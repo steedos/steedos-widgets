@@ -1,6 +1,6 @@
 {
   "name": "@steedos-widgets/design-system",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "",
   "keywords": [],
   "main": "dist/builder-widgets.umd.js",
@@ -163,8 +163,7 @@
   "peerDependencies": {
     "@steedos-builder/react": "^0.1.0"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "publishConfig": {
     "access": "public"
   },
