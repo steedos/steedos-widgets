@@ -1,0 +1,168 @@
+{
+  "name": "@steedos-widgets/design-system-react",
+  "version": "0.1.0",
+  "description": "",
+  "keywords": [],
+  "main": "dist/builder-widgets.cjs.js",
+  "module": "dist/builder-widgets.es5.js",
+  "unpkg": "dist/builder-widgets.browser.js",
+  "typings": "dist/types/builder-widgets.d.ts",
+  "files": [
+    "dist"
+  ],
+  "author": "Jack Zhuang <zhuangjianguo@steedos.com>",
+  "repository": "https://github.com/steedos/steedos-widgets",
+  "license": "MIT",
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "scripts": {
+    "_unlink": "yarn unlink *",
+    "_install": "yarn install && yarn-install-peers",
+    "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+    "prebuild": "rimraf dist",
+    "build": "cross-env NODE_OPTIONS=--max-old-space-size=16192 && rollup -c rollup.config.ts",
+    "build:docs": "typedoc --out docs --target es6 --theme minimal --mode file src",
+    "start": "rollup -c rollup.config.ts -w",
+    "test:watch": "jest --watch",
+    "test:prod": "yarn run lint && yarn run test -- --coverage --no-cache",
+    "deploy-docs": "ts-node tools/gh-pages-publish",
+    "report-coverage": "cat ./coverage/lcov.info | coveralls",
+    "commit": "git-cz",
+    "release": "yarn run build && ALLOW_PUBLISH=true yarn publish",
+    "release:patch": "yarn run build && yarn version patch && ALLOW_PUBLISH=true yarn publish",
+    "release:nightly": "yarn run build && yarn version prerelease --no-git-tag-version && ALLOW_PUBLISH=true yarn publish --tag nightly",
+    "release:dev": "yarn run build && yarn version prerelease --no-git-tag-version && ALLOW_PUBLISH=true yarn publish --tag dev",
+    "semantic-release": "semantic-release",
+    "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
+    "precommit": "lint-staged",
+    "prepublishOnly": "block-publish",
+    "ci:build": "yarn run build",
+    "ci:lint": "yarn run lint"
+  },
+  "lint-staged": {
+    "{src,test}/**/*.ts": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-conventional-changelog"
+    },
+    "validate-commit-msg": {
+      "types": "conventional-commit-types",
+      "helpMessage": "Use \"yarn run commit\" instead, we use conventional-changelog format :) (https://github.com/commitizen/cz-cli)"
+    }
+  },
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/test/"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 90,
+        "functions": 95,
+        "lines": 95,
+        "statements": 95
+      }
+    },
+    "collectCoverage": true
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.16.7",
+    "@babel/plugin-proposal-export-default-from": "^7.16.7",
+    "@babel/plugin-proposal-export-namespace-from": "^7.16.7",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/preset-react": "^7.16.7",
+    "@builder.io/block-publish": "^1.1.2",
+    "@builder.io/react": "^1.1.42",
+    "@lopatnov/rollup-plugin-uglify": "^2.1.2",
+    "@rollup/plugin-alias": "^3.1.9",
+    "@rollup/plugin-babel": "^5.3.1",
+    "@rollup/plugin-commonjs": "^21.0.2",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.1.3",
+    "@salesforce/babel-preset-design-system-react": "^3.0.0",
+    "@types/jest": "^26.0.19",
+    "@types/lodash-es": "^4.17.1",
+    "@types/node": "^14.14.19",
+    "@types/react": "^17.0.2",
+    "@types/react-dom": "^17.0.0",
+    "@types/react-loadable": "^5.5.1",
+    "@types/react-slick": "^0.23.4",
+    "colors": "^1.1.2",
+    "commitizen": "4.2.2",
+    "coveralls": "^3.0.0",
+    "cross-env": "7.0.3",
+    "cz-conventional-changelog": "3.3.0",
+    "husky": "7",
+    "jest": "26.6.3",
+    "less": "^4.1.2",
+    "lint-staged": "10.5.3",
+    "lodash.camelcase": "^4.3.0",
+    "npm-install-peers": "^1.2.1",
+    "postcss": "^8.4.12",
+    "prettier": "^2.2.1",
+    "prompt": "^1.0.0",
+    "replace-in-file": "^6.2.0",
+    "rimraf": "3.0.2",
+    "rollup": "^2.70.1",
+    "rollup-plugin-alias": "^2.2.0",
+    "rollup-plugin-external-globals": "^0.6.1",
+    "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "rollup-plugin-node-globals": "^1.4.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-polyfill-node": "^0.8.0",
+    "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-postcss-webpack-alias-less-loader": "^1.0.0",
+    "rollup-plugin-re": "^1.0.7",
+    "rollup-plugin-replace": "^2.0.0",
+    "rollup-plugin-sourcemaps": "^0.6.3",
+    "rollup-plugin-svg": "^2.0.0",
+    "rollup-plugin-tslib-resolve-id": "^0.0.0",
+    "rollup-plugin-typescript2": "^0.30.0",
+    "rollup-plugin-visualizer": "^5.6.0",
+    "semantic-release": "^17.4.2",
+    "terser": "^5.12.1",
+    "ts-jest": "26.4.4",
+    "ts-node": "^9.1.1",
+    "tslint": "^5.8.0",
+    "tslint-config-prettier": "^1.1.0",
+    "tslint-config-standard": "^7.0.0",
+    "typedoc": "^0.20.36",
+    "typescript": "^4.6.2",
+    "validate-commit-msg": "^2.12.2"
+  },
+  "optionalDependencies": {
+    "create-inferno-context": "^0.2.4",
+    "create-react-context": "^0.2.3",
+    "inferno": "^7.1.9",
+    "inferno-compat": "^7.1.9",
+    "preact": "^8.4.2",
+    "preact-compat": "^3.18.4",
+    "preact-context": "^1.1.3",
+    "prop-types": "^15.7.2"
+  },
+  "peerDependencies": {
+    "@steedos-builder/react": "^0.1.0"
+  },
+  "dependencies": {
+    "@salesforce/design-system-react": "^0.10.46"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "4d96fbc32864698afbb355ab991c6d90be991951"
+}
