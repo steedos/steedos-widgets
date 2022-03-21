@@ -1,6 +1,6 @@
 const { name, version} = require('../package.json');
 
-const exportName = "DesignSystemWidgets"
+const exportName = "DesignSystem"
 
 export default {
   packages: [

@@ -5,7 +5,7 @@
   "keywords": [],
   "main": "dist/builder-widgets.cjs.js",
   "module": "dist/builder-widgets.es5.js",
-  "unpkg": "dist/builder-widgets.browser.js",
+  "unpkg": "dist/builder-widgets.umd.js",
   "typings": "dist/types/builder-widgets.d.ts",
   "files": [
     "dist"
