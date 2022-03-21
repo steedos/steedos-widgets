@@ -4,7 +4,7 @@ import json from '@rollup/plugin-json';
 import regexReplace from 'rollup-plugin-re';
 import replace from 'rollup-plugin-replace';
 import sourceMaps from 'rollup-plugin-sourcemaps';
-import typescript from 'rollup-plugin-typescript2';
+import typescript from '@rollup/plugin-typescript';
 import { babel } from '@rollup/plugin-babel'
 import path from 'path';
 import postcss from 'rollup-plugin-postcss'
@@ -43,9 +43,7 @@ const options = {
       browser: true,
       // preferBuiltins:true,
     }),
-    typescript({
-      useTsconfigDeclarationDir: true,
-    }),
+    typescript({}),
     replace({
       'process.env.NODE_ENV': JSON.stringify('production'),
     }),
@@ -88,9 +86,9 @@ export default [
     external,
     plugins: options.plugins.concat([
       visualizer({
-        filename: 'dist/stats.html'
+        filename: 'stats.html'
       }),
-      // uglify(), 
+      uglify(), 
       // sourceMaps()
     ]),
   },
