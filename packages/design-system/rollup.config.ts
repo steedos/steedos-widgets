@@ -13,6 +13,7 @@ import alias from '@rollup/plugin-alias';
 import visualizer from 'rollup-plugin-visualizer'
 import uglify from "@lopatnov/rollup-plugin-uglify";
 import builtins from 'rollup-plugin-node-builtins';
+import image from '@rollup/plugin-image';
 
 const rollupPostcssLessLoader = require('rollup-plugin-postcss-webpack-alias-less-loader')
 
@@ -38,6 +39,7 @@ const options = {
   plugins: [
     // Allow json resolution
     json(),
+    image(),
     builtins(),
     nodeResolve({
       browser: true,
