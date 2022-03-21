@@ -13,7 +13,6 @@ import alias from '@rollup/plugin-alias';
 import visualizer from 'rollup-plugin-visualizer'
 import uglify from "@lopatnov/rollup-plugin-uglify";
 import builtins from 'rollup-plugin-node-builtins';
-import image from '@rollup/plugin-image';
 
 const rollupPostcssLessLoader = require('rollup-plugin-postcss-webpack-alias-less-loader')
 
@@ -22,12 +21,12 @@ const libraryName = 'builder-widgets';
 const external = [
   "react",
   "react-dom",
-  'vm2',
   'lodash',
 ]
 const globals = {
   'react': 'React',
   'react-dom': 'ReactDOM',
+  'lodash': '_',
 }
 
 const options = {
@@ -39,7 +38,7 @@ const options = {
   plugins: [
     // Allow json resolution
     json(),
-    image(),
+    svg(),
     builtins(),
     nodeResolve({
       browser: true,
@@ -50,7 +49,6 @@ const options = {
       'process.env.NODE_ENV': JSON.stringify('production'),
     }),
 
-    svg(),
     postcss({
       config: false,
       loaders: [rollupPostcssLessLoader({
@@ -81,7 +79,7 @@ export default [
     output: {
       format: 'umd',
       file: `dist/${libraryName}.umd.js`,
-      name: 'BuilderWidgets',
+      name: 'DesignSystem',
       sourcemap: false,
       globals
     },

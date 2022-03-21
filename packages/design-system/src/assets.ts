@@ -6,7 +6,10 @@ export default {
   packages: [
     {
       package: name,
-      urls: [`https://unpkg.com/${name}/dist/builder-widgets.umd.js`],
+      urls: [
+        `https://unpkg.com/${name}/dist/builder-widgets.umd.js`,
+        `https://unpkg.com/${name}/dist/builder-widgets.umd.css`
+      ],
       library: exportName,
     }
   ],

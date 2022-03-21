@@ -94,5 +94,4 @@ yarn-error.log
 yarn.lock
 build
 
-dist
 stats.html
