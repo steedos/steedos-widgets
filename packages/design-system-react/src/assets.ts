@@ -1,4 +1,4 @@
-import { name, version} from '../package.json';
+const { name, version} = require('../package.json');
 
 const exportName = "DesignSystemReactWidgets"
 

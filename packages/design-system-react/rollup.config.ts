@@ -36,6 +36,8 @@ const options = {
     include: 'src/**',
   },
   plugins: [
+    // Allow json resolution
+    json(),
     builtins(),
     nodeResolve({
       browser: true,
@@ -47,8 +49,6 @@ const options = {
     replace({
       'process.env.NODE_ENV': JSON.stringify('production'),
     }),
-    // Allow json resolution
-    json(),
 
     svg(),
     postcss({

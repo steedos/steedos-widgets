@@ -91,6 +91,7 @@ yarn-error.log
 # Yarn Integrity file
 .yarn-integrity
 
-report.*
 yarn.lock
 build
+
+dist
