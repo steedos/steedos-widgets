@@ -1,9 +1,19 @@
 declare const _default: {
     packages: {
-        package: void;
+        package: string;
         urls: string[];
         library: string;
     }[];
-    components: never[];
+    components: {
+        exportName: string;
+        npm: {
+            package: string;
+        };
+        url: string;
+        urls: {
+            default: string;
+            design: string;
+        };
+    }[];
 };
 export default _default;

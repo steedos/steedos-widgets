@@ -2,7 +2,7 @@ const config: any = {
   group: "Salesforce",
   name: "salesforce-button",
   componentName: "SalesforceButton",
-  title: "按钮",
+  title: "SF按钮",
   docUrl: "",
   screenshot: "",
   icon: "fa-fw fa fa-list-alt",
@@ -21,8 +21,7 @@ const config: any = {
     },
   ],
   preview: {
-    text: "Submit",
-    link: "https://www.steedos.cn"
+    label: "Submit",
   },
   targets: ["steedos__RecordPage", "steedos__AppPage", "steedos__HomePage"],
   engines: ["amis"],

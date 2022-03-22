@@ -8,7 +8,7 @@
     var assets = {
         packages: [
             {
-                package: name,
+                package: '@steedos-widgets/design-system',
                 urls: [
                     "https://unpkg.com/@steedos-widgets/design-system/dist/builder-widgets.umd.js",
                     "https://unpkg.com/@steedos-widgets/design-system/dist/builder-widgets.umd.css"
@@ -17,18 +17,17 @@
             }
         ],
         components: [
-        // {
-        //   exportName: `${exportName}Meta`,
-        //   npm: {
-        //     package: name,
-        //     version
-        //   },
-        //   url: `https://unpkg.com/${name}/dist/meta.js`,
-        //   urls: {
-        //     default: `https://unpkg.com/${name}/dist/meta.js`,
-        //     design: `https://unpkg.com/${name}/dist/meta.js`
-        //   }
-        // }
+            {
+                exportName: "".concat(exportName, "Meta"),
+                npm: {
+                    package: '@steedos-widgets/design-system',
+                },
+                url: "https://unpkg.com/@steedos-widgets/design-system/dist/meta.js",
+                urls: {
+                    default: "https://unpkg.com/@steedos-widgets/design-system/dist/meta.js",
+                    design: "https://unpkg.com/@steedos-widgets/design-system/dist/meta.js"
+                }
+            }
         ]
     };
 
