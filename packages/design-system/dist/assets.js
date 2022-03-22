@@ -22,7 +22,7 @@
                 npm: {
                     package: '@steedos-widgets/design-system',
                 },
-                url: "https://unpkg.com/@steedos-widgets/design-system/dist/meta.js",
+                url: "https://unpkg.com/@steedos-widgets/design-system@0.1.9/dist/meta.js",
                 urls: {
                     default: "https://unpkg.com/@steedos-widgets/design-system/dist/meta.js",
                     design: "https://unpkg.com/@steedos-widgets/design-system/dist/meta.js"

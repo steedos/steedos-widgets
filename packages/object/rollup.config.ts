@@ -39,6 +39,8 @@ const external = [
   "@salesforce-ux/design-system/assets/icons",
   // "@salesforce-ux/design-system/",
   "@salesforce/design-system-react",
+  "@salesforce/design-system-react/",
+  "@salesforce/design-system-react/*",
   "@steedos-widgets/design-system",
   // "@chakra-ui/react",
   // "antd",

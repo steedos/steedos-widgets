@@ -76673,7 +76673,8 @@
     var SteedosIcon = function (props) {
         var _a = props.category, category = _a === void 0 ? 'standard' : _a, name = props.name; props.path; __rest$1(props, ["category", "name", "path"]);
         var inlineData = inlineIcons[category][name.toLowerCase()];
-        inlineData.viewBox = inlineIcons[category].viewBox;
+        if (inlineData)
+            inlineData.viewBox = inlineIcons[category].viewBox;
         return React__default["default"].createElement(Icon$1, __assign$1({ name: name, category: category, icon: inlineData }, props));
     };
 

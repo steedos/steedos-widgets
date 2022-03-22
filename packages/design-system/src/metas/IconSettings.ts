@@ -1,27 +1,22 @@
 const config: any = {
   group: "Salesforce",
-  name: "salesforce-button",
-  componentName: "SalesforceButton",
-  title: "SF Button",
+  name: "salesforce-icon-settings",
+  componentName: "SalesforceIconSettings",
+  title: "SF Icon Settings",
   docUrl: "",
   screenshot: "",
   icon: "fa-fw fa fa-list-alt",
   npm: {
     package: "@steedos-widgets/design-system",
     version: "{{version}}",
-    exportName: "Icon",
+    exportName: "IconSettings",
     main: "",
     destructuring: true,
     subName: ""
   },
   props: [
-    {
-      name: "label",
-      propType: "string"
-    },
   ],
   preview: {
-    label: "Hello Button",
   },
   targets: ["steedos__RecordPage", "steedos__AppPage", "steedos__HomePage"],
   engines: ["amis"],
@@ -66,11 +61,6 @@ export default {
       },
       panelTitle: "设置",
       panelControls: [
-        {
-          type: "text",
-          name: "label",
-          label: "标题"
-        },
       ]
     }
   }

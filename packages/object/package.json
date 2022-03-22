@@ -23,6 +23,7 @@
     "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf dist",
     "build": "cross-env NODE_OPTIONS=--max-old-space-size=16192 && rollup -c rollup.config.ts",
+    "build:types": "tsc --emitDeclarationOnly --declaration --declarationDir dist/types",
     "build:docs": "typedoc --out docs --target es6 --theme minimal --mode file src",
     "start": "rollup -c rollup.config.ts -w",
     "test:watch": "jest --watch",
