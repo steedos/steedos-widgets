@@ -1,6 +1,6 @@
 {
   "name": "@steedos-widgets/design-system",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "",
   "keywords": [],
   "main": "dist/builder-widgets.umd.js",
