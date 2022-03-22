@@ -15,10 +15,12 @@ const inlineIcons: any = {
   utility
 }
 export const SteedosIcon = (props: any) => {
-  const {category = 'standard', name} = props
+  const {category = 'standard', name, path, ...rest} = props
   const inlineData = inlineIcons[category][name.toLowerCase()]
   inlineData.viewBox = inlineIcons[category].viewBox;
   return <Icon 
+    name = {name}
+    category = {category}
     icon = {inlineData}
     {...props}/>
 }

@@ -88,7 +88,7 @@ export default [
       visualizer({
         filename: 'stats.html'
       }),
-      uglify(), 
+      // uglify(), 
       // sourceMaps()
     ]),
   },
