@@ -130,6 +130,7 @@
     "rollup-plugin-svg": "^2.0.0",
     "rollup-plugin-tslib-resolve-id": "^0.0.0",
     "rollup-plugin-typescript2": "^0.30.0",
+    "@lopatnov/rollup-plugin-uglify": "^2.1.2",
     "semantic-release": "^17.4.2",
     "ts-jest": "26.4.4",
     "ts-node": "^9.1.1",
@@ -151,20 +152,19 @@
     "prop-types": "^15.7.2"
   },
   "peerDependencies": {
-    "@builder.io/react": "^1.1.0"
+    "antd": "^4.19.2",
+    "@ant-design/pro-form": "^1.58.1",
+    "@builder.io/react": "^1.1.0",
+    "@steedos-builder/react": "^0.0.2",
+    "@steedos-ui/builder-ag-grid": "^1.0.24",
+    "@steedos-ui/builder-lightning": "^1.0.24",
+    "@steedos-ui/builder-object": "^1.0.24"
   },
   "dependencies": {
-    "@ant-design/pro-form": "^1.58.1",
     "@chakra-ui/icons": "^1.1.7",
     "@emotion/core": ">=10",
     "@emotion/react": "^11.8.2",
     "@emotion/styled": "^11.1.5",
-    "@lopatnov/rollup-plugin-uglify": "^2.1.2",
-    "@steedos-builder/react": "^0.0.2",
-    "@steedos-ui/builder-ag-grid": "^1.0.24",
-    "@steedos-ui/builder-lightning": "^1.0.24",
-    "@steedos-ui/builder-object": "^1.0.24",
-    "antd": "^4.19.2",
     "lodash-es": "^4.17.10",
     "next": "^12.1.0",
     "react": "^17.0.2",

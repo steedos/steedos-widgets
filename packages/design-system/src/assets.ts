@@ -1,5 +1,3 @@
-const { name, version} = require('../package.json');
-
 const exportName = "DesignSystem"
 
 export default {
@@ -7,8 +5,8 @@ export default {
     {
       package: name,
       urls: [
-        `https://unpkg.com/${name}/dist/builder-widgets.umd.js`,
-        `https://unpkg.com/${name}/dist/builder-widgets.umd.css`
+        `https://unpkg.com/@steedos-widgets/design-system/dist/builder-widgets.umd.js`,
+        `https://unpkg.com/@steedos-widgets/design-system/dist/builder-widgets.umd.css`
       ],
       library: exportName,
     }

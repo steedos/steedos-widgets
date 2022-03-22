@@ -1,10 +1,12 @@
 
-const components:any = [];
+import Button from "./metas/Button";
+
+const components:any = [Button];
 const componentList = [
   {
     title: "Design System",
     icon: "",
-    children: []
+    children: [Button]
   }
 ];
 

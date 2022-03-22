@@ -4,15 +4,14 @@
     (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Assets = factory());
 })(this, (function () { 'use strict';
 
-    var _a = require('../package.json'), name = _a.name; _a.version;
     var exportName = "DesignSystem";
     var assets = {
         packages: [
             {
                 package: name,
                 urls: [
-                    "https://unpkg.com/".concat(name, "/dist/builder-widgets.umd.js"),
-                    "https://unpkg.com/".concat(name, "/dist/builder-widgets.umd.css")
+                    "https://unpkg.com/@steedos-widgets/design-system/dist/builder-widgets.umd.js",
+                    "https://unpkg.com/@steedos-widgets/design-system/dist/builder-widgets.umd.css"
                 ],
                 library: exportName,
             }

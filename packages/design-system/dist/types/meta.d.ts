@@ -2,7 +2,7 @@ declare const _default: {
     componentList: {
         title: string;
         icon: string;
-        children: never[];
+        children: any[];
     }[];
     components: any;
 };

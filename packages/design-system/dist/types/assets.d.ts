@@ -1,6 +1,6 @@
 declare const _default: {
     packages: {
-        package: any;
+        package: void;
         urls: string[];
         library: string;
     }[];
