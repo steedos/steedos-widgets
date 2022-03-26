@@ -1,13 +1,12 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('react'), require('@salesforce/design-system-react/components/tooltip'), require('react-dom')) :
-    typeof define === 'function' && define.amd ? define(['exports', 'react', '@salesforce/design-system-react/components/tooltip', 'react-dom'], factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.DesignSystem = {}, global.React, global.Tooltip$2, global.ReactDOM));
-})(this, (function (exports, React$3, Tooltip$2, ReactDOM) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('react'), require('react-dom')) :
+    typeof define === 'function' && define.amd ? define(['exports', 'react', 'react-dom'], factory) :
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.DesignSystem = {}, global.React, global.ReactDOM));
+})(this, (function (exports, React$3, ReactDOM) { 'use strict';
 
     function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
     var React__default = /*#__PURE__*/_interopDefaultLegacy(React$3);
-    var Tooltip__default = /*#__PURE__*/_interopDefaultLegacy(Tooltip$2);
     var ReactDOM__default = /*#__PURE__*/_interopDefaultLegacy(ReactDOM);
 
     /*! *****************************************************************************
@@ -76857,7 +76856,7 @@
                 ));
             };
             // This is present for backwards compatibility and should be removed at a future breaking change release. Please wrap a `Button` in a `PopoverTooltip` to achieve the same result. There will be an extra trigger `div` wrapping the `Button` though.
-            _this.renderTooltip = function () { return (React__default["default"].createElement(Tooltip__default["default"], { content: _this.props.tooltip }, _this.renderButton)); };
+            _this.renderTooltip = function () { return (React__default["default"].createElement(Tooltip$1, { content: _this.props.tooltip }, _this.renderButton)); };
             return _this;
             // `checkProps` issues warnings to developers about properties (similar to React's built in development tools)
             // checkProps(BUTTON, props, componentDoc);

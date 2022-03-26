@@ -5,7 +5,7 @@ import ButtonIcon from './ButtonIcon';
 // import checkProps from './check-props';
 // import componentDoc from './component.json';
 // eslint-disable-next-line import/no-cycle
-import Tooltip from '@salesforce/design-system-react/components/tooltip';
+import {Tooltip} from '@salesforce/design-system-react';
 
 import getAriaProps from '@salesforce/design-system-react/utilities/get-aria-props';
 import getDataProps from '@salesforce/design-system-react/utilities/get-data-props';
