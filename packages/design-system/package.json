@@ -163,7 +163,9 @@
   "peerDependencies": {
     "@steedos-builder/react": "^0.1.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "react-required-if": "^1.0.3"
+  },
   "publishConfig": {
     "access": "public"
   },

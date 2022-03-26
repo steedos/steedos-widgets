@@ -1,12 +1,13 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('react'), require('react-dom')) :
-    typeof define === 'function' && define.amd ? define(['exports', 'react', 'react-dom'], factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.DesignSystem = {}, global.React, global.ReactDOM));
-})(this, (function (exports, React$3, ReactDOM) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('react'), require('@salesforce/design-system-react/components/tooltip'), require('react-dom')) :
+    typeof define === 'function' && define.amd ? define(['exports', 'react', '@salesforce/design-system-react/components/tooltip', 'react-dom'], factory) :
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.DesignSystem = {}, global.React, global.Tooltip$2, global.ReactDOM));
+})(this, (function (exports, React$3, Tooltip$2, ReactDOM) { 'use strict';
 
     function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
     var React__default = /*#__PURE__*/_interopDefaultLegacy(React$3);
+    var Tooltip__default = /*#__PURE__*/_interopDefaultLegacy(Tooltip$2);
     var ReactDOM__default = /*#__PURE__*/_interopDefaultLegacy(ReactDOM);
 
     /*! *****************************************************************************
@@ -23,6 +24,29 @@
     OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
     PERFORMANCE OF THIS SOFTWARE.
     ***************************************************************************** */
+
+    /* global Reflect, Promise */
+    var extendStatics = function (d, b) {
+      extendStatics = Object.setPrototypeOf || {
+        __proto__: []
+      } instanceof Array && function (d, b) {
+        d.__proto__ = b;
+      } || function (d, b) {
+        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+      };
+
+      return extendStatics(d, b);
+    };
+
+    function __extends$1(d, b) {
+      extendStatics(d, b);
+
+      function __() {
+        this.constructor = d;
+      }
+
+      d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    }
     var __assign$1 = function () {
       __assign$1 = Object.assign || function __assign(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -573,7 +597,7 @@
     var BUILDER_HEADER_NAV_DROPDOWN = 'SLDSBuilderHeaderNavDropdown';
     var BUILDER_HEADER_NAV_LINK = 'SLDSBuilderHeaderNavLink';
     var BUILDER_HEADER_TOOLBAR = 'SLDSBuilderHeaderToolbar';
-    var BUTTON = 'SLDSButton';
+    var BUTTON$1 = 'SLDSButton';
     var BUTTON_GROUP = 'SLDSButtonGroup';
     var BUTTON_STATEFUL = 'SLDSButtonStateful';
     var BUTTON_ICON = 'SLDSButtonIcon'; // a non-interctive icon wrapper for SLDSUtilityIcon
@@ -1872,13 +1896,13 @@
        */
       size: PropTypes$2.oneOf(['x-small', 'small', 'medium', 'large'])
     };
-    var defaultProps$1h = {
+    var defaultProps$1i = {
       category: 'utility',
       size: 'medium'
     };
     ButtonIcon.displayName = BUTTON_ICON;
     ButtonIcon.propTypes = propTypes$1D;
-    ButtonIcon.defaultProps = defaultProps$1h;
+    ButtonIcon.defaultProps = defaultProps$1i;
     var ButtonIcon$1 = ButtonIcon;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
@@ -8006,7 +8030,7 @@
 
       return obj;
     }
-    var defaultProps$1g = {
+    var defaultProps$1h = {
       assistiveText: {},
       category: 'standard',
       colorVariant: 'default',
@@ -8038,7 +8062,7 @@
         }, style);
       }
 
-      var assistiveText = typeof props.assistiveText === 'string' ? props.assistiveText : _objectSpread$O(_objectSpread$O({}, defaultProps$1g.assistiveText), props.assistiveText).label;
+      var assistiveText = typeof props.assistiveText === 'string' ? props.assistiveText : _objectSpread$O(_objectSpread$O({}, defaultProps$1h.assistiveText), props.assistiveText).label;
       var kababCaseName = name ? name.replace(/_/g, '-') : '';
       return /*#__PURE__*/React__default["default"].createElement("span", {
         className: classNames(_defineProperty$1G({
@@ -8154,7 +8178,7 @@
        */
       title: PropTypes$2.string
     };
-    Icon.defaultProps = defaultProps$1g;
+    Icon.defaultProps = defaultProps$1h;
     var Icon$1 = Icon;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
@@ -8471,7 +8495,7 @@
        */
       variant: PropTypes$2.oneOf(['base', 'learnMore', 'list-item'])
     };
-    var defaultProps$1f = {
+    var defaultProps$1g = {
       assistiveText: {
         tooltipTipLearnMoreIcon: 'this link',
         triggerLearnMoreIcon: 'Help'
@@ -8654,7 +8678,7 @@
               size: "x-small"
             }))];
           } else if (noChildrenProvided) {
-            children = [/*#__PURE__*/React__default["default"].createElement(Button$2, {
+            children = [/*#__PURE__*/React__default["default"].createElement(Button$3, {
               "aria-disabled": true,
               assistiveText: {
                 icon: this.props.assistiveText.triggerLearnMoreIcon
@@ -8773,10 +8797,10 @@
     Tooltip.contextType = IconSettingsContext;
     Tooltip.displayName = displayName$t;
     Tooltip.propTypes = propTypes$1C;
-    Tooltip.defaultProps = defaultProps$1f;
+    Tooltip.defaultProps = defaultProps$1g;
     var Tooltip$1 = Tooltip;
 
-    function getAriaProps(props) {
+    function getAriaProps$1(props) {
       return Object.keys(props).reduce(function (prev, key) {
         if (key.substr(0, 5) === 'aria-') {
           // eslint-disable-next-line no-param-reassign
@@ -8787,7 +8811,7 @@
       }, {});
     }
 
-    function getDataProps(props) {
+    function getDataProps$1(props) {
       return Object.keys(props).reduce(function (prev, key) {
         if (key.substr(0, 5) === 'data-') {
           // eslint-disable-next-line no-param-reassign
@@ -8798,10 +8822,10 @@
       }, {});
     }
 
-    var formPropsSet = new Set(['form', 'formAction', 'formEncType', 'formMethod', 'formNoValidate', 'formTarget']);
-    function getFormProps(props) {
+    var formPropsSet$1 = new Set(['form', 'formAction', 'formEncType', 'formMethod', 'formNoValidate', 'formTarget']);
+    function getFormProps$1(props) {
       return Object.keys(props).reduce(function (prev, key) {
-        if (formPropsSet.has(key)) {
+        if (formPropsSet$1.has(key)) {
           // eslint-disable-next-line no-param-reassign
           prev[key] = props[key];
         }
@@ -8997,7 +9021,7 @@
 
       return obj;
     }
-    var defaultProps$1e = {
+    var defaultProps$1f = {
       assistiveText: {
         icon: ''
       },
@@ -9014,7 +9038,7 @@
      * Although not listed in the prop table, all `aria-*`, `data-*` and `form*` props will be added to the `button` element if passed in.
      */
 
-    var Button$1 = /*#__PURE__*/function (_React$Component) {
+    var Button$2 = /*#__PURE__*/function (_React$Component) {
       _inherits$1H(Button, _React$Component);
 
       var _super = _createSuper$1G(Button);
@@ -9074,16 +9098,16 @@
 
         _defineProperty$1E(_assertThisInitialized$1H(_this), "renderLabel", function () {
           var iconOnly = _this.props.iconName || _this.props.iconPath;
-          var assistiveTextIcon = typeof _this.props.assistiveText === 'string' ? _this.props.assistiveText : _objectSpread$M(_objectSpread$M({}, defaultProps$1e.assistiveText), _this.props.assistiveText).icon;
+          var assistiveTextIcon = typeof _this.props.assistiveText === 'string' ? _this.props.assistiveText : _objectSpread$M(_objectSpread$M({}, defaultProps$1f.assistiveText), _this.props.assistiveText).icon;
           return iconOnly && assistiveTextIcon ? /*#__PURE__*/React__default["default"].createElement("span", {
             className: "slds-assistive-text"
           }, assistiveTextIcon) : _this.props.label;
         });
 
         _defineProperty$1E(_assertThisInitialized$1H(_this), "renderButton", function () {
-          var ariaProps = getAriaProps(_this.props);
-          var dataProps = getDataProps(_this.props);
-          var formProps = getFormProps(_this.props);
+          var ariaProps = getAriaProps$1(_this.props);
+          var dataProps = getDataProps$1(_this.props);
+          var formProps = getFormProps$1(_this.props);
           return (
             /*#__PURE__*/
             // eslint-disable-next-line react/button-has-type
@@ -9131,7 +9155,7 @@
           }, _this.renderButton);
         });
 
-        checkProps$19(BUTTON, props, componentDoc$t);
+        checkProps$19(BUTTON$1, props, componentDoc$t);
         return _this;
       }
 
@@ -9145,9 +9169,9 @@
       return Button;
     }(React__default["default"].Component);
 
-    _defineProperty$1E(Button$1, "displayName", BUTTON);
+    _defineProperty$1E(Button$2, "displayName", BUTTON$1);
 
-    _defineProperty$1E(Button$1, "propTypes", {
+    _defineProperty$1E(Button$2, "propTypes", {
       /**
        * **Assistive text for accessibility.**
        * This object is merged with the default props object on every render.
@@ -9325,9 +9349,9 @@
       style: PropTypes$2.object
     });
 
-    _defineProperty$1E(Button$1, "defaultProps", defaultProps$1e);
+    _defineProperty$1E(Button$2, "defaultProps", defaultProps$1f);
 
-    var Button$2 = Button$1;
+    var Button$3 = Button$2;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
     var propTypes$1B = {
@@ -9403,7 +9427,7 @@
         className: "slds-accordion__summary"
       }, /*#__PURE__*/React__default["default"].createElement("h3", {
         className: "slds-text-heading_small slds-accordion__summary-heading slds-has-flexi-truncate"
-      }, /*#__PURE__*/React__default["default"].createElement(Button$2, {
+      }, /*#__PURE__*/React__default["default"].createElement(Button$3, {
         "aria-controls": "".concat(id, "-accordion-panel"),
         "aria-expanded": expanded,
         buttonRef: refs.summaryButton,
@@ -10346,7 +10370,7 @@
        */
       variant: PropTypes$2.oneOf(['error', 'info', 'offline', 'warning']).isRequired
     };
-    var defaultProps$1d = {
+    var defaultProps$1e = {
       assistiveText: {
         closeButton: 'Close'
       },
@@ -10402,8 +10426,8 @@
         key: "render",
         value: function render() {
           // Merge objects of strings with their default object
-          var assistiveText = lodash_assign({}, defaultProps$1d.assistiveText, this.props.assistiveText);
-          var labels = lodash_assign({}, defaultProps$1d.labels, this.props.labels); // BACKWARD COMPATIBILITY WITH NOTIFICATION
+          var assistiveText = lodash_assign({}, defaultProps$1e.assistiveText, this.props.assistiveText);
+          var labels = lodash_assign({}, defaultProps$1e.labels, this.props.labels); // BACKWARD COMPATIBILITY WITH NOTIFICATION
 
           var heading = labels.heading || this.props.content; // eslint-disable-line react/prop-types
 
@@ -10462,7 +10486,7 @@
           }, assistiveTextVariant[this.props.variant]), clonedIcon, /*#__PURE__*/React__default["default"].createElement("h2", null, heading, ' ', labels.headingLink ? /*#__PURE__*/React__default["default"].createElement("a", {
             onClick: EventUtil$1.trappedHandler(this.props.onClickHeadingLink),
             href: "#"
-          }, labels.headingLink) : null), this.props.dismissible ? /*#__PURE__*/React__default["default"].createElement(Button$2, {
+          }, labels.headingLink) : null), this.props.dismissible ? /*#__PURE__*/React__default["default"].createElement(Button$3, {
             assistiveText: {
               icon: assistiveText.closeButton
             },
@@ -10482,7 +10506,7 @@
       return Alert;
     }(React__default["default"].Component);
 
-    Alert.defaultProps = defaultProps$1d;
+    Alert.defaultProps = defaultProps$1e;
     Alert.displayName = ALERT;
     Alert.propTypes = propTypes$1A;
     var Alert$1 = Alert;
@@ -13068,7 +13092,7 @@
        */
       toast: PropTypes$2.node
     };
-    var defaultProps$1c = {
+    var defaultProps$1d = {
       assistiveText: {
         dialogLabelledBy: '',
         closeButton: 'Close'
@@ -13319,10 +13343,10 @@
           var headerContent = this.props.header;
           var headerEmpty = !headerContent && !(this.props.heading || this.props.title) && !this.props.tagline;
 
-          var assistiveText = _objectSpread$L(_objectSpread$L({}, defaultProps$1c.assistiveText), this.props.assistiveText);
+          var assistiveText = _objectSpread$L(_objectSpread$L({}, defaultProps$1d.assistiveText), this.props.assistiveText);
 
           var closeButtonAssistiveText = this.props.closeButtonAssistiveText || assistiveText.closeButton;
-          var closeButton = /*#__PURE__*/React__default["default"].createElement(Button$2, {
+          var closeButton = /*#__PURE__*/React__default["default"].createElement(Button$3, {
             assistiveText: {
               icon: closeButtonAssistiveText
             },
@@ -13420,7 +13444,7 @@
 
     Modal.displayName = MODAL;
     Modal.propTypes = propTypes$1y;
-    Modal.defaultProps = defaultProps$1c;
+    Modal.defaultProps = defaultProps$1d;
     var Modal$1 = Modal;
 
     function _typeof$1D(obj) {
@@ -13592,7 +13616,7 @@
 
       return obj;
     }
-    var defaultProps$1b = {
+    var defaultProps$1c = {
       assistiveText: {
         trigger: 'Open App Launcher'
       },
@@ -13720,7 +13744,7 @@
 
           var modalContentStaticHeight = '90%';
 
-          var assistiveText = _objectSpread$K(_objectSpread$K({}, defaultProps$1b.assistiveText), this.props.assistiveText);
+          var assistiveText = _objectSpread$K(_objectSpread$K({}, defaultProps$1c.assistiveText), this.props.assistiveText);
 
           var triggerAssistiveText = this.props.triggerAssistiveText || assistiveText.trigger;
           return /*#__PURE__*/React__default["default"].createElement("div", {
@@ -13856,7 +13880,7 @@
       triggerOnClick: PropTypes$2.func
     });
 
-    _defineProperty$1B(AppLauncher, "defaultProps", defaultProps$1b);
+    _defineProperty$1B(AppLauncher, "defaultProps", defaultProps$1c);
 
     var AppLauncher$1 = AppLauncher;
 
@@ -14053,7 +14077,7 @@
        */
       title: PropTypes$2.string.isRequired
     };
-    var defaultProps$1a = {
+    var defaultProps$1b = {
       assistiveText: {
         toggleSection: 'Toggle visibility of section'
       },
@@ -14123,7 +14147,7 @@
             className: classNames$1('slds-section__title', {
               'slds-theme_shade': !!this.props.nonCollapsible
             })
-          }, !this.props.nonCollapsible ? /*#__PURE__*/React__default["default"].createElement(Button$2, _extends$J({
+          }, !this.props.nonCollapsible ? /*#__PURE__*/React__default["default"].createElement(Button$3, _extends$J({
             assistiveText: {
               icon: this.props.assistiveText.toggleSection
             },
@@ -14146,7 +14170,7 @@
 
     ExpandableSection.displayName = EXPANDABLE_SECTION;
     ExpandableSection.propTypes = propTypes$1x;
-    ExpandableSection.defaultProps = defaultProps$1a;
+    ExpandableSection.defaultProps = defaultProps$1b;
     var ExpandableSection$1 = ExpandableSection;
 
     function _typeof$1B(obj) {
@@ -16533,7 +16557,7 @@
       title: PropTypes$2.string.isRequired // Future feature: add Highlighter to Truncate text (https://github.com/ShinyChang/React-Text-Truncate/issues/32)
 
     };
-    var defaultProps$19 = {
+    var defaultProps$1a = {
       assistiveText: {
         dragIconText: 'Reorder'
       },
@@ -16600,7 +16624,7 @@
             title: this.props.title
           }, this.props.iconText)), /*#__PURE__*/React__default["default"].createElement("div", {
             className: "slds-m-top_xxx-small"
-          }, /*#__PURE__*/React__default["default"].createElement(Button$2, _extends$I({
+          }, /*#__PURE__*/React__default["default"].createElement(Button$3, _extends$I({
             assistiveText: {
               icon: this.props.assistiveText.dragIconText
             },
@@ -16628,7 +16652,7 @@
                 search: this.props.search
               }, this.props.description),
               isOpen: this.props.isOpenTooltip
-            }, /*#__PURE__*/React__default["default"].createElement(Button$2, {
+            }, /*#__PURE__*/React__default["default"].createElement(Button$3, {
               className: "slds-button_reset slds-text-link",
               variant: "base"
             }, this.props.moreLabel)),
@@ -16653,7 +16677,7 @@
     }(React__default["default"].Component);
 
     AppLauncherTile.displayName = APP_LAUNCHER_TILE;
-    AppLauncherTile.defaultProps = defaultProps$19;
+    AppLauncherTile.defaultProps = defaultProps$1a;
     AppLauncherTile.propTypes = propTypes$1w;
     var AppLauncherTile$1 = AppLauncherTile;
 
@@ -16924,7 +16948,7 @@
        */
       title: PropTypes$2.string
     };
-    var defaultProps$18 = {
+    var defaultProps$19 = {
       assistiveText: {
         icon: 'User or Account Icon'
       },
@@ -17005,7 +17029,7 @@
         key: "renderIconAvatar",
         value: function renderIconAvatar() {
           var variant = this.props.variant;
-          var iconAssistiveText = typeof this.props.assistiveText === 'string' ? this.props.assistiveText : _objectSpread$I(_objectSpread$I({}, defaultProps$18.assistiveText), this.props.assistiveText).icon;
+          var iconAssistiveText = typeof this.props.assistiveText === 'string' ? this.props.assistiveText : _objectSpread$I(_objectSpread$I({}, defaultProps$19.assistiveText), this.props.assistiveText).icon;
           return /*#__PURE__*/React__default["default"].createElement(Icon$1, {
             assistiveText: {
               label: iconAssistiveText
@@ -17071,7 +17095,7 @@
       return Avatar;
     }(React__default["default"].Component);
 
-    Avatar.defaultProps = defaultProps$18;
+    Avatar.defaultProps = defaultProps$19;
     Avatar.displayName = displayName$s;
     Avatar.propTypes = propTypes$1v;
     var Avatar$1 = Avatar;
@@ -18848,7 +18872,7 @@
 
           if (React__default["default"].Children.count(this.props.children) !== 0) {
             React__default["default"].Children.forEach(this.props.children, function (child) {
-              if (child && child.type.displayName === Button$2.displayName) {
+              if (child && child.type.displayName === Button$3.displayName) {
                 propsFromGrandchildButton = child.props;
               }
             });
@@ -18871,7 +18895,7 @@
               onMouseDown: onMouseDown,
               onMouseEnter: onMouseEnter,
               onMouseLeave: onMouseLeave
-            }, /*#__PURE__*/React__default["default"].createElement(Button$2, _extends$F({
+            }, /*#__PURE__*/React__default["default"].createElement(Button$3, _extends$F({
               assistiveText: assistiveText,
               className: className,
               "aria-expanded": isOpen,
@@ -19897,7 +19921,7 @@
        */
       width: PropTypes$2.oneOf(['xx-small', 'x-small', 'small', 'medium', 'bottom', 'large'])
     };
-    var defaultProps$17 = {
+    var defaultProps$18 = {
       align: 'left',
       hoverCloseDelay: 300,
       length: '5',
@@ -20561,7 +20585,7 @@
 
     MenuDropdown.contextType = IconSettingsContext;
     MenuDropdown.propTypes = propTypes$1u;
-    MenuDropdown.defaultProps = defaultProps$17;
+    MenuDropdown.defaultProps = defaultProps$18;
     var MenuDropdown$1 = MenuDropdown;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
@@ -20649,7 +20673,7 @@
        */
       trail: PropTypes$2.array.isRequired
     };
-    var defaultProps$16 = {
+    var defaultProps$17 = {
       assistiveText: {
         label: 'Breadcrumbs'
       }
@@ -20677,7 +20701,7 @@
       checkProps$V(BREADCRUMB, props, componentDoc$m);
       var overflowDropdownMenu = props.overflowDropdownMenu,
           trail = props.trail;
-      var assistiveText = typeof props.assistiveText === 'string' ? props.assistiveText : _objectSpread$F(_objectSpread$F({}, defaultProps$16.assistiveText), props.assistiveText).label;
+      var assistiveText = typeof props.assistiveText === 'string' ? props.assistiveText : _objectSpread$F(_objectSpread$F({}, defaultProps$17.assistiveText), props.assistiveText).label;
       return /*#__PURE__*/React__default["default"].createElement("nav", {
         role: "navigation",
         "aria-label": assistiveText,
@@ -20700,7 +20724,7 @@
 
     Breadcrumb.displayName = BREADCRUMB;
     Breadcrumb.propTypes = propTypes$1t;
-    Breadcrumb.defaultProps = defaultProps$16;
+    Breadcrumb.defaultProps = defaultProps$17;
     var Breadcrumb$1 = Breadcrumb;
 
     var propTypes$1s = {
@@ -20827,7 +20851,7 @@
        */
       onClick: PropTypes$2.func
     };
-    var defaultProps$15 = {
+    var defaultProps$16 = {
       assistiveText: {},
       iconCategory: '',
       iconName: '',
@@ -20838,7 +20862,7 @@
      */
 
     var BuilderHeaderNavLink = function BuilderHeaderNavLink(props) {
-      var assistiveText = _objectSpread$E(_objectSpread$E({}, defaultProps$15.assistiveText), props.assistiveText);
+      var assistiveText = _objectSpread$E(_objectSpread$E({}, defaultProps$16.assistiveText), props.assistiveText);
 
       return /*#__PURE__*/React__default["default"].createElement("a", {
         className: "slds-builder-header__item-action slds-media slds-media_center",
@@ -21003,7 +21027,7 @@
        */
       style: PropTypes$2.object
     };
-    var defaultProps$14 = {
+    var defaultProps$15 = {
       assistiveText: {
         backIcon: 'Back',
         helpIcon: 'Help',
@@ -21023,11 +21047,11 @@
      */
 
     var BuilderHeader = function BuilderHeader(props) {
-      var assistiveText = _objectSpread$D(_objectSpread$D({}, defaultProps$14.assistiveText), props.assistiveText);
+      var assistiveText = _objectSpread$D(_objectSpread$D({}, defaultProps$15.assistiveText), props.assistiveText);
 
       var events = _objectSpread$D(_objectSpread$D({}, {}), props.events);
 
-      var labels = _objectSpread$D(_objectSpread$D({}, defaultProps$14.labels), props.labels);
+      var labels = _objectSpread$D(_objectSpread$D({}, defaultProps$15.labels), props.labels);
 
       var nav;
       var toolbar; // Default utilities includes Back and Help links
@@ -21122,7 +21146,7 @@
 
     BuilderHeader.displayName = BUILDER_HEADER;
     BuilderHeader.propTypes = propTypes$1q;
-    BuilderHeader.defaultProps = defaultProps$14;
+    BuilderHeader.defaultProps = defaultProps$15;
     var BuilderHeader$1 = BuilderHeader;
 
     var propTypes$1p = {
@@ -21245,7 +21269,7 @@
           assistiveText = props.assistiveText,
           rest = _objectWithoutProperties$l(props, ["iconCategory", "iconName", "label", "assistiveText"]);
 
-      return /*#__PURE__*/React__default["default"].createElement(Dropdown, rest, /*#__PURE__*/React__default["default"].createElement(DropdownTrigger, null, /*#__PURE__*/React__default["default"].createElement(Button$2, {
+      return /*#__PURE__*/React__default["default"].createElement(Dropdown, rest, /*#__PURE__*/React__default["default"].createElement(DropdownTrigger, null, /*#__PURE__*/React__default["default"].createElement(Button$3, {
         className: "slds-builder-header__item-action slds-media slds-media_center",
         variant: "base"
       }, /*#__PURE__*/React__default["default"].createElement("span", {
@@ -21356,7 +21380,7 @@
        */
       onRenderActions: PropTypes$2.func
     };
-    var defaultProps$13 = {
+    var defaultProps$14 = {
       assistiveText: {
         actions: 'Actions'
       }
@@ -21366,7 +21390,7 @@
      */
 
     var BuilderHeaderToolbar = function BuilderHeaderToolbar(props) {
-      var assistiveText = _objectSpread$C(_objectSpread$C({}, defaultProps$13.assistiveText), props.assistiveText);
+      var assistiveText = _objectSpread$C(_objectSpread$C({}, defaultProps$14.assistiveText), props.assistiveText);
 
       return /*#__PURE__*/React__default["default"].createElement("div", {
         className: "slds-builder-toolbar",
@@ -21388,7 +21412,7 @@
 
     BuilderHeaderToolbar.displayName = BUILDER_HEADER_TOOLBAR;
     BuilderHeaderToolbar.propTypes = propTypes$1m;
-    BuilderHeaderToolbar.defaultProps = defaultProps$13;
+    BuilderHeaderToolbar.defaultProps = defaultProps$14;
     var BuilderHeaderToolbar$1 = BuilderHeaderToolbar;
 
     function _typeof$1q(obj) {
@@ -21544,7 +21568,7 @@
        */
       variant: PropTypes$2.oneOf(['checkbox', 'list'])
     };
-    var defaultProps$12 = {
+    var defaultProps$13 = {
       labels: {}
     };
     /**
@@ -21577,7 +21601,7 @@
           var _this2 = this; // Merge objects of strings with their default object
 
 
-          var labels = lodash_assign({}, defaultProps$12.labels, this.props.labels);
+          var labels = lodash_assign({}, defaultProps$13.labels, this.props.labels);
           var zeroIndexLength = React__default["default"].Children.count(this.props.children) - 1;
           var children = this.props.children;
 
@@ -21652,7 +21676,7 @@
 
     ButtonGroup.displayName = BUTTON_GROUP;
     ButtonGroup.propTypes = propTypes$1l;
-    ButtonGroup.defaultProps = defaultProps$12;
+    ButtonGroup.defaultProps = defaultProps$13;
     var ButtonGroup$1 = ButtonGroup;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
@@ -21966,7 +21990,7 @@
       variant: PropTypes$2.oneOf(['base', 'neutral', 'brand', 'destructive', 'icon', 'icon-filled'])
     }; // i18n
 
-    var defaultProps$11 = {
+    var defaultProps$12 = {
       assistiveText: {
         icon: ''
       },
@@ -22069,10 +22093,10 @@
             size: 'small',
             className: 'slds-button__icon_stateful'
           };
-          var iconAssistiveText = typeof this.props.assistiveText === 'string' ? this.props.assistiveText : _objectSpread$B(_objectSpread$B({}, defaultProps$11.assistiveText), this.props.assistiveText).icon;
+          var iconAssistiveText = typeof this.props.assistiveText === 'string' ? this.props.assistiveText : _objectSpread$B(_objectSpread$B({}, defaultProps$12.assistiveText), this.props.assistiveText).icon;
           var isActive = typeof active === 'boolean' ? active : this.state.active; // Accept aria-* props
 
-          var ariaProps = getAriaProps(this.props);
+          var ariaProps = getAriaProps$1(this.props);
 
           if (variant === 'icon' || variant === 'icon-filled') {
             // Default aria attribute for stateful button with icon, if none is specified
@@ -22168,7 +22192,7 @@
 
     ButtonStateful.displayName = BUTTON_STATEFUL;
     ButtonStateful.propTypes = propTypes$1k;
-    ButtonStateful.defaultProps = defaultProps$11;
+    ButtonStateful.defaultProps = defaultProps$12;
     var ButtonStateful$1 = ButtonStateful;
 
     function _typeof$1o(obj) {
@@ -22840,7 +22864,7 @@
           path: path
         }, rest))
       };
-      return isFunction$1(onClick) ? /*#__PURE__*/React__default["default"].createElement(Button$2, _extends$C({
+      return isFunction$1(onClick) ? /*#__PURE__*/React__default["default"].createElement(Button$3, _extends$C({
         className: classNames$1('slds-input__icon', _defineProperty$1j({}, "slds-input__icon_".concat(iconPosition), iconPosition)),
         iconCategory: category,
         iconName: name,
@@ -23020,7 +23044,7 @@
        */
       variant: PropTypes$2.oneOf(['base', 'brand', 'inverse'])
     };
-    var defaultProps$10 = {
+    var defaultProps$11 = {
       assistiveText: {
         label: 'Loading...'
       },
@@ -23046,7 +23070,7 @@
           hasContainer = props.hasContainer,
           size = props.size,
           variant = props.variant;
-      var assistiveText = typeof props.assistiveText === 'string' ? props.assistiveText : _objectSpread$z(_objectSpread$z({}, defaultProps$10.assistiveText), props.assistiveText).label;
+      var assistiveText = typeof props.assistiveText === 'string' ? props.assistiveText : _objectSpread$z(_objectSpread$z({}, defaultProps$11.assistiveText), props.assistiveText).label;
       var spinnerClassName = classNames$1('slds-spinner', _defineProperty$1i({
         'slds-spinner_inline': isInline,
         'slds-input__spinner': isInput,
@@ -23074,7 +23098,7 @@
 
     Spinner.displayName = SPINNER;
     Spinner.propTypes = propTypes$1j;
-    Spinner.defaultProps = defaultProps$10;
+    Spinner.defaultProps = defaultProps$11;
     var Spinner$1 = Spinner;
 
     function _extends$B() {
@@ -23383,7 +23407,7 @@
        */
       defaultValue: PropTypes$2.oneOfType([PropTypes$2.number, PropTypes$2.string])
     };
-    var defaultProps$$ = {
+    var defaultProps$10 = {
       assistiveText: {
         spinner: 'Loading ...'
       },
@@ -23394,14 +23418,14 @@
      */
 
     var InnerInput = function InnerInput(props) {
-      var ariaProps = getAriaProps(props);
+      var ariaProps = getAriaProps$1(props);
       ariaProps['aria-describedby'] = props.hasSpinner ? "loading-status-icon ".concat(props['aria-describedby']) : props['aria-describedby'];
 
       var _props$containerProps = props.containerProps,
           containerClassName = _props$containerProps.className,
           containerProps = _objectWithoutProperties$j(_props$containerProps, ["className"]);
 
-      var assistiveText = _objectSpread$y(_objectSpread$y({}, defaultProps$$.assistiveText), props.assistiveText);
+      var assistiveText = _objectSpread$y(_objectSpread$y({}, defaultProps$10.assistiveText), props.assistiveText);
 
       return /*#__PURE__*/React__default["default"].createElement("div", _extends$B({
         className: classNames$1(containerClassName, {
@@ -23472,7 +23496,7 @@
 
     InnerInput.displayName = 'SLDSInnerInput';
     InnerInput.propTypes = propTypes$1i;
-    InnerInput.defaultProps = defaultProps$$;
+    InnerInput.defaultProps = defaultProps$10;
     var InnerInput$1 = InnerInput;
 
     /* eslint-disable react/jsx-curly-brace-presence */
@@ -23507,7 +23531,7 @@
        */
       variant: PropTypes$2.oneOf(['base', 'static'])
     };
-    var defaultProps$_ = {
+    var defaultProps$$ = {
       variant: 'base'
     };
     /*
@@ -23536,7 +23560,7 @@
 
     Label$4.displayName = 'Label';
     Label$4.propTypes = propTypes$1h;
-    Label$4.defaultProps = defaultProps$_;
+    Label$4.defaultProps = defaultProps$$;
     var Label$5 = Label$4;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
@@ -23683,7 +23707,7 @@
        */
       fieldLevelHelpTooltip: PropTypes$2.node.isRequired
     };
-    var defaultProps$Z = {
+    var defaultProps$_ = {
       triggerClassName: 'slds-form-element__icon',
       // This allows `position: absolute` Tooltips to align properly.
       // If not present, tooltip will always be below the info icon // instead of above it.
@@ -23697,7 +23721,7 @@
       var fieldLevelHelpTooltip = _ref.fieldLevelHelpTooltip,
           _ref$assistiveText = _ref.assistiveText,
           assistiveText = _ref$assistiveText === void 0 ? {} : _ref$assistiveText;
-      return fieldLevelHelpTooltip ? /*#__PURE__*/React__default["default"].createElement(Tooltip$1, _objectSpread$x(_objectSpread$x(_objectSpread$x({}, defaultProps$Z), fieldLevelHelpTooltip.props), {}, {
+      return fieldLevelHelpTooltip ? /*#__PURE__*/React__default["default"].createElement(Tooltip$1, _objectSpread$x(_objectSpread$x(_objectSpread$x({}, defaultProps$_), fieldLevelHelpTooltip.props), {}, {
         // allow backwards compatibility with Input's
         // assistiveText.fieldLevelHelpButton
         // `Input` used to have an `assistiveText.fieldLevelHelpButton`
@@ -23901,7 +23925,7 @@
     var COUNTER = 'counter';
     var DECREMENT = 'Decrement';
     var INCREMENT = 'Increment';
-    var defaultProps$Y = {
+    var defaultProps$Z = {
       assistiveText: {
         decrement: "".concat(DECREMENT, " ").concat(COUNTER),
         increment: "".concat(INCREMENT, " ").concat(COUNTER)
@@ -23953,7 +23977,7 @@
             disabled = true;
           }
 
-          return /*#__PURE__*/React__default["default"].createElement(Button$2, {
+          return /*#__PURE__*/React__default["default"].createElement(Button$3, {
             assistiveText: {
               icon: _this.props.assistiveText[direction.toLowerCase()]
             },
@@ -24118,7 +24142,7 @@
       _createClass$1l(Input, [{
         key: "render",
         value: function render() {
-          var assistiveText = _objectSpread$w(_objectSpread$w({}, defaultProps$Y.assistiveText), this.props.assistiveText);
+          var assistiveText = _objectSpread$w(_objectSpread$w({}, defaultProps$Z.assistiveText), this.props.assistiveText);
 
           var inputRef = this.props.variant === COUNTER ? this.setInputRef : this.props.inputRef;
           var iconLeft = null;
@@ -24505,7 +24529,7 @@
       variant: PropTypes$2.oneOf(['base', COUNTER])
     });
 
-    _defineProperty$1f(Input, "defaultProps", defaultProps$Y);
+    _defineProperty$1f(Input, "defaultProps", defaultProps$Z);
 
     var Input$1 = Input;
 
@@ -25011,7 +25035,7 @@
           margin: '-12px 0 0',
           top: '50%'
         })
-      }, /*#__PURE__*/React__default["default"].createElement(Button$2, {
+      }, /*#__PURE__*/React__default["default"].createElement(Button$3, {
         assistiveText: {
           icon: props.assistiveText
         },
@@ -25116,7 +25140,7 @@
         style: {
           minHeight: '40px'
         }
-      }, props.description), props.buttonLabel && /*#__PURE__*/React__default["default"].createElement(Button$2, {
+      }, props.description), props.buttonLabel && /*#__PURE__*/React__default["default"].createElement(Button$3, {
         label: props.buttonLabel,
         tabIndex: props.isInCurrentPanel ? '0' : '-1',
         variant: "neutral"
@@ -25207,7 +25231,7 @@
         style: {
           left: '66px'
         }
-      }, /*#__PURE__*/React__default["default"].createElement(Button$2, {
+      }, /*#__PURE__*/React__default["default"].createElement(Button$3, {
         assistiveText: {
           icon: props.assistiveText
         },
@@ -25397,7 +25421,7 @@
     /* eslint-disable jsx-a11y/no-static-element-interactions */
     // ### Default Props
 
-    var defaultProps$X = {
+    var defaultProps$Y = {
       assistiveText: {
         autoplayButton: 'Start / Stop auto-play',
         nextPanel: 'Next Panel',
@@ -25875,7 +25899,7 @@
       onItemClick: PropTypes$2.func
     });
 
-    _defineProperty$1c(Carousel, "defaultProps", defaultProps$X);
+    _defineProperty$1c(Carousel, "defaultProps", defaultProps$Y);
 
     var Carousel$1 = Carousel;
 
@@ -26299,7 +26323,7 @@
        */
       size: PropTypes$2.oneOf(['medium', 'large'])
     };
-    var defaultProps$W = {
+    var defaultProps$X = {
       assistiveText: {},
       labels: {
         toggleDisabled: 'Disabled',
@@ -26599,17 +26623,17 @@
       _createClass$1i(Checkbox, [{
         key: "render",
         value: function render() {
-          var ariaProps = getAriaProps(this.props);
+          var ariaProps = getAriaProps$1(this.props);
 
           if (this.props.variant === 'toggle') {
             ariaProps['aria-describedby'] = "".concat(this.getId(), "-desc");
           }
 
-          var assistiveText = _objectSpread$u(_objectSpread$u(_objectSpread$u({}, defaultProps$W.assistiveText), typeof this.props.assistiveText === 'string' ? {
+          var assistiveText = _objectSpread$u(_objectSpread$u(_objectSpread$u({}, defaultProps$X.assistiveText), typeof this.props.assistiveText === 'string' ? {
             label: this.props.assistiveText
           } : {}), _typeof$1k(this.props.assistiveText) === 'object' ? this.props.assistiveText : {});
 
-          var labels = _objectSpread$u(_objectSpread$u(_objectSpread$u({}, defaultProps$W.labels), this.props.label ? {
+          var labels = _objectSpread$u(_objectSpread$u(_objectSpread$u({}, defaultProps$X.labels), this.props.label ? {
             label: this.props.label
           } : {}), this.props.labels);
 
@@ -26629,7 +26653,7 @@
 
     Checkbox.displayName = CHECKBOX;
     Checkbox.propTypes = propTypes$1f;
-    Checkbox.defaultProps = defaultProps$W;
+    Checkbox.defaultProps = defaultProps$X;
     var Checkbox$1 = Checkbox;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
@@ -27074,7 +27098,7 @@
        */
       variant: PropTypes$2.oneOf(['base', 'button-group'])
     };
-    var defaultProps$V = {
+    var defaultProps$W = {
       assistiveText: {
         required: 'Required'
       },
@@ -27127,9 +27151,9 @@
           var _this2 = this; // Merge objects of strings with their default object
 
 
-          this.labels = this.props.labels ? lodash_assign({}, defaultProps$V.labels, this.props.labels) : defaultProps$V.labels;
+          this.labels = this.props.labels ? lodash_assign({}, defaultProps$W.labels, this.props.labels) : defaultProps$W.labels;
 
-          var assistiveText = _objectSpread$t(_objectSpread$t({}, defaultProps$V.assistiveText), this.props.assistiveText);
+          var assistiveText = _objectSpread$t(_objectSpread$t({}, defaultProps$W.assistiveText), this.props.assistiveText);
 
           var children = React__default["default"].Children.map(this.props.children, function (child) {
             return /*#__PURE__*/React__default["default"].cloneElement(child, {
@@ -27167,7 +27191,7 @@
 
     RadioGroup.displayName = RADIO_GROUP;
     RadioGroup.propTypes = propTypes$1e;
-    RadioGroup.defaultProps = defaultProps$V;
+    RadioGroup.defaultProps = defaultProps$W;
     var RadioGroup$1 = RadioGroup;
 
     function _extends$w() {
@@ -27278,7 +27302,7 @@
        */
       errorId: PropTypes$2.string
     };
-    var defaultProps$U = {
+    var defaultProps$V = {
       labels: {},
       assistiveText: {}
     };
@@ -27299,7 +27323,7 @@
 
     RadioButtonGroup.displayName = RADIO_BUTTON_GROUP;
     RadioButtonGroup.propTypes = propTypes$1d;
-    RadioButtonGroup.defaultProps = defaultProps$U;
+    RadioButtonGroup.defaultProps = defaultProps$V;
     var RadioButtonGroup$1 = RadioButtonGroup;
 
     function ownKeys$s(object, enumerableOnly) {
@@ -27748,7 +27772,7 @@
         input: PropTypes$2.func
       })
     };
-    var defaultProps$T = {
+    var defaultProps$U = {
       assistiveText: {},
       variant: 'base',
       coverable: false
@@ -27800,11 +27824,11 @@
         value: function render() {
           var _this2 = this;
 
-          var ariaProps = getAriaProps(this.props);
-          var dataProps = getDataProps(this.props);
+          var ariaProps = getAriaProps$1(this.props);
+          var dataProps = getDataProps$1(this.props);
           var radio;
 
-          var labels = _objectSpread$r(_objectSpread$r(_objectSpread$r({}, defaultProps$T.labels), this.props.label ? {
+          var labels = _objectSpread$r(_objectSpread$r(_objectSpread$r({}, defaultProps$U.labels), this.props.label ? {
             label: this.props.label
           } : {}), this.props.labels);
 
@@ -27925,7 +27949,7 @@
 
     Radio.displayName = RADIO;
     Radio.propTypes = propTypes$1c;
-    Radio.defaultProps = defaultProps$T;
+    Radio.defaultProps = defaultProps$U;
     var Radio$1 = Radio;
 
     var COLOR_NAMES = {
@@ -32561,7 +32585,7 @@
        */
       selectedIndex: PropTypes$2.number
     };
-    var defaultProps$S = {
+    var defaultProps$T = {
       defaultSelectedIndex: 0,
       variant: 'default'
     };
@@ -32894,7 +32918,7 @@
 
     Tabs.displayName = displayName$r;
     Tabs.propTypes = propTypes$1b;
-    Tabs.defaultProps = defaultProps$S;
+    Tabs.defaultProps = defaultProps$T;
     var Tabs$1 = Tabs;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
@@ -33247,7 +33271,7 @@
     overlay.style.height = '100%';
     overlay.style.position = 'absolute';
     var currentOpenPopover; // FIXME - what is this exported for? Probably needs to be deprecated.
-    var defaultProps$R = {
+    var defaultProps$S = {
       align: 'right',
       assistiveText: {
         closeButton: 'Close dialog'
@@ -33488,7 +33512,7 @@
 
           var offset = props.offset;
 
-          var assistiveText = _objectSpread$o(_objectSpread$o({}, defaultProps$R.assistiveText), _this.props.assistiveText);
+          var assistiveText = _objectSpread$o(_objectSpread$o({}, defaultProps$S.assistiveText), _this.props.assistiveText);
 
           var closeButtonAssistiveText = props.closeButtonAssistiveText || assistiveText.closeButton; // HEADER SUB-RENDERS
 
@@ -33637,7 +33661,7 @@
               'aria-labelledby': _this.props.ariaLabelledby || "".concat(_this.getId(), "-dialog-heading"),
               'aria-describedby': "".concat(_this.getId(), "-dialog-body")
             }
-          }, !_this.props.hasNoCloseButton && /*#__PURE__*/React__default["default"].createElement(Button$2, {
+          }, !_this.props.hasNoCloseButton && /*#__PURE__*/React__default["default"].createElement(Button$3, {
             assistiveText: {
               icon: closeButtonAssistiveText
             },
@@ -33896,7 +33920,7 @@
       variant: PropTypes$2.oneOf(['base', 'error', 'feature', 'walkthrough', 'walkthrough-action', 'warning'])
     });
 
-    _defineProperty$10(Popover$1, "defaultProps", defaultProps$R);
+    _defineProperty$10(Popover$1, "defaultProps", defaultProps$S);
 
     Popover$1.contextType = IconSettingsContext;
     var Popover$2 = Popover$1;
@@ -34209,7 +34233,7 @@
        */
       valueWorking: PropTypes$2.string
     };
-    var defaultProps$Q = {
+    var defaultProps$R = {
       assistiveText: {
         saturationValueGrid: 'Use arrow keys to select a saturation and brightness, on an x and y axis.',
         hueSlider: 'Select Hue'
@@ -34495,13 +34519,13 @@
           }));
           var popoverFooter = /*#__PURE__*/React__default["default"].createElement("div", {
             className: "slds-color-picker__selector-footer"
-          }, /*#__PURE__*/React__default["default"].createElement(Button$2, {
+          }, /*#__PURE__*/React__default["default"].createElement(Button$3, {
             className: "slds-color-picker__selector-cancel",
             id: "color-picker-footer-cancel-".concat(this.generatedId),
             label: labels.cancelButton,
             onClick: this.handleCancel,
             variant: "neutral"
-          }), /*#__PURE__*/React__default["default"].createElement(Button$2, {
+          }), /*#__PURE__*/React__default["default"].createElement(Button$3, {
             className: "slds-color-picker__selector-submit",
             disabled: Object.keys(this.state.workingColor.errors || {}).length > 0,
             id: "color-picker-footer-submit-".concat(this.generatedId),
@@ -34524,7 +34548,7 @@
             onOpen: this.props.onOpen,
             onRequestClose: this.handleOnRequestClose,
             position: this.props.menuPosition
-          }, /*#__PURE__*/React__default["default"].createElement(Button$2, {
+          }, /*#__PURE__*/React__default["default"].createElement(Button$3, {
             className: "slds-color-picker__summary-button",
             disabled: this.props.disabled,
             iconClassName: "slds-m-left_xx-small",
@@ -34598,7 +34622,7 @@
         value: function render() {
           var _this5 = this;
 
-          var labels = lodash_assign({}, defaultProps$Q.labels, this.props.labels);
+          var labels = lodash_assign({}, defaultProps$R.labels, this.props.labels);
           return /*#__PURE__*/React__default["default"].createElement("div", {
             className: classNames$1('slds-color-picker', this.props.className),
             ref: function ref(node) {
@@ -34628,7 +34652,7 @@
 
     _defineProperty$$(ColorPicker, "propTypes", propTypes$1a);
 
-    _defineProperty$$(ColorPicker, "defaultProps", defaultProps$Q);
+    _defineProperty$$(ColorPicker, "defaultProps", defaultProps$R);
 
     var ColorPicker$1 = ColorPicker;
 
@@ -39938,7 +39962,7 @@
       isSelected: PropTypes$2.func,
       assistiveText: PropTypes$2.object
     };
-    var defaultProps$P = {
+    var defaultProps$Q = {
       inputValue: '',
       menuRef: function menuRef() {}
     };
@@ -40201,7 +40225,7 @@
 
     Menu$2.displayName = 'Menu';
     Menu$2.propTypes = propTypes$19;
-    Menu$2.defaultProps = defaultProps$P;
+    Menu$2.defaultProps = defaultProps$Q;
     var Menu$3 = Menu$2;
 
     /* eslint-disable react/jsx-curly-brace-presence */
@@ -40231,7 +40255,7 @@
        */
       variant: PropTypes$2.oneOf(['base', 'static'])
     };
-    var defaultProps$O = {
+    var defaultProps$P = {
       variant: 'base'
     };
     /*
@@ -40260,7 +40284,7 @@
 
     Label$2.displayName = 'Label';
     Label$2.propTypes = propTypes$18;
-    Label$2.defaultProps = defaultProps$O;
+    Label$2.defaultProps = defaultProps$P;
     var Label$3 = Label$2;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
@@ -40935,7 +40959,7 @@
        */
       tabIndex: PropTypes$2.number
     };
-    var defaultProps$N = {
+    var defaultProps$O = {
       assistiveText: PropTypes$2.shape({
         remove: ', Press delete or backspace to remove'
       }),
@@ -40980,8 +41004,8 @@
     };
 
     var Pill = function Pill(props) {
-      var assistiveText = lodash_assign({}, defaultProps$N.assistiveText, props.assistiveText);
-      var labels = lodash_assign({}, defaultProps$N.labels, props.labels);
+      var assistiveText = lodash_assign({}, defaultProps$O.assistiveText, props.assistiveText);
+      var labels = lodash_assign({}, defaultProps$O.labels, props.labels);
       return /*#__PURE__*/React__default["default"].createElement(SLDSPill, {
         avatar: props.avatar,
         bare: props.bare,
@@ -41030,7 +41054,7 @@
 
     Pill.displayName = 'Pill';
     Pill.propTypes = propTypes$16;
-    Pill.defaultProps = defaultProps$N;
+    Pill.defaultProps = defaultProps$O;
     var Pill$1 = Pill;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
@@ -41212,7 +41236,7 @@
        */
       variant: PropTypes$2.oneOf(['base', 'inline-listbox', 'readonly'])
     };
-    var defaultProps$M = {
+    var defaultProps$N = {
       listboxAriaOrientation: 'horizontal',
       listboxRole: 'listbox',
       renderAtSelectionLength: 1
@@ -41338,7 +41362,7 @@
 
     SelectedListBox.displayName = 'SelectedListBox';
     SelectedListBox.propTypes = propTypes$15;
-    SelectedListBox.defaultProps = defaultProps$M;
+    SelectedListBox.defaultProps = defaultProps$N;
     var SelectedListBox$1 = SelectedListBox;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
@@ -42061,7 +42085,7 @@
        */
       variant: PropTypes$2.oneOf(['base', 'inline-listbox', 'popover', 'readonly'])
     };
-    var defaultProps$L = {
+    var defaultProps$M = {
       assistiveText: {
         loadingMenuItems: 'Loading',
         optionSelectedInMenu: 'Current Selection:',
@@ -42116,14 +42140,14 @@
             className: "slds-assistive-text",
             id: "".concat(_this.getId(), "-label")
           }, assistiveText.popoverLabel), body);
-          var popoverFooter = /*#__PURE__*/React__default["default"].createElement("div", null, /*#__PURE__*/React__default["default"].createElement(Button$2, {
+          var popoverFooter = /*#__PURE__*/React__default["default"].createElement("div", null, /*#__PURE__*/React__default["default"].createElement(Button$3, {
             label: labels.cancelButton,
             onClick: function onClick(e) {
               _this.handleClose(e, {
                 trigger: 'cancel'
               });
             }
-          }), /*#__PURE__*/React__default["default"].createElement(Button$2, {
+          }), /*#__PURE__*/React__default["default"].createElement(Button$3, {
             label: labels.doneButton,
             variant: "brand",
             onClick: _this.handleClose
@@ -42179,7 +42203,7 @@
         _defineProperty$W(_assertThisInitialized$16(_this), "getOptions", function () {
           var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this.props;
           var localProps = props;
-          var labels = lodash_assign({}, defaultProps$L.labels, _this.props.labels);
+          var labels = lodash_assign({}, defaultProps$M.labels, _this.props.labels);
           var deselectOption = {
             id: _this.deselectId,
             label: labels.deselectOption,
@@ -43314,8 +43338,8 @@
         value: function render() {
           var props = this.props; // Merge objects of strings with their default object
 
-          var assistiveText = lodash_assign({}, defaultProps$L.assistiveText, props.assistiveText);
-          var labels = lodash_assign({}, defaultProps$L.labels, this.props.labels);
+          var assistiveText = lodash_assign({}, defaultProps$M.assistiveText, props.assistiveText);
+          var labels = lodash_assign({}, defaultProps$M.labels, this.props.labels);
           var hasRenderedLabel = labels.label || assistiveText && assistiveText.label; // declare user defined props
 
           var userDefinedProps = {};
@@ -43388,7 +43412,7 @@
     Combobox$1.contextType = IconSettingsContext;
     Combobox$1.displayName = COMBOBOX;
     Combobox$1.propTypes = propTypes$14;
-    Combobox$1.defaultProps = defaultProps$L;
+    Combobox$1.defaultProps = defaultProps$M;
     var Combobox$2 = Combobox$1;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
@@ -46116,7 +46140,7 @@
        */
       dropdown: PropTypes$2.node
     };
-    var defaultProps$K = {
+    var defaultProps$L = {
       assistiveText: {
         icon: 'Actions'
       },
@@ -46197,7 +46221,7 @@
     };
 
     DataTableRowActions.propTypes = propTypes$10;
-    DataTableRowActions.defaultProps = defaultProps$K;
+    DataTableRowActions.defaultProps = defaultProps$L;
     DataTableRowActions.displayName = DATA_TABLE_ROW_ACTIONS;
     var DataTableRowActions$1 = DataTableRowActions;
 
@@ -46506,7 +46530,7 @@
       return Array.isArray(array) ? array.length : 0;
     };
 
-    var defaultProps$J = {
+    var defaultProps$K = {
       assistiveText: {
         actionsHeader: 'Actions',
         columnSort: 'Sort by: ',
@@ -46527,7 +46551,7 @@
       }
     };
     var getAssistiveText = memoizeOne(function (assistiveText, actionsHeaderText, columnSortText, columnSortedAscendingText, columnSortedDescendingText, selectAllRowsText, selectRowText) {
-      var result = _objectSpread$h(_objectSpread$h({}, defaultProps$J.assistiveText), assistiveText);
+      var result = _objectSpread$h(_objectSpread$h({}, defaultProps$K.assistiveText), assistiveText);
 
       if (actionsHeaderText) {
         result.actionsHeader = actionsHeaderText;
@@ -46972,7 +46996,7 @@
             }
 
             if (!this.resizer) {
-              var options = _objectSpread$h(_objectSpread$h(_objectSpread$h({}, defaultProps$J.resizableOptions), {
+              var options = _objectSpread$h(_objectSpread$h(_objectSpread$h({}, defaultProps$K.resizableOptions), {
                 disabledColumns: disabledColumns
               }), this.props.resizableOptions);
 
@@ -47757,7 +47781,7 @@
       resizableOptions: PropTypes$2.object
     });
 
-    _defineProperty$S(DataTable, "defaultProps", defaultProps$J);
+    _defineProperty$S(DataTable, "defaultProps", defaultProps$K);
 
     var DataTable$1 = DataTable;
 
@@ -49166,7 +49190,7 @@
             }
           }, /*#__PURE__*/React__default["default"].createElement("div", {
             className: "slds-align-middle"
-          }, /*#__PURE__*/React__default["default"].createElement(Button$2, {
+          }, /*#__PURE__*/React__default["default"].createElement(Button$3, {
             assistiveText: {
               icon: this.props.assistiveTextPreviousMonth
             },
@@ -49189,7 +49213,7 @@
             className: "slds-assistive-text"
           }, this.getYearLabel())), /*#__PURE__*/React__default["default"].createElement("div", {
             className: "slds-align-middle"
-          }, /*#__PURE__*/React__default["default"].createElement(Button$2, {
+          }, /*#__PURE__*/React__default["default"].createElement(Button$3, {
             assistiveText: {
               icon: this.props.assistiveTextNextMonth
             },
@@ -50069,7 +50093,7 @@
        */
       value: PropTypes$2.instanceOf(Date)
     };
-    var defaultProps$I = {
+    var defaultProps$J = {
       align: 'left',
       assistiveText: {
         nextMonth: 'Next month',
@@ -50464,8 +50488,8 @@
         key: "render",
         value: function render() {
           // Merge objects of strings with their default object
-          var labels = lodash_assign({}, defaultProps$I.labels, this.props.labels);
-          var assistiveText = lodash_assign({}, defaultProps$I.assistiveText, this.props.assistiveText);
+          var labels = lodash_assign({}, defaultProps$J.labels, this.props.labels);
+          var assistiveText = lodash_assign({}, defaultProps$J.assistiveText, this.props.assistiveText);
           var inputProps = this.getInputProps({
             assistiveText: assistiveText,
             labels: labels
@@ -50490,7 +50514,7 @@
     Datepicker.contextType = IconSettingsContext;
     Datepicker.displayName = DATE_PICKER;
     Datepicker.propTypes = propTypes$$;
-    Datepicker.defaultProps = defaultProps$I;
+    Datepicker.defaultProps = defaultProps$J;
     var Datepicker$1 = Datepicker;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
@@ -51222,7 +51246,7 @@
 
       return obj;
     }
-    var defaultProps$H = {
+    var defaultProps$I = {
       labels: {
         cancel: 'Cancel',
         save: 'Save'
@@ -51269,7 +51293,7 @@
               restProps = _objectWithoutProperties$b(_this$props, ["onCancel", "onSave"]); // trigger button will either be passed in children or defaults to an edit button.
 
 
-          var children = this.props.children ? this.props.children : /*#__PURE__*/React__default["default"].createElement(Button$2, {
+          var children = this.props.children ? this.props.children : /*#__PURE__*/React__default["default"].createElement(Button$3, {
             assistiveText: {
               icon: 'Edit: Status'
             },
@@ -51284,16 +51308,16 @@
               verticalAlign: 'middle'
             }
           });
-          var labels = lodash_assign({}, defaultProps$H.labels, this.props.labels);
+          var labels = lodash_assign({}, defaultProps$I.labels, this.props.labels);
           return /*#__PURE__*/React__default["default"].createElement(Popover, _extends$n({
             classNameFooter: ['slds-p-top_xxx-small', 'slds-p-bottom_xx-small', 'slds-p-right_large'],
             classNameBody: ['slds-p-bottom_xx-small'],
             footer: /*#__PURE__*/React__default["default"].createElement("div", {
               className: "slds-text-align_right slds-text-align_right slds-p-bottom_x-small slds-p-right_xx-small"
-            }, /*#__PURE__*/React__default["default"].createElement(Button$2, {
+            }, /*#__PURE__*/React__default["default"].createElement(Button$3, {
               label: labels.cancel,
               onClick: onCancel
-            }), /*#__PURE__*/React__default["default"].createElement(Button$2, {
+            }), /*#__PURE__*/React__default["default"].createElement(Button$3, {
               disabled: !this.props.isModified,
               variant: "brand",
               label: labels.save,
@@ -51359,7 +51383,7 @@
       popover: PropTypes$2.node
     });
 
-    EditDialog.defaultProps = defaultProps$H;
+    EditDialog.defaultProps = defaultProps$I;
     var EditDialog$1 = EditDialog;
 
     function _typeof$X(obj) {
@@ -51563,7 +51587,7 @@
        */
       customLogicValue: PropTypes$2.string
     };
-    var defaultProps$G = {
+    var defaultProps$H = {
       triggerType: 'all',
       customLogicValue: '',
       labels: {
@@ -51625,7 +51649,7 @@
       }, {
         key: "getTriggers",
         value: function getTriggers() {
-          var labels = lodash_assign({}, defaultProps$G.labels, this.props.labels);
+          var labels = lodash_assign({}, defaultProps$H.labels, this.props.labels);
           return [{
             id: '1',
             label: labels.triggerAll
@@ -51678,8 +51702,8 @@
         value: function render() {
           var _this2 = this;
 
-          var assistiveText = lodash_assign({}, defaultProps$G.assistiveText, this.props.assistiveText);
-          var labels = lodash_assign({}, defaultProps$G.labels, this.props.labels);
+          var assistiveText = lodash_assign({}, defaultProps$H.assistiveText, this.props.assistiveText);
+          var labels = lodash_assign({}, defaultProps$H.labels, this.props.labels);
           var triggerCombobox = /*#__PURE__*/React__default["default"].createElement(Combobox, {
             events: {
               onSelect: function onSelect(event, data) {
@@ -51699,7 +51723,7 @@
           });
           var buttons = this.props.triggerType !== 'always' && this.props.triggerType !== 'formula' ? /*#__PURE__*/React__default["default"].createElement("div", {
             className: "slds-expression__buttons"
-          }, /*#__PURE__*/React__default["default"].createElement(Button$2, {
+          }, /*#__PURE__*/React__default["default"].createElement(Button$3, {
             iconCategory: "utility",
             iconName: "add",
             iconPosition: "left",
@@ -51709,7 +51733,7 @@
               icon: assistiveText.addCondition
             },
             onClick: this.props.events.onAddCondition
-          }), this.props.isRoot ? /*#__PURE__*/React__default["default"].createElement(Button$2, {
+          }), this.props.isRoot ? /*#__PURE__*/React__default["default"].createElement(Button$3, {
             iconCategory: "utility",
             iconName: "add",
             iconPosition: "left",
@@ -51797,7 +51821,7 @@
 
     ExpressionGroup.displayName = EXPRESSION_GROUP;
     ExpressionGroup.propTypes = propTypes$Z;
-    ExpressionGroup.defaultProps = defaultProps$G;
+    ExpressionGroup.defaultProps = defaultProps$H;
     var ExpressionGroup$1 = ExpressionGroup;
 
     function _typeof$W(obj) {
@@ -51979,7 +52003,7 @@
        */
       customLogicValue: PropTypes$2.string
     };
-    var defaultProps$F = {
+    var defaultProps$G = {
       labels: {
         title: 'Conditions'
       }
@@ -52017,7 +52041,7 @@
       }, {
         key: "render",
         value: function render() {
-          var labels = lodash_assign({}, defaultProps$F.labels, this.props.labels);
+          var labels = lodash_assign({}, defaultProps$G.labels, this.props.labels);
           return /*#__PURE__*/React__default["default"].createElement("div", {
             className: classNames$1('slds-expression', this.props.className),
             id: this.getId()
@@ -52039,7 +52063,7 @@
 
     Expression.displayName = EXPRESSION;
     Expression.propTypes = propTypes$Y;
-    Expression.defaultProps = defaultProps$F;
+    Expression.defaultProps = defaultProps$G;
     var Expression$1 = Expression;
 
     function _typeof$V(obj) {
@@ -52267,7 +52291,7 @@
        */
       value: PropTypes$2.string
     };
-    var defaultProps$E = {
+    var defaultProps$F = {
       assistiveText: {
         title: 'Condition',
         deleteIcon: 'Delete Condition'
@@ -52325,8 +52349,8 @@
         value: function render() {
           var _this2 = this;
 
-          var assistiveText = lodash_assign({}, defaultProps$E.assistiveText, this.props.assistiveText);
-          var labels = lodash_assign({}, defaultProps$E.labels, this.props.labels);
+          var assistiveText = lodash_assign({}, defaultProps$F.assistiveText, this.props.assistiveText);
+          var labels = lodash_assign({}, defaultProps$F.labels, this.props.labels);
           return /*#__PURE__*/React__default["default"].createElement("li", {
             className: classNames$1("slds-expression__row", {
               'slds-expression__row_group': this.props.isSubCondition
@@ -52386,7 +52410,7 @@
             className: "slds-form-element__label"
           }, "\xA0"), /*#__PURE__*/React__default["default"].createElement("div", {
             className: "slds-form-element__control"
-          }, /*#__PURE__*/React__default["default"].createElement(Button$2, {
+          }, /*#__PURE__*/React__default["default"].createElement(Button$3, {
             id: "".concat(this.getId(), "-delete-button"),
             variant: "outline-brand",
             iconCategory: "utility",
@@ -52406,7 +52430,7 @@
 
     ExpressionCondition.displayName = EXPRESSION_CONDITION;
     ExpressionCondition.propTypes = propTypes$X;
-    ExpressionCondition.defaultProps = defaultProps$E;
+    ExpressionCondition.defaultProps = defaultProps$F;
     var ExpressionCondition$1 = ExpressionCondition;
 
     var reactContenteditable = {};
@@ -52877,7 +52901,7 @@
        */
       textEditorValue: PropTypes$2.node
     };
-    var defaultProps$D = {
+    var defaultProps$E = {
       assistiveText: {
         help: 'Help'
       },
@@ -52940,8 +52964,8 @@
       }, {
         key: "render",
         value: function render() {
-          var assistiveText = lodash_assign({}, defaultProps$D.assistiveText, this.props.assistiveText);
-          var labels = lodash_assign({}, defaultProps$D.labels, this.props.labels);
+          var assistiveText = lodash_assign({}, defaultProps$E.assistiveText, this.props.assistiveText);
+          var labels = lodash_assign({}, defaultProps$E.labels, this.props.labels);
           return /*#__PURE__*/React__default["default"].createElement(React__default["default"].Fragment, null, /*#__PURE__*/React__default["default"].createElement("div", {
             id: this.getId(),
             className: classNames$1("slds-expression_formula__rte", this.props.className)
@@ -52964,7 +52988,7 @@
             className: "slds-rich-text-editor__col slds-rich-text-editor__col_grow"
           }, this.props.operatorInput), /*#__PURE__*/React__default["default"].createElement("div", {
             className: "slds-rich-text-editor__col"
-          }, /*#__PURE__*/React__default["default"].createElement(Button$2, {
+          }, /*#__PURE__*/React__default["default"].createElement(Button$3, {
             assistiveText: {
               icon: assistiveText.help
             },
@@ -52987,7 +53011,7 @@
             disabled: false
           })))))), /*#__PURE__*/React__default["default"].createElement("div", {
             className: "slds-m-top_small"
-          }, /*#__PURE__*/React__default["default"].createElement(Button$2, {
+          }, /*#__PURE__*/React__default["default"].createElement(Button$3, {
             id: "".concat(this.getId(), "-check-syntax-button"),
             variant: "neutral",
             label: labels.checkSyntax,
@@ -53001,7 +53025,7 @@
 
     ExpressionFormula.displayName = EXPRESSION_FORMULA;
     ExpressionFormula.propTypes = propTypes$W;
-    ExpressionFormula.defaultProps = defaultProps$D;
+    ExpressionFormula.defaultProps = defaultProps$E;
     var ExpressionFormula$1 = ExpressionFormula;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
@@ -53083,7 +53107,7 @@
       }, /*#__PURE__*/React__default["default"].createElement("div", {
         className: "slds-button-group",
         role: "group"
-      }, typeof props.onClickDownload === 'function' ? /*#__PURE__*/React__default["default"].createElement(Button$2, {
+      }, typeof props.onClickDownload === 'function' ? /*#__PURE__*/React__default["default"].createElement(Button$3, {
         type: "button",
         variant: "icon",
         iconSize: "x-small",
@@ -53396,7 +53420,7 @@
        */
       hasNoVisibleTitle: PropTypes$2.bool
     };
-    var defaultProps$C = {
+    var defaultProps$D = {
       assistiveText: {
         download: 'download',
         link: 'Preview:',
@@ -53450,7 +53474,7 @@
       }, {
         key: "render",
         value: function render() {
-          var assistiveText = _objectSpread$e(_objectSpread$e({}, defaultProps$C.assistiveText), this.props.assistiveText);
+          var assistiveText = _objectSpread$e(_objectSpread$e({}, defaultProps$D.assistiveText), this.props.assistiveText);
 
           return /*#__PURE__*/React__default["default"].createElement("div", {
             id: this.getId(),
@@ -53501,7 +53525,7 @@
 
     File.displayName = displayName$q;
     File.propTypes = propTypes$V;
-    File.defaultProps = defaultProps$C;
+    File.defaultProps = defaultProps$D;
     var File$1 = File;
 
     function _typeof$S(obj) {
@@ -53642,7 +53666,7 @@
        */
       columnClassName: PropTypes$2.string
     };
-    var defaultProps$B = {
+    var defaultProps$C = {
       crop: '4-by-3'
     };
     /**
@@ -53697,7 +53721,7 @@
 
     Files.displayName = displayName$p;
     Files.propTypes = propTypes$U;
-    Files.defaultProps = defaultProps$B;
+    Files.defaultProps = defaultProps$C;
     var Files$1 = Files;
 
     function _typeof$R(obj) {
@@ -53913,7 +53937,7 @@
        */
       href: PropTypes$2.string
     };
-    var defaultProps$A = {
+    var defaultProps$B = {
       assistiveText: {
         count: 'more files',
         image: 'Show more files',
@@ -53951,7 +53975,7 @@
         value: function render() {
           var _this2 = this;
 
-          var assistiveText = _objectSpread$d(_objectSpread$d({}, defaultProps$A.assistiveText), this.props.assistiveText);
+          var assistiveText = _objectSpread$d(_objectSpread$d({}, defaultProps$B.assistiveText), this.props.assistiveText);
 
           return /*#__PURE__*/React__default["default"].createElement("div", {
             className: classNames$1("slds-file slds-file_card", this.props.className),
@@ -53991,7 +54015,7 @@
 
     MoreFiles.displayName = displayName$o;
     MoreFiles.propTypes = propTypes$T;
-    MoreFiles.defaultProps = defaultProps$A;
+    MoreFiles.defaultProps = defaultProps$B;
     var MoreFiles$1 = MoreFiles;
 
     function _typeof$Q(obj) {
@@ -54178,7 +54202,7 @@
             id: "".concat(_this.getId(), "-popover-heading")
           }, assistiveText.editFilterHeading), _this.props.children, /*#__PURE__*/React__default["default"].createElement("div", {
             className: "slds-m-top_small slds-text-align_right"
-          }, /*#__PURE__*/React__default["default"].createElement(Button$2, {
+          }, /*#__PURE__*/React__default["default"].createElement(Button$3, {
             className: "slds-col_bump-left",
             label: "Done",
             onClick: _this.handleChange
@@ -54291,7 +54315,7 @@
           }, this.props.property), /*#__PURE__*/React__default["default"].createElement("span", {
             className: "slds-show"
           }, this.props.predicate)), // Remove button
-          !this.props.isPermanent && !this.props.isLocked ? /*#__PURE__*/React__default["default"].createElement(Button$2, {
+          !this.props.isPermanent && !this.props.isLocked ? /*#__PURE__*/React__default["default"].createElement(Button$3, {
             assistiveText: {
               icon: assistiveText.removeFilter
             },
@@ -54631,7 +54655,7 @@
 
       return obj;
     }
-    var defaultProps$z = {
+    var defaultProps$A = {
       assistiveText: {
         skipToNav: 'Skip to Navigation',
         skipToContent: 'Skip to Main Content'
@@ -54686,7 +54710,7 @@
         value: function render() {
           var _actions;
 
-          var assistiveText = _objectSpread$c(_objectSpread$c({}, defaultProps$z.assistiveText), this.props.assistiveText);
+          var assistiveText = _objectSpread$c(_objectSpread$c({}, defaultProps$A.assistiveText), this.props.assistiveText);
 
           var actions = (_actions = {}, _defineProperty$G(_actions, GLOBAL_HEADER_FAVORITES, []), _defineProperty$G(_actions, GLOBAL_HEADER_HELP, []), _defineProperty$G(_actions, GLOBAL_HEADER_NOTIFICATIONS, []), _defineProperty$G(_actions, GLOBAL_HEADER_PROFILE, []), _defineProperty$G(_actions, GLOBAL_HEADER_SETUP, []), _defineProperty$G(_actions, GLOBAL_HEADER_TASK, []), _defineProperty$G(_actions, GLOBAL_HEADER_TOOL, []), _actions);
           var search;
@@ -54782,7 +54806,7 @@
       onSkipToNav: PropTypes$2.func
     });
 
-    _defineProperty$G(GlobalHeader, "defaultProps", defaultProps$z);
+    _defineProperty$G(GlobalHeader, "defaultProps", defaultProps$A);
 
     var GlobalHeader$1 = GlobalHeader;
 
@@ -54849,7 +54873,7 @@
       var buttonVariant = props.buttonVariant,
           rest = _objectWithoutProperties$a(props, ["buttonVariant"]);
 
-      var btn = /*#__PURE__*/React__default["default"].createElement(Button$2, _extends$l({
+      var btn = /*#__PURE__*/React__default["default"].createElement(Button$3, _extends$l({
         iconVariant: "global-header",
         variant: "icon"
       }, rest));
@@ -54857,7 +54881,7 @@
     };
 
     GlobalHeaderButton.displayName = GLOBAL_HEADER_TOOL;
-    var Button = GlobalHeaderButton;
+    var Button$1 = GlobalHeaderButton;
 
     function _typeof$O(obj) {
       "@babel/helpers - typeof";
@@ -55123,7 +55147,7 @@
               onMouseEnter: onMouseEnter,
               onMouseLeave: onMouseLeave,
               ref: triggerRef
-            }, /*#__PURE__*/React__default["default"].createElement(Button, _extends$k({
+            }, /*#__PURE__*/React__default["default"].createElement(Button$1, _extends$k({
               className: classNames$1({
                 'slds-global-header__button_icon-actions': globalAction
               }),
@@ -55608,7 +55632,7 @@
             className: "slds-global-actions__favorites slds-dropdown-trigger slds-dropdown-trigger_click"
           }, /*#__PURE__*/React__default["default"].createElement("div", {
             className: "slds-button-group"
-          }, /*#__PURE__*/React__default["default"].createElement(Button$2, _extends$i({
+          }, /*#__PURE__*/React__default["default"].createElement(Button$3, _extends$i({
             assistiveText: {
               icon: this.props.assistiveText.action
             },
@@ -55631,7 +55655,7 @@
             },
             title: this.props.assistiveText.action,
             variant: "icon"
-          }, actionAriaProps)), /*#__PURE__*/React__default["default"].createElement(Popover, popoverProps, /*#__PURE__*/React__default["default"].createElement(Button$2, {
+          }, actionAriaProps)), /*#__PURE__*/React__default["default"].createElement(Popover, popoverProps, /*#__PURE__*/React__default["default"].createElement(Button$3, {
             assistiveText: {
               icon: this.props.assistiveText.more
             },
@@ -55840,7 +55864,7 @@
           }, this.props.popover ? this.props.popover.props : {}); // eslint-disable-next-line fp/no-delete
 
           delete popoverProps.children;
-          return /*#__PURE__*/React__default["default"].createElement(Popover, popoverProps, /*#__PURE__*/React__default["default"].createElement(Button$2, _extends$h({
+          return /*#__PURE__*/React__default["default"].createElement(Popover, popoverProps, /*#__PURE__*/React__default["default"].createElement(Button$3, _extends$h({
             assistiveText: {
               icon: this.props.assistiveText.triggerButton
             },
@@ -56062,7 +56086,7 @@
             buttonAriaProps['aria-atomic'] = true;
           }
 
-          return /*#__PURE__*/React__default["default"].createElement(Popover, popoverProps, /*#__PURE__*/React__default["default"].createElement(Button$2, _extends$g({
+          return /*#__PURE__*/React__default["default"].createElement(Popover, popoverProps, /*#__PURE__*/React__default["default"].createElement(Button$3, _extends$g({
             assistiveText: {
               icon: notificationsAssistiveText
             },
@@ -56275,7 +56299,7 @@
 
           delete popoverProps.children;
           avatar = this.props.avatar ? this.props.avatar : avatar;
-          return /*#__PURE__*/React__default["default"].createElement(Popover, popoverProps, /*#__PURE__*/React__default["default"].createElement(Button$2, _extends$f({
+          return /*#__PURE__*/React__default["default"].createElement(Popover, popoverProps, /*#__PURE__*/React__default["default"].createElement(Button$3, _extends$f({
             className: classNames$1('slds-global-actions__avatar slds-global-actions__item-action', this.props.buttonClassName),
             title: this.props.userName,
             variant: "icon"
@@ -56528,7 +56552,7 @@
           var dropdownChildren = dropdownProps.children || null; // eslint-disable-next-line fp/no-delete
 
           delete dropdownProps.children;
-          return /*#__PURE__*/React__default["default"].createElement(Dropdown, dropdownProps, /*#__PURE__*/React__default["default"].createElement(DropdownTrigger, null, /*#__PURE__*/React__default["default"].createElement(Button$2, _extends$e({
+          return /*#__PURE__*/React__default["default"].createElement(Dropdown, dropdownProps, /*#__PURE__*/React__default["default"].createElement(DropdownTrigger, null, /*#__PURE__*/React__default["default"].createElement(Button$3, _extends$e({
             assistiveText: {
               icon: this.props.assistiveText.triggerButton
             },
@@ -56732,7 +56756,7 @@
           var dropdownChildren = dropdownProps.children || null; // eslint-disable-next-line fp/no-delete
 
           delete dropdownProps.children;
-          return /*#__PURE__*/React__default["default"].createElement(Dropdown, dropdownProps, /*#__PURE__*/React__default["default"].createElement(DropdownTrigger, null, /*#__PURE__*/React__default["default"].createElement(Button$2, _extends$d({
+          return /*#__PURE__*/React__default["default"].createElement(Dropdown, dropdownProps, /*#__PURE__*/React__default["default"].createElement(DropdownTrigger, null, /*#__PURE__*/React__default["default"].createElement(Button$3, _extends$d({
             assistiveText: {
               icon: this.props.assistiveText.triggerButton
             },
@@ -56895,7 +56919,7 @@
         className: classNames$1('slds-context-bar__item', _defineProperty$C({
           'slds-is-active': active
         }, "slds-context-bar__item_divider-".concat(dividerPosition), dividerPosition))
-      }, /*#__PURE__*/React__default["default"].createElement(Button$2, props));
+      }, /*#__PURE__*/React__default["default"].createElement(Button$3, props));
     };
 
     GlobalNavigationButton.displayName = GLOBAL_NAVIGATION_BAR_BUTTON; // ### Prop Types
@@ -57247,7 +57271,7 @@
               title: label
             }, label)), /*#__PURE__*/React__default["default"].createElement("div", {
               className: "slds-context-bar__icon-action slds-p-left_none"
-            }, /*#__PURE__*/React__default["default"].createElement(Button$2, _extends$c({
+            }, /*#__PURE__*/React__default["default"].createElement(Button$3, _extends$c({
               assistiveText: this.props.assistiveText
             }, rest, {
               className: "slds-context-bar__button",
@@ -58462,7 +58486,7 @@
        */
       value: PropTypes$2.string.isRequired
     };
-    var defaultProps$y = {
+    var defaultProps$z = {
       assistiveText: 'Edit text',
       type: 'text'
     };
@@ -58606,7 +58630,7 @@
               tabIndex: "-1"
             }) : null,
             disabled: disabled,
-            inlineEditTrigger: /*#__PURE__*/React__default["default"].createElement(Button$2, {
+            inlineEditTrigger: /*#__PURE__*/React__default["default"].createElement(Button$3, {
               assistiveText: {
                 icon: assistiveText
               },
@@ -58638,7 +58662,7 @@
 
     InlineEdit.displayName = FORMS_INLINE_EDIT;
     InlineEdit.propTypes = propTypes$N;
-    InlineEdit.defaultProps = defaultProps$y;
+    InlineEdit.defaultProps = defaultProps$z;
     var InlineEdit$1 = InlineEdit;
 
     function _extends$9() {
@@ -58755,7 +58779,7 @@
       }
     };
 
-    var defaultProps$x = {
+    var defaultProps$y = {
       assistiveText: {}
     };
     /**
@@ -58770,7 +58794,7 @@
           props = _objectWithoutProperties$3(_ref, ["clearable", "onClear", "onSearch", "placeholder"]);
 
       checkProps$N(SEARCH, props, componentDoc$i);
-      var assistiveText = typeof props.assistiveText === 'string' ? props.assistiveText : _objectSpread$a(_objectSpread$a({}, defaultProps$x.assistiveText), props.assistiveText).label;
+      var assistiveText = typeof props.assistiveText === 'string' ? props.assistiveText : _objectSpread$a(_objectSpread$a({}, defaultProps$y.assistiveText), props.assistiveText).label;
       return /*#__PURE__*/React__default["default"].createElement(Input$1, _extends$9({
         assistiveText: {
           label: assistiveText
@@ -58829,7 +58853,7 @@
        */
       placeholder: PropTypes$2.string
     };
-    Search.defaultProps = defaultProps$x;
+    Search.defaultProps = defaultProps$y;
     var Search$1 = Search;
 
     function _typeof$E(obj) {
@@ -59073,7 +59097,7 @@
         address: PropTypes$2.string.isRequired
       })
     };
-    var defaultProps$w = {
+    var defaultProps$x = {
       labels: {
         title: 'Interactive Map'
       }
@@ -59124,7 +59148,7 @@
         value: function render() {
           var _this2 = this;
 
-          var labels = _objectSpread$9(_objectSpread$9({}, defaultProps$w.labels), this.props.labels);
+          var labels = _objectSpread$9(_objectSpread$9({}, defaultProps$x.labels), this.props.labels);
 
           return /*#__PURE__*/React__default["default"].createElement("div", {
             id: this.getId(),
@@ -59324,7 +59348,7 @@
     }
     var displayName$m = 'LookupDefaultHeader';
     var propTypes$L = {};
-    var defaultProps$v = {};
+    var defaultProps$w = {};
 
     var DefaultHeader = /*#__PURE__*/function (_React$Component) {
       _inherits$D(DefaultHeader, _React$Component);
@@ -59398,7 +59422,7 @@
 
     DefaultHeader.displayName = displayName$m;
     DefaultHeader.propTypes = propTypes$L;
-    DefaultHeader.defaultProps = defaultProps$v;
+    DefaultHeader.defaultProps = defaultProps$w;
     var DefaultHeader$1 = DefaultHeader;
 
     function _typeof$C(obj) {
@@ -59534,7 +59558,7 @@
     }
     var displayName$l = 'LookupDefaultFooter';
     var propTypes$K = {};
-    var defaultProps$u = {};
+    var defaultProps$v = {};
 
     var DefaultFooter = /*#__PURE__*/function (_React$Component) {
       _inherits$C(DefaultFooter, _React$Component);
@@ -59608,7 +59632,7 @@
 
     DefaultFooter.displayName = displayName$l;
     DefaultFooter.propTypes = propTypes$K;
-    DefaultFooter.defaultProps = defaultProps$u;
+    DefaultFooter.defaultProps = defaultProps$v;
     var DefaultFooter$1 = DefaultFooter;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
@@ -60077,7 +60101,7 @@
       searchTerm: PropTypes$2.string,
       setFocus: PropTypes$2.func
     };
-    var defaultProps$t = {
+    var defaultProps$u = {
       emptyMessage: 'No matches found.'
     };
 
@@ -60266,7 +60290,7 @@
 
     Menu.displayName = displayName$i;
     Menu.propTypes = propTypes$H;
-    Menu.defaultProps = defaultProps$t;
+    Menu.defaultProps = defaultProps$u;
     var Menu$1 = Menu;
 
     function _typeof$z(obj) {
@@ -60910,7 +60934,7 @@
             onKeyDown: _this.handlePillKeyDown
           }, renderIcon, /*#__PURE__*/React__default["default"].createElement("span", {
             className: labelClassName
-          }, selectedItem), /*#__PURE__*/React__default["default"].createElement(Button$2, {
+          }, selectedItem), /*#__PURE__*/React__default["default"].createElement(Button$3, {
             assistiveText: {
               icon: 'Press delete to remove'
             },
@@ -62407,7 +62431,7 @@
       theme: PropTypes$2.oneOf(['success', 'warning', 'error', 'offline']),
       variant: PropTypes$2.oneOf(['alert', 'toast']).isRequired
     };
-    var defaultProps$s = {
+    var defaultProps$t = {
       iconCategory: 'utility',
       dismissible: true,
       isOpen: false,
@@ -62529,7 +62553,7 @@
             var size = null;
             if (this.props.variant === 'toast') size = 'large'; // i18n
 
-            return /*#__PURE__*/React__default["default"].createElement(Button$2, {
+            return /*#__PURE__*/React__default["default"].createElement(Button$3, {
               assistiveText: {
                 icon: 'Dismiss Notification'
               },
@@ -62631,7 +62655,7 @@
 
     Notification.displayName = displayName$h;
     Notification.propTypes = propTypes$G;
-    Notification.defaultProps = defaultProps$s;
+    Notification.defaultProps = defaultProps$t;
     var Notification$1 = Notification;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
@@ -62913,7 +62937,7 @@
        */
       truncate: PropTypes$2.bool
     };
-    var defaultProps$r = {
+    var defaultProps$s = {
       // align: 'middle',
       title: 'Page Header Title',
       truncate: true
@@ -62953,7 +62977,7 @@
 
     Title.displayName = displayName$e;
     Title.propTypes = propTypes$D;
-    Title.defaultProps = defaultProps$r;
+    Title.defaultProps = defaultProps$s;
     var Title$1 = Title;
 
     function _typeof$v(obj) {
@@ -63114,7 +63138,7 @@
        */
       truncate: PropTypes$2.bool
     };
-    var defaultProps$q = {
+    var defaultProps$r = {
       content: '',
       label: '',
       truncate: true
@@ -63247,7 +63271,7 @@
 
     DetailBlock.displayName = displayName$d;
     DetailBlock.propTypes = propTypes$C;
-    DetailBlock.defaultProps = defaultProps$q;
+    DetailBlock.defaultProps = defaultProps$r;
     var DetailBlock$1 = DetailBlock;
 
     function _typeof$u(obj) {
@@ -63380,7 +63404,7 @@
        */
       details: PropTypes$2.array
     };
-    var defaultProps$p = {};
+    var defaultProps$q = {};
 
     var DetailRow = /*#__PURE__*/function (_Component) {
       _inherits$u(DetailRow, _Component);
@@ -63430,7 +63454,7 @@
 
     DetailRow.displayName = displayName$c;
     DetailRow.propTypes = propTypes$B;
-    DetailRow.defaultProps = defaultProps$p;
+    DetailRow.defaultProps = defaultProps$q;
     var DetailRow$1 = DetailRow;
 
     function _typeof$t(obj) {
@@ -63579,7 +63603,7 @@
        */
       type: PropTypes$2.oneOf(['actions', 'controls'])
     };
-    var defaultProps$o = {};
+    var defaultProps$p = {};
 
     var Controls = /*#__PURE__*/function (_Component) {
       _inherits$t(Controls, _Component);
@@ -63656,7 +63680,7 @@
 
     Controls.displayName = displayName$b;
     Controls.propTypes = propTypes$A;
-    Controls.defaultProps = defaultProps$o;
+    Controls.defaultProps = defaultProps$p;
     var Controls$1 = Controls;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
@@ -63986,7 +64010,7 @@
        */
       variant: PropTypes$2.string
     };
-    var defaultProps$n = {};
+    var defaultProps$o = {};
 
     var RelatedList = function RelatedList(props) {
       return /*#__PURE__*/React__default["default"].createElement(React__default["default"].Fragment, null, /*#__PURE__*/React__default["default"].createElement("div", {
@@ -64023,7 +64047,7 @@
 
     RelatedList.displayName = displayName$7;
     RelatedList.propTypes = propTypes$w;
-    RelatedList.defaultProps = defaultProps$n;
+    RelatedList.defaultProps = defaultProps$o;
     var RelatedList$1 = RelatedList;
 
     function _typeof$s(obj) {
@@ -64209,7 +64233,7 @@
        */
       variant: PropTypes$2.oneOf(['base', 'object-home', 'record-home', 'related-list'])
     };
-    var defaultProps$m = {
+    var defaultProps$n = {
       variant: 'base'
     };
     /**
@@ -64279,7 +64303,7 @@
 
     PageHeader.displayName = displayName$6;
     PageHeader.propTypes = propTypes$v;
-    PageHeader.defaultProps = defaultProps$m;
+    PageHeader.defaultProps = defaultProps$n;
     var PageHeader$1 = PageHeader; // NOTE: these are private components and are prone to breaking changes.
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
@@ -64486,11 +64510,11 @@
           removeAllLabel = _ref.removeAllLabel;
       return /*#__PURE__*/React__default["default"].createElement("div", {
         className: "slds-filters__footer slds-grid slds-shrink-none"
-      }, /*#__PURE__*/React__default["default"].createElement(Button$2, {
+      }, /*#__PURE__*/React__default["default"].createElement(Button$3, {
         label: addFilterLabel,
         onClick: onClickAdd,
         variant: "link"
-      }), /*#__PURE__*/React__default["default"].createElement(Button$2, {
+      }), /*#__PURE__*/React__default["default"].createElement(Button$3, {
         className: "slds-col_bump-left",
         label: removeAllLabel,
         onClick: onClickRemoveAll,
@@ -64538,11 +64562,11 @@
           saveLabel = _ref.saveLabel;
       return modified ? /*#__PURE__*/React__default["default"].createElement("div", {
         className: "slds-filters__header slds-grid slds-has-divider_bottom-space slds-grid_align-spread"
-      }, /*#__PURE__*/React__default["default"].createElement(Button$2, {
+      }, /*#__PURE__*/React__default["default"].createElement(Button$3, {
         label: cancelLabel,
         onClick: onRequestCancel,
         variant: "neutral"
-      }), /*#__PURE__*/React__default["default"].createElement(Button$2, {
+      }), /*#__PURE__*/React__default["default"].createElement(Button$3, {
         label: saveLabel,
         onClick: onRequestSave,
         variant: "brand"
@@ -64550,7 +64574,7 @@
         className: "slds-filters__header slds-grid slds-has-divider_bottom-space"
       }, /*#__PURE__*/React__default["default"].createElement("h2", {
         className: "slds-align-middle slds-text-heading_small"
-      }, heading), /*#__PURE__*/React__default["default"].createElement(Button$2, {
+      }, heading), /*#__PURE__*/React__default["default"].createElement(Button$3, {
         className: "slds-col_bump-left",
         assistiveText: {
           icon: assistiveText.closeButton
@@ -64665,7 +64689,7 @@
 
       return obj;
     }
-    var defaultProps$l = {
+    var defaultProps$m = {
       addFilterLabel: 'Add Filter',
       cancelLabel: 'Cancel',
       assistiveText: {
@@ -64698,7 +64722,7 @@
           onRequestSave = props.onRequestSave,
           saveLabel = props.saveLabel;
 
-      var assistiveText = _objectSpread$8(_objectSpread$8({}, defaultProps$l.assistiveText), props.assistiveText);
+      var assistiveText = _objectSpread$8(_objectSpread$8({}, defaultProps$m.assistiveText), props.assistiveText);
 
       if (props.assistiveTextCloseFilterPanel) {
         assistiveText.closeButton = props.assistiveTextCloseFilterPanel;
@@ -64834,7 +64858,7 @@
        */
       variant: PropTypes$2.oneOf(['panel'])
     };
-    PanelFilterGroup.defaultProps = defaultProps$l;
+    PanelFilterGroup.defaultProps = defaultProps$m;
     var PanelFilterGroup$1 = PanelFilterGroup;
 
     function _typeof$q(obj) {
@@ -65678,7 +65702,7 @@
        */
       style: PropTypes$2.object
     };
-    var defaultProps$k = {
+    var defaultProps$l = {
       assistiveText: {
         progress: 'Progress'
       },
@@ -65741,9 +65765,9 @@
       }, {
         key: "render",
         value: function render() {
-          var labels = lodash_assign({}, defaultProps$k.labels, this.props.labels);
-          var assistiveText = lodash_assign({}, defaultProps$k.assistiveText, this.props.assistiveText);
-          var style = lodash_assign({}, defaultProps$k.style, this.props.style);
+          var labels = lodash_assign({}, defaultProps$l.labels, this.props.labels);
+          var assistiveText = lodash_assign({}, defaultProps$l.assistiveText, this.props.assistiveText);
+          var style = lodash_assign({}, defaultProps$l.style, this.props.style);
           return /*#__PURE__*/React__default["default"].createElement("div", {
             id: this.getId(),
             style: style
@@ -65777,7 +65801,7 @@
 
     ProgressBar$2.displayName = PROGRESS_BAR;
     ProgressBar$2.propTypes = propTypes$s;
-    ProgressBar$2.defaultProps = defaultProps$k;
+    ProgressBar$2.defaultProps = defaultProps$l;
     var ProgressBar$3 = ProgressBar$2;
 
     function _typeof$n(obj) {
@@ -67063,7 +67087,7 @@
       id: 4,
       label: 'tooltip label #5'
     }];
-    var defaultProps$j = {
+    var defaultProps$k = {
       assistiveText: {
         completedStep: 'Completed',
         disabledStep: 'Disabled',
@@ -67161,7 +67185,7 @@
           var _this2 = this; // Merge objects of strings with their default object
 
 
-          var assistiveText = _objectSpread$7(_objectSpread$7({}, defaultProps$j.assistiveText), this.props.assistiveText);
+          var assistiveText = _objectSpread$7(_objectSpread$7({}, defaultProps$k.assistiveText), this.props.assistiveText);
 
           var _this$props = this.props,
               selectedStep = _this$props.selectedStep,
@@ -67224,7 +67248,7 @@
 
     ProgressIndicator.displayName = displayName$3;
     ProgressIndicator.propTypes = propTypes$n;
-    ProgressIndicator.defaultProps = defaultProps$j;
+    ProgressIndicator.defaultProps = defaultProps$k;
     var ProgressIndicator$1 = ProgressIndicator;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
@@ -67255,7 +67279,7 @@
        */
       size: PropTypes$2.oneOf(['medium', 'large'])
     };
-    var defaultProps$i = {
+    var defaultProps$j = {
       fillPercentDecimal: 0
     };
     /**
@@ -67316,7 +67340,7 @@
 
     ProgressRingShape.displayName = PROGRESS_RING_SHAPE;
     ProgressRingShape.propTypes = propTypes$m;
-    ProgressRingShape.defaultProps = defaultProps$i;
+    ProgressRingShape.defaultProps = defaultProps$j;
     var ProgressRingShape$1 = ProgressRingShape;
 
     function _typeof$i(obj) {
@@ -67508,7 +67532,7 @@
        */
       size: PropTypes$2.oneOf(['medium', 'large'])
     };
-    var defaultProps$h = {
+    var defaultProps$i = {
       flowDirection: 'drain',
       size: 'medium'
     };
@@ -67604,7 +67628,7 @@
 
     ProgressRing.displayName = PROGRESS_RING;
     ProgressRing.propTypes = propTypes$l;
-    ProgressRing.defaultProps = defaultProps$h;
+    ProgressRing.defaultProps = defaultProps$i;
     var ProgressRing$1 = ProgressRing;
 
     var component$5 = "scoped-notification";
@@ -67836,7 +67860,7 @@
        */
       theme: PropTypes$2.oneOf(['dark', 'light'])
     };
-    var defaultProps$g = {};
+    var defaultProps$h = {};
     /**
      * A Scoped Notification Component serve advisory information for the user that is not important enough to justify an alert.
      */
@@ -67906,7 +67930,7 @@
 
     ScopedNotification.displayName = SCOPED_NOTIFICATION;
     ScopedNotification.propTypes = propTypes$k;
-    ScopedNotification.defaultProps = defaultProps$g;
+    ScopedNotification.defaultProps = defaultProps$h;
     var ScopedNotification$1 = ScopedNotification;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
@@ -68152,7 +68176,7 @@
        */
       progressBar: PropTypes$2.node
     };
-    var defaultProps$f = {
+    var defaultProps$g = {
       isCard: false
     };
     /**
@@ -68224,7 +68248,7 @@
 
     SetupAssistant.displayName = SETUP_ASSISTANT;
     SetupAssistant.propTypes = propTypes$j;
-    SetupAssistant.defaultProps = defaultProps$f;
+    SetupAssistant.defaultProps = defaultProps$g;
     var SetupAssistant$1 = SetupAssistant;
 
     function _typeof$f(obj) {
@@ -68477,7 +68501,7 @@
        */
       stepNumber: PropTypes$2.number
     };
-    var defaultProps$e = {
+    var defaultProps$f = {
       assistiveText: {
         expandStep: 'Expand Step'
       }
@@ -68538,7 +68562,7 @@
             className: "slds-setup-assistant__step-summary-content slds-media__body"
           }, /*#__PURE__*/React__default["default"].createElement("h3", {
             className: "slds-setup-assistant__step-summary-title slds-text-heading_small"
-          }, this.props.isExpandable ? /*#__PURE__*/React__default["default"].createElement(Button$2, {
+          }, this.props.isExpandable ? /*#__PURE__*/React__default["default"].createElement(Button$3, {
             "aria-controls": "".concat(this.getId(), "-detail-content"),
             className: "slds-button_reset",
             label: this.props.heading,
@@ -68611,7 +68635,7 @@
       }, {
         key: "render",
         value: function render() {
-          var assistiveText = lodash_assign({}, defaultProps$e.assistiveText, this.props.assistiveText);
+          var assistiveText = lodash_assign({}, defaultProps$f.assistiveText, this.props.assistiveText);
           return /*#__PURE__*/React__default["default"].createElement("li", {
             className: classNames$1('slds-setup-assistant__item', this.props.className),
             id: this.getId()
@@ -68621,7 +68645,7 @@
             className: classNames$1('slds-summary-detail', {
               'slds-is-open': this.getIsOpen()
             })
-          }, /*#__PURE__*/React__default["default"].createElement(Button$2, {
+          }, /*#__PURE__*/React__default["default"].createElement(Button$3, {
             assistiveText: {
               icon: assistiveText.expandStep
             },
@@ -68650,7 +68674,7 @@
 
     Step.displayName = SETUP_ASSISTANT_STEP;
     Step.propTypes = propTypes$i;
-    Step.defaultProps = defaultProps$e;
+    Step.defaultProps = defaultProps$f;
     var Step$1 = Step;
 
     function _typeof$e(obj) {
@@ -68935,7 +68959,7 @@
        */
       vertical: PropTypes$2.bool
     };
-    var defaultProps$d = {
+    var defaultProps$e = {
       assistiveText: {
         disabled: 'Disabled'
       },
@@ -68997,10 +69021,10 @@
       }, {
         key: "render",
         value: function render() {
-          var ariaProps = getAriaProps(this.props);
+          var ariaProps = getAriaProps$1(this.props);
           ariaProps['aria-describedby'] = this.getErrorId();
 
-          var assistiveText = _objectSpread$3(_objectSpread$3({}, defaultProps$d.assistiveText), this.props.assistiveText);
+          var assistiveText = _objectSpread$3(_objectSpread$3({}, defaultProps$e.assistiveText), this.props.assistiveText);
 
           var labelText = this.props.label || this.props.assistiveText && this.props.assistiveText.label;
           return /*#__PURE__*/React__default["default"].createElement("div", {
@@ -69062,7 +69086,7 @@
 
     _defineProperty$b(Slider, "propTypes", propTypes$h);
 
-    _defineProperty$b(Slider, "defaultProps", defaultProps$d);
+    _defineProperty$b(Slider, "defaultProps", defaultProps$e);
 
     var Slider$1 = Slider;
 
@@ -69098,7 +69122,7 @@
         onClick: PropTypes$2.func.isRequired
       })
     };
-    var defaultProps$c = {};
+    var defaultProps$d = {};
 
     var SplitViewToggleButton = function SplitViewToggleButton(_ref) {
       var isOpen = _ref.isOpen,
@@ -69106,7 +69130,7 @@
           ariaControls = _ref.ariaControls,
           events = _ref.events;
       var toggleAssistiveText = isOpen ? assistiveText.toggleButtonOpen : assistiveText.toggleButtonClose;
-      return /*#__PURE__*/React__default["default"].createElement(Button$2, {
+      return /*#__PURE__*/React__default["default"].createElement(Button$3, {
         className: classNames$1('slds-button slds-button_icon slds-split-view__toggle-button', {
           'slds-is-open': isOpen
         }),
@@ -69126,7 +69150,7 @@
 
     SplitViewToggleButton.displayName = DISPLAY_NAME$2;
     SplitViewToggleButton.propTypes = propsTypes$1;
-    SplitViewToggleButton.defaultProps = defaultProps$c;
+    SplitViewToggleButton.defaultProps = defaultProps$d;
     var ToggleButton = SplitViewToggleButton;
 
     function _typeof$d(obj) {
@@ -69313,7 +69337,7 @@
        */
       detail: PropTypes$2.oneOfType([PropTypes$2.arrayOf(PropTypes$2.element), PropTypes$2.element]).isRequired
     };
-    var defaultProps$b = {
+    var defaultProps$c = {
       assistiveText: {
         toggleButtonOpen: 'Close split view',
         toggleButtonClose: 'Open split view'
@@ -69426,7 +69450,7 @@
 
     _defineProperty$a(SplitView, "propTypes", propTypes$g);
 
-    _defineProperty$a(SplitView, "defaultProps", defaultProps$b);
+    _defineProperty$a(SplitView, "defaultProps", defaultProps$c);
 
     var SplitView$1 = SplitView;
 
@@ -69484,7 +69508,7 @@
       return target;
     }
     var propTypes$f = {};
-    var defaultProps$a = {};
+    var defaultProps$b = {};
     /**
      * The Split View Header takes the same properties as the [PageHeader](https://react.lightningdesignsystem.com/components/page-headers/) component.
      */
@@ -69500,7 +69524,7 @@
 
     SplitViewHeader.displayName = SPLIT_VIEW_HEADER;
     SplitViewHeader.propTypes = propTypes$f;
-    SplitViewHeader.defaultProps = defaultProps$a;
+    SplitViewHeader.defaultProps = defaultProps$b;
     var SplitViewHeader$1 = SplitViewHeader;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
@@ -69520,7 +69544,7 @@
         bottomRightText: PropTypes$2.string
       })
     };
-    var defaultProps$9 = {};
+    var defaultProps$a = {};
 
     var SplitViewListItemContent = function SplitViewListItemContent(_ref) {
       var item = _ref.item;
@@ -69545,7 +69569,7 @@
 
     SplitViewListItemContent.displayName = DISPLAY_NAME$1;
     SplitViewListItemContent.propTypes = propTypes$e;
-    SplitViewListItemContent.defaultProps = defaultProps$9;
+    SplitViewListItemContent.defaultProps = defaultProps$a;
     var SplitViewListItemContent$1 = SplitViewListItemContent;
 
     function _typeof$c(obj) {
@@ -69732,7 +69756,7 @@
        */
       listItemRef: PropTypes$2.func
     };
-    var defaultProps$8 = {
+    var defaultProps$9 = {
       assistiveText: {
         unreadItem: 'Unread Item'
       },
@@ -69812,7 +69836,7 @@
 
       _defineProperty$9(ListItemWithContent, "propTypes", propsTypes);
 
-      _defineProperty$9(ListItemWithContent, "defaultProps", defaultProps$8);
+      _defineProperty$9(ListItemWithContent, "defaultProps", defaultProps$9);
 
       return ListItemWithContent;
     };
@@ -70117,7 +70141,7 @@
        */
       listItem: PropTypes$2.func
     };
-    var defaultProps$7 = {
+    var defaultProps$8 = {
       assistiveText: {
         list: 'Select an item to open it in a new workspace tab.',
         sort: {
@@ -70406,7 +70430,7 @@
 
     _defineProperty$8(SplitViewListbox, "propTypes", propTypes$d);
 
-    _defineProperty$8(SplitViewListbox, "defaultProps", defaultProps$7);
+    _defineProperty$8(SplitViewListbox, "defaultProps", defaultProps$8);
 
     var SplitViewListbox$1 = SplitViewListbox;
 
@@ -70695,7 +70719,7 @@
               value = _this$props.value,
               defaultValue = _this$props.defaultValue,
               wrap = _this$props.wrap;
-          var ariaProps = getAriaProps(this.props);
+          var ariaProps = getAriaProps$1(this.props);
           var assistiveTextLabel = typeof this.props.assistiveText === 'string' ? this.props.assistiveText : _objectSpread$2({}, this.props.assistiveText).label;
           var labelText = label || assistiveTextLabel; // One of these is required to pass accessibility tests
 
@@ -72059,7 +72083,7 @@
        */
       variant: PropTypes$2.oneOf(['error', 'info', 'success', 'warning']).isRequired
     };
-    var defaultProps$6 = {
+    var defaultProps$7 = {
       assistiveText: {
         closeButton: 'Close',
         error: 'error',
@@ -72147,8 +72171,8 @@
         key: "render",
         value: function render() {
           // Merge objects of strings with their default object
-          var assistiveText = lodash_assign({}, defaultProps$6.assistiveText, this.props.assistiveText);
-          var labels = lodash_assign({}, defaultProps$6.labels, this.props.labels);
+          var assistiveText = lodash_assign({}, defaultProps$7.assistiveText, this.props.assistiveText);
+          var labels = lodash_assign({}, defaultProps$7.labels, this.props.labels);
           var heading = labels.heading || this.props.content; // eslint-disable-line react/prop-types
 
           var assistiveTextVariant = {
@@ -72202,7 +72226,7 @@
           }, heading, ' ', labels.headingLink ? /*#__PURE__*/React__default["default"].createElement("a", {
             onClick: EventUtil$1.trappedHandler(this.props.onClickHeadingLink),
             href: "#"
-          }, labels.headingLink) : null), labels.details ? /*#__PURE__*/React__default["default"].createElement("p", null, labels.details) : null), /*#__PURE__*/React__default["default"].createElement(Button$2, {
+          }, labels.headingLink) : null), labels.details ? /*#__PURE__*/React__default["default"].createElement("p", null, labels.details) : null), /*#__PURE__*/React__default["default"].createElement(Button$3, {
             assistiveText: {
               icon: assistiveText.closeButton
             },
@@ -72221,7 +72245,7 @@
       return Toast;
     }(React__default["default"].Component);
 
-    Toast.defaultProps = defaultProps$6;
+    Toast.defaultProps = defaultProps$7;
     Toast.displayName = TOAST;
     Toast.propTypes = propTypes$c;
     var Toast$1 = Toast;
@@ -72576,7 +72600,7 @@
             props: props
           });
         }
-      }, /*#__PURE__*/React__default["default"].createElement(Button$2, {
+      }, /*#__PURE__*/React__default["default"].createElement(Button$3, {
         tabIndex: "-1",
         "aria-hidden": true,
         assistiveText: {
@@ -73065,7 +73089,7 @@
             props: props
           });
         }
-      }, /*#__PURE__*/React__default["default"].createElement(Button$2, {
+      }, /*#__PURE__*/React__default["default"].createElement(Button$3, {
         "aria-hidden": true,
         assistiveText: {
           icon: 'Expand Tree Branch'
@@ -73565,7 +73589,7 @@
        */
       listStyle: PropTypes$2.object
     };
-    var defaultProps$5 = {
+    var defaultProps$6 = {
       assistiveText: {},
       getNodes: function getNodes(node) {
         return node.nodes;
@@ -73715,7 +73739,7 @@
         key: "render",
         value: function render() {
           // One of these is required to pass accessibility tests
-          var assistiveText = typeof this.props.assistiveText === 'string' ? this.props.assistiveText : _objectSpread$1(_objectSpread$1({}, defaultProps$5.assistiveText), this.props.assistiveText).label;
+          var assistiveText = typeof this.props.assistiveText === 'string' ? this.props.assistiveText : _objectSpread$1(_objectSpread$1({}, defaultProps$6.assistiveText), this.props.assistiveText).label;
           var headingText = assistiveText || this.props.heading; // Start the zero level branch--that is the tree root. There is no label for
           // the tree root, but is required by all other nodes
 
@@ -73769,7 +73793,7 @@
 
     Tree.displayName = TREE;
     Tree.propTypes = propTypes$8;
-    Tree.defaultProps = defaultProps$5;
+    Tree.defaultProps = defaultProps$6;
     var Tree$1 = Tree;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
@@ -73813,7 +73837,7 @@
        */
       style: PropTypes$2.object
     };
-    var defaultProps$4 = {
+    var defaultProps$5 = {
       labels: {
         timeLeftUnitAfter: 'left in trial'
       }
@@ -73823,7 +73847,7 @@
      */
 
     var TrialBar = function TrialBar(props) {
-      var labels = lodash_assign({}, defaultProps$4.labels, props.labels);
+      var labels = lodash_assign({}, defaultProps$5.labels, props.labels);
       return /*#__PURE__*/React__default["default"].createElement("div", {
         className: classNames$1('slds-trial-header slds-grid', props.className),
         style: props.style
@@ -73840,7 +73864,7 @@
 
     TrialBar.displayName = TRIAL_BAR;
     TrialBar.propTypes = propTypes$7;
-    TrialBar.defaultProps = defaultProps$4;
+    TrialBar.defaultProps = defaultProps$5;
     var TrialBar$1 = TrialBar;
 
     function _extends$1() {
@@ -73862,13 +73886,13 @@
     }
     // eslint-disable-next-line react/forbid-foreign-prop-types
 
-    var propTypes$6 = Button$2.propTypes;
+    var propTypes$6 = Button$3.propTypes;
     /**
      *  A [Button](/components/buttons/) within the Trial Bar.
      */
 
     var TrialBarButton = function TrialBarButton(props) {
-      return /*#__PURE__*/React__default["default"].createElement(Button$2, _extends$1({}, props, {
+      return /*#__PURE__*/React__default["default"].createElement(Button$3, _extends$1({}, props, {
         inverse: true,
         style: {
           border: 0,
@@ -73950,7 +73974,7 @@
         inverse: true
       }), /*#__PURE__*/React__default["default"].createElement(DropdownTrigger, {
         triggerClassName: "slds-grid"
-      }, /*#__PURE__*/React__default["default"].createElement(Button$2, {
+      }, /*#__PURE__*/React__default["default"].createElement(Button$3, {
         inverse: true,
         style: {
           border: 0,
@@ -74125,7 +74149,7 @@
        */
       size: PropTypes$2.oneOf(['medium', 'large'])
     };
-    var defaultProps$3 = {
+    var defaultProps$4 = {
       size: 'medium',
       vertical: false,
       links: false
@@ -74182,7 +74206,7 @@
 
     VisualPicker.displayName = VISUAL_PICKER;
     VisualPicker.propTypes = propTypes$4;
-    VisualPicker.defaultProps = defaultProps$3;
+    VisualPicker.defaultProps = defaultProps$4;
     var VisualPicker$1 = VisualPicker;
 
     function _typeof$3(obj) {
@@ -74545,7 +74569,7 @@
        */
       doNotShowAgainCheckbox: PropTypes$2.node
     };
-    var defaultProps$2 = {
+    var defaultProps$3 = {
       labels: {
         unitsCompletedAfter: 'units completed'
       },
@@ -74602,7 +74626,7 @@
         value: function render() {
           var _this2 = this;
 
-          var labels = lodash_assign({}, defaultProps$2.labels, this.props.labels);
+          var labels = lodash_assign({}, defaultProps$3.labels, this.props.labels);
           var splash = /*#__PURE__*/React__default["default"].createElement("div", {
             className: classNames$1('slds-welcome-mat__info-content', this.props.className),
             id: "".concat(this.getId(), "-content")
@@ -74659,7 +74683,7 @@
 
     WelcomeMat.displayName = displayName$2;
     WelcomeMat.propTypes = propTypes$2;
-    WelcomeMat.defaultProps = defaultProps$2;
+    WelcomeMat.defaultProps = defaultProps$3;
     var WelcomeMat$1 = WelcomeMat;
 
     function _typeof$1(obj) {
@@ -74813,7 +74837,7 @@
        */
       onCompleteRenderActions: PropTypes$2.func
     };
-    var defaultProps$1 = {
+    var defaultProps$2 = {
       isComplete: false,
       variant: 'steps'
     };
@@ -74879,7 +74903,7 @@
 
     InfoBadge.displayName = displayName$1;
     InfoBadge.propTypes = propTypes$1;
-    InfoBadge.defaultProps = defaultProps$1;
+    InfoBadge.defaultProps = defaultProps$2;
     var InfoBadge$1 = InfoBadge;
 
     function _typeof(obj) {
@@ -75102,7 +75126,7 @@
        */
       variant: PropTypes$2.oneOf(['steps', 'info-only', 'splash', 'trailhead-connected'])
     };
-    var defaultProps = {
+    var defaultProps$1 = {
       assistiveText: {
         completedIcon: 'Completed'
       },
@@ -75140,7 +75164,7 @@
       }, {
         key: "render",
         value: function render() {
-          var assistiveText = _objectSpread(_objectSpread({}, defaultProps.assistiveText), this.props.assistiveText);
+          var assistiveText = _objectSpread(_objectSpread({}, defaultProps$1.assistiveText), this.props.assistiveText);
 
           var body = /*#__PURE__*/React__default["default"].createElement(React__default["default"].Fragment, null, /*#__PURE__*/React__default["default"].createElement("div", {
             className: classNames$1('slds-media__figure', 'slds-media__figure_fixed-width', 'slds-align_absolute-center')
@@ -75181,7 +75205,7 @@
 
     Tile.displayName = displayName;
     Tile.propTypes = propTypes;
-    Tile.defaultProps = defaultProps;
+    Tile.defaultProps = defaultProps$1;
     var Tile$1 = Tile;
 
     function _toConsumableArray(arr) {
@@ -76663,7 +76687,7 @@
     }
     var utility = icons;
 
-    var inlineIcons = {
+    var inlineIcons$1 = {
         action: action,
         custom: custom,
         doctype: doctype,
@@ -76672,11 +76696,347 @@
     };
     var SteedosIcon = function (props) {
         var _a = props.category, category = _a === void 0 ? 'standard' : _a, name = props.name; props.path; __rest$1(props, ["category", "name", "path"]);
+        var inlineData = inlineIcons$1[category][name.toLowerCase()];
+        if (inlineData)
+            inlineData.viewBox = inlineIcons$1[category].viewBox;
+        return React__default["default"].createElement(Icon$1, __assign$1({ name: name, category: category, icon: inlineData }, props));
+    };
+
+    var inlineIcons = {
+        action: action,
+        custom: custom,
+        doctype: doctype,
+        standard: standard,
+        utility: utility
+    };
+    var SteedosButtonIcon = function (props) {
+        var _a = props.category, category = _a === void 0 ? 'standard' : _a, name = props.name; props.path; __rest$1(props, ["category", "name", "path"]);
         var inlineData = inlineIcons[category][name.toLowerCase()];
         if (inlineData)
             inlineData.viewBox = inlineIcons[category].viewBox;
-        return React__default["default"].createElement(Icon$1, __assign$1({ name: name, category: category, icon: inlineData }, props));
+        return React__default["default"].createElement(ButtonIcon$1, __assign$1({ name: name, category: category, icon: inlineData }, props));
     };
+
+    function getAriaProps(props) {
+      return Object.keys(props).reduce((prev, key) => {
+        if (key.substr(0, 5) === 'aria-') {
+          // eslint-disable-next-line no-param-reassign
+          prev[key] = props[key];
+        }
+
+        return prev;
+      }, {});
+    }
+
+    function getDataProps(props) {
+      return Object.keys(props).reduce((prev, key) => {
+        if (key.substr(0, 5) === 'data-') {
+          // eslint-disable-next-line no-param-reassign
+          prev[key] = props[key];
+        }
+
+        return prev;
+      }, {});
+    }
+
+    const formPropsSet = new Set(['form', 'formAction', 'formEncType', 'formMethod', 'formNoValidate', 'formTarget']);
+    function getFormProps(props) {
+      return Object.keys(props).reduce((prev, key) => {
+        if (formPropsSet.has(key)) {
+          // eslint-disable-next-line no-param-reassign
+          prev[key] = props[key];
+        }
+
+        return prev;
+      }, {});
+    }
+
+    // ## Components
+    const BUTTON = 'SLDSButton';
+
+    var defaultProps = {
+        assistiveText: { icon: '' },
+        disabled: false,
+        hint: false,
+        iconSize: 'medium',
+        responsive: false,
+        type: 'button',
+        variant: 'neutral',
+    };
+    /**
+     * The Button component is the Lightning Design System Button component. The Button should be used for label buttons, icon buttons, or buttons that have both labels and icons.
+     * Either a <code>label</code> or <code>assistiveText.icon</code> is required; see the Prop Details table below. For buttons that maintain selected/unselected states, use the <a href="#/button-stateful">ButtonStateful</a> component.
+     * Although not listed in the prop table, all `aria-*`, `data-*` and `form*` props will be added to the `button` element if passed in.
+     */
+    var Button = /** @class */ (function (_super) {
+        __extends$1(Button, _super);
+        function Button(props) {
+            var _this = _super.call(this, props) || this;
+            _this.getClassName = function () {
+                var _a;
+                var isIcon = _this.props.variant === 'icon';
+                var iconVariant = _this.props.iconVariant;
+                var iconMore = iconVariant === 'more';
+                var iconBorder = iconVariant === 'border';
+                var iconGlobalHeader = iconVariant === 'global-header';
+                var showButtonVariant = (_this.props.variant !== 'base' &&
+                    !iconVariant &&
+                    !_this.props.inverse &&
+                    _this.props.variant !== 'link') ||
+                    iconVariant === 'bare';
+                var plainInverseBtn = _this.props.inverse && !isIcon;
+                var plainInverseIcon = _this.props.inverse && isIcon && !iconMore && !iconBorder;
+                var moreInverseIcon = _this.props.inverse && iconMore;
+                var borderInverseIcon = _this.props.inverse && iconBorder;
+                // After hijacking `iconVariant` to let `Button` know it's in the header, we reset to container style for the actual button CSS.
+                if (iconVariant === 'global-header') {
+                    iconVariant = 'container';
+                }
+                return classNames$1((_a = {
+                        'slds-button': _this.props.variant !== 'link'
+                    },
+                    _a["slds-button_".concat(_this.props.variant)] = showButtonVariant,
+                    _a['slds-button_inverse'] = plainInverseBtn,
+                    _a['slds-button_icon-inverse'] = plainInverseIcon || moreInverseIcon,
+                    _a['slds-button_icon-border-inverse'] = borderInverseIcon,
+                    _a["slds-button_icon-".concat(iconVariant)] = iconVariant && !borderInverseIcon,
+                    _a['slds-global-header__button_icon'] = iconGlobalHeader,
+                    // If icon has a container, then we apply the icon size to the container not the svg. Icon size is medium by default, so we don't need to explicitly render it here.
+                    _a["slds-button_icon-".concat(_this.props.iconSize)] = iconVariant && _this.props.iconSize !== 'medium',
+                    _a['slds-button_reset'] = _this.props.variant === 'link',
+                    _a['slds-text-link'] = _this.props.variant === 'link',
+                    _a), _this.props.className);
+            };
+            _this.handleClick = function (event) {
+                if (_this.props.onClick) {
+                    _this.props.onClick(event, {});
+                }
+            };
+            _this.renderIcon = function (name) {
+                var iconSize = !_this.props.iconSize || _this.props.iconVariant
+                    ? null
+                    : _this.props.iconSize;
+                return (React__default["default"].createElement(SteedosButtonIcon, { category: _this.props.iconCategory || 'utility', className: classNames$1({
+                        'slds-global-header__icon': _this.props.iconVariant === 'global-header',
+                    }, _this.props.iconClassName), hint: _this.props.hint, inverse: _this.props.inverse, name: name, path: _this.props.iconPath, position: _this.props.iconPosition, size: iconSize }));
+            };
+            _this.renderLabel = function () {
+                var iconOnly = _this.props.iconName || _this.props.iconPath;
+                var assistiveTextIcon = typeof _this.props.assistiveText === 'string'
+                    ? _this.props.assistiveText
+                    : __assign$1(__assign$1({}, defaultProps.assistiveText), _this.props.assistiveText).icon;
+                return iconOnly && assistiveTextIcon ? (React__default["default"].createElement("span", { className: "slds-assistive-text" }, assistiveTextIcon)) : (_this.props.label);
+            };
+            _this.renderButton = function () {
+                var ariaProps = getAriaProps(_this.props);
+                var dataProps = getDataProps(_this.props);
+                var formProps = getFormProps(_this.props);
+                return (
+                // eslint-disable-next-line react/button-has-type
+                React__default["default"].createElement("button", __assign$1({ className: _this.getClassName(), disabled: _this.props.disabled, id: _this.props.id, onBlur: _this.props.onBlur, onClick: _this.handleClick, onFocus: _this.props.onFocus, onKeyDown: _this.props.onKeyDown, onKeyPress: _this.props.onKeyPress, onKeyUp: _this.props.onKeyUp, onMouseDown: _this.props.onMouseDown, onMouseEnter: _this.props.onMouseEnter, onMouseLeave: _this.props.onMouseLeave, onMouseUp: _this.props.onMouseUp, ref: function (component) {
+                        if (_this.props.buttonRef) {
+                            _this.props.buttonRef(component);
+                        }
+                        if (component &&
+                            _this.props.requestFocus &&
+                            _this.props.onRequestFocus) {
+                            _this.props.onRequestFocus(component);
+                        }
+                    }, tabIndex: _this.props.tabIndex, title: _this.props.title, 
+                    // eslint-disable-next-line react/button-has-type
+                    type: _this.props.type || 'button', style: _this.props.style }, ariaProps, dataProps, formProps),
+                    _this.props.iconPosition === 'right' ? _this.renderLabel() : null,
+                    _this.props.iconName || _this.props.iconPath
+                        ? _this.renderIcon(_this.props.iconName)
+                        : null,
+                    _this.props.iconVariant === 'more' ? (React__default["default"].createElement(SteedosButtonIcon, { category: "utility", name: "down", size: "x-small", className: _this.props.iconClassName })) : null,
+                    _this.props.iconPosition === 'left' || !_this.props.iconPosition
+                        ? _this.renderLabel()
+                        : null,
+                    _this.props.children // eslint-disable-line react/prop-types
+                ));
+            };
+            // This is present for backwards compatibility and should be removed at a future breaking change release. Please wrap a `Button` in a `PopoverTooltip` to achieve the same result. There will be an extra trigger `div` wrapping the `Button` though.
+            _this.renderTooltip = function () { return (React__default["default"].createElement(Tooltip__default["default"], { content: _this.props.tooltip }, _this.renderButton)); };
+            return _this;
+            // `checkProps` issues warnings to developers about properties (similar to React's built in development tools)
+            // checkProps(BUTTON, props, componentDoc);
+        }
+        Button.prototype.render = function () {
+            return this.props.tooltip ? this.renderTooltip() : this.renderButton();
+        };
+        Button.displayName = BUTTON;
+        Button.propTypes = {
+            /**
+             * **Assistive text for accessibility.**
+             * This object is merged with the default props object on every render.
+             * * `icon`: Text that is visually hidden but read aloud by screenreaders to tell the user what the icon means. If the button has an icon and a visible label, you can omit the <code>assistiveText.icon</code> prop and use the <code>label</code> prop.
+             */
+            assistiveText: PropTypes$2.shape({
+                icon: PropTypes$2.string,
+            }),
+            /**
+             * Callback that passes in the DOM reference of the `<button>` DOM node within this component. Primary use is to allow `focus` to be called. You should still test if the node exists, since rendering is asynchronous. `buttonRef={(component) => { if(component) console.log(component); }}`
+             */
+            buttonRef: PropTypes$2.func,
+            /**
+             * CSS classes to be added to button.
+             */
+            className: PropTypes$2.oneOfType([
+                PropTypes$2.array,
+                PropTypes$2.object,
+                PropTypes$2.string,
+            ]),
+            /**
+             * Disables the button and adds disabled styling.
+             */
+            disabled: PropTypes$2.bool,
+            /**
+             * Associates an icon button with another element on the page by changes the color of the SVG. Please reference <a href="http://www.lightningdesignsystem.com/components/buttons/#hint">Lightning Design System Buttons > Hint</a>.
+             */
+            hint: PropTypes$2.bool,
+            /**
+             * Name of the icon category. Visit <a href="http://www.lightningdesignsystem.com/resources/icons">Lightning Design System Icons</a> to reference icon categories.
+             */
+            iconCategory: PropTypes$2.oneOf(['action', 'custom', 'doctype', 'standard', 'utility']),
+            /**
+             * CSS classes to be added to icon.
+             */
+            iconClassName: PropTypes$2.oneOfType([
+                PropTypes$2.array,
+                PropTypes$2.object,
+                PropTypes$2.string,
+            ]),
+            /**
+             * Name of the icon. Visit <a href="http://www.lightningdesignsystem.com/resources/icons">Lightning Design System Icons</a> to reference icon names.
+             */
+            iconName: PropTypes$2.string,
+            /**
+             * Path to the icon. This will override any global icon settings.
+             */
+            iconPath: PropTypes$2.string,
+            /**
+             * If omitted, icon position is centered.
+             */
+            iconPosition: PropTypes$2.oneOf(['left', 'right']),
+            /**
+             * Determines the size of the icon.
+             */
+            iconSize: PropTypes$2.oneOf(['x-small', 'small', 'medium', 'large']),
+            /**
+             * For icon variants, please reference <a href="http://www.lightningdesignsystem.com/components/buttons/#icon">Lightning Design System Icons</a>.
+             */
+            iconVariant: PropTypes$2.oneOf([
+                'bare',
+                'container',
+                'border',
+                'border-filled',
+                'brand',
+                'more',
+                'global-header',
+            ]),
+            /**
+             * Id string applied to button node.
+             */
+            id: PropTypes$2.string,
+            /**
+             * If true, button/icon is white. Meant for buttons or utility icons on dark backgrounds.
+             */
+            inverse: PropTypes$2.bool,
+            /**
+             * Visible label on the button. If the button is an icon button with no label, you must use the <code>assistiveText.icon</code> prop.
+             */
+            label: PropTypes$2.oneOfType([PropTypes$2.string, PropTypes$2.node]),
+            /**
+             * Triggered when focus is removed.
+             */
+            onBlur: PropTypes$2.func,
+            /**
+             * Triggered when the button is clicked.
+             */
+            onClick: PropTypes$2.func,
+            /**
+             * Triggered when component is focused.
+             */
+            onFocus: PropTypes$2.func,
+            /**
+             * Triggered when a key is pressed down
+             */
+            onKeyDown: PropTypes$2.func,
+            /**
+             * Triggered when a key is pressed and released
+             */
+            onKeyPress: PropTypes$2.func,
+            /**
+             * Triggered when a key is released
+             */
+            onKeyUp: PropTypes$2.func,
+            /**
+             * Triggered when a mouse button is pressed down
+             */
+            onMouseDown: PropTypes$2.func,
+            /**
+             * Triggered when a mouse arrow hovers
+             */
+            onMouseEnter: PropTypes$2.func,
+            /**
+             * Triggered when a mouse arrow no longer hovers
+             */
+            onMouseLeave: PropTypes$2.func,
+            /**
+             * Triggered when a mouse button is released
+             */
+            onMouseUp: PropTypes$2.func,
+            /**
+             * Triggered to indicate that this component should receive focus.
+             */
+            onRequestFocus: PropTypes$2.func,
+            /**
+             * If true, will trigger `onRequestFocus`.
+             */
+            requestFocus: PropTypes$2.bool,
+            /**
+             * If true, button scales to 100% width on small form factors.
+             */
+            responsive: PropTypes$2.bool,
+            /**
+             * Write <code>"-1"</code> if you don't want the user to tab to the button.
+             */
+            tabIndex: PropTypes$2.string,
+            /**
+             * Button type
+             */
+            type: PropTypes$2.oneOf(['reset', 'submit', 'button']),
+            /**
+             * HTML title attribute
+             */
+            title: PropTypes$2.string,
+            /**
+             * [Deprecated] Tooltip on button. Button should be a child of `Tooltip` instead.
+             */
+            tooltip: PropTypes$2.node,
+            /**
+             * Different types of buttons
+             */
+            variant: PropTypes$2.oneOf([
+                'base',
+                'link',
+                'neutral',
+                'brand',
+                'outline-brand',
+                'destructive',
+                'success',
+                'text-destructive',
+                'icon',
+            ]),
+            /**
+             * Custom styles to be passed to the component
+             */
+            style: PropTypes$2.object,
+        };
+        Button.defaultProps = defaultProps;
+        return Button;
+    }(React__default["default"].Component));
 
     exports.Accordion = Accordion$1;
     exports.AccordionPanel = AccordionPanel$1;
@@ -76698,9 +77058,9 @@
     exports.BuilderHeaderNavLink = BuilderHeaderNavLink$1;
     exports.BuilderHeaderToolbar = BuilderHeaderToolbar$1;
     exports.BuilderHeaderUtilities = BuilderHeaderUtilities$1;
-    exports.Button = Button$2;
+    exports.Button = Button;
     exports.ButtonGroup = ButtonGroup$1;
-    exports.ButtonIcon = ButtonIcon$1;
+    exports.ButtonIcon = SteedosButtonIcon;
     exports.ButtonStateful = ButtonStateful$1;
     exports.Card = Card$1;
     exports.CardEmpty = Empty;
@@ -76733,7 +77093,7 @@
     exports.FilesMoreFiles = MoreFiles$1;
     exports.Filter = Filter$1;
     exports.GlobalHeader = GlobalHeader$1;
-    exports.GlobalHeaderButton = Button;
+    exports.GlobalHeaderButton = Button$1;
     exports.GlobalHeaderDropdown = GlobalHeaderDropdown$1;
     exports.GlobalHeaderFavorites = GlobalHeaderFavorites$1;
     exports.GlobalHeaderHelp = GlobalHeaderHelp$1;
@@ -76749,7 +77109,7 @@
     exports.GlobalNavigationBarLink = GlobalNavigationBarLink$1;
     exports.GlobalNavigationBarRegion = Region$1;
     exports.Icon = SteedosIcon;
-    exports.IconSettings = IconSettings$1;
+    exports.IconSettings = SteedosIconSettings;
     exports.Illustration = Illustration$1;
     exports.InlineEdit = InlineEdit$1;
     exports.Input = Input$1;
@@ -76806,7 +77166,7 @@
     exports.SLDSBuilderHeaderNavLink = BuilderHeaderNavLink$1;
     exports.SLDSBuilderHeaderToolbar = BuilderHeaderToolbar$1;
     exports.SLDSBuilderHeaderUtilities = BuilderHeaderUtilities$1;
-    exports.SLDSButton = Button$2;
+    exports.SLDSButton = Button$3;
     exports.SLDSButtonGroup = ButtonGroup$1;
     exports.SLDSButtonIcon = ButtonIcon$1;
     exports.SLDSButtonStateful = ButtonStateful$1;
@@ -76841,7 +77201,7 @@
     exports.SLDSFilesMoreFiles = MoreFiles$1;
     exports.SLDSFilter = Filter$1;
     exports.SLDSGlobalHeader = GlobalHeader$1;
-    exports.SLDSGlobalHeaderButton = Button;
+    exports.SLDSGlobalHeaderButton = Button$1;
     exports.SLDSGlobalHeaderDropdown = GlobalHeaderDropdown$1;
     exports.SLDSGlobalHeaderFavorites = GlobalHeaderFavorites$1;
     exports.SLDSGlobalHeaderHelp = GlobalHeaderHelp$1;
@@ -76935,7 +77295,6 @@
     exports.SplitViewHeader = SplitViewHeader$1;
     exports.SplitViewListbox = SplitViewListbox$1;
     exports.Splitview = SplitView$1;
-    exports.SteedosIconSettings = SteedosIconSettings;
     exports.Tabs = Tabs$1;
     exports.TabsPanel = TabsPanel;
     exports.Textarea = Textarea$1;

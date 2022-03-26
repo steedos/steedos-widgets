@@ -1,4 +1,6 @@
-import { SteedosIconSettings } from './components/IconSettings';
-import { SteedosIcon as Icon } from './components/Icon';
+import IconSettings from './components/IconSettings';
+import Icon from './components/Icon';
+import Button from './components/Button';
+import ButtonIcon from './components/ButtonIcon';
 export * from '@salesforce/design-system-react';
-export { Icon, SteedosIconSettings };
+export { Button, ButtonIcon, Icon, IconSettings };

@@ -6,9 +6,11 @@ import {IconSettings} from '@salesforce/design-system-react';
 
 import React from 'react';
 
-export const SteedosIconSettings = (props:any) => <IconSettings  
+const SteedosIconSettings = (props:any) => <IconSettings  
     // actionSprite={actionSprite} 
     // standardSprite={standardSprite} 
     // customSprite={customSprite} 
     // utilitySprite={utilitySprite} 
     {...props}/>
+
+export default SteedosIconSettings

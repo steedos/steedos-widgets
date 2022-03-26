@@ -1,4 +1,4 @@
-import {Icon} from '@salesforce/design-system-react'; 
+import {ButtonIcon} from '@salesforce/design-system-react'; 
 import React from 'react';
 
 import action from './IconAction'; 
@@ -14,16 +14,16 @@ const inlineIcons: any = {
   standard,
   utility
 }
-const SteedosIcon = (props: any) => {
+const SteedosButtonIcon = (props: any) => {
   const {category = 'standard', name, path, ...rest} = props
   const inlineData = inlineIcons[category][name.toLowerCase()]
   if (inlineData)
     inlineData.viewBox = inlineIcons[category].viewBox;
-  return <Icon 
+  return <ButtonIcon 
     name = {name}
     category = {category}
     icon = {inlineData}
     {...props}/>
 }
 
-export default SteedosIcon
+export default SteedosButtonIcon

@@ -1,1 +1,2 @@
-export declare const SteedosIconSettings: (props: any) => JSX.Element;
+declare const SteedosIconSettings: (props: any) => JSX.Element;
+export default SteedosIconSettings;
