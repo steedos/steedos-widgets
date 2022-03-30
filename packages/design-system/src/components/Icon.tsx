@@ -20,10 +20,11 @@ const SteedosIcon = (props: any) => {
   if (inlineData)
     inlineData.viewBox = inlineIcons[category].viewBox;
   return <Icon 
+    {...props}
     name = {name}
     category = {category}
     icon = {inlineData}
-    {...props}/>
+   />
 }
 
 export default SteedosIcon

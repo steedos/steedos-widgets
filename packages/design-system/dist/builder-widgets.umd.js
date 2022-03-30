@@ -76698,7 +76698,7 @@
         var inlineData = inlineIcons$1[category][name.toLowerCase()];
         if (inlineData)
             inlineData.viewBox = inlineIcons$1[category].viewBox;
-        return React__default["default"].createElement(Icon$1, __assign$1({ name: name, category: category, icon: inlineData }, props));
+        return React__default["default"].createElement(Icon$1, __assign$1({}, props, { name: name, category: category, icon: inlineData }));
     };
 
     var inlineIcons = {
