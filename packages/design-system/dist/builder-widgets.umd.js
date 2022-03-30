@@ -91,7 +91,7 @@
     	return a;
     }
 
-    var propTypes$1F = {exports: {}};
+    var propTypes$1H = {exports: {}};
 
     /**
      * Copyright (c) 2013-present, Facebook, Inc.
@@ -173,12 +173,12 @@
     {
       // By explicitly using `prop-types` you are opting into new production behavior.
       // http://fb.me/prop-types-in-prod
-      propTypes$1F.exports = factoryWithThrowingShims();
+      propTypes$1H.exports = factoryWithThrowingShims();
     }
 
-    var PropTypes$2 = propTypes$1F.exports;
+    var PropTypes$2 = propTypes$1H.exports;
 
-    var classnames = {exports: {}};
+    var classnames$1 = {exports: {}};
 
     /*!
       Copyright (c) 2018 Jed Watson.
@@ -233,9 +233,9 @@
         window.classNames = classNames;
       }
     })();
-    }(classnames));
+    }(classnames$1));
 
-    var classNames$1 = classnames.exports;
+    var classnames = classnames$1.exports;
 
     var lib$1 = {exports: {}};
 
@@ -643,9 +643,9 @@
     var GLOBAL_HEADER = 'SLDSGlobalHeader';
     var GLOBAL_HEADER_BUTTON = 'SLDSGlobalHeaderButton';
     var GLOBAL_HEADER_DROPDOWN = 'SLDSGlobalHeaderDropdown';
-    var GLOBAL_HEADER_FAVORITES = 'SLDSGlobalHeaderFavorites';
+    var GLOBAL_HEADER_FAVORITES$1 = 'SLDSGlobalHeaderFavorites';
     var GLOBAL_HEADER_HELP = 'SLDSGlobalHeaderHelp';
-    var GLOBAL_HEADER_NOTIFICATIONS = 'SLDSGlobalHeaderNotifications';
+    var GLOBAL_HEADER_NOTIFICATIONS$1 = 'SLDSGlobalHeaderNotifications';
     var GLOBAL_HEADER_PROFILE = 'SLDSGlobalHeaderProfile';
     var GLOBAL_HEADER_SEARCH = 'SLDSGlobalHeaderSearch';
     var GLOBAL_HEADER_SETUP = 'SLDSGlobalHeaderSetup';
@@ -839,7 +839,7 @@
       };
       return _getPrototypeOf$1M(o);
     }
-    var propTypes$1E = {
+    var propTypes$1G = {
       /**
        * CSS class names to be added to the accordion component. _Tested with snapshot testing._
        */
@@ -958,7 +958,7 @@
 
           return /*#__PURE__*/React__default["default"].createElement("ul", {
             name: this.props.id || this.generatedId,
-            className: classNames$1('slds-accordion', this.props.className)
+            className: classnames('slds-accordion', this.props.className)
           }, React__default["default"].Children.map(this.props.children, function (child) {
             return /*#__PURE__*/React__default["default"].cloneElement(child, {
               refs: {
@@ -975,7 +975,7 @@
     }(React$3.Component);
 
     Accordion.displayName = ACCORDION;
-    Accordion.propTypes = propTypes$1E;
+    Accordion.propTypes = propTypes$1G;
     var Accordion$1 = Accordion;
 
     var reactRequiredIf = function requiredIf(type, condition) {
@@ -1841,7 +1841,7 @@
       return /*#__PURE__*/React__default["default"].createElement(UtilityIcon$1, {
         "aria-hidden": "true",
         category: props.category,
-        className: classNames$1('slds-button__icon', (_classNames = {}, _defineProperty$1I(_classNames, "slds-button__icon_".concat(props.size), props.size && props.size !== 'medium'), _defineProperty$1I(_classNames, 'slds-button__icon_inverse-hint', props.inverse && props.hint), _defineProperty$1I(_classNames, 'slds-button__icon_hint', props.hint && !props.inverse), _defineProperty$1I(_classNames, "slds-button__icon_".concat(props.position), props.position), _classNames), props.className) // iconClassName has been deprecated
+        className: classnames('slds-button__icon', (_classNames = {}, _defineProperty$1I(_classNames, "slds-button__icon_".concat(props.size), props.size && props.size !== 'medium'), _defineProperty$1I(_classNames, 'slds-button__icon_inverse-hint', props.inverse && props.hint), _defineProperty$1I(_classNames, 'slds-button__icon_hint', props.hint && !props.inverse), _defineProperty$1I(_classNames, "slds-button__icon_".concat(props.position), props.position), _classNames), props.className) // iconClassName has been deprecated
         ,
         icon: props.icon,
         name: props.name,
@@ -1849,7 +1849,7 @@
       });
     };
 
-    var propTypes$1D = {
+    var propTypes$1F = {
       /**
        * Icon category from [lightningdesignsystem.com/icons/](https://www.lightningdesignsystem.com/icons/)
        */
@@ -1900,7 +1900,7 @@
       size: 'medium'
     };
     ButtonIcon.displayName = BUTTON_ICON;
-    ButtonIcon.propTypes = propTypes$1D;
+    ButtonIcon.propTypes = propTypes$1F;
     ButtonIcon.defaultProps = defaultProps$1i;
     var ButtonIcon$1 = ButtonIcon;
 
@@ -1943,7 +1943,7 @@
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
 
     /* Licensed under BSD 3-Clause - see LICENSE.txt or git.io/sfdc-license */
-    var EventUtil = {
+    var EventUtil$2 = {
       trapEvent: function trapEvent(event) {
         if (!event) return;
         event.preventDefault();
@@ -1958,7 +1958,7 @@
         }
       },
       trap: function trap(event) {
-        return EventUtil.trapEvent(event);
+        return EventUtil$2.trapEvent(event);
       },
       trapImmediate: function trapImmediate(event) {
         if (event.stopImmediatePropagation) {
@@ -1969,11 +1969,11 @@
           event.nativeEvent.stopImmediatePropagation();
         }
 
-        EventUtil.trap(event);
+        EventUtil$2.trap(event);
       },
       trappedHandler: function trappedHandler(handler) {
         return function (event) {
-          EventUtil.trap(event);
+          EventUtil$2.trap(event);
 
           if (handler) {
             handler(event);
@@ -1981,7 +1981,7 @@
         };
       }
     };
-    var EventUtil$1 = EventUtil;
+    var EventUtil$3 = EventUtil$2;
 
     /**!
      * @fileOverview Kickass library to create and place poppers near their reference elements.
@@ -6988,7 +6988,7 @@
     Portal.contextType = PortalSettingsContext;
     var Portal$1 = Portal;
 
-    var keys$1 = {
+    var keys$2 = {
       ENTER: 13,
       ESCAPE: 27,
       SPACE: 32,
@@ -7000,7 +7000,7 @@
       DELETE: 46,
       BACKSPACE: 8
     }; // Helpful for interaction/event tests. Use with simulate:
-    var KEYS = keys$1;
+    var KEYS$1 = keys$2;
 
     /*!
      * Adapted from jQuery UI core
@@ -7048,7 +7048,7 @@
     var focusLaterElement = null;
 
     var handleScopedKeyDown = function handleScopedKeyDown(event) {
-      if (!canUseDOM || !ancestor || event.keyCode !== KEYS.TAB) {
+      if (!canUseDOM || !ancestor || event.keyCode !== KEYS$1.TAB) {
         return;
       }
 
@@ -7174,7 +7174,7 @@
       var popperData = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
       if (popperData.flipped) {
-        return classNames$1({
+        return classnames({
           'slds-nubbin_top': align === 'top',
           'slds-nubbin_top-left': align === 'top left',
           'slds-nubbin_top-right': align === 'top right',
@@ -7190,7 +7190,7 @@
         });
       }
 
-      return classNames$1({
+      return classnames({
         'slds-nubbin_top': align === 'bottom',
         'slds-nubbin_top-left': align === 'bottom left',
         'slds-nubbin_top-right': align === 'bottom right',
@@ -7565,9 +7565,9 @@
         });
 
         _defineProperty$1H(_assertThisInitialized$1J(_this), "handleKeyDown", function (event) {
-          if (event.keyCode === KEYS.TAB) {
+          if (event.keyCode === KEYS$1.TAB) {
             if (_this.props.closeOnTabKey) {
-              EventUtil$1.trap(event);
+              EventUtil$3.trap(event);
 
               _this.handleClose(event);
             }
@@ -7725,7 +7725,7 @@
           style = _objectSpread$P(_objectSpread$P({}, style), this.props.style);
           var outerTag = this.props.variant === 'popover' ? 'section' : 'div';
           var contents = /*#__PURE__*/React__default["default"].createElement(outerTag, _objectSpread$P({
-            className: classNames$1(_defineProperty$1H({
+            className: classnames(_defineProperty$1H({
               'absolute-positioned': this.props.position === 'absolute',
               'portal-positioned': this.props.position === 'overflowBoundaryElement'
             }, "".concat(this.props.outsideClickIgnoreClass), this.props.position === 'overflowBoundaryElement'), this.props.hasNubbin && getNubbinClassName(this.props.align, this.state.popperData), this.props.contentsClassName) || undefined,
@@ -7956,7 +7956,7 @@
     // ### classNames
 
     var classNamesWrapper = function classNamesWrapper() {
-      var string = classNames$1.apply(void 0, arguments);
+      var string = classnames.apply(void 0, arguments);
       return string === '' ? undefined : string;
     };
 
@@ -8388,7 +8388,7 @@
     // Always use the canonical component name as the React display name.
 
     var displayName$t = POPOVER_TOOLTIP;
-    var propTypes$1C = {
+    var propTypes$1E = {
       /**
        * Alignment of the Tooltip relative to the element that triggers it.
        */
@@ -8667,7 +8667,7 @@
           if (noChildrenProvided && this.props.onClickTrigger) {
             children = [/*#__PURE__*/React__default["default"].createElement("a", {
               href: "#",
-              onClick: EventUtil$1.trappedHandler(this.props.onClickTrigger)
+              onClick: EventUtil$3.trappedHandler(this.props.onClickTrigger)
             }, /*#__PURE__*/React__default["default"].createElement(Icon$1, {
               category: "utility",
               name: "info",
@@ -8725,7 +8725,7 @@
           return isOpen ? /*#__PURE__*/React__default["default"].createElement(Dialog$1, {
             closeOnTabKey: true,
             hasNubbin: true,
-            contentsClassName: classNames$1('slds-popover', 'slds-popover_tooltip', {
+            contentsClassName: classnames('slds-popover', 'slds-popover_tooltip', {
               'slds-theme_error': this.props.theme === 'error' || deprecatedWay
             }, this.props.dialogClassName),
             align: align,
@@ -8783,7 +8783,7 @@
           }, this.props.triggerStyle);
 
           return /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-tooltip-trigger', this.props.triggerClassName),
+            className: classnames('slds-tooltip-trigger', this.props.triggerClassName),
             style: containerStyles,
             ref: this.saveTriggerRef
           }, this.getAnchoredNubbinStyles(), this.getContent(), this.getTooltip());
@@ -8795,7 +8795,7 @@
 
     Tooltip.contextType = IconSettingsContext;
     Tooltip.displayName = displayName$t;
-    Tooltip.propTypes = propTypes$1C;
+    Tooltip.propTypes = propTypes$1E;
     Tooltip.defaultProps = defaultProps$1g;
     var Tooltip$1 = Tooltip;
 
@@ -9067,7 +9067,7 @@
             iconVariant = 'container';
           }
 
-          return classNames$1((_classNames = {
+          return classnames((_classNames = {
             'slds-button': _this.props.variant !== 'link'
           }, _defineProperty$1E(_classNames, "slds-button_".concat(_this.props.variant), showButtonVariant), _defineProperty$1E(_classNames, 'slds-button_inverse', plainInverseBtn), _defineProperty$1E(_classNames, 'slds-button_icon-inverse', plainInverseIcon || moreInverseIcon), _defineProperty$1E(_classNames, 'slds-button_icon-border-inverse', borderInverseIcon), _defineProperty$1E(_classNames, "slds-button_icon-".concat(iconVariant), iconVariant && !borderInverseIcon), _defineProperty$1E(_classNames, 'slds-global-header__button_icon', iconGlobalHeader), _defineProperty$1E(_classNames, "slds-button_icon-".concat(_this.props.iconSize), iconVariant && _this.props.iconSize !== 'medium'), _defineProperty$1E(_classNames, 'slds-button_reset', _this.props.variant === 'link'), _defineProperty$1E(_classNames, 'slds-text-link', _this.props.variant === 'link'), _classNames), _this.props.className);
         });
@@ -9083,7 +9083,7 @@
           return /*#__PURE__*/React__default["default"].createElement(ButtonIcon$1, {
             category: _this.props.iconCategory || 'utility' // BREAKING CHANGE we will introduce in 1.0. For the moment, set default prop here if none specified.
             ,
-            className: classNames$1({
+            className: classnames({
               'slds-global-header__icon': _this.props.iconVariant === 'global-header'
             }, _this.props.iconClassName),
             hint: _this.props.hint,
@@ -9353,7 +9353,7 @@
     var Button$3 = Button$2;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
-    var propTypes$1B = {
+    var propTypes$1D = {
       /**
        * The panel content for the Accordion component. Accordion panels should be added as <AccordionPanel />. Event handler for the accordion panels should be added to `<AccordionPanel />`. Optional `panelContentActions` component may be passed as prop. _Tested with Mocha framework and snapshot testing._
        */
@@ -9419,7 +9419,7 @@
       return /*#__PURE__*/React__default["default"].createElement("li", {
         className: "slds-accordion__list-item"
       }, /*#__PURE__*/React__default["default"].createElement("section", {
-        className: classNames$1('slds-accordion__section', {
+        className: classnames('slds-accordion__section', {
           'slds-is-open': expanded
         })
       }, /*#__PURE__*/React__default["default"].createElement("div", {
@@ -9452,7 +9452,7 @@
     };
 
     var AccordionPanel$1 = AccordionPanel;
-    AccordionPanel.propTypes = propTypes$1B;
+    AccordionPanel.propTypes = propTypes$1D;
     AccordionPanel.displayName = ACCORDION_PANEL;
 
     /**
@@ -10075,7 +10075,7 @@
 
     var assign = createAssigner(function (object, source) {
       if (nonEnumShadows || isPrototype$1(source) || isArrayLike(source)) {
-        copyObject(source, keys(source), object);
+        copyObject(source, keys$1(source), object);
         return;
       }
 
@@ -10114,7 +10114,7 @@
      * // => ['0', '1']
      */
 
-    function keys(object) {
+    function keys$1(object) {
       return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
     }
 
@@ -10302,7 +10302,7 @@
 
       return obj;
     }
-    var propTypes$1A = {
+    var propTypes$1C = {
       /**
        * **Assistive text for accessibility**
        * This object is merged with the default props object on every render.
@@ -10483,7 +10483,7 @@
           }, /*#__PURE__*/React__default["default"].createElement("span", {
             className: "slds-assistive-text"
           }, assistiveTextVariant[this.props.variant]), clonedIcon, /*#__PURE__*/React__default["default"].createElement("h2", null, heading, ' ', labels.headingLink ? /*#__PURE__*/React__default["default"].createElement("a", {
-            onClick: EventUtil$1.trappedHandler(this.props.onClickHeadingLink),
+            onClick: EventUtil$3.trappedHandler(this.props.onClickHeadingLink),
             href: "#"
           }, labels.headingLink) : null), this.props.dismissible ? /*#__PURE__*/React__default["default"].createElement(Button$3, {
             assistiveText: {
@@ -10507,7 +10507,7 @@
 
     Alert.defaultProps = defaultProps$1e;
     Alert.displayName = ALERT;
-    Alert.propTypes = propTypes$1A;
+    Alert.propTypes = propTypes$1C;
     var Alert$1 = Alert;
 
     function _typeof$1F(obj) {
@@ -10626,7 +10626,7 @@
       };
       return _getPrototypeOf$1E(o);
     }
-    var propTypes$1z = {
+    var propTypes$1B = {
       /**
        * CSS classes to be added to tag with `.slds-notify_alert`. Uses `classNames` [API](https://github.com/JedWatson/classnames).
        */
@@ -10665,7 +10665,7 @@
     }(React__default["default"].Component);
 
     AlertContainer.displayName = ALERT_CONTAINER;
-    AlertContainer.propTypes = propTypes$1z;
+    AlertContainer.propTypes = propTypes$1B;
     var AlertContainer$1 = AlertContainer;
 
     /**
@@ -11734,7 +11734,7 @@
 
     var _react = React__default["default"];
 
-    var _propTypes = propTypes$1F.exports;
+    var _propTypes = propTypes$1H.exports;
 
     var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -12370,7 +12370,7 @@
 
     var _reactDom2 = _interopRequireDefault(_reactDom);
 
-    var _propTypes = propTypes$1F.exports;
+    var _propTypes = propTypes$1H.exports;
 
     var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -12957,7 +12957,7 @@
     }
     var documentDefined$4 = typeof document !== 'undefined';
     var windowDefined = typeof window !== 'undefined';
-    var propTypes$1y = {
+    var propTypes$1A = {
       /**
        * Vertical alignment of Modal.
        */
@@ -13234,15 +13234,15 @@
 
             /* eslint-disable */
             React__default["default"].createElement("section", {
-              className: classNames$1('slds-modal', 'slds-fade-in-open', this.props.size ? "slds-modal_".concat(this.props.size) : null, {
+              className: classnames('slds-modal', 'slds-fade-in-open', this.props.size ? "slds-modal_".concat(this.props.size) : null, {
                 'slds-modal_prompt': this.isPrompt()
               }, this.props.className),
               onClick: this.dismissModalOnClickOutside
             }, /*#__PURE__*/React__default["default"].createElement("div", {
-              className: classNames$1('slds-modal__container', this.props.containerClassName),
+              className: classnames('slds-modal__container', this.props.containerClassName),
               style: modalStyle
             }, this.headerComponent(), /*#__PURE__*/React__default["default"].createElement("div", {
-              className: classNames$1('slds-modal__content', this.props.contentClassName),
+              className: classnames('slds-modal__content', this.props.contentClassName),
               id: "".concat(this.getId(), "-modal-content"),
               style: contentStyle,
               onClick: this.handleModalClick
@@ -13314,7 +13314,7 @@
             /*#__PURE__*/
             // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/no-noninteractive-element-interactions
             React__default["default"].createElement("footer", {
-              className: classNames$1(footerClass, this.props.footerClassNames),
+              className: classnames(footerClass, this.props.footerClassNames),
               onClick: this.handleModalClick
             }, this.props.footer);
           }
@@ -13361,7 +13361,7 @@
 
           if (!headerContent && (this.props.heading || this.props.title) || this.props.tagline) {
             headerContent = /*#__PURE__*/React__default["default"].createElement("div", null, this.props.toast, /*#__PURE__*/React__default["default"].createElement("h2", {
-              className: classNames$1({
+              className: classnames({
                 'slds-text-heading_small': this.isPrompt(),
                 'slds-text-heading_medium': !this.isPrompt()
               }),
@@ -13375,7 +13375,7 @@
             /*#__PURE__*/
             // eslint-disable-next-line jsx-a11y/no-static-element-interactions
             React__default["default"].createElement("header", {
-              className: classNames$1('slds-modal__header', (_classNames = {
+              className: classnames('slds-modal__header', (_classNames = {
                 'slds-modal__header_empty': headerEmpty
               }, _defineProperty$1C(_classNames, "slds-theme_".concat(this.props.prompt), this.isPrompt()), _defineProperty$1C(_classNames, 'slds-theme_alert-texture', this.isPrompt()), _classNames), this.props.headerClassName),
               onClick: this.handleModalClick
@@ -13431,7 +13431,7 @@
             role: this.props.disableClose ? 'alertdialog' : 'dialog',
             style: customStyles,
             parentSelector: this.props.parentSelector,
-            portalClassName: classNames$1('ReactModalPortal', this.props.portalClassName)
+            portalClassName: classnames('ReactModalPortal', this.props.portalClassName)
           }, this.getModal(), /*#__PURE__*/React__default["default"].createElement("div", {
             className: "slds-backdrop slds-backdrop_open"
           }));
@@ -13442,7 +13442,7 @@
     }(React__default["default"].Component);
 
     Modal.displayName = MODAL;
-    Modal.propTypes = propTypes$1y;
+    Modal.propTypes = propTypes$1A;
     Modal.defaultProps = defaultProps$1d;
     var Modal$1 = Modal;
 
@@ -13784,7 +13784,7 @@
             assistiveText: {
               dialogLabelledBy: "".concat(this.getId(), "-app-launcher-title")
             },
-            className: classNames$1('slds-app-launcher', this.props.modalClassName),
+            className: classnames('slds-app-launcher', this.props.modalClassName),
             contentClassName: "slds-app-launcher__content slds-p-around_medium",
             contentStyle: {
               minHeight: modalContentStaticHeight
@@ -14032,7 +14032,7 @@
 
       return obj;
     }
-    var propTypes$1x = {
+    var propTypes$1z = {
       /**
        * **Assistive text for accessibility.**
        * * `toggleSection`: Label for the icon that expands / collapses the section
@@ -14133,17 +14133,17 @@
             'aria-expanded': !!isOpen
           };
           var titleNode = /*#__PURE__*/React__default["default"].createElement("span", {
-            className: classNames$1('slds-truncate', {
+            className: classnames('slds-truncate', {
               'slds-p-horizontal_small': !!this.props.nonCollapsible
             }),
             title: this.props.title
           }, this.props.title);
           return /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-section', {
+            className: classnames('slds-section', {
               'slds-is-open': isOpen
             }, this.props.className)
           }, /*#__PURE__*/React__default["default"].createElement("h3", {
-            className: classNames$1('slds-section__title', {
+            className: classnames('slds-section__title', {
               'slds-theme_shade': !!this.props.nonCollapsible
             })
           }, !this.props.nonCollapsible ? /*#__PURE__*/React__default["default"].createElement(Button$3, _extends$J({
@@ -14168,7 +14168,7 @@
     }(React__default["default"].Component);
 
     ExpandableSection.displayName = EXPANDABLE_SECTION;
-    ExpandableSection.propTypes = propTypes$1x;
+    ExpandableSection.propTypes = propTypes$1z;
     ExpandableSection.defaultProps = defaultProps$1b;
     var ExpandableSection$1 = ExpandableSection;
 
@@ -14406,7 +14406,7 @@
             }, child);
           });
           return /*#__PURE__*/React__default["default"].createElement(ExpandableSection$1, expandableSectionProps, /*#__PURE__*/React__default["default"].createElement("ul", {
-            className: classNames$1('slds-grid slds-wrap', {
+            className: classnames('slds-grid slds-wrap', {
               'slds-grid_pull-padded': ulChildrenType === 'tiles'
             })
           }, ulContent));
@@ -15322,7 +15322,7 @@
 
     var createReactClass = createReactClass$1;
 
-    var PropTypes$1 = propTypes$1F.exports;
+    var PropTypes$1 = propTypes$1H.exports;
 
     function removeDiacritics(str, blacklist) {
       if (!String.prototype.normalize) {
@@ -15786,7 +15786,7 @@
 
           return /*#__PURE__*/React__default["default"].createElement("a", {
             href: this.props.href,
-            className: classNames$1('slds-truncate', this.props.className),
+            className: classnames('slds-truncate', this.props.className),
             onClick: function onClick(event) {
               if (_this.props.href === '#') {
                 event.preventDefault();
@@ -16486,7 +16486,7 @@
 
       return obj;
     }
-    var propTypes$1w = {
+    var propTypes$1y = {
       /**
        * **Assistive text for accessibility.**
        * * `dragIconText`: Text that describes the purpose of the drag handle icon.
@@ -16608,7 +16608,7 @@
           }
 
           return /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-app-launcher__tile slds-text-link_reset slds-is-draggable', // NOTE: while the draggable class is here for stylistic purposes, the draggable attribute is not present as draggability has not been implemented yet
+            className: classnames('slds-app-launcher__tile slds-text-link_reset slds-is-draggable', // NOTE: while the draggable class is here for stylistic purposes, the draggable attribute is not present as draggability has not been implemented yet
             this.props.className),
             onClick: this.handleClick,
             role: "button",
@@ -16677,7 +16677,7 @@
 
     AppLauncherTile.displayName = APP_LAUNCHER_TILE;
     AppLauncherTile.defaultProps = defaultProps$1a;
-    AppLauncherTile.propTypes = propTypes$1w;
+    AppLauncherTile.propTypes = propTypes$1y;
     var AppLauncherTile$1 = AppLauncherTile;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
@@ -16897,7 +16897,7 @@
 
     var displayName$s = AVATAR; // ### Prop Types
 
-    var propTypes$1v = {
+    var propTypes$1x = {
       /**
        * **Assistive text for accessibility.**
        * This object is merged with the default props object on every render.
@@ -17096,7 +17096,7 @@
 
     Avatar.defaultProps = defaultProps$19;
     Avatar.displayName = displayName$s;
-    Avatar.propTypes = propTypes$1v;
+    Avatar.propTypes = propTypes$1x;
     var Avatar$1 = Avatar;
 
     function _typeof$1w(obj) {
@@ -17247,12 +17247,12 @@
         key: "render",
         value: function render() {
           var icon = this.props.icon && /*#__PURE__*/React__default["default"].createElement("span", {
-            className: classNames$1('slds-badge__icon', "slds-badge__icon_".concat(this.props.iconAlignment)),
+            className: classnames('slds-badge__icon', "slds-badge__icon_".concat(this.props.iconAlignment)),
             style: this.props.style
           }, this.props.icon);
           return /*#__PURE__*/React__default["default"].createElement("span", {
             id: this.getId(),
-            className: classNames$1('slds-badge', {
+            className: classnames('slds-badge', {
               'slds-badge_inverse': this.props.color === 'inverse',
               'slds-badge_lightest': this.props.color === 'light',
               'slds-theme_success': this.props.color === 'success',
@@ -18178,14 +18178,14 @@
         });
 
         _defineProperty$1u(_assertThisInitialized$1t(_this), "getIcon", function (position) {
-          var classnames = ['slds-icon-text-default'];
+          var classnames$1 = ['slds-icon-text-default'];
 
           var iconProps = _this.props["".concat(position, "Icon")];
 
           if (position === 'left') {
             if (_this.props.isCheckmarkVariant) {
               // eslint-disable-next-line fp/no-mutating-methods
-              classnames.push('slds-icon_selected');
+              classnames$1.push('slds-icon_selected');
               iconProps = {
                 category: 'utility',
                 name: 'check'
@@ -18193,15 +18193,15 @@
             } // eslint-disable-next-line fp/no-mutating-methods
 
 
-            classnames.push('slds-m-right_x-small');
+            classnames$1.push('slds-m-right_x-small');
           } else {
             // eslint-disable-next-line fp/no-mutating-methods
-            classnames.push('slds-m-left_small');
+            classnames$1.push('slds-m-left_small');
           }
 
           if (iconProps) {
             return /*#__PURE__*/React__default["default"].createElement(Icon$1, _extends$H({
-              className: classNames$1(classnames),
+              className: classnames(classnames$1),
               position: position,
               size: "x-small"
             }, iconProps));
@@ -18213,7 +18213,7 @@
         _defineProperty$1u(_assertThisInitialized$1t(_this), "handleClick", function (event) {
           if (_this.props.type !== 'link' || _this.props.href === 'javascript:void(0);' || // eslint-disable-line no-script-url
           _this.props.href === '#') {
-            EventUtil$1.trapImmediate(event);
+            EventUtil$3.trapImmediate(event);
           }
 
           if (_this.props.onSelect) {
@@ -18222,7 +18222,7 @@
         });
 
         _defineProperty$1u(_assertThisInitialized$1t(_this), "handleMouseDown", function (event) {
-          EventUtil$1.trapImmediate(event);
+          EventUtil$3.trapImmediate(event);
         });
 
         return _this;
@@ -18235,7 +18235,7 @@
             case 'header':
               {
                 return /*#__PURE__*/React__default["default"].createElement("li", {
-                  className: classNames$1('slds-dropdown__header', {
+                  className: classnames('slds-dropdown__header', {
                     'slds-has-divider_top-space': this.props.divider === 'top',
                     'slds-has-divider_bottom-space': this.props.divider === 'bottom'
                   }, this.props.className),
@@ -18247,7 +18247,7 @@
             case 'divider':
               {
                 return /*#__PURE__*/React__default["default"].createElement("li", {
-                  className: classNames$1('slds-has-divider', this.props.className),
+                  className: classnames('slds-has-divider', this.props.className),
                   onMouseDown: this.handleMouseDown,
                   role: "separator"
                 });
@@ -18289,7 +18289,7 @@
                   // disabled eslint, but using aria-selected on presentation role seems suspicious...
                   React__default["default"].createElement("li", {
                     "aria-selected": this.props.checkmark === null ? this.props.isSelected : null,
-                    className: classNames$1('slds-dropdown__item', {
+                    className: classnames('slds-dropdown__item', {
                       'slds-is-selected': this.props.isSelected
                     }, this.props.className),
                     id: this.props.id,
@@ -18526,7 +18526,7 @@
 
           list = /*#__PURE__*/React__default["default"].createElement("ul", {
             "aria-labelledby": this.props.triggerId,
-            className: classNames$1('dropdown__list', lengthClassName, this.props.className),
+            className: classnames('dropdown__list', lengthClassName, this.props.className),
             role: "menu"
           }, this.props.options.map(function (option, index) {
             var id = _this.props.getListItemId(index);
@@ -18883,7 +18883,7 @@
 
             /* eslint-disable jsx-a11y/no-static-element-interactions */
             React__default["default"].createElement("div", {
-              className: classNames$1("slds-dropdown-trigger slds-dropdown-trigger_".concat(openOn), {
+              className: classnames("slds-dropdown-trigger slds-dropdown-trigger_".concat(openOn), {
                 'slds-is-open': isOpen
               }, triggerClassName),
               id: id,
@@ -19323,9 +19323,9 @@
         ch = null;
       }
 
-      var openMenuKeys = keyCode === KEYS.ENTER || keyCode === KEYS.SPACE || keyCode === KEYS.UP;
+      var openMenuKeys = keyCode === KEYS$1.ENTER || keyCode === KEYS$1.SPACE || keyCode === KEYS$1.UP;
 
-      if (keyCode === KEYS.ESCAPE) {
+      if (keyCode === KEYS$1.ESCAPE) {
         if (isOpen) toggleOpen();
       } else if (!isOpen) {
         var _indexes = _slicedToArray$4(indexes, 1);
@@ -19340,12 +19340,12 @@
         ReactDOM__default["default"].findDOMNode(componentContext.trigger) === target) {
           componentContext.handleClick(event);
         }
-      } else if (keyCode === KEYS.ENTER || keyCode === KEYS.SPACE) {
+      } else if (keyCode === KEYS$1.ENTER || keyCode === KEYS$1.SPACE) {
         onSelect(currentFocusedIndex);
       } else {
         var navigableIndex = indexes.indexOf(currentFocusedIndex);
 
-        if (keyCode === KEYS.DOWN) {
+        if (keyCode === KEYS$1.DOWN) {
           if (navigableIndex < lastIndex) {
             var newNavigableIndex = navigableIndex + 1;
             focusedIndex = indexes[newNavigableIndex];
@@ -19354,7 +19354,7 @@
 
             focusedIndex = _indexes2[0];
           }
-        } else if (keyCode === KEYS.UP) {
+        } else if (keyCode === KEYS$1.UP) {
           if (navigableIndex > 0) {
             var _newNavigableIndex = navigableIndex - 1;
 
@@ -19649,7 +19649,7 @@
       'bottom left': 'top left',
       'bottom right': 'top right'
     };
-    var propTypes$1u = {
+    var propTypes$1w = {
       /**
        * Aligns the menu center, right, or left respective to the trigger. This is not intended for use with `nubbinPosition`.
        */
@@ -20237,10 +20237,10 @@
 
         _defineProperty$1r(_assertThisInitialized$1q(_this), "handleKeyDown", function (event) {
           if (event.keyCode) {
-            if (event.keyCode === KEYS.TAB) {
+            if (event.keyCode === KEYS$1.TAB) {
               _this.handleCancel();
-            } else if (event.keyCode === KEYS.ENTER || event.keyCode === KEYS.SPACE || event.keyCode === KEYS.DOWN || event.keyCode === KEYS.UP || event.keyCode === KEYS.ESCAPE) {
-              EventUtil$1.trap(event);
+            } else if (event.keyCode === KEYS$1.ENTER || event.keyCode === KEYS$1.SPACE || event.keyCode === KEYS$1.DOWN || event.keyCode === KEYS$1.UP || event.keyCode === KEYS$1.ESCAPE) {
+              EventUtil$3.trap(event);
 
               var isOpen = _this.getIsOpen();
 
@@ -20420,7 +20420,7 @@
           }
 
           var positions = DropdownToDialogNubbinMapping[align].split(' ');
-          positionClassName = classNames$1(positions.map(function (position) {
+          positionClassName = classnames(positions.map(function (position) {
             return "slds-dropdown_".concat(position);
           })); // FOR BACKWARDS COMPATIBILITY
 
@@ -20434,9 +20434,9 @@
 
           return isOpen ? /*#__PURE__*/React__default["default"].createElement(Dialog$1, {
             align: align,
-            className: classNames$1(_this.props.containerClassName),
+            className: classnames(_this.props.containerClassName),
             closeOnTabKey: true,
-            contentsClassName: classNames$1('slds-dropdown', "slds-dropdown_".concat(_this.props.width), 'slds-text-align_left', 'ignore-react-onclickoutside', _this.props.className, positionClassName, {
+            contentsClassName: classnames('slds-dropdown', "slds-dropdown_".concat(_this.props.width), 'slds-text-align_left', 'ignore-react-onclickoutside', _this.props.className, positionClassName, {
               'slds-dropdown_inverse': _this.props.inverse
             }),
             context: _this.context,
@@ -20545,7 +20545,7 @@
           return /*#__PURE__*/React__default["default"].createElement(CurrentTrigger, _extends$E({
             "aria-haspopup": true,
             assistiveText: this.props.assistiveText,
-            className: classNames$1(outsideClickIgnoreClass, this.props.buttonClassName),
+            className: classnames(outsideClickIgnoreClass, this.props.buttonClassName),
             disabled: this.props.disabled,
             hint: this.props.hint,
             iconCategory: this.props.iconCategory,
@@ -20583,7 +20583,7 @@
     _defineProperty$1r(MenuDropdown, "displayName", MENU_DROPDOWN);
 
     MenuDropdown.contextType = IconSettingsContext;
-    MenuDropdown.propTypes = propTypes$1u;
+    MenuDropdown.propTypes = propTypes$1w;
     MenuDropdown.defaultProps = defaultProps$18;
     var MenuDropdown$1 = MenuDropdown;
 
@@ -20642,7 +20642,7 @@
 
       return obj;
     }
-    var propTypes$1t = {
+    var propTypes$1v = {
       /**
        * **Assistive text for accessibility.**
        * This object is merged with the default props object on every render.
@@ -20722,11 +20722,11 @@
     };
 
     Breadcrumb.displayName = BREADCRUMB;
-    Breadcrumb.propTypes = propTypes$1t;
+    Breadcrumb.propTypes = propTypes$1v;
     Breadcrumb.defaultProps = defaultProps$17;
     var Breadcrumb$1 = Breadcrumb;
 
-    var propTypes$1s = {
+    var propTypes$1u = {
       /**
        * Provide children of the types `<BuilderHeaderNavLink />` or `<BuilderHeaderNavDropdown />` to define the structure of the utilities section.
        * ```
@@ -20759,7 +20759,7 @@
     };
 
     BuilderHeaderUtilities.displayName = BUILDER_HEADER_UTILITIES;
-    BuilderHeaderUtilities.propTypes = propTypes$1s;
+    BuilderHeaderUtilities.propTypes = propTypes$1u;
     var BuilderHeaderUtilities$1 = BuilderHeaderUtilities;
 
     function ownKeys$E(object, enumerableOnly) {
@@ -20814,7 +20814,7 @@
 
       return obj;
     }
-    var propTypes$1r = {
+    var propTypes$1t = {
       /**
        * **Assistive text for accessibility**
        * This object is merged with the default props object on every render.
@@ -20866,7 +20866,7 @@
       return /*#__PURE__*/React__default["default"].createElement("a", {
         className: "slds-builder-header__item-action slds-media slds-media_center",
         href: "#",
-        onClick: EventUtil$1.trappedHandler(props.onClick)
+        onClick: EventUtil$3.trappedHandler(props.onClick)
       }, /*#__PURE__*/React__default["default"].createElement("span", {
         className: "slds-media__figure"
       }, /*#__PURE__*/React__default["default"].createElement(Icon$1, {
@@ -20887,7 +20887,7 @@
     };
 
     BuilderHeaderNavLink.displayName = BUILDER_HEADER_NAV_LINK;
-    BuilderHeaderNavLink.propTypes = propTypes$1r;
+    BuilderHeaderNavLink.propTypes = propTypes$1t;
     var BuilderHeaderNavLink$1 = BuilderHeaderNavLink;
 
     function ownKeys$D(object, enumerableOnly) {
@@ -20942,7 +20942,7 @@
 
       return obj;
     }
-    var propTypes$1q = {
+    var propTypes$1s = {
       /**
        * **Assistive text for accessibility**
        * This object is merged with the default props object on every render.
@@ -21062,7 +21062,7 @@
         iconCategory: "utility",
         iconName: "back",
         label: labels.back,
-        onClick: EventUtil$1.trappedHandler(events.onClickBack)
+        onClick: EventUtil$3.trappedHandler(events.onClickBack)
       }), /*#__PURE__*/React__default["default"].createElement(BuilderHeaderNavLink$1, {
         assistiveText: {
           icon: assistiveText.helpIcon
@@ -21070,7 +21070,7 @@
         iconCategory: "utility",
         iconName: "help",
         label: labels.help,
-        onClick: EventUtil$1.trappedHandler(events.onClickHelp)
+        onClick: EventUtil$3.trappedHandler(events.onClickHelp)
       }));
       var misc = [];
       React__default["default"].Children.forEach(props.children, function (child) {
@@ -21112,7 +21112,7 @@
           height: '100px'
         }
       }, /*#__PURE__*/React__default["default"].createElement("div", {
-        className: classNames$1('slds-builder-header_container', props.className),
+        className: classnames('slds-builder-header_container', props.className),
         style: props.style
       }, /*#__PURE__*/React__default["default"].createElement("header", {
         className: "slds-builder-header"
@@ -21127,7 +21127,7 @@
           label: assistiveText.icon
         },
         category: iconCategory,
-        containerClassName: classNames$1('slds-icon_container', 'slds-icon-utility-builder', 'slds-current-color', props.iconClassName),
+        containerClassName: classnames('slds-icon_container', 'slds-icon-utility-builder', 'slds-current-color', props.iconClassName),
         name: iconName,
         path: iconPath,
         size: "x-small"
@@ -21144,11 +21144,11 @@
     };
 
     BuilderHeader.displayName = BUILDER_HEADER;
-    BuilderHeader.propTypes = propTypes$1q;
+    BuilderHeader.propTypes = propTypes$1s;
     BuilderHeader.defaultProps = defaultProps$15;
     var BuilderHeader$1 = BuilderHeader;
 
-    var propTypes$1p = {
+    var propTypes$1r = {
       /**
        * Provide custom content in place of Page Type label
        * ```
@@ -21177,10 +21177,10 @@
     };
 
     BuilderHeaderMisc.displayName = BUILDER_HEADER_MISC;
-    BuilderHeaderMisc.propTypes = propTypes$1p;
+    BuilderHeaderMisc.propTypes = propTypes$1r;
     var BuilderHeaderMisc$1 = BuilderHeaderMisc;
 
-    var propTypes$1o = {
+    var propTypes$1q = {
       /**
        * Provide children of the types `<BuilderHeaderNavLink />` or `<BuilderHeaderNavDropdown />` to define the structure of the navigation section.
        * ```
@@ -21215,7 +21215,7 @@
     };
 
     BuilderHeaderNav.displayName = BUILDER_HEADER_NAV;
-    BuilderHeaderNav.propTypes = propTypes$1o;
+    BuilderHeaderNav.propTypes = propTypes$1q;
     var BuilderHeaderNav$1 = BuilderHeaderNav;
 
     function _objectWithoutProperties$l(source, excluded) {
@@ -21255,7 +21255,7 @@
     }
     // eslint-disable-next-line react/forbid-foreign-prop-types
 
-    var propTypes$1n = MenuDropdown$1.propTypes;
+    var propTypes$1p = MenuDropdown$1.propTypes;
     /**
      * A dropdown within the navigation section of the header.
      */
@@ -21295,7 +21295,7 @@
     };
 
     BuilderHeaderNavDropdown.displayName = BUILDER_HEADER_NAV_DROPDOWN;
-    BuilderHeaderNavDropdown.propTypes = propTypes$1n;
+    BuilderHeaderNavDropdown.propTypes = propTypes$1p;
     var BuilderHeaderNavDropdown$1 = BuilderHeaderNavDropdown;
 
     function ownKeys$C(object, enumerableOnly) {
@@ -21350,7 +21350,7 @@
 
       return obj;
     }
-    var propTypes$1m = {
+    var propTypes$1o = {
       /**
        * **Assistive text for accessibility**
        * This object is merged with the default props object on every render.
@@ -21410,7 +21410,7 @@
     };
 
     BuilderHeaderToolbar.displayName = BUILDER_HEADER_TOOLBAR;
-    BuilderHeaderToolbar.propTypes = propTypes$1m;
+    BuilderHeaderToolbar.propTypes = propTypes$1o;
     BuilderHeaderToolbar.defaultProps = defaultProps$14;
     var BuilderHeaderToolbar$1 = BuilderHeaderToolbar;
 
@@ -21530,7 +21530,7 @@
       };
       return _getPrototypeOf$1p(o);
     }
-    var propTypes$1l = {
+    var propTypes$1n = {
       /**
        * Children are expected to be components. If last button triggers a dropdown menu, use Dropdown instead of Button. _Tested with snapshot testing._
        */
@@ -21633,19 +21633,19 @@
               return /*#__PURE__*/React__default["default"].cloneElement(child, cloneProps);
             });
             component = /*#__PURE__*/React__default["default"].createElement("div", {
-              className: classNames$1('slds-checkbox_button-group', this.props.className),
+              className: classnames('slds-checkbox_button-group', this.props.className),
               id: this.getId()
             }, children);
           } else if (this.props.variant === 'list') {
             component = /*#__PURE__*/React__default["default"].createElement("ul", {
-              className: classNames$1('slds-button-group-list', this.props.className),
+              className: classnames('slds-button-group-list', this.props.className),
               id: this.getId()
             }, React__default["default"].Children.map(this.props.children, function (child) {
               return /*#__PURE__*/React__default["default"].createElement("li", null, child);
             }));
           } else {
             component = /*#__PURE__*/React__default["default"].createElement("div", {
-              className: classNames$1('slds-button-group', this.props.className),
+              className: classnames('slds-button-group', this.props.className),
               id: this.getId(),
               role: "group"
             }, children);
@@ -21653,7 +21653,7 @@
 
           if (this.props.variant === 'checkbox' || this.props.labels.label) {
             component = /*#__PURE__*/React__default["default"].createElement("fieldset", {
-              className: classNames$1('slds-form-element', {
+              className: classnames('slds-form-element', {
                 'slds-has-error': labels.error
               }, this.props.classNameContainer)
             }, /*#__PURE__*/React__default["default"].createElement("legend", {
@@ -21674,7 +21674,7 @@
     }(React__default["default"].Component);
 
     ButtonGroup.displayName = BUTTON_GROUP;
-    ButtonGroup.propTypes = propTypes$1l;
+    ButtonGroup.propTypes = propTypes$1n;
     ButtonGroup.defaultProps = defaultProps$13;
     var ButtonGroup$1 = ButtonGroup;
 
@@ -21893,7 +21893,7 @@
 
       return obj;
     }
-    var propTypes$1k = {
+    var propTypes$1m = {
       /**
        * Specifies the current state of the button. If set, the button will act as a ['controlled' component](https://facebook.github.io/react/docs/forms.html#controlled-components).
        */
@@ -22056,7 +22056,7 @@
       _createClass$1n(ButtonStateful, [{
         key: "getClassName",
         value: function getClassName(active) {
-          return classNames$1(this.props.className, 'slds-button', {
+          return classnames(this.props.className, 'slds-button', {
             'slds-button_neutral': this.props.variant !== 'icon' && this.props.variant !== 'icon-filled',
             'slds-button_inverse': this.props.variant === 'inverse',
             'slds-not-selected': !active,
@@ -22190,7 +22190,7 @@
     }(React__default["default"].Component);
 
     ButtonStateful.displayName = BUTTON_STATEFUL;
-    ButtonStateful.propTypes = propTypes$1k;
+    ButtonStateful.propTypes = propTypes$1m;
     ButtonStateful.defaultProps = defaultProps$12;
     var ButtonStateful$1 = ButtonStateful;
 
@@ -22353,7 +22353,7 @@
         // ### Prop Types
         function render() {
           return /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1(cssClasses.base, {
+            className: classnames(cssClasses.base, {
               'slds-media_center': this.props.verticalCenter,
               'slds-has-flexi-truncate': this.props.canTruncate
             }, this.props.className)
@@ -22499,10 +22499,10 @@
 
       var hasFilter = props.filter ? true : null;
       return /*#__PURE__*/React__default["default"].createElement("div", {
-        className: classNames$1('slds-card__header', 'slds-grid')
+        className: classnames('slds-card__header', 'slds-grid')
       }, Header, props.filter ? renderFilter(props.filter, props.filterId) : null, /*#__PURE__*/React__default["default"].createElement("div", {
         id: props.headerActionsId,
-        className: classNames$1('slds-no-flex', {
+        className: classnames('slds-no-flex', {
           'slds-size_1-of-3': hasFilter,
           'slds-text-align_right': hasFilter
         })
@@ -22560,7 +22560,7 @@
 
     var CardBody = function CardBody(props) {
       return /*#__PURE__*/React__default["default"].createElement("div", {
-        className: classNames$1('slds-card__body', props.className),
+        className: classnames('slds-card__body', props.className),
         id: props.id
       }, props.children);
     };
@@ -22664,7 +22664,7 @@
 
       return /*#__PURE__*/React__default["default"].createElement("article", {
         id: props.id,
-        className: classNames$1('slds-card', props.className),
+        className: classnames('slds-card', props.className),
         style: props.style
       }, !props.hasNoHeader && /*#__PURE__*/React__default["default"].createElement(Header, {
         header: props.header,
@@ -22851,20 +22851,20 @@
         }, /*#__PURE__*/React__default["default"].createElement(UtilityIcon$1, _extends$C({
           "aria-hidden": true,
           category: category,
-          className: classNames$1('slds-icon slds-icon_x-small slds-icon-text-default'),
+          className: classnames('slds-icon slds-icon_x-small slds-icon-text-default'),
           name: name,
           path: path
         }, rest))),
         base: /*#__PURE__*/React__default["default"].createElement(UtilityIcon$1, _extends$C({
           "aria-hidden": true,
           category: category,
-          className: classNames$1('slds-input__icon slds-icon-text-default', _defineProperty$1j({}, "slds-input__icon_".concat(iconPosition), iconPosition)),
+          className: classnames('slds-input__icon slds-icon-text-default', _defineProperty$1j({}, "slds-input__icon_".concat(iconPosition), iconPosition)),
           name: name,
           path: path
         }, rest))
       };
       return isFunction$1(onClick) ? /*#__PURE__*/React__default["default"].createElement(Button$3, _extends$C({
-        className: classNames$1('slds-input__icon', _defineProperty$1j({}, "slds-input__icon_".concat(iconPosition), iconPosition)),
+        className: classnames('slds-input__icon', _defineProperty$1j({}, "slds-input__icon_".concat(iconPosition), iconPosition)),
         iconCategory: category,
         iconName: name,
         iconPath: path,
@@ -22988,7 +22988,7 @@
       return obj;
     }
 
-    var propTypes$1j = {
+    var propTypes$1l = {
       /**
        * **Assistive text for accessibility.**
        * This object is merged with the default props object on every render.
@@ -23070,7 +23070,7 @@
           size = props.size,
           variant = props.variant;
       var assistiveText = typeof props.assistiveText === 'string' ? props.assistiveText : _objectSpread$z(_objectSpread$z({}, defaultProps$11.assistiveText), props.assistiveText).label;
-      var spinnerClassName = classNames$1('slds-spinner', _defineProperty$1i({
+      var spinnerClassName = classnames('slds-spinner', _defineProperty$1i({
         'slds-spinner_inline': isInline,
         'slds-input__spinner': isInput,
         'slds-spinner_brand': variant === 'brand',
@@ -23090,13 +23090,13 @@
         className: "slds-spinner__dot-b"
       }));
       return hasContainer ? /*#__PURE__*/React__default["default"].createElement("div", {
-        className: classNames$1(containerClassName, 'slds-spinner_container'),
+        className: classnames(containerClassName, 'slds-spinner_container'),
         style: containerStyle
       }, spinner) : spinner;
     };
 
     Spinner.displayName = SPINNER;
-    Spinner.propTypes = propTypes$1j;
+    Spinner.propTypes = propTypes$1l;
     Spinner.defaultProps = defaultProps$11;
     var Spinner$1 = Spinner;
 
@@ -23207,7 +23207,7 @@
       return target;
     }
     var COUNTER$1 = 'counter';
-    var propTypes$1i = {
+    var propTypes$1k = {
       'aria-activedescendant': PropTypes$2.string,
       'aria-autocomplete': PropTypes$2.string,
 
@@ -23427,7 +23427,7 @@
       var assistiveText = _objectSpread$y(_objectSpread$y({}, defaultProps$10.assistiveText), props.assistiveText);
 
       return /*#__PURE__*/React__default["default"].createElement("div", _extends$B({
-        className: classNames$1(containerClassName, {
+        className: classnames(containerClassName, {
           'slds-input-has-icon': props.variant !== COUNTER$1 && (props.iconLeft || props.iconRight),
           'slds-input-has-icon_left': props.iconLeft && !props.iconRight,
           'slds-input-has-icon_right': !props.iconLeft && props.iconRight,
@@ -23439,7 +23439,7 @@
         className: "slds-form-element__addon"
       }, props.fixedTextLeft), !props.isStatic && /*#__PURE__*/React__default["default"].createElement("input", _extends$B({
         autoComplete: props.autoComplete,
-        className: classNames$1('slds-input', {
+        className: classnames('slds-input', {
           'slds-text-align_left': props.variant === COUNTER$1 && props.readOnly
         }, props.className),
         disabled: props.disabled,
@@ -23486,7 +23486,7 @@
       }), props.iconRight && props.iconRight) : props.iconRight && props.iconRight, props.fixedTextRight && /*#__PURE__*/React__default["default"].createElement("span", {
         className: "slds-form-element__addon"
       }, props.fixedTextRight), props.isStatic && /*#__PURE__*/React__default["default"].createElement("span", {
-        className: classNames$1('slds-form-element__static', 'slds-grid', {
+        className: classnames('slds-form-element__static', 'slds-grid', {
           'slds-grid_align-spread': props.variant !== COUNTER$1
         }),
         onClick: props.onClick
@@ -23494,12 +23494,12 @@
     };
 
     InnerInput.displayName = 'SLDSInnerInput';
-    InnerInput.propTypes = propTypes$1i;
+    InnerInput.propTypes = propTypes$1k;
     InnerInput.defaultProps = defaultProps$10;
     var InnerInput$1 = InnerInput;
 
     /* eslint-disable react/jsx-curly-brace-presence */
-    var propTypes$1h = {
+    var propTypes$1j = {
       /*
        * Assistive Text to use instead of a visible label
        */
@@ -23542,7 +23542,7 @@
 
       var subRenders = {
         base: /*#__PURE__*/React__default["default"].createElement("label", {
-          className: classNames$1('slds-form-element__label', {
+          className: classnames('slds-form-element__label', {
             'slds-assistive-text': props.assistiveText && !props.label
           }, props.className),
           htmlFor: props.htmlFor
@@ -23551,14 +23551,14 @@
           title: "required"
         }, '*'), labelText),
         static: /*#__PURE__*/React__default["default"].createElement("span", {
-          className: classNames$1('slds-form-element__label', props.className)
+          className: classnames('slds-form-element__label', props.className)
         }, labelText)
       };
       return labelText ? subRenders[props.variant] : null;
     };
 
     Label$4.displayName = 'Label';
-    Label$4.propTypes = propTypes$1h;
+    Label$4.propTypes = propTypes$1j;
     Label$4.defaultProps = defaultProps$$;
     var Label$5 = Label$4;
 
@@ -23693,7 +23693,7 @@
 
       return obj;
     }
-    var propTypes$1g = {
+    var propTypes$1i = {
       /*
        * Assistive Text object from parent component such as Input, Combobox, etc.
        */
@@ -23730,7 +23730,7 @@
       })) : null;
     };
 
-    FieldLevelHelpTooltip.propTypes = propTypes$1g;
+    FieldLevelHelpTooltip.propTypes = propTypes$1i;
     FieldLevelHelpTooltip.displayName = 'FieldLevelHelpTooltip';
     var FieldLevelHelpTooltip$1 = FieldLevelHelpTooltip;
 
@@ -23980,7 +23980,7 @@
             assistiveText: {
               icon: _this.props.assistiveText[direction.toLowerCase()]
             },
-            className: classNames$1('slds-button_icon-small', "slds-input__button_".concat(direction.toLowerCase())),
+            className: classnames('slds-button_icon-small', "slds-input__button_".concat(direction.toLowerCase())),
             disabled: disabled,
             iconCategory: "utility",
             iconName: direction === DECREMENT ? 'ban' : 'new',
@@ -24162,7 +24162,7 @@
           }
 
           return /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-form-element', {
+            className: classnames('slds-form-element', {
               'slds-has-error': this.props.errorText
             }, this.props.className),
             style: this.props.styleContainer
@@ -24187,7 +24187,7 @@
             "aria-owns": this.props['aria-owns'],
             "aria-required": this.props['aria-required'],
             autoComplete: this.props.autoComplete,
-            className: classNames$1({
+            className: classnames({
               'slds-input_counter': this.props.variant === COUNTER,
               'slds-p-horizontal_none': this.props.variant === COUNTER && this.props.readOnly
             }),
@@ -24850,7 +24850,7 @@
             role: "tablist"
           }, _toConsumableArray$5(Array(props.noOfIndicators).keys()).map(function (index) {
             var isSelectedPanel = index === props.currentIndex;
-            var indicatorActionClassName = classNames$1('slds-carousel__indicator-action', props.className, {
+            var indicatorActionClassName = classnames('slds-carousel__indicator-action', props.className, {
               'slds-is-active': isSelectedPanel
             });
             var assistiveText = "".concat(index);
@@ -25597,7 +25597,7 @@
         _defineProperty$1c(_assertThisInitialized$1k(_this), "handleKeyDown", function (event) {
           var _keyDownCallbacks;
 
-          var keyDownCallbacks = (_keyDownCallbacks = {}, _defineProperty$1c(_keyDownCallbacks, KEYS.LEFT, function () {
+          var keyDownCallbacks = (_keyDownCallbacks = {}, _defineProperty$1c(_keyDownCallbacks, KEYS$1.LEFT, function () {
             if (_this.props.isInfinite || _this.canGoToPrevious()) {
               _this.onPreviousPanelHandler(event);
 
@@ -25609,7 +25609,7 @@
                 _this.stopAutoplay(event);
               }
             }
-          }), _defineProperty$1c(_keyDownCallbacks, KEYS.RIGHT, function () {
+          }), _defineProperty$1c(_keyDownCallbacks, KEYS$1.RIGHT, function () {
             if (_this.props.isInfinite || _this.canGoToNext()) {
               _this.onNextPanelHandler(event);
 
@@ -25624,7 +25624,7 @@
           }), _keyDownCallbacks);
 
           if (keyDownCallbacks[event.keyCode]) {
-            EventUtil$1.trapImmediate(event);
+            EventUtil$3.trapImmediate(event);
             keyDownCallbacks[event.keyCode]();
           }
         });
@@ -25724,7 +25724,7 @@
             marginRight: '44px'
           } : {};
           return /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-carousel', this.props.className),
+            className: classnames('slds-carousel', this.props.className),
             id: id,
             onKeyDown: this.handleKeyDown
           }, /*#__PURE__*/React__default["default"].createElement("div", {
@@ -26129,7 +26129,7 @@
 
       return obj;
     }
-    var propTypes$1f = {
+    var propTypes$1h = {
       /**
        * An HTML ID that is shared with ARIA-supported devices with the
        * `aria-controls` attribute in order to relate the input with
@@ -26387,8 +26387,8 @@
 
         _defineProperty$1b(_assertThisInitialized$1j(_this), "handleKeyDown", function (event) {
           if (event.keyCode) {
-            if (event.keyCode === KEYS.ENTER || event.keyCode === KEYS.SPACE) {
-              EventUtil$1.trapImmediate(event);
+            if (event.keyCode === KEYS$1.ENTER || event.keyCode === KEYS$1.SPACE) {
+              EventUtil$3.trapImmediate(event);
 
               _this.handleChange(event);
             }
@@ -26435,7 +26435,7 @@
 
         _defineProperty$1b(_assertThisInitialized$1j(_this), "renderBaseVariant", function (props, ariaProps, assistiveText, labels) {
           return /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-form-element', {
+            className: classnames('slds-form-element', {
               'is-required': props.required,
               'slds-has-error': props.errorText
             }, props.className)
@@ -26499,7 +26499,7 @@
 
         _defineProperty$1b(_assertThisInitialized$1j(_this), "renderToggleVariant", function (props, ariaProps, assistiveText, labels) {
           return /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-form-element', {
+            className: classnames('slds-form-element', {
               'is-required': props.required,
               'slds-has-error': props.errorText
             }, props.className)
@@ -26558,7 +26558,7 @@
 
         _defineProperty$1b(_assertThisInitialized$1j(_this), "renderVisualPickerVariant", function (props, ariaProps, assistiveText) {
           return /*#__PURE__*/React__default["default"].createElement("span", {
-            className: classNames$1('slds-visual-picker', "slds-visual-picker_".concat(_this.props.size), _this.props.vertical ? 'slds-visual-picker_vertical' : null)
+            className: classnames('slds-visual-picker', "slds-visual-picker_".concat(_this.props.size), _this.props.vertical ? 'slds-visual-picker_vertical' : null)
           }, /*#__PURE__*/React__default["default"].createElement("input", _extends$x({
             disabled: props.disabled
             /* A form element should not have both checked and defaultChecked props. */
@@ -26651,7 +26651,7 @@
     }(React__default["default"].Component);
 
     Checkbox.displayName = CHECKBOX;
-    Checkbox.propTypes = propTypes$1f;
+    Checkbox.propTypes = propTypes$1h;
     Checkbox.defaultProps = defaultProps$X;
     var Checkbox$1 = Checkbox;
 
@@ -26817,7 +26817,7 @@
             className: "slds-color-picker__custom-inputs"
           }, /*#__PURE__*/React__default["default"].createElement(Input$1, {
             "aria-describedby": describedBy,
-            className: classNames$1('slds-color-picker__input-custom-hex', {
+            className: classnames('slds-color-picker__input-custom-hex', {
               'slds-has-error': this.props.color.errors && this.props.color.errors.hex
             }),
             id: "color-picker-input-hex-".concat(this.props.id),
@@ -26827,7 +26827,7 @@
             value: this.props.color.hex
           }), /*#__PURE__*/React__default["default"].createElement(Input$1, {
             "aria-describedby": describedBy,
-            className: classNames$1('slds-color-picker__input-custom-r', {
+            className: classnames('slds-color-picker__input-custom-r', {
               'slds-has-error': this.props.color.errors && this.props.color.errors.red
             }),
             id: "color-picker-input-r-".concat(this.props.id),
@@ -26837,7 +26837,7 @@
             value: String(this.props.color.rgb.red)
           }), /*#__PURE__*/React__default["default"].createElement(Input$1, {
             "aria-describedby": describedBy,
-            className: classNames$1('slds-color-picker__input-custom-g', {
+            className: classnames('slds-color-picker__input-custom-g', {
               'slds-has-error': this.props.color.errors && this.props.color.errors.green
             }),
             id: "color-picker-input-g-".concat(this.props.id),
@@ -26847,7 +26847,7 @@
             value: String(this.props.color.rgb.green)
           }), /*#__PURE__*/React__default["default"].createElement(Input$1, {
             "aria-describedby": describedBy,
-            className: classNames$1('slds-color-picker__input-custom-b', {
+            className: classnames('slds-color-picker__input-custom-b', {
               'slds-has-error': this.props.color.errors && this.props.color.errors.blue
             }),
             id: "color-picker-input-b-".concat(this.props.id),
@@ -27035,7 +27035,7 @@
       };
       return _getPrototypeOf$1h(o);
     }
-    var propTypes$1e = {
+    var propTypes$1g = {
       /**
        * **Assistive text for accessibility**
        * * `label`: This label appears in the legend.
@@ -27163,18 +27163,18 @@
             });
           });
           return /*#__PURE__*/React__default["default"].createElement("fieldset", {
-            className: classNames$1('slds-form-element', {
+            className: classnames('slds-form-element', {
               'slds-has-error': this.labels.error
             })
           }, /*#__PURE__*/React__default["default"].createElement("legend", {
-            className: classNames$1('slds-form-element__legend', 'slds-form-element__label', assistiveText.label ? 'slds-assistive-text' : '')
+            className: classnames('slds-form-element__legend', 'slds-form-element__label', assistiveText.label ? 'slds-assistive-text' : '')
           }, this.props.required ? /*#__PURE__*/React__default["default"].createElement("abbr", {
             className: "slds-required",
             title: "required"
           }, '*', /*#__PURE__*/React__default["default"].createElement("div", {
             className: "slds-assistive-text"
           }, assistiveText.required, ' ')) : null, assistiveText.label ? assistiveText.label : this.labels.label), /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-form-element__control', this.props.className)
+            className: classnames('slds-form-element__control', this.props.className)
           }, this.props.variant === 'button-group' ? /*#__PURE__*/React__default["default"].createElement("div", {
             style: this.props.style,
             className: "slds-radio_button-group"
@@ -27189,7 +27189,7 @@
     }(React__default["default"].Component);
 
     RadioGroup.displayName = RADIO_GROUP;
-    RadioGroup.propTypes = propTypes$1e;
+    RadioGroup.propTypes = propTypes$1g;
     RadioGroup.defaultProps = defaultProps$W;
     var RadioGroup$1 = RadioGroup;
 
@@ -27246,7 +27246,7 @@
 
       return target;
     }
-    var propTypes$1d = {
+    var propTypes$1f = {
       /**
        * **Assistive text for accessibility**
        * * `label`: This label appears in the legend.
@@ -27321,7 +27321,7 @@
     };
 
     RadioButtonGroup.displayName = RADIO_BUTTON_GROUP;
-    RadioButtonGroup.propTypes = propTypes$1d;
+    RadioButtonGroup.propTypes = propTypes$1f;
     RadioButtonGroup.defaultProps = defaultProps$V;
     var RadioButtonGroup$1 = RadioButtonGroup;
 
@@ -27630,7 +27630,7 @@
 
       return obj;
     }
-    var propTypes$1c = {
+    var propTypes$1e = {
       /**
        * **Assistive text for accessibility**
        * This object is merged with the default props object on every render.
@@ -27891,7 +27891,7 @@
           }
 
           return /*#__PURE__*/React__default["default"].createElement("span", {
-            className: classNames$1(this.props.variant === 'visual-picker' ? "slds-visual-picker_".concat(this.props.size) : null, {
+            className: classnames(this.props.variant === 'visual-picker' ? "slds-visual-picker_".concat(this.props.size) : null, {
               'slds-radio': this.props.variant === 'base' || this.props.variant === 'swatch',
               'slds-button slds-radio_button': this.props.variant === 'button-group',
               'slds-visual-picker': this.props.variant === 'visual-picker',
@@ -27921,9 +27921,9 @@
             onKeyPress: function onKeyPress(event) {
               var charCode = event.charCode;
 
-              if (charCode === KEYS.SPACE && _this2.props.checked && _this2.props.deselectable) {
+              if (charCode === KEYS$1.SPACE && _this2.props.checked && _this2.props.deselectable) {
                 _this2.handleChange(event, true);
-              } else if (charCode === KEYS.ENTER && _this2.props.checked && _this2.props.deselectable || !_this2.props.checked) {
+              } else if (charCode === KEYS$1.ENTER && _this2.props.checked && _this2.props.deselectable || !_this2.props.checked) {
                 _this2.handleChange(event);
               }
             },
@@ -27947,7 +27947,7 @@
     }(React__default["default"].Component);
 
     Radio.displayName = RADIO;
-    Radio.propTypes = propTypes$1c;
+    Radio.propTypes = propTypes$1e;
     Radio.defaultProps = defaultProps$U;
     var Radio$1 = Radio;
 
@@ -28523,19 +28523,19 @@
 
       var onSaturationNavigate = _ref2.onSaturationNavigate,
           onValueNavigate = _ref2.onValueNavigate;
-      var keyDownCallbacks = (_keyDownCallbacks = {}, _defineProperty$16(_keyDownCallbacks, KEYS.LEFT, function (multiplier) {
+      var keyDownCallbacks = (_keyDownCallbacks = {}, _defineProperty$16(_keyDownCallbacks, KEYS$1.LEFT, function (multiplier) {
         onSaturationNavigate(event, {
           delta: multiplier * -1
         });
-      }), _defineProperty$16(_keyDownCallbacks, KEYS.RIGHT, function (multiplier) {
+      }), _defineProperty$16(_keyDownCallbacks, KEYS$1.RIGHT, function (multiplier) {
         onSaturationNavigate(event, {
           delta: multiplier
         });
-      }), _defineProperty$16(_keyDownCallbacks, KEYS.UP, function (multiplier) {
+      }), _defineProperty$16(_keyDownCallbacks, KEYS$1.UP, function (multiplier) {
         onValueNavigate(event, {
           delta: multiplier
         });
-      }), _defineProperty$16(_keyDownCallbacks, KEYS.DOWN, function (multiplier) {
+      }), _defineProperty$16(_keyDownCallbacks, KEYS$1.DOWN, function (multiplier) {
         onValueNavigate(event, {
           delta: multiplier * -1
         });
@@ -31814,27 +31814,27 @@
         _defineProperty$13(_assertThisInitialized$1c(_this), "handleKeyDown", function (event, props) {
           var _keyDownCallbacks;
 
-          var keyDownCallbacks = (_keyDownCallbacks = {}, _defineProperty$13(_keyDownCallbacks, KEYS.RIGHT, function () {
+          var keyDownCallbacks = (_keyDownCallbacks = {}, _defineProperty$13(_keyDownCallbacks, KEYS$1.RIGHT, function () {
             if (props.direction === DIRECTIONS.RTL) {
               _this.selectNextColor(event, props);
             } else {
               _this.selectPreviousColor(event, props);
             }
-          }), _defineProperty$13(_keyDownCallbacks, KEYS.DOWN, function () {
+          }), _defineProperty$13(_keyDownCallbacks, KEYS$1.DOWN, function () {
             _this.selectPreviousColor(event, props);
-          }), _defineProperty$13(_keyDownCallbacks, KEYS.LEFT, function () {
+          }), _defineProperty$13(_keyDownCallbacks, KEYS$1.LEFT, function () {
             if (props.direction === DIRECTIONS.RTL) {
               _this.selectPreviousColor(event, props);
             } else {
               _this.selectNextColor(event, props);
             }
-          }), _defineProperty$13(_keyDownCallbacks, KEYS.UP, function () {
+          }), _defineProperty$13(_keyDownCallbacks, KEYS$1.UP, function () {
             _this.selectNextColor(event, props);
           }), _keyDownCallbacks);
 
           if (event.keyCode) {
             if (keyDownCallbacks[event.keyCode]) {
-              EventUtil$1.trapEvent(event);
+              EventUtil$3.trapEvent(event);
               keyDownCallbacks[event.keyCode]();
             }
           }
@@ -31892,7 +31892,7 @@
           variant = _ref.variant;
       return /*#__PURE__*/React__default["default"].createElement("ul", {
         id: "".concat(id, "-slds-tabs__nav"),
-        className: classNames$1(className, {
+        className: classnames(className, {
           'slds-tabs_default__nav': variant === 'default',
           'slds-tabs_scoped__nav': variant === 'scoped',
           'slds-vertical-tabs__nav': variant === 'vertical'
@@ -32133,12 +32133,12 @@
           }
 
           return /*#__PURE__*/React__default["default"].createElement("li", {
-            className: classNames$1(className, (_classNames = {}, _defineProperty$12(_classNames, activeTabClassName, selected), _defineProperty$12(_classNames, disabledTabClassName, disabled), _defineProperty$12(_classNames, 'slds-tabs_default__item', variant === 'default'), _defineProperty$12(_classNames, 'slds-tabs_scoped__item', variant === 'scoped'), _defineProperty$12(_classNames, 'slds-vertical-tabs__nav-item', variant === 'vertical'), _classNames)),
+            className: classnames(className, (_classNames = {}, _defineProperty$12(_classNames, activeTabClassName, selected), _defineProperty$12(_classNames, disabledTabClassName, disabled), _defineProperty$12(_classNames, 'slds-tabs_default__item', variant === 'default'), _defineProperty$12(_classNames, 'slds-tabs_scoped__item', variant === 'scoped'), _defineProperty$12(_classNames, 'slds-vertical-tabs__nav-item', variant === 'vertical'), _classNames)),
             role: "presentation",
             id: id,
             title: typeof children === 'string' ? children : null
           }, /*#__PURE__*/React__default["default"].createElement("a", {
-            className: classNames$1((_classNames2 = {}, _defineProperty$12(_classNames2, activeTabClassName, selected), _defineProperty$12(_classNames2, disabledTabClassName, disabled), _defineProperty$12(_classNames2, 'slds-tabs_default__link', variant === 'default'), _defineProperty$12(_classNames2, 'slds-tabs_scoped__link', variant === 'scoped'), _defineProperty$12(_classNames2, 'slds-vertical-tabs__link', variant === 'vertical'), _classNames2)),
+            className: classnames((_classNames2 = {}, _defineProperty$12(_classNames2, activeTabClassName, selected), _defineProperty$12(_classNames2, disabledTabClassName, disabled), _defineProperty$12(_classNames2, 'slds-tabs_default__link', variant === 'default'), _defineProperty$12(_classNames2, 'slds-tabs_scoped__link', variant === 'scoped'), _defineProperty$12(_classNames2, 'slds-vertical-tabs__link', variant === 'vertical'), _classNames2)),
             href: "#",
             role: "tab",
             ref: function ref(node) {
@@ -32152,7 +32152,7 @@
               return event.preventDefault();
             }
           }, children, hasError && /*#__PURE__*/React__default["default"].createElement("span", {
-            className: classNames$1({
+            className: classnames({
               'slds-tabs__right-icon': variant !== 'vertical',
               'slds-vertical-tabs__right-icon': variant === 'vertical'
             })
@@ -32305,7 +32305,7 @@
 
       return /*#__PURE__*/React__default["default"].createElement("div", {
         "aria-labelledby": tabId,
-        className: classNames$1(className, {
+        className: classnames(className, {
           'slds-show': selected,
           'slds-hide': !selected,
           'slds-tabs_default__content': variant === 'default',
@@ -32527,7 +32527,7 @@
 
 
     var displayName$r = TABS;
-    var propTypes$1b = {
+    var propTypes$1d = {
       /**
        * HTML `id` attribute of primary element that has `.slds-tabs_default` on it. Optional: If one is not supplied, a `shortid` will be created.
        */
@@ -32638,11 +32638,11 @@
 
             var preventDefault = false;
 
-            if (event.keyCode === KEYS.LEFT || event.keyCode === KEYS.UP) {
+            if (event.keyCode === KEYS$1.LEFT || event.keyCode === KEYS$1.UP) {
               // Select next tab to the left
               index = _this.getPrevTab(index);
               preventDefault = true;
-            } else if (event.keyCode === KEYS.RIGHT || event.keyCode === KEYS.DOWN) {
+            } else if (event.keyCode === KEYS$1.RIGHT || event.keyCode === KEYS$1.DOWN) {
               // Select next tab to the right
               index = _this.getNextTab(index);
               preventDefault = true;
@@ -32650,7 +32650,7 @@
 
 
             if (preventDefault) {
-              EventUtil$1.trap(event);
+              EventUtil$3.trap(event);
             }
 
             _this.setSelected(index, true);
@@ -32896,7 +32896,7 @@
             /* eslint-disable jsx-a11y/no-static-element-interactions */
             React__default["default"].createElement("div", {
               id: id,
-              className: classNames$1({
+              className: classnames({
                 'slds-tabs_default': variant === 'default',
                 'slds-tabs_scoped': variant === 'scoped',
                 'slds-vertical-tabs': variant === 'vertical'
@@ -32916,7 +32916,7 @@
     }(React__default["default"].Component);
 
     Tabs.displayName = displayName$r;
-    Tabs.propTypes = propTypes$1b;
+    Tabs.propTypes = propTypes$1d;
     Tabs.defaultProps = defaultProps$T;
     var Tabs$1 = Tabs;
 
@@ -33065,14 +33065,14 @@
           toggleOpen = _ref2.toggleOpen;
 
       switch (keyCode) {
-        case KEYS.ESCAPE:
+        case KEYS$1.ESCAPE:
           if (isOpen) {
             toggleOpen();
           }
 
           break;
 
-        case KEYS.ENTER:
+        case KEYS$1.ENTER:
           if (!isOpen) {
             internalHandleClick({
               trigger: trigger,
@@ -33462,7 +33462,7 @@
 
         _defineProperty$10(_assertThisInitialized$19(_this), "handleKeyDown", function (event) {
           if (event.keyCode) {
-            if (event.keyCode !== KEYS.TAB) {
+            if (event.keyCode !== KEYS$1.TAB) {
               var isOpen = _this.getIsOpen();
 
               keyboardNavigableDialog({
@@ -33533,12 +33533,12 @@
           };
           var headerVariants = {
             base: /*#__PURE__*/React__default["default"].createElement("header", {
-              className: classNames$1('slds-popover__header', {
+              className: classnames('slds-popover__header', {
                 'slds-p-vertical_medium': props.variant === 'walkthrough'
               })
             }, /*#__PURE__*/React__default["default"].createElement("h2", {
               id: _this.props.ariaLabelledby || "".concat(_this.getId(), "-dialog-heading"),
-              className: classNames$1({
+              className: classnames({
                 'slds-text-heading_small': props.variant !== 'walkthrough',
                 'slds-text-heading_medium': props.variant === 'walkthrough'
               })
@@ -33567,11 +33567,11 @@
           if (props.variant === 'error' || props.variant === 'warning') {
             body = /*#__PURE__*/React__default["default"].createElement("div", {
               id: "".concat(_this.getId(), "-dialog-body"),
-              className: classNames$1('slds-popover__body', _this.props.classNameBody)
+              className: classnames('slds-popover__body', _this.props.classNameBody)
             }, props.body);
           } else if (props.variant === 'walkthrough-action' || props.variant === 'feature') {
             body = /*#__PURE__*/React__default["default"].createElement("div", {
-              className: classNames$1('slds-popover__body', _this.props.classNameBody),
+              className: classnames('slds-popover__body', _this.props.classNameBody),
               id: "".concat(_this.getId(), "-dialog-body")
             }, /*#__PURE__*/React__default["default"].createElement("div", {
               className: "slds-media"
@@ -33596,7 +33596,7 @@
             // DEFAULT - NOT SCROLLABLE
             React__default["default"].createElement("div", {
               id: "".concat(_this.getId(), "-dialog-body"),
-              className: classNames$1('slds-popover__body', _this.props.classNameBody)
+              className: classnames('slds-popover__body', _this.props.classNameBody)
             }, props.body);
           } // FOOTER SUB-RENDERS
 
@@ -33605,7 +33605,7 @@
 
           if (props.footer) {
             footer = /*#__PURE__*/React__default["default"].createElement("footer", {
-              className: classNames$1('slds-popover__footer', _this.props.classNameFooter, _this.props.footerClassName),
+              className: classnames('slds-popover__footer', _this.props.classNameFooter, _this.props.footerClassName),
               style: _this.props.footerStyle
             }, _this.props.footer);
           } else if (props.variant !== 'walkthrough-action' && (props.footerWalkthroughActions || props.stepText)) {
@@ -33627,7 +33627,7 @@
           return isOpen ? /*#__PURE__*/React__default["default"].createElement(Dialog$1, {
             hasNubbin: !_this.props.hasNoNubbin,
             align: props.align,
-            contentsClassName: classNames$1(_this.props.contentsClassName, 'ignore-react-onclickoutside', 'slds-popover', {
+            contentsClassName: classnames(_this.props.contentsClassName, 'ignore-react-onclickoutside', 'slds-popover', {
               'slds-popover_error': props.variant === 'error'
             }, {
               'slds-popover_walkthrough': props.variant === 'walkthrough' || props.variant === 'walkthrough-action' || props.variant === 'feature'
@@ -33666,7 +33666,7 @@
             },
             iconCategory: "utility",
             iconName: "close",
-            className: classNames$1('slds-button slds-button_icon-small slds-float_right slds-popover__close slds-button_icon', {
+            className: classnames('slds-button slds-button_icon-small slds-float_right slds-popover__close slds-button_icon', {
               'slds-button_icon-inverse': props.variant === 'walkthrough' || props.variant === 'walkthrough-action' || props.variant === 'feature'
             }),
             onClick: _this.handleCancel,
@@ -34076,7 +34076,7 @@
 
       return obj;
     }
-    var propTypes$1a = {
+    var propTypes$1c = {
       /**
        * **Assistive text for accessibility**
        * * `label`: Visually hidden label but read out loud by screen readers.
@@ -34454,7 +34454,7 @@
           var labels = _ref5.labels;
           return this.props.hideInput ? null : /*#__PURE__*/React__default["default"].createElement(Input$1, {
             "aria-describedby": !this.state.isOpen && this.state.colorErrorMessage ? "color-picker-summary-error-".concat(this.generatedId) : undefined,
-            className: classNames$1('slds-color-picker__summary-input', 'slds-align-top', {
+            className: classnames('slds-color-picker__summary-input', 'slds-align-top', {
               'slds-has-error': !!this.state.colorErrorMessage
             }),
             disabled: this.props.disabled,
@@ -34536,7 +34536,7 @@
             ariaLabelledby: "color-picker-label-".concat(this.generatedId),
             align: "bottom left",
             body: popoverBody,
-            className: classNames$1('slds-color-picker__selector', this.props.classNameMenu),
+            className: classnames('slds-color-picker__selector', this.props.classNameMenu),
             footer: popoverFooter,
             hasNoCloseButton: true,
             hasNoNubbin: true,
@@ -34623,14 +34623,14 @@
 
           var labels = lodash_assign({}, defaultProps$R.labels, this.props.labels);
           return /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-color-picker', this.props.className),
+            className: classnames('slds-color-picker', this.props.className),
             ref: function ref(node) {
               _this5.wrapper = node;
             }
           }, /*#__PURE__*/React__default["default"].createElement("div", {
             className: "slds-color-picker__summary"
           }, /*#__PURE__*/React__default["default"].createElement("label", {
-            className: classNames$1('slds-color-picker__summary-label', this.props.assistiveText.label ? 'slds-assistive-text' : ''),
+            className: classnames('slds-color-picker__summary-label', this.props.assistiveText.label ? 'slds-assistive-text' : ''),
             htmlFor: !this.props.hideInput ? "color-picker-summary-input-".concat(this.generatedId) : undefined,
             id: "color-picker-label-".concat(this.generatedId)
           }, this.props.assistiveText.label ? this.props.assistiveText.label : labels.label), this.getPopover({
@@ -34649,7 +34649,7 @@
 
     _defineProperty$$(ColorPicker, "displayName", COLOR_PICKER);
 
-    _defineProperty$$(ColorPicker, "propTypes", propTypes$1a);
+    _defineProperty$$(ColorPicker, "propTypes", propTypes$1c);
 
     _defineProperty$$(ColorPicker, "defaultProps", defaultProps$R);
 
@@ -39866,7 +39866,7 @@
 
       return _extends$u.apply(this, arguments);
     }
-    var propTypes$19 = {
+    var propTypes$1b = {
       /*
        * Active descendant in menu
        */
@@ -40010,7 +40010,7 @@
             role: "separator",
             key: "menu-separator-".concat(optionData.id)
           }, /*#__PURE__*/React__default["default"].createElement("span", {
-            className: classNames$1('slds-listbox__option-header', props.classNameMenuSubHeader)
+            className: classnames('slds-listbox__option-header', props.classNameMenuSubHeader)
           }, optionData.label)) : /*#__PURE__*/React__default["default"].createElement("li", {
             className: "slds-has-divider_top-space",
             role: "separator",
@@ -40031,7 +40031,7 @@
             },
             "aria-selected": active,
             id: "".concat(props.inputId, "-listbox-option-").concat(optionData.id),
-            className: classNames$1('slds-media slds-listbox__option', 'slds-listbox__option_entity slds-listbox__option_term', {
+            className: classnames('slds-media slds-listbox__option', 'slds-listbox__option_entity slds-listbox__option_term', {
               'slds-has-focus': active
             }),
             role: "option"
@@ -40055,7 +40055,7 @@
               });
             },
             id: "".concat(props.inputId, "-listbox-option-").concat(optionData.id),
-            className: classNames$1('slds-media slds-listbox__option', 'slds-listbox__option_entity slds-listbox__option_term', {
+            className: classnames('slds-media slds-listbox__option', 'slds-listbox__option_entity slds-listbox__option_term', {
               'slds-has-focus': active
             }),
             role: "option"
@@ -40086,7 +40086,7 @@
           }, disabledProps, {
             id: "".concat(props.inputId, "-listbox-option-").concat(optionData.id),
             key: "menu-subtitle-".concat(optionData.id),
-            className: classNames$1('slds-media slds-listbox__option', 'slds-listbox__option_entity slds-listbox__option_has-meta', {
+            className: classnames('slds-media slds-listbox__option', 'slds-listbox__option_entity slds-listbox__option_has-meta', {
               'slds-has-focus': active
             }),
             onClick: optionData.disabled ? null : function (event) {
@@ -40104,12 +40104,12 @@
           }) : /*#__PURE__*/React__default["default"].createElement("span", {
             className: "slds-media__body"
           }, /*#__PURE__*/React__default["default"].createElement("span", {
-            className: classNames$1('slds-listbox__option-text', 'slds-listbox__option-text_entity', {
+            className: classnames('slds-listbox__option-text', 'slds-listbox__option-text_entity', {
               'slds-disabled-text': optionData.disabled
             }),
             title: optionData.label
           }, setBold(optionData.label, props.inputValue)), /*#__PURE__*/React__default["default"].createElement("span", {
-            className: classNames$1('slds-listbox__option-meta slds-listbox__option-meta_entity', {
+            className: classnames('slds-listbox__option-meta slds-listbox__option-meta_entity', {
               'slds-disabled-text': optionData.disabled
             }),
             title: optionData.subTitle
@@ -40120,7 +40120,7 @@
           }, disabledProps, {
             id: "".concat(props.inputId, "-listbox-option-").concat(optionData.id),
             key: "menu-checkbox-".concat(optionData.id),
-            className: classNames$1('slds-media slds-listbox__option', ' slds-listbox__option_plain slds-media_small slds-media_center', {
+            className: classnames('slds-media slds-listbox__option', ' slds-listbox__option_plain slds-media_small slds-media_center', {
               'slds-has-focus': active,
               'slds-is-selected': selected
             }),
@@ -40145,7 +40145,7 @@
             selected: selected,
             option: optionData
           }) : /*#__PURE__*/React__default["default"].createElement("span", {
-            className: classNames$1('slds-truncate', {
+            className: classnames('slds-truncate', {
               'slds-disabled-text': optionData.disabled
             }),
             title: optionData.label
@@ -40189,7 +40189,7 @@
         }, item);
       });
       return /*#__PURE__*/React__default["default"].createElement("ul", {
-        className: classNames$1('slds-listbox slds-listbox_vertical slds-dropdown slds-dropdown_fluid', {
+        className: classnames('slds-listbox slds-listbox_vertical slds-dropdown slds-dropdown_fluid', {
           'slds-dropdown_length-with-icon-5': props.itemVisibleLength === 5,
           'slds-dropdown_length-with-icon-7': props.itemVisibleLength === 7,
           'slds-dropdown_length-with-icon-10': props.itemVisibleLength === 10
@@ -40223,12 +40223,12 @@
     };
 
     Menu$2.displayName = 'Menu';
-    Menu$2.propTypes = propTypes$19;
+    Menu$2.propTypes = propTypes$1b;
     Menu$2.defaultProps = defaultProps$Q;
     var Menu$3 = Menu$2;
 
     /* eslint-disable react/jsx-curly-brace-presence */
-    var propTypes$18 = {
+    var propTypes$1a = {
       /*
        * Assistive Text to use instead of a visible label
        */
@@ -40266,7 +40266,7 @@
 
       var subRenders = {
         base: /*#__PURE__*/React__default["default"].createElement("label", {
-          className: classNames$1('slds-form-element__label', {
+          className: classnames('slds-form-element__label', {
             'slds-assistive-text': props.assistiveText && !props.label
           }),
           htmlFor: props.htmlFor
@@ -40282,7 +40282,7 @@
     };
 
     Label$2.displayName = 'Label';
-    Label$2.propTypes = propTypes$18;
+    Label$2.propTypes = propTypes$1a;
     Label$2.defaultProps = defaultProps$P;
     var Label$3 = Label$2;
 
@@ -40304,20 +40304,20 @@
 
       if (event.shiftKey && event.keyCode && shiftCallbacks[event.keyCode]) {
         if (stopPropagation) {
-          EventUtil$1.trapEvent(event);
+          EventUtil$3.trapEvent(event);
         }
 
         shiftCallbacks[event.keyCode].callback(event, shiftCallbacks[event.keyCode].data);
       } else if (event.keyCode && callbacks[event.keyCode]) {
         if (stopPropagation) {
-          EventUtil$1.trapEvent(event);
+          EventUtil$3.trapEvent(event);
         }
 
         callbacks[event.keyCode].callback(event, callbacks[event.keyCode].data);
       } else if (event.keyCode && callbacks.other) {
         // You will likely NOT want to stop propagation of all key presses!
         if (callbacks.other.stopPropagation) {
-          EventUtil$1.trapEvent(event);
+          EventUtil$3.trapEvent(event);
         }
 
         callbacks.other.callback(event, callbacks.other.data);
@@ -40511,7 +40511,7 @@
 
       return obj;
     }
-    var propTypes$17 = {
+    var propTypes$19 = {
       /**
        * **Assistive text for accessibility**
        * This object is merged with the default props object on every render.
@@ -40665,19 +40665,19 @@
           }
 
           switch (event.keyCode) {
-            case KEYS.ENTER:
+            case KEYS$1.ENTER:
               if (typeof _this.props.onClick === 'function') {
-                EventUtil$1.trap(event);
+                EventUtil$3.trap(event);
 
                 _this.props.onClick();
               }
 
               break;
 
-            case KEYS.BACKSPACE:
-            case KEYS.DELETE:
+            case KEYS$1.BACKSPACE:
+            case KEYS$1.DELETE:
               if (typeof _this.props.onRemove === 'function') {
-                EventUtil$1.trap(event);
+                EventUtil$3.trap(event);
 
                 _this.props.onRemove();
               }
@@ -40803,7 +40803,7 @@
             /* eslint-disable jsx-a11y/no-static-element-interactions */
             React__default["default"].createElement("span", _extends$t({}, this.restProps(), {
               role: role,
-              className: classNames$1('slds-pill', {
+              className: classnames('slds-pill', {
                 'slds-pill_link': this.props.variant === 'link',
                 'slds-has-error': this.props.hasError,
                 'slds-pill_bare': this.props.bare
@@ -40825,7 +40825,7 @@
       labels: {},
       assistiveText: {}
     };
-    Pill$2.propTypes = propTypes$17;
+    Pill$2.propTypes = propTypes$19;
     var SLDSPill = Pill$2;
 
     function ownKeys$m(object, enumerableOnly) {
@@ -40880,7 +40880,7 @@
 
       return obj;
     }
-    var propTypes$16 = {
+    var propTypes$18 = {
       /**
        * Pill is the actively focused pill within a pill container. This will request focus on the DOM node.
        */
@@ -40975,18 +40975,18 @@
           data = _ref.data; // Helper function that takes an object literal of callbacks that are triggered with a key event
 
       mapKeyEventCallbacks$1(event, {
-        callbacks: (_callbacks = {}, _defineProperty$Y(_callbacks, KEYS.BACKSPACE, {
+        callbacks: (_callbacks = {}, _defineProperty$Y(_callbacks, KEYS$1.BACKSPACE, {
           callback: events.onRequestRemove,
           data: data
-        }), _defineProperty$Y(_callbacks, KEYS.DELETE, {
+        }), _defineProperty$Y(_callbacks, KEYS$1.DELETE, {
           callback: events.onRequestRemove,
           data: data
-        }), _defineProperty$Y(_callbacks, KEYS.LEFT, {
+        }), _defineProperty$Y(_callbacks, KEYS$1.LEFT, {
           callback: events.onRequestFocusOnPreviousPill,
           data: _objectSpread$m(_objectSpread$m({}, data), {}, {
             direction: 'previous'
           })
-        }), _defineProperty$Y(_callbacks, KEYS.RIGHT, {
+        }), _defineProperty$Y(_callbacks, KEYS$1.RIGHT, {
           callback: events.onRequestFocusOnNextPill,
           data: _objectSpread$m(_objectSpread$m({}, data), {}, {
             direction: 'next'
@@ -40998,7 +40998,7 @@
     var handleClickRemove = function handleClickRemove(event, _ref2) {
       var events = _ref2.events,
           data = _ref2.data;
-      EventUtil$1.trap(event);
+      EventUtil$3.trap(event);
       events.onRequestRemove(event, data);
     };
 
@@ -41029,7 +41029,7 @@
           }
         },
         onRemove: function onRemove(event) {
-          EventUtil$1.trap(event);
+          EventUtil$3.trap(event);
           handleClickRemove(event, {
             events: props.events,
             data: props.eventData
@@ -41052,7 +41052,7 @@
     };
 
     Pill.displayName = 'Pill';
-    Pill.propTypes = propTypes$16;
+    Pill.propTypes = propTypes$18;
     Pill.defaultProps = defaultProps$O;
     var Pill$1 = Pill;
 
@@ -41115,7 +41115,7 @@
 
       return obj;
     }
-    var propTypes$15 = {
+    var propTypes$17 = {
       /*
        * The option object within the selection prop that should have focus.
        */
@@ -41282,7 +41282,7 @@
     var SelectedListBox = function SelectedListBox(props) {
       return props.selection.length >= props.renderAtSelectionLength ? /*#__PURE__*/React__default["default"].createElement("div", {
         // eslint-disable-line jsx-a11y/role-supports-aria-props
-        className: classNames$1({
+        className: classnames({
           'slds-pill_container': props.isPillContainer
         }, props.className) || undefined,
         id: props.id,
@@ -41296,7 +41296,7 @@
         role: props.containerRole,
         "aria-orientation": props.containerAriaOrientation
       }, /*#__PURE__*/React__default["default"].createElement("ul", {
-        className: classNames$1('slds-listbox', {
+        className: classnames('slds-listbox', {
           'slds-listbox_inline': props.isInline,
           'slds-listbox_horizontal': !props.isInline,
           'slds-p-top_xxx-small': !props.isInline
@@ -41360,7 +41360,7 @@
     };
 
     SelectedListBox.displayName = 'SelectedListBox';
-    SelectedListBox.propTypes = propTypes$15;
+    SelectedListBox.propTypes = propTypes$17;
     SelectedListBox.defaultProps = defaultProps$N;
     var SelectedListBox$1 = SelectedListBox;
 
@@ -41726,7 +41726,7 @@
     }
     var currentOpenDropdown;
     var documentDefined = typeof document !== 'undefined';
-    var propTypes$14 = {
+    var propTypes$16 = {
       /**
        * **Assistive text for accessibility**
        * This object is merged with the default props object on every render.
@@ -42357,23 +42357,23 @@
         _defineProperty$W(_assertThisInitialized$16(_this), "handleKeyDown", function (event) {
           var _callbacks;
 
-          var callbacks = (_callbacks = {}, _defineProperty$W(_callbacks, KEYS.DOWN, {
+          var callbacks = (_callbacks = {}, _defineProperty$W(_callbacks, KEYS$1.DOWN, {
             callback: _this.handleKeyDownDown
-          }), _defineProperty$W(_callbacks, KEYS.ENTER, {
+          }), _defineProperty$W(_callbacks, KEYS$1.ENTER, {
             callback: _this.handleInputSubmit
-          }), _defineProperty$W(_callbacks, KEYS.ESCAPE, {
+          }), _defineProperty$W(_callbacks, KEYS$1.ESCAPE, {
             callback: _this.handleClose
-          }), _defineProperty$W(_callbacks, KEYS.UP, {
+          }), _defineProperty$W(_callbacks, KEYS$1.UP, {
             callback: _this.handleKeyDownUp
           }), _callbacks);
 
           if (_this.props.variant === 'readonly') {
             if (_this.props.selection.length > 2) {
-              callbacks[KEYS.TAB] = {
+              callbacks[KEYS$1.TAB] = {
                 callback: _this.handleKeyDownTab
               };
             } else {
-              callbacks[KEYS.TAB] = undefined;
+              callbacks[KEYS$1.TAB] = undefined;
             }
 
             callbacks.other = {
@@ -42692,7 +42692,7 @@
           }, /*#__PURE__*/React__default["default"].createElement("div", {
             className: "slds-combobox_container"
           }, /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-combobox', 'slds-dropdown-trigger', 'slds-dropdown-trigger_click', 'ignore-react-onclickoutside', {
+            className: classnames('slds-combobox', 'slds-dropdown-trigger', 'slds-dropdown-trigger_click', 'ignore-react-onclickoutside', {
               'slds-is-open': _this.getIsOpen()
             }, {
               'slds-has-error': props.errorText
@@ -42776,7 +42776,7 @@
           return /*#__PURE__*/React__default["default"].createElement("div", {
             className: "slds-form-element__control"
           }, /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-combobox_container', {
+            className: classnames('slds-combobox_container', {
               'slds-has-inline-listbox': props.selection.length
             })
           }, props.selection.length ? /*#__PURE__*/React__default["default"].createElement(SelectedListBox$1, {
@@ -42801,7 +42801,7 @@
             selection: props.selection,
             listboxHasFocus: _this.state.listboxHasFocus
           }) : null, /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-combobox', 'slds-dropdown-trigger', 'slds-dropdown-trigger_click', 'ignore-react-onclickoutside', {
+            className: classnames('slds-combobox', 'slds-dropdown-trigger', 'slds-dropdown-trigger_click', 'ignore-react-onclickoutside', {
               'slds-is-open': _this.getIsOpen()
             }, {
               'slds-has-error': props.errorText
@@ -42867,11 +42867,11 @@
           return /*#__PURE__*/React__default["default"].createElement("div", {
             className: "slds-form-element__control"
           }, /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-combobox_container', {
+            className: classnames('slds-combobox_container', {
               'slds-has-inline-listbox': props.selection.length
             })
           }, /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-combobox', 'slds-dropdown-trigger', 'slds-dropdown-trigger_click', 'ignore-react-onclickoutside', {
+            className: classnames('slds-combobox', 'slds-dropdown-trigger', 'slds-dropdown-trigger_click', 'ignore-react-onclickoutside', {
               'slds-is-open': _this.getIsOpen()
             }, {
               'slds-has-error': props.errorText
@@ -43003,7 +43003,7 @@
           }, /*#__PURE__*/React__default["default"].createElement("div", {
             className: "slds-combobox_container"
           }, /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-combobox', 'slds-dropdown-trigger', 'slds-dropdown-trigger_click', 'ignore-react-onclickoutside', {
+            className: classnames('slds-combobox', 'slds-dropdown-trigger', 'slds-dropdown-trigger_click', 'ignore-react-onclickoutside', {
               'slds-is-open': _this.getIsOpen()
             }, {
               'slds-has-error': props.errorText
@@ -43062,7 +43062,7 @@
           }, /*#__PURE__*/React__default["default"].createElement("div", {
             className: "slds-combobox_container"
           }, /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-combobox', 'slds-dropdown-trigger', 'slds-dropdown-trigger_click', 'ignore-react-onclickoutside', {
+            className: classnames('slds-combobox', 'slds-dropdown-trigger', 'slds-dropdown-trigger_click', 'ignore-react-onclickoutside', {
               'slds-is-open': _this.getIsOpen()
             }, {
               'slds-has-error': props.errorText
@@ -43159,7 +43159,7 @@
             className: "slds-combobox_container"
           }, /*#__PURE__*/React__default["default"].createElement("div", {
             // aria attributes have been moved to the `div` wrapping `input` to comply with ARIA 1.1.
-            className: classNames$1('slds-combobox', 'slds-dropdown-trigger', 'slds-dropdown-trigger_click', 'ignore-react-onclickoutside', {
+            className: classnames('slds-combobox', 'slds-dropdown-trigger', 'slds-dropdown-trigger_click', 'ignore-react-onclickoutside', {
               'slds-is-open': _this.getIsOpen()
             }, {
               'slds-has-error': props.errorText
@@ -43377,7 +43377,7 @@
           };
           var variantExists = subRenders[this.props.variant][multipleOrSingle];
           var mainCombobox = /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-form-element', props.classNameContainer)
+            className: classnames('slds-form-element', props.classNameContainer)
           }, props.entityCombobox ? null : /*#__PURE__*/React__default["default"].createElement(Label$3, {
             assistiveText: this.props.assistiveText,
             htmlFor: this.getId(),
@@ -43410,7 +43410,7 @@
 
     Combobox$1.contextType = IconSettingsContext;
     Combobox$1.displayName = COMBOBOX;
-    Combobox$1.propTypes = propTypes$14;
+    Combobox$1.propTypes = propTypes$16;
     Combobox$1.defaultProps = defaultProps$M;
     var Combobox$2 = Combobox$1;
 
@@ -44556,12 +44556,12 @@
 
       var childText = /*#__PURE__*/React__default["default"].isValidElement(props.children) ? props.children.props.children : props.children;
       var contents = /*#__PURE__*/React__default["default"].createElement("div", {
-        className: classNames$1({
+        className: classnames({
           'slds-truncate': props.fixedLayout
         }),
         title: props.title || childText
       }, props.children);
-      var className = classNames$1(props.className, {
+      var className = classnames(props.className, {
         'slds-has-focus': hasFocus
       });
 
@@ -44977,7 +44977,7 @@
             }
           },
           onKeyDown: function onKeyDown(event) {
-            return event.keyCode === KEYS.ENTER && props.onClick ? props.onClick(event) : undefined;
+            return event.keyCode === KEYS$1.ENTER && props.onClick ? props.onClick(event) : undefined;
           }
         }, passThroughProps), props.children)
       );
@@ -45381,7 +45381,7 @@
       if (Array.isArray(arr)) return arr;
     }
 
-    var propTypes$13 = {
+    var propTypes$15 = {
       assistiveText: PropTypes$2.shape({
         actionsHeader: PropTypes$2.string,
         columnSort: PropTypes$2.string,
@@ -45559,7 +45559,7 @@
         id: "".concat(props.id, "-").concat(property, "-th"),
         "aria-label": labelType === 'string' ? label : undefined,
         "aria-sort": ariaSort,
-        className: classNames$1((_classNames = {
+        className: classnames((_classNames = {
           'slds-is-sortable': sortable,
           'slds-is-sorted': isSorted
         }, _defineProperty$U(_classNames, "slds-is-sorted_".concat(effectiveSortDirection), effectiveSortDirection), _defineProperty$U(_classNames, 'slds-is-sorted_asc', isSorted && !effectiveSortDirection), _classNames)),
@@ -45605,7 +45605,7 @@
 
 
     DataTableHeaderCell.displayName = DATA_TABLE_HEADER_CELL;
-    DataTableHeaderCell.propTypes = propTypes$13;
+    DataTableHeaderCell.propTypes = propTypes$15;
     var HeaderCell = DataTableHeaderCell;
 
     function _extends$q() {
@@ -45627,7 +45627,7 @@
     }
     var InteractiveCheckbox$1 = InteractiveElement(Checkbox$1); // ### Prop Types
 
-    var propTypes$12 = {
+    var propTypes$14 = {
       assistiveText: PropTypes$2.shape({
         actionsHeader: PropTypes$2.string,
         columnSort: PropTypes$2.string,
@@ -45677,7 +45677,7 @@
       };
 
       return /*#__PURE__*/React__default["default"].createElement("th", {
-        className: classNames$1({
+        className: classnames({
           'slds-has-focus': hasFocus
         }),
         ref: function ref(_ref) {
@@ -45760,7 +45760,7 @@
       };
 
       return /*#__PURE__*/React__default["default"].createElement("th", {
-        className: classNames$1('slds-text-align_right', {
+        className: classnames('slds-text-align_right', {
           'slds-has-focus': hasFocus
         }),
         ref: function ref(_ref2) {
@@ -45846,7 +45846,7 @@
       var actionsHeader = getActionsHeader();
       var selectHeader = getSelectHeader();
       return /*#__PURE__*/React__default["default"].createElement("thead", {
-        className: classNames$1({
+        className: classnames({
           'slds-assistive-text': props.isHidden
         })
       }, /*#__PURE__*/React__default["default"].createElement("tr", {
@@ -45875,7 +45875,7 @@
 
 
     DataTableHead.displayName = DATA_TABLE_HEAD;
-    DataTableHead.propTypes = propTypes$12;
+    DataTableHead.propTypes = propTypes$14;
     var DataTableHead$1 = DataTableHead;
 
     function _extends$p() {
@@ -45897,7 +45897,7 @@
     }
     var InteractiveCheckbox = InteractiveElement(Checkbox$1);
     var InteractiveRadio = InteractiveElement(Radio$1);
-    var propTypes$11 = {
+    var propTypes$13 = {
       assistiveText: PropTypes$2.shape({
         actionsHeader: PropTypes$2.string,
         columnSort: PropTypes$2.string,
@@ -45961,7 +45961,7 @@
       }, [isSelected, props.canSelectRows]); // i18n
 
       return /*#__PURE__*/React__default["default"].createElement("tr", _extends$p({}, ariaProps, {
-        className: classNames$1(props.className, {
+        className: classnames(props.className, {
           'slds-hint-parent': props.rowActions,
           'slds-is-selected': props.canSelectRows && isSelected,
           'slds-has-focus': hasFocus
@@ -46041,7 +46041,7 @@
     };
 
     DataTableRow.displayName = DATA_TABLE_ROW;
-    DataTableRow.propTypes = propTypes$11;
+    DataTableRow.propTypes = propTypes$13;
     var DataTableRow$1 = DataTableRow;
 
     function ownKeys$i(object, enumerableOnly) {
@@ -46097,7 +46097,7 @@
       return obj;
     }
     var InteractiveDropdown = InteractiveElement(Dropdown);
-    var propTypes$10 = {
+    var propTypes$12 = {
       /**
        * Description of the menu for screenreaders.
        */
@@ -46161,7 +46161,7 @@
           handleKeyDown = _useContextHelper.handleKeyDown;
 
       var handleClick = function handleClick(e) {
-        EventUtil$1.trap(e);
+        EventUtil$3.trap(e);
       };
 
       var handleSelect = function handleSelect(selection) {
@@ -46198,7 +46198,7 @@
 
         /* eslint-disable jsx-a11y/no-static-element-interactions */
         React__default["default"].createElement("td", {
-          className: classNames$1({
+          className: classnames({
             'slds-has-focus': hasFocus
           }),
           "data-label": "Actions",
@@ -46219,7 +46219,7 @@
       );
     };
 
-    DataTableRowActions.propTypes = propTypes$10;
+    DataTableRowActions.propTypes = propTypes$12;
     DataTableRowActions.defaultProps = defaultProps$L;
     DataTableRowActions.displayName = DATA_TABLE_ROW_ACTIONS;
     var DataTableRowActions$1 = DataTableRowActions;
@@ -47063,31 +47063,31 @@
               _callbacks;
 
           mapKeyEventCallbacks$1(event, {
-            callbacks: (_callbacks = {}, _defineProperty$S(_callbacks, KEYS.UP, {
+            callbacks: (_callbacks = {}, _defineProperty$S(_callbacks, KEYS$1.UP, {
               callback: function callback(evt) {
                 return _this3.handleKeyDownUp(evt);
               }
-            }), _defineProperty$S(_callbacks, KEYS.DOWN, {
+            }), _defineProperty$S(_callbacks, KEYS$1.DOWN, {
               callback: function callback(evt) {
                 return _this3.handleKeyDownDown(evt);
               }
-            }), _defineProperty$S(_callbacks, KEYS.LEFT, {
+            }), _defineProperty$S(_callbacks, KEYS$1.LEFT, {
               callback: function callback(evt) {
                 return _this3.handleKeyDownLeft(evt);
               }
-            }), _defineProperty$S(_callbacks, KEYS.RIGHT, {
+            }), _defineProperty$S(_callbacks, KEYS$1.RIGHT, {
               callback: function callback(evt) {
                 return _this3.handleKeyDownRight(evt);
               }
-            }), _defineProperty$S(_callbacks, KEYS.ENTER, {
+            }), _defineProperty$S(_callbacks, KEYS$1.ENTER, {
               callback: function callback(evt) {
                 return _this3.handleKeyDownEnter(evt);
               }
-            }), _defineProperty$S(_callbacks, KEYS.ESCAPE, {
+            }), _defineProperty$S(_callbacks, KEYS$1.ESCAPE, {
               callback: function callback(evt) {
                 return _this3.handleKeyDownEscape(evt);
               }
-            }), _defineProperty$S(_callbacks, KEYS.TAB, this.state.mode === Mode$1.ACTIONABLE ? {
+            }), _defineProperty$S(_callbacks, KEYS$1.TAB, this.state.mode === Mode$1.ACTIONABLE ? {
               callback: function callback(evt) {
                 return _this3.handleKeyTabPress(evt);
               }
@@ -47384,7 +47384,7 @@
           var component = /*#__PURE__*/React__default["default"].createElement(React__default["default"].Fragment, null, /*#__PURE__*/React__default["default"].createElement(TableContext.Provider, {
             value: this.getTableContext(this.state, this.getKeyboardNavigation())
           }, /*#__PURE__*/React__default["default"].createElement("table", _extends$o({}, ariaProps, {
-            className: classNames$1('slds-table', {
+            className: classnames('slds-table', {
               'slds-table_fixed-layout': this.getFixedLayout(),
               'slds-table_header-fixed': this.getFixedHeader(),
               'slds-table_resizable-cols': this.getFixedLayout(),
@@ -47964,19 +47964,19 @@
           onKeyboardNavigateToPreviousWeek = _ref2.onKeyboardNavigateToPreviousWeek,
           onKeyboardNavigateToNextWeek = _ref2.onKeyboardNavigateToNextWeek,
           direction = _ref2.direction;
-      var keyDownCallbacks = (_keyDownCallbacks = {}, _defineProperty$R(_keyDownCallbacks, KEYS.SPACE, function () {
+      var keyDownCallbacks = (_keyDownCallbacks = {}, _defineProperty$R(_keyDownCallbacks, KEYS$1.SPACE, function () {
         onSelectDate(event, {
           date: date
         });
-      }), _defineProperty$R(_keyDownCallbacks, KEYS.ENTER, function () {
+      }), _defineProperty$R(_keyDownCallbacks, KEYS$1.ENTER, function () {
         onSelectDate(event, {
           date: date
         });
-      }), _defineProperty$R(_keyDownCallbacks, KEYS.TAB, function () {
+      }), _defineProperty$R(_keyDownCallbacks, KEYS$1.TAB, function () {
         onCalendarBlur(event, {
           direction: 'next'
         });
-      }), _defineProperty$R(_keyDownCallbacks, KEYS.LEFT, function () {
+      }), _defineProperty$R(_keyDownCallbacks, KEYS$1.LEFT, function () {
         if (direction === DIRECTIONS.RTL) {
           onKeyboardNavigateToNextDay(event, {
             date: date
@@ -47986,7 +47986,7 @@
             date: date
           });
         }
-      }), _defineProperty$R(_keyDownCallbacks, KEYS.RIGHT, function () {
+      }), _defineProperty$R(_keyDownCallbacks, KEYS$1.RIGHT, function () {
         if (direction === DIRECTIONS.RTL) {
           onKeyboardNavigateToPreviousDay(event, {
             date: date
@@ -47996,17 +47996,17 @@
             date: date
           });
         }
-      }), _defineProperty$R(_keyDownCallbacks, KEYS.UP, function () {
+      }), _defineProperty$R(_keyDownCallbacks, KEYS$1.UP, function () {
         onKeyboardNavigateToPreviousWeek(event, {
           date: date
         });
-      }), _defineProperty$R(_keyDownCallbacks, KEYS.DOWN, function () {
+      }), _defineProperty$R(_keyDownCallbacks, KEYS$1.DOWN, function () {
         onKeyboardNavigateToNextWeek(event, {
           date: date
         });
       }), _keyDownCallbacks);
 
-      var shiftKeyDownCallbacks = _defineProperty$R({}, KEYS.TAB, function () {
+      var shiftKeyDownCallbacks = _defineProperty$R({}, KEYS$1.TAB, function () {
         onCalendarBlur(event, {
           direction: 'previous'
         });
@@ -48014,10 +48014,10 @@
 
       if (event.keyCode) {
         if (event.shiftKey && keyDownCallbacks[event.keyCode]) {
-          EventUtil$1.trapEvent(event);
+          EventUtil$3.trapEvent(event);
           shiftKeyDownCallbacks[event.keyCode]();
         } else if (keyDownCallbacks[event.keyCode]) {
-          EventUtil$1.trapEvent(event);
+          EventUtil$3.trapEvent(event);
           keyDownCallbacks[event.keyCode]();
         }
       }
@@ -48036,7 +48036,7 @@
         React__default["default"].createElement("td", {
           "aria-disabled": isDisabled,
           "aria-selected": isSelectedDay,
-          className: classNames$1({
+          className: classnames({
             'slds-is-today': isToday,
             'slds-disabled-text': isDisabled,
             'slds-is-selected': isSelectedDay
@@ -49510,8 +49510,8 @@
         });
 
         _defineProperty$N(_assertThisInitialized$$(_this), "handleFirstFocusableNodeKeyDown", function (event) {
-          if (event.shiftKey && event.keyCode === KEYS.TAB) {
-            EventUtil$1.trapEvent(event);
+          if (event.shiftKey && event.keyCode === KEYS$1.TAB) {
+            EventUtil$3.trapEvent(event);
           }
         });
 
@@ -49522,16 +49522,16 @@
         });
 
         _defineProperty$N(_assertThisInitialized$$(_this), "handleKeyDown", function (event) {
-          if (event.keyCode === KEYS.ESCAPE) {
-            EventUtil$1.trapEvent(event);
+          if (event.keyCode === KEYS$1.ESCAPE) {
+            EventUtil$3.trapEvent(event);
 
             _this.props.onRequestClose(event, {});
           }
         });
 
         _defineProperty$N(_assertThisInitialized$$(_this), "handleLastFocusableNodeKeyDown", function (event) {
-          if (!event.shiftKey && event.keyCode === KEYS.TAB) {
-            EventUtil$1.trapEvent(event);
+          if (!event.shiftKey && event.keyCode === KEYS$1.TAB) {
+            EventUtil$3.trapEvent(event);
           }
         });
 
@@ -49567,7 +49567,7 @@
 
           return /*#__PURE__*/React__default["default"].createElement("div", {
             // eslint-disable-line jsx-a11y/no-static-element-interactions
-            className: classNames$1({
+            className: classnames({
               'slds-datepicker': this.props.isolated
             }, this.props.className),
             "aria-hidden": "false",
@@ -49921,7 +49921,7 @@
 
       return obj;
     }
-    var propTypes$$ = {
+    var propTypes$11 = {
       /**
        * **Assistive text for accessibility**
        * This object is merged with the default props object on every render.
@@ -50200,7 +50200,7 @@
           } : {};
           return !_this.props.disabled && _this.getIsOpen() ? /*#__PURE__*/React__default["default"].createElement(Dialog$1, {
             align: "bottom ".concat(_this.props.align),
-            contentsClassName: classNames$1('slds-datepicker slds-dropdown', {
+            contentsClassName: classnames('slds-datepicker slds-dropdown', {
               'slds-dropdown_right': _this.props.menuPosition === 'relative' && _this.props.align === 'right',
               'slds-dropdown_left': _this.props.menuPosition === 'relative' && _this.props.align === 'left'
             }, _this.props.className),
@@ -50372,16 +50372,16 @@
 
         _defineProperty$M(_assertThisInitialized$_(_this), "handleKeyDown", function (event) {
           // Don't open if user is selecting text
-          if (event.keyCode && !event.shiftKey && (event.keyCode === KEYS.DOWN || event.keyCode === KEYS.UP)) {
-            EventUtil$1.trapEvent(event);
+          if (event.keyCode && !event.shiftKey && (event.keyCode === KEYS$1.DOWN || event.keyCode === KEYS$1.UP)) {
+            EventUtil$3.trapEvent(event);
 
             _this.setState({
               isOpen: true
             });
           }
 
-          if (event.keyCode === KEYS.ESCAPE || event.keyCode === KEYS.ENTER) {
-            EventUtil$1.trapEvent(event);
+          if (event.keyCode === KEYS$1.ESCAPE || event.keyCode === KEYS$1.ENTER) {
+            EventUtil$3.trapEvent(event);
 
             _this.setState({
               isOpen: false
@@ -50496,7 +50496,7 @@
 
           var inputToRender = this.props.children ? /*#__PURE__*/React__default["default"].cloneElement(this.props.children, _objectSpread$f({}, inputProps)) : /*#__PURE__*/React__default["default"].createElement(Input$1, inputProps);
           return /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-dropdown-trigger', 'slds-dropdown-trigger_click', 'ignore-react-onclickoutside', {
+            className: classnames('slds-dropdown-trigger', 'slds-dropdown-trigger_click', 'ignore-react-onclickoutside', {
               'slds-has-error': this.props.hasError,
               'slds-is-open': this.getIsOpen()
             }, this.props.triggerClassName)
@@ -50512,7 +50512,7 @@
 
     Datepicker.contextType = IconSettingsContext;
     Datepicker.displayName = DATE_PICKER;
-    Datepicker.propTypes = propTypes$$;
+    Datepicker.propTypes = propTypes$11;
     Datepicker.defaultProps = defaultProps$J;
     var Datepicker$1 = Datepicker;
 
@@ -50671,7 +50671,7 @@
       return _getPrototypeOf$Z(o);
     }
 
-    var propTypes$_ = {
+    var propTypes$10 = {
       /**
        * **Assistive text for accessibility**
        * * `label`: Used as a visually hidden label to describe the dynamic icon.
@@ -51057,7 +51057,7 @@
     }(React__default["default"].Component);
 
     DynamicIcon.displayName = DYNAMIC_ICON;
-    DynamicIcon.propTypes = propTypes$_;
+    DynamicIcon.propTypes = propTypes$10;
     var DynamicIcon$1 = DynamicIcon;
 
     function _typeof$Y(obj) {
@@ -51501,7 +51501,7 @@
       };
       return _getPrototypeOf$X(o);
     }
-    var propTypes$Z = {
+    var propTypes$$ = {
       /**
        *  **Assistive text for accessibility.**
        * * `label`: For users of assistive technology, assistive text for the expression group's label.
@@ -51768,7 +51768,7 @@
             }
 
             return /*#__PURE__*/React__default["default"].createElement("div", {
-              className: classNames$1(this.props.className),
+              className: classnames(this.props.className),
               id: this.getId()
             }, /*#__PURE__*/React__default["default"].createElement("div", {
               className: "slds-expression__options"
@@ -51776,7 +51776,7 @@
           }
 
           return /*#__PURE__*/React__default["default"].createElement("li", {
-            className: classNames$1('slds-expression__group', this.props.className),
+            className: classnames('slds-expression__group', this.props.className),
             id: this.getId(),
             ref: function ref(rootNode) {
               _this2.rootNode = rootNode;
@@ -51819,7 +51819,7 @@
     }(React__default["default"].Component);
 
     ExpressionGroup.displayName = EXPRESSION_GROUP;
-    ExpressionGroup.propTypes = propTypes$Z;
+    ExpressionGroup.propTypes = propTypes$$;
     ExpressionGroup.defaultProps = defaultProps$H;
     var ExpressionGroup$1 = ExpressionGroup;
 
@@ -51939,7 +51939,7 @@
       };
       return _getPrototypeOf$W(o);
     }
-    var propTypes$Y = {
+    var propTypes$_ = {
       /**
        * HTML id for component.
        */
@@ -52042,7 +52042,7 @@
         value: function render() {
           var labels = lodash_assign({}, defaultProps$G.labels, this.props.labels);
           return /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-expression', this.props.className),
+            className: classnames('slds-expression', this.props.className),
             id: this.getId()
           }, /*#__PURE__*/React__default["default"].createElement("h2", {
             className: "slds-expression__title"
@@ -52061,7 +52061,7 @@
     }(React__default["default"].Component);
 
     Expression.displayName = EXPRESSION;
-    Expression.propTypes = propTypes$Y;
+    Expression.propTypes = propTypes$_;
     Expression.defaultProps = defaultProps$G;
     var Expression$1 = Expression;
 
@@ -52181,7 +52181,7 @@
       };
       return _getPrototypeOf$V(o);
     }
-    var propTypes$X = {
+    var propTypes$Z = {
       /**
        *  **Assistive text for accessibility.**
        * * `title`: For users of assistive technology, title for the condition fieldset. Defaults to 'Condition'
@@ -52351,7 +52351,7 @@
           var assistiveText = lodash_assign({}, defaultProps$F.assistiveText, this.props.assistiveText);
           var labels = lodash_assign({}, defaultProps$F.labels, this.props.labels);
           return /*#__PURE__*/React__default["default"].createElement("li", {
-            className: classNames$1("slds-expression__row", {
+            className: classnames("slds-expression__row", {
               'slds-expression__row_group': this.props.isSubCondition
             }, this.props.className),
             id: this.getId(),
@@ -52428,7 +52428,7 @@
     }(React__default["default"].Component);
 
     ExpressionCondition.displayName = EXPRESSION_CONDITION;
-    ExpressionCondition.propTypes = propTypes$X;
+    ExpressionCondition.propTypes = propTypes$Z;
     ExpressionCondition.defaultProps = defaultProps$F;
     var ExpressionCondition$1 = ExpressionCondition;
 
@@ -52567,7 +52567,7 @@
 
     var fast_deep_equal_1 = __importDefault(fastDeepEqual);
 
-    var PropTypes = __importStar(propTypes$1F.exports);
+    var PropTypes = __importStar(propTypes$1H.exports);
 
     function normalizeHtml(str) {
       return str && str.replace(/&nbsp;|\u202F|\u00A0/g, ' ');
@@ -52839,7 +52839,7 @@
 
       return obj;
     }
-    var propTypes$W = {
+    var propTypes$Y = {
       /**
        *  **Assistive text for accessibility.**
        * * `help`: Assistive text for help icon
@@ -52967,7 +52967,7 @@
           var labels = lodash_assign({}, defaultProps$E.labels, this.props.labels);
           return /*#__PURE__*/React__default["default"].createElement(React__default["default"].Fragment, null, /*#__PURE__*/React__default["default"].createElement("div", {
             id: this.getId(),
-            className: classNames$1("slds-expression_formula__rte", this.props.className)
+            className: classnames("slds-expression_formula__rte", this.props.className)
           }, /*#__PURE__*/React__default["default"].createElement("div", {
             className: "slds-form-element"
           }, /*#__PURE__*/React__default["default"].createElement("span", {
@@ -53023,7 +53023,7 @@
     }(React__default["default"].Component);
 
     ExpressionFormula.displayName = EXPRESSION_FORMULA;
-    ExpressionFormula.propTypes = propTypes$W;
+    ExpressionFormula.propTypes = propTypes$Y;
     ExpressionFormula.defaultProps = defaultProps$E;
     var ExpressionFormula$1 = ExpressionFormula;
 
@@ -53334,7 +53334,7 @@
       return obj;
     }
     var displayName$q = FILES_FILE;
-    var propTypes$V = {
+    var propTypes$X = {
       /**
        * **Assistive text for accessibility**
        *  * download - description for the download button if present
@@ -53477,10 +53477,10 @@
 
           return /*#__PURE__*/React__default["default"].createElement("div", {
             id: this.getId(),
-            className: classNames$1('slds-file', 'slds-file_card', !this.props.hasNoVisibleTitle ? 'slds-has-title' : null, this.props.className)
+            className: classnames('slds-file', 'slds-file_card', !this.props.hasNoVisibleTitle ? 'slds-has-title' : null, this.props.className)
           }, /*#__PURE__*/React__default["default"].createElement("figure", null, /*#__PURE__*/React__default["default"].createElement("a", {
             href: this.props.href,
-            className: classNames$1('slds-file__crop', this.props.crop ? "slds-file__crop_".concat(this.props.crop) : null),
+            className: classnames('slds-file__crop', this.props.crop ? "slds-file__crop_".concat(this.props.crop) : null),
             onClick: this.handleOnClickImage
           }, /*#__PURE__*/React__default["default"].createElement(FileFigure$1, {
             assistiveText: assistiveText,
@@ -53523,7 +53523,7 @@
     }(React__default["default"].Component);
 
     File.displayName = displayName$q;
-    File.propTypes = propTypes$V;
+    File.propTypes = propTypes$X;
     File.defaultProps = defaultProps$D;
     var File$1 = File;
 
@@ -53644,7 +53644,7 @@
       return _getPrototypeOf$S(o);
     }
     var displayName$p = FILES;
-    var propTypes$U = {
+    var propTypes$W = {
       /**
        * CSS class names to be added to the container element. `array`, `object`, or `string` are accepted.
        */
@@ -53703,13 +53703,13 @@
 
           var files = React__default["default"].Children.map(this.props.children, function (option) {
             return /*#__PURE__*/React__default["default"].createElement("li", {
-              className: classNames$1("slds-p-horizontal_xx-small slds-size_1-of-3 slds-medium-size_1-of-4", _this2.props.columnClassName)
+              className: classnames("slds-p-horizontal_xx-small slds-size_1-of-3 slds-medium-size_1-of-4", _this2.props.columnClassName)
             }, /*#__PURE__*/React__default["default"].cloneElement(option, {
               crop: option.props.crop ? option.props.crop : _this2.props.crop
             }));
           });
           return /*#__PURE__*/React__default["default"].createElement("ul", {
-            className: classNames$1('slds-grid slds-grid_pull-padded', this.props.className),
+            className: classnames('slds-grid slds-grid_pull-padded', this.props.className),
             id: this.getId()
           }, files);
         }
@@ -53719,7 +53719,7 @@
     }(React__default["default"].Component);
 
     Files.displayName = displayName$p;
-    Files.propTypes = propTypes$U;
+    Files.propTypes = propTypes$W;
     Files.defaultProps = defaultProps$C;
     var Files$1 = Files;
 
@@ -53893,7 +53893,7 @@
       return _getPrototypeOf$R(o);
     }
     var displayName$o = FILES_MORE;
-    var propTypes$T = {
+    var propTypes$V = {
       /**
        * **Assistive text for accessibility**
        *  * count - description for the more files count
@@ -53977,11 +53977,11 @@
           var assistiveText = _objectSpread$d(_objectSpread$d({}, defaultProps$B.assistiveText), this.props.assistiveText);
 
           return /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1("slds-file slds-file_card", this.props.className),
+            className: classnames("slds-file slds-file_card", this.props.className),
             id: this.getId()
           }, /*#__PURE__*/React__default["default"].createElement("figure", null, /*#__PURE__*/React__default["default"].createElement("a", {
             href: this.props.href,
-            className: classNames$1('slds-file__crop', this.props.crop ? "slds-file__crop_".concat(this.props.crop) : null),
+            className: classnames('slds-file__crop', this.props.crop ? "slds-file__crop_".concat(this.props.crop) : null),
             onClick: function onClick(event) {
               return _this2.props.href === '#' && event.preventDefault();
             }
@@ -54013,7 +54013,7 @@
     }(React__default["default"].Component);
 
     MoreFiles.displayName = displayName$o;
-    MoreFiles.propTypes = propTypes$T;
+    MoreFiles.propTypes = propTypes$V;
     MoreFiles.defaultProps = defaultProps$B;
     var MoreFiles$1 = MoreFiles;
 
@@ -54286,7 +54286,7 @@
             assistiveText: assistiveText
           });
           return /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-filters__item', 'slds-grid', 'slds-grid_vertical-align-center', {
+            className: classnames('slds-filters__item', 'slds-grid', 'slds-grid_vertical-align-center', {
               'slds-is-locked': this.props.isLocked,
               'slds-is-new': this.props.isNew,
               'slds-has-error': this.props.isError
@@ -54689,13 +54689,13 @@
         _this = _super.call(this, props);
 
         _defineProperty$G(_assertThisInitialized$P(_this), "handleSkipToContent", function (e) {
-          EventUtil$1.trap(e);
+          EventUtil$3.trap(e);
 
           _this.props.onSkipToContent(e);
         });
 
         _defineProperty$G(_assertThisInitialized$P(_this), "handleSkipToNav", function (e) {
-          EventUtil$1.trap(e);
+          EventUtil$3.trap(e);
 
           _this.props.onSkipToNav(e);
         });
@@ -54711,7 +54711,7 @@
 
           var assistiveText = _objectSpread$c(_objectSpread$c({}, defaultProps$A.assistiveText), this.props.assistiveText);
 
-          var actions = (_actions = {}, _defineProperty$G(_actions, GLOBAL_HEADER_FAVORITES, []), _defineProperty$G(_actions, GLOBAL_HEADER_HELP, []), _defineProperty$G(_actions, GLOBAL_HEADER_NOTIFICATIONS, []), _defineProperty$G(_actions, GLOBAL_HEADER_PROFILE, []), _defineProperty$G(_actions, GLOBAL_HEADER_SETUP, []), _defineProperty$G(_actions, GLOBAL_HEADER_TASK, []), _defineProperty$G(_actions, GLOBAL_HEADER_TOOL, []), _actions);
+          var actions = (_actions = {}, _defineProperty$G(_actions, GLOBAL_HEADER_FAVORITES$1, []), _defineProperty$G(_actions, GLOBAL_HEADER_HELP, []), _defineProperty$G(_actions, GLOBAL_HEADER_NOTIFICATIONS$1, []), _defineProperty$G(_actions, GLOBAL_HEADER_PROFILE, []), _defineProperty$G(_actions, GLOBAL_HEADER_SETUP, []), _defineProperty$G(_actions, GLOBAL_HEADER_TASK, []), _defineProperty$G(_actions, GLOBAL_HEADER_TOOL, []), _actions);
           var search;
           React__default["default"].Children.forEach(this.props.children, function (child) {
             if (child) {
@@ -54723,7 +54723,7 @@
               }
             }
           });
-          actions = [].concat(actions[GLOBAL_HEADER_FAVORITES], actions[GLOBAL_HEADER_TASK], actions[GLOBAL_HEADER_HELP], actions[GLOBAL_HEADER_SETUP], actions[GLOBAL_HEADER_NOTIFICATIONS], actions[GLOBAL_HEADER_TOOL], // support for deprecated GlobalHeaderButton and GlobalHeaderDropdown
+          actions = [].concat(actions[GLOBAL_HEADER_FAVORITES$1], actions[GLOBAL_HEADER_TASK], actions[GLOBAL_HEADER_HELP], actions[GLOBAL_HEADER_SETUP], actions[GLOBAL_HEADER_NOTIFICATIONS$1], actions[GLOBAL_HEADER_TOOL], // support for deprecated GlobalHeaderButton and GlobalHeaderDropdown
           actions[GLOBAL_HEADER_PROFILE]);
           /* eslint-disable max-len */
 
@@ -55133,7 +55133,7 @@
             // eslint-disable-next-line jsx-a11y/role-supports-aria-props
             React__default["default"].createElement("li", {
               "aria-haspopup": "true",
-              className: classNames$1('slds-dropdown-trigger slds-dropdown-trigger_click', {
+              className: classnames('slds-dropdown-trigger slds-dropdown-trigger_click', {
                 'slds-is-open': isOpen,
                 'slds-p-around_xx-small': globalAction
               }, className),
@@ -55147,10 +55147,10 @@
               onMouseLeave: onMouseLeave,
               ref: triggerRef
             }, /*#__PURE__*/React__default["default"].createElement(Button$1, _extends$k({
-              className: classNames$1({
+              className: classnames({
                 'slds-global-header__button_icon-actions': globalAction
               }),
-              iconClassName: classNames$1({
+              iconClassName: classnames({
                 'slds-global-header__icon-actions': globalAction
               }),
               "aria-haspopup": "true",
@@ -55547,7 +55547,7 @@
 
       return obj;
     }
-    var propTypes$S = {
+    var propTypes$U = {
       /**
        * **Assistive text for accessibility**
        * * `action`: Description of star button. Default is "Toggle Favorite."
@@ -55582,7 +55582,7 @@
      * A GlobalHeaderFavorites component. The favorites action is used to "favorite" a commonly used page within a user's experience. When a user "favorites" a page by pressing the favorites action, the button icon changes color with a small animation to confirm your selection.
      */
 
-    var GlobalHeaderFavorites = /*#__PURE__*/function (_React$Component) {
+    var GlobalHeaderFavorites$1 = /*#__PURE__*/function (_React$Component) {
       _inherits$N(GlobalHeaderFavorites, _React$Component);
 
       var _super = _createSuper$N(GlobalHeaderFavorites);
@@ -55635,7 +55635,7 @@
             assistiveText: {
               icon: this.props.assistiveText.action
             },
-            className: classNames$1('slds-button_icon slds-global-actions__favorites-action', {
+            className: classnames('slds-button_icon slds-global-actions__favorites-action', {
               'slds-is-disabled': this.props.actionDisabled,
               'slds-is-selected': this.props.actionSelected
             }),
@@ -55646,8 +55646,8 @@
             iconVariant: "border",
             onClick: this.toggleActionSelected,
             onKeyDown: function onKeyDown(event) {
-              if (event.keyCode === KEYS.ENTER) {
-                EventUtil$1.trapImmediate(event);
+              if (event.keyCode === KEYS$1.ENTER) {
+                EventUtil$3.trapImmediate(event);
 
                 _this2.toggleActionSelected(event);
               }
@@ -55677,15 +55677,15 @@
       return GlobalHeaderFavorites;
     }(React__default["default"].Component);
 
-    GlobalHeaderFavorites.displayName = GLOBAL_HEADER_FAVORITES;
-    GlobalHeaderFavorites.defaultProps = {
+    GlobalHeaderFavorites$1.displayName = GLOBAL_HEADER_FAVORITES$1;
+    GlobalHeaderFavorites$1.defaultProps = {
       assistiveText: {
         action: 'Toggle Favorite',
         more: 'View Favorites'
       }
     };
-    GlobalHeaderFavorites.propTypes = propTypes$S;
-    var GlobalHeaderFavorites$1 = GlobalHeaderFavorites;
+    GlobalHeaderFavorites$1.propTypes = propTypes$U;
+    var GlobalHeaderFavorites$2 = GlobalHeaderFavorites$1;
 
     function _typeof$M(obj) {
       "@babel/helpers - typeof";
@@ -55821,7 +55821,7 @@
       };
       return _getPrototypeOf$M(o);
     }
-    var propTypes$R = {
+    var propTypes$T = {
       /**
        * **Assistive text for accessibility**
        * * `triggerButton`: Assistive text for the GlobalHeaderHelp trigger button. The default is `Help and Training`.
@@ -55888,7 +55888,7 @@
         triggerButton: 'Help and Training'
       }
     };
-    GlobalHeaderHelp.propTypes = propTypes$R;
+    GlobalHeaderHelp.propTypes = propTypes$T;
     var GlobalHeaderHelp$1 = GlobalHeaderHelp;
 
     function _typeof$L(obj) {
@@ -56025,7 +56025,7 @@
       };
       return _getPrototypeOf$L(o);
     }
-    var propTypes$Q = {
+    var propTypes$S = {
       /**
        * **Assistive text for accessibility**
        * * `newNotificationsAfter`: Assistive text for when there are new notifications, after the notificationCount. The default is ' new notifications'.
@@ -56052,7 +56052,7 @@
      * A GlobalHeaderNotifications component. Notifications are a way to notify a user about a global change within the application.
      */
 
-    var GlobalHeaderNotifications = /*#__PURE__*/function (_React$Component) {
+    var GlobalHeaderNotifications$1 = /*#__PURE__*/function (_React$Component) {
       _inherits$L(GlobalHeaderNotifications, _React$Component);
 
       var _super = _createSuper$L(GlobalHeaderNotifications);
@@ -56110,8 +56110,8 @@
       return GlobalHeaderNotifications;
     }(React__default["default"].Component);
 
-    GlobalHeaderNotifications.displayName = GLOBAL_HEADER_NOTIFICATIONS;
-    GlobalHeaderNotifications.defaultProps = {
+    GlobalHeaderNotifications$1.displayName = GLOBAL_HEADER_NOTIFICATIONS$1;
+    GlobalHeaderNotifications$1.defaultProps = {
       assistiveText: {
         newNotificationsAfter: ' new notifications',
         newNotificationsBefore: '',
@@ -56119,8 +56119,8 @@
       },
       notificationCount: 0
     };
-    GlobalHeaderNotifications.propTypes = propTypes$Q;
-    var GlobalHeaderNotifications$1 = GlobalHeaderNotifications;
+    GlobalHeaderNotifications$1.propTypes = propTypes$S;
+    var GlobalHeaderNotifications$2 = GlobalHeaderNotifications$1;
 
     function _typeof$K(obj) {
       "@babel/helpers - typeof";
@@ -56299,7 +56299,7 @@
           delete popoverProps.children;
           avatar = this.props.avatar ? this.props.avatar : avatar;
           return /*#__PURE__*/React__default["default"].createElement(Popover, popoverProps, /*#__PURE__*/React__default["default"].createElement(Button$3, _extends$f({
-            className: classNames$1('slds-global-actions__avatar slds-global-actions__item-action', this.props.buttonClassName),
+            className: classnames('slds-global-actions__avatar slds-global-actions__item-action', this.props.buttonClassName),
             title: this.props.userName,
             variant: "icon"
           }, buttonAriaProps), typeof avatar === 'string' ? /*#__PURE__*/React__default["default"].createElement("span", {
@@ -56509,7 +56509,7 @@
       };
       return _getPrototypeOf$J(o);
     }
-    var propTypes$P = {
+    var propTypes$R = {
       /**
        * **Assistive text for accessibility**
        * * `triggerButton`: Assistive text for the GlobalHeaderSetup trigger button. The default is `Setup`.
@@ -56576,7 +56576,7 @@
         triggerButton: 'Setup'
       }
     };
-    GlobalHeaderSetup.propTypes = propTypes$P;
+    GlobalHeaderSetup.propTypes = propTypes$R;
     var GlobalHeaderSetup$1 = GlobalHeaderSetup;
 
     function _typeof$I(obj) {
@@ -56713,7 +56713,7 @@
       };
       return _getPrototypeOf$I(o);
     }
-    var propTypes$O = {
+    var propTypes$Q = {
       /**
        * **Assistive text for accessibility**
        * * `triggerButton`: Assistive text for the GlobalHeaderTask trigger button. The default is `Global Actions`.
@@ -56779,7 +56779,7 @@
         triggerButton: 'Global Actions'
       }
     };
-    GlobalHeaderTask.propTypes = propTypes$O;
+    GlobalHeaderTask.propTypes = propTypes$Q;
     var GlobalHeaderTask$1 = GlobalHeaderTask;
 
     function _defineProperty$D(obj, key, value) {
@@ -56825,7 +56825,7 @@
       var _classNames;
 
       return /*#__PURE__*/React__default["default"].createElement("div", {
-        className: classNames$1('slds-context-bar', (_classNames = {}, _defineProperty$D(_classNames, "slds-context-bar_theme-".concat(props.cloud), props.cloud), _defineProperty$D(_classNames, "slds-context-bar_theme-".concat(props.theme), props.theme), _classNames), props.className)
+        className: classnames('slds-context-bar', (_classNames = {}, _defineProperty$D(_classNames, "slds-context-bar_theme-".concat(props.cloud), props.cloud), _defineProperty$D(_classNames, "slds-context-bar_theme-".concat(props.theme), props.theme), _classNames), props.className)
       }, auditChildren(props.children));
     }; // ### Prop Types
 
@@ -56915,7 +56915,7 @@
           props = _objectWithoutProperties$7(_ref, ["active", "dividerPosition"]);
 
       return /*#__PURE__*/React__default["default"].createElement("li", {
-        className: classNames$1('slds-context-bar__item', _defineProperty$C({
+        className: classnames('slds-context-bar__item', _defineProperty$C({
           'slds-is-active': active
         }, "slds-context-bar__item_divider-".concat(dividerPosition), dividerPosition))
       }, /*#__PURE__*/React__default["default"].createElement(Button$3, props));
@@ -57248,7 +57248,7 @@
             // eslint-disable-next-line jsx-a11y/role-supports-aria-props
             React__default["default"].createElement("li", {
               "aria-haspopup": "true",
-              className: classNames$1('slds-context-bar__item slds-context-bar__dropdown-trigger slds-dropdown-trigger slds-dropdown-trigger_click', _defineProperty$B({
+              className: classnames('slds-context-bar__item slds-context-bar__dropdown-trigger slds-dropdown-trigger slds-dropdown-trigger_click', _defineProperty$B({
                 'slds-is-open': isOpen,
                 'slds-is-active': active
               }, "slds-context-bar__item_divider-".concat(dividerPosition), dividerPosition), className),
@@ -57578,7 +57578,7 @@
         style: {
           color: colors.colorTextLinkDisabled
         },
-        className: classNames$1('slds-context-bar__label-action', _defineProperty$A({}, "slds-context-bar__item_divider-".concat(dividerPosition), dividerPosition), className)
+        className: classnames('slds-context-bar__label-action', _defineProperty$A({}, "slds-context-bar__item_divider-".concat(dividerPosition), dividerPosition), className)
       }, /*#__PURE__*/React__default["default"].createElement("span", {
         className: "slds-truncate"
       }, label)));
@@ -57664,14 +57664,14 @@
       }
 
       return /*#__PURE__*/React__default["default"].createElement("li", {
-        className: classNames$1('slds-context-bar__item', _defineProperty$z({
+        className: classnames('slds-context-bar__item', _defineProperty$z({
           'slds-is-active': active
         }, "slds-context-bar__item_divider-".concat(dividerPosition), dividerPosition)),
         id: id,
         style: listItemstyle
       }, /*#__PURE__*/React__default["default"].createElement("a", {
         href: href,
-        className: classNames$1('slds-context-bar__label-action', className),
+        className: classnames('slds-context-bar__label-action', className),
         onBlur: onBlur,
         onClick: handleOnClick,
         onFocus: onFocus,
@@ -57924,7 +57924,7 @@
 
     var renderPrimary = function renderPrimary(dividerClass, className, children) {
       return /*#__PURE__*/React__default["default"].createElement("div", {
-        className: classNames$1('slds-context-bar__primary', dividerClass, className)
+        className: classnames('slds-context-bar__primary', dividerClass, className)
       }, children);
     };
 
@@ -57933,14 +57933,14 @@
 
       if (navigation) {
         region = /*#__PURE__*/React__default["default"].createElement("nav", {
-          className: classNames$1('slds-context-bar__secondary', dividerClass, className),
+          className: classnames('slds-context-bar__secondary', dividerClass, className),
           role: "navigation"
         }, /*#__PURE__*/React__default["default"].createElement("ul", {
           className: "slds-grid"
         }, children));
       } else {
         region = /*#__PURE__*/React__default["default"].createElement("div", {
-          className: classNames$1('slds-context-bar__secondary', dividerClass, className)
+          className: classnames('slds-context-bar__secondary', dividerClass, className)
         }, /*#__PURE__*/React__default["default"].createElement("ul", {
           className: "slds-grid"
         }, children));
@@ -57951,7 +57951,7 @@
 
     var renderTertiary = function renderTertiary(dividerClass, className, children) {
       return /*#__PURE__*/React__default["default"].createElement("div", {
-        className: classNames$1('slds-context-bar__tertiary', 'slds-col_bump-left', dividerClass, className)
+        className: classnames('slds-context-bar__tertiary', 'slds-col_bump-left', dividerClass, className)
       }, /*#__PURE__*/React__default["default"].createElement("ul", {
         className: "slds-grid"
       }, children));
@@ -58434,7 +58434,7 @@
       return obj;
     }
 
-    var propTypes$N = {
+    var propTypes$P = {
       /**
        * Class names to be added to the outer container of the input.
        */
@@ -58540,11 +58540,11 @@
 
         _defineProperty$w(_assertThisInitialized$F(_this), "handleKeyDown", function (event) {
           if (event.keyCode) {
-            if (event.keyCode === KEYS.ESCAPE) {
+            if (event.keyCode === KEYS$1.ESCAPE) {
               _this.saveEdits({
                 cancel: true
               });
-            } else if (event.keyCode === KEYS.ENTER) {
+            } else if (event.keyCode === KEYS$1.ENTER) {
               _this.saveEdits();
             }
           }
@@ -58660,7 +58660,7 @@
     }(React__default["default"].Component);
 
     InlineEdit.displayName = FORMS_INLINE_EDIT;
-    InlineEdit.propTypes = propTypes$N;
+    InlineEdit.propTypes = propTypes$P;
     InlineEdit.defaultProps = defaultProps$z;
     var InlineEdit$1 = InlineEdit;
 
@@ -58772,8 +58772,8 @@
     }
 
     var handleKeyDown$2 = function handleKeyDown(event, onSearch) {
-      if (event.keyCode === KEYS.ENTER) {
-        EventUtil$1.trapImmediate(event);
+      if (event.keyCode === KEYS$1.ENTER) {
+        EventUtil$3.trapImmediate(event);
         onSearch(event);
       }
     };
@@ -59025,7 +59025,7 @@
       return obj;
     }
     var displayName$n = LOCATION_MAP;
-    var propTypes$M = {
+    var propTypes$O = {
       /**
        * CSS class names to be added with `slds-map` class. `array`, `object`, or `string` are accepted.
        */
@@ -59151,7 +59151,7 @@
 
           return /*#__PURE__*/React__default["default"].createElement("div", {
             id: this.getId(),
-            className: classNames$1("slds-grid", {
+            className: classnames("slds-grid", {
               'slds-has-coordinates': this.props.locations
             }, this.props.classNameContainer)
           }, /*#__PURE__*/React__default["default"].createElement("div", {
@@ -59160,7 +59160,7 @@
               padding: '4px'
             }
           }, /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1("slds-map", this.props.className),
+            className: classnames("slds-map", this.props.className),
             ref: function ref(map) {
               _this2.map = map;
             },
@@ -59211,7 +59211,7 @@
     }(React__default["default"].Component);
 
     LocationMap.displayName = displayName$n;
-    LocationMap.propTypes = propTypes$M;
+    LocationMap.propTypes = propTypes$O;
     var LocationMap$1 = LocationMap;
 
     function _typeof$D(obj) {
@@ -59346,7 +59346,7 @@
       return obj;
     }
     var displayName$m = 'LookupDefaultHeader';
-    var propTypes$L = {};
+    var propTypes$N = {};
     var defaultProps$w = {};
 
     var DefaultHeader = /*#__PURE__*/function (_React$Component) {
@@ -59393,7 +59393,7 @@
             /* eslint-disable jsx-a11y/no-static-element-interactions */
             React__default["default"].createElement("div", {
               className: "js-slds-lookup__item",
-              onMouseDown: EventUtil$1.trapImmediate,
+              onMouseDown: EventUtil$3.trapImmediate,
               onClick: this.handleClick
             }, /*#__PURE__*/React__default["default"].createElement("a", {
               id: "searchRecords",
@@ -59420,7 +59420,7 @@
     }(React__default["default"].Component);
 
     DefaultHeader.displayName = displayName$m;
-    DefaultHeader.propTypes = propTypes$L;
+    DefaultHeader.propTypes = propTypes$N;
     DefaultHeader.defaultProps = defaultProps$w;
     var DefaultHeader$1 = DefaultHeader;
 
@@ -59556,7 +59556,7 @@
       return obj;
     }
     var displayName$l = 'LookupDefaultFooter';
-    var propTypes$K = {};
+    var propTypes$M = {};
     var defaultProps$v = {};
 
     var DefaultFooter = /*#__PURE__*/function (_React$Component) {
@@ -59604,7 +59604,7 @@
             React__default["default"].createElement("div", {
               className: "js-slds-lookup__item",
               onClick: this.handleClick,
-              onMouseDown: EventUtil$1.trapImmediate
+              onMouseDown: EventUtil$3.trapImmediate
             }, /*#__PURE__*/React__default["default"].createElement("a", {
               id: "newItem",
               href: "#",
@@ -59630,13 +59630,13 @@
     }(React__default["default"].Component);
 
     DefaultFooter.displayName = displayName$l;
-    DefaultFooter.propTypes = propTypes$K;
+    DefaultFooter.propTypes = propTypes$M;
     DefaultFooter.defaultProps = defaultProps$v;
     var DefaultFooter$1 = DefaultFooter;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
     var displayName$k = 'LookupDefaultSectionDivider';
-    var propTypes$J = {
+    var propTypes$L = {
       data: PropTypes$2.object
     };
 
@@ -59650,7 +59650,7 @@
     };
 
     DefaultSectionDivider.displayName = displayName$k;
-    DefaultSectionDivider.propTypes = propTypes$J;
+    DefaultSectionDivider.propTypes = propTypes$L;
     var DefaultSectionDivider$1 = DefaultSectionDivider;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
@@ -59791,7 +59791,7 @@
       return obj;
     }
     var displayName$j = 'Lookup-Menu-Item';
-    var propTypes$I = {
+    var propTypes$K = {
       data: PropTypes$2.object,
       handleItemFocus: PropTypes$2.func,
       href: PropTypes$2.string,
@@ -59875,7 +59875,7 @@
               className: "slds-lookup__result-meta slds-text-body_small"
             }, this.props.children.data.subTitle));
           } else {
-            var labelClassName = classNames$1('slds-lookup__result-text', {
+            var labelClassName = classnames('slds-lookup__result-text', {
               'slds-m-left_x-small': !this.props.iconName
             });
             label = /*#__PURE__*/React__default["default"].createElement("div", {
@@ -59919,7 +59919,7 @@
               href: this.props.href,
               id: id,
               onClick: this.handleClick,
-              onMouseDown: EventUtil$1.trapImmediate,
+              onMouseDown: EventUtil$3.trapImmediate,
               ref: id,
               role: "option",
               tabIndex: "-1"
@@ -59932,7 +59932,7 @@
     }(React__default["default"].Component);
 
     Item$4.displayName = displayName$j;
-    Item$4.propTypes = propTypes$I;
+    Item$4.propTypes = propTypes$K;
     var Item$5 = Item$4;
 
     function _typeof$A(obj) {
@@ -60087,7 +60087,7 @@
     /* eslint-disable react/no-did-update-set-state */
 
     var displayName$i = 'Lookup-Menu';
-    var propTypes$H = {
+    var propTypes$J = {
       boldRegex: PropTypes$2.instanceOf(RegExp),
       emptyMessage: PropTypes$2.oneOfType([PropTypes$2.string, PropTypes$2.element]),
       filterWith: PropTypes$2.func,
@@ -60288,7 +60288,7 @@
     }(React__default["default"].Component);
 
     Menu.displayName = displayName$i;
-    Menu.propTypes = propTypes$H;
+    Menu.propTypes = propTypes$J;
     Menu.defaultProps = defaultProps$u;
     var Menu$1 = Menu;
 
@@ -60486,7 +60486,7 @@
         });
 
         _defineProperty$p(_assertThisInitialized$z(_this), "getClassName", function () {
-          return classNames$1(_this.props.className, 'slds-form-element slds-lookup', {
+          return classnames(_this.props.className, 'slds-form-element slds-lookup', {
             'slds-has-selection': _this.isSelected(),
             'slds-is-open': _this.getIsOpen()
           });
@@ -60670,7 +60670,7 @@
 
         _defineProperty$p(_assertThisInitialized$z(_this), "handleEscape", function (event) {
           if (_this.getIsOpen() && event) {
-            EventUtil$1.trap(event);
+            EventUtil$3.trap(event);
           }
 
           _this.handleClose();
@@ -60729,9 +60729,9 @@
         _defineProperty$p(_assertThisInitialized$z(_this), "handleKeyDown", function (event) {
           if (event.keyCode) {
             // If user hits esc key or tab key, close menu
-            if (event.keyCode === KEYS.ESCAPE) {
+            if (event.keyCode === KEYS$1.ESCAPE) {
               _this.handleEscape(event);
-            } else if (event.keyCode === KEYS.TAB) {
+            } else if (event.keyCode === KEYS$1.TAB) {
               // remove the focus on input, tab focus shoud move to next tabbale elemnt
               setTimeout(function () {
                 _this.handleClose();
@@ -60743,17 +60743,17 @@
             } // If user hits down key, advance aria activedescendant to next item
 
 
-            if (event.keyCode === KEYS.DOWN) {
-              EventUtil$1.trapImmediate(event);
+            if (event.keyCode === KEYS$1.DOWN) {
+              EventUtil$3.trapImmediate(event);
 
               if (_this.state.focusIndex === null) {
                 _this.setFirstIndex();
               } else {
                 _this.increaseIndex();
               }
-            } else if (event.keyCode === KEYS.UP) {
+            } else if (event.keyCode === KEYS$1.UP) {
               // If user hits up key, advance aria activedescendant to previous item
-              EventUtil$1.trapImmediate(event);
+              EventUtil$3.trapImmediate(event);
 
               var numFocusable = _this.getNumFocusableItems();
 
@@ -60764,9 +60764,9 @@
               } else {
                 _this.decreaseIndex();
               }
-            } else if (event.keyCode === KEYS.ENTER && _this.state.focusIndex !== null) {
+            } else if (event.keyCode === KEYS$1.ENTER && _this.state.focusIndex !== null) {
               // If user hits enter, select current activedescendant item
-              EventUtil$1.trapImmediate(event); // If the focus is on the first fixed Action Item in Menu, click it
+              EventUtil$3.trapImmediate(event); // If the focus is on the first fixed Action Item in Menu, click it
 
               if (_this.headerComponent && _this.state.focusIndex === 0) {
                 _this.headerComponent.handleClick();
@@ -60783,8 +60783,8 @@
 
         _defineProperty$p(_assertThisInitialized$z(_this), "handlePillKeyDown", function (event) {
           if (event.keyCode) {
-            if (event.keyCode === KEYS.DELETE || event.keyCode === KEYS.BACKSPACE) {
-              EventUtil$1.trapImmediate(event);
+            if (event.keyCode === KEYS$1.DELETE || event.keyCode === KEYS$1.BACKSPACE) {
+              EventUtil$3.trapImmediate(event);
 
               _this.handleDeleteSelected();
             }
@@ -61038,7 +61038,7 @@
             "data-scope": "single",
             onScroll: this.props.onScroll
           }, this.props.label ? this.renderLabel() : null, /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1(formElementControlClasses)
+            className: classnames(formElementControlClasses)
           }, this.isSelected() ? this.renderSelectedItem() : null, !this.isSelected() ? this.renderInput() : null), isInline ? this.renderInlineMenu() : this.renderSeparateMenu());
         }
       }]);
@@ -61564,19 +61564,19 @@
       },
       handleMouseDown: function handleMouseDown(event) {
         if (event) {
-          EventUtil$1.trapImmediate(event);
+          EventUtil$3.trapImmediate(event);
           event.nativeEvent[this.getClickEventName()] = true;
         }
       },
       handleKeyDown: function handleKeyDown(event) {
         if (event.keyCode) {
-          if (event.keyCode === KEYS.ENTER || event.keyCode === KEYS.SPACE || event.keyCode === KEYS.DOWN || event.keyCode === KEYS.UP) {
-            EventUtil$1.trap(event);
+          if (event.keyCode === KEYS$1.ENTER || event.keyCode === KEYS$1.SPACE || event.keyCode === KEYS$1.DOWN || event.keyCode === KEYS$1.UP) {
+            EventUtil$3.trap(event);
           }
 
-          if (event.keyCode !== KEYS.TAB) {
+          if (event.keyCode !== KEYS$1.TAB) {
             // The outer div with onKeyDown is overriding button onClick so we need to add it here.
-            var openMenuKeys = event.keyCode === KEYS.ENTER || event.keyCode === KEYS.DOWN || event.keyCode === KEYS.UP;
+            var openMenuKeys = event.keyCode === KEYS$1.ENTER || event.keyCode === KEYS$1.DOWN || event.keyCode === KEYS$1.UP;
             var isTrigger = event.target.tagName === 'BUTTON';
 
             if (openMenuKeys && isTrigger && this.props.onClick) {
@@ -61773,7 +61773,7 @@
           /*#__PURE__*/
           // eslint-disable-next-line jsx-a11y/no-static-element-interactions
           React__default["default"].createElement("div", {
-            className: classNames$1('slds-picklist slds-dropdown-trigger slds-dropdown-trigger_click', {
+            className: classnames('slds-picklist slds-dropdown-trigger slds-dropdown-trigger_click', {
               'slds-is-open': this.state.isOpen
             }, this.props.className),
             onKeyDown: this.handleKeyDown,
@@ -61866,7 +61866,7 @@
           }
         }, '* ') : null;
         return /*#__PURE__*/React__default["default"].createElement("div", {
-          className: classNames$1('slds-form-element', {
+          className: classnames('slds-form-element', {
             'slds-has-error': errorText
           }, className)
         }, this.props.label ? /*#__PURE__*/React__default["default"].createElement("label", {
@@ -61957,7 +61957,7 @@
 
     var Item$2 = function Item(props) {
       return /*#__PURE__*/React__default["default"].createElement("li", {
-        className: classNames$1('slds-nav-vertical__item', {
+        className: classnames('slds-nav-vertical__item', {
           'slds-is-active': props.isSelected
         })
       }, /*#__PURE__*/React__default["default"].createElement("a", {
@@ -61970,9 +61970,9 @@
           handleClick(event, props);
         }
       }, props.item.icon ? /*#__PURE__*/React__default["default"].createElement(React__default["default"].Fragment, null, /*#__PURE__*/React__default["default"].cloneElement(props.item.icon, {
-        className: classNames$1(props.item.icon.props.className, "slds-m-right_".concat(props.item.icon.props.size || 'medium'))
+        className: classnames(props.item.icon.props.className, "slds-m-right_".concat(props.item.icon.props.size || 'medium'))
       }), props.item.label) : props.item.label, props.item.notificationBadge ? /*#__PURE__*/React__default["default"].cloneElement(props.item.notificationBadge, {
-        className: classNames$1(props.item.notificationBadge.props.className, 'slds-col_bump-left')
+        className: classnames(props.item.notificationBadge.props.className, 'slds-col_bump-left')
       }) : /*#__PURE__*/React__default["default"].createElement(React__default["default"].Fragment, null)));
     }; // ### Display Name
     // Always use the canonical component name as the React display name.
@@ -62188,7 +62188,7 @@
           var rootId = this.getId();
           return /*#__PURE__*/React__default["default"].createElement("nav", {
             id: rootId,
-            className: classNames$1('slds-nav-vertical', this.props.className)
+            className: classnames('slds-nav-vertical', this.props.className)
           }, this.props.categories.map(function (category) {
             var categoryId = "".concat(rootId, "-").concat(category.id);
 
@@ -62389,7 +62389,7 @@
       return obj;
     }
     var displayName$h = 'Notification';
-    var propTypes$G = {
+    var propTypes$I = {
       iconCategory: PropTypes$2.string,
 
       /**
@@ -62522,7 +62522,7 @@
         value: function getClassName() {
           var _classNames;
 
-          return classNames$1(this.props.className, 'slds-notify', (_classNames = {}, _defineProperty$n(_classNames, "slds-notify_".concat(this.props.variant), this.props.variant), _defineProperty$n(_classNames, "slds-theme_".concat(this.props.theme), this.props.theme), _defineProperty$n(_classNames, 'slds-theme_alert-texture', this.props.texture), _classNames));
+          return classnames(this.props.className, 'slds-notify', (_classNames = {}, _defineProperty$n(_classNames, "slds-notify_".concat(this.props.variant), this.props.variant), _defineProperty$n(_classNames, "slds-theme_".concat(this.props.theme), this.props.theme), _defineProperty$n(_classNames, 'slds-theme_alert-texture', this.props.texture), _classNames));
         }
         /*
          * The parent container with role='alert' only announces its content if there is a change inside of it.
@@ -62653,7 +62653,7 @@
     }(React__default["default"].Component);
 
     Notification.displayName = displayName$h;
-    Notification.propTypes = propTypes$G;
+    Notification.propTypes = propTypes$I;
     Notification.defaultProps = defaultProps$t;
     var Notification$1 = Notification;
 
@@ -62702,7 +62702,7 @@
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
     var displayName$g = 'PageHeaderInfo';
-    var propTypes$F = {
+    var propTypes$H = {
       /**
        * Optional class name
        */
@@ -62721,7 +62721,7 @@
 
     var Info = function Info(props) {
       if (!props.content) return null;
-      var classes = classNames$1({
+      var classes = classnames({
         'slds-page-header__name-meta': props.variant === 'base',
         'slds-page-header__meta-text': props.variant === 'object-home' || props.variant === 'objectHome' || props.variant === 'related-list' || props.variant === 'relatedList'
       }, props.className);
@@ -62738,12 +62738,12 @@
     };
 
     Info.displayName = displayName$g;
-    Info.propTypes = propTypes$F;
+    Info.propTypes = propTypes$H;
     var Info$1 = Info;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
     var displayName$f = 'PageHeaderLabel';
-    var propTypes$E = {
+    var propTypes$G = {
       /**
        * Contents of label section
        */
@@ -62775,7 +62775,7 @@
     };
 
     Label.displayName = displayName$f;
-    Label.propTypes = propTypes$E;
+    Label.propTypes = propTypes$G;
     var Label$1 = Label;
 
     function _typeof$w(obj) {
@@ -62910,7 +62910,7 @@
       return _getPrototypeOf$w(o);
     }
     var displayName$e = 'PageHeaderTitle';
-    var propTypes$D = {
+    var propTypes$F = {
       /**
        * Sets the vertical alignment on the title
        */
@@ -62957,7 +62957,7 @@
         key: "render",
         value: function render() {
           if (!this.props.content) return null;
-          var classes = classNames$1('slds-page-header__title', this.props.className, _defineProperty$m({
+          var classes = classnames('slds-page-header__title', this.props.className, _defineProperty$m({
             'slds-truncate': this.props.truncate
           }, "slds-align-".concat(this.props.align), this.props.align));
           return /*#__PURE__*/React__default["default"].createElement("div", {
@@ -62975,7 +62975,7 @@
     }(React$3.Component);
 
     Title.displayName = displayName$e;
-    Title.propTypes = propTypes$D;
+    Title.propTypes = propTypes$F;
     Title.defaultProps = defaultProps$s;
     var Title$1 = Title;
 
@@ -63111,7 +63111,7 @@
       return _getPrototypeOf$v(o);
     }
     var displayName$d = 'PageHeaderDetailRow';
-    var propTypes$C = {
+    var propTypes$E = {
       /**
        * Optional class name
        */
@@ -63182,7 +63182,7 @@
               truncate = _this$props.truncate;
 
           if (typeof content === 'string') {
-            var labelClasses = classNames$1({
+            var labelClasses = classnames({
               'slds-truncate': truncate
             });
             return /*#__PURE__*/React__default["default"].createElement("div", {
@@ -63202,7 +63202,7 @@
           var _this$props2 = this.props,
               content = _this$props2.content,
               truncate = _this$props2.truncate;
-          var labelClasses = classNames$1({
+          var labelClasses = classnames({
             'slds-truncate': truncate
           });
           return /*#__PURE__*/React__default["default"].createElement(Tooltip$1, {
@@ -63241,7 +63241,7 @@
               truncate = _this$props3.truncate;
 
           if (typeof label === 'string') {
-            var labelClasses = classNames$1('slds-text-title', {
+            var labelClasses = classnames('slds-text-title', {
               'slds-truncate': truncate
             });
             return /*#__PURE__*/React__default["default"].createElement("div", {
@@ -63258,7 +63258,7 @@
           var _this$props4 = this.props,
               className = _this$props4.className,
               flavor = _this$props4.flavor;
-          var classes = classNames$1('slds-page-header__detail-block', className, _defineProperty$l({}, "slds-size_".concat(flavor), flavor));
+          var classes = classnames('slds-page-header__detail-block', className, _defineProperty$l({}, "slds-size_".concat(flavor), flavor));
           return /*#__PURE__*/React__default["default"].createElement("li", {
             className: classes
           }, this.renderLabel(), this.state.showTooltip ? this.renderContentWithTooltip() : this.renderContent());
@@ -63269,7 +63269,7 @@
     }(React$3.Component);
 
     DetailBlock.displayName = displayName$d;
-    DetailBlock.propTypes = propTypes$C;
+    DetailBlock.propTypes = propTypes$E;
     DetailBlock.defaultProps = defaultProps$r;
     var DetailBlock$1 = DetailBlock;
 
@@ -63390,7 +63390,7 @@
       return _getPrototypeOf$u(o);
     }
     var displayName$c = 'PageHeaderDetailRow';
-    var propTypes$B = {
+    var propTypes$D = {
       children: PropTypes$2.node,
 
       /**
@@ -63441,7 +63441,7 @@
       }, {
         key: "render",
         value: function render() {
-          var classes = classNames$1('slds-page-header__detail-row', this.props.className);
+          var classes = classnames('slds-page-header__detail-row', this.props.className);
           return /*#__PURE__*/React__default["default"].createElement("ul", {
             className: classes
           }, this.renderDetails());
@@ -63452,7 +63452,7 @@
     }(React$3.Component);
 
     DetailRow.displayName = displayName$c;
-    DetailRow.propTypes = propTypes$B;
+    DetailRow.propTypes = propTypes$D;
     DetailRow.defaultProps = defaultProps$q;
     var DetailRow$1 = DetailRow;
 
@@ -63591,7 +63591,7 @@
       return _getPrototypeOf$t(o);
     }
     var displayName$b = 'PageHeaderControls';
-    var propTypes$A = {
+    var propTypes$C = {
       /**
        * Optional class name
        */
@@ -63664,7 +63664,7 @@
             }
 
             return /*#__PURE__*/React__default["default"].createElement("div", {
-              className: classNames$1("slds-page-header__col-".concat(this.props.type), this.props.className)
+              className: classnames("slds-page-header__col-".concat(this.props.type), this.props.className)
             }, legacyControls || /*#__PURE__*/React__default["default"].createElement("div", {
               className: "slds-page-header__controls"
             }, vettedControls));
@@ -63678,13 +63678,13 @@
     }(React$3.Component);
 
     Controls.displayName = displayName$b;
-    Controls.propTypes = propTypes$A;
+    Controls.propTypes = propTypes$C;
     Controls.defaultProps = defaultProps$p;
     var Controls$1 = Controls;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
     var displayName$a = 'PageHeaderBase';
-    var propTypes$z = {
+    var propTypes$B = {
       /**
        * The page header icon
        */
@@ -63728,7 +63728,7 @@
         var iconClasses = 'slds-page-header__icon';
 
         if (props.icon.props) {
-          iconClasses = classNames$1(props.icon.props.className, iconClasses);
+          iconClasses = classnames(props.icon.props.className, iconClasses);
         }
 
         icon = /*#__PURE__*/React__default["default"].cloneElement(props.icon, {
@@ -63759,12 +63759,12 @@
     };
 
     Base.displayName = displayName$a;
-    Base.propTypes = propTypes$z;
+    Base.propTypes = propTypes$B;
     var Base$1 = Base;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
     var displayName$9 = 'PageHeaderRecordHome';
-    var propTypes$y = {
+    var propTypes$A = {
       /**
        * An array of detail blocks (used in "recordHome" variant)
        */
@@ -63808,7 +63808,7 @@
         var iconClasses = 'slds-page-header__icon';
 
         if (props.icon.props) {
-          iconClasses = classNames$1(props.icon.props.className, iconClasses);
+          iconClasses = classnames(props.icon.props.className, iconClasses);
         }
 
         icon = /*#__PURE__*/React__default["default"].cloneElement(props.icon, {
@@ -63842,12 +63842,12 @@
     };
 
     RecordHome.displayName = displayName$9;
-    RecordHome.propTypes = propTypes$y;
+    RecordHome.propTypes = propTypes$A;
     var RecordHome$1 = RecordHome;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
     var displayName$8 = 'PageHeaderObjectHome';
-    var propTypes$x = {
+    var propTypes$z = {
       /**
        * The label property can be a string or a React element
        */
@@ -63913,7 +63913,7 @@
         var iconClasses = 'slds-page-header__icon';
 
         if (props.icon.props) {
-          iconClasses = classNames$1(props.icon.props.className, iconClasses);
+          iconClasses = classnames(props.icon.props.className, iconClasses);
         }
 
         icon = /*#__PURE__*/React__default["default"].cloneElement(props.icon, {
@@ -63941,7 +63941,7 @@
         }, props.nameSwitcherDropdown) : null)),
         figure: icon
       })), /*#__PURE__*/React__default["default"].createElement(Controls$1, {
-        className: classNames$1({
+        className: classnames({
           'slds-align-middle slds-p-bottom_none': !props.onRenderControls && !props.navRight
         }),
         contentRight: props.contentRight,
@@ -63955,7 +63955,7 @@
         content: props.info,
         variant: props.variant
       })), /*#__PURE__*/React__default["default"].createElement(Controls$1, {
-        className: classNames$1({
+        className: classnames({
           'slds-align-middle': !props.onRenderActions && !props.comntentRight
         }),
         navRight: props.navRight,
@@ -63965,12 +63965,12 @@
     };
 
     ObjectHome.displayName = displayName$8;
-    ObjectHome.propTypes = propTypes$x;
+    ObjectHome.propTypes = propTypes$z;
     var ObjectHome$1 = ObjectHome;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
     var displayName$7 = 'PageHeaderRelatedList';
-    var propTypes$w = {
+    var propTypes$y = {
       /**
        * The label property can be a string or a React element
        */
@@ -64045,7 +64045,7 @@
     };
 
     RelatedList.displayName = displayName$7;
-    RelatedList.propTypes = propTypes$w;
+    RelatedList.propTypes = propTypes$y;
     RelatedList.defaultProps = defaultProps$o;
     var RelatedList$1 = RelatedList;
 
@@ -64166,7 +64166,7 @@
       return _getPrototypeOf$s(o);
     }
     var displayName$6 = PAGE_HEADER;
-    var propTypes$v = {
+    var propTypes$x = {
       /**
        * Optional class name
        */
@@ -64261,7 +64261,7 @@
           var _this$props = this.props,
               className = _this$props.className,
               variant = _this$props.variant;
-          var classes = classNames$1('slds-page-header', {
+          var classes = classnames('slds-page-header', {
             'slds-page-header_record-home': variant === 'record-home' || variant === 'recordHome',
             'slds-page-header_related-list': variant === 'related-list' || variant === 'relatedList',
             'slds-page-header_joined': this.props.joined
@@ -64301,12 +64301,12 @@
     }(React$3.Component);
 
     PageHeader.displayName = displayName$6;
-    PageHeader.propTypes = propTypes$v;
+    PageHeader.propTypes = propTypes$x;
     PageHeader.defaultProps = defaultProps$n;
     var PageHeader$1 = PageHeader; // NOTE: these are private components and are prone to breaking changes.
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
-    var propTypes$u = {
+    var propTypes$w = {
       /**
        * Optional class name
        */
@@ -64318,12 +64318,12 @@
 
     var Control = function Control(props) {
       return /*#__PURE__*/React__default["default"].createElement("div", {
-        className: classNames$1('slds-page-header__control', props.className)
+        className: classnames('slds-page-header__control', props.className)
       }, props.children);
     };
 
     Control.displayName = PAGE_HEADER_CONTROL;
-    Control.propTypes = propTypes$u;
+    Control.propTypes = propTypes$w;
     var Control$1 = Control;
 
     function _typeof$r(obj) {
@@ -64460,7 +64460,7 @@
         key: "render",
         value: function render() {
           return /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-panel', 'slds-grid', 'slds-grid_vertical', 'slds-nowrap', {
+            className: classnames('slds-panel', 'slds-grid', 'slds-grid_vertical', 'slds-nowrap', {
               'slds-panel_filters': this.props.variant === 'filters'
             }, this.props.className)
           }, /*#__PURE__*/React__default["default"].createElement("div", {
@@ -65065,7 +65065,7 @@
           isLocked = _ref.isLocked,
           lockedHeading = _ref.lockedHeading;
       return /*#__PURE__*/React__default["default"].createElement("h3", {
-        className: classNames$1('slds-text-body_small', 'slds-m-vertical_x-small', {
+        className: classnames('slds-text-body_small', 'slds-m-vertical_x-small', {
           'slds-grid': isLocked
         })
       }, isLocked ? lockedHeading : heading, isLocked ? /*#__PURE__*/React__default["default"].createElement(Icon$1, {
@@ -65233,7 +65233,7 @@
 
       return obj;
     }
-    var propTypes$t = {
+    var propTypes$v = {
       /**
        * **Assistive text for accessibility**
        * * `listboxLabel`: This is a label for the listbox. The default is `Selected Options:`.
@@ -65523,7 +65523,7 @@
         removePillTitle: 'Remove'
       }
     };
-    PillContainer.propTypes = propTypes$t;
+    PillContainer.propTypes = propTypes$v;
     var PillContainer$1 = PillContainer;
 
     function _typeof$o(obj) {
@@ -65642,7 +65642,7 @@
       };
       return _getPrototypeOf$o(o);
     }
-    var propTypes$s = {
+    var propTypes$u = {
       /**
        * **Assistive text for accessibility**
        * This object is merged with the default props object on every render.
@@ -65779,11 +65779,11 @@
             "aria-valuenow": this.props.value,
             "aria-valuetext": "".concat(assistiveText.progress, ": ").concat(this.props.value, "%"),
             role: "progressbar",
-            className: classNames$1('slds-progress-bar', this.props.radius ? "slds-progress-bar_".concat(this.props.radius) : null, this.props.thickness ? "slds-progress-bar_".concat(this.props.thickness) : null, this.props.className, {
+            className: classnames('slds-progress-bar', this.props.radius ? "slds-progress-bar_".concat(this.props.radius) : null, this.props.thickness ? "slds-progress-bar_".concat(this.props.thickness) : null, this.props.className, {
               'slds-progress-bar_vertical': this.props.orientation === 'vertical'
             })
           }, /*#__PURE__*/React__default["default"].createElement("span", {
-            className: classNames$1("slds-progress-bar__value", this.props.color ? "slds-progress-bar__value_".concat(this.props.color) : null),
+            className: classnames("slds-progress-bar__value", this.props.color ? "slds-progress-bar__value_".concat(this.props.color) : null),
             style: this.props.orientation === 'vertical' ? {
               height: "".concat(this.props.value, "%")
             } : {
@@ -65799,7 +65799,7 @@
     }(React__default["default"].Component);
 
     ProgressBar$2.displayName = PROGRESS_BAR;
-    ProgressBar$2.propTypes = propTypes$s;
+    ProgressBar$2.propTypes = propTypes$u;
     ProgressBar$2.defaultProps = defaultProps$l;
     var ProgressBar$3 = ProgressBar$2;
 
@@ -65922,7 +65922,7 @@
 
     var displayName$5 = PROGRESS_INDICATOR_STEP; // ### Prop Types
 
-    var propTypes$r = {
+    var propTypes$t = {
       /**
        * **Assistive text for accessibility**
        * This object is merged with the default props object on every render.
@@ -66052,7 +66052,7 @@
           };
 
           var stepButton = props.isDisabled ? /*#__PURE__*/React__default["default"].createElement("a", {
-            className: classNames$1('slds-button', {
+            className: classnames('slds-button', {
               'slds-button_icon': renderIcon
             }, 'slds-progress__marker', {
               'slds-progress__marker_icon': renderIcon
@@ -66067,7 +66067,7 @@
           }, icon, /*#__PURE__*/React__default["default"].createElement("span", {
             className: "slds-assistive-text"
           }, this.props.step.assistiveText || /*#__PURE__*/React__default["default"].createElement(React__default["default"].Fragment, null, "".concat(props.assistiveText.step, " ").concat(props.index + 1, ": "), props.step.label, "- ".concat(status)))) : /*#__PURE__*/React__default["default"].createElement("button", {
-            className: classNames$1('slds-button', {
+            className: classnames('slds-button', {
               'slds-button_icon': renderIcon
             }, 'slds-progress__marker', {
               'slds-progress__marker_icon': renderIcon
@@ -66115,7 +66115,7 @@
           }
 
           return /*#__PURE__*/React__default["default"].createElement("li", {
-            className: classNames$1('slds-progress__item', {
+            className: classnames('slds-progress__item', {
               'slds-is-completed': this.props.isCompleted,
               'slds-is-active': this.props.isSelected && !this.props.isError,
               'slds-has-error': this.props.isError
@@ -66127,7 +66127,7 @@
       return Step;
     }(React__default["default"].Component);
 
-    Step$2.propTypes = propTypes$r;
+    Step$2.propTypes = propTypes$t;
     Step$2.displayName = displayName$5;
     var Step$3 = Step$2; // export is replaced with `ReactDOM.render(<Example />, mountNode);` at runtime
 
@@ -66247,7 +66247,7 @@
       };
       return _getPrototypeOf$m(o);
     }
-    var propTypes$q = {
+    var propTypes$s = {
       /**
        * Assistive text for percentage
        */
@@ -66279,7 +66279,7 @@
         key: "render",
         value: function render() {
           return /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-progress-bar slds-progress-bar_x-small', {
+            className: classnames('slds-progress-bar slds-progress-bar_x-small', {
               'slds-progress-bar_vertical': this.props.orientation === 'vertical'
             }),
             "aria-valuemin": "0",
@@ -66303,7 +66303,7 @@
     }(React__default["default"].Component);
 
     ProgressBar.displayName = 'ProgressBar';
-    ProgressBar.propTypes = propTypes$q;
+    ProgressBar.propTypes = propTypes$s;
     var ProgressBar$1 = ProgressBar;
 
     function _typeof$l(obj) {
@@ -66423,7 +66423,7 @@
       return _getPrototypeOf$l(o);
     }
 
-    var propTypes$p = {
+    var propTypes$r = {
       /**
        * Assistive text for percentage
        */
@@ -66490,7 +66490,7 @@
         value: function render() {
           return /*#__PURE__*/React__default["default"].createElement("div", {
             id: this.getId(),
-            className: classNames$1('slds-progress', {
+            className: classnames('slds-progress', {
               'slds-progress_shade': this.props.variant === 'modal'
             }, {
               'slds-progress_vertical': this.props.orientation === 'vertical'
@@ -66498,7 +66498,7 @@
               'slds-progress_success': this.props.variant === 'setup-assistant'
             }, this.props.className)
           }, /*#__PURE__*/React__default["default"].createElement("ol", {
-            className: classNames$1('slds-progress__list', {
+            className: classnames('slds-progress__list', {
               'slds-progress__list-bordered': this.props.variant === 'setup-assistant'
             })
           }, this.props.children), this.props.orientation !== 'vertical' && /*#__PURE__*/React__default["default"].createElement(ProgressBar$1, {
@@ -66512,7 +66512,7 @@
       return Progress;
     }(React__default["default"].Component);
 
-    Progress.propTypes = propTypes$p;
+    Progress.propTypes = propTypes$r;
     Progress.displayName = PROGRESS_INDICATOR_PROGRESS;
     var Progress$1 = Progress;
 
@@ -66650,7 +66650,7 @@
 
     var displayName$4 = PROGRESS_INDICATOR_STEP_VERTICAL; // ### Prop Types
 
-    var propTypes$o = {
+    var propTypes$q = {
       /**
        * Index of step. Used for id's if no step ID exists
        */
@@ -66725,7 +66725,7 @@
           };
 
           return _this.props.onClick ? /*#__PURE__*/React__default["default"].createElement("button", {
-            className: classNames$1('slds-button slds-progress__marker', {
+            className: classnames('slds-button slds-progress__marker', {
               'slds-progress__marker_icon': renderIcon,
               'slds-progress__marker_icon-success': _this.props.variant === 'setup-assistant' && renderIcon && !_this.props.isError
             }),
@@ -66734,7 +66734,7 @@
           }, icon, /*#__PURE__*/React__default["default"].createElement("span", {
             className: "slds-assistive-text"
           }, _this.props.step.assistiveText || /*#__PURE__*/React__default["default"].createElement(React__default["default"].Fragment, null, "".concat(_this.props.assistiveText.step, " ").concat(_this.props.index + 1, ": "), _this.props.step.label, status ? " - ".concat(status) : ''))) : /*#__PURE__*/React__default["default"].createElement("span", {
-            className: classNames$1('slds-progress__marker', {
+            className: classnames('slds-progress__marker', {
               'slds-progress__marker_icon': renderIcon,
               'slds-progress__marker_icon-success': _this.props.variant === 'setup-assistant' && renderIcon && !_this.props.isError
             })
@@ -66783,7 +66783,7 @@
           }
 
           return /*#__PURE__*/React__default["default"].createElement("li", {
-            className: classNames$1('slds-progress__item', {
+            className: classnames('slds-progress__item', {
               'slds-is-completed': this.props.isCompleted,
               'slds-is-active': this.props.isSelected && !this.props.isError,
               'slds-has-error': this.props.isError
@@ -66795,7 +66795,7 @@
       return StepVertical;
     }(React__default["default"].Component);
 
-    StepVertical.propTypes = propTypes$o;
+    StepVertical.propTypes = propTypes$q;
     StepVertical.displayName = displayName$4;
     var StepVertical$1 = StepVertical; // export is replaced with `ReactDOM.render(<Example />, mountNode);` at runtime
 
@@ -66969,7 +66969,7 @@
       return _getPrototypeOf$j(o);
     }
     var displayName$3 = PROGRESS_INDICATOR;
-    var propTypes$n = {
+    var propTypes$p = {
       /**
        * **Assistive text for accessibility**
        * This object is merged with the default props object on every render.
@@ -67246,13 +67246,13 @@
     }(React__default["default"].Component);
 
     ProgressIndicator.displayName = displayName$3;
-    ProgressIndicator.propTypes = propTypes$n;
+    ProgressIndicator.propTypes = propTypes$p;
     ProgressIndicator.defaultProps = defaultProps$k;
     var ProgressIndicator$1 = ProgressIndicator;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
     var PROGRESS_RING_SHAPE = 'SLDSProgressRingShape';
-    var propTypes$m = {
+    var propTypes$o = {
       /**
        * HTML id for component.
        */
@@ -67319,7 +67319,7 @@
 
       return /*#__PURE__*/React__default["default"].createElement("div", {
         id: props.id,
-        className: classNames$1('slds-progress-ring', props.className)
+        className: classnames('slds-progress-ring', props.className)
       }, /*#__PURE__*/React__default["default"].createElement("div", {
         "aria-valuemin": "0",
         "aria-valuemax": "100",
@@ -67338,7 +67338,7 @@
     };
 
     ProgressRingShape.displayName = PROGRESS_RING_SHAPE;
-    ProgressRingShape.propTypes = propTypes$m;
+    ProgressRingShape.propTypes = propTypes$o;
     ProgressRingShape.defaultProps = defaultProps$j;
     var ProgressRingShape$1 = ProgressRingShape;
 
@@ -67490,7 +67490,7 @@
      */
 
     var THEME_CLASSES = (_THEME_CLASSES = {}, _defineProperty$f(_THEME_CLASSES, THEME_OPTIONS.ACTIVE, 'slds-progress-ring_active-step'), _defineProperty$f(_THEME_CLASSES, THEME_OPTIONS.WARNING, 'slds-progress-ring_warning'), _defineProperty$f(_THEME_CLASSES, THEME_OPTIONS.EXPIRED, 'slds-progress-ring_expired'), _defineProperty$f(_THEME_CLASSES, THEME_OPTIONS.COMPLETE, 'slds-progress-ring_complete'), _THEME_CLASSES);
-    var propTypes$l = {
+    var propTypes$n = {
       /**
        * HTML id for component.
        */
@@ -67613,7 +67613,7 @@
           return /*#__PURE__*/React__default["default"].createElement(ProgressRingShape$1, {
             id: this.props.id,
             size: this.props.size,
-            className: classNames$1(this.props.className, this.themeClass(), {
+            className: classnames(this.props.className, this.themeClass(), {
               'slds-progress-ring_large': this.props.size === 'large'
             }),
             fillPercentDecimal: this.percentDecimal(),
@@ -67626,7 +67626,7 @@
     }(React__default["default"].Component);
 
     ProgressRing.displayName = PROGRESS_RING;
-    ProgressRing.propTypes = propTypes$l;
+    ProgressRing.propTypes = propTypes$n;
     ProgressRing.defaultProps = defaultProps$i;
     var ProgressRing$1 = ProgressRing;
 
@@ -67835,7 +67835,7 @@
       };
       return _getPrototypeOf$h(o);
     }
-    var propTypes$k = {
+    var propTypes$m = {
       /**
        * **Assistive text for accessibility.**
        * * `icon`: The assistive text for the icon. Is overridden by `label` assistive text passed directly to an `Icon` component via the `icon` prop
@@ -67911,7 +67911,7 @@
           }
 
           return /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1("slds-scoped-notification", "slds-media", "slds-media_center", {
+            className: classnames("slds-scoped-notification", "slds-media", "slds-media_center", {
               'slds-scoped-notification_light': this.props.theme === 'light',
               'slds-scoped-notification_dark': this.props.theme === 'dark'
             }, this.props.className),
@@ -67928,7 +67928,7 @@
     }(React__default["default"].Component);
 
     ScopedNotification.displayName = SCOPED_NOTIFICATION;
-    ScopedNotification.propTypes = propTypes$k;
+    ScopedNotification.propTypes = propTypes$m;
     ScopedNotification.defaultProps = defaultProps$h;
     var ScopedNotification$1 = ScopedNotification;
 
@@ -68144,7 +68144,7 @@
       };
       return _getPrototypeOf$g(o);
     }
-    var propTypes$j = {
+    var propTypes$l = {
       /**
        * Accepts SetupAssistantStep components only as children.
        */
@@ -68225,7 +68225,7 @@
 
           var steps = /*#__PURE__*/React__default["default"].createElement("ol", {
             id: this.getId(),
-            className: classNames$1('slds-setup-assistant', this.props.className)
+            className: classnames('slds-setup-assistant', this.props.className)
           }, React__default["default"].Children.map(this.props.children, function (child, i) {
             if (child.type.displayName !== SETUP_ASSISTANT_STEP) return null;
             return /*#__PURE__*/React__default["default"].cloneElement(child, _objectSpread$5({
@@ -68246,7 +68246,7 @@
     }(React__default["default"].Component);
 
     SetupAssistant.displayName = SETUP_ASSISTANT;
-    SetupAssistant.propTypes = propTypes$j;
+    SetupAssistant.propTypes = propTypes$l;
     SetupAssistant.defaultProps = defaultProps$g;
     var SetupAssistant$1 = SetupAssistant;
 
@@ -68419,7 +68419,7 @@
 
       return obj;
     }
-    var propTypes$i = {
+    var propTypes$k = {
       /**
        * **Assistive text for accessibility**
        * This object is merged with the default props object on every render.
@@ -68570,7 +68570,7 @@
           }) : this.props.heading), /*#__PURE__*/React__default["default"].createElement("p", null, this.props.description)), /*#__PURE__*/React__default["default"].createElement("div", {
             className: "slds-media__figure slds-media__figure_reverse"
           }, this.props.onRenderAction ? this.props.onRenderAction() : null, this.props.estimatedTime ? /*#__PURE__*/React__default["default"].createElement("p", {
-            className: classNames$1('slds-text-align_right', 'slds-text-color_weak', {
+            className: classnames('slds-text-align_right', 'slds-text-color_weak', {
               'slds-p-top_medium': this.props.onRenderAction !== undefined
             })
           }, this.props.estimatedTime) : null));
@@ -68636,12 +68636,12 @@
         value: function render() {
           var assistiveText = lodash_assign({}, defaultProps$f.assistiveText, this.props.assistiveText);
           return /*#__PURE__*/React__default["default"].createElement("li", {
-            className: classNames$1('slds-setup-assistant__item', this.props.className),
+            className: classnames('slds-setup-assistant__item', this.props.className),
             id: this.getId()
           }, /*#__PURE__*/React__default["default"].createElement("article", {
             className: "slds-setup-assistant__step"
           }, this.props.isExpandable ? /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-summary-detail', {
+            className: classnames('slds-summary-detail', {
               'slds-is-open': this.getIsOpen()
             })
           }, /*#__PURE__*/React__default["default"].createElement(Button$3, {
@@ -68672,7 +68672,7 @@
     }(React__default["default"].Component);
 
     Step.displayName = SETUP_ASSISTANT_STEP;
-    Step.propTypes = propTypes$i;
+    Step.propTypes = propTypes$k;
     Step.defaultProps = defaultProps$f;
     var Step$1 = Step;
 
@@ -68863,7 +68863,7 @@
 
       return obj;
     }
-    var propTypes$h = {
+    var propTypes$j = {
       /**
        * The `aria-describedby` attribute is used to indicate the IDs of the elements that describe the object. It is used to establish a relationship between widgets or groups and text that described them. This is very similar to aria-labelledby: a label describes the essence of an object, while a description provides more information that the user might need.
        */
@@ -69027,11 +69027,11 @@
 
           var labelText = this.props.label || this.props.assistiveText && this.props.assistiveText.label;
           return /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-form-element', {
+            className: classnames('slds-form-element', {
               'slds-has-error': this.props.errorText
             }, this.props.classNameContainer)
           }, /*#__PURE__*/React__default["default"].createElement("label", {
-            className: classNames$1('slds-form-element__label', {
+            className: classnames('slds-form-element__label', {
               'slds-assistive-text': this.props.assistiveText && !this.props.label
             }),
             htmlFor: this.getId()
@@ -69046,7 +69046,7 @@
           }, ' ', assistiveText.disabled) : null)), /*#__PURE__*/React__default["default"].createElement("div", {
             className: "slds-form-element__control"
           }, /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-slider', {
+            className: classnames('slds-slider', {
               'slds-slider_vertical': this.props.vertical,
               'slds-size_x-small': this.props.size === 'x-small',
               'slds-size_small': this.props.size === 'small',
@@ -69083,7 +69083,7 @@
 
     _defineProperty$b(Slider, "displayName", SLIDER);
 
-    _defineProperty$b(Slider, "propTypes", propTypes$h);
+    _defineProperty$b(Slider, "propTypes", propTypes$j);
 
     _defineProperty$b(Slider, "defaultProps", defaultProps$e);
 
@@ -69130,7 +69130,7 @@
           events = _ref.events;
       var toggleAssistiveText = isOpen ? assistiveText.toggleButtonOpen : assistiveText.toggleButtonClose;
       return /*#__PURE__*/React__default["default"].createElement(Button$3, {
-        className: classNames$1('slds-button slds-button_icon slds-split-view__toggle-button', {
+        className: classnames('slds-button slds-button_icon slds-split-view__toggle-button', {
           'slds-is-open': isOpen
         }),
         "aria-expanded": isOpen,
@@ -69283,7 +69283,7 @@
 
       return obj;
     }
-    var propTypes$g = {
+    var propTypes$i = {
       /**
        * **Assistive text for accessibility**
        * * `toggleButtonOpen`: The button used to open the split view.
@@ -69407,7 +69407,7 @@
 
           return /*#__PURE__*/React__default["default"].createElement("div", {
             id: this.getId(),
-            className: classNames$1('slds-grid', this.props.className),
+            className: classnames('slds-grid', this.props.className),
             style: {
               height: '100%'
             }
@@ -69416,7 +69416,7 @@
               maxWidth: this.getIsOpen() ? this.props.masterWidth : '0',
               minWidth: this.getIsOpen() ? this.props.masterWidth : '0'
             },
-            className: classNames$1('slds-split-view_container', {
+            className: classnames('slds-split-view_container', {
               'slds-is-open': this.getIsOpen()
             }, {
               'slds-is-closed': !this.getIsOpen()
@@ -69447,7 +69447,7 @@
 
     _defineProperty$a(SplitView, "displayName", SPLIT_VIEW);
 
-    _defineProperty$a(SplitView, "propTypes", propTypes$g);
+    _defineProperty$a(SplitView, "propTypes", propTypes$i);
 
     _defineProperty$a(SplitView, "defaultProps", defaultProps$c);
 
@@ -69506,7 +69506,7 @@
 
       return target;
     }
-    var propTypes$f = {};
+    var propTypes$h = {};
     var defaultProps$b = {};
     /**
      * The Split View Header takes the same properties as the [PageHeader](https://react.lightningdesignsystem.com/components/page-headers/) component.
@@ -69517,18 +69517,18 @@
           rest = _objectWithoutProperties$2(_ref, ["className"]);
 
       return /*#__PURE__*/React__default["default"].createElement(PageHeader$1, _extends$4({
-        className: classNames$1('slds-split-view__header slds-has-bottom-magnet', className)
+        className: classnames('slds-split-view__header slds-has-bottom-magnet', className)
       }, rest));
     };
 
     SplitViewHeader.displayName = SPLIT_VIEW_HEADER;
-    SplitViewHeader.propTypes = propTypes$f;
+    SplitViewHeader.propTypes = propTypes$h;
     SplitViewHeader.defaultProps = defaultProps$b;
     var SplitViewHeader$1 = SplitViewHeader;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
     var DISPLAY_NAME$1 = 'SLDSSplitViewListItemContent';
-    var propTypes$e = {
+    var propTypes$g = {
       /**
        * **Item to be displayed**
        * * `label`: The main label displayed on the top left.
@@ -69567,7 +69567,7 @@
     };
 
     SplitViewListItemContent.displayName = DISPLAY_NAME$1;
-    SplitViewListItemContent.propTypes = propTypes$e;
+    SplitViewListItemContent.propTypes = propTypes$g;
     SplitViewListItemContent.defaultProps = defaultProps$a;
     var SplitViewListItemContent$1 = SplitViewListItemContent;
 
@@ -69812,7 +69812,7 @@
           key: "render",
           value: function render() {
             return /*#__PURE__*/React__default["default"].createElement("li", {
-              className: classNames$1('slds-split-view__list-item', {
+              className: classnames('slds-split-view__list-item', {
                 'slds-is-unread': this.props.isUnread
               }),
               role: "presentation"
@@ -70054,7 +70054,7 @@
       UP: 'up',
       DOWN: 'down'
     });
-    var propTypes$d = {
+    var propTypes$f = {
       /**
        * **Assistive text for accessibility**
        * * `list`: aria label for the list
@@ -70207,7 +70207,7 @@
         value: function handleKeyDown(event) {
           if (this.props.multiple && event.key === 'a' && event.ctrlKey) {
             // select / deselect all
-            EventUtil$1.trap(event);
+            EventUtil$3.trap(event);
 
             if (this.props.options === this.props.selection) {
               this.deselectAllListItems(event);
@@ -70215,10 +70215,10 @@
               this.selectAllListItems(event);
             }
           } else if (event.key === 'ArrowUp') {
-            EventUtil$1.trap(event);
+            EventUtil$3.trap(event);
             this.moveToPreviousItem(event);
           } else if (event.key === 'ArrowDown') {
-            EventUtil$1.trap(event);
+            EventUtil$3.trap(event);
             this.moveToNextItem(event);
           }
         }
@@ -70350,7 +70350,7 @@
             href: "#",
             role: "button",
             className: "slds-split-view__list-header slds-grid slds-text-link_reset",
-            onClick: EventUtil$1.trappedHandler(this.props.events.onSort)
+            onClick: EventUtil$3.trappedHandler(this.props.events.onSort)
           }, children) : /*#__PURE__*/React__default["default"].createElement("div", {
             style: {
               borderTop: '0'
@@ -70409,7 +70409,7 @@
 
           return /*#__PURE__*/React__default["default"].createElement("div", {
             id: this.props.id,
-            className: classNames$1('slds-grid slds-grid_vertical slds-scrollable_none', this.props.className)
+            className: classnames('slds-grid slds-grid_vertical slds-scrollable_none', this.props.className)
           }, this.header(), /*#__PURE__*/React__default["default"].createElement("ul", {
             className: "slds-scrollable_y",
             "aria-label": this.props.assistiveText.list,
@@ -70427,7 +70427,7 @@
 
     _defineProperty$8(SplitViewListbox, "displayName", SPLIT_VIEW_LISTBOX);
 
-    _defineProperty$8(SplitViewListbox, "propTypes", propTypes$d);
+    _defineProperty$8(SplitViewListbox, "propTypes", propTypes$f);
 
     _defineProperty$8(SplitViewListbox, "defaultProps", defaultProps$8);
 
@@ -70723,11 +70723,11 @@
           var labelText = label || assistiveTextLabel; // One of these is required to pass accessibility tests
 
           return /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-form-element', {
+            className: classnames('slds-form-element', {
               'slds-has-error': errorText
             }, classNameContainer)
           }, labelText && /*#__PURE__*/React__default["default"].createElement("label", {
-            className: classNames$1('slds-form-element__label', {
+            className: classnames('slds-form-element__label', {
               'slds-assistive-text': assistiveTextLabel && !label
             }),
             htmlFor: this.getId()
@@ -70735,9 +70735,9 @@
             className: "slds-required",
             title: "required"
           }, '*'), labelText), /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-form-element__control')
+            className: classnames('slds-form-element__control')
           }, /*#__PURE__*/React__default["default"].createElement("textarea", _extends$3({
-            className: classNames$1('slds-textarea', className),
+            className: classnames('slds-textarea', className),
             autoFocus: autoFocus,
             disabled: disabled,
             id: this.getId(),
@@ -71312,7 +71312,7 @@
 
         _defineProperty$6(_assertThisInitialized$9(_this), "handleKeyDown", function (event) {
           if (_this.props.onKeyDown && event.keyCode) {
-            if (event.keyCode === KEYS.ENTER || event.keyCode === KEYS.DOWN || event.keyCode === KEYS.UP || event.keyCode === KEYS.ESCAPE) {
+            if (event.keyCode === KEYS$1.ENTER || event.keyCode === KEYS$1.DOWN || event.keyCode === KEYS$1.UP || event.keyCode === KEYS$1.ESCAPE) {
               _this.props.onKeyDown(event);
             }
           }
@@ -72010,7 +72010,7 @@
 
       return obj;
     }
-    var propTypes$c = {
+    var propTypes$e = {
       /**
        * **Assistive text for accessibility**
        * This object is merged with the default props object on every render.
@@ -72223,7 +72223,7 @@
           }, /*#__PURE__*/React__default["default"].createElement("h2", {
             className: "slds-text-heading_small"
           }, heading, ' ', labels.headingLink ? /*#__PURE__*/React__default["default"].createElement("a", {
-            onClick: EventUtil$1.trappedHandler(this.props.onClickHeadingLink),
+            onClick: EventUtil$3.trappedHandler(this.props.onClickHeadingLink),
             href: "#"
           }, labels.headingLink) : null), labels.details ? /*#__PURE__*/React__default["default"].createElement("p", null, labels.details) : null), /*#__PURE__*/React__default["default"].createElement(Button$3, {
             assistiveText: {
@@ -72246,7 +72246,7 @@
 
     Toast.defaultProps = defaultProps$7;
     Toast.displayName = TOAST;
-    Toast.propTypes = propTypes$c;
+    Toast.propTypes = propTypes$e;
     var Toast$1 = Toast;
 
     function _typeof$6(obj) {
@@ -72365,7 +72365,7 @@
       };
       return _getPrototypeOf$6(o);
     }
-    var propTypes$b = {
+    var propTypes$d = {
       /**
        * CSS classes to be added to tag with `.slds-notify-container`. Uses `classNames` [API](https://github.com/JedWatson/classnames).
        */
@@ -72404,7 +72404,7 @@
     }(React__default["default"].Component);
 
     ToastContainer.displayName = TOAST_CONTAINER;
-    ToastContainer.propTypes = propTypes$b;
+    ToastContainer.propTypes = propTypes$d;
     var ToastContainer$1 = ToastContainer;
 
     function _defineProperty$3(obj, key, value) {
@@ -72426,7 +72426,7 @@
       var event = _ref.event,
           props = _ref.props,
           fromFocus = _ref.fromFocus;
-      EventUtil$1.trap(event);
+      EventUtil$3.trap(event);
 
       if (isFunction$1(props.onSelect)) {
         props.onSelect({
@@ -72530,19 +72530,19 @@
       var _callbacks;
 
       mapKeyEventCallbacks$1(event, {
-        callbacks: (_callbacks = {}, _defineProperty$3(_callbacks, KEYS.DOWN, {
+        callbacks: (_callbacks = {}, _defineProperty$3(_callbacks, KEYS$1.DOWN, {
           callback: function callback(evt) {
             return handleKeyDownDown$1(evt, props);
           }
-        }), _defineProperty$3(_callbacks, KEYS.UP, {
+        }), _defineProperty$3(_callbacks, KEYS$1.UP, {
           callback: function callback(evt) {
             return handleKeyDownUp$1(evt, props);
           }
-        }), _defineProperty$3(_callbacks, KEYS.LEFT, {
+        }), _defineProperty$3(_callbacks, KEYS$1.LEFT, {
           callback: function callback(evt) {
             return handleKeyDownLeft$1(evt, props);
           }
-        }), _defineProperty$3(_callbacks, KEYS.ENTER, {
+        }), _defineProperty$3(_callbacks, KEYS$1.ENTER, {
           callback: function callback(evt) {
             return handleKeyDownEnter$1(evt, props);
           }
@@ -72590,7 +72590,7 @@
           }
         }
       }, /*#__PURE__*/React__default["default"].createElement("div", {
-        className: classNames$1('slds-tree__item', {
+        className: classnames('slds-tree__item', {
           'slds-is-selected': isSelected
         }),
         onClick: function onClick(event) {
@@ -72707,7 +72707,7 @@
     var Item$1 = Item;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
-    var propTypes$a = {
+    var propTypes$c = {
       /**
        * HTML `id` of the wrapping container element.
        */
@@ -72741,7 +72741,7 @@
         // container that includes the header
         React__default["default"].createElement("ul", {
           "aria-labelledby": "".concat(props.htmlId, "__heading"),
-          className: classNames$1('slds-tree', props.initalClassName),
+          className: classnames('slds-tree', props.initalClassName),
           onScroll: function onScroll(event) {
             handleScroll(event, props);
           },
@@ -72752,7 +72752,7 @@
     };
 
     renderInitialNode.displayName = 'TreeInitialNode';
-    renderInitialNode.propTypes = propTypes$a;
+    renderInitialNode.propTypes = propTypes$c;
     var RenderInitialBranch = renderInitialNode;
 
     function _defineProperty$2(obj, key, value) {
@@ -72769,7 +72769,7 @@
 
       return obj;
     }
-    var propTypes$9 = {
+    var propTypes$b = {
       /**
        * HTML `id` of primary element that has `.slds-tree` on it. This component has a wrapping container element outside of `.slds-tree`.
        */
@@ -72842,7 +72842,7 @@
     };
 
     var handleExpand = function handleExpand(event, props) {
-      EventUtil$1.trap(event);
+      EventUtil$3.trap(event);
 
       if (isFunction$1(props.onExpand)) {
         props.onExpand({
@@ -72860,7 +72860,7 @@
       var event = _ref.event,
           props = _ref.props,
           fromFocus = _ref.fromFocus;
-      EventUtil$1.trap(event);
+      EventUtil$3.trap(event);
 
       if (isFunction$1(props.onSelect)) {
         props.onSelect({
@@ -72978,23 +72978,23 @@
       var _callbacks;
 
       mapKeyEventCallbacks$1(event, {
-        callbacks: (_callbacks = {}, _defineProperty$2(_callbacks, KEYS.DOWN, {
+        callbacks: (_callbacks = {}, _defineProperty$2(_callbacks, KEYS$1.DOWN, {
           callback: function callback(evt) {
             return handleKeyDownDown(evt, props);
           }
-        }), _defineProperty$2(_callbacks, KEYS.UP, {
+        }), _defineProperty$2(_callbacks, KEYS$1.UP, {
           callback: function callback(evt) {
             return handleKeyDownUp(evt, props);
           }
-        }), _defineProperty$2(_callbacks, KEYS.RIGHT, {
+        }), _defineProperty$2(_callbacks, KEYS$1.RIGHT, {
           callback: function callback(evt) {
             return handleKeyDownRight(evt, props);
           }
-        }), _defineProperty$2(_callbacks, KEYS.LEFT, {
+        }), _defineProperty$2(_callbacks, KEYS$1.LEFT, {
           callback: function callback(evt) {
             return handleKeyDownLeft(evt, props);
           }
-        }), _defineProperty$2(_callbacks, KEYS.ENTER, {
+        }), _defineProperty$2(_callbacks, KEYS$1.ENTER, {
           callback: function callback(evt) {
             return handleKeyDownEnter(evt, props);
           }
@@ -73079,7 +73079,7 @@
           }
         }
       }, /*#__PURE__*/React__default["default"].createElement("div", {
-        className: classNames$1('slds-tree__item', {
+        className: classnames('slds-tree__item', {
           'slds-is-selected': isSelected
         }),
         onClick: function onClick(event) {
@@ -73111,7 +73111,7 @@
         search: props.searchTerm,
         className: "slds-tree__item-label slds-truncate"
       }, props.label))), isLoading ? loader : null, /*#__PURE__*/React__default["default"].createElement("ul", {
-        className: classNames$1({
+        className: classnames({
           'slds-is-expanded': isExpanded,
           'slds-is-collapsed': !isExpanded
         }),
@@ -73121,7 +73121,7 @@
     };
 
     RenderBranch.displayName = 'Branch';
-    RenderBranch.propTypes = propTypes$9;
+    RenderBranch.propTypes = propTypes$b;
     var RenderBranch$1 = RenderBranch;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
@@ -73508,7 +73508,7 @@
       return obj;
     }
 
-    var propTypes$8 = {
+    var propTypes$a = {
       /**
        * **Assistive text for accessibility.**
        * This object is merged with the default props object on every render.
@@ -73744,11 +73744,11 @@
 
           return /*#__PURE__*/React__default["default"].createElement("div", {
             id: this.props.id,
-            className: classNames$1('slds-tree_container', this.props.className)
+            className: classnames('slds-tree_container', this.props.className)
             /* role="application" */
 
           }, /*#__PURE__*/React__default["default"].createElement("h4", {
-            className: classNames$1('slds-tree__group-header', {
+            className: classnames('slds-tree__group-header', {
               'slds-assistive-text': assistiveText
             }),
             id: "".concat(this.props.id, "__heading")
@@ -73791,12 +73791,12 @@
     }(React__default["default"].Component);
 
     Tree.displayName = TREE;
-    Tree.propTypes = propTypes$8;
+    Tree.propTypes = propTypes$a;
     Tree.defaultProps = defaultProps$6;
     var Tree$1 = Tree;
 
     /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
-    var propTypes$7 = {
+    var propTypes$9 = {
       /**
        * Provide children of the types `<TrialBarButton />` or `<TrialBarDropdown />` to define the structure of the trial bar.
        * ```
@@ -73848,7 +73848,7 @@
     var TrialBar = function TrialBar(props) {
       var labels = lodash_assign({}, defaultProps$5.labels, props.labels);
       return /*#__PURE__*/React__default["default"].createElement("div", {
-        className: classNames$1('slds-trial-header slds-grid', props.className),
+        className: classnames('slds-trial-header slds-grid', props.className),
         style: props.style
       }, /*#__PURE__*/React__default["default"].createElement("div", {
         className: "slds-grid"
@@ -73862,7 +73862,7 @@
     };
 
     TrialBar.displayName = TRIAL_BAR;
-    TrialBar.propTypes = propTypes$7;
+    TrialBar.propTypes = propTypes$9;
     TrialBar.defaultProps = defaultProps$5;
     var TrialBar$1 = TrialBar;
 
@@ -73885,7 +73885,7 @@
     }
     // eslint-disable-next-line react/forbid-foreign-prop-types
 
-    var propTypes$6 = Button$3.propTypes;
+    var propTypes$8 = Button$3.propTypes;
     /**
      *  A [Button](/components/buttons/) within the Trial Bar.
      */
@@ -73901,7 +73901,7 @@
       }));
     };
 
-    TrialBarButton.propTypes = propTypes$6;
+    TrialBarButton.propTypes = propTypes$8;
     TrialBarButton.displayName = TRIAL_BAR_BUTTON;
     var TrialBarButton$1 = TrialBarButton;
 
@@ -73960,7 +73960,7 @@
     }
     // eslint-disable-next-line react/forbid-foreign-prop-types
 
-    var propTypes$5 = MenuDropdown$1.propTypes;
+    var propTypes$7 = MenuDropdown$1.propTypes;
     /**
      *  A [Dropdown](/components/menu-dropdowns/) within the Trial Bar.
      */
@@ -73987,7 +73987,7 @@
       })));
     };
 
-    TrialBarDropdown.propTypes = propTypes$5;
+    TrialBarDropdown.propTypes = propTypes$7;
     TrialBarDropdown.displayName = TRIAL_BAR_DROPDOWN;
     var TrialBarDropdown$1 = TrialBarDropdown;
 
@@ -74107,7 +74107,7 @@
       };
       return _getPrototypeOf$4(o);
     }
-    var propTypes$4 = {
+    var propTypes$6 = {
       /**
        * HTML id for component.
        */
@@ -74191,7 +74191,7 @@
             className: "slds-form-element__control"
           }, this.props.children) : /*#__PURE__*/React__default["default"].createElement("fieldset", {
             id: this.props.id,
-            className: classNames$1("slds-form-element", this.props.className)
+            className: classnames("slds-form-element", this.props.className)
           }, /*#__PURE__*/React__default["default"].createElement("legend", {
             className: "slds-form-element__legend slds-form-element__label"
           }, this.props.label), /*#__PURE__*/React__default["default"].createElement("div", {
@@ -74204,7 +74204,7 @@
     }(React__default["default"].Component);
 
     VisualPicker.displayName = VISUAL_PICKER;
-    VisualPicker.propTypes = propTypes$4;
+    VisualPicker.propTypes = propTypes$6;
     VisualPicker.defaultProps = defaultProps$4;
     var VisualPicker$1 = VisualPicker;
 
@@ -74324,7 +74324,7 @@
       };
       return _getPrototypeOf$3(o);
     }
-    var propTypes$3 = {
+    var propTypes$5 = {
       /**
        * HTML id for component.
        */
@@ -74376,7 +74376,7 @@
           return /*#__PURE__*/React__default["default"].createElement("a", {
             href: this.props.href,
             id: this.props.id,
-            className: classNames$1('slds-box', 'slds-box_link', 'slds-theme_default', 'slds-box_x-small', 'slds-media', 'slds-visual-picker_vertical', this.props.className)
+            className: classnames('slds-box', 'slds-box_link', 'slds-theme_default', 'slds-box_x-small', 'slds-media', 'slds-visual-picker_vertical', this.props.className)
           }, /*#__PURE__*/React__default["default"].createElement("div", {
             className: "slds-media__figure slds-media__figure_fixed-width slds-align_absolute-center slds-m-left_xx-small"
           }, this.props.icon), /*#__PURE__*/React__default["default"].createElement("div", {
@@ -74394,7 +74394,7 @@
     }(React__default["default"].Component);
 
     VisualPickerLink.displayName = VISUAL_PICKER_LINK;
-    VisualPickerLink.propTypes = propTypes$3;
+    VisualPickerLink.propTypes = propTypes$5;
     var VisualPickerLink$1 = VisualPickerLink;
 
     function _typeof$2(obj) {
@@ -74514,7 +74514,7 @@
       return _getPrototypeOf$2(o);
     }
     var displayName$2 = WELCOME_MAT;
-    var propTypes$2 = {
+    var propTypes$4 = {
       /**
        * CSS class names to be added to the container element. `array`, `object`, or `string` are accepted.
        */
@@ -74627,7 +74627,7 @@
 
           var labels = lodash_assign({}, defaultProps$3.labels, this.props.labels);
           var splash = /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-welcome-mat__info-content', this.props.className),
+            className: classnames('slds-welcome-mat__info-content', this.props.className),
             id: "".concat(this.getId(), "-content")
           }, /*#__PURE__*/React__default["default"].createElement("h2", {
             className: "slds-welcome-mat__info-title",
@@ -74639,7 +74639,7 @@
           }, this.props.onRenderInfoActions() ? this.props.onRenderInfoActions() : null, /*#__PURE__*/React__default["default"].createElement("div", {
             className: "slds-m-top_large"
           }, this.props.doNotShowAgainCheckbox ? this.props.doNotShowAgainCheckbox : null)) : null, (this.props.variant === 'steps' || this.props.variant === 'trailhead-connected') && this.props.children ? /*#__PURE__*/React__default["default"].createElement(React__default["default"].Fragment, null, /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-welcome-mat__info-progress', this.state.completedSteps === this.state.totalSteps ? 'slds-welcome-mat__info-progress_complete' : null)
+            className: classnames('slds-welcome-mat__info-progress', this.state.completedSteps === this.state.totalSteps ? 'slds-welcome-mat__info-progress_complete' : null)
           }, this.props.variant === 'trailhead-connected' ? React__default["default"].Children.map(this.props.infoBadge, function (child) {
             return /*#__PURE__*/React__default["default"].cloneElement(child, {
               isComplete: _this2.state.completedSteps === _this2.state.totalSteps ? true : null
@@ -74657,7 +74657,7 @@
             size: "small",
             id: "".concat(this.getId(), "-modal")
           }, /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-welcome-mat', {
+            className: classnames('slds-welcome-mat', {
               'slds-welcome-mat_info-only': this.props.variant === 'info-only'
             }, this.props.children ? null : 'slds-welcome-mat_splash'),
             id: this.getId()
@@ -74666,7 +74666,7 @@
           }, this.props.children ? /*#__PURE__*/React__default["default"].createElement(React__default["default"].Fragment, null, /*#__PURE__*/React__default["default"].createElement("div", {
             className: "slds-welcome-mat__info slds-size_1-of-2"
           }, splash), /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-welcome-mat__tiles', 'slds-size_1-of-2', this.props.variant === 'info-only' ? 'slds-welcome-mat__tiles_info-only' : null)
+            className: classnames('slds-welcome-mat__tiles', 'slds-size_1-of-2', this.props.variant === 'info-only' ? 'slds-welcome-mat__tiles_info-only' : null)
           }, React__default["default"].Children.map(this.props.children, function (child) {
             return /*#__PURE__*/React__default["default"].cloneElement(child, {
               variant: _this2.props.variant
@@ -74681,7 +74681,7 @@
     }(React__default["default"].Component);
 
     WelcomeMat.displayName = displayName$2;
-    WelcomeMat.propTypes = propTypes$2;
+    WelcomeMat.propTypes = propTypes$4;
     WelcomeMat.defaultProps = defaultProps$3;
     var WelcomeMat$1 = WelcomeMat;
 
@@ -74802,7 +74802,7 @@
       return _getPrototypeOf$1(o);
     }
     var displayName$1 = WELCOME_MAT_BADGE;
-    var propTypes$1 = {
+    var propTypes$3 = {
       /**
        *  **Assistive text for accessibility.**
        * * `completed` : For users of assistive technology, assistive text for completed icon.
@@ -74901,7 +74901,7 @@
     }(React__default["default"].Component);
 
     InfoBadge.displayName = displayName$1;
-    InfoBadge.propTypes = propTypes$1;
+    InfoBadge.propTypes = propTypes$3;
     InfoBadge.defaultProps = defaultProps$2;
     var InfoBadge$1 = InfoBadge;
 
@@ -75075,7 +75075,7 @@
       return _getPrototypeOf(o);
     }
     var displayName = WELCOME_MAT_TILE;
-    var propTypes = {
+    var propTypes$2 = {
       /**
        * **Assistive text for accessibility.**
        * This object is merged with the default props object on every render.
@@ -75166,7 +75166,7 @@
           var assistiveText = _objectSpread(_objectSpread({}, defaultProps$1.assistiveText), this.props.assistiveText);
 
           var body = /*#__PURE__*/React__default["default"].createElement(React__default["default"].Fragment, null, /*#__PURE__*/React__default["default"].createElement("div", {
-            className: classNames$1('slds-media__figure', 'slds-media__figure_fixed-width', 'slds-align_absolute-center')
+            className: classnames('slds-media__figure', 'slds-media__figure_fixed-width', 'slds-align_absolute-center')
           }, /*#__PURE__*/React__default["default"].createElement("div", {
             className: "slds-welcome-mat__tile-figure"
           }, /*#__PURE__*/React__default["default"].createElement("div", {
@@ -75189,7 +75189,7 @@
           }, this.props.description))));
           return /*#__PURE__*/React__default["default"].createElement("div", {
             id: this.getId(),
-            className: classNames$1('slds-welcome-mat__tile', this.props.variant === 'info-only' ? 'slds-welcome-mat__tile_info-only' : null, this.props.isComplete && this.props.variant !== 'info-only' ? 'slds-welcome-mat__tile_complete' : null, this.props.className)
+            className: classnames('slds-welcome-mat__tile', this.props.variant === 'info-only' ? 'slds-welcome-mat__tile_info-only' : null, this.props.isComplete && this.props.variant !== 'info-only' ? 'slds-welcome-mat__tile_complete' : null, this.props.className)
           }, this.props.variant === 'info-only' ? /*#__PURE__*/React__default["default"].createElement("div", {
             className: "slds-media"
           }, body) : /*#__PURE__*/React__default["default"].createElement("a", {
@@ -75203,7 +75203,7 @@
     }(React__default["default"].Component);
 
     Tile.displayName = displayName;
-    Tile.propTypes = propTypes;
+    Tile.propTypes = propTypes$2;
     Tile.defaultProps = defaultProps$1;
     var Tile$1 = Tile;
 
@@ -76752,6 +76752,8 @@
 
     // ## Components
     const BUTTON = 'SLDSButton';
+    const GLOBAL_HEADER_FAVORITES = 'SLDSGlobalHeaderFavorites';
+    const GLOBAL_HEADER_NOTIFICATIONS = 'SLDSGlobalHeaderNotifications';
 
     var defaultProps = {
         assistiveText: { icon: '' },
@@ -76791,7 +76793,7 @@
                 if (iconVariant === 'global-header') {
                     iconVariant = 'container';
                 }
-                return classNames$1((_a = {
+                return classnames((_a = {
                         'slds-button': _this.props.variant !== 'link'
                     },
                     _a["slds-button_".concat(_this.props.variant)] = showButtonVariant,
@@ -76815,7 +76817,7 @@
                 var iconSize = !_this.props.iconSize || _this.props.iconVariant
                     ? null
                     : _this.props.iconSize;
-                return (React__default["default"].createElement(SteedosButtonIcon, { category: _this.props.iconCategory || 'utility', className: classNames$1({
+                return (React__default["default"].createElement(SteedosButtonIcon, { category: _this.props.iconCategory || 'utility', className: classnames({
                         'slds-global-header__icon': _this.props.iconVariant === 'global-header',
                     }, _this.props.iconClassName), hint: _this.props.hint, inverse: _this.props.inverse, name: name, path: _this.props.iconPath, position: _this.props.iconPosition, size: iconSize }));
             };
@@ -77037,6 +77039,213 @@
         return Button;
     }(React__default["default"].Component));
 
+    /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
+
+    /* Licensed under BSD 3-Clause - see LICENSE.txt or git.io/sfdc-license */
+    const EventUtil = {
+      trapEvent: event => {
+        if (!event) return;
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (event.nativeEvent && event.nativeEvent.preventDefault) {
+          event.nativeEvent.preventDefault();
+        }
+
+        if (event.nativeEvent && event.nativeEvent.stopPropagation) {
+          event.nativeEvent.stopPropagation();
+        }
+      },
+      trap: event => EventUtil.trapEvent(event),
+      trapImmediate: event => {
+        if (event.stopImmediatePropagation) {
+          event.stopImmediatePropagation();
+        }
+
+        if (event.nativeEvent && event.nativeEvent.stopImmediatePropagation) {
+          event.nativeEvent.stopImmediatePropagation();
+        }
+
+        EventUtil.trap(event);
+      },
+      trappedHandler: handler => {
+        return event => {
+          EventUtil.trap(event);
+
+          if (handler) {
+            handler(event);
+          }
+        };
+      }
+    };
+    var EventUtil$1 = EventUtil;
+
+    const keys = {
+      ENTER: 13,
+      ESCAPE: 27,
+      SPACE: 32,
+      LEFT: 37,
+      UP: 38,
+      RIGHT: 39,
+      DOWN: 40,
+      TAB: 9,
+      DELETE: 46,
+      BACKSPACE: 8
+    }; // Helpful for interaction/event tests. Use with simulate:
+    var KEYS = keys;
+
+    /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
+    var propTypes$1 = {
+        /**
+         * **Assistive text for accessibility**
+         * * `action`: Description of star button. Default is "Toggle Favorite."
+         * * `more`: Description of dropdown menu. Default is "View Favorites."
+         */
+        assistiveText: PropTypes$2.shape({
+            action: PropTypes$2.string,
+            more: PropTypes$2.string,
+        }),
+        /**
+         * Disables the favorites action (star) button and not the related Popover."
+         */
+        actionDisabled: PropTypes$2.bool,
+        /**
+         * Controls whether the favorites action (star) button is selected or not
+         */
+        actionSelected: PropTypes$2.bool,
+        /**
+         * This event fires when the favorites action (star) button is toggled. Passes in `event, { actionSelected }`.
+         */
+        onToggleActionSelected: PropTypes$2.func,
+        /**
+         * A `Popover` component applied to the favorites more button. The props from this popover will be merged and override any default props. The `children` prop will be ignored.
+         */
+        popover: PropTypes$2.node,
+    };
+    /**
+     * A GlobalHeaderFavorites component. The favorites action is used to "favorite" a commonly used page within a user's experience. When a user "favorites" a page by pressing the favorites action, the button icon changes color with a small animation to confirm your selection.
+     */
+    var GlobalHeaderFavorites = /** @class */ (function (_super) {
+        __extends$1(GlobalHeaderFavorites, _super);
+        function GlobalHeaderFavorites() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.toggleActionSelected = function (event) {
+                if (_this.props.onToggleActionSelected) {
+                    _this.props.onToggleActionSelected(event, {
+                        actionSelected: _this.props.actionSelected || false,
+                    });
+                }
+            };
+            return _this;
+        }
+        GlobalHeaderFavorites.prototype.render = function () {
+            var _this = this;
+            var actionAriaProps = {};
+            var popoverProps = lodash_assign({
+                align: 'bottom',
+                body: React__default["default"].createElement("span", null),
+                triggerClassName: 'slds-dropdown-trigger slds-dropdown-trigger_click',
+            }, this.props.popover ? this.props.popover.props : {});
+            // eslint-disable-next-line fp/no-delete
+            delete popoverProps.children;
+            if (this.props.actionSelected) {
+                actionAriaProps['aria-pressed'] = true;
+            }
+            return (React__default["default"].createElement("div", { className: "slds-global-actions__favorites slds-dropdown-trigger slds-dropdown-trigger_click" },
+                React__default["default"].createElement("div", { className: "slds-button-group" },
+                    React__default["default"].createElement(Button, __assign$1({ assistiveText: { icon: this.props.assistiveText.action }, className: classnames('slds-button_icon slds-global-actions__favorites-action', {
+                            'slds-is-disabled': this.props.actionDisabled,
+                            'slds-is-selected': this.props.actionSelected,
+                        }), disabled: this.props.actionDisabled, iconCategory: "utility", iconName: "favorite", iconSize: "small", iconVariant: "border", onClick: this.toggleActionSelected, onKeyDown: function (event) {
+                            if (event.keyCode === KEYS.ENTER) {
+                                EventUtil$1.trapImmediate(event);
+                                _this.toggleActionSelected(event);
+                            }
+                        }, title: this.props.assistiveText.action, variant: "icon" }, actionAriaProps)),
+                    React__default["default"].createElement(Popover, __assign$1({}, popoverProps),
+                        React__default["default"].createElement(Button, { assistiveText: { icon: this.props.assistiveText.more }, className: "slds-button_icon slds-global-actions__favorites-more", iconCategory: "utility", iconName: "down", iconSize: "small", iconVariant: "border", style: {
+                                // this is needed because the popover trigger wrapper janks up the default styles
+                                borderLeft: '0',
+                                borderRadius: '0 .25rem .25rem 0',
+                            }, title: this.props.assistiveText.more, variant: "icon" })))));
+        };
+        return GlobalHeaderFavorites;
+    }(React__default["default"].Component));
+    GlobalHeaderFavorites.displayName = GLOBAL_HEADER_FAVORITES;
+    GlobalHeaderFavorites.defaultProps = {
+        assistiveText: {
+            action: 'Toggle Favorite',
+            more: 'View Favorites',
+        },
+    };
+    GlobalHeaderFavorites.propTypes = propTypes$1;
+
+    /* Copyright (c) 2015-present, salesforce.com, inc. All rights reserved */
+    var propTypes = {
+        /**
+         * **Assistive text for accessibility**
+         * * `newNotificationsAfter`: Assistive text for when there are new notifications, after the notificationCount. The default is ' new notifications'.
+         * * `newNotificationsBefore`: Assistive text for when there are new notifications, before the notificationCount. The default is ''.
+         * * `noNotifications`: Assistive text for when there are no new notifications.
+         */
+        assistiveText: PropTypes$2.shape({
+            newNotificationsAfter: PropTypes$2.string,
+            newNotificationsBefore: PropTypes$2.string,
+            noNotifications: PropTypes$2.string,
+        }),
+        /**
+         * Dictates the number of notifications shown in the new notifications badge.
+         */
+        notificationCount: PropTypes$2.number,
+        /**
+         * A `Popover` component. The props from this popover will be merged and override any default props. The `children` prop will be ignored.
+         */
+        popover: PropTypes$2.node,
+    };
+    /**
+     * A GlobalHeaderNotifications component. Notifications are a way to notify a user about a global change within the application.
+     */
+    var GlobalHeaderNotifications = /** @class */ (function (_super) {
+        __extends$1(GlobalHeaderNotifications, _super);
+        function GlobalHeaderNotifications() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        GlobalHeaderNotifications.prototype.render = function () {
+            var buttonAriaProps = {
+                'aria-live': 'assertive',
+            };
+            var notificationCount = this.props.notificationCount;
+            var popoverProps = lodash_assign({
+                align: 'bottom right',
+                body: React__default["default"].createElement("span", null),
+                triggerClassName: 'slds-dropdown-trigger slds-dropdown-trigger_click',
+            }, this.props.popover ? this.props.popover.props : {});
+            var notificationsAssistiveText = this.props.assistiveText.noNotifications;
+            // eslint-disable-next-line fp/no-delete
+            delete popoverProps.children;
+            if (notificationCount > 0) {
+                notificationsAssistiveText = "".concat(this.props.assistiveText.newNotificationsBefore).concat(notificationCount).concat(this.props.assistiveText.newNotificationsAfter);
+            }
+            else {
+                buttonAriaProps['aria-atomic'] = true;
+            }
+            return (React__default["default"].createElement(Popover, __assign$1({}, popoverProps),
+                React__default["default"].createElement(Button, __assign$1({ assistiveText: { icon: notificationsAssistiveText }, className: "slds-button_icon slds-global-actions__notifications slds-global-actions__item-action", iconCategory: "utility", iconClassName: "slds-global-header__icon", iconName: "notification", iconSize: "small", iconVariant: "container", title: notificationsAssistiveText, variant: "icon" }, buttonAriaProps)),
+                notificationCount > 0 ? (React__default["default"].createElement("span", { "aria-hidden": "true", className: "slds-notification-badge slds-incoming-notification slds-show-notification" }, notificationCount)) : (React__default["default"].createElement("span", { "aria-hidden": "true", className: "slds-notification-badge" }))));
+        };
+        return GlobalHeaderNotifications;
+    }(React__default["default"].Component));
+    GlobalHeaderNotifications.displayName = GLOBAL_HEADER_NOTIFICATIONS;
+    GlobalHeaderNotifications.defaultProps = {
+        assistiveText: {
+            newNotificationsAfter: ' new notifications',
+            newNotificationsBefore: '',
+            noNotifications: 'No new notifications',
+        },
+        notificationCount: 0,
+    };
+    GlobalHeaderNotifications.propTypes = propTypes;
+
     exports.Accordion = Accordion$1;
     exports.AccordionPanel = AccordionPanel$1;
     exports.Alert = Alert$1;
@@ -77094,9 +77303,9 @@
     exports.GlobalHeader = GlobalHeader$1;
     exports.GlobalHeaderButton = Button$1;
     exports.GlobalHeaderDropdown = GlobalHeaderDropdown$1;
-    exports.GlobalHeaderFavorites = GlobalHeaderFavorites$1;
+    exports.GlobalHeaderFavorites = GlobalHeaderFavorites;
     exports.GlobalHeaderHelp = GlobalHeaderHelp$1;
-    exports.GlobalHeaderNotifications = GlobalHeaderNotifications$1;
+    exports.GlobalHeaderNotifications = GlobalHeaderNotifications;
     exports.GlobalHeaderProfile = GlobalHeaderProfile$1;
     exports.GlobalHeaderSearch = GlobalHeaderSearch$1;
     exports.GlobalHeaderSetup = GlobalHeaderSetup$1;
@@ -77202,9 +77411,9 @@
     exports.SLDSGlobalHeader = GlobalHeader$1;
     exports.SLDSGlobalHeaderButton = Button$1;
     exports.SLDSGlobalHeaderDropdown = GlobalHeaderDropdown$1;
-    exports.SLDSGlobalHeaderFavorites = GlobalHeaderFavorites$1;
+    exports.SLDSGlobalHeaderFavorites = GlobalHeaderFavorites$2;
     exports.SLDSGlobalHeaderHelp = GlobalHeaderHelp$1;
-    exports.SLDSGlobalHeaderNotifications = GlobalHeaderNotifications$1;
+    exports.SLDSGlobalHeaderNotifications = GlobalHeaderNotifications$2;
     exports.SLDSGlobalHeaderProfile = GlobalHeaderProfile$1;
     exports.SLDSGlobalHeaderSearch = GlobalHeaderSearch$1;
     exports.SLDSGlobalHeaderSetup = GlobalHeaderSetup$1;
