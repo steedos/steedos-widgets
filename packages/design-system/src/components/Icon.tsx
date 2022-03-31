@@ -16,7 +16,7 @@ const inlineIcons: any = {
 }
 const SteedosIcon = (props: any) => {
   const {category = 'standard', name, path, ...rest} = props
-  const inlineData = inlineIcons[category][name.toLowerCase()]
+  const inlineData = name?inlineIcons[category][name.toLowerCase()]:null
   if (inlineData)
     inlineData.viewBox = inlineIcons[category].viewBox;
   return <Icon 
