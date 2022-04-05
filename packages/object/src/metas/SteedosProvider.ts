@@ -35,6 +35,11 @@ const config: any = {
   // },
   targets: ["steedos__RecordPage", "steedos__AppPage", "steedos__HomePage"],
   engines: ["amis"],
+  configure: {
+      component: {
+          isContainer: true
+      }
+  },
   // settings for amis.
   amis: {
     name: 'steedos-provider',
