@@ -4,7 +4,6 @@ const config: any = {
   title: "华炎魔方容器",
   docUrl: "",
   screenshot: "",
-  icon: "fa-fw fa fa-square-o",
   npm: {
     package: "@steedos-widgets/steedos-object",
     version: "{{version}}",
@@ -38,7 +37,8 @@ const config: any = {
   engines: ["amis"],
   // settings for amis.
   amis: {
-    name: 'steedos-provider'
+    name: 'steedos-provider',
+    icon: "fa-fw fa fa-square-o"
   }
 };
 
@@ -49,30 +49,30 @@ export default {
       title: config.title,
       screenshot: "",
       schema: {
-        componentName: config.name,
+        componentName: config.componentName,
         props: config.preview
       }
     }
   ],
   amis: {
     render: {
-      type: config.name,
+      type: config.amis.name,
       usage: "renderer",
       weight: 1,
       framework: "react"
     },
     plugin: {
-      rendererName: config.name,
+      rendererName: config.amis.name,
       $schema: '/schemas/UnkownSchema.json',
       name: config.title,
       description: config.title,
       tags: [config.group],
       order: -9999,
-      icon: config.icon,
+      icon: config.amis.icon,
       scaffold: {
-        type: config.name,
+        type: config.amis.name,
         label: config.title,
-        name: config.name,
+        name: config.amis.name,
         body: [], // 容器类字段
         ...config.preview,
       },
@@ -84,7 +84,7 @@ export default {
         },
       ],
       previewSchema: {
-        type: config.name,
+        type: config.amis.name,
         ...config.preview
       },
       panelTitle: "设置",

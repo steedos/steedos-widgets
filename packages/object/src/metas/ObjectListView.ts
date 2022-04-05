@@ -1,10 +1,14 @@
+/*
+ * @Author: baozhoutao@steedos.com
+ * @Date: 2022-04-05 15:11:21
+ * @Description: 
+ */
 const config: any = {
   group: "华炎魔方",
   componentName: "ObjectListView",
   title: "列表视图",
   docUrl: "",
   screenshot: "",
-  icon: "fa-fw fa fa-table",
   npm: {
     package: "@steedos-widgets/steedos-object",
     version: "{{version}}",
@@ -27,7 +31,8 @@ const config: any = {
   engines: ["amis"],
   // settings for amis.
   amis: {
-    name: 'steedos-object-listview'
+    name: 'steedos-object-listview',
+    icon: "fa-fw fa fa-table"
   }
 };
 
@@ -38,34 +43,34 @@ export default {
       title: config.title,
       screenshot: "",
       schema: {
-        componentName: config.name,
+        componentName: config.componentName,
         props: config.preview
       }
     }
   ],
   amis: {
     render: {
-      type: config.name,
+      type: config.amis.name,
       usage: "renderer",
       weight: 1,
       framework: "react"
     },
     plugin: {
-      rendererName: config.name,
+      rendererName: config.amis.name,
       $schema: '/schemas/UnkownSchema.json',
       name: config.title,
       description: config.title,
       tags: [config.group],
       order: -9999,
-      icon: config.icon,
+      icon: config.amis.icon,
       scaffold: {
-        type: config.name,
+        type: config.amis.name,
         label: config.title,
-        name: config.name,
+        name: config.amis.name,
         ...config.preview
       },
       previewSchema: {
-        type: config.name,
+        type: config.amis.name,
         ...config.preview
       },
       panelTitle: "设置",
