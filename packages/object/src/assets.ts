@@ -13,12 +13,12 @@ export default {
         "https://unpkg.com/@steedos-widgets/steedos-object/dist/builder-widgets.umd.js",
         "https://unpkg.com/@steedos-widgets/steedos-object/dist/builder-widgets.umd.css"
       ],
-      library: "BuilderWidgets"
+      library: "SteedosObjectWidgets"
     }
   ],
   components: [
     {
-      exportName: "BuilderWidgetsMeta",
+      exportName: "SteedosObjectWidgetsMeta",
       npm: {
         package: "@steedos-widgets/steedos-object"
       },

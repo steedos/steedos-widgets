@@ -160,7 +160,7 @@ export default [
     output: {
       format: 'umd',
       file: 'dist/builder-widgets.umd.js',
-      name: 'BuilderWidgets',
+      name: 'SteedosObjectWidgets',
       sourcemap: false,
       globals
     },
@@ -212,7 +212,7 @@ export default [
     output: {
       file: "dist/meta.js",
       format: "umd",
-      name: "BuilderWidgetsMeta",
+      name: "SteedosObjectWidgetsMeta",
       sourcemap: false
     }
   },
@@ -223,7 +223,7 @@ export default [
     output: {
       file: "dist/assets.js",
       format: "umd",
-      name: "BuilderWidgetsAssets",
+      name: "SteedosObjectWidgetsAssets",
       sourcemap: false
     }
   }

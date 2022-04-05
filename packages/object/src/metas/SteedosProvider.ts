@@ -1,6 +1,5 @@
 const config: any = {
   group: "华炎魔方",
-  name: "steedos-provider",
   componentName: "SteedosProvider",
   title: "华炎魔方容器",
   docUrl: "",

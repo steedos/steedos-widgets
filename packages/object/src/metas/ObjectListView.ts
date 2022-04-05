@@ -1,6 +1,5 @@
 const config: any = {
   group: "华炎魔方",
-  name: "steedos-object-listview",
   componentName: "ObjectListView",
   title: "列表视图",
   docUrl: "",

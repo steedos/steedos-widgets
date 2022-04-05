@@ -1,6 +1,5 @@
 const config: any = {
   group: "华炎魔方",
-  name: "steedos-object-form",
   componentName: "ObjectForm",
   title: "对象表单",
   docUrl: "",
