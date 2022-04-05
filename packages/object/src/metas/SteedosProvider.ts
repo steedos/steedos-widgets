@@ -6,7 +6,7 @@ const config: any = {
   screenshot: "",
   icon: "fa-fw fa fa-square-o",
   npm: {
-    package: "@steedos-ui/builder-widgets",
+    package: "@steedos-widgets/steedos-object",
     version: "{{version}}",
     exportName: "SteedosProvider",
     main: "",
