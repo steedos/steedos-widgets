@@ -26,7 +26,9 @@ const config: any = {
   targets: ["steedos__RecordPage", "steedos__AppPage", "steedos__HomePage"],
   engines: ["amis"],
   // settings for amis.
-  amis: {}
+  amis: {
+    name: 'steedos-object-listview'
+  }
 };
 
 export default {
