@@ -7,7 +7,7 @@ const config: any = {
   screenshot: "",
   icon: "fa-fw fa fa-square-o",
   npm: {
-    package: "@steedos-widgets/steedos-object",
+    package: "@steedos-ui/builder-widgets",
     version: "{{version}}",
     exportName: "SteedosProvider",
     main: "",
@@ -19,10 +19,22 @@ const config: any = {
       name: "rootUrl",
       propType: "string"
     },
+    {
+      name: "tenantId",
+      propType: "string"
+    },
+    {
+      name: "userId",
+      propType: "string"
+    },
+    {
+      name: "authToken",
+      propType: "string"
+    },
   ],
-  preview: {
-    rootUrl: ""
-  },
+  // preview: {
+  //   rootUrl: ""
+  // },
   targets: ["steedos__RecordPage", "steedos__AppPage", "steedos__HomePage"],
   engines: ["amis"],
   // settings for amis.
@@ -50,7 +62,7 @@ export default {
     },
     plugin: {
       rendererName: config.name,
-      // $schema: '/schemas/UnkownSchema.json',
+      $schema: '/schemas/UnkownSchema.json',
       name: config.title,
       description: config.title,
       tags: [config.group],
@@ -79,8 +91,23 @@ export default {
         {
           type: "text",
           name: "rootUrl",
-          label: "标题"
+          label: "rootUrl",
         },
+        {
+          type: "text",
+          name: 'tenantId',
+          label: 'tenantId',
+        },
+        {
+          type: "text",
+          name: 'userId',
+          label: 'userId',
+        },
+        {
+          type: "text",
+          name: 'authToken',
+          label: 'authToken',
+        }
       ]
     }
   }

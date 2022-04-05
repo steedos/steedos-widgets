@@ -7,7 +7,7 @@ const config: any = {
   screenshot: "",
   icon: "fa-fw fa fa-table",
   npm: {
-    package: "@steedos-widgets/steedos-object",
+    package: "@steedos-ui/builder-widgets",
     version: "{{version}}",
     exportName: "ObjectListView",
     main: "",
@@ -51,7 +51,7 @@ export default {
     },
     plugin: {
       rendererName: config.name,
-      // $schema: '/schemas/UnkownSchema.json',
+      $schema: '/schemas/UnkownSchema.json',
       name: config.title,
       description: config.title,
       tags: [config.group],
@@ -72,8 +72,14 @@ export default {
         {
           type: "text",
           name: "objectApiName",
-          label: "标题"
+          label: "object Api Name",
         },
+        {
+          type: "text",
+          name: "listName",
+          label: "list Name",
+          value: "all"
+        }
       ]
     }
   }

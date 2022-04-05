@@ -9,6 +9,7 @@ import { babel } from '@rollup/plugin-babel'
 import path from 'path';
 import postcss from 'rollup-plugin-postcss'
 import svg from 'rollup-plugin-svg';
+import image from '@rollup/plugin-image';
 import alias from '@rollup/plugin-alias';
 import visualizer from 'rollup-plugin-visualizer'
 import uglify from "@lopatnov/rollup-plugin-uglify";
@@ -36,11 +37,7 @@ const external = [
   'lodash',
   "@steedos-builder/sdk",
   "@steedos-builder/react",
-  "@salesforce-ux/design-system/assets/icons",
   // "@salesforce-ux/design-system/",
-  "@salesforce/design-system-react",
-  "@salesforce/design-system-react/",
-  "@salesforce/design-system-react/*",
   "@steedos-widgets/design-system",
   // "@chakra-ui/react",
   // "antd",
@@ -48,6 +45,7 @@ const external = [
 const globals = {
   'react': 'React',
   'react-dom': 'ReactDOM',
+  'lodash': '_',
   '@steedos-builder/sdk': 'BuilderSDK',
   '@steedos-builder/react': 'BuilderReact',
   "@steedos-widgets/design-system": 'DesignSystem',
@@ -73,7 +71,7 @@ const options = {
     }),
     // Allow json resolution
     json(),
-
+    image(),
     svg(),
     postcss({
       config: false,
@@ -83,7 +81,12 @@ const options = {
           '~': path.resolve('../../node_modules'),
         }
       })],
-      use: [["less", { javascriptEnabled: true }]],
+      use: [["less", { 
+        javascriptEnabled: true,
+        modifyVars: {
+          'root-entry-name': 'default'
+        } 
+      }]],
       extract: true,
     }),
     
@@ -136,6 +139,22 @@ const options = {
 };
 
 export default [
+  // {
+  //   ...options,
+  //   external,
+  //   output: [
+  //     { 
+  //       file: 'dist/builder-widgets.react.js', 
+  //       format: 'cjs', 
+  //       sourcemap: false,
+  //       strict: false,
+  //       globals,
+  //     }
+  //   ],
+  //   plugins: options.plugins.concat([
+  //     // sourceMaps(),
+  //   ]),
+  // },
   {
     ...options,
     output: {
@@ -154,23 +173,23 @@ export default [
       // sourceMaps()
     ]),
   },
-  {
-    ...options,
-    output: [
-      { file: pkg.module, format: 'es', sourcemap: true },
-      { file: pkg.main, format: 'cjs', sourcemap: true },
-    ],
-    // Do not resolve for es module build
-    // TODO: should really do a cjs build too (probably for the default build instead of umd...)
-    external: externalDependencies,
-    plugins: options.plugins
-      .filter(plugin => plugin !== resolvePlugin)
-      .concat([
-        resolve({
-          only: [/^\.{0,2}\//, /lodash\-es/],
-        }),
-      ]),
-  },
+  // {
+  //   ...options,
+  //   output: [
+  //     { file: pkg.module, format: 'es', sourcemap: true },
+  //     { file: pkg.main, format: 'cjs', sourcemap: true },
+  //   ],
+  //   // Do not resolve for es module build
+  //   // TODO: should really do a cjs build too (probably for the default build instead of umd...)
+  //   external: externalDependencies,
+  //   plugins: options.plugins
+  //     .filter(plugin => plugin !== resolvePlugin)
+  //     .concat([
+  //       resolve({
+  //         only: [/^\.{0,2}\//, /lodash\-es/],
+  //       }),
+  //     ]),
+  // },
   // {
   //   ...options,
   //   input: 'src/builder-widgets-async.tsx',
@@ -193,7 +212,7 @@ export default [
     output: {
       file: "dist/meta.js",
       format: "umd",
-      name: "Meta",
+      name: "BuilderWidgetsMeta",
       sourcemap: false
     }
   },
@@ -204,7 +223,7 @@ export default [
     output: {
       file: "dist/assets.js",
       format: "umd",
-      name: "Assets",
+      name: "BuilderWidgetsAssets",
       sourcemap: false
     }
   }
