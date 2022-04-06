@@ -216,15 +216,4 @@ export default [
       sourcemap: false
     }
   },
-  // assets build
-  {
-    input: `src/assets.ts`,
-    plugins: [typescript()],
-    output: {
-      file: "dist/assets.js",
-      format: "umd",
-      name: "SteedosObjectWidgetsAssets",
-      sourcemap: false
-    }
-  }
 ];
