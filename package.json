@@ -6,6 +6,12 @@
     "packages/object"
   ],
   "main": "index.js",
+  "scripts": {
+    "build": "yarn build-object",
+    "build-object": "cd packages/object && yarn build",
+    "http": "yarn http-object",
+    "http-object": "cd packages/object && yarn http"
+  },
   "repository": "https://github.com/steedos/steedos-widgets.git",
   "author": "Jack Zhuang <50353452+hotlong@users.noreply.github.com>",
   "license": "MIT",
