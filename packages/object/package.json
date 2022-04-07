@@ -21,7 +21,7 @@
     "_unlink": "yarn unlink *",
     "_install": "yarn install && yarn-install-peers",
     "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
-    "http": "npx http-server ./dist",
+    "http": "npx http-server ./dist --cors *.steedos.com",
     "prebuild": "rimraf dist",
     "build": "cross-env NODE_OPTIONS=--max_old_space_size=4096 rollup -c rollup.config.ts && cp src/assets.json dist",
     "build:docs": "typedoc --out docs --target es6 --theme minimal --mode file src",
