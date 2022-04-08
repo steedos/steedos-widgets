@@ -17,6 +17,25 @@ const config: any = {
       name: "objectApiName",
       propType: "string"
     },
+    {
+      name: "recordId",
+      propType: "string"
+    },
+    {
+      name: "mode",
+      propType: "string",
+      /* 默认值无效
+      defaultValue: "edit"
+      */
+    },
+    {
+      name: "onValuesChange",
+      propType: "func"
+    },
+    {
+      name: "onFinish",
+      propType: "func"
+    },
   ],
   preview: {
     text: "Submit",
