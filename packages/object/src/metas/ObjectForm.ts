@@ -15,26 +15,46 @@ const config: any = {
   props: [
     {
       name: "objectApiName",
-      propType: "string"
+      propType: "string",
+      description: '对象名',
     },
     {
       name: "recordId",
-      propType: "string"
+      propType: "string",
+      description: '记录ID',
     },
     {
       name: "mode",
-      propType: "string",
-      /* 默认值无效
-      defaultValue: "edit"
-      */
+      propType:  {
+        "type": "oneOf",
+        "value": [
+          "read",
+          "edit",
+        ]
+      },
+      description: '显示状态',
+    },
+    {
+      name: "layout",
+      propType:  {
+        "type": "oneOf",
+        "value": [
+          "vertical",
+          "horizontal",
+          "inline"
+        ]
+      },
+      description: '表单布局',
     },
     {
       name: "onValuesChange",
-      propType: "func"
+      propType: "func",
+      description: '字段值更新时触发回调事件',
     },
     {
       name: "onFinish",
-      propType: "func"
+      propType: "func",
+      description: '提交表单且数据验证成功后回调事件',
     },
   ],
   preview: {
