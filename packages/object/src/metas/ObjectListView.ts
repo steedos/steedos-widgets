@@ -22,6 +22,10 @@ const config: any = {
       name: "objectApiName",
       propType: "string"
     },
+    {
+      name: "listName",
+      propType: "string"
+    }, 
   ],
   preview: {
     text: "Submit",
