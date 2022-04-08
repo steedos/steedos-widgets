@@ -20,11 +20,13 @@ const config: any = {
   props: [
     {
       name: "objectApiName",
-      propType: "string"
+      propType: "string",
+      description: '对象名',
     },
     {
       name: "listName",
-      propType: "string"
+      propType: "string",
+      description: '列表视图名称'
     }, 
   ],
   preview: {
