@@ -47,6 +47,14 @@ const config: any = {
       description: '表单布局',
     },
     {
+      name: "fields",
+      propType:  {
+        "type": "arrayOf",
+        "value": "string"
+      },
+      description: '表单中显示的字段',
+    },
+    {
       name: "onValuesChange",
       propType: "func",
       description: '字段值更新时触发回调事件',
