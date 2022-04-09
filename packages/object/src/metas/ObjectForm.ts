@@ -112,7 +112,46 @@ export default {
         {
           type: "text",
           name: "objectApiName",
-          label: "object Api Name"
+          label: "对象名",
+        },
+        {
+          type: "text",
+          name: "recordId",
+          label: "记录ID"
+        },
+        {
+          type: "button-group-select",
+          name: "mode",
+          label: "显示状态",
+          options: [
+            {
+              "label": "read",
+              "value": "read"
+            },
+            {
+              "label": "edit",
+              "value": "edit"
+            }
+          ]
+        },
+        {
+          type: "button-group-select",
+          name: "layout",
+          label: "表单布局",
+          options: [
+            {
+              "label": "vertical",
+              "value": "vertical"
+            },
+            {
+              "label": "horizontal",
+              "value": "horizontal"
+            },
+            {
+              "label": "inline",
+              "value": "inline"
+            },
+          ]
         },
       ]
     }
