@@ -84,12 +84,12 @@ export default {
         {
           type: "text",
           name: "objectApiName",
-          label: "object Api Name",
+          label: "对象名",
         },
         {
           type: "text",
           name: "listName",
-          label: "list Name",
+          label: "列表视图名称",
           value: "all"
         }
       ]
