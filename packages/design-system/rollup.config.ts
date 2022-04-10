@@ -88,7 +88,7 @@ export default [
       visualizer({
         filename: 'stats.html'
       }),
-      // uglify(), 
+      uglify(), 
       // sourceMaps()
     ]),
   },
@@ -99,19 +99,8 @@ export default [
     output: {
       file: "dist/meta.js",
       format: "umd",
-      name: "Meta",
+      name: "DesignSystemMeta",
       sourcemap: false
     }
   },
-  // assets build
-  {
-    input: `src/assets.ts`,
-    plugins: [typescript()],
-    output: {
-      file: "dist/assets.js",
-      format: "umd",
-      name: "Assets",
-      sourcemap: false
-    }
-  }
 ];

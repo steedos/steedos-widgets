@@ -10,7 +10,7 @@ const config: any = {
   docUrl: "",
   screenshot: "",
   npm: {
-    package: "@steedos-widgets/steedos-object",
+    package: "@steedos-ui/builder-community",
     version: "{{version}}",
     exportName: "ObjectListView",
     main: "",
