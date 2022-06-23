@@ -19,8 +19,8 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "paths": {
-      "@/layouts/*": [
-        "layouts/*"
+      "@/*": [
+        "*"
       ]
     }
   },

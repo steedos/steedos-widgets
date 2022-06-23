@@ -2,6 +2,7 @@ import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { SearchIcon } from '@heroicons/react/solid'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
+import { authValidate, goLogin, goLogout, goSignup } from '@/lib/steedos.client';
 
 const user = {
   name: 'Tom Cook',
@@ -16,9 +17,10 @@ const navigation = [
   { name: 'Calendar', href: '#', current: false },
 ]
 const userNavigation = [
-  { name: 'Your Profile', href: '#' },
-  { name: 'Settings', href: '#' },
-  { name: 'Sign out', href: '#' },
+  // { name: 'Your Profile', href: '#' },
+  // { name: 'Settings', href: '#' },
+  { name: 'Sign In', href: '#', onClick: goLogin },
+  { name: 'Sign out', href: '#', onClick: goLogout},
 ]
 
 function classNames(...classes) {
@@ -103,6 +105,7 @@ export default function Navbar({  }) {
                           {({ active }) => (
                             <a
                               href={item.href}
+                              onClick={item.onClick}
                               className={classNames(
                                 active ? 'bg-gray-100' : '',
                                 'block py-2 px-4 text-sm text-gray-700'
