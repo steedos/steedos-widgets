@@ -20,7 +20,7 @@ export default class MyDocument extends Document {
           <meta name="theme-color" content="#ffffff" />
         </Head>
         <body
-          className='antialiased text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900'>
+          className='antialiased text-slate-500 bg-white'>
           <Main />
           <NextScript />
         </body>
