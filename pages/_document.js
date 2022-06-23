@@ -13,7 +13,7 @@ export default class MyDocument extends Document {
       <Html lang="en">
         <Head>
           <script src="https://cdn.tailwindcss.com"></script>
-          <link rel="icon" href="/favicon.ico" />
+          <link rel="icon" href="/favicon.png" />
           <link rel="manifest" href="/manifest.json" />
           <meta name="application-name" content="Steedos" />
   
