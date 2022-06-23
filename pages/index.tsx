@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import Layout from '../layouts/default'
 
 export default function Home() {
   return (
@@ -205,5 +206,12 @@ export default function Home() {
         }
       `}</style>
     </div>
+  )
+}
+
+
+Home.getLayout = function getLayout(page) {
+  return (
+    <Layout>{page}</Layout>
   )
 }
