@@ -14,17 +14,19 @@ export default NextAuth({
   ],
   callbacks: {
     async jwt({ token, account }) {
-      console.log(account)
       // Persist the OAuth access_token to the token right after signin
-      if (account) {
-        token.accessToken = account.access_token
-      }
+      // if (account) {
+      //   token.accessToken = account.access_token
+      // }
       return token
     },
     async session({ session, token, user }) {
       // Send properties to the client, like an access_token from a provider.
-      session.accessToken = token.accessToken
+      // session.accessToken = token.accessToken
       return session
     }
   },
+  pages: {
+    signIn: '/auth/signin',
+  }
 })
