@@ -3,31 +3,52 @@ import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { SearchIcon } from '@heroicons/react/solid'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
 import { authValidate, goLogin, goLogout, goSignup } from '@/lib/steedos.client';
+import { useSession, signIn, signOut } from "next-auth/react"
 
-const user = {
-  name: 'Tom Cook',
-  email: 'tom@example.com',
-  imageUrl:
-    'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-}
 const navigation = [
   { name: 'Dashboard', href: '#', current: true },
   { name: 'Team', href: '#', current: false },
   { name: 'Projects', href: '#', current: false },
   { name: 'Calendar', href: '#', current: false },
 ]
-const userNavigation = [
-  // { name: 'Your Profile', href: '#' },
-  // { name: 'Settings', href: '#' },
-  { name: 'Sign In', href: '#', onClick: goLogin },
-  { name: 'Sign out', href: '#', onClick: goLogout},
-]
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
+const defaultAvatar = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+
 export default function Navbar({  }) {
+  const { data: session } = useSession()
+
+  const user = session? {
+    name: session.user.name,
+    email: session.user.email,
+    imageUrl: session.user.image ? session.user.image : defaultAvatar ,
+  } : {
+    name: '',
+    email: '',
+    imageUrl: defaultAvatar,
+  } 
+
+  const userNavigation = [
+    // { name: 'Your Profile', href: '#' },
+    // { name: 'Settings', href: '#' },
+  ]
+  if (session) {
+    userNavigation.push({
+      name: 'Sign out',
+      href: '#',
+      onClick: () => signOut()
+    })
+  } else{
+    userNavigation.push({
+      name: 'Sign in',
+      href: '#',
+      onClick: () => signIn()
+    })
+
+  }
+  
   return (
     <Disclosure as="header" className="bg-white shadow">
       {({ open }) => (
@@ -99,7 +120,17 @@ export default function Navbar({  }) {
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                   >
-                    <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 focus:outline-none">
+                    <Menu.Items className="origin-top-right absolute right-0 mt-2 w-80 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 focus:outline-none">
+
+                      <div className="p-4 flex items-center">
+                        <div className="flex-shrink-0">
+                          <img className="h-10 w-10 rounded-full" src={user.imageUrl} alt="" />
+                        </div>
+                        <div className="ml-3">
+                          <div className="text-base font-medium text-gray-800">{user.name}</div>
+                          <div className="text-sm font-medium text-gray-500">{user.email}</div>
+                        </div>
+                      </div>
                       {userNavigation.map((item) => (
                         <Menu.Item key={item.name}>
                           {({ active }) => (
