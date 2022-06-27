@@ -19,6 +19,7 @@ const defaultAvatar = 'https://images.unsplash.com/photo-1472099645785-5658abf4f
 
 export default function Navbar({  }) {
   const { data: session } = useSession()
+  console.log(session)
 
   const user = session? {
     name: session.user.name,
@@ -36,13 +37,13 @@ export default function Navbar({  }) {
   ]
   if (session) {
     userNavigation.push({
-      name: 'Sign out',
+      name: '注销',
       href: '#',
       onClick: () => signOut()
     })
   } else{
     userNavigation.push({
-      name: 'Sign in',
+      name: '登录',
       href: '#',
       onClick: () => signIn()
     })
@@ -122,7 +123,7 @@ export default function Navbar({  }) {
                   >
                     <Menu.Items className="origin-top-right absolute right-0 mt-2 w-80 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 focus:outline-none">
 
-                      <div className="p-4 flex items-center">
+                      {session && (<div className="p-4 flex items-center">
                         <div className="flex-shrink-0">
                           <img className="h-10 w-10 rounded-full" src={user.imageUrl} alt="" />
                         </div>
@@ -130,7 +131,7 @@ export default function Navbar({  }) {
                           <div className="text-base font-medium text-gray-800">{user.name}</div>
                           <div className="text-sm font-medium text-gray-500">{user.email}</div>
                         </div>
-                      </div>
+                      </div>)}
                       {userNavigation.map((item) => (
                         <Menu.Item key={item.name}>
                           {({ active }) => (
@@ -209,6 +210,7 @@ export default function Navbar({  }) {
                     key={item.name}
                     as="a"
                     href={item.href}
+                    onClick={item.onClick}
                     className="block rounded-md py-2 px-3 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900"
                   >
                     {item.name}
