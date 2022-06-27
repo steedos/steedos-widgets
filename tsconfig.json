@@ -28,7 +28,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "src/pages/app/[app_id]/[tab_id].jsx"  ],
   "exclude": [
     "node_modules"
   ]
