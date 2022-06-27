@@ -2,6 +2,8 @@ import dynamic from 'next/dynamic'
 import Document, { Script, Head, Main, NextScript } from 'next/document'
 import React, { useState, useEffect } from 'react';
 
+import { Navbar } from '@/components/Navbar'
+
 export default function Page ({schema}) {
 
   useEffect(() => {
@@ -19,6 +21,7 @@ export default function Page ({schema}) {
 
   return (
     <>
+      <Navbar/>
       {/* <link rel="stylesheet" href="https://unpkg.com/amis@2.0.0-rc.20/lib/themes/cxd.css" /> */}
       <link rel="stylesheet" href="https://unpkg.com/amis@2.0.0-rc.20/lib/themes/antd.css" />
       <link rel="stylesheet" href="https://unpkg.com/amis@2.0.0-rc.20/lib/themes/helper.css" />
