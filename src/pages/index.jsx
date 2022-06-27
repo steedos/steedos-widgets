@@ -23,15 +23,15 @@ export default function Home() {
       </Head>
       <Navbar />
       <main>
-        {/* <Hero />
+        <Hero />
         <PrimaryFeatures />
         <SecondaryFeatures />
         <CallToAction />
         <Testimonials />
         <Pricing />
-        <Faqs /> */}
+        <Faqs />
       </main>
-      {/* <Footer /> */}
+      <Footer />
     </>
   )
 }

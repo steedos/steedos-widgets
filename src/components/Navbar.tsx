@@ -4,6 +4,7 @@ import { SearchIcon } from '@heroicons/react/solid'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
 import { authValidate, goLogin, goLogout, goSignup } from '@/lib/steedos.client';
 import { useSession, signIn, signOut } from "next-auth/react"
+import { Logo } from '@/components/Logo'
 
 const navigation = [
   { name: 'Dashboard', href: '#', current: true },
@@ -43,8 +44,7 @@ export function Navbar({  }) {
   } else{
     userNavigation.push({
       name: '登录',
-      href: '#',
-      onClick: () => signIn(process.env.NEXT_PUBLIC_STEEDOS_PROVIDER_ID)
+      onClick: () => signIn()
     })
 
   }
@@ -57,10 +57,8 @@ export function Navbar({  }) {
             <div className="relative h-16 flex justify-between px-2 sm:px-4 lg:px-8">
               <div className="relative z-10 px-2 flex lg:px-0">
                 <div className="flex-shrink-0 flex items-center">
-                  <img
+                  <Logo
                     className="block h-8 w-auto"
-                    src="/logo.png"
-                    alt="Steedos"
                   />
                 </div>
               </div>
