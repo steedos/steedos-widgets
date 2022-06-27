@@ -44,7 +44,7 @@ export function Navbar({  }) {
   } else{
     userNavigation.push({
       name: '登录',
-      onClick: () => signIn()
+      onClick: () => signIn(process.env.NEXT_PUBLIC_NEXTAUTH_PROVIDER_ID)
     })
 
   }
@@ -118,7 +118,7 @@ export function Navbar({  }) {
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                   >
-                    <Menu.Items className="origin-top-right absolute right-0 mt-2 w-80 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 focus:outline-none">
+                    <Menu.Items className="origin-top-right absolute right-0 mt-2 w-60 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 focus:outline-none overflow-hidden">
 
                       {session && (<div className="p-4 flex items-center">
                         <div className="flex-shrink-0">

@@ -22,11 +22,6 @@ export default function Page ({schema}) {
   return (
     <>
       <Navbar/>
-      {/* <link rel="stylesheet" href="https://unpkg.com/amis@2.0.0-rc.20/lib/themes/cxd.css" /> */}
-      <link rel="stylesheet" href="https://unpkg.com/amis@2.0.0-rc.20/lib/themes/antd.css" />
-      <link rel="stylesheet" href="https://unpkg.com/amis@2.0.0-rc.20/lib/themes/helper.css" />
-      <link rel="stylesheet" href="https://unpkg.com/amis@2.0.0-rc.20/sdk/iconfont.css" />
-      <script src="https://unpkg.com/amis@2.0.0-rc.20/sdk/sdk.js"></script>
       <div id="amis-root" className="app-wrapper"></div>
     </>
   )
