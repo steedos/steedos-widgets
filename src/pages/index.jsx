@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>amisX - Build apps made simple for developers</title>
+        <title>SteedosX - Build external apps made simple for developers</title>
         <meta
           name="description"
           content="Most bookkeeping software is accurate, but hard to use. We make the opposite trade-off, and hope you don’t get audited."
