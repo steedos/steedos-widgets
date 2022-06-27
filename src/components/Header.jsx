@@ -106,9 +106,10 @@ export function Header() {
           <ul className="flex items-center">
             <li>
               <Link href="#">
-                <a>
+                <a className="flex items-center text-lg font-bold text-slate-800">
                   <span className="sr-only">Home</span>
-                  <Logo className="h-10 w-auto" />
+                  <Logo className="h-8 w-auto mr-4" />
+                  <span>amisX</span>
                 </a>
               </Link>
             </li>
