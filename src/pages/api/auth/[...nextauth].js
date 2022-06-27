@@ -9,7 +9,7 @@ export default NextAuth({
       clientId: process.env.KEYCLOAK_ID,
       clientSecret: process.env.KEYCLOAK_SECRET,
       issuer: process.env.KEYCLOAK_ISSUER,
-      name: '华炎云'
+      name: 'Steedos ID'
     })
     // ...add more providers here
   ],

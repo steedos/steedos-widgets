@@ -77,11 +77,10 @@ export function PrimaryFeatures() {
             id="features-title"
             className="font-display text-3xl tracking-tight text-white sm:text-4xl md:text-5xl"
           >
-            Everything you need to run your books.
+            Build enterprise apps in minutes, the easy way.
           </h2>
           <p className="mt-6 text-lg tracking-tight text-blue-100">
-            Well everything you need if you aren’t that picky about minor
-            details like tax compliance.
+            With Amis Builder, we offer the best development experience with an obsessive focus on application design. enables everybody to design like professionals.
           </p>
         </div>
         <Tab.Group

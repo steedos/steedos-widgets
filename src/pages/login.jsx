@@ -29,7 +29,7 @@ export default function Login({providers}) {
             </a>
           </Link>
           <h2 className="mt-6 text-lg font-semibold text-gray-900">
-          登录您的账户
+          Sign in to your account
           </h2>
           {/* <p className="mt-2 text-sm text-gray-700">
             点击以下按钮登录您的账户
@@ -64,7 +64,7 @@ export default function Login({providers}) {
                 onClick={() => signIn(provider.id)}
                 className="w-full rounded-full border border-transparent bg-blue-600 py-2 px-4 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               >
-                使用 {provider.name} 登录
+                Sign in with {provider.name}
               </button>
             </div>
           ))}

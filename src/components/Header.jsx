@@ -2,12 +2,14 @@ import { Fragment } from 'react'
 import Link from 'next/link'
 import { Popover, Transition } from '@headlessui/react'
 import clsx from 'clsx'
+import { useSession, signIn, signOut } from "next-auth/react"
 
 import { ButtonLink } from '@/components/Button'
 import { Container } from '@/components/Container'
 import { Logo } from '@/components/Logo'
 
 function MobileNavigation() {
+  const { data: session } = useSession()
   return (
     <Popover>
       {({ open, close }) => (
@@ -96,6 +98,7 @@ function MobileNavigation() {
 }
 
 export function Header() {
+  const { data: session } = useSession()
   return (
     <header className="py-10">
       <Container>
@@ -131,11 +134,16 @@ export function Header() {
               </Link>
             </li>
             <li className="ml-auto hidden md:block">
-              <Link href="/login">
-                <a className="rounded-lg py-1 px-2 text-slate-700 hover:bg-slate-100 hover:text-slate-900">
+              {!session && (
+                <a href="#" onClick={signIn} className="rounded-lg py-1 px-2 text-slate-700 hover:bg-slate-100 hover:text-slate-900">
                   Sign in
                 </a>
-              </Link>
+              )}
+              {session && (
+                <a href="#" onClick={signOut} className="rounded-lg py-1 px-2 text-slate-700 hover:bg-slate-100 hover:text-slate-900">
+                  Sign out {session.user.name}
+                </a>
+              )}
             </li>
             <li className="ml-auto md:ml-8">
               <ButtonLink href="/register" color="blue">
