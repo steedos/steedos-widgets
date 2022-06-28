@@ -27,7 +27,8 @@ const errors = {
 export default function Login({providers={}, csrfToken}) {
   const { data: session } = useSession()
   const router = useRouter();
-  const { callbackUrl, error } = router.query
+  const { callbackUrl = '/', error } = router.query
+  console.log(session)
   
   if (typeof window !== 'undefined' && session && callbackUrl) {
     router.push(callbackUrl);
