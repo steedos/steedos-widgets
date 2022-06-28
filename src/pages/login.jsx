@@ -42,10 +42,10 @@ export default function Login({providers={}, csrfToken}) {
         <div className="flex flex-col items-center justify-center">
           <Link href="/">
             <a>
-              <Logo className="mb-2 h-10 w-auto" />
+              <Logo className="h-10 w-auto" />
             </a>
           </Link>
-          <h2 className="mt-6 text-lg font-semibold text-gray-900">
+          <h2 className="mt-4 text-lg font-semibold text-gray-900">
           Sign in to your account
           </h2>
           <p className="mt-2 text-sm text-red-500">
