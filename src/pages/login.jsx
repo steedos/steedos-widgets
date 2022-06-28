@@ -1,32 +1,37 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import { useSession, getProviders, signIn } from "next-auth/react"
+
 import { useRouter } from 'next/router';
+import { XCircleIcon } from '@heroicons/react/solid'
 
 import { AuthLayout } from '@/components/AuthLayout'
 import { Input } from '@/components/Input'
 import { Logo } from '@/components/Logo'
 
+const errors = {
+  Signin: "Try signing in with a different account.",
+  OAuthSignin: "Try signing in with a different account.",
+  OAuthCallback: "Try signing in with a different account.",
+  OAuthCreateAccount: "Try signing in with a different account.",
+  EmailCreateAccount: "Try signing in with a different account.",
+  Callback: "Try signing in with a different account.",
+  OAuthAccountNotLinked:
+    "To confirm your identity, sign in with the same account you used originally.",
+  EmailSignin: "The e-mail could not be sent.",
+  CredentialsSignin:
+    "Sign in failed. Check the details you provided are correct.",
+  SessionRequired: "Please sign in to access this page.",
+  default: "Unable to sign in.",
+}
 export default function Login({providers={}}) {
   console.log(providers)
 
-  const providersToRender = Object.values(providers).filter((provider) => {
-    if (provider.type === "oauth" || provider.type === "email") {
-      // Always render oauth and email type providers
-      return true
-    } else if (provider.type === "credentials" && provider.credentials) {
-      // Only render credentials type provider if credentials are defined
-      return true
-    }
-    // Don't render other provider types
-    return false
-  })
-
   const { data: session } = useSession()
   const router = useRouter();
-  const { callbackUrl = '/' } = router.query
+  const { callbackUrl, error } = router.query
   
-  if (typeof window !== 'undefined' && session) {
+  if (typeof window !== 'undefined' && session && callbackUrl) {
     router.push(callbackUrl);
   }
 
@@ -45,49 +50,76 @@ export default function Login({providers={}}) {
           <h2 className="mt-6 text-lg font-semibold text-gray-900">
           Sign in to your account
           </h2>
-          {/* <p className="mt-2 text-sm text-gray-700">
-            点击以下按钮登录您的账户
-          </p> */}
-        </div>
-        <div className="mt-10">
-          <div className="mt-6">
-            <form action="#" method="POST" className="space-y-7">
-              <Input
-                label="Email address"
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-              />
-              <Input
-                label="Password"
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-              />
-              <div className="pt-1">
-                <button
-                  onClick={() => signIn('credentials')}
-                  className="w-full rounded-full border border-transparent bg-blue-600 py-2 px-4 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                >
-                  Sign in
-                </button>
+          <p className="mt-2 text-sm text-red-500">
+            {error && errors[error] && (
+              <div className="rounded-md bg-red-50 p-4">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <XCircleIcon className="h-5 w-5 text-red-400" aria-hidden="true" />
+                </div>
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium text-red-800">{errors[error]}</h3>
+                </div>
               </div>
-            </form>
-
-          {providers && Object.values(providers).map((provider) => (
-            <div key={provider.name}>
-              <button
-                onClick={() => signIn(provider.id)}
-                className="w-full rounded-full border border-transparent bg-blue-600 py-2 px-4 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              >
-                Sign in with {provider.name}
-              </button>
             </div>
-          ))}
+            )}
+          </p>
+        </div>
+        <div className="mt-6">
+          <div className="">
+
+          {providers && Object.values(providers).map((provider) => {
+            if (provider.type === "credentials") 
+            return (
+              <form action="#" method="POST" className="space-y-4">
+                <input
+                  placeholder="Email address"
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  className="block w-full appearance-none rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-blue-500 sm:text-sm"
+                  required
+                />
+                <input
+                  placeholder="Password"
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  className="block w-full appearance-none rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-blue-500 sm:text-sm"
+                  required
+                />
+                <div className="pt-2">
+                  <button
+                    onClick={() => signIn('credentials')}
+                    className="w-full rounded-full border border-transparent bg-sky-600 py-2 px-4 text-sm font-semibold text-white shadow-sm hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
+                  >
+                    Sign in
+                  </button>
+                </div>
+              </form>
+            )
+          })}
+
+          <div className="pt-5">
+            <hr className="my-5"/>
+            {providers && Object.values(providers).map((provider) => {
+              if (provider.type === "oauth") 
+              return (
+                <>
+                  <div key={provider.name} className="pt-5"> 
+                    <button
+                      onClick={() => signIn(provider.id)}
+                      className="w-full rounded-full border border-transparent bg-green-600 py-2 px-4 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                    >
+                      Sign in with {provider.name}
+                    </button>
+                  </div>
+                </>
+              )
+            })}
+          </div>
           </div>
         </div>
       </AuthLayout>
