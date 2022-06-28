@@ -1,6 +1,8 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import { useSession, getProviders, getCsrfToken, signIn } from "next-auth/react"
+import { unstable_getServerSession } from "next-auth/next"
+import { authOptions } from '@/pages/api/auth/[...nextauth]'
 
 import { useRouter } from 'next/router';
 import { XCircleIcon } from '@heroicons/react/solid'
@@ -129,6 +131,16 @@ export default function Login({providers={}, csrfToken}) {
 
 
 export async function getServerSideProps(context) {
+  const session = await unstable_getServerSession(context.req, context.res, authOptions)
+  const { callbackUrl = '/', error } = context.query
+
+  if (session && callbackUrl) {
+    context.res.setHeader('Location', callbackUrl);
+    context.res.statusCode = 302;
+    context.res.end();
+    return
+  }
+
   const providers = await getProviders()
   const csrfToken = await getCsrfToken(context)
   return {

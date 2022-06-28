@@ -2,10 +2,10 @@ import NextAuth from "next-auth"
 import KeycloakProvider from "next-auth/providers/keycloak";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-export default NextAuth({
+export const authOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
   // Configure one or more authentication providers
   providers: [
-
     CredentialsProvider({
       // The name to display on the sign in form (e.g. "Sign in with...")
       name: "Password",
@@ -58,4 +58,7 @@ export default NextAuth({
   pages: {
     signIn: '/login',
   }
-})
+}
+
+
+export default NextAuth(authOptions)
