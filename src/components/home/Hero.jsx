@@ -28,7 +28,7 @@ export function Hero() {
         for enterprise developers.
       </h1>
       <p className="mx-auto mt-6 max-w-2xl text-lg tracking-tight text-slate-700">
-        AmisX gives everyone the tools to build external apps faster and drive business transformation.
+        Steedos gives everyone the tools to build external apps faster and drive business transformation.
       </p>
       <div className="mt-10 flex justify-center space-x-6">
         <ButtonLink href="/register">Get 6 months free</ButtonLink>

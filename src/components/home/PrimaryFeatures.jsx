@@ -80,7 +80,7 @@ export function PrimaryFeatures() {
             Build enterprise apps in minutes, the easy way.
           </h2>
           <p className="mt-6 text-lg tracking-tight text-blue-100">
-            With AmisX, we offer the best development experience with an obsessive focus on application design. enables everybody to design like professionals.
+            With Steedos, we offer the best development experience with an obsessive focus on application design. enables everybody to design like professionals.
           </p>
         </div>
         <Tab.Group
