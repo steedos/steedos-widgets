@@ -29,7 +29,7 @@ const errors = {
 export default function Login({providers={}, csrfToken}) {
   const { data: session } = useSession()
   const router = useRouter();
-  const { callbackUrl = '/', error } = router.query
+  const { callbackUrl = '/app', error } = router.query
   console.log(session)
   
   if (typeof window !== 'undefined' && session && callbackUrl) {
@@ -132,7 +132,7 @@ export default function Login({providers={}, csrfToken}) {
 
 export async function getServerSideProps(context) {
   const session = await unstable_getServerSession(context.req, context.res, authOptions)
-  const { callbackUrl = '/', error } = context.query
+  const { callbackUrl = '/app', error } = context.query
 
   if (session && callbackUrl) {
     context.res.setHeader('Location', callbackUrl);

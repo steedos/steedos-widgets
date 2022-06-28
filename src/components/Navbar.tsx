@@ -6,10 +6,10 @@ import { useSession, signIn, signOut } from "next-auth/react"
 import { Logo } from '@/components/Logo'
 
 const navigation = [
-  { name: 'Dashboard', href: '#', current: true },
-  { name: 'Team', href: '#', current: false },
-  { name: 'Projects', href: '#', current: false },
-  { name: 'Calendar', href: '#', current: false },
+  { name: 'Dashboard', href: '/app/default/Dashboard', current: true },
+  { name: 'Team', href: '/app/default/Team', current: false },
+  { name: 'Projects', href: '/app/default/Projects', current: false },
+  { name: 'Calendar', href: '/app/default/Calendar', current: false },
 ]
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -56,9 +56,9 @@ export function Navbar({  }) {
             <div className="relative h-16 flex justify-between px-2 sm:px-4 lg:px-8">
               <div className="relative z-10 px-2 flex lg:px-0">
                 <div className="flex-shrink-0 flex items-center">
-                  <Logo
-                    className="block h-8 w-auto"
-                  />
+                  <a href="/">
+                    <Logo className="block h-8 w-auto"/>
+                  </a>
                 </div>
               </div>
               {/* <div className="relative z-0 flex-1 px-2 flex items-center justify-center sm:absolute sm:inset-0">

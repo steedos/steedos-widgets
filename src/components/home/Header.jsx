@@ -134,6 +134,15 @@ export function Header() {
                 </a>
               </Link>
             </li>
+            {session && (
+            <li className="ml-auto md:ml-8">
+              <ButtonLink href="/app" color="blue">
+                <span>
+                  Apps Dashboard
+                </span>
+              </ButtonLink>
+            </li>
+            )}
             <li className="ml-auto hidden md:block">
               {!session && (
                 <a href="#" onClick={signIn} className="rounded-lg py-1 px-2 text-slate-700 hover:bg-slate-100 hover:text-slate-900">
@@ -141,17 +150,12 @@ export function Header() {
                 </a>
               )}
               {session && (
-                <a href="#" onClick={signOut} className="rounded-lg py-1 px-2 text-slate-700 hover:bg-slate-100 hover:text-slate-900">
-                  Sign out {session.user.name}
-                </a>
+                <>
+                  <a href="#" onClick={signOut} className="rounded-lg py-1 px-2 text-slate-700 hover:bg-slate-100 hover:text-slate-900">
+                    Sign out {session.user.name}
+                  </a>
+                </>
               )}
-            </li>
-            <li className="ml-auto md:ml-8">
-              <ButtonLink href="/register" color="blue">
-                <span>
-                  Get started<span className="hidden lg:inline"> today</span>
-                </span>
-              </ButtonLink>
             </li>
             <li className="ml-5 -mr-1 md:hidden">
               <MobileNavigation />
