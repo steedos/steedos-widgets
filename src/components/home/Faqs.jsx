@@ -6,7 +6,7 @@ import backgroundImage from '@/images/home/background-faqs.jpg'
 const faqs = [
   [
     {
-      question: 'Does TaxPal handle VAT?',
+      question: 'Does Steedos DXP handle VAT?',
       answer:
         'Well no, but if you move your company offshore you can probably ignore it.',
     },
@@ -15,7 +15,7 @@ const faqs = [
       answer: 'Absolutely, we are happy to take your money in all forms.',
     },
     {
-      question: 'How do I apply for a job at TaxPal?',
+      question: 'How do I apply for a job at Steedos DXP?',
       answer:
         'We only hire our customers, so subscribe for a minimum of 6 months and then let’s talk.',
     },
@@ -24,17 +24,17 @@ const faqs = [
     {
       question: 'What was that testimonial about tax fraud all about?',
       answer:
-        'TaxPal is just a software application, ultimately your books are your responsibility.',
+        'Steedos DXP is just a software application, ultimately your books are your responsibility.',
     },
     {
       question:
-        'TaxPal sounds horrible but why do I still feel compelled to purchase?',
+        'Steedos DXP sounds horrible but why do I still feel compelled to purchase?',
       answer:
         'This is the power of excellent visual design. You just can’t resist it, no matter how poorly it actually functions.',
     },
     {
       question:
-        'I found other companies called TaxPal, are you sure you can use this name?',
+        'I found other companies called Steedos DXP, are you sure you can use this name?',
       answer:
         'Honestly not sure at all. We haven’t actually incorporated or anything, we just thought it sounded cool and made this website.',
     },

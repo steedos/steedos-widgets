@@ -39,7 +39,7 @@ export function Footer() {
           <div className="flex space-x-6">
             {/* <Link href="#">
               <a className="group">
-                <span className="sr-only">TaxPal on Twitter</span>
+                <span className="sr-only">Steedos DXP on Twitter</span>
                 <svg
                   aria-hidden="true"
                   className="h-6 w-6 fill-slate-500 group-hover:fill-slate-700"
