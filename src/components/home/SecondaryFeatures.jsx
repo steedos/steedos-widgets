@@ -221,11 +221,11 @@ export function SecondaryFeatures() {
             id="secondary-features-title"
             className="font-display text-3xl tracking-tight text-slate-900 sm:text-4xl"
           >
-            Simplify everyday business tasks.
+            Use data from any system, anywhere, with our integrated business solutions.
           </h2>
           <p className="mt-4 text-lg tracking-tight text-slate-700">
-            Because you’d probably be a little confused if we suggested you
-            complicate your everyday business tasks instead.
+          Deliver intelligent, relevant experiences. With all your data in one place, customers can create and escalate support cases. Partners can update opportunities and qualify leads. Employees can collaborate on and share files.
+
           </p>
         </div>
         <FeaturesMobile />

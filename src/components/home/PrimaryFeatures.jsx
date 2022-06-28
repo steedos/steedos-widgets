@@ -77,10 +77,11 @@ export function PrimaryFeatures() {
             id="features-title"
             className="font-display text-3xl tracking-tight text-white sm:text-4xl md:text-5xl"
           >
-            Build enterprise apps in minutes, the easy way.
+            Discover the experience platform that drives customer relationships and revenue.
+
           </h2>
           <p className="mt-6 text-lg tracking-tight text-blue-100">
-            With Steedos, we offer the best development experience with an obsessive focus on application design. enables everybody to design like professionals.
+            Empower your team to quickly iterate and build secure, engaging digital experiences with prebuilt apps and low-code web tools.
           </p>
         </div>
         <Tab.Group
