@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-import backgroundImage from '@/images/background-auth.jpg'
+import backgroundImage from '@/images/home/background-auth.jpg'
 
 export function AuthLayout({ children }) {
   return (
