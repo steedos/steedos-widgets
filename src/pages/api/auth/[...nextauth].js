@@ -55,11 +55,6 @@ export default NextAuth({
       return session
     }
   },
-  theme: {
-    colorScheme: "light", // "auto" | "dark" | "light"
-    brandColor: "blue", // Hex color code
-    // logo: "/logo.png" // Absolute URL to image
-  },
   pages: {
     signIn: '/login',
   }

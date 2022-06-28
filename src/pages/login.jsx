@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import Link from 'next/link'
-import { useSession, getProviders, signIn } from "next-auth/react"
+import { useSession, getProviders, getCsrfToken, signIn } from "next-auth/react"
 
 import { useRouter } from 'next/router';
 import { XCircleIcon } from '@heroicons/react/solid'
@@ -24,9 +24,7 @@ const errors = {
   SessionRequired: "Please sign in to access this page.",
   default: "Unable to sign in.",
 }
-export default function Login({providers={}}) {
-  console.log(providers)
-
+export default function Login({providers={}, csrfToken}) {
   const { data: session } = useSession()
   const router = useRouter();
   const { callbackUrl, error } = router.query
@@ -71,7 +69,8 @@ export default function Login({providers={}}) {
           {providers && Object.values(providers).map((provider) => {
             if (provider.type === "credentials") 
             return (
-              <form action="#" method="POST" className="space-y-4">
+              <form method="post" action="/api/auth/callback/credentials" className="space-y-4">
+                <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
                 <input
                   placeholder="Email address"
                   id="email"
@@ -92,7 +91,7 @@ export default function Login({providers={}}) {
                 />
                 <div className="pt-2">
                   <button
-                    onClick={() => signIn('credentials')}
+                    type="submit"
                     className="w-full rounded-full border border-transparent bg-sky-600 py-2 px-4 text-sm font-semibold text-white shadow-sm hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
                   >
                     Sign in
@@ -105,7 +104,7 @@ export default function Login({providers={}}) {
           <div className="pt-5">
             <hr className="my-5"/>
             {providers && Object.values(providers).map((provider) => {
-              if (provider.type === "oauth") 
+              if (true || provider.type === "oauth") 
               return (
                 <>
                   <div key={provider.name} className="pt-5"> 
@@ -130,7 +129,8 @@ export default function Login({providers={}}) {
 
 export async function getServerSideProps(context) {
   const providers = await getProviders()
+  const csrfToken = await getCsrfToken(context)
   return {
-    props: { providers },
+    props: { providers, csrfToken },
   }
 }
