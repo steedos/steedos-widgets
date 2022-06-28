@@ -7,7 +7,7 @@ export function AuthLayout({ children }) {
     <>
       <div className="relative flex min-h-full justify-center md:px-12 lg:px-0">
         <div className="relative z-10 flex flex-1 flex-col justify-center bg-white py-12 px-4 shadow-2xl md:flex-none md:px-28">
-          <div className="mx-auto w-full max-w-md sm:px-4 md:w-96 md:max-w-sm md:px-0">
+          <div className="mx-auto w-full max-w-md px-6 sm:px-6 md:w-96 md:max-w-sm md:px-6">
             {children}
           </div>
         </div>

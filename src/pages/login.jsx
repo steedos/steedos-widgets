@@ -63,13 +63,13 @@ export default function Login({providers={}, csrfToken}) {
             )}
           </p>
         </div>
-        <div className="mt-6">
+        <div className="mt-4">
           <div className="">
 
           {providers && Object.values(providers).map((provider) => {
             if (provider.type === "credentials") 
             return (
-              <form method="post" action="/api/auth/callback/credentials" className="space-y-4">
+              <form method="post" action="/api/auth/callback/credentials" className="rounded-md shadow-sm my-2">
                 <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
                 <input
                   placeholder="Email address"
@@ -77,7 +77,7 @@ export default function Login({providers={}, csrfToken}) {
                   name="email"
                   type="email"
                   autoComplete="email"
-                  className="block w-full appearance-none rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-blue-500 sm:text-sm"
+                  className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-md sm:leading-5"
                   required
                 />
                 <input
@@ -86,10 +86,10 @@ export default function Login({providers={}, csrfToken}) {
                   name="password"
                   type="password"
                   autoComplete="current-password"
-                  className="block w-full appearance-none rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-blue-500 sm:text-sm"
+                  className="-mt-px appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-md sm:leading-5"
                   required
                 />
-                <div className="pt-2">
+                <div className="pt-6">
                   <button
                     type="submit"
                     className="w-full rounded-full border border-transparent bg-sky-600 py-2 px-4 text-sm font-semibold text-white shadow-sm hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
