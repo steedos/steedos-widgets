@@ -104,7 +104,7 @@ export default function Login({providers={}, csrfToken}) {
           <div className="pt-5">
             <hr className="my-5"/>
             {providers && Object.values(providers).map((provider) => {
-              if (true || provider.type === "oauth") 
+              if (provider.type === "oauth") 
               return (
                 <>
                   <div key={provider.name} className="pt-5"> 
