@@ -1,6 +1,7 @@
 import NextAuth from "next-auth"
 import KeycloakProvider from "next-auth/providers/keycloak";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { unstable_getServerSession } from "next-auth/next"
 
 export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,

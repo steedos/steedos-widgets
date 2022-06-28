@@ -29,7 +29,7 @@ const errors = {
 export default function Login({providers={}, csrfToken}) {
   const { data: session } = useSession()
   const router = useRouter();
-  const { callbackUrl = '/app', error } = router.query
+  const { callbackUrl = '/', error } = router.query
   
   if (typeof window !== 'undefined' && session && callbackUrl) {
     router.push(callbackUrl);
@@ -131,7 +131,7 @@ export default function Login({providers={}, csrfToken}) {
 
 export async function getServerSideProps(context) {
   const session = await unstable_getServerSession(context.req, context.res, authOptions)
-  const { callbackUrl = '/app', error } = context.query
+  const { callbackUrl = '/', error } = context.query
 
   if (session && callbackUrl) {
     return {
