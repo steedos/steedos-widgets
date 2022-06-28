@@ -108,7 +108,7 @@ export function Header() {
               <Link href="#">
                 <a className="flex items-center text-lg font-bold text-slate-800">
                   <span className="sr-only">Home</span>
-                  <Logo className="h-8 w-auto mr-4" />
+                  <Logo className="h-8 w-auto mr-2" />
                   <span>Steedos</span>
                 </a>
               </Link>
