@@ -1,7 +1,6 @@
 import NextAuth from "next-auth"
 import KeycloakProvider from "next-auth/providers/keycloak";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { unstable_getServerSession } from "next-auth/next"
 
 export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
@@ -21,6 +20,16 @@ export const authOptions = {
       async authorize(credentials, req) {
         // Add logic here to look up the user from the credentials supplied
         const user = { id: 1, name: "J Smith", email: "jsmith@example.com" }
+        try {
+
+          const res = await fetch(`${process.env.NEXT_PUBLIC_STEEDOS_ROOT_URL}/accounts/password/login`, {
+            method: 'POST',
+            body: JSON.stringify({ user: {email: credentials.email}, password: credentials.password })
+          })
+          const json = await res.json()
+          console.log(json)
+
+        } catch (e) {console.log(e)}
   
         if (user) {
           // Any object returned will be saved in `user` property of the JWT
@@ -43,6 +52,8 @@ export const authOptions = {
   ],
   callbacks: {
     async jwt({ token, account }) {
+      console.log(token)
+      console.log(account)
       // Persist the OAuth access_token to the token right after signin
       // if (account) {
       //   token.accessToken = account.access_token
@@ -50,6 +61,7 @@ export const authOptions = {
       return token
     },
     async session({ session, token, user }) {
+      console.log(session)
       // Send properties to the client, like an access_token from a provider.
       // session.accessToken = token.accessToken
       return session
