@@ -109,7 +109,7 @@ export function Header() {
                 <a className="flex items-center text-lg font-bold text-slate-800">
                   <span className="sr-only">Home</span>
                   <Logo className="h-8 w-auto mr-4" />
-                  <span>amisX</span>
+                  <span>AmisX</span>
                 </a>
               </Link>
             </li>

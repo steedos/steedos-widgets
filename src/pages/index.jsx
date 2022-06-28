@@ -1,21 +1,21 @@
 import Head from 'next/head'
 
 import { Navbar } from '@/components/Navbar'
-import { CallToAction } from '@/components/CallToAction'
-import { Faqs } from '@/components/Faqs'
-import { Footer } from '@/components/Footer'
-import { Header } from '@/components/Header'
-import { Hero } from '@/components/Hero'
-import { Pricing } from '@/components/Pricing'
-import { PrimaryFeatures } from '@/components/PrimaryFeatures'
-import { SecondaryFeatures } from '@/components/SecondaryFeatures'
-import { Testimonials } from '@/components/Testimonials'
+import { CallToAction } from '@/components/home/CallToAction'
+import { Faqs } from '@/components/home/Faqs'
+import { Footer } from '@/components/home/Footer'
+import { Header } from '@/components/home/Header'
+import { Hero } from '@/components/home/Hero'
+import { Pricing } from '@/components/home/Pricing'
+import { PrimaryFeatures } from '@/components/home/PrimaryFeatures'
+import { SecondaryFeatures } from '@/components/home/SecondaryFeatures'
+import { Testimonials } from '@/components/home/Testimonials'
 
 export default function Home() {
   return (
     <>
       <Head>
-        <title>SteedosX - Build external apps made simple for developers</title>
+        <title>AmisX - Build external apps made simple for developers</title>
         <meta
           name="description"
           content="Most bookkeeping software is accurate, but hard to use. We make the opposite trade-off, and hope you don’t get audited."

@@ -25,10 +25,10 @@ export function Hero() {
           </svg>
           <span className="relative">made simple</span>
         </span>{' '}
-        for developers.
+        for enterprise developers.
       </h1>
       <p className="mx-auto mt-6 max-w-2xl text-lg tracking-tight text-slate-700">
-        amisX gives everyone the tools to build amis apps faster and drive business transformation.
+        AmisX gives everyone the tools to build external apps faster and drive business transformation.
       </p>
       <div className="mt-10 flex justify-center space-x-6">
         <ButtonLink href="/register">Get 6 months free</ButtonLink>

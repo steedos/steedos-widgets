@@ -7,7 +7,21 @@ import { AuthLayout } from '@/components/AuthLayout'
 import { Input } from '@/components/Input'
 import { Logo } from '@/components/Logo'
 
-export default function Login({providers}) {
+export default function Login({providers={}}) {
+  console.log(providers)
+
+  const providersToRender = Object.values(providers).filter((provider) => {
+    if (provider.type === "oauth" || provider.type === "email") {
+      // Always render oauth and email type providers
+      return true
+    } else if (provider.type === "credentials" && provider.credentials) {
+      // Only render credentials type provider if credentials are defined
+      return true
+    }
+    // Don't render other provider types
+    return false
+  })
+
   const { data: session } = useSession()
   const router = useRouter();
   const { callbackUrl = '/' } = router.query
@@ -37,7 +51,7 @@ export default function Login({providers}) {
         </div>
         <div className="mt-10">
           <div className="mt-6">
-            {/* <form action="#" method="POST" className="space-y-7">
+            <form action="#" method="POST" className="space-y-7">
               <Input
                 label="Email address"
                 id="email"
@@ -55,8 +69,14 @@ export default function Login({providers}) {
                 required
               />
               <div className="pt-1">
+                <button
+                  onClick={() => signIn('credentials')}
+                  className="w-full rounded-full border border-transparent bg-blue-600 py-2 px-4 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                >
+                  Sign in
+                </button>
               </div>
-            </form> */}
+            </form>
 
           {providers && Object.values(providers).map((provider) => (
             <div key={provider.name}>
