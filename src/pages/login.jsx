@@ -30,7 +30,6 @@ export default function Login({providers={}, csrfToken}) {
   const { data: session } = useSession()
   const router = useRouter();
   const { callbackUrl = '/app', error } = router.query
-  console.log(session)
   
   if (typeof window !== 'undefined' && session && callbackUrl) {
     router.push(callbackUrl);
@@ -135,10 +134,12 @@ export async function getServerSideProps(context) {
   const { callbackUrl = '/app', error } = context.query
 
   if (session && callbackUrl) {
-    context.res.setHeader('Location', callbackUrl);
-    context.res.statusCode = 302;
-    context.res.end();
-    return
+    return {
+      redirect: {
+        destination: callbackUrl,
+        permanent: false,
+      },
+    }
   }
 
   const providers = await getProviders()
