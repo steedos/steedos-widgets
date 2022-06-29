@@ -21,7 +21,6 @@ export default CredentialsProvider({
           body: JSON.stringify({ user: {email: credentials.email}, password: credentials.password })
         })
         const json = await res.json()
-        console.log(json)
 
       } catch (e) {console.log(e)}
 
