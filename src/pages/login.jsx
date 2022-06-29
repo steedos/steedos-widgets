@@ -31,6 +31,7 @@ export default function Login({providers={}, csrfToken}) {
   const router = useRouter();
   const { callbackUrl = '/', error } = router.query
   
+  
   if (typeof window !== 'undefined' && session && callbackUrl) {
     router.push(callbackUrl);
   }
@@ -44,7 +45,7 @@ export default function Login({providers={}, csrfToken}) {
         <div className="flex flex-col items-center justify-center">
           <Link href="/">
             <a>
-              <Logo className="h-10 w-auto" />
+              <Logo className="h-12 w-auto" />
             </a>
           </Link>
           <h2 className="mt-4 text-lg font-semibold text-gray-900">
@@ -104,7 +105,6 @@ export default function Login({providers={}, csrfToken}) {
           })}
 
           <div className="pt-5">
-            <hr className="my-5"/>
             {providers && Object.values(providers).map((provider) => {
               if (provider.type === "oauth") 
               return (
