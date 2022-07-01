@@ -4,8 +4,9 @@
 
 tasks:
   - init: |
-      gp env NEXTAUTH_URL=$(gp url 3000)
+      yarn install
     command: |
+      export NEXTAUTH_URL=$(gp url 3000)
       yarn install
       yarn run dev
 
