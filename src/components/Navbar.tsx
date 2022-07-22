@@ -4,20 +4,16 @@ import { SearchIcon } from '@heroicons/react/solid'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
 import { useSession, signIn, signOut } from "next-auth/react"
 import { Logo } from '@/components/Logo'
+import { useRouter } from 'next/router'
 
-const navigation = [
-  { name: 'Dashboard', href: '/app/default/Dashboard', current: true },
-  { name: 'Team', href: '/app/default/Team', current: false },
-  { name: 'Projects', href: '/app/default/Projects', current: false },
-  { name: 'Calendar', href: '/app/default/Calendar', current: false },
-]
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 const defaultAvatar = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
 
-export function Navbar({  }) {
+export function Navbar({ navigation, selected }) {
+  const router = useRouter()
   const { data: session } = useSession()
 
   const user = session? {
@@ -47,8 +43,14 @@ export function Navbar({  }) {
     })
 
   }
+
+  const handleClick = (e) => {
+    e.preventDefault()
+    router.push(e.target.href)
+  }
   
   return (
+    // @ts-ignore
     <Disclosure as="header" className="bg-white shadow">
       {({ open }) => (
         <>
@@ -149,35 +151,37 @@ export function Navbar({  }) {
                 </Menu>
               </div>
             </div>
-            <nav className="hidden lg:py-2 lg:flex lg:space-x-8 px-2 sm:px-4 lg:px-8" aria-label="Global">
-              {navigation.map((item) => (
+            {navigation?.length > 0 && <nav className="hidden lg:py-2 lg:flex lg:space-x-8 px-2 sm:px-4 lg:px-8" aria-label="Global">
+              {navigation?.map((item) => (
                 <a
-                  key={item.name}
-                  href={item.href}
+                  key={item.id}
+                  href={item.path}
+                  onClick={handleClick}
                   className={classNames(
-                    item.current ? 'bg-gray-100 text-gray-900' : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900',
+                    item.id === selected ? 'bg-gray-100 text-gray-900' : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900',
                     'rounded-md py-2 px-3 inline-flex items-center text-sm font-medium'
                   )}
-                  aria-current={item.current ? 'page' : undefined}
+                  aria-current={item.id === selected ? 'page' : undefined}
                 >
                   {item.name}
                 </a>
               ))}
             </nav>
+            }
           </div>
 
           <Disclosure.Panel as="nav" className="lg:hidden" aria-label="Global">
             <div className="pt-2 pb-3 px-2 space-y-1">
-              {navigation.map((item) => (
+              {navigation?.map((item) => (
                 <Disclosure.Button
-                  key={item.name}
+                  key={item.id}
                   as="a"
-                  href={item.href}
+                  href={item.path}
                   className={classNames(
-                    item.current ? 'bg-gray-100 text-gray-900' : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900',
+                    item.id === selected ? 'bg-gray-100 text-gray-900' : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900',
                     'block rounded-md py-2 px-3 text-base font-medium'
                   )}
-                  aria-current={item.current ? 'page' : undefined}
+                  aria-current={item.id === selected ? 'page' : undefined}
                 >
                   {item.name}
                 </Disclosure.Button>

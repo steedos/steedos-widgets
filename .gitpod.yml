@@ -4,9 +4,7 @@
 
 tasks:
   - init: |
-      yarn install
     command: |
-      echo "NEXTAUTH_URL=$(gp url 3000)" >> .env.local
       yarn install
       yarn run dev
 
