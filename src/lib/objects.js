@@ -2,12 +2,13 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-22 17:58:49
+ * @LastEditTime: 2022-07-23 17:52:10
  * @Description: 
  */
 import { fetchAPI } from './steedos.client';
 import { getObjectList, getObjectDetail, getObjectForm } from './converter/amis/index';
 import { list } from 'postcss';
+import { slice, isEmpty } from 'lodash';
 
 const _ = require('lodash');
 
@@ -65,13 +66,25 @@ export async function getFormSchema(objectName, ctx){
     }
 }
 
-export async function getViewSchema(objectName, recordId){
+export async function getViewSchema(objectName, recordId, ctx){
     const uiSchema = await getUISchema(objectName);
-    const amisSchema = await getObjectDetail(uiSchema, recordId);
+    const amisSchema = await getObjectDetail(uiSchema, recordId, ctx);
     return {
         uiSchema,
         amisSchema
     }
+}
+
+function getListViewColumns(listView, formFactor){
+    let listViewColumns = [];
+
+    if(formFactor === 'SMALL'){
+        listViewColumns = !isEmpty(listView.mobile_columns) ? listView.mobile_columns :  slice(listView.columns, 0, 4);
+    }else{
+        listViewColumns = listView.columns;
+    }
+
+    return listViewColumns;
 }
 
 export async function getListSchema(appName, objectName, listViewName = 'all', options = {}){
@@ -84,26 +97,29 @@ export async function getListSchema(appName, objectName, listViewName = 'all', o
     }
     let fields = uiSchema.fields;
     const listViewFields = [];
-    if(listView && listView.columns){
-        _.each(listView.columns, function(column){
+
+    let listViewColumns = getListViewColumns(listView, options.formFactor);
+
+    if(listView && listViewColumns){
+        _.each(listViewColumns, function(column){
             if(_.isString(column) && uiSchema.fields[column]){
                 listViewFields.push(uiSchema.fields[column])
             }else if(_.isObject(column) && uiSchema.fields[column.field]){
                 listViewFields.push(Object.assign({}, uiSchema.fields[column.field], {width: column.width, wrap: column.wrap}))
             }
         })
-
-        if(listView.extra_columns){
-            _.each(listView.extra_columns, function(column){
-                if(_.isString(column)){
-                    listViewFields.push({extra: true, name: column})
-                }else if(_.isObject(column)){
-                    listViewFields.push({extra: true, name: column.field})
-                }
-            })
-        }
-
     }
+
+    if(listView &&  listView.extra_columns){
+        _.each(listView.extra_columns, function(column){
+            if(_.isString(column)){
+                listViewFields.push({extra: true, name: column})
+            }else if(_.isObject(column)){
+                listViewFields.push({extra: true, name: column.field})
+            }
+        })
+    }
+
     fields = listViewFields;
     const amisSchema = await getObjectList(uiSchema, fields, {tabId: objectName, appId: appName, objectName: objectName, ...options});
     return {
@@ -117,7 +133,7 @@ export async function getField(objectName, fieldName){
     return uiSchema?.fields[fieldName];
 }
 
-export async function getObjectRelateds(appName, objectName, recordId){
+export async function getObjectRelateds(appName, objectName, recordId, formFactor){
     const uiSchema = await getUISchema(objectName);
 
     const related = [];
@@ -142,7 +158,7 @@ export async function getObjectRelateds(appName, objectName, recordId){
         related.push({
             object_name: arr[0], 
             foreign_key: arr[1],
-            schema: await getListSchema(appName, arr[0], 'all', {filter: filter})
+            schema: await getListSchema(appName, arr[0], 'all', {filter: filter, formFactor: formFactor})
         })
     }
     console.log(related);

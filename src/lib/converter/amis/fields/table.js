@@ -68,7 +68,7 @@ function getDefaultParams(options){
     }
 }
 
-exports.getTableSchema = function(fields, options){
+export function getTableSchema(fields, options){
     if(!options){
         options = {};
     }
@@ -86,7 +86,7 @@ exports.getTableSchema = function(fields, options){
     }
 }
 
-exports.getTableApi = function(mainObject, fields, options){
+export function getTableApi(mainObject, fields, options){
     const searchableFields = [];
     const { filter } = options;
     _.each(fields,function(field){
@@ -120,6 +120,20 @@ exports.getTableApi = function(mainObject, fields, options){
                     filters.push([key, "contains", keyValue]);
                 }
             })
+        }
+
+        if(selfData.__keywords && allowSearchFields){
+            const keywordsFilters = [];
+            allowSearchFields.forEach(function(key, index){
+                const keyValue = selfData.__keywords;
+                if(keyValue){
+                    keywordsFilters.push([key, "contains", keyValue]);
+                    if(index < allowSearchFields.length - 1){
+                        keywordsFilters.push('or');
+                    }
+                }
+            })
+            filters.push(keywordsFilters);
         }
         api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', pageSize).replace('{__skip}', skip).replace('{__sort}', sort.trim());
         return api;

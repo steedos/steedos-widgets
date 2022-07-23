@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-26 16:02:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-08 17:09:53
+ * @LastEditTime: 2022-07-23 17:53:16
  * @Description: 
  */
 const Fields = require('../fields');
@@ -39,7 +39,7 @@ const getFieldSchemaArray = (mergedSchema)=>{
   return fieldSchemaArray;
 }
 
-const getSection = async (permissionFields, fieldSchemaArray, sectionName) => {
+const getSection = async (permissionFields, fieldSchemaArray, sectionName, ctx) => {
   const sectionFields = lodash.filter(fieldSchemaArray, { 'group': sectionName });
   if(sectionFields.length == lodash.filter(sectionFields, ['hidden', true]).length){
     return ;
@@ -55,7 +55,7 @@ const getSection = async (permissionFields, fieldSchemaArray, sectionName) => {
           field = await Fields.getObjectFieldSubFields(perField, permissionFields);
       }
       if(field.name.indexOf(".") < 0){
-          const amisField = await Fields.convertSFieldToAmisField(field, field.readonly);
+          const amisField = await Fields.convertSFieldToAmisField(field, field.readonly, ctx);
           if(amisField){
               fieldSetBody.push(amisField)
           }
@@ -70,12 +70,12 @@ const getSection = async (permissionFields, fieldSchemaArray, sectionName) => {
   }
 }
 
-export const getSections = async (permissionFields, mergedSchema) => {
+export const getSections = async (permissionFields, mergedSchema, ctx) => {
   const fieldSchemaArray = getFieldSchemaArray(mergedSchema)
   const _sections = lodash.groupBy(fieldSchemaArray, 'group');
   const sections = [];
   for (const key in _sections) {
-    const section = await getSection(permissionFields, fieldSchemaArray, key);
+    const section = await getSection(permissionFields, fieldSchemaArray, key, ctx);
     if(section.body.length > 0){
       sections.push(section)
     }

@@ -4,6 +4,7 @@ const graphql = require('../graphql');
 const Tpl = require('../tpl');
 const Field = require('./index');
 const Table = require('./table');
+const List = require('./list');
 
 
 const getReferenceTo = async (field)=>{
@@ -30,7 +31,7 @@ const getReferenceTo = async (field)=>{
 }
 
 
-export async function lookupToAmisPicker(field, readonly){
+export async function lookupToAmisPicker(field, readonly, ctx){
     let referenceTo = await getReferenceTo(field);
     if(!referenceTo){
         return ;
@@ -113,6 +114,20 @@ export async function lookupToAmisPicker(field, readonly){
         top = 1000;
     };
 
+    let pickerSchema = null;
+    if(ctx.formFactor === 'SMALL'){
+        pickerSchema = List.getListSchema(tableFields, {
+            top:  top,
+            ...ctx,
+            actions: false
+        })
+    }else{
+        pickerSchema = Table.getTableSchema(tableFields, {
+            top:  top,
+            ...ctx
+        })
+    }
+
     const data = {
         type: Field.getAmisStaticFieldType('picker', readonly),
         labelField: referenceTo.labelField.name,
@@ -120,9 +135,7 @@ export async function lookupToAmisPicker(field, readonly){
         modalMode: 'dialog', //TODO 设置 dialog 或者 drawer，用来配置弹出方式
         source: source,
         size: "lg",
-        pickerSchema: Table.getTableSchema(tableFields, {
-            top:  top
-        }),
+        pickerSchema: pickerSchema,
         joinValues: false,
         extractValue: true
     }
@@ -223,7 +236,7 @@ function getApi(object, recordId, fields, options){
     }
 }
 
-export async function lookupToAmis(field, readonly){
+export async function lookupToAmis(field, readonly, ctx){
     let referenceTo = await getReferenceTo(field);
     if(!referenceTo){
         return await lookupToAmisSelect(field, readonly);
@@ -232,7 +245,7 @@ export async function lookupToAmis(field, readonly){
 
     // 此处不参考 steedos 的 enable_enhanced_lookup 规则. 如果默认是开启弹出选择,用户选择过程操作太繁琐, 所以默认是关闭弹出选择.
     if(refObject.enable_enhanced_lookup == true){
-        return await lookupToAmisPicker(field, readonly);
+        return await lookupToAmisPicker(field, readonly, ctx);
     }else{
         return await lookupToAmisSelect(field, readonly);
     }

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-18 14:44:06
+ * @LastEditTime: 2022-07-23 18:19:53
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -23,17 +23,26 @@ export default function Page ({}) {
   const router = useRouter()
   const { app_id, tab_id } = router.query
   const [schema, setSchema] = useState(null);
+  const [formFactor, setFormFactor] = useState(null);
+
+  useEffect(()=>{
+    if(window.innerWidth < 768){
+      setFormFactor('SMALL')
+    }else{
+      setFormFactor('LARGE')
+    }
+  }, [])
 
   useEffect(() => {
-    if(!tab_id) return ;
-    getListSchema(app_id, tab_id, selected?.name)
+    if(!tab_id || !formFactor) return ;
+    getListSchema(app_id, tab_id, selected?.name, {formFactor: formFactor})
       .then((data) => {
         if(!schema){
           setSelected(values(data.uiSchema?.list_views).length > 0 ? values(data.uiSchema.list_views)[0] : null)
         }
         setSchema(data)
       })
-  }, [tab_id, selected]);
+  }, [tab_id, selected, formFactor]);
 
   const newRecord = ()=>{
     router.push('/app/'+app_id+'/'+tab_id+'/view/new')
@@ -41,17 +50,17 @@ export default function Page ({}) {
 
   return (
     <>
-      <div className="z-10 p-4 pb-0">
-              <div className="space-y-4">
-                  <div className="pointer-events-auto w-full rounded-lg bg-white p-4 text-[0.8125rem] leading-5 shadow-xl shadow-black/5 hover:bg-slate-50 ring-1 ring-slate-700/10">
+      <div className="relative z-9 p-0 sm:p-4 sm:pb-0 border-b sm:border-b-0">
+              <div className="relative space-y-4">
+                  <div className="relative pointer-events-auto w-full sm:rounded-lg bg-white p-4 text-[0.8125rem] leading-5 shadow-xl shadow-black/5 hover:bg-slate-50 ring-1 ring-slate-700/10">
                       <div className="flex justify-between">
                           <div className="font-medium text-slate-900 text-base">{schema?.uiSchema?.label}</div>
                           <div className="ml-6 fill-slate-400">
-                          <button onClick={newRecord} className="py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold rounded-lg shadow focus:outline-none">新建</button>
+                          <button onClick={newRecord} className="py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold sm:rounded-lg shadow focus:outline-none">新建</button>
                             </div>
                       </div>
                       <Listbox value={selected} onChange={setSelected}>
-                        <div className="mt-1">
+                        <div className="relative mt-1">
                           <Listbox.Button className="min-w-[6rem] w-auto cursor-default py-2 pr-10 text-left focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
                             <span className="block truncate">{selected?.label}</span>
                             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
@@ -67,7 +76,7 @@ export default function Page ({}) {
                             leaveFrom="opacity-100"
                             leaveTo="opacity-0"
                           >
-                            <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                            <Listbox.Options className="z-50 absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                               {values(schema?.uiSchema?.list_views).map((listView, personIdx) => (
                                 <Listbox.Option
                                   key={personIdx}
