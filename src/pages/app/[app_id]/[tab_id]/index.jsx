@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-23 18:19:53
+ * @LastEditTime: 2022-07-25 15:20:43
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -40,6 +40,7 @@ export default function Page ({}) {
         if(!schema){
           setSelected(values(data.uiSchema?.list_views).length > 0 ? values(data.uiSchema.list_views)[0] : null)
         }
+        console.log(`data`, data)
         setSchema(data)
       })
   }, [tab_id, selected, formFactor]);
@@ -55,9 +56,9 @@ export default function Page ({}) {
                   <div className="relative pointer-events-auto w-full sm:rounded-lg bg-white p-4 text-[0.8125rem] leading-5 shadow-xl shadow-black/5 hover:bg-slate-50 ring-1 ring-slate-700/10">
                       <div className="flex justify-between">
                           <div className="font-medium text-slate-900 text-base">{schema?.uiSchema?.label}</div>
-                          <div className="ml-6 fill-slate-400">
-                          <button onClick={newRecord} className="py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold sm:rounded-lg shadow focus:outline-none">新建</button>
-                            </div>
+                          {schema?.uiSchema?.permissions?.allowCreate && <div className="ml-6 fill-slate-400">
+                            <button onClick={newRecord} className="py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold sm:rounded-[2px] shadow focus:outline-none">新建</button>
+                          </div>}
                       </div>
                       <Listbox value={selected} onChange={setSelected}>
                         <div className="relative mt-1">

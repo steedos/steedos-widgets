@@ -2,18 +2,18 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-23 18:12:54
+ * @LastEditTime: 2022-07-25 15:33:45
  * @Description: 
  */
 import dynamic from 'next/dynamic'
 import Document, { Script, Head, Main, NextScript } from 'next/document'
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { useRouter } from 'next/router'
 import { getViewSchema, getFormSchema, getObjectRelateds } from '@/lib/objects';
 import { AmisRender } from '@/components/AmisRender'
 import { unstable_getServerSession } from "next-auth/next"
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
-import { Tab } from '@headlessui/react'
+import { Tab, Menu, Transition} from '@headlessui/react'
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -101,9 +101,42 @@ export default function Record({ }) {
                             <div className="flex justify-between">
                                 <div className="font-medium text-slate-900 text-base">{schema?.uiSchema?.label}</div>
                                 <div className="ml-6 fill-slate-400">
-                                { !isEditing && <button onClick={editClick} className="py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold sm:rounded-lg shadow focus:outline-none">编辑</button>}
-                                {  isEditing && <button onClick={cancelClick} className="py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold sm:rounded-lg shadow focus:outline-none">取消</button>}
-                                </div>
+                                { schema?.uiSchema?.permissions?.allowEdit &&  !isEditing && <button onClick={editClick} className="py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold sm:rounded-[2px] shadow focus:outline-none">编辑</button>}
+                                {  isEditing && <button onClick={cancelClick} className="py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold sm:rounded-[2px] shadow focus:outline-none">取消</button>}
+
+                                    <Menu as="div" className="relative inline-block text-left">
+                                        <div>
+                                        <Menu.Button className="py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold sm:rounded-[2px] shadow focus:outline-none ml-1">
+                                            ...
+                                        </Menu.Button>
+                                        </div>
+                                        <Transition
+                                        as={Fragment}
+                                        enter="transition ease-out duration-100"
+                                        enterFrom="transform opacity-0 scale-95"
+                                        enterTo="transform opacity-100 scale-100"
+                                        leave="transition ease-in duration-75"
+                                        leaveFrom="transform opacity-100 scale-100"
+                                        leaveTo="transform opacity-0 scale-95"
+                                        >
+                                        <Menu.Items className="z-10 absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                            <div className="px-1 py-1">
+                                            <Menu.Item>
+                                                {({ active }) => (
+                                                <button
+                                                    className={`${
+                                                    active ? 'bg-violet-500 text-white' : 'text-gray-900'
+                                                    } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                                >
+                                                    删除
+                                                </button>
+                                                )}
+                                            </Menu.Item>
+                                            </div>
+                                        </Menu.Items>
+                                        </Transition>
+                                    </Menu>
+                                    </div>
                             </div>
                             <div className="mt-1 text-slate-700">TODO: 记录名称</div>
                         </div>

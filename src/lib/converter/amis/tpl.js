@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-22 18:00:18
+ * @LastEditTime: 2022-07-25 15:19:31
  * @Description: 
  */
 export function getCreatedInfoTpl(){
@@ -34,7 +34,6 @@ export function getSelectTpl(field){
 }
 
 export function getNameTpl(field, ctx){
-    console.log(`getNameTpl field, ctx`, field, ctx)
     if(ctx.objectName === 'cms_files'){
         return `<a href="\${context.rootUrl}/api/files/files/\${versions[0]}?download=true">\${${field.name}}</a>`
     }

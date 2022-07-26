@@ -215,3 +215,22 @@ export function getSaveApi(object, recordId, fields, options){
         }
     }
 }
+
+export function getBatchDelete(objectName){
+    return {
+        method: 'post',
+        url: graphql.getApi(),
+        requestAdaptor: `
+            var ids = api.data.ids.split(",");
+            var deleteArray = [];
+            ids.forEach((id,index)=>{
+                deleteArray.push(\`delete__\${index}:${objectName}__delete(id: "\${id}")\`);
+            })
+            api.data = {query: \`mutation{\${deleteArray.join(',')}}\`};
+            return api;
+        `,
+        data: {
+            ids: `\${ids}`
+        },
+    }
+}

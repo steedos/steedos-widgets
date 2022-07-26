@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-23 17:52:10
+ * @LastEditTime: 2022-07-25 17:13:04
  * @Description: 
  */
 import { fetchAPI } from './steedos.client';
@@ -24,6 +24,16 @@ const getUISchemaCache = (key)=>{
 
 const hasUISchemaCache = (key)=>{
     return _.has(UI_SCHEMA_CACHE, key);
+}
+
+const getListViewColumns = (listView, formFactor)=>{
+    let listViewColumns = [];
+    if(formFactor === 'SMALL'){
+        listViewColumns = !isEmpty(listView.mobile_columns) ? listView.mobile_columns :  slice(listView.columns, 0, 4);
+    }else{
+        listViewColumns = listView.columns;
+    }
+    return listViewColumns;
 }
 
 export async function getUISchema(objectName){
@@ -57,6 +67,12 @@ export async function getUISchema(objectName){
     return getUISchemaCache(objectName) ;
 }
 
+export async function getField(objectName, fieldName){
+    const uiSchema = await getUISchema(objectName);
+    return uiSchema?.fields[fieldName];
+}
+
+// 获取表单页面
 export async function getFormSchema(objectName, ctx){
     const uiSchema = await getUISchema(objectName);
     const amisSchema = await getObjectForm(uiSchema, ctx);
@@ -66,6 +82,7 @@ export async function getFormSchema(objectName, ctx){
     }
 }
 
+// 获取只读页面
 export async function getViewSchema(objectName, recordId, ctx){
     const uiSchema = await getUISchema(objectName);
     const amisSchema = await getObjectDetail(uiSchema, recordId, ctx);
@@ -75,18 +92,7 @@ export async function getViewSchema(objectName, recordId, ctx){
     }
 }
 
-function getListViewColumns(listView, formFactor){
-    let listViewColumns = [];
-
-    if(formFactor === 'SMALL'){
-        listViewColumns = !isEmpty(listView.mobile_columns) ? listView.mobile_columns :  slice(listView.columns, 0, 4);
-    }else{
-        listViewColumns = listView.columns;
-    }
-
-    return listViewColumns;
-}
-
+// 获取列表视图
 export async function getListSchema(appName, objectName, listViewName = 'all', options = {}){
     const uiSchema = await getUISchema(objectName);
 
@@ -128,11 +134,7 @@ export async function getListSchema(appName, objectName, listViewName = 'all', o
     }
 }
 
-export async function getField(objectName, fieldName){
-    const uiSchema = await getUISchema(objectName);
-    return uiSchema?.fields[fieldName];
-}
-
+// 获取相关表
 export async function getObjectRelateds(appName, objectName, recordId, formFactor){
     const uiSchema = await getUISchema(objectName);
 

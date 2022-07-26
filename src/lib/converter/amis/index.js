@@ -1,5 +1,5 @@
 import { getAuthToken , getTenantId } from '@/lib/steedos.client.js';
-import { getReadonlyFormInitApi, getSaveApi, getEditFormInitApi } from '@/lib/converter/amis/api';
+import { getReadonlyFormInitApi, getSaveApi, getEditFormInitApi, getBatchDelete } from '@/lib/converter/amis/api';
 import { getTableSchema, getTableApi } from '@/lib/converter/amis/fields/table';
 import { getFormBody } from '@/lib/converter/amis/form';
 import { getListSchema } from '@/lib/converter/amis/fields/list';
@@ -7,14 +7,16 @@ import { map } from 'lodash';
 
 const ROOT_URL = process.env.NEXT_PUBLIC_STEEDOS_ROOT_URL
 
-function getBulkActions(){
+function getBulkActions(objectSchema){
     return [
-        {
-          "label": "批量删除",
-          "actionType": "clickAction",
-          "onClick": "",
-          "confirmText": "TODO"
-        },
+      {
+        "type": "button",
+        "level": "danger",
+        "label": "批量删除",
+        "actionType": "ajax",
+        "confirmText": "确定要删除吗",
+        "api": getBatchDelete(objectSchema.name),
+      }
         // {
         //   "label": "批量修改",
         //   "actionType": "dialog",
@@ -130,7 +132,7 @@ function getFilter(){
 
 export function getObjectList(objectSchema, fields, options){
     
-    const bulkActions = getBulkActions()
+    const bulkActions = getBulkActions(objectSchema)
 
     const bodyProps = {
       toolbar: getToolbar(), 
@@ -227,7 +229,7 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
                 debug: false,
                 title: "",
                 body: await getFormBody(map(fields, (field)=>{field.readonly = true;}), objectSchema, ctx),
-                panelClassName:'m-0 sm:ounded-lg',
+                panelClassName:'m-0 sm:rounded-lg',
                 bodyClassName: 'p-0 sm:p-4',
                 className: 'p-4 sm:p-0 steedos-amis-form',
                 actions: [] // 不显示表单默认的提交按钮
