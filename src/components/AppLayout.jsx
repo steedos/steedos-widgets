@@ -35,23 +35,22 @@ export function AppLayout({ children }) {
     }, [tab_id]);
 
     return (
-      <>
-        <Navbar navigation={app?.children} selected={selected}/>
+      <div className='h-full flex flex-col'>
+          <Navbar navigation={app?.children} selected={selected}/>
 
         {session && (
-        <div className="py-10">
-          <div className="sm:px-6 lg:px-8 lg:grid lg:grid-cols-12 lg:gap-8">
-            <div className="hidden lg:block lg:col-span-3 xl:col-span-2">
+          <div className="py-10 flex-1">
+
+            <div className="hidden lg:block fixed z-20 inset-0 top-[3.8125rem] left-[max(0px,calc(50%-45rem))] right-auto w-[19.5rem] pb-10 px-8 overflow-y-auto">
               <Sidebar navigation={app?.children} selected={selected}/>
             </div>
 
-            <main className="lg:col-span-9 xl:col-span-10">
+            <div className="lg:pl-[19.5rem]">
               {children}
-            </main>
-          </div>
+            </div>
         </div>
         )}
         {/* <Footer /> */}
-      </>
+      </div>
     )
   }

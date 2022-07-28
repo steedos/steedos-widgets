@@ -51,7 +51,7 @@ export function Navbar({ navigation, selected }) {
   
   return (
     // @ts-ignore
-    <Disclosure as="header" className="bg-white shadow-sm lg:static lg:overflow-y-visible">
+    <Disclosure as="header" className="sticky top-0 z-40 w-full backdrop-blur flex-none transition-colors duration-500 lg:z-50 lg:border-b lg:border-slate-900/10 dark:border-slate-50/[0.06] bg-white/95 supports-backdrop-blur:bg-white/60 dark:bg-transparent">
       {({ open }) => (
         <>
           <div className="mx-auto lg:divide-y lg:divide-gray-200">
