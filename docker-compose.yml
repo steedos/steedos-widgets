@@ -1,0 +1,77 @@
+version: "3.9"
+
+services:
+  steedos:
+    image: steedos/steedos-community:2.2
+    command: "yarn start"
+    ports:
+      - "5000:5000"
+    volumes:
+      - "steedos-installed-packages:/app/.steedos"
+      - "steedos-data:/app/storage"
+    environment:
+      - PORT=5000
+      - ROOT_URL=http://localhost:3000
+      - MONGO_URL=mongodb://mongodb:27017/steedos
+      - MONGO_OPLOG_URL=mongodb://mongodb:27017/local
+      - STEEDOS_CFS_STORE=local
+      - STEEDOS_STORAGE_DIR=/app/storage
+      - STEEDOS_TENANT_ENABLE_PASSWORD_LOGIN=true
+      - TRANSPORTER=redis://redis:6379/2
+      - CACHER=redis://redis:6379
+      - STEEDOS_IDENTITY_JWT_SECRET=${NEXTAUTH_SECRET}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      redis:
+        condition: service_started
+      mongodb:
+        condition: service_healthy
+    
+  redis:
+    image: redis:6.2
+    command: "redis-server --save \"\" --appendonly no --loglevel warning"
+    ports:
+      - "6379:6379"
+  
+
+  mongodb:
+    image: 'bitnami/mongodb:4.4'
+    restart: on-failure
+    ports:
+      - 27017:27017
+    environment:
+      - MONGODB_REPLICA_SET_MODE=primary
+      - MONGODB_INITIAL_PRIMARY_HOST=mongodb
+      - MONGODB_REPLICA_SET_NAME=steedos
+      - MONGODB_ENABLE_JOURNAL=true
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb
+      - ALLOW_EMPTY_PASSWORD=yes
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo admin -u root -p ${MONGODB_PASSWORD:-} --quiet | grep 1
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - 'steedos-mongo-data:/bitnami'
+
+  watchtower-service:
+    restart: always
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --debug --http-api-update steedos
+    environment:
+      - WATCHTOWER_HTTP_API=true
+      - WATCHTOWER_HTTP_API_TOKEN=steedos
+      - WATCHTOWER_CLEANUP=true
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
+
+volumes:
+  steedos-mongo-data:
+  steedos-installed-packages:
+  steedos-data:
