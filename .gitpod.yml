@@ -8,10 +8,10 @@ tasks:
       docker-compose up
   - name: Nextjs
     command: |
-      yarn install
-      yarn run dev
       echo "NEXT_PUBLIC_STEEDOS_ROOT_URL=$(gp url 5000)" >> .env.local
       echo "NEXTAUTH_URL=$(gp url 3000)" >> .env.local
+      yarn install
+      yarn run dev
 
 ports:
   - port: 3000
