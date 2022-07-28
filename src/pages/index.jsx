@@ -6,12 +6,7 @@
  * @Description: 
  */
 import { CallToAction } from '@/components/home/CallToAction'
-import { Faqs } from '@/components/home/Faqs'
 import { Hero } from '@/components/home/Hero'
-import { Pricing } from '@/components/home/Pricing'
-import { PrimaryFeatures } from '@/components/home/PrimaryFeatures'
-import { SecondaryFeatures } from '@/components/home/SecondaryFeatures'
-import { Testimonials } from '@/components/home/Testimonials'
 import { HomeLayout } from '@/components/HomeLayout'
 
 export default function Home() {
@@ -19,12 +14,7 @@ export default function Home() {
     <>
       <main>
         <Hero />
-        <PrimaryFeatures />
-        <SecondaryFeatures />
         <CallToAction />
-        <Testimonials />
-        <Pricing />
-        <Faqs />
       </main>
     </>
   )
