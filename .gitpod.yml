@@ -5,8 +5,8 @@
 tasks:
   - name: Steedos
     command: |
-      echo "ROOT_URL=$(gp url 5000)" >> .env.local
       cd steedos-ee
+      echo "ROOT_URL=$(gp url 5000)" >> .env.local
       docker-compose up
   - name: Nextjs
     command: |
