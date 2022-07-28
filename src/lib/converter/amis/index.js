@@ -143,10 +143,12 @@ export function getObjectList(objectSchema, fields, options){
     }
 
     let body = null;
+    const id = `listview_${objectSchema.name}`;
     if(options.formFactor === 'SMALL'){
       body = Object.assign({}, getListSchema(fields, options), {
         type: 'crud', 
         primaryField: '_id', 
+        id: id,
         keepItemSelectionOnPageChange: true, 
         api: getTableApi(objectSchema, fields, options)}, 
         bodyProps
@@ -157,6 +159,7 @@ export function getObjectList(objectSchema, fields, options){
       body = Object.assign({}, table, {
         type: 'crud', 
         primaryField: '_id', 
+        id: id,
         keepItemSelectionOnPageChange: true, 
         api: getTableApi(objectSchema, fields, options)}, 
         bodyProps
@@ -165,7 +168,7 @@ export function getObjectList(objectSchema, fields, options){
 
     return {
         type: 'page',
-        bodyClassName: 'sm:m-4 bg-white sm:rounded-lg',
+        bodyClassName: 'bg-white sm:rounded-lg',
         name: `page_list_${objectSchema.name}`,
         data: {context: {rootUrl: ROOT_URL, tenantId: getTenantId(), authToken: getAuthToken()}},
         body: body
@@ -177,7 +180,7 @@ export async function getObjectForm(objectSchema, ctx){
     const fields = _.values(objectSchema.fields);
     return {
         type: 'page',
-        bodyClassName: 'p-0 sm:p-4',
+        bodyClassName: '',
         regions: [
             "body"
         ],
@@ -199,7 +202,7 @@ export async function getObjectForm(objectSchema, ctx){
                 initFetch: recordId != 'new',
                 body: await getFormBody(fields, objectSchema, ctx),
                 panelClassName:'m-0 sm:rounded-lg',
-                bodyClassName: 'p-0 sm:p-4',
+                bodyClassName: 'p-0',
                 className: 'p-4 sm:p-0 steedos-amis-form',
                 redirect: `/app/${appId}/${tabId}/view/\${recordId}`
             }
@@ -211,7 +214,7 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
     const fields = _.values(objectSchema.fields);
     return {
         type: 'page',
-        bodyClassName: 'p-0 sm:p-4',
+        bodyClassName: '', //p-0
         regions: [
             "body"
         ],
@@ -230,7 +233,7 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
                 title: "",
                 body: await getFormBody(map(fields, (field)=>{field.readonly = true;}), objectSchema, ctx),
                 panelClassName:'m-0 sm:rounded-lg',
-                bodyClassName: 'p-0 sm:p-4',
+                bodyClassName: 'p-0',
                 className: 'p-4 sm:p-0 steedos-amis-form',
                 actions: [] // 不显示表单默认的提交按钮
             }

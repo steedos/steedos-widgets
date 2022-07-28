@@ -40,9 +40,11 @@ function getReadonlyFormAdaptor(fields){
     // })
 
     return  `
-    var data = payload.data.data[0];
-    ${scriptStr}
-    payload.data = data;
+    if(payload.data.data){
+        var data = payload.data.data[0];
+        ${scriptStr}
+        payload.data = data;
+    }
     return payload;
 `
 }
@@ -174,20 +176,22 @@ export function getEditFormInitApi(object, recordId, fields){
         sendOn: "!!this.recordId",
         cache: API_CACHE,
         adaptor: `
-            var data = payload.data.data[0];
-            if(data){
-                ${getConvertDataScriptStr(fields)}
-                ${getScriptForAddUrlPrefixForImgFields(fields)}
-                ${getScriptForRewriteValueForFileFields(fields)}
-                //初始化接口返回的字段移除字段值为null的字段
-                for (key in data){
-                    if(data[key] === null){
-                        delete data[key];
+            if(payload.data.data){
+                var data = payload.data.data[0];
+                if(data){
+                    ${getConvertDataScriptStr(fields)}
+                    ${getScriptForAddUrlPrefixForImgFields(fields)}
+                    ${getScriptForRewriteValueForFileFields(fields)}
+                    //初始化接口返回的字段移除字段值为null的字段
+                    for (key in data){
+                        if(data[key] === null){
+                            delete data[key];
+                        }
                     }
-                }
-            };
-            payload.data = data;
-            delete payload.extensions;
+                };
+                payload.data = data;
+                delete payload.extensions;
+            }
             return payload;
         `,
         data: graphql.getFindOneQuery(object, recordId, fields),
