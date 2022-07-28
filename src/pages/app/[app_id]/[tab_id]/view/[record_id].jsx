@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-28 15:38:43
+ * @LastEditTime: 2022-07-28 16:04:35
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -124,7 +124,7 @@ export default function Record({ }) {
                                 { schema?.uiSchema?.permissions?.allowEdit &&  !isEditing && <button onClick={editClick} className="py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white font-semibold sm:rounded-[2px] shadow focus:outline-none">编辑</button>}
                                 {  isEditing && <button onClick={cancelClick} className="py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white font-semibold sm:rounded-[2px] shadow focus:outline-none">取消</button>}
 
-                                {buttons?.map((button)=>{
+                                {record_id != 'new' && buttons?.map((button)=>{
                                     return (
                                         <Button button={button} router={router} data={{
                                         app_id: app_id,
@@ -134,7 +134,7 @@ export default function Record({ }) {
                                         }}></Button>
                                     )
                                     })}
-                                    <Menu as="div" className="relative inline-block text-left">
+                                {record_id != 'new' && moreButtons?.length > 0 && <Menu as="div" className="relative inline-block text-left">
                                         <div>
                                         <Menu.Button className="py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold sm:rounded-[2px] shadow focus:outline-none ml-1">
                                             ...
@@ -162,7 +162,7 @@ export default function Record({ }) {
                                                 </Button>
                                                 )}
                                             </Menu.Item> */}
-                                            {moreButtons && moreButtons.map((button, index)=>{
+                                            {moreButtons.map((button, index)=>{
                                                 return <Menu.Item>
                                                 {({ active }) => (
                                                 <Button button={button}  router={router} data={{
@@ -181,7 +181,7 @@ export default function Record({ }) {
                                             </div>
                                         </Menu.Items>
                                         </Transition>
-                                    </Menu>
+                                    </Menu>}
                                     </div>
                             </div>
                             <div className="mt-1 text-slate-700">TODO: 记录名称</div>
