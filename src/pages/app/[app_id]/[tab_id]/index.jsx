@@ -19,7 +19,7 @@ import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid'
 import { values } from 'lodash';
 
-import { Button } from '@/components/Object/Button'
+import { Button } from '@/components/object/Button'
 
 export default function Page ({}) {
   const [selected, setSelected] = useState();
