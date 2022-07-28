@@ -53,7 +53,7 @@ export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   // Configure one or more authentication providers
   providers: [
-    CredentialsProvider,
+    // CredentialsProvider,
     KeycloakProvider
     // ...add more providers here
   ],
