@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 11:31:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-13 13:28:21
+ * @LastEditTime: 2022-07-27 18:18:39
  * @Description:
  */
 
@@ -64,7 +64,7 @@ export const amisRender = (root, schema, data = {}, env = {}, options) => {
       to = normalizeLink(to);
 
       if (action && action.actionType === "url") {
-        action.blank === false ? (window.location.href = to) : window.open(to);
+        action.blank === false ? router.push(to) : window.open(to);
         return;
       }
 

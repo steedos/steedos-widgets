@@ -2,14 +2,15 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-25 15:20:43
+ * @LastEditTime: 2022-07-28 15:12:19
  * @Description: 
  */
 import dynamic from 'next/dynamic'
 import Document, { Script, Head, Main, NextScript } from 'next/document'
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { useRouter } from 'next/router'
 import { getListSchema } from '@/lib/objects';
+import { getListViewButtons, execute } from '@/lib/buttons';
 import { unstable_getServerSession } from "next-auth/next"
 import { AmisRender } from '@/components/AmisRender'
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
@@ -18,12 +19,19 @@ import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid'
 import { values } from 'lodash';
 
+import { Button } from '@/components/Object/Button'
+
 export default function Page ({}) {
   const [selected, setSelected] = useState();
   const router = useRouter()
   const { app_id, tab_id } = router.query
   const [schema, setSchema] = useState(null);
   const [formFactor, setFormFactor] = useState(null);
+  const [buttons, setButtons] = useState(null);
+
+  const listViewRef = useRef();
+
+  window.listViewRef = listViewRef;
 
   useEffect(()=>{
     if(window.innerWidth < 768){
@@ -40,14 +48,34 @@ export default function Page ({}) {
         if(!schema){
           setSelected(values(data.uiSchema?.list_views).length > 0 ? values(data.uiSchema.list_views)[0] : null)
         }
-        console.log(`data`, data)
+        console.log(`===============data`, data)
         setSchema(data)
       })
+      
   }, [tab_id, selected, formFactor]);
+
+  useEffect(()=>{
+    if(schema && schema.uiSchema){
+      setButtons(getListViewButtons(schema.uiSchema, {
+        app_id: app_id,
+        tab_id: tab_id,
+        router: router,
+      }))
+    }
+  },[schema])
 
   const newRecord = ()=>{
     router.push('/app/'+app_id+'/'+tab_id+'/view/new')
   }
+
+  // const buttonClick = (button)=>{
+  //   return execute(button, {
+  //     app_id: app_id,
+  //     tab_id: tab_id,
+  //     router: router,
+  //     uiSchema: schema.uiSchema,
+  //   })
+  // }
 
   return (
     <>
@@ -56,9 +84,21 @@ export default function Page ({}) {
                   <div className="relative pointer-events-auto w-full sm:rounded-lg bg-white p-4 text-[0.8125rem] leading-5 shadow-xl shadow-black/5 hover:bg-slate-50 ring-1 ring-slate-700/10">
                       <div className="flex justify-between">
                           <div className="font-medium text-slate-900 text-base">{schema?.uiSchema?.label}</div>
-                          {schema?.uiSchema?.permissions?.allowCreate && <div className="ml-6 fill-slate-400">
-                            <button onClick={newRecord} className="py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold sm:rounded-[2px] shadow focus:outline-none">新建</button>
-                          </div>}
+                          <div className="flex flex-nowrap space-x-2 ml-6 fill-slate-400">
+                            {schema?.uiSchema?.permissions?.allowCreate && 
+                              <button onClick={newRecord} className="py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold sm:rounded-[2px] shadow focus:outline-none">新建</button>
+                            }
+                            {listViewRef.current && buttons?.map((button)=>{
+                              return (
+                                <Button button={button} router={router} data={{
+                                  app_id: app_id,
+                                  tab_id: tab_id,
+                                  object_name: schema.uiSchema.name,
+                                  // _ref: listViewRef.current?.amisScope?.getComponentById("listview_project"),
+                                }}></Button>
+                               )
+                            })}
+                          </div>
                       </div>
                       <Listbox value={selected} onChange={setSelected}>
                         <div className="relative mt-1">
@@ -113,7 +153,7 @@ export default function Page ({}) {
                   </div>
               </div>
           </div>
-      <AmisRender id={`${app_id}-${tab_id}`} schema={schema?.amisSchema || {}} router={router}></AmisRender>
+      {schema?.amisSchema && <AmisRender className="p-0 sm:p-4" ref={listViewRef} id={`${app_id}-${tab_id}`} schema={schema?.amisSchema || {}} router={router}></AmisRender>}
     </>
   )
 }
