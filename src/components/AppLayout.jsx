@@ -39,9 +39,9 @@ export function AppLayout({ children }) {
           <Navbar navigation={app?.children} selected={selected}/>
 
         {session && (
-          <div className="py-10 flex-1">
+          <div className=" px-4 pt-10">
 
-            <div className="hidden lg:block fixed z-20 inset-0 top-[3.8125rem] left-[max(0px,calc(50%-45rem))] right-auto w-[19.5rem] pb-10 px-8 overflow-y-auto">
+            <div className="hidden lg:block fixed z-20 inset-0 top-[3.8125rem] right-auto w-[19.5rem] pb-10 px-8 overflow-y-auto">
               <Sidebar navigation={app?.children} selected={selected}/>
             </div>
 

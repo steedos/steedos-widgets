@@ -114,12 +114,12 @@ export default function Record({ }) {
 
     return (
         <>
-            <div className="relative z-9 p-0 sm:p-4 sm:pb-0">
+            <div className="relative z-9 ">
                 <div className="space-y-4">
-                    <div className="pointer-events-auto w-full sm:rounded-lg bg-white p-4 text-[0.8125rem] leading-5 shadow-xl shadow-black/5 ring-1 ring-slate-700/10">
+                    <div className="pointer-events-auto w-full text-[0.8125rem] leading-5">
                         <div className=''>
                             <div className="flex justify-between">
-                                <div className="font-medium text-slate-900 text-base">{schema?.uiSchema?.label}</div>
+                                <div className="inline-block text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight dark:text-slate-200">{schema?.uiSchema?.label}</div>
                                 <div className="flex flex-nowrap space-x-2 ml-6 fill-slate-400">
                                 { schema?.uiSchema?.permissions?.allowEdit &&  !isEditing && <button onClick={editClick} className="py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white font-semibold sm:rounded-[2px] shadow focus:outline-none">编辑</button>}
                                 {  isEditing && <button onClick={cancelClick} className="py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white font-semibold sm:rounded-[2px] shadow focus:outline-none">取消</button>}
@@ -190,9 +190,9 @@ export default function Record({ }) {
                 </div>
             </div>
             
-            <div className="relative mt-2 z-9 p-0 sm:p-4 sm:pt-0 border-b sm:border-b-0">
+            <div className="relative mt-2 z-9 ">
                 <Tab.Group vertical={true}>
-                    <Tab.List className="flex space-x-1 sm:rounded-t-xl bg-white p-2">
+                    <Tab.List className="flex space-x-1 p-2">
                         <Tab
                                 key="detail"
                                 className={({ selected }) =>
