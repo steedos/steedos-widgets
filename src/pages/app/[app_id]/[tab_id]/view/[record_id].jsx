@@ -15,7 +15,7 @@ import { unstable_getServerSession } from "next-auth/next"
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
 import { Tab, Menu, Transition} from '@headlessui/react'
 import { getObjectDetailButtons, getObjectDetailMoreButtons } from '@/lib/buttons';
-import { Button } from '@/components/Object/Button'
+import { Button } from '@/components/object/Button'
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
