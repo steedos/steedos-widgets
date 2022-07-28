@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   steedos:
-    image: steedos/steedos-community:2.2
+    image: steedos/steedos-enterprise:2.2.55-beta.15
     command: "yarn start"
     ports:
       - "5000:5000"
@@ -19,7 +19,13 @@ services:
       - STEEDOS_TENANT_ENABLE_PASSWORD_LOGIN=true
       - TRANSPORTER=redis://redis:6379/2
       - CACHER=redis://redis:6379
-      - STEEDOS_IDENTITY_JWT_SECRET=${NEXTAUTH_SECRET}
+      - STEEDOS_IDENTITY_JWT_ENABLED=true
+      - STEEDOS_IDENTITY_JWT_SECRET=${JWT_SECRET}
+      - STEEDOS_IDENTITY_OIDC_ENABLED=true
+      - STEEDOS_IDENTITY_OIDC_CONFIG_URL=https://id.steedos.cn/realms/dev/.well-known/openid-configuration
+      - STEEDOS_IDENTITY_OIDC_CLIENT_ID=steedos-oidc-public
+      - STEEDOS_IDENTITY_OIDC_CLIENT_SECRET=
+      - STEEDOS_IDENTITY_OIDC_NAME=Steedos ID
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
       interval: 60s
