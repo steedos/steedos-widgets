@@ -1,16 +1,30 @@
+/*
+ * @Author: baozhoutao@steedos.com
+ * @Date: 2022-07-29 10:46:29
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2022-07-29 11:16:01
+ * @Description: 
+ */
 /* This example requires Tailwind CSS v2.0+ */
 import { CalendarIcon, ChartBarIcon, FolderIcon, HomeIcon, InboxIcon, UsersIcon } from '@heroicons/react/outline'
+import { useRouter } from 'next/router'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 export  function Sidebar({ navigation, selected }) {
+  const router = useRouter()
+  const handleClick = (e) => {
+    e.preventDefault()
+    router.push(e.target.href)
+  }
   return (
     <nav aria-label="Sidebar" className="sticky top-10 divide-y divide-gray-300">
       <div className="space-y-6 lg:space-y-3 border-l border-slate-100 dark:border-slate-800">
         {navigation?.map((item) => (
           <a
+            onClick={handleClick}
             key={item.name}
             href={item.path}
             className={classNames(
@@ -19,7 +33,7 @@ export  function Sidebar({ navigation, selected }) {
             )}
             aria-current={item.current ? 'page' : undefined}
           >
-            <span className="truncate">{item.name}</span>
+            {item.name}
           </a>
         ))}
       </div>

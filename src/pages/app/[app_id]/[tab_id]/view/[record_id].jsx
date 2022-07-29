@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-29 10:47:02
+ * @LastEditTime: 2022-07-29 11:13:17
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -59,16 +59,16 @@ export default function Record({ }) {
         doReadonly()
     }, [router]);
 
-    useEffect(() => {
-        if(record_id === 'new'){
-            doEditing()
-        }else{
-            doReadonly()
-        }
-    }, [record_id]);
+    // useEffect(() => {
+    //     if(record_id === 'new'){
+    //         doEditing()
+    //     }else{
+    //         doReadonly()
+    //     }
+    // }, [record_id, formFactor]);
 
     useEffect(() => {
-        if(isEditing){
+        if(isEditing || record_id === 'new'){
             doEditing()
         }else{
             doReadonly()
