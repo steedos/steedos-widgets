@@ -1,0 +1,44 @@
+{
+    "type": "page",
+    "title": "Welcome to Steedos",
+    "body": [
+      {
+        "type": "crud",
+        "syncLocation": false,
+        "api": {
+          "method": "get",
+          "url": ""
+        },
+        "columns": [
+          {
+            "name": "id",
+            "label": "ID",
+            "type": "text"
+          },
+          {
+            "name": "engine",
+            "label": "渲染引擎",
+            "type": "text"
+          }
+        ],
+        "bulkActions": [
+        ],
+        "itemActions": [
+        ],
+        "id": "u:c0945e41a091"
+      }
+    ],
+    "regions": [
+      "body"
+    ],
+    "data": {
+      "objectName": "space_users",
+      "recordId": "",
+      "initialValues": {
+      },
+      "appId": "builder",
+      "title": "",
+      "context": {
+      }
+    }
+  }
