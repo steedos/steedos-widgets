@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-28 15:12:19
+ * @LastEditTime: 2022-07-29 09:26:05
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -21,17 +21,13 @@ import { values } from 'lodash';
 
 import { Button } from '@/components/Object/Button'
 
-export default function Page ({}) {
+export default function Page (props) {
   const [selected, setSelected] = useState();
   const router = useRouter()
   const { app_id, tab_id } = router.query
-  const [schema, setSchema] = useState(null);
+  const [schema, setSchema] = useState({name: 'all'});
   const [formFactor, setFormFactor] = useState(null);
   const [buttons, setButtons] = useState(null);
-
-  const listViewRef = useRef();
-
-  window.listViewRef = listViewRef;
 
   useEffect(()=>{
     if(window.innerWidth < 768){
@@ -45,24 +41,29 @@ export default function Page ({}) {
     if(!tab_id || !formFactor) return ;
     getListSchema(app_id, tab_id, selected?.name, {formFactor: formFactor})
       .then((data) => {
-        if(!schema){
-          setSelected(values(data.uiSchema?.list_views).length > 0 ? values(data.uiSchema.list_views)[0] : null)
-        }
-        console.log(`===============data`, data)
+        // if(!schema){
+        //   const defSelected = values(data.uiSchema?.list_views).length > 0 ? values(data.uiSchema.list_views)[0] : null;
+        //   setSelected(defSelected)
+        // }
+        setButtons(getListViewButtons(data.uiSchema, {
+          app_id: app_id,
+          tab_id: tab_id,
+          router: router,
+        }))
         setSchema(data)
       })
       
   }, [tab_id, selected, formFactor]);
 
-  useEffect(()=>{
-    if(schema && schema.uiSchema){
-      setButtons(getListViewButtons(schema.uiSchema, {
-        app_id: app_id,
-        tab_id: tab_id,
-        router: router,
-      }))
-    }
-  },[schema])
+  // useEffect(()=>{
+  //   if(schema && schema.uiSchema){
+  //     setButtons(getListViewButtons(schema.uiSchema, {
+  //       app_id: app_id,
+  //       tab_id: tab_id,
+  //       router: router,
+  //     }))
+  //   }
+  // },[schema])
 
   const newRecord = ()=>{
     router.push('/app/'+app_id+'/'+tab_id+'/view/new')
@@ -76,7 +77,6 @@ export default function Page ({}) {
   //     uiSchema: schema.uiSchema,
   //   })
   // }
-
   return (
     <>
       <div className="relative z-9 p-0 sm:p-4 sm:pb-0 border-b sm:border-b-0">
@@ -88,13 +88,12 @@ export default function Page ({}) {
                             {schema?.uiSchema?.permissions?.allowCreate && 
                               <button onClick={newRecord} className="py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold sm:rounded-[2px] shadow focus:outline-none">新建</button>
                             }
-                            {listViewRef.current && buttons?.map((button)=>{
+                            {buttons?.map((button)=>{
                               return (
                                 <Button button={button} router={router} data={{
                                   app_id: app_id,
                                   tab_id: tab_id,
                                   object_name: schema.uiSchema.name,
-                                  // _ref: listViewRef.current?.amisScope?.getComponentById("listview_project"),
                                 }}></Button>
                                )
                             })}
@@ -153,7 +152,7 @@ export default function Page ({}) {
                   </div>
               </div>
           </div>
-      {schema?.amisSchema && <AmisRender className="p-0 sm:p-4" ref={listViewRef} id={`${app_id}-${tab_id}`} schema={schema?.amisSchema || {}} router={router}></AmisRender>}
+      {schema?.amisSchema && <AmisRender className="p-0 sm:p-4" id={`${app_id}-${tab_id}`} schema={schema?.amisSchema || {}} router={router}></AmisRender>}
     </>
   )
 }

@@ -1,9 +1,9 @@
 import { AmisRender } from "@/components/AmisRender";
 import { execute } from "@/lib/buttons";
 export function Button(props) {
-  const { button, data, router, className } = props;
+  const { button, data, router, className, scope } = props;
   const buttonClick = () => {
-    console.log(`data._ref.props.store.toJSON()`, data._ref?.props.store.toJSON())
+    console.log(`data._ref.props.store.toJSON()`, scope.getComponentById("listview_project")?.props.store.toJSON())
     return execute(button, data); //TODO 处理参数
   };
 

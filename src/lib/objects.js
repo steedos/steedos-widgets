@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-25 17:13:04
+ * @LastEditTime: 2022-07-29 10:45:36
  * @Description: 
  */
 import { fetchAPI } from './steedos.client';
@@ -163,6 +163,5 @@ export async function getObjectRelateds(appName, objectName, recordId, formFacto
             schema: await getListSchema(appName, arr[0], 'all', {filter: filter, formFactor: formFactor})
         })
     }
-    console.log(related);
     return related;
 }

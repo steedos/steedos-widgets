@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-28 16:04:35
+ * @LastEditTime: 2022-07-29 10:45:05
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -33,6 +33,20 @@ export default function Record({ }) {
     const [buttons, setButtons] = useState(null);
     const [moreButtons, setMoreButtons] = useState(null);
 
+    const doEditing = ()=>{
+        if(!formFactor){
+            return ;
+        }
+        editRecord(tab_id, record_id, formFactor);
+    }
+
+    const doReadonly = ()=>{
+        if(!formFactor){
+            return ;
+        }
+        viewRecord(tab_id, record_id, formFactor);
+    }
+
     useEffect(()=>{
       if(window.innerWidth < 768){
         setFormFactor('SMALL')
@@ -42,52 +56,76 @@ export default function Record({ }) {
     }, [])
 
     useEffect(() => {
-        setIsEditing(false)
+        doReadonly()
     }, [router]);
 
     useEffect(() => {
         if(record_id === 'new'){
-            setIsEditing(true)
+            doEditing()
         }else{
-            setIsEditing(false)
+            doReadonly()
         }
     }, [record_id]);
 
     useEffect(() => {
-        if(!formFactor){
-            return ;
-        }
         if(isEditing){
-            editRecord(tab_id, record_id, formFactor)
+            doEditing()
         }else{
-            viewRecord(tab_id, record_id, formFactor);
+            doReadonly()
         }
-    }, [tab_id, record_id, isEditing, formFactor]);
+    }, [formFactor]);
 
-    useEffect(()=>{
+    // useEffect(() => {
+    //     if(!formFactor){
+    //         return ;
+    //     }
+    //     if(isEditing){
+    //         editRecord(tab_id, record_id, formFactor)
+    //     }else{
+    //         viewRecord(tab_id, record_id, formFactor);
+    //     }
+    // }, [tab_id, record_id, isEditing, formFactor]);
+
+    // useEffect(()=>{
+    //     if(schema && schema.uiSchema){
+    //       setButtons(getObjectDetailButtons(schema.uiSchema, {
+    //         app_id: app_id,
+    //         tab_id: tab_id,
+    //         router: router,
+    //       }))
+    //       setMoreButtons(getObjectDetailMoreButtons(schema.uiSchema, {
+    //         app_id: app_id,
+    //         tab_id: tab_id,
+    //         router: router,
+    //       }))
+    //     }
+    //   },[schema])
+
+    const loadButtons = (schema)=>{
         if(schema && schema.uiSchema){
-          setButtons(getObjectDetailButtons(schema.uiSchema, {
-            app_id: app_id,
-            tab_id: tab_id,
-            router: router,
-          }))
-          setMoreButtons(getObjectDetailMoreButtons(schema.uiSchema, {
-            app_id: app_id,
-            tab_id: tab_id,
-            router: router,
-          }))
-        }
-      },[schema])
+            setButtons(getObjectDetailButtons(schema.uiSchema, {
+              app_id: app_id,
+              tab_id: tab_id,
+              router: router,
+            }))
+            setMoreButtons(getObjectDetailMoreButtons(schema.uiSchema, {
+              app_id: app_id,
+              tab_id: tab_id,
+              router: router,
+            }))
+          }
+    }
 
     const viewRecord = (tab_id, record_id, formFactor)=>{
         if(tab_id && record_id){
-            getViewSchema(tab_id, record_id, {formFactor: formFactor})
-            .then((data) => {
-                setSchema(data)
-            });
             getObjectRelateds(app_id, tab_id, record_id, formFactor).then((data)=>{
                 setRelateds(data)
-            })
+            });
+            getViewSchema(tab_id, record_id, {formFactor: formFactor}).then((data) => {
+                loadButtons(data);
+                setSchema(data)
+                setIsEditing(false);
+            });
         }
     }
 
@@ -95,7 +133,9 @@ export default function Record({ }) {
         if(tab_id && record_id){
             getFormSchema(tab_id, {recordId: record_id, tabId: tab_id, appId: app_id, formFactor: formFactor})
             .then((data) => {
-                setSchema(data)
+                loadButtons(data);
+                setSchema(data);
+                setIsEditing(true);
             })
         }
     }
@@ -104,14 +144,13 @@ export default function Record({ }) {
         if(record_id === 'new'){
             router.back()
         }else{
-            setIsEditing(false)
+            doReadonly()
         }
     }
 
     const editClick = ()=>{
-        setIsEditing(true)
+        doEditing()
     }
-
     return (
         <>
             <div className="relative z-9 p-0 sm:p-4 sm:pb-0">
@@ -191,7 +230,7 @@ export default function Record({ }) {
             </div>
             
             <div className="relative mt-2 z-9 p-0 sm:p-4 sm:pt-0 border-b sm:border-b-0">
-                <Tab.Group vertical={true}>
+                <Tab.Group vertical={true} defaultIndex={0} >
                     <Tab.List className="flex space-x-1 sm:rounded-t-xl bg-white p-2">
                         <Tab
                                 key="detail"
@@ -226,7 +265,7 @@ export default function Record({ }) {
                                     'sm:rounded-b-xl bg-white',
                                     ''
                                   )}>
-                        <AmisRender id={`${app_id}-${tab_id}-${record_id}`} schema={schema?.amisSchema || {}} router={router}></AmisRender>
+                            {schema?.amisSchema && <AmisRender id={`${app_id}-${tab_id}-${record_id}-${isEditing ? 'editing' : 'readonly'}`} schema={schema?.amisSchema || {}} router={router}></AmisRender>}
                         </Tab.Panel>
                         {relateds?.map((related)=>{
                             return (
