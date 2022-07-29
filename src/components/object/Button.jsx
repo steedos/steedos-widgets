@@ -39,7 +39,7 @@ export function Button(props) {
     return (
       <button
         onClick={buttonClick}
-        className="bg-sky-500 py-0.5 px-3 text-sm font-semibold text-white shadow hover:bg-sky-600 focus:outline-none sm:rounded-[2px]"
+        className="antd-Button bg-sky-500 py-0.5 px-3 text-sm font-semibold text-white shadow hover:bg-sky-600 focus:outline-none sm:rounded-[2px]"
       >
         {button.label}
       </button>
