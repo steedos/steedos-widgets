@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-29 09:26:05
+ * @LastEditTime: 2022-07-29 10:47:16
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -19,7 +19,7 @@ import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid'
 import { values } from 'lodash';
 
-import { Button } from '@/components/Object/Button'
+import { Button } from '@/components/object/Button'
 
 export default function Page (props) {
   const [selected, setSelected] = useState();
@@ -79,11 +79,11 @@ export default function Page (props) {
   // }
   return (
     <>
-      <div className="relative z-9 p-0 sm:p-4 sm:pb-0 border-b sm:border-b-0">
+      <div className="relative z-9 sm:pb-0 border-b sm:border-b-0">
               <div className="relative space-y-4">
-                  <div className="relative pointer-events-auto w-full sm:rounded-lg bg-white p-4 text-[0.8125rem] leading-5 shadow-xl shadow-black/5 hover:bg-slate-50 ring-1 ring-slate-700/10">
+                  <div className="relative pointer-events-auto w-full px-3 text-[0.8125rem] leading-5">
                       <div className="flex justify-between">
-                          <div className="font-medium text-slate-900 text-base">{schema?.uiSchema?.label}</div>
+                          <div className="inline-block text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight dark:text-slate-200">{schema?.uiSchema?.label}</div>
                           <div className="flex flex-nowrap space-x-2 ml-6 fill-slate-400">
                             {schema?.uiSchema?.permissions?.allowCreate && 
                               <button onClick={newRecord} className="py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold sm:rounded-[2px] shadow focus:outline-none">新建</button>
@@ -100,7 +100,7 @@ export default function Page (props) {
                           </div>
                       </div>
                       <Listbox value={selected} onChange={setSelected}>
-                        <div className="relative mt-1">
+                        <div className="relative mt-1 w-[1/2]">
                           <Listbox.Button className="min-w-[6rem] w-auto cursor-default py-2 pr-10 text-left focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
                             <span className="block truncate">{selected?.label}</span>
                             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
@@ -152,7 +152,7 @@ export default function Page (props) {
                   </div>
               </div>
           </div>
-      {schema?.amisSchema && <AmisRender className="p-0 sm:p-4" id={`${app_id}-${tab_id}`} schema={schema?.amisSchema || {}} router={router}></AmisRender>}
+      {schema?.amisSchema && <AmisRender className="" id={`${app_id}-${tab_id}`} schema={schema?.amisSchema || {}} router={router}></AmisRender>}
     </>
   )
 }

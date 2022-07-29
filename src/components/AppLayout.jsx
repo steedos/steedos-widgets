@@ -7,6 +7,7 @@
  */
 import React, { useState, useEffect, Fragment } from 'react';
 import { Navbar } from '@/components/Navbar';
+import { Sidebar } from '@/components/Sidebar';
 import { getApp } from '@/lib/apps';
 import { useRouter } from 'next/router'
 import { setSteedosAuth } from '@/lib/steedos.client';
@@ -34,10 +35,22 @@ export function AppLayout({ children }) {
     }, [tab_id]);
 
     return (
-      <>
-        <Navbar navigation={app?.children} selected={selected}/>
-        {session && <main>{children}</main>}
+      <div className='h-full flex flex-col'>
+          <Navbar navigation={app?.children} selected={selected}/>
+
+        {session && (
+          <div className=" px-4 pt-10">
+
+            <div className="hidden lg:block fixed z-20 inset-0 top-[3.8125rem] right-auto w-[16rem] pb-10 px-8 overflow-y-auto">
+              <Sidebar navigation={app?.children} selected={selected}/>
+            </div>
+
+            <div className="lg:pl-[16rem]">
+              {children}
+            </div>
+        </div>
+        )}
         {/* <Footer /> */}
-      </>
+      </div>
     )
   }

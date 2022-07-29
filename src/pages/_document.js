@@ -18,7 +18,7 @@ export default class MyDocument extends Document {
           <script src="https://unpkg.com/amis@2.0.2/sdk/sdk.js"></script>
           <link rel="stylesheet" href="/amis.css" />
         </Head>
-        <body className='flex h-full flex-col'>
+        <body className='antialiased text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900'>
           <link rel="stylesheet" href="https://unpkg.com/amis@2.0.2/lib/themes/antd.css" />
           <link rel="stylesheet" href="https://unpkg.com/amis@2.0.2/lib/helper.css" />
           <link rel="stylesheet" href="https://unpkg.com/amis@2.0.2/sdk/iconfont.css" />

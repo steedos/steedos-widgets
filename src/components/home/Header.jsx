@@ -62,7 +62,7 @@ function MobileNavigation() {
                 as="ul"
                 className="absolute inset-x-0 top-full mt-4 origin-top space-y-4 rounded-2xl bg-white p-6 text-lg tracking-tight text-slate-900 shadow-xl ring-1 ring-slate-900/5"
               >
-                <li>
+                {/* <li>
                   <Link href="#features">
                     <a className="block w-full" onClick={() => close()}>
                       Features
@@ -82,7 +82,7 @@ function MobileNavigation() {
                       Pricing
                     </a>
                   </Link>
-                </li>
+                </li> */}
                 <li className="border-t border-slate-300/40 pt-4">
                   <Link href="/login">
                     <a className="block w-full">Sign in</a>
@@ -113,7 +113,7 @@ export function Header() {
                 </a>
               </Link>
             </li>
-            <li className="ml-12 hidden md:block">
+            {/* <li className="ml-12 hidden md:block">
               <Link href="#features">
                 <a className="rounded-lg py-1 px-2 text-slate-700 hover:bg-slate-100 hover:text-slate-900">
                   Features
@@ -133,7 +133,7 @@ export function Header() {
                   Pricing
                 </a>
               </Link>
-            </li>
+            </li> */}
             
             <li className="ml-auto hidden md:block">
               {!session && (

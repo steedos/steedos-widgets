@@ -51,7 +51,7 @@ export function Navbar({ navigation, selected }) {
   
   return (
     // @ts-ignore
-    <Disclosure as="header" className="bg-white shadow">
+    <Disclosure as="header" className="sticky top-0 z-40 w-full backdrop-blur flex-none transition-colors duration-500 lg:z-50 lg:border-b lg:border-slate-900/10 dark:border-slate-50/[0.06] bg-white/95 supports-backdrop-blur:bg-white/60 dark:bg-transparent">
       {({ open }) => (
         <>
           <div className="mx-auto lg:divide-y lg:divide-gray-200">
@@ -151,23 +151,6 @@ export function Navbar({ navigation, selected }) {
                 </Menu>
               </div>
             </div>
-            {navigation?.length > 0 && <nav className="hidden lg:py-2 lg:flex lg:space-x-8 px-2 sm:px-4 lg:px-8" aria-label="Global">
-              {navigation?.map((item) => (
-                <a
-                  key={item.id}
-                  href={item.path}
-                  onClick={handleClick}
-                  className={classNames(
-                    item.id === selected ? 'bg-gray-100 text-gray-900' : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900',
-                    'rounded-md py-2 px-3 inline-flex items-center text-sm font-medium'
-                  )}
-                  aria-current={item.id === selected ? 'page' : undefined}
-                >
-                  {item.name}
-                </a>
-              ))}
-            </nav>
-            }
           </div>
 
           <Disclosure.Panel as="nav" className="lg:hidden" aria-label="Global">
