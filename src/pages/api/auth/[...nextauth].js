@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-20 16:29:22
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-20 18:10:01
+ * @LastEditTime: 2022-07-29 11:41:41
  * @Description: 
  */
 
@@ -74,6 +74,7 @@ export const authOptions = {
           session.steedos = {
             space: loginResult.space,
             token: loginResult.token,
+            userId: loginResult.user?.id
           }
         }
       }

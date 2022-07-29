@@ -2,16 +2,17 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-18 13:38:31
+ * @LastEditTime: 2022-07-29 11:44:06
  * @Description: 
  */
 const ROOT_URL = process.env.NEXT_PUBLIC_STEEDOS_ROOT_URL
 
 const STEEDOS_AUTH = {};
 
-export const setSteedosAuth = (space, token) => {
+export const setSteedosAuth = (space, token, userId) => {
     STEEDOS_AUTH.space = space;
     STEEDOS_AUTH.token = token;
+    STEEDOS_AUTH.userId = userId;
 }
 
 export async function fetchAPI(api, options = { credentials: 'include' }) {
@@ -95,4 +96,12 @@ export function getAuthorization(){
 
 export function absoluteUrl(url){
     return `${ROOT_URL}${url}`
+}
+
+export function getRootUrl(){
+    return ROOT_URL;
+}
+
+export const getSteedosAuth = () => {
+    return Object.assign({}, STEEDOS_AUTH);
 }

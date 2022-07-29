@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 09:31:04
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-18 14:40:25
+ * @LastEditTime: 2022-07-29 11:43:04
  * @Description:  
  */
 import React, { useState, useEffect, Fragment } from 'react';
@@ -19,7 +19,7 @@ export function AppLayout({ children }) {
     const [selected, setSelected] = useState(tab_id)
     const { data: session } = useSession()
     if(session){
-      setSteedosAuth(session.steedos.space, session.steedos.token);
+      setSteedosAuth(session.steedos.space, session.steedos.token, session.steedos.userId);
     }
 
     useEffect(() => {
