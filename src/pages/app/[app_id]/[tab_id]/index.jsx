@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-30 11:31:00
+ * @LastEditTime: 2022-07-30 17:58:38
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -25,7 +25,7 @@ export default function Page (props) {
   const [selected, setSelected] = useState();
   const router = useRouter()
   const { app_id, tab_id } = router.query
-  const [schema, setSchema] = useState({name: 'all'});
+  const [schema, setSchema] = useState();
   const [formFactor, setFormFactor] = useState(null);
   const [buttons, setButtons] = useState(null);
 
@@ -41,10 +41,6 @@ export default function Page (props) {
     if(!tab_id || !formFactor) return ;
     getListSchema(app_id, tab_id, selected?.name, {formFactor: formFactor})
       .then((data) => {
-        // if(!schema){
-        //   const defSelected = values(data.uiSchema?.list_views).length > 0 ? values(data.uiSchema.list_views)[0] : null;
-        //   setSelected(defSelected)
-        // }
         setButtons(getListViewButtons(data.uiSchema, {
           app_id: app_id,
           tab_id: tab_id,
@@ -55,29 +51,10 @@ export default function Page (props) {
       
   }, [tab_id, selected, formFactor]);
 
-  // useEffect(()=>{ 
-  //   if(schema && schema.uiSchema){
-  //     setButtons(getListViewButtons(schema.uiSchema, {
-  //       app_id: app_id,
-  //       tab_id: tab_id,
-  //       router: router,
-  //     }))
-  //   }
-  // },[schema])
-
   const newRecord = ()=>{
     router.push('/app/'+app_id+'/'+tab_id+'/view/new')
   }
 
-  
-  // const buttonClick = (button)=>{
-  //   return execute(button, {
-  //     app_id: app_id,
-  //     tab_id: tab_id,
-  //     router: router,
-  //     uiSchema: schema.uiSchema,
-  //   })
-  // }
   return (
     <>
       <div className="relative z-9 sm:pb-0 border-b sm:border-b-0">
@@ -91,7 +68,7 @@ export default function Page (props) {
                             }
                             {buttons?.map((button)=>{
                               return (
-                                <Button button={button} router={router} data={{
+                                <Button key={button.name} button={button} router={router} data={{
                                   app_id: app_id,
                                   tab_id: tab_id,
                                   object_name: schema.uiSchema.name,
@@ -103,8 +80,8 @@ export default function Page (props) {
                       </div>
                       <Listbox value={selected} onChange={setSelected}>
                         <div className="relative mt-1 w-[1/2]">
-                          <Listbox.Button className="min-w-[6rem] w-auto cursor-default py-2 pr-10 text-left focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
-                            <span className="block truncate">{selected?.label}</span>
+                          <Listbox.Button className="relative w-full cursor-default py-2 pr-10 text-left focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+                            <span className="block truncate">{selected?.label || schema?.uiSchema.list_views.all?.label}</span>
                             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                               <SelectorIcon
                                 className="h-5 w-5 text-gray-400"
@@ -112,45 +89,33 @@ export default function Page (props) {
                               />
                             </span>
                           </Listbox.Button>
-                          <Transition
-                            as={Fragment}
-                            leave="transition ease-in duration-100"
-                            leaveFrom="opacity-100"
-                            leaveTo="opacity-0"
-                          >
                             <Listbox.Options className="z-50 absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                               {values(schema?.uiSchema?.list_views).map((listView, personIdx) => (
-                                <Listbox.Option
-                                  key={personIdx}
-                                  className={({ active }) =>
-                                    `cursor-default select-none py-2 pl-10 pr-4 ${
+                                    <Listbox.Option key={personIdx} value={listView} className={({ active }) =>
+                                    `relative cursor-default select-none py-2 pl-10 pr-4 ${
                                       active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
                                     }`
-                                  }
-                                  value={listView}
-                                >
-                                  {({ selected }) => (
-                                    <>
-                                      <span
-                                        className={`block truncate ${
-                                          selected ? 'font-medium' : 'font-normal'
-                                        }`}
-                                      >
-                                        {listView.label}
-                                      </span>
-                                      {selected ? (
-                                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
-                                          <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                                  }>
+                                   
+                                        <span
+                                          className={`block truncate ${
+                                            selected?.name ? selected.name : 'all' === listView.name ? 'font-medium' : 'font-normal'
+                                          }`}
+                                        >
+                                          {listView.label}
                                         </span>
-                                      ) : null}
-                                    </>
-                                  )}
-                                </Listbox.Option>
+                                        {selected?.name ? selected.name : 'all' === listView.name ? (
+                                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                                          </span>
+                                        ) : null}
+                                    </Listbox.Option>
                               ))}
                             </Listbox.Options>
-                          </Transition>
                         </div>
+                        
                       </Listbox>
+                      
                   </div>
               </div>
           </div>
