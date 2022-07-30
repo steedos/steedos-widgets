@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-29 11:26:30
+ * @LastEditTime: 2022-07-30 16:31:11
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -118,13 +118,17 @@ export default function Record({ }) {
 
     const viewRecord = (tab_id, record_id, formFactor)=>{
         if(tab_id && record_id){
-            getObjectRelateds(app_id, tab_id, record_id, formFactor).then((data)=>{
-                setRelateds(data)
-            });
-            getViewSchema(tab_id, record_id, {formFactor: formFactor}).then((data) => {
-                loadButtons(data);
-                setSchema(data)
+            const p1 = getObjectRelateds(app_id, tab_id, record_id, formFactor);
+            const p2 = getViewSchema(tab_id, record_id, {formFactor: formFactor});
+            Promise.all([ p1, p2 ]).then((values) => {
+                console.log(values);
+                setRelateds(values[0]);
+
+                const schema = values[1];
+                loadButtons(schema);
+                setSchema(schema)
                 setIsEditing(false);
+
             });
         }
     }
@@ -151,6 +155,9 @@ export default function Record({ }) {
     const editClick = ()=>{
         doEditing()
     }
+
+    console.log(`schema`, schema)
+
     return (
         <>
             <div className="relative z-9 ">
@@ -165,11 +172,11 @@ export default function Record({ }) {
 
                                 {record_id != 'new' && buttons?.map((button)=>{
                                     return (
-                                        <Button button={button} router={router} data={{
+                                        <Button key={button.name}  button={button} router={router} data={{
                                         app_id: app_id,
                                         tab_id: tab_id,
                                         object_name: schema.uiSchema.name,
-                                        // _ref: listViewRef.current?.amisScope?.getComponentById("listview_project"),
+                                        dataComponentId: `${app_id}-${tab_id}-${record_id}`
                                         }}></Button>
                                     )
                                     })}
@@ -202,7 +209,7 @@ export default function Record({ }) {
                                                 )}
                                             </Menu.Item> */}
                                             {moreButtons.map((button, index)=>{
-                                                return <Menu.Item>
+                                                return <Menu.Item key={index}>
                                                 {({ active }) => (
                                                 <Button button={button}  router={router} data={{
                                                     app_id: app_id,
@@ -265,7 +272,7 @@ export default function Record({ }) {
                                     'sm:rounded-b-xl bg-white',
                                     ''
                                   )}>
-                            {schema?.amisSchema && <AmisRender id={`${app_id}-${tab_id}-${record_id}-${isEditing ? 'editing' : 'readonly'}`} schema={schema?.amisSchema || {}} router={router}></AmisRender>}
+                            {schema?.amisSchema && <AmisRender id={`${app_id}-${tab_id}-${record_id}`} schema={schema?.amisSchema || {}} router={router}></AmisRender>}
                         </Tab.Panel>
                         {relateds?.map((related)=>{
                             return (

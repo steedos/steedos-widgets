@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 11:31:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-27 18:18:39
+ * @LastEditTime: 2022-07-30 15:37:13
  * @Description:
  */
 
@@ -51,10 +51,8 @@ export const amisRootClick = (router, e) => {
   }
 };
 
-export const amisRender = (root, schema, data = {}, env = {}, options) => {
-  let amis = amisRequire("amis/embed");
-  const { router } = options;
-  return amis.embed(root, schema, data, {
+export const getEvn = (router)=>{
+  return {
     theme: "antd",
     jumpTo: (to, action) => {
       if (to === "goBack") {
@@ -78,7 +76,12 @@ export const amisRender = (root, schema, data = {}, env = {}, options) => {
       } else {
         router.push(to);
       }
-    },
-    ...env,
-  });
+    }
+  }
+}
+
+export const amisRender = (root, schema, data = {}, env = {}, options) => {
+  let amis = amisRequire("amis/embed");
+  const { router } = options;
+  return amis.embed(root, schema, data, Object.assign(getEvn(router), env));
 };

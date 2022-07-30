@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 16:55:58
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-29 11:47:12
+ * @LastEditTime: 2022-07-30 16:31:46
  * @Description: 
  */
 
@@ -44,11 +44,18 @@ export const AmisRender = ({id, schema, data, router, className, })=>{
                 }
             }
         });
-        let scope = amisRender(`#${id}`, defaultsDeep(defData , schema), data, {}, {router: router});
-        SteedosUI.refs[id] = scope;
-      }, [id]);
-
+        // 如果已存在,则先销毁, 再创建新实例
+        if(SteedosUI.refs[id]){
+            try {
+                SteedosUI.refs[id].unmount()
+            } catch (error) {
+                console.error(`error`, id)
+            }
+        }
+        SteedosUI.refs[id] = amisRender(`#${id}`, defaultsDeep(defData , schema), data, {}, {router: router});
+      }, [schema]);
+    
     return (
-        <div id={id} className={`app-wrapper ${className}`} onClick={(e)=>{ return amisRootClick(router, e)}}></div>
+        <div id={`${id}`} className={`app-wrapper ${className}`} onClick={(e)=>{ return amisRootClick(router, e)}}></div>
     )
 };

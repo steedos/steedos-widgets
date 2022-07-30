@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-29 10:47:16
+ * @LastEditTime: 2022-07-30 11:31:00
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -55,7 +55,7 @@ export default function Page (props) {
       
   }, [tab_id, selected, formFactor]);
 
-  // useEffect(()=>{
+  // useEffect(()=>{ 
   //   if(schema && schema.uiSchema){
   //     setButtons(getListViewButtons(schema.uiSchema, {
   //       app_id: app_id,
@@ -69,6 +69,7 @@ export default function Page (props) {
     router.push('/app/'+app_id+'/'+tab_id+'/view/new')
   }
 
+  
   // const buttonClick = (button)=>{
   //   return execute(button, {
   //     app_id: app_id,
@@ -86,7 +87,7 @@ export default function Page (props) {
                           <div className="inline-block text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight dark:text-slate-200">{schema?.uiSchema?.label}</div>
                           <div className="flex flex-nowrap space-x-2 ml-6 fill-slate-400">
                             {schema?.uiSchema?.permissions?.allowCreate && 
-                              <button onClick={newRecord} className="py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold sm:rounded-[2px] shadow focus:outline-none">新建</button>
+                              <button onClick={newRecord} className="antd-Button py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold sm:rounded-[2px] shadow focus:outline-none">新建</button>
                             }
                             {buttons?.map((button)=>{
                               return (
@@ -94,6 +95,7 @@ export default function Page (props) {
                                   app_id: app_id,
                                   tab_id: tab_id,
                                   object_name: schema.uiSchema.name,
+                                  dataComponentId: `${app_id}-${tab_id}`
                                 }}></Button>
                                )
                             })}

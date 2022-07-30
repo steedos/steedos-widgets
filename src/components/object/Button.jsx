@@ -1,10 +1,10 @@
 import { AmisRender } from "@/components/AmisRender";
 import { execute } from "@/lib/buttons";
 export function Button(props) {
-  const { button, data, router, className, scope } = props;
+  const { button, data, router, className,  } = props;
+  const { dataComponentId } = data;
   const buttonClick = () => {
-    console.log(`data._ref.props.store.toJSON()`, scope.getComponentById("listview_project")?.props.store.toJSON())
-    return execute(button, data); //TODO 处理参数
+    return execute(button, Object.assign({}, data , {scope: SteedosUI.getRef(dataComponentId)})); //TODO 处理参数
   };
 
   if (button.type === "action") {
@@ -26,7 +26,9 @@ export function Button(props) {
         regions: [
           "body"
         ],
-        data: data
+        data: {
+            ...data
+        }
       };
     return (
       <AmisRender
