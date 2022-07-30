@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-30 17:58:38
+ * @LastEditTime: 2022-07-30 17:59:47
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -99,12 +99,12 @@ export default function Page (props) {
                                    
                                         <span
                                           className={`block truncate ${
-                                            selected?.name ? selected.name : 'all' === listView.name ? 'font-medium' : 'font-normal'
+                                            (selected?.name ? selected.name : 'all') === listView.name ? 'font-medium' : 'font-normal'
                                           }`}
                                         >
                                           {listView.label}
                                         </span>
-                                        {selected?.name ? selected.name : 'all' === listView.name ? (
+                                        {(selected?.name ? selected.name : 'all') === listView.name ? (
                                           <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
                                             <CheckIcon className="h-5 w-5" aria-hidden="true" />
                                           </span>
