@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-01 15:30:19
+ * @LastEditTime: 2022-08-01 17:52:24
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -32,6 +32,8 @@ export default function Record({}) {
   const [schema, setSchema] = useState(null);
   const [relateds, setRelateds] = useState(null);
   const [formFactor, setFormFactor] = useState(null);
+  
+  const [record, setRecord] = useState(null);
 
   const [buttons, setButtons] = useState(null);
   const [moreButtons, setMoreButtons] = useState(null);
@@ -56,6 +58,14 @@ export default function Record({}) {
     } else {
       setFormFactor("LARGE");
     }
+
+    window.addEventListener('message', function (event) {
+        const { data } = event;
+        if(data.type === 'record.loaded'){
+            const { record } = data;
+            setRecord(record);
+        }
+    })
   }, []);
 
   useEffect(() => {
@@ -156,7 +166,7 @@ export default function Record({}) {
                     <>
                       <button
                         onClick={cancelClick}
-                        className="antd-Button border-1 border-solid border-slate-300 py-0.5 px-3 text-slate-400 hover:bg-slate-300 hover:text-white  focus:outline-none sm:rounded-[2px]"
+                        className="antd-Button py-0.5 px-3 text-slate-700 border-solid border-1 border-gray-300 sm:rounded-[2px]"
                       >
                         取消
                       </button>
@@ -237,7 +247,7 @@ export default function Record({}) {
                   )}
                 </div>
               </div>
-              <div className="mt-1 text-slate-700">TODO: 记录名称</div>
+              <div className="mt-1 text-slate-700">{record ? record[schema?.uiSchema?.NAME_FIELD_KEY] : ''}</div>
             </div>
           </div>
         </div>
