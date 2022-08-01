@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-01 10:22:45
+ * @LastEditTime: 2022-08-01 11:15:07
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -159,7 +159,7 @@ export default function Record({ }) {
     const submitClick = (e)=>{
         const scope = SteedosUI.getRef(`${app_id}-${tab_id}-${record_id}`)
         const form = scope.getComponentByName(`page_edit_${record_id}.form_edit_${record_id}`);
-        form.submit()
+        form.handleAction({}, {type: 'submit'})
     }
     return (
         <>
