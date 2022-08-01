@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-30 17:59:47
+ * @LastEditTime: 2022-08-01 10:57:37
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -23,7 +23,7 @@ import { Button } from '@/components/object/Button'
 
 export default function Page (props) {
   const [selected, setSelected] = useState();
-  const router = useRouter()
+  const router = useRouter();
   const { app_id, tab_id } = router.query
   const [schema, setSchema] = useState();
   const [formFactor, setFormFactor] = useState(null);
@@ -54,7 +54,6 @@ export default function Page (props) {
   const newRecord = ()=>{
     router.push('/app/'+app_id+'/'+tab_id+'/view/new')
   }
-
   return (
     <>
       <div className="relative z-9 sm:pb-0 border-b sm:border-b-0">
@@ -119,7 +118,7 @@ export default function Page (props) {
                   </div>
               </div>
           </div>
-      {schema?.amisSchema && <AmisRender className="" id={`${app_id}-${tab_id}`} schema={schema?.amisSchema || {}} router={router}></AmisRender>}
+      {schema?.amisSchema && schema?.uiSchema.name === tab_id && <AmisRender className="" id={`${app_id}-${tab_id}`} schema={schema?.amisSchema || {}} router={router}></AmisRender>}
     </>
   )
 }
