@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-30 16:31:11
+ * @LastEditTime: 2022-08-01 10:22:45
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -156,8 +156,11 @@ export default function Record({ }) {
         doEditing()
     }
 
-    console.log(`schema`, schema)
-
+    const submitClick = (e)=>{
+        const scope = SteedosUI.getRef(`${app_id}-${tab_id}-${record_id}`)
+        const form = scope.getComponentByName(`page_edit_${record_id}.form_edit_${record_id}`);
+        form.submit()
+    }
     return (
         <>
             <div className="relative z-9 ">
@@ -168,7 +171,12 @@ export default function Record({ }) {
                                 <div className="inline-block text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight dark:text-slate-200">{schema?.uiSchema?.label}</div>
                                 <div className="flex flex-nowrap space-x-2 ml-6 fill-slate-400">
                                 { schema?.uiSchema?.permissions?.allowEdit &&  !isEditing && <button onClick={editClick} className="antd-Button py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white font-semibold sm:rounded-[2px] shadow focus:outline-none">编辑</button>}
-                                {  isEditing && <button onClick={cancelClick} className="antd-Button py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white font-semibold sm:rounded-[2px] shadow focus:outline-none">取消</button>}
+                                {  isEditing && 
+                                <>
+                                    <button onClick={cancelClick} className="antd-Button py-0.5 px-3 border-solid border-1 border-slate-300 text-slate-400 hover:bg-slate-300 hover:text-white font-semibold sm:rounded-[2px] shadow focus:outline-none">取消</button>
+                                    <button onClick={submitClick} className="antd-Button py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white font-semibold sm:rounded-[2px] shadow focus:outline-none">提交</button>
+                                </>
+                                }
 
                                 {record_id != 'new' && buttons?.map((button)=>{
                                     return (

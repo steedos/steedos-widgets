@@ -197,6 +197,7 @@ export async function getObjectForm(objectSchema, ctx){
                 name: `form_edit_${recordId}`,
                 debug: false,
                 title: "",
+                submitText: "", // amis 表单不显示提交按钮, 表单提交由项目代码接管
                 api: getSaveApi(objectSchema, recordId, fields, {}),
                 initApi: getEditFormInitApi(objectSchema, recordId, fields),
                 initFetch: recordId != 'new',
