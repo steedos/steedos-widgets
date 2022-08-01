@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-01 15:15:14
+ * @LastEditTime: 2022-08-01 15:18:38
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -44,7 +44,6 @@ export default function newRecord({}) {
   }, [formFactor]);
 
   const editRecord = (tab_id, record_id, formFactor) => {
-    console.log(`editRecord`, tab_id, record_id, formFactor)
     if (tab_id && record_id) {
       getFormSchema(tab_id, {
         recordId: record_id,
@@ -77,7 +76,7 @@ export default function newRecord({}) {
             <div className="">
               <div className="flex justify-between">
                 <div className="inline-block text-2xl font-extrabold tracking-tight text-slate-900 dark:text-slate-200 sm:text-3xl">
-                  {schema?.uiSchema?.label}
+                  创建 {schema?.uiSchema?.label}
                 </div>
                 <div className="ml-6 flex flex-nowrap space-x-2 fill-slate-400">
                     <button
