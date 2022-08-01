@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-01 17:52:24
+ * @LastEditTime: 2022-08-01 18:13:17
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -304,7 +304,7 @@ export default function Record({}) {
                   key={`${related.object_name}-${related.foreign_key}`}
                   className={classNames("bg-white sm:rounded-b-xl", "")}
                 >
-                    <RelatedList key={`${related.object_name}-${related.foreign_key}`} {...related}></RelatedList>
+                    <RelatedList key={`${related.object_name}-${related.foreign_key}`} {...related} app_id={app_id}></RelatedList>
                 </Tab.Panel>
               );
             })}

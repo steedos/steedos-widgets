@@ -168,7 +168,7 @@ export function getObjectList(objectSchema, fields, options){
 
     return {
         type: 'page',
-        bodyClassName: 'bg-white sm:rounded-lg',
+        bodyClassName: 'bg-white sm:rounded-lg p-0',
         name: `page_list_${objectSchema.name}`,
         data: {context: {rootUrl: ROOT_URL, tenantId: getTenantId(), authToken: getAuthToken()}},
         body: body

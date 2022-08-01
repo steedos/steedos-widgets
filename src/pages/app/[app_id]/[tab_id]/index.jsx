@@ -105,7 +105,7 @@ export default function Page (props) {
                   </div>
               </div>
           </div>
-      {schema?.amisSchema && schema?.uiSchema.name === tab_id && <AmisRender className="" id={`${app_id}-${tab_id}`} schema={schema?.amisSchema || {}} router={router}></AmisRender>}
+      {schema?.amisSchema && schema?.uiSchema.name === tab_id && <AmisRender className="px-3" id={`${app_id}-${tab_id}`} schema={schema?.amisSchema || {}} router={router}></AmisRender>}
     </>
   )
 }
