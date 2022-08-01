@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-01 15:16:41
+ * @LastEditTime: 2022-08-01 15:30:19
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -133,7 +133,6 @@ export default function Record({}) {
     );
     form.handleAction({}, { type: "submit" });
   };
-  console.log(`schema==========>`, schema);
   return (
     <>
       <div className="z-9 relative ">
@@ -262,7 +261,7 @@ export default function Record({}) {
             {relateds?.map((related) => {
               return (
                 <Tab
-                  key={related.tab_id}
+                    key={`${related.object_name}-${related.foreign_key}`}
                   className={({ selected }) =>
                     classNames(
                       "w-full max-w-[15rem] pb-2",
@@ -292,10 +291,10 @@ export default function Record({}) {
             {relateds?.map((related) => {
               return (
                 <Tab.Panel
-                  key={related.tab_id}
+                  key={`${related.object_name}-${related.foreign_key}`}
                   className={classNames("bg-white sm:rounded-b-xl", "")}
                 >
-                    <RelatedList key={related.tab_id} {...related}></RelatedList>
+                    <RelatedList key={`${related.object_name}-${related.foreign_key}`} {...related}></RelatedList>
                 </Tab.Panel>
               );
             })}
