@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-01 13:40:05
+ * @LastEditTime: 2022-08-01 15:16:41
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -62,47 +62,13 @@ export default function Record({}) {
     doReadonly();
   }, [router]);
 
-  // useEffect(() => {
-  //     if(record_id === 'new'){
-  //         doEditing()
-  //     }else{
-  //         doReadonly()
-  //     }
-  // }, [record_id, formFactor]);
-
   useEffect(() => {
-    if (isEditing || record_id === "new") {
+    if (isEditing) {
       doEditing();
     } else {
       doReadonly();
     }
   }, [formFactor]);
-
-  // useEffect(() => {
-  //     if(!formFactor){
-  //         return ;
-  //     }
-  //     if(isEditing){
-  //         editRecord(tab_id, record_id, formFactor)
-  //     }else{
-  //         viewRecord(tab_id, record_id, formFactor);
-  //     }
-  // }, [tab_id, record_id, isEditing, formFactor]);
-
-  // useEffect(()=>{
-  //     if(schema && schema.uiSchema){
-  //       setButtons(getObjectDetailButtons(schema.uiSchema, {
-  //         app_id: app_id,
-  //         tab_id: tab_id,
-  //         router: router,
-  //       }))
-  //       setMoreButtons(getObjectDetailMoreButtons(schema.uiSchema, {
-  //         app_id: app_id,
-  //         tab_id: tab_id,
-  //         router: router,
-  //       }))
-  //     }
-  //   },[schema])
 
   const loadButtons = (schema) => {
     if (schema && schema.uiSchema) {
@@ -154,11 +120,7 @@ export default function Record({}) {
   };
 
   const cancelClick = () => {
-    if (record_id === "new") {
-      router.back();
-    } else {
-      doReadonly();
-    }
+    doReadonly();
   };
 
   const editClick = () => {
@@ -171,6 +133,7 @@ export default function Record({}) {
     );
     form.handleAction({}, { type: "submit" });
   };
+  console.log(`schema==========>`, schema);
   return (
     <>
       <div className="z-9 relative ">
@@ -208,7 +171,7 @@ export default function Record({}) {
                   )}
                   {!isEditing && (
                     <>
-                      {record_id != "new" &&
+                      {
                         buttons?.map((button) => {
                           return (
                             <Button
@@ -223,7 +186,7 @@ export default function Record({}) {
                             ></Button>
                           );
                         })}
-                      {record_id != "new" && moreButtons?.length > 0 && (
+                      {moreButtons?.length > 0 && (
                         <Menu
                           as="div"
                           className="relative inline-block text-left"
