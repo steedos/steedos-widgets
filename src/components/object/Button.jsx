@@ -2,13 +2,15 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-27 17:34:25
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-01 11:25:43
+ * @LastEditTime: 2022-08-01 13:24:01
  * @Description: 
  */
 import { AmisRender } from "@/components/AmisRender";
 import { execute } from "@/lib/buttons";
+import { useRouter } from 'next/router';
 export function Button(props) {
-  const { button, data, router, className,  } = props;
+  const router = useRouter()
+  const { button, data, className,  } = props;
   const { dataComponentId } = data;
   const buttonClick = () => {
     return execute(button, Object.assign({}, data , {scope: SteedosUI.getRef(dataComponentId)})); //TODO 处理参数

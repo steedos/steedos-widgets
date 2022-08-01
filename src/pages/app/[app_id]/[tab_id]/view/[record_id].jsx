@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-01 13:07:25
+ * @LastEditTime: 2022-08-01 13:40:05
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -19,6 +19,7 @@ import {
   getObjectDetailMoreButtons,
 } from "@/lib/buttons";
 import { Button } from "@/components/object/Button";
+import { RelatedList } from '@/components/object/RelatedList'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -213,7 +214,6 @@ export default function Record({}) {
                             <Button
                               key={button.name}
                               button={button}
-                              router={router}
                               data={{
                                 app_id: app_id,
                                 tab_id: tab_id,
@@ -250,7 +250,6 @@ export default function Record({}) {
                                       {({ active }) => (
                                         <Button
                                           button={button}
-                                          router={router}
                                           data={{
                                             app_id: app_id,
                                             tab_id: tab_id,
@@ -333,11 +332,7 @@ export default function Record({}) {
                   key={related.tab_id}
                   className={classNames("bg-white sm:rounded-b-xl", "")}
                 >
-                  <AmisRender
-                    id={`amis-root-related-${related.object_name}-${related.foreign_key}`}
-                    schema={related?.schema.amisSchema || {}}
-                    router={router}
-                  ></AmisRender>
+                    <RelatedList key={related.tab_id} {...related}></RelatedList>
                 </Tab.Panel>
               );
             })}

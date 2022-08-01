@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-29 10:45:36
+ * @LastEditTime: 2022-08-01 14:50:11
  * @Description: 
  */
 import { fetchAPI } from './steedos.client';
@@ -95,7 +95,6 @@ export async function getViewSchema(objectName, recordId, ctx){
 // 获取列表视图
 export async function getListSchema(appName, objectName, listViewName = 'all', options = {}){
     const uiSchema = await getUISchema(objectName);
-
     const listView = _.find(uiSchema.list_views, (listView, name) => name === listViewName);
 
     if(!listView){
