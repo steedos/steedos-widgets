@@ -3,29 +3,54 @@
     "title": "Welcome to Steedos",
     "body": [
       {
-        "type": "crud",
-        "syncLocation": false,
-        "api": {
-          "method": "get",
-          "url": ""
-        },
-        "columns": [
+        "type": "service",
+        "id": "u:0f6224a0836f",
+        "affixFooter": false,
+        "body": [
           {
-            "name": "id",
-            "label": "ID",
-            "type": "text"
-          },
-          {
-            "name": "engine",
-            "label": "渲染引擎",
-            "type": "text"
+            "type": "panel",
+            "id": "u:e162ec06b709",
+            "affixFooter": false,
+            "title": "应用",
+            "body": [
+              {
+                "type": "each",
+                "name": "items",
+                "source": "${items}",
+                "items": {
+                  "type": "tpl",
+                  "tpl": "<a class='slds-app-launcher__tile slds-text-link_reset ' role='button' tabindex='0' href='${path}'><div class='slds-app-launcher__tile-figure'><span class='slds-icon_container slds-icon-standard-approval'><img class='slds-icon slds-icon_container slds-icon-standard-${icon}' src='${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg'><span class='slds-assistive-text'>${name}</span></span></div><div class='slds-app-launcher__tile-body'><span class='slds-link text-blue-600 font-bold'><span title='${name}'>${name}</span></span><div style='display: -webkit-box; -webkit-line-clamp: 1;-webkit-box-orient: vertical;overflow: hidden;'><span title='${description}'>${description}</span></div></div></a>",
+                  "inline": true,
+                  "style": {
+                  },
+                  "className": "slds-p-horizontal_small slds-size_1-of-1 slds-medium-size_1-of-3"
+                },
+                "id": "u:a0f163ed207f",
+                "className": "slds-grid slds-wrap slds-grid_pull-padded"
+              }
+            ],
+            "headerClassName": "p-t p-l font-bold",
+            "placeholder": "暂无数据",
+            "showHeader": false,
+            "className": "Panel--default slds-card",
+            "visibleOn": "",
+            "clearValueOnHidden": false
           }
         ],
-        "bulkActions": [
-        ],
-        "itemActions": [
-        ],
-        "id": "u:c0945e41a091"
+        "className": "",
+        "visibleOn": "",
+        "clearValueOnHidden": false,
+        "visible": true,
+        "messages": {
+        },
+        "api": {
+          "method": "get",
+          "url": "${context.rootUrl}/service/api/apps/menus",
+          "data": null,
+          "headers": {
+            "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+          }
+        }
       }
     ],
     "regions": [

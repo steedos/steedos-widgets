@@ -17,6 +17,7 @@ export default class MyDocument extends Document {
           <meta name="theme-color" content="#ffffff" />
           <script src="https://unpkg.com/amis@2.1.0/sdk/sdk.js"></script>
           <link rel="stylesheet" href="/amis.css" />
+          <link rel="stylesheet" type="text/css" href="https://unpkg.com/@salesforce-ux/design-system@2.17.5/assets/styles/salesforce-lightning-design-system.min.css" />
         </Head>
         <body className='antialiased text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900'>
           <link rel="stylesheet" href="https://unpkg.com/amis@2.1.0/lib/themes/antd.css" />
