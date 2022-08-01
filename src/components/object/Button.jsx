@@ -1,3 +1,10 @@
+/*
+ * @Author: baozhoutao@steedos.com
+ * @Date: 2022-07-27 17:34:25
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2022-08-01 11:25:43
+ * @Description: 
+ */
 import { AmisRender } from "@/components/AmisRender";
 import { execute } from "@/lib/buttons";
 export function Button(props) {
@@ -41,7 +48,7 @@ export function Button(props) {
     return (
       <button
         onClick={buttonClick}
-        className="antd-Button bg-sky-500 py-0.5 px-3 text-sm font-semibold text-white shadow hover:bg-sky-600 focus:outline-none sm:rounded-[2px]"
+        className={`antd-Button py-0.5 px-3 text-slate-700 border-solid border-1 border-gray-300 sm:rounded-[2px] ${className}`}
       >
         {button.label}
       </button>

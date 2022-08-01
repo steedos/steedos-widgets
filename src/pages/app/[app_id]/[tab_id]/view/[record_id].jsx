@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-01 11:19:01
+ * @LastEditTime: 2022-08-01 11:27:04
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -170,11 +170,11 @@ export default function Record({ }) {
                             <div className="flex justify-between">
                                 <div className="inline-block text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight dark:text-slate-200">{schema?.uiSchema?.label}</div>
                                 <div className="flex flex-nowrap space-x-2 ml-6 fill-slate-400">
-                                { schema?.uiSchema?.permissions?.allowEdit &&  !isEditing && <button onClick={editClick} className="antd-Button py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white font-semibold sm:rounded-[2px] shadow focus:outline-none">编辑</button>}
+                                { schema?.uiSchema?.permissions?.allowEdit &&  !isEditing && <button onClick={editClick} className="antd-Button py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white sm:rounded-[2px] focus:outline-none">编辑</button>}
                                 {  isEditing && 
                                 <>
-                                    <button onClick={cancelClick} className="antd-Button py-0.5 px-3 border-solid border-1 border-slate-300 text-slate-400 hover:bg-slate-300 hover:text-white font-semibold sm:rounded-[2px] shadow focus:outline-none">取消</button>
-                                    <button onClick={submitClick} className="antd-Button py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white font-semibold sm:rounded-[2px] shadow focus:outline-none">提交</button>
+                                    <button onClick={cancelClick} className="antd-Button py-0.5 px-3 border-solid border-1 border-slate-300 text-slate-400 hover:bg-slate-300 hover:text-white  sm:rounded-[2px] focus:outline-none">取消</button>
+                                    <button onClick={submitClick} className="antd-Button py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white font-semibold sm:rounded-[2px] focus:outline-none">提交</button>
                                 </>
                                 }
 
@@ -190,7 +190,7 @@ export default function Record({ }) {
                                     })}
                                 {record_id != 'new' && moreButtons?.length > 0 && <Menu as="div" className="relative inline-block text-left">
                                         <div>
-                                        <Menu.Button className="antd-Button py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold sm:rounded-[2px] shadow focus:outline-none">
+                                        <Menu.Button className="antd-Button py-0.5 px-3 text-slate-700 border-solid border-1 border-gray-300 sm:rounded-[2px]">
                                             ...
                                         </Menu.Button>
                                         </div>
@@ -227,7 +227,7 @@ export default function Record({ }) {
                                                   }}
                                                   className={`${
                                                     active ? 'bg-violet-500 text-white' : 'text-gray-900'
-                                                    } border-0 hover:bg-slate-50 group flex w-full items-center sm:rounded-[2px] px-2 py-2 text-sm`}
+                                                    } border-0 hover:bg-slate-50 group flex w-full items-center sm:rounded-[2px] px-2 py-2`}
                                                   ></Button>
                                                 )}
                                             </Menu.Item>

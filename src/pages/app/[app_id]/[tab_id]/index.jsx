@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-01 10:57:37
+ * @LastEditTime: 2022-08-01 11:28:24
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -63,7 +63,7 @@ export default function Page (props) {
                           <div className="inline-block text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight dark:text-slate-200">{schema?.uiSchema?.label}</div>
                           <div className="flex flex-nowrap space-x-2 ml-6 fill-slate-400">
                             {schema?.uiSchema?.permissions?.allowCreate && 
-                              <button onClick={newRecord} className="antd-Button py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold sm:rounded-[2px] shadow focus:outline-none">新建</button>
+                              <button onClick={newRecord} className="antd-Button py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white font-semibold sm:rounded-[2px] focus:outline-none">新建</button>
                             }
                             {buttons?.map((button)=>{
                               return (
