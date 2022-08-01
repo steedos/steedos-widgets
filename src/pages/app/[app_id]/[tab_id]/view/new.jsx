@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-01 15:18:38
+ * @LastEditTime: 2022-08-01 15:39:03
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -81,7 +81,7 @@ export default function newRecord({}) {
                 <div className="ml-6 flex flex-nowrap space-x-2 fill-slate-400">
                     <button
                         onClick={cancelClick}
-                        className="antd-Button border-1 border-solid border-slate-300 py-0.5 px-3 text-slate-400 hover:bg-slate-300 hover:text-white  focus:outline-none sm:rounded-[2px]"
+                        className="antd-Button py-0.5 px-3 text-slate-700 border-solid border-1 border-gray-300 sm:rounded-[2px]"
                       >
                         取消
                       </button>

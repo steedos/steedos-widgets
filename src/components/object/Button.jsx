@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-27 17:34:25
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-01 13:24:01
+ * @LastEditTime: 2022-08-01 15:39:31
  * @Description: 
  */
 import { AmisRender } from "@/components/AmisRender";
@@ -50,7 +50,7 @@ export function Button(props) {
     return (
       <button
         onClick={buttonClick}
-        className={`antd-Button py-0.5 px-3 text-slate-700 border-solid border-1 border-gray-300 sm:rounded-[2px] ${className}`}
+        className={`antd-Button py-0.5 px-3 text-slate-700 border-solid border-1 border-gray-300 sm:rounded-[2px] ${className ? className : ''}`}
       >
         {button.label}
       </button>
