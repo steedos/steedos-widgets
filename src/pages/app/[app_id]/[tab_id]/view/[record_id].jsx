@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-01 11:15:07
+ * @LastEditTime: 2022-08-01 11:19:01
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -121,7 +121,7 @@ export default function Record({ }) {
             const p1 = getObjectRelateds(app_id, tab_id, record_id, formFactor);
             const p2 = getViewSchema(tab_id, record_id, {formFactor: formFactor});
             Promise.all([ p1, p2 ]).then((values) => {
-                console.log(values);
+                
                 setRelateds(values[0]);
 
                 const schema = values[1];
@@ -190,7 +190,7 @@ export default function Record({ }) {
                                     })}
                                 {record_id != 'new' && moreButtons?.length > 0 && <Menu as="div" className="relative inline-block text-left">
                                         <div>
-                                        <Menu.Button className="py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold sm:rounded-[2px] shadow focus:outline-none ml-1">
+                                        <Menu.Button className="antd-Button py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold sm:rounded-[2px] shadow focus:outline-none">
                                             ...
                                         </Menu.Button>
                                         </div>
