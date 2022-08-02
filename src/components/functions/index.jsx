@@ -2,12 +2,14 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-27 15:54:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-27 16:11:16
+ * @LastEditTime: 2022-08-02 14:23:27
  * @Description: 
  */
 import { message, notification, Button, Space} from 'antd';
 import {Modal, Drawer} from './modal'
+import { SObject } from './sObject';
 const SteedosUI = Object.assign({}, {
+    Object: SObject,
     Modal, 
     Drawer,
     refs: {},
@@ -21,6 +23,18 @@ const SteedosUI = Object.assign({}, {
     notification,
     components: {
       Button, Space
+    },
+    getRefId: ({type, appId, name})=>{
+      switch (type) {
+        case 'listview':
+          return `amis-${appId}-${name}-listview`;
+        case 'form':
+          return `amis-${appId}-${name}-form`;
+        case 'detail':
+          return `amis-${appId}-${name}-detail`;
+        default:
+          return `amis-${appId}-${name}-${type}`;
+      }
     }
 })
 

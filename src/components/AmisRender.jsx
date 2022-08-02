@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 16:55:58
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-30 16:31:46
+ * @LastEditTime: 2022-08-02 14:52:23
  * @Description: 
  */
 
@@ -10,6 +10,7 @@ import React, { useState, useEffect, Fragment, useRef, useImperativeHandle } fro
 import { amisRender, amisRootClick } from '@/lib/amis';
 import { getSteedosAuth } from '@/lib/steedos.client'
 import { defaultsDeep } from 'lodash';
+import { withRouter } from 'next/router'
 
 // export const AmisRender = React.forwardRef(({id, schema, data, router, className}, ref)=>{
 //     console.log(`AmisRender`, id)
@@ -54,7 +55,6 @@ export const AmisRender = ({id, schema, data, router, className, })=>{
         }
         SteedosUI.refs[id] = amisRender(`#${id}`, defaultsDeep(defData , schema), data, {}, {router: router});
       }, [schema]);
-    
     return (
         <div id={`${id}`} className={`app-wrapper ${className}`} onClick={(e)=>{ return amisRootClick(router, e)}}></div>
     )

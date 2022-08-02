@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-01 15:39:03
+ * @LastEditTime: 2022-08-02 14:35:30
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -61,11 +61,15 @@ export default function newRecord({}) {
   };
 
   const submitClick = (e) => {
-    const scope = SteedosUI.getRef(`${app_id}-${tab_id}-${record_id}`);
+    const scope = SteedosUI.getRef(SteedosUI.getRefId({type: 'form', appId: app_id, name: schema.uiSchema.name}));
     const form = scope.getComponentByName(
       `page_edit_${record_id}.form_edit_${record_id}`
     );
-    form.handleAction({}, { type: "submit" });
+    form.handleAction({}, { type: "submit" }).then((data)=>{
+        if(data){
+            router.push(`/app/${app_id}/${tab_id}/view/${data.recordId}`)
+        }
+    })
   };
 
   return (
@@ -121,7 +125,7 @@ export default function newRecord({}) {
             >
               {schema?.amisSchema && (
                 <AmisRender
-                  id={`${app_id}-${tab_id}-${record_id}`}
+                  id={SteedosUI.getRefId({type: 'form', appId: app_id, name: schema.uiSchema.name})}
                   schema={schema?.amisSchema || {}}
                   router={router}
                 ></AmisRender>

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-01 14:59:33
+ * @LastEditTime: 2022-08-02 11:28:38
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -105,7 +105,7 @@ export default function Page (props) {
                   </div>
               </div>
           </div>
-      {schema?.amisSchema && schema?.uiSchema.name === tab_id && <AmisRender className="px-3" id={`${app_id}-${tab_id}`} schema={schema?.amisSchema || {}} router={router}></AmisRender>}
+      {schema?.amisSchema && schema?.uiSchema.name === tab_id && <AmisRender className="px-3" id={SteedosUI.getRefId({type: 'listview', appId: app_id, name: schema.uiSchema.name})} schema={schema?.amisSchema || {}} router={router}></AmisRender>}
     </>
   )
 }

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-01 18:13:17
+ * @LastEditTime: 2022-08-02 15:11:32
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -137,11 +137,15 @@ export default function Record({}) {
     doEditing();
   };
   const submitClick = (e) => {
-    const scope = SteedosUI.getRef(`${app_id}-${tab_id}-${record_id}`);
+    const scope = SteedosUI.getRef(SteedosUI.getRefId({type: 'form', appId: app_id, name: schema.uiSchema.name}));
     const form = scope.getComponentByName(
       `page_edit_${record_id}.form_edit_${record_id}`
     );
-    form.handleAction({}, { type: "submit" });
+    form.handleAction({}, { type: "submit" }).then((data)=>{
+        if(data){
+            router.push(`/app/${app_id}/${tab_id}/view/${data.recordId}`)
+        }
+    })
   };
   return (
     <>
@@ -292,7 +296,7 @@ export default function Record({}) {
             >
               {schema?.amisSchema && (
                 <AmisRender
-                  id={`${app_id}-${tab_id}-${record_id}`}
+                    id={SteedosUI.getRefId({type: 'form', appId: app_id, name: schema.uiSchema.name})}
                   schema={schema?.amisSchema || {}}
                   router={router}
                 ></AmisRender>
@@ -304,7 +308,7 @@ export default function Record({}) {
                   key={`${related.object_name}-${related.foreign_key}`}
                   className={classNames("bg-white sm:rounded-b-xl", "")}
                 >
-                    <RelatedList key={`${related.object_name}-${related.foreign_key}`} {...related} app_id={app_id}></RelatedList>
+                    <RelatedList key={`${related.object_name}-${related.foreign_key}`} {...related} app_id={app_id} record_id={record_id}></RelatedList>
                 </Tab.Panel>
               );
             })}
