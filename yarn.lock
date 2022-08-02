@@ -203,6 +203,11 @@
   resolved "https://registry.yarnpkg.com/@rushstack/eslint-patch/-/eslint-patch-1.1.4.tgz#0c8b74c50f29ee44f423f7416829c0bf8bb5eb27"
   integrity sha512-LwzQKA4vzIct1zNZzBmRKI9QuNpLgTQMEjsQLf3BXuGYb3QPTP4Yjf6mkdX+X1mYttZ808QpOwAzZjv28kq7DA==
 
+"@salesforce-ux/design-system@^2.18.1":
+  version "2.18.1"
+  resolved "https://registry.yarnpkg.com/@salesforce-ux/design-system/-/design-system-2.18.1.tgz#568a5d1d528c92fca0e1226af2c3ddbdaf04218f"
+  integrity sha512-yrnzHkafWRPDSAwyXrLjehbJIkLNTXJ61sOjorHQiExTopwcY+K6as3aFjHGpKzPS8OPXCzz9pQ8a34urcBmQg==
+
 "@steedos-ui/amis@^2.2.28":
   version "2.2.37"
   resolved "https://registry.yarnpkg.com/@steedos-ui/amis/-/amis-2.2.37.tgz#0980ce85aab94292ae765e7f46f2aa072dc93ee5"

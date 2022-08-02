@@ -23,6 +23,7 @@ export default class MyDocument extends Document {
           <link rel="stylesheet" href="https://unpkg.com/amis@2.1.0/lib/themes/antd.css" />
           <link rel="stylesheet" href="https://unpkg.com/amis@2.1.0/lib/helper.css" />
           <link rel="stylesheet" href="https://unpkg.com/amis@2.1.0/sdk/iconfont.css" />
+          <link rel="stylesheet" href="/unpkg.com/@salesforce-ux/design-system@2.18.1/assets/styles/salesforce-lightning-design-system.min.css" />
           <Main />
           <NextScript />
         </body>
