@@ -237,5 +237,8 @@ export function getBatchDelete(objectName){
         data: {
             ids: `\${ids}`
         },
+        headers: {
+            Authorization: "Bearer ${context.tenantId},${context.authToken}"
+        }
     }
 }

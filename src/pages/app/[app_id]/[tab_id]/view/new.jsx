@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-02 14:35:30
+ * @LastEditTime: 2022-08-02 16:55:25
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -14,12 +14,6 @@ import { AmisRender } from "@/components/AmisRender";
 import { unstable_getServerSession } from "next-auth/next";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { Tab, Menu, Transition } from "@headlessui/react";
-import {
-  getObjectDetailButtons,
-  getObjectDetailMoreButtons,
-} from "@/lib/buttons";
-import { Button } from "@/components/object/Button";
-import { RelatedList } from '@/components/object/RelatedList'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
