@@ -149,24 +149,59 @@ export default function Record({}) {
   };
   return (
     <>
-    
-      <div className="z-9 relative ">
+<div className="slds-page-header slds-page-header_record-home">
+  <div className="slds-page-header__row">
+    <div className="slds-page-header__col-title">
+      <div className="slds-media">
+        <div className="slds-media__figure">
+          <span className="slds-icon_container slds-icon-standard-opportunity">
+            <svg className="slds-icon slds-page-header__icon" aria-hidden="true">
+              <use xlinkHref="/assets/icons/standard-sprite/svg/symbols.svg#opportunity"></use>
+            </svg>
+          </span>
+        </div>
+        <div className="slds-media__body">
+          <div className="slds-page-header__name">
+            <div className="slds-page-header__name-title">
+              <div className="">
+                <span>{schema?.uiSchema?.label}</span>
+                <span className="slds-page-header__title slds-truncate">{record ? record[schema?.uiSchema?.NAME_FIELD_KEY] : ''}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div className="slds-page-header__col-actions">
+      <div className="slds-page-header__controls">
+       
+        <div className="slds-page-header__control">
+          <ul className="slds-button-group-list">
+            {schema?.uiSchema?.permissions?.allowEdit && (
+              <li>
+                <button
+                  onClick={editClick}
+                  className="slds-button slds-button_neutral"
+                >
+                  编辑
+                </button>
+              </li>
+            )}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div className="z-9 relative py-4">
         <div className="space-y-4">
           <div className="pointer-events-auto w-full text-[0.8125rem] leading-5">
             <div className="">
               <div className="flex justify-between">
                 <div className="inline-block text-2xl font-extrabold tracking-tight text-slate-900 dark:text-slate-200 sm:text-3xl">
-                  {schema?.uiSchema?.label}
+                  
                 </div>
                 <div className="ml-6 flex flex-nowrap space-x-2 fill-slate-400">
-                  {schema?.uiSchema?.permissions?.allowEdit && !isEditing && (
-                    <button
-                      onClick={editClick}
-                      className="antd-Button bg-sky-500 py-0.5 px-3 text-white hover:bg-sky-600 focus:outline-none sm:rounded-[2px]"
-                    >
-                      编辑
-                    </button>
-                  )}
                   {isEditing && (
                     <>
                       <button
@@ -252,7 +287,6 @@ export default function Record({}) {
                   )}
                 </div>
               </div>
-              <div className="mt-1 text-slate-700">{record ? record[schema?.uiSchema?.NAME_FIELD_KEY] : ''}</div>
             </div>
           </div>
         </div>

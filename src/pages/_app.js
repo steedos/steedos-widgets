@@ -8,6 +8,7 @@
 import { SessionProvider } from "next-auth/react"
 import 'focus-visible';
 import '@/styles/tailwind.css';
+import '@/styles/amis.css';
 import 'antd/dist/antd.css'
 import { AppLayout } from '@/components/AppLayout';
 import '@/components/functions';
