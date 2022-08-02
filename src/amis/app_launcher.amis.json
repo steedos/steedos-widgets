@@ -19,14 +19,14 @@
                 "source": "${items}",
                 "items": {
                   "type": "tpl",
-                  "tpl": "<div class='flex-1 p-4 space-y-2 flex flex-col'><h3 class='text-lg font-medium text-gray-900'><a href='${path}'><span aria-hidden='true' class='absolute inset-0'></span>${name}</a></h3><p class='text-sm text-gray-500'>${description}</p></div>",
+                  "tpl": "<a class='slds-app-launcher__tile slds-text-link_reset ' role='button' tabindex='0' href='${path}'><div class='slds-app-launcher__tile-figure'><span class='slds-icon_container slds-icon-standard-approval'><img class='slds-icon slds-icon_container slds-icon-standard-${icon}' src='${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg'><span class='slds-assistive-text'>${name}</span></span></div><div class='slds-app-launcher__tile-body'><span class='slds-link text-blue-600 font-bold'><span title='${name}'>${name}</span></span><div style='display: -webkit-box; -webkit-line-clamp: 1;-webkit-box-orient: vertical;overflow: hidden;'><span title='${description}'>${description}</span></div></div></a>",
                   "inline": true,
                   "style": {
                   },
-                  "className": "group relative bg-white border border-gray-200 rounded-lg flex flex-col overflow-hidden"
+                  "className": "slds-p-horizontal_small slds-size_1-of-1 slds-medium-size_1-of-3"
                 },
                 "id": "u:a0f163ed207f",
-                "className": "grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-3 lg:gap-x-8"
+                "className": "slds-grid slds-wrap slds-grid_pull-padded"
               }
             ],
             "headerClassName": "p-t p-l font-bold",
