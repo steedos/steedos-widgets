@@ -128,7 +128,7 @@ export default function Page (props) {
     </div>
     <div className="slds-page-header__row">
       <div className="slds-page-header__col-meta">
-        <p className="slds-page-header__meta-text">10 items • Updated 13 minutes ago</p>
+        <p className="slds-page-header__meta-text mb-0">10 items • Updated 13 minutes ago</p>
       </div>
       <div className="slds-page-header__col-controls">
         <div className="slds-page-header__controls">
@@ -175,7 +175,7 @@ export default function Page (props) {
             </button>
           </div>
           <div className="slds-page-header__control">
-            <ul className="slds-button-group-list">
+            <ul className="slds-button-group-list mb-0">
               <li>
                 <button className="slds-button slds-button_icon slds-button_icon-border-filled" title="Charts">
                   <svg className="slds-button__icon" aria-hidden="true">
