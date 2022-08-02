@@ -1,5 +1,5 @@
 import {Modal, Drawer} from './modal'
-import { Form } from '@/components/object/form'
+import { Form } from '@/components/object/Form'
 import { Button, Space} from 'antd';
 export const SObject = {
     //TODO 清理router参数传递
