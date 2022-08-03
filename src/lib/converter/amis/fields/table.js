@@ -35,26 +35,46 @@ function getDetailColumn(){}
 function getTableColumns(fields, options){
     const columns = [{name: '_index',type: 'text', width: 32, placeholder: ""}];
     _.each(fields, function(field){
-
-        const tpl = Tpl.getFieldTpl(field, options);
-
-        let type = 'text';
-        if(tpl){
-            type = 'tpl';
-        }
-        if(!field.hidden && !field.extra){
+        if((field.is_name || field.name === options.labelFieldName) && options.objectName === 'cms_files'){
             columns.push({
-                name: field.name,
-                label: field.label,
-                sortable: field.sortable,
-                searchable: field.searchable,
-                width: field.width,
-                type: type,
-                tpl: tpl,
-                toggled: field.toggled
-                // toggled: true 
-            })
+                "type": "button",
+                "label": `\${${field.name}}`,
+                "type": "button",
+                "actionType": "ajax",
+                "api": {
+                    "url": "${context.rootUrl}/api/files/files/${versions[0]}?download=true",
+                    "method": "get",
+                    "headers": {
+                        "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                    },
+                    "responseType": "blob",
+                    "dataType": "form-data"
+                  },
+                "id": "u:6c8291d1029f",
+                "level": "link"
+              })
+        }else{
+            const tpl = Tpl.getFieldTpl(field, options);
+
+            let type = 'text';
+            if(tpl){
+                type = 'tpl';
+            }
+            if(!field.hidden && !field.extra){
+                columns.push({
+                    name: field.name,
+                    label: field.label,
+                    sortable: field.sortable,
+                    searchable: field.searchable,
+                    width: field.width,
+                    type: type,
+                    tpl: tpl,
+                    toggled: field.toggled
+                    // toggled: true 
+                })
+            }
         }
+        
     });
 
     // columns.push(getOperation(fields));
