@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 13:32:49
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-02 17:17:01
+ * @LastEditTime: 2022-08-03 12:10:39
  * @Description: 
  */
 import { getListViewButtons, execute } from '@/lib/buttons';
@@ -47,13 +47,17 @@ export function RelatedListButtons(props) {
                     "name": "file",
                     "id": "u:a58d02614e04",
                     "btnLabel": "上传",
-                    "multiple": false,
+                    "multiple": false, // 待amis 2.1.x 处理了 多选 + 自动上传的bug 后, 可开启此功能.
+                    "maxLength": 10,
                     "submitType": "asUpload",
                     "uploadType": "fileReceptor",
                     "proxy": false,
                     "drag": true,
                     "autoUpload": true,
                     "useChunk": false,
+                    "joinValues": false,
+                    "extractValue": false,
+                    "valueField": "version_id",
                     "receiver": {
                       "url": "${context.rootUrl}/s3",
                       headers: {
