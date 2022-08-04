@@ -21,18 +21,18 @@
     
 }
 
-.antd-Collapse-header{
-    padding-top: 0.5rem !important;
+fieldset.antd-Collapse > legend.antd-Collapse-header{
+    padding: 0.5rem;
+    background: #EEEEEE;
+    font-weight: bold;
+    border-radius: 0.2rem;
+    border: 0;
 }
 
 main {
     background: var(--body-bg);
 }
 
-.amis-scope svg.icon{
-    display: inline !important;
-    vertical-align: initial !important;
-}
 
 .ant-modal-root .amis-scope .antd-Panel-footerWrap{
     position: sticky;
@@ -68,13 +68,6 @@ main {
 }
 
 
-.antd-Table-placeholder{
-    height: 20px !important;
-}
-
-.antd-Table-placeholder-empty-icon.icon{
-    height: 20px !important;
-}
 
 .antd-Crud-toolbar{
     margin-left: 1rem;

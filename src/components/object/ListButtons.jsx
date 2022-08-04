@@ -88,7 +88,7 @@ export function ListButtons(props) {
                         )
                     })}
                     {schema?.uiSchema?.permissions?.allowDelete && 
-                        <button onClick={batchDelete} className="slds-button slds-button_text-destructive">删除</button>
+                        <button onClick={batchDelete} className="slds-button slds-button_neutral">删除</button>
                     }
                 </>
             }
