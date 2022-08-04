@@ -73,7 +73,7 @@ export function RecordHeader({ schema }) {
                   className="slds-icon slds-page-header__icon"
                   aria-hidden="true"
                 >
-                  <use xlinkHref="/assets/icons/standard-sprite/svg/symbols.svg#opportunity"></use>
+                  <use xlinkHref={`/assets/icons/standard-sprite/svg/symbols.svg#${schema.uiSchema.icon}`}></use>
                 </svg>
               </span>
             </div>
@@ -164,7 +164,6 @@ export function RecordHeader({ schema }) {
                                           app_id: app_id,
                                           tab_id: tab_id,
                                           object_name: schema.uiSchema.name,
-                                          // _ref: listViewRef.current?.amisScope?.getComponentById("listview_project"),
                                         }}
                                         className={`${
                                           active

@@ -140,7 +140,7 @@ export function getObjectList(objectSchema, fields, options){
       footerToolbar: footerToolbar(), 
       headerToolbar: getHeaderToolbar(objectSchema, options.formFactor),
       bulkActions: bulkActions, 
-      bodyClassName: "border"
+      bodyClassName: ""
       // filter: getFilter()
     }
 
@@ -151,6 +151,7 @@ export function getObjectList(objectSchema, fields, options){
         type: 'crud', 
         primaryField: '_id', 
         id: id,
+        name: id,
         keepItemSelectionOnPageChange: true, 
         api: getTableApi(objectSchema, fields, options)}, 
         bodyProps
@@ -162,6 +163,7 @@ export function getObjectList(objectSchema, fields, options){
         type: 'crud', 
         primaryField: '_id', 
         id: id,
+        name: id,
         keepItemSelectionOnPageChange: true, 
         api: getTableApi(objectSchema, fields, options)}, 
         bodyProps
@@ -171,7 +173,7 @@ export function getObjectList(objectSchema, fields, options){
     return {
         type: 'page',
         bodyClassName: 'bg-white sm:rounded-lg p-0',
-        name: `page_list_${objectSchema.name}`,
+        name: `page`,
         data: {context: {rootUrl: ROOT_URL, tenantId: getTenantId(), authToken: getAuthToken()}},
         body: body
     }

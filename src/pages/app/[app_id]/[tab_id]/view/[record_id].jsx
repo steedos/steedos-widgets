@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-04 11:41:54
+ * @LastEditTime: 2022-08-04 16:54:45
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -14,8 +14,9 @@ import { AmisRender } from "@/components/AmisRender";
 import { unstable_getServerSession } from "next-auth/next";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { Tab, Menu, Transition } from "@headlessui/react";
-import { RelatedList } from "@/components/object/RelatedList";
-import { RecordHeader } from '@/components/object/RecordHeader'
+
+import { RecordHeader } from '@/components/object/RecordHeader';
+import { Relateds } from '@/components/object/Relateds';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -112,10 +113,38 @@ export default function Record({}) {
   //     }
   //   });
   // };
-  console.log(`schema`, schema)
+  const getTabs = ()=>{
+    return [
+      {label: '基本信息', name: 'detail', component: ()=>{
+        return (
+          <>
+            {schema?.amisSchema && (
+                <AmisRender
+                  id={SteedosUI.getRefId({
+                    type: "detail",
+                    appId: app_id,
+                    name: schema.uiSchema.name,
+                  })}
+                  schema={schema?.amisSchema || {}}
+                  router={router}
+                ></AmisRender>
+              )}
+          </>
+        )
+      }},
+      {label: '相关表', name: 'relateds', component: ()=>{
+        return (<>
+          <Relateds app_id={app_id} record_id={record_id} relateds={relateds}></Relateds>
+        </>)
+      }}
+    ]
+  }
+
   return (
-    <>
-      {schema && <RecordHeader schema={schema}></RecordHeader>}
+    <div className="slds-grid slds-wrap">
+      <div className="slds-col slds-size_1-of-1 row region-header">
+        {schema && <RecordHeader schema={schema}></RecordHeader>}
+      </div>
       {/* <div className="z-9 relative py-4">
         <div className="space-y-4">
           <div className="pointer-events-auto w-full text-[0.8125rem] leading-5">
@@ -145,75 +174,42 @@ export default function Record({}) {
           </div>
         </div>
       </div> */}
-
-      <div className="z-9 relative mt-2 ">
+    <div className="slds-col slds-size_1-of-1 row region-main">
+    <div className="z-9 relative mt-2 slds-tabs_card">
         <Tab.Group vertical={true}>
-          <Tab.List className="flex space-x-1 p-2">
-            <Tab
-              key="detail"
-              className={({ selected }) =>
-                classNames(
-                  "w-full max-w-[15rem] pb-2",
-                  "",
-                  selected ? "border-b-2 border-sky-500" : ""
-                )
-              }
-            >
-              基本信息
-            </Tab>
-            {relateds?.map((related) => {
-              return (
-                <Tab
-                  key={`${related.object_name}-${related.foreign_key}`}
-                  className={({ selected }) =>
-                    classNames(
-                      "w-full max-w-[15rem] pb-2",
-                      "",
-                      selected ? "border-b-2 border-sky-500" : ""
-                    )
-                  }
-                >
-                  {related?.schema?.uiSchema?.label}
-                </Tab>
-              );
+          <Tab.List className="flex space-x-1 border-b">
+            {getTabs().map((item)=>{
+              return (<Tab
+                key={item.name}
+                className={({ selected }) =>
+                  classNames(
+                    "w-full max-w-[15rem]",
+                    "text-lg",
+                    selected ? "border-b-2 border-sky-500 text-black" : "text-current"
+                  )
+                }
+              >
+                {item.label}
+              </Tab>)
             })}
           </Tab.List>
           <Tab.Panels className="mt-0">
-            <Tab.Panel
-              key="detail"
-              className={classNames("bg-white sm:rounded-b-xl", "")}
-            >
-              {schema?.amisSchema && (
-                <AmisRender
-                  id={SteedosUI.getRefId({
-                    type: "detail",
-                    appId: app_id,
-                    name: schema.uiSchema.name,
-                  })}
-                  schema={schema?.amisSchema || {}}
-                  router={router}
-                ></AmisRender>
-              )}
-            </Tab.Panel>
-            {relateds?.map((related) => {
+            {getTabs().map((item)=>{
               return (
                 <Tab.Panel
-                  key={`${related.object_name}-${related.foreign_key}`}
-                  className={classNames("bg-white sm:rounded-b-xl", "")}
-                >
-                  <RelatedList
-                    key={`${related.object_name}-${related.foreign_key}`}
-                    {...related}
-                    app_id={app_id}
-                    record_id={record_id}
-                  ></RelatedList>
-                </Tab.Panel>
-              );
+                key={item.name}
+              className={classNames("bg-white sm:rounded-b-xl", "pt-2")}
+            >
+              {item.component()}
+            </Tab.Panel>
+              )
             })}
           </Tab.Panels>
         </Tab.Group>
       </div>
-    </>
+    </div>
+     
+    </div>
   );
 }
 

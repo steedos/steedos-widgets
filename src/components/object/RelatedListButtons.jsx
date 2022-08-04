@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 13:32:49
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-04 11:59:16
+ * @LastEditTime: 2022-08-04 16:48:29
  * @Description: 
  */
 import { getListViewButtons, execute } from '@/lib/buttons';
@@ -31,10 +31,10 @@ export function RelatedListButtons(props) {
             const type = 'drawer';
             SteedosUI.Object.newRecord({
                 onSubmitted : ()=>{
-                    SteedosUI.getRef(refId).getComponentById(`listview_${schema.uiSchema.name}`).handleAction({}, { actionType: "reload"})
+                    SteedosUI.getRef(refId).getComponentByName(`page.listview_${schema.uiSchema.name}`).handleAction({}, { actionType: "reload"})
                 },
                 onCancel: ()=>{
-                    SteedosUI.getRef(refId).getComponentById(`listview_${schema.uiSchema.name}`).handleAction({}, { actionType: "reload"})
+                    SteedosUI.getRef(refId).getComponentByName(`page.listview_${schema.uiSchema.name}`).handleAction({}, { actionType: "reload"})
                 },
                 data: {data: { [foreign_key]: record_id }},  
                 appId: app_id, name: SteedosUI.getRefId({type: `${type}-form`, appId: app_id, name: `${schema.uiSchema.name}`}), title: `新建 ${schema.uiSchema.label}`, objectName: schema.uiSchema.name, recordId: 'new', type, options: {}, router})
@@ -55,12 +55,13 @@ export function RelatedListButtons(props) {
                     "name": "file",
                     "id": "u:a58d02614e04",
                     "btnLabel": "上传",
+                    // "btnClassName": "slds-button slds-button_neutral", 
                     "multiple": false, // 待amis 2.1.x 处理了 多选 + 自动上传的bug 后, 可开启此功能.
                     "maxLength": 10,
                     "submitType": "asUpload",
                     "uploadType": "fileReceptor",
                     "proxy": false,
-                    "drag": true,
+                    "drag": false,
                     "autoUpload": true,
                     "useChunk": false,
                     "joinValues": false,
@@ -108,7 +109,7 @@ export function RelatedListButtons(props) {
                             "args": {},
                             "actionType": "custom",
                             "script": `
-                                SteedosUI.getRef('${refId}').getComponentById('listview_${object_name}').handleAction({}, { actionType: "reload"})
+                                SteedosUI.getRef('${refId}').getComponentByName('page.listview_${object_name}').handleAction({}, { actionType: "reload"})
                             `
                           }
                         ]
@@ -133,7 +134,7 @@ export function RelatedListButtons(props) {
                 <>
                     {schema?.uiSchema?.permissions?.allowCreate && 
                         <>
-                            { schema.uiSchema.name != 'cms_files' && <button onClick={newRecord} className="antd-Button py-0.5 px-3 bg-sky-500 hover:bg-sky-600 text-white font-semibold sm:rounded-[2px] focus:outline-none">新建</button> }
+                            { schema.uiSchema.name != 'cms_files' && <button onClick={newRecord} className="slds-button slds-button_neutral">新建</button> }
                             { schema.uiSchema.name === 'cms_files' && 
                             <AmisRender
                             id={SteedosUI.getRefId({type: 'button', appId: app_id, name: 'upload'})}

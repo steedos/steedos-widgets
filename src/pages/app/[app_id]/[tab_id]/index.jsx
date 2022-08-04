@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-03 17:04:12
+ * @LastEditTime: 2022-08-04 15:56:29
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -47,14 +47,16 @@ export default function Page (props) {
   }, [tab_id, selectedListView, formFactor]);
 
   return (
-    <>
-      {schema?.amisSchema && schema?.uiSchema.name === tab_id && <ListviewHeader schema={schema} onListviewChange={(listView)=>{
-        getListviewSchema(listView.name)
-      }}></ListviewHeader>}
-      <div className="mt-2 sm:pb-0 border-b sm:border-b-0">
+    <div className='slds-card slds-card_boundary slds-grid slds-grid--vertical'>
+      <div className='slds-page-header--object-home slds-page-header_joined slds-page-header_bleed slds-page-header slds-shrink-none p-0'>
+        {schema?.amisSchema && schema?.uiSchema.name === tab_id && <ListviewHeader schema={schema} onListviewChange={(listView)=>{
+          getListviewSchema(listView.name)
+        }}></ListviewHeader>}
+      </div>
+      <div className="border-t">
       {schema?.amisSchema && schema?.uiSchema.name === tab_id && <AmisRender className="steedos-listview" id={listViewId} schema={schema?.amisSchema || {}} router={router}></AmisRender>}
           </div>
-    </>
+    </div>
   )
 }
 

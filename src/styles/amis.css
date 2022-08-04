@@ -66,3 +66,17 @@ main {
     font-weight: inherit !important;
     font-size: inherit !important;
 }
+
+
+.antd-Table-placeholder{
+    height: 20px !important;
+}
+
+.antd-Table-placeholder-empty-icon.icon{
+    height: 20px !important;
+}
+
+.antd-Crud-toolbar{
+    margin-left: 1rem;
+    margin-right: 1rem;
+}

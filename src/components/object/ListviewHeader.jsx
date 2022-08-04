@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-03 16:46:23
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-03 18:01:16
+ * @LastEditTime: 2022-08-04 16:48:40
  * @Description:
  */
 import { Listbox, Transition } from "@headlessui/react";
@@ -18,6 +18,11 @@ export function ListviewHeader({ schema, onListviewChange }) {
   const [queryInfo, setQueryInfo] = useState();
   const router = useRouter();
   const { app_id, tab_id } = router.query;
+  const listViewId = SteedosUI.getRefId({
+    type: "listview",
+    appId: app_id,
+    name: schema?.uiSchema?.name,
+  });
   useEffect(() => {
     if (schema) {
       window.addEventListener("message", (event) => {
@@ -27,11 +32,11 @@ export function ListviewHeader({ schema, onListviewChange }) {
             setTimeout(() => {
               if (
                 SteedosUI.getRef(listViewId) &&
-                SteedosUI.getRef(listViewId).getComponentById
+                SteedosUI.getRef(listViewId).getComponentByName
               ) {
                 const listViewRef = SteedosUI.getRef(
                   listViewId
-                ).getComponentById(`listview_${schema.uiSchema.name}`);
+                ).getComponentByName(`page.listview_${schema.uiSchema.name}`);
                 setQueryInfo({
                   count: listViewRef.props.data.count,
                   dataUpdatedAt: listViewRef.props.dataUpdatedAt,
@@ -43,14 +48,10 @@ export function ListviewHeader({ schema, onListviewChange }) {
       });
     }
   }, [schema]);
-  const listViewId = SteedosUI.getRefId({
-    type: "listview",
-    appId: app_id,
-    name: schema?.uiSchema?.name,
-  });
+
   const refreshList = (e) => {
     SteedosUI.getRef(listViewId)
-      .getComponentById(`listview_${schema.uiSchema.name}`)
+      .getComponentByName(`page.listview_${schema.uiSchema.name}`)
       .handleAction({}, { actionType: "reload" });
   };
   useEffect(() => {
@@ -58,10 +59,6 @@ export function ListviewHeader({ schema, onListviewChange }) {
       onListviewChange(selectedListView);
     }
   }, [selectedListView]);
-
-  const fromNow = (date) => {
-    return amisRequire("moment")(date).fromNow();
-  };
 
   return (
     <div className="slds-page-header">
@@ -74,7 +71,7 @@ export function ListviewHeader({ schema, onListviewChange }) {
                   className="slds-icon slds-page-header__icon"
                   aria-hidden="true"
                 >
-                  <use xlinkHref="/assets/icons/standard-sprite/svg/symbols.svg#opportunity"></use>
+                  <use xlinkHref={`/assets/icons/standard-sprite/svg/symbols.svg#${schema.uiSchema.icon}`}></use>
                 </svg>
               </span>
             </div>
@@ -88,7 +85,7 @@ export function ListviewHeader({ schema, onListviewChange }) {
                       value={selectedListView}
                       onChange={setSelectedListView}
                     >
-                      <div className="relative mt-1 w-[1/2]">
+                      <div className="relative w-[1/2]">
                         <Listbox.Button className="relative w-full cursor-default pr-10 text-left focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
                           <span className="slds-page-header__title slds-truncate">
                             {selectedListView?.label ||

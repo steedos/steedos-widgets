@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 13:32:49
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-04 11:58:18
+ * @LastEditTime: 2022-08-04 16:48:53
  * @Description: 
  */
 import { getListViewButtons, execute } from '@/lib/buttons';
@@ -33,10 +33,10 @@ export function ListButtons(props) {
         const type = config.listView.newRecordMode;
         SteedosUI.Object.newRecord({ 
             onSubmitted : ()=>{
-                SteedosUI.getRef(listViewId).getComponentById(`listview_${schema.uiSchema.name}`).handleAction({}, { actionType: "reload"})
+                SteedosUI.getRef(listViewId).getComponentByName(`page.listview_${schema.uiSchema.name}`).handleAction({}, { actionType: "reload"})
             },
             onCancel: ()=>{
-                SteedosUI.getRef(listViewId).getComponentById(`listview_${schema.uiSchema.name}`).handleAction({}, { actionType: "reload"})
+                SteedosUI.getRef(listViewId).getComponentByName(`page.listview_${schema.uiSchema.name}`).handleAction({}, { actionType: "reload"})
             },
             appId: app_id, 
             name: SteedosUI.getRefId({type: `${type}-form`,}), 
@@ -51,7 +51,7 @@ export function ListButtons(props) {
 
       const batchDelete = ()=>{
           const listViewId = SteedosUI.getRefId({type: 'listview', appId: app_id, name: schema?.uiSchema?.name});
-          const listViewRef = SteedosUI.getRef(listViewId).getComponentById(`listview_${schema.uiSchema.name}`)
+          const listViewRef = SteedosUI.getRef(listViewId).getComponentByName(`page.listview_${schema.uiSchema.name}`)
         if(_.isEmpty(listViewRef.props.store.toJSON().selectedItems)){
             listViewRef.handleAction({}, {
                 "actionType": "toast",
