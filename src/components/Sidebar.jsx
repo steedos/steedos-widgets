@@ -21,7 +21,7 @@ export  function Sidebar({ navigation, selected }) {
   }
   return (
     <nav aria-label="Sidebar" className="sticky top-6 divide-y divide-gray-300">
-      <div className="my-4">
+      <div className="my-8">
         {navigation?.map((item) => (
           <a
             onClick={handleClick}
@@ -29,7 +29,7 @@ export  function Sidebar({ navigation, selected }) {
             href={item.path}
             className={classNames(
               item.id === selected ? 'text-sky-500 border-current font-semibold dark:text-sky-400 bg-sky-50' : 'border-transparent hover:border-slate-400 dark:hover:border-slate-500 text-slate-700 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-300',
-              'block border-l-[3px] pl-4 -ml-px text-md no-underline py-2 hover:bg-slate-50'
+              'block border-l-[3px] pl-4 -ml-px text-base no-underline py-2 hover:bg-slate-50'
             )}
             aria-current={item.current ? 'page' : undefined}
           >

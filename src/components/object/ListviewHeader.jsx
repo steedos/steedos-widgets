@@ -61,7 +61,7 @@ export function ListviewHeader({ schema, onListviewChange }) {
   }, [selectedListView]);
 
   return (
-    <div className="slds-page-header">
+    <div className="slds-page-header bg-white">
       <div className="slds-page-header__row">
         <div className="slds-page-header__col-title">
           <div className="slds-media">

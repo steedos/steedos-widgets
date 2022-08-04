@@ -47,8 +47,8 @@ export default function Page (props) {
   }, [tab_id, selectedListView, formFactor]);
 
   return (
-    <div className='slds-card slds-card_boundary slds-grid slds-grid--vertical shadow-none'>
-      <div className='slds-page-header--object-home slds-page-header_joined slds-page-header_bleed slds-page-header slds-shrink-none p-0'>
+    <div className='slds-card slds-card_boundary slds-grid slds-grid--vertical shadow-none border-none'>
+      <div className='slds-page-header--object-home slds-page-header_joined slds-page-header_bleed slds-page-header slds-shrink-none p-0 bg-white'>
         {schema?.amisSchema && schema?.uiSchema.name === tab_id && <ListviewHeader schema={schema} onListviewChange={(listView)=>{
           getListviewSchema(listView.name)
         }}></ListviewHeader>}
