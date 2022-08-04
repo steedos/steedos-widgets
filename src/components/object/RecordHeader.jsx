@@ -107,72 +107,81 @@ export function RecordHeader({ schema }) {
                 )}
 
                 <>
-                {buttons?.map((button) => {
+                  {buttons?.map((button) => {
                     return (
-                    <li>
+                      <li key={button.name}>
                         <Button
-                        key={button.name}
-                        button={button}
-                        data={{
+                          button={button}
+                          data={{
                             app_id: app_id,
                             tab_id: tab_id,
                             object_name: schema.uiSchema.name,
                             dataComponentId: `${app_id}-${tab_id}-${record_id}`,
-                        }}
+                          }}
                         ></Button>
-                    </li>
+                      </li>
                     );
-                })}
-                {moreButtons?.length > 0 && (
+                  })}
+                  {moreButtons?.length > 0 && (
                     <li>
-                    <Menu
+                      <Menu
                         as="div"
-                        className="relative inline-block text-left"
-                    >
+                        className="slds-dropdown-trigger slds-dropdown-trigger_click"
+                      >
                         <div>
-                        <Menu.Button className="antd-Button border-1 border-solid border-gray-300 py-0.5 px-3 text-slate-700 sm:rounded-[2px]">
-                            ...
-                        </Menu.Button>
+                          <Menu.Button className="slds-button slds-button_icon-border-filled slds-button_last">
+                          <div>
+                            <svg
+                            focusable="false"
+                            data-key="down"
+                            aria-hidden="true"
+                            className="slds-button__icon"
+                            >
+                            <use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#down"></use>
+                            </svg>
+                        </div>
+                          </Menu.Button>
                         </div>
                         <Transition
-                        as={Fragment}
-                        enter="transition ease-out duration-100"
-                        enterFrom="transform opacity-0 scale-95"
-                        enterTo="transform opacity-100 scale-100"
-                        leave="transition ease-in duration-75"
-                        leaveFrom="transform opacity-100 scale-100"
-                        leaveTo="transform opacity-0 scale-95"
+                          as={Fragment}
+                          enter="transition ease-out duration-100"
+                          enterFrom="transform opacity-0 scale-95"
+                          enterTo="transform opacity-100 scale-100"
+                          leave="transition ease-in duration-75"
+                          leaveFrom="transform opacity-100 scale-100"
+                          leaveTo="transform opacity-0 scale-95"
                         >
-                        <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:rounded-[2px]">
-                            <div className="px-1 py-1">
-                            {moreButtons.map((button, index) => {
+                          <Menu.Items className="absolute right-0 z-10 mt-1 w-56 origin-top-right divide-y divide-gray-100 bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:rounded-[2px]">
+                            <div className="">
+                              {moreButtons.map((button, index) => {
                                 return (
-                                <Menu.Item key={index}>
+                                  <Menu.Item key={index}>
                                     {({ active }) => (
-                                    <Button
+                                      <Button
                                         button={button}
+                                        inMore={true}
                                         data={{
-                                        app_id: app_id,
-                                        tab_id: tab_id,
-                                        object_name: schema.uiSchema.name,
-                                        // _ref: listViewRef.current?.amisScope?.getComponentById("listview_project"),
+                                          app_id: app_id,
+                                          tab_id: tab_id,
+                                          object_name: schema.uiSchema.name,
+                                          // _ref: listViewRef.current?.amisScope?.getComponentById("listview_project"),
                                         }}
                                         className={`${
-                                        active
+                                          active
                                             ? "bg-violet-500 text-white"
                                             : "text-gray-900"
-                                        } group flex w-full items-center border-0 px-2 py-2 hover:bg-slate-50 sm:rounded-[2px]`}
-                                    ></Button>
+                                        } slds-dropdown__item group flex w-full items-center border-0 px-2 py-2`}
+                                      ></Button>
                                     )}
-                                </Menu.Item>
+                                  </Menu.Item>
                                 );
-                            })}
+                              })}
                             </div>
-                        </Menu.Items>
+                          </Menu.Items>
                         </Transition>
-                    </Menu>
+                      </Menu>
                     </li>
-                )}
+                  )}
                 </>
               </ul>
             </div>
