@@ -222,6 +222,7 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
             "body"
         ],
         name: `page_readonly_${recordId}`,
+        id: `detail_${recordId}`,
         data: {context: {rootUrl: ROOT_URL, tenantId: getTenantId(), authToken: getAuthToken()}},
         initApi: getReadonlyFormInitApi(objectSchema, recordId, fields),
         initFetch: true ,

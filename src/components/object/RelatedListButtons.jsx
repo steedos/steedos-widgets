@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 13:32:49
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-03 14:08:18
+ * @LastEditTime: 2022-08-04 11:59:16
  * @Description: 
  */
 import { getListViewButtons, execute } from '@/lib/buttons';
@@ -29,7 +29,15 @@ export function RelatedListButtons(props) {
             
         }else{
             const type = 'drawer';
-            SteedosUI.Object.newRecord({ data: {data: { [foreign_key]: record_id }},  refId: refId, appId: app_id, name: SteedosUI.getRefId({type: `${type}-form`, appId: app_id, name: `${schema.uiSchema.name}`}), title: `新建 ${schema.uiSchema.label}`, objectName: schema.uiSchema.name, recordId: 'new', type, options: {}, router})
+            SteedosUI.Object.newRecord({
+                onSubmitted : ()=>{
+                    SteedosUI.getRef(refId).getComponentById(`listview_${schema.uiSchema.name}`).handleAction({}, { actionType: "reload"})
+                },
+                onCancel: ()=>{
+                    SteedosUI.getRef(refId).getComponentById(`listview_${schema.uiSchema.name}`).handleAction({}, { actionType: "reload"})
+                },
+                data: {data: { [foreign_key]: record_id }},  
+                appId: app_id, name: SteedosUI.getRefId({type: `${type}-form`, appId: app_id, name: `${schema.uiSchema.name}`}), title: `新建 ${schema.uiSchema.label}`, objectName: schema.uiSchema.name, recordId: 'new', type, options: {}, router})
         }
       }
       const auth = getSteedosAuth();
