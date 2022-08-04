@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 13:32:49
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-04 10:10:33
+ * @LastEditTime: 2022-08-04 10:47:00
  * @Description: 
  */
 import { getListViewButtons, execute } from '@/lib/buttons';
@@ -10,6 +10,8 @@ import { useRouter } from 'next/router';
 import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { Button } from '@/components/object/Button'
 import _ from 'lodash';
+
+import config from '@/config';
 
 export function ListButtons(props) {
     const { app_id, tab_id, schema } = props;
@@ -28,7 +30,7 @@ export function ListButtons(props) {
       const newRecord = ()=>{
         const listViewId = SteedosUI.getRefId({type: 'listview', appId: app_id, name: schema?.uiSchema?.name});
         // router.push('/app/'+app_id+'/'+schema.uiSchema.name+'/view/new')
-        const type = 'modal';
+        const type = config.listView.newRecordMode;
         SteedosUI.Object.newRecord({ refId: listViewId, appId: app_id, name: SteedosUI.getRefId({type: `${type}-form`,}), title: `新建 ${schema.uiSchema.label}`, objectName: schema.uiSchema.name, recordId: 'new', type, options: {}, router })
       }
 

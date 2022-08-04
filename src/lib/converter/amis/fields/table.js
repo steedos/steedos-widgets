@@ -2,6 +2,7 @@ const Tpl = require('../tpl');
 const Fields = require('./index');
 const _ = require('lodash');
 const graphql = require('../graphql');
+import config from '@/config'
 function getOperation(fields){
     const controls = [];
     _.each(fields, function(field){
@@ -84,7 +85,7 @@ function getTableColumns(fields, options){
 
 function getDefaultParams(options){
     return {
-        perPage: options.top || 20
+        perPage: options.top || config.listView.perPage
     }
 }
 
