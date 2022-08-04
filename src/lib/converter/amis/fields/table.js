@@ -84,7 +84,7 @@ function getTableColumns(fields, options){
 
 function getDefaultParams(options){
     return {
-        perPage: options.top || 10
+        perPage: options.top || 20
     }
 }
 
@@ -103,6 +103,7 @@ export function getTableSchema(fields, options){
         keepItemSelectionOnPageChange: true,
         checkOnItemClick: true,
         labelTpl: `\${name}`, //TODO 获取name字段
+        autoFillHeight: false, // 自动高度效果不理想,先关闭
     }
 }
 
@@ -162,6 +163,7 @@ export function getTableApi(mainObject, fields, options){
     _.each(payload.data.rows, function(item, index){
         item._index = index + 1;
     })
+    window.postMessage(Object.assign({type: "listview.loaded"}), "*")
     return payload;
     `;
     return api;

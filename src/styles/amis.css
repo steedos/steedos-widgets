@@ -54,3 +54,15 @@ main {
     display: block;
     min-width: 100px;
 }
+
+.steedos-listview .antd-Table-headToolbar{
+    display: none;
+}
+
+.slds-page-header .antd-Button{
+    vertical-align: inherit !important;
+    height: auto !important;
+    min-width: auto !important;
+    font-weight: inherit !important;
+    font-size: inherit !important;
+}

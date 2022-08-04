@@ -2,11 +2,11 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-03-28 09:36:35
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-02 14:23:42
+ * @LastEditTime: 2022-08-04 10:10:40
  * @Description: 
  */
-import React, { useState } from "react"
-import ReactDOM from "react-dom";
+import React, { useState, useEffect, Fragment, useRef } from 'react';
+import {createRoot} from 'react-dom/client';
 import { has, assign } from 'lodash'
 import { Modal as AntdModal, Drawer as AntdDrawer } from "antd"
 
@@ -31,7 +31,6 @@ const newFunctionComponent = (Component)=>{
     const close = () => {
       setIsVisible(false);
     }
-  
     if(!has(props, 'ref')){
       window.SteedosUI.refs[props.name]= {
         show: show,
@@ -47,21 +46,21 @@ const newFunctionComponent = (Component)=>{
 }
 
 const newComponentRender = (prefix, Component)=>{
-  return (props, root)=>{
+  return (props, container)=>{
     if(!props.name){
       props.name = `${prefix}-${props.name || 'default'}`;
     }
-    if(!root){
-      root = document.getElementById(`steedos-${prefix}-root-${props.name}`);
-      if (!root) {
-        root = document.createElement('div');
-        root.setAttribute('id', `steedos-${prefix}-root-${props.name}`);
-        document.body.appendChild(root)
+    if(!container){
+      container = document.getElementById(`steedos-${prefix}-root-${props.name}`);
+      if (!container) {
+        container = document.createElement('div');
+        container.setAttribute('id', `steedos-${prefix}-root-${props.name}`);
+        document.body.appendChild(container)
       }
     }
     const element = React.createElement(newFunctionComponent(Component), props);
-    ReactDOM.render(element, root);
-    return window.SteedosUI.getRef(props.name);
+    const root = createRoot(container);
+    root.render(element);
   }
 }
 

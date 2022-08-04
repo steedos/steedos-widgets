@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 09:31:04
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-02 17:16:38
+ * @LastEditTime: 2022-08-03 13:30:50
  * @Description:  
  */
 import React, { useState, useEffect, Fragment } from 'react';
@@ -39,7 +39,7 @@ export function AppLayout({ children }) {
           <Navbar navigation={app?.children} selected={selected}/>
 
         {session && (
-          <div className=" px-4 pt-10">
+          <div className=" px-4 pt-4">
 
             <div className="hidden lg:block fixed z-20 inset-0 top-[3.8125rem] right-auto w-[16rem] pb-10 px-8 overflow-y-auto">
               <Sidebar navigation={app?.children} selected={selected}/>

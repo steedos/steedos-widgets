@@ -6,13 +6,15 @@ export const SObject = {
     newRecord: (props)=>{
         const { appId, name, title, objectName, recordId, type, options, router, refId, data } = props;
         if(type === 'modal'){
-            const ref = Modal(Object.assign({
+            Modal(Object.assign({
                 name: name,
                 title: title,
                 destroyOnClose: true,
                 maskClosable: false,
                 keyboard: false, // 禁止 esc 关闭
                 // footer: null,
+                cancelText: '取消',
+                okText: '确定',
                 onOk: ()=>{
                     const scope = SteedosUI.getRef(SteedosUI.getRefId({type: `form`, appId: appId, name: objectName}));
                     const form = scope.getComponentByName(`page_edit_${recordId}.form_edit_${recordId}`);
@@ -20,21 +22,20 @@ export const SObject = {
                         if(data){
                             SteedosUI.getRef(name).close();
                             if(refId){
-                                SteedosUI.getRef(refId).getComponentById(`listview_${objectName}`).search();
+                                SteedosUI.getRef(refId).getComponentById(`listview_${objectName}`).handleAction({}, { actionType: "reload"})
                             }
                         }
                     })
                 },
                 onCancel: ()=>{
                     SteedosUI.getRef(name).close();
+                    SteedosUI.getRef(refId).getComponentById(`listview_${objectName}`).handleAction({}, { actionType: "reload"})
                 },
                 bodyStyle: {padding: "0px", paddingTop: "12px"},
                 children: <Form appId={appId} objectName={objectName} recordId={recordId} data={data}></Form>
             }, options?.props));
-            ref.show();
-            return ref;
         }else if(type === 'drawer'){
-            const drawerRef = SteedosUI.Drawer(Object.assign({
+            SteedosUI.Drawer(Object.assign({
                 name: name,
                 title: title,
                 destroyOnClose: true,
@@ -49,6 +50,7 @@ export const SObject = {
                 <Space>
                     <Button onClick={()=>{
                         SteedosUI.getRef(name).close();
+                        SteedosUI.getRef(refId).getComponentById(`listview_${objectName}`).handleAction({}, { actionType: "reload"})
                     }}>取消</Button>
                     <Button type='primary' onClick={()=>{
                         const scope = SteedosUI.getRef(SteedosUI.getRefId({type: `form`, appId: appId, name: objectName}));
@@ -57,15 +59,13 @@ export const SObject = {
                             if(data){
                                 SteedosUI.getRef(name).close();
                                 if(refId){
-                                    SteedosUI.getRef(refId).getComponentById(`listview_${objectName}`).search();
+                                    SteedosUI.getRef(refId).getComponentById(`listview_${objectName}`).handleAction({}, { actionType: "reload"})
                                 }
                             }
                         })
                     }}>确认</Button>
                 </Space>)
             }, options?.props))
-            drawerRef.show();
-            return drawerRef;
         }else{
             router.push(`/app/${appId}/${objectName}/view/new`)
         }

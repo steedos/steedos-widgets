@@ -15,6 +15,7 @@ function getBulkActions(objectSchema){
         "label": "批量删除",
         "actionType": "ajax",
         "confirmText": "确定要删除吗",
+        "id": "batchDelete",
         "api": getBatchDelete(objectSchema.name),
       }
         // {
@@ -64,18 +65,18 @@ function getHeaderToolbar(mainObject, formFactor){
     return [
       // "filter-toggler",
       "bulkActions",
-      {
-          "type": "export-excel",
-          "align": "right"
-      },
-      {
-          "type": "reload",
-          "align": "right"
-      },
-      {
-          "type": "columns-toggler",
-          "align": "right"
-      },
+      // {
+      //     "type": "export-excel",
+      //     "align": "right"
+      // },
+      // {
+      //     "type": "reload",
+      //     "align": "right"
+      // },
+      // {
+      //     "type": "columns-toggler",
+      //     "align": "right"
+      // },
       {
         "type": "search-box",
         "align": "right",
@@ -83,14 +84,14 @@ function getHeaderToolbar(mainObject, formFactor){
         "placeholder": "请输入关键字",
         "mini": true
       },
-      {
-          "type": "drag-toggler",
-          "align": "right"
-      },
-      {
-          "type": "pagination",
-          "align": "right"
-      }
+      // {
+      //     "type": "drag-toggler",
+      //     "align": "right"
+      // },
+      // {
+      //     "type": "pagination",
+      //     "align": "right"
+      // }
   ]
   }
 
@@ -139,6 +140,7 @@ export function getObjectList(objectSchema, fields, options){
       footerToolbar: footerToolbar(), 
       headerToolbar: getHeaderToolbar(objectSchema, options.formFactor),
       bulkActions: bulkActions, 
+      bodyClassName: "border"
       // filter: getFilter()
     }
 

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 13:32:49
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-03 12:10:39
+ * @LastEditTime: 2022-08-03 14:08:18
  * @Description: 
  */
 import { getListViewButtons, execute } from '@/lib/buttons';
@@ -100,7 +100,7 @@ export function RelatedListButtons(props) {
                             "args": {},
                             "actionType": "custom",
                             "script": `
-                                SteedosUI.getRef('${refId}').getComponentById('listview_${object_name}').search();
+                                SteedosUI.getRef('${refId}').getComponentById('listview_${object_name}').handleAction({}, { actionType: "reload"})
                             `
                           }
                         ]

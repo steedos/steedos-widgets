@@ -18,6 +18,7 @@ export function RelatedList(props) {
             id={id}
             schema={schema.amisSchema}
             router={router}
+            className={"steedos-listview"}
             ></AmisRender>}
         </>
     )
