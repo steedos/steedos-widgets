@@ -20,16 +20,16 @@ export  function Sidebar({ navigation, selected }) {
     router.push(e.target.href)
   }
   return (
-    <nav aria-label="Sidebar" className="sticky top-10 divide-y divide-gray-300">
-      <div className="space-y-6 lg:space-y-3 border-l border-slate-100 dark:border-slate-800">
+    <nav aria-label="Sidebar" className="sticky top-6 divide-y divide-gray-300">
+      <div className="my-4">
         {navigation?.map((item) => (
           <a
             onClick={handleClick}
             key={item.name}
             href={item.path}
             className={classNames(
-              item.id === selected ? 'text-sky-500 border-current font-semibold dark:text-sky-400' : 'border-transparent hover:border-slate-400 dark:hover:border-slate-500 text-slate-700 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-300',
-              'block border-l pl-4 -ml-px text-lg'
+              item.id === selected ? 'text-sky-500 border-current font-semibold dark:text-sky-400 bg-sky-50' : 'border-transparent hover:border-slate-400 dark:hover:border-slate-500 text-slate-700 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-300',
+              'block border-l-[3px] pl-4 -ml-px text-md no-underline py-2 hover:bg-slate-50'
             )}
             aria-current={item.current ? 'page' : undefined}
           >

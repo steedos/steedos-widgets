@@ -39,13 +39,13 @@ export function AppLayout({ children }) {
           <Navbar navigation={app?.children} selected={selected}/>
 
         {session && (
-          <div className=" px-4 pt-4">
+          <div className="">
 
-            <div className="hidden lg:block fixed z-20 inset-0 top-[3.8125rem] right-auto w-[16rem] pb-10 px-8 overflow-y-auto">
+            <div className="hidden lg:block fixed z-20 inset-0 top-[3.8125rem] right-auto w-[16rem] pb-10 px-4 overflow-y-auto">
               <Sidebar navigation={app?.children} selected={selected}/>
             </div>
 
-            <div className="lg:pl-[16rem]">
+            <div className="lg:pl-[16rem] lg:py-4 lg:pr-4">
               {children}
             </div>
         </div>

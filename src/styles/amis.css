@@ -24,7 +24,7 @@
 fieldset.antd-Collapse > legend.antd-Collapse-header{
     padding: 0.5rem;
     background: #EEEEEE;
-    font-weight: bold;
+    font-weight: 500;
     border-radius: 0.2rem;
     border: 0;
 }
