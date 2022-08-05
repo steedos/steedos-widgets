@@ -193,7 +193,7 @@ export default function Record({}) {
               </Tab>)
             })}
           </Tab.List>
-          <Tab.Panels className="mt-0">
+          <Tab.Panels className="my-2">
             {getTabs().map((item)=>{
               return (
                 <Tab.Panel

@@ -73,3 +73,7 @@ main {
     margin-left: 1rem;
     margin-right: 1rem;
 }
+
+#__next .antd-Page-body {
+    padding: 0;
+}

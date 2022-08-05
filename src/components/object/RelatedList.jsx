@@ -8,7 +8,7 @@ export function RelatedList(props) {
     const router = useRouter();
     const id = SteedosUI.getRefId({type: 'related_list', appId: app_id, name: `${object_name}-${foreign_key}`})
     return (
-        <article className="slds-card slds-card_boundary">
+        <article className="slds-card slds-card_boundary shadow-none border-slate-200">
             <div className="slds-grid slds-page-header rounded-b-none p-2">
                 {schema && <RecordRelatedHeader refId={id} {...props}></RecordRelatedHeader>}
             </div>
