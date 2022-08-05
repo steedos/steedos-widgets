@@ -115,7 +115,7 @@ export default function Record({}) {
   // };
   const getTabs = ()=>{
     return [
-      {label: '基本信息', name: 'detail', component: ()=>{
+      {label: '详情', name: 'detail', component: ()=>{
         return (
           <>
             {schema?.amisSchema && (
@@ -132,7 +132,7 @@ export default function Record({}) {
           </>
         )
       }},
-      {label: '相关表', name: 'relateds', component: ()=>{
+      {label: '相关', name: 'relateds', component: ()=>{
         return (<>
           <Relateds app_id={app_id} record_id={record_id} relateds={relateds}></Relateds>
         </>)
@@ -175,7 +175,7 @@ export default function Record({}) {
         </div>
       </div> */}
     <div className="slds-col slds-size_1-of-1 row region-main">
-    <div className="z-9 relative mt-2 slds-tabs_card">
+    <div className="z-9 relative mt-2 shadow-none border-none">
         <Tab.Group vertical={true}>
           <Tab.List className="flex space-x-1 border-b">
             {getTabs().map((item)=>{
@@ -183,8 +183,8 @@ export default function Record({}) {
                 key={item.name}
                 className={({ selected }) =>
                   classNames(
-                    "w-full max-w-[15rem]",
-                    "text-lg",
+                    "px-10",
+                    "text-base",
                     selected ? "border-b-2 border-sky-500 text-black" : "text-current"
                   )
                 }
@@ -193,7 +193,7 @@ export default function Record({}) {
               </Tab>)
             })}
           </Tab.List>
-          <Tab.Panels className="mt-0">
+          <Tab.Panels className="my-2">
             {getTabs().map((item)=>{
               return (
                 <Tab.Panel
