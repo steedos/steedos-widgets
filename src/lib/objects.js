@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-02 16:40:18
+ * @LastEditTime: 2022-08-05 15:16:59
  * @Description: 
  */
 import { fetchAPI } from './steedos.client';
@@ -36,11 +36,11 @@ const getListViewColumns = (listView, formFactor)=>{
     return listViewColumns;
 }
 
-export async function getUISchema(objectName){
+export async function getUISchema(objectName, force){
     if(!objectName){
         return ;
     }
-    if(hasUISchemaCache(objectName)){
+    if(hasUISchemaCache(objectName) && !force){
         return getUISchemaCache(objectName);
     }
     const url = `/service/api/@${objectName.replace(/\./g, "_")}/uiSchema`;
@@ -93,12 +93,12 @@ export async function getViewSchema(objectName, recordId, ctx){
 }
 
 // 获取列表视图
-export async function getListSchema(appName, objectName, listViewName = 'all', options = {}){
+export async function getListSchema(appName, objectName, listViewName, options = {}){
     const uiSchema = await getUISchema(objectName);
     const listView = _.find(uiSchema.list_views, (listView, name) => name === listViewName);
 
     if(!listView){
-        return {};
+        return {uiSchema};
     }
     let fields = uiSchema.fields;
     const listViewFields = [];
@@ -126,7 +126,7 @@ export async function getListSchema(appName, objectName, listViewName = 'all', o
     }
 
     fields = listViewFields;
-    const amisSchema = await getObjectList(uiSchema, fields, {tabId: objectName, appId: appName, objectName: objectName, ...options});
+    const amisSchema = await getObjectList(uiSchema, fields, {tabId: objectName, appId: appName, objectName: objectName, ...options, filter: listView.filters});
     return {
         uiSchema,
         amisSchema

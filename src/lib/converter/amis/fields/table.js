@@ -120,9 +120,10 @@ export function getTableApi(mainObject, fields, options){
     const api = getApi(mainObject, null, fields, {alias: 'rows', queryOptions: `filters: {__filters}, top: {__top}, skip: {__skip}, sort: "{__sort}"`});
     api.data.$term = "$term";
     api.data.$self = "$$";
+    api.data.filter = "$filter"
     api.requestAdaptor = `
         const selfData = JSON.parse(JSON.stringify(api.data.$self));
-        var filters = [${JSON.stringify(filter)}];
+        var filters = api.data.filter || [${JSON.stringify(filter)}];
         var pageSize = api.data.pageSize || 10;
         var pageNo = api.data.pageNo || 1;
         var skip = (pageNo - 1) * pageSize;

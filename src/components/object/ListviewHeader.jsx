@@ -2,12 +2,12 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-03 16:46:23
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-04 16:48:40
+ * @LastEditTime: 2022-08-05 15:53:30
  * @Description:
  */
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
-import { values, isFunction, isEmpty } from "lodash";
+import { values, isFunction, isEmpty, defaultsDeep } from "lodash";
 import { useRouter } from "next/router";
 import React, { useState, useEffect, Fragment, useRef } from "react";
 import { ListButtons } from "@/components/object/ListButtons";
@@ -16,6 +16,7 @@ import { FromNow } from '@/components/FromNow'
 export function ListviewHeader({ schema, onListviewChange }) {
   const [selectedListView, setSelectedListView] = useState();
   const [queryInfo, setQueryInfo] = useState();
+  const [filter, setFilter] = useState();
   const router = useRouter();
   const { app_id, tab_id } = router.query;
   const listViewId = SteedosUI.getRefId({
@@ -46,6 +47,9 @@ export function ListviewHeader({ schema, onListviewChange }) {
           }
         }
       });
+      if(!selectedListView){
+        setSelectedListView(values(schema.uiSchema.list_views)[0])
+      }
     }
   }, [schema]);
 
@@ -56,9 +60,35 @@ export function ListviewHeader({ schema, onListviewChange }) {
   };
   useEffect(() => {
     if (!isEmpty(selectedListView) && isFunction(onListviewChange)) {
+      setFilter(null)
       onListviewChange(selectedListView);
     }
   }, [selectedListView]);
+
+  const showFilter = ()=>{
+    SteedosUI.ListView.showFilter(schema.uiSchema.name, {
+        listView: selectedListView,
+        data: {
+            filters: SteedosUI.ListView.getVisibleFilter(selectedListView, filter)
+        },
+        onFilterChange: (filter)=>{
+            const scope = SteedosUI.getRef(listViewId);
+            // amis updateProps 的 callback 2.1.0版本存在不执行的bug ,先通过延迟刷新.
+            scope.updateProps({
+                data: defaultsDeep({
+                    filter: SteedosUI.ListView.getQueryFilter(selectedListView, filter)
+                }, schema.amisSchema.data)
+            }, ()=>{
+                refreshList();
+                setFilter(filter);
+            });
+            setTimeout(()=>{
+                refreshList()
+                setFilter(filter);
+            }, 300)
+        }
+    })
+  }
 
   return (
     <div className="slds-page-header">
@@ -257,12 +287,13 @@ export function ListviewHeader({ schema, onListviewChange }) {
                 <li>
                   <button
                     className="slds-button slds-button_icon slds-button_icon-border-filled"
-                    title="Filters"
+                    onClick={showFilter}
                   >
                     <svg className="slds-button__icon" aria-hidden="true">
                       <use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#filterList"></use>
                     </svg>
-                    <span className="slds-assistive-text">Filters</span>
+                    <span className="slds-assistive-text">过滤器</span>
+                    { !isEmpty(filter) && <span className="min-w-[0.5rem] min-h-[0.5rem] slds-notification-badge slds-incoming-notification slds-show-notification"></span>}
                   </button>
                 </li>
               </ul>

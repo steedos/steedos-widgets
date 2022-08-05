@@ -1,4 +1,3 @@
-import {Modal, Drawer} from './modal'
 import { Form } from '@/components/object/Form'
 import { Button, Space} from 'antd';
 import { isFunction } from 'lodash';
@@ -6,7 +5,7 @@ import { isFunction } from 'lodash';
 const editRecordHandle = (props)=>{
     const { appId, name, title, objectName, recordId, type, options, router, refId, data, onSubmitted, onCancel } = props;
     if(type === 'modal'){
-        Modal(Object.assign({
+        SteedosUI.Modal(Object.assign({
             name: name,
             title: title,
             destroyOnClose: true,

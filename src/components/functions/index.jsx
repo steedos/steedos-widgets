@@ -2,13 +2,15 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-27 15:54:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-02 14:23:27
+ * @LastEditTime: 2022-08-04 17:16:45
  * @Description: 
  */
 import { message, notification, Button, Space} from 'antd';
 import {Modal, Drawer} from './modal'
 import { SObject } from './sObject';
+import { ListView } from './listView';
 const SteedosUI = Object.assign({}, {
+    ListView,
     Object: SObject,
     Modal, 
     Drawer,
