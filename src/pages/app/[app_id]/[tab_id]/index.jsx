@@ -47,9 +47,9 @@ export default function Page (props) {
           getListviewSchema(listView.name)
         }}></ListviewHeader>}
       </div>
-      <div className="border-t">
+      <div className="border">
       {schema?.amisSchema && schema?.uiSchema.name === tab_id && <AmisRender className="steedos-listview" id={listViewId} schema={schema?.amisSchema || {}} router={router}></AmisRender>}
-          </div>
+      </div>
     </div>
   )
 }

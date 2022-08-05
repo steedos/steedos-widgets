@@ -45,7 +45,7 @@ export function AppLayout({ children }) {
               <Sidebar navigation={app?.children} selected={selected}/>
             </div>
 
-            <div className="lg:pl-[16rem] lg:m-4">
+            <div className="lg:pl-[16rem] lg:m-6">
               {children}
             </div>
         </div>
