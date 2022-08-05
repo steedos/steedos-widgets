@@ -175,7 +175,7 @@ export default function Record({}) {
         </div>
       </div> */}
     <div className="slds-col slds-size_1-of-1 row region-main">
-    <div className="z-9 relative mt-2 slds-tabs_card shadow-none">
+    <div className="z-9 relative mt-2 shadow-none border-none">
         <Tab.Group vertical={true}>
           <Tab.List className="flex space-x-1 border-b">
             {getTabs().map((item)=>{
