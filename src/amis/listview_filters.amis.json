@@ -1,0 +1,41 @@
+{
+    "type": "page",
+    "title": "过滤器",
+    "name": "steedos-filters",
+    "body": [
+      {
+        "type": "form",
+        "title": "过滤器",
+        "body": [
+          {
+            "label": "",
+            "type": "condition-builder",
+            "name": "filters",
+            "description": "",
+            "id": "filters",
+            "source": {
+              "method": "get",
+              "url": "${context.rootUrl}/service/api/amis-metadata-listviews/getFilterFields?objectName=${objectName}",
+              "dataType": "json",
+              "headers": {
+                "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+              }
+            },
+            "disabled": false
+          }
+        ],
+        "id": "filtersForm",
+        "wrapWithPanel": false
+      }
+    ],
+    "regions": [
+      "body"
+    ],
+    "data": {
+      "recordId": "",
+      "initialValues": {
+      },
+      "appId": "builder",
+      "title": ""
+    }
+}

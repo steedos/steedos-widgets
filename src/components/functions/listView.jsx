@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-04 17:10:53
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-05 15:40:58
+ * @LastEditTime: 2022-08-05 15:56:49
  * @Description: 
  */
 import { AmisRender } from "@/components/AmisRender";
@@ -12,47 +12,7 @@ import { conditionsToFilters, filtersToConditions } from '@/components/functions
 import { getSteedosAuth, fetchAPI } from "@/lib/steedos.client";
 import { getUISchema } from '@/lib/objects'
 
-const filtersAmisSchema = {
-    "type": "page",
-    "title": "过滤器",
-    "name": "steedos-filters",
-    "body": [
-      {
-        "type": "form",
-        "title": "过滤器",
-        "body": [
-          {
-            "label": "",
-            "type": "condition-builder",
-            "name": "filters",
-            "description": "",
-            "id": "filters",
-            "source": {
-              "method": "get",
-              "url": "${context.rootUrl}/service/api/amis-metadata-listviews/getFilterFields?objectName=${objectName}",
-              "dataType": "json",
-              "headers": {
-                "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-              }
-            },
-            "disabled": false
-          }
-        ],
-        "id": "filtersForm",
-        "wrapWithPanel": false
-      }
-    ],
-    "regions": [
-      "body"
-    ],
-    "data": {
-      "recordId": "",
-      "initialValues": {
-      },
-      "appId": "builder",
-      "title": ""
-    }
-};
+const filtersAmisSchema = require('@/amis/listview_filters.amis.json')
 
 const canSaveFilter = (listView)=>{
     if(listView._id && listView.owner === getSteedosAuth()?.userId){
