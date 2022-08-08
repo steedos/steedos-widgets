@@ -2,13 +2,13 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 15:46:59
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-08 15:23:03
+ * @LastEditTime: 2022-08-08 15:26:21
  * @Description: 
  */
 import { AmisRender } from "@/components/AmisRender";
 import { useRouter } from 'next/router';
 import React, { useState, useEffect, Fragment, useRef } from "react";
-import { isEmpty, filter, values, includes, map, compact } from 'lodash';
+import { isEmpty, filter, values, sortBy, map, compact } from 'lodash';
 import { getSearchableFieldsFilterSchema } from "@/lib/objects";
 
 export function SearchableFieldsFilter({schema, listViewId, appId}) {
@@ -23,9 +23,9 @@ export function SearchableFieldsFilter({schema, listViewId, appId}) {
         //   const scope = SteedosUI.getRef(listViewId);
           // scope.getComponentByName(`page.listview_${schema.uiSchema.name}`).handleFilterReset();
           getSearchableFieldsFilterSchema(
-            compact(map(searchableFields, (fieldName)=>{
+            sortBy(compact(map(searchableFields, (fieldName)=>{
                 return schema.uiSchema.fields[fieldName]
-            }))
+            })), 'sort_no')
           ).then((data) => {
             setSearchableFieldsSchema(data)
           });
