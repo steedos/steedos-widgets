@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-03 16:46:23
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-08 13:28:38
+ * @LastEditTime: 2022-08-08 15:28:44
  * @Description:
  */
 import { Listbox, Transition } from "@headlessui/react";
@@ -110,6 +110,10 @@ export function ListviewHeader({ schema, onListviewChange }) {
 
   const filterToggler = () => {
     //TODO
+    if(showFieldsFilter){
+        const scope = SteedosUI.getRef(listViewId);
+        scope.getComponentByName(`page.listview_${schema.uiSchema.name}`).handleFilterReset();
+    }
     setShowFieldsFilter(!showFieldsFilter)
   };
 
@@ -230,7 +234,7 @@ export function ListviewHeader({ schema, onListviewChange }) {
         </div>
         <div className="slds-page-header__col-controls">
           <div className="slds-page-header__controls">
-            <div className="slds-page-header__control">
+            {/* <div className="slds-page-header__control">
               <div className="slds-dropdown-trigger slds-dropdown-trigger_click">
                 <button
                   className="slds-button slds-button_icon slds-button_icon-more"
@@ -284,7 +288,7 @@ export function ListviewHeader({ schema, onListviewChange }) {
                 </svg>
                 <span className="slds-assistive-text">Edit List</span>
               </button>
-            </div>
+            </div> */}
             <div className="slds-page-header__control">
               <button
                 className="slds-button slds-button_icon slds-button_icon-border-filled"
