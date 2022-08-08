@@ -122,7 +122,6 @@ export function getTableApi(mainObject, fields, options){
     api.data.$self = "$$";
     api.data.filter = "$filter"
     api.requestAdaptor = `
-        console.log('api', api)
         const selfData = JSON.parse(JSON.stringify(api.data.$self));
         var filters = api.data.filter || [${JSON.stringify(filter)}];
         var pageSize = api.data.pageSize || 10;
