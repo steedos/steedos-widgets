@@ -21,7 +21,7 @@ export  function Sidebar({ navigation, selected }) {
   }
   return (
     <nav aria-label="Sidebar" className="sticky top-6 divide-y divide-gray-300">
-      <div className="my-8">
+      <div className="">
         {navigation?.map((item) => (
           <a
             onClick={handleClick}

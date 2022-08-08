@@ -77,3 +77,7 @@ main {
 #__next .antd-Page-body {
     padding: 0;
 }
+
+#__next .antd-Panel {
+    box-shadow: none;
+}

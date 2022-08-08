@@ -114,7 +114,7 @@ export function ListviewHeader({ schema, onListviewChange }) {
   };
 
   return (
-    <div className="slds-page-header bg-white">
+    <div className="slds-page-header bg-white p-0 pb-4">
       <div className="slds-page-header__row">
         <div className="slds-page-header__col-title">
           <div className="slds-media">
