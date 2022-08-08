@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 15:46:59
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-08 15:26:21
+ * @LastEditTime: 2022-08-08 15:31:24
  * @Description: 
  */
 import { AmisRender } from "@/components/AmisRender";
@@ -57,7 +57,7 @@ export function SearchableFieldsFilter({schema, listViewId, appId}) {
                         }, (values)=>{
                             setSearchableFields(values.fields)
                         }, ()=>{
-                            console.log(`取消操作!!!`)
+                            // console.log(`取消操作!!!`)
                         });
                     }}>选择过滤字段</button>
                     <button className="slds-button slds-button_neutral" type="button" onClick={onSearch}>
