@@ -2,13 +2,13 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-05 15:16:59
+ * @LastEditTime: 2022-08-08 15:22:32
  * @Description: 
  */
 import { fetchAPI } from './steedos.client';
 import { getObjectList, getObjectDetail, getObjectForm } from './converter/amis/index';
-import { list } from 'postcss';
-import { slice, isEmpty } from 'lodash';
+import { slice, isEmpty, each } from 'lodash';
+import { getFiledSearchable } from '@/lib/converter/amis/fields/index';
 
 const _ = require('lodash');
 
@@ -164,4 +164,29 @@ export async function getObjectRelateds(appName, objectName, recordId, formFacto
         })
     }
     return related;
+}
+
+export async function getSearchableFieldsFilterSchema(fields){
+    const body = [];
+    for (const field of fields) {
+        const amisField = await getFiledSearchable(field, fields, {})
+        if(amisField){
+            body.push(amisField)
+        }
+    }
+    return {
+        type: 'page',
+        name: 'page',
+        body: [
+            {
+                "title": "",
+                "mode": "horizontal",
+                "type": "form",
+                "name": "form",
+                "className": "grid grid-cols-3 gap-3",
+                "body": body,
+                "actions": []
+              }
+        ]
+    }
 }

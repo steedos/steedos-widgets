@@ -1,0 +1,55 @@
+{
+    "type": "page",
+    "body": [
+        {
+            "type": "form",
+            "mode": "normal",
+            "persistData": false,
+            "promptPageLeave": true,
+            "name": "form",
+            "debug": false,
+            "title": "",
+            "body": [
+                {
+                    "label": "",
+                    "type": "transfer",
+                    "name": "fields",
+                    "options": [],
+                    "id": "u:92c0b3cccca0",
+                    "required": true,
+                    "placeholder": "-",
+                    "source": {
+                        "method": "get",
+                        "url": "${context.rootUrl}/service/api/amis-metadata-objects/objects/${objectName}/fields/options",
+                        "data": null,
+                        "requestAdaptor": "",
+                        "adaptor": "",
+                        "dataType": "json",
+                        "headers": {
+                            "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                        }
+                    },
+                    "className": "col-span-2 m-0",
+                    "checkAll": false,
+                    "searchable": true,
+                    "sortable": true,
+                    "joinValues": false,
+                    "extractValue": true
+                }
+            ],
+            "actions": [],
+            "panelClassName": "m-0",
+            "bodyClassName": "p-4",
+            "className": "steedos-amis-form"
+        }
+    ],
+    "regions": [
+        "body"
+    ],
+    "data": {
+    },
+    "bodyClassName": "p-0",
+    "name": "page",
+    "initApi": null,
+    "initFetch": null
+}

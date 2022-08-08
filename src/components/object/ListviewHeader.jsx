@@ -2,19 +2,28 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-03 16:46:23
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-05 15:53:30
+ * @LastEditTime: 2022-08-08 13:28:38
  * @Description:
  */
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
-import { values, isFunction, isEmpty, defaultsDeep } from "lodash";
+import {
+  values,
+  isFunction,
+  isEmpty,
+  defaultsDeep,
+  filter as _filter,
+  includes,
+} from "lodash";
 import { useRouter } from "next/router";
 import React, { useState, useEffect, Fragment, useRef } from "react";
 import { ListButtons } from "@/components/object/ListButtons";
-import { FromNow } from '@/components/FromNow'
+import { FromNow } from "@/components/FromNow";
+import { SearchableFieldsFilter } from '@/components/object/SearchableFieldsFilter'
 
 export function ListviewHeader({ schema, onListviewChange }) {
   const [selectedListView, setSelectedListView] = useState();
+  const [showFieldsFilter, setShowFieldsFilter] = useState(false);
   const [queryInfo, setQueryInfo] = useState();
   const [filter, setFilter] = useState();
   const router = useRouter();
@@ -47,8 +56,8 @@ export function ListviewHeader({ schema, onListviewChange }) {
           }
         }
       });
-      if(!selectedListView){
-        setSelectedListView(values(schema.uiSchema.list_views)[0])
+      if (!selectedListView) {
+        setSelectedListView(values(schema.uiSchema.list_views)[0]);
       }
     }
   }, [schema]);
@@ -60,35 +69,49 @@ export function ListviewHeader({ schema, onListviewChange }) {
   };
   useEffect(() => {
     if (!isEmpty(selectedListView) && isFunction(onListviewChange)) {
-      setFilter(null)
+      setFilter(null);
       onListviewChange(selectedListView);
     }
   }, [selectedListView]);
 
-  const showFilter = ()=>{
+  const showFilter = () => {
     SteedosUI.ListView.showFilter(schema.uiSchema.name, {
-        listView: selectedListView,
-        data: {
-            filters: SteedosUI.ListView.getVisibleFilter(selectedListView, filter)
-        },
-        onFilterChange: (filter)=>{
-            const scope = SteedosUI.getRef(listViewId);
-            // amis updateProps 的 callback 2.1.0版本存在不执行的bug ,先通过延迟刷新.
-            scope.updateProps({
-                data: defaultsDeep({
-                    filter: SteedosUI.ListView.getQueryFilter(selectedListView, filter)
-                }, schema.amisSchema.data)
-            }, ()=>{
-                refreshList();
-                setFilter(filter);
-            });
-            setTimeout(()=>{
-                refreshList()
-                setFilter(filter);
-            }, 300)
-        }
-    })
-  }
+      listView: selectedListView,
+      data: {
+        filters: SteedosUI.ListView.getVisibleFilter(selectedListView, filter),
+      },
+      onFilterChange: (filter) => {
+        const scope = SteedosUI.getRef(listViewId);
+        // amis updateProps 的 callback 2.1.0版本存在不执行的bug ,先通过延迟刷新.
+        scope.updateProps(
+          {
+            data: defaultsDeep(
+              {
+                filter: SteedosUI.ListView.getQueryFilter(
+                  selectedListView,
+                  filter
+                ),
+              },
+              schema.amisSchema.data
+            ),
+          },
+          () => {
+            refreshList();
+            setFilter(filter);
+          }
+        );
+        setTimeout(() => {
+          refreshList();
+          setFilter(filter);
+        }, 300);
+      },
+    });
+  };
+
+  const filterToggler = () => {
+    //TODO
+    setShowFieldsFilter(!showFieldsFilter)
+  };
 
   return (
     <div className="slds-page-header bg-white">
@@ -101,7 +124,9 @@ export function ListviewHeader({ schema, onListviewChange }) {
                   className="slds-icon slds-page-header__icon"
                   aria-hidden="true"
                 >
-                  <use xlinkHref={`/assets/icons/standard-sprite/svg/symbols.svg#${schema.uiSchema.icon}`}></use>
+                  <use
+                    xlinkHref={`/assets/icons/standard-sprite/svg/symbols.svg#${schema.uiSchema.icon}`}
+                  ></use>
                 </svg>
               </span>
             </div>
@@ -198,7 +223,8 @@ export function ListviewHeader({ schema, onListviewChange }) {
         <div className="slds-page-header__col-meta">
           {queryInfo && (
             <p className="slds-page-header__meta-text mb-0">
-              {queryInfo.count} 项 • <FromNow date={queryInfo.dataUpdatedAt}></FromNow>
+              {queryInfo.count} 项 •{" "}
+              <FromNow date={queryInfo.dataUpdatedAt}></FromNow>
             </p>
           )}
         </div>
@@ -276,12 +302,13 @@ export function ListviewHeader({ schema, onListviewChange }) {
                 <li>
                   <button
                     className="slds-button slds-button_icon slds-button_icon-border-filled"
-                    title="Charts"
+                    title="Filter"
+                    onClick={filterToggler}
                   >
                     <svg className="slds-button__icon" aria-hidden="true">
-                      <use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#chart"></use>
+                      <use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#filter"></use>
                     </svg>
-                    <span className="slds-assistive-text">Charts</span>
+                    <span className="slds-assistive-text">刷选</span>
                   </button>
                 </li>
                 <li>
@@ -293,7 +320,9 @@ export function ListviewHeader({ schema, onListviewChange }) {
                       <use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#filterList"></use>
                     </svg>
                     <span className="slds-assistive-text">过滤器</span>
-                    { !isEmpty(filter) && <span className="min-w-[0.5rem] min-h-[0.5rem] slds-notification-badge slds-incoming-notification slds-show-notification"></span>}
+                    {!isEmpty(filter) && (
+                      <span className="slds-notification-badge slds-incoming-notification slds-show-notification min-h-[0.5rem] min-w-[0.5rem]"></span>
+                    )}
                   </button>
                 </li>
               </ul>
@@ -301,6 +330,19 @@ export function ListviewHeader({ schema, onListviewChange }) {
           </div>
         </div>
       </div>
+      <Transition
+      as={Fragment}
+      show={showFieldsFilter}
+      leave="transition ease-in duration-100"
+      leaveFrom="opacity-100"
+      leaveTo="opacity-0"
+    >
+      <div className="slds-page-header__row slds-page-header__row_gutters">
+        <div className="slds-page-header__col-details">
+          <SearchableFieldsFilter schema={schema} listViewId={listViewId}></SearchableFieldsFilter>
+        </div>
+      </div>
+      </Transition>
     </div>
   );
 }

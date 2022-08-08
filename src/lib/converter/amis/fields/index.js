@@ -1,4 +1,6 @@
+import { cloneDeep, includes } from 'lodash';
 import { lookupToAmis } from './lookup';
+const Fields = require('../fields');
 const Tpl = require('../tpl');
 const _ = require('lodash');
 export const OMIT_FIELDS = ['created', 'created_by', 'modified', 'modified_by'];
@@ -178,7 +180,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
     if(_.includes(OMIT_FIELDS, field.name)){
         return;
     }
-    const baseData = {name: field.name, label: field.label, labelRemark: field.inlineHelpText, required: field.required};
+    const baseData = {name: ctx.fieldNamePrefix ? `${ctx.fieldNamePrefix}${field.name}` : field.name, label: field.label, labelRemark: field.inlineHelpText, required: _.has(ctx, 'required') ? ctx.required : field.required};
     let convertData = {};
     // if(_.includes(OMIT_FIELDS, field.name)){
     //     readonly = true;
@@ -443,4 +445,23 @@ return payload;
         return Object.assign({}, baseData, convertData);
     }
     
+}
+
+export async function getFiledSearchable(perField, permissionFields, ctx){
+    let field = perField;
+    if(field.type === 'grid'){
+        field = await Fields.getGridFieldSubFields(perField, permissionFields);
+    }else if(perField.type === 'object'){
+        field = await Fields.getObjectFieldSubFields(perField, permissionFields);
+    }
+    if(field.name.indexOf(".") < 0){
+        let _field = cloneDeep(field)
+        if(includes(['textarea', 'html', 'code', 'autonumber'], field.type)){
+            _field.type = 'text'
+        }
+        const amisField = await Fields.convertSFieldToAmisField(_field, false, Object.assign({}, ctx, {fieldNamePrefix: `__searchable_`, required: false}));
+        if(amisField){
+            return amisField;
+        }
+    }
 }

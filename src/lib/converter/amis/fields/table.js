@@ -122,6 +122,7 @@ export function getTableApi(mainObject, fields, options){
     api.data.$self = "$$";
     api.data.filter = "$filter"
     api.requestAdaptor = `
+        console.log('api', api)
         const selfData = JSON.parse(JSON.stringify(api.data.$self));
         var filters = api.data.filter || [${JSON.stringify(filter)}];
         var pageSize = api.data.pageSize || 10;
@@ -136,6 +137,28 @@ export function getTableApi(mainObject, fields, options){
         }else if(selfData.op === 'loadOptions' && selfData.value){
             filters = [["${valueField.name}", "=", selfData.value]];
         }
+
+        var searchableFilter = [];
+        _.each(selfData, (value, key)=>{
+            if(!_.isEmpty(value) || _.isBoolean(value)){
+                if(_.startsWith(key, '__searchable_')){
+                    if(_.isString(value)){
+                        searchableFilter.push([\`\${key.replace("__searchable_", "")}\`, "contains", value])
+                    }else{
+                        searchableFilter.push([\`\${key.replace("__searchable_", "")}\`, "=", value])
+                    }
+                }
+            }
+        });
+
+        if(searchableFilter.length > 0){
+            if(filters.length > 0 ){
+                filters = [filters, 'and', searchableFilter];
+            }else{
+                searchableFilter = filters;
+            }
+        }
+
         if(allowSearchFields){
             allowSearchFields.forEach(function(key){
                 const keyValue = selfData[key];

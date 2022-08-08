@@ -63,7 +63,7 @@ function getHeaderToolbar(mainObject, formFactor){
   ]
   }else{
     return [
-      // "filter-toggler",
+      "filter-toggler",
       "bulkActions",
       // {
       //     "type": "export-excel",
@@ -140,7 +140,9 @@ export function getObjectList(objectSchema, fields, options){
       footerToolbar: footerToolbar(), 
       headerToolbar: getHeaderToolbar(objectSchema, options.formFactor),
       bulkActions: bulkActions, 
-      bodyClassName: ""
+      bodyClassName: "",
+      // filterTogglable: true,
+      // filterDefaultVisible: true,
       // filter: getFilter()
     }
 
