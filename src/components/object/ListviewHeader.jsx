@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-03 16:46:23
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-08 15:28:44
+ * @LastEditTime: 2022-08-08 15:47:37
  * @Description:
  */
 import { Listbox, Transition } from "@headlessui/react";
@@ -109,12 +109,9 @@ export function ListviewHeader({ schema, onListviewChange }) {
   };
 
   const filterToggler = () => {
-    //TODO
-    if(showFieldsFilter){
-        const scope = SteedosUI.getRef(listViewId);
-        scope.getComponentByName(`page.listview_${schema.uiSchema.name}`).handleFilterReset();
+    if(!showFieldsFilter){
+        setShowFieldsFilter(true)
     }
-    setShowFieldsFilter(!showFieldsFilter)
   };
 
   return (
@@ -214,6 +211,7 @@ export function ListviewHeader({ schema, onListviewChange }) {
         <div className="slds-page-header__col-actions">
           <div className="slds-page-header__controls">
             <div className="slds-page-header__control space-x-1">
+              <button onClick={filterToggler} className="slds-button slds-button_neutral">查找</button>
               <ListButtons
                 app_id={app_id}
                 tab_id={tab_id}
@@ -303,7 +301,7 @@ export function ListviewHeader({ schema, onListviewChange }) {
             </div>
             <div className="slds-page-header__control">
               <ul className="slds-button-group-list mb-0">
-                <li>
+                {/* <li>
                   <button
                     className="slds-button slds-button_icon slds-button_icon-border-filled"
                     title="Filter"
@@ -314,7 +312,7 @@ export function ListviewHeader({ schema, onListviewChange }) {
                     </svg>
                     <span className="slds-assistive-text">刷选</span>
                   </button>
-                </li>
+                </li> */}
                 <li>
                   <button
                     className="slds-button slds-button_icon slds-button_icon-border-filled"
@@ -341,9 +339,15 @@ export function ListviewHeader({ schema, onListviewChange }) {
       leaveFrom="opacity-100"
       leaveTo="opacity-0"
     >
-      <div className="slds-page-header__row slds-page-header__row_gutters">
+      <div className="slds-page-header__row slds-page-header__row_gutters pt-2">
         <div className="slds-page-header__col-details">
-          <SearchableFieldsFilter schema={schema} listViewId={listViewId}></SearchableFieldsFilter>
+          <SearchableFieldsFilter schema={schema} listViewId={listViewId} onClose = {()=>{
+            if(showFieldsFilter){
+                const scope = SteedosUI.getRef(listViewId);
+                scope.getComponentByName(`page.listview_${schema.uiSchema.name}`).handleFilterReset();
+                setShowFieldsFilter(false)
+            }
+          }}></SearchableFieldsFilter>
         </div>
       </div>
       </Transition>
