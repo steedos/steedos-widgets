@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-03 16:46:23
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-08 15:47:37
+ * @LastEditTime: 2022-08-08 15:55:36
  * @Description:
  */
 import { Listbox, Transition } from "@headlessui/react";
@@ -211,7 +211,7 @@ export function ListviewHeader({ schema, onListviewChange }) {
         <div className="slds-page-header__col-actions">
           <div className="slds-page-header__controls">
             <div className="slds-page-header__control space-x-1">
-              <button onClick={filterToggler} className="slds-button slds-button_neutral">查找</button>
+              <button onClick={filterToggler} className="slds-button slds-button_neutral">查询</button>
               <ListButtons
                 app_id={app_id}
                 tab_id={tab_id}

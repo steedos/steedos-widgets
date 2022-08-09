@@ -177,7 +177,7 @@ export function getSelectFieldOptions(field){
 
 export async function convertSFieldToAmisField(field, readonly, ctx) {
     // 创建人和修改人、创建时间和修改时间不显示
-    if(_.includes(OMIT_FIELDS, field.name)){
+    if(_.includes(OMIT_FIELDS, field.name) && ctx.showSystemFields != true){
         return;
     }
     const baseData = {name: ctx.fieldNamePrefix ? `${ctx.fieldNamePrefix}${field.name}` : field.name, label: field.label, labelRemark: field.inlineHelpText, required: _.has(ctx, 'required') ? ctx.required : field.required};
@@ -239,6 +239,15 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                 tpl: readonly ? Tpl.getSwitchTpl(field) : null
             }
             break;
+        case 'input-date-range':
+            convertData = {
+                type: "input-date-range",
+                inputFormat: "YYYY-MM-DD",
+                format:'YYYY-MM-DDT00:00:00.000[Z]',
+                tpl: readonly ? Tpl.getDateTpl(field) : null,
+                // utc: true
+            }
+            break;
         case 'date':
             convertData = {
                 type: getAmisStaticFieldType('date', readonly),
@@ -248,6 +257,15 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                 // utc: true
             }
             break;
+        case 'input-datetime-range':
+            convertData = {
+                type: "input-datetime-range",
+                inputFormat: 'YYYY-MM-DD HH:mm',
+                format:'YYYY-MM-DDTHH:mm:ss.SSS[Z]',
+                tpl: readonly ? Tpl.getDateTimeTpl(field) : null,
+                utc: true
+            }
+            break;
         case 'datetime':
             convertData = {
                 type: getAmisStaticFieldType('datetime', readonly),
@@ -255,6 +273,16 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                 format:'YYYY-MM-DDTHH:mm:ss.SSS[Z]',
                 tpl: readonly ? Tpl.getDateTimeTpl(field) : null,
                 utc: true
+            }
+            break;
+        case 'input-time-range':
+            convertData = {
+                type: 'input-time-range',
+                inputFormat: 'HH:mm',
+                timeFormat:'1970-01-01THH:mm:00.000[Z]',
+                format:'1970-01-01THH:mm:00.000[Z]',
+                tpl: readonly ? Tpl.getDateTimeTpl(field) : null,
+                // utc: true
             }
             break;
         case 'time':
@@ -282,6 +310,19 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                 min: field.min,
                 max: field.max,
                 precision: field.scale
+            }
+            break;
+        case 'input-array':
+            convertData = Object.assign({}, field, baseData);
+            break;
+        case 'input-range':
+            convertData = {
+                type: 'input-range',
+                min: field.min,
+                max: field.max,
+                value: [0, 0],
+                multiple: true,
+                showInput: true
             }
             break;
         case 'percent':
@@ -454,12 +495,51 @@ export async function getFiledSearchable(perField, permissionFields, ctx){
     }else if(perField.type === 'object'){
         field = await Fields.getObjectFieldSubFields(perField, permissionFields);
     }
+
+    
+    let fieldNamePrefix = '__searchable__';
     if(field.name.indexOf(".") < 0){
         let _field = cloneDeep(field)
         if(includes(['textarea', 'html', 'code', 'autonumber'], field.type)){
             _field.type = 'text'
         }
-        const amisField = await Fields.convertSFieldToAmisField(_field, false, Object.assign({}, ctx, {fieldNamePrefix: `__searchable_`, required: false}));
+
+        if(field.type === 'number' || field.type === 'currency'){
+            _field.type = 'input-array';
+            _field.inline = true;
+            _field.addable = false;
+            _field.removable = false;
+            _field.value = [null,null];
+            _field.items = {
+                type: "input-number"
+            }
+            _field.is_wide = true;
+            fieldNamePrefix = `${fieldNamePrefix}between__`
+        }
+
+        if(field.type ==='date'){
+            _field.type = 'input-date-range';
+            _field.is_wide = true;
+            fieldNamePrefix = `${fieldNamePrefix}between__`
+        }
+        if(field.type === 'datetime'){
+            _field.type = 'input-datetime-range'
+            _field.is_wide = true;
+            fieldNamePrefix = `${fieldNamePrefix}between__`
+        }
+        if(field.type === 'time'){
+            _field.type = 'input-time-range'
+            _field.is_wide = true;
+            fieldNamePrefix = `${fieldNamePrefix}between__`
+        }
+        if(field.reference_to === 'users'){
+            _field.reference_to = 'space_users';
+            _field.reference_to_field = 'user';
+        }
+        _field.readonly = false;
+        _field.disabled = false;
+        _field.multiple = true;
+        const amisField = await Fields.convertSFieldToAmisField(_field, false, Object.assign({}, ctx, {fieldNamePrefix: fieldNamePrefix, required: false, showSystemFields: true}));
         if(amisField){
             return amisField;
         }

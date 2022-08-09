@@ -140,11 +140,13 @@ export function getTableApi(mainObject, fields, options){
         var searchableFilter = [];
         _.each(selfData, (value, key)=>{
             if(!_.isEmpty(value) || _.isBoolean(value)){
-                if(_.startsWith(key, '__searchable_')){
+                if(_.startsWith(key, '__searchable__between__')){
+                    searchableFilter.push([\`\${key.replace("__searchable__between__", "")}\`, "between", value])
+                }else if(_.startsWith(key, '__searchable__')){
                     if(_.isString(value)){
-                        searchableFilter.push([\`\${key.replace("__searchable_", "")}\`, "contains", value])
+                        searchableFilter.push([\`\${key.replace("__searchable__", "")}\`, "contains", value])
                     }else{
-                        searchableFilter.push([\`\${key.replace("__searchable_", "")}\`, "=", value])
+                        searchableFilter.push([\`\${key.replace("__searchable__", "")}\`, "=", value])
                     }
                 }
             }

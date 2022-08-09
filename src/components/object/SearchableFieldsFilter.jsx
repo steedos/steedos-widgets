@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 15:46:59
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-08 15:46:31
+ * @LastEditTime: 2022-08-08 15:55:16
  * @Description:
  */
 import { AmisRender } from "@/components/AmisRender";
@@ -60,10 +60,10 @@ export function SearchableFieldsFilter({ schema, listViewId, appId, onClose }) {
     <div className="slds-panel slds-grid slds-grid_vertical slds-nowrap slds-panel_filters m-0 border-none shadow-none">
       <div className="slds-filters">
         <div className="slds-filters__header slds-grid slds-has-divider_bottom-space p-0 text-lg">
-          <h2 className="slds-align-middle slds-text-heading_small">查找</h2>
+          <h2 className="slds-align-middle slds-text-heading_small">查询</h2>
           <button
             className="slds-button slds-button_icon slds-button_icon-bare slds-button_icon-small slds-col_bump-left"
-            title="关闭查找"
+            title="关闭查询"
             type="button"
             onClick={onClose}
           >
@@ -111,7 +111,7 @@ export function SearchableFieldsFilter({ schema, listViewId, appId, onClose }) {
                 );
               }}
             >
-              选择查找字段
+              设置查询字段
             </button>
             <button
               className="slds-button slds-button_neutral"

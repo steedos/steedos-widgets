@@ -81,3 +81,22 @@ main {
 #__next .antd-Panel {
     box-shadow: none;
 }
+
+.is-inline .antd-Combo-items{
+    justify-content: space-between !important;
+    display: flex !important;
+
+}
+
+.is-inline .antd-Combo-items > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 0 !important;
+    margin-right: calc(0.25rem * var(--tw-space-x-reverse)) !important;
+    margin-left: calc(0.25rem * calc(1 - var(--tw-space-x-reverse))) !important;
+}
+
+.is-inline .antd-Combo-item{
+    display: inline-block !important;
+    flex: 1 1 0%;
+    margin-top: 0 !important;
+}
+
