@@ -2,14 +2,12 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 16:25:16
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-13 10:23:56
+ * @LastEditTime: 2022-08-09 14:52:39
  * @Description: 
  */
 import { unstable_getServerSession } from "next-auth/next"
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
 import React, { useState, useEffect } from 'react';
-import { Navbar } from '@/components/Navbar'
-
 
 export default function App() {
 

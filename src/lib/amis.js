@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 11:31:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-02 14:23:52
+ * @LastEditTime: 2022-08-09 14:47:05
  * @Description:
  */
 const normalizeLink = (to, location = window.location) => {

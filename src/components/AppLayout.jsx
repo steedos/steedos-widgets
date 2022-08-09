@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 09:31:04
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-03 13:30:50
+ * @LastEditTime: 2022-08-09 14:55:58
  * @Description:  
  */
 import React, { useState, useEffect, Fragment } from 'react';
@@ -21,6 +21,14 @@ export function AppLayout({ children }) {
     if(session){
       setSteedosAuth(session.steedos.space, session.steedos.token, session.steedos.userId, session.steedos.name);
     }
+
+    // 默认进入第一个tab
+    useEffect(() => {
+      if(!selected && app?.children[0]){
+        router.push(app.children[0].path)
+        setSelected(app.children[0].id)
+      }
+    }, [app]);
 
     useEffect(() => {
         if(!app_id || !session) return ;
