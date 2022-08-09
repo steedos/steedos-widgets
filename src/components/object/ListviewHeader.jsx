@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-03 16:46:23
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-08 15:55:36
+ * @LastEditTime: 2022-08-09 10:34:21
  * @Description:
  */
 import { Listbox, Transition } from "@headlessui/react";
@@ -22,12 +22,15 @@ import { FromNow } from "@/components/FromNow";
 import { SearchableFieldsFilter } from '@/components/object/SearchableFieldsFilter'
 
 export function ListviewHeader({ schema, onListviewChange }) {
-  const [selectedListView, setSelectedListView] = useState();
+//   const [selectedListView, setSelectedListView] = useState();
   const [showFieldsFilter, setShowFieldsFilter] = useState(false);
   const [queryInfo, setQueryInfo] = useState();
   const [filter, setFilter] = useState();
   const router = useRouter();
-  const { app_id, tab_id } = router.query;
+  const { app_id, tab_id, listview_id } = router.query;
+
+  const selectedListView = schema.uiSchema.list_views[listview_id]
+
   const listViewId = SteedosUI.getRefId({
     type: "listview",
     appId: app_id,
@@ -56,9 +59,9 @@ export function ListviewHeader({ schema, onListviewChange }) {
           }
         }
       });
-      if (!selectedListView) {
-        setSelectedListView(values(schema.uiSchema.list_views)[0]);
-      }
+    //   if (!selectedListView) {
+    //     setSelectedListView(schema.uiSchema.list_views[listview_id]);
+    //   }
     }
   }, [schema]);
 
@@ -67,12 +70,13 @@ export function ListviewHeader({ schema, onListviewChange }) {
       .getComponentByName(`page.listview_${schema.uiSchema.name}`)
       .handleAction({}, { actionType: "reload" });
   };
+  
   useEffect(() => {
-    if (!isEmpty(selectedListView) && isFunction(onListviewChange)) {
+    if (!isEmpty(listview_id) && isFunction(onListviewChange)) {
       setFilter(null);
       onListviewChange(selectedListView);
     }
-  }, [selectedListView]);
+  }, [listview_id]);
 
   const showFilter = () => {
     SteedosUI.ListView.showFilter(schema.uiSchema.name, {
@@ -114,6 +118,11 @@ export function ListviewHeader({ schema, onListviewChange }) {
     }
   };
 
+  const onChange = (value)=>{
+    router.push(`/app/${app_id}/${tab_id}/grid/${value.name}`)
+    // setSelectedListView
+  }
+
   return (
     <div className="slds-page-header bg-white p-0 pb-4">
       <div className="slds-page-header__row">
@@ -139,7 +148,7 @@ export function ListviewHeader({ schema, onListviewChange }) {
 
                     <Listbox
                       value={selectedListView}
-                      onChange={setSelectedListView}
+                      onChange={onChange}
                     >
                       <div className="relative w-[1/2]">
                         <Listbox.Button className="relative w-full cursor-default pr-10 text-left focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
