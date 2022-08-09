@@ -66,7 +66,7 @@ function getTableColumns(fields, options){
                     name: field.name,
                     label: field.label,
                     sortable: field.sortable,
-                    searchable: field.searchable,
+                    // searchable: field.searchable,
                     width: field.width,
                     type: type,
                     tpl: tpl,
