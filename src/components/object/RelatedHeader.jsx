@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-09 11:09:10
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-09 14:18:42
+ * @LastEditTime: 2022-08-09 16:45:04
  * @Description:
  */
 import React, { useState, useEffect, Fragment, useRef } from "react";
@@ -77,7 +77,7 @@ export const RelatedHeader = ({app_id, foreign_key, masterObjectName, object_nam
         });
       };
       const batchDelete = ()=>{
-        const listViewRef = SteedosUI.getRef(listViewId).getComponentByName(`page.listview_${schema.uiSchema.name}`)
+        const listViewRef = SteedosUI.getRef(listViewId).getComponentByName(`page.listview_${object_name}`)
       if(_.isEmpty(listViewRef.props.store.toJSON().selectedItems)){
           listViewRef.handleAction({}, {
               "actionType": "toast",
