@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 13:32:49
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-04 16:48:29
+ * @LastEditTime: 2022-08-09 11:16:20
  * @Description: 
  */
 import { getListViewButtons, execute } from '@/lib/buttons';
@@ -11,7 +11,7 @@ import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { Button } from '@/components/object/Button'
 import { AmisRender } from "@/components/AmisRender";
 import { getSteedosAuth } from '@/lib/steedos.client';
-export function RelatedListButtons(props) {
+export function RecordRelatedListButtons(props) {
     const { app_id, tab_id, schema, refId, foreign_key, record_id, object_name , masterObjectName} = props;
     const [buttons, setButtons] = useState(null);
     const router = useRouter()
@@ -133,7 +133,7 @@ export function RelatedListButtons(props) {
             {schema?.uiSchema && 
                 <>
                     {schema?.uiSchema?.permissions?.allowCreate && 
-                        <>
+                        <li>
                             { schema.uiSchema.name != 'cms_files' && <button onClick={newRecord} className="slds-button slds-button_neutral">新建</button> }
                             { schema.uiSchema.name === 'cms_files' && 
                             <AmisRender
@@ -143,16 +143,19 @@ export function RelatedListButtons(props) {
                             className='w-full'
                           ></AmisRender>
                             }
-                        </>
+                        </li>
                     }
                     {buttons?.map((button)=>{
                         return (
-                        <Button key={button.name} button={button} data={{
+                          <li key={button.name} >
+<Button button={button} data={{
                             app_id: app_id,
                             tab_id: tab_id,
                             object_name: schema.uiSchema.name,
                             dataComponentId: SteedosUI.getRefId({type: 'listview', appId: app_id, name: schema.uiSchema.name})
                         }}></Button>
+                          </li>
+                        
                         )
                     })}
                 </>

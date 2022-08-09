@@ -1,6 +1,7 @@
 import { Form } from '@/components/object/Form'
 import { Button, Space} from 'antd';
-import { isFunction } from 'lodash';
+import { isFunction, each } from 'lodash';
+import { fetchAPI } from '@/lib/steedos.client.js';
 
 const editRecordHandle = (props)=>{
     const { appId, name, title, objectName, recordId, type, options, router, refId, data, onSubmitted, onCancel } = props;
@@ -74,6 +75,33 @@ const editRecordHandle = (props)=>{
     }
 }
 
+const getGraphqlFieldsQuery = (fields)=>{
+    const fieldsName = ['_id'];
+    fields.push('record_permissions');
+    //TODO 此处需要考虑相关对象查询
+    each(fields, (fieldName)=>{
+        if(fieldName.indexOf('.') > -1){
+            fieldName = fieldName.split('.')[0]
+        }
+        fieldsName.push(`${fieldName}`)
+    })
+    return `${fieldsName.join(' ')}`;
+}
+
+const getFindOneQuery = (objectName, id, fields)=>{
+    objectName = objectName.replace(/\./g, '_');
+    const queryFields = getGraphqlFieldsQuery(fields);
+    let queryOptions = ''
+    let alias = "record";
+    
+    const queryOptionsArray = [`id: "${id}"`];
+    
+    if(queryOptionsArray.length > 0){
+        queryOptions = `(${queryOptionsArray.join(',')})`
+    }
+
+    return `{${alias}:${objectName}__findOne${queryOptions}{${queryFields}}}`
+}
 
 export const SObject = {
     //TODO 清理router参数传递
@@ -82,5 +110,14 @@ export const SObject = {
     },
     editRecord: (props)=>{
         return editRecordHandle(props)
+    },
+    getRecord: async (objectName, recordId, fields)=>{
+        const result = await fetchAPI('/graphql', {
+            method: 'post',
+            body: JSON.stringify({
+                query: getFindOneQuery(objectName, recordId, fields)
+            })
+        })
+        return result.data.record;
     }
 }

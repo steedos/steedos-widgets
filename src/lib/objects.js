@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-08 15:22:32
+ * @LastEditTime: 2022-08-09 13:27:34
  * @Description: 
  */
 import { fetchAPI } from './steedos.client';
@@ -133,7 +133,7 @@ export async function getListSchema(appName, objectName, listViewName, options =
     }
 }
 
-// 获取相关表
+// 获取所有相关表
 export async function getObjectRelateds(appName, objectName, recordId, formFactor){
     const uiSchema = await getUISchema(objectName);
 
@@ -160,10 +160,31 @@ export async function getObjectRelateds(appName, objectName, recordId, formFacto
             masterObjectName: objectName,
             object_name: arr[0], 
             foreign_key: arr[1],
-            schema: await getListSchema(appName, arr[0], 'all', {filter: filter, formFactor: formFactor})
+            schema: await getListSchema(appName, arr[0], 'all', {globalFilter: filter, formFactor: formFactor})
         })
     }
     return related;
+}
+
+// 获取单个相关表
+export async function getObjectRelated(appName, masterObjectName, objectName, relatedFieldName, recordId, formFactor){
+    let filter = null;
+    const refField = await getField(objectName, relatedFieldName);
+    if(refField._reference_to || (refField.reference_to && !_.isString(refField.reference_to))){
+        filter =  [[`${relatedFieldName}/o`, '=', objectName], [`${relatedFieldName}/ids`, '=', recordId]];
+    }else{
+        filter = [`${relatedFieldName}`, '=', recordId] ;
+    }
+    console.log(`filter`, filter)
+    const masterObjectUISchema = await getUISchema(masterObjectName, formFactor)
+    return {
+        masterObjectName: masterObjectName,
+        object_name: objectName, 
+        foreign_key: relatedFieldName,
+        schema: await getListSchema(appName, objectName, 'all', {globalFilter: filter, formFactor: formFactor}),
+        record: await SteedosUI.Object.getRecord(masterObjectName, recordId, [masterObjectUISchema.NAME_FIELD_KEY]),
+        masterObjectUISchema: masterObjectUISchema
+    };
 }
 
 export async function getSearchableFieldsFilterSchema(fields){

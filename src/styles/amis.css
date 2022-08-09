@@ -67,8 +67,6 @@ main {
     font-size: inherit !important;
 }
 
-
-
 .antd-Crud-toolbar{
     margin-left: 1rem;
     margin-right: 1rem;
@@ -100,3 +98,11 @@ main {
     margin-top: 0 !important;
 }
 
+/*Table空状态高度调整*/
+.antd-Table-placeholder{
+    height: 20px !important;
+}
+
+.antd-Table-placeholder-empty-icon.icon{
+    height: 20px !important;
+}

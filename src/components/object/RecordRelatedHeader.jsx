@@ -2,11 +2,12 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-04 13:59:06
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-04 16:45:28
+ * @LastEditTime: 2022-08-09 11:16:24
  * @Description:
  */
-import { RelatedListButtons } from '@/components/object/RelatedListButtons'
+import { RecordRelatedListButtons } from '@/components/object/RecordRelatedListButtons'
 import React, { useState, useEffect, Fragment, useRef } from "react";
+import Link from 'next/link'
 
 export const RecordRelatedHeader = ({schema, object_name, foreign_key, app_id, record_id, masterObjectName, refId}) => {
   const [queryInfo, setQueryInfo] = useState();
@@ -64,10 +65,11 @@ export const RecordRelatedHeader = ({schema, object_name, foreign_key, app_id, r
           <h2
             className="slds-card__header-title"
           >
+            <Link href={`/app/${app_id}/${masterObjectName}/${record_id}/${object_name}/grid?related_field_name=${foreign_key}`}>
             <a
-              href="/lightning/r/Contact/0035i00000BQ2ZaAAL/related/AccountContactRelations/view"
               className="slds-card__header-link baseCard__header-title-container"
             >
+              <>
               <span
                 className="slds-truncate slds-m-right--xx-small"
               >
@@ -78,7 +80,9 @@ export const RecordRelatedHeader = ({schema, object_name, foreign_key, app_id, r
               >
                 ({queryInfo?.count})
               </span>
+              </>
             </a>
+            </Link>
           </h2>
         </div>
       </header>
@@ -87,7 +91,7 @@ export const RecordRelatedHeader = ({schema, object_name, foreign_key, app_id, r
           <ul
             className="branding-actions slds-button-group slds-m-left--xx-small small oneActionsRibbon forceActionsContainer"
           >
-            <RelatedListButtons foreign_key={foreign_key} record_id={record_id} refId={refId} app_id={app_id} tab_id={object_name} object_name={object_name} masterObjectName={masterObjectName} schema={schema}></RelatedListButtons>
+            <RecordRelatedListButtons foreign_key={foreign_key} record_id={record_id} refId={refId} app_id={app_id} tab_id={object_name} object_name={object_name} masterObjectName={masterObjectName} schema={schema}></RecordRelatedListButtons>
           </ul>
         </div>
       </div>

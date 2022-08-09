@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-04 16:54:45
+ * @LastEditTime: 2022-08-09 11:15:30
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -16,7 +16,7 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { Tab, Menu, Transition } from "@headlessui/react";
 
 import { RecordHeader } from '@/components/object/RecordHeader';
-import { Relateds } from '@/components/object/Relateds';
+import { RecordRelateds } from '@/components/object/RecordRelateds';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -134,7 +134,7 @@ export default function Record({}) {
       }},
       {label: '相关', name: 'relateds', component: ()=>{
         return (<>
-          <Relateds app_id={app_id} record_id={record_id} relateds={relateds}></Relateds>
+          <RecordRelateds app_id={app_id} record_id={record_id} relateds={relateds}></RecordRelateds>
         </>)
       }}
     ]

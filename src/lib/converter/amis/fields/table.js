@@ -110,7 +110,7 @@ export function getTableSchema(fields, options){
 
 export function getTableApi(mainObject, fields, options){
     const searchableFields = [];
-    const { filter } = options;
+    const { globalFilter, filter } = options;
     _.each(fields,function(field){
         if(field.searchable){
             searchableFields.push(field.name);
@@ -122,8 +122,14 @@ export function getTableApi(mainObject, fields, options){
     api.data.$self = "$$";
     api.data.filter = "$filter"
     api.requestAdaptor = `
+        console.log("api", api)
         const selfData = JSON.parse(JSON.stringify(api.data.$self));
-        var filters = api.data.filter || [${JSON.stringify(filter)}];
+        ${globalFilter ? `var filters = ${JSON.stringify(globalFilter)};` : 'var filters = [];'}
+        if(_.isEmpty(filters)){
+            filters = api.data.filter || [${JSON.stringify(filter)}];
+        }else{
+            filters = [filters, 'and', api.data.filter || [${JSON.stringify(filter)}]]
+        }
         var pageSize = api.data.pageSize || 10;
         var pageNo = api.data.pageNo || 1;
         var skip = (pageNo - 1) * pageSize;
