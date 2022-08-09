@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-27 17:34:25
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-04 13:24:12
+ * @LastEditTime: 2022-08-09 16:52:45
  * @Description: 
  */
 import { AmisRender } from "@/components/AmisRender";
@@ -16,7 +16,7 @@ export function Button(props) {
     return execute(button, Object.assign({}, data , {scope: SteedosUI.getRef(dataComponentId)})); //TODO 处理参数
   };
 
-  if (button.type === "action") {
+  if (button.type === "amis_action") {
     const schema = {
         type: "page",
         bodyClassName: 'p-0',
@@ -27,7 +27,7 @@ export function Button(props) {
                 className: `${ inMore ? '' : 'slds-button slds-button_neutral' } ${className ? className : ''}`,
                 onEvent: {
                   click: {
-                    actions: JSON.parse(button.actions),
+                    actions: JSON.parse(button.amis_actions),
                   },
                 }
             }
