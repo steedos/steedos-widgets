@@ -8,6 +8,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false, // 不要开启. amis 不支持 strict mode
+  experimental: {
+    images: {
+      unoptimized: true
+    }
+  }
 }
 
 module.exports = nextConfig
