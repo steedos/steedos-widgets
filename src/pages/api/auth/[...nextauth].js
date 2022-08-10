@@ -2,17 +2,16 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-20 16:29:22
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-10 18:06:55
+ * @LastEditTime: 2022-08-10 18:27:44
  * @Description: 
  */
 
 import NextAuth from "next-auth"
 import KeycloakProvider from "@/lib/auth/KeycloakProvider";
 import CredentialsProvider from "@/lib/auth/CredentialsProvider";
-import { getRootUrl } from "@/lib/steedos.client";
 const axios = require('axios');
 const jwt = require("jsonwebtoken")
-
+const ROOT_URL = process.env.NEXT_PUBLIC_STEEDOS_ROOT_URL
 const JWT_API = '/accounts/jwt/login';
 const STEEDOS_TOKENS = {};
 
@@ -39,7 +38,7 @@ const loginSteedosProject = async (user)=>{
   if(STEEDOS_TOKENS[user.email]){
     return STEEDOS_TOKENS[user.email];
   }
-  const projectRootUrl = getRootUrl();
+  const projectRootUrl = ROOT_URL;
   const rest =  await axios({
     url: `${projectRootUrl}${JWT_API}`,
     method: 'get',

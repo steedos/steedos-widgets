@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-10 18:25:43
+ * @LastEditTime: 2022-08-10 18:30:56
  * @Description: 
  */
 import { isEmpty } from "lodash";
@@ -103,7 +103,7 @@ export function absoluteUrl(url){
 }
 
 export function getRootUrl(){
-    const rootUrl = localStorage.getItem("steedos:rootUrl");
+    const rootUrl = typeof window != 'undefined' ? window.localStorage.getItem("steedos:rootUrl") : '';
     if(rootUrl){
         return rootUrl
     }
