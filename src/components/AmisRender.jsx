@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 16:55:58
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-09 14:24:59
+ * @LastEditTime: 2022-08-10 13:43:54
  * @Description: 
  */
 
@@ -10,6 +10,7 @@ import React, { useState, useEffect, Fragment, useRef, useImperativeHandle } fro
 import { amisRender, amisRootClick } from '@/lib/amis';
 import { getSteedosAuth } from '@/lib/steedos.client'
 import { defaultsDeep } from 'lodash';
+import { getRootUrl } from '@/lib/steedos.client.js';
 
 export const AmisRender = ({id, schema, data, router, className, })=>{
     useEffect(() => {
@@ -17,7 +18,7 @@ export const AmisRender = ({id, schema, data, router, className, })=>{
         const defData = defaultsDeep({}, data , {
             data: {
                 context: {
-                    rootUrl: process.env.NEXT_PUBLIC_STEEDOS_ROOT_URL,
+                    rootUrl: getRootUrl(),
                     userId: steedosAuth.userId,
                     tenantId: steedosAuth.space,
                     authToken: steedosAuth.token

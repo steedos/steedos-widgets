@@ -2,9 +2,10 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-09 18:32:35
+ * @LastEditTime: 2022-08-10 13:49:44
  * @Description: 
  */
+import { isEmpty } from "lodash";
 const ROOT_URL = process.env.NEXT_PUBLIC_STEEDOS_ROOT_URL
 
 const STEEDOS_AUTH = {};
@@ -71,7 +72,8 @@ export function getTenantId(){
 
 export function getAuthToken(){
     try {
-        let token = STEEDOS_AUTH.token;
+        const auth = getSteedosAuth();
+        let token = auth.token;
         if (!token) {
             return null;
         }
@@ -83,8 +85,9 @@ export function getAuthToken(){
 
 export function getAuthorization(){
     try {
-        let spaceId = STEEDOS_AUTH.space;
-        let token = STEEDOS_AUTH.token;
+        const auth = getSteedosAuth();
+        let spaceId = auth.space;
+        let token = auth.token;
         
         if (!spaceId || !token) {
             return null;
@@ -100,9 +103,13 @@ export function absoluteUrl(url){
 }
 
 export function getRootUrl(){
+    if(!ROOT_URL){
+        return window.location.origin
+    }
     return ROOT_URL;
 }
 
 export const getSteedosAuth = () => {
+    console.log(`STEEDOS_AUTH`, STEEDOS_AUTH)
     return Object.assign({}, STEEDOS_AUTH);
 }

@@ -4,8 +4,7 @@ import { getTableSchema, getTableApi } from '@/lib/converter/amis/fields/table';
 import { getFormBody } from '@/lib/converter/amis/form';
 import { getListSchema } from '@/lib/converter/amis/fields/list';
 import { map } from 'lodash';
-
-const ROOT_URL = process.env.NEXT_PUBLIC_STEEDOS_ROOT_URL
+import { getRootUrl } from '@/lib/steedos.client.js';
 
 function getBulkActions(objectSchema){
     return [
@@ -176,7 +175,7 @@ export function getObjectList(objectSchema, fields, options){
         type: 'page',
         bodyClassName: 'bg-white sm:rounded-lg p-0',
         name: `page`,
-        data: {context: {rootUrl: ROOT_URL, tenantId: getTenantId(), authToken: getAuthToken()}},
+        data: {context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
         body: body
     }
 }
@@ -191,7 +190,7 @@ export async function getObjectForm(objectSchema, ctx){
             "body"
         ],
         name: `page_edit_${recordId}`,
-        data: {recordId: recordId, objectName: objectSchema.name, context: {rootUrl: ROOT_URL, tenantId: getTenantId(), authToken: getAuthToken()}},
+        data: {recordId: recordId, objectName: objectSchema.name, context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
         initApi: null,
         initFetch: null ,
         body: [
@@ -227,7 +226,7 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
         ],
         name: `page_readonly_${recordId}`,
         id: `detail_${recordId}`,
-        data: {context: {rootUrl: ROOT_URL, tenantId: getTenantId(), authToken: getAuthToken()}},
+        data: {context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
         initApi: getReadonlyFormInitApi(objectSchema, recordId, fields),
         initFetch: true ,
         body: [

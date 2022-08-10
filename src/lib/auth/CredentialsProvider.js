@@ -1,5 +1,12 @@
+/*
+ * @Author: baozhoutao@steedos.com
+ * @Date: 2022-07-20 16:29:22
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2022-08-10 13:44:12
+ * @Description: 
+ */
 import CredentialsProvider from "next-auth/providers/credentials";
-
+import { getRootUrl } from '@/lib/steedos.client.js';
 export default CredentialsProvider({
     // The name to display on the sign in form (e.g. "Sign in with...")
     name: "Password",
@@ -16,7 +23,7 @@ export default CredentialsProvider({
       const user = { id: 1, name: "J Smith", email: "jsmith@example.com" }
       try {
 
-        const res = await fetch(`${process.env.NEXT_PUBLIC_STEEDOS_ROOT_URL}/accounts/password/login`, {
+        const res = await fetch(`${getRootUrl()}/accounts/password/login`, {
           method: 'POST',
           body: JSON.stringify({ user: {email: credentials.email}, password: credentials.password })
         })

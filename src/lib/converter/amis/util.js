@@ -1,4 +1,11 @@
-const ROOT_URL = process.env.NEXT_PUBLIC_STEEDOS_ROOT_URL
+/*
+ * @Author: baozhoutao@steedos.com
+ * @Date: 2022-07-20 16:29:22
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2022-08-10 13:46:05
+ * @Description: 
+ */
+import { getRootUrl } from "@/lib/steedos.client";
 
 export function getSvgUrl(source, name) {
     var foo, url;
@@ -11,5 +18,5 @@ export function getSvgUrl(source, name) {
       name = foo[1];
     }
     url = "/assets/icons/" + source + "/svg/symbols.svg#" + name;
-    return `${ROOT_URL}${url}`;
+    return `${getRootUrl()}${url}`;
 }
