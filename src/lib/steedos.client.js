@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-02 17:16:22
+ * @LastEditTime: 2022-08-09 18:32:35
  * @Description: 
  */
 const ROOT_URL = process.env.NEXT_PUBLIC_STEEDOS_ROOT_URL
@@ -29,7 +29,7 @@ export async function fetchAPI(api, options = { credentials: 'include' }) {
 
     options.headers = Object.assign({}, headers, options.headers);
 
-    const res = await fetch(`${ROOT_URL}${api}`, options)
+    const res = await fetch(`${getRootUrl()}${api}`, options)
     
     if(res.status === 401){
         throw new Error(401)
@@ -44,11 +44,11 @@ export async function fetchAPI(api, options = { credentials: 'include' }) {
 }
 
 export function getFileSrc(fileId){
-    return `${ROOT_URL}/api/files/files/${fileId}`
+    return `${getRootUrl()}/api/files/files/${fileId}`
 }
 
 export function getImageSrc(fileId){
-    return `${ROOT_URL}/api/files/images/${fileId}`
+    return `${getRootUrl()}/api/files/images/${fileId}`
 }
 
 
@@ -96,7 +96,7 @@ export function getAuthorization(){
 }
 
 export function absoluteUrl(url){
-    return `${ROOT_URL}${url}`
+    return `${getRootUrl()}${url}`
 }
 
 export function getRootUrl(){

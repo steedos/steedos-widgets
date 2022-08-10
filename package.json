@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "node server",
     "build": "next build",
+    "export": "next build && next export",
     "gitpod:init": "echo \"NEXTAUTH_URL=$(gp url 3000)\" >> .env.local",
     "start": "NODE_ENV=production node server.js"
   },
