@@ -2,11 +2,11 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-20 16:29:22
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-10 13:44:12
+ * @LastEditTime: 2022-08-10 18:10:31
  * @Description: 
  */
 import CredentialsProvider from "next-auth/providers/credentials";
-import { getRootUrl } from '@/lib/steedos.client.js';
+import crypto from 'crypto';
 export default CredentialsProvider({
     // The name to display on the sign in form (e.g. "Sign in with...")
     name: "Password",
@@ -16,21 +16,33 @@ export default CredentialsProvider({
     // You can pass any HTML attribute to the <input> tag through the object.
     credentials: {
       username: { label: "Username", type: "text", placeholder: "" },
-      password: {  label: "Password", type: "password" }
+      password: {  label: "Password", type: "password" },
+      domain: {  label: "Domain", type: "text" }
     },
     async authorize(credentials, req) {
       // Add logic here to look up the user from the credentials supplied
-      const user = { id: 1, name: "J Smith", email: "jsmith@example.com" }
+      let user = null;
       try {
 
-        const res = await fetch(`${getRootUrl()}/accounts/password/login`, {
+        const res = await fetch(`${credentials.domain}/accounts/password/login`, {
           method: 'POST',
-          body: JSON.stringify({ user: {email: credentials.email}, password: credentials.password })
+          body: JSON.stringify({ user: {email: credentials.email}, password: crypto.createHash('sha256').update(credentials.password).digest('hex') }) 
         })
-        const json = await res.json()
-
+        const json = await res.json();
+        user = {
+          id: json.user.id,
+          name: json.user.name,
+          local: json.user.local,
+          email: json.user.email,
+          utcOffset: json.user.utcOffset,
+          steedos: {
+            space: json.space,
+            token: json.token,
+            userId: json.user.id,
+            name: json.user.name
+          }
+        }
       } catch (e) {console.log(e)}
-
       if (user) {
         // Any object returned will be saved in `user` property of the JWT
         return user

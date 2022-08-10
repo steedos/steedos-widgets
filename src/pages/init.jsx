@@ -2,19 +2,24 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-09 18:15:54
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-09 18:30:35
+ * @LastEditTime: 2022-08-10 16:33:50
  * @Description:
  */
 import { AuthLayout } from '@/components/AuthLayout'
-import { useState } from 'react'
-import { Switch } from '@headlessui/react'
-
+import { setRootUrl } from '@/lib/steedos.client.js';
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 export default function Init({}) {
-    const [agreed, setAgreed] = useState(false)
+  const onSubmit = (e)=>{
+    e.preventDefault();
+    if(e.target.company.value){
+        setRootUrl(e.target.company.value);
+        window.location.href = `${e.target.company.value}/accounts/a/#/login?redirect_uri=${window.location.origin}/app`
+    }
+    return false
+  }
 
   return (
     <div className="bg-white py-16 px-4 overflow-hidden sm:px-6 lg:px-8 lg:py-24">
@@ -70,7 +75,7 @@ export default function Init({}) {
           </p>
         </div>
         <div className="mt-12">
-          <form action="#" method="POST" className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-8">
+          <form method="POST" className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-8" onSubmit={onSubmit}>
             <div className="sm:col-span-2">
               <label htmlFor="company" className="block text-sm font-medium text-gray-700">
               服务器地址

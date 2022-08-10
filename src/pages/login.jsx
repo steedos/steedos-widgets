@@ -10,6 +10,7 @@ import { XCircleIcon } from '@heroicons/react/solid'
 import { AuthLayout } from '@/components/AuthLayout'
 import { Input } from '@/components/Input'
 import { Logo } from '@/components/Logo'
+import { getRootUrl } from '@/lib/steedos.client.js';
 
 const errors = {
   Signin: "Try signing in with a different account.",
@@ -69,6 +70,7 @@ export default function Login({providers={}, csrfToken}) {
           return (
             <form method="post" action="/api/auth/callback/credentials" className="rounded-md shadow-sm my-2">
               <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
+              <input name="domain" type="hidden" defaultValue={getRootUrl()} />
               <input
                 placeholder="Email address"
                 id="email"

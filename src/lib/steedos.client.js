@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-10 13:49:44
+ * @LastEditTime: 2022-08-10 18:11:01
  * @Description: 
  */
 import { isEmpty } from "lodash";
@@ -104,12 +104,23 @@ export function absoluteUrl(url){
 
 export function getRootUrl(){
     if(!ROOT_URL){
-        return window.location.origin
+        return localStorage.getItem("steedos:rootUrl")
     }
     return ROOT_URL;
 }
 
+export function setRootUrl(rootUrl){
+    localStorage.setItem("steedos:rootUrl", rootUrl)
+}
+
 export const getSteedosAuth = () => {
-    console.log(`STEEDOS_AUTH`, STEEDOS_AUTH)
+    // if(isEmpty(STEEDOS_AUTH)){
+    //     return {
+    //         space: localStorage.getItem("steedos:spaceId"),
+    //         token: localStorage.getItem("steedos:token"), 
+    //         userId: localStorage.getItem("steedos:userId"),
+    //         name: Meteor.user().name  //TODO: 使用steedos 函数. 此属性在上传附件时使用
+    //     }
+    // }
     return Object.assign({}, STEEDOS_AUTH);
 }

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-20 16:29:22
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-10 15:00:11
+ * @LastEditTime: 2022-08-10 18:06:55
  * @Description: 
  */
 
@@ -54,29 +54,37 @@ export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   // Configure one or more authentication providers
   providers: [
-    // CredentialsProvider,
+    CredentialsProvider,
     KeycloakProvider
     // ...add more providers here
   ],
   callbacks: {
-    async jwt({ token, account }) {
+    async jwt(props) {
+      const { token, account, user } = props;
       // Persist the OAuth access_token to the token right after signin
       // if (account) {
       //   token.accessToken = account.access_token
       // }
+      if(user && user.steedos){
+        token.steedos = user.steedos;
+      }
       return token
-    },
+    }, 
     async session({ session, token, user }) {
       // Send properties to the client, like an access_token from a provider.
       // session.accessToken = token.accessToken
       if(session.user){
-        const loginResult = await loginSteedosProject(session.user);
-        if(loginResult.space && loginResult.token){
-          session.steedos = {
-            space: loginResult.space,
-            token: loginResult.token,
-            userId: loginResult.user?.id,
-            name: loginResult.user?.name
+        if(token && token.steedos){
+          session.steedos = token.steedos;
+        }else{
+          const loginResult = await loginSteedosProject(session.user);
+          if(loginResult.space && loginResult.token){
+            session.steedos = {
+              space: loginResult.space,
+              token: loginResult.token,
+              userId: loginResult.user?.id,
+              name: loginResult.user?.name
+            }
           }
         }
       }
