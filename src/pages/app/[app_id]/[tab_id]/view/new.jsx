@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-10 10:06:27
+ * @LastEditTime: 2022-08-02 16:55:25
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -130,4 +130,24 @@ export default function newRecord({}) {
       </div>
     </>
   );
+}
+
+export async function getServerSideProps(context) {
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authOptions
+  );
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/login?callbackUrl=/app",
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {},
+  };
 }

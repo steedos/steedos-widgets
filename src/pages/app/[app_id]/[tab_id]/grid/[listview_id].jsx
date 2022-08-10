@@ -53,3 +53,20 @@ export default function Page (props) {
     </div>
   )
 }
+
+
+export async function getServerSideProps(context) {
+  const session = await unstable_getServerSession(context.req, context.res, authOptions)
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/login?callbackUrl=/app',
+        permanent: false,
+      },
+    }
+  }
+  return {
+    props: { },
+  }
+}
