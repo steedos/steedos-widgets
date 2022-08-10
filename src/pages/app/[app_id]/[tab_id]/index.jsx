@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-09 10:38:04
+ * @LastEditTime: 2022-08-10 10:06:17
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -38,21 +38,4 @@ export default function Page (props) {
   }, [tab_id, formFactor]);
 
   return (<></>)
-}
-
-
-export async function getServerSideProps(context) {
-  const session = await unstable_getServerSession(context.req, context.res, authOptions)
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login?callbackUrl=/app',
-        permanent: false,
-      },
-    }
-  }
-  return {
-    props: { },
-  }
 }

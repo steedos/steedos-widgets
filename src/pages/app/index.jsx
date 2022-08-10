@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-02 09:27:13
+ * @LastEditTime: 2022-08-10 10:06:11
  * @Description: 
  */
 import { unstable_getServerSession } from "next-auth/next"
@@ -19,20 +19,4 @@ export default function Apps() {
     <AmisRender className="" id={`app_launcher`} schema={schema} router={router}></AmisRender>
   </>
   )
-}
-
-export async function getServerSideProps(context) {
-  const session = await unstable_getServerSession(context.req, context.res, authOptions)
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login?callbackUrl=/app',
-        permanent: false,
-      },
-    }
-  }
-  return {
-    props: { },
-  }
 }
