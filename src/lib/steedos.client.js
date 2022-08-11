@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-11 10:01:37
+ * @LastEditTime: 2022-08-11 14:13:18
  * @Description: 
  */
 import { endsWith, isEmpty } from "lodash";
@@ -10,11 +10,12 @@ const ROOT_URL = process.env.NEXT_PUBLIC_STEEDOS_ROOT_URL
 
 const STEEDOS_AUTH = {};
 
-export const setSteedosAuth = (space, token, userId, name) => {
+export const setSteedosAuth = (space, token, userId, name, options) => {
     STEEDOS_AUTH.space = space;
     STEEDOS_AUTH.token = token;
     STEEDOS_AUTH.userId = userId;
     STEEDOS_AUTH.name = name;
+    Object.assign(STEEDOS_AUTH, options);
 }
 
 export async function fetchAPI(api, options = { credentials: 'include' }) {

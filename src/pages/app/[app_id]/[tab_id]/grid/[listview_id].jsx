@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-09 10:52:35
+ * @LastEditTime: 2022-08-11 17:42:19
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -44,7 +44,7 @@ export default function Page (props) {
     <div className='slds-card slds-card_boundary slds-grid slds-grid--vertical shadow-none border-none'>
       <div className='slds-page-header--object-home slds-page-header_joined slds-page-header_bleed slds-page-header slds-shrink-none p-0 bg-white'>
       {formFactor && schema?.uiSchema.name === tab_id && <ListviewHeader schema={schema} onListviewChange={(listView)=>{
-          getListviewSchema(listView.name)
+          getListviewSchema(listView?.name)
         }}></ListviewHeader>}
       </div>
       <div className="border">
