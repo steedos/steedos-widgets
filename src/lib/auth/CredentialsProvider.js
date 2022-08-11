@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-20 16:29:22
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-11 10:04:42
+ * @LastEditTime: 2022-08-11 10:46:41
  * @Description: 
  */
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -37,6 +37,9 @@ export default CredentialsProvider({
           body: JSON.stringify({ user: {email: credentials.email}, password: crypto.createHash('sha256').update(credentials.password).digest('hex') }) 
         })
         const json = await res.json();
+        if(!json.user){
+          return null
+        }
         user = {
           id: json.user.id,
           name: json.user.name,
