@@ -2,10 +2,11 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-20 16:29:22
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-10 18:10:31
+ * @LastEditTime: 2022-08-11 10:04:42
  * @Description: 
  */
 import CredentialsProvider from "next-auth/providers/credentials";
+import { endsWith } from 'lodash'
 import crypto from 'crypto';
 export default CredentialsProvider({
     // The name to display on the sign in form (e.g. "Sign in with...")
@@ -23,8 +24,15 @@ export default CredentialsProvider({
       // Add logic here to look up the user from the credentials supplied
       let user = null;
       try {
+        console.log(`fetch ${credentials.domain}/accounts/password/login`)
 
-        const res = await fetch(`${credentials.domain}/accounts/password/login`, {
+        let domain = credentials.domain;
+
+        if(endsWith(domain, '/')){
+          domain = domain.substring(0, domain.length-1)
+      }
+
+        const res = await fetch(`${domain}/accounts/password/login`, {
           method: 'POST',
           body: JSON.stringify({ user: {email: credentials.email}, password: crypto.createHash('sha256').update(credentials.password).digest('hex') }) 
         })

@@ -2,10 +2,10 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-10 18:30:56
+ * @LastEditTime: 2022-08-11 10:01:37
  * @Description: 
  */
-import { isEmpty } from "lodash";
+import { endsWith, isEmpty } from "lodash";
 const ROOT_URL = process.env.NEXT_PUBLIC_STEEDOS_ROOT_URL
 
 const STEEDOS_AUTH = {};
@@ -111,6 +111,9 @@ export function getRootUrl(){
 }
 
 export function setRootUrl(rootUrl){
+    if(endsWith(rootUrl, '/')){
+        rootUrl = rootUrl.substring(0, rootUrl.length-1)
+    }
     localStorage.setItem("steedos:rootUrl", rootUrl)
 }
 
