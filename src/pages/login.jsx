@@ -58,7 +58,7 @@ export default function Login({ providers = {}, csrfToken }) {
         <h2 className="mt-4 text-lg font-semibold text-gray-900">
           Sign in to your account
         </h2>
-        <p className="mt-2 text-sm text-red-500">
+        <span className="mt-2 text-sm text-red-500">
           {error && errors[error] && (
             <div className="rounded-md bg-red-50 p-4">
               <div className="flex">
@@ -76,7 +76,7 @@ export default function Login({ providers = {}, csrfToken }) {
               </div>
             </div>
           )}
-        </p>
+        </span>
       </div>
       <div className="mt-4">
         <div className="">
