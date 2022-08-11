@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 09:31:04
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-11 17:41:35
+ * @LastEditTime: 2022-08-11 18:11:49
  * @Description:  
  */
 import React, { useState, useEffect, Fragment } from 'react';
@@ -12,6 +12,9 @@ import { getApp } from '@/lib/apps';
 import { useRouter } from 'next/router'
 import { setSteedosAuth } from '@/lib/steedos.client';
 import { useSession } from "next-auth/react"
+
+import { AppLauncherBar } from '@/components/AppLauncherBar';
+
 export function AppLayout({ children }) {
     const router = useRouter()
     const { app_id, tab_id } = router.query
@@ -41,14 +44,15 @@ export function AppLayout({ children }) {
             setApp(data)
           })
       }, [app_id, session]);
-
     return (
       <div className='h-full flex flex-col'>
           <Navbar navigation={app?.children} selected={selected} app={app}/>
-
         {session && (
           <>
-            <div className="hidden lg:block fixed z-20 inset-0 top-[4.5rem] right-auto w-[16rem] overflow-y-auto bg-slate-50 border-r border-slate-200">
+            <div className="hidden lg:block fixed z-20 inset-0 top-[3rem] right-auto w-[16rem] overflow-y-auto bg-slate-50 border-r border-slate-200">
+              <div className="slds-context-bar h-12 pl-3 pt-1">
+                <AppLauncherBar app={app}></AppLauncherBar>
+              </div>
               <Sidebar navigation={app?.children} selected={selected}/>
             </div>
             <div className="lg:pl-[16rem] lg:m-6">

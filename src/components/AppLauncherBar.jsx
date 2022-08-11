@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-11 16:46:07
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-11 17:41:42
+ * @LastEditTime: 2022-08-11 17:55:40
  * @Description:
  */
 import { useRouter } from 'next/router'
@@ -30,8 +30,8 @@ export const AppLauncherBar = ({app}) => {
   }
 
   return (
-    <div className="slds-context-bar" style={{padding: "0 0 0 1rem"}} onClick={openAppLauncher}>
-      <div className="slds-context-bar__primary">
+    <>
+      <div className="slds-context-bar__primary" onClick={openAppLauncher}>
         <div className="slds-context-bar__item slds-context-bar__dropdown-trigger slds-dropdown-trigger slds-dropdown-trigger_click slds-no-hover">
           <div className="slds-context-bar__icon-action">
             <button
@@ -61,6 +61,6 @@ export const AppLauncherBar = ({app}) => {
           </span>
         </div>
       </div>
-    </div>
+    </>
   );
 };

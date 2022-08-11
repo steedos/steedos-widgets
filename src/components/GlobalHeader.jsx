@@ -52,10 +52,10 @@ export function GlobalHeader({ navigation, selected, app }) {
   
   return (
     <>
-    <Disclosure as="header" className="slds-global-header_container sticky top-0 z-40 w-full backdrop-blur flex-none transition-colors duration-500 lg:z-50 lg:border-b lg:border-slate-900/10 dark:border-slate-50/[0.06] bg-white/95 supports-backdrop-blur:bg-white/60 dark:bg-transparent">
+    <Disclosure as="header" className="shadow-none slds-global-header_container sticky top-0 z-40 w-full backdrop-blur flex-none transition-colors duration-500 lg:z-50 lg:border-b lg:border-slate-900/10 dark:border-slate-50/[0.06] bg-white/95 supports-backdrop-blur:bg-white/60 dark:bg-transparent">
       {({ open }) => (
         <>
-          <div className="slds-global-header slds-grid slds-grid_align-spread">
+          <div className="slds-global-header slds-grid slds-grid_align-spread shadow-none">
             <div className="slds-global-header__item">
                 <div
                 className="slds-global-header__logo"
@@ -165,12 +165,15 @@ export function GlobalHeader({ navigation, selected, app }) {
                 
             </div>
           </div>
-          
+{/*           
           <div className="bBottom">
             <AppLauncherBar app={app}></AppLauncherBar>
-        </div>
+        </div> */}
 
           <Disclosure.Panel as="nav" className="lg:hidden" aria-label="Global">
+            <div className="slds-context-bar h-12 pl-3">
+                <AppLauncherBar app={app}></AppLauncherBar>
+              </div>
             <div className="pt-2 pb-3 px-2 space-y-1">
               {navigation?.map((item) => (
                 <Disclosure.Button
