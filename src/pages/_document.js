@@ -2,10 +2,9 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-02 20:17:43
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-09 16:44:00
+ * @LastEditTime: 2022-08-12 17:40:55
  * @Description: 
  */
-import clsx from 'clsx'
 import Document, { Html, Head, Main, Script, NextScript } from 'next/document'
 
 export default class MyDocument extends Document {
