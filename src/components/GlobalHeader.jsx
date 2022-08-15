@@ -62,17 +62,16 @@ export function GlobalHeader({ navigation, selected, app }) {
         {({ open }) => (
           <>
             <div className="slds-global-header slds-grid slds-grid_align-spread shadow-none">
-              <div className="slds-global-header__item">
-                <div
-                  className="slds-global-header__logo"
-                  style={{
-                    backgroundImage: "url(/logo.png)",
-                    display: "inline-block",
-                  }}
-                ></div>
+              <div className="slds-global-header__item flex">
+                <a href="/app" className="pr-8">
+                  <img
+                    className="block h-8 w-auto"
+                    src="/logo.png"
+                  />
+                </a>
+                <AppLauncherBar app={app}></AppLauncherBar>
               </div>
               <div className="slds-global-header__item">
-                <AppLauncherBar app={app}></AppLauncherBar>
               </div>
 
               <div className="slds-global-header__item">
