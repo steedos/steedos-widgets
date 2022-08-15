@@ -102,3 +102,7 @@ main {
 .antd-Table-placeholder-empty-icon.icon{
     height: 20px !important;
 }
+
+#__next .bg-white {
+    color: black;
+}
