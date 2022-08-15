@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-02 16:55:25
+ * @LastEditTime: 2022-08-13 18:06:23
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -133,7 +133,7 @@ export default function newRecord({}) {
 }
 
 export async function getServerSideProps(context) {
-  const session = await unstable_getServerSession(
+  const session = context.req.session || await unstable_getServerSession(
     context.req,
     context.res,
     authOptions

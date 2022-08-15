@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-11 17:42:19
+ * @LastEditTime: 2022-08-13 18:06:16
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -56,7 +56,7 @@ export default function Page (props) {
 
 
 export async function getServerSideProps(context) {
-  const session = await unstable_getServerSession(context.req, context.res, authOptions)
+  const session = context.req.session || await unstable_getServerSession(context.req, context.res, authOptions)
 
   if (!session) {
     return {

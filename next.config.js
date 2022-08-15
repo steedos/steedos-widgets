@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-20 16:29:22
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-12 17:41:02
+ * @LastEditTime: 2022-08-15 10:47:18
  * @Description: 
  */
 /** @type {import('next').NextConfig} */
@@ -12,7 +12,8 @@ const nextConfig = {
     images: {
       unoptimized: true
     }
-  }
+  },
+  cache: false
 }
 
 module.exports = nextConfig

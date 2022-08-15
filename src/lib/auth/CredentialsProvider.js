@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-20 16:29:22
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-11 10:46:41
+ * @LastEditTime: 2022-08-13 16:37:30
  * @Description: 
  */
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -21,6 +21,7 @@ export default CredentialsProvider({
       domain: {  label: "Domain", type: "text" }
     },
     async authorize(credentials, req) {
+      console.log(`authorize============`)
       // Add logic here to look up the user from the credentials supplied
       let user = null;
       try {

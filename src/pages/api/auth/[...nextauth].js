@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-20 16:29:22
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-10 18:27:44
+ * @LastEditTime: 2022-08-13 17:10:42
  * @Description: 
  */
 
@@ -52,10 +52,11 @@ const loginSteedosProject = async (user)=>{
 export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   // Configure one or more authentication providers
-  providers: [
+  providers: process.env.STEEDOS_IDENTITY_OIDC_ENABLED ? [
     CredentialsProvider,
     KeycloakProvider
-    // ...add more providers here
+  ] : [
+    CredentialsProvider
   ],
   callbacks: {
     async jwt(props) {
@@ -70,6 +71,7 @@ export const authOptions = {
       return token
     }, 
     async session({ session, token, user }) {
+      console.log(`session`, session)
       // Send properties to the client, like an access_token from a provider.
       // session.accessToken = token.accessToken
       if(session.user){
@@ -94,6 +96,5 @@ export const authOptions = {
     signIn: '/login',
   }
 }
-
 
 export default NextAuth(authOptions)

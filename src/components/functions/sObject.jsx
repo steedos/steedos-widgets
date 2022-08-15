@@ -1,8 +1,7 @@
 import { Form } from '@/components/object/Form'
-import { Button, Space} from 'antd';
-import { isFunction, each, isEmpty } from 'lodash';
-import { fetchAPI, getSteedosAuth } from '@/lib/steedos.client.js';
-import { getUISchema } from '@/lib/objects.js'
+import { Button, Space } from 'antd';
+import { isFunction, each } from 'lodash';
+import { fetchAPI } from '@/lib/steedos.client.js';
 
 const editRecordHandle = (props)=>{
     const { appId, name, title, objectName, recordId, type, options, router, refId, data, onSubmitted, onCancel } = props;

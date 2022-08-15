@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-12 18:11:21
+ * @LastEditTime: 2022-08-13 18:06:03
  * @Description: 
  */
 import { unstable_getServerSession } from "next-auth/next"
@@ -24,7 +24,7 @@ Apps.getLayout = function getLayout(page) {
   return LauncherLayout;
 };
 export async function getServerSideProps(context) {
-  const session = await unstable_getServerSession(context.req, context.res, authOptions)
+  const session = context.req.session || await unstable_getServerSession(context.req, context.res, authOptions)
 
   if (!session) {
     return {
