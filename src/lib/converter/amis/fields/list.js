@@ -43,7 +43,7 @@ export function getListSchema(fields, options){
         mode: "list",
         name: "thelist",
         draggable: false,
-        headerToolbar: ['switch-per-page', 'reload'],
+        headerToolbar: ['reload'],
         defaultParams: getDefaultParams(options),
         syncLocation: false,
         keepItemSelectionOnPageChange: true,

@@ -107,7 +107,7 @@ function getToolbar(){
 function footerToolbar(){
     return [
         "statistics",
-        "switch-per-page",
+        // "switch-per-page",
         "pagination"
       ]
 }

@@ -127,6 +127,7 @@ export async function getListSchema(appName, objectName, listViewName, options =
 
     fields = listViewFields;
     const amisSchema = await getObjectList(uiSchema, fields, {tabId: objectName, appId: appName, objectName: objectName, ...options, filter: listView.filters});
+    
     return {
         uiSchema,
         amisSchema

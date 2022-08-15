@@ -9,33 +9,7 @@ import { RecordRelatedListButtons } from '@/components/object/RecordRelatedListB
 import React, { useState, useEffect, Fragment, useRef } from "react";
 import Link from 'next/link'
 
-export const RecordRelatedHeader = ({schema, object_name, foreign_key, app_id, record_id, masterObjectName, refId}) => {
-  const [queryInfo, setQueryInfo] = useState();
-  useEffect(() => {
-    if (schema) {
-      window.addEventListener("message", (event) => {
-        const { data } = event;
-        if (data.type === "listview.loaded") {
-          if (schema) {
-            setTimeout(() => {
-                const listViewId = SteedosUI.getRefId({type: 'related_list', appId: app_id, name: `${object_name}-${foreign_key}`})
-              if (
-                SteedosUI.getRef(listViewId) &&
-                SteedosUI.getRef(listViewId).getComponentByName
-              ) {
-                const listViewRef = SteedosUI.getRef(
-                  listViewId
-                ).getComponentByName(`page.listview_${schema.uiSchema.name}`);
-                setQueryInfo({
-                  count: listViewRef.props.data.count
-                });
-              }
-            }, 300);
-          }
-        }
-      });
-    }
-  }, [schema]);
+export const RecordRelatedHeader = ({schema, object_name, foreign_key, app_id, record_id, masterObjectName, refId, recordCount}) => {
   return (
     <>
       <header
@@ -78,7 +52,7 @@ export const RecordRelatedHeader = ({schema, object_name, foreign_key, app_id, r
               <span
                 className="slds-shrink-none slds-m-right--xx-small"
               >
-                ({queryInfo?.count})
+                ({recordCount})
               </span>
               </>
             </a>

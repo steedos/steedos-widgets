@@ -55,8 +55,16 @@ main {
     min-width: 100px;
 }
 
-.steedos-listview .antd-Table-headToolbar{
+.steedos-related-listview.amis-scope .antd-Table-headToolbar{
     display: none;
+}
+
+.steedos-listview.amis-scope .antd-Table-headToolbar{
+    display: none;
+}
+
+.steedos-listview.amis-scope .antd-Table-table {
+    border: 1px solid var(--Table-borderColor);
 }
 
 .slds-page-header .antd-Button{
@@ -105,4 +113,8 @@ main {
 
 #__next .bg-white {
     color: black;
+}
+
+#__next .amis-scope {
+    background: white;
 }
