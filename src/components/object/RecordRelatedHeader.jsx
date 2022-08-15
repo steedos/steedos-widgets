@@ -20,11 +20,11 @@ export const RecordRelatedHeader = ({schema, object_name, foreign_key, app_id, r
           className="slds-media__figure stencil slds-avatar slds-avatar_small"
         >
           <div
-             style={{backgroundColor: "#3c97dd"}}
+            //  style={{backgroundColor: "#3c97dd"}}
             className="extraSmall forceEntityIcon"
           >
             <span
-              className="uiImage"
+              className={`uiImage slds-icon_container slds-icon-standard-${schema.uiSchema.icon.replaceAll('_', '-')}`}
             >
               <svg
                   className="slds-icon slds-page-header__icon"
