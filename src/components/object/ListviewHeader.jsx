@@ -178,7 +178,7 @@ export function ListviewHeader({ schema, onListviewChange }) {
                                   className={({ active }) =>
                                     `relative cursor-default select-none py-2 pl-10 pr-4 ${
                                       active
-                                        ? "bg-amber-100 text-amber-900"
+                                        ? "bg-sky-100 text-sky-900"
                                         : "text-gray-900"
                                     }`
                                   }
@@ -197,7 +197,7 @@ export function ListviewHeader({ schema, onListviewChange }) {
                                   {(selectedListView?.name
                                     ? selectedListView.name
                                     : "all") === listView.name ? (
-                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-sky-600">
                                       <CheckIcon
                                         className="h-5 w-5"
                                         aria-hidden="true"
