@@ -99,6 +99,7 @@ export default function Login({ providers = {}, csrfToken }) {
                       placeholder="Domain"
                       name="domain"
                       type="text"
+                      hidden // 暂时隐藏
                       defaultValue={getRootUrl()}
                       required
                       className="mb-2 focus:shadow-outline-blue sm:text-md relative block w-full appearance-none rounded-none rounded border border-gray-300 px-3 py-3 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-blue-300 focus:outline-none sm:leading-5"
