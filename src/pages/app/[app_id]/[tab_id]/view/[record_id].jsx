@@ -141,7 +141,7 @@ export default function Record({}) {
   }
 
   return (
-    <div className="slds-grid slds-wrap">
+    <div className="p-4 slds-grid slds-wrap">
       <div className="slds-col slds-size_1-of-1 row region-header">
         {schema && <RecordHeader schema={schema}></RecordHeader>}
       </div>

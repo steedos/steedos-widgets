@@ -46,17 +46,17 @@ export function AppLayout({ children }) {
       }, [app_id, session]);
     return (
       <div className='h-full flex flex-col'>
-          <Navbar navigation={app?.children} selected={selected} app={app}/>
+        <Navbar navigation={app?.children} selected={selected} app={app}/>
         {session && (
-          <>
-            <div className="hidden lg:block fixed z-20 inset-0 top-[3rem] right-auto w-[16rem] overflow-y-auto bg-slate-50 border-r border-slate-200">
+          <div id="main" className="flex grow">
+            <div id="sidebar" className="flex-none hidden lg:block z-20 inset-0 top-[3rem] right-auto w-[16rem] overflow-y-auto bg-slate-50 border-r border-slate-200">
             
               <Sidebar navigation={app?.children} selected={selected}/>
             </div>
-            <div className="lg:pl-[16rem] lg:m-6">
+            <div id="content" className="grow">
               {children}
             </div>
-          </>
+          </div>
         )}
         {/* <Footer /> */}
       </div>
