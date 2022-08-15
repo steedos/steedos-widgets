@@ -6,6 +6,7 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import { Logo } from "@/components/Logo";
 import { useRouter } from "next/router";
 import { AppLauncherBar } from "@/components/AppLauncherBar";
+import { Notification } from '@/components/Notification';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -104,39 +105,17 @@ export function GlobalHeader({ navigation, selected, app }) {
                       </button>
                     </div>
                   </li>
+                  {session && 
                   <li className="slds-global-actions__item">
-                    <div
-                      className="slds-dropdown-trigger slds-dropdown-trigger_click"
-                      style={{ display: "inline-block" }}
-                    >
-                      <button
-                        className="slds-button slds-button_icon-container slds-button_icon-small slds-button_icon slds-global-actions__notifications slds-global-actions__item-action"
-                        id="header-notifications-popover-id"
-                        title="5 new notifications"
-                        type="button"
-                        aria-live="assertive"
-                        aria-haspopup="dialog"
-                      >
-                        <svg
-                            focusable="false"
-                            data-key="down"
-                            aria-hidden="true"
-                            className="slds-button__icon slds-global-header__icon"
-                            >
-                            <use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#notification"></use>
-                            </svg>
-                        <span className="slds-assistive-text">
-                        5 new notifications
-                        </span>
-                      </button>
-                      <span
-                        aria-hidden="true"
-                        className="slds-notification-badge slds-incoming-notification slds-show-notification"
-                      >
-                        5
-                      </span>
-                    </div>
-                  </li>
+                  <div
+                    className="slds-dropdown-trigger slds-dropdown-trigger_click"
+                    style={{ display: "inline-block" }}
+                  >
+                    <Notification></Notification>
+                  </div>
+                </li>
+                  }
+                  
                   <li className="relative z-10 flex items-center lg:hidden">
                     {/* Mobile menu button */}
                     <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
