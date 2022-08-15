@@ -27,7 +27,7 @@ export default class MyDocument extends Document {
         <body className='antialiased text-black dark:text-slate-400 bg-white dark:bg-slate-900'>
           <link rel="stylesheet" href="https://unpkg.com/amis@2.1.1-beta.2/lib/themes/antd.css" />
           <link rel="stylesheet" href="/assets/styles/salesforce-lightning-design-system.min.css" />
-          {/* <link rel="stylesheet" href="https://unpkg.com/amis@2.1.1-beta.2/lib/helper.css" /> */}
+          <link rel="stylesheet" href="https://unpkg.com/amis@2.1.1-beta.2/lib/helper.css" />
           <link rel="stylesheet" href="https://unpkg.com/amis@2.1.1-beta.2/sdk/iconfont.css" />
           <Main />
           <NextScript />
