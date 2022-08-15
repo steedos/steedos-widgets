@@ -71,6 +71,9 @@ export function GlobalHeader({ navigation, selected, app }) {
                   }}
                 ></div>
               </div>
+              <div className="slds-global-header__item">
+                <AppLauncherBar app={app}></AppLauncherBar>
+              </div>
 
               <div className="slds-global-header__item">
                 <ul className="slds-global-actions">
@@ -196,10 +199,7 @@ export function GlobalHeader({ navigation, selected, app }) {
                 </ul>
               </div>
             </div>
-            {/*           
-          <div className="bBottom">
-            <AppLauncherBar app={app}></AppLauncherBar>
-        </div> */}
+               
 
             <Disclosure.Panel
               as="nav"

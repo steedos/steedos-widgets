@@ -50,9 +50,7 @@ export function AppLayout({ children }) {
         {session && (
           <>
             <div className="hidden lg:block fixed z-20 inset-0 top-[3rem] right-auto w-[16rem] overflow-y-auto bg-slate-50 border-r border-slate-200">
-              <div className="slds-context-bar h-12 pl-3 pt-1">
-                <AppLauncherBar app={app}></AppLauncherBar>
-              </div>
+            
               <Sidebar navigation={app?.children} selected={selected}/>
             </div>
             <div className="lg:pl-[16rem] lg:m-6">
