@@ -24,7 +24,7 @@ export const RecordRelatedHeader = ({schema, object_name, foreign_key, app_id, r
             className="extraSmall forceEntityIcon"
           >
             <span
-              className={`uiImage slds-icon_container slds-icon-standard-${schema.uiSchema.icon.replaceAll('_', '-')}`}
+              className={`uiImage slds-icon_container slds-icon-standard-${schema.uiSchema.icon?.replaceAll('_', '-')}`}
             >
               <svg
                   className="slds-icon slds-page-header__icon"
