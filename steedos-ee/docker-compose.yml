@@ -26,7 +26,7 @@ services:
       - STEEDOS_IDENTITY_OIDC_CLIENT_ID=steedos-oidc-public
       - STEEDOS_IDENTITY_OIDC_CLIENT_SECRET=none
       - STEEDOS_IDENTITY_OIDC_NAME=Steedos ID
-      - STEEDOS_INITIAL_PACKAGES="@steedos-labs/master,@steedos-labs/contract,@steedos-labs/project,@steedos-labs/oa,@steedos-labs/workflow"
+      - STEEDOS_INITIAL_PACKAGES="@steedos-labs/master@beta,@steedos-labs/contract@beta,@steedos-labs/project@beta,@steedos-labs/project-ee@beta,@steedos-labs/oa@beta,@steedos-labs/workflow@beta"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
       interval: 60s
