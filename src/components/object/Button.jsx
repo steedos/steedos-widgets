@@ -18,7 +18,7 @@ export function Button(props) {
 
   if (button.type === "amis_action") {
     const schema = {
-        type: "page",
+        type: "service",
         bodyClassName: 'p-0',
         body: [
             {
@@ -51,7 +51,7 @@ export function Button(props) {
     return (
       <button
         onClick={buttonClick}
-        className={`slds-button slds-button_neutral ${className ? className : ''}`}
+        // className={`slds-button slds-button_neutral ${className ? className : ''}`}
       >
         {button.label}
       </button>

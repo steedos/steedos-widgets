@@ -74,7 +74,7 @@ export function ListButtons(props) {
             {schema?.uiSchema && 
                 <>
                     {schema?.uiSchema?.permissions?.allowCreate && 
-                        <button onClick={newRecord} className="slds-button slds-button_neutral">新建</button>
+                        <button onClick={newRecord} className="antd-Button antd-Button--default">新建</button>
                     }
                     {buttons?.map((button)=>{
                         return (
@@ -87,7 +87,7 @@ export function ListButtons(props) {
                         )
                     })}
                     {schema?.uiSchema?.permissions?.allowDelete && 
-                        <button onClick={batchDelete} className="slds-button slds-button_neutral">删除</button>
+                        <button onClick={batchDelete} className="antd-Button antd-Button--default">删除</button>
                     }
                 </>
             }
