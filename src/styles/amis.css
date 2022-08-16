@@ -118,3 +118,8 @@ main {
 #__next .amis-scope {
     background: white;
 }
+
+.amis-scope svg.icon {
+    vertical-align: baseline;
+    display: inline;
+}
