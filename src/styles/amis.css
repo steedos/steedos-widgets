@@ -123,10 +123,6 @@ main {
     color: black;
 }
 
-#__next .amis-scope {
-    background: white;
-}
-
 .amis-scope .antd-Card{
     border-left: none !important;
     border-right: none !important;
