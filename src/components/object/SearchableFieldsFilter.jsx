@@ -59,7 +59,7 @@ export function SearchableFieldsFilter({ schema, listViewId, appId, onClose }) {
   return (
     <div className="slds-panel slds-grid slds-grid_vertical slds-nowrap slds-panel_filters m-0 border-none shadow-none">
       <div className="slds-filters">
-        <div className="slds-filters__header slds-grid slds-has-divider_bottom-space p-0 text-lg">
+        {/* <div className="slds-filters__header slds-grid slds-has-divider_bottom-space p-0 text-lg">
           <h2 className="slds-align-middle slds-text-heading_small">查询</h2>
           <button
             className="slds-button slds-button_icon slds-button_icon-bare slds-button_icon-small slds-col_bump-left"
@@ -76,7 +76,7 @@ export function SearchableFieldsFilter({ schema, listViewId, appId, onClose }) {
             </svg>
             <span className="slds-assistive-text">关闭</span>
           </button>
-        </div>
+        </div> */}
         <div className="slds-filters__body p-0">
           {searchableFieldsSchema && (
             <AmisRender
@@ -92,7 +92,7 @@ export function SearchableFieldsFilter({ schema, listViewId, appId, onClose }) {
         </div>
         <div className="slds-filters__footer slds-grid slds-shrink-none flex justify-between p-0">
           <div></div>
-          <div className="space-x-1">
+          <div className="space-x-6">
             <button
               className="slds-button_reset slds-text-link slds-col_bump-left"
               type="button"
@@ -111,7 +111,7 @@ export function SearchableFieldsFilter({ schema, listViewId, appId, onClose }) {
                 );
               }}
             >
-              设置查询字段
+              设置搜索项
             </button>
             <button
               className="slds-button slds-button_neutral"
@@ -126,7 +126,7 @@ export function SearchableFieldsFilter({ schema, listViewId, appId, onClose }) {
                   xlinkHref={`/assets/icons/utility-sprite/svg/symbols.svg#search`}
                 ></use>
               </svg>
-              确定
+              搜索
             </button>
           </div>
         </div>

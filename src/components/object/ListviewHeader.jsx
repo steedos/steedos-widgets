@@ -113,9 +113,10 @@ export function ListviewHeader({ schema, onListviewChange }) {
   };
 
   const filterToggler = () => {
-    if(!showFieldsFilter){
-        setShowFieldsFilter(true)
-    }
+    // if(!showFieldsFilter){
+    //     setShowFieldsFilter(true)
+    // }
+    setShowFieldsFilter(!showFieldsFilter)
   };
 
   const onChange = (value)=>{
@@ -220,7 +221,7 @@ export function ListviewHeader({ schema, onListviewChange }) {
         <div className="slds-page-header__col-actions">
           <div className="slds-page-header__controls">
             <div className="slds-page-header__control space-x-1">
-              <button onClick={filterToggler} className="slds-button slds-button_neutral">查询</button>
+              {/* <button onClick={filterToggler} className="slds-button slds-button_neutral">查询</button> */}
               <ListButtons
                 app_id={app_id}
                 tab_id={tab_id}
@@ -241,6 +242,18 @@ export function ListviewHeader({ schema, onListviewChange }) {
         </div>
         <div className="slds-page-header__col-controls">
           <div className="slds-page-header__controls">
+            <div className="slds-page-header__control">
+              <button 
+                onClick={filterToggler}
+                className="slds-button slds-button_icon slds-button_icon-border-filled"
+                title="Quick Search"
+              >
+                <svg className="slds-button__icon" aria-hidden="true">
+                  <use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#search"></use>
+                </svg>
+                <span className="slds-assistive-text">Quick Search</span>
+              </button>
+            </div>
             {/* <div className="slds-page-header__control">
               <div className="slds-dropdown-trigger slds-dropdown-trigger_click">
                 <button
@@ -348,7 +361,7 @@ export function ListviewHeader({ schema, onListviewChange }) {
       leaveFrom="opacity-100"
       leaveTo="opacity-0"
     >
-      <div className="slds-page-header__row slds-page-header__row_gutters pt-2">
+      <div className="w-full">
         <div className="slds-page-header__col-details">
           <SearchableFieldsFilter schema={schema} listViewId={listViewId} onClose = {()=>{
             if(showFieldsFilter){

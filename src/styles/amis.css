@@ -130,4 +130,5 @@ button.antd-Button--primary {
 
 :root {
     --Collapse-header-padding: 0px;
+    --Form-selectValue-fontSize: 14px;
 }

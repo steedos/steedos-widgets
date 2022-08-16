@@ -75,7 +75,7 @@ export function ListButtons(props) {
             {schema?.uiSchema && 
                 <>
                     {schema?.uiSchema?.permissions?.allowCreate && 
-                        <button onClick={newRecord} className="slds-button slds-button_brand">新建</button>
+                        <button onClick={newRecord} className="slds-button slds-button_neutral">新建</button>
                     }
                     {buttons?.map((button)=>{
                         return (
