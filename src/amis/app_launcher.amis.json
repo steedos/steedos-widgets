@@ -10,7 +10,8 @@
           {
             "type": "collapse-group",
             "activeKey": [
-              "1"
+              "1",
+              "2"
             ],
             "body": [
               {
@@ -23,7 +24,7 @@
                     "name": "app_items",
                     "items": {
                       "type": "tpl",
-                      "tpl": "<a class='slds-app-launcher__tile slds-text-link_reset ' role='button' tabindex='0' href='${path}'><div class='slds-app-launcher__tile-figure'><span class='slds-icon_container slds-icon-standard-approval'><img class='slds-icon slds-icon_container slds-icon-standard-${icon}' src='${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg'><span class='slds-assistive-text'>${name}</span></span></div><div class='slds-app-launcher__tile-body'><span class='slds-link text-blue-600 font-bold'><span title='${name}'>${name}</span></span><div style='display: -webkit-box; -webkit-line-clamp: 1;-webkit-box-orient: vertical;overflow: hidden;'><span title='${description}'>${description}</span></div></div></a>",
+                      "tpl": "<a class='slds-app-launcher__tile slds-text-link_reset ' role='button' tabindex='0' href='${path}'><div class='slds-app-launcher__tile-figure'><span class='slds-icon_container slds-icon-standard-approval'><img class='w-12 h-12 slds-icon slds-icon_container slds-icon-standard-${icon}' src='${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg'><span class='slds-assistive-text'>${name}</span></span></div><div class='slds-app-launcher__tile-body'><span class='slds-link text-blue-600 text-lg'><span title='${name}'>${name}</span></span><div style='display: -webkit-box; -webkit-line-clamp: 1;-webkit-box-orient: vertical;overflow: hidden;'><span title='${description}'>${description}</span></div></div></a>",
                       "inline": true,
                       "style": {
                       },
