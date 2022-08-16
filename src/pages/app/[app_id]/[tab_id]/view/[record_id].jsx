@@ -88,7 +88,7 @@ export default function Record({formFactor}) {
     return [
       {label: '详情', name: 'detail', component: ()=>{
         return (
-          <div className="p-4 bg-white rounded border">
+          <div className="p-4 bg-white sm:rounded sm:border">
             {schema?.amisSchema && (
                 <AmisRender
                   id={SteedosUI.getRefId({
@@ -135,7 +135,7 @@ export default function Record({formFactor}) {
               </Tab>)
             })}
           </Tab.List>
-          <Tab.Panels className="flex-1 p-4 bg-gray-50 overflow-y-auto  ">
+          <Tab.Panels className="flex-1 sm:p-4 sm:bg-gray-50 overflow-y-auto  ">
             {getTabs().map((item)=>{
               return (
                 <Tab.Panel
