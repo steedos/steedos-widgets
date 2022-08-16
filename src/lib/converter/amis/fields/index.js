@@ -181,7 +181,8 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
         return;
     }
     const baseData = {name: ctx.fieldNamePrefix ? `${ctx.fieldNamePrefix}${field.name}` : field.name, label: field.label, labelRemark: field.inlineHelpText, required: _.has(ctx, 'required') ? ctx.required : field.required};
-    let convertData = {};
+    let convertData = {
+    };
     // if(_.includes(OMIT_FIELDS, field.name)){
     //     readonly = true;
     // }
@@ -488,7 +489,7 @@ return payload;
     
 }
 
-export async function getFiledSearchable(perField, permissionFields, ctx){
+export async function getFieldSearchable(perField, permissionFields, ctx){
     let field = perField;
     if(field.type === 'grid'){
         field = await Fields.getGridFieldSubFields(perField, permissionFields);
@@ -539,6 +540,7 @@ export async function getFiledSearchable(perField, permissionFields, ctx){
         _field.readonly = false;
         _field.disabled = false;
         _field.multiple = true;
+        _field.is_wide = false;
         const amisField = await Fields.convertSFieldToAmisField(_field, false, Object.assign({}, ctx, {fieldNamePrefix: fieldNamePrefix, required: false, showSystemFields: true}));
         if(amisField){
             return amisField;

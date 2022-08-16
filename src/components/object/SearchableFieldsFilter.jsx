@@ -50,7 +50,7 @@ export function SearchableFieldsFilter({ schema, listViewId, appId, onClose }) {
         name: schema.uiSchema.name,
       })
     );
-    const formValues = scope.getComponentByName("page.form").getValues();
+    const formValues = scope.getComponentByName("form").getValues();
     SteedosUI.getRef(listViewId)
       .getComponentByName(`page.listview_${schema.uiSchema.name}`)
       .handleFilterSubmit(formValues);
@@ -59,24 +59,6 @@ export function SearchableFieldsFilter({ schema, listViewId, appId, onClose }) {
   return (
     <div className="slds-panel slds-grid slds-grid_vertical slds-nowrap slds-panel_filters m-0 border-none shadow-none">
       <div className="slds-filters">
-        {/* <div className="slds-filters__header slds-grid slds-has-divider_bottom-space p-0 text-lg">
-          <h2 className="slds-align-middle slds-text-heading_small">查询</h2>
-          <button
-            className="slds-button slds-button_icon slds-button_icon-bare slds-button_icon-small slds-col_bump-left"
-            title="关闭查询"
-            type="button"
-            onClick={onClose}
-          >
-            <svg
-              aria-hidden="true"
-              className="slds-button__icon"
-              viewBox="0 0 52 52"
-            >
-              <use xlinkHref={`/assets/icons/utility-sprite/svg/symbols.svg#close`}></use>
-            </svg>
-            <span className="slds-assistive-text">关闭</span>
-          </button>
-        </div> */}
         <div className="slds-filters__body p-0">
           {searchableFieldsSchema && (
             <AmisRender
@@ -91,8 +73,22 @@ export function SearchableFieldsFilter({ schema, listViewId, appId, onClose }) {
           )}
         </div>
         <div className="slds-filters__footer slds-grid slds-shrink-none flex justify-between p-0">
-          <div></div>
-          <div className="space-x-6">
+          <div className="space-x-4">
+            <button
+              className="slds-button slds-button_neutral"
+              type="button"
+              onClick={onSearch}
+            >
+              <svg
+                className="slds-button__icon slds-button__icon_left"
+                aria-hidden="true"
+              >
+                <use
+                  xlinkHref={`/assets/icons/utility-sprite/svg/symbols.svg#search`}
+                ></use>
+              </svg>
+              搜索
+            </button>
             <button
               className="slds-button_reset slds-text-link slds-col_bump-left"
               type="button"
@@ -112,21 +108,6 @@ export function SearchableFieldsFilter({ schema, listViewId, appId, onClose }) {
               }}
             >
               设置搜索项
-            </button>
-            <button
-              className="slds-button slds-button_neutral"
-              type="button"
-              onClick={onSearch}
-            >
-              <svg
-                className="slds-button__icon slds-button__icon_left"
-                aria-hidden="true"
-              >
-                <use
-                  xlinkHref={`/assets/icons/utility-sprite/svg/symbols.svg#search`}
-                ></use>
-              </svg>
-              搜索
             </button>
           </div>
         </div>

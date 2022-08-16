@@ -8,7 +8,7 @@
 import { fetchAPI } from './steedos.client';
 import { getObjectList, getObjectDetail, getObjectForm } from './converter/amis/index';
 import { slice, isEmpty, each } from 'lodash';
-import { getFiledSearchable } from '@/lib/converter/amis/fields/index';
+import { getFieldSearchable } from '@/lib/converter/amis/fields/index';
 
 const _ = require('lodash');
 
@@ -191,24 +191,18 @@ export async function getObjectRelated(appName, masterObjectName, objectName, re
 export async function getSearchableFieldsFilterSchema(fields){
     const body = [];
     for (const field of fields) {
-        const amisField = await getFiledSearchable(field, fields, {})
+        const amisField = await getFieldSearchable(field, fields, {})
         if(amisField){
+            amisField.className = "min-w-[200px] pr-4 max-w-[350px] grow"
             body.push(amisField)
         }
     }
     return {
-        type: 'page',
-        name: 'page',
-        body: [
-            {
-                "title": "",
-                "mode": "horizontal",
-                "type": "form",
-                "name": "form",
-                "className": "grid grid-cols-3 gap-3",
-                "body": body,
-                "actions": []
-              }
-        ]
+        "title": "",
+        "type": "form",
+        "name": "form",
+        "wrapWithPanel": false,
+        "className": "flex flex-row w-full flex-wrap",
+        "body": body,
     }
 }

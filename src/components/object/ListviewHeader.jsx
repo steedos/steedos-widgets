@@ -362,7 +362,6 @@ export function ListviewHeader({ schema, onListviewChange }) {
       leaveTo="opacity-0"
     >
       <div className="w-full">
-        <div className="slds-page-header__col-details">
           <SearchableFieldsFilter schema={schema} listViewId={listViewId} onClose = {()=>{
             if(showFieldsFilter){
                 const scope = SteedosUI.getRef(listViewId);
@@ -370,7 +369,6 @@ export function ListviewHeader({ schema, onListviewChange }) {
                 setShowFieldsFilter(false)
             }
           }}></SearchableFieldsFilter>
-        </div>
       </div>
       </Transition>
     </div>
