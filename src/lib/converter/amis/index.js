@@ -234,10 +234,9 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
                 name: `form_readonly_${recordId}`,
                 debug: false,
                 title: "",
+                wrapWithPanel: false, 
                 body: await getFormBody(map(fields, (field)=>{field.readonly = true;}), objectSchema, ctx),
-                panelClassName:'m-0 sm:rounded-lg',
-                bodyClassName: 'p-0',
-                className: 'p-4 sm:p-0 steedos-amis-form',
+                className: 'steedos-amis-form',
                 actions: [] // 不显示表单默认的提交按钮
             }
         ]

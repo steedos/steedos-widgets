@@ -88,7 +88,7 @@ export default function Record({formFactor}) {
     return [
       {label: '详情', name: 'detail', component: ()=>{
         return (
-          <>
+          <div className="p-4 bg-white rounded border">
             {schema?.amisSchema && (
                 <AmisRender
                   id={SteedosUI.getRefId({
@@ -100,7 +100,7 @@ export default function Record({formFactor}) {
                   router={router}
                 ></AmisRender>
               )}
-          </>
+          </div>
         )
       }},
       {label: '相关', name: 'relateds', component: ()=>{
@@ -114,41 +114,11 @@ export default function Record({formFactor}) {
   const Header = formFactor === "SMALL" ? MobileRecordHeader : RecordHeader;
 
   return (
-    <div className="sm:p-4 slds-grid slds-wrap">
-      <div className="slds-col slds-size_1-of-1 row region-header">
+    <div className="flex flex-col flex-1 overflow-hidden">
+      <div className="region-header">
         {schema && <Header schema={schema}></Header>}
       </div>
-      {/* <div className="z-9 relative py-4">
-        <div className="space-y-4">
-          <div className="pointer-events-auto w-full text-[0.8125rem] leading-5">
-            <div className="">
-              <div className="flex justify-between">
-                <div className="inline-block text-2xl font-extrabold tracking-tight text-slate-900 dark:text-slate-200 sm:text-3xl"></div>
-                <div className="ml-6 flex flex-nowrap space-x-2 fill-slate-400">
-                  {isEditing && (
-                    <>
-                      <button
-                        onClick={cancelClick}
-                        className="antd-Button border-1 border-solid border-gray-300 py-0.5 px-3 text-slate-700 sm:rounded-[2px]"
-                      >
-                        取消
-                      </button>
-                      <button
-                        onClick={submitClick}
-                        className="antd-Button bg-sky-500 py-0.5 px-3 font-semibold text-white hover:bg-sky-600 focus:outline-none sm:rounded-[2px]"
-                      >
-                        提交
-                      </button>
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> */}
-    <div className="slds-col slds-size_1-of-1 row region-main">
-    <div className="z-9 relative mt-2 shadow-none border-none">
+      <div className="flex flex-1 flex-col region-main overflow-hidden">
         <Tab.Group vertical={true}>
           <Tab.List className="flex space-x-1 border-b">
             {getTabs().map((item)=>{
@@ -156,8 +126,7 @@ export default function Record({formFactor}) {
                 key={item.name}
                 className={({ selected }) =>
                   classNames(
-                    "px-10",
-                    "text-base",
+                    "px-10 py-2",
                     selected ? "border-b-2 border-sky-500 text-black" : "text-current"
                   )
                 }
@@ -166,12 +135,11 @@ export default function Record({formFactor}) {
               </Tab>)
             })}
           </Tab.List>
-          <Tab.Panels className="my-2">
+          <Tab.Panels className="flex-1 p-4 bg-gray-50 overflow-y-auto  ">
             {getTabs().map((item)=>{
               return (
                 <Tab.Panel
                 key={item.name}
-              className={classNames("bg-white sm:rounded-b-xl", "pt-2")}
             >
               {item.component()}
             </Tab.Panel>
@@ -180,7 +148,6 @@ export default function Record({formFactor}) {
           </Tab.Panels>
         </Tab.Group>
       </div>
-    </div>
      
     </div>
   );

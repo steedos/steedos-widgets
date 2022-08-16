@@ -48,12 +48,13 @@ export function AppLayout({ children }) {
       <div className='h-full flex flex-col'>
         <Navbar navigation={app?.children} selected={selected} app={app}/>
         {session && (
-          <div id="main" className="flex grow">
-            <div id="sidebar" className="flex-none hidden lg:block z-20 inset-0 top-[3rem] right-auto w-[16rem] overflow-y-auto border-r border-slate-200">
-            
-              <Sidebar navigation={app?.children} selected={selected}/>
+          <div id="main" className="flex flex-1 overflow-hidden">
+            <div id="sidebar" className="flex flex-shrink-0 border-r overflow-y-auto">
+              <div className="flex flex-col w-64">
+                <Sidebar navigation={app?.children} selected={selected}/>
+              </div>
             </div>
-            <div id="content" className="grow">
+            <div id="content" className="flex flex-col min-w-0 flex-1">
               {children}
             </div>
           </div>

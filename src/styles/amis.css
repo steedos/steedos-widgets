@@ -123,10 +123,6 @@ main {
     color: black;
 }
 
-#__next .amis-scope {
-    background: white;
-}
-
 .amis-scope .antd-Card{
     border-left: none !important;
     border-right: none !important;
@@ -143,7 +139,12 @@ button.antd-Button--primary {
     background-color: var(--Button--primary-bg);
 }
 
+#__next .antd-Table {
+    margin-bottom: 0;
+}
+
 :root {
     --Collapse-header-padding: 0px;
     --Form-selectValue-fontSize: 14px;
+    --Table-toolbar-marginY: 0;
 }
