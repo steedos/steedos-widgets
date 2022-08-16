@@ -33,13 +33,13 @@ export default function Page ({formFactor}) {
   }, [tab_id, formFactor]);
 
   return (
-    <div className='flex flex-col w-full h-full'>
-      <div className='drop-shadow-sm'>
+    <div className='flex flex-col flex-1 overflow-hidden'>
+      <div className='border-b'>
       {formFactor && schema?.uiSchema.name === tab_id && <ListviewHeader schema={schema} onListviewChange={(listView)=>{
           getListviewSchema(listView?.name)
         }}></ListviewHeader>}
       </div>
-      <div className="p-4 bg-slate-50 grow">
+      <div className="p-4 bg-slate-50 flex-1 min-h-0 overflow-y-auto">
       {schema?.amisSchema && schema?.uiSchema.name === tab_id && <AmisRender className="steedos-listview" id={listViewId} schema={schema?.amisSchema || {}} router={router}></AmisRender>}
       </div>
     </div>
