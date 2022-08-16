@@ -143,7 +143,12 @@ button.antd-Button--primary {
     background-color: var(--Button--primary-bg);
 }
 
+#__next .antd-Table {
+    margin-bottom: 0;
+}
+
 :root {
     --Collapse-header-padding: 0px;
     --Form-selectValue-fontSize: 14px;
+    --Table-toolbar-marginY: 0;
 }

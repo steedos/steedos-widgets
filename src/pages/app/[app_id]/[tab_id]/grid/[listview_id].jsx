@@ -14,7 +14,6 @@ import { unstable_getServerSession } from "next-auth/next"
 import { AmisRender } from '@/components/AmisRender'
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
 import { ListviewHeader } from '@/components/object/ListviewHeader'
-import { ListviewHeader as MobileListviewHeader } from '@/components/mobile/object/ListviewHeader'
 
 export default function Page ({formFactor}) {
   const router = useRouter();
@@ -33,16 +32,14 @@ export default function Page ({formFactor}) {
     getListviewSchema(undefined)
   }, [tab_id, formFactor]);
 
-  const Header = formFactor === 'SMALL' ? MobileListviewHeader : ListviewHeader;
-
   return (
-    <div className='sm:p-4 slds-card slds-card_boundary slds-grid slds-grid--vertical shadow-none border-none'>
-      <div className='slds-page-header--object-home slds-page-header_joined slds-page-header_bleed slds-page-header slds-shrink-none p-0 bg-white'>
-      {formFactor && schema?.uiSchema.name === tab_id && <Header schema={schema} onListviewChange={(listView)=>{
+    <div className='flex flex-col w-full h-full'>
+      <div className='drop-shadow-sm'>
+      {formFactor && schema?.uiSchema.name === tab_id && <ListviewHeader schema={schema} onListviewChange={(listView)=>{
           getListviewSchema(listView?.name)
-        }}></Header>}
+        }}></ListviewHeader>}
       </div>
-      <div className="">
+      <div className="p-4 bg-slate-50 grow">
       {schema?.amisSchema && schema?.uiSchema.name === tab_id && <AmisRender className="steedos-listview" id={listViewId} schema={schema?.amisSchema || {}} router={router}></AmisRender>}
       </div>
     </div>
