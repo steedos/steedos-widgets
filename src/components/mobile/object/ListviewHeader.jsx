@@ -1,0 +1,305 @@
+/*
+ * @Author: baozhoutao@steedos.com
+ * @Date: 2022-08-03 16:46:23
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2022-08-16 11:38:03
+ * @Description:
+ */
+import { Listbox, Transition } from "@headlessui/react";
+import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
+import {
+  values,
+  isFunction,
+  isEmpty,
+  defaultsDeep,
+  filter as _filter,
+  includes,
+} from "lodash";
+import { useRouter } from "next/router";
+import React, { useState, useEffect, Fragment, useRef } from "react";
+import { ListButtons } from "@/components/object/ListButtons";
+import { FromNow } from "@/components/FromNow";
+import config from '@/config';
+
+export function ListviewHeader({ schema, onListviewChange }) {
+  //   const [selectedListView, setSelectedListView] = useState();
+  const [showFieldsFilter, setShowFieldsFilter] = useState(false);
+  const [queryInfo, setQueryInfo] = useState();
+  const [filter, setFilter] = useState();
+  const router = useRouter();
+  const { app_id, tab_id, listview_id } = router.query;
+
+  const selectedListView = schema.uiSchema.list_views[listview_id];
+
+  const listViewId = SteedosUI.getRefId({
+    type: "listview",
+    appId: app_id,
+    name: schema?.uiSchema?.name,
+  });
+  useEffect(() => {
+    if (schema) {
+      window.addEventListener("message", (event) => {
+        const { data } = event;
+        if (data.type === "listview.loaded") {
+          if (schema) {
+            setTimeout(() => {
+              if (
+                SteedosUI.getRef(listViewId) &&
+                SteedosUI.getRef(listViewId).getComponentByName
+              ) {
+                const listViewRef = SteedosUI.getRef(
+                  listViewId
+                ).getComponentByName(`page.listview_${schema.uiSchema.name}`);
+                setQueryInfo({
+                  count: listViewRef.props.data.count,
+                  dataUpdatedAt: listViewRef.props.dataUpdatedAt,
+                });
+              }
+            }, 300);
+          }
+        }
+      });
+      //   if (!selectedListView) {
+      //     setSelectedListView(schema.uiSchema.list_views[listview_id]);
+      //   }
+    }
+  }, [schema]);
+
+  const refreshList = (e) => {
+    SteedosUI.getRef(listViewId)
+      .getComponentByName(`page.listview_${schema.uiSchema.name}`)
+      .handleAction({}, { actionType: "reload" });
+  };
+
+  useEffect(() => {
+    if (!isEmpty(listview_id) && isFunction(onListviewChange)) {
+      setFilter(null);
+      onListviewChange(selectedListView);
+    }
+  }, [listview_id]);
+
+  const showFilter = () => {
+    SteedosUI.ListView.showFilter(schema.uiSchema.name, {
+      listView: selectedListView,
+      data: {
+        filters: SteedosUI.ListView.getVisibleFilter(selectedListView, filter),
+      },
+      props: {
+        width: '100%',
+            style: {
+              width: '100%',
+            },
+      },
+      onFilterChange: (filter) => {
+        const scope = SteedosUI.getRef(listViewId);
+        // amis updateProps 的 callback 2.1.0版本存在不执行的bug ,先通过延迟刷新.
+        scope.updateProps(
+          {
+            data: defaultsDeep(
+              {
+                filter: SteedosUI.ListView.getQueryFilter(
+                  selectedListView,
+                  filter
+                ),
+              },
+              schema.amisSchema.data
+            ),
+          },
+          () => {
+            refreshList();
+            setFilter(filter);
+          }
+        );
+        setTimeout(() => {
+          refreshList();
+          setFilter(filter);
+        }, 300);
+      },
+    });
+  };
+
+  const filterToggler = () => {
+    if (!showFieldsFilter) {
+      setShowFieldsFilter(true);
+    }
+  };
+
+  const onChange = (value) => {
+    router.push(`/app/${app_id}/${tab_id}/grid/${value.name}`);
+    // setSelectedListView
+  };
+
+  const newRecord = ()=>{
+    const listViewId = SteedosUI.getRefId({type: 'listview', appId: app_id, name: schema?.uiSchema?.name});
+    // router.push('/app/'+app_id+'/'+schema.uiSchema.name+'/view/new')
+    const type = config.listView.newRecordMode;
+    SteedosUI.Object.newRecord({ 
+        onSubmitted : ()=>{
+            SteedosUI.getRef(listViewId).getComponentByName(`page.listview_${schema.uiSchema.name}`).handleAction({}, { actionType: "reload"})
+        },
+        onCancel: ()=>{
+            SteedosUI.getRef(listViewId).getComponentByName(`page.listview_${schema.uiSchema.name}`).handleAction({}, { actionType: "reload"})
+        },
+        appId: app_id, 
+        name: SteedosUI.getRefId({type: `${type}-form`,}), 
+        title: `新建 ${schema.uiSchema.label}`, 
+        objectName: schema.uiSchema.name, 
+        recordId: 'new', 
+        type, 
+        options: {
+          props: {
+            width: '100%',
+            style: {
+              width: '100%',
+            },
+            bodyStyle: {padding: "0px", paddingTop: "0px"},
+          }
+        }, 
+        router
+    })
+  }
+
+  return (
+    <div className="relative slds-page-header bg-white p-0">
+      <div className="slds-page-header__row bg-slate-100 border-b">
+        <div className="slds-page-header__col-details">
+          <div className="grid gap-4 grid-cols-3 p-0 pt-2">
+            <div className="text-center	">
+            <span
+                className="slds-icon_container slds-icon_container_circle slds-icon-standard-filter"
+                title="过滤器"
+                onClick={showFilter}
+              >
+                <svg className="slds-icon slds-button__icon slds-icon_small" aria-hidden="true">
+                  <use xlinkHref="/assets/icons/standard-sprite/svg/symbols.svg#filter"></use>
+                </svg>
+                <span className="slds-assistive-text">filterList</span>
+                {!isEmpty(filter) && (
+                    <span className="slds-notification-badge slds-incoming-notification slds-show-notification min-h-[0.5rem] min-w-[0.5rem]"></span>
+                  )}
+              </span>
+            </div>
+            <div className="text-center	">
+            <span
+                className="slds-icon_container slds-icon_container_circle slds-icon-action-refresh"
+                title="Refresh List"
+                onClick={refreshList}
+              >
+                <svg className="slds-icon slds-button__icon slds-icon_small" aria-hidden="true">
+                  <use xlinkHref="/assets/icons/action-sprite/svg/symbols.svg#refresh"></use>
+                </svg>
+                <span className="slds-assistive-text">Refresh List</span>
+              </span>
+            </div>
+            <div className="text-center	">
+            <span
+                className="slds-icon_container slds-icon_container_circle slds-icon-action-new"
+                title="Refresh List"
+                onClick={newRecord}
+              >
+                <svg className="slds-icon slds-button__icon slds-icon_small" aria-hidden="true">
+                  <use xlinkHref="/assets/icons/action-sprite/svg/symbols.svg#new"></use>
+                </svg>
+                <span className="slds-assistive-text">新建</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="slds-page-header__row p-2">
+        <div className="slds-page-header__col-title">
+          <div className="slds-media">
+            <div className="slds-media__figure">
+              <span className="slds-icon_container slds-icon-standard-opportunity">
+                <svg
+                  className="slds-icon slds-page-header__icon"
+                  aria-hidden="true"
+                >
+                  <use
+                    xlinkHref={`/assets/icons/standard-sprite/svg/symbols.svg#${schema.uiSchema.icon}`}
+                  ></use>
+                </svg>
+              </span>
+            </div>
+            <div className="slds-media__body">
+              <div className="slds-page-header__name">
+                <div className="slds-page-header__name-title">
+                  <div>
+                    <Listbox value={selectedListView} onChange={onChange}>
+                      <div className="relative w-[1/2]">
+                        <Listbox.Button className="relative w-full cursor-default pr-10 text-left focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+                          <span className="slds-page-header__title slds-truncate">
+                            {selectedListView?.label ||
+                              schema?.uiSchema?.list_views.all?.label}
+                          </span>
+                          <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                            <SelectorIcon
+                              className="h-5 w-5 text-gray-400"
+                              aria-hidden="true"
+                            />
+                          </span>
+                        </Listbox.Button>
+                        <Transition
+                          as={Fragment}
+                          leave="transition ease-in duration-100"
+                          leaveFrom="opacity-100"
+                          leaveTo="opacity-0"
+                        >
+                          <Listbox.Options className="absolute z-50 mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                            {values(schema?.uiSchema?.list_views).map(
+                              (listView, personIdx) => (
+                                <Listbox.Option
+                                  key={personIdx}
+                                  value={listView}
+                                  className={({ active }) =>
+                                    `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                                      active
+                                        ? "bg-amber-100 text-amber-900"
+                                        : "text-gray-900"
+                                    }`
+                                  }
+                                >
+                                  <span
+                                    className={`block truncate ${
+                                      (selectedListView?.name
+                                        ? selectedListView.name
+                                        : "all") === listView.name
+                                        ? "font-medium"
+                                        : "font-normal"
+                                    }`}
+                                  >
+                                    {listView.label}
+                                  </span>
+                                  {(selectedListView?.name
+                                    ? selectedListView.name
+                                    : "all") === listView.name ? (
+                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                                      <CheckIcon
+                                        className="h-5 w-5"
+                                        aria-hidden="true"
+                                      />
+                                    </span>
+                                  ) : null}
+                                </Listbox.Option>
+                              )
+                            )}
+                          </Listbox.Options>
+                        </Transition>
+                      </div>
+                    </Listbox>
+                    {queryInfo && (
+                      <p className="slds-page-header__meta-text mb-0">
+                        {queryInfo.count} 项 •{" "}
+                        <FromNow date={queryInfo.dataUpdatedAt}></FromNow>
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

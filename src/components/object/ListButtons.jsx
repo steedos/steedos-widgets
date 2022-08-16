@@ -65,7 +65,6 @@ export function ListButtons(props) {
                   }
               })
         }else{
-            console.log(`handleBulkAction`, listViewRef.props.bulkActions[0])
             listViewRef.handleBulkAction(listViewRef.props.store.toJSON().selectedItems,[],{},listViewRef.props.bulkActions[0]);
         }
       }

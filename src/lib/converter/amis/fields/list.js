@@ -1,3 +1,10 @@
+/*
+ * @Author: baozhoutao@steedos.com
+ * @Date: 2022-07-23 09:12:14
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2022-08-16 09:57:50
+ * @Description: 
+ */
 
 const Tpl = require('../tpl');
 
@@ -61,5 +68,31 @@ export function getListSchema(fields, options){
                 }
             ]
         }
+    }
+}
+
+
+export function getCardSchema(fields, options){
+    return {
+        mode: "cards",
+        name: "cards",
+        draggable: false,
+        headerToolbar: ['switch-per-page', 'reload'],
+        defaultParams: getDefaultParams(options),
+        syncLocation: false,
+        keepItemSelectionOnPageChange: false,
+        checkOnItemClick: false,
+        labelTpl: `\${${options.labelFieldName}}`,
+        card: {
+            "type": "card",
+            "header": {
+                "title": Tpl.getFieldTpl(_.find(fields, (f)=>{
+                    return f.name === options.labelFieldName;
+                }), options),
+              },
+            "body": [...(getListBody(_.filter(fields, (f)=>{
+                return f.name != options.labelFieldName
+            }), options).columns)]
+          }
     }
 }

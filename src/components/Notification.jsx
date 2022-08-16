@@ -30,7 +30,7 @@ export const Notification = ({}) => {
           focusable="false"
           data-key="down"
           aria-hidden="true"
-          className="slds-button__icon slds-global-header__icon"
+          className="slds-icon"
         >
           <use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#notification"></use>
         </svg>
