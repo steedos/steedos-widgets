@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-13 18:06:20
+ * @LastEditTime: 2022-08-16 13:21:25
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -16,19 +16,19 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { Tab, Menu, Transition } from "@headlessui/react";
 
 import { RecordHeader } from '@/components/object/RecordHeader';
+import { RecordHeader as MobileRecordHeader } from '@/components/mobile/object/RecordHeader';
 import { RecordRelateds } from '@/components/object/RecordRelateds';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Record({}) {
+export default function Record({formFactor}) {
   const router = useRouter();
   const { app_id, tab_id, record_id } = router.query;
   const [isEditing, setIsEditing] = useState(false);
   const [schema, setSchema] = useState(null);
   const [relateds, setRelateds] = useState(null);
-  const [formFactor, setFormFactor] = useState(null);
 
   const doEditing = () => {
     if (!formFactor) {
@@ -43,14 +43,6 @@ export default function Record({}) {
     }
     viewRecord(tab_id, record_id, formFactor);
   };
-
-  useEffect(() => {
-    if (window.innerWidth < 768) {
-      setFormFactor("SMALL");
-    } else {
-      setFormFactor("LARGE");
-    }
-  }, []);
 
   useEffect(() => {
     doReadonly();
@@ -92,27 +84,6 @@ export default function Record({}) {
     }
   };
 
-  // const cancelClick = () => {
-  //   doReadonly();
-  // };
-
-  // const submitClick = (e) => {
-  //   const scope = SteedosUI.getRef(
-  //     SteedosUI.getRefId({
-  //       type: "form",
-  //       appId: app_id,
-  //       name: schema.uiSchema.name,
-  //     })
-  //   );
-  //   const form = scope.getComponentByName(
-  //     `page_edit_${record_id}.form_edit_${record_id}`
-  //   );
-  //   form.handleAction({}, { type: "submit" }).then((data) => {
-  //     if (data) {
-  //       router.push(`/app/${app_id}/${tab_id}/view/${data.recordId}`);
-  //     }
-  //   });
-  // };
   const getTabs = ()=>{
     return [
       {label: '详情', name: 'detail', component: ()=>{
@@ -140,10 +111,12 @@ export default function Record({}) {
     ]
   }
 
+  const Header = formFactor === "SMALL" ? MobileRecordHeader : RecordHeader;
+
   return (
-    <div className="p-4 slds-grid slds-wrap">
+    <div className="sm:p-4 slds-grid slds-wrap">
       <div className="slds-col slds-size_1-of-1 row region-header">
-        {schema && <RecordHeader schema={schema}></RecordHeader>}
+        {schema && <Header schema={schema}></Header>}
       </div>
       {/* <div className="z-9 relative py-4">
         <div className="space-y-4">

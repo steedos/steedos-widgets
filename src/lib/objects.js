@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-09 13:27:34
+ * @LastEditTime: 2022-08-16 11:42:13
  * @Description: 
  */
 import { fetchAPI } from './steedos.client';
@@ -176,7 +176,6 @@ export async function getObjectRelated(appName, masterObjectName, objectName, re
     }else{
         filter = [`${relatedFieldName}`, '=', recordId] ;
     }
-    console.log(`filter`, filter)
     const masterObjectUISchema = await getUISchema(masterObjectName, formFactor)
     return {
         masterObjectName: masterObjectName,

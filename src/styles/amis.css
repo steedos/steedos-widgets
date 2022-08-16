@@ -111,12 +111,27 @@ main {
     height: 20px !important;
 }
 
+.steedos-listview .antd-List-toolbar{
+    display: none;
+}
+
+.steedos-listview .antd-Crud-toolbar{
+    display: none;
+}
+
 #__next .bg-white {
     color: black;
 }
 
 #__next .amis-scope {
     background: white;
+}
+
+.amis-scope .antd-Card{
+    border-left: none !important;
+    border-right: none !important;
+    border-image: none !important;
+    border-bottom: none !important;
 }
 
 .amis-scope svg.icon {

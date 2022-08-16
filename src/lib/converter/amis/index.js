@@ -2,8 +2,8 @@ import { getAuthToken , getTenantId } from '@/lib/steedos.client.js';
 import { getReadonlyFormInitApi, getSaveApi, getEditFormInitApi, getBatchDelete } from '@/lib/converter/amis/api';
 import { getTableSchema, getTableApi } from '@/lib/converter/amis/fields/table';
 import { getFormBody } from '@/lib/converter/amis/form';
-import { getListSchema } from '@/lib/converter/amis/fields/list';
-import { map } from 'lodash';
+import { getListSchema, getCardSchema } from '@/lib/converter/amis/fields/list';
+import _, { map } from 'lodash';
 import { getRootUrl } from '@/lib/steedos.client.js';
 
 function getBulkActions(objectSchema){
@@ -148,12 +148,13 @@ export function getObjectList(objectSchema, fields, options){
     let body = null;
     const id = `listview_${objectSchema.name}`;
     if(options.formFactor === 'SMALL'){
-      body = Object.assign({}, getListSchema(fields, options), {
+      delete bodyProps.bulkActions
+      body = Object.assign({}, getCardSchema(fields, Object.assign({idFieldName: objectSchema.idFieldName, labelFieldName: objectSchema.NAME_FIELD_KEY || 'name'}, options, {actions: false})), {
         type: 'crud', 
         primaryField: '_id', 
         id: id,
         name: id,
-        keepItemSelectionOnPageChange: true, 
+        keepItemSelectionOnPageChange: false, 
         api: getTableApi(objectSchema, fields, options)}, 
         bodyProps
         );
@@ -185,7 +186,7 @@ export async function getObjectForm(objectSchema, ctx){
     const fields = _.values(objectSchema.fields);
     return {
         type: 'page',
-        bodyClassName: '',
+        bodyClassName: 'p-0',
         regions: [
             "body"
         ],

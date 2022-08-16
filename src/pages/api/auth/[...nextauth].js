@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-20 16:29:22
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-13 17:10:42
+ * @LastEditTime: 2022-08-16 11:42:32
  * @Description: 
  */
 
@@ -71,7 +71,6 @@ export const authOptions = {
       return token
     }, 
     async session({ session, token, user }) {
-      console.log(`session`, session)
       // Send properties to the client, like an access_token from a provider.
       // session.accessToken = token.accessToken
       if(session.user){

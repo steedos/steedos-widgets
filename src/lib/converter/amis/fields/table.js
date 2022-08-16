@@ -122,7 +122,6 @@ export function getTableApi(mainObject, fields, options){
     api.data.$self = "$$";
     api.data.filter = "$filter"
     api.requestAdaptor = `
-        console.log("api", api)
         const selfData = JSON.parse(JSON.stringify(api.data.$self));
         ${globalFilter ? `var filters = ${JSON.stringify(globalFilter)};` : 'var filters = [];'}
         if(_.isEmpty(filters)){
