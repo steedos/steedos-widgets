@@ -30,7 +30,7 @@ export const GlobalHeader = ({ navigation, selected, app })=>{
     return (
         <header
           className={clsx(
-            'relative bg-blue-700 sticky top-0 z-50 flex flex-wrap items-center justify-between px-4 py-4 transition duration-500 shadow-none sm:px-6 lg:px-8',
+            'relative bg-sky-700 sticky top-0 z-50 flex flex-wrap items-center justify-between px-4 py-4 transition duration-500 shadow-none sm:px-6 lg:px-8',
           )}
         >
           <div className="mr-6 flex lg:hidden">
@@ -39,7 +39,7 @@ export const GlobalHeader = ({ navigation, selected, app })=>{
           <div className="relative flex flex-grow basis-0 items-center">
             <Link href="/" aria-label="Home page">
               <>
-              <Logo className="h-9 w-auto fill-slate-700 dark:fill-sky-100 lg:block" />
+              <Logo className="h-6 w-auto fill-slate-700 dark:fill-sky-100 lg:block" />
               </>
             </Link>
           </div>
