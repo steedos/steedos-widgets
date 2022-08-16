@@ -29,7 +29,7 @@ export  function Sidebar({ navigation, selected }) {
             onClick={handleClick}
             className={classNames(
               item.id === selected ? 'text-sky-500 border-current font-semibold bg-slate-100' : 'border-transparent text-slate-700',
-              'block border-l-[3px] pl-4 -ml-px text-base no-underline py-2 hover:bg-slate-100 '
+              'block border-l-[3px] pl-4 -ml-px no-underline py-2 hover:bg-slate-100 '
             )}
             aria-current={item.current ? 'page' : undefined}
           >

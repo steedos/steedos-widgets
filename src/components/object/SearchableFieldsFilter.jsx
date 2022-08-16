@@ -50,7 +50,7 @@ export function SearchableFieldsFilter({ schema, listViewId, appId, onClose }) {
         name: schema.uiSchema.name,
       })
     );
-    const formValues = scope.getComponentByName("form").getValues();
+    const formValues = scope.getComponentByName("listview-filter-form").getValues();
     SteedosUI.getRef(listViewId)
       .getComponentByName(`page.listview_${schema.uiSchema.name}`)
       .handleFilterSubmit(formValues);
