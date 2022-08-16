@@ -30,6 +30,8 @@ export default class MyDocument extends Document {
           <link rel="stylesheet" href="/unpkg.com/amis/lib/helper.css" />
           {/* <link rel="stylesheet" href="/unpkg.com/amis/sdk/antd.css" /> */}
           <link rel="stylesheet" href="/unpkg.com/amis/sdk/iconfont.css" />
+          <link rel="stylesheet" href="/unpkg.com/fontawesome/fontawesome.css" />
+          
           <Main />
           <NextScript />
         </body>
