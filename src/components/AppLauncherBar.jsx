@@ -14,7 +14,7 @@ export const AppLauncherBar = ({app}) => {
     const name = 'app-launcher-modal';
     SteedosUI.Modal(Object.assign({
         name: name,
-        title: `App Launcher`,
+        title: `应用导航`,
         destroyOnClose: true,
         maskClosable: false,
         keyboard: false, // 禁止 esc 关闭

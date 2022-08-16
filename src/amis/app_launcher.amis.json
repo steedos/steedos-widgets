@@ -16,7 +16,7 @@
               {
                 "type": "collapse",
                 "key": "1",
-                "header": "所有应用程序",
+                "header": "所有应用",
                 "body": [
                   {
                     "type": "each",
