@@ -123,3 +123,11 @@ main {
     vertical-align: baseline;
     display: inline;
 }
+
+button.antd-Button--primary {
+    background-color: var(--Button--primary-bg);
+}
+
+:root {
+    --Collapse-header-padding: 0px;
+}
