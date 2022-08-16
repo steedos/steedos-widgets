@@ -199,9 +199,10 @@ export async function getSearchableFieldsFilterSchema(fields){
     return {
         "title": "",
         "type": "form",
-        "name": "form",
+        "name": "listview-filter-form",
+        "mode": "normal",
         "wrapWithPanel": false,
-        "className": "flex flex-row w-full flex-wrap",
+        "className": "flex flex-row w-full flex-wrap mb-3",
         "body": body,
     }
 }

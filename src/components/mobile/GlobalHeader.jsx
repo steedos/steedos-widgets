@@ -11,7 +11,6 @@ import clsx from 'clsx'
 
 import { Logo } from '@/components/Logo'
 import { MobileNavigation } from '@/components/mobile/MobileNavigation'
-import { Search } from '@/components/mobile/Search'
 import { ThemeSelector } from '@/components/mobile/ThemeSelector'
 import { Notification } from '@/components/Notification';
 
