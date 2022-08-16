@@ -173,8 +173,8 @@ export function getObjectList(objectSchema, fields, options){
     }
 
     return {
-        type: 'page',
-        bodyClassName: 'bg-white sm:rounded-lg p-0',
+        type: 'service',
+        bodyClassName: '',
         name: `page`,
         data: {context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
         body: body
