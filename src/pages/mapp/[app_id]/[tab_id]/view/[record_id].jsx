@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-16 13:21:25
+ * @LastEditTime: 2022-08-16 16:59:46
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -17,7 +17,7 @@ import { Tab, Menu, Transition } from "@headlessui/react";
 
 import { RecordHeader } from '@/components/object/RecordHeader';
 import { RecordHeader as MobileRecordHeader } from '@/components/mobile/object/RecordHeader';
-import { RecordRelateds } from '@/components/object/RecordRelateds';
+import { RelatedsLink } from '@/components/object/RelatedsLink';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -105,7 +105,7 @@ export default function Record({formFactor}) {
       }},
       {label: '相关', name: 'relateds', component: ()=>{
         return (<>
-          <RecordRelateds app_id={app_id} record_id={record_id} relateds={relateds}></RecordRelateds>
+          <RelatedsLink app_id={app_id} record_id={record_id} relateds={relateds}></RelatedsLink>
         </>)
       }}
     ]
@@ -118,35 +118,6 @@ export default function Record({formFactor}) {
       <div className="slds-col slds-size_1-of-1 row region-header">
         {schema && <Header schema={schema}></Header>}
       </div>
-      {/* <div className="z-9 relative py-4">
-        <div className="space-y-4">
-          <div className="pointer-events-auto w-full text-[0.8125rem] leading-5">
-            <div className="">
-              <div className="flex justify-between">
-                <div className="inline-block text-2xl font-extrabold tracking-tight text-slate-900 dark:text-slate-200 sm:text-3xl"></div>
-                <div className="ml-6 flex flex-nowrap space-x-2 fill-slate-400">
-                  {isEditing && (
-                    <>
-                      <button
-                        onClick={cancelClick}
-                        className="antd-Button border-1 border-solid border-gray-300 py-0.5 px-3 text-slate-700 sm:rounded-[2px]"
-                      >
-                        取消
-                      </button>
-                      <button
-                        onClick={submitClick}
-                        className="antd-Button bg-sky-500 py-0.5 px-3 font-semibold text-white hover:bg-sky-600 focus:outline-none sm:rounded-[2px]"
-                      >
-                        提交
-                      </button>
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> */}
     <div className="slds-col slds-size_1-of-1 row region-main">
     <div className="z-9 relative mt-2 shadow-none border-none">
         <Tab.Group vertical={true}>
@@ -171,7 +142,7 @@ export default function Record({formFactor}) {
               return (
                 <Tab.Panel
                 key={item.name}
-              className={classNames("bg-white sm:rounded-b-xl", "pt-2")}
+              className={classNames("bg-white shadow-none", "pt-2")}
             >
               {item.component()}
             </Tab.Panel>
