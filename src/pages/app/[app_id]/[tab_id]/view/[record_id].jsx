@@ -120,7 +120,7 @@ export default function Record({formFactor}) {
       </div>
       <div className="flex flex-1 flex-col region-main overflow-hidden">
         <Tab.Group vertical={true}>
-          <Tab.List className="flex space-x-1 border-b">
+          <Tab.List className="pl-4 flex space-x-1 border-b">
             {getTabs().map((item)=>{
               return (<Tab
                 key={item.name}
