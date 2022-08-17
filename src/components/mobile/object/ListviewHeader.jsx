@@ -2,10 +2,10 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-03 16:46:23
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-17 11:10:51
+ * @LastEditTime: 2022-08-17 12:01:57
  * @Description:
  */
-import { Listbox, Transition } from "@headlessui/react";
+import { Listbox, Menu, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
 import {
   values,
@@ -17,12 +17,9 @@ import {
 } from "lodash";
 import { useRouter } from "next/router";
 import React, { useState, useEffect, Fragment, useRef } from "react";
-import { ListButtons } from "@/components/object/ListButtons";
+import { Button } from "@/components/object/Button";
 import { FromNow } from "@/components/FromNow";
 import config from "@/config";
-
-import { Dropdown, Menu, Space, } from 'antd';
-
 
 export function ListviewHeader({ schema, onListviewChange, formFactor }) {
   //   const [selectedListView, setSelectedListView] = useState();
@@ -175,54 +172,23 @@ export function ListviewHeader({ schema, onListviewChange, formFactor }) {
     });
   };
 
-  const handleMenuClick = (e)=>{
-    if(e.key === "new"){
-      newRecord();
-    }else if(e.key === "filter"){
-      showFilter();
-    }else if(e.key === "refresh"){
-      refreshList();
-    }
+  const moreButtons =[ 
+  {
+    label: '新建',
+    name: 'new',
+    todo: newRecord
+  },
+  {
+    label: '过滤',
+    name: 'filter',
+    todo: showFilter
+  },
+  {
+    label: '刷新',
+    name: 'refresh',
+    todo: refreshList
   }
-
-  const menu = (
-    <Menu
-      onClick={handleMenuClick}
-      style={{minWidth: '10rem'}}
-      items={[
-        {
-          label: '新建',
-          key: 'new',
-          icon: <svg
-          className="slds-icon slds-icon-text-default slds-icon_x-small"
-          aria-hidden="true"
-        >
-          <use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#new"></use>
-        </svg>,
-        },
-        {
-          label: '过滤',
-          key: 'filter',
-          icon: <svg
-          className="slds-icon slds-icon-text-default slds-icon_x-small"
-          aria-hidden="true"
-        >
-          <use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#filter"></use>
-        </svg>,
-        },
-        {
-          label: '刷新',
-          key: 'refresh',
-          icon: <svg
-          className="slds-icon slds-icon-text-default slds-icon_x-small"
-          aria-hidden="true"
-        >
-          <use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#refresh"></use>
-        </svg>,
-        }
-      ]}
-    />
-  );
+]
 
   return (
     <div className="slds-page-header relative rounded-none p-0">
@@ -321,16 +287,59 @@ export function ListviewHeader({ schema, onListviewChange, formFactor }) {
         </div>
         <div className="slds-page-header__col-actions">
           <div className="slds-page-header__controls">
-          <Dropdown overlay={menu}>
-              <Space>
-              <svg
-                  className="slds-icon slds-icon-text-default slds-icon_x-small"
-                  aria-hidden="true"
-                >
-                  <use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#threedots_vertical"></use>
-                </svg>
-              </Space>
-          </Dropdown> 
+          <Menu
+              as="div"
+              className="slds-dropdown-trigger slds-dropdown-trigger_click"
+            >
+              <div>
+                <Menu.Button className="border-0">
+                <div>
+                <svg
+                className="slds-icon slds-icon-text-default slds-icon_x-small"
+                aria-hidden="true"
+              >
+                <use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#threedots_vertical"></use>
+              </svg>
+              </div>
+                </Menu.Button>
+              </div>
+              <Transition
+                as={Fragment}
+                enter="transition ease-out duration-100"
+                enterFrom="transform opacity-0 scale-95"
+                enterTo="transform opacity-100 scale-100"
+                leave="transition ease-in duration-75"
+                leaveFrom="transform opacity-100 scale-100"
+                leaveTo="transform opacity-0 scale-95"
+              >
+                <Menu.Items className="absolute right-0 z-10 mt-1 w-56 origin-top-right divide-y divide-gray-100 bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:rounded-[2px]">
+                  <div className="">
+                    {moreButtons?.map((button, index) => {
+                      return (
+                        <Menu.Item key={index}>
+                          {({ active }) => (
+                            <Button
+                              button={button}
+                              inMore={true}
+                              data={{
+                                app_id: app_id,
+                                tab_id: tab_id,
+                                object_name: schema.uiSchema.name,
+                              }}
+                              className={`${
+                                active
+                                  ? "bg-violet-500 text-white"
+                                  : "text-gray-900"
+                              } slds-dropdown__item group flex w-full items-center border-0 px-2 py-2`}
+                            ></Button>
+                          )}
+                        </Menu.Item>
+                      );
+                    })}
+                  </div>
+                </Menu.Items>
+              </Transition>
+            </Menu>
           </div>
         </div>
       </div>

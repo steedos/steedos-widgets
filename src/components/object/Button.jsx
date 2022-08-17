@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-27 17:34:25
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-09 16:52:45
+ * @LastEditTime: 2022-08-17 11:58:52
  * @Description: 
  */
 import { AmisRender } from "@/components/AmisRender";
@@ -51,7 +51,7 @@ export function Button(props) {
     return (
       <button
         onClick={buttonClick}
-        // className={`slds-button slds-button_neutral ${className ? className : ''}`}
+        className={`${className ? className : ''}`}
       >
         {button.label}
       </button>

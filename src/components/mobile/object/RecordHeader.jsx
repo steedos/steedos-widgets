@@ -8,25 +8,22 @@ import {
   import { Button } from "@/components/object/Button";
 
   import config from '@/config';
-import { isEmpty, filter } from 'lodash';
 
 export function RecordHeader({ schema }) {
   const router = useRouter();
   const { app_id, tab_id, record_id } = router.query;
-  
   const [record, setRecord] = useState(null);
-  const [buttons, setButtons] = useState(null);
   const [moreButtons, setMoreButtons] = useState(null);
   const editRecord = () => {
     const type = config.listView.editRecordMode;
     SteedosUI.Object.editRecord({ appId: app_id, name: SteedosUI.getRefId({type: `${type}-form`,}), title: `编辑 ${schema.uiSchema.label}`, objectName: schema.uiSchema.name, recordId: record_id, type, options: {
       props: {
-        width: '100%',
+        width: "100%",
         style: {
-          width: '100%',
+          width: "100%",
         },
-        bodyStyle: {padding: "0px", paddingTop: "0px"},
-      }
+        bodyStyle: { padding: "0px", paddingTop: "0px" },
+      },
     }, router, 
     onSubmitted: ()=>{
         SteedosUI.getRef(SteedosUI.getRefId({
@@ -38,22 +35,27 @@ export function RecordHeader({ schema }) {
 
   };
   const loadButtons = (schema) => {
+    let buttons = [];
     if (schema && schema.uiSchema) {
-      setButtons(
-        getObjectDetailButtons(schema.uiSchema, {
-          app_id: app_id,
-          tab_id: tab_id,
-          router: router,
-        })
-      );
-      setMoreButtons(
-        getObjectDetailMoreButtons(schema.uiSchema, {
-          app_id: app_id,
-          tab_id: tab_id,
-          router: router,
-        })
-      );
+      if(schema?.uiSchema?.permissions?.allowEdit){
+        buttons.push({
+          label: "编辑",
+          name: 'edit',
+          todo: editRecord,
+        });
+      }
     }
+    buttons = _.concat(buttons, getObjectDetailButtons(schema.uiSchema, {
+      app_id: app_id,
+      tab_id: tab_id,
+      router: router,
+    }));
+    buttons = _.concat(buttons, getObjectDetailMoreButtons(schema.uiSchema, {
+      app_id: app_id,
+          tab_id: tab_id,
+          router: router,
+    }));
+    setMoreButtons(buttons);
   };
 
   useEffect(() => {
@@ -72,71 +74,8 @@ export function RecordHeader({ schema }) {
 
 
   return (
-    <div className="slds-page-header slds-page-header_record-home  bg-white shadow-none border-none p-0">
-      <div className="slds-page-header__row bg-slate-100 border-b">
-      <div className="slds-page-header__col-details">
-          <div className="grid gap-4 grid-cols-3 p-0 pt-2">
-          {schema?.uiSchema?.permissions?.allowEdit && (
-            <div className="text-center	">
-            <span
-                className="slds-icon_container slds-icon_container_circle slds-icon-action-edit"
-                title="编辑"
-                onClick={editRecord}
-              >
-                <svg className="slds-icon slds-button__icon slds-icon_small" aria-hidden="true">
-                  <use xlinkHref="/assets/icons/action-sprite/svg/symbols.svg#edit"></use>
-                </svg>
-                <span className="slds-assistive-text">编辑</span>
-              </span>
-            </div>
-          )}
-
-<div className="text-center	" >
-                <span
-                    className="slds-icon_container slds-icon_container_circle slds-icon-action-share-file"
-                    title="File"
-                    onClick={()=>{}}
-                  >
-                    <svg className="slds-icon slds-button__icon slds-icon_small" aria-hidden="true">
-                      <use xlinkHref="/assets/icons/action-sprite/svg/symbols.svg#share_file"></use>
-                    </svg>
-                    <span className="slds-assistive-text">File</span>
-                  </span>
-                </div>
-
-          {buttons?.map((button) => {
-              return (
-                <li key={button.name}>
-                  <Button
-                    button={button}
-                    data={{
-                      app_id: app_id,
-                      tab_id: tab_id,
-                      object_name: schema.uiSchema.name,
-                      dataComponentId: `${app_id}-${tab_id}-${record_id}`,
-                    }}
-                  ></Button>
-                </li>
-                
-              );
-            })}
-            
-            <div className="text-center	">
-            <span
-                className="slds-icon_container slds-icon_container_circle slds-icon-action-more"
-                title="Refresh List"
-                onClick={()=>{}}
-              >
-                <svg className="slds-icon slds-button__icon slds-icon_small" aria-hidden="true">
-                  <use xlinkHref="/assets/icons/action-sprite/svg/symbols.svg#more"></use>
-                </svg>
-                <span className="slds-assistive-text">更多</span>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="slds-page-header__row p-2">
+    <div className="slds-page-header slds-page-header_record-home  bg-white shadow-none border-none pb-0">
+      <div className="slds-page-header__row">
         <div className="slds-page-header__col-title">
           <div className="slds-media">
             <div className="slds-media__figure">
@@ -160,6 +99,73 @@ export function RecordHeader({ schema }) {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+        <div className="slds-page-header__col-actions">
+          <div className="slds-page-header__controls">
+            <div className="slds-page-header__control">
+              <ul className="slds-button-group-list">
+                <>
+                  {moreButtons?.length > 0 && (
+                    <li>
+                      <Menu
+                        as="div"
+                        className="slds-dropdown-trigger slds-dropdown-trigger_click"
+                      >
+                        <div>
+                          <Menu.Button className="border-0">
+                          <div>
+                          <svg
+                          className="slds-icon slds-icon-text-default slds-icon_x-small"
+                          aria-hidden="true"
+                        >
+                          <use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#threedots_vertical"></use>
+                        </svg>
+                        </div>
+                          </Menu.Button>
+                        </div>
+                        <Transition
+                          as={Fragment}
+                          enter="transition ease-out duration-100"
+                          enterFrom="transform opacity-0 scale-95"
+                          enterTo="transform opacity-100 scale-100"
+                          leave="transition ease-in duration-75"
+                          leaveFrom="transform opacity-100 scale-100"
+                          leaveTo="transform opacity-0 scale-95"
+                        >
+                          <Menu.Items className="absolute right-0 z-10 mt-1 w-56 origin-top-right divide-y divide-gray-100 bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:rounded-[2px]">
+                            <div className="">
+                              {moreButtons?.map((button, index) => {
+                                return (
+                                  <Menu.Item key={index}>
+                                    {({ active }) => (
+                                      <Button
+                                        button={button}
+                                        inMore={true}
+                                        data={{
+                                          app_id: app_id,
+                                          tab_id: tab_id,
+                                          object_name: schema.uiSchema.name,
+                                        }}
+                                        className={`${
+                                          active
+                                            ? "bg-violet-500 text-white"
+                                            : "text-gray-900"
+                                        } slds-dropdown__item group flex w-full items-center border-0 px-2 py-2`}
+                                      ></Button>
+                                    )}
+                                  </Menu.Item>
+                                );
+                              })}
+                            </div>
+                          </Menu.Items>
+                        </Transition>
+                      </Menu>
+                    </li>
+                  )}
+                </>
+              </ul>
             </div>
           </div>
         </div>
