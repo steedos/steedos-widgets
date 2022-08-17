@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-16 11:21:55
+ * @LastEditTime: 2022-08-16 17:48:06
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -40,7 +40,7 @@ export default function Page ({formFactor}) {
       <div className='slds-page-header--object-home slds-page-header_joined slds-page-header_bleed slds-page-header slds-shrink-none p-0 bg-white'>
       {formFactor && schema?.uiSchema.name === tab_id && <Header schema={schema} onListviewChange={(listView)=>{
           getListviewSchema(listView?.name)
-        }}></Header>}
+        }} formFactor={formFactor}></Header>}
       </div>
       <div className="">
       {schema?.amisSchema && schema?.uiSchema.name === tab_id && <AmisRender className="steedos-listview" id={listViewId} schema={schema?.amisSchema || {}} router={router}></AmisRender>}

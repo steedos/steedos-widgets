@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-03 16:46:23
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-16 11:38:03
+ * @LastEditTime: 2022-08-16 17:50:05
  * @Description:
  */
 import { Listbox, Transition } from "@headlessui/react";
@@ -21,7 +21,7 @@ import { ListButtons } from "@/components/object/ListButtons";
 import { FromNow } from "@/components/FromNow";
 import config from '@/config';
 
-export function ListviewHeader({ schema, onListviewChange }) {
+export function ListviewHeader({ schema, onListviewChange, formFactor }) {
   //   const [selectedListView, setSelectedListView] = useState();
   const [showFieldsFilter, setShowFieldsFilter] = useState(false);
   const [queryInfo, setQueryInfo] = useState();
@@ -125,13 +125,13 @@ export function ListviewHeader({ schema, onListviewChange }) {
   };
 
   const onChange = (value) => {
-    router.push(`/app/${app_id}/${tab_id}/grid/${value.name}`);
-    // setSelectedListView
+    router.push(SteedosUI.Router.getObjectListViewPath({
+      formFactor, appId: app_id, objectName: tab_id, listViewName: value.name
+    }));
   };
 
   const newRecord = ()=>{
     const listViewId = SteedosUI.getRefId({type: 'listview', appId: app_id, name: schema?.uiSchema?.name});
-    // router.push('/app/'+app_id+'/'+schema.uiSchema.name+'/view/new')
     const type = config.listView.newRecordMode;
     SteedosUI.Object.newRecord({ 
         onSubmitted : ()=>{
@@ -160,7 +160,7 @@ export function ListviewHeader({ schema, onListviewChange }) {
   }
 
   return (
-    <div className="relative slds-page-header rounded-none">
+    <div className="relative slds-page-header rounded-none p-0">
       <div className="slds-page-header__row bg-slate-100 border-b">
         <div className="slds-page-header__col-details">
           <div className="grid gap-4 grid-cols-3 p-0 pt-2">

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-16 15:23:18
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-16 16:32:37
+ * @LastEditTime: 2022-08-16 17:27:51
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef } from "react";
@@ -14,7 +14,7 @@ import { Tab, Menu, Transition } from "@headlessui/react";
 import { RelatedLink } from '@/components/object/RelatedLink'
 import { getRelatedsCount } from '@/lib/record';
 
-export const RelatedsLink = ({app_id, record_id, relateds})=>{
+export const RelatedsLink = ({app_id, record_id, relateds, formFactor})=>{
     const [relatedsQueryInfo, setRelatedsQueryInfo] = useState({});
     useEffect(()=>{
         getRelatedsCount(record_id, relateds).then(res=>{
@@ -29,6 +29,7 @@ export const RelatedsLink = ({app_id, record_id, relateds})=>{
                     <RelatedLink {...related}
                 app_id={app_id}
                 record_id={record_id}
+                formFactor={formFactor}
                 recordCount={relatedsQueryInfo[related.object_name]} ></RelatedLink>
                 </div>
             );

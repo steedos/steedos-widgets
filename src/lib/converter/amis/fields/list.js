@@ -2,9 +2,11 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-23 09:12:14
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-16 09:57:50
+ * @LastEditTime: 2022-08-17 09:52:02
  * @Description: 
  */
+
+import { SteedosUI } from '../../../../components/functions';
 
 const Tpl = require('../tpl');
 
@@ -64,7 +66,12 @@ export function getListSchema(fields, options){
                     label: "查看",
                     type: "button",
                     actionType: "link",
-                    link: `/app/${options.appId}/${options.tabId}/view/\${_id}`
+                    link: SteedosUI.Router.getObjectDetailPath({
+                        formFactor: options.formFactor, 
+                        appId: options.appId, 
+                        objectName: options.tabId, 
+                        recordId: `\${_id}`
+                    })
                 }
             ]
         }

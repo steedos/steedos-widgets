@@ -2,15 +2,21 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-25 15:19:31
+ * @LastEditTime: 2022-08-17 10:24:39
  * @Description: 
  */
-export function getCreatedInfoTpl(){
-    return "<div><a href='/app/admin/users/view/${created_by._id}'>${created_by.name}</a> ${_display.created}</div>"
+export function getCreatedInfoTpl(formFactor){
+    const href = SteedosUI.Router.getObjectDetailPath({
+        formFactor, appId: "admin", objectName: 'users', recordId: '${created_by._id}'
+    })
+    return `<div><a href='${href}'>\${created_by.name}</a>\${_display.created}</div>`
 }
 
-export function getModifiedInfoTpl(){
-    return "<div><a href='/app/admin/users/view/${modified_by._id}'>${modified_by.name}</a> ${_display.modified}</div>"
+export function getModifiedInfoTpl(formFactor){
+    const href = SteedosUI.Router.getObjectDetailPath({
+        formFactor, appId: "admin", objectName: 'users', recordId: '${modified_by._id}'
+    })
+    return `<div><a href='${href}'>\${modified_by.name}</a>\${_display.modified}</div>`
 }
 
 export function getDateTpl(field){
@@ -37,20 +43,29 @@ export function getNameTpl(field, ctx){
     if(ctx.objectName === 'cms_files'){
         return `<a href="\${context.rootUrl}/api/files/files/\${versions[0]}?download=true">\${${field.name}}</a>`
     }
-    return `<a href="/app/${ctx.appId}/${ctx.tabId}/view/\${${ctx.idFieldName}}">\${${field.name}}</a>`
+    const href = SteedosUI.Router.getObjectDetailPath({
+        formFactor: ctx.formFactor, appId: ctx.appId, objectName: ctx.tabId, recordId: `\${${ctx.idFieldName}}`
+    })
+    return `<a href="${href}">\${${field.name}}</a>`
 }
 
-export function getLookupTpl(field){
+export function getLookupTpl(field, ctx){
     if(!field.reference_to){
         return getSelectTpl(field)
     }
     const NAME_FIELD_KEY = getRefObjectNameFieldName(field);
     if(field.multiple){
+        const href = SteedosUI.Router.getObjectDetailPath({
+            formFactor: ctx.formFactor, appId: ctx.appId, objectName: field.reference_to, recordId: `<%=item._id%>`
+        })
         return `
-        <% if (data.${field.name} && data.${field.name}.length) { %><% data.${field.name}.forEach(function(item) { %> <a href="/app/-/${field.reference_to}/view/<%=item._id%>"><%=item.${NAME_FIELD_KEY}%></a>  <% }); %><% } %>
+        <% if (data.${field.name} && data.${field.name}.length) { %><% data.${field.name}.forEach(function(item) { %> <a href="${href}"><%=item.${NAME_FIELD_KEY}%></a>  <% }); %><% } %>
         `
     }else{
-        return `<a href="/app/-/${field.reference_to}/view/\${${field.name}._id}">\${${field.name}.${NAME_FIELD_KEY}}</a>`
+        const href = SteedosUI.Router.getObjectDetailPath({
+            formFactor: ctx.formFactor, appId: ctx.appId, objectName: field.reference_to, recordId: `\${${field.name}._id}`
+        })
+        return `<a href="${href}">\${${field.name}.${NAME_FIELD_KEY}}</a>`
     }
     
 }
@@ -86,9 +101,9 @@ export function getFieldTpl (field, options){
         case 'datetime':
             return getDateTimeTpl(field);
         case 'lookup':
-            return getLookupTpl(field);
+            return getLookupTpl(field, options);
         case 'master_detail':
-            return getLookupTpl(field);
+            return getLookupTpl(field, options);
         default:
             break;
     }

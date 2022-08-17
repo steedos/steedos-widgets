@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-16 16:59:46
+ * @LastEditTime: 2022-08-16 17:58:25
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -105,14 +105,14 @@ export default function Record({formFactor}) {
       }},
       {label: '相关', name: 'relateds', component: ()=>{
         return (<>
-          <RelatedsLink app_id={app_id} record_id={record_id} relateds={relateds}></RelatedsLink>
+          <RelatedsLink app_id={app_id} record_id={record_id} relateds={relateds} formFactor={formFactor}></RelatedsLink>
         </>)
       }}
     ]
   }
 
   const Header = formFactor === "SMALL" ? MobileRecordHeader : RecordHeader;
-
+  console.log(`schema`, schema)
   return (
     <div className="sm:p-4 slds-grid slds-wrap">
       <div className="slds-col slds-size_1-of-1 row region-header">

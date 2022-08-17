@@ -28,7 +28,9 @@ export default function Page (props) {
   }, [])
   const getListviewSchema = (listviewName)=>{
     getListSchema(app_id, tab_id, listviewName, {formFactor: formFactor}).then((data) => {
-      router.push(`/app/${app_id}/${tab_id}/grid/${values(data.uiSchema.list_views)[0].name}`)
+      router.push(SteedosUI.Router.getObjectListViewPath({
+        formFactor, appId: app_id, objectName: tab_id, listViewName: values(data.uiSchema.list_views)[0].name
+      }))
     })
   } 
 

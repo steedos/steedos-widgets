@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-13 18:06:11
+ * @LastEditTime: 2022-08-16 17:44:59
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -28,7 +28,9 @@ export default function Page (props) {
   }, [])
   const getListviewSchema = (listviewName)=>{
     getListSchema(app_id, tab_id, listviewName, {formFactor: formFactor}).then((data) => {
-      router.push(`/app/${app_id}/${tab_id}/grid/${values(data.uiSchema.list_views)[0].name}`)
+      router.push(SteedosUI.Router.getObjectListViewPath({
+        formFactor, appId: app_id, objectName: tab_id, listViewName: values(data.uiSchema.list_views)[0].name
+      }))
     })
   } 
 

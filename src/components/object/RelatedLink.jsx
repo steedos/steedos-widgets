@@ -2,12 +2,12 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-09 11:09:10
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-16 16:57:26
+ * @LastEditTime: 2022-08-16 17:24:50
  * @Description:
  */
 import React, { useState, useEffect, Fragment, useRef } from "react";
 import Link from "next/link";
-
+import { SteedosUI } from '@/components/functions';
 export const RelatedLink = ({
   schema,
   object_name,
@@ -16,6 +16,7 @@ export const RelatedLink = ({
   record_id,
   masterObjectName,
   recordCount,
+  formFactor
 }) => {
   return (
     <>
@@ -48,7 +49,16 @@ export const RelatedLink = ({
         <div className="slds-media__body">
           <h2 className="slds-card__header-title">
             <Link
-              href={`/app/${app_id}/${masterObjectName}/${record_id}/${object_name}/grid?related_field_name=${foreign_key}`}
+              href={SteedosUI.Router.getObjectRelatedViewPath({
+                formFactor, 
+                appId: app_id, 
+                masterObjectName: masterObjectName, 
+                masterRecordId: record_id, 
+                objectName: object_name, 
+              //`/app/${app_id}/${masterObjectName}/${record_id}/${object_name}/grid?related_field_name=${foreign_key}`
+                foreignKey: foreign_key
+              })}
+              //`/app/${app_id}/${masterObjectName}/${record_id}/${object_name}/grid?related_field_name=${foreign_key}`
             >
               <a className="slds-card__header-link baseCard__header-title-container">
                 <>

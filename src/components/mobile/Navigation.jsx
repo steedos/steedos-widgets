@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-15 15:19:59
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-16 11:42:01
+ * @LastEditTime: 2022-08-16 17:40:24
  * @Description: 
  */
 import Link from 'next/link'
@@ -11,14 +11,13 @@ import clsx from 'clsx'
 
 export function Navigation({ navigation, className }) {
   let router = useRouter()
-
   return (
     <nav className={clsx('text-base lg:text-sm', className)}>
       <ul role="list" className="space-y-2">
         {navigation.map((section) => (
           <li key={section.path} className="relative">
           <Link
-            href={section.path}
+            href={section.path.replace(/^\/app/, '/mapp')}
             className={clsx(
               'block w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full',
               section.path === router.pathname

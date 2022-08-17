@@ -145,13 +145,13 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     }
 
     if(readonly){
-        data.tpl = Tpl.getLookupTpl(field)
+        data.tpl = Tpl.getLookupTpl(field, ctx)
     }
 
     return data;
 }
 
-export async function lookupToAmisSelect(field, readonly){
+export async function lookupToAmisSelect(field, readonly, ctx){
     let referenceTo = await getReferenceTo(field);
 
     let apiInfo;
@@ -219,7 +219,7 @@ export async function lookupToAmisSelect(field, readonly){
     }
 
     if(readonly){
-        data.tpl = Tpl.getLookupTpl(field)
+        data.tpl = Tpl.getLookupTpl(field, ctx)
     }
 
     return data;
@@ -239,7 +239,7 @@ function getApi(object, recordId, fields, options){
 export async function lookupToAmis(field, readonly, ctx){
     let referenceTo = await getReferenceTo(field);
     if(!referenceTo){
-        return await lookupToAmisSelect(field, readonly);
+        return await lookupToAmisSelect(field, readonly, ctx);
     }
     const refObject = await getUISchema(referenceTo.objectName);
 
@@ -247,6 +247,6 @@ export async function lookupToAmis(field, readonly, ctx){
     if(refObject.enable_enhanced_lookup == true){
         return await lookupToAmisPicker(field, readonly, ctx);
     }else{
-        return await lookupToAmisSelect(field, readonly);
+        return await lookupToAmisSelect(field, readonly, ctx);
     }
 }
