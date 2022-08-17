@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-15 15:19:59
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-17 17:23:47
+ * @LastEditTime: 2022-08-17 17:26:35
  * @Description: 
  */
 import Link from 'next/link'
@@ -12,7 +12,6 @@ import { AppLauncherBar } from '@/components/AppLauncherBar'
 
 export function Navigation({ navigation, className, formFactor, app }) {
   let router = useRouter();
-  console.log(`navigation`, navigation)
   return (
     <>
     <nav className={clsx('text-base lg:text-sm', className)}>

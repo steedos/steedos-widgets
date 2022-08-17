@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-16 17:58:25
+ * @LastEditTime: 2022-08-17 17:27:08
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -112,7 +112,6 @@ export default function Record({formFactor}) {
   }
 
   const Header = formFactor === "SMALL" ? MobileRecordHeader : RecordHeader;
-  console.log(`schema`, schema)
   return (
     <div className="sm:p-4 slds-grid slds-wrap">
       <div className="slds-col slds-size_1-of-1 row region-header">

@@ -218,7 +218,6 @@ export async function getObjectForm(objectSchema, ctx){
 
 export async function getObjectDetail(objectSchema, recordId, ctx){
     const fields = _.values(objectSchema.fields);
-    console.log(`ctx`, ctx)
     return {
         type: 'service',
         name: `page_readonly_${recordId}`,

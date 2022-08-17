@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 09:31:04
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-17 16:45:06
+ * @LastEditTime: 2022-08-17 17:26:53
  * @Description:  
  */
 import React, { useState, useEffect, Fragment } from 'react';
@@ -42,7 +42,6 @@ export function AppLayout({ children, formFactor }) {
             setApp(data)
           })
       }, [app_id, session]);
-      console.log(`formFactor`, formFactor)
     return (
       <div className='h-full flex flex-col'>
         <GlobalHeader navigation={app?.children} selected={selected} app={app} formFactor={formFactor} />
