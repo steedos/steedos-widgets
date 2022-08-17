@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 09:31:04
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-16 11:23:44
+ * @LastEditTime: 2022-08-17 16:45:06
  * @Description:  
  */
 import React, { useState, useEffect, Fragment } from 'react';
@@ -13,7 +13,7 @@ import { useRouter } from 'next/router'
 import { setSteedosAuth } from '@/lib/steedos.client';
 import { useSession } from "next-auth/react"
 
-export function AppLayout({ children }) {
+export function AppLayout({ children, formFactor }) {
     const router = useRouter()
     const { app_id, tab_id } = router.query
     const [app, setApp] = useState(null)
@@ -42,9 +42,10 @@ export function AppLayout({ children }) {
             setApp(data)
           })
       }, [app_id, session]);
+      console.log(`formFactor`, formFactor)
     return (
       <div className='h-full flex flex-col'>
-        <GlobalHeader navigation={app?.children} selected={selected} app={app}/>
+        <GlobalHeader navigation={app?.children} selected={selected} app={app} formFactor={formFactor} />
         {session && (
           <div id="main" className="flex grow">
             <div id="sidebar" className="flex-none hidden lg:block z-20 inset-0 top-[3rem] right-auto w-[16rem] overflow-y-auto bg-slate-50 border-r border-slate-200">

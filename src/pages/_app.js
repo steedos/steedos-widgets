@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-16 11:25:19
+ * @LastEditTime: 2022-08-17 16:45:52
  * @Description: 
  */
 import { SessionProvider } from "next-auth/react"
@@ -31,7 +31,7 @@ export default function App({
   return (
     <>
     { formFactor && <SessionProvider session={session}>
-      <Layout>
+      <Layout formFactor={formFactor}>
         <Component {...pageProps} formFactor={formFactor}/>
       </Layout>
     </SessionProvider>}

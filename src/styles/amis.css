@@ -148,3 +148,26 @@ button.antd-Button--primary {
     --Form-selectValue-fontSize: 14px;
     --Table-toolbar-marginY: 0;
 }
+
+.antd-Cards-fixedTop{
+    display: none !important;
+}
+
+/* .antd-Form-item--normal{
+    display: block !important;
+    padding-top: 0.25rem !important;
+    padding-bottom:  0.25rem !important;
+    margin: 0 !important;
+}
+
+.antd-Form-item--normal .antd-Form-label{
+    margin-bottom: 0.25rem !important;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+
+.antd-Form--normal .slds-form-element_readonly{
+    border: none !important;
+    border-image: none !important;
+} */

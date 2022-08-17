@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 09:31:04
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-11 18:11:49
+ * @LastEditTime: 2022-08-17 16:46:56
  * @Description:  
  */
 import React, { useState, useEffect, Fragment } from 'react';
@@ -12,8 +12,6 @@ import { getApp } from '@/lib/apps';
 import { useRouter } from 'next/router'
 import { setSteedosAuth } from '@/lib/steedos.client';
 import { useSession } from "next-auth/react"
-
-import { AppLauncherBar } from '@/components/AppLauncherBar';
 
 export function AppLayout({ children }) {
     const router = useRouter()

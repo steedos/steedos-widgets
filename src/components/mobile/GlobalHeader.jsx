@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-15 15:58:15
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-16 11:41:36
+ * @LastEditTime: 2022-08-17 16:47:40
  * @Description: 
  */
 import { useCallback, useEffect, useState } from 'react'
@@ -14,7 +14,7 @@ import { MobileNavigation } from '@/components/mobile/MobileNavigation'
 import { ThemeSelector } from '@/components/mobile/ThemeSelector'
 import { Notification } from '@/components/Notification';
 
-export const GlobalHeader = ({ navigation, selected, app })=>{
+export const GlobalHeader = ({ navigation, selected, app, formFactor })=>{
     let [isScrolled, setIsScrolled] = useState(false)
 
     useEffect(() => {
@@ -33,8 +33,8 @@ export const GlobalHeader = ({ navigation, selected, app })=>{
             'relative bg-sky-700 sticky top-0 z-50 flex flex-wrap items-center justify-between px-4 py-4 transition duration-500 shadow-none sm:px-6 lg:px-8',
           )}
         >
-          <div className="mr-6 flex lg:hidden">
-            <MobileNavigation navigation={navigation} />
+          <div className="mr-6 flex">
+            <MobileNavigation navigation={navigation} formFactor={formFactor} app={app} />
           </div>
           <div className="relative flex flex-grow basis-0 items-center">
             <Link href="/" aria-label="Home page">

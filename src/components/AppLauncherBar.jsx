@@ -2,13 +2,13 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-11 16:46:07
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-11 17:55:40
+ * @LastEditTime: 2022-08-17 16:43:11
  * @Description:
  */
 import { useRouter } from 'next/router'
 import { AppLauncher } from '@/components/AppLauncher'
 
-export const AppLauncherBar = ({app}) => {
+export const AppLauncherBar = ({app, formFactor}) => {
   const router = useRouter()
   const openAppLauncher = () => {
     const name = 'app-launcher-modal';
@@ -19,10 +19,16 @@ export const AppLauncherBar = ({app}) => {
         maskClosable: false,
         keyboard: false, // 禁止 esc 关闭
         footer: null,
-        width: "90%",
-        style: {
-          width: "90%",
-          maxWidth: "90",
+        width: formFactor === 'SMALL' ? "100%" : "90%",
+        style: formFactor === 'SMALL' ?  {
+          top: '0px',
+          margin: '0px',
+          width: "100%",
+          maxWidth: "100%",
+          height: "100%",
+        } : {
+          width: '90%',
+          maxWidth: '90%',
         },
         bodyStyle: {padding: "0px", paddingTop: "12px"},
         children: <AppLauncher router={router}></AppLauncher>
