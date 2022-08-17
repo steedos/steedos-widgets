@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-03 16:46:23
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-16 17:50:05
+ * @LastEditTime: 2022-08-17 11:10:51
  * @Description:
  */
 import { Listbox, Transition } from "@headlessui/react";
@@ -19,7 +19,10 @@ import { useRouter } from "next/router";
 import React, { useState, useEffect, Fragment, useRef } from "react";
 import { ListButtons } from "@/components/object/ListButtons";
 import { FromNow } from "@/components/FromNow";
-import config from '@/config';
+import config from "@/config";
+
+import { Dropdown, Menu, Space, } from 'antd';
+
 
 export function ListviewHeader({ schema, onListviewChange, formFactor }) {
   //   const [selectedListView, setSelectedListView] = useState();
@@ -85,10 +88,10 @@ export function ListviewHeader({ schema, onListviewChange, formFactor }) {
         filters: SteedosUI.ListView.getVisibleFilter(selectedListView, filter),
       },
       props: {
-        width: '100%',
-            style: {
-              width: '100%',
-            },
+        width: "100%",
+        style: {
+          width: "100%",
+        },
       },
       onFilterChange: (filter) => {
         const scope = SteedosUI.getRef(listViewId);
@@ -125,87 +128,104 @@ export function ListviewHeader({ schema, onListviewChange, formFactor }) {
   };
 
   const onChange = (value) => {
-    router.push(SteedosUI.Router.getObjectListViewPath({
-      formFactor, appId: app_id, objectName: tab_id, listViewName: value.name
-    }));
+    router.push(
+      SteedosUI.Router.getObjectListViewPath({
+        formFactor,
+        appId: app_id,
+        objectName: tab_id,
+        listViewName: value.name,
+      })
+    );
   };
 
-  const newRecord = ()=>{
-    const listViewId = SteedosUI.getRefId({type: 'listview', appId: app_id, name: schema?.uiSchema?.name});
+  const newRecord = () => {
+    const listViewId = SteedosUI.getRefId({
+      type: "listview",
+      appId: app_id,
+      name: schema?.uiSchema?.name,
+    });
     const type = config.listView.newRecordMode;
-    SteedosUI.Object.newRecord({ 
-        onSubmitted : ()=>{
-            SteedosUI.getRef(listViewId).getComponentByName(`page.listview_${schema.uiSchema.name}`).handleAction({}, { actionType: "reload"})
+    SteedosUI.Object.newRecord({
+      onSubmitted: () => {
+        SteedosUI.getRef(listViewId)
+          .getComponentByName(`page.listview_${schema.uiSchema.name}`)
+          .handleAction({}, { actionType: "reload" });
+      },
+      onCancel: () => {
+        SteedosUI.getRef(listViewId)
+          .getComponentByName(`page.listview_${schema.uiSchema.name}`)
+          .handleAction({}, { actionType: "reload" });
+      },
+      appId: app_id,
+      name: SteedosUI.getRefId({ type: `${type}-form` }),
+      title: `新建 ${schema.uiSchema.label}`,
+      objectName: schema.uiSchema.name,
+      recordId: "new",
+      type,
+      options: {
+        props: {
+          width: "100%",
+          style: {
+            width: "100%",
+          },
+          bodyStyle: { padding: "0px", paddingTop: "0px" },
         },
-        onCancel: ()=>{
-            SteedosUI.getRef(listViewId).getComponentByName(`page.listview_${schema.uiSchema.name}`).handleAction({}, { actionType: "reload"})
-        },
-        appId: app_id, 
-        name: SteedosUI.getRefId({type: `${type}-form`,}), 
-        title: `新建 ${schema.uiSchema.label}`, 
-        objectName: schema.uiSchema.name, 
-        recordId: 'new', 
-        type, 
-        options: {
-          props: {
-            width: '100%',
-            style: {
-              width: '100%',
-            },
-            bodyStyle: {padding: "0px", paddingTop: "0px"},
-          }
-        }, 
-        router
-    })
+      },
+      router,
+    });
+  };
+
+  const handleMenuClick = (e)=>{
+    if(e.key === "new"){
+      newRecord();
+    }else if(e.key === "filter"){
+      showFilter();
+    }else if(e.key === "refresh"){
+      refreshList();
+    }
   }
 
+  const menu = (
+    <Menu
+      onClick={handleMenuClick}
+      style={{minWidth: '10rem'}}
+      items={[
+        {
+          label: '新建',
+          key: 'new',
+          icon: <svg
+          className="slds-icon slds-icon-text-default slds-icon_x-small"
+          aria-hidden="true"
+        >
+          <use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#new"></use>
+        </svg>,
+        },
+        {
+          label: '过滤',
+          key: 'filter',
+          icon: <svg
+          className="slds-icon slds-icon-text-default slds-icon_x-small"
+          aria-hidden="true"
+        >
+          <use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#filter"></use>
+        </svg>,
+        },
+        {
+          label: '刷新',
+          key: 'refresh',
+          icon: <svg
+          className="slds-icon slds-icon-text-default slds-icon_x-small"
+          aria-hidden="true"
+        >
+          <use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#refresh"></use>
+        </svg>,
+        }
+      ]}
+    />
+  );
+
   return (
-    <div className="relative slds-page-header rounded-none p-0">
-      <div className="slds-page-header__row bg-slate-100 border-b">
-        <div className="slds-page-header__col-details">
-          <div className="grid gap-4 grid-cols-3 p-0 pt-2">
-            <div className="text-center	">
-            <span
-                className="slds-icon_container slds-icon_container_circle slds-icon-standard-filter"
-                title="过滤器"
-                onClick={showFilter}
-              >
-                <svg className="slds-icon slds-button__icon slds-icon_small" aria-hidden="true">
-                  <use xlinkHref="/assets/icons/standard-sprite/svg/symbols.svg#filter"></use>
-                </svg>
-                <span className="slds-assistive-text">filterList</span>
-                {!isEmpty(filter) && (
-                    <span className="slds-notification-badge slds-incoming-notification slds-show-notification min-h-[0.5rem] min-w-[0.5rem]"></span>
-                  )}
-              </span>
-            </div>
-            <div className="text-center	">
-            <span
-                className="slds-icon_container slds-icon_container_circle slds-icon-action-refresh"
-                title="Refresh List"
-                onClick={refreshList}
-              >
-                <svg className="slds-icon slds-button__icon slds-icon_small" aria-hidden="true">
-                  <use xlinkHref="/assets/icons/action-sprite/svg/symbols.svg#refresh"></use>
-                </svg>
-                <span className="slds-assistive-text">Refresh List</span>
-              </span>
-            </div>
-            <div className="text-center	">
-            <span
-                className="slds-icon_container slds-icon_container_circle slds-icon-action-new"
-                title="Refresh List"
-                onClick={newRecord}
-              >
-                <svg className="slds-icon slds-button__icon slds-icon_small" aria-hidden="true">
-                  <use xlinkHref="/assets/icons/action-sprite/svg/symbols.svg#new"></use>
-                </svg>
-                <span className="slds-assistive-text">新建</span>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div className="slds-page-header relative rounded-none p-0">
       <div className="slds-page-header__row p-2">
         <div className="slds-page-header__col-title">
           <div className="slds-media">
@@ -297,6 +317,20 @@ export function ListviewHeader({ schema, onListviewChange, formFactor }) {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+        <div className="slds-page-header__col-actions">
+          <div className="slds-page-header__controls">
+          <Dropdown overlay={menu}>
+              <Space>
+              <svg
+                  className="slds-icon slds-icon-text-default slds-icon_x-small"
+                  aria-hidden="true"
+                >
+                  <use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#threedots_vertical"></use>
+                </svg>
+              </Space>
+          </Dropdown> 
           </div>
         </div>
       </div>
