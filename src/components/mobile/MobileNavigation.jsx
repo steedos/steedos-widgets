@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-15 15:19:59
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-17 17:01:49
+ * @LastEditTime: 2022-08-17 17:54:25
  * @Description: 
  */
 import { useEffect, useState } from 'react'
@@ -85,7 +85,7 @@ export function MobileNavigation({ navigation, formFactor, app }) {
               type="button"
               onClick={() => setIsOpen(false)}
               aria-label="Close navigation"
-              className="absolute top-0 right-5 p-2 text-white"
+              className="absolute top-0 right-0 p-2 text-white"
             >
               <CloseIcon className="h-6 w-6 stroke-slate-500" />
             </button>
