@@ -197,7 +197,7 @@ export async function getObjectForm(objectSchema, ctx){
         body: [
             {
                 type: "form",
-                mode: "horizontal",
+                mode: ctx.formFactor === 'SMALL' ? 'normal' : 'horizontal',
                 persistData: false,
                 promptPageLeave: true,
                 name: `form_edit_${recordId}`,
@@ -219,6 +219,7 @@ export async function getObjectForm(objectSchema, ctx){
 
 export async function getObjectDetail(objectSchema, recordId, ctx){
     const fields = _.values(objectSchema.fields);
+    console.log(`ctx`, ctx)
     return {
         type: 'service',
         name: `page_readonly_${recordId}`,
@@ -228,7 +229,7 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
         body: [
             {
                 type: "form",
-                mode: "horizontal",
+                mode: ctx.formFactor === 'SMALL' ? 'normal' : 'horizontal',
                 persistData: false,
                 promptPageLeave: false,
                 name: `form_readonly_${recordId}`,
