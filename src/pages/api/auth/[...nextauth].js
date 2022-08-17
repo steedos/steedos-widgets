@@ -27,7 +27,7 @@ const getJWTToken = (user)=>{
 
   return jwt.sign(
     jwtPayload,
-    process.env.JWT_SECRET,
+    process.env.STEEDOS_IDENTITY_JWT_SECRET,
     {
       expiresIn: 60
     }
