@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-03 16:46:23
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-09 10:34:21
+ * @LastEditTime: 2022-08-18 15:32:46
  * @Description:
  */
 import { Listbox, Transition } from "@headlessui/react";
@@ -21,7 +21,7 @@ import { ListButtons } from "@/components/object/ListButtons";
 import { FromNow } from "@/components/FromNow";
 import { SearchableFieldsFilter } from '@/components/object/SearchableFieldsFilter'
 
-export function ListviewHeader({ schema, onListviewChange }) {
+export function ListviewHeader({ schema, onListviewChange, formFactor }) {
 //   const [selectedListView, setSelectedListView] = useState();
   const [showFieldsFilter, setShowFieldsFilter] = useState(false);
   const [queryInfo, setQueryInfo] = useState();
@@ -226,6 +226,7 @@ export function ListviewHeader({ schema, onListviewChange }) {
                 app_id={app_id}
                 tab_id={tab_id}
                 schema={schema}
+                formFactor={formFactor}
               ></ListButtons>
             </div>
           </div>

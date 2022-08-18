@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-03 16:46:23
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-17 17:09:37
+ * @LastEditTime: 2022-08-18 15:24:24
  * @Description:
  */
 import { Listbox, Menu, Transition } from "@headlessui/react";
@@ -158,6 +158,7 @@ export function ListviewHeader({ schema, onListviewChange, formFactor }) {
       title: `新建 ${schema.uiSchema.label}`,
       objectName: schema.uiSchema.name,
       recordId: "new",
+      formFactor: formFactor,
       type,
       options: {
         props: {

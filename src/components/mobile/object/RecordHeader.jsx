@@ -9,7 +9,7 @@ import {
 
   import config from '@/config';
 
-export function RecordHeader({ schema }) {
+export function RecordHeader({ schema, formFactor }) {
   const router = useRouter();
   const { app_id, tab_id, record_id } = router.query;
   const [record, setRecord] = useState(null);
@@ -23,8 +23,8 @@ export function RecordHeader({ schema }) {
           width: "100%",
         },
         bodyStyle: { padding: "0px", paddingTop: "0px" },
-      },
-    }, router, 
+      }
+    }, router, formFactor: formFactor,
     onSubmitted: ()=>{
         SteedosUI.getRef(SteedosUI.getRefId({
             type: "detail",

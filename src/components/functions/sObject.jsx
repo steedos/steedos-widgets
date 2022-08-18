@@ -4,7 +4,7 @@ import { isFunction, each } from 'lodash';
 import { fetchAPI } from '@/lib/steedos.client.js';
 
 const editRecordHandle = (props)=>{
-    const { appId, name, title, objectName, recordId, type, options, router, refId, data, onSubmitted, onCancel } = props;
+    const { appId, name, title, objectName, recordId, type, options, router, refId, data, onSubmitted, onCancel, formFactor } = props;
     if(type === 'modal'){
         SteedosUI.Modal(Object.assign({
             name: name,
@@ -34,7 +34,7 @@ const editRecordHandle = (props)=>{
                 }
             },
             bodyStyle: {padding: "0px", paddingTop: "12px"},
-            children: <Form appId={appId} objectName={objectName} recordId={recordId} data={data}></Form>
+            children: <Form appId={appId} objectName={objectName} recordId={recordId} data={data} formFactor={formFactor}></Form>
         }, options?.props));
     }else if(type === 'drawer'){
         SteedosUI.Drawer(Object.assign({
@@ -44,7 +44,7 @@ const editRecordHandle = (props)=>{
             maskClosable: false,
             footer: null,
             bodyStyle: {padding: "0px", paddingTop: "12px"},
-            children: <Form appId={appId} objectName={objectName} recordId={recordId} data={data}></Form>,
+            children: <Form appId={appId} objectName={objectName} recordId={recordId} data={data} formFactor={formFactor}></Form>,
             mask: false,
             size: 'large',
             style: null,
