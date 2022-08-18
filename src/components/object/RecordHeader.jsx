@@ -63,7 +63,7 @@ export function RecordHeader({ schema }) {
 
 
   return (
-    <div className="slds-page-header slds-page-header_record-home  bg-white shadow-none border-none pb-0">
+    <div className="slds-page-header slds-page-header_record-home bg-transparent shadow-none border-none pb-0">
       <div className="slds-page-header__row">
         <div className="slds-page-header__col-title">
           <div className="slds-media">

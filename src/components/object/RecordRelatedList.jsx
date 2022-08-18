@@ -42,7 +42,7 @@ export function RecordRelatedList(props) {
     }, [schema]);
     
     return (
-        <article className="slds-card slds-card_boundary shadow-none border-slate-200">
+        <article className="slds-card slds-card_boundary shadow-none bg-slate-50 border-slate-200">
             <div className="slds-grid slds-page-header rounded-b-none p-2">
                 {schema && <RecordRelatedHeader refId={id} recordCount={recordCount} {...props}></RecordRelatedHeader>}
             </div>

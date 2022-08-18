@@ -21,7 +21,7 @@ export  function Sidebar({ navigation, selected }) {
     router.push(e.target.href)
   }
   return (
-    <nav aria-label="Sidebar" className="pt-4 divide-y divide-gray-300">
+    <nav aria-label="Sidebar" className="pt-4 divide-y">
       <div className="">
         {navigation?.map((item) => (
           <Link href={item.path} key={item.name}>
