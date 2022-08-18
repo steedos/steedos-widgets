@@ -1,5 +1,6 @@
 import { cloneDeep, includes } from 'lodash';
 import { lookupToAmis } from './lookup';
+import { absoluteUrl } from '@/lib/steedos.client.js'
 const Fields = require('../fields');
 const Tpl = require('../tpl');
 const _ = require('lodash');
@@ -176,6 +177,7 @@ export function getSelectFieldOptions(field){
 }
 
 export async function convertSFieldToAmisField(field, readonly, ctx) {
+    let rootUrl = null;
     // 创建人和修改人、创建时间和修改时间不显示
     if(_.includes(OMIT_FIELDS, field.name) && ctx.showSystemFields != true){
         return;
@@ -361,7 +363,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             }
             break;
         case 'image':
-            rootUrl = Meteor.absoluteUrl('/api/files/images/');
+            rootUrl = absoluteUrl('/api/files/images/');
             convertData = {
                 type: getAmisStaticFieldType('image', readonly),
                 receiver: {
@@ -392,7 +394,7 @@ return payload;
             }
             break;
         case 'file':
-            rootUrl = Meteor.absoluteUrl('/api/files/files/');
+            rootUrl = absoluteUrl('/api/files/files/');
             convertData = {
                 type: getAmisStaticFieldType('file', readonly),
                 receiver: {

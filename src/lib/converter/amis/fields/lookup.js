@@ -12,6 +12,12 @@ const getReferenceTo = async (field)=>{
     if(!referenceTo){
         return ;
     }
+
+    if(referenceTo === 'users'){
+        referenceTo = 'space_users';
+        field.reference_to_field = 'user'
+    }
+
     const refObjectConfig = await getUISchema(referenceTo);
     let valueField = null;
     let valueFieldName = field.reference_to_field;
@@ -75,7 +81,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         }
     });
 
-    const source = getApi({
+    const source = await getApi({
         name: referenceTo.objectName
     }, null, fields, {expand: true, alias: 'rows', queryOptions: `filters: {__filters}, top: {__top}, skip: {__skip}, sort: "{__sort}"`});
     source.data.$term = "$term";
@@ -157,7 +163,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
     let apiInfo;
 
     if(referenceTo){
-        apiInfo = getApi({
+        apiInfo = await getApi({
             name: referenceTo.objectName
         }, null, {
             [referenceTo.labelField.name]: Object.assign({}, referenceTo.labelField, {alias: 'label'}),
@@ -225,11 +231,12 @@ export async function lookupToAmisSelect(field, readonly, ctx){
     return data;
 }
 
-function getApi(object, recordId, fields, options){
+async function getApi(object, recordId, fields, options){
+    const data = await graphql.getFindQuery(object, recordId, fields, options);
     return {
         method: "post",
         url: graphql.getApi(),
-        data: graphql.getFindQuery(object, recordId, fields, options),
+        data: data,
         headers: {
             Authorization: "Bearer ${context.tenantId},${context.authToken}"
         }

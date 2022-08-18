@@ -103,21 +103,32 @@ export function getTableSchema(fields, options){
         syncLocation: false,
         keepItemSelectionOnPageChange: true,
         checkOnItemClick: true,
-        labelTpl: `\${name}`, //TODO 获取name字段
+        labelTpl: `\${${options.labelFieldName}}`,
         autoFillHeight: false, // 自动高度效果不理想,先关闭
     }
 }
 
-export function getTableApi(mainObject, fields, options){
+export async function getTableApi(mainObject, fields, options){
     const searchableFields = [];
-    const { globalFilter, filter } = options;
+    let { globalFilter, filter } = options;
+
+    if(_.isArray(filter)){
+        filter = _.map(filter, function(item){
+            if(item.operation){
+                return [item.field, item.operation, item.value];
+            }else{
+                return item
+            }
+        })
+    }
+
     _.each(fields,function(field){
         if(field.searchable){
             searchableFields.push(field.name);
         }
     })
     let valueField = mainObject.key_field || '_id';
-    const api = getApi(mainObject, null, fields, {alias: 'rows', queryOptions: `filters: {__filters}, top: {__top}, skip: {__skip}, sort: "{__sort}"`});
+    const api = await getApi(mainObject, null, fields, {alias: 'rows', queryOptions: `filters: {__filters}, top: {__top}, skip: {__skip}, sort: "{__sort}"`});
     api.data.$term = "$term";
     api.data.$self = "$$";
     api.data.filter = "$filter"
@@ -200,11 +211,12 @@ export function getTableApi(mainObject, fields, options){
     return api;
 }
 
-function getApi(object, recordId, fields, options){
+async function getApi(object, recordId, fields, options){
+    const data = await graphql.getFindQuery(object, recordId, fields, options);
     return {
         method: "post",
         url: graphql.getApi(),
-        data: graphql.getFindQuery(object, recordId, fields, options),
+        data: data,
         headers: {
             Authorization: "Bearer ${context.tenantId},${context.authToken}"
         }
