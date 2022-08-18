@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-23 09:12:14
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-17 09:52:02
+ * @LastEditTime: 2022-08-18 10:17:23
  * @Description: 
  */
 
@@ -84,7 +84,7 @@ export function getCardSchema(fields, options){
         mode: "cards",
         name: "cards",
         draggable: false,
-        headerToolbar: ['switch-per-page', 'reload'],
+        headerToolbar: ['statistics', 'pagination'],
         defaultParams: getDefaultParams(options),
         syncLocation: false,
         keepItemSelectionOnPageChange: false,

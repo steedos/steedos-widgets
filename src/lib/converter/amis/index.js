@@ -148,7 +148,9 @@ export function getObjectList(objectSchema, fields, options){
     let body = null;
     const id = `listview_${objectSchema.name}`;
     if(options.formFactor === 'SMALL'){
-      delete bodyProps.bulkActions
+      delete bodyProps.bulkActions;
+      delete bodyProps.headerToolbar;
+      delete bodyProps.footerToolbar;
       body = Object.assign({}, getCardSchema(fields, Object.assign({idFieldName: objectSchema.idFieldName, labelFieldName: objectSchema.NAME_FIELD_KEY || 'name'}, options, {actions: false})), {
         type: 'crud', 
         primaryField: '_id', 

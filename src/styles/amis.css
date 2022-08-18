@@ -115,9 +115,9 @@ main {
     display: none;
 }
 
-.steedos-listview .antd-Crud-toolbar{
+/* .steedos-listview .antd-Crud-toolbar:first-child{
     display: none;
-}
+} */
 
 #__next .bg-white {
     color: black;
@@ -149,9 +149,9 @@ button.antd-Button--primary {
     --Table-toolbar-marginY: 0;
 }
 
-.antd-Cards-fixedTop{
+/* .antd-Cards-fixedTop{
     display: none !important;
-}
+} */
 
 .antd-Form-item--normal{
     display: block !important;
@@ -181,6 +181,9 @@ button.antd-Button--primary {
         border: none !important;
     }
     .antd-Form .antd-Picker-input{
+        border: none !important;
+    }
+    .antd-Form .antd-Number{
         border: none !important;
     }
 }
