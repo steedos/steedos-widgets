@@ -12,6 +12,12 @@ const getReferenceTo = async (field)=>{
     if(!referenceTo){
         return ;
     }
+
+    if(referenceTo === 'users'){
+        referenceTo = 'space_users';
+        field.reference_to_field = 'user'
+    }
+
     const refObjectConfig = await getUISchema(referenceTo);
     let valueField = null;
     let valueFieldName = field.reference_to_field;
