@@ -113,7 +113,7 @@ export default function Record({formFactor}) {
 
   const Header = formFactor === "SMALL" ? MobileRecordHeader : RecordHeader;
   return (
-    <div className="sm:p-4 slds-grid slds-wrap">
+    <div className="slds-grid slds-wrap">
       <div className="slds-col slds-size_1-of-1 row region-header bg-slate-50">
         {schema && <Header schema={schema} formFactor={formFactor}></Header>}
       </div>
