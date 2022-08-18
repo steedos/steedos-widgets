@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 13:32:49
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-17 15:48:54
+ * @LastEditTime: 2022-08-18 16:50:43
  * @Description: 
  */
 import { getListViewButtons, execute } from '@/lib/buttons';
@@ -39,6 +39,7 @@ export function RecordRelatedListButtons(props) {
                 data: {data: { [foreign_key]: record_id }},  
                 appId: app_id, name: SteedosUI.getRefId({type: `${type}-form`, appId: app_id, name: `${schema.uiSchema.name}`}), title: `新建 ${schema.uiSchema.label}`, 
                 objectName: schema.uiSchema.name, recordId: 'new', type, 
+                formFactor: formFactor,
                 options: formFactor === 'SMALL' ? {
                   props: {
                     width: "100%",

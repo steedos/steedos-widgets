@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-16 11:21:55
+ * @LastEditTime: 2022-08-18 15:31:41
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -35,7 +35,7 @@ export default function Page ({formFactor}) {
   return (
     <div className='flex flex-col flex-1 overflow-hidden'>
       <div className='border-b'>
-      {formFactor && schema?.uiSchema.name === tab_id && <ListviewHeader schema={schema} onListviewChange={(listView)=>{
+      {formFactor && schema?.uiSchema.name === tab_id && <ListviewHeader formFactor={formFactor} schema={schema} onListviewChange={(listView)=>{
           getListviewSchema(listView?.name)
         }}></ListviewHeader>}
       </div>

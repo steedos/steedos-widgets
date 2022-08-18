@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-16 13:21:25
+ * @LastEditTime: 2022-08-18 16:38:47
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -105,7 +105,7 @@ export default function Record({formFactor}) {
       }},
       {label: '相关', name: 'relateds', component: ()=>{
         return (<>
-          <RecordRelateds app_id={app_id} record_id={record_id} relateds={relateds}></RecordRelateds>
+          <RecordRelateds app_id={app_id} record_id={record_id} relateds={relateds} formFactor={formFactor}></RecordRelateds>
         </>)
       }}
     ]
@@ -116,7 +116,7 @@ export default function Record({formFactor}) {
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       <div className="region-header">
-        {schema && <Header schema={schema}></Header>}
+        {schema && <Header schema={schema} formFactor={formFactor}></Header>}
       </div>
       <div className="flex flex-1 flex-col region-main overflow-hidden">
         <Tab.Group vertical={true}>

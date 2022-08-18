@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-18 10:13:39
+ * @LastEditTime: 2022-08-18 16:50:48
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -34,7 +34,6 @@ export default function Page ({formFactor}) {
   }, [tab_id, formFactor]);
 
   const Header = formFactor === 'SMALL' ? MobileListviewHeader : ListviewHeader;
-  console.log(`schema`, schema)
   return (
     <div className='sm:p-4 slds-card slds-card_boundary slds-grid slds-grid--vertical shadow-none border-none'>
       <div className='slds-page-header--object-home slds-page-header_joined slds-page-header_bleed slds-page-header slds-shrink-none p-0 bg-white'>

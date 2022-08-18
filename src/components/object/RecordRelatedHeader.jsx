@@ -2,14 +2,14 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-04 13:59:06
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-09 11:16:24
+ * @LastEditTime: 2022-08-18 16:36:45
  * @Description:
  */
 import { RecordRelatedListButtons } from '@/components/object/RecordRelatedListButtons'
 import React, { useState, useEffect, Fragment, useRef } from "react";
 import Link from 'next/link'
 
-export const RecordRelatedHeader = ({schema, object_name, foreign_key, app_id, record_id, masterObjectName, refId, recordCount}) => {
+export const RecordRelatedHeader = ({schema, object_name, foreign_key, app_id, record_id, masterObjectName, refId, recordCount, formFactor}) => {
   return (
     <>
       <header
@@ -65,7 +65,7 @@ export const RecordRelatedHeader = ({schema, object_name, foreign_key, app_id, r
           <ul
             className="branding-actions slds-button-group slds-m-left--xx-small small oneActionsRibbon forceActionsContainer"
           >
-            <RecordRelatedListButtons foreign_key={foreign_key} record_id={record_id} refId={refId} app_id={app_id} tab_id={object_name} object_name={object_name} masterObjectName={masterObjectName} schema={schema}></RecordRelatedListButtons>
+            <RecordRelatedListButtons formFactor={formFactor} foreign_key={foreign_key} record_id={record_id} refId={refId} app_id={app_id} tab_id={object_name} object_name={object_name} masterObjectName={masterObjectName} schema={schema}></RecordRelatedListButtons>
           </ul>
         </div>
       </div>

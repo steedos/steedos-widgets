@@ -9,7 +9,7 @@ import {
 
   import config from '@/config';
 
-export function RecordHeader({ schema }) {
+export function RecordHeader({ schema, formFactor }) {
   const router = useRouter();
   const { app_id, tab_id, record_id } = router.query;
   
@@ -25,7 +25,7 @@ export function RecordHeader({ schema }) {
             appId: app_id,
             name: schema.uiSchema.name,
           })).getComponentById(`detail_${record_id}`).reload()
-      } })
+      }, formFactor: formFactor })
 
   };
   const loadButtons = (schema) => {

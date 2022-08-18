@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 13:32:49
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-04 16:48:53
+ * @LastEditTime: 2022-08-18 15:24:37
  * @Description: 
  */
 import { getListViewButtons, execute } from '@/lib/buttons';
@@ -14,7 +14,7 @@ import _ from 'lodash';
 import config from '@/config';
 
 export function ListButtons(props) {
-    const { app_id, tab_id, schema } = props;
+    const { app_id, tab_id, schema, formFactor } = props;
     const [buttons, setButtons] = useState(null);
     const router = useRouter()
 
@@ -39,6 +39,7 @@ export function ListButtons(props) {
                 SteedosUI.getRef(listViewId).getComponentByName(`page.listview_${schema.uiSchema.name}`).handleAction({}, { actionType: "reload"})
             },
             appId: app_id, 
+            formFactor: formFactor,
             name: SteedosUI.getRefId({type: `${type}-form`,}), 
             title: `新建 ${schema.uiSchema.label}`, 
             objectName: schema.uiSchema.name, 

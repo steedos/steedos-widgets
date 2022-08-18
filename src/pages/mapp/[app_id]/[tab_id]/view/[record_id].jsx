@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-18 09:31:02
+ * @LastEditTime: 2022-08-18 16:48:38
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -115,7 +115,7 @@ export default function Record({formFactor}) {
   return (
     <div className="sm:p-4 slds-grid slds-wrap">
       <div className="slds-col slds-size_1-of-1 row region-header">
-        {schema && <Header schema={schema}></Header>}
+        {schema && <Header schema={schema} formFactor={formFactor}></Header>}
       </div>
     <div className="slds-col slds-size_1-of-1 row region-main">
     <div className="z-9 relative mt-2 shadow-none border-none">
