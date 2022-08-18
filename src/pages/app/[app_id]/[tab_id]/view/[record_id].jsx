@@ -135,7 +135,7 @@ export default function Record({formFactor}) {
               </Tab>)
             })}
           </Tab.List>
-          <Tab.Panels className="flex-1 sm:p-4 overflow-y-auto  ">
+          <Tab.Panels className="flex-1 p-4 overflow-y-auto  ">
             {getTabs().map((item)=>{
               return (
                 <Tab.Panel

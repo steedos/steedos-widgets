@@ -120,14 +120,13 @@ export default function Record({formFactor}) {
     <div className="slds-col slds-size_1-of-1 row region-main">
     <div className="z-9 relative shadow-none border-none">
         <Tab.Group vertical={true}>
-          <Tab.List className="flex space-x-1 border-b bg-slate-50">
+          <Tab.List className="pl-4 flex space-x-1 border-b bg-slate-50">
             {getTabs().map((item)=>{
               return (<Tab
                 key={item.name}
                 className={({ selected }) =>
                   classNames(
                     "px-10",
-                    "text-base",
                     selected ? "border-b-2 border-sky-500 text-black" : "text-current"
                   )
                 }
@@ -136,7 +135,7 @@ export default function Record({formFactor}) {
               </Tab>)
             })}
           </Tab.List>
-          <Tab.Panels className="my-2">
+          <Tab.Panels className="flex-1 p-4 overflow-y-auto ">
             {getTabs().map((item)=>{
               return (
                 <Tab.Panel
