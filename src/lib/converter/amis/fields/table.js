@@ -110,7 +110,18 @@ export function getTableSchema(fields, options){
 
 export function getTableApi(mainObject, fields, options){
     const searchableFields = [];
-    const { globalFilter, filter } = options;
+    let { globalFilter, filter } = options;
+
+    if(_.isArray(filter)){
+        filter = _.map(filter, function(item){
+            if(item.operation){
+                return [item.field, item.operation, item.value];
+            }else{
+                return item
+            }
+        })
+    }
+
     _.each(fields,function(field){
         if(field.searchable){
             searchableFields.push(field.name);
