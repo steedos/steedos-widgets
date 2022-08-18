@@ -7,8 +7,19 @@
  */
 import { useRouter } from 'next/router'
 import { AppLauncher } from '@/components/AppLauncher'
+import React, { useState, useEffect, Fragment, useRef } from 'react';
 
-export const AppLauncherBar = ({app, formFactor}) => {
+
+export const AppLauncherBar = ({app}) => {
+  const [formFactor, setFormFactor] = useState(null);
+  useEffect(() => {
+    if (window.innerWidth < 768) {
+      setFormFactor("SMALL");
+    } else {
+      setFormFactor("LARGE");
+    }
+  }, []);
+
   const router = useRouter()
   const openAppLauncher = () => {
     const name = 'app-launcher-modal';

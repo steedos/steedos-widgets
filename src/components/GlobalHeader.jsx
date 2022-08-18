@@ -5,6 +5,7 @@ import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { Logo } from "@/components/Logo";
 import { useRouter } from "next/router";
+import { MobileNavigation } from '@/components/mobile/MobileNavigation'
 import { AppLauncherBar } from "@/components/AppLauncherBar";
 import { Notification } from '@/components/Notification';
 
@@ -57,19 +58,25 @@ export function GlobalHeader({ navigation, selected, app }) {
     <>
       <Disclosure
         as="header"
-        className="slds-global-header_container supports-backdrop-blur:bg-white/60 sticky top-0 z-40 w-full flex-none bg-white/95 shadow-none backdrop-blur transition-colors duration-500 lg:z-50 lg:border-b lg:border-slate-900/10"
+        className="slds-global-header_container supports-backdrop-blur:bg-white/60 sticky top-0 z-40 w-full flex-none bg-white/95 shadow-none backdrop-blur transition-colors duration-500 lg:z-50 border-b lg:border-b-2 lg:border-sky-500"
       >
         {({ open }) => (
           <>
-            <div className="slds-global-header slds-grid slds-grid_align-spread border-b-2 border-sky-500 shadow-none">
+            <div className="slds-global-header slds-grid slds-grid_align-spread   shadow-none">
               <div className="slds-global-header__item flex">
-                <a href="/app" className="pr-6">
+                <div className="sm:hidden mr-4 flex items-center">
+                  <MobileNavigation navigation={navigation} app={app} />
+                </div>
+                
+                <a href="/app" className="flex items-center">
                   <img
-                    className="block h-8 w-auto"
+                    className="block h-7 w-auto"
                     src="/logo.png"
                   />
                 </a>
-                <AppLauncherBar app={app}></AppLauncherBar>
+                <div className="flex items-center ml-6 hidden sm:block">
+                  <AppLauncherBar app={app}></AppLauncherBar>
+                </div>
               </div>
               <div className="slds-global-header__item">
               </div>
@@ -78,8 +85,7 @@ export function GlobalHeader({ navigation, selected, app }) {
                 <ul className="slds-global-actions mb-0">
                   <li className="slds-global-actions__item">
                     <div
-                      className="slds-dropdown-trigger slds-dropdown-trigger_click"
-                      style={{display: "inline-block"}}
+                      className="slds-dropdown-trigger slds-dropdown-trigger_click hidden sm:block"
                     >
                       <button
                         className="slds-button slds-button_icon-container slds-button_icon-small slds-button_icon slds-global-actions__help slds-global-actions__item-action"
@@ -118,20 +124,6 @@ export function GlobalHeader({ navigation, selected, app }) {
                 </li>
                   }
                   
-                  <li className="relative z-10 flex items-center lg:hidden">
-                    {/* Mobile menu button */}
-                    <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
-                      <span className="sr-only">Open menu</span>
-                      {open ? (
-                        <XIcon className="block h-6 w-6" aria-hidden="true" />
-                      ) : (
-                        <MenuIcon
-                          className="block h-6 w-6"
-                          aria-hidden="true"
-                        />
-                      )}
-                    </Disclosure.Button>
-                  </li>
 
                   <div className="hidden lg:relative lg:z-10 lg:ml-4 lg:flex lg:items-center">
                     {/* Profile dropdown */}
@@ -200,72 +192,6 @@ export function GlobalHeader({ navigation, selected, app }) {
             </div>
                
 
-            <Disclosure.Panel
-              as="nav"
-              className="lg:hidden"
-              aria-label="Global"
-            >
-              <div className="slds-context-bar h-12 pl-3">
-                <AppLauncherBar app={app}></AppLauncherBar>
-              </div>
-              <div className="space-y-1 px-2 pt-2 pb-3">
-                {navigation?.map((item) => (
-                  <Disclosure.Button
-                    key={item.id}
-                    as="a"
-                    href={item.path}
-                    className={classNames(
-                      item.id === selected
-                        ? "bg-gray-100 text-gray-900"
-                        : "text-gray-900 hover:bg-gray-50 hover:text-gray-900",
-                      "block rounded-md py-2 px-3 text-base font-medium"
-                    )}
-                    aria-current={item.id === selected ? "page" : undefined}
-                  >
-                    {item.name}
-                  </Disclosure.Button>
-                ))}
-              </div>
-              <div className="border-t border-gray-200 pt-4 pb-3">
-                <div className="flex items-center px-4">
-                  <div className="flex-shrink-0">
-                    <img
-                      className="h-10 w-10 rounded-full"
-                      src={user.imageUrl}
-                      alt=""
-                    />
-                  </div>
-                  <div className="ml-3">
-                    <div className="text-base font-medium text-gray-800">
-                      {user.name}
-                    </div>
-                    <div className="text-sm font-medium text-gray-500">
-                      {user.email}
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    className="ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                  >
-                    <span className="sr-only">View notifications</span>
-                    <BellIcon className="h-6 w-6" aria-hidden="true" />
-                  </button>
-                </div>
-                <div className="mt-3 space-y-1 px-2">
-                  {userNavigation.map((item) => (
-                    <Disclosure.Button
-                      key={item.name}
-                      as="a"
-                      href={item.href}
-                      onClick={item.onClick}
-                      className="block rounded-md py-2 px-3 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900"
-                    >
-                      {item.name}
-                    </Disclosure.Button>
-                  ))}
-                </div>
-              </div>
-            </Disclosure.Panel>
           </>
         )}
       </Disclosure>
