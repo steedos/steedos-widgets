@@ -71,7 +71,7 @@ export function MobileNavigation({ navigation, formFactor, app }) {
         className="relative"
         aria-label="Open navigation"
       >
-        <MenuIcon className="h-6 w-6 stroke-white	" />
+        <MenuIcon className="h-6 w-6 stroke-slate-600" />
       </button>
       <Dialog
         open={isOpen}
@@ -79,7 +79,7 @@ export function MobileNavigation({ navigation, formFactor, app }) {
         className="fixed inset-0 z-50 flex items-start overflow-y-auto bg-slate-900/50 pr-10 backdrop-blur"
         aria-label="Navigation"
       >
-        <Dialog.Panel className="min-h-full w-full max-w-xs bg-white px-4 pt-5 pb-12 sm:px-6">
+        <Dialog.Panel className="min-h-full w-full max-w-xs bg-slate-50 px-4 pt-5 pb-12 sm:px-6">
           <div className="flex items-center">
             <button
               type="button"

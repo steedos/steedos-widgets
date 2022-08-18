@@ -57,13 +57,13 @@ export function GlobalHeader({ navigation, selected, app }) {
     <>
       <Disclosure
         as="header"
-        className="slds-global-header_container supports-backdrop-blur:bg-white/60 sticky top-0 z-40 w-full flex-none bg-white/95 shadow-none backdrop-blur transition-colors duration-500 dark:border-slate-50/[0.06] dark:bg-transparent lg:z-50 lg:border-b lg:border-slate-900/10"
+        className="slds-global-header_container supports-backdrop-blur:bg-white/60 sticky top-0 z-40 w-full flex-none bg-white/95 shadow-none backdrop-blur transition-colors duration-500 lg:z-50 lg:border-b lg:border-slate-900/10"
       >
         {({ open }) => (
           <>
-            <div className="slds-global-header slds-grid slds-grid_align-spread shadow-none">
+            <div className="slds-global-header slds-grid slds-grid_align-spread border-b-2 border-sky-500 shadow-none">
               <div className="slds-global-header__item flex">
-                <a href="/app" className="pr-8">
+                <a href="/app" className="pr-6">
                   <img
                     className="block h-8 w-auto"
                     src="/logo.png"
@@ -75,7 +75,7 @@ export function GlobalHeader({ navigation, selected, app }) {
               </div>
 
               <div className="slds-global-header__item">
-                <ul className="slds-global-actions">
+                <ul className="slds-global-actions mb-0">
                   <li className="slds-global-actions__item">
                     <div
                       className="slds-dropdown-trigger slds-dropdown-trigger_click"
