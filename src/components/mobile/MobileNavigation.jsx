@@ -79,7 +79,7 @@ export function MobileNavigation({ navigation, formFactor, app }) {
         className="fixed inset-0 z-50 flex items-start overflow-y-auto bg-slate-900/50 pr-10 backdrop-blur"
         aria-label="Navigation"
       >
-        <Dialog.Panel className="min-h-full w-full max-w-xs bg-white px-4 pt-5 pb-12 dark:bg-slate-900 sm:px-6">
+        <Dialog.Panel className="min-h-full w-full max-w-xs bg-white px-4 pt-5 pb-12 sm:px-6">
           <div className="flex items-center">
             <button
               type="button"
@@ -87,13 +87,10 @@ export function MobileNavigation({ navigation, formFactor, app }) {
               aria-label="Close navigation"
               className="absolute top-0 right-0 p-2 text-white"
             >
-              <CloseIcon className="h-6 w-6 stroke-slate-500" />
+              <CloseIcon className="h-6 w-6 stroke-white" />
             </button>
-            <Link href="/" className="ml-6" aria-label="Home page">
-              <Logo className="h-9 w-9" />
-            </Link>
           </div>
-          <Navigation navigation={navigation} formFactor={formFactor} app={app}  className="mt-5 px-1" />
+          <Navigation navigation={navigation} formFactor={formFactor} app={app}  className="" />
         </Dialog.Panel>
       </Dialog>
     </>

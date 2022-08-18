@@ -35,8 +35,8 @@ export default function Page ({formFactor}) {
 
   const Header = formFactor === 'SMALL' ? MobileListviewHeader : ListviewHeader;
   return (
-    <div className='sm:p-4 slds-card slds-card_boundary slds-grid slds-grid--vertical shadow-none border-none'>
-      <div className='slds-page-header--object-home slds-page-header_joined slds-page-header_bleed slds-page-header slds-shrink-none p-0 bg-white'>
+    <div className='slds-card slds-card_boundary slds-grid slds-grid--vertical shadow-none border-none'>
+      <div className=''>
       {formFactor && schema?.uiSchema.name === tab_id && <Header schema={schema} onListviewChange={(listView)=>{
           getListviewSchema(listView?.name)
         }} formFactor={formFactor}></Header>}

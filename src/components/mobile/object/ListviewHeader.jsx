@@ -192,8 +192,8 @@ export function ListviewHeader({ schema, onListviewChange, formFactor }) {
 ]
 
   return (
-    <div className="slds-page-header relative rounded-none p-0">
-      <div className="slds-page-header__row p-2">
+    <div className="slds-page-header relative rounded-none">
+      <div className="slds-page-header__row">
         <div className="slds-page-header__col-title">
           <div className="slds-media">
             <div className="slds-media__figure">
@@ -241,7 +241,7 @@ export function ListviewHeader({ schema, onListviewChange, formFactor }) {
                                   className={({ active }) =>
                                     `relative cursor-default select-none py-2 pl-10 pr-4 ${
                                       active
-                                        ? "bg-amber-100 text-amber-900"
+                                        ? "bg-sky-50 text-sky-900"
                                         : "text-gray-900"
                                     }`
                                   }
@@ -260,7 +260,7 @@ export function ListviewHeader({ schema, onListviewChange, formFactor }) {
                                   {(selectedListView?.name
                                     ? selectedListView.name
                                     : "all") === listView.name ? (
-                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-sky-600">
                                       <CheckIcon
                                         className="h-5 w-5"
                                         aria-hidden="true"

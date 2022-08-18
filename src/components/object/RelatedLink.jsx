@@ -60,7 +60,7 @@ export const RelatedLink = ({
               })}
               //`/app/${app_id}/${masterObjectName}/${record_id}/${object_name}/grid?related_field_name=${foreign_key}`
             >
-              <a className="slds-card__header-link baseCard__header-title-container">
+              <a className="slds-card__header-link baseCard__header-title-container font-normal">
                 <>
                   <span className="slds-truncate slds-m-right--xx-small">
                     {schema.uiSchema.label}

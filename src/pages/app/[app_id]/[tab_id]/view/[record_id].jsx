@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-18 16:38:47
+ * @LastEditTime: 2022-08-18 16:52:21
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -88,7 +88,7 @@ export default function Record({formFactor}) {
     return [
       {label: '详情', name: 'detail', component: ()=>{
         return (
-          <div className="p-4 bg-white sm:rounded sm:border">
+          <div className="">
             {schema?.amisSchema && (
                 <AmisRender
                   id={SteedosUI.getRefId({
@@ -115,12 +115,12 @@ export default function Record({formFactor}) {
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
-      <div className="region-header">
+      <div className="region-header bg-slate-50 ">
         {schema && <Header schema={schema} formFactor={formFactor}></Header>}
       </div>
       <div className="flex flex-1 flex-col region-main overflow-hidden">
         <Tab.Group vertical={true}>
-          <Tab.List className="pl-4 flex space-x-1 border-b">
+          <Tab.List className="pl-4 flex space-x-1 border-b bg-slate-50 ">
             {getTabs().map((item)=>{
               return (<Tab
                 key={item.name}
@@ -135,7 +135,7 @@ export default function Record({formFactor}) {
               </Tab>)
             })}
           </Tab.List>
-          <Tab.Panels className="flex-1 sm:p-4 sm:bg-gray-50 overflow-y-auto  ">
+          <Tab.Panels className="flex-1 sm:p-4 overflow-y-auto  ">
             {getTabs().map((item)=>{
               return (
                 <Tab.Panel
