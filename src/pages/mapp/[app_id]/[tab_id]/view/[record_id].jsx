@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-17 17:27:08
+ * @LastEditTime: 2022-08-18 09:31:02
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -141,7 +141,7 @@ export default function Record({formFactor}) {
               return (
                 <Tab.Panel
                 key={item.name}
-              className={classNames("bg-white shadow-none", "pt-2")}
+              className={classNames("bg-white shadow-none", "p-2")}
             >
               {item.component()}
             </Tab.Panel>
