@@ -191,8 +191,8 @@ export function ListviewHeader({ schema, onListviewChange, formFactor }) {
 ]
 
   return (
-    <div className="slds-page-header relative rounded-none p-0">
-      <div className="slds-page-header__row p-2">
+    <div className="slds-page-header relative rounded-none">
+      <div className="slds-page-header__row">
         <div className="slds-page-header__col-title">
           <div className="slds-media">
             <div className="slds-media__figure">
