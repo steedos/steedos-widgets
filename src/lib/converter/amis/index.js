@@ -130,7 +130,7 @@ function getFilter(){
       }
 }
 
-export function getObjectList(objectSchema, fields, options){
+export async function getObjectList(objectSchema, fields, options){
     
     const bulkActions = getBulkActions(objectSchema)
 
@@ -157,7 +157,7 @@ export function getObjectList(objectSchema, fields, options){
         id: id,
         name: id,
         keepItemSelectionOnPageChange: false, 
-        api: getTableApi(objectSchema, fields, options)}, 
+        api: await getTableApi(objectSchema, fields, options)}, 
         bodyProps
         );
     }else{
@@ -169,7 +169,7 @@ export function getObjectList(objectSchema, fields, options){
         id: id,
         name: id,
         keepItemSelectionOnPageChange: true, 
-        api: getTableApi(objectSchema, fields, options)}, 
+        api: await getTableApi(objectSchema, fields, options)}, 
         bodyProps
         )
     }
@@ -206,8 +206,8 @@ export async function getObjectForm(objectSchema, ctx){
                 debug: false,
                 title: "",
                 submitText: "", // amis 表单不显示提交按钮, 表单提交由项目代码接管
-                api: getSaveApi(objectSchema, recordId, fields, {}),
-                initApi: getEditFormInitApi(objectSchema, recordId, fields),
+                api: await getSaveApi(objectSchema, recordId, fields, {}),
+                initApi: await getEditFormInitApi(objectSchema, recordId, fields),
                 initFetch: recordId != 'new',
                 body: await getFormBody(fields, objectSchema, ctx),
                 panelClassName:'m-0 sm:rounded-lg shadow-none',
@@ -225,7 +225,7 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
         name: `page_readonly_${recordId}`,
         id: `detail_${recordId}`,
         data: {context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
-        api: getReadonlyFormInitApi(objectSchema, recordId, fields),
+        api: await getReadonlyFormInitApi(objectSchema, recordId, fields),
         body: [
             {
                 type: "form",

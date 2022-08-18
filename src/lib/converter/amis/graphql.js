@@ -1,17 +1,24 @@
 const _ = require('lodash');
+import { getUISchema } from '@/lib/objects';
 
-export function getFieldsTemplate(fields, expand){
+export async function getFieldsTemplate(fields, expand){
     if(expand != false){
         expand = true;
     }
     let fieldsName = ['_id'];
     let displayFields = [];
-
-    _.each(fields, function(field){
+    console.log(`fields`, fields)
+    let fieldsArr = [];
+    if(_.isArray(fields)){
+        fieldsArr = fields;
+    }else{
+        fieldsArr = _.values(fields);
+    }
+    for (const field of fieldsArr) {
         if(field.name.indexOf('.') < 0){
             if(expand && (field.type == 'lookup' || field.type == 'master_detail') && field.reference_to){
-                //TODO 获取相关表名称字段
-                const NAME_FIELD_KEY = 'name';
+                const refUiSchema = await getUISchema(field.reference_to);
+                const NAME_FIELD_KEY = refUiSchema.NAME_FIELD_KEY || 'name';
                 fieldsName.push(`${field.name}:${field.name}__expand{_id,${NAME_FIELD_KEY}${field.reference_to_field ? `,${field.reference_to_field}`:''}}`);
             }else{
                 fieldsName.push( field.alias ? `${field.alias}:${field.name}` : field.name)
@@ -25,7 +32,7 @@ export function getFieldsTemplate(fields, expand){
                 displayFields.push(`${field.name}`)
             }
         }
-    })
+    }
 
     displayFields = _.uniq(displayFields);
     fieldsName = _.uniq(fieldsName);
@@ -36,7 +43,7 @@ export function getFieldsTemplate(fields, expand){
     return `${fieldsName.join(' ')}`
 }
 
-export function getFindOneQuery(object, recordId, fields, options){
+export async function getFindOneQuery(object, recordId, fields, options){
     let queryOptions = "";
     
     if(recordId){
@@ -56,7 +63,7 @@ export function getFindOneQuery(object, recordId, fields, options){
         }
     }
     return {
-        query: `{${alias}:${object.name}${queryOptions}{${getFieldsTemplate(fields)}}}`
+        query: `{${alias}:${object.name}${queryOptions}{${await getFieldsTemplate(fields)}}}`
     }
 }
 
@@ -188,7 +195,7 @@ export function getSaveRequestAdaptor(fields){
     `
 }
 
-export function getFindQuery(object, recordId, fields, options){
+export async function getFindQuery(object, recordId, fields, options){
     let limit = options.limit || 10;
     let queryOptions = `(top: ${limit})`;
     if(recordId){
@@ -212,7 +219,7 @@ export function getFindQuery(object, recordId, fields, options){
         orderDir: "${orderDir}",
         pageNo: "${page}",
         pageSize: "${perPage}",
-        query: `{${alias}:${object.name}${queryOptions}{${getFieldsTemplate(fields, options.expand)}},count:${object.name}__count(filters:{__filters})}`
+        query: `{${alias}:${object.name}${queryOptions}{${await getFieldsTemplate(fields, options.expand)}},count:${object.name}__count(filters:{__filters})}`
     }
 }
 

@@ -50,13 +50,13 @@ function getReadonlyFormAdaptor(fields){
 `
 }
 
-export function getReadonlyFormInitApi(object, recordId, fields){
+export async function getReadonlyFormInitApi(object, recordId, fields){
     return {
         method: "post",
         url: graphql.getApi()+"?rf="+ (new Date()).getTime(),
         cache: API_CACHE,
         adaptor: getReadonlyFormAdaptor(fields),
-        data: graphql.getFindOneQuery(object, recordId, fields),
+        data: await graphql.getFindOneQuery(object, recordId, fields),
         headers: {
             Authorization: "Bearer ${context.tenantId},${context.authToken}"
         }
@@ -170,7 +170,7 @@ function getScriptForRewriteValueForFileFields(fields){
     `
 }
 
-export function getEditFormInitApi(object, recordId, fields){
+export async function getEditFormInitApi(object, recordId, fields){
     return {
         method: "post",
         url: graphql.getApi(),
@@ -195,7 +195,7 @@ export function getEditFormInitApi(object, recordId, fields){
             }
             return payload;
         `,
-        data: graphql.getFindOneQuery(object, recordId, fields),
+        data: await graphql.getFindOneQuery(object, recordId, fields),
         headers: {
             Authorization: "Bearer ${context.tenantId},${context.authToken}"
         }
