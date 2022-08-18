@@ -15,10 +15,8 @@ export function Navigation({ navigation, className, formFactor, app }) {
   return (
     <>
     <nav className={clsx('text-base lg:text-sm', className)}>
-      <ul role="list" className="space-y-2">
-        <li>
-        <AppLauncherBar formFactor={formFactor} app={app} ></AppLauncherBar>
-        </li>
+      <AppLauncherBar formFactor={formFactor} app={app} ></AppLauncherBar>
+      <ul role="list" className="space-y-2 pt-6">
         {navigation.map((section) => (
           <li key={section.path} className="relative">
           <Link
@@ -28,7 +26,7 @@ export function Navigation({ navigation, className, formFactor, app }) {
               'text-slate-700 block w-full before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full',
               section.path === router.pathname
                 ? 'font-semibold text-sky-500 before:bg-sky-500'
-                : 'text-slate-500 before:hidden before:bg-slate-300 hover:text-slate-600 hover:before:block dark:text-slate-400 dark:before:bg-slate-700 dark:hover:text-slate-300'
+                : 'text-slate-900 before:hidden before:bg-slate-300 hover:text-slate-600 hover:before:block'
             )}>
               {/* <svg
                   className="slds-icon slds-icon-text-default slds-icon-small"
