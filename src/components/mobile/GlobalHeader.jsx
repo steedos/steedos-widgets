@@ -30,7 +30,7 @@ export const GlobalHeader = ({ navigation, selected, app, formFactor })=>{
     return (
         <header
           className={clsx(
-            'relative bg-sky-700 sticky top-0 z-50 flex flex-wrap items-center justify-between px-4 py-4 transition duration-500 shadow-none sm:px-6 lg:px-8',
+            'relative top-0 z-50 flex flex-wrap items-center justify-between px-4 py-4 transition duration-500 shadow-none sm:px-6 lg:px-8 border-b',
           )}
         >
           <div className="mr-6 flex">
