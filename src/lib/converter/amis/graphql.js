@@ -7,7 +7,6 @@ export async function getFieldsTemplate(fields, expand){
     }
     let fieldsName = ['_id'];
     let displayFields = [];
-    console.log(`fields`, fields)
     let fieldsArr = [];
     if(_.isArray(fields)){
         fieldsArr = fields;
