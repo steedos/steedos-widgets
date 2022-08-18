@@ -180,4 +180,7 @@ button.antd-Button--primary {
     .antd-Form::before{
         border: none !important;
     }
+    .antd-Form .antd-Picker-input{
+        border: none !important;
+    }
 }
