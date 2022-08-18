@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-13 20:48:28
+ * @LastEditTime: 2022-08-18 18:04:09
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -13,6 +13,7 @@ import { getPage } from '@/lib/page';
 import { unstable_getServerSession } from "next-auth/next"
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
 import { amisRender, amisRootClick } from '@/lib/amis';
+import { AmisRender } from '@/components/AmisRender';
 
 export default function Page ({}) {
   const router = useRouter()
@@ -27,18 +28,9 @@ export default function Page ({}) {
       })
   }, [app_id, page_id]);
 
-
-  useEffect(() => {
-    (function () {
-      if(document.getElementById("amis-root") && page && page.schema){
-        let amisScoped = amisRender('#amis-root', JSON.parse(page.schema), {}, {}, {router: router})
-      }
-    })();
-  }, [page]);
-
   return (
     <>
-      <div id="amis-root" className="app-wrapper" onClick={(e)=>{ return amisRootClick(router, e)}}></div>
+      {page && page.schema && <AmisRender id="amis-root" schema={JSON.parse(page.schema)} />}
     </>
   )
 }
