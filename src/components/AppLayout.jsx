@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 09:31:04
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-19 16:39:38
+ * @LastEditTime: 2022-08-19 17:11:09
  * @Description:  
  */
 import React, { useState, useEffect, Fragment } from 'react';
@@ -46,7 +46,7 @@ export function AppLayout({ children }) {
       <div className='h-full flex flex-col'>
         <Navbar navigation={app?.children} selected={selected} app={app}/>
         {session && (
-          <div id="main" className="flex flex-1 overflow-hidden">
+          <div id="main" className="flex flex-1 sm:overflow-hidden">
             <div id="sidebar" className="hidden lg:block flex flex-shrink-0 border-r overflow-y-auto bg-slate-50">
               <div className="flex flex-col w-64">
                 <Sidebar navigation={app?.children} selected={selected}/>
