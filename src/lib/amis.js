@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 11:31:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-19 14:36:10
+ * @LastEditTime: 2022-08-19 16:20:10
  * @Description:
  */
 import { message, notification, Button, Space} from 'antd';
@@ -55,7 +55,11 @@ export const getEvn = (router)=>{
   return {
     theme: "antd",
     notify: (type, msg)=>{
-      SteedosUI.message[type](msg.props.schema.tpl)
+      if(msg.props?.schema.tpl){
+        SteedosUI.message[type](msg.props?.schema.tpl)
+      }else{
+        console.warn('notify', type, msg)
+      }
     },
     confirm: (msg)=>{
       return new Promise((resolve, reject)=>{
