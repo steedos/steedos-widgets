@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-09 11:09:10
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-18 16:47:15
+ * @LastEditTime: 2022-08-19 10:36:54
  * @Description:
  */
 import React, { useState, useEffect, Fragment, useRef } from "react";
@@ -192,7 +192,6 @@ export const RelatedHeader = ({app_id, foreign_key, masterObjectName, object_nam
                   >
                     <button
                       className="slds-button slds-button_icon-border-filled ignore-click-page-header-related-list-add-contact-dropdown"
-                      tabindex="0"
                       type="button"
                       aria-expanded="false"
                       aria-haspopup="true"

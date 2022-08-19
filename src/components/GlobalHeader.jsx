@@ -90,7 +90,6 @@ export function GlobalHeader({ navigation, selected, app }) {
                       <button
                         className="slds-button slds-button_icon-container slds-button_icon-small slds-button_icon slds-global-actions__help slds-global-actions__item-action"
                         id="header-help-popover-id"
-                        tabindex="0"
                         title="Help and Training"
                         type="button"
                         aria-haspopup="true"
