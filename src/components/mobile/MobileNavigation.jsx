@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-15 15:19:59
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-17 17:54:25
+ * @LastEditTime: 2022-08-19 16:42:30
  * @Description: 
  */
 import { useEffect, useState } from 'react'
@@ -112,7 +112,7 @@ export function MobileNavigation({ navigation, app }) {
               <CloseIcon className="h-6 w-6 stroke-white" />
             </button>
           </div>
-          <Navigation navigation={navigation} app={app}  className="" />
+          {navigation && <Navigation navigation={navigation} app={app}  className="" />}
 
           <div className="border-t border-gray-200 pt-4 pb-3">
                 <div className="flex items-center">
