@@ -11,7 +11,6 @@ import '@/styles/tailwind.css';
 import '@/styles/amis.css';
 import 'antd/dist/antd.css'
 import { AppLayout } from '@/components/AppLayout';
-import { AppLayout as MobileAppLayout } from '@/components/mobile/AppLayout';
 import '@/components/functions';
 import React, { useState, useEffect, Fragment, useRef } from 'react';
 
@@ -27,7 +26,7 @@ export default function App({
       setFormFactor("LARGE");
     }
   }, []);
-  const Layout = Component.getLayout ? Component.getLayout() : (formFactor === "SMALL" ? MobileAppLayout : AppLayout);
+  const Layout = Component.getLayout ? Component.getLayout() : AppLayout;
   return (
     <>
     { formFactor && <SessionProvider session={session}>

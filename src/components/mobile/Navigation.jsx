@@ -10,12 +10,12 @@ import { useRouter } from 'next/router'
 import clsx from 'clsx'
 import { AppLauncherBar } from '@/components/AppLauncherBar'
 
-export function Navigation({ navigation, className, formFactor, app }) {
+export function Navigation({ navigation, className, app }) {
   let router = useRouter();
   return (
     <>
     <nav className={clsx('text-base lg:text-sm', className)}>
-      <AppLauncherBar formFactor={formFactor} app={app} ></AppLauncherBar>
+      <AppLauncherBar app={app} ></AppLauncherBar>
       <ul role="list" className="space-y-2 pt-6">
         {navigation.map((section) => (
           <li key={section.path} className="relative">
