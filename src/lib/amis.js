@@ -2,9 +2,10 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 11:31:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-11 18:23:10
+ * @LastEditTime: 2022-08-19 14:36:10
  * @Description:
  */
+import { message, notification, Button, Space} from 'antd';
 const normalizeLink = (to, location = window.location) => {
   to = to || "";
 
@@ -53,6 +54,21 @@ export const amisRootClick = (router, e) => {
 export const getEvn = (router)=>{
   return {
     theme: "antd",
+    notify: (type, msg)=>{
+      SteedosUI.message[type](msg.props.schema.tpl)
+    },
+    confirm: (msg)=>{
+      return new Promise((resolve, reject)=>{
+        SteedosUI.Modal.confirm({
+          title: msg,
+          onOk: ()=>{
+            resolve();
+          },
+          okText: "确认",
+          cancelText: "取消"
+        })
+      })
+    },
     jumpTo: (to, action) => {
       if (to === "goBack") {
         return window.history.back();

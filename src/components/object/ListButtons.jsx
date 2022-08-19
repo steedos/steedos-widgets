@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 13:32:49
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-19 10:16:12
+ * @LastEditTime: 2022-08-19 14:34:44
  * @Description: 
  */
 import { getListViewButtons, execute } from '@/lib/buttons';
@@ -53,6 +53,7 @@ export function ListButtons(props) {
       const batchDelete = ()=>{
           const listViewId = SteedosUI.getRefId({type: 'listview', appId: app_id, name: schema?.uiSchema?.name});
           const listViewRef = SteedosUI.getRef(listViewId).getComponentByName(`page.listview_${schema.uiSchema.name}`)
+          
         if(_.isEmpty(listViewRef.props.store.toJSON().selectedItems)){
             listViewRef.handleAction({}, {
                 "actionType": "toast",
