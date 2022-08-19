@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-03 16:46:23
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-18 15:24:24
+ * @LastEditTime: 2022-08-19 17:29:09
  * @Description:
  */
 import { Listbox, Menu, Transition } from "@headlessui/react";
@@ -178,16 +178,6 @@ export function ListviewHeader({ schema, onListviewChange, formFactor }) {
     label: '新建',
     name: 'new',
     todo: newRecord
-  },
-  {
-    label: '过滤',
-    name: 'filter',
-    todo: showFilter
-  },
-  {
-    label: '刷新',
-    name: 'refresh',
-    todo: refreshList
   }
 ]
 
@@ -282,12 +272,44 @@ export function ListviewHeader({ schema, onListviewChange, formFactor }) {
                     )}
                   </div>
                 </div>
+                
               </div>
             </div>
           </div>
         </div>
         <div className="slds-page-header__col-actions">
-          <div className="slds-page-header__controls">
+          <div className="slds-page-header__controls space-x-4">
+            <div className="slds-page-header__control">
+              <button
+                className="slds-icon slds-icon-text-default slds-icon_x-small"
+                title="Refresh List"
+                onClick={refreshList}
+              >
+                <svg className="slds-button__icon" aria-hidden="true">
+                  <use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#refresh"></use>
+                </svg>
+                <span className="slds-assistive-text">Refresh List</span>
+              </button>
+            </div>
+            <div className="slds-page-header__control">
+              <ul className="slds-button-group-list mb-0">
+                <li>
+                  <button
+                    className="slds-icon slds-icon-text-default slds-icon_x-small"
+                    onClick={showFilter}
+                  >
+                    <svg className="slds-button__icon" aria-hidden="true">
+                      <use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#filterList"></use>
+                    </svg>
+                    <span className="slds-assistive-text">过滤器</span>
+                    {!isEmpty(filter) && (
+                      <span className="slds-notification-badge slds-incoming-notification slds-show-notification min-h-[0.5rem] min-w-[0.5rem]"></span>
+                    )}
+                  </button>
+                </li>
+              </ul>
+            </div>
+
           <Menu
               as="div"
               className="slds-dropdown-trigger slds-dropdown-trigger_click"
