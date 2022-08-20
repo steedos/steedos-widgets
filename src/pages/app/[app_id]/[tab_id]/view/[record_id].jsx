@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-18 16:52:21
+ * @LastEditTime: 2022-08-20 17:56:20
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -59,7 +59,12 @@ export default function Record({formFactor}) {
   const viewRecord = (tab_id, record_id, formFactor) => {
     if (tab_id && record_id) {
       const p1 = getObjectRelateds(app_id, tab_id, record_id, formFactor);
-      const p2 = getViewSchema(tab_id, record_id, { formFactor: formFactor });
+      const p2 = getViewSchema(tab_id, record_id, {
+        recordId: record_id,
+        tabId: tab_id,
+        appId: app_id,
+        formFactor: formFactor,
+      });
       Promise.all([p1, p2]).then((values) => {
         setRelateds(values[0]);
 
