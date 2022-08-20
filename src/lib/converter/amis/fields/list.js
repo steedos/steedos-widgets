@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-23 09:12:14
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-18 10:17:23
+ * @LastEditTime: 2022-08-20 17:44:38
  * @Description: 
  */
 
@@ -80,6 +80,13 @@ export function getListSchema(fields, options){
 
 
 export function getCardSchema(fields, options){
+    let title = null;
+    const titleField = _.find(fields, (f)=>{
+        return f.name === options.labelFieldName;
+    });
+    if(titleField){
+        title = Tpl.getFieldTpl(titleField, options)
+    }
     return {
         mode: "cards",
         name: "cards",
@@ -93,9 +100,7 @@ export function getCardSchema(fields, options){
         card: {
             "type": "card",
             "header": {
-                "title": Tpl.getFieldTpl(_.find(fields, (f)=>{
-                    return f.name === options.labelFieldName;
-                }), options),
+                "title": title
               },
             "body": [...(getListBody(_.filter(fields, (f)=>{
                 return f.name != options.labelFieldName
