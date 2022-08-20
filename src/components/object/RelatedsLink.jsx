@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-16 15:23:18
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-16 17:27:51
+ * @LastEditTime: 2022-08-20 17:48:49
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef } from "react";
@@ -25,13 +25,11 @@ export const RelatedsLink = ({app_id, record_id, relateds, formFactor})=>{
         {relateds?.map((related) => {
             return (
               
-                <div className="slds-grid slds-page-header rounded-none p-2 bg-white border-0 shadow-none">
                     <RelatedLink {...related}
                 app_id={app_id}
                 record_id={record_id}
                 formFactor={formFactor}
                 recordCount={relatedsQueryInfo[related.object_name]} ></RelatedLink>
-                </div>
             );
         })}
     </div>)

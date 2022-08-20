@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-17 10:24:39
+ * @LastEditTime: 2022-08-20 17:45:00
  * @Description: 
  */
 export function getCreatedInfoTpl(formFactor){

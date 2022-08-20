@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-09 11:09:10
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-16 17:24:50
+ * @LastEditTime: 2022-08-20 17:49:19
  * @Description:
  */
 import React, { useState, useEffect, Fragment, useRef } from "react";
@@ -19,7 +19,16 @@ export const RelatedLink = ({
   formFactor
 }) => {
   return (
-    <>
+    <Link
+              href={SteedosUI.Router.getObjectRelatedViewPath({
+                formFactor, 
+                appId: app_id, 
+                masterObjectName: masterObjectName, 
+                masterRecordId: record_id, 
+                objectName: object_name, 
+                foreignKey: foreign_key
+              })}
+            ><div className="slds-grid slds-page-header rounded-none p-2 bg-white border-0 shadow-none">
       <header className="slds-media slds-media--center slds-has-flexi-truncate">
         <div
           aria-hidden="true"
@@ -48,18 +57,7 @@ export const RelatedLink = ({
         </div>
         <div className="slds-media__body">
           <h2 className="slds-card__header-title">
-            <Link
-              href={SteedosUI.Router.getObjectRelatedViewPath({
-                formFactor, 
-                appId: app_id, 
-                masterObjectName: masterObjectName, 
-                masterRecordId: record_id, 
-                objectName: object_name, 
-              //`/app/${app_id}/${masterObjectName}/${record_id}/${object_name}/grid?related_field_name=${foreign_key}`
-                foreignKey: foreign_key
-              })}
-              //`/app/${app_id}/${masterObjectName}/${record_id}/${object_name}/grid?related_field_name=${foreign_key}`
-            >
+            
               <a className="slds-card__header-link baseCard__header-title-container font-normal">
                 <>
                   <span className="slds-truncate slds-m-right--xx-small">
@@ -70,7 +68,7 @@ export const RelatedLink = ({
                   </span>
                 </>
               </a>
-            </Link>
+            
           </h2>
         </div>
       </header>
@@ -83,7 +81,7 @@ export const RelatedLink = ({
               <use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#chevronright"></use>
             </svg>
           </span>
-      </div>
-    </>
+      </div></div>
+      </Link>
   );
 };
