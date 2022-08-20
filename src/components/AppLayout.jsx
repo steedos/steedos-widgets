@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 09:31:04
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-19 17:11:09
+ * @LastEditTime: 2022-08-20 16:29:12
  * @Description:  
  */
 import React, { useState, useEffect, Fragment } from 'react';
@@ -20,7 +20,7 @@ export function AppLayout({ children }) {
     const [selected, setSelected] = useState(tab_id)
     const { data: session } = useSession()
     if(session){
-      setSteedosAuth(session.steedos.space, session.steedos.token, session.steedos.userId, session.steedos.name);
+      setSteedosAuth(session.steedos);
     }
 
     // 默认进入第一个tab

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-20 16:29:22
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-16 11:42:32
+ * @LastEditTime: 2022-08-20 16:25:51
  * @Description: 
  */
 
@@ -13,7 +13,9 @@ const axios = require('axios');
 const jwt = require("jsonwebtoken")
 const ROOT_URL = process.env.NEXT_PUBLIC_STEEDOS_ROOT_URL
 const JWT_API = '/accounts/jwt/login';
+const VALIDATE_API = '/api/setup/validate';
 const STEEDOS_TOKENS = {};
+const STEEDOS_SESSIONS = {};
 
 const getJWTToken = (user)=>{
   const jwtPayload = {
@@ -47,6 +49,20 @@ const loginSteedosProject = async (user)=>{
   });
   STEEDOS_TOKENS[user.email] = rest.data;
   return STEEDOS_TOKENS[user.email];
+}
+
+const validateSteedosToken = async (user)=>{
+  if(STEEDOS_SESSIONS[user.email]){
+    return STEEDOS_SESSIONS[user.email];
+  }
+  const rest =  await axios({
+    url: `${ROOT_URL}${VALIDATE_API}`,
+    method: 'post',
+    data: {},
+    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${user.space},${user.token}` }
+  });
+  STEEDOS_SESSIONS[user.email] = rest.data;
+  return STEEDOS_SESSIONS[user.email];
 }
 
 export const authOptions = {
@@ -87,6 +103,8 @@ export const authOptions = {
             }
           }
         }
+        const steedosSession = await validateSteedosToken(session.steedos);
+        session.steedos = Object.assign(steedosSession, {token: steedosSession.authToken});
       }
       return session
     }

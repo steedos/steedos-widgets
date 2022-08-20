@@ -4,7 +4,7 @@ import { getTableSchema, getTableApi } from '@/lib/converter/amis/fields/table';
 import { getFormBody } from '@/lib/converter/amis/form';
 import { getListSchema, getCardSchema } from '@/lib/converter/amis/fields/list';
 import _, { map } from 'lodash';
-import { getRootUrl } from '@/lib/steedos.client.js';
+import { getRootUrl, getSteedosAuth } from '@/lib/steedos.client.js';
 
 function getBulkActions(objectSchema){
     return [
@@ -183,6 +183,11 @@ export async function getObjectList(objectSchema, fields, options){
     }
 }
 
+const getGlobalData = (mode)=>{
+  const user = getSteedosAuth();
+  return {mode: mode, user: user, spaceId: user.spaceId, userId: user.userId}
+}
+
 export async function getObjectForm(objectSchema, ctx){
     const { recordId, tabId, appId } = ctx;
     const fields = _.values(objectSchema.fields);
@@ -193,7 +198,7 @@ export async function getObjectForm(objectSchema, ctx){
             "body"
         ],
         name: `page_edit_${recordId}`,
-        data: {recordId: recordId, objectName: objectSchema.name, context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
+        data: {global: getGlobalData('edit'), recordId: recordId, objectName: objectSchema.name, context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
         initApi: null,
         initFetch: null ,
         body: [
@@ -224,7 +229,7 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
         type: 'service',
         name: `page_readonly_${recordId}`,
         id: `detail_${recordId}`,
-        data: {context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
+        data: {global: getGlobalData('read'), context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
         api: await getReadonlyFormInitApi(objectSchema, recordId, fields),
         body: [
             {
@@ -235,6 +240,9 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
                 name: `form_readonly_${recordId}`,
                 debug: false,
                 title: "",
+                data: {
+                  "formData": "$$"
+                },
                 wrapWithPanel: false, 
                 body: await getFormBody(map(fields, (field)=>{field.readonly = true;}), objectSchema, ctx),
                 className: 'steedos-amis-form',

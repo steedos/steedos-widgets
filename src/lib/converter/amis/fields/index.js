@@ -486,6 +486,11 @@ return payload;
         if(readonly){
             convertData.quickEdit = false;
         }
+
+        if(field.visible_on){
+            convertData.visibleOn = `\$${field.visible_on.substring(1, field.visible_on.length -1).replace(/formData./g, '')}`;
+        }
+
         return Object.assign({}, baseData, convertData);
     }
     

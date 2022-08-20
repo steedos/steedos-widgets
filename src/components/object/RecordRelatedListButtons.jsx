@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 13:32:49
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-18 16:50:43
+ * @LastEditTime: 2022-08-20 16:27:25
  * @Description: 
  */
 import { getListViewButtons, execute } from '@/lib/buttons';
@@ -90,7 +90,7 @@ export function RecordRelatedListButtons(props) {
                       "requestAdaptor": `
                         api.data.append('record_id', '${record_id}');
                         api.data.append('object_name', '${masterObjectName}');
-                        api.data.append('space', '${auth.space}');
+                        api.data.append('space', '${auth.spaceId}');
                         api.data.append('owner', '${auth.userId}');
                         api.data.append('owner_name', '${auth.name}');
                         return api;

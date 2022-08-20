@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-26 16:02:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-23 17:53:16
+ * @LastEditTime: 2022-08-20 15:19:15
  * @Description: 
  */
 const Fields = require('../fields');
@@ -62,12 +62,21 @@ const getSection = async (permissionFields, fieldSchemaArray, sectionName, ctx) 
       }
   }
 
-  return {
-      "type": "fieldSet",
-      "title": sectionName,
-      "collapsable": true,
-      "body": fieldSetBody
+  // fieldSet 暂不支持显隐控制
+  // const sectionFieldsVisibleOn = lodash.map(lodash.compact(lodash.map(fieldSetBody, 'visibleOn')) , (visibleOn)=>{
+  //   return `(${visibleOn.substring(2, visibleOn.length -1)})`;
+  // });
+
+  const section = {
+    "type": "fieldSet",
+    "title": sectionName,
+    "collapsable": true,
+    "body": fieldSetBody,
   }
+  // if(sectionFieldsVisibleOn.length > 0){
+  //   section.visibleOn = `\${${sectionFieldsVisibleOn.join(" || ")}}`
+  // }
+  return section
 }
 
 export const getSections = async (permissionFields, mergedSchema, ctx) => {
