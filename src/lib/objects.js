@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-19 09:58:11
+ * @LastEditTime: 2022-08-20 13:20:55
  * @Description:
  */
 import { fetchAPI } from "./steedos.client";
@@ -11,7 +11,7 @@ import {
     getObjectDetail,
     getObjectForm,
 } from "./converter/amis/index";
-import { slice, isEmpty, each } from "lodash";
+import { slice, isEmpty, each, has } from "lodash";
 import { getFieldSearchable } from "@/lib/converter/amis/fields/index";
 
 const _ = require("lodash");
@@ -69,6 +69,12 @@ export async function getUISchema(objectName, force) {
                 }
             }
         }
+        each(uiSchema.list_views, (v, k)=>{
+            v.name = k;
+            if(!has(v, 'columns')){
+                v.columns = uiSchema.list_views.all.columns;
+            }
+        })
     } catch (error) {
         console.error(`getUISchema`, objectName, error);
         setUISchemaCache(objectName, null);
