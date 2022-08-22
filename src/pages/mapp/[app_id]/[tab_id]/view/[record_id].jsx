@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-20 17:57:16
+ * @LastEditTime: 2022-08-22 17:40:03
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -90,7 +90,7 @@ export default function Record({formFactor}) {
   };
 
   const getTabs = ()=>{
-    return [
+    const tabs = [
       {label: '详情', name: 'detail', component: ()=>{
         return (
           <>
@@ -108,12 +108,15 @@ export default function Record({formFactor}) {
           </>
         )
       }},
-      {label: '相关', name: 'relateds', component: ()=>{
+    ]
+    if(relateds && relateds.length > 0){
+      tabs.push({label: '相关', name: 'relateds', component: ()=>{
         return (<>
           <RelatedsLink app_id={app_id} record_id={record_id} relateds={relateds} formFactor={formFactor}></RelatedsLink>
         </>)
-      }}
-    ]
+      }})
+    }
+    return tabs;
   }
 
   const Header = formFactor === "SMALL" ? MobileRecordHeader : RecordHeader;
