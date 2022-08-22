@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-27 17:34:25
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-22 16:17:27
+ * @LastEditTime: 2022-08-22 16:36:07
  * @Description: 
  */
 import { AmisRender } from "@/components/AmisRender";
@@ -24,7 +24,7 @@ export function Button(props) {
             {
                 type: "button",
                 label: button.label,
-                className: `${ inMore ? 'flex w-full items-center border-0 px-2 py-1' : 'slds-button slds-button_neutral' } ${className ? className : ''}`,
+                className: `${ inMore ? 'flex w-full items-center border-0 px-2 py-1' : 'bg-white' } ${className ? className : ''}`,
                 onEvent: {
                   click: {
                     actions: JSON.parse(button.amis_actions),
