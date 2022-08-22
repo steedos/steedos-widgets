@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-27 17:34:25
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-17 15:52:17
+ * @LastEditTime: 2022-08-22 16:17:27
  * @Description: 
  */
 import { AmisRender } from "@/components/AmisRender";
@@ -51,7 +51,7 @@ export function Button(props) {
     return (
       <button
         onClick={buttonClick}
-        className={`${className ? className : ''}`}
+        className={`antd-Button antd-Button--default ${className ? className : ''}`}
       >
         {button.label}
       </button>
