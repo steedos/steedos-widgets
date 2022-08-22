@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-20 17:56:20
+ * @LastEditTime: 2022-08-22 09:12:24
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -90,30 +90,34 @@ export default function Record({formFactor}) {
   };
 
   const getTabs = ()=>{
-    return [
-      {label: '详情', name: 'detail', component: ()=>{
-        return (
-          <div className="">
-            {schema?.amisSchema && (
-                <AmisRender
-                  id={SteedosUI.getRefId({
-                    type: "detail",
-                    appId: app_id,
-                    name: schema.uiSchema.name,
-                  })}
-                  schema={schema?.amisSchema || {}}
-                  router={router}
-                ></AmisRender>
-              )}
-          </div>
-        )
-      }},
-      {label: '相关', name: 'relateds', component: ()=>{
+
+    const tabs = [{label: '详情', name: 'detail', component: ()=>{
+      return (
+        <div className="">
+          {schema?.amisSchema && (
+              <AmisRender
+                id={SteedosUI.getRefId({
+                  type: "detail",
+                  appId: app_id,
+                  name: schema.uiSchema.name,
+                })}
+                schema={schema?.amisSchema || {}}
+                router={router}
+              ></AmisRender>
+            )}
+        </div>
+      )
+    }}];
+
+    if(relateds && relateds.length > 0){
+      tabs.push({label: '相关', name: 'relateds', component: ()=>{
         return (<>
           <RecordRelateds app_id={app_id} record_id={record_id} relateds={relateds} formFactor={formFactor}></RecordRelateds>
         </>)
-      }}
-    ]
+      }})
+    }
+
+    return tabs;
   }
 
   const Header = formFactor === "SMALL" ? MobileRecordHeader : RecordHeader;
