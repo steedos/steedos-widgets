@@ -93,24 +93,20 @@ export function RecordHeader({ schema, formFactor }) {
         </div>
         <div className="slds-page-header__col-actions">
           <div className="slds-page-header__controls">
-            <div className="slds-page-header__control">
-              <ul className="slds-button-group-list">
+            <div className="slds-page-header__control space-x-1">
                 {schema?.uiSchema?.permissions?.allowEdit && (
-                  <li>
-                    <button
-                      onClick={editRecord}
-                      className="slds-button slds-button_neutral"
-                    >
-                      编辑
-                    </button>
-                  </li>
+                  <button
+                  onClick={editRecord}
+                  className="antd-Button antd-Button--default"
+                >
+                  编辑
+                </button>
                 )}
-
                 <>
                   {buttons?.map((button) => {
                     return (
-                      <li key={button.name}>
                         <Button
+                          key={button.name}
                           button={button}
                           data={{
                             app_id: app_id,
@@ -118,12 +114,11 @@ export function RecordHeader({ schema, formFactor }) {
                             object_name: schema.uiSchema.name,
                             dataComponentId: `${app_id}-${tab_id}-${record_id}`,
                           }}
+                          scopeClassName="inline-block"
                         ></Button>
-                      </li>
                     );
                   })}
                   {moreButtons?.length > 0 && (
-                    <li>
                       <Menu
                         as="div"
                         className="slds-dropdown-trigger slds-dropdown-trigger_click"
@@ -179,10 +174,8 @@ export function RecordHeader({ schema, formFactor }) {
                           </Menu.Items>
                         </Transition>
                       </Menu>
-                    </li>
                   )}
                 </>
-              </ul>
             </div>
           </div>
         </div>
