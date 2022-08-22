@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-03 16:46:23
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-19 17:29:09
+ * @LastEditTime: 2022-08-22 16:49:18
  * @Description:
  */
 import { Listbox, Menu, Transition } from "@headlessui/react";
@@ -14,15 +14,18 @@ import {
   defaultsDeep,
   filter as _filter,
   includes,
+  concat,
 } from "lodash";
 import { useRouter } from "next/router";
 import React, { useState, useEffect, Fragment, useRef } from "react";
 import { Button } from "@/components/object/Button";
 import { FromNow } from "@/components/FromNow";
 import config from "@/config";
+import { getListViewButtons } from '@/lib/buttons';
 
 export function ListviewHeader({ schema, onListviewChange, formFactor }) {
   //   const [selectedListView, setSelectedListView] = useState();
+  const [buttons, setButtons] = useState(null);
   const [showFieldsFilter, setShowFieldsFilter] = useState(false);
   const [queryInfo, setQueryInfo] = useState();
   const [filter, setFilter] = useState();
@@ -38,6 +41,13 @@ export function ListviewHeader({ schema, onListviewChange, formFactor }) {
   });
   useEffect(() => {
     if (schema) {
+      if(schema && schema.uiSchema){
+        setButtons(getListViewButtons(schema.uiSchema, {
+            app_id: app_id,
+            tab_id: tab_id,
+            router: router,
+          }))
+      }
       window.addEventListener("message", (event) => {
         const { data } = event;
         if (data.type === "listview.loaded") {
@@ -337,7 +347,7 @@ export function ListviewHeader({ schema, onListviewChange, formFactor }) {
               >
                 <Menu.Items className="absolute right-0 z-10 mt-1 w-56 origin-top-right divide-y divide-gray-100 bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:rounded-[2px]">
                   <div className="">
-                    {moreButtons?.map((button, index) => {
+                    {concat(moreButtons, buttons)?.map((button, index) => {
                       return (
                         <Menu.Item key={index}>
                           {({ active }) => (
