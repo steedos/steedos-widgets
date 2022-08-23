@@ -63,10 +63,6 @@ main {
     display: none;
 }
 
-.steedos-listview.amis-scope .antd-Table-table {
-    border: 1px solid var(--Table-borderColor);
-}
-
 .slds-page-header .antd-Button{
     vertical-align: inherit !important;
     height: auto !important;
@@ -143,10 +139,24 @@ button.antd-Button--primary {
     margin-bottom: 0;
 }
 
+#__next .antd-Table-tr--even {
+    background-color: #fcfdfe;
+}
+
 :root {
     --Collapse-header-padding: 0px;
     --Form-selectValue-fontSize: 14px;
     --Table-toolbar-marginY: 0;
+    --TableCell--edge-paddingX: 0.5rem;
+    --Table-borderColor: #d9dcde;
+    --TableCell-paddingY: 0.3rem;
+    --Table-thead-borderWidth: 0;
+    --text--muted-color: #d9dcde;
+    --Collapse-header-fontSize: 16px;
+    --Collapse-header-fontWeight: 400;
+    --Collapse-header-onHover-bg: #EEEEEE;
+    --Collapse-header-padding: 4px;
+    --Collapse-content-padding: 8px;
 }
 
 /* .antd-Cards-fixedTop{

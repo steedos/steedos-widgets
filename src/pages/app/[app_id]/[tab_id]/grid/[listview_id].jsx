@@ -14,6 +14,7 @@ import { unstable_getServerSession } from "next-auth/next"
 import { AmisRender } from '@/components/AmisRender'
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
 import { ListviewHeader } from '@/components/object/ListviewHeader'
+import { Loading } from '@/components/Loading';
 
 export default function Page ({formFactor}) {
   const router = useRouter();
@@ -32,6 +33,9 @@ export default function Page ({formFactor}) {
     getListviewSchema(undefined)
   }, [tab_id, formFactor]);
 
+  if (!schema) 
+    return <><Loading/></>
+
   return (
     <div className='flex flex-col flex-1 overflow-hidden'>
       <div className='border-b'>
@@ -39,7 +43,7 @@ export default function Page ({formFactor}) {
           getListviewSchema(listView?.name)
         }}></ListviewHeader>}
       </div>
-      <div className="p-4 flex-1 min-h-0 overflow-y-auto">
+      <div className="flex-1 min-h-0 overflow-y-auto">
       {schema?.amisSchema && schema?.uiSchema.name === tab_id && <AmisRender className="steedos-listview" id={listViewId} schema={schema?.amisSchema || {}} router={router}></AmisRender>}
       </div>
     </div>

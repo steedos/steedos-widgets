@@ -22,21 +22,25 @@ export  function Sidebar({ navigation, selected }) {
   }
   return (
     <nav aria-label="Sidebar" className="pt-4 divide-y">
-      <div className="">
-        {navigation?.map((item) => (
+      <div className="px-2">
+        {navigation?.map((item) => {
+          const icon = item.icon?item.icon:'account'
+          return (
           <Link href={item.path} key={item.name}>
             <a
             onClick={handleClick}
             className={classNames(
-              item.id === selected ? 'text-sky-500 border-current font-semibold bg-slate-100' : 'border-transparent text-slate-700',
-              'block border-l-[3px] pl-4 -ml-px no-underline py-2 hover:bg-slate-100 '
+              item.id === selected ? 'bg-sky-200/25 fill-sky-500  text-slate-900' : 'fill-slate-500  text-slate-700',
+              'block px-2 -ml-px no-underline py-2 hover:bg-slate-100 group flex items-center text-[15px] font-medium rounded-md'
             )}
             aria-current={item.current ? 'page' : undefined}
           >
+            <svg className="mr-3 flex-shrink-0 h-6 w-6" ariaHidden="true"><use xlinkHref={`/assets/icons/standard-sprite/svg/symbols.svg#${icon}`}></use></svg>
+            
             {item.name}
           </a>
           </Link>
-        ))}
+        )})}
       </div>
     </nav>
   )

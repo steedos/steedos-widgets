@@ -127,7 +127,7 @@ export function GlobalHeader({ navigation, selected, app }) {
                   <div className="hidden lg:relative lg:z-10 lg:ml-2 lg:flex lg:items-center">
                     {/* Profile dropdown */}
                     <Menu as="div" className="relative ml-0 flex-shrink-0">
-                      <div className="slds-global-actions__item">
+                      <div className="slds-global-actions__item slds-grid slds-grid_vertical-align-center">
                         <Menu.Button className="slds-dropdown-trigger slds-dropdown-trigger_click">
                           <span className="sr-only">Open user menu</span>
                           <img

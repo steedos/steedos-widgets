@@ -18,6 +18,7 @@ import { Tab, Menu, Transition } from "@headlessui/react";
 import { RecordHeader } from '@/components/object/RecordHeader';
 import { RecordHeader as MobileRecordHeader } from '@/components/mobile/object/RecordHeader';
 import { RecordRelateds } from '@/components/object/RecordRelateds';
+import { Loading } from '@/components/Loading';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -122,6 +123,9 @@ export default function Record({formFactor}) {
 
   const Header = formFactor === "SMALL" ? MobileRecordHeader : RecordHeader;
 
+  if (!schema) 
+    return <><Loading/></>
+    
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       <div className="region-header bg-slate-50 ">
