@@ -152,6 +152,11 @@ button.antd-Button--primary {
     --TableCell-paddingY: 0.3rem;
     --Table-thead-borderWidth: 0;
     --text--muted-color: #d9dcde;
+    --Collapse-header-fontSize: 16px;
+    --Collapse-header-fontWeight: 400;
+    --Collapse-header-onHover-bg: #EEEEEE;
+    --Collapse-header-padding: 4px;
+    --Collapse-content-padding: 8px;
 }
 
 /* .antd-Cards-fixedTop{
