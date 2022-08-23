@@ -16,7 +16,7 @@ export default function Apps() {
   const router = useRouter()
   return (
     <>
-    <AppLauncher router={router}></AppLauncher>
+    {/* <AppLauncher router={router}></AppLauncher> */}
   </>
   )
 }
