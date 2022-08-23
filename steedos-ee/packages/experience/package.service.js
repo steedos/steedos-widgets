@@ -123,7 +123,7 @@ module.exports = {
     process.env.NEXT_STATIC_PROPS_REVALIDATE = 3600;
     process.env.KEYCLOAK_ID = process.env.STEEDOS_IDENTITY_OIDC_CLIENT_ID;
     process.env.KEYCLOAK_SECRET = process.env.STEEDOS_IDENTITY_OIDC_CLIENT_SECRET;
-    process.env.KEYCLOAK_ISSUER = process.env.STEEDOS_IDENTITY_OIDC_CONFIG_URL;
+    process.env.KEYCLOAK_ISSUER = process.env.STEEDOS_IDENTITY_OIDC_ISSUER;
     process.env.NEXTAUTH_SECRET = process.env.STEEDOS_IDENTITY_JWT_SECRET;
     process.env.JWT_SECRET = process.env.STEEDOS_IDENTITY_JWT_SECRET;
 
