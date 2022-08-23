@@ -25,6 +25,7 @@ module.exports = {
   settings: {
     server: true,
     port: process.env.STEEDOS_EXPERIENCE_PORT || 3100,
+    url: process.env.STEEDOS_EXPERIENCE_URL || 'http://127.0.0.1:3000',
     packageInfo: {
       path: __dirname,
       name: packageName,
@@ -116,13 +117,7 @@ module.exports = {
    * Service created lifecycle event handler
    */
   created() {
-
-    const rootUrl = new URL(process.env.ROOT_URL);
-
-    const url = `${rootUrl.protocol}//${rootUrl.hostname}:${this.settings.port}`;
-    this.settings.url = url;
-
-    process.env.NEXTAUTH_URL = url;
+    process.env.NEXTAUTH_URL = this.settings.url;
     process.env.NEXT_PUBLIC_STEEDOS_ROOT_URL = process.env.ROOT_URL;
     process.env.NEXT_PUBLIC_NEXTAUTH_PROVIDER_ID = "keycloak";
     process.env.NEXT_STATIC_PROPS_REVALIDATE = 3600;
