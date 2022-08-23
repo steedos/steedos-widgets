@@ -62,11 +62,11 @@ export const RecordRelatedHeader = ({schema, object_name, foreign_key, app_id, r
       </header>
       <div className="slds-no-flex" >
         <div className="actionsContainer" >
-          <ul
+          <div
             className="branding-actions slds-button-group slds-m-left--xx-small small oneActionsRibbon forceActionsContainer"
           >
             <RecordRelatedListButtons formFactor={formFactor} foreign_key={foreign_key} record_id={record_id} refId={refId} app_id={app_id} tab_id={object_name} object_name={object_name} masterObjectName={masterObjectName} schema={schema}></RecordRelatedListButtons>
-          </ul>
+          </div>
         </div>
       </div>
     </>
