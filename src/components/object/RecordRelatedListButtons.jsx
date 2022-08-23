@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 13:32:49
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-20 16:27:25
+ * @LastEditTime: 2022-08-23 10:23:21
  * @Description: 
  */
 import { getListViewButtons, execute } from '@/lib/buttons';
@@ -67,7 +67,7 @@ export function RecordRelatedListButtons(props) {
                     "name": "file",
                     "id": "u:a58d02614e04",
                     "btnLabel": "上传",
-                    // "btnClassName": "slds-button slds-button_neutral", 
+                    "btnClassName": "m-0", 
                     "multiple": false, // 待amis 2.1.x 处理了 多选 + 自动上传的bug 后, 可开启此功能.
                     "maxLength": 10,
                     "submitType": "asUpload",
@@ -145,31 +145,29 @@ export function RecordRelatedListButtons(props) {
             {schema?.uiSchema && 
                 <>
                     {schema?.uiSchema?.permissions?.allowCreate && 
-                        <li>
+                        <>
                             { schema.uiSchema.name != 'cms_files' && <button onClick={newRecord} className={ inMore ? "flex w-full items-center border-0 px-2 py-1" : 'slds-button slds-button_neutral'}>新建</button> }
                             { schema.uiSchema.name === 'cms_files' && 
                             <AmisRender
                             id={SteedosUI.getRefId({type: 'button', appId: app_id, name: 'upload'})}
                             schema={uploadBtnSchema}
                             router={router}
-                            className='w-full'
+                            className='inline-block'
                           ></AmisRender>
                             }
-                        </li>
+                        </>
                     }
                     {buttons?.map((button)=>{
                         return (
-                          <li key={button.name} >
-<Button button={button} inMore={inMore} data={{
+                          <Button key={button.name}  button={button} inMore={inMore} data={{
                             app_id: app_id,
                             tab_id: tab_id,
                             object_name: schema.uiSchema.name,
                             dataComponentId: SteedosUI.getRefId({type: 'listview', appId: app_id, name: schema.uiSchema.name})
                         }}
-                        className = {inMore ? "flex w-full items-center border-0 px-2 py-1" : ''}
+                        className = {inMore ? "flex items-center border-0 px-2 py-1" : ''}
+                        scopeClassName="inline-block"
                         ></Button>
-                          </li>
-                        
                         )
                     })}
                 </>
