@@ -9,24 +9,29 @@
 import { CalendarIcon, ChartBarIcon, FolderIcon, HomeIcon, InboxIcon, UsersIcon } from '@heroicons/react/outline'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { AppLauncherBar } from '@/components/AppLauncherBar'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export  function Sidebar({ navigation, selected }) {
+export  function Sidebar({ navigation, selected, app }) {
   const router = useRouter()
   const handleClick = (e) => {
     e.preventDefault()
     router.push(e.target.href)
   }
   return (
-    <nav aria-label="Sidebar" className="pt-4 divide-y">
-      <div className="px-2">
+    <nav aria-label="Sidebar" className="divide-y">
+      <div className="block lg:hidden px-4 py-4">
+        <AppLauncherBar app={app}></AppLauncherBar>
+      </div>
+      <div className="px-2 py-4">
         {navigation?.map((item) => {
           const icon = item.icon?item.icon:'account'
+          const href = (window.innerWidth < 768)? item.path.replace(/^\/app/, '/mapp') : item.path
           return (
-          <Link href={item.path} key={item.name}>
+          <Link href={href} key={item.name}>
             <a
             onClick={handleClick}
             className={classNames(
