@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-09 11:09:10
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-23 09:42:27
+ * @LastEditTime: 2022-08-23 10:19:09
  * @Description:
  */
 import React, { useState, useEffect, Fragment, useRef } from "react";
@@ -131,55 +131,43 @@ export const RelatedHeader = ({app_id, foreign_key, masterObjectName, object_nam
         </div>
         <div className="slds-page-header__col-actions">
           <div className="slds-page-header__controls">
-            <div className="slds-page-header__control">
-              <ul
-                className="slds-button-group-list"
-                id="button-group-page-header-actions"
-              >
+            <div className="slds-page-header__control space-x-1">
                 <RecordRelatedListButtons formFactor={formFactor} foreign_key={foreign_key} record_id={record_id} refId={listViewId} app_id={app_id} tab_id={object_name} object_name={object_name} masterObjectName={masterObjectName} schema={schema}>
                 </RecordRelatedListButtons>
-
-                <li>
-                      <Menu
-                        as="div"
-                        className="slds-dropdown-trigger slds-dropdown-trigger_click"
+                <Menu
+                  as="div"
+                  className="antd-Button antd-Button--default"
+                >
+                    <Menu.Button  >
+                      <svg
+                      focusable="false"
+                      data-key="down"
+                      aria-hidden="true"
+                      className="slds-button__icon"
                       >
-                        <div>
-                          <Menu.Button className="slds-button slds-button_icon-border-filled slds-button_last">
-                          <div>
-                            <svg
-                            focusable="false"
-                            data-key="down"
-                            aria-hidden="true"
-                            className="slds-button__icon"
-                            >
-                            <use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#down"></use>
-                            </svg>
-                        </div>
-                          </Menu.Button>
-                        </div>
-                        <Transition
-                          as={Fragment}
-                          enter="transition ease-out duration-100"
-                          enterFrom="transform opacity-0 scale-95"
-                          enterTo="transform opacity-100 scale-100"
-                          leave="transition ease-in duration-75"
-                          leaveFrom="transform opacity-100 scale-100"
-                          leaveTo="transform opacity-0 scale-95"
-                        >
-                          <Menu.Items className="absolute right-0 z-10 mt-1 w-56 origin-top-right divide-y divide-gray-100 bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:rounded-[2px]">
-                            <div className="">
-                                <Menu.Item >
-                                {schema?.uiSchema?.permissions?.allowDelete && 
-                                    <button onClick={batchDelete} className="slds-dropdown__item group flex w-full items-center border-0 px-2 py-2">删除</button>
-                                }
-                                </Menu.Item>
-                            </div>
-                          </Menu.Items>
-                        </Transition>
-                      </Menu>
-                    </li>
-              </ul>
+                      <use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#down"></use>
+                      </svg>
+                    </Menu.Button>
+                  <Transition
+                    as={Fragment}
+                    enter="transition ease-out duration-100"
+                    enterFrom="transform opacity-0 scale-95"
+                    enterTo="transform opacity-100 scale-100"
+                    leave="transition ease-in duration-75"
+                    leaveFrom="transform opacity-100 scale-100"
+                    leaveTo="transform opacity-0 scale-95"
+                  >
+                    <Menu.Items className="absolute right-0 z-10 mt-1 w-56 origin-top-right divide-y divide-gray-100 bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:rounded-[2px]">
+                      <div className="">
+                          <Menu.Item >
+                          {schema?.uiSchema?.permissions?.allowDelete && 
+                              <button onClick={batchDelete} className="slds-dropdown__item group flex w-full items-center border-0 px-2 py-2">删除</button>
+                          }
+                          </Menu.Item>
+                      </div>
+                    </Menu.Items>
+                  </Transition>
+                </Menu>
             </div>
           </div>
         </div>
