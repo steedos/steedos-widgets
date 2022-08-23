@@ -48,16 +48,7 @@ class MyDocument extends next_document__WEBPACK_IMPORTED_MODULE_1__["default"] {
                             content: "#ffffff"
                         }),
                         /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("script", {
-                            src: "https://unpkg.com/amis@2.1.1-beta.2/sdk/sdk.js"
-                        })
-                    ]
-                }),
-                /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("body", {
-                    className: "antialiased text-black dark:text-slate-400 bg-white dark:bg-slate-900",
-                    children: [
-                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("link", {
-                            rel: "stylesheet",
-                            href: "https://unpkg.com/amis@2.1.1-beta.2/lib/themes/antd.css"
+                            src: "/unpkg.com/amis/sdk/sdk.js"
                         }),
                         /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("link", {
                             rel: "stylesheet",
@@ -65,8 +56,25 @@ class MyDocument extends next_document__WEBPACK_IMPORTED_MODULE_1__["default"] {
                         }),
                         /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("link", {
                             rel: "stylesheet",
-                            href: "https://unpkg.com/amis@2.1.1-beta.2/sdk/iconfont.css"
+                            href: "/unpkg.com/amis/lib/themes/antd.css"
                         }),
+                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("link", {
+                            rel: "stylesheet",
+                            href: "/unpkg.com/amis/lib/helper.css"
+                        }),
+                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("link", {
+                            rel: "stylesheet",
+                            href: "/unpkg.com/amis/sdk/iconfont.css"
+                        }),
+                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("link", {
+                            rel: "stylesheet",
+                            href: "/unpkg.com/fontawesome/fontawesome.css"
+                        })
+                    ]
+                }),
+                /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("body", {
+                    className: "antialiased text-black bg-white",
+                    children: [
                         /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(next_document__WEBPACK_IMPORTED_MODULE_1__.Main, {}),
                         /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(next_document__WEBPACK_IMPORTED_MODULE_1__.NextScript, {})
                     ]

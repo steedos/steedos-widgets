@@ -24,7 +24,7 @@ exports.modules = {
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 13:32:49
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-09 11:16:20
+ * @LastEditTime: 2022-08-23 10:23:21
  * @Description: 
  */ 
 
@@ -34,7 +34,7 @@ exports.modules = {
 
 function RecordRelatedListButtons(props) {
     var ref, ref1;
-    const { app_id , tab_id , schema , refId , foreign_key , record_id , object_name , masterObjectName  } = props;
+    const { app_id , tab_id , schema , refId , foreign_key , record_id , object_name , masterObjectName , inMore , formFactor  } = props;
     const { 0: buttons , 1: setButtons  } = (0,react__WEBPACK_IMPORTED_MODULE_3__.useState)(null);
     const router = (0,next_router__WEBPACK_IMPORTED_MODULE_2__.useRouter)();
     (0,react__WEBPACK_IMPORTED_MODULE_3__.useEffect)(()=>{
@@ -77,7 +77,19 @@ function RecordRelatedListButtons(props) {
                 objectName: schema.uiSchema.name,
                 recordId: "new",
                 type,
-                options: {},
+                formFactor: formFactor,
+                options: formFactor === "SMALL" ? {
+                    props: {
+                        width: "100%",
+                        style: {
+                            width: "100%"
+                        },
+                        bodyStyle: {
+                            padding: "0px",
+                            paddingTop: "0px"
+                        }
+                    }
+                } : {},
                 router
             });
         }
@@ -97,7 +109,7 @@ function RecordRelatedListButtons(props) {
                         "name": "file",
                         "id": "u:a58d02614e04",
                         "btnLabel": "\u4E0A\u4F20",
-                        // "btnClassName": "slds-button slds-button_neutral", 
+                        "btnClassName": "m-0",
                         "multiple": false,
                         "maxLength": 10,
                         "submitType": "asUpload",
@@ -120,7 +132,7 @@ function RecordRelatedListButtons(props) {
                             "requestAdaptor": `
                         api.data.append('record_id', '${record_id}');
                         api.data.append('object_name', '${masterObjectName}');
-                        api.data.append('space', '${auth.space}');
+                        api.data.append('space', '${auth.spaceId}');
                         api.data.append('owner', '${auth.userId}');
                         api.data.append('owner_name', '${auth.name}');
                         return api;
@@ -171,11 +183,11 @@ function RecordRelatedListButtons(props) {
     return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
         children: (schema === null || schema === void 0 ? void 0 : schema.uiSchema) && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
             children: [
-                (schema === null || schema === void 0 ? void 0 : (ref = schema.uiSchema) === null || ref === void 0 ? void 0 : (ref1 = ref.permissions) === null || ref1 === void 0 ? void 0 : ref1.allowCreate) && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("li", {
+                (schema === null || schema === void 0 ? void 0 : (ref = schema.uiSchema) === null || ref === void 0 ? void 0 : (ref1 = ref.permissions) === null || ref1 === void 0 ? void 0 : ref1.allowCreate) && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
                     children: [
                         schema.uiSchema.name != "cms_files" && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("button", {
                             onClick: newRecord,
-                            className: "slds-button slds-button_neutral",
+                            className: inMore ? "flex w-full items-center border-0 px-2 py-1" : "slds-button slds-button_neutral",
                             children: "\u65B0\u5EFA"
                         }),
                         schema.uiSchema.name === "cms_files" && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_AmisRender__WEBPACK_IMPORTED_MODULE_5__/* .AmisRender */ .k, {
@@ -186,25 +198,26 @@ function RecordRelatedListButtons(props) {
                             }),
                             schema: uploadBtnSchema,
                             router: router,
-                            className: "w-full"
+                            className: "inline-block"
                         })
                     ]
                 }),
                 buttons === null || buttons === void 0 ? void 0 : buttons.map((button)=>{
-                    return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("li", {
-                        children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_object_Button__WEBPACK_IMPORTED_MODULE_4__/* .Button */ .z, {
-                            button: button,
-                            data: {
-                                app_id: app_id,
-                                tab_id: tab_id,
-                                object_name: schema.uiSchema.name,
-                                dataComponentId: SteedosUI.getRefId({
-                                    type: "listview",
-                                    appId: app_id,
-                                    name: schema.uiSchema.name
-                                })
-                            }
-                        })
+                    return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_object_Button__WEBPACK_IMPORTED_MODULE_4__/* .Button */ .z, {
+                        button: button,
+                        inMore: inMore,
+                        data: {
+                            app_id: app_id,
+                            tab_id: tab_id,
+                            object_name: schema.uiSchema.name,
+                            dataComponentId: SteedosUI.getRefId({
+                                type: "listview",
+                                appId: app_id,
+                                name: schema.uiSchema.name
+                            })
+                        },
+                        className: inMore ? "flex items-center border-0 px-2 py-1" : "",
+                        scopeClassName: "inline-block"
                     }, button.name);
                 })
             ]

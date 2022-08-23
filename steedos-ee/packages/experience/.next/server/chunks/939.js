@@ -38,30 +38,49 @@ const AppLauncher = ({ router  })=>{
 /* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1853);
 /* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(next_router__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _components_AppLauncher__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(712);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6689);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_3__);
 
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-11 16:46:07
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-11 17:55:40
+ * @LastEditTime: 2022-08-17 16:43:11
  * @Description:
  */ 
 
+
 const AppLauncherBar = ({ app  })=>{
+    const { 0: formFactor , 1: setFormFactor  } = (0,react__WEBPACK_IMPORTED_MODULE_3__.useState)(null);
+    (0,react__WEBPACK_IMPORTED_MODULE_3__.useEffect)(()=>{
+        if (window.innerWidth < 768) {
+            setFormFactor("SMALL");
+        } else {
+            setFormFactor("LARGE");
+        }
+    }, []);
     const router = (0,next_router__WEBPACK_IMPORTED_MODULE_1__.useRouter)();
     const openAppLauncher = ()=>{
         const name = "app-launcher-modal";
         SteedosUI.Modal(Object.assign({
             name: name,
-            title: `App Launcher`,
+            title: `应用导航`,
             destroyOnClose: true,
             maskClosable: false,
             keyboard: false,
             footer: null,
-            width: "90%",
-            style: {
+            width: "100%",
+            centered: true,
+            style: formFactor === "SMALL" ? {
+                top: "0px",
+                margin: "0px",
+                width: "100%",
+                maxWidth: "100%",
+                height: "100%"
+            } : {
                 width: "90%",
-                maxWidth: "90"
+                maxWidth: "90%",
+                height: "90%"
             },
             bodyStyle: {
                 padding: "0px",
@@ -164,9 +183,13 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony import */ var _components_Logo__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(4079);
 /* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(1853);
 /* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(next_router__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _components_AppLauncherBar__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(1571);
-var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_headlessui_react__WEBPACK_IMPORTED_MODULE_2__]);
-_headlessui_react__WEBPACK_IMPORTED_MODULE_2__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__)[0];
+/* harmony import */ var _components_mobile_MobileNavigation__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(8418);
+/* harmony import */ var _components_AppLauncherBar__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(1571);
+/* harmony import */ var _components_Notification__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(1719);
+var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_headlessui_react__WEBPACK_IMPORTED_MODULE_2__, _components_mobile_MobileNavigation__WEBPACK_IMPORTED_MODULE_8__]);
+([_headlessui_react__WEBPACK_IMPORTED_MODULE_2__, _components_mobile_MobileNavigation__WEBPACK_IMPORTED_MODULE_8__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
+
+
 
 
 
@@ -179,7 +202,7 @@ _headlessui_react__WEBPACK_IMPORTED_MODULE_2__ = (__webpack_async_dependencies__
 function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
 }
-const defaultAvatar = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80";
+const defaultAvatar = "/images/defaultAvatar.png";
 function GlobalHeader({ navigation , selected , app  }) {
     const router = (0,next_router__WEBPACK_IMPORTED_MODULE_7__.useRouter)();
     const { data: session  } = (0,next_auth_react__WEBPACK_IMPORTED_MODULE_5__.useSession)();
@@ -212,281 +235,166 @@ function GlobalHeader({ navigation , selected , app  }) {
     return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
         children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_headlessui_react__WEBPACK_IMPORTED_MODULE_2__.Disclosure, {
             as: "header",
-            className: "slds-global-header_container supports-backdrop-blur:bg-white/60 sticky top-0 z-40 w-full flex-none bg-white/95 shadow-none backdrop-blur transition-colors duration-500 dark:border-slate-50/[0.06] dark:bg-transparent lg:z-50 lg:border-b lg:border-slate-900/10",
-            children: ({ open  })=>{
-                /*#__PURE__*/ return (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
-                    children: [
-                        /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-                            className: "slds-global-header slds-grid slds-grid_align-spread shadow-none",
-                            children: [
-                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-                                    className: "slds-global-header__item",
-                                    children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-                                        className: "slds-global-header__logo",
-                                        style: {
-                                            backgroundImage: "url(/logo.png)",
-                                            display: "inline-block"
-                                        }
+            className: "slds-global-header_container supports-backdrop-blur:bg-white/60 sticky top-0 z-40 w-full flex-none bg-white/95 shadow-none backdrop-blur transition-colors duration-500 lg:z-50 border-b lg:border-b-2 lg:border-sky-500",
+            children: ({ open  })=>/*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+                    children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+                        className: "slds-global-header slds-grid slds-grid_align-spread shadow-none",
+                        children: [
+                            /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+                                className: "slds-global-header__item flex",
+                                children: [
+                                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                                        className: "sm:hidden mr-4 flex items-center",
+                                        children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_mobile_MobileNavigation__WEBPACK_IMPORTED_MODULE_8__/* .MobileNavigation */ .$, {
+                                            navigation: navigation,
+                                            app: app
+                                        })
+                                    }),
+                                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("a", {
+                                        href: "/app",
+                                        className: "flex items-center",
+                                        children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("img", {
+                                            className: "block h-7 w-auto",
+                                            src: "/logo.png"
+                                        })
+                                    }),
+                                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                                        className: "flex items-center ml-6 hidden sm:block",
+                                        children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_AppLauncherBar__WEBPACK_IMPORTED_MODULE_9__/* .AppLauncherBar */ .A, {
+                                            app: app
+                                        })
                                     })
-                                }),
-                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-                                    className: "slds-global-header__item",
-                                    children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("ul", {
-                                        className: "slds-global-actions",
-                                        children: [
-                                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("li", {
-                                                className: "slds-global-actions__item",
-                                                children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-                                                    className: "slds-dropdown-trigger slds-dropdown-trigger_click",
-                                                    style: {
-                                                        display: "inline-block"
-                                                    },
-                                                    children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("button", {
-                                                        className: "slds-button slds-button_icon-container slds-button_icon-small slds-button_icon slds-global-actions__help slds-global-actions__item-action",
-                                                        id: "header-help-popover-id",
-                                                        tabindex: "0",
-                                                        title: "Help and Training",
-                                                        type: "button",
-                                                        "aria-haspopup": "true",
-                                                        onClick: ()=>{
-                                                            window.open(`https://www.steedos.com/docs`, "_blank");
-                                                        },
-                                                        children: [
-                                                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("svg", {
-                                                                focusable: "false",
-                                                                "data-key": "down",
-                                                                "aria-hidden": "true",
-                                                                className: "slds-button__icon slds-global-header__icon",
-                                                                children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("use", {
-                                                                    xlinkHref: "/assets/icons/utility-sprite/svg/symbols.svg#help"
-                                                                })
-                                                            }),
-                                                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
-                                                                className: "slds-assistive-text",
-                                                                children: "Help and Training"
-                                                            })
-                                                        ]
-                                                    })
-                                                })
-                                            }),
-                                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("li", {
-                                                className: "slds-global-actions__item",
-                                                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-                                                    className: "slds-dropdown-trigger slds-dropdown-trigger_click",
-                                                    style: {
-                                                        display: "inline-block"
+                                ]
+                            }),
+                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                                className: "slds-global-header__item"
+                            }),
+                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                                className: "slds-global-header__item",
+                                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("ul", {
+                                    className: "slds-global-actions mb-0",
+                                    children: [
+                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("li", {
+                                            className: "slds-global-actions__item",
+                                            children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                                                className: "slds-dropdown-trigger slds-dropdown-trigger_click hidden sm:block",
+                                                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("button", {
+                                                    className: "slds-button slds-button_icon-container slds-button_icon-small slds-button_icon slds-global-actions__help slds-global-actions__item-action",
+                                                    id: "header-help-popover-id",
+                                                    title: "Help and Training",
+                                                    type: "button",
+                                                    "aria-haspopup": "true",
+                                                    onClick: ()=>{
+                                                        window.open(`https://www.steedos.com/docs`, "_blank");
                                                     },
                                                     children: [
-                                                        /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("button", {
-                                                            className: "slds-button slds-button_icon-container slds-button_icon-small slds-button_icon slds-global-actions__notifications slds-global-actions__item-action",
-                                                            id: "header-notifications-popover-id",
-                                                            title: "5 new notifications",
-                                                            type: "button",
-                                                            "aria-live": "assertive",
-                                                            "aria-haspopup": "dialog",
-                                                            children: [
-                                                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("svg", {
-                                                                    focusable: "false",
-                                                                    "data-key": "down",
-                                                                    "aria-hidden": "true",
-                                                                    className: "slds-button__icon slds-global-header__icon",
-                                                                    children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("use", {
-                                                                        xlinkHref: "/assets/icons/utility-sprite/svg/symbols.svg#notification"
-                                                                    })
-                                                                }),
-                                                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
-                                                                    className: "slds-assistive-text",
-                                                                    children: "5 new notifications"
-                                                                })
-                                                            ]
-                                                        }),
-                                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
+                                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("svg", {
+                                                            focusable: "false",
+                                                            "data-key": "down",
                                                             "aria-hidden": "true",
-                                                            className: "slds-notification-badge slds-incoming-notification slds-show-notification",
-                                                            children: "5"
-                                                        })
-                                                    ]
-                                                })
-                                            }),
-                                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("li", {
-                                                className: "relative z-10 flex items-center lg:hidden",
-                                                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(_headlessui_react__WEBPACK_IMPORTED_MODULE_2__.Disclosure.Button, {
-                                                    className: "inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500",
-                                                    children: [
+                                                            className: "slds-button__icon slds-global-header__icon",
+                                                            children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("use", {
+                                                                xlinkHref: "/assets/icons/utility-sprite/svg/symbols.svg#help"
+                                                            })
+                                                        }),
                                                         /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
-                                                            className: "sr-only",
-                                                            children: "Open menu"
-                                                        }),
-                                                        open ? /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_heroicons_react_outline__WEBPACK_IMPORTED_MODULE_4__.XIcon, {
-                                                            className: "block h-6 w-6",
-                                                            "aria-hidden": "true"
-                                                        }) : /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_heroicons_react_outline__WEBPACK_IMPORTED_MODULE_4__.MenuIcon, {
-                                                            className: "block h-6 w-6",
-                                                            "aria-hidden": "true"
-                                                        })
-                                                    ]
-                                                })
-                                            }),
-                                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-                                                className: "hidden lg:relative lg:z-10 lg:ml-4 lg:flex lg:items-center",
-                                                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(_headlessui_react__WEBPACK_IMPORTED_MODULE_2__.Menu, {
-                                                    as: "div",
-                                                    className: "relative ml-0 flex-shrink-0",
-                                                    children: [
-                                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-                                                            className: "slds-global-actions__item",
-                                                            children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(_headlessui_react__WEBPACK_IMPORTED_MODULE_2__.Menu.Button, {
-                                                                className: "slds-dropdown-trigger slds-dropdown-trigger_click",
-                                                                children: [
-                                                                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
-                                                                        className: "sr-only",
-                                                                        children: "Open user menu"
-                                                                    }),
-                                                                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("img", {
-                                                                        className: "h-8 w-8 rounded-full",
-                                                                        src: user.imageUrl,
-                                                                        alt: ""
-                                                                    })
-                                                                ]
-                                                            })
-                                                        }),
-                                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_headlessui_react__WEBPACK_IMPORTED_MODULE_2__.Transition, {
-                                                            as: react__WEBPACK_IMPORTED_MODULE_1__.Fragment,
-                                                            enter: "transition ease-out duration-100",
-                                                            enterFrom: "transform opacity-0 scale-95",
-                                                            enterTo: "transform opacity-100 scale-100",
-                                                            leave: "transition ease-in duration-75",
-                                                            leaveFrom: "transform opacity-100 scale-100",
-                                                            leaveTo: "transform opacity-0 scale-95",
-                                                            children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(_headlessui_react__WEBPACK_IMPORTED_MODULE_2__.Menu.Items, {
-                                                                className: "fixed right-6 mt-2 min-w-[160px] origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none",
-                                                                children: [
-                                                                    session && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-                                                                        className: "flex items-center py-2 px-4",
-                                                                        children: [
-                                                                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-                                                                                className: "flex-shrink-0",
-                                                                                children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("img", {
-                                                                                    className: "h-10 w-10 rounded-full",
-                                                                                    src: user.imageUrl,
-                                                                                    alt: ""
-                                                                                })
-                                                                            }),
-                                                                            /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-                                                                                className: "ml-3",
-                                                                                children: [
-                                                                                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-                                                                                        className: "text-base font-medium text-gray-800",
-                                                                                        children: user.name
-                                                                                    }),
-                                                                                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-                                                                                        className: "text-sm font-medium text-gray-500",
-                                                                                        children: user.email
-                                                                                    })
-                                                                                ]
-                                                                            })
-                                                                        ]
-                                                                    }),
-                                                                    userNavigation.map((item)=>/*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_headlessui_react__WEBPACK_IMPORTED_MODULE_2__.Menu.Item, {
-                                                                            children: ({ active  })=>/*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("a", {
-                                                                                    href: item.href,
-                                                                                    onClick: item.onClick,
-                                                                                    className: classNames(active ? "bg-gray-100" : "", "block py-2 px-4 text-sm text-gray-700"),
-                                                                                    children: item.name
-                                                                                })
-                                                                        }, item.name))
-                                                                ]
-                                                            })
+                                                            className: "slds-assistive-text",
+                                                            children: "Help and Training"
                                                         })
                                                     ]
                                                 })
                                             })
-                                        ]
-                                    })
-                                })
-                            ]
-                        }),
-                        /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(_headlessui_react__WEBPACK_IMPORTED_MODULE_2__.Disclosure.Panel, {
-                            as: "nav",
-                            className: "lg:hidden",
-                            "aria-label": "Global",
-                            children: [
-                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-                                    className: "slds-context-bar h-12 pl-3",
-                                    children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_AppLauncherBar__WEBPACK_IMPORTED_MODULE_8__/* .AppLauncherBar */ .A, {
-                                        app: app
-                                    })
-                                }),
-                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-                                    className: "space-y-1 px-2 pt-2 pb-3",
-                                    children: navigation === null || navigation === void 0 ? void 0 : navigation.map((item)=>/*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_headlessui_react__WEBPACK_IMPORTED_MODULE_2__.Disclosure.Button, {
-                                            as: "a",
-                                            href: item.path,
-                                            className: classNames(item.id === selected ? "bg-gray-100 text-gray-900" : "text-gray-900 hover:bg-gray-50 hover:text-gray-900", "block rounded-md py-2 px-3 text-base font-medium"),
-                                            "aria-current": item.id === selected ? "page" : undefined,
-                                            children: item.name
-                                        }, item.id))
-                                }),
-                                /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-                                    className: "border-t border-gray-200 pt-4 pb-3",
-                                    children: [
-                                        /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-                                            className: "flex items-center px-4",
-                                            children: [
-                                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-                                                    className: "flex-shrink-0",
-                                                    children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("img", {
-                                                        className: "h-10 w-10 rounded-full",
-                                                        src: user.imageUrl,
-                                                        alt: ""
-                                                    })
-                                                }),
-                                                /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-                                                    className: "ml-3",
-                                                    children: [
-                                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-                                                            className: "text-base font-medium text-gray-800",
-                                                            children: user.name
-                                                        }),
-                                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-                                                            className: "text-sm font-medium text-gray-500",
-                                                            children: user.email
-                                                        })
-                                                    ]
-                                                }),
-                                                /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("button", {
-                                                    type: "button",
-                                                    className: "ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2",
-                                                    children: [
-                                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
-                                                            className: "sr-only",
-                                                            children: "View notifications"
-                                                        }),
-                                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_heroicons_react_outline__WEBPACK_IMPORTED_MODULE_4__.BellIcon, {
-                                                            className: "h-6 w-6",
-                                                            "aria-hidden": "true"
-                                                        })
-                                                    ]
-                                                })
-                                            ]
+                                        }),
+                                        session && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("li", {
+                                            className: "slds-global-actions__item",
+                                            children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                                                className: "slds-dropdown-trigger slds-dropdown-trigger_click",
+                                                style: {
+                                                    display: "inline-block"
+                                                },
+                                                children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_Notification__WEBPACK_IMPORTED_MODULE_10__/* .Notification */ .P, {})
+                                            })
                                         }),
                                         /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-                                            className: "mt-3 space-y-1 px-2",
-                                            children: userNavigation.map((item)=>/*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_headlessui_react__WEBPACK_IMPORTED_MODULE_2__.Disclosure.Button, {
-                                                    as: "a",
-                                                    href: item.href,
-                                                    onClick: item.onClick,
-                                                    className: "block rounded-md py-2 px-3 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900",
-                                                    children: item.name
-                                                }, item.name))
+                                            className: "hidden lg:relative lg:z-10 lg:ml-2 lg:flex lg:items-center",
+                                            children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(_headlessui_react__WEBPACK_IMPORTED_MODULE_2__.Menu, {
+                                                as: "div",
+                                                className: "relative ml-0 flex-shrink-0",
+                                                children: [
+                                                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                                                        className: "slds-global-actions__item slds-grid slds-grid_vertical-align-center",
+                                                        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(_headlessui_react__WEBPACK_IMPORTED_MODULE_2__.Menu.Button, {
+                                                            className: "slds-dropdown-trigger slds-dropdown-trigger_click",
+                                                            children: [
+                                                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
+                                                                    className: "sr-only",
+                                                                    children: "Open user menu"
+                                                                }),
+                                                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("img", {
+                                                                    className: "h-8 w-8 rounded-full",
+                                                                    src: user.imageUrl,
+                                                                    alt: ""
+                                                                })
+                                                            ]
+                                                        })
+                                                    }),
+                                                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_headlessui_react__WEBPACK_IMPORTED_MODULE_2__.Transition, {
+                                                        as: react__WEBPACK_IMPORTED_MODULE_1__.Fragment,
+                                                        enter: "transition ease-out duration-100",
+                                                        enterFrom: "transform opacity-0 scale-95",
+                                                        enterTo: "transform opacity-100 scale-100",
+                                                        leave: "transition ease-in duration-75",
+                                                        leaveFrom: "transform opacity-100 scale-100",
+                                                        leaveTo: "transform opacity-0 scale-95",
+                                                        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(_headlessui_react__WEBPACK_IMPORTED_MODULE_2__.Menu.Items, {
+                                                            className: "fixed right-6 mt-2 min-w-[160px] origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none",
+                                                            children: [
+                                                                session && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+                                                                    className: "flex items-center py-2 px-4",
+                                                                    children: [
+                                                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                                                                            className: "flex-shrink-0",
+                                                                            children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("img", {
+                                                                                className: "h-10 w-10 rounded-full",
+                                                                                src: user.imageUrl,
+                                                                                alt: ""
+                                                                            })
+                                                                        }),
+                                                                        /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+                                                                            className: "ml-3",
+                                                                            children: [
+                                                                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                                                                                    className: "text-base font-medium text-gray-800",
+                                                                                    children: user.name
+                                                                                }),
+                                                                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                                                                                    className: "text-sm font-medium text-gray-500",
+                                                                                    children: user.email
+                                                                                })
+                                                                            ]
+                                                                        })
+                                                                    ]
+                                                                }),
+                                                                userNavigation.map((item)=>/*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_headlessui_react__WEBPACK_IMPORTED_MODULE_2__.Menu.Item, {
+                                                                        children: ({ active  })=>/*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("a", {
+                                                                                href: item.href,
+                                                                                onClick: item.onClick,
+                                                                                className: classNames(active ? "bg-gray-100" : "", "block py-2 px-4 text-sm text-gray-700"),
+                                                                                children: item.name
+                                                                            })
+                                                                    }, item.name))
+                                                            ]
+                                                        })
+                                                    })
+                                                ]
+                                            })
                                         })
                                     ]
                                 })
-                            ]
-                        })
-                    ]
-                });
-            }
+                            })
+                        ]
+                    })
+                })
         })
     });
 }
@@ -525,6 +433,99 @@ __webpack_async_result__();
 
 /***/ }),
 
+/***/ 1719:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "P": () => (/* binding */ Notification)
+});
+
+// EXTERNAL MODULE: external "react/jsx-runtime"
+var jsx_runtime_ = __webpack_require__(997);
+// EXTERNAL MODULE: external "react"
+var external_react_ = __webpack_require__(6689);
+// EXTERNAL MODULE: ./src/lib/steedos.client.js
+var steedos_client = __webpack_require__(8282);
+;// CONCATENATED MODULE: ./src/lib/notification.js
+
+const getNotifications = async ()=>{
+    const auth = (0,steedos_client/* getSteedosAuth */.Z0)();
+    const query = `
+    {
+        notifications(filters: ["owner","=","${auth.userId}"], sort: "created desc,name", top : 10){
+          name,body,related_to,related_name,url,owner,is_read,from,created
+        },
+        unReadCount: notifications__count(filters: [["owner","=","${auth.userId}"], ["is_read", "!=", true]])
+    }
+    `;
+    const result = await (0,steedos_client/* fetchAPI */.Io)("/graphql", {
+        method: "POST",
+        body: JSON.stringify({
+            query
+        })
+    });
+    return result.data;
+};
+
+;// CONCATENATED MODULE: ./src/components/Notification.jsx
+
+
+
+const Notification = ({})=>{
+    const { 0: info , 1: setInfo  } = (0,external_react_.useState)(null);
+    const loadData = async ()=>{
+        getNotifications().then((result)=>{
+            setInfo(result);
+        }).catch((err)=>{
+            console.error(err);
+        }).finally(()=>{
+            setTimeout(loadData, 30 * 1000);
+        });
+    };
+    (0,external_react_.useEffect)(()=>{
+        loadData();
+    }, []);
+    return /*#__PURE__*/ (0,jsx_runtime_.jsxs)(jsx_runtime_.Fragment, {
+        children: [
+            /*#__PURE__*/ (0,jsx_runtime_.jsxs)("button", {
+                className: "slds-button slds-button_icon-container slds-button_icon-small slds-button_icon slds-global-actions__notifications slds-global-actions__item-action",
+                id: "header-notifications-popover-id",
+                type: "button",
+                "aria-live": "assertive",
+                "aria-haspopup": "dialog",
+                children: [
+                    /*#__PURE__*/ jsx_runtime_.jsx("svg", {
+                        focusable: "false",
+                        "data-key": "down",
+                        "aria-hidden": "true",
+                        className: "slds-button__icon slds-global-header__icon",
+                        children: /*#__PURE__*/ jsx_runtime_.jsx("use", {
+                            xlinkHref: "/assets/icons/utility-sprite/svg/symbols.svg#notification"
+                        })
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime_.jsxs)("span", {
+                        className: "slds-assistive-text",
+                        children: [
+                            info === null || info === void 0 ? void 0 : info.unReadCount,
+                            " new notifications"
+                        ]
+                    })
+                ]
+            }),
+            (info === null || info === void 0 ? void 0 : info.unReadCount) > 0 && /*#__PURE__*/ jsx_runtime_.jsx("span", {
+                "aria-hidden": "true",
+                className: "slds-notification-badge slds-incoming-notification slds-show-notification",
+                children: info === null || info === void 0 ? void 0 : info.unReadCount
+            })
+        ]
+    });
+};
+
+
+/***/ }),
+
 /***/ 6798:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -560,18 +561,270 @@ function Sidebar({ navigation , selected  }) {
     };
     return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("nav", {
         "aria-label": "Sidebar",
-        className: "sticky top-6 divide-y divide-gray-300",
+        className: "pt-4 divide-y",
         children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-            className: "",
-            children: navigation === null || navigation === void 0 ? void 0 : navigation.map((item)=>/*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((next_link__WEBPACK_IMPORTED_MODULE_3___default()), {
+            className: "px-2",
+            children: navigation === null || navigation === void 0 ? void 0 : navigation.map((item)=>{
+                const icon = item.icon ? item.icon : "account";
+                return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((next_link__WEBPACK_IMPORTED_MODULE_3___default()), {
                     href: item.path,
-                    children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("a", {
+                    children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("a", {
                         onClick: handleClick,
-                        className: classNames(item.id === selected ? "text-sky-500 border-current font-semibold dark:text-sky-400 bg-slate-100" : "border-transparent hover:border-slate-400 dark:hover:border-slate-500 text-slate-700 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-300", "block border-l-[3px] pl-4 -ml-px text-base no-underline py-2 hover:bg-slate-100"),
+                        className: classNames(item.id === selected ? "bg-sky-200/25 fill-sky-500  text-slate-900" : "fill-slate-500  text-slate-700", "block px-2 -ml-px no-underline py-2 hover:bg-slate-100 group flex items-center text-[15px] font-medium rounded-md"),
                         "aria-current": item.current ? "page" : undefined,
-                        children: item.name
+                        children: [
+                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("svg", {
+                                className: "mr-3 flex-shrink-0 h-6 w-6",
+                                ariaHidden: "true",
+                                children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("use", {
+                                    xlinkHref: `/assets/icons/standard-sprite/svg/symbols.svg#${icon}`
+                                })
+                            }),
+                            item.name
+                        ]
                     })
-                }, item.name))
+                }, item.name);
+            })
+        })
+    });
+}
+
+
+/***/ }),
+
+/***/ 8418:
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "$": () => (/* binding */ MobileNavigation)
+/* harmony export */ });
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(997);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6689);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1664);
+/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_link__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1853);
+/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(next_router__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _headlessui_react__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1185);
+/* harmony import */ var _heroicons_react_outline__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(8768);
+/* harmony import */ var _heroicons_react_outline__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_heroicons_react_outline__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var next_auth_react__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(1649);
+/* harmony import */ var next_auth_react__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(next_auth_react__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _components_Logo__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(4079);
+/* harmony import */ var _components_mobile_Navigation__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(1149);
+var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_headlessui_react__WEBPACK_IMPORTED_MODULE_4__]);
+_headlessui_react__WEBPACK_IMPORTED_MODULE_4__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__)[0];
+
+/*
+ * @Author: baozhoutao@steedos.com
+ * @Date: 2022-08-15 15:19:59
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2022-08-19 16:42:30
+ * @Description: 
+ */ 
+
+
+
+
+
+
+
+const defaultAvatar = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80";
+function CloseIcon(props) {
+    return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("svg", {
+        "aria-hidden": "true",
+        viewBox: "0 0 24 24",
+        fill: "none",
+        strokeWidth: "2",
+        strokeLinecap: "round",
+        ...props,
+        children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("path", {
+            d: "M5 5l14 14M19 5l-14 14"
+        })
+    });
+}
+function MobileNavigation({ navigation , app  }) {
+    let router = (0,next_router__WEBPACK_IMPORTED_MODULE_3__.useRouter)();
+    let { 0: isOpen , 1: setIsOpen  } = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+    const { data: session  } = (0,next_auth_react__WEBPACK_IMPORTED_MODULE_6__.useSession)();
+    const user = session ? {
+        name: session.user.name,
+        email: session.user.email,
+        imageUrl: session.user.image ? session.user.image : defaultAvatar
+    } : {
+        name: "",
+        email: "",
+        imageUrl: defaultAvatar
+    };
+    const userNavigation = [];
+    if (session) {
+        userNavigation.push({
+            name: "\u6CE8\u9500",
+            href: "#",
+            onClick: ()=>(0,next_auth_react__WEBPACK_IMPORTED_MODULE_6__.signOut)()
+        });
+    } else {
+        userNavigation.push({
+            name: "\u767B\u5F55",
+            onClick: ()=>(0,next_auth_react__WEBPACK_IMPORTED_MODULE_6__.signIn)()
+        });
+    }
+    (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{
+        if (!isOpen) return;
+        function onRouteChange() {
+            setIsOpen(false);
+        }
+        router.events.on("routeChangeComplete", onRouteChange);
+        router.events.on("routeChangeError", onRouteChange);
+        return ()=>{
+            router.events.off("routeChangeComplete", onRouteChange);
+            router.events.off("routeChangeError", onRouteChange);
+        };
+    }, [
+        router,
+        isOpen
+    ]);
+    return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+        children: [
+            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("button", {
+                type: "button",
+                onClick: ()=>setIsOpen(true),
+                className: "relative",
+                "aria-label": "Open navigation",
+                children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_heroicons_react_outline__WEBPACK_IMPORTED_MODULE_5__.MenuIcon, {
+                    className: "h-6 w-6 stroke-slate-600"
+                })
+            }),
+            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_headlessui_react__WEBPACK_IMPORTED_MODULE_4__.Dialog, {
+                open: isOpen,
+                onClose: setIsOpen,
+                className: "fixed inset-0 z-50 flex items-start overflow-y-auto bg-slate-900/50 pr-10 backdrop-blur",
+                "aria-label": "Navigation",
+                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(_headlessui_react__WEBPACK_IMPORTED_MODULE_4__.Dialog.Panel, {
+                    className: "min-h-full w-full max-w-xs bg-slate-50 px-4 pt-5 pb-12 sm:px-6",
+                    children: [
+                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                            className: "flex items-center",
+                            children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("button", {
+                                type: "button",
+                                onClick: ()=>setIsOpen(false),
+                                "aria-label": "Close navigation",
+                                className: "absolute top-0 right-0 p-2 text-white",
+                                children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(CloseIcon, {
+                                    className: "h-6 w-6 stroke-white"
+                                })
+                            })
+                        }),
+                        navigation && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_mobile_Navigation__WEBPACK_IMPORTED_MODULE_8__/* .Navigation */ .W, {
+                            navigation: navigation,
+                            app: app,
+                            className: ""
+                        }),
+                        /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+                            className: "border-t border-gray-200 pt-4 pb-3",
+                            children: [
+                                /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+                                    className: "flex items-center",
+                                    children: [
+                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                                            className: "flex-shrink-0",
+                                            children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("img", {
+                                                className: "h-10 w-10 rounded-full",
+                                                src: user.imageUrl,
+                                                alt: ""
+                                            })
+                                        }),
+                                        /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+                                            className: "ml-3",
+                                            children: [
+                                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                                                    className: "text-base font-medium text-gray-800",
+                                                    children: user.name
+                                                }),
+                                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                                                    className: "text-sm font-medium text-gray-500",
+                                                    children: user.email
+                                                })
+                                            ]
+                                        })
+                                    ]
+                                }),
+                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                                    className: "mt-3 space-y-1",
+                                    children: userNavigation.map((item)=>/*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_headlessui_react__WEBPACK_IMPORTED_MODULE_4__.Disclosure.Button, {
+                                            as: "a",
+                                            href: item.href,
+                                            onClick: item.onClick,
+                                            className: "block rounded-md py-2 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900",
+                                            children: item.name
+                                        }, item.name))
+                                })
+                            ]
+                        })
+                    ]
+                })
+            })
+        ]
+    });
+}
+
+__webpack_async_result__();
+} catch(e) { __webpack_async_result__(e); } });
+
+/***/ }),
+
+/***/ 1149:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "W": () => (/* binding */ Navigation)
+/* harmony export */ });
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(997);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1664);
+/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(next_link__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1853);
+/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_router__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(8103);
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(clsx__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _components_AppLauncherBar__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1571);
+
+/*
+ * @Author: baozhoutao@steedos.com
+ * @Date: 2022-08-15 15:19:59
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2022-08-17 17:26:35
+ * @Description: 
+ */ 
+
+
+
+function Navigation({ navigation , className , app  }) {
+    let router = (0,next_router__WEBPACK_IMPORTED_MODULE_2__.useRouter)();
+    return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("nav", {
+            className: clsx__WEBPACK_IMPORTED_MODULE_3___default()("text-base lg:text-sm", className),
+            children: [
+                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_AppLauncherBar__WEBPACK_IMPORTED_MODULE_4__/* .AppLauncherBar */ .A, {
+                    app: app
+                }),
+                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("ul", {
+                    role: "list",
+                    className: "space-y-2 pt-6",
+                    children: navigation.map((section)=>/*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("li", {
+                            className: "relative",
+                            children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((next_link__WEBPACK_IMPORTED_MODULE_1___default()), {
+                                href: section.path.replace(/^\/app/, "/mapp"),
+                                children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("a", {
+                                    className: clsx__WEBPACK_IMPORTED_MODULE_3___default()("text-slate-700 block w-full before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full", section.path === router.pathname ? "font-semibold text-sky-500 before:bg-sky-500" : "text-slate-900 before:hidden before:bg-slate-300 hover:text-slate-600 hover:before:block"),
+                                    children: section.name
+                                })
+                            })
+                        }, section.path))
+                })
+            ]
         })
     });
 }
@@ -583,9 +836,9 @@ function Sidebar({ navigation , selected  }) {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "C": () => (/* binding */ getApps),
 /* harmony export */   "M": () => (/* binding */ getApp)
 /* harmony export */ });
-/* unused harmony export getApps */
 /* harmony import */ var _steedos_client__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(8282);
 /*
  * @Author: baozhoutao@steedos.com
@@ -596,7 +849,7 @@ function Sidebar({ navigation , selected  }) {
  */ 
 async function getApps() {
     const APPS_API = "/service/api/apps/menus";
-    const apps = await fetchAPI(APPS_API);
+    const apps = await (0,_steedos_client__WEBPACK_IMPORTED_MODULE_0__/* .fetchAPI */ .Io)(APPS_API);
     return apps;
 }
 async function getApp(appName) {
@@ -611,7 +864,7 @@ async function getApp(appName) {
 /***/ 4997:
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"type":"page","title":"Welcome to Steedos","body":[{"type":"service","id":"u:0f6224a0836f","affixFooter":false,"body":[{"type":"collapse-group","activeKey":["1"],"body":[{"type":"collapse","key":"1","header":"所有应用程序","body":[{"type":"each","name":"app_items","items":{"type":"tpl","tpl":"<a class=\'slds-app-launcher__tile slds-text-link_reset \' role=\'button\' tabindex=\'0\' href=\'${path}\'><div class=\'slds-app-launcher__tile-figure\'><span class=\'slds-icon_container slds-icon-standard-approval\'><img class=\'slds-icon slds-icon_container slds-icon-standard-${icon}\' src=\'${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg\'><span class=\'slds-assistive-text\'>${name}</span></span></div><div class=\'slds-app-launcher__tile-body\'><span class=\'slds-link text-blue-600 font-bold\'><span title=\'${name}\'>${name}</span></span><div style=\'display: -webkit-box; -webkit-line-clamp: 1;-webkit-box-orient: vertical;overflow: hidden;\'><span title=\'${description}\'>${description}</span></div></div></a>","inline":true,"style":{},"className":"slds-p-horizontal_small slds-size_1-of-1 slds-medium-size_1-of-3"},"id":"u:a0f163ed207f","className":"slds-grid slds-wrap slds-grid_pull-padded"}]},{"type":"collapse","key":"2","header":"所有项目","body":[{"type":"html","html":"<ul class=\'slds-grid slds-wrap\'>${object_items_dom|raw}</ul>","className":"dec"}],"id":"u:a88a225c8832","className":""}],"id":"u:cb1c62622fd6"}],"className":"","visibleOn":"","clearValueOnHidden":false,"visible":true,"messages":{},"api":{"method":"get","url":"${context.rootUrl}/service/api/apps/menus","data":null,"headers":{"Authorization":"Bearer ${context.tenantId},${context.authToken}"},"adaptor":"\\nlet app_items = payload;\\nlet object_items = [];\\napp_items.forEach((item) => {\\n  object_items = object_items.concat(item.children);\\n})\\nlet object_items_dom = \'\';\\nobject_items.forEach((item) => {\\n  object_items_dom = object_items_dom +\\n    `<li class=\\"slds-col--padded slds-p-vertical_xx-small slds-size_1-of-5 slds-grow-none oneAppLauncherItem\\">\\n      <a data-object-name=\\"${item.id}\\" href=\\"${item.path}\\" class=\\"app-launcher-link slds-text-link--reset slds-app-launcher__tile--small slds-truncate creator-object-nav-${item.id}\\">\\n        <span class=\\"slds-truncate slds-text-link\\">${item.name}</span>\\n      </a>\\n    </li>`\\n})\\npayload.data = {\\n  app_items,\\n  object_items_dom\\n}\\nreturn payload;"}}],"regions":["body"],"data":{"objectName":"space_users","recordId":"","initialValues":{},"appId":"builder","title":"","context":{}}}');
+module.exports = JSON.parse('{"type":"page","title":"Welcome to Steedos","body":[{"type":"service","id":"u:0f6224a0836f","affixFooter":false,"body":[{"type":"collapse-group","activeKey":["1","2"],"body":[{"type":"collapse","key":"1","header":"所有应用","body":[{"type":"each","name":"app_items","items":{"type":"tpl","tpl":"<a class=\'slds-app-launcher__tile slds-text-link_reset \' role=\'button\' tabindex=\'0\' href=\'${path}\'><div class=\'slds-app-launcher__tile-figure\'><span class=\'slds-icon_container slds-icon-standard-approval\'><img class=\'w-12 h-12 slds-icon slds-icon_container slds-icon-standard-${icon}\' src=\'${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg\'><span class=\'slds-assistive-text\'>${name}</span></span></div><div class=\'slds-app-launcher__tile-body\'><span class=\'slds-link text-blue-600 text-lg\'><span title=\'${name}\'>${name}</span></span><div style=\'display: -webkit-box; -webkit-line-clamp: 1;-webkit-box-orient: vertical;overflow: hidden;\'><span title=\'${description}\'>${description}</span></div></div></a>","inline":true,"style":{},"className":"slds-p-horizontal_small slds-size_1-of-1 slds-medium-size_1-of-3"},"id":"u:a0f163ed207f","className":"slds-grid slds-wrap slds-grid_pull-padded"}]},{"type":"collapse","key":"2","header":"所有项目","body":[{"type":"html","html":"<ul class=\'slds-grid slds-wrap\'>${object_items_dom|raw}</ul>","className":"dec"}],"id":"u:a88a225c8832","className":""}],"id":"u:cb1c62622fd6"}],"className":"","visibleOn":"","clearValueOnHidden":false,"visible":true,"messages":{},"api":{"method":"get","url":"${context.rootUrl}/service/api/apps/menus","data":null,"headers":{"Authorization":"Bearer ${context.tenantId},${context.authToken}"},"adaptor":"\\nlet app_items = payload;\\nlet object_items = [];\\napp_items.forEach((item) => {\\n  object_items = object_items.concat(item.children);\\n})\\nlet object_items_dom = \'\';\\nobject_items.forEach((item) => {\\n  object_items_dom = object_items_dom +\\n    `<li class=\\"slds-col--padded slds-p-vertical_xx-small slds-size_1-of-5 slds-grow-none oneAppLauncherItem\\">\\n      <a data-object-name=\\"${item.id}\\" href=\\"${item.path}\\" class=\\"app-launcher-link slds-text-link--reset slds-app-launcher__tile--small slds-truncate creator-object-nav-${item.id}\\">\\n        <span class=\\"slds-truncate slds-text-link\\">${item.name}</span>\\n      </a>\\n    </li>`\\n})\\npayload.data = {\\n  app_items,\\n  object_items_dom\\n}\\nreturn payload;"}}],"regions":["body"],"data":{"objectName":"space_users","recordId":"","initialValues":{},"appId":"builder","title":"","context":{}}}');
 
 /***/ })
 

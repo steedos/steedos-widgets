@@ -58,7 +58,12 @@ function Page(props) {
         (0,_lib_objects__WEBPACK_IMPORTED_MODULE_5__/* .getListSchema */ .$R)(app_id, tab_id, listviewName, {
             formFactor: formFactor
         }).then((data)=>{
-            router.push(`/app/${app_id}/${tab_id}/grid/${(0,lodash__WEBPACK_IMPORTED_MODULE_8__.values)(data.uiSchema.list_views)[0].name}`);
+            router.push(SteedosUI.Router.getObjectListViewPath({
+                formFactor,
+                appId: app_id,
+                objectName: tab_id,
+                listViewName: (0,lodash__WEBPACK_IMPORTED_MODULE_8__.values)(data.uiSchema.list_views)[0].name
+            }));
         });
     };
     (0,react__WEBPACK_IMPORTED_MODULE_3__.useEffect)(()=>{
@@ -85,6 +90,13 @@ async function getServerSideProps(context) {
     };
 }
 
+
+/***/ }),
+
+/***/ 5725:
+/***/ ((module) => {
+
+module.exports = require("antd");
 
 /***/ }),
 
@@ -207,6 +219,13 @@ module.exports = require("react");
 
 /***/ }),
 
+/***/ 7849:
+/***/ ((module) => {
+
+module.exports = require("react-dom/client");
+
+/***/ }),
+
 /***/ 997:
 /***/ ((module) => {
 
@@ -228,7 +247,7 @@ module.exports = require("crypto");
 var __webpack_require__ = require("../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [952,859,152,282,295,804], () => (__webpack_exec__(2363)));
+var __webpack_exports__ = __webpack_require__.X(0, [952,859,152,282,295,95,397], () => (__webpack_exec__(2363)));
 module.exports = __webpack_exports__;
 
 })();

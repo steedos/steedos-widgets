@@ -192,6 +192,13 @@ __webpack_async_result__();
 
 /***/ }),
 
+/***/ 5725:
+/***/ ((module) => {
+
+module.exports = require("antd");
+
+/***/ }),
+
 /***/ 2167:
 /***/ ((module) => {
 
@@ -311,6 +318,13 @@ module.exports = require("react");
 
 /***/ }),
 
+/***/ 7849:
+/***/ ((module) => {
+
+module.exports = require("react-dom/client");
+
+/***/ }),
+
 /***/ 997:
 /***/ ((module) => {
 
@@ -339,7 +353,7 @@ module.exports = require("crypto");
 var __webpack_require__ = require("../../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [952,859,152,282,295,345,804,95], () => (__webpack_exec__(5767)));
+var __webpack_exports__ = __webpack_require__.X(0, [952,859,152,282,295,95,397], () => (__webpack_exec__(5767)));
 module.exports = __webpack_exports__;
 
 })();
