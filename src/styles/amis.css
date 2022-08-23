@@ -150,6 +150,8 @@ button.antd-Button--primary {
     --TableCell--edge-paddingX: 0.5rem;
     --Table-borderColor: #d9dcde;
     --TableCell-paddingY: 0.3rem;
+    --Table-thead-borderWidth: 0;
+    --text--muted-color: #d9dcde;
 }
 
 /* .antd-Cards-fixedTop{
