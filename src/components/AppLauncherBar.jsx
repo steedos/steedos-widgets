@@ -30,7 +30,8 @@ export const AppLauncherBar = ({app}) => {
         maskClosable: false,
         keyboard: false, // 禁止 esc 关闭
         footer: null,
-        width: formFactor === 'SMALL' ? "100%" : "90%",
+        width:"100%",
+        centered: true,
         style: formFactor === 'SMALL' ?  {
           top: '0px',
           margin: '0px',
@@ -38,8 +39,9 @@ export const AppLauncherBar = ({app}) => {
           maxWidth: "100%",
           height: "100%",
         } : {
-          width: '90%',
-          maxWidth: '90%',
+          width: "90%",
+          maxWidth: "90%",
+          height: "90%",
         },
         bodyStyle: {padding: "0px", paddingTop: "12px"},
         children: <AppLauncher router={router}></AppLauncher>

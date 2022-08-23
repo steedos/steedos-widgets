@@ -14,7 +14,7 @@ function classNames(...classes) {
 }
 
 const defaultAvatar =
-  "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80";
+  "/images/defaultAvatar.png";
 
 export function GlobalHeader({ navigation, selected, app }) {
   const router = useRouter();
@@ -124,7 +124,7 @@ export function GlobalHeader({ navigation, selected, app }) {
                   }
                   
 
-                  <div className="hidden lg:relative lg:z-10 lg:ml-4 lg:flex lg:items-center">
+                  <div className="hidden lg:relative lg:z-10 lg:ml-2 lg:flex lg:items-center">
                     {/* Profile dropdown */}
                     <Menu as="div" className="relative ml-0 flex-shrink-0">
                       <div className="slds-global-actions__item">
