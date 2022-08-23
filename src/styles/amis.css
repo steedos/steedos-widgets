@@ -22,11 +22,7 @@
 }
 
 fieldset.antd-Collapse > legend.antd-Collapse-header{
-    padding: 0;
-    margin: 0;
-    font-weight: 500;
-    border-radius: 0.2rem;
-    border: 0;
+    border-left: 0;
 }
 
 main {
@@ -157,6 +153,9 @@ button.antd-Button--primary {
     --Collapse-header-onHover-bg: #EEEEEE;
     --Collapse-header-padding: 4px;
     --Collapse-content-padding: 8px;
+    --Button-paddingX: 16px;
+    --Button--default-color: #0176d3;
+    --Button-borderRadius: 0.25rem;
 }
 
 /* .antd-Cards-fixedTop{
