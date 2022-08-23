@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-09 11:09:10
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-19 10:36:54
+ * @LastEditTime: 2022-08-23 09:42:27
  * @Description:
  */
 import React, { useState, useEffect, Fragment, useRef } from "react";
@@ -179,34 +179,6 @@ export const RelatedHeader = ({app_id, foreign_key, masterObjectName, object_nam
                         </Transition>
                       </Menu>
                     </li>
-
-                {/* <li>
-                  <button className="slds-button slds-button_neutral" type="button">
-                    Add Contact
-                  </button>
-                </li>
-                <li>
-                  <div
-                    className="slds-dropdown-trigger slds-dropdown-trigger_click"
-                    id="page-header-related-list-add-contact-dropdown"
-                  >
-                    <button
-                      className="slds-button slds-button_icon-border-filled ignore-click-page-header-related-list-add-contact-dropdown"
-                      type="button"
-                      aria-expanded="false"
-                      aria-haspopup="true"
-                    >
-                      <svg
-                        aria-hidden="true"
-                        className="slds-button__icon"
-                        viewBox="0 0 52 52"
-                      >
-                        <path d="M8.3 14h35.4c1 0 1.7 1.3.9 2.2L27.3 37.4c-.6.8-1.9.8-2.5 0L7.3 16.2c-.7-.9-.1-2.2 1-2.2z"></path>
-                      </svg>
-                      <span className="slds-assistive-text">More Options</span>
-                    </button>
-                  </div>
-                </li> */}
               </ul>
             </div>
           </div>
