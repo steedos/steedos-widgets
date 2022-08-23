@@ -22,7 +22,7 @@ export  function Sidebar({ navigation, selected }) {
   }
   return (
     <nav aria-label="Sidebar" className="pt-4 divide-y">
-      <div className="px-3">
+      <div className="px-2">
         {navigation?.map((item) => {
           const icon = item.icon?item.icon:'account'
           return (
@@ -30,7 +30,7 @@ export  function Sidebar({ navigation, selected }) {
             <a
             onClick={handleClick}
             className={classNames(
-              item.id === selected ? 'bg-slate-200 fill-sky-500  text-slate-900' : 'fill-slate-500  text-slate-700',
+              item.id === selected ? 'bg-sky-200/25 fill-sky-500  text-slate-900' : 'fill-slate-500  text-slate-700',
               'block px-2 -ml-px no-underline py-2 hover:bg-slate-100 group flex items-center text-[15px] font-medium rounded-md'
             )}
             aria-current={item.current ? 'page' : undefined}
