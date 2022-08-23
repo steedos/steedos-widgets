@@ -139,14 +139,18 @@ button.antd-Button--primary {
     background-color: #fcfdfe;
 }
 
+#__next .antd-Table-checkCell {
+    border-right: 0;
+}
+
 :root {
     --Collapse-header-padding: 0px;
     --Form-selectValue-fontSize: 14px;
     --Table-toolbar-marginY: 0;
-    --TableCell--edge-paddingX: 0.5rem;
+    --TableCell--edge-paddingX: 1rem;
     --Table-borderColor: #d9dcde;
     --TableCell-paddingY: 0.3rem;
-    --Table-thead-borderWidth: 0;
+    --Table-thead-borderWidth: 1px;
     --text--muted-color: #d9dcde;
     --Collapse-header-fontSize: 16px;
     --Collapse-header-fontWeight: 400;
