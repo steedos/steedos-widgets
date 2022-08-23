@@ -23,17 +23,13 @@ exports.modules = {
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-11 14:13:18
+ * @LastEditTime: 2022-08-23 15:50:54
  * @Description: 
  */ 
 const ROOT_URL = "http://192.168.50.181:5000";
 const STEEDOS_AUTH = {};
-const setSteedosAuth = (space, token, userId, name, options)=>{
-    STEEDOS_AUTH.space = space;
-    STEEDOS_AUTH.token = token;
-    STEEDOS_AUTH.userId = userId;
-    STEEDOS_AUTH.name = name;
-    Object.assign(STEEDOS_AUTH, options);
+const setSteedosAuth = (steedosSession)=>{
+    Object.assign(STEEDOS_AUTH, steedosSession);
 };
 async function fetchAPI(api, options = {
     credentials: "include"
@@ -95,7 +91,7 @@ function getAuthToken() {
 function getAuthorization() {
     try {
         const auth = getSteedosAuth();
-        let spaceId = auth.space;
+        let spaceId = auth.spaceId;
         let token = auth.token;
         if (!spaceId || !token) {
             return null;
@@ -130,7 +126,7 @@ const getSteedosAuth = ()=>{
     //         name: Meteor.user().name  //TODO: 使用steedos 函数. 此属性在上传附件时使用
     //     }
     // }
-    return Object.assign({}, STEEDOS_AUTH);
+    return (0,lodash__WEBPACK_IMPORTED_MODULE_0__.cloneDeep)(STEEDOS_AUTH);
 };
 
 

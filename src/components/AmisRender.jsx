@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 16:55:58
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-10 13:43:54
+ * @LastEditTime: 2022-08-23 15:52:51
  * @Description: 
  */
 
@@ -20,7 +20,7 @@ export const AmisRender = ({id, schema, data, router, className, })=>{
                 context: {
                     rootUrl: getRootUrl(),
                     userId: steedosAuth.userId,
-                    tenantId: steedosAuth.space,
+                    tenantId: steedosAuth.spaceId,
                     authToken: steedosAuth.token
                 }
             }

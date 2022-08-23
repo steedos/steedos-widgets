@@ -5,31 +5,13 @@ exports.id = 372;
 exports.ids = [372];
 exports.modules = {
 
-/***/ 5793:
+/***/ 8405:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-// ESM COMPAT FLAG
-__webpack_require__.r(__webpack_exports__);
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  "default": () => (/* binding */ Page),
-  "getServerSideProps": () => (/* binding */ getServerSideProps)
-});
-
-// EXTERNAL MODULE: external "react/jsx-runtime"
-var jsx_runtime_ = __webpack_require__(997);
-// EXTERNAL MODULE: ./node_modules/next/dynamic.js
-var dynamic = __webpack_require__(5152);
-// EXTERNAL MODULE: ./node_modules/next/document.js
-var next_document = __webpack_require__(6859);
-// EXTERNAL MODULE: external "react"
-var external_react_ = __webpack_require__(6689);
-// EXTERNAL MODULE: external "next/router"
-var router_ = __webpack_require__(1853);
-// EXTERNAL MODULE: ./src/lib/steedos.client.js
-var steedos_client = __webpack_require__(8282);
-;// CONCATENATED MODULE: ./src/lib/page.js
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "f": () => (/* binding */ getPage)
+/* harmony export */ });
+/* harmony import */ var _steedos_client__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(8282);
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 15:18:03
@@ -39,23 +21,42 @@ var steedos_client = __webpack_require__(8282);
  */ 
 async function getPage(pageId, appId, objectName = "", recordId, formFactor = "LARGE") {
     const APPS_API = `/api/pageSchema/app?app=${appId}&objectApiName=${objectName}&recordId=${recordId}&pageId=${pageId}&formFactor=${formFactor}`;
-    const page = await (0,steedos_client/* fetchAPI */.Io)(APPS_API);
+    const page = await (0,_steedos_client__WEBPACK_IMPORTED_MODULE_0__/* .fetchAPI */ .Io)(APPS_API);
     return page;
 }
 
-// EXTERNAL MODULE: external "next-auth/next"
-var next_ = __webpack_require__(2113);
-// EXTERNAL MODULE: ./src/pages/api/auth/[...nextauth].js + 2 modules
-var _nextauth_ = __webpack_require__(6295);
-// EXTERNAL MODULE: ./src/lib/amis.js
-var amis = __webpack_require__(9345);
-;// CONCATENATED MODULE: ./src/pages/app/[app_id]/page/[page_id]/index.jsx
+
+/***/ }),
+
+/***/ 2980:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Page),
+/* harmony export */   "getServerSideProps": () => (/* binding */ getServerSideProps)
+/* harmony export */ });
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(997);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var next_dynamic__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5152);
+/* harmony import */ var next_dynamic__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(next_dynamic__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var next_document__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6859);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6689);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1853);
+/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(next_router__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _lib_page__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(8405);
+/* harmony import */ var next_auth_next__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(2113);
+/* harmony import */ var next_auth_next__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(next_auth_next__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _pages_api_auth_nextauth___WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(6295);
+/* harmony import */ var _lib_amis__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(9345);
+/* harmony import */ var _components_AmisRender__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(1095);
 
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-13 20:48:28
+ * @LastEditTime: 2022-08-18 18:03:11
  * @Description: 
  */ 
 
@@ -65,42 +66,29 @@ var amis = __webpack_require__(9345);
 
 
 
+
 function Page({}) {
-    const router = (0,router_.useRouter)();
+    const router = (0,next_router__WEBPACK_IMPORTED_MODULE_4__.useRouter)();
     const { app_id , page_id  } = router.query;
-    const { 0: page , 1: setPage  } = (0,external_react_.useState)(null);
-    (0,external_react_.useEffect)(()=>{
+    const { 0: page , 1: setPage  } = (0,react__WEBPACK_IMPORTED_MODULE_3__.useState)(null);
+    (0,react__WEBPACK_IMPORTED_MODULE_3__.useEffect)(()=>{
         if (!page_id) return;
-        getPage(page_id, app_id).then((data)=>{
+        (0,_lib_page__WEBPACK_IMPORTED_MODULE_5__/* .getPage */ .f)(page_id, app_id).then((data)=>{
             setPage(data);
         });
     }, [
         app_id,
         page_id
     ]);
-    (0,external_react_.useEffect)(()=>{
-        (function() {
-            if (document.getElementById("amis-root") && page && page.schema) {
-                let amisScoped = (0,amis/* amisRender */.Ac)("#amis-root", JSON.parse(page.schema), {}, {}, {
-                    router: router
-                });
-            }
-        })();
-    }, [
-        page
-    ]);
-    return /*#__PURE__*/ jsx_runtime_.jsx(jsx_runtime_.Fragment, {
-        children: /*#__PURE__*/ jsx_runtime_.jsx("div", {
+    return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+        children: page && page.schema && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_AmisRender__WEBPACK_IMPORTED_MODULE_9__/* .AmisRender */ .k, {
             id: "amis-root",
-            className: "app-wrapper",
-            onClick: (e)=>{
-                return (0,amis/* amisRootClick */.oo)(router, e);
-            }
+            schema: JSON.parse(page.schema)
         })
     });
 };
 async function getServerSideProps(context) {
-    const session = context.req.session || await (0,next_.unstable_getServerSession)(context.req, context.res, _nextauth_/* authOptions */.L);
+    const session = context.req.session || await (0,next_auth_next__WEBPACK_IMPORTED_MODULE_6__.unstable_getServerSession)(context.req, context.res, _pages_api_auth_nextauth___WEBPACK_IMPORTED_MODULE_7__/* .authOptions */ .L);
     if (!session) {
         return {
             redirect: {
@@ -114,6 +102,13 @@ async function getServerSideProps(context) {
     };
 }
 
+
+/***/ }),
+
+/***/ 5725:
+/***/ ((module) => {
+
+module.exports = require("antd");
 
 /***/ }),
 
@@ -257,7 +252,7 @@ module.exports = require("crypto");
 var __webpack_require__ = require("../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [952,859,152,282,295,345], () => (__webpack_exec__(5793)));
+var __webpack_exports__ = __webpack_require__.X(0, [952,859,152,282,295,95], () => (__webpack_exec__(2980)));
 module.exports = __webpack_exports__;
 
 })();

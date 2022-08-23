@@ -20,7 +20,7 @@ exports.modules = {
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-27 17:34:25
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-09 16:52:45
+ * @LastEditTime: 2022-08-22 16:36:07
  * @Description: 
  */ 
 
@@ -36,13 +36,13 @@ function Button(props) {
     };
     if (button.type === "amis_action") {
         const schema = {
-            type: "page",
+            type: "service",
             bodyClassName: "p-0",
             body: [
                 {
                     type: "button",
                     label: button.label,
-                    className: `${inMore ? "" : "slds-button slds-button_neutral"} ${className ? className : ""}`,
+                    className: `${inMore ? "flex w-full items-center border-0 px-2 py-1" : "bg-white"} ${className ? className : ""}`,
                     onEvent: {
                         click: {
                             actions: JSON.parse(button.amis_actions)
@@ -70,7 +70,7 @@ function Button(props) {
     } else {
         return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("button", {
             onClick: buttonClick,
-            className: `slds-button slds-button_neutral ${className ? className : ""}`,
+            className: `antd-Button antd-Button--default ${className ? className : ""}`,
             children: button.label
         });
     }

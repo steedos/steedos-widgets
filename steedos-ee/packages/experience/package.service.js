@@ -78,12 +78,7 @@ module.exports = {
 					email: user.email
 				},
 				expires: "2022-09-12T09:11:06.459Z",
-				steedos: {
-				  space: user.spaceId,
-				  token: user.authToken,
-				  userId: user.userId,
-				  name: user.name,
-				},
+				steedos: Object.assign(user, {token: user.authToken}),
 			  };
 			if(req.url === "/api/auth/session"){
 				return res.json(session)

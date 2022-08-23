@@ -59,7 +59,7 @@ var external_crypto_default = /*#__PURE__*/__webpack_require__.n(external_crypto
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-20 16:29:22
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-13 16:37:30
+ * @LastEditTime: 2022-08-16 11:42:16
  * @Description: 
  */ 
 
@@ -87,11 +87,9 @@ var external_crypto_default = /*#__PURE__*/__webpack_require__.n(external_crypto
         }
     },
     async authorize (credentials, req) {
-        console.log(`authorize============`);
         // Add logic here to look up the user from the credentials supplied
         let user = null;
         try {
-            console.log(`fetch ${credentials.domain}/accounts/password/login`);
             let domain = credentials.domain;
             if ((0,external_lodash_namespaceObject.endsWith)(domain, "/")) {
                 domain = domain.substring(0, domain.length - 1);
@@ -141,7 +139,7 @@ var external_crypto_default = /*#__PURE__*/__webpack_require__.n(external_crypto
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-20 16:29:22
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-13 17:10:42
+ * @LastEditTime: 2022-08-20 16:25:51
  * @Description: 
  */ 
 
@@ -150,7 +148,9 @@ const axios = __webpack_require__(2167);
 const jwt = __webpack_require__(9344);
 const ROOT_URL = "http://192.168.50.181:5000";
 const JWT_API = "/accounts/jwt/login";
+const VALIDATE_API = "/api/setup/validate";
 const STEEDOS_TOKENS = {};
+const STEEDOS_SESSIONS = {};
 const getJWTToken = (user)=>{
     const jwtPayload = {
         iss: process.env.NEXTAUTH_URL,
@@ -160,7 +160,7 @@ const getJWTToken = (user)=>{
             ...user
         }
     };
-    return jwt.sign(jwtPayload, process.env.JWT_SECRET, {
+    return jwt.sign(jwtPayload, process.env.STEEDOS_IDENTITY_JWT_SECRET, {
         expiresIn: 60
     });
 };
@@ -180,6 +180,22 @@ const loginSteedosProject = async (user)=>{
     });
     STEEDOS_TOKENS[user.email] = rest.data;
     return STEEDOS_TOKENS[user.email];
+};
+const validateSteedosToken = async (user)=>{
+    if (STEEDOS_SESSIONS[user.email]) {
+        return STEEDOS_SESSIONS[user.email];
+    }
+    const rest = await axios({
+        url: `${ROOT_URL}${VALIDATE_API}`,
+        method: "post",
+        data: {},
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${user.space},${user.token}`
+        }
+    });
+    STEEDOS_SESSIONS[user.email] = rest.data;
+    return STEEDOS_SESSIONS[user.email];
 };
 const authOptions = {
     secret: process.env.NEXTAUTH_SECRET,
@@ -203,7 +219,6 @@ const authOptions = {
             return token;
         },
         async session ({ session , token , user  }) {
-            console.log(`session`, session);
             // Send properties to the client, like an access_token from a provider.
             // session.accessToken = token.accessToken
             if (session.user) {
@@ -221,6 +236,10 @@ const authOptions = {
                         };
                     }
                 }
+                const steedosSession = await validateSteedosToken(session.steedos);
+                session.steedos = Object.assign(steedosSession, {
+                    token: steedosSession.authToken
+                });
             }
             return session;
         }
