@@ -24,7 +24,7 @@ module.exports = {
    */
   settings: {
     server: true,
-    port: process.env.EXPERIENCE_PORT || 5001,
+    port: process.env.STEEDOS_EXPERIENCE_PORT || 3100,
     packageInfo: {
       path: __dirname,
       name: packageName,
