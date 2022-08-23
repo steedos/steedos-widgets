@@ -12,11 +12,9 @@ import { Disclosure, Dialog } from '@headlessui/react'
 import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
 import { useSession, signIn, signOut } from "next-auth/react";
 
-import { Logo } from '@/components/Logo'
-import { Navigation } from '@/components/mobile/Navigation'
+import { Sidebar } from '@/components/Sidebar'
 
-const defaultAvatar =
-  "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80";
+const defaultAvatar = "/images/defaultAvatar.png";
 
 
 function CloseIcon(props) {
@@ -34,7 +32,7 @@ function CloseIcon(props) {
   )
 }
 
-export function MobileNavigation({ navigation, app }) {
+export function MobileNavigation({ navigation, selected, app }) {
   let router = useRouter()
   let [isOpen, setIsOpen] = useState(false)
 
@@ -101,7 +99,7 @@ export function MobileNavigation({ navigation, app }) {
         className="fixed inset-0 z-50 flex items-start overflow-y-auto bg-slate-900/50 pr-10 backdrop-blur"
         aria-label="Navigation"
       >
-        <Dialog.Panel className="min-h-full w-full max-w-xs bg-slate-50 px-4 pt-5 pb-12 sm:px-6">
+        <Dialog.Panel className="min-h-full w-full max-w-xs bg-slate-50 pb-12 sm:px-6">
           <div className="flex items-center">
             <button
               type="button"
@@ -112,9 +110,9 @@ export function MobileNavigation({ navigation, app }) {
               <CloseIcon className="h-6 w-6 stroke-white" />
             </button>
           </div>
-          {navigation && <Navigation navigation={navigation} app={app}  className="" />}
+          {navigation && <Sidebar navigation={navigation} app={app} selected={selected}/>}
 
-          <div className="border-t border-gray-200 pt-4 pb-3">
+          <div className="border-t border-gray-200 py-4 px-4">
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
                     <img
