@@ -39,7 +39,7 @@ export default function Page ({formFactor}) {
           getListviewSchema(listView?.name)
         }}></ListviewHeader>}
       </div>
-      <div className="p-4 flex-1 min-h-0 overflow-y-auto">
+      <div className="flex-1 min-h-0 overflow-y-auto">
       {schema?.amisSchema && schema?.uiSchema.name === tab_id && <AmisRender className="steedos-listview" id={listViewId} schema={schema?.amisSchema || {}} router={router}></AmisRender>}
       </div>
     </div>
