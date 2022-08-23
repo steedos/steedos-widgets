@@ -23,6 +23,8 @@ module.exports = {
    * Settings
    */
   settings: {
+    server: true,
+    port: process.env.STEEDOS_EXPERIENCE_PORT || 3100,
     packageInfo: {
       path: __dirname,
       name: packageName,
@@ -50,6 +52,17 @@ module.exports = {
    * Methods
    */
   methods: {
+    createServer() {
+			const express = require("express");
+      
+      const app = express();
+
+      app.use("/", this.express());
+      
+      app.use("/", express.static(this.static(), { maxAge: this.cacheTime() }));
+
+      this.app = app;
+		},
     /**
      * Middleware for ExpressJS
      *
@@ -103,25 +116,69 @@ module.exports = {
    * Service created lifecycle event handler
    */
   created() {
-    process.env.NEXTAUTH_URL = "http://127.0.0.1:3333";
+
+    const rootUrl = new URL(process.env.ROOT_URL);
+
+    const url = `${rootUrl.protocol}//${rootUrl.hostname}:${this.settings.port}`;
+    this.settings.url = url;
+
+    process.env.NEXTAUTH_URL = url;
     process.env.NEXT_PUBLIC_STEEDOS_ROOT_URL = process.env.ROOT_URL;
     process.env.NEXT_PUBLIC_NEXTAUTH_PROVIDER_ID = "keycloak";
     process.env.NEXT_STATIC_PROPS_REVALIDATE = 3600;
     process.env.KEYCLOAK_ID = process.env.STEEDOS_IDENTITY_OIDC_CLIENT_ID;
-    process.env.KEYCLOAK_SECRET =
-      process.env.STEEDOS_IDENTITY_OIDC_CLIENT_SECRET;
+    process.env.KEYCLOAK_SECRET = process.env.STEEDOS_IDENTITY_OIDC_CLIENT_SECRET;
     process.env.KEYCLOAK_ISSUER = process.env.STEEDOS_IDENTITY_OIDC_CONFIG_URL;
     process.env.NEXTAUTH_SECRET = process.env.STEEDOS_IDENTITY_JWT_SECRET;
     process.env.JWT_SECRET = process.env.STEEDOS_IDENTITY_JWT_SECRET;
+
+    if (this.settings.server !== false) {
+			this.createServer();
+
+			/* istanbul ignore next */
+			this.app.on("error", err => {
+				this.logger.error("Server error", err);
+			});
+
+			this.logger.info("Experience server created.");
+		}
   },
 
   /**
    * Service started lifecycle event handler
    */
-  async started() {},
+  async started() {
+    if (this.settings.server === false)
+			return this.Promise.resolve();
+
+		/* istanbul ignore next */
+		return new this.Promise((resolve, reject) => {
+			this.server = this.app.listen(this.settings.port, err => {
+				if (err)
+					return reject(err);
+
+				this.logger.info(`Experience listening on ${this.settings.url}`);
+				resolve();
+			});
+		});
+  },
 
   /**
    * Service stopped lifecycle event handler
    */
-  async stopped() {},
+  async stopped() {
+    if (this.settings.server !== false && this.server) {
+			/* istanbul ignore next */
+			return new this.Promise((resolve, reject) => {
+				this.server.close(err => {
+					if (err)
+						return reject(err);
+
+					this.logger.info("Experience stopped!");
+					resolve();
+				});
+			});
+		}
+		return this.Promise.resolve();
+  },
 };
