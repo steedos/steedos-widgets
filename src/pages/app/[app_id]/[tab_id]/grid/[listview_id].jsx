@@ -14,6 +14,7 @@ import { unstable_getServerSession } from "next-auth/next"
 import { AmisRender } from '@/components/AmisRender'
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
 import { ListviewHeader } from '@/components/object/ListviewHeader'
+import { Loading } from '@/components/Loading';
 
 export default function Page ({formFactor}) {
   const router = useRouter();
@@ -31,6 +32,9 @@ export default function Page ({formFactor}) {
     if(!tab_id || !formFactor) return ;
     getListviewSchema(undefined)
   }, [tab_id, formFactor]);
+
+  if (!schema) 
+    return <><Loading/></>
 
   return (
     <div className='flex flex-col flex-1 overflow-hidden'>
