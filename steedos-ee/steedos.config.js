@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-23 11:21:44
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-23 11:51:45
+ * @LastEditTime: 2022-08-23 16:03:12
  * @Description: 
  */
 const express = require("express");
@@ -26,11 +26,11 @@ module.exports = {
 		
 		app.use("/", express.static(svc.static(), { maxAge: svc.cacheTime() }));
 
-		app.listen(3333, err => {
+		app.listen(5001, err => {
 			if (err)
 				return console.error(err);
 		
-			console.log("Open http://localhost:3333");
+			console.log("Open http://localhost:5001");
 		});
 	},
 

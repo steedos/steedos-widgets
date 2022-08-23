@@ -130,7 +130,7 @@ if ((typeof exports.default === "function" || typeof exports.default === "object
 
 /***/ }),
 
-/***/ 7749:
+/***/ 8418:
 /***/ ((module, exports, __webpack_require__) => {
 
 "use strict";
@@ -2371,7 +2371,7 @@ exports["default"] = Router; //# sourceMappingURL=router.js.map
 /***/ 1664:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-module.exports = __webpack_require__(7749)
+module.exports = __webpack_require__(8418)
 
 
 /***/ })

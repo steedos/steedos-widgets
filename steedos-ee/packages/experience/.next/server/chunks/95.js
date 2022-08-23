@@ -82,7 +82,7 @@ const AmisRender = ({ id , schema , data , router , className ,  })=>{
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 11:31:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-23 15:53:07
+ * @LastEditTime: 2022-08-20 10:55:36
  * @Description:
  */ 
 const normalizeLink = (to, location = window.location)=>{
