@@ -97,7 +97,7 @@ const RecordRelatedHeader = ({ schema , object_name , foreign_key , app_id , rec
                 className: "slds-no-flex",
                 children: /*#__PURE__*/ jsx_runtime_.jsx("div", {
                     className: "actionsContainer",
-                    children: /*#__PURE__*/ jsx_runtime_.jsx("ul", {
+                    children: /*#__PURE__*/ jsx_runtime_.jsx("div", {
                         className: "branding-actions slds-button-group slds-m-left--xx-small small oneActionsRibbon forceActionsContainer",
                         children: /*#__PURE__*/ jsx_runtime_.jsx(RecordRelatedListButtons/* RecordRelatedListButtons */.B, {
                             formFactor: formFactor,

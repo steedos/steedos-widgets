@@ -183,7 +183,7 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony import */ var _components_Logo__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(4079);
 /* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(1853);
 /* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(next_router__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _components_mobile_MobileNavigation__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(8418);
+/* harmony import */ var _components_mobile_MobileNavigation__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(7559);
 /* harmony import */ var _components_AppLauncherBar__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(1571);
 /* harmony import */ var _components_Notification__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(1719);
 var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_headlessui_react__WEBPACK_IMPORTED_MODULE_2__, _components_mobile_MobileNavigation__WEBPACK_IMPORTED_MODULE_8__]);
@@ -592,7 +592,7 @@ function Sidebar({ navigation , selected  }) {
 
 /***/ }),
 
-/***/ 8418:
+/***/ 7559:
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {

@@ -23,7 +23,7 @@ exports.modules = {
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-23 15:50:54
+ * @LastEditTime: 2022-08-20 16:31:59
  * @Description: 
  */ 
 const ROOT_URL = "http://192.168.50.181:5000";
