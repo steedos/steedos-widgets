@@ -149,6 +149,7 @@ button.antd-Button--primary {
     --Table-toolbar-marginY: 0;
     --TableCell--edge-paddingX: 0.5rem;
     --Table-borderColor: #d9dcde;
+    --TableCell-paddingY: 0.3rem;
 }
 
 /* .antd-Cards-fixedTop{
