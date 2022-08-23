@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-20 13:20:55
+ * @LastEditTime: 2022-08-23 09:47:38
  * @Description:
  */
 import { fetchAPI } from "./steedos.client";
@@ -231,7 +231,7 @@ export async function getObjectRelated(
         (refField.reference_to && !_.isString(refField.reference_to))
     ) {
         filter = [
-            [`${relatedFieldName}/o`, "=", objectName],
+            [`${relatedFieldName}/o`, "=", masterObjectName],
             [`${relatedFieldName}/ids`, "=", recordId],
         ];
     } else {
