@@ -1,0 +1,69 @@
+my-steedos-package:
+  enable: true
+  version: 0.1.0
+  description: !<tag:yaml.org,2002:js/undefined> ''
+  local: true
+  path: steedos-app
+'@steedos-labs/master':
+  enable: true
+  label: ''
+  version: 2.2.1-beta.18
+  description: !<tag:yaml.org,2002:js/undefined> ''
+  local: false
+  path: .steedos/node_modules/@steedos-labs/master
+'@steedos-labs/contract':
+  enable: true
+  label: ''
+  version: 2.2.1-beta.18
+  description: !<tag:yaml.org,2002:js/undefined> ''
+  local: false
+  path: .steedos/node_modules/@steedos-labs/contract
+'@steedos-labs/contract-ee':
+  enable: true
+  label: ''
+  version: 2.2.1-beta.18
+  description: !<tag:yaml.org,2002:js/undefined> ''
+  local: false
+  path: .steedos/node_modules/@steedos-labs/contract-ee
+'@steedos-labs/project':
+  enable: true
+  label: ''
+  version: 2.2.1-beta.18
+  description: ''
+  local: false
+  path: .steedos/node_modules/@steedos-labs/project
+'@steedos-labs/project-ee':
+  enable: true
+  label: ''
+  version: 2.2.1-beta.18
+  description: ''
+  local: false
+  path: .steedos/node_modules/@steedos-labs/project-ee
+'@steedos-labs/finance':
+  enable: true
+  label: ''
+  version: 2.2.1-beta.18
+  description: !<tag:yaml.org,2002:js/undefined> ''
+  local: false
+  path: .steedos/node_modules/@steedos-labs/finance
+'@steedos-labs/finance-ee':
+  enable: true
+  label: ''
+  version: 2.2.1-beta.18
+  description: !<tag:yaml.org,2002:js/undefined> ''
+  local: false
+  path: .steedos/node_modules/@steedos-labs/finance-ee
+'@steedos-labs/oa':
+  enable: true
+  label: ''
+  version: 2.2.1-beta.18
+  description: ''
+  local: false
+  path: .steedos/node_modules/@steedos-labs/oa
+'@steedos-labs/workflow':
+  enable: true
+  label: ''
+  version: 2.2.1-beta.18
+  description: ''
+  local: false
+  path: .steedos/node_modules/@steedos-labs/workflow

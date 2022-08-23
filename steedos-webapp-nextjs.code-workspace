@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"name": "steedos-ee",
+			"path": "./steedos-ee"
+		},
+		{
+			"name": "steedos-webapp-nextjs",
+			"path": "."
+		}
+	],
+	"settings": {
+		"cSpell.words": [
+			"mapp"
+		]
+	}
+}
