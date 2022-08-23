@@ -43,7 +43,7 @@ export const AppLauncherBar = ({app}) => {
           maxWidth: "90%",
           height: "90%",
         },
-        bodyStyle: {padding: "0px", paddingTop: "12px"},
+        bodyStyle: {padding: "0px"},
         children: <AppLauncher router={router}></AppLauncher>
     }, {}));
   }
