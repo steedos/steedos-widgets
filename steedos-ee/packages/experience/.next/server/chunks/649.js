@@ -1,6 +1,6 @@
 "use strict";
-exports.id = 939;
-exports.ids = [939];
+exports.id = 649;
+exports.ids = [649];
 exports.modules = {
 
 /***/ 712:
@@ -539,6 +539,7 @@ const Notification = ({})=>{
 /* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_router__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1664);
 /* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(next_link__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _components_AppLauncherBar__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1571);
 
 /*
  * @Author: baozhoutao@steedos.com
@@ -549,42 +550,52 @@ const Notification = ({})=>{
  */ /* This example requires Tailwind CSS v2.0+ */ 
 
 
+
 function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
 }
-function Sidebar({ navigation , selected  }) {
+function Sidebar({ navigation , selected , app  }) {
     const router = (0,next_router__WEBPACK_IMPORTED_MODULE_2__.useRouter)();
     const handleClick = (e)=>{
         e.preventDefault();
         router.push(e.target.href);
     };
-    return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("nav", {
+    return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("nav", {
         "aria-label": "Sidebar",
-        className: "pt-4 divide-y",
-        children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-            className: "px-2",
-            children: navigation === null || navigation === void 0 ? void 0 : navigation.map((item)=>{
-                const icon = item.icon ? item.icon : "account";
-                return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((next_link__WEBPACK_IMPORTED_MODULE_3___default()), {
-                    href: item.path,
-                    children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("a", {
-                        onClick: handleClick,
-                        className: classNames(item.id === selected ? "bg-sky-200/25 fill-sky-500  text-slate-900" : "fill-slate-500  text-slate-700", "block px-2 -ml-px no-underline py-2 hover:bg-slate-100 group flex items-center text-[15px] font-medium rounded-md"),
-                        "aria-current": item.current ? "page" : undefined,
-                        children: [
-                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("svg", {
-                                className: "mr-3 flex-shrink-0 h-6 w-6",
-                                ariaHidden: "true",
-                                children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("use", {
-                                    xlinkHref: `/assets/icons/standard-sprite/svg/symbols.svg#${icon}`
-                                })
-                            }),
-                            item.name
-                        ]
-                    })
-                }, item.name);
+        className: "divide-y",
+        children: [
+            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                className: "block lg:hidden px-4 py-4",
+                children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_AppLauncherBar__WEBPACK_IMPORTED_MODULE_4__/* .AppLauncherBar */ .A, {
+                    app: app
+                })
+            }),
+            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                className: "px-2 py-4",
+                children: navigation === null || navigation === void 0 ? void 0 : navigation.map((item)=>{
+                    const icon = item.icon ? item.icon : "account";
+                    const href = window.innerWidth < 768 ? item.path.replace(/^\/app/, "/mapp") : item.path;
+                    return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((next_link__WEBPACK_IMPORTED_MODULE_3___default()), {
+                        href: href,
+                        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("a", {
+                            onClick: handleClick,
+                            className: classNames(item.id === selected ? "bg-sky-200/25 fill-sky-500  text-slate-900" : "fill-slate-500  text-slate-700", "block px-2 -ml-px no-underline py-2 hover:bg-slate-100 group flex items-center text-[15px] font-medium rounded-md"),
+                            "aria-current": item.current ? "page" : undefined,
+                            children: [
+                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("svg", {
+                                    className: "mr-3 flex-shrink-0 h-6 w-6",
+                                    ariaHidden: "true",
+                                    children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("use", {
+                                        xlinkHref: `/assets/icons/standard-sprite/svg/symbols.svg#${icon}`
+                                    })
+                                }),
+                                item.name
+                            ]
+                        })
+                    }, item.name);
+                })
             })
-        })
+        ]
     });
 }
 
@@ -611,8 +622,7 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony import */ var _heroicons_react_outline__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_heroicons_react_outline__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var next_auth_react__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(1649);
 /* harmony import */ var next_auth_react__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(next_auth_react__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _components_Logo__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(4079);
-/* harmony import */ var _components_mobile_Navigation__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(1149);
+/* harmony import */ var _components_Sidebar__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(6798);
 var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_headlessui_react__WEBPACK_IMPORTED_MODULE_4__]);
 _headlessui_react__WEBPACK_IMPORTED_MODULE_4__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__)[0];
 
@@ -629,8 +639,7 @@ _headlessui_react__WEBPACK_IMPORTED_MODULE_4__ = (__webpack_async_dependencies__
 
 
 
-
-const defaultAvatar = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80";
+const defaultAvatar = "/images/defaultAvatar.png";
 function CloseIcon(props) {
     return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("svg", {
         "aria-hidden": "true",
@@ -644,7 +653,7 @@ function CloseIcon(props) {
         })
     });
 }
-function MobileNavigation({ navigation , app  }) {
+function MobileNavigation({ navigation , selected , app  }) {
     let router = (0,next_router__WEBPACK_IMPORTED_MODULE_3__.useRouter)();
     let { 0: isOpen , 1: setIsOpen  } = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
     const { data: session  } = (0,next_auth_react__WEBPACK_IMPORTED_MODULE_6__.useSession)();
@@ -702,7 +711,7 @@ function MobileNavigation({ navigation , app  }) {
                 className: "fixed inset-0 z-50 flex items-start overflow-y-auto bg-slate-900/50 pr-10 backdrop-blur",
                 "aria-label": "Navigation",
                 children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(_headlessui_react__WEBPACK_IMPORTED_MODULE_4__.Dialog.Panel, {
-                    className: "min-h-full w-full max-w-xs bg-slate-50 px-4 pt-5 pb-12 sm:px-6",
+                    className: "min-h-full w-full max-w-xs bg-slate-50 pb-12 sm:px-6",
                     children: [
                         /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
                             className: "flex items-center",
@@ -716,13 +725,13 @@ function MobileNavigation({ navigation , app  }) {
                                 })
                             })
                         }),
-                        navigation && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_mobile_Navigation__WEBPACK_IMPORTED_MODULE_8__/* .Navigation */ .W, {
+                        navigation && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_Sidebar__WEBPACK_IMPORTED_MODULE_7__/* .Sidebar */ .Y, {
                             navigation: navigation,
                             app: app,
-                            className: ""
+                            selected: selected
                         }),
                         /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-                            className: "border-t border-gray-200 pt-4 pb-3",
+                            className: "border-t border-gray-200 py-4 px-4",
                             children: [
                                 /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
                                     className: "flex items-center",
@@ -771,63 +780,6 @@ function MobileNavigation({ navigation , app  }) {
 
 __webpack_async_result__();
 } catch(e) { __webpack_async_result__(e); } });
-
-/***/ }),
-
-/***/ 1149:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "W": () => (/* binding */ Navigation)
-/* harmony export */ });
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(997);
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1664);
-/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(next_link__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1853);
-/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_router__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(8103);
-/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(clsx__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _components_AppLauncherBar__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1571);
-
-/*
- * @Author: baozhoutao@steedos.com
- * @Date: 2022-08-15 15:19:59
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-17 17:26:35
- * @Description: 
- */ 
-
-
-
-function Navigation({ navigation , className , app  }) {
-    let router = (0,next_router__WEBPACK_IMPORTED_MODULE_2__.useRouter)();
-    return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
-        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("nav", {
-            className: clsx__WEBPACK_IMPORTED_MODULE_3___default()("text-base lg:text-sm", className),
-            children: [
-                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_AppLauncherBar__WEBPACK_IMPORTED_MODULE_4__/* .AppLauncherBar */ .A, {
-                    app: app
-                }),
-                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("ul", {
-                    role: "list",
-                    className: "space-y-2 pt-6",
-                    children: navigation.map((section)=>/*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("li", {
-                            className: "relative",
-                            children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((next_link__WEBPACK_IMPORTED_MODULE_1___default()), {
-                                href: section.path.replace(/^\/app/, "/mapp"),
-                                children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("a", {
-                                    className: clsx__WEBPACK_IMPORTED_MODULE_3___default()("text-slate-700 block w-full before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full", section.path === router.pathname ? "font-semibold text-sky-500 before:bg-sky-500" : "text-slate-900 before:hidden before:bg-slate-300 hover:text-slate-600 hover:before:block"),
-                                    children: section.name
-                                })
-                            })
-                        }, section.path))
-                })
-            ]
-        })
-    });
-}
-
 
 /***/ }),
 

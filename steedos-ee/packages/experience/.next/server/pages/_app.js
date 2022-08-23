@@ -91,7 +91,8 @@ function AppLayout({ children  }) {
                             className: "flex flex-col w-64",
                             children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_Sidebar__WEBPACK_IMPORTED_MODULE_3__/* .Sidebar */ .Y, {
                                 navigation: app === null || app === void 0 ? void 0 : app.children,
-                                selected: selected
+                                selected: selected,
+                                app: app
                             })
                         })
                     }),
@@ -206,14 +207,6 @@ module.exports = require("@heroicons/react/solid");
 
 "use strict";
 module.exports = require("antd");
-
-/***/ }),
-
-/***/ 8103:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("clsx");
 
 /***/ }),
 
@@ -464,7 +457,7 @@ module.exports = import("@headlessui/react");;
 var __webpack_require__ = require("../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [952,664,282,95,397,79,939], () => (__webpack_exec__(2654)));
+var __webpack_exports__ = __webpack_require__.X(0, [952,664,282,95,397,79,649], () => (__webpack_exec__(2654)));
 module.exports = __webpack_exports__;
 
 })();

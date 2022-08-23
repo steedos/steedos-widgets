@@ -12,9 +12,15 @@ exports.modules = {
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(997);
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__);
 
-function Loading() {
+/*
+ * @Author: baozhoutao@steedos.com
+ * @Date: 2022-08-23 15:09:34
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2022-08-23 17:23:15
+ * @Description: 
+ */ function Loading() {
     return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-        class: "w-full h-full flex items-center justify-center ",
+        className: "w-full h-full flex items-center justify-center ",
         children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("svg", {
             className: "animate-spin -ml-1 mr-3 h-8 w-8 text-sky-500",
             xmlns: "http://www.w3.org/2000/svg",
