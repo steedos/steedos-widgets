@@ -6,7 +6,6 @@
  * @Description: 
  */
 import { endsWith, isEmpty, cloneDeep } from "lodash";
-const ROOT_URL = process.env.NEXT_PUBLIC_STEEDOS_ROOT_URL
 
 const STEEDOS_AUTH = {};
 
@@ -99,12 +98,12 @@ export function absoluteUrl(url){
     return `${getRootUrl()}${url}`
 }
 
-export function getRootUrl(){
+export function getRootUrl(defaultRootUrl){
     const rootUrl = typeof window != 'undefined' ? window.localStorage.getItem("steedos:rootUrl") : '';
     if(rootUrl){
         return rootUrl
     }
-    return ROOT_URL;
+    return defaultRootUrl;
 }
 
 export function setRootUrl(rootUrl){

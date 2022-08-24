@@ -11,7 +11,7 @@ import KeycloakProvider from "@/lib/auth/KeycloakProvider";
 import CredentialsProvider from "@/lib/auth/CredentialsProvider";
 const axios = require('axios');
 const jwt = require("jsonwebtoken")
-const ROOT_URL = process.env.NEXT_PUBLIC_STEEDOS_ROOT_URL
+const STEEDOS_ROOT_URL = process.env.STEEDOS_ROOT_URL
 const JWT_API = '/accounts/jwt/login';
 const VALIDATE_API = '/api/setup/validate';
 const STEEDOS_TOKENS = {};
@@ -40,7 +40,7 @@ const loginSteedosProject = async (user)=>{
   if(STEEDOS_TOKENS[user.email]){
     return STEEDOS_TOKENS[user.email];
   }
-  const projectRootUrl = ROOT_URL;
+  const projectRootUrl = STEEDOS_ROOT_URL;
   const rest =  await axios({
     url: `${projectRootUrl}${JWT_API}`,
     method: 'get',
@@ -56,7 +56,7 @@ const validateSteedosToken = async (user)=>{
     return STEEDOS_SESSIONS[user.email];
   }
   const rest =  await axios({
-    url: `${ROOT_URL}${VALIDATE_API}`,
+    url: `${STEEDOS_ROOT_URL}${VALIDATE_API}`,
     method: 'post',
     data: {},
     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${user.space},${user.token}` }

@@ -32,19 +32,15 @@ const errors = {
   SessionRequired: "Please sign in to access this page.",
   default: "Unable to sign in.",
 };
-export default function Login({ providers = {}, csrfToken }) {
+export default function Login({ providers = {}, csrfToken, rootUrl }) {
   const { data: session } = useSession();
   const router = useRouter();
   const { callbackUrl = "/", error } = router.query;
 
+  setRootUrl(rootUrl);
+  
   if (typeof window !== "undefined" && session && callbackUrl) {
     router.push(callbackUrl);
-  }
-
-  const onSubmit = (e)=>{
-    if(e.target.domain.value){
-      setRootUrl(e.target.domain.value);
-    }
   }
 
   return (
@@ -56,7 +52,7 @@ export default function Login({ providers = {}, csrfToken }) {
           </a>
         </Link>
         <h2 className="mt-4 text-lg font-semibold text-gray-900">
-          Sign in to your account
+          登录您的账户
         </h2>
         <span className="mt-2 text-sm text-red-500">
           {error && errors[error] && (
@@ -88,7 +84,6 @@ export default function Login({ providers = {}, csrfToken }) {
                     method="post"
                     action="/api/auth/callback/credentials"
                     className="my-2 rounded-md shadow-sm"
-                    onSubmit={onSubmit}
                   >
                     <input
                       name="csrfToken"
@@ -100,12 +95,12 @@ export default function Login({ providers = {}, csrfToken }) {
                       name="domain"
                       type="text"
                       hidden // 暂时隐藏
-                      defaultValue={getRootUrl()}
+                      defaultValue={getRootUrl(rootUrl)}
                       required
                       className="mb-2 focus:shadow-outline-blue sm:text-md relative block w-full appearance-none rounded-none rounded border border-gray-300 px-3 py-3 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-blue-300 focus:outline-none sm:leading-5"
                     />
                     <input
-                      placeholder="Email address"
+                      placeholder="邮箱"
                       id="email"
                       name="email"
                       type="email"
@@ -114,7 +109,7 @@ export default function Login({ providers = {}, csrfToken }) {
                       required
                     />
                     <input
-                      placeholder="Password"
+                      placeholder="密码"
                       id="password"
                       name="password"
                       type="password"
@@ -127,13 +122,13 @@ export default function Login({ providers = {}, csrfToken }) {
                         type="submit"
                         className="w-full rounded-full border border-transparent bg-sky-600 py-2 px-4 text-sm font-semibold text-white shadow-sm hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
                       >
-                        Sign in
+                        登录
                       </button>
                     </div>
                   </form>
                 );
             })}
-          {process.env.NEXT_PUBLIC_STEEDOS_ROOT_URL && (
+            
             <div className="pt-5">
               {providers &&
                 Object.values(providers).map((provider) => {
@@ -145,14 +140,13 @@ export default function Login({ providers = {}, csrfToken }) {
                             onClick={() => signIn(provider.id)}
                             className="w-full rounded-full border border-transparent bg-green-600 py-2 px-4 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                           >
-                            Sign in with {provider.name}
+                            使用 {provider.name} 登录
                           </button>
                         </div>
                       </>
                     );
                 })}
             </div>
-          )}
         </div>
       </div>
     </>
@@ -184,6 +178,7 @@ export async function getServerSideProps(context) {
   const csrfToken = await getCsrfToken(context);
   return {
     props: {
+      rootUrl: process.env.STEEDOS_ROOT_URL,
       providers,
       csrfToken: csrfToken ? csrfToken : null,
     },
