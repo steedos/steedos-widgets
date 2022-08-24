@@ -26,7 +26,6 @@ exports.modules = {
  * @LastEditTime: 2022-08-20 16:31:59
  * @Description: 
  */ 
-const ROOT_URL = "http://192.168.50.181:5000";
 const STEEDOS_AUTH = {};
 const setSteedosAuth = (steedosSession)=>{
     Object.assign(STEEDOS_AUTH, steedosSession);
@@ -104,12 +103,12 @@ function getAuthorization() {
 function absoluteUrl(url) {
     return `${getRootUrl()}${url}`;
 }
-function getRootUrl() {
+function getRootUrl(defaultRootUrl) {
     const rootUrl =  false ? 0 : "";
     if (rootUrl) {
         return rootUrl;
     }
-    return ROOT_URL;
+    return defaultRootUrl;
 }
 function setRootUrl(rootUrl) {
     if ((0,lodash__WEBPACK_IMPORTED_MODULE_0__.endsWith)(rootUrl, "/")) {

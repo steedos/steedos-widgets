@@ -149,7 +149,7 @@ const AppLauncherBar = ({ app  })=>{
                         children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
                             className: "slds-truncate",
                             title: "App Name",
-                            children: app === null || app === void 0 ? void 0 : app.name
+                            children: app?.name
                         })
                     })
                 ]
@@ -507,16 +507,16 @@ const Notification = ({})=>{
                     /*#__PURE__*/ (0,jsx_runtime_.jsxs)("span", {
                         className: "slds-assistive-text",
                         children: [
-                            info === null || info === void 0 ? void 0 : info.unReadCount,
+                            info?.unReadCount,
                             " new notifications"
                         ]
                     })
                 ]
             }),
-            (info === null || info === void 0 ? void 0 : info.unReadCount) > 0 && /*#__PURE__*/ jsx_runtime_.jsx("span", {
+            info?.unReadCount > 0 && /*#__PURE__*/ jsx_runtime_.jsx("span", {
                 "aria-hidden": "true",
                 className: "slds-notification-badge slds-incoming-notification slds-show-notification",
-                children: info === null || info === void 0 ? void 0 : info.unReadCount
+                children: info?.unReadCount
             })
         ]
     });
@@ -572,7 +572,7 @@ function Sidebar({ navigation , selected , app  }) {
             }),
             /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
                 className: "px-2 py-4",
-                children: navigation === null || navigation === void 0 ? void 0 : navigation.map((item)=>{
+                children: navigation?.map((item)=>{
                     const icon = item.icon ? item.icon : "account";
                     const href = window.innerWidth < 768 ? item.path.replace(/^\/app/, "/mapp") : item.path;
                     return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((next_link__WEBPACK_IMPORTED_MODULE_3___default()), {

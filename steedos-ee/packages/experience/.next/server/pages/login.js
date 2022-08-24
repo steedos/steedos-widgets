@@ -123,16 +123,12 @@ const errors = {
     SessionRequired: "Please sign in to access this page.",
     default: "Unable to sign in."
 };
-function Login({ providers ={} , csrfToken  }) {
+function Login({ providers ={} , csrfToken , rootUrl  }) {
     const { data: session  } = (0,react_.useSession)();
     const router = (0,router_.useRouter)();
     const { callbackUrl ="/" , error  } = router.query;
+    (0,steedos_client/* setRootUrl */.MC)(rootUrl);
     if (false) {}
-    const onSubmit = (e)=>{
-        if (e.target.domain.value) {
-            (0,steedos_client/* setRootUrl */.MC)(e.target.domain.value);
-        }
-    };
     return /*#__PURE__*/ (0,jsx_runtime_.jsxs)(jsx_runtime_.Fragment, {
         children: [
             /*#__PURE__*/ (0,jsx_runtime_.jsxs)("div", {
@@ -148,7 +144,7 @@ function Login({ providers ={} , csrfToken  }) {
                     }),
                     /*#__PURE__*/ jsx_runtime_.jsx("h2", {
                         className: "mt-4 text-lg font-semibold text-gray-900",
-                        children: "Sign in to your account"
+                        children: "\u767B\u5F55\u60A8\u7684\u8D26\u6237"
                     }),
                     /*#__PURE__*/ jsx_runtime_.jsx("span", {
                         className: "mt-2 text-sm text-red-500",
@@ -187,7 +183,6 @@ function Login({ providers ={} , csrfToken  }) {
                                 method: "post",
                                 action: "/api/auth/callback/credentials",
                                 className: "my-2 rounded-md shadow-sm",
-                                onSubmit: onSubmit,
                                 children: [
                                     /*#__PURE__*/ jsx_runtime_.jsx("input", {
                                         name: "csrfToken",
@@ -199,12 +194,12 @@ function Login({ providers ={} , csrfToken  }) {
                                         name: "domain",
                                         type: "text",
                                         hidden: true,
-                                        defaultValue: (0,steedos_client/* getRootUrl */.N0)(),
+                                        defaultValue: (0,steedos_client/* getRootUrl */.N0)(rootUrl),
                                         required: true,
                                         className: "mb-2 focus:shadow-outline-blue sm:text-md relative block w-full appearance-none rounded-none rounded border border-gray-300 px-3 py-3 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-blue-300 focus:outline-none sm:leading-5"
                                     }),
                                     /*#__PURE__*/ jsx_runtime_.jsx("input", {
-                                        placeholder: "Email address",
+                                        placeholder: "\u90AE\u7BB1",
                                         id: "email",
                                         name: "email",
                                         type: "email",
@@ -213,7 +208,7 @@ function Login({ providers ={} , csrfToken  }) {
                                         required: true
                                     }),
                                     /*#__PURE__*/ jsx_runtime_.jsx("input", {
-                                        placeholder: "Password",
+                                        placeholder: "\u5BC6\u7801",
                                         id: "password",
                                         name: "password",
                                         type: "password",
@@ -226,13 +221,13 @@ function Login({ providers ={} , csrfToken  }) {
                                         children: /*#__PURE__*/ jsx_runtime_.jsx("button", {
                                             type: "submit",
                                             className: "w-full rounded-full border border-transparent bg-sky-600 py-2 px-4 text-sm font-semibold text-white shadow-sm hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2",
-                                            children: "Sign in"
+                                            children: "\u767B\u5F55"
                                         })
                                     })
                                 ]
                             });
                         }),
-                         true && /*#__PURE__*/ jsx_runtime_.jsx("div", {
+                        /*#__PURE__*/ jsx_runtime_.jsx("div", {
                             className: "pt-5",
                             children: providers && Object.values(providers).map((provider)=>{
                                 if (provider.type === "oauth") return /*#__PURE__*/ jsx_runtime_.jsx(jsx_runtime_.Fragment, {
@@ -242,8 +237,9 @@ function Login({ providers ={} , csrfToken  }) {
                                             onClick: ()=>(0,react_.signIn)(provider.id),
                                             className: "w-full rounded-full border border-transparent bg-green-600 py-2 px-4 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2",
                                             children: [
-                                                "Sign in with ",
-                                                provider.name
+                                                "\u4F7F\u7528 ",
+                                                provider.name,
+                                                " \u767B\u5F55"
                                             ]
                                         })
                                     }, provider.name)
@@ -274,6 +270,7 @@ async function getServerSideProps(context) {
     const csrfToken = await (0,react_.getCsrfToken)(context);
     return {
         props: {
+            rootUrl: process.env.STEEDOS_ROOT_URL,
             providers,
             csrfToken: csrfToken ? csrfToken : null
         }

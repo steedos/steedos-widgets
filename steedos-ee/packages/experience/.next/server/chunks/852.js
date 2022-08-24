@@ -71,7 +71,6 @@ function FromNow({ date  }) {
 
 
 function ListButtons(props) {
-    var ref, ref1, ref2, ref3;
     const { app_id , tab_id , schema , formFactor  } = props;
     const { 0: buttons , 1: setButtons  } = (0,react__WEBPACK_IMPORTED_MODULE_3__.useState)(null);
     const router = (0,next_router__WEBPACK_IMPORTED_MODULE_2__.useRouter)();
@@ -87,11 +86,10 @@ function ListButtons(props) {
         schema
     ]);
     const newRecord = ()=>{
-        var ref;
         const listViewId = SteedosUI.getRefId({
             type: "listview",
             appId: app_id,
-            name: schema === null || schema === void 0 ? void 0 : (ref = schema.uiSchema) === null || ref === void 0 ? void 0 : ref.name
+            name: schema?.uiSchema?.name
         });
         // router.push('/app/'+app_id+'/'+schema.uiSchema.name+'/view/new')
         const type = _config__WEBPACK_IMPORTED_MODULE_6__/* ["default"].listView.newRecordMode */ .Z.listView.newRecordMode;
@@ -120,11 +118,10 @@ function ListButtons(props) {
         });
     };
     const batchDelete = ()=>{
-        var ref;
         const listViewId = SteedosUI.getRefId({
             type: "listview",
             appId: app_id,
-            name: schema === null || schema === void 0 ? void 0 : (ref = schema.uiSchema) === null || ref === void 0 ? void 0 : ref.name
+            name: schema?.uiSchema?.name
         });
         const listViewRef = SteedosUI.getRef(listViewId).getComponentByName(`page.listview_${schema.uiSchema.name}`);
         if (lodash__WEBPACK_IMPORTED_MODULE_5___default().isEmpty(listViewRef.props.store.toJSON().selectedItems)) {
@@ -144,14 +141,14 @@ function ListButtons(props) {
         }
     };
     return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
-        children: (schema === null || schema === void 0 ? void 0 : schema.uiSchema) && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+        children: schema?.uiSchema && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
             children: [
-                (schema === null || schema === void 0 ? void 0 : (ref = schema.uiSchema) === null || ref === void 0 ? void 0 : (ref1 = ref.permissions) === null || ref1 === void 0 ? void 0 : ref1.allowCreate) && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("button", {
+                schema?.uiSchema?.permissions?.allowCreate && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("button", {
                     onClick: newRecord,
                     className: "antd-Button antd-Button--default",
                     children: "\u65B0\u5EFA"
                 }),
-                buttons === null || buttons === void 0 ? void 0 : buttons.map((button)=>{
+                buttons?.map((button)=>{
                     return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_object_Button__WEBPACK_IMPORTED_MODULE_4__/* .Button */ .z, {
                         button: button,
                         data: {
@@ -167,7 +164,7 @@ function ListButtons(props) {
                         scopeClassName: "inline-block"
                     }, button.name);
                 }),
-                (schema === null || schema === void 0 ? void 0 : (ref2 = schema.uiSchema) === null || ref2 === void 0 ? void 0 : (ref3 = ref2.permissions) === null || ref3 === void 0 ? void 0 : ref3.allowDelete) && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("button", {
+                schema?.uiSchema?.permissions?.allowDelete && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("button", {
                     onClick: batchDelete,
                     className: "antd-Button antd-Button--default",
                     children: "\u5220\u9664"
@@ -219,7 +216,6 @@ _headlessui_react__WEBPACK_IMPORTED_MODULE_1__ = (__webpack_async_dependencies__
 
 
 function ListviewHeader({ schema , onListviewChange , formFactor  }) {
-    var ref, ref1, ref2, ref3, ref4;
     //   const [selectedListView, setSelectedListView] = useState();
     const { 0: showFieldsFilter , 1: setShowFieldsFilter  } = (0,react__WEBPACK_IMPORTED_MODULE_5__.useState)(false);
     const { 0: queryInfo , 1: setQueryInfo  } = (0,react__WEBPACK_IMPORTED_MODULE_5__.useState)();
@@ -230,7 +226,7 @@ function ListviewHeader({ schema , onListviewChange , formFactor  }) {
     const listViewId = SteedosUI.getRefId({
         type: "listview",
         appId: app_id,
-        name: schema === null || schema === void 0 ? void 0 : (ref = schema.uiSchema) === null || ref === void 0 ? void 0 : ref.name
+        name: schema?.uiSchema?.name
     });
     (0,react__WEBPACK_IMPORTED_MODULE_5__.useEffect)(()=>{
         if (schema) {
@@ -337,7 +333,7 @@ function ListviewHeader({ schema , onListviewChange , formFactor  }) {
                                             children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
                                                 children: [
                                                     /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
-                                                        children: schema === null || schema === void 0 ? void 0 : (ref1 = schema.uiSchema) === null || ref1 === void 0 ? void 0 : ref1.label
+                                                        children: schema?.uiSchema?.label
                                                     }),
                                                     /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_headlessui_react__WEBPACK_IMPORTED_MODULE_1__.Listbox, {
                                                         value: selectedListView,
@@ -350,7 +346,7 @@ function ListviewHeader({ schema , onListviewChange , formFactor  }) {
                                                                     children: [
                                                                         /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
                                                                             className: "slds-page-header__title slds-truncate",
-                                                                            children: (selectedListView === null || selectedListView === void 0 ? void 0 : selectedListView.label) || ((ref3 = schema === null || schema === void 0 ? void 0 : (ref2 = schema.uiSchema) === null || ref2 === void 0 ? void 0 : ref2.list_views.all) === null || ref3 === void 0 ? void 0 : ref3.label)
+                                                                            children: selectedListView?.label || schema?.uiSchema?.list_views.all?.label
                                                                         }),
                                                                         /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
                                                                             className: "pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2",
@@ -368,16 +364,15 @@ function ListviewHeader({ schema , onListviewChange , formFactor  }) {
                                                                     leaveTo: "opacity-0",
                                                                     children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_headlessui_react__WEBPACK_IMPORTED_MODULE_1__.Listbox.Options, {
                                                                         className: "absolute z-50 mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm",
-                                                                        children: (0,lodash__WEBPACK_IMPORTED_MODULE_3__.values)(schema === null || schema === void 0 ? void 0 : (ref4 = schema.uiSchema) === null || ref4 === void 0 ? void 0 : ref4.list_views).map((listView, personIdx)=>{
-                                                                            /*#__PURE__*/ return (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(_headlessui_react__WEBPACK_IMPORTED_MODULE_1__.Listbox.Option, {
+                                                                        children: (0,lodash__WEBPACK_IMPORTED_MODULE_3__.values)(schema?.uiSchema?.list_views).map((listView, personIdx)=>/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(_headlessui_react__WEBPACK_IMPORTED_MODULE_1__.Listbox.Option, {
                                                                                 value: listView,
                                                                                 className: ({ active  })=>`relative cursor-default select-none py-2 pl-10 pr-4 ${active ? "bg-sky-100 text-sky-900" : "text-gray-900"}`,
                                                                                 children: [
                                                                                     /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
-                                                                                        className: `block truncate ${((selectedListView === null || selectedListView === void 0 ? void 0 : selectedListView.name) ? selectedListView.name : "all") === listView.name ? "font-medium" : "font-normal"}`,
+                                                                                        className: `block truncate ${(selectedListView?.name ? selectedListView.name : "all") === listView.name ? "font-medium" : "font-normal"}`,
                                                                                         children: listView.label
                                                                                     }),
-                                                                                    ((selectedListView === null || selectedListView === void 0 ? void 0 : selectedListView.name) ? selectedListView.name : "all") === listView.name ? /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
+                                                                                    (selectedListView?.name ? selectedListView.name : "all") === listView.name ? /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
                                                                                         className: "absolute inset-y-0 left-0 flex items-center pl-3 text-sky-600",
                                                                                         children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_heroicons_react_solid__WEBPACK_IMPORTED_MODULE_2__.CheckIcon, {
                                                                                             className: "h-5 w-5",
@@ -385,8 +380,7 @@ function ListviewHeader({ schema , onListviewChange , formFactor  }) {
                                                                                         })
                                                                                     }) : null
                                                                                 ]
-                                                                            }, personIdx);
-                                                                        })
+                                                                            }, personIdx))
                                                                     })
                                                                 })
                                                             ]

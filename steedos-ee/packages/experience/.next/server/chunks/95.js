@@ -124,10 +124,8 @@ const getEvn = (router)=>{
     return {
         theme: "antd",
         notify: (type, msg)=>{
-            var ref;
-            if ((ref = msg.props) === null || ref === void 0 ? void 0 : ref.schema.tpl) {
-                var ref1;
-                SteedosUI.message[type]((ref1 = msg.props) === null || ref1 === void 0 ? void 0 : ref1.schema.tpl);
+            if (msg.props?.schema.tpl) {
+                SteedosUI.message[type](msg.props?.schema.tpl);
             } else if (typeof msg == "string") {
                 SteedosUI.message[type](msg);
             } else {

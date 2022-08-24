@@ -49,7 +49,7 @@ function LauncherLayout({ children  }) {
     }
     // 默认进入第一个tab
     (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{
-        if (!selected && (app === null || app === void 0 ? void 0 : app.children[0])) {
+        if (!selected && app?.children[0]) {
             router.push(app.children[0].path);
             setSelected(app.children[0].id);
         }
@@ -74,7 +74,7 @@ function LauncherLayout({ children  }) {
         className: "h-full flex flex-col",
         children: [
             /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_Navbar__WEBPACK_IMPORTED_MODULE_2__/* .Navbar */ .w, {
-                navigation: app === null || app === void 0 ? void 0 : app.children,
+                navigation: app?.children,
                 selected: selected,
                 app: app
             }),

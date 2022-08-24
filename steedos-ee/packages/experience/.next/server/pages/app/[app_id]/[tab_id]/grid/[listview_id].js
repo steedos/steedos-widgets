@@ -50,14 +50,13 @@ _components_object_ListviewHeader__WEBPACK_IMPORTED_MODULE_9__ = (__webpack_asyn
 
 
 function Page({ formFactor  }) {
-    var ref;
     const router = (0,next_router__WEBPACK_IMPORTED_MODULE_4__.useRouter)();
     const { app_id , tab_id  } = router.query;
     const { 0: schema , 1: setSchema  } = (0,react__WEBPACK_IMPORTED_MODULE_3__.useState)();
     const listViewId = SteedosUI.getRefId({
         type: "listview",
         appId: app_id,
-        name: schema === null || schema === void 0 ? void 0 : (ref = schema.uiSchema) === null || ref === void 0 ? void 0 : ref.name
+        name: schema?.uiSchema?.name
     });
     const getListviewSchema = (listviewName)=>{
         (0,_lib_objects__WEBPACK_IMPORTED_MODULE_5__/* .getListSchema */ .$R)(app_id, tab_id, listviewName, {
@@ -81,20 +80,20 @@ function Page({ formFactor  }) {
         children: [
             /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
                 className: "border-b",
-                children: formFactor && (schema === null || schema === void 0 ? void 0 : schema.uiSchema.name) === tab_id && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_object_ListviewHeader__WEBPACK_IMPORTED_MODULE_9__/* .ListviewHeader */ .z, {
+                children: formFactor && schema?.uiSchema.name === tab_id && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_object_ListviewHeader__WEBPACK_IMPORTED_MODULE_9__/* .ListviewHeader */ .z, {
                     formFactor: formFactor,
                     schema: schema,
                     onListviewChange: (listView)=>{
-                        getListviewSchema(listView === null || listView === void 0 ? void 0 : listView.name);
+                        getListviewSchema(listView?.name);
                     }
                 })
             }),
             /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
                 className: "flex-1 min-h-0 overflow-y-auto",
-                children: (schema === null || schema === void 0 ? void 0 : schema.amisSchema) && (schema === null || schema === void 0 ? void 0 : schema.uiSchema.name) === tab_id && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_AmisRender__WEBPACK_IMPORTED_MODULE_7__/* .AmisRender */ .k, {
+                children: schema?.amisSchema && schema?.uiSchema.name === tab_id && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_AmisRender__WEBPACK_IMPORTED_MODULE_7__/* .AmisRender */ .k, {
                     className: "steedos-listview",
                     id: listViewId,
-                    schema: (schema === null || schema === void 0 ? void 0 : schema.amisSchema) || {},
+                    schema: schema?.amisSchema || {},
                     router: router
                 })
             })

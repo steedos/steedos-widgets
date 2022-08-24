@@ -33,7 +33,6 @@ exports.modules = {
 
 
 function RecordRelatedListButtons(props) {
-    var ref, ref1;
     const { app_id , tab_id , schema , refId , foreign_key , record_id , object_name , masterObjectName , inMore , formFactor  } = props;
     const { 0: buttons , 1: setButtons  } = (0,react__WEBPACK_IMPORTED_MODULE_3__.useState)(null);
     const router = (0,next_router__WEBPACK_IMPORTED_MODULE_2__.useRouter)();
@@ -181,9 +180,9 @@ function RecordRelatedListButtons(props) {
         data: {}
     };
     return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
-        children: (schema === null || schema === void 0 ? void 0 : schema.uiSchema) && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+        children: schema?.uiSchema && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
             children: [
-                (schema === null || schema === void 0 ? void 0 : (ref = schema.uiSchema) === null || ref === void 0 ? void 0 : (ref1 = ref.permissions) === null || ref1 === void 0 ? void 0 : ref1.allowCreate) && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+                schema?.uiSchema?.permissions?.allowCreate && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
                     children: [
                         schema.uiSchema.name != "cms_files" && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("button", {
                             onClick: newRecord,
@@ -202,7 +201,7 @@ function RecordRelatedListButtons(props) {
                         })
                     ]
                 }),
-                buttons === null || buttons === void 0 ? void 0 : buttons.map((button)=>{
+                buttons?.map((button)=>{
                     return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_object_Button__WEBPACK_IMPORTED_MODULE_4__/* .Button */ .z, {
                         button: button,
                         inMore: inMore,

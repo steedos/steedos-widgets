@@ -51,7 +51,6 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
 }
 function newRecord({}) {
-    var ref;
     const router = (0,next_router__WEBPACK_IMPORTED_MODULE_4__.useRouter)();
     const { app_id , tab_id , record_id ="new"  } = router.query;
     const { 0: schema , 1: setSchema  } = (0,react__WEBPACK_IMPORTED_MODULE_3__.useState)(null);
@@ -115,7 +114,7 @@ function newRecord({}) {
                                         className: "inline-block text-2xl font-extrabold tracking-tight text-slate-900 dark:text-slate-200 sm:text-3xl",
                                         children: [
                                             "\u521B\u5EFA ",
-                                            schema === null || schema === void 0 ? void 0 : (ref = schema.uiSchema) === null || ref === void 0 ? void 0 : ref.label
+                                            schema?.uiSchema?.label
                                         ]
                                     }),
                                     /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
@@ -155,13 +154,13 @@ function newRecord({}) {
                             className: "mt-0",
                             children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_headlessui_react__WEBPACK_IMPORTED_MODULE_9__.Tab.Panel, {
                                 className: classNames("bg-white sm:rounded-b-xl", ""),
-                                children: (schema === null || schema === void 0 ? void 0 : schema.amisSchema) && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_AmisRender__WEBPACK_IMPORTED_MODULE_6__/* .AmisRender */ .k, {
+                                children: schema?.amisSchema && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_AmisRender__WEBPACK_IMPORTED_MODULE_6__/* .AmisRender */ .k, {
                                     id: SteedosUI.getRefId({
                                         type: "form",
                                         appId: app_id,
                                         name: schema.uiSchema.name
                                     }),
-                                    schema: (schema === null || schema === void 0 ? void 0 : schema.amisSchema) || {},
+                                    schema: schema?.amisSchema || {},
                                     router: router
                                 })
                             }, "detail")

@@ -66,7 +66,6 @@ function FromNow({ date  }) {
 
 
 const RelatedLink = ({ schema , object_name , foreign_key , app_id , record_id , masterObjectName , recordCount , formFactor  })=>{
-    var ref;
     return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((next_link__WEBPACK_IMPORTED_MODULE_2___default()), {
         href: _components_functions__WEBPACK_IMPORTED_MODULE_3__/* .SteedosUI.Router.getObjectRelatedViewPath */ .h.Router.getObjectRelatedViewPath({
             formFactor,
@@ -89,7 +88,7 @@ const RelatedLink = ({ schema , object_name , foreign_key , app_id , record_id ,
                                 //  style={{backgroundColor: "#3c97dd"}}
                                 className: "extraSmall forceEntityIcon",
                                 children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
-                                    className: `uiImage slds-icon_container slds-icon-standard-${(ref = schema.uiSchema.icon) === null || ref === void 0 ? void 0 : ref.replaceAll("_", "-")}`,
+                                    className: `uiImage slds-icon_container slds-icon-standard-${schema.uiSchema.icon?.replaceAll("_", "-")}`,
                                     children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("svg", {
                                         className: "slds-icon slds-page-header__icon",
                                         "aria-hidden": "true",
@@ -197,7 +196,7 @@ const RelatedsLink = ({ app_id , record_id , relateds , formFactor  })=>{
     ]);
     return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
         className: "divide-y",
-        children: relateds === null || relateds === void 0 ? void 0 : relateds.map((related)=>{
+        children: relateds?.map((related)=>{
             return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_object_RelatedLink__WEBPACK_IMPORTED_MODULE_7__/* .RelatedLink */ .l, {
                 ...related,
                 app_id: app_id,
@@ -370,13 +369,13 @@ function Record({ formFactor  }) {
                 name: "detail",
                 component: ()=>{
                     return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
-                        children: (schema === null || schema === void 0 ? void 0 : schema.amisSchema) && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_AmisRender__WEBPACK_IMPORTED_MODULE_6__/* .AmisRender */ .k, {
+                        children: schema?.amisSchema && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_AmisRender__WEBPACK_IMPORTED_MODULE_6__/* .AmisRender */ .k, {
                             id: SteedosUI.getRefId({
                                 type: "detail",
                                 appId: app_id,
                                 name: schema.uiSchema.name
                             }),
-                            schema: (schema === null || schema === void 0 ? void 0 : schema.amisSchema) || {},
+                            schema: schema?.amisSchema || {},
                             router: router
                         })
                     });

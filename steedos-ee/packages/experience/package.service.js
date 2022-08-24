@@ -133,7 +133,7 @@ module.exports = {
 				this.logger.error("Server error", err);
 			});
 
-			this.logger.info("Experience server created.");
+			this.logger.info("Steedos Experience Server created.");
 		}
   },
 
@@ -150,7 +150,7 @@ module.exports = {
 				if (err)
 					return reject(err);
 
-				this.logger.info(`Experience listening on ${this.settings.url}`);
+				this.logger.info(`Steedos Experience Server listening on ${this.settings.url}`);
 				resolve();
 			});
 		});
@@ -167,7 +167,7 @@ module.exports = {
 					if (err)
 						return reject(err);
 
-					this.logger.info("Experience stopped!");
+					this.logger.info("Steedos Experience Server stopped!");
 					resolve();
 				});
 			});

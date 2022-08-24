@@ -30,7 +30,6 @@ _headlessui_react__WEBPACK_IMPORTED_MODULE_3__ = (__webpack_async_dependencies__
 
 
 function RecordHeader({ schema , formFactor  }) {
-    var ref, ref1;
     const router = (0,next_router__WEBPACK_IMPORTED_MODULE_2__.useRouter)();
     const { app_id , tab_id , record_id  } = router.query;
     const { 0: record , 1: setRecord  } = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
@@ -72,8 +71,7 @@ function RecordHeader({ schema , formFactor  }) {
     const loadButtons = (schema)=>{
         let buttons = [];
         if (schema && schema.uiSchema) {
-            var ref, ref1;
-            if (schema === null || schema === void 0 ? void 0 : (ref = schema.uiSchema) === null || ref === void 0 ? void 0 : (ref1 = ref.permissions) === null || ref1 === void 0 ? void 0 : ref1.allowEdit) {
+            if (schema?.uiSchema?.permissions?.allowEdit) {
                 buttons.push({
                     label: "\u7F16\u8F91",
                     name: "edit",
@@ -140,11 +138,11 @@ function RecordHeader({ schema , formFactor  }) {
                                             className: "",
                                             children: [
                                                 /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
-                                                    children: schema === null || schema === void 0 ? void 0 : (ref = schema.uiSchema) === null || ref === void 0 ? void 0 : ref.label
+                                                    children: schema?.uiSchema?.label
                                                 }),
                                                 /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
                                                     className: "slds-page-header__title slds-truncate",
-                                                    children: record ? record[schema === null || schema === void 0 ? void 0 : (ref1 = schema.uiSchema) === null || ref1 === void 0 ? void 0 : ref1.NAME_FIELD_KEY] : ""
+                                                    children: record ? record[schema?.uiSchema?.NAME_FIELD_KEY] : ""
                                                 })
                                             ]
                                         })
@@ -163,7 +161,7 @@ function RecordHeader({ schema , formFactor  }) {
                             children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("ul", {
                                 className: "slds-button-group-list",
                                 children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
-                                    children: (moreButtons === null || moreButtons === void 0 ? void 0 : moreButtons.length) > 0 && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("li", {
+                                    children: moreButtons?.length > 0 && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("li", {
                                         children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(_headlessui_react__WEBPACK_IMPORTED_MODULE_3__.Menu, {
                                             as: "div",
                                             className: "slds-dropdown-trigger slds-dropdown-trigger_click",
@@ -194,7 +192,7 @@ function RecordHeader({ schema , formFactor  }) {
                                                         className: "absolute right-0 z-10 mt-1 w-56 origin-top-right divide-y divide-gray-100 bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:rounded-[2px]",
                                                         children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
                                                             className: "",
-                                                            children: moreButtons === null || moreButtons === void 0 ? void 0 : moreButtons.map((button, index)=>{
+                                                            children: moreButtons?.map((button, index)=>{
                                                                 return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_headlessui_react__WEBPACK_IMPORTED_MODULE_3__.Menu.Item, {
                                                                     children: ({ active  })=>/*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_object_Button__WEBPACK_IMPORTED_MODULE_5__/* .Button */ .z, {
                                                                             button: button,
@@ -256,7 +254,6 @@ _headlessui_react__WEBPACK_IMPORTED_MODULE_3__ = (__webpack_async_dependencies__
 
 
 function RecordHeader({ schema , formFactor  }) {
-    var ref, ref1, ref2, ref3;
     const router = (0,next_router__WEBPACK_IMPORTED_MODULE_2__.useRouter)();
     const { app_id , tab_id , record_id  } = router.query;
     const { 0: record , 1: setRecord  } = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
@@ -346,11 +343,11 @@ function RecordHeader({ schema , formFactor  }) {
                                             className: "",
                                             children: [
                                                 /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
-                                                    children: schema === null || schema === void 0 ? void 0 : (ref = schema.uiSchema) === null || ref === void 0 ? void 0 : ref.label
+                                                    children: schema?.uiSchema?.label
                                                 }),
                                                 /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
                                                     className: "slds-page-header__title slds-truncate",
-                                                    children: record ? record[schema === null || schema === void 0 ? void 0 : (ref1 = schema.uiSchema) === null || ref1 === void 0 ? void 0 : ref1.NAME_FIELD_KEY] : ""
+                                                    children: record ? record[schema?.uiSchema?.NAME_FIELD_KEY] : ""
                                                 })
                                             ]
                                         })
@@ -367,14 +364,14 @@ function RecordHeader({ schema , formFactor  }) {
                         children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
                             className: "slds-page-header__control space-x-1",
                             children: [
-                                (schema === null || schema === void 0 ? void 0 : (ref2 = schema.uiSchema) === null || ref2 === void 0 ? void 0 : (ref3 = ref2.permissions) === null || ref3 === void 0 ? void 0 : ref3.allowEdit) && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("button", {
+                                schema?.uiSchema?.permissions?.allowEdit && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("button", {
                                     onClick: editRecord,
                                     className: "antd-Button antd-Button--default",
                                     children: "\u7F16\u8F91"
                                 }),
                                 /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
                                     children: [
-                                        buttons === null || buttons === void 0 ? void 0 : buttons.map((button)=>{
+                                        buttons?.map((button)=>{
                                             return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_object_Button__WEBPACK_IMPORTED_MODULE_5__/* .Button */ .z, {
                                                 button: button,
                                                 data: {
@@ -386,7 +383,7 @@ function RecordHeader({ schema , formFactor  }) {
                                                 scopeClassName: "inline-block"
                                             }, button.name);
                                         }),
-                                        (moreButtons === null || moreButtons === void 0 ? void 0 : moreButtons.length) > 0 && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(_headlessui_react__WEBPACK_IMPORTED_MODULE_3__.Menu, {
+                                        moreButtons?.length > 0 && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(_headlessui_react__WEBPACK_IMPORTED_MODULE_3__.Menu, {
                                             as: "div",
                                             className: "slds-dropdown-trigger slds-dropdown-trigger_click",
                                             children: [

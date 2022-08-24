@@ -39,7 +39,6 @@ var link_default = /*#__PURE__*/__webpack_require__.n(next_link);
 
 
 const RecordRelatedHeader = ({ schema , object_name , foreign_key , app_id , record_id , masterObjectName , refId , recordCount , formFactor  })=>{
-    var ref;
     return /*#__PURE__*/ (0,jsx_runtime_.jsxs)(jsx_runtime_.Fragment, {
         children: [
             /*#__PURE__*/ (0,jsx_runtime_.jsxs)("header", {
@@ -52,7 +51,7 @@ const RecordRelatedHeader = ({ schema , object_name , foreign_key , app_id , rec
                             //  style={{backgroundColor: "#3c97dd"}}
                             className: "extraSmall forceEntityIcon",
                             children: /*#__PURE__*/ jsx_runtime_.jsx("span", {
-                                className: `uiImage slds-icon_container slds-icon-standard-${(ref = schema.uiSchema.icon) === null || ref === void 0 ? void 0 : ref.replaceAll("_", "-")}`,
+                                className: `uiImage slds-icon_container slds-icon-standard-${schema.uiSchema.icon?.replaceAll("_", "-")}`,
                                 children: /*#__PURE__*/ jsx_runtime_.jsx("svg", {
                                     className: "slds-icon slds-page-header__icon",
                                     "aria-hidden": "true",
@@ -198,7 +197,7 @@ function RecordRelatedList(props) {
 
 const RecordRelateds = ({ app_id , record_id , relateds , formFactor  })=>{
     return /*#__PURE__*/ jsx_runtime_.jsx(jsx_runtime_.Fragment, {
-        children: relateds === null || relateds === void 0 ? void 0 : relateds.map((related)=>{
+        children: relateds?.map((related)=>{
             return /*#__PURE__*/ jsx_runtime_.jsx(RecordRelatedList, {
                 ...related,
                 app_id: app_id,
@@ -338,13 +337,13 @@ function Record({ formFactor  }) {
                 component: ()=>{
                     return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
                         className: "",
-                        children: (schema === null || schema === void 0 ? void 0 : schema.amisSchema) && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_AmisRender__WEBPACK_IMPORTED_MODULE_6__/* .AmisRender */ .k, {
+                        children: schema?.amisSchema && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_AmisRender__WEBPACK_IMPORTED_MODULE_6__/* .AmisRender */ .k, {
                             id: SteedosUI.getRefId({
                                 type: "detail",
                                 appId: app_id,
                                 name: schema.uiSchema.name
                             }),
-                            schema: (schema === null || schema === void 0 ? void 0 : schema.amisSchema) || {},
+                            schema: schema?.amisSchema || {},
                             router: router
                         })
                     });

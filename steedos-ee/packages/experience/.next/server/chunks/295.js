@@ -129,7 +129,7 @@ var external_crypto_default = /*#__PURE__*/__webpack_require__.n(external_crypto
 
 const axios = __webpack_require__(2167);
 const jwt = __webpack_require__(9344);
-const ROOT_URL = "http://192.168.50.181:5000";
+const STEEDOS_ROOT_URL = process.env.STEEDOS_ROOT_URL;
 const JWT_API = "/accounts/jwt/login";
 const VALIDATE_API = "/api/setup/validate";
 const STEEDOS_TOKENS = {};
@@ -151,7 +151,7 @@ const loginSteedosProject = async (user)=>{
     if (STEEDOS_TOKENS[user.email]) {
         return STEEDOS_TOKENS[user.email];
     }
-    const projectRootUrl = ROOT_URL;
+    const projectRootUrl = STEEDOS_ROOT_URL;
     const rest = await axios({
         url: `${projectRootUrl}${JWT_API}`,
         method: "get",
@@ -169,7 +169,7 @@ const validateSteedosToken = async (user)=>{
         return STEEDOS_SESSIONS[user.email];
     }
     const rest = await axios({
-        url: `${ROOT_URL}${VALIDATE_API}`,
+        url: `${STEEDOS_ROOT_URL}${VALIDATE_API}`,
         method: "post",
         data: {},
         headers: {
@@ -210,12 +210,11 @@ const authOptions = {
                 } else {
                     const loginResult = await loginSteedosProject(session.user);
                     if (loginResult.space && loginResult.token) {
-                        var ref, ref1;
                         session.steedos = {
                             space: loginResult.space,
                             token: loginResult.token,
-                            userId: (ref = loginResult.user) === null || ref === void 0 ? void 0 : ref.id,
-                            name: (ref1 = loginResult.user) === null || ref1 === void 0 ? void 0 : ref1.name
+                            userId: loginResult.user?.id,
+                            name: loginResult.user?.name
                         };
                     }
                 }

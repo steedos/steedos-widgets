@@ -197,7 +197,7 @@ const editRecordHandle = (props)=>{
                 data: data,
                 formFactor: formFactor
             })
-        }, options === null || options === void 0 ? void 0 : options.props));
+        }, options?.props));
     } else if (type === "drawer") {
         SteedosUI.Drawer(Object.assign({
             name: name,
@@ -254,7 +254,7 @@ const editRecordHandle = (props)=>{
                     })
                 ]
             })
-        }, options === null || options === void 0 ? void 0 : options.props));
+        }, options?.props));
     } else {
         router.push(`/app/${appId}/${objectName}/view/new`);
     }
@@ -502,8 +502,7 @@ const filtersToConditions = (filters)=>{
 
 const filtersAmisSchema = __webpack_require__(575);
 const canSaveFilter = (listView)=>{
-    var ref;
-    if (listView._id && listView.owner === ((ref = (0,steedos_client/* getSteedosAuth */.Z0)()) === null || ref === void 0 ? void 0 : ref.userId)) {
+    if (listView._id && listView.owner === (0,steedos_client/* getSteedosAuth */.Z0)()?.userId) {
         return true;
     } else {
         return false;
@@ -3023,7 +3022,7 @@ async function getUISchema(objectName, force) {
 }
 async function getField(objectName, fieldName) {
     const uiSchema = await getUISchema(objectName);
-    return uiSchema === null || uiSchema === void 0 ? void 0 : uiSchema.fields[fieldName];
+    return uiSchema?.fields[fieldName];
 }
 // 获取表单页面
 async function getFormSchema(objectName, ctx) {
