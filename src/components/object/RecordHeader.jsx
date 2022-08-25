@@ -5,9 +5,9 @@ import {
     getObjectDetailButtons,
     getObjectDetailMoreButtons,
   } from "@/lib/buttons";
-  import { Button } from "@/components/object/Button";
+import { Button } from "@/components/object/Button";
 
-  import config from '@/config';
+import { standardButtonsTodo } from '@/lib/buttons';
 
 export function RecordHeader({ schema, formFactor, permissions }) {
   const router = useRouter();
@@ -16,18 +16,7 @@ export function RecordHeader({ schema, formFactor, permissions }) {
   const [record, setRecord] = useState(null);
   const [buttons, setButtons] = useState(null);
   const [moreButtons, setMoreButtons] = useState(null);
-  const editRecord = () => {
-    const type = config.listView.editRecordMode;
-    SteedosUI.Object.editRecord({ appId: app_id, name: SteedosUI.getRefId({type: `${type}-form`,}), title: `编辑 ${schema.uiSchema.label}`, objectName: schema.uiSchema.name, recordId: record_id, type, options: {}, router, 
-    onSubmitted: ()=>{
-        SteedosUI.getRef(SteedosUI.getRefId({
-            type: "detail",
-            appId: app_id,
-            name: schema.uiSchema.name,
-          })).getComponentById(`detail_${record_id}`).reload()
-      }, formFactor: formFactor })
-
-  };
+  
   const loadButtons = (schema) => {
     if (schema && schema.uiSchema) {
       setButtons(
@@ -95,7 +84,15 @@ export function RecordHeader({ schema, formFactor, permissions }) {
             <div className="slds-page-header__control space-x-1">
                 {permissions?.allowEdit && (
                   <button
-                  onClick={editRecord}
+                  onClick={(event)=>{
+                    standardButtonsTodo.standard_edit.call({}, event, {
+                      recordId: record_id,
+                      appId: app_id,
+                      uiSchema: schema.uiSchema,
+                      formFactor: formFactor,
+                      router: router
+                    })
+                  }}
                   className="antd-Button antd-Button--default"
                 >
                   编辑

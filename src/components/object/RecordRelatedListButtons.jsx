@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 13:32:49
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-25 11:46:23
+ * @LastEditTime: 2022-08-25 17:05:51
  * @Description: 
  */
 import { getListViewButtons, execute } from '@/lib/buttons';
@@ -11,8 +11,7 @@ import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { Button } from '@/components/object/Button'
 import { AmisRender } from "@/components/AmisRender";
 import { getSteedosAuth } from '@/lib/steedos.client';
-
-import config from "@/config";
+import { standardButtonsTodo } from '@/lib/buttons';
 
 export function RecordRelatedListButtons(props) {
     const { app_id, tab_id, schema, refId, foreign_key, record_id, object_name , masterObjectName, inMore, formFactor} = props;
@@ -27,34 +26,6 @@ export function RecordRelatedListButtons(props) {
               }))
         }
       }, [schema]);
-      const newRecord = ()=>{
-        if(schema.uiSchema.name === 'cms_files'){
-            
-        }else{
-            const type = config.listView.newRecordMode;
-            SteedosUI.Object.newRecord({
-                onSubmitted : ()=>{
-                    SteedosUI.getRef(refId).getComponentByName(`page.listview_${schema.uiSchema.name}`).handleAction({}, { actionType: "reload"})
-                },
-                onCancel: ()=>{
-                    SteedosUI.getRef(refId).getComponentByName(`page.listview_${schema.uiSchema.name}`).handleAction({}, { actionType: "reload"})
-                },
-                data: {data: { [foreign_key]: record_id }},  
-                appId: app_id, name: SteedosUI.getRefId({type: `${type}-form`, appId: app_id, name: `${schema.uiSchema.name}`}), title: `新建 ${schema.uiSchema.label}`, 
-                objectName: schema.uiSchema.name, recordId: 'new', type, 
-                formFactor: formFactor,
-                options: formFactor === 'SMALL' ? {
-                  props: {
-                    width: "100%",
-                    style: {
-                      width: "100%",
-                    },
-                    bodyStyle: { padding: "0px", paddingTop: "0px" },
-                  },
-                } : {}, 
-                router})
-        }
-      }
       const auth = getSteedosAuth();
       const uploadBtnSchema = {
         type: "page",
@@ -149,7 +120,17 @@ export function RecordRelatedListButtons(props) {
                 <>
                     {schema?.uiSchema?.permissions?.allowCreate && 
                         <>
-                            { schema.uiSchema.name != 'cms_files' && <button onClick={newRecord} className={ inMore ? "flex w-full items-center border-0 px-2 py-1" : 'slds-button slds-button_neutral'}>新建</button> }
+                            { schema.uiSchema.name != 'cms_files' && <button onClick={(event)=>{
+                              standardButtonsTodo.standard_new.call({}, event, {
+                                listViewId: refId,
+                                appId: app_id,
+                                uiSchema: schema.uiSchema,
+                                formFactor: formFactor,
+                                router: router,
+                                data: {data: { [foreign_key]: record_id }}, 
+                            })
+
+                            }} className={ inMore ? "flex w-full items-center border-0 px-2 py-1" : 'slds-button slds-button_neutral'}>新建</button> }
                             { schema.uiSchema.name === 'cms_files' && 
                             <AmisRender
                             id={SteedosUI.getRefId({type: 'button', appId: app_id, name: 'upload'})}

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-03 16:46:23
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-22 16:49:18
+ * @LastEditTime: 2022-08-25 17:11:15
  * @Description:
  */
 import { Listbox, Menu, Transition } from "@headlessui/react";
@@ -20,7 +20,7 @@ import { useRouter } from "next/router";
 import React, { useState, useEffect, Fragment, useRef } from "react";
 import { Button } from "@/components/object/Button";
 import { FromNow } from "@/components/FromNow";
-import config from "@/config";
+import { standardButtonsTodo } from '@/lib/buttons';
 import { getListViewButtons } from '@/lib/buttons';
 
 export function ListviewHeader({ schema, onListviewChange, formFactor }) {
@@ -145,49 +145,29 @@ export function ListviewHeader({ schema, onListviewChange, formFactor }) {
     );
   };
 
-  const newRecord = () => {
-    const listViewId = SteedosUI.getRefId({
-      type: "listview",
-      appId: app_id,
-      name: schema?.uiSchema?.name,
-    });
-    const type = config.listView.newRecordMode;
-    SteedosUI.Object.newRecord({
-      onSubmitted: () => {
-        SteedosUI.getRef(listViewId)
-          .getComponentByName(`page.listview_${schema.uiSchema.name}`)
-          .handleAction({}, { actionType: "reload" });
-      },
-      onCancel: () => {
-        SteedosUI.getRef(listViewId)
-          .getComponentByName(`page.listview_${schema.uiSchema.name}`)
-          .handleAction({}, { actionType: "reload" });
-      },
-      appId: app_id,
-      name: SteedosUI.getRefId({ type: `${type}-form` }),
-      title: `新建 ${schema.uiSchema.label}`,
-      objectName: schema.uiSchema.name,
-      recordId: "new",
-      formFactor: formFactor,
-      type,
-      options: {
-        props: {
-          width: "100%",
-          style: {
-            width: "100%",
-          },
-          bodyStyle: { padding: "0px", paddingTop: "0px" },
-        },
-      },
-      router,
-    });
-  };
-
   const moreButtons =[ 
   {
     label: '新建',
     name: 'new',
-    todo: newRecord
+    todo: (event)=>{
+      const listViewId = SteedosUI.getRefId({type: 'listview', appId: app_id, name: schema?.uiSchema?.name});
+      standardButtonsTodo.standard_new.call({}, event, {
+          listViewId,
+          appId: app_id,
+          uiSchema: schema.uiSchema,
+          formFactor: formFactor,
+          router: router,
+          options: {
+            props: {
+              width: "100%",
+              style: {
+                width: "100%",
+              },
+              bodyStyle: { padding: "0px", paddingTop: "0px" },
+            },
+          }
+      })
+    }
   }
 ]
 

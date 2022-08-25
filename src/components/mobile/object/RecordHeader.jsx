@@ -7,33 +7,14 @@ import {
   } from "@/lib/buttons";
   import { Button } from "@/components/object/Button";
 
-  import config from '@/config';
+  import { standardButtonsTodo } from '@/lib/buttons';
 
 export function RecordHeader({ schema, formFactor, permissions }) {
   const router = useRouter();
   const { app_id, tab_id, record_id } = router.query;
   const [record, setRecord] = useState(null);
   const [moreButtons, setMoreButtons] = useState(null);
-  const editRecord = () => {
-    const type = config.listView.editRecordMode;
-    SteedosUI.Object.editRecord({ appId: app_id, name: SteedosUI.getRefId({type: `${type}-form`,}), title: `编辑 ${schema.uiSchema.label}`, objectName: schema.uiSchema.name, recordId: record_id, type, options: {
-      props: {
-        width: "100%",
-        style: {
-          width: "100%",
-        },
-        bodyStyle: { padding: "0px", paddingTop: "0px" },
-      }
-    }, router, formFactor: formFactor,
-    onSubmitted: ()=>{
-        SteedosUI.getRef(SteedosUI.getRefId({
-            type: "detail",
-            appId: app_id,
-            name: schema.uiSchema.name,
-          })).getComponentById(`detail_${record_id}`).reload()
-      } })
 
-  };
   const loadButtons = (schema) => {
     let buttons = [];
     if (schema && schema.uiSchema) {
@@ -41,7 +22,24 @@ export function RecordHeader({ schema, formFactor, permissions }) {
         buttons.push({
           label: "编辑",
           name: 'edit',
-          todo: editRecord,
+          todo: (event)=>{
+            standardButtonsTodo.standard_edit.call({}, event, {
+              recordId: record_id,
+              appId: app_id,
+              uiSchema: schema.uiSchema,
+              formFactor: formFactor,
+              router: router,
+              options: {
+                props: {
+                  width: "100%",
+                  style: {
+                    width: "100%",
+                  },
+                  bodyStyle: { padding: "0px", paddingTop: "0px" },
+                }
+              }
+            })
+          }
         });
       }
     }

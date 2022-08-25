@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-25 15:31:00
+ * @LastEditTime: 2022-08-25 16:48:19
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -100,7 +100,6 @@ export default function Record({formFactor}) {
   };
 
   const getTabs = ()=>{
-
     const tabs = [{label: '详情', name: 'detail', component: ()=>{
       return (
         <div className="">

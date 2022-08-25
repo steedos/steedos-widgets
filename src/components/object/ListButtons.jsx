@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 13:32:49
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-19 14:34:44
+ * @LastEditTime: 2022-08-25 17:26:03
  * @Description: 
  */
 import { getListViewButtons, execute } from '@/lib/buttons';
@@ -11,7 +11,7 @@ import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { Button } from '@/components/object/Button'
 import _ from 'lodash';
 
-import config from '@/config';
+import { standardButtonsTodo } from '@/lib/buttons';
 
 export function ListButtons(props) {
     const { app_id, tab_id, schema, formFactor } = props;
@@ -27,56 +27,22 @@ export function ListButtons(props) {
               }))
         }
       }, [schema]);
-      const newRecord = ()=>{
-        const listViewId = SteedosUI.getRefId({type: 'listview', appId: app_id, name: schema?.uiSchema?.name});
-        // router.push('/app/'+app_id+'/'+schema.uiSchema.name+'/view/new')
-        const type = config.listView.newRecordMode;
-        SteedosUI.Object.newRecord({ 
-            onSubmitted : ()=>{
-                SteedosUI.getRef(listViewId).getComponentByName(`page.listview_${schema.uiSchema.name}`).handleAction({}, { actionType: "reload"})
-            },
-            onCancel: ()=>{
-                SteedosUI.getRef(listViewId).getComponentByName(`page.listview_${schema.uiSchema.name}`).handleAction({}, { actionType: "reload"})
-            },
-            appId: app_id, 
-            formFactor: formFactor,
-            name: SteedosUI.getRefId({type: `${type}-form`,}), 
-            title: `新建 ${schema.uiSchema.label}`, 
-            objectName: schema.uiSchema.name, 
-            recordId: 'new', 
-            type, 
-            options: {}, 
-            router 
-        })
-      }
-
-      const batchDelete = ()=>{
-          const listViewId = SteedosUI.getRefId({type: 'listview', appId: app_id, name: schema?.uiSchema?.name});
-          const listViewRef = SteedosUI.getRef(listViewId).getComponentByName(`page.listview_${schema.uiSchema.name}`)
-          
-        if(_.isEmpty(listViewRef.props.store.toJSON().selectedItems)){
-            listViewRef.handleAction({}, {
-                "actionType": "toast",
-                "toast": {
-                    "items": [
-                      {
-                        "position": "top-right",
-                        "body": "请选择要删除的项"
-                      }
-                    ]
-                  }
-              })
-        }else{
-            listViewRef.handleBulkAction(listViewRef.props.store.toJSON().selectedItems,[],{},listViewRef.props.bulkActions[0]);
-        }
-      }
 
     return (
         <>
             {schema?.uiSchema && 
                 <>
                     {schema?.uiSchema?.permissions?.allowCreate && 
-                        <button onClick={newRecord} className="antd-Button antd-Button--default">新建</button>
+                        <button onClick={(event)=>{
+                                const listViewId = SteedosUI.getRefId({type: 'listview', appId: app_id, name: schema?.uiSchema?.name});
+                                standardButtonsTodo.standard_new.call({}, event, {
+                                    listViewId,
+                                    appId: app_id,
+                                    uiSchema: schema.uiSchema,
+                                    formFactor: formFactor,
+                                    router: router
+                                })
+                        }} className="antd-Button antd-Button--default">新建</button>
                     }
                     {buttons?.map((button)=>{
                         return (
@@ -89,7 +55,13 @@ export function ListButtons(props) {
                         )
                     })}
                     {schema?.uiSchema?.permissions?.allowDelete && 
-                        <button onClick={batchDelete} className="antd-Button antd-Button--default">删除</button>
+                        <button onClick={(event)=>{
+                            const listViewId = SteedosUI.getRefId({type: 'listview', appId: app_id, name: schema?.uiSchema?.name});
+                            standardButtonsTodo.batch_delete.call({}, event, {
+                                listViewId,
+                                uiSchema: schema.uiSchema,
+                            })
+                        }} className="antd-Button antd-Button--default">删除</button>
                     }
                 </>
             }
