@@ -23,6 +23,20 @@ export function AppLayout({ children }) {
       setSteedosAuth(session.steedos);
     }
 
+    useEffect(() => {
+      if (session && session.steedos && session.steedos.space) {
+        const userId = session.steedos.userId;
+        const people = {
+          id: userId,
+          name: session.steedos.space.name + '/' + session.steedos.name,
+          spaceId: session.steedos.space._id,
+          spaceName: session.steedos.space.name,
+        }
+        window.posthog.identify(userId);
+        window.posthog.people.set(people);
+      }
+    }, [session]);
+
     // 默认进入第一个tab
     useEffect(() => {
       if(!selected && app?.children[0]){
