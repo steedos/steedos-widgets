@@ -56,13 +56,12 @@ function FromNow({ date  }) {
 /* harmony import */ var _components_object_Button__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(2767);
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(6517);
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(7733);
 
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 13:32:49
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-19 14:34:44
+ * @LastEditTime: 2022-08-25 17:26:03
  * @Description: 
  */ 
 
@@ -85,66 +84,24 @@ function ListButtons(props) {
     }, [
         schema
     ]);
-    const newRecord = ()=>{
-        const listViewId = SteedosUI.getRefId({
-            type: "listview",
-            appId: app_id,
-            name: schema?.uiSchema?.name
-        });
-        // router.push('/app/'+app_id+'/'+schema.uiSchema.name+'/view/new')
-        const type = _config__WEBPACK_IMPORTED_MODULE_6__/* ["default"].listView.newRecordMode */ .Z.listView.newRecordMode;
-        SteedosUI.Object.newRecord({
-            onSubmitted: ()=>{
-                SteedosUI.getRef(listViewId).getComponentByName(`page.listview_${schema.uiSchema.name}`).handleAction({}, {
-                    actionType: "reload"
-                });
-            },
-            onCancel: ()=>{
-                SteedosUI.getRef(listViewId).getComponentByName(`page.listview_${schema.uiSchema.name}`).handleAction({}, {
-                    actionType: "reload"
-                });
-            },
-            appId: app_id,
-            formFactor: formFactor,
-            name: SteedosUI.getRefId({
-                type: `${type}-form`
-            }),
-            title: `新建 ${schema.uiSchema.label}`,
-            objectName: schema.uiSchema.name,
-            recordId: "new",
-            type,
-            options: {},
-            router
-        });
-    };
-    const batchDelete = ()=>{
-        const listViewId = SteedosUI.getRefId({
-            type: "listview",
-            appId: app_id,
-            name: schema?.uiSchema?.name
-        });
-        const listViewRef = SteedosUI.getRef(listViewId).getComponentByName(`page.listview_${schema.uiSchema.name}`);
-        if (lodash__WEBPACK_IMPORTED_MODULE_5___default().isEmpty(listViewRef.props.store.toJSON().selectedItems)) {
-            listViewRef.handleAction({}, {
-                "actionType": "toast",
-                "toast": {
-                    "items": [
-                        {
-                            "position": "top-right",
-                            "body": "\u8BF7\u9009\u62E9\u8981\u5220\u9664\u7684\u9879"
-                        }
-                    ]
-                }
-            });
-        } else {
-            listViewRef.handleBulkAction(listViewRef.props.store.toJSON().selectedItems, [], {}, listViewRef.props.bulkActions[0]);
-        }
-    };
     return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
         children: schema?.uiSchema && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
             children: [
                 schema?.uiSchema?.permissions?.allowCreate && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("button", {
-                    onClick: newRecord,
+                    onClick: (event)=>{
+                        const listViewId = SteedosUI.getRefId({
+                            type: "listview",
+                            appId: app_id,
+                            name: schema?.uiSchema?.name
+                        });
+                        _lib_buttons__WEBPACK_IMPORTED_MODULE_1__/* .standardButtonsTodo.standard_new.call */ .QU.standard_new.call({}, event, {
+                            listViewId,
+                            appId: app_id,
+                            uiSchema: schema.uiSchema,
+                            formFactor: formFactor,
+                            router: router
+                        });
+                    },
                     className: "antd-Button antd-Button--default",
                     children: "\u65B0\u5EFA"
                 }),
@@ -165,7 +122,17 @@ function ListButtons(props) {
                     }, button.name);
                 }),
                 schema?.uiSchema?.permissions?.allowDelete && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("button", {
-                    onClick: batchDelete,
+                    onClick: (event)=>{
+                        const listViewId = SteedosUI.getRefId({
+                            type: "listview",
+                            appId: app_id,
+                            name: schema?.uiSchema?.name
+                        });
+                        _lib_buttons__WEBPACK_IMPORTED_MODULE_1__/* .standardButtonsTodo.batch_delete.call */ .QU.batch_delete.call({}, event, {
+                            listViewId,
+                            uiSchema: schema.uiSchema
+                        });
+                    },
                     className: "antd-Button antd-Button--default",
                     children: "\u5220\u9664"
                 })

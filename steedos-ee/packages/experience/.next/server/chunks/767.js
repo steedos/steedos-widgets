@@ -88,10 +88,11 @@ __webpack_require__.d(__webpack_exports__, {
   "ht": () => (/* binding */ execute),
   "Iv": () => (/* binding */ getListViewButtons),
   "vU": () => (/* binding */ getObjectDetailButtons),
-  "ud": () => (/* binding */ getObjectDetailMoreButtons)
+  "ud": () => (/* binding */ getObjectDetailMoreButtons),
+  "QU": () => (/* binding */ standardButtonsTodo)
 });
 
-// UNUSED EXPORTS: getButtons, standardButtonsTodo
+// UNUSED EXPORTS: getButtons
 
 // EXTERNAL MODULE: external "lodash"
 var external_lodash_ = __webpack_require__(6517);
@@ -155,7 +156,10 @@ const parseSingleExpression = function(func, formData, dataPath, global, userSes
     }
 };
 
+// EXTERNAL MODULE: ./src/config/index.js
+var config = __webpack_require__(7733);
 ;// CONCATENATED MODULE: ./src/lib/buttons.js
+
 
 
 const getGlobalData = ()=>{
@@ -187,10 +191,78 @@ const isVisible = (button, ctx)=>{
 // TODO
 const standardButtonsTodo = {
     standard_new: (event, props)=>{
-        props.router.push("/app/" + props.data.app_id + "/" + props.data.objectName + "/view/new");
+        const { appId , listViewId , uiSchema , formFactor , data , router , options ={} ,  } = props;
+        // router.push('/app/'+props.data.app_id+'/'+props.data.objectName+'/view/new');
+        const type = config/* default.listView.newRecordMode */.Z.listView.newRecordMode;
+        SteedosUI.Object.newRecord({
+            onSubmitted: ()=>{
+                SteedosUI.getRef(listViewId).getComponentByName(`page.listview_${uiSchema.name}`).handleAction({}, {
+                    actionType: "reload"
+                });
+            },
+            onCancel: ()=>{
+                SteedosUI.getRef(listViewId).getComponentByName(`page.listview_${uiSchema.name}`).handleAction({}, {
+                    actionType: "reload"
+                });
+            },
+            appId: appId,
+            formFactor: formFactor,
+            name: SteedosUI.getRefId({
+                type: `${type}-form`
+            }),
+            title: `新建 ${uiSchema.label}`,
+            objectName: uiSchema.name,
+            data: data,
+            recordId: "new",
+            type,
+            options: options,
+            router
+        });
     },
-    standard_edit: (event, props)=>{},
-    standard_delete: (event, props)=>{}
+    standard_edit: (event, props)=>{
+        const type = config/* default.listView.newRecordMode */.Z.listView.newRecordMode;
+        const { appId , recordId , uiSchema , formFactor , router , options ={} ,  } = props;
+        SteedosUI.Object.editRecord({
+            appId: appId,
+            name: SteedosUI.getRefId({
+                type: `${type}-form`
+            }),
+            title: `编辑 ${uiSchema.label}`,
+            objectName: uiSchema.name,
+            recordId: recordId,
+            type,
+            options: options,
+            router,
+            formFactor: formFactor,
+            onSubmitted: ()=>{
+                SteedosUI.getRef(SteedosUI.getRefId({
+                    type: "detail",
+                    appId: appId,
+                    name: uiSchema.name
+                })).getComponentById(`detail_${recordId}`).reload();
+            }
+        });
+    },
+    standard_delete: (event, props)=>{},
+    batch_delete: (event, props)=>{
+        const { listViewId , uiSchema ,  } = props;
+        const listViewRef = SteedosUI.getRef(listViewId).getComponentByName(`page.listview_${uiSchema.name}`);
+        if (external_lodash_default().isEmpty(listViewRef.props.store.toJSON().selectedItems)) {
+            listViewRef.handleAction({}, {
+                "actionType": "toast",
+                "toast": {
+                    "items": [
+                        {
+                            "position": "top-right",
+                            "body": "\u8BF7\u9009\u62E9\u8981\u5220\u9664\u7684\u9879"
+                        }
+                    ]
+                }
+            });
+        } else {
+            listViewRef.handleBulkAction(listViewRef.props.store.toJSON().selectedItems, [], {}, listViewRef.props.bulkActions[0]);
+        }
+    }
 };
 // TODO
 const standardButtonsVisible = {
@@ -201,8 +273,7 @@ const getButtons = (uiSchema, ctx)=>{
     let buttons = external_lodash_default().sortBy(external_lodash_default().values(uiSchema.actions), "sort");
     if (external_lodash_default().has(uiSchema, "allow_customActions")) {
         buttons = external_lodash_default().filter(buttons, (button)=>{
-            return external_lodash_default().include(uiSchema.allow_customActions, button.name) // || _.include(_.keys(Creator.getObject('base').actions) || {}, button.name)
-            ;
+            return external_lodash_default().include(uiSchema.allow_customActions, button.name); // || _.include(_.keys(Creator.getObject('base').actions) || {}, button.name)
         });
     }
     if (external_lodash_default().has(uiSchema, "exclude_actions")) {

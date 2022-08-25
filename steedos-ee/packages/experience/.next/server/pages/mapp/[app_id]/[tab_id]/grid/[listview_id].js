@@ -25,8 +25,7 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _components_object_Button__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(2767);
 /* harmony import */ var _components_FromNow__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(8930);
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(7733);
-/* harmony import */ var _lib_buttons__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(4413);
+/* harmony import */ var _lib_buttons__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(4413);
 var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_headlessui_react__WEBPACK_IMPORTED_MODULE_1__]);
 _headlessui_react__WEBPACK_IMPORTED_MODULE_1__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__)[0];
 
@@ -34,7 +33,7 @@ _headlessui_react__WEBPACK_IMPORTED_MODULE_1__ = (__webpack_async_dependencies__
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-03 16:46:23
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-22 16:49:18
+ * @LastEditTime: 2022-08-25 17:11:15
  * @Description:
  */ 
 
@@ -62,7 +61,7 @@ function ListviewHeader({ schema , onListviewChange , formFactor  }) {
     (0,react__WEBPACK_IMPORTED_MODULE_5__.useEffect)(()=>{
         if (schema) {
             if (schema && schema.uiSchema) {
-                setButtons((0,_lib_buttons__WEBPACK_IMPORTED_MODULE_9__/* .getListViewButtons */ .Iv)(schema.uiSchema, {
+                setButtons((0,_lib_buttons__WEBPACK_IMPORTED_MODULE_8__/* .getListViewButtons */ .Iv)(schema.uiSchema, {
                     app_id: app_id,
                     tab_id: tab_id,
                     router: router
@@ -147,53 +146,36 @@ function ListviewHeader({ schema , onListviewChange , formFactor  }) {
             listViewName: value.name
         }));
     };
-    const newRecord = ()=>{
-        const listViewId = SteedosUI.getRefId({
-            type: "listview",
-            appId: app_id,
-            name: schema?.uiSchema?.name
-        });
-        const type = _config__WEBPACK_IMPORTED_MODULE_8__/* ["default"].listView.newRecordMode */ .Z.listView.newRecordMode;
-        SteedosUI.Object.newRecord({
-            onSubmitted: ()=>{
-                SteedosUI.getRef(listViewId).getComponentByName(`page.listview_${schema.uiSchema.name}`).handleAction({}, {
-                    actionType: "reload"
-                });
-            },
-            onCancel: ()=>{
-                SteedosUI.getRef(listViewId).getComponentByName(`page.listview_${schema.uiSchema.name}`).handleAction({}, {
-                    actionType: "reload"
-                });
-            },
-            appId: app_id,
-            name: SteedosUI.getRefId({
-                type: `${type}-form`
-            }),
-            title: `新建 ${schema.uiSchema.label}`,
-            objectName: schema.uiSchema.name,
-            recordId: "new",
-            formFactor: formFactor,
-            type,
-            options: {
-                props: {
-                    width: "100%",
-                    style: {
-                        width: "100%"
-                    },
-                    bodyStyle: {
-                        padding: "0px",
-                        paddingTop: "0px"
-                    }
-                }
-            },
-            router
-        });
-    };
     const moreButtons = [
         {
             label: "\u65B0\u5EFA",
             name: "new",
-            todo: newRecord
+            todo: (event)=>{
+                const listViewId = SteedosUI.getRefId({
+                    type: "listview",
+                    appId: app_id,
+                    name: schema?.uiSchema?.name
+                });
+                _lib_buttons__WEBPACK_IMPORTED_MODULE_8__/* .standardButtonsTodo.standard_new.call */ .QU.standard_new.call({}, event, {
+                    listViewId,
+                    appId: app_id,
+                    uiSchema: schema.uiSchema,
+                    formFactor: formFactor,
+                    router: router,
+                    options: {
+                        props: {
+                            width: "100%",
+                            style: {
+                                width: "100%"
+                            },
+                            bodyStyle: {
+                                padding: "0px",
+                                paddingTop: "0px"
+                            }
+                        }
+                    }
+                });
+            }
         }
     ];
     return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
