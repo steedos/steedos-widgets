@@ -9,7 +9,7 @@ import {
 
   import config from '@/config';
 
-export function RecordHeader({ schema, formFactor }) {
+export function RecordHeader({ schema, formFactor, permissions }) {
   const router = useRouter();
   const { app_id, tab_id, record_id } = router.query;
   
@@ -61,7 +61,6 @@ export function RecordHeader({ schema, formFactor }) {
     }
   }, [schema]);
 
-
   return (
     <div className="slds-page-header slds-page-header_record-home bg-transparent shadow-none border-none pb-0">
       <div className="slds-page-header__row">
@@ -94,7 +93,7 @@ export function RecordHeader({ schema, formFactor }) {
         <div className="slds-page-header__col-actions">
           <div className="slds-page-header__controls">
             <div className="slds-page-header__control space-x-1">
-                {schema?.uiSchema?.permissions?.allowEdit && (
+                {permissions?.allowEdit && (
                   <button
                   onClick={editRecord}
                   className="antd-Button antd-Button--default"

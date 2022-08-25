@@ -738,10 +738,16 @@ if (false) {}
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+/*
+ * @Author: baozhoutao@steedos.com
+ * @Date: 2022-08-04 10:42:49
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2022-08-25 10:28:47
+ * @Description: 
+ */ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
     listView: {
-        newRecordMode: "drawer",
-        editRecordMode: "drawer",
+        newRecordMode: "modal",
+        editRecordMode: "modal",
         perPage: 20
     }
 });
