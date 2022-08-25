@@ -13,11 +13,21 @@ import 'antd/dist/antd.css'
 import { AppLayout } from '@/components/AppLayout';
 import '@/components/functions';
 import React, { useState, useEffect, Fragment, useRef } from 'react';
+import { usePostHog } from 'next-use-posthog'
 
 export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }) {
+  
+  usePostHog('phc_Hs5rJpeE5JK3GdR3NWOf75TvjEcnYShmBxNU2Y942HB', {
+    api_host: 'https://posthog.steedos.cn',
+    loaded: (posthog) => {
+      window.posthog = posthog;
+      posthog.opt_in_capturing()
+    },
+  })  
+
   const [formFactor, setFormFactor] = useState(null);
   useEffect(() => {
     if (window.innerWidth < 768) {
