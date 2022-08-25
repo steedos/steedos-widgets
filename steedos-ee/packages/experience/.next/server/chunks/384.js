@@ -1,6 +1,6 @@
 "use strict";
-exports.id = 391;
-exports.ids = [391];
+exports.id = 384;
+exports.ids = [384];
 exports.modules = {
 
 /***/ 8985:
@@ -29,7 +29,7 @@ _headlessui_react__WEBPACK_IMPORTED_MODULE_3__ = (__webpack_async_dependencies__
 
 
 
-function RecordHeader({ schema , formFactor  }) {
+function RecordHeader({ schema , formFactor , permissions  }) {
     const router = (0,next_router__WEBPACK_IMPORTED_MODULE_2__.useRouter)();
     const { app_id , tab_id , record_id  } = router.query;
     const { 0: record , 1: setRecord  } = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
@@ -71,7 +71,7 @@ function RecordHeader({ schema , formFactor  }) {
     const loadButtons = (schema)=>{
         let buttons = [];
         if (schema && schema.uiSchema) {
-            if (schema?.uiSchema?.permissions?.allowEdit) {
+            if (permissions?.allowEdit) {
                 buttons.push({
                     label: "\u7F16\u8F91",
                     name: "edit",
@@ -253,7 +253,7 @@ _headlessui_react__WEBPACK_IMPORTED_MODULE_3__ = (__webpack_async_dependencies__
 
 
 
-function RecordHeader({ schema , formFactor  }) {
+function RecordHeader({ schema , formFactor , permissions  }) {
     const router = (0,next_router__WEBPACK_IMPORTED_MODULE_2__.useRouter)();
     const { app_id , tab_id , record_id  } = router.query;
     const { 0: record , 1: setRecord  } = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
@@ -364,7 +364,7 @@ function RecordHeader({ schema , formFactor  }) {
                         children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
                             className: "slds-page-header__control space-x-1",
                             children: [
-                                schema?.uiSchema?.permissions?.allowEdit && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("button", {
+                                permissions?.allowEdit && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("button", {
                                     onClick: editRecord,
                                     className: "antd-Button antd-Button--default",
                                     children: "\u7F16\u8F91"
@@ -447,6 +447,47 @@ function RecordHeader({ schema , formFactor  }) {
 
 __webpack_async_result__();
 } catch(e) { __webpack_async_result__(e); } });
+
+/***/ }),
+
+/***/ 237:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Q": () => (/* binding */ getRecordPermissions),
+/* harmony export */   "r": () => (/* binding */ getRelatedsCount)
+/* harmony export */ });
+/* harmony import */ var _steedos_client__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(8282);
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6517);
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_1__);
+
+
+const getRelatedsCount = async (masterRecordId, relateds)=>{
+    const relatedQuery = [];
+    (0,lodash__WEBPACK_IMPORTED_MODULE_1__.each)(relateds, (relate)=>{
+        relatedQuery.push(`${relate.object_name}: ${relate.object_name}__count(filters: [["${relate.foreign_key}","=","${masterRecordId}"]])`);
+    });
+    const query = `
+    {
+        ${relatedQuery.join(",")}
+    }
+    `;
+    const result = await (0,_steedos_client__WEBPACK_IMPORTED_MODULE_0__/* .fetchAPI */ .Io)("/graphql", {
+        method: "POST",
+        body: JSON.stringify({
+            query
+        })
+    });
+    return result.data;
+};
+const getRecordPermissions = async (objectName, recordId)=>{
+    const result = await (0,_steedos_client__WEBPACK_IMPORTED_MODULE_0__/* .fetchAPI */ .Io)(`/service/api/@${objectName}/recordPermissions/${recordId}`, {
+        method: "GET"
+    });
+    console.log("result", result);
+    return result;
+};
+
 
 /***/ })
 

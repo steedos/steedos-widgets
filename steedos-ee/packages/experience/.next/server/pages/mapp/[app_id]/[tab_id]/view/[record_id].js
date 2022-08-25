@@ -213,39 +213,6 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 237:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "r": () => (/* binding */ getRelatedsCount)
-/* harmony export */ });
-/* harmony import */ var _steedos_client__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(8282);
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6517);
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_1__);
-
-
-const getRelatedsCount = async (masterRecordId, relateds)=>{
-    const relatedQuery = [];
-    (0,lodash__WEBPACK_IMPORTED_MODULE_1__.each)(relateds, (relate)=>{
-        relatedQuery.push(`${relate.object_name}: ${relate.object_name}__count(filters: [["${relate.foreign_key}","=","${masterRecordId}"]])`);
-    });
-    const query = `
-    {
-        ${relatedQuery.join(",")}
-    }
-    `;
-    const result = await (0,_steedos_client__WEBPACK_IMPORTED_MODULE_0__/* .fetchAPI */ .Io)("/graphql", {
-        method: "POST",
-        body: JSON.stringify({
-            query
-        })
-    });
-    return result.data;
-};
-
-
-/***/ }),
-
 /***/ 1975:
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
@@ -764,7 +731,7 @@ module.exports = require("crypto");
 var __webpack_require__ = require("../../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [952,859,152,664,282,295,95,397,767,125,391], () => (__webpack_exec__(1975)));
+var __webpack_exports__ = __webpack_require__.X(0, [952,859,152,664,282,295,95,397,767,125,384], () => (__webpack_exec__(1975)));
 module.exports = __webpack_exports__;
 
 })();
