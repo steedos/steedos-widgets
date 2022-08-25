@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 13:32:49
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-23 10:23:21
+ * @LastEditTime: 2022-08-25 11:46:23
  * @Description: 
  */
 import { getListViewButtons, execute } from '@/lib/buttons';
@@ -11,6 +11,9 @@ import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { Button } from '@/components/object/Button'
 import { AmisRender } from "@/components/AmisRender";
 import { getSteedosAuth } from '@/lib/steedos.client';
+
+import config from "@/config";
+
 export function RecordRelatedListButtons(props) {
     const { app_id, tab_id, schema, refId, foreign_key, record_id, object_name , masterObjectName, inMore, formFactor} = props;
     const [buttons, setButtons] = useState(null);
@@ -28,7 +31,7 @@ export function RecordRelatedListButtons(props) {
         if(schema.uiSchema.name === 'cms_files'){
             
         }else{
-            const type = 'drawer';
+            const type = config.listView.newRecordMode;
             SteedosUI.Object.newRecord({
                 onSubmitted : ()=>{
                     SteedosUI.getRef(refId).getComponentByName(`page.listview_${schema.uiSchema.name}`).handleAction({}, { actionType: "reload"})
