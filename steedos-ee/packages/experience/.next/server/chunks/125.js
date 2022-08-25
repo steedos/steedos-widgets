@@ -19,14 +19,16 @@ exports.modules = {
 /* harmony import */ var _components_object_Button__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(2767);
 /* harmony import */ var _components_AmisRender__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1095);
 /* harmony import */ var _lib_steedos_client__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(8282);
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(7733);
 
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 13:32:49
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-23 10:23:21
+ * @LastEditTime: 2022-08-25 11:46:23
  * @Description: 
  */ 
+
 
 
 
@@ -49,7 +51,7 @@ function RecordRelatedListButtons(props) {
     ]);
     const newRecord = ()=>{
         if (schema.uiSchema.name === "cms_files") {} else {
-            const type = "drawer";
+            const type = _config__WEBPACK_IMPORTED_MODULE_7__/* ["default"].listView.newRecordMode */ .Z.listView.newRecordMode;
             SteedosUI.Object.newRecord({
                 onSubmitted: ()=>{
                     SteedosUI.getRef(refId).getComponentByName(`page.listview_${schema.uiSchema.name}`).handleAction({}, {

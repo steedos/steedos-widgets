@@ -238,7 +238,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_object_RecordHeader__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(2917);
 /* harmony import */ var _components_mobile_object_RecordHeader__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(8985);
 /* harmony import */ var _components_object_RecordRelateds__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(6479);
-/* harmony import */ var _components_Loading__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(9597);
+/* harmony import */ var _lib_record__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(237);
+/* harmony import */ var _components_Loading__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(9597);
 var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_headlessui_react__WEBPACK_IMPORTED_MODULE_9__, _components_object_RecordHeader__WEBPACK_IMPORTED_MODULE_10__, _components_mobile_object_RecordHeader__WEBPACK_IMPORTED_MODULE_11__]);
 ([_headlessui_react__WEBPACK_IMPORTED_MODULE_9__, _components_object_RecordHeader__WEBPACK_IMPORTED_MODULE_10__, _components_mobile_object_RecordHeader__WEBPACK_IMPORTED_MODULE_11__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
 
@@ -246,9 +247,10 @@ var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_hea
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-22 09:12:24
+ * @LastEditTime: 2022-08-25 15:31:00
  * @Description:
  */ 
+
 
 
 
@@ -270,6 +272,7 @@ function Record({ formFactor  }) {
     const { 0: isEditing , 1: setIsEditing  } = (0,react__WEBPACK_IMPORTED_MODULE_3__.useState)(false);
     const { 0: schema , 1: setSchema  } = (0,react__WEBPACK_IMPORTED_MODULE_3__.useState)(null);
     const { 0: relateds , 1: setRelateds  } = (0,react__WEBPACK_IMPORTED_MODULE_3__.useState)(null);
+    const { 0: permissions , 1: setPermissions  } = (0,react__WEBPACK_IMPORTED_MODULE_3__.useState)(null);
     const doEditing = ()=>{
         if (!formFactor) {
             return;
@@ -282,6 +285,14 @@ function Record({ formFactor  }) {
         }
         viewRecord(tab_id, record_id, formFactor);
     };
+    (0,react__WEBPACK_IMPORTED_MODULE_3__.useEffect)(()=>{
+        (0,_lib_record__WEBPACK_IMPORTED_MODULE_13__/* .getRecordPermissions */ .Q)(tab_id, record_id).then((res)=>{
+            setPermissions(res);
+        });
+    }, [
+        tab_id,
+        record_id
+    ]);
     (0,react__WEBPACK_IMPORTED_MODULE_3__.useEffect)(()=>{
         doReadonly();
     }, [
@@ -370,7 +381,7 @@ function Record({ formFactor  }) {
     };
     const Header = formFactor === "SMALL" ? _components_mobile_object_RecordHeader__WEBPACK_IMPORTED_MODULE_11__/* .RecordHeader */ .b : _components_object_RecordHeader__WEBPACK_IMPORTED_MODULE_10__/* .RecordHeader */ .b;
     if (!schema) return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
-        children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_Loading__WEBPACK_IMPORTED_MODULE_13__/* .Loading */ .g, {})
+        children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_Loading__WEBPACK_IMPORTED_MODULE_14__/* .Loading */ .g, {})
     });
     return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
         className: "flex flex-col flex-1 overflow-hidden",
@@ -379,7 +390,8 @@ function Record({ formFactor  }) {
                 className: "region-header bg-slate-50 ",
                 children: schema && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(Header, {
                     schema: schema,
-                    formFactor: formFactor
+                    formFactor: formFactor,
+                    permissions: permissions
                 })
             }),
             /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
@@ -731,7 +743,7 @@ module.exports = require("crypto");
 var __webpack_require__ = require("../../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [952,859,152,664,282,295,95,397,767,125,391,597], () => (__webpack_exec__(9960)));
+var __webpack_exports__ = __webpack_require__.X(0, [952,859,152,664,282,295,95,397,767,125,597,384], () => (__webpack_exec__(9960)));
 module.exports = __webpack_exports__;
 
 })();
