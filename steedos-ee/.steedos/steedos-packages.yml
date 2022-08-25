@@ -1,9 +1,3 @@
-my-steedos-package:
-  enable: true
-  version: 0.1.0
-  description: !<tag:yaml.org,2002:js/undefined> ''
-  local: true
-  path: steedos-app
 '@steedos-labs/master':
   enable: true
   label: ''
