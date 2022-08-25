@@ -9,7 +9,7 @@ import {
 
   import config from '@/config';
 
-export function RecordHeader({ schema, formFactor }) {
+export function RecordHeader({ schema, formFactor, permissions }) {
   const router = useRouter();
   const { app_id, tab_id, record_id } = router.query;
   const [record, setRecord] = useState(null);
@@ -37,7 +37,7 @@ export function RecordHeader({ schema, formFactor }) {
   const loadButtons = (schema) => {
     let buttons = [];
     if (schema && schema.uiSchema) {
-      if(schema?.uiSchema?.permissions?.allowEdit){
+      if(permissions?.allowEdit){
         buttons.push({
           label: "编辑",
           name: 'edit',
