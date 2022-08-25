@@ -20,3 +20,11 @@ export const getRelatedsCount = async (masterRecordId, relateds) => {
 
     return result.data
 }
+
+export const getRecordPermissions = async (objectName, recordId)=>{
+    const result = await fetchAPI(`/service/api/@${objectName}/recordPermissions/${recordId}`, {
+        method: 'GET'
+    })
+    console.log('result', result);
+    return result;
+}
