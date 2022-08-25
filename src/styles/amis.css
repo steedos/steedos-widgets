@@ -200,3 +200,32 @@ button.antd-Button--primary {
         border: none !important;
     }
 }
+
+
+
+.ant-modal-wrap {
+    overflow: hidden;
+}
+
+.ant-modal-content {
+    max-height: calc(100vh - 200px);
+    display: flex;
+    flex-direction: column;
+}
+@media (max-width: 768px){
+    .ant-modal{
+        top: 0px !important;
+        margin: 0px !important;
+        max-width: 100% !important;
+        padding-bottom: 0px !important;
+        height: 100%;
+    }
+    .ant-modal-content {
+        height: 100%;
+        max-height: 100%;
+    }
+}
+.ant-modal-body {
+flex: 1  !important;
+overflow: auto  !important;
+}
