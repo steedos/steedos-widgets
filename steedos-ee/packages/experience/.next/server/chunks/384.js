@@ -19,7 +19,6 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony import */ var _headlessui_react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1185);
 /* harmony import */ var _lib_buttons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4413);
 /* harmony import */ var _components_object_Button__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(2767);
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(7733);
 var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_headlessui_react__WEBPACK_IMPORTED_MODULE_3__]);
 _headlessui_react__WEBPACK_IMPORTED_MODULE_3__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__)[0];
 
@@ -34,40 +33,6 @@ function RecordHeader({ schema , formFactor , permissions  }) {
     const { app_id , tab_id , record_id  } = router.query;
     const { 0: record , 1: setRecord  } = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
     const { 0: moreButtons , 1: setMoreButtons  } = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
-    const editRecord = ()=>{
-        const type = _config__WEBPACK_IMPORTED_MODULE_6__/* ["default"].listView.editRecordMode */ .Z.listView.editRecordMode;
-        SteedosUI.Object.editRecord({
-            appId: app_id,
-            name: SteedosUI.getRefId({
-                type: `${type}-form`
-            }),
-            title: `编辑 ${schema.uiSchema.label}`,
-            objectName: schema.uiSchema.name,
-            recordId: record_id,
-            type,
-            options: {
-                props: {
-                    width: "100%",
-                    style: {
-                        width: "100%"
-                    },
-                    bodyStyle: {
-                        padding: "0px",
-                        paddingTop: "0px"
-                    }
-                }
-            },
-            router,
-            formFactor: formFactor,
-            onSubmitted: ()=>{
-                SteedosUI.getRef(SteedosUI.getRefId({
-                    type: "detail",
-                    appId: app_id,
-                    name: schema.uiSchema.name
-                })).getComponentById(`detail_${record_id}`).reload();
-            }
-        });
-    };
     const loadButtons = (schema)=>{
         let buttons = [];
         if (schema && schema.uiSchema) {
@@ -75,7 +40,27 @@ function RecordHeader({ schema , formFactor , permissions  }) {
                 buttons.push({
                     label: "\u7F16\u8F91",
                     name: "edit",
-                    todo: editRecord
+                    todo: (event)=>{
+                        _lib_buttons__WEBPACK_IMPORTED_MODULE_4__/* .standardButtonsTodo.standard_edit.call */ .QU.standard_edit.call({}, event, {
+                            recordId: record_id,
+                            appId: app_id,
+                            uiSchema: schema.uiSchema,
+                            formFactor: formFactor,
+                            router: router,
+                            options: {
+                                props: {
+                                    width: "100%",
+                                    style: {
+                                        width: "100%"
+                                    },
+                                    bodyStyle: {
+                                        padding: "0px",
+                                        paddingTop: "0px"
+                                    }
+                                }
+                            }
+                        });
+                    }
                 });
             }
         }
@@ -243,7 +228,6 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony import */ var _headlessui_react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1185);
 /* harmony import */ var _lib_buttons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4413);
 /* harmony import */ var _components_object_Button__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(2767);
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(7733);
 var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_headlessui_react__WEBPACK_IMPORTED_MODULE_3__]);
 _headlessui_react__WEBPACK_IMPORTED_MODULE_3__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__)[0];
 
@@ -259,29 +243,6 @@ function RecordHeader({ schema , formFactor , permissions  }) {
     const { 0: record , 1: setRecord  } = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
     const { 0: buttons , 1: setButtons  } = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
     const { 0: moreButtons , 1: setMoreButtons  } = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
-    const editRecord = ()=>{
-        const type = _config__WEBPACK_IMPORTED_MODULE_6__/* ["default"].listView.editRecordMode */ .Z.listView.editRecordMode;
-        SteedosUI.Object.editRecord({
-            appId: app_id,
-            name: SteedosUI.getRefId({
-                type: `${type}-form`
-            }),
-            title: `编辑 ${schema.uiSchema.label}`,
-            objectName: schema.uiSchema.name,
-            recordId: record_id,
-            type,
-            options: {},
-            router,
-            onSubmitted: ()=>{
-                SteedosUI.getRef(SteedosUI.getRefId({
-                    type: "detail",
-                    appId: app_id,
-                    name: schema.uiSchema.name
-                })).getComponentById(`detail_${record_id}`).reload();
-            },
-            formFactor: formFactor
-        });
-    };
     const loadButtons = (schema)=>{
         if (schema && schema.uiSchema) {
             setButtons((0,_lib_buttons__WEBPACK_IMPORTED_MODULE_4__/* .getObjectDetailButtons */ .vU)(schema.uiSchema, {
@@ -365,7 +326,15 @@ function RecordHeader({ schema , formFactor , permissions  }) {
                             className: "slds-page-header__control space-x-1",
                             children: [
                                 permissions?.allowEdit && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("button", {
-                                    onClick: editRecord,
+                                    onClick: (event)=>{
+                                        _lib_buttons__WEBPACK_IMPORTED_MODULE_4__/* .standardButtonsTodo.standard_edit.call */ .QU.standard_edit.call({}, event, {
+                                            recordId: record_id,
+                                            appId: app_id,
+                                            uiSchema: schema.uiSchema,
+                                            formFactor: formFactor,
+                                            router: router
+                                        });
+                                    },
                                     className: "antd-Button antd-Button--default",
                                     children: "\u7F16\u8F91"
                                 }),

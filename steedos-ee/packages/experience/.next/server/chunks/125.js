@@ -19,13 +19,12 @@ exports.modules = {
 /* harmony import */ var _components_object_Button__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(2767);
 /* harmony import */ var _components_AmisRender__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1095);
 /* harmony import */ var _lib_steedos_client__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(8282);
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(7733);
 
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 13:32:49
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-25 11:46:23
+ * @LastEditTime: 2022-08-25 17:05:51
  * @Description: 
  */ 
 
@@ -49,52 +48,6 @@ function RecordRelatedListButtons(props) {
     }, [
         schema
     ]);
-    const newRecord = ()=>{
-        if (schema.uiSchema.name === "cms_files") {} else {
-            const type = _config__WEBPACK_IMPORTED_MODULE_7__/* ["default"].listView.newRecordMode */ .Z.listView.newRecordMode;
-            SteedosUI.Object.newRecord({
-                onSubmitted: ()=>{
-                    SteedosUI.getRef(refId).getComponentByName(`page.listview_${schema.uiSchema.name}`).handleAction({}, {
-                        actionType: "reload"
-                    });
-                },
-                onCancel: ()=>{
-                    SteedosUI.getRef(refId).getComponentByName(`page.listview_${schema.uiSchema.name}`).handleAction({}, {
-                        actionType: "reload"
-                    });
-                },
-                data: {
-                    data: {
-                        [foreign_key]: record_id
-                    }
-                },
-                appId: app_id,
-                name: SteedosUI.getRefId({
-                    type: `${type}-form`,
-                    appId: app_id,
-                    name: `${schema.uiSchema.name}`
-                }),
-                title: `新建 ${schema.uiSchema.label}`,
-                objectName: schema.uiSchema.name,
-                recordId: "new",
-                type,
-                formFactor: formFactor,
-                options: formFactor === "SMALL" ? {
-                    props: {
-                        width: "100%",
-                        style: {
-                            width: "100%"
-                        },
-                        bodyStyle: {
-                            padding: "0px",
-                            paddingTop: "0px"
-                        }
-                    }
-                } : {},
-                router
-            });
-        }
-    };
     const auth = (0,_lib_steedos_client__WEBPACK_IMPORTED_MODULE_6__/* .getSteedosAuth */ .Z0)();
     const uploadBtnSchema = {
         type: "page",
@@ -187,7 +140,20 @@ function RecordRelatedListButtons(props) {
                 schema?.uiSchema?.permissions?.allowCreate && /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
                     children: [
                         schema.uiSchema.name != "cms_files" && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("button", {
-                            onClick: newRecord,
+                            onClick: (event)=>{
+                                _lib_buttons__WEBPACK_IMPORTED_MODULE_1__/* .standardButtonsTodo.standard_new.call */ .QU.standard_new.call({}, event, {
+                                    listViewId: refId,
+                                    appId: app_id,
+                                    uiSchema: schema.uiSchema,
+                                    formFactor: formFactor,
+                                    router: router,
+                                    data: {
+                                        data: {
+                                            [foreign_key]: record_id
+                                        }
+                                    }
+                                });
+                            },
                             className: inMore ? "flex w-full items-center border-0 px-2 py-1" : "slds-button slds-button_neutral",
                             children: "\u65B0\u5EFA"
                         }),

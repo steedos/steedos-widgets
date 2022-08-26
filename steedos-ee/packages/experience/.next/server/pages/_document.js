@@ -50,6 +50,9 @@ class MyDocument extends next_document__WEBPACK_IMPORTED_MODULE_1__["default"] {
                         /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("script", {
                             src: "/unpkg.com/amis/sdk/sdk.js"
                         }),
+                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("script", {
+                            src: "/unpkg.com/lodash/lodash.min.js"
+                        }),
                         /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("link", {
                             rel: "stylesheet",
                             href: "/assets/styles/salesforce-lightning-design-system.min.css"
