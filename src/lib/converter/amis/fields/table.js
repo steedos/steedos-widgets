@@ -102,7 +102,7 @@ export function getTableSchema(fields, options){
         columns: getTableColumns(fields, options),
         syncLocation: false,
         keepItemSelectionOnPageChange: true,
-        checkOnItemClick: true,
+        checkOnItemClick: false,
         labelTpl: `\${${options.labelFieldName}}`,
         autoFillHeight: false, // 自动高度效果不理想,先关闭
     }

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-23 09:12:14
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-20 17:44:38
+ * @LastEditTime: 2022-08-26 13:12:07
  * @Description: 
  */
 
@@ -56,7 +56,7 @@ export function getListSchema(fields, options){
         defaultParams: getDefaultParams(options),
         syncLocation: false,
         keepItemSelectionOnPageChange: true,
-        checkOnItemClick: true,
+        checkOnItemClick: false,
         labelTpl: `\${name}`, //TODO 获取name字段
         listItem: {
             body: [...(getListBody(fields, options).columns)],
