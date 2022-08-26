@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-18 18:04:09
+ * @LastEditTime: 2022-08-26 09:36:20
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -30,7 +30,7 @@ export default function Page ({}) {
 
   return (
     <>
-      {page && page.schema && <AmisRender id="amis-root" schema={JSON.parse(page.schema)} />}
+      {page && page.schema && <AmisRender id="amis-root" className="overflow-auto" schema={JSON.parse(page.schema)} />}
     </>
   )
 }
