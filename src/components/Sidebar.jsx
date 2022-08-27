@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-29 10:46:29
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-10 13:16:20
+ * @LastEditTime: 2022-08-27 18:03:32
  * @Description: 
  */
 /* This example requires Tailwind CSS v2.0+ */
@@ -19,7 +19,7 @@ export  function Sidebar({ navigation, selected, app }) {
   const router = useRouter()
   const handleClick = (e) => {
     e.preventDefault()
-    router.push(e.target.href)
+    router.push(e.currentTarget.href)
   }
   return (
     <nav aria-label="Sidebar" className="divide-y">
