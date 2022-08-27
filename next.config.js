@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-20 16:29:22
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-25 09:50:36
+ * @LastEditTime: 2022-08-27 15:58:02
  * @Description: 
  */
 /** @type {import('next').NextConfig} */

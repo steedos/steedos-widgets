@@ -1,0 +1,119 @@
+.header-dropdown{
+    min-width: 24rem !important;
+}
+
+.header-dropdown> * {
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 6px 16px -8px rgb(0 0 0 / 8%), 0 9px 28px 0 rgb(0 0 0 / 5%), 0 12px 48px 16px rgb(0 0 0 / 3%);
+  }
+  @media screen and (max-width: 480px) {
+    .header-dropdown {
+      width: 100% !important;
+    }
+    .header-dropdown > * {
+      border-radius: 0 !important;
+    }
+  }
+  
+
+  .ant-tabs-nav-list{
+    margin: auto;
+  }
+
+  .ant-list {
+    max-height: 400px;
+    overflow: auto;
+  }
+  .ant-list::-webkit-scrollbar {
+    display: none;
+  }
+  .ant-list .ant-list-item {
+    padding-right: 24px;
+    padding-left: 24px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .ant-list .ant-list-item .meta {
+    width: 100%;
+  }
+  .ant-list .ant-list-item .avatar {
+    margin-top: 4px;
+    background: #fff;
+  }
+  .ant-list .ant-list-item .iconElement {
+    font-size: 32px;
+  }
+  .ant-list .ant-list-item.read {
+    opacity: 0.4;
+  }
+  .ant-list .ant-list-item:last-child {
+    border-bottom: 0;
+  }
+  .ant-list .ant-list-item:hover {
+    background: #e6f7ff;
+  }
+  .ant-list .ant-list-item .title {
+    margin-bottom: 8px;
+    font-weight: normal;
+  }
+  .ant-list .ant-list-item .description {
+    font-size: 12px;
+    line-height: 1.5715;
+  }
+  .ant-list .ant-list-item .datetime {
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 1.5715;
+  }
+  .ant-list .ant-list-item .extra {
+    float: right;
+    margin-top: -1.5px;
+    margin-right: 0;
+    color: #000;
+    font-weight: normal;
+  }
+  .ant-list .loadMore {
+    padding: 8px 0;
+    color: #f55;
+    text-align: center;
+    cursor: pointer;
+  }
+  .ant-list .loadMore.loadedAll {
+    color: rgba(0,0,0,0.25);
+    cursor: unset;
+  }
+  .notFound {
+    padding: 73px 0 88px;
+    color: #000;
+    text-align: center;
+  }
+  .notFound img {
+    display: inline-block;
+    height: 76px;
+    margin-bottom: 16px;
+  }
+  .bottomBar {
+    height: 46px;
+    color: #000;
+    line-height: 46px;
+    text-align: center;
+    border-top: 1px solid rgba(0,0,0,.06);
+    border-radius: 0 0 2px 2px;
+    transition: all 0.3s;
+  }
+  .bottomBar div {
+    display: inline-block;
+    width: 50%;
+    cursor: pointer;
+    transition: all 0.3s;
+    user-select: none;
+  }
+  .bottomBar div:only-child {
+    width: 100%;
+  }
+  .bottomBar div:not(:only-child):last-child {
+    border-left: 1px solid rgba(0,0,0,.06);
+  }
+  
