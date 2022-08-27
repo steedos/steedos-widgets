@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-03 16:46:23
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-25 17:11:15
+ * @LastEditTime: 2022-08-27 11:32:07
  * @Description:
  */
 import { Listbox, Menu, Transition } from "@headlessui/react";
@@ -24,7 +24,6 @@ import { standardButtonsTodo } from '@/lib/buttons';
 import { getListViewButtons } from '@/lib/buttons';
 
 export function ListviewHeader({ schema, onListviewChange, formFactor }) {
-  //   const [selectedListView, setSelectedListView] = useState();
   const [buttons, setButtons] = useState(null);
   const [showFieldsFilter, setShowFieldsFilter] = useState(false);
   const [queryInfo, setQueryInfo] = useState();
@@ -42,11 +41,14 @@ export function ListviewHeader({ schema, onListviewChange, formFactor }) {
   useEffect(() => {
     if (schema) {
       if(schema && schema.uiSchema){
+        const listViewId = SteedosUI.getRefId({type: 'listview', appId: app_id, name: schema?.uiSchema?.name});
         setButtons(getListViewButtons(schema.uiSchema, {
+            listViewId: listViewId,
+            formFactor: formFactor,
             app_id: app_id,
             tab_id: tab_id,
             router: router,
-          }))
+        }))
       }
       window.addEventListener("message", (event) => {
         const { data } = event;
@@ -144,32 +146,6 @@ export function ListviewHeader({ schema, onListviewChange, formFactor }) {
       })
     );
   };
-
-  const moreButtons =[ 
-  {
-    label: '新建',
-    name: 'new',
-    todo: (event)=>{
-      const listViewId = SteedosUI.getRefId({type: 'listview', appId: app_id, name: schema?.uiSchema?.name});
-      standardButtonsTodo.standard_new.call({}, event, {
-          listViewId,
-          appId: app_id,
-          uiSchema: schema.uiSchema,
-          formFactor: formFactor,
-          router: router,
-          options: {
-            props: {
-              width: "100%",
-              style: {
-                width: "100%",
-              },
-              bodyStyle: { padding: "0px", paddingTop: "0px" },
-            },
-          }
-      })
-    }
-  }
-]
 
   return (
     <div className="slds-page-header relative rounded-none">
@@ -327,7 +303,7 @@ export function ListviewHeader({ schema, onListviewChange, formFactor }) {
               >
                 <Menu.Items className="absolute right-0 z-10 mt-1 w-56 origin-top-right divide-y divide-gray-100 bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:rounded-[2px]">
                   <div className="">
-                    {concat(moreButtons, buttons)?.map((button, index) => {
+                    {buttons?.map((button, index) => {
                       return (
                         <Menu.Item key={index}>
                           {({ active }) => (

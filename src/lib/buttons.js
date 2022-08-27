@@ -187,12 +187,41 @@ export const getButtons = (uiSchema, ctx) => {
 
 export const getListViewButtons = (uiSchema, ctx) => {
     const buttons = getButtons(uiSchema, ctx);
-    return _.filter(buttons, (button) => {
+    const listButtons = _.filter(buttons, (button) => {
         if (button.on == "list") {
             return isVisible(button, ctx);
         }
         return false;
     });
+    // 如果是standard_new 且 _visible 中调用了 Steedos 函数, 则自动添加标准的新建功能
+    const standardNew = _.find(buttons, (btn)=>{ return btn.name == 'standard_new'})
+    if(uiSchema.permissions.allowCreate && standardNew && standardNew._visible.indexOf('Steedos.StandardObjects.Base.Actions.standard_new.visible.apply') > 0){
+        listButtons.push({
+            label: standardNew.label,
+            name: standardNew.name,
+            on: standardNew.on,
+            type: standardNew.type,
+            todo: (event)=>{
+                return standardButtonsTodo.standard_new.call({}, event, {
+                    listViewId: ctx.listViewId,
+                    appId: ctx.app_id,
+                    uiSchema: uiSchema,
+                    formFactor: ctx.formFactor,
+                    router: ctx.router,
+                    options: ctx.formFactor === 'SMALL' ? {
+                        props: {
+                          width: "100%",
+                          style: {
+                            width: "100%",
+                          },
+                          bodyStyle: { padding: "0px", paddingTop: "0px" },
+                        }
+                      } : null
+                  })
+            }
+        }); 
+    }
+    return listButtons;
 };
 
 export const getObjectDetailButtons = (uiSchema, ctx) => {
@@ -203,7 +232,7 @@ export const getObjectDetailButtons = (uiSchema, ctx) => {
         }
         return false;
     });
-    // 如果是standard_edit 且 _visible 中调用了 Steedos 函数, 则自动添加标注的删除功能
+    // 如果是standard_edit 且 _visible 中调用了 Steedos 函数, 则自动添加标准的编辑功能
     const standardEdit = _.find(buttons, (btn)=>{ return btn.name == 'standard_edit'})
     if(ctx.permissions?.allowEdit && standardEdit && standardEdit._visible.indexOf('Steedos.StandardObjects.Base.Actions.standard_edit.visible.apply') > 0){
         detailButtons.push({
@@ -244,15 +273,14 @@ export const getObjectDetailMoreButtons = (uiSchema, ctx) => {
         return false;
     });
 
-    // 如果是standard_delete 且 _visible 中调用了 Steedos 函数, 则自动添加标注的删除功能
+    // 如果是standard_delete 且 _visible 中调用了 Steedos 函数, 则自动添加标准的删除功能
     const standardDelete = _.find(buttons, (btn)=>{ return btn.name == 'standard_delete'})
     if(ctx.permissions?.allowDelete && standardDelete && standardDelete._visible.indexOf('Steedos.StandardObjects.Base.Actions.standard_delete.visible.apply') > 0){
         moreButtons.push({
-            label: "删除",
-            name: "standard_delete",
-            on: "record_more",
+            label: standardDelete.label,
+            name: standardDelete.name,
+            on: standardDelete.on,
             type: "amis_action",
-            todo: "standard_delete",
             confirmText: "确定要删除此项目?",
             sort: standardDelete.sort,
             amis_actions: [

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-27 17:34:25
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-25 18:18:15
+ * @LastEditTime: 2022-08-27 11:18:19
  * @Description: 
  */
 import { AmisRender } from "@/components/AmisRender";
@@ -41,7 +41,6 @@ export function Button(props) {
             ...data
         }
       };
-    console.log(`schema`, schema)
     return (
       <AmisRender
         id={SteedosUI.getRefId({type: 'button', appId: data.app_id, name: button.name})}
