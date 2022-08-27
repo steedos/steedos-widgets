@@ -22,28 +22,33 @@ export function RecordHeader({ schema, formFactor, permissions }) {
     if (schema && schema.uiSchema) {
       setButtons(
         getObjectDetailButtons(schema.uiSchema, {
-          app_id: app_id,
-          tab_id: tab_id,
-          router: router,
-        })
-      );
-      setMoreButtons(
-        getObjectDetailMoreButtons(schema.uiSchema, {
+          permissions,
           app_id: app_id,
           tab_id: tab_id,
           router: router,
           recordId: record_id,
-          objectName: schema.uiSchema.name
+          objectName: schema.uiSchema.name,
+          formFactor: formFactor
+        })
+      );
+      setMoreButtons(
+        getObjectDetailMoreButtons(schema.uiSchema, {
+          permissions,
+          app_id: app_id,
+          tab_id: tab_id,
+          router: router,
+          recordId: record_id,
+          objectName: schema.uiSchema.name,
+          formFactor: formFactor
         })
       );
     }
   };
 
   useEffect(() => {
-    if(schema){
+    if(schema && permissions){
         loadButtons(schema);
-
-        window.addEventListener("message", function (event) {
+        return window.addEventListener("message", function (event) {
             const { data } = event;
             if (data.type === "record.loaded") {
               const { record } = data;
@@ -51,7 +56,7 @@ export function RecordHeader({ schema, formFactor, permissions }) {
             }
         });
     }
-  }, [schema]);
+  }, [schema, permissions]);
 
 
   const getMenu = ()=>{
@@ -115,22 +120,6 @@ export function RecordHeader({ schema, formFactor, permissions }) {
         <div className="slds-page-header__col-actions">
           <div className="slds-page-header__controls">
             <div className="slds-page-header__control space-x-1">
-                {permissions?.allowEdit && (
-                  <button
-                  onClick={(event)=>{
-                    standardButtonsTodo.standard_edit.call({}, event, {
-                      recordId: record_id,
-                      appId: app_id,
-                      uiSchema: schema.uiSchema,
-                      formFactor: formFactor,
-                      router: router
-                    })
-                  }}
-                  className="antd-Button antd-Button--default"
-                >
-                  编辑
-                </button>
-                )}
                 <>
                   {buttons?.map((button) => {
                     return (

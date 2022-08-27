@@ -17,49 +17,29 @@ export function RecordHeader({ schema, formFactor, permissions }) {
 
   const loadButtons = (schema) => {
     let buttons = [];
-    if (schema && schema.uiSchema) {
-      if(permissions?.allowEdit){
-        buttons.push({
-          label: "编辑",
-          name: 'edit',
-          todo: (event)=>{
-            standardButtonsTodo.standard_edit.call({}, event, {
-              recordId: record_id,
-              appId: app_id,
-              uiSchema: schema.uiSchema,
-              formFactor: formFactor,
-              router: router,
-              options: {
-                props: {
-                  width: "100%",
-                  style: {
-                    width: "100%",
-                  },
-                  bodyStyle: { padding: "0px", paddingTop: "0px" },
-                }
-              }
-            })
-          }
-        });
-      }
-    }
     buttons = _.concat(buttons, getObjectDetailButtons(schema.uiSchema, {
+      permissions,
       app_id: app_id,
       tab_id: tab_id,
       router: router,
+      recordId: record_id,
+      objectName: schema.uiSchema.name,
+      formFactor: formFactor
     }));
     buttons = _.concat(buttons, getObjectDetailMoreButtons(schema.uiSchema, {
+      permissions,
       app_id: app_id,
-          tab_id: tab_id,
-          router: router,
-          recordId: record_id,
-          objectName: schema.uiSchema.name
+      tab_id: tab_id,
+      router: router,
+      recordId: record_id,
+      objectName: schema.uiSchema.name,
+      formFactor: formFactor
     }));
     setMoreButtons(buttons);
   };
 
   useEffect(() => {
-    if(schema){
+    if(schema && permissions){
         loadButtons(schema);
 
         window.addEventListener("message", function (event) {
@@ -70,7 +50,7 @@ export function RecordHeader({ schema, formFactor, permissions }) {
             }
         });
     }
-  }, [schema]);
+  }, [schema, permissions]);
 
 
   return (
