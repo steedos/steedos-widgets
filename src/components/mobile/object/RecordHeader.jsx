@@ -52,6 +52,8 @@ export function RecordHeader({ schema, formFactor, permissions }) {
       app_id: app_id,
           tab_id: tab_id,
           router: router,
+          recordId: record_id,
+          objectName: schema.uiSchema.name
     }));
     setMoreButtons(buttons);
   };

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 13:32:49
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-25 17:26:03
+ * @LastEditTime: 2022-08-25 17:39:32
  * @Description: 
  */
 import { getListViewButtons, execute } from '@/lib/buttons';
@@ -57,7 +57,7 @@ export function ListButtons(props) {
                     {schema?.uiSchema?.permissions?.allowDelete && 
                         <button onClick={(event)=>{
                             const listViewId = SteedosUI.getRefId({type: 'listview', appId: app_id, name: schema?.uiSchema?.name});
-                            standardButtonsTodo.batch_delete.call({}, event, {
+                            standardButtonsTodo.standard_delete_many.call({}, event, {
                                 listViewId,
                                 uiSchema: schema.uiSchema,
                             })

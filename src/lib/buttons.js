@@ -1,5 +1,6 @@
 import _ from "lodash";
 import { isExpression, parseSingleExpression } from "./expression";
+import { getApi } from '@/lib/converter/amis/graphql';
 import config from "@/config";
 
 const getGlobalData = () => {
@@ -107,7 +108,7 @@ export const standardButtonsTodo = {
         });
     },
     standard_delete: (event, props) => { },
-    batch_delete: (event, props)=>{
+    standard_delete_many: (event, props)=>{
         const {
             listViewId,
             uiSchema,
@@ -206,12 +207,50 @@ export const getObjectDetailButtons = (uiSchema, ctx) => {
 
 export const getObjectDetailMoreButtons = (uiSchema, ctx) => {
     const buttons = getButtons(uiSchema, ctx);
-    return _.filter(buttons, (button) => {
+    const moreButtons = _.filter(buttons, (button) => {
         if (button.on == "record_more" || button.on == "record_only_more") {
             return isVisible(button, ctx);
         }
         return false;
     });
+
+    // 如果是standard_delete 且 _visible 中调用了 Steedos 函数, 则自动添加标注的删除功能
+    const standardDelete = _.find(buttons, (btn)=>{ return btn.name == 'standard_delete'})
+    if(standardDelete && standardDelete._visible.indexOf('Steedos.StandardObjects.Base.Actions.standard_delete.visible.apply') > 0){
+        moreButtons.push({
+            label: "删除",
+            name: "standard_delete",
+            on: "record_more",
+            type: "amis_action",
+            todo: "standard_delete",
+            confirmText: "确定要删除此项目?",
+            amis_actions: [
+                {
+                  "args": {
+                    "api": {
+                        method: 'post',
+                        url: getApi(),
+                        requestAdaptor: `
+                            var deleteArray = [];
+                             deleteArray.push(\`delete:${ctx.objectName}__delete(id: "${ctx.recordId}")\`);
+                            api.data = {query: \`mutation{\${deleteArray.join(',')}}\`};
+                            return api;
+                        `,
+                        headers: {
+                            Authorization: "Bearer ${context.tenantId},${context.authToken}"
+                        }
+                    },
+                    "messages": {
+                        "success": "删除成功",
+                        "failed": "删除失败"
+                    }
+                  },
+                  "actionType": "ajax"
+                }
+              ]
+        })
+    }
+    return moreButtons;
 };
 
 export const execute = (button, props) => {

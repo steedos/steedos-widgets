@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 11:31:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-20 10:55:36
+ * @LastEditTime: 2022-08-25 18:27:01
  * @Description:
  */
 import { message, notification, Button, Space} from 'antd';
@@ -65,10 +65,10 @@ export const getEvn = (router)=>{
     },
     confirm: (msg)=>{
       return new Promise((resolve, reject)=>{
-        SteedosUI.Modal.confirm({
+        return SteedosUI.Modal.confirm({
           title: msg,
           onOk: ()=>{
-            resolve();
+            resolve(true);
           },
           okText: "确认",
           cancelText: "取消"

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
-import { Tab, Menu, Transition } from "@headlessui/react";
 import {
     getObjectDetailButtons,
     getObjectDetailMoreButtons,
@@ -8,6 +7,8 @@ import {
 import { Button } from "@/components/object/Button";
 
 import { standardButtonsTodo } from '@/lib/buttons';
+import { MoreOutlined } from '@ant-design/icons';
+import { Dropdown, Menu , Space, Button as AButton  } from 'antd';
 
 export function RecordHeader({ schema, formFactor, permissions }) {
   const router = useRouter();
@@ -31,6 +32,8 @@ export function RecordHeader({ schema, formFactor, permissions }) {
           app_id: app_id,
           tab_id: tab_id,
           router: router,
+          recordId: record_id,
+          objectName: schema.uiSchema.name
         })
       );
     }
@@ -49,6 +52,36 @@ export function RecordHeader({ schema, formFactor, permissions }) {
         });
     }
   }, [schema]);
+
+
+  const getMenu = ()=>{
+    const items = [];
+    moreButtons?.map((button, index)=>{
+      items.push({
+        key: button.name,
+        className: 'w-full p-0 min-w-[11rem]',
+        label: <>
+          <Button
+              button={button}
+              inMore={true}
+              data={{
+                app_id: app_id,
+                tab_id: tab_id,
+                object_name: schema.uiSchema.name,
+              }}
+              className={`text-gray-900 slds-dropdown__item group flex w-full items-center border-0 px-2 py-2`}
+            ></Button>
+        </>
+      })
+    })
+
+    const menu = (
+      <Menu
+        items={items}
+      />
+    );
+    return menu
+  }
 
   return (
     <div className="slds-page-header slds-page-header_record-home bg-transparent shadow-none border-none pb-0">
@@ -115,61 +148,9 @@ export function RecordHeader({ schema, formFactor, permissions }) {
                     );
                   })}
                   {moreButtons?.length > 0 && (
-                      <Menu
-                        as="div"
-                        className="slds-dropdown-trigger slds-dropdown-trigger_click"
-                      >
-                        <div>
-                          <Menu.Button className="slds-button slds-button_icon-border-filled slds-button_last">
-                          <div>
-                            <svg
-                            focusable="false"
-                            data-key="down"
-                            aria-hidden="true"
-                            className="slds-button__icon"
-                            >
-                            <use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#down"></use>
-                            </svg>
-                        </div>
-                          </Menu.Button>
-                        </div>
-                        <Transition
-                          as={Fragment}
-                          enter="transition ease-out duration-100"
-                          enterFrom="transform opacity-0 scale-95"
-                          enterTo="transform opacity-100 scale-100"
-                          leave="transition ease-in duration-75"
-                          leaveFrom="transform opacity-100 scale-100"
-                          leaveTo="transform opacity-0 scale-95"
-                        >
-                          <Menu.Items className="absolute right-0 z-10 mt-1 w-56 origin-top-right divide-y divide-gray-100 bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:rounded-[2px]">
-                            <div className="">
-                              {moreButtons.map((button, index) => {
-                                return (
-                                  <Menu.Item key={index}>
-                                    {({ active }) => (
-                                      <Button
-                                        button={button}
-                                        inMore={true}
-                                        data={{
-                                          app_id: app_id,
-                                          tab_id: tab_id,
-                                          object_name: schema.uiSchema.name,
-                                        }}
-                                        className={`${
-                                          active
-                                            ? "bg-violet-500 text-white"
-                                            : "text-gray-900"
-                                        } slds-dropdown__item group flex w-full items-center border-0 px-2 py-2`}
-                                      ></Button>
-                                    )}
-                                  </Menu.Item>
-                                );
-                              })}
-                            </div>
-                          </Menu.Items>
-                        </Transition>
-                      </Menu>
+                      <Dropdown overlay={getMenu()} trigger={['click']}>
+                        <AButton icon={<MoreOutlined />} className="rounded"></AButton>
+                      </Dropdown>
                   )}
                 </>
             </div>
