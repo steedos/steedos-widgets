@@ -195,7 +195,7 @@ export const getListViewButtons = (uiSchema, ctx) => {
     });
     // 如果是standard_new 且 _visible 中调用了 Steedos 函数, 则自动添加标准的新建功能
     const standardNew = _.find(buttons, (btn)=>{ return btn.name == 'standard_new'})
-    if(uiSchema.permissions.allowCreate && standardNew && standardNew._visible.indexOf('Steedos.StandardObjects.Base.Actions.standard_new.visible.apply') > 0){
+    if( uiSchema.name != 'cms_files' && uiSchema.permissions.allowCreate && standardNew && standardNew._visible.indexOf('Steedos.StandardObjects.Base.Actions.standard_new.visible.apply') > 0){
         listButtons.push({
             label: standardNew.label,
             name: standardNew.name,
@@ -208,6 +208,7 @@ export const getListViewButtons = (uiSchema, ctx) => {
                     uiSchema: uiSchema,
                     formFactor: ctx.formFactor,
                     router: ctx.router,
+                    data: ctx.data,
                     options: ctx.formFactor === 'SMALL' ? {
                         props: {
                           width: "100%",
