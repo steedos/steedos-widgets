@@ -31,6 +31,8 @@ export default function App({
   })  
 
   useEffect(() => {
+    if (Builder.isBrowser)
+      window.Builder = Builder;
     Builder.registerRemoteAssets('https://unpkg.com/@steedos-widgets/example@0.0.4/dist/assets.json')
   }, []);
 
