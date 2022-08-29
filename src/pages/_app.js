@@ -15,6 +15,7 @@ import { AppLayout } from '@/components/AppLayout';
 import '@/components/functions';
 import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { usePostHog } from 'next-use-posthog'
+import { Builder } from '@steedos-builder/react'
 
 export default function App({
   Component,
@@ -28,6 +29,10 @@ export default function App({
       posthog.opt_in_capturing()
     },
   })  
+
+  useEffect(() => {
+    Builder.registerRemoteAssets('https://unpkg.com/@steedos-widgets/example@0.0.4/dist/assets.json')
+  }, []);
 
   const [formFactor, setFormFactor] = useState(null);
   useEffect(() => {
