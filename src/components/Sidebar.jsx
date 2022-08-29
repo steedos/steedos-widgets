@@ -40,7 +40,7 @@ export  function Sidebar({ navigation, selected, app }) {
             )}
             aria-current={item.current ? 'page' : undefined}
           >
-            <svg className="mr-3 flex-shrink-0 h-6 w-6" ariaHidden="true"><use xlinkHref={`/assets/icons/standard-sprite/svg/symbols.svg#${icon}`}></use></svg>
+            <svg className="mr-3 flex-shrink-0 h-6 w-6"><use xlinkHref={`/assets/icons/standard-sprite/svg/symbols.svg#${icon}`}></use></svg>
             
             {item.name}
           </a>
