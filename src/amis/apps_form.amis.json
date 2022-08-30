@@ -3,9 +3,6 @@
   "body": [
     {
       "type": "wizard",
-      "mode": "normal",
-      "persistData": false,
-      "promptPageLeave": true,
       "name": "form_edit_${recordId}",
       "debug": false,
       "title": "",
@@ -35,34 +32,10 @@
         }
       },
       "initFetch": true,
-      "panelClassName": "m-0",
-      "bodyClassName": "p-4",
-      "actions": [
-        {
-          "type": "button",
-          "label": "取消",
-          "actionType": "",
-          "level": "default",
-          "block": false,
-          "onClick": "SteedosUI.getRef(props.data.__super.modalName).close();",
-          "id": "u:f2208dc2b4cd"
-        },
-        {
-          "type": "button",
-          "label": "保存",
-          "actionType": "submit",
-          "level": "info",
-          "id": "u:207386fce204"
-        }
-      ],
-      "actionsClassName": "p-sm b-t b-light text-center",
-      "className": "steedos-amis-form",
       "id": "u:eff484b5c357",
       "steps": [
         {
-          "type": "fieldSet",
-          "title": "通用",
-          "collapsable": true,
+          "title": "详细信息",
           "body": [
             {
               "name": "name",
@@ -196,9 +169,7 @@
           "id": "u:b5b8d4915890"
         },
         {
-          "type": "fieldSet",
           "title": "业务对象",
-          "collapsable": true,
           "body": [
             {
               "name": "tabs",
@@ -303,9 +274,7 @@
           "id": "u:191375a237f1"
         },
         {
-          "type": "fieldSet",
           "title": "外接应用",
-          "collapsable": true,
           "body": [
             {
               "name": "url",
@@ -373,9 +342,6 @@
       ]
     }
   ],
-  "regions": [
-    "body"
-  ],
   "data": {
     "objectName": "apps",
     "context": {
@@ -389,5 +355,8 @@
   "name": "page_edit_${recordId}",
   "initApi": null,
   "initFetch": null,
-  "id": "u:953fda4052b6"
+  "id": "u:953fda4052b6",
+  "regions": [
+    "body"
+  ]
 }
