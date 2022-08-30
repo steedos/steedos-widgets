@@ -107,63 +107,6 @@
               "className": "m-0",
               "labelClassName": "text-left",
               "id": "u:fc07a5376a46"
-            },
-            {
-              "name": "is_system",
-              "label": "系统",
-              "type": "checkbox",
-              "tpl": null,
-              "className": "m-0",
-              "labelClassName": "text-left",
-              "id": "u:187291a8f30f"
-            },
-            {
-              "name": "from_code_id",
-              "label": "",
-              "type": "input-text",
-              "className": "m-0",
-              "labelClassName": "text-left",
-              "id": "u:f11e17711f7a"
-            },
-            {
-              "name": "instance_state",
-              "label": "审批状态",
-              "type": "select",
-              "joinValues": false,
-              "options": [
-                {
-                  "label": "草稿",
-                  "value": "draft"
-                },
-                {
-                  "label": "进行中",
-                  "value": "pending"
-                },
-                {
-                  "label": "已完成",
-                  "value": "completed"
-                },
-                {
-                  "label": "已核准",
-                  "value": "approved"
-                },
-                {
-                  "label": "已驳回",
-                  "value": "rejected"
-                },
-                {
-                  "label": "已取消",
-                  "value": "terminated"
-                }
-              ],
-              "extractValue": true,
-              "clearable": true,
-              "labelField": "label",
-              "valueField": "value",
-              "tpl": null,
-              "className": "m-0",
-              "labelClassName": "text-left",
-              "id": "u:c01323596418"
             }
           ],
           "id": "u:b5b8d4915890"
