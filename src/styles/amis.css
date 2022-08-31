@@ -1,5 +1,5 @@
 @media (min-width: 767px){
-    .antd-Collapse .antd-Form--normal{
+    .antd-Collapse .antd-Form--normal, .antd-Form--normal .antd-Tabs .antd-Tabs-content .antd-Tabs-pane .form-content{
         display: grid!important;
         grid-template-columns: repeat(2,minmax(0,1fr))!important;
         grid-row-gap: 1rem!important;
@@ -9,7 +9,7 @@
         column-gap: 1.5rem!important;
     }
     
-    .antd-Collapse .antd-Form--horizontal{
+    .antd-Collapse .antd-Form--horizontal, .antd-Form--horizontal .antd-Tabs .antd-Tabs-content .antd-Tabs-pane .form-content{
         display: grid!important;
         grid-template-columns: repeat(2,minmax(0,1fr))!important;
         grid-row-gap: 1rem!important;
