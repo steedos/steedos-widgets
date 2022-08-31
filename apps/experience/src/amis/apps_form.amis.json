@@ -41,7 +41,7 @@
           "id": "u:430a42f742ee",
           "tabs": [
             {
-              "title": "详细信息",
+              "title": "基本信息",
               "body": [
                 {
                   "type": "wrapper",
@@ -93,67 +93,20 @@
                       }
                     },
                     {
-                      "name": "visible",
-                      "label": "启用",
-                      "type": "checkbox",
-                      "tpl": null,
-                      "className": "m-0",
-                      "labelClassName": "text-left",
-                      "id": "u:07a8a4c5f875"
-                    },
-                    {
-                      "name": "description",
-                      "label": "描述",
-                      "type": "textarea",
-                      "className": "col-span-2 m-0",
-                      "labelClassName": "text-left",
-                      "id": "u:40d99f2da55a",
-                      "tpl": "<b><%=data.description%></b>"
-                    },
-                    {
                       "name": "sort",
                       "label": "排序",
                       "type": "input-number",
                       "className": "m-0",
                       "labelClassName": "text-left",
                       "id": "u:fc07a5376a46"
-                    }
-                  ],
-                  "id": "u:0b870f195836",
-                  "size": "none"
-                }
-              ],
-              "id": "u:b5b8d4915890"
-            },
-            {
-              "title": "业务对象",
-              "body": [
-                {
-                  "type": "wrapper",
-                  "className": "form-content",
-                  "body": [
-                    {
-                      "name": "tabs",
-                      "label": "选项卡",
-                      "type": "select",
-                      "joinValues": false,
-                      "extractValue": true,
-                      "multiple": true,
-                      "className": "m-0",
-                      "labelClassName": "text-left",
-                      "id": "u:b4cbad99c35f",
-                      "source": {
-                        "url": "${context.rootUrl}/graphql",
-                        "method": "post",
-                        "data": {
-                          "query": "{options:tabs{_id label:label value:name}}"
-                        }
-                      }
                     },
                     {
                       "name": "objects",
-                      "label": "桌面主菜单",
+                      "label": "桌面主菜单(已作废)",
                       "type": "select",
+                      "className": "m-0",
+                      "labelClassName": "text-left",
+                      "id": "u:4e5047e44905",
                       "joinValues": false,
                       "extractValue": true,
                       "labelField": "label",
@@ -171,14 +124,11 @@
                         "requestAdaptor": "\n        var filters = '[]';\n        var top = 10;\n        if(api.data.$term){\n            filters = '[\"name\", \"contains\", \"'+ api.data.$term +'\"]';\n        }else if(api.data.$value){\n            filters = '[\"_id\", \"=\", \"'+ api.data.$value +'\"]';\n        }\n        api.data.query = api.data.query.replace(/{__filters}/g, filters).replace('{__top}', top);\n        return api;\n    ",
                         "adaptor": "\n        payload.data.options = eval(function anonymous(\n) {\n\n  return Steedos.getObjectsOptions()\n\n})(api.data);\n        return payload;\n        "
                       },
-                      "multiple": true,
-                      "className": "m-0",
-                      "labelClassName": "text-left",
-                      "id": "u:4e5047e44905"
+                      "multiple": true
                     },
                     {
                       "name": "mobile_objects",
-                      "label": "手机主菜单",
+                      "label": "手机主菜单(已作废)",
                       "type": "select",
                       "className": "m-0",
                       "labelClassName": "text-left",
@@ -203,29 +153,71 @@
                       "multiple": true
                     },
                     {
+                      "name": "description",
+                      "label": "描述",
+                      "type": "textarea",
+                      "className": "col-span-2 m-0",
+                      "labelClassName": "text-left",
+                      "id": "u:40d99f2da55a",
+                      "tpl": "<b><%=data.description%></b>"
+                    },
+                    {
                       "name": "is_creator",
                       "label": "显示在桌面菜单中",
                       "type": "checkbox",
-                      "tpl": null,
                       "className": "m-0",
                       "labelClassName": "text-left",
-                      "id": "u:8dc6d3e8521d"
+                      "id": "u:8dc6d3e8521d",
+                      "tpl": null
                     },
                     {
                       "name": "mobile",
                       "label": "显示在手机菜单中",
                       "type": "checkbox",
+                      "className": "m-0",
+                      "labelClassName": "text-left",
+                      "id": "u:c9ffb7fd0610",
+                      "tpl": null
+                    },
+                    {
+                      "name": "visible",
+                      "label": "启用",
+                      "type": "checkbox",
                       "tpl": null,
                       "className": "m-0",
                       "labelClassName": "text-left",
-                      "id": "u:c9ffb7fd0610"
+                      "id": "u:07a8a4c5f875"
                     }
                   ],
-                  "size": "none",
-                  "id": "u:10d2a0550360"
+                  "id": "u:0b870f195836",
+                  "size": "none"
                 }
               ],
-              "id": "u:191375a237f1"
+              "id": "u:b5b8d4915890"
+            },
+            {
+              "title": "选项卡",
+              "body": [
+                {
+                  "name": "tabs",
+                  "label": "选项卡",
+                  "type": "select",
+                  "joinValues": false,
+                  "extractValue": true,
+                  "multiple": true,
+                  "className": "m-0",
+                  "labelClassName": "text-left",
+                  "id": "u:b4cbad99c35f",
+                  "source": {
+                    "url": "${context.rootUrl}/graphql",
+                    "method": "post",
+                    "data": {
+                      "query": "{options:tabs{_id label:label value:name}}"
+                    }
+                  },
+                  "checkAll": false
+                }
+              ]
             },
             {
               "title": "外接应用",
