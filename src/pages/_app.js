@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-31 13:12:06
+ * @LastEditTime: 2022-08-31 14:17:37
  * @Description: 
  */
 import { SessionProvider } from "next-auth/react"
@@ -39,10 +39,10 @@ export default function App({
     }
   }, []);
 
-  if (typeof window !== "undefined") {
-    setEnvs(publicEnv);
-    setRootUrl(publicEnv.STEEDOS_ROOT_URL);
-  }
+  // if (typeof window !== "undefined") {
+  //   setEnvs(publicEnv);
+  //   setRootUrl(publicEnv.STEEDOS_ROOT_URL);
+  // }
 
   const [formFactor, setFormFactor] = useState(null);
   useEffect(() => {
@@ -64,11 +64,11 @@ export default function App({
   )
 }
 
-App.getInitialProps = (appContext)=>{
-  return {
-    publicEnv: {
-      STEEDOS_ROOT_URL: process.env.STEEDOS_ROOT_URL,
-      STEEDOS_EXPERIENCE_ASSETURLS: process.env.STEEDOS_EXPERIENCE_ASSETURLS
-    },
-  };
-}
+// App.getInitialProps = (appContext)=>{
+//   return {
+//     publicEnv: {
+//       STEEDOS_ROOT_URL: process.env.STEEDOS_ROOT_URL,
+//       STEEDOS_EXPERIENCE_ASSETURLS: process.env.STEEDOS_EXPERIENCE_ASSETURLS
+//     },
+//   };
+// }
