@@ -1,4 +1,5 @@
 const config: any = {
+  type: 'amisSchema', // amisSchema || react 
   group: "华炎魔方",
   componentName: "AmisHello",
   title: "哈喽",

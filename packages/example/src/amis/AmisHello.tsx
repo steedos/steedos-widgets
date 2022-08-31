@@ -5,4 +5,6 @@ export const AmisHello = ({title, body}) => {
   }
 }
 
-AmisHello.isAmis = true;
+AmisHello.meta = {
+  
+}

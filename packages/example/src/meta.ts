@@ -1,6 +1,7 @@
 import Hello from "./metas/Hello";
+import AmisHello from "./metas/AmisHello";
 
-const components = [Hello];
+const components = [Hello, AmisHello];
 const componentList = [
   {
     title: "哈喽组件",
