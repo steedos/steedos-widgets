@@ -2,10 +2,13 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 11:31:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-25 18:27:01
+ * @LastEditTime: 2022-08-31 10:27:44
  * @Description:
  */
-import { message, notification, Button, Space} from 'antd';
+import { each, find, isArray, isEmpty } from 'lodash';
+
+const RegisterRenders = [];
+
 const normalizeLink = (to, location = window.location) => {
   to = to || "";
 
@@ -101,8 +104,25 @@ export const getEvn = (router)=>{
   }
 }
 
+export const registerRenders = (assets)=>{
+  if(!isEmpty(assets) && isArray(assets)){
+    let amisLib = amisRequire('amis');
+    each(assets, (asset)=>{
+      // 防止组件重复注册
+      if(!find(RegisterRenders, (componentName)=>{ return componentName === asset.componentName})){
+        const Component = Builder.components.find(item => item.name === asset.componentName);
+        amisLib.Renderer({
+          test: new RegExp(`(^|\/)${asset.type}`)
+        })(Component.class);
+        RegisterRenders.push(asset.componentName)
+      }
+    })
+  }
+}
+
 export const amisRender = (root, schema, data = {}, env = {}, options) => {
   let amis = amisRequire("amis/embed");
-  const { router } = options;
+  const { router, assets } = options;
+  registerRenders(assets);
   return amis.embed(root, schema, data, Object.assign(getEvn(router), env));
 };

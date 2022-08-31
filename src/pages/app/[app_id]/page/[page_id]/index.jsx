@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-26 09:36:08
+ * @LastEditTime: 2022-08-30 11:13:50
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -12,8 +12,7 @@ import { useRouter } from 'next/router'
 import { getPage } from '@/lib/page';
 import { unstable_getServerSession } from "next-auth/next"
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
-import { amisRender, amisRootClick } from '@/lib/amis';
-import { AmisRender } from '@/components/AmisRender';
+import { PageRender } from '@/components/PageRender';
 
 export default function Page ({}) {
   const router = useRouter()
@@ -30,7 +29,7 @@ export default function Page ({}) {
 
   return (
     <>
-      {page && page.schema && <AmisRender id="amis-root" className="overflow-auto" schema={JSON.parse(page.schema)} />}
+      {page && page.schema && <PageRender id="amis-root" className="overflow-auto" schema={JSON.parse(page.schema)} assetUrls={['https://unpkg.com/@steedos-widgets/example@0.0.4/dist/assets.json']}/>}
     </>
   )
 }

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 16:55:58
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-23 15:52:51
+ * @LastEditTime: 2022-08-31 10:27:30
  * @Description: 
  */
 
@@ -12,7 +12,7 @@ import { getSteedosAuth } from '@/lib/steedos.client'
 import { defaultsDeep } from 'lodash';
 import { getRootUrl } from '@/lib/steedos.client.js';
 
-export const AmisRender = ({id, schema, data, router, className, })=>{
+export const AmisRender = ({id, schema, data, router, className, assets})=>{
     useEffect(() => {
         const steedosAuth = getSteedosAuth();
         const defData = defaultsDeep({}, data , {
@@ -33,7 +33,7 @@ export const AmisRender = ({id, schema, data, router, className, })=>{
                 console.error(`error`, id)
             }
         }
-        SteedosUI.refs[id] = amisRender(`#${id}`, defaultsDeep(defData , schema), data, {}, {router: router});
+        SteedosUI.refs[id] = amisRender(`#${id}`, defaultsDeep(defData , schema), data, {}, {router: router, assets: assets});
       }, [schema]);
     return (
         <div id={`${id}`} className={`app-wrapper ${className}`} onClick={(e)=>{ return amisRootClick(router, e)}}></div>
