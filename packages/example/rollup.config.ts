@@ -98,11 +98,11 @@ export default [
         globals,
       },
     ],
-    plugins: options.plugins.concat([
-      visualizer({
-        filename: './stats.html'
-      })
-    ]),
+    // plugins: options.plugins.concat([
+    //   visualizer({
+    //     filename: './stats.html'
+    //   })
+    // ]),
   },
   // meta build
   {
