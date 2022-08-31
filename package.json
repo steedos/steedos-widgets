@@ -2,6 +2,12 @@
   "name": "nextjs-amis",
   "version": "0.0.0",
   "private": true,
+  "workspaces": {
+    "packages": [
+      "./apps/*",
+      "./packages/*"
+    ]
+  },
   "scripts": {
     "dev": "node server",
     "build": "next build && yarn copy",
