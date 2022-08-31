@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-30 10:03:56
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-31 11:55:02
+ * @LastEditTime: 2022-08-31 14:01:16
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef, useImperativeHandle } from 'react';
@@ -18,7 +18,11 @@ export const PageRender = (props)=>{
 
     useEffect(()=>{
         if(assetUrls && assetUrls.length > 0){
-            Builder.registerRemoteAssets(assetUrls).then(()=>{
+            let assetUrlsArray = assetUrls;
+            if(isString(assetUrlsArray)){
+                assetUrlsArray = assetUrlsArray.split(',');
+            }
+            Builder.registerRemoteAssets(assetUrlsArray).then(()=>{
                 const amisComps = filter(Builder.registry['meta-components'], function(item){ return item.componentName && item.amis?.render});
                 setAssets(map(amisComps, (item)=>{
                     return { componentName: item.componentName, ...item.amis.render}
