@@ -1,5 +1,12 @@
+/*
+ * @Author: baozhoutao@steedos.com
+ * @Date: 2022-08-31 16:32:35
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2022-08-31 18:18:35
+ * @Description: 
+ */
 const config: any = {
-  type: 'amisSchema', // amisSchema || react 
+  componentType: 'amisSchema', // amisSchema || react 
   group: "华炎魔方",
   componentName: "AmisHello",
   title: "哈喽",
