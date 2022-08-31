@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-31 14:17:37
+ * @LastEditTime: 2022-08-31 15:20:27
  * @Description: 
  */
 import { SessionProvider } from "next-auth/react"
@@ -16,8 +16,6 @@ import '@/components/functions';
 import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { usePostHog } from 'next-use-posthog'
 import { Builder } from '@steedos-builder/react'
-import { setEnvs } from '@/lib/public.env';
-import { setRootUrl } from "@/lib/steedos.client.js";
 export default function App({
   Component,
   publicEnv,
@@ -39,11 +37,6 @@ export default function App({
     }
   }, []);
 
-  // if (typeof window !== "undefined") {
-  //   setEnvs(publicEnv);
-  //   setRootUrl(publicEnv.STEEDOS_ROOT_URL);
-  // }
-
   const [formFactor, setFormFactor] = useState(null);
   useEffect(() => {
     if (window.innerWidth < 768) {
@@ -63,12 +56,3 @@ export default function App({
     </>
   )
 }
-
-// App.getInitialProps = (appContext)=>{
-//   return {
-//     publicEnv: {
-//       STEEDOS_ROOT_URL: process.env.STEEDOS_ROOT_URL,
-//       STEEDOS_EXPERIENCE_ASSETURLS: process.env.STEEDOS_EXPERIENCE_ASSETURLS
-//     },
-//   };
-// }
