@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 11:31:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-31 10:27:44
+ * @LastEditTime: 2022-08-31 17:39:12
  * @Description:
  */
 import { each, find, isArray, isEmpty } from 'lodash';
@@ -107,13 +107,31 @@ export const getEvn = (router)=>{
 export const registerRenders = (assets)=>{
   if(!isEmpty(assets) && isArray(assets)){
     let amisLib = amisRequire('amis');
+    let amisReact = amisRequire('react');
     each(assets, (asset)=>{
       // 防止组件重复注册
       if(!find(RegisterRenders, (componentName)=>{ return componentName === asset.componentName})){
-        const Component = Builder.components.find(item => item.name === asset.componentName);
+        let Component = Builder.components.find(item => item.name === asset.componentName);
+        let AmisWrapper = Component.class
+        if(asset.componentType === 'amisSchema'){
+          AmisWrapper = (props)=>{
+            const [schema, setSchema] = amisReact.useState(null);
+            amisReact.useEffect(()=>{
+              const result = Component.class(props);
+              if(result.then && typeof result.then === 'function'){
+                result.then((data)=>{
+                  setSchema(data);
+                })
+              }else{
+                setSchema(schema)
+              }
+            }, [])
+            return <>{(schema && props.render) ? props.render('body', schema) : ''}</> //assets={}
+          }
+        }
         amisLib.Renderer({
           test: new RegExp(`(^|\/)${asset.type}`)
-        })(Component.class);
+        })(AmisWrapper);
         RegisterRenders.push(asset.componentName)
       }
     })
