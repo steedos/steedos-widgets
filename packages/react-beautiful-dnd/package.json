@@ -1,0 +1,9 @@
+{
+  "name": "@steedos-widgets/board",
+  "version": "0.0.1",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "react-beautiful-dnd": "^13.1.1"
+  }
+}
