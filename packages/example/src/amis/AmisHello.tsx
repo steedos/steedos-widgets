@@ -4,3 +4,5 @@ export const AmisHello = ({title, body}) => {
     "body": "Hello ${title}"
   }
 }
+
+AmisHello.isAmis = true;

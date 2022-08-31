@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "node server",
-    "build": "next build",
+    "build-app": "next build",
     "copy": " rm -rf ./steedos-ee/packages/experience/.next/* && cp -rf .next ./steedos-ee/packages/experience/ && rm -rf  ./steedos-ee/packages/experience/.next/cache &&  cp -rf public ./steedos-ee/packages/experience",
     "export": "next build && next export",
     "release": "cd steedos-ee/packages/experience && npm publish --registry https://registry.npmjs.org ",
