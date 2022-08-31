@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 11:31:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-31 17:39:12
+ * @LastEditTime: 2022-08-31 17:41:55
  * @Description:
  */
 import { each, find, isArray, isEmpty } from 'lodash';
@@ -123,7 +123,7 @@ export const registerRenders = (assets)=>{
                   setSchema(data);
                 })
               }else{
-                setSchema(schema)
+                setSchema(result)
               }
             }, [])
             return <>{(schema && props.render) ? props.render('body', schema) : ''}</> //assets={}
