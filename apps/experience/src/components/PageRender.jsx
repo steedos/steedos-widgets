@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-30 10:03:56
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-31 15:36:21
+ * @LastEditTime: 2022-08-31 17:18:04
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef, useImperativeHandle } from 'react';
@@ -16,14 +16,13 @@ export const PageRender = (props)=>{
     const [globalAssetLoaded, setGlobalAssetLoaded] = useState(false);
     const [assetsLoaded, setAssetLoaded] = useState(false);
     const [assets, setAssets] = useState(null);
-
     useEffect(()=>{
         if(Builder.settings.env.STEEDOS_EXPERIENCE_ASSETURLS){
             const globalAssetUrls = Builder.settings.env.STEEDOS_EXPERIENCE_ASSETURLS.split(',');
             Builder.registerRemoteAssets(globalAssetUrls).then(()=>{
                 const amisComps = filter(Builder.registry['meta-components'], function(item){ return item.componentName && item.amis?.render});
                 setAssets(map(amisComps, (item)=>{
-                    return { componentName: item.componentName, ...item.amis.render}
+                    return { componentType: item.type, componentName: item.componentName, ...item.amis.render}
                 }));
                 setGlobalAssetLoaded(true)
             })
@@ -41,7 +40,7 @@ export const PageRender = (props)=>{
             Builder.registerRemoteAssets(assetUrlsArray).then(()=>{
                 const amisComps = filter(Builder.registry['meta-components'], function(item){ return item.componentName && item.amis?.render});
                 setAssets(map(amisComps, (item)=>{
-                    return { componentName: item.componentName, ...item.amis.render}
+                    return { componentType: item.type, componentName: item.componentName, ...item.amis.render}
                 }));
                 setAssetLoaded(true)
             })
