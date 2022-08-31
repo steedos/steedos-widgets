@@ -5,8 +5,8 @@
 			"path": "./steedos-ee"
 		},
 		{
-			"name": "steedos-webapp-nextjs",
-			"path": "."
+			"name": "app-experience",
+			"path": "./apps/experience"
 		}
 	],
 	"settings": {
