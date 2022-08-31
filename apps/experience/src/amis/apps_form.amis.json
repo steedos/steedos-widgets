@@ -119,7 +119,8 @@
                       "id": "u:fc07a5376a46"
                     }
                   ],
-                  "id": "u:0b870f195836"
+                  "id": "u:0b870f195836",
+                  "size": "none"
                 }
               ],
               "id": "u:b5b8d4915890"
@@ -137,28 +138,17 @@
                       "type": "select",
                       "joinValues": false,
                       "extractValue": true,
-                      "labelField": "label",
-                      "valueField": "name",
-                      "autoComplete": {
-                        "method": "post",
-                        "url": "${context.rootUrl}/graphql",
-                        "data": {
-                          "query": "{options:tabs(filters: {__filters}, top: {__top}){_id label:label value:name},count:tabs__count(filters:{__filters})}",
-                          "$": "$$",
-                          "$term": "$term",
-                          "$value": "$tabs.name",
-                          "rfield": "${object_name}",
-                          "orderBy": "${orderBy}",
-                          "orderDir": "${orderDir}",
-                          "pageNo": "${page}",
-                          "pageSize": "${perPage}"
-                        },
-                        "requestAdaptor": "\n        var filters = '[]';\n        var top = 10;\n        if(api.data.$term){\n            filters = '[\"name\", \"contains\", \"'+ api.data.$term +'\"]';\n        }else if(api.data.$value){\n            filters = '[\"_id\", \"=\", \"'+ api.data.$value +'\"]';\n        }\n        api.data.query = api.data.query.replace(/{__filters}/g, filters).replace('{__top}', top);\n        return api;\n    "
-                      },
                       "multiple": true,
-                      "className": "col-span-2 m-0",
+                      "className": "m-0",
                       "labelClassName": "text-left",
-                      "id": "u:7f35c54cbe1f"
+                      "id": "u:b4cbad99c35f",
+                      "source": {
+                        "url": "${context.rootUrl}/graphql",
+                        "method": "post",
+                        "data": {
+                          "query": "{options:tabs{_id label:label value:name}}"
+                        }
+                      }
                     },
                     {
                       "name": "objects",
