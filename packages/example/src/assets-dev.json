@@ -1,0 +1,25 @@
+{
+  "packages": [
+      {
+          "package": "@steedos-widgets/example",
+          "urls": [
+              "https://8080-steedos-steedoswidgets-afuc7kqudss.ws-us63.gitpod.io/example/dist/example.umd.min.js",
+              "https://8080-steedos-steedoswidgets-afuc7kqudss.ws-us63.gitpod.io/example/dist/example.umd.css"
+          ],
+          "library": "BuilderExample"
+      }
+  ],
+  "components": [
+      {
+          "exportName": "BuilderExampleWidgetsMeta",
+          "npm": {
+              "package": "@steedos-widgets/example"
+          },
+          "url": "https://8080-steedos-steedoswidgets-afuc7kqudss.ws-us63.gitpod.io/example/dist/meta.js",
+          "urls": {
+              "default": "https://8080-steedos-steedoswidgets-afuc7kqudss.ws-us63.gitpod.io/example/dist/meta.js",
+              "design": "https://8080-steedos-steedoswidgets-afuc7kqudss.ws-us63.gitpod.io/example/dist/meta.js"
+          }
+      }
+  ]
+}

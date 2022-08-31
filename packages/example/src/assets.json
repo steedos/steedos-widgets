@@ -1,0 +1,25 @@
+{
+  "packages": [
+      {
+          "package": "@steedos-widgets/example",
+          "urls": [
+              "https://unpkg.com/@steedos-widgets/example@{{version}}/dist/example.umd.min.js",
+              "https://unpkg.com/@steedos-widgets/example@{{version}}/dist/example.umd.css"
+          ],
+          "library": "BuilderExample"
+      }
+  ],
+  "components": [
+      {
+          "exportName": "BuilderExampleWidgetsMeta",
+          "npm": {
+              "package": "@steedos-widgets/example"
+          },
+          "url": "https://unpkg.com/@steedos-widgets/example@{{version}}/dist/meta.js",
+          "urls": {
+              "default": "https://unpkg.com/@steedos-widgets/example@{{version}}/dist/meta.js",
+              "design": "https://unpkg.com/@steedos-widgets/example@{{version}}/dist/meta.js"
+          }
+      }
+  ]
+}

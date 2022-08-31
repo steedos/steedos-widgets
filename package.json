@@ -10,11 +10,14 @@
       "./apps/*",
       "./packages/*"
     ]
-  },  
+  },
   "scripts": {
     "dev": "cd apps/experience && node server",
-    "build": "cd apps/experience && next build && yarn copy",
+    "build": "lerna run build",
     "release": "cd steedos-ee/packages/experience && npm publish --registry https://registry.npmjs.org ",
     "start": "cd apps/experience && NODE_ENV=production node server.js"
+  },
+  "dependencies": {
+    "lerna": "^5.4.3"
   }
 }
