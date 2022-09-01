@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-31 15:29:15
+ * @LastEditTime: 2022-09-01 13:41:17
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -38,6 +38,7 @@ export default function Page({ publicEnv }) {
         <PageRender
           id="amis-root"
           className="overflow-auto"
+          router={router}
           schema={JSON.parse(page.schema)}
           assetUrls={[]}
         />
