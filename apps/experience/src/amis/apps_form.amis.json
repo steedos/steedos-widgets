@@ -78,7 +78,8 @@
                       "extractValue": true,
                       "labelField": "label",
                       "valueField": "value",
-                      "autoComplete": {
+                      "multiple": false,
+                      "source": {
                         "method": "post",
                         "url": "${context.rootUrl}/graphql",
                         "data": {
@@ -89,7 +90,8 @@
                           "rfield": "${object_name}"
                         },
                         "requestAdaptor": "\n        var filters = '[]';\n        var top = 10;\n        if(api.data.$term){\n            filters = '[\"name\", \"contains\", \"'+ api.data.$term +'\"]';\n        }else if(api.data.$value){\n            filters = '[\"_id\", \"=\", \"'+ api.data.$value +'\"]';\n        }\n        api.data.query = api.data.query.replace(/{__filters}/g, filters).replace('{__top}', top);\n        return api;\n    ",
-                        "adaptor": "\n        payload.data.options = eval(function anonymous(\n) {\n\n  var options;\n  options = [];\n\n  _.forEach(Creator.resources.sldsIcons.standard, function (svg) {\n    return options.push({\n      value: svg,\n      label: svg,\n      icon: svg\n    });\n  });\n\n  return options;\n\n})(api.data);\n        return payload;\n        "
+                        "adaptor": "\npayload.data.options = eval(function anonymous() {\n\n  var options;\n  options = [];\n  if (!window.Creator) { \n    return options;\n  }\n  _.forEach(Creator.resources.sldsIcons.standard, function (svg) {\n    return options.push({\n      value: svg,\n      label: svg,\n      icon: svg\n    });\n  });\n\n  return options;\n\n})(api.data);\n\nreturn payload;\n        ",
+                        "messages": {}
                       }
                     },
                     {
@@ -111,20 +113,10 @@
                       "extractValue": true,
                       "labelField": "label",
                       "valueField": "value",
-                      "autoComplete": {
-                        "method": "post",
-                        "url": "${context.rootUrl}/graphql",
-                        "data": {
-                          "query": "{objects(filters: [\"_id\", \"=\", \"-1\"]){_id}}",
-                          "$": "$$",
-                          "$term": "$term",
-                          "$value": "$objects._id",
-                          "rfield": "${object_name}"
-                        },
-                        "requestAdaptor": "\n        var filters = '[]';\n        var top = 10;\n        if(api.data.$term){\n            filters = '[\"name\", \"contains\", \"'+ api.data.$term +'\"]';\n        }else if(api.data.$value){\n            filters = '[\"_id\", \"=\", \"'+ api.data.$value +'\"]';\n        }\n        api.data.query = api.data.query.replace(/{__filters}/g, filters).replace('{__top}', top);\n        return api;\n    ",
-                        "adaptor": "\n        payload.data.options = eval(function anonymous(\n) {\n\n  return Steedos.getObjectsOptions()\n\n})(api.data);\n        return payload;\n        "
-                      },
-                      "multiple": true
+                      "multiple": true,
+                      "checkAll": false,
+                      "searchable": true,
+                      "autoComplete": "get:${context.rootUrl}/service/api/amis-metadata-objects/objects/options"
                     },
                     {
                       "name": "mobile_objects",
@@ -137,20 +129,10 @@
                       "extractValue": true,
                       "labelField": "label",
                       "valueField": "value",
-                      "autoComplete": {
-                        "method": "post",
-                        "url": "${context.rootUrl}/graphql",
-                        "data": {
-                          "query": "{objects(filters: [\"_id\", \"=\", \"-1\"]){_id}}",
-                          "$": "$$",
-                          "$term": "$term",
-                          "$value": "$mobile_objects._id",
-                          "rfield": "${object_name}"
-                        },
-                        "requestAdaptor": "\n        var filters = '[]';\n        var top = 10;\n        if(api.data.$term){\n            filters = '[\"name\", \"contains\", \"'+ api.data.$term +'\"]';\n        }else if(api.data.$value){\n            filters = '[\"_id\", \"=\", \"'+ api.data.$value +'\"]';\n        }\n        api.data.query = api.data.query.replace(/{__filters}/g, filters).replace('{__top}', top);\n        return api;\n    ",
-                        "adaptor": "\n        payload.data.options = eval(function anonymous(\n) {\n\n  return Steedos.getObjectsOptions()\n\n})(api.data);\n        return payload;\n        "
-                      },
-                      "multiple": true
+                      "multiple": true,
+                      "checkAll": false,
+                      "searchable": true,
+                      "autoComplete": "get:${context.rootUrl}/service/api/amis-metadata-objects/objects/options"
                     },
                     {
                       "name": "description",
@@ -218,14 +200,6 @@
                           "removable": true,
                           "draggable": false,
                           "columns": [
-                            // {
-                            //   "name": "index",
-                            //   "className": "w-10",
-                            //   "label": "序号",
-                            //   "type": "static",
-                            //   "value": "${index + 1}",
-                            //   "id": "u:d1c2922699d3"
-                            // },
                             {
                               "name": "tab_name_label",
                               "label": "选项卡",
