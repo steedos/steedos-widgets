@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 09:31:04
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-20 16:29:12
+ * @LastEditTime: 2022-09-01 14:36:39
  * @Description:  
  */
 import React, { useState, useEffect, Fragment } from 'react';
@@ -10,7 +10,7 @@ import { Navbar } from '@/components/Navbar';
 import { Sidebar } from '@/components/Sidebar';
 import { getApp } from '@/lib/apps';
 import { useRouter } from 'next/router'
-import { setSteedosAuth } from '@/lib/steedos.client';
+import { setSteedosAuth, getRootUrl } from '@/lib/steedos.client';
 import { useSession } from "next-auth/react"
 
 export function AppLayout({ children }) {
@@ -21,6 +21,14 @@ export function AppLayout({ children }) {
     const { data: session } = useSession()
     if(session){
       setSteedosAuth(session.steedos);
+      Builder.set({ 
+        context: {
+          rootUrl: getRootUrl(),
+          userId: session.steedos.userId,
+          tenantId: session.steedos.spaceId,
+          authToken: session.steedos.token
+        } 
+      });
     }
 
     useEffect(() => {

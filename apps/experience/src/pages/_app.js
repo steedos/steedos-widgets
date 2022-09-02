@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-31 15:20:27
+ * @LastEditTime: 2022-09-01 14:43:34
  * @Description: 
  */
 import { SessionProvider } from "next-auth/react"
@@ -18,10 +18,8 @@ import { usePostHog } from 'next-use-posthog'
 import { Builder } from '@steedos-builder/react'
 export default function App({
   Component,
-  publicEnv,
   pageProps: { session, ...pageProps },
 }) {
-
   usePostHog('phc_Hs5rJpeE5JK3GdR3NWOf75TvjEcnYShmBxNU2Y942HB', {
     api_host: 'https://posthog.steedos.cn',
     loaded: (posthog) => {
