@@ -66,7 +66,7 @@
           "headers": {
             "Authorization": "Bearer ${context.tenantId},${context.authToken}"
           },
-          "adaptor": "\nlet app_items = payload;\nlet object_items = [];\napp_items.forEach((item) => {\n  object_items = object_items.concat(item.children);\n})\nlet object_items_dom = '';\nobject_items.forEach((item) => {\n  object_items_dom = object_items_dom +\n    `<li class=\"slds-col--padded slds-p-vertical_xx-small slds-size_1-of-5 slds-grow-none oneAppLauncherItem\">\n      <a data-object-name=\"${item.id}\" href=\"${item.path}\" class=\"app-launcher-link slds-text-link--reset slds-app-launcher__tile--small slds-truncate creator-object-nav-${item.id}\">\n        <span class=\"slds-truncate slds-text-link\">${item.name}</span>\n      </a>\n    </li>`\n})\npayload.data = {\n  app_items,\n  object_items_dom\n}\nreturn payload;"
+          "adaptor": "\nlet app_items = payload;\nlet object_items = [];\nlet objects = [];\napp_items.forEach((item) => {\n  item.children.forEach((i) => {\n    if (objects.indexOf(i.id) < 0) {\n      objects.push(i.id);\n      object_items.push(i)\n    }\n  })\n})\nlet object_items_dom = '';\nobject_items.forEach((item) => {\n\n  object_items_dom = object_items_dom +\n    `<li class=\"slds-col--padded slds-p-vertical_xx-small slds-size_1-of-5 slds-grow-none oneAppLauncherItem\">\n      <a data-object-name=\"${item.id}\" href=\"${item.path}\" class=\"app-launcher-link slds-text-link--reset slds-app-launcher__tile--small slds-truncate creator-object-nav-${item.id}\">\n        <span class=\"slds-truncate slds-text-link\">${item.name}</span>\n      </a>\n    </li>`\n})\npayload.data = {\n  app_items,\n  object_items_dom\n}\nreturn payload;"
         }
       }
     ],
