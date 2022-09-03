@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-02 10:40:18
+ * @LastEditTime: 2022-09-03 10:46:31
  * @Description:
  */
 import { fetchAPI } from "./steedos.client";
@@ -13,6 +13,7 @@ import {
 } from "./converter/amis/index";
 import _ , { slice, isEmpty, each, has } from "lodash";
 import { getFieldSearchable } from "./converter/amis/fields/index";
+import { getRecord } from './record';
 
 const UI_SCHEMA_CACHE = {};
 
@@ -39,16 +40,6 @@ const getListViewColumns = (listView, formFactor) => {
     }
     return listViewColumns;
 };
-
-const getRecord = async (objectName, recordId, fields)=>{
-    const result = await fetchAPI('/graphql', {
-        method: 'post',
-        body: JSON.stringify({
-            query: getFindOneQuery(objectName, recordId, fields)
-        })
-    })
-    return result.data.record;
-}
 
 export async function getUISchema(objectName, force) {
     if (!objectName) {
