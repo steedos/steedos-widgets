@@ -348,6 +348,14 @@
     estree-walker "^2.0.1"
     picomatch "^2.2.2"
 
+"@steedos-labs/amis-lib@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@steedos-labs/amis-lib/-/amis-lib-0.0.1.tgz#daaf757036a200a00a2ea6c9e4483decfceeffa0"
+  integrity sha512-TAIwNcybzGHn6fPRXqtrynTTTMKSL+0HTuhYiGyB3NWBl1mOHdeaVZJNVCYNtaQOtTkDUi1yPRy9CGOIgrZQAw==
+  dependencies:
+    lodash "^4.17.21"
+    uglify-js "^3.17.0"
+
 "@trysound/sax@0.2.0":
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/@trysound/sax/-/sax-0.2.0.tgz#cccaab758af56761eb7bf37af6f03f326dd798ad"
@@ -2239,7 +2247,7 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha512-xfBaXQd9ryd9dlSDvnvI0lvxfLJlYAZzXomUYzLKtUeOQvOP5piqAWuGtrhWeqaXK9hhoM/iyJc5AV+XfsX3HQ==
 
-lodash@^4.0.1, lodash@^4.17.15:
+lodash@^4.0.1, lodash@^4.17.15, lodash@^4.17.21:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==

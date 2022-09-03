@@ -2,15 +2,15 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 09:31:04
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-01 14:36:39
+ * @LastEditTime: 2022-09-03 14:13:25
  * @Description:  
  */
 import React, { useState, useEffect, Fragment } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Sidebar } from '@/components/Sidebar';
-import { getApp } from '@/lib/apps';
+import { getApp } from '@steedos-labs/amis-lib';
 import { useRouter } from 'next/router'
-import { setSteedosAuth, getRootUrl } from '@/lib/steedos.client';
+import { setSteedosAuth, getRootUrl } from '@steedos-labs/amis-lib';
 import { useSession } from "next-auth/react"
 
 export function AppLayout({ children }) {

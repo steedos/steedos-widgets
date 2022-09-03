@@ -51,7 +51,7 @@ export const standardButtonsTodo = {
         } = props;
         // router.push('/app/'+props.data.app_id+'/'+props.data.objectName+'/view/new');
         const type = config.listView.newRecordMode;
-        SteedosUI.Object.newRecord({
+        SteedosUI?.Object.newRecord({
             onSubmitted: () => {
                 SteedosUI.getRef(listViewId)
                     .getComponentByName(`page.listview_${uiSchema.name}`)
@@ -84,7 +84,7 @@ export const standardButtonsTodo = {
             router,
             options = {},
         } = props;
-        SteedosUI.Object.editRecord({
+        SteedosUI?.Object.editRecord({
             appId: appId,
             name: SteedosUI.getRefId({ type: `${type}-form` }),
             title: `编辑 ${uiSchema.label}`,
@@ -113,7 +113,7 @@ export const standardButtonsTodo = {
             listViewId,
             uiSchema,
         } = props;
-        const listViewRef = SteedosUI.getRef(listViewId).getComponentByName(`page.listview_${uiSchema.name}`)
+        const listViewRef = SteedosUI?.getRef(listViewId).getComponentByName(`page.listview_${uiSchema.name}`)
           
         if(_.isEmpty(listViewRef.props.store.toJSON().selectedItems)){
             listViewRef.handleAction({}, {

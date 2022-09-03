@@ -2,14 +2,14 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-25 16:48:19
+ * @LastEditTime: 2022-09-03 10:41:50
  * @Description:
  */
 import dynamic from "next/dynamic";
 import Document, { Script, Head, Main, NextScript } from "next/document";
 import React, { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
-import { getViewSchema, getFormSchema, getObjectRelateds } from "@/lib/objects";
+import { getViewSchema, getFormSchema, getObjectRelateds } from "@steedos-labs/amis-lib";
 import { AmisRender } from "@/components/AmisRender";
 import { unstable_getServerSession } from "next-auth/next";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
@@ -18,7 +18,7 @@ import { Tab, Menu, Transition } from "@headlessui/react";
 import { RecordHeader } from '@/components/object/RecordHeader';
 import { RecordHeader as MobileRecordHeader } from '@/components/mobile/object/RecordHeader';
 import { RecordRelateds } from '@/components/object/RecordRelateds';
-import { getRecordPermissions } from '@/lib/record';
+import { getRecordPermissions } from '@steedos-labs/amis-lib';
 import { Loading } from '@/components/Loading';
 
 function classNames(...classes) {

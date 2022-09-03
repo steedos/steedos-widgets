@@ -2,17 +2,16 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-31 15:18:50
+ * @LastEditTime: 2022-09-03 14:12:47
  * @Description: 
  */
 import dynamic from 'next/dynamic'
 import Document, { Script, Head, Main, NextScript } from 'next/document'
 import React, { useState, useEffect, Fragment } from 'react';
 import { useRouter } from 'next/router'
-import { getPage } from '@/lib/page';
+import { getPage } from '@steedos-labs/amis-lib';
 import { unstable_getServerSession } from "next-auth/next"
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
-import { amisRender, amisRootClick } from '@/lib/amis';
 import { AmisRender } from '@/components/AmisRender';
 
 export default function Page ({}) {

@@ -2,11 +2,11 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-04 15:01:06
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-18 16:46:14
+ * @LastEditTime: 2022-09-03 13:34:38
  * @Description: 
  */
 import React, { useState, useEffect, Fragment } from "react";
-import { getObjectRelated } from '@/lib/objects';
+import { getObjectRelated } from '@steedos-labs/amis-lib';
 import { RelatedList } from "@/components/object/RelatedList";
 import { useRouter } from 'next/router'
 

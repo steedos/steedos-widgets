@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-03 16:46:23
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-27 11:32:07
+ * @LastEditTime: 2022-09-03 15:30:54
  * @Description:
  */
 import { Listbox, Menu, Transition } from "@headlessui/react";
@@ -20,8 +20,7 @@ import { useRouter } from "next/router";
 import React, { useState, useEffect, Fragment, useRef } from "react";
 import { Button } from "@/components/object/Button";
 import { FromNow } from "@/components/FromNow";
-import { standardButtonsTodo } from '@/lib/buttons';
-import { getListViewButtons } from '@/lib/buttons';
+import { getListViewButtons } from '@steedos-labs/amis-lib';
 
 export function ListviewHeader({ schema, onListviewChange, formFactor }) {
   const [buttons, setButtons] = useState(null);

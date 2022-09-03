@@ -9,8 +9,8 @@ import { AmisRender } from "@/components/AmisRender";
 import { Button, Space} from 'antd';
 import { isEmpty, isFunction } from "lodash";
 import { conditionsToFilters, filtersToConditions } from '@/components/functions/amis'
-import { getSteedosAuth, fetchAPI } from "@/lib/steedos.client";
-import { getUISchema } from '@/lib/objects'
+import { getSteedosAuth, fetchAPI } from "@steedos-labs/amis-lib";
+import { getUISchema } from '@steedos-labs/amis-lib'
 
 const filtersAmisSchema = require('@/amis/listview_filters.amis.json')
 

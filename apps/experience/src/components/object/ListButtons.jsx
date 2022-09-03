@@ -2,16 +2,16 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 13:32:49
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-27 11:32:50
+ * @LastEditTime: 2022-09-03 15:42:26
  * @Description: 
  */
-import { getListViewButtons, execute } from '@/lib/buttons';
+import { getListViewButtons } from '@steedos-labs/amis-lib';
 import { useRouter } from 'next/router';
 import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { Button } from '@/components/object/Button'
 import _ from 'lodash';
 
-import { standardButtonsTodo } from '@/lib/buttons';
+import { standardButtonsTodo } from '@steedos-labs/amis-lib';
 
 export function ListButtons(props) {
     const { app_id, tab_id, schema, formFactor } = props;

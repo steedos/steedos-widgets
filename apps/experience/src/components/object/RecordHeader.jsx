@@ -3,10 +3,9 @@ import { useRouter } from "next/router";
 import {
     getObjectDetailButtons,
     getObjectDetailMoreButtons,
-  } from "@/lib/buttons";
+  } from "@steedos-labs/amis-lib";
 import { Button } from "@/components/object/Button";
 
-import { standardButtonsTodo } from '@/lib/buttons';
 import { MoreOutlined } from '@ant-design/icons';
 import { Dropdown, Menu , Space, Button as AButton  } from 'antd';
 

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-16 15:23:18
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-20 17:48:49
+ * @LastEditTime: 2022-09-03 14:10:30
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef } from "react";
@@ -12,7 +12,7 @@ import { RecordRelatedListButtons } from '@/components/object/RecordRelatedListB
 import { isEmpty, defaultsDeep } from 'lodash'
 import { Tab, Menu, Transition } from "@headlessui/react";
 import { RelatedLink } from '@/components/object/RelatedLink'
-import { getRelatedsCount } from '@/lib/record';
+import { getRelatedsCount } from '@steedos-labs/amis-lib';
 
 export const RelatedsLink = ({app_id, record_id, relateds, formFactor})=>{
     const [relatedsQueryInfo, setRelatedsQueryInfo] = useState({});

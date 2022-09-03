@@ -2,14 +2,14 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 15:46:59
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-08 15:55:16
+ * @LastEditTime: 2022-09-03 14:10:41
  * @Description:
  */
 import { AmisRender } from "@/components/AmisRender";
 import { useRouter } from "next/router";
 import React, { useState, useEffect, Fragment, useRef } from "react";
 import { isEmpty, filter, values, sortBy, map, compact } from "lodash";
-import { getSearchableFieldsFilterSchema } from "@/lib/objects";
+import { getSearchableFieldsFilterSchema } from "@steedos-labs/amis-lib";
 
 export function SearchableFieldsFilter({ schema, listViewId, appId, onClose }) {
   const [searchableFields, setSearchableFields] = useState(

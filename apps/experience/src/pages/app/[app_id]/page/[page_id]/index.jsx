@@ -2,18 +2,18 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-01 13:41:17
+ * @LastEditTime: 2022-09-03 14:14:26
  * @Description:
  */
 import dynamic from "next/dynamic";
 import Document, { Script, Head, Main, NextScript } from "next/document";
 import React, { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
-import { getPage } from "@/lib/page";
+import { getPage } from "@steedos-labs/amis-lib";
 import { unstable_getServerSession } from "next-auth/next";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { PageRender } from "@/components/PageRender";
-import { setRootUrl } from "@/lib/steedos.client.js";
+import { setRootUrl } from "@steedos-labs/amis-lib";
 
 export default function Page({ publicEnv }) {
   const router = useRouter();

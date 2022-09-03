@@ -2,14 +2,14 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-23 15:15:34
+ * @LastEditTime: 2022-09-03 14:14:21
  * @Description: 
  */
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router'
 import { Loading } from '@/components/Loading'
 
-import { getApps } from '@/lib/apps'
+import { getApps } from '@steedos-labs/amis-lib'
 
 export default function Apps() {
   const router = useRouter()

@@ -4,10 +4,8 @@ import { Tab, Menu, Transition } from "@headlessui/react";
 import {
     getObjectDetailButtons,
     getObjectDetailMoreButtons,
-  } from "@/lib/buttons";
+  } from "@steedos-labs/amis-lib";
   import { Button } from "@/components/object/Button";
-
-  import { standardButtonsTodo } from '@/lib/buttons';
 
 export function RecordHeader({ schema, formFactor, permissions }) {
   const router = useRouter();

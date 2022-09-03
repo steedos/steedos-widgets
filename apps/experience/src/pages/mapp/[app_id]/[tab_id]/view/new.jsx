@@ -2,14 +2,14 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-13 18:06:23
+ * @LastEditTime: 2022-09-03 14:12:15
  * @Description:
  */
 import dynamic from "next/dynamic";
 import Document, { Script, Head, Main, NextScript } from "next/document";
 import React, { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
-import { getViewSchema, getFormSchema, getObjectRelateds } from "@/lib/objects";
+import { getViewSchema, getFormSchema, getObjectRelateds } from "@steedos-labs/amis-lib";
 import { AmisRender } from "@/components/AmisRender";
 import { unstable_getServerSession } from "next-auth/next";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";

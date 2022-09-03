@@ -2,14 +2,14 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-25 11:05:58
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-27 17:23:55
+ * @LastEditTime: 2022-09-03 14:13:33
  * @Description: 
  */
 import React, { useState, useEffect, Fragment } from "react";
-import { getNotifications, markReadAll } from '@/lib/notification';
+import { getNotifications, markReadAll } from '@steedos-labs/amis-lib';
 import { Dropdown, List, Menu, Button, Avatar, Tabs, Spin, message } from 'antd';
 import HeaderDropdown from '@/components/HeaderDropdown';
-import { getRootUrl } from '@/lib/steedos.client.js';
+import { getRootUrl } from '@steedos-labs/amis-lib';
 import { FromNow } from '@/components/FromNow'
 const { TabPane } = Tabs;
 
