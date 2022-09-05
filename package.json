@@ -16,6 +16,7 @@
     "start": "cd apps/experience && NODE_ENV=production node server.js"
   },
   "dependencies": {
+    "tsdx": "^0.14.1", 
     "lerna": "^5.4.3"
   }
 }
