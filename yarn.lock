@@ -1810,12 +1810,6 @@
     lodash "^4.17.21"
     uglify-js "^3.17.0"
 
-"@steedos-labs/amis-lib@^0.0.4":
-  version "0.0.3"
-  dependencies:
-    lodash "^4.17.21"
-    uglify-js "^3.17.0"
-
 "@steedos-ui/amis@^2.2.28":
   version "2.2.37"
   resolved "https://registry.yarnpkg.com/@steedos-ui/amis/-/amis-2.2.37.tgz#0980ce85aab94292ae765e7f46f2aa072dc93ee5"
