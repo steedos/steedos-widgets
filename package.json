@@ -19,7 +19,12 @@
   },
   "dependencies": {
     "lerna": "^5.4.3",
-    "tsdx": "^0.14.1"
+    "postcss": "^8.1.10",
+    "postcss-loader": "^4.1.0",
+    "postcss-nested": "^5.0.1",
+    "postcss-simple-vars": "^6.0.1",
+    "tsdx": "^0.14.1",
+    "vite": "^3.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.18.13",
@@ -27,6 +32,7 @@
     "@storybook/addon-essentials": "^6.5.10",
     "@storybook/addon-interactions": "^6.5.10",
     "@storybook/addon-links": "^6.5.10",
+    "@storybook/builder-vite": "^0.2.2",
     "@storybook/builder-webpack5": "^6.5.10",
     "@storybook/manager-webpack5": "^6.5.10",
     "@storybook/react": "^6.5.10",

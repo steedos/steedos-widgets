@@ -15,7 +15,10 @@
       "allowSyntheticDefaultImports": true,
       "downlevelIteration": true,
       "strictFunctionTypes": false,
-      "noImplicitAny": false
+      "noImplicitAny": false,
+      "paths": {
+        "@steedos-widgets/dnd-kit": ["packages/dnd-kit/src"],
+      }
     },
     "include": [
       "packages",
@@ -28,8 +31,5 @@
         "resolveJsonModule": true,
         "noImplicitAny": false
       }
-    },
-    "paths": {
-      "@steedos-widgets/dnd-kit": ["packages/dnd-kit/src"],
     }
   }

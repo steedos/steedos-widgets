@@ -2,6 +2,8 @@
   "name": "@steedos-widgets/dnd-kit",
   "version": "0.0.1",
   "main": "dist/index.js",
+  "module": "dist/dnd-kit.esm.js",
+  "typings": "dist/index.d.ts",
   "license": "MIT",
   "scripts": {
     "start": "tsdx watch --tsconfig tsconfig.build.json --verbose --noClean",
@@ -11,8 +13,8 @@
     "prepublish": "npm run build"
   },
   "devDependencies": {
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
+    "@types/react": "^18.0.8",
+    "@types/react-dom": "^18.0.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "rollup-plugin-postcss": "^4.0.2"

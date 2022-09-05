@@ -1,10 +1,10 @@
 import React from 'react';
 
-import {MultipleContainers} from '@steedos-widgets/dnd-kit'
+import {MultipleContainers} from '../packages/dnd-kit/src' //'@steedos-widgets/dnd-kit'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Example/MultipleContainers',
+  title: 'MultipleContainers',
   component: MultipleContainers,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {
@@ -12,4 +12,9 @@ export default {
   },
 };
 
-export const Simple =<MultipleContainers />;
+const items = {
+  A: ['A1', 'A2'],
+  B: ['B1', 'B2']
+}
+
+export const Simple = <MultipleContainers/>;

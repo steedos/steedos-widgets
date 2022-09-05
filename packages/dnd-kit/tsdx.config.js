@@ -4,8 +4,13 @@ module.exports = {
   rollup(config, options) {
     config.plugins.push(
       postcss({
-        inject: true, // 这里改为了 true
-        extract: false, //!!options.writeMeta,
+        plugins: [
+          require('postcss-simple-vars'), 
+          require('postcss-nested')
+        ],
+        modules: true,
+        // inject: true, // 这里改为了 true
+        extract: !!options.writeMeta,
       }),
     );
     return config;
