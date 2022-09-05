@@ -4,5 +4,12 @@ export function createRange<T = number>(
   length: number,
   initializer: (index: number) => any = defaultInitializer
 ): T[] {
-  return [...new Array(length)].map((_, index) => {console.log(index); return initializer(index)});
+  let array = [];
+  let index = 0;
+
+  while(index < length){
+    array.push(initializer(index));
+    index++;
+  }
+  return array;
 }

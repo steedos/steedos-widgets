@@ -1,6 +1,7 @@
 import React from 'react';
 
-import {MultipleContainers} from '../packages/dnd-kit/src' //'@steedos-widgets/dnd-kit'
+import {MultipleContainers} from '@steedos-widgets/dnd-kit'
+//import {MultipleContainers} from '../packages/dnd-kit/src' 
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
