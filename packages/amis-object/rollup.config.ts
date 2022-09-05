@@ -9,6 +9,8 @@ import visualizer from 'rollup-plugin-visualizer';
 import builtins from 'rollup-plugin-node-builtins';
 import path from 'path';
 
+require('dotenv-flow').config();
+
 const rollupPostcssLessLoader = require('rollup-plugin-postcss-webpack-alias-less-loader');
 const pkg = require('./package.json');
 
@@ -120,6 +122,13 @@ export default [
                  fileName: 'assets.json',
                  source: amis
               });
+              const amisDev = JSON.stringify(assets, null, 4).replace(/\@\{\{version\}\}/g, ``).replace(/https\:\/\/unpkg.com/g, process.env.STEEDOS_UNPKG_URL)
+              this.emitFile({
+                 type: 'asset',
+                 fileName: 'assets-dev.json',
+                 source: amisDev
+              });
+              console.log('ASSETURL DEV: ', process.env.STEEDOS_UNPKG_URL + '/@steedos-widgets/amis-object/dist/assets-dev.json')
           }
       }
     ],
