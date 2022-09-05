@@ -1,8 +1,8 @@
 import React from 'react';
 import {rectSortingStrategy} from '@dnd-kit/sortable';
 
-import {MultipleContainers} from '@steedos-widgets/dnd-kit'
-//import {MultipleContainers} from '../packages/dnd-kit/src' 
+import {MultipleContainers} from '@steedos-widgets/sortable'
+//import {MultipleContainers} from '../packages/sortable/src' 
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
