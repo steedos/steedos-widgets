@@ -1,4 +1,5 @@
 import React from 'react';
+import {rectSortingStrategy} from '@dnd-kit/sortable';
 
 import {MultipleContainers} from '@steedos-widgets/dnd-kit'
 //import {MultipleContainers} from '../packages/dnd-kit/src' 
@@ -14,8 +15,23 @@ export default {
 };
 
 const items = {
-  A: ['A1', 'A2'],
-  B: ['B1', 'B2']
+  X: ['XX1', 'XX2'],
+  Y: ['YY2', 'YY2']
 }
 
-export const Simple = <MultipleContainers/>;
+export const Simple = () => <MultipleContainers/>;
+
+export const withItems = () => <MultipleContainers items={items}/>;
+
+export const Vertical = () => <MultipleContainers itemCount={5} vertical />;
+
+export const Grid = () => (
+  <MultipleContainers
+    columns={2}
+    strategy={rectSortingStrategy}
+    wrapperStyle={() => ({
+      width: 150,
+      height: 150,
+    })}
+  />
+);
