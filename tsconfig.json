@@ -19,6 +19,7 @@
     },
     "include": [
       "packages",
+      "stories",
     ],
     "exclude": ["node_modules"],
     "ts-node": {
@@ -27,5 +28,8 @@
         "resolveJsonModule": true,
         "noImplicitAny": false
       }
+    },
+    "paths": {
+      "@steedos-widgets/dnd-kit": ["packages/dnd-kit/src"],
     }
   }

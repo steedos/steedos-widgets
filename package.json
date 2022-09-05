@@ -13,10 +13,24 @@
     "dev": "cd apps/experience && node server",
     "build": "lerna run build",
     "release": "cd steedos-ee/packages/experience && npm publish --registry https://registry.npmjs.org ",
-    "start": "cd apps/experience && NODE_ENV=production node server.js"
+    "start": "cd apps/experience && NODE_ENV=production node server.js",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "dependencies": {
-    "tsdx": "^0.14.1", 
-    "lerna": "^5.4.3"
+    "lerna": "^5.4.3",
+    "tsdx": "^0.14.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.18.13",
+    "@storybook/addon-actions": "^6.5.10",
+    "@storybook/addon-essentials": "^6.5.10",
+    "@storybook/addon-interactions": "^6.5.10",
+    "@storybook/addon-links": "^6.5.10",
+    "@storybook/builder-webpack5": "^6.5.10",
+    "@storybook/manager-webpack5": "^6.5.10",
+    "@storybook/react": "^6.5.10",
+    "@storybook/testing-library": "^0.0.13",
+    "babel-loader": "^8.2.5"
   }
 }

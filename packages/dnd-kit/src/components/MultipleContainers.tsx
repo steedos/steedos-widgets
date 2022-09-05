@@ -35,7 +35,8 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { coordinateGetter as multipleContainersCoordinateGetter } from './multipleContainersKeyboardCoordinates';
 
-import { Item, Container, ContainerProps } from '.';
+import { Item } from './Item'
+import { Container, ContainerProps } from '.';
 
 import { createRange } from '../utilities';
 
