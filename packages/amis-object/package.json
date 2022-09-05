@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "prebuild": "rimraf dist",
-    "dev": "npx http-server ../ --port 8080 --cors -c -1",
+    "dev": "node server",
     "build": "yarn build-types && yarn build-rollup",
     "build-types": "tsc --emitDeclarationOnly --declaration --declarationDir dist/types",
     "build-rollup": "rollup -c rollup.config.ts && yarn build-uglifyjs",
