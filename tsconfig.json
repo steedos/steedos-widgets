@@ -17,7 +17,7 @@
       "strictFunctionTypes": false,
       "noImplicitAny": false,
       "paths": {
-        "@steedos-widgets/dnd-kit": ["packages/dnd-kit/src"],
+        "@steedos-widgets/sortable": ["packages/sortable/src"],
       }
     },
     "include": [
