@@ -11,11 +11,12 @@ tasks:
   - name: Nextjs
     command: |
       git config pull.rebase false
+      yarn install
+      yarn build
+      cd apps/experience
       echo "STEEDOS_EXPERIENCE_URL=$(gp url 3000)" >> .env.local
       echo "NEXTAUTH_URL=$(gp url 3000)" >> .env.local
       echo "STEEDOS_ROOT_URL=$(gp url 5000)" >> .env.local
-      yarn install
-      yarn build
       yarn run dev
 
 ports:
