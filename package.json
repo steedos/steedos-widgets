@@ -5,12 +5,10 @@
   "author": "庄建国 <zhuangjianguo@steedos.com>",
   "license": "MIT",
   "private": true,
-  "workspaces": {
-    "packages": [
-      "./apps/*",
-      "./packages/*"
-    ]
-  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "dev": "cd apps/experience && node server",
     "build": "lerna run build",
