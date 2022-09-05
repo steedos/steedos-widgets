@@ -6,5 +6,3 @@
  * @Description: 
  */
 export * from './AmisHello';
-export * from './AmisSteedosObjectForm';
-export * from './AmisObjectListview';

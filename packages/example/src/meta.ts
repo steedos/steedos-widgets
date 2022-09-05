@@ -5,19 +5,17 @@
  * @LastEditTime: 2022-09-01 18:46:29
  * @Description: 
  */
-// import Hello from "./metas/Hello";
+import Hello from "./metas/Hello";
 import AmisHello from "./metas/AmisHello";
-import AmisSteedosObjectForm from "./metas/AmisSteedosObjectForm";
-import AmisObjectListview from "./metas/AmisObjectListview";
-const components = [AmisHello, AmisSteedosObjectForm, AmisObjectListview];
-// const componentList = [
-//   {
-//     title: "哈喽组件",
-//     icon: "",
-//     children: [Hello]
-//   }
-// ];
+const components = [Hello, AmisHello];
+const componentList = [
+  {
+    title: "哈喽组件",
+    icon: "",
+    children: [Hello, AmisHello]
+  }
+];
 export default {
-  // componentList,
+  componentList,
   components
 };
