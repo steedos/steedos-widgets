@@ -5,8 +5,7 @@
  * @LastEditTime: 2022-09-01 10:52:00
  * @Description: 
  */
-import * as ts from 'typescript';
-import typescript from 'rollup-plugin-typescript2';
+import typescript from '@rollup/plugin-typescript';
 import commonjs from 'rollup-plugin-commonjs';
 import resolve from 'rollup-plugin-node-resolve';
 import { uglify } from 'rollup-plugin-uglify';
@@ -30,10 +29,7 @@ const options = {
   context: 'window',
 
   plugins: [
-    typescript({
-      typescript: ts,
-      useTsconfigDeclarationDir: true,
-    }),
+    typescript({}),
     json(),
     commonjs({
       namedExports: {
