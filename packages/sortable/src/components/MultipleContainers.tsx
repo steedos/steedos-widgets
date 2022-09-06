@@ -456,7 +456,6 @@ export function MultipleContainers({
         style={{
           display: 'inline-grid',
           boxSizing: 'border-box',
-          padding: 20,
           gridAutoFlow: vertical ? 'row' : 'column',
         }}
       >

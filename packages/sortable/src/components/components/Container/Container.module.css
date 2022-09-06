@@ -20,7 +20,7 @@
     grid-gap: 10px;
     grid-template-columns: repeat(var(--columns, 1), 1fr);
     list-style: none;
-    padding: 20px;
+    padding: 10px;
     margin: 0;
   }
 
