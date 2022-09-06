@@ -3274,13 +3274,6 @@
     "@types/path-to-regexp" "^1.7.0"
     path-to-regexp "^6.2.1"
 
-"@steedos-widgets/amis-lib@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@steedos-widgets/amis-lib/-/amis-lib-0.0.1.tgz#21f19b9131f28c82e389223080a28471b3be6e9c"
-  integrity sha512-MxrC7K2ZFY+P6NIIY1xeEkYYFjBxvt+UocbpJvMuvjCq7u0h4ATaHF6Rsv81DRbRIeDuZDlsorq6kKXmr3Liow==
-  dependencies:
-    lodash "^4.17.21"
-
 "@storybook/addon-actions@6.5.10", "@storybook/addon-actions@^6.5.10":
   version "6.5.10"
   resolved "https://registry.yarnpkg.com/@storybook/addon-actions/-/addon-actions-6.5.10.tgz#83ec807a899e0412cf98037647f256c45cc32bf5"
