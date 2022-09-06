@@ -20,7 +20,7 @@ import { useRouter } from "next/router";
 import React, { useState, useEffect, Fragment, useRef } from "react";
 import { Button } from "@/components/object/Button";
 import { FromNow } from "@/components/FromNow";
-import { getListViewButtons } from '@steedos-labs/amis-lib';
+import { getListViewButtons } from '@steedos-widgets/amis-lib';
 
 export function ListviewHeader({ schema, onListviewChange, formFactor }) {
   const [buttons, setButtons] = useState(null);

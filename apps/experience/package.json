@@ -17,7 +17,7 @@
     "@salesforce-ux/design-system": "^2.18.1",
     "@steedos-builder/react": "^0.2.28",
     "@steedos-ui/amis": "^2.2.28",
-    "@steedos-labs/amis-lib": "^0.0.3",
+    "@steedos-widgets/amis-lib": "^0.0.2",
     "@tailwindcss/forms": "^0.5.2",
     "antd": "^4.22.0",
     "attr-accept": "^2.2.2",

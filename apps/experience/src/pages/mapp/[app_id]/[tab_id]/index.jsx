@@ -9,7 +9,7 @@ import dynamic from 'next/dynamic'
 import Document, { Script, Head, Main, NextScript } from 'next/document'
 import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { useRouter } from 'next/router'
-import { getListSchema } from '@steedos-labs/amis-lib';
+import { getListSchema } from '@steedos-widgets/amis-lib';
 import { unstable_getServerSession } from "next-auth/next"
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
 import { values } from 'lodash'

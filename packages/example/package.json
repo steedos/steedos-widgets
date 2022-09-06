@@ -54,7 +54,7 @@
     "typescript": "^4.6.2"
   },
   "dependencies": {
-    "@steedos-labs/amis-lib": "^0.0.1",
+    "@steedos-widgets/amis-lib": "^0.0.1",
     "uglify-js": "^3.17.0"
   }
 }

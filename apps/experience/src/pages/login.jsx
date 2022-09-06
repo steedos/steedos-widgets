@@ -15,7 +15,7 @@ import { XCircleIcon } from "@heroicons/react/solid";
 import { AuthLayout } from "@/components/AuthLayout";
 import { Input } from "@/components/Input";
 import { Logo } from "@/components/Logo";
-import { getRootUrl, setRootUrl } from "@steedos-labs/amis-lib";
+import { getRootUrl, setRootUrl } from "@steedos-widgets/amis-lib";
 
 const errors = {
   Signin: "Try signing in with a different account.",

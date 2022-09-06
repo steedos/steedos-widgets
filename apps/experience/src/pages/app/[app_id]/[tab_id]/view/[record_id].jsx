@@ -2,14 +2,14 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-03 10:41:50
+ * @LastEditTime: 2022-09-06 09:41:11
  * @Description:
  */
 import dynamic from "next/dynamic";
 import Document, { Script, Head, Main, NextScript } from "next/document";
 import React, { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
-import { getViewSchema, getFormSchema, getObjectRelateds } from "@steedos-labs/amis-lib";
+import { getViewSchema, getFormSchema, getObjectRelatedList } from "@steedos-widgets/amis-lib";
 import { AmisRender } from "@/components/AmisRender";
 import { unstable_getServerSession } from "next-auth/next";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
@@ -18,13 +18,12 @@ import { Tab, Menu, Transition } from "@headlessui/react";
 import { RecordHeader } from '@/components/object/RecordHeader';
 import { RecordHeader as MobileRecordHeader } from '@/components/mobile/object/RecordHeader';
 import { RecordRelateds } from '@/components/object/RecordRelateds';
-import { getRecordPermissions } from '@steedos-labs/amis-lib';
+import { getRecordPermissions } from '@steedos-widgets/amis-lib';
 import { Loading } from '@/components/Loading';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
-
 export default function Record({formFactor}) {
   const router = useRouter();
   const { app_id, tab_id, record_id } = router.query;
@@ -68,7 +67,7 @@ export default function Record({formFactor}) {
 
   const viewRecord = (tab_id, record_id, formFactor) => {
     if (tab_id && record_id) {
-      const p1 = getObjectRelateds(app_id, tab_id, record_id, formFactor);
+      const p1 = getObjectRelatedList(app_id, tab_id, record_id, formFactor);
       const p2 = getViewSchema(tab_id, record_id, {
         recordId: record_id,
         tabId: tab_id,

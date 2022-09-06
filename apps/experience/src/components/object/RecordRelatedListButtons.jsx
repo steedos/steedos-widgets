@@ -5,12 +5,12 @@
  * @LastEditTime: 2022-09-03 15:31:36
  * @Description: 
  */
-import { getListViewButtons, execute } from '@steedos-labs/amis-lib';
+import { getListViewButtons, execute } from '@steedos-widgets/amis-lib';
 import { useRouter } from 'next/router';
 import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { Button } from '@/components/object/Button'
 import { AmisRender } from "@/components/AmisRender";
-import { getSteedosAuth } from '@steedos-labs/amis-lib';
+import { getSteedosAuth } from '@steedos-widgets/amis-lib';
 
 export function RecordRelatedListButtons(props) {
     const { app_id, tab_id, schema, refId, foreign_key, record_id, object_name , masterObjectName, inMore, formFactor} = props;

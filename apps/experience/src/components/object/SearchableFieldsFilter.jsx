@@ -9,7 +9,7 @@ import { AmisRender } from "@/components/AmisRender";
 import { useRouter } from "next/router";
 import React, { useState, useEffect, Fragment, useRef } from "react";
 import { isEmpty, filter, values, sortBy, map, compact } from "lodash";
-import { getSearchableFieldsFilterSchema } from "@steedos-labs/amis-lib";
+import { getSearchableFieldsFilterSchema } from "@steedos-widgets/amis-lib";
 
 export function SearchableFieldsFilter({ schema, listViewId, appId, onClose }) {
   const [searchableFields, setSearchableFields] = useState(

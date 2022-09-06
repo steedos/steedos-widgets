@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 09:11:13
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-02 10:51:53
+ * @LastEditTime: 2022-09-05 17:53:19
  * @Description: 
 -->
 # Amis-lib
@@ -17,7 +17,7 @@ getViewSchema
 getListSchema
 
 ## 获取所有相关表
-getObjectRelateds
+getObjectRelatedList
 
 ## 获取单个相关表
 getObjectRelated

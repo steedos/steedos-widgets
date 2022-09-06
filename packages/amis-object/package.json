@@ -62,7 +62,7 @@
     "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
     "@babel/plugin-proposal-object-rest-spread": "^7.18.9",
     "@babel/plugin-transform-runtime": "^7.18.10",
-    "@steedos-labs/amis-lib": "^0.0.1",
+    "@steedos-widgets/amis-lib": "^0.0.1",
     "uglify-js": "^3.17.0"
   }
 }

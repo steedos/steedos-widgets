@@ -6,7 +6,7 @@
  * @Description: 
  */
 import { AmisRender } from "@/components/AmisRender";
-import { execute } from "@steedos-labs/amis-lib";
+import { execute } from "@steedos-widgets/amis-lib";
 import { useRouter } from 'next/router';
 import { isString } from "lodash";
 export function Button(props) {

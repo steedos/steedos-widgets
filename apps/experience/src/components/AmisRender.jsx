@@ -8,9 +8,9 @@
 
 import React, { useState, useEffect, Fragment, useRef, useImperativeHandle } from 'react';
 import { amisRender, amisRootClick } from '@/lib/amis';
-import { getSteedosAuth } from '@steedos-labs/amis-lib'
+import { getSteedosAuth } from '@steedos-widgets/amis-lib'
 import { defaultsDeep } from 'lodash';
-import { getRootUrl } from '@steedos-labs/amis-lib';
+import { getRootUrl } from '@steedos-widgets/amis-lib';
 
 export const AmisRender = ({id, schema, data, router, className, assets})=>{
     useEffect(() => {

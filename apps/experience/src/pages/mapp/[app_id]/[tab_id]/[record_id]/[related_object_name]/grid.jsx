@@ -2,11 +2,11 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-04 15:01:06
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-03 14:11:51
+ * @LastEditTime: 2022-09-06 10:56:56
  * @Description: 
  */
 import React, { useState, useEffect, Fragment } from "react";
-import { getObjectRelated } from '@steedos-labs/amis-lib';
+import { getObjectRelated } from '@steedos-widgets/amis-lib';
 import { RelatedList } from "@/components/mobile/object/RelatedList";
 import { useRouter } from 'next/router'
 
@@ -28,7 +28,12 @@ export default function RelatedGrid({}){
 
     useEffect(() => {
         if(!tab_id || !formFactor) return ;
-        getObjectRelated(app_id, tab_id, related_object_name, related_field_name, record_id, formFactor).then((data)=>{
+        getObjectRelated({appName: app_id,
+          masterObjectName: tab_id,
+          objectName: related_object_name,
+          relatedFieldName: related_field_name,
+          recordId: record_id,
+          formFactor}).then((data)=>{
             setRelated(data)
         })
       }, [tab_id, formFactor]);

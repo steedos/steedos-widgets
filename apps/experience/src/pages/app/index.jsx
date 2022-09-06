@@ -9,7 +9,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router'
 import { Loading } from '@/components/Loading'
 
-import { getApps } from '@steedos-labs/amis-lib'
+import { getApps } from '@steedos-widgets/amis-lib'
 
 export default function Apps() {
   const router = useRouter()

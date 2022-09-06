@@ -6,10 +6,10 @@
  * @Description: 
  */
 import React, { useState, useEffect, Fragment } from "react";
-import { getNotifications, markReadAll } from '@steedos-labs/amis-lib';
+import { getNotifications, markReadAll } from '@steedos-widgets/amis-lib';
 import { Dropdown, List, Menu, Button, Avatar, Tabs, Spin, message } from 'antd';
 import HeaderDropdown from '@/components/HeaderDropdown';
-import { getRootUrl } from '@steedos-labs/amis-lib';
+import { getRootUrl } from '@steedos-widgets/amis-lib';
 import { FromNow } from '@/components/FromNow'
 const { TabPane } = Tabs;
 
