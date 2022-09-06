@@ -12,7 +12,7 @@
   "scripts": {
     "dev": "cd apps/experience && node server",
     "build": "lerna run build",
-    "unpkg": "npx http-server ./unpkg.com --port 8080 --cors -c -1",
+    "unpkg": "http-server ./unpkg.com --port 8080 --cors -c -1",
     "release": "cd steedos-ee/packages/experience && npm publish --registry https://registry.npmjs.org ",
     "start": "cd apps/experience && NODE_ENV=production node server.js",
     "storybook": "start-storybook -p 6006",
@@ -38,6 +38,7 @@
     "@storybook/manager-webpack5": "^6.5.10",
     "@storybook/react": "^6.5.10",
     "@storybook/testing-library": "^0.0.13",
-    "babel-loader": "^8.2.5"
+    "babel-loader": "^8.2.5",
+    "http-server": "^14.1.1"
   }
 }
