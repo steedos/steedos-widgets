@@ -11,7 +11,7 @@
   ],
   "components": [
       {
-          "exportName": "BuilderSortableWidgetsMeta",
+          "exportName": "BuilderSortableMeta",
           "npm": {
               "package": "@steedos-widgets/sortable"
           },

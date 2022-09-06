@@ -1,3 +1,4 @@
+import resolve, { nodeResolve } from '@rollup/plugin-node-resolve';
 import postcss from 'rollup-plugin-postcss';
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
@@ -29,7 +30,8 @@ const options = {
   watch: {
     include: 'src/**',
   },
-  plugins: [,
+  plugins: [
+    nodeResolve(),
     json(),
     typescript({ 
     }),
