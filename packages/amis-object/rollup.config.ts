@@ -31,34 +31,34 @@ const options = {
     include: 'src/**',
   },
   plugins: [,
-    builtins(),
+    // builtins(),
     json(),
     // resolve(),
-    nodeResolve({
-      extensions: [ '.jsx', '.js', '.json', '.node' ],
-      browser: true, 
-      preferBuiltins: false,
-      resolveOnly: [  ]
-    }),
+    // nodeResolve({
+    //   extensions: [ '.jsx', '.js', '.json', '.node' ],
+    //   browser: true, 
+    //   preferBuiltins: false,
+    //   resolveOnly: [  ]
+    // }),
     // Compile TypeScript files
     typescript({}),
-    commonjs({
-    }),
-    babel({
-      babelHelpers: 'runtime',
-      exclude: '**/node_modules/**',
-      presets: ["@babel/preset-react", "@babel/preset-env"],
-      plugins: [
-        ["@babel/plugin-proposal-class-properties"],
-        '@babel/plugin-proposal-object-rest-spread',
-        '@babel/plugin-proposal-export-default-from',
-        '@babel/plugin-proposal-export-namespace-from',
-        ["@babel/plugin-transform-runtime", {
-          "regenerator": true,
-          "corejs": false,
-        }]
-      ]
-    }),
+    // commonjs({
+    // }),
+    // babel({
+    //   babelHelpers: 'runtime',
+    //   exclude: '**/node_modules/**',
+    //   presets: ["@babel/preset-react", "@babel/preset-env"],
+    //   plugins: [
+    //     ["@babel/plugin-proposal-class-properties"],
+    //     '@babel/plugin-proposal-object-rest-spread',
+    //     '@babel/plugin-proposal-export-default-from',
+    //     '@babel/plugin-proposal-export-namespace-from',
+    //     ["@babel/plugin-transform-runtime", {
+    //       "regenerator": true,
+    //       "corejs": false,
+    //     }]
+    //   ]
+    // }),
     postcss({
       loaders: [rollupPostcssLessLoader({
         nodeModulePath: path.resolve('../../node_modules'),
@@ -75,10 +75,10 @@ const options = {
       extract: true,
       // minimize: true,
     }),
-    replace({
-      'process.env.NODE_ENV': JSON.stringify( 'production' ),
-      'document.body.clientWidth': 'document.body && document.body.clientWidth',
-    }),
+    // replace({
+    //   'process.env.NODE_ENV': JSON.stringify( 'production' ),
+    //   'document.body.clientWidth': 'document.body && document.body.clientWidth',
+    // }),
   ],
 };
 

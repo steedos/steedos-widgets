@@ -48,7 +48,7 @@ export default [
     external,
     output: [
       {
-        file: 'dist/amis-lib.umd.js',
+        file: pkg.unpkg,
         name: 'amis-lib',
         format: 'umd',
         sourcemap: false,

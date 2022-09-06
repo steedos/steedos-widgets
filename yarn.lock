@@ -3266,14 +3266,6 @@
     systemjs "^6.12.1"
     tslib "^1.10.0"
 
-"@steedos-labs/amis-lib@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@steedos-labs/amis-lib/-/amis-lib-0.0.1.tgz#daaf757036a200a00a2ea6c9e4483decfceeffa0"
-  integrity sha512-TAIwNcybzGHn6fPRXqtrynTTTMKSL+0HTuhYiGyB3NWBl1mOHdeaVZJNVCYNtaQOtTkDUi1yPRy9CGOIgrZQAw==
-  dependencies:
-    lodash "^4.17.21"
-    uglify-js "^3.17.0"
-
 "@steedos-ui/amis@^2.2.28":
   version "2.2.44"
   resolved "https://registry.yarnpkg.com/@steedos-ui/amis/-/amis-2.2.44.tgz#7bf1c1f5797d12b052e6f603e179c8cdb69b3f4c"
@@ -3281,6 +3273,13 @@
   dependencies:
     "@types/path-to-regexp" "^1.7.0"
     path-to-regexp "^6.2.1"
+
+"@steedos-widgets/amis-lib@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@steedos-widgets/amis-lib/-/amis-lib-0.0.1.tgz#21f19b9131f28c82e389223080a28471b3be6e9c"
+  integrity sha512-MxrC7K2ZFY+P6NIIY1xeEkYYFjBxvt+UocbpJvMuvjCq7u0h4ATaHF6Rsv81DRbRIeDuZDlsorq6kKXmr3Liow==
+  dependencies:
+    lodash "^4.17.21"
 
 "@storybook/addon-actions@6.5.10", "@storybook/addon-actions@^6.5.10":
   version "6.5.10"
