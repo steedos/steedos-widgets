@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import {
     getObjectDetailButtons,
     getObjectDetailMoreButtons,
-  } from "@steedos-labs/amis-lib";
+  } from "@steedos-widgets/amis-lib";
 import { Button } from "@/components/object/Button";
 
 import { MoreOutlined } from '@ant-design/icons';

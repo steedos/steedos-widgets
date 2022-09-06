@@ -2,14 +2,14 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-03 14:12:07
+ * @LastEditTime: 2022-09-05 17:53:30
  * @Description:
  */
 import dynamic from "next/dynamic";
 import Document, { Script, Head, Main, NextScript } from "next/document";
 import React, { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
-import { getViewSchema, getFormSchema, getObjectRelateds } from "@steedos-labs/amis-lib";
+import { getViewSchema, getFormSchema, getObjectRelatedList } from "@steedos-widgets/amis-lib";
 import { AmisRender } from "@/components/AmisRender";
 import { unstable_getServerSession } from "next-auth/next";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
@@ -58,7 +58,7 @@ export default function Record({formFactor}) {
 
   const viewRecord = (tab_id, record_id, formFactor) => {
     if (tab_id && record_id) {
-      const p1 = getObjectRelateds(app_id, tab_id, record_id, formFactor);
+      const p1 = getObjectRelatedList(app_id, tab_id, record_id, formFactor);
       const p2 = getViewSchema(tab_id, record_id, {
         recordId: record_id,
         tabId: tab_id,

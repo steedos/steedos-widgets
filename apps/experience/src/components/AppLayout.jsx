@@ -8,9 +8,9 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Sidebar } from '@/components/Sidebar';
-import { getApp } from '@steedos-labs/amis-lib';
+import { getApp } from '@steedos-widgets/amis-lib';
 import { useRouter } from 'next/router'
-import { setSteedosAuth, getRootUrl } from '@steedos-labs/amis-lib';
+import { setSteedosAuth, getRootUrl } from '@steedos-widgets/amis-lib';
 import { useSession } from "next-auth/react"
 
 export function AppLayout({ children }) {

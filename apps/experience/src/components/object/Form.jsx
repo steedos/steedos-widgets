@@ -7,7 +7,7 @@
  */
 import React, { useState, useEffect, Fragment } from "react";
 import { AmisRender } from "@/components/AmisRender";
-import { getFormSchema } from "@steedos-labs/amis-lib";
+import { getFormSchema } from "@steedos-widgets/amis-lib";
 
 export function Form({ appId, objectName, recordId, className, data, formFactor }) {
     const [schema, setSchema] = useState(null);

@@ -4,7 +4,7 @@ import { Tab, Menu, Transition } from "@headlessui/react";
 import {
     getObjectDetailButtons,
     getObjectDetailMoreButtons,
-  } from "@steedos-labs/amis-lib";
+  } from "@steedos-widgets/amis-lib";
   import { Button } from "@/components/object/Button";
 
 export function RecordHeader({ schema, formFactor, permissions }) {

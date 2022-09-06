@@ -5,13 +5,13 @@
  * @LastEditTime: 2022-09-03 15:42:26
  * @Description: 
  */
-import { getListViewButtons } from '@steedos-labs/amis-lib';
+import { getListViewButtons } from '@steedos-widgets/amis-lib';
 import { useRouter } from 'next/router';
 import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { Button } from '@/components/object/Button'
 import _ from 'lodash';
 
-import { standardButtonsTodo } from '@steedos-labs/amis-lib';
+import { standardButtonsTodo } from '@steedos-widgets/amis-lib';
 
 export function ListButtons(props) {
     const { app_id, tab_id, schema, formFactor } = props;

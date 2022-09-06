@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-03 10:46:31
+ * @LastEditTime: 2022-09-06 10:32:53
  * @Description:
  */
 import { fetchAPI } from "./steedos.client";
@@ -111,7 +111,7 @@ export async function getListSchema(
     appName,
     objectName,
     listViewName,
-    options = {}
+    ctx = {}
 ) {
     const uiSchema = await getUISchema(objectName);
     const listView = _.find(
@@ -125,7 +125,7 @@ export async function getListSchema(
     let fields = uiSchema.fields;
     const listViewFields = [];
 
-    let listViewColumns = getListViewColumns(listView, options.formFactor);
+    let listViewColumns = getListViewColumns(listView, ctx.formFactor);
 
     if (listView && listViewColumns) {
         _.each(listViewColumns, function (column) {
@@ -157,7 +157,7 @@ export async function getListSchema(
         tabId: objectName,
         appId: appName,
         objectName: objectName,
-        ...options,
+        ...ctx,
         filter: listView.filters,
     });
 
@@ -168,7 +168,7 @@ export async function getListSchema(
 }
 
 // 获取所有相关表
-export async function getObjectRelateds(
+export async function getObjectRelatedList(
     appName,
     objectName,
     recordId,
@@ -216,12 +216,12 @@ export async function getObjectRelateds(
 
 // 获取单个相关表
 export async function getObjectRelated(
-    appName,
+    {appName,
     masterObjectName,
     objectName,
     relatedFieldName,
     recordId,
-    formFactor
+    formFactor}
 ) {
     let filter = null;
     const refField = await getField(objectName, relatedFieldName);

@@ -2,18 +2,18 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-03 14:14:26
+ * @LastEditTime: 2022-09-06 09:44:26
  * @Description:
  */
 import dynamic from "next/dynamic";
 import Document, { Script, Head, Main, NextScript } from "next/document";
 import React, { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
-import { getPage } from "@steedos-labs/amis-lib";
+import { getPage } from "@steedos-widgets/amis-lib";
 import { unstable_getServerSession } from "next-auth/next";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { PageRender } from "@/components/PageRender";
-import { setRootUrl } from "@steedos-labs/amis-lib";
+import { setRootUrl } from "@steedos-widgets/amis-lib";
 
 export default function Page({ publicEnv }) {
   const router = useRouter();
@@ -27,7 +27,7 @@ export default function Page({ publicEnv }) {
 
   useEffect(() => {
     if (!page_id) return;
-    getPage(page_id, app_id).then((data) => {
+    getPage({pageId: page_id, appId: app_id}).then((data) => {
       setPage(data);
     });
   }, [app_id, page_id]);
