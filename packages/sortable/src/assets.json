@@ -3,7 +3,7 @@
       {
           "package": "@steedos-widgets/sortable",
           "urls": [
-              "https://unpkg.com/@steedos-widgets/sortable@{{version}}/dist/sortable.umd.min.js",
+              "https://unpkg.com/@steedos-widgets/sortable@{{version}}/dist/sortable.umd.js",
               "https://unpkg.com/@steedos-widgets/sortable@{{version}}/dist/sortable.umd.css"
           ],
           "library": "BuilderSortable"

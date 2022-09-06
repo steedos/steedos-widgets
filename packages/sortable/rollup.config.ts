@@ -2,6 +2,9 @@ import postcss from 'rollup-plugin-postcss';
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
 import json from 'rollup-plugin-json';
+import { terser } from "rollup-plugin-terser";
+
+require('dotenv-flow').config();
 
 const pkg = require('./package.json');
 
@@ -35,6 +38,7 @@ const options = {
     postcss({
       extract: true,
     }),
+    terser()
   ],
 };
 
@@ -89,7 +93,6 @@ export default [
                  fileName: 'assets-dev.json',
                  source: amisDev
               });
-              console.log('ASSETURL DEV: ', unpkgUrl + '/@steedos-widgets/amis-object/dist/assets-dev.json')
           }
       }
     ],
