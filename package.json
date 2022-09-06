@@ -12,6 +12,7 @@
   "scripts": {
     "dev": "cd apps/experience && node server",
     "build": "lerna run build",
+    "unpkg": "node unpkg.js",
     "release": "cd steedos-ee/packages/experience && npm publish --registry https://registry.npmjs.org ",
     "start": "cd apps/experience && NODE_ENV=production node server.js",
     "storybook": "start-storybook -p 6006",
