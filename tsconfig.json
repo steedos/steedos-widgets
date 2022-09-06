@@ -16,6 +16,7 @@
       "downlevelIteration": true,
       "strictFunctionTypes": false,
       "noImplicitAny": false,
+      "declarationDir": "dist/types",
       "paths": {
         "@steedos-widgets/sortable": ["packages/sortable/src"],
       }
@@ -24,12 +25,5 @@
       "packages",
       "stories",
     ],
-    "exclude": ["node_modules"],
-    "ts-node": {
-      "compilerOptions": {
-        "module": "CommonJS",
-        "resolveJsonModule": true,
-        "noImplicitAny": false
-      }
-    }
+    "exclude": ["node_modules"]
   }

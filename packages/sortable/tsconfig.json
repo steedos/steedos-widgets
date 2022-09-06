@@ -1,13 +1,11 @@
 {
-  "extends": "./tsconfig.build.json",
-  "include": ["src"],
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "allowJs": false,
-    "baseUrl": ".",
-    "importsNotUsedAsValues": "error",
-    "isolatedModules": true,
-    "typeRoots": ["../node_modules/@types", "./node_modules/@types", "./types"],
-    "paths": {
-    }
-  }
+    "baseUrl": "./",
+    "declarationDir": "dist/types",
+    "declaration": true,
+    "outDir": "dist/cjs"
+  },
+  "include": ["src"],
+  "exclude": ["dist"]
 }
