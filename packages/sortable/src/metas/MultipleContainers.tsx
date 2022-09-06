@@ -60,10 +60,12 @@ const config: any = {
         scaffold: {
           type: config.amis.name,
           label: config.title,
-          // items: {
-          //   A: ["A1", "A2"],
-          //   B: ["B1", "B2"]
-          // }
+          columns: 1,
+          vertical: false,
+          items: JSON.stringify({
+            A: ["A1", "A2"],
+            B: ["B1", "B2"]
+          })
         },
         previewSchema: {
           type: config.amis.name,
@@ -71,17 +73,22 @@ const config: any = {
         panelTitle: "设置",
         panelControls: [
           {
-            type: "editor",
-            name: "items",
-            label: "数据",
-            language: 'json'
+            "name": "columns",
+            "type": "input-number",
+            "label": "列数",
           },
           {
             "name": "vertical",
             "type": "checkbox",
             "label": "布局",
             "option": "纵向"
-          }
+          },
+          {
+            type: "editor",
+            name: "items",
+            label: "数据",
+            language: 'json'
+          },
         ]
       }
     }
