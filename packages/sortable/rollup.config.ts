@@ -39,6 +39,7 @@ const options = {
     }),
     postcss({
       extract: true,
+      plugins: [require('postcss-simple-vars'), require('postcss-nested')],
     }),
     terser()
   ],
