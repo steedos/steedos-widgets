@@ -15,8 +15,8 @@ export default {
 };
 
 const items = {
-  X: ['XX1', 'XX2'],
-  Y: ['YY2', 'YY2']
+  X: ['A1', 'X2'],
+  Y: ['Y2', 'Y2']
 }
 
 export const Simple = () => <MultipleContainers/>;
@@ -31,7 +31,20 @@ export const Grid = () => (
     strategy={rectSortingStrategy}
     wrapperStyle={() => ({
       width: 150,
-      height: 150,
+      height: 50,
     })}
+  />
+);
+
+
+export const VerticalGrid = () => (
+  <MultipleContainers
+    columns={2}
+    strategy={rectSortingStrategy}
+    wrapperStyle={() => ({
+      width: 150,
+      height: 50,
+    })}
+    vertical
   />
 );
