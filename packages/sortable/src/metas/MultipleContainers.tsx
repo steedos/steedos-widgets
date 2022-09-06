@@ -59,6 +59,7 @@ const config: any = {
         icon: config.amis.icon,
         scaffold: {
           type: config.amis.name,
+          asFormItem: true,
           label: config.title,
           columns: 1,
           vertical: false,

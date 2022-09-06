@@ -143,6 +143,8 @@ interface Props {
   trashable?: boolean;
   scrollable?: boolean;
   vertical?: boolean;
+  value: Items | string,
+  onChange: Function,
 }
 
 export const TRASH_ID = 'void';
@@ -167,22 +169,33 @@ export function MultipleContainers({
   trashable = false,
   vertical = false,
   scrollable,
+  value,
+  onChange
 }: Props) {
+
   if (typeof initialItems === 'string') {
     try {
       initialItems = JSON.parse(initialItems)
     }catch(e){}
   }
+  if (initialItems)
+    delete(initialItems.$$id)
 
   const [items, setItems] = useState<Items>(
     () =>
-      initialItems ?? {
+      (initialItems as Items) ?? {
         A: createRange(itemCount, (index) => `A${index + 1}`),
         B: createRange(itemCount, (index) => `B${index + 1}`),
         C: createRange(itemCount, (index) => `C${index + 1}`),
         D: createRange(itemCount, (index) => `D${index + 1}`),
       }
   );
+
+  useEffect(() => {
+    if (onChange)
+      onChange(items)
+  }, [items]); // Only re-run the effect if count changes
+
   const [containers, setContainers] = useState(
     Object.keys(items) as UniqueIdentifier[]
   );
