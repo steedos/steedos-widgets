@@ -168,6 +168,12 @@ export function MultipleContainers({
   vertical = false,
   scrollable,
 }: Props) {
+  if (typeof initialItems === 'string') {
+    try {
+      initialItems = JSON.parse(initialItems)
+    }catch(e){}
+  }
+
   const [items, setItems] = useState<Items>(
     () =>
       initialItems ?? {
@@ -185,7 +191,6 @@ export function MultipleContainers({
   const recentlyMovedToNewContainer = useRef(false);
   const isSortingContainer = activeId ? containers.includes(activeId) : false;
 
-  console.log(items)
   /**
    * Custom collision detection strategy optimized for multiple containers
    *

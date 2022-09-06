@@ -1,7 +1,7 @@
 const config: any = {
-    group: "Steedos",
+    group: "华炎魔方",
     componentName: "MultipleContainers",
-    title: "分组排序",
+    title: "容器排序",
     docUrl: "",
     screenshot: "",
     npm: {
@@ -12,13 +12,13 @@ const config: any = {
       destructuring: true,
       subName: ""
     },
-    props: [
-      {
-        name: "title",
-        propType: "string",
-        description: '标题',
-      }
-    ],
+    // props: [
+    //   {
+    //     name: "title",
+    //     propType: "string",
+    //     description: '标题',
+    //   }
+    // ],
     preview: {
     },
     targets: ["steedos__RecordPage", "steedos__AppPage", "steedos__HomePage"],
@@ -60,8 +60,10 @@ const config: any = {
         scaffold: {
           type: config.amis.name,
           label: config.title,
-          title: "",
-          content: ""
+          // items: {
+          //   A: ["A1", "A2"],
+          //   B: ["B1", "B2"]
+          // }
         },
         previewSchema: {
           type: config.amis.name,
@@ -69,9 +71,16 @@ const config: any = {
         panelTitle: "设置",
         panelControls: [
           {
-            type: "text",
-            name: "title",
-            label: "标题",
+            type: "editor",
+            name: "items",
+            label: "数据",
+            language: 'json'
+          },
+          {
+            "name": "vertical",
+            "type": "checkbox",
+            "label": "布局",
+            "option": "纵向"
           }
         ]
       }
