@@ -1,4 +1,4 @@
-import { nodeResolve } from '@rollup/plugin-node-resolve';
+import resolve, { nodeResolve } from '@rollup/plugin-node-resolve';
 import { babel } from '@rollup/plugin-babel';
 import postcss from 'rollup-plugin-postcss';
 import replace from 'rollup-plugin-replace';
@@ -34,16 +34,16 @@ const options = {
     // builtins(),
     json(),
     // resolve(),
-    // nodeResolve({
-    //   extensions: [ '.jsx', '.js', '.json', '.node' ],
-    //   browser: true, 
-    //   preferBuiltins: false,
-    //   resolveOnly: [  ]
-    // }),
+    nodeResolve({
+      extensions: [ '.jsx', '.js', '.json', '.node' ],
+      browser: true, 
+      preferBuiltins: false,
+      resolveOnly: [  ]
+    }),
     // Compile TypeScript files
     typescript({}),
-    // commonjs({
-    // }),
+    commonjs({
+    }),
     // babel({
     //   babelHelpers: 'runtime',
     //   exclude: '**/node_modules/**',
