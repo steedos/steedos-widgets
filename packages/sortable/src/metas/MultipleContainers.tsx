@@ -45,7 +45,7 @@ const config: any = {
     amis: {
       render: {
         type: config.amis.name,
-        usage: "renderer",
+        usage: "formitem",
         weight: 1,
         framework: "react"
       },
@@ -59,20 +59,20 @@ const config: any = {
         icon: config.amis.icon,
         scaffold: {
           type: config.amis.name,
-          asFormItem: true,
           label: config.title,
+          name: 'board',
           columns: 1,
           vertical: false,
-          items: JSON.stringify({
+          value: {
             A: ["A1", "A2"],
             B: ["B1", "B2"]
-          })
+          },
         },
         previewSchema: {
           type: config.amis.name,
         },
         panelTitle: "设置",
-        panelControls: [
+        panelControls: [,
           {
             "name": "columns",
             "type": "input-number",
@@ -83,13 +83,7 @@ const config: any = {
             "type": "checkbox",
             "label": "布局",
             "option": "纵向"
-          },
-          {
-            type: "editor",
-            name: "items",
-            label: "数据",
-            language: 'json'
-          },
+          }
         ]
       }
     }

@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal, unstable_batchedUpdates } from 'react-dom';
+import { isEqual } from 'lodash';
 import {
   CancelDrop,
   closestCenter,
@@ -143,7 +144,7 @@ interface Props {
   trashable?: boolean;
   scrollable?: boolean;
   vertical?: boolean;
-  value: Items | string,
+  defaultValue: any,
   onChange: Function,
 }
 
@@ -151,55 +152,60 @@ export const TRASH_ID = 'void';
 const PLACEHOLDER_ID = 'placeholder';
 const empty: UniqueIdentifier[] = [];
 
-export function MultipleContainers({
-  adjustScale = false,
-  itemCount = 3,
-  cancelDrop,
-  columns,
-  handle = false,
-  items: initialItems,
-  containerStyle,
-  coordinateGetter = multipleContainersCoordinateGetter,
-  getItemStyles = () => ({}),
-  wrapperStyle = () => ({}),
-  minimal = false,
-  modifiers,
-  renderItem,
-  strategy = verticalListSortingStrategy,
-  trashable = false,
-  vertical = false,
-  scrollable,
-  value,
-  onChange
-}: Props) {
+export function MultipleContainers(props) {
 
-  if (typeof initialItems === 'string') {
-    try {
-      initialItems = JSON.parse(initialItems)
-    }catch(e){}
-  }
-  if (initialItems)
-    delete(initialItems.$$id)
+  let {
+    adjustScale = false,
+    itemCount = 3,
+    cancelDrop,
+    columns,
+    handle = false,
+    items: initialItems,
+    containerStyle,
+    coordinateGetter = multipleContainersCoordinateGetter,
+    getItemStyles = () => ({}),
+    wrapperStyle = () => ({}),
+    minimal = false,
+    modifiers,
+    renderItem,
+    strategy = verticalListSortingStrategy,
+    trashable = false,
+    vertical = false,
+    scrollable,
+    defaultValue,
+    onChange
+  }: Props = props
+
+  initialItems = defaultValue as Items
+
+  initialItems && delete(initialItems.$$id);
 
   const [items, setItems] = useState<Items>(
-    () =>
-      (initialItems as Items) ?? {
+    () => {
+      return (defaultValue as Items) ?? {
         A: createRange(itemCount, (index) => `A${index + 1}`),
         B: createRange(itemCount, (index) => `B${index + 1}`),
         C: createRange(itemCount, (index) => `C${index + 1}`),
         D: createRange(itemCount, (index) => `D${index + 1}`),
       }
+    }
   );
-
-  useEffect(() => {
-    if (onChange)
-      onChange(items)
-  }, [items]); // Only re-run the effect if count changes
 
   const [containers, setContainers] = useState(
     Object.keys(items) as UniqueIdentifier[]
   );
+  console.log(containers)
+
+  // useEffect(() => {
+  //   if (defaultValue && !isEqual(defaultValue, items)) {
+  //     console.log('useEffect: defaultValue 变化')
+  //     setItems(defaultValue)
+  //     setContainers(Object.keys(defaultValue) as UniqueIdentifier[])
+  //   }
+  // });
+  
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
+
   const lastOverId = useRef<UniqueIdentifier | null>(null);
   const recentlyMovedToNewContainer = useRef(false);
   const isSortingContainer = activeId ? containers.includes(activeId) : false;
@@ -460,6 +466,9 @@ export function MultipleContainers({
         }
 
         setActiveId(null);
+
+        // console.log('拖动结束，更新form value')
+        setTimeout(()=>onChange(items), 100);
       }}
       cancelDrop={cancelDrop}
       onDragCancel={onDragCancel}
