@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 09:31:04
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-03 14:13:25
+ * @LastEditTime: 2022-09-07 15:00:55
  * @Description:  
  */
 import React, { useState, useEffect, Fragment } from 'react';
@@ -22,6 +22,7 @@ export function AppLayout({ children }) {
     if(session){
       setSteedosAuth(session.steedos);
       Builder.set({ 
+        rootUrl: getRootUrl(),
         context: {
           rootUrl: getRootUrl(),
           userId: session.steedos.userId,
