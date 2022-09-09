@@ -5332,7 +5332,7 @@ amis-ui@^2.2.0:
     tslib "^2.3.1"
     uncontrollable "7.2.1"
 
-amis@^2.1.1-beta.2:
+amis@2.2.0, amis@^2.1.1-beta.2:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/amis/-/amis-2.2.0.tgz#13faef0c23ecad532a3e883ed372b1a3138ed5a3"
   integrity sha512-VsswW9M6QatEHo7XBwA5buR1LTrp7HzmdNrUsaIvQ6shn0Sjsxk9+dNsarBWyFxuwrjH5nursP7PZBZrW+mcfw==
