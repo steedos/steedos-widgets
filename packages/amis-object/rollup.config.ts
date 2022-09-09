@@ -1,18 +1,17 @@
 import resolve, { nodeResolve } from '@rollup/plugin-node-resolve';
-import { babel } from '@rollup/plugin-babel';
 import postcss from 'rollup-plugin-postcss';
-import replace from 'rollup-plugin-replace';
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
 import json from 'rollup-plugin-json';
-import visualizer from 'rollup-plugin-visualizer';
-import builtins from 'rollup-plugin-node-builtins';
-import path from 'path';
+import { terser } from "rollup-plugin-terser";
 
 require('dotenv-flow').config();
 
-const rollupPostcssLessLoader = require('rollup-plugin-postcss-webpack-alias-less-loader');
 const pkg = require('./package.json');
+
+const exportName = 'BuilderAmisObject';
+
+const unpkgUrl = process.env.STEEDOS_UNPKG_URL ? process.env.STEEDOS_UNPKG_URL : 'https://unpkg.com'
 
 const external = [
   "react",
@@ -25,72 +24,47 @@ const globals = {
 }
 
 const options = {
+  input: `src/index.ts`,
   // Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash')
   external: [],
   watch: {
     include: 'src/**',
   },
-  plugins: [,
-    // builtins(),
+  plugins: [
+    nodeResolve(),
     json(),
-    // resolve(),
-    nodeResolve({
-      extensions: [ '.jsx', '.js', '.json', '.node' ],
-      browser: true, 
-      preferBuiltins: false,
-      resolveOnly: [  ]
+    typescript({ 
     }),
-    // Compile TypeScript files
-    typescript({}),
     commonjs({
     }),
-    // babel({
-    //   babelHelpers: 'runtime',
-    //   exclude: '**/node_modules/**',
-    //   presets: ["@babel/preset-react", "@babel/preset-env"],
-    //   plugins: [
-    //     ["@babel/plugin-proposal-class-properties"],
-    //     '@babel/plugin-proposal-object-rest-spread',
-    //     '@babel/plugin-proposal-export-default-from',
-    //     '@babel/plugin-proposal-export-namespace-from',
-    //     ["@babel/plugin-transform-runtime", {
-    //       "regenerator": true,
-    //       "corejs": false,
-    //     }]
-    //   ]
-    // }),
     postcss({
-      loaders: [rollupPostcssLessLoader({
-        nodeModulePath: path.resolve('../../node_modules'),
-        aliases: {
-          '~': path.resolve('../../node_modules'),
-        }
-      })],
-      use: [["less", { 
-        javascriptEnabled: true,
-        modifyVars: {
-          'root-entry-name': 'default'
-        } 
-      }]],
       extract: true,
-      // minimize: true,
+      plugins: [require('postcss-simple-vars'), require('postcss-nested')],
     }),
-    // replace({
-    //   'process.env.NODE_ENV': JSON.stringify( 'production' ),
-    //   'document.body.clientWidth': 'document.body && document.body.clientWidth',
-    // }),
+    // terser()
   ],
 };
 
 export default [
+  // React CJS
   {
     ...options,
-    input: `src/index.ts`,
+    output: [{ file: pkg.main, format: 'cjs', sourcemap: true }],
+    plugins: options.plugins.concat([]),
+  },
+  // ES
+  {
+    ...options,
+    output: [{ file: pkg.module, format: 'es', sourcemap: true }],
+    plugins: options.plugins.concat([]),
+  },
+  {
+    ...options,
     external,
     output: [
       {
-        file: 'dist/amis-object.umd.js',
-        name: 'BuilderAmisObject',
+        file: pkg.unpkg,
+        name: exportName,
         format: 'umd',
         sourcemap: false,
         strict: false,
@@ -98,17 +72,13 @@ export default [
         globals,
       },
     ],
-    // plugins: options.plugins.concat([
-    //   visualizer({
-    //     filename: './stats.html'
-    //   })
-    // ]),
   },
   // meta build
   {
     input: `src/meta.ts`,
     plugins: [
-      typescript(),
+      typescript({ 
+      }),
       {
           name: 'assets',
           generateBundle(outputOptions, bundle) {
@@ -120,20 +90,19 @@ export default [
                  fileName: 'assets.json',
                  source: amis
               });
-              const amisDev = JSON.stringify(assets, null, 4).replace(/\@\{\{version\}\}/g, ``).replace(/https\:\/\/unpkg.com/g, process.env.STEEDOS_UNPKG_URL)
+              const amisDev = JSON.stringify(assets, null, 4).replace(/\@\{\{version\}\}/g, ``).replace(/https\:\/\/unpkg.com/g, unpkgUrl)
               this.emitFile({
                  type: 'asset',
                  fileName: 'assets-dev.json',
                  source: amisDev
               });
-              console.log('ASSETURL DEV: ', process.env.STEEDOS_UNPKG_URL + '/@steedos-widgets/amis-object/dist/assets-dev.json')
           }
       }
     ],
     output: {
       file: "dist/meta.js",
       format: "umd",
-      name: "BuilderAmisObjectWidgetsMeta",
+      name: exportName + 'Meta',
       sourcemap: false
     }
   },
