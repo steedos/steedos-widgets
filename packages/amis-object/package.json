@@ -2,19 +2,18 @@
   "name": "@steedos-widgets/amis-object",
   "private": false,
   "version": "0.0.1",
-  "main": "dist/meta.js",
-  "module": "dist/meta.js",
-  "unpkg": "dist/meta.js",
+  "main": "dist/amis-object.cjs.js",
+  "module": "dist/amis-object.esm.js",
+  "unpkg": "dist/amis-object.umd.js",
+  "typings": "dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "yarn build-types && yarn build-rollup",
-    "build-types": "tsc --emitDeclarationOnly --declaration --declarationDir dist/types",
-    "build-rollup": "rollup -c rollup.config.ts && yarn build-uglifyjs",
-    "build-uglifyjs": "yarn uglifyjs dist/amis-object.umd.js -o dist/amis-object.umd.min.js",
-    "build-assets": "cp src/assets-dev.json dist"
+    "build": "yarn build:rollup",
+    "build:rollup": "rollup -c rollup.config.ts",
+    "build:types": "tsc --emitDeclarationOnly --declaration --declarationDir dist/types"
   },
   "license": "MIT",
   "publishConfig": {

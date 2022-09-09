@@ -3,7 +3,7 @@
       {
           "package": "@steedos-widgets/amis-object",
           "urls": [
-              "https://unpkg.com/@steedos-widgets/amis-object@{{version}}/dist/amis-object.umd.min.js",
+              "https://unpkg.com/@steedos-widgets/amis-object@{{version}}/dist/amis-object.umd.js",
               "https://unpkg.com/@steedos-widgets/amis-object@{{version}}/dist/amis-object.umd.css"
           ],
           "library": "BuilderAmisObject"
@@ -11,7 +11,7 @@
   ],
   "components": [
       {
-          "exportName": "BuilderAmisObjectWidgetsMeta",
+          "exportName": "BuilderAmisObjectMeta",
           "npm": {
               "package": "@steedos-widgets/amis-object"
           },

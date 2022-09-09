@@ -194,7 +194,6 @@ export function MultipleContainers(props) {
   const [containers, setContainers] = useState(
     Object.keys(items) as UniqueIdentifier[]
   );
-  console.log(containers)
 
   // useEffect(() => {
   //   if (defaultValue && !isEqual(defaultValue, items)) {
@@ -442,6 +441,8 @@ export function MultipleContainers(props) {
               ),
               [newContainerId]: [active.id],
             }));
+            console.log('拖动结束，更新form value')
+            setTimeout(()=>onChange(items), 1000);
             setActiveId(null);
           });
           return;
@@ -467,8 +468,8 @@ export function MultipleContainers(props) {
 
         setActiveId(null);
 
-        // console.log('拖动结束，更新form value')
-        setTimeout(()=>onChange(items), 100);
+        console.log('拖动结束2，更新form value')
+        setTimeout(()=>onChange(items), 1000);
       }}
       cancelDrop={cancelDrop}
       onDragCancel={onDragCancel}
@@ -501,7 +502,10 @@ export function MultipleContainers(props) {
               unstyled={minimal}
               onRemove={() => handleRemove(containerId)}
             >
-              <SortableContext items={items[containerId]} strategy={strategy}>
+              <SortableContext 
+                items={items[containerId]} 
+                strategy={strategy}
+                >
                 {items[containerId].map((value, index) => {
                   return (
                     <SortableItem
