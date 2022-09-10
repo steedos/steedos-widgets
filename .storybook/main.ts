@@ -11,9 +11,9 @@ module.exports = {
     "@storybook/addon-actions"
   ],
   "framework": "@storybook/react",
-  // "core": {
-  //   "builder": "@storybook/builder-vite"
-  // },
+  "core": {
+    "builder": "@storybook/builder-webpack5"
+  },
   webpackFinal: async (config) => {
     config.module.rules = [
       ...config.module.rules.filter(
