@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 11:31:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-02 10:44:10
+ * @LastEditTime: 2022-09-13 14:39:34
  * @Description:
  */
 import { each, find, isArray, isEmpty } from 'lodash';
@@ -119,7 +119,7 @@ export const registerRenders = (assets)=>{
             const [schema, setSchema] = amisReact.useState(null);
             amisReact.useEffect(()=>{
               const result = Component.class(props);
-              if(result.then && typeof result.then === 'function'){
+              if(result && result.then && typeof result.then === 'function'){
                 result.then((data)=>{
                   setSchema(data);
                 })
@@ -127,12 +127,8 @@ export const registerRenders = (assets)=>{
                 setSchema(result)
               }
             }, [])
-            return <>
-              <>{(schema && render) ? render('body', schema) : ''}</>
-              <>
-                {render ? render('body', body) : ''}
-              </>
-            </>
+            console.log(`schema`, schema)
+            return amisReact.createElement(amisReact.Fragment, null, amisReact.createElement(amisReact.Fragment, null, schema && render ? render('body', schema) : ''), amisReact.createElement(amisReact.Fragment, null, render ? render('body', body) : ''));
           }
         }
         amisLib.Renderer({
