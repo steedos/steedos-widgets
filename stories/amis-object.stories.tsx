@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 11:54:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-13 15:13:53
+ * @LastEditTime: 2022-09-13 15:24:56
  * @Description: 
  */
 import React, {useEffect, useState} from 'react';
@@ -11,14 +11,13 @@ import { defaultsDeep } from 'lodash';
 import { Builder } from '@steedos-builder/react';
 if (Builder.isBrowser){
   (window as any).Builder = Builder;
-  const rootUlr = "http://127.0.0.1:5000"
   Builder.set({ 
-    rootUrl: rootUlr,
+    rootUrl: process.env.STEEDOS_ROOT_URL,
     context: {
-      rootUrl: rootUlr,
-      userId: "63044e7529b3b23f86e0c95a",
-      tenantId: "osjAHnCr7nampKZ9Z",
-      authToken: "cfe37ba9fca8c9b6b777537117e3a3a2e60ab9eab68e6b6367bbc21858d0b15e162488b4ee40be6c1139c8"
+      rootUrl: process.env.STEEDOS_ROOT_URL,
+      userId: process.env.STEEDOS_USERID,
+      tenantId: process.env.STEEDOS_TENANTID,
+      authToken: process.env.STEEDOS_AUTHTOKEN,
     } 
   });
 }
