@@ -102,19 +102,38 @@ const settings = {
     messageOnly: true,
   };
 
+  const initialContent = {
+    type: "page",
+    title: "Welcome to Steedos 2",
+    body: [],
+    regions: ["body"],
+    data: {
+      objectName: "space_users",
+      recordId: "",
+      initialValues: {},
+      appId: "builder",
+      title: "",
+      context: {
+        rootUrl: process.env.STEEDOS_ROOT_URL,
+        userId: process.env.STEEDOS_USERID,
+        tenantId: process.env.STEEDOS_TENANTID,
+        authToken: process.env.STEEDOS_AUTHTOKEN,
+      },
+    },
+  };
+
 
 /** 以上为可复用代码 **/
 
 export const Simple = () => {
-    useEffect(()=>{
-    });
 
     window.addEventListener('message', function (event) {
+        const comp = document.querySelector("builder-fiddle");
         const { data } = event;
         if (data) {
           if (data.type === 'builder.editorLoaded') {
-            const comp = document.querySelector("builder-fiddle");
             comp.settings = settings;
+            comp.messageFrame('builder.contentChanged', { AmisSchema : initialContent } )
           }
         }
       })
