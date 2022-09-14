@@ -22,7 +22,7 @@ const config: any = {
   },
   props: [
     {
-      name: "objectName",
+      name: "objectApiName",
       propType: "string",
       description: '对象名称',
     },
@@ -73,7 +73,7 @@ export default {
       scaffold: {
         type: config.amis.name,
         label: config.title,
-        objectName: "space_users",
+        objectApiName: "space_users",
         listviewName: "all"
       },
       previewSchema: {
@@ -84,7 +84,7 @@ export default {
         {
           "type": "select",
           "label": "对象",
-          "name": "objectName",
+          "name": "objectApiName",
           "id": "u:4a14f11bb85f",
           "multiple": false,
           "source": {

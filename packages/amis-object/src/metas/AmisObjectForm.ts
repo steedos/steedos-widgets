@@ -5,6 +5,7 @@
  * @LastEditTime: 2022-09-02 09:04:33
  * @Description: 
  */
+
 const config: any = {
   componentType: 'amisSchema', // amisSchema || react 
   group: "华炎魔方",
@@ -22,15 +23,37 @@ const config: any = {
   },
   props: [
     {
-      name: "title",
+      name: "objectApiName",
       propType: "string",
-      description: '标题',
+      description: '对象名',
     },
     {
-      name: "content",
+      name: "recordId",
       propType: "string",
-      description: '内容',
-    }
+      description: '记录ID',
+    },
+    {
+      name: "mode",
+      propType:  {
+        "type": "oneOf",
+        "value": [
+          "read",
+          "edit",
+        ]
+      },
+      description: '显示状态',
+    },
+    {
+      name: "layout",
+      propType:  {
+        "type": "oneOf",
+        "value": [
+          "vertical",
+          "horizontal",
+        ]
+      },
+      description: '表单布局',
+    },
   ],
   preview: {
   },
@@ -82,8 +105,43 @@ export default {
       panelControls: [
         {
           type: "text",
-          name: "objectName",
-          label: "对象",
+          name: "objectApiName",
+          label: "对象Api名称",
+        },
+        {
+          type: "text",
+          name: "recordId",
+          label: "记录ID"
+        },
+        {
+          type: "button-group-select",
+          name: "mode",
+          label: "显示状态",
+          options: [
+            {
+              "label": "只读",
+              "value": "read"
+            },
+            {
+              "label": "编辑",
+              "value": "edit"
+            }
+          ]
+        },
+        {
+          type: "button-group-select",
+          name: "layout",
+          label: "表单布局",
+          options: [
+            {
+              "label": "纵向",
+              "value": "vertical"
+            },
+            {
+              "label": "横向",
+              "value": "horizontal"
+            },
+          ]
         },
       ]
     }
