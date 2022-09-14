@@ -39,6 +39,8 @@
     "@storybook/react": "^6.5.10",
     "@storybook/testing-library": "^0.0.13",
     "babel-loader": "^8.2.5",
-    "http-server": "^14.1.1"
+    "http-server": "^14.1.1",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths-webpack-plugin": "^4.0.0"
   }
 }

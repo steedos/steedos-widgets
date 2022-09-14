@@ -9,6 +9,7 @@ import React, {useEffect, useState} from 'react';
 import { registerRemoteAssets, amisRender, getSteedosAuth, getRootUrl } from '@steedos-widgets/amis-lib';
 import { defaultsDeep } from 'lodash';
 import { Builder } from '@steedos-builder/react';
+
 if (Builder.isBrowser){
   (window as any).Builder = Builder;
   Builder.set({ 
@@ -67,14 +68,13 @@ const loadCss = async (href)=>{
 
 
 export default {
-  title: 'Amis Object',
+  title: 'Designer',
   decorators: [(Story)=>{
     const [isLoaded, setIsLoaded] = useState(false);
       useEffect(() => {
         Promise.all([
-          loadJS('https://unpkg.com/amis/sdk/sdk.js'), 
-          loadJS('https://unpkg.com/lodash/lodash.min.js'),
-          loadJS('https://unpkg.com/@steedos-builder/react@0.2.30/dist/builder-react.unpkg.js'),
+          loadJS('https://unpkg.com/@steedos-builder/fiddle@0.0.5/dist/builder-fiddle.umd.js'), 
+          loadJS('https://unpkg.com/axios@0.26.1/dist/axios.min.js'),
           loadCss('https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css'),
           loadCss('https://unpkg.com/amis/lib/themes/antd.css'),
           loadCss('https://unpkg.com/amis/lib/helper.css'),
@@ -93,51 +93,35 @@ export default {
   }]
 };
 
+const settings = {
+    assetUrls: process.env.STEEDOS_EXPERIENCE_ASSETURLS,
+    rootUrl: process.env.STEEDOS_ROOT_URL,
+    userId: process.env.STEEDOS_USERID,
+    tenantId: process.env.STEEDOS_TENANTID,
+    authToken: process.env.STEEDOS_AUTHTOKEN,
+    messageOnly: true,
+  };
+
+
 /** 以上为可复用代码 **/
 
-export const Simple = () => (
-  <AmisRender schema={{
-    type: 'page',
-    title: '表单页面',
-    body: {
-      type: 'form',
-      mode: 'horizontal',
-      api: '/saveForm',
-      body: [
-        {
-          label: 'Name',
-          type: 'input-text',
-          name: 'name'
-        },
-        {
-          label: 'Email',
-          type: 'input-email',
-          name: 'email'
-        }
-      ]
-    }
-  }}
-  />
-)
+export const Simple = () => {
+    useEffect(()=>{
+    });
 
-
-export const AssetsSimple = () => (
-  <AmisRender schema={{
-    type: 'page',
-    title: '表单页面',
-    body: {
-      type: 'form',
-      mode: 'horizontal',
-      api: '/saveForm',
-      body: [
-        {
-          "type": "amis-steedos-object-listview",
-          "objectName": "account_banks",
-          "listviewName": "all"
+    window.addEventListener('message', function (event) {
+        const { data } = event;
+        if (data) {
+          if (data.type === 'builder.editorLoaded') {
+            const comp = document.querySelector("builder-fiddle");
+            comp.settings = settings;
+          }
         }
-      ]
-    }
-  }}
-  assetUrls="http://127.0.0.1:8080/@steedos-widgets/amis-object/dist/assets-dev.json"
-  />
-)
+      })
+
+    return (
+        <builder-fiddle 
+            host={`https://beta.builder.steedos.com/amis?assetUrl=${process.env.STEEDOS_EXPERIENCE_ASSETURLS}`}
+        ></builder-fiddle>
+    )    
+} 
