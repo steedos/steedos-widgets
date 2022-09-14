@@ -120,7 +120,7 @@ export const Login = () => (
 )
 
 
-export const Listview = () => (
+export const ObjectListview = () => (
   <AmisRender schema={{
     type: 'page',
     title: '列表视图',
@@ -128,6 +128,20 @@ export const Listview = () => (
       "type": "amis-steedos-object-listview",
       "objectName": "space_users",
       "listviewName": "all"
+    },
+  }}
+  assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
+  />
+)
+
+
+export const ObjectForm = () => (
+  <AmisRender schema={{
+    type: 'page',
+    title: '表单',
+    body: {
+      "type": "amis-steedos-object-form",
+      "objectName": "space_users",
     },
   }}
   assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
