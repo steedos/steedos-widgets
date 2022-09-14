@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 11:31:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-01 11:50:47
+ * @LastEditTime: 2022-09-14 16:32:12
  * @Description:
  */
 import { each, find, isArray, isEmpty } from 'lodash';
@@ -127,7 +127,6 @@ export const registerRenders = (assets)=>{
                 setSchema(result)
               }
             }, [])
-            console.log(`schema`, schema)
             return <>
               <>{(schema && render) ? render('body', schema) : ''}</>
               <>
@@ -145,9 +144,9 @@ export const registerRenders = (assets)=>{
   }
 }
 
-export const amisRender = (root, schema, data = {}, env = {}, options) => {
+export const amisRender = (root, schema, props = {}, env = {}, options) => {
   let amis = amisRequire("amis/embed");
   const { router, assets } = options;
   registerRenders(assets);
-  return amis.embed(root, schema, data, Object.assign(getEvn(router), env));
+  return amis.embed(root, schema, props, Object.assign(getEvn(router), env));
 };

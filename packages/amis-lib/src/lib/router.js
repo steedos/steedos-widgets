@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-16 17:02:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-16 17:29:37
+ * @LastEditTime: 2022-09-14 14:50:39
  * @Description:
  */
 
@@ -17,7 +17,10 @@ export const Router = {
     getObjectListViewPath({formFactor, appId, objectName, listViewName}){
         return `/${formFactor === 'SMALL' ? 'mapp': 'app'}/${appId}/${objectName}/grid/${listViewName}`;
     },
-    getObjectDetailPath({formFactor, appId, objectName, recordId}){
+    getObjectDetailPath({formFactor, appId, objectName, recordId, listViewName}){
+        if(objectName === 'instances'){
+            return `/workflow/space/\${context.tenantId}/${listViewName}/${recordId}`;
+        }
         return `/${formFactor === 'SMALL' ? 'mapp': 'app'}/${appId}/${objectName}/view/${recordId}`;
     },
     getObjectRelatedViewPath({formFactor, appId, masterObjectName, masterRecordId, objectName, foreignKey}){

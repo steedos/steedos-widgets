@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 13:32:49
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-03 15:31:36
+ * @LastEditTime: 2022-09-14 10:42:14
  * @Description: 
  */
 import { getListViewButtons, execute } from '@steedos-widgets/amis-lib';
@@ -59,7 +59,7 @@ export function RecordRelatedListButtons(props) {
                       "url": "${context.rootUrl}/s3",
                       headers: {
                         Authorization: "Bearer ${context.tenantId},${context.authToken}"
-                    },
+                      },
                       "method": "post",
                       "messages": {},
                       "dataType": "form-data",

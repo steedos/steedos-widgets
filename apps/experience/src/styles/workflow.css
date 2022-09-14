@@ -1,0 +1,60 @@
+
+#instanceRoot{
+    font-size: .8125rem;
+}
+
+
+
+#instanceRoot .instance-name{
+    font-size: 20px;
+}
+
+#instanceRoot .instance-form-view{
+    width: 100%;
+    border-collapse: collapse;
+    border: 2px solid #000;
+}
+
+#instanceRoot .instance-applicant-view{
+    border: none !important;
+}
+
+#instanceRoot .instance-applicant-view td{
+    border: none !important;
+}
+
+#instanceRoot .instance-form-view .antd-TextControl-input{
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important; 
+}
+
+#instanceRoot .instance-form-view .antd-Select{
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important; 
+}
+
+#instanceRoot .instance-form-view .antd-DatePicker{
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important; 
+}
+
+#instanceRoot .instance-form-view .antd-TextareaControl-input{
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important; 
+}
+
+#instanceRoot .instance-form-view .antd-Number{
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important; 
+}
+
+#instanceRoot .instance-form-view .antd-Picker-input{
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important; 
+}

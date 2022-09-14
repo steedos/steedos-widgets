@@ -154,7 +154,10 @@ export default function Login({ providers = {}, csrfToken, rootUrl }) {
 }
 
 Login.getLayout = function getLayout(page) {
-  return AuthLayout;
+  return {
+    layout: AuthLayout,
+    data: {}
+  };
 };
 
 export async function getServerSideProps(context) {

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-07-18 13:28:52
+ * @LastEditTime: 2022-09-14 15:03:42
  * @Description: 
  */
 import { CallToAction } from '@/components/home/CallToAction'
@@ -21,5 +21,8 @@ export default function Home() {
 }
 
 Home.getLayout = function getLayout(page) {
-  return HomeLayout
+  return {
+    layout: HomeLayout,
+    data: {}
+  }
 }

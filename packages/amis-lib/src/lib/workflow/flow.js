@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-08 15:09:42
+ * @LastEditTime: 2022-09-14 16:31:47
  * @Description:
  */
 import { lookupToAmisPicker } from '../converter/amis/fields/lookup'
@@ -75,14 +75,6 @@ const getTdInputTpl = (field, label) => {
       break;
     case "group":
       tpl.type = "input-text"; //TODO
-      console.log("lookupToAmisPicker", lookupToAmisPicker({
-        name: field.code,
-        label: field.name,
-        reference_to: "organizations",
-        multiple: field.is_multiselect
-      }, true, {
-        
-      }))
       break;
     case "radio":
       tpl.type = "radios";
