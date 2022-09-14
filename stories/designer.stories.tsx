@@ -93,9 +93,35 @@ export default {
   }]
 };
 
+const settings = {
+    assetUrls: process.env.STEEDOS_EXPERIENCE_ASSETURLS,
+    rootUrl: process.env.STEEDOS_ROOT_URL,
+    userId: process.env.STEEDOS_USERID,
+    tenantId: process.env.STEEDOS_TENANTID,
+    authToken: process.env.STEEDOS_AUTHTOKEN,
+    messageOnly: true,
+  };
+
+
 /** 以上为可复用代码 **/
 
-export const Simple = () => (
-    <builder-fiddle host={`https://beta.builder.steedos.com/amis?assetUrl=${process.env.STEEDOS_EXPERIENCE_ASSETURLS}`}></builder-fiddle>
-)
+export const Simple = () => {
+    useEffect(()=>{
+    });
 
+    window.addEventListener('message', function (event) {
+        const { data } = event;
+        if (data) {
+          if (data.type === 'builder.editorLoaded') {
+            const comp = document.querySelector("builder-fiddle");
+            comp.settings = settings;
+          }
+        }
+      })
+
+    return (
+        <builder-fiddle 
+            host={`https://beta.builder.steedos.com/amis?assetUrl=${process.env.STEEDOS_EXPERIENCE_ASSETURLS}`}
+        ></builder-fiddle>
+    )    
+} 

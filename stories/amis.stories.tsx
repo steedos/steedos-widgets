@@ -125,7 +125,7 @@ export const ObjectListview = () => (
     type: 'page',
     title: '列表视图',
     body: {
-      "type": "amis-steedos-object-listview",
+      "type": "steedos-object-listview",
       "objectName": "space_users",
       "listviewName": "all"
     },
@@ -140,8 +140,8 @@ export const ObjectForm = () => (
     type: 'page',
     title: '表单',
     body: {
-      "type": "amis-steedos-object-form",
-      "objectName": "space_users",
+      "type": "steedos-object-form",
+      "objectName": "organizations",
     },
   }}
   assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
