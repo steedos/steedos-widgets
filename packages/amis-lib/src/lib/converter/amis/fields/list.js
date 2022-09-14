@@ -69,6 +69,7 @@ export function getListSchema(fields, options){
                         formFactor: options.formFactor, 
                         appId: options.appId, 
                         objectName: options.tabId, 
+                        listView: options.listView,
                         recordId: `\${_id}`
                     })
                 }

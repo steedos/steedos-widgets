@@ -9,7 +9,7 @@ import { Button } from "@/components/object/Button";
 import { MoreOutlined } from '@ant-design/icons';
 import { Dropdown, Menu , Space, Button as AButton  } from 'antd';
 
-export function RecordHeader({ schema, formFactor, permissions }) {
+export function RecordHeader({ schema, formFactor, permissions, hiddenTitle }) {
   const router = useRouter();
   const { app_id, tab_id, record_id } = router.query;
   
@@ -90,32 +90,35 @@ export function RecordHeader({ schema, formFactor, permissions }) {
   return (
     <div className="slds-page-header slds-page-header_record-home bg-transparent shadow-none border-none pb-0">
       <div className="slds-page-header__row">
-        <div className="slds-page-header__col-title">
-          <div className="slds-media">
-            <div className="slds-media__figure">
-              <span className="slds-icon_container slds-icon-standard-opportunity">
-                <svg
-                  className="slds-icon slds-page-header__icon"
-                  aria-hidden="true"
-                >
-                  <use xlinkHref={`/assets/icons/standard-sprite/svg/symbols.svg#${schema.uiSchema.icon}`}></use>
-                </svg>
-              </span>
-            </div>
-            <div className="slds-media__body">
-              <div className="slds-page-header__name">
-                <div className="slds-page-header__name-title">
-                  <div className="">
-                    <span>{schema?.uiSchema?.label}</span>
-                    <span className="slds-page-header__title slds-truncate">
-                      {record ? record[schema?.uiSchema?.NAME_FIELD_KEY] : ""}
+        {hiddenTitle != true && 
+                <div className="slds-page-header__col-title">
+                <div className="slds-media">
+                  <div className="slds-media__figure">
+                    <span className="slds-icon_container slds-icon-standard-opportunity">
+                      <svg
+                        className="slds-icon slds-page-header__icon"
+                        aria-hidden="true"
+                      >
+                        <use xlinkHref={`/assets/icons/standard-sprite/svg/symbols.svg#${schema.uiSchema.icon}`}></use>
+                      </svg>
                     </span>
+                  </div>
+                  <div className="slds-media__body">
+                    <div className="slds-page-header__name">
+                      <div className="slds-page-header__name-title">
+                        <div className="">
+                          <span>{schema?.uiSchema?.label}</span>
+                          <span className="slds-page-header__title slds-truncate">
+                            {record ? record[schema?.uiSchema?.NAME_FIELD_KEY] : ""}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
+        }
+
         <div className="slds-page-header__col-actions">
           <div className="slds-page-header__controls">
             <div className="slds-page-header__control space-x-1">

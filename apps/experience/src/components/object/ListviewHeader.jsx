@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-03 16:46:23
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-19 11:03:27
+ * @LastEditTime: 2022-09-14 16:14:18
  * @Description:
  */
 import { Listbox, Transition } from "@headlessui/react";
@@ -21,14 +21,15 @@ import { ListButtons } from "@/components/object/ListButtons";
 import { FromNow } from "@/components/FromNow";
 import { SearchableFieldsFilter } from '@/components/object/SearchableFieldsFilter'
 
-export function ListviewHeader({ schema, onListviewChange, formFactor }) {
+export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: appId,tab_id: tabId}) {
 //   const [selectedListView, setSelectedListView] = useState();
   const [showFieldsFilter, setShowFieldsFilter] = useState(false);
   const [queryInfo, setQueryInfo] = useState();
   const [filter, setFilter] = useState();
   const router = useRouter();
-  const { app_id, tab_id, listview_id } = router.query;
-
+  const { listview_id } = router.query;
+  const app_id = router.query.app_id || appId;
+  const tab_id = router.query.tab_id || tabId;
   const selectedListView = schema.uiSchema.list_views[listview_id]
 
   const listViewId = SteedosUI.getRefId({

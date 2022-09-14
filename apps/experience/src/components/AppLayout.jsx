@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 09:31:04
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-07 15:00:55
+ * @LastEditTime: 2022-09-14 15:17:52
  * @Description:  
  */
 import React, { useState, useEffect, Fragment } from 'react';
@@ -13,11 +13,17 @@ import { useRouter } from 'next/router'
 import { setSteedosAuth, getRootUrl } from '@steedos-widgets/amis-lib';
 import { useSession } from "next-auth/react"
 
-export function AppLayout({ children }) {
+export function AppLayout({ children, app_id, tab_id}) {
     const router = useRouter()
-    const { app_id, tab_id } = router.query
+    let { app_id: appId, tab_id: tabId } = router.query;
+    if(app_id){
+      appId = app_id
+    }
+    if(tab_id){
+      tabId = tab_id
+    }
     const [app, setApp] = useState(null)
-    const [selected, setSelected] = useState(tab_id)
+    const [selected, setSelected] = useState(tabId)
     const { data: session } = useSession()
     if(session){
       setSteedosAuth(session.steedos);
@@ -55,16 +61,16 @@ export function AppLayout({ children }) {
     }, [app]);
 
     useEffect(() => {
-        setSelected(tab_id)
-    }, [tab_id]);
+        setSelected(tabId)
+    }, [tabId]);
 
     useEffect(() => {
-        if(!app_id || !session) return ;
-        getApp(app_id)
+        if(!appId || !session) return ;
+        getApp(appId)
           .then((data) => {
             setApp(data)
           })
-      }, [app_id, session]);
+      }, [appId, session]);
     return (
       <div className='h-full flex flex-col'>
         <Navbar navigation={app?.children} selected={selected} app={app}/>

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 11:31:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-13 14:39:34
+ * @LastEditTime: 2022-09-14 16:31:21
  * @Description:
  */
 import { each, find, isArray, isEmpty } from 'lodash';
@@ -127,7 +127,6 @@ export const registerRenders = (assets)=>{
                 setSchema(result)
               }
             }, [])
-            console.log(`schema`, schema)
             return amisReact.createElement(amisReact.Fragment, null, amisReact.createElement(amisReact.Fragment, null, schema && render ? render('body', schema) : ''), amisReact.createElement(amisReact.Fragment, null, render ? render('body', body) : ''));
           }
         }

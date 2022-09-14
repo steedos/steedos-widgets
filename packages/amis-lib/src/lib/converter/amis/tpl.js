@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-02 10:43:04
+ * @LastEditTime: 2022-09-14 14:29:29
  * @Description: 
  */
 import { Router } from '../../router'
@@ -46,7 +46,7 @@ export function getNameTpl(field, ctx){
         return `<a href="\${context.rootUrl}/api/files/files/\${versions[0]}?download=true">\${${field.name}}</a>`
     }
     const href = Router.getObjectDetailPath({
-        formFactor: ctx.formFactor, appId: ctx.appId, objectName: ctx.tabId, recordId: `\${${ctx.idFieldName}}`
+        ...ctx,  formFactor: ctx.formFactor, appId: ctx.appId, objectName: ctx.tabId, recordId: `\${${ctx.idFieldName}}`
     })
     return `<a href="${href}">\${${field.name}}</a>`
 }

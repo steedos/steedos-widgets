@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-01 14:43:34
+ * @LastEditTime: 2022-09-14 15:05:44
  * @Description: 
  */
 import { SessionProvider } from "next-auth/react"
@@ -10,6 +10,7 @@ import 'focus-visible';
 import '@/styles/tailwind.css';
 import '@/styles/amis.css';
 import '@/styles/notification.css';
+import '@/styles/workflow.css';
 import 'antd/dist/antd.css'
 import { AppLayout } from '@/components/AppLayout';
 import '@/components/functions';
@@ -43,11 +44,16 @@ export default function App({
       setFormFactor("LARGE");
     }
   }, []);
-  const Layout = Component.getLayout ? Component.getLayout() : AppLayout;
+  let Layout = Component.getLayout ? Component.getLayout() : AppLayout;
+  let data = {}
+  if(Layout.data){
+    data = Layout.data;
+    Layout = Layout.layout;
+  }
   return (
     <>
     { formFactor && <SessionProvider session={session}>
-      <Layout formFactor={formFactor}>
+      <Layout formFactor={formFactor} {...data}>
         <Component {...pageProps} formFactor={formFactor}/>
       </Layout>
     </SessionProvider>}
