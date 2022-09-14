@@ -65,7 +65,7 @@ export default {
     plugin: {
       rendererName: config.amis.name,
       $schema: '/schemas/UnkownSchema.json',
-      name: config.amis.name,
+      name: config.title,
       description: config.title,
       tags: [config.group],
       order: -9999,
