@@ -23,6 +23,7 @@ export default class MyDocument extends Document {
           <meta name="theme-color" content="#ffffff" />
           <script src="/unpkg.com/amis/sdk/sdk.js"></script>
           <script src="/unpkg.com/lodash/lodash.min.js"></script>
+          <script src="/unpkg.com/moment/min/moment.min.js"></script>
           <link rel="stylesheet" href="/unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css" />
           <link rel="stylesheet" href="/unpkg.com/amis/lib/themes/antd.css" />
           <link rel="stylesheet" href="/unpkg.com/amis/lib/helper.css" />

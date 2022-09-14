@@ -82,14 +82,9 @@ export default {
       panelControls: [
         {
           type: "text",
-          name: "title",
-          label: "标题",
+          name: "objectName",
+          label: "对象",
         },
-        {
-          type: "text",
-          name: "content",
-          label: "内容"
-        }
       ]
     }
   }
