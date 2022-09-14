@@ -68,7 +68,7 @@ const loadCss = async (href)=>{
 
 
 export default {
-  title: 'Amis/Baidu',
+  title: 'Amis',
   decorators: [(Story)=>{
     const [isLoaded, setIsLoaded] = useState(false);
       useEffect(() => {
@@ -120,22 +120,15 @@ export const Login = () => (
 )
 
 
-export const AssetsSimple = () => (
+export const Listview = () => (
   <AmisRender schema={{
     type: 'page',
-    title: '表单页面',
+    title: '列表视图',
     body: {
-      type: 'form',
-      mode: 'horizontal',
-      api: '/saveForm',
-      body: [
-        {
-          "type": "amis-steedos-object-listview",
-          "objectName": "space_users",
-          "listviewName": "all"
-        }
-      ]
-    }
+      "type": "amis-steedos-object-listview",
+      "objectName": "space_users",
+      "listviewName": "all"
+    },
   }}
   assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
   />
