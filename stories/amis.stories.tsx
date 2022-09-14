@@ -96,27 +96,25 @@ export default {
 
 /** 以上为可复用代码 **/
 
-export const Simple = () => (
+export const Login = () => (
   <AmisRender schema={{
-    type: 'page',
-    title: '表单页面',
-    body: {
-      type: 'form',
-      mode: 'horizontal',
-      api: '/saveForm',
-      body: [
-        {
-          label: 'Name',
-          type: 'input-text',
-          name: 'name'
-        },
-        {
-          label: 'Email',
-          type: 'input-email',
-          name: 'email'
-        }
-      ]
-    }
+    "type": "form",
+    "mode": "horizontal",
+    "api": "/accounts/password/login",
+    "body": [
+      {
+        "label": "Username",
+        "type": "input-text",
+        "name": "username",
+      },
+      {
+        "label": "Password",
+        "type": "input-password",
+        "name": "password",
+      }
+    ],
+    "submitText": "Login",
+    "title": "Login to Steedos"
   }}
   />
 )
