@@ -9,6 +9,7 @@ import React, {useEffect, useState} from 'react';
 import { registerRemoteAssets, amisRender, getSteedosAuth, getRootUrl } from '@steedos-widgets/amis-lib';
 import { defaultsDeep } from 'lodash';
 import { Builder } from '@steedos-builder/react';
+
 if (Builder.isBrowser){
   (window as any).Builder = Builder;
   Builder.set({ 
@@ -132,12 +133,12 @@ export const AssetsSimple = () => (
       body: [
         {
           "type": "amis-steedos-object-listview",
-          "objectName": "account_banks",
+          "objectName": "space_users",
           "listviewName": "all"
         }
       ]
     }
   }}
-  assetUrls="http://127.0.0.1:8080/@steedos-widgets/amis-object/dist/assets-dev.json"
+  assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
   />
 )
