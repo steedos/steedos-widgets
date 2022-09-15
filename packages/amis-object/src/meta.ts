@@ -8,12 +8,13 @@
 // import Hello from "./metas/Hello";
 import AmisObjectForm from "./metas/AmisObjectForm";
 import AmisObjectListview from "./metas/AmisObjectListview";
-const components = [AmisObjectForm, AmisObjectListview];
+import AmisTabListSelect from "./metas/AmisTabListSelect";
+const components = [AmisObjectForm, AmisObjectListview, AmisTabListSelect];
 const componentList = [
   {
     title: "华炎魔方",
     icon: "",
-    children: [AmisObjectForm, AmisObjectListview]
+    children: [AmisObjectForm, AmisObjectListview, AmisTabListSelect]
   }
 ];
 export default {
