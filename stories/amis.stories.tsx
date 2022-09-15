@@ -80,6 +80,7 @@ export default {
           loadCss('https://unpkg.com/amis/lib/themes/antd.css'),
           loadCss('https://unpkg.com/amis/lib/helper.css'),
           loadCss('https://unpkg.com/amis/sdk/iconfont.css'),
+          loadCss('https://unpkg.com/@fortawesome/fontawesome-free@6.2.0/css/all.min.css'),
         ]).then(()=>{
           setIsLoaded(true)
         }).catch((error)=>{
