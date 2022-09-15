@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-02 10:36:23
+ * @LastEditTime: 2022-09-15 10:40:37
  * @Description: 
  */
 const config: any = {
@@ -90,7 +90,7 @@ export default {
           "source": {
             "method": "get",
             "url": "/service/api/amis-design/objects",
-            "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url\nreturn api;"
+            "requestAdaptor": "console.log('api', api);api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;"
           },
           "labelField": "label",
           "valueField": "name",
