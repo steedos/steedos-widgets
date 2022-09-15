@@ -62,4 +62,5 @@
 
 .approval-drawer .antd-Drawer-content {
     display: block !important;
+    height: auto !important;
 }
