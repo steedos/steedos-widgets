@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-15 11:56:59
+ * @LastEditTime: 2022-09-15 13:07:29
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -130,8 +130,6 @@ export default function Record({formFactor}) {
               ...record.approveValues,
               context: record,
             }} getModalContainer={()=>{
-              //TODO getModalContainer env失效
-              console.log(`getModalContainer===============`, document.querySelector('#instanceRoot'))
               return document.querySelector('#instanceRoot')
             }}></AmisRender>
           )}
