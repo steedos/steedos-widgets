@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-15 13:07:29
+ * @LastEditTime: 2022-09-15 18:22:03
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -116,14 +116,14 @@ export default function Record({formFactor}) {
   if (!schema) 
     return <><Loading/></>
   return (
-    <div className="grid grid-cols-3 grid-rows-3 grid-flow-row-dense">
+    <div className="h-full grid grid-cols-3 grid-flow-row-dense">
       <div className="border-r"><Listview formFactor={formFactor} app_id={'approve_workflow'} tab_id={'instances'}></Listview></div>
       <div className="col-span-2" >
         <div className="region-header bg-slate-50 static">
           {schema && <Header schema={schema} formFactor={formFactor} permissions={permissions} hiddenTitle={true}></Header>}
         </div>
         <div className="relative flex flex-1 flex-col region-main overflow-auto" id="instanceRoot" style={{
-          height: "calc(100% - 20px)"
+          height: "calc(100% - 60px)"
         }}>
           {formSchema && (
             <AmisRender  className="" id={`amis-root-workflow`} schema={formSchema} router={router} data={{
