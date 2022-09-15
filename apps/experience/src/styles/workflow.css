@@ -58,3 +58,8 @@
     border: none !important;
     box-shadow: none !important; 
 }
+
+
+.approval-drawer .antd-Drawer-content {
+    display: block !important;
+}

@@ -243,8 +243,10 @@ export const getApprovalDrawerSchema = async (instance) => {
   return {
     type: "drawer",
     overlay: false,
-    size: "md",
+    resizable: true,
+    size: "sm",
     title: `${instance.step.name}`,
+    className: "approval-drawer absolute",
     body: [
       {
         type: "form",

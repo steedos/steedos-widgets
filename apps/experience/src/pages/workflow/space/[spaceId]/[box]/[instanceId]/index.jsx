@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-14 16:21:37
+ * @LastEditTime: 2022-09-15 11:56:59
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -117,15 +117,14 @@ export default function Record({formFactor}) {
     return <><Loading/></>
   return (
     <div className="grid grid-cols-3 grid-rows-3 grid-flow-row-dense">
-      <div className=" border-r"><Listview formFactor={formFactor} app_id={'approve_workflow'} tab_id={'instances'}></Listview></div>
+      <div className="border-r"><Listview formFactor={formFactor} app_id={'approve_workflow'} tab_id={'instances'}></Listview></div>
       <div className="col-span-2" >
-        <div className="region-header bg-slate-50 ">
+        <div className="region-header bg-slate-50 static">
           {schema && <Header schema={schema} formFactor={formFactor} permissions={permissions} hiddenTitle={true}></Header>}
         </div>
-        <div className="flex flex-1 flex-col region-main" id="instanceRoot" style={{
-        overflow: "auto",
-        height: "calc(100% - 270px)"
-      }}>
+        <div className="relative flex flex-1 flex-col region-main overflow-auto" id="instanceRoot" style={{
+          height: "calc(100% - 20px)"
+        }}>
           {formSchema && (
             <AmisRender  className="" id={`amis-root-workflow`} schema={formSchema} router={router} data={{
               ...record.approveValues,
