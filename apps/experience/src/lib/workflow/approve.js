@@ -6,20 +6,6 @@ import {
 //TODO Meteor.settings.public?.workflow?.hideCounterSignJudgeOptions
 const HIDE_COUNTER_SIGN_JUDGE_OPTIONS = false;
 
-const getNextStep = async (instance) => {
-  return instance.flowVersion.steps; // TODO
-};
-
-const getNextStepOptions = async (instance) => {
-  const steps = await getNextStep(instance);
-  return map(steps, (step) => {
-    return {
-      label: step.name,
-      value: step._id,
-    };
-  });
-};
-
 const getJudgeOptions = async (instance) => {
   const { step } = instance;
   const options = [];
@@ -59,8 +45,22 @@ const getJudgeInput = async (instance) => {
       type: "radios",
       label: false,
       name: "judge",
+      value: "approved",
       options: judgeOptions,
       id: "u:444dbad76e90",
+      "onEvent": {
+        "change": {
+          "weight": 0,
+          "actions": [
+            {
+              "componentId": "u:next_step",
+              "args": {
+              },
+              "actionType": "reload"
+            }
+          ]
+        }
+      }
     };
   }
 };
@@ -90,9 +90,36 @@ const getNextStepInput = async (instance) => {
             type: "list-select",
             label: "",
             name: "next_step",
-            options: await getNextStepOptions(instance),
-            id: "u:61f5de3d39cb",
+            // options: await getNextStepOptions(instance),
+            id: "u:next_step",
             multiple: false,
+            "source": {
+              "url": "${context.rootUrl}/api/workflow/v2/nextStep",
+              "method": "post",
+              "messages": {
+              },
+              "requestAdaptor": "console.log(`api====`, api)\nconst { context, judge } = api.data;console.log(`context, judge`, context, judge);\nconst formValues = SteedosUI.getRef(\"amis-root-workflow\").getComponentById(\"instance_form\").getValues();\n\napi.data = {\nflowVersionId: context.flowVersion._id,\n  instanceId: context._id,\n  flowId: context.flow._id,\n  step: context.step,\n  judge: judge,\n  values: formValues\n}\n\n\n console.log('api===', api);return api;",
+              "adaptor": "console.log('payload', payload);\npayload.data = payload.nextSteps;\nreturn payload;",
+              "data": {
+                "&": "$$",
+                "context": "${context}",
+              }
+            },
+            "labelField": "name",
+            "valueField": "_id",
+            "onEvent": {
+              "change": {
+                "weight": 0,
+                "actions": [
+                  {
+                    "componentId": "u:next_users",
+                    "args": {
+                    },
+                    "actionType": "reload"
+                  }
+                ]
+              }
+            }
           },
         ],
         id: "u:4d3a884b437c",
@@ -126,17 +153,39 @@ const getNextStepUsersInput = async (instance) => {
       {
         body: [
           // TODO 处理下一步处理人默认值
-          Object.assign({name: "next_users", value: ""}, await lookupToAmisPicker(
-            {
-              name: "next_users",
-              label: false,
-              reference_to: "space_users",
-              reference_to_field: 'user',
-              multiple: false,
+          // Object.assign({name: "next_users", value: ""}, await lookupToAmisPicker(
+          //   {
+          //     name: "next_users",
+          //     label: false,
+          //     reference_to: "space_users",
+          //     reference_to_field: 'user',
+          //     multiple: false,
+          //   },
+          //   false,
+          //   {}
+          // )),
+          {
+            type: "list-select",
+            label: "",
+            name: "next_users",
+            // options: await getNextStepOptions(instance),
+            id: "u:next_users",
+            multiple: false,
+            "source": {
+              "url": "${context.rootUrl}/api/workflow/v2/nextStepUsers",
+              "method": "post",
+              "messages": {
+              },
+              "requestAdaptor": "console.log(`api====`, api)\nconst { context, next_step } = api.data;console.log('====', next_step);\nconst formValues = SteedosUI.getRef(\"amis-root-workflow\").getComponentById(\"instance_form\").getValues();\n\napi.data = {\n  instanceId: context._id,\n nextStepId: next_step,\n  values: formValues\n}\n\n\n console.log('api===', api);return api;",
+              "adaptor": "console.log('payload', payload);\npayload.data = payload.nextStepUsers;\nreturn payload;",
+              "data": {
+                "&": "$$",
+                "context": "${context}",
+              }
             },
-            false,
-            {}
-          )),
+            "labelField": "name",
+            "valueField": "id"
+          }
         ],
         id: "u:81a4913c61cc",
       },
