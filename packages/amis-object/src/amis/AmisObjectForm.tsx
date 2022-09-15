@@ -10,5 +10,5 @@ import {getFormSchema} from '@steedos-widgets/amis-lib'
 export const AmisObjectForm = async (props) => {
   const { $schema } = props;
   console.log(`AmisObjectForm props`, props)
-  return (await getFormSchema($schema.objectName, {recordId: $schema.recordId})).amisSchema
+  return (await getFormSchema($schema.objectApiName, {recordId: $schema.recordId})).amisSchema
 }

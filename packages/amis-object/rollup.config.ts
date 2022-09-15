@@ -77,6 +77,7 @@ export default [
   {
     input: `src/meta.ts`,
     plugins: [
+      nodeResolve(),
       typescript({ 
       }),
       {
