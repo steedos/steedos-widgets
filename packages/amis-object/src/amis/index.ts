@@ -7,4 +7,3 @@
  */
 export * from './AmisObjectForm';
 export * from './AmisObjectListview';
-export * from './AmisTabListSelect';
