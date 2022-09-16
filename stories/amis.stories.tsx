@@ -149,6 +149,34 @@ export const ObjectForm = () => (
   />
 )
 
+// export const RecordDetailRelatedList = () => (
+//   <AmisRender schema={{
+//     type: 'page',
+//     title: '相关列表',
+//     body: {
+//       "type": "steedos-record-detail-related-list",
+//       "objectApiName": "space_users",
+//       // "recordId": "admin",
+//     },
+//   }}
+//   assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
+//   />
+// )
+
+export const RecordDetailHeader = () => (
+  <AmisRender schema={{
+    type: 'page',
+    title: '标题面板',
+    body: {
+      "type": "steedos-record-detail-header",
+      "objectApiName": "space_users",
+      "recordId": "kDrtGu7aZPwYdyFpe"
+    },
+  }}
+  assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
+  />
+)
+
 // export const AmisTabListSelect = () => (
 //   <AmisRender schema={{
 //     type: 'page',

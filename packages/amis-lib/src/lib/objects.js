@@ -8,6 +8,7 @@
 import { fetchAPI } from "./steedos.client";
 import {
     getObjectList,
+    getRecordDetailHeaderAmisSchema,
     getObjectDetail,
     getObjectForm,
 } from "./converter/amis/index";
@@ -162,6 +163,15 @@ export async function getListSchema(
         filter: listView.filters
     });
 
+    return {
+        uiSchema,
+        amisSchema,
+    };
+}
+
+export async function getRecordDetailHeaderSchema(appName,objectName,recordId){
+    const uiSchema = await getUISchema(objectName);
+    const amisSchema = await getRecordDetailHeaderAmisSchema(uiSchema, recordId);
     return {
         uiSchema,
         amisSchema,
