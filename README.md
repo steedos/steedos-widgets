@@ -14,6 +14,11 @@ yarn unpkg
 ```
 yarn dev
 ```
+- 配置环境变量 apps/experience/.env.local
+```
+STEEDOS_ROOT_URL=steedos project root url
+NEXTAUTH_URL=http://ip:3000
+``` 
 
 ### 启动 storybook
 ```
