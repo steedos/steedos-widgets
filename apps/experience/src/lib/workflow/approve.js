@@ -53,11 +53,24 @@ const getJudgeInput = async (instance) => {
           "weight": 0,
           "actions": [
             {
-              "componentId": "u:next_step",
+              "componentId": "instance_approval",
               "args": {
+                "value": {
+                  new_judge: "${event.data.value}",
+                  new_next_step: undefined,
+                  next_step: undefined,
+                }
               },
-              "actionType": "reload"
-            }
+              "actionType": "setValue"
+            },
+            {
+              // "componentId": "u:next_step",
+              "args": {
+                judge: "${event.data.value}"
+              },
+              "actionType": "broadcast",
+              eventName: "approve_judge_change"
+            },
           ]
         }
       }
@@ -98,27 +111,61 @@ const getNextStepInput = async (instance) => {
               "method": "post",
               "messages": {
               },
-              "requestAdaptor": "console.log(`api====`, api)\nconst { context, judge } = api.data;console.log(`context, judge`, context, judge);\nconst formValues = SteedosUI.getRef(\"amis-root-workflow\").getComponentById(\"instance_form\").getValues();\n\napi.data = {\nflowVersionId: context.flowVersion._id,\n  instanceId: context._id,\n  flowId: context.flow._id,\n  step: context.step,\n  judge: judge,\n  values: formValues\n}\n\n\n console.log('api===', api);return api;",
-              "adaptor": "console.log('payload', payload);\npayload.data = payload.nextSteps;\nreturn payload;",
+              "requestAdaptor": "let { context, judge } = api.data; if(!judge){judge='approved'}\nconst formValues = SteedosUI.getRef(\"amis-root-workflow\").getComponentById(\"instance_form\").getValues();\n\napi.data = {\nflowVersionId: context.flowVersion._id,\n  instanceId: context._id,\n  flowId: context.flow._id,\n  step: context.step,\n  judge: judge,\n  values: formValues\n}\n\n\n return api;",
+              "adaptor": `
+                payload.data = {
+                  options: _.map(payload.nextSteps, (item)=>{
+                    return {
+                      label: item.name, 
+                      value: item
+                    }
+                  })
+                };
+                return payload;
+              `,
               "data": {
-                "&": "$$",
+                // "&": "$$",
                 "context": "${context}",
+                "judge": "${new_judge}",
               }
             },
-            "labelField": "name",
-            "valueField": "_id",
+            // "labelField": "name",
+            // "valueField": "_id",
             "onEvent": {
+              // "change": {
+              //   "weight": 0,
+              //   "actions": [
+              //     {
+              //       "componentId": "u:next_users",
+              //       "args": {
+              //       },
+              //       "actionType": "reload"
+              //     }
+              //   ]
+              // },
               "change": {
                 "weight": 0,
                 "actions": [
                   {
-                    "componentId": "u:next_users",
+                    "componentId": "instance_approval",
                     "args": {
+                      "value": {
+                        new_next_step: "${event.data.value}",
+                      }
                     },
-                    "actionType": "reload"
-                  }
+                    "actionType": "setValue"
+                  },
+                  {
+                    // "componentId": "u:next_step",
+                    "args": {
+                      next_step: "${event.data.value}",
+                    },
+                    "actionType": "broadcast",
+                    eventName: "approve_next_step_change"
+                  },
                 ]
               }
+              
             }
           },
         ],
@@ -153,17 +200,21 @@ const getNextStepUsersInput = async (instance) => {
       {
         body: [
           // TODO 处理下一步处理人默认值
-          // Object.assign({name: "next_users", value: ""}, await lookupToAmisPicker(
-          //   {
-          //     name: "next_users",
-          //     label: false,
-          //     reference_to: "space_users",
-          //     reference_to_field: 'user',
-          //     multiple: false,
-          //   },
-          //   false,
-          //   {}
-          // )),
+          Object.assign({}, await lookupToAmisPicker(
+            {
+              name: "next_users",
+              label: false,
+              reference_to: "space_users",
+              reference_to_field: 'user',
+              multiple: false,
+            },
+            false,
+            {}
+          ),{
+            name: "next_users", 
+            value: "",
+            hiddenOn: "this.new_next_step.deal_type != 'pickupAtRuntime'"
+          }),
           {
             type: "list-select",
             label: "",
@@ -174,17 +225,20 @@ const getNextStepUsersInput = async (instance) => {
             "source": {
               "url": "${context.rootUrl}/api/workflow/v2/nextStepUsers",
               "method": "post",
+              "sendOn": "!!this.new_next_step",
               "messages": {
               },
-              "requestAdaptor": "console.log(`api====`, api)\nconst { context, next_step } = api.data;console.log('====', next_step);\nconst formValues = SteedosUI.getRef(\"amis-root-workflow\").getComponentById(\"instance_form\").getValues();\n\napi.data = {\n  instanceId: context._id,\n nextStepId: next_step,\n  values: formValues\n}\n\n\n console.log('api===', api);return api;",
-              "adaptor": "console.log('payload', payload);\npayload.data = payload.nextStepUsers;\nreturn payload;",
+              "requestAdaptor": "\nconst { context, next_step } = api.data;\nconst formValues = SteedosUI.getRef(\"amis-root-workflow\").getComponentById(\"instance_form\").getValues();\n\napi.data = {\n  instanceId: context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
+              "adaptor": "\npayload.data = payload.nextStepUsers;\nreturn payload;",
               "data": {
                 "&": "$$",
                 "context": "${context}",
+                "next_step": "${new_next_step}",
               }
             },
             "labelField": "name",
-            "valueField": "id"
+            "valueField": "id",
+            hiddenOn: "this.new_next_step.deal_type === 'pickupAtRuntime'"
           }
         ],
         id: "u:81a4913c61cc",
@@ -193,11 +247,12 @@ const getNextStepUsersInput = async (instance) => {
     id: "u:ffff15b76c89",
     className: "b-a b-1x p-xs m-b-none m-l-none m-r-none m-t-sm",
     subFormMode: "",
+    hiddenOn: "!!!this.new_next_step || this.next_step?.step_type === 'end'"
   };
 };
 
 const getPostSubmitRequestAdaptor = async (instance) => {
-  return `  console.log("submit", api)
+  return `  
             const formValues = SteedosUI.getRef("amis-root-workflow").getComponentById("instance_form").getValues();
             const approveValues = SteedosUI.getRef("amis-root-workflow").getComponentById("instance_approval").getValues();
 
@@ -226,7 +281,7 @@ const getPostSubmitRequestAdaptor = async (instance) => {
 };
 
 const getPostEngineRequestAdaptor = async (instance) => {
-  return `  console.log("engine", api)
+  return `  
             const formValues = SteedosUI.getRef("amis-root-workflow").getComponentById("instance_form").getValues();
             const approveValues = SteedosUI.getRef("amis-root-workflow").getComponentById("instance_approval").getValues();
             const body = {Approvals: [{
@@ -315,6 +370,28 @@ export const getApprovalDrawerSchema = async (instance) => {
           await getNextStepInput(instance),
           await getNextStepUsersInput(instance),
         ],
+        onEvent: {
+          "approve_judge_change": {
+            "actions": [
+              {
+                "actionType": "reload",
+                "componentId": "u:next_step",
+                "args": {
+                }
+              }
+            ]
+          },
+          "approve_next_step_change": {
+            "actions": [
+              {
+                "actionType": "reload",
+                "componentId": "u:next_users",
+                "args": {
+                }
+              }
+            ]
+          },
+        }
       },
     ],
     id: "u:8861156e0b23",
@@ -347,6 +424,6 @@ export const getApprovalDrawerSchema = async (instance) => {
         },
         id: "u:127ff1da7283",
       },
-    ],
+    ]
   };
 };
