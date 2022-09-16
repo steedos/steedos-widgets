@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-16 15:25:39
+ * @LastEditTime: 2022-09-16 16:00:41
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -65,14 +65,12 @@ export default function Record({formFactor}) {
           {schema && <Header schema={schema} formFactor={formFactor} permissions={permissions} hiddenTitle={true}></Header>}
         </div>
         }
-        <div className="relative flex flex-1 flex-col region-main overflow-auto" id="instanceRoot" style={{
-          height: "calc(100% - 60px)"
-        }}>
+        <div className="h-full  relative flex flex-1 flex-col region-main overflow-auto" id="instanceRoot">
           { record === undefined && <>
             Not Find Instance
           </>}
           {record != undefined && formSchema && (
-            <AmisRender  className="" id={`amis-root-workflow`} schema={formSchema} router={router} data={{
+            <AmisRender  className="h-full" id={`amis-root-workflow`} schema={formSchema} router={router} data={{
               ...record.approveValues,
               context: record,
             }} getModalContainer={()=>{

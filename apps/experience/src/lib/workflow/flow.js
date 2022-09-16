@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-16 14:45:28
+ * @LastEditTime: 2022-09-16 16:10:30
  * @Description:
  */
 import {
@@ -408,7 +408,7 @@ const getApproveButton = async (instance)=>{
     id: "u:cc1afbdc3868",
     level: "primary",
     className:
-      "p-4 shadow-sm bg-purple-500 w-16 h-16 rounded-full fixed top-2 right-2 bg-purple-500 shadow-lg p-4 text-white dark:bg-sky-500",
+      "approve-button w-14 h-14 rounded-full fixed bottom-4 right-4 shadow-lg text-white text-base text-center font-semibold bg-blue-500 p-0",
   }
 }
 
