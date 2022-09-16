@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-15 18:22:03
+ * @LastEditTime: 2022-09-16 14:22:52
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -117,7 +117,7 @@ export default function Record({formFactor}) {
     return <><Loading/></>
   return (
     <div className="h-full grid grid-cols-3 grid-flow-row-dense">
-      <div className="border-r"><Listview formFactor={formFactor} app_id={'approve_workflow'} tab_id={'instances'}></Listview></div>
+      <div className="border-r"><Listview formFactor={formFactor} app_id={'approve_workflow'} tab_id={'instances'} listViewName={box}></Listview></div>
       <div className="col-span-2" >
         <div className="region-header bg-slate-50 static">
           {schema && <Header schema={schema} formFactor={formFactor} permissions={permissions} hiddenTitle={true}></Header>}
