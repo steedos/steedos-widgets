@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-16 17:24:24
+ * @LastEditTime: 2022-09-16 18:19:41
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -89,6 +89,7 @@ export default function Record({formFactor}) {
               submit_date: record.submit_date,
               applicant: record.applicant,
               applicant_name: record.applicant_name,
+              related_instances: record.related_instances,
               ...record.approveValues,
               context: record,
             }} getModalContainer={()=>{

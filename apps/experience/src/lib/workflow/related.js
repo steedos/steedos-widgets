@@ -2,11 +2,11 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-16 17:26:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-16 17:36:59
+ * @LastEditTime: 2022-09-16 18:21:54
  * @Description: 
  */
 import { map, isEmpty } from 'lodash'
-
+import { getSteedosAuth } from '@steedos-widgets/amis-lib';
 export const getRelatedRecords = async (instance)=>{
     if(!instance.record_ids || isEmpty(instance.record_ids)){
         return ;
@@ -19,7 +19,34 @@ export const getRelatedRecords = async (instance)=>{
     })
 }
 
-// TODO 
-export const getRelatedInstances = async ()=>{
-
+// TODO delete button
+export const getRelatedInstances = async (instance)=>{
+    if(!instance.related_instances || isEmpty(instance.related_instances)){
+        return ;
+    }
+    const spaceId = getSteedosAuth().spaceId;
+    
+    return {
+        "type": "list",
+        "source": "${related_instances}",
+        title: "相关文件",
+        "listItem": {
+          "body": [
+            {
+                type: 'tpl',
+                inline: true,
+                tpl: `<a href='/workflow/space/${spaceId}/view/readonly/\${_id}' target='_blank'>\${name}</a>`
+            }
+          ],
+          "actions": [
+            {
+              "icon": "fa fa-eye",
+              "type": "button",
+              "id": "u:ef52fa8940a8"
+            }
+          ],
+          "id": "u:550b3fdc8788"
+        },
+        "id": "u:f538be693fad"
+    }
 }

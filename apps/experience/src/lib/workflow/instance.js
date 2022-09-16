@@ -4,7 +4,7 @@ import _, { find, isEmpty } from "lodash";
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 17:47:37
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-16 17:29:26
+ * @LastEditTime: 2022-09-16 17:52:51
  * @Description:
  */
 
@@ -119,6 +119,10 @@ export const getInstanceInfo = async ({ instanceId, box }) => {
         submitter,
         submit_date,
         record_ids,
+        related_instances: related_instances__expand{
+          _id,
+          name
+        },
         traces,
         form_version,
         form:form__expand{
@@ -188,6 +192,7 @@ export const getInstanceInfo = async ({ instanceId, box }) => {
     step: step,
     trace: trace,
     approve: userApprove,
-    record_ids: instance.record_ids
+    record_ids: instance.record_ids,
+    related_instances: instance.related_instances
   };
 };
