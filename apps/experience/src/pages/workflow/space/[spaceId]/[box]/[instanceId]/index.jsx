@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-16 16:59:31
+ * @LastEditTime: 2022-09-16 17:15:25
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -30,8 +30,7 @@ function classNames(...classes) {
 }
 export default function Record({formFactor}) {
   const router = useRouter();
-  const { app_id, tab_id = 'instances', instanceId, box } = router.query;
-  const [isEditing, setIsEditing] = useState(false);
+  const { app_id= 'approve_workflow', tab_id = 'instances', instanceId, box } = router.query;
   const [schema, setSchema] = useState(null);
   const [permissions, setPermissions] = useState(null);
   const [formSchema, setFormSchema] = useState(null);
@@ -54,17 +53,30 @@ export default function Record({formFactor}) {
     }
   }, [record])
 
+  useEffect(()=>{
+    getViewSchema(tab_id, instanceId, {
+      recordId: instanceId,
+      tabId: tab_id,
+      appId: app_id,
+      formFactor: formFactor,
+    }).then((res)=>{
+      setSchema(res)
+    })
+  }, [tab_id, instanceId])
+
   const Header = formFactor === "SMALL" ? MobileRecordHeader : RecordHeader;
   return (
     <div className="h-full grid grid-cols-3 grid-flow-row-dense">
-      <div className="border-r"><Listview formFactor={formFactor} app_id={'approve_workflow'} tab_id={'instances'} listViewName={box}></Listview></div>
+      <div className="border-r"><Listview formFactor={formFactor} app_id={app_id} tab_id={'instances'} listViewName={box}></Listview></div>
       <div className="col-span-2" >
         {
           record != undefined && <div className="region-header bg-slate-50 static">
           {schema && <Header schema={schema} formFactor={formFactor} permissions={permissions} hiddenTitle={true}></Header>}
         </div>
         }
-        <div className="h-full  relative flex flex-1 flex-col region-main overflow-auto" id="instanceRoot">
+        <div className="relative flex flex-1 flex-col region-main overflow-auto" id="instanceRoot" style={{
+          height: "calc(100% - 60px)"
+        }}>
           { record === undefined && <>
             Not Find Instance
           </>}
