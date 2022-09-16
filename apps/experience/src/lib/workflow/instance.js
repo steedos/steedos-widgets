@@ -4,7 +4,7 @@ import _, { find, isEmpty } from "lodash";
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 17:47:37
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-14 16:05:52
+ * @LastEditTime: 2022-09-16 14:42:39
  * @Description:
  */
 
@@ -145,6 +145,9 @@ export const getInstanceInfo = async ({ instanceId, box }) => {
   let trace = null;
   let step = null;
   const instance = result.data.instance;
+  if(!instance){
+    return undefined;
+  }
   if(box === 'inbox' || box === 'draft'){
     userApprove = getUserApprove({ instance, userId });
   }

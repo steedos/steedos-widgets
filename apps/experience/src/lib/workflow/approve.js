@@ -103,7 +103,6 @@ const getNextStepInput = async (instance) => {
             type: "list-select",
             label: "",
             name: "next_step",
-            // options: await getNextStepOptions(instance),
             id: "u:next_step",
             multiple: false,
             "source": {
@@ -225,7 +224,7 @@ const getNextStepUsersInput = async (instance) => {
             "source": {
               "url": "${context.rootUrl}/api/workflow/v2/nextStepUsers",
               "method": "post",
-              "sendOn": "!!this.new_next_step",
+              "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end'",
               "messages": {
               },
               "requestAdaptor": "\nconst { context, next_step } = api.data;\nconst formValues = SteedosUI.getRef(\"amis-root-workflow\").getComponentById(\"instance_form\").getValues();\n\napi.data = {\n  instanceId: context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
@@ -247,7 +246,7 @@ const getNextStepUsersInput = async (instance) => {
     id: "u:ffff15b76c89",
     className: "b-a b-1x p-xs m-b-none m-l-none m-r-none m-t-sm",
     subFormMode: "",
-    hiddenOn: "!!!this.new_next_step || this.next_step?.step_type === 'end'"
+    hiddenOn: "!!!this.new_next_step || this.new_next_step?.step_type === 'end'"
   };
 };
 
@@ -267,7 +266,7 @@ const getPostSubmitRequestAdaptor = async (instance) => {
                     approves: [{
                         _id: "${instance.approve._id}",
                         next_steps: [{
-                            step: approveValues.next_step,
+                            step: approveValues.next_step._id,
                             users: [approveValues.next_users],
                         }],
                         description: approveValues.suggestion,
@@ -290,7 +289,7 @@ const getPostEngineRequestAdaptor = async (instance) => {
               trace: "${instance.approve.trace}",
               _id: "${instance.approve._id}",
               next_steps: [{
-                  step: approveValues.next_step,
+                  step: approveValues.next_step._id,
                   users: [approveValues.next_users],
               }],
               description: approveValues.suggestion,
@@ -381,16 +380,16 @@ export const getApprovalDrawerSchema = async (instance) => {
               }
             ]
           },
-          "approve_next_step_change": {
-            "actions": [
-              {
-                "actionType": "reload",
-                "componentId": "u:next_users",
-                "args": {
-                }
-              }
-            ]
-          },
+          // "approve_next_step_change": {
+          //   "actions": [
+          //     {
+          //       "actionType": "reload",
+          //       "componentId": "u:nex_users",
+          //       "args": {t
+          //       }
+          //     }
+          //   ]
+          // },
         }
       },
     ],

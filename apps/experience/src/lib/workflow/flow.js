@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-14 16:06:47
+ * @LastEditTime: 2022-09-16 14:45:28
  * @Description:
  */
 import {
@@ -116,8 +116,8 @@ const getTdInputTpl = async (field, label) => {
       labelField = labelField.substr(labelField.indexOf(".") + 1);
       tpl.type = "select";
       tpl.multiple = field.is_multiselect;
-      tpl.labelField = labelField;
-      tpl.valueField = "_id"; //TODO, 存储整条记录
+      // tpl.labelField = labelField;
+      // tpl.valueField = "_value";
       tpl.source = {
         url: startsWith(field.url, "http")
           ? field.url
@@ -127,8 +127,22 @@ const getTdInputTpl = async (field, label) => {
         headers: {
           Authorization: "Bearer ${context.tenantId},${context.authToken}",
         },
-        adaptor:
-          "console.log('payload',payload);payload.options = payload.value;\nreturn payload;",
+        adaptor:`
+          payload.data = {
+            options: _.map(payload.value, (item)=>{
+              const value = item;
+              item["@label"] = item["${labelField}"]
+              delete item['@odata.editLink'];
+              delete item['@odata.etag'];
+              delete item['@odata.id'];
+              return {
+                label: item["@label"],
+                value: value
+              }
+            })
+          }
+          return payload;
+        `
       };
       break;
     case "html":
