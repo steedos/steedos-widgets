@@ -9,7 +9,7 @@ import { Button } from "@/components/object/Button";
 import { MoreOutlined } from '@ant-design/icons';
 import { Dropdown, Menu , Space, Button as AButton  } from 'antd';
 
-export function RecordHeader({ schema, formFactor, permissions, hiddenTitle }) {
+export function RecordHeader({ schema, formFactor, permissions, hiddenTitle, className="" }) {
   const router = useRouter();
   const { app_id, tab_id, record_id } = router.query;
   
@@ -88,7 +88,7 @@ export function RecordHeader({ schema, formFactor, permissions, hiddenTitle }) {
   }
 
   return (
-    <div className="slds-page-header slds-page-header_record-home bg-transparent shadow-none border-none pb-0">
+    <div className={`slds-page-header slds-page-header_record-home bg-transparent shadow-none border-none pb-0 ${className}`}>
       <div className="slds-page-header__row">
         {hiddenTitle != true && 
                 <div className="slds-page-header__col-title">

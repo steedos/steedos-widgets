@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 11:31:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-14 16:32:12
+ * @LastEditTime: 2022-09-16 17:39:13
  * @Description:
  */
 import { each, find, isArray, isEmpty } from 'lodash';
@@ -48,7 +48,7 @@ const normalizeLink = (to, location = window.location) => {
 };
 
 export const amisRootClick = (router, e) => {
-  if (e.target.nodeName.toLocaleLowerCase() === "a" && e.target.href) {
+  if (e.target.nodeName.toLocaleLowerCase() === "a" && e.target.href && e.target.target != '_blank') {
     e.preventDefault();
     router.push(e.target.href);
   }

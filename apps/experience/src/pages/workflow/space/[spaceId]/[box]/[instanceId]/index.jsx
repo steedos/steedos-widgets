@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-16 17:15:25
+ * @LastEditTime: 2022-09-16 17:24:24
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -71,15 +71,19 @@ export default function Record({formFactor}) {
       <div className="col-span-2" >
         {
           record != undefined && <div className="region-header bg-slate-50 static">
-          {schema && <Header schema={schema} formFactor={formFactor} permissions={permissions} hiddenTitle={true}></Header>}
+          {schema && <Header schema={schema} formFactor={formFactor} permissions={permissions} hiddenTitle={true} className="p-2"></Header>}
         </div>
         }
-        <div className="relative flex flex-1 flex-col region-main overflow-auto" id="instanceRoot" style={{
+        <div className="relative flex flex-1 flex-col region-main overflow-auto border-t" id="instanceRoot" style={{
           height: "calc(100% - 60px)"
         }}>
           { record === undefined && <>
             Not Find Instance
           </>}
+
+          {/* TODO: instance_attachments */}
+          {/* TODO: related_instances */}
+          {/* TODO: related_records */}
           {record != undefined && formSchema && (
             <AmisRender  className="h-full" id={`amis-root-workflow`} schema={formSchema} router={router} data={{
               submit_date: record.submit_date,

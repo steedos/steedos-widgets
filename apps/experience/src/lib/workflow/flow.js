@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-16 17:01:04
+ * @LastEditTime: 2022-09-16 17:35:05
  * @Description:
  */
 import {
@@ -14,6 +14,8 @@ import {
 import { each, startsWith } from "lodash";
 
 import { getApprovalDrawerSchema } from "./approve";
+
+import { getRelatedRecords } from './related';
 
 const getSelectOptions = (field) => {
   const options = [];
@@ -431,6 +433,7 @@ export const getFlowFormSchema = async (instance) => {
   return {
     type: "page",
     body: [
+      await getRelatedRecords(instance),
       {
         type: "form",
         debug: false,
