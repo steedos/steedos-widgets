@@ -182,6 +182,121 @@ export async function getObjectList(objectSchema, fields, options){
     }
 }
 
+export async function getRecordDetailHeaderAmisSchema(objectSchema, recordId){
+  // console.log('amis==>', objectSchema, recordId)
+  const { name,  label , icon } = objectSchema;
+  let body = [
+    {
+      "type": "service",
+      "body": [
+        {
+          "type": "panel",
+          "title": "标题",
+          "body": [],
+          "id": "u:f06f9b6298c5",
+          "header": {
+            "type": "wrapper",
+            "body": [
+              {
+                "type": "grid",
+                "columns": [
+                  {
+                    "body": [
+                      {
+                        "type": "grid",
+                        "columns": [
+                          {
+                            "body": {
+                              "type": "tpl",
+                              "id": "u:b788c99f23f5",
+                              "className": "block",
+                              "tpl": `<img class='slds-icon slds-icon_container slds-icon-standard-${icon}' src='\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg'>`
+                            },
+                            "id": "u:4ad6d27dd9a7",
+                            "md": "auto",
+                            "className": "",
+                            "columnClassName": "flex justify-center items-center"
+                          },
+                          {
+                            "body": [
+                              {
+                                "type": "tpl",
+                                "tpl": `${label}`,
+                                "inline": false,
+                                "wrapperComponent": "",
+                                "id": "u:f20c8f4bd441",
+                                "style": {
+                                  "fontFamily": "",
+                                  "fontSize": 13
+                                },
+                                "className": "leading-none"
+                              },
+                              {
+                                "type": "tpl",
+                                "tpl": "${name}",
+                                "inline": false,
+                                "wrapperComponent": "",
+                                "id": "u:3d874f3158c5",
+                                "style": {
+                                  "fontFamily": "",
+                                  "fontSize": 20,
+                                  "fontWeight": "bold",
+                                  "textAlign": "left"
+                                },
+                                "className": "leading-none"
+                              }
+                            ],
+                            "id": "u:5d7a850db0ba"
+                          }
+                        ],
+                        "id": "u:a9edfcb34f3e"
+                      }
+                    ],
+                    "id": "u:2804a6a76bc4",
+                    "md": 9
+                  },
+                  {
+                    "body": [],
+                    "id": "u:122319277746"
+                  }
+                ],
+                "id": "u:fb5acaad8423"
+              }
+            ],
+            "id": "u:1c057096260a",
+            "size": "xs"
+          },
+          "affixFooter": false,
+          "headerClassName": "",
+          "bodyClassName": "p-none"
+        }
+      ],
+      "id": "u:d016f464c9f2",
+      "messages": {},
+      "api": {
+        "method": "post",
+        "url": "${context.rootUrl}/graphql",
+        "headers": {
+          "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+        },
+        "data": {
+          "query": `{rows:${name}(filters: [\"_id\",\"=\",${recordId}]){_id, name} }`
+        },
+        "requestAdaptor": "",
+        "adaptor": "const rows = payload.data.rows;\nlet name = null;\nif (rows.length) {\n  const objectInfo = rows[0];\n  label = objectInfo.name;\n}\ndelete payload.rows;\npayload.data = {\n  name: label\n}\nreturn payload;"
+      }
+    }
+  ];
+
+  return {
+      type: 'service',
+      bodyClassName: '',
+      name: `page`,
+      data: {context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
+      body: body
+  }
+}
+
 const getGlobalData = (mode)=>{
   const user = getSteedosAuth();
   return {mode: mode, user: user, spaceId: user.spaceId, userId: user.userId}
