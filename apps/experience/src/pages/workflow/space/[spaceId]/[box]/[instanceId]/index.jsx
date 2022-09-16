@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-16 14:43:20
+ * @LastEditTime: 2022-09-16 15:25:39
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -37,21 +37,6 @@ export default function Record({formFactor}) {
   const [formSchema, setFormSchema] = useState(null);
   const [record, setRecord] = useState(null);
 
-  const doEditing = () => {
-    if (!formFactor) {
-      return;
-    }
-    editRecord(tab_id, instanceId, formFactor);
-  };
-
-  const doReadonly = () => {
-    if (!formFactor) {
-      return;
-    }
-    viewRecord(tab_id, instanceId, formFactor);
-  };
-
-
   useEffect(()=>{
     getInstanceInfo({instanceId: instanceId, box: box}).then((res)=>{
       setRecord(res)
@@ -69,52 +54,8 @@ export default function Record({formFactor}) {
     }
   }, [record])
 
-  useEffect(() => {
-    doReadonly();
-  }, [router]);
-
-  useEffect(() => {
-    if (isEditing) {
-      doEditing();
-    } else {
-      doReadonly();
-    }
-  }, [formFactor]);
-
-  const viewRecord = (tab_id, record_id, formFactor) => {
-    if (tab_id && record_id) {
-      const p1 = getObjectRelatedList(app_id, tab_id, record_id, formFactor);
-      const p2 = getViewSchema(tab_id, record_id, {
-        recordId: record_id,
-        tabId: tab_id,
-        appId: app_id,
-        formFactor: formFactor,
-      });
-      Promise.all([p1, p2]).then((values) => {
-        const schema = values[1];
-        setSchema(schema);
-        setIsEditing(false);
-      });
-    }
-  };
-  const editRecord = (tab_id, record_id, formFactor) => {
-    if (tab_id && record_id) {
-      getFormSchema(tab_id, {
-        recordId: record_id,
-        tabId: tab_id,
-        appId: app_id,
-        formFactor: formFactor,
-      }).then((data) => {
-        setSchema(data);
-        setIsEditing(true);
-      });
-    }
-  };
-
   const Header = formFactor === "SMALL" ? MobileRecordHeader : RecordHeader;
 
-  if (!schema) 
-    return <><Loading/></>
   return (
     <div className="h-full grid grid-cols-3 grid-flow-row-dense">
       <div className="border-r"><Listview formFactor={formFactor} app_id={'approve_workflow'} tab_id={'instances'} listViewName={box}></Listview></div>
