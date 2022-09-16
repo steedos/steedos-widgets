@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-16 16:10:30
+ * @LastEditTime: 2022-09-16 17:01:04
  * @Description:
  */
 import {
@@ -288,6 +288,31 @@ const getFormTableView = async (instance) => {
 };
 
 const getApplicantTableView = async (instance) => {
+  let applicantInput = null;
+  if(instance.state === 'draft'){
+    applicantInput = Object.assign({name: "applicant", value: getSteedosAuth().userId, disabled: instance.box !== 'draft'}, await lookupToAmisPicker(
+      {
+        name: "applicant",
+        label: false,
+        reference_to: "space_users",
+        reference_to_field: 'user',
+        multiple: false
+      },
+      false,
+      {}
+    ));
+  }else{
+    applicantInput = {
+      label: false,
+      mode: "horizontal",
+      className: "m-none p-none",
+      disabled: true,
+      type: "tpl",
+      tpl: '<div>${applicant_name}</div>',
+      id: "u:2016b04355f4",
+    }
+  }
+
   return {
     type: "table-view",
     className: "instance-applicant-view",
@@ -320,18 +345,7 @@ const getApplicantTableView = async (instance) => {
             className: "td-field",
             width: "32%",
             body: [
-              // TODO 处理权限, 只有开始步骤才允许修改此属性?
-              Object.assign({name: "applicant", value: getSteedosAuth().userId, disabled: instance.box !== 'draft'}, await lookupToAmisPicker(
-                {
-                  name: "applicant",
-                  label: false,
-                  reference_to: "space_users",
-                  reference_to_field: 'user',
-                  multiple: false
-                },
-                false,
-                {}
-              )),
+              applicantInput
             ],
             id: "u:45d65d91905c",
           },
@@ -362,12 +376,13 @@ const getApplicantTableView = async (instance) => {
             body: [
               {
                 label: false,
-                name: "submit_date",
                 mode: "horizontal",
                 className: "m-none p-none",
-                disabled: false,
+                disabled: true,
                 type: "tpl",
-                tpl: "TODO 格式化提交日期YYYY-MM-DD显示在此处",
+                inputFormat: "YYYY-MM-DD",
+                valueFormat: "YYYY-MM-DDT00:00:00.000[Z]",
+                tpl: '<div>${submit_date}</div>',
                 id: "u:2016b04355f4",
               },
             ],

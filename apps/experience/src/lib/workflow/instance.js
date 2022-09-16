@@ -4,7 +4,7 @@ import _, { find, isEmpty } from "lodash";
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 17:47:37
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-16 14:42:39
+ * @LastEditTime: 2022-09-16 16:58:58
  * @Description:
  */
 
@@ -115,7 +115,9 @@ export const getInstanceInfo = async ({ instanceId, box }) => {
         state,
         values,
         applicant,
+        applicant_name,
         submitter,
+        submit_date,
         traces,
         form_version,
         form:form__expand{
@@ -171,7 +173,9 @@ export const getInstanceInfo = async ({ instanceId, box }) => {
     flow: instance.flow,
     form: instance.form,
     applicant: instance.applicant,
+    applicant_name: instance.applicant_name,
     submitter: instance.submitter,
+    submit_date: instance.submit_date ? amisRequire("moment")(instance.submit_date).format("YYYY-MM-DD") : '',
     state: instance.state,
     approveValues: values,
     title: instance.name || instance.form.name,
@@ -182,6 +186,6 @@ export const getInstanceInfo = async ({ instanceId, box }) => {
     formVersion: formVersion,
     step: step,
     trace: trace,
-    approve: userApprove,
+    approve: userApprove
   };
 };

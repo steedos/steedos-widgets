@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-16 16:00:41
+ * @LastEditTime: 2022-09-16 16:59:31
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -55,7 +55,6 @@ export default function Record({formFactor}) {
   }, [record])
 
   const Header = formFactor === "SMALL" ? MobileRecordHeader : RecordHeader;
-
   return (
     <div className="h-full grid grid-cols-3 grid-flow-row-dense">
       <div className="border-r"><Listview formFactor={formFactor} app_id={'approve_workflow'} tab_id={'instances'} listViewName={box}></Listview></div>
@@ -71,6 +70,9 @@ export default function Record({formFactor}) {
           </>}
           {record != undefined && formSchema && (
             <AmisRender  className="h-full" id={`amis-root-workflow`} schema={formSchema} router={router} data={{
+              submit_date: record.submit_date,
+              applicant: record.applicant,
+              applicant_name: record.applicant_name,
               ...record.approveValues,
               context: record,
             }} getModalContainer={()=>{

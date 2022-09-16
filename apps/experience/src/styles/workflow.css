@@ -68,3 +68,9 @@
 #instanceRoot .antd-PullRefresh{
     height: 100%;
 }
+
+#instanceRoot .instance-applicant-view  .antd-Picker-input{
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important; 
+}
