@@ -254,7 +254,10 @@ const getPostSubmitRequestAdaptor = async (instance) => {
   return `  
             const formValues = SteedosUI.getRef("amis-root-workflow").getComponentById("instance_form").getValues();
             const approveValues = SteedosUI.getRef("amis-root-workflow").getComponentById("instance_approval").getValues();
-
+            let nextUsers = approveValues.next_users;
+            if(_.isString(nextUsers)){
+              nextUsers = [approveValues.next_users];
+            }
             const body = {Instances: [{
                 _id: "${instance._id}",
                 flow: "${instance.flow._id}",
@@ -267,7 +270,7 @@ const getPostSubmitRequestAdaptor = async (instance) => {
                         _id: "${instance.approve._id}",
                         next_steps: [{
                             step: approveValues.next_step._id,
-                            users: [approveValues.next_users],
+                            users: nextUsers,
                         }],
                         description: approveValues.suggestion,
                         values: formValues
@@ -283,6 +286,10 @@ const getPostEngineRequestAdaptor = async (instance) => {
   return `  
             const formValues = SteedosUI.getRef("amis-root-workflow").getComponentById("instance_form").getValues();
             const approveValues = SteedosUI.getRef("amis-root-workflow").getComponentById("instance_approval").getValues();
+            let nextUsers = approveValues.next_users;
+            if(_.isString(nextUsers)){
+              nextUsers = [approveValues.next_users];
+            }
             const body = {Approvals: [{
               instance: "${instance._id}",
               judge: approveValues.judge,
@@ -290,7 +297,7 @@ const getPostEngineRequestAdaptor = async (instance) => {
               _id: "${instance.approve._id}",
               next_steps: [{
                   step: approveValues.next_step._id,
-                  users: [approveValues.next_users],
+                  users: nextUsers,
               }],
               description: approveValues.suggestion,
               values: formValues
@@ -334,11 +341,19 @@ const getSubmitActions = async (instance) => {
           requestAdaptor: requestAdaptor,
         },
         messages: {
-          success: "提交成功",
+          success: "提交成功!",
         },
       },
       actionType: "ajax",
     },
+    {
+      "componentId": "",
+      "args": {
+        "blank": false,
+        "url": `/workflow/space/${getSteedosAuth().spaceId}/${instance.box}`
+      },
+      "actionType": "url"
+    }
   ];
 };
 
