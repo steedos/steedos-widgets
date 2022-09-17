@@ -14,6 +14,7 @@ export * from './lib/notification';
 export * from './lib/page';
 export * from './lib/public.env';
 export * from './lib/record';
+export * from './lib/space_users'
 export * from './lib/steedos.client.js'
 
 export * from './lib/converter/amis/fields/lookup';
