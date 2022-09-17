@@ -20,3 +20,47 @@ export const AmisTabListSelect = async (props) => {
     ]
   }
 }
+
+
+// export const AmisTabListSelect = () => (
+//   <AmisRender schema={{
+//     type: 'page',
+//     title: 'AmisTabListSelect',
+//     "data": {
+//       "arr": [
+//         {
+//           "tab_title": "收入",
+//           "items": [
+//             {
+//               "label": "Option A1",
+//               "value": "a1"
+//             },
+//             {
+//               "label": "Option B1",
+//               "value": "b1"
+//             }
+//           ]
+//         },
+//         {
+//           "tab_title": "支出",
+//           "items": [
+//             {
+//               "label": "Option A2",
+//               "value": "a2"
+//             },
+//             {
+//               "label": "Option B2",
+//               "value": "b2"
+//             }
+//           ]
+//         }
+//       ]
+//     },
+//     body: {
+//       type: 'amis-tab-list-select',
+//       "source": "${arr}"
+//     }
+//   }}
+//   assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
+//   />
+// )
