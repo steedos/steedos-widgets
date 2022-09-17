@@ -169,7 +169,7 @@ export async function getListSchema(
     };
 }
 
-export async function getRecordDetailHeaderSchema(appName,objectName,recordId){
+export async function getRecordDetailHeaderSchema(objectName,recordId){
     const uiSchema = await getUISchema(objectName);
     const amisSchema = await getRecordDetailHeaderAmisSchema(uiSchema, recordId);
     return {
