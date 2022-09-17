@@ -176,3 +176,33 @@ export const RecordDetailHeader = () => (
   assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
   />
 )
+
+// export const AmisSpaceUsersPicker = () => (
+//   <AmisRender schema={{
+//     type: 'page',
+//     title: 'AmisSpaceUsersPicker',
+//     body: {
+//       type: 'amis-tab-list-select',
+//       "source": "${arr}"
+//     }
+//   }}
+//   assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
+//   />
+// )
+
+export const AmisSpaceUsersPicker = () => (
+  <AmisRender schema={{
+      "type": "form",
+      "mode": "horizontal",
+      "body": [
+        {
+          "label": "Owner",
+          "type": "steedos-space-users-picker",
+          "name": "owner",
+        }
+      ],
+      "title": "AmisSpaceUsersPicker"
+    }}
+    assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
+  />
+)

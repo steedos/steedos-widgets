@@ -9,13 +9,14 @@
 import AmisObjectForm from "./metas/AmisObjectForm";
 import AmisObjectListview from "./metas/AmisObjectListview";
 import AmisRecordDetailHeader from "./metas/AmisRecordDetailHeader";
+import AmisSpaceUsersPicker from "./metas/AmisSpaceUsersPicker";
 
-const components = [AmisObjectForm, AmisObjectListview, AmisRecordDetailHeader];
+const components = [AmisObjectForm, AmisObjectListview, AmisRecordDetailHeader, AmisSpaceUsersPicker];
 const componentList = [
   {
     title: "华炎魔方",
     icon: "",
-    children: [AmisObjectForm, AmisObjectListview,AmisRecordDetailHeader]
+    children: [AmisObjectForm, AmisObjectListview,AmisRecordDetailHeader, AmisSpaceUsersPicker]
   }
 ];
 export default {
