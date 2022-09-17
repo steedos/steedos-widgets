@@ -177,19 +177,6 @@ export const RecordDetailHeader = () => (
   />
 )
 
-// export const AmisSpaceUsersPicker = () => (
-//   <AmisRender schema={{
-//     type: 'page',
-//     title: 'AmisSpaceUsersPicker',
-//     body: {
-//       type: 'amis-tab-list-select',
-//       "source": "${arr}"
-//     }
-//   }}
-//   assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
-//   />
-// )
-
 export const AmisSpaceUsersPicker = () => (
   <AmisRender schema={{
       "type": "form",
