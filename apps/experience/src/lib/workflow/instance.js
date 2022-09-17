@@ -4,7 +4,7 @@ import _, { find, isEmpty } from "lodash";
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 17:47:37
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-16 17:52:51
+ * @LastEditTime: 2022-09-17 15:12:55
  * @Description:
  */
 
@@ -111,6 +111,7 @@ export const getInstanceInfo = async ({ instanceId, box }) => {
   const query = `{
       instance: instances__findOne(id:"${instanceId}"){
         _id,
+        space,
         name,
         state,
         values,
@@ -175,6 +176,7 @@ export const getInstanceInfo = async ({ instanceId, box }) => {
   return {
     box: box,
     _id: instanceId,
+    space: instance.space,
     flow: instance.flow,
     form: instance.form,
     applicant: instance.applicant,
@@ -193,6 +195,6 @@ export const getInstanceInfo = async ({ instanceId, box }) => {
     trace: trace,
     approve: userApprove,
     record_ids: instance.record_ids,
-    related_instances: instance.related_instances
+    related_instances: instance.related_instances,
   };
 };

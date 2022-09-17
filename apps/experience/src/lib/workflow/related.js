@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-16 17:26:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-16 18:21:54
+ * @LastEditTime: 2022-09-17 13:32:00
  * @Description: 
  */
 import { map, isEmpty } from 'lodash'
@@ -35,7 +35,7 @@ export const getRelatedInstances = async (instance)=>{
             {
                 type: 'tpl',
                 inline: true,
-                tpl: `<a href='/workflow/space/${spaceId}/view/readonly/\${_id}' target='_blank'>\${name}</a>`
+                tpl: `<a href='\${context.rootUrl}/workflow/space/${spaceId}/view/readonly/\${_id}' target='_blank'>\${name}</a>`
             }
           ],
           "actions": [
