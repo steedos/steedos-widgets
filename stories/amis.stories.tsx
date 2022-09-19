@@ -16,9 +16,9 @@ if (Builder.isBrowser){
     rootUrl: process.env.STEEDOS_ROOT_URL,
     context: {
       rootUrl: process.env.STEEDOS_ROOT_URL,
-      userId: process.env.STEEDOS_USERID,
-      tenantId: process.env.STEEDOS_TENANTID,
-      authToken: process.env.STEEDOS_AUTHTOKEN,
+      userId: process.env.STEEDOS_USERID || localStorage.getItem('steedos:userId'),
+      tenantId: process.env.STEEDOS_TENANTID || localStorage.getItem('steedos:spaceId'),
+      authToken: process.env.STEEDOS_AUTHTOKEN || localStorage.getItem('steedos:token'),
     } 
   });
 }
