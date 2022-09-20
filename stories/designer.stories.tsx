@@ -125,7 +125,9 @@ const settings = {
 
 /** 以上为可复用代码 **/
 
-export const Simple = () => {
+export const AmisObject = () => {
+
+    const assetUrl = process.env.STEEDOS_UNPKG_URL + '/@steedos-widgets/amis-object/dist/assets-dev.json'
 
     window.addEventListener('message', function (event) {
         const comp = document.querySelector("builder-fiddle");
@@ -140,7 +142,29 @@ export const Simple = () => {
 
     return (
         <builder-fiddle 
-            host={`https://beta.builder.steedos.com/amis?assetUrl=${process.env.STEEDOS_EXPERIENCE_ASSETURLS}`}
+            host={`https://beta.builder.steedos.com/amis?assetUrl=${assetUrl}`}
         ></builder-fiddle>
     )    
+} 
+
+export const Sortable = () => {
+
+  const assetUrl = process.env.STEEDOS_UNPKG_URL + '/@steedos-widgets/sortable/dist/assets-dev.json'
+
+  window.addEventListener('message', function (event) {
+      const comp = document.querySelector("builder-fiddle");
+      const { data } = event;
+      if (data) {
+        if (data.type === 'builder.editorLoaded') {
+          comp.settings = settings;
+          comp.messageFrame('builder.contentChanged', { AmisSchema : initialContent } )
+        }
+      }
+    })
+
+  return (
+      <builder-fiddle 
+          host={`https://beta.builder.steedos.com/amis?assetUrl=${assetUrl}`}
+      ></builder-fiddle>
+  )    
 } 

@@ -10,6 +10,8 @@ import { registerRemoteAssets, amisRender, getSteedosAuth, getRootUrl } from '@s
 import { defaultsDeep } from 'lodash';
 import { Builder } from '@steedos-builder/react';
 
+const assetUrls = process.env.STEEDOS_UNPKG_URL + '/@steedos-widgets/amis-object/dist/assets-dev.json'
+
 if (Builder.isBrowser){
   (window as any).Builder = Builder;
   Builder.set({ 
@@ -145,7 +147,7 @@ export const ObjectForm = () => (
       "objectApiName": "organizations",
     },
   }}
-  assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
+  assetUrls={assetUrls}
   />
 )
 
@@ -160,7 +162,7 @@ export const RecordDetailRelatedList = () => (
       "relatedObjectApiName": "instances"
     },
   }}
-  assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
+  assetUrls={assetUrls}
   />
 )
 
@@ -191,6 +193,6 @@ export const AmisSpaceUsersPicker = () => (
       ],
       "title": "AmisSpaceUsersPicker"
     }}
-    assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
+    assetUrls={assetUrls}
   />
 )
