@@ -15,12 +15,14 @@ const unpkgUrl = process.env.STEEDOS_UNPKG_URL ? process.env.STEEDOS_UNPKG_URL :
 
 const external = [
   "react",
-  "react-dom"
+  "react-dom",
+  'lodash'
 ]
 
 const globals = { 
   react: 'React',
-  'react-dom': 'ReactDOM'
+  'react-dom': 'ReactDOM',
+  'lodash': '_'
 }
 
 const options = {
