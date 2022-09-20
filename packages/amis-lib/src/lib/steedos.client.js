@@ -24,11 +24,12 @@ export async function fetchAPI(api, options = { credentials: 'include' }) {
         headers[
             'Authorization'
         ] = AUTHORIZATION
-    } else {
-        throw new Error(401)
+    // } else {
+    //     throw new Error(401)
     }
 
     options.headers = Object.assign({}, headers, options.headers);
+    options.credentials = 'include'
 
     const res = await fetch(`${getRootUrl()}${api}`, options)
     
