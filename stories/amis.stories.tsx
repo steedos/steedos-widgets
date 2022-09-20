@@ -76,6 +76,7 @@ export default {
       useEffect(() => {
         Promise.all([
           loadJS('https://unpkg.com/amis/sdk/sdk.js'), 
+          loadJS('https://unpkg.com/crypto-js@4.1.1/crypto-js.js'), 
           loadJS('https://unpkg.com/lodash/lodash.min.js'),
           loadJS('https://unpkg.com/@steedos-builder/react@0.2.30/dist/builder-react.unpkg.js'),
           loadCss('https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css'),
@@ -103,12 +104,17 @@ export const Login = () => (
   <AmisRender schema={{
     "type": "form",
     "mode": "horizontal",
-    "api": "/accounts/password/login",
+    "api": {
+      "method": "post",
+      "url": "${context.rootUrl}/accounts/password/login",
+      "requestAdaptor": `api.data.password = CryptoJS.SHA256(api.data.password).toString();\n const username = api.data.username  ; \n api.data.user = {email: username}; \n return api;`
+    },
     "body": [
       {
         "label": "Username",
         "type": "input-text",
         "name": "username",
+        "placeholder": "请输入邮箱"
       },
       {
         "label": "Password",
