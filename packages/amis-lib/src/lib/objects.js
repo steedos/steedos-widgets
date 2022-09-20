@@ -6,13 +6,15 @@
  * @Description:
  */
 import { fetchAPI } from "./steedos.client";
+import { getAuthToken , getTenantId, getRootUrl } from './steedos.client.js';
+
 import {
     getObjectList,
     getRecordDetailHeaderAmisSchema,
     getObjectDetail,
     getObjectForm,
 } from "./converter/amis/index";
-import _ , { slice, isEmpty, each, has } from "lodash";
+import _ , { slice, isEmpty, each, has, findKey } from "lodash";
 import { getFieldSearchable } from "./converter/amis/fields/index";
 import { getRecord } from './record';
 
@@ -175,6 +177,123 @@ export async function getRecordDetailHeaderSchema(objectName,recordId){
     return {
         uiSchema,
         amisSchema,
+    };
+}
+
+export async function getRecordDetailRelatedListSchema(objectName,recordId,relatedObjectName){
+    const relatedObjectUiSchema = await getUISchema(relatedObjectName);
+    const { list_views, label , icon, fields } = relatedObjectUiSchema;
+    const firstListViewName = _.keys(list_views)[0];
+    const filterFieldName = findKey(fields, function(field) { 
+        return ["lookup","master_detail"].indexOf(field.type) > -1 && field.reference_to === objectName; 
+    });
+    const globalFilter = [filterFieldName,'=',recordId];
+
+    const listViewAmisSchema= (await getListSchema(null, relatedObjectName, firstListViewName, {globalFilter})).amisSchema;
+    const listViewAmisSchemaBody = listViewAmisSchema.body;
+    const api = listViewAmisSchemaBody.api;
+
+    const recordRelatedListBody = Object.assign({},listViewAmisSchemaBody,{
+        bulkActions: [],
+        headerToolbar: [],
+        columnsTogglable: false,
+        source: "${rows}"
+    });
+
+    const  body = [
+        {
+          "type": "service",
+          "body": [
+            {
+              "type": "panel",
+              "title": "子表标题",
+              "body": recordRelatedListBody,
+              "id": "u:f06f9b6298c5",
+              "header": {
+                "type": "wrapper",
+                "body": [
+                  {
+                    "type": "grid",
+                    "columns": [
+                      {
+                        "body": [
+                          {
+                            "type": "grid",
+                            "columns": [
+                              {
+                                "body": {
+                                  "type": "tpl",
+                                  "id": "u:b788c99f23f5",
+                                  "className": "block",
+                                  "tpl": `<p><img class=\"slds-icon_small slds-icon_container slds-icon-standard-${icon}\" src=\"\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg\" /></p>`
+                                },
+                                "id": "u:4ad6d27dd9a7",
+                                "md": "auto",
+                                "className": "",
+                                "columnClassName": "flex justify-center items-center"
+                              },
+                              {
+                                "body": [
+                                  {
+                                    "type": "tpl",
+                                    "tpl": `${label}(\${count ? count : 0})`,
+                                    "inline": false,
+                                    "wrapperComponent": "",
+                                    "id": "u:f20c8f4bd441",
+                                    "className": "leading-none",
+                                    "style": {
+                                      "fontFamily": "",
+                                      "fontSize": 13,
+                                      "fontWeight": "bold"
+                                    }
+                                  }
+                                ],
+                                "id": "u:5d7a850db0ba",
+                                "md": "",
+                                "valign": "middle",
+                                "columnClassName": "p-l-xs"
+                              }
+                            ],
+                            "id": "u:a9edfcb34f3e"
+                          }
+                        ],
+                        "id": "u:2804a6a76bc4",
+                        "md": 9
+                      },
+                      {
+                        "body": [
+                        ],
+                        "id": "u:122319277746"
+                      }
+                    ],
+                    "id": "u:fb5acaad8423"
+                  }
+                ],
+                "id": "u:1c057096260a",
+                "size": "xs"
+              },
+              "affixFooter": false,
+              "headerClassName": "",
+              "bodyClassName": "p-none"
+            }
+          ],
+          "id": "u:de70a592ef23",
+          "messages": {
+          },
+          api
+        }
+    ];
+    const amisSchema =  {
+          type: 'service',
+          bodyClassName: '',
+          name: `page`,
+          data: {context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
+          body: body
+    }
+
+    return {
+        uiSchema: relatedObjectUiSchema,
+        amisSchema
     };
 }
 

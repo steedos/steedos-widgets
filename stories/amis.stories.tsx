@@ -149,19 +149,20 @@ export const ObjectForm = () => (
   />
 )
 
-// export const RecordDetailRelatedList = () => (
-//   <AmisRender schema={{
-//     type: 'page',
-//     title: '相关列表',
-//     body: {
-//       "type": "steedos-record-detail-related-list",
-//       "objectApiName": "space_users",
-//       // "recordId": "admin",
-//     },
-//   }}
-//   assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
-//   />
-// )
+export const RecordDetailRelatedList = () => (
+  <AmisRender schema={{
+    type: 'page',
+    title: '相关列表',
+    body: {
+      "type": "steedos-record-detail-related-list",
+      "objectApiName": "space_users",
+      "recordId": "kDrtGu7aZPwYdyFpe",
+      "relatedObjectApiName": "instances"
+    },
+  }}
+  assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
+  />
+)
 
 export const RecordDetailHeader = () => (
   <AmisRender schema={{

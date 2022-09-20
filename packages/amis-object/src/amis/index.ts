@@ -8,4 +8,5 @@
 export * from './AmisObjectForm';
 export * from './AmisObjectListview';
 export * from './AmisRecordDetailHeader';
+export * from './AmisRecordDetailRelatedList';
 export * from './AmisSpaceUsersPicker';
