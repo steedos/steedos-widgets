@@ -56,7 +56,7 @@ export function getImageSrc(fileId){
 
 export function getTenantId(){
     try {
-        const spaceId = getBuilderContext().tenantId
+        let spaceId = getBuilderContext().tenantId
 
         if (window.location.search && !spaceId) {
             var searchParams = new URLSearchParams(window.location.search);
