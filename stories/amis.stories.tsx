@@ -193,7 +193,7 @@ export const AmisSpaceUsersPicker = () => (
       "body": [
         {
           "label": "Owner",
-          "type": "steedos-space-users-picker",
+          "type": "steedos-user-picker",
           "name": "owner",
         }
       ],

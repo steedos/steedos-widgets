@@ -2,7 +2,7 @@ const config: any = {
   componentType: 'amisSchema', // amisSchema || react 
   group: "华炎魔方",
   componentName: "AmisSpaceUsersPicker",
-  title: "AmisSpaceUsersPicker",
+  title: "选择用户",
   docUrl: "",
   screenshot: "",
   npm: {
@@ -26,7 +26,7 @@ const config: any = {
   engines: ["amis"],
   // settings for amis.
   amis: {
-    name: 'steedos-space-users-picker',
+    name: 'steedos-user-picker',
     icon: "fa-fw fa fa-list-alt"
   }
 };
@@ -53,7 +53,7 @@ export default {
     plugin: {
       rendererName: config.amis.name,
       $schema: '/schemas/UnkownSchema.json',
-      name: config.amis.name,
+      name: config.title,
       description: config.title,
       tags: [config.group],
       order: -9999,
