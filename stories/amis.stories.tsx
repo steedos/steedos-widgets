@@ -6,7 +6,7 @@
  * @Description: 
  */
 import React, {useEffect, useState} from 'react';
-import { registerRemoteAssets, amisRender, getSteedosAuth, getRootUrl } from '@steedos-widgets/amis-lib';
+import { registerRemoteAssets, amisRender, getSteedosAuth, getRootUrl, getSelectUserSchema } from '@steedos-widgets/amis-lib';
 import { defaultsDeep } from 'lodash';
 import { Builder } from '@steedos-builder/react';
 
@@ -202,3 +202,20 @@ export const AmisSpaceUsersPicker = () => (
     assetUrls={assetUrls}
   />
 )
+
+export const AmisSelectUsers = () => {
+  const userAmisSchema = getSelectUserSchema()
+  const amisSchema = {
+    "type": "form",
+    "mode": "horizontal",
+    "body": [
+    ],
+    "title": "AmisSelectUsers"
+  };
+  amisSchema.body.push(userAmisSchema);
+
+  return (<AmisRender schema={amisSchema}
+    assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
+  />
+  )
+}
