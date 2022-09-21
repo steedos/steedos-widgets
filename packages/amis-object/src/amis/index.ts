@@ -5,6 +5,8 @@
  * @LastEditTime: 2022-09-01 18:42:03
  * @Description: 
  */
+import './amis-fix.less'
+
 export * from './AmisObjectForm';
 export * from './AmisObjectListview';
 export * from './AmisRecordDetailHeader';
