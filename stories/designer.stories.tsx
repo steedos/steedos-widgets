@@ -97,8 +97,8 @@ const settings = {
     assetUrls: process.env.STEEDOS_EXPERIENCE_ASSETURLS,
     rootUrl: process.env.STEEDOS_ROOT_URL,
     userId: process.env.STEEDOS_USERID,
-    tenantId: process.env.STEEDOS_TENANTID,
-    authToken: process.env.STEEDOS_AUTHTOKEN,
+    tenantId: process.env.STEEDOS_TENANTID  || localStorage.getItem('steedos:spaceId'),
+    authToken: process.env.STEEDOS_AUTHTOKEN  || localStorage.getItem('steedos:token'),
     messageOnly: true,
   };
 
