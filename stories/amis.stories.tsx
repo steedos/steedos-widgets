@@ -162,7 +162,7 @@ export const RecordDetailRelatedList = () => (
     type: 'page',
     title: '相关列表',
     body: {
-      "type": "steedos-record-detail-related-list",
+      "type": "steedos-record-related-list",
       "objectApiName": "space_users",
       "recordId": "kDrtGu7aZPwYdyFpe",
       "relatedObjectApiName": "instances"
