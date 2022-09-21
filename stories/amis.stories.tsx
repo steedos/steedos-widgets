@@ -204,19 +204,19 @@ export const AmisSpaceUsersPicker = () => (
   />
 )
 
-export const AmisSelectUsers = () => {
-  const userAmisSchema = getSelectUserSchema()
-  const amisSchema = {
-    "type": "form",
-    "mode": "horizontal",
-    "body": [
-    ],
-    "title": "AmisSelectUsers"
-  };
-  amisSchema.body.push(userAmisSchema);
+// export const AmisSelectUsers = () => {
+//   const userAmisSchema = getSelectUserSchema()
+//   const amisSchema = {
+//     "type": "form",
+//     "mode": "horizontal",
+//     "body": [
+//     ],
+//     "title": "AmisSelectUsers"
+//   };
+//   amisSchema.body.push(userAmisSchema);
 
-  return (<AmisRender schema={amisSchema}
-    assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
-  />
-  )
-}
+//   return (<AmisRender schema={amisSchema}
+//     assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
+//   />
+//   )
+// }

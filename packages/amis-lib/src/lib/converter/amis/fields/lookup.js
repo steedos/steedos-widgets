@@ -5,6 +5,7 @@ import * as Tpl from '../tpl';
 import * as Field from './index';
 import * as Table from './table';
 import * as List from './list';
+import { getSelectUserSchema } from './user';
 
 const getReferenceTo = async (field)=>{
     let referenceTo = field.reference_to;
@@ -249,10 +250,19 @@ export async function lookupToAmis(field, readonly, ctx){
     }
     const refObject = await getUISchema(referenceTo.objectName);
 
+    console.log("======lookupToAmis==referenceTo=12==", referenceTo);
+    if(referenceTo.objectName === "space_users"){
+        return await lookupToAmisSelectUser(field, readonly, ctx);
+    }
+
     // 此处不参考 steedos 的 enable_enhanced_lookup 规则. 如果默认是开启弹出选择,用户选择过程操作太繁琐, 所以默认是关闭弹出选择.
     if(refObject.enable_enhanced_lookup == true){
         return await lookupToAmisPicker(field, readonly, ctx);
     }else{
         return await lookupToAmisSelect(field, readonly, ctx);
     }
+}
+
+export async function lookupToAmisSelectUser(field, readonly, ctx){
+    return getSelectUserSchema(field, readonly, ctx);
 }
