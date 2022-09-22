@@ -70,7 +70,7 @@ export default [
         format: 'umd',
         sourcemap: false,
         strict: false,
-        intro: 'const global = window;',
+        intro: 'const global = window; const process = {env: {NODE_ENV: "production"}};',
         globals,
       },
     ],
