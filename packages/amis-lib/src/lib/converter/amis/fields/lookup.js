@@ -250,7 +250,6 @@ export async function lookupToAmis(field, readonly, ctx){
     }
     const refObject = await getUISchema(referenceTo.objectName);
 
-    console.log("======lookupToAmis==referenceTo=12==", referenceTo);
     if(referenceTo.objectName === "space_users"){
         return await lookupToAmisSelectUser(field, readonly, ctx);
     }

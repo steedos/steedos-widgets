@@ -29,6 +29,7 @@ tasks:
     command: |
       echo "STEEDOS_UNPKG_URL=$(gp url 8080)" >> .env.local
       echo "STEEDOS_ROOT_URL=$(gp url 5000)" >> .env.local
+      echo "STEEDOS_EXPERIENCE_ASSETURLS=$(gp url 8080)/@steedos-widgets/amis-object/dist/assets-dev.json" >> .env.local
       gp await-port 5000
       yarn storybook
 
