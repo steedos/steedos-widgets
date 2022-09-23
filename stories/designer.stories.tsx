@@ -73,12 +73,12 @@ export default {
     const [isLoaded, setIsLoaded] = useState(false);
       useEffect(() => {
         Promise.all([
-          loadJS('https://unpkg.com/@steedos-builder/fiddle@0.0.5/dist/builder-fiddle.umd.js'), 
-          loadJS('https://unpkg.com/axios@0.26.1/dist/axios.min.js'),
-          loadCss('https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css'),
-          loadCss('https://unpkg.com/amis/lib/themes/antd.css'),
-          loadCss('https://unpkg.com/amis/lib/helper.css'),
-          loadCss('https://unpkg.com/amis/sdk/iconfont.css'),
+          loadJS('https://unpkg.steedos.cn/@steedos-builder/fiddle@0.0.5/dist/builder-fiddle.umd.js'), 
+          loadJS('https://unpkg.steedos.cn/axios@0.26.1/dist/axios.min.js'),
+          loadCss('https://unpkg.steedos.cn/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css'),
+          loadCss('https://unpkg.steedos.cn/amis/lib/themes/antd.css'),
+          loadCss('https://unpkg.steedos.cn/amis/lib/helper.css'),
+          loadCss('https://unpkg.steedos.cn/amis/sdk/iconfont.css'),
         ]).then(()=>{
           setIsLoaded(true)
         }).catch((error)=>{
