@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-17 15:13:16
+ * @LastEditTime: 2022-09-23 16:23:35
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -63,15 +63,15 @@ export default function Record({formFactor}) {
       setSchema(res)
     })
   }, [tab_id, instanceId])
-
+  console.log(`formSchema`, formSchema)
   const Header = formFactor === "SMALL" ? MobileRecordHeader : RecordHeader;
   return (
     <div className="h-full flex instance-scope">
-      <div className="flex-1 w-32 border-r"><Listview formFactor={formFactor} app_id={app_id} tab_id={'instances'} listViewName={box}></Listview></div>
+      <div className="flex-1 w-32 border-r"><Listview formFactor={formFactor} app_id={app_id} tab_id={tab_id} listViewName={box}></Listview></div>
       <div className="flex-1 w-64" >
         {
           record != undefined && <div className="region-header bg-slate-50 static">
-          {schema && <Header schema={schema} formFactor={formFactor} permissions={permissions} hiddenTitle={true} className="p-2"></Header>}
+          {schema && <Header app_id={app_id} tab_id={tab_id} record_id={instanceId} record={record} schema={schema} formFactor={formFactor} permissions={permissions} hiddenTitle={true} className="p-2"></Header>}
         </div>
         }
         <div className="relative flex flex-1 flex-col region-main overflow-auto border-t" id="instanceRoot" style={{
@@ -90,6 +90,8 @@ export default function Record({formFactor}) {
               applicant: record.applicant,
               applicant_name: record.applicant_name,
               related_instances: record.related_instances,
+              app_id,
+              box,
               ...record.approveValues,
               context: record,
             }} getModalContainer={()=>{

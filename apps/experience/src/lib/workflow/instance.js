@@ -4,7 +4,7 @@ import _, { find, isEmpty } from "lodash";
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 17:47:37
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-17 15:12:55
+ * @LastEditTime: 2022-09-17 17:39:53
  * @Description:
  */
 
@@ -186,6 +186,7 @@ export const getInstanceInfo = async ({ instanceId, box }) => {
     state: instance.state,
     approveValues: values,
     title: instance.name || instance.form.name,
+    name: instance.name || instance.form.name,
     fields: _.map(formVersion.fields, (field)=>{
       return Object.assign({}, field, {permission: step?.permissions[field.code]})
     }),
@@ -195,6 +196,6 @@ export const getInstanceInfo = async ({ instanceId, box }) => {
     trace: trace,
     approve: userApprove,
     record_ids: instance.record_ids,
-    related_instances: instance.related_instances,
+    // related_instances: instance.related_instances,
   };
 };
