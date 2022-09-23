@@ -75,15 +75,15 @@ export default {
     const [isLoaded, setIsLoaded] = useState(false);
       useEffect(() => {
         Promise.all([
-          loadJS('https://unpkg.com/amis/sdk/sdk.js'), 
-          loadJS('https://unpkg.com/crypto-js@4.1.1/crypto-js.js'), 
-          loadJS('https://unpkg.com/lodash/lodash.min.js'),
-          loadJS('https://unpkg.com/@steedos-builder/react@0.2.30/dist/builder-react.unpkg.js'),
-          loadCss('https://unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css'),
-          loadCss('https://unpkg.com/amis/lib/themes/antd.css'),
-          loadCss('https://unpkg.com/amis/lib/helper.css'),
-          loadCss('https://unpkg.com/amis/sdk/iconfont.css'),
-          loadCss('https://unpkg.com/@fortawesome/fontawesome-free@6.2.0/css/all.min.css'),
+          loadJS('https://unpkg.steedos.cn/amis/sdk/sdk.js'), 
+          loadJS('https://unpkg.steedos.cn/crypto-js@4.1.1/crypto-js.js'), 
+          loadJS('https://unpkg.steedos.cn/lodash/lodash.min.js'),
+          loadJS('https://unpkg.steedos.cn/@steedos-builder/react@0.2.30/dist/builder-react.unpkg.js'),
+          loadCss('https://unpkg.steedos.cn/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css'),
+          loadCss('https://unpkg.steedos.cn/amis/lib/themes/antd.css'),
+          loadCss('https://unpkg.steedos.cn/amis/lib/helper.css'),
+          loadCss('https://unpkg.steedos.cn/amis/sdk/iconfont.css'),
+          loadCss('https://unpkg.steedos.cn/@fortawesome/fontawesome-free@6.2.0/css/all.min.css'),
         ]).then(()=>{
           setIsLoaded(true)
         }).catch((error)=>{
