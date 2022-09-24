@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-16 17:27:24
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-17 15:14:08
+ * @LastEditTime: 2022-09-17 16:42:56
  * @Description: 
  */
 import { isEmpty } from 'lodash'
@@ -10,18 +10,12 @@ import { getSteedosAuth } from '@steedos-widgets/amis-lib'
 // TODO attachments
 export const getAttachments = async (instance)=>{
 
-    const query = ``
-
     return {
         "type": "panel",
         className: "border-none",
         headerClassName: "p-0 border-none mb-1",
         bodyClassName: "p-0",
         "title": [
-        //   {
-        //       type: 'tpl',
-        //       tpl: "附件"
-        //   },
           await getAttachmentUploadInput(instance)
         ],
         "body": [
@@ -37,7 +31,6 @@ export const getAttachments = async (instance)=>{
                 },
                 requestAdaptor: `
                     api.data.query = 'query{attachments:cfs_instances_filerecord(filters: [["metadata.instance", "=", "${instance._id}"], "metadata.current", "=", true]){ _id,original,metadata}}';
-                    console.log("api", api)
                     return api;
                 `
             },
@@ -72,6 +65,12 @@ export const getAttachments = async (instance)=>{
 }
 
 export const getAttachmentUploadInput = async (instance)=>{
+    if(!instance.approve){
+        return {
+            type: 'tpl',
+            tpl: "附件"
+        }
+    }
     const auth = getSteedosAuth();
     return {
         "type": "form",
@@ -107,7 +106,7 @@ export const getAttachmentUploadInput = async (instance)=>{
               "requestAdaptor": `
                 api.data.append('space', '${instance.space}');
                 api.data.append('instance', '${instance._id}');
-                api.data.append('approve', '${instance.approve._id}');
+                api.data.append('approve', '${instance.approve?._id}');
                 api.data.append('owner', '${auth.userId}');
                 api.data.append('owner_name', '${auth.name}');
                 return api;

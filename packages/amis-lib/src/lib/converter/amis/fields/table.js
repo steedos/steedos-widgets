@@ -153,7 +153,6 @@ export async function getTableApi(mainObject, fields, options){
         }else if(selfData.op === 'loadOptions' && selfData.value){
             filters = [["${valueField.name}", "=", selfData.value]];
         }
-
         var searchableFilter = [];
         _.each(selfData, (value, key)=>{
             if(!_.isEmpty(value) || _.isBoolean(value)){
@@ -180,8 +179,10 @@ export async function getTableApi(mainObject, fields, options){
         if(allowSearchFields){
             allowSearchFields.forEach(function(key){
                 const keyValue = selfData[key];
-                if(keyValue){
+                if(_.isString(keyValue)){
                     filters.push([key, "contains", keyValue]);
+                }else if(_.isArray(keyValue) || _.isBoolean(keyValue) || keyValue){
+                    filters.push([key, "=", keyValue]);
                 }
             })
         }

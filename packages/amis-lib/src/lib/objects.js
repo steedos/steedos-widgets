@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-14 14:41:46
+ * @LastEditTime: 2022-09-24 13:22:12
  * @Description:
  */
 import { fetchAPI } from "./steedos.client";
@@ -382,7 +382,7 @@ export async function getObjectRelated(
     };
 }
 
-export async function getSearchableFieldsFilterSchema(fields) {
+export async function getSearchableFieldsFilterSchema(fields, cols) {
     const body = [];
     for (let field of fields) {
         if (
@@ -420,7 +420,7 @@ export async function getSearchableFieldsFilterSchema(fields) {
         name: "listview-filter-form",
         mode: "normal",
         wrapWithPanel: false,
-        className: "grid gap-2 grid-cols-4 mb-2",
+        className: `grid gap-2 grid-cols-${cols || 4} mb-2`,
         body: body,
     };
 }

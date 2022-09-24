@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-03 16:46:23
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-16 14:23:50
+ * @LastEditTime: 2022-09-24 13:24:28
  * @Description:
  */
 import { Listbox, Transition } from "@headlessui/react";
@@ -21,7 +21,7 @@ import { ListButtons } from "@/components/object/ListButtons";
 import { FromNow } from "@/components/FromNow";
 import { SearchableFieldsFilter } from '@/components/object/SearchableFieldsFilter'
 
-export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: appId,tab_id: tabId, listViewName}) {
+export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: appId,tab_id: tabId, listViewName, searchFieldsFilterProps}) {
 //   const [selectedListView, setSelectedListView] = useState();
   const [showFieldsFilter, setShowFieldsFilter] = useState(false);
   const [queryInfo, setQueryInfo] = useState();
@@ -373,7 +373,7 @@ export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: 
                 scope.getComponentByName(`page.listview_${schema.uiSchema.name}`).handleFilterReset();
                 setShowFieldsFilter(false)
             }
-          }}></SearchableFieldsFilter>
+          }} {...searchFieldsFilterProps}></SearchableFieldsFilter>
       </div>
       </Transition>
     </div>

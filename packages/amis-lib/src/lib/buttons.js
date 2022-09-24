@@ -281,10 +281,10 @@ export const getObjectDetailMoreButtons = (uiSchema, ctx) => {
             label: standardDelete.label,
             name: standardDelete.name,
             on: standardDelete.on,
-            type: "amis_action",
+            type: "amis_button",
             confirmText: "确定要删除此项目?",
             sort: standardDelete.sort,
-            amis_actions: [
+            amis_schema: [
                 {
                   "args": {
                     "api": {

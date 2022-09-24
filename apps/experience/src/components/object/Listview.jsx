@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-16 14:24:17
+ * @LastEditTime: 2022-09-24 13:26:03
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef } from 'react';
@@ -35,7 +35,7 @@ export function Listview ({formFactor, app_id, tab_id, listViewName}) {
       <div className='border-b'>
       {formFactor && schema?.uiSchema.name === tab_id && <ListviewHeader tab_id={tab_id} app_id={app_id} listViewName={listViewName} formFactor={formFactor} schema={schema} onListviewChange={(listView)=>{
           getListviewSchema(listView?.name)
-        }}></ListviewHeader>}
+        }} searchFieldsFilterProps={{cols: 2}}></ListviewHeader>}
       </div>
       <div className="flex-1 min-h-0 overflow-y-auto">
       {schema?.amisSchema && schema?.uiSchema.name === tab_id && <AmisRender className="steedos-listview" id={listViewId} schema={schema?.amisSchema || {}} router={router}></AmisRender>}

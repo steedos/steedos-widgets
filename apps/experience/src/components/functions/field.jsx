@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-06 13:33:37
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-08 15:21:25
+ * @LastEditTime: 2022-09-17 18:33:47
  * @Description: 
  */
 import { AmisRender } from "@/components/AmisRender";
@@ -37,7 +37,7 @@ export const Field = {
             children: <AmisRender
             id={amisScopeId}
             schema={schema}
-            data={{data: Object.assign({}, data, {objectName: objectName})}}
+            data={Object.assign({}, data, {objectName: objectName})}
             ></AmisRender>
         }, {}));
     }

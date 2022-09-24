@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-17 11:52:32
+ * @LastEditTime: 2022-09-24 14:48:48
  * @Description:
  */
 import {
@@ -217,7 +217,7 @@ const getTdTitle = (field) => {
     body: [
       {
         type: "tpl",
-        tpl: `<div>${field.name}</div>`,
+        tpl: `<div>${field.name || field.code}</div>`,
       },
     ],
     // "id": "u:9b001b7ff92d",
@@ -250,7 +250,7 @@ const getFormTrs = async (instance) => {
   let fields = [];
   each(instance.fields, (field) => {
     fields.push(field);
-    if (field.type === "section") {
+    if (field.type === "section" && field.fields) {
       fields = fields.concat(field.fields);
     }
   });
@@ -436,6 +436,7 @@ const getApproveButton = async (instance)=>{
 export const getFlowFormSchema = async (instance) => {
   return {
     type: "page",
+    name: "instancePage",
     body: [
       await getAttachments(instance),
       await getRelatedInstances(instance),
@@ -485,7 +486,39 @@ export const getFlowFormSchema = async (instance) => {
         ],
       },
     },
-    initApi: "get:${context.rootUrl}/api/v4/project",
+    initApi:{
+      "url": "${context.rootUrl}/graphql",
+      "method": "post",
+      "messages": {
+      },
+      "requestAdaptor": `
+        const { context } = api.data;
+        api.data = {
+          query: \`
+            {
+              instance: instances__findOne(id:"\${context._id}"){
+                related_instances: related_instances__expand{
+                  _id,
+                  name
+                }
+              }
+            }
+          \`
+        }
+        return api;
+      `,
+      "adaptor": `
+        payload.data = {
+          related_instances: payload.data.instance.related_instances
+        };
+        return payload;
+      `,
+      "data": {
+        // "&": "$$",
+        "context": "${context}",
+        "judge": "${new_judge}",
+      }
+    },
     initFetch: true,
   };
 };

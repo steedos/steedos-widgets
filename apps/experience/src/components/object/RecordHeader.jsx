@@ -9,11 +9,19 @@ import { Button } from "@/components/object/Button";
 import { MoreOutlined } from '@ant-design/icons';
 import { Dropdown, Menu , Space, Button as AButton  } from 'antd';
 
-export function RecordHeader({ schema, formFactor, permissions, hiddenTitle, className="" }) {
+export function RecordHeader({ schema, formFactor, permissions, hiddenTitle, className="", record: defRecord, app_id: appId, tab_id: tabId, record_id: recordId }) {
   const router = useRouter();
-  const { app_id, tab_id, record_id } = router.query;
-  
-  const [record, setRecord] = useState(null);
+  let { app_id, tab_id, record_id } = router.query;
+  if(appId){
+    app_id = appId;
+  }
+  if(tabId){
+    tab_id = tabId;
+  }
+  if(recordId){
+    record_id = recordId;
+  }
+  const [record, setRecord] = useState(defRecord);
   const [buttons, setButtons] = useState(null);
   const [moreButtons, setMoreButtons] = useState(null);
   
@@ -133,6 +141,9 @@ export function RecordHeader({ schema, formFactor, permissions, hiddenTitle, cla
                             tab_id: tab_id,
                             object_name: schema.uiSchema.name,
                             dataComponentId: `${app_id}-${tab_id}-${record_id}`,
+                            record_id: record_id,
+                            record: record,
+                            permissions: schema.uiSchema.permissions
                           }}
                           scopeClassName="inline-block"
                         ></Button>

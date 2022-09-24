@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 15:46:59
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-03 14:10:41
+ * @LastEditTime: 2022-09-24 14:19:05
  * @Description:
  */
 import { AmisRender } from "@/components/AmisRender";
@@ -11,7 +11,7 @@ import React, { useState, useEffect, Fragment, useRef } from "react";
 import { isEmpty, filter, values, sortBy, map, compact } from "lodash";
 import { getSearchableFieldsFilterSchema } from "@steedos-widgets/amis-lib";
 
-export function SearchableFieldsFilter({ schema, listViewId, appId, onClose }) {
+export function SearchableFieldsFilter({ schema, listViewId, appId, onClose, cols }) {
   const [searchableFields, setSearchableFields] = useState(
     map(
       filter(values(schema.uiSchema.fields), (field) => {
@@ -35,7 +35,7 @@ export function SearchableFieldsFilter({ schema, listViewId, appId, onClose }) {
             })
           ),
           "sort_no"
-        )
+        ), cols
       ).then((data) => {
         setSearchableFieldsSchema(data);
       });
@@ -55,7 +55,6 @@ export function SearchableFieldsFilter({ schema, listViewId, appId, onClose }) {
       .getComponentByName(`page.listview_${schema.uiSchema.name}`)
       .handleFilterSubmit(formValues);
   };
-
   return (
     <div className="mt-4 border-gray slds-grid slds-grid_vertical slds-nowrap ">
       <div className="slds-filters">

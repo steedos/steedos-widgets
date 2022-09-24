@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-16 17:26:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-17 13:32:00
+ * @LastEditTime: 2022-09-23 17:47:37
  * @Description: 
  */
 import { map, isEmpty } from 'lodash'
@@ -21,13 +21,14 @@ export const getRelatedRecords = async (instance)=>{
 
 // TODO delete button
 export const getRelatedInstances = async (instance)=>{
-    if(!instance.related_instances || isEmpty(instance.related_instances)){
-        return ;
-    }
+    // if(!instance.related_instances || isEmpty(instance.related_instances)){
+    //     return ;
+    // }
     const spaceId = getSteedosAuth().spaceId;
     
     return {
         "type": "list",
+        "name": "relatedInstances",
         "source": "${related_instances}",
         title: "相关文件",
         "listItem": {
@@ -47,6 +48,6 @@ export const getRelatedInstances = async (instance)=>{
           ],
           "id": "u:550b3fdc8788"
         },
-        "id": "u:f538be693fad"
+        "id": "related_instances"
     }
 }
