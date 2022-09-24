@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-24 10:31:41
+ * @LastEditTime: 2022-09-24 14:48:48
  * @Description:
  */
 import {
@@ -254,7 +254,6 @@ const getFormTrs = async (instance) => {
       fields = fields.concat(field.fields);
     }
   });
-  console.log(`fields`, fields)
   each(fields, (field, index) => {
     if (field.is_wide) {
       if (tdFields.length != 0) {
