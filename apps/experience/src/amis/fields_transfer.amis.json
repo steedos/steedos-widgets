@@ -34,7 +34,8 @@
                     "searchable": true,
                     "sortable": true,
                     "joinValues": false,
-                    "extractValue": true
+                    "extractValue": true,
+                    "multiple": true
                 }
             ],
             "actions": [],

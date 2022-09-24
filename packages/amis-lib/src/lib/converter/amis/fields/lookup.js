@@ -212,8 +212,8 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         type: Field.getAmisStaticFieldType('select', readonly),
         joinValues: false,
         extractValue: true,
-        labelField: labelField,
-        valueField: valueField,
+        // labelField: labelField,
+        // valueField: valueField,
         autoComplete: apiInfo,
     }
     if(_.has(field, 'defaultValue') && !(_.isString(field.defaultValue) && field.defaultValue.startsWith("{"))){
