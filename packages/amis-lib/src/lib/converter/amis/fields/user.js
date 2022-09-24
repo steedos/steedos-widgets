@@ -2,8 +2,8 @@ import * as graphql from '../graphql';
 import * as Field from './index';
 import * as Tpl from '../tpl';
 
-async function getSource(){
-    // data.query 最终格式 "{ \tleftOptions:organizations(filters: {__filters}){value:_id,label:name,children},   children:organizations(filters: {__filters}){ref:_id,children} }"
+async function getSource(field){
+    // data.query 最终格式 "{ \tleftOptions:organizations(filters: {__filters}){value:_id,label:name,children},   children:organizations(filters: {__filters}){ref:_id,children}, defaultValueOptions:space_users(filters: {__options_filters}){value:user,label:name} }"
     const data = await graphql.getFindQuery({name: "organizations"}, null, [{name: "_id", alias: "value"},{name: "name", alias: "label"},{name: "children"}],{
         alias: "leftOptions",
         filters: "{__filters}"
@@ -14,10 +14,24 @@ async function getSource(){
         filters: "{__filters}"
     });
     childrenData.query = childrenData.query.replace(/,count\:.+/,"}");
-    data.query = data.query.replace(/}$/, "," + childrenData.query.replace(/{(.+)}/,"$1}"))
+    data.query = data.query.replace(/}$/, "," + childrenData.query.replace(/{(.+)}/,"$1}"));
+    const defaultValueOptionsData = await graphql.getFindQuery({name: "space_users"}, null, [{name: "user", alias: "value"},{name: "name", alias: "label"}],{
+        alias: "defaultValueOptions",
+        filters: "{__options_filters}"
+    });
+    defaultValueOptionsData.query = defaultValueOptionsData.query.replace(/,count\:.+/,"}");
+    data.query = data.query.replace(/}$/, "," + defaultValueOptionsData.query.replace(/{(.+)}/,"$1}"))
+    data.$value = `$${field.name}`;
     const requestAdaptor = `
         var filters = [['parent', '=', null]];
         api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters));
+        var defaultValue = api.data.$value;
+        var optionsFilters = [["user", "in", []]];
+        if (defaultValue) { 
+         
+            optionsFilters = [["user", "in", defaultValue]];
+        }
+        api.data.query = api.data.query.replace(/{__options_filters}/g, JSON.stringify(optionsFilters));
         return api;
     `;
     const adaptor = `
@@ -32,15 +46,19 @@ async function getSource(){
             delete leftOption.children;
             return leftOption;
         });
-        payload.data = { options: [data] }
+        var defaultValueOptions = data.defaultValueOptions;
+        data.children = _.union(data.children, defaultValueOptions);
+        delete data.defaultValueOptions;
+        payload.data = { options: [data] };
         return payload;
     `;
     return {
         "method": "post",
-        "url": graphql.getApi(),
+        "url": graphql.getApi() + "?_id=${_id}",
         "requestAdaptor": requestAdaptor,
         "adaptor": adaptor,
         "data": data,
+        "sendOn": `!!this._id || !!!this.${field.name}`,
         "headers": {
             "Authorization": "Bearer ${context.tenantId},${context.authToken}"
         },
@@ -166,18 +184,18 @@ export async function getSelectUserSchema(field, readonly, ctx) {
         name: field.name
     };
     const opt = Object.assign({}, defaultOpt, ctx);
-
+    debugger;
     const amisSchema = {
         "type": Field.getAmisStaticFieldType('select', readonly),
-        "label": opt.label,
-        "name": opt.name,
+        // "label": opt.label,
+        // "name": opt.name,
         "multiple": opt.multiple,
         "searchable": opt.searchable,
         "selectMode": "associated",
         "leftMode": "tree",
         "joinValues": false,
         "extractValue": true,
-        "source": await getSource(),
+        "source": await getSource(field),
         "deferApi": await getDeferApi(),
         "searchApi": await getSearchApi()
     };
