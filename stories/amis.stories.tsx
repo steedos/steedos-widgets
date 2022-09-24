@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 11:54:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-13 15:24:56
+ * @LastEditTime: 2022-09-24 14:49:42
  * @Description: 
  */
 import React, {useEffect, useState} from 'react';
@@ -33,11 +33,11 @@ const AmisRender = ({schema, data = {}, router = null, assetUrls = null, getModa
                 rootUrl: getRootUrl(null),
                 userId: steedosAuth.userId,
                 tenantId: steedosAuth.spaceId,
-                authToken: steedosAuth.token
+                authToken: steedosAuth.token,
+                user: steedosAuth
             }
         }
     });
-    console.log(`assetUrls`, assetUrls)
     registerRemoteAssets(assetUrls).then((assets)=>{
       amisRender(`#amis-root`, defaultsDeep(defData , schema), data, {getModalContainer: getModalContainer}, {router: router, assets: assets});
     })

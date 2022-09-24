@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 16:55:58
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-14 11:59:04
+ * @LastEditTime: 2022-09-24 14:48:25
  * @Description: 
  */
 
@@ -21,7 +21,8 @@ export const AmisRender = ({id, schema, data, router, className, assets, getModa
                     rootUrl: getRootUrl(),
                     userId: steedosAuth.userId,
                     tenantId: steedosAuth.spaceId,
-                    authToken: steedosAuth.token
+                    authToken: steedosAuth.token,
+                    user: steedosAuth
                 }
             }
         });

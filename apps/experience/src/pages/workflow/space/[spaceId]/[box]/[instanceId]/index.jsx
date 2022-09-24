@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-23 16:23:35
+ * @LastEditTime: 2022-09-24 14:47:23
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -63,7 +63,6 @@ export default function Record({formFactor}) {
       setSchema(res)
     })
   }, [tab_id, instanceId])
-  console.log(`formSchema`, formSchema)
   const Header = formFactor === "SMALL" ? MobileRecordHeader : RecordHeader;
   return (
     <div className="h-full flex instance-scope">
