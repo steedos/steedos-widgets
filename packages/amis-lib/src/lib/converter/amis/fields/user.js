@@ -26,10 +26,10 @@ async function getSource(field){
         var filters = [['parent', '=', null]];
         api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters));
         var defaultValue = api.data.$value;
-        var optionsFilters = [["user", "in", []]];
+        var optionsFiltersOp = "${field.multiple ? "in" : "="}";
+        var optionsFilters = [["user", optionsFiltersOp, []]];
         if (defaultValue) { 
-         
-            optionsFilters = [["user", "in", defaultValue]];
+            optionsFilters = [["user", optionsFiltersOp, defaultValue]];
         }
         api.data.query = api.data.query.replace(/{__options_filters}/g, JSON.stringify(optionsFilters));
         return api;
