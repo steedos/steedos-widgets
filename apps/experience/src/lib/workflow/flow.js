@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-23 17:47:54
+ * @LastEditTime: 2022-09-24 10:31:41
  * @Description:
  */
 import {
@@ -488,7 +488,7 @@ export const getFlowFormSchema = async (instance) => {
       },
     },
     initApi:{
-      "url": "${context.rootUrl}/graphql?a=1",
+      "url": "${context.rootUrl}/graphql",
       "method": "post",
       "messages": {
       },
@@ -512,7 +512,6 @@ export const getFlowFormSchema = async (instance) => {
         payload.data = {
           related_instances: payload.data.instance.related_instances
         };
-        console.log("payload", payload)
         return payload;
       `,
       "data": {
