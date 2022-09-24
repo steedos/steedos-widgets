@@ -166,11 +166,11 @@ export async function getSelectUserSchema(field, readonly, ctx) {
         name: field.name
     };
     const opt = Object.assign({}, defaultOpt, ctx);
-
+    // 底层转换函数无需处理label 、name
     const amisSchema = {
         "type": Field.getAmisStaticFieldType('select', readonly),
-        "label": opt.label,
-        "name": opt.name,
+        // "label": opt.label,
+        // "name": opt.name,  
         "multiple": opt.multiple,
         "searchable": opt.searchable,
         "selectMode": "associated",
