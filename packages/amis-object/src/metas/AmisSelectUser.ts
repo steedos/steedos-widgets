@@ -94,12 +94,12 @@ export default {
           label: '标题',
         },
         {
-          propType: "checkbox",
+          type: "checkbox",
           name: "multiple",
           label: '多选',
         },
         {
-          propType: "checkbox",
+          type: "checkbox",
           name: "searchable",
           label: '可搜索',
         }

@@ -192,7 +192,7 @@ export const AmisSelectUser = () => (
   <AmisRender schema={{
       "type": "form",
       "mode": "horizontal",
-      "debug": true,
+      "debug": false,
       "body": [
         {
           "label": "人员单选",
