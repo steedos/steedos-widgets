@@ -2,7 +2,7 @@ import * as graphql from '../graphql';
 import * as Field from './index';
 import * as Tpl from '../tpl';
 
-async function getSource(field){
+async function getSource(field, multiple){
     // data.query 最终格式 "{ \tleftOptions:organizations(filters: {__filters}){value:_id,label:name,children},   children:organizations(filters: {__filters}){ref:_id,children}, defaultValueOptions:space_users(filters: {__options_filters}){user,name} }"
     const data = await graphql.getFindQuery({name: "organizations"}, null, [{name: "_id", alias: "value"},{name: "name", alias: "label"},{name: "children"}],{
         alias: "leftOptions",
@@ -26,7 +26,7 @@ async function getSource(field){
         var filters = [['parent', '=', null]];
         api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters));
         var defaultValue = api.data.$value;
-        var optionsFiltersOp = "${field.multiple ? "in" : "="}";
+        var optionsFiltersOp = "${multiple ? "in" : "="}";
         var optionsFilters = [["user", optionsFiltersOp, []]];
         if (defaultValue) { 
             optionsFilters = [["user", optionsFiltersOp, defaultValue]];
@@ -181,16 +181,11 @@ export async function getSelectUserSchema(field, readonly, ctx) {
     }
     const defaultOpt = {
         multiple: field.multiple,
-        searchable: true,
-        label: field.label,
-        name: field.name
+        searchable: true
     };
     const opt = Object.assign({}, defaultOpt, ctx);
-    // 底层转换函数无需处理label 、name
     const amisSchema = {
         "type": Field.getAmisStaticFieldType('select', readonly),
-        // "label": opt.label,
-        // "name": opt.name,  
         "labelField": "name",
         "valueField": "user",
         "multiple": opt.multiple,
@@ -199,7 +194,7 @@ export async function getSelectUserSchema(field, readonly, ctx) {
         "leftMode": "tree",
         "joinValues": false,
         "extractValue": true,
-        "source": await getSource(field),
+        "source": await getSource(field, opt.multiple),
         "deferApi": await getDeferApi(),
         "searchApi": await getSearchApi()
     };

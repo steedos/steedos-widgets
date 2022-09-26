@@ -1,14 +1,14 @@
 const config: any = {
   componentType: 'amisSchema', // amisSchema || react 
   group: "华炎魔方",
-  componentName: "AmisSpaceUsersPicker",
+  componentName: "AmisSelectUser",
   title: "选择用户",
   docUrl: "",
   screenshot: "",
   npm: {
     package: "@steedos-widgets/amis-object",
     version: "{{version}}",
-    exportName: "AmisSpaceUsersPicker",
+    exportName: "AmisSelectUser",
     main: "",
     destructuring: true,
     subName: ""
@@ -17,7 +17,22 @@ const config: any = {
     {
       name: "name",
       propType: "string",
-      description: '字段Api名称',
+      description: '字段名称',
+    },
+    {
+      name: "label",
+      propType: "string",
+      description: '标题',
+    },
+    {
+      name: "multiple",
+      propType: "boolean",
+      description: '多选',
+    },
+    {
+      name: "searchable",
+      propType: "boolean",
+      description: '可搜索',
     }
   ],
   preview: {
@@ -26,7 +41,7 @@ const config: any = {
   engines: ["amis"],
   // settings for amis.
   amis: {
-    name: 'steedos-user-picker',
+    name: 'steedos-select-user',
     icon: "fa-fw fa fa-list-alt"
   }
 };
@@ -71,7 +86,22 @@ export default {
         {
           type: "text",
           name: "name",
-          label: "字段Api名称"
+          label: '字段名称',
+        },
+        {
+          type: "text",
+          name: "label",
+          label: '标题',
+        },
+        {
+          propType: "checkbox",
+          name: "multiple",
+          label: '多选',
+        },
+        {
+          propType: "checkbox",
+          name: "searchable",
+          label: '可搜索',
         }
       ]
     }
