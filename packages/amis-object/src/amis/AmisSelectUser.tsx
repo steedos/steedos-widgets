@@ -12,7 +12,8 @@ export const AmisSelectUser = async (props) => {
     searchable: searchable,
   });
   amisSchema.name = $schema.name;
-  amisSchema.label = $schema.label;
+  // 不可以写label因为设计器中会显示两次
+  // amisSchema.label = $schema.label;
   return amisSchema;
 }
   

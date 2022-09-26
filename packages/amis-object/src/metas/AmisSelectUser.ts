@@ -13,28 +13,28 @@ const config: any = {
     destructuring: true,
     subName: ""
   },
-  props: [
-    {
-      name: "name",
-      propType: "string",
-      description: '字段名称',
-    },
-    {
-      name: "label",
-      propType: "string",
-      description: '标题',
-    },
-    {
-      name: "multiple",
-      propType: "boolean",
-      description: '多选',
-    },
-    {
-      name: "searchable",
-      propType: "boolean",
-      description: '可搜索',
-    }
-  ],
+  // props: [
+  //   {
+  //     name: "name",
+  //     propType: "string",
+  //     description: '字段名称',
+  //   },
+  //   {
+  //     name: "label",
+  //     propType: "string",
+  //     description: '标题',
+  //   },
+  //   {
+  //     name: "multiple",
+  //     propType: "boolean",
+  //     description: '多选',
+  //   },
+  //   {
+  //     name: "searchable",
+  //     propType: "boolean",
+  //     description: '可搜索',
+  //   }
+  // ],
   preview: {
   },
   targets: ["steedos__RecordPage", "steedos__AppPage", "steedos__HomePage"],
@@ -61,7 +61,7 @@ export default {
   amis: {
     render: {
       type: config.amis.name,
-      usage: "renderer",
+      usage: "formitem",
       weight: 1,
       framework: "react"
     },
@@ -83,16 +83,6 @@ export default {
       },
       panelTitle: "设置",
       panelControls: [
-        {
-          type: "text",
-          name: "name",
-          label: '字段名称',
-        },
-        {
-          type: "text",
-          name: "label",
-          label: '标题',
-        },
         {
           type: "checkbox",
           name: "multiple",
