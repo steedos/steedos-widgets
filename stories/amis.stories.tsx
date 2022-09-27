@@ -221,6 +221,13 @@ export const AmisSelectUser = () => (
               ]
             }
           }
+        },
+        {
+          "label": "过滤条件",
+          "type": "steedos-select-user",
+          "name": "admins",
+          "multiple": true,
+          "filters": [["name", "contains", "王"]],
         }
       ],
       "title": "AmisSelectUser"

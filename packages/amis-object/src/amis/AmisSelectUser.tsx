@@ -7,7 +7,8 @@ export const AmisSelectUser = async (props) => {
     name: $schema.name,
     multiple: $schema.multiple,
     searchable: $schema.searchable,
-    onEvent: $schema.onEvent
+    onEvent: $schema.onEvent,
+    filters: $schema.filters
   }, false, {});
   amisSchema.name = $schema.name;
   // 不可以写label因为设计器中会显示两次

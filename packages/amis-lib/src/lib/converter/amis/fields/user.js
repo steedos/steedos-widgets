@@ -65,12 +65,14 @@ async function getSource(field) {
     }
 }
 
-async function getDeferApi() {
+async function getDeferApi(field) {
     // data.query 最终格式 "{ \toptions:{__object_name}(filters:{__filters}){{__fields}} }"
     const data = await graphql.getFindQuery({ name: "{__object_name}" }, null, [], {
         alias: "options",
         filters: "{__filters}"
     });
+    // 传入的默认过滤条件，比如[["name", "contains", "三"]]，将会作为基本过滤条件
+    const filters = field.filters;
     data.query = data.query.replace(/,count\:.+/, "}");
     // 字段要根据请求参数动态生成，写死为__fields后续在发送适配器中替换
     data.query = data.query.replace("{_id}", "{{__fields}}");
@@ -86,24 +88,16 @@ async function getDeferApi() {
             fields = "value:_id,label:name,children";
             filters = [['parent', '=', dep]];
         }
-        else if (ref || term) { 
+        else if (ref) { 
             objectName = "space_users";
             // 这里要额外把字段转为value和label是因为valueField和labelField在deferApi/searchApi中不生效，所以字段要取两次
             fields = "user,name,value:user,label:name";
             filters = [['user_accepted', '=', true]];
-            if (term) {
-                var fieldsForSearch = ["name", "username", "email", "mobile"];
-                var termFilters = [];
-                fieldsForSearch.forEach(function (field) {
-                    termFilters.push([field, 'contains', term]);
-                    termFilters.push("or");
-                });
-                termFilters.pop();
-                filters.push(termFilters);
+            var defaultFilters = ${filters && JSON.stringify(filters)};
+            if(defaultFilters){
+                filters.push(defaultFilters);
             }
-            else {
-                filters.push(['organizations_parents', '=', ref]);
-            }
+            filters.push(['organizations_parents', '=', ref]);
         }
         api.data.query = api.data.query.replace(/{__object_name}/g, objectName).replace(/{__fields}/g, fields).replace(/{__filters}/g, JSON.stringify(filters));
         return api;
@@ -133,7 +127,7 @@ async function getDeferApi() {
     }
 }
 
-async function getSearchApi() {
+async function getSearchApi(field) {
     // data.query 最终格式 "{ \toptions:space_users(filters: {__filters}){user,name,value:user,label:name}}"
     // 这里要额外把字段转为value和label是因为valueField和labelField在deferApi/searchApi中不生效，所以字段要取两次
     const data = await graphql.getFindQuery({ name: "space_users" }, null, [{ name: "user" }, { name: "name" }, { name: "user", alias: "value" }, { name: "name", alias: "label" }], {
@@ -141,21 +135,25 @@ async function getSearchApi() {
         filters: "{__filters}"
     });
     data.query = data.query.replace(/,count\:.+/, "}");
+    // 传入的默认过滤条件，比如[["name", "contains", "三"]]，将会作为基本过滤条件
+    const filters = field.filters;
     const requestAdaptor = `
         var term = api.query.term;
         var filters;
         if (term) { 
             filters = [['user_accepted', '=', true]];
-            if (term) {
-                var fieldsForSearch = ["name", "username", "email", "mobile"];
-                var termFilters = [];
-                fieldsForSearch.forEach(function (field) {
-                    termFilters.push([field, 'contains', term]);
-                    termFilters.push("or");
-                });
-                termFilters.pop();
-                filters.push(termFilters);
+            var defaultFilters = ${filters && JSON.stringify(filters)};
+            if(defaultFilters){
+                filters.push(defaultFilters);
             }
+            var fieldsForSearch = ["name", "username", "email", "mobile"];
+            var termFilters = [];
+            fieldsForSearch.forEach(function (field) {
+                termFilters.push([field, 'contains', term]);
+                termFilters.push("or");
+            });
+            termFilters.pop();
+            filters.push(termFilters);
         }
         api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters));
         return api;
@@ -190,8 +188,8 @@ export async function getSelectUserSchema(field, readonly, ctx) {
         "joinValues": false,
         "extractValue": true,
         "source": await getSource(field),
-        "deferApi": await getDeferApi(),
-        "searchApi": await getSearchApi()
+        "deferApi": await getDeferApi(field),
+        "searchApi": await getSearchApi(field)
     };
     if (_.has(field, 'defaultValue') && !(_.isString(field.defaultValue) && field.defaultValue.startsWith("{"))) {
         amisSchema.value = field.defaultValue
