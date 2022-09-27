@@ -303,7 +303,9 @@ const getGlobalData = (mode)=>{
 }
 
 export async function getObjectForm(objectSchema, ctx){
-    const { recordId, tabId, appId } = ctx;
+    const { recordId, mode = 'edit', layout = 'vertical', tabId, appId } = ctx;
+    const formFactor = layout === 'vertical' ? 'SMALL' : 'LARGE';
+    const state = mode === 'edit' ? mode : 'readonly';
     const fields = _.values(objectSchema.fields);
     return {
         type: 'page',
@@ -311,17 +313,18 @@ export async function getObjectForm(objectSchema, ctx){
         regions: [
             "body"
         ],
-        name: `page_edit_${recordId}`,
-        data: {global: getGlobalData('edit'), recordId: recordId, objectName: objectSchema.name, context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
+        name: `page_${state}_${recordId}`,
+        data: {global: getGlobalData(mode), recordId: recordId, objectName: objectSchema.name, context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
         initApi: null,
         initFetch: null ,
         body: [
             {
                 type: "form",
-                mode: ctx.formFactor === 'SMALL' ? 'normal' : 'horizontal',
+                mode: formFactor === 'SMALL' ? 'normal' : 'horizontal',
+                labelAlign: "left",
                 persistData: false,
                 promptPageLeave: true,
-                name: `form_edit_${recordId}`,
+                name: `form_${state}_${recordId}`,
                 debug: false,
                 title: "",
                 submitText: "", // amis 表单不显示提交按钮, 表单提交由项目代码接管

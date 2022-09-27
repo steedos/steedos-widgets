@@ -104,15 +104,33 @@ export default {
       panelTitle: "设置",
       panelControls: [
         {
-          type: "text",
-          name: "objectApiName",
-          label: "对象Api名称",
+          "type": "select",
+          "label": "对象",
+          "name": "objectApiName",
+          "id": "u:4a14f11bb85f",
+          "multiple": false,
+          "source": {
+            "method": "get",
+            "url": "/service/api/amis-design/objects",
+            "requestAdaptor": `
+                api.url = Builder.settings.rootUrl  + api.url; 
+                if(!api.headers){
+                  api.headers = {}
+                };
+                api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;
+                return api;
+            `
+          },
+          "labelField": "label",
+          "valueField": "name",
+          "menuTpl": ""
         },
         {
           type: "text",
           name: "recordId",
           label: "记录ID"
         },
+        /*  TODO: 表单状态配置功能待字段解决只读/编辑后放开。
         {
           type: "button-group-select",
           name: "mode",
@@ -128,6 +146,7 @@ export default {
             }
           ]
         },
+        */
         {
           type: "button-group-select",
           name: "layout",
