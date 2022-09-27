@@ -102,12 +102,31 @@ export default {
           "id": "u:4a14f11bb851",
           "multiple": false,
           label: "视图",
-          "options": [
-            {
-              "label": "所有",
-              "value": "all"
-            }
-          ]
+          "source": {
+            "url": "/service/api/amis-design/objects?objectApiName=${objectApiName}",
+            "method": "get",
+            "messages": {
+            },
+            "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
+            "adaptor": `
+                const objectApiName = api.query.objectApiName;
+                const targetObject = payload.find(function (obj) {
+                  return obj.name === objectApiName;
+                })
+                const listViews = targetObject.list_views;
+                const options = listViews.map(function (item) {
+                  return { value: item.name || item._id, label: item.label || item.name }
+                })
+                payload.data = {
+                  options,
+                  value: options[0].value
+                }
+                return payload;
+            `,
+            "sendOn": "this.objectApiName"
+          },
+          "labelField": "label",
+          "valueField": "value"
         }
       ]
     }

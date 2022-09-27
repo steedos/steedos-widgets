@@ -12,7 +12,8 @@ export const AmisObjectForm = async (props) => {
   const options = {
     recordId: $schema.recordId,
     mode: $schema.mode,
-    layout: $schema.layout
+    layout: $schema.layout,
+    labelAlign:  $schema.labelAlign
   }
   return (await getFormSchema($schema.objectApiName, options)).amisSchema
 }

@@ -303,9 +303,7 @@ const getGlobalData = (mode)=>{
 }
 
 export async function getObjectForm(objectSchema, ctx){
-    const { recordId, mode = 'edit', layout = 'vertical', tabId, appId } = ctx;
-    const formFactor = layout === 'vertical' ? 'SMALL' : 'LARGE';
-    const state = mode === 'edit' ? mode : 'readonly';
+    const { recordId, formFactor, layout, labelAlign, tabId, appId } = ctx;
     const fields = _.values(objectSchema.fields);
     return {
         type: 'page',
@@ -313,18 +311,18 @@ export async function getObjectForm(objectSchema, ctx){
         regions: [
             "body"
         ],
-        name: `page_${state}_${recordId}`,
-        data: {global: getGlobalData(mode), recordId: recordId, objectName: objectSchema.name, context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
+        name: `page_edit_${recordId}`,
+        data: {global: getGlobalData('edit'), recordId: recordId, objectName: objectSchema.name, context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
         initApi: null,
         initFetch: null ,
         body: [
             {
                 type: "form",
-                mode: formFactor === 'SMALL' ? 'normal' : 'horizontal',
-                labelAlign: "left",
+                mode: formFactor === 'SMALL' ? 'normal' : layout,
+                labelAlign,
                 persistData: false,
                 promptPageLeave: true,
-                name: `form_${state}_${recordId}`,
+                name: `form_edit_${recordId}`,
                 debug: false,
                 title: "",
                 submitText: "", // amis 表单不显示提交按钮, 表单提交由项目代码接管
@@ -341,6 +339,7 @@ export async function getObjectForm(objectSchema, ctx){
 }
 
 export async function getObjectDetail(objectSchema, recordId, ctx){
+    const { formFactor, layout, labelAlign } = ctx;
     const fields = _.values(objectSchema.fields);
     return {
         type: 'service',
@@ -351,7 +350,8 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
         body: [
             {
                 type: "form",
-                mode: ctx.formFactor === 'SMALL' ? 'normal' : 'horizontal',
+                mode: formFactor === 'SMALL' ? 'normal' : layout,
+                labelAlign,
                 persistData: false,
                 promptPageLeave: false,
                 name: `form_readonly_${recordId}`,

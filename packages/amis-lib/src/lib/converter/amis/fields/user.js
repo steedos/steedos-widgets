@@ -2,31 +2,31 @@ import * as graphql from '../graphql';
 import * as Field from './index';
 import * as Tpl from '../tpl';
 
-async function getSource(field, multiple){
+async function getSource(field) {
     // data.query 最终格式 "{ \tleftOptions:organizations(filters: {__filters}){value:_id,label:name,children},   children:organizations(filters: {__filters}){ref:_id,children}, defaultValueOptions:space_users(filters: {__options_filters}){user,name} }"
-    const data = await graphql.getFindQuery({name: "organizations"}, null, [{name: "_id", alias: "value"},{name: "name", alias: "label"},{name: "children"}],{
+    const data = await graphql.getFindQuery({ name: "organizations" }, null, [{ name: "_id", alias: "value" }, { name: "name", alias: "label" }, { name: "children" }], {
         alias: "leftOptions",
         filters: "{__filters}"
     });
-    data.query = data.query.replace(/,count\:.+/,"}");
-    const childrenData = await graphql.getFindQuery({name: "organizations"}, null, [{name: "_id", alias: "ref"},{name: "children"}],{
+    data.query = data.query.replace(/,count\:.+/, "}");
+    const childrenData = await graphql.getFindQuery({ name: "organizations" }, null, [{ name: "_id", alias: "ref" }, { name: "children" }], {
         alias: "children",
         filters: "{__filters}"
     });
-    childrenData.query = childrenData.query.replace(/,count\:.+/,"}");
-    data.query = data.query.replace(/}$/, "," + childrenData.query.replace(/{(.+)}/,"$1}"));
-    const defaultValueOptionsData = await graphql.getFindQuery({name: "space_users"}, null, [{name: "user"},{name: "name"}],{
+    childrenData.query = childrenData.query.replace(/,count\:.+/, "}");
+    data.query = data.query.replace(/}$/, "," + childrenData.query.replace(/{(.+)}/, "$1}"));
+    const defaultValueOptionsData = await graphql.getFindQuery({ name: "space_users" }, null, [{ name: "user" }, { name: "name" }], {
         alias: "defaultValueOptions",
         filters: "{__options_filters}"
     });
-    defaultValueOptionsData.query = defaultValueOptionsData.query.replace(/,count\:.+/,"}");
-    data.query = data.query.replace(/}$/, "," + defaultValueOptionsData.query.replace(/{(.+)}/,"$1}"))
+    defaultValueOptionsData.query = defaultValueOptionsData.query.replace(/,count\:.+/, "}");
+    data.query = data.query.replace(/}$/, "," + defaultValueOptionsData.query.replace(/{(.+)}/, "$1}"))
     data.$value = `$${field.name}`;
     const requestAdaptor = `
         var filters = [['parent', '=', null]];
         api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters));
         var defaultValue = api.data.$value;
-        var optionsFiltersOp = "${multiple ? "in" : "="}";
+        var optionsFiltersOp = "${field.multiple ? "in" : "="}";
         var optionsFilters = [["user", optionsFiltersOp, []]];
         if (defaultValue) { 
             optionsFilters = [["user", optionsFiltersOp, defaultValue]];
@@ -65,15 +65,24 @@ async function getSource(field, multiple){
     }
 }
 
-async function getDeferApi(){
+async function getDeferApi(field) {
     // data.query 最终格式 "{ \toptions:{__object_name}(filters:{__filters}){{__fields}} }"
-    const data = await graphql.getFindQuery({name: "{__object_name}"}, null, [],{
+    const data = await graphql.getFindQuery({ name: "{__object_name}" }, null, [], {
         alias: "options",
         filters: "{__filters}"
     });
-    data.query = data.query.replace(/,count\:.+/,"}");
+    // 传入的默认过滤条件，比如[["name", "contains", "三"]]，将会作为基本过滤条件
+    let filters = field.filters;
+    if(typeof filters === "string"){
+        filters = new Function(`return ${filters}`);
+        filters = filters();
+    }
+    if(typeof filters === "function"){
+        filters = filters(field);
+    }
+    data.query = data.query.replace(/,count\:.+/, "}");
     // 字段要根据请求参数动态生成，写死为__fields后续在发送适配器中替换
-    data.query = data.query.replace("{_id}","{{__fields}}");
+    data.query = data.query.replace("{_id}", "{{__fields}}");
     const requestAdaptor = `
         var dep = api.query.dep;
         var ref = api.query.ref;
@@ -86,24 +95,16 @@ async function getDeferApi(){
             fields = "value:_id,label:name,children";
             filters = [['parent', '=', dep]];
         }
-        else if (ref || term) { 
+        else if (ref) { 
             objectName = "space_users";
             // 这里要额外把字段转为value和label是因为valueField和labelField在deferApi/searchApi中不生效，所以字段要取两次
             fields = "user,name,value:user,label:name";
             filters = [['user_accepted', '=', true]];
-            if (term) {
-                var fieldsForSearch = ["name", "username", "email", "mobile"];
-                var termFilters = [];
-                fieldsForSearch.forEach(function (field) {
-                    termFilters.push([field, 'contains', term]);
-                    termFilters.push("or");
-                });
-                termFilters.pop();
-                filters.push(termFilters);
+            var defaultFilters = ${filters && JSON.stringify(filters)};
+            if(defaultFilters){
+                filters.push(defaultFilters);
             }
-            else {
-                filters.push(['organizations_parents', '=', ref]);
-            }
+            filters.push(['organizations_parents', '=', ref]);
         }
         api.data.query = api.data.query.replace(/{__object_name}/g, objectName).replace(/{__fields}/g, fields).replace(/{__filters}/g, JSON.stringify(filters));
         return api;
@@ -133,29 +134,33 @@ async function getDeferApi(){
     }
 }
 
-async function getSearchApi(){
+async function getSearchApi(field) {
     // data.query 最终格式 "{ \toptions:space_users(filters: {__filters}){user,name,value:user,label:name}}"
     // 这里要额外把字段转为value和label是因为valueField和labelField在deferApi/searchApi中不生效，所以字段要取两次
-    const data = await graphql.getFindQuery({name: "space_users"}, null, [{name: "user"},{name: "name"},{name: "user", alias: "value"},{name: "name", alias: "label"}],{
+    const data = await graphql.getFindQuery({ name: "space_users" }, null, [{ name: "user" }, { name: "name" }, { name: "user", alias: "value" }, { name: "name", alias: "label" }], {
         alias: "options",
         filters: "{__filters}"
     });
-    data.query = data.query.replace(/,count\:.+/,"}");
+    data.query = data.query.replace(/,count\:.+/, "}");
+    // 传入的默认过滤条件，比如[["name", "contains", "三"]]，将会作为基本过滤条件
+    const filters = field.filters;
     const requestAdaptor = `
         var term = api.query.term;
         var filters;
         if (term) { 
             filters = [['user_accepted', '=', true]];
-            if (term) {
-                var fieldsForSearch = ["name", "username", "email", "mobile"];
-                var termFilters = [];
-                fieldsForSearch.forEach(function (field) {
-                    termFilters.push([field, 'contains', term]);
-                    termFilters.push("or");
-                });
-                termFilters.pop();
-                filters.push(termFilters);
+            var defaultFilters = ${filters && JSON.stringify(filters)};
+            if(defaultFilters){
+                filters.push(defaultFilters);
             }
+            var fieldsForSearch = ["name", "username", "email", "mobile"];
+            var termFilters = [];
+            fieldsForSearch.forEach(function (field) {
+                termFilters.push([field, 'contains', term]);
+                termFilters.push("or");
+            });
+            termFilters.pop();
+            filters.push(termFilters);
         }
         api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters));
         return api;
@@ -179,30 +184,32 @@ export async function getSelectUserSchema(field, readonly, ctx) {
     if (!ctx) {
         ctx = {};
     }
-    const defaultOpt = {
-        multiple: field.multiple,
-        searchable: true
-    };
-    const opt = Object.assign({}, defaultOpt, ctx);
     const amisSchema = {
         "type": Field.getAmisStaticFieldType('select', readonly),
         "labelField": "name",
         "valueField": "user",
-        "multiple": opt.multiple,
-        "searchable": opt.searchable,
+        "multiple": field.multiple,
+        "searchable": field.searchable,
         "selectMode": "associated",
         "leftMode": "tree",
         "joinValues": false,
         "extractValue": true,
-        "source": await getSource(field, opt.multiple),
-        "deferApi": await getDeferApi(),
-        "searchApi": await getSearchApi()
+        "source": await getSource(field),
+        "deferApi": await getDeferApi(field),
+        "searchApi": await getSearchApi(field)
     };
-    if(_.has(field, 'defaultValue') && !(_.isString(field.defaultValue) && field.defaultValue.startsWith("{"))){
+    if (_.has(field, 'defaultValue') && !(_.isString(field.defaultValue) && field.defaultValue.startsWith("{"))) {
         amisSchema.value = field.defaultValue
     }
-    if(readonly){
+    if (readonly) {
         amisSchema.tpl = Tpl.getLookupTpl(field, ctx)
+    }
+    if (typeof amisSchema.searchable !== "boolean") {
+        amisSchema.searchable = true;
+    }
+    const onEvent = field.onEvent;
+    if (onEvent) {
+        amisSchema.onEvent = onEvent;
     }
 
     return amisSchema;

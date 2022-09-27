@@ -87,7 +87,7 @@ export default {
       panelControls: [
         {
           "type": "select",
-          "label": "对象",
+          "label": "父级对象",
           "name": "objectApiName",
           "id": "u:4a14f11bb85f",
           "multiple": false,
@@ -103,7 +103,7 @@ export default {
         {
           type: "text",
           name: "recordId",
-          label: "记录ID"
+          label: "父级记录"
         },
         {
           "type": "select",
@@ -119,36 +119,6 @@ export default {
           "labelField": "label",
           "valueField": "name",
           "menuTpl": ""
-        },
-        {
-          type: "button-group-select",
-          name: "mode",
-          label: "显示状态",
-          options: [
-            {
-              "label": "只读",
-              "value": "read"
-            },
-            {
-              "label": "编辑",
-              "value": "edit"
-            }
-          ]
-        },
-        {
-          type: "button-group-select",
-          name: "layout",
-          label: "表单布局",
-          options: [
-            {
-              "label": "纵向",
-              "value": "vertical"
-            },
-            {
-              "label": "横向",
-              "value": "horizontal"
-            },
-          ]
         }
       ]
     }

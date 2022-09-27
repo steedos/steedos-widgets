@@ -130,11 +130,11 @@ export default {
           name: "recordId",
           label: "记录ID"
         },
-        /*  TODO: 表单状态配置功能待字段解决只读/编辑后放开。
         {
           type: "button-group-select",
           name: "mode",
           label: "显示状态",
+          value: "read",
           options: [
             {
               "label": "只读",
@@ -146,22 +146,48 @@ export default {
             }
           ]
         },
-        */
         {
           type: "button-group-select",
           name: "layout",
-          label: "表单布局",
+          label: "表单项布局",
           options: [
             {
               "label": "纵向",
-              "value": "vertical"
+              "value": "normal"
             },
             {
               "label": "横向",
               "value": "horizontal"
             },
+            {
+              "label": "内联",
+              "value": "inline"
+            }
           ]
         },
+        /*
+        {
+          type: "button-group-select",
+          name: "labelAlign",
+          label: "表单项标签对齐方式",
+          hiddenOn: "this.layout !== 'horizontal'",
+          options: [
+            {
+              "label": "左",
+              "value": "left"
+            },
+            {
+              "label": "右",
+              "value": "right"
+            }
+          ]
+        },
+        {
+          type: "text",
+          name: "className",
+          label: "CSS类名"
+        }
+        */
       ]
     }
   }
