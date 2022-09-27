@@ -204,6 +204,23 @@ export const AmisSelectUser = () => (
           "type": "steedos-select-user",
           "name": "admins",
           "multiple": true
+        },
+        {
+          "label": "触发change事件",
+          "type": "steedos-select-user",
+          "name": "admins",
+          "multiple": true,
+          "onEvent": {
+            "change": {
+              "weight": 0,
+              "actions": [
+                {
+                  "actionType": "custom",
+                  "script": "console.log(\"onEvent change, context.props\", context.props);alert(\"onEvent change\");"
+                }
+              ]
+            }
+          }
         }
       ],
       "title": "AmisSelectUser"
