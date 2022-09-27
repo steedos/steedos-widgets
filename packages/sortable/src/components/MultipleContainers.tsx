@@ -1,6 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal, unstable_batchedUpdates } from 'react-dom';
 import { isEqual } from 'lodash';
+
+import {
+  createObject,
+} from 'amis-core/esm/utils/object';
+
 import {
   CancelDrop,
   closestCenter,
@@ -146,6 +151,8 @@ interface Props {
   vertical?: boolean;
   defaultValue: any,
   onChange: Function,
+  data: any,
+  dispatchEvent: Function,
 }
 
 export const TRASH_ID = 'void';
@@ -173,7 +180,9 @@ export function MultipleContainers(props) {
     vertical = false,
     scrollable,
     defaultValue,
-    onChange
+    onChange,
+    data,
+    dispatchEvent
   }: Props = props
 
   initialItems = defaultValue as Items
@@ -195,13 +204,21 @@ export function MultipleContainers(props) {
     Object.keys(items) as UniqueIdentifier[]
   );
 
-  // useEffect(() => {
-  //   if (defaultValue && !isEqual(defaultValue, items)) {
-  //     console.log('useEffect: defaultValue 变化')
-  //     setItems(defaultValue)
-  //     setContainers(Object.keys(defaultValue) as UniqueIdentifier[])
-  //   }
-  // });
+  const handleChange = async () => {
+    const value = items;
+
+    const rendererEvent = await dispatchEvent(
+      'change',
+      createObject(data, {
+        value
+      })
+    );
+    if (rendererEvent?.prevented) {
+      return;
+    }
+
+    setTimeout(()=> onChange(value), 1000);
+  }
   
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
 
@@ -442,7 +459,7 @@ export function MultipleContainers(props) {
               [newContainerId]: [active.id],
             }));
             console.log('拖动结束，更新form value')
-            setTimeout(()=>onChange(items), 1000);
+            handleChange()
             setActiveId(null);
           });
           return;
@@ -469,7 +486,7 @@ export function MultipleContainers(props) {
         setActiveId(null);
 
         console.log('拖动结束2，更新form value')
-        setTimeout(()=>onChange(items), 1000);
+        handleChange()
       }}
       cancelDrop={cancelDrop}
       onDragCancel={onDragCancel}
