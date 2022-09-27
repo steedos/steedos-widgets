@@ -72,7 +72,14 @@ async function getDeferApi(field) {
         filters: "{__filters}"
     });
     // 传入的默认过滤条件，比如[["name", "contains", "三"]]，将会作为基本过滤条件
-    const filters = field.filters;
+    let filters = field.filters;
+    if(typeof filters === "string"){
+        filters = new Function(`return ${filters}`);
+        filters = filters();
+    }
+    if(typeof filters === "function"){
+        filters = filters(field);
+    }
     data.query = data.query.replace(/,count\:.+/, "}");
     // 字段要根据请求参数动态生成，写死为__fields后续在发送适配器中替换
     data.query = data.query.replace("{_id}", "{{__fields}}");
