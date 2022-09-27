@@ -137,7 +137,7 @@ export async function getObjectList(objectSchema, fields, options){
       toolbar: getToolbar(), 
       footerToolbar: footerToolbar(), 
       headerToolbar: getHeaderToolbar(objectSchema, options.formFactor),
-      bulkActions: bulkActions, 
+      bulkActions: options.bulkActions != false ? bulkActions : false, 
       bodyClassName: "",
       // filterTogglable: true,
       // filterDefaultVisible: true,
