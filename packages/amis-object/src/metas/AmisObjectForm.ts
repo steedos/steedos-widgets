@@ -134,6 +134,7 @@ export default {
           type: "button-group-select",
           name: "mode",
           label: "显示状态",
+          value: "read",
           options: [
             {
               "label": "只读",
