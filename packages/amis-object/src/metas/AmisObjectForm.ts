@@ -150,18 +150,38 @@ export default {
         {
           type: "button-group-select",
           name: "layout",
-          label: "表单布局",
+          label: "表单项布局",
           options: [
             {
               "label": "纵向",
-              "value": "vertical"
+              "value": "normal"
             },
             {
               "label": "横向",
               "value": "horizontal"
             },
+            {
+              "label": "内联",
+              "value": "inline"
+            }
           ]
         },
+        {
+          type: "button-group-select",
+          name: "labelAlign",
+          label: "表单项标签对齐方式",
+          hiddenOn: "this.layout !== 'horizontal'",
+          options: [
+            {
+              "label": "左",
+              "value": "left"
+            },
+            {
+              "label": "右",
+              "value": "right"
+            }
+          ]
+        }
       ]
     }
   }
