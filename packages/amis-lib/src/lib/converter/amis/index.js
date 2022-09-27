@@ -339,6 +339,7 @@ export async function getObjectForm(objectSchema, ctx){
 }
 
 export async function getObjectDetail(objectSchema, recordId, ctx){
+    const { formFactor, layout, labelAlign } = ctx;
     const fields = _.values(objectSchema.fields);
     return {
         type: 'service',
@@ -349,7 +350,8 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
         body: [
             {
                 type: "form",
-                mode: ctx.formFactor === 'SMALL' ? 'normal' : 'horizontal',
+                mode: formFactor === 'SMALL' ? 'normal' : layout,
+                labelAlign,
                 persistData: false,
                 promptPageLeave: false,
                 name: `form_readonly_${recordId}`,

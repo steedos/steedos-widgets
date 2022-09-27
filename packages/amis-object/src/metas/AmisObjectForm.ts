@@ -130,7 +130,6 @@ export default {
           name: "recordId",
           label: "记录ID"
         },
-        /*  TODO: 表单状态配置功能待字段解决只读/编辑后放开。
         {
           type: "button-group-select",
           name: "mode",
@@ -146,7 +145,6 @@ export default {
             }
           ]
         },
-        */
         {
           type: "button-group-select",
           name: "layout",
@@ -166,6 +164,7 @@ export default {
             }
           ]
         },
+        /*
         {
           type: "button-group-select",
           name: "labelAlign",
@@ -181,7 +180,13 @@ export default {
               "value": "right"
             }
           ]
+        },
+        {
+          type: "text",
+          name: "className",
+          label: "CSS类名"
         }
+        */
       ]
     }
   }

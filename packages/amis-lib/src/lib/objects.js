@@ -92,7 +92,7 @@ export async function getField(objectName, fieldName) {
 // 获取表单页面
 export async function getFormSchema(objectName, ctx) {
     const uiSchema = await getUISchema(objectName);
-    const amisSchema = await getObjectForm(uiSchema, ctx);
+    const amisSchema = ctx.mode === 'edit' ?  await getObjectForm(uiSchema, ctx) : await getObjectDetail(uiSchema, ctx.recordId, ctx);
     return {
         uiSchema,
         amisSchema,
