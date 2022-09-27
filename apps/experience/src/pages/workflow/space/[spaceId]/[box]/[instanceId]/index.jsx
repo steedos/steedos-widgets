@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-24 14:47:23
+ * @LastEditTime: 2022-09-24 17:49:19
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -66,7 +66,7 @@ export default function Record({formFactor}) {
   const Header = formFactor === "SMALL" ? MobileRecordHeader : RecordHeader;
   return (
     <div className="h-full flex instance-scope">
-      <div className="flex-1 w-32 border-r"><Listview formFactor={formFactor} app_id={app_id} tab_id={tab_id} listViewName={box}></Listview></div>
+      <div className="flex-1 w-32 border-r"><Listview bulkActions={false} formFactor={formFactor} app_id={app_id} tab_id={tab_id} listViewName={box}></Listview></div>
       <div className="flex-1 w-64" >
         {
           record != undefined && <div className="region-header bg-slate-50 static">
@@ -89,6 +89,7 @@ export default function Record({formFactor}) {
               applicant: record.applicant,
               applicant_name: record.applicant_name,
               related_instances: record.related_instances,
+              historyApproves: record.historyApproves,
               app_id,
               box,
               ...record.approveValues,

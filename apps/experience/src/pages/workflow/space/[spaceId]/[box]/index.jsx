@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-17 18:24:22
+ * @LastEditTime: 2022-09-24 17:50:31
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -22,7 +22,7 @@ export default function Record({formFactor}) {
 
   return (
     <div className="h-full flex instance-scope">
-      <div className="flex-1 w-32 border-r"><Listview formFactor={formFactor} app_id={'approve_workflow'} tab_id={tab_id} listViewName={box}></Listview></div>
+      <div className="flex-1 w-32 border-r"><Listview bulkActions={false} formFactor={formFactor} app_id={'approve_workflow'} tab_id={tab_id} listViewName={box}></Listview></div>
       <div className="flex-1 w-64" >
         
       </div>

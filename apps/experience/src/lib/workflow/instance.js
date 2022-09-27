@@ -4,7 +4,7 @@ import _, { find, isEmpty } from "lodash";
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 17:47:37
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-24 10:26:50
+ * @LastEditTime: 2022-09-27 16:42:39
  * @Description:
  */
 
@@ -90,7 +90,7 @@ const getFlowVersion = (instance) => {
   }
 };
 
-const getFormVersion = (instance)=>{
+const getFormVersion = (instance) => {
   if (instance.form.current._id === instance.form_version) {
     return instance.form.current;
   } else {
@@ -98,12 +98,47 @@ const getFormVersion = (instance)=>{
       return history._id === instance.form_version;
     });
   }
-}
+};
 
 const getStep = ({ flowVersion, stepId }) => {
   return find(flowVersion.steps, (step) => {
     return step._id === stepId;
   });
+};
+
+const getLastCCStep = ({ traces }, userId) => {
+  var i, step_id, trace_id, user_id;
+
+  user_id = userId;
+
+  trace_id = null;
+
+  step_id = null;
+
+  i = traces.length - 1;
+
+  while (i >= 0) {
+    if (!trace_id && traces[i].is_finished) {
+      _.each(traces[i].approves, function (ap) {
+        if (!trace_id) {
+          if (
+            ap.is_finished &&
+            ap.user === user_id &&
+            (!ap.type || ap.type == "cc") &&
+            ["approved", "submitted", "rejected"].includes(ap.judge)
+          ) {
+            trace_id = ap.trace;
+          }
+          if (trace_id) {
+            step_id = traces[i].step;
+          }
+        }
+      });
+    }
+    i--;
+  }
+
+  return step_id;
 };
 
 export const getInstanceInfo = async ({ instanceId, box }) => {
@@ -116,10 +151,12 @@ export const getInstanceInfo = async ({ instanceId, box }) => {
         state,
         values,
         applicant,
+        cc_users,
         applicant_name,
         submitter,
         submit_date,
         record_ids,
+        forward_from_instance,
         related_instances: related_instances__expand{
           _id,
           name
@@ -136,6 +173,7 @@ export const getInstanceInfo = async ({ instanceId, box }) => {
         flow:flow__expand{
           _id,
           name,
+          perms,
           current,
           historys
         }
@@ -149,23 +187,26 @@ export const getInstanceInfo = async ({ instanceId, box }) => {
       query: query,
     }),
   });
-  let userApprove = null
+  let userApprove = null;
   let trace = null;
   let step = null;
   const instance = result.data.instance;
-  if(!instance){
+  if (!instance) {
     return undefined;
   }
-  if(box === 'inbox' || box === 'draft'){
+  if (box === "inbox" || box === "draft") {
     userApprove = getUserApprove({ instance, userId });
   }
   const flowVersion = getFlowVersion(instance);
   const formVersion = getFormVersion(instance);
-  
-  if(userApprove){
+
+  if (userApprove) {
     trace = getTrace({ instance, traceId: userApprove.trace });
     step = getStep({ flowVersion, stepId: trace.step });
   }
+
+  const lastCCStep = getLastCCStep(instance, userId);
+
   const values = getApproveValues({
     instance,
     trace,
@@ -182,20 +223,97 @@ export const getInstanceInfo = async ({ instanceId, box }) => {
     applicant: instance.applicant,
     applicant_name: instance.applicant_name,
     submitter: instance.submitter,
-    submit_date: instance.submit_date ? amisRequire("moment")(instance.submit_date).format("YYYY-MM-DD") : '',
+    submit_date: instance.submit_date
+      ? amisRequire("moment")(instance.submit_date).format("YYYY-MM-DD")
+      : "",
     state: instance.state,
     approveValues: values,
     title: instance.name || instance.form.name,
     name: instance.name || instance.form.name,
-    fields: _.map(formVersion.fields, (field)=>{
-      return Object.assign({}, field, {permission: step?.permissions[field.code]})
+    fields: _.map(formVersion.fields, (field) => {
+      return Object.assign({}, field, {
+        permission: step?.permissions[field.code],
+      });
     }),
     flowVersion: flowVersion,
     formVersion: formVersion,
     step: step,
+    lastCCStep: lastCCStep,
     trace: trace,
     approve: userApprove,
     record_ids: instance.record_ids,
     related_instances: instance.related_instances,
+    forward_from_instance: instance.forward_from_instance,
+    cc_users: instance.cc_users,
+    traces: instance.traces,
+    historyApproves: _.map(instance.traces, (trace) => {
+      return Object.assign(
+        {
+          children: _.map(trace.approves, (approve) => {
+            let finishDate = approve.finish_date;
+            let judge = approve.judge;
+            let userName = approve.user_name;
+            let opinion = approve.description;
+            if(approve.type === 'cc'){
+              userName = `${userName} (传阅)`
+              opinion = approve.cc_description;
+            }
+            if (!finishDate) {
+              finishDate = approve.is_read ? "已读" : "未处理";
+              judge = null;
+            } else {
+              finishDate =
+                amisRequire("moment")(finishDate).format("YYYY-MM-DD HH:mm");
+            }
+
+            switch (judge) {
+              case "submitted":
+                judge = "";
+                break;
+              case "returned":
+                judge = "已退回";
+                break;
+              case "terminated":
+                judge = "被取回";
+                break;
+              case "pending":
+                judge = "审核中";
+                break;
+              case "approved":
+                judge = "已核准";
+                break;
+              case "rejected":
+                judge = "已驳回";
+                break;
+              case "finished":
+                judge = "已完成";
+                break;
+              case "reassigned":
+                judge = "转签核";
+                break;
+              case "inhand":
+                judge = "处理中";
+                break;
+              case "relocated":
+                judge = "重定位";
+                break;
+              case "readed":
+                judge = "已阅";
+                break;
+              default:
+                break;
+            }
+            return {
+              name: "",
+              user_name: userName,
+              finish_date: finishDate,
+              judge: judge,
+              opinion: opinion,
+            };
+          }),
+        },
+        { name: trace.name, judge: "" }
+      );
+    }),
   };
 };
