@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 11:31:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-14 16:31:21
+ * @LastEditTime: 2022-09-27 10:34:59
  * @Description:
  */
 import { each, find, isArray, isEmpty } from 'lodash';
@@ -107,6 +107,13 @@ export const getEvn = (router)=>{
 export const registerRenders = (assets)=>{
   if(!isEmpty(assets) && isArray(assets)){
     let amisLib = amisRequire('amis');
+
+    const registerMap = {
+      renderer: amisLib.Renderer,
+      formitem: amisLib.FormItem,
+      options: amisLib.OptionsControl,
+    };
+    
     let amisReact = amisRequire('react');
     each(assets, (asset)=>{
       // 防止组件重复注册
@@ -130,9 +137,31 @@ export const registerRenders = (assets)=>{
             return amisReact.createElement(amisReact.Fragment, null, amisReact.createElement(amisReact.Fragment, null, schema && render ? render('body', schema) : ''), amisReact.createElement(amisReact.Fragment, null, render ? render('body', body) : ''));
           }
         }
-        amisLib.Renderer({
-          test: new RegExp(`(^|\/)${asset.type}`)
-        })(AmisWrapper);
+
+        // 注册amis渲染器
+        if (!registerMap[asset.usage]) {
+          console.error(
+            `${consoleTag}自定义组件注册失败，不存在${asset.usage}自定义组件类型。`,
+          );
+        } else {
+          registerMap[asset.usage]({
+            test: new RegExp(`(^|\/)${asset.type}`),
+            type: asset.type,
+            weight: asset.weight,
+            autoVar: true,
+          })(AmisWrapper);
+          // 记录当前创建的amis自定义组件
+          console.info('注册了一个自定义amis组件:', {
+            type: asset.type,
+            weight: asset.weight,
+            component: AmisWrapper,
+            framework: asset.framework,
+            usage: asset.usage,
+          });
+        }
+        // amisLib.Renderer({
+        //   test: new RegExp(`(^|\/)${asset.type}`)
+        // })(AmisWrapper);
         RegisterRenders.push(asset.componentName)
       }
     })
