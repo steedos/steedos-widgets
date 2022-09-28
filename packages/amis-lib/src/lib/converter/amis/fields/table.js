@@ -122,6 +122,9 @@ export async function getTableApi(mainObject, fields, options){
             }
         })
     }
+    if(!filter){
+        filter = [];
+    }
 
     _.each(fields,function(field){
         if(field.searchable){
