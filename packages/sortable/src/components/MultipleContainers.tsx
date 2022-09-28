@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal, unstable_batchedUpdates } from 'react-dom';
-import { isEqual } from 'lodash';
+import { map, keyBy, isEqual } from 'lodash';
 
 import {
   createObject,
@@ -149,6 +149,8 @@ interface Props {
   trashable?: boolean;
   scrollable?: boolean;
   vertical?: boolean;
+  containerSource: [{id:string, title:string}?],
+  itemSource: [{id:string, title:string}?],
   defaultValue: any,
   onChange: Function,
   data: any,
@@ -167,7 +169,6 @@ export function MultipleContainers(props) {
     cancelDrop,
     columns,
     handle = false,
-    items: initialItems,
     containerStyle,
     coordinateGetter = multipleContainersCoordinateGetter,
     getItemStyles = () => ({}),
@@ -179,23 +180,22 @@ export function MultipleContainers(props) {
     trashable = false,
     vertical = false,
     scrollable,
+    containerSource = [],
+    itemSource = [],
     defaultValue,
     onChange,
     data,
     dispatchEvent
   }: Props = props
 
-  initialItems = defaultValue as Items
-
-  initialItems && delete(initialItems.$$id);
+  defaultValue && delete(defaultValue.$$id);
 
   const [items, setItems] = useState<Items>(
     () => {
       return (defaultValue as Items) ?? {
-        A: createRange(itemCount, (index) => `A${index + 1}`),
-        B: createRange(itemCount, (index) => `B${index + 1}`),
-        C: createRange(itemCount, (index) => `C${index + 1}`),
-        D: createRange(itemCount, (index) => `D${index + 1}`),
+        A: ['A1', 'A2'],
+        B: ['B1', 'B2'],
+        C: ['C1', 'C2'],
       }
     }
   );
@@ -205,8 +205,11 @@ export function MultipleContainers(props) {
   );
 
   const handleChange = async () => {
+    if (!dispatchEvent || !onChange)
+      return 
     const value = items;
 
+    // 支持 amis OnEvent.change
     const rendererEvent = await dispatchEvent(
       'change',
       createObject(data, {
@@ -507,11 +510,13 @@ export function MultipleContainers(props) {
               : horizontalListSortingStrategy
           }
         >
-          {containers.map((containerId) => (
+          {containers.map((containerId) => {
+            const container = keyBy(containerSource, 'id')[containerId] || {id: containerId, title: 'Container ' + containerId}
+            return (
             <DroppableContainer
               key={containerId}
               id={containerId}
-              label={minimal ? undefined : `Column ${containerId}`}
+              label={container.title}
               columns={columns}
               items={items[containerId]}
               scrollable={scrollable}
@@ -524,11 +529,13 @@ export function MultipleContainers(props) {
                 strategy={strategy}
                 >
                 {items[containerId].map((value, index) => {
+                  const item = keyBy(itemSource, 'id')[value] || {id: value, title: '' + value}
                   return (
                     <SortableItem
                       disabled={isSortingContainer}
                       key={value}
                       id={value}
+                      label={item.title}
                       index={index}
                       handle={handle}
                       style={getItemStyles}
@@ -541,7 +548,7 @@ export function MultipleContainers(props) {
                 })}
               </SortableContext>
             </DroppableContainer>
-          ))}
+          )})}
           {minimal ? undefined : (
             <DroppableContainer
               id={PLACEHOLDER_ID}
@@ -712,6 +719,7 @@ interface SortableItemProps {
 function SortableItem({
   disabled,
   id,
+  label,
   index,
   handle,
   renderItem,
@@ -739,7 +747,7 @@ function SortableItem({
   return (
     <Item
       ref={disabled ? undefined : setNodeRef}
-      value={id}
+      value={label}
       dragging={isDragging}
       sorting={isSorting}
       handle={handle}

@@ -14,14 +14,39 @@ export default {
   },
 };
 
-const items = {
-  X: ['A1', 'X2'],
-  Y: ['Y2', 'Y2']
+const defaultValue = {
+  X: ['A1', 'B1'],
+  Y: ['A2', 'B2']
 }
+
+
+const containerSource = [
+  {
+    id: 'X',
+    title: 'Board X',
+  },
+  {
+    id: 'Y',
+    title: 'Board Y'
+  }
+]
+
+const itemSource = [
+  {
+    id: 'A1',
+    title: 'Item A1'
+  },
+  {
+    id: 'B1',
+    title: 'Item B1'
+  },
+]
 
 export const Simple = () => <MultipleContainers/>;
 
-export const withItems = () => <MultipleContainers items={items}/>;
+export const withItems = () => <MultipleContainers defaultValue={defaultValue}/>;
+
+export const withSource = () => <MultipleContainers containerSource={containerSource} itemSource={itemSource} defaultValue={defaultValue}/>;
 
 export const Vertical = () => <MultipleContainers itemCount={5} vertical />;
 
