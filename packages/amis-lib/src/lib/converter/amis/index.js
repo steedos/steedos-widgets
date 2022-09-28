@@ -282,6 +282,7 @@ export async function getRecordDetailHeaderAmisSchema(objectSchema, recordId){
         "data": {
           "query": `{rows:${name}(filters: [\"_id\",\"=\",${recordId}]){_id, name} }`
         },
+        "sendOn": `${!!recordId}`,
         "requestAdaptor": "",
         "adaptor": "const rows = payload.data.rows;\nlet name = null;\nif (rows.length) {\n  const objectInfo = rows[0];\n  label = objectInfo.name;\n}\ndelete payload.rows;\npayload.data = {\n  name: label\n}\nreturn payload;"
       }
@@ -306,11 +307,8 @@ export async function getObjectForm(objectSchema, ctx){
     const { recordId, formFactor, layout, labelAlign, tabId, appId } = ctx;
     const fields = _.values(objectSchema.fields);
     return {
-        type: 'page',
-        bodyClassName: 'p-0',
-        regions: [
-            "body"
-        ],
+        type: 'service',
+        className: 'p-0',
         name: `page_edit_${recordId}`,
         data: {global: getGlobalData('edit'), recordId: recordId, objectName: objectSchema.name, context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
         initApi: null,
