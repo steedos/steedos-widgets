@@ -6,6 +6,7 @@
  * @Description: 
  */
 import './amis-fix.less'
+import './AmisObjectForm.less'
 
 export * from './AmisObjectForm';
 export * from './AmisObjectListview';
