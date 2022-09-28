@@ -63,10 +63,50 @@ const config: any = {
           name: 'board',
           columns: 1,
           vertical: false,
-          value: {
-            A: ["A1", "A2"],
-            B: ["B1", "B2"]
+          "value": {
+            "A": [
+              "A1",
+              "B1"
+            ],
+            "B": [
+              "A2",
+              "B2"
+            ]
           },
+          "containerSource": [
+            {
+              "id": "A",
+              "label": "Board A"
+            },
+            {
+              "id": "B",
+              "label": "Board B"
+            }
+          ],
+          "itemSource": [
+            {
+              "id": "A1",
+              "label": "Item A1",
+              "columnSpan": 2,
+              "color": "red"
+            },
+            {
+              "id": "A2",
+              "label": "Item A2",
+              "columnSpan": 1,
+              "color": "blue"
+            },
+            {
+              "id": "B1",
+              "label": "Item B1",
+              "color": "green"
+            },
+            {
+              "id": "B2",
+              "label": "Item B2",
+              "color": "silver"
+            }
+          ],
         },
         previewSchema: {
           type: config.amis.name,
