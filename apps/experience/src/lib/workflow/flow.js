@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-24 14:48:48
+ * @LastEditTime: 2022-09-27 18:39:56
  * @Description:
  */
 import {
@@ -19,6 +19,7 @@ import { getAttachments } from './attachment';
 
 import { getRelatedRecords, getRelatedInstances } from './related';
 
+import { getInstanceApprovalHistory } from './history';
 
 
 const getSelectOptions = (field) => {
@@ -437,6 +438,20 @@ export const getFlowFormSchema = async (instance) => {
   return {
     type: "page",
     name: "instancePage",
+    "css": {
+      ".instance-approve-history .antd-Table-table thead": {
+        "display": "none"
+      },
+      ".instance-approve-history .antd-Table-heading": {
+        "font-size": "14px",
+        "font-weight": "500",
+        "padding-left": "0px"
+      },
+      ".antd-List-heading": {
+        "font-size": "14px",
+        "font-weight": "500"
+      }
+    },
     body: [
       await getAttachments(instance),
       await getRelatedInstances(instance),
@@ -464,6 +479,7 @@ export const getFlowFormSchema = async (instance) => {
         ],
         id: "instance_form",
       },
+      await getInstanceApprovalHistory()
     ],
     id: "u:63849ea39e12",
     messages: {},
