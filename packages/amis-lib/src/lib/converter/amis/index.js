@@ -282,6 +282,7 @@ export async function getRecordDetailHeaderAmisSchema(objectSchema, recordId){
         "data": {
           "query": `{rows:${name}(filters: [\"_id\",\"=\",${recordId}]){_id, name} }`
         },
+        "sendOn": `${!!recordId}`,
         "requestAdaptor": "",
         "adaptor": "const rows = payload.data.rows;\nlet name = null;\nif (rows.length) {\n  const objectInfo = rows[0];\n  label = objectInfo.name;\n}\ndelete payload.rows;\npayload.data = {\n  name: label\n}\nreturn payload;"
       }
