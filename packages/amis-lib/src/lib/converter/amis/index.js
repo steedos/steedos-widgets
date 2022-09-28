@@ -306,11 +306,8 @@ export async function getObjectForm(objectSchema, ctx){
     const { recordId, formFactor, layout, labelAlign, tabId, appId } = ctx;
     const fields = _.values(objectSchema.fields);
     return {
-        type: 'page',
-        bodyClassName: 'p-0',
-        regions: [
-            "body"
-        ],
+        type: 'service',
+        className: 'p-0',
         name: `page_edit_${recordId}`,
         data: {global: getGlobalData('edit'), recordId: recordId, objectName: objectSchema.name, context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
         initApi: null,
