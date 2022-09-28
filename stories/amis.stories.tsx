@@ -165,9 +165,9 @@ export const RecordDetailRelatedList = () => (
     title: '相关列表',
     body: {
       "type": "steedos-record-related-list",
-      "objectApiName": "space_users",
-      "recordId": "kDrtGu7aZPwYdyFpe",
-      "relatedObjectApiName": "instances"
+      "objectApiName": "accounts",
+      "recordId": "AKEQtKsWvNDF6MitJ",
+      "relatedObjectApiName": "contacts"
     },
   }}
   assetUrls={assetUrls}
