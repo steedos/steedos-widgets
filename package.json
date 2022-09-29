@@ -7,12 +7,12 @@
   "private": true,
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/@steedos-widgets/*"
   ],
   "scripts": {
     "dev": "cd apps/experience && node server",
     "build": "lerna run build",
-    "unpkg": "http-server ./unpkg.com --port 8080 --cors -c -1",
+    "unpkg": "http-server ./packages --port 8080 --cors -c -1",
     "release": "cd steedos-ee/packages/experience && npm publish --registry https://registry.npmjs.org ",
     "start": "cd apps/experience && NODE_ENV=production node server.js",
     "storybook": "start-storybook -p 6006",

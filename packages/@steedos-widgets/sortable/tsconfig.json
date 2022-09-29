@@ -1,9 +1,11 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../../tsconfig.json",
   "compilerOptions": {
     "baseUrl": "./",
     "declarationDir": "dist/types",
+    "declaration": true,
     "outDir": "dist/cjs"
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["dist"]
 }
