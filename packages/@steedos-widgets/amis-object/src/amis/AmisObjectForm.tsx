@@ -8,16 +8,17 @@
 import {getFormSchema, getViewSchema} from '@steedos-widgets/amis-lib'
 
 export const AmisObjectForm = async (props) => {
-  const { $schema } = props;
+  // console.log('props==>', props)
+  const { $schema, objectApiName, recordId } = props;
   const options = {
-    recordId: $schema.recordId,
+    recordId: recordId || $schema.recordId,
     mode: $schema.mode,
     layout: $schema.layout === 'vertical' ? 'normal' : $schema.layout,
     labelAlign:  $schema.labelAlign
   }
   if($schema.mode === 'edit'){
-    return (await getFormSchema($schema.objectApiName, options)).amisSchema;
+    return (await getFormSchema(objectApiName, options)).amisSchema;
   }else{
-    return (await getViewSchema($schema.objectApiName, $schema.recordId, options)).amisSchema;
+    return (await getViewSchema(objectApiName, recordId, options)).amisSchema;
   }
 }
