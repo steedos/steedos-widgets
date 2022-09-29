@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-29 18:10:41
+ * @LastEditTime: 2022-09-29 18:16:22
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -79,7 +79,7 @@ export default function Record({formFactor}) {
           { record === undefined && <>
             Not Find Instance
           </>}
-
+          <div className="" id="instanceRootModalContainer"></div>
           {record != undefined && formSchema && (
             <AmisRender  className="h-full" id={`amis-root-workflow`} schema={formSchema} router={router} data={{
               submit_date: record.submit_date,
@@ -92,7 +92,7 @@ export default function Record({formFactor}) {
               ...record.approveValues,
               context: record,
             }} getModalContainer={()=>{
-              return document.querySelector('#instanceRoot')
+              return document.querySelector('#instanceRootModalContainer')
             }}></AmisRender>
           )}
         </div>
