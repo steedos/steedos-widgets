@@ -96,10 +96,12 @@ export default {
       scaffold: {
         type: config.amis.name,
         label: config.title,
-        objectApiName: "space_users",
+        objectApiName: "${objectName}",
+        recordId: "${recordId}"
       },
       previewSchema: {
         type: config.amis.name,
+        objectApiName: 'space_users'
       },
       panelTitle: "设置",
       panelControls: [
@@ -107,6 +109,7 @@ export default {
           "type": "select",
           "label": "对象",
           "name": "objectApiName",
+          "searchable": true,
           "multiple": false,
           "source": {
             "method": "get",
