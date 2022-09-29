@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-29 17:25:11
+ * @LastEditTime: 2022-09-29 18:10:41
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -80,9 +80,6 @@ export default function Record({formFactor}) {
             Not Find Instance
           </>}
 
-          {/* TODO: instance_attachments */}
-          {/* TODO: related_instances */}
-          {/* TODO: related_records */}
           {record != undefined && formSchema && (
             <AmisRender  className="h-full" id={`amis-root-workflow`} schema={formSchema} router={router} data={{
               submit_date: record.submit_date,
