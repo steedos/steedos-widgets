@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-29 15:15:09
+ * @LastEditTime: 2022-09-29 16:50:16
  * @Description:
  */
 import {
@@ -546,11 +546,12 @@ export const getFlowFormSchema = async (instance) => {
           },
           await getFormTableView(instance),
           await getApplicantTableView(instance),
-          await getApproveButton(instance)
+          
         ],
         id: "instance_form",
       },
-      await getInstanceApprovalHistory()
+      await getInstanceApprovalHistory(),
+      await getApproveButton(instance)
     ],
     id: "u:63849ea39e12",
     messages: {},
