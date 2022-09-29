@@ -21,7 +21,7 @@ export function RecordHeader({ schema, formFactor, permissions, hiddenTitle, cla
   if(recordId){
     record_id = recordId;
   }
-  const [record, setRecord] = useState(defRecord);
+  const [record, setRecord] = useState();
   const [buttons, setButtons] = useState(null);
   const [moreButtons, setMoreButtons] = useState(null);
   
@@ -63,8 +63,11 @@ export function RecordHeader({ schema, formFactor, permissions, hiddenTitle, cla
             }
         });
     }
-  }, [schema, permissions]);
+  }, [schema, permissions, record_id]);
 
+  useEffect(()=>{
+    setRecord(defRecord)
+  }, [defRecord])
 
   const getMenu = ()=>{
     const items = [];

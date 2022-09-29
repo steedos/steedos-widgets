@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-24 17:49:19
+ * @LastEditTime: 2022-09-29 17:25:11
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -70,7 +70,7 @@ export default function Record({formFactor}) {
       <div className="flex-1 w-64" >
         {
           record != undefined && <div className="region-header bg-slate-50 static">
-          {schema && <Header app_id={app_id} tab_id={tab_id} record_id={instanceId} record={record} schema={schema} formFactor={formFactor} permissions={permissions} hiddenTitle={true} className="p-2"></Header>}
+          {schema && <Header app_id={app_id} tab_id={tab_id} record_id={record._id} record={record} schema={schema} formFactor={formFactor} permissions={permissions} hiddenTitle={true} className="p-2"></Header>}
         </div>
         }
         <div className="relative flex flex-1 flex-col region-main overflow-auto border-t" id="instanceRoot" style={{
