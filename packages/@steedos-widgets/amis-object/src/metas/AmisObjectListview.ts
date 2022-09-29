@@ -27,7 +27,7 @@ const config: any = {
       description: '对象名称',
     },
     {
-      name: "listviewName",
+      name: "listName",
       propType: "string",
       description: '视图名称',
     }
@@ -74,7 +74,7 @@ export default {
         type: config.amis.name,
         label: config.title,
         objectApiName: "space_users",
-        listviewName: "all"
+        listName: "all"
       },
       previewSchema: {
         type: config.amis.name,
