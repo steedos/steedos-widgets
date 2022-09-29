@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-29 09:35:15
+ * @LastEditTime: 2022-09-29 09:37:02
  * @Description:
  */
 import {
@@ -189,7 +189,6 @@ const getFieldReadonlyTpl = async (field, label)=>{
     mode: "horizontal",
     className: "m-none p-none form-control",
   };
-  console.log(`field`, field)
   if(includes(['text'], field.type)){
     tpl.type = `static-${field.type}`;
   }else if(field.type === 'select'){
