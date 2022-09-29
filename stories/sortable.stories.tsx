@@ -56,9 +56,17 @@ const itemSource = [
   },
 ]
 
+const itemBody = [{
+  "type": "tpl",
+  "tpl": "${label}",
+  "inline": false,
+}]
+
 export const Simple = () => <MultipleContainers/>;
 
 export const withItems = () => <MultipleContainers defaultValue={defaultValue}/>;
+
+export const withItemTemplate = () => <MultipleContainers defaultValue={defaultValue} itemBody={itemBody}/>;
 
 export const withSource = () => <MultipleContainers containerSource={containerSource} itemSource={itemSource} defaultValue={defaultValue}/>;
 
@@ -71,7 +79,6 @@ export const Grid = () => (
     itemSource={itemSource}
     strategy={rectSortingStrategy}
     wrapperStyle={() => ({
-      width: 150,
       height: 50,
     })}
   />

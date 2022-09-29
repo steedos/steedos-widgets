@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal, unstable_batchedUpdates } from 'react-dom';
-import { map, keyBy, isEqual } from 'lodash';
+import { map, keyBy, cloneDeep } from 'lodash';
 
 import {
   createObject,
@@ -151,11 +151,13 @@ interface Props {
   scrollable?: boolean;
   vertical?: boolean;
   containerSource: [{id:string, label:string}?],
-  itemSource: [{id:string, label:string, color: string, columnSpan: number}?],
+  itemSource: [{id:string, label:string, color: string, columnSpan: number, body: [any]}?],
   defaultValue: any,
   onChange: Function,
   data: any,
   dispatchEvent: Function,
+  render: Function,
+  itemBody: any
 }
 
 export const TRASH_ID = 'void';
@@ -168,7 +170,7 @@ export function MultipleContainers(props) {
     adjustScale = false,
     itemCount = 3,
     cancelDrop,
-    columns,
+    columns = 1,
     handle = false,
     containerStyle,
     coordinateGetter = multipleContainersCoordinateGetter,
@@ -185,9 +187,15 @@ export function MultipleContainers(props) {
     containerSource = [],
     itemSource = [],
     defaultValue,
-    onChange,
-    data,
-    dispatchEvent
+    onChange: amisOnChange,
+    data: amisData,
+    dispatchEvent: amisDispatchEvent,
+    render: amisRender,
+    itemBody: amisItemBody = [{
+      "type": "tpl",
+      "tpl": "${label}",
+      "inline": false,
+    }],
   }: Props = props
 
   defaultValue && delete(defaultValue.$$id);
@@ -207,14 +215,14 @@ export function MultipleContainers(props) {
   );
 
   const handleChange = async () => {
-    if (!dispatchEvent || !onChange)
+    if (!amisDispatchEvent || !amisOnChange)
       return 
     const value = items;
 
     // 支持 amis OnEvent.change
-    const rendererEvent = await dispatchEvent(
+    const rendererEvent = await amisDispatchEvent(
       'change',
-      createObject(data, {
+      createObject(amisData, {
         value
       })
     );
@@ -222,7 +230,7 @@ export function MultipleContainers(props) {
       return;
     }
 
-    setTimeout(()=> onChange(value), 1000);
+    setTimeout(()=> amisOnChange(value), 1000);
   }
   
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
@@ -514,7 +522,7 @@ export function MultipleContainers(props) {
           }
         >
           {containers.map((containerId) => {
-            const container = keyBy(containerSource, 'id')[containerId] || {id: containerId, label: 'Container ' + containerId}
+            const container = cloneDeep(keyBy(containerSource, 'id')[containerId]) || {id: containerId, label: 'Container ' + containerId}
             return (
             <DroppableContainer
               key={containerId}
@@ -533,13 +541,18 @@ export function MultipleContainers(props) {
                 strategy={strategy}
                 >
                 {items[containerId].map((value, index) => {
-                  const item = keyBy(itemSource, 'id')[value] || {id: value, label: '' + value}
+                  const item = cloneDeep(keyBy(itemSource, 'id')[value]) || {id: value, label: '' + value, columnSpan:1, body: amisItemBody}
+                  if (item.columnSpan && item.columnSpan > columns)
+                    item.columnSpan = columns
+                  if (!item.body) 
+                    item.body = amisItemBody
                   return (
                     <SortableItem
                       disabled={isSortingContainer}
                       key={value}
-                      // id={value}
-                      // label={item.label}
+                      value={amisRender? amisRender('body', item.body, {data: {...item}}) : (
+                        <span>{item.label}</span>
+                      )}
                       index={index}
                       handle={handle}
                       style={getItemStyles}
@@ -585,9 +598,14 @@ export function MultipleContainers(props) {
   );
 
   function renderSortableItemDragOverlay(id: UniqueIdentifier) {
+    const item = cloneDeep(keyBy(itemSource, 'id')[id]) || {id: id, label: '' + id, columnSpan:1}
+    if (item.columnSpan && item.columnSpan > columns)
+      item.columnSpan = columns
     return (
       <Item
-        value={id}
+        value={amisRender? amisRender('body', amisItemBody, {data: {...item}}) : (
+          <span>{item.label}</span>
+        )}
         handle={handle}
         style={getItemStyles({
           containerId: findContainer(id) as UniqueIdentifier,
@@ -666,7 +684,7 @@ export function MultipleContainers(props) {
   }
 
   function getColor(id: UniqueIdentifier) {
-    const item  = keyBy(itemSource, 'id')[id]
+    const item  = cloneDeep(keyBy(itemSource, 'id')[id])
     return item && item.color? item.color : undefined
   }
 
@@ -680,6 +698,7 @@ export function MultipleContainers(props) {
     style,
     containerId,
     getIndex,
+    value,
     wrapperStyle,
     ...props
   }: SortableItemProps) {
@@ -702,7 +721,7 @@ export function MultipleContainers(props) {
     return (
       <Item
         ref={disabled ? undefined : setNodeRef}
-        value={label}
+        value={value}
         dragging={isDragging}
         sorting={isSorting}
         handle={handle}
@@ -764,6 +783,7 @@ interface SortableItemProps {
   label: string,
   index: number;
   handle: boolean;
+  value: any;
   disabled?: boolean;
   style(args: any): React.CSSProperties;
   getIndex(id: UniqueIdentifier): number;

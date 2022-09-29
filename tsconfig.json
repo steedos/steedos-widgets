@@ -18,9 +18,9 @@
       "noImplicitAny": false,
       "declarationDir": "dist/types",
       "paths": {
-        "@steedos-widgets/sortable": ["packages/sortable/src"],
-        "@steedos-widgets/amis-lib": ["packages/amis-lib/src"],
-        "@steedos-widgets/amis-object": ["packages/amis-object/src"]
+        "@steedos-widgets/sortable": ["packages/@steedos-widgets/sortable/src"],
+        "@steedos-widgets/amis-lib": ["packages/@steedos-widgets/amis-lib/src"],
+        "@steedos-widgets/amis-object": ["packages/@steedos-widgets/amis-object/src"]
       }
     },
     "include": [

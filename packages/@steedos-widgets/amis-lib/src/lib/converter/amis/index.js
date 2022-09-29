@@ -284,7 +284,19 @@ export async function getRecordDetailHeaderAmisSchema(objectSchema, recordId){
         },
         "sendOn": `${!!recordId}`,
         "requestAdaptor": "",
-        "adaptor": "const rows = payload.data.rows;\nlet name = null;\nif (rows.length) {\n  const objectInfo = rows[0];\n  label = objectInfo.name;\n}\ndelete payload.rows;\npayload.data = {\n  name: label\n}\nreturn payload;"
+        "adaptor": `
+          const rows = payload.data.rows;
+          let label = null;
+          if (rows.length) {
+            const objectInfo = rows[0];
+            label = objectInfo.name;
+          }
+          delete payload.rows;
+          payload.data = {
+            name: label
+          }
+          return payload;
+        `
       }
     }
   ];

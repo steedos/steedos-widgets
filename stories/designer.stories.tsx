@@ -193,6 +193,12 @@ export const Sortable = () => {
     },
   ]
   
+  const itemBody = [{
+    "type": "tpl",
+    "tpl": "${label}",
+    "inline": false,
+  }]
+
   const sortableInitialContent = {
     type: "page",
     title: "Welcome to Steedos",
@@ -205,6 +211,7 @@ export const Sortable = () => {
       "value": defaultValue,
       "containerSource": containerSource,
       "itemSource": itemSource,
+      "itemBody": itemBody,
     }],
     regions: ["body"],
     data: {

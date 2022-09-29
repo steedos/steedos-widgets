@@ -7,7 +7,7 @@
   "private": true,
   "workspaces": [
     "apps/*",
-    "packages/@steedos-widgets/*"
+    "packages/**"
   ],
   "scripts": {
     "dev": "cd apps/experience && node server",
