@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal, unstable_batchedUpdates } from 'react-dom';
-import { map, keyBy, isEqual } from 'lodash';
+import { map, keyBy, cloneDeep } from 'lodash';
 
 import {
   createObject,
@@ -151,7 +151,7 @@ interface Props {
   scrollable?: boolean;
   vertical?: boolean;
   containerSource: [{id:string, label:string}?],
-  itemSource: [{id:string, label:string, color: string, columnSpan: number}?],
+  itemSource: [{id:string, label:string, color: string, columnSpan: number, body: [any]}?],
   defaultValue: any,
   onChange: Function,
   data: any,
@@ -522,7 +522,7 @@ export function MultipleContainers(props) {
           }
         >
           {containers.map((containerId) => {
-            const container = keyBy(containerSource, 'id')[containerId] || {id: containerId, label: 'Container ' + containerId}
+            const container = cloneDeep(keyBy(containerSource, 'id')[containerId]) || {id: containerId, label: 'Container ' + containerId}
             return (
             <DroppableContainer
               key={containerId}
@@ -541,14 +541,16 @@ export function MultipleContainers(props) {
                 strategy={strategy}
                 >
                 {items[containerId].map((value, index) => {
-                  const item = keyBy(itemSource, 'id')[value] || {id: value, label: '' + value, columnSpan:1}
+                  const item = cloneDeep(keyBy(itemSource, 'id')[value]) || {id: value, label: '' + value, columnSpan:1, body: amisItemBody}
                   if (item.columnSpan && item.columnSpan > columns)
                     item.columnSpan = columns
+                  if (!item.body) 
+                    item.body = amisItemBody
                   return (
                     <SortableItem
                       disabled={isSortingContainer}
                       key={value}
-                      value={amisRender? amisRender('body', amisItemBody, {data: {...item}}) : (
+                      value={amisRender? amisRender('body', item.body, {data: {...item}}) : (
                         <span>{item.label}</span>
                       )}
                       index={index}
@@ -596,7 +598,7 @@ export function MultipleContainers(props) {
   );
 
   function renderSortableItemDragOverlay(id: UniqueIdentifier) {
-    const item = keyBy(itemSource, 'id')[id] || {id: id, label: '' + id, columnSpan:1}
+    const item = cloneDeep(keyBy(itemSource, 'id')[id]) || {id: id, label: '' + id, columnSpan:1}
     if (item.columnSpan && item.columnSpan > columns)
       item.columnSpan = columns
     return (
@@ -682,7 +684,7 @@ export function MultipleContainers(props) {
   }
 
   function getColor(id: UniqueIdentifier) {
-    const item  = keyBy(itemSource, 'id')[id]
+    const item  = cloneDeep(keyBy(itemSource, 'id')[id])
     return item && item.color? item.color : undefined
   }
 
