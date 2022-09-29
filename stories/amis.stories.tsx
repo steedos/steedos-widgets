@@ -137,7 +137,7 @@ export const ObjectListview = () => (
     body: {
       "type": "steedos-object-listview",
       "objectApiName": "space_users",
-      "listviewName": "all"
+      "listName": "all"
     },
   }}
   assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
