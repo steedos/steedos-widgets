@@ -83,6 +83,8 @@ export default {
       },
       previewSchema: {
         type: config.amis.name,
+        objectApiName: "accounts",
+        relatedObjectApiName: "contacts"
       },
       panelTitle: "设置",
       panelControls: [

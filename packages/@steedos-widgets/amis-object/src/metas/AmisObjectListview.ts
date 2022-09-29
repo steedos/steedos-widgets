@@ -78,6 +78,8 @@ export default {
       },
       previewSchema: {
         type: config.amis.name,
+        objectApiName: 'space_users',
+        listName: "all"
       },
       panelTitle: "设置",
       panelControls: [
