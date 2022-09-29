@@ -71,7 +71,6 @@ export const Grid = () => (
     itemSource={itemSource}
     strategy={rectSortingStrategy}
     wrapperStyle={() => ({
-      width: 150,
       height: 50,
     })}
   />

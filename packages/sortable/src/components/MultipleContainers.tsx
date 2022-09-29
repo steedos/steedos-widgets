@@ -168,7 +168,7 @@ export function MultipleContainers(props) {
     adjustScale = false,
     itemCount = 3,
     cancelDrop,
-    columns,
+    columns = 1,
     handle = false,
     containerStyle,
     coordinateGetter = multipleContainersCoordinateGetter,
@@ -533,7 +533,10 @@ export function MultipleContainers(props) {
                 strategy={strategy}
                 >
                 {items[containerId].map((value, index) => {
-                  const item = keyBy(itemSource, 'id')[value] || {id: value, label: '' + value}
+                  const item = keyBy(itemSource, 'id')[value] || {id: value, label: '' + value, columnSpan:1}
+                  if (item.columnSpan && item.columnSpan > columns)
+                    item.columnSpan = columns
+                  console.log(item)
                   return (
                     <SortableItem
                       disabled={isSortingContainer}
