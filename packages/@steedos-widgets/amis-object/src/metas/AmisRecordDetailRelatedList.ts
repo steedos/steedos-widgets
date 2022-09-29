@@ -43,7 +43,7 @@ const config: any = {
   engines: ["amis"],
   // settings for amis.
   amis: {
-    name: 'steedos-record-related-list',
+    name: 'steedos-object-related-listview',
     icon: "fa-fw fa fa-list-alt"
   }
 };

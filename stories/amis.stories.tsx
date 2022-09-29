@@ -164,7 +164,7 @@ export const RecordDetailRelatedList = () => (
     type: 'page',
     title: '相关列表',
     body: {
-      "type": "steedos-record-related-list",
+      "type": "steedos-object-related-listview",
       "objectApiName": "accounts",
       "recordId": "AKEQtKsWvNDF6MitJ",
       "relatedObjectApiName": "contacts"
