@@ -3,7 +3,7 @@
     "useWorkspaces": true,
     "packages": [
       "apps/*",
-      "packages/*"
+      "ages/@steedos-widgets/*"
     ],
     "command": {
       "version": {
