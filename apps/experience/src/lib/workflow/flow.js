@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-27 18:39:56
+ * @LastEditTime: 2022-09-29 09:35:15
  * @Description:
  */
 import {
@@ -11,7 +11,7 @@ import {
   getSteedosAuth,
 } from "@steedos-widgets/amis-lib";
 
-import { each, startsWith } from "lodash";
+import { each, startsWith, includes } from "lodash";
 
 import { getApprovalDrawerSchema } from "./approve";
 
@@ -35,7 +35,7 @@ const getSelectOptions = (field) => {
   return options;
 };
 
-const getTdInputTpl = async (field, label) => {
+const getFieldEditTpl = async (field, label)=>{
   const tpl = {
     label: label === true ? field.name : false,
     name: field.code,
@@ -182,6 +182,79 @@ const getTdInputTpl = async (field, label) => {
   return tpl;
 };
 
+const getFieldReadonlyTpl = async (field, label)=>{
+  const tpl = {
+    label: label === true ? field.name : false,
+    name: field.code,
+    mode: "horizontal",
+    className: "m-none p-none form-control",
+  };
+  console.log(`field`, field)
+  if(includes(['text'], field.type)){
+    tpl.type = `static-${field.type}`;
+  }else if(field.type === 'select'){
+    const options = getSelectOptions(field);
+    const map = {};
+    each(options , (item)=>{
+      map[item.value] = item.label;
+    })
+    tpl.type = 'static';
+    tpl.tpl = `<% var options = ${JSON.stringify(map)}; return options?.[data.${field.code}]%>`
+  }else if(field.type === 'odata'){
+    tpl.type = 'static';
+    tpl.tpl = `<div>\${${field.code}['@label']}</div>`
+  }else if(field.type === 'checkbox'){
+    tpl.type = 'static';
+    tpl.tpl = `\${${field.code} ? '是': '否'}`
+  }else if(field.type === 'email'){
+    tpl.type = 'static'
+    tpl.tpl = `<a href="mailto:\${${field.code}}">\${${field.code}}</a>`
+  }else if(field.type === 'url'){
+    tpl.type = 'static'
+    tpl.tpl = `<a href="\${${field.code}}" target="_blank">\${${field.code}}</a>`
+  }else if(field.type === 'password'){
+    tpl.type = 'static'
+    tpl.tpl = `******`
+  }else if(field.type === 'dateTime'){
+    tpl.type = 'static'
+    // tpl.format = 'YYYY-MM-DD HH:mm'
+    tpl.tpl = `<%=date(new Date(data.${field.code}), 'YYYY-MM-DD HH:mm') %>`
+  }else if(field.type === 'user'){
+    tpl.type = 'static'
+    // tpl.format = 'YYYY-MM-DD HH:mm'
+    tpl.tpl = `\${${field.code}.name}`
+  }else if(field.type === 'group'){
+    tpl.type = 'static'
+    // tpl.format = 'YYYY-MM-DD HH:mm'
+    tpl.tpl = `\${${field.code}.name}`
+  }else if(field.type === 'table'){
+    tpl.type = "input-table"; //TODO
+    tpl.addable = field.permission === "editable";
+    tpl.editable = tpl.addable;
+    tpl.copyable = tpl.addable;
+    tpl.columns = [];
+    for (const sField of field.fields) {
+      if (sField.type != "hidden") {
+        const column = await getTdInputTpl(sField, true);
+        tpl.columns.push(column);
+      }
+    }
+  }
+  else{
+    tpl.type = 'static';
+  }
+  return tpl;
+};
+
+const getTdInputTpl = async (field, label) => {
+  const edit = field.permission === "editable";
+  if(edit){
+    return await getFieldEditTpl(field, label)
+  }else{
+    return await getFieldReadonlyTpl(field, label)
+  }
+};
+
 const getTdField = async (field, fieldsCount) => {
   return {
     background: field.permission !== "editable" ? "#FFFFFF" : "rgba(255,255,0,.1)",
@@ -269,13 +342,12 @@ const getFormTrs = async (instance) => {
       tdFields = [];
     } else {
       tdFields.push(field);
-      if (tdFields.length == 2 || index === instance.fields.length - 1) {
+      if (tdFields.length == 2 || index === fields.length - 1) {
         trs.push(tdFields);
         tdFields = [];
       }
     }
   });
-
   for (const tdFields of trs) {
     trsSchema.push({
       background: "#F7F7F7",
