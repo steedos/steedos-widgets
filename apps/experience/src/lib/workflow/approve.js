@@ -48,6 +48,7 @@ const getJudgeInput = async (instance) => {
       value: "approved",
       options: judgeOptions,
       id: "u:444dbad76e90",
+      required: true,
       "onEvent": {
         "change": {
           "weight": 0,
@@ -105,6 +106,7 @@ const getNextStepInput = async (instance) => {
             name: "next_step",
             id: "u:next_step",
             multiple: false,
+            required: true,
             "source": {
               "url": "${context.rootUrl}/api/workflow/v2/nextStep",
               "method": "post",
@@ -212,7 +214,8 @@ const getNextStepUsersInput = async (instance) => {
           ),{
             name: "next_users", 
             value: "",
-            hiddenOn: "this.new_next_step.deal_type != 'pickupAtRuntime'"
+            hiddenOn: "this.new_next_step.deal_type != 'pickupAtRuntime'",
+            required: true
           }),
           {
             type: "list-select",
@@ -220,6 +223,7 @@ const getNextStepUsersInput = async (instance) => {
             name: "next_users",
             // options: await getNextStepOptions(instance),
             id: "u:next_users",
+            required: true,
             multiple: false,
             "source": {
               "url": "${context.rootUrl}/api/workflow/v2/nextStepUsers",
@@ -328,6 +332,30 @@ const getSubmitActions = async (instance) => {
   }
 
   return [
+    // 校验表单
+    {
+      "componentId": "",
+      "args": {},
+      "actionType": "custom",
+      "script": `
+        const form = SteedosUI.getRef("amis-root-workflow").getComponentById("instance_form");
+        return form.validate().then((instanceFormValidate)=>{
+          event.setData({...event.data, instanceFormValidate})
+        })
+      `
+    },
+    // 校验审批表单
+    {
+      "componentId": "",
+      "args": {},
+      "actionType": "custom",
+      "script": `
+        const form = SteedosUI.getRef("amis-root-workflow").getComponentById("instance_approval");
+        return form.validate().then((approvalFormValidate)=>{
+          event.setData({...event.data, approvalFormValidate})
+        })
+      `
+    },
     {
       componentId: "",
       args: {
@@ -345,6 +373,7 @@ const getSubmitActions = async (instance) => {
         },
       },
       actionType: "ajax",
+      expression: "${event.data.instanceFormValidate && event.data.approvalFormValidate}"
     },
     {
       "componentId": "",
@@ -352,7 +381,8 @@ const getSubmitActions = async (instance) => {
         "blank": false,
         "url": `/workflow/space/${getSteedosAuth().spaceId}/${instance.box}`
       },
-      "actionType": "url"
+      "actionType": "url",
+      expression: "${event.data.instanceFormValidate && event.data.approvalFormValidate}"
     }
   ];
 };
