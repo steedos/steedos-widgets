@@ -107,7 +107,6 @@ export default {
           "type": "select",
           "label": "对象",
           "name": "objectApiName",
-          "id": "u:4a14f11bb85f",
           "multiple": false,
           "source": {
             "method": "get",
