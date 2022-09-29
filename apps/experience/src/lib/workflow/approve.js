@@ -251,8 +251,8 @@ const getNextStepUsersInput = async (instance) => {
 };
 
 const getPostSubmitRequestAdaptor = async (instance) => {
-  return `  
-            const formValues = SteedosUI.getRef("amis-root-workflow").getComponentById("instance_form").getValues();
+  return `  const instanceForm = SteedosUI.getRef("amis-root-workflow").getComponentById("instance_form");
+            const formValues = instanceForm.getValues();
             const approveValues = SteedosUI.getRef("amis-root-workflow").getComponentById("instance_approval").getValues();
             let nextUsers = approveValues.next_users;
             if(_.isString(nextUsers)){
