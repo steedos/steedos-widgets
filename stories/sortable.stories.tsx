@@ -14,20 +14,61 @@ export default {
   },
 };
 
-const items = {
-  X: ['A1', 'X2'],
-  Y: ['Y2', 'Y2']
+const defaultValue = {
+  A: ['A1', 'B1'],
+  B: ['A2', 'B2']
 }
+
+
+const containerSource = [
+  {
+    id: 'A',
+    label: 'Board A',
+  },
+  {
+    id: 'B',
+    label: 'Board B'
+  }
+]
+
+const itemSource = [
+  {
+    id: 'A1',
+    label: 'Item A1',
+    columnSpan: 2,
+    color: 'red'
+  },
+  {
+    id: 'A2',
+    label: 'Item A2',
+    columnSpan: 1,
+    color: 'blue'
+  },
+  {
+    id: 'B1',
+    label: 'Item B1',
+    color: 'green'
+  },,
+  {
+    id: 'B2',
+    label: 'Item B2',
+    color: 'silver'
+  },
+]
 
 export const Simple = () => <MultipleContainers/>;
 
-export const withItems = () => <MultipleContainers items={items}/>;
+export const withItems = () => <MultipleContainers defaultValue={defaultValue}/>;
+
+export const withSource = () => <MultipleContainers containerSource={containerSource} itemSource={itemSource} defaultValue={defaultValue}/>;
 
 export const Vertical = () => <MultipleContainers itemCount={5} vertical />;
 
 export const Grid = () => (
   <MultipleContainers
     columns={2}
+    containerSource={containerSource} 
+    itemSource={itemSource}
     strategy={rectSortingStrategy}
     wrapperStyle={() => ({
       width: 150,
@@ -39,10 +80,11 @@ export const Grid = () => (
 
 export const VerticalGrid = () => (
   <MultipleContainers
-    columns={2}
+    columns={3}
+    containerSource={containerSource} 
+    itemSource={itemSource}
     strategy={rectSortingStrategy}
     wrapperStyle={() => ({
-      width: 150,
       height: 50,
     })}
     vertical

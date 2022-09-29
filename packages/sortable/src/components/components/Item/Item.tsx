@@ -16,6 +16,7 @@ export interface Props {
   handleProps?: any;
   height?: number;
   index?: number;
+  columnSpan?: number;
   fadeIn?: boolean;
   transform?: Transform | null;
   listeners?: DraggableSyntheticListeners;
@@ -52,6 +53,7 @@ export const Item = React.memo(
         handle,
         handleProps,
         height,
+        columnSpan = 1,
         index,
         listeners,
         onRemove,
@@ -103,6 +105,7 @@ export const Item = React.memo(
           style={
             {
               ...wrapperStyle,
+              gridColumn: `span ${columnSpan} / span ${columnSpan}`,
               transition: [transition, wrapperStyle?.transition]
                 .filter(Boolean)
                 .join(', '),

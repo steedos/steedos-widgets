@@ -6,9 +6,11 @@
  * @Description: 
  */
 import './amis-fix.less'
+import './AmisObjectForm.less'
 
 export * from './AmisObjectForm';
 export * from './AmisObjectListview';
 export * from './AmisRecordDetailHeader';
 export * from './AmisRecordDetailRelatedList';
 export * from './AmisSelectUser';
+export * from './AmisProvider';

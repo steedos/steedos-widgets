@@ -98,7 +98,7 @@ export default {
         },
         {
           type: "select",
-          name: "listviewName",
+          name: "listName",
           "id": "u:4a14f11bb851",
           "multiple": false,
           label: "视图",

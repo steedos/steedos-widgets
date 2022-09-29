@@ -14,7 +14,7 @@ import {
     getObjectDetail,
     getObjectForm,
 } from "./converter/amis/index";
-import _ , { slice, isEmpty, each, has, findKey } from "lodash";
+import { cloneDeep, slice, isEmpty, each, has, findKey, find, isString, isObject, keys, includes } from "lodash";
 import { getFieldSearchable } from "./converter/amis/fields/index";
 import { getRecord } from './record';
 
@@ -25,11 +25,11 @@ const setUISchemaCache = (key, value) => {
 };
 
 const getUISchemaCache = (key) => {
-    return _.cloneDeep(UI_SCHEMA_CACHE[key]);
+    return cloneDeep(UI_SCHEMA_CACHE[key]);
 };
 
 const hasUISchemaCache = (key) => {
-    return _.has(UI_SCHEMA_CACHE, key);
+    return has(UI_SCHEMA_CACHE, key);
 };
 
 const getListViewColumns = (listView, formFactor) => {
@@ -92,10 +92,7 @@ export async function getField(objectName, fieldName) {
 // 获取表单页面
 export async function getFormSchema(objectName, ctx) {
     const uiSchema = await getUISchema(objectName);
-    let amisSchema = await getObjectForm(uiSchema, ctx);
-    if(ctx.mode === 'read'){
-        amisSchema = await getObjectDetail(uiSchema, ctx.recordId, ctx);
-    }
+    const amisSchema = await getObjectForm(uiSchema, ctx);
     return {
         uiSchema,
         amisSchema,
@@ -120,7 +117,7 @@ export async function getListSchema(
     ctx = {}
 ) {
     const uiSchema = await getUISchema(objectName);
-    const listView = _.find(
+    const listView = find(
         uiSchema.list_views,
         (listView, name) => name === listViewName
     );
@@ -134,10 +131,10 @@ export async function getListSchema(
     let listViewColumns = getListViewColumns(listView, ctx.formFactor);
 
     if (listView && listViewColumns) {
-        _.each(listViewColumns, function (column) {
-            if (_.isString(column) && uiSchema.fields[column]) {
+        each(listViewColumns, function (column) {
+            if (isString(column) && uiSchema.fields[column]) {
                 listViewFields.push(uiSchema.fields[column]);
-            } else if (_.isObject(column) && uiSchema.fields[column.field]) {
+            } else if (isObject(column) && uiSchema.fields[column.field]) {
                 listViewFields.push(
                     Object.assign({}, uiSchema.fields[column.field], {
                         width: column.width,
@@ -149,10 +146,10 @@ export async function getListSchema(
     }
 
     if (listView && listView.extra_columns) {
-        _.each(listView.extra_columns, function (column) {
-            if (_.isString(column)) {
+        each(listView.extra_columns, function (column) {
+            if (isString(column)) {
                 listViewFields.push({ extra: true, name: column });
-            } else if (_.isObject(column)) {
+            } else if (isObject(column)) {
                 listViewFields.push({ extra: true, name: column.field });
             }
         });
@@ -186,7 +183,7 @@ export async function getRecordDetailHeaderSchema(objectName,recordId){
 export async function getRecordDetailRelatedListSchema(objectName,recordId,relatedObjectName){
     const relatedObjectUiSchema = await getUISchema(relatedObjectName);
     const { list_views, label , icon, fields } = relatedObjectUiSchema;
-    const firstListViewName = _.keys(list_views)[0];
+    const firstListViewName = keys(list_views)[0];
     const filterFieldName = findKey(fields, function(field) { 
         return ["lookup","master_detail"].indexOf(field.type) > -1 && field.reference_to === objectName; 
     });
@@ -324,7 +321,7 @@ export async function getObjectRelatedList(
         const refField = await getField(arr[0], arr[1]);
         if (
             refField._reference_to ||
-            (refField.reference_to && !_.isString(refField.reference_to))
+            (refField.reference_to && !isString(refField.reference_to))
         ) {
             filter = [
                 [`${arr[1]}/o`, "=", objectName],
@@ -360,7 +357,7 @@ export async function getObjectRelated(
     const refField = await getField(objectName, relatedFieldName);
     if (
         refField._reference_to ||
-        (refField.reference_to && !_.isString(refField.reference_to))
+        (refField.reference_to && !isString(refField.reference_to))
     ) {
         filter = [
             [`${relatedFieldName}/o`, "=", masterObjectName],
@@ -389,7 +386,7 @@ export async function getSearchableFieldsFilterSchema(fields, cols) {
     const body = [];
     for (let field of fields) {
         if (
-            !_.includes(
+            !includes(
                 [
                     "grid",
                     "avatar",

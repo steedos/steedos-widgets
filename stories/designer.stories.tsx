@@ -104,7 +104,7 @@ const settings = {
 
   const initialContent = {
     type: "page",
-    title: "Welcome to Steedos 2",
+    title: "Welcome to Steedos",
     body: [],
     regions: ["body"],
     data: {
@@ -151,13 +151,83 @@ export const Sortable = () => {
 
   const assetUrl = process.env.STEEDOS_UNPKG_URL + '/@steedos-widgets/sortable/dist/assets-dev.json'
 
+  const defaultValue = {
+    A: ['A1', 'B1'],
+    B: ['A2', 'B2']
+  }
+  
+  
+  const containerSource = [
+    {
+      id: 'A',
+      label: 'Board A',
+    },
+    {
+      id: 'B',
+      label: 'Board B'
+    }
+  ]
+  
+  const itemSource = [
+    {
+      id: 'A1',
+      label: 'Item A1',
+      columnSpan: 2,
+      color: 'red'
+    },
+    {
+      id: 'A2',
+      label: 'Item A2',
+      columnSpan: 1,
+      color: 'blue'
+    },
+    {
+      id: 'B1',
+      label: 'Item B1',
+      color: 'green'
+    },,
+    {
+      id: 'B2',
+      label: 'Item B2',
+      color: 'silver'
+    },
+  ]
+  
+  const sortableInitialContent = {
+    type: "page",
+    title: "Welcome to Steedos",
+    body: [{
+      "type": "sortable-multiple-containers",
+      "label": "容器排序",
+      "name": "board",
+      "columns": 1,
+      "vertical": false,
+      "value": defaultValue,
+      "containerSource": containerSource,
+      "itemSource": itemSource,
+    }],
+    regions: ["body"],
+    data: {
+      objectName: "space_users",
+      recordId: "",
+      initialValues: {},
+      appId: "builder",
+      title: "",
+      context: {
+        rootUrl: process.env.STEEDOS_ROOT_URL,
+        userId: process.env.STEEDOS_USERID,
+        tenantId: process.env.STEEDOS_TENANTID,
+        authToken: process.env.STEEDOS_AUTHTOKEN,
+      },
+    },
+  };
   window.addEventListener('message', function (event) {
       const comp = document.querySelector("builder-fiddle");
       const { data } = event;
       if (data) {
         if (data.type === 'builder.editorLoaded') {
           comp.settings = settings;
-          comp.messageFrame('builder.contentChanged', { AmisSchema : initialContent } )
+          comp.messageFrame('builder.contentChanged', { AmisSchema : sortableInitialContent } )
         }
       }
     })

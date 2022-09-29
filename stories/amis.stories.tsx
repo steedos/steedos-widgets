@@ -165,9 +165,9 @@ export const RecordDetailRelatedList = () => (
     title: '相关列表',
     body: {
       "type": "steedos-record-related-list",
-      "objectApiName": "space_users",
-      "recordId": "kDrtGu7aZPwYdyFpe",
-      "relatedObjectApiName": "instances"
+      "objectApiName": "accounts",
+      "recordId": "AKEQtKsWvNDF6MitJ",
+      "relatedObjectApiName": "contacts"
     },
   }}
   assetUrls={assetUrls}
@@ -281,5 +281,23 @@ export const AmisSelectUser = () => (
       }]
     }}
     assetUrls={assetUrls}
+  />
+)
+
+export const Provider = () => (
+  <AmisRender schema={{
+    type: 'page',
+    title: '华炎魔方容器',
+    body: {
+      "type": "steedos-provider",
+      "body":[
+        {
+          "type": "tpl",
+          "tpl": `没有任何属性任何功能，只是一个不带边距的wrapper容器`,
+        }
+      ]
+    },
+  }}
+  assetUrls={assetUrls}
   />
 )

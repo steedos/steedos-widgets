@@ -1,47 +1,35 @@
+/*
+ * @Author: baozhoutao@steedos.com
+ * @Date: 2022-08-31 16:32:35
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2022-09-02 09:04:33
+ * @Description: 
+ */
+
 const config: any = {
   componentType: 'amisSchema', // amisSchema || react 
   group: "华炎魔方",
-  componentName: "AmisSelectUser",
-  title: "选择用户",
+  componentName: "AmisProvider",
+  title: "华炎魔方容器",
   docUrl: "",
   screenshot: "",
   npm: {
     package: "@steedos-widgets/amis-object",
     version: "{{version}}",
-    exportName: "AmisSelectUser",
+    exportName: "AmisProvider",
     main: "",
     destructuring: true,
     subName: ""
   },
-  // props: [
-  //   {
-  //     name: "name",
-  //     propType: "string",
-  //     description: '字段名称',
-  //   },
-  //   {
-  //     name: "label",
-  //     propType: "string",
-  //     description: '标题',
-  //   },
-  //   {
-  //     name: "multiple",
-  //     propType: "boolean",
-  //     description: '多选',
-  //   },
-  //   {
-  //     name: "searchable",
-  //     propType: "boolean",
-  //     description: '可搜索',
-  //   }
-  // ],
+  props: [
+  ],
   preview: {
   },
   targets: ["steedos__RecordPage", "steedos__AppPage", "steedos__HomePage"],
   engines: ["amis"],
   // settings for amis.
   amis: {
-    name: 'steedos-select-user',
+    name: 'steedos-provider',
     icon: "fa-fw fa fa-list-alt"
   }
 };
@@ -61,7 +49,7 @@ export default {
   amis: {
     render: {
       type: config.amis.name,
-      usage: "formitem",
+      usage: "renderer",
       weight: 1,
       framework: "react"
     },
@@ -75,31 +63,13 @@ export default {
       icon: config.amis.icon,
       scaffold: {
         type: config.amis.name,
-        label: config.title,
-        name: ""
+        label: config.title
       },
       previewSchema: {
         type: config.amis.name,
       },
       panelTitle: "设置",
-      panelControls: [
-        {
-          type: "checkbox",
-          name: "multiple",
-          label: '多选',
-        },
-        {
-          type: "checkbox",
-          name: "searchable",
-          label: '可搜索',
-        }
-        // ,{
-        //   "type": "editor",
-        //   "name": "editor",
-        //   "label": "编辑器",
-        //   "placeholder": "function() {\n  console.log('hello world')\n}"
-        // }
-      ]
+      panelControls: []
     }
   }
 };
