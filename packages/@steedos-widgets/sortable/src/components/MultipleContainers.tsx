@@ -544,13 +544,12 @@ export function MultipleContainers(props) {
                   const item = keyBy(itemSource, 'id')[value] || {id: value, label: '' + value, columnSpan:1}
                   if (item.columnSpan && item.columnSpan > columns)
                     item.columnSpan = columns
-                  console.log(item)
                   return (
                     <SortableItem
                       disabled={isSortingContainer}
                       key={value}
                       value={amisRender? amisRender('body', amisItemBody, {data: {...item}}) : (
-                        <span>{value}</span>
+                        <span>{item.label}</span>
                       )}
                       index={index}
                       handle={handle}
@@ -597,9 +596,14 @@ export function MultipleContainers(props) {
   );
 
   function renderSortableItemDragOverlay(id: UniqueIdentifier) {
+    const item = keyBy(itemSource, 'id')[id] || {id: id, label: '' + id, columnSpan:1}
+    if (item.columnSpan && item.columnSpan > columns)
+      item.columnSpan = columns
     return (
       <Item
-        value={id}
+        value={amisRender? amisRender('body', amisItemBody, {data: {...item}}) : (
+          <span>{item.label}</span>
+        )}
         handle={handle}
         style={getItemStyles({
           containerId: findContainer(id) as UniqueIdentifier,
