@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-29 16:50:16
+ * @LastEditTime: 2022-09-29 18:02:40
  * @Description:
  */
 import {
@@ -549,6 +549,25 @@ export const getFlowFormSchema = async (instance) => {
           
         ],
         id: "instance_form",
+        onEvent: {
+          validateError: {
+            weight: 0,
+            actions: [
+              {
+                "componentId": "",
+                "args": {
+                  "msgType": "info",
+                  "position": "top-right",
+                  "closeButton": true,
+                  "showIcon": true,
+                  "title": "提交失败",
+                  "msg": "请填写必填字段"
+                },
+                "actionType": "toast"
+              }
+            ],
+          }
+        }
       },
       await getInstanceApprovalHistory(),
       await getApproveButton(instance)
@@ -572,7 +591,7 @@ export const getFlowFormSchema = async (instance) => {
           //   "drawer": await getApprovalDrawerSchema()
           // }
         ],
-      },
+      }
     },
     initApi:{
       "url": "${context.rootUrl}/graphql",

@@ -354,7 +354,8 @@ const getSubmitActions = async (instance) => {
         return form.validate().then((approvalFormValidate)=>{
           event.setData({...event.data, approvalFormValidate})
         })
-      `
+      `,
+      expression: "${event.data.instanceFormValidate}"
     },
     {
       componentId: "",
@@ -435,7 +436,25 @@ export const getApprovalDrawerSchema = async (instance) => {
           //     }
           //   ]
           // },
-        }
+          validateError: {
+            weight: 0,
+            actions: [
+              {
+                "componentId": "",
+                "args": {
+                  "msgType": "info",
+                  "position": "top-right",
+                  "closeButton": true,
+                  "showIcon": true,
+                  "title": "提交失败",
+                  "msg": "请填写必填字段"
+                },
+                "actionType": "toast"
+              }
+            ],
+          }
+        },
+        
       },
     ],
     id: "u:8861156e0b23",
