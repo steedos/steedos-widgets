@@ -161,10 +161,49 @@ export const ObjectForm = () => (
       "type": "panel",
       "title": "编辑",
       "body": [{
+        "type": "tpl", 
+        "tpl":"自定义底部actions"
+      },{
+        "id": "test",
         "type": "steedos-object-form",
         "objectApiName": "organizations",
         "recordId": "623NR6NCZJP8irB4y",
-        "mode": "edit"
+        "mode": "edit",
+        "actions": [
+          {
+            "type": "button",
+            "label": "取消",
+            "actionType": "",
+            "level": "default",
+            "block": false,
+            "onClick": "SteedosUI.getRef(props.data.__super.modalName).close();",
+            "id": "u:42931eb1700a"
+          },
+          {
+            "type": "button",
+            "label": "保存",
+            "actionType": "submit",
+            "level": "info",
+            "id": "u:f76b9dba4b2c"
+          }
+        ]
+      },{
+        "type": "tpl", 
+        "tpl":"<p> 自定义按钮中触发表单提交事件，通过传入表单Id </p>"
+      },{
+        "type": "button",
+        "label": "提交上面的表单",
+        "onEvent": {
+          "click": {
+            "actions": [
+              {
+                "componentId": "test",
+                "actionType": "submit"
+              }
+            ]
+          }
+        },
+        "id": "u:c5ce4f94c7cb"
       }]
     }]
   }}
