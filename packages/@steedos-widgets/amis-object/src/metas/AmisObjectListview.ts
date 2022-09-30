@@ -73,7 +73,7 @@ export default {
       scaffold: {
         type: config.amis.name,
         label: config.title,
-        objectApiName: "space_users",
+        objectApiName: "${objectName}",
         listName: "all"
       },
       previewSchema: {
