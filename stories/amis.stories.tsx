@@ -149,11 +149,24 @@ export const ObjectForm = () => (
   <AmisRender schema={{
     type: 'page',
     title: '表单',
-    body: {
-      "type": "steedos-object-form",
-      "objectApiName": "organizations",
-      "recordId": "623NR6NCZJP8irB4y"
-    },
+    body: [{
+      "type": "panel",
+      "title": "只读（默认）",
+      "body": [{
+        "type": "steedos-object-form",
+        "objectApiName": "organizations",
+        "recordId": "623NR6NCZJP8irB4y"
+      }]
+    },{
+      "type": "panel",
+      "title": "编辑",
+      "body": [{
+        "type": "steedos-object-form",
+        "objectApiName": "organizations",
+        "recordId": "623NR6NCZJP8irB4y",
+        "mode": "edit"
+      }]
+    }]
   }}
   assetUrls={assetUrls}
   />
