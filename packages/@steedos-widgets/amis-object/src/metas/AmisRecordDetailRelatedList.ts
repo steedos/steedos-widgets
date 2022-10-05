@@ -92,7 +92,7 @@ export default {
           "type": "select",
           "label": "父级对象",
           "name": "objectApiName",
-          "id": "u:4a14f11bb85f",
+          "searchable": true,
           "multiple": false,
           "source": {
             "method": "get",
@@ -112,11 +112,11 @@ export default {
           "type": "select",
           "label": "相关列表对象",
           "name": "relatedObjectApiName",
-          "id": "u:4a14f11bb85g",
+          "searchable": true,
           "multiple": false,
           "source": {
             "method": "get",
-            "url": "/service/api/amis-design/objects",
+            "url": "/service/api/amis-design/related_objects/${objectApiName}",
             "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;"
           },
           "labelField": "label",
