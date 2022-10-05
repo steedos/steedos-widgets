@@ -121,6 +121,14 @@ export default {
                 };
                 api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;
                 return api;
+            `,
+            "adaptor": `
+              let data = payload.data;
+              payload.unshift({
+                label: "\${objectName}",
+                name: "\${objectName}"
+              });
+              return payload;
             `
           },
           "labelField": "label",
