@@ -78,7 +78,7 @@ export default {
       scaffold: {
         type: config.amis.name,
         label: config.title,
-        objectApiName: "accounts",
+        objectApiName: "${objectName}",
         relatedObjectApiName: "contacts"
       },
       previewSchema: {
@@ -97,7 +97,15 @@ export default {
           "source": {
             "method": "get",
             "url": "/service/api/amis-design/objects",
-            "requestAdaptor": "console.log('api', api);api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;"
+            "requestAdaptor": "console.log('api', api);api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
+            "adaptor": `
+              let data = payload.data;
+              payload.unshift({
+                label: "\${objectName}",
+                name: "\${objectName}"
+              });
+              return payload;
+            `
           },
           "labelField": "label",
           "valueField": "name",
@@ -116,8 +124,9 @@ export default {
           "multiple": false,
           "source": {
             "method": "get",
-            "url": "/service/api/amis-design/related_objects/${objectApiName}",
-            "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;"
+            "url": "/service/api/amis-design/related_objects/${objectApiName === '${objectName}' ? 'accounts' : objectApiName}",
+            "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
+            "sendOn": "this.objectApiName"
           },
           "labelField": "label",
           "valueField": "name",
