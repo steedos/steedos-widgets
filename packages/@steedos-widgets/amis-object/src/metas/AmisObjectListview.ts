@@ -73,7 +73,7 @@ export default {
       scaffold: {
         type: config.amis.name,
         label: config.title,
-        objectApiName: "space_users",
+        objectApiName: "${objectName}",
         listName: "all"
       },
       previewSchema: {
@@ -92,7 +92,15 @@ export default {
           "source": {
             "method": "get",
             "url": "/service/api/amis-design/objects",
-            "requestAdaptor": "console.log('api', api);api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;"
+            "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
+            "adaptor": `
+              let data = payload.data;
+              payload.unshift({
+                label: "\${objectName}",
+                name: "\${objectName}"
+              });
+              return payload;
+            `
           },
           "labelField": "label",
           "valueField": "name",
@@ -105,7 +113,7 @@ export default {
           "multiple": false,
           label: "视图",
           "source": {
-            "url": "/service/api/amis-design/object/${objectApiName}",
+            "url": "/service/api/amis-design/object/${objectApiName === '${objectName}' ? 'space_users' : objectApiName}",
             "method": "get",
             "messages": {
             },

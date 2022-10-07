@@ -9,6 +9,9 @@ import {getListSchema} from '@steedos-widgets/amis-lib'
 
 export const AmisObjectListView = async (props) => {
   // console.log(`AmisObjectListView props`, props)
-  const { $schema, data } = props;
-  return (await getListSchema(data.appId, $schema.objectApiName, $schema.listName)).amisSchema
+  const { objectApiName, listName, data } = props;
+  if(!objectApiName){
+    return {}
+  }
+  return (await getListSchema(data.appId, objectApiName, listName)).amisSchema
 }
