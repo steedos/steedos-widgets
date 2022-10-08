@@ -73,11 +73,13 @@ export default {
       scaffold: {
         type: config.amis.name,
         label: config.title,
-        objectApiName: "space_users",
+        objectApiName: "${objectName}",
         listName: "all"
       },
       previewSchema: {
         type: config.amis.name,
+        objectApiName: 'space_users',
+        listName: "all"
       },
       panelTitle: "设置",
       panelControls: [
@@ -85,12 +87,19 @@ export default {
           "type": "select",
           "label": "对象",
           "name": "objectApiName",
-          "id": "u:4a14f11bb85f",
           "multiple": false,
           "source": {
             "method": "get",
             "url": "/service/api/amis-design/objects",
-            "requestAdaptor": "console.log('api', api);api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;"
+            "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
+            "adaptor": `
+              let data = payload.data;
+              payload.unshift({
+                label: "\${objectName}",
+                name: "\${objectName}"
+              });
+              return payload;
+            `
           },
           "labelField": "label",
           "valueField": "name",
@@ -99,27 +108,24 @@ export default {
         {
           type: "select",
           name: "listName",
-          "id": "u:4a14f11bb851",
           "multiple": false,
           label: "视图",
           "source": {
-            "url": "/service/api/amis-design/objects?objectApiName=${objectApiName}",
+            "url": "/service/api/amis-design/object/${objectApiName === '${objectName}' ? 'space_users' : objectApiName}",
             "method": "get",
             "messages": {
             },
             "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
             "adaptor": `
-                const objectApiName = api.query.objectApiName;
-                const targetObject = payload.find(function (obj) {
-                  return obj.name === objectApiName;
-                })
-                const listViews = targetObject.list_views;
+                const listViews = payload && payload.list_views;
+                if(!listViews){
+                  return;
+                }
                 const options = listViews.map(function (item) {
                   return { value: item.name || item._id, label: item.label || item.name }
                 })
                 payload.data = {
-                  options,
-                  value: options[0].value
+                  options
                 }
                 return payload;
             `,

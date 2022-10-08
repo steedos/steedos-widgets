@@ -78,11 +78,13 @@ export default {
       scaffold: {
         type: config.amis.name,
         label: config.title,
-        objectApiName: "accounts",
+        objectApiName: "${objectName}",
         relatedObjectApiName: "contacts"
       },
       previewSchema: {
         type: config.amis.name,
+        objectApiName: "accounts",
+        relatedObjectApiName: "contacts"
       },
       panelTitle: "设置",
       panelControls: [
@@ -90,12 +92,20 @@ export default {
           "type": "select",
           "label": "父级对象",
           "name": "objectApiName",
-          "id": "u:4a14f11bb85f",
+          "searchable": true,
           "multiple": false,
           "source": {
             "method": "get",
             "url": "/service/api/amis-design/objects",
-            "requestAdaptor": "console.log('api', api);api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;"
+            "requestAdaptor": "console.log('api', api);api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
+            "adaptor": `
+              let data = payload.data;
+              payload.unshift({
+                label: "\${objectName}",
+                name: "\${objectName}"
+              });
+              return payload;
+            `
           },
           "labelField": "label",
           "valueField": "name",
@@ -110,12 +120,13 @@ export default {
           "type": "select",
           "label": "相关列表对象",
           "name": "relatedObjectApiName",
-          "id": "u:4a14f11bb85g",
+          "searchable": true,
           "multiple": false,
           "source": {
             "method": "get",
-            "url": "/service/api/amis-design/objects",
-            "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;"
+            "url": "/service/api/amis-design/related_objects/${objectApiName === '${objectName}' ? 'accounts' : objectApiName}",
+            "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
+            "sendOn": "this.objectApiName"
           },
           "labelField": "label",
           "valueField": "name",

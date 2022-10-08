@@ -91,7 +91,15 @@ export default {
           "source": {
             "method": "get",
             "url": "/service/api/amis-design/objects",
-            "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;"
+            "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
+            "adaptor": `
+              let data = payload.data;
+              payload.unshift({
+                label: "\${objectName}",
+                name: "\${objectName}"
+              });
+              return payload;
+            `
           },
           "labelField": "label",
           "valueField": "name",

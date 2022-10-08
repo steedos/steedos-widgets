@@ -76,6 +76,19 @@ export function getSaveQuery(object, recordId, fields, options){
 }
 
 /*
+    readonly字段应该移除掉不提交到服务端。
+*/
+export function getScriptForReadonlyFields(fields){
+    var scripts = [];
+    fields.forEach((item)=>{
+        if(item.readonly){
+            scripts.push(`delete formData.${item.name};`);
+        }
+    });
+    return scripts.join("\r\n");
+}
+
+/*
     img字段值移除URL前缀使其保存时正常保存id,而不是url。
 */
 export function getScriptForRemoveUrlPrefixForImgFields(fields){
@@ -175,6 +188,7 @@ export function getSaveDataTpl(fields){
         delete formData.modified;
         delete formData.modified_by;
         delete formData._display;
+        ${getScriptForReadonlyFields(fields)}
         ${getScriptForRemoveUrlPrefixForImgFields(fields)}
         ${getScriptForSimplifiedValueForFileFields(fields)}
         let query = \`mutation{record: \${objectName}__insert(doc: {__saveData}){_id}}\`;
