@@ -10,5 +10,8 @@ import {getRecordDetailHeaderSchema} from '@steedos-widgets/amis-lib'
 export const AmisRecordDetailHeader = async (props) => {
   // console.log(`AmisRecordDetailHeader props==>`, props)
   const { $schema, objectApiName, recordId } = props;
+  if(!objectApiName){
+    return {}
+  }
   return (await getRecordDetailHeaderSchema(objectApiName, recordId)).amisSchema
 }
