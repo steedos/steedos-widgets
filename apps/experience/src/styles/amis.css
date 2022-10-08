@@ -25,6 +25,10 @@ fieldset.antd-Collapse > legend.antd-Collapse-header{
     border-left: 0;
 }
 
+fieldset.antd-Collapse > legend{
+    padding: none !important;
+}
+
 main {
     background: var(--body-bg);
 }
