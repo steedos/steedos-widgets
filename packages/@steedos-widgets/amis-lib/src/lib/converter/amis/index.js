@@ -371,7 +371,7 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
                   "formData": "$$"
                 },
                 wrapWithPanel: false, 
-                body: await getFormBody(map(fields, (field)=>{field.readonly = true;}), objectSchema, ctx),
+                body: await getFormBody(map(fields, (field)=>{field.readonly = true;}), objectSchema, Object.assign({}, ctx, {showSystemFields: true})),
                 className: 'steedos-amis-form',
                 actions: [] // 不显示表单默认的提交按钮
             }
