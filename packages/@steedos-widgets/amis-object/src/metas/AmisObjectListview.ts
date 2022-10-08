@@ -106,9 +106,8 @@ export default {
           "menuTpl": ""
         },
         {
-          type: "input-tag",
+          type: "select",
           name: "listName",
-          max: 1,
           "multiple": false,
           label: "视图",
           "source": {
