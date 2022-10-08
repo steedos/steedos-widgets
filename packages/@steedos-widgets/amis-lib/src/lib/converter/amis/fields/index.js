@@ -491,7 +491,7 @@ return payload;
             convertData.visibleOn = `\$${field.visible_on.substring(1, field.visible_on.length -1).replace(/formData./g, '')}`;
         }
 
-        return Object.assign({}, baseData, convertData);
+        return Object.assign({}, baseData, convertData, { clearValueOnHidden: true});
     }
     
 }
