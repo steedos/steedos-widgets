@@ -87,7 +87,6 @@ export default {
           "type": "select",
           "label": "对象",
           "name": "objectApiName",
-          "id": "u:4a14f11bb85f",
           "multiple": false,
           "source": {
             "method": "get",
@@ -110,7 +109,6 @@ export default {
           type: "input-tag",
           name: "listName",
           max: 1,
-          "id": "u:4a14f11bb851",
           "multiple": false,
           label: "视图",
           "source": {
@@ -128,8 +126,7 @@ export default {
                   return { value: item.name || item._id, label: item.label || item.name }
                 })
                 payload.data = {
-                  options,
-                  value: options[0].value
+                  options
                 }
                 return payload;
             `,
