@@ -280,7 +280,7 @@ export async function getRecordDetailHeaderAmisSchema(objectSchema, recordId){
           "Authorization": "Bearer ${context.tenantId},${context.authToken}"
         },
         "data": {
-          "query": `{rows:${name}(filters: [\"_id\",\"=\",${recordId}]){_id, name} }`
+          "query": `{rows:${name}(filters: ["_id","=","${recordId}"]){_id, name} }`
         },
         "sendOn": `${!!recordId}`,
         "requestAdaptor": "",
