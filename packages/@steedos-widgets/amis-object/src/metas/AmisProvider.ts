@@ -63,8 +63,16 @@ export default {
       icon: config.amis.icon,
       scaffold: {
         type: config.amis.name,
-        label: config.title
+        label: config.title,
+        body: [],// 容器类字段
       },
+      // 容器类组件必需字段
+      regions: [
+        {
+          key: 'body',
+          label: '内容区'
+        },
+      ],
       previewSchema: {
         type: config.amis.name,
       },
