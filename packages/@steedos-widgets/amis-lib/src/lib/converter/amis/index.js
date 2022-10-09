@@ -316,39 +316,39 @@ const getGlobalData = (mode)=>{
 }
 
 export async function getObjectForm(objectSchema, ctx){
-    const { recordId, formFactor, layout, labelAlign, tabId, appId, id, actions } = ctx;
+    const { recordId, formFactor, layout, labelAlign, tabId, appId, defaults } = ctx;
     const fields = _.values(objectSchema.fields);
-    return {
-        id: `service-${id}`,
-        type: 'service',
-        className: 'p-0',
-        name: `page_edit_${recordId}`,
-        data: {global: getGlobalData('edit'), recordId: recordId, objectName: objectSchema.name, context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
-        initApi: null,
-        initFetch: null ,
-        body: [
-            {
-                id: id,
-                type: "form",
-                mode: formFactor === 'SMALL' ? 'normal' : layout,
-                labelAlign,
-                persistData: false,
-                promptPageLeave: true,
-                name: `form_edit_${recordId}`,
-                debug: false,
-                title: "",
-                submitText: "", // amis 表单不显示提交按钮, 表单提交由项目代码接管
-                api: await getSaveApi(objectSchema, recordId, fields, {}),
-                initApi: await getEditFormInitApi(objectSchema, recordId, fields),
-                initFetch: recordId != 'new',
-                body: await getFormBody(fields, objectSchema, ctx),
-                panelClassName:'m-0 sm:rounded-lg shadow-none',
-                bodyClassName: 'p-0',
-                className: 'p-4 sm:p-0 steedos-amis-form',
-                actions
-            }
-        ]
+    const formSchema =  defaults && defaults.formSchema || {};
+    const amisSchema =  {
+      type: 'service',
+      className: 'p-0',
+      name: `page_edit_${recordId}`,
+      data: {global: getGlobalData('edit'), recordId: recordId, objectName: objectSchema.name, context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
+      initApi: null,
+      initFetch: null ,
+      body: [_.defaultsDeep({}, formSchema, {
+        type: "form",
+        mode: formFactor === 'SMALL' ? 'normal' : layout,
+        labelAlign,
+        persistData: false,
+        promptPageLeave: true,
+        name: `form_edit_${recordId}`,
+        debug: false,
+        title: "",
+        submitText: "", // amis 表单不显示提交按钮, 表单提交由项目代码接管
+        api: await getSaveApi(objectSchema, recordId, fields, {}),
+        initApi: await getEditFormInitApi(objectSchema, recordId, fields),
+        initFetch: recordId != 'new',
+        body: await getFormBody(fields, objectSchema, ctx),
+        panelClassName:'m-0 sm:rounded-lg shadow-none',
+        bodyClassName: 'p-0',
+        className: 'p-4 sm:p-0 steedos-amis-form',
+      })]
+    };
+    if(formSchema.id){
+      amisSchema.id = `service-${formSchema.id}`;
     }
+    return amisSchema;
 }
 
 export async function getObjectDetail(objectSchema, recordId, ctx){

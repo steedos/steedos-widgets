@@ -6,20 +6,25 @@
  * @Description: 
  */
 import {getFormSchema, getViewSchema} from '@steedos-widgets/amis-lib'
+import { keys, pick, difference } from 'lodash';
 
 export const AmisObjectForm = async (props) => {
-  // console.log('AmisObjectForm props==>', props)
-  const { objectApiName, recordId, mode, id, layout, labelAlign, actions } = props;
+  console.log('AmisObjectForm props==>', props)
+  const { $schema, objectApiName, recordId, mode, layout, labelAlign } = props;
   if(!objectApiName){
     return {}
   }
+  const schemaKeys = difference(keys($schema), ["type"]);
+  const formSchema = pick(props, schemaKeys);
+  const defaults = {
+    formSchema
+  };
   const options = {
     recordId,
     mode: mode,
     layout: layout === 'vertical' ? 'normal' : layout,
-    labelAlign,
-    id, 
-    actions
+    labelAlign, 
+    defaults
   }
   if(mode === 'edit'){
     return (await getFormSchema(objectApiName, options)).amisSchema;
