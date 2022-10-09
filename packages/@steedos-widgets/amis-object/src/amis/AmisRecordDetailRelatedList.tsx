@@ -11,7 +11,7 @@ import {getRecordDetailRelatedListSchema} from '@steedos-widgets/amis-lib'
 export const AmisRecordDetailRelatedList = async (props) => {
   // console.log(`AmisRecordDetailRelatedList props==>`, props)
   const { objectApiName, recordId, relatedObjectApiName, data } = props;
-  if(!objectApiName){
+  if(!objectApiName || !relatedObjectApiName){
     return {}
   }
   return (await getRecordDetailRelatedListSchema(objectApiName, recordId, relatedObjectApiName)).amisSchema;

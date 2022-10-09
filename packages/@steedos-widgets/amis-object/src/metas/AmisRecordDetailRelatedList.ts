@@ -79,6 +79,7 @@ export default {
         type: config.amis.name,
         label: config.title,
         objectApiName: "${objectName}",
+        recordId: "${recordId}",
         relatedObjectApiName: "contacts"
       },
       previewSchema: {
