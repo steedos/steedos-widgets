@@ -193,7 +193,6 @@ export async function getRecordDetailHeaderAmisSchema(objectSchema, recordId){
           "type": "panel",
           "title": "标题",
           "body": [],
-          "id": "u:f06f9b6298c5",
           "header": {
             "type": "wrapper",
             "body": [
@@ -208,11 +207,9 @@ export async function getRecordDetailHeaderAmisSchema(objectSchema, recordId){
                           {
                             "body": {
                               "type": "tpl",
-                              "id": "u:b788c99f23f5",
                               "className": "block",
                               "tpl": `<img class='slds-icon slds-icon_container slds-icon-standard-${icon}' src='\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg'>`
                             },
-                            "id": "u:4ad6d27dd9a7",
                             "md": "auto",
                             "className": "",
                             "columnClassName": "flex justify-center items-center"
@@ -224,7 +221,6 @@ export async function getRecordDetailHeaderAmisSchema(objectSchema, recordId){
                                 "tpl": `${label}`,
                                 "inline": false,
                                 "wrapperComponent": "",
-                                "id": "u:f20c8f4bd441",
                                 "style": {
                                   "fontFamily": "",
                                   "fontSize": 13
@@ -236,7 +232,6 @@ export async function getRecordDetailHeaderAmisSchema(objectSchema, recordId){
                                 "tpl": "${name}",
                                 "inline": false,
                                 "wrapperComponent": "",
-                                "id": "u:3d874f3158c5",
                                 "style": {
                                   "fontFamily": "",
                                   "fontSize": 20,
@@ -246,24 +241,18 @@ export async function getRecordDetailHeaderAmisSchema(objectSchema, recordId){
                                 "className": "leading-none"
                               }
                             ],
-                            "id": "u:5d7a850db0ba"
                           }
-                        ],
-                        "id": "u:a9edfcb34f3e"
+                        ]
                       }
                     ],
-                    "id": "u:2804a6a76bc4",
                     "md": 9
                   },
                   {
-                    "body": [],
-                    "id": "u:122319277746"
+                    "body": []
                   }
-                ],
-                "id": "u:fb5acaad8423"
+                ]
               }
             ],
-            "id": "u:1c057096260a",
             "size": "xs"
           },
           "affixFooter": false,
@@ -271,7 +260,6 @@ export async function getRecordDetailHeaderAmisSchema(objectSchema, recordId){
           "bodyClassName": "p-none"
         }
       ],
-      "id": "u:d016f464c9f2",
       "messages": {},
       "api": {
         "method": "post",
