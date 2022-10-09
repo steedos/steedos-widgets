@@ -87,6 +87,7 @@ export default {
           "type": "select",
           "label": "对象",
           "name": "objectApiName",
+          "searchable": true,
           "multiple": false,
           "source": {
             "method": "get",
