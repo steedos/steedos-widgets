@@ -345,7 +345,7 @@ export const Provider = () => (
       "body":[
         {
           "type": "tpl",
-          "tpl": `没有任何属性任何功能，只是一个不带边距的wrapper容器`,
+          "tpl": `没有任何属性任何功能，返回空内容`,
         }
       ]
     },
