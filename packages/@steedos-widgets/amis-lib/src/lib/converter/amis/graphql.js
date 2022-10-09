@@ -15,7 +15,7 @@ export async function getFieldsTemplate(fields, expand){
     }
     for (const field of fieldsArr) {
         if(field.name.indexOf('.') < 0){
-            if(expand && (field.type == 'lookup' || field.type == 'master_detail') && field.reference_to){
+            if(expand && (field.type == 'lookup' || field.type == 'master_detail') && field.reference_to && typeof field.reference_to === "string"){
                 const refUiSchema = await getUISchema(field.reference_to);
                 const NAME_FIELD_KEY = refUiSchema.NAME_FIELD_KEY || 'name';
                 fieldsName.push(`${field.name}:${field.name}__expand{_id,${NAME_FIELD_KEY}${field.reference_to_field ? `,${field.reference_to_field}`:''}}`);
@@ -73,6 +73,19 @@ export function getSaveQuery(object, recordId, fields, options){
         recordId: "${recordId}",
         modalName: "${modalName}"
     }
+}
+
+/*
+    readonly字段应该移除掉不提交到服务端。
+*/
+export function getScriptForReadonlyFields(fields){
+    var scripts = [];
+    fields.forEach((item)=>{
+        if(item.readonly){
+            scripts.push(`delete formData.${item.name};`);
+        }
+    });
+    return scripts.join("\r\n");
 }
 
 /*
@@ -175,6 +188,7 @@ export function getSaveDataTpl(fields){
         delete formData.modified;
         delete formData.modified_by;
         delete formData._display;
+        ${getScriptForReadonlyFields(fields)}
         ${getScriptForRemoveUrlPrefixForImgFields(fields)}
         ${getScriptForSimplifiedValueForFileFields(fields)}
         let query = \`mutation{record: \${objectName}__insert(doc: {__saveData}){_id}}\`;

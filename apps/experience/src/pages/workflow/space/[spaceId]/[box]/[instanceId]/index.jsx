@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-24 17:49:19
+ * @LastEditTime: 2022-09-29 18:16:22
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -70,7 +70,7 @@ export default function Record({formFactor}) {
       <div className="flex-1 w-64" >
         {
           record != undefined && <div className="region-header bg-slate-50 static">
-          {schema && <Header app_id={app_id} tab_id={tab_id} record_id={instanceId} record={record} schema={schema} formFactor={formFactor} permissions={permissions} hiddenTitle={true} className="p-2"></Header>}
+          {schema && <Header app_id={app_id} tab_id={tab_id} record_id={record._id} record={record} schema={schema} formFactor={formFactor} permissions={permissions} hiddenTitle={true} className="p-2"></Header>}
         </div>
         }
         <div className="relative flex flex-1 flex-col region-main overflow-auto border-t" id="instanceRoot" style={{
@@ -79,10 +79,7 @@ export default function Record({formFactor}) {
           { record === undefined && <>
             Not Find Instance
           </>}
-
-          {/* TODO: instance_attachments */}
-          {/* TODO: related_instances */}
-          {/* TODO: related_records */}
+          <div className="" id="instanceRootModalContainer"></div>
           {record != undefined && formSchema && (
             <AmisRender  className="h-full" id={`amis-root-workflow`} schema={formSchema} router={router} data={{
               submit_date: record.submit_date,
@@ -95,7 +92,7 @@ export default function Record({formFactor}) {
               ...record.approveValues,
               context: record,
             }} getModalContainer={()=>{
-              return document.querySelector('#instanceRoot')
+              return document.querySelector('#instanceRootModalContainer')
             }}></AmisRender>
           )}
         </div>

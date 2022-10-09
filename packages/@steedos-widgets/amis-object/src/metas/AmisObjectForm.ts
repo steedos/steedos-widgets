@@ -96,10 +96,12 @@ export default {
       scaffold: {
         type: config.amis.name,
         label: config.title,
-        objectApiName: "space_users",
+        objectApiName: "${objectName}",
+        recordId: "${recordId}"
       },
       previewSchema: {
         type: config.amis.name,
+        objectApiName: 'space_users'
       },
       panelTitle: "设置",
       panelControls: [
@@ -107,7 +109,7 @@ export default {
           "type": "select",
           "label": "对象",
           "name": "objectApiName",
-          "id": "u:4a14f11bb85f",
+          "searchable": true,
           "multiple": false,
           "source": {
             "method": "get",
@@ -119,6 +121,14 @@ export default {
                 };
                 api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;
                 return api;
+            `,
+            "adaptor": `
+              let data = payload.data;
+              payload.unshift({
+                label: "\${objectName}",
+                name: "\${objectName}"
+              });
+              return payload;
             `
           },
           "labelField": "label",

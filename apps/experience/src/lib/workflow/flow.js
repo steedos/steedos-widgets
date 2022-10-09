@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-29 09:37:02
+ * @LastEditTime: 2022-09-29 18:02:40
  * @Description:
  */
 import {
@@ -42,6 +42,7 @@ const getFieldEditTpl = async (field, label)=>{
     mode: "horizontal",
     className: "m-none p-none form-control",
     disabled: field.permission !== "editable",
+    required: field.is_required
   };
   switch (field.type) {
     case "input":
@@ -178,7 +179,6 @@ const getFieldEditTpl = async (field, label)=>{
     default:
       break;
   }
-
   return tpl;
 };
 
@@ -198,7 +198,7 @@ const getFieldReadonlyTpl = async (field, label)=>{
       map[item.value] = item.label;
     })
     tpl.type = 'static';
-    tpl.tpl = `<% var options = ${JSON.stringify(map)}; return options?.[data.${field.code}]%>`
+    tpl.tpl = `<% var options = ${JSON.stringify(map)}; return options?.[data.${field.code}] || ''%>`
   }else if(field.type === 'odata'){
     tpl.type = 'static';
     tpl.tpl = `<div>\${${field.code}['@label']}</div>`
@@ -290,7 +290,7 @@ const getTdTitle = (field) => {
     body: [
       {
         type: "tpl",
-        tpl: `<div>${field.name || field.code}</div>`,
+        tpl: `<div>${field.name || field.code} ${field.is_required ? '<span class="antd-Form-star">*</span>' : ''}</div>`,
       },
     ],
     // "id": "u:9b001b7ff92d",
@@ -546,11 +546,31 @@ export const getFlowFormSchema = async (instance) => {
           },
           await getFormTableView(instance),
           await getApplicantTableView(instance),
-          await getApproveButton(instance)
+          
         ],
         id: "instance_form",
+        onEvent: {
+          validateError: {
+            weight: 0,
+            actions: [
+              {
+                "componentId": "",
+                "args": {
+                  "msgType": "info",
+                  "position": "top-right",
+                  "closeButton": true,
+                  "showIcon": true,
+                  "title": "提交失败",
+                  "msg": "请填写必填字段"
+                },
+                "actionType": "toast"
+              }
+            ],
+          }
+        }
       },
-      await getInstanceApprovalHistory()
+      await getInstanceApprovalHistory(),
+      await getApproveButton(instance)
     ],
     id: "u:63849ea39e12",
     messages: {},
@@ -571,7 +591,7 @@ export const getFlowFormSchema = async (instance) => {
           //   "drawer": await getApprovalDrawerSchema()
           // }
         ],
-      },
+      }
     },
     initApi:{
       "url": "${context.rootUrl}/graphql",
