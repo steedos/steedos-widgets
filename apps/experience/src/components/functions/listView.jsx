@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-04 17:10:53
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-05 15:56:49
+ * @LastEditTime: 2022-10-09 13:25:31
  * @Description: 
  */
 import { AmisRender } from "@/components/AmisRender";
@@ -52,7 +52,7 @@ export const ListView = {
             children: <AmisRender
                 id={amisScopeId}
                 schema={filtersAmisSchema}
-                data={{data: Object.assign({}, data, {objectName: objectName})}}
+                data={Object.assign({}, data, {objectName: objectName})}
                 ></AmisRender>,
             mask: false,
             width: 550,
