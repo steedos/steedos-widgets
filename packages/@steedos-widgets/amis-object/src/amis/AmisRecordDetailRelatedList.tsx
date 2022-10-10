@@ -5,14 +5,13 @@
  * @LastEditTime: 2022-09-02 10:56:21
  * @Description: 
  */
-import {getRecordDetailRelatedListSchema} from '@steedos-widgets/amis-lib'
+import { getRecordDetailRelatedListSchema } from '@steedos-widgets/amis-lib'
 
 
 export const AmisRecordDetailRelatedList = async (props) => {
   // console.log(`AmisRecordDetailRelatedList props==>`, props)
-  const { objectApiName, recordId, relatedObjectApiName, data } = props;
-  if(!objectApiName || !relatedObjectApiName){
-    return {}
-  }
+  const { recordId, data } = props;
+  let objectApiName = props.objectApiName || "accounts";
+  let relatedObjectApiName = props.relatedObjectApiName || "contacts";
   return (await getRecordDetailRelatedListSchema(objectApiName, recordId, relatedObjectApiName)).amisSchema;
 }

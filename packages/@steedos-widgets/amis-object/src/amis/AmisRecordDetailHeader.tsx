@@ -5,13 +5,11 @@
  * @LastEditTime: 2022-09-02 10:56:21
  * @Description: 
  */
-import {getRecordDetailHeaderSchema} from '@steedos-widgets/amis-lib'
+import { getRecordDetailHeaderSchema } from '@steedos-widgets/amis-lib'
 
 export const AmisRecordDetailHeader = async (props) => {
   // console.log(`AmisRecordDetailHeader props==>`, props)
-  const { $schema, objectApiName, recordId } = props;
-  if(!objectApiName){
-    return {}
-  }
+  const { $schema, recordId } = props;
+  let objectApiName = props.objectApiName || "space_users";
   return (await getRecordDetailHeaderSchema(objectApiName, recordId)).amisSchema
 }
