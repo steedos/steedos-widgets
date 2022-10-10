@@ -76,6 +76,10 @@ export interface ComboControlSchema extends FormBaseControlSchema {
      */
     addable?: boolean;
     /**
+     * Add at top
+     */
+    addattop?: boolean;
+    /**
      * 数组输入框的子项
      */
     items?: Array<ComboSubControl>;

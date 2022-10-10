@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -103,6 +103,17 @@ var HocPopOver = function (config) {
                 }
                 return schema || 'error';
             };
+            PopOverComponent.prototype.getOffset = function () {
+                var popOver = this.props.popOver;
+                if (typeof popOver === 'boolean' || !popOver.offset) {
+                    return undefined;
+                }
+                // PopOver 组件接收的 offset 格式为 { x: number, y: number }
+                return {
+                    x: popOver.offset.left || 0,
+                    y: popOver.offset.top || 0
+                };
+            };
             PopOverComponent.prototype.renderPopOver = function () {
                 var _this = this;
                 var _a = this.props, popOver = _a.popOver, render = _a.render, popOverContainer = _a.popOverContainer, cx = _a.classnames, ns = _a.classPrefix;
@@ -130,7 +141,7 @@ var HocPopOver = function (config) {
                             ? _this.clearCloseTimer
                             : undefined, ref: ref }, content));
                 })) : (React__default["default"].createElement(amisCore.Overlay, { container: popOverContainer, placement: position || config.position || 'center', target: function () { return _this.target; }, onHide: this.closePopOver, rootClose: true, show: true },
-                    React__default["default"].createElement(amisCore.PopOver, { classPrefix: ns, className: cx('PopOverAble-popover', popOver.popOverClassName), offset: popOver.offset, onMouseLeave: (popOver === null || popOver === void 0 ? void 0 : popOver.trigger) === 'hover'
+                    React__default["default"].createElement(amisCore.PopOver, { classPrefix: ns, className: cx('PopOverAble-popover', popOver.popOverClassName), offset: this.getOffset(), onMouseLeave: (popOver === null || popOver === void 0 ? void 0 : popOver.trigger) === 'hover'
                             ? this.closePopOver
                             : undefined, onMouseEnter: (popOver === null || popOver === void 0 ? void 0 : popOver.trigger) === 'hover'
                             ? this.clearCloseTimer

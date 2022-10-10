@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -59,7 +59,7 @@ var JSONField = /** @class */ (function (_super) {
             jsonThemeValue = amisCore.resolveVariableAndFilter(jsonTheme, this.props.data, '| raw');
         }
         // JsonView 只支持对象，所以不是对象格式需要转成对象格式。
-        if (data && ~['string', 'number'].indexOf(typeof data)) {
+        if (~['string', 'number', 'boolean'].indexOf(typeof data)) {
             data = (_a = {},
                 _a[typeof data] = data,
                 _a);

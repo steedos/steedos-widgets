@@ -365,7 +365,7 @@ export declare class DiffEditorControlRenderer extends DiffEditor {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -493,7 +493,7 @@ export declare class DiffEditorControlRenderer extends DiffEditor {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -625,7 +625,7 @@ export declare class DiffEditorControlRenderer extends DiffEditor {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -753,7 +753,7 @@ export declare class DiffEditorControlRenderer extends DiffEditor {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -890,7 +890,7 @@ export declare class DiffEditorControlRenderer extends DiffEditor {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -1018,7 +1018,7 @@ export declare class DiffEditorControlRenderer extends DiffEditor {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -1150,7 +1150,7 @@ export declare class DiffEditorControlRenderer extends DiffEditor {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -1278,7 +1278,7 @@ export declare class DiffEditorControlRenderer extends DiffEditor {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -1410,7 +1410,7 @@ export declare class DiffEditorControlRenderer extends DiffEditor {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -1538,7 +1538,7 @@ export declare class DiffEditorControlRenderer extends DiffEditor {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -1571,7 +1571,7 @@ export declare class DiffEditorControlRenderer extends DiffEditor {
             setCanAccessSuperData: (value?: boolean | undefined) => void;
             deleteValueByName: (name: string) => void;
             getLocalPersistData: () => void;
-            setLocalPersistData: () => void;
+            setLocalPersistData: (keys?: string[] | undefined) => void;
             clearLocalPersistData: () => void;
             setPersistData: (value?: string | undefined) => void;
             clear: (cb?: ((data: any) => void) | undefined) => void;
@@ -1786,7 +1786,7 @@ export declare class DiffEditorControlRenderer extends DiffEditor {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -1914,7 +1914,7 @@ export declare class DiffEditorControlRenderer extends DiffEditor {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -2046,7 +2046,7 @@ export declare class DiffEditorControlRenderer extends DiffEditor {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -2174,7 +2174,7 @@ export declare class DiffEditorControlRenderer extends DiffEditor {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -2311,7 +2311,7 @@ export declare class DiffEditorControlRenderer extends DiffEditor {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -2439,7 +2439,7 @@ export declare class DiffEditorControlRenderer extends DiffEditor {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -2571,7 +2571,7 @@ export declare class DiffEditorControlRenderer extends DiffEditor {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -2699,7 +2699,7 @@ export declare class DiffEditorControlRenderer extends DiffEditor {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -2831,7 +2831,7 @@ export declare class DiffEditorControlRenderer extends DiffEditor {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -2959,7 +2959,7 @@ export declare class DiffEditorControlRenderer extends DiffEditor {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -2992,7 +2992,7 @@ export declare class DiffEditorControlRenderer extends DiffEditor {
             setCanAccessSuperData: (value?: boolean | undefined) => void;
             deleteValueByName: (name: string) => void;
             getLocalPersistData: () => void;
-            setLocalPersistData: () => void;
+            setLocalPersistData: (keys?: string[] | undefined) => void;
             clearLocalPersistData: () => void;
             setPersistData: (value?: string | undefined) => void;
             clear: (cb?: ((data: any) => void) | undefined) => void;
@@ -3130,7 +3130,7 @@ export declare class DiffEditorControlRenderer extends DiffEditor {
             getSubStore: () => any;
             reset: (keepErrors?: boolean | undefined) => void;
             resetValidationStatus: (tag?: string | undefined) => void;
-            openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+            openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
             closeDialog: (result?: any) => void;
             changeTmpValue: (value: any) => void;
             changeEmitedValue: (value: any) => void;
@@ -3540,7 +3540,7 @@ export declare class DiffEditorControlRenderer extends DiffEditor {
             getSubStore: () => any;
             reset: (keepErrors?: boolean | undefined) => void;
             resetValidationStatus: (tag?: string | undefined) => void;
-            openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+            openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
             closeDialog: (result?: any) => void;
             changeTmpValue: (value: any) => void;
             changeEmitedValue: (value: any) => void;
@@ -3831,12 +3831,12 @@ export declare class DiffEditorControlRenderer extends DiffEditor {
             loadAutoUpdateData: (api: import("amis-core").Api, data?: object | undefined, silent?: boolean | undefined) => Promise<import("amis-core").Payload>;
         }, import("mobx-state-tree")._NotCustomized, import("mobx-state-tree")._NotCustomized>>) | undefined;
         formInited?: boolean | undefined;
-        formMode?: "horizontal" | "default" | "inline" | "row" | "normal" | undefined;
+        formMode?: "horizontal" | "inline" | "normal" | "row" | "default" | undefined;
         formHorizontal?: import("amis-core").FormHorizontal | undefined;
         formLabelAlign?: import("amis-core/lib/renderers/Item").LabelAlign | undefined;
         formLabelWidth?: string | number | undefined;
-        defaultSize?: "xs" | "sm" | "md" | "lg" | "full" | undefined;
-        size?: "xs" | "sm" | "md" | "lg" | "full" | undefined;
+        defaultSize?: "full" | "xs" | "sm" | "md" | "lg" | undefined;
+        size?: "full" | "xs" | "sm" | "md" | "lg" | undefined;
         labelAlign?: import("amis-core/lib/renderers/Item").LabelAlign | undefined;
         labelWidth?: string | number | undefined;
         disabled?: boolean | undefined;
@@ -3872,27 +3872,26 @@ export declare class DiffEditorControlRenderer extends DiffEditor {
         } | undefined;
         error?: string | undefined;
         showErrorMsg?: boolean | undefined;
-        placeholder?: string | undefined;
+        remark?: import("../Remark").SchemaRemark | undefined;
+        hidden?: boolean | undefined;
+        label?: string | false | undefined;
         $ref?: string | undefined;
         disabledOn?: string | undefined;
-        hidden?: boolean | undefined;
         hiddenOn?: string | undefined;
         visible?: boolean | undefined;
         visibleOn?: string | undefined;
         id?: string | undefined;
-        label?: string | false | undefined;
-        remark?: import("../Remark").SchemaRemark | undefined;
         desc?: string | undefined;
-        mode?: "horizontal" | "inline" | "normal" | undefined;
-        horizontal?: import("amis-core").FormHorizontal | undefined;
-        labelClassName?: string | undefined;
-        inline?: boolean | undefined;
-        readOnly?: boolean | undefined;
+        placeholder?: string | undefined;
         labelRemark?: import("../Remark").SchemaRemark | undefined;
-        options?: any;
+        labelClassName?: string | undefined;
         submitOnChange?: boolean | undefined;
+        readOnly?: boolean | undefined;
         readOnlyOn?: string | undefined;
         validateOnChange?: boolean | undefined;
+        mode?: "horizontal" | "inline" | "normal" | undefined;
+        horizontal?: import("amis-core").FormHorizontal | undefined;
+        inline?: boolean | undefined;
         required?: boolean | undefined;
         validationErrors?: {
             [propName: string]: any;
@@ -3965,7 +3964,8 @@ export declare class DiffEditorControlRenderer extends DiffEditor {
         } | undefined;
         clearValueOnHidden?: boolean | undefined;
         validateApi?: string | import("amis-core").BaseApiObject | undefined;
-        diffValue?: string | undefined;
+        options?: any;
         language?: string | undefined;
+        diffValue?: string | undefined;
     };
 }

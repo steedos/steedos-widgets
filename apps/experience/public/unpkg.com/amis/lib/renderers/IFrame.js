@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -100,7 +100,7 @@ var IFrame = /** @class */ (function (_super) {
     };
     IFrame.prototype.render = function () {
         var _a = this.state, width = _a.width, height = _a.height;
-        var _b = this.props, className = _b.className, src = _b.src, name = _b.name, frameBorder = _b.frameBorder, data = _b.data, style = _b.style, allow = _b.allow, sandbox = _b.sandbox, referrerpolicy = _b.referrerpolicy;
+        var _b = this.props, className = _b.className, src = _b.src, name = _b.name, frameBorder = _b.frameBorder, data = _b.data, style = _b.style, allow = _b.allow, sandbox = _b.sandbox, referrerpolicy = _b.referrerpolicy, __ = _b.translate, env = _b.env;
         var tempStyle = {};
         width !== void 0 && (tempStyle.width = width);
         height !== void 0 && (tempStyle.height = height);
@@ -111,7 +111,12 @@ var IFrame = /** @class */ (function (_super) {
         if (typeof finalSrc === 'string' &&
             finalSrc &&
             !/^(\.\/|\.\.\/|\/|https?\:\/\/|\/\/)/.test(finalSrc)) {
-            return React__default["default"].createElement("p", null, "\u8BF7\u586B\u5199\u5408\u6CD5\u7684 iframe \u5730\u5740");
+            return React__default["default"].createElement("p", null, __('Iframe.invalid'));
+        }
+        if (location.protocol === 'https:' &&
+            finalSrc &&
+            finalSrc.startsWith('http://')) {
+            env.notify('error', __('Iframe.invalidProtocol'));
         }
         return (React__default["default"].createElement("iframe", { name: name, className: className, frameBorder: frameBorder, style: style, ref: this.IFrameRef, onLoad: this.onLoad, src: finalSrc, allow: allow, referrerPolicy: referrerpolicy, sandbox: sandbox }));
     };

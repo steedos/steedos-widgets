@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -46,7 +46,7 @@ var React__default = /*#__PURE__*/_interopDefaultLegacy(React);
         var _c = this.props, options = _c.options, leftOptions = _c.leftOptions, leftDefaultValue = _c.leftDefaultValue;
         if (selectMode === 'associated' &&
             options &&
-            options.length === 1 &&
+            options.length &&
             options[0].leftOptions &&
             Array.isArray(options[0].children)) {
             leftOptions = options[0].leftOptions;

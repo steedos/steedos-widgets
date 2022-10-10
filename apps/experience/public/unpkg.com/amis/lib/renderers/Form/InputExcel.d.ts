@@ -1,6 +1,7 @@
 import React from 'react';
 import { FormControlProps } from 'amis-core';
 import { FormBaseControlSchema } from '../../Schema';
+import type { CellRichTextValue } from 'exceljs';
 /**
  * Excel 解析
  * 文档：https://baidu.gitee.io/amis/docs/components/form/input-excel
@@ -41,6 +42,19 @@ export default class ExcelControl extends React.PureComponent<ExcelProps, ExcelC
     componentDidUpdate(prevProps: ExcelProps): void;
     handleDrop(files: File[]): void;
     dispatchEvent(eventName: string, eventData?: Record<string, any>): Promise<any>;
+    /**
+     * 检查当前单元格数据是否为富文本
+     *
+     * @reference https://github.com/exceljs/exceljs#rich-text
+     */
+    isRichTextValue(value: any): boolean;
+    /**
+     * 将富文本类型的单元格内容转化为Plain Text
+     *
+     * @param {CellRichTextValue} cellValue 单元格值
+     * @param {Boolean} html 是否输出为html格式
+     */
+    richText2PlainString(cellValue: CellRichTextValue, html?: boolean): string;
     /**
      * 读取单个 sheet 的内容
      */

@@ -59,7 +59,7 @@ declare class Remark extends React.Component<RemarkProps> {
     static propsList: Array<string>;
     static defaultProps: {
         icon: string;
-        trigger: ("click" | "focus" | "hover")[];
+        trigger: ("click" | "hover" | "focus")[];
     };
     showModalTip(tooltip?: string | TooltipObject): (e: React.MouseEvent) => void;
     renderLabel(finalIcon: any, finalLabel: string, cx: ClassNamesFn, shape?: 'circle' | 'square'): JSX.Element;

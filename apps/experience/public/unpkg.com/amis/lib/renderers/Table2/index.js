@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -32,21 +32,19 @@ var Table2 = /** @class */ (function (_super) {
         _this.renderedToolbars = [];
         var scoped = context;
         scoped.registerComponent(_this);
-        var store = props.store, columnsTogglable = props.columnsTogglable, columns = props.columns;
-        store.update({ columnsTogglable: columnsTogglable, columns: columns });
+        var store = props.store, columnsTogglable = props.columnsTogglable, columns = props.columns, keepItemSelectionOnPageChange = props.keepItemSelectionOnPageChange, maxKeepItemSelectionLength = props.maxKeepItemSelectionLength;
+        store.update({
+            columnsTogglable: columnsTogglable,
+            columns: columns,
+            keepItemSelectionOnPageChange: keepItemSelectionOnPageChange,
+            maxKeepItemSelectionLength: maxKeepItemSelectionLength
+        });
         Table2.syncRows(store, props, undefined) && _this.syncSelected();
         return _this;
     }
     Table2.prototype.componentWillUnmount = function () {
         var scoped = this.context;
         scoped.unRegisterComponent(this);
-    };
-    Table2.prototype.controlRef = function (control) {
-        // 因为 control 有可能被 n 层 hoc 包裹。
-        while (control && control.getWrappedInstance) {
-            control = control.getWrappedInstance();
-        }
-        this.control = control;
     };
     Table2.prototype.syncSelected = function () {
         var _a = this.props, store = _a.store, onSelect = _a.onSelect;
@@ -385,7 +383,7 @@ var Table2 = /** @class */ (function (_super) {
                 reload && _this.reloadTarget(reload, data_2);
             })
                 .catch(function () {
-                (options === null || options === void 0 ? void 0 : options.resetOnFailed) && _this.control.reset();
+                (options === null || options === void 0 ? void 0 : options.resetOnFailed) && _this.reset();
             });
         }
     };
@@ -455,11 +453,11 @@ var Table2 = /** @class */ (function (_super) {
     };
     Table2.prototype.handleSelected = function (selectedRows, selectedRowKeys, unSelectedRows) {
         return tslib.__awaiter(this, void 0, void 0, function () {
-            var _a, dispatchEvent, data, rowSelection, onSelect, store, rendererEvent;
+            var _a, dispatchEvent, data, rowSelection, onSelect, store, keyField, rendererEvent;
             return tslib.__generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        _a = this.props, dispatchEvent = _a.dispatchEvent, data = _a.data, rowSelection = _a.rowSelection, onSelect = _a.onSelect, store = _a.store;
+                        _a = this.props, dispatchEvent = _a.dispatchEvent, data = _a.data, rowSelection = _a.rowSelection, onSelect = _a.onSelect, store = _a.store, keyField = _a.keyField;
                         return [4 /*yield*/, dispatchEvent('selectedChange', amisCore.createObject(data, {
                                 selectedItems: selectedRows,
                                 unSelectedItems: unSelectedRows
@@ -469,7 +467,7 @@ var Table2 = /** @class */ (function (_super) {
                         if (rendererEvent === null || rendererEvent === void 0 ? void 0 : rendererEvent.prevented) {
                             return [2 /*return*/, rendererEvent === null || rendererEvent === void 0 ? void 0 : rendererEvent.prevented];
                         }
-                        store.updateSelected(selectedRowKeys, rowSelection === null || rowSelection === void 0 ? void 0 : rowSelection.keyField);
+                        store.updateSelected(selectedRowKeys, (rowSelection === null || rowSelection === void 0 ? void 0 : rowSelection.keyField) || keyField);
                         onSelect && onSelect(selectedRows, unSelectedRows);
                         return [2 /*return*/];
                 }
@@ -580,9 +578,11 @@ var Table2 = /** @class */ (function (_super) {
         store.reset();
     };
     Table2.prototype.doAction = function (action, args, throwErrors) {
-        var _a = this.props, store = _a.store, rowSelection = _a.rowSelection, data = _a.data;
+        var _this = this;
+        var _a = this.props, store = _a.store, rowSelection = _a.rowSelection, data = _a.data, key = _a.keyField, expandable = _a.expandable;
         var actionType = action === null || action === void 0 ? void 0 : action.actionType;
-        var keyField = rowSelection === null || rowSelection === void 0 ? void 0 : rowSelection.keyField;
+        var keyField = (rowSelection === null || rowSelection === void 0 ? void 0 : rowSelection.keyField) || key || 'key';
+        var dataSource = store.getData(data).items || [];
         switch (actionType) {
             case 'selectAll':
                 store.updateSelectedAll(keyField);
@@ -591,24 +591,68 @@ var Table2 = /** @class */ (function (_super) {
                 store.updateSelected([], keyField);
                 break;
             case 'select':
-                var dataSource = store.getData(data);
                 var selected_1 = [];
-                dataSource.items.forEach(function (item, rowIndex) {
+                dataSource.forEach(function (item, rowIndex) {
                     var flag = amisCore.evalExpression(args === null || args === void 0 ? void 0 : args.selectedRowKeysExpr, {
                         record: item,
                         rowIndex: rowIndex
                     });
-                    if (flag && keyField) {
+                    if (flag) {
                         selected_1.push(item[keyField]);
                     }
                 });
                 store.updateSelected(selected_1, keyField);
                 break;
+            case 'expand':
+                var expandableKey_1 = (expandable === null || expandable === void 0 ? void 0 : expandable.keyField) || key || 'key';
+                var expanded_1 = [];
+                var collapse_1 = [];
+                // value值控制展开1个
+                if (args === null || args === void 0 ? void 0 : args.value) {
+                    var rowIndex = dataSource.findIndex(function (d) { return d[expandableKey_1] === args.value; });
+                    var item = dataSource[rowIndex];
+                    if (this.tableRef && this.tableRef.isExpandableRow(item, rowIndex)) {
+                        if (this.tableRef.isExpanded(item)) {
+                            collapse_1.push(item);
+                        }
+                        else {
+                            expanded_1.push(item);
+                        }
+                    }
+                }
+                else if (args === null || args === void 0 ? void 0 : args.expandedRowsExpr) {
+                    dataSource.forEach(function (item, rowIndex) {
+                        var flag = amisCore.evalExpression(args === null || args === void 0 ? void 0 : args.expandedRowsExpr, {
+                            record: item,
+                            rowIndex: rowIndex
+                        });
+                        if (flag &&
+                            _this.tableRef &&
+                            _this.tableRef.isExpandableRow(item, rowIndex)) {
+                            if (_this.tableRef.isExpanded(item)) {
+                                collapse_1.push(item);
+                            }
+                            else {
+                                expanded_1.push(item);
+                            }
+                        }
+                    });
+                }
+                if (expanded_1.length > 0) {
+                    this.tableRef && this.tableRef.onExpandRows(expanded_1);
+                }
+                if (collapse_1.length > 0) {
+                    this.tableRef && this.tableRef.onCollapseRows(collapse_1);
+                }
+                break;
         }
+    };
+    Table2.prototype.getRef = function (ref) {
+        this.tableRef = ref;
     };
     Table2.prototype.renderTable = function () {
         var _this = this;
-        var _a = this.props, render = _a.render, title = _a.title, footer = _a.footer, rowSelection = _a.rowSelection; _a.columns; var expandable = _a.expandable, footSummary = _a.footSummary, headSummary = _a.headSummary, loading = _a.loading, cx = _a.classnames, placeholder = _a.placeholder, rowClassNameExpr = _a.rowClassNameExpr, itemActions = _a.itemActions, onRow = _a.onRow, store = _a.store, rest = tslib.__rest(_a, ["render", "title", "footer", "rowSelection", "columns", "expandable", "footSummary", "headSummary", "loading", "classnames", "placeholder", "rowClassNameExpr", "itemActions", "onRow", "store"]);
+        var _a = this.props, render = _a.render, title = _a.title, footer = _a.footer, rowSelection = _a.rowSelection; _a.columns; var expandable = _a.expandable, footSummary = _a.footSummary, headSummary = _a.headSummary, loading = _a.loading, cx = _a.classnames, placeholder = _a.placeholder, rowClassNameExpr = _a.rowClassNameExpr, itemActions = _a.itemActions, keyField = _a.keyField, onRow = _a.onRow, store = _a.store, rest = tslib.__rest(_a, ["render", "title", "footer", "rowSelection", "columns", "expandable", "footSummary", "headSummary", "loading", "classnames", "placeholder", "rowClassNameExpr", "itemActions", "keyField", "onRow", "store"]);
         var expandableConfig = null;
         if (expandable) {
             expandable.expandedRowKeys; var rest_1 = tslib.__rest(expandable, ["expandedRowKeys"]);
@@ -632,14 +676,20 @@ var Table2 = /** @class */ (function (_super) {
         var rowSelectionConfig = null;
         if (rowSelection) {
             rowSelection.selectedRowKeys; var selections = rowSelection.selections, rest_2 = tslib.__rest(rowSelection, ["selectedRowKeys", "selections"]);
-            rowSelectionConfig = tslib.__assign({ selectedRowKeys: store.currentSelectedRowKeys }, rest_2);
-            if (rowSelection.disableOn) {
-                var disableOn_1 = rowSelection.disableOn;
-                rowSelectionConfig.getCheckboxProps = function (record, rowIndex) { return ({
-                    disabled: amisCore.evalExpression(disableOn_1, { record: record, rowIndex: rowIndex })
-                }); };
-                delete rowSelectionConfig.disableOn;
-            }
+            rowSelectionConfig = tslib.__assign({ selectedRowKeys: store.currentSelectedRowKeys, maxSelectedLength: store.maxKeepItemSelectionLength }, rest_2);
+            var disableOn_1 = rowSelection.disableOn;
+            rowSelectionConfig.getCheckboxProps = function (record, rowIndex) {
+                return {
+                    disabled: (disableOn_1
+                        ? amisCore.evalExpression(disableOn_1, { record: record, rowIndex: rowIndex })
+                        : false) ||
+                        (store.maxKeepItemSelectionLength &&
+                            store.currentSelectedRowKeys.length >=
+                                store.maxKeepItemSelectionLength &&
+                            !store.currentSelectedRowKeys.includes(record[rowSelection.keyField || keyField || 'key']))
+                };
+            };
+            disableOn_1 && delete rowSelectionConfig.disableOn;
             if (selections && Array.isArray(selections)) {
                 rowSelectionConfig.selections = [];
                 selections.forEach(function (item) {
@@ -706,7 +756,7 @@ var Table2 = /** @class */ (function (_super) {
                 })));
             };
         }
-        return (React__default["default"].createElement(amisUi.Table, tslib.__assign({}, rest, { title: this.renderSchema('title', title, { data: this.props.data }), footer: this.renderSchema('footer', footer, { data: this.props.data }), columns: this.buildColumns(store.filteredColumns), dataSource: store.dataSource, rowSelection: rowSelectionConfig, rowClassName: rowClassName, expandable: expandableConfig, footSummary: this.buildSummary('footSummary', footSummary), headSummary: this.buildSummary('headSummary', headSummary), loading: this.renderSchema('loading', loading), placeholder: this.renderSchema('placeholder', placeholder), onSelect: this.handleSelected, onSelectAll: this.handleSelected, onSort: this.handleSort, onFilter: this.handleFilter, onDrag: this.handleOrderChange, itemActions: itemActionsConfig, onRow: tslib.__assign(tslib.__assign({}, onRow), { onRowClick: this.handleRowClick }) })));
+        return (React__default["default"].createElement(amisUi.Table, tslib.__assign({}, rest, { onRef: this.getRef, title: this.renderSchema('title', title, { data: this.props.data }), footer: this.renderSchema('footer', footer, { data: this.props.data }), columns: this.buildColumns(store.filteredColumns), dataSource: store.dataSource, rowSelection: rowSelectionConfig, rowClassName: rowClassName, expandable: expandableConfig, footSummary: this.buildSummary('footSummary', footSummary), headSummary: this.buildSummary('headSummary', headSummary), loading: this.renderSchema('loading', loading), placeholder: this.renderSchema('placeholder', placeholder), onSelect: this.handleSelected, onSelectAll: this.handleSelected, onSort: this.handleSort, onFilter: this.handleFilter, onDrag: this.handleOrderChange, itemActions: itemActionsConfig, onRow: tslib.__assign(tslib.__assign({}, onRow), { onRowClick: this.handleRowClick }) })));
     };
     Table2.prototype.renderHeading = function () {
         var _a = this.props, store = _a.store, cx = _a.classnames, headingClassName = _a.headingClassName, __ = _a.translate;
@@ -735,12 +785,6 @@ var Table2 = /** @class */ (function (_super) {
             React__default["default"].createElement(amisUi.Spinner, { overlay: true, show: loading })));
     };
     Table2.contextType = amisCore.ScopedContext;
-    tslib.__decorate([
-        amisCore.autobind,
-        tslib.__metadata("design:type", Function),
-        tslib.__metadata("design:paramtypes", [Object]),
-        tslib.__metadata("design:returntype", void 0)
-    ], Table2.prototype, "controlRef", null);
     tslib.__decorate([
         amisCore.autobind,
         tslib.__metadata("design:type", Function),
@@ -810,6 +854,12 @@ var Table2 = /** @class */ (function (_super) {
         tslib.__metadata("design:paramtypes", []),
         tslib.__metadata("design:returntype", void 0)
     ], Table2.prototype, "reset", null);
+    tslib.__decorate([
+        amisCore.autobind,
+        tslib.__metadata("design:type", Function),
+        tslib.__metadata("design:paramtypes", [Object]),
+        tslib.__metadata("design:returntype", void 0)
+    ], Table2.prototype, "getRef", null);
     return Table2;
 }(React__default["default"].Component));
 /** @class */ ((function (_super) {

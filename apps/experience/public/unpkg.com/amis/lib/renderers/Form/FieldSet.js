@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -24,7 +24,7 @@ var FieldSetControl = /** @class */ (function (_super) {
         return _this;
     }
     FieldSetControl.prototype.renderBody = function () {
-        var _a = this.props, body = _a.body, collapsable = _a.collapsable, horizontal = _a.horizontal, render = _a.render, mode = _a.mode, formMode = _a.formMode, cx = _a.classnames, store = _a.store, formClassName = _a.formClassName, disabled = _a.disabled, formHorizontal = _a.formHorizontal, subFormMode = _a.subFormMode, subFormHorizontal = _a.subFormHorizontal;
+        var _a = this.props, body = _a.body; _a.collapsable; var horizontal = _a.horizontal, render = _a.render, mode = _a.mode, formMode = _a.formMode, cx = _a.classnames, store = _a.store, formClassName = _a.formClassName, disabled = _a.disabled, formHorizontal = _a.formHorizontal, subFormMode = _a.subFormMode, subFormHorizontal = _a.subFormHorizontal;
         var props = {
             store: store,
             data: store.data,
@@ -34,7 +34,6 @@ var FieldSetControl = /** @class */ (function (_super) {
             formHorizontal: subFormHorizontal || formHorizontal
         };
         mode && (props.mode = mode);
-        typeof collapsable !== 'undefined' && (props.collapsable = collapsable);
         horizontal && (props.horizontal = horizontal);
         return (React__default["default"].createElement("div", { className: cx("Form--".concat(props.mode || formMode || 'normal'), formClassName) }, body ? render('body', body, props) : null));
     };
@@ -47,6 +46,13 @@ var FieldSetControl = /** @class */ (function (_super) {
         headingClassName: '',
         collapsable: false
     };
+    FieldSetControl.propsList = [
+        'collapsable',
+        'collapsed',
+        'collapseTitle',
+        'titlePosition',
+        'collapseTitle'
+    ];
     return FieldSetControl;
 }(React__default["default"].Component));
 var FieldSetRenderer = /** @class */ (function (_super) {

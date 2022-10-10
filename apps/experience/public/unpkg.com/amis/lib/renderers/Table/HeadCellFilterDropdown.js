@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -107,6 +107,7 @@ var HeadCellFilterDropDown = /** @class */ (function (_super) {
         });
     };
     HeadCellFilterDropDown.prototype.alterOptions = function (options) {
+        var _this = this;
         var _a = this.props, data = _a.data, filterable = _a.filterable, name = _a.name;
         var filterValue = data && typeof data[name] !== 'undefined' ? data[name] : '';
         options = amisCore.normalizeOptions(options);
@@ -114,9 +115,22 @@ var HeadCellFilterDropDown = /** @class */ (function (_super) {
             options = options.map(function (option) { return (tslib.__assign(tslib.__assign({}, option), { selected: filterValue.split(',').indexOf(option.value) > -1 })); });
         }
         else {
-            options = options.map(function (option) { return (tslib.__assign(tslib.__assign({}, option), { selected: option.value == filterValue })); });
+            options = options.map(function (option) { return (tslib.__assign(tslib.__assign({}, option), { selected: _this.optionComparator(option, filterValue) })); });
         }
         return options;
+    };
+    HeadCellFilterDropDown.prototype.optionComparator = function (option, selected) {
+        var filterable = this.props.filterable;
+        /**
+         * 无论是否严格模式，需要考虑CRUD开启syncLocation后，参数值会被转化为string的情况：
+         * 数字类需要特殊处理，如果两边都为数字类时才进行比较，否则不相等，排除 1 == true 这种情况
+         */
+        if (amisCore.isNumeric(option.value)) {
+            return amisCore.isNumeric(selected) ? option.value == selected : false;
+        }
+        return (filterable === null || filterable === void 0 ? void 0 : filterable.strictMode) === true
+            ? option.value === selected
+            : option.value == selected;
     };
     HeadCellFilterDropDown.prototype.handleClickOutside = function () {
         this.close();

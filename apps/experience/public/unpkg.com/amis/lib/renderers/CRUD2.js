@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -30,10 +30,10 @@ var CRUD2 = /** @class */ (function (_super) {
         var location = props.location, store = props.store, syncLocation = props.syncLocation, pageField = props.pageField, perPageField = props.perPageField;
         _this.mounted = true;
         if (syncLocation && location && (location.query || location.search)) {
-            store.updateQuery(amisCore.qsparse(location.search.substring(1)), undefined, pageField, perPageField);
+            store.updateQuery(amisCore.parseQuery(location), undefined, pageField, perPageField);
         }
         else if (syncLocation && !location && window.location.search) {
-            store.updateQuery(amisCore.qsparse(window.location.search.substring(1)), undefined, pageField, perPageField);
+            store.updateQuery(amisCore.parseQuery(window.location), undefined, pageField, perPageField);
         }
         // 如果有 api，data 里面先写个 空数组，面得继承外层的 items
         // 比如 crud 打开一个弹框，里面也是个 crud，默认一开始其实显示
@@ -84,7 +84,7 @@ var CRUD2 = /** @class */ (function (_super) {
             prevProps.location &&
             prevProps.location.search !== props.location.search) {
             // 同步地址栏，那么直接检测 query 是否变了，变了就重新拉数据
-            store.updateQuery(amisCore.qsparse(props.location.search.substring(1)), undefined, props.pageField, props.perPageField);
+            store.updateQuery(amisCore.parseQuery(props.location), undefined, props.pageField, props.perPageField);
             dataInvalid = !!(props.api && amisCore.isObjectShallowModified(store.query, this.lastQuery, false));
         }
         if (dataInvalid) ;
@@ -438,7 +438,7 @@ var CRUD2 = /** @class */ (function (_super) {
                 else {
                     oldUnselectedItems_1.push(item);
                 }
-                ~idx2 && oldItems_1.splice(idx2, 1);
+                !~idx && ~idx2 && oldItems_1.splice(idx2, 1);
             });
             newItems = oldItems_1;
             newUnSelectedItems = oldUnselectedItems_1;

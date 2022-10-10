@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -43,4 +43,9 @@ amisCore.addRootWrapper(function (props) {
     var env = props.env, children = props.children;
     return (React__default["default"].createElement(amisUi.ImageGallery, { modalContainer: env.getModalContainer }, children));
 });
-amisCore.LazyComponent.defaultProps.placeholder = React__default["default"].createElement(amisUi.Spinner, null);
+var SimpleSpinner = amisCore.themeable(function (props) {
+    var cx = props.classnames;
+    return (React__default["default"].createElement("div", { "data-testid": "spinner", className: cx("Spinner", 'in', props.className) },
+        React__default["default"].createElement("div", { className: cx("Spinner-icon", 'Spinner-icon--default', props.spinnerClassName) })));
+});
+amisCore.LazyComponent.defaultProps.placeholder = React__default["default"].createElement(SimpleSpinner, null);

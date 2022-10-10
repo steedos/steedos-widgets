@@ -43,10 +43,6 @@ export interface LogSchema extends BaseSchema {
      */
     rowHeight?: number;
     /**
-     * 关闭 ANSI 颜色支持
-     */
-    disableColor?: boolean;
-    /**
      * 一些可操作选项
      */
     operation?: Array<LogOperation>;
@@ -82,7 +78,6 @@ export declare class Log extends React.Component<LogProps, LogState> {
     changeFilterWord: (value: string) => void;
     loadLogs(): Promise<void>;
     renderHighlightWord(line: string): string | (string | JSX.Element)[];
-    renderHighlightWordWithAnsi(line: string): string;
     /**
      * 渲染某一行
      */

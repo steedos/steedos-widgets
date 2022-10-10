@@ -256,7 +256,6 @@ export default class ImageControl extends React.Component<ImageProps, ImageState
         multiple: boolean;
         dropCrop: boolean;
     };
-    static formatFileSize(size: number | string, units?: string[]): string;
     static valueToFile(value: string | object, props?: ImageProps): FileValue | undefined;
     static sizeInfo(width: number | undefined, height: number | undefined, __: TranslateFn): string;
     state: ImageState;

@@ -32,7 +32,11 @@ export interface TextControlSchema extends FormOptionsSchema {
      */
     borderMode?: 'full' | 'half' | 'none';
     /**
-     * 限制文字个数
+     * 限制文字最小输入个数
+     */
+    minLength?: number;
+    /**
+     * 限制文字最大输入个数
      */
     maxLength?: number;
     /**

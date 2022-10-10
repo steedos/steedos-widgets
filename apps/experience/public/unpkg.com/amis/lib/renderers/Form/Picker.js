@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -155,6 +155,24 @@ var PickerControl = /** @class */ (function (_super) {
             });
         });
     };
+    PickerControl.prototype.handleItemClick = function (itemlabel, itemid) {
+        return tslib.__awaiter(this, void 0, void 0, function () {
+            var _a, data, dispatchEvent, rendererEvent;
+            return tslib.__generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _a = this.props, data = _a.data, dispatchEvent = _a.dispatchEvent, _a.setOptions;
+                        return [4 /*yield*/, dispatchEvent('itemclick', amisCore.createObject(data, { 'label': itemlabel, 'id': itemid }))];
+                    case 1:
+                        rendererEvent = _b.sent();
+                        if (rendererEvent === null || rendererEvent === void 0 ? void 0 : rendererEvent.prevented) {
+                            return [2 /*return*/];
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     PickerControl.prototype.removeItem = function (index) {
         var _a = this.props, selectedOptions = _a.selectedOptions, joinValues = _a.joinValues, extractValue = _a.extractValue, delimiter = _a.delimiter, valueField = _a.valueField, onChange = _a.onChange, multiple = _a.multiple;
         var items = selectedOptions.concat();
@@ -213,7 +231,10 @@ var PickerControl = /** @class */ (function (_super) {
                     e.stopPropagation();
                     _this.removeItem(index);
                 } }, "\u00D7"),
-            React__default["default"].createElement("span", { className: "".concat(ns, "Picker-valueLabel") }, labelTpl ? (React__default["default"].createElement(amisUi.Html, { html: amisCore.filter(labelTpl, item) })) : ("".concat(amisCore.getVariable(item, labelField || 'label') ||
+            React__default["default"].createElement("span", { className: "".concat(ns, "Picker-valueLabel"), onClick: function (e) {
+                    e.stopPropagation();
+                    _this.handleItemClick(amisCore.getVariable(item, labelField || 'label'), amisCore.getVariable(item, 'id') || '');
+                } }, labelTpl ? (React__default["default"].createElement(amisUi.Html, { html: amisCore.filter(labelTpl, item) })) : ("".concat(amisCore.getVariable(item, labelField || 'label') ||
                 amisCore.getVariable(item, 'id')))))); })));
     };
     PickerControl.prototype.renderBody = function (_a) {
@@ -320,6 +341,12 @@ var PickerControl = /** @class */ (function (_super) {
         tslib.__metadata("design:paramtypes", [Array]),
         tslib.__metadata("design:returntype", Promise)
     ], PickerControl.prototype, "handleChange", null);
+    tslib.__decorate([
+        amisCore.autobind,
+        tslib.__metadata("design:type", Function),
+        tslib.__metadata("design:paramtypes", [String, String]),
+        tslib.__metadata("design:returntype", Promise)
+    ], PickerControl.prototype, "handleItemClick", null);
     tslib.__decorate([
         amisCore.autobind,
         tslib.__metadata("design:type", Function),

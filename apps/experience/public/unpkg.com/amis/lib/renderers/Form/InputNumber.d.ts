@@ -45,6 +45,10 @@ export interface NumberControlSchema extends FormBaseControlSchema {
      */
     unitOptions?: string | Array<Option> | string[] | PlainObject;
     /**
+     * 是否是大数，如果是的话输入输出都将是字符串
+     */
+    big?: boolean;
+    /**
      * 是否千分分隔
      */
     kilobitSeparator?: boolean;
@@ -95,6 +99,10 @@ export interface NumberProps extends FormControlProps {
      * 输入框为基础输入框还是加强输入框
      */
     displayMode?: 'base' | 'enhance';
+    /**
+     * 是否是大数，如果是的话输入输出都将是字符串
+     */
+    big?: boolean;
 }
 interface NumberState {
     unit?: string;

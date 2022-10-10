@@ -4,6 +4,14 @@ import { RendererProps } from 'amis-core';
 import { ThemeProps } from 'amis-core';
 import { LocaleProps } from 'amis-core';
 import { BaseSchema, SchemaClassName, SchemaTpl, SchemaUrlPath } from '../Schema';
+import type { ImageAction, ImageActionKey } from 'amis-ui/lib/components/ImageGallery';
+export interface ImageToolbarAction {
+    key: keyof typeof ImageActionKey;
+    label?: string;
+    icon?: string;
+    iconClassName?: string;
+    disabled?: boolean;
+}
 /**
  * 图片展示控件。
  * 文档：https://baidu.gitee.io/amis/docs/components/image
@@ -96,6 +104,14 @@ export interface ImageSchema extends BaseSchema {
      * 链接的 target
      */
     htmlTarget?: string;
+    /**
+     * 是否展示图片工具栏
+     */
+    showToolbar?: boolean;
+    /**
+     * 工具栏配置
+     */
+    toolbarActions?: ImageToolbarAction[];
 }
 export interface ImageThumbProps extends LocaleProps, ThemeProps, Omit<ImageSchema, 'type' | 'className' | 'innerClassName'> {
     onEnlarge?: (info: ImageThumbProps) => void;
@@ -174,22 +190,12 @@ declare const ThemedImageThumb: {
             translate?: ((str: string, ...args: any[]) => string) | undefined;
         }): {
             ref: any;
-            /**
-             * 图片无法显示时的替换文本
-             */
-            childRef(ref: any): void; /**
-             * 图片无法显示时的替换文本
-             */
+            childRef(ref: any): void;
             getWrappedInstance(): any;
             render(): JSX.Element;
-            context: any; /**
-             * 宽度
-             */
+            context: any;
             setState<K_1 extends never>(state: {} | ((prevState: Readonly<{}>, props: Readonly<Omit<ImageThumbProps, keyof LocaleProps> & {
                 locale?: string | undefined;
-                /**
-                 * 图片缩略图外层 css 类名
-                 */
                 translate?: ((str: string, ...args: any[]) => string) | undefined;
             }>) => {} | Pick<{}, K_1> | null) | Pick<{}, K_1> | null, callback?: (() => void) | undefined): void;
             forceUpdate(callback?: (() => void) | undefined): void;
@@ -203,6 +209,9 @@ declare const ThemedImageThumb: {
             refs: {
                 [key: string]: React.ReactInstance;
             };
+            /**
+             * 是否展示图片工具栏
+             */
             componentDidMount?(): void;
             shouldComponentUpdate?(nextProps: Readonly<Omit<ImageThumbProps, keyof LocaleProps> & {
                 locale?: string | undefined;
@@ -249,22 +258,12 @@ declare const ThemedImageThumb: {
         translate?: ((str: string, ...args: any[]) => string) | undefined;
     }): {
         ref: any;
-        /**
-         * 图片无法显示时的替换文本
-         */
-        childRef(ref: any): void; /**
-         * 图片无法显示时的替换文本
-         */
+        childRef(ref: any): void;
         getWrappedInstance(): any;
         render(): JSX.Element;
-        context: any; /**
-         * 宽度
-         */
+        context: any;
         setState<K_1 extends never>(state: {} | ((prevState: Readonly<{}>, props: Readonly<Omit<ImageThumbProps, keyof LocaleProps> & {
             locale?: string | undefined;
-            /**
-             * 图片缩略图外层 css 类名
-             */
             translate?: ((str: string, ...args: any[]) => string) | undefined;
         }>) => {} | Pick<{}, K_1> | null) | Pick<{}, K_1> | null, callback?: (() => void) | undefined): void;
         forceUpdate(callback?: (() => void) | undefined): void;
@@ -278,6 +277,9 @@ declare const ThemedImageThumb: {
         refs: {
             [key: string]: React.ReactInstance;
         };
+        /**
+         * 是否展示图片工具栏
+         */
         componentDidMount?(): void;
         shouldComponentUpdate?(nextProps: Readonly<Omit<ImageThumbProps, keyof LocaleProps> & {
             locale?: string | undefined;
@@ -324,22 +326,12 @@ declare const ThemedImageThumb: {
             translate?: ((str: string, ...args: any[]) => string) | undefined;
         }): {
             ref: any;
-            /**
-             * 图片无法显示时的替换文本
-             */
-            childRef(ref: any): void; /**
-             * 图片无法显示时的替换文本
-             */
+            childRef(ref: any): void;
             getWrappedInstance(): any;
             render(): JSX.Element;
-            context: any; /**
-             * 宽度
-             */
+            context: any;
             setState<K_1 extends never>(state: {} | ((prevState: Readonly<{}>, props: Readonly<Omit<ImageThumbProps, keyof LocaleProps> & {
                 locale?: string | undefined;
-                /**
-                 * 图片缩略图外层 css 类名
-                 */
                 translate?: ((str: string, ...args: any[]) => string) | undefined;
             }>) => {} | Pick<{}, K_1> | null) | Pick<{}, K_1> | null, callback?: (() => void) | undefined): void;
             forceUpdate(callback?: (() => void) | undefined): void;
@@ -353,6 +345,9 @@ declare const ThemedImageThumb: {
             refs: {
                 [key: string]: React.ReactInstance;
             };
+            /**
+             * 是否展示图片工具栏
+             */
             componentDidMount?(): void;
             shouldComponentUpdate?(nextProps: Readonly<Omit<ImageThumbProps, keyof LocaleProps> & {
                 locale?: string | undefined;
@@ -410,6 +405,8 @@ export interface ImageFieldProps extends RendererProps {
     thumbRatio: '1:1' | '4:3' | '16:9';
     originalSrc?: string;
     enlargeAble?: boolean;
+    showToolbar?: boolean;
+    toolbarActions?: ImageAction[];
     onImageEnlarge?: (info: {
         src: string;
         originalSrc: string;
@@ -417,6 +414,8 @@ export interface ImageFieldProps extends RendererProps {
         caption?: string;
         thumbMode?: 'w-full' | 'h-full' | 'contain' | 'cover';
         thumbRatio?: '1:1' | '4:3' | '16:9';
+        showToolbar?: boolean;
+        toolbarActions?: ImageAction[];
     }, target: any) => void;
 }
 export declare class ImageField extends React.Component<ImageFieldProps, object> {

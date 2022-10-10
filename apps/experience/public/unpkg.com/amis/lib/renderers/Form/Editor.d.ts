@@ -364,7 +364,7 @@ export declare class EditorControlRenderer extends EditorControl {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -492,7 +492,7 @@ export declare class EditorControlRenderer extends EditorControl {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -624,7 +624,7 @@ export declare class EditorControlRenderer extends EditorControl {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -752,7 +752,7 @@ export declare class EditorControlRenderer extends EditorControl {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -889,7 +889,7 @@ export declare class EditorControlRenderer extends EditorControl {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -1017,7 +1017,7 @@ export declare class EditorControlRenderer extends EditorControl {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -1149,7 +1149,7 @@ export declare class EditorControlRenderer extends EditorControl {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -1277,7 +1277,7 @@ export declare class EditorControlRenderer extends EditorControl {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -1409,7 +1409,7 @@ export declare class EditorControlRenderer extends EditorControl {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -1537,7 +1537,7 @@ export declare class EditorControlRenderer extends EditorControl {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -1570,7 +1570,7 @@ export declare class EditorControlRenderer extends EditorControl {
             setCanAccessSuperData: (value?: boolean | undefined) => void;
             deleteValueByName: (name: string) => void;
             getLocalPersistData: () => void;
-            setLocalPersistData: () => void;
+            setLocalPersistData: (keys?: string[] | undefined) => void;
             clearLocalPersistData: () => void;
             setPersistData: (value?: string | undefined) => void;
             clear: (cb?: ((data: any) => void) | undefined) => void;
@@ -1788,7 +1788,7 @@ export declare class EditorControlRenderer extends EditorControl {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -1916,7 +1916,7 @@ export declare class EditorControlRenderer extends EditorControl {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -2048,7 +2048,7 @@ export declare class EditorControlRenderer extends EditorControl {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -2176,7 +2176,7 @@ export declare class EditorControlRenderer extends EditorControl {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -2313,7 +2313,7 @@ export declare class EditorControlRenderer extends EditorControl {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -2441,7 +2441,7 @@ export declare class EditorControlRenderer extends EditorControl {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -2573,7 +2573,7 @@ export declare class EditorControlRenderer extends EditorControl {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -2701,7 +2701,7 @@ export declare class EditorControlRenderer extends EditorControl {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -2833,7 +2833,7 @@ export declare class EditorControlRenderer extends EditorControl {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -2961,7 +2961,7 @@ export declare class EditorControlRenderer extends EditorControl {
                 getSubStore: () => any;
                 reset: (keepErrors?: boolean | undefined) => void;
                 resetValidationStatus: (tag?: string | undefined) => void;
-                openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+                openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
                 closeDialog: (result?: any) => void;
                 changeTmpValue: (value: any) => void;
                 changeEmitedValue: (value: any) => void;
@@ -2994,7 +2994,7 @@ export declare class EditorControlRenderer extends EditorControl {
             setCanAccessSuperData: (value?: boolean | undefined) => void;
             deleteValueByName: (name: string) => void;
             getLocalPersistData: () => void;
-            setLocalPersistData: () => void;
+            setLocalPersistData: (keys?: string[] | undefined) => void;
             clearLocalPersistData: () => void;
             setPersistData: (value?: string | undefined) => void;
             clear: (cb?: ((data: any) => void) | undefined) => void;
@@ -3132,7 +3132,7 @@ export declare class EditorControlRenderer extends EditorControl {
             getSubStore: () => any;
             reset: (keepErrors?: boolean | undefined) => void;
             resetValidationStatus: (tag?: string | undefined) => void;
-            openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+            openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
             closeDialog: (result?: any) => void;
             changeTmpValue: (value: any) => void;
             changeEmitedValue: (value: any) => void;
@@ -3542,7 +3542,7 @@ export declare class EditorControlRenderer extends EditorControl {
             getSubStore: () => any;
             reset: (keepErrors?: boolean | undefined) => void;
             resetValidationStatus: (tag?: string | undefined) => void;
-            openDialog: (schema: any, data: any, callback?: ((ret?: any) => void) | undefined) => void;
+            openDialog: (schema: any, ctx: any, callback?: ((ret?: any) => void) | undefined) => void;
             closeDialog: (result?: any) => void;
             changeTmpValue: (value: any) => void;
             changeEmitedValue: (value: any) => void;
@@ -3833,12 +3833,12 @@ export declare class EditorControlRenderer extends EditorControl {
             loadAutoUpdateData: (api: import("amis-core").Api, data?: object | undefined, silent?: boolean | undefined) => Promise<import("amis-core").Payload>;
         }, import("mobx-state-tree")._NotCustomized, import("mobx-state-tree")._NotCustomized>>) | undefined;
         formInited?: boolean | undefined;
-        formMode?: "horizontal" | "default" | "inline" | "row" | "normal" | undefined;
+        formMode?: "horizontal" | "inline" | "normal" | "row" | "default" | undefined;
         formHorizontal?: import("amis-core").FormHorizontal | undefined;
         formLabelAlign?: import("amis-core/lib/renderers/Item").LabelAlign | undefined;
         formLabelWidth?: string | number | undefined;
-        defaultSize?: "xs" | "sm" | "md" | "lg" | "full" | undefined;
-        size?: "xs" | "sm" | "md" | "lg" | "full" | undefined;
+        defaultSize?: "full" | "xs" | "sm" | "md" | "lg" | undefined;
+        size?: "full" | "xs" | "sm" | "md" | "lg" | undefined;
         labelAlign?: import("amis-core/lib/renderers/Item").LabelAlign | undefined;
         labelWidth?: string | number | undefined;
         disabled?: boolean | undefined;

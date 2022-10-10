@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -91,15 +91,6 @@ var ImageControl = /** @class */ (function (_super) {
         _this_1.handleReSelect = _this_1.handleReSelect.bind(_this_1);
         return _this_1;
     }
-    ImageControl.formatFileSize = function (size, units) {
-        if (units === void 0) { units = [' B', ' KB', ' M', ' G']; }
-        size = parseInt(size, 10) || 0;
-        while (size > 1024 && units.length > 1) {
-            size /= 1024;
-            units.shift();
-        }
-        return size.toFixed(2) + units[0];
-    };
     ImageControl.valueToFile = function (value, props) {
         return value
             ? tslib.__assign(tslib.__assign({}, (typeof value === 'string'
@@ -133,7 +124,7 @@ var ImageControl = /** @class */ (function (_super) {
     ImageControl.prototype.componentDidUpdate = function (prevProps) {
         var _this_1 = this;
         var props = this.props;
-        if (prevProps.value !== props.value && this.emitValue !== props.value) {
+        if (prevProps.value !== props.value) {
             var value = props.value;
             var multiple = props.multiple;
             var joinValues = props.joinValues;
@@ -532,8 +523,8 @@ var ImageControl = /** @class */ (function (_super) {
             if (maxSize && file.size > maxSize) {
                 _this_1.props.env.alert(__('File.maxSize', {
                     filename: file.name,
-                    actualSize: ImageControl.formatFileSize(file.size),
-                    maxSize: ImageControl.formatFileSize(maxSize)
+                    actualSize: amisCore.prettyBytes(file.size, 1024),
+                    maxSize: amisCore.prettyBytes(maxSize, 1024)
                 }));
                 return;
             }
@@ -937,7 +928,6 @@ var ImageControl = /** @class */ (function (_super) {
     };
     return ImageControl;
 }(React__default["default"].Component));
-var ImageControl$1 = ImageControl;
 var ImageControlRenderer = /** @class */ (function (_super) {
     tslib.__extends(ImageControlRenderer, _super);
     function ImageControlRenderer() {
@@ -953,4 +943,4 @@ var ImageControlRenderer = /** @class */ (function (_super) {
 }(ImageControl));
 
 exports.ImageControlRenderer = ImageControlRenderer;
-exports["default"] = ImageControl$1;
+exports["default"] = ImageControl;

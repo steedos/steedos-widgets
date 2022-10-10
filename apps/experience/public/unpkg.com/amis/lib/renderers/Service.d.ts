@@ -2,9 +2,14 @@ import React from 'react';
 import { RendererProps } from 'amis-core';
 import { IServiceStore } from 'amis-core';
 import { Api, RendererData, ActionObject } from 'amis-core';
-import Scoped, { IScopedContext } from 'amis-core';
+import { IScopedContext } from 'amis-core';
 import { BaseSchema, SchemaApi, SchemaCollection, SchemaExpression, SchemaMessage, SchemaName } from '../Schema';
 import type { ListenerAction } from 'amis-core';
+export declare const eventTypes: readonly ["inited", "onApiFetched", "onSchemaApiFetched", "onWsFetched"];
+export declare type ProviderEventType = typeof eventTypes[number];
+export declare type DataProviderCollection = Partial<Record<ProviderEventType, DataProvider>>;
+export declare type DataProvider = string | Function;
+export declare type ComposedDataProvider = DataProvider | DataProviderCollection;
 /**
  * Service 服务类控件。
  * 文档：https://baidu.gitee.io/amis/docs/components/service
@@ -25,7 +30,7 @@ export interface ServiceSchema extends BaseSchema {
     /**
      * 通过调用外部函数来获取数据
      */
-    dataProvider?: string | Function;
+    dataProvider?: ComposedDataProvider;
     /**
      * 内容区域
      */
@@ -80,7 +85,8 @@ export default class Service extends React.Component<ServiceProps> {
     timer: ReturnType<typeof setTimeout>;
     mounted: boolean;
     socket: any;
-    dataProviderUnsubscribe?: Function;
+    dataProviders: DataProviderCollection;
+    dataProviderUnsubscribe?: Partial<Record<ProviderEventType, Function>>;
     static defaultProps: Partial<ServiceProps>;
     static propsList: Array<string>;
     constructor(props: ServiceProps);
@@ -89,8 +95,26 @@ export default class Service extends React.Component<ServiceProps> {
     componentWillUnmount(): void;
     doAction(action: ListenerAction, args: any): void;
     initFetch(): void;
-    runDataProvider(): Promise<void>;
-    runDataProviderUnsubscribe(): void;
+    /**
+     * 初始化Provider函数集，将Schema配置统一转化为DataProviderCollection格式
+     */
+    initDataProviders(provider?: ComposedDataProvider): Partial<Record<"inited" | "onApiFetched" | "onSchemaApiFetched" | "onWsFetched", DataProvider>>;
+    /**
+     * 标准化处理Provider函数
+     */
+    normalizeProvider(provider: any, event?: ProviderEventType): DataProviderCollection | null;
+    /**
+     * 使用外部函数获取数据
+     *
+     * @param {ProviderEventType} event 触发provider函数执行的事件，默认初始时执行
+     */
+    runDataProvider(event: ProviderEventType): Promise<void>;
+    /**
+     * 运行销毁外部函数的方法
+     *
+     * @param {ProviderEventType} event 事件名称，不传参数即执行所有销毁函数
+     */
+    runDataProviderUnsubscribe(event?: ProviderEventType): void;
     dataProviderSetData(data: any): void;
     fetchWSData(ws: string | Api, data: any): void;
     afterDataFetch(result: any): void;
@@ -110,7 +134,7 @@ export default class Service extends React.Component<ServiceProps> {
     render(): JSX.Element;
 }
 export declare class ServiceRenderer extends Service {
-    static contextType: React.Context<Scoped.IScopedContext>;
+    static contextType: React.Context<IScopedContext>;
     constructor(props: ServiceProps, context: IScopedContext);
     reload(subpath?: string, query?: any, ctx?: any, silent?: boolean): void;
     receive(values: any, subPath?: string): void;

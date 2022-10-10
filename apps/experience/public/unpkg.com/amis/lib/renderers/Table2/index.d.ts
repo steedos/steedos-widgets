@@ -258,9 +258,17 @@ export interface TableSchema2 extends BaseSchema {
      * 操作列配置
      */
     actions?: Array<ActionSchema>;
+    /**
+     * 批量操作最大限制数
+     */
+    maxKeepItemSelectionLength?: number;
+    /**
+     * 翻页是否保存数据
+     */
+    keepItemSelectionOnPageChange?: boolean;
 }
 export declare type Table2RendererEvent = 'selected' | 'columnSort' | 'columnFilter' | 'columnSearch' | 'columnToggled' | 'dragOver';
-export declare type Table2RendererAction = 'selectAll' | 'clearAll' | 'select';
+export declare type Table2RendererAction = 'selectAll' | 'clearAll' | 'select' | 'expand';
 export interface Table2Props extends RendererProps {
     title?: string;
     columns: Array<ColumnSchema | ColumnProps>;
@@ -283,14 +291,15 @@ export interface Table2Props extends RendererProps {
     headSummary?: Array<SummaryProps | Array<SummaryProps>>;
     footSummary?: Array<SummaryProps | Array<SummaryProps>>;
     headingClassName?: string;
+    keepItemSelectionOnPageChange?: boolean;
+    maxKeepItemSelectionLength?: number;
 }
 export default class Table2 extends React.Component<Table2Props, object> {
     static contextType: React.Context<IScopedContext>;
     renderedToolbars: Array<string>;
-    control: any;
+    tableRef?: any;
     constructor(props: Table2Props, context: IScopedContext);
     componentWillUnmount(): void;
-    controlRef(control: any): void;
     syncSelected(): void;
     static syncRows(store: ITableStore2, props: Table2Props, prevProps?: Table2Props): boolean;
     componentDidUpdate(prevProps: Table2Props): void;
@@ -321,6 +330,7 @@ export default class Table2 extends React.Component<Table2Props, object> {
     handleSaveOrder(): Promise<void>;
     reset(): void;
     doAction(action: ActionObject, args: any, throwErrors: boolean): any;
+    getRef(ref: any): void;
     renderTable(): JSX.Element | null;
     renderHeading(): JSX.Element | null;
     render(): JSX.Element;

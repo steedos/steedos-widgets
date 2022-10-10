@@ -185,7 +185,7 @@ export interface DefaultProps {
 }
 export interface RangeItemProps extends RangeProps {
     value: FormatValue;
-    updateValue: (value: Value) => void;
+    onChange: (value: Value) => void;
     onAfterChange: () => void;
 }
 export interface RangeState {
@@ -252,10 +252,10 @@ export default class RangeControl extends React.PureComponent<RangeProps, RangeS
         min: number;
     };
     /**
-     * 所有触发value变换 -> updateValue
+     * 所有触发value变换 -> onChange
      * @param value
      */
-    updateValue(value: FormatValue): Promise<void>;
+    onChange(value: FormatValue): Promise<void>;
     /**
      * 鼠标松开事件
      */

@@ -90,7 +90,7 @@ export default class Dialog extends React.Component<DialogProps> {
         lazyRender: boolean;
         showCloseButton: boolean;
         wrapperComponent: {
-            new (props: Omit<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+            new (props: Omit<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                 container: HTMLElement;
                 size: string;
                 overlay: boolean;
@@ -103,7 +103,7 @@ export default class Dialog extends React.Component<DialogProps> {
                 getWrappedInstance(): any;
                 render(): JSX.Element;
                 context: any;
-                setState<K extends never>(state: {} | ((prevState: Readonly<{}>, props: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                setState<K extends never>(state: {} | ((prevState: Readonly<{}>, props: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                     container: HTMLElement;
                     size: string;
                     overlay: boolean;
@@ -112,7 +112,7 @@ export default class Dialog extends React.Component<DialogProps> {
                     translate?: ((str: string, ...args: any[]) => string) | undefined;
                 }, keyof import("amis-core").ThemeProps> & import("amis-core/lib/theme").ThemeOutterProps>) => {} | Pick<{}, K> | null) | Pick<{}, K> | null, callback?: (() => void) | undefined): void;
                 forceUpdate(callback?: (() => void) | undefined): void;
-                readonly props: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                readonly props: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                     container: HTMLElement;
                     size: string;
                     overlay: boolean;
@@ -127,7 +127,7 @@ export default class Dialog extends React.Component<DialogProps> {
                     [key: string]: React.ReactInstance;
                 };
                 componentDidMount?(): void;
-                shouldComponentUpdate?(nextProps: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                shouldComponentUpdate?(nextProps: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                     container: HTMLElement;
                     size: string;
                     overlay: boolean;
@@ -137,7 +137,7 @@ export default class Dialog extends React.Component<DialogProps> {
                 }, keyof import("amis-core").ThemeProps> & import("amis-core/lib/theme").ThemeOutterProps>, nextState: Readonly<{}>, nextContext: any): boolean;
                 componentWillUnmount?(): void;
                 componentDidCatch?(error: Error, errorInfo: React.ErrorInfo): void;
-                getSnapshotBeforeUpdate?(prevProps: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                getSnapshotBeforeUpdate?(prevProps: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                     container: HTMLElement;
                     size: string;
                     overlay: boolean;
@@ -145,7 +145,7 @@ export default class Dialog extends React.Component<DialogProps> {
                     locale?: string | undefined;
                     translate?: ((str: string, ...args: any[]) => string) | undefined;
                 }, keyof import("amis-core").ThemeProps> & import("amis-core/lib/theme").ThemeOutterProps>, prevState: Readonly<{}>): any;
-                componentDidUpdate?(prevProps: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                componentDidUpdate?(prevProps: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                     container: HTMLElement;
                     size: string;
                     overlay: boolean;
@@ -155,7 +155,7 @@ export default class Dialog extends React.Component<DialogProps> {
                 }, keyof import("amis-core").ThemeProps> & import("amis-core/lib/theme").ThemeOutterProps>, prevState: Readonly<{}>, snapshot?: any): void;
                 componentWillMount?(): void;
                 UNSAFE_componentWillMount?(): void;
-                componentWillReceiveProps?(nextProps: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                componentWillReceiveProps?(nextProps: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                     container: HTMLElement;
                     size: string;
                     overlay: boolean;
@@ -163,7 +163,7 @@ export default class Dialog extends React.Component<DialogProps> {
                     locale?: string | undefined;
                     translate?: ((str: string, ...args: any[]) => string) | undefined;
                 }, keyof import("amis-core").ThemeProps> & import("amis-core/lib/theme").ThemeOutterProps>, nextContext: any): void;
-                UNSAFE_componentWillReceiveProps?(nextProps: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                UNSAFE_componentWillReceiveProps?(nextProps: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                     container: HTMLElement;
                     size: string;
                     overlay: boolean;
@@ -171,7 +171,7 @@ export default class Dialog extends React.Component<DialogProps> {
                     locale?: string | undefined;
                     translate?: ((str: string, ...args: any[]) => string) | undefined;
                 }, keyof import("amis-core").ThemeProps> & import("amis-core/lib/theme").ThemeOutterProps>, nextContext: any): void;
-                componentWillUpdate?(nextProps: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                componentWillUpdate?(nextProps: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                     container: HTMLElement;
                     size: string;
                     overlay: boolean;
@@ -179,7 +179,7 @@ export default class Dialog extends React.Component<DialogProps> {
                     locale?: string | undefined;
                     translate?: ((str: string, ...args: any[]) => string) | undefined;
                 }, keyof import("amis-core").ThemeProps> & import("amis-core/lib/theme").ThemeOutterProps>, nextState: Readonly<{}>, nextContext: any): void;
-                UNSAFE_componentWillUpdate?(nextProps: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                UNSAFE_componentWillUpdate?(nextProps: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                     container: HTMLElement;
                     size: string;
                     overlay: boolean;
@@ -191,7 +191,7 @@ export default class Dialog extends React.Component<DialogProps> {
             displayName: string;
             contextType: React.Context<string>;
             ComposedComponent: React.ComponentType<{
-                new (props: Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                new (props: Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                     container: HTMLElement;
                     size: string;
                     overlay: boolean;
@@ -204,7 +204,7 @@ export default class Dialog extends React.Component<DialogProps> {
                     getWrappedInstance(): any;
                     render(): JSX.Element;
                     context: any;
-                    setState<K_1 extends never>(state: {} | ((prevState: Readonly<{}>, props: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                    setState<K_1 extends never>(state: {} | ((prevState: Readonly<{}>, props: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                         container: HTMLElement;
                         size: string;
                         overlay: boolean;
@@ -213,7 +213,7 @@ export default class Dialog extends React.Component<DialogProps> {
                         translate?: ((str: string, ...args: any[]) => string) | undefined;
                     }>) => {} | Pick<{}, K_1> | null) | Pick<{}, K_1> | null, callback?: (() => void) | undefined): void;
                     forceUpdate(callback?: (() => void) | undefined): void;
-                    readonly props: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                    readonly props: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                         container: HTMLElement;
                         size: string;
                         overlay: boolean;
@@ -228,7 +228,7 @@ export default class Dialog extends React.Component<DialogProps> {
                         [key: string]: React.ReactInstance;
                     };
                     componentDidMount?(): void;
-                    shouldComponentUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                    shouldComponentUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                         container: HTMLElement;
                         size: string;
                         overlay: boolean;
@@ -238,7 +238,7 @@ export default class Dialog extends React.Component<DialogProps> {
                     }>, nextState: Readonly<{}>, nextContext: any): boolean;
                     componentWillUnmount?(): void;
                     componentDidCatch?(error: Error, errorInfo: React.ErrorInfo): void;
-                    getSnapshotBeforeUpdate?(prevProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                    getSnapshotBeforeUpdate?(prevProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                         container: HTMLElement;
                         size: string;
                         overlay: boolean;
@@ -246,7 +246,7 @@ export default class Dialog extends React.Component<DialogProps> {
                         locale?: string | undefined;
                         translate?: ((str: string, ...args: any[]) => string) | undefined;
                     }>, prevState: Readonly<{}>): any;
-                    componentDidUpdate?(prevProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                    componentDidUpdate?(prevProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                         container: HTMLElement;
                         size: string;
                         overlay: boolean;
@@ -256,7 +256,7 @@ export default class Dialog extends React.Component<DialogProps> {
                     }>, prevState: Readonly<{}>, snapshot?: any): void;
                     componentWillMount?(): void;
                     UNSAFE_componentWillMount?(): void;
-                    componentWillReceiveProps?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                    componentWillReceiveProps?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                         container: HTMLElement;
                         size: string;
                         overlay: boolean;
@@ -264,7 +264,7 @@ export default class Dialog extends React.Component<DialogProps> {
                         locale?: string | undefined;
                         translate?: ((str: string, ...args: any[]) => string) | undefined;
                     }>, nextContext: any): void;
-                    UNSAFE_componentWillReceiveProps?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                    UNSAFE_componentWillReceiveProps?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                         container: HTMLElement;
                         size: string;
                         overlay: boolean;
@@ -272,7 +272,7 @@ export default class Dialog extends React.Component<DialogProps> {
                         locale?: string | undefined;
                         translate?: ((str: string, ...args: any[]) => string) | undefined;
                     }>, nextContext: any): void;
-                    componentWillUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                    componentWillUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                         container: HTMLElement;
                         size: string;
                         overlay: boolean;
@@ -280,7 +280,7 @@ export default class Dialog extends React.Component<DialogProps> {
                         locale?: string | undefined;
                         translate?: ((str: string, ...args: any[]) => string) | undefined;
                     }>, nextState: Readonly<{}>, nextContext: any): void;
-                    UNSAFE_componentWillUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                    UNSAFE_componentWillUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                         container: HTMLElement;
                         size: string;
                         overlay: boolean;
@@ -296,7 +296,7 @@ export default class Dialog extends React.Component<DialogProps> {
                 ComposedComponent: typeof import("amis-ui/lib/components/Modal").Modal;
             }>;
         } & import("hoist-non-react-statics").NonReactStatics<{
-            new (props: Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+            new (props: Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                 container: HTMLElement;
                 size: string;
                 overlay: boolean;
@@ -309,7 +309,7 @@ export default class Dialog extends React.Component<DialogProps> {
                 getWrappedInstance(): any;
                 render(): JSX.Element;
                 context: any;
-                setState<K_1_1 extends never>(state: {} | ((prevState: Readonly<{}>, props: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                setState<K_1_1 extends never>(state: {} | ((prevState: Readonly<{}>, props: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                     container: HTMLElement;
                     size: string;
                     overlay: boolean;
@@ -318,7 +318,7 @@ export default class Dialog extends React.Component<DialogProps> {
                     translate?: ((str: string, ...args: any[]) => string) | undefined;
                 }>) => {} | Pick<{}, K_1_1> | null) | Pick<{}, K_1_1> | null, callback?: (() => void) | undefined): void;
                 forceUpdate(callback?: (() => void) | undefined): void;
-                readonly props: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                readonly props: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                     container: HTMLElement;
                     size: string;
                     overlay: boolean;
@@ -333,7 +333,7 @@ export default class Dialog extends React.Component<DialogProps> {
                     [key: string]: React.ReactInstance;
                 };
                 componentDidMount?(): void;
-                shouldComponentUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                shouldComponentUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                     container: HTMLElement;
                     size: string;
                     overlay: boolean;
@@ -343,7 +343,7 @@ export default class Dialog extends React.Component<DialogProps> {
                 }>, nextState: Readonly<{}>, nextContext: any): boolean;
                 componentWillUnmount?(): void;
                 componentDidCatch?(error: Error, errorInfo: React.ErrorInfo): void;
-                getSnapshotBeforeUpdate?(prevProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                getSnapshotBeforeUpdate?(prevProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                     container: HTMLElement;
                     size: string;
                     overlay: boolean;
@@ -351,7 +351,7 @@ export default class Dialog extends React.Component<DialogProps> {
                     locale?: string | undefined;
                     translate?: ((str: string, ...args: any[]) => string) | undefined;
                 }>, prevState: Readonly<{}>): any;
-                componentDidUpdate?(prevProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                componentDidUpdate?(prevProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                     container: HTMLElement;
                     size: string;
                     overlay: boolean;
@@ -361,7 +361,7 @@ export default class Dialog extends React.Component<DialogProps> {
                 }>, prevState: Readonly<{}>, snapshot?: any): void;
                 componentWillMount?(): void;
                 UNSAFE_componentWillMount?(): void;
-                componentWillReceiveProps?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                componentWillReceiveProps?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                     container: HTMLElement;
                     size: string;
                     overlay: boolean;
@@ -369,7 +369,7 @@ export default class Dialog extends React.Component<DialogProps> {
                     locale?: string | undefined;
                     translate?: ((str: string, ...args: any[]) => string) | undefined;
                 }>, nextContext: any): void;
-                UNSAFE_componentWillReceiveProps?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                UNSAFE_componentWillReceiveProps?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                     container: HTMLElement;
                     size: string;
                     overlay: boolean;
@@ -377,7 +377,7 @@ export default class Dialog extends React.Component<DialogProps> {
                     locale?: string | undefined;
                     translate?: ((str: string, ...args: any[]) => string) | undefined;
                 }>, nextContext: any): void;
-                componentWillUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                componentWillUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                     container: HTMLElement;
                     size: string;
                     overlay: boolean;
@@ -385,7 +385,7 @@ export default class Dialog extends React.Component<DialogProps> {
                     locale?: string | undefined;
                     translate?: ((str: string, ...args: any[]) => string) | undefined;
                 }>, nextState: Readonly<{}>, nextContext: any): void;
-                UNSAFE_componentWillUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                UNSAFE_componentWillUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                     container: HTMLElement;
                     size: string;
                     overlay: boolean;
@@ -401,7 +401,7 @@ export default class Dialog extends React.Component<DialogProps> {
             ComposedComponent: typeof import("amis-ui/lib/components/Modal").Modal;
         }, {}> & {
             ComposedComponent: {
-                new (props: Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                new (props: Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                     container: HTMLElement;
                     size: string;
                     overlay: boolean;
@@ -414,7 +414,7 @@ export default class Dialog extends React.Component<DialogProps> {
                     getWrappedInstance(): any;
                     render(): JSX.Element;
                     context: any;
-                    setState<K_1_2 extends never>(state: {} | ((prevState: Readonly<{}>, props: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                    setState<K_1_2 extends never>(state: {} | ((prevState: Readonly<{}>, props: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                         container: HTMLElement;
                         size: string;
                         overlay: boolean;
@@ -423,7 +423,7 @@ export default class Dialog extends React.Component<DialogProps> {
                         translate?: ((str: string, ...args: any[]) => string) | undefined;
                     }>) => {} | Pick<{}, K_1_2> | null) | Pick<{}, K_1_2> | null, callback?: (() => void) | undefined): void;
                     forceUpdate(callback?: (() => void) | undefined): void;
-                    readonly props: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                    readonly props: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                         container: HTMLElement;
                         size: string;
                         overlay: boolean;
@@ -438,7 +438,7 @@ export default class Dialog extends React.Component<DialogProps> {
                         [key: string]: React.ReactInstance;
                     };
                     componentDidMount?(): void;
-                    shouldComponentUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                    shouldComponentUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                         container: HTMLElement;
                         size: string;
                         overlay: boolean;
@@ -448,7 +448,7 @@ export default class Dialog extends React.Component<DialogProps> {
                     }>, nextState: Readonly<{}>, nextContext: any): boolean;
                     componentWillUnmount?(): void;
                     componentDidCatch?(error: Error, errorInfo: React.ErrorInfo): void;
-                    getSnapshotBeforeUpdate?(prevProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                    getSnapshotBeforeUpdate?(prevProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                         container: HTMLElement;
                         size: string;
                         overlay: boolean;
@@ -456,7 +456,7 @@ export default class Dialog extends React.Component<DialogProps> {
                         locale?: string | undefined;
                         translate?: ((str: string, ...args: any[]) => string) | undefined;
                     }>, prevState: Readonly<{}>): any;
-                    componentDidUpdate?(prevProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                    componentDidUpdate?(prevProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                         container: HTMLElement;
                         size: string;
                         overlay: boolean;
@@ -466,7 +466,7 @@ export default class Dialog extends React.Component<DialogProps> {
                     }>, prevState: Readonly<{}>, snapshot?: any): void;
                     componentWillMount?(): void;
                     UNSAFE_componentWillMount?(): void;
-                    componentWillReceiveProps?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                    componentWillReceiveProps?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                         container: HTMLElement;
                         size: string;
                         overlay: boolean;
@@ -474,7 +474,7 @@ export default class Dialog extends React.Component<DialogProps> {
                         locale?: string | undefined;
                         translate?: ((str: string, ...args: any[]) => string) | undefined;
                     }>, nextContext: any): void;
-                    UNSAFE_componentWillReceiveProps?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                    UNSAFE_componentWillReceiveProps?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                         container: HTMLElement;
                         size: string;
                         overlay: boolean;
@@ -482,7 +482,7 @@ export default class Dialog extends React.Component<DialogProps> {
                         locale?: string | undefined;
                         translate?: ((str: string, ...args: any[]) => string) | undefined;
                     }>, nextContext: any): void;
-                    componentWillUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                    componentWillUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                         container: HTMLElement;
                         size: string;
                         overlay: boolean;
@@ -490,7 +490,7 @@ export default class Dialog extends React.Component<DialogProps> {
                         locale?: string | undefined;
                         translate?: ((str: string, ...args: any[]) => string) | undefined;
                     }>, nextState: Readonly<{}>, nextContext: any): void;
-                    UNSAFE_componentWillUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "width" | "height" | "closeOnOutside" | "show" | "onHide" | "onEntered" | "onExited" | "contentClassName" | "closeOnEsc"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "size" | "container" | "overlay">> & Partial<Pick<{
+                    UNSAFE_componentWillUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "show" | "closeOnEsc" | "closeOnOutside" | "height" | "width" | "onHide" | "onEntered" | "onExited" | "contentClassName"> & Partial<Pick<Omit<import("amis-ui/lib/components/Modal").ModalProps, keyof import("amis-core").LocaleProps>, "container" | "overlay" | "size">> & Partial<Pick<{
                         container: HTMLElement;
                         size: string;
                         overlay: boolean;
@@ -748,21 +748,21 @@ export default class Dialog extends React.Component<DialogProps> {
                     };
                     displayName: string;
                     contextType: React.Context<string>;
-                    ComposedComponent: React.ComponentType<({ classnames, className, showCloseButton, onClose, children, classPrefix, translate, forwardedRef, ...rest }: import("amis-core").ThemeProps & import("amis-core").LocaleProps & {
+                    ComposedComponent: React.ComponentType<({ classnames: cx, className, showCloseButton, onClose, children, classPrefix, translate: __, forwardedRef, ...rest }: import("amis-core").ThemeProps & import("amis-core").LocaleProps & {
                         className?: string | undefined;
                         showCloseButton?: boolean | undefined;
                         onClose?: (() => void) | undefined;
                         children?: React.ReactNode;
                         forwardedRef?: any;
                     } & React.HTMLAttributes<HTMLDivElement>) => JSX.Element>;
-                } & import("hoist-non-react-statics").NonReactStatics<({ classnames, className, showCloseButton, onClose, children, classPrefix, translate, forwardedRef, ...rest }: import("amis-core").ThemeProps & import("amis-core").LocaleProps & {
+                } & import("hoist-non-react-statics").NonReactStatics<({ classnames: cx, className, showCloseButton, onClose, children, classPrefix, translate: __, forwardedRef, ...rest }: import("amis-core").ThemeProps & import("amis-core").LocaleProps & {
                     className?: string | undefined;
                     showCloseButton?: boolean | undefined;
                     onClose?: (() => void) | undefined;
                     children?: React.ReactNode;
                     forwardedRef?: any;
                 } & React.HTMLAttributes<HTMLDivElement>) => JSX.Element, {}> & {
-                    ComposedComponent: ({ classnames, className, showCloseButton, onClose, children, classPrefix, translate, forwardedRef, ...rest }: import("amis-core").ThemeProps & import("amis-core").LocaleProps & {
+                    ComposedComponent: ({ classnames: cx, className, showCloseButton, onClose, children, classPrefix, translate: __, forwardedRef, ...rest }: import("amis-core").ThemeProps & import("amis-core").LocaleProps & {
                         className?: string | undefined;
                         showCloseButton?: boolean | undefined;
                         onClose?: (() => void) | undefined;
@@ -891,21 +891,21 @@ export default class Dialog extends React.Component<DialogProps> {
                 };
                 displayName: string;
                 contextType: React.Context<string>;
-                ComposedComponent: React.ComponentType<({ classnames, className, showCloseButton, onClose, children, classPrefix, translate, forwardedRef, ...rest }: import("amis-core").ThemeProps & import("amis-core").LocaleProps & {
+                ComposedComponent: React.ComponentType<({ classnames: cx, className, showCloseButton, onClose, children, classPrefix, translate: __, forwardedRef, ...rest }: import("amis-core").ThemeProps & import("amis-core").LocaleProps & {
                     className?: string | undefined;
                     showCloseButton?: boolean | undefined;
                     onClose?: (() => void) | undefined;
                     children?: React.ReactNode;
                     forwardedRef?: any;
                 } & React.HTMLAttributes<HTMLDivElement>) => JSX.Element>;
-            } & import("hoist-non-react-statics").NonReactStatics<({ classnames, className, showCloseButton, onClose, children, classPrefix, translate, forwardedRef, ...rest }: import("amis-core").ThemeProps & import("amis-core").LocaleProps & {
+            } & import("hoist-non-react-statics").NonReactStatics<({ classnames: cx, className, showCloseButton, onClose, children, classPrefix, translate: __, forwardedRef, ...rest }: import("amis-core").ThemeProps & import("amis-core").LocaleProps & {
                 className?: string | undefined;
                 showCloseButton?: boolean | undefined;
                 onClose?: (() => void) | undefined;
                 children?: React.ReactNode;
                 forwardedRef?: any;
             } & React.HTMLAttributes<HTMLDivElement>) => JSX.Element, {}> & {
-                ComposedComponent: ({ classnames, className, showCloseButton, onClose, children, classPrefix, translate, forwardedRef, ...rest }: import("amis-core").ThemeProps & import("amis-core").LocaleProps & {
+                ComposedComponent: ({ classnames: cx, className, showCloseButton, onClose, children, classPrefix, translate: __, forwardedRef, ...rest }: import("amis-core").ThemeProps & import("amis-core").LocaleProps & {
                     className?: string | undefined;
                     showCloseButton?: boolean | undefined;
                     onClose?: (() => void) | undefined;
@@ -1034,21 +1034,21 @@ export default class Dialog extends React.Component<DialogProps> {
                     };
                     displayName: string;
                     contextType: React.Context<string>;
-                    ComposedComponent: React.ComponentType<({ classnames, className, showCloseButton, onClose, children, classPrefix, translate, forwardedRef, ...rest }: import("amis-core").ThemeProps & import("amis-core").LocaleProps & {
+                    ComposedComponent: React.ComponentType<({ classnames: cx, className, showCloseButton, onClose, children, classPrefix, translate: __, forwardedRef, ...rest }: import("amis-core").ThemeProps & import("amis-core").LocaleProps & {
                         className?: string | undefined;
                         showCloseButton?: boolean | undefined;
                         onClose?: (() => void) | undefined;
                         children?: React.ReactNode;
                         forwardedRef?: any;
                     } & React.HTMLAttributes<HTMLDivElement>) => JSX.Element>;
-                } & import("hoist-non-react-statics").NonReactStatics<({ classnames, className, showCloseButton, onClose, children, classPrefix, translate, forwardedRef, ...rest }: import("amis-core").ThemeProps & import("amis-core").LocaleProps & {
+                } & import("hoist-non-react-statics").NonReactStatics<({ classnames: cx, className, showCloseButton, onClose, children, classPrefix, translate: __, forwardedRef, ...rest }: import("amis-core").ThemeProps & import("amis-core").LocaleProps & {
                     className?: string | undefined;
                     showCloseButton?: boolean | undefined;
                     onClose?: (() => void) | undefined;
                     children?: React.ReactNode;
                     forwardedRef?: any;
                 } & React.HTMLAttributes<HTMLDivElement>) => JSX.Element, {}> & {
-                    ComposedComponent: ({ classnames, className, showCloseButton, onClose, children, classPrefix, translate, forwardedRef, ...rest }: import("amis-core").ThemeProps & import("amis-core").LocaleProps & {
+                    ComposedComponent: ({ classnames: cx, className, showCloseButton, onClose, children, classPrefix, translate: __, forwardedRef, ...rest }: import("amis-core").ThemeProps & import("amis-core").LocaleProps & {
                         className?: string | undefined;
                         showCloseButton?: boolean | undefined;
                         onClose?: (() => void) | undefined;
@@ -1128,17 +1128,17 @@ export default class Dialog extends React.Component<DialogProps> {
                 };
                 displayName: string;
                 contextType: React.Context<string>;
-                ComposedComponent: React.ComponentType<({ classnames, className, children, classPrefix, forwardedRef, ...rest }: import("amis-core").ThemeProps & {
+                ComposedComponent: React.ComponentType<({ classnames: cx, className, children, classPrefix, forwardedRef, ...rest }: import("amis-core").ThemeProps & {
                     className?: string | undefined;
                     children?: React.ReactNode;
                     forwardedRef?: any;
                 } & React.HTMLAttributes<HTMLDivElement>) => JSX.Element>;
-            } & import("hoist-non-react-statics").NonReactStatics<({ classnames, className, children, classPrefix, forwardedRef, ...rest }: import("amis-core").ThemeProps & {
+            } & import("hoist-non-react-statics").NonReactStatics<({ classnames: cx, className, children, classPrefix, forwardedRef, ...rest }: import("amis-core").ThemeProps & {
                 className?: string | undefined;
                 children?: React.ReactNode;
                 forwardedRef?: any;
             } & React.HTMLAttributes<HTMLDivElement>) => JSX.Element, {}> & {
-                ComposedComponent: ({ classnames, className, children, classPrefix, forwardedRef, ...rest }: import("amis-core").ThemeProps & {
+                ComposedComponent: ({ classnames: cx, className, children, classPrefix, forwardedRef, ...rest }: import("amis-core").ThemeProps & {
                     className?: string | undefined;
                     children?: React.ReactNode;
                     forwardedRef?: any;
@@ -1215,17 +1215,17 @@ export default class Dialog extends React.Component<DialogProps> {
                 };
                 displayName: string;
                 contextType: React.Context<string>;
-                ComposedComponent: React.ComponentType<({ classnames, className, children, classPrefix, forwardedRef, ...rest }: import("amis-core").ThemeProps & {
+                ComposedComponent: React.ComponentType<({ classnames: cx, className, children, classPrefix, forwardedRef, ...rest }: import("amis-core").ThemeProps & {
                     className?: string | undefined;
                     children?: React.ReactNode;
                     forwardedRef?: any;
                 } & React.HTMLAttributes<HTMLDivElement>) => JSX.Element>;
-            } & import("hoist-non-react-statics").NonReactStatics<({ classnames, className, children, classPrefix, forwardedRef, ...rest }: import("amis-core").ThemeProps & {
+            } & import("hoist-non-react-statics").NonReactStatics<({ classnames: cx, className, children, classPrefix, forwardedRef, ...rest }: import("amis-core").ThemeProps & {
                 className?: string | undefined;
                 children?: React.ReactNode;
                 forwardedRef?: any;
             } & React.HTMLAttributes<HTMLDivElement>) => JSX.Element, {}> & {
-                ComposedComponent: ({ classnames, className, children, classPrefix, forwardedRef, ...rest }: import("amis-core").ThemeProps & {
+                ComposedComponent: ({ classnames: cx, className, children, classPrefix, forwardedRef, ...rest }: import("amis-core").ThemeProps & {
                     className?: string | undefined;
                     children?: React.ReactNode;
                     forwardedRef?: any;
@@ -1302,17 +1302,17 @@ export default class Dialog extends React.Component<DialogProps> {
                 };
                 displayName: string;
                 contextType: React.Context<string>;
-                ComposedComponent: React.ComponentType<({ classnames, className, children, classPrefix, forwardedRef, ...rest }: import("amis-core").ThemeProps & {
+                ComposedComponent: React.ComponentType<({ classnames: cx, className, children, classPrefix, forwardedRef, ...rest }: import("amis-core").ThemeProps & {
                     className?: string | undefined;
                     children?: React.ReactNode;
                     forwardedRef?: any;
                 } & React.HTMLAttributes<HTMLDivElement>) => JSX.Element>;
-            } & import("hoist-non-react-statics").NonReactStatics<({ classnames, className, children, classPrefix, forwardedRef, ...rest }: import("amis-core").ThemeProps & {
+            } & import("hoist-non-react-statics").NonReactStatics<({ classnames: cx, className, children, classPrefix, forwardedRef, ...rest }: import("amis-core").ThemeProps & {
                 className?: string | undefined;
                 children?: React.ReactNode;
                 forwardedRef?: any;
             } & React.HTMLAttributes<HTMLDivElement>) => JSX.Element, {}> & {
-                ComposedComponent: ({ classnames, className, children, classPrefix, forwardedRef, ...rest }: import("amis-core").ThemeProps & {
+                ComposedComponent: ({ classnames: cx, className, children, classPrefix, forwardedRef, ...rest }: import("amis-core").ThemeProps & {
                     className?: string | undefined;
                     children?: React.ReactNode;
                     forwardedRef?: any;

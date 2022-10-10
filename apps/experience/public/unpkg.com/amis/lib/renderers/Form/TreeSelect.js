@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -315,7 +315,7 @@ var TreeSelectControl = /** @class */ (function (_super) {
                     ? selectedOptions
                     : selectedOptions.length
                         ? this.renderItem(selectedOptions[0])
-                        : '', onResultClick: this.handleOutClick, value: this.state.inputValue, onChange: this.handleInputChange, onResultChange: this.handleResultChange, itemRender: this.renderItem, onKeyPress: this.handleKeyPress, onFocus: this.handleFocus, onBlur: this.handleBlur, onKeyDown: this.handleInputKeyDown, clearable: clearable, allowInput: searchable || amisCore.isEffectiveApi(autoComplete) }, loading ? React__default["default"].createElement(amisUi.Spinner, { size: "sm" }) : undefined),
+                        : '', onResultClick: this.handleOutClick, value: this.state.inputValue, onChange: this.handleInputChange, onResultChange: this.handleResultChange, itemRender: this.renderItem, onKeyPress: this.handleKeyPress, onFocus: this.handleFocus, onBlur: this.handleBlur, onKeyDown: this.handleInputKeyDown, clearable: clearable, allowInput: searchable || amisCore.isEffectiveApi(autoComplete), hasDropDownArrow: true }, loading ? React__default["default"].createElement(amisUi.Spinner, { size: "sm" }) : undefined),
             !mobileUI && isOpened ? (React__default["default"].createElement(amisCore.Overlay, { container: popOverContainer || (function () { return _this.container.current; }), target: function () { return _this.target; }, show: true },
                 React__default["default"].createElement(amisCore.PopOver, { classPrefix: ns, className: "".concat(ns, "TreeSelect-popover"), style: {
                         minWidth: this.target ? this.target.offsetWidth : undefined

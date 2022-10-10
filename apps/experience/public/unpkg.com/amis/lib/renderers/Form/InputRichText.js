@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -37,7 +37,17 @@ var RichTextControl = /** @class */ (function (_super) {
         _this.handleFocus = _this.handleFocus.bind(_this);
         _this.handleBlur = _this.handleBlur.bind(_this);
         _this.handleChange = _this.handleChange.bind(_this);
+        var imageReceiver = amisCore.normalizeApi(props.receiver, props.receiver.method || 'post');
+        imageReceiver.data = imageReceiver.data || {};
+        var imageApi = amisCore.buildApi(imageReceiver, props.data, {
+            method: props.receiver.method || 'post'
+        });
         if (finnalVendor === 'froala') {
+            var videoReceiver = amisCore.normalizeApi(props.videoReceiver, props.videoReceiver.method || 'post');
+            videoReceiver.data = videoReceiver.data || {};
+            var videoApi = amisCore.buildApi(videoReceiver, props.data, {
+                method: props.videoReceiver.method || 'post'
+            });
             _this.config = tslib.__assign(tslib.__assign({ imageAllowedTypes: ['jpeg', 'jpg', 'png', 'gif'], imageDefaultAlign: 'left', imageEditButtons: props.imageEditable
                     ? [
                         'imageReplace',
@@ -54,59 +64,66 @@ var RichTextControl = /** @class */ (function (_super) {
                         'imageAlt',
                         'imageSize'
                     ]
-                    : [], key: props.env.richTextToken, attribution: false }, props.options), { editorClass: props.editorClass, placeholderText: props.translate(props.placeholder), imageUploadURL: amisCore.tokenize(props.receiver, props.data), imageUploadParams: {
-                    from: 'rich-text'
-                }, videoUploadURL: amisCore.tokenize(props.videoReceiver, props.data), videoUploadParams: {
-                    from: 'rich-text'
-                }, events: tslib.__assign(tslib.__assign({}, (props.options && props.options.events)), { focus: _this.handleFocus, blur: _this.handleBlur }), language: !_this.props.locale || _this.props.locale === 'zh-CN' ? 'zh_cn' : '' });
+                    : [], key: props.env.richTextToken, attribution: false }, props.options), { editorClass: props.editorClass, placeholderText: props.translate(props.placeholder), imageUploadURL: imageApi.url, imageUploadParams: tslib.__assign({ from: 'rich-text' }, imageApi.data), videoUploadURL: videoApi.url, videoUploadParams: tslib.__assign({ from: 'rich-text' }, videoApi.data), events: tslib.__assign(tslib.__assign({}, (props.options && props.options.events)), { focus: _this.handleFocus, blur: _this.handleBlur }), language: !_this.props.locale || _this.props.locale === 'zh-CN' ? 'zh_cn' : '' });
             if (props.buttons) {
                 _this.config.toolbarButtons = props.buttons;
             }
         }
         else {
             var fetcher_1 = props.env.fetcher;
-            _this.config = tslib.__assign(tslib.__assign({}, props.options), { images_upload_handler: function (blobInfo, ok, fail) { return tslib.__awaiter(_this, void 0, void 0, function () {
-                    var formData, receiver, response, location_1, e_1;
-                    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
-                    return tslib.__generator(this, function (_k) {
-                        switch (_k.label) {
-                            case 0:
-                                formData = new FormData();
-                                formData.append(props.fileField, blobInfo.blob(), blobInfo.filename());
-                                _k.label = 1;
-                            case 1:
-                                _k.trys.push([1, 3, , 4]);
-                                receiver = tslib.__assign({ adaptor: function (payload) {
-                                        return tslib.__assign(tslib.__assign({}, payload), { data: payload });
-                                    } }, amisCore.normalizeApi(amisCore.tokenize(props.receiver, props.data), 'post'));
-                                return [4 /*yield*/, fetcher_1(receiver, formData, {
-                                        method: 'post'
-                                    })];
-                            case 2:
-                                response = _k.sent();
-                                if (response.ok) {
-                                    location_1 = ((_a = response.data) === null || _a === void 0 ? void 0 : _a.link) ||
-                                        ((_b = response.data) === null || _b === void 0 ? void 0 : _b.url) ||
-                                        ((_c = response.data) === null || _c === void 0 ? void 0 : _c.value) ||
-                                        ((_e = (_d = response.data) === null || _d === void 0 ? void 0 : _d.data) === null || _e === void 0 ? void 0 : _e.link) ||
-                                        ((_g = (_f = response.data) === null || _f === void 0 ? void 0 : _f.data) === null || _g === void 0 ? void 0 : _g.url) ||
-                                        ((_j = (_h = response.data) === null || _h === void 0 ? void 0 : _h.data) === null || _j === void 0 ? void 0 : _j.value);
-                                    if (location_1) {
-                                        ok(location_1);
+            _this.config = tslib.__assign(tslib.__assign({}, props.options), { images_upload_handler: function (blobInfo, progress) {
+                    return new Promise(function (resolve, reject) { return tslib.__awaiter(_this, void 0, void 0, function () {
+                        var formData, receiver, response, location_1, e_1;
+                        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+                        return tslib.__generator(this, function (_k) {
+                            switch (_k.label) {
+                                case 0:
+                                    formData = new FormData();
+                                    if (imageApi.data) {
+                                        amisCore.qsstringify(imageApi.data)
+                                            .split('&')
+                                            .filter(function (item) { return item !== ''; })
+                                            .forEach(function (item) {
+                                            var parts = item.split('=');
+                                            formData.append(parts[0], decodeURIComponent(parts[1]));
+                                        });
                                     }
-                                    else {
-                                        console.warn('must have return value');
+                                    formData.append(props.fileField || 'file', blobInfo.blob(), blobInfo.filename());
+                                    _k.label = 1;
+                                case 1:
+                                    _k.trys.push([1, 3, , 4]);
+                                    receiver = tslib.__assign({ adaptor: function (payload) {
+                                            return tslib.__assign(tslib.__assign({}, payload), { data: payload });
+                                        } }, imageApi);
+                                    return [4 /*yield*/, fetcher_1(receiver, formData, {
+                                            method: 'post'
+                                        })];
+                                case 2:
+                                    response = _k.sent();
+                                    if (response.ok) {
+                                        location_1 = ((_a = response.data) === null || _a === void 0 ? void 0 : _a.link) ||
+                                            ((_b = response.data) === null || _b === void 0 ? void 0 : _b.url) ||
+                                            ((_c = response.data) === null || _c === void 0 ? void 0 : _c.value) ||
+                                            ((_e = (_d = response.data) === null || _d === void 0 ? void 0 : _d.data) === null || _e === void 0 ? void 0 : _e.link) ||
+                                            ((_g = (_f = response.data) === null || _f === void 0 ? void 0 : _f.data) === null || _g === void 0 ? void 0 : _g.url) ||
+                                            ((_j = (_h = response.data) === null || _h === void 0 ? void 0 : _h.data) === null || _j === void 0 ? void 0 : _j.value);
+                                        if (location_1) {
+                                            resolve(location_1);
+                                        }
+                                        else {
+                                            console.warn('must have return value');
+                                        }
                                     }
-                                }
-                                return [3 /*break*/, 4];
-                            case 3:
-                                e_1 = _k.sent();
-                                fail(e_1);
-                                return [3 /*break*/, 4];
-                            case 4: return [2 /*return*/];
-                        }
-                    });
-                }); } });
+                                    return [3 /*break*/, 4];
+                                case 3:
+                                    e_1 = _k.sent();
+                                    reject(e_1);
+                                    return [3 /*break*/, 4];
+                                case 4: return [2 /*return*/];
+                            }
+                        });
+                    }); });
+                } });
         }
         return _this;
     }

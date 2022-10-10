@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -37,6 +37,17 @@ var Collapse = /** @class */ (function (_super) {
                     ? render('body', body)
                     : null, onCollapse: onCollapse }));
     };
+    Collapse.propsList = [
+        'collapsable',
+        'collapsed',
+        'collapseTitle',
+        'showArrow',
+        'headerPosition',
+        'bodyClassName',
+        'headingClassName',
+        'collapseHeader',
+        'size'
+    ];
     return Collapse;
 }(React__default["default"].Component));
 /** @class */ ((function (_super) {
