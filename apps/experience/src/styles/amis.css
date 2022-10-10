@@ -229,3 +229,6 @@ flex: 1  !important;
 overflow: auto  !important;
 }
 
+:focus:not(:focus-visible) {
+    outline: 0;
+}
