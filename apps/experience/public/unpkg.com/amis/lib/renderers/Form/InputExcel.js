@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -98,6 +98,58 @@ var ExcelControl = /** @class */ (function (_super) {
         });
     };
     /**
+     * 检查当前单元格数据是否为富文本
+     *
+     * @reference https://github.com/exceljs/exceljs#rich-text
+     */
+    ExcelControl.prototype.isRichTextValue = function (value) {
+        return !!(value &&
+            amisCore.isObject(value) &&
+            value.hasOwnProperty('richText') &&
+            Array.isArray(value === null || value === void 0 ? void 0 : value.richText));
+    };
+    /**
+     * 将富文本类型的单元格内容转化为Plain Text
+     *
+     * @param {CellRichTextValue} cellValue 单元格值
+     * @param {Boolean} html 是否输出为html格式
+     */
+    ExcelControl.prototype.richText2PlainString = function (cellValue, html) {
+        if (html === void 0) { html = false; }
+        var result = cellValue.richText.map(function (_a) {
+            var text = _a.text, _b = _a.font, font = _b === void 0 ? {} : _b;
+            var outputStr = text;
+            /* 如果以HTML格式输出，简单处理一下样式 */
+            if (html) {
+                var styles = '';
+                var htmlTag = (font === null || font === void 0 ? void 0 : font.bold)
+                    ? 'strong'
+                    : (font === null || font === void 0 ? void 0 : font.italic)
+                        ? 'em'
+                        : (font === null || font === void 0 ? void 0 : font.vertAlign) === 'superscript'
+                            ? 'sup'
+                            : (font === null || font === void 0 ? void 0 : font.vertAlign) === 'subscript'
+                                ? 'sub'
+                                : 'span';
+                if (font === null || font === void 0 ? void 0 : font.strike) {
+                    styles += 'text-decoration: line-through;';
+                }
+                else if (font === null || font === void 0 ? void 0 : font.underline) {
+                    styles += 'text-decoration: underline;';
+                }
+                if (font === null || font === void 0 ? void 0 : font.outline) {
+                    styles += 'outline: solid;';
+                }
+                if (font === null || font === void 0 ? void 0 : font.size) {
+                    styles += "font-size: ".concat(font.size, "px;");
+                }
+                outputStr = "<".concat(htmlTag, " ").concat(styles ? "style=".concat(styles) : '', ">").concat(text, "</").concat(htmlTag, ">");
+            }
+            return outputStr;
+        });
+        return result.join('');
+    };
+    /**
      * 读取单个 sheet 的内容
      */
     ExcelControl.prototype.readWorksheet = function (worksheet) {
@@ -115,9 +167,14 @@ var ExcelControl = /** @class */ (function (_super) {
         else {
             var firstRowValues_1 = [];
             worksheet.eachRow(function (row, rowNumber) {
+                var _a;
                 // 将第一列作为字段名
                 if (rowNumber == 1) {
-                    firstRowValues_1 = row.values;
+                    firstRowValues_1 = ((_a = row.values) !== null && _a !== void 0 ? _a : []).map(function (item) {
+                        return _this.isRichTextValue(item)
+                            ? _this.richText2PlainString(item)
+                            : item;
+                    });
                 }
                 else {
                     var data_1 = {};

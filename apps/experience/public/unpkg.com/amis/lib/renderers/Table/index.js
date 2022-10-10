@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -133,20 +133,7 @@ var Table = /** @class */ (function (_super) {
     };
     Table.prototype.componentDidMount = function () {
         var currentNode = ReactDOM.findDOMNode(this);
-        // 获取小于所有子元素高度之和的父元素
-        var parent = amisCore.getScrollParent(currentNode, function (parent) {
-            if (parent.getAttribute('role') === 'dialog') {
-                /**
-                 *
-                 * * 兼容在 Dialog 中的场景,
-                 * ! 有时 dialog 内容并没有撑出滚动条，这里需要做一下特殊处理
-                 * TODO 有没有一种更好的方式来判断
-                 */
-                return true;
-            }
-            // * 具备 overflow-*:auto 的父元素的高度小于当前元素
-            return (parent.offsetHeight > 0 && parent.offsetHeight < parent.scrollHeight);
-        });
+        var parent = amisCore.getScrollParent(currentNode);
         if (!parent || parent === document.body) {
             parent = window;
         }
@@ -575,9 +562,20 @@ var Table = /** @class */ (function (_super) {
                 totalWidth += width;
             });
             forEach__default["default"](table.querySelectorAll('thead>tr:first-child>th'), function (item) {
-                var width = widths2[item.getAttribute('data-index')];
-                item.style.cssText += "width: ".concat(width, "px; height: ").concat(heights.header2, "px");
-                totalWidth2 += width;
+                var rowSpan = Number(item.getAttribute('rowspan'));
+                var colSpan = Number(item.getAttribute('colspan'));
+                var thWidth = widths2[item.getAttribute('data-index')];
+                var thHeight = Number(heights.header2);
+                /* 考虑表头分组的情况，需要将固定列中对应的表头的高度按照rowSpan扩大指定倍数 */
+                if (!isNaN(thHeight) && !isNaN(rowSpan)) {
+                    thHeight *= rowSpan;
+                }
+                /* 考虑表头分组的情况，需要将分组表头按照colSpan缩小至指定倍数 */
+                if (!isNaN(thWidth) && !isNaN(colSpan) && colSpan !== 0) {
+                    thWidth /= colSpan;
+                }
+                item.style.cssText += "width: ".concat(thWidth, "px; height: ").concat(thHeight, "px");
+                totalWidth2 += thWidth;
             });
             forEach__default["default"](table.querySelectorAll('colgroup>col'), function (item) {
                 var width = widths[item.getAttribute('data-index')];
@@ -1026,12 +1024,12 @@ var Table = /** @class */ (function (_super) {
                 onClick: store.toggleExpandAll },
                 React__default["default"].createElement(amisUi.Icon, { icon: "right-arrow-bold", className: "icon" })))));
         }
-        var affix = null;
+        var affix = [];
         if (column.searchable && column.name && !autoGenerateFilter) {
-            affix = (React__default["default"].createElement(HeadCellSearchDropdown.HeadCellSearchDropDown, tslib.__assign({}, this.props, { onQuery: onQuery, name: column.name, searchable: column.searchable, sortable: column.sortable, type: column.type, data: query, orderBy: store.orderBy, orderDir: store.orderDir, popOverContainer: this.getPopOverContainer })));
+            affix.push(React__default["default"].createElement(HeadCellSearchDropdown.HeadCellSearchDropDown, tslib.__assign({}, this.props, { onQuery: onQuery, name: column.name, searchable: column.searchable, sortable: false, type: column.type, data: query, orderBy: store.orderBy, orderDir: store.orderDir, popOverContainer: this.getPopOverContainer })));
         }
-        else if (column.sortable && column.name) {
-            affix = (React__default["default"].createElement("span", { className: cx('TableCell-sortBtn'), onClick: function () { return tslib.__awaiter(_this, void 0, void 0, function () {
+        if (column.sortable && column.name) {
+            affix.push(React__default["default"].createElement("span", { className: cx('TableCell-sortBtn'), onClick: function () { return tslib.__awaiter(_this, void 0, void 0, function () {
                     var orderBy, orderDir, order, rendererEvent;
                     return tslib.__generator(this, function (_a) {
                         switch (_a.label) {
@@ -1079,8 +1077,8 @@ var Table = /** @class */ (function (_super) {
                 React__default["default"].createElement("i", { className: cx('TableCell-sortBtn--default', store.orderBy === column.name ? '' : 'is-active') },
                     React__default["default"].createElement(amisUi.Icon, { icon: "sort-default", className: "icon" }))));
         }
-        else if (column.filterable && column.name) {
-            affix = (React__default["default"].createElement(HeadCellFilterDropdown.HeadCellFilterDropDown, tslib.__assign({}, this.props, { onQuery: onQuery, name: column.name, type: column.type, data: query, filterable: column.filterable, popOverContainer: this.getPopOverContainer })));
+        if (!column.searchable && column.filterable && column.name) {
+            affix.push(React__default["default"].createElement(HeadCellFilterDropdown.HeadCellFilterDropDown, tslib.__assign({}, this.props, { onQuery: onQuery, name: column.name, type: column.type, data: query, filterable: column.filterable, popOverContainer: this.getPopOverContainer })));
         }
         if (column.pristine.width) {
             props.style = props.style || {};

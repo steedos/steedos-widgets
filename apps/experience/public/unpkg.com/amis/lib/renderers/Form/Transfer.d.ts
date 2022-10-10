@@ -86,6 +86,10 @@ export interface TransferControlSchema extends FormOptionsSchema {
      * 右侧列表搜索框提示
      */
     resultSearchPlaceholder?: string;
+    /**
+     * 统计数字
+     */
+    statistics?: boolean;
 }
 export interface BaseTransferProps extends OptionsControlProps, Omit<TransferControlSchema, 'type' | 'options' | 'className' | 'descriptionClassName' | 'inputClassName'> {
     resultItemRender?: (option: Option) => JSX.Element;

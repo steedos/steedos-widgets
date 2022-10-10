@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 

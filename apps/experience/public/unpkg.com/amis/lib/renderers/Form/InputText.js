@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -382,12 +382,14 @@ var TextControl = /** @class */ (function (_super) {
             ? ''
             : typeof value === 'string'
                 ? value
-                : JSON.stringify(value);
+                : value instanceof Date
+                    ? value.toISOString()
+                    : JSON.stringify(value);
     };
     TextControl.prototype.renderSugestMode = function () {
         var _this = this;
         var _a;
-        var _b = this.props, className = _b.className, inputControlClassName = _b.inputControlClassName, nativeInputClassName = _b.nativeInputClassName, inputOnly = _b.inputOnly, value = _b.value, placeholder = _b.placeholder, cx = _b.classnames, disabled = _b.disabled, readOnly = _b.readOnly, name = _b.name, loading = _b.loading, clearable = _b.clearable, options = _b.options, selectedOptions = _b.selectedOptions, autoComplete = _b.autoComplete, labelField = _b.labelField, valueField = _b.valueField, multiple = _b.multiple, creatable = _b.creatable, borderMode = _b.borderMode, showCounter = _b.showCounter, maxLength = _b.maxLength, __ = _b.translate;
+        var _b = this.props, className = _b.className, inputControlClassName = _b.inputControlClassName, nativeInputClassName = _b.nativeInputClassName, inputOnly = _b.inputOnly, value = _b.value, placeholder = _b.placeholder, cx = _b.classnames, disabled = _b.disabled, readOnly = _b.readOnly, name = _b.name, loading = _b.loading, clearable = _b.clearable, options = _b.options, selectedOptions = _b.selectedOptions, autoComplete = _b.autoComplete, labelField = _b.labelField, valueField = _b.valueField, multiple = _b.multiple, creatable = _b.creatable, borderMode = _b.borderMode, showCounter = _b.showCounter, maxLength = _b.maxLength, minLength = _b.minLength, __ = _b.translate;
         var type = (_a = this.props.type) === null || _a === void 0 ? void 0 : _a.replace(/^(?:native|input)\-/, '');
         return (React__default["default"].createElement(Downshift__default["default"], { isOpen: this.state.isOpen && !disabled && !readOnly, inputValue: this.state.inputValue, onChange: this.handleChange, onStateChange: this.handleStateChange, selectedItem: selectedOptions.map(function (item) { return item[valueField || 'value']; }) }, function (_a) {
             var _b, _c;
@@ -437,7 +439,9 @@ var TextControl = /** @class */ (function (_super) {
                         onFocus: _this.handleFocus,
                         onBlur: _this.handleBlur,
                         onChange: _this.handleInputChange,
-                        onKeyDown: _this.handleKeyDown
+                        onKeyDown: _this.handleKeyDown,
+                        maxLength: maxLength,
+                        minLength: minLength
                     }), { autoComplete: "off", size: 10, className: cx(nativeInputClassName) }))),
                 clearable && !disabled && !readOnly && value ? (React__default["default"].createElement("a", { onClick: _this.clearValue, className: cx('TextControl-clear') },
                     React__default["default"].createElement(amisUi.Icon, { icon: "input-clear", className: "icon" }))) : null,
@@ -471,13 +475,13 @@ var TextControl = /** @class */ (function (_super) {
     TextControl.prototype.renderNormal = function () {
         var _a;
         var _b, _c;
-        var _d = this.props, ns = _d.classPrefix, cx = _d.classnames, className = _d.className, inputControlClassName = _d.inputControlClassName, nativeInputClassName = _d.nativeInputClassName, inputOnly = _d.inputOnly, value = _d.value, placeholder = _d.placeholder; _d.onChange; var disabled = _d.disabled, readOnly = _d.readOnly, max = _d.max, min = _d.min, step = _d.step, clearable = _d.clearable, _e = _d.revealPassword, revealPassword = _e === void 0 ? true : _e, name = _d.name, borderMode = _d.borderMode, prefix = _d.prefix, suffix = _d.suffix, data = _d.data, showCounter = _d.showCounter, maxLength = _d.maxLength;
+        var _d = this.props, ns = _d.classPrefix, cx = _d.classnames, className = _d.className, inputControlClassName = _d.inputControlClassName, nativeInputClassName = _d.nativeInputClassName, inputOnly = _d.inputOnly, value = _d.value, placeholder = _d.placeholder; _d.onChange; var disabled = _d.disabled, readOnly = _d.readOnly, max = _d.max, min = _d.min, step = _d.step, clearable = _d.clearable, _e = _d.revealPassword, revealPassword = _e === void 0 ? true : _e, name = _d.name, borderMode = _d.borderMode, prefix = _d.prefix, suffix = _d.suffix, data = _d.data, showCounter = _d.showCounter, maxLength = _d.maxLength, minLength = _d.minLength;
         var type = (_b = this.props.type) === null || _b === void 0 ? void 0 : _b.replace(/^(?:native|input)\-/, '');
         return (React__default["default"].createElement("div", { className: cx('TextControl-input', (_a = {},
                 _a["TextControl-input--border".concat(amisCore.ucFirst(borderMode))] = borderMode,
                 _a), inputControlClassName, inputOnly ? className : '') },
             prefix ? (React__default["default"].createElement("span", { className: cx('TextControl-inputPrefix') }, amisCore.filter(prefix, data))) : null,
-            React__default["default"].createElement(amisUi.Input, { name: name, placeholder: placeholder, ref: this.inputRef, disabled: disabled, readOnly: readOnly, type: this.state.revealPassword ? 'text' : type, onFocus: this.handleFocus, onBlur: this.handleBlur, max: max, min: min, autoComplete: "off", size: 10, step: step, onChange: this.handleNormalInputChange, value: this.valueToString(value), className: cx(nativeInputClassName, {
+            React__default["default"].createElement(amisUi.Input, { name: name, placeholder: placeholder, ref: this.inputRef, disabled: disabled, readOnly: readOnly, type: this.state.revealPassword ? 'text' : type, onFocus: this.handleFocus, onBlur: this.handleBlur, max: max, min: min, maxLength: maxLength, minLength: minLength, autoComplete: "off", size: 10, step: step, onChange: this.handleNormalInputChange, value: this.valueToString(value), className: cx(nativeInputClassName, {
                     'TextControl-input-password': type === 'password' && revealPassword
                 }) }),
             clearable && !disabled && !readOnly && value ? (React__default["default"].createElement("a", { onClick: this.clearValue, className: "".concat(ns, "TextControl-clear") },

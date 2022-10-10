@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -326,7 +326,7 @@ var Page = /** @class */ (function (_super) {
     };
     Page.prototype.initInterval = function (value) {
         var _a = this.props, interval = _a.interval, silentPolling = _a.silentPolling, stopAutoRefreshWhen = _a.stopAutoRefreshWhen, data = _a.data, dispatchEvent = _a.dispatchEvent;
-        if (value.data) {
+        if (value === null || value === void 0 ? void 0 : value.data) {
             dispatchEvent('inited', amisCore.createObject(data, value.data));
         }
         interval &&
@@ -399,7 +399,7 @@ var Page = /** @class */ (function (_super) {
         return header || right;
     };
     Page.prototype.render = function () {
-        var _a = this.props, className = _a.className, store = _a.store, body = _a.body, bodyClassName = _a.bodyClassName, render = _a.render, aside = _a.aside, asideClassName = _a.asideClassName, cx = _a.classnames; _a.header; var showErrorMsg = _a.showErrorMsg, initApi = _a.initApi, regions = _a.regions, style = _a.style, data = _a.data, asideResizor = _a.asideResizor, pullRefresh = _a.pullRefresh, __ = _a.translate;
+        var _a = this.props, className = _a.className, store = _a.store, body = _a.body, bodyClassName = _a.bodyClassName, render = _a.render, aside = _a.aside, asideClassName = _a.asideClassName, cx = _a.classnames; _a.header; var showErrorMsg = _a.showErrorMsg, initApi = _a.initApi, regions = _a.regions, style = _a.style, data = _a.data, asideResizor = _a.asideResizor, pullRefresh = _a.pullRefresh, useMobileUI = _a.useMobileUI, __ = _a.translate;
         var subProps = {
             onAction: this.handleAction,
             onQuery: initApi ? this.handleQuery : undefined,
@@ -429,7 +429,7 @@ var Page = /** @class */ (function (_super) {
                     }
                     : null)))),
                 asideResizor ? (React__default["default"].createElement("div", { onMouseDown: this.handleResizeMouseDown, className: cx("Page-asideResizor") })) : null)) : null,
-            pullRefresh && !pullRefresh.disabled ? (React__default["default"].createElement(amisUi.PullRefresh, tslib.__assign({}, pullRefresh, { translate: __, onRefresh: this.handleRefresh }), pageContent)) : (pageContent),
+            useMobileUI && amisCore.isMobile() && pullRefresh && !pullRefresh.disabled ? (React__default["default"].createElement(amisUi.PullRefresh, tslib.__assign({}, pullRefresh, { translate: __, onRefresh: this.handleRefresh }), pageContent)) : (pageContent),
             render('dialog', tslib.__assign(tslib.__assign({}, (store.action &&
                 store.action.dialog)), { type: 'dialog' }), {
                 key: 'dialog',

@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -9,17 +9,32 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var tslib = require('tslib');
 var React = require('react');
+var extend = require('lodash/extend');
+var cloneDeep = require('lodash/cloneDeep');
 var amisCore = require('amis-core');
 var amisUi = require('amis-ui');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 var React__default = /*#__PURE__*/_interopDefaultLegacy(React);
+var extend__default = /*#__PURE__*/_interopDefaultLegacy(extend);
+var cloneDeep__default = /*#__PURE__*/_interopDefaultLegacy(cloneDeep);
 
+var eventTypes = [
+    /* 初始化时执行，默认 */
+    'inited',
+    /* API请求调用成功之后执行 */
+    'onApiFetched',
+    /* Schema API请求调用成功之后执行 */
+    'onSchemaApiFetched',
+    /* WebSocket调用成功后执行 */
+    'onWsFetched'
+];
 var Service = /** @class */ (function (_super) {
     tslib.__extends(Service, _super);
     function Service(props) {
         var _this = _super.call(this, props) || this;
+        _this.dataProviders = _this.initDataProviders(props.dataProvider);
         _this.handleQuery = _this.handleQuery.bind(_this);
         _this.handleAction = _this.handleAction.bind(_this);
         _this.handleChange = _this.handleChange.bind(_this);
@@ -37,23 +52,38 @@ var Service = /** @class */ (function (_super) {
         this.initFetch();
     };
     Service.prototype.componentDidUpdate = function (prevProps) {
+        var _this = this;
+        var _a;
         var props = this.props;
         var store = props.store;
-        var _a = props.messages, fetchSuccess = _a.fetchSuccess, fetchFailed = _a.fetchFailed;
+        var _b = props.messages, fetchSuccess = _b.fetchSuccess, fetchFailed = _b.fetchFailed;
+        if (props.dataProvider !== prevProps.dataProvider) {
+            /* 重新构建provider函数 */
+            this.dataProviders = this.initDataProviders(props.dataProvider);
+            if (this.dataProviders && ((_a = this.dataProviders) === null || _a === void 0 ? void 0 : _a.inited)) {
+                this.runDataProvider('inited');
+            }
+        }
         amisCore.isApiOutdated(prevProps.api, props.api, prevProps.data, props.data) &&
             store
                 .fetchData(props.api, store.data, {
                 successMessage: fetchSuccess,
                 errorMessage: fetchFailed
             })
-                .then(this.afterDataFetch);
+                .then(function (res) {
+                _this.runDataProvider('onApiFetched');
+                _this.afterDataFetch(res);
+            });
         amisCore.isApiOutdated(prevProps.schemaApi, props.schemaApi, prevProps.data, props.data) &&
             store
                 .fetchSchema(props.schemaApi, store.data, {
                 successMessage: fetchSuccess,
                 errorMessage: fetchFailed
             })
-                .then(this.afterSchemaFetch);
+                .then(function (res) {
+                _this.runDataProvider('onSchemaApiFetched');
+                _this.afterSchemaFetch(res);
+            });
         if (props.ws && prevProps.ws !== props.ws) {
             if (this.socket) {
                 this.socket.close();
@@ -62,9 +92,6 @@ var Service = /** @class */ (function (_super) {
         }
         if (amisCore.isObjectShallowModified(prevProps.defaultData, props.defaultData)) {
             store.reInitData(props.defaultData);
-        }
-        if (props.dataProvider !== prevProps.dataProvider) {
-            this.runDataProvider();
         }
     };
     Service.prototype.componentWillUnmount = function () {
@@ -89,11 +116,12 @@ var Service = /** @class */ (function (_super) {
                     .then(this.afterSchemaFetch);
             }
             if (dataProvider) {
-                this.runDataProvider();
+                this.runDataProvider('inited');
             }
         }
     };
     Service.prototype.initFetch = function () {
+        var _this = this;
         var _a = this.props, schemaApi = _a.schemaApi, initFetchSchema = _a.initFetchSchema, api = _a.api, ws = _a.ws, initFetch = _a.initFetch, initFetchOn = _a.initFetchOn, dataProvider = _a.dataProvider, store = _a.store, _b = _a.messages, fetchSuccess = _b.fetchSuccess, fetchFailed = _b.fetchFailed;
         if (amisCore.isEffectiveApi(schemaApi, store.data, initFetchSchema)) {
             store
@@ -101,7 +129,10 @@ var Service = /** @class */ (function (_super) {
                 successMessage: fetchSuccess,
                 errorMessage: fetchFailed
             })
-                .then(this.afterSchemaFetch);
+                .then(function (res) {
+                _this.runDataProvider('onSchemaApiFetched');
+                _this.afterSchemaFetch(res);
+            });
         }
         if (amisCore.isEffectiveApi(api, store.data, initFetch, initFetchOn)) {
             store
@@ -109,50 +140,126 @@ var Service = /** @class */ (function (_super) {
                 successMessage: fetchSuccess,
                 errorMessage: fetchFailed
             })
-                .then(this.afterDataFetch);
+                .then(function (res) {
+                _this.runDataProvider('onApiFetched');
+                _this.afterDataFetch(res);
+            });
         }
         if (ws) {
             this.socket = this.fetchWSData(ws, store.data);
         }
         if (dataProvider) {
-            this.runDataProvider();
+            this.runDataProvider('inited');
         }
     };
-    // 使用外部函数获取数据
-    Service.prototype.runDataProvider = function () {
+    /**
+     * 初始化Provider函数集，将Schema配置统一转化为DataProviderCollection格式
+     */
+    Service.prototype.initDataProviders = function (provider) {
+        var _this = this;
+        var dataProvider = cloneDeep__default["default"](provider);
+        var fnCollection = {};
+        if (dataProvider) {
+            if (typeof dataProvider === 'object' && amisCore.isObject(dataProvider)) {
+                Object.keys(dataProvider).forEach(function (event) {
+                    var normalizedProvider = _this.normalizeProvider(dataProvider[event], event);
+                    fnCollection = extend__default["default"](fnCollection, normalizedProvider || {});
+                });
+            }
+            else {
+                var normalizedProvider = this.normalizeProvider(dataProvider, 'inited');
+                fnCollection = extend__default["default"](fnCollection, normalizedProvider || {});
+            }
+        }
+        return fnCollection;
+    };
+    /**
+     * 标准化处理Provider函数
+     */
+    Service.prototype.normalizeProvider = function (provider, event) {
+        var _a, _b;
+        if (event === void 0) { event = 'inited'; }
+        if (!~eventTypes.indexOf(event)) {
+            return null;
+        }
+        if (typeof provider === 'function') {
+            return _a = {}, _a[event] = provider, _a;
+        }
+        else if (typeof provider === 'string') {
+            var asyncFn = amisCore.str2AsyncFunction(provider, 'data', 'setData', 'env');
+            return asyncFn
+                ? (_b = {},
+                    _b[event] = asyncFn,
+                    _b) : null;
+        }
+        return null;
+    };
+    /**
+     * 使用外部函数获取数据
+     *
+     * @param {ProviderEventType} event 触发provider函数执行的事件，默认初始时执行
+     */
+    Service.prototype.runDataProvider = function (event) {
         return tslib.__awaiter(this, void 0, void 0, function () {
-            var _a, dataProvider, store, dataProviderFunc, unsubscribe;
-            return tslib.__generator(this, function (_b) {
-                switch (_b.label) {
+            var store, dataProviders, fn, unsubscribe;
+            return tslib.__generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
-                        this.runDataProviderUnsubscribe();
-                        _a = this.props, dataProvider = _a.dataProvider, store = _a.store;
-                        dataProviderFunc = dataProvider;
-                        if (typeof dataProvider === 'string' && dataProvider) {
-                            dataProviderFunc = amisCore.str2AsyncFunction(dataProvider, 'data', 'setData', 'env');
-                        }
-                        if (!(typeof dataProviderFunc === 'function')) return [3 /*break*/, 2];
-                        return [4 /*yield*/, dataProviderFunc(store.data, this.dataProviderSetData, this.props.env)];
+                        this.runDataProviderUnsubscribe(event);
+                        store = this.props.store;
+                        dataProviders = this.dataProviders;
+                        if (!(dataProviders && ~eventTypes.indexOf(event))) return [3 /*break*/, 2];
+                        fn = dataProviders[event];
+                        if (!(fn && typeof fn === 'function')) return [3 /*break*/, 2];
+                        return [4 /*yield*/, fn(store.data, this.dataProviderSetData, this.props.env)];
                     case 1:
-                        unsubscribe = _b.sent();
+                        unsubscribe = _a.sent();
                         if (typeof unsubscribe === 'function') {
-                            this.dataProviderUnsubscribe = unsubscribe;
+                            if (!this.dataProviderUnsubscribe) {
+                                this.dataProviderUnsubscribe = {};
+                            }
+                            this.dataProviderUnsubscribe[event] = unsubscribe;
                         }
-                        _b.label = 2;
+                        _a.label = 2;
                     case 2: return [2 /*return*/];
                 }
             });
         });
     };
-    // 运行销毁外部函数的方法
-    Service.prototype.runDataProviderUnsubscribe = function () {
-        if (typeof this.dataProviderUnsubscribe === 'function') {
+    /**
+     * 运行销毁外部函数的方法
+     *
+     * @param {ProviderEventType} event 事件名称，不传参数即执行所有销毁函数
+     */
+    Service.prototype.runDataProviderUnsubscribe = function (event) {
+        var _a;
+        var dataProviderUnsubscribe = this.dataProviderUnsubscribe;
+        if (!dataProviderUnsubscribe) {
+            return;
+        }
+        if (event) {
+            var disposedFn = dataProviderUnsubscribe[event];
             try {
-                this.dataProviderUnsubscribe();
+                if (disposedFn && typeof disposedFn === 'function') {
+                    disposedFn();
+                }
             }
             catch (error) {
                 console.error(error);
             }
+        }
+        else {
+            (_a = Object.keys(dataProviderUnsubscribe)) === null || _a === void 0 ? void 0 : _a.forEach(function (event) {
+                var disposedFn = dataProviderUnsubscribe[event];
+                try {
+                    if (disposedFn && typeof disposedFn === 'function') {
+                        disposedFn();
+                    }
+                }
+                catch (error) {
+                    console.error(error);
+                }
+            });
         }
     };
     // 外部函数回调更新数据
@@ -181,6 +288,7 @@ var Service = /** @class */ (function (_super) {
             }
             store.updateData(returndata, undefined, false);
             store.setHasRemoteData();
+            _this.runDataProvider('onWsFetched');
             // 因为 WebSocket 只会获取纯数据，所以没有 msg 之类的
             _this.afterDataFetch({ ok: true, data: returndata });
         }, function (error) {
@@ -220,6 +328,7 @@ var Service = /** @class */ (function (_super) {
         return value;
     };
     Service.prototype.reload = function (subpath, query, ctx, silent) {
+        var _this = this;
         if (query) {
             return this.receive(query);
         }
@@ -231,7 +340,10 @@ var Service = /** @class */ (function (_super) {
                 successMessage: fetchSuccess,
                 errorMessage: fetchFailed
             })
-                .then(this.afterSchemaFetch);
+                .then(function (res) {
+                _this.runDataProvider('onApiFetched');
+                _this.afterSchemaFetch(res);
+            });
         }
         if (amisCore.isEffectiveApi(api, store.data)) {
             store
@@ -240,10 +352,13 @@ var Service = /** @class */ (function (_super) {
                 successMessage: fetchSuccess,
                 errorMessage: fetchFailed
             })
-                .then(this.afterDataFetch);
+                .then(function (res) {
+                _this.runDataProvider('onSchemaApiFetched');
+                _this.afterDataFetch(res);
+            });
         }
         if (dataProvider) {
-            this.runDataProvider();
+            this.runDataProvider('inited');
         }
     };
     Service.prototype.silentReload = function (target, query) {
@@ -385,6 +500,18 @@ var Service = /** @class */ (function (_super) {
     tslib.__decorate([
         amisCore.autobind,
         tslib.__metadata("design:type", Function),
+        tslib.__metadata("design:paramtypes", [Object]),
+        tslib.__metadata("design:returntype", void 0)
+    ], Service.prototype, "initDataProviders", null);
+    tslib.__decorate([
+        amisCore.autobind,
+        tslib.__metadata("design:type", Function),
+        tslib.__metadata("design:paramtypes", [Object, String]),
+        tslib.__metadata("design:returntype", Object)
+    ], Service.prototype, "normalizeProvider", null);
+    tslib.__decorate([
+        amisCore.autobind,
+        tslib.__metadata("design:type", Function),
         tslib.__metadata("design:paramtypes", [Array, Object, Object, Array]),
         tslib.__metadata("design:returntype", void 0)
     ], Service.prototype, "handleDialogConfirm", null);
@@ -444,3 +571,4 @@ var Service = /** @class */ (function (_super) {
 })(Service));
 
 exports["default"] = Service;
+exports.eventTypes = eventTypes;

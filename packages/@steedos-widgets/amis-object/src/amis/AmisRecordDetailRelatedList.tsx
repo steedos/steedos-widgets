@@ -12,6 +12,16 @@ export const AmisRecordDetailRelatedList = async (props) => {
   // console.log(`AmisRecordDetailRelatedList props==>`, props)
   const { recordId, data } = props;
   let objectApiName = props.objectApiName || "accounts";
-  let relatedObjectApiName = props.relatedObjectApiName || "contacts";
+  let relatedObjectApiName = props.relatedObjectApiName;
+  if(!props.objectApiName || !recordId || !relatedObjectApiName){
+    return {
+      "type": "alert",
+      "title": "注意",
+      "body": "缺少父级对象、父级记录或相关列表对象",
+      "level": "warning",
+      "showIcon": true,
+      "className": "mb-3"
+    }
+  }
   return (await getRecordDetailRelatedListSchema(objectApiName, recordId, relatedObjectApiName)).amisSchema;
 }

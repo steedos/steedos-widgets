@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -220,7 +220,7 @@ var Navigation = /** @class */ (function (_super) {
         var _a = this.props, render = _a.render, cx = _a.classnames, className = _a.className, loading = _a.loading, _b = _a.links, links = _b === void 0 ? [] : _b;
         var overflowClassName = overflowConfig.overflowClassName, overflowPopoverClassName = overflowConfig.overflowPopoverClassName, overflowListClassName = overflowConfig.overflowListClassName, overflowLabel = overflowConfig.overflowLabel, overflowIndicator = overflowConfig.overflowIndicator, _c = overflowConfig.itemWidth, itemWidth = _c === void 0 ? 160 : _c, overflowSuffix = overflowConfig.overflowSuffix, popOverContainer = overflowConfig.popOverContainer, style = overflowConfig.style, maxVisibleCount = overflowConfig.maxVisibleCount, _d = overflowConfig.wrapperComponent, wrapperComponent = _d === void 0 ? 'ul' : _d;
         return (React__default["default"].createElement(React__default["default"].Fragment, null,
-            React__default["default"].createElement(amisUi.Spinner, { show: !!loading, overlay: true, icon: "reload" }),
+            React__default["default"].createElement(amisUi.Spinner, { show: !!loading, overlay: true }),
             React__default["default"].createElement(Overflow__default["default"], { className: cx('Nav-list--tabs', className), prefixCls: cx('Nav-list'), itemWidth: itemWidth, style: style, component: wrapperComponent, data: links, suffix: overflowSuffix
                     ? render('nav-overflow-suffix', overflowSuffix)
                     : null, renderRawItem: function (item, index) {
@@ -258,7 +258,7 @@ var Navigation = /** @class */ (function (_super) {
                 Array.isArray(links)
                     ? links.map(function (item, index) { return _this.renderItem(item, index); })
                     : null,
-                React__default["default"].createElement(amisUi.Spinner, { show: !!loading, overlay: true, icon: "reload" })),
+                React__default["default"].createElement(amisUi.Spinner, { show: !!loading, overlay: true })),
             dropIndicator ? (React__default["default"].createElement("div", { className: cx('Nav-dropIndicator'), style: dropIndicator })) : null))));
     };
     Navigation.defaultProps = {

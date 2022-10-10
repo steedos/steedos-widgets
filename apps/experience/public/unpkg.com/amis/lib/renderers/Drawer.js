@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -283,9 +283,7 @@ var Drawer = /** @class */ (function (_super) {
         var store = this.props.store;
         var _a = tslib.__assign(tslib.__assign({}, this.props), store.schema), className = _a.className, size = _a.size, closeOnEsc = _a.closeOnEsc, position = _a.position, title = _a.title, render = _a.render, header = _a.header, body = _a.body, bodyClassName = _a.bodyClassName, headerClassName = _a.headerClassName, show = _a.show, showCloseButton = _a.showCloseButton, width = _a.width, height = _a.height, wrapperComponent = _a.wrapperComponent, env = _a.env, resizable = _a.resizable, overlay = _a.overlay, closeOnOutside = _a.closeOnOutside, ns = _a.classPrefix, cx = _a.classnames, drawerContainer = _a.drawerContainer;
         var Container = wrapperComponent || amisUi.Drawer;
-        return (React__default["default"].createElement(Container, { resizable: resizable, classPrefix: ns, className: className, size: size, onHide: this.handleSelfClose, disabled: store.loading, show: show, showCloseButton: showCloseButton, width: width, height: height, position: position, overlay: overlay, onEntered: this.handleEntered, onExited: this.handleExited, closeOnEsc: closeOnEsc, closeOnOutside: !store.drawerOpen &&
-                !store.dialogOpen &&
-                (closeOnOutside || !showCloseButton), container: drawerContainer
+        return (React__default["default"].createElement(Container, { resizable: resizable, classPrefix: ns, className: className, size: size, onHide: this.handleSelfClose, disabled: store.loading, show: show, showCloseButton: showCloseButton, width: width, height: height, position: position, overlay: overlay, onEntered: this.handleEntered, onExited: this.handleExited, closeOnEsc: closeOnEsc, closeOnOutside: !store.drawerOpen && !store.dialogOpen && closeOnOutside, container: drawerContainer
                 ? drawerContainer
                 : env && env.getModalContainer
                     ? env.getModalContainer

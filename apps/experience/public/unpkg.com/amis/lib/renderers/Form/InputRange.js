@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -70,7 +70,7 @@ var Input = /** @class */ (function (_super) {
         var _a;
         var _b = this.props, multiple = _b.multiple, originValue = _b.value, type = _b.type, min = _b.min;
         var _value = this.getValue(value, type);
-        this.props.updateValue(multiple
+        this.props.onChange(multiple
             ? tslib.__assign(tslib.__assign({}, originValue), (_a = {}, _a[type] = _value, _a)) : value !== null && value !== void 0 ? value : min);
     };
     /**
@@ -81,7 +81,7 @@ var Input = /** @class */ (function (_super) {
         var _a;
         var _b = this.props, multiple = _b.multiple, originValue = _b.value, type = _b.type;
         var _value = this.getValue(value, type);
-        this.props.updateValue(multiple ? tslib.__assign(tslib.__assign({}, originValue), (_a = {}, _a[type] = _value, _a)) : value);
+        this.props.onChange(multiple ? tslib.__assign(tslib.__assign({}, originValue), (_a = {}, _a[type] = _value, _a)) : value);
     };
     Input.prototype.checkNum = function (value) {
         if (typeof value !== 'number') {
@@ -262,10 +262,10 @@ var RangeControl = /** @class */ (function (_super) {
             : amisCore.stripNumber(value);
     };
     /**
-     * 所有触发value变换 -> updateValue
+     * 所有触发value变换 -> onChange
      * @param value
      */
-    RangeControl.prototype.updateValue = function (value) {
+    RangeControl.prototype.onChange = function (value) {
         return tslib.__awaiter(this, void 0, void 0, function () {
             var _a, onChange, data, dispatchEvent, result, rendererEvent;
             return tslib.__generator(this, function (_b) {
@@ -314,7 +314,7 @@ var RangeControl = /** @class */ (function (_super) {
     RangeControl.prototype.render = function () {
         var _this = this;
         var value = this.state.value;
-        var props = tslib.__assign(tslib.__assign({}, this.props), { value: value, updateValue: this.updateValue, onAfterChange: this.onAfterChange });
+        var props = tslib.__assign(tslib.__assign({}, this.props), { value: value, onChange: this.onChange, onAfterChange: this.onAfterChange });
         var ns = props.classPrefix, multiple = props.multiple; props.parts; var showInput = props.showInput, cx = props.classnames, className = props.className, disabled = props.disabled, clearable = props.clearable, min = props.min, max = props.max, render = props.render, marks = props.marks, region = props.region;
         // 处理自定义json配置
         var renderMarks = marks ? tslib.__assign({}, marks) : marks;
@@ -369,7 +369,7 @@ var RangeControl = /** @class */ (function (_super) {
         tslib.__metadata("design:type", Function),
         tslib.__metadata("design:paramtypes", [Object]),
         tslib.__metadata("design:returntype", Promise)
-    ], RangeControl.prototype, "updateValue", null);
+    ], RangeControl.prototype, "onChange", null);
     tslib.__decorate([
         amisCore.autobind,
         tslib.__metadata("design:type", Function),

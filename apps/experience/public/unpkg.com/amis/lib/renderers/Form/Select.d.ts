@@ -118,7 +118,7 @@ export default class SelectControl extends React.Component<SelectProps, any> {
     componentWillUnmount(): void;
     inputRef(ref: any): void;
     foucs(): void;
-    getValue(value: Option | Array<Option> | string | void): string | void | Option | Option[];
+    getValue(value: Option | Array<Option> | string | void, additonalOptions?: Array<any>): string | void | Option | Option[];
     dispatchEvent(eventName: SelectRendererEvent, eventData?: any): Promise<void>;
     changeValue(value: Option | Array<Option> | string | void): Promise<void>;
     loadRemote(input: string): Promise<(() => void) | {

@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -29,7 +29,7 @@ var BaseTransferRenderer = /** @class */ (function (_super) {
     };
     BaseTransferRenderer.prototype.handleChange = function (value, optionModified) {
         return tslib.__awaiter(this, void 0, void 0, function () {
-            var _a, onChange, joinValues, delimiter, valueField, extractValue, options, dispatchEvent, setOptions, newValue, newOptions, rendererEvent;
+            var _a, onChange, joinValues, delimiter, valueField, extractValue, options, dispatchEvent, setOptions, newValue, newOptions, indexes, origin_1, rendererEvent;
             return tslib.__generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -43,8 +43,8 @@ var BaseTransferRenderer = /** @class */ (function (_super) {
                                     newOptions.push(item);
                                 }
                                 else if (optionModified) {
-                                    var origin_1 = amisCore.getTree(newOptions, indexes);
-                                    newOptions = amisCore.spliceTree(newOptions, indexes, 1, tslib.__assign(tslib.__assign({}, origin_1), item));
+                                    var origin_2 = amisCore.getTree(newOptions, indexes);
+                                    newOptions = amisCore.spliceTree(newOptions, indexes, 1, tslib.__assign(tslib.__assign({}, origin_2), item));
                                 }
                                 return joinValues || extractValue
                                     ? item[valueField || 'value']
@@ -59,6 +59,14 @@ var BaseTransferRenderer = /** @class */ (function (_super) {
                                 joinValues || extractValue
                                     ? value[valueField || 'value']
                                     : value;
+                            indexes = amisCore.findTreeIndex(options, amisCore.optionValueCompare(value[valueField || 'value'], valueField || 'value'));
+                            if (!indexes) {
+                                newOptions.push(value);
+                            }
+                            else if (optionModified) {
+                                origin_1 = amisCore.getTree(newOptions, indexes);
+                                newOptions = amisCore.spliceTree(newOptions, indexes, 1, tslib.__assign(tslib.__assign({}, origin_1), value));
+                            }
                         }
                         (newOptions.length > options.length || optionModified) &&
                             setOptions(newOptions, true);
@@ -101,7 +109,7 @@ var BaseTransferRenderer = /** @class */ (function (_super) {
                         }
                         result = payload.data.options || payload.data.items || payload.data;
                         if (!Array.isArray(result)) {
-                            throw new Error('CRUD.invalidArray');
+                            throw new Error(__('CRUD.invalidArray'));
                         }
                         return [2 /*return*/, result.map(function (item) {
                                 var resolved = null;
@@ -159,7 +167,7 @@ var BaseTransferRenderer = /** @class */ (function (_super) {
                 data: amisCore.createObject(amisCore.createObject(data, states), option)
             });
         }
-        return amisUi.ResultList.itemRender(option);
+        return amisUi.ResultList.itemRender(option, states);
     };
     BaseTransferRenderer.prototype.renderCell = function (column, option, colIndex, rowIndex) {
         var _a = this.props, render = _a.render, data = _a.data;
@@ -196,7 +204,7 @@ var BaseTransferRenderer = /** @class */ (function (_super) {
     };
     BaseTransferRenderer.prototype.render = function () {
         var _a;
-        var _b = this.props, className = _b.className, cx = _b.classnames, selectedOptions = _b.selectedOptions, showArrow = _b.showArrow, sortable = _b.sortable, selectMode = _b.selectMode, columns = _b.columns, loading = _b.loading, searchable = _b.searchable, searchResultMode = _b.searchResultMode, searchResultColumns = _b.searchResultColumns, deferLoad = _b.deferLoad, leftMode = _b.leftMode, rightMode = _b.rightMode, disabled = _b.disabled, selectTitle = _b.selectTitle, resultTitle = _b.resultTitle; _b.menuTpl; var searchPlaceholder = _b.searchPlaceholder, _c = _b.resultListModeFollowSelect, resultListModeFollowSelect = _c === void 0 ? false : _c, resultSearchPlaceholder = _b.resultSearchPlaceholder, _d = _b.resultSearchable, resultSearchable = _d === void 0 ? false : _d;
+        var _b = this.props, className = _b.className, cx = _b.classnames, selectedOptions = _b.selectedOptions, showArrow = _b.showArrow, sortable = _b.sortable, selectMode = _b.selectMode, columns = _b.columns, loading = _b.loading, searchable = _b.searchable, searchResultMode = _b.searchResultMode, searchResultColumns = _b.searchResultColumns, deferLoad = _b.deferLoad, leftMode = _b.leftMode, rightMode = _b.rightMode, disabled = _b.disabled, selectTitle = _b.selectTitle, resultTitle = _b.resultTitle; _b.menuTpl; var searchPlaceholder = _b.searchPlaceholder, _c = _b.resultListModeFollowSelect, resultListModeFollowSelect = _c === void 0 ? false : _c, resultSearchPlaceholder = _b.resultSearchPlaceholder, _d = _b.resultSearchable, resultSearchable = _d === void 0 ? false : _d, statistics = _b.statistics, labelField = _b.labelField;
         // 目前 LeftOptions 没有接口可以动态加载
         // 为了方便可以快速实现动态化，让选项的第一个成员携带
         // LeftOptions 信息
@@ -211,7 +219,7 @@ var BaseTransferRenderer = /** @class */ (function (_super) {
             options = options[0].children;
         }
         return (React__default["default"].createElement("div", { className: cx('TransferControl', className) },
-            React__default["default"].createElement(amisUi.Transfer, { value: selectedOptions, options: options, disabled: disabled, onChange: this.handleChange, option2value: this.option2value, sortable: sortable, showArrow: showArrow, selectMode: selectMode, searchResultMode: searchResultMode, searchResultColumns: searchResultColumns, columns: columns, onSearch: searchable ? this.handleSearch : undefined, onDeferLoad: deferLoad, leftOptions: leftOptions, leftMode: leftMode, rightMode: rightMode, cellRender: this.renderCell, selectTitle: selectTitle, resultTitle: resultTitle, resultListModeFollowSelect: resultListModeFollowSelect, onResultSearch: this.handleResultSearch, searchPlaceholder: searchPlaceholder, resultSearchable: resultSearchable, resultSearchPlaceholder: resultSearchPlaceholder, optionItemRender: this.optionItemRender, resultItemRender: this.resultItemRender, onSelectAll: this.onSelectAll, onRef: this.getRef }),
+            React__default["default"].createElement(amisUi.Transfer, { value: selectedOptions, options: options, disabled: disabled, onChange: this.handleChange, option2value: this.option2value, sortable: sortable, showArrow: showArrow, selectMode: selectMode, searchResultMode: searchResultMode, searchResultColumns: searchResultColumns, columns: columns, onSearch: searchable ? this.handleSearch : undefined, onDeferLoad: deferLoad, leftOptions: leftOptions, leftMode: leftMode, rightMode: rightMode, cellRender: this.renderCell, selectTitle: selectTitle, resultTitle: resultTitle, resultListModeFollowSelect: resultListModeFollowSelect, onResultSearch: this.handleResultSearch, searchPlaceholder: searchPlaceholder, resultSearchable: resultSearchable, resultSearchPlaceholder: resultSearchPlaceholder, statistics: statistics, labelField: labelField, optionItemRender: this.optionItemRender, resultItemRender: this.resultItemRender, onSelectAll: this.onSelectAll, onRef: this.getRef }),
             React__default["default"].createElement(amisUi.Spinner, { overlay: true, key: "info", show: loading })));
     };
     tslib.__decorate([

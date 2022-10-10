@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -39,7 +39,7 @@ var ImagesField = /** @class */ (function (_super) {
     };
     ImagesField.prototype.render = function () {
         var _this = this;
-        var _a = this.props, className = _a.className, defaultImage = _a.defaultImage, thumbMode = _a.thumbMode, thumbRatio = _a.thumbRatio, data = _a.data; _a.name; var placeholder = _a.placeholder, cx = _a.classnames, source = _a.source, delimiter = _a.delimiter, enlargeAble = _a.enlargeAble, src = _a.src, originalSrc = _a.originalSrc, listClassName = _a.listClassName, options = _a.options;
+        var _a = this.props, className = _a.className, defaultImage = _a.defaultImage, thumbMode = _a.thumbMode, thumbRatio = _a.thumbRatio, data = _a.data; _a.name; var placeholder = _a.placeholder, cx = _a.classnames, source = _a.source, delimiter = _a.delimiter, enlargeAble = _a.enlargeAble, src = _a.src, originalSrc = _a.originalSrc, listClassName = _a.listClassName, options = _a.options, showToolbar = _a.showToolbar, toolbarActions = _a.toolbarActions;
         var value;
         var list;
         if (typeof source === 'string' && amisCore.isPureVariable(source)) {
@@ -62,7 +62,7 @@ var ImagesField = /** @class */ (function (_super) {
         return (React__default["default"].createElement("div", { className: cx('ImagesField', className) }, Array.isArray(list) ? (React__default["default"].createElement("div", { className: cx('Images', listClassName) }, list.map(function (item, index) { return (React__default["default"].createElement(Image["default"], { index: index, className: cx('Images-item'), key: index, src: (src ? amisCore.filter(src, item, '| raw') : item && item.image) ||
                 item, originalSrc: (originalSrc
                 ? amisCore.filter(originalSrc, item, '| raw')
-                : item && item.src) || item, title: item && item.title, caption: item && (item.description || item.caption), thumbMode: thumbMode, thumbRatio: thumbRatio, enlargeAble: enlargeAble, onEnlarge: _this.handleEnlarge })); }))) : defaultImage ? (React__default["default"].createElement("div", { className: cx('Images', listClassName) },
+                : item && item.src) || item, title: item && item.title, caption: item && (item.description || item.caption), thumbMode: thumbMode, thumbRatio: thumbRatio, enlargeAble: enlargeAble, onEnlarge: _this.handleEnlarge, showToolbar: showToolbar, toolbarActions: toolbarActions })); }))) : defaultImage ? (React__default["default"].createElement("div", { className: cx('Images', listClassName) },
             React__default["default"].createElement(Image["default"], { className: cx('Images-item'), src: defaultImage, thumbMode: thumbMode, thumbRatio: thumbRatio }))) : (placeholder)));
     };
     ImagesField.defaultProps = {

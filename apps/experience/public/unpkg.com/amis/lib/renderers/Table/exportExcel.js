@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -34,11 +34,11 @@ var getAbsoluteUrl = (function () {
     };
 })();
 function exportExcel(ExcelJS, props, toolbar) {
-    var _a, _b;
+    var _a, _b, _c, _d;
     return tslib.__awaiter(this, void 0, void 0, function () {
-        var store, env, __, data, columns, rows, tmpStore, filename, res, workbook, worksheet, exportColumnNames, _i, columns_1, column, filteredColumns, firstRowLabels, firstRow, remoteMappingCache, rowIndex, _c, rows_1, row, rowData, sheetRow, columIndex, _d, filteredColumns_1, column, name_1, value, type, imageData, imageDimensions, imageWidth, imageHeight, imageMaxSize, imageMatch, imageExt, imageId, linkURL, e_1, href, linkURL, body, text, absoluteURL, map, source, sourceValue, mapKey, res, viewValue, viewValue, _e, fromNow, _f, format, _g, valueFormat, ISODate, NormalDate, buffer, blob;
-        return tslib.__generator(this, function (_h) {
-            switch (_h.label) {
+        var store, env, __, data, columns, rows, tmpStore, filename, res, _i, _e, key, workbook, worksheet, exportColumnNames, _f, columns_1, column, filteredColumns, firstRowLabels, firstRow, remoteMappingCache, rowIndex, _g, rows_1, row, rowData, sheetRow, columIndex, _h, filteredColumns_1, column, name_1, value, type, imageData, imageDimensions, imageWidth, imageHeight, imageMaxSize, imageMatch, imageExt, imageId, linkURL, e_1, href, linkURL, body, text, absoluteURL, map, source, sourceValue, mapKey, res, viewValue, viewValue, _j, fromNow, _k, format, _l, valueFormat, ISODate, NormalDate, buffer, blob;
+        return tslib.__generator(this, function (_m) {
+            switch (_m.label) {
                 case 0:
                     store = props.store, env = props.env, props.classnames, __ = props.translate, data = props.data;
                     columns = store.exportColumns || [];
@@ -47,16 +47,32 @@ function exportExcel(ExcelJS, props, toolbar) {
                     if (!(typeof toolbar === 'object' && toolbar.api)) return [3 /*break*/, 2];
                     return [4 /*yield*/, env.fetcher(toolbar.api, data)];
                 case 1:
-                    res = _h.sent();
+                    res = _m.sent();
                     if (!res.data) {
                         env.notify('warning', __('placeholder.noData'));
                         return [2 /*return*/];
                     }
+                    /**
+                     * 优先找items和rows，找不到就拿第一个值为数组的字段
+                     * 和CRUD中的处理逻辑保持一致，避免能渲染和导出的不一致
+                     */
                     if (Array.isArray(res.data)) {
                         rows = res.data;
                     }
+                    else if (Array.isArray((_a = res.data) === null || _a === void 0 ? void 0 : _a.rows)) {
+                        rows = res.data.rows;
+                    }
+                    else if (Array.isArray((_b = res.data) === null || _b === void 0 ? void 0 : _b.items)) {
+                        rows = res.data.items;
+                    }
                     else {
-                        rows = res.data.rows || res.data.items;
+                        for (_i = 0, _e = Object.keys(res.data); _i < _e.length; _i++) {
+                            key = _e[_i];
+                            if (res.data.hasOwnProperty(key) && Array.isArray(res.data[key])) {
+                                rows = res.data[key];
+                                break;
+                            }
+                        }
                     }
                     // 因为很多方法是 store 里的，所以需要构建 store 来处理
                     tmpStore = amisCore.TableStore.create(mobxStateTree.getSnapshot(store));
@@ -65,7 +81,7 @@ function exportExcel(ExcelJS, props, toolbar) {
                     return [3 /*break*/, 3];
                 case 2:
                     rows = store.rows;
-                    _h.label = 3;
+                    _m.label = 3;
                 case 3:
                     if (typeof toolbar === 'object' && toolbar.filename) {
                         filename = amisCore.filter(toolbar.filename, data, '| raw');
@@ -87,8 +103,8 @@ function exportExcel(ExcelJS, props, toolbar) {
                     if (toolbar.exportColumns && Array.isArray(toolbar.exportColumns)) {
                         columns = toolbar.exportColumns;
                         // 因为后面列 props 都是从 pristine 里获取，所以这里归一一下
-                        for (_i = 0, columns_1 = columns; _i < columns_1.length; _i++) {
-                            column = columns_1[_i];
+                        for (_f = 0, columns_1 = columns; _f < columns_1.length; _f++) {
+                            column = columns_1[_f];
                             column.pristine = column;
                         }
                     }
@@ -118,20 +134,20 @@ function exportExcel(ExcelJS, props, toolbar) {
                     };
                     remoteMappingCache = {};
                     rowIndex = 1;
-                    _c = 0, rows_1 = rows;
-                    _h.label = 4;
+                    _g = 0, rows_1 = rows;
+                    _m.label = 4;
                 case 4:
-                    if (!(_c < rows_1.length)) return [3 /*break*/, 19];
-                    row = rows_1[_c];
+                    if (!(_g < rows_1.length)) return [3 /*break*/, 19];
+                    row = rows_1[_g];
                     rowData = amisCore.createObject(data, row.data);
                     rowIndex += 1;
                     sheetRow = worksheet.getRow(rowIndex);
                     columIndex = 0;
-                    _d = 0, filteredColumns_1 = filteredColumns;
-                    _h.label = 5;
+                    _h = 0, filteredColumns_1 = filteredColumns;
+                    _m.label = 5;
                 case 5:
-                    if (!(_d < filteredColumns_1.length)) return [3 /*break*/, 18];
-                    column = filteredColumns_1[_d];
+                    if (!(_h < filteredColumns_1.length)) return [3 /*break*/, 18];
+                    column = filteredColumns_1[_h];
                     columIndex += 1;
                     name_1 = column.name;
                     value = amisCore.getVariable(rowData, name_1);
@@ -150,15 +166,15 @@ function exportExcel(ExcelJS, props, toolbar) {
                     }
                     type = column.type || 'plain';
                     if (!((type === 'image' || type === 'static-image') && value)) return [3 /*break*/, 11];
-                    _h.label = 6;
+                    _m.label = 6;
                 case 6:
-                    _h.trys.push([6, 9, , 10]);
+                    _m.trys.push([6, 9, , 10]);
                     return [4 /*yield*/, amisCore.toDataURL(value)];
                 case 7:
-                    imageData = _h.sent();
+                    imageData = _m.sent();
                     return [4 /*yield*/, amisCore.getImageDimensions(imageData)];
                 case 8:
-                    imageDimensions = _h.sent();
+                    imageDimensions = _m.sent();
                     imageWidth = imageDimensions.width;
                     imageHeight = imageDimensions.height;
                     imageMaxSize = 100;
@@ -202,7 +218,7 @@ function exportExcel(ExcelJS, props, toolbar) {
                     });
                     return [3 /*break*/, 10];
                 case 9:
-                    e_1 = _h.sent();
+                    e_1 = _m.sent();
                     console.warn(e_1.stack);
                     return [3 /*break*/, 10];
                 case 10: return [3 /*break*/, 17];
@@ -237,15 +253,15 @@ function exportExcel(ExcelJS, props, toolbar) {
                     return [3 /*break*/, 15];
                 case 13: return [4 /*yield*/, env.fetcher(sourceValue, rowData)];
                 case 14:
-                    res = _h.sent();
+                    res = _m.sent();
                     if (res.data) {
                         remoteMappingCache[mapKey] = res.data;
                         map = res.data;
                     }
-                    _h.label = 15;
+                    _m.label = 15;
                 case 15:
-                    if (typeof value !== 'undefined' && map && ((_a = map[value]) !== null && _a !== void 0 ? _a : map['*'])) {
-                        viewValue = (_b = map[value]) !== null && _b !== void 0 ? _b : (value === true && map['1']
+                    if (typeof value !== 'undefined' && map && ((_c = map[value]) !== null && _c !== void 0 ? _c : map['*'])) {
+                        viewValue = (_d = map[value]) !== null && _d !== void 0 ? _d : (value === true && map['1']
                             ? map['1']
                             : value === false && map['0']
                                 ? map['0']
@@ -259,7 +275,7 @@ function exportExcel(ExcelJS, props, toolbar) {
                 case 16:
                     if (type === 'date' || type === 'static-date') {
                         viewValue = void 0;
-                        _e = column.pristine, fromNow = _e.fromNow, _f = _e.format, format = _f === void 0 ? 'YYYY-MM-DD' : _f, _g = _e.valueFormat, valueFormat = _g === void 0 ? 'X' : _g;
+                        _j = column.pristine, fromNow = _j.fromNow, _k = _j.format, format = _k === void 0 ? 'YYYY-MM-DD' : _k, _l = _j.valueFormat, valueFormat = _l === void 0 ? 'X' : _l;
                         if (value) {
                             ISODate = moment__default["default"](value, moment__default["default"].ISO_8601);
                             NormalDate = moment__default["default"](value, valueFormat);
@@ -284,16 +300,16 @@ function exportExcel(ExcelJS, props, toolbar) {
                             sheetRow.getCell(columIndex).value = value;
                         }
                     }
-                    _h.label = 17;
+                    _m.label = 17;
                 case 17:
-                    _d++;
+                    _h++;
                     return [3 /*break*/, 5];
                 case 18:
-                    _c++;
+                    _g++;
                     return [3 /*break*/, 4];
                 case 19: return [4 /*yield*/, workbook.xlsx.writeBuffer()];
                 case 20:
-                    buffer = _h.sent();
+                    buffer = _m.sent();
                     if (buffer) {
                         blob = new Blob([buffer], {
                             type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'

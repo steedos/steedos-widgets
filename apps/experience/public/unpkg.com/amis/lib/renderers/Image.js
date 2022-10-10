@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -65,7 +65,7 @@ var ImageField = /** @class */ (function (_super) {
     }
     ImageField.prototype.handleEnlarge = function (_a) {
         var src = _a.src, originalSrc = _a.originalSrc, title = _a.title, caption = _a.caption, thumbMode = _a.thumbMode, thumbRatio = _a.thumbRatio;
-        var _b = this.props, onImageEnlarge = _b.onImageEnlarge, enlargeTitle = _b.enlargeTitle, enlargeCaption = _b.enlargeCaption;
+        var _b = this.props, onImageEnlarge = _b.onImageEnlarge, enlargeTitle = _b.enlargeTitle, enlargeCaption = _b.enlargeCaption, showToolbar = _b.showToolbar, toolbarActions = _b.toolbarActions;
         onImageEnlarge &&
             onImageEnlarge({
                 src: src,
@@ -73,7 +73,9 @@ var ImageField = /** @class */ (function (_super) {
                 title: enlargeTitle || title,
                 caption: enlargeCaption || caption,
                 thumbMode: thumbMode,
-                thumbRatio: thumbRatio
+                thumbRatio: thumbRatio,
+                showToolbar: showToolbar,
+                toolbarActions: toolbarActions
             }, this.props);
     };
     ImageField.prototype.handleClick = function (e) {

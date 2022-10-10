@@ -63,6 +63,7 @@ export default class FieldSetControl extends React.Component<FieldSetProps, any>
         headingClassName: string;
         collapsable: boolean;
     };
+    static propsList: Array<string>;
     renderBody(): JSX.Element;
     render(): JSX.Element;
 }

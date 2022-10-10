@@ -77,6 +77,7 @@ export interface CollapseProps extends RendererProps, Omit<CollapseSchema, 'type
     children?: JSX.Element | ((props?: any) => JSX.Element);
 }
 export default class Collapse extends React.Component<CollapseProps, {}> {
+    static propsList: Array<string>;
     render(): JSX.Element;
 }
 export declare class CollapseRenderer extends Collapse {

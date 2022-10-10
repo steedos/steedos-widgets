@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -87,7 +87,9 @@ var NumberControl = /** @class */ (function (_super) {
     };
     NumberControl.prototype.getValue = function (inputValue) {
         var _a = this.props, resetValue = _a.resetValue, unitOptions = _a.unitOptions;
-        if (inputValue && typeof inputValue !== 'number') {
+        if (inputValue &&
+            typeof inputValue !== 'number' &&
+            typeof inputValue !== 'string') {
             return;
         }
         if (inputValue !== null && unitOptions && this.state.unit) {
@@ -131,6 +133,9 @@ var NumberControl = /** @class */ (function (_super) {
         });
     };
     NumberControl.prototype.filterNum = function (value) {
+        if (typeof value === 'undefined') {
+            return undefined;
+        }
         if (typeof value !== 'number') {
             value = amisCore.filter(value, this.props.data);
             value = /^[-]?\d+/.test(value) ? +value : undefined;
@@ -173,7 +178,7 @@ var NumberControl = /** @class */ (function (_super) {
         var _a;
         var _this = this;
         var _b;
-        var _c = this.props, className = _c.className, ns = _c.classPrefix, value = _c.value, step = _c.step, precision = _c.precision, max = _c.max, min = _c.min, disabled = _c.disabled, placeholder = _c.placeholder, showSteps = _c.showSteps, borderMode = _c.borderMode, suffix = _c.suffix, prefix = _c.prefix, kilobitSeparator = _c.kilobitSeparator, unitOptions = _c.unitOptions, readOnly = _c.readOnly, keyboard = _c.keyboard, displayMode = _c.displayMode;
+        var _c = this.props, className = _c.className, ns = _c.classPrefix, value = _c.value, step = _c.step, precision = _c.precision, max = _c.max, min = _c.min, disabled = _c.disabled, placeholder = _c.placeholder, showSteps = _c.showSteps, borderMode = _c.borderMode, suffix = _c.suffix, prefix = _c.prefix, kilobitSeparator = _c.kilobitSeparator, unitOptions = _c.unitOptions, readOnly = _c.readOnly, keyboard = _c.keyboard, displayMode = _c.displayMode, big = _c.big;
         var finalPrecision = this.filterNum(precision);
         var unit = (_b = this.state) === null || _b === void 0 ? void 0 : _b.unit;
         // 数据格式化
@@ -199,7 +204,7 @@ var NumberControl = /** @class */ (function (_super) {
         return (React__default["default"].createElement("div", { className: cx__default["default"]("".concat(ns, "NumberControl"), (_a = {},
                 _a["".concat(ns, "NumberControl--withUnit")] = unitOptions,
                 _a), className) },
-            React__default["default"].createElement(amisUi.NumberInput, { inputRef: this.inputRef, value: finalValue, step: step, max: this.filterNum(max), min: this.filterNum(min), formatter: formatter, parser: parser, onChange: this.handleChange, disabled: disabled, placeholder: placeholder, precision: finalPrecision, showSteps: showSteps, borderMode: borderMode, readOnly: readOnly, onFocus: function () { return _this.dispatchEvent('focus'); }, onBlur: function () { return _this.dispatchEvent('blur'); }, keyboard: keyboard, displayMode: displayMode }),
+            React__default["default"].createElement(amisUi.NumberInput, { inputRef: this.inputRef, value: finalValue, step: step, max: this.filterNum(max), min: this.filterNum(min), formatter: formatter, parser: parser, onChange: this.handleChange, disabled: disabled, placeholder: placeholder, precision: finalPrecision, showSteps: showSteps, borderMode: borderMode, readOnly: readOnly, onFocus: function () { return _this.dispatchEvent('focus'); }, onBlur: function () { return _this.dispatchEvent('blur'); }, keyboard: keyboard, displayMode: displayMode, big: big }),
             unitOptions ? (React__default["default"].createElement(amisUi.Select, { value: unit, clearable: false, options: this.state.unitOptions || [], onChange: this.handleChangeUnit })) : null));
     };
     NumberControl.defaultProps = {

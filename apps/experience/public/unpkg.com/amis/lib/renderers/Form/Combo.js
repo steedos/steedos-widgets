@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -134,7 +134,7 @@ var ComboControl = /** @class */ (function (_super) {
         return value;
     };
     ComboControl.prototype.addItemWith = function (condition) {
-        var _a = this.props, flat = _a.flat, joinValues = _a.joinValues, delimiter = _a.delimiter, scaffold = _a.scaffold, disabled = _a.disabled, submitOnChange = _a.submitOnChange;
+        var _a = this.props, flat = _a.flat, joinValues = _a.joinValues, addattop = _a.addattop, delimiter = _a.delimiter, scaffold = _a.scaffold, disabled = _a.disabled, submitOnChange = _a.submitOnChange;
         if (disabled) {
             return;
         }
@@ -146,15 +146,18 @@ var ComboControl = /** @class */ (function (_super) {
         if (flat && joinValues) {
             value = value.join(delimiter || ',');
         }
+        if (addattop === true) {
+            value.unshift(value.pop());
+        }
         this.props.onChange(value, submitOnChange, true);
     };
     ComboControl.prototype.addItem = function () {
         return tslib.__awaiter(this, void 0, void 0, function () {
-            var _a, flat, joinValues, delimiter, scaffold, disabled, submitOnChange, data, dispatchEvent, value, rendererEvent;
+            var _a, flat, joinValues, addattop, delimiter, scaffold, disabled, submitOnChange, data, dispatchEvent, value, rendererEvent;
             return tslib.__generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        _a = this.props, flat = _a.flat, joinValues = _a.joinValues, delimiter = _a.delimiter, scaffold = _a.scaffold, disabled = _a.disabled, submitOnChange = _a.submitOnChange, data = _a.data, dispatchEvent = _a.dispatchEvent;
+                        _a = this.props, flat = _a.flat, joinValues = _a.joinValues, addattop = _a.addattop, delimiter = _a.delimiter, scaffold = _a.scaffold, disabled = _a.disabled, submitOnChange = _a.submitOnChange, data = _a.data, dispatchEvent = _a.dispatchEvent;
                         if (disabled) {
                             return [2 /*return*/];
                         }
@@ -173,6 +176,9 @@ var ComboControl = /** @class */ (function (_super) {
                         this.keys.push(amisCore.guid());
                         if (flat && joinValues) {
                             value = value.join(delimiter || ',');
+                        }
+                        if (addattop === true) {
+                            value.unshift(value.pop());
                         }
                         this.props.onChange(value, submitOnChange, true);
                         return [2 /*return*/];

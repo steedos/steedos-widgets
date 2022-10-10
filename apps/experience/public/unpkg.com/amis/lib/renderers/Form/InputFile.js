@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -12,7 +12,6 @@ var React = require('react');
 var amisCore = require('amis-core');
 var find = require('lodash/find');
 var isPlainObject = require('lodash/isPlainObject');
-var InputImage = require('./InputImage.js');
 var amisUi = require('amis-ui');
 var DropZone = require('react-dropzone');
 var merge = require('lodash/merge');
@@ -165,8 +164,8 @@ var FileControl = /** @class */ (function (_super) {
                 // this.props.env.alert(
                 //   __('File.maxSize', {
                 //     filename: file[nameField as keyof typeof file] || file.name,
-                //     actualSize: ImageControl.formatFileSize(file.size),
-                //     maxSize: ImageControl.formatFileSize(maxSize)
+                //     actualSize: prettyBytes(file.size),
+                //     maxSize: prettyBytes(maxSize)
                 //   })
                 // );
                 file.state = 'invalid';
@@ -857,7 +856,9 @@ var FileControl = /** @class */ (function (_super) {
                             __('File.dragDrop'),
                             React__default["default"].createElement("span", { className: cx('FileControl-acceptTip-click') }, __('File.clickUpload'))),
                         React__default["default"].createElement("div", { className: cx('FileControl-acceptTip-help', 'TplField') }, documentLink ? (React__default["default"].createElement("a", { href: documentLink, onClick: function (e) { return e.stopPropagation(); } }, documentation ? documentation : __('File.helpText'))) : null),
-                        maxSize ? (React__default["default"].createElement("div", { className: cx('FileControl-sizeTip') }, __('File.sizeLimit', { maxSize: maxSize }))) : null)) : (React__default["default"].createElement(React__default["default"].Fragment, null,
+                        maxSize ? (React__default["default"].createElement("div", { className: cx('FileControl-sizeTip') }, __('File.sizeLimit', {
+                            maxSize: amisCore.prettyBytes(maxSize, 1024)
+                        }))) : null)) : (React__default["default"].createElement(React__default["default"].Fragment, null,
                         React__default["default"].createElement(amisUi.Button, { level: "default", disabled: disabled, className: cx('FileControl-selectBtn', btnClassName, {
                                 'is-disabled': multiple && !!maxLength && files.length >= maxLength
                             }), tooltip: multiple && maxLength && files.length >= maxLength
@@ -877,7 +878,7 @@ var FileControl = /** @class */ (function (_super) {
                         })
                         : null));
             }),
-            maxSize && !drag ? (React__default["default"].createElement("div", { className: cx('FileControl-sizeTip') }, __('File.sizeLimit', { maxSize: maxSize }))) : null,
+            maxSize && !drag ? (React__default["default"].createElement("div", { className: cx('FileControl-sizeTip') }, __('File.sizeLimit', { maxSize: amisCore.prettyBytes(maxSize, 1024) }))) : null,
             Array.isArray(files) ? (React__default["default"].createElement("ul", { className: cx('FileControl-list') }, files.map(function (file, index) {
                 var filename = file[nameField] ||
                     file.filename;
@@ -887,8 +888,8 @@ var FileControl = /** @class */ (function (_super) {
                                 (maxSize && file.size > maxSize
                                     ? __('File.maxSize', {
                                         filename: file.name,
-                                        actualSize: InputImage["default"].formatFileSize(file.size),
-                                        maxSize: InputImage["default"].formatFileSize(maxSize)
+                                        actualSize: amisCore.prettyBytes(file.size, 1024),
+                                        maxSize: amisCore.prettyBytes(maxSize, 1024)
                                     })
                                     : '')
                             : '' },

@@ -205,6 +205,42 @@ export const ObjectForm = () => (
         },
         "id": "u:c5ce4f94c7cb"
       }]
+    },{
+      "type": "panel",
+      "title": "按钮弹出表单",
+      "body": [{
+        "type": "button",
+        "label": "按钮",
+        "onEvent": {
+          "click": {
+            "actions": [
+              {
+                "actionType": "dialog",
+                "dialog": {
+                  "type": "dialog",
+                  "title": "弹框标题",
+                  "body": [
+                    {
+                      "type": "steedos-object-form",
+                      "label": "对象表单",
+                      "objectApiName": "organizations",
+                      "recordId": "623NR6NCZJP8irB4y",
+                      "id": "u:bd6cac6514e2",
+                      "mode": "edit"
+                    }
+                  ],
+                  "id": "u:efbdf9ba356f",
+                  "closeOnEsc": false,
+                  "closeOnOutside": false,
+                  "showCloseButton": true,
+                  "size": "xl"
+                }
+              }
+            ]
+          }
+        },
+        "id": "u:0ad1781ec67c"
+      }]
     }]
   }}
   assetUrls={assetUrls}

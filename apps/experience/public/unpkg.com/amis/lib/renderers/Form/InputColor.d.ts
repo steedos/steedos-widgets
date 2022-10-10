@@ -4,7 +4,7 @@ import { FormControlProps } from 'amis-core';
 import type { PresetColor } from 'amis-ui';
 import { FormBaseControlSchema } from '../../Schema';
 export declare const ColorPicker: React.LazyExoticComponent<{
-    new (props: Omit<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+    new (props: Omit<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
         format: string;
         clearable: boolean;
         placeholder: string;
@@ -18,7 +18,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
         getWrappedInstance(): any;
         render(): JSX.Element;
         context: any;
-        setState<K extends never>(state: {} | ((prevState: Readonly<{}>, props: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+        setState<K extends never>(state: {} | ((prevState: Readonly<{}>, props: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
             format: string;
             clearable: boolean;
             placeholder: string;
@@ -28,7 +28,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
             translate?: ((str: string, ...args: any[]) => string) | undefined;
         }, keyof import("amis-core").ThemeProps> & import("amis-core/lib/theme").ThemeOutterProps>) => {} | Pick<{}, K> | null) | Pick<{}, K> | null, callback?: (() => void) | undefined): void;
         forceUpdate(callback?: (() => void) | undefined): void;
-        readonly props: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+        readonly props: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
             format: string;
             clearable: boolean;
             placeholder: string;
@@ -44,7 +44,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
             [key: string]: React.ReactInstance;
         };
         componentDidMount?(): void;
-        shouldComponentUpdate?(nextProps: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+        shouldComponentUpdate?(nextProps: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
             format: string;
             clearable: boolean;
             placeholder: string;
@@ -55,7 +55,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
         }, keyof import("amis-core").ThemeProps> & import("amis-core/lib/theme").ThemeOutterProps>, nextState: Readonly<{}>, nextContext: any): boolean;
         componentWillUnmount?(): void;
         componentDidCatch?(error: Error, errorInfo: React.ErrorInfo): void;
-        getSnapshotBeforeUpdate?(prevProps: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+        getSnapshotBeforeUpdate?(prevProps: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
             format: string;
             clearable: boolean;
             placeholder: string;
@@ -64,7 +64,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
             locale?: string | undefined;
             translate?: ((str: string, ...args: any[]) => string) | undefined;
         }, keyof import("amis-core").ThemeProps> & import("amis-core/lib/theme").ThemeOutterProps>, prevState: Readonly<{}>): any;
-        componentDidUpdate?(prevProps: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+        componentDidUpdate?(prevProps: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
             format: string;
             clearable: boolean;
             placeholder: string;
@@ -75,7 +75,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
         }, keyof import("amis-core").ThemeProps> & import("amis-core/lib/theme").ThemeOutterProps>, prevState: Readonly<{}>, snapshot?: any): void;
         componentWillMount?(): void;
         UNSAFE_componentWillMount?(): void;
-        componentWillReceiveProps?(nextProps: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+        componentWillReceiveProps?(nextProps: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
             format: string;
             clearable: boolean;
             placeholder: string;
@@ -84,7 +84,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
             locale?: string | undefined;
             translate?: ((str: string, ...args: any[]) => string) | undefined;
         }, keyof import("amis-core").ThemeProps> & import("amis-core/lib/theme").ThemeOutterProps>, nextContext: any): void;
-        UNSAFE_componentWillReceiveProps?(nextProps: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+        UNSAFE_componentWillReceiveProps?(nextProps: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
             format: string;
             clearable: boolean;
             placeholder: string;
@@ -93,7 +93,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
             locale?: string | undefined;
             translate?: ((str: string, ...args: any[]) => string) | undefined;
         }, keyof import("amis-core").ThemeProps> & import("amis-core/lib/theme").ThemeOutterProps>, nextContext: any): void;
-        componentWillUpdate?(nextProps: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+        componentWillUpdate?(nextProps: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
             format: string;
             clearable: boolean;
             placeholder: string;
@@ -102,7 +102,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
             locale?: string | undefined;
             translate?: ((str: string, ...args: any[]) => string) | undefined;
         }, keyof import("amis-core").ThemeProps> & import("amis-core/lib/theme").ThemeOutterProps>, nextState: Readonly<{}>, nextContext: any): void;
-        UNSAFE_componentWillUpdate?(nextProps: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+        UNSAFE_componentWillUpdate?(nextProps: Readonly<Omit<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
             format: string;
             clearable: boolean;
             placeholder: string;
@@ -115,7 +115,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
     displayName: string;
     contextType: React.Context<string>;
     ComposedComponent: React.ComponentType<{
-        new (props: Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+        new (props: Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
             format: string;
             clearable: boolean;
             placeholder: string;
@@ -129,7 +129,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
             getWrappedInstance(): any;
             render(): JSX.Element;
             context: any;
-            setState<K_1 extends never>(state: {} | ((prevState: Readonly<{}>, props: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+            setState<K_1 extends never>(state: {} | ((prevState: Readonly<{}>, props: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
                 format: string;
                 clearable: boolean;
                 placeholder: string;
@@ -139,7 +139,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
                 translate?: ((str: string, ...args: any[]) => string) | undefined;
             }>) => {} | Pick<{}, K_1> | null) | Pick<{}, K_1> | null, callback?: (() => void) | undefined): void;
             forceUpdate(callback?: (() => void) | undefined): void;
-            readonly props: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+            readonly props: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
                 format: string;
                 clearable: boolean;
                 placeholder: string;
@@ -155,7 +155,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
                 [key: string]: React.ReactInstance;
             };
             componentDidMount?(): void;
-            shouldComponentUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+            shouldComponentUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
                 format: string;
                 clearable: boolean;
                 placeholder: string;
@@ -166,7 +166,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
             }>, nextState: Readonly<{}>, nextContext: any): boolean;
             componentWillUnmount?(): void;
             componentDidCatch?(error: Error, errorInfo: React.ErrorInfo): void;
-            getSnapshotBeforeUpdate?(prevProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+            getSnapshotBeforeUpdate?(prevProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
                 format: string;
                 clearable: boolean;
                 placeholder: string;
@@ -175,7 +175,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
                 locale?: string | undefined;
                 translate?: ((str: string, ...args: any[]) => string) | undefined;
             }>, prevState: Readonly<{}>): any;
-            componentDidUpdate?(prevProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+            componentDidUpdate?(prevProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
                 format: string;
                 clearable: boolean;
                 placeholder: string;
@@ -186,7 +186,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
             }>, prevState: Readonly<{}>, snapshot?: any): void;
             componentWillMount?(): void;
             UNSAFE_componentWillMount?(): void;
-            componentWillReceiveProps?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+            componentWillReceiveProps?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
                 format: string;
                 clearable: boolean;
                 placeholder: string;
@@ -195,7 +195,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
                 locale?: string | undefined;
                 translate?: ((str: string, ...args: any[]) => string) | undefined;
             }>, nextContext: any): void;
-            UNSAFE_componentWillReceiveProps?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+            UNSAFE_componentWillReceiveProps?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
                 format: string;
                 clearable: boolean;
                 placeholder: string;
@@ -204,7 +204,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
                 locale?: string | undefined;
                 translate?: ((str: string, ...args: any[]) => string) | undefined;
             }>, nextContext: any): void;
-            componentWillUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+            componentWillUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
                 format: string;
                 clearable: boolean;
                 placeholder: string;
@@ -213,7 +213,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
                 locale?: string | undefined;
                 translate?: ((str: string, ...args: any[]) => string) | undefined;
             }>, nextState: Readonly<{}>, nextContext: any): void;
-            UNSAFE_componentWillUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+            UNSAFE_componentWillUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
                 format: string;
                 clearable: boolean;
                 placeholder: string;
@@ -230,7 +230,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
         ComposedComponent: typeof import("amis-ui/lib/components/ColorPicker").ColorControl;
     }>;
 } & import("hoist-non-react-statics").NonReactStatics<{
-    new (props: Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+    new (props: Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
         format: string;
         clearable: boolean;
         placeholder: string;
@@ -244,7 +244,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
         getWrappedInstance(): any;
         render(): JSX.Element;
         context: any;
-        setState<K_1_1 extends never>(state: {} | ((prevState: Readonly<{}>, props: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+        setState<K_1_1 extends never>(state: {} | ((prevState: Readonly<{}>, props: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
             format: string;
             clearable: boolean;
             placeholder: string;
@@ -254,7 +254,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
             translate?: ((str: string, ...args: any[]) => string) | undefined;
         }>) => {} | Pick<{}, K_1_1> | null) | Pick<{}, K_1_1> | null, callback?: (() => void) | undefined): void;
         forceUpdate(callback?: (() => void) | undefined): void;
-        readonly props: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+        readonly props: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
             format: string;
             clearable: boolean;
             placeholder: string;
@@ -270,7 +270,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
             [key: string]: React.ReactInstance;
         };
         componentDidMount?(): void;
-        shouldComponentUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+        shouldComponentUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
             format: string;
             clearable: boolean;
             placeholder: string;
@@ -281,7 +281,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
         }>, nextState: Readonly<{}>, nextContext: any): boolean;
         componentWillUnmount?(): void;
         componentDidCatch?(error: Error, errorInfo: React.ErrorInfo): void;
-        getSnapshotBeforeUpdate?(prevProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+        getSnapshotBeforeUpdate?(prevProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
             format: string;
             clearable: boolean;
             placeholder: string;
@@ -290,7 +290,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
             locale?: string | undefined;
             translate?: ((str: string, ...args: any[]) => string) | undefined;
         }>, prevState: Readonly<{}>): any;
-        componentDidUpdate?(prevProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+        componentDidUpdate?(prevProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
             format: string;
             clearable: boolean;
             placeholder: string;
@@ -301,7 +301,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
         }>, prevState: Readonly<{}>, snapshot?: any): void;
         componentWillMount?(): void;
         UNSAFE_componentWillMount?(): void;
-        componentWillReceiveProps?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+        componentWillReceiveProps?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
             format: string;
             clearable: boolean;
             placeholder: string;
@@ -310,7 +310,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
             locale?: string | undefined;
             translate?: ((str: string, ...args: any[]) => string) | undefined;
         }>, nextContext: any): void;
-        UNSAFE_componentWillReceiveProps?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+        UNSAFE_componentWillReceiveProps?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
             format: string;
             clearable: boolean;
             placeholder: string;
@@ -319,7 +319,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
             locale?: string | undefined;
             translate?: ((str: string, ...args: any[]) => string) | undefined;
         }>, nextContext: any): void;
-        componentWillUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+        componentWillUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
             format: string;
             clearable: boolean;
             placeholder: string;
@@ -328,7 +328,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
             locale?: string | undefined;
             translate?: ((str: string, ...args: any[]) => string) | undefined;
         }>, nextState: Readonly<{}>, nextContext: any): void;
-        UNSAFE_componentWillUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+        UNSAFE_componentWillUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
             format: string;
             clearable: boolean;
             placeholder: string;
@@ -345,7 +345,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
     ComposedComponent: typeof import("amis-ui/lib/components/ColorPicker").ColorControl;
 }, {}> & {
     ComposedComponent: {
-        new (props: Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+        new (props: Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
             format: string;
             clearable: boolean;
             placeholder: string;
@@ -359,7 +359,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
             getWrappedInstance(): any;
             render(): JSX.Element;
             context: any;
-            setState<K_1_2 extends never>(state: {} | ((prevState: Readonly<{}>, props: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+            setState<K_1_2 extends never>(state: {} | ((prevState: Readonly<{}>, props: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
                 format: string;
                 clearable: boolean;
                 placeholder: string;
@@ -369,7 +369,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
                 translate?: ((str: string, ...args: any[]) => string) | undefined;
             }>) => {} | Pick<{}, K_1_2> | null) | Pick<{}, K_1_2> | null, callback?: (() => void) | undefined): void;
             forceUpdate(callback?: (() => void) | undefined): void;
-            readonly props: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+            readonly props: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
                 format: string;
                 clearable: boolean;
                 placeholder: string;
@@ -385,7 +385,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
                 [key: string]: React.ReactInstance;
             };
             componentDidMount?(): void;
-            shouldComponentUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+            shouldComponentUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
                 format: string;
                 clearable: boolean;
                 placeholder: string;
@@ -396,7 +396,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
             }>, nextState: Readonly<{}>, nextContext: any): boolean;
             componentWillUnmount?(): void;
             componentDidCatch?(error: Error, errorInfo: React.ErrorInfo): void;
-            getSnapshotBeforeUpdate?(prevProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+            getSnapshotBeforeUpdate?(prevProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
                 format: string;
                 clearable: boolean;
                 placeholder: string;
@@ -405,7 +405,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
                 locale?: string | undefined;
                 translate?: ((str: string, ...args: any[]) => string) | undefined;
             }>, prevState: Readonly<{}>): any;
-            componentDidUpdate?(prevProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+            componentDidUpdate?(prevProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
                 format: string;
                 clearable: boolean;
                 placeholder: string;
@@ -416,7 +416,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
             }>, prevState: Readonly<{}>, snapshot?: any): void;
             componentWillMount?(): void;
             UNSAFE_componentWillMount?(): void;
-            componentWillReceiveProps?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+            componentWillReceiveProps?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
                 format: string;
                 clearable: boolean;
                 placeholder: string;
@@ -425,7 +425,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
                 locale?: string | undefined;
                 translate?: ((str: string, ...args: any[]) => string) | undefined;
             }>, nextContext: any): void;
-            UNSAFE_componentWillReceiveProps?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+            UNSAFE_componentWillReceiveProps?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
                 format: string;
                 clearable: boolean;
                 placeholder: string;
@@ -434,7 +434,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
                 locale?: string | undefined;
                 translate?: ((str: string, ...args: any[]) => string) | undefined;
             }>, nextContext: any): void;
-            componentWillUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+            componentWillUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
                 format: string;
                 clearable: boolean;
                 placeholder: string;
@@ -443,7 +443,7 @@ export declare const ColorPicker: React.LazyExoticComponent<{
                 locale?: string | undefined;
                 translate?: ((str: string, ...args: any[]) => string) | undefined;
             }>, nextState: Readonly<{}>, nextContext: any): void;
-            UNSAFE_componentWillUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "className" | "disabled" | "popOverContainer" | "placement" | "value" | "classPrefix" | "classnames" | "theme" | "onChange" | "resetValue" | "useMobileUI" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
+            UNSAFE_componentWillUpdate?(nextProps: Readonly<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placement" | "className" | "disabled" | "classPrefix" | "classnames" | "theme" | "useMobileUI" | "popOverContainer" | "onChange" | "value" | "resetValue" | "popoverClassName" | "presetColors"> & Partial<Pick<Omit<import("amis-ui/lib/components/ColorPicker").ColorProps, keyof import("amis-core").LocaleProps>, "placeholder" | "clearable" | "format" | "allowCustomColor">> & Partial<Pick<{
                 format: string;
                 clearable: boolean;
                 placeholder: string;

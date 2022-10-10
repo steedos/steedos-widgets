@@ -2,50 +2,97 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-29 10:46:29
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-27 18:03:32
+ * @LastEditTime: 2022-10-10 14:09:40
  * @Description: 
  */
 /* This example requires Tailwind CSS v2.0+ */
-import { CalendarIcon, ChartBarIcon, FolderIcon, HomeIcon, InboxIcon, UsersIcon } from '@heroicons/react/outline'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { AppLauncherBar } from '@/components/AppLauncherBar'
+import { AmisRender } from '@/components/AmisRender'
+import { each, groupBy, map } from 'lodash'
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
+function getNavData(nav, selected){
+  const data = {nav: []};
+  each(groupBy(nav, 'group'), (tabs , groupName)=>{
+    if(groupName === 'undefined'){
+      each(tabs, (tab)=>{
+        data.nav.push({
+          "label": {
+              type: 'tpl',
+              tpl: `<span class='fill-slate-500  text-slate-700 block -ml-px no-underline group flex items-center text-[15px] font-medium rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#${tab.icon || 'account'}"></use></svg>${tab.name}</span>`
+            },
+          "to": tab.path,
+          active: tab.id === selected
+        })
+      })
+    }else{
+      data.nav.push({
+        "label": groupName,
+        "unfolded": true,
+        "children": map(tabs, (tab)=>{
+          return {
+            "label": {
+              type: 'tpl',
+              tpl: `<span class='fill-slate-500  text-slate-700 block -ml-px no-underline group flex items-center text-[15px] font-medium rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#${tab.icon || 'account'}"></use></svg>${tab.name}</span>`
+            },
+            "to": tab.path,
+            active: tab.id === selected
+          }
+        })
+      })
+    }
+  });
+
+  return data;
+}
+
+function getNavSchema(nav, selected){
+  const data = getNavData(nav, selected);
+  return {
+    "type": "page",
+    "data": data,
+    bodyClassName: "p-0",
+    "css": {
+      ".antd-Nav-itemIcon":{
+        height: '20px !important',
+        width: '20px',
+        'object-fit': 'cover',
+        // 'background-color': 'var(--slds-c-icon-color-background,var(--sds-c-icon-color-background,#779ef2))',
+        // fill: "var(--slds-c-icon-color-foreground,var(--sds-c-icon-color-foreground,#fff))",
+      },
+      ".antd-Nav-list":{
+        width: "auto"
+      },
+      ".antd-Nav-item a":{
+        // "padding-top": "2px !important",
+        // "padding-bottom": "2px !important"
+      },
+      ".is-active .fill-slate-500":{
+        fill: '#ffffff !important'
+      },
+      ".is-active .text-slate-700":{
+        color: '#ffffff !important'
+      }
+    },
+    "body": {
+      "type": "nav",
+      "stacked": true,
+      "className": "w-md",
+      "source": "${nav}"
+    }
+  }
 }
 
 export  function Sidebar({ navigation, selected, app }) {
   const router = useRouter()
-  const handleClick = (e) => {
-    e.preventDefault()
-    router.push(e.currentTarget.href)
-  }
   return (
     <nav aria-label="Sidebar" className="divide-y">
       <div className="block lg:hidden px-4 py-4">
         <AppLauncherBar app={app}></AppLauncherBar>
       </div>
-      <div className="px-2 py-4">
-        {navigation?.map((item) => {
-          const icon = item.icon?item.icon:'account'
-          const href = (window.innerWidth < 768)? item.path.replace(/^\/app/, '/mapp') : item.path
-          return (
-          <Link href={href} key={item.name}>
-            <a
-            onClick={handleClick}
-            className={classNames(
-              item.id === selected ? 'bg-sky-200/25 fill-sky-500  text-slate-900' : 'fill-slate-500  text-slate-700',
-              'block px-2 -ml-px no-underline py-2 hover:bg-slate-100 group flex items-center text-[15px] font-medium rounded-md'
-            )}
-            aria-current={item.current ? 'page' : undefined}
-          >
-            <svg className="mr-3 flex-shrink-0 h-6 w-6"><use xlinkHref={`/assets/icons/standard-sprite/svg/symbols.svg#${icon}`}></use></svg>
-            
-            {item.name}
-          </a>
-          </Link>
-        )})}
+      <div className="px-0 py-4">
+      { navigation && <AmisRender schema={getNavSchema(navigation, selected)} data={{}} router={router}></AmisRender>} 
       </div>
     </nav>
   )

@@ -1,10 +1,11 @@
 import { fetchAPI, getSteedosAuth } from "@steedos-widgets/amis-lib";
 import _, { find, isEmpty } from "lodash";
+import { getOpinionFieldStepsName } from './util';
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 17:47:37
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-27 16:42:39
+ * @LastEditTime: 2022-10-08 16:45:53
  * @Description:
  */
 
@@ -141,6 +142,10 @@ const getLastCCStep = ({ traces }, userId) => {
   return step_id;
 };
 
+const isCurrentStepOpinionField = (field, currentStep)=>{
+  return _.includes(_.map(getOpinionFieldStepsName(field), 'stepName'), currentStep.name);
+}
+
 export const getInstanceInfo = async ({ instanceId, box }) => {
   const userId = getSteedosAuth().userId;
   const query = `{
@@ -232,8 +237,8 @@ export const getInstanceInfo = async ({ instanceId, box }) => {
     name: instance.name || instance.form.name,
     fields: _.map(formVersion.fields, (field) => {
       return Object.assign({}, field, {
-        permission: step?.permissions[field.code],
-      });
+        permission: step?.permissions[field.code] || ( isCurrentStepOpinionField(field, step) ? 'editable' : ''),
+      }) ;
     }),
     flowVersion: flowVersion,
     formVersion: formVersion,

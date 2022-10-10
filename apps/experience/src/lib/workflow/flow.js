@@ -2,12 +2,11 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-29 18:02:40
+ * @LastEditTime: 2022-10-08 17:54:55
  * @Description:
  */
 import {
-  lookupToAmisPicker,
-  fetchAPI,
+  lookupToAmis,
   getSteedosAuth,
 } from "@steedos-widgets/amis-lib";
 
@@ -35,6 +34,11 @@ const getSelectOptions = (field) => {
   return options;
 };
 
+const isOpinionField = (field)=>{
+  const field_formula = field.formula;
+  return (field_formula?.indexOf("{traces.") > -1 || field_formula?.indexOf("{signature.traces.") > -1 || field_formula?.indexOf("{yijianlan:") > -1 || field_formula?.indexOf("{\"yijianlan\":") > -1 || field_formula?.indexOf("{'yijianlan':") > -1)
+}
+
 const getFieldEditTpl = async (field, label)=>{
   const tpl = {
     label: label === true ? field.name : false,
@@ -44,141 +48,332 @@ const getFieldEditTpl = async (field, label)=>{
     disabled: field.permission !== "editable",
     required: field.is_required
   };
-  switch (field.type) {
-    case "input":
-      if (field.is_textarea) {
-        tpl.type = "textarea";
-      } else {
-        tpl.type = "input-text";
-      }
-      break;
-    case "number":
-      tpl.type = "input-number";
-      break;
-    case "date":
-      tpl.type = "input-date";
-      break;
-    case "dateTime":
-      tpl.type = "input-datetime";
-      break;
-    case "checkbox":
-      tpl.type = "checkbox";
-      break;
-    case "email":
-      tpl.type = "input-email";
-      tpl.validations = {
-        isEmail: true,
-      };
-      break;
-    case "url":
-      tpl.type = "input-url";
-      tpl.validations = {
-        isUrl: true,
-      };
-      break;
-    case "password":
-      tpl.type = "input-password";
-      tpl.showCounter = true;
-      break;
-    case "select":
-      tpl.type = "select";
-      tpl.options = getSelectOptions(field);
-      break;
-    case "user":
-      const useTpl = await lookupToAmisPicker(
-        {
-          name: field.code,
-          label: field.name,
-          reference_to: "space_users",
-          reference_to_field: 'user',
-          multiple: field.is_multiselect,
-        },
-        false,
-        {}
-      );
-      Object.assign(tpl, useTpl);
-      break;
-    case "group":
-      const orgTpl = await lookupToAmisPicker(
-        {
-          name: field.code,
-          label: field.name,
-          reference_to: "organizations",
-          multiple: field.is_multiselect,
-        },
-        false,
-        {}
-      );
-      Object.assign(tpl, orgTpl);
-      break;
-    case "radio":
-      tpl.type = "radios";
-      tpl.options = getSelectOptions(field);
-      break;
-    case "multiSelect":
-      tpl.type = "checkboxes";
-      tpl.options = getSelectOptions(field);
-      break;
-    case "odata":
-      var labelField = field.formula.substr(1, field.formula.length - 2);
-      labelField = labelField.substr(labelField.indexOf(".") + 1);
-      tpl.type = "select";
-      tpl.multiple = field.is_multiselect;
-      // tpl.labelField = labelField;
-      // tpl.valueField = "_value";
-      tpl.source = {
-        url: startsWith(field.url, "http")
-          ? field.url
-          : `\${context.rootUrl}${field.url}`,
-        method: "get",
-        dataType: "json",
-        headers: {
-          Authorization: "Bearer ${context.tenantId},${context.authToken}",
-        },
-        adaptor:`
-          payload.data = {
-            options: _.map(payload.value, (item)=>{
-              const value = item;
-              item["@label"] = item["${labelField}"]
-              delete item['@odata.editLink'];
-              delete item['@odata.etag'];
-              delete item['@odata.id'];
-              return {
-                label: item["@label"],
-                value: value
+  if(isOpinionField(field)){
+    tpl.type = 'input-group';
+    tpl.body = [
+      {
+        "type": "textarea",
+        "inputClassName": "b-r-none p-r-none",
+        "name": "input-group",
+        "id": `yijian-${field.code}`,
+        "minRows": 3,
+        "maxRows": 20,
+        "mode": "normal",
+        "size": "full"
+      },
+      {
+        "type": "button",
+        "label": "签批",
+        "level": "link",
+        "id": "u:2592111d236d",
+        "block": false,
+        "onEvent": {
+          "click": {
+            "actions": [
+              {
+                "actionType": "dialog",
+                "dialog": {
+                  "type": "dialog",
+                  "title": `${field.name || field.code}`,
+                  "body": [
+                    {
+                      "type": "form",
+                      "title": "表单",
+                      "body": [
+                        {
+                          "label": "",
+                          "type": "textarea",
+                          "name": "yijian",
+                          "id": "u:1d5a60623000",
+                          "minRows": 6,
+                          "maxRows": 20,
+                          "mode": "normal",
+                          "placeholder": "请填写意见"
+                        },
+                        {
+                          "type": "grid",
+                          "columns": [
+                            {
+                              "body": [
+                                {
+                                  "type": "button",
+                                  "label": "已阅",
+                                  "onEvent": {
+                                    "click": {
+                                      "actions": [
+                                        {
+                                          "componentId": "u:1d5a60623000",
+                                          "args": {
+                                            "valueInput": "已阅",
+                                            "value": "已阅"
+                                          },
+                                          "actionType": "setValue"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "id": "u:13498f8d2882",
+                                  "level": "link",
+                                  "className": "m-r"
+                                },
+                                {
+                                  "type": "button",
+                                  "label": "已办",
+                                  "onEvent": {
+                                    "click": {
+                                      "actions": [
+                                        {
+                                          "componentId": "u:1d5a60623000",
+                                          "args": {
+                                            "valueInput": "已办",
+                                            "value": "已办"
+                                          },
+                                          "actionType": "setValue"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "id": "u:cfa2e3c54a21",
+                                  "level": "link",
+                                  "className": "m-r"
+                                },
+                                {
+                                  "type": "button",
+                                  "label": "同意",
+                                  "onEvent": {
+                                    "click": {
+                                      "actions": [
+                                        {
+                                          "componentId": "u:1d5a60623000",
+                                          "args": {
+                                            "valueInput": "同意",
+                                            "value": "同意"
+                                          },
+                                          "actionType": "setValue"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "id": "u:06e0037dcd23",
+                                  "level": "link",
+                                  "className": "m-r"
+                                },
+                                {
+                                  "type": "button",
+                                  "label": "其他常用意见",
+                                  "onEvent": {
+                                    "click": {
+                                      "actions": []
+                                    }
+                                  },
+                                  "id": "u:3a781bc550a2",
+                                  "level": "link",
+                                  "className": "m-r"
+                                }
+                              ],
+                              "id": "u:3def7a5b7cd5"
+                            }
+                          ],
+                          "id": "u:ecbefa51b638"
+                        }
+                      ],
+                      "id": "u:dd32ae67b5c7"
+                    }
+                  ],
+                  "id": "u:a5d06d3a61b9",
+                  "closeOnEsc": false,
+                  "closeOnOutside": false,
+                  "showCloseButton": true,
+                  "actions": [
+                    {
+                      "type": "button",
+                      "label": "确认",
+                      "onEvent": {
+                        "click": {
+                          "actions": [
+                            {
+                              "componentId": `yijian-${field.code}`,
+                              "args": {
+                                "valueInput": "${yijian}",
+                                "value": "${yijian}"
+                              },
+                              "actionType": "setValue"
+                            },
+                            {
+                              "componentId": "",
+                              "args": {},
+                              "actionType": "closeDialog"
+                            }
+                          ]
+                        }
+                      },
+                      "id": "u:87e22efe707a",
+                      "level": "primary"
+                    },
+                    {
+                      "type": "button",
+                      "label": "取消",
+                      "onEvent": {
+                        "click": {
+                          "actions": [
+                            {
+                              "componentId": "",
+                              "args": {},
+                              "actionType": "closeDialog"
+                            }
+                          ]
+                        }
+                      },
+                      "id": "u:d0e6550a848e"
+                    }
+                  ]
+                }
               }
-            })
+            ],
+            "weight": 0
           }
-          return payload;
-        `
-      };
-      break;
-    case "html":
-      if (tpl.disabled) {
-        tpl.type = 'html';
-      } else {
-        tpl.type = "input-rich-text";
+        },
+        "className": "instance-sign-text-btn",
       }
-      break;
-    case "table":
-      tpl.type = "input-table"; //TODO
-      tpl.addable = field.permission === "editable";
-      tpl.editable = tpl.addable;
-      tpl.copyable = tpl.addable;
-      tpl.columns = [];
-      for (const sField of field.fields) {
-        if (sField.type != "hidden") {
-          const column = await getTdInputTpl(sField, true);
-          tpl.columns.push(column);
+    ]
+  }else{
+    switch (field.type) {
+      case "input":
+        if (field.is_textarea) {
+          tpl.type = "textarea";
+        } else {
+          tpl.type = "input-text";
         }
-      }
-      break;
-    case "section":
-      tpl.type = "input-text";
-      break;
-    default:
-      break;
+        break;
+      case "number":
+        tpl.type = "input-number";
+        break;
+      case "date":
+        tpl.type = "input-date";
+        break;
+      case "dateTime":
+        tpl.type = "input-datetime";
+        break;
+      case "checkbox":
+        tpl.type = "checkbox";
+        break;
+      case "email":
+        tpl.type = "input-email";
+        tpl.validations = {
+          isEmail: true,
+        };
+        break;
+      case "url":
+        tpl.type = "input-url";
+        tpl.validations = {
+          isUrl: true,
+        };
+        break;
+      case "password":
+        tpl.type = "input-password";
+        tpl.showCounter = true;
+        break;
+      case "select":
+        tpl.type = "select";
+        tpl.options = getSelectOptions(field);
+        break;
+      case "user":
+        const useTpl = await lookupToAmis(
+          {
+            name: field.code,
+            label: field.name,
+            reference_to: "space_users",
+            reference_to_field: 'user',
+            multiple: field.is_multiselect,
+          },
+          false,
+          {}
+        );
+        Object.assign(tpl, useTpl);
+        break;
+      case "group":
+        const orgTpl = await lookupToAmis(
+          {
+            name: field.code,
+            label: field.name,
+            reference_to: "organizations",
+            multiple: field.is_multiselect,
+          },
+          false,
+          {}
+        );
+        Object.assign(tpl, orgTpl);
+        break;
+      case "radio":
+        tpl.type = "radios";
+        tpl.options = getSelectOptions(field);
+        break;
+      case "multiSelect":
+        tpl.type = "checkboxes";
+        tpl.options = getSelectOptions(field);
+        break;
+      case "odata":
+        var labelField = field.formula.substr(1, field.formula.length - 2);
+        labelField = labelField.substr(labelField.indexOf(".") + 1);
+        tpl.type = "select";
+        tpl.multiple = field.is_multiselect;
+        // tpl.labelField = labelField;
+        // tpl.valueField = "_value";
+        tpl.source = {
+          url: startsWith(field.url, "http")
+            ? field.url
+            : `\${context.rootUrl}${field.url}`,
+          method: "get",
+          dataType: "json",
+          headers: {
+            Authorization: "Bearer ${context.tenantId},${context.authToken}",
+          },
+          adaptor:`
+            payload.data = {
+              options: _.map(payload.value, (item)=>{
+                const value = item;
+                item["@label"] = item["${labelField}"]
+                delete item['@odata.editLink'];
+                delete item['@odata.etag'];
+                delete item['@odata.id'];
+                return {
+                  label: item["@label"],
+                  value: value
+                }
+              })
+            }
+            return payload;
+          `
+        };
+        break;
+      case "html":
+        if (tpl.disabled) {
+          tpl.type = 'html';
+        } else {
+          tpl.type = "input-rich-text";
+        }
+        break;
+      case "table":
+        tpl.type = "input-table"; //TODO
+        tpl.addable = field.permission === "editable";
+        tpl.editable = tpl.addable;
+        tpl.copyable = tpl.addable;
+        tpl.columns = [];
+        for (const sField of field.fields) {
+          if (sField.type != "hidden") {
+            const column = await getTdInputTpl(sField, true);
+            tpl.columns.push(column);
+          }
+        }
+        break;
+      case "section":
+        tpl.type = "input-text";
+        break;
+      default:
+        break;
+    }
   }
+
   return tpl;
 };
 
@@ -221,7 +416,11 @@ const getFieldReadonlyTpl = async (field, label)=>{
   }else if(field.type === 'user'){
     tpl.type = 'static'
     // tpl.format = 'YYYY-MM-DD HH:mm'
-    tpl.tpl = `\${${field.code}.name}`
+    if(field.is_multiselect){
+      tpl.tpl = `\${_.map(${field.code}, 'name')}`
+    }else{
+      tpl.tpl = `\${${field.code}?.name}`
+    }
   }else if(field.type === 'group'){
     tpl.type = 'static'
     // tpl.format = 'YYYY-MM-DD HH:mm'
@@ -238,6 +437,8 @@ const getFieldReadonlyTpl = async (field, label)=>{
         tpl.columns.push(column);
       }
     }
+  }else if(field.type === 'html'){
+    tpl.type = 'tpl';
   }
   else{
     tpl.type = 'static';
@@ -368,7 +569,7 @@ const getFormTableView = async (instance) => {
 const getApplicantTableView = async (instance) => {
   let applicantInput = null;
   if(instance.state === 'draft'){
-    applicantInput = Object.assign({name: "applicant", value: getSteedosAuth().userId, disabled: instance.box !== 'draft'}, await lookupToAmisPicker(
+    applicantInput = Object.assign({name: "applicant", value: getSteedosAuth().userId, disabled: instance.box !== 'draft'}, await lookupToAmis(
       {
         name: "applicant",
         label: false,

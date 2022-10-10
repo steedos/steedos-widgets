@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -10,13 +10,11 @@ Object.defineProperty(exports, '__esModule', { value: true });
 var tslib = require('tslib');
 var React = require('react');
 var amisCore = require('amis-core');
-var Ansi = require('ansi-to-react');
 var amisUi = require('amis-ui');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 var React__default = /*#__PURE__*/_interopDefaultLegacy(React);
-var Ansi__default = /*#__PURE__*/_interopDefaultLegacy(Ansi);
 
 var Log = /** @class */ (function (_super) {
     tslib.__extends(Log, _super);
@@ -198,27 +196,20 @@ var Log = /** @class */ (function (_super) {
             return item;
         });
     };
-    Log.prototype.renderHighlightWordWithAnsi = function (line) {
-        var filterWord = this.state.filterWord;
-        if (filterWord === '') {
-            return line;
-        }
-        return line.replaceAll(filterWord, "\u001B[43;1m\u001B[30;1m".concat(filterWord, "\u001B[0m"));
-    };
     /**
      * 渲染某一行
      */
     Log.prototype.renderLine = function (index, line, showLineNumber) {
-        var _a = this.props, cx = _a.classnames, disableColor = _a.disableColor;
+        var _a = this.props, cx = _a.classnames; _a.disableColor;
         return (React__default["default"].createElement("div", { className: cx('Log-line'), key: index },
             showLineNumber && (React__default["default"].createElement("span", { className: cx('Log-line-number') },
                 index + 1,
                 " ")),
-            disableColor ? (this.renderHighlightWord(line)) : (React__default["default"].createElement(Ansi__default["default"], { useClasses: true }, this.renderHighlightWordWithAnsi(line)))));
+            this.renderHighlightWord(line)));
     };
     Log.prototype.render = function () {
         var _this = this;
-        var _a = this.props, source = _a.source, className = _a.className, cx = _a.classnames, placeholder = _a.placeholder, height = _a.height, rowHeight = _a.rowHeight, disableColor = _a.disableColor, __ = _a.translate, operation = _a.operation;
+        var _a = this.props, source = _a.source, className = _a.className, cx = _a.classnames, placeholder = _a.placeholder, height = _a.height, rowHeight = _a.rowHeight; _a.disableColor; var __ = _a.translate, operation = _a.operation;
         var _b = this.state, refresh = _b.refresh, showLineNumber = _b.showLineNumber;
         var loading = __(placeholder);
         if (!source) {
@@ -237,7 +228,7 @@ var Log = /** @class */ (function (_super) {
                         showLineNumber && (React__default["default"].createElement("span", { className: cx('Log-line-number') },
                             index + 1,
                             " ")),
-                        disableColor ? (_this.renderHighlightWord(logs[index])) : (React__default["default"].createElement(Ansi__default["default"], { useClasses: true }, _this.renderHighlightWordWithAnsi(logs[index])))));
+                        _this.renderHighlightWord(logs[index])));
                 } }));
         }
         else {

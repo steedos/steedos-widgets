@@ -1,8 +1,10 @@
 import React from 'react';
 import { RendererProps } from 'amis-core';
+import type { Option } from 'amis-core';
 export interface QuickFilterConfig {
     options: Array<any>;
     multiple: boolean;
+    strictMode?: boolean;
     [propName: string]: any;
 }
 export interface HeadCellFilterProps extends RendererProps {
@@ -22,6 +24,7 @@ export declare class HeadCellFilterDropDown extends React.Component<HeadCellFilt
     componentDidUpdate(prevProps: HeadCellFilterProps, prevState: any): void;
     fetchOptions(): void;
     alterOptions(options: Array<any>): any[];
+    optionComparator(option: Option, selected: any): boolean;
     handleClickOutside(): void;
     open(): void;
     close(): void;

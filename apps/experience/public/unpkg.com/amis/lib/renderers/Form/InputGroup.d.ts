@@ -25,7 +25,7 @@ export declare class InputGroup extends React.Component<InputGroupProps, InputGr
     handleFocus(): void;
     handleBlur(): void;
     renderControl(control: any, index: any, otherProps?: any): JSX.Element | null;
-    validate(): string[] | "";
+    validate(): "" | string[];
     render(): JSX.Element;
 }
 export default class InputGroupRenderer extends InputGroup {

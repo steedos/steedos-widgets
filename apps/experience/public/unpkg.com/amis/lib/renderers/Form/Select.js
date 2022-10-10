@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -52,13 +52,15 @@ var SelectControl = /** @class */ (function (_super) {
     SelectControl.prototype.foucs = function () {
         this.input && this.input.focus();
     };
-    SelectControl.prototype.getValue = function (value) {
+    SelectControl.prototype.getValue = function (value, additonalOptions) {
+        if (additonalOptions === void 0) { additonalOptions = []; }
         var _a = this.props, joinValues = _a.joinValues, extractValue = _a.extractValue, delimiter = _a.delimiter, multiple = _a.multiple, valueField = _a.valueField, options = _a.options;
         var newValue = value;
         (Array.isArray(value) ? value : value ? [value] : []).forEach(function (option) {
-            find__default["default"](options, function (item) {
+            var resolved = find__default["default"](options, function (item) {
                 return item[valueField || 'value'] == option[valueField || 'value'];
             });
+            resolved || additonalOptions.push(option);
         });
         if (joinValues) {
             if (multiple) {
@@ -117,13 +119,13 @@ var SelectControl = /** @class */ (function (_super) {
     };
     SelectControl.prototype.changeValue = function (value) {
         return tslib.__awaiter(this, void 0, void 0, function () {
-            var _a, onChange, setOptions, options, data, dispatchEvent, newValue, additonalOptions, rendererEvent;
+            var _a, onChange, setOptions, options, data, dispatchEvent, additonalOptions, newValue, rendererEvent;
             return tslib.__generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         _a = this.props, onChange = _a.onChange, setOptions = _a.setOptions, options = _a.options, data = _a.data, dispatchEvent = _a.dispatchEvent;
-                        newValue = this.getValue(value);
                         additonalOptions = [];
+                        newValue = this.getValue(value, additonalOptions);
                         // 不设置没法回显
                         additonalOptions.length && setOptions(options.concat(additonalOptions));
                         return [4 /*yield*/, dispatchEvent('change', amisCore.createObject(data, {
@@ -271,7 +273,7 @@ var TransferDropdownRenderer = /** @class */ (function (_super) {
         var _c = this.props, options = _c.options, leftOptions = _c.leftOptions, leftDefaultValue = _c.leftDefaultValue;
         if (selectMode === 'associated' &&
             options &&
-            options.length === 1 &&
+            options.length &&
             options[0].leftOptions &&
             Array.isArray(options[0].children)) {
             leftOptions = options[0].leftOptions;

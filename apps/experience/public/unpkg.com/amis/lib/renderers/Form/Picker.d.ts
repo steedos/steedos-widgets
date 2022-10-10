@@ -72,6 +72,7 @@ export default class PickerControl extends React.PureComponent<PickerProps, any>
     close(): void;
     handleModalConfirm(values: Array<any>, action: ActionObject, ctx: any, components: Array<any>): void;
     handleChange(items: Array<any>): Promise<void>;
+    handleItemClick(itemlabel: string, itemid: string): Promise<void>;
     removeItem(index: number): void;
     handleKeyDown(e: React.KeyboardEvent): void;
     handleFocus(): void;

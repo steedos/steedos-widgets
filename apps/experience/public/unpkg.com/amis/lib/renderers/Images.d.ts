@@ -2,6 +2,7 @@ import React from 'react';
 import { RendererProps } from 'amis-core';
 import { ImageThumbProps } from './Image';
 import { BaseSchema, SchemaClassName, SchemaUrlPath } from '../Schema';
+import type { ImageToolbarAction } from './Image';
 /**
  * 图片集展示控件。
  * 文档：https://baidu.gitee.io/amis/docs/components/images
@@ -63,11 +64,19 @@ export interface ImagesSchema extends BaseSchema {
      * 列表 CSS 类名
      */
     listClassName?: SchemaClassName;
+    /**
+     * 是否展示图片工具栏
+     */
+    showToolbar?: boolean;
+    /**
+     * 工具栏配置
+     */
+    toolbarActions?: ImageToolbarAction[];
 }
 export interface ImagesProps extends RendererProps, Omit<ImagesSchema, 'type' | 'className'> {
     delimiter: string;
     onEnlarge?: (info: ImageThumbProps & {
-        list?: Array<Pick<ImageThumbProps, 'src' | 'originalSrc' | 'title' | 'caption'>>;
+        list?: Array<Pick<ImageThumbProps, 'src' | 'originalSrc' | 'title' | 'caption' | 'showToolbar'>>;
     }) => void;
 }
 export declare class ImagesField extends React.Component<ImagesProps> {

@@ -1,5 +1,5 @@
 /**
- * amis v2.2.0
+ * amis v2.3.0
  * Copyright 2018-2022 baidu
  */
 
@@ -19,19 +19,8 @@ var React__default = /*#__PURE__*/_interopDefaultLegacy(React);
 var Tpl = /** @class */ (function (_super) {
     tslib.__extends(Tpl, _super);
     function Tpl(props) {
-        var _this = _super.call(this, props) || this;
-        _this.htmlRef = _this.htmlRef.bind(_this);
-        return _this;
+        return _super.call(this, props) || this;
     }
-    Tpl.prototype.componentDidUpdate = function (prevProps) {
-        if (amisCore.anyChanged(['data', 'tpl', 'html', 'text', 'raw', 'value'], this.props, prevProps)) {
-            this._render();
-        }
-    };
-    Tpl.prototype.htmlRef = function (dom) {
-        this.dom = dom;
-        this._render();
-    };
     Tpl.prototype.getContent = function () {
         var _a = this.props, tpl = _a.tpl, html = _a.html, text = _a.text, raw = _a.raw, data = _a.data, placeholder = _a.placeholder;
         var value = amisCore.getPropValue(this.props);
@@ -55,20 +44,14 @@ var Tpl = /** @class */ (function (_super) {
                     : JSON.stringify(value);
         }
     };
-    Tpl.prototype._render = function () {
-        if (!this.dom) {
-            return;
-        }
-        this.dom.firstChild.innerHTML = this.props.env.filterHtml(this.getContent());
-    };
     Tpl.prototype.render = function () {
-        var _a = this.props, className = _a.className, wrapperComponent = _a.wrapperComponent, inline = _a.inline, cx = _a.classnames, style = _a.style, showNativeTitle = _a.showNativeTitle, data = _a.data;
+        var _a = this.props, className = _a.className, wrapperComponent = _a.wrapperComponent, inline = _a.inline, cx = _a.classnames, style = _a.style, showNativeTitle = _a.showNativeTitle, data = _a.data, env = _a.env;
         var Component = wrapperComponent || (inline ? 'span' : 'div');
-        var content = this.getContent();
-        return (React__default["default"].createElement(Component, tslib.__assign({ ref: this.htmlRef, className: cx('TplField', className), style: amisCore.buildStyle(style, data) }, (showNativeTitle
+        var content = env.filterHtml(this.getContent());
+        return (React__default["default"].createElement(Component, tslib.__assign({ className: cx('TplField', className), style: amisCore.buildStyle(style, data) }, (showNativeTitle
             ? { title: typeof content === 'string' ? content : '' }
             : {})),
-            React__default["default"].createElement("span", null, content)));
+            React__default["default"].createElement("span", { dangerouslySetInnerHTML: { __html: content } })));
     };
     Tpl.defaultProps = {
         inline: true,
