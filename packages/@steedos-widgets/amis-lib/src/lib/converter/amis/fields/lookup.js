@@ -9,7 +9,7 @@ import { getSelectUserSchema } from './user';
 
 const getReferenceTo = async (field)=>{
     let referenceTo = field.reference_to;
-    if(!referenceTo || typeof referenceTo !== "string"){
+    if(!referenceTo){
         return ;
     }
 

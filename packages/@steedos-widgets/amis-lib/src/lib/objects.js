@@ -62,7 +62,7 @@ export async function getUISchema(objectName, force) {
 
                 if (
                     (field.type === "lookup" || field.type === "master_detail") &&
-                    field.reference_to && typeof field.reference_to === "string"
+                    field.reference_to
                 ) {
                     const refUiSchema = await getUISchema(field.reference_to);
                     if (!refUiSchema) {
