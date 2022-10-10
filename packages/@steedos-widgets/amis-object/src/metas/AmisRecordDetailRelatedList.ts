@@ -80,12 +80,12 @@ export default {
         label: config.title,
         objectApiName: "${objectName}",
         recordId: "${recordId}",
-        relatedObjectApiName: "contacts"
+        // relatedObjectApiName: "contacts"
       },
       previewSchema: {
         type: config.amis.name,
         objectApiName: "accounts",
-        relatedObjectApiName: "contacts"
+        // relatedObjectApiName: "contacts"
       },
       panelTitle: "设置",
       panelControls: [
@@ -118,20 +118,20 @@ export default {
           label: "父级记录"
         },
         {
-          "type": "select",
+          "type": "text",
           "label": "相关列表对象",
           "name": "relatedObjectApiName",
-          "searchable": true,
-          "multiple": false,
-          "source": {
-            "method": "get",
-            "url": "/service/api/amis-design/related_objects/${objectApiName === '${objectName}' ? 'accounts' : objectApiName}",
-            "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
-            "sendOn": "this.objectApiName"
-          },
-          "labelField": "label",
-          "valueField": "name",
-          "menuTpl": ""
+          // "searchable": true,
+          // "multiple": false,
+          // "source": {
+          //   "method": "get",
+          //   "url": "/service/api/amis-design/related_objects/${objectApiName}",
+          //   "requestAdaptor": "console.log('xiang==>',api); api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
+          //   "sendOn": "this.objectApiName"
+          // },
+          // "labelField": "label",
+          // "valueField": "name",
+          // "menuTpl": ""
         }
       ]
     }
