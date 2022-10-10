@@ -26,7 +26,7 @@ fieldset.antd-Collapse > legend.antd-Collapse-header{
 }
 
 fieldset.antd-Collapse > legend{
-    padding: none !important;
+    padding: 0;
 }
 
 main {
@@ -186,11 +186,6 @@ button.antd-Button--primary {
 
 .antd-Form-item .antd-Form-control{
     font-size: var(--Form-item-fontSize) !important;
-}
-
-.antd-Form--normal .slds-form-element_readonly{
-    border: none !important;
-    border-image: none !important;
 }
 
 @media (max-width: 767px){

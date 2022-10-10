@@ -3,7 +3,7 @@ import { getReadonlyFormInitApi, getSaveApi, getEditFormInitApi, getBatchDelete 
 import { getTableSchema, getTableApi } from './fields/table';
 import { getFormBody } from './form';
 import { getListSchema, getCardSchema } from './fields/list';
-import _, { map } from 'lodash';
+import _, { map, defaultsDeep } from 'lodash';
 
 function getBulkActions(objectSchema){
     return [
@@ -314,7 +314,7 @@ export async function getObjectForm(objectSchema, ctx){
       data: {global: getGlobalData('edit'), recordId: recordId, objectName: objectSchema.name, context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
       initApi: null,
       initFetch: null ,
-      body: [_.defaultsDeep({}, formSchema, {
+      body: [defaultsDeep({}, formSchema, {
         type: "form",
         mode: formFactor === 'SMALL' ? 'normal' : layout,
         labelAlign,
