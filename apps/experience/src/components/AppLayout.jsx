@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 09:31:04
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-14 15:17:52
+ * @LastEditTime: 2022-10-10 13:49:58
  * @Description:  
  */
 import React, { useState, useEffect, Fragment } from 'react';
@@ -13,14 +13,17 @@ import { useRouter } from 'next/router'
 import { setSteedosAuth, getRootUrl } from '@steedos-widgets/amis-lib';
 import { useSession } from "next-auth/react"
 
-export function AppLayout({ children, app_id, tab_id}) {
+export function AppLayout({ children, app_id, tab_id, page_id}) {
     const router = useRouter()
-    let { app_id: appId, tab_id: tabId } = router.query;
+    let { app_id: appId, tab_id: tabId, page_id: pageId } = router.query;
     if(app_id){
       appId = app_id
     }
     if(tab_id){
       tabId = tab_id
+    }
+    if(page_id){
+      pageId = page_id
     }
     const [app, setApp] = useState(null)
     const [selected, setSelected] = useState(tabId)
@@ -54,7 +57,7 @@ export function AppLayout({ children, app_id, tab_id}) {
 
     // 默认进入第一个tab
     useEffect(() => {
-      if(!selected && app?.children[0]){
+      if(!pageId && !tabId && !selected && app?.children[0]){
         router.push(app.children[0].path)
         setSelected(app.children[0].id)
       }

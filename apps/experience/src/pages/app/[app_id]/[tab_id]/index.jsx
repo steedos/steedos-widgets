@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-03 10:42:44
+ * @LastEditTime: 2022-10-10 14:14:03
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -14,18 +14,10 @@ import { unstable_getServerSession } from "next-auth/next"
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
 import { values } from 'lodash'
 
-export default function Page (props) {
+export default function Page ({ formFactor }) {
   const router = useRouter();
   const { app_id, tab_id } = router.query
-  const [formFactor, setFormFactor] = useState(null);
 
-  useEffect(()=>{
-    if(window.innerWidth < 768){
-      setFormFactor('SMALL')
-    }else{
-      setFormFactor('LARGE')
-    }
-  }, [])
   const getListviewSchema = (listviewName)=>{
     getListSchema(app_id, tab_id, listviewName, {formFactor: formFactor}).then((data) => {
       router.push(SteedosUI.Router.getObjectListViewPath({
