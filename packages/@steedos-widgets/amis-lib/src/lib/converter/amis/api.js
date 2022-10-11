@@ -55,7 +55,6 @@ export async function getReadonlyFormInitApi(object, recordId, fields){
     return {
         method: "post",
         url: graphql.getApi()+"?rf="+ (new Date()).getTime(),
-        sendOn: "!!this.recordId",
         cache: API_CACHE,
         adaptor: getReadonlyFormAdaptor(fields),
         data: await graphql.getFindOneQuery(object, recordId, fields),
