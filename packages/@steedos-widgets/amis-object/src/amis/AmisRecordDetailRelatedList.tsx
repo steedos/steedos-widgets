@@ -10,10 +10,8 @@ import { getRecordDetailRelatedListSchema } from '@steedos-widgets/amis-lib'
 
 export const AmisRecordDetailRelatedList = async (props) => {
   // console.log(`AmisRecordDetailRelatedList props==>`, props)
-  const { recordId, data } = props;
-  let objectApiName = props.objectApiName || "accounts";
-  let relatedObjectApiName = props.relatedObjectApiName;
-  if(!props.objectApiName || !relatedObjectApiName){
+  const { objectApiName, recordId, relatedObjectApiName, data } = props;
+  if(!objectApiName || !relatedObjectApiName){
     return {
       "type": "alert",
       "body": "缺少父级对象或相关列表对象",
