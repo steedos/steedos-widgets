@@ -311,6 +311,7 @@ export async function getObjectForm(objectSchema, ctx){
       type: 'service',
       className: 'p-0',
       name: `page_edit_${recordId}`,
+      api: await getEditFormInitApi(objectSchema, recordId, fields),
       data: {global: getGlobalData('edit'), recordId: recordId, objectName: objectSchema.name, context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
       initApi: null,
       initFetch: null ,
@@ -325,7 +326,6 @@ export async function getObjectForm(objectSchema, ctx){
         title: "",
         submitText: "", // amis 表单不显示提交按钮, 表单提交由项目代码接管
         api: await getSaveApi(objectSchema, recordId, fields, {}),
-        initApi: await getEditFormInitApi(objectSchema, recordId, fields),
         initFetch: recordId != 'new',
         body: await getFormBody(fields, objectSchema, ctx),
         panelClassName:'m-0 sm:rounded-lg shadow-none',
