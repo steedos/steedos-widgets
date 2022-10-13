@@ -75,7 +75,7 @@ export function getLookupTpl(field, ctx){
 export function getSwitchTpl(field){
     return `<% if (data.${field.name}) { %>
     <span class="slds-icon_container slds-icon-utility-check slds-current-color" title="<%=data._display.${field.name}%>">
-        <span class="slds-assistive-text"><%=data._display.${field.name}%></span>
+        <span ><%=data._display.${field.name}%></span>
     </span>
     <% } %>`
 }

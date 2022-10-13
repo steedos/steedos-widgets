@@ -51,13 +51,13 @@ function getReadonlyFormAdaptor(fields){
 `
 }
 
-export async function getReadonlyFormInitApi(object, recordId, fields){
+export async function getReadonlyFormInitApi(object, recordId, fields, options){
     return {
         method: "post",
         url: graphql.getApi()+"?rf="+ (new Date()).getTime(),
         cache: API_CACHE,
         adaptor: getReadonlyFormAdaptor(fields),
-        data: await graphql.getFindOneQuery(object, recordId, fields),
+        data: await graphql.getFindOneQuery(object, recordId, fields, options),
         headers: {
             Authorization: "Bearer ${context.tenantId},${context.authToken}"
         }

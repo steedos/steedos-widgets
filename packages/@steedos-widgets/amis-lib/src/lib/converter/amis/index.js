@@ -340,14 +340,14 @@ export async function getObjectForm(objectSchema, ctx){
 }
 
 export async function getObjectDetail(objectSchema, recordId, ctx){
-    const { formFactor, layout, labelAlign } = ctx;
+    const { formFactor, layout, labelAlign, formInitProps } = ctx;
     const fields = _.values(objectSchema.fields);
     return {
         type: 'service',
         name: `page_readonly_${recordId}`,
         id: `detail_${recordId}`,
         data: {global: getGlobalData('read'), context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
-        api: await getReadonlyFormInitApi(objectSchema, recordId, fields),
+        api: await getReadonlyFormInitApi(objectSchema, recordId, fields, formInitProps),
         body: [
             {
                 type: "form",
