@@ -34,9 +34,9 @@ function getOperation(fields){
 //获取name字段，如果没有，则_index字段添加链接
 function getDetailColumn(){}
 
-function getTableColumns(fields, options){
+async function getTableColumns(fields, options){
     const columns = [{name: '_index',type: 'text', width: 32, placeholder: ""}];
-    _.each(fields, function(field){
+    for (const field of fields) {
         if((field.is_name || field.name === options.labelFieldName) && options.objectName === 'cms_files'){
             columns.push({
                 "type": "button",
@@ -56,7 +56,7 @@ function getTableColumns(fields, options){
                 "level": "link"
               })
         }else{
-            const tpl = Tpl.getFieldTpl(field, options);
+            const tpl = await Tpl.getFieldTpl(field, options);
 
             let type = 'text';
             if(tpl){
@@ -77,7 +77,7 @@ function getTableColumns(fields, options){
             }
         }
         
-    });
+    };
 
     // columns.push(getOperation(fields));
 
@@ -90,17 +90,18 @@ function getDefaultParams(options){
     }
 }
 
-export function getTableSchema(fields, options){
+export async function getTableSchema(fields, options){
     if(!options){
         options = {};
     }
+    const columns = await getTableColumns(fields, options);
     return {
         mode: "table",
         name: "thelist",
         draggable: false,
         headerToolbar: [ 'reload'],
         defaultParams: getDefaultParams(options),
-        columns: getTableColumns(fields, options),
+        columns: columns,
         syncLocation: false,
         keepItemSelectionOnPageChange: true,
         checkOnItemClick: false,

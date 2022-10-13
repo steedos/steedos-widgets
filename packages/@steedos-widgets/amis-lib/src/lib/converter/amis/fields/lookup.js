@@ -122,13 +122,13 @@ export async function lookupToAmisPicker(field, readonly, ctx){
 
     let pickerSchema = null;
     if(ctx.formFactor === 'SMALL'){
-        pickerSchema = List.getListSchema(tableFields, {
+        pickerSchema = await List.getListSchema(tableFields, {
             top:  top,
             ...ctx,
             actions: false
         })
     }else{
-        pickerSchema = Table.getTableSchema(tableFields, {
+        pickerSchema = await Table.getTableSchema(tableFields, {
             top:  top,
             ...ctx
         })
@@ -151,7 +151,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     }
 
     if(readonly){
-        data.tpl = Tpl.getLookupTpl(field, ctx)
+        data.tpl = await Tpl.getLookupTpl(field, ctx)
     }
 
     return data;
@@ -225,7 +225,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
     }
 
     if(readonly){
-        data.tpl = Tpl.getLookupTpl(field, ctx)
+        data.tpl = await Tpl.getLookupTpl(field, ctx)
     }
 
     return data;

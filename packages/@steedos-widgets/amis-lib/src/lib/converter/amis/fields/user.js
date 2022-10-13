@@ -202,7 +202,7 @@ export async function getSelectUserSchema(field, readonly, ctx) {
         amisSchema.value = field.defaultValue
     }
     if (readonly) {
-        amisSchema.tpl = Tpl.getLookupTpl(field, ctx)
+        amisSchema.tpl = await Tpl.getLookupTpl(field, ctx)
     }
     if (typeof amisSchema.searchable !== "boolean") {
         amisSchema.searchable = true;

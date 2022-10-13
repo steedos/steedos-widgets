@@ -150,7 +150,8 @@ export async function getObjectList(objectSchema, fields, options){
       delete bodyProps.bulkActions;
       delete bodyProps.headerToolbar;
       delete bodyProps.footerToolbar;
-      body = Object.assign({}, getCardSchema(fields, Object.assign({idFieldName: objectSchema.idFieldName, labelFieldName: objectSchema.NAME_FIELD_KEY || 'name'}, options, {actions: false})), {
+      const card = await getCardSchema(fields, Object.assign({idFieldName: objectSchema.idFieldName, labelFieldName: objectSchema.NAME_FIELD_KEY || 'name'}, options, {actions: false}));
+      body = Object.assign({}, card , {
         type: 'crud', 
         primaryField: '_id', 
         id: id,
@@ -160,7 +161,7 @@ export async function getObjectList(objectSchema, fields, options){
         bodyProps
         );
     }else{
-      const table = getTableSchema(fields, Object.assign({idFieldName: objectSchema.idFieldName, labelFieldName: objectSchema.NAME_FIELD_KEY || 'name'}, options));
+      const table = await getTableSchema(fields, Object.assign({idFieldName: objectSchema.idFieldName, labelFieldName: objectSchema.NAME_FIELD_KEY || 'name'}, options));
       delete table.mode;
       body = Object.assign({}, table, {
         type: 'crud', 

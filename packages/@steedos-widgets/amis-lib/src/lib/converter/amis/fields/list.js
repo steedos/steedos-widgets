@@ -9,11 +9,11 @@
 import * as Tpl from '../tpl';
 import { Router } from '../../../router'
 
-function getListBody(fields, options){
+async function getListBody(fields, options){
     const columns = [];
-    _.each(fields, function(field){
+    for (const field of fields) {
 
-        const tpl = Tpl.getFieldTpl(field, options);
+        const tpl = await Tpl.getFieldTpl(field, options);
 
         let type = 'text';
         if(tpl){
@@ -32,7 +32,7 @@ function getListBody(fields, options){
                 // toggled: true 
             })
         }
-    });
+    };
 
     return {
         "type": "hbox",
@@ -46,7 +46,9 @@ function getDefaultParams(options){
     }
 }
 
-export function getListSchema(fields, options){
+export async function getListSchema(fields, options){
+    const listBody = await getListBody(fields, options);
+    const columns = listBody.columns;
     return {
         mode: "list",
         name: "thelist",
@@ -58,7 +60,7 @@ export function getListSchema(fields, options){
         checkOnItemClick: false,
         labelTpl: `\${name}`, //TODO 获取name字段
         listItem: {
-            body: [...(getListBody(fields, options).columns)],
+            body: [...columns],
             actions: options.actions === false ? null : [
                 {
                     icon: "fa fa-eye",
@@ -79,14 +81,18 @@ export function getListSchema(fields, options){
 }
 
 
-export function getCardSchema(fields, options){
+export async function getCardSchema(fields, options){
     let title = null;
     const titleField = _.find(fields, (f)=>{
         return f.name === options.labelFieldName;
     });
     if(titleField){
-        title = Tpl.getFieldTpl(titleField, options)
+        title = await Tpl.getFieldTpl(titleField, options)
     }
+    const listBody = await getListBody(_.filter(fields, (f)=>{
+        return f.name != options.labelFieldName
+    }), options);
+    const columns = listBody.columns;
     return {
         mode: "cards",
         name: "cards",
@@ -102,9 +108,7 @@ export function getCardSchema(fields, options){
             "header": {
                 "title": title
               },
-            "body": [...(getListBody(_.filter(fields, (f)=>{
-                return f.name != options.labelFieldName
-            }), options).columns)]
+            "body": [...columns]
           }
     }
 }
