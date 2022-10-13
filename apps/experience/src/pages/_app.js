@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-14 15:05:44
+ * @LastEditTime: 2022-10-13 13:55:50
  * @Description: 
  */
 import { SessionProvider } from "next-auth/react"
@@ -33,6 +33,7 @@ export default function App({
     if (Builder.isBrowser){
       window.Builder = Builder;
       window.React = amisRequire('react');
+      window.ReactDOM = amisRequire('react-dom');
     }
   }, []);
 
