@@ -17,7 +17,7 @@ export const AmisObjectForm = async (props) => {
   const defaults = {
     formSchema
   };
-  const options = {
+  const options: any = {
     recordId,
     mode: mode,
     layout: layout === 'vertical' ? 'normal' : layout,
@@ -27,6 +27,12 @@ export const AmisObjectForm = async (props) => {
   if (mode === 'edit') {
     return (await getFormSchema(objectApiName, options)).amisSchema;
   } else {
+    // formInitProps
+    if(!recordId){
+      options.formInitProps = {
+        queryOptions: "top: 1"
+      };
+    }
     return (await getViewSchema(objectApiName, recordId, options)).amisSchema;
   }
 }
