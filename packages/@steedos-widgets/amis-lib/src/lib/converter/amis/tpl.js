@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-14 18:09:22
+ * @LastEditTime: 2022-10-14 18:22:55
  * @Description: 
  */
 import { Router } from '../../router'
@@ -133,9 +133,9 @@ export async function getFieldTpl (field, options){
         case 'datetime':
             return getDateTimeTpl(field);
         case 'lookup':
-            return await getLookupTpl(field, options);
+            return await getRelatedFieldTpl(field, options);
         case 'master_detail':
-            return await getLookupTpl(field, options);
+            return await getRelatedFieldTpl(field, options);
         default:
             break;
     }

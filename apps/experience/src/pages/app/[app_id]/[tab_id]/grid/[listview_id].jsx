@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-03 10:41:24
+ * @LastEditTime: 2022-10-14 18:23:40
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -35,7 +35,6 @@ export default function Page ({formFactor}) {
 
   if (!schema) 
     return <><Loading/></>
-
   return (
     <div className='flex flex-col flex-1 overflow-hidden'>
       <div className='border-b'>
