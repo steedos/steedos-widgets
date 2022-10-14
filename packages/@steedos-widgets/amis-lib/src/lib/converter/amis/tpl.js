@@ -2,10 +2,11 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-14 14:34:36
+ * @LastEditTime: 2022-10-14 18:09:22
  * @Description: 
  */
 import { Router } from '../../router'
+ import { getUISchema } from '../../objects'
 
 export function getCreatedInfoTpl(formFactor){
     const href = Router.getObjectDetailPath({
@@ -31,10 +32,10 @@ export function getDateTimeTpl(field){
 }
 
 //TODO 处理name字段
-export function getRefObjectNameFieldName(field){
-    // const refObject = objectql.getObject(field.reference_to);
-    // return refObject.NAME_FIELD_KEY;
-    return 'name';
+export async function getRefObjectNameFieldName(field){
+    const refUiSchema = await getUISchema(field.reference_to)
+    const NAME_FIELD_KEY = refUiSchema.NAME_FIELD_KEY || 'name';
+    return NAME_FIELD_KEY;
 }
 
 export function getSelectTpl(field){
@@ -80,11 +81,11 @@ export function getRelatedFieldTpl(field, ctx){
     return tpl
 }
 
-export function getLookupTpl(field, ctx){
+export async function getLookupTpl(field, ctx){
     if(!field.reference_to){
         return getSelectTpl(field)
     }
-    const NAME_FIELD_KEY = getRefObjectNameFieldName(field);
+    const NAME_FIELD_KEY = await getRefObjectNameFieldName(field);
     if(field.multiple){
         const href = Router.getObjectDetailPath({
             formFactor: ctx.formFactor, appId: ctx.appId, objectName: field.reference_to, recordId: `<%=item._id%>`
@@ -116,7 +117,7 @@ export function getPasswordTpl(field){
 }
 
 
-export function getFieldTpl (field, options){
+export async function getFieldTpl (field, options){
     if(field.is_name || field.name === options.labelFieldName){
         return getNameTpl(field, options)
     }
@@ -132,9 +133,9 @@ export function getFieldTpl (field, options){
         case 'datetime':
             return getDateTimeTpl(field);
         case 'lookup':
-            return getLookupTpl(field, options);
+            return await getLookupTpl(field, options);
         case 'master_detail':
-            return getLookupTpl(field, options);
+            return await getLookupTpl(field, options);
         default:
             break;
     }

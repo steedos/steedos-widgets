@@ -9,7 +9,7 @@ async function getSource(field) {
         filters: "{__filters}"
     });
     data.query = data.query.replace(/,count\:.+/, "}");
-    const childrenData = await graphql.getFindQuery({ name: "organizations" }, null, [{ name: "_id", alias: "ref" }, { name: "children" }], {
+    const childrenData = await graphql.getFindQuery({ name: "organizations" }, null, [{ name: "_id", alias: "ref" }], {
         alias: "children",
         filters: "{__filters}"
     });
@@ -37,7 +37,8 @@ async function getSource(field) {
     const adaptor = `
         const data = payload.data;
         data.children = data.children.map(function (child) { 
-            child.defer = !!(child.children && child.children.length);
+            // child.defer = !!(child.children && child.children.length);
+            child.defer = true;
             delete child.children;
             return child;
         });
@@ -202,7 +203,7 @@ export async function getSelectUserSchema(field, readonly, ctx) {
         amisSchema.value = field.defaultValue
     }
     if (readonly) {
-        amisSchema.tpl = Tpl.getLookupTpl(field, ctx)
+        amisSchema.tpl = await Tpl.getLookupTpl(field, ctx)
     }
     if (typeof amisSchema.searchable !== "boolean") {
         amisSchema.searchable = true;
