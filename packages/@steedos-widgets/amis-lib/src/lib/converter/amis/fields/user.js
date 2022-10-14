@@ -37,7 +37,8 @@ async function getSource(field) {
     const adaptor = `
         const data = payload.data;
         data.children = data.children.map(function (child) { 
-            child.defer = !!(child.children && child.children.length);
+            // child.defer = !!(child.children && child.children.length);
+            child.defer = true;
             delete child.children;
             return child;
         });
