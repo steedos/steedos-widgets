@@ -181,7 +181,6 @@ export async function getEditFormInitApi(object, recordId, fields){
             if(payload.data.data){
                 var data = payload.data.data[0];
                 if(data){
-                    ${getConvertDataScriptStr(fields)}
                     ${getScriptForAddUrlPrefixForImgFields(fields)}
                     ${getScriptForRewriteValueForFileFields(fields)}
                     //初始化接口返回的字段移除字段值为null的字段

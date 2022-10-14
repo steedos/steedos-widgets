@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-20 16:29:22
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-24 14:45:51
+ * @LastEditTime: 2022-10-14 17:34:04
  * @Description: 
  */
 
@@ -106,6 +106,12 @@ export const authOptions = {
         const steedosSession = await validateSteedosToken(session.steedos);
         session.steedos = Object.assign(steedosSession, {token: steedosSession.authToken});
       }
+
+      session.publicEnv ={
+        STEEDOS_ROOT_URL: process.env.STEEDOS_ROOT_URL,
+        STEEDOS_EXPERIENCE_ASSETURLS: process.env.STEEDOS_EXPERIENCE_ASSETURLS,
+      }
+
       return session
     }
   },

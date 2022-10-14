@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-24 13:22:12
+ * @LastEditTime: 2022-10-14 16:04:34
  * @Description:
  */
 import { fetchAPI } from "./steedos.client";
@@ -14,7 +14,7 @@ import {
     getObjectDetail,
     getObjectForm,
 } from "./converter/amis/index";
-import { cloneDeep, slice, isEmpty, each, has, findKey, find, isString, isObject, keys, includes } from "lodash";
+import _, { cloneDeep, slice, isEmpty, each, has, findKey, find, isString, isObject, keys, includes, isArray, isFunction } from "lodash";
 import { getFieldSearchable } from "./converter/amis/fields/index";
 import { getRecord } from './record';
 
@@ -64,10 +64,26 @@ export async function getUISchema(objectName, force) {
                     (field.type === "lookup" || field.type === "master_detail") &&
                     field.reference_to
                 ) {
-                    const refUiSchema = await getUISchema(field.reference_to);
-                    if (!refUiSchema) {
-                        delete uiSchema.fields[fieldName];
+                    let refTo = null;
+                    if(isFunction(field.reference_to)){
+                        try {
+                            refTo = eval(field.reference_to)();
+                        } catch (error) {
+                            console.error(error)
+                        }
                     }
+                    if(isString(field.reference_to)){
+                        refTo = [field.reference_to]
+                    }else if(isArray(field.reference_to)){
+                        refTo = field.reference_to
+                    }
+                    for (const item of refTo) {
+                        const refUiSchema = await getUISchema(item);
+                        if (!refUiSchema) {
+                            delete uiSchema.fields[fieldName];
+                        }
+                    }
+                   
                 }
             }
         }

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-14 14:29:29
+ * @LastEditTime: 2022-10-14 14:34:36
  * @Description: 
  */
 import { Router } from '../../router'
@@ -11,14 +11,14 @@ export function getCreatedInfoTpl(formFactor){
     const href = Router.getObjectDetailPath({
         formFactor, appId: "admin", objectName: 'users', recordId: '${created_by._id}'
     })
-    return `<div><a href='${href}'>\${created_by.name}</a>\${_display.created}</div>`
+    return `<div><a href='${href}'>\${_display.created_by.label}</a>\${_display.created}</div>`
 }
 
 export function getModifiedInfoTpl(formFactor){
     const href = Router.getObjectDetailPath({
         formFactor, appId: "admin", objectName: 'users', recordId: '${modified_by._id}'
     })
-    return `<div><a href='${href}'>\${modified_by.name}</a>\${_display.modified}</div>`
+    return `<div><a href='${href}'>\${_display.modified_by.label}</a>\${_display.modified}</div>`
 }
 
 export function getDateTpl(field){
@@ -49,6 +49,35 @@ export function getNameTpl(field, ctx){
         ...ctx,  formFactor: ctx.formFactor, appId: ctx.appId, objectName: ctx.tabId, recordId: `\${${ctx.idFieldName}}`
     })
     return `<a href="${href}">\${${field.name}}</a>`
+}
+
+export function getRelatedFieldTpl(field, ctx){
+    let tpl = '';
+    if(_.isString(field.reference_to)){
+        if(field.multiple){
+            const href = Router.getObjectDetailPath({
+                formFactor: ctx.formFactor, appId: ctx.appId, objectName: `<%=item.objectName%>`, recordId: `<%=item.value%>`
+            })
+            tpl = `
+            <% if (data._display.${field.name} && data._display.${field.name}.length) { %><% data._display.${field.name}.forEach(function(item) { %> <a href="${href}"><%=item.label%></a>  <% }); %><% } %>
+            `
+        }else{
+            const href = Router.getObjectDetailPath({
+                formFactor: ctx.formFactor, appId: ctx.appId, objectName: `\${_display.${field.name}.objectName}`, recordId: `\${_display.${field.name}.value}`
+            })
+            tpl = `<a href="${href}">\${_display.${field.name}.label}</a>`
+        }
+
+        
+    }else{
+        const href = Router.getObjectDetailPath({
+            formFactor: ctx.formFactor, appId: ctx.appId, objectName: `<%=item.objectName%>`, recordId: `<%=item.value%>`
+        })
+        tpl = `
+        <% if (data._display.${field.name} && data._display.${field.name}.length) { %><% data._display.${field.name}.forEach(function(item) { %> <a href="${href}"><%=item.label%></a>  <% }); %><% } %>
+        `
+    }
+    return tpl
 }
 
 export function getLookupTpl(field, ctx){

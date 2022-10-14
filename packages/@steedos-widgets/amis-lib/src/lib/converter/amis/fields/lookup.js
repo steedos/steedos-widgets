@@ -100,7 +100,11 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         if(api.data.$term){
             filters = [["name", "contains", "'+ api.data.$term +'"]];
         }else if(selfData.op === 'loadOptions' && selfData.value){
-            filters = [["${referenceTo.valueField.name}", "=", selfData.value]];
+            if(selfData.value?.indexOf(',') > 0){
+                filters = [["${referenceTo.valueField.name}", "=", selfData.value.split(',')]];
+            }else{
+                filters = [["${referenceTo.valueField.name}", "=", selfData.value]];
+            }
         }
         if(allowSearchFields){
             allowSearchFields.forEach(function(key){
@@ -123,12 +127,14 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     let pickerSchema = null;
     if(ctx.formFactor === 'SMALL'){
         pickerSchema = List.getListSchema(tableFields, {
+            labelFieldName: referenceTo.labelField.name || 'name',
             top:  top,
             ...ctx,
             actions: false
         })
     }else{
         pickerSchema = Table.getTableSchema(tableFields, {
+            labelFieldName: referenceTo.labelField.name || 'name',
             top:  top,
             ...ctx
         })
@@ -244,10 +250,39 @@ async function getApi(object, recordId, fields, options){
 }
 
 export async function lookupToAmis(field, readonly, ctx){
+    if(readonly){
+        return {
+            type: Field.getAmisStaticFieldType('picker', readonly),
+            tpl: Tpl.getRelatedFieldTpl(field, ctx)
+        }
+    }
+    // console.log(`referenceTo.objectName====`, field)
+    if(!_.isString(field.reference_to) && !readonly){
+        return {
+            type: 'steedos-field-lookup',
+            field,
+            readonly,
+            ctx: {},
+            "onEvent": {
+                "change": {
+                  "weight": 0,
+                  "actions": [
+                    {
+                      "actionType": "custom",
+                      script: `console.log('======', event)`
+                    }
+                  ]
+                }
+              }
+        }
+        // return await lookupToAmisGroup(field, readonly, ctx);
+    }
+
     let referenceTo = await getReferenceTo(field);
     if(!referenceTo){
         return await lookupToAmisSelect(field, readonly, ctx);
     }
+
     const refObject = await getUISchema(referenceTo.objectName);
 
     if(referenceTo.objectName === "space_users"){

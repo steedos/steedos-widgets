@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 09:31:04
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-10 13:49:58
+ * @LastEditTime: 2022-10-14 17:36:58
  * @Description:  
  */
 import React, { useState, useEffect, Fragment } from 'react';
@@ -10,7 +10,7 @@ import { Navbar } from '@/components/Navbar';
 import { Sidebar } from '@/components/Sidebar';
 import { getApp } from '@steedos-widgets/amis-lib';
 import { useRouter } from 'next/router'
-import { setSteedosAuth, getRootUrl } from '@steedos-widgets/amis-lib';
+import { setSteedosAuth, setRootUrl, getRootUrl } from '@steedos-widgets/amis-lib';
 import { useSession } from "next-auth/react"
 
 export function AppLayout({ children, app_id, tab_id, page_id}) {
@@ -29,8 +29,12 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
     const [selected, setSelected] = useState(tabId)
     const { data: session } = useSession()
     if(session){
+      if(session.publicEnv?.STEEDOS_ROOT_URL){
+        setRootUrl(session.publicEnv?.STEEDOS_ROOT_URL);
+      }
       setSteedosAuth(session.steedos);
       Builder.set({ 
+        env: session.publicEnv,
         rootUrl: getRootUrl(),
         context: {
           rootUrl: getRootUrl(),
