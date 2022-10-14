@@ -181,6 +181,20 @@ export async function getRecordDetailHeaderSchema(objectName,recordId){
 }
 
 export async function getRecordDetailRelatedListSchema(objectName,recordId,relatedObjectName){
+    // console.log('b==>',objectName,recordId,relatedObjectName)
+    // if(!objectName || !recordId || !relatedObjectName){
+    // if(!objectName || !relatedObjectName){
+    //     const amisAlert = {
+    //       "type": "alert",
+    //       "body": "缺少父级对象、父级记录或相关列表对象",
+    //       "level": "warning",
+    //       "showIcon": true,
+    //       "className": "mb-3"
+    //     }
+    //     return {
+    //         amisSchema: amisAlert
+    //     }
+    // }
     const relatedObjectUiSchema = await getUISchema(relatedObjectName);
     const { list_views, label , icon, fields } = relatedObjectUiSchema;
     const firstListViewName = keys(list_views)[0];

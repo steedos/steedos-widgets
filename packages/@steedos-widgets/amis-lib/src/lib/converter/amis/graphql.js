@@ -16,7 +16,9 @@ export async function getFieldsTemplate(fields, expand){
     for (const field of fieldsArr) {
         if(field.name.indexOf('.') < 0){
             if(expand && (field.type == 'lookup' || field.type == 'master_detail') && field.reference_to){
+                // console.log('field==>',field)
                 const refUiSchema = await getUISchema(field.reference_to);
+                // console.log('refUiSchema==>',refUiSchema)
                 const NAME_FIELD_KEY = refUiSchema.NAME_FIELD_KEY || 'name';
                 fieldsName.push(`${field.name}:${field.name}__expand{_id,${NAME_FIELD_KEY}${field.reference_to_field ? `,${field.reference_to_field}`:''}}`);
             }else{
@@ -173,6 +175,7 @@ export function getScriptForSimplifiedValueForFileFields(fields){
 }
 
 export function getSaveDataTpl(fields){
+    console.log('fields==>',fields)
     return `
         const formData = api.data.$;
         for (key in formData){

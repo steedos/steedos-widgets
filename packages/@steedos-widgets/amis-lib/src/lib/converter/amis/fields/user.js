@@ -9,7 +9,7 @@ async function getSource(field) {
         filters: "{__filters}"
     });
     data.query = data.query.replace(/,count\:.+/, "}");
-    const childrenData = await graphql.getFindQuery({ name: "organizations" }, null, [{ name: "_id", alias: "ref" }, { name: "children" }], {
+    const childrenData = await graphql.getFindQuery({ name: "organizations" }, null, [{ name: "_id", alias: "ref" }], {
         alias: "children",
         filters: "{__filters}"
     });
