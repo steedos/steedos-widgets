@@ -15,15 +15,9 @@ export async function getFieldsTemplate(fields, expand){
     }
     for (const field of fieldsArr) {
         if(field.name.indexOf('.') < 0){
-            //TODO field.reference_to 是 array 时,数据如何处理?
             if(expand && (field.type == 'lookup' || field.type == 'master_detail')){
                 fieldsName.push(`${field.name}`)
                 displayFields.push(`${field.name}`)
-                // if(_.isString(field.reference_to)){
-                //     const refUiSchema = await getUISchema(field.reference_to);
-                //     const NAME_FIELD_KEY = refUiSchema.NAME_FIELD_KEY || 'name';
-                //     fieldsName.push(`${field.name}:${field.name}__expand{_id,${NAME_FIELD_KEY}${field.reference_to_field ? `,${field.reference_to_field}`:''}}`);
-                // }
             }else{
                 fieldsName.push( field.alias ? `${field.alias}:${field.name}` : field.name)
             }
@@ -233,12 +227,17 @@ export async function getFindQuery(object, recordId, fields, options){
             queryOptions = `(${options.queryOptions})`;
         }
     }
+    var treeFields = '';
+    if(object.enable_tree){
+        treeFields = ',parent,children';
+    }
+
     return {
         orderBy: "${orderBy}",
         orderDir: "${orderDir}",
         pageNo: "${page}",
         pageSize: "${perPage}",
-        query: `{${alias}:${object.name}${queryOptions}{${await getFieldsTemplate(fields, options.expand)}},count:${object.name}__count(filters:{__filters})}`
+        query: `{${alias}:${object.name}${queryOptions}{${await getFieldsTemplate(fields, options.expand)}${treeFields}},count:${object.name}__count(filters:{__filters})}`
     }
 }
 

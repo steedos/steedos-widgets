@@ -208,10 +208,39 @@ export async function getTableApi(mainObject, fields, options){
         return api;
     `
     api.adaptor = `
-    _.each(payload.data.rows, function(item, index){
-        item._index = index + 1;
-    })
+    const enable_tree = ${mainObject.enable_tree};
+    if(!enable_tree){
+        _.each(payload.data.rows, function(item, index){
+            item._index = index + 1;
+        })
+    }
     window.postMessage(Object.assign({type: "listview.loaded"}), "*")
+    
+    if(enable_tree){
+        const records = payload.data.rows;
+        const treeRecords = [];
+        const getChildren = (records, childrenIds)=>{
+            if(!childrenIds){
+                return;
+            }
+            const children = _.filter(records, (record)=>{
+                return _.includes(childrenIds, record._id)
+            });
+            _.each(children, (item)=>{
+                if(item.children){
+                    item.children = getChildren(records, item.children)
+                }
+            })
+            return children;
+        }
+
+        _.each(records, (record)=>{
+            if(!record.parent){
+                treeRecords.push(Object.assign({}, record, {children: getChildren(records, record.children)}));
+            }
+        });
+        payload.data.rows = treeRecords;
+    }
     return payload;
     `;
     return api;
