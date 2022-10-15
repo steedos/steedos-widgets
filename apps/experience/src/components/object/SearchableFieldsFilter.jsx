@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 15:46:59
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-24 14:19:05
+ * @LastEditTime: 2022-10-15 17:16:59
  * @Description:
  */
 import { AmisRender } from "@/components/AmisRender";
@@ -73,7 +73,7 @@ export function SearchableFieldsFilter({ schema, listViewId, appId, onClose, col
         </div>
         <div className="slds-filters__footer slds-grid slds-shrink-none flex justify-between p-0">
           <div className="space-x-4">
-            <button
+            {searchableFieldsSchema && <button
               className="slds-button slds-button_neutral"
               type="button"
               onClick={onSearch}
@@ -88,6 +88,7 @@ export function SearchableFieldsFilter({ schema, listViewId, appId, onClose, col
               </svg>
               搜索
             </button>
+            }
             <button
               className="slds-button_reset slds-text-link slds-col_bump-left"
               type="button"
