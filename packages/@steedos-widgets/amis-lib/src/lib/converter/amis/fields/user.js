@@ -186,31 +186,36 @@ export async function getSelectUserSchema(field, readonly, ctx) {
         ctx = {};
     }
     const amisSchema = {
-        "type": Field.getAmisStaticFieldType('select', readonly),
-        "labelField": "name",
-        "valueField": "user",
-        "multiple": field.multiple,
-        "searchable": field.searchable,
-        "selectMode": "associated",
-        "leftMode": "tree",
-        "joinValues": false,
-        "extractValue": true,
-        "source": await getSource(field),
-        "deferApi": await getDeferApi(field),
-        "searchApi": await getSearchApi(field)
+        "type": Field.getAmisStaticFieldType('select', readonly)
     };
-    if (_.has(field, 'defaultValue') && !(_.isString(field.defaultValue) && field.defaultValue.startsWith("{"))) {
-        amisSchema.value = field.defaultValue
-    }
+
     if (readonly) {
         amisSchema.tpl = await Tpl.getLookupTpl(field, ctx)
     }
-    if (typeof amisSchema.searchable !== "boolean") {
-        amisSchema.searchable = true;
-    }
-    const onEvent = field.onEvent;
-    if (onEvent) {
-        amisSchema.onEvent = onEvent;
+    else{
+        Object.assign(amisSchema, {
+            "labelField": "name",
+            "valueField": "user",
+            "multiple": field.multiple,
+            "searchable": field.searchable,
+            "selectMode": "associated",
+            "leftMode": "tree",
+            "joinValues": false,
+            "extractValue": true,
+            "source": await getSource(field),
+            "deferApi": await getDeferApi(field),
+            "searchApi": await getSearchApi(field)
+        });
+        if (_.has(field, 'defaultValue') && !(_.isString(field.defaultValue) && field.defaultValue.startsWith("{"))) {
+            amisSchema.value = field.defaultValue
+        }
+        if (typeof amisSchema.searchable !== "boolean") {
+            amisSchema.searchable = true;
+        }
+        const onEvent = field.onEvent;
+        if (onEvent) {
+            amisSchema.onEvent = onEvent;
+        }
     }
 
     return amisSchema;
