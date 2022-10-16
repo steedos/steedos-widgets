@@ -2,11 +2,11 @@ version: "3.9"
 
 services:
   steedos:
-    image: steedos/steedos-enterprise:2.3.0-beta.27
+    image: steedos/steedos-enterprise:2.3.0-beta.28
     command: "yarn start"
     ports:
       - "5000:3000"
-    volumes:
+    volumes:   
       - "steedos-installed-packages:/app/.steedos"
       - "steedos-data:/app/storage"
     env_file:
