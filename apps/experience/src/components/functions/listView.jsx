@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-04 17:10:53
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-09 13:25:31
+ * @LastEditTime: 2022-10-17 10:51:57
  * @Description: 
  */
 import { AmisRender } from "@/components/AmisRender";
@@ -44,7 +44,7 @@ export const ListView = {
         }
         SteedosUI.Drawer(Object.assign({
             name: pageName,
-            title: '过滤器',
+            title: '高级过滤',
             destroyOnClose: true,
             maskClosable: false,
             footer: null,

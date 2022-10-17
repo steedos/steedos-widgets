@@ -1,11 +1,11 @@
 {
     "type": "page",
-    "title": "过滤器",
+    "title": "高级过滤",
     "name": "steedos-filters",
     "body": [
       {
         "type": "form",
-        "title": "过滤器",
+        "title": "高级过滤",
         "body": [
           {
             "label": "",
