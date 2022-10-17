@@ -202,6 +202,7 @@ export async function getSelectUserSchema(field, readonly, ctx) {
             "leftMode": "tree",
             "joinValues": false,
             "extractValue": true,
+            "clearable": true,
             "source": await getSource(field),
             "deferApi": await getDeferApi(field),
             "searchApi": await getSearchApi(field)
