@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-27 17:34:25
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-03 14:09:36
+ * @LastEditTime: 2022-10-17 17:26:19
  * @Description: 
  */
 import React, { useState, useEffect, Fragment } from "react";
@@ -18,8 +18,8 @@ export function Form({ appId, objectName, recordId, className, data, formFactor 
               tabId: objectName,
               appId: appId,
               formFactor: formFactor,
-            }).then((data) => {
-              setSchema(data);
+            }).then((result) => {
+              setSchema(result);
             });
           }
       }, [formFactor]);
