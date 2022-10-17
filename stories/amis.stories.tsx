@@ -2,18 +2,23 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 11:54:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-24 14:49:42
+ * @LastEditTime: 2022-10-17 10:59:58
  * @Description: 
  */
 import React, {useEffect, useState} from 'react';
 import { registerRemoteAssets, amisRender, getSteedosAuth, getRootUrl } from '@steedos-widgets/amis-lib';
 import { defaultsDeep } from 'lodash';
 import { Builder } from '@steedos-builder/react';
+import ReactDOM from 'react-dom';
+import * as _ from 'lodash';
 
 const assetUrls = process.env.STEEDOS_UNPKG_URL + '/@steedos-widgets/amis-object/dist/assets-dev.json'
 
 if (Builder.isBrowser){
   (window as any).Builder = Builder;
+  (window as any).React = React;
+  (window as any).ReactDOM = ReactDOM;
+  (window as any)._ = _;
   Builder.set({ 
     rootUrl: process.env.STEEDOS_ROOT_URL,
     context: {
