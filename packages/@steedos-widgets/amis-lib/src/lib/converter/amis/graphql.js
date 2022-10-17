@@ -228,7 +228,7 @@ export async function getFindQuery(object, recordId, fields, options){
         }
     }
     var treeFields = '';
-    if(object.enable_tree){
+    if(object.enable_tree && _.includes(_.keys(object.fields), 'parent') && _.includes(_.keys(object.fields), 'children')){
         treeFields = ',parent,children';
     }
 
