@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 13:32:49
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-14 10:42:14
+ * @LastEditTime: 2022-10-17 17:27:00
  * @Description: 
  */
 import { getListViewButtons, execute } from '@steedos-widgets/amis-lib';
@@ -24,7 +24,7 @@ export function RecordRelatedListButtons(props) {
               app_id: app_id,
               tab_id: tab_id,
               router: router,
-              data: {data: { [foreign_key]: record_id }}, 
+              data: {[foreign_key]: record_id}, 
               }))
         }
       }, [schema]);
