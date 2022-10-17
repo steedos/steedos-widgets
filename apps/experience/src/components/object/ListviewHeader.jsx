@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-03 16:46:23
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-24 13:24:28
+ * @LastEditTime: 2022-10-17 10:49:57
  * @Description:
  */
 import { Listbox, Transition } from "@headlessui/react";
@@ -23,7 +23,7 @@ import { SearchableFieldsFilter } from '@/components/object/SearchableFieldsFilt
 
 export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: appId,tab_id: tabId, listViewName, searchFieldsFilterProps}) {
 //   const [selectedListView, setSelectedListView] = useState();
-  const [showFieldsFilter, setShowFieldsFilter] = useState(false);
+  const [showFieldsFilter, setShowFieldsFilter] = useState(true);
   const [queryInfo, setQueryInfo] = useState();
   const [filter, setFilter] = useState();
   const router = useRouter();
