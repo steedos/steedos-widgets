@@ -112,7 +112,7 @@ export async function getTableSchema(fields, options){
 
 export async function getTableApi(mainObject, fields, options){
     const searchableFields = [];
-    let { globalFilter, filter } = options;
+    let { globalFilter, filter, top } = options;
 
     if(_.isArray(filter)){
         filter = _.map(filter, function(item){
@@ -145,7 +145,7 @@ export async function getTableApi(mainObject, fields, options){
         }else{
             filters = [filters, 'and', api.data.filter || [${JSON.stringify(filter)}]]
         }
-        var pageSize = api.data.pageSize || 10;
+        var pageSize = ${top} || api.data.pageSize || 10;
         var pageNo = api.data.pageNo || 1;
         var skip = (pageNo - 1) * pageSize;
         var orderBy = api.data.orderBy || '';
