@@ -174,6 +174,10 @@ export async function getObjectList(objectSchema, fields, options){
         )
     }
 
+    const defaults = options.defaults;
+    const listSchema =  defaults && defaults.listSchema || {};
+    body = defaultsDeep({}, listSchema, body);
+
     return {
         type: 'service',
         bodyClassName: '',
