@@ -282,32 +282,50 @@ export const getObjectDetailMoreButtons = (uiSchema, ctx) => {
             name: standardDelete.name,
             on: standardDelete.on,
             type: "amis_button",
-            confirmText: "确定要删除此项目?",
             sort: standardDelete.sort,
-            amis_schema: [
-                {
-                  "args": {
-                    "api": {
-                        method: 'post',
-                        url: getApi(),
-                        requestAdaptor: `
-                            var deleteArray = [];
-                             deleteArray.push(\`delete:${ctx.objectName}__delete(id: "${ctx.recordId}")\`);
-                            api.data = {query: \`mutation{\${deleteArray.join(',')}}\`};
-                            return api;
-                        `,
-                        headers: {
-                            Authorization: "Bearer ${context.tenantId},${context.authToken}"
+            amis_schema: {
+                type: "service",
+                bodyClassName: 'p-0',
+                body: [
+                    {
+                        type: "button",
+                        label: '删除',
+                        confirmText: "确定要删除此项目?",
+                        className: 'border-none',
+                        onEvent: {
+                            click: {
+                                actions: [
+                                    {
+                                      "args": {
+                                        "api": {
+                                            method: 'post',
+                                            url: getApi(),
+                                            requestAdaptor: `
+                                                var deleteArray = [];
+                                                 deleteArray.push(\`delete:${ctx.objectName}__delete(id: "${ctx.recordId}")\`);
+                                                api.data = {query: \`mutation{\${deleteArray.join(',')}}\`};
+                                                return api;
+                                            `,
+                                            headers: {
+                                                Authorization: "Bearer ${context.tenantId},${context.authToken}"
+                                            }
+                                        },
+                                        "messages": {
+                                            "success": "删除成功",
+                                            "failed": "删除失败"
+                                        }
+                                      },
+                                      "actionType": "ajax"
+                                    }
+                                  ]
+                            }
                         }
-                    },
-                    "messages": {
-                        "success": "删除成功",
-                        "failed": "删除失败"
                     }
-                  },
-                  "actionType": "ajax"
-                }
-              ]
+                ],
+                regions: [
+                  "body"
+                ]
+              }
         })
     }
     return _.sortBy(moreButtons, "sort");
