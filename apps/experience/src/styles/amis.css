@@ -147,7 +147,12 @@ button.antd-Button--primary {
     border-right: 0;
 }
 
+body {
+    font-family: -apple-system,BlinkMacSystemFont,Helvetica,Arial,Microsoft Yahei,SimHei;
+}
+
 :root {
+    --fontFamilyBase: -apple-system,BlinkMacSystemFont,Helvetica,Arial,Microsoft Yahei,SimHei;
     --Collapse-header-padding: 0px;
     --Form-selectValue-fontSize: 14px;
     --Table-toolbar-marginY: 0;
@@ -160,7 +165,7 @@ button.antd-Button--primary {
     --Collapse-header-fontWeight: 400;
     --Collapse-header-onHover-bg: #EEEEEE;
     --Collapse-header-padding: 4px;
-    --Collapse-content-padding: 8px;
+    --Collapse-content-padding: 12px;
     --Button-paddingX: 16px;
     --Button--default-color: #0176d3;
     --Button-borderRadius: 0.25rem;
@@ -225,10 +230,21 @@ button.antd-Button--primary {
     }
 }
 .ant-modal-body {
-flex: 1  !important;
-overflow: auto  !important;
+    flex: 1  !important;
+    overflow: auto  !important;
 }
 
 :focus:not(:focus-visible) {
     outline: 0;
+}
+
+fieldset.antd-Collapse > legend.antd-Collapse-header {
+    background: #f3f3f3;
+    padding: 0.5rem;
+    margin: 0;
+    border-radius: 0.25rem;
+}
+
+fieldset.antd-Collapse > legend.antd-Collapse-header > .antd-Collapse-arrow:before {
+    border-color: initial
 }
