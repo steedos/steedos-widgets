@@ -9,6 +9,7 @@ export * from './lib/amis'
 export * from './lib/objects'
 export * from './lib/apps'
 export * from './lib/buttons'
+export * from './lib/defaultsDeep'
 export * from './lib/expression';
 export * from './lib/notification';
 export * from './lib/page';

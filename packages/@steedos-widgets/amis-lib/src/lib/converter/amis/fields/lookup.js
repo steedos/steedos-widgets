@@ -114,6 +114,16 @@ export async function lookupToAmisPicker(field, readonly, ctx){
                 }
             })
         }
+
+        const filtersFunction = ${field._filtersFunction};
+        
+        if(filtersFunction){
+            const _filters = filtersFunction();
+            if(_filters && _filters.length > 0){
+                filters.push(_filters);
+            }
+        }
+
         api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', pageSize).replace('{__skip}', skip).replace('{__sort}', sort.trim());
         return api;
     `
