@@ -220,8 +220,9 @@ export async function getRecordDetailRelatedListSchema(objectName,recordId,relat
     const globalFilter = [filterFieldName,'=',recordId];
 
     const listViewAmisSchema= (await getListSchema(null, relatedObjectName, firstListViewName, {globalFilter})).amisSchema;
-    const listViewAmisSchemaBody = listViewAmisSchema.body;
-
+    let listViewAmisSchemaBody = listViewAmisSchema.body;
+    const api = listViewAmisSchemaBody.api;
+    delete listViewAmisSchemaBody.api;
     const recordRelatedListBody = Object.assign({},listViewAmisSchemaBody,{
         bulkActions: [],
         headerToolbar: [],
@@ -298,6 +299,7 @@ export async function getRecordDetailRelatedListSchema(objectName,recordId,relat
           type: 'service',
           bodyClassName: '',
           name: `relatedObject`,
+          api,
           data: {context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
           body: body
     }
