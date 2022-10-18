@@ -154,7 +154,8 @@ export const ObjectListview = () => (
         "type": "steedos-object-listview",
         "objectApiName": "space_users",
         "listName": "all",
-        "headerToolbar": []
+        "headerToolbar": [],
+        "columnsTogglable": false
       }]
     }]
   }}
