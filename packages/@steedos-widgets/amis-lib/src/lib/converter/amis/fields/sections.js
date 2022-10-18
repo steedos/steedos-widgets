@@ -55,30 +55,9 @@ const getSection = async (permissionFields, fieldSchemaArray, sectionName, ctx) 
           field = await Fields.getObjectFieldSubFields(perField, permissionFields);
       }
       if(field.name.indexOf(".") < 0){
-          let amisField = await Fields.convertSFieldToAmisField(field, field.readonly, ctx);
-          // if(amisField && amisField.labelRemark === undefined){
-          //   delete amisField.labelRemark;
-          // }
-          // if(amisField && amisField.visibleOn === "${false}"){
-          //   delete amisField.visibleOn;
-          //   // amisField.hidden = true;
-          //   // amisField.disabledOn = "${true}";
-          //   // visibleOn: "${false}"
-          // }
-          // console.log('amisField==>',amisField);
+          const amisField = await Fields.convertSFieldToAmisField(field, field.readonly, ctx);
           if(amisField){
               fieldSetBody.push(amisField);
-              // fieldSetBody.push(
-              //   {
-              //     "type": "input-text",
-              //     "label": "文本",
-              //     "value": "这是一段文本",
-              //     // "hiddenOn": "1==1",
-              //     "visibleOn": "${false}",
-              //     "clearValueOnHidden": true,
-              //     "name": "two"
-              //   }
-              // );
           }
       }
   }
