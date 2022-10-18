@@ -134,6 +134,11 @@ export default {
           // },
           // "labelField": "label",
           // "valueField": "value"
+        },
+        {
+          "type": "number",
+          "name": "top",
+          "label": "显示的记录数量",
         }
       ]
     }
