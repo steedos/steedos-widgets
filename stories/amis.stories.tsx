@@ -6,11 +6,13 @@
  * @Description: 
  */
 import React, {useEffect, useState} from 'react';
-import { registerRemoteAssets, amisRender, getSteedosAuth, getRootUrl } from '@steedos-widgets/amis-lib';
-import { defaultsDeep } from 'lodash';
+import { registerRemoteAssets, amisRender, getSteedosAuth, getRootUrl, defaultsDeep } from '@steedos-widgets/amis-lib';
+// import { defaultsDeep } from 'lodash';
 import { Builder } from '@steedos-builder/react';
 import ReactDOM from 'react-dom';
 import * as _ from 'lodash';
+
+// window.defaultsDeep = defaultsDeep;
 
 const assetUrls = process.env.STEEDOS_UNPKG_URL + '/@steedos-widgets/amis-object/dist/assets-dev.json'
 
