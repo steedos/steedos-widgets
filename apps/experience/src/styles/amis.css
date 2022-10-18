@@ -248,3 +248,7 @@ fieldset.antd-Collapse > legend.antd-Collapse-header {
 fieldset.antd-Collapse > legend.antd-Collapse-header > .antd-Collapse-arrow:before {
     border-color: initial
 }
+
+svg.icon {
+    display: inherit;
+}
