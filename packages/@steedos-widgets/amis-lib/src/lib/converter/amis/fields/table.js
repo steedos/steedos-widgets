@@ -133,7 +133,7 @@ export async function getTableApi(mainObject, fields, options){
         }
     })
     let valueField = mainObject.key_field || '_id';
-    const api = await getApi(mainObject, null, fields, {alias: 'rows', queryOptions: `filters: {__filters}, top: {__top}, skip: {__skip}, sort: "{__sort}"`});
+    const api = await getApi(mainObject, null, fields, {alias: 'rows', limit: top, queryOptions: `filters: {__filters}, top: {__top}, skip: {__skip}, sort: "{__sort}"`});
     api.data.$term = "$term";
     api.data.$self = "$$";
     api.data.filter = "$filter"
@@ -145,7 +145,7 @@ export async function getTableApi(mainObject, fields, options){
         }else{
             filters = [filters, 'and', api.data.filter || [${JSON.stringify(filter)}]]
         }
-        var pageSize = ${top} || api.data.pageSize || 10;
+        var pageSize = api.data.pageSize || 10;
         var pageNo = api.data.pageNo || 1;
         var skip = (pageNo - 1) * pageSize;
         var orderBy = api.data.orderBy || '';
