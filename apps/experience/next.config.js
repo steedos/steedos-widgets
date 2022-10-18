@@ -14,7 +14,6 @@ const nextConfig = {
       unoptimized: true
     }
   },
-  cache: false
 }
 
 module.exports = nextConfig

@@ -21,14 +21,14 @@ export default class MyDocument extends Document {
           <meta name="application-name" content="Steedos" />
   
           <meta name="theme-color" content="#ffffff" />
-          <script src="/unpkg.com/amis/sdk/sdk.js"></script>
-          <script src="/unpkg.com/lodash/lodash.min.js"></script>
-          <script src="/unpkg.com/moment/min/moment.min.js"></script>
-          <link rel="stylesheet" href="/unpkg.com/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css" />
-          <link rel="stylesheet" href="/unpkg.com/amis/lib/themes/antd.css" />
-          <link rel="stylesheet" href="/unpkg.com/amis/lib/helper.css" />
-          <link rel="stylesheet" href="/unpkg.com/amis/sdk/iconfont.css" />
-          <link rel="stylesheet" href="/unpkg.com/fontawesome/fontawesome.css" />
+          <script src="https://unpkg.steedos.cn/amis@2.3.0/sdk/sdk.js"></script>
+          <script src="https://unpkg.steedos.cn/lodash/lodash.min.js"></script>
+          <script src="https://unpkg.steedos.cn/moment/min/moment.min.js"></script>
+          <link rel="stylesheet" href="https://unpkg.steedos.cn/@salesforce-ux/design-system@2.19.0/assets/styles/salesforce-lightning-design-system.min.css" />
+          <link rel="stylesheet" href="https://unpkg.steedos.cn/amis@2.3.0/lib/themes/antd.css" />
+          <link rel="stylesheet" href="https://unpkg.steedos.cn/amis@2.3.0/lib/helper.css" />
+          <link rel="stylesheet" href="https://unpkg.steedos.cn/amis@2.3.0/sdk/iconfont.css" />
+          <link rel="stylesheet" href="https://unpkg.steedos.cn/@fortawesome/fontawesome-free@6.2.0/css/all.min.css" />
 
         </Head>
         <body className='antialiased text-black bg-white'>
