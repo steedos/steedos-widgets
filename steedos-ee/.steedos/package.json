@@ -1,20 +1,9 @@
+
 {
     "name": "steedos-project-packages",
     "version": "1.0.0",
     "description": "",
     "license": "MIT",
-    "author": "",
-    "dependencies": {
-        "@salesforce-ux/design-system": "^2.18.1",
-        "@steedos-labs/contract": "2.2.1-beta.18",
-        "@steedos-labs/contract-ee": "2.2.1-beta.18",
-        "@steedos-labs/finance": "2.2.1-beta.18",
-        "@steedos-labs/finance-ee": "2.2.1-beta.18",
-        "@steedos-labs/master": "2.2.1-beta.18",
-        "@steedos-labs/oa": "2.2.1-beta.18",
-        "@steedos-labs/project": "2.2.1-beta.18",
-        "@steedos-labs/project-ee": "2.2.1-beta.18",
-        "@steedos-labs/workflow": "2.2.1-beta.18",
-        "@steedos-ui/amis": "^2.2.28"
-    }
+    "author": ""
 }
+        

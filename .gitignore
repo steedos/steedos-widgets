@@ -6,5 +6,4 @@ dist
 
 .yarn.lock
 *.log
-steedos-ee/storage
 .DS_Store
