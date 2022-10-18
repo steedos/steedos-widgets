@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-20 16:29:22
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-16 11:42:16
+ * @LastEditTime: 2022-10-18 09:41:08
  * @Description: 
  */
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -48,7 +48,8 @@ export default CredentialsProvider({
             space: json.space,
             token: json.token,
             userId: json.user.id,
-            name: json.user.name
+            name: json.user.name,
+            email: json.user.email,
           }
         }
       } catch (e) {console.log(e)}

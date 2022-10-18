@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-20 16:29:22
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-14 17:34:04
+ * @LastEditTime: 2022-10-18 09:41:24
  * @Description: 
  */
 
@@ -99,7 +99,8 @@ export const authOptions = {
               space: loginResult.space,
               token: loginResult.token,
               userId: loginResult.user?.id,
-              name: loginResult.user?.name
+              name: loginResult.user?.name,
+              email: session.user.email
             }
           }
         }
@@ -113,6 +114,12 @@ export const authOptions = {
       }
 
       return session
+    }
+  },
+  events:{
+    async signOut(token, session){
+      delete STEEDOS_TOKENS[token.token.email];
+      delete STEEDOS_SESSIONS[token.token.email];
     }
   },
   pages: {
