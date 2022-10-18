@@ -367,7 +367,7 @@ export const AmisSelectUser = () => (
             "type": "steedos-select-user",
             "name": "admins",
             "multiple": true,
-            // "filters": [["name", "contains", "王"]],
+            "filters": [["name", "contains", "王"]],
           },
           {
             "label": "函数",
