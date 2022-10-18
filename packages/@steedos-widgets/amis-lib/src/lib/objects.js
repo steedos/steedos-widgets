@@ -145,6 +145,22 @@ export async function getListSchema(
     const listViewFields = [];
 
     let listViewColumns = getListViewColumns(listView, ctx.formFactor);
+    let sort = '';
+    if(listView && listView.sort && listView.sort.length){
+        each(listView.sort,function(item,index){
+            if(isArray(item)){
+                const field_name = item[0];
+                const order = item[1] || '';
+                let sortStr = field_name + ' ' + order;
+                sortStr = index > 0 ? ','+sortStr : sortStr
+                sort += sortStr;
+            }else{
+                let sortStr = item.field_name + ' ' + item.order;
+                sortStr = index > 0 ? ','+sortStr : sortStr
+                sort += sortStr;
+            }
+        })
+    }
 
     if (listView && listViewColumns) {
         each(listViewColumns, function (column) {
@@ -178,7 +194,8 @@ export async function getListSchema(
         objectName: objectName,
         listViewName: listViewName,
         ...ctx,
-        filter: listView.filters
+        filter: listView.filters,
+        sort
     });
 
     return {
