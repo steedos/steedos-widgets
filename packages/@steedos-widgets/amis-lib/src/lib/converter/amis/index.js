@@ -3,7 +3,8 @@ import { getReadonlyFormInitApi, getSaveApi, getEditFormInitApi, getBatchDelete 
 import { getTableSchema, getTableApi } from './fields/table';
 import { getFormBody } from './form';
 import { getListSchema, getCardSchema } from './fields/list';
-import _, { map, defaultsDeep } from 'lodash';
+import _, { map } from 'lodash';
+import { defaultsDeep } from '../../defaultsDeep';
 
 function getBulkActions(objectSchema){
     return [

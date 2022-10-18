@@ -139,11 +139,24 @@ export const ObjectListview = () => (
   <AmisRender schema={{
     type: 'page',
     title: '列表视图',
-    body: {
-      "type": "steedos-object-listview",
-      "objectApiName": "space_users",
-      "listName": "all"
-    },
+    body: [{
+      "type": "panel",
+      "title": "基本用法",
+      "body": [{
+        "type": "steedos-object-listview",
+        "objectApiName": "space_users",
+        "listName": "all"
+      }]
+    },{
+      "type": "panel",
+      "title": "不显示 amis headerToolbar",
+      "body": [{
+        "type": "steedos-object-listview",
+        "objectApiName": "space_users",
+        "listName": "all",
+        "headerToolbar": []
+      }]
+    }]
   }}
   assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
   />
