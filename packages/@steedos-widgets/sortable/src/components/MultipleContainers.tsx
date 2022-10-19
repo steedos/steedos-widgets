@@ -2,9 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal, unstable_batchedUpdates } from 'react-dom';
 import { map, keyBy, cloneDeep } from 'lodash';
 
-import {
-  createObject,
-} from 'amis-core/esm/utils/object';
+import { createObject } from '@steedos-widgets/amis-lib'
 
 import {
   CancelDrop,
