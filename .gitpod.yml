@@ -12,6 +12,7 @@ tasks:
   - name: Nextjs
     command: |
       git config pull.rebase false
+      yarn config set registry https://registry.npmmirror.com
       yarn install
       yarn build
       cd apps/experience
