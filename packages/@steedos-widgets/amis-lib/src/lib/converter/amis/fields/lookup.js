@@ -81,9 +81,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         }
     });
 
-    const source = await getApi({
-        name: referenceTo.objectName
-    }, null, fields, {expand: true, alias: 'rows', queryOptions: `filters: {__filters}, top: {__top}, skip: {__skip}, sort: "{__sort}"`});
+    const source = await getApi(refObjectConfig, null, fields, {expand: true, alias: 'rows', queryOptions: `filters: {__filters}, top: {__top}, skip: {__skip}, sort: "{__sort}"`});
     source.data.$term = "$term";
     source.data.$self = "$$";
    
@@ -116,7 +114,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         }
 
         const filtersFunction = ${field._filtersFunction};
-        
+
         if(filtersFunction){
             const _filters = filtersFunction();
             if(_filters && _filters.length > 0){
@@ -127,7 +125,35 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', pageSize).replace('{__skip}', skip).replace('{__sort}', sort.trim());
         return api;
     `
+    source.adaptor = `
+    const enable_tree = ${refObjectConfig.enable_tree};
+    if(enable_tree){
+        const records = payload.data.rows;
+        const treeRecords = [];
+        const getChildren = (records, childrenIds)=>{
+            if(!childrenIds){
+                return;
+            }
+            const children = _.filter(records, (record)=>{
+                return _.includes(childrenIds, record._id)
+            });
+            _.each(children, (item)=>{
+                if(item.children){
+                    item.children = getChildren(records, item.children)
+                }
+            })
+            return children;
+        }
 
+        _.each(records, (record)=>{
+            if(!record.parent){
+                treeRecords.push(Object.assign({}, record, {children: getChildren(records, record.children)}));
+            }
+        });
+        payload.data.rows = treeRecords;
+    }
+    return payload;
+    `;
     let top = 20;
 
     if(refObjectConfig.paging && refObjectConfig.paging.enabled === false){
