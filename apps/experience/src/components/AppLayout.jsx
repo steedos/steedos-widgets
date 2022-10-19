@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 09:31:04
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-14 17:36:58
+ * @LastEditTime: 2022-10-19 13:27:46
  * @Description:  
  */
 import React, { useState, useEffect, Fragment } from 'react';
@@ -24,6 +24,9 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
     }
     if(page_id){
       pageId = page_id
+    }
+    if(!tabId && pageId){
+      tabId = pageId;
     }
     const [app, setApp] = useState(null)
     const [selected, setSelected] = useState(tabId)
