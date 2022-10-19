@@ -6,10 +6,8 @@
  * @Description: 
  */
 import React, { useEffect, useState } from 'react'
-import { getUISchema, lookupToAmisPicker, lookupToAmisSelect } from '@steedos-widgets/amis-lib'
-import {
-  createObject,
-} from 'amis-core/esm/utils/object';
+import { getUISchema, lookupToAmisPicker, lookupToAmisSelect, createObject } from '@steedos-widgets/amis-lib'
+
 import { compact, isString } from 'lodash';
 
 

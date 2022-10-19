@@ -24,3 +24,5 @@ export * from './lib/converter/amis/fields/user';
 export * from './lib/workflow/flow';
 
 export * from './lib/assets';
+
+export * from './utils/object';
