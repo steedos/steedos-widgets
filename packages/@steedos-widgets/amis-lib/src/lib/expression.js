@@ -1,4 +1,4 @@
-import * as _ from 'lodash'
+import {get} from 'lodash'
 
 const globalTag = '__G_L_O_B_A_L__';
 
@@ -19,7 +19,7 @@ const getValueByPath = function (formData, path) {
     if (path === '#' || !path) {
         return formData || {};
     } else if (typeof path === 'string') {
-        return _.get(formData, path);
+        return get(formData, path);
     } else {
         console.error('path has to be a string');
     }
