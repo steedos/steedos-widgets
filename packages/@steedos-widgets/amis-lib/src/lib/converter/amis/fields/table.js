@@ -55,6 +55,15 @@ async function getTableColumns(fields, options){
                 "id": "u:6c8291d1029f",
                 "level": "link"
               })
+        }else if(field.type === 'toggle'){
+            columns.push({
+                type: "switch",
+                name: field.name,
+                label: field.label,
+                width: field.width,
+                toggled: field.toggled,
+                disabled: true
+            })
         }else{
             const tpl = await Tpl.getFieldTpl(field, options);
 

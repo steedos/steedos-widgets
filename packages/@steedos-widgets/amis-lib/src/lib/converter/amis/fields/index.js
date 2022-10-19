@@ -438,9 +438,18 @@ return payload;
             }
             break;
         case 'toggle':
-            convertData = {
-                type: "switch"
+            if(readonly){
+                convertData = {
+                    type: getAmisStaticFieldType('checkbox', readonly),
+                    option: field.inlineHelpText,
+                    tpl: readonly ? Tpl.getSwitchTpl(field) : null
+                }
+            }else{
+                convertData = {
+                    type: "switch"
+                }
             }
+            
             break;
         case 'grid':
             convertData = {

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-14 18:22:55
+ * @LastEditTime: 2022-10-19 18:02:38
  * @Description: 
  */
 import { Router } from '../../router'
@@ -20,6 +20,14 @@ export function getModifiedInfoTpl(formFactor){
         formFactor, appId: "admin", objectName: 'users', recordId: '${modified_by._id}'
     })
     return `<div><a href='${href}'>\${_display.modified_by.label}</a>\${_display.modified}</div>`
+}
+
+export function getNumberTpl(field){
+    return `<div>\${_display.${field.name}}</div>`
+}
+
+export function getTimeTpl(field){
+    return `<div>\${_display.${field.name}}</div>`
 }
 
 export function getDateTpl(field){
@@ -128,6 +136,8 @@ export async function getFieldTpl (field, options){
             return getSwitchTpl(field);
         case 'select':
             return getSelectTpl(field);
+        case 'time':
+            return getTimeTpl(field);
         case 'date':
             return getDateTpl(field);
         case 'datetime':
@@ -136,6 +146,9 @@ export async function getFieldTpl (field, options){
             return await getRelatedFieldTpl(field, options);
         case 'master_detail':
             return await getRelatedFieldTpl(field, options);
+        case 'number':
+        case 'currency':
+            return await getNumberTpl(field);
         default:
             break;
     }

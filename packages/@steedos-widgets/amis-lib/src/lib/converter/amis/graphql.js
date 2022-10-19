@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import { includes } from 'lodash';
 import { getUISchema } from '../../objects';
 
 export async function getFieldsTemplate(fields, expand){
@@ -21,12 +22,10 @@ export async function getFieldsTemplate(fields, expand){
             }else{
                 fieldsName.push( field.alias ? `${field.alias}:${field.name}` : field.name)
             }
-
-            if(field.type === 'date' || field.type == 'datetime' || field.type == 'boolean'){
+            if(includes(['time','date','datetime','boolean','number','currency'], field.type)){
                 fieldsName.push(`${field.name}`)
             }
-
-            if(field.type === 'date' || field.type == 'datetime' || field.type == 'boolean' || field.type == 'select' || field.type == 'file'){
+            if(includes(['time','date','datetime','boolean','number','currency', 'select', 'file'], field.type)){
                 displayFields.push(`${field.name}`)
             }
         }
