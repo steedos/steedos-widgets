@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-14 16:04:34
+ * @LastEditTime: 2022-10-19 11:34:19
  * @Description:
  */
 import { fetchAPI } from "./steedos.client";
@@ -14,7 +14,7 @@ import {
     getObjectDetail,
     getObjectForm,
 } from "./converter/amis/index";
-import _, { cloneDeep, slice, isEmpty, each, has, findKey, find, isString, isObject, keys, includes, isArray, isFunction } from "lodash";
+import _, { cloneDeep, slice, isEmpty, each, has, findKey, find, isString, isObject, keys, includes, isArray, isFunction, map } from "lodash";
 import { getFieldSearchable } from "./converter/amis/fields/index";
 import { getRecord } from './record';
 
@@ -55,6 +55,9 @@ export async function getUISchema(objectName, force) {
     let uiSchema = null;
     try {
         uiSchema = await fetchAPI(url, { method: "get" });
+        if(!uiSchema){
+            return ;
+        }
         setUISchemaCache(objectName, uiSchema);
         for (const fieldName in uiSchema.fields) {
             if (uiSchema.fields) {
@@ -321,39 +324,87 @@ export async function getObjectRelatedList(
 
     const related = [];
 
-    const details = [].concat(uiSchema.details || []);
+    const relatedLists = [].concat(uiSchema.related_lists || []);
 
-    if (uiSchema.enable_files) {
-        details.push(`cms_files.parent`);
-    }
-
-    for (const detail of details) {
-        const arr = detail.split(".");
-
-        let filter = null;
-        const refField = await getField(arr[0], arr[1]);
-        if (
-            refField._reference_to ||
-            (refField.reference_to && !isString(refField.reference_to))
-        ) {
-            filter = [
-                [`${arr[1]}/o`, "=", objectName],
-                [`${arr[1]}/ids`, "=", recordId],
-            ];
-        } else {
-            filter = [`${arr[1]}`, "=", recordId];
+    if(!isEmpty(relatedLists)){
+        for (const relatedList of relatedLists) {
+            const arr = relatedList.related_field_fullname.split(".");
+            let filter = null;
+            const refField = await getField(arr[0], arr[1]);
+            if(refField){
+                if (
+                    refField._reference_to ||
+                    (refField.reference_to && !isString(refField.reference_to))
+                ) {
+                    filter = [
+                        [`${arr[1]}/o`, "=", objectName],
+                        [`${arr[1]}/ids`, "=", recordId],
+                    ];
+                } else {
+                    filter = [`${arr[1]}`, "=", recordId];
+                }
+                const relatedUiSchema = await getUISchema(arr[0], formFactor);
+                if(relatedUiSchema){
+                    const fields = map(relatedList.field_names , (fName)=>{
+                        return find(relatedUiSchema.fields, (item)=>{
+                            return item.name === fName
+                        })
+                    })
+                    related.push({
+                        masterObjectName: objectName,
+                        object_name: arr[0],
+                        foreign_key: arr[1],
+                        schema: {
+                            uiSchema: relatedUiSchema,
+                            amisSchema: await getObjectList(relatedUiSchema, fields, {
+                                tabId: objectName,
+                                appId: appName,
+                                objectName: arr[0],
+                                formFactor: formFactor,
+                                globalFilter: filter,
+                            })
+                        }
+                    });
+                }
+            }
         }
 
-        related.push({
-            masterObjectName: objectName,
-            object_name: arr[0],
-            foreign_key: arr[1],
-            schema: await getListSchema(appName, arr[0], "all", {
-                globalFilter: filter,
-                formFactor: formFactor,
-            }),
-        });
+    }else{
+        const details = [].concat(uiSchema.details || []);
+
+        if (uiSchema.enable_files) {
+            details.push(`cms_files.parent`);
+        }
+    
+        for (const detail of details) {
+            const arr = detail.split(".");
+    
+            let filter = null;
+            const refField = await getField(arr[0], arr[1]);
+            if (
+                refField._reference_to ||
+                (refField.reference_to && !isString(refField.reference_to))
+            ) {
+                filter = [
+                    [`${arr[1]}/o`, "=", objectName],
+                    [`${arr[1]}/ids`, "=", recordId],
+                ];
+            } else {
+                filter = [`${arr[1]}`, "=", recordId];
+            }
+    
+            related.push({
+                masterObjectName: objectName,
+                object_name: arr[0],
+                foreign_key: arr[1],
+                schema: await getListSchema(appName, arr[0], "all", {
+                    globalFilter: filter,
+                    formFactor: formFactor,
+                }),
+            });
+        }
     }
+
     return related;
 }
 
