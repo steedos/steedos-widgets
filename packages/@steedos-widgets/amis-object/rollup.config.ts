@@ -52,12 +52,14 @@ export default [
   {
     ...options,
     output: [{ file: pkg.main, format: 'cjs', sourcemap: true }],
+    external,
     plugins: options.plugins.concat([]),
   },
   // ES
   {
     ...options,
     output: [{ file: pkg.module, format: 'es', sourcemap: true }],
+    external,
     plugins: options.plugins.concat([]),
   },
   {
