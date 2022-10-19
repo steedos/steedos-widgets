@@ -1,24 +1,30 @@
 {
-  "name": "nextjs-amis",
-  "version": "0.0.0",
-  "private": true,
+  "name": "@steedos-labs/experience",
+  "version": "1.0.0-beta.16",
+  "main": "package.service.js",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    ".next/server",
+    ".next/static",
+    ".next/BUILD_ID",
+    ".next/*.json",
+    "public",
+    "package.service.js"
+  ],
   "scripts": {
     "dev": "node server",
     "build-app": "next build",
-    "deploy": "rm -rf ../../steedos-ee/packages/experience/.next/* && cp -rf .next ../../steedos-ee/packages/experience/ && rm -rf  ../../steedos-ee/packages/experience/.next/cache &&  cp -rf public ../../steedos-ee/packages/experience",
-    "export": "next build && next export",
-    "release": "cd steedos-ee/packages/experience && npm publish --registry https://registry.npmjs.org ",
+    "build-docker": "docker build -t steedos/steedos-experience .",
+    "release": "npm publish --registry https://registry.npmjs.org ",
     "start": "NODE_ENV=production node server.js"
   },
   "dependencies": {
-    "@docsearch/react": "^3.2.0",
     "@headlessui/react": "^1.6.5",
     "@heroicons/react": "^1.0.6",
-    "@salesforce-ux/design-system": "^2.18.1",
     "@steedos-builder/react": "^0.2.28",
-    "@steedos-ui/amis": "^2.2.28",
-    "@steedos-widgets/amis-lib": "^0.0.3",
-    "@tailwindcss/forms": "^0.5.2",
     "antd": "^4.22.0",
     "attr-accept": "^2.2.2",
     "autoprefixer": "^10.4.7",
@@ -42,7 +48,6 @@
   "devDependencies": {
     "@types/node": "^18.0.0",
     "@types/react": "^18.0.14",
-    "amis": "2.3.0",
     "eslint": "8.17.0",
     "eslint-config-next": "12.1.6",
     "prettier": "^2.7.1",

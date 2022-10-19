@@ -6,11 +6,13 @@
  * @Description: 
  */
 import React, {useEffect, useState} from 'react';
-import { registerRemoteAssets, amisRender, getSteedosAuth, getRootUrl } from '@steedos-widgets/amis-lib';
-import { defaultsDeep } from 'lodash';
+import { registerRemoteAssets, amisRender, getSteedosAuth, getRootUrl, defaultsDeep } from '@steedos-widgets/amis-lib';
+// import { defaultsDeep } from 'lodash';
 import { Builder } from '@steedos-builder/react';
 import ReactDOM from 'react-dom';
 import * as _ from 'lodash';
+
+// window.defaultsDeep = defaultsDeep;
 
 const assetUrls = process.env.STEEDOS_UNPKG_URL + '/@steedos-widgets/amis-object/dist/assets-dev.json'
 
@@ -139,11 +141,25 @@ export const ObjectListview = () => (
   <AmisRender schema={{
     type: 'page',
     title: '列表视图',
-    body: {
-      "type": "steedos-object-listview",
-      "objectApiName": "space_users",
-      "listName": "all"
-    },
+    body: [{
+      "type": "panel",
+      "title": "基本用法",
+      "body": [{
+        "type": "steedos-object-listview",
+        "objectApiName": "space_users",
+        "listName": "all"
+      }]
+    },{
+      "type": "panel",
+      "title": "不显示 amis headerToolbar",
+      "body": [{
+        "type": "steedos-object-listview",
+        "objectApiName": "space_users",
+        "listName": "all",
+        "headerToolbar": [],
+        "columnsTogglable": false
+      }]
+    }]
   }}
   assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
   />
@@ -354,7 +370,7 @@ export const AmisSelectUser = () => (
             "type": "steedos-select-user",
             "name": "admins",
             "multiple": true,
-            // "filters": [["name", "contains", "王"]],
+            "filters": [["name", "contains", "王"]],
           },
           {
             "label": "函数",

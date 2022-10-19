@@ -112,7 +112,7 @@ export async function getTableSchema(fields, options){
 
 export async function getTableApi(mainObject, fields, options){
     const searchableFields = [];
-    let { globalFilter, filter, top } = options;
+    let { globalFilter, filter, sort, top } = options;
 
     if(_.isArray(filter)){
         filter = _.map(filter, function(item){
@@ -151,6 +151,7 @@ export async function getTableApi(mainObject, fields, options){
         var orderBy = api.data.orderBy || '';
         var orderDir = api.data.orderDir || '';
         var sort = orderBy + ' ' + orderDir;
+        sort = orderBy ? sort : "${sort}";
         var allowSearchFields = ${JSON.stringify(searchableFields)};
         if(api.data.$term){
             filters = [["name", "contains", "'+ api.data.$term +'"]];

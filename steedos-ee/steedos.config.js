@@ -18,22 +18,6 @@ module.exports = {
 
 		broker.createService(require("@steedos-labs/experience"));
 
-		// const express = require("express");
-		
-		// const svc = broker.createService(require("@steedos-labs/experience"));
-
-		// const app = express();
-
-		// app.use("/", svc.express());
-		
-		// app.use("/", express.static(svc.static(), { maxAge: svc.cacheTime() }));
-
-		// app.listen(5001, err => {
-		// 	if (err)
-		// 		return console.error(err);
-		
-		// 	console.log("Open http://localhost:5001");
-		// });
 	},
 
 };

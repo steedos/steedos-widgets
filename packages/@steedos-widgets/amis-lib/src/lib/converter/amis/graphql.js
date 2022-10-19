@@ -172,7 +172,7 @@ export function getScriptForSimplifiedValueForFileFields(fields){
 }
 
 export function getSaveDataTpl(fields){
-    console.log('fields==>',fields)
+
     return `
         const formData = api.data.$;
         for (key in formData){
