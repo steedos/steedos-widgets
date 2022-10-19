@@ -124,6 +124,7 @@ module.exports = {
     process.env.KEYCLOAK_ISSUER = process.env.STEEDOS_IDENTITY_OIDC_ISSUER;
     process.env.NEXTAUTH_SECRET = process.env.STEEDOS_IDENTITY_JWT_SECRET;
     process.env.JWT_SECRET = process.env.STEEDOS_IDENTITY_JWT_SECRET;
+    process.env.STEEDOS_ROOT_URL = process.env.ROOT_URL;
 
     if (this.settings.server !== false) {
 			this.createServer();
