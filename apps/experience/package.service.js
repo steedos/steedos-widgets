@@ -124,6 +124,10 @@ module.exports = {
     process.env.KEYCLOAK_ISSUER = process.env.STEEDOS_IDENTITY_OIDC_ISSUER;
     process.env.NEXTAUTH_SECRET = process.env.STEEDOS_IDENTITY_JWT_SECRET;
     process.env.JWT_SECRET = process.env.STEEDOS_IDENTITY_JWT_SECRET;
+    // 默认使用华炎魔方ROOT_URL
+    process.env.STEEDOS_ROOT_URL = process.env.ROOT_URL;
+    // 默认使用华炎魔方资产包
+    process.env.STEEDOS_EXPERIENCE_ASSETURLS = process.env.STEEDOS_PUBLIC_PAGE_ASSETURLS;
 
     if (this.settings.server !== false) {
 			this.createServer();

@@ -5,6 +5,5 @@
  * @LastEditTime: 2022-10-12 13:22:25
  * @Description: 
  */
-export * from './Hello';
 
 export * from './fields/AmisObjectFieldLookup'
