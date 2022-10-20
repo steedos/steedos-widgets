@@ -35,7 +35,7 @@ export async function getFieldsTemplate(fields, expand){
     fieldsName = _.uniq(fieldsName);
 
     if(displayFields.length > 0){
-        return `${fieldsName.join(',')},_display{${displayFields.join(',')}}`;
+        return `${fieldsName.join(',')},_display:_ui{${displayFields.join(',')}}`;
     }
     return `${fieldsName.join(' ')}`
 }
