@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-04 17:10:53
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-17 10:51:57
+ * @LastEditTime: 2022-10-20 10:25:48
  * @Description: 
  */
 import { AmisRender } from "@/components/AmisRender";
@@ -89,7 +89,7 @@ export const ListView = {
     getQueryFilter: (listView, userFilter)=>{
         const canSave = canSaveFilter(listView);
         if(canSave){
-            return getVisibleFilter(listView, userFilter);
+            return ListView.getVisibleFilter(listView, userFilter);
         }else{
             if(isEmpty(userFilter)){
                 return listView.filters;
