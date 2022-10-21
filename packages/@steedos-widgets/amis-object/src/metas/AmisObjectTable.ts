@@ -131,20 +131,20 @@ export default {
             // }
           ]
         },
-        {
-          "type": "condition-builder",
-          "name": "filters",
-          "label": "过滤条件",
-          "source": {
-            "method": "get",
-            "url": "/service/api/amis-metadata-listviews/getFilterFields?objectName=${objectApiName === '${objectName}' ? 'space_users' : objectApiName}",
-            "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
-            "dataType": "json"
-          },
-          "en-US": {
-            "label": "Filters Conditions"
-          }
-        },
+        // {
+        //   "type": "condition-builder",
+        //   "name": "filters",
+        //   "label": "过滤条件",
+        //   "source": {
+        //     "method": "get",
+        //     "url": "/service/api/amis-metadata-listviews/getFilterFields?objectName=${objectApiName === '${objectName}' ? 'space_users' : objectApiName}",
+        //     "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
+        //     "dataType": "json"
+        //   },
+        //   "en-US": {
+        //     "label": "Filters Conditions"
+        //   }
+        // },
         {
           "type": "input-text",
           "name": "sortField",
