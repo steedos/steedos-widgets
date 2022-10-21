@@ -54,7 +54,7 @@ export function getAmisStaticFieldType(type, readonly){
         }
         return type;
     }
-    if(_.includes(['text'], type)){
+    if(_.includes(['text','image'], type)){
         return `static-${type}`;
     }else{
         return 'static';
@@ -217,6 +217,10 @@ return payload;
         convertData.multiple = true;
         convertData.joinValues = false;
         convertData.extractValue = true;
+    }
+    if(_.includes(['avatar','image'], type)){
+        convertData.enlargeAble = true;
+        convertData.showToolbar = true;
     }
     return convertData;
 }

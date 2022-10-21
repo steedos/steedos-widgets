@@ -44,6 +44,7 @@ function getReadonlyFormAdaptor(fields){
     if(payload.data.data){
         var data = payload.data.data[0];
         ${scriptStr}
+        ${getScriptForAddUrlPrefixForImgFields(fields)}
         payload.data = data;
         window.postMessage(Object.assign({type: "record.loaded"}, {record: data}), "*")
     }
