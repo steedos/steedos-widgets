@@ -26,11 +26,11 @@ const config: any = {
       propType: "string",
       description: '对象名称',
     },
-    // {
-    //   name: "listName",
-    //   propType: "string",
-    //   description: '视图名称',
-    // }
+    {
+      name: "columns",
+      propType: "array",
+      description: '显示列',
+    }
   ],
   preview: {
   },
@@ -74,12 +74,12 @@ export default {
         type: config.amis.name,
         label: config.title,
         objectApiName: "${objectName}",
-        // listName: "all"
+        columns: [{"field": "name"}]
       },
       previewSchema: {
         type: config.amis.name,
         objectApiName: 'space_users',
-        // listName: "all"
+        columns: [{"field": "name"}]
       },
       panelTitle: "设置",
       panelControls: [
@@ -106,11 +106,62 @@ export default {
           "valueField": "name",
           "menuTpl": ""
         },
-        // {
-        //   type: "text",
-        //   name: "listName",
-        //   label: "视图",
-        // },
+        {
+          "type": "combo",
+          "name": "columns",
+          "label": "显示列",
+          "multiLine": true,
+          "multiple": true,
+          "draggable": true,
+          "items": [
+            {
+              "name": "field",
+              "type": "input-text",
+              "placeholder": "字段"
+            },
+            {
+              "name": "width",
+              "type": "input-text",
+              "placeholder": "宽度"
+            },
+            // {
+            //   "name": "wrap",
+            //   "type": "checkbox",
+            //   "option": "换行"
+            // }
+          ]
+        },
+        {
+          "type": "condition-builder",
+          "name": "filters",
+          "label": "过滤条件",
+          "source": {
+            "method": "get",
+            "url": "/service/api/amis-metadata-listviews/getFilterFields?objectName=${objectApiName === '${objectName}' ? 'space_users' : objectApiName}",
+            "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
+            "dataType": "json"
+          },
+          "en-US": {
+            "label": "Filters Conditions"
+          }
+        },
+        {
+          "type": "input-text",
+          "name": "sortField",
+          "label": "排序字段"
+        },
+        {
+          "type": "select",
+          "name": "sortOrder",
+          "label": "排序顺序",
+          "options": [{
+            "label": "升级",
+            "value": "asc"
+          },{
+            "label": "倒序",
+            "value": "desc"
+          }]
+        },
         {
           "type": "number",
           "name": "top",
