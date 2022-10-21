@@ -136,36 +136,6 @@ export const Login = () => (
   />
 )
 
-
-export const ObjectListview = () => (
-  <AmisRender schema={{
-    type: 'page',
-    title: '列表视图',
-    body: [{
-      "type": "panel",
-      "title": "基本用法",
-      "body": [{
-        "type": "steedos-object-listview",
-        "objectApiName": "space_users",
-        "listName": "all"
-      }]
-    },{
-      "type": "panel",
-      "title": "不显示 amis headerToolbar",
-      "body": [{
-        "type": "steedos-object-listview",
-        "objectApiName": "space_users",
-        "listName": "all",
-        "headerToolbar": [],
-        "columnsTogglable": false
-      }]
-    }]
-  }}
-  assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
-  />
-)
-
-
 export const ObjectForm = () => (
   <AmisRender schema={{
     type: 'page',
@@ -268,6 +238,115 @@ export const ObjectForm = () => (
     }]
   }}
   assetUrls={assetUrls}
+  />
+)
+
+export const ObjectListview = () => (
+  <AmisRender schema={{
+    type: 'page',
+    title: '列表视图',
+    body: [{
+      "type": "panel",
+      "title": "基本用法",
+      "body": [{
+        "type": "steedos-object-listview",
+        "objectApiName": "space_users",
+        "listName": "all"
+      }]
+    },{
+      "type": "panel",
+      "title": "不显示 amis headerToolbar",
+      "body": [{
+        "type": "steedos-object-listview",
+        "objectApiName": "space_users",
+        "listName": "all",
+        "headerToolbar": [],
+        "columnsTogglable": false
+      }]
+    }]
+  }}
+  assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
+  />
+)
+
+export const ObjectTable = () => (
+  <AmisRender schema={{
+    type: 'page',
+    title: '对象表格',
+    body: [{
+      "type": "panel",
+      "title": "基本用法(指定columns)",
+      "body": [{
+        "type": "steedos-object-table",
+        "objectApiName": "space_users",
+        "columns": ["name", "mobile"]
+      }]
+    },{
+      "type": "panel",
+      "title": "过滤条件",
+      "body": [{
+        "type": "steedos-object-table",
+        "objectApiName": "space_users",
+        "columns": ["name", "mobile"],
+        "filters": ["name", "contains", "张"]
+      }]
+    },{
+      "type": "panel",
+      "title": "排序",
+      "body": [{
+        "type": "steedos-object-table",
+        "objectApiName": "space_users",
+        "columns": ["name", "mobile"],
+        "sortField": "name",
+        "sortOrder": "asc",
+      }]
+    },{
+      "type": "panel",
+      "title": "TOP",
+      "body": [{
+        "type": "steedos-object-table",
+        "objectApiName": "space_users",
+        "columns": ["name", "mobile"],
+        "top": 2
+      }]
+    },{
+      "type": "panel",
+      "title": "翻页 perPage(没效果)",
+      "body": [{
+        "type": "steedos-object-table",
+        "objectApiName": "space_users",
+        "columns": ["name", "mobile"],
+        "perPage": 2
+      }]
+    },{
+      "type": "panel",
+      "title": "列宽度",
+      "body": [{
+        "type": "steedos-object-table",
+        "objectApiName": "space_users",
+        "columns": [{"field": "name", "width": "120px"}, "mobile"]
+      }]
+    },{
+      "type": "panel",
+      "title": "列换行(没效果，始终会换行)",
+      "body": [{
+        "type": "steedos-object-table",
+        "objectApiName": "space_users",
+        "columns": ["name", "mobile", {"field": "position", "width": 120, "wrap": false}]
+      }]
+    },{
+      "type": "panel",
+      "title": "不显示 amis headerToolbar",
+      "body": [{
+        "type": "steedos-object-table",
+        "objectApiName": "space_users",
+        "columns": ["name", "mobile"],
+        "headerToolbar": [],
+        "columnsTogglable": false
+      }]
+    }]
+  }}
+  assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
   />
 )
 

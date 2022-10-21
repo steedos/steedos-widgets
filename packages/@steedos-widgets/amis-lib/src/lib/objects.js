@@ -207,6 +207,52 @@ export async function getListSchema(
     };
 }
 
+// 获取对象表格
+export async function getTableSchema(
+    appName,
+    objectName,
+    columns,
+    ctx = {}
+) {
+    const uiSchema = await getUISchema(objectName);
+
+    let sort = '';
+    const sortField = ctx.sortField;
+    const sortOrder = ctx.sortOrder;
+    if(sortField){
+        let sortStr = sortField + ' ' + sortOrder || 'asc';
+        sort = sortStr;
+    }
+
+    let fields = [];
+    each(columns, function (column) {
+        if (isString(column) && uiSchema.fields[column]) {
+            fields.push(uiSchema.fields[column]);
+        } else if (isObject(column) && uiSchema.fields[column.field]) {
+            fields.push(
+                Object.assign({}, uiSchema.fields[column.field], {
+                    width: column.width,
+                    wrap: column.wrap,
+                })
+            );
+        }
+    });
+
+    const amisSchema = await getObjectList(uiSchema, fields, {
+        tabId: objectName,
+        appId: appName,
+        objectName: objectName,
+        ...ctx,
+        filter: ctx.filters,
+        sort
+    });
+
+    return {
+        uiSchema,
+        amisSchema,
+    };
+}
+
 export async function getRecordDetailHeaderSchema(objectName,recordId){
     const uiSchema = await getUISchema(objectName);
     const amisSchema = await getRecordDetailHeaderAmisSchema(uiSchema, recordId);

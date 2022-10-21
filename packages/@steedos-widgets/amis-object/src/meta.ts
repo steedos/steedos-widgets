@@ -8,6 +8,7 @@
 // import Hello from "./metas/Hello";
 import AmisObjectForm from "./metas/AmisObjectForm";
 import AmisObjectListview from "./metas/AmisObjectListview";
+import AmisObjectTable from "./metas/AmisObjectTable";
 import AmisRecordDetailHeader from "./metas/AmisRecordDetailHeader";
 import AmisSelectUser from "./metas/AmisSelectUser";
 import AmisRecordDetailRelatedList from "./metas/AmisRecordDetailRelatedList";
@@ -17,12 +18,14 @@ import AmisObjectFieldLookup from './metas/AmisObjectFieldLookup';
 
 // import Hello from './metas/Hello';
 
-const components = [AmisObjectForm, AmisObjectListview, AmisRecordDetailHeader, AmisSelectUser, AmisRecordDetailRelatedList, AmisProvider, AmisObjectFieldLookup];
+const components = [AmisObjectForm, AmisObjectListview, AmisObjectTable, AmisRecordDetailRelatedList, 
+  AmisRecordDetailHeader, AmisProvider, AmisSelectUser, AmisObjectFieldLookup];
 const componentList = [
   {
     title: "华炎魔方",
     icon: "",
-    children: [AmisObjectForm, AmisObjectListview,AmisRecordDetailHeader, AmisSelectUser, AmisRecordDetailRelatedList, AmisProvider, AmisObjectFieldLookup]
+    children: [AmisObjectForm, AmisObjectListview, AmisObjectTable, AmisRecordDetailRelatedList, 
+      AmisRecordDetailHeader, AmisProvider, AmisSelectUser, AmisObjectFieldLookup]
   }
 ];
 export default {
