@@ -14,7 +14,7 @@ import {
     getObjectDetail,
     getObjectForm,
 } from "./converter/amis/index";
-import _, { cloneDeep, slice, isEmpty, each, has, findKey, find, isString, isObject, keys, includes, isArray, isFunction, map } from "lodash";
+import _, { cloneDeep, slice, isEmpty, each, has, findKey, find, isString, isObject, keys, includes, isArray, isFunction, map, forEach } from "lodash";
 import { getFieldSearchable } from "./converter/amis/fields/index";
 import { getRecord } from './record';
 
@@ -408,10 +408,14 @@ export async function getObjectRelatedList(
                 }
                 const relatedUiSchema = await getUISchema(arr[0], formFactor);
                 if(relatedUiSchema){
-                    const fields = map(relatedList.field_names , (fName)=>{
-                        return find(relatedUiSchema.fields, (item)=>{
+                    let fields = [];
+                    forEach(relatedList.field_names , (fName)=>{
+                        const field = find(relatedUiSchema.fields, (item)=>{
                             return item.name === fName
                         })
+                        if(field){
+                            fields.push(field);
+                        }
                     })
                     related.push({
                         masterObjectName: objectName,
