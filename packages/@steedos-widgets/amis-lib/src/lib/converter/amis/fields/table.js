@@ -3,6 +3,7 @@ import * as Tpl from '../tpl';
 import * as Fields from '../index';
 import * as graphql from '../graphql';
 import config from '../../../../config'
+import { each, isBoolean } from 'lodash';
 
 function getOperation(fields){
     const controls = [];
@@ -99,11 +100,115 @@ function getDefaultParams(options){
     }
 }
 
+function getButtonVisibleOn(button){
+    let visible= button.visible;
+
+    if(button._visible){
+        visible = button._visible;
+    }
+
+    if(isBoolean(visible)){
+        visible = visible.toString();
+    }
+
+    if(visible){
+        console.log(`visible`, visible)
+        if(visible.startsWith('function')){
+            return `${visible}(objectName, _id, recordPermissions)`
+        }
+        return visible;
+    }
+
+    if(button.type === 'amis_button'){
+        const amisSchema = button.amis_schema;
+        if(amisSchema && amisSchema.body && amisSchema.body.length > 0){
+            const btn1 = amisSchema.body[0];
+            return btn1.visibleOn
+        }
+    }
+}
+
+async function getTableOperation(ctx){
+    console.log(`getTableOperation`, ctx)
+    const buttons = ctx.buttons;
+    const operationButtons = [];
+    each(buttons, (button)=>{
+        if(isBoolean(button.visible)){
+            button.visible = button.visible.toString();
+        }
+        // operationButtons.push({
+        //     type: 'button',
+        //     label: button.label,
+        //     visibleOn: button.visible ? `${button.visible}` : (button._visible ? `${button._visible}` : null),
+        //     onEvent: {
+        //         click: {
+        //             actions: []
+        //         }
+        //     }
+        // })
+
+        operationButtons.push({
+            type: 'steedos-object-button',
+            name: button.name,
+            objectName: button.objectName,
+            visibleOn: getButtonVisibleOn(button),
+            className: 'border-none antd-Button--link hover:bg-transparent focus:bg-transparent'
+        })
+    })
+    console.log(`operationButtons`, operationButtons)
+    return {
+        type: 'operation',
+        label: '操作',
+        fixed: 'right',
+        buttons: [
+            {
+                "type": "dropdown-button",
+                "label": "",
+                "buttons": operationButtons,
+                align: 'left',
+                // "trigger": "hover",
+                "id": "u:c2140a365019",
+                
+              },
+              {
+                "type": "steedos-dropdown-button",
+                "label": "",
+                "buttons": operationButtons,
+                align: 'left',
+                // "trigger": "hover",
+                "id": "u:c2140a365019",
+                onOpenApi: {
+                    url: `\${context.rootUrl}/service/api/@\${objectName}/recordPermissions/\${_id}`,
+                    method: "get",
+                    data: {
+                        $: "$$",
+                        objectName: "${objectName}",
+                        'context': `\${context}`
+                    },
+                    "responseData": {
+                        "recordPermissions": "$$"
+                    },
+                    headers: {
+                        Authorization: "Bearer ${context.tenantId},${context.authToken}"
+                    },
+                    requestAdaptor: `console.log('requestAdaptor api=====', api); return api;`,
+                    adaptor: `
+                        payload.recordPermissions = payload;
+                        console.log('=====payload', payload);
+                        return payload;
+                    `,
+                }
+              }
+        ]
+    }
+}
+
 export async function getTableSchema(fields, options){
     if(!options){
         options = {};
     }
     const columns = await getTableColumns(fields, options);
+    columns.push(await getTableOperation(options))
     return {
         mode: "table",
         name: "thelist",

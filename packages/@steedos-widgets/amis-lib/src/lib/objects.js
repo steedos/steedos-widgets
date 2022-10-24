@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-19 11:34:19
+ * @LastEditTime: 2022-10-22 14:21:31
  * @Description:
  */
 import { fetchAPI } from "./steedos.client";
@@ -17,10 +17,11 @@ import {
 import _, { cloneDeep, slice, isEmpty, each, has, findKey, find, isString, isObject, keys, includes, isArray, isFunction, map } from "lodash";
 import { getFieldSearchable } from "./converter/amis/fields/index";
 import { getRecord } from './record';
+import { getListViewItemButtons } from './buttons'
 
 const UI_SCHEMA_CACHE = {};
-
 const setUISchemaCache = (key, value) => {
+    console.log("setUISchemaCache========>", key, value)
     UI_SCHEMA_CACHE[key] = value;
 };
 
@@ -29,6 +30,7 @@ const getUISchemaCache = (key) => {
 };
 
 const hasUISchemaCache = (key) => {
+    console.log(`hasUISchemaCache===>`, UI_SCHEMA_CACHE, key)
     return has(UI_SCHEMA_CACHE, key);
 };
 
@@ -48,10 +50,12 @@ export async function getUISchema(objectName, force) {
     if (!objectName) {
         return;
     }
+    console.log(`getUISchema`, objectName, hasUISchemaCache(objectName), !force, force)
     if (hasUISchemaCache(objectName) && !force) {
         return getUISchemaCache(objectName);
     }
     const url = `/service/api/@${objectName.replace(/\./g, "_")}/uiSchema`;
+    console.log(`getUISchema=====>`, url)
     let uiSchema = null;
     try {
         uiSchema = await fetchAPI(url, { method: "get" });
@@ -59,37 +63,37 @@ export async function getUISchema(objectName, force) {
             return ;
         }
         setUISchemaCache(objectName, uiSchema);
-        for (const fieldName in uiSchema.fields) {
-            if (uiSchema.fields) {
-                const field = uiSchema.fields[fieldName];
+        // for (const fieldName in uiSchema.fields) {
+        //     if (uiSchema.fields) {
+        //         const field = uiSchema.fields[fieldName];
 
-                if (
-                    (field.type === "lookup" || field.type === "master_detail") &&
-                    field.reference_to
-                ) {
-                    let refTo = null;
-                    if(isFunction(field.reference_to)){
-                        try {
-                            refTo = eval(field.reference_to)();
-                        } catch (error) {
-                            console.error(error)
-                        }
-                    }
-                    if(isString(field.reference_to)){
-                        refTo = [field.reference_to]
-                    }else if(isArray(field.reference_to)){
-                        refTo = field.reference_to
-                    }
-                    for (const item of refTo) {
-                        const refUiSchema = await getUISchema(item);
-                        if (!refUiSchema) {
-                            delete uiSchema.fields[fieldName];
-                        }
-                    }
+        //         if (
+        //             (field.type === "lookup" || field.type === "master_detail") &&
+        //             field.reference_to
+        //         ) {
+        //             let refTo = null;
+        //             if(isFunction(field.reference_to)){
+        //                 try {
+        //                     refTo = eval(field.reference_to)();
+        //                 } catch (error) {
+        //                     console.error(error)
+        //                 }
+        //             }
+        //             if(isString(field.reference_to)){
+        //                 refTo = [field.reference_to]
+        //             }else if(isArray(field.reference_to)){
+        //                 refTo = field.reference_to
+        //             }
+        //             for (const item of refTo) {
+        //                 const refUiSchema = await getUISchema(item);
+        //                 if (!refUiSchema) {
+        //                     delete uiSchema.fields[fieldName];
+        //                 }
+        //             }
                    
-                }
-            }
-        }
+        //         }
+        //     }
+        // }
         each(uiSchema.list_views, (v, k)=>{
             v.name = k;
             if(!has(v, 'columns')){
@@ -198,7 +202,8 @@ export async function getListSchema(
         listViewName: listViewName,
         ...ctx,
         filter: listView.filters,
-        sort
+        sort,
+        buttons: await getListViewItemButtons(uiSchema, ctx)
     });
 
     return {
@@ -360,7 +365,7 @@ export async function getObjectRelatedList(
                 } else {
                     filter = [`${arr[1]}`, "=", recordId];
                 }
-                const relatedUiSchema = await getUISchema(arr[0], formFactor);
+                const relatedUiSchema = await getUISchema(arr[0]);
                 if(relatedUiSchema){
                     const fields = map(relatedList.field_names , (fName)=>{
                         return find(relatedUiSchema.fields, (item)=>{
@@ -447,7 +452,7 @@ export async function getObjectRelated(
     } else {
         filter = [`${relatedFieldName}`, "=", recordId];
     }
-    const masterObjectUISchema = await getUISchema(masterObjectName, formFactor);
+    const masterObjectUISchema = await getUISchema(masterObjectName);
     return {
         masterObjectName: masterObjectName,
         object_name: objectName,

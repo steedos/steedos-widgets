@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-14 18:23:40
+ * @LastEditTime: 2022-10-24 16:48:00
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -43,7 +43,9 @@ export default function Page ({formFactor}) {
         }}></ListviewHeader>}
       </div>
       <div className="flex-1 min-h-0 overflow-y-auto">
-      {schema?.amisSchema && schema?.uiSchema.name === tab_id && <AmisRender className="steedos-listview" id={listViewId} schema={schema?.amisSchema || {}} router={router}></AmisRender>}
+      {schema?.amisSchema && schema?.uiSchema.name === tab_id && <AmisRender data={{
+        objectName: schema.uiSchema.name
+      }} className="steedos-listview" id={listViewId} schema={schema?.amisSchema || {}} router={router}></AmisRender>}
       </div>
     </div>
   )
