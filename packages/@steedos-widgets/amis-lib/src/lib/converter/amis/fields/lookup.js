@@ -116,7 +116,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         const filtersFunction = ${field._filtersFunction};
 
         if(filtersFunction){
-            const _filters = filtersFunction();
+            const _filters = filtersFunction(filters, api.data.$self.__super.__super);
             if(_filters && _filters.length > 0){
                 filters.push(_filters);
             }
