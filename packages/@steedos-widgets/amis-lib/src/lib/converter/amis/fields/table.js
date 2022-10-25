@@ -158,15 +158,6 @@ async function getTableOperation(ctx){
         label: '操作',
         fixed: 'right',
         buttons: [
-            {
-                "type": "dropdown-button",
-                "label": "",
-                "buttons": operationButtons,
-                align: 'left',
-                // "trigger": "hover",
-                "id": "u:c2140a365019",
-                
-              },
               {
                 "type": "steedos-dropdown-button",
                 "label": "",

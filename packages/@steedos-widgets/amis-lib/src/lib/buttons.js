@@ -471,6 +471,14 @@ export const getButton = async (objectName, buttonName, ctx)=>{
                                             }
                                         },
                                         "actionType": "ajax"
+                                        },
+                                        {
+                                            "componentId": "",
+                                            "args": {
+                                              "url": `/app/${ctx.appId}/${ctx.objectName}`,
+                                              blank: false,
+                                            },
+                                            "actionType": "url"
                                         }
                                     ]
                                 }
@@ -483,7 +491,6 @@ export const getButton = async (objectName, buttonName, ctx)=>{
                 }
             }
         }
-
         return button;
 
     }
