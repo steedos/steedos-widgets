@@ -1,6 +1,6 @@
 {
   "name": "@steedos-labs/experience",
-  "version": "1.0.0-beta.18",
+  "version": "1.0.0-beta.20",
   "main": "package.service.js",
   "private": false,
   "publishConfig": {
