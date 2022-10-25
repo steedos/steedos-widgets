@@ -157,6 +157,8 @@ async function getTableOperation(ctx){
         type: 'operation',
         label: '操作',
         fixed: 'right',
+        labelClassName: 'text-center',
+        className: 'text-center',
         buttons: [
               {
                 "type": "steedos-dropdown-button",
