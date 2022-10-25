@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-21 10:27:43
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-24 14:01:32
+ * @LastEditTime: 2022-10-25 11:20:29
  * @Description: 
  */
 import React, { useEffect, useState } from 'react'
@@ -10,9 +10,8 @@ import { isString } from 'lodash';
 import { getButton, executeButton, getUISchema } from '@steedos-widgets/amis-lib';
 
 export const AmisObjectButton = (props) => {
-    const { objectName, name, data, render, className } = props;
+    const { objectName, name, data, render, className, listViewId } = props;
     const [button, setButton] = useState();
-    console.log(`AmisObjectButton`, props, button)
     //TODO 处理上下文参数
     const appId = "budget";
     const formFactor = "XXX";
@@ -20,13 +19,15 @@ export const AmisObjectButton = (props) => {
         if(objectName){
             getUISchema(objectName, false).then((uiSchema)=>{
                 getButton(objectName, name, {
+                    objectName: objectName,
                     recordId: data._id,
                     appId: appId,
                     uiSchema: uiSchema,
                     formFactor: formFactor,
                     router: null,
+                    listViewId: data.listViewId,
                     props: {
-                        className: className
+                        className: `antd-Button antd-Button--link`
                     }
                 }).then((result)=>{
                     setButton(result)

@@ -112,7 +112,6 @@ function getButtonVisibleOn(button){
     }
 
     if(visible){
-        console.log(`visible`, visible)
         if(visible.startsWith('function')){
             return `${visible}(objectName, _id, recordPermissions)`
         }
@@ -129,7 +128,6 @@ function getButtonVisibleOn(button){
 }
 
 async function getTableOperation(ctx){
-    console.log(`getTableOperation`, ctx)
     const buttons = ctx.buttons;
     const operationButtons = [];
     each(buttons, (button)=>{
@@ -155,7 +153,6 @@ async function getTableOperation(ctx){
             className: 'border-none antd-Button--link hover:bg-transparent focus:bg-transparent'
         })
     })
-    console.log(`operationButtons`, operationButtons)
     return {
         type: 'operation',
         label: '操作',
@@ -183,7 +180,10 @@ async function getTableOperation(ctx){
                     data: {
                         $: "$$",
                         objectName: "${objectName}",
-                        'context': `\${context}`
+                        listViewId: "${listViewId}",
+                        appId: "${appId}",
+                        formFactor: "${formFactor}",
+                        context: `\${context}`
                     },
                     "responseData": {
                         "recordPermissions": "$$"
@@ -191,10 +191,8 @@ async function getTableOperation(ctx){
                     headers: {
                         Authorization: "Bearer ${context.tenantId},${context.authToken}"
                     },
-                    requestAdaptor: `console.log('requestAdaptor api=====', api); return api;`,
                     adaptor: `
                         payload.recordPermissions = payload;
-                        console.log('=====payload', payload);
                         return payload;
                     `,
                 }

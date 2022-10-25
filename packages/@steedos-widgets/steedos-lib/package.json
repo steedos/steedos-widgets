@@ -1,0 +1,27 @@
+{
+  "name": "@steedos-widgets/steedos-lib",
+  "private": false,
+  "version": "0.0.1",
+  "unpkg": "./dist/index.umd.js",
+  "main": "./dist/index.cjs.js",
+  "module": "./dist/index.esm.js",
+  "types": "./dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "http": "npx http-server ../ --port 8080 --cors -c -1",
+    "build": "yarn build-types && yarn build-rollup",
+    "build-types": "tsc --emitDeclarationOnly --declaration --declarationDir dist/types",
+    "build-rollup": "rollup -c rollup.config.ts && yarn build-uglifyjs",
+    "build-uglifyjs": "yarn uglifyjs dist/index.umd.js -o dist/index.umd.min.js"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
+  }
+}

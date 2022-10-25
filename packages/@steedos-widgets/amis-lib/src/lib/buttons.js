@@ -83,6 +83,7 @@ export const standardButtonsTodo = {
             uiSchema,
             formFactor,
             router,
+            listViewId,
             options = {},
         } = props;
         SteedosUI?.Object.editRecord({
@@ -96,15 +97,21 @@ export const standardButtonsTodo = {
             router,
             formFactor: formFactor,
             onSubmitted: () => {
-                SteedosUI.getRef(
+                const detailScope = SteedosUI.getRef(
                     SteedosUI.getRefId({
                         type: "detail",
                         appId: appId,
                         name: uiSchema.name,
                     })
-                )
-                    .getComponentById(`detail_${recordId}`)
-                    .reload();
+                );
+                if(detailScope && detailScope.getComponentById(`detail_${recordId}`)){
+                    detailScope.getComponentById(`detail_${recordId}`)
+                        .reload();
+                }else{
+                    SteedosUI.getRef(listViewId)
+                    .getComponentByName(`page.listview_${uiSchema.name}`)
+                    .handleAction({}, { actionType: "reload" });
+                }
             },
         });
     },
@@ -359,7 +366,6 @@ export const getButton = async (objectName, buttonName, ctx)=>{
     const { props } = ctx;
     if(uiSchema){
         const buttons = await getButtons(uiSchema, ctx);
-        console.log(`getButton`, buttons, objectName, buttonName, ctx)
         const button = _.find(buttons, (button)=>{
             return button.name === buttonName
         });
@@ -381,6 +387,7 @@ export const getButton = async (objectName, buttonName, ctx)=>{
                         uiSchema: uiSchema,
                         formFactor: ctx.formFactor,
                         router: ctx.router,
+                        listViewId: ctx.listViewId,
                         options: ctx.formFactor === 'SMALL' ? {
                             props: {
                               width: "100%",

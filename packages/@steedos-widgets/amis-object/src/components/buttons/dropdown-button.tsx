@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-22 17:26:21
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-24 17:20:59
+ * @LastEditTime: 2022-10-25 11:20:35
  * @Description: 
  */
 import React, { useEffect, useState } from 'react'
@@ -14,7 +14,7 @@ import { createObject } from '@steedos-widgets/amis-lib';
 const getMenu = (render, buttons, props)=>{
     return <Menu
     items={map(buttons, (button)=>{
-        button.className = button.className ? `${button.className} steedos-dropdown-button-item py-2` : 'steedos-dropdown-button-item py-1'
+        button.className = button.className ? `${button.className} steedos-dropdown-button-item py-1` : 'steedos-dropdown-button-item py-1'
         return {
             key: button.name,
             className: 'py-0',
@@ -33,16 +33,12 @@ export const SteedosDropdownButton = (props)=>{
 
 const [menu, setMenu] = useState(<></>);
     
-    console.log(`SteedosDropdownButton props`, props)
     const onOpenChange = (open)=>{
-        console.log(`=============>open`, open)
         if(open){
             if(onOpenApi){
-                console.log(`data=========>`, data)
                 try {
                     env.fetcher(onOpenApi, createObject(data, {})).then(result => {
                         const openData = result?.hasOwnProperty('ok') ? result.data : result;
-                        console.log(`openData`, openData)
                         setMenu(getMenu(render, buttons, {
                             data: createObject(data, defaultsDeep(openData, data))
                         }))

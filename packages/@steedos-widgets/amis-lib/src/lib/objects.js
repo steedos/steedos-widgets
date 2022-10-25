@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-22 14:21:31
+ * @LastEditTime: 2022-10-25 11:19:48
  * @Description:
  */
 import { fetchAPI } from "./steedos.client";
@@ -21,7 +21,6 @@ import { getListViewItemButtons } from './buttons'
 
 const UI_SCHEMA_CACHE = {};
 const setUISchemaCache = (key, value) => {
-    console.log("setUISchemaCache========>", key, value)
     UI_SCHEMA_CACHE[key] = value;
 };
 
@@ -30,7 +29,6 @@ const getUISchemaCache = (key) => {
 };
 
 const hasUISchemaCache = (key) => {
-    console.log(`hasUISchemaCache===>`, UI_SCHEMA_CACHE, key)
     return has(UI_SCHEMA_CACHE, key);
 };
 
@@ -50,12 +48,10 @@ export async function getUISchema(objectName, force) {
     if (!objectName) {
         return;
     }
-    console.log(`getUISchema`, objectName, hasUISchemaCache(objectName), !force, force)
     if (hasUISchemaCache(objectName) && !force) {
         return getUISchemaCache(objectName);
     }
     const url = `/service/api/@${objectName.replace(/\./g, "_")}/uiSchema`;
-    console.log(`getUISchema=====>`, url)
     let uiSchema = null;
     try {
         uiSchema = await fetchAPI(url, { method: "get" });
