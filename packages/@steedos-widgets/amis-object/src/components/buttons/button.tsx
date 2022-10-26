@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-21 10:27:43
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-26 13:23:01
+ * @LastEditTime: 2022-10-26 15:53:47
  * @Description: 
  */
 import React, { useEffect, useState } from 'react'
@@ -14,8 +14,8 @@ export const AmisObjectButton = (props) => {
     const [button, setButton] = useState();
     const [uiSchema, setUiSchema] = useState();
     //TODO 处理上下文参数
-    const appId = "budget";
-    const formFactor = "XXX";
+    const appId = data.appId;
+    const formFactor = data.formFactor;
     useEffect(()=>{
         if(objectName){
             getUISchema(objectName, false).then((uiSchema)=>{
@@ -40,7 +40,6 @@ export const AmisObjectButton = (props) => {
     }, [objectName, name])
     const buttonClick = () => {
         const { dataComponentId } = data;
-        console.log(`data`, data)
         //Object.assign({}, data , {scope: (window as any).SteedosUI.getRef(dataComponentId)})
         return executeButton(button, {
             objectName: objectName,
