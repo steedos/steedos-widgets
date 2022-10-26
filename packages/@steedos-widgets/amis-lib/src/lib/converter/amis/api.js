@@ -44,6 +44,7 @@ function getReadonlyFormAdaptor(fields){
     if(payload.data.data){
         var data = payload.data.data[0];
         ${scriptStr}
+        ${getScriptForAddUrlPrefixForImgFields(fields)}
         payload.data = data;
         window.postMessage(Object.assign({type: "record.loaded"}, {record: data}), "*")
     }
@@ -81,17 +82,18 @@ function getConvertDataScriptStr(fields){
 }
 
 /*
-    img字段值添加URL前缀使其在amis中正常显示图片。
+    img/avatar字段值添加URL前缀使其在amis中正常显示图片。
 */
 function getScriptForAddUrlPrefixForImgFields(fields){
     let imgFieldsKeys = [];
     let imgFields = {};
-    let rootUrl = absoluteUrl('/api/files/images/');
+    let rootUrl = absoluteUrl('/api/files/');
     fields.forEach((item)=>{
-        if(item.type === 'image'){
+        if(_.includes(['image','avatar'], item.type)){
             imgFieldsKeys.push(item.name);
             imgFields[item.name] = {
                 name: item.name,
+                type: item.type,
                 multiple: item.multiple
             };
         }
@@ -107,12 +109,19 @@ function getScriptForAddUrlPrefixForImgFields(fields){
                 imgFieldsKeys.forEach((item)=>{
                     let imgFieldValue = data[item];
                     if(imgFieldValue && imgFieldValue.length){
-                        if(imgFields[item].multiple){
+                        let fieldProps = imgFields[item];
+                        let table_name;
+                        if(fieldProps.type === 'image'){
+                            table_name = 'images';
+                        }else{
+                            table_name = 'avatars';
+                        }
+                        if(fieldProps.multiple){
                             if(imgFieldValue instanceof Array){
-                                data[item] = imgFieldValue.map((value)=>{ return rootUrl + value});
+                                data[item] = imgFieldValue.map((value)=>{ return rootUrl + table_name +  '/' + value});
                             }
                         }else{
-                            data[item] = rootUrl + imgFieldValue;
+                            data[item] = rootUrl + table_name + '/' + imgFieldValue;
                         }
                     }
                 })

@@ -14,7 +14,7 @@ import {
     getObjectDetail,
     getObjectForm,
 } from "./converter/amis/index";
-import _, { cloneDeep, slice, isEmpty, each, has, findKey, find, isString, isObject, keys, includes, isArray, isFunction, map } from "lodash";
+import _, { cloneDeep, slice, isEmpty, each, has, findKey, find, isString, isObject, keys, includes, isArray, isFunction, map, forEach } from "lodash";
 import { getFieldSearchable } from "./converter/amis/fields/index";
 import { getRecord } from './record';
 import { getListViewItemButtons } from './buttons'
@@ -208,6 +208,52 @@ export async function getListSchema(
     };
 }
 
+// 获取对象表格
+export async function getTableSchema(
+    appName,
+    objectName,
+    columns,
+    ctx = {}
+) {
+    const uiSchema = await getUISchema(objectName);
+
+    let sort = '';
+    const sortField = ctx.sortField;
+    const sortOrder = ctx.sortOrder;
+    if(sortField){
+        let sortStr = sortField + ' ' + sortOrder || 'asc';
+        sort = sortStr;
+    }
+
+    let fields = [];
+    each(columns, function (column) {
+        if (isString(column) && uiSchema.fields[column]) {
+            fields.push(uiSchema.fields[column]);
+        } else if (isObject(column) && uiSchema.fields[column.field]) {
+            fields.push(
+                Object.assign({}, uiSchema.fields[column.field], {
+                    width: column.width,
+                    wrap: column.wrap,
+                })
+            );
+        }
+    });
+
+    const amisSchema = await getObjectList(uiSchema, fields, {
+        tabId: objectName,
+        appId: appName,
+        objectName: objectName,
+        ...ctx,
+        filter: ctx.filters,
+        sort
+    });
+
+    return {
+        uiSchema,
+        amisSchema,
+    };
+}
+
 export async function getRecordDetailHeaderSchema(objectName,recordId){
     const uiSchema = await getUISchema(objectName);
     const amisSchema = await getRecordDetailHeaderAmisSchema(uiSchema, recordId);
@@ -363,10 +409,14 @@ export async function getObjectRelatedList(
                 }
                 const relatedUiSchema = await getUISchema(arr[0]);
                 if(relatedUiSchema){
-                    const fields = map(relatedList.field_names , (fName)=>{
-                        return find(relatedUiSchema.fields, (item)=>{
+                    let fields = [];
+                    forEach(relatedList.field_names , (fName)=>{
+                        const field = find(relatedUiSchema.fields, (item)=>{
                             return item.name === fName
                         })
+                        if(field){
+                            fields.push(field);
+                        }
                     })
                     related.push({
                         masterObjectName: objectName,

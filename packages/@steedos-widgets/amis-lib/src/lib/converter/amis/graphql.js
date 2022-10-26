@@ -87,13 +87,13 @@ export function getScriptForReadonlyFields(fields){
 }
 
 /*
-    img字段值移除URL前缀使其保存时正常保存id,而不是url。
+    img/avatar字段值移除URL前缀使其保存时正常保存id,而不是url。
 */
 export function getScriptForRemoveUrlPrefixForImgFields(fields){
     let imgFieldsKeys = [];
     let imgFields = {};
     fields.forEach((item)=>{
-        if(item.type === 'image'){
+        if(includes(['image','avatar'], item.type)){
             imgFieldsKeys.push(item.name);
             imgFields[item.name] = {
                 name: item.name,
