@@ -193,8 +193,8 @@ function  convertSFieldToAmisFilesField(field,readonly){
     if( _.includes(['avatar','image'], type) && field.multiple && readonly){
         amisFieldType = "images";
     }
-    rootUrl = absoluteUrl(`/api/files/${table_name}/`);
-    convertData = {
+    let rootUrl = absoluteUrl(`/api/files/${table_name}/`);
+    let convertData = {
         type: amisFieldType,
         receiver: {
             method: "post",
