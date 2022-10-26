@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-21 10:27:43
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-25 11:20:29
+ * @LastEditTime: 2022-10-26 13:23:01
  * @Description: 
  */
 import React, { useEffect, useState } from 'react'
@@ -10,8 +10,9 @@ import { isString } from 'lodash';
 import { getButton, executeButton, getUISchema } from '@steedos-widgets/amis-lib';
 
 export const AmisObjectButton = (props) => {
-    const { objectName, name, data, render, className, listViewId } = props;
+    const { objectName, name, data, render, className,  listViewId} = props;
     const [button, setButton] = useState();
+    const [uiSchema, setUiSchema] = useState();
     //TODO 处理上下文参数
     const appId = "budget";
     const formFactor = "XXX";
@@ -31,6 +32,7 @@ export const AmisObjectButton = (props) => {
                     }
                 }).then((result)=>{
                     setButton(result)
+                    setUiSchema(uiSchema);
                 })
             })
         }
@@ -38,7 +40,18 @@ export const AmisObjectButton = (props) => {
     }, [objectName, name])
     const buttonClick = () => {
         const { dataComponentId } = data;
-        return executeButton(button, Object.assign({}, data , {scope: (window as any).SteedosUI.getRef(dataComponentId)})); //TODO 处理参数
+        console.log(`data`, data)
+        //Object.assign({}, data , {scope: (window as any).SteedosUI.getRef(dataComponentId)})
+        return executeButton(button, {
+            objectName: objectName,
+            listViewId: listViewId || data.listViewId,
+            uiSchema: uiSchema,
+            record: data,
+            recordId: data._id,
+            appId: appId,
+            formFactor: formFactor,
+            scope: (window as any).SteedosUI.getRef(dataComponentId)
+        });
     };
     if(!button){
         return (<>loading...</>)

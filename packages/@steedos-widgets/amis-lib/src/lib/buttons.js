@@ -40,60 +40,53 @@ export const getButtonVisible = (button, ctx) => {
 
 // TODO
 export const standardButtonsTodo = {
-    standard_new: (event, props) => {
-        const {
-            appId,
-            listViewId,
-            uiSchema,
-            formFactor,
-            data,
-            router,
-            options = {},
-        } = props;
-        // router.push('/app/'+props.data.app_id+'/'+props.data.objectName+'/view/new');
+    standard_new: function(){
+        // object: uiSchema
+        // action: button
+        const { objectName, object_name, object, action, record, recordId, record_id, appId, listViewId, formFactor, router } = this;
+
         const type = config.listView.newRecordMode;
         SteedosUI?.Object.newRecord({
             onSubmitted: () => {
                 SteedosUI.getRef(listViewId)
-                    .getComponentByName(`page.listview_${uiSchema.name}`)
+                    .getComponentByName(`page.listview_${object.name}`)
                     .handleAction({}, { actionType: "reload" });
             },
             onCancel: () => {
                 SteedosUI.getRef(listViewId)
-                    .getComponentByName(`page.listview_${uiSchema.name}`)
+                    .getComponentByName(`page.listview_${object.name}`)
                     .handleAction({}, { actionType: "reload" });
             },
             appId: appId,
             formFactor: formFactor,
             name: SteedosUI.getRefId({ type: `${type}-form` }),
-            title: `新建 ${uiSchema.label}`,
-            objectName: uiSchema.name,
-            data: data,
+            title: `新建 ${object.label}`,
+            objectName: object.name,
+            data: record,
             recordId: "new",
             type,
-            options: options,
             router,
         });
     },
-    standard_edit: (event, props) => {
+    standard_edit: function(){
         const type = config.listView.newRecordMode;
-        const {
-            appId,
-            recordId,
-            uiSchema,
-            formFactor,
-            router,
-            listViewId,
-            options = {},
-        } = props;
+        const { objectName, object_name, object, action, record, recordId, record_id, appId, listViewId, formFactor, router } = this;
         SteedosUI?.Object.editRecord({
             appId: appId,
             name: SteedosUI.getRefId({ type: `${type}-form` }),
-            title: `编辑 ${uiSchema.label}`,
-            objectName: uiSchema.name,
+            title: `编辑 ${object.label}`,
+            objectName: object.name,
             recordId: recordId,
             type,
-            options: options,
+            options: formFactor === 'SMALL' ? {
+                props: {
+                  width: "100%",
+                  style: {
+                    width: "100%",
+                  },
+                  bodyStyle: { padding: "0px", paddingTop: "0px" },
+                }
+              } : null,
             router,
             formFactor: formFactor,
             onSubmitted: () => {
@@ -101,7 +94,7 @@ export const standardButtonsTodo = {
                     SteedosUI.getRefId({
                         type: "detail",
                         appId: appId,
-                        name: uiSchema.name,
+                        name: object.name,
                     })
                 );
                 if(detailScope && detailScope.getComponentById(`detail_${recordId}`)){
@@ -109,18 +102,18 @@ export const standardButtonsTodo = {
                         .reload();
                 }else{
                     SteedosUI.getRef(listViewId)
-                    .getComponentByName(`page.listview_${uiSchema.name}`)
+                    .getComponentByName(`page.listview_${object.name}`)
                     .handleAction({}, { actionType: "reload" });
                 }
             },
         });
     },
-    standard_delete: (event, props) => { },
-    standard_delete_many: (event, props)=>{
+    standard_delete: function() { },
+    standard_delete_many: function(){
         const {
             listViewId,
-            uiSchema,
-        } = props;
+            object: uiSchema,
+        } = this;
         const listViewRef = SteedosUI?.getRef(listViewId).getComponentByName(`page.listview_${uiSchema.name}`)
           
         if(_.isEmpty(listViewRef.props.store.toJSON().selectedItems)){
@@ -196,7 +189,7 @@ export const getButtons = (uiSchema, ctx) => {
     }
 
     return _.filter(buttons, (button) => {
-        return _.indexOf(disabledButtons, button.name) < 0;
+        return _.indexOf(disabledButtons, button.name) < 0 && button.name != 'standard_query';
     });
 };
 
@@ -216,25 +209,7 @@ export const getListViewButtons = (uiSchema, ctx) => {
             name: standardNew.name,
             on: standardNew.on,
             type: standardNew.type,
-            todo: (event)=>{
-                return standardButtonsTodo.standard_new.call({}, event, {
-                    listViewId: ctx.listViewId,
-                    appId: ctx.app_id,
-                    uiSchema: uiSchema,
-                    formFactor: ctx.formFactor,
-                    router: ctx.router,
-                    data: ctx.data,
-                    options: ctx.formFactor === 'SMALL' ? {
-                        props: {
-                          width: "100%",
-                          style: {
-                            width: "100%",
-                          },
-                          bodyStyle: { padding: "0px", paddingTop: "0px" },
-                        }
-                      } : null
-                  })
-            }
+            todo: standardButtonsTodo.standard_new
         }); 
     }
     return listButtons;
@@ -256,24 +231,7 @@ export const getObjectDetailButtons = (uiSchema, ctx) => {
             name: standardEdit.name,
             on: standardEdit.on,
             type: standardEdit.type,
-            todo: (event)=>{
-                return standardButtonsTodo.standard_edit.call({}, event, {
-                    recordId: ctx.recordId,
-                    appId: ctx.app_id,
-                    uiSchema: uiSchema,
-                    formFactor: ctx.formFactor,
-                    router: ctx.router,
-                    options: ctx.formFactor === 'SMALL' ? {
-                        props: {
-                          width: "100%",
-                          style: {
-                            width: "100%",
-                          },
-                          bodyStyle: { padding: "0px", paddingTop: "0px" },
-                        }
-                      } : null
-                  })
-            }
+            todo: standardButtonsTodo.standard_edit
         })
     }
 
@@ -380,25 +338,27 @@ export const getButton = async (objectName, buttonName, ctx)=>{
                 name: button.name,
                 on: button.on,
                 type: button.type,
-                todo: (event)=>{
-                    return standardButtonsTodo.standard_edit.call({}, event, {
-                        recordId: ctx.recordId,
-                        appId: ctx.app_id,
-                        uiSchema: uiSchema,
-                        formFactor: ctx.formFactor,
-                        router: ctx.router,
-                        listViewId: ctx.listViewId,
-                        options: ctx.formFactor === 'SMALL' ? {
-                            props: {
-                              width: "100%",
-                              style: {
-                                width: "100%",
-                              },
-                              bodyStyle: { padding: "0px", paddingTop: "0px" },
-                            }
-                          } : null
-                      })
-                }
+                todo: standardButtonsTodo.standard_edit
+                // todo: (objectName, recordId)=>{
+                //     return standardButtonsTodo.standard_edit.apply(this, [objectName, recordId]);
+                //     // return standardButtonsTodo.standard_edit.call({}, event, {
+                //     //     recordId: ctx.recordId,
+                //     //     appId: ctx.app_id,
+                //     //     uiSchema: uiSchema,
+                //     //     formFactor: ctx.formFactor,
+                //     //     router: ctx.router,
+                //     //     listViewId: ctx.listViewId,
+                //     //     options: ctx.formFactor === 'SMALL' ? {
+                //     //         props: {
+                //     //           width: "100%",
+                //     //           style: {
+                //     //             width: "100%",
+                //     //           },
+                //     //           bodyStyle: { padding: "0px", paddingTop: "0px" },
+                //     //         }
+                //     //       } : null
+                //     //   })
+                // }
             };
         }
 
@@ -409,23 +369,7 @@ export const getButton = async (objectName, buttonName, ctx)=>{
                 on: button.on,
                 type: button.type,
                 todo: (event)=>{
-                    return standardButtonsTodo.standard_new.call({}, event, {
-                        listViewId: ctx.listViewId,
-                        appId: ctx.app_id,
-                        uiSchema: uiSchema,
-                        formFactor: ctx.formFactor,
-                        router: ctx.router,
-                        data: ctx.data,
-                        options: ctx.formFactor === 'SMALL' ? {
-                            props: {
-                              width: "100%",
-                              style: {
-                                width: "100%",
-                              },
-                              bodyStyle: { padding: "0px", paddingTop: "0px" },
-                            }
-                          } : null
-                      })
+                    return standardButtonsTodo.standard_new
                 }
             }
         }
@@ -508,7 +452,17 @@ export const execute = (button, props) => {
         }
     }
     if (_.isFunction(button.todo)) {
-        return button.todo.apply({}, [props]);
+        const todoThis = {
+            objectName: props.objectName, 
+            object_name: props.objectName, 
+            object: props.uiSchema, 
+            record: props.record,
+            recordId: props.recordId,
+            record_id: props.recordId,
+            ...props,
+            action: button
+        }
+        return button.todo.apply(todoThis, [todoThis.objectName, todoThis.recordId]);
     }
 };
 

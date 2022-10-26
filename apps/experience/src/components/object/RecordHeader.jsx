@@ -79,6 +79,8 @@ export function RecordHeader({ schema, formFactor, permissions, hiddenTitle, cla
           <Button
               button={button}
               inMore={true}
+              uiSchema={schema.uiSchema} 
+              formFactor={formFactor} 
               data={{
                 app_id: app_id,
                 tab_id: tab_id,
@@ -136,20 +138,23 @@ export function RecordHeader({ schema, formFactor, permissions, hiddenTitle, cla
                 <>
                   {buttons?.map((button) => {
                     return (
-                        <Button
-                          key={button.name}
-                          button={button}
-                          data={{
-                            app_id: app_id,
-                            tab_id: tab_id,
-                            object_name: schema.uiSchema.name,
-                            dataComponentId: `${app_id}-${tab_id}-${record_id}`,
-                            record_id: record_id,
-                            record: record,
-                            permissions: schema.uiSchema.permissions
-                          }}
-                          scopeClassName="inline-block"
-                        ></Button>
+                      <Button
+                      key={button.name}
+                      button={button}
+                      uiSchema={schema.uiSchema} 
+                      formFactor={formFactor} 
+                      data={{
+                        app_id: app_id,
+                        tab_id: tab_id,
+                        object_name: schema.uiSchema.name,
+                        dataComponentId: `${app_id}-${tab_id}-${record_id}`,
+                        record_id: record_id,
+                        recordId: record_id,
+                        record: record,
+                        permissions: schema.uiSchema.permissions
+                      }}
+                      scopeClassName="inline-block"
+                    ></Button>
                     );
                   })}
                   {moreButtons?.length > 0 && (

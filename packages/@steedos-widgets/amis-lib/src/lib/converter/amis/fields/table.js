@@ -113,7 +113,7 @@ function getButtonVisibleOn(button){
 
     if(visible){
         if(visible.startsWith('function')){
-            return `${visible}(objectName, _id, recordPermissions)`
+            return `${visible}(objectName, _id, recordPermissions, data)`
         }
         return visible;
     }
