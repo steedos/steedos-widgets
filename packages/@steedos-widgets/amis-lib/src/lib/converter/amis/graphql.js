@@ -231,12 +231,17 @@ export async function getFindQuery(object, recordId, fields, options){
         treeFields = ',parent,children';
     }
 
+    var cfsFields = '';
+    if(object.name === 'cms_files'){
+        cfsFields = ',versions'
+    }
+
     return {
         orderBy: "${orderBy}",
         orderDir: "${orderDir}",
         pageNo: "${page}",
         pageSize: "${perPage}",
-        query: `{${alias}:${object.name}${queryOptions}{${await getFieldsTemplate(fields, options.expand)}${treeFields}},count:${object.name}__count(filters:{__filters})}`
+        query: `{${alias}:${object.name}${queryOptions}{${await getFieldsTemplate(fields, options.expand)}${treeFields}${cfsFields}},count:${object.name}__count(filters:{__filters})}`
     }
 }
 
