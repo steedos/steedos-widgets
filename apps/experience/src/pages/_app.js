@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-13 13:55:50
+ * @LastEditTime: 2022-10-25 09:35:26
  * @Description: 
  */
 import { SessionProvider } from "next-auth/react"
@@ -17,6 +17,7 @@ import '@/components/functions';
 import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { usePostHog } from 'next-use-posthog'
 import { Builder } from '@steedos-builder/react'
+import { Steedos } from '@steedos-widgets/steedos-lib'
 export default function App({
   Component,
   pageProps: { session, ...pageProps },
@@ -34,6 +35,7 @@ export default function App({
       window.Builder = Builder;
       window.React = amisRequire('react');
       window.ReactDOM = amisRequire('react-dom');
+      window.Steedos = Steedos;
     }
   }, []);
 

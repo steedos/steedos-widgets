@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 13:32:49
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-03 15:42:26
+ * @LastEditTime: 2022-10-26 13:33:20
  * @Description: 
  */
 import { getListViewButtons } from '@steedos-widgets/amis-lib';
@@ -37,7 +37,7 @@ export function ListButtons(props) {
                 <>
                     {buttons?.map((button)=>{
                         return (
-                        <Button key={button.name} button={button} data={{
+                        <Button key={button.name} button={button} uiSchema={schema.uiSchema} formFactor={formFactor} data={{
                             app_id: app_id,
                             tab_id: tab_id,
                             object_name: schema.uiSchema.name,

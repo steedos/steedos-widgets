@@ -1,25 +1,33 @@
 {
   "packages": [
-      {
-          "package": "@steedos-widgets/amis-object",
-          "urls": [
-              "https://unpkg.com/@steedos-widgets/amis-object@{{version}}/dist/amis-object.umd.js",
-              "https://unpkg.com/@steedos-widgets/amis-object@{{version}}/dist/amis-object.umd.css"
-          ],
-          "library": "BuilderAmisObject"
-      }
+    {
+        "package": "antd",
+        "urls": [
+            "https://unpkg.steedos.cn/antd@4.23.6/dist/antd.min.js",
+            "https://unpkg.steedos.cn/antd@4.23.6/dist/antd.min.css"
+        ],
+        "library": "antd"
+    },
+    {
+        "package": "@steedos-widgets/amis-object",
+        "urls": [
+            "https://unpkg.com/@steedos-widgets/amis-object@{{version}}/dist/amis-object.umd.js",
+            "https://unpkg.com/@steedos-widgets/amis-object@{{version}}/dist/amis-object.umd.css"
+        ],
+        "library": "BuilderAmisObject"
+    }
   ],
   "components": [
-      {
-          "exportName": "BuilderAmisObjectMeta",
-          "npm": {
-              "package": "@steedos-widgets/amis-object"
-          },
-          "url": "https://unpkg.com/@steedos-widgets/amis-object@{{version}}/dist/meta.js",
-          "urls": {
-              "default": "https://unpkg.com/@steedos-widgets/amis-object@{{version}}/dist/meta.js",
-              "design": "https://unpkg.com/@steedos-widgets/amis-object@{{version}}/dist/meta.js"
-          }
-      }
+    {
+        "exportName": "BuilderAmisObjectMeta",
+        "npm": {
+            "package": "@steedos-widgets/amis-object"
+        },
+        "url": "https://unpkg.com/@steedos-widgets/amis-object@{{version}}/dist/meta.js",
+        "urls": {
+            "default": "https://unpkg.com/@steedos-widgets/amis-object@{{version}}/dist/meta.js",
+            "design": "https://unpkg.com/@steedos-widgets/amis-object@{{version}}/dist/meta.js"
+        }
+    }
   ]
 }

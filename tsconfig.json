@@ -20,7 +20,8 @@
       "paths": {
         "@steedos-widgets/sortable": ["packages/@steedos-widgets/sortable/src"],
         "@steedos-widgets/amis-lib": ["packages/@steedos-widgets/amis-lib/src"],
-        "@steedos-widgets/amis-object": ["packages/@steedos-widgets/amis-object/src"]
+        "@steedos-widgets/amis-object": ["packages/@steedos-widgets/amis-object/src"],
+        "@steedos-widgets/steedos-lib": ["packages/@steedos-widgets/steedos-lib/src"]
       }
     },
     "include": [

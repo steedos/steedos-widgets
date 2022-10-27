@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-13 15:00:08
+ * @LastEditTime: 2022-10-26 15:58:26
  * @Description: 
  */
 // import Hello from "./metas/Hello";
@@ -16,16 +16,40 @@ import AmisProvider from "./metas/AmisProvider";
 
 import AmisObjectFieldLookup from './metas/AmisObjectFieldLookup';
 
+import AmisObjectButton from "./metas/AmisObjectButton";
+
+import SteedosDropdownButton from "./metas/SteedosDropdownButton";
 // import Hello from './metas/Hello';
 
-const components = [AmisObjectForm, AmisObjectListview, AmisObjectTable, AmisRecordDetailRelatedList, 
-  AmisRecordDetailHeader, AmisProvider, AmisSelectUser, AmisObjectFieldLookup];
+const components = [
+  AmisObjectForm, 
+  AmisObjectListview, 
+  AmisRecordDetailHeader, 
+  AmisSelectUser, 
+  AmisRecordDetailRelatedList, 
+  AmisProvider, 
+  AmisObjectFieldLookup,
+  AmisObjectTable,
+  AmisObjectButton,
+  SteedosDropdownButton
+];
+
 const componentList = [
   {
     title: "华炎魔方",
     icon: "",
-    children: [AmisObjectForm, AmisObjectListview, AmisObjectTable, AmisRecordDetailRelatedList, 
-      AmisRecordDetailHeader, AmisProvider, AmisSelectUser, AmisObjectFieldLookup]
+    children: [
+      AmisObjectForm, 
+      AmisObjectListview, 
+      AmisRecordDetailHeader, 
+      AmisSelectUser,
+      AmisRecordDetailRelatedList,
+      AmisProvider,
+      AmisObjectFieldLookup,
+      AmisObjectTable,
+      AmisObjectButton,
+      SteedosDropdownButton
+    ]
   }
 ];
 export default {

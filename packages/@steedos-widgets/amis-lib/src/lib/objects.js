@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-19 11:34:19
+ * @LastEditTime: 2022-10-27 09:36:29
  * @Description:
  */
 import { fetchAPI } from "./steedos.client";
@@ -17,9 +17,9 @@ import {
 import _, { cloneDeep, slice, isEmpty, each, has, findKey, find, isString, isObject, keys, includes, isArray, isFunction, map, forEach } from "lodash";
 import { getFieldSearchable } from "./converter/amis/fields/index";
 import { getRecord } from './record';
+import { getListViewItemButtons } from './buttons'
 
 const UI_SCHEMA_CACHE = {};
-
 const setUISchemaCache = (key, value) => {
     UI_SCHEMA_CACHE[key] = value;
 };
@@ -59,37 +59,37 @@ export async function getUISchema(objectName, force) {
             return ;
         }
         setUISchemaCache(objectName, uiSchema);
-        for (const fieldName in uiSchema.fields) {
-            if (uiSchema.fields) {
-                const field = uiSchema.fields[fieldName];
+        // for (const fieldName in uiSchema.fields) {
+        //     if (uiSchema.fields) {
+        //         const field = uiSchema.fields[fieldName];
 
-                if (
-                    (field.type === "lookup" || field.type === "master_detail") &&
-                    field.reference_to
-                ) {
-                    let refTo = null;
-                    if(isFunction(field.reference_to)){
-                        try {
-                            refTo = eval(field.reference_to)();
-                        } catch (error) {
-                            console.error(error)
-                        }
-                    }
-                    if(isString(field.reference_to)){
-                        refTo = [field.reference_to]
-                    }else if(isArray(field.reference_to)){
-                        refTo = field.reference_to
-                    }
-                    for (const item of refTo) {
-                        const refUiSchema = await getUISchema(item);
-                        if (!refUiSchema) {
-                            delete uiSchema.fields[fieldName];
-                        }
-                    }
+        //         if (
+        //             (field.type === "lookup" || field.type === "master_detail") &&
+        //             field.reference_to
+        //         ) {
+        //             let refTo = null;
+        //             if(isFunction(field.reference_to)){
+        //                 try {
+        //                     refTo = eval(field.reference_to)();
+        //                 } catch (error) {
+        //                     console.error(error)
+        //                 }
+        //             }
+        //             if(isString(field.reference_to)){
+        //                 refTo = [field.reference_to]
+        //             }else if(isArray(field.reference_to)){
+        //                 refTo = field.reference_to
+        //             }
+        //             for (const item of refTo) {
+        //                 const refUiSchema = await getUISchema(item);
+        //                 if (!refUiSchema) {
+        //                     delete uiSchema.fields[fieldName];
+        //                 }
+        //             }
                    
-                }
-            }
-        }
+        //         }
+        //     }
+        // }
         each(uiSchema.list_views, (v, k)=>{
             v.name = k;
             if(!has(v, 'columns')){
@@ -198,7 +198,8 @@ export async function getListSchema(
         listViewName: listViewName,
         ...ctx,
         filter: listView.filters,
-        sort
+        sort,
+        buttons: await getListViewItemButtons(uiSchema, ctx)
     });
 
     return {
@@ -406,7 +407,7 @@ export async function getObjectRelatedList(
                 } else {
                     filter = [`${arr[1]}`, "=", recordId];
                 }
-                const relatedUiSchema = await getUISchema(arr[0], formFactor);
+                const relatedUiSchema = await getUISchema(arr[0]);
                 if(relatedUiSchema){
                     let fields = [];
                     forEach(relatedList.field_names , (fName)=>{
@@ -429,6 +430,7 @@ export async function getObjectRelatedList(
                                 objectName: arr[0],
                                 formFactor: formFactor,
                                 globalFilter: filter,
+                                buttons: await getListViewItemButtons(relatedUiSchema, {isMobile: false})
                             })
                         }
                     });
@@ -445,30 +447,33 @@ export async function getObjectRelatedList(
     
         for (const detail of details) {
             const arr = detail.split(".");
-    
-            let filter = null;
-            const refField = await getField(arr[0], arr[1]);
-            if (
-                refField._reference_to ||
-                (refField.reference_to && !isString(refField.reference_to))
-            ) {
-                filter = [
-                    [`${arr[1]}/o`, "=", objectName],
-                    [`${arr[1]}/ids`, "=", recordId],
-                ];
-            } else {
-                filter = [`${arr[1]}`, "=", recordId];
+            const relatedUiSchema = await getUISchema(arr[0]);
+            if(relatedUiSchema){
+                let filter = null;
+                const refField = await getField(arr[0], arr[1]);
+                if (
+                    refField._reference_to ||
+                    (refField.reference_to && !isString(refField.reference_to))
+                ) {
+                    filter = [
+                        [`${arr[1]}/o`, "=", objectName],
+                        [`${arr[1]}/ids`, "=", recordId],
+                    ];
+                } else {
+                    filter = [`${arr[1]}`, "=", recordId];
+                }
+        
+                related.push({
+                    masterObjectName: objectName,
+                    object_name: arr[0],
+                    foreign_key: arr[1],
+                    schema: await getListSchema(appName, arr[0], "all", {
+                        globalFilter: filter,
+                        formFactor: formFactor,
+                        buttons: await getListViewItemButtons(relatedUiSchema, {isMobile: false})
+                    }),
+                });
             }
-    
-            related.push({
-                masterObjectName: objectName,
-                object_name: arr[0],
-                foreign_key: arr[1],
-                schema: await getListSchema(appName, arr[0], "all", {
-                    globalFilter: filter,
-                    formFactor: formFactor,
-                }),
-            });
         }
     }
 
@@ -497,7 +502,7 @@ export async function getObjectRelated(
     } else {
         filter = [`${relatedFieldName}`, "=", recordId];
     }
-    const masterObjectUISchema = await getUISchema(masterObjectName, formFactor);
+    const masterObjectUISchema = await getUISchema(masterObjectName);
     return {
         masterObjectName: masterObjectName,
         object_name: objectName,
