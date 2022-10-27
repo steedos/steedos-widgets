@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-26 16:37:51
+ * @LastEditTime: 2022-10-27 13:16:07
  * @Description: 
  */
 import { Router } from '../../router'
@@ -62,7 +62,7 @@ export function getNameTpl(field, ctx){
 
 export function getRelatedFieldTpl(field, ctx){
     let tpl = '';
-    if(_.isString(field.reference_to)){
+    if(_.isString(field.reference_to) || !field.reference_to){
         if(field.multiple){
             const href = Router.getObjectDetailPath({
                 formFactor: ctx.formFactor, appId: ctx.appId, objectName: `<%=item.objectName%>`, recordId: `<%=item.value%>`
