@@ -47,7 +47,7 @@ export function getBaseFields(readonly){
     ]
 };
 
-export function getAmisStaticFieldType(type, readonly){
+export function getAmisStaticFieldType(type, readonly, options){
     if(!readonly){
         if(_.includes(AmisFormInputs, type)){
             return `input-${type}`;
@@ -55,6 +55,9 @@ export function getAmisStaticFieldType(type, readonly){
         return type;
     }
     if(_.includes(['text','image'], type)){
+        if('image' === type && options && options.multiple){
+            return `static-images`;
+        }
         return `static-${type}`;
     }else{
         return 'static';
@@ -189,10 +192,7 @@ function  convertSFieldToAmisFilesField(field,readonly){
     }else if(type === 'file'){
         table_name = 'files';
     }
-    let amisFieldType = getAmisStaticFieldType(fieldType, readonly);
-    if( _.includes(['avatar','image'], type) && field.multiple && readonly){
-        amisFieldType = "static-images";
-    }
+    let amisFieldType = getAmisStaticFieldType(fieldType, readonly, {multiple: field.multiple});
     let rootUrl = absoluteUrl(`/api/files/${table_name}/`);
     let convertData = {
         type: amisFieldType,
