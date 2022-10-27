@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-22 17:26:21
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-27 13:03:09
+ * @LastEditTime: 2022-10-27 13:34:00
  * @Description: 
  */
 import React, { useEffect, useState } from 'react'
@@ -16,7 +16,7 @@ const getMenu = (render, buttons, props)=>{
         button.className = button.className ? `${button.className} steedos-dropdown-button-item py-1 text-left w-full` : 'steedos-dropdown-button-item py-1 text-left w-full'
         return {
             key: button.name,
-            className: 'py-0',
+            className: 'py-0 min-w-40',
             label: (
               <>
                 {render('body', button, props)}
