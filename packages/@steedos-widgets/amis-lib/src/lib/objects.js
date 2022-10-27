@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-26 16:39:06
+ * @LastEditTime: 2022-10-27 09:36:29
  * @Description:
  */
 import { fetchAPI } from "./steedos.client";
@@ -430,6 +430,7 @@ export async function getObjectRelatedList(
                                 objectName: arr[0],
                                 formFactor: formFactor,
                                 globalFilter: filter,
+                                buttons: await getListViewItemButtons(relatedUiSchema, {isMobile: false})
                             })
                         }
                     });
@@ -446,30 +447,33 @@ export async function getObjectRelatedList(
     
         for (const detail of details) {
             const arr = detail.split(".");
-    
-            let filter = null;
-            const refField = await getField(arr[0], arr[1]);
-            if (
-                refField._reference_to ||
-                (refField.reference_to && !isString(refField.reference_to))
-            ) {
-                filter = [
-                    [`${arr[1]}/o`, "=", objectName],
-                    [`${arr[1]}/ids`, "=", recordId],
-                ];
-            } else {
-                filter = [`${arr[1]}`, "=", recordId];
+            const relatedUiSchema = await getUISchema(arr[0]);
+            if(relatedUiSchema){
+                let filter = null;
+                const refField = await getField(arr[0], arr[1]);
+                if (
+                    refField._reference_to ||
+                    (refField.reference_to && !isString(refField.reference_to))
+                ) {
+                    filter = [
+                        [`${arr[1]}/o`, "=", objectName],
+                        [`${arr[1]}/ids`, "=", recordId],
+                    ];
+                } else {
+                    filter = [`${arr[1]}`, "=", recordId];
+                }
+        
+                related.push({
+                    masterObjectName: objectName,
+                    object_name: arr[0],
+                    foreign_key: arr[1],
+                    schema: await getListSchema(appName, arr[0], "all", {
+                        globalFilter: filter,
+                        formFactor: formFactor,
+                        buttons: await getListViewItemButtons(relatedUiSchema, {isMobile: false})
+                    }),
+                });
             }
-    
-            related.push({
-                masterObjectName: objectName,
-                object_name: arr[0],
-                foreign_key: arr[1],
-                schema: await getListSchema(appName, arr[0], "all", {
-                    globalFilter: filter,
-                    formFactor: formFactor,
-                }),
-            });
         }
     }
 

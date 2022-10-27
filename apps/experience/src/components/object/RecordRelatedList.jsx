@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-05 15:54:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-09 11:14:02
+ * @LastEditTime: 2022-10-27 10:37:05
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef } from "react";
@@ -12,7 +12,7 @@ import { RecordRelatedHeader } from '@/components/object/RecordRelatedHeader'
 
 
 export function RecordRelatedList(props) {
-    const { schema, object_name, foreign_key, app_id, record_id, masterObjectName} = props;
+    const { schema, object_name, foreign_key, app_id, record_id, masterObjectName, formFactor} = props;
     const router = useRouter();
     const id = SteedosUI.getRefId({type: 'related_list', appId: app_id, name: `${object_name}-${foreign_key}`})
 
@@ -51,6 +51,12 @@ export function RecordRelatedList(props) {
                 id={id}
                 schema={schema.amisSchema}
                 router={router}
+                data={{
+                    objectName: schema.uiSchema.name,
+                    listViewId: id,
+                    appId: app_id, 
+                    formFactor: formFactor
+                  }} 
                 className="steedos-related-listview border-t"
                 ></AmisRender>}
             </div>

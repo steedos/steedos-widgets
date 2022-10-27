@@ -1,3 +1,10 @@
+/*
+ * @Author: baozhoutao@steedos.com
+ * @Date: 2022-08-31 15:04:42
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2022-10-26 17:17:31
+ * @Description: 
+ */
 import { AmisRender } from "@/components/AmisRender";
 import { useRouter } from 'next/router'
 import { RelatedHeader } from '@/components/object/RelatedHeader'
@@ -14,6 +21,12 @@ export function RelatedList(props) {
                 id={id}
                 schema={schema.amisSchema}
                 router={router}
+                data={{
+                    objectName: schema.uiSchema.name,
+                    listViewId: id,
+                    appId: app_id, 
+                    formFactor: formFactor
+                  }} 
                 className={"steedos-listview"}
                 ></AmisRender>}
             </div>

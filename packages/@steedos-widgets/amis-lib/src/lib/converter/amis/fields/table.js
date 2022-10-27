@@ -112,6 +112,10 @@ function getButtonVisibleOn(button){
     }
 
     if(visible){
+        if(visible.indexOf("Meteor.") > 0 || visible.indexOf("Creator.") > 0 || visible.indexOf("Session.") > 0){
+            console.warn('无效的visible', visible)
+            return 'false';
+        }
         if(visible.startsWith('function')){
             return `${visible}(objectName, _id, recordPermissions, data)`
         }
@@ -153,6 +157,9 @@ async function getTableOperation(ctx){
             className: 'border-none antd-Button--link hover:bg-transparent focus:bg-transparent'
         })
     })
+    if(operationButtons.length < 1){
+        return ;
+    }
     return {
         type: 'operation',
         label: '操作',
@@ -164,7 +171,6 @@ async function getTableOperation(ctx){
                 "type": "steedos-dropdown-button",
                 "label": "",
                 "buttons": operationButtons,
-                align: 'left',
                 // "trigger": "hover",
                 "id": "u:c2140a365019",
                 onOpenApi: {
