@@ -2,12 +2,11 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-22 17:26:21
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-26 10:48:13
+ * @LastEditTime: 2022-10-27 13:03:09
  * @Description: 
  */
 import React, { useEffect, useState } from 'react'
-import { DownOutlined, SmileOutlined } from '@ant-design/icons';
-import { Dropdown, Menu, Space } from 'antd';
+import { Dropdown, Menu } from 'antd';
 import { map, defaultsDeep } from 'lodash';
 import { createObject } from '@steedos-widgets/amis-lib';
 
@@ -57,7 +56,9 @@ const [menu, setMenu] = useState(<></>);
     }
     return (
         <Dropdown overlay={menu} trigger={['click']} onOpenChange={onOpenChange}>
-            <DownOutlined />
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+            </svg>
         </Dropdown>
       )
 }
