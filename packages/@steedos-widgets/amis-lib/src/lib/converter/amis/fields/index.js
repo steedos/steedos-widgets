@@ -217,6 +217,17 @@ return payload;
             }
         }
     }
+    if(type === 'file' && readonly){
+        convertData = {
+            type: amisFieldType,
+            tpl: `
+                <% let fileData = data.${field.name}; if (fileData) { %>
+                    <% if(${!field.multiple}){ fileData = [fileData]}  %>
+                    <% fileData.forEach(function(item) { %> 
+                        <a href='<%= item.url %>' target='_self' class='block'><%= item.name %></a> 
+                <% });} %>`
+        }
+    }
     if(field.multiple){
         convertData.multiple = true;
         convertData.joinValues = false;
