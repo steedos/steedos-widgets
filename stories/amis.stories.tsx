@@ -146,7 +146,7 @@ export const ObjectForm = () => (
       "body": [{
         "type": "steedos-object-form",
         "objectApiName": "space_users",
-        "mode": 'edit',
+        "mode": 'read',
         "recordId": "S9KrMPys4fKx9Kjtm"
       }]
     },{
