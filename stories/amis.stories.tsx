@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 11:54:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-17 10:59:58
+ * @LastEditTime: 2022-10-28 10:24:50
  * @Description: 
  */
 import React, {useEffect, useState} from 'react';
@@ -18,8 +18,6 @@ const assetUrls = process.env.STEEDOS_UNPKG_URL + '/@steedos-widgets/amis-object
 
 if (Builder.isBrowser){
   (window as any).Builder = Builder;
-  (window as any).React = React;
-  (window as any).ReactDOM = ReactDOM;
   (window as any)._ = _;
   Builder.set({ 
     rootUrl: process.env.STEEDOS_ROOT_URL,
@@ -92,6 +90,8 @@ export default {
           loadCss('https://unpkg.steedos.cn/amis/sdk/iconfont.css'),
           loadCss('https://unpkg.steedos.cn/@fortawesome/fontawesome-free@6.2.0/css/all.min.css'),
         ]).then(()=>{
+          (window as any).React = (window as any).amisRequire("react");
+          (window as any).ReactDOM = (window as any).amisRequire("react-dom");
           setIsLoaded(true)
         }).catch((error)=>{
           console.error(error)
