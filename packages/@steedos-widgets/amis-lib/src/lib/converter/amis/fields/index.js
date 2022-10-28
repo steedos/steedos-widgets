@@ -442,10 +442,14 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             convertData = convertSFieldToAmisFilesField(field,readonly);
             break;
         case 'formula':
-            //TODO
+            if(readonly){
+                convertData.type = getAmisStaticFieldType(field.data_type, readonly);
+            }
             break;
         case 'summary':
-            //TODO
+            if(readonly){
+                convertData.type = getAmisStaticFieldType(field.data_type, readonly);
+            }
             break;
         case 'code':
             convertData = {
