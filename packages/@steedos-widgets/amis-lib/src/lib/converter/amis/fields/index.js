@@ -47,7 +47,7 @@ export function getBaseFields(readonly){
     ]
 };
 
-export function getAmisStaticFieldType(type, readonly){
+export function getAmisStaticFieldType(type, readonly, options){
     if(!readonly){
         if(_.includes(AmisFormInputs, type)){
             return `input-${type}`;
@@ -55,6 +55,9 @@ export function getAmisStaticFieldType(type, readonly){
         return type;
     }
     if(_.includes(['text','image'], type)){
+        if('image' === type && options && options.multiple){
+            return `static-images`;
+        }
         return `static-${type}`;
     }else{
         return 'static';
@@ -189,55 +192,59 @@ function  convertSFieldToAmisFilesField(field,readonly){
     }else if(type === 'file'){
         table_name = 'files';
     }
-    let amisFieldType = getAmisStaticFieldType(fieldType, readonly);
-    if( _.includes(['avatar','image'], type) && field.multiple && readonly){
-        amisFieldType = "static-images";
-    }
-    let rootUrl = absoluteUrl(`/api/files/${table_name}/`);
-    let convertData = {
-        type: amisFieldType,
-        receiver: {
-            method: "post",
-            url: `\${context.rootUrl}/s3/${table_name}`,
-            adaptor: `
-var rootUrl = ${JSON.stringify(rootUrl)};
-payload = {
-    status: response.status == 200 ? 0 : response.status,
-    msg: response.statusText,
-    data: {
-        value: payload._id,
-        name: payload.original.name,
-        url: rootUrl + payload._id,
-    }
-}
-return payload;
-            `,
-            headers: {
-                Authorization: "Bearer ${context.tenantId},${context.authToken}"
+    let amisFieldType = getAmisStaticFieldType(fieldType, readonly, {multiple: field.multiple});
+    if(readonly){
+        if(_.includes(['avatar','image'], type)){
+            return {
+                type: amisFieldType,
+                enlargeAble: true,
+                showToolbar: true
             }
         }
-    }
-    if(type === 'file' && readonly){
-        convertData = {
-            type: amisFieldType,
-            tpl: `
-                <% let fileData = data.${field.name}; if (fileData) { %>
-                    <% if(${!field.multiple}){ fileData = [fileData]}  %>
-                    <% fileData.forEach(function(item) { %> 
-                        <a href='<%= item.url %>' target='_self' class='block'><%= item.name %></a> 
-                <% });} %>`
+        if(type === 'file'){
+            return {
+                type: amisFieldType,
+                tpl: `
+                    <% let fileData = data.${field.name}; if (fileData) { %>
+                        <% if(${!field.multiple}){ fileData = [fileData]}  %>
+                        <% fileData.forEach(function(item) { %> 
+                            <a href='<%= item.url %>' target='_self' class='block'><%= item.name %></a> 
+                    <% });} %>`
+            }
         }
+    }else{
+        let rootUrl = absoluteUrl(`/api/files/${table_name}/`);
+        let convertData = {
+            type: amisFieldType,
+            receiver: {
+                method: "post",
+                url: `\${context.rootUrl}/s3/${table_name}`,
+                adaptor: `
+                    var rootUrl = ${JSON.stringify(rootUrl)};
+                    payload = {
+                        status: response.status == 200 ? 0 : response.status,
+                        msg: response.statusText,
+                        data: {
+                            value: payload._id,
+                            name: payload.original.name,
+                            url: rootUrl + payload._id,
+                        }
+                    }
+                    return payload;
+                `,
+                headers: {
+                    Authorization: "Bearer ${context.tenantId},${context.authToken}"
+                }
+            }
+        }
+        
+        if(field.multiple){
+            convertData.multiple = true;
+            convertData.joinValues = false;
+            convertData.extractValue = true;
+        }
+        return convertData;
     }
-    if(field.multiple){
-        convertData.multiple = true;
-        convertData.joinValues = false;
-        convertData.extractValue = true;
-    }
-    if(_.includes(['avatar','image'], type)){
-        convertData.enlargeAble = true;
-        convertData.showToolbar = true;
-    }
-    return convertData;
 }
 export async function convertSFieldToAmisField(field, readonly, ctx) {
     let rootUrl = null;
