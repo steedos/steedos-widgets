@@ -8,7 +8,7 @@
 import { AmisRender } from "@/components/AmisRender";
 import { Button, Space} from 'antd';
 import { isEmpty, isFunction } from "lodash";
-import { conditionsToFilters, filtersToConditions } from '@/components/functions/amis'
+import { conditionsToFilters, filtersToConditions } from '@steedos-widgets/amis-lib'
 import { getSteedosAuth, fetchAPI } from "@steedos-widgets/amis-lib";
 import { getUISchema } from '@steedos-widgets/amis-lib'
 

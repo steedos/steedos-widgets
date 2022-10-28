@@ -30,6 +30,26 @@ const config: any = {
       name: "columns",
       propType: "array",
       description: '显示列',
+    },
+    {
+      name: "amisCondition",
+      propType: "object",
+      description: '过滤条件',
+    },
+    {
+      name: "sortField",
+      propType: "string",
+      description: '排序字段',
+    },
+    {
+      name: "sortOrder",
+      propType: "string",
+      description: '排序顺序',
+    },
+    {
+      name: "top",
+      propType: "number",
+      description: '显示的记录数量',
     }
   ],
   preview: {
@@ -131,20 +151,20 @@ export default {
             // }
           ]
         },
-        // {
-        //   "type": "condition-builder",
-        //   "name": "filters",
-        //   "label": "过滤条件",
-        //   "source": {
-        //     "method": "get",
-        //     "url": "/service/api/amis-metadata-listviews/getFilterFields?objectName=${objectApiName === '${objectName}' ? 'space_users' : objectApiName}",
-        //     "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
-        //     "dataType": "json"
-        //   },
-        //   "en-US": {
-        //     "label": "Filters Conditions"
-        //   }
-        // },
+        {
+          "type": "condition-builder",
+          "name": "amisCondition",
+          "label": "过滤条件",
+          "source": {
+            "method": "get",
+            "url": "/service/api/amis-metadata-listviews/getFilterFields?objectName=${objectApiName === '${objectName}' ? 'space_users' : objectApiName}",
+            "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
+            "dataType": "json"
+          },
+          "en-US": {
+            "label": "Filters Conditions"
+          }
+        },
         {
           "type": "input-text",
           "name": "sortField",
