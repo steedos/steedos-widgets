@@ -20,6 +20,7 @@ export * from './lib/steedos.client.js'
 
 export * from './lib/converter/amis/fields/lookup';
 export * from './lib/converter/amis/fields/user';
+export * from './lib/converter/amis/filters';
 
 export * from './lib/workflow/flow';
 

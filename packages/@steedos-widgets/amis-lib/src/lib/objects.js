@@ -302,7 +302,8 @@ export async function getRecordDetailRelatedListSchema(objectName,recordId,relat
         bulkActions: [],
         headerToolbar: [],
         columnsTogglable: false,
-        source: "${rows}"
+        source: "${rows}",
+        className: "b-t"
     });
     const recordRelatedListHeader = {
         "type": "wrapper",
@@ -357,22 +358,13 @@ export async function getRecordDetailRelatedListSchema(objectName,recordId,relat
                 ]
             }
         ],
-        "size": "xs"
+        "size": "xs",
+        "className": "bg-white p-t-sm p-b-sm p-l"
     };
-    const  body = [
-        {
-            "type": "panel",
-            "title": "子表标题",
-            "header": recordRelatedListHeader,
-            "body": recordRelatedListBody,
-            "affixFooter": false,
-            "headerClassName": "",
-            "bodyClassName": "p-none"
-        }
-    ];
+    const body = [recordRelatedListHeader,recordRelatedListBody];
     const amisSchema =  {
           type: 'service',
-          bodyClassName: '',
+          className: 'r b-a',
           name: `relatedObject`,
           api,
           data: {context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
