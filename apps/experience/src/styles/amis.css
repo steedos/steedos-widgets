@@ -263,3 +263,17 @@ svg.icon {
 .steedos-listview .antd-Images{
     display: inline !important;
 }
+
+.steedos-object-record-more-button button{
+    border-radius: 0px !important;
+    width: 100% !important;
+    text-align: left !important;
+    background-color: transparent !important;
+    background: transparent !important;
+    border: none !important;
+    color: var(--Button--default-color) !important;
+}
+
+.steedos-object-record-more-button button:hover{
+    color: var(--Button--default-color) !important;
+}

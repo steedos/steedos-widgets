@@ -46,7 +46,8 @@ export function RecordHeader({ schema, formFactor, permissions, hiddenTitle, cla
           router: router,
           recordId: record_id,
           objectName: schema.uiSchema.name,
-          formFactor: formFactor
+          formFactor: formFactor,
+          className: 'text-left w-full rounded-none'
         })
       );
     }
@@ -74,7 +75,7 @@ export function RecordHeader({ schema, formFactor, permissions, hiddenTitle, cla
     moreButtons?.map((button, index)=>{
       items.push({
         key: button.name,
-        className: 'w-full p-0 min-w-[11rem]',
+        className: 'steedos-object-record-more-button w-full p-0 min-w-[11rem]',
         label: <>
           <Button
               button={button}
