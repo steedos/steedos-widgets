@@ -258,3 +258,8 @@ svg.icon {
 .antd-CBGroup-toolbar .antd-CBGroup-toolbarConditionAdd .antd-ButtonGroup>.antd-Button:first-child {
     margin-right: 1.5rem;
 }
+
+
+.steedos-listview .antd-Images{
+    display: inline !important;
+}

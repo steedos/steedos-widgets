@@ -156,7 +156,7 @@ function getScriptForRewriteValueForFileFields(fields){
                 fileFieldsKeys.forEach((item)=>{
                     let fileFieldValue = data[item];
                     if(fileFieldValue && fileFieldValue.length){
-                        const fileFieldNames = data._display[item].split(',');
+                        const fileFieldNames = _.map(_.isArray(data._display[item]) ? data._display[item] : [data._display[item]], 'name');
                         if(fileFields[item].multiple){
                             if(fileFieldValue instanceof Array){
                                 data[item] = fileFieldValue.map((value, index)=>{ 

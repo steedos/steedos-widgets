@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-27 09:36:29
+ * @LastEditTime: 2022-10-28 11:12:21
  * @Description:
  */
 import { fetchAPI } from "./steedos.client";
@@ -19,7 +19,15 @@ import { getFieldSearchable } from "./converter/amis/fields/index";
 import { getRecord } from './record';
 import { getListViewItemButtons } from './buttons'
 
-const UI_SCHEMA_CACHE = {};
+let UI_SCHEMA_CACHE = {};
+
+if('undefined' != typeof window){
+    if(!window.UI_SCHEMA_CACHE){
+        window.UI_SCHEMA_CACHE = UI_SCHEMA_CACHE;
+    }
+    UI_SCHEMA_CACHE = window.UI_SCHEMA_CACHE;
+}
+
 const setUISchemaCache = (key, value) => {
     UI_SCHEMA_CACHE[key] = value;
 };

@@ -1,26 +1,13 @@
 import { cloneDeep, includes } from 'lodash';
 import { lookupToAmis } from './lookup';
-import { absoluteUrl } from '../../../steedos.client.js'
 import * as Fields from '../fields';
 import * as Tpl from '../tpl';
+import * as File from './file';
+import { getAmisStaticFieldType } from './type';
 import * as _ from 'lodash'
 export const OMIT_FIELDS = ['created', 'created_by', 'modified', 'modified_by'];
+export { getAmisStaticFieldType } from './type';
 // const Lookup = require('./lookup');
-const AmisFormInputs = [
-    'text',
-    'date',
-    'file',
-    "avatar",
-    'image',
-    'datetime',
-    'time',
-    'number',
-    'currency',
-    'percent',
-    'password',
-    'url',
-    'email'
-]
 
 export function getBaseFields(readonly){
     let calssName = 'm-1';
@@ -47,22 +34,7 @@ export function getBaseFields(readonly){
     ]
 };
 
-export function getAmisStaticFieldType(type, readonly, options){
-    if(!readonly){
-        if(_.includes(AmisFormInputs, type)){
-            return `input-${type}`;
-        }
-        return type;
-    }
-    if(_.includes(['text','image'], type)){
-        if('image' === type && options && options.multiple){
-            return `static-images`;
-        }
-        return `static-${type}`;
-    }else{
-        return 'static';
-    }
-};
+
 
 export function getAmisFieldType(sField){
     switch (sField.type) {
@@ -180,72 +152,6 @@ export function getSelectFieldOptions(field){
     return options;
 }
 
-function  convertSFieldToAmisFilesField(field,readonly){
-    const type = field.type;
-    let table_name;
-    let fieldType = type;
-    if(type === 'avatar'){
-        table_name = 'avatars';
-        fieldType = "image";
-    }else if(type === 'image'){
-        table_name = 'images';
-    }else if(type === 'file'){
-        table_name = 'files';
-    }
-    let amisFieldType = getAmisStaticFieldType(fieldType, readonly, {multiple: field.multiple});
-    if(readonly){
-        if(_.includes(['avatar','image'], type)){
-            return {
-                type: amisFieldType,
-                enlargeAble: true,
-                showToolbar: true
-            }
-        }
-        if(type === 'file'){
-            return {
-                type: amisFieldType,
-                tpl: `
-                    <% let fileData = data.${field.name}; if (fileData) { %>
-                        <% if(${!field.multiple}){ fileData = [fileData]}  %>
-                        <% fileData.forEach(function(item) { %> 
-                            <a href='<%= item.url %>' target='_self' class='block'><%= item.name %></a> 
-                    <% });} %>`
-            }
-        }
-    }else{
-        let rootUrl = absoluteUrl(`/api/files/${table_name}/`);
-        let convertData = {
-            type: amisFieldType,
-            receiver: {
-                method: "post",
-                url: `\${context.rootUrl}/s3/${table_name}`,
-                adaptor: `
-                    var rootUrl = ${JSON.stringify(rootUrl)};
-                    payload = {
-                        status: response.status == 200 ? 0 : response.status,
-                        msg: response.statusText,
-                        data: {
-                            value: payload._id,
-                            name: payload.original.name,
-                            url: rootUrl + payload._id,
-                        }
-                    }
-                    return payload;
-                `,
-                headers: {
-                    Authorization: "Bearer ${context.tenantId},${context.authToken}"
-                }
-            }
-        }
-        
-        if(field.multiple){
-            convertData.multiple = true;
-            convertData.joinValues = false;
-            convertData.extractValue = true;
-        }
-        return convertData;
-    }
-}
 export async function convertSFieldToAmisField(field, readonly, ctx) {
     let rootUrl = null;
     // 创建人和修改人、创建时间和修改时间不显示
@@ -433,13 +339,13 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             }
             break;
         case 'avatar':
-            convertData = convertSFieldToAmisFilesField(field,readonly);
+            convertData = File.getAmisFileSchema(field, readonly);
             break;
         case 'image':
-            convertData = convertSFieldToAmisFilesField(field,readonly);
+            convertData = File.getAmisFileSchema(field, readonly);
             break;
         case 'file':
-            convertData = convertSFieldToAmisFilesField(field,readonly);
+            convertData = File.getAmisFileSchema(field, readonly);
             break;
         case 'formula':
             if(readonly){

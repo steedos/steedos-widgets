@@ -4,6 +4,7 @@ import * as Fields from '../index';
 import * as graphql from '../graphql';
 import config from '../../../../config'
 import { each, isBoolean } from 'lodash';
+import { getAmisFileReadonlySchema } from './file'
 
 function getOperation(fields){
     const controls = [];
@@ -41,6 +42,7 @@ async function getTableColumns(fields, options){
         if((field.is_name || field.name === options.labelFieldName) && options.objectName === 'cms_files'){
             columns.push({
                 "type": "button",
+                className:"whitespace-nowrap",
                 "label": `\${${field.name}}`,
                 "type": "button",
                 "actionType": "ajax",
@@ -63,9 +65,23 @@ async function getTableColumns(fields, options){
                 label: field.label,
                 width: field.width,
                 toggled: field.toggled,
-                disabled: true
+                disabled: true,
+                className:"whitespace-nowrap",
             })
-        }else{
+        }else if(field.type === 'avatar' || field.type === 'image' || field.type === 'file'){
+            columns.push({
+                type: "switch",
+                name: field.name,
+                label: field.label,
+                width: field.width,
+                toggled: field.toggled,
+                disabled: true,
+                className:"whitespace-nowrap",
+                ...getAmisFileReadonlySchema(field)
+            })
+        }
+        
+        else{
             const tpl = await Tpl.getFieldTpl(field, options);
 
             let type = 'text';
@@ -81,7 +97,8 @@ async function getTableColumns(fields, options){
                     width: field.width,
                     type: type,
                     tpl: tpl,
-                    toggled: field.toggled
+                    toggled: field.toggled,
+                    className: field.type === 'textarea' ? 'w-56 whitespace-pre-wrap' :  "whitespace-nowrap",
                     // toggled: true 
                 })
             }
@@ -243,6 +260,20 @@ export async function getTableApi(mainObject, fields, options){
             searchableFields.push(field.name);
         }
     })
+
+    const fileFields = {};
+    const fileFieldsKeys = [];
+    fields.forEach((item)=>{
+        if(_.includes(['image','avatar','file'], item.type)){
+            fileFieldsKeys.push(item.name);
+            fileFields[item.name] = {
+                name: item.name,
+                type: item.type,
+                multiple: item.multiple
+            };
+        }
+    })
+
     let valueField = mainObject.key_field || '_id';
     const api = await getApi(mainObject, null, fields, {alias: 'rows', limit: top, queryOptions: `filters: {__filters}, top: {__top}, skip: {__skip}, sort: "{__sort}"`});
     api.data.$term = "$term";
@@ -326,7 +357,23 @@ export async function getTableApi(mainObject, fields, options){
             item._index = index + 1;
         })
     }
-    window.postMessage(Object.assign({type: "listview.loaded"}), "*")
+    window.postMessage(Object.assign({type: "listview.loaded"}), "*");
+    let fileFields = ${JSON.stringify(fileFields)};
+    _.each(payload.data.rows, function(item, index){
+        _.each(fileFields , (field, key)=>{
+            if(item[key] && item._display && item._display [key]){
+                let value = item._display[key];
+                if(!_.isArray(value)){
+                    value = [value]
+                };
+                if(field.type === 'file'){
+                    item[key] = value
+                }else{
+                    item[key] = _.map(value, 'url')
+                }
+            }
+        })
+    })
     
     if(enable_tree){
         const records = payload.data.rows;
