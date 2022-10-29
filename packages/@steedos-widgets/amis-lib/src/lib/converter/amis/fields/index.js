@@ -326,7 +326,11 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             convertData = await lookupToAmis(field, readonly, ctx) //TODO
             break;
         case 'autonumber':
-            //TODO
+            if(readonly){
+                convertData = {
+                    type: 'static-text'
+                }
+            }
             break;
         case 'url':
             convertData = {
@@ -365,18 +369,14 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             }
             break;
         case 'toggle':
-            if(readonly){
-                convertData = {
-                    type: getAmisStaticFieldType('checkbox', readonly),
-                    option: field.inlineHelpText,
-                    tpl: readonly ? Tpl.getSwitchTpl(field) : null
-                }
-            }else{
-                convertData = {
-                    type: "switch"
-                }
+            convertData = {
+                type: "switch",
+                name: field.name,
+                label: field.label,
+                width: field.width,
+                toggled: field.toggled,
+                disabled: readonly,
             }
-            
             break;
         case 'grid':
             convertData = {
