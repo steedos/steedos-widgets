@@ -274,22 +274,22 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                 // utc: true
             }
             break;
-        case 'number':
-            convertData = {
-                type: getAmisStaticFieldType('number', readonly),
-                min: field.min,
-                max: field.max,
-                precision: field.scale
-            }
-            break;
         case 'currency':
-            //TODO
-            convertData = {
-                type: getAmisStaticFieldType('number', readonly),
-                min: field.min,
-                max: field.max,
-                precision: field.scale
+        case 'number':
+            if(readonly){
+                convertData = {
+                    type: 'static-tpl',
+                    tpl: Tpl.getNumberTpl(field)
+                }
+            }else{
+                convertData = {
+                    type: getAmisStaticFieldType('number', readonly),
+                    min: field.min,
+                    max: field.max,
+                    precision: field.scale
+                }
             }
+            
             break;
         case 'input-array':
             convertData = Object.assign({}, field, baseData);
