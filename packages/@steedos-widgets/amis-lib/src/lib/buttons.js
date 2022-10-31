@@ -372,7 +372,6 @@ export const getListViewButtons = (uiSchema, ctx) => {
                                                 "syncLocation": false,
                                                 "keepItemSelectionOnPageChange": true,
                                                 "checkOnItemClick": false,
-                                                "labelTpl": "${undefined}",
                                                 "autoFillHeight": false
                                             },
                                             "joinValues": false,
