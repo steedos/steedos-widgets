@@ -277,3 +277,16 @@ svg.icon {
 .steedos-object-record-more-button button:hover{
     color: var(--Button--default-color) !important;
 }
+
+
+.steedos-listview .antd-Image-thumb{
+    width: 1rem !important;
+    height: 1rem !important;
+}
+
+.steedos-listview .textarea{
+    -webkit-line-clamp: 3;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}

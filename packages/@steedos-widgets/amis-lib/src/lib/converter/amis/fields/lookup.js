@@ -48,14 +48,35 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     const searchableFields = [];
 
     const fieldsArr = [];
-	_.each(refObjectConfig.fields , (field, field_name)=>{
-        if(field_name != '_id' && !field.hidden){
-            if(!_.has(field, "name")){
-                field.name = field_name
+
+    const listView = _.find(
+        refObjectConfig.list_views,
+        (listView, name) => name === 'all'
+    );
+    if (listView && listView.columns) {
+        _.each(listView.columns, function (column) {
+            if (_.isString(column) && refObjectConfig.fields[column]) {
+                fieldsArr.push(refObjectConfig.fields[column]);
+            } else if (_.isObject(column) && refObjectConfig.fields[column.field]) {
+                fieldsArr.push(
+                    Object.assign({}, refObjectConfig.fields[column.field], {
+                        width: column.width,
+                        wrap: column.wrap,
+                    })
+                );
             }
-            fieldsArr.push(field)
-        }
-    })
+        });
+    }else{
+        _.each(refObjectConfig.fields , (field, field_name)=>{
+            if(field_name != '_id' && !field.hidden){
+                if(!_.has(field, "name")){
+                    field.name = field_name
+                }
+                fieldsArr.push(field)
+            }
+        })
+    }
+
     _.each(_.sortBy(fieldsArr, "sort_no"),function(field){
         if(i < 5){
             if(!_.find(tableFields, function(f){

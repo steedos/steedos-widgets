@@ -1,7 +1,7 @@
 import { Form } from '@/components/object/Form'
 import { Button, Space } from 'antd';
 import { isFunction, each } from 'lodash';
-import { fetchAPI } from '@steedos-widgets/amis-lib';
+import { fetchAPI, getUISchema } from '@steedos-widgets/amis-lib';
 
 const editRecordHandle = (props)=>{
     const { appId, name, title, objectName, recordId, type, options, router, refId, data, onSubmitted, onCancel, formFactor } = props;
@@ -119,5 +119,8 @@ export const SObject = {
             })
         })
         return result.data.record;
+    },
+    getUISchema: async (objectName, force)=>{
+        return await getUISchema(objectName, force)
     }
 }

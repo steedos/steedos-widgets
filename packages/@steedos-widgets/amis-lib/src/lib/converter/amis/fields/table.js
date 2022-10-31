@@ -87,6 +87,8 @@ async function getTableColumns(fields, options){
             let type = 'text';
             if(tpl){
                 type = 'tpl';
+            }else if(field.type === 'html'){
+                type = 'markdown';
             }
             if(!field.hidden && !field.extra){
                 columns.push({
@@ -98,7 +100,8 @@ async function getTableColumns(fields, options){
                     type: type,
                     tpl: tpl,
                     toggled: field.toggled,
-                    className: field.type === 'textarea' ? 'w-56 whitespace-pre-wrap' :  "whitespace-nowrap",
+                    className: field.type === 'textarea' ? 'w-56 whitespace-pre-wrap textarea' :  "whitespace-nowrap",
+                    html: field.type === 'html' ? true : null
                     // toggled: true 
                 })
             }
