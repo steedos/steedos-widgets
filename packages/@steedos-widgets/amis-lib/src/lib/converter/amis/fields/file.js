@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-28 14:15:09
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-29 10:10:43
+ * @LastEditTime: 2022-10-29 14:08:52
  * @Description: 
  */
 import { getAmisStaticFieldType } from './type';
@@ -53,6 +53,7 @@ export const getAmisFileEditSchema = (steedosField)=>{
     const amisFieldType = getAmisFieldType(steedosField, false)
     let convertData = {
         type: amisFieldType,
+        useChunk: false, // 关闭分块上传
         receiver: {
             method: "post",
             url: `\${context.rootUrl}/s3/${tableName}`,
