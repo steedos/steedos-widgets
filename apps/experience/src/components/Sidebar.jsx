@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-29 10:46:29
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-10 14:09:40
+ * @LastEditTime: 2022-10-31 18:03:21
  * @Description: 
  */
 /* This example requires Tailwind CSS v2.0+ */
@@ -51,7 +51,7 @@ function getNavSchema(nav, selected){
   const data = getNavData(nav, selected);
   return {
     "type": "page",
-    "data": data,
+    // "data": data,
     bodyClassName: "p-0",
     "css": {
       ".antd-Nav-itemIcon":{
@@ -79,13 +79,15 @@ function getNavSchema(nav, selected){
       "type": "nav",
       "stacked": true,
       "className": "w-md",
-      "source": "${nav}"
+      "links": data.nav,
+      // "source": "${nav}"
     }
   }
 }
 
 export  function Sidebar({ navigation, selected, app }) {
   const router = useRouter()
+  console.log(`=====>`, getNavSchema(navigation, selected))
   return (
     <nav aria-label="Sidebar" className="divide-y">
       <div className="block lg:hidden px-4 py-4">

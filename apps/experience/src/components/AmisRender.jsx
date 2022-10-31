@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 16:55:58
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-26 15:54:08
+ * @LastEditTime: 2022-10-31 18:06:10
  * @Description: 
  */
 
@@ -44,6 +44,13 @@ export const AmisRender = ({id, schema, data, router, className, assets, getModa
                     tenantId: steedosAuth.spaceId,
                     authToken: steedosAuth.token,
                     user: steedosAuth
+                },
+                global: {
+                    userId: steedosAuth.userId,
+                    spaceId: steedosAuth.spaceId,
+                    user: steedosAuth, 
+                    now: new Date(),
+                    // mode: mode //由表单提供
                 }
             }
         });
