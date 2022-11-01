@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 11:31:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-12 16:34:27
+ * @LastEditTime: 2022-11-01 11:38:09
  * @Description:
  */
 import { each, find, isArray, isEmpty } from 'lodash';
@@ -57,6 +57,17 @@ export const amisRootClick = (router, e) => {
 export const getEvn = (router)=>{
   return {
     theme: "antd",
+    getModalContainer: (props)=>{
+      let div = document.querySelector("#amisModalContainer");
+        if(!div){
+            div = document.createElement('div');
+            div.className="amis-scope";
+            div.style.height='0px';
+            div.id="amisModalContainer";
+            document.body.appendChild(div)
+        }
+        return div;
+    },
     notify: (type, msg)=>{
       if(msg.props?.schema.tpl){
         SteedosUI.message[type](msg.props?.schema.tpl)
@@ -176,5 +187,6 @@ export const amisRender = (root, schema, props = {}, env = {}, options) => {
   let amis = amisRequire("amis/embed");
   const { router, assets } = options;
   registerRenders(assets);
+  console.log('====', props, Object.assign(getEvn(router), env))
   return amis.embed(root, schema, props, Object.assign(getEvn(router), env));
 };
