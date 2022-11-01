@@ -59,7 +59,7 @@ services:
       - MONGODB_ADVERTISED_HOSTNAME=mongodb
       - ALLOW_EMPTY_PASSWORD=yes
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongo steedos --quiet | grep 1
+      test: echo 'rs.status().ok' | mongo steedos --quiet | grep 1
       interval: 10s
       timeout: 10s
       retries: 5
