@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 16:55:58
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-31 18:06:10
+ * @LastEditTime: 2022-11-01 11:36:43
  * @Description: 
  */
 
@@ -62,8 +62,17 @@ export const AmisRender = ({id, schema, data, router, className, assets, getModa
                 console.error(`error`, id)
             }
         }
+        // console.log(`defData`, defData, defaultsDeep(defData , schema))
         // console.log(`globalAssets`, globalAssets)
-        SteedosUI.refs[id] = amisRender(`#${id}`, defaultsDeep(defData , schema), {}, {getModalContainer: getModalContainer}, {router: router, assets: compact(concat(globalAssets, assets))});
+
+
+        const env = {};
+
+        if(getModalContainer){
+            env.getModalContainer = getModalContainer;
+        }
+
+        SteedosUI.refs[id] = amisRender(`#${id}`, defaultsDeep(defData , schema), {}, env, {router: router, assets: compact(concat(globalAssets, assets))});
       }, [globalAssetLoaded, schema]);
     return (
         <div id={`${id}`} className={`app-wrapper ${className}`} onClick={(e)=>{ return amisRootClick(router, e)}}></div>
