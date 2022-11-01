@@ -12,7 +12,7 @@ export const AmisObjectForm = async (props) => {
   const { $schema, recordId, mode, layout, labelAlign } = props;
   let objectApiName = props.objectApiName || "space_users";
   // amis中的mode属性是表单布局,没有layout属性。defaults的变量会覆盖mode属性值。
-  const schemaKeys = difference(keys($schema), ["type","mode","layout"]); 
+  const schemaKeys = difference(keys($schema), ["type","mode","layout"]);
   const formSchema = pick(props, schemaKeys);
   const defaults = {
     formSchema
