@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-27 17:34:25
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-26 15:09:14
+ * @LastEditTime: 2022-11-01 09:30:28
  * @Description: 
  */
 import { AmisRender } from "@/components/AmisRender";
@@ -46,7 +46,7 @@ export function Button(props) {
         schema={schema}
         router={router}
         className={scopeClassName}
-        data={data}
+        data={Object.assign({}, data, {objectName: data.object_name})}
       ></AmisRender>
     );
   } else {
