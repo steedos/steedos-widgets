@@ -193,6 +193,7 @@ export function GlobalHeader({ navigation, selected, app }) {
                               </div>
                             </div>
                           )}
+                          <a href="/app/admin/space_users/view/\${global.user.spaceUserId}" class="block py-2 px-4 text-sm text-gray-700" id="user_info">个人资料</a>
                           {userNavigation.map((item) => (
                             <Menu.Item key={item.name}>
                               {({ active }) => (
