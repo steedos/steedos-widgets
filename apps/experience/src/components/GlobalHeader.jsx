@@ -112,6 +112,33 @@ export function GlobalHeader({ navigation, selected, app }) {
                       </button>
                     </div>
                   </li>
+                  <li className="slds-global-actions__item">
+                    <div
+                      className="slds-dropdown-trigger slds-dropdown-trigger_click hidden sm:block"
+                    >
+                      <a
+                        className="slds-button slds-button_icon-container slds-button_icon-small slds-button_icon slds-global-actions__help slds-global-actions__item-action"
+                        id="header-setup-popover-id"
+                        type="button"
+                        aria-haspopup="true"
+                        href='/app/admin'
+                        target='_blank'
+                      >
+
+                        <svg
+                            focusable="false"
+                            data-key="down"
+                            aria-hidden="true"
+                            className="slds-button__icon slds-global-header__icon"
+                            >
+                            <use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#setup"></use>
+                            </svg>
+                        <span className="slds-assistive-text">
+                          Setup
+                        </span>
+                      </a>
+                    </div>
+                  </li>
                   {session && 
                   <li className="slds-global-actions__item">
                   <div
