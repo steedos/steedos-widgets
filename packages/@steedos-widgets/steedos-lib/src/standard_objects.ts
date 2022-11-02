@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-25 09:17:54
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-25 09:21:52
+ * @LastEditTime: 2022-11-02 15:59:45
  * @Description: 
  */
 
@@ -39,6 +39,14 @@ export const StandardObjects = {
                     }
                 }
             },
+            standard_import_data: {
+                visible: function (object_name, record_id, record_permissions) {
+                    const { object } = this;
+                    if (record_permissions) {
+                        return record_permissions["allowCreate"] && object.hasImportTemplates
+                    }
+                }
+            }
             // TODO
             // standard_delete_many:{
             //     visible: function (object_name, record_id, record_permissions) {

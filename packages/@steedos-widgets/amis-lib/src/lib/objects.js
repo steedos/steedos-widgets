@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-28 11:12:21
+ * @LastEditTime: 2022-10-31 16:33:16
  * @Description:
  */
 import { fetchAPI } from "./steedos.client";
