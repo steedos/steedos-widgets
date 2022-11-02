@@ -62,7 +62,7 @@ export function GlobalHeader({ navigation, selected, app }) {
       >
         {({ open }) => (
           <>
-            <div className="bg-slate-100 slds-global-header slds-grid slds-grid_align-spread   shadow-none">
+            <div className="lg:bg-slate-100 slds-global-header slds-grid slds-grid_align-spread   shadow-none">
               <div className="slds-global-header__item flex">
                 <div className="sm:hidden mr-4 flex items-center">
                   <MobileNavigation navigation={navigation} app={app} />
