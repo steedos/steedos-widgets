@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:51:00
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-02 15:17:17
+ * @LastEditTime: 2022-11-02 18:49:42
  * @Description: 
  */
 export const getSchema = (uiSchema)=>{
@@ -50,18 +50,6 @@ export const getSchema = (uiSchema)=>{
         "regions": [
             "body"
         ],
-        "data": {
-            "context": {
-                "rootUrl": "http://127.0.0.1:5000"
-            },
-            "app_id": "",
-            "tab_id": "",
-            "object_name": "",
-            "dataComponentId": "",
-            "record_id": "",
-            "record": {},
-            "permissions": {}
-        },
         "bodyClassName": "p-0",
         "id": "u:aef99d937b10"
     }
