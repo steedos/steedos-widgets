@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-21 10:27:43
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-02 15:27:09
+ * @LastEditTime: 2022-11-02 17:23:02
  * @Description: 
  */
 import React, { useEffect, useState } from 'react'
@@ -11,7 +11,6 @@ import { getButton, executeButton, getUISchema } from '@steedos-widgets/amis-lib
 
 export const AmisObjectButton = (props) => {
     const { objectName, name, data, render, className,  listViewId} = props;
-    // console.log(`AmisObjectButton props====`, props)
     const [button, setButton] = useState();
     const [uiSchema, setUiSchema] = useState();
     //TODO 处理上下文参数

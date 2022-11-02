@@ -136,7 +136,7 @@ function getButtonVisibleOn(button){
             console.warn('无效的visible', visible)
             return 'false';
         }
-        if(visible.startsWith('function')){
+        if(visible.trim().startsWith('function')){
             return `${visible}(objectName, _id, recordPermissions, data)`
         }
         return visible;

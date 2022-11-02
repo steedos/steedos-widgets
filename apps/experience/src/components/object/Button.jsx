@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-27 17:34:25
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-01 18:28:04
+ * @LastEditTime: 2022-11-02 17:20:07
  * @Description: 
  */
 import { AmisRender } from "@/components/AmisRender";
@@ -30,10 +30,10 @@ export function Button(props) {
     ]
   }
   return <AmisRender
-  id={SteedosUI.getRefId({type: 'button', appId: data.app_id, name: button.name})}
+  id={SteedosUI.getRefId({type: 'button', appId: data.app_id, name: `${uiSchema.name}_${button.name}`})}
   schema={buttonSchema}
   router={router}
   className={scopeClassName}
-  data={Object.assign({}, data, {objectName: data.object_name, _id: data.recordId, recordPermissions: permissions || uiSchema.permissions, listViewId: data.listViewId})}
+  data={Object.assign({}, data, {objectName: data.object_name, _id: data.recordId, recordPermissions: permissions || uiSchema.permissions, listViewId: data.listViewId, uiSchema: uiSchema})}
   ></AmisRender>
 }

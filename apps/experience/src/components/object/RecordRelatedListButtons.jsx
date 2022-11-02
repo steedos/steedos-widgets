@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 13:32:49
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-26 14:50:16
+ * @LastEditTime: 2022-11-02 17:22:28
  * @Description: 
  */
 import { getListViewButtons, execute } from '@steedos-widgets/amis-lib';
@@ -139,8 +139,10 @@ export function RecordRelatedListButtons(props) {
                             app_id: app_id,
                             tab_id: tab_id,
                             object_name: schema.uiSchema.name,
+                            ...{[foreign_key]: record_id},
                             record: {[foreign_key]: record_id}, 
-                            dataComponentId: refId
+                            listViewId: refId,
+                            uiSchema: schema.uiSchema
                         }}
                         className = {inMore ? "flex items-center border-0 px-2 py-1" : ''}
                         scopeClassName="inline-block"

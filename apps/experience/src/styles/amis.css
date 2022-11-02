@@ -299,6 +299,14 @@ svg.icon {
     margin-right: 4px;
 }
 
+.steedos-related-buttons #amis-pages-upload-button{
+    margin-right: 4px;
+}
+
+.steedos-related-buttons .antd-Button--default{
+    margin-right: 4px;
+}
+
 
 .steedos-dropdown-button-item .antd-Button{
     border: none !important;
