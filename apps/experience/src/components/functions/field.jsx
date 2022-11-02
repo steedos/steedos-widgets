@@ -10,12 +10,12 @@ import { isFunction } from 'lodash';
 const schema = require('@/amis/fields_transfer.amis.json');
 
 export const Field = {
-    showFieldsTransfer: (objectName, data, onOk, onCancel)=>{
+    showFieldsTransfer: ({objectName, data, onOk, onCancel, title = '选择字段'})=>{
         const name = `${objectName}-fields-transfer`;
         const amisScopeId = `amis-${name}`;
         SteedosUI.Modal(Object.assign({
             name: name,
-            title: '选择字段',
+            title,
             destroyOnClose: true,
             maskClosable: false,
             keyboard: false, // 禁止 esc 关闭
