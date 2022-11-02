@@ -315,3 +315,8 @@ svg.icon {
     width: 100% !important;
     text-align: left !important;
 }
+
+
+.steedos-listview-operation svg{
+    display: initial !important;
+}

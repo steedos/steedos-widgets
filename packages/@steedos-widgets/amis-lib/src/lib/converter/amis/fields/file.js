@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-28 14:15:09
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-29 14:08:52
+ * @LastEditTime: 2022-11-02 18:06:16
  * @Description: 
  */
 import { getAmisStaticFieldType } from './type';
@@ -40,7 +40,7 @@ export const getAmisFileReadonlySchema = (steedosField)=>{
             type: amisFieldType,
             tpl: `
                 <% let fileData = data.${steedosField.name}; if (fileData) { %>
-                    <% if(${!steedosField.multiple}){ fileData = [fileData]}  %>
+                    <% if(!Array.isArray(fileData)){ fileData = [fileData]}  %>
                     <% fileData.forEach(function(item) { %> 
                         <a href='<%= item.url %>' target='_self' class='block'><%= item.name %></a> 
                 <% });} %>`
