@@ -88,7 +88,7 @@ function getNavSchema(nav, selected){
 export  function Sidebar({ navigation, selected, app }) {
   const router = useRouter()
   return (
-    <nav aria-label="Sidebar" className="divide-y">
+    <nav aria-label="Sidebar" className="">
       <div className="block lg:hidden px-4 py-4">
         <AppLauncherBar app={app}></AppLauncherBar>
       </div>

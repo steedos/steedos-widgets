@@ -58,11 +58,11 @@ export function GlobalHeader({ navigation, selected, app }) {
     <>
       <Disclosure
         as="header"
-        className="slds-global-header_container supports-backdrop-blur:bg-white/60 sticky top-0 z-40 w-full flex-none bg-white/95 shadow-none backdrop-blur transition-colors duration-500 lg:z-50 border-b lg:border-b-2 lg:border-sky-500"
+        className="slds-global-header_container supports-backdrop-blur:bg-white/60 sticky top-0 z-40 w-full flex-none bg-white/95 shadow-none backdrop-blur transition-colors duration-500 lg:z-50 border-b lg:border-b-1 lg:border-slate-300"
       >
         {({ open }) => (
           <>
-            <div className="slds-global-header slds-grid slds-grid_align-spread   shadow-none">
+            <div className="bg-slate-100 slds-global-header slds-grid slds-grid_align-spread   shadow-none">
               <div className="slds-global-header__item flex">
                 <div className="sm:hidden mr-4 flex items-center">
                   <MobileNavigation navigation={navigation} app={app} />
@@ -118,7 +118,7 @@ export function GlobalHeader({ navigation, selected, app }) {
                     >
                       <a
                         className="slds-button slds-button_icon-container slds-button_icon-small slds-button_icon slds-global-actions__help slds-global-actions__item-action"
-                        id="header-setup-popover-id"
+                        id="header-help-popover-id"
                         type="button"
                         aria-haspopup="true"
                         href='/app/admin'
