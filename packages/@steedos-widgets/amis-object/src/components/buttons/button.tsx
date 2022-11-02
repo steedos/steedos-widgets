@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-21 10:27:43
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-26 15:53:47
+ * @LastEditTime: 2022-11-02 17:23:02
  * @Description: 
  */
 import React, { useEffect, useState } from 'react'
@@ -66,7 +66,8 @@ export const AmisObjectButton = (props) => {
             {button && amisSchema? (
                 <div className="container">
                 {render('body', schema, {
-                    // 这里的信息会作为 props 传递给子组件，一般情况下都不需要这个
+                    // 这里的信息会作为 props 传递给子组件，一般情况下都不需要这个,
+                    data: Object.assign(data, {recordId: data._id, objectName: objectName, listViewId: data.listViewId, app_id: appId}),
                     onChange: ()=>{
                         console.log(`change....`)
                     }

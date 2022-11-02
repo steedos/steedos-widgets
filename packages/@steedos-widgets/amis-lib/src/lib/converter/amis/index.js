@@ -318,7 +318,7 @@ export async function getObjectForm(objectSchema, ctx){
       className: 'p-0',
       name: `page_edit_${recordId}`,
       api: await getEditFormInitApi(objectSchema, recordId, fields),
-      data: {global: getGlobalData('edit'), recordId: recordId, objectName: objectSchema.name, context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
+      // data: {global: getGlobalData('edit'), recordId: recordId, objectName: objectSchema.name, context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
       initApi: null,
       initFetch: null ,
       body: [defaultsDeep({}, formSchema, {
@@ -337,6 +337,23 @@ export async function getObjectForm(objectSchema, ctx){
         panelClassName:'m-0 sm:rounded-lg shadow-none',
         bodyClassName: 'p-0',
         className: 'p-4 sm:p-0 steedos-amis-form',
+        onEvent: {
+          "submitSucc": {
+            "weight": 0,
+            "actions": [
+              {
+                "componentId": `listview_${objectSchema.name}`,
+                "actionType": "reload",
+                "expression": "!!listViewId"
+              },
+              {
+                "componentId": `detail_${recordId}`,
+                "actionType": "reload",
+                "expression": "!!!listViewId"
+              },
+            ]
+          }
+        }
       })]
     };
     if(formSchema.id){

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-14 16:04:43
+ * @LastEditTime: 2022-11-02 16:00:24
  * @Description: 
  */
 import { getFormSchema, getViewSchema } from '@steedos-widgets/amis-lib'

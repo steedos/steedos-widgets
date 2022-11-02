@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-09 11:09:10
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-08-23 10:19:09
+ * @LastEditTime: 2022-11-02 16:24:31
  * @Description:
  */
 import React, { useState, useEffect, Fragment, useRef } from "react";
@@ -131,7 +131,7 @@ export const RelatedHeader = ({app_id, foreign_key, masterObjectName, object_nam
         </div>
         <div className="slds-page-header__col-actions">
           <div className="slds-page-header__controls">
-            <div className="slds-page-header__control space-x-1">
+            <div className="slds-page-header__control steedos-related-buttons">
                 <RecordRelatedListButtons formFactor={formFactor} foreign_key={foreign_key} record_id={record_id} refId={listViewId} app_id={app_id} tab_id={object_name} object_name={object_name} masterObjectName={masterObjectName} schema={schema}>
                 </RecordRelatedListButtons>
                 <Menu

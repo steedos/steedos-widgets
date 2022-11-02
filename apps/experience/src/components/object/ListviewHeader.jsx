@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-03 16:46:23
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-17 11:21:14
+ * @LastEditTime: 2022-11-02 11:32:20
  * @Description:
  */
 import { Listbox, Transition } from "@headlessui/react";
@@ -226,7 +226,7 @@ export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: 
         </div>
         <div className="slds-page-header__col-actions">
           <div className="slds-page-header__controls">
-            <div className="slds-page-header__control space-x-1">
+            <div className="slds-page-header__control steedos-listview-buttons">
               {/* <button onClick={filterToggler} className="slds-button slds-button_neutral">查询</button> */}
               <ListButtons
                 app_id={app_id}

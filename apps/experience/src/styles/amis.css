@@ -290,3 +290,28 @@ svg.icon {
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
+
+.steedos-record-buttons .antd-Button{
+    margin-right: 4px;
+}
+
+.steedos-listview-buttons .antd-Button{
+    margin-right: 4px;
+}
+
+.steedos-related-buttons #amis-pages-upload-button{
+    margin-right: 4px;
+}
+
+.steedos-related-buttons .antd-Button--default{
+    margin-right: 4px;
+}
+
+
+.steedos-dropdown-button-item .antd-Button{
+    border: none !important;
+    background-color: transparent !important;
+    padding: 0 !important;
+    width: 100% !important;
+    text-align: left !important;
+}
