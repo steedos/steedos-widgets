@@ -93,18 +93,19 @@ export function SearchableFieldsFilter({ schema, listViewId, appId, onClose, col
               className="slds-button_reset slds-text-link slds-col_bump-left"
               type="button"
               onClick={() => {
-                return SteedosUI.Field.showFieldsTransfer(
-                  schema.uiSchema.name,
-                  {
+                return SteedosUI.Field.showFieldsTransfer({
+                  objectName: schema.uiSchema.name,
+                  data: {
                     fields: searchableFields,
                   },
-                  (values) => {
+                  onOk: (values) => {
                     setSearchableFields(values.fields);
                   },
-                  () => {
+                  onCancel: () => {
                     // console.log(`取消操作!!!`)
-                  }
-                );
+                  },
+                  title: '设置搜索项'
+                });
               }}
             >
               设置搜索项
