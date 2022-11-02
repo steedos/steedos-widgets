@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-25 09:17:54
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-02 17:23:11
+ * @LastEditTime: 2022-11-02 18:26:04
  * @Description: 
  */
 
@@ -12,10 +12,11 @@ export const StandardObjects = {
         Actions: {
             standard_query: {
                 visible: (objectName, recordId, record_permissions)=>{
-                    if(recordId){
-                        return false;
-                    }
-                    return true;
+                    // if(recordId){
+                    //     return false;
+                    // }
+                    // return true;
+                    return false;
                 }
             },
             standard_new: {
