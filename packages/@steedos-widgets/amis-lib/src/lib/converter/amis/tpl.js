@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-27 13:16:07
+ * @LastEditTime: 2022-11-03 13:37:56
  * @Description: 
  */
 import { Router } from '../../router'
@@ -36,6 +36,10 @@ export function getDateTpl(field){
 
 
 export function getDateTimeTpl(field){
+    return `<div>\${_display.${field.name}}</div>`
+}
+
+export function getUiFieldTpl(field){
     return `<div>\${_display.${field.name}}</div>`
 }
 
@@ -149,6 +153,9 @@ export async function getFieldTpl (field, options){
         case 'number':
         case 'currency':
             return await getNumberTpl(field);
+        case 'formula':
+        case 'summary':
+            return getUiFieldTpl(field)
         default:
             break;
     }
