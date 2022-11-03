@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-25 09:17:54
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-02 18:26:04
+ * @LastEditTime: 2022-11-03 09:40:08
  * @Description: 
  */
 
@@ -21,7 +21,7 @@ export const StandardObjects = {
             },
             standard_new: {
                 visible: function (objectName, recordId, record_permissions) {
-                    if(objectName === 'cms_files'){
+                    if(objectName === 'cms_files' || objectName === 'instances'){
                         return false;
                     }
                     if (record_permissions) {
@@ -50,24 +50,35 @@ export const StandardObjects = {
                         return record_permissions["allowCreate"] && object.hasImportTemplates
                     }
                 }
-            }
+            },
             // TODO
-            // standard_delete_many:{
-            //     visible: function (object_name, record_id, record_permissions) {
-            //         if(Session.get('record_id')){
-            //             return false;
-            //         }
-            //         var object = Creator.getObject(object_name);
-            //         var perms = object && object.permissions.get();
-            //         return perms && perms["allowDelete"];
-            //     },
-            //     todo: function () {
-            //         var object_name = this.object_name;
-            //         var list_view_id = Session.get("list_view_id") || "all";
-            //         var listViewName = "listview_" + object_name + "_" + list_view_id;
-            //         Creator.executeAction(object_name, {todo: 'standard_delete'}, null, null, listViewName);
-            //     }
-            // }
+            standard_approve: {
+                visible: function (object_name, record_id, record_permissions) {
+                    return false;
+                }
+            },
+            // TODO
+            standard_view_instance:{
+                visible: function (object_name, record_id, record_permissions) {
+                    return false;
+                }
+            },
+            // TODO
+            standard_submit_for_approval: {
+                visible: function (object_name, record_id, record_permissions) {
+                    return false;
+                }
+            },
+            standard_follow: {
+                visible: function (object_name, record_id, record_permissions) {
+                    return false;
+                }
+            },
+            standard_delete_many:{
+                visible: function (object_name, record_id, record_permissions) {
+                   return false;
+                }
+            }
         }
     }
 }
