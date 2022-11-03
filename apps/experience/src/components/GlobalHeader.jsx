@@ -58,7 +58,7 @@ export function GlobalHeader({ navigation, selected, app }) {
     <>
       <Disclosure
         as="header"
-        className="slds-global-header_container sticky top-0 z-40 w-full flex-none shadow backdrop-blur transition-colors duration-500 lg:z-50 border-b lg:border-b-2 lg:border-sky-500"
+        className="slds-global-header_container sticky top-0 z-40 w-full flex-none backdrop-blur transition-colors duration-500 lg:z-50 border-b border-b-2 border-sky-500 lg:shadow"
       >
         {({ open }) => (
           <>
