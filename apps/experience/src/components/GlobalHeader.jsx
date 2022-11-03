@@ -175,6 +175,7 @@ export function GlobalHeader({ navigation, selected, app }) {
                       >
                         <Menu.Items className="fixed right-6 mt-2 min-w-[160px] origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                           {session && (
+                          <>
                             <div className="flex items-center py-2 px-4">
                               <div className="flex-shrink-0">
                                 <img
@@ -192,8 +193,9 @@ export function GlobalHeader({ navigation, selected, app }) {
                                 </div>
                               </div>
                             </div>
+                            <a href="/app/admin/space_users/view/\${global.user.spaceUserId}" onClick={handleClick} className="block py-2 px-4 text-sm text-gray-700" id="user_info">个人资料</a>
+                          </>
                           )}
-                          <a href="/app/admin/space_users/view/\${global.user.spaceUserId}" class="block py-2 px-4 text-sm text-gray-700" id="user_info">个人资料</a>
                           {userNavigation.map((item) => (
                             <Menu.Item key={item.name}>
                               {({ active }) => (
