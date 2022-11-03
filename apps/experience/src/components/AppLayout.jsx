@@ -6,7 +6,7 @@
  * @Description:  
  */
 import React, { useState, useEffect, Fragment } from 'react';
-import { Navbar } from '@/components/Navbar';
+import { GlobalHeader } from '@/components/GlobalHeader';
 import { Sidebar } from '@/components/Sidebar';
 import { getApp } from '@steedos-widgets/amis-lib';
 import { useRouter } from 'next/router'
@@ -83,7 +83,7 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
       }, [appId, session]);
     return (
       <div className='h-full flex flex-col'>
-        <Navbar navigation={app?.children} selected={selected} app={app}/>
+        <GlobalHeader navigation={app?.children} selected={selected} app={app}/>
         {session && (
           <div id="main" className="flex flex-1 sm:overflow-hidden">
             <div id="sidebar" className="hidden lg:block flex flex-shrink-0 border-r overflow-y-auto bg-slate-100/80 border-slate-300">
