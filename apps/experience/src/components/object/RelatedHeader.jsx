@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-09 11:09:10
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-02 16:24:31
+ * @LastEditTime: 2022-11-03 10:25:08
  * @Description:
  */
 import React, { useState, useEffect, Fragment, useRef } from "react";
@@ -134,40 +134,7 @@ export const RelatedHeader = ({app_id, foreign_key, masterObjectName, object_nam
             <div className="slds-page-header__control steedos-related-buttons">
                 <RecordRelatedListButtons formFactor={formFactor} foreign_key={foreign_key} record_id={record_id} refId={listViewId} app_id={app_id} tab_id={object_name} object_name={object_name} masterObjectName={masterObjectName} schema={schema}>
                 </RecordRelatedListButtons>
-                <Menu
-                  as="div"
-                  className="antd-Button antd-Button--default"
-                >
-                    <Menu.Button  >
-                      <svg
-                      focusable="false"
-                      data-key="down"
-                      aria-hidden="true"
-                      className="slds-button__icon"
-                      >
-                      <use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#down"></use>
-                      </svg>
-                    </Menu.Button>
-                  <Transition
-                    as={Fragment}
-                    enter="transition ease-out duration-100"
-                    enterFrom="transform opacity-0 scale-95"
-                    enterTo="transform opacity-100 scale-100"
-                    leave="transition ease-in duration-75"
-                    leaveFrom="transform opacity-100 scale-100"
-                    leaveTo="transform opacity-0 scale-95"
-                  >
-                    <Menu.Items className="absolute right-0 z-10 mt-1 w-56 origin-top-right divide-y divide-gray-100 bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:rounded-[2px]">
-                      <div className="">
-                          <Menu.Item >
-                          {schema?.uiSchema?.permissions?.allowDelete && 
-                              <button onClick={batchDelete} className="slds-dropdown__item group flex w-full items-center border-0 px-2 py-2">删除</button>
-                          }
-                          </Menu.Item>
-                      </div>
-                    </Menu.Items>
-                  </Transition>
-                </Menu>
+                <button onClick={batchDelete} className="antd-Button antd-Button--default">删除</button>
             </div>
           </div>
         </div>
