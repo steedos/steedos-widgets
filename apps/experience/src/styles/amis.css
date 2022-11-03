@@ -149,6 +149,9 @@ button.antd-Button--primary {
 
 body {
     font-family: -apple-system,BlinkMacSystemFont,Helvetica,Arial,Microsoft Yahei,SimHei;
+    background: url(/images/defaultBackground.png);    
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
 :root {
@@ -169,6 +172,7 @@ body {
     --Button-paddingX: 16px;
     --Button--default-color: #0176d3;
     --Button-borderRadius: 0.25rem;
+    --borderRadius: 4px;
 }
 
 /* .antd-Cards-fixedTop{
