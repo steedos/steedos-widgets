@@ -31,7 +31,7 @@ export default class MyDocument extends Document {
           <link rel="stylesheet" href="https://unpkg.steedos.cn/@fortawesome/fontawesome-free@6.2.0/css/all.min.css" />
 
         </Head>
-        <body className='antialiased text-black bg-gray-50'>
+        <body className='antialiased text-black bg-slate-50'>
           
           <Main />
           <NextScript />

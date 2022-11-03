@@ -86,12 +86,12 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
         <Navbar navigation={app?.children} selected={selected} app={app}/>
         {session && (
           <div id="main" className="flex flex-1 sm:overflow-hidden">
-            <div id="sidebar" className="hidden lg:block flex flex-shrink-0 border-r overflow-y-auto bg-gray-100 border-slate-300">
+            <div id="sidebar" className="hidden lg:block flex flex-shrink-0 border-r overflow-y-auto bg-slate-100/80 border-slate-300">
               <div className="flex flex-col w-64">
                 <Sidebar navigation={app?.children} selected={selected} app={app}/>
               </div>
             </div>
-            <div id="content" className="flex flex-col min-w-0 flex-1">
+            <div id="content" className="flex flex-col min-w-0 flex-1 bg-slate-50">
               {children}
             </div>
           </div>
