@@ -60,12 +60,12 @@ export const RelatedHeader = ({app_id, foreign_key, masterObjectName, object_nam
           <nav role="navigation" aria-label="Breadcrumbs">
             <ol className="slds-breadcrumb slds-list_horizontal">
               <li className="slds-breadcrumb__item">
-                <Link href={`/mapp/${app_id}/${masterObjectName}`}>
+                <Link href={`/app/${app_id}/${masterObjectName}`}>
                     <a >{masterObjectUISchema.label}</a>
                 </Link>
               </li>
               <li className="slds-breadcrumb__item">
-                <Link href={`/mapp/${app_id}/${masterObjectName}/view/${record_id}`}>
+                <Link href={`/app/${app_id}/${masterObjectName}/view/${record_id}`}>
                 <a >{record[masterObjectUISchema.NAME_FIELD_KEY]}</a>
                 </Link>
               </li>

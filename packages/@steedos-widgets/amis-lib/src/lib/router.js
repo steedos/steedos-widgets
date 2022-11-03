@@ -9,21 +9,21 @@
 
 export const Router = {
     getAppPath({formFactor, appId}){
-        return `/${formFactor === 'SMALL' ? 'mapp': 'app'}/${appId}`;
+        return `/app/${appId}`;
     },
     getPagePath(){
         //TODO
     },
     getObjectListViewPath({formFactor, appId, objectName, listViewName}){
-        return `/${formFactor === 'SMALL' ? 'mapp': 'app'}/${appId}/${objectName}/grid/${listViewName}`;
+        return `/app/${appId}/${objectName}/grid/${listViewName}`;
     },
     getObjectDetailPath({formFactor, appId, objectName, recordId, listViewName}){
         if(objectName === 'instances'){
             return `/workflow/space/\${context.tenantId}/${listViewName}/${recordId}`;
         }
-        return `/${formFactor === 'SMALL' ? 'mapp': 'app'}/${appId}/${objectName}/view/${recordId}`;
+        return `/app/${appId}/${objectName}/view/${recordId}`;
     },
     getObjectRelatedViewPath({formFactor, appId, masterObjectName, masterRecordId, objectName, foreignKey}){
-        return `/${formFactor === 'SMALL' ? 'mapp': 'app'}/${appId}/${masterObjectName}/${masterRecordId}/${objectName}/grid?related_field_name=${foreignKey}`;
+        return `/app/${appId}/${masterObjectName}/${masterRecordId}/${objectName}/grid?related_field_name=${foreignKey}`;
     }
 }
