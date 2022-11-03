@@ -149,9 +149,14 @@ button.antd-Button--primary {
 
 body {
     font-family: -apple-system,BlinkMacSystemFont,Helvetica,Arial,Microsoft Yahei,SimHei;
-    background: url(/images/defaultBackground.png);    
-    background-size: contain;
-    background-repeat: no-repeat;
+}
+
+@media only screen and (min-width: 600px) {
+    body {
+        background: url(/images/defaultBackground.png);    
+        background-size: contain;
+        background-repeat: no-repeat;
+    }
 }
 
 :root {
