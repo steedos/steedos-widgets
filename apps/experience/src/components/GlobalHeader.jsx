@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { SearchIcon } from "@heroicons/react/solid";
@@ -16,7 +17,9 @@ function classNames(...classes) {
 const defaultAvatar =
   "/images/defaultAvatar.png";
 
-export function GlobalHeader({ navigation, selected, app }) {
+export function GlobalHeader({ navigation, selected, app, SideBarToggle }) {
+  let [sidebarOpen, setSidebarOpen] = useState(false)
+
   const router = useRouter();
   const { data: session } = useSession();
 
@@ -64,9 +67,10 @@ export function GlobalHeader({ navigation, selected, app }) {
           <>
             <div className="bg-transparent slds-global-header slds-grid slds-grid_align-spread shadow-none">
               <div className="slds-global-header__item flex">
-                <div className="sm:hidden mr-4 flex items-center">
+                {/* <div className="sm:hidden mr-4 flex items-center">
                   <MobileNavigation navigation={navigation} app={app} />
-                </div>
+                </div> */}
+                <SideBarToggle/>
                 
                 <a href="/app" className="flex items-center">
                   <img
@@ -74,7 +78,7 @@ export function GlobalHeader({ navigation, selected, app }) {
                     src="/logo.png"
                   />
                 </a>
-                <div className="flex items-center ml-6 hidden sm:block">
+                <div className="flex items-center ml-6 ">
                   <AppLauncherBar app={app}></AppLauncherBar>
                 </div>
               </div>

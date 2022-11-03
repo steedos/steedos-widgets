@@ -6,6 +6,9 @@
  * @Description:  
  */
 import React, { useState, useEffect, Fragment } from 'react';
+import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
+import { Transition } from '@headlessui/react'
+
 import { GlobalHeader } from '@/components/GlobalHeader';
 import { Sidebar } from '@/components/Sidebar';
 import { getApp } from '@steedos-widgets/amis-lib';
@@ -14,6 +17,21 @@ import { setSteedosAuth, setRootUrl, getRootUrl } from '@steedos-widgets/amis-li
 import { useSession } from "next-auth/react"
 
 export function AppLayout({ children, app_id, tab_id, page_id}) {
+    const [sidebarOpen, setSidebarOpen] = useState(true)
+
+    const SideBarToggle = ()=> {
+      return (
+        <button
+          type="button"
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="relative mr-6"
+          aria-label="Open navigation"
+        >
+          <MenuIcon className="h-6 w-6 stroke-slate-600" />
+        </button>
+      )
+    }
+    
     const router = useRouter()
     let { app_id: appId, tab_id: tabId, page_id: pageId } = router.query;
     if(app_id){
@@ -83,14 +101,26 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
       }, [appId, session]);
     return (
       <div className='h-full flex flex-col'>
-        <GlobalHeader navigation={app?.children} selected={selected} app={app}/>
+        <GlobalHeader navigation={app?.children} selected={selected} app={app} SideBarToggle={SideBarToggle}/>
         {session && (
           <div id="main" className="flex flex-1 sm:overflow-hidden">
-            <div id="sidebar" className="hidden lg:block flex flex-shrink-0 border-r overflow-y-auto bg-slate-100/80 border-slate-300">
-              <div className="flex flex-col w-64">
-                <Sidebar navigation={app?.children} selected={selected} app={app}/>
+
+            <Transition
+              show={sidebarOpen}
+              as={Fragment}
+              enter="transition-opacity duration-75 flex"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="transition-opacity duration-150  flex"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div id="sidebar" className="ease-in-out duration-300 flex flex-shrink-0 border-r overflow-y-auto bg-slate-100/80 border-slate-300">
+                <div className="flex flex-col w-64">
+                  <Sidebar navigation={app?.children} selected={selected} app={app}/>
+                </div>
               </div>
-            </div>
+            </Transition>
             <div id="content" className="flex flex-col min-w-0 flex-1 bg-slate-50">
               {children}
             </div>
