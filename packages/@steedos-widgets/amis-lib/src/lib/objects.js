@@ -21,6 +21,11 @@ import { getListViewItemButtons } from './buttons'
 
 let UI_SCHEMA_CACHE = {};
 
+let UISchemaFunction;
+export const setUISchemaFunction = function(fun){
+    UISchemaFunction = fun;
+};
+
 if('undefined' != typeof window){
     if(!window.UI_SCHEMA_CACHE){
         window.UI_SCHEMA_CACHE = UI_SCHEMA_CACHE;
@@ -59,10 +64,15 @@ export async function getUISchema(objectName, force) {
     if (hasUISchemaCache(objectName) && !force) {
         return getUISchemaCache(objectName);
     }
-    const url = `/service/api/@${objectName.replace(/\./g, "_")}/uiSchema`;
     let uiSchema = null;
     try {
-        uiSchema = await fetchAPI(url, { method: "get" });
+        if(UISchemaFunction){
+            uiSchema = await UISchemaFunction(objectName, force);
+        }
+        else {
+            const url = `/service/api/@${objectName.replace(/\./g, "_")}/uiSchema`;
+            uiSchema = await fetchAPI(url, { method: "get" });
+        }
         if(!uiSchema){
             return ;
         }
