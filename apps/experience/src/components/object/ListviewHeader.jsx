@@ -23,9 +23,7 @@ import { SearchableFieldsFilter } from '@/components/object/SearchableFieldsFilt
 
 export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: appId,tab_id: tabId, listViewName, searchFieldsFilterProps}) {
 //   const [selectedListView, setSelectedListView] = useState();
-  const [showFieldsFilter, setShowFieldsFilter] = useState(_filter(values(schema.uiSchema.fields), (field) => {
-    return field.searchable;
-  }).length > 0);
+  const [showFieldsFilter, setShowFieldsFilter] = useState(false); //useState(_filter(values(schema.uiSchema.fields), (field) => { return field.searchable; }).length > 0);
   const [queryInfo, setQueryInfo] = useState();
   const [filter, setFilter] = useState();
   const router = useRouter();
