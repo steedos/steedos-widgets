@@ -556,7 +556,7 @@ export async function getSearchableFieldsFilterSchema(fields, cols) {
         name: "listview-filter-form",
         mode: "normal",
         wrapWithPanel: false,
-        className: `grid gap-2 grid-cols-${cols || 4} mb-2`,
+        className: `sm:grid sm:gap-2 sm:grid-cols-4 mb-2`,
         body: body,
     };
 }
