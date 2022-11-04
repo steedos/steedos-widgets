@@ -157,18 +157,15 @@ export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: 
                       value={selectedListView}
                       onChange={onChange}
                     >
-                      <div className="relative w-[1/2]">
-                        <Listbox.Button className="relative w-full cursor-default pr-10 text-left focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
-                          <span className="slds-page-header__title slds-truncate">
+                      <div className="relative ">
+                        <Listbox.Button className="flex w-full cursor-default text-left focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+                          <div className="slds-page-header__title slds-truncate">
                             {selectedListView?.label ||
                               schema?.uiSchema?.list_views.all?.label}
-                          </span>
-                          <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                            <SelectorIcon
-                              className="h-5 w-5 text-gray-400"
-                              aria-hidden="true"
-                            />
-                          </span>
+                          </div>
+                          <div className="slds-page-header__name-switcher">
+                            <svg class="slds-icon slds-icon-text-default h-4 w-4 fill-black" ariaHidden="true"><use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#down"></use></svg>
+                          </div>
                         </Listbox.Button>
                         <Transition
                           as={Fragment}

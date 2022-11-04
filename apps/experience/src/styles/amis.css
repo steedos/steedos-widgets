@@ -175,7 +175,8 @@ body {
     --Collapse-header-padding: 4px;
     --Collapse-content-padding: 12px;
     --Button-paddingX: 16px;
-    --Button--default-color: #0176d3;
+    --Button--default-color: rgb(1, 118, 211);
+    --Button--default-border: #c9c9c9;
     --Button-borderRadius: 0.25rem;
     --borderRadius: 4px;
     --Nav-item-borderRadius: 4px;
