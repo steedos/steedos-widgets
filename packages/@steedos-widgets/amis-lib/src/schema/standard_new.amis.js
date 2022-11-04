@@ -6,6 +6,7 @@
  * @Description: 
  */
 export const getSchema = (uiSchema)=>{
+    const title = "新建 " + uiSchema.label
     return {
         "type": "service",
         "body": [
@@ -21,7 +22,7 @@ export const getSchema = (uiSchema)=>{
                                 "actionType": "dialog",
                                 "dialog": {
                                     "type": "dialog",
-                                    "title": "新建",
+                                    "title": title,
                                     "bodyClassName": "",
                                     "body": [
                                         {

@@ -336,7 +336,7 @@ export async function getObjectForm(objectSchema, ctx){
         body: await getFormBody(fields, objectSchema, ctx),
         panelClassName:'m-0 sm:rounded-lg shadow-none',
         bodyClassName: 'p-0',
-        className: 'p-4 sm:p-0 steedos-amis-form',
+        className: 'steedos-amis-form',
         onEvent: {
           "submitSucc": {
             "weight": 0,
