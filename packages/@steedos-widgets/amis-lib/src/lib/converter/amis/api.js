@@ -88,7 +88,6 @@ function getConvertDataScriptStr(fields){
 function getScriptForAddUrlPrefixForImgFields(fields){
     let imgFieldsKeys = [];
     let imgFields = {};
-    let rootUrl = absoluteUrl('/api/files/');
     fields.forEach((item)=>{
         if(_.includes(['image','avatar'], item.type)){
             imgFieldsKeys.push(item.name);
@@ -106,23 +105,17 @@ function getScriptForAddUrlPrefixForImgFields(fields){
                 // image字段值添加URL前缀
                 let imgFieldsKeys = ${JSON.stringify(imgFieldsKeys)};
                 let imgFields = ${JSON.stringify(imgFields)};
-                let rootUrl = ${JSON.stringify(rootUrl)};
                 imgFieldsKeys.forEach((item)=>{
                     let imgFieldValue = data[item];
+                    let imgFieldDisplayValue = data._display && data._display[item];
                     if(imgFieldValue && imgFieldValue.length){
                         let fieldProps = imgFields[item];
-                        let table_name;
-                        if(fieldProps.type === 'image'){
-                            table_name = 'images';
-                        }else{
-                            table_name = 'avatars';
-                        }
                         if(fieldProps.multiple){
-                            if(imgFieldValue instanceof Array){
-                                data[item] = imgFieldValue.map((value)=>{ return rootUrl + table_name +  '/' + value});
+                            if(imgFieldDisplayValue instanceof Array){
+                                data[item] = imgFieldDisplayValue.map((i)=>{ return i.url });
                             }
                         }else{
-                            data[item] = rootUrl + table_name + '/' + imgFieldValue;
+                            data[item] = imgFieldDisplayValue && imgFieldDisplayValue.url;
                         }
                     }
                 })
@@ -135,7 +128,6 @@ function getScriptForAddUrlPrefixForImgFields(fields){
 function getScriptForRewriteValueForFileFields(fields){
     let fileFieldsKeys = [];
     let fileFields = {};
-    let fileRootUrl = absoluteUrl('/api/files/files/');
     fields.forEach((item)=>{
         if(item.type === 'file'){
             fileFieldsKeys.push(item.name);
@@ -152,18 +144,17 @@ function getScriptForRewriteValueForFileFields(fields){
                 // file字段值重写以便编辑时正常显示附件名、点击附件名正常下载附件
                 let fileFieldsKeys = ${JSON.stringify(fileFieldsKeys)};
                 let fileFields = ${JSON.stringify(fileFields)};
-                let fileRootUrl = ${JSON.stringify(fileRootUrl)};
                 fileFieldsKeys.forEach((item)=>{
                     let fileFieldValue = data[item];
+                    let fileFieldDisplayValue = data._display && data._display[item];
                     if(fileFieldValue && fileFieldValue.length){
-                        const fileFieldNames = _.map(_.isArray(data._display[item]) ? data._display[item] : [data._display[item]], 'name');
                         if(fileFields[item].multiple){
-                            if(fileFieldValue instanceof Array){
-                                data[item] = fileFieldValue.map((value, index)=>{ 
+                            if(fileFieldDisplayValue instanceof Array){
+                                data[item] = fileFieldDisplayValue.map((item, index)=>{ 
                                     return {
-                                        value: value,
-                                        name: fileFieldNames[index],
-                                        url: fileRootUrl + value + "?download=true",
+                                        value: fileFieldValue[index],
+                                        name: item.name,
+                                        url: item.url + "?download=true",
                                         state: "uploaded"
                                     }
                                 });
@@ -171,8 +162,8 @@ function getScriptForRewriteValueForFileFields(fields){
                         }else{
                             data[item] = {
                                 value: fileFieldValue,
-                                name: fileFieldNames[0],
-                                url: fileRootUrl + fileFieldValue + "?download=true",
+                                name: fileFieldDisplayValue.name,
+                                url: fileFieldDisplayValue.url + "?download=true",
                                 state: "uploaded"
                             };
                         }
