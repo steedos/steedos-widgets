@@ -134,13 +134,13 @@ export default function Record({formFactor}) {
     return <><Loading/></>
     
   return (
-    <div className="flex flex-col flex-1 overflow-hidden">
-      <div className="region-header bg-slate-50 ">
+    <div className="flex flex-col flex-1 overflow-hidden bg-slate-50/70">
+      <div className="region-header ">
         {schema && <Header schema={schema} formFactor={formFactor} permissions={permissions}></Header>}
       </div>
       <div className="flex flex-1 flex-col region-main overflow-hidden">
         <Tab.Group vertical={true}>
-          <Tab.List className="pl-4 flex space-x-1 border-b bg-slate-50 ">
+          <Tab.List className="pl-4 flex space-x-1 border-b">
             {getTabs().map((item)=>{
               return (<Tab
                 key={item.name}
