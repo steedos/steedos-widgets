@@ -288,3 +288,7 @@ svg.icon {
         max-height: calc(100vh - 100px);
     }
 }
+
+.antd-Modal-body {
+    overflow: scroll;
+}

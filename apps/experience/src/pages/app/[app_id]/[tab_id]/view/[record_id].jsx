@@ -16,7 +16,6 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { Tab, Menu, Transition } from "@headlessui/react";
 
 import { RecordHeader } from '@/components/object/RecordHeader';
-import { RecordHeader as MobileRecordHeader } from '@/components/mobile/object/RecordHeader';
 import { RecordRelateds } from '@/components/object/RecordRelateds';
 import { getRecordPermissions } from '@steedos-widgets/amis-lib';
 import { Loading } from '@/components/Loading';
@@ -128,7 +127,6 @@ export default function Record({formFactor}) {
     return tabs;
   }
 
-  const Header = formFactor === "SMALL" ? MobileRecordHeader : RecordHeader;
 
   if (!schema) 
     return <><Loading/></>
@@ -136,7 +134,7 @@ export default function Record({formFactor}) {
   return (
     <div className="flex flex-col flex-1 overflow-hidden bg-slate-50/70">
       <div className="region-header">
-        {schema && <Header schema={schema} formFactor={formFactor} permissions={permissions}></Header>}
+        {schema && <RecordHeader schema={schema} formFactor={formFactor} permissions={permissions}></RecordHeader>}
       </div>
       <div className="flex flex-1 flex-col region-main overflow-hidden">
         <Tab.Group vertical={true}>
