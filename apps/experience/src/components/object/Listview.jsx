@@ -32,7 +32,7 @@ export function Listview ({formFactor, app_id, tab_id, listViewName, bulkActions
     return <><Loading/></>
   return (
     <div className='flex flex-col flex-1 overflow-hidden'>
-      <div className='border-b'>
+      <div className='b-b'>
       {formFactor && schema?.uiSchema.name === tab_id && <ListviewHeader tab_id={tab_id} app_id={app_id} listViewName={listViewName} formFactor={formFactor} schema={schema} onListviewChange={(listView)=>{
           getListviewSchema(listView?.name)
         }} searchFieldsFilterProps={{cols: 2}}></ListviewHeader>}

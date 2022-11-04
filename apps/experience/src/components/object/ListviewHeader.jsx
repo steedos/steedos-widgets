@@ -366,7 +366,7 @@ export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: 
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
       >
-      <div className="w-full px-4 pb-4 sm:bg-slate-50">
+      <div className="w-full px-4 py-4 bg-white b-t">
           <SearchableFieldsFilter schema={schema} listViewId={listViewId} onClose = {()=>{
             if(showFieldsFilter){
                 const scope = SteedosUI.getRef(listViewId);
