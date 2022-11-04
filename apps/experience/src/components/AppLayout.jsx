@@ -116,7 +116,7 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <div id="sidebar" className="absolute sm:relative z-20 h-full ease-in-out duration-300 flex flex-shrink-0 border-r overflow-y-auto bg-slate-100 sm:bg-slate-100/80 border-slate-300">
+              <div id="sidebar" className="absolute sm:relative z-20 h-full ease-in-out duration-300 flex flex-shrink-0 border-r overflow-y-auto bg-slate-50 sm:bg-slate-50/80 border-slate-300">
                 <div className="flex flex-col w-64">
                   <Sidebar navigation={app?.children} selected={selected} app={app}/>
                 </div>
