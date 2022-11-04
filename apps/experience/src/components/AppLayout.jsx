@@ -108,7 +108,7 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
 
             <div 
                 id="sidebar" 
-                className={`absolute sm:relative z-20 h-full ease-in-out duration-300 flex flex-shrink-0 border-r overflow-y-auto bg-slate-50 sm:bg-slate-50/80 border-slate-300
+                className={`absolute lg:relative z-20 h-full ease-in-out duration-300 flex flex-shrink-0 border-r overflow-y-auto bg-slate-50 lg:bg-slate-50/80 border-slate-300
                   ${sidebarOpen?'block -translate-x-0 w-64':' -translate-x-80 w-0'}`}>
               <div className="flex flex-col w-full">
                 <Sidebar navigation={app?.children} selected={selected} app={app}/>
