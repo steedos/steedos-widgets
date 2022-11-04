@@ -68,12 +68,6 @@ function getNavSchema(nav, selected){
         // "padding-top": "2px !important",
         // "padding-bottom": "2px !important"
       },
-      ".is-active .fill-slate-500":{
-        fill: '#ffffff !important'
-      },
-      ".is-active .text-slate-700":{
-        color: '#ffffff !important'
-      }
     },
     "body": {
       "type": "nav",
@@ -92,7 +86,7 @@ export  function Sidebar({ navigation, selected, app }) {
       <div className="block sm:hidden px-6 pt-4">
         <AppLauncherBar app={app}></AppLauncherBar>
       </div>
-      <div className="px-0 pt-4">
+      <div className="px-2 py-4 font-medium">
       { navigation && <AmisRender schema={getNavSchema(navigation, selected)} data={{}} router={router}></AmisRender>} 
       </div>
     </nav>

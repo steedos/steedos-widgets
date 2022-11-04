@@ -178,6 +178,9 @@ body {
     --Button--default-color: #0176d3;
     --Button-borderRadius: 0.25rem;
     --borderRadius: 4px;
+    --Nav-item-borderRadius: 4px;
+    --Nav-item-onActive-bg: rgba(21,137,238,.1);
+    --Nav-item-onActive-color: #000;
 }
 
 /* .antd-Cards-fixedTop{
