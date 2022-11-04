@@ -135,7 +135,7 @@ export default function Record({formFactor}) {
     
   return (
     <div className="flex flex-col flex-1 overflow-hidden bg-slate-50/70">
-      <div className="region-header ">
+      <div className="region-header">
         {schema && <Header schema={schema} formFactor={formFactor} permissions={permissions}></Header>}
       </div>
       <div className="flex flex-1 flex-col region-main overflow-hidden">
@@ -155,7 +155,7 @@ export default function Record({formFactor}) {
               </Tab>)
             })}
           </Tab.List>
-          <Tab.Panels className="flex-1 p-4 overflow-y-auto  ">
+          <Tab.Panels className="flex-1 p-4 overflow-y-auto  bg-white ">
             {getTabs().map((item)=>{
               return (
                 <Tab.Panel
