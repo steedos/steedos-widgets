@@ -129,6 +129,7 @@ export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: 
   }
 
   return (
+  <>
     <div className="slds-page-header bg-slate-50 shadow-none rounded-none border-none">
       <div className="slds-page-header__row">
         <div className="slds-page-header__col-title">
@@ -356,14 +357,16 @@ export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: 
           </div>
         </div>
       </div>
-      <Transition
-      as={Fragment}
-      show={showFieldsFilter}
-      leave="transition ease-in duration-100"
-      leaveFrom="opacity-100"
-      leaveTo="opacity-0"
-    >
-      <div className="w-full">
+    </div>
+
+    <Transition
+        as={Fragment}
+        show={showFieldsFilter}
+        leave="transition ease-in duration-100"
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0"
+      >
+      <div className="w-full px-4 pb-4 sm:bg-slate-50">
           <SearchableFieldsFilter schema={schema} listViewId={listViewId} onClose = {()=>{
             if(showFieldsFilter){
                 const scope = SteedosUI.getRef(listViewId);
@@ -373,6 +376,6 @@ export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: 
           }} {...searchFieldsFilterProps}></SearchableFieldsFilter>
       </div>
       </Transition>
-    </div>
+  </>
   );
 }

@@ -56,7 +56,7 @@ export function SearchableFieldsFilter({ schema, listViewId, appId, onClose, col
       .handleFilterSubmit(formValues);
   };
   return (
-    <div className="mt-4 border-gray slds-grid slds-grid_vertical slds-nowrap ">
+    <div className="border-gray slds-grid slds-grid_vertical slds-nowrap ">
       <div className="slds-filters">
         <div className="slds-filters__body p-0">
           {searchableFieldsSchema && (
