@@ -290,3 +290,10 @@ svg.icon {
 .steedos-listview-operation svg{
     display: initial !important;
 }
+
+
+@media only screen and (min-width: 768px) {
+    .amis-scope .antd-Modal-content{
+        max-height: calc(100vh - 100px);
+    }
+}
