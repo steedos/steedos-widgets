@@ -27,8 +27,8 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
           className="relative mr-4"
           aria-label="Open navigation"
         >
-          {!sidebarOpen &&(<svg className="h-6 w-6" fill="none" width="1em" height="1em" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m3 18h18v-2h-18zm0-5h18v-2h-18zm0-7v2h18v-2z" fill="currentColor"></path></svg>)}
-          {sidebarOpen && (<svg className="h-6 w-6" fill="none" width="1em" height="1em" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m3 18h13v-2h-13zm0-5h10v-2h-10zm0-7v2h13v-2zm18 9.59-3.58-3.59 3.58-3.59-1.41-1.41-5 5 5 5z" fill="currentColor"></path></svg>)}
+          {!sidebarOpen &&(<svg className="h-6 w-6 text-slate-500" fill="none" width="1em" height="1em" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m3 18h18v-2h-18zm0-5h18v-2h-18zm0-7v2h18v-2z" fill="currentColor"></path></svg>)}
+          {sidebarOpen && (<svg className="h-6 w-6 text-slate-500" fill="none" width="1em" height="1em" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m3 18h13v-2h-13zm0-5h10v-2h-10zm0-7v2h13v-2zm18 9.59-3.58-3.59 3.58-3.59-1.41-1.41-5 5 5 5z" fill="currentColor"></path></svg>)}
         </button>
       )
     }
@@ -116,7 +116,7 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <div id="sidebar" className="ease-in-out duration-300 flex flex-shrink-0 border-r overflow-y-auto bg-slate-100/80 border-slate-300">
+              <div id="sidebar" className="absolute sm:relative z-20 h-full ease-in-out duration-300 flex flex-shrink-0 border-r overflow-y-auto bg-slate-100 sm:bg-slate-100/80 border-slate-300">
                 <div className="flex flex-col w-64">
                   <Sidebar navigation={app?.children} selected={selected} app={app}/>
                 </div>
