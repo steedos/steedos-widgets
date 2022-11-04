@@ -1,26 +1,3 @@
-@media (min-width: 767px){
-    .antd-Collapse .antd-Form--normal, .antd-Form--normal .antd-Tabs .antd-Tabs-content .antd-Tabs-pane .form-content{
-        display: grid!important;
-        grid-template-columns: repeat(2,minmax(0,1fr))!important;
-        grid-row-gap: 1rem!important;
-        row-gap: 1rem!important;
-        grid-column-gap: 1.5rem!important;
-        -moz-column-gap: 1.5rem!important;
-        column-gap: 1.5rem!important;
-    }
-    
-    .antd-Collapse .antd-Form--horizontal, .antd-Form--horizontal .antd-Tabs .antd-Tabs-content .antd-Tabs-pane .form-content{
-        display: grid!important;
-        grid-template-columns: repeat(2,minmax(0,1fr))!important;
-        grid-row-gap: 1rem!important;
-        row-gap: 1rem!important;
-        grid-column-gap: 1.5rem!important;
-        -moz-column-gap: 1.5rem!important;
-        column-gap: 1.5rem!important;
-    }
-    
-}
-
 fieldset.antd-Collapse > legend.antd-Collapse-header{
     border-left: 0;
 }
@@ -39,10 +16,6 @@ main {
     width: 100%;
     bottom: 0px;
     background: #ffffff
-}
-
-.amis-scope .antd-Modal-content{
-    max-height: calc(100vh - 100px);
 }
 
 .amis-scope .antd-Modal-content .antd-Modal-body{
@@ -161,6 +134,7 @@ body {
 
 :root {
     --fontFamilyBase: -apple-system,BlinkMacSystemFont,Helvetica,Arial,Microsoft Yahei,SimHei;
+    --fontSizeLg: 14px;
     --Collapse-header-padding: 0px;
     --Form-selectValue-fontSize: 14px;
     --Table-toolbar-marginY: 0;
