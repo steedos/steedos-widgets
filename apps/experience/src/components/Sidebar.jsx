@@ -89,10 +89,10 @@ export  function Sidebar({ navigation, selected, app }) {
   const router = useRouter()
   return (
     <nav aria-label="Sidebar" className="">
-      <div className="block lg:hidden px-4 py-4">
+      <div className="block sm:hidden px-6 pt-4">
         <AppLauncherBar app={app}></AppLauncherBar>
       </div>
-      <div className="px-0 py-4">
+      <div className="px-0 pt-4">
       { navigation && <AmisRender schema={getNavSchema(navigation, selected)} data={{}} router={router}></AmisRender>} 
       </div>
     </nav>
