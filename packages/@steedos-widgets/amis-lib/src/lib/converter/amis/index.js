@@ -310,7 +310,7 @@ const getGlobalData = (mode)=>{
 }
 
 export async function getObjectForm(objectSchema, ctx){
-    const { recordId, formFactor, layout, labelAlign, tabId, appId, defaults } = ctx;
+    const { recordId, formFactor, layout = formFactor === 'SMALL' ? 'normal' : "horizontal", labelAlign, tabId, appId, defaults } = ctx;
     const fields = _.values(objectSchema.fields);
     const formSchema =  defaults && defaults.formSchema || {};
     const amisSchema =  {
@@ -323,7 +323,7 @@ export async function getObjectForm(objectSchema, ctx){
       initFetch: null ,
       body: [defaultsDeep({}, formSchema, {
         type: "form",
-        mode: formFactor === 'SMALL' ? 'normal' : layout,
+        mode: layout,
         labelAlign,
         persistData: false,
         promptPageLeave: true,
@@ -363,7 +363,7 @@ export async function getObjectForm(objectSchema, ctx){
 }
 
 export async function getObjectDetail(objectSchema, recordId, ctx){
-    const { formFactor, layout, labelAlign, formInitProps } = ctx;
+    const { formFactor, layout = formFactor === 'SMALL' ? 'normal' : "horizontal", labelAlign, formInitProps } = ctx;
     const fields = _.values(objectSchema.fields);
     return {
         type: 'service',
@@ -374,7 +374,7 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
         body: [
             {
                 type: "form",
-                mode: formFactor === 'SMALL' ? 'normal' : layout,
+                mode: layout,
                 labelAlign,
                 persistData: false,
                 promptPageLeave: false,

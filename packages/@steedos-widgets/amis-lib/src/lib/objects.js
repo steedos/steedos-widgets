@@ -303,7 +303,7 @@ export async function getRecordDetailRelatedListSchema(objectName,recordId,relat
         headerToolbar: [],
         columnsTogglable: false,
         source: "${rows}",
-        className: "b-t"
+        className: "border-t"
     });
     const recordRelatedListHeader = {
         "type": "wrapper",

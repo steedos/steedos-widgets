@@ -21,7 +21,7 @@ export const getSchema = (uiSchema)=>{
                 "dialog": {
                   "type": "dialog",
                   "title": "编辑",
-                  "bodyClassName": "p-0 m-0",
+                  "bodyClassName": "",
                   "body": [
                     {
                       "type": "steedos-object-form",
