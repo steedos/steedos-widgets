@@ -17,7 +17,7 @@ import { setSteedosAuth, setRootUrl, getRootUrl } from '@steedos-widgets/amis-li
 import { useSession } from "next-auth/react"
 
 export function AppLayout({ children, app_id, tab_id, page_id}) {
-    const [sidebarOpen, setSidebarOpen] = useState(true)
+    const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 768)
 
     const SideBarToggle = ()=> {
       return (
