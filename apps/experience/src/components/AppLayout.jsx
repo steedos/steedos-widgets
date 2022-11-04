@@ -106,22 +106,14 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
         {session && (
           <div id="main" className="flex flex-1 sm:overflow-hidden">
 
-            <Transition
-              show={sidebarOpen}
-              as={Fragment}
-              enter="transition-opacity duration-75 flex"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="transition-opacity duration-150  flex"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <div id="sidebar" className="absolute sm:relative z-20 h-full ease-in-out duration-300 flex flex-shrink-0 border-r overflow-y-auto bg-slate-50 sm:bg-slate-50/80 border-slate-300">
-                <div className="flex flex-col w-64">
-                  <Sidebar navigation={app?.children} selected={selected} app={app}/>
-                </div>
+            <div 
+                id="sidebar" 
+                className={`absolute sm:relative z-20 h-full ease-in-out duration-300 flex flex-shrink-0 border-r overflow-y-auto bg-slate-50 sm:bg-slate-50/80 border-slate-300
+                  ${sidebarOpen?'block -translate-x-0 w-64':' -translate-x-80 w-0'}`}>
+              <div className="flex flex-col w-full">
+                <Sidebar navigation={app?.children} selected={selected} app={app}/>
               </div>
-            </Transition>
+            </div>
             <div id="content" className="flex flex-col min-w-0 flex-1">
               {children}
             </div>
