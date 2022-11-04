@@ -24,10 +24,11 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
         <button
           type="button"
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="relative mr-6"
+          className="relative mr-4"
           aria-label="Open navigation"
         >
-          <MenuIcon className="h-6 w-6 stroke-slate-600" />
+          {!sidebarOpen &&(<svg className="h-6 w-6" fill="none" width="1em" height="1em" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m3 18h18v-2h-18zm0-5h18v-2h-18zm0-7v2h18v-2z" fill="currentColor"></path></svg>)}
+          {sidebarOpen && (<svg className="h-6 w-6" fill="none" width="1em" height="1em" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m3 18h13v-2h-13zm0-5h10v-2h-10zm0-7v2h13v-2zm18 9.59-3.58-3.59 3.58-3.59-1.41-1.41-5 5 5 5z" fill="currentColor"></path></svg>)}
         </button>
       )
     }
@@ -121,7 +122,7 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
                 </div>
               </div>
             </Transition>
-            <div id="content" className="flex flex-col min-w-0 flex-1 bg-slate-50">
+            <div id="content" className="flex flex-col min-w-0 flex-1">
               {children}
             </div>
           </div>
