@@ -83,7 +83,7 @@ export  function Sidebar({ navigation, selected, app }) {
   const router = useRouter()
   return (
     <nav aria-label="Sidebar" className="">
-      <div className="block sm:hidden px-6 pt-4">
+      <div className="block sm:hidden px-4 py-2 bg-white border-b">
         <AppLauncherBar app={app}></AppLauncherBar>
       </div>
       <div className="px-2 py-4 font-medium">
