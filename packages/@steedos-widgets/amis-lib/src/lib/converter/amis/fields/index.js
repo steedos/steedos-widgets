@@ -12,7 +12,7 @@ export { getAmisStaticFieldType } from './type';
 export function getBaseFields(readonly){
     let calssName = 'm-1';
     if(readonly){
-        calssName = `${calssName} slds-form-element_readonly`
+        calssName = `${calssName}`
     }
     return [
         { 

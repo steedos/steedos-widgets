@@ -162,23 +162,6 @@ body {
     display: none !important;
 } */
 
-.antd-Form-item--normal{
-    display: block !important;
-    padding-top: 0.25rem !important;
-    padding-bottom:  0.25rem !important;
-    margin: 0 !important;
-}
-
-.antd-Form-item--normal .antd-Form-label{
-    margin-bottom: 0.25rem !important;
-    width: 100%;
-    max-width: 100% !important;
-    font-size: var(--Form-item-fontSize) !important;
-}
-
-.antd-Form-item .antd-Form-control{
-    font-size: var(--Form-item-fontSize) !important;
-}
 
 @media (max-width: 767px){
     .antd-Form::before{
