@@ -5,6 +5,8 @@
  * @LastEditTime: 2022-10-28 14:53:02
  * @Description: 
  */
+import * as _ from 'lodash';
+
 const AmisFormInputs = [
     'text',
     'date',

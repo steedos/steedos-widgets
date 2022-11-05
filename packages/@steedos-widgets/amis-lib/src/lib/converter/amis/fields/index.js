@@ -12,7 +12,7 @@ export { getAmisStaticFieldType } from './type';
 export function getBaseFields(readonly){
     let calssName = 'm-1';
     if(readonly){
-        calssName = `${calssName} slds-form-element_readonly`
+        calssName = `${calssName}`
     }
     return [
         { 
@@ -416,7 +416,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             convertData.className = 'm-1';
         }
         if(readonly){
-            convertData.className = `${convertData.className} slds-form-element_readonly`
+            convertData.className = `${convertData.className} sm:border-b`
         }
         convertData.labelClassName = 'text-left';
         if(readonly){

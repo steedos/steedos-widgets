@@ -23,9 +23,7 @@ import { SearchableFieldsFilter } from '@/components/object/SearchableFieldsFilt
 
 export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: appId,tab_id: tabId, listViewName, searchFieldsFilterProps}) {
 //   const [selectedListView, setSelectedListView] = useState();
-  const [showFieldsFilter, setShowFieldsFilter] = useState(_filter(values(schema.uiSchema.fields), (field) => {
-    return field.searchable;
-  }).length > 0);
+  const [showFieldsFilter, setShowFieldsFilter] = useState(false); //useState(_filter(values(schema.uiSchema.fields), (field) => { return field.searchable; }).length > 0);
   const [queryInfo, setQueryInfo] = useState();
   const [filter, setFilter] = useState();
   const router = useRouter();
@@ -131,6 +129,7 @@ export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: 
   }
 
   return (
+  <>
     <div className="slds-page-header bg-slate-50 shadow-none rounded-none border-none">
       <div className="slds-page-header__row">
         <div className="slds-page-header__col-title">
@@ -157,18 +156,15 @@ export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: 
                       value={selectedListView}
                       onChange={onChange}
                     >
-                      <div className="relative w-[1/2]">
-                        <Listbox.Button className="relative w-full cursor-default pr-10 text-left focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
-                          <span className="slds-page-header__title slds-truncate">
+                      <div className="relative ">
+                        <Listbox.Button className="flex w-full cursor-default text-left focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+                          <div className="slds-page-header__title slds-truncate">
                             {selectedListView?.label ||
                               schema?.uiSchema?.list_views.all?.label}
-                          </span>
-                          <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                            <SelectorIcon
-                              className="h-5 w-5 text-gray-400"
-                              aria-hidden="true"
-                            />
-                          </span>
+                          </div>
+                          <div className="slds-page-header__name-switcher">
+                            <svg class="slds-icon slds-icon-text-default h-4 w-4 fill-black" ariaHidden="true"><use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#down"></use></svg>
+                          </div>
                         </Listbox.Button>
                         <Transition
                           as={Fragment}
@@ -361,14 +357,16 @@ export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: 
           </div>
         </div>
       </div>
-      <Transition
-      as={Fragment}
-      show={showFieldsFilter}
-      leave="transition ease-in duration-100"
-      leaveFrom="opacity-100"
-      leaveTo="opacity-0"
-    >
-      <div className="w-full">
+    </div>
+
+    <Transition
+        as={Fragment}
+        show={showFieldsFilter}
+        leave="transition ease-in duration-100"
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0"
+      >
+      <div className="w-full px-4 py-4 bg-white b-t">
           <SearchableFieldsFilter schema={schema} listViewId={listViewId} onClose = {()=>{
             if(showFieldsFilter){
                 const scope = SteedosUI.getRef(listViewId);
@@ -378,6 +376,6 @@ export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: 
           }} {...searchFieldsFilterProps}></SearchableFieldsFilter>
       </div>
       </Transition>
-    </div>
+  </>
   );
 }

@@ -21,6 +21,11 @@ import { getListViewItemButtons } from './buttons'
 
 let UI_SCHEMA_CACHE = {};
 
+let UISchemaFunction;
+export const setUISchemaFunction = function(fun){
+    UISchemaFunction = fun;
+};
+
 if('undefined' != typeof window){
     if(!window.UI_SCHEMA_CACHE){
         window.UI_SCHEMA_CACHE = UI_SCHEMA_CACHE;
@@ -59,10 +64,15 @@ export async function getUISchema(objectName, force) {
     if (hasUISchemaCache(objectName) && !force) {
         return getUISchemaCache(objectName);
     }
-    const url = `/service/api/@${objectName.replace(/\./g, "_")}/uiSchema`;
     let uiSchema = null;
     try {
-        uiSchema = await fetchAPI(url, { method: "get" });
+        if(UISchemaFunction){
+            uiSchema = await UISchemaFunction(objectName, force);
+        }
+        else {
+            const url = `/service/api/@${objectName.replace(/\./g, "_")}/uiSchema`;
+            uiSchema = await fetchAPI(url, { method: "get" });
+        }
         if(!uiSchema){
             return ;
         }
@@ -303,7 +313,7 @@ export async function getRecordDetailRelatedListSchema(objectName,recordId,relat
         headerToolbar: [],
         columnsTogglable: false,
         source: "${rows}",
-        className: "b-t"
+        className: "border-t"
     });
     const recordRelatedListHeader = {
         "type": "wrapper",
@@ -556,7 +566,7 @@ export async function getSearchableFieldsFilterSchema(fields, cols) {
         name: "listview-filter-form",
         mode: "normal",
         wrapWithPanel: false,
-        className: `grid gap-2 grid-cols-${cols || 4} mb-2`,
+        className: `sm:grid sm:gap-2 sm:grid-cols-4 mb-2`,
         body: body,
     };
 }

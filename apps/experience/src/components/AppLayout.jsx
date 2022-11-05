@@ -6,7 +6,10 @@
  * @Description:  
  */
 import React, { useState, useEffect, Fragment } from 'react';
-import { Navbar } from '@/components/Navbar';
+import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
+import { Transition } from '@headlessui/react'
+
+import { GlobalHeader } from '@/components/GlobalHeader';
 import { Sidebar } from '@/components/Sidebar';
 import { getApp } from '@steedos-widgets/amis-lib';
 import { useRouter } from 'next/router'
@@ -14,6 +17,22 @@ import { setSteedosAuth, setRootUrl, getRootUrl } from '@steedos-widgets/amis-li
 import { useSession } from "next-auth/react"
 
 export function AppLayout({ children, app_id, tab_id, page_id}) {
+    const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 768)
+
+    const SideBarToggle = ()=> {
+      return (
+        <button
+          type="button"
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="relative mr-4"
+          aria-label="Open navigation"
+        >
+          {!sidebarOpen &&(<svg className="h-6 w-6 text-slate-500" fill="none" width="1em" height="1em" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m3 18h18v-2h-18zm0-5h18v-2h-18zm0-7v2h18v-2z" fill="currentColor"></path></svg>)}
+          {sidebarOpen && (<svg className="h-6 w-6 text-slate-500" fill="none" width="1em" height="1em" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m3 18h13v-2h-13zm0-5h10v-2h-10zm0-7v2h13v-2zm18 9.59-3.58-3.59 3.58-3.59-1.41-1.41-5 5 5 5z" fill="currentColor"></path></svg>)}
+        </button>
+      )
+    }
+    
     const router = useRouter()
     let { app_id: appId, tab_id: tabId, page_id: pageId } = router.query;
     if(app_id){
@@ -83,15 +102,19 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
       }, [appId, session]);
     return (
       <div className='h-full flex flex-col'>
-        <Navbar navigation={app?.children} selected={selected} app={app}/>
+        <GlobalHeader navigation={app?.children} selected={selected} app={app} SideBarToggle={SideBarToggle}/>
         {session && (
           <div id="main" className="flex flex-1 sm:overflow-hidden">
-            <div id="sidebar" className="hidden lg:block flex flex-shrink-0 border-r overflow-y-auto bg-slate-100/80 border-slate-300">
-              <div className="flex flex-col w-64">
+
+            <div 
+                id="sidebar" 
+                className={`absolute lg:relative z-20 h-full ease-in-out duration-300 flex flex-shrink-0 border-r overflow-y-auto bg-slate-50 lg:bg-slate-50/80 border-slate-300
+                  ${sidebarOpen?'block -translate-x-0 w-64':' -translate-x-80 w-0'}`}>
+              <div className="flex flex-col w-full">
                 <Sidebar navigation={app?.children} selected={selected} app={app}/>
               </div>
             </div>
-            <div id="content" className="flex flex-col min-w-0 flex-1 bg-slate-50">
+            <div id="content" className="flex flex-col min-w-0 flex-1">
               {children}
             </div>
           </div>

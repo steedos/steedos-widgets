@@ -109,7 +109,7 @@ export const standardButtonsTodo = {
  * @returns 
  */
 export const getButtons = (uiSchema, ctx) => {
-    const disabledButtons = uiSchema.permissions.disabled_actions;
+    const disabledButtons = uiSchema.permissions && uiSchema.permissions.disabled_actions;
     let buttons = _.sortBy(_.values(uiSchema.actions), "sort");
     if (_.has(uiSchema, "allow_customActions")) {
         buttons = _.filter(buttons, (button) => {

@@ -16,7 +16,6 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { Tab, Menu, Transition } from "@headlessui/react";
 
 import { RecordHeader } from '@/components/object/RecordHeader';
-import { RecordHeader as MobileRecordHeader } from '@/components/mobile/object/RecordHeader';
 import { RecordRelateds } from '@/components/object/RecordRelateds';
 import { getRecordPermissions } from '@steedos-widgets/amis-lib';
 import { Loading } from '@/components/Loading';
@@ -128,19 +127,18 @@ export default function Record({formFactor}) {
     return tabs;
   }
 
-  const Header = formFactor === "SMALL" ? MobileRecordHeader : RecordHeader;
 
   if (!schema) 
     return <><Loading/></>
     
   return (
-    <div className="flex flex-col flex-1 overflow-hidden">
-      <div className="region-header bg-slate-50 ">
-        {schema && <Header schema={schema} formFactor={formFactor} permissions={permissions}></Header>}
+    <div className="flex flex-col flex-1 overflow-hidden bg-slate-50/70">
+      <div className="region-header">
+        {schema && <RecordHeader schema={schema} formFactor={formFactor} permissions={permissions}></RecordHeader>}
       </div>
       <div className="flex flex-1 flex-col region-main overflow-hidden">
         <Tab.Group vertical={true}>
-          <Tab.List className="pl-4 flex space-x-1 border-b bg-slate-50 ">
+          <Tab.List className="pl-4 flex space-x-1 border-b">
             {getTabs().map((item)=>{
               return (<Tab
                 key={item.name}
@@ -155,7 +153,7 @@ export default function Record({formFactor}) {
               </Tab>)
             })}
           </Tab.List>
-          <Tab.Panels className="flex-1 p-4 overflow-y-auto  ">
+          <Tab.Panels className="flex-1 p-4 overflow-y-auto  bg-white ">
             {getTabs().map((item)=>{
               return (
                 <Tab.Panel

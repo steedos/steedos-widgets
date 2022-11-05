@@ -6,6 +6,7 @@
  * @Description: 
  */
 export const getSchema = (uiSchema)=>{
+    const title = "新建 " + uiSchema.label
     return {
         "type": "service",
         "body": [
@@ -21,8 +22,8 @@ export const getSchema = (uiSchema)=>{
                                 "actionType": "dialog",
                                 "dialog": {
                                     "type": "dialog",
-                                    "title": "新建",
-                                    "bodyClassName": "p-0 m-0",
+                                    "title": title,
+                                    "bodyClassName": "",
                                     "body": [
                                         {
                                             "type": "steedos-object-form",

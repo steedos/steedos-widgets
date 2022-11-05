@@ -10,6 +10,9 @@ import { endsWith, isEmpty, cloneDeep } from "lodash";
 const STEEDOS_AUTH = {};
 
 const getBuilderContext = ()=>{
+    if(typeof window === "undefined"){
+        return {};
+    }
     return Builder.settings.context ? Builder.settings.context : Builder.settings
 }
 

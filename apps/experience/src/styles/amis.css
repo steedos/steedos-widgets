@@ -1,32 +1,5 @@
-@media (min-width: 767px){
-    .antd-Collapse .antd-Form--normal, .antd-Form--normal .antd-Tabs .antd-Tabs-content .antd-Tabs-pane .form-content{
-        display: grid!important;
-        grid-template-columns: repeat(2,minmax(0,1fr))!important;
-        grid-row-gap: 1rem!important;
-        row-gap: 1rem!important;
-        grid-column-gap: 1.5rem!important;
-        -moz-column-gap: 1.5rem!important;
-        column-gap: 1.5rem!important;
-    }
-    
-    .antd-Collapse .antd-Form--horizontal, .antd-Form--horizontal .antd-Tabs .antd-Tabs-content .antd-Tabs-pane .form-content{
-        display: grid!important;
-        grid-template-columns: repeat(2,minmax(0,1fr))!important;
-        grid-row-gap: 1rem!important;
-        row-gap: 1rem!important;
-        grid-column-gap: 1.5rem!important;
-        -moz-column-gap: 1.5rem!important;
-        column-gap: 1.5rem!important;
-    }
-    
-}
-
 fieldset.antd-Collapse > legend.antd-Collapse-header{
     border-left: 0;
-}
-
-fieldset.antd-Collapse > legend{
-    padding: 0;
 }
 
 main {
@@ -39,15 +12,6 @@ main {
     width: 100%;
     bottom: 0px;
     background: #ffffff
-}
-
-.amis-scope .antd-Modal-content{
-    max-height: calc(100vh - 100px);
-}
-
-.amis-scope .antd-Modal-content .antd-Modal-body{
-    height: calc(100% - 108px);
-    overflow: auto;
 }
 
 .amis-scope .antd-Select-option > label {
@@ -149,13 +113,19 @@ button.antd-Button--primary {
 
 body {
     font-family: -apple-system,BlinkMacSystemFont,Helvetica,Arial,Microsoft Yahei,SimHei;
-    background: url(/images/defaultBackground.png);    
-    background-size: contain;
-    background-repeat: no-repeat;
+}
+
+@media only screen and (min-width: 600px) {
+    body {
+        background: url(/images/defaultBackground.png);    
+        background-size: contain;
+        background-repeat: no-repeat;
+    }
 }
 
 :root {
     --fontFamilyBase: -apple-system,BlinkMacSystemFont,Helvetica,Arial,Microsoft Yahei,SimHei;
+    --fontSizeLg: 14px;
     --Collapse-header-padding: 0px;
     --Form-selectValue-fontSize: 14px;
     --Table-toolbar-marginY: 0;
@@ -168,34 +138,21 @@ body {
     --Collapse-header-fontWeight: 400;
     --Collapse-header-onHover-bg: #EEEEEE;
     --Collapse-header-padding: 4px;
-    --Collapse-content-padding: 12px;
+    --Collapse-content-padding: 4px;
     --Button-paddingX: 16px;
-    --Button--default-color: #0176d3;
+    --Button--default-color: rgb(1, 118, 211);
+    --Button--default-border: #c9c9c9;
     --Button-borderRadius: 0.25rem;
     --borderRadius: 4px;
+    --Nav-item-borderRadius: 4px;
+    --Nav-item-onActive-bg: rgba(21,137,238,.1);
+    --Nav-item-onActive-color: #000;
 }
 
 /* .antd-Cards-fixedTop{
     display: none !important;
 } */
 
-.antd-Form-item--normal{
-    display: block !important;
-    padding-top: 0.25rem !important;
-    padding-bottom:  0.25rem !important;
-    margin: 0 !important;
-}
-
-.antd-Form-item--normal .antd-Form-label{
-    margin-bottom: 0.25rem !important;
-    width: 100%;
-    max-width: 100% !important;
-    font-size: var(--Form-item-fontSize) !important;
-}
-
-.antd-Form-item .antd-Form-control{
-    font-size: var(--Form-item-fontSize) !important;
-}
 
 @media (max-width: 767px){
     .antd-Form::before{
@@ -243,7 +200,7 @@ body {
 }
 
 fieldset.antd-Collapse > legend.antd-Collapse-header {
-    background: #f3f3f3;
+    background: rgb(241 245 249);
     padding: 0.5rem;
     margin: 0;
     border-radius: 0.25rem;
@@ -323,4 +280,15 @@ svg.icon {
 
 .steedos-listview-operation svg{
     display: initial !important;
+}
+
+
+@media only screen and (min-width: 768px) {
+    .amis-scope .antd-Modal-content{
+        max-height: calc(100vh - 100px);
+    }
+}
+
+.antd-Modal-body {
+    overflow: scroll;
 }
