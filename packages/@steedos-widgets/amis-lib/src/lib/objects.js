@@ -291,16 +291,16 @@ export async function getRecordDetailRelatedListSchema(objectName,recordId,relat
     const globalFilter = [filterFieldName,'=',recordId];
 
     const listViewAmisSchema= (await getListSchema(null, relatedObjectName, firstListViewName, {globalFilter})).amisSchema;
-    let listViewAmisSchemaBody = listViewAmisSchema.body;
-    const api = listViewAmisSchemaBody.api;
-    delete listViewAmisSchemaBody.api;
-    const recordRelatedListBody = Object.assign({},listViewAmisSchemaBody,{
-        bulkActions: [],
-        headerToolbar: [],
-        columnsTogglable: false,
-        source: "${rows}",
-        className: "border-t"
-    });
+    // let listViewAmisSchemaBody = listViewAmisSchema.body;
+    // const api = listViewAmisSchemaBody.api;
+    // delete listViewAmisSchemaBody.api;
+    // const recordRelatedListBody = Object.assign({},listViewAmisSchemaBody,{
+    //     bulkActions: [],
+    //     headerToolbar: [],
+    //     columnsTogglable: false,
+    //     source: "${rows}",
+    //     className: "border-t"
+    // });
     const recordRelatedListHeader = {
         "type": "wrapper",
         "body": [
@@ -357,12 +357,12 @@ export async function getRecordDetailRelatedListSchema(objectName,recordId,relat
         "size": "xs",
         "className": "bg-white p-t-sm p-b-sm p-l"
     };
-    const body = [recordRelatedListHeader,recordRelatedListBody];
+    const body = [recordRelatedListHeader,listViewAmisSchema];
     const amisSchema =  {
           type: 'service',
           className: 'r b-a',
           name: `relatedObject`,
-          api,
+        //   api,
           data: {context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
           body: body
     }
