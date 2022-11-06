@@ -10,16 +10,17 @@ import { keys, pick, difference } from 'lodash';
 
 export const AmisObjectTable = async (props) => {
   // console.log(`AmisObjectTable props`, props)
-  const { $schema, filters, amisCondition, top, sortField, sortOrder, extraColumns, defaults, data } = props;
+  const { $schema, filters, amisCondition, top, sortField, sortOrder, extraColumns, data } = props;
   const columns = props.columns || [];
+  let defaults = props.defaults;
   let objectApiName = props.objectApiName || "space_users";
 
   if(!defaults){
     const schemaKeys = difference(keys($schema), ["type", "objectApiName", "columns", "extraColumns"]);
     const listSchema = pick(props, schemaKeys);
-    Object.assign(defaults, {
+    defaults = {
       listSchema
-    });
+    };
   }
   const amisFilters = amisCondition && conditionsToFilters(amisCondition);
   const tableFilters = filters || amisFilters;
