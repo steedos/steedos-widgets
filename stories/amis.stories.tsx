@@ -263,6 +263,17 @@ export const ObjectListview = () => (
         "headerToolbar": [],
         "columnsTogglable": false
       }]
+    },{
+      "type": "panel",
+      "title": "显示列表视图头部",
+      "body": [{
+        "type": "steedos-object-listview",
+        "objectApiName": "space_users",
+        "listName": "all",
+        "headerToolbar": [],
+        "columnsTogglable": false,
+        "showHeader": true
+      }]
     }]
   }}
   assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}

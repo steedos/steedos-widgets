@@ -10,12 +10,12 @@ import { keys, pick, difference } from 'lodash';
 
 export const AmisObjectListView = async (props) => {
   // console.log(`AmisObjectListView props`, props)
-  const { $schema, listName, top, data } = props;
+  const { $schema, listName, top, showHeader, data } = props;
   let objectApiName = props.objectApiName || "space_users";
-  const schemaKeys = difference(keys($schema), ["type"]);
+  const schemaKeys = difference(keys($schema), ["type", "showHeader"]);
   const listSchema = pick(props, schemaKeys);
   const defaults = {
     listSchema
   };
-  return (await getListSchema(data.appId, objectApiName, listName, { top, defaults })).amisSchema
+  return (await getListSchema(data.appId, objectApiName, listName, { top, showHeader, defaults })).amisSchema
 }
