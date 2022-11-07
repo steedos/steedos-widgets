@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-01 13:32:49
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-02 17:22:28
+ * @LastEditTime: 2022-11-07 14:22:27
  * @Description: 
  */
 import { getListViewButtons, execute } from '@steedos-widgets/amis-lib';
@@ -11,6 +11,20 @@ import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { Button } from '@/components/object/Button'
 import { AmisRender } from "@/components/AmisRender";
 import { getSteedosAuth } from '@steedos-widgets/amis-lib';
+import { find, isString } from 'lodash';
+
+const getForeignValue = (masterObjectName, record_id, uiSchema, foreign_key)=>{
+  const foreignField = find(uiSchema.fields, (field)=>{
+    return foreign_key === field?.name
+  });
+  if(!isString(foreignField.reference_to)){
+    return {o: masterObjectName, ids: [record_id]}
+  }else if(foreignField.multiple){
+    return [record_id]
+  }else{
+    return record_id
+  }
+}
 
 export function RecordRelatedListButtons(props) {
     const { app_id, tab_id, schema, refId, foreign_key, record_id, object_name , masterObjectName, inMore, formFactor} = props;
@@ -24,7 +38,7 @@ export function RecordRelatedListButtons(props) {
               app_id: app_id,
               tab_id: tab_id,
               router: router,
-              data: {[foreign_key]: record_id}, 
+              data: {[foreign_key]: getForeignValue(masterObjectName, record_id, schema.uiSchema, foreign_key)}, 
               }))
         }
       }, [schema]);
@@ -139,8 +153,8 @@ export function RecordRelatedListButtons(props) {
                             app_id: app_id,
                             tab_id: tab_id,
                             object_name: schema.uiSchema.name,
-                            ...{[foreign_key]: record_id},
-                            record: {[foreign_key]: record_id}, 
+                            ...{[foreign_key]: getForeignValue(masterObjectName, record_id, schema.uiSchema, foreign_key)},
+                            record: {[foreign_key]: getForeignValue(masterObjectName, record_id, schema.uiSchema, foreign_key)}, 
                             listViewId: refId,
                             uiSchema: schema.uiSchema
                         }}
