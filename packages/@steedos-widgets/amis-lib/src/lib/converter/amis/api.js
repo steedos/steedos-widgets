@@ -16,6 +16,8 @@ function getReadonlyFormAdaptor(fields){
                 scriptStr = scriptStr + `var ${field.name}Options= (${options}).options;`;
             }else if(field.optionsFunction){
                 scriptStr = scriptStr + `var ${field.name}Options = eval(${field.optionsFunction.toString()})(api.data);`
+            }else if(field._optionsFunction){
+                scriptStr = scriptStr + `var ${field.name}Options = eval(${field._optionsFunction})(api.data);`
             }
             if(field.multiple){
                 scriptStr = scriptStr + `data.${field.name}__label = _.map(_.filter(${field.name}Options, function(option){return _.includes(data.${field.name}, option.value)}), 'label');`
@@ -43,9 +45,13 @@ function getReadonlyFormAdaptor(fields){
     return  `
     if(payload.data.data){
         var data = payload.data.data[0];
-        ${scriptStr}
-        ${getScriptForAddUrlPrefixForImgFields(fields)}
-        ${getScriptForRewriteValueForFileFields(fields)}
+        try{
+            ${scriptStr}
+            ${getScriptForAddUrlPrefixForImgFields(fields)}
+            ${getScriptForRewriteValueForFileFields(fields)}
+        }catch(e){
+            console.error(e)
+        }
         payload.data = data;
         window.postMessage(Object.assign({type: "record.loaded"}, {record: data}), "*")
     }
