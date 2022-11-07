@@ -6,10 +6,10 @@
  * @Description: 
  */
 
-import * as standardNew from '@/schema/standard_new.amis.js'
-import * as standardEdit from '@/schema/standard_edit.amis.js'
-import * as standardDelete from '@/schema/standard_delete.amis.js'
-import * as standardImportData from '@/schema/standard_import_data.amis.js'
+import * as standardNew from '../schema/standard_new.amis.js'
+import * as standardEdit from '../schema/standard_edit.amis.js'
+import * as standardDelete from '../schema/standard_delete.amis.js'
+import * as standardImportData from '../schema/standard_import_data.amis.js'
 
 export const StandardButtons = {
     getStandardNew: (uiSchema)=>{
