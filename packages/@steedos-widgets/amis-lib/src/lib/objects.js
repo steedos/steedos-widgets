@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-31 16:33:16
+ * @LastEditTime: 2022-11-07 15:18:27
  * @Description:
  */
 import { fetchAPI } from "./steedos.client";
@@ -509,10 +509,6 @@ export async function getObjectRelatedList(
     }else{
         const details = [].concat(uiSchema.details || []);
 
-        if (uiSchema.enable_files) {
-            details.push(`cms_files.parent`);
-        }
-    
         for (const detail of details) {
             const arr = detail.split(".");
             const relatedUiSchema = await getUISchema(arr[0]);
