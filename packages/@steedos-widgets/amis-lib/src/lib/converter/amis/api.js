@@ -55,6 +55,10 @@ function getReadonlyFormAdaptor(fields){
         payload.data = data;
         window.postMessage(Object.assign({type: "record.loaded"}, {record: data}), "*")
     }
+    if(payload.errors){
+        payload.status = 2;
+        payload.msg = payload.errors[0].message;
+    }
     return payload;
 `
 }
@@ -220,6 +224,10 @@ export function getSaveApi(object, recordId, fields, options){
             "recordId": "${record._id}"
         },
         adaptor: `
+            if(payload.errors){
+                payload.status = 2;
+                payload.msg = payload.errors[0].message;
+            }
             return payload;
         `,
         headers: {
