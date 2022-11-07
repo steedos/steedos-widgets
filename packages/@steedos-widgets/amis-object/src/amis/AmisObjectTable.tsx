@@ -25,7 +25,8 @@ export const AmisObjectTable = async (props) => {
   const amisFilters = amisCondition && conditionsToFilters(amisCondition);
   const tableFilters = filters || amisFilters;
 
-  let amisSchema = (await getTableSchema(data.appId, objectApiName, columns, { filters : tableFilters, top, sortField, sortOrder, extraColumns, defaults })).amisSchema;
-  amisSchema.data = Object.assign({}, data, defaultData);
+  const amisSchemaData = Object.assign({}, data, defaultData);
+  let amisSchema = (await getTableSchema(amisSchemaData.appId, objectApiName, columns, { filters : tableFilters, top, sortField, sortOrder, extraColumns, defaults })).amisSchema;
+  amisSchema.data = amisSchemaData;
   return amisSchema;
 }
