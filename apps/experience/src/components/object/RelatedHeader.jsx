@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-09 11:09:10
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-03 10:25:08
+ * @LastEditTime: 2022-11-07 14:26:31
  * @Description:
  */
 import React, { useState, useEffect, Fragment, useRef } from "react";
@@ -12,7 +12,7 @@ import { RecordRelatedListButtons } from '@/components/object/RecordRelatedListB
 import { isEmpty, defaultsDeep } from 'lodash'
 import { Tab, Menu, Transition } from "@headlessui/react";
 
-export const RelatedHeader = ({app_id, foreign_key, masterObjectName, object_name, record_id, schema, record, masterObjectUISchema, formFactor}) => {
+export const RelatedHeader = ({app_id, foreign_key, masterObjectName, object_name, record_id, schema, record = {}, masterObjectUISchema = {}, formFactor}) => {
     const [queryInfo, setQueryInfo] = useState();
     const [filter, setFilter] = useState();
     const listViewId = SteedosUI.getRefId({type: 'related_list', appId: app_id, name: `${object_name}-${foreign_key}`})

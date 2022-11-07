@@ -294,3 +294,9 @@ svg.icon {
 .antd-Modal-body {
     overflow: scroll;
 }
+
+
+
+.steedos-listview .antd-Table-operationCell{
+    width: 6rem !important;
+}
