@@ -7,7 +7,6 @@ export const getSchema = (uiSchema)=>{
                 "type": "button",
                 "label": "删除",
                 "confirmText": "确定要删除此项目?",
-                "className": "border-none",
                 "onEvent": {
                     "click": {
                         "actions": [

@@ -47,7 +47,6 @@ export function RecordHeader({ schema, formFactor, permissions, hiddenTitle, cla
           recordId: record_id,
           objectName: schema.uiSchema.name,
           formFactor: formFactor,
-          className: 'text-left w-full rounded-none'
         })
       );
     }
@@ -94,7 +93,7 @@ export function RecordHeader({ schema, formFactor, permissions, hiddenTitle, cla
                 permissions: schema.uiSchema.permissions,
                 uiSchema: schema.uiSchema
               }}
-              className={`text-gray-900 slds-dropdown__item group flex w-full items-center border-0 px-2 py-2`}
+              className={`antd-Button antd-Button--default`}
             ></Button>
         </>
       })
@@ -142,7 +141,7 @@ export function RecordHeader({ schema, formFactor, permissions, hiddenTitle, cla
 
         <div className="slds-page-header__col-actions">
           <div className="slds-page-header__controls">
-            <div className="slds-page-header__control steedos-record-buttons">
+            <div className="slds-page-header__control steedos-record-buttons flex">
                 <>
                   {buttons?.map((button) => {
                     return (
@@ -162,13 +161,16 @@ export function RecordHeader({ schema, formFactor, permissions, hiddenTitle, cla
                         permissions: schema.uiSchema.permissions,
                         uiSchema: schema.uiSchema,
                       }}
-                      scopeClassName="inline-block"
+                      scopeClassName=""
                     ></Button>
                     );
                   })}
                   {moreButtons?.length > 0 && (
                       <Dropdown overlay={getMenu()} trigger={['click']}>
-                        <AButton icon={<MoreOutlined />} className="rounded"></AButton>
+                        <button className="slds-button slds-button_icon slds-button_icon-border-filled" ariaHaspopup="true" title="More Actions">
+                          <svg className="slds-button__icon" ariaHidden="true"><use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#down"></use></svg>
+                          <span className="slds-assistive-text">More Actions</span>
+                        </button>
                       </Dropdown>
                   )}
                 </>

@@ -13,10 +13,11 @@ import { createObject } from '@steedos-widgets/amis-lib';
 const getMenu = (render, buttons, props)=>{
     return <Menu
     items={map(buttons, (button)=>{
-        button.className = button.className ? `${button.className} steedos-dropdown-button-item py-1 text-left w-full` : 'steedos-dropdown-button-item py-1 text-left w-full'
+        console.log(button)
+        button.className = button.className
         return {
             key: button.name,
-            className: 'py-0 min-w-40',
+            className: 'py-0 w-32',
             label: (
               <>
                 {render('body', button, props)}

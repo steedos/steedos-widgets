@@ -174,7 +174,7 @@ async function getTableOperation(ctx){
             name: button.name,
             objectName: button.objectName,
             visibleOn: getButtonVisibleOn(button),
-            className: 'border-none antd-Button--link text-left w-full'
+            className: 'antd-Button--default'
         })
     })
     if(operationButtons.length < 1){
