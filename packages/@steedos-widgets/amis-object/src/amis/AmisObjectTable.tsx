@@ -10,7 +10,7 @@ import { keys, pick, difference } from 'lodash';
 
 export const AmisObjectTable = async (props) => {
   // console.log(`AmisObjectTable props`, props)
-  const { $schema, filters, amisCondition, top, sortField, sortOrder, extraColumns, data } = props;
+  const { $schema, filters, amisCondition, top, sortField, sortOrder, extraColumns, data, defaultData } = props;
   const columns = props.columns || [];
   let defaults = props.defaults;
   let objectApiName = props.objectApiName || "space_users";
@@ -24,5 +24,8 @@ export const AmisObjectTable = async (props) => {
   }
   const amisFilters = amisCondition && conditionsToFilters(amisCondition);
   const tableFilters = filters || amisFilters;
-  return (await getTableSchema(data.appId, objectApiName, columns, { filters : tableFilters, top, sortField, sortOrder, extraColumns, defaults })).amisSchema
+
+  let amisSchema = (await getTableSchema(data.appId, objectApiName, columns, { filters : tableFilters, top, sortField, sortOrder, extraColumns, defaults })).amisSchema;
+  amisSchema.data = Object.assign({}, data, defaultData);
+  return amisSchema;
 }
