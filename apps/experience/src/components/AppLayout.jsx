@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 09:31:04
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-19 13:27:46
+ * @LastEditTime: 2022-11-07 17:48:37
  * @Description:  
  */
 import React, { useState, useEffect, Fragment } from 'react';
@@ -18,7 +18,6 @@ import { useSession } from "next-auth/react"
 
 export function AppLayout({ children, app_id, tab_id, page_id}) {
     const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 768)
-
     const SideBarToggle = ()=> {
       return (
         <button
@@ -110,7 +109,13 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
                 id="sidebar" 
                 className={`absolute lg:relative z-20 h-full ease-in-out duration-300 flex flex-shrink-0 border-r overflow-y-auto bg-slate-50 lg:bg-slate-50/80 border-slate-300
                   ${sidebarOpen?'block -translate-x-0 w-64':' -translate-x-80 w-0'}`}>
-              <div className="flex flex-col w-full">
+              <div className="flex flex-col w-full" onClick={(event)=>{
+                if(!(window.innerWidth >= 768)){
+                  if(event.target.nodeName != 'A' || event.target?.lastChild?.className === 'antd-TplField' || event.target.className === 'antd-TplField'){
+                    setSidebarOpen(false)
+                  }
+                }
+              }}>
                 <Sidebar navigation={app?.children} selected={selected} app={app}/>
               </div>
             </div>
