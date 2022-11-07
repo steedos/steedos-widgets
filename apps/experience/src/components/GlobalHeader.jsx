@@ -197,7 +197,7 @@ export function GlobalHeader({ navigation, selected, app, SideBarToggle }) {
                                 </div>
                               </div>
                             </div>
-                            <a href="/app/admin/space_users/view/\${global.user.spaceUserId}" onClick={handleClick} className="block py-2 px-4 text-sm text-gray-700" id="user_info">个人资料</a>
+                            <a href={'/app/admin/space_users/view/'+ session.steedos.spaceUserId} onClick={handleClick} className="block py-2 px-4 text-sm text-gray-700" id="user_info">个人资料</a>
                           </>
                           )}
                           {userNavigation.map((item) => (
