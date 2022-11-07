@@ -56,9 +56,9 @@ const [menu, setMenu] = useState(<></>);
     }
     return (
         <Dropdown overlay={menu} trigger={['click']} onOpenChange={onOpenChange}>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-            </svg>
+          <button className="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small">
+            <svg className="slds-button__icon slds-button__icon_hint slds-button__icon_small" ariaHidden="true"><use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#down"></use></svg>
+          </button>
         </Dropdown>
       )
 }
