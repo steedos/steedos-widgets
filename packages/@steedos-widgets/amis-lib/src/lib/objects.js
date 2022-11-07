@@ -162,8 +162,6 @@ export async function getListSchema(
     if (!listView) {
         return { uiSchema };
     }
-    let fields = uiSchema.fields;
-    const listViewFields = [];
 
     let listViewColumns = getListViewColumns(listView, ctx.formFactor);
     let sort = '';
@@ -183,42 +181,15 @@ export async function getListSchema(
         })
     }
 
-    if (listView && listViewColumns) {
-        each(listViewColumns, function (column) {
-            if (isString(column) && uiSchema.fields[column]) {
-                listViewFields.push(uiSchema.fields[column]);
-            } else if (isObject(column) && uiSchema.fields[column.field]) {
-                listViewFields.push(
-                    Object.assign({}, uiSchema.fields[column.field], {
-                        width: column.width,
-                        wrap: column.wrap,
-                    })
-                );
-            }
-        });
-    }
-
-    if (listView && listView.extra_columns) {
-        each(listView.extra_columns, function (column) {
-            if (isString(column)) {
-                listViewFields.push({ extra: true, name: column });
-            } else if (isObject(column)) {
-                listViewFields.push({ extra: true, name: column.field });
-            }
-        });
-    }
-
-    fields = listViewFields;
-    const amisSchema = await getObjectList(uiSchema, fields, {
-        tabId: objectName,
-        appId: appName,
-        objectName: objectName,
-        listViewName: listViewName,
-        ...ctx,
-        filter: listView.filters,
-        sort,
-        buttons: await getListViewItemButtons(uiSchema, ctx)
-    });
+    const amisSchema = {
+        "type": "steedos-object-table",
+        "objectApiName": objectName,
+        "columns": listViewColumns,
+        "extraColumns": listView.extra_columns,
+        "filters": listView.filters,
+        "sort": sort,
+        "defaults": ctx.defaults
+    };
 
     return {
         uiSchema,
@@ -235,12 +206,14 @@ export async function getTableSchema(
 ) {
     const uiSchema = await getUISchema(objectName);
 
-    let sort = '';
-    const sortField = ctx.sortField;
-    const sortOrder = ctx.sortOrder;
-    if(sortField){
-        let sortStr = sortField + ' ' + sortOrder || 'asc';
-        sort = sortStr;
+    let sort = ctx.sort;
+    if(!sort){
+        const sortField = ctx.sortField;
+        const sortOrder = ctx.sortOrder;
+        if(sortField){
+            let sortStr = sortField + ' ' + sortOrder || 'asc';
+            sort = sortStr;
+        }
     }
 
     let fields = [];
@@ -257,13 +230,26 @@ export async function getTableSchema(
         }
     });
 
+    const extraColumns = ctx.extraColumns;
+
+    if (extraColumns) {
+        each(extraColumns, function (column) {
+            if (isString(column)) {
+                fields.push({ extra: true, name: column });
+            } else if (isObject(column)) {
+                fields.push({ extra: true, name: column.field });
+            }
+        });
+    }
+    
     const amisSchema = await getObjectList(uiSchema, fields, {
         tabId: objectName,
         appId: appName,
         objectName: objectName,
         ...ctx,
         filter: ctx.filters,
-        sort
+        sort,
+        buttons: await getListViewItemButtons(uiSchema, ctx)
     });
 
     return {
@@ -305,16 +291,16 @@ export async function getRecordDetailRelatedListSchema(objectName,recordId,relat
     const globalFilter = [filterFieldName,'=',recordId];
 
     const listViewAmisSchema= (await getListSchema(null, relatedObjectName, firstListViewName, {globalFilter})).amisSchema;
-    let listViewAmisSchemaBody = listViewAmisSchema.body;
-    const api = listViewAmisSchemaBody.api;
-    delete listViewAmisSchemaBody.api;
-    const recordRelatedListBody = Object.assign({},listViewAmisSchemaBody,{
-        bulkActions: [],
-        headerToolbar: [],
-        columnsTogglable: false,
-        source: "${rows}",
-        className: "border-t"
-    });
+    // let listViewAmisSchemaBody = listViewAmisSchema.body;
+    // const api = listViewAmisSchemaBody.api;
+    // delete listViewAmisSchemaBody.api;
+    // const recordRelatedListBody = Object.assign({},listViewAmisSchemaBody,{
+    //     bulkActions: [],
+    //     headerToolbar: [],
+    //     columnsTogglable: false,
+    //     source: "${rows}",
+    //     className: "border-t"
+    // });
     const recordRelatedListHeader = {
         "type": "wrapper",
         "body": [
@@ -371,12 +357,12 @@ export async function getRecordDetailRelatedListSchema(objectName,recordId,relat
         "size": "xs",
         "className": "bg-white p-t-sm p-b-sm p-l"
     };
-    const body = [recordRelatedListHeader,recordRelatedListBody];
+    const body = [recordRelatedListHeader,listViewAmisSchema];
     const amisSchema =  {
           type: 'service',
           className: 'r b-a',
           name: `relatedObject`,
-          api,
+        //   api,
           data: {context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
           body: body
     }

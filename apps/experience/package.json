@@ -35,7 +35,7 @@
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
     "next": "12.2.5",
-    "next-auth": "^4.15.0",
+    "next-auth": "4.15.0",
     "next-use-posthog": "^1.16.0",
     "postcss": "^8.4.14",
     "postcss-focus-visible": "^6.0.4",
