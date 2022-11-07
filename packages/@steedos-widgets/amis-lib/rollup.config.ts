@@ -51,7 +51,7 @@ export default [
         file: pkg.unpkg,
         name: 'amis-lib',
         format: 'umd',
-        sourcemap: false,
+        sourcemap: true,
         strict: false,
         intro: 'const global = window;',
         globals,

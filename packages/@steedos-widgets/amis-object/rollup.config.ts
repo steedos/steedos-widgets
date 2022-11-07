@@ -72,7 +72,7 @@ export default [
         file: pkg.unpkg,
         name: exportName,
         format: 'umd',
-        sourcemap: false,
+        sourcemap: true,
         strict: false,
         intro: 'const global = window; const process = {env: {NODE_ENV: "production"}};',
         globals,
