@@ -163,7 +163,7 @@ export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: 
                               schema?.uiSchema?.list_views.all?.label}
                           </div>
                           <div className="slds-page-header__name-switcher">
-                            <svg class="slds-icon slds-icon-text-default h-4 w-4 fill-black" ariaHidden="true"><use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#down"></use></svg>
+                            <svg className="slds-icon slds-icon-text-default h-4 w-4 fill-black" aria-hidden="true"><use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#down"></use></svg>
                           </div>
                         </Listbox.Button>
                         <Transition
