@@ -157,7 +157,6 @@ export function RecordHeader({ schema, formFactor, permissions, hiddenTitle, cla
                         dataComponentId: `${app_id}-${tab_id}-${record_id}`,
                         record_id: record_id,
                         recordId: record_id,
-                        _id: record_id,
                         record: record,
                         permissions: schema.uiSchema.permissions,
                         uiSchema: schema.uiSchema,
