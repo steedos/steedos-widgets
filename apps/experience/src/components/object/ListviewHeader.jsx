@@ -130,7 +130,7 @@ export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: 
 
   return (
   <>
-    <div className="slds-page-header bg-slate-50 shadow-none rounded-none border-none">
+    <div className="slds-page-header bg-transparent shadow-none rounded-none border-none">
       <div className="slds-page-header__row">
         <div className="slds-page-header__col-title">
           <div className="slds-media">

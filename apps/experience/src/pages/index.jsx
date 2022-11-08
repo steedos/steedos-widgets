@@ -12,10 +12,10 @@ import { HomeLayout } from '@/components/HomeLayout'
 export default function Home() {
   return (
     <>
-      <main>
+      <div>
         <Hero />
         <CallToAction />
-      </main>
+      </div>
     </>
   )
 }

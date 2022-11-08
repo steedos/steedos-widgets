@@ -2,55 +2,53 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-26 15:51:55
+ * @LastEditTime: 2022-11-08 14:08:21
  * @Description: 
  */
-import dynamic from 'next/dynamic'
-import Document, { Script, Head, Main, NextScript } from 'next/document'
 import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { useRouter } from 'next/router'
-import { getListSchema } from '@steedos-widgets/amis-lib';
 import { unstable_getServerSession } from "next-auth/next"
-import { AmisRender } from '@/components/AmisRender'
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
-import { ListviewHeader } from '@/components/object/ListviewHeader'
+import { getPage } from "@steedos-widgets/amis-lib";
 import { Loading } from '@/components/Loading';
+import { DefaultListview } from '@/components/object/DefaultListview';
 
-export default function Page ({formFactor}) {
+import { AmisRender } from "@/components/AmisRender";
+
+export default function Page ({formFactor, listViewId}) {
   const router = useRouter();
-  const { app_id, tab_id } = router.query
-  const [schema, setSchema] = useState();
-  const listViewId = SteedosUI.getRefId({type: 'listview', appId: app_id, name: schema?.uiSchema?.name});
-  
-  const getListviewSchema = (listviewName)=>{
-    getListSchema(app_id, tab_id, listviewName, {formFactor: formFactor}).then((data) => {
-      setSchema(data)
-    })
-  } 
+
+  const { app_id, tab_id, listview_id } = router.query;
+  const [page, setPage] = useState(false);
 
   useEffect(() => {
-    if(!tab_id || !formFactor) return ;
-    getListviewSchema(undefined)
-  }, [tab_id, formFactor]);
+    getPage({type: 'list', appId: app_id, objectName: tab_id, formFactor}).then((data) => {
+      setPage(data);
+    });
+  }, [app_id, tab_id]);
 
-  if (!schema) 
-    return <><Loading/></>
+  if(page === false){
+    return <Loading></Loading>
+  }
+
   return (
-    <div className='flex flex-col flex-1 overflow-hidden'>
-      <div className='border-b'>
-      {formFactor && schema?.uiSchema.name === tab_id && <ListviewHeader formFactor={formFactor} schema={schema} onListviewChange={(listView)=>{
-          getListviewSchema(listView?.name)
-        }}></ListviewHeader>}
-      </div>
-      <div className="flex-1 min-h-0 overflow-y-auto">
-      {schema?.amisSchema && schema?.uiSchema.name === tab_id && <AmisRender data={{
-        objectName: schema.uiSchema.name,
-        listViewId: listViewId,
-        appId: app_id, 
-        formFactor: formFactor
-      }} className="steedos-listview" id={listViewId} schema={schema?.amisSchema || {}} router={router}></AmisRender>}
-      </div>
-    </div>
+    <>
+      {page && (
+        <AmisRender
+            data={{
+              objectName: tab_id,
+              listViewId: listViewId,
+              appId: app_id,
+              formFactor: formFactor,
+            }}
+            className="steedos-listview"
+            id={`${listViewId}-page`}
+            schema={JSON.parse(page.schema)}
+            router={router}
+          ></AmisRender>
+      )}
+      {!page && <DefaultListview formFactor={formFactor} router={router} listViewId={listViewId}></DefaultListview>}
+    </>
   )
 }
 

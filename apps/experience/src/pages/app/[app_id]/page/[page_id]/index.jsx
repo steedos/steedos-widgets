@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-18 14:01:14
+ * @LastEditTime: 2022-11-08 09:37:28
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -18,7 +18,7 @@ export default function Page(props) {
 
   useEffect(() => {
     if (!page_id) return;
-    getPage({pageId: page_id, appId: app_id}).then((data) => {
+    getPage({type: 'app', pageId: page_id, appId: app_id, formFactor: props.formFactor}).then((data) => {
       setPage(data);
     });
   }, [app_id, page_id]);

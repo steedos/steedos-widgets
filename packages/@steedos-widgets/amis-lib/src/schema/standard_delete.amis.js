@@ -7,7 +7,6 @@ export const getSchema = (uiSchema)=>{
                 "type": "button",
                 "label": "删除",
                 "confirmText": "确定要删除此项目?",
-                "className": "border-none",
                 "onEvent": {
                     "click": {
                         "actions": [
@@ -24,7 +23,14 @@ export const getSchema = (uiSchema)=>{
                                     "requestAdaptor": "const {recordId, objectName} = api.body; var deleteArray = []; deleteArray.push(`delete:${objectName}__delete(id: \"${recordId}\")`); api.data = {query: `mutation{${deleteArray.join(',')}}`}; return api;",
                                     "headers": {
                                         "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                                    }
+                                    },
+                                    "adaptor": `
+                                        if(payload.errors){
+                                            payload.status = 2;
+                                            payload.msg = payload.errors[0].message;
+                                        }
+                                        return payload;
+                                    `,
                                 },
                                 "messages": {
                                     "success": "删除成功",

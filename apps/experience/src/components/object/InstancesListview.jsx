@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-24 17:49:09
+ * @LastEditTime: 2022-11-08 09:18:57
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef } from 'react';
@@ -12,7 +12,7 @@ import { AmisRender } from '@/components/AmisRender'
 import { ListviewHeader } from '@/components/object/ListviewHeader'
 import { Loading } from '@/components/Loading';
 
-export function Listview ({formFactor, app_id, tab_id, listViewName, bulkActions}) {
+export function InstancesListview ({formFactor, app_id, tab_id, listViewName, bulkActions}) {
   const router = useRouter();
   const [schema, setSchema] = useState();
   const listViewId = SteedosUI.getRefId({type: 'listview', appId: app_id, name: schema?.uiSchema?.name});

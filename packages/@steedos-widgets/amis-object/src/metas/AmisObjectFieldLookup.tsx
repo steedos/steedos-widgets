@@ -9,7 +9,7 @@ const config: any = {
     // componentType: 'amisSchema', 
     group: "华炎魔方",
     componentName: "AmisObjectFieldLookup",
-    title: "Steedos Lookup",
+    title: "Lookup",
     docUrl: "",
     screenshot: "",
     npm: {

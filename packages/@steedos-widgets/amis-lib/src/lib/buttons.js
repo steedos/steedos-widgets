@@ -246,6 +246,16 @@ export const getButton = async (objectName, buttonName, ctx)=>{
             }
         }
 
+        if(button.name === 'standard_open_view'){
+            return {
+                label: button.label,
+                name: button.name,
+                on: button.on,
+                sort: button.sort,
+                ...StandardButtons.getStandardOpenView(uiSchema)
+            }
+        }
+
         return button;
 
     }

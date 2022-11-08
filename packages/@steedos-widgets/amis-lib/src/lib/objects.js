@@ -188,7 +188,7 @@ export async function getListSchema(
         "extraColumns": listView.extra_columns,
         "filters": listView.filters,
         "sort": sort,
-        "defaults": ctx.defaults
+        "ctx": ctx
     };
 
     let amisHeaderSchema;

@@ -10,7 +10,8 @@ import { getButtonVisibleOn } from "@steedos-widgets/amis-lib";
 import { useRouter } from 'next/router';
 export function Button(props) {
   const router = useRouter()
-  const { button, data, className, scopeClassName, inMore, formFactor, uiSchema, permissions } = props;
+  const { button, data, className = 'antd-Button--default', scopeClassName, inMore, formFactor, uiSchema, permissions } = props;
+  
   button.objectName = uiSchema.name
   const buttonSchema = {
     type: "service",
@@ -19,10 +20,9 @@ export function Button(props) {
       {
         type: 'steedos-object-button',
         name: button.name,
+        className: `${className} ${inMore?'in-more':''}`,
         objectName: button.objectName,
         visibleOn: getButtonVisibleOn(button),
-        className: 'antd-Button--default'
-        // className: 'border-none antd-Button--link text-left w-full'
       }
     ],
     regions: [

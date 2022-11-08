@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-24 17:50:41
+ * @LastEditTime: 2022-11-08 09:20:45
  * @Description: 
  */
 import dynamic from 'next/dynamic'
@@ -14,7 +14,7 @@ import { unstable_getServerSession } from "next-auth/next"
 import { AmisRender } from '@/components/AmisRender'
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
 import { Loading } from '@/components/Loading';
-import { Listview } from '@/components/object/Listview';
+import { InstancesListview } from '@/components/object/InstancesListview';
 
 export default function Page ({formFactor}) {
   const router = useRouter();
@@ -39,10 +39,9 @@ export default function Page ({formFactor}) {
 
   return (
     <div className='h-full flex instance-scope'>
-      <div className="flex-1 w-32 border-r"><Listview bulkActions={false} formFactor={formFactor} app_id={app_id} tab_id={tab_id}></Listview></div>
+      <div className="flex-1 w-32 border-r"><InstancesListview bulkActions={false} formFactor={formFactor} app_id={app_id} tab_id={tab_id}></InstancesListview></div>
       <div className="flex-1 w-64" ></div>
     </div>
-    
   )
 }
 

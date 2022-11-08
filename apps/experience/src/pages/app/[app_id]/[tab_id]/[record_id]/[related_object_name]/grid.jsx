@@ -30,7 +30,7 @@ export default function RelatedGrid({formFactor}){
       }, [tab_id, formFactor]);
 
     return (
-      <div className="p-4">
+      <div className="">
         {related &&
          <RelatedList
          key={`${related.object_name}-${related.foreign_key}`}
