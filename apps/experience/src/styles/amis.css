@@ -281,8 +281,10 @@ svg.icon {
     overflow: scroll;
 }
 
-
-
 .steedos-listview .antd-Table-operationCell{
+    width: 4rem !important;
+}
+
+.steedos-related-listview .antd-Table-operationCell{
     width: 4rem !important;
 }
