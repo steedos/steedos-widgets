@@ -181,7 +181,7 @@ body {
     flex-direction: column;
 }
 @media (max-width: 768px){
-    .ant-modal{
+    .ant-modal.antd-Modal--lg, .ant-modal.antd-Modal--xl, .ant-modal.antd-Modal--full{
         top: 0px !important;
         margin: 0px !important;
         max-width: 100% !important;

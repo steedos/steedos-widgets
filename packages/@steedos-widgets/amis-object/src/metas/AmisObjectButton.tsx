@@ -9,7 +9,7 @@ const config: any = {
     // componentType: 'amisSchema', 
     group: "华炎魔方",
     componentName: "AmisObjectButton",
-    title: "Steedos Button",
+    title: "按钮",
     docUrl: "",
     screenshot: "",
     npm: {

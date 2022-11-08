@@ -9,7 +9,7 @@ const config: any = {
   componentType: 'amisSchema', // amisSchema || react 
   group: "华炎魔方",
   componentName: "AmisObjectListView",
-  title: "对象列表",
+  title: "列表视图",
   docUrl: "",
   screenshot: "",
   npm: {
