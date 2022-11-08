@@ -95,7 +95,7 @@ export const RelatedHeader = ({app_id, foreign_key, masterObjectName, object_nam
       }
     }
   return (
-    <div className="slds-page-header slds-page-header_related-list bg-transparent shadow-none border-none p-0 pb-4">
+    <div className="slds-page-header slds-page-header_related-list bg-transparent shadow-none border-none p-0">
       <div className="slds-page-header__row">
         <div className="slds-page-header__col-title">
           <nav role="navigation" aria-label="Breadcrumbs">
