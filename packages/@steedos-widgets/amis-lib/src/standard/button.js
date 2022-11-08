@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:53:07
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-07 17:09:07
+ * @LastEditTime: 2022-11-08 16:38:18
  * @Description: 
  */
 
@@ -13,40 +13,40 @@ import * as standardImportData from '../schema/standard_import_data.amis.js'
 import * as standardOpenView from '../schema/standard_open_view.amis.js'
 
 export const StandardButtons = {
-    getStandardNew: (uiSchema)=>{
+    getStandardNew: async (uiSchema, ctx)=>{
         return {
             type: 'amis_button',
-            amis_schema: standardNew.getSchema(uiSchema)
+            amis_schema: await standardNew.getSchema(uiSchema, ctx)
         }
     },
-    getStandardEdit: (uiSchema)=>{
+    getStandardEdit: async (uiSchema, ctx)=>{
         return {
             type: 'amis_button',
-            amis_schema: standardEdit.getSchema(uiSchema)
+            amis_schema: await standardEdit.getSchema(uiSchema, ctx)
         }
     },
-    getStandardDelete: (uiSchema)=>{
+    getStandardDelete: async (uiSchema, ctx)=>{
         return {
             type: 'amis_button',
-            amis_schema: standardDelete.getSchema(uiSchema)
+            amis_schema: await standardDelete.getSchema(uiSchema, ctx)
         }
     },
-    getStandardDeleteMany: (uiSchema)=>{
+    getStandardDeleteMany: async (uiSchema, ctx)=>{
         return {
             type: 'amis_button',
             // amis_schema: standardDelete.getSchema(uiSchema)
         }
     },
-    getStandardImportData: (uiSchema)=>{
+    getStandardImportData: async (uiSchema, ctx)=>{
         return {
             type: 'amis_button',
-            amis_schema: standardImportData.getSchema(uiSchema)
+            amis_schema: await standardImportData.getSchema(uiSchema, ctx)
         }
     },
-    getStandardOpenView: (uiSchema)=>{
+    getStandardOpenView: async (uiSchema, ctx)=>{
         return {
             type: 'amis_button',
-            amis_schema: standardOpenView.getSchema(uiSchema)
+            amis_schema: await standardOpenView.getSchema(uiSchema, ctx)
         }
     }
 }

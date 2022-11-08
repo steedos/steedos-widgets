@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-27 17:34:25
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-02 17:20:07
+ * @LastEditTime: 2022-11-08 16:31:46
  * @Description: 
  */
 import { AmisRender } from "@/components/AmisRender";
@@ -11,7 +11,6 @@ import { useRouter } from 'next/router';
 export function Button(props) {
   const router = useRouter()
   const { button, data, className = 'antd-Button--default', scopeClassName, inMore, formFactor, uiSchema, permissions } = props;
-  
   button.objectName = uiSchema.name
   const buttonSchema = {
     type: "service",
@@ -34,6 +33,6 @@ export function Button(props) {
   schema={buttonSchema}
   router={router}
   className={scopeClassName}
-  data={Object.assign({}, data, {objectName: data.object_name, _id: data.recordId, recordPermissions: permissions || uiSchema.permissions, listViewId: data.listViewId, uiSchema: uiSchema})}
+  data={Object.assign({}, data, {appId: data.app_id, objectName: data.object_name, _id: data.recordId, recordPermissions: permissions || uiSchema.permissions, listViewId: data.listViewId, uiSchema: uiSchema})}
   ></AmisRender>
 }

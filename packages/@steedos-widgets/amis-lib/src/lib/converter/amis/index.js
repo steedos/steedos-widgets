@@ -168,6 +168,7 @@ export async function getObjectList(objectSchema, fields, options){
       body = Object.assign({}, table, {
         type: 'crud', 
         primaryField: '_id', 
+        affixHeader: false,
         id: id,
         name: id,
         keepItemSelectionOnPageChange: true, 

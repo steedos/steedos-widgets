@@ -183,7 +183,7 @@ async function getTableOperation(ctx){
     return {
         type: 'operation',
         label: '操作',
-        // fixed: 'right',
+        fixed: 'right',
         labelClassName: 'text-center',
         className: 'text-center steedos-listview-operation',
         buttons: [
