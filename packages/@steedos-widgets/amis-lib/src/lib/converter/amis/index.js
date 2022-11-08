@@ -5,6 +5,7 @@ import { getFormBody } from './form';
 import { getListSchema, getCardSchema } from './fields/list';
 import _, { map } from 'lodash';
 import { defaultsDeep } from '../../defaultsDeep';
+import { getObjectDetailButtons, getObjectDetailMoreButtons, getButtonVisibleOn } from '../../buttons'
 
 function getBulkActions(objectSchema){
     return [
@@ -131,7 +132,7 @@ function getFilter(){
 }
 
 export async function getObjectList(objectSchema, fields, options){
-    
+
     const bulkActions = getBulkActions(objectSchema)
 
     const bodyProps = {
@@ -190,7 +191,38 @@ export async function getObjectList(objectSchema, fields, options){
 
 export async function getRecordDetailHeaderAmisSchema(objectSchema, recordId){
   // console.log('amis==>', objectSchema, recordId)
-  const { name,  label , icon } = objectSchema;
+  const { name, label, icon } = objectSchema;
+  const buttons = getObjectDetailButtons(objectSchema, {});
+  const moreButtons = getObjectDetailMoreButtons(objectSchema, {
+    recordId: recordId,
+    objectName: name
+  })
+  let amisButtonsSchema = map(buttons, (button) => {
+    return {
+      type: 'steedos-object-button',
+      name: button.name,
+      objectName: button.objectName,
+      visibleOn: getButtonVisibleOn(button),
+      className: `button_${button.name} border-gray-200 inline-block`
+    }
+  })
+  let dropdownButtons = map(moreButtons, (button)=>{
+    return{
+      type: 'steedos-object-button',
+      name: button.name,
+      objectName: button.objectName,
+      visibleOn: getButtonVisibleOn(button),
+      className: `button_${button.name} border-gray-200 inline-block`
+    }
+  })
+  const dropdownButtonsSchema = {
+    type: "steedos-dropdown-button",
+    label: "",
+    buttons: dropdownButtons,
+    className: 'slds-icon'
+  }
+  amisButtonsSchema.push(dropdownButtonsSchema);
+
   let body = [
     {
       "type": "service",
@@ -251,12 +283,14 @@ export async function getRecordDetailHeaderAmisSchema(objectSchema, recordId){
                         ]
                       }
                     ],
-                    "md": 9
+                    "md": "auto"
                   },
                   {
-                    "body": []
+                    "body": amisButtonsSchema,
+                    "md": "auto"
                   }
-                ]
+                ],
+                "align": "between"
               }
             ],
             "size": "xs"
@@ -299,7 +333,7 @@ export async function getRecordDetailHeaderAmisSchema(objectSchema, recordId){
       type: 'service',
       bodyClassName: '',
       name: `page`,
-      data: {context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
+      data: {context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()},objectName:name, _id: recordId,recordPermissions: objectSchema.permissions, uiSchema: objectSchema},
       body: body
   }
 }
