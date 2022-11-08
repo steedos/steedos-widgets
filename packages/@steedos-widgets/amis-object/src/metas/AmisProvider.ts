@@ -10,7 +10,7 @@ const config: any = {
   componentType: 'amisSchema', // amisSchema || react 
   group: "华炎魔方",
   componentName: "AmisProvider",
-  title: "华炎魔方容器",
+  title: "魔方容器",
   docUrl: "",
   screenshot: "",
   npm: {
