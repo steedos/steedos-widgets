@@ -8,7 +8,7 @@
 export const getSchema = (uiSchema)=>{
     return {
         "type": "service",
-        "bodyClassName": "p-0",
+        "className": "p-0",
         "body": [
             {
                 "type": "button",

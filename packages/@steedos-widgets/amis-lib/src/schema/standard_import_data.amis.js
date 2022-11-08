@@ -253,7 +253,7 @@ export const getSchema = (uiSchema)=>{
         "regions": [
         "body"
         ],
-        "bodyClassName": "p-0",
+        "className": "p-0",
         "id": "u:bd2f9c4e986f"
     }
 }
