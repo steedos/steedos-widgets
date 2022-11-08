@@ -183,14 +183,15 @@ async function getTableOperation(ctx){
     return {
         type: 'operation',
         label: '操作',
-        fixed: 'right',
+        // fixed: 'right',
         labelClassName: 'text-center',
         className: 'text-center steedos-listview-operation',
         buttons: [
               {
                 "type": "steedos-dropdown-button",
-                "label": "",
+                "label": "xxx",
                 "buttons": operationButtons,
+                "placement": "bottomLeft",
                 // "trigger": "hover",
                 "id": "u:c2140a365019",
                 onOpenApi: {

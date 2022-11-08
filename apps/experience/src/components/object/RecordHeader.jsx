@@ -166,7 +166,7 @@ export function RecordHeader({ schema, formFactor, permissions, hiddenTitle, cla
                     );
                   })}
                   {moreButtons?.length > 0 && (
-                      <Dropdown overlay={getMenu()} trigger={['click']}>
+                      <Dropdown overlay={getMenu()} trigger={['click']} placement='bottomLeft'>
                         <button className="slds-button slds-button_icon slds-button_icon-border-filled" ariaHaspopup="true" title="More Actions">
                           <svg className="slds-button__icon" ariaHidden="true"><use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#down"></use></svg>
                           <span className="slds-assistive-text">More Actions</span>
