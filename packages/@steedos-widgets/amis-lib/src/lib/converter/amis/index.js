@@ -177,8 +177,22 @@ export async function getObjectList(objectSchema, fields, options){
     }
 
     const defaults = options.defaults;
-    const listSchema =  defaults && defaults.listSchema || {};
-    body = defaultsDeep({}, listSchema, body);
+    if (defaults) {
+      const listSchema = defaults.listSchema || {};
+      body = defaultsDeep({}, listSchema, body);
+      const headerSchema = defaults.headerSchema;
+      const footerSchema = defaults.footerSchema;
+      if (headerSchema || footerSchema) {
+        const wrappedBody = [body];
+        if (headerSchema) {
+          wrappedBody.unshift(headerSchema);
+        }
+        if (footerSchema) {
+          wrappedBody.push(footerSchema);
+        }
+        body = wrappedBody;
+      }
+    }
 
     return {
         type: 'service',

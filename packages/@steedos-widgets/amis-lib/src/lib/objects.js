@@ -181,20 +181,10 @@ export async function getListSchema(
         })
     }
 
-    const amisListSchema = {
-        "type": "steedos-object-table",
-        "objectApiName": objectName,
-        "columns": listViewColumns,
-        "extraColumns": listView.extra_columns,
-        "filters": listView.filters,
-        "sort": sort,
-        "ctx": ctx
-    };
+    const defaults = ctx.defaults || {};
 
-    let amisHeaderSchema;
-
-    if(ctx.showHeader){
-        amisHeaderSchema = {
+    if(!defaults.headerSchema && ctx.showHeader){
+        defaults.headerSchema = {
             "type": "wrapper",
             "body": [
                 {
@@ -251,17 +241,22 @@ export async function getListSchema(
             "className": "bg-white p-t-sm p-b-sm p-l"
         };
     }
-    const body = [amisListSchema];
-    if(amisHeaderSchema){
-        body.unshift(amisHeaderSchema);
+
+    if(!ctx.showHeader){
+        defaults.headerSchema = null;
     }
-    const amisSchema =  {
-        type: 'service',
-        className: 'r b-a',
-        name: `object-list-${objectName}`,
-        data: {context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
-        body: body
-    }
+
+    ctx.defaults = defaults;
+
+    const amisSchema = {
+        "type": "steedos-object-table",
+        "objectApiName": objectName,
+        "columns": listViewColumns,
+        "extraColumns": listView.extra_columns,
+        "filters": listView.filters,
+        "sort": sort,
+        "ctx": ctx
+    };
 
     return {
         uiSchema,
