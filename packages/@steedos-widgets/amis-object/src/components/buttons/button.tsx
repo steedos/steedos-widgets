@@ -62,19 +62,19 @@ export const AmisObjectButton = (props) => {
             delete schema.body[0]['visibleOn']
         }
         return (
-            <div className={className}>
+            <>
             {button && amisSchema? (
-                <div className="container">
+                <>
                 {render('body', schema, {
                     // 这里的信息会作为 props 传递给子组件，一般情况下都不需要这个,
-                    data: Object.assign(data, {recordId: data._id, objectName: objectName, listViewId: data.listViewId, app_id: appId}),
+                    data: Object.assign(data, {recordId: data._id, objectName: objectName, listViewId: data.listViewId, app_id: appId, className: className}),
                     onChange: ()=>{
                         console.log(`change....`)
                     }
                 })}
-                </div>
+                </>
             ) : null}
-            </div>)
+            </>)
     }else{
         return (
             <button
