@@ -213,7 +213,7 @@ export const getButton = async (objectName, buttonName, ctx)=>{
                 label: button.label,
                 name: button.name,
                 on: button.on,
-                ...StandardButtons.getStandardEdit(uiSchema)
+                ...await StandardButtons.getStandardEdit(uiSchema, ctx)
             };
         }
         if(objectName != 'cms_files' && button.name == 'standard_new' && button._visible.indexOf('Steedos.StandardObjects.Base.Actions.standard_new.visible.apply') > 0){
@@ -221,7 +221,7 @@ export const getButton = async (objectName, buttonName, ctx)=>{
                 label: button.label,
                 name: button.name,
                 on: button.on,
-                ...StandardButtons.getStandardNew(uiSchema)
+                ...await StandardButtons.getStandardNew(uiSchema, ctx)
             }
         }
 
@@ -232,7 +232,7 @@ export const getButton = async (objectName, buttonName, ctx)=>{
                 name: button.name,
                 on: button.on,
                 sort: button.sort,
-                ...StandardButtons.getStandardDelete(uiSchema)
+                ...await StandardButtons.getStandardDelete(uiSchema, ctx)
             }
         }
 
@@ -242,7 +242,7 @@ export const getButton = async (objectName, buttonName, ctx)=>{
                 name: button.name,
                 on: button.on,
                 sort: button.sort,
-                ...StandardButtons.getStandardImportData(uiSchema)
+                ...await StandardButtons.getStandardImportData(uiSchema, ctx)
             }
         }
 
@@ -252,7 +252,7 @@ export const getButton = async (objectName, buttonName, ctx)=>{
                 name: button.name,
                 on: button.on,
                 sort: button.sort,
-                ...StandardButtons.getStandardOpenView(uiSchema)
+                ...await StandardButtons.getStandardOpenView(uiSchema, ctx)
             }
         }
 
