@@ -286,3 +286,7 @@ svg.icon {
 .steedos-listview .antd-Table-operationCell{
     width: 6rem !important;
 }
+
+.steedos-related-listview .antd-Table-operationCell{
+    width: 6rem !important;
+}
