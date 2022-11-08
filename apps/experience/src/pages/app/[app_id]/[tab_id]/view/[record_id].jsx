@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-08 11:21:19
+ * @LastEditTime: 2022-11-08 14:09:14
  * @Description:
  */
 import React, { useState, useEffect, Fragment } from "react";
@@ -12,12 +12,13 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { DefaultRecordDetail } from '@/components/object/DefaultRecordDetail'
 import { AmisRender } from "@/components/AmisRender";
 import { getPage } from "@steedos-widgets/amis-lib";
+import { Loading } from '@/components/Loading';
 
 export default function Record({formFactor}) {
   const router = useRouter();
 
   const { app_id, tab_id, listview_id } = router.query;
-  const [page, setPage] = useState(null);
+  const [page, setPage] = useState(false);
 
   useEffect(() => {
     getPage({type: 'record', appId: app_id, objectName: tab_id, formFactor}).then((data) => {
@@ -30,6 +31,12 @@ export default function Record({formFactor}) {
     appId: app_id,
     name: tab_id,
   });
+
+
+  if(page === false){
+    return <Loading></Loading>
+  }
+
   return (
     <>
       {page && (
