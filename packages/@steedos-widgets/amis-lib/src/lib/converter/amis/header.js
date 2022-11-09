@@ -1,4 +1,9 @@
-export async function getObjectListHeader(objectSchema, type, options) {
+/**
+ * 列表视图顶部amisSchema
+ * @param {*} objectSchema 对象UISchema
+ * @returns amisSchema
+ */
+export async function getObjectListHeader(objectSchema) {
   return {
     "type": "wrapper",
     "body": [
@@ -57,6 +62,12 @@ export async function getObjectListHeader(objectSchema, type, options) {
   };
 }
 
+/**
+ * 记录详细界面顶部头amisSchema
+ * @param {*} objectSchema 对象UISchema
+ * @param {*} recordId 记录id
+ * @returns amisSchema
+ */
 export async function getObjectRecordDetailHeader(objectSchema, recordId) {
   // console.log('amis==>', objectSchema, recordId)
   const { name, label, icon } = objectSchema;
@@ -207,6 +218,11 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
 
 }
 
+/**
+ * 记录详细界面中相关表顶部头amisSchema
+ * @param {*} relatedObjectSchema 相关对象UISchema
+ * @returns amisSchema
+ */
 export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema) {
   const { icon, label } = relatedObjectSchema;
   const recordRelatedListHeader = {
@@ -268,5 +284,12 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
   return recordRelatedListHeader;
 }
 
+/**
+ * 点击记录详细界面相关表顶部标题进入的相关表页面的顶部amisSchema
+ * @param {*} objectSchema 
+ * @param {*} recordId 
+ * @param {*} relatedObjectName 
+ * @returns amisSchema
+ */
 export async function getObjectRelatedListHeader(objectSchema, recordId, relatedObjectName) {
 }
