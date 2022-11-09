@@ -61,6 +61,9 @@ export const AmisObjectButton = (props) => {
         if(schema && schema.body.length > 0){
             delete schema.body[0]['visibleOn']
         }
+        if(className){
+            schema.className = schema.className + ' ' + className;
+        }
         return (
             <>
             {button && amisSchema? (

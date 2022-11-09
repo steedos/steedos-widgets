@@ -95,7 +95,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
       name: button.name,
       objectName: button.objectName,
       visibleOn: getButtonVisibleOn(button),
-      className: `button_${button.name} border-gray-200 inline-block`
+      // className: `button_${button.name} border-gray-200 inline-block`
     }
   })
   const dropdownButtonsSchema = {
