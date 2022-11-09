@@ -313,7 +313,7 @@ export async function getRecordDetailRelatedListSchema(objectName,recordId,relat
     //     source: "${rows}",
     //     className: "border-t"
     // });
-    const recordRelatedListHeader = getObjectRecordDetailRelatedListHeader(relatedObjectUiSchema);
+    const recordRelatedListHeader = await getObjectRecordDetailRelatedListHeader(relatedObjectUiSchema);
     const body = [recordRelatedListHeader,listViewAmisSchema];
     const amisSchema =  {
           type: 'service',
@@ -323,7 +323,7 @@ export async function getRecordDetailRelatedListSchema(objectName,recordId,relat
           data: {context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
           body: body
     }
-
+    console.log('amisSchema==>',amisSchema)
     return {
         uiSchema: relatedObjectUiSchema,
         amisSchema
