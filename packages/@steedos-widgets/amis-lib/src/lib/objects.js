@@ -301,8 +301,10 @@ export async function getRecordDetailRelatedListSchema(objectName,recordId,relat
         return ["lookup","master_detail"].indexOf(field.type) > -1 && field.reference_to === objectName; 
     });
     const globalFilter = [filterFieldName,'=',recordId];
-
-    const listViewAmisSchema= (await getListSchema(null, relatedObjectName, firstListViewName, {globalFilter})).amisSchema;
+    const defaults = {
+        listSchema: { headerToolbar:[],columnsTogglable:false }
+    }
+    const listViewAmisSchema= (await getListSchema(null, relatedObjectName, firstListViewName, {globalFilter, defaults})).amisSchema;
     // let listViewAmisSchemaBody = listViewAmisSchema.body;
     // const api = listViewAmisSchemaBody.api;
     // delete listViewAmisSchemaBody.api;
