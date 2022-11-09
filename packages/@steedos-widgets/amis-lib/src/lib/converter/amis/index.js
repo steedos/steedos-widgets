@@ -5,7 +5,6 @@ import { getFormBody } from './form';
 import { getListSchema, getCardSchema } from './fields/list';
 import _, { map } from 'lodash';
 import { defaultsDeep } from '../../defaultsDeep';
-import { getObjectDetailButtons, getObjectDetailMoreButtons, getButtonVisibleOn } from '../../buttons'
 
 function getBulkActions(objectSchema){
     return [
