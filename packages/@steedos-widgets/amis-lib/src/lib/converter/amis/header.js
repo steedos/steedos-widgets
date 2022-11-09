@@ -67,7 +67,7 @@ export async function getObjectListHeader(objectSchema) {
 }
 
 /**
- * 记录详细界面顶部头amisSchema
+ * 记录详细界面顶部头amisSchema，也是标题面板组件的amisSchema
  * @param {*} objectSchema 对象UISchema
  * @param {*} recordId 记录id
  * @returns amisSchema
