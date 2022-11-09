@@ -129,7 +129,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
                             "body": {
                               "type": "tpl",
                               "className": "block",
-                              "tpl": `<img class='slds-icon slds-icon_container slds-icon-standard-${icon}' src='\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg'>`
+                              "tpl": `<img class='slds-icon slds-icon_container slds-icon-standard-${icon.indexOf('_') > -1 ? icon.replace(/_/g,'-') : icon}' src='\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg'>`
                             },
                             "md": "auto",
                             "className": "",
