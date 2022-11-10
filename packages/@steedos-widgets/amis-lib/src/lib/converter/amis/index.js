@@ -285,7 +285,7 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
                 },
                 wrapWithPanel: false, 
                 body: await getFormBody(map(fields, (field)=>{field.readonly = true;}), objectSchema, Object.assign({}, ctx, {showSystemFields: true})),
-                className: 'steedos-amis-form',
+                className: 'steedos-amis-form bg-white pt-2 px-2',
                 actions: [] // 不显示表单默认的提交按钮
             }
         ]

@@ -281,19 +281,6 @@ export async function getRecordDetailHeaderSchema(objectName,recordId){
 
 export async function getRecordDetailRelatedListSchema(objectName,recordId,relatedObjectName){
     // console.log('b==>',objectName,recordId,relatedObjectName)
-    // if(!objectName || !recordId || !relatedObjectName){
-    // if(!objectName || !relatedObjectName){
-    //     const amisAlert = {
-    //       "type": "alert",
-    //       "body": "缺少父级对象、父级记录或相关列表对象",
-    //       "level": "warning",
-    //       "showIcon": true,
-    //       "className": "mb-3"
-    //     }
-    //     return {
-    //         amisSchema: amisAlert
-    //     }
-    // }
     const relatedObjectUiSchema = await getUISchema(relatedObjectName);
     const { list_views, label , icon, fields } = relatedObjectUiSchema;
     const firstListViewName = keys(list_views)[0];
@@ -301,31 +288,17 @@ export async function getRecordDetailRelatedListSchema(objectName,recordId,relat
         return ["lookup","master_detail"].indexOf(field.type) > -1 && field.reference_to === objectName; 
     });
     const globalFilter = [filterFieldName,'=',recordId];
-    const defaults = {
-        listSchema: { headerToolbar:[],columnsTogglable:false }
-    }
-    const listViewAmisSchema= (await getListSchema(null, relatedObjectName, firstListViewName, {globalFilter, defaults})).amisSchema;
-    // let listViewAmisSchemaBody = listViewAmisSchema.body;
-    // const api = listViewAmisSchemaBody.api;
-    // delete listViewAmisSchemaBody.api;
-    // const recordRelatedListBody = Object.assign({},listViewAmisSchemaBody,{
-    //     bulkActions: [],
-    //     headerToolbar: [],
-    //     columnsTogglable: false,
-    //     source: "${rows}",
-    //     className: "border-t"
-    // });
     const recordRelatedListHeader = await getObjectRecordDetailRelatedListHeader(relatedObjectUiSchema);
-    const body = [recordRelatedListHeader,listViewAmisSchema];
-    const amisSchema =  {
-          type: 'service',
-          className: 'r b-a',
-          name: `relatedObject`,
-        //   api,
-          data: {context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
-          body: body
+    const options = {
+        globalFilter,
+        defaults: {
+            listSchema: { headerToolbar:[],columnsTogglable:false },
+            headerSchema: recordRelatedListHeader
+        },
+        showHeader: true
     }
-    console.log('amisSchema==>',amisSchema)
+    const amisSchema= (await getListSchema(null, relatedObjectName, firstListViewName, options)).amisSchema;
+
     return {
         uiSchema: relatedObjectUiSchema,
         amisSchema
