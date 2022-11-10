@@ -184,7 +184,7 @@ export async function getListSchema(
     const defaults = ctx.defaults || {};
 
     if(!defaults.headerSchema && ctx.showHeader){
-        defaults.headerSchema = await getObjectListHeader(uiSchema);
+        defaults.headerSchema = await getObjectListHeader(uiSchema, listViewName);
     }
 
     if(!ctx.showHeader){

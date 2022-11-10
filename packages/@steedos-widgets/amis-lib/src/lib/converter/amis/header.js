@@ -1,15 +1,36 @@
-import { getAuthToken , getTenantId, getRootUrl } from '../../steedos.client.js';
+import { getAuthToken, getTenantId, getRootUrl } from '../../steedos.client.js';
 import { getObjectDetailButtons, getObjectDetailMoreButtons, getButtonVisibleOn } from '../../buttons'
-import { map } from 'lodash';
+import { map, each } from 'lodash';
 
 /**
  * 列表视图顶部amisSchema
  * @param {*} objectSchema 对象UISchema
  * @returns amisSchema
  */
-export async function getObjectListHeader(objectSchema) {
+export async function getObjectListHeader(objectSchema, listViewName) {
   const { icon, label } = objectSchema;
-  return {
+  const listViewButtonOptions = [];
+  let currentListView;
+  each(
+    objectSchema.list_views,
+      (listView, name) => {
+        listViewButtonOptions.push({
+          type: "button",
+          label: listView.label,
+          actionType: "link",
+          // icon: "fa fa-plus",
+          link: `/app/projects/${objectSchema.name}/grid/${name}?listName=${name}`
+        });
+        if(name === listViewName){
+          currentListView = listView;
+        }
+      }
+  );
+  if(!currentListView){
+    return {};
+  }
+
+  let headerSchema = {
     "type": "wrapper",
     "body": [
       {
@@ -43,6 +64,15 @@ export async function getObjectListHeader(objectSchema) {
                           "fontSize": 13,
                           "fontWeight": "bold"
                         }
+                      },
+                      {
+                        "type": "dropdown-button",
+                        "className": "leading-none",
+                        "label": currentListView.label,
+                        "rightIcon": "fa fa-caret-down",
+                        "hideCaret": true,
+                        "btnClassName": "bg-transparent border-none text-lg font-bold p-0",
+                        "buttons": listViewButtonOptions
                       }
                     ],
                     "md": "",
@@ -65,6 +95,7 @@ export async function getObjectListHeader(objectSchema) {
     "size": "xs",
     "className": "bg-white p-t-sm p-b-sm p-l"
   };
+  return headerSchema;
 }
 
 /**
@@ -130,7 +161,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
                             "body": {
                               "type": "tpl",
                               "className": "block",
-                              "tpl": `<img class='slds-icon slds-icon_container slds-icon-standard-${icon.indexOf('_') > -1 ? icon.replace(/_/g,'-') : icon}' src='\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg'>`
+                              "tpl": `<img class='slds-icon slds-icon_container slds-icon-standard-${icon.indexOf('_') > -1 ? icon.replace(/_/g, '-') : icon}' src='\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg'>`
                             },
                             "md": "auto",
                             "className": "",
@@ -245,7 +276,7 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
                     "body": {
                       "type": "tpl",
                       "className": "block",
-                      "tpl": `<p><img class=\"slds-icon_small slds-icon_container slds-icon-standard-${icon.indexOf('_') > -1 ? icon.replace(/_/g,'-') : icon}\" src=\"\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg\" /></p>`
+                      "tpl": `<p><img class=\"slds-icon_small slds-icon_container slds-icon-standard-${icon.indexOf('_') > -1 ? icon.replace(/_/g, '-') : icon}\" src=\"\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg\" /></p>`
                     },
                     "md": "auto",
                     "className": "",
