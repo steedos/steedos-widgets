@@ -119,7 +119,7 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
                 <Sidebar navigation={app?.children} selected={selected} app={app}/>
               </div>
             </div>
-            <div id="content" className="flex flex-col min-w-0 flex-1">
+            <div id="content" className="flex flex-col min-w-0 flex-1 overflow-y-auto">
               {children}
             </div>
           </div>
