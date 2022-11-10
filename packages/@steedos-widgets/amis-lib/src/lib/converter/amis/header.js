@@ -19,7 +19,7 @@ export async function getObjectListHeader(objectSchema, listViewName) {
           label: listView.label,
           actionType: "link",
           // icon: "fa fa-plus",
-          link: `/app/projects/${objectSchema.name}/grid/${name}`
+          link: `/app/\${appId}/${objectSchema.name}/grid/${name}`
         });
         if(name === listViewName){
           currentListView = listView;
