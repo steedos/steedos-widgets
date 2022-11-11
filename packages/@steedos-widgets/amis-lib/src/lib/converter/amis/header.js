@@ -1,5 +1,5 @@
 import { getAuthToken, getTenantId, getRootUrl } from '../../steedos.client.js';
-import { getObjectDetailButtons, getObjectDetailMoreButtons, getButtonVisibleOn } from '../../buttons'
+import { getObjectDetailButtons, getObjectDetailMoreButtons,getObjectRelatedListButtons, getButtonVisibleOn } from '../../buttons'
 import { map, each } from 'lodash';
 
 /**
@@ -262,6 +262,16 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
  */
 export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema) {
   const { icon, label } = relatedObjectSchema;
+  const buttons = await getObjectRelatedListButtons(relatedObjectSchema, {});
+  let amisButtonsSchema = map(buttons, (button) => {
+    return {
+      type: 'steedos-object-button',
+      name: button.name,
+      objectName: button.objectName,
+      visibleOn: getButtonVisibleOn(button),
+      className: `button_${button.name} border-gray-200 inline-block`
+    }
+  })
   const recordRelatedListHeader = {
     "type": "wrapper",
     "body": [
@@ -277,7 +287,7 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
                     "body": {
                       "type": "tpl",
                       "className": "block",
-                      "tpl": `<p><img class=\"slds-icon_small slds-icon_container slds-icon-standard-${icon.indexOf('_') > -1 ? icon.replace(/_/g, '-') : icon}\" src=\"\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg\" /></p>`
+                      "tpl": `<img class=\"slds-icon_small slds-icon_container slds-icon-standard-${icon.indexOf('_') > -1 ? icon.replace(/_/g, '-') : icon}\" src=\"\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg\" />`
                     },
                     "md": "auto",
                     "className": "",
@@ -305,18 +315,18 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
                 ]
               }
             ],
-            "md": 9
+            "md": "auto"
           },
           {
-            "body": [
-              // 头部内容区
-            ]
+            "body": amisButtonsSchema,
+            "md": "auto"
           }
-        ]
+        ],
+        "align": "between"
       }
     ],
     "size": "xs",
-    "className": "bg-white p-t-sm p-b-sm p-l"
+    "className": "bg-white p-t-sm p-b-sm px-4 border-b"
   };
   return recordRelatedListHeader;
 }
