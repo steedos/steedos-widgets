@@ -196,7 +196,7 @@ export async function getObjectList(objectSchema, fields, options){
 
     return {
       type: 'service',
-      className: 'border border-gray-200',
+      className: '',
       name: `page`,
       data: {
         context: { rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken() },
