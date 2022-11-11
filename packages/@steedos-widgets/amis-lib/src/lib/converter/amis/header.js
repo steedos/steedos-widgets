@@ -1,5 +1,5 @@
 import { getAuthToken, getTenantId, getRootUrl } from '../../steedos.client.js';
-import { getObjectDetailButtons, getObjectDetailMoreButtons,getObjectRelatedListButtons, getButtonVisibleOn } from '../../buttons'
+import { getListViewButtons, getObjectDetailButtons, getObjectDetailMoreButtons,getObjectRelatedListButtons, getButtonVisibleOn } from '../../buttons'
 import { map, each } from 'lodash';
 
 /**
@@ -30,6 +30,18 @@ export async function getObjectListHeader(objectSchema, listViewName) {
   // if(!currentListView){
   //   return {};
   // }
+
+
+  const buttons = getListViewButtons(objectSchema, {});
+  let amisButtonsSchema = map(buttons, (button) => {
+    return {
+      type: 'steedos-object-button',
+      name: button.name,
+      objectName: button.objectName,
+      visibleOn: getButtonVisibleOn(button),
+      className: `button_${button.name} border-gray-200 inline-block`
+    }
+  });
 
   let headerSchema = {
     "type": "wrapper",
@@ -83,18 +95,18 @@ export async function getObjectListHeader(objectSchema, listViewName) {
                 ]
               }
             ],
-            "md": 9
+            "md": "auto"
           },
           {
-            "body": [
-              // 头部内容区
-            ]
+            "body": amisButtonsSchema,
+            "md": "auto"
           }
-        ]
+        ],
+        "align": "between"
       }
     ],
     "size": "xs",
-    "className": "bg-white p-t-sm p-b-sm p-l"
+    "className": "bg-white p-t-sm p-b-sm p-l pr-4"
   };
   return headerSchema;
 }
