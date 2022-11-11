@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-29 18:16:22
+ * @LastEditTime: 2022-11-11 14:10:02
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -20,7 +20,7 @@ import { RecordHeader as MobileRecordHeader } from '@/components/mobile/object/R
 import { RecordRelateds } from '@/components/object/RecordRelateds';
 import { getRecordPermissions } from '@steedos-widgets/amis-lib';
 import { Loading } from '@/components/Loading';
-import { Listview } from '@/components/object/Listview';
+import { InstancesListview } from '@/components/object/InstancesListview';
 import { getFlowFormSchema } from '@/lib/workflow/flow';
 import { getInstanceInfo } from '@/lib/workflow/instance';
 import { AppLayout } from '@/components/AppLayout';
@@ -66,7 +66,7 @@ export default function Record({formFactor}) {
   const Header = formFactor === "SMALL" ? MobileRecordHeader : RecordHeader;
   return (
     <div className="h-full flex instance-scope">
-      <div className="flex-1 w-32 border-r"><Listview bulkActions={false} formFactor={formFactor} app_id={app_id} tab_id={tab_id} listViewName={box}></Listview></div>
+      <div className="flex-1 w-32 border-r"><InstancesListview bulkActions={false} formFactor={formFactor} app_id={app_id} tab_id={tab_id} listViewName={box}></InstancesListview></div>
       <div className="flex-1 w-64" >
         {
           record != undefined && <div className="region-header bg-slate-50 static">

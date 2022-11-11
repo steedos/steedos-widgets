@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-24 17:50:31
+ * @LastEditTime: 2022-11-11 14:10:21
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -13,7 +13,7 @@ import { getViewSchema, getFormSchema, getObjectRelatedList } from "@steedos-wid
 import { AmisRender } from "@/components/AmisRender";
 import { unstable_getServerSession } from "next-auth/next";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { Listview } from '@/components/object/Listview';
+import { InstancesListview } from '@/components/object/InstancesListview';
 import { AppLayout } from '@/components/AppLayout';
 
 export default function Record({formFactor}) {
@@ -22,7 +22,7 @@ export default function Record({formFactor}) {
 
   return (
     <div className="h-full flex instance-scope">
-      <div className="flex-1 w-32 border-r"><Listview bulkActions={false} formFactor={formFactor} app_id={'approve_workflow'} tab_id={tab_id} listViewName={box}></Listview></div>
+      <div className="flex-1 w-32 border-r"><InstancesListview bulkActions={false} formFactor={formFactor} app_id={'approve_workflow'} tab_id={tab_id} listViewName={box}></InstancesListview></div>
       <div className="flex-1 w-64" >
         
       </div>
