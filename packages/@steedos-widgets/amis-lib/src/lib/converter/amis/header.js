@@ -10,7 +10,7 @@ import { map, each } from 'lodash';
 export async function getObjectListHeader(objectSchema, listViewName) {
   const { icon, label } = objectSchema;
   const listViewButtonOptions = [];
-  let currentListView;
+  // let currentListView;
   each(
     objectSchema.list_views,
       (listView, name) => {
@@ -21,14 +21,15 @@ export async function getObjectListHeader(objectSchema, listViewName) {
           // icon: "fa fa-plus",
           link: `/app/\${appId}/${objectSchema.name}/grid/${name}`
         });
-        if(name === listViewName){
-          currentListView = listView;
-        }
+        // if(name === listViewName){
+        //   currentListView = listView;
+        // }
       }
   );
-  if(!currentListView){
-    return {};
-  }
+  
+  // if(!currentListView){
+  //   return {};
+  // }
 
   let headerSchema = {
     "type": "wrapper",
@@ -68,7 +69,7 @@ export async function getObjectListHeader(objectSchema, listViewName) {
                       {
                         "type": "dropdown-button",
                         "className": "leading-none",
-                        "label": currentListView.label,
+                        "label": "\${uiSchema.list_views[listName].label}",
                         "rightIcon": "fa fa-caret-down",
                         "hideCaret": true,
                         "btnClassName": "bg-transparent border-none text-lg font-bold p-0",

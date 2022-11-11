@@ -12,10 +12,11 @@ export const AmisObjectListView = async (props) => {
   // console.log(`AmisObjectListView props`, props)
   const { $schema, top, showHeader, ctx, data, defaultData } = props;
   let listName = props.listName || location.pathname.match(/grid\/(\w+)/)[1];
+
   let defaults = {};
   let objectApiName = props.objectApiName || "space_users";
 
-  if(!(ctx && ctx.defaults)){
+  if (!(ctx && ctx.defaults)) {
     const schemaKeys = difference(keys($schema), ["type", "showHeader"]);
     const listSchema = pick(props, schemaKeys);
     defaults = {
@@ -25,6 +26,6 @@ export const AmisObjectListView = async (props) => {
 
   const amisSchemaData = Object.assign({}, data, defaultData);
   let amisSchema: any = (await getListSchema(amisSchemaData.appId, objectApiName, listName, { top, showHeader, defaults, ...ctx })).amisSchema;
-  amisSchema.data = amisSchemaData;
+  amisSchema.data = Object.assign({}, amisSchema.data, amisSchemaData, { listName });
   return amisSchema;
 }
