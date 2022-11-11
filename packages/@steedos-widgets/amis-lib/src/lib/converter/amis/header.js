@@ -103,6 +103,30 @@ export async function getObjectListHeader(objectSchema, listViewName) {
           }
         ],
         "align": "between"
+      },
+      {
+        "type": "grid",
+        "align": "between",
+        "columns": [
+          {
+            "body": [
+            ],
+            "md": "auto"
+          },
+          {
+            "body": [
+              {
+                "type": "button",
+                "label": "",
+                "icon": "fa fa-refresh",
+                "actionType": "reload",
+                "target": `listview_${objectSchema.name}`,
+                "className": "bg-transparent p-0"
+              }
+            ],
+            "md": "auto"
+          }
+        ]
       }
     ],
     "size": "xs",
