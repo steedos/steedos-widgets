@@ -325,7 +325,7 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
       }
     ],
     "size": "xs",
-    "className": "bg-white p-t-sm p-b-sm px-4"
+    "className": "bg-white p-t-sm p-b-sm px-4 border-b"
   };
   return recordRelatedListHeader;
 }
