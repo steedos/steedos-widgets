@@ -154,9 +154,15 @@ export async function getListSchema(
     ctx = {}
 ) {
     const uiSchema = await getUISchema(objectName);
-    const listView = find(
+    const listView =  find(
         uiSchema.list_views,
-        (listView, name) => name === listViewName
+        (listView, name) => {
+            // 传入listViewName空值则取第一个
+            if(!listViewName){
+                listViewName = name;
+            }
+            return name === listViewName;
+        }
     );
 
     if (!listView) {

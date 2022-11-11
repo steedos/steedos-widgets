@@ -11,7 +11,9 @@ import { keys, pick, difference } from 'lodash';
 export const AmisObjectListView = async (props) => {
   // console.log(`AmisObjectListView props`, props)
   const { $schema, top, showHeader, ctx, data, defaultData } = props;
-  let listName = props.listName || location.pathname.match(/grid\/(\w+)/)[1];
+  const urlListNameMatchs = location.pathname.match(/grid\/(\w+)/);
+  const urlListName = urlListNameMatchs && urlListNameMatchs[1]
+  let listName = props.listName || urlListName;
 
   let defaults = {};
   let objectApiName = props.objectApiName || "space_users";

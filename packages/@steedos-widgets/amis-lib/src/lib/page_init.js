@@ -36,7 +36,7 @@ export async function getListPageInitSchema(objectApiName, formFactor, userSessi
         // name: `page_${readonly ? 'readonly':'edit'}_${recordId}`
         body: [{
             "type": "steedos-object-listview",
-            "objectApiName": "space_users",
+            "objectApiName": objectApiName,
             // "listName": "${listName}",
             // "headerToolbar": [],
             "columnsTogglable": false,
