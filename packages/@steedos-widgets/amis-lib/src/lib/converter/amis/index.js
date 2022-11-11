@@ -198,7 +198,7 @@ export async function getObjectList(objectSchema, fields, options){
         type: 'service',
         bodyClassName: '',
         name: `page`,
-        data: {context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
+        data: {context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}, objectName: objectSchema.name,_id:null, recordPermissions: objectSchema.permissions, uiSchema: objectSchema },
         body: body
     }
 }

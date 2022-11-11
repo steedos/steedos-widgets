@@ -188,6 +188,18 @@ export const getListViewItemButtons = async (uiSchema, ctx)=>{
     return listButtons;
 }
 
+export const getObjectRelatedListButtons = async (uiSchema, ctx)=>{
+    const buttons = getButtons(uiSchema, ctx);
+    const relatedListButtons = _.filter(buttons, (button) => {
+        if(button.objectName === 'cms_files'){
+            // TODO:附件对象本身没有上传按钮，需要自定义
+        }else{
+            return button.name == "standard_new";
+        }
+    });
+    return relatedListButtons;
+}
+
 /**
  * 由此函数负责内置按钮的转换
  * @param {*} objectName 
