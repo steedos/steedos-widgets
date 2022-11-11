@@ -196,7 +196,7 @@ export async function getObjectList(objectSchema, fields, options){
 
     return {
       type: 'service',
-      className: 'border border-gray-200 my-4',
+      className: 'border border-gray-200',
       name: `page`,
       data: {
         context: { rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken() },
@@ -252,7 +252,8 @@ export async function getObjectForm(objectSchema, ctx){
                 "expression": "!!listViewId"
               },
               {
-                "componentId": `detail_${recordId}`,
+                // "componentId": `detail_${recordId}`,
+                // "componentId": '',
                 "actionType": "reload",
                 "expression": "!!!listViewId"
               },
