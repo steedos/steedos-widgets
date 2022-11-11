@@ -252,8 +252,7 @@ export async function getObjectForm(objectSchema, ctx){
                 "expression": "!!listViewId"
               },
               {
-                // "componentId": `detail_${recordId}`,
-                // "componentId": '',
+                "componentId": `detail_${recordId}`,
                 "actionType": "reload",
                 "expression": "!!!listViewId"
               },
