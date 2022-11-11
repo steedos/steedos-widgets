@@ -58,7 +58,7 @@ export async function getObjectListHeader(objectSchema, listViewName) {
                     "body": {
                       "type": "tpl",
                       "className": "block",
-                      "tpl": `<p><img class=\"slds-icon_small slds-icon_container slds-icon-standard-${icon.indexOf('_') > -1 ? icon.replace(/_/g,'-') : icon}\" src=\"\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg\" /></p>`
+                      "tpl": `<p><img class=\"slds-icon slds-icon_container slds-icon-standard-${icon.indexOf('_') > -1 ? icon.replace(/_/g,'-') : icon}\" src=\"\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg\" /></p>`
                     },
                     "md": "auto",
                     "className": "",
@@ -68,7 +68,7 @@ export async function getObjectListHeader(objectSchema, listViewName) {
                     "body": [
                       {
                         "type": "tpl",
-                        "tpl": `${label}(\${count ? count : 0})`,
+                        "tpl": `${label}`,
                         "inline": false,
                         "wrapperComponent": "",
                         "className": "leading-none",
