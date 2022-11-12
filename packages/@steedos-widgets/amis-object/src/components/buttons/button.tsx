@@ -2,11 +2,11 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-21 10:27:43
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-02 17:23:02
+ * @LastEditTime: 2022-11-12 11:15:42
  * @Description: 
  */
 import React, { useEffect, useState } from 'react'
-import { isString } from 'lodash';
+import { isString, defaultsDeep } from 'lodash';
 import { getButton, executeButton, getUISchema } from '@steedos-widgets/amis-lib';
 
 export const AmisObjectButton = (props) => {
@@ -61,13 +61,18 @@ export const AmisObjectButton = (props) => {
         if(schema && schema.body.length > 0){
             delete schema.body[0]['visibleOn']
         }
+
+        const renderData = Object.assign(data, {recordId: data._id, objectName: objectName, listViewId: data.listViewId, app_id: appId, className: className})
+        if(schema){
+            schema.data = defaultsDeep({}, schema.data, renderData);
+        }
         return (
             <>
             {button && amisSchema? (
                 <>
                 {render('body', schema, {
                     // 这里的信息会作为 props 传递给子组件，一般情况下都不需要这个,
-                    data: Object.assign(data, {recordId: data._id, objectName: objectName, listViewId: data.listViewId, app_id: appId, className: className}),
+                    data: renderData,
                     onChange: ()=>{
                         console.log(`change....`)
                     }
