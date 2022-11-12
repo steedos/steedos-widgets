@@ -16,7 +16,7 @@ const getMenu = (render, buttons, props)=>{
         button.className = button.className
         return {
             key: button.name,
-            className: 'py-0 w-32',
+            className: 'p-0 min-w-32',
             label: (
               <>
                 {render('body', button, props)}
