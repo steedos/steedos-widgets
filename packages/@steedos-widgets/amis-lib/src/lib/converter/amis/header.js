@@ -39,7 +39,7 @@ export async function getObjectListHeader(objectSchema, listViewName) {
       name: button.name,
       objectName: button.objectName,
       visibleOn: getButtonVisibleOn(button),
-      className: `button_${button.name} border-gray-200 inline-block`
+      className: `button_${button.name} border-gray-200 inline-block ml-1`
     }
   });
 
@@ -174,7 +174,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
       name: button.name,
       objectName: button.objectName,
       visibleOn: getButtonVisibleOn(button),
-      className: `button_${button.name} border-gray-200 inline-block`
+      className: `button_${button.name} border-gray-200 inline-block ml-1`
     }
   })
   let dropdownButtons = map(moreButtons, (button) => {
@@ -183,7 +183,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
       name: button.name,
       objectName: button.objectName,
       visibleOn: getButtonVisibleOn(button),
-      // className: `button_${button.name} border-gray-200 inline-block`
+      // className: `button_${button.name} border-gray-200 inline-block ml-1`
     }
   })
   const dropdownButtonsSchema = {
@@ -324,7 +324,7 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
       name: button.name,
       objectName: button.objectName,
       visibleOn: getButtonVisibleOn(button),
-      className: `button_${button.name} border-gray-200 inline-block`
+      className: `button_${button.name} border-gray-200 inline-block ml-1`
     }
   })
   const recordRelatedListHeader = {
