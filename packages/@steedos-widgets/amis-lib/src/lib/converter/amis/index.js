@@ -197,6 +197,7 @@ export async function getObjectList(objectSchema, fields, options){
     return {
       type: 'service',
       className: '',
+      id: `service_${id}`,
       name: `page`,
       data: {
         context: { rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken() },

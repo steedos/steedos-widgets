@@ -122,6 +122,25 @@ export async function getObjectListHeader(objectSchema, listViewName) {
                 "actionType": "reload",
                 "target": `listview_${objectSchema.name}`,
                 "className": "bg-transparent p-0"
+              },
+              {
+                "type": "button",
+                "label": "",
+                "icon": "fa fa-filter",
+                "actionType": "custom",
+                "className": "bg-transparent p-0 ml-1",
+                "id": "u:c20cb87d96c9",
+                "onEvent": {
+                  "click": {
+                    "actions": [
+                      {
+                        "actionType": "custom",
+                        "script": "\nconst uiSchema = event.data.uiSchema;\nconst listview_id = event.data.listName;\nvar selectedListView = uiSchema.list_views[listview_id]\nvar filter = event.data.filter;//[[\"name\", \"contains\", \"a\"]];\n// var listViewId = SteedosUI.getRefId({\n//   type: \"listview\",\n//   appId: \"admin\",\n//   name: uiSchema?.name,\n// });\n\nSteedosUI.ListView.showFilter(uiSchema.name, {\n  listView: selectedListView,\n  data: {\n    filters: SteedosUI.ListView.getVisibleFilter(selectedListView, filter),\n  },\n  onFilterChange: (filter) => {\n\n    doAction({\n      componentId: `service_listview_${uiSchema.name}`,\n      actionType: 'setValue',\n      \"args\": {\n        \"value\": {\n          filter: filter\n        }\n      }\n    });\n    // setTimeout(() => {\n      doAction({\n        componentId: `listview_${uiSchema.name}`,\n        actionType: 'reload'\n      });\n    // }, 3000);\n  }\n});"
+                      }
+                    ],
+                    "weight": 0
+                  }
+                }
               }
             ],
             "md": "auto"
