@@ -17,7 +17,7 @@ import { Loading } from '@/components/Loading';
 export default function Record({formFactor}) {
   const router = useRouter();
 
-  const { app_id, tab_id, listview_id, recordId: record_id } = router.query;
+  const { app_id, tab_id, listview_id, record_id } = router.query;
   const [page, setPage] = useState(false);
 
   useEffect(() => {
@@ -43,7 +43,7 @@ export default function Record({formFactor}) {
         <AmisRender
             data={{
               objectName: tab_id,
-              recordId: recordId,
+              recordId: record_id,
               appId: app_id,
               formFactor: formFactor,
             }}
