@@ -2,15 +2,13 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 16:55:58
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-01 11:36:43
+ * @LastEditTime: 2022-11-14 09:08:57
  * @Description: 
  */
 
 import React, { useState, useEffect, Fragment, useRef, useImperativeHandle } from 'react';
-import { amisRender, amisRootClick } from '@/lib/amis';
-import { getSteedosAuth } from '@steedos-widgets/amis-lib'
+import { amisRender, amisRootClick, getDefaultRenderData } from '@/lib/amis';
 import { defaultsDeep, concat, compact, filter, map } from 'lodash';
-import { getRootUrl } from '@steedos-widgets/amis-lib';
 
 export const AmisRender = ({id, schema, data, router, className, assets, getModalContainer})=>{
     const [globalAssetLoaded, setGlobalAssetLoaded] = useState(false);
@@ -35,24 +33,8 @@ export const AmisRender = ({id, schema, data, router, className, assets, getModa
         if(!globalAssetLoaded){
             return ;
         }
-        const steedosAuth = getSteedosAuth();
         const defData = defaultsDeep({}, {data: data} , {
-            data: {
-                context: {
-                    rootUrl: getRootUrl(),
-                    userId: steedosAuth.userId,
-                    tenantId: steedosAuth.spaceId,
-                    authToken: steedosAuth.token,
-                    user: steedosAuth
-                },
-                global: {
-                    userId: steedosAuth.userId,
-                    spaceId: steedosAuth.spaceId,
-                    user: steedosAuth, 
-                    now: new Date(),
-                    // mode: mode //由表单提供
-                }
-            }
+            data: getDefaultRenderData()
         });
         // 如果已存在,则先销毁, 再创建新实例
         if(SteedosUI.refs[id]){

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-03 16:46:23
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-02 11:32:20
+ * @LastEditTime: 2022-11-14 09:11:08
  * @Description:
  */
 import { Listbox, Transition } from "@headlessui/react";
@@ -20,6 +20,8 @@ import React, { useState, useEffect, Fragment, useRef } from "react";
 import { ListButtons } from "@/components/object/ListButtons";
 import { FromNow } from "@/components/FromNow";
 import { SearchableFieldsFilter } from '@/components/object/SearchableFieldsFilter'
+
+import { getDefaultRenderData } from '@/lib/amis'
 
 export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: appId,tab_id: tabId, listViewName, searchFieldsFilterProps}) {
 //   const [selectedListView, setSelectedListView] = useState();
@@ -100,7 +102,8 @@ export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: 
                   filter
                 ),
               },
-              schema.amisSchema.data
+              schema.amisSchema.data, 
+              getDefaultRenderData()
             ),
           },
           () => {
