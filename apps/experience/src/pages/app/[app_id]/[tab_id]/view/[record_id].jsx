@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-14 14:29:21
+ * @LastEditTime: 2022-11-14 15:30:53
  * @Description:
  */
 import React, { useState, useEffect, Fragment } from "react";
@@ -17,7 +17,7 @@ import { Loading } from '@/components/Loading';
 export default function Record({formFactor}) {
   const router = useRouter();
 
-  const { app_id, tab_id, listview_id, recordId: record_id } = router.query;
+  const { app_id, tab_id, listview_id, record_id: recordId } = router.query;
   const [page, setPage] = useState(false);
 
   useEffect(() => {
