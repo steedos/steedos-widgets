@@ -23,12 +23,8 @@ export async function getAmisObjectRelatedList(
     formFactor
 ) {
     const uiSchema = await getUISchema(objectName);
-    console.log('a=getUISchema==>', uiSchema)
-
     const related = [];
-
     const relatedLists = [].concat(uiSchema.related_lists || []);
-    console.log('a=relatedLists==>', relatedLists)
     if(!isEmpty(relatedLists)){
         for (const relatedList of relatedLists) {
             const arr = relatedList.related_field_fullname.split(".");
