@@ -64,6 +64,9 @@ export const AmisObjectButton = (props) => {
         if(schema && schema.body.length > 0){
             delete schema.body[0]['visibleOn']
         }
+        if(className){
+            schema.className = schema.className + ' ' + className;
+        }
         const renderData = Object.assign(data, {recordId: data._id, objectName: objectName, listViewId: data.listViewId, app_id: appId, className: className})
         if(schema){
             schema.data = defaultsDeep({}, schema.data, renderData);
