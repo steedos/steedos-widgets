@@ -64,8 +64,8 @@ export async function getListPageInitSchema(objectApiName, formFactor, userSessi
 }
 
 // 获取
-export async function getRecordPageInitSchema(objectApiName, ctx, formFactor, userSession){
-    console.log('getRecordPageSchema==>', objectApiName, ctx, formFactor, userSession);
+export async function getRecordPageInitSchema(objectApiName, ctx){
+    // console.log('getRecordPageSchema==>', objectApiName, ctx, formFactor, userSession);
     // const detailHeaderAmisSchema = (await getRecordDetailHeaderSchema(objectApiName, "${recordId}")).amisSchema;
     // const objectFormAmisSchema = (await getViewSchema(objectApiName, "${recordId}", {labelAlign:"left"})).amisSchema;
 
@@ -77,34 +77,38 @@ export async function getRecordPageInitSchema(objectApiName, ctx, formFactor, us
             "label": "标题面板",
             "objectApiName": "${objectName}",
             "recordId": "${recordId}",
-        },
-        {
-            "type": "tabs",
-            "tabs": [
-                {
-                    "title": "详情",
-                    "body": [
-                        // objectFormAmisSchema
-                        {
-                            "type": "steedos-object-form",
-                            "label": "对象表单",
-                            "mode": "read",
-                            "objectApiName": "${objectName}",
-                            "recordId": "${recordId}",
-                            "labelAlign": "left"
-                        }
-                    ],
-                }
-            ],
-            "className": "bg-white mb-4"
-        },
-        
-    ]
-
+        }
+    ];
+    let contentBody = {
+        "type": "tabs",
+        "tabs": [
+            {
+                "title": "详情",
+                "body": [
+                    // objectFormAmisSchema
+                    {
+                        "type": "steedos-object-form",
+                        "label": "对象表单",
+                        "mode": "read",
+                        "objectApiName": "${objectName}",
+                        "recordId": "${recordId}",
+                        "labelAlign": "left"
+                    }
+                ],
+            }
+        ],
+        "className": "bg-white mb-4"
+    };
     const relatedListSchema = map(relatedList,(item)=>{
         return item.schema.amisSchema;
     })
-    body = body.concat(relatedListSchema);
+    if(relatedListSchema.length){
+        contentBody.tabs.push({
+            "title": "相关",
+            "body": relatedListSchema
+        })
+    }
+    body.push(contentBody);
     return {
         type: 'page',
         bodyClassName: '',
