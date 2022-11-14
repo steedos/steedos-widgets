@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-03 16:46:23
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-14 09:11:08
+ * @LastEditTime: 2022-11-14 10:32:37
  * @Description:
  */
 import { Listbox, Transition } from "@headlessui/react";
@@ -44,7 +44,7 @@ export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: 
   });
   useEffect(() => {
     if (schema) {
-      window.addEventListener("message", (event) => {
+      return window.addEventListener("message", (event) => {
         const { data } = event;
         if (data.type === "listview.loaded") {
           if (schema) {
@@ -130,7 +130,6 @@ export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: 
     router.push(`/app/${app_id}/${tab_id}/grid/${value.name}`)
     // setSelectedListView
   }
-
   return (
   <>
     <div className="slds-page-header bg-transparent shadow-none rounded-none border-none">
@@ -227,12 +226,12 @@ export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: 
           <div className="slds-page-header__controls">
             <div className="slds-page-header__control steedos-listview-buttons">
               {/* <button onClick={filterToggler} className="slds-button slds-button_neutral">查询</button> */}
-              <ListButtons
+              {queryInfo && <ListButtons
                 app_id={app_id}
                 tab_id={tab_id}
                 schema={schema}
                 formFactor={formFactor}
-              ></ListButtons>
+              ></ListButtons>}
             </div>
           </div>
         </div>
