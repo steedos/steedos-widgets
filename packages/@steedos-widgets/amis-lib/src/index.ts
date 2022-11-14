@@ -7,6 +7,7 @@
  */
 export * from './lib/amis'
 export * from './lib/objects'
+export * from './lib/objectsRelated'
 export * from './lib/page_init'
 export * from './lib/apps'
 export * from './lib/buttons'
