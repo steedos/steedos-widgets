@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-14 14:34:17
+ * @LastEditTime: 2022-11-14 17:57:19
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef } from 'react';
@@ -15,7 +15,7 @@ import { DefaultListview } from '@/components/object/DefaultListview';
 
 import { AmisRender } from "@/components/AmisRender";
 
-export default function Page ({formFactor, listViewId}) {
+export default function Page ({ formFactor }) {
   const router = useRouter();
 
   const { app_id, tab_id, listview_id } = router.query;
@@ -31,6 +31,12 @@ export default function Page ({formFactor, listViewId}) {
   if(page === false){
     return <Loading></Loading>
   }
+
+  const listViewId = SteedosUI.getRefId({
+    type: "listview",
+    appId: app_id,
+    name: tab_id,
+  });
 
   return (
     <>
