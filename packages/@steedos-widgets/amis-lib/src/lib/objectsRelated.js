@@ -99,7 +99,7 @@ export async function getAmisObjectRelatedList(
                     filter = [`${arr[1]}`, "=", recordId];
                 }
                 const relatedSchema =  await getListSchema(appName, arr[0], "all", {
-                    globalFilter: filter,
+                    // globalFilter: filter,
                     formFactor: formFactor,
                     buttons: await getListViewItemButtons(relatedUiSchema, {isMobile: false})
                 });
@@ -110,12 +110,12 @@ export async function getAmisObjectRelatedList(
                     listSchema: { headerToolbar:[],columnsTogglable:false },
                     headerSchema: recordRelatedListHeader
                 })
-                relatedAmisSchema.ctx.globalFilter = "${globalFilter}";
+                // delete relatedAmisSchema.ctx.globalFilter;
                 relatedSchema.amisSchema = {
                     type: "service",
                     data: {
                         masterObjectName: objectName,
-                        masterRecordId: "${recorId}",
+                        masterRecordId: "${recordId}",
                         relatedKey: arr[1],   
                         objectName: arr[0],
                     },
@@ -123,8 +123,7 @@ export async function getAmisObjectRelatedList(
                         {
                             ...relatedAmisSchema,
                             data: {
-                                // globalFilter: ctx.globalFilter,
-                                globalFilter: ["${relatedKey}", "=", "${masterRecordId}"],
+                                filter: relatedAmisSchema.filters.concat(["${relatedKey}", "=", "${masterRecordId}"]),
                                 objectName: "${objectName}",
                                 recordId: "${masterRecordId}"
                             }
