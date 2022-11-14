@@ -144,7 +144,7 @@ export default {
         {
           "type": "checkbox",
           "name": "showHeader",
-          "label": "显示列表头",
+          "label": "显示表头",
         }
       ]
     }
