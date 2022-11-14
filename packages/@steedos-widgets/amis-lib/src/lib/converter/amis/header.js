@@ -111,6 +111,19 @@ export async function getObjectListHeader(objectSchema, listViewName) {
         "columns": [
           {
             "body": [
+              // {
+              //   "type": "tpl",
+              //   "tpl": "${listCount} 项 • 2 分钟前",
+              //   "inline": false,
+              //   "wrapperComponent": "",
+              //   "className": "leading-none",
+              //   "style": {
+              //     "fontFamily": "",
+              //     "fontSize": 13,
+              //     "fontWeight": "bold"
+              //   },
+              //   "id": "u:1661f8471235"
+              // }
             ],
             "md": "auto"
           },
