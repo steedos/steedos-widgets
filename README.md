@@ -119,7 +119,7 @@ yarn storybook
 
 ### @steedos-labs/experience版本发布
 
-1. 拉取最新代码后，在最外层目录执行yarn biuid编译；
+1. 拉取最新代码后，在最外层目录执行yarn build编译；
 
 2. 编译完成后，进入apps/experience文件夹，执行yarn build-app进行编译；
 

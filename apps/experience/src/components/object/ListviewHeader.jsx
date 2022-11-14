@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-03 16:46:23
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-02 11:32:20
+ * @LastEditTime: 2022-11-14 10:32:37
  * @Description:
  */
 import { Listbox, Transition } from "@headlessui/react";
@@ -20,6 +20,8 @@ import React, { useState, useEffect, Fragment, useRef } from "react";
 import { ListButtons } from "@/components/object/ListButtons";
 import { FromNow } from "@/components/FromNow";
 import { SearchableFieldsFilter } from '@/components/object/SearchableFieldsFilter'
+
+import { getDefaultRenderData } from '@/lib/amis'
 
 export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: appId,tab_id: tabId, listViewName, searchFieldsFilterProps}) {
 //   const [selectedListView, setSelectedListView] = useState();
@@ -42,7 +44,7 @@ export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: 
   });
   useEffect(() => {
     if (schema) {
-      window.addEventListener("message", (event) => {
+      return window.addEventListener("message", (event) => {
         const { data } = event;
         if (data.type === "listview.loaded") {
           if (schema) {
@@ -100,7 +102,8 @@ export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: 
                   filter
                 ),
               },
-              schema.amisSchema.data
+              schema.amisSchema.data, 
+              getDefaultRenderData()
             ),
           },
           () => {
@@ -127,7 +130,6 @@ export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: 
     router.push(`/app/${app_id}/${tab_id}/grid/${value.name}`)
     // setSelectedListView
   }
-
   return (
   <>
     <div className="slds-page-header bg-transparent shadow-none rounded-none border-none">
@@ -224,12 +226,12 @@ export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: 
           <div className="slds-page-header__controls">
             <div className="slds-page-header__control steedos-listview-buttons">
               {/* <button onClick={filterToggler} className="slds-button slds-button_neutral">查询</button> */}
-              <ListButtons
+              {queryInfo && <ListButtons
                 app_id={app_id}
                 tab_id={tab_id}
                 schema={schema}
                 formFactor={formFactor}
-              ></ListButtons>
+              ></ListButtons>}
             </div>
           </div>
         </div>
