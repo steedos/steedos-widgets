@@ -64,12 +64,13 @@ export async function getListPageInitSchema(objectApiName, formFactor, userSessi
 }
 
 // 获取
-export async function getRecordPageInitSchema(objectApiName, ctx){
+export async function getRecordPageInitSchema(objectApiName){
     // console.log('getRecordPageSchema==>', objectApiName, ctx, formFactor, userSession);
     // const detailHeaderAmisSchema = (await getRecordDetailHeaderSchema(objectApiName, "${recordId}")).amisSchema;
     // const objectFormAmisSchema = (await getViewSchema(objectApiName, "${recordId}", {labelAlign:"left"})).amisSchema;
-
-    const relatedList = await getAmisObjectRelatedList(null, objectApiName, ctx.recordId, null);
+    
+    const recordId = '${recordId}';
+    const relatedList = await getAmisObjectRelatedList(null, objectApiName, recordId, null);
     let body = [
         // detailHeaderAmisSchema,
         {
