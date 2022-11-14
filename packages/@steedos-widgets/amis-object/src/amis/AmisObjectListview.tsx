@@ -10,20 +10,26 @@ import { keys, pick, difference } from 'lodash';
 
 export const AmisObjectListView = async (props) => {
   // console.log(`AmisObjectListView props`, props)
-  const { $schema, top, showHeader, ctx, data, defaultData } = props;
+  const { $schema, top, showHeader, headerSchema, ctx, data, defaultData } = props;
   const urlListNameMatchs = location.pathname.match(/grid\/(\w+)/);
   const urlListName = urlListNameMatchs && urlListNameMatchs[1]
   let listName = props.listName || urlListName;
 
-  let defaults = {};
+  let defaults: any = {};
   let objectApiName = props.objectApiName || "space_users";
 
   if (!(ctx && ctx.defaults)) {
+    // 支持把crud组件任意属性通过listSchema属性传入到底层crud组件中
     const schemaKeys = difference(keys($schema), ["type", "showHeader"]);
     const listSchema = pick(props, schemaKeys);
     defaults = {
       listSchema
     };
+  }
+
+  // 支持通过直接定义headerSchema属性来定制表头，而不一定要通过ctx.defaults.headerSchema传入
+  if(headerSchema){
+    defaults.headerSchema = headerSchema;
   }
 
   const amisSchemaData = Object.assign({}, data, defaultData);

@@ -37,12 +37,8 @@ export async function getListPageInitSchema(objectApiName, formFactor, userSessi
     // }
 
     const uiSchema = await getUISchema(objectApiName);
-    const listViewName = first(keys(uiSchema.list_views))
-    const ctx = {};
-    const defaults = {};
-    defaults.headerSchema = await getObjectListHeader(uiSchema, listViewName);
-
-    ctx.defaults = defaults;
+    const listViewName = first(keys(uiSchema.list_views));
+    const headerSchema = await getObjectListHeader(uiSchema, listViewName);
 
     return {
         type: 'page',
@@ -58,7 +54,7 @@ export async function getListPageInitSchema(objectApiName, formFactor, userSessi
             // "headerToolbar": [],
             "columnsTogglable": false,
             "showHeader": true,
-            "ctx": ctx
+            "headerSchema": headerSchema
         }]
     }
 }
