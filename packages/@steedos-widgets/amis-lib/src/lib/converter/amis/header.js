@@ -42,7 +42,8 @@ export async function getObjectListHeader(objectSchema, listViewName) {
       className: `button_${button.name} border-gray-200 inline-block ml-1`
     }
   });
-
+  const reg = new RegExp('_','g');
+  const standardIcon = icon && icon.replace(reg,'-');
   let headerSchema = {
     "type": "wrapper",
     "body": [
@@ -58,7 +59,7 @@ export async function getObjectListHeader(objectSchema, listViewName) {
                     "body": {
                       "type": "tpl",
                       "className": "block",
-                      "tpl": `<p><img class=\"slds-icon slds-icon_container slds-icon-standard-${icon.replaceAll('_', '-')}\" src=\"\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg\" /></p>`
+                      "tpl": `<p><img class=\"slds-icon slds-icon_container slds-icon-standard-${standardIcon}\" src=\"\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg\" /></p>`
                     },
                     "md": "auto",
                     "className": "",
@@ -193,7 +194,8 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
     className: 'slds-icon'
   }
   amisButtonsSchema.push(dropdownButtonsSchema);
-
+  const reg = new RegExp('_','g');
+  const standardIcon = icon && icon.replace(reg,'-');
   let body = [
     {
       "type": "service",
@@ -217,7 +219,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
                             "body": {
                               "type": "tpl",
                               "className": "block",
-                              "tpl": `<img class='slds-icon slds-icon_container slds-icon-standard-${icon.replaceAll('_', '-')}' src='\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg'>`
+                              "tpl": `<img class='slds-icon slds-icon_container slds-icon-standard-${standardIcon}' src='\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg'>`
                             },
                             "md": "auto",
                             "className": "",
@@ -327,6 +329,8 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
       className: `button_${button.name} border-gray-200 inline-block ml-1`
     }
   })
+  const reg = new RegExp('_','g');
+  const standardIcon = icon && icon.replace(reg,'-');
   const recordRelatedListHeader = {
     "type": "wrapper",
     "body": [
@@ -342,7 +346,7 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
                     "body": {
                       "type": "tpl",
                       "className": "block",
-                      "tpl": `<img class=\"slds-icon_small slds-icon_container slds-icon-standard-${icon.replaceAll('_', '-')}\" src=\"\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg\" />`
+                      "tpl": `<img class=\"slds-icon_small slds-icon_container slds-icon-standard-${standardIcon}\" src=\"\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg\" />`
                     },
                     "md": "auto",
                     "className": "",
