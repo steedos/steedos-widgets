@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-07 15:18:27
+ * @LastEditTime: 2022-11-14 15:58:05
  * @Description:
  */
 import { fetchAPI } from "./steedos.client";
@@ -161,6 +161,14 @@ export async function getListSchema(
 
     if (!listView) {
         return { uiSchema };
+    }
+
+    if(listView.amis_schema){
+        return {
+            uiSchema,
+            isCustom: true,
+            amisSchema: isString(listView.amis_schema) ? JSON.parse(listView.amis_schema) : listView.amis_schema,
+        };
     }
 
     let listViewColumns = getListViewColumns(listView, ctx.formFactor);

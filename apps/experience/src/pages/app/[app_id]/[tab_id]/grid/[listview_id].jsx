@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-08 14:08:21
+ * @LastEditTime: 2022-11-14 14:34:17
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef } from 'react';
@@ -22,6 +22,7 @@ export default function Page ({formFactor, listViewId}) {
   const [page, setPage] = useState(false);
 
   useEffect(() => {
+    // 微页面
     getPage({type: 'list', appId: app_id, objectName: tab_id, formFactor}).then((data) => {
       setPage(data);
     });

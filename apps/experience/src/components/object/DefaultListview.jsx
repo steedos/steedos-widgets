@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-08 09:19:16
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-08 09:23:47
+ * @LastEditTime: 2022-11-14 16:01:43
  * @Description:
  */
 
@@ -41,7 +41,22 @@ export function DefaultListview({ router, formFactor }) {
       </>
     );
   return (
-    <div className="flex flex-1 flex-col overflow-hidden">
+    <>
+      {schema.isCustom && schema.amisSchema && <AmisRender
+        data={{
+          objectName: tab_id,
+          listViewId: listViewId,
+          appId: app_id,
+          formFactor: formFactor,
+        }}
+        className="steedos-listview"
+        id={`${listViewId}-page`}
+        schema={schema.amisSchema}
+        router={router}
+      ></AmisRender>
+    }
+    {
+      !schema.isCustom && <div className="flex flex-1 flex-col overflow-hidden">
       <div className="border-b">
         {formFactor && schema?.uiSchema.name === tab_id && (
           <ListviewHeader
@@ -70,5 +85,7 @@ export function DefaultListview({ router, formFactor }) {
         )}
       </div>
     </div>
+    }
+    </>
   );
 }
