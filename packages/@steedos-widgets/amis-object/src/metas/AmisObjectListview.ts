@@ -111,6 +111,7 @@ export default {
           name: "listName",
           // "multiple": false,
           label: "视图",
+          hiddenOn: "this.showHeader",
           // "source": {
           //   "url": "/service/api/amis-design/object/${objectApiName === '${objectName}' ? 'space_users' : objectApiName}",
           //   "method": "get",
@@ -139,6 +140,11 @@ export default {
           "type": "number",
           "name": "top",
           "label": "显示的记录数量",
+        },
+        {
+          "type": "checkbox",
+          "name": "showHeader",
+          "label": "显示列表头",
         }
       ]
     }
