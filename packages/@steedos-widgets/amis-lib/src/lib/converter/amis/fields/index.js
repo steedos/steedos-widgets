@@ -416,7 +416,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             convertData.className = 'm-1';
         }
         if(readonly){
-            convertData.className = `${convertData.className}`
+            convertData.className = `${convertData.className} md:border-b`
         }
         convertData.labelClassName = 'text-left';
         if(readonly){
