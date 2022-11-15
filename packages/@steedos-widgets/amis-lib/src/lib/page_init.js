@@ -91,11 +91,11 @@ export async function getRecordPageInitSchema(objectApiName){
                         "recordId": "${recordId}",
                         "labelAlign": "left"
                     }
-                ],
-                "linksClassName": "pl-4 pt-2",
+                ]
             }
         ],
-        "className": "bg-white mb-4"
+        "className": "bg-white mb-4",
+        "linksClassName": "pl-4 pt-2"
     };
     const relatedListSchema = map(relatedList,(item)=>{
         return item.schema.amisSchema;
