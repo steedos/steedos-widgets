@@ -106,7 +106,7 @@ export async function getAmisObjectRelatedList(
                     listSchema: { headerToolbar:[],columnsTogglable:false },
                     headerSchema: recordRelatedListHeader
                 })
-                // delete relatedAmisSchema.ctx.globalFilter;
+                relatedAmisSchema.ctx.globalFilter = relatedAmisSchema.filters;
                 relatedSchema.amisSchema = {
                     type: "service",
                     data: {
@@ -119,7 +119,7 @@ export async function getAmisObjectRelatedList(
                         {
                             ...relatedAmisSchema,
                             data: {
-                                filter: relatedAmisSchema.filters.concat(["${relatedKey}", "=", "${masterRecordId}"]),
+                                filter: ["${relatedKey}", "=", "${masterRecordId}"],
                                 objectName: "${objectName}",
                                 recordId: "${masterRecordId}"
                             }
