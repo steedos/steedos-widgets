@@ -92,6 +92,7 @@ export async function getRecordPageInitSchema(objectApiName){
                         "labelAlign": "left"
                     }
                 ],
+                "linksClassName": "pl-4 pt-2",
             }
         ],
         "className": "bg-white mb-4"
