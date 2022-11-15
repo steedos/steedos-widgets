@@ -59,7 +59,7 @@ export async function getObjectListHeader(objectSchema, listViewName) {
                     "body": {
                       "type": "tpl",
                       "className": "block",
-                      "tpl": `<p><img class=\"slds-icon slds-icon_container slds-icon-standard-${standardIcon}\" src=\"\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg\" /></p>`
+                      "tpl": `<p><img class=\"slds-icon slds-icon_container slds-icon-standard-${standardIcon} slds-page-header__icon\" src=\"\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg\" /></p>`
                     },
                     "md": "auto",
                     "className": "",
