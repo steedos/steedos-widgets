@@ -295,6 +295,20 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
                 className: 'steedos-amis-form bg-white pt-2 px-2',
                 actions: [] // 不显示表单默认的提交按钮
             }
-        ]
+        ],
+        onEvent: {
+          "fetchInited": {
+            "weight": 0,
+            "actions": [
+              {
+                "componentId": `${objectSchema.name}_record_detail`,
+                "actionType": "setValue",
+                "args": {
+                  "value": { record: "${event.data}", uiSchema: objectSchema }
+                }
+              }
+            ]
+          }
+        }
     }
 }

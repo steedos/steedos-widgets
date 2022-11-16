@@ -176,7 +176,7 @@ export async function getObjectListHeader(objectSchema, listViewName) {
  */
 export async function getObjectRecordDetailHeader(objectSchema, recordId) {
   // console.log('amis==>', objectSchema, recordId)
-  const { name, label, icon } = objectSchema;
+  const { name, label, icon, NAME_FIELD_KEY } = objectSchema;
   const buttons = getObjectDetailButtons(objectSchema, {});
   const moreButtons = getObjectDetailMoreButtons(objectSchema, {
     recordId: recordId,
@@ -253,7 +253,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
                               },
                               {
                                 "type": "tpl",
-                                "tpl": "${name}",
+                                "tpl": "${(record && uiSchema && record[uiSchema.NAME_FIELD_KEY]) || name}",
                                 "inline": false,
                                 "wrapperComponent": "",
                                 "style": {
@@ -294,7 +294,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
           "Authorization": "Bearer ${context.tenantId},${context.authToken}"
         },
         "data": {
-          "query": `{rows:${name}(filters: ["_id","=","${recordId}"]){_id, name} }`
+          "query": `{rows:${name}(filters: ["_id","=","${recordId}"]){_id, ${NAME_FIELD_KEY || 'name'}} }`
         },
         "sendOn": `${!!recordId}`,
         "requestAdaptor": "",
