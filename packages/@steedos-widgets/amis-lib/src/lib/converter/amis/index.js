@@ -301,7 +301,7 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
             "weight": 0,
             "actions": [
               {
-                "componentId": `${objectSchema.name}_record_detail`,
+                "componentId": `page_${objectSchema.name}_record_detail`,
                 "actionType": "setValue",
                 "args": {
                   "value": { record: "${event.data}", uiSchema: objectSchema }

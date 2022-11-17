@@ -109,7 +109,7 @@ export async function getRecordPageInitSchema(objectApiName){
     body.push(contentBody);
     return {
         type: 'page',
-        id: `${objectApiName}_record_detail`,
+        id: `page_${objectApiName}_record_detail`,
         bodyClassName: '',
         regions: [
             "body"
