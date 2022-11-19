@@ -17,3 +17,8 @@
     background: transparent;
     background-color: transparent;
 }
+
+
+.ant-message{
+    z-index: 2600;
+}
