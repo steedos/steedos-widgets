@@ -14,6 +14,18 @@ import { isEmpty,  find, isString, forEach } from "lodash";
 import { getListViewItemButtons } from './buttons'
 import { getUISchema, getListSchema, getField } from './objects'
 
+const getRelatedFieldValue = (masterObjectName, record_id, uiSchema, foreign_key) => {
+    const relatedField = find(uiSchema.fields, (field) => {
+        return foreign_key === field?.name
+    });
+    if (!isString(relatedField.reference_to)) {
+        return { o: masterObjectName, ids: [record_id] }
+    } else if (relatedField.multiple) {
+        return [record_id]
+    } else {
+        return record_id
+    }
+}
 
 // 获取所有相关表
 export async function getAmisObjectRelatedList(
@@ -122,7 +134,8 @@ export async function getAmisObjectRelatedList(
                             data: {
                                 filter: ["${relatedKey}", "=", "${masterRecordId}"],
                                 objectName: "${objectName}",
-                                recordId: "${masterRecordId}"
+                                recordId: "${masterRecordId}",
+                                ...{[arr[1]]: getRelatedFieldValue(objectName, "${recordId}", relatedSchema.uiSchema, arr[1])}
                             }
                         }
                     ]
