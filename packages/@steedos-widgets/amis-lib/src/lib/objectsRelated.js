@@ -114,6 +114,7 @@ export async function getAmisObjectRelatedList(
                         masterRecordId: "${recordId}",
                         relatedKey: arr[1],   
                         objectName: arr[0],
+                        listViewId: `amis-\${appId}-${arr[0]}-listview`,
                     },
                     body:[
                         {
