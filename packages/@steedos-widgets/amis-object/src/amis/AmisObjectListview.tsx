@@ -20,7 +20,7 @@ export const AmisObjectListView = async (props) => {
 
   if (!(ctx && ctx.defaults)) {
     // 支持把crud组件任意属性通过listSchema属性传入到底层crud组件中
-    const schemaKeys = difference(keys($schema), ["type", "showHeader"]);
+    const schemaKeys = difference(keys($schema), ["type", "showHeader","id"]);
     const listSchema = pick(props, schemaKeys);
     defaults = {
       listSchema

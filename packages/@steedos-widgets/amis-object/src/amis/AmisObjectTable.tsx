@@ -16,7 +16,7 @@ export const AmisObjectTable = async (props) => {
   let objectApiName = props.objectApiName || "space_users";
 
   if (!(ctx && ctx.defaults)) {
-    const schemaKeys = difference(keys($schema), ["type", "objectApiName", "columns", "extraColumns"]);
+    const schemaKeys = difference(keys($schema), ["type", "objectApiName", "columns", "extraColumns","id"]);
     const listSchema = pick(props, schemaKeys);
     defaults = {
       listSchema
