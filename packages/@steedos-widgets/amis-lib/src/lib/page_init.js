@@ -1,5 +1,5 @@
-import { first, keys, map } from 'lodash';
-import { getUISchema, getObjectRelatedList,getRecordDetailHeaderSchema, getFormSchema, getViewSchema } from './objects';
+import { first, keys, map, find } from 'lodash';
+import { getUISchema, getObjectRelatedList,getRecordDetailHeaderSchema, getFormSchema, getViewSchema, getListViewColumns, getListViewSort } from './objects';
 import { getAmisObjectRelatedList } from './objectsRelated';
 
 import { getObjectListHeader,getObjectRecordDetailRelatedListHeader } from './converter/amis/header';
@@ -115,5 +115,50 @@ export async function getRecordPageInitSchema(objectApiName){
             "body"
         ],
         body
+    }
+}
+
+// 获取对象的某个列表视图初始化amisSchema
+export async function getListviewInitSchema(objectApiName, listViewName, ctx) {
+    if(!ctx){
+        ctx = {};
+    }
+    const uiSchema = await getUISchema(objectApiName);
+    const listView =  find(
+        uiSchema.list_views,
+        (listView, name) => {
+            return name === listViewName;
+        }
+    );
+
+    let amisSchema = {};
+
+    if (listView) {
+        const listViewColumns = getListViewColumns(listView, ctx.formFactor);
+        const sort = getListViewSort(listView);
+        const headerSchema = await getObjectListHeader(uiSchema, listViewName);
+    
+        amisSchema = {
+            "type": "steedos-object-table",
+            "objectApiName": objectApiName,
+            "columns": listViewColumns,
+            "extraColumns": listView.extra_columns,
+            "filters": listView.filters,
+            "sort": sort,
+            "headerSchema": headerSchema
+        };
+    }
+
+    return {
+        type: 'page',
+        bodyClassName: 'p-0',
+        regions: [
+            "body"
+        ],
+        // name: `page_${readonly ? 'readonly':'edit'}_${recordId}`
+        body: [amisSchema],
+        data:{
+            listName: listViewName
+        }
     }
 }

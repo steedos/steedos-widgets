@@ -45,7 +45,7 @@ const hasUISchemaCache = (key) => {
     return has(UI_SCHEMA_CACHE, key);
 };
 
-const getListViewColumns = (listView, formFactor) => {
+export function getListViewColumns(listView, formFactor) {
     let listViewColumns = [];
     if (formFactor === "SMALL") {
         listViewColumns = !isEmpty(listView.mobile_columns)
@@ -55,6 +55,26 @@ const getListViewColumns = (listView, formFactor) => {
         listViewColumns = listView.columns;
     }
     return listViewColumns;
+};
+
+export function getListViewSort(listView) {
+    let sort = '';
+    if(listView && listView.sort && listView.sort.length){
+        each(listView.sort,function(item,index){
+            if(isArray(item)){
+                const field_name = item[0];
+                const order = item[1] || '';
+                let sortStr = field_name + ' ' + order;
+                sortStr = index > 0 ? ','+sortStr : sortStr
+                sort += sortStr;
+            }else{
+                let sortStr = item.field_name + ' ' + item.order;
+                sortStr = index > 0 ? ','+sortStr : sortStr
+                sort += sortStr;
+            }
+        })
+    }
+    return sort;
 };
 
 export async function getUISchema(objectName, force) {
@@ -178,22 +198,7 @@ export async function getListSchema(
     }
 
     let listViewColumns = getListViewColumns(listView, ctx.formFactor);
-    let sort = '';
-    if(listView && listView.sort && listView.sort.length){
-        each(listView.sort,function(item,index){
-            if(isArray(item)){
-                const field_name = item[0];
-                const order = item[1] || '';
-                let sortStr = field_name + ' ' + order;
-                sortStr = index > 0 ? ','+sortStr : sortStr
-                sort += sortStr;
-            }else{
-                let sortStr = item.field_name + ' ' + item.order;
-                sortStr = index > 0 ? ','+sortStr : sortStr
-                sort += sortStr;
-            }
-        })
-    }
+    let sort = getListViewSort(listView);
 
     const defaults = ctx.defaults || {};
 

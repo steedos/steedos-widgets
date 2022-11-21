@@ -13,7 +13,7 @@ import { ListviewHeader } from '@/components/object/ListviewHeader'
 import { Loading } from '@/components/Loading';
 
 export function DefaultListview({ router, formFactor }) {
-  const { app_id, tab_id } = router.query;
+  const { app_id, tab_id, listview_id } = router.query;
   const [schema, setSchema] = useState();
   const listViewId = SteedosUI.getRefId({
     type: "listview",
@@ -31,8 +31,8 @@ export function DefaultListview({ router, formFactor }) {
 
   useEffect(() => {
     if (!tab_id || !formFactor) return;
-    getListviewSchema(undefined);
-  }, [tab_id, formFactor]);
+    getListviewSchema(listview_id);
+  }, [tab_id, formFactor, listview_id ]);
 
   if (!schema)
     return (
