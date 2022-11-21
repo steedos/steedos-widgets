@@ -50,7 +50,7 @@ export function DefaultListview({ router, formFactor }) {
           formFactor: formFactor,
         }}
         className="steedos-listview"
-        id={`${listViewId}-page`}
+        id={`${listViewId}`}
         schema={schema.amisSchema}
         router={router}
       ></AmisRender>

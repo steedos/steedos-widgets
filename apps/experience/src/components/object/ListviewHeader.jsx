@@ -57,8 +57,8 @@ export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: 
                   listViewId
                 ).getComponentByName(`page.listview_${schema.uiSchema.name}`);
                 setQueryInfo({
-                  count: listViewRef.props.data.count,
-                  dataUpdatedAt: listViewRef.props.dataUpdatedAt,
+                  count: listViewRef?.props.data.count,
+                  dataUpdatedAt: listViewRef?.props.dataUpdatedAt,
                 });
               }
             }, 300);
