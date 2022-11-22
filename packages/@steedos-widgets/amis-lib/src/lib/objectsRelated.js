@@ -115,7 +115,9 @@ export async function getAmisObjectRelatedList(
                 const relatedAmisSchema = relatedSchema.amisSchema;
                 const recordRelatedListHeader = await getObjectRecordDetailRelatedListHeader(relatedUiSchema);
                 relatedAmisSchema.headerSchema = recordRelatedListHeader;
-                relatedAmisSchema.listSchema =  { headerToolbar:[],columnsTogglable:false };
+                // relatedAmisSchema.listSchema =  { headerToolbar:[],columnsTogglable:false };
+                relatedAmisSchema.headerToolbar =  [];
+                relatedAmisSchema.columnsTogglable =  false ;
                 relatedAmisSchema.globalFilter = relatedAmisSchema.filters;
                 delete relatedAmisSchema.ctx;
                 relatedSchema.amisSchema = {

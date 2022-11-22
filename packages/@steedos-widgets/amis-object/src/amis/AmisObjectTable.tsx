@@ -10,12 +10,12 @@ import { keys, pick, difference } from 'lodash';
 
 export const AmisObjectTable = async (props) => {
   // console.log(`AmisObjectTable props`, props)
-  const { $schema, filters, amisCondition, top, headerSchema,globalFilter,listSchema: tableSchema, sortField, sortOrder, extraColumns, ctx, data, defaultData } = props;
+  const { $schema, filters, amisCondition, top, headerSchema,globalFilter, sortField, sortOrder, extraColumns, ctx, data, defaultData } = props;
   const columns = props.columns || [];
   let defaults: any = {};
   let objectApiName = props.objectApiName || "space_users";
 
-  if (!tableSchema && !(ctx && ctx.defaults)) {
+  if (!(ctx && ctx.defaults)) {
     const schemaKeys = difference(keys($schema), ["type", "objectApiName", "columns", "extraColumns","id"]);
     const listSchema = pick(props, schemaKeys);
     defaults = {
@@ -26,9 +26,6 @@ export const AmisObjectTable = async (props) => {
   // 支持通过直接定义headerSchema属性来定制表头，而不一定要通过ctx.defaults.headerSchema传入
   if(headerSchema){
     defaults.headerSchema = headerSchema;
-  }
-  if(tableSchema){
-    defaults.listSchema = tableSchema;
   }
   const amisFilters = amisCondition && conditionsToFilters(amisCondition);
   const tableFilters = filters || amisFilters;
