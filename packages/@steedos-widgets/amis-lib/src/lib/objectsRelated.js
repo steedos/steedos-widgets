@@ -114,11 +114,10 @@ export async function getAmisObjectRelatedList(
 
                 const relatedAmisSchema = relatedSchema.amisSchema;
                 const recordRelatedListHeader = await getObjectRecordDetailRelatedListHeader(relatedUiSchema);
-                relatedAmisSchema.ctx.defaults = Object.assign(relatedAmisSchema.ctx.defaults, {
-                    listSchema: { headerToolbar:[],columnsTogglable:false },
-                    headerSchema: recordRelatedListHeader
-                })
-                relatedAmisSchema.ctx.globalFilter = relatedAmisSchema.filters;
+                relatedAmisSchema.headerSchema = recordRelatedListHeader;
+                relatedAmisSchema.listSchema =  { headerToolbar:[],columnsTogglable:false };
+                relatedAmisSchema.globalFilter = relatedAmisSchema.filters;
+                delete relatedAmisSchema.ctx;
                 relatedSchema.amisSchema = {
                     type: "service",
                     data: {

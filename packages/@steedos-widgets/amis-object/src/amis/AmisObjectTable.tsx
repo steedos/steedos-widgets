@@ -10,12 +10,12 @@ import { keys, pick, difference } from 'lodash';
 
 export const AmisObjectTable = async (props) => {
   // console.log(`AmisObjectTable props`, props)
-  const { $schema, filters, amisCondition, top, headerSchema, sortField, sortOrder, extraColumns, ctx, data, defaultData } = props;
+  const { $schema, filters, amisCondition, top, headerSchema,globalFilter,listSchema: tableSchema, sortField, sortOrder, extraColumns, ctx, data, defaultData } = props;
   const columns = props.columns || [];
   let defaults: any = {};
   let objectApiName = props.objectApiName || "space_users";
 
-  if (!(ctx && ctx.defaults)) {
+  if (!tableSchema && !(ctx && ctx.defaults)) {
     const schemaKeys = difference(keys($schema), ["type", "objectApiName", "columns", "extraColumns","id"]);
     const listSchema = pick(props, schemaKeys);
     defaults = {
@@ -27,12 +27,14 @@ export const AmisObjectTable = async (props) => {
   if(headerSchema){
     defaults.headerSchema = headerSchema;
   }
-
+  if(tableSchema){
+    defaults.listSchema = tableSchema;
+  }
   const amisFilters = amisCondition && conditionsToFilters(amisCondition);
   const tableFilters = filters || amisFilters;
 
   const amisSchemaData = Object.assign({}, data, defaultData);
-  let amisSchema = (await getTableSchema(amisSchemaData.appId, objectApiName, columns, { filters: tableFilters, top, sortField, sortOrder, extraColumns, defaults, ...ctx })).amisSchema;
+  let amisSchema = (await getTableSchema(amisSchemaData.appId, objectApiName, columns, { filters: tableFilters, top, sortField, sortOrder, extraColumns,globalFilter, defaults, ...ctx })).amisSchema;
   amisSchema.data = Object.assign({}, amisSchema.data, amisSchemaData);
   return amisSchema;
 }
