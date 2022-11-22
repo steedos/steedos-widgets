@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-20 16:29:22
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-18 09:41:24
+ * @LastEditTime: 2022-11-19 16:02:57
  * @Description: 
  */
 
@@ -58,7 +58,9 @@ const validateSteedosToken = async (user)=>{
   const rest =  await axios({
     url: `${STEEDOS_ROOT_URL}${VALIDATE_API}`,
     method: 'post',
-    data: {},
+    data: {
+      utcOffset: 8
+    },
     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${user.space},${user.token}` }
   });
   STEEDOS_SESSIONS[user.email] = rest.data;
