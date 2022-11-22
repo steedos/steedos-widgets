@@ -189,7 +189,7 @@ export async function getListSchema(
         return { uiSchema };
     }
 
-    if(listView.amis_schema){
+    if(listView.enable_amis_schema && listView.amis_schema){
         return {
             uiSchema,
             isCustom: true,
