@@ -163,7 +163,7 @@ export async function getObjectListHeader(objectSchema, listViewName) {
       }
     ],
     "size": "xs",
-    "className": "bg-white p-t-sm p-b-sm p-l pr-4"
+    "className": "p-t-sm p-b-sm p-l pr-4"
   };
   return headerSchema;
 }

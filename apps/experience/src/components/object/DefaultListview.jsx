@@ -42,7 +42,7 @@ export function DefaultListview({ router, formFactor }) {
     );
   return (
     <>
-      {schema.isCustom && schema.amisSchema && <AmisRender
+      {/* {schema.isCustom && schema.amisSchema && <AmisRender
         data={{
           objectName: tab_id,
           listViewId: listViewId,
@@ -54,9 +54,9 @@ export function DefaultListview({ router, formFactor }) {
         schema={schema.amisSchema}
         router={router}
       ></AmisRender>
-    }
+    } */}
     {
-      !schema.isCustom && <div className="flex flex-1 flex-col overflow-hidden">
+    <div className="flex flex-1 flex-col overflow-hidden">
       <div className="border-b">
         {formFactor && schema?.uiSchema.name === tab_id && (
           <ListviewHeader

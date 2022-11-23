@@ -236,6 +236,7 @@ export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: 
           </div>
         </div>
       </div>
+      {!schema.isCustom && (
       <div className="slds-page-header__row">
         <div className="slds-page-header__col-meta">
           {queryInfo && (
@@ -359,6 +360,7 @@ export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: 
           </div>
         </div>
       </div>
+      )}
     </div>
 
     <Transition
