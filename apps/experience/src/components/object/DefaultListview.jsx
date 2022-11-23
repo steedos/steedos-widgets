@@ -57,7 +57,7 @@ export function DefaultListview({ router, formFactor }) {
     } */}
     {
     <div className="flex flex-1 flex-col overflow-hidden">
-      <div className="border-b">
+      <div className={schema.isCustom ? "" : "border-b"}>
         {formFactor && schema?.uiSchema.name === tab_id && (
           <ListviewHeader
             formFactor={formFactor}
@@ -68,7 +68,7 @@ export function DefaultListview({ router, formFactor }) {
           ></ListviewHeader>
         )}
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <div className={"min-h-0 flex-1 overflow-y-auto" + (schema.isCustom ? " -mt-6" : "")}>
         {schema?.amisSchema && schema?.uiSchema.name === tab_id && (
           <AmisRender
             data={{
