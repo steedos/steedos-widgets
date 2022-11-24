@@ -136,7 +136,9 @@ export async function getListviewInitSchema(objectApiName, listViewName, ctx) {
     if (listView) {
         const listViewColumns = getListViewColumns(listView, ctx.formFactor);
         const sort = getListViewSort(listView);
-        const headerSchema = await getObjectListHeader(uiSchema, listViewName);
+        const headerSchema = await getObjectListHeader(uiSchema, listViewName, {
+            onlySecordLine: true
+        });
     
         amisSchema = {
             "type": "steedos-object-table",
