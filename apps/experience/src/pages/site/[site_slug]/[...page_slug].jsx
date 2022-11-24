@@ -9,7 +9,7 @@ import React, { useState, useEffect } from 'react';
 const axios = require('axios');
 
 const STEEDOS_ROOT_URL = process.env.STEEDOS_ROOT_URL
-const STEEDOS_SERVER_API_KEY = process.env.STEEDOS_SERVER_API_KEY
+const STEEDOS_API_KEY = process.env.STEEDOS_API_KEY
 
 import { SiteLayout } from '@/components/site/SiteLayout'
 
@@ -61,7 +61,7 @@ export async function getServerSideProps({
     },
     headers: { 
       "Content-Type": "application/json", 
-      "Authorization": `Bearer apikey,${STEEDOS_SERVER_API_KEY}` 
+      "Authorization": `Bearer apikey,${STEEDOS_API_KEY}` 
     }
   });
   const page = result?.data?.data?.site_pages[0] || {}
@@ -94,7 +94,7 @@ export async function getServerSideProps({
 //     },
 //     headers: { 
 //       "Content-Type": "application/json", 
-//       "Authorization": `Bearer apikey,${STEEDOS_SERVER_API_KEY}` 
+//       "Authorization": `Bearer apikey,${STEEDOS_API_KEY}` 
 //     }
 //   });
 
