@@ -1,6 +1,7 @@
 import { getAuthToken, getTenantId, getRootUrl } from '../../steedos.client.js';
-import { getListViewButtons, getObjectDetailButtons, getObjectDetailMoreButtons,getObjectRelatedListButtons, getButtonVisibleOn } from '../../buttons'
-import { map, each } from 'lodash';
+import { getListViewButtons, getObjectDetailButtons, getObjectDetailMoreButtons, getObjectRelatedListButtons, getButtonVisibleOn } from '../../buttons'
+import { getObjectFieldsFilterButtonSchema, getObjectFieldsFilterBarSchema } from './fields_filter';
+import { map, each, sortBy, compact } from 'lodash';
 
 /**
  * 列表视图顶部amisSchema
@@ -8,28 +9,28 @@ import { map, each } from 'lodash';
  * @returns amisSchema
  */
 export async function getObjectListHeader(objectSchema, listViewName, ctx) {
-  if(!ctx){
-      ctx = {};
+  if (!ctx) {
+    ctx = {};
   }
   const { icon, label } = objectSchema;
   const listViewButtonOptions = [];
   // let currentListView;
   each(
     objectSchema.list_views,
-      (listView, name) => {
-        listViewButtonOptions.push({
-          type: "button",
-          label: listView.label,
-          actionType: "link",
-          // icon: "fa fa-plus",
-          link: `/app/\${appId}/${objectSchema.name}/grid/${name}`
-        });
-        // if(name === listViewName){
-        //   currentListView = listView;
-        // }
-      }
+    (listView, name) => {
+      listViewButtonOptions.push({
+        type: "button",
+        label: listView.label,
+        actionType: "link",
+        // icon: "fa fa-plus",
+        link: `/app/\${appId}/${objectSchema.name}/grid/${name}`
+      });
+      // if(name === listViewName){
+      //   currentListView = listView;
+      // }
+    }
   );
-  
+
   // if(!currentListView){
   //   return {};
   // }
@@ -45,8 +46,9 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
       className: `button_${button.name} border-gray-200 inline-block ml-1`
     }
   });
-  const reg = new RegExp('_','g');
-  const standardIcon = icon && icon.replace(reg,'-');
+  const reg = new RegExp('_', 'g');
+  const standardIcon = icon && icon.replace(reg, '-');
+  const amisListViewId = `listview_${objectSchema.name}`;
   let firstLineSchema = {
     "type": "grid",
     "columns": [
@@ -105,6 +107,7 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
     ],
     "align": "between"
   };
+  const fieldsFilterButtonSchema = await getObjectFieldsFilterButtonSchema(objectSchema);
   let secordLineSchema = {
     "type": "grid",
     "align": "between",
@@ -129,13 +132,14 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
       },
       {
         "body": [
+          fieldsFilterButtonSchema,
           {
             "type": "button",
             "label": "",
             "icon": "fa fa-refresh",
             "actionType": "reload",
-            "target": `listview_${objectSchema.name}`,
-            "className": "bg-transparent p-0"
+            "target": amisListViewId,
+            "className": "bg-transparent p-0 ml-1"
           },
           {
             "type": "button",
@@ -163,18 +167,29 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
     "className": "-mt-3"
   };
   let body = [firstLineSchema, secordLineSchema];
-  if(ctx.onlyFirstLine){
-    body = firstLineSchema;
+  if (ctx.onlyFirstLine) {
+    body = [firstLineSchema];
   }
-  else if(ctx.onlySecordLine){
-    body = secordLineSchema;
+  else if (ctx.onlySecordLine) {
+    body = [secordLineSchema];
   }
-  let headerSchema = {
+  let headerSchema = [{
     "type": "wrapper",
     "body": body,
     "size": "xs",
     "className": "p-t-sm p-b-sm p-l pr-4 border-b py-4"
-  };
+  }];
+  const searchableFields = ["name"];
+  const fields = sortBy(
+    compact(
+      map(searchableFields, (fieldName) => {
+        return objectSchema.fields[fieldName];
+      })
+    ),
+    "sort_no"
+  );
+  const fieldsFilterBarSchema = await getObjectFieldsFilterBarSchema(fields);
+  headerSchema.push(fieldsFilterBarSchema);
   return headerSchema;
 }
 
@@ -217,8 +232,8 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
     className: 'slds-icon'
   }
   amisButtonsSchema.push(dropdownButtonsSchema);
-  const reg = new RegExp('_','g');
-  const standardIcon = icon && icon.replace(reg,'-');
+  const reg = new RegExp('_', 'g');
+  const standardIcon = icon && icon.replace(reg, '-');
   let body = [
     {
       "type": "service",
@@ -352,8 +367,8 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
       className: `button_${button.name} border-gray-200 inline-block ml-1`
     }
   })
-  const reg = new RegExp('_','g');
-  const standardIcon = icon && icon.replace(reg,'-');
+  const reg = new RegExp('_', 'g');
+  const standardIcon = icon && icon.replace(reg, '-');
   const recordRelatedListHeader = {
     "type": "wrapper",
     "body": [
