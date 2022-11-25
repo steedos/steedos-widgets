@@ -26,7 +26,7 @@ export async function getObjectFieldsFilterButtonSchema(objectSchema) {
   }
 }
 
-export async function getObjectFieldsFilterFormSchema(fields, cols) {
+export async function getObjectFieldsFilterFormSchema(objectSchema, fields, cols) {
   const body = [];
   for (let field of fields) {
     if (
@@ -62,7 +62,7 @@ export async function getObjectFieldsFilterFormSchema(fields, cols) {
     title: "",
     type: "form",
     name: "listview-filter-form",
-    id: "listview-filter-form",
+    id: `listview_filter_form_${objectSchema.name}`,
     mode: "normal",
     wrapWithPanel: false,
     className: `sm:grid sm:gap-2 sm:grid-cols-4 mb-2`,
@@ -70,8 +70,8 @@ export async function getObjectFieldsFilterFormSchema(fields, cols) {
   };
 }
 
-export async function getObjectFieldsFilterBarSchema(fields, cols) {
-  const filterFormSchema = await getObjectFieldsFilterFormSchema(fields, cols);
+export async function getObjectFieldsFilterBarSchema(objectSchema, fields, cols) {
+  const filterFormSchema = await getObjectFieldsFilterFormSchema(objectSchema, fields, cols);
   const onSearchScript = `
     const appId = event.data.appId;
     const objectName = event.data.objectName;
@@ -81,8 +81,10 @@ export async function getObjectFieldsFilterBarSchema(fields, cols) {
       name: objectName,
     });
     const pageId = listViewId + "-page";
-    var filterFormValues = SteedosUI.getRef(pageId).getComponentById("listview-filter-form").getValues();
-    SteedosUI.getRef(pageId).getComponentById("listview_" + objectName).handleFilterSubmit(filterFormValues);
+    var filterForm = SteedosUI.getRef(pageId).getComponentById("listview_filter_form_" + objectName);
+    var filterFormValues = filterForm.getValues();
+    var listView = SteedosUI.getRef(pageId).getComponentById("listview_" + objectName);
+    listView.handleFilterSubmit(filterFormValues);
   `;
   return {
     "type": "wrapper",
@@ -112,6 +114,12 @@ export async function getObjectFieldsFilterBarSchema(fields, cols) {
                       {
                         "actionType": "custom",
                         "script": onSearchScript
+                      },
+                      {
+                        actionType: 'toast',
+                        args: {
+                          msg: "aaa67"
+                        }
                       }
                     ]
                   }

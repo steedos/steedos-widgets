@@ -7,7 +7,6 @@
  */
 import { fetchAPI } from "./steedos.client";
 import { getAuthToken , getTenantId, getRootUrl } from './steedos.client.js';
-import { getObjectFieldsFilterFormSchema } from './converter/amis/fields_filter';
 
 import {
     getObjectList,
@@ -459,8 +458,4 @@ export async function getObjectRelated(
         ]),
         masterObjectUISchema: masterObjectUISchema,
     };
-}
-
-export async function getSearchableFieldsFilterSchema(fields, cols) {
-    return await getObjectFieldsFilterFormSchema(fields, cols);
 }
