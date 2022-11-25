@@ -114,12 +114,6 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, cols)
                       {
                         "actionType": "custom",
                         "script": onSearchScript
-                      },
-                      {
-                        actionType: 'toast',
-                        args: {
-                          msg: "aaa67"
-                        }
                       }
                     ]
                   }
