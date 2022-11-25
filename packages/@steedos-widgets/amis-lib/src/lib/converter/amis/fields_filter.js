@@ -62,6 +62,7 @@ export async function getObjectFieldsFilterFormSchema(fields, cols) {
     title: "",
     type: "form",
     name: "listview-filter-form",
+    id: "listview-filter-form",
     mode: "normal",
     wrapWithPanel: false,
     className: `sm:grid sm:gap-2 sm:grid-cols-4 mb-2`,
@@ -71,6 +72,18 @@ export async function getObjectFieldsFilterFormSchema(fields, cols) {
 
 export async function getObjectFieldsFilterBarSchema(fields, cols) {
   const filterFormSchema = await getObjectFieldsFilterFormSchema(fields, cols);
+  const onSearchScript = `
+    const appId = event.data.appId;
+    const objectName = event.data.objectName;
+    const listViewId = SteedosUI.getRefId({
+      type: "listview",
+      appId: appId,
+      name: objectName,
+    });
+    const pageId = listViewId + "-page";
+    var filterFormValues = SteedosUI.getRef(pageId).getComponentById("listview-filter-form").getValues();
+    SteedosUI.getRef(pageId).getComponentById("listview_" + objectName).handleFilterSubmit(filterFormValues);
+  `;
   return {
     "type": "wrapper",
     "body": {
@@ -84,7 +97,7 @@ export async function getObjectFieldsFilterBarSchema(fields, cols) {
           ],
           "size": "xs",
           "className": "slds-filters__body p-0"
-        },{
+        }, {
           "type": "wrapper",
           "body": {
             "type": "wrapper",
@@ -93,22 +106,16 @@ export async function getObjectFieldsFilterBarSchema(fields, cols) {
                 "type": "button",
                 "label": "搜索",
                 "icon": "fa fa-search",
-                // "className": "p-0",
-                // "onEvent": {
-                //   "click": {
-                //     "actions": [
-                //       {
-                //         "actionType": "setValue",
-                //         "args": {
-                //           "value": {
-                //             "showFieldsFilter": "${!showFieldsFilter}"
-                //           }
-                //         },
-                //         "componentId": `service_${amisListViewId}`
-                //       }
-                //     ]
-                //   }
-                // }
+                "onEvent": {
+                  "click": {
+                    "actions": [
+                      {
+                        "actionType": "custom",
+                        "script": onSearchScript
+                      }
+                    ]
+                  }
+                }
               },
               {
                 "type": "button",
