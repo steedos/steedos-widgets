@@ -9,7 +9,7 @@ import { AmisRender } from "@/components/AmisRender";
 import { useRouter } from "next/router";
 import React, { useState, useEffect, Fragment, useRef } from "react";
 import { isEmpty, filter, values, sortBy, map, compact } from "lodash";
-import { getObjectFieldsFilterFormSchema } from "@steedos-widgets/amis-lib";
+import { getSearchableFieldsFilterSchema } from "@steedos-widgets/amis-lib";
 
 export function SearchableFieldsFilter({ schema, listViewId, appId, onClose, cols }) {
   const [searchableFields, setSearchableFields] = useState(
@@ -27,7 +27,7 @@ export function SearchableFieldsFilter({ schema, listViewId, appId, onClose, col
     if (!isEmpty(searchableFields)) {
       //   const scope = SteedosUI.getRef(listViewId);
       // scope.getComponentByName(`page.listview_${schema.uiSchema.name}`).handleFilterReset();
-      getObjectFieldsFilterFormSchema(
+      getSearchableFieldsFilterSchema(
         schema.uiSchema,
         sortBy(
           compact(
