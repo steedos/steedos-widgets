@@ -7,6 +7,7 @@
  */
 import { fetchAPI } from "./steedos.client";
 import { getAuthToken , getTenantId, getRootUrl } from './steedos.client.js';
+import { getObjectFieldsFilterFormSchema } from './converter/amis/fields_filter';
 
 import {
     getObjectList,
@@ -15,7 +16,6 @@ import {
 } from "./converter/amis/index";
 import { getObjectListHeader, getObjectRecordDetailHeader, getObjectRecordDetailRelatedListHeader } from './converter/amis/header';
 import _, { cloneDeep, slice, isEmpty, each, has, findKey, find, isString, isObject, keys, includes, isArray, isFunction, map, forEach } from "lodash";
-import { getFieldSearchable } from "./converter/amis/fields/index";
 import { getRecord } from './record';
 import { getListViewItemButtons } from './buttons'
 
@@ -189,7 +189,7 @@ export async function getListSchema(
         return { uiSchema };
     }
 
-    if(listView.amis_schema){
+    if(listView.enable_amis_schema && listView.amis_schema){
         return {
             uiSchema,
             isCustom: true,
@@ -461,45 +461,6 @@ export async function getObjectRelated(
     };
 }
 
-export async function getSearchableFieldsFilterSchema(fields, cols) {
-    const body = [];
-    for (let field of fields) {
-        if (
-            !includes(
-                [
-                    "grid",
-                    "avatar",
-                    "image",
-                    "object",
-                    "[object]",
-                    "[Object]",
-                    "[grid]",
-                    "[text]",
-                    "audio",
-                    "file",
-                ],
-                field.type
-            )
-        ) {
-            delete field.defaultValue
-            delete field.required
-            delete field.is_wide
-            delete field.readonly
-            delete field.hidden
-            delete field.omit
-            const amisField = await getFieldSearchable(field, fields, {});
-            if (amisField) {
-                body.push(amisField);
-            }
-        }
-    }
-    return {
-        title: "",
-        type: "form",
-        name: "listview-filter-form",
-        mode: "normal",
-        wrapWithPanel: false,
-        className: `sm:grid sm:gap-2 sm:grid-cols-4 mb-2`,
-        body: body,
-    };
+export async function getSearchableFieldsFilterSchema(objectSchema, fields, cols) {
+    return await getObjectFieldsFilterFormSchema(objectSchema, fields, cols);
 }

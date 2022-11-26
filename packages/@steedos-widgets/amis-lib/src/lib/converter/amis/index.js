@@ -196,7 +196,7 @@ export async function getObjectList(objectSchema, fields, options){
 
     return {
       type: 'service',
-      className: 'border mb-2',
+      className: 'mb-2',
       id: `service_${id}`,
       name: `page`,
       data: {

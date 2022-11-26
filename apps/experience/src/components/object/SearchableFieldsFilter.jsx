@@ -28,6 +28,7 @@ export function SearchableFieldsFilter({ schema, listViewId, appId, onClose, col
       //   const scope = SteedosUI.getRef(listViewId);
       // scope.getComponentByName(`page.listview_${schema.uiSchema.name}`).handleFilterReset();
       getSearchableFieldsFilterSchema(
+        schema.uiSchema,
         sortBy(
           compact(
             map(searchableFields, (fieldName) => {

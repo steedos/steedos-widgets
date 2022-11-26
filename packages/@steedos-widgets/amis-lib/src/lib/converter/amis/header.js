@@ -1,32 +1,36 @@
 import { getAuthToken, getTenantId, getRootUrl } from '../../steedos.client.js';
-import { getListViewButtons, getObjectDetailButtons, getObjectDetailMoreButtons,getObjectRelatedListButtons, getButtonVisibleOn } from '../../buttons'
-import { map, each } from 'lodash';
+import { getListViewButtons, getObjectDetailButtons, getObjectDetailMoreButtons, getObjectRelatedListButtons, getButtonVisibleOn } from '../../buttons'
+import { getObjectFieldsFilterButtonSchema, getObjectFieldsFilterBarSchema } from './fields_filter';
+import { map, each, sortBy, compact } from 'lodash';
 
 /**
  * 列表视图顶部amisSchema
  * @param {*} objectSchema 对象UISchema
  * @returns amisSchema
  */
-export async function getObjectListHeader(objectSchema, listViewName) {
+export async function getObjectListHeader(objectSchema, listViewName, ctx) {
+  if (!ctx) {
+    ctx = {};
+  }
   const { icon, label } = objectSchema;
   const listViewButtonOptions = [];
   // let currentListView;
   each(
     objectSchema.list_views,
-      (listView, name) => {
-        listViewButtonOptions.push({
-          type: "button",
-          label: listView.label,
-          actionType: "link",
-          // icon: "fa fa-plus",
-          link: `/app/\${appId}/${objectSchema.name}/grid/${name}`
-        });
-        // if(name === listViewName){
-        //   currentListView = listView;
-        // }
-      }
+    (listView, name) => {
+      listViewButtonOptions.push({
+        type: "button",
+        label: listView.label,
+        actionType: "link",
+        // icon: "fa fa-plus",
+        link: `/app/\${appId}/${objectSchema.name}/grid/${name}`
+      });
+      // if(name === listViewName){
+      //   currentListView = listView;
+      // }
+    }
   );
-  
+
   // if(!currentListView){
   //   return {};
   // }
@@ -42,129 +46,150 @@ export async function getObjectListHeader(objectSchema, listViewName) {
       className: `button_${button.name} border-gray-200 inline-block ml-1`
     }
   });
-  const reg = new RegExp('_','g');
-  const standardIcon = icon && icon.replace(reg,'-');
-  let headerSchema = {
-    "type": "wrapper",
-    "body": [
+  const reg = new RegExp('_', 'g');
+  const standardIcon = icon && icon.replace(reg, '-');
+  const amisListViewId = `listview_${objectSchema.name}`;
+  let firstLineSchema = {
+    "type": "grid",
+    "columns": [
       {
-        "type": "grid",
-        "columns": [
+        "body": [
           {
-            "body": [
+            "type": "grid",
+            "columns": [
               {
-                "type": "grid",
-                "columns": [
-                  {
-                    "body": {
-                      "type": "tpl",
-                      "className": "block",
-                      "tpl": `<p><img class=\"slds-icon slds-icon_container slds-icon-standard-${standardIcon} slds-page-header__icon\" src=\"\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg\" /></p>`
-                    },
-                    "md": "auto",
-                    "className": "",
-                    "columnClassName": "flex justify-center items-center"
-                  },
-                  {
-                    "body": [
-                      {
-                        "type": "tpl",
-                        "tpl": `${label}`,
-                        "inline": false,
-                        "wrapperComponent": "",
-                        "className": "leading-none",
-                        "style": {
-                          "fontFamily": "",
-                          "fontSize": 13,
-                          "fontWeight": "bold"
-                        }
-                      },
-                      {
-                        "type": "dropdown-button",
-                        "className": "leading-none",
-                        "label": "\${uiSchema.list_views[listName].label}",
-                        "rightIcon": "fa fa-caret-down",
-                        "hideCaret": true,
-                        "btnClassName": "bg-transparent border-none text-lg font-bold p-0",
-                        "buttons": listViewButtonOptions
-                      }
-                    ],
-                    "md": "",
-                    "valign": "middle",
-                    "columnClassName": "p-l-xs"
-                  }
-                ]
-              }
-            ],
-            "md": "auto"
-          },
-          {
-            "body": amisButtonsSchema,
-            "md": "auto"
-          }
-        ],
-        "align": "between"
-      },
-      {
-        "type": "grid",
-        "align": "between",
-        "columns": [
-          {
-            "body": [
-              // {
-              //   "type": "tpl",
-              //   "tpl": "${listCount} 项 • 2 分钟前",
-              //   "inline": false,
-              //   "wrapperComponent": "",
-              //   "className": "leading-none",
-              //   "style": {
-              //     "fontFamily": "",
-              //     "fontSize": 13,
-              //     "fontWeight": "bold"
-              //   },
-              //   "id": "u:1661f8471235"
-              // }
-            ],
-            "md": "auto"
-          },
-          {
-            "body": [
-              {
-                "type": "button",
-                "label": "",
-                "icon": "fa fa-refresh",
-                "actionType": "reload",
-                "target": `listview_${objectSchema.name}`,
-                "className": "bg-transparent p-0"
+                "body": {
+                  "type": "tpl",
+                  "className": "block",
+                  "tpl": `<p><img class=\"slds-icon slds-icon_container slds-icon-standard-${standardIcon} slds-page-header__icon\" src=\"\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg\" /></p>`
+                },
+                "md": "auto",
+                "className": "",
+                "columnClassName": "flex justify-center items-center"
               },
               {
-                "type": "button",
-                "label": "",
-                "icon": "fa fa-filter",
-                "actionType": "custom",
-                "className": "bg-transparent p-0 ml-1",
-                "id": "u:c20cb87d96c9",
-                "onEvent": {
-                  "click": {
-                    "actions": [
-                      {
-                        "actionType": "custom",
-                        "script": "const eventData = event.data;\nconst uiSchema = eventData.uiSchema;\nconst listview_id = eventData.listName;\nvar selectedListView = uiSchema.list_views[listview_id]\nvar filter = eventData.filter;\n\nSteedosUI.ListView.showFilter(uiSchema.name, {\n  listView: selectedListView,\n  data: {\n    filters: SteedosUI.ListView.getVisibleFilter(selectedListView, filter),\n  },\n  onFilterChange: (filter) => {\n    doAction({\n      componentId: `service_listview_${uiSchema.name}`,\n      actionType: 'setValue',\n      \"args\": {\n        \"value\": {\n          filter: filter\n        }\n      }\n    });\n    doAction({\n      componentId: `listview_${uiSchema.name}`,\n      actionType: 'reload',\n      \"args\": {\n        filter: filter\n      }\n    });\n  }\n});"
-                      }
-                    ],
-                    "weight": 0
+                "body": [
+                  {
+                    "type": "tpl",
+                    "tpl": `${label}`,
+                    "inline": false,
+                    "wrapperComponent": "",
+                    "className": "leading-none",
+                    "style": {
+                      "fontFamily": "",
+                      "fontSize": 13,
+                      "fontWeight": "bold"
+                    }
+                  },
+                  {
+                    "type": "dropdown-button",
+                    "className": "leading-none",
+                    "label": "\${uiSchema.list_views[listName].label}",
+                    "rightIcon": "fa fa-caret-down",
+                    "hideCaret": true,
+                    "btnClassName": "bg-transparent border-none text-lg font-bold p-0",
+                    "buttons": listViewButtonOptions
                   }
-                }
+                ],
+                "md": "",
+                "valign": "middle",
+                "columnClassName": "p-l-xs"
               }
-            ],
-            "md": "auto"
+            ]
           }
-        ]
+        ],
+        "md": "auto"
+      },
+      {
+        "body": amisButtonsSchema,
+        "md": "auto"
       }
     ],
-    "size": "xs",
-    "className": "bg-white p-t-sm p-b-sm p-l pr-4"
+    "align": "between"
   };
+  const fieldsFilterButtonSchema = await getObjectFieldsFilterButtonSchema(objectSchema);
+  let secordLineSchema = {
+    "type": "grid",
+    "align": "between",
+    "columns": [
+      {
+        "body": [
+          // {
+          //   "type": "tpl",
+          //   "tpl": "${listCount} 项 • 2 分钟前",
+          //   "inline": false,
+          //   "wrapperComponent": "",
+          //   "className": "leading-none",
+          //   "style": {
+          //     "fontFamily": "",
+          //     "fontSize": 13,
+          //     "fontWeight": "bold"
+          //   },
+          //   "id": "u:1661f8471235"
+          // }
+        ],
+        "md": "auto"
+      },
+      {
+        "body": [
+          fieldsFilterButtonSchema,
+          {
+            "type": "button",
+            "label": "",
+            "icon": "fa fa-refresh",
+            "actionType": "reload",
+            "target": amisListViewId,
+            "className": "bg-transparent p-0 ml-1"
+          },
+          {
+            "type": "button",
+            "label": "",
+            "icon": "fa fa-filter",
+            "actionType": "custom",
+            "className": "bg-transparent p-0 ml-1",
+            "id": "u:c20cb87d96c9",
+            "onEvent": {
+              "click": {
+                "actions": [
+                  {
+                    "actionType": "custom",
+                    "script": "const eventData = event.data;\nconst uiSchema = eventData.uiSchema;\nconst listview_id = eventData.listName;\nvar selectedListView = uiSchema.list_views[listview_id]\nvar filter = eventData.filter;\n\nSteedosUI.ListView.showFilter(uiSchema.name, {\n  listView: selectedListView,\n  data: {\n    filters: SteedosUI.ListView.getVisibleFilter(selectedListView, filter),\n  },\n  onFilterChange: (filter) => {\n    doAction({\n      componentId: `service_listview_${uiSchema.name}`,\n      actionType: 'setValue',\n      \"args\": {\n        \"value\": {\n          filter: filter\n        }\n      }\n    });\n    doAction({\n      componentId: `listview_${uiSchema.name}`,\n      actionType: 'reload',\n      \"args\": {\n        filter: filter\n      }\n    });\n  }\n});"
+                  }
+                ],
+                "weight": 0
+              }
+            }
+          }
+        ],
+        "md": "auto"
+      }
+    ],
+    "className": "-mt-3"
+  };
+  let body = [firstLineSchema, secordLineSchema];
+  if (ctx.onlyFirstLine) {
+    body = [firstLineSchema];
+  }
+  else if (ctx.onlySecordLine) {
+    body = [secordLineSchema];
+  }
+  let headerSchema = [{
+    "type": "wrapper",
+    "body": body,
+    "size": "xs",
+    "className": "p-t-sm p-b-sm p-l pr-4 border-b py-4"
+  }];
+  const searchableFields = ["name"];
+  const fields = sortBy(
+    compact(
+      map(searchableFields, (fieldName) => {
+        return objectSchema.fields[fieldName];
+      })
+    ),
+    "sort_no"
+  );
+  const fieldsFilterBarSchema = await getObjectFieldsFilterBarSchema(objectSchema, fields);
+  headerSchema.push(fieldsFilterBarSchema);
   return headerSchema;
 }
 
@@ -207,8 +232,8 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
     className: 'slds-icon'
   }
   amisButtonsSchema.push(dropdownButtonsSchema);
-  const reg = new RegExp('_','g');
-  const standardIcon = icon && icon.replace(reg,'-');
+  const reg = new RegExp('_', 'g');
+  const standardIcon = icon && icon.replace(reg, '-');
   let body = [
     {
       "type": "service",
@@ -342,8 +367,8 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
       className: `button_${button.name} border-gray-200 inline-block ml-1`
     }
   })
-  const reg = new RegExp('_','g');
-  const standardIcon = icon && icon.replace(reg,'-');
+  const reg = new RegExp('_', 'g');
+  const standardIcon = icon && icon.replace(reg, '-');
   const recordRelatedListHeader = {
     "type": "wrapper",
     "body": [
