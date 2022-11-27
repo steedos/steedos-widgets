@@ -1,7 +1,7 @@
 import { getAuthToken, getTenantId, getRootUrl } from '../../steedos.client.js';
 import { getListViewButtons, getObjectDetailButtons, getObjectDetailMoreButtons, getObjectRelatedListButtons, getButtonVisibleOn } from '../../buttons'
 import { getObjectFieldsFilterButtonSchema, getObjectFieldsFilterBarSchema } from './fields_filter';
-import { map, each, sortBy, compact } from 'lodash';
+import { map, each, sortBy, compact, keys } from 'lodash';
 
 /**
  * 列表视图顶部amisSchema
@@ -179,7 +179,7 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
     "size": "xs",
     "className": "p-t-sm p-b-sm p-l pr-4 border-b py-4"
   }];
-  const searchableFields = ["name"];
+  const searchableFields = keys(objectSchema.fields);
   const fields = sortBy(
     compact(
       map(searchableFields, (fieldName) => {

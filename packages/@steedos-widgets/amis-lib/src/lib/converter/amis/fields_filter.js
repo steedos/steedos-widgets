@@ -26,7 +26,10 @@ export async function getObjectFieldsFilterButtonSchema(objectSchema) {
   }
 }
 
-export async function getObjectFieldsFilterFormSchema(objectSchema, fields, cols) {
+export async function getObjectFieldsFilterFormSchema(objectSchema, fields, ctx) {
+  if(!ctx){
+    ctx = {};
+  }
   const body = [];
   for (let field of fields) {
     if (
@@ -58,6 +61,11 @@ export async function getObjectFieldsFilterFormSchema(objectSchema, fields, cols
       }
     }
   }
+  if(ctx.enableSearchableFieldsVisibleOn){
+    body.forEach(function(fieldItem){
+      fieldItem.visibleOn = `this.filterFormSearchableFields && this.filterFormSearchableFields.indexOf("${fieldItem.fieldName}") > -1`;
+    });
+  }
   return {
     title: "",
     type: "form",
@@ -71,7 +79,10 @@ export async function getObjectFieldsFilterFormSchema(objectSchema, fields, cols
 }
 
 export async function getObjectFieldsFilterBarSchema(objectSchema, fields, cols) {
-  const filterFormSchema = await getObjectFieldsFilterFormSchema(objectSchema, fields, cols);
+  const filterFormSchema = await getObjectFieldsFilterFormSchema(objectSchema, fields, {
+    enableSearchableFieldsVisibleOn: true,
+    cols
+  });
   const onSearchScript = `
     const appId = event.data.appId;
     const objectName = event.data.objectName;
@@ -86,8 +97,38 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, cols)
     var listView = SteedosUI.getRef(pageId).getComponentById("listview_" + objectName);
     listView.handleFilterSubmit(filterFormValues);
   `;
+  const openSearchalbeFieldsSettingScript = `
+    const appId = event.data.appId;
+    const objectName = event.data.objectName;
+    const listViewId = SteedosUI.getRefId({
+      type: "listview",
+      appId: appId,
+      name: objectName,
+    });
+    const pageId = listViewId + "-page";
+    var filterFormService = SteedosUI.getRef(pageId).getComponentById("service_listview_filter_form_" + objectName);
+    const searchableFields = filterFormService.props.data?.filterFormSearchableFields;
+    SteedosUI.Field.showFieldsTransfer({
+      objectName: "${objectSchema.name}",
+      data: {
+        fields: searchableFields,
+      },
+      onOk: (values) => {
+        filterFormService.setData({
+          filterFormSearchableFields: values.fields
+        });
+      },
+      onCancel: () => {
+      },
+      title: '设置搜索项'
+    });
+  `;
   return {
-    "type": "wrapper",
+    "type": "service",
+    // "data": {
+    //   "filterFormSearchableFields": ["name"]
+    // },
+    "id": `service_listview_filter_form_${objectSchema.name}`,
     "body": {
       "type": "wrapper",
       "body": {
@@ -123,7 +164,17 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, cols)
                 "type": "button",
                 "label": "设置搜索项",
                 "className": "ml-1",
-                "level": "link"
+                "level": "link",
+                "onEvent": {
+                  "click": {
+                    "actions": [
+                      {
+                        "actionType": "custom",
+                        "script": openSearchalbeFieldsSettingScript
+                      }
+                    ]
+                  }
+                }
               }
             ],
             "size": "xs",
@@ -139,7 +190,6 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, cols)
       "className": "border-gray slds-grid slds-grid_vertical slds-nowrap"
     },
     "visibleOn": "this.showFieldsFilter",
-    "size": "xs",
     "className": "px-1 py-1 bg-white b-b"
   };
 }

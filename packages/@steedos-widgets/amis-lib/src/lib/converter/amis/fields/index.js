@@ -427,7 +427,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             convertData.visibleOn = `\$${field.visible_on.substring(1, field.visible_on.length -1).replace(/formData./g, '')}`;
         }
 
-        return Object.assign({}, baseData, convertData, { clearValueOnHidden: true});
+        return Object.assign({}, baseData, convertData, { clearValueOnHidden: true, fieldName: field.name});
     }
     
 }
