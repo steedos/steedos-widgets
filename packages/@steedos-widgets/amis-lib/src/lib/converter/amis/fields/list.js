@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-23 09:12:14
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-02 10:46:48
+ * @LastEditTime: 2022-11-25 13:28:35
  * @Description: 
  */
 
@@ -92,7 +92,6 @@ export async function getCardSchema(fields, options){
     const listBody = await getListBody(_.filter(fields, (f)=>{
         return f.name != options.labelFieldName
     }), options);
-    const columns = listBody.columns;
     return {
         mode: "cards",
         name: "cards",
@@ -108,7 +107,7 @@ export async function getCardSchema(fields, options){
             "header": {
                 "title": title
               },
-            "body": [...columns]
+            "body": [...listBody.columns]
           }
     }
 }
