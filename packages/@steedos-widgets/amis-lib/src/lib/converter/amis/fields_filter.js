@@ -139,6 +139,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, cols)
             filterFormSchema
           ],
           "size": "xs",
+          "visibleOn": "this.filterFormSearchableFields && this.filterFormSearchableFields.length",
           "className": "slds-filters__body p-0"
         }, {
           "type": "wrapper",
@@ -149,6 +150,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, cols)
                 "type": "button",
                 "label": "搜索",
                 "icon": "fa fa-search",
+                "visibleOn": "this.filterFormSearchableFields && this.filterFormSearchableFields.length",
                 "onEvent": {
                   "click": {
                     "actions": [
