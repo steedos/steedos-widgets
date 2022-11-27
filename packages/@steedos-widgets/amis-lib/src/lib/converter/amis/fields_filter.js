@@ -78,11 +78,13 @@ export async function getObjectFieldsFilterFormSchema(objectSchema, fields, ctx)
   };
 }
 
-export async function getObjectFieldsFilterBarSchema(objectSchema, fields, cols) {
-  const filterFormSchema = await getObjectFieldsFilterFormSchema(objectSchema, fields, {
-    enableSearchableFieldsVisibleOn: true,
-    cols
-  });
+export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) {
+  if(!ctx){
+    ctx = {};
+  }
+  const filterFormSchema = await getObjectFieldsFilterFormSchema(objectSchema, fields, Object.assign({}, {
+    enableSearchableFieldsVisibleOn: true
+  }, ctx));
   const onSearchScript = `
     const appId = event.data.appId;
     const objectName = event.data.objectName;
@@ -92,9 +94,10 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, cols)
       name: objectName,
     });
     const pageId = listViewId + "-page";
-    var filterForm = SteedosUI.getRef(pageId).getComponentById("listview_filter_form_" + objectName);
+    const scope = SteedosUI.getRef(${ctx.isListviewInit ? "listViewId" : "pageId"});
+    var filterForm = scope.getComponentById("listview_filter_form_" + objectName);
     var filterFormValues = filterForm.getValues();
-    var listView = SteedosUI.getRef(pageId).getComponentById("listview_" + objectName);
+    var listView = scope.getComponentById("listview_" + objectName);
     listView.handleFilterSubmit(filterFormValues);
   `;
   const openSearchalbeFieldsSettingScript = `
@@ -106,7 +109,8 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, cols)
       name: objectName,
     });
     const pageId = listViewId + "-page";
-    var filterFormService = SteedosUI.getRef(pageId).getComponentById("service_listview_filter_form_" + objectName);
+    const scope = SteedosUI.getRef(${ctx.isListviewInit ? "listViewId" : "pageId"});
+    var filterFormService = scope.getComponentById("service_listview_filter_form_" + objectName);
     const searchableFields = filterFormService.props.data?.filterFormSearchableFields;
     SteedosUI.Field.showFieldsTransfer({
       objectName: "${objectSchema.name}",

@@ -136,8 +136,10 @@ export async function getListviewInitSchema(objectApiName, listViewName, ctx) {
     if (listView) {
         const listViewColumns = getListViewColumns(listView, ctx.formFactor);
         const sort = getListViewSort(listView);
+        //传入isListviewInit是区别于对象列表类型的微页面，即getListPageInitSchema函数中该属性为false
         const headerSchema = await getObjectListHeader(uiSchema, listViewName, {
-            onlySecordLine: true
+            onlySecordLine: true,
+            isListviewInit: true
         });
     
         amisSchema = {

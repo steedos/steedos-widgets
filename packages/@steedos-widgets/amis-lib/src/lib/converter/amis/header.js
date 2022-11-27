@@ -188,7 +188,9 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
     ),
     "sort_no"
   );
-  const fieldsFilterBarSchema = await getObjectFieldsFilterBarSchema(objectSchema, fields);
+  const fieldsFilterBarSchema = await getObjectFieldsFilterBarSchema(objectSchema, fields, {
+    isListviewInit: ctx.isListviewInit
+  });
   headerSchema.push(fieldsFilterBarSchema);
   return headerSchema;
 }
