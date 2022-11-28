@@ -103,6 +103,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
   const openSearchalbeFieldsSettingScript = `
     const appId = event.data.appId;
     const objectName = event.data.objectName;
+    const listName = event.data.listName;
     const listViewId = SteedosUI.getRefId({
       type: "listview",
       appId: appId,
@@ -121,11 +122,19 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
         filterFormService.setData({
           filterFormSearchableFields: values.fields
         });
+        const searchableFieldsStoreKey = \`\${objectName}_\${listName}_searchable_fields\`;
+        localStorage.setItem(searchableFieldsStoreKey, values.fields)
       },
       onCancel: () => {
       },
       title: '设置搜索项'
     });
+  `;
+  const dataProviderInited = `
+    const supperData = data.__super;
+    const searchableFieldsStoreKey = \`\${supperData.objectName}_\${supperData.listName}_searchable_fields\`;
+    let defaultSearchableFields = localStorage.getItem(searchableFieldsStoreKey);
+    setData({ filterFormSearchableFields: defaultSearchableFields });
   `;
   return {
     "type": "service",
@@ -133,6 +142,9 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
     //   "filterFormSearchableFields": ["name"]
     // },
     "id": `service_listview_filter_form_${objectSchema.name}`,
+    "dataProvider": {
+      "inited": dataProviderInited
+    },
     "body": {
       "type": "wrapper",
       "body": {
