@@ -11,15 +11,21 @@ import React, { useState, useEffect, Fragment, useRef } from "react";
 import { isEmpty, filter, values, sortBy, map, compact } from "lodash";
 import { getSearchableFieldsFilterSchema } from "@steedos-widgets/amis-lib";
 
-export function SearchableFieldsFilter({ schema, listViewId, appId, onClose, cols }) {
-  const [searchableFields, setSearchableFields] = useState(
-    map(
+export function SearchableFieldsFilter({ schema, listViewId, listViewName, appId, onClose, cols }) {
+  const searchableFieldsStoreKey = `${schema.uiSchema.name}_${listViewName}_searchable_fields`;
+  let defaultSearchableFields = localStorage.getItem(searchableFieldsStoreKey);
+  if(!defaultSearchableFields){
+    defaultSearchableFields = map(
       filter(values(schema.uiSchema.fields), (field) => {
         return field.searchable;
       }),
       "name"
-    )
-  );
+    );
+  }
+  if(defaultSearchableFields && typeof defaultSearchableFields === "string"){
+    defaultSearchableFields = defaultSearchableFields.split(",");
+  }
+  const [searchableFields, setSearchableFields] = useState(defaultSearchableFields);
   const [searchableFieldsSchema, setSearchableFieldsSchema] = useState();
   const router = useRouter();
 
@@ -101,6 +107,7 @@ export function SearchableFieldsFilter({ schema, listViewId, appId, onClose, col
                   },
                   onOk: (values) => {
                     setSearchableFields(values.fields);
+                    localStorage.setItem(searchableFieldsStoreKey, values.fields)
                   },
                   onCancel: () => {
                     // console.log(`取消操作!!!`)
