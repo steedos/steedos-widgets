@@ -284,7 +284,7 @@ export async function getTableApi(mainObject, fields, options){
     api.data.$self = "$$";
     api.data.filter = "$filter"
     api.requestAdaptor = `
-        const selfData = JSON.parse(JSON.stringify(api.data.$self));
+        let selfData = JSON.parse(JSON.stringify(api.data.$self));
         ${globalFilter ? `var filters = ${JSON.stringify(globalFilter)};` : 'var filters = [];'}
         if(_.isEmpty(filters)){
             filters = api.data.filter || [${JSON.stringify(filter)}];
@@ -305,6 +305,22 @@ export async function getTableApi(mainObject, fields, options){
             filters = [["${valueField.name}", "=", selfData.value]];
         }
         var searchableFilter = [];
+        try{
+            // TODO: 不应该直接在这里取localStorage，应该从外面传入
+            const selfSupperData = api.data.$self.__super.__super;
+            const appId = selfSupperData.appId;
+            const objectName = selfSupperData.objectName;
+            const listName = selfSupperData.listName;
+            const searchableFilterStoreKey = "/app/" + appId + "/" + objectName + "/grid/" + listName + "/form/filters";
+            let localSearchableFilter = localStorage.getItem(searchableFilterStoreKey);
+            if(localSearchableFilter){
+                selfData = Object.assign({}, JSON.parse(localSearchableFilter), selfData);
+            }
+        }
+        catch(ex){
+            console.error("本地存储中过滤条件解析异常：", ex);
+        }
+
         _.each(selfData, (value, key)=>{
             if(!_.isEmpty(value) || _.isBoolean(value)){
                 if(_.startsWith(key, '__searchable__between__')){
