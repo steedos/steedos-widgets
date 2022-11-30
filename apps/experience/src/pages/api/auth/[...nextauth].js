@@ -11,6 +11,7 @@ import KeycloakProvider from "@/lib/auth/KeycloakProvider";
 import CredentialsProvider from "@/lib/auth/CredentialsProvider";
 const axios = require('axios');
 const jwt = require("jsonwebtoken")
+const querystring = require('querystring');
 const STEEDOS_ROOT_URL = process.env.STEEDOS_ROOT_URL
 const JWT_API = '/accounts/jwt/login';
 const VALIDATE_API = '/api/setup/validate';
@@ -67,6 +68,43 @@ const validateSteedosToken = async (user)=>{
   return STEEDOS_SESSIONS[user.email];
 }
 
+/**
+ * Takes a token, and returns a new token with updated
+ * `accessToken` and `accessTokenExpires`. If an error occurs,
+ * returns the old token and an error property
+ */
+ async function refreshAccessToken(token) {
+  try {
+    const url =
+      `${process.env.KEYCLOAK_ISSUER}/protocol/openid-connect/token`
+
+    const response = await axios.post(url, 
+      querystring.stringify({
+        client_id: process.env.KEYCLOAK_ID,
+        client_secret: process.env.KEYCLOAK_SECRET,
+        grant_type: "refresh_token",
+        refresh_token: token.refreshToken,
+      })
+    )
+
+    const refreshedTokens = response.data
+    
+    return {
+      ...token,
+      accessToken: refreshedTokens.access_token,
+      accessTokenExpires: Date.now() + refreshedTokens.expires_in * 1000,
+      refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
+    }
+  } catch (error) {
+    console.log(error)
+
+    return {
+      ...token,
+      error: "RefreshAccessTokenError",
+    }
+  }
+}
+
 export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   // Configure one or more authentication providers
@@ -79,18 +117,34 @@ export const authOptions = {
   callbacks: {
     async jwt(props) {
       const { token, account, user } = props;
+
       // Persist the OAuth access_token to the token right after signin
-      // if (account) {
-      //   token.accessToken = account.access_token
-      // }
-      if(user && user.steedos){
-        token.steedos = user.steedos;
+      if (account && user) {
+        const token = {
+          accessToken: account.access_token,
+          accessTokenExpires: account.expires_at * 1000,
+          refreshToken: account.refresh_token,
+          user,
+          steedos: user.steedos
+        }
+        return token
       }
-      return token
+
+      // Return previous token if the access token has not expired yet
+      if (Date.now() < token.accessTokenExpires) {
+        return token
+      }
+
+      // Access token has expired, try to update it
+      return refreshAccessToken(token)
     }, 
     async session({ session, token, user }) {
+
+      session.user = token.user
+      session.accessToken = token.accessToken
+      session.error = token.error
+
       // Send properties to the client, like an access_token from a provider.
-      // session.accessToken = token.accessToken
       if(session.user){
         if(token && token.steedos){
           session.steedos = token.steedos;
