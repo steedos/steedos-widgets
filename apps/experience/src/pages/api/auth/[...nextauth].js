@@ -14,9 +14,8 @@ const jwt = require("jsonwebtoken")
 const querystring = require('querystring');
 const STEEDOS_ROOT_URL = process.env.STEEDOS_ROOT_URL
 const JWT_API = '/accounts/jwt/login';
+const OIDC_API = '/api/global/auth/oidc/login';
 const VALIDATE_API = '/api/setup/validate';
-const STEEDOS_TOKENS = {};
-const STEEDOS_SESSIONS = {};
 
 const getJWTToken = (user)=>{
   const jwtPayload = {
@@ -37,35 +36,30 @@ const getJWTToken = (user)=>{
   );
 }
 
-const loginSteedosProject = async (user)=>{
-  if(STEEDOS_TOKENS[user.email]){
-    return STEEDOS_TOKENS[user.email];
-  }
+
+const loginSteedosByOIDC = async (accessToken)=>{
   const projectRootUrl = STEEDOS_ROOT_URL;
   const rest =  await axios({
-    url: `${projectRootUrl}${JWT_API}`,
-    method: 'get',
-    data: {},
-    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${getJWTToken(user)}` }
+    url: `${projectRootUrl}${OIDC_API}`,
+    method: 'post',
+    data: {
+      accessToken,
+    },
+    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${accessToken}` }
   });
-  STEEDOS_TOKENS[user.email] = rest.data;
-  return STEEDOS_TOKENS[user.email];
+  return rest.data
 }
 
-const validateSteedosToken = async (user)=>{
-  if(STEEDOS_SESSIONS[user.email]){
-    return STEEDOS_SESSIONS[user.email];
-  }
+const validateSteedosToken = async (space, token)=>{
   const rest =  await axios({
     url: `${STEEDOS_ROOT_URL}${VALIDATE_API}`,
     method: 'post',
     data: {
       utcOffset: 8
     },
-    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${user.space},${user.token}` }
+    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${space},${token}` }
   });
-  STEEDOS_SESSIONS[user.email] = rest.data;
-  return STEEDOS_SESSIONS[user.email];
+  return rest.data;
 }
 
 /**
@@ -124,11 +118,27 @@ export const authOptions = {
           accessToken: account.access_token,
           accessTokenExpires: account.expires_at * 1000,
           refreshToken: account.refresh_token,
+          provider: account.provider,
           user,
-          steedos: user.steedos
         }
+
+        if (account.provider === 'keycloak') {
+          const loginResult = await loginSteedosByOIDC(account.access_token);
+          
+          user.space = loginResult.space;
+          user.token = loginResult.token;
+        }
+
+        if(user.space && user.token){
+          const steedosSession = await validateSteedosToken(user.space, user.token);
+          token.steedos = Object.assign(steedosSession, {token: steedosSession.authToken});
+        }
+
         return token
       }
+
+      if (token.provider != 'keycloak') 
+        return token
 
       // Return previous token if the access token has not expired yet
       if (Date.now() < token.accessTokenExpires) {
@@ -138,31 +148,13 @@ export const authOptions = {
       // Access token has expired, try to update it
       return refreshAccessToken(token)
     }, 
+
     async session({ session, token, user }) {
 
       session.user = token.user
+      session.steedos = token.steedos
       session.accessToken = token.accessToken
       session.error = token.error
-
-      // Send properties to the client, like an access_token from a provider.
-      if(session.user){
-        if(token && token.steedos){
-          session.steedos = token.steedos;
-        }else{
-          const loginResult = await loginSteedosProject(session.user);
-          if(loginResult.space && loginResult.token){
-            session.steedos = {
-              space: loginResult.space,
-              token: loginResult.token,
-              userId: loginResult.user?.id,
-              name: loginResult.user?.name,
-              email: session.user.email
-            }
-          }
-        }
-        const steedosSession = await validateSteedosToken(session.steedos);
-        session.steedos = Object.assign(steedosSession, {token: steedosSession.authToken});
-      }
 
       session.publicEnv ={
         STEEDOS_ROOT_URL: process.env.STEEDOS_ROOT_URL,
@@ -174,8 +166,6 @@ export const authOptions = {
   },
   events:{
     async signOut(token, session){
-      delete STEEDOS_TOKENS[token.token.email];
-      delete STEEDOS_SESSIONS[token.token.email];
     }
   },
   pages: {
