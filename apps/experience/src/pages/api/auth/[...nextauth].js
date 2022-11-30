@@ -7,6 +7,8 @@
  */
 
 import NextAuth from "next-auth"
+import { caching } from 'cache-manager';
+
 import KeycloakProvider from "@/lib/auth/KeycloakProvider";
 import CredentialsProvider from "@/lib/auth/CredentialsProvider";
 const axios = require('axios');
@@ -15,6 +17,7 @@ const STEEDOS_ROOT_URL = process.env.STEEDOS_ROOT_URL;
 const OIDC_API = '/api/global/auth/oidc/login';
 const VALIDATE_API = '/api/setup/validate';
 
+let steedosSessionCache = null;
 
 const loginSteedosByOIDC = async (accessToken)=>{
   const projectRootUrl = STEEDOS_ROOT_URL;
@@ -29,16 +32,29 @@ const loginSteedosByOIDC = async (accessToken)=>{
   return rest.data
 }
 
-const validateSteedosToken = async (space, token)=>{
-  const rest =  await axios({
-    url: `${STEEDOS_ROOT_URL}${VALIDATE_API}`,
-    method: 'post',
-    data: {
-      utcOffset: 8
-    },
-    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${space},${token}` }
-  });
-  return rest.data;
+const getSteedosToken = async (space, token)=>{
+
+  if (!steedosSessionCache) {
+    steedosSessionCache = await caching('memory', {
+      ttl: 60 * 60 * 1000 /*milliseconds*/,
+    });
+  }
+
+  let steedosSession = await steedosSessionCache.get(`${space}/${token}`);
+  if (!steedosSession) {
+    const rest =  await axios({
+      url: `${STEEDOS_ROOT_URL}${VALIDATE_API}`,
+      method: 'post',
+      data: {
+        utcOffset: 8
+      },
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${space},${token}` }
+    });
+    steedosSession = rest.data;
+    await steedosSessionCache.set(`${space}/${token}`, steedosSession);
+  }
+
+  return steedosSession;
 }
 
 /**
@@ -108,10 +124,6 @@ export const authOptions = {
           user.token = loginResult.token;
         }
 
-        if(user.space && user.token){
-          const steedosSession = await validateSteedosToken(user.space, user.token);
-          token.steedos = Object.assign(steedosSession, {token: steedosSession.authToken});
-        }
 
         return token
       }
@@ -131,9 +143,9 @@ export const authOptions = {
     async session({ session, token, user }) {
 
       session.user = token.user
-      session.steedos = token.steedos
       session.accessToken = token.accessToken
       session.error = token.error
+      session.steedos = await getSteedosToken(session.user.space, session.user.token);
 
       session.publicEnv ={
         STEEDOS_ROOT_URL: process.env.STEEDOS_ROOT_URL,
