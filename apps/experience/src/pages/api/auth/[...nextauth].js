@@ -10,31 +10,10 @@ import NextAuth from "next-auth"
 import KeycloakProvider from "@/lib/auth/KeycloakProvider";
 import CredentialsProvider from "@/lib/auth/CredentialsProvider";
 const axios = require('axios');
-const jwt = require("jsonwebtoken")
 const querystring = require('querystring');
-const STEEDOS_ROOT_URL = process.env.STEEDOS_ROOT_URL
-const JWT_API = '/accounts/jwt/login';
+const STEEDOS_ROOT_URL = process.env.STEEDOS_ROOT_URL;
 const OIDC_API = '/api/global/auth/oidc/login';
 const VALIDATE_API = '/api/setup/validate';
-
-const getJWTToken = (user)=>{
-  const jwtPayload = {
-    iss: process.env.NEXTAUTH_URL,
-    sub: "steedos-nextjs-amis",
-    profile: {
-      email: user.email,
-      ...user      
-    }
-  };
-
-  return jwt.sign(
-    jwtPayload,
-    process.env.STEEDOS_IDENTITY_JWT_SECRET,
-    {
-      expiresIn: 60
-    }
-  );
-}
 
 
 const loginSteedosByOIDC = async (accessToken)=>{
