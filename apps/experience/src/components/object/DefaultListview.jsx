@@ -74,6 +74,7 @@ export function DefaultListview({ router, formFactor }) {
             data={{
               objectName: schema.uiSchema.name,
               listViewId: listViewId,
+              listName: listview_id,
               appId: app_id,
               formFactor: formFactor,
             }}
