@@ -308,17 +308,15 @@ export async function getTableApi(mainObject, fields, options){
         try{
             // TODO: 不应该直接在这里取localStorage，应该从外面传入
             const selfSupperData = api.data.$self.__super.__super;
-            const appId = selfSupperData.appId;
-            const objectName = selfSupperData.objectName;
-            const listName = selfSupperData.listName;
-            const searchableFilterStoreKey = "/app/" + appId + "/" + objectName + "/grid/" + listName + "/form/filters";
+            const listViewId = selfSupperData.listViewId;
+            const searchableFilterStoreKey = location.pathname + "/crud/" + listViewId ;
             let localSearchableFilter = localStorage.getItem(searchableFilterStoreKey);
             if(localSearchableFilter){
                 selfData = Object.assign({}, JSON.parse(localSearchableFilter), selfData);
             }
         }
         catch(ex){
-            console.error("本地存储中过滤条件解析异常：", ex);
+            console.error("本地存储中crud参数解析异常：", ex);
         }
 
         _.each(selfData, (value, key)=>{
@@ -419,6 +417,25 @@ export async function getTableApi(mainObject, fields, options){
             }
         });
         payload.data.rows = treeRecords;
+    }
+
+
+    try{
+        // TODO: 不应该直接在这里取localStorage，应该从外面传入
+        const selfSupperData = api.data.$self.__super.__super;
+        const listViewId = selfSupperData.listViewId;
+        const searchableFilterStoreKey = location.pathname + "/crud/" + listViewId ;
+        let localSearchableFilter = localStorage.getItem(searchableFilterStoreKey);
+        let selfData = JSON.parse(JSON.stringify(api.data.$self));
+        if(localSearchableFilter){
+            selfData = Object.assign({}, JSON.parse(localSearchableFilter), selfData);
+        }
+        delete selfData.context;
+        delete selfData.global;
+        localStorage.setItem(searchableFilterStoreKey, JSON.stringify(selfData));
+    }
+    catch(ex){
+        console.error("本地存储中crud参数解析异常：", ex);
     }
     return payload;
     `;

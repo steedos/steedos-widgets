@@ -62,40 +62,10 @@ export async function getObjectFieldsFilterFormSchema(objectSchema, fields, ctx)
     }
   }
   let persistDataKeys = map(body, "name");
-  let events = {};
   if(ctx.enableSearchableFieldsVisibleOn){
     body.forEach(function(fieldItem){
       fieldItem.visibleOn = `this.filterFormSearchableFields && this.filterFormSearchableFields.indexOf("${fieldItem.fieldName}") > -1`;
     });
-    // TODO:不应该走事件来手动写本地缓存，而是走amis form默认写本地存储的功能，保持使用的当前组件的path作为key
-    const onValueChangeScript = `
-      // form的persistData存的路径太深了，比如/app/test/tets__c/grid/all/page/body/0/.../0/form/filters，这里手动存下
-      const data = event.data;
-      const superServiceData = data.__super.__super;
-      const filterFormSearchableFields = superServiceData.filterFormSearchableFields;
-      const superPageData = superServiceData.__super;
-      const appId = superPageData.appId;
-      const objectName = superPageData.objectName;
-      const listName = superPageData.listName;
-      const searchableFilterStoreKey = "/app/" + appId + "/" + objectName + "/grid/" + listName + "/form/filters";
-      const searchableFilter = _.pickBy(data, function(value, key){
-        // __searchable开头的就是过滤条件
-        return /^__searchable/.test(key);
-      });
-      localStorage.setItem(searchableFilterStoreKey, JSON.stringify(searchableFilter));
-    `;
-    events = {
-      "onEvent": {
-        "change": {
-          "actions": [
-            {
-              "actionType": "custom",
-              "script": onValueChangeScript
-            }
-          ]
-        }
-      }
-    }
   }
 
   return {
@@ -106,10 +76,9 @@ export async function getObjectFieldsFilterFormSchema(objectSchema, fields, ctx)
     mode: "normal",
     wrapWithPanel: false,
     className: `sm:grid sm:gap-2 sm:grid-cols-4 mb-2`,
-    persistData: "filters",
+    persistData: "crud:${id}",
     persistDataKeys: persistDataKeys,
-    body: body,
-    ...events
+    body: body
   };
 }
 
