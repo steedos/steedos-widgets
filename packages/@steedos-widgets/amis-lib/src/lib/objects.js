@@ -15,7 +15,7 @@ import {
     getObjectForm,
 } from "./converter/amis/index";
 import { getObjectListHeader, getObjectRecordDetailHeader, getObjectRecordDetailRelatedListHeader } from './converter/amis/header';
-import _, { cloneDeep, slice, isEmpty, each, has, findKey, find, isString, isObject, keys, includes, isArray, isFunction, map, forEach } from "lodash";
+import _, { cloneDeep, slice, isEmpty, each, has, findKey, find, isString, isObject, keys, includes, isArray, isFunction, map, forEach, defaultsDeep } from "lodash";
 import { getRecord } from './record';
 import { getListViewItemButtons } from './buttons'
 
@@ -208,6 +208,45 @@ export async function getListSchema(
 
     if(!ctx.showHeader){
         defaults.headerSchema = null;
+    }
+
+    try {
+      const searchableFilterStoreKey = location.pathname + "/crud/" + ctx.listViewId;
+      let localSearchableFilter = localStorage.getItem(searchableFilterStoreKey);
+      /**
+       * localSearchableFiltercrud规范来自crud请求api中api.data.$self参数值的。
+       * 比如：{"perPage":20,"page":1,"__searchable__name":"7","__searchable__between__n1__c":[null,null],"filter":[["name","contains","a"]]}
+       * __searchable__...:顶部放大镜搜索条件
+       * filter:右侧过滤器
+       * perPage:每页条数
+       * page:当前页码
+       * orderBy:排序字段
+       * orderDir:排序方向
+       */
+      if (localSearchableFilter) {
+        localSearchableFilter = JSON.parse(localSearchableFilter);
+        let listSchema = {};
+        if(localSearchableFilter.orderBy){
+            listSchema.orderBy = localSearchableFilter.orderBy;
+        }
+        if(localSearchableFilter.orderDir){
+            listSchema.orderDir = localSearchableFilter.orderDir;
+        }
+        if(localSearchableFilter.perPage){
+            listSchema.defaultParams = {
+                perPage: localSearchableFilter.perPage
+            }
+        }
+        if(localSearchableFilter.page){
+            listSchema.defaultParams = Object.assign({}, listSchema.defaultParams, {
+                page: localSearchableFilter.page
+            });
+        }
+        defaults.listSchema = defaultsDeep({}, listSchema, defaults.listSchema || {});
+      }
+    }
+    catch (ex) {
+      console.error("本地存储中crud参数解析异常：", ex);
     }
 
     ctx.defaults = defaults;
