@@ -35,22 +35,14 @@ export default CredentialsProvider({
           body: JSON.stringify({ user: {email: credentials.email}, password: crypto.createHash('sha256').update(credentials.password).digest('hex') }) 
         })
         const json = await res.json();
+        
         if(!json.user){
           return null
         }
         user = {
-          id: json.user.id,
-          name: json.user.name,
-          local: json.user.local,
-          email: json.user.email,
-          utcOffset: json.user.utcOffset,
-          steedos: {
-            space: json.space,
-            token: json.token,
-            userId: json.user.id,
-            name: json.user.name,
-            email: json.user.email,
-          }
+          space: json.space,
+          token: json.token,
+          ...json.user
         }
       } catch (e) {console.log(e)}
       if (user) {

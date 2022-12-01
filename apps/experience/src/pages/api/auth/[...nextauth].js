@@ -7,64 +7,60 @@
  */
 
 import NextAuth from "next-auth"
+import { caching } from 'cache-manager';
+
 import KeycloakProvider from "@/lib/auth/KeycloakProvider";
 import CredentialsProvider from "@/lib/auth/CredentialsProvider";
 const axios = require('axios');
-const jwt = require("jsonwebtoken")
-const STEEDOS_ROOT_URL = process.env.STEEDOS_ROOT_URL
-const JWT_API = '/accounts/jwt/login';
+const querystring = require('querystring');
+const STEEDOS_ROOT_URL = process.env.STEEDOS_ROOT_URL;
+const OIDC_API = '/api/global/auth/oidc/login';
 const VALIDATE_API = '/api/setup/validate';
-const STEEDOS_TOKENS = {};
-const STEEDOS_SESSIONS = {};
 
-const getJWTToken = (user)=>{
-  const jwtPayload = {
-    iss: process.env.NEXTAUTH_URL,
-    sub: "steedos-nextjs-amis",
-    profile: {
-      email: user.email,
-      ...user      
-    }
-  };
+let cache = null;
 
-  return jwt.sign(
-    jwtPayload,
-    process.env.STEEDOS_IDENTITY_JWT_SECRET,
-    {
-      expiresIn: 60
-    }
-  );
+const getCache = async () => {
+
+  if (!cache) {
+    cache = await caching('memory', {
+      ttl: 60 * 60 * 1000 /*milliseconds*/,
+    });
+  }
+
+  return cache;
+
 }
 
-const loginSteedosProject = async (user)=>{
-  if(STEEDOS_TOKENS[user.email]){
-    return STEEDOS_TOKENS[user.email];
-  }
+const loginSteedosByOIDC = async (accessToken)=>{
   const projectRootUrl = STEEDOS_ROOT_URL;
   const rest =  await axios({
-    url: `${projectRootUrl}${JWT_API}`,
-    method: 'get',
-    data: {},
-    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${getJWTToken(user)}` }
-  });
-  STEEDOS_TOKENS[user.email] = rest.data;
-  return STEEDOS_TOKENS[user.email];
-}
-
-const validateSteedosToken = async (user)=>{
-  if(STEEDOS_SESSIONS[user.email]){
-    return STEEDOS_SESSIONS[user.email];
-  }
-  const rest =  await axios({
-    url: `${STEEDOS_ROOT_URL}${VALIDATE_API}`,
+    url: `${projectRootUrl}${OIDC_API}`,
     method: 'post',
     data: {
-      utcOffset: 8
+      accessToken,
     },
-    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${user.space},${user.token}` }
+    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${accessToken}` }
   });
-  STEEDOS_SESSIONS[user.email] = rest.data;
-  return STEEDOS_SESSIONS[user.email];
+  return rest.data
+}
+
+const getSteedosToken = async (space, token)=>{
+
+  let steedosSession = await (await getCache()).get(`steedos-session/${space}/${token}`);
+  if (!steedosSession) {
+    const rest =  await axios({
+      url: `${STEEDOS_ROOT_URL}${VALIDATE_API}`,
+      method: 'post',
+      data: {
+        utcOffset: 8
+      },
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${space},${token}` }
+    });
+    steedosSession = rest.data;
+    await (await getCache()).set(`steedos-session/${space}/${token}`, steedosSession);
+  }
+
+  return steedosSession;
 }
 
 export const authOptions = {
@@ -79,36 +75,32 @@ export const authOptions = {
   callbacks: {
     async jwt(props) {
       const { token, account, user } = props;
+
       // Persist the OAuth access_token to the token right after signin
-      // if (account) {
-      //   token.accessToken = account.access_token
-      // }
-      if(user && user.steedos){
-        token.steedos = user.steedos;
-      }
-      return token
-    }, 
-    async session({ session, token, user }) {
-      // Send properties to the client, like an access_token from a provider.
-      // session.accessToken = token.accessToken
-      if(session.user){
-        if(token && token.steedos){
-          session.steedos = token.steedos;
-        }else{
-          const loginResult = await loginSteedosProject(session.user);
-          if(loginResult.space && loginResult.token){
-            session.steedos = {
-              space: loginResult.space,
-              token: loginResult.token,
-              userId: loginResult.user?.id,
-              name: loginResult.user?.name,
-              email: session.user.email
-            }
-          }
+      if (account && user && user.email) {
+
+        if (account.provider === 'keycloak') {
+          const loginResult = await loginSteedosByOIDC(account.access_token);
+          
+          user.space = loginResult.space;
+          user.token = loginResult.token;
         }
-        const steedosSession = await validateSteedosToken(session.steedos);
-        session.steedos = Object.assign(steedosSession, {token: steedosSession.authToken});
+
+        const token = {
+          user,
+        }
+
+        return token
       }
+
+      return token;
+    }, 
+
+    async session({ session, token, user }) {
+
+      session.user = token.user
+      session.error = token.error
+      session.steedos = await getSteedosToken(session.user.space, session.user.token);
 
       session.publicEnv ={
         STEEDOS_ROOT_URL: process.env.STEEDOS_ROOT_URL,
@@ -120,8 +112,6 @@ export const authOptions = {
   },
   events:{
     async signOut(token, session){
-      delete STEEDOS_TOKENS[token.token.email];
-      delete STEEDOS_SESSIONS[token.token.email];
     }
   },
   pages: {
