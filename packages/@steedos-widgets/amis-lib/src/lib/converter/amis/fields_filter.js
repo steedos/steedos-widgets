@@ -188,6 +188,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
                         "actionType": "dialog",
                         "dialog": {
                           "type": "dialog",
+                          "size": "md",
                           "title": "设置搜索项",
                           "body": [
                             {
@@ -254,7 +255,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
                             },
                             {
                               "type": "button",
-                              "label": "按钮",
+                              "label": "确认",
                               "onEvent": {
                                 "click": {
                                   "actions": [
