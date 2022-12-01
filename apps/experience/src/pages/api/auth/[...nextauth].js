@@ -99,7 +99,6 @@ export const authOptions = {
     async session({ session, token, user }) {
 
       session.user = token.user
-      session.accessToken = token.accessToken
       session.error = token.error
       session.steedos = await getSteedosToken(session.user.space, session.user.token);
 
