@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-14 17:57:19
+ * @LastEditTime: 2022-12-01 10:16:12
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef } from 'react';
@@ -37,7 +37,7 @@ export default function Page ({ formFactor }) {
     appId: app_id,
     name: tab_id,
   });
-
+  const scopeId = `${listViewId}-page`;
   return (
     <>
       {page && (
@@ -47,9 +47,10 @@ export default function Page ({ formFactor }) {
               listViewId: listViewId,
               appId: app_id,
               formFactor: formFactor,
+              scopeId: scopeId,
             }}
             className="steedos-listview"
-            id={`${listViewId}-page`}
+            id={scopeId}
             schema={JSON.parse(page.schema)}
             router={router}
           ></AmisRender>

@@ -88,47 +88,12 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
   const onSearchScript = `
     const appId = event.data.appId;
     const objectName = event.data.objectName;
-    const listViewId = SteedosUI.getRefId({
-      type: "listview",
-      appId: appId,
-      name: objectName,
-    });
-    const pageId = listViewId + "-page";
-    const scope = SteedosUI.getRef(${ctx.isListviewInit ? "listViewId" : "pageId"});
+    const scopeId = event.data.scopeId;
+    const scope = SteedosUI.getRef(scopeId);
     var filterForm = scope.getComponentById("listview_filter_form_" + objectName);
     var filterFormValues = filterForm.getValues();
     var listView = scope.getComponentById("listview_" + objectName);
     listView.handleFilterSubmit(filterFormValues);
-  `;
-  const openSearchalbeFieldsSettingScript = `
-    const appId = event.data.appId;
-    const objectName = event.data.objectName;
-    const listName = event.data.listName;
-    const listViewId = SteedosUI.getRefId({
-      type: "listview",
-      appId: appId,
-      name: objectName,
-    });
-    const pageId = listViewId + "-page";
-    const scope = SteedosUI.getRef(${ctx.isListviewInit ? "listViewId" : "pageId"});
-    var filterFormService = scope.getComponentById("service_listview_filter_form_" + objectName);
-    const searchableFields = filterFormService.props.data?.filterFormSearchableFields;
-    SteedosUI.Field.showFieldsTransfer({
-      objectName: "${objectSchema.name}",
-      data: {
-        fields: searchableFields,
-      },
-      onOk: (values) => {
-        filterFormService.setData({
-          filterFormSearchableFields: values.fields
-        });
-        const searchableFieldsStoreKey = \`\${objectName}_\${listName}_searchable_fields\`;
-        localStorage.setItem(searchableFieldsStoreKey, values.fields)
-      },
-      onCancel: () => {
-      },
-      title: '设置搜索项'
-    });
   `;
   const dataProviderInited = `
     const supperData = data.__super;
@@ -181,18 +146,116 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
               {
                 "type": "button",
                 "label": "设置搜索项",
-                "className": "ml-1",
-                "level": "link",
                 "onEvent": {
                   "click": {
                     "actions": [
                       {
-                        "actionType": "custom",
-                        "script": openSearchalbeFieldsSettingScript
+                        "actionType": "dialog",
+                        "dialog": {
+                          "type": "dialog",
+                          "title": "设置搜索项",
+                          "body": [
+                            {
+                              "type": "form",
+                              "title": "",
+                              "body": [
+                                {
+                                  "label": "",
+                                  "type": "transfer",
+                                  "name": "fields",
+                                  "id": "u:92c0b3cccca0",
+                                  "source": {
+                                    "method": "get",
+                                    "url": "${context.rootUrl}/service/api/amis-metadata-objects/objects/${objectName}/fields/options",
+                                    "dataType": "json",
+                                    "headers": {
+                                      "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                                    },
+                                    "data": null,
+                                    "requestAdaptor": "",
+                                    "adaptor": ""
+                                  },
+                                  "options": [],
+                                  "required": true,
+                                  "placeholder": "-",
+                                  "className": "col-span-2 m-0",
+                                  "checkAll": false,
+                                  "searchable": true,
+                                  "sortable": true,
+                                  "joinValues": false,
+                                  "extractValue": true,
+                                  "multiple": true
+                                }
+                              ],
+                              "id": "u:e5ac506d5683",
+                              "mode": "normal",
+                              "persistData": false,
+                              "promptPageLeave": true,
+                              "name": "form",
+                              "debug": false,
+                              "actions": [],
+                              "panelClassName": "m-0",
+                              "bodyClassName": "p-4",
+                              "className": "steedos-amis-form"
+                            }
+                          ],
+                          "id": "u:ca99fa9fe1b1",
+                          "actions": [
+                            {
+                              "type": "button",
+                              "label": "取消",
+                              "onEvent": {
+                                "click": {
+                                  "actions": [
+                                    {
+                                      "componentId": "",
+                                      "args": {},
+                                      "actionType": "closeDialog"
+                                    }
+                                  ]
+                                }
+                              },
+                              "id": "u:4e447b5ca72a"
+                            },
+                            {
+                              "type": "button",
+                              "label": "按钮",
+                              "onEvent": {
+                                "click": {
+                                  "actions": [
+                                    {
+                                      "actionType": "custom",
+                                      "script": "debugger;const listName = context.props.data.listName;const objectName = context.props.data.objectName;\ndoAction({\n  actionType: 'setValue',\n  args: {\n    value: {filterFormSearchableFields: context.props.data.fields}\n  },\n  componentId: \"service_listview_filter_form_\" + objectName,\n})\n; const searchableFieldsStoreKey = `${objectName}_${listName}_searchable_fields`; localStorage.setItem(searchableFieldsStoreKey, context.props.data.fields);"
+                                    },
+                                    {
+                                      "componentId": "",
+                                      "args": {},
+                                      "actionType": "closeDrawer"
+                                    }
+                                  ]
+                                }
+                              },
+                              "id": "u:14e7388fecd3",
+                              "level": "primary"
+                            }
+                          ],
+                          "closeOnEsc": false,
+                          "closeOnOutside": false,
+                          "showCloseButton": true,
+                          "data": {
+                            "&": "$$",
+                            "objectName": "${objectName}",
+                            "listName": "${listName}",
+                            "context": "${context}",
+                            "fields": "${filterFormSearchableFields}"
+                          }
+                        }
                       }
                     ]
                   }
-                }
+                },
+                "id": "u:b96d84868a5a",
+                "level": "link"
               }
             ],
             "size": "xs",

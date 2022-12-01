@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-08 09:19:16
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-14 16:01:43
+ * @LastEditTime: 2022-12-01 10:15:55
  * @Description:
  */
 
@@ -76,6 +76,7 @@ export function DefaultListview({ router, formFactor }) {
               listViewId: listViewId,
               appId: app_id,
               formFactor: formFactor,
+              scopeId: listViewId,
             }}
             className="steedos-listview"
             id={listViewId}
