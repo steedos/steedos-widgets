@@ -260,7 +260,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
                                   "actions": [
                                     {
                                       "actionType": "custom",
-                                      "script": "debugger;const listName = context.props.data.listName;const objectName = context.props.data.objectName;\ndoAction({\n  actionType: 'setValue',\n  args: {\n    value: {filterFormSearchableFields: context.props.data.fields}\n  },\n  componentId: \"service_listview_filter_form_\" + objectName,\n})\n; const searchableFieldsStoreKey = `${objectName}_${listName}_searchable_fields`; localStorage.setItem(searchableFieldsStoreKey, context.props.data.fields);"
+                                      "script": "const listName = context.props.data.listName;const objectName = context.props.data.objectName;\ndoAction({\n  actionType: 'setValue',\n  args: {\n    value: {filterFormSearchableFields: context.props.data.fields}\n  },\n  componentId: \"service_listview_filter_form_\" + objectName,\n})\n; const searchableFieldsStoreKey = `${objectName}_${listName}_searchable_fields`; localStorage.setItem(searchableFieldsStoreKey, context.props.data.fields);"
                                     },
                                     {
                                       "componentId": "",
