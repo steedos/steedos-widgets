@@ -430,6 +430,8 @@ export async function getTableApi(mainObject, fields, options){
         if(localSearchableFilter){
             selfData = Object.assign({}, JSON.parse(localSearchableFilter), selfData);
         }
+        delete selfData.context;
+        delete selfData.global;
         localStorage.setItem(searchableFilterStoreKey, JSON.stringify(selfData));
     }
     catch(ex){
