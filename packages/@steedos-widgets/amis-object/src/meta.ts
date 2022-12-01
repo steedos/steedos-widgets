@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-26 15:58:26
+ * @LastEditTime: 2022-12-01 15:51:11
  * @Description: 
  */
 // import Hello from "./metas/Hello";
@@ -12,6 +12,7 @@ import AmisObjectTable from "./metas/AmisObjectTable";
 import AmisRecordDetailHeader from "./metas/AmisRecordDetailHeader";
 import AmisSelectUser from "./metas/AmisSelectUser";
 import AmisRecordDetailRelatedList from "./metas/AmisRecordDetailRelatedList";
+import AmisRecordDetailRelatedLists from "./metas/AmisRecordDetailRelatedLists";
 import AmisProvider from "./metas/AmisProvider";
 
 import AmisObjectFieldLookup from './metas/AmisObjectFieldLookup';
@@ -27,6 +28,7 @@ const components = [
   AmisRecordDetailHeader, 
   AmisSelectUser, 
   AmisRecordDetailRelatedList, 
+  AmisRecordDetailRelatedLists,
   AmisProvider, 
   AmisObjectFieldLookup,
   AmisObjectTable,
@@ -44,6 +46,7 @@ const componentList = [
       AmisRecordDetailHeader, 
       AmisSelectUser,
       AmisRecordDetailRelatedList,
+      AmisRecordDetailRelatedLists,
       AmisProvider,
       AmisObjectFieldLookup,
       AmisObjectTable,

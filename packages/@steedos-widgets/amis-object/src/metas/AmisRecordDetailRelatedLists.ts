@@ -2,20 +2,20 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-01 16:06:37
+ * @LastEditTime: 2022-12-01 16:08:49
  * @Description: 
  */
 const config: any = {
   componentType: 'amisSchema', // amisSchema || react 
   group: "华炎魔方",
-  componentName: "AmisRecordDetailRelatedList",
-  title: "相关列表-单一",
+  componentName: "AmisRecordDetailRelatedLists",
+  title: "相关列表",
   docUrl: "",
   screenshot: "",
   npm: {
     package: "@steedos-widgets/amis-object",
     version: "{{version}}",
-    exportName: "AmisRecordDetailRelatedList",
+    exportName: "AmisRecordDetailRelatedLists",
     main: "",
     destructuring: true,
     subName: ""
@@ -30,11 +30,6 @@ const config: any = {
       name: "recordId",
       propType: "string",
       description: '父级记录',
-    },
-    {
-      name: "relatedObjectApiName",
-      propType: "string",
-      description: '相关列表对象',
     }
   ],
   preview: {
@@ -43,7 +38,7 @@ const config: any = {
   engines: ["amis"],
   // settings for amis.
   amis: {
-    name: 'steedos-object-related-listview',
+    name: 'steedos-object-related-lists',
     icon: "fa-fw fa fa-list-alt"
   }
 };
@@ -80,12 +75,10 @@ export default {
         label: config.title,
         objectApiName: "${objectName}",
         recordId: "${recordId}",
-        // relatedObjectApiName: "contacts"
       },
       previewSchema: {
         type: config.amis.name,
         objectApiName: "accounts",
-        // relatedObjectApiName: "contacts"
       },
       panelTitle: "设置",
       panelControls: [
@@ -116,22 +109,6 @@ export default {
           type: "text",
           name: "recordId",
           label: "父级记录"
-        },
-        {
-          "type": "text",
-          "label": "相关列表对象",
-          "name": "relatedObjectApiName",
-          // "searchable": true,
-          // "multiple": false,
-          // "source": {
-          //   "method": "get",
-          //   "url": "/service/api/amis-design/related_objects/${objectApiName}",
-          //   "requestAdaptor": "console.log('xiang==>',api); api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
-          //   "sendOn": "this.objectApiName"
-          // },
-          // "labelField": "label",
-          // "valueField": "name",
-          // "menuTpl": ""
         }
       ]
     }
