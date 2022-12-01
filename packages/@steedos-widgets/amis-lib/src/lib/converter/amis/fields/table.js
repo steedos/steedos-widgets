@@ -132,10 +132,10 @@ function getButtonVisibleOn(button){
     }
 
     if(visible){
-        if(visible.indexOf("Meteor.") > 0 || visible.indexOf("Creator.") > 0 || visible.indexOf("Session.") > 0){
-            console.warn('无效的visible', visible)
-            return 'false';
-        }
+        // if(visible.indexOf("Meteor.") > 0 || visible.indexOf("Creator.") > 0 || visible.indexOf("Session.") > 0){
+        //     console.warn('无效的visible', visible)
+        //     return 'false';
+        // }
         if(visible.trim().startsWith('function')){
             return `${visible}(objectName, _id, recordPermissions, data)`
         }
