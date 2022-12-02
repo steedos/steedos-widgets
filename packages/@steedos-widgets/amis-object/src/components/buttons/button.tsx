@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-21 10:27:43
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-14 10:15:41
+ * @LastEditTime: 2022-12-02 18:36:26
  * @Description: 
  */
 import React, { useEffect, useState } from 'react'
@@ -89,7 +89,7 @@ export const AmisObjectButton = (props) => {
         return (
             <button
               onClick={buttonClick}
-              className={`antd-Button ${className ? className : ''}`}
+              className={`antd-Button antd-Button--default antd-Button--size-default ${className ? className : ''}`}
             >
               {(button as any).label}
             </button>
