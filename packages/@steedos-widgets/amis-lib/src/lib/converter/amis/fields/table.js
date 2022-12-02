@@ -43,7 +43,7 @@ async function getTableColumns(fields, options){
             columns.push({
                 "type": "button",
                 className:"whitespace-nowrap",
-                "label": `\${${field.name}}`,
+                "label": `${field.label}`,
                 "type": "button",
                 "actionType": "ajax",
                 "api": {
