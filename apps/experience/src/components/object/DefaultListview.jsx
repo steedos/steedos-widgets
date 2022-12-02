@@ -24,6 +24,7 @@ export function DefaultListview({ router, formFactor }) {
   const getListviewSchema = (listviewName) => {
     getListSchema(app_id, tab_id, listviewName, {
       formFactor: formFactor,
+      listViewId: listViewId
     }).then((data) => {
       setSchema(data);
     });
