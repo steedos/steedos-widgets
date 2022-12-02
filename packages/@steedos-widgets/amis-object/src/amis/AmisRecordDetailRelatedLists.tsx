@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-01 15:49:30
+ * @LastEditTime: 2022-12-01 16:50:05
  * @Description: 
  */
 import { getObjectRelatedList } from '@steedos-widgets/amis-lib'
@@ -27,6 +27,7 @@ export const AmisRecordDetailRelatedLists = async (props) => {
       return {
         type: 'steedos-object-related-listview',
         objectApiName: objectApiName,
+        recordId: recordId,
         relatedObjectApiName: item.object_name,
         foreign_key: item.foreign_key,
       }
