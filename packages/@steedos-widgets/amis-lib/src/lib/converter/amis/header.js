@@ -280,7 +280,8 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
                               },
                               {
                                 "type": "tpl",
-                                "tpl": "${(record && uiSchema && record[uiSchema.NAME_FIELD_KEY]) || name}",
+                                "tpl": "${name}",
+                                // "tpl": "${(record && uiSchema && record[uiSchema.NAME_FIELD_KEY]) || name}",
                                 "inline": false,
                                 "wrapperComponent": "",
                                 "style": {
@@ -321,7 +322,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
           "Authorization": "Bearer ${context.tenantId},${context.authToken}"
         },
         "data": {
-          "query": `{rows:${name}(filters: ["_id","=","${recordId}"]){_id, ${NAME_FIELD_KEY || 'name'}} }`
+          "query": `{rows:${name}(filters: ["_id","=","${recordId}"]){_id, name: ${NAME_FIELD_KEY || 'name'}} }`
         },
         "sendOn": `${!!recordId}`,
         "requestAdaptor": "",
