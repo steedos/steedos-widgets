@@ -306,6 +306,16 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
                 "args": {
                   "value": { record: "${event.data}", uiSchema: objectSchema }
                 }
+              },
+              {
+                actionType: 'broadcast',
+                eventName: "recordLoaded",
+                args: {
+                  eventName: "recordLoaded"
+                },
+                data: {
+                  record: "${event.data}"
+                }
               }
             ]
           }
