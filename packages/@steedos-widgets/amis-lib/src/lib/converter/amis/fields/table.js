@@ -344,7 +344,7 @@ export async function getTableApi(mainObject, fields, options){
             if(filters.length > 0 ){
                 filters = [filters, 'and', searchableFilter];
             }else{
-                searchableFilter = filters;
+                filters = searchableFilter;
             }
         }
 
