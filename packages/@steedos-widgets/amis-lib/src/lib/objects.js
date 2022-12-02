@@ -225,6 +225,7 @@ export async function getListSchema(
        */
       if (localSearchableFilter) {
         localSearchableFilter = JSON.parse(localSearchableFilter);
+        // localSearchableFilter.perPage = 3;
         let listSchema = {};
         if(localSearchableFilter.orderBy){
             listSchema.orderBy = localSearchableFilter.orderBy;
@@ -237,11 +238,12 @@ export async function getListSchema(
                 perPage: localSearchableFilter.perPage
             }
         }
-        if(localSearchableFilter.page){
-            listSchema.defaultParams = Object.assign({}, listSchema.defaultParams, {
-                page: localSearchableFilter.page
-            });
-        }
+        // TODO:翻页页码在这里无效，crud不支持把页码直接写到组件属性中
+        // if(localSearchableFilter.page){
+        //     listSchema.defaultParams = Object.assign({}, listSchema.defaultParams, {
+        //         page: localSearchableFilter.page
+        //     });
+        // }
         defaults.listSchema = defaultsDeep({}, listSchema, defaults.listSchema || {});
       }
     }
