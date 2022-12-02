@@ -98,7 +98,7 @@ export default {
           "source": {
             "method": "get",
             "url": "/service/api/amis-design/objects",
-            "requestAdaptor": "console.log('api', api);api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
+            "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
             "adaptor": `
               let data = payload.data;
               payload.unshift({
@@ -118,20 +118,23 @@ export default {
           label: "父级记录"
         },
         {
-          "type": "text",
+          "type": "select",
           "label": "相关列表对象",
           "name": "relatedObjectApiName",
-          // "searchable": true,
-          // "multiple": false,
-          // "source": {
-          //   "method": "get",
-          //   "url": "/service/api/amis-design/related_objects/${objectApiName}",
-          //   "requestAdaptor": "console.log('xiang==>',api); api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
-          //   "sendOn": "this.objectApiName"
-          // },
-          // "labelField": "label",
-          // "valueField": "name",
-          // "menuTpl": ""
+          "searchable": true,
+          "multiple": false,
+          "source": {
+            "method": "get",
+            "data": {
+              "objectName": "${objectName}"
+            },
+            "url": "/service/api/amis-design/related_objects/${objectApiName}",
+            "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url.replaceAll('${objectName}',api.body.objectName); if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
+            "sendOn": "this.objectApiName"
+          },
+          "labelField": "label",
+          "valueField": "name",
+          "menuTpl": ""
         }
       ]
     }
