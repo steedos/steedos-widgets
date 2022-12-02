@@ -204,7 +204,8 @@ export async function getObjectList(objectSchema, fields, options){
         objectName: objectSchema.name,
         _id: null,
         recordPermissions: objectSchema.permissions,
-        uiSchema: objectSchema
+        uiSchema: objectSchema,
+        loaded: false //crud接收适配器中设置为true，否则就是刷新浏览器第一次加载
       },
       body: body
     }

@@ -283,28 +283,32 @@ export async function getTableApi(mainObject, fields, options){
     api.data.$term = "$term";
     api.data.$self = "$$";
     api.data.filter = "$filter"
+    api.data.loaded = "${loaded}"
     api.requestAdaptor = `
         let selfData = JSON.parse(JSON.stringify(api.data.$self));
-        try{
-            // TODO: 不应该直接在这里取localStorage，应该从外面传入
-            const selfSupperData = api.data.$self.__super.__super;
-            const listViewId = selfSupperData.listViewId;
-            const searchableFilterStoreKey = location.pathname + "/crud/" + listViewId ;
-            let localSearchableFilter = localStorage.getItem(searchableFilterStoreKey);
-            localSearchableFilter = JSON.parse(localSearchableFilter);
-            if(localSearchableFilter){
-                selfData = Object.assign({}, localSearchableFilter, selfData);
-                if(!api.data.filter){
+        if(!api.data.loaded){
+            // 只有第一次加载组件，比如刷新浏览器时才需要从本地存储中合并过滤条件等参数
+            // 否则翻页页码会因为刷新浏览器时api.data.pageNo始终有默认值为1无法生效
+            try{
+                // TODO: 不应该直接在这里取localStorage，应该从外面传入
+                const selfSupperData = api.data.$self.__super.__super;
+                const listViewId = selfSupperData.listViewId;
+                const searchableFilterStoreKey = location.pathname + "/crud/" + listViewId ;
+                let localSearchableFilter = localStorage.getItem(searchableFilterStoreKey);
+                localSearchableFilter = JSON.parse(localSearchableFilter);
+                if(localSearchableFilter){
+                    selfData = Object.assign({}, selfData, localSearchableFilter);
                     api.data.filter = localSearchableFilter.filter;
+                    api.data.pageNo = localSearchableFilter.page;
+                    // TODO:翻页在这里无效，因为刷新浏览器时api.data.pageNo始终有默认值为1
+                    // if(!api.data.pageNo){
+                    //     api.data.pageNo = localSearchableFilter.page;
+                    // }
                 }
-                // TODO:翻页在这里无效，因为刷新浏览器时api.data.pageNo始终有默认值为1
-                // if(!api.data.pageNo){
-                //     api.data.pageNo = localSearchableFilter.page;
-                // }
             }
-        }
-        catch(ex){
-            console.error("本地存储中crud参数解析异常：", ex);
+            catch(ex){
+                console.error("本地存储中crud参数解析异常：", ex);
+            }
         }
         ${globalFilter ? `var filters = ${JSON.stringify(globalFilter)};` : 'var filters = [];'}
         if(_.isEmpty(filters)){
@@ -435,15 +439,24 @@ export async function getTableApi(mainObject, fields, options){
         let localSearchableFilter = localStorage.getItem(searchableFilterStoreKey);
         let selfData = JSON.parse(JSON.stringify(api.data.$self));
         if(localSearchableFilter){
-            selfData = Object.assign({}, JSON.parse(localSearchableFilter), selfData);
+            if(api.data.loaded){
+                selfData = Object.assign({}, JSON.parse(localSearchableFilter), selfData);
+            }
+            else{
+                selfData = Object.assign({}, selfData, JSON.parse(localSearchableFilter));
+            }
         }
         delete selfData.context;
         delete selfData.global;
         localStorage.setItem(searchableFilterStoreKey, JSON.stringify(selfData));
+        // 返回页码到UI界面
+        payload.data.page= selfData.page;
     }
     catch(ex){
         console.error("本地存储中crud参数解析异常：", ex);
     }
+    // 标记加载过，后续优先从本地存储中加载相关参数
+    payload.data.loaded= true;
     return payload;
     `;
     return api;
