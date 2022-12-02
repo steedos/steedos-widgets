@@ -285,6 +285,27 @@ export async function getTableApi(mainObject, fields, options){
     api.data.filter = "$filter"
     api.requestAdaptor = `
         let selfData = JSON.parse(JSON.stringify(api.data.$self));
+        try{
+            // TODO: 不应该直接在这里取localStorage，应该从外面传入
+            const selfSupperData = api.data.$self.__super.__super;
+            const listViewId = selfSupperData.listViewId;
+            const searchableFilterStoreKey = location.pathname + "/crud/" + listViewId ;
+            let localSearchableFilter = localStorage.getItem(searchableFilterStoreKey);
+            localSearchableFilter = JSON.parse(localSearchableFilter);
+            if(localSearchableFilter){
+                selfData = Object.assign({}, localSearchableFilter, selfData);
+                if(!api.data.filter){
+                    api.data.filter = localSearchableFilter.filter;
+                }
+                // TODO:翻页在这里无效，因为刷新浏览器时api.data.pageNo始终有默认值为1
+                // if(!api.data.pageNo){
+                //     api.data.pageNo = localSearchableFilter.page;
+                // }
+            }
+        }
+        catch(ex){
+            console.error("本地存储中crud参数解析异常：", ex);
+        }
         ${globalFilter ? `var filters = ${JSON.stringify(globalFilter)};` : 'var filters = [];'}
         if(_.isEmpty(filters)){
             filters = api.data.filter || [${JSON.stringify(filter)}];
@@ -305,20 +326,6 @@ export async function getTableApi(mainObject, fields, options){
             filters = [["${valueField.name}", "=", selfData.value]];
         }
         var searchableFilter = [];
-        try{
-            // TODO: 不应该直接在这里取localStorage，应该从外面传入
-            const selfSupperData = api.data.$self.__super.__super;
-            const listViewId = selfSupperData.listViewId;
-            const searchableFilterStoreKey = location.pathname + "/crud/" + listViewId ;
-            let localSearchableFilter = localStorage.getItem(searchableFilterStoreKey);
-            if(localSearchableFilter){
-                selfData = Object.assign({}, JSON.parse(localSearchableFilter), selfData);
-            }
-        }
-        catch(ex){
-            console.error("本地存储中crud参数解析异常：", ex);
-        }
-
         _.each(selfData, (value, key)=>{
             if(!_.isEmpty(value) || _.isBoolean(value)){
                 if(_.startsWith(key, '__searchable__between__')){
@@ -337,7 +344,7 @@ export async function getTableApi(mainObject, fields, options){
             if(filters.length > 0 ){
                 filters = [filters, 'and', searchableFilter];
             }else{
-                searchableFilter = filters;
+                filters = searchableFilter;
             }
         }
 
