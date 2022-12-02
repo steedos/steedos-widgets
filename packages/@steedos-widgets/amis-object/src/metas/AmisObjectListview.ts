@@ -107,34 +107,37 @@ export default {
           "menuTpl": ""
         },
         {
-          type: "text",
+          type: "select",
           name: "listName",
-          // "multiple": false,
+          multiple: false,
           label: "视图",
           hiddenOn: "this.showHeader",
-          // "source": {
-          //   "url": "/service/api/amis-design/object/${objectApiName === '${objectName}' ? 'space_users' : objectApiName}",
-          //   "method": "get",
-          //   "messages": {
-          //   },
-          //   "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
-          //   "adaptor": `
-          //       const listViews = payload && payload.list_views;
-          //       if(!listViews){
-          //         return;
-          //       }
-          //       const options = listViews.map(function (item) {
-          //         return { value: item.name || item._id, label: item.label || item.name }
-          //       })
-          //       payload.data = {
-          //         options
-          //       }
-          //       return payload;
-          //   `,
-          //   "sendOn": "this.objectApiName"
-          // },
-          // "labelField": "label",
-          // "valueField": "value"
+          "source": {
+            "url": "/service/api/amis-design/object/${objectApiName}",
+            "method": "get",
+            "messages": {
+            },
+            "data": {
+              "objectName": "${objectName}"
+            },
+            "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url.replaceAll('${objectName}',api.body.objectName); if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
+            "adaptor": `
+                const listViews = payload && payload.list_views;
+                if(!listViews){
+                  return;
+                }
+                const options = listViews.map(function (item) {
+                  return { value: item.name || item._id, label: item.label || item.name }
+                })
+                payload.data = {
+                  options
+                }
+                return payload;
+            `,
+            "sendOn": "this.objectApiName"
+          },
+          "labelField": "label",
+          "valueField": "value"
         },
         {
           "type": "number",
