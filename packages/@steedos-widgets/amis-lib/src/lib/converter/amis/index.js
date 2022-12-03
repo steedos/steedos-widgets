@@ -301,13 +301,13 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
           "fetchInited": {
             "weight": 0,
             "actions": [
-              {
-                "componentId": `page_${objectSchema.name}_record_detail`,
-                "actionType": "setValue",
-                "args": {
-                  "value": { record: "${event.data}", uiSchema: objectSchema }
-                }
-              },
+              // {
+              //   "componentId": `page_${objectSchema.name}_record_detail`,
+              //   "actionType": "setValue",
+              //   "args": {
+              //     "value": { record: "${event.data}", uiSchema: objectSchema }
+              //   }
+              // },
               {
                 actionType: 'broadcast',
                 eventName: "recordLoaded",
