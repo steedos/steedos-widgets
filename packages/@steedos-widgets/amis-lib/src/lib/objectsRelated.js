@@ -137,7 +137,9 @@ export async function getAmisObjectRelatedList(
                                 filter: ["${relatedKey}", "=", "${masterRecordId}"],
                                 objectName: "${objectName}",
                                 recordId: "${masterRecordId}",
-                                ...{[arr[1]]: getRelatedFieldValue(objectName, "${recordId}", relatedSchema.uiSchema, arr[1])}
+                                defaultData: {
+                                    ...{[arr[1]]: getRelatedFieldValue(objectName, "${recordId}", relatedSchema.uiSchema, arr[1])}
+                                }
                             }
                         }
                     ]
