@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-07 15:18:27
+ * @LastEditTime: 2022-12-05 13:32:43
  * @Description:
  */
 
@@ -10,14 +10,15 @@ import {
     getObjectList
 } from "./converter/amis/index";
 import { getObjectRecordDetailRelatedListHeader } from './converter/amis/header';
-import { isEmpty,  find, isString, forEach } from "lodash";
+import { isEmpty,  find, isString, forEach, keys, findKey } from "lodash";
 import { getListViewItemButtons } from './buttons'
 import { getUISchema, getListSchema, getField } from './objects'
 
-const getRelatedFieldValue = (masterObjectName, record_id, uiSchema, foreign_key) => {
+export const getRelatedFieldValue = (masterObjectName, record_id, uiSchema, foreign_key) => {
     const relatedField = find(uiSchema.fields, (field) => {
         return foreign_key === field?.name
     });
+    console.log(`getRelatedFieldValue`, relatedField, uiSchema, foreign_key)
     if (!isString(relatedField.reference_to)) {
         return { o: masterObjectName, ids: [record_id] }
     } else if (relatedField.multiple) {
@@ -156,3 +157,50 @@ export async function getAmisObjectRelatedList(
 }
 
 // 获取单个相关表
+export async function getRecordDetailRelatedListSchema(objectName, recordId, relatedObjectName, relatedKey){
+    // console.log('b==>',objectName,recordId,relatedObjectName)
+    const relatedObjectUiSchema = await getUISchema(relatedObjectName);
+    const { list_views, label , icon, fields } = relatedObjectUiSchema;
+    const firstListViewName = keys(list_views)[0];
+    if(!relatedKey){
+        relatedKey = findKey(fields, function(field) { 
+           return ["lookup","master_detail"].indexOf(field.type) > -1 && field.reference_to === objectName; 
+       });
+    }
+    console.log(`relatedKey`, relatedKey)
+    const globalFilter = [relatedKey,'=',recordId];
+    const recordRelatedListHeader = await getObjectRecordDetailRelatedListHeader(relatedObjectUiSchema);
+    const options = {
+        globalFilter,
+        defaults: {
+            listSchema: { headerToolbar:[],columnsTogglable:false },
+            headerSchema: recordRelatedListHeader
+        },
+        showHeader: true
+    }
+    const amisSchema= (await getListSchema(null, relatedObjectName, firstListViewName, options)).amisSchema;
+    return {
+        uiSchema: relatedObjectUiSchema,
+        amisSchema: {
+            type: "service",
+            data: {
+                masterObjectName: objectName,
+                masterRecordId: "${recordId}",
+                relatedKey: relatedKey,   
+                objectName: relatedObjectName,
+                listViewId: `amis-\${appId}-${relatedObjectName}-listview`,
+            },
+            body:[
+                {
+                    ...amisSchema,
+                    data: {
+                        filter: ["${relatedKey}", "=", "${masterRecordId}"],
+                        objectName: "${objectName}",
+                        recordId: "${masterRecordId}",
+                        ...{[relatedKey]: getRelatedFieldValue(objectName, "${recordId}", relatedObjectUiSchema, relatedKey)}
+                    }
+                }
+            ]
+        }
+    };
+}
