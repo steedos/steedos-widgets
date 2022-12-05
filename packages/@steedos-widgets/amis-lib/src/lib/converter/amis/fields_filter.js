@@ -102,12 +102,20 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
   const dataProviderInited = `
     const searchableFieldsStoreKey = location.pathname + "/searchable_fields/" + data.listViewId ;
     let defaultSearchableFields = localStorage.getItem(searchableFieldsStoreKey);
-    if(!defaultSearchableFields){
-      let listView = data.uiSchema && data.uiSchema.list_views[data.listName];
+    if(!defaultSearchableFields && data.uiSchema){
+      let listView = data.uiSchema.list_views[data.listName];
       defaultSearchableFields = listView && listView.searchable_fields;
       if(defaultSearchableFields && defaultSearchableFields.length){
         defaultSearchableFields = _.map(defaultSearchableFields, 'field');
       }
+    }
+    if(_.isEmpty(defaultSearchableFields) && data.uiSchema){
+      defaultSearchableFields = _.map(
+        _.filter(_.values(data.uiSchema.fields), (field) => {
+          return field.searchable;
+        }),
+        "name"
+      );
     }
     setData({ filterFormSearchableFields: defaultSearchableFields });
   `;

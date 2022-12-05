@@ -21,7 +21,7 @@ export function SearchableFieldsFilter({ schema, listViewId, listViewName, appId
       defaultSearchableFields = map(defaultSearchableFields, 'field');
     }
   }
-  if(!defaultSearchableFields){
+  if(isEmpty(defaultSearchableFields)){
     defaultSearchableFields = map(
       filter(values(schema.uiSchema.fields), (field) => {
         return field.searchable;
