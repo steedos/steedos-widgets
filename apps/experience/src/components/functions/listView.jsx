@@ -104,7 +104,12 @@ export const ListView = {
             if(isEmpty(userFilter)){
                 return listView.filters;
             }else{
-                return [listView.filters, 'and', userFilter];
+                if(isEmpty(listView.filters)){
+                    return userFilter;
+                }
+                else{
+                    return [listView.filters, 'and', userFilter];
+                }
             }
         }
     }

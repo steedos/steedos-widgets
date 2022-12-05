@@ -449,7 +449,7 @@ export async function getTableApi(mainObject, fields, options){
         let selfData = JSON.parse(JSON.stringify(api.data.$self));
         if(localListViewProps){
             localListViewProps = JSON.parse(localListViewProps);
-            selfData = Object.assign({}, localListViewProps, selfData);
+            selfData = Object.assign({}, localListViewProps, selfData, { filter: api.data.filter });
             if(!api.data.loaded){
                 // 第一次加载组件，比如刷新浏览器时因为api.data.pageNo有默认值1
                 // 所以会把localSearchableFilter中已经存过的页码覆盖
