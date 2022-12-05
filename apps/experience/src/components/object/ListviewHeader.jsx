@@ -88,7 +88,7 @@ export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: 
     SteedosUI.ListView.showFilter(schema.uiSchema.name, {
       listView: selectedListView,
       data: {
-        filters: SteedosUI.ListView.getVisibleFilter(selectedListView, filter),
+        filters: SteedosUI.ListView.getVisibleFilter(selectedListView, filter, { listViewId })
       },
       onFilterChange: (filter) => {
         const scope = SteedosUI.getRef(listViewId);
@@ -103,7 +103,8 @@ export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: 
                 ),
               },
               schema.amisSchema.data, 
-              getDefaultRenderData()
+              getDefaultRenderData(),
+              { listViewId }
             ),
           },
           () => {

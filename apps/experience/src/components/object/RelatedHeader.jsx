@@ -47,7 +47,7 @@ export const RelatedHeader = ({app_id, foreign_key, masterObjectName, object_nam
         SteedosUI.ListView.showFilter(schema.uiSchema.name, {
           listView: selectedListView,
           data: {
-            filters: SteedosUI.ListView.getVisibleFilter(selectedListView, filter),
+            filters: SteedosUI.ListView.getVisibleFilter(selectedListView, filter, { listViewId }),
           },
           onFilterChange: (filter) => {
             const scope = SteedosUI.getRef(listViewId);

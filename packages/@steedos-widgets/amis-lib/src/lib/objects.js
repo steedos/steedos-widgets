@@ -211,10 +211,10 @@ export async function getListSchema(
     }
 
     try {
-      const searchableFilterStoreKey = location.pathname + "/crud/" + ctx.listViewId;
-      let localSearchableFilter = localStorage.getItem(searchableFilterStoreKey);
+      const listViewPropsStoreKey = location.pathname + "/crud/" + ctx.listViewId;
+      let localListViewProps = localStorage.getItem(listViewPropsStoreKey);
       /**
-       * localSearchableFiltercrud规范来自crud请求api中api.data.$self参数值的。
+       * localListViewProps规范来自crud请求api中api.data.$self参数值的。
        * 比如：{"perPage":20,"page":1,"__searchable__name":"7","__searchable__between__n1__c":[null,null],"filter":[["name","contains","a"]]}
        * __searchable__...:顶部放大镜搜索条件
        * filter:右侧过滤器
@@ -223,27 +223,21 @@ export async function getListSchema(
        * orderBy:排序字段
        * orderDir:排序方向
        */
-      if (localSearchableFilter) {
-        localSearchableFilter = JSON.parse(localSearchableFilter);
-        // localSearchableFilter.perPage = 3;
+      if (localListViewProps) {
+        localListViewProps = JSON.parse(localListViewProps);
+        // localListViewProps.perPage = 3;
         let listSchema = {};
-        if(localSearchableFilter.orderBy){
-            listSchema.orderBy = localSearchableFilter.orderBy;
+        if(localListViewProps.orderBy){
+            listSchema.orderBy = localListViewProps.orderBy;
         }
-        if(localSearchableFilter.orderDir){
-            listSchema.orderDir = localSearchableFilter.orderDir;
+        if(localListViewProps.orderDir){
+            listSchema.orderDir = localListViewProps.orderDir;
         }
-        if(localSearchableFilter.perPage){
+        if(localListViewProps.perPage){
             listSchema.defaultParams = {
-                perPage: localSearchableFilter.perPage
+                perPage: localListViewProps.perPage
             }
         }
-        // TODO:翻页页码在这里无效，crud不支持把页码直接写到组件属性中
-        // if(localSearchableFilter.page){
-        //     listSchema.defaultParams = Object.assign({}, listSchema.defaultParams, {
-        //         page: localSearchableFilter.page
-        //     });
-        // }
         defaults.listSchema = defaultsDeep({}, listSchema, defaults.listSchema || {});
       }
     }
