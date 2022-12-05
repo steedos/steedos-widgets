@@ -15,6 +15,13 @@ export function SearchableFieldsFilter({ schema, listViewId, listViewName, appId
   const searchableFieldsStoreKey = location.pathname + "/searchable_fields/" + listViewId;
   let defaultSearchableFields = localStorage.getItem(searchableFieldsStoreKey);
   if(!defaultSearchableFields){
+    let listView = schema.uiSchema.list_views[listViewName];
+    defaultSearchableFields = listView && listView.searchable_fields;
+    if(defaultSearchableFields && defaultSearchableFields.length){
+      defaultSearchableFields = map(defaultSearchableFields, 'field');
+    }
+  }
+  if(!defaultSearchableFields){
     defaultSearchableFields = map(
       filter(values(schema.uiSchema.fields), (field) => {
         return field.searchable;
