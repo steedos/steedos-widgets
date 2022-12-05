@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-14 15:58:05
+ * @LastEditTime: 2022-12-05 11:46:38
  * @Description:
  */
 import { fetchAPI } from "./steedos.client";
@@ -339,31 +339,50 @@ export async function getRecordDetailHeaderSchema(objectName,recordId){
     };
 }
 
-export async function getRecordDetailRelatedListSchema(objectName,recordId,relatedObjectName){
-    // console.log('b==>',objectName,recordId,relatedObjectName)
-    const relatedObjectUiSchema = await getUISchema(relatedObjectName);
-    const { list_views, label , icon, fields } = relatedObjectUiSchema;
-    const firstListViewName = keys(list_views)[0];
-    const filterFieldName = findKey(fields, function(field) { 
-        return ["lookup","master_detail"].indexOf(field.type) > -1 && field.reference_to === objectName; 
-    });
-    const globalFilter = [filterFieldName,'=',recordId];
-    const recordRelatedListHeader = await getObjectRecordDetailRelatedListHeader(relatedObjectUiSchema);
-    const options = {
-        globalFilter,
-        defaults: {
-            listSchema: { headerToolbar:[],columnsTogglable:false },
-            headerSchema: recordRelatedListHeader
-        },
-        showHeader: true
-    }
-    const amisSchema= (await getListSchema(null, relatedObjectName, firstListViewName, options)).amisSchema;
-
-    return {
-        uiSchema: relatedObjectUiSchema,
-        amisSchema
-    };
-}
+// export async function getRecordDetailRelatedListSchema(objectName,recordId,relatedObjectName){
+//     // console.log('b==>',objectName,recordId,relatedObjectName)
+//     const relatedObjectUiSchema = await getUISchema(relatedObjectName);
+//     const { list_views, label , icon, fields } = relatedObjectUiSchema;
+//     const firstListViewName = keys(list_views)[0];
+//     const relatedKey = findKey(fields, function(field) { 
+//         return ["lookup","master_detail"].indexOf(field.type) > -1 && field.reference_to === objectName; 
+//     });
+//     const globalFilter = [relatedKey,'=',recordId];
+//     const recordRelatedListHeader = await getObjectRecordDetailRelatedListHeader(relatedObjectUiSchema);
+//     const options = {
+//         globalFilter,
+//         defaults: {
+//             listSchema: { headerToolbar:[],columnsTogglable:false },
+//             headerSchema: recordRelatedListHeader
+//         },
+//         showHeader: true
+//     }
+//     const amisSchema= (await getListSchema(null, relatedObjectName, firstListViewName, options)).amisSchema;
+//     return {
+//         uiSchema: relatedObjectUiSchema,
+//         amisSchema: {
+//             type: "service",
+//             data: {
+//                 masterObjectName: objectName,
+//                 masterRecordId: "${recordId}",
+//                 relatedKey: relatedKey,   
+//                 objectName: relatedObjectName,
+//                 listViewId: `amis-\${appId}-${relatedObjectName}-listview`,
+//             },
+//             body:[
+//                 {
+//                     ...amisSchema,
+//                     data: {
+//                         filter: ["${relatedKey}", "=", "${masterRecordId}"],
+//                         objectName: "${objectName}",
+//                         recordId: "${masterRecordId}",
+//                         ...{[relatedKey]: getRelatedFieldValue(objectName, "${recordId}", relatedSchema.uiSchema, relatedKey)}
+//                     }
+//                 }
+//             ]
+//         }
+//     };
+// }
 
 // 获取所有相关表
 export async function getObjectRelatedList(
