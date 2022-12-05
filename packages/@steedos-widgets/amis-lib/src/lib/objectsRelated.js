@@ -199,7 +199,9 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
                         filter: ["${relatedKey}", "=", "${masterRecordId}"],
                         objectName: "${objectName}",
                         recordId: "${masterRecordId}",
-                        ...{[relatedKey]: getRelatedFieldValue(objectName, "${recordId}", relatedObjectUiSchema, relatedKey)}
+                        defaultData: {
+                            ...{[relatedKey]: getRelatedFieldValue(objectName, "${recordId}", relatedObjectUiSchema, relatedKey)}
+                        }
                     }
                 }
             ]
