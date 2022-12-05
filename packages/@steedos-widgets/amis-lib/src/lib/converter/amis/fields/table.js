@@ -283,13 +283,13 @@ export async function getTableApi(mainObject, fields, options){
     api.data.$term = "$term";
     api.data.$self = "$$";
     api.data.filter = "$filter"
-    api.data.loaded = "${loaded}"
+    api.data.loaded = "${loaded}";
+    api.data.listViewId = "${listViewId}";
     api.requestAdaptor = `
         let selfData = JSON.parse(JSON.stringify(api.data.$self));
         try{
             // TODO: 不应该直接在这里取localStorage，应该从外面传入
-            const selfSupperData = api.data.$self.__super.__super;
-            const listViewId = selfSupperData.listViewId;
+            const listViewId = api.data.listViewId;
             const listViewPropsStoreKey = location.pathname + "/crud/" + listViewId ;
             let localListViewProps = localStorage.getItem(listViewPropsStoreKey);
             if(localListViewProps){
@@ -432,8 +432,7 @@ export async function getTableApi(mainObject, fields, options){
 
     try{
         // TODO: 不应该直接在这里取localStorage，应该从外面传入
-        const selfSupperData = api.data.$self.__super.__super;
-        const listViewId = selfSupperData.listViewId;
+        const listViewId = api.data.listViewId;
         const listViewPropsStoreKey = location.pathname + "/crud/" + listViewId ;
         /**
          * localListViewProps规范来自crud请求api中api.data.$self参数值的。
