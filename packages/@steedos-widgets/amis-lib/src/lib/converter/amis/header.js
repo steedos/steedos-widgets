@@ -139,14 +139,14 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
             "icon": "fa fa-refresh",
             "actionType": "reload",
             "target": amisListViewId,
-            "className": "bg-transparent p-0 ml-1"
+            "className": "bg-transparent p-2 ml-1"
           },
           {
             "type": "button",
             "label": "",
             "icon": "fa fa-filter",
             "actionType": "custom",
-            "className": "bg-transparent p-0 ml-1",
+            "className": "bg-transparent p-2 ml-1",
             "id": "u:c20cb87d96c9",
             "onEvent": {
               "click": {
@@ -231,7 +231,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
     type: "steedos-dropdown-button",
     label: "",
     buttons: dropdownButtons,
-    className: 'slds-icon'
+    className: 'slds-icon ml-1 border-gray-200 rounded-none'
   }
   amisButtonsSchema.push(dropdownButtonsSchema);
   const reg = new RegExp('_', 'g');
