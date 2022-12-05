@@ -286,29 +286,28 @@ export async function getTableApi(mainObject, fields, options){
     api.data.loaded = "${loaded}"
     api.requestAdaptor = `
         let selfData = JSON.parse(JSON.stringify(api.data.$self));
-        if(!api.data.loaded){
-            // 只有第一次加载组件，比如刷新浏览器时才需要从本地存储中合并过滤条件等参数
-            // 否则翻页页码会因为刷新浏览器时api.data.pageNo始终有默认值为1无法生效
-            try{
-                // TODO: 不应该直接在这里取localStorage，应该从外面传入
-                const selfSupperData = api.data.$self.__super.__super;
-                const listViewId = selfSupperData.listViewId;
-                const searchableFilterStoreKey = location.pathname + "/crud/" + listViewId ;
-                let localSearchableFilter = localStorage.getItem(searchableFilterStoreKey);
-                localSearchableFilter = JSON.parse(localSearchableFilter);
-                if(localSearchableFilter){
-                    selfData = Object.assign({}, selfData, localSearchableFilter);
-                    api.data.filter = localSearchableFilter.filter;
-                    api.data.pageNo = localSearchableFilter.page;
-                    // TODO:翻页在这里无效，因为刷新浏览器时api.data.pageNo始终有默认值为1
-                    // if(!api.data.pageNo){
-                    //     api.data.pageNo = localSearchableFilter.page;
-                    // }
+        try{
+            // TODO: 不应该直接在这里取localStorage，应该从外面传入
+            const selfSupperData = api.data.$self.__super.__super;
+            const listViewId = selfSupperData.listViewId;
+            const listViewPropsStoreKey = location.pathname + "/crud/" + listViewId ;
+            let localListViewProps = localStorage.getItem(listViewPropsStoreKey);
+            if(localListViewProps){
+                localListViewProps = JSON.parse(localListViewProps);
+                selfData = Object.assign({}, localListViewProps, selfData);
+                if(!api.data.filter){
+                    api.data.filter = localListViewProps.filter;
+                }
+                if(!api.data.loaded){
+                    // 第一次加载组件，比如刷新浏览器时因为api.data.pageNo有默认值1
+                    // 所以会把localSearchableFilter中已经存过的页码覆盖
+                    // 如果是第一次加载组件始终让翻页页码从本地存储中取值
+                    api.data.pageNo = localListViewProps.page || 1;
                 }
             }
-            catch(ex){
-                console.error("本地存储中crud参数解析异常：", ex);
-            }
+        }
+        catch(ex){
+            console.error("本地存储中crud参数解析异常：", ex);
         }
         ${globalFilter ? `var filters = ${JSON.stringify(globalFilter)};` : 'var filters = [];'}
         if(_.isEmpty(filters)){
@@ -435,20 +434,32 @@ export async function getTableApi(mainObject, fields, options){
         // TODO: 不应该直接在这里取localStorage，应该从外面传入
         const selfSupperData = api.data.$self.__super.__super;
         const listViewId = selfSupperData.listViewId;
-        const searchableFilterStoreKey = location.pathname + "/crud/" + listViewId ;
-        let localSearchableFilter = localStorage.getItem(searchableFilterStoreKey);
+        const listViewPropsStoreKey = location.pathname + "/crud/" + listViewId ;
+        /**
+         * localListViewProps规范来自crud请求api中api.data.$self参数值的。
+         * 比如：{"perPage":20,"page":1,"__searchable__name":"7","__searchable__between__n1__c":[null,null],"filter":[["name","contains","a"]]}
+         * __searchable__...:顶部放大镜搜索条件
+         * filter:右侧过滤器
+         * perPage:每页条数
+         * page:当前页码
+         * orderBy:排序字段
+         * orderDir:排序方向
+         */
+        let localListViewProps = localStorage.getItem(listViewPropsStoreKey);
         let selfData = JSON.parse(JSON.stringify(api.data.$self));
-        if(localSearchableFilter){
-            if(api.data.loaded){
-                selfData = Object.assign({}, JSON.parse(localSearchableFilter), selfData);
-            }
-            else{
-                selfData = Object.assign({}, selfData, JSON.parse(localSearchableFilter));
+        if(localListViewProps){
+            localListViewProps = JSON.parse(localListViewProps);
+            selfData = Object.assign({}, localListViewProps, selfData);
+            if(!api.data.loaded){
+                // 第一次加载组件，比如刷新浏览器时因为api.data.pageNo有默认值1
+                // 所以会把localSearchableFilter中已经存过的页码覆盖
+                // 如果是第一次加载组件始终让翻页页码从本地存储中取值
+                selfData.page = localListViewProps.page || 1;
             }
         }
         delete selfData.context;
         delete selfData.global;
-        localStorage.setItem(searchableFilterStoreKey, JSON.stringify(selfData));
+        localStorage.setItem(listViewPropsStoreKey, JSON.stringify(selfData));
         // 返回页码到UI界面
         payload.data.page= selfData.page;
     }

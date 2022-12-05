@@ -93,7 +93,7 @@ export function ListviewHeader({ schema, onListviewChange, formFactor }) {
     SteedosUI.ListView.showFilter(schema.uiSchema.name, {
       listView: selectedListView,
       data: {
-        filters: SteedosUI.ListView.getVisibleFilter(selectedListView, filter),
+        filters: SteedosUI.ListView.getVisibleFilter(selectedListView, filter, { listViewId }),
       },
       props: {
         width: "100%",

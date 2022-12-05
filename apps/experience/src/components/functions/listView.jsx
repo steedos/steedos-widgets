@@ -77,7 +77,17 @@ export const ListView = {
             </Space>)
         }, props))
     },
-    getVisibleFilter: (listView, userFilter)=>{
+    getVisibleFilter: (listView, userFilter, ctx)=>{
+        let listViewId = ctx && ctx.listViewId;
+        if (!userFilter && listViewId) { 
+          // 没有的话从本地存储中取
+          const listViewPropsStoreKey = location.pathname + "/crud/" + listViewId;
+          let localListViewProps = localStorage.getItem(listViewPropsStoreKey);
+          localListViewProps = JSON.parse(localListViewProps);
+          if (localListViewProps) {
+            userFilter = localListViewProps.filter;
+          }
+        }
         if(userFilter){
             return userFilter;
         };
