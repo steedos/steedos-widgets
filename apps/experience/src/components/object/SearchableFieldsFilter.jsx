@@ -12,7 +12,7 @@ import { isEmpty, filter, values, sortBy, map, compact } from "lodash";
 import { getSearchableFieldsFilterSchema } from "@steedos-widgets/amis-lib";
 
 export function SearchableFieldsFilter({ schema, listViewId, listViewName, appId, onClose, cols }) {
-  const searchableFieldsStoreKey = `${schema.uiSchema.name}_${listViewName}_searchable_fields`;
+  const searchableFieldsStoreKey = location.pathname + "/searchable_fields/" + listViewId;
   let defaultSearchableFields = localStorage.getItem(searchableFieldsStoreKey);
   if(!defaultSearchableFields){
     defaultSearchableFields = map(

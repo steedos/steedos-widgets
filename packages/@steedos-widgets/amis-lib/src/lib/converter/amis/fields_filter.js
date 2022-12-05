@@ -100,16 +100,31 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
     listView.handleFilterSubmit(filterFormValues);
   `;
   const dataProviderInited = `
-    const supperData = data.__super;
-    const searchableFieldsStoreKey = \`\${supperData.objectName}_\${supperData.listName}_searchable_fields\`;
+    const searchableFieldsStoreKey = location.pathname + "/searchable_fields/" + data.listViewId ;
     let defaultSearchableFields = localStorage.getItem(searchableFieldsStoreKey);
     setData({ filterFormSearchableFields: defaultSearchableFields });
   `;
+  const onSearchableFieldsChangeScript = `
+    const data = context.props.data;
+    const listName = data.listName;
+    const objectName = data.objectName;
+    const value = data.fields;
+    doAction({
+      actionType: 'setValue',
+      args: {
+        value: { filterFormSearchableFields: value }
+      },
+      componentId: "service_listview_filter_form_" + objectName,
+    });
+    const searchableFieldsStoreKey = location.pathname + "/searchable_fields/" + data.listViewId;
+    localStorage.setItem(searchableFieldsStoreKey, value);
+  `;
   return {
     "type": "service",
-    // "data": {
-    //   "filterFormSearchableFields": ["name"]
-    // },
+    "data": {
+      // "filterFormSearchableFields": ["name"]
+      "listViewId": "${listViewId}"
+    },
     "id": `service_listview_filter_form_${objectSchema.name}`,
     "dataProvider": {
       "inited": dataProviderInited
@@ -230,7 +245,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
                                   "actions": [
                                     {
                                       "actionType": "custom",
-                                      "script": "const listName = context.props.data.listName;const objectName = context.props.data.objectName;\ndoAction({\n  actionType: 'setValue',\n  args: {\n    value: {filterFormSearchableFields: context.props.data.fields}\n  },\n  componentId: \"service_listview_filter_form_\" + objectName,\n})\n; const searchableFieldsStoreKey = `${objectName}_${listName}_searchable_fields`; localStorage.setItem(searchableFieldsStoreKey, context.props.data.fields);"
+                                      "script": onSearchableFieldsChangeScript
                                     },
                                     {
                                       "componentId": "",
