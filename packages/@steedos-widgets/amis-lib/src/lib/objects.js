@@ -225,7 +225,7 @@ export async function getListSchema(
        */
       if (localListViewProps) {
         localListViewProps = JSON.parse(localListViewProps);
-        localListViewProps.perPage = 3;
+        // localListViewProps.perPage = 3;
         let listSchema = {};
         if(localListViewProps.orderBy){
             listSchema.orderBy = localListViewProps.orderBy;
