@@ -108,6 +108,38 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
     "align": "between"
   };
   const fieldsFilterButtonSchema = await getObjectFieldsFilterButtonSchema(objectSchema);
+  const onFilterChangeScript = `
+    const eventData = event.data;
+    const uiSchema = eventData.uiSchema;
+    const listName = eventData.listName;
+    const listViewId = eventData.listViewId;
+    var selectedListView = uiSchema.list_views[listName]
+    var filter = eventData.filter;
+    SteedosUI.ListView.showFilter(uiSchema.name, {
+      listView: selectedListView,
+      data: {
+        filters: SteedosUI.ListView.getVisibleFilter(selectedListView, filter, { listViewId }),
+      },
+      onFilterChange: (filter) => {
+        doAction({
+          componentId: \`service_listview_\${uiSchema.name}\`,
+          actionType: 'setValue',
+          "args": {
+            "value": {
+              filter: filter
+            }
+          }
+        });
+        doAction({
+          componentId: \`listview_\${uiSchema.name}\`,
+          actionType: 'reload',
+          "args": {
+            filter: filter
+          }
+        });
+      }
+    });
+  `;
   let secordLineSchema = {
     "type": "grid",
     "align": "between",
@@ -153,7 +185,7 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
                 "actions": [
                   {
                     "actionType": "custom",
-                    "script": "const eventData = event.data;\nconst uiSchema = eventData.uiSchema;\nconst listview_id = eventData.listName;\nvar selectedListView = uiSchema.list_views[listview_id]\nvar filter = eventData.filter;\n\nSteedosUI.ListView.showFilter(uiSchema.name, {\n  listView: selectedListView,\n  data: {\n    filters: SteedosUI.ListView.getVisibleFilter(selectedListView, filter),\n  },\n  onFilterChange: (filter) => {\n    doAction({\n      componentId: `service_listview_${uiSchema.name}`,\n      actionType: 'setValue',\n      \"args\": {\n        \"value\": {\n          filter: filter\n        }\n      }\n    });\n    doAction({\n      componentId: `listview_${uiSchema.name}`,\n      actionType: 'reload',\n      \"args\": {\n        filter: filter\n      }\n    });\n  }\n});"
+                    "script": onFilterChangeScript
                   }
                 ],
                 "weight": 0
