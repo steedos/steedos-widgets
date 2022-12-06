@@ -245,3 +245,51 @@ export const Sortable = () => {
       ></builder-fiddle>
   )    
 } 
+
+
+
+export const FullCalendar = () => {
+
+  const assetUrl = process.env.STEEDOS_UNPKG_URL + '/@steedos-widgets/fullcalendar/dist/assets-dev.json'
+
+  
+  const initialContent = {
+    type: "page",
+    title: "Welcome to Steedos",
+    body: [{
+      "type": "steedos-fullcalendar",
+      "label": "日程",
+      "name": "fullcalendar",
+    }],
+    regions: ["body"],
+    data: {
+      objectName: "space_users",
+      recordId: "",
+      initialValues: {},
+      appId: "builder",
+      title: "",
+      context: {
+        rootUrl: process.env.STEEDOS_ROOT_URL,
+        userId: process.env.STEEDOS_USERID,
+        tenantId: process.env.STEEDOS_TENANTID,
+        authToken: process.env.STEEDOS_AUTHTOKEN,
+      },
+    },
+  };
+  window.addEventListener('message', function (event) {
+      const comp = document.querySelector("builder-fiddle");
+      const { data } = event;
+      if (data) {
+        if (data.type === 'builder.editorLoaded') {
+          comp.settings = settings;
+          comp.messageFrame('builder.contentChanged', { AmisSchema : initialContent } )
+        }
+      }
+    })
+
+  return (
+      <builder-fiddle 
+          host={`https://beta.builder.steedos.com/amis?assetUrl=${assetUrl}`}
+      ></builder-fiddle>
+  )    
+} 

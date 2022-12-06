@@ -19,6 +19,10 @@ export const FullCalendar = (props) => {
       }}
       locales={allLocales}
       locale={initialLocaleCode}
+      editable={true}
+      selectable={true}
+      selectMirror={true}
+      dayMaxEvents={true}
       initialView='timeGridWeek'
       {...props}
     />

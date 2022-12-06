@@ -3,7 +3,7 @@
       {
           "package": "@steedos-widgets/fullcalendar",
           "urls": [
-              "https://unpkg.com/@steedos-widgets/fullcalendar@{{version}}/dist/fullcalendar.umd.min.js",
+              "https://unpkg.com/@steedos-widgets/fullcalendar@{{version}}/dist/fullcalendar.umd.js",
               "https://unpkg.com/@steedos-widgets/fullcalendar@{{version}}/dist/fullcalendar.umd.css"
           ],
           "library": "BuilderFullCalendar"

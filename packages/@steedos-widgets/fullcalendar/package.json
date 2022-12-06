@@ -12,11 +12,9 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "http": "npx http-server ../ --port 8080 --cors -c -1",
-    "build": "yarn build-types && yarn build-rollup && yarn build-assets",
+    "build": "yarn build-types && yarn build-rollup",
     "build-types": "tsc --emitDeclarationOnly --declaration --declarationDir dist/types",
-    "build-rollup": "rollup -c rollup.config.ts && yarn build-uglifyjs",
-    "build-uglifyjs": "yarn uglifyjs dist/fullcalendar.umd.js -o dist/fullcalendar.umd.min.js",
-    "build-assets": "cp src/assets-dev.json dist"
+    "build-rollup": "rollup -c rollup.config.ts"
   },
   "license": "MIT",
   "publishConfig": {

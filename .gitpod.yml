@@ -25,6 +25,7 @@ tasks:
     command: |
       echo "STEEDOS_UNPKG_URL=$(gp url 8080)" >> packages/@steedos-widgets/amis-object/.env.local
       echo "STEEDOS_UNPKG_URL=$(gp url 8080)" >> packages/@steedos-widgets/sortable/.env.local
+      echo "STEEDOS_UNPKG_URL=$(gp url 8080)" >> packages/@steedos-widgets/fullcalendar/.env.local
       gp await-port 3000
       yarn unpkg
   - name: storybook

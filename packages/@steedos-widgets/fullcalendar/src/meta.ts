@@ -5,13 +5,13 @@
  * @LastEditTime: 2022-09-01 18:46:29
  * @Description: 
  */
-import Hello from "./metas/Hello";
-const components = [Hello];
+import Calendar from "./metas/Calendar";
+const components = [Calendar];
 const componentList = [
   {
-    title: "哈喽组件",
+    title: "华炎魔方",
     icon: "",
-    children: [Hello]
+    children: [Calendar]
   }
 ];
 export default {

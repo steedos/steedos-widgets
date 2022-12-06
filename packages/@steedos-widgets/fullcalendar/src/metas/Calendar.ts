@@ -1,13 +1,13 @@
 const config: any = {
   group: "华炎魔方",
-  componentName: "Hello",
-  title: "哈喽",
+  componentName: "FullCalendar",
+  title: "日程",
   docUrl: "",
   screenshot: "",
   npm: {
-    package: "@steedos-widgets/example",
+    package: "@steedos-widgets/fullcalendar",
     version: "{{version}}",
-    exportName: "Hello",
+    exportName: "FullCalendar",
     main: "",
     destructuring: true,
     subName: ""
@@ -30,7 +30,7 @@ const config: any = {
   engines: ["amis"],
   // settings for amis.
   amis: {
-    name: 'example-hello',
+    name: 'steedos-fullcalendar',
     icon: "fa-fw fa fa-list-alt"
   }
 };
