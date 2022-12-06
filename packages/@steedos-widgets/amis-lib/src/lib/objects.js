@@ -515,6 +515,6 @@ export async function getObjectRelated(
     };
 }
 
-export async function getSearchableFieldsFilterSchema(objectSchema, fields, cols) {
-    return await getObjectFieldsFilterFormSchema(objectSchema, fields, cols);
+export async function getSearchableFieldsFilterSchema(objectSchema, fields, ctx) {
+    return await getObjectFieldsFilterFormSchema(objectSchema, fields, ctx);
 }
