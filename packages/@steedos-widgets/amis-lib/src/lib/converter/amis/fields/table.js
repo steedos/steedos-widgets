@@ -469,7 +469,6 @@ export async function getTableApi(mainObject, fields, options){
     payload.data.loaded= true;
 
     const setDataToComponentId = "${setDataToComponentId}";
-    console.log("setDataToComponentId", setDataToComponentId);
     if(setDataToComponentId){
         SteedosUI.getRef(api.body.$self.scopeId).getComponentById(setDataToComponentId).setData({$count: payload.data.count})
     }

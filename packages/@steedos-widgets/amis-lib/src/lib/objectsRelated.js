@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-06 15:19:54
+ * @LastEditTime: 2022-12-06 15:45:16
  * @Description:
  */
 
@@ -18,7 +18,7 @@ export const getRelatedFieldValue = (masterObjectName, record_id, uiSchema, fore
     const relatedField = find(uiSchema.fields, (field) => {
         return foreign_key === field?.name
     });
-    console.log(`getRelatedFieldValue`, relatedField, uiSchema, foreign_key)
+    // console.log(`getRelatedFieldValue`, relatedField, uiSchema, foreign_key)
     if (!isString(relatedField.reference_to)) {
         return { o: masterObjectName, ids: [record_id] }
     } else if (relatedField.multiple) {
