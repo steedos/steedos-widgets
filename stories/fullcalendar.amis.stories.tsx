@@ -137,28 +137,7 @@ export const Gerneral = () => (
         assetUrls={assetUrls}
         schema={{
         "type": "page",
-        "title": "日程",
         "body": [
-            {
-              "type": "input-text",
-              "label": "文本",
-              "name": "text",
-              "id": "u:91817338f633",
-              "onEvent": {
-                "change": {
-                  "weight": 0,
-                  "actions": [
-                    {
-                      "componentId": "",
-                      "args": {
-                      },
-                      "actionType": "custom",
-                      "script": "/* 自定义JS使用说明： \n * 1.动作执行函数doAction，可以执行所有类型的动作\n * 2.通过上下文对象context可以获取当前组件实例，例如context.props可以获取该组件相关属性\n * 3.事件对象event，在doAction之后执行event.stopPropagation = true;可以阻止后续动作执行\n*/\nconsole.log('aaa');\nconst myMsg = '我是自定义JS';\ndoAction({\n  actionType: 'toast',\n  args: {\n    msg: myMsg\n  }\n});\n"
-                    }
-                  ]
-                }
-              }
-            },
             {
                 "type": "steedos-fullcalendar",
                 "label": "日程",
