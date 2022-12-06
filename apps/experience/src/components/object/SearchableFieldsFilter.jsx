@@ -12,9 +12,16 @@ import { isEmpty, filter, values, sortBy, map, compact } from "lodash";
 import { getSearchableFieldsFilterSchema } from "@steedos-widgets/amis-lib";
 
 export function SearchableFieldsFilter({ schema, listViewId, listViewName, appId, onClose, cols }) {
-  const searchableFieldsStoreKey = `${schema.uiSchema.name}_${listViewName}_searchable_fields`;
+  const searchableFieldsStoreKey = location.pathname + "/searchable_fields/" + listViewId;
   let defaultSearchableFields = localStorage.getItem(searchableFieldsStoreKey);
   if(!defaultSearchableFields){
+    let listView = schema.uiSchema.list_views[listViewName];
+    defaultSearchableFields = listView && listView.searchable_fields;
+    if(defaultSearchableFields && defaultSearchableFields.length){
+      defaultSearchableFields = map(defaultSearchableFields, 'field');
+    }
+  }
+  if(isEmpty(defaultSearchableFields)){
     defaultSearchableFields = map(
       filter(values(schema.uiSchema.fields), (field) => {
         return field.searchable;
@@ -33,6 +40,18 @@ export function SearchableFieldsFilter({ schema, listViewId, listViewName, appId
     if (!isEmpty(searchableFields)) {
       //   const scope = SteedosUI.getRef(listViewId);
       // scope.getComponentByName(`page.listview_${schema.uiSchema.name}`).handleFilterReset();
+      let initData = {};
+      const listViewPropsStoreKey = location.pathname + "/crud/" + listViewId ;
+      let localListViewProps = localStorage.getItem(listViewPropsStoreKey);
+      if(localListViewProps){
+          localListViewProps = JSON.parse(localListViewProps);
+          let filterFormValues = _.pickBy(localListViewProps, function(n,k){
+            return /^__searchable__/g.test(k);
+          });
+          if(!_.isEmpty(filterFormValues)){
+            initData = filterFormValues;
+          }
+      }
       getSearchableFieldsFilterSchema(
         schema.uiSchema,
         sortBy(
@@ -42,7 +61,7 @@ export function SearchableFieldsFilter({ schema, listViewId, listViewName, appId
             })
           ),
           "sort_no"
-        ), cols
+        ), { initData }
       ).then((data) => {
         setSearchableFieldsSchema(data);
       });

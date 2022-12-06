@@ -1,0 +1,25 @@
+{
+  "packages": [
+      {
+          "package": "@steedos-widgets/fullcalendar",
+          "urls": [
+              "https://unpkg.com/@steedos-widgets/fullcalendar@{{version}}/dist/fullcalendar.umd.js",
+              "https://unpkg.com/@steedos-widgets/fullcalendar@{{version}}/dist/fullcalendar.umd.css"
+          ],
+          "library": "BuilderFullCalendar"
+      }
+  ],
+  "components": [
+      {
+          "exportName": "BuilderFullCalendarMeta",
+          "npm": {
+              "package": "@steedos-widgets/fullcalendar"
+          },
+          "url": "https://unpkg.com/@steedos-widgets/fullcalendar@{{version}}/dist/meta.js",
+          "urls": {
+              "default": "https://unpkg.com/@steedos-widgets/fullcalendar@{{version}}/dist/meta.js",
+              "design": "https://unpkg.com/@steedos-widgets/fullcalendar@{{version}}/dist/meta.js"
+          }
+      }
+  ]
+}

@@ -80,6 +80,7 @@ export function ListviewHeader({ schema, onListviewChange, formFactor , app_id: 
   useEffect(() => {
     if (!isEmpty(listview_id) && isFunction(onListviewChange)) {
       setFilter(null);
+      setShowFieldsFilter(false);
       onListviewChange(selectedListView);
     }
   }, [listview_id]);

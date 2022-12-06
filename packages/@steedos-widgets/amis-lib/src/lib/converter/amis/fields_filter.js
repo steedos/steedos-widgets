@@ -71,13 +71,18 @@ export async function getObjectFieldsFilterFormSchema(objectSchema, fields, ctx)
   return {
     title: "",
     type: "form",
+    // debug: true,
     name: "listview-filter-form",
     id: `listview_filter_form_${objectSchema.name}`,
     mode: "normal",
     wrapWithPanel: false,
     className: `sm:grid sm:gap-2 sm:grid-cols-4 mb-2`,
-    persistData: "crud:${id}",
-    persistDataKeys: persistDataKeys,
+    data: {
+      "&": "${filterFormValues || {}}",
+      ...ctx.initData
+    },
+    // persistData: "crud:${id}",
+    // persistDataKeys: persistDataKeys,
     body: body
   };
 }
@@ -100,16 +105,60 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
     listView.handleFilterSubmit(filterFormValues);
   `;
   const dataProviderInited = `
-    const supperData = data.__super;
-    const searchableFieldsStoreKey = \`\${supperData.objectName}_\${supperData.listName}_searchable_fields\`;
+    console.log("===dataProviderInited===", data);
+    const searchableFieldsStoreKey = location.pathname + "/searchable_fields/" + data.listViewId ;
     let defaultSearchableFields = localStorage.getItem(searchableFieldsStoreKey);
+    if(!defaultSearchableFields && data.uiSchema){
+      let listView = data.uiSchema.list_views[data.listName];
+      defaultSearchableFields = listView && listView.searchable_fields;
+      if(defaultSearchableFields && defaultSearchableFields.length){
+        defaultSearchableFields = _.map(defaultSearchableFields, 'field');
+      }
+    }
+    if(_.isEmpty(defaultSearchableFields) && data.uiSchema){
+      defaultSearchableFields = _.map(
+        _.filter(_.values(data.uiSchema.fields), (field) => {
+          return field.searchable;
+        }),
+        "name"
+      );
+    }
     setData({ filterFormSearchableFields: defaultSearchableFields });
+
+    const listViewPropsStoreKey = location.pathname + "/crud/" + data.listViewId ;
+    let localListViewProps = localStorage.getItem(listViewPropsStoreKey);
+    if(localListViewProps){
+        localListViewProps = JSON.parse(localListViewProps);
+        let filterFormValues = _.pickBy(localListViewProps, function(n,k){
+          return /^__searchable__/g.test(k);
+        });
+        if(!_.isEmpty(filterFormValues)){
+          setData({ filterFormValues });
+        }
+    }
+  `;
+  const onSearchableFieldsChangeScript = `
+    const data = context.props.data;
+    const listName = data.listName;
+    const objectName = data.objectName;
+    const value = data.fields;
+    doAction({
+      actionType: 'setValue',
+      args: {
+        value: { filterFormSearchableFields: value }
+      },
+      componentId: "service_listview_filter_form_" + objectName,
+    });
+    const searchableFieldsStoreKey = location.pathname + "/searchable_fields/" + data.listViewId;
+    localStorage.setItem(searchableFieldsStoreKey, value);
   `;
   return {
     "type": "service",
-    // "data": {
-    //   "filterFormSearchableFields": ["name"]
-    // },
+    "data": {
+      // "filterFormSearchableFields": ["name"],//默认可搜索项
+      // "filterFormValues": {"__searchable__name": "xxx"},//搜索项表单值
+      "listViewId": "${listViewId}"
+    },
     "id": `service_listview_filter_form_${objectSchema.name}`,
     "dataProvider": {
       "inited": dataProviderInited
@@ -230,7 +279,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
                                   "actions": [
                                     {
                                       "actionType": "custom",
-                                      "script": "const listName = context.props.data.listName;const objectName = context.props.data.objectName;\ndoAction({\n  actionType: 'setValue',\n  args: {\n    value: {filterFormSearchableFields: context.props.data.fields}\n  },\n  componentId: \"service_listview_filter_form_\" + objectName,\n})\n; const searchableFieldsStoreKey = `${objectName}_${listName}_searchable_fields`; localStorage.setItem(searchableFieldsStoreKey, context.props.data.fields);"
+                                      "script": onSearchableFieldsChangeScript
                                     },
                                     {
                                       "componentId": "",

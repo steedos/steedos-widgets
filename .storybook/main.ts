@@ -19,10 +19,11 @@ module.exports = {
   webpackFinal: async (config) => {
     config.module.rules = [
       ...config.module.rules.filter(
-        (rule) => !String(rule.test).includes('.css')
+        (rule) => { return !String(rule.test).includes('.css')}
       ),
       {
-        test: /\.module\.css$/,
+        test: /\.module.css$/,
+        sideEffects: true,
         use: [
           'style-loader',
           {
@@ -40,10 +41,28 @@ module.exports = {
             },
           },
         ],
-        include: [ 
-          path.resolve(__dirname, '../stories'),
-          path.resolve(__dirname, '../packages'),
+      },
+      {
+        test: /\.css$/,
+        sideEffects: true,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              modules: false,
+            },
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: ['postcss-simple-vars', 'postcss-nested'],
+              },
+            },
+          },
         ],
+        exclude: /\.module\.css$/,
       },
     ];
 

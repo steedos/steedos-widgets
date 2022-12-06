@@ -217,7 +217,9 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
                         // filter: ["${relatedKey}", "=", "${masterRecordId}"], 此语法不符合amis 数据映射规范
                         objectName: "${objectName}",
                         recordId: "${masterRecordId}",
-                        ...{[relatedKey]: getRelatedFieldValue(objectName, "${recordId}", relatedObjectUiSchema, relatedKey)}
+                        defaultData: {
+                            ...{[relatedKey]: getRelatedFieldValue(objectName, "${recordId}", relatedObjectUiSchema, relatedKey)}
+                        }
                     }
                 }
             ]
