@@ -16,26 +16,40 @@ export const FullCalendar = ({
 ) => {
   const initialLocaleCode = 'zh-cn';
 
-  const handleSelect = (event)=> {
+  const dispatchEvent = async (action: string, value?: object) => {
 
     if (!amisDispatchEvent) return;
-    
-    // 支持 amis action
-    amisDispatchEvent(
-      'select',
-      createObject(amisData, event)
-    )
+
+    const rendererEvent = await amisDispatchEvent(
+      action,
+      value ? createObject(amisData, value) : amisData
+    );
+
+    return rendererEvent?.prevented ?? false;
+  }
+
+  const handleSelect = (event)=> {
+    dispatchEvent('select', event)
   };
 
   const handleEventsSet = (event)=> {
+    dispatchEvent('eventsSet', event)
+  };
 
-    if (!amisDispatchEvent) return;
-    
-    // 支持 amis action
-    amisDispatchEvent(
-      'eventsSet',
-      createObject(amisData, event)
-    )
+  const handleEventClick = (event)=> {
+    dispatchEvent('eventClick', event)
+  };
+
+  const handleEventAdd = (event)=> {
+    dispatchEvent('eventAdd', event)
+  };
+
+  const handleEventChange = (event)=> {
+    dispatchEvent('eventChange', event)
+  };
+
+  const handleEventRemove = (event)=> {
+    dispatchEvent('eventRemove', event)
   };
 
   return (
@@ -54,11 +68,11 @@ export const FullCalendar = ({
       dayMaxEvents={true}
       initialView='timeGridWeek'
       select={handleSelect}
-      eventClick={function(){ console.error('FullCalendar: eventClick function not found.'); }}
+      eventClick={handleEventClick}
       eventsSet={handleEventsSet}
-      eventAdd={function(){ console.error('FullCalendar: eventAdd function not found.'); }}
-      eventChange={function(){ console.error('FullCalendar: eventChange function not found.'); }}
-      eventRemove={function(){ console.error('FullCalendar: eventRemove function not found.'); }}
+      eventAdd={handleEventAdd}
+      eventChange={handleEventChange}
+      eventRemove={handleEventRemove}
       {...props}
     />
   )

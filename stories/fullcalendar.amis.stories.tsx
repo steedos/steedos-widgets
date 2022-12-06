@@ -107,6 +107,31 @@ export default {
 
 /** 以上为可复用代码 **/
 
+let eventGuid = 0
+let todayStr = new Date().toISOString().replace(/T.*$/, '') // YYYY-MM-DD of today
+
+const INITIAL_EVENTS = [
+  {
+    id: createEventId(),
+    title: 'All-day event',
+    start: todayStr
+  },
+  {
+    id: createEventId(),
+    title: 'Timed event',
+    start: todayStr + 'T12:00:00'
+  },
+  {
+    id: createEventId(),
+    title: 'Timed event 2',
+    start: todayStr + 'T12:05:00'
+  }
+]
+
+function createEventId() {
+  return String(eventGuid++)
+}
+
 export const Gerneral = () => (
     <AmisRender 
         assetUrls={assetUrls}
@@ -139,6 +164,7 @@ export const Gerneral = () => (
                 "label": "日程",
                 "name": "fullcalendar",
                 "id": "u:866648329263",
+                "initialEvents": INITIAL_EVENTS,
                 "onEvent": {
                   "select": {
                     "weight": 0,
@@ -148,10 +174,70 @@ export const Gerneral = () => (
                         "args": {
                         },
                         "actionType": "custom",
-                        "script": "/* 自定义JS使用说明： \n * 1.动作执行函数doAction，可以执行所有类型的动作\n * 2.通过上下文对象context可以获取当前组件实例，例如context.props可以获取该组件相关属性\n * 3.事件对象event，在doAction之后执行event.stopPropagation = true;可以阻止后续动作执行\n*/\nconsole.log('xxx');\nconst myMsg = '我是自定义JS';\ndoAction({\n  actionType: 'toast',\n  args: {\n    msg: myMsg\n  }\n});\n"
+                        "script": "console.log('select'); console.log(event);"
                       }
                     ]
-                  }
+                  },
+                  "eventClick": {
+                    "weight": 0,
+                    "actions": [
+                      {
+                        "componentId": "",
+                        "args": {
+                        },
+                        "actionType": "custom",
+                        "script": "console.log('eventClick'); console.log(event);"
+                      }
+                    ]
+                  },
+                  "eventAdd": {
+                    "weight": 0,
+                    "actions": [
+                      {
+                        "componentId": "",
+                        "args": {
+                        },
+                        "actionType": "custom",
+                        "script": "console.log('eventAdd'); console.log(event);"
+                      }
+                    ]
+                  },
+                  "eventChange": {
+                    "weight": 0,
+                    "actions": [
+                      {
+                        "componentId": "",
+                        "args": {
+                        },
+                        "actionType": "custom",
+                        "script": "console.log('eventChange'); console.log(event);"
+                      }
+                    ]
+                  },
+                  "eventRemove": {
+                    "weight": 0,
+                    "actions": [
+                      {
+                        "componentId": "",
+                        "args": {
+                        },
+                        "actionType": "custom",
+                        "script": "console.log('eventRemove'); console.log(event);"
+                      }
+                    ]
+                  },
+                  "eventsSet": {
+                    "weight": 0,
+                    "actions": [
+                      {
+                        "componentId": "",
+                        "args": {
+                        },
+                        "actionType": "custom",
+                        "script": "console.log('eventsSet'); console.log(event);"
+                      }
+                    ]
+                  },
                 }
               },
         ],
