@@ -29,12 +29,19 @@ function createEventId() {
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Full Calendar',
+  title: 'React/Full Calendar',
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
 
 export const Simple = () => (
     <FullCalendar
         initialEvents={INITIAL_EVENTS}
+    />
+);
+
+export const ReadOnly = () => (
+    <FullCalendar
+        initialEvents={INITIAL_EVENTS}
+        editable={false}
     />
 );

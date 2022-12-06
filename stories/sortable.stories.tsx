@@ -6,7 +6,7 @@ import {MultipleContainers} from '@steedos-widgets/sortable'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Sortable',
+  title: 'React/Sortable',
   component: MultipleContainers,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {

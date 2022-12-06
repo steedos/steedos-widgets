@@ -75,7 +75,7 @@ const loadCss = async (href)=>{
 
 
 export default {
-  title: 'Amis',
+  title: 'Amis/Steedos Object',
   decorators: [(Story)=>{
     const [isLoaded, setIsLoaded] = useState(false);
       useEffect(() => {
