@@ -43,7 +43,7 @@ async function getTableColumns(fields, options){
             columns.push({
                 "type": "button",
                 className:"whitespace-nowrap",
-                "label": `${field.label}`,
+                "label": `<%=data.versions ? data.name : "${field.label}"%>`,
                 "type": "button",
                 "actionType": "ajax",
                 "api": {
@@ -244,7 +244,7 @@ export async function getTableSchema(fields, options){
 
 export async function getTableApi(mainObject, fields, options){
     const searchableFields = [];
-    let { globalFilter, filter, sort, top } = options;
+    let { globalFilter, filter, sort, top, setDataToComponentId = '' } = options;
 
     if(_.isArray(filter)){
         filter = _.map(filter, function(item){
@@ -467,6 +467,13 @@ export async function getTableApi(mainObject, fields, options){
     }
     // 标记加载过，后续优先从本地存储中加载相关参数
     payload.data.loaded= true;
+
+    const setDataToComponentId = "${setDataToComponentId}";
+    console.log("setDataToComponentId", setDataToComponentId);
+    if(setDataToComponentId){
+        SteedosUI.getRef(api.body.$self.scopeId).getComponentById(setDataToComponentId).setData({$count: payload.data.count})
+    }
+
     return payload;
     `;
     return api;

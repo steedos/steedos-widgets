@@ -25,7 +25,7 @@ export async function getFieldsTemplate(fields, expand){
             if(includes(['time','date','datetime','boolean','number','currency'], field.type)){
                 fieldsName.push(`${field.name}`)
             }
-            if(includes(['time','date','datetime','boolean','number','currency', 'select', 'file', 'image', 'avatar', 'formula', 'summary'], field.type)){
+            if(includes(['time','filesize','date','datetime','boolean','number','currency', 'select', 'file', 'image', 'avatar', 'formula', 'summary'], field.type)){
                 displayFields.push(`${field.name}`)
             }
         }
@@ -38,6 +38,35 @@ export async function getFieldsTemplate(fields, expand){
         return `${fieldsName.join(',')},_display:_ui{${displayFields.join(',')}}`;
     }
     return `${fieldsName.join(' ')}`
+}
+
+export function getRecordPermissionsTemplate(){
+    return `
+    recordPermissions: _permissions{
+        allowCreate,
+        allowCreateFiles,
+        allowDelete,
+        allowDeleteFiles,
+        allowEdit,
+        allowEditFiles,
+        allowRead,
+        allowReadFiles,
+        disabled_actions,
+        disabled_list_views,
+        field_permissions,
+        modifyAllFiles,
+        modifyAllRecords,
+        modifyAssignCompanysRecords,
+        modifyCompanyRecords,
+        uneditable_fields,
+        unreadable_fields,
+        unrelated_objects,
+        viewAllFiles,
+        viewAllRecords,
+        viewAssignCompanysRecords,
+        viewCompanyRecords,
+      }
+    `
 }
 
 export async function getFindOneQuery(object, recordId, fields, options){
@@ -60,7 +89,7 @@ export async function getFindOneQuery(object, recordId, fields, options){
         }
     }
     return {
-        query: `{${alias}:${object.name}${queryOptions}{${await getFieldsTemplate(fields)}}}`
+        query: `{${alias}:${object.name}${queryOptions}{${await getFieldsTemplate(fields)}, ${getRecordPermissionsTemplate()}}}`
     }
 }
 

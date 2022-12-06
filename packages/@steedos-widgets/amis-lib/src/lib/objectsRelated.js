@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-05 13:32:43
+ * @LastEditTime: 2022-12-06 15:19:54
  * @Description:
  */
 
@@ -159,7 +159,7 @@ export async function getAmisObjectRelatedList(
 }
 
 // 获取单个相关表
-export async function getRecordDetailRelatedListSchema(objectName, recordId, relatedObjectName, relatedKey){
+export async function getRecordDetailRelatedListSchema(objectName, recordId, relatedObjectName, relatedKey, top){
     // console.log('b==>',objectName,recordId,relatedObjectName)
     const relatedObjectUiSchema = await getUISchema(relatedObjectName);
     const { list_views, label , icon, fields } = relatedObjectUiSchema;
@@ -169,22 +169,40 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
            return ["lookup","master_detail"].indexOf(field.type) > -1 && field.reference_to === objectName; 
        });
     }
-    console.log(`relatedKey`, relatedKey)
-    const globalFilter = [relatedKey,'=',recordId];
+    let globalFilter = null;
+    const refField = await getField(relatedObjectName, relatedKey);
+    
+    if (
+        refField._reference_to ||
+        (refField.reference_to && !isString(refField.reference_to))
+    ) {
+        globalFilter = [
+            [`${relatedKey}/o`, "=", objectName],
+            [`${relatedKey}/ids`, "=", recordId],
+        ];
+    } else {
+        globalFilter = [`${relatedKey}`, "=", recordId];
+    }
     const recordRelatedListHeader = await getObjectRecordDetailRelatedListHeader(relatedObjectUiSchema);
+    const componentId = `steedos-record-related-list-${relatedObjectName}`;
     const options = {
         globalFilter,
         defaults: {
             listSchema: { headerToolbar:[],columnsTogglable:false },
             headerSchema: recordRelatedListHeader
         },
-        showHeader: true
+        showHeader: true,
+        top: top,
+        setDataToComponentId: componentId,
+        tableHiddenOn: "this.$count === 0"
     }
     const amisSchema= (await getListSchema(null, relatedObjectName, firstListViewName, options)).amisSchema;
     return {
         uiSchema: relatedObjectUiSchema,
         amisSchema: {
             type: "service",
+            id: componentId,
+            className: "steedos-record-related-list bg-white mb-1 border",
             data: {
                 masterObjectName: objectName,
                 masterRecordId: "${recordId}",
@@ -196,7 +214,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
                 {
                     ...amisSchema,
                     data: {
-                        filter: ["${relatedKey}", "=", "${masterRecordId}"],
+                        // filter: ["${relatedKey}", "=", "${masterRecordId}"], 此语法不符合amis 数据映射规范
                         objectName: "${objectName}",
                         recordId: "${masterRecordId}",
                         ...{[relatedKey]: getRelatedFieldValue(objectName, "${recordId}", relatedObjectUiSchema, relatedKey)}

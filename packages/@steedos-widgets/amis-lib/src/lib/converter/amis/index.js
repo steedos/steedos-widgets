@@ -158,7 +158,9 @@ export async function getObjectList(objectSchema, fields, options){
         id: id,
         name: id,
         keepItemSelectionOnPageChange: false, 
-        api: await getTableApi(objectSchema, fields, options)}, 
+        api: await getTableApi(objectSchema, fields, options),
+        hiddenOn: options.tableHiddenOn,
+        }, 
         bodyProps
         );
     }else{
@@ -171,8 +173,10 @@ export async function getObjectList(objectSchema, fields, options){
         id: id,
         name: id,
         keepItemSelectionOnPageChange: true, 
-        api: await getTableApi(objectSchema, fields, options)}, 
-        bodyProps
+        api: await getTableApi(objectSchema, fields, options),
+        hiddenOn: options.tableHiddenOn,
+      }, 
+        bodyProps,
         )
     }
 
@@ -200,6 +204,7 @@ export async function getObjectList(objectSchema, fields, options){
       id: `service_${id}`,
       name: `page`,
       data: {
+        "$master": '$$',
         context: { rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken() },
         objectName: objectSchema.name,
         _id: null,
@@ -301,13 +306,6 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
           "fetchInited": {
             "weight": 0,
             "actions": [
-              // {
-              //   "componentId": `page_${objectSchema.name}_record_detail`,
-              //   "actionType": "setValue",
-              //   "args": {
-              //     "value": { record: "${event.data}", uiSchema: objectSchema }
-              //   }
-              // },
               {
                 actionType: 'broadcast',
                 eventName: "recordLoaded",

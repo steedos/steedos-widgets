@@ -7,7 +7,7 @@ export async function getObjectFieldsFilterButtonSchema(objectSchema) {
     "type": "button",
     "label": "",
     "icon": "fa fa-search",
-    "className": "bg-transparent p-0 ml-1",
+    "className": "bg-transparent p-2 ml-1",
     "onEvent": {
       "click": {
         "actions": [

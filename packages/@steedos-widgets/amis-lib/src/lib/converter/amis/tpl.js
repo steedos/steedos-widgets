@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-03 13:37:56
+ * @LastEditTime: 2022-12-06 15:29:11
  * @Description: 
  */
 import { Router } from '../../router'
@@ -40,6 +40,10 @@ export function getDateTimeTpl(field){
 }
 
 export function getUiFieldTpl(field){
+    return `<div>\${_display.${field.name}}</div>`
+}
+
+export function getUiFileSizeTpl(field){
     return `<div>\${_display.${field.name}}</div>`
 }
 
@@ -156,6 +160,8 @@ export async function getFieldTpl (field, options){
         case 'formula':
         case 'summary':
             return getUiFieldTpl(field)
+        case 'filesize':
+            return getUiFileSizeTpl(field)
         default:
             break;
     }

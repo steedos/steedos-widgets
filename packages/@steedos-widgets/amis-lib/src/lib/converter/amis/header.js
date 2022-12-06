@@ -429,7 +429,7 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
                     "body": [
                       {
                         "type": "tpl",
-                        "tpl": `${label}`,
+                        "tpl": `${label}(\${$count})`,
                         "inline": false,
                         "wrapperComponent": "",
                         "className": "leading-none",
