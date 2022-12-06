@@ -71,13 +71,18 @@ export async function getObjectFieldsFilterFormSchema(objectSchema, fields, ctx)
   return {
     title: "",
     type: "form",
+    // debug: true,
     name: "listview-filter-form",
     id: `listview_filter_form_${objectSchema.name}`,
     mode: "normal",
     wrapWithPanel: false,
     className: `sm:grid sm:gap-2 sm:grid-cols-4 mb-2`,
-    persistData: "crud:${id}",
-    persistDataKeys: persistDataKeys,
+    data: {
+      "&": "${filterFormValues || {}}",
+      ...ctx.initData
+    },
+    // persistData: "crud:${id}",
+    // persistDataKeys: persistDataKeys,
     body: body
   };
 }
@@ -100,6 +105,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
     listView.handleFilterSubmit(filterFormValues);
   `;
   const dataProviderInited = `
+    console.log("===dataProviderInited===", data);
     const searchableFieldsStoreKey = location.pathname + "/searchable_fields/" + data.listViewId ;
     let defaultSearchableFields = localStorage.getItem(searchableFieldsStoreKey);
     if(!defaultSearchableFields && data.uiSchema){
@@ -118,6 +124,18 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
       );
     }
     setData({ filterFormSearchableFields: defaultSearchableFields });
+
+    const listViewPropsStoreKey = location.pathname + "/crud/" + data.listViewId ;
+    let localListViewProps = localStorage.getItem(listViewPropsStoreKey);
+    if(localListViewProps){
+        localListViewProps = JSON.parse(localListViewProps);
+        let filterFormValues = _.pickBy(localListViewProps, function(n,k){
+          return /^__searchable__/g.test(k);
+        });
+        if(!_.isEmpty(filterFormValues)){
+          setData({ filterFormValues });
+        }
+    }
   `;
   const onSearchableFieldsChangeScript = `
     const data = context.props.data;
@@ -137,7 +155,8 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
   return {
     "type": "service",
     "data": {
-      // "filterFormSearchableFields": ["name"]
+      // "filterFormSearchableFields": ["name"],//默认可搜索项
+      // "filterFormValues": {"__searchable__name": "xxx"},//搜索项表单值
       "listViewId": "${listViewId}"
     },
     "id": `service_listview_filter_form_${objectSchema.name}`,
