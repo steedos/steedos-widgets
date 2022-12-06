@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-06 15:45:16
+ * @LastEditTime: 2022-12-06 16:50:04
  * @Description:
  */
 
@@ -215,6 +215,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
                     ...amisSchema,
                     data: {
                         // filter: ["${relatedKey}", "=", "${masterRecordId}"], 此语法不符合amis 数据映射规范
+                        relatedKey: relatedKey,
                         objectName: "${objectName}",
                         recordId: "${masterRecordId}",
                         defaultData: {
