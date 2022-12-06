@@ -1,13 +1,25 @@
 import React from 'react'
-import FullCalendar, { formatDate } from '@fullcalendar/react'
+import FullCalendarReact, { formatDate } from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
+import listPlugin from '@fullcalendar/list';
+import allLocales from '@fullcalendar/core/locales-all';
+import './Calendar.css';
 
-export const Calendar = (props) => {
+export const FullCalendar = (props) => {
+  const initialLocaleCode = 'zh-cn';
   return (
-    <FullCalendar 
+    <FullCalendarReact 
       plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+      headerToolbar={{
+        left: 'title',
+        center: '',
+        right: 'prev,next today dayGridMonth,timeGridWeek,timeGridDay'
+      }}
+      locales={allLocales}
+      locale={initialLocaleCode}
+      initialView='timeGridWeek'
       {...props}
     />
   )

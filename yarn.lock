@@ -1502,6 +1502,15 @@
   dependencies:
     tslib "^2.1.0"
 
+"@fullcalendar/core@^5.11.3":
+  version "5.11.3"
+  resolved "https://registry.npmmirror.com/@fullcalendar/core/-/core-5.11.3.tgz#26f276347eb83185e03e4086772910c85406b88e"
+  integrity sha512-YUFxCvVJytUwFeXCx4J17kFMM7Ixwn9zBjVRw5NM2bMwgR6VAhSnlZc6yNQSOIy7Hj2TF0vDkO/4JNlTvxyAXw==
+  dependencies:
+    "@fullcalendar/common" "~5.11.3"
+    preact "^10.0.5"
+    tslib "^2.1.0"
+
 "@fullcalendar/daygrid@^5.11.3", "@fullcalendar/daygrid@~5.11.3":
   version "5.11.3"
   resolved "https://registry.npmmirror.com/@fullcalendar/daygrid/-/daygrid-5.11.3.tgz#6bc1f956c95f84438428aa6e7a106c863a791a70"
@@ -1514,6 +1523,14 @@
   version "5.11.3"
   resolved "https://registry.npmmirror.com/@fullcalendar/interaction/-/interaction-5.11.3.tgz#c6712c1305ecb8e975953c7ff462222b49204187"
   integrity sha512-L955wkDjza62K96ndstvYs2Fd4V0kayTDpqW8W7huFG3Ox8MutpLqKAa2SCaTvcNIlWS4oexGQRiQAaJG7u47A==
+  dependencies:
+    "@fullcalendar/common" "~5.11.3"
+    tslib "^2.1.0"
+
+"@fullcalendar/list@^5.11.3":
+  version "5.11.3"
+  resolved "https://registry.npmmirror.com/@fullcalendar/list/-/list-5.11.3.tgz#113c98b6adecf0790107582ae3f3e33232a3068d"
+  integrity sha512-6m9rJPzB5XfJZg+MlgVpha1cI3NUDeyV3GOmojJWZuti05NfDP4f0lzFUul8W7m1DQcjGS2UPRNE8HouA3guEA==
   dependencies:
     "@fullcalendar/common" "~5.11.3"
     tslib "^2.1.0"
@@ -9832,11 +9849,6 @@ fstream@^1.0.12:
     mkdirp ">=0.5 0"
     rimraf "2"
 
-fullcalendar@^5.11.3:
-  version "5.11.3"
-  resolved "https://registry.npmmirror.com/fullcalendar/-/fullcalendar-5.11.3.tgz#866a062efac2ad5ae3c73aaf345223d617fe1c84"
-  integrity sha512-SgqiMEA+lWLyEd2jEwtIxdfx41j2CZr4KK00D2Gepj1MnGOjaEi13athnU6xvqMQXXjgJNj+vmlUP69QiuGncQ==
-
 function-bind@^1.1.1:
   version "1.1.1"
   resolved "https://registry.npmmirror.com/function-bind/-/function-bind-1.1.1.tgz#a56899d3ea3c9bab874bb9773b7c5ede92f4895d"
@@ -15112,6 +15124,11 @@ preact-render-to-string@^5.1.19:
   integrity sha512-rEBn42C3Wh+AjPxXUbDkb6xw0cTJQgxdYlp6ytUR1uBZF647Wn6ykkopMeQlRl7ggX+qnYYjZ4Hs1abZENl7ww==
   dependencies:
     pretty-format "^3.8.0"
+
+preact@^10.0.5:
+  version "10.11.3"
+  resolved "https://registry.npmmirror.com/preact/-/preact-10.11.3.tgz#8a7e4ba19d3992c488b0785afcc0f8aa13c78d19"
+  integrity sha512-eY93IVpod/zG3uMF22Unl8h9KkrcKIRs2EGar8hwLZZDU1lkjph303V9HZBwufh2s736U6VXuhD109LYqPoffg==
 
 preact@^10.1.0, preact@^10.6.3:
   version "10.11.2"

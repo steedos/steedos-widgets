@@ -1,14 +1,35 @@
 import React from 'react';
 
-import { Calendar } from '@steedos-widgets/fullcalendar'
+import { FullCalendar } from '@steedos-widgets/fullcalendar'
+
+let eventGuid = 0
+let todayStr = new Date().toISOString().replace(/T.*$/, '') // YYYY-MM-DD of today
+
+const INITIAL_EVENTS = [
+  {
+    id: createEventId(),
+    title: 'All-day event',
+    start: todayStr
+  },
+  {
+    id: createEventId(),
+    title: 'Timed event',
+    start: todayStr + 'T12:00:00'
+  }
+]
+
+function createEventId() {
+  return String(eventGuid++)
+}
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
   title: 'Full Calendar',
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
-  argTypes: {
-    backgroundColor: { control: 'color' },
-  },
 };
 
-export const Simple = () => <Calendar/>;
+export const Simple = () => (
+    <FullCalendar
+        initialEvents={INITIAL_EVENTS}
+    />
+);

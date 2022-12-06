@@ -1,0 +1,9 @@
+:root {
+    --fc-button-text-color: #0176d3;
+    --fc-button-bg-color: #fff;
+    --fc-button-border-color: #c9c9c9;
+    --fc-button-hover-bg-color: #f3f3f3;
+    --fc-button-hover-border-color: #c9c9c9;
+    --fc-button-active-bg-color: #eeeeee;
+    --fc-button-active-border-color: #c9c9c9;
+}
