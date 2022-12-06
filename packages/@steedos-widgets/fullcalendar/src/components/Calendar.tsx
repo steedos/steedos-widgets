@@ -23,12 +23,8 @@ export const FullCalendar = ({
     // 支持 amis action
     amisDispatchEvent(
       'select',
-      createObject(amisData, {
-        event
-      })
-    ).then((rendererEvent) => {
-      console.log(rendererEvent);
-    })
+      createObject(amisData, event)
+    )
   };
 
   const handleEventsSet = (event)=> {
@@ -38,17 +34,13 @@ export const FullCalendar = ({
     // 支持 amis action
     amisDispatchEvent(
       'eventsSet',
-      createObject(amisData, {
-        event
-      })
-    ).then((rendererEvent) => {
-      console.log(rendererEvent);
-    })
+      createObject(amisData, event)
+    )
   };
 
   return (
     <FullCalendarReact 
-      plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+      plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
       headerToolbar={{
         left: 'title',
         center: '',
