@@ -69,7 +69,7 @@ export const getSchema = async (uiSchema, ctx)=>{
         "regions": [
             "body"
         ],
-        "className": "p-0",
+        "className": "p-0 border-0",
         "id": "u:aef99d937b10"
     }
 }
