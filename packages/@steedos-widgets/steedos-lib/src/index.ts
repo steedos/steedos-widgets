@@ -2,12 +2,14 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-25 09:16:09
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-08 14:00:46
+ * @LastEditTime: 2022-11-30 10:04:02
  * @Description: 
  */
 
 import { StandardObjects } from './standard_objects'
 import { authRequest } from './authRequest'
+
+import { SteedosUI } from './ui';
 
 declare var Builder;
 
@@ -70,3 +72,9 @@ export const Steedos = {
 // if(typeof window != 'undefined' && !(window as any).Steedos){
 //     (window as any).Steedos = Steedos;
 // }
+
+if(typeof window != 'undefined' && !(window as any).SteedosUI){
+    (window as any).SteedosUI = SteedosUI;
+}else if(typeof window != 'undefined'){
+    (window as any).SteedosUI = Object.assign((window as any).SteedosUI, SteedosUI);
+}
