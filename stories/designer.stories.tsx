@@ -68,7 +68,7 @@ const loadCss = async (href)=>{
 
 
 export default {
-  title: 'Designer',
+  title: 'Designer/Amis Designer',
   decorators: [(Story)=>{
     const [isLoaded, setIsLoaded] = useState(false);
       useEffect(() => {

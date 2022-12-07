@@ -7,11 +7,54 @@ import listPlugin from '@fullcalendar/list';
 import allLocales from '@fullcalendar/core/locales-all';
 import './Calendar.css';
 
-export const FullCalendar = (props) => {
+import { createObject } from '@steedos-widgets/amis-lib';
+
+export const FullCalendar = ({ 
+  dispatchEvent: amisDispatchEvent, 
+  data: amisData,
+  ...props }
+) => {
   const initialLocaleCode = 'zh-cn';
+
+  const dispatchEvent = async (action: string, value?: object) => {
+
+    if (!amisDispatchEvent) return;
+
+    const rendererEvent = await amisDispatchEvent(
+      action,
+      value ? createObject(amisData, value) : amisData
+    );
+
+    return rendererEvent?.prevented ?? false;
+  }
+
+  const handleSelect = (event)=> {
+    dispatchEvent('select', event)
+  };
+
+  const handleEventsSet = (event)=> {
+    dispatchEvent('eventsSet', event)
+  };
+
+  const handleEventClick = (event)=> {
+    dispatchEvent('eventClick', event)
+  };
+
+  const handleEventAdd = (event)=> {
+    dispatchEvent('eventAdd', event)
+  };
+
+  const handleEventChange = (event)=> {
+    dispatchEvent('eventChange', event)
+  };
+
+  const handleEventRemove = (event)=> {
+    dispatchEvent('eventRemove', event)
+  };
+
   return (
     <FullCalendarReact 
-      plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+      plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
       headerToolbar={{
         left: 'title',
         center: '',
@@ -24,6 +67,12 @@ export const FullCalendar = (props) => {
       selectMirror={true}
       dayMaxEvents={true}
       initialView='timeGridWeek'
+      select={handleSelect}
+      eventClick={handleEventClick}
+      eventsSet={handleEventsSet}
+      eventAdd={handleEventAdd}
+      eventChange={handleEventChange}
+      eventRemove={handleEventRemove}
       {...props}
     />
   )
