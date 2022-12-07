@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:53:07
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-08 16:38:18
+ * @LastEditTime: 2022-12-05 10:49:23
  * @Description: 
  */
 
@@ -33,8 +33,31 @@ export const StandardButtons = {
     },
     getStandardDeleteMany: async (uiSchema, ctx)=>{
         return {
-            type: 'amis_button',
-            // amis_schema: standardDelete.getSchema(uiSchema)
+            type: 'script',
+            todo: function(){
+                const {
+                    appId,
+                    objectName,
+                    uiSchema,
+                } = this;
+                const listViewRef = SteedosUI?.getRef(`amis-${appId}-${objectName}-listview`).getComponentById(`listview_${uiSchema.name}`);
+                console.log(`listViewRef`, listViewRef)
+                if(_.isEmpty(listViewRef.props.store.toJSON().selectedItems)){
+                    listViewRef.handleAction({}, {
+                        "actionType": "toast",
+                        "toast": {
+                            "items": [
+                              {
+                                "position": "top-right",
+                                "body": "请选择要删除的项"
+                              }
+                            ]
+                          }
+                      })
+                }else{
+                    listViewRef.handleBulkAction(listViewRef.props.store.toJSON().selectedItems,[],{},listViewRef.props.bulkActions[0]);
+                }
+            }
         }
     },
     getStandardImportData: async (uiSchema, ctx)=>{

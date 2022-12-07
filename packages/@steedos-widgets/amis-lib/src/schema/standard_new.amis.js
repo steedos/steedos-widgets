@@ -46,7 +46,8 @@ export const getSchema = async (uiSchema, ctx)=>{
                                         "$master": "$$",
                                         "&": "${defaultData}",
                                         "objectName": "${objectName}",
-                                        "context": "${context}"
+                                        "context": "${context}",
+                                        "listViewId": "${listViewId}"
                                     },
                                     "title": title,
                                     "bodyClassName": "",
@@ -69,7 +70,7 @@ export const getSchema = async (uiSchema, ctx)=>{
         "regions": [
             "body"
         ],
-        "className": "p-0",
+        "className": "p-0 border-0",
         "id": "u:aef99d937b10"
     }
 }

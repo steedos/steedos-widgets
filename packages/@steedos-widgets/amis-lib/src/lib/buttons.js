@@ -24,10 +24,10 @@ export function getButtonVisibleOn(button){
     }
 
     if(visible){
-        if(visible.indexOf("Meteor.") > 0 || visible.indexOf("Creator.") > 0 || visible.indexOf("Session.") > 0){
-            console.warn('无效的visible', visible)
-            return 'false';
-        }
+        // if(visible.indexOf("Meteor.") > 0 || visible.indexOf("Creator.") > 0 || visible.indexOf("Session.") > 0){
+        //     console.warn('无效的visible', visible)
+        //     return 'false';
+        // }
         if(visible.trim().startsWith('function')){
             return `${visible}.apply({
                 object: uiSchema
@@ -189,15 +189,20 @@ export const getListViewItemButtons = async (uiSchema, ctx)=>{
 }
 
 export const getObjectRelatedListButtons = async (uiSchema, ctx)=>{
+    // const buttons = getButtons(uiSchema, ctx);
+    // const relatedListButtons = _.filter(buttons, (button) => {
+    //     if(button.objectName === 'cms_files'){
+    //         // TODO:附件对象本身没有上传按钮，需要自定义
+    //     }else{
+    //         return button.name == "standard_new";
+    //     }
+    // });
+    // return relatedListButtons;
     const buttons = getButtons(uiSchema, ctx);
-    const relatedListButtons = _.filter(buttons, (button) => {
-        if(button.objectName === 'cms_files'){
-            // TODO:附件对象本身没有上传按钮，需要自定义
-        }else{
-            return button.name == "standard_new";
-        }
+    const listButtons = _.filter(buttons, (button) => {
+        return button.on == "list";
     });
-    return relatedListButtons;
+    return listButtons;
 }
 
 /**
@@ -265,6 +270,16 @@ export const getButton = async (objectName, buttonName, ctx)=>{
                 on: button.on,
                 sort: button.sort,
                 ...await StandardButtons.getStandardOpenView(uiSchema, ctx)
+            }
+        }
+
+        if(button.name === 'standard_delete_many'){
+            return {
+                label: button.label,
+                name: button.name,
+                on: button.on,
+                sort: button.sort,
+                ...await StandardButtons.getStandardDeleteMany(uiSchema, ctx)
             }
         }
 

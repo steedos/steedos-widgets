@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 09:11:13
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-25 09:15:58
+ * @LastEditTime: 2022-11-30 09:58:44
  * @Description: 
  */
 import typescript from '@rollup/plugin-typescript';
@@ -15,12 +15,16 @@ import pkg from './package.json';
 
 const external = [
   "react",
-  "react-dom"
+  "react-dom",
+  'lodash',
+  'antd'
 ]
 
 const globals = { 
   react: 'React',
-  'react-dom': 'ReactDOM'
+  'react-dom': 'ReactDOM',
+  'lodash': '_',
+  'antd': 'antd'
 }
 
 const options = {
