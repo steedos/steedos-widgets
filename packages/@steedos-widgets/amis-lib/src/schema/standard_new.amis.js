@@ -44,7 +44,9 @@ export const getSchema = async (uiSchema, ctx)=>{
                                     "type": "dialog",
                                     "data": {
                                         "$master": "$$",
-                                        "&": "${defaultData}"
+                                        "&": "${defaultData}",
+                                        "objectName": "${objectName}",
+                                        "context": "${context}"
                                     },
                                     "title": title,
                                     "bodyClassName": "",
