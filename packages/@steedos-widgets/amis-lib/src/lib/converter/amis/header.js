@@ -429,7 +429,7 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
                     "body": [
                       {
                         "type": "tpl",
-                        "tpl": `<a href="/app/\${app_id}/\${masterObjectName}/\${masterRecordId}/\${objectName}/grid?related_field_name=\${relatedKey}">${label}(\${$count})</a>`,
+                        "tpl": `<a href="/app/\${appId}/\${masterObjectName}/\${masterRecordId}/\${objectName}/grid?related_field_name=\${relatedKey}">${label}(\${$count})</a>`,
                         "inline": false,
                         "wrapperComponent": "",
                         "className": "leading-none",
