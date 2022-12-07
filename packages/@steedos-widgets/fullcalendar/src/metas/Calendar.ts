@@ -1,3 +1,4 @@
+
 const config: any = {
   group: "华炎魔方",
   componentName: "FullCalendar",
@@ -13,16 +14,6 @@ const config: any = {
     subName: ""
   },
   props: [
-    {
-      name: "title",
-      propType: "string",
-      description: '标题',
-    },
-    {
-      name: "content",
-      propType: "string",
-      description: '内容',
-    }
   ],
   preview: {
   },
@@ -83,7 +74,35 @@ export default {
           name: "content",
           label: "内容"
         }
-      ]
-    }
+      ],
+      events: [{
+        eventName: "eventClick",
+        eventLabel: 'eventClick',
+        description: 'Click on an event.',
+        dataSchema: [{
+          type: "object",
+          properties: {
+            "event.data.name": {
+              type: "string",
+              title: "name"
+            },
+          }
+        }]
+      }],
+    //   panelBodyCreator: function(context) {
+    //     return window['AmisEditorCore'].getSchemaTpl('tabs', [
+    //       {
+    //         title: '常规',
+    //         controls: [
+    //           {
+    //             name: 'name',
+    //             label: '标题',
+    //             type: 'text'
+    //           }
+    //         ]
+    //       },
+    //     ]);
+    //   }
+    },
   }
 };
