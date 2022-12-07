@@ -54,7 +54,7 @@ export function ListButtons(props) {
                                 listViewId,
                                 uiSchema: schema.uiSchema,
                             })
-                        }} className="antd-Button antd-Button--default">删除</button>
+                        }} className="antd-Button antd-Button--default px-2">删除</button>
                     }
                 </>
             }

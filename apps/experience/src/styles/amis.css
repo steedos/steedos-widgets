@@ -96,7 +96,10 @@ main {
 }
 
 button.antd-Button--primary {
-    background-color: var(--Button--primary-bg);
+    color: #fff;
+    border-color: #1890ff;
+    background: #1890ff;
+    /* background-color: var(--Button--primary-bg); */
 }
 
 #__next .antd-Table {
