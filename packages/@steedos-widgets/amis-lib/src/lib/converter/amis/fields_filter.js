@@ -65,8 +65,44 @@ export async function getObjectFieldsFilterFormSchema(objectSchema, fields, ctx)
   if(ctx.enableSearchableFieldsVisibleOn){
     body.forEach(function(fieldItem){
       fieldItem.visibleOn = `this.filterFormSearchableFields && this.filterFormSearchableFields.indexOf("${fieldItem.fieldName}") > -1`;
+      // fieldItem.clearValueOnHidden = true;//这个属性会把form字段值删除，但是点击搜索时crud还是把值给传递到过滤条件(api.requestAdaptor的data.$self)中了，应该是crud的bug
     });
   }
+
+  const onBroadcastSearchableFieldsChangeScript = `
+    const data = event.data;
+    const listViewId = data.listViewId;
+    const searchableFields = data.fields;
+    const preSearchableFields = data.__super.__super.fields;
+    const removedFields = _.difference(preSearchableFields, searchableFields);
+    const listViewPropsStoreKey = location.pathname + "/crud/" + listViewId ;
+    let localListViewProps = localStorage.getItem(listViewPropsStoreKey);
+    if(localListViewProps){
+      localListViewProps = JSON.parse(localListViewProps);
+      let removedKeys = [];
+      _.each(localListViewProps, function(n,k){
+        // __searchable__开头的不在searchableFields范围则清除其值
+        let isRemoved = !!removedFields.find(function(fieldName){
+          return new RegExp("__searchable__\.*" + fieldName + "$").test(k);
+        });
+        if(isRemoved){
+          removedKeys.push(k);
+        }
+      });
+      const removedValues = {};
+      removedKeys.forEach(function(key){
+        delete localListViewProps[key];
+        removedValues[key] = "";
+      });
+      doAction({
+        actionType: 'setValue',
+        args: {
+          value: removedValues
+        }
+      });
+      localStorage.setItem(listViewPropsStoreKey, JSON.stringify(localListViewProps));
+    }
+  `;
 
   return {
     title: "",
@@ -83,7 +119,17 @@ export async function getObjectFieldsFilterFormSchema(objectSchema, fields, ctx)
     },
     // persistData: "crud:${id}",
     // persistDataKeys: persistDataKeys,
-    body: body
+    body: body,
+    "onEvent": {
+      "broadcastSearchableFieldsChange": {
+        "actions": [
+          {
+            "actionType": "custom",
+            "script": onBroadcastSearchableFieldsChangeScript
+          }
+        ]
+      }
+    }
   };
 }
 
@@ -105,7 +151,6 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
     listView.handleFilterSubmit(filterFormValues);
   `;
   const dataProviderInited = `
-    console.log("===dataProviderInited===", data);
     const searchableFieldsStoreKey = location.pathname + "/searchable_fields/" + data.listViewId ;
     let defaultSearchableFields = localStorage.getItem(searchableFieldsStoreKey);
     if(!defaultSearchableFields && data.uiSchema){
@@ -282,6 +327,16 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
                                       "script": onSearchableFieldsChangeScript
                                     },
                                     {
+                                      "actionType": "broadcast",
+                                      "eventName": "broadcastSearchableFieldsChange",
+                                      "args": {
+                                        "eventName": "broadcastSearchableFieldsChange"
+                                      },
+                                      "data": {
+                                        "fields": "${event.data.fields}"
+                                      }
+                                    },
+                                    {
                                       "componentId": "",
                                       "args": {},
                                       "actionType": "closeDrawer"
@@ -328,3 +383,31 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
     "className": "px-1 py-1 bg-white b-b"
   };
 }
+
+export function resetLocalListViewPropsWithSearchableFields(listViewId, searchableFields){
+  // 清除本地缓存中被删除字段的值
+  if(typeof searchableFields === "string"){
+    searchableFields = searchableFields.split(",");
+  }
+  const listViewPropsStoreKey = location.pathname + "/crud/" + listViewId ;
+  let localListViewProps = localStorage.getItem(listViewPropsStoreKey);
+  if(localListViewProps){
+    localListViewProps = JSON.parse(localListViewProps);
+    let removedKeys = [];
+    for(var k in localListViewProps){
+      let isField = new RegExp("__searchable__\.*").test(k);
+      // __searchable__开头的不在searchableFields范围则清除其值
+      let needRemoved = isField && !!!searchableFields.find(function(fieldName){
+        return new RegExp("__searchable__\.*" + fieldName + "$").test(k);
+      });
+      if(needRemoved){
+        removedKeys.push(k);
+      }
+    }
+    removedKeys.forEach(function(key){
+      delete localListViewProps[key];
+    });
+    localStorage.setItem(listViewPropsStoreKey, JSON.stringify(localListViewProps));
+  }
+}
+
