@@ -1,7 +1,7 @@
 {
   "name": "@steedos-widgets/amis-object",
   "private": false,
-  "version": "0.0.17",
+  "version": "0.0.18",
   "main": "dist/amis-object.cjs.js",
   "module": "dist/amis-object.esm.js",
   "unpkg": "dist/amis-object.umd.js",
@@ -59,6 +59,6 @@
     "uglify-js": "^3.17.0"
   },
   "dependencies": {
-    "@steedos-widgets/amis-lib": "0.0.14"
+    "@steedos-widgets/amis-lib": "0.0.15"
   }
 }
