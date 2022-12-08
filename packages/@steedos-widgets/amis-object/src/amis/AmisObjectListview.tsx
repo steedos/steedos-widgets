@@ -36,5 +36,9 @@ export const AmisObjectListView = async (props) => {
   const listViewId = ctx?.listViewId || amisSchemaData.listViewId;
   let amisSchema: any = (await getListSchema(amisSchemaData.appId, objectApiName, listName, { top, showHeader, defaults, ...ctx, listViewId })).amisSchema;
   amisSchema.data = Object.assign({}, amisSchema.data, amisSchemaData, { listName });
-  return amisSchema;
+  return {
+    "type": "wrapper",
+    "body": amisSchema,
+    "className": "m-3 p-0 sm:border bg-white sm:shadow sm:rounded border-slate-300"
+  }
 }
