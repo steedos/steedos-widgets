@@ -42,7 +42,7 @@ export function DefaultListview({ router, formFactor }) {
       </>
     );
   return (
-    <>
+    <div className="flex-1 sm:m-3 sm:border bg-white sm:shadow sm:rounded border-slate-300">
       {/* {schema.isCustom && schema.amisSchema && <AmisRender
         data={{
           objectName: tab_id,
@@ -89,6 +89,6 @@ export function DefaultListview({ router, formFactor }) {
       </div>
     </div>
     }
-    </>
+    </div>
   );
 }
