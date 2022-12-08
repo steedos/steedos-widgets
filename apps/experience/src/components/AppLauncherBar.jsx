@@ -8,7 +8,10 @@
 import { useRouter } from 'next/router'
 import { AppLauncher } from '@/components/AppLauncher'
 import React, { useState, useEffect, Fragment, useRef } from 'react';
+import { AmisRender } from "@/components/AmisRender";
+import { getDefaultRenderData } from '@/lib/amis';
 
+const schema = require('@/amis/app_launcher.amis.json');
 
 export const AppLauncherBar = ({app}) => {
   const [formFactor, setFormFactor] = useState(null);
@@ -48,38 +51,41 @@ export const AppLauncherBar = ({app}) => {
     }, {}));
   }
 
+  const defData = getDefaultRenderData();
+  schema.data = Object.assign({},schema.data,defData)
+  const buttonSchema = {
+      "label": "",
+      "type": "button",
+      "actionType": "dialog",
+      "className": "",
+      "body": [
+        {
+          "type": "tpl",
+          "className": "align-text-top",
+          "tpl": "<button aria-haspopup='true' title='Open App Launcher' class='slds-button slds-icon-waffle_container slds-context-bar__button' title='Open App Launcher' type='button'><span class='slds-icon-waffle'><span class='slds-r1'></span><span class='slds-r2'></span><span class='slds-r3'></span><span class='slds-r4'></span><span class='slds-r5'></span><span class='slds-r6'></span><span class='slds-r7'></span><span class='slds-r8'></span><span class='slds-r9'></span></span></button>"
+        }
+      ],
+      "dialog": {
+        "size": "xl",
+        "title": {
+          "type": "tpl",
+          "tpl": "应用程序启动器",
+          "className": "block text-xl text-center"
+        },
+        "actions": [],
+        "body": schema
+      }
+    }
+
   return (
     <>
-      <div className="slds-context-bar__primary" onClick={openAppLauncher}>
-        <div className="slds-context-bar__item slds-context-bar__dropdown-trigger slds-dropdown-trigger slds-dropdown-trigger_click slds-no-hover">
-          <div className="slds-context-bar__icon-action">
-            <button
-              aria-haspopup="true"
-              className="slds-button slds-icon-waffle_container slds-context-bar__button"
-              title="Open App Launcher"
-              type="button"
-            >
-              <span className="slds-icon-waffle">
-                <span className="slds-r1"></span>
-                <span className="slds-r2"></span>
-                <span className="slds-r3"></span>
-                <span className="slds-r4"></span>
-                <span className="slds-r5"></span>
-                <span className="slds-r6"></span>
-                <span className="slds-r7"></span>
-                <span className="slds-r8"></span>
-                <span className="slds-r9"></span>
-              </span>
-              <span className="slds-assistive-text">Open App Launcher</span>
-            </button>
-          </div>
-          <span className="slds-context-bar__label-action slds-context-bar__app-name">
-            <span className="slds-truncate" title="App Name">
-              {app?.name}
-            </span>
-          </span>
-        </div>
-      </div>
+      <AmisRender
+        id="amis-nav"
+        schema={buttonSchema}
+        router={router}
+        className=''
+        data={{}}
+      ></AmisRender>
     </>
   );
 };
