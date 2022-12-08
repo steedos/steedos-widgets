@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-01 15:51:11
+ * @LastEditTime: 2022-12-08 10:39:35
  * @Description: 
  */
 // import Hello from "./metas/Hello";
@@ -10,6 +10,7 @@ import AmisObjectForm from "./metas/AmisObjectForm";
 import AmisObjectListview from "./metas/AmisObjectListview";
 import AmisObjectTable from "./metas/AmisObjectTable";
 import AmisRecordDetailHeader from "./metas/AmisRecordDetailHeader";
+import AmisRecordDetail from "./metas/AmisRecordDetail";
 import AmisSelectUser from "./metas/AmisSelectUser";
 import AmisRecordDetailRelatedList from "./metas/AmisRecordDetailRelatedList";
 import AmisRecordDetailRelatedLists from "./metas/AmisRecordDetailRelatedLists";
@@ -25,7 +26,8 @@ import SteedosDropdownButton from "./metas/SteedosDropdownButton";
 const components = [
   AmisObjectForm, 
   AmisObjectListview, 
-  AmisRecordDetailHeader, 
+  AmisRecordDetailHeader,
+  AmisRecordDetail, 
   AmisSelectUser, 
   AmisRecordDetailRelatedList, 
   AmisRecordDetailRelatedLists,
@@ -44,6 +46,7 @@ const componentList = [
       AmisObjectForm, 
       AmisObjectListview, 
       AmisRecordDetailHeader, 
+      AmisRecordDetail, 
       AmisSelectUser,
       AmisRecordDetailRelatedList,
       AmisRecordDetailRelatedLists,

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-05 11:46:38
+ * @LastEditTime: 2022-12-08 10:45:44
  * @Description:
  */
 import { fetchAPI } from "./steedos.client";
@@ -331,6 +331,69 @@ export async function getRecordDetailHeaderSchema(objectName,recordId){
         uiSchema,
         amisSchema,
     };
+}
+
+export async function getRecordDetailSchema(objectName){
+    const uiSchema = await getUISchema(objectName);
+    return {
+        uiSchema,
+        amisSchema: {
+            "type": "service",
+            "body": [
+              {
+                "type": "steedos-record-detail-header",
+                "label": "标题面板",
+                "objectApiName": "${objectName}",
+                "recordId": "${recordId}",
+                "id": "u:48d2c28eb755",
+                onEvent: {
+                    "recordLoaded": {
+                        "actions": [
+                            {
+                                "actionType": "reload",
+                                "data": {
+                                    "name": `\${record.${uiSchema?.NAME_FIELD_KEY || 'name'}}`
+                                }
+                            }
+                        ]
+                      }
+                },
+              },
+              {
+                "type": "tabs",
+                "tabs": [
+                  {
+                    "title": "详细",
+                    "body": [
+                      {
+                        "type": "steedos-object-form",
+                        "label": "对象表单",
+                        "objectApiName": "${objectName}",
+                        "recordId": "${recordId}",
+                        "id": "u:d4a495811d57"
+                      }
+                    ],
+                    "id": "u:5d4e7e3f6ecc"
+                  },
+                  {
+                    "title": "相关",
+                    "body": [
+                      {
+                        "type": "steedos-object-related-lists",
+                        "label": "相关列表",
+                        "objectApiName": "${objectName}",
+                        "recordId": "${recordId}",
+                        "id": "u:3b85b7b7a7f6"
+                      }
+                    ],
+                    "id": "u:1a0326aeec2b"
+                  }
+                ],
+                "id": "u:a649e4094a12"
+              }
+            ],
+          }
+    }
 }
 
 // export async function getRecordDetailRelatedListSchema(objectName,recordId,relatedObjectName){
