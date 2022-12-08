@@ -313,23 +313,12 @@ export async function lookupToAmis(field, readonly, ctx){
         }
     }
     // console.log(`referenceTo.objectName====`, field)
-    if(!_.isString(field.reference_to) && !readonly){
+    if(field.reference_to && !_.isString(field.reference_to) && !readonly){
         return {
             type: 'steedos-field-lookup',
             field,
             readonly,
             ctx: {},
-            "onEvent": {
-                "change": {
-                  "weight": 0,
-                  "actions": [
-                    {
-                      "actionType": "custom",
-                      script: `console.log('======', event)`
-                    }
-                  ]
-                }
-              }
         }
         // return await lookupToAmisGroup(field, readonly, ctx);
     }
