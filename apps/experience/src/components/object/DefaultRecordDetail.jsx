@@ -133,7 +133,7 @@ export function DefaultRecordDetail({ router, formFactor }){
       </div>
       <div className="sm:mt-3 flex flex-col region-main bg-white sm:shadow sm:rounded sm:border border-slate-300">
         <Tab.Group vertical={true}>
-          <Tab.List className="pl-4 flex space-x-1 border-b">
+          <Tab.List className="pl-4 pt-2 flex space-x-1 border-b">
             {getTabs().map((item)=>{
               return (<Tab
                 key={item.name}
@@ -148,7 +148,7 @@ export function DefaultRecordDetail({ router, formFactor }){
               </Tab>)
             })}
           </Tab.List>
-          <Tab.Panels className="flex-1 p-4 overflow-y-auto  bg-white ">
+          <Tab.Panels className="flex-1 p-4 overflow-y-auto bg-white">
             {getTabs().map((item)=>{
               return (
                 <Tab.Panel
