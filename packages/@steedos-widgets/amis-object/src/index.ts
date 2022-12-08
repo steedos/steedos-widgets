@@ -1,3 +1,4 @@
+import './styles/amis.css';
 import './styles/tailwind.css';
 
 export * from './components';
