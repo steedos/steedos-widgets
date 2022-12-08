@@ -256,7 +256,7 @@ export function ListviewHeader({ schema, onListviewChange, formFactor }) {
                 <span className="slds-assistive-text">Refresh List</span>
               </button>
             </div>
-            <div className="slds-page-header__control">
+            <div className="slds-page-header__control hidden">
               <ul className="slds-button-group-list mb-0">
                 <li>
                   <button
