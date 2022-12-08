@@ -32,9 +32,14 @@ export const AmisObjectListView = async (props) => {
     defaults.headerSchema = headerSchema;
   }
 
+  let setDataToComponentId = ctx && ctx.setDataToComponentId;
+  if(!setDataToComponentId){
+    setDataToComponentId = `service_listview_${objectApiName}`;
+  }
+
   const amisSchemaData = Object.assign({}, data, defaultData);
   const listViewId = ctx?.listViewId || amisSchemaData.listViewId;
-  let amisSchema: any = (await getListSchema(amisSchemaData.appId, objectApiName, listName, { top, showHeader, defaults, ...ctx, listViewId })).amisSchema;
+  let amisSchema: any = (await getListSchema(amisSchemaData.appId, objectApiName, listName, { top, showHeader, defaults, ...ctx, listViewId, setDataToComponentId })).amisSchema;
   amisSchema.data = Object.assign({}, amisSchema.data, amisSchemaData, { listName });
   return {
     "type": "wrapper",

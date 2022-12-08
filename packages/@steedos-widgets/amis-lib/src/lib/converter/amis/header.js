@@ -146,21 +146,22 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
     "columns": [
       {
         "body": [
-          // {
-          //   "type": "tpl",
-          //   "tpl": "${listCount} 项 • 2 分钟前",
-          //   "inline": false,
-          //   "wrapperComponent": "",
-          //   "className": "leading-none",
-          //   "style": {
-          //     "fontFamily": "",
-          //     "fontSize": 13,
-          //     "fontWeight": "bold"
-          //   },
-          //   "id": "u:1661f8471235"
-          // }
+          {
+            "type": "tpl",
+            "tpl": "${$count} 个项目",
+            "visibleOn": "this.$count >= 0",
+            "inline": false,
+            "wrapperComponent": "",
+            "className": "leading-none",
+            "style": {
+              "fontFamily": "",
+              "fontSize": 14
+            },
+            "id": "u:1661f8471235"
+          }
         ],
-        "md": "auto"
+        "md": "auto",
+        "valign": "middle"
       },
       {
         "body": [
@@ -171,14 +172,14 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
             "icon": "fa fa-refresh",
             "actionType": "reload",
             "target": amisListViewId,
-            "className": "bg-transparent p-2 ml-1"
+            "className": "bg-transparent p-2 ml-1 rounded border-gray-300 text-gray-500"
           },
           // {
           //   "type": "button",
           //   "label": "",
           //   "icon": "fa fa-filter",
           //   "actionType": "custom",
-          //   "className": "bg-transparent p-2 ml-1",
+          //   "className": "bg-transparent p-2 ml-1 rounded border-gray-300 text-gray-500",
           //   "id": "u:c20cb87d96c9",
           //   "onEvent": {
           //     "click": {
