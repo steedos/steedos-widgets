@@ -1,3 +1,6 @@
+:root {
+}
+
 fieldset.antd-Collapse > legend.antd-Collapse-header{
     border-left: 0;
 }
@@ -25,14 +28,6 @@ main {
 
 .steedos-listview.amis-scope .antd-Table-headToolbar{
     display: none;
-}
-
-.slds-page-header .antd-Button{
-    vertical-align: inherit !important;
-    height: auto !important;
-    min-width: auto !important;
-    font-weight: inherit !important;
-    font-size: inherit !important;
 }
 
 .antd-Crud-toolbar{
@@ -212,10 +207,6 @@ svg.icon {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     overflow: hidden;
-}
-
-.steedos-record-buttons .antd-Button{
-    margin-right: 4px;
 }
 
 .steedos-listview-buttons .antd-Button{
