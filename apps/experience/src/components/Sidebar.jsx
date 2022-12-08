@@ -86,7 +86,7 @@ export  function Sidebar({ navigation, selected, app }) {
       <div className="block sm:hidden px-4 py-2 bg-white border-b">
         <AppLauncherBar app={app}></AppLauncherBar>
       </div>
-      <div className="px-2 py-4 font-medium">
+      <div className="py-4 font-medium">
       { navigation && <AmisRender schema={getNavSchema(navigation, selected)} data={{}} router={router}></AmisRender>} 
       </div>
     </nav>

@@ -150,7 +150,7 @@ body {
     --Button--default-border: #c9c9c9;
     --Button-borderRadius: 0.25rem;
     --borderRadius: 4px;
-    --Nav-item-borderRadius: 4px;
+    --Nav-item-borderRadius: 0px;
     --Nav-item-onActive-bg: rgba(21,137,238,.1);
     --Nav-item-onActive-color: #000;
 }

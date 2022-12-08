@@ -108,7 +108,7 @@ export function RecordHeader({ schema, formFactor, permissions, hiddenTitle, cla
   }
 
   return (
-    <div className={`slds-page-header slds-page-header_record-home bg-transparent shadow-none border-none pb-0 ${className}`}>
+    <div className={`slds-page-header slds-page-header_record-home bg-transparent shadow-none border-none ${className}`}>
       <div className="slds-page-header__row">
         {hiddenTitle != true && 
                 <div className="slds-page-header__col-title">

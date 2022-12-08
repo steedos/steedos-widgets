@@ -127,11 +127,11 @@ export function DefaultRecordDetail({ router, formFactor }){
     return <><Loading/></>
     
   return (
-    <div className="flex flex-col flex-1 overflow-hidden bg-slate-50/70">
-      <div className="region-header">
+    <div className="flex flex-col sm:m-3">
+      <div className="region-header bg-white sm:shadow sm:rounded sm:border border-slate-300">
         {schema && <RecordHeader schema={schema} formFactor={formFactor} permissions={permissions}></RecordHeader>}
       </div>
-      <div className="flex flex-1 flex-col region-main overflow-hidden">
+      <div className="sm:mt-3 flex flex-col region-main bg-white sm:shadow sm:rounded sm:border border-slate-300">
         <Tab.Group vertical={true}>
           <Tab.List className="pl-4 flex space-x-1 border-b">
             {getTabs().map((item)=>{
