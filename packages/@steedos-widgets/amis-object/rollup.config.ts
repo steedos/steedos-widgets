@@ -43,7 +43,12 @@ const options = {
     }),
     postcss({
       extract: true,
-      plugins: [require('postcss-simple-vars'), require('postcss-nested')],
+      plugins: [
+        require('postcss-simple-vars'), 
+        require('postcss-nested'), 
+        require('tailwindcss'), 
+        require('autoprefixer')
+      ],
     }),
     // terser()
   ],

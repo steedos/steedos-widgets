@@ -3,7 +3,7 @@ const defaultTheme = require('tailwindcss/defaultTheme')
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   important: true,
-  content: ['./src/**/*.{js,jsx,tsx,json}','../../packages/**/*.{js,jsx,tsx,json}'],
+  content: ['./src/**/*.{js,jsx,tsx,json}'],
   theme: {
     fontSize: {
       xs: ['0.75rem', { lineHeight: '1rem' }],

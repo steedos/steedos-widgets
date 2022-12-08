@@ -162,7 +162,7 @@ export const RelatedHeader = ({app_id, foreign_key, masterObjectName, object_nam
                 <span className="slds-assistive-text">Refresh List</span>
               </button>
             </div>
-            <div className="slds-page-header__control">
+            <div className="slds-page-header__control hidden">
               <ul
                 className="slds-button-group-list"
                 id="button-group-page-header-controls"

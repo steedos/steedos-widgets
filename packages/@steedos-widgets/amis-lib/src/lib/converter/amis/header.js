@@ -173,25 +173,25 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
             "target": amisListViewId,
             "className": "bg-transparent p-2 ml-1"
           },
-          {
-            "type": "button",
-            "label": "",
-            "icon": "fa fa-filter",
-            "actionType": "custom",
-            "className": "bg-transparent p-2 ml-1",
-            "id": "u:c20cb87d96c9",
-            "onEvent": {
-              "click": {
-                "actions": [
-                  {
-                    "actionType": "custom",
-                    "script": onFilterChangeScript
-                  }
-                ],
-                "weight": 0
-              }
-            }
-          }
+          // {
+          //   "type": "button",
+          //   "label": "",
+          //   "icon": "fa fa-filter",
+          //   "actionType": "custom",
+          //   "className": "bg-transparent p-2 ml-1",
+          //   "id": "u:c20cb87d96c9",
+          //   "onEvent": {
+          //     "click": {
+          //       "actions": [
+          //         {
+          //           "actionType": "custom",
+          //           "script": onFilterChangeScript
+          //         }
+          //       ],
+          //       "weight": 0
+          //     }
+          //   }
+          // }
         ],
         "md": "auto"
       }
