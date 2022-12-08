@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:51:00
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-08 16:39:48
+ * @LastEditTime: 2022-12-08 09:18:44
  * @Description: 
  */
 
@@ -26,7 +26,7 @@ export const getSchema = async (uiSchema, ctx)=>{
     if(page){
         formSchema = _.isString(page.schema) ? JSON.parse(page.schema) : page.schema;
     }
-
+    // console.log(`standard_new getSchema`, uiSchema, ctx)
     return {
         "type": "service",
         "body": [
