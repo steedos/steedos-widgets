@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-08 10:45:44
+ * @LastEditTime: 2022-12-08 15:16:03
  * @Description:
  */
 import { fetchAPI } from "./steedos.client";
@@ -333,7 +333,7 @@ export async function getRecordDetailHeaderSchema(objectName,recordId){
     };
 }
 
-export async function getRecordDetailSchema(objectName){
+export async function getRecordDetailSchema(objectName, appId){
     const uiSchema = await getUISchema(objectName);
     return {
         uiSchema,
@@ -370,7 +370,8 @@ export async function getRecordDetailSchema(objectName){
                         "label": "对象表单",
                         "objectApiName": "${objectName}",
                         "recordId": "${recordId}",
-                        "id": "u:d4a495811d57"
+                        "id": "u:d4a495811d57", 
+                        appId: appId
                       }
                     ],
                     "id": "u:5d4e7e3f6ecc"
@@ -383,7 +384,8 @@ export async function getRecordDetailSchema(objectName){
                         "label": "相关列表",
                         "objectApiName": "${objectName}",
                         "recordId": "${recordId}",
-                        "id": "u:3b85b7b7a7f6"
+                        "id": "u:3b85b7b7a7f6", 
+                        appId: appId
                       }
                     ],
                     "id": "u:1a0326aeec2b"

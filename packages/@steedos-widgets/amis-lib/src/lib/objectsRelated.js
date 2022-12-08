@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-08 14:10:59
+ * @LastEditTime: 2022-12-08 15:13:58
  * @Description:
  */
 
@@ -160,7 +160,7 @@ export async function getAmisObjectRelatedList(
 }
 
 // 获取单个相关表
-export async function getRecordDetailRelatedListSchema(objectName, recordId, relatedObjectName, relatedKey, top, hiddenEmptyTable){
+export async function getRecordDetailRelatedListSchema(objectName, recordId, relatedObjectName, relatedKey, top, hiddenEmptyTable, appId){
     // console.log('b==>',objectName,recordId,relatedObjectName)
     const relatedObjectUiSchema = await getUISchema(relatedObjectName);
     const { list_views, label , icon, fields } = relatedObjectUiSchema;
@@ -201,7 +201,8 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
         showHeader: true,
         top: top,
         setDataToComponentId: componentId,
-        tableHiddenOn: hiddenEmptyTable ? "this.$count === 0" : null
+        tableHiddenOn: hiddenEmptyTable ? "this.$count === 0" : null,
+        appId: appId
     }
     const amisSchema= (await getListSchema(null, relatedObjectName, firstListViewName, options)).amisSchema;
     return {
