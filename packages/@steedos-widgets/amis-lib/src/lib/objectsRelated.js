@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-07 09:32:45
+ * @LastEditTime: 2022-12-08 14:10:59
  * @Description:
  */
 
@@ -13,6 +13,7 @@ import { getObjectRecordDetailRelatedListHeader } from './converter/amis/header'
 import { isEmpty,  find, isString, forEach, keys, findKey } from "lodash";
 import { getListViewItemButtons } from './buttons'
 import { getUISchema, getListSchema, getField } from './objects'
+import { getRecord } from './record';
 
 export const getRelatedFieldValue = (masterObjectName, record_id, uiSchema, foreign_key) => {
     const relatedField = find(uiSchema.fields, (field) => {
@@ -138,7 +139,7 @@ export async function getAmisObjectRelatedList(
                                 objectName: "${objectName}",
                                 recordId: "${masterRecordId}",
                                 defaultData: {
-                                    ...{[arr[1]]: getRelatedFieldValue(objectName, "${recordId}", relatedSchema.uiSchema, arr[1])}
+                                    ...{[arr[1]]: getRelatedFieldValue(objectName, recordId, relatedSchema.uiSchema, arr[1])}
                                 }
                             }
                         }
@@ -171,6 +172,12 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
     }
     let globalFilter = null;
     const refField = await getField(relatedObjectName, relatedKey);
+
+    let relatedValue = recordId;
+    if(refField.reference_to_field && refField.reference_to_field != '_id'){
+        const masterRecord = await getRecord(objectName, recordId, [refField.reference_to_field]);
+        relatedValue = masterRecord[refField.reference_to_field]
+    }
     
     if (
         refField._reference_to ||
@@ -178,10 +185,10 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
     ) {
         globalFilter = [
             [`${relatedKey}/o`, "=", objectName],
-            [`${relatedKey}/ids`, "=", recordId],
+            [`${relatedKey}/ids`, "=", relatedValue],
         ];
     } else {
-        globalFilter = [`${relatedKey}`, "=", recordId];
+        globalFilter = [`${relatedKey}`, "=", relatedValue];
     }
     const recordRelatedListHeader = await getObjectRecordDetailRelatedListHeader(relatedObjectUiSchema);
     const componentId = `steedos-record-related-list-${relatedObjectName}`;
@@ -219,7 +226,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
                         objectName: "${objectName}",
                         recordId: "${masterRecordId}",
                         defaultData: {
-                            ...{[relatedKey]: getRelatedFieldValue(objectName, "${recordId}", relatedObjectUiSchema, relatedKey)}
+                            ...{[relatedKey]: getRelatedFieldValue(objectName, relatedValue, relatedObjectUiSchema, relatedKey)}
                         }
                     }
                 }
