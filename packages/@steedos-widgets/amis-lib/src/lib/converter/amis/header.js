@@ -61,7 +61,7 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
                 "body": {
                   "type": "tpl",
                   "className": "block",
-                  "tpl": `<p><img class=\"slds-icon slds-icon_container slds-icon-standard-${standardIcon} slds-page-header__icon\" src=\"\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg\" /></p>`
+                  "tpl": `<img class=\"slds-icon slds-icon_container slds-icon-standard-${standardIcon} slds-page-header__icon\" src=\"\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg\" />`
                 },
                 "md": "auto",
                 "className": "",
@@ -173,14 +173,14 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
             "icon": "fa fa-refresh",
             "actionType": "reload",
             "target": amisListViewId,
-            "className": "bg-white p-2 ml-1 rounded border-gray-300 text-gray-500"
+            "className": "bg-white p-2 rounded border-gray-300 text-gray-500"
           },
           // {
           //   "type": "button",
           //   "label": "",
           //   "icon": "fa fa-filter",
           //   "actionType": "custom",
-          //   "className": "bg-transparent p-2 ml-1 rounded border-gray-300 text-gray-500",
+          //   "className": "bg-transparent p-2 rounded border-gray-300 text-gray-500",
           //   "id": "u:c20cb87d96c9",
           //   "onEvent": {
           //     "click": {
@@ -210,7 +210,7 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
   let headerSchema = [{
     "type": "wrapper",
     "body": body,
-    "className": "p-4 border-b"
+    "className": "p-4 border-b sm:rounded bg-gray-100"
   }];
   const searchableFields = keys(objectSchema.fields);
   const fields = sortBy(

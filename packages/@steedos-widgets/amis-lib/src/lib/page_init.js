@@ -42,7 +42,7 @@ export async function getListPageInitSchema(objectApiName, formFactor, userSessi
 
     return {
         type: 'page',
-        bodyClassName: 'p-0',
+        bodyClassName: '',
         regions: [
             "body"
         ],

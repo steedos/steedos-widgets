@@ -13,21 +13,29 @@
 
 .ant-dropdown-menu-item .antd-Button.antd-Button--default{
     border: none;
+    border-width: 0;
     width: 100%;
     text-align: left;
     background: transparent;
     background-color: transparent;
+    min-width: 100px;
+    justify-content: left;
 }
 
 .ant-dropdown-menu-item .antd-Button--default:not(:disabled):not(.is-disabled):hover {
-    background: transparent;
-    background-color: transparent;
+    border-width: 0;
 }
 
 .steedos-record-related-list {
     .antd-Table-contentWrap{
         margin-bottom: 0px !important;
     }
+    .antd-Button {
+        background: white;
+    }    
+}
+
+.steedos-listview {
     .antd-Button {
         background: white;
     }    
