@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 11:31:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-14 09:07:36
+ * @LastEditTime: 2022-12-09 10:43:40
  * @Description:
  */
 import { each, find, isArray, isEmpty } from 'lodash';
@@ -200,7 +200,7 @@ export const getDefaultRenderData = ()=>{
         rootUrl: getRootUrl(),
         userId: steedosAuth.userId,
         tenantId: steedosAuth.spaceId,
-        authToken: steedosAuth.token,
+        authToken: steedosAuth.authToken,
         user: steedosAuth
     },
     global: {
