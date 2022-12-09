@@ -259,10 +259,9 @@ export async function getObjectForm(objectSchema, ctx){
                 "expression": "!!listViewId"
               },
               {
-                "componentId": `detail_${recordId}`,
-                "actionType": "reload",
-                "expression": "!!!listViewId"
-              },
+                "actionType": "custom",
+                "script": "const { recordId, listViewId } = context.props.data;\ndoAction({\n  componentId: `detail_${recordId}`,\n  actionType: \"reload\",\n  expression: `!${listViewId}`\n})\n\n\n\n\n"
+              }
             ]
           }
         }
