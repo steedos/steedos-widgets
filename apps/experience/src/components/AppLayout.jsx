@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 09:31:04
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-07 17:48:37
+ * @LastEditTime: 2022-12-09 10:40:19
  * @Description:  
  */
 import React, { useState, useEffect, Fragment } from 'react';
@@ -61,7 +61,7 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
           rootUrl: getRootUrl(),
           userId: session.steedos.userId,
           tenantId: session.steedos.spaceId,
-          authToken: session.steedos.token
+          authToken: session.steedos.authToken
         } 
       });
     }
