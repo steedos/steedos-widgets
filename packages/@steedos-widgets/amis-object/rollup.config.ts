@@ -4,6 +4,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
 import json from 'rollup-plugin-json';
 import { terser } from "rollup-plugin-terser";
+import fg from 'fast-glob';
 
 require('dotenv-flow').config();
 
@@ -35,6 +36,15 @@ const options = {
     include: 'src/**',
   },
   plugins: [
+    {
+        name: 'watch-src',
+        async buildStart(){
+            const files = await fg('src/**/*');
+            for(let file of files){
+              this.addWatchFile(file);
+            }
+        }
+    },
     nodeResolve(),
     json(),
     typescript({ 

@@ -27,11 +27,16 @@ export const AmisObjectTable = async (props) => {
   if(headerSchema){
     defaults.headerSchema = headerSchema;
   }
+
+  let setDataToComponentId = ctx && ctx.setDataToComponentId;
+  if(!setDataToComponentId){
+    setDataToComponentId = `service_listview_${objectApiName}`;
+  }
   const amisFilters = amisCondition && conditionsToFilters(amisCondition);
   const tableFilters = filters || amisFilters;
 
   const amisSchemaData = Object.assign({}, data, defaultData);
-  let amisSchema = (await getTableSchema(amisSchemaData.appId, objectApiName, columns, { filters: tableFilters, top, sortField, sortOrder, extraColumns,globalFilter, defaults, ...ctx })).amisSchema;
+  let amisSchema = (await getTableSchema(amisSchemaData.appId, objectApiName, columns, { filters: tableFilters, top, sortField, sortOrder, extraColumns,globalFilter, defaults, ...ctx, setDataToComponentId })).amisSchema;
   amisSchema.data = Object.assign({}, amisSchema.data, amisSchemaData);
   return amisSchema;
 }

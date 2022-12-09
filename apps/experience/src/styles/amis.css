@@ -1,3 +1,6 @@
+:root {
+}
+
 fieldset.antd-Collapse > legend.antd-Collapse-header{
     border-left: 0;
 }
@@ -25,14 +28,6 @@ main {
 
 .steedos-listview.amis-scope .antd-Table-headToolbar{
     display: none;
-}
-
-.slds-page-header .antd-Button{
-    vertical-align: inherit !important;
-    height: auto !important;
-    min-width: auto !important;
-    font-weight: inherit !important;
-    font-size: inherit !important;
 }
 
 .antd-Crud-toolbar{
@@ -126,36 +121,6 @@ body {
     }
 }
 
-:root {
-    --fontFamilyBase: -apple-system,BlinkMacSystemFont,Helvetica,Arial,Microsoft Yahei,SimHei;
-    --fontSizeLg: 14px;
-    --Collapse-header-padding: 0px;
-    --Form-selectValue-fontSize: 14px;
-    --Table-toolbar-marginY: 0;
-    --TableCell--edge-paddingX: 1rem;
-    --Table-borderColor: #d9dcde;
-    --TableCell-paddingY: 0.3rem;
-    --TableCell-paddingX: 0.5rem;
-    --TableCell--edge-paddingX: 0.5rem;
-    --Table-thead-borderWidth: 1px;
-    --text--muted-color: #d9dcde;
-    --Collapse-header-fontSize: 16px;
-    --Collapse-header-fontWeight: 400;
-    --Collapse-header-onHover-bg: #EEEEEE;
-    --Collapse-header-padding: 4px;
-    --Collapse-content-padding: 4px;
-    --Button-height: 2rem;
-    --Button-paddingX: 16px;
-    --Button--default-color: rgb(1, 118, 211);
-    --Button--default-border: #c9c9c9;
-    --Button-borderRadius: 0.25rem;
-    --borderRadius: 4px;
-    --Nav-item-borderRadius: 0px;
-    --Nav-item-onHover-bg: rgba(21,137,238,.1);
-    --Nav-item-onActive-bg: rgba(21,137,238,.1);
-    --Nav-item-onActive-color: #000;
-}
-
 /* .antd-Cards-fixedTop{
     display: none !important;
 } */
@@ -242,10 +207,6 @@ svg.icon {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     overflow: hidden;
-}
-
-.steedos-record-buttons .antd-Button{
-    margin-right: 4px;
 }
 
 .steedos-listview-buttons .antd-Button{

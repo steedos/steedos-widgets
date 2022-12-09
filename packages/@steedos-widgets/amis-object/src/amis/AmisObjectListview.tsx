@@ -10,7 +10,7 @@ import { keys, pick, difference } from 'lodash';
 
 export const AmisObjectListView = async (props) => {
   // console.log(`AmisObjectListView props`, props)
-  const { $schema, top, showHeader, headerSchema, ctx, data, defaultData } = props;
+  const { $schema, top, showHeader, headerSchema, ctx, data, defaultData, className } = props;
   const urlListNameMatchs = location.pathname.match(/grid\/(\w+)/);
   const urlListName = urlListNameMatchs && urlListNameMatchs[1]
   let listName = urlListName || props.listName;
@@ -32,9 +32,14 @@ export const AmisObjectListView = async (props) => {
     defaults.headerSchema = headerSchema;
   }
 
+  let setDataToComponentId = ctx && ctx.setDataToComponentId;
+  if(!setDataToComponentId){
+    setDataToComponentId = `service_listview_${objectApiName}`;
+  }
+
   const amisSchemaData = Object.assign({}, data, defaultData);
   const listViewId = ctx?.listViewId || amisSchemaData.listViewId;
-  let amisSchema: any = (await getListSchema(amisSchemaData.appId, objectApiName, listName, { top, showHeader, defaults, ...ctx, listViewId })).amisSchema;
+  let amisSchema: any = (await getListSchema(amisSchemaData.appId, objectApiName, listName, { top, showHeader, defaults, ...ctx, listViewId, setDataToComponentId })).amisSchema;
   amisSchema.data = Object.assign({}, amisSchema.data, amisSchemaData, { listName });
   return {
     "type": "wrapper",

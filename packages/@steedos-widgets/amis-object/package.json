@@ -10,6 +10,7 @@
     "dist"
   ],
   "scripts": {
+    "watch": "rollup -c rollup.config.ts -w",
     "prebuild": "rimraf dist",
     "build": "yarn build:rollup",
     "build:rollup": "rollup -c rollup.config.ts",

@@ -65,7 +65,7 @@ export const getSchema = async (uiSchema, ctx) => {
       },
     ],
     regions: ["body"],
-    className: "p-0",
+    className: "",
     id: "u:3c5cbc0429bb",
   };
 };
