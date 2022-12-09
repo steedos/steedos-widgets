@@ -209,8 +209,7 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
   let headerSchema = [{
     "type": "wrapper",
     "body": body,
-    "size": "xs",
-    "className": "p-t-sm p-b-sm p-l pr-4 border-b py-4"
+    "className": "p-3 border-b bg-gray-100"
   }];
   const searchableFields = keys(objectSchema.fields);
   const fields = sortBy(

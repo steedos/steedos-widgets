@@ -11,6 +11,7 @@
   ],
   "scripts": {
     "dev": "cd apps/experience && node server",
+    "watch": "lerna run watch --parallel",
     "build": "lerna run build",
     "unpkg": "http-server ./packages --port 8080 --cors -c -1",
     "release": "cd steedos-ee/packages/experience && npm publish --registry https://registry.npmjs.org ",

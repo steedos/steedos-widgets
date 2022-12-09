@@ -10,6 +10,7 @@ import commonjs from 'rollup-plugin-commonjs';
 import resolve from 'rollup-plugin-node-resolve';
 import { uglify } from 'rollup-plugin-uglify';
 import json from 'rollup-plugin-json';
+import fg from 'fast-glob';
 
 import pkg from './package.json';
 
@@ -37,6 +38,15 @@ const options = {
         './node_modules/es6-promise/dist/es6-promise.j': ['polyfill'],
       },
     }),
+    {
+        name: 'watch-src',
+        async buildStart(){
+            const files = await fg('src/**/*');
+            for(let file of files){
+                this.addWatchFile(file);
+            }
+        }
+    },
     uglify()
   ],
 };
