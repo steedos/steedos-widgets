@@ -44,6 +44,6 @@ export const AmisObjectListView = async (props) => {
   return {
     "type": "wrapper",
     "body": amisSchema,
-    "className": "m-3 p-0 sm:border bg-white sm:shadow sm:rounded border-slate-300"
+    "className": `p-0 sm:border bg-white sm:shadow sm:rounded border-slate-300 ${className}`
   }
 }

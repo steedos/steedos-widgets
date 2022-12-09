@@ -5,7 +5,6 @@
  * @LastEditTime: 2022-12-08 10:39:18
  * @Description: 
  */
-import './amis-fix.less'
 import './AmisObjectForm.less'
 
 export * from './AmisObjectForm';

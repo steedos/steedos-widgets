@@ -86,8 +86,9 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
                     "className": "leading-none",
                     "label": "\${uiSchema.list_views[listName].label}",
                     "rightIcon": "fa fa-caret-down",
+                    "size": "sm",
                     "hideCaret": true,
-                    "btnClassName": "bg-transparent border-none text-lg font-bold p-0",
+                    "btnClassName": "bg-transparent border-none text-base font-bold p-0 text-black leading-5",
                     "buttons": listViewButtonOptions
                   }
                 ],
@@ -172,7 +173,7 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
             "icon": "fa fa-refresh",
             "actionType": "reload",
             "target": amisListViewId,
-            "className": "bg-transparent p-2 ml-1 rounded border-gray-300 text-gray-500"
+            "className": "bg-white p-2 ml-1 rounded border-gray-300 text-gray-500"
           },
           // {
           //   "type": "button",
@@ -197,7 +198,7 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
         "md": "auto"
       }
     ],
-    "className": "-mt-3"
+    "className": ""
   };
   let body = [firstLineSchema, secordLineSchema];
   if (ctx.onlyFirstLine) {
@@ -209,7 +210,7 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
   let headerSchema = [{
     "type": "wrapper",
     "body": body,
-    "className": "p-3 border-b bg-gray-100"
+    "className": "p-4 border-b"
   }];
   const searchableFields = keys(objectSchema.fields);
   const fields = sortBy(
