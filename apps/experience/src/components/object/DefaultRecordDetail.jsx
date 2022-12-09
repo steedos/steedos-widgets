@@ -127,8 +127,8 @@ export function DefaultRecordDetail({ router, formFactor }){
     return <><Loading/></>
     
   return (
-    <div className="flex flex-col sm:m-3">
-      <div className="region-header bg-white sm:shadow sm:rounded sm:border border-slate-300">
+    <div className="steedos-record-detail flex flex-col sm:m-3">
+      <div className="region-header bg-gray-100 sm:shadow sm:rounded sm:border border-slate-300">
         {schema && <RecordHeader schema={schema} formFactor={formFactor} permissions={permissions}></RecordHeader>}
       </div>
       <div className="sm:mt-3 flex flex-col region-main bg-white sm:shadow sm:rounded sm:border border-slate-300">
