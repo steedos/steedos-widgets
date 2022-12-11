@@ -4,11 +4,11 @@ import { getObjectFieldsFilterButtonSchema, getObjectFieldsFilterBarSchema } fro
 import { map, each, sortBy, compact, keys } from 'lodash';
 
 /**
- * 列表视图顶部amisSchema
+ * 列表视图顶部第一行amisSchema
  * @param {*} objectSchema 对象UISchema
  * @returns amisSchema
  */
-export async function getObjectListHeader(objectSchema, listViewName, ctx) {
+export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
   if (!ctx) {
     ctx = {};
   }
@@ -34,7 +34,6 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
   // if(!currentListView){
   //   return {};
   // }
-
 
   const buttons = getListViewButtons(objectSchema, {});
   let amisButtonsSchema = map(buttons, (button) => {
@@ -76,8 +75,7 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
   }
   const reg = new RegExp('_', 'g');
   const standardIcon = icon && icon.replace(reg, '-');
-  const amisListViewId = `listview_${objectSchema.name}`;
-  let firstLineSchema = {
+  return {
     "type": "grid",
     "columns": [
       {
@@ -135,7 +133,20 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
       }
     ],
     "align": "between"
-  };
+  }
+}
+
+/**
+ * 列表视图顶部amisSchema
+ * @param {*} objectSchema 对象UISchema
+ * @returns amisSchema
+ */
+export async function getObjectListHeader(objectSchema, listViewName, ctx) {
+  if (!ctx) {
+    ctx = {};
+  }
+  const amisListViewId = `listview_${objectSchema.name}`;
+  let firstLineSchema = getObjectListHeaderFirstLine(objectSchema, listViewName, ctx);
   const fieldsFilterButtonSchema = await getObjectFieldsFilterButtonSchema(objectSchema);
   const onFilterChangeScript = `
     const eventData = event.data;
