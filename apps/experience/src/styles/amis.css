@@ -22,9 +22,9 @@ main {
     min-width: 100px;
 }
 
-.steedos-related-listview.amis-scope .antd-Table-headToolbar{
+/* .steedos-related-listview.amis-scope .antd-Table-headToolbar{
     display: none;
-}
+} */
 
 /* .steedos-listview.amis-scope .antd-Table-headToolbar{
     display: none;
@@ -126,7 +126,7 @@ body {
 } */
 
 
-@media (max-width: 767px){
+/* @media (max-width: 767px){
     .antd-Form::before{
         border: none !important;
     }
@@ -136,11 +136,9 @@ body {
     .antd-Form .antd-Number{
         border: none !important;
     }
-}
+} */
 
-
-
-.ant-modal-wrap {
+/* .ant-modal-wrap {
     overflow: hidden;
 }
 
@@ -148,7 +146,7 @@ body {
     max-height: calc(100vh - 200px);
     display: flex;
     flex-direction: column;
-}
+} */
 @media (max-width: 768px){
     .ant-modal.antd-Modal--lg, .ant-modal.antd-Modal--xl, .ant-modal.antd-Modal--full{
         top: 0px !important;
@@ -162,10 +160,10 @@ body {
         max-height: 100%;
     }
 }
-.ant-modal-body {
+/* .ant-modal-body {
     flex: 1  !important;
     overflow: auto  !important;
-}
+} */
 
 :focus:not(:focus-visible) {
     outline: 0;
@@ -193,7 +191,7 @@ svg.icon {
 }
 
 
-.steedos-listview .antd-Images{
+/* .steedos-listview .antd-Images{
     display: inline !important;
 }
 
@@ -207,9 +205,9 @@ svg.icon {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     overflow: hidden;
-}
+} */
 
-.steedos-listview-buttons .antd-Button{
+/* .steedos-listview-buttons .antd-Button{
     margin-right: 4px;
 }
 
@@ -219,10 +217,10 @@ svg.icon {
 
 .steedos-related-buttons .antd-Button--default{
     margin-right: 4px;
-}
+} */
 
 
-.steedos-dropdown-button-item .antd-Button{
+/* .steedos-dropdown-button-item .antd-Button{
     border: none !important;
     background-color: transparent !important;
     padding: 0 !important;
@@ -233,7 +231,7 @@ svg.icon {
 
 .steedos-listview-operation svg{
     display: initial !important;
-}
+} */
 
 
 @media only screen and (min-width: 768px) {
@@ -246,10 +244,10 @@ svg.icon {
     overflow: auto;
 }
 
-.steedos-listview .antd-Table-operationCell{
+/* .steedos-listview .antd-Table-operationCell{
     width: 4rem !important;
 }
 
 .steedos-related-listview .antd-Table-operationCell{
     width: 4rem !important;
-}
+} */
