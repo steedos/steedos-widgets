@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-20 16:29:22
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-18 09:41:08
+ * @LastEditTime: 2022-12-12 14:45:01
  * @Description: 
  */
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -28,11 +28,18 @@ export default CredentialsProvider({
 
         if(endsWith(domain, '/')){
           domain = domain.substring(0, domain.length-1)
-      }
+        }
+
+        let loginInfo = {email: credentials.email}
+        if(new RegExp('^[0-9]{11}$').test(credentials.email)){
+          loginInfo = {mobile: credentials.email}
+        }else if(credentials.email.indexOf("@") < 0){
+          loginInfo = {username: credentials.email}
+        }
 
         const res = await fetch(`${domain}/accounts/password/login`, {
           method: 'POST',
-          body: JSON.stringify({ user: {email: credentials.email}, password: crypto.createHash('sha256').update(credentials.password).digest('hex') }) 
+          body: JSON.stringify({ user: loginInfo, password: crypto.createHash('sha256').update(credentials.password).digest('hex') }) 
         })
         const json = await res.json();
         

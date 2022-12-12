@@ -100,10 +100,10 @@ export default function Login({ providers = {}, csrfToken, rootUrl }) {
                       className="mb-2 focus:shadow-outline-blue sm:text-md relative block w-full appearance-none rounded-none rounded border border-gray-300 px-3 py-3 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-blue-300 focus:outline-none sm:leading-5"
                     />
                     <input
-                      placeholder="邮箱"
+                      placeholder="邮箱、手机号、用户名"
                       id="email"
                       name="email"
-                      type="email"
+                      type="text"
                       autoComplete="email"
                       className="focus:shadow-outline-blue sm:text-md relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-3 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-blue-300 focus:outline-none sm:leading-5"
                       required
