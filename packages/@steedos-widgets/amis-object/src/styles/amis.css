@@ -6,12 +6,15 @@
     --Table-toolbar-marginY: 0;
     --TableCell--edge-paddingX: 1rem;
     --Table-borderColor: #d9dcde;
+    --Table-thead-fontSize: 13px;
+    --Table-fontSize: 13px;
     --Table-thead-bg: rgb(243 244 246);
     --TableCell-paddingY: 0.3rem;
     --TableCell-paddingX: 0.5rem;
     --TableCell--edge-paddingX: 0.5rem;
     --Table-thead-borderWidth: 1px;
     --text--muted-color: #d9dcde;
+    --Collapse-border: 0;
     --Collapse-header-fontSize: 16px;
     --Collapse-header-fontWeight: 400;
     --Collapse-header-onHover-bg: #EEEEEE;
