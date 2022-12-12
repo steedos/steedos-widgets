@@ -42,5 +42,6 @@
   "dependencies": {
     "@dnd-kit/core": "^6.0.5",
     "@dnd-kit/sortable": "^7.0.1"
-  }
+  },
+  "gitHead": "62a446518c9f80a67a4c3f04ddb65165f30f3bae"
 }

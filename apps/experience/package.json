@@ -55,5 +55,6 @@
     "prettier": "^2.7.1",
     "prettier-plugin-tailwindcss": "^0.1.11",
     "typescript": "4.6.3"
-  }
+  },
+  "gitHead": "62a446518c9f80a67a4c3f04ddb65165f30f3bae"
 }
