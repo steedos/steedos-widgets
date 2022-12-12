@@ -41,7 +41,8 @@
   },
   "dependencies": {
     "@dnd-kit/core": "^6.0.5",
-    "@dnd-kit/sortable": "^7.0.1"
+    "@dnd-kit/sortable": "^7.0.1",
+    "@steedos-widgets/amis-lib": "1.0.0-beta.30"
   },
   "gitHead": "c41242d76a6b4b7f51001d55d71c93ea674fcde2"
 }
