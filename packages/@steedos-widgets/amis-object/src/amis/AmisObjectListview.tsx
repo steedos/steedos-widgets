@@ -10,7 +10,7 @@ import { keys, pick, difference } from 'lodash';
 
 export const AmisObjectListView = async (props) => {
   // console.log(`AmisObjectListView props`, props)
-  const { $schema, top, showHeader, headerSchema, ctx, data, defaultData, className } = props;
+  const { $schema, top, showHeader, headerSchema, ctx, data, defaultData, className, tableClassName } = props;
   const urlListNameMatchs = location.pathname.match(/grid\/(\w+)/);
   const urlListName = urlListNameMatchs && urlListNameMatchs[1]
   let listName = urlListName || props.listName;
@@ -22,6 +22,8 @@ export const AmisObjectListView = async (props) => {
     // 支持把crud组件任意属性通过listSchema属性传入到底层crud组件中
     const schemaKeys = difference(keys($schema), ["type", "showHeader","id"]);
     const listSchema = pick(props, schemaKeys);
+    // className不传入crud组件，crud单独识别tableClassName属性
+    listSchema.className = tableClassName;
     defaults = {
       listSchema
     };

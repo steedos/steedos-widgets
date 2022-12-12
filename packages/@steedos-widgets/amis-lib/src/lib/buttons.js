@@ -80,8 +80,9 @@ export const standardButtonsTodo = {
         const {
             listViewId,
             uiSchema,
+            scopeId
         } = this;
-        const listViewRef = SteedosUI?.getRef(listViewId).getComponentById(`listview_${uiSchema.name}`)
+        const listViewRef = SteedosUI?.getRef(scopeId || listViewId).getComponentById(`listview_${uiSchema.name}`)
           
         if(_.isEmpty(listViewRef.props.store.toJSON().selectedItems)){
             listViewRef.handleAction({}, {

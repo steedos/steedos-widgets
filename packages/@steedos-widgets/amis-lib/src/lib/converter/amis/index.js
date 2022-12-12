@@ -187,12 +187,22 @@ export async function getObjectList(objectSchema, fields, options){
       const headerSchema = defaults.headerSchema;
       const footerSchema = defaults.footerSchema;
       if (headerSchema || footerSchema) {
-        const wrappedBody = [body];
+        let wrappedBody = [body];
         if (headerSchema) {
-          wrappedBody.unshift(headerSchema);
+          if(_.isArray(headerSchema)){
+            wrappedBody = _.union(headerSchema,wrappedBody);
+          }
+          else{
+            wrappedBody.unshift(headerSchema);
+          }
         }
         if (footerSchema) {
-          wrappedBody.push(footerSchema);
+          if(_.isArray(footerSchema)){
+            wrappedBody = _.union(wrappedBody,footerSchema);
+          }
+          else{
+            wrappedBody.push(footerSchema);
+          }
         }
         body = wrappedBody;
       }

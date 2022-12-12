@@ -55,7 +55,31 @@ export default function Page ({ formFactor }) {
             router={router}
           ></AmisRender>
       )}
-      {!page && <DefaultListview formFactor={formFactor} router={router} listViewId={listViewId}></DefaultListview>}
+      {/* {!page && <DefaultListview formFactor={formFactor} router={router} listViewId={listViewId}></DefaultListview>} */}
+      {!page && (
+          <AmisRender
+            data={{
+              objectName: tab_id,
+              listViewId: listViewId,
+              listName: listview_id,
+              appId: app_id,
+              formFactor: formFactor,
+              scopeId: listViewId,
+            }}
+            className="steedos-listview"
+            id={listViewId}
+            schema={{
+              "type": "steedos-object-listview",
+              "objectApiName": tab_id,
+              // "listName": "${listName}",
+              // "headerToolbar": [],
+              "columnsTogglable": false,
+              "showHeader": true,
+              "className": "sm:m-3"
+            }}
+            router={router}
+          ></AmisRender>
+        )}
     </>
   )
 }

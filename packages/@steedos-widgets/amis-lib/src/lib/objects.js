@@ -14,7 +14,7 @@ import {
     getObjectDetail,
     getObjectForm,
 } from "./converter/amis/index";
-import { getObjectListHeader, getObjectRecordDetailHeader, getObjectRecordDetailRelatedListHeader } from './converter/amis/header';
+import { getObjectListHeader, getObjectListHeaderFirstLine, getObjectRecordDetailHeader, getObjectRecordDetailRelatedListHeader } from './converter/amis/header';
 import _, { cloneDeep, slice, isEmpty, each, has, findKey, find, isString, isObject, keys, includes, isArray, isFunction, map, forEach, defaultsDeep } from "lodash";
 import { getRecord } from './record';
 import { getListViewItemButtons } from './buttons'
@@ -190,10 +190,13 @@ export async function getListSchema(
     }
 
     if(listView.enable_amis_schema && listView.amis_schema){
+        const amisSchema = isString(listView.amis_schema) ? JSON.parse(listView.amis_schema) : listView.amis_schema;
+        let firstLineSchema = getObjectListHeaderFirstLine(uiSchema, listViewName, ctx);
+        amisSchema.body[0].headerSchema[0].body.unshift(firstLineSchema);
         return {
             uiSchema,
             isCustom: true,
-            amisSchema: isString(listView.amis_schema) ? JSON.parse(listView.amis_schema) : listView.amis_schema,
+            amisSchema
         };
     }
 
