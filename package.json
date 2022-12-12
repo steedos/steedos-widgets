@@ -15,7 +15,7 @@
     "build": "lerna run build",
     "unpkg": "http-server ./packages --port 8080 --cors -c -1",
     "version:beta": "lerna version prerelease --preid beta --force-publish --exact --allow-branch dev",
-    "publish:beta": "lerna publish from-package --registry https://registry.npmjs.org --dist-tag beta",
+    "publish:beta": "yarn build && lerna publish from-package --registry https://registry.npmjs.org --dist-tag beta",
     "start": "cd apps/experience && NODE_ENV=production node server.js",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
