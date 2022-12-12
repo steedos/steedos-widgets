@@ -191,11 +191,9 @@ export async function getListSchema(
 
     if(listView.enable_amis_schema && listView.amis_schema){
         const amisSchema = isString(listView.amis_schema) ? JSON.parse(listView.amis_schema) : listView.amis_schema;
-        let firstLineSchema = getObjectListHeaderFirstLine(uiSchema, listViewName, ctx);
-        amisSchema.body[0].headerSchema[0].body.unshift(firstLineSchema);
         return {
             uiSchema,
-            isCustom: true,
+            isCustomAmisSchema: true,
             amisSchema
         };
     }

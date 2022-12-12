@@ -1,5 +1,5 @@
 import { first, keys, map, find } from 'lodash';
-import { getUISchema, getObjectRelatedList,getRecordDetailHeaderSchema, getFormSchema, getViewSchema, getListViewColumns, getListViewSort } from './objects';
+import { getUISchema, getObjectRelatedList,getRecordDetailHeaderSchema, getFormSchema, getViewSchema, getListViewColumns, getListViewSort, getTableSchema } from './objects';
 import { getAmisObjectRelatedList } from './objectsRelated';
 
 import { getObjectListHeader,getObjectRecordDetailRelatedListHeader } from './converter/amis/header';
@@ -148,33 +148,47 @@ export async function getListviewInitSchema(objectApiName, listViewName, ctx) {
     if (listView) {
         const listViewColumns = getListViewColumns(listView, ctx.formFactor);
         const sort = getListViewSort(listView);
-        //传入isListviewInit是区别于对象列表类型的微页面，即getListPageInitSchema函数中该属性为false
-        const headerSchema = await getObjectListHeader(uiSchema, listViewName, {
-            onlySecordLine: true,
-            isListviewInit: true
-        });
     
-        amisSchema = {
-            "type": "steedos-object-table",
-            "objectApiName": objectApiName,
-            "columns": listViewColumns,
-            "extraColumns": listView.extra_columns,
-            "filters": listView.filters,
-            "sort": sort,
-            "headerSchema": headerSchema
-        };
-    }
+        // amisSchema = {
+        //     "type": "steedos-object-table",
+        //     "objectApiName": objectApiName,
+        //     "columns": listViewColumns,
+        //     "extraColumns": listView.extra_columns,
+        //     "filters": listView.filters,
+        //     "sort": sort,
+        //     "headerSchema": headerSchema
+        // };
 
-    return {
-        type: 'page',
-        bodyClassName: 'p-0',
-        regions: [
-            "body"
-        ],
-        // name: `page_${readonly ? 'readonly':'edit'}_${recordId}`
-        body: [amisSchema],
-        data:{
-            listName: listViewName
+        const defaults = ctx.defaults || {};
+        if(!defaults.headerSchema){
+            //传入isListviewInit是区别于对象列表类型的微页面，即getListPageInitSchema函数中该属性为false
+            const headerSchema = await getObjectListHeader(uiSchema, listViewName, {
+                onlySecordLine: true,
+                isListviewInit: true
+            });
+            defaults.headerSchema = headerSchema;
         }
+        ctx.defaults = defaults;
+        const schema = await getTableSchema(null, objectApiName, listViewColumns, {
+            sort,
+            ...ctx
+            
+        });
+        amisSchema = schema.amisSchema;
     }
+    // 不可以外面包一层page，否则列表视图渲染时的data无法传入顶部第一行造成按钮显示异常
+    return amisSchema;
+
+    // return {
+    //     type: 'page',
+    //     bodyClassName: 'p-0',
+    //     regions: [
+    //         "body"
+    //     ],
+    //     // name: `page_${readonly ? 'readonly':'edit'}_${recordId}`
+    //     body: [amisSchema],
+    //     data:{
+    //         listName: listViewName
+    //     }
+    // }
 }

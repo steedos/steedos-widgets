@@ -215,7 +215,6 @@ export async function getObjectList(objectSchema, fields, options){
       name: `page`,
       data: {
         "$master": '$$',
-        context: { rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken() },
         objectName: objectSchema.name,
         _id: null,
         recordPermissions: objectSchema.permissions,
