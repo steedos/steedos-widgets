@@ -1,7 +1,8 @@
 :root {
     --fontFamilyBase: -apple-system,BlinkMacSystemFont,Helvetica,Arial,Microsoft Yahei,SimHei;
     --fontSizeLg: 14px;
-    --Collapse-header-padding: 0px;
+    --Form-item-fontSize: 12px;
+    --Form-fontSize: 14px;
     --Form-selectValue-fontSize: 14px;
     --Table-toolbar-marginY: 0;
     --TableCell--edge-paddingX: 1rem;
@@ -14,6 +15,8 @@
     --TableCell--edge-paddingX: 0.5rem;
     --Table-thead-borderWidth: 1px;
     --text--muted-color: #d9dcde;
+    --Collapse-header-padding: 0px;
+    --Collapse-content-fontSize: 14px;
     --Collapse-border: 0;
     --Collapse-header-fontSize: 16px;
     --Collapse-header-fontWeight: 400;
