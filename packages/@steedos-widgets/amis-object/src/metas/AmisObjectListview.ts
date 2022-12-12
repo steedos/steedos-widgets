@@ -111,7 +111,6 @@ export default {
           name: "listName",
           multiple: false,
           label: "视图",
-          hiddenOn: "this.showHeader",
           "source": {
             "url": "/service/api/amis-design/object/${objectApiName}",
             "method": "get",
