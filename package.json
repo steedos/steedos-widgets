@@ -13,7 +13,7 @@
     "dev": "cd apps/experience && node server",
     "watch": "lerna run watch --parallel",
     "build": "lerna run build",
-    "build-app": "lerna run build-app",
+    "build-app": "lerna run build-app --parallel",
     "unpkg": "http-server ./packages --port 8080 --cors -c -1",
     "version:beta": "lerna version prerelease --preid beta --force-publish --exact --allow-branch dev",
     "publish:beta": "yarn build && yarn build-app && lerna publish from-package --registry https://registry.npmjs.org --dist-tag beta",
