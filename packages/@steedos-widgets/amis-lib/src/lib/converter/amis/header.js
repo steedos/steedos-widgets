@@ -45,34 +45,34 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
       className: `button_${button.name} border-gray-200 inline-block ml-1`
     }
   });
-  if(objectSchema.permissions?.allowDelete){
-    const bulkDeleteScript = `
-      const data = event.data;
-      const listViewId = data.listViewId;
-      const uiSchema = data.uiSchema;
-      const scopeId = data.scopeId;
-      BuilderAmisObject.AmisLib.standardButtonsTodo.standard_delete_many.call({
-        listViewId, 
-        uiSchema, 
-        scopeId
-      })
-    `;
-    amisButtonsSchema.push({
-      type: 'button',
-      label: "删除",
-      className: `antd-Button antd-Button--default antd-Button--size-default`,
-      "onEvent": {
-        "click": {
-          "actions": [
-            {
-              "actionType": "custom",
-              "script": bulkDeleteScript
-            }
-          ]
-        }
-      }
-    });
-  }
+  // if(objectSchema.permissions?.allowDelete){
+  //   const bulkDeleteScript = `
+  //     const data = event.data;
+  //     const listViewId = data.listViewId;
+  //     const uiSchema = data.uiSchema;
+  //     const scopeId = data.scopeId;
+  //     BuilderAmisObject.AmisLib.standardButtonsTodo.standard_delete_many.call({
+  //       listViewId, 
+  //       uiSchema, 
+  //       scopeId
+  //     })
+  //   `;
+  //   amisButtonsSchema.push({
+  //     type: 'button',
+  //     label: "删除",
+  //     className: `antd-Button antd-Button--default antd-Button--size-default`,
+  //     "onEvent": {
+  //       "click": {
+  //         "actions": [
+  //           {
+  //             "actionType": "custom",
+  //             "script": bulkDeleteScript
+  //           }
+  //         ]
+  //       }
+  //     }
+  //   });
+  // }
   const reg = new RegExp('_', 'g');
   const standardIcon = icon && icon.replace(reg, '-');
   return {
@@ -252,7 +252,8 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
   let headerSchema = [{
     "type": "wrapper",
     "body": body,
-    "className": "p-4 border-b sm:rounded-tl sm:rounded-tr bg-gray-100"
+    "className": "p-4 border-b sm:rounded bg-gray-100"
+    // "className": "p-4 border-b sm:rounded-tl sm:rounded-tr bg-gray-100"
   }];
   const searchableFields = keys(objectSchema.fields);
   const fields = sortBy(

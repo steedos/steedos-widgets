@@ -47,7 +47,11 @@ export const AmisObjectListView = async (props) => {
   const body = [amisSchema];
   if(schema.isCustomAmisSchema){
     let firstLineSchema = getObjectListHeaderFirstLine(uiSchema, listName, ctx);
-    body.unshift(firstLineSchema);
+    body.unshift({
+      "type": "wrapper",
+      "body": [firstLineSchema],
+      "className": "bg-gray-100 pb-0",
+    });
   }
   const serviceData = Object.assign({}, amisSchema.data, amisSchemaData, { listName, uiSchema });
   return {
