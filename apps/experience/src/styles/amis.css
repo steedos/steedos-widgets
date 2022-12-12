@@ -26,9 +26,9 @@ main {
     display: none;
 }
 
-.steedos-listview.amis-scope .antd-Table-headToolbar{
+/* .steedos-listview.amis-scope .antd-Table-headToolbar{
     display: none;
-}
+} */
 
 .antd-Crud-toolbar{
     margin-left: 1rem;
