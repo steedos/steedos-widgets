@@ -128,7 +128,10 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
         "md": "auto"
       },
       {
-        "body": amisButtonsSchema,
+        "body":  {
+          "type": "flex",
+          "items": amisButtonsSchema,
+        },
         "md": "auto"
       }
     ],
@@ -372,7 +375,10 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
                     "md": "auto"
                   },
                   {
-                    "body": amisButtonsSchema,
+                    "body":  {
+                      "type": "flex",
+                      "items": amisButtonsSchema,
+                    },
                     "md": "auto"
                   }
                 ],
@@ -490,7 +496,10 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
             "md": "auto"
           },
           {
-            "body": amisButtonsSchema,
+            "body": {
+              "type": "flex",
+              "items": amisButtonsSchema,
+            },
             "md": "auto"
           }
         ],
