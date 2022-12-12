@@ -1,21 +1,16 @@
 {
-    "npmClient": "yarn",
-    "useWorkspaces": true,
-    "packages": [
-      "apps/*",
-      "packages/**"
-    ],
-    "command": {
-      "version": {
-        "exact": true
-      },
-      "publish": {
-        "npmClient": "npm",
-        "allowBranch": [
-          "master"
-        ],
-        "registry": "https://registry.npmjs.org/"
-      }
+  "npmClient": "yarn",
+  "useWorkspaces": true,
+  "packages": ["apps/*", "packages/**"],
+  "command": {
+    "version": {
+      "exact": true
     },
-    "version": "0.0.1"
-  }
+    "publish": {
+      "npmClient": "npm",
+      "allowBranch": ["master"],
+      "registry": "https://registry.npmjs.org/"
+    }
+  },
+  "version": "1.0.0-beta.29"
+}

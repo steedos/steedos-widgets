@@ -5,8 +5,6 @@
  * @LastEditTime: 2022-08-13 18:06:08
  * @Description: 
  */
-import { unstable_getServerSession } from "next-auth/next"
-import { authOptions } from '@/pages/api/auth/[...nextauth]'
 import React, { useState, useEffect } from 'react';
 
 export default function App() {
@@ -15,20 +13,4 @@ export default function App() {
     <>
     </>
   )
-}
-
-export async function getServerSideProps(context) {
-  const session = context.req.session ||await unstable_getServerSession(context.req, context.res, authOptions)
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login?callbackUrl=/app',
-        permanent: false,
-      },
-    }
-  }
-  return {
-    props: { },
-  }
 }

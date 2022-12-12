@@ -6,9 +6,8 @@
  * @Description:  
  */
 import React, { useState, useEffect, Fragment } from 'react';
-import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
-import { Transition } from '@headlessui/react'
 
+import { Loading } from '@/components/Loading'
 import { GlobalHeader } from '@/components/GlobalHeader';
 import { Sidebar } from '@/components/Sidebar';
 import { getApp } from '@steedos-widgets/amis-lib';
@@ -47,8 +46,9 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
       tabId = pageId;
     }
     const [app, setApp] = useState(null)
-    const [selected, setSelected] = useState(tabId)
+    const [selectedTabId, setSelectedTabId] = useState(tabId)
     const { data: session } = useSession()
+
     if(session){
       if(session.publicEnv?.STEEDOS_ROOT_URL){
         setRootUrl(session.publicEnv?.STEEDOS_ROOT_URL);
@@ -80,29 +80,39 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
       }
     }, [session]);
 
-    // 默认进入第一个tab
+    // session 变化，获取 app
     useEffect(() => {
-      if(!pageId && !tabId && !selected && app?.children[0]){
+      if(!appId || !session) return ;
+      if (!app || app?.id != appId) {
+        getApp(appId)
+          .then((data) => {
+            console.log('setApp')
+            setApp(data)
+          })
+      }
+    }, [session]);
+
+    // app 变化，默认进入第一个tab
+    useEffect(() => {
+      console.log('app change')
+      if(!session) return ;
+      if(!pageId && !tabId && !selectedTabId && app?.children[0]){
         router.push(app.children[0].path)
-        setSelected(app.children[0].id)
+        setSelectedTabId(app.children[0].id)
+      } else if (tabId != selectedTabId){
+        setSelectedTabId(tabId)
       }
     }, [app]);
 
-    useEffect(() => {
-        setSelected(tabId)
-    }, [tabId]);
+    console.log(`render ${appId}`, `${tabId}`)
+    console.log(app)
 
-    useEffect(() => {
-        if(!appId || !session) return ;
-        getApp(appId)
-          .then((data) => {
-            setApp(data)
-          })
-      }, [appId, session]);
+    if (!session) return <Loading></Loading>
+
     return (
       <div className='h-full flex flex-col'>
-        <GlobalHeader navigation={app?.children} selected={selected} app={app} SideBarToggle={SideBarToggle}/>
-        {session && (
+        <GlobalHeader navigation={app?.children} selectedTabId={tabId} app={app} SideBarToggle={SideBarToggle}/>
+        {session && app && (
           <div id="main" className="flex flex-1 sm:overflow-hidden">
 
             <div 
@@ -116,7 +126,7 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
                   }
                 }
               }}>
-                <Sidebar navigation={app?.children} selected={selected} app={app}/>
+                <Sidebar navigation={app?.children} selectedTabId={tabId} app={app}/>
               </div>
             </div>
             <div id="content" className="flex flex-col min-w-0 flex-1 overflow-y-auto bg-slate-50">

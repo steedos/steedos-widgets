@@ -5,7 +5,7 @@
  * @LastEditTime: 2022-11-30 10:45:46
  * @Description: 
  */
-import { getListSchema } from '@steedos-widgets/amis-lib'
+import { getListSchema, getObjectListHeaderFirstLine } from '@steedos-widgets/amis-lib'
 import { keys, pick, difference } from 'lodash';
 
 export const AmisObjectListView = async (props) => {
@@ -41,11 +41,19 @@ export const AmisObjectListView = async (props) => {
 
   const amisSchemaData = Object.assign({}, data, defaultData);
   const listViewId = ctx?.listViewId || amisSchemaData.listViewId;
-  let amisSchema: any = (await getListSchema(amisSchemaData.appId, objectApiName, listName, { top, showHeader, defaults, ...ctx, listViewId, setDataToComponentId })).amisSchema;
-  amisSchema.data = Object.assign({}, amisSchema.data, amisSchemaData, { listName });
+  let schema: any = (await getListSchema(amisSchemaData.appId, objectApiName, listName, { top, showHeader, defaults, ...ctx, listViewId, setDataToComponentId }));
+  const amisSchema = schema.amisSchema;
+  const uiSchema = schema.uiSchema;
+  const body = [amisSchema];
+  if(schema.isCustomAmisSchema){
+    let firstLineSchema = getObjectListHeaderFirstLine(uiSchema, listName, ctx);
+    body.unshift(firstLineSchema);
+  }
+  const serviceData = Object.assign({}, amisSchema.data, amisSchemaData, { listName, uiSchema });
   return {
-    "type": "wrapper",
-    "body": amisSchema,
-    "className": `p-0 sm:border bg-white sm:shadow sm:rounded border-slate-300 ${className}`
+    "type": "service",
+    "body": body,
+    "className": `p-0 sm:border bg-white sm:shadow sm:rounded border-slate-300 ${className}`,
+    "data": serviceData
   }
 }
