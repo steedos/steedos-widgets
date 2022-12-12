@@ -79,7 +79,7 @@ function getNavSchema(nav, selected){
   }
 }
 
-export  function Sidebar({ navigation, selected, app }) {
+export  function Sidebar({ navigation, selectedTabId, app }) {
   const router = useRouter()
   return (
     <nav aria-label="Sidebar" className="">
@@ -87,7 +87,7 @@ export  function Sidebar({ navigation, selected, app }) {
         <AppLauncherBar app={app}></AppLauncherBar>
       </div>
       <div className="py-4 font-medium">
-      { navigation && <AmisRender schema={getNavSchema(navigation, selected)} data={{}} router={router}></AmisRender>} 
+      { navigation && <AmisRender schema={getNavSchema(navigation, selectedTabId)} data={{}} router={router}></AmisRender>} 
       </div>
     </nav>
   )

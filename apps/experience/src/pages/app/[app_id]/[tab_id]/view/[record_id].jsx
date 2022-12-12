@@ -7,8 +7,6 @@
  */
 import React, { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
-import { unstable_getServerSession } from "next-auth/next";
-import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { DefaultRecordDetail } from '@/components/object/DefaultRecordDetail'
 import { AmisRender } from "@/components/AmisRender";
 import { getPage } from "@steedos-widgets/amis-lib";
@@ -56,24 +54,4 @@ export default function Record({formFactor}) {
       {!page && <DefaultRecordDetail formFactor={formFactor} router={router}></DefaultRecordDetail>}
     </>
   )
-}
-
-export async function getServerSideProps(context) {
-  const session = context.req.session || await unstable_getServerSession(
-    context.req,
-    context.res,
-    authOptions
-  );
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: "/login?callbackUrl=/app",
-        permanent: false,
-      },
-    };
-  }
-  return {
-    props: {},
-  };
 }

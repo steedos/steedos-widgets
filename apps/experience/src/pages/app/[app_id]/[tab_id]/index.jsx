@@ -5,13 +5,9 @@
  * @LastEditTime: 2022-10-10 14:14:03
  * @Description: 
  */
-import dynamic from 'next/dynamic'
-import Document, { Script, Head, Main, NextScript } from 'next/document'
 import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { useRouter } from 'next/router'
 import { getListSchema } from '@steedos-widgets/amis-lib';
-import { unstable_getServerSession } from "next-auth/next"
-import { authOptions } from '@/pages/api/auth/[...nextauth]'
 import { values } from 'lodash'
 
 export default function Page ({ formFactor }) {
@@ -35,18 +31,3 @@ export default function Page ({ formFactor }) {
 }
 
 
-export async function getServerSideProps(context) {
-  const session = context.req.session || await unstable_getServerSession(context.req, context.res, authOptions)
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login?callbackUrl=/app',
-        permanent: false,
-      },
-    }
-  }
-  return {
-    props: { },
-  }
-}

@@ -5,14 +5,9 @@
  * @LastEditTime: 2022-11-08 09:20:45
  * @Description: 
  */
-import dynamic from 'next/dynamic'
-import Document, { Script, Head, Main, NextScript } from 'next/document'
 import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { useRouter } from 'next/router'
 import { getListSchema } from '@steedos-widgets/amis-lib';
-import { unstable_getServerSession } from "next-auth/next"
-import { AmisRender } from '@/components/AmisRender'
-import { authOptions } from '@/pages/api/auth/[...nextauth]'
 import { Loading } from '@/components/Loading';
 import { InstancesListview } from '@/components/object/InstancesListview';
 
@@ -43,20 +38,4 @@ export default function Page ({formFactor}) {
       <div className="flex-1 w-64" ></div>
     </div>
   )
-}
-
-export async function getServerSideProps(context) {
-  const session = context.req.session || await unstable_getServerSession(context.req, context.res, authOptions)
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login?callbackUrl=/app',
-        permanent: false,
-      },
-    }
-  }
-  return {
-    props: { },
-  }
 }

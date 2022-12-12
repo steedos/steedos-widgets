@@ -7,11 +7,8 @@
  */
 import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { useRouter } from 'next/router'
-import { unstable_getServerSession } from "next-auth/next"
-import { authOptions } from '@/pages/api/auth/[...nextauth]'
 import { getPage } from "@steedos-widgets/amis-lib";
 import { Loading } from '@/components/Loading';
-import { DefaultListview } from '@/components/object/DefaultListview';
 
 import { AmisRender } from "@/components/AmisRender";
 
@@ -82,20 +79,4 @@ export default function Page ({ formFactor }) {
         )}
     </>
   )
-}
-
-export async function getServerSideProps(context) {
-  const session = context.req.session || await unstable_getServerSession(context.req, context.res, authOptions)
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login?callbackUrl=/app',
-        permanent: false,
-      },
-    }
-  }
-  return {
-    props: { },
-  }
 }

@@ -17,7 +17,7 @@ function classNames(...classes) {
 const defaultAvatar =
   "/images/defaultAvatar.png";
 
-export function GlobalHeader({ navigation, selected, app, SideBarToggle }) {
+export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) {
   let [sidebarOpen, setSidebarOpen] = useState(false)
 
   const router = useRouter();
