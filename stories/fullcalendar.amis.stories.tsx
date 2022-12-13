@@ -84,7 +84,6 @@ export default {
           loadJS('https://unpkg.steedos.cn/crypto-js@4.1.1/crypto-js.js'), 
           loadJS('https://unpkg.steedos.cn/lodash/lodash.min.js'),
           loadJS('https://unpkg.steedos.cn/@steedos-builder/react@0.2.30/dist/builder-react.unpkg.js'),
-          loadCss('https://unpkg.com/tailwindcss@3.2.4/src/css/preflight.css'),
           loadCss('https://unpkg.steedos.cn/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css'),
           loadCss('https://unpkg.steedos.cn/amis/lib/themes/antd.css'),
           loadCss('https://unpkg.steedos.cn/amis/lib/helper.css'),
