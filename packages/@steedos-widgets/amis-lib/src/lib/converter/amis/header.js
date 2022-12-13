@@ -279,10 +279,11 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
     roundedCss = "";
     body = [secordLineSchema];
   }
+  // className中不可以加p-4，否则它会优先于后面的pt-0，边距效果依赖wrapper自带的antd-Wrapper--md样式类
   let headerSchema = [{
     "type": "wrapper",
     "body": body,
-    "className": `p-4 border-b bg-gray-100 ${roundedCss}`
+    "className": `border-b bg-gray-100 ${roundedCss} ${ctx.onlySecordLine && "pt-0"}`
   }];
   const fieldsFilterBarSchema = await getObjectListHeaderFieldsFilterBar(objectSchema, listViewName, ctx);
   headerSchema.push(fieldsFilterBarSchema);
