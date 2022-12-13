@@ -1,4 +1,5 @@
 :root {
+    --Page-main-bg: transparent;
     --fontFamilyBase: -apple-system,BlinkMacSystemFont,Helvetica,Arial,Microsoft Yahei,SimHei;
     --fontSizeLg: 14px;
     --Form-item-fontSize: 12px;
