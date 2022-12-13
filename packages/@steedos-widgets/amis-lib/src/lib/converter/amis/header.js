@@ -100,21 +100,16 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
                     "tpl": `${label}`,
                     "inline": false,
                     "wrapperComponent": "",
-                    "className": "leading-none",
-                    "style": {
-                      "fontFamily": "",
-                      "fontSize": 13,
-                      "fontWeight": "bold"
-                    }
+                    "className": "text-md leading-none text-black",
                   },
                   {
                     "type": "dropdown-button",
-                    "className": "leading-none",
+                    "className": "",
                     "label": "\${uiSchema.list_views[listName].label}",
                     "rightIcon": "fa fa-caret-down",
                     "size": "sm",
                     "hideCaret": true,
-                    "btnClassName": "bg-transparent border-none text-base font-bold p-0 text-black leading-5",
+                    "btnClassName": "bg-transparent border-none text-xl font-bold p-0 text-black leading-none",
                     "buttons": listViewButtonOptions
                   }
                 ],
