@@ -162,14 +162,6 @@ body {
     font-family: -apple-system,BlinkMacSystemFont,Helvetica,Arial,Microsoft Yahei,SimHei;
 }
 
-@media only screen and (min-width: 600px) {
-    body {
-        background: url(/images/defaultBackground.png);    
-        background-size: contain;
-        background-repeat: no-repeat;
-    }
-}
-
 @media (max-width: 768px){
     .ant-modal.antd-Modal--lg, .ant-modal.antd-Modal--xl, .ant-modal.antd-Modal--full{
         top: 0px !important;
