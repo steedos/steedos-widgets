@@ -10,7 +10,7 @@ import { keys, pick, difference } from 'lodash';
 
 export const AmisObjectListView = async (props) => {
   // console.log(`AmisObjectListView props`, props)
-  const { $schema, top, showHeader, headerSchema, ctx, data, defaultData, className, tableClassName } = props;
+  const { $schema, top, showHeader, headerSchema, ctx, data, defaultData, className="", tableClassName } = props;
   const urlListNameMatchs = location.pathname.match(/grid\/(\w+)/);
   const urlListName = urlListNameMatchs && urlListNameMatchs[1]
   let listName = urlListName || props.listName;
@@ -57,7 +57,7 @@ export const AmisObjectListView = async (props) => {
   return {
     "type": "service",
     "body": body,
-    "className": `p-0 sm:border bg-white sm:shadow sm:rounded border-slate-300 ${className}`,
+    "className": `p-0 sm:border bg-white sm:shadow sm:rounded border-slate-300 border-solid	${className}`,
     "data": serviceData
   }
 }
