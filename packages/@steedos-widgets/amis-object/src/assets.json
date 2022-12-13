@@ -9,6 +9,14 @@
         "library": "antd"
     },
     {
+        "package": "steedos-lib",
+        "urls": [
+            "http://127.0.0.1:8080/%40steedos-widgets/steedos-lib/dist/index.umd.js"
+        ],
+        "library": "SteedosLib"
+    },
+    
+    {
         "package": "@steedos-widgets/amis-object",
         "urls": [
             "https://unpkg.com/@steedos-widgets/amis-object@{{version}}/dist/amis-object.umd.js",
