@@ -135,6 +135,16 @@ export default {
           "labelField": "label",
           "valueField": "name",
           "menuTpl": ""
+        },
+        {
+          "type": "number",
+          "name": "top",
+          "label": "显示的记录数量",
+        },
+        {
+          "type": "number",
+          "name": "perPage",
+          "label": "每页显示记录数量",
         }
       ]
     }

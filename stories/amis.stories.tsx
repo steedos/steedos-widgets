@@ -2,11 +2,11 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 11:54:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-28 10:24:50
+ * @LastEditTime: 2022-12-13 15:27:40
  * @Description: 
  */
 import React, {useEffect, useState} from 'react';
-import { registerRemoteAssets, amisRender, getSteedosAuth, getRootUrl, defaultsDeep } from '@steedos-widgets/amis-lib';
+import { registerRemoteAssets, amisRender, getSteedosAuth, getRootUrl, defaultsDeep, getTenantId, getAuthToken } from '@steedos-widgets/amis-lib';
 // import { defaultsDeep } from 'lodash';
 import { Builder } from '@steedos-builder/react';
 import ReactDOM from 'react-dom';
@@ -31,15 +31,14 @@ if (Builder.isBrowser){
 }
 const AmisRender = ({schema, data = {}, router = null, assetUrls = null, getModalContainer = null})=> {
   useEffect(()=>{
-    const steedosAuth: any = getSteedosAuth();
     const defData = defaultsDeep({}, data , {
         data: {
             context: {
                 rootUrl: getRootUrl(null),
-                userId: steedosAuth.userId,
-                tenantId: steedosAuth.spaceId,
-                authToken: steedosAuth.token,
-                user: steedosAuth
+                userId: process.env.STEEDOS_USERID || localStorage.getItem('steedos:userId'),
+                tenantId: getTenantId(),
+                authToken: getAuthToken(),
+                user: {}
             }
         }
     });
@@ -501,6 +500,65 @@ export const Provider = () => (
         }
       ]
     },
+  }}
+  assetUrls={assetUrls}
+  />
+)
+
+export const AppHeader = () => (
+  <AmisRender schema={{
+    "type": "page",
+    "title": "Welcome to Steedos",
+    "body": [
+      {
+        "type": "grid",
+        "className": "m-t",
+        "columns": [
+          {
+            "columnClassName": "",
+            "body": [
+              {
+                "type": "steedos-logo",
+                "src": ""
+              }
+            ],
+            "id": "u:8f98766aa1bc",
+            "md": "auto",
+            "valign": "middle"
+          },
+          {
+            "columnClassName": "",
+            "body": [
+              {
+                "type": "steedos-app-launcher",
+                "id": "u:202de972cb2d"
+              }
+            ],
+            "id": "u:e8a42e96eaf5",
+            "md": "auto",
+            "valign": "middle"
+          },
+          {
+            "columnClassName": "",
+            "body": [
+              {
+                "type": "steedos-app-menu",
+                "stacked": false,
+                "id": "u:77851eb4aa89"
+              }
+            ],
+            "id": "u:5367229505d8",
+            "md": "",
+            "valign": "middle"
+          }
+        ],
+        "id": "u:6cc99950b29c"
+      }
+    ],
+    "regions": [
+      "body"
+    ],
+    "id": "u:53a05f7c471a"
   }}
   assetUrls={assetUrls}
   />

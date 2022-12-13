@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-08 10:39:18
+ * @LastEditTime: 2022-12-13 13:14:42
  * @Description: 
  */
 import './AmisObjectForm.less'
@@ -16,3 +16,6 @@ export * from './AmisRecordDetailRelatedList';
 export * from './AmisRecordDetailRelatedLists';
 export * from './AmisSelectUser';
 export * from './AmisProvider';
+export * from './AmisAppLauncher';
+export * from './AmisLogo';
+export * from './AmisAppMenu';

@@ -10,7 +10,7 @@ import { map } from 'lodash';
 
 export const AmisRecordDetailRelatedLists = async (props) => {
   // console.log(`AmisRecordDetailRelatedList props==>`, props)
-  const { objectApiName, recordId, appId, data, formFactor, top = 5 } = props;
+  const { objectApiName, recordId, appId, data, formFactor, perPage = 5 } = props;
   if(!objectApiName){
     return {
       "type": "alert",
@@ -31,7 +31,7 @@ export const AmisRecordDetailRelatedLists = async (props) => {
         relatedObjectApiName: item.object_name,
         foreign_key: item.foreign_key,
         relatedKey: item.foreign_key,
-        top: top,
+        perPage: perPage,
         hiddenEmptyTable: true,
         appId: appId,
       }
