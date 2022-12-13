@@ -50,7 +50,7 @@ export const AmisObjectListView = async (props) => {
     body.unshift({
       "type": "wrapper",
       "body": [firstLineSchema],
-      "className": "bg-gray-100 pb-0",
+      "className": "bg-gray-100 pb-0 sm:rounded-tl sm:rounded-tr",
     });
   }
   const serviceData = Object.assign({}, amisSchema.data, amisSchemaData, { listName, uiSchema });

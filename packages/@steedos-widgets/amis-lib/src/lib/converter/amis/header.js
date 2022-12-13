@@ -275,17 +275,19 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
   let firstLineSchema = getObjectListHeaderFirstLine(objectSchema, listViewName, ctx);
   let secordLineSchema = await getObjectListHeaderSecordLine(objectSchema, listViewName, ctx);
   let body = [firstLineSchema, secordLineSchema];
+  let roundedCss = "sm:rounded-tl sm:rounded-tr";
   if (ctx.onlyFirstLine) {
     body = [firstLineSchema];
   }
   else if (ctx.onlySecordLine) {
+    // 列表视图自定义amisSchema时不能加圆角
+    roundedCss = "";
     body = [secordLineSchema];
   }
   let headerSchema = [{
     "type": "wrapper",
     "body": body,
-    // "className": "p-4 border-b sm:rounded bg-gray-100"
-    "className": "p-4 border-b sm:rounded-tl sm:rounded-tr bg-gray-100"
+    "className": `p-4 border-b bg-gray-100 ${roundedCss}`
   }];
   const fieldsFilterBarSchema = await getObjectListHeaderFieldsFilterBar(objectSchema, listViewName, ctx);
   headerSchema.push(fieldsFilterBarSchema);
