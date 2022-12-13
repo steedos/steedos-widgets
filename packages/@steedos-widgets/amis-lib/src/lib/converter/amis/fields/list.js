@@ -42,7 +42,7 @@ async function getListBody(fields, options){
 
 function getDefaultParams(options){
     return {
-        perPage: options.top || 10
+        perPage: options.top || options.perPage || 10
     }
 }
 

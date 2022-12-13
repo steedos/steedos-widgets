@@ -116,7 +116,7 @@ async function getTableColumns(fields, options){
 
 function getDefaultParams(options){
     return {
-        perPage: options.top || config.listView.perPage
+        perPage: options.top || options.perPage || config.listView.perPage
     }
 }
 

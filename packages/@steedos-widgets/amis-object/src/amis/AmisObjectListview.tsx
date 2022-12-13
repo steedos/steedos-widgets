@@ -10,7 +10,7 @@ import { keys, pick, difference } from 'lodash';
 
 export const AmisObjectListView = async (props) => {
   // console.log(`AmisObjectListView props`, props)
-  const { $schema, top, showHeader, headerSchema, ctx, data, defaultData, className="", tableClassName } = props;
+  const { $schema, top, perPage, showHeader, headerSchema, ctx, data, defaultData, className="", tableClassName } = props;
   const urlListNameMatchs = location.pathname.match(/grid\/(\w+)/);
   const urlListName = urlListNameMatchs && urlListNameMatchs[1]
   let listName = urlListName || props.listName;
@@ -41,7 +41,7 @@ export const AmisObjectListView = async (props) => {
 
   const amisSchemaData = Object.assign({}, data, defaultData);
   const listViewId = ctx?.listViewId || amisSchemaData.listViewId;
-  let schema: any = (await getListSchema(amisSchemaData.appId, objectApiName, listName, { top, showHeader, defaults, ...ctx, listViewId, setDataToComponentId }));
+  let schema: any = (await getListSchema(amisSchemaData.appId, objectApiName, listName, { top, perPage, showHeader, defaults, ...ctx, listViewId, setDataToComponentId }));
   const amisSchema = schema.amisSchema;
   const uiSchema = schema.uiSchema;
   const body = [amisSchema];
