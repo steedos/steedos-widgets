@@ -60,7 +60,7 @@ const options = {
         require('autoprefixer')
       ],
     }),
-    // terser()
+    terser()
   ],
 };
 

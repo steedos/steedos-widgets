@@ -1,5 +1,5 @@
 {
-  "name": "@steedos-labs/experience",
+  "name": "@steedos/ee_experience",
   "version": "1.0.0-beta.30",
   "main": "package.service.js",
   "private": false,
