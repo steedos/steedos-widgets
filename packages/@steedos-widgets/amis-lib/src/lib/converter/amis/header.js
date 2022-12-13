@@ -140,49 +140,45 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
 }
 
 /**
- * 列表视图顶部amisSchema
+ * 列表视图顶部第二行amisSchema
  * @param {*} objectSchema 对象UISchema
  * @returns amisSchema
  */
-export async function getObjectListHeader(objectSchema, listViewName, ctx) {
-  if (!ctx) {
-    ctx = {};
-  }
+export async function getObjectListHeaderSecordLine(objectSchema, listViewName, ctx) {
   const amisListViewId = `listview_${objectSchema.name}`;
-  let firstLineSchema = getObjectListHeaderFirstLine(objectSchema, listViewName, ctx);
   const fieldsFilterButtonSchema = await getObjectFieldsFilterButtonSchema(objectSchema);
-  const onFilterChangeScript = `
-    const eventData = event.data;
-    const uiSchema = eventData.uiSchema;
-    const listName = eventData.listName;
-    const listViewId = eventData.listViewId;
-    var selectedListView = uiSchema.list_views[listName]
-    var filter = eventData.filter;
-    SteedosUI.ListView.showFilter(uiSchema.name, {
-      listView: selectedListView,
-      data: {
-        filters: SteedosUI.ListView.getVisibleFilter(selectedListView, filter, { listViewId }),
-      },
-      onFilterChange: (filter) => {
-        doAction({
-          componentId: \`service_listview_\${uiSchema.name}\`,
-          actionType: 'setValue',
-          "args": {
-            "value": {
-              filter: filter
-            }
-          }
-        });
-        doAction({
-          componentId: \`listview_\${uiSchema.name}\`,
-          actionType: 'reload',
-          "args": {
-            filter: filter
-          }
-        });
-      }
-    });
-  `;
+  // const onFilterChangeScript = `
+  //   const eventData = event.data;
+  //   const uiSchema = eventData.uiSchema;
+  //   const listName = eventData.listName;
+  //   const listViewId = eventData.listViewId;
+  //   var selectedListView = uiSchema.list_views[listName]
+  //   var filter = eventData.filter;
+  //   SteedosUI.ListView.showFilter(uiSchema.name, {
+  //     listView: selectedListView,
+  //     data: {
+  //       filters: SteedosUI.ListView.getVisibleFilter(selectedListView, filter, { listViewId }),
+  //     },
+  //     onFilterChange: (filter) => {
+  //       doAction({
+  //         componentId: \`service_listview_\${uiSchema.name}\`,
+  //         actionType: 'setValue',
+  //         "args": {
+  //           "value": {
+  //             filter: filter
+  //           }
+  //         }
+  //       });
+  //       doAction({
+  //         componentId: \`listview_\${uiSchema.name}\`,
+  //         actionType: 'reload',
+  //         "args": {
+  //           filter: filter
+  //         }
+  //       });
+  //     }
+  //   });
+  // `;
   let secordLineSchema = {
     "type": "grid",
     "align": "between",
@@ -242,18 +238,16 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
     ],
     "className": ""
   };
-  let body = [firstLineSchema, secordLineSchema];
-  if (ctx.onlyFirstLine) {
-    body = [firstLineSchema];
-  }
-  else if (ctx.onlySecordLine) {
-    body = [secordLineSchema];
-  }
-  let headerSchema = [{
-    "type": "wrapper",
-    "body": body,
-    "className": "p-4 border-b sm:rounded-tl sm:rounded-tr bg-gray-100"
-  }];
+  return secordLineSchema;
+}
+
+
+/**
+ * 列表视图顶部放大镜过滤条件栏amisSchema
+ * @param {*} objectSchema 对象UISchema
+ * @returns amisSchema
+ */
+export async function getObjectListHeaderFieldsFilterBar(objectSchema, listViewName, ctx) {
   const searchableFields = keys(objectSchema.fields);
   const fields = sortBy(
     compact(
@@ -266,6 +260,34 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
   const fieldsFilterBarSchema = await getObjectFieldsFilterBarSchema(objectSchema, fields, {
     isListviewInit: ctx.isListviewInit
   });
+  return fieldsFilterBarSchema;
+}
+
+/**
+ * 列表视图顶部amisSchema
+ * @param {*} objectSchema 对象UISchema
+ * @returns amisSchema
+ */
+export async function getObjectListHeader(objectSchema, listViewName, ctx) {
+  if (!ctx) {
+    ctx = {};
+  }
+  let firstLineSchema = getObjectListHeaderFirstLine(objectSchema, listViewName, ctx);
+  let secordLineSchema = await getObjectListHeaderSecordLine(objectSchema, listViewName, ctx);
+  let body = [firstLineSchema, secordLineSchema];
+  if (ctx.onlyFirstLine) {
+    body = [firstLineSchema];
+  }
+  else if (ctx.onlySecordLine) {
+    body = [secordLineSchema];
+  }
+  let headerSchema = [{
+    "type": "wrapper",
+    "body": body,
+    // "className": "p-4 border-b sm:rounded bg-gray-100"
+    "className": "p-4 border-b sm:rounded-tl sm:rounded-tr bg-gray-100"
+  }];
+  const fieldsFilterBarSchema = await getObjectListHeaderFieldsFilterBar(objectSchema, listViewName, ctx);
   headerSchema.push(fieldsFilterBarSchema);
   return headerSchema;
 }
