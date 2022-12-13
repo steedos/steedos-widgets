@@ -185,14 +185,14 @@ async function getTableOperation(ctx){
         label: '操作',
         fixed: 'right',
         labelClassName: 'text-center',
-        className: 'text-center steedos-listview-operation',
+        className: 'text-center steedos-listview-operation w-20',
         buttons: [
               {
                 "type": "steedos-dropdown-button",
                 "label": "xxx",
                 "buttons": operationButtons,
-                "placement": "bottomLeft",
-                // "trigger": "hover",
+                "placement": "bottomRight",
+                "trigger": ["click"],
                 "id": "u:c2140a365019",
                 onOpenApi: {
                     url: `\${context.rootUrl}/service/api/@\${objectName}/recordPermissions/\${_id}`,

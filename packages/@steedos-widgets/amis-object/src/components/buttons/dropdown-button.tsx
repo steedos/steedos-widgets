@@ -28,7 +28,8 @@ const getMenu = (render, buttons, props)=>{
 }
 
 export const SteedosDropdownButton = (props)=>{
-    const { data, render, className, buttons, placement, onOpenApi, store, env } = props;
+    const { data, render, className, buttons, placement, trigger=['click'], onOpenApi, store, env } = props;
+    console.log(props)
 
 const [menu, setMenu] = useState(<></>);
     
@@ -55,7 +56,7 @@ const [menu, setMenu] = useState(<></>);
         }
     }
     return (
-        <Dropdown overlay={menu} trigger={['click']} onOpenChange={onOpenChange} placement={placement}>
+        <Dropdown overlay={menu} trigger={trigger} onOpenChange={onOpenChange} placement={placement}>
           <button className={`slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small ${className ? className : ''}`}>
             <svg fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m7 10 5 5 5-5z" fill="currentColor"></path></svg>
           </button>
