@@ -175,6 +175,11 @@ export async function getListviewInitSchema(objectApiName, listViewName, ctx) {
             
         });
         amisSchema = schema.amisSchema;
+        // TODO: 下面这些data下的无用属性在底层代码中就不应该加，待底层移除后下面的删除语句就可以去掉了
+        delete amisSchema.data.$master;
+        delete amisSchema.data._id;
+        delete amisSchema.data.recordPermissions;
+        delete amisSchema.data.uiSchema;
     }
     // 不可以外面包一层page，否则列表视图渲染时的data无法传入顶部第一行造成按钮显示异常
     return amisSchema;

@@ -53,7 +53,8 @@ export const AmisObjectListView = async (props) => {
       "className": "bg-gray-100 pb-0 sm:rounded-tl sm:rounded-tr",
     });
   }
-  const serviceData = Object.assign({}, amisSchema.data, amisSchemaData, { listName, uiSchema });
+  // TODO: recordPermissions和_id是右上角按钮需要强依赖的变量，应该写到按钮那边去
+  const serviceData = Object.assign({}, amisSchema.data, amisSchemaData, { listName, uiSchema, recordPermissions: uiSchema.permissions, _id: null });
   return {
     "type": "service",
     "body": body,
