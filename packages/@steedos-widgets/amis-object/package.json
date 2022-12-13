@@ -1,7 +1,7 @@
 {
   "name": "@steedos-widgets/amis-object",
   "private": false,
-  "version": "1.0.0-beta.30",
+  "version": "1.0.2",
   "main": "dist/amis-object.cjs.js",
   "module": "dist/amis-object.esm.js",
   "unpkg": "dist/amis-object.umd.js",
@@ -60,10 +60,10 @@
     "uglify-js": "^3.17.0"
   },
   "dependencies": {
-    "@steedos-widgets/amis-lib": "1.0.0-beta.30",
+    "@steedos-widgets/amis-lib": "1.0.2",
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.19",
     "tailwindcss": "^3.2.4"
   },
-  "gitHead": "c41242d76a6b4b7f51001d55d71c93ea674fcde2"
+  "gitHead": "427edc67c86d9a3e563743e9c743fd00a89d5146"
 }

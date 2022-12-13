@@ -1,7 +1,7 @@
 {
   "name": "@steedos-widgets/fullcalendar",
   "private": false,
-  "version": "1.0.0-beta.30",
+  "version": "1.0.2",
   "main": "dist/fullcalendar.cjs.js",
   "module": "dist/fullcalendar.esm.js",
   "unpkg": "dist/fullcalendar.umd.js",
@@ -54,7 +54,7 @@
     "@fullcalendar/list": "^5.11.3",
     "@fullcalendar/react": "^5.11.3",
     "@fullcalendar/timegrid": "^5.11.3",
-    "@steedos-widgets/amis-lib": "1.0.0-beta.30"
+    "@steedos-widgets/amis-lib": "1.0.2"
   },
-  "gitHead": "c41242d76a6b4b7f51001d55d71c93ea674fcde2"
+  "gitHead": "427edc67c86d9a3e563743e9c743fd00a89d5146"
 }

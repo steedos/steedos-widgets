@@ -1,7 +1,7 @@
 {
   "name": "@steedos-widgets/steedos-lib",
   "private": false,
-  "version": "1.0.0-beta.30",
+  "version": "1.0.2",
   "unpkg": "./dist/index.umd.js",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.esm.js",
@@ -24,5 +24,5 @@
   "dependencies": {
     "lodash": "^4.17.21"
   },
-  "gitHead": "c41242d76a6b4b7f51001d55d71c93ea674fcde2"
+  "gitHead": "427edc67c86d9a3e563743e9c743fd00a89d5146"
 }

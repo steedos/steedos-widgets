@@ -45,34 +45,34 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
       className: `button_${button.name} border-gray-200 inline-block ml-1`
     }
   });
-  if(objectSchema.permissions?.allowDelete){
-    const bulkDeleteScript = `
-      const data = event.data;
-      const listViewId = data.listViewId;
-      const uiSchema = data.uiSchema;
-      const scopeId = data.scopeId;
-      BuilderAmisObject.AmisLib.standardButtonsTodo.standard_delete_many.call({
-        listViewId, 
-        uiSchema, 
-        scopeId
-      })
-    `;
-    amisButtonsSchema.push({
-      type: 'button',
-      label: "删除",
-      className: `antd-Button antd-Button--default antd-Button--size-default`,
-      "onEvent": {
-        "click": {
-          "actions": [
-            {
-              "actionType": "custom",
-              "script": bulkDeleteScript
-            }
-          ]
-        }
-      }
-    });
-  }
+  // if(objectSchema.permissions?.allowDelete){
+  //   const bulkDeleteScript = `
+  //     const data = event.data;
+  //     const listViewId = data.listViewId;
+  //     const uiSchema = data.uiSchema;
+  //     const scopeId = data.scopeId;
+  //     BuilderAmisObject.AmisLib.standardButtonsTodo.standard_delete_many.call({
+  //       listViewId, 
+  //       uiSchema, 
+  //       scopeId
+  //     })
+  //   `;
+  //   amisButtonsSchema.push({
+  //     type: 'button',
+  //     label: "删除",
+  //     className: `antd-Button antd-Button--default antd-Button--size-default`,
+  //     "onEvent": {
+  //       "click": {
+  //         "actions": [
+  //           {
+  //             "actionType": "custom",
+  //             "script": bulkDeleteScript
+  //           }
+  //         ]
+  //       }
+  //     }
+  //   });
+  // }
   const reg = new RegExp('_', 'g');
   const standardIcon = icon && icon.replace(reg, '-');
   return {
@@ -100,21 +100,16 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
                     "tpl": `${label}`,
                     "inline": false,
                     "wrapperComponent": "",
-                    "className": "leading-none",
-                    "style": {
-                      "fontFamily": "",
-                      "fontSize": 13,
-                      "fontWeight": "bold"
-                    }
+                    "className": "text-md leading-none text-black",
                   },
                   {
                     "type": "dropdown-button",
-                    "className": "leading-none",
+                    "className": "",
                     "label": "\${uiSchema.list_views[listName].label}",
                     "rightIcon": "fa fa-caret-down",
                     "size": "sm",
                     "hideCaret": true,
-                    "btnClassName": "bg-transparent border-none text-base font-bold p-0 text-black leading-5",
+                    "btnClassName": "bg-transparent border-none text-xl font-bold p-0 text-black leading-none",
                     "buttons": listViewButtonOptions
                   }
                 ],
@@ -140,49 +135,45 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
 }
 
 /**
- * 列表视图顶部amisSchema
+ * 列表视图顶部第二行amisSchema
  * @param {*} objectSchema 对象UISchema
  * @returns amisSchema
  */
-export async function getObjectListHeader(objectSchema, listViewName, ctx) {
-  if (!ctx) {
-    ctx = {};
-  }
+export async function getObjectListHeaderSecordLine(objectSchema, listViewName, ctx) {
   const amisListViewId = `listview_${objectSchema.name}`;
-  let firstLineSchema = getObjectListHeaderFirstLine(objectSchema, listViewName, ctx);
   const fieldsFilterButtonSchema = await getObjectFieldsFilterButtonSchema(objectSchema);
-  const onFilterChangeScript = `
-    const eventData = event.data;
-    const uiSchema = eventData.uiSchema;
-    const listName = eventData.listName;
-    const listViewId = eventData.listViewId;
-    var selectedListView = uiSchema.list_views[listName]
-    var filter = eventData.filter;
-    SteedosUI.ListView.showFilter(uiSchema.name, {
-      listView: selectedListView,
-      data: {
-        filters: SteedosUI.ListView.getVisibleFilter(selectedListView, filter, { listViewId }),
-      },
-      onFilterChange: (filter) => {
-        doAction({
-          componentId: \`service_listview_\${uiSchema.name}\`,
-          actionType: 'setValue',
-          "args": {
-            "value": {
-              filter: filter
-            }
-          }
-        });
-        doAction({
-          componentId: \`listview_\${uiSchema.name}\`,
-          actionType: 'reload',
-          "args": {
-            filter: filter
-          }
-        });
-      }
-    });
-  `;
+  // const onFilterChangeScript = `
+  //   const eventData = event.data;
+  //   const uiSchema = eventData.uiSchema;
+  //   const listName = eventData.listName;
+  //   const listViewId = eventData.listViewId;
+  //   var selectedListView = uiSchema.list_views[listName]
+  //   var filter = eventData.filter;
+  //   SteedosUI.ListView.showFilter(uiSchema.name, {
+  //     listView: selectedListView,
+  //     data: {
+  //       filters: SteedosUI.ListView.getVisibleFilter(selectedListView, filter, { listViewId }),
+  //     },
+  //     onFilterChange: (filter) => {
+  //       doAction({
+  //         componentId: \`service_listview_\${uiSchema.name}\`,
+  //         actionType: 'setValue',
+  //         "args": {
+  //           "value": {
+  //             filter: filter
+  //           }
+  //         }
+  //       });
+  //       doAction({
+  //         componentId: \`listview_\${uiSchema.name}\`,
+  //         actionType: 'reload',
+  //         "args": {
+  //           filter: filter
+  //         }
+  //       });
+  //     }
+  //   });
+  // `;
   let secordLineSchema = {
     "type": "grid",
     "align": "between",
@@ -242,18 +233,16 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
     ],
     "className": ""
   };
-  let body = [firstLineSchema, secordLineSchema];
-  if (ctx.onlyFirstLine) {
-    body = [firstLineSchema];
-  }
-  else if (ctx.onlySecordLine) {
-    body = [secordLineSchema];
-  }
-  let headerSchema = [{
-    "type": "wrapper",
-    "body": body,
-    "className": "p-4 border-b sm:rounded bg-gray-100"
-  }];
+  return secordLineSchema;
+}
+
+
+/**
+ * 列表视图顶部放大镜过滤条件栏amisSchema
+ * @param {*} objectSchema 对象UISchema
+ * @returns amisSchema
+ */
+export async function getObjectListHeaderFieldsFilterBar(objectSchema, listViewName, ctx) {
   const searchableFields = keys(objectSchema.fields);
   const fields = sortBy(
     compact(
@@ -266,6 +255,37 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
   const fieldsFilterBarSchema = await getObjectFieldsFilterBarSchema(objectSchema, fields, {
     isListviewInit: ctx.isListviewInit
   });
+  return fieldsFilterBarSchema;
+}
+
+/**
+ * 列表视图顶部amisSchema
+ * @param {*} objectSchema 对象UISchema
+ * @returns amisSchema
+ */
+export async function getObjectListHeader(objectSchema, listViewName, ctx) {
+  if (!ctx) {
+    ctx = {};
+  }
+  let firstLineSchema = getObjectListHeaderFirstLine(objectSchema, listViewName, ctx);
+  let secordLineSchema = await getObjectListHeaderSecordLine(objectSchema, listViewName, ctx);
+  let body = [firstLineSchema, secordLineSchema];
+  let roundedCss = "sm:rounded-tl sm:rounded-tr";
+  if (ctx.onlyFirstLine) {
+    body = [firstLineSchema];
+  }
+  else if (ctx.onlySecordLine) {
+    // 列表视图自定义amisSchema时不能加圆角
+    roundedCss = "";
+    body = [secordLineSchema];
+  }
+  // className中不可以加p-4，否则它会优先于后面的pt-0，边距效果依赖wrapper自带的antd-Wrapper--md样式类
+  let headerSchema = [{
+    "type": "wrapper",
+    "body": body,
+    "className": `border-b bg-gray-100 ${roundedCss} ${ctx.onlySecordLine && "pt-0"}`
+  }];
+  const fieldsFilterBarSchema = await getObjectListHeaderFieldsFilterBar(objectSchema, listViewName, ctx);
   headerSchema.push(fieldsFilterBarSchema);
   return headerSchema;
 }

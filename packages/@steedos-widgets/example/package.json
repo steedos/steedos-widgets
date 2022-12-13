@@ -1,7 +1,7 @@
 {
   "name": "@steedos-widgets/example",
   "private": false,
-  "version": "1.0.0-beta.30",
+  "version": "1.0.2",
   "main": "dist/meta.js",
   "module": "dist/meta.js",
   "unpkg": "dist/meta.js",
@@ -52,5 +52,5 @@
     "tslint-config-standard": "^7.0.0",
     "typescript": "^4.6.2"
   },
-  "gitHead": "c41242d76a6b4b7f51001d55d71c93ea674fcde2"
+  "gitHead": "427edc67c86d9a3e563743e9c743fd00a89d5146"
 }

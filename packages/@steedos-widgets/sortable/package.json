@@ -1,6 +1,6 @@
 {
   "name": "@steedos-widgets/sortable",
-  "version": "1.0.0-beta.30",
+  "version": "1.0.2",
   "main": "dist/sortable.cjs.js",
   "module": "dist/sortable.esm.js",
   "unpkg": "dist/sortable.umd.js",
@@ -39,9 +39,13 @@
     "rollup-plugin-tslib-resolve-id": "^0.0.0",
     "rollup-plugin-visualizer": "^5.8.0"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@dnd-kit/core": "^6.0.5",
-    "@dnd-kit/sortable": "^7.0.1"
+    "@dnd-kit/sortable": "^7.0.1",
+    "@steedos-widgets/amis-lib": "1.0.2"
   },
-  "gitHead": "c41242d76a6b4b7f51001d55d71c93ea674fcde2"
+  "gitHead": "427edc67c86d9a3e563743e9c743fd00a89d5146"
 }

@@ -36,9 +36,9 @@ export async function getListPageInitSchema(objectApiName, formFactor, userSessi
     //     }
     // }
 
-    const uiSchema = await getUISchema(objectApiName);
-    const listViewName = first(keys(uiSchema.list_views));
-    const headerSchema = await getObjectListHeader(uiSchema, listViewName);
+    // const uiSchema = await getUISchema(objectApiName);
+    // const listViewName = first(keys(uiSchema.list_views));
+    // const headerSchema = await getObjectListHeader(uiSchema, listViewName);
 
     return {
         type: 'page',
@@ -54,7 +54,7 @@ export async function getListPageInitSchema(objectApiName, formFactor, userSessi
             // "headerToolbar": [],
             "columnsTogglable": false,
             "showHeader": true,
-            "headerSchema": headerSchema
+            // "headerSchema": headerSchema
         }]
     }
 }
@@ -169,12 +169,21 @@ export async function getListviewInitSchema(objectApiName, listViewName, ctx) {
             defaults.headerSchema = headerSchema;
         }
         ctx.defaults = defaults;
+        let setDataToComponentId = ctx.setDataToComponentId;
+        if(!setDataToComponentId){
+          setDataToComponentId = `service_listview_${objectApiName}`;
+        }
         const schema = await getTableSchema(null, objectApiName, listViewColumns, {
             sort,
-            ...ctx
-            
+            ...ctx,
+            setDataToComponentId
         });
         amisSchema = schema.amisSchema;
+        // TODO: 下面这些data下的无用属性在底层代码中就不应该加，待底层移除后下面的删除语句就可以去掉了
+        delete amisSchema.data.$master;
+        delete amisSchema.data._id;
+        delete amisSchema.data.recordPermissions;
+        delete amisSchema.data.uiSchema;
     }
     // 不可以外面包一层page，否则列表视图渲染时的data无法传入顶部第一行造成按钮显示异常
     return amisSchema;

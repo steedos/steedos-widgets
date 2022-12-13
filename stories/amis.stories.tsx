@@ -59,7 +59,7 @@ const loadJS = async (src)=>{
       resolve(true);
     };
     script.src = src;
-    document.body.appendChild(script);
+    document.head.appendChild(script);
   })
 }
 const loadCss = async (href)=>{
@@ -67,7 +67,7 @@ const loadCss = async (href)=>{
     const link = document.createElement('link');
     link.setAttribute('href', href);
     link.setAttribute('rel', 'stylesheet');
-    document.body.appendChild(link);
+    document.head.appendChild(link);
     resolve(true);
   })
 }

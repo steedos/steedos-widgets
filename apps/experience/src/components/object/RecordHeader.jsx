@@ -69,6 +69,7 @@ export function RecordHeader({ schema, formFactor, permissions, hiddenTitle, cla
     setRecord(defRecord)
   }, [defRecord])
 
+  // TODO: dataComponentId删除掉换成scopeId
   const getMenu = ()=>{
     const items = [];
     moreButtons?.map((button, index)=>{

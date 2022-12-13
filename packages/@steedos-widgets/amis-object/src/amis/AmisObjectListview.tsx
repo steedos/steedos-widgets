@@ -10,7 +10,7 @@ import { keys, pick, difference } from 'lodash';
 
 export const AmisObjectListView = async (props) => {
   // console.log(`AmisObjectListView props`, props)
-  const { $schema, top, showHeader, headerSchema, ctx, data, defaultData, className, tableClassName } = props;
+  const { $schema, top, perPage, showHeader, headerSchema, ctx, data, defaultData, className="", tableClassName } = props;
   const urlListNameMatchs = location.pathname.match(/grid\/(\w+)/);
   const urlListName = urlListNameMatchs && urlListNameMatchs[1]
   let listName = urlListName || props.listName;
@@ -41,19 +41,24 @@ export const AmisObjectListView = async (props) => {
 
   const amisSchemaData = Object.assign({}, data, defaultData);
   const listViewId = ctx?.listViewId || amisSchemaData.listViewId;
-  let schema: any = (await getListSchema(amisSchemaData.appId, objectApiName, listName, { top, showHeader, defaults, ...ctx, listViewId, setDataToComponentId }));
+  let schema: any = (await getListSchema(amisSchemaData.appId, objectApiName, listName, { top, perPage, showHeader, defaults, ...ctx, listViewId, setDataToComponentId }));
   const amisSchema = schema.amisSchema;
   const uiSchema = schema.uiSchema;
   const body = [amisSchema];
   if(schema.isCustomAmisSchema){
     let firstLineSchema = getObjectListHeaderFirstLine(uiSchema, listName, ctx);
-    body.unshift(firstLineSchema);
+    body.unshift({
+      "type": "wrapper",
+      "body": [firstLineSchema],
+      "className": "bg-gray-100 pb-0 sm:rounded-tl sm:rounded-tr",
+    });
   }
-  const serviceData = Object.assign({}, amisSchema.data, amisSchemaData, { listName, uiSchema });
+  // TODO: recordPermissions和_id是右上角按钮需要强依赖的变量，应该写到按钮那边去
+  const serviceData = Object.assign({}, amisSchema.data, amisSchemaData, { listName, uiSchema, recordPermissions: uiSchema.permissions, _id: null });
   return {
     "type": "service",
     "body": body,
-    "className": `p-0 sm:border bg-white sm:shadow sm:rounded border-slate-300 ${className}`,
+    "className": `steedos-listview p-0 sm:border bg-white sm:shadow sm:rounded border-slate-300 border-solid	${className}`,
     "data": serviceData
   }
 }

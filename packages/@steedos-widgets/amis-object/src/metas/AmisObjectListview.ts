@@ -144,6 +144,11 @@ export default {
           "label": "显示的记录数量",
         },
         {
+          "type": "number",
+          "name": "perPage",
+          "label": "每页显示记录数量",
+        },
+        {
           "type": "checkbox",
           "name": "showHeader",
           "label": "显示表头",

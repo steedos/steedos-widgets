@@ -131,7 +131,8 @@ function getFilter(){
 }
 
 export async function getObjectList(objectSchema, fields, options){
-
+    const { top, perPage } = options;
+    const nonpaged = objectSchema.paging && objectSchema.paging.enabled === false;
     const bulkActions = getBulkActions(objectSchema)
 
     const bodyProps = {
@@ -144,7 +145,16 @@ export async function getObjectList(objectSchema, fields, options){
       // filterDefaultVisible: true,
       // filter: getFilter()
     }
-
+    if(top || perPage){
+      if(top){
+        bodyProps.footerToolbar = [];
+      }
+    }else{
+      if(nonpaged){
+        options.top = 1000;
+        bodyProps.footerToolbar = [];
+      }
+    }
     let body = null;
     const id = `listview_${objectSchema.name}`;
     if(options.formFactor === 'SMALL'){
@@ -208,6 +218,7 @@ export async function getObjectList(objectSchema, fields, options){
       }
     }
 
+    // TODO: data应该只留loaded，其他属性都改为从上层传递下来
     return {
       type: 'service',
       className: 'mb-2',

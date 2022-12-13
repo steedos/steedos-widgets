@@ -38,9 +38,10 @@ export const StandardButtons = {
                 const {
                     appId,
                     objectName,
-                    uiSchema,
+                    uiSchema
                 } = this;
-                const listViewRef = SteedosUI?.getRef(`amis-${appId}-${objectName}-listview`).getComponentById(`listview_${uiSchema.name}`);
+                const scope = this.scope || SteedosUI?.getRef(`amis-${appId}-${objectName}-listview`);
+                const listViewRef = scope.getComponentById(`listview_${uiSchema.name}`);
                 console.log(`listViewRef`, listViewRef)
                 if(_.isEmpty(listViewRef.props.store.toJSON().selectedItems)){
                     listViewRef.handleAction({}, {
