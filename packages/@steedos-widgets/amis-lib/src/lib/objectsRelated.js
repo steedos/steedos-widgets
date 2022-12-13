@@ -160,7 +160,7 @@ export async function getAmisObjectRelatedList(
 }
 
 // 获取单个相关表
-export async function getRecordDetailRelatedListSchema(objectName, recordId, relatedObjectName, relatedKey, top, hiddenEmptyTable, appId){
+export async function getRecordDetailRelatedListSchema(objectName, recordId, relatedObjectName, relatedKey, top, perPage, hiddenEmptyTable, appId){
     // console.log('b==>',objectName,recordId,relatedObjectName)
     const relatedObjectUiSchema = await getUISchema(relatedObjectName);
     const { list_views, label , icon, fields } = relatedObjectUiSchema;
@@ -200,6 +200,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
         },
         showHeader: true,
         top: top,
+        perPage: perPage,
         setDataToComponentId: componentId,
         tableHiddenOn: hiddenEmptyTable ? "this.$count === 0" : null,
         appId: appId
