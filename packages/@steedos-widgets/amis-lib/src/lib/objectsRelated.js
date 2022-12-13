@@ -124,6 +124,7 @@ export async function getAmisObjectRelatedList(
                 delete relatedAmisSchema.ctx;
                 relatedSchema.amisSchema = {
                     type: "service",
+                    className: "b-a m-b",
                     data: {
                         masterObjectName: objectName,
                         masterRecordId: "${recordId}",
