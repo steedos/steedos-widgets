@@ -279,6 +279,22 @@ export const ObjectListview = () => (
   />
 )
 
+
+export const ObjectCalendar = () => (
+  <AmisRender schema={{
+    type: 'page',
+    title: '日历视图',
+    body: [{
+      "type": "steedos-object-listview",
+      "objectApiName": "events",
+      "listName": "calendar_view",
+      "showHeader": true
+    }]
+  }}
+  assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
+  />
+)
+
 export const ObjectTable = () => (
   <AmisRender schema={{
     type: 'page',

@@ -8,6 +8,7 @@
 import { fetchAPI } from "./steedos.client";
 import { getAuthToken , getTenantId, getRootUrl } from './steedos.client.js';
 import { getObjectFieldsFilterFormSchema } from './converter/amis/fields_filter';
+import { getObjectCalendar } from './converter/amis/calendar';
 
 import {
     getObjectList,
@@ -194,6 +195,16 @@ export async function getListSchema(
         return {
             uiSchema,
             isCustomAmisSchema: true,
+            amisSchema
+        };
+    }
+
+    if(listView.type === "calendar" && false){
+        // TODO: 日历视图完善后可放开
+        const amisSchema = await getObjectCalendar(uiSchema, listView);
+        return {
+            uiSchema,
+            isCalendar: true,
             amisSchema
         };
     }

@@ -45,7 +45,7 @@ export const AmisObjectListView = async (props) => {
   const amisSchema = schema.amisSchema;
   const uiSchema = schema.uiSchema;
   const body = [amisSchema];
-  if(schema.isCustomAmisSchema){
+  if(schema.isCustomAmisSchema || schema.isCalendar){
     let firstLineSchema = getObjectListHeaderFirstLine(uiSchema, listName, ctx);
     body.unshift({
       "type": "wrapper",
