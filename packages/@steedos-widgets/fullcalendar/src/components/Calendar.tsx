@@ -29,7 +29,11 @@ export const FullCalendar = ({
   }
 
   const handleGetEvents = (fetchInfo, successCallback, failureCallback)=> {
-    dispatchEvent('getEvents', {fetchInfo, successCallback, failureCallback})
+    // fix：控件初始 render 的时候，dispatchEvent未生效
+    setTimeout(()=>{
+      dispatchEvent('getEvents', {fetchInfo, successCallback, failureCallback})
+    }, 100);
+    
   };
 
   const handleSelect = (event)=> {

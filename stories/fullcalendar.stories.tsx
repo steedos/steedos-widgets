@@ -46,7 +46,7 @@ export const ReadOnly = () => (
     />
 );
 
-export const EventsFunction = () => {
+export const RemoteEvents = () => {
   const events = function(info, successCallback, failureCallback) {
     console.log(info)
     successCallback(INITIAL_EVENTS);
