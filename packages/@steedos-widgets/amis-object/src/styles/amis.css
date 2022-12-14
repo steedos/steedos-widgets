@@ -7,6 +7,7 @@
     --Form-selectValue-fontSize: 14px;
     --Table-toolbar-marginY: 0;
     --TableCell--edge-paddingX: 1rem;
+    --Table-borderWidth: 1px;
     --Table-borderColor: #d9dcde;
     --Table-thead-fontSize: 13px;
     --Table-fontSize: 13px;
@@ -42,6 +43,14 @@
     --Nav-item-onActive-color: #000;
 }
 
+@media only screen and (min-width: 600px) {
+    body {
+        background: url(/images/defaultBackground.png); 
+        background-size: contain;
+        background-repeat: no-repeat;
+    }
+}
+
 fieldset.antd-Collapse {
     margin-bottom: 1rem;
 }
@@ -58,39 +67,9 @@ fieldset.antd-Collapse > legend.antd-Collapse-header > .antd-Collapse-arrow:befo
     border-color: initial
 }
 
-
-main {
-    background: var(--body-bg);
-}
-
-
-.ant-modal-root .amis-scope .antd-Panel-footerWrap{
-    position: sticky;
-    width: 100%;
-    bottom: 0px;
-    background: #ffffff
-}
-
 .amis-scope .antd-Select-option > label {
     display: block;
     min-width: 100px;
-}
-
-/* .steedos-related-listview.amis-scope .antd-Table-headToolbar{
-    display: none;
-} */
-
-/* .steedos-listview.amis-scope .antd-Table-headToolbar{
-    display: none;
-} */
-
-.antd-Crud-toolbar{
-    margin-left: 1rem;
-    margin-right: 1rem;
-}
-
-#__next .antd-Panel {
-    box-shadow: none;
 }
 
 .is-inline .antd-Combo-items{
@@ -111,52 +90,8 @@ main {
     margin-top: 0 !important;
 }
 
-/*Table空状态高度调整*/
-.antd-Table-placeholder{
-    height: 20px !important;
-}
-
-.antd-Table-placeholder-empty-icon.icon{
-    height: 20px !important;
-}
-
 .steedos-listview .antd-List-toolbar{
     display: none;
-}
-
-/* .steedos-listview .antd-Crud-toolbar:first-child{
-    display: none;
-} */
-
-.amis-scope .antd-Card{
-    border-left: none !important;
-    border-right: none !important;
-    border-image: none !important;
-    border-bottom: none !important;
-}
-
-.amis-scope svg.icon {
-    vertical-align: baseline;
-    display: inline;
-}
-
-button.antd-Button--primary {
-    color: #fff;
-    border-color: #1890ff;
-    background: #1890ff;
-    /* background-color: var(--Button--primary-bg); */
-}
-
-#__next .antd-Table {
-    margin-bottom: 0;
-}
-
-#__next .antd-Table-tr--even {
-    background-color: #fcfdfe;
-}
-
-#__next .antd-Table-checkCell {
-    border-right: 0;
 }
 
 body {
@@ -181,11 +116,6 @@ body {
     outline: 0;
 }
 
-svg.icon {
-    display: inherit;
-}
-
-
 /* fix: https://github.com/baidu/amis/issues/5073 */
 .antd-CBGroup-toolbar .antd-CBGroup-toolbarConditionAdd .antd-ButtonGroup>.antd-Button:first-child {
     margin-right: 1.5rem;
@@ -200,4 +130,9 @@ svg.icon {
 
 .antd-Modal-body {
     overflow: auto;
+}
+
+
+.antd-Nav-item.is-active {
+    box-shadow:var(--link-color) 4px 0 0 inset;
 }
