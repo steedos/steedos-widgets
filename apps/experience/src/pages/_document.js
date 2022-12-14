@@ -25,6 +25,8 @@ export default class MyDocument extends Document {
           <script src="https://unpkg.steedos.cn/lodash/lodash.min.js"></script>
           <script src="https://unpkg.steedos.cn/moment/min/moment.min.js"></script>
           <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+
+          <link rel="stylesheet" href="/tailwind-base.css" />
           <link rel="stylesheet" href="https://unpkg.steedos.cn/@salesforce-ux/design-system@2.19.0/assets/styles/salesforce-lightning-design-system.min.css" />
           <link rel="stylesheet" href="https://unpkg.steedos.cn/amis@2.5.2/lib/themes/antd.css" />
           <link rel="stylesheet" href="https://unpkg.steedos.cn/amis@2.5.2/lib/helper.css" />
