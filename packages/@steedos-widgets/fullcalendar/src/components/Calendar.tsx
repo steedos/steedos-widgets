@@ -28,6 +28,10 @@ export const FullCalendar = ({
     return rendererEvent?.prevented ?? false;
   }
 
+  const handleGetEvents = (fetchInfo, successCallback, failureCallback)=> {
+    dispatchEvent('getEvents', {fetchInfo, successCallback, failureCallback})
+  };
+
   const handleSelect = (event)=> {
     dispatchEvent('select', event)
   };
@@ -67,6 +71,7 @@ export const FullCalendar = ({
       selectMirror={true}
       dayMaxEvents={true}
       initialView='timeGridWeek'
+      events={handleGetEvents}
       select={handleSelect}
       eventClick={handleEventClick}
       eventsSet={handleEventsSet}
