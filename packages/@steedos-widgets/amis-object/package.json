@@ -12,7 +12,7 @@
   "scripts": {
     "watch": "rollup -c rollup.config.ts -w",
     "prebuild": "rimraf dist",
-    "build": "yarn build:rollup",
+    "build": "yarn build:rollup && yarn build:tailwind",
     "build:rollup": "rollup -c rollup.config.ts",
     "build:tailwind": "tailwindcss -i ./src/styles/tailwind-base.css -o ./dist/tailwind-base.css",
     "build:types": "tsc --emitDeclarationOnly --declaration --declarationDir dist/types"
