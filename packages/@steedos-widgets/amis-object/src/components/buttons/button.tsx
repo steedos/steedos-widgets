@@ -39,7 +39,7 @@ export const AmisObjectButton = (props) => {
         
     }, [objectName, name])
     const buttonClick = () => {
-        const { dataComponentId } = data;
+        const { dataComponentId, scopeId } = data;
         //Object.assign({}, data , {scope: (window as any).SteedosUI.getRef(dataComponentId)})
         return executeButton(button, {
             objectName: objectName,
@@ -49,7 +49,8 @@ export const AmisObjectButton = (props) => {
             recordId: data._id,
             appId: appId,
             formFactor: formFactor,
-            scope: (window as any).SteedosUI.getRef(dataComponentId)
+            scope: (window as any).SteedosUI.getRef(dataComponentId),
+            scopeId: scopeId || dataComponentId
         });
     };
     if(!button){

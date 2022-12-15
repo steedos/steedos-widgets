@@ -45,3 +45,15 @@ export const ReadOnly = () => (
         editable={false}
     />
 );
+
+export const RemoteEvents = () => {
+  const events = function(info, successCallback, failureCallback) {
+    console.log(info)
+    successCallback(INITIAL_EVENTS);
+  };
+  return (
+    <FullCalendar
+      events={events}
+    />
+  )
+};

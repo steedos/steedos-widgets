@@ -94,7 +94,6 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
 
     // app 变化，默认进入第一个tab
     useEffect(() => {
-      console.log('app change')
       if(!session) return ;
       if(!pageId && !tabId && !selectedTabId && app?.children[0]){
         router.push(app.children[0].path)
@@ -104,15 +103,13 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
       }
     }, [app]);
 
-    console.log(`render ${appId}`, `${tabId}`)
-    console.log(app)
 
     if (!session) return <Loading></Loading>
 
     return (
       <div className='h-full flex flex-col'>
         <GlobalHeader navigation={app?.children} selectedTabId={tabId} app={app} SideBarToggle={SideBarToggle}/>
-        {session && app && (
+        {session && (
           <div id="main" className="flex flex-1 sm:overflow-hidden">
 
             <div 

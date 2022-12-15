@@ -1,7 +1,7 @@
 {
   "name": "@steedos-widgets/amis-lib",
   "private": false,
-  "version": "1.0.2",
+  "version": "1.0.5",
   "unpkg": "./dist/index.umd.js",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.esm.js",
@@ -28,7 +28,6 @@
     "@rollup/plugin-node-resolve": "^13.1.3",
     "@rollup/plugin-typescript": "^8.4.0",
     "@types/lodash": "^4.14.184",
-    "amis": "^2.1.1-beta.2",
     "fast-glob": "^3.2.12",
     "rimraf": "3.0.2",
     "rollup": "^2.70.1",
@@ -59,5 +58,5 @@
   "dependencies": {
     "lodash": "^4.17.21"
   },
-  "gitHead": "427edc67c86d9a3e563743e9c743fd00a89d5146"
+  "gitHead": "f2fc2138fad111304eddfac08c9b494f0708e471"
 }

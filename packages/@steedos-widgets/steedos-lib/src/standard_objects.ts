@@ -76,6 +76,10 @@ export const StandardObjects = {
             },
             standard_delete_many:{
                 visible: function (object_name, record_id, record_permissions) {
+                    // TODO: 简易处理。  记录页：相关子表右上角的批量删除按钮隐藏
+                    if (RegExp("\\w+/view/\\w+").test(location.pathname)) {
+                        return false;
+                    }
                    if (record_permissions) {
                        return record_permissions["allowDelete"];
                    }

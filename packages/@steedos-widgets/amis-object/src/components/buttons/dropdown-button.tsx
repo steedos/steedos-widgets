@@ -10,28 +10,24 @@ import { Dropdown, Menu } from 'antd';
 import { map, defaultsDeep } from 'lodash';
 import { createObject } from '@steedos-widgets/amis-lib';
 
-const getMenu = (render, buttons, props)=>{
-    return <Menu
-    items={map(buttons, (button)=>{
-        button.className = button.className
+const getMenu = (render, buttons, btnClassName, props)=>{
+    return map(buttons, (button)=>{
+      button.className = `${button.className} ${btnClassName}`
         return {
             key: button.name,
-            className: 'p-0 min-w-32',
             label: (
               <>
                 {render('body', button, props)}
               </>
             )
           }
-    }) as any}
-  />
+    })
 }
 
 export const SteedosDropdownButton = (props)=>{
-    const { data, render, className, buttons, placement, trigger=['click'], onOpenApi, store, env } = props;
-    console.log(props)
+    const { data, render, className, btnClassName, buttons, placement, trigger=['click'], onOpenApi, store, env, overlayClassName, arrow } = props;
 
-const [menu, setMenu] = useState(<></>);
+    const [menu, setMenu] = useState([]);
     
     const onOpenChange = (open)=>{
         if(open){
@@ -39,7 +35,7 @@ const [menu, setMenu] = useState(<></>);
                 try {
                     env.fetcher(onOpenApi, createObject(data, {})).then(result => {
                         const openData = result?.hasOwnProperty('ok') ? result.data : result;
-                        setMenu(getMenu(render, buttons, {
+                        setMenu(getMenu(render, buttons, btnClassName, {
                             data: createObject(data, defaultsDeep(openData, data))
                         }))
                       }).catch((e)=>{
@@ -49,14 +45,14 @@ const [menu, setMenu] = useState(<></>);
                     console.error(error)
                 }
             }else{
-                setMenu(getMenu(render, buttons, {
+                setMenu(getMenu(render, buttons, btnClassName, {
                     data: data
                 }))
             }
         }
     }
     return (
-        <Dropdown overlay={menu} trigger={trigger} onOpenChange={onOpenChange} placement={placement}>
+        <Dropdown menu={{items: menu}} trigger={trigger} onOpenChange={onOpenChange} placement={placement} overlayClassName={overlayClassName} arrow={arrow}>
           <button className={`slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small ${className ? className : ''}`}>
             <svg fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m7 10 5 5 5-5z" fill="currentColor"></path></svg>
           </button>

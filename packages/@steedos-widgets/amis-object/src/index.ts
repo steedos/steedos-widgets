@@ -1,4 +1,5 @@
 import './styles/amis.css';
+import './styles/antd.css';
 import './styles/tailwind.css';
 import './styles/object.less';
 import './styles/dropdown.css';

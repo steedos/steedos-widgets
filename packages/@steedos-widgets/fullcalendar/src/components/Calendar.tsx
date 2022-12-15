@@ -28,6 +28,14 @@ export const FullCalendar = ({
     return rendererEvent?.prevented ?? false;
   }
 
+  const handleGetEvents = (fetchInfo, successCallback, failureCallback)=> {
+    // fix：控件初始 render 的时候，dispatchEvent未生效
+    setTimeout(()=>{
+      dispatchEvent('getEvents', {fetchInfo, successCallback, failureCallback})
+    }, 100);
+    
+  };
+
   const handleSelect = (event)=> {
     dispatchEvent('select', event)
   };
@@ -67,6 +75,7 @@ export const FullCalendar = ({
       selectMirror={true}
       dayMaxEvents={true}
       initialView='timeGridWeek'
+      events={handleGetEvents}
       select={handleSelect}
       eventClick={handleEventClick}
       eventsSet={handleEventsSet}

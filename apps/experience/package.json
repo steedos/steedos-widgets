@@ -1,6 +1,6 @@
 {
   "name": "@steedos/ee_experience",
-  "version": "1.0.2",
+  "version": "1.0.5",
   "main": "package.service.js",
   "private": false,
   "publishConfig": {
@@ -17,6 +17,7 @@
   "scripts": {
     "dev": "node server",
     "build-app": "next build",
+    "build:tailwind": "tailwindcss -i ./src/styles/tailwind-base.css -o ./public/tailwind-base.css",
     "build-docker": "docker build -t steedos/steedos-experience .",
     "release": "npm publish --registry https://registry.npmjs.org ",
     "start": "NODE_ENV=production node server.js"
@@ -25,7 +26,7 @@
     "@headlessui/react": "^1.6.5",
     "@heroicons/react": "^1.0.6",
     "@steedos-builder/react": "^0.2.34",
-    "antd": "^4.22.0",
+    "antd": "^4.24.5",
     "attr-accept": "^2.2.2",
     "autoprefixer": "^10.4.7",
     "axios": "^0.27.2",
@@ -40,6 +41,7 @@
     "next-use-posthog": "^1.16.0",
     "postcss": "^8.4.14",
     "postcss-focus-visible": "^6.0.4",
+    "postcss-less": "^6.0.0",
     "prism-react-renderer": "^1.3.5",
     "querystring": "^0.2.1",
     "react": "18.2.0",
@@ -56,5 +58,5 @@
     "prettier-plugin-tailwindcss": "^0.1.11",
     "typescript": "4.6.3"
   },
-  "gitHead": "427edc67c86d9a3e563743e9c743fd00a89d5146"
+  "gitHead": "f2fc2138fad111304eddfac08c9b494f0708e471"
 }

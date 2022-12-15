@@ -61,7 +61,7 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
     <>
       <Disclosure
         as="header"
-        className="slds-global-header_container sticky top-0 z-40 w-full flex-none backdrop-blur transition-colors duration-500 lg:z-50 border-b border-b-2 border-sky-500 lg:shadow"
+        className="slds-global-header_container sticky top-0 z-40 w-full flex-none backdrop-blur transition-colors duration-500 lg:z-50 border-b-2 border-sky-500 lg:shadow"
       >
         {({ open }) => (
           <>

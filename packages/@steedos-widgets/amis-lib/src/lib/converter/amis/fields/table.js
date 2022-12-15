@@ -192,6 +192,7 @@ async function getTableOperation(ctx){
                 "label": "xxx",
                 "buttons": operationButtons,
                 "placement": "bottomRight",
+                "overlayClassName": "shadow !min-w-[160px]",
                 "trigger": ["click"],
                 "id": "u:c2140a365019",
                 onOpenApi: {

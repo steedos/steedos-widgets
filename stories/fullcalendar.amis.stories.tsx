@@ -143,8 +143,19 @@ export const Gerneral = () => (
                 "label": "日程",
                 "name": "fullcalendar",
                 "id": "u:866648329263",
-                "initialEvents": INITIAL_EVENTS,
                 "onEvent": {
+                  "getEvents": {
+                    "weight": 0,
+                    "actions": [
+                      {
+                        "componentId": "",
+                        "args": {
+                        },
+                        "actionType": "custom",
+                        "script": "console.log('getEvents'); console.log(event); const events = [{id: event.data.fetchInfo.start, title: event.data.fetchInfo.startStr, start: event.data.fetchInfo.start}]; console.log(events); event.data.successCallback(events);"
+                      }
+                    ]
+                  },
                   "select": {
                     "weight": 0,
                     "actions": [
