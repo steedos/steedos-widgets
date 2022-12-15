@@ -110,35 +110,6 @@ export default {
 
 /** 以上为可复用代码 **/
 
-export const Login = () => (
-  <AmisRender schema={{
-    "type": "form",
-    "mode": "horizontal",
-    "api": {
-      "method": "post",
-      "url": "${context.rootUrl}/accounts/password/login",
-      "adaptor": `localStorage.setItem("steedos:userId", payload.user.id);\n localStorage.setItem("steedos:spaceId", payload.space);\n localStorage.setItem("steedos:token", payload.token);\n setTimeout(function(){ location.reload()},2000) \n return payload;`,
-      "requestAdaptor": `api.data.password = CryptoJS.SHA256(api.data.password).toString();\n const username = api.data.username  ; \n api.data.user = {email: username}; \n return api;`
-    },
-    "body": [
-      {
-        "label": "Username",
-        "type": "input-text",
-        "name": "username",
-        "placeholder": "请输入邮箱"
-      },
-      {
-        "label": "Password",
-        "type": "input-password",
-        "name": "password",
-      }
-    ],
-    "submitText": "Login",
-    "title": "Login to Steedos"
-  }}
-  />
-)
-
 export const ObjectForm = () => (
   <AmisRender schema={{
     type: 'page',
@@ -520,98 +491,6 @@ export const Provider = () => (
         }
       ]
     },
-  }}
-  assetUrls={assetUrls}
-  />
-)
-
-export const AppHeader = () => (
-  <AmisRender schema={{
-    "type": "page",
-    "title": "Welcome to Steedos",
-    "body": [
-      {
-        "type": "grid",
-        "className": "m-t",
-        "columns": [
-          {
-            "columnClassName": "",
-            "body": [
-              {
-                "type": "steedos-logo",
-                "src": ""
-              }
-            ],
-            "id": "u:8f98766aa1bc",
-            "md": "auto",
-            "valign": "middle"
-          },
-          {
-            "columnClassName": "",
-            "body": [
-              {
-                "type": "steedos-app-launcher",
-                "id": "u:202de972cb2d"
-              }
-            ],
-            "id": "u:e8a42e96eaf5",
-            "md": "auto",
-            "valign": "middle"
-          },
-          {
-            "columnClassName": "",
-            "body": [
-              {
-                "type": "steedos-app-menu",
-                "stacked": false,
-                "id": "u:77851eb4aa89"
-              }
-            ],
-            "id": "u:5367229505d8",
-            "md": "",
-            "valign": "middle"
-          }
-        ],
-        "id": "u:6cc99950b29c"
-      }
-    ],
-    "regions": [
-      "body"
-    ],
-    "id": "u:53a05f7c471a"
-  }}
-  assetUrls={assetUrls}
-  />
-)
-
-
-export const GlobalHeader = () => (
-  <AmisRender schema={{
-    "type": "page",
-    "title": "Welcome to Steedos",
-    "body": [
-      {
-        "type": "steedos-global-header",
-        "id": "u:9c3d279be31a",
-      },
-    ],
-    "regions": [
-      "body"
-    ],
-    "data": {
-      "recordId": "",
-      "initialValues": {
-      },
-      "appId": "builder",
-      "title": "",
-      "context": {
-        "rootUrl": "http://127.0.0.1:5300",
-        "tenantId": "osjAHnCr7nampKZ9Z",
-        "userId": "63044e7529b3b23f86e0c95a",
-        "authToken": "32fa980d8a04b9810cb2ff503eb0a3e642b75b533e4c37b8989579a84476fda0c7ebfe9a9722bbfcfc41d7"
-      }
-    },
-    "id": "u:03557e4e0798"
   }}
   assetUrls={assetUrls}
   />

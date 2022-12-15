@@ -11,7 +11,7 @@
     {
         "package": "steedos-lib",
         "urls": [
-            "http://127.0.0.1:8080/%40steedos-widgets/steedos-lib/dist/index.umd.js",
+            "https://unpkg.com/@steedos-widgets/steedos-lib/dist/index.umd.js",
             "https://unpkg.steedos.cn/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css"
         ],
         "library": "SteedosLib"
