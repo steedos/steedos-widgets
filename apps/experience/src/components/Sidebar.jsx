@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-29 10:46:29
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-14 18:04:15
+ * @LastEditTime: 2022-12-15 16:39:08
  * @Description: 
  */
 /* This example requires Tailwind CSS v2.0+ */
@@ -47,47 +47,33 @@ function getNavData(nav, selected){
   return data;
 }
 
-function getNavSchema(nav, selected){
-  const data = getNavData(nav, selected);
-  return {
-    "type": "page",
-    // "data": data,
-    bodyClassName: "p-0",
-    "css": {
-      ".antd-Nav-itemIcon":{
-        height: '20px !important',
-        width: '20px',
-        'object-fit': 'cover',
-        // 'background-color': 'var(--slds-c-icon-color-background,var(--sds-c-icon-color-background,#779ef2))',
-        // fill: "var(--slds-c-icon-color-foreground,var(--sds-c-icon-color-foreground,#fff))",
-      },
-      ".antd-Nav-list":{
-        width: "auto"
-      },
-      ".antd-Nav-item a":{
-        // "padding-top": "2px !important",
-        // "padding-bottom": "2px !important"
-      },
-    },
-    "body": {
-      "type": "nav",
-      "stacked": true,
-      "className": "w-md",
-      "links": data.nav,
-      // "source": "${nav}"
-    }
-  }
-}
-
 export  function Sidebar({ navigation, selectedTabId, app }) {
+  const data = getNavData(navigation, selectedTabId);
   const router = useRouter()
   return (
     <nav aria-label="Sidebar" className="">
       <div className="block sm:hidden px-4 py-2 bg-white border-b">
-        <AppLauncherBar app={app}></AppLauncherBar>
+      <AmisRender schema={{
+        type: 'service',
+        body: [
+          {
+            "type": "steedos-app-launcher",
+          }
+        ]
+      }} data={{}} router={router} id="sidebarAppLauncherBar"></AmisRender>
       </div>
       <div className="py-4 font-medium">
-      { navigation && <AmisRender schema={getNavSchema(navigation, selectedTabId)} data={{}} router={router}></AmisRender>} 
+      {app && data?.nav && <AmisRender schema={{
+        type: 'service',
+        body: [
+          {
+            "type": "steedos-app-menu",
+            "stacked": true,
+            "appId": app.id,
+            links: data.nav
+          }
+        ]
+      }} data={{}} router={router} id="sidebarAppMenu"></AmisRender>}
       </div>
     </nav>
   )

@@ -7,7 +7,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-15 14:37:06
+ * @LastEditTime: 2022-12-15 16:18:07
  * @Description: 
  */
 
@@ -17,7 +17,7 @@ export const AmisGlobalHeader = async (props) => {
     let  avatarSrc = null;
 
     if(data.context?.user?.avatar){
-        avatarSrc = `/avatar/${data.context.user.userId}?w=220&h=200&fs=160&avatar=${data.context.user.avatar}`;
+        avatarSrc = `${data.context.rootUrl || ""}/avatar/${data.context.user.userId}?w=220&h=200&fs=160&avatar=${data.context.user.avatar}`;
     }
 
     return {
@@ -170,7 +170,7 @@ export const AmisGlobalHeader = async (props) => {
                         "actions": [
                             {
                                 "args": {
-                                  "url": "/app/admin/space_users/view/${context.userId}",
+                                  "url": "/app/admin/space_users/view/${context.user.spaceUserId}",
                                   "blank": false
                                 },
                                 "actionType": "link"

@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { MobileNavigation } from '@/components/mobile/MobileNavigation'
 import { AppLauncherBar } from "@/components/AppLauncherBar";
 import { Notification } from '@/components/Notification';
+import { AmisRender } from '@/components/AmisRender';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -57,6 +58,8 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
     router.push(e.target.href);
   };
 
+  window.signOut = signOut;
+
   return (
     <>
       <Disclosure
@@ -72,7 +75,7 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
                 </div> */}
                 <SideBarToggle/>
                 
-                <a href="/app" className="flex items-center">
+                {/* <a href="/app" className="flex items-center">
                   <img
                     className="block h-7 w-auto"
                     src="/logo.png"
@@ -80,13 +83,51 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
                 </a>
                 <div className="flex items-center ml-6 hidden sm:block">
                   <AppLauncherBar app={app}></AppLauncherBar>
-                </div>
+                </div> */}
+
+                <AmisRender schema={{
+                  type: "service",
+                  body: [
+                    {
+                      "type": "grid",
+                      className: 'pl-4',
+                      "columns": [
+                        {
+                          "columnClassName": "",
+                          "body": [
+                            {
+                              "type": "steedos-logo",
+                              "src": "/logo.png",
+                              "className": 'block h-7 w-auto'
+                            }
+                          ],
+                          "id": "u:e8a42e96eaf5",
+                          "md": "auto",
+                          "valign": "middle"
+                        },
+                        {
+                          "columnClassName": "",
+                          "body": [
+                            {
+                              "type": "steedos-app-launcher"
+                            }
+                          ],
+                          "id": "u:e8a42e96eaf5",
+                          "md": "auto",
+                          "valign": "middle"
+                        }
+                      ],
+                      "id": "u:6cc99950b29c"
+                    }
+                  ]
+                }} id="appLauncher" router={router}></AmisRender>
+
               </div>
               <div className="slds-global-header__item">
               </div>
 
               <div className="slds-global-header__item">
-                <ul className="slds-global-actions mb-0">
+                { false && <ul className="slds-global-actions mb-0">
                   <li className="slds-global-actions__item">
                     <div
                       className="slds-dropdown-trigger slds-dropdown-trigger_click hidden sm:block"
@@ -220,7 +261,21 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
                       </Transition>
                     </Menu>
                   </div>
-                </ul>
+                </ul>}
+
+                <AmisRender router={router} schema={{
+                  type: 'service',
+                  id: "globalHeader",
+                  body: [
+                    {
+                      "type": "steedos-global-header",
+                      "label": "Global Header",
+                      className: 'flex flex-nowrap gap-x-2',
+                      logoutScript: "window.signOut();"
+                    }
+                  ]
+                }}></AmisRender>
+
               </div>
             </div>
                
