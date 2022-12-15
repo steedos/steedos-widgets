@@ -7,16 +7,23 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-15 11:21:12
+ * @LastEditTime: 2022-12-15 14:37:06
  * @Description: 
  */
 
 export const AmisGlobalHeader = async (props) => {
-    const { stacked = false } = props;
+    const { className = '', data, logoutScript = "" } = props;
+    
+    let  avatarSrc = null;
+
+    if(data.context?.user?.avatar){
+        avatarSrc = `/avatar/${data.context.user.userId}?w=220&h=200&fs=160&avatar=${data.context.user.avatar}`;
+    }
+
     return {
         "type": "wrapper",
         "id": "u:9c3d279be31a",
-        "className": "steedos-global-header",
+        "className": `steedos-global-header ${className}`,
         "size": "xs",
         "body": [
           {
@@ -118,8 +125,13 @@ export const AmisGlobalHeader = async (props) => {
             "body": [
               {
                 "type": "avatar",
+                "src": avatarSrc,
                 "icon": "fa fa-user",
                 "id": "u:033218742221",
+                "style": {
+                    "background": "rgb(59 130 246 / 0.5)",
+                    "color": "#FFFFFF"
+                },
                 size: 30
               }
             ],
@@ -130,22 +142,25 @@ export const AmisGlobalHeader = async (props) => {
                 "body": [
                   {
                     "type": "avatar",
+                    "src": avatarSrc,
                     "icon": "fa fa-user",
-                    "id": "u:c1956f5ad96a"
+                    "id": "u:033218742221",
+                    "style": {
+                        "background": "rgb(59 130 246 / 0.5)",
+                        "color": "#FFFFFF"
+                    },
                   },
                   {
                     "type": "tpl",
+                    className: "block",
                     "tpl": "${context.user.name}",
                     "inline": true,
-                    "wrapperComponent": "",
-                    "id": "u:325e582aac06"
                   },
                   {
                     "type": "tpl",
+                    className: "block",
                     "tpl": "${context.user.email}",
                     "inline": true,
-                    "wrapperComponent": "",
-                    "id": "u:eac1db95ebb9"
                   },
                   {
                     "type": "button",
@@ -153,6 +168,13 @@ export const AmisGlobalHeader = async (props) => {
                     "onEvent": {
                       "click": {
                         "actions": [
+                            {
+                                "args": {
+                                  "url": "/app/admin/space_users/view/${context.userId}",
+                                  "blank": false
+                                },
+                                "actionType": "link"
+                              }
                         ]
                       }
                     },
@@ -166,13 +188,40 @@ export const AmisGlobalHeader = async (props) => {
                     "onEvent": {
                       "click": {
                         "actions": [
+                            {
+                                "componentId": "",
+                                "args": {},
+                                "actionType": "custom",
+                                "script": logoutScript
+                              }
                         ]
                       }
                     },
                     "id": "u:0ab9ad5a8503",
                     "block": true,
                     "level": "link"
-                  }
+                  },
+                  {
+                    "type": "button",
+                    "label": "关于",
+                    "onEvent": {
+                      "click": {
+                        "actions": [
+                            {
+                                "args": {
+                                  "url": "/app/admin/page/creator_about",
+                                  "blank": false
+                                },
+                                "actionType": "link"
+                              }
+                        ]
+                      }
+                    },
+                    "id": "u:1e6c26ff8721",
+                    "block": true,
+                    "level": "link"
+                  },
+                  
                 ],
                 "id": "u:b90fbd8773aa"
               }
