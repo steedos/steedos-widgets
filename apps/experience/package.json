@@ -26,7 +26,7 @@
     "@headlessui/react": "^1.6.5",
     "@heroicons/react": "^1.0.6",
     "@steedos-builder/react": "^0.2.34",
-    "antd": "^4.22.0",
+    "antd": "^4.24.5",
     "attr-accept": "^2.2.2",
     "autoprefixer": "^10.4.7",
     "axios": "^0.27.2",

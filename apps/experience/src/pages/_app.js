@@ -13,6 +13,7 @@ import '@/styles/amis.css';
 import '@/styles/mobile.css';
 import '@/styles/notification.css';
 import '@/styles/workflow.css';
+import '@/styles/experience.css';
 import { AppLayout } from '@/components/AppLayout';
 import '@/components/functions';
 import React, { useState, useEffect, Fragment, useRef } from 'react';

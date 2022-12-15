@@ -3,8 +3,8 @@
     {
         "package": "antd",
         "urls": [
-            "https://unpkg.steedos.cn/antd@4.23.6/dist/antd.min.js",
-            "https://unpkg.steedos.cn/antd@4.23.6/dist/antd.min.css"
+            "https://unpkg.steedos.cn/antd@4.24.5/dist/antd.min.js",
+            "https://unpkg.steedos.cn/antd@4.24.5/dist/antd.min.css"
         ],
         "library": "antd"
     },
