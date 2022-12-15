@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-13 13:15:02
+ * @LastEditTime: 2022-12-14 13:38:04
  * @Description: 
  */
 // import Hello from "./metas/Hello";
@@ -29,6 +29,14 @@ import AmisLogo from './metas/AmisLogo';
 
 import AmisAppMenu from './metas/AmisAppMenu';
 
+import SteedosIcon from './metas/SteedosIcon';
+
+import SteedosDropdown from "./metas/SteedosDropdown";
+
+import FromNow from './metas/FromNow';
+
+import AmisGlobalHeader from './metas/AmisGlobalHeader';
+
 const components = [
   AmisObjectForm, 
   AmisObjectListview, 
@@ -44,7 +52,11 @@ const components = [
   SteedosDropdownButton,
   AmisAppLauncher,
   AmisLogo,
-  AmisAppMenu
+  AmisAppMenu,
+  SteedosIcon,
+  SteedosDropdown,
+  FromNow,
+  AmisGlobalHeader
 ];
 
 const componentList = [
@@ -66,7 +78,11 @@ const componentList = [
       SteedosDropdownButton,
       AmisAppLauncher,
       AmisLogo,
-      AmisAppMenu
+      AmisAppMenu,
+      SteedosIcon,
+      SteedosDropdown,
+      FromNow,
+      AmisGlobalHeader
     ]
   }
 ];
