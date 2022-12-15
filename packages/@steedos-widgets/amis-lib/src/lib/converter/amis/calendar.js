@@ -1,29 +1,135 @@
-import { getAuthToken, getTenantId, getRootUrl } from '../../steedos.client.js';
-import { map, each, sortBy, compact, keys } from 'lodash';
+import { getApi } from './fields/table';
+import { each } from 'lodash';
 
-let eventGuid = 0
-let todayStr = new Date().toISOString().replace(/T.*$/, '') // YYYY-MM-DD of today
-
-const INITIAL_EVENTS = [
-  {
-    id: createEventId(),
-    title: 'All-day event',
-    start: todayStr
-  },
-  {
-    id: createEventId(),
-    title: 'Timed event',
-    start: todayStr + 'T12:00:00'
-  },
-  {
-    id: createEventId(),
-    title: 'Timed event 2',
-    start: todayStr + 'T12:05:00'
+export async function getCalendarApi(mainObject, fields, options) {
+  if (!options) {
+    options = {};
   }
-]
+  const searchableFields = [];
+  let { globalFilter, filter, sort, top, setDataToComponentId = '' } = options;
 
-function createEventId() {
-  return String(eventGuid++)
+  if (_.isArray(filter)) {
+    filter = _.map(filter, function (item) {
+      if (item.operation) {
+        return [item.field, item.operation, item.value];
+      } else {
+        return item
+      }
+    })
+  }
+  if (!filter) {
+    filter = [];
+  }
+
+  _.each(fields, function (field) {
+    if (field.searchable) {
+      searchableFields.push(field.name);
+    }
+  })
+
+  let valueField = mainObject.key_field || '_id';
+  const api = await getApi(mainObject, null, fields, { alias: 'rows', limit: top, queryOptions: `filters: {__filters}, top: {__top}, skip: {__skip}, sort: "{__sort}"` });
+  api.data.$term = "$term";
+  api.data.$self = "$$";
+  api.data.filter = "$filter"
+  // api.data.loaded = "${loaded}";
+  // api.data.listViewId = "${listViewId}";
+  api.requestAdaptor = `
+    let selfData = JSON.parse(JSON.stringify(api.data.$self));
+    ${globalFilter ? `var filters = ${JSON.stringify(globalFilter)};` : 'var filters = [];'}
+    if(_.isEmpty(filters)){
+        filters = api.data.filter || [${JSON.stringify(filter)}];
+    }else{
+        filters = [filters, 'and', api.data.filter || [${JSON.stringify(filter)}]]
+    }
+    var pageSize = api.data.pageSize || 10;
+    var pageNo = api.data.pageNo || 1;
+    var skip = (pageNo - 1) * pageSize;
+    var orderBy = api.data.orderBy || '';
+    var orderDir = api.data.orderDir || '';
+    var sort = orderBy + ' ' + orderDir;
+    sort = orderBy ? sort : "${sort}";
+    var allowSearchFields = ${JSON.stringify(searchableFields)};
+    if(api.data.$term){
+        filters = [["name", "contains", "'+ api.data.$term +'"]];
+    }else if(selfData.op === 'loadOptions' && selfData.value){
+        filters = [["${valueField.name}", "=", selfData.value]];
+    }
+    var searchableFilter = [];
+    _.each(selfData, (value, key)=>{
+        if(!_.isEmpty(value) || _.isBoolean(value)){
+            if(_.startsWith(key, '__searchable__between__')){
+                searchableFilter.push([\`\${key.replace("__searchable__between__", "")}\`, "between", value])
+            }else if(_.startsWith(key, '__searchable__')){
+                if(_.isString(value)){
+                    searchableFilter.push([\`\${key.replace("__searchable__", "")}\`, "contains", value])
+                }else{
+                    searchableFilter.push([\`\${key.replace("__searchable__", "")}\`, "=", value])
+                }
+            }
+        }
+    });
+
+    if(searchableFilter.length > 0){
+        if(filters.length > 0 ){
+            filters = [filters, 'and', searchableFilter];
+        }else{
+            filters = searchableFilter;
+        }
+    }
+
+    if(allowSearchFields){
+        allowSearchFields.forEach(function(key){
+            const keyValue = selfData[key];
+            if(_.isString(keyValue)){
+                filters.push([key, "contains", keyValue]);
+            }else if(_.isArray(keyValue) || _.isBoolean(keyValue) || keyValue){
+                filters.push([key, "=", keyValue]);
+            }
+        })
+    }
+
+    if(selfData.__keywords && allowSearchFields){
+        const keywordsFilters = [];
+        allowSearchFields.forEach(function(key, index){
+            const keyValue = selfData.__keywords;
+            if(keyValue){
+                keywordsFilters.push([key, "contains", keyValue]);
+                if(index < allowSearchFields.length - 1){
+                    keywordsFilters.push('or');
+                }
+            }
+        })
+        filters.push(keywordsFilters);
+    }
+    api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', pageSize).replace('{__skip}', skip).replace('{__sort}', sort.trim());
+    return api;
+  `
+  api.adaptor = `
+    window.postMessage(Object.assign({type: "listview.loaded"}), "*");
+    const setDataToComponentId = "${setDataToComponentId}";
+    if(setDataToComponentId){
+        SteedosUI.getRef(api.body.$self.scopeId)?.getComponentById(setDataToComponentId)?.setData({$count: payload.data.count})
+    }
+    console.log("===adaptor==payload===", payload);
+    const rows = payload.data.rows || [];
+    const events = rows.map(function(n){
+      return {
+        id: n._id,
+        title: n.name,
+        start: n.start,
+        end: n.end
+      }
+    });
+    console.log("===adaptor==api===", api);
+    console.log("===adaptor==events===", events);
+    const selfData = api.data.$self;
+    const successCallback = selfData.successCallback;
+    const failureCallback = selfData.failureCallback;
+    successCallback(events);
+    return payload;
+  `;
+  return api;
 }
 
 /**
@@ -36,12 +142,45 @@ export async function getObjectCalendar(objectSchema, listView, ctx) {
     ctx = {};
   }
 
+  const calendarOptions = listView.options || {};
+  const titleFields = calendarOptions.title || ["name"];
+  let fields = [];
+  each(titleFields, function (n) {
+    if (objectSchema.fields[n]) {
+      fields.push(objectSchema.fields[n]);
+    }
+  });
+
+  const api = await getCalendarApi(objectSchema, fields);
+
+  const getEventsScript = `
+    const api = ${JSON.stringify(api)};
+    console.log('getEventsScript==api====', api); 
+    doAction({
+      "actionType": 'ajax',
+      "args": {
+        "api": api
+      },
+    });
+  `;
+
   const amisSchema = {
     "type": "steedos-fullcalendar",
     "label": "",
     "name": "fullcalendar",
-    "initialEvents": INITIAL_EVENTS,
     "onEvent": {
+      "getEvents": {
+        "weight": 0,
+        "actions": [
+          {
+            "componentId": "",
+            "args": {
+            },
+            "actionType": "custom",
+            "script": getEventsScript
+          }
+        ]
+      },
       "select": {
         "weight": 0,
         "actions": [
