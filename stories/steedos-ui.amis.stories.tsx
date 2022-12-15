@@ -117,10 +117,17 @@ export const Login = () => (
     "api": {
       "method": "post",
       "url": "${context.rootUrl}/accounts/password/login",
-      "adaptor": `localStorage.setItem("steedos:userId", payload.user.id);\n localStorage.setItem("steedos:spaceId", payload.space);\n localStorage.setItem("steedos:token", payload.token);\n setTimeout(function(){ location.reload()},2000) \n return payload;`,
+      "adaptor": `localStorage.setItem("steedos:userId", payload.user.id);\n localStorage.setItem("steedos:spaceId", payload.space);\n localStorage.setItem("steedos:token", payload.token);\n localStorage.setItem("steedos:user", JSON.stringify(payload.user))\nsetTimeout(function(){ location.reload()},2000) \n return payload;`,
       "requestAdaptor": `api.data.password = CryptoJS.SHA256(api.data.password).toString();\n const username = api.data.username  ; \n api.data.user = {email: username}; \n return api;`
     },
     "body": [
+      {
+        "label": "Root URL",
+        "type": "static",
+        "name": "rootUrl",
+        "readonly": true,
+        "value": "${context.rootUrl}"
+      },
       {
         "label": "Username",
         "type": "input-text",
@@ -140,10 +147,36 @@ export const Login = () => (
 )
 
 
+export const UserSession = () => (
+  <AmisRender schema={{
+    "type": "page",
+    "initApi": {
+      "url": "${context.rootUrl}/api/v4/users/validate",
+      "method": "post",
+      "adaptor": "var result = {status: 0, msg:'',  data: { user: payload } };  console.log(result); return result;"
+    },
+    "body": [
+      {
+        "label": "Context",
+        "type": "json",
+        "name": "context",
+        "value": "${context}"
+      },
+      {
+        "label": "User",
+        "type": "json",
+        "name": "user",
+        "value": "${user}"
+      }
+    ],
+  }}
+  />
+)
+
+
 export const AppHeader = () => (
   <AmisRender schema={{
     "type": "page",
-    "title": "Welcome to Steedos",
     "body": [
       {
         "type": "grid",
@@ -207,7 +240,7 @@ export const GlobalHeader = () => (
       {
         "type": "steedos-global-header",
         "id": "u:9c3d279be31a",
-      },
+      }
     ],
   }}
   assetUrls={assetUrls}
