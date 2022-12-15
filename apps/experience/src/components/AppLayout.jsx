@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 09:31:04
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-09 10:40:19
+ * @LastEditTime: 2022-12-15 16:36:39
  * @Description:  
  */
 import React, { useState, useEffect, Fragment } from 'react';
@@ -13,7 +13,7 @@ import { Sidebar } from '@/components/Sidebar';
 import { getApp } from '@steedos-widgets/amis-lib';
 import { useRouter } from 'next/router'
 import { setSteedosAuth, setRootUrl, getRootUrl } from '@steedos-widgets/amis-lib';
-import { useSession } from "next-auth/react"
+import { useSession, signIn } from "next-auth/react"
 
 export function AppLayout({ children, app_id, tab_id, page_id}) {
     const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 768)
@@ -47,8 +47,7 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
     }
     const [app, setApp] = useState(null)
     const [selectedTabId, setSelectedTabId] = useState(tabId)
-    const { data: session } = useSession()
-
+    const { data: session, status } = useSession()
     if(session){
       if(session.publicEnv?.STEEDOS_ROOT_URL){
         setRootUrl(session.publicEnv?.STEEDOS_ROOT_URL);
@@ -79,6 +78,12 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
         window.posthog.people.set(people);
       }
     }, [session]);
+
+    useEffect(()=>{
+      if (status === "unauthenticated") {
+        signIn()
+      }
+    }, [status])
 
     // session 变化，获取 app
     useEffect(() => {
