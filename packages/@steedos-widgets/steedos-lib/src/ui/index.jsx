@@ -21,8 +21,36 @@ export const SteedosUI = Object.assign({}, {
     getRef(name){
       return SteedosUI.refs[name];
     },
-    router: ()=>{
-        // TODO
+    router:{
+      // TODO: 简易处理
+      go: (action, to)=>{
+        console.log('useRouter==>', useRouter)
+        const {type, objectName, recordId } = action || {};
+        const router = window.FlowRouter;
+  
+        if(to){
+          if(router){
+            return router.go(to);
+          }
+          /* TODO: 补充处于nextjs环境下的跳转
+          else if(){
+            return router.push(to);
+          }
+          */
+          else{
+            return window.open(to);
+          }
+        }
+  
+        if(router){
+          router.reload();
+        }else{
+          console.warn('暂不支持自动跳转', action)
+        }
+      },
+      reload: ()=>{
+        console.log('reload')
+      }
     },
     message,
     notification,
