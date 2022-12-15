@@ -9,14 +9,20 @@
         "library": "antd"
     },
     {
+        "package": "@steedos-widgets/fullcalendar",
+        "urls": [
+            "https://unpkg.com/@steedos-widgets/fullcalendar@{{version}}/dist/fullcalendar.umd.js",
+            "https://unpkg.com/@steedos-widgets/fullcalendar@{{version}}/dist/fullcalendar.umd.css"
+        ],
+        "library": "BuilderFullCalendar"
+    },
+    {
         "package": "steedos-lib",
         "urls": [
-            "https://unpkg.com/@steedos-widgets/steedos-lib/dist/index.umd.js",
-            "https://unpkg.steedos.cn/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css"
+            "https://unpkg.com/@steedos-widgets/steedos-lib/dist/index.umd.js"
         ],
         "library": "SteedosLib"
     },
-    
     {
         "package": "@steedos-widgets/amis-object",
         "urls": [
@@ -27,6 +33,17 @@
     }
   ],
   "components": [
+    {
+        "exportName": "BuilderFullCalendarMeta",
+        "npm": {
+            "package": "@steedos-widgets/fullcalendar"
+        },
+        "url": "https://unpkg.com/@steedos-widgets/fullcalendar@{{version}}/dist/meta.js",
+        "urls": {
+            "default": "https://unpkg.com/@steedos-widgets/fullcalendar@{{version}}/dist/meta.js",
+            "design": "https://unpkg.com/@steedos-widgets/fullcalendar@{{version}}/dist/meta.js"
+        }
+    },
     {
         "exportName": "BuilderAmisObjectMeta",
         "npm": {

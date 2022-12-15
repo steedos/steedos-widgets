@@ -23,15 +23,20 @@ if (Builder.isBrowser){
     rootUrl: process.env.STEEDOS_ROOT_URL,
     context: {
       rootUrl: process.env.STEEDOS_ROOT_URL,
-      userId: process.env.STEEDOS_USERID || localStorage.getItem('steedos:userId'),
-      tenantId: process.env.STEEDOS_TENANTID || localStorage.getItem('steedos:spaceId'),
-      authToken: process.env.STEEDOS_AUTHTOKEN || localStorage.getItem('steedos:token'),
+      // userId: process.env.STEEDOS_USERID || localStorage.getItem('steedos:userId'),
+      // tenantId: process.env.STEEDOS_TENANTID || localStorage.getItem('steedos:spaceId'),
+      // authToken: process.env.STEEDOS_AUTHTOKEN || localStorage.getItem('steedos:token'),
     } 
   });
 }
 const AmisRender = ({schema, data = {}, router = null, assetUrls = null, getModalContainer = null})=> {
   useEffect(()=>{
-    const defData = defaultsDeep({}, data , {
+    const defaultSchema = defaultsDeep({}, data , {
+        "initApi": {
+          "url": "${context.rootUrl}/api/v4/users/validate",
+          "method": "post",
+          "adaptor": "var context = {rootUrl: api.data.context.rootUrl, userId: payload.userId, authToken: payload.authToken, tenantId: payload.spaceId}; Builder.set({context: context}); var result = {status: 0, msg:'',  data: { context: {...context, user: payload} } };  console.log(result); return result;"
+        },
         data: {
             context: {
                 rootUrl: getRootUrl(null),
@@ -46,7 +51,7 @@ const AmisRender = ({schema, data = {}, router = null, assetUrls = null, getModa
         }
     });
     registerRemoteAssets(assetUrls).then((assets)=>{
-      amisRender(`#amis-root`, defaultsDeep(defData , schema), data, {getModalContainer: getModalContainer}, {router: router, assets: assets});
+      amisRender(`#amis-root`, defaultsDeep(defaultSchema , schema), data, {getModalContainer: getModalContainer}, {router: router, assets: assets});
     })
   }, [])
   return (
@@ -112,29 +117,78 @@ export default {
 
 export const Login = () => (
   <AmisRender schema={{
-    "type": "form",
-    "mode": "horizontal",
-    "api": {
-      "method": "post",
-      "url": "${context.rootUrl}/accounts/password/login",
-      "adaptor": `localStorage.setItem("steedos:userId", payload.user.id);\n localStorage.setItem("steedos:spaceId", payload.space);\n localStorage.setItem("steedos:token", payload.token);\n setTimeout(function(){ location.reload()},2000) \n return payload;`,
-      "requestAdaptor": `api.data.password = CryptoJS.SHA256(api.data.password).toString();\n const username = api.data.username  ; \n api.data.user = {email: username}; \n return api;`
-    },
+    "type": "page",
+    "body": [{
+      "type": "form",
+      "mode": "horizontal",
+      "api": {
+        "method": "post",
+        "url": "${context.rootUrl}/accounts/password/login",
+        "adaptor": `localStorage.setItem("steedos:userId", payload.user.id);\n localStorage.setItem("steedos:spaceId", payload.space);\n localStorage.setItem("steedos:token", payload.token);\n localStorage.setItem("steedos:user", JSON.stringify(payload.user))\nsetTimeout(function(){ location.reload()},2000) \n return payload;`,
+        "requestAdaptor": `api.data.password = CryptoJS.SHA256(api.data.password).toString();\n const username = api.data.username  ; \n api.data.user = {email: username}; \n return api;`
+      },
+      "body": [
+        {
+          "label": "Root URL",
+          "type": "static",
+          "name": "rootUrl",
+          "value": "${context.rootUrl}"
+        },
+        {
+          "label": "Current User Id",
+          "type": "static",
+          "name": "context.user.userId",
+          "value": "${context.user.userId}"
+        },
+        {
+          "label": "Current User Name",
+          "type": "static",
+          "name": "context.user.name",
+          "value": "${context.user.name}"
+        },
+        {
+          "label": "Current User Email",
+          "type": "static",
+          "name": "context.user.email",
+          "value": "${context.user.email}"
+        },
+        {
+          "label": "Email",
+          "type": "input-text",
+          "name": "username",
+          "placeholder": "请输入邮箱"
+        },
+        {
+          "label": "Password",
+          "type": "input-password",
+          "name": "password",
+        }
+      ],
+      "submitText": "Login",
+      "title": "Login to Steedos"
+    }]
+  }}
+  />
+)
+
+
+export const UserSession = () => (
+  <AmisRender schema={{
+    "type": "page",
     "body": [
       {
-        "label": "Username",
-        "type": "input-text",
-        "name": "username",
-        "placeholder": "请输入邮箱"
+        "label": "Context",
+        "type": "json",
+        "name": "context",
+        "value": "${context}"
       },
       {
-        "label": "Password",
-        "type": "input-password",
-        "name": "password",
+        "label": "User",
+        "type": "json",
+        "name": "context.user",
+        "value": "${context.user}"
       }
     ],
-    "submitText": "Login",
-    "title": "Login to Steedos"
   }}
   />
 )
@@ -143,7 +197,6 @@ export const Login = () => (
 export const AppHeader = () => (
   <AmisRender schema={{
     "type": "page",
-    "title": "Welcome to Steedos",
     "body": [
       {
         "type": "grid",
@@ -207,7 +260,7 @@ export const GlobalHeader = () => (
       {
         "type": "steedos-global-header",
         "id": "u:9c3d279be31a",
-      },
+      }
     ],
   }}
   assetUrls={assetUrls}

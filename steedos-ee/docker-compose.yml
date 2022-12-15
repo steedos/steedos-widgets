@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   steedos:
-    image: ecr.aws.steedos.cn/dockerhub/steedos/steedos-enterprise:2.3.2
+    image: ecr.aws.steedos.cn/dockerhub/steedos/steedos-enterprise:2.3.3-beta.4
     command: "yarn start"
     ports:
       - "5000:3000"
@@ -26,8 +26,7 @@ services:
       - STEEDOS_IDENTITY_OIDC_CLIENT_ID=steedos-oidc-public
       - STEEDOS_IDENTITY_OIDC_CLIENT_SECRET=none
       - STEEDOS_IDENTITY_OIDC_NAME=Steedos ID
-      - STEEDOS_INITIAL_PACKAGES="@steedos-labs/master@beta,@steedos-labs/contract@beta,@steedos-labs/contract-ee@beta,@steedos-labs/project@beta,@steedos-labs/project-ee@beta,@steedos-labs/finance@beta,@steedos-labs/finance-ee@beta,@steedos-labs/oa@beta,@steedos-labs/workflow@beta,@steedos-labs/site@beta"
-      - STEEDOS_BUILDER_URL=https://builder.steedos.com
+      - STEEDOS_INITIAL_PACKAGES="@steedos-labs/project-ee@beta,@steedos-labs/demo-ee@beta"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
       interval: 60s
