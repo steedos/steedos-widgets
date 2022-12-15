@@ -153,7 +153,7 @@ export const UserSession = () => (
     "initApi": {
       "url": "${context.rootUrl}/api/v4/users/validate",
       "method": "post",
-      "adaptor": "var result = {status: 0, msg:'',  data: { user: payload } };  console.log(result); return result;"
+      "adaptor": "var result = {status: 0, msg:'',  data: { context: {...api.data.context, user: payload} } };  console.log(result); return result;"
     },
     "body": [
       {
@@ -165,8 +165,8 @@ export const UserSession = () => (
       {
         "label": "User",
         "type": "json",
-        "name": "user",
-        "value": "${user}"
+        "name": "context.user",
+        "value": "${context.user}"
       }
     ],
   }}
