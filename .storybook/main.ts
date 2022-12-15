@@ -1,9 +1,17 @@
+/*
+ * @Author: baozhoutao@steedos.com
+ * @Date: 2022-12-09 10:47:22
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2022-12-14 13:59:31
+ * @Description: 
+ */
 const path = require('path');
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 require('dotenv-flow').config();
 
 module.exports = {
   stories: ['../stories/**/*.stories.tsx'],
+  staticDirs: ['../apps/experience/public'],
   reactOptions: {
     legacyRootApi: false,
   },

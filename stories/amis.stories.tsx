@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 11:54:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-13 15:27:40
+ * @LastEditTime: 2022-12-14 14:01:19
  * @Description: 
  */
 import React, {useEffect, useState} from 'react';
@@ -38,7 +38,10 @@ const AmisRender = ({schema, data = {}, router = null, assetUrls = null, getModa
                 userId: process.env.STEEDOS_USERID || localStorage.getItem('steedos:userId'),
                 tenantId: getTenantId(),
                 authToken: getAuthToken(),
-                user: {}
+                user: {
+                  name: 'huayan',
+                  email: 'huayan@steedos.com'
+                }
             }
         }
     });
@@ -75,6 +78,7 @@ const loadCss = async (href)=>{
 
 export default {
   title: 'Amis/Steedos Object',
+  
   decorators: [(Story)=>{
     const [isLoaded, setIsLoaded] = useState(false);
       useEffect(() => {
@@ -559,6 +563,39 @@ export const AppHeader = () => (
       "body"
     ],
     "id": "u:53a05f7c471a"
+  }}
+  assetUrls={assetUrls}
+  />
+)
+
+
+export const GlobalHeader = () => (
+  <AmisRender schema={{
+    "type": "page",
+    "title": "Welcome to Steedos",
+    "body": [
+      {
+        "type": "steedos-global-header",
+        "id": "u:9c3d279be31a",
+      },
+    ],
+    "regions": [
+      "body"
+    ],
+    "data": {
+      "recordId": "",
+      "initialValues": {
+      },
+      "appId": "builder",
+      "title": "",
+      "context": {
+        "rootUrl": "http://127.0.0.1:5300",
+        "tenantId": "osjAHnCr7nampKZ9Z",
+        "userId": "63044e7529b3b23f86e0c95a",
+        "authToken": "32fa980d8a04b9810cb2ff503eb0a3e642b75b533e4c37b8989579a84476fda0c7ebfe9a9722bbfcfc41d7"
+      }
+    },
+    "id": "u:03557e4e0798"
   }}
   assetUrls={assetUrls}
   />
