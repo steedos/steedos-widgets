@@ -12,7 +12,6 @@ import { createObject } from '@steedos-widgets/amis-lib';
 
 const getMenu = (render, buttons, btnClassName, props)=>{
     return map(buttons, (button)=>{
-      console.log(button)
       button.className = `${button.className} ${btnClassName}`
         return {
             key: button.name,
