@@ -1,6 +1,6 @@
 {
   "name": "@steedos-widgets/example",
-  "private": false,
+  "private": true,
   "version": "1.0.7",
   "main": "dist/meta.js",
   "module": "dist/meta.js",
@@ -11,7 +11,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "http": "npx http-server ../ --port 8080 --cors -c -1",
-    "build": "yarn build-types && yarn build-rollup && yarn build-assets",
+    "build.disabled": "yarn build-types && yarn build-rollup && yarn build-assets",
     "build-types": "tsc --emitDeclarationOnly --declaration --declarationDir dist/types",
     "build-rollup": "rollup -c rollup.config.ts && yarn build-uglifyjs",
     "build-uglifyjs": "yarn uglifyjs dist/example.umd.js -o dist/example.umd.min.js",
