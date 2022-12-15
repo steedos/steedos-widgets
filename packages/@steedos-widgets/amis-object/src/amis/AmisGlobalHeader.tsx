@@ -7,16 +7,23 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-15 11:21:12
+ * @LastEditTime: 2022-12-15 14:22:26
  * @Description: 
  */
 
 export const AmisGlobalHeader = async (props) => {
-    const { stacked = false } = props;
+    const { className = '', data } = props;
+    
+    let  avatarSrc = null;
+
+    if(data.context?.user?.avatar){
+        avatarSrc = `/avatar/${data.context.user.userId}?w=220&h=200&fs=160&avatar=${data.context.user.avatar}`;
+    }
+
     return {
         "type": "wrapper",
         "id": "u:9c3d279be31a",
-        "className": "steedos-global-header",
+        "className": `steedos-global-header ${className}`,
         "size": "xs",
         "body": [
           {
@@ -118,8 +125,13 @@ export const AmisGlobalHeader = async (props) => {
             "body": [
               {
                 "type": "avatar",
+                "src": avatarSrc,
                 "icon": "fa fa-user",
                 "id": "u:033218742221",
+                "style": {
+                    "background": "rgb(59 130 246 / 0.5)",
+                    "color": "#FFFFFF"
+                },
                 size: 30
               }
             ],
@@ -130,8 +142,13 @@ export const AmisGlobalHeader = async (props) => {
                 "body": [
                   {
                     "type": "avatar",
+                    "src": avatarSrc,
                     "icon": "fa fa-user",
-                    "id": "u:c1956f5ad96a"
+                    "id": "u:033218742221",
+                    "style": {
+                        "background": "rgb(59 130 246 / 0.5)",
+                        "color": "#FFFFFF"
+                    },
                   },
                   {
                     "type": "tpl",
