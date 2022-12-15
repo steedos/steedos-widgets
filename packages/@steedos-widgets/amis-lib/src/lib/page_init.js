@@ -106,7 +106,7 @@ export async function getRecordPageInitSchema(objectApiName){
                 ]
             }
         ],
-        "className": "bg-white mb-4",
+        "className": "sm:mt-3 flex flex-col region-main bg-white sm:shadow sm:rounded sm:border border-slate-300",
         "linksClassName": "pl-4 pt-2"
     };
     const relatedListSchema = map(relatedList,(item)=>{

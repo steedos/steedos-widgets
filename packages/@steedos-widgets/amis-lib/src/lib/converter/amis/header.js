@@ -326,7 +326,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
     type: "steedos-dropdown-button",
     label: "",
     buttons: dropdownButtons,
-    className: 'slds-icon ml-1 border-gray-200 rounded-none'
+    className: 'slds-icon'
   }
   amisButtonsSchema.push(dropdownButtonsSchema);
   const reg = new RegExp('_', 'g');
@@ -336,80 +336,73 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
       "type": "service",
       "body": [
         {
-          "type": "panel",
-          "title": "标题",
-          "body": [],
-          "header": {
-            "type": "wrapper",
-            "body": [
-              {
-                "type": "grid",
-                "columns": [
-                  {
-                    "body": [
-                      {
-                        "type": "grid",
-                        "columns": [
-                          {
-                            "body": {
-                              "type": "tpl",
-                              "className": "block",
-                              "tpl": `<img class='slds-icon slds-icon_container slds-icon-standard-${standardIcon}' src='\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg'>`
-                            },
-                            "md": "auto",
-                            "className": "",
-                            "columnClassName": "flex justify-center items-center"
+          "type": "wrapper",
+          "className": "bg-gray-100 sm:shadow sm:rounded sm:border border-slate-300 p-4",
+          "body": [
+            {
+              "type": "grid",
+              "columns": [
+                {
+                  "body": [
+                    {
+                      "type": "grid",
+                      "columns": [
+                        {
+                          "body": {
+                            "type": "tpl",
+                            "className": "block",
+                            "tpl": `<img class='slds-icon slds-icon_container slds-icon-standard-${standardIcon}' src='\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg'>`
                           },
-                          {
-                            "body": [
-                              {
-                                "type": "tpl",
-                                "tpl": `${label}`,
-                                "inline": false,
-                                "wrapperComponent": "",
-                                "style": {
-                                  "fontFamily": "",
-                                  "fontSize": 13
-                                },
-                                "className": "leading-none"
+                          "md": "auto",
+                          "className": "",
+                          "columnClassName": "flex justify-center items-center"
+                        },
+                        {
+                          "body": [
+                            {
+                              "type": "tpl",
+                              "tpl": `${label}`,
+                              "inline": false,
+                              "wrapperComponent": "",
+                              "style": {
+                                "fontFamily": "",
+                                "fontSize": 13
                               },
-                              {
-                                "type": "tpl",
-                                "tpl": "${name}",
-                                // "tpl": "${(record && uiSchema && record[uiSchema.NAME_FIELD_KEY]) || name}",
-                                "inline": false,
-                                "wrapperComponent": "",
-                                "style": {
-                                  "fontFamily": "",
-                                  "fontSize": 20,
-                                  "fontWeight": "bold",
-                                  "textAlign": "left"
-                                },
-                                "className": "leading-none"
-                              }
-                            ],
-                          }
-                        ]
-                      }
-                    ],
-                    "md": "auto"
+                              "className": "leading-none"
+                            },
+                            {
+                              "type": "tpl",
+                              "tpl": "${name}",
+                              // "tpl": "${(record && uiSchema && record[uiSchema.NAME_FIELD_KEY]) || name}",
+                              "inline": false,
+                              "wrapperComponent": "",
+                              "style": {
+                                "fontFamily": "",
+                                "fontSize": 20,
+                                "fontWeight": "bold",
+                                "textAlign": "left"
+                              },
+                              "className": "leading-none"
+                            }
+                          ],
+                        }
+                      ]
+                    }
+                  ],
+                  "md": "auto"
+                },
+                {
+                  "body":  {
+                    "type": "flex",
+                    "items": amisButtonsSchema,
                   },
-                  {
-                    "body":  {
-                      "type": "flex",
-                      "items": amisButtonsSchema,
-                    },
-                    "md": "auto"
-                  }
-                ],
-                "align": "between"
-              }
-            ],
-            "size": "xs"
-          },
-          "affixFooter": false,
-          "headerClassName": "",
-          "bodyClassName": "p-none"
+                  "md": "auto"
+                }
+              ],
+              "align": "between"
+            }
+          ],
+          "size": "xs"
         }
       ],
       "messages": {},
