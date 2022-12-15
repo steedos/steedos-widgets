@@ -203,31 +203,46 @@ export const AppHeader = () => (
 export const GlobalHeader = () => (
   <AmisRender schema={{
     "type": "page",
-    "title": "Welcome to Steedos",
     "body": [
       {
         "type": "steedos-global-header",
         "id": "u:9c3d279be31a",
       },
     ],
-    "regions": [
-      "body"
-    ],
-    "data": {
-      "recordId": "",
-      "initialValues": {
-      },
-      "appId": "builder",
-      "title": "",
-      "context": {
-        "rootUrl": "http://127.0.0.1:5300",
-        "tenantId": "osjAHnCr7nampKZ9Z",
-        "userId": "63044e7529b3b23f86e0c95a",
-        "authToken": "32fa980d8a04b9810cb2ff503eb0a3e642b75b533e4c37b8989579a84476fda0c7ebfe9a9722bbfcfc41d7"
-      }
-    },
-    "id": "u:03557e4e0798"
   }}
+  assetUrls={assetUrls}
+  />
+)
+
+
+
+export const AppMenuLeft = () => (
+  <AmisRender schema={{
+    "type": "page",
+    "body": [
+              {
+                "type": "steedos-app-menu",
+                "stacked": true,
+                "id": "u:77851eb4aa89"
+              }
+            ],
+    }}
+  assetUrls={assetUrls}
+  />
+)
+
+
+export const AppMenuTop = () => (
+  <AmisRender schema={{
+    "type": "page",
+    "body": [
+              {
+                "type": "steedos-app-menu",
+                "stacked": false,
+                "id": "u:77851eb4aa89"
+              }
+            ],
+    }}
   assetUrls={assetUrls}
   />
 )
