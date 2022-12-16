@@ -106,7 +106,7 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
                           "valign": "middle"
                         },
                         {
-                          "columnClassName": "flex items-center ml-6 hidden sm:block",
+                          "columnClassName": "flex items-center hidden sm:block",
                           "body": [
                             {
                               "type": "steedos-app-launcher"
