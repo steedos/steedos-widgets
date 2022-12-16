@@ -40,9 +40,9 @@ export default function App({
     if (Builder.isBrowser){
       window.Builder = Builder;
       window.Steedos = Steedos;
-      // if (process.env.NODE_ENV !== 'production') {
-      //   window['BuilderAmisObject'] = require('@steedos-widgets/amis-object');
-      // }
+      if (process.env.NODE_ENV !== 'production') {
+        // window['BuilderAmisObject'] = require('@steedos-widgets/amis-object/src');
+      }
     }
   }, []);
 
