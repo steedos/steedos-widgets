@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-11 09:39:38
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-13 13:21:18
+ * @LastEditTime: 2022-12-16 14:17:37
  * @Description: 
  */
 const config: any = {
@@ -69,7 +69,8 @@ const config: any = {
           type: config.amis.name,
           label: config.title,
           columns: 1,
-          vertical: false
+          vertical: false,
+          showIcon: true
         },
         previewSchema: {
           type: config.amis.name,
@@ -80,6 +81,11 @@ const config: any = {
             type: "switch",
             name: "stacked",
             label: "是否竖着摆放"
+          },
+          {
+            type: 'switch',
+            name: 'showIcon',
+            label: '是否显示Icon'
           }
         ]
       }
