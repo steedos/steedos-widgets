@@ -21,7 +21,8 @@
     "paths": {
       "@/*": [
         "*"
-      ]
+      ],
+      "@steedos-widgets/*": ["../../packages/@steedos-widgets/*/src"],
     },
     "moduleResolution": "node",
     "declaration": true

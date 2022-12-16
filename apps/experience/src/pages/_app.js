@@ -5,6 +5,7 @@
  * @LastEditTime: 2022-10-25 09:35:26
  * @Description: 
  */
+import Script from 'next/script'
 import { SessionProvider } from "next-auth/react"
 import 'focus-visible';
 import '@/styles/tailwind.css';
@@ -20,6 +21,9 @@ import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { usePostHog } from 'next-use-posthog'
 import { Builder } from '@steedos-builder/react'
 import { Steedos } from '@steedos-widgets/steedos-lib'
+
+
+
 export default function App({
   Component,
   pageProps: { session, ...pageProps },
@@ -35,9 +39,10 @@ export default function App({
   useEffect(() => {
     if (Builder.isBrowser){
       window.Builder = Builder;
-      window.React = amisRequire('react');
-      window.ReactDOM = amisRequire('react-dom');
       window.Steedos = Steedos;
+      // if (process.env.NODE_ENV !== 'production') {
+      //   window['BuilderAmisObject'] = require('@steedos-widgets/amis-object');
+      // }
     }
   }, []);
 
@@ -58,6 +63,9 @@ export default function App({
 
   return (
     <>
+    <Script src="https://unpkg.steedos.cn/amis@2.5.2/sdk/sdk.js" strategy="beforeInteractive"/>
+    <Script src="/amis-init.js" strategy="beforeInteractive"/>
+
     { formFactor && <SessionProvider session={session}>
       <Layout formFactor={formFactor} {...data}>
         <Component {...pageProps} formFactor={formFactor}/>
