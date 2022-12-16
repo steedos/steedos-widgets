@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-14 09:31:34
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-14 14:06:00
+ * @LastEditTime: 2022-12-16 11:17:16
  * @Description: 
  */
 import { Dropdown, Spin, Tabs } from 'antd';
@@ -25,7 +25,6 @@ const HeaderDropdown: React.FC<HeaderDropdownProps> = ({ overlayClassName: cls, 
 );
 
 const getOverlay = (render, overlaySchema, data)=>{
-  console.log(`getOverlay`, overlaySchema)
   return <>
   <Spin delay={300} spinning={false} >
     <>
@@ -39,7 +38,6 @@ const getOverlay = (render, overlaySchema, data)=>{
 }
 
 export const SteedosDropdown = (props) => {
-  console.log(`props`, props) 
   const { render, overlay, body, trigger = ['click'], placement = 'bottomRight', overlayClassName, className, data } = props; 
   return (
     <>

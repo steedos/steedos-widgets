@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-15 11:08:16
+ * @LastEditTime: 2022-12-16 11:18:39
  * @Description: 
  */
 
@@ -11,8 +11,7 @@ export const AmisAppLauncher = async (props) => {
     if(!appId){
         appId = data.context.appId || 'admin';
     }
-
-    console.log(`AmisAppLauncher`, props);
+    // console.log(`AmisAppLauncher`, props);
     
     return {
         type: 'service',
