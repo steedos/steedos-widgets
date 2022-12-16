@@ -221,7 +221,7 @@ export async function getObjectList(objectSchema, fields, options){
     // TODO: data应该只留loaded，其他属性都改为从上层传递下来
     return {
       type: 'service',
-      className: 'mb-2',
+      className: '',
       id: `service_${id}`,
       name: `page`,
       data: {
