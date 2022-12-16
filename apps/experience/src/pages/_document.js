@@ -32,11 +32,14 @@ export default class MyDocument extends Document {
           <link rel="stylesheet" href="https://unpkg.steedos.cn/amis@2.5.2/sdk/iconfont.css" />
           <link rel="stylesheet" href="https://unpkg.steedos.cn/@fortawesome/fontawesome-free@6.2.0/css/all.min.css" />
 
-          {process.env.NODE_ENV !== 'production' && (<link rel="stylesheet" href="https://cdn.tailwindcss.com" />)}
+          {process.env.NODE_ENV !== 'production' && (
+            <>
+              <link rel="stylesheet" href="https://cdn.tailwindcss.com" />
+            </>
+          )}
 
         </Head>
         <body className='antialiased text-black'>
-          
           <Main />
           <NextScript />
         </body>

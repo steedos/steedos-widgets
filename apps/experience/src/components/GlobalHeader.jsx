@@ -270,7 +270,7 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
                     {
                       "type": "steedos-global-header",
                       "label": "Global Header",
-                      className: 'flex flex-nowrap gap-x-2',
+                      className: 'flex flex-nowrap gap-x-3 items-center',
                       logoutScript: "window.signOut();"
                     }
                   ]
