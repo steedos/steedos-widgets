@@ -2,11 +2,11 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-16 11:18:44
+ * @LastEditTime: 2022-12-16 13:28:19
  * @Description: 
  */
 export const AmisAppMenu = async (props) => {
-    let { stacked = false, overflow, appId, data, links = [] } = props;
+    let { stacked = false, overflow, appId, data, links = null } = props;
     if(!appId){
         appId = data.context.appId || 'admin';
     }
