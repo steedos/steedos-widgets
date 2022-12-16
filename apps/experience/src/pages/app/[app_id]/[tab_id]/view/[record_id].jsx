@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-16 11:59:08
+ * @LastEditTime: 2022-12-16 12:00:35
  * @Description:
  */
 import React, { useState, useEffect, Fragment } from "react";
@@ -37,7 +37,6 @@ export default function Record({formFactor}) {
   if(page === false){
     return <Loading></Loading>
   }
-  console.log(`uiSchema`, uiSchema)
   return (
     <>
       {page && (
