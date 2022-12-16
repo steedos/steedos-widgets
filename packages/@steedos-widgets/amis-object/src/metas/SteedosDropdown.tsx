@@ -2,14 +2,14 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-11 09:39:38
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-14 11:59:13
+ * @LastEditTime: 2022-12-16 11:11:32
  * @Description: 
  */
 const config: any = {
     // componentType: 'amisSchema', 
     group: "华炎魔方",
     componentName: "SteedosDropdown",
-    title: "Steedos Dropdown",
+    title: "下拉菜单",
     docUrl: "",
     screenshot: "",
     npm: {
