@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-11 09:39:38
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-14 13:07:09
+ * @LastEditTime: 2022-12-16 11:10:51
  * @Description: 
  */
 const config: any = {
@@ -50,30 +50,30 @@ const config: any = {
         weight: 1,
         framework: "react"
       },
-      plugin: {
-        rendererName: config.amis.name,
-        $schema: '/schemas/UnkownSchema.json',
-        name: config.title,
-        description: config.title,
-        tags: [config.group],
-        order: -9999,
-        icon: config.amis.icon,
-        scaffold: {
-          type: config.amis.name,
-          date: new Date()
-        },
-        previewSchema: {
-          type: config.amis.name,
-        },
-        panelTitle: "设置",
-        panelControls: [
-          {
-            type: "input-datetime",
-            name: "date",
-            label: "Date"
-          }
-        ]
-      }
+      // plugin: {
+      //   rendererName: config.amis.name,
+      //   $schema: '/schemas/UnkownSchema.json',
+      //   name: config.title,
+      //   description: config.title,
+      //   tags: [config.group],
+      //   order: -9999,
+      //   icon: config.amis.icon,
+      //   scaffold: {
+      //     type: config.amis.name,
+      //     date: new Date()
+      //   },
+      //   previewSchema: {
+      //     type: config.amis.name,
+      //   },
+      //   panelTitle: "设置",
+      //   panelControls: [
+      //     {
+      //       type: "input-datetime",
+      //       name: "date",
+      //       label: "Date"
+      //     }
+      //   ]
+      // }
     }
   };
   
