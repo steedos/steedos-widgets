@@ -91,7 +91,8 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
                 },
                 "md": "auto",
                 "className": "",
-                "columnClassName": "flex justify-center items-center"
+                "columnClassName": "flex justify-center items-center",
+                "valign": "middle",
               },
               {
                 "body": [
@@ -468,11 +469,13 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
     "body": [
       {
         "type": "grid",
+        "valign": "middle",
         "columns": [
           {
             "body": [
               {
                 "type": "grid",
+                "valign": "middle",
                 "columns": [
                   {
                     "body": {
@@ -488,15 +491,10 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
                     "body": [
                       {
                         "type": "tpl",
-                        "tpl": `<a href="/app/\${appId}/\${masterObjectName}/\${masterRecordId}/\${objectName}/grid?related_field_name=\${relatedKey}">${label}(\${$count})</a>`,
+                        "tpl": `<a class="text-black text-base font-bold" href="/app/\${appId}/\${masterObjectName}/\${masterRecordId}/\${objectName}/grid?related_field_name=\${relatedKey}">${label}(\${$count})</a>`,
                         "inline": false,
                         "wrapperComponent": "",
-                        "className": "leading-none",
-                        "style": {
-                          "fontFamily": "",
-                          "fontSize": 13,
-                          "fontWeight": "bold"
-                        }
+                        "className": "",
                       }
                     ],
                     "md": "",
@@ -519,8 +517,7 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
         "align": "between"
       }
     ],
-    "size": "xs",
-    "className": "bg-white p-t-sm p-b-sm px-4 border-b"
+    "className": "bg-gray-100 sm:rounded p-3"
   };
   return recordRelatedListHeader;
 }

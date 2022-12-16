@@ -373,9 +373,11 @@ export async function getRecordDetailSchema(objectName, appId){
               },
               {
                 "type": "tabs",
+                "tabsClassName": "mt-3 bg-white sm:shadow sm:rounded sm:border border-slate-300 p-4",
                 "tabs": [
                   {
                     "title": "详细",
+                    "className": "px-0 py-4",
                     "body": [
                       {
                         "type": "steedos-object-form",
@@ -390,6 +392,7 @@ export async function getRecordDetailSchema(objectName, appId){
                   },
                   {
                     "title": "相关",
+                    "className": "px-0 py-4",
                     "body": [
                       {
                         "type": "steedos-object-related-lists",
