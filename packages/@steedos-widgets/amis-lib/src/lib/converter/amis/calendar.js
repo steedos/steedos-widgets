@@ -33,9 +33,7 @@ export async function getCalendarApi(mainObject, fields, options) {
   api.data.$self = "$$";
   api.data.filter = "$filter"
   api.requestAdaptor = `
-    console.log("===requestAdaptor==api===", api);
     let selfData = JSON.parse(JSON.stringify(api.data.$self));
-    console.log("===requestAdaptor==selfData===", selfData);
     ${globalFilter ? `var filters = ${JSON.stringify(globalFilter)};` : 'var filters = [];'}
     if(_.isEmpty(filters)){
         filters = api.data.filter || ${JSON.stringify(filter)};
@@ -121,7 +119,6 @@ export async function getCalendarApi(mainObject, fields, options) {
     if(setDataToComponentId){
         SteedosUI.getRef(api.body.$self.scopeId)?.getComponentById(setDataToComponentId)?.setData({$count: payload.data.count})
     }
-    console.log("===adaptor==payload===", payload);
     const rows = payload.data.rows || [];
     const events = rows.map(function(n){
       return {
@@ -131,8 +128,6 @@ export async function getCalendarApi(mainObject, fields, options) {
         end: n.end
       }
     });
-    console.log("===adaptor==api===", api);
-    console.log("===adaptor==events===", events);
     const selfData = api.data.$self;
     const successCallback = selfData.successCallback;
     const failureCallback = selfData.failureCallback;
@@ -175,8 +170,6 @@ export async function getObjectCalendar(objectSchema, listView, options) {
 
   const onGetEventsScript = `
     const api = ${JSON.stringify(api)};
-    console.log('onGetEventsScript==api====', api); 
-    console.log('onGetEventsScript==event.data====', event.data); 
     event.data.calendarOptions = ${JSON.stringify(calendarOptions)};
     doAction({
       "actionType": 'ajax',
@@ -187,9 +180,6 @@ export async function getObjectCalendar(objectSchema, listView, options) {
   `;
 
   const onSelectScript = `
-    console.log('select'); 
-    console.log(event);
-    console.log('onSelectScript==event.data====', event.data); 
     const data = event.data;
     const doc = {
       name: data.title
