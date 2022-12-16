@@ -38,9 +38,16 @@ export async function getCalendarApi(mainObject, fields, options) {
     let selfData = JSON.parse(JSON.stringify(api.data.$self));
     ${globalFilter ? `var filters = ${JSON.stringify(globalFilter)};` : 'var filters = [];'}
     if(_.isEmpty(filters)){
-        filters = api.data.filter || [${JSON.stringify(filter)}];
+        filters = api.data.filter || ${JSON.stringify(filter)};
     }else{
-        filters = [filters, 'and', api.data.filter || [${JSON.stringify(filter)}]]
+        filters = [filters, 'and', api.data.filter || ${JSON.stringify(filter)}]
+    }
+    const eventFetchInfo = selfData.fetchInfo;
+    const eventDurationFilters = [["end", ">=", eventFetchInfo.start], ["start", "<=", eventFetchInfo.end]];
+    if(_.isEmpty(filters)){
+      filters = eventDurationFilters;
+    }else{
+        filters = [filters, 'and', eventDurationFilters]
     }
     var pageSize = api.data.pageSize || 10;
     var pageNo = api.data.pageNo || 1;
