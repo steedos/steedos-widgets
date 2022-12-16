@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-05 16:26:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-14 13:15:02
+ * @LastEditTime: 2022-12-16 09:43:19
  * @Description: 
  */
 
@@ -16,4 +16,8 @@ export * from './SteedosIcon';
 
 export * from './Dropdown';
 
-export * from './FromNow'
+export * from './FromNow';
+
+export * from './SteedosBadge';
+
+export * from './SteedosBadgeRibbon';
