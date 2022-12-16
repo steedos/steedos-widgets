@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-11 09:39:38
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-14 14:54:10
+ * @LastEditTime: 2022-12-16 11:10:03
  * @Description: 
  */
 const config: any = {
@@ -83,10 +83,34 @@ const config: any = {
             ]
           },
           {
-            type: "text",
-            name: "name",
-            label: "名称"
-          },
+            "name": "name",
+            "label": "Name",
+            "type": "select",
+            "className": "m-0",
+            "labelClassName": "text-left",
+            "id": "u:d0724fe17aa7",
+            "required": true,
+            "joinValues": false,
+            "extractValue": true,
+            "labelField": "symbol",
+            "valueField": "symbol",
+            "multiple": false,
+            searchable: true,
+            "source": {
+              "method": "get",
+              "url": "${context.rootUrl}/ui.icons.json?c=${category}",
+              "requestAdaptor": "",
+              "data": {
+                "category": "${category}"
+              },
+              "adaptor": "if (payload && payload.length) {\n  let data = {};\n  let sldsStandardIcons = _.find(payload, { name: api.body.category || \"standard\" });\n  sldsStandardIcons = sldsStandardIcons && sldsStandardIcons.icons;\n  data.options = sldsStandardIcons;\n  payload.data = data;\n}\nconsole.log('payload=====',payload);return payload;\n",
+              "headers": {
+                  "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+              },
+              "sendOn": "this.category"
+            },
+            // 卡. "menuTpl": "<span class=\"flex items-center mt-0.5\">\n  <span role=\"img\" aria-label=\"smile\" class=\"anticon anticon-smile\">\n    <span class=\"slds-icon_container slds-icon-standard-${symbol|split:_|join:-}\">\n        <svg class=\"slds-icon slds-icon_x-small\" aria-hidden=\"true\">\n          <use xlink:href=\"/assets/icons/standard-sprite/svg/symbols.svg#${symbol}\"></use>\n        </svg>\n    </span>\n  </span>\n  <span class=\"pl-1.5\">${symbol}</span>\n</span>"
+        },
           {
             type: "text",
             name: "className",
