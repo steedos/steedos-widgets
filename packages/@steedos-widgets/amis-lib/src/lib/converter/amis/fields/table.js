@@ -479,7 +479,7 @@ export async function getTableApi(mainObject, fields, options){
     return api;
 }
 
-async function getApi(object, recordId, fields, options){
+export async function getApi(object, recordId, fields, options){
     const data = await graphql.getFindQuery(object, recordId, fields, options);
     return {
         method: "post",

@@ -24,7 +24,6 @@ export const SteedosUI = Object.assign({}, {
     router:{
       // TODO: 简易处理
       go: (action, to)=>{
-        console.log('useRouter==>', useRouter)
         const {type, objectName, recordId } = action || {};
         const router = window.FlowRouter;
   
