@@ -162,21 +162,21 @@ export async function getObjectCalendar(objectSchema, listView, options) {
   });
 
   let sort = options.sort;
-  if(!sort){
-      const sortField = options.sortField;
-      const sortOrder = options.sortOrder;
-      if(sortField){
-          let sortStr = sortField + ' ' + sortOrder || 'asc';
-          sort = sortStr;
-      }
+  if (!sort) {
+    const sortField = options.sortField;
+    const sortOrder = options.sortOrder;
+    if (sortField) {
+      let sortStr = sortField + ' ' + sortOrder || 'asc';
+      sort = sortStr;
+    }
   }
 
   const api = await getCalendarApi(objectSchema, fields, options);
 
-  const getEventsScript = `
+  const onGetEventsScript = `
     const api = ${JSON.stringify(api)};
-    console.log('getEventsScript==api====', api); 
-    console.log('getEventsScript==event.data====', event.data); 
+    console.log('onGetEventsScript==api====', api); 
+    console.log('onGetEventsScript==event.data====', event.data); 
     event.data.calendarOptions = ${JSON.stringify(calendarOptions)};
     doAction({
       "actionType": 'ajax',
@@ -184,6 +184,44 @@ export async function getObjectCalendar(objectSchema, listView, options) {
         "api": api
       },
     });
+  `;
+
+  const onSelectScript = `
+    console.log('select'); 
+    console.log(event);
+    console.log('onSelectScript==event.data====', event.data); 
+    const data = event.data;
+    const doc = {
+      name: data.title
+    };
+    const calendarOptions = ${JSON.stringify(calendarOptions)} || {};
+    const startDateExpr = calendarOptions.startDateExpr || "start";
+    const endDateExpr = calendarOptions.endDateExpr || "end";
+    doc[startDateExpr] = data.start;
+    doc[endDateExpr] = data.end;
+    // ObjectForm会认作用域下的变量值
+    // TODO: 待组件支持initValues属性后应该改掉，不应该通过data直接传值
+    event.data = doc;
+    const title = "新建 ${objectSchema.label}";
+    doAction(
+      {
+        "actionType": "dialog",
+        "dialog": {
+          "type": "dialog",
+          "title": title,
+          "body": [
+            {
+              "type": "steedos-object-form",
+              "objectApiName": "\${objectName}",
+              "mode": "edit"
+            }
+          ],
+          "closeOnEsc": false,
+          "closeOnOutside": false,
+          "showCloseButton": true,
+          "size": "lg"
+        }
+      });
   `;
 
   const amisSchema = {
@@ -199,7 +237,7 @@ export async function getObjectCalendar(objectSchema, listView, options) {
             "args": {
             },
             "actionType": "custom",
-            "script": getEventsScript
+            "script": onGetEventsScript
           }
         ]
       },
@@ -211,7 +249,7 @@ export async function getObjectCalendar(objectSchema, listView, options) {
             "args": {
             },
             "actionType": "custom",
-            "script": "console.log('select'); console.log(event);"
+            "script": onSelectScript
           }
         ]
       },
