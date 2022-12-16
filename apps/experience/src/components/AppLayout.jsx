@@ -22,7 +22,7 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
         <button
           type="button"
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="relative mr-4"
+          className="relative"
           aria-label="Open navigation"
         >
           {!sidebarOpen &&(<svg className="h-6 w-6 text-slate-500" fill="none" width="1em" height="1em" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m3 18h18v-2h-18zm0-5h18v-2h-18zm0-7v2h18v-2z" fill="currentColor"></path></svg>)}

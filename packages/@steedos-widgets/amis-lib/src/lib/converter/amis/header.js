@@ -42,7 +42,7 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
       name: button.name,
       objectName: button.objectName,
       visibleOn: getButtonVisibleOn(button),
-      className: `button_${button.name} border-gray-200 inline-block ml-1`
+      className: `button_${button.name}`
     }
   });
   // if(objectSchema.permissions?.allowDelete){
@@ -100,7 +100,7 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
                     "tpl": `${label}`,
                     "inline": false,
                     "wrapperComponent": "",
-                    "className": "text-md leading-none text-black",
+                    "className": "text-sm leading-none text-black",
                   },
                   {
                     "type": "dropdown-button",
@@ -109,7 +109,7 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
                     "rightIcon": "fa fa-caret-down",
                     "size": "sm",
                     "hideCaret": true,
-                    "btnClassName": "bg-transparent border-none text-xl font-bold p-0 text-black leading-none",
+                    "btnClassName": "bg-transparent border-none text-lg h-5 font-bold p-0 text-black leading-none",
                     "buttons": listViewButtonOptions
                   }
                 ],
@@ -127,7 +127,8 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
           "type": "flex",
           "items": amisButtonsSchema,
         },
-        "md": "auto"
+        "md": "auto",
+        "valign": "middle",
       }
     ],
     "align": "between"
@@ -310,7 +311,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
       name: button.name,
       objectName: button.objectName,
       visibleOn: getButtonVisibleOn(button),
-      className: `button_${button.name} border-gray-200 inline-block ml-1`
+      className: `button_${button.name}`
     }
   })
   let dropdownButtons = map(moreButtons, (button) => {
@@ -319,7 +320,6 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
       name: button.name,
       objectName: button.objectName,
       visibleOn: getButtonVisibleOn(button),
-      // className: `button_${button.name} border-gray-200 inline-block ml-1`
     }
   })
   const dropdownButtonsSchema = {
@@ -458,7 +458,7 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
       name: button.name,
       objectName: button.objectName,
       visibleOn: getButtonVisibleOn(button),
-      className: `button_${button.name} border-gray-200 inline-block ml-1`
+      className: `button_${button.name}`
     }
   })
   const reg = new RegExp('_', 'g');

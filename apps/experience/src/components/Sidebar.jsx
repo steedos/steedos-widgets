@@ -58,6 +58,7 @@ export  function Sidebar({ navigation, selectedTabId, app }) {
         body: [
           {
             "type": "steedos-app-launcher",
+            "showAppName": true,
           }
         ]
       }} data={{}} router={router} id="sidebarAppLauncherBar"></AmisRender>

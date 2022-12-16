@@ -55,6 +55,7 @@ export default function App({
     data = Layout.data;
     Layout = Layout.layout;
   }
+
   return (
     <>
     { formFactor && <SessionProvider session={session}>
