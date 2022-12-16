@@ -147,9 +147,9 @@ export async function getCalendarApi(mainObject, fields, options) {
  * @param {*} objectSchema 对象UISchema
  * @returns amisSchema
  */
-export async function getObjectCalendar(objectSchema, listView, ctx) {
-  if (!ctx) {
-    ctx = {};
+export async function getObjectCalendar(objectSchema, listView, options) {
+  if (!options) {
+    options = {};
   }
 
   const calendarOptions = listView.options || {};
@@ -161,7 +161,17 @@ export async function getObjectCalendar(objectSchema, listView, ctx) {
     }
   });
 
-  const api = await getCalendarApi(objectSchema, fields);
+  let sort = options.sort;
+  if(!sort){
+      const sortField = options.sortField;
+      const sortOrder = options.sortOrder;
+      if(sortField){
+          let sortStr = sortField + ' ' + sortOrder || 'asc';
+          sort = sortStr;
+      }
+  }
+
+  const api = await getCalendarApi(objectSchema, fields, options);
 
   const getEventsScript = `
     const api = ${JSON.stringify(api)};

@@ -199,18 +199,25 @@ export async function getListSchema(
         };
     }
 
+    let listViewColumns = getListViewColumns(listView, ctx.formFactor);
+    let sort = getListViewSort(listView);
+
     if(listView.type === "calendar"){
         // TODO: 日历视图完善后可放开
-        const amisSchema = await getObjectCalendar(uiSchema, listView);
+        const amisSchema = await getObjectCalendar(uiSchema, listView, {
+            tabId: objectName,
+            appId: appName,
+            objectName: objectName,
+            ...ctx,
+            filter: listView.filters,
+            sort
+        });
         return {
             uiSchema,
             isCalendar: true,
             amisSchema
         };
     }
-
-    let listViewColumns = getListViewColumns(listView, ctx.formFactor);
-    let sort = getListViewSort(listView);
 
     const defaults = ctx.defaults || {};
 
