@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-14 13:38:04
+ * @LastEditTime: 2022-12-16 09:43:53
  * @Description: 
  */
 // import Hello from "./metas/Hello";
@@ -37,6 +37,9 @@ import FromNow from './metas/FromNow';
 
 import AmisGlobalHeader from './metas/AmisGlobalHeader';
 
+import SteedosBadge from "./metas/SteedosBadge";
+import SteedosBadgeRibbon from "./metas/SteedosBadgeRibbon";
+
 const components = [
   AmisObjectForm, 
   AmisObjectListview, 
@@ -56,7 +59,9 @@ const components = [
   SteedosIcon,
   SteedosDropdown,
   FromNow,
-  AmisGlobalHeader
+  AmisGlobalHeader,
+  SteedosBadge,
+  SteedosBadgeRibbon
 ];
 
 const componentList = [
@@ -82,7 +87,9 @@ const componentList = [
       SteedosIcon,
       SteedosDropdown,
       FromNow,
-      AmisGlobalHeader
+      AmisGlobalHeader,
+      SteedosBadge,
+      SteedosBadgeRibbon
     ]
   }
 ];
