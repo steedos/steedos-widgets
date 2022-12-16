@@ -73,8 +73,8 @@ export const Steedos = {
 //     (window as any).Steedos = Steedos;
 // }
 
-if(typeof window != 'undefined' && !(window as any).SteedosUI){
-    (window as any).SteedosUI = SteedosUI;
-}else if(typeof window != 'undefined'){
-    (window as any).SteedosUI = Object.assign((window as any).SteedosUI, SteedosUI);
-}
+// if(typeof window != 'undefined' && !(window as any).SteedosUI){
+//     (window as any).SteedosUI = SteedosUI;
+// }else if(typeof window != 'undefined'){
+//     (window as any).SteedosUI = Object.assign((window as any).SteedosUI, SteedosUI);
+// }
