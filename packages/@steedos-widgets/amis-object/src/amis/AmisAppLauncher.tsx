@@ -112,7 +112,7 @@ export const AmisAppLauncher = async (props) => {
             },
             {
                 type: 'tpl',
-                className: `text-lg ml-4 ${appNameClassName}`,
+                className: `text-lg ml-4 font-bold text-black ${appNameClassName} `,
                 tpl: '${name}',
                 hiddenOn: `${!!!showAppName}`
             }

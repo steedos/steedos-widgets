@@ -32,15 +32,25 @@ export async function getCalendarApi(mainObject, fields, options) {
   api.data.$term = "$term";
   api.data.$self = "$$";
   api.data.filter = "$filter"
-  // api.data.loaded = "${loaded}";
-  // api.data.listViewId = "${listViewId}";
   api.requestAdaptor = `
+    console.log("===requestAdaptor==api===", api);
     let selfData = JSON.parse(JSON.stringify(api.data.$self));
+    console.log("===requestAdaptor==selfData===", selfData);
     ${globalFilter ? `var filters = ${JSON.stringify(globalFilter)};` : 'var filters = [];'}
     if(_.isEmpty(filters)){
-        filters = api.data.filter || [${JSON.stringify(filter)}];
+        filters = api.data.filter || ${JSON.stringify(filter)};
     }else{
-        filters = [filters, 'and', api.data.filter || [${JSON.stringify(filter)}]]
+        filters = [filters, 'and', api.data.filter || ${JSON.stringify(filter)}]
+    }
+    const eventFetchInfo = selfData.fetchInfo;
+    const calendarOptions = selfData.calendarOptions || {};
+    const startDateExpr = calendarOptions.startDateExpr || "start";
+    const endDateExpr = calendarOptions.endDateExpr || "end";
+    const eventDurationFilters = [[endDateExpr, ">=", eventFetchInfo.start], [startDateExpr, "<=", eventFetchInfo.end]];
+    if(_.isEmpty(filters)){
+      filters = eventDurationFilters;
+    }else{
+        filters = [filters, 'and', eventDurationFilters]
     }
     var pageSize = api.data.pageSize || 10;
     var pageNo = api.data.pageNo || 1;
@@ -156,6 +166,8 @@ export async function getObjectCalendar(objectSchema, listView, ctx) {
   const getEventsScript = `
     const api = ${JSON.stringify(api)};
     console.log('getEventsScript==api====', api); 
+    console.log('getEventsScript==event.data====', event.data); 
+    event.data.calendarOptions = ${JSON.stringify(calendarOptions)};
     doAction({
       "actionType": 'ajax',
       "args": {
