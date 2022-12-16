@@ -78,3 +78,5 @@ export const Steedos = {
 // }else if(typeof window != 'undefined'){
 //     (window as any).SteedosUI = Object.assign((window as any).SteedosUI, SteedosUI);
 // }
+
+export { SteedosUI } from './ui';

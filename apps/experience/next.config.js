@@ -14,6 +14,20 @@ const nextConfig = {
       unoptimized: true
     }
   },
+  webpack: (
+    config,
+    { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }
+  ) => {
+    // Important: return the modified config
+    if (!isServer) {
+      config.externals = {
+        ...config.externals,
+        'react': 'React',
+        'react-dom': 'ReactDOM',
+      };
+    }
+    return config
+  },
 }
 
 module.exports = nextConfig

@@ -21,7 +21,6 @@ export default class MyDocument extends Document {
           <meta name="application-name" content="Steedos" />
   
           <meta name="theme-color" content="#ffffff" />
-          <script src="https://unpkg.steedos.cn/amis@2.5.2/sdk/sdk.js"></script>
           <script src="https://unpkg.steedos.cn/lodash/lodash.min.js"></script>
           <script src="https://unpkg.steedos.cn/moment/min/moment.min.js"></script>
           <script src="https://unpkg.steedos.cn/jquery@3.6.2/dist/jquery.min.js"></script>

@@ -11,6 +11,14 @@ import { registerRemoteAssets, amisRender, getSteedosAuth, getRootUrl, defaultsD
 import { Builder } from '@steedos-builder/react';
 import ReactDOM from 'react-dom';
 import * as _ from 'lodash';
+import { SteedosUI } from '@steedos-widgets/steedos-lib';
+
+// TODO: storybook中会报错没有SteedosUI变量，临时处理
+if(typeof window != 'undefined' && !(window as any).SteedosUI){
+    (window as any).SteedosUI = SteedosUI;
+}else if(typeof window != 'undefined'){
+    (window as any).SteedosUI = Object.assign((window as any).SteedosUI, SteedosUI);
+}
 
 // window.defaultsDeep = defaultsDeep;
 
@@ -226,27 +234,6 @@ export const ObjectListview = () => (
         "type": "steedos-object-listview",
         "objectApiName": "space_users",
         "listName": "all"
-      }]
-    },{
-      "type": "panel",
-      "title": "不显示 amis headerToolbar",
-      "body": [{
-        "type": "steedos-object-listview",
-        "objectApiName": "space_users",
-        "listName": "all",
-        "headerToolbar": [],
-        "columnsTogglable": false
-      }]
-    },{
-      "type": "panel",
-      "title": "显示列表视图头部",
-      "body": [{
-        "type": "steedos-object-listview",
-        "objectApiName": "space_users",
-        "listName": "all",
-        "headerToolbar": [],
-        "columnsTogglable": false,
-        "showHeader": true
       }]
     }]
   }}
