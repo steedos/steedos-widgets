@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-27 15:54:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-30 09:56:27
+ * @LastEditTime: 2022-12-16 18:14:51
  * @Description: 
  */
 import { message, notification, Button, Space} from 'antd';
@@ -10,8 +10,10 @@ import {Modal, Drawer} from './modal'
 import { SObject } from './sObject';
 import { ListView } from './listView';
 import { Router } from './router';
+import { render } from './render';
 
 export const SteedosUI = Object.assign({}, {
+    render: render,
     Router,
     ListView,
     Object: SObject,

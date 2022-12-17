@@ -2,12 +2,12 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 11:31:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-09 10:43:40
+ * @LastEditTime: 2022-12-17 17:05:10
  * @Description:
  */
 import { each, find, isArray, isEmpty } from 'lodash';
 
-import { getRootUrl, getSteedosAuth } from '@steedos-widgets/amis-lib';
+export  { getDefaultRenderData } from '@steedos-widgets/amis-lib';
 
 const RegisterRenders = [];
 
@@ -191,24 +191,3 @@ export const amisRender = (root, schema, props = {}, env = {}, options) => {
   registerRenders(assets);
   return amis.embed(root, schema, props, Object.assign(getEvn(router), env));
 };
-
-
-export const getDefaultRenderData = ()=>{
-  const steedosAuth = getSteedosAuth();
-  return {
-    context: {
-        rootUrl: getRootUrl(),
-        userId: steedosAuth.userId,
-        tenantId: steedosAuth.spaceId,
-        authToken: steedosAuth.authToken,
-        user: steedosAuth
-    },
-    global: {
-        userId: steedosAuth.userId,
-        spaceId: steedosAuth.spaceId,
-        user: steedosAuth, 
-        now: new Date(),
-        // mode: mode //由表单提供
-    }
-}
-}

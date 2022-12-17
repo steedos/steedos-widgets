@@ -2,12 +2,12 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-21 10:27:43
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-02 18:36:26
+ * @LastEditTime: 2022-12-17 17:19:01
  * @Description: 
  */
 import React, { useEffect, useState } from 'react'
 import { isString, defaultsDeep } from 'lodash';
-import { getButton, executeButton, getUISchema } from '@steedos-widgets/amis-lib';
+import { getButton, executeButton, getUISchema, getDefaultRenderData } from '@steedos-widgets/amis-lib';
 
 export const AmisObjectButton = (props) => {
     const { objectName, name, data, render, className,  listViewId} = props;
@@ -70,7 +70,7 @@ export const AmisObjectButton = (props) => {
         // }
         const renderData = Object.assign(data, {recordId: data._id, objectName: objectName, listViewId: data.listViewId, app_id: appId, className: className})
         if(schema){
-            schema.data = defaultsDeep({}, schema.data, renderData);
+            schema.data = defaultsDeep({}, renderData, getDefaultRenderData(), schema.data);
         }
         return (
             <>
