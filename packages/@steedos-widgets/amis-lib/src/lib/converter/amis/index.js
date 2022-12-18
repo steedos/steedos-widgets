@@ -247,11 +247,28 @@ export async function getObjectForm(objectSchema, ctx){
     const formSchema =  defaults && defaults.formSchema || {};
     const onSubmitSuccCustomScript = `
       const { recordId, listViewId } = context.props.data;
-      doAction({
-        componentId: \`detail_\${recordId}\`,
-        actionType: "reload",
-        expression: \`!\${listViewId}\`
-      });
+      const data = event.data;
+      const appId = data.appId;
+      const objectName = data.objectName;
+      // 在记录详细界面时isRecordDetail为true
+      // TODO: isRecordDetail这个判断需要优化
+      const isRecordDetail = !!data.$master && data.$master.$master?.recordId;
+      if(recordId){
+        // 编辑记录时，刷新主表单
+        doAction({
+          componentId: \`detail_\${recordId}\`,
+          actionType: "reload",
+          expression: \`!\${listViewId}\`
+        });
+      }
+      else if(!isRecordDetail){
+        // 在列表视图界面新建记录时跳转到详细页面
+        const jumpTo = event.context.env && event.context.env.jumpTo;
+        if(jumpTo){
+          const newRecordId = data.result.data?.recordId;
+          jumpTo("/app/" + appId + "/" + objectName + "/view/" + newRecordId);
+        }
+      }
     `;
     const amisSchema =  {
       type: 'service',
