@@ -8,6 +8,11 @@ export async function getCalendarApi(mainObject, fields, options) {
   const searchableFields = [];
   let { globalFilter, filter, sort, top, setDataToComponentId = '' } = options;
 
+  if(!top){
+    // 日历请求不翻页
+    top = 5000;
+  }
+
   if (_.isArray(filter)) {
     filter = _.map(filter, function (item) {
       if (item.operation) {
@@ -31,7 +36,8 @@ export async function getCalendarApi(mainObject, fields, options) {
   const api = await getApi(mainObject, null, fields, { alias: 'rows', limit: top, queryOptions: `filters: {__filters}, top: {__top}, skip: {__skip}, sort: "{__sort}"` });
   api.data.$term = "$term";
   api.data.$self = "$$";
-  api.data.filter = "$filter"
+  api.data.filter = "$filter";
+  api.data.pageSize = top || 10;
   api.requestAdaptor = `
     let selfData = JSON.parse(JSON.stringify(api.data.$self));
     ${globalFilter ? `var filters = ${JSON.stringify(globalFilter)};` : 'var filters = [];'}
