@@ -117,6 +117,12 @@ export async function getCalendarApi(mainObject, fields, options) {
         filters.push(keywordsFilters);
     }
     api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', pageSize).replace('{__skip}', skip).replace('{__sort}', sort.trim());
+    delete api.data.$term;
+    delete api.data.filter;
+    delete api.data.pageSize;
+    delete api.data.pageNo;
+    delete api.data.orderBy;
+    delete api.data.orderDir;
     return api;
   `
   api.adaptor = `
