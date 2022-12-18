@@ -3,7 +3,7 @@ import * as Tpl from '../tpl';
 import * as Fields from '../index';
 import * as graphql from '../graphql';
 import config from '../../../../config'
-import { each, isBoolean } from 'lodash';
+import { each, isBoolean, isEmpty } from 'lodash';
 import { getAmisFileReadonlySchema } from './file'
 
 function getOperation(fields){
@@ -259,7 +259,15 @@ export async function getTableApi(mainObject, fields, options){
     if(!filter){
         filter = [];
     }
-
+    // gloablFilter: 是定义为相关子表的过滤条件， filter 是列表视图自带的过滤条件。
+    let baseFilters = null;
+    if(!isEmpty(globalFilter) && !isEmpty(filter)){
+        baseFilters = [globalFilter, 'and', filter]
+    }else if(globalFilter){
+        baseFilters = globalFilter;
+    }else if(filter){
+        baseFilters = filter;
+    }
     _.each(fields,function(field){
         if(field.searchable){
             searchableFields.push(field.name);
@@ -310,11 +318,13 @@ export async function getTableApi(mainObject, fields, options){
         catch(ex){
             console.error("本地存储中crud参数解析异常：", ex);
         }
-        ${globalFilter ? `var filters = ${JSON.stringify(globalFilter)};` : 'var filters = [];'}
+        ${baseFilters ? `var filters = ${JSON.stringify(baseFilters)};` : 'var filters = [];'}
         if(_.isEmpty(filters)){
-            filters = api.data.filter || [${JSON.stringify(filter)}];
+            filters = api.data.filter || [];
         }else{
-            filters = [filters, 'and', api.data.filter || [${JSON.stringify(filter)}]]
+            if(!_.isEmpty(api.data.filter)){
+                filters = [filters, 'and', api.data.filter];
+            }
         }
         var pageSize = api.data.pageSize || 10;
         var pageNo = api.data.pageNo || 1;

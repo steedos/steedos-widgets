@@ -120,7 +120,6 @@ export async function getAmisObjectRelatedList(
                 // relatedAmisSchema.listSchema =  { headerToolbar:[],columnsTogglable:false };
                 relatedAmisSchema.headerToolbar =  [];
                 relatedAmisSchema.columnsTogglable =  false ;
-                relatedAmisSchema.globalFilter = relatedAmisSchema.filters;
                 delete relatedAmisSchema.ctx;
                 relatedSchema.amisSchema = {
                     type: "service",
