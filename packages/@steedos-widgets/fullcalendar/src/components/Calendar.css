@@ -28,3 +28,7 @@
 .steedos-listview .fc .fc-scrollgrid-section > td{
     border-right-width: 0;
 }
+.steedos-listview .fc .fc-toolbar.fc-header-toolbar{
+    margin: var(--gap-md);
+    margin-top: var(--gap-sm);
+}
