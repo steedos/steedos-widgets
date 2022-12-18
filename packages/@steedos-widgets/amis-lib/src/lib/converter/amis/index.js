@@ -245,6 +245,14 @@ export async function getObjectForm(objectSchema, ctx){
     const { recordId, formFactor, layout = formFactor === 'SMALL' ? 'normal' : "horizontal", labelAlign, tabId, appId, defaults } = ctx;
     const fields = _.values(objectSchema.fields);
     const formSchema =  defaults && defaults.formSchema || {};
+    const onSubmitSuccCustomScript = `
+      const { recordId, listViewId } = context.props.data;
+      doAction({
+        componentId: \`detail_\${recordId}\`,
+        actionType: "reload",
+        expression: \`!\${listViewId}\`
+      });
+    `;
     const amisSchema =  {
       type: 'service',
       className: 'p-0',
@@ -280,7 +288,7 @@ export async function getObjectForm(objectSchema, ctx){
               },
               {
                 "actionType": "custom",
-                "script": "const { recordId, listViewId } = context.props.data;\ndoAction({\n  componentId: `detail_${recordId}`,\n  actionType: \"reload\",\n  expression: `!${listViewId}`\n})\n\n\n\n\n"
+                "script": onSubmitSuccCustomScript
               }
             ]
           }
