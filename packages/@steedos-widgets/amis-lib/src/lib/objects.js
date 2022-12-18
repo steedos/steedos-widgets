@@ -203,7 +203,6 @@ export async function getListSchema(
     let sort = getListViewSort(listView);
 
     if(listView.type === "calendar"){
-        // TODO: 日历视图完善后可放开
         const amisSchema = await getObjectCalendar(uiSchema, listView, {
             tabId: objectName,
             appId: appName,
