@@ -61,7 +61,6 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
 
   window.signOut = signOut;
 
-  console.log(`app`, app)
   const navStacked = getNavStacked();
 
   return (
@@ -132,7 +131,7 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
 
               </div>
               <div className="slds-global-header__item w-9/12">
-                { app && <AmisRender schema={{
+                { app && navStacked && <AmisRender schema={{
                   type: "service",
                   body: [
                     {
