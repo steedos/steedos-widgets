@@ -19,13 +19,18 @@ export const AmisAppLauncher = async (props) => {
             {
                 "type": "button",
                 "actionType": "dialog",
-                "className": "",
+                "className": "flex items-center",
                 "body": [
                   {
                     "type": "tpl",
-                    "className": "align-text-top",
-                    "tpl": "<button aria-haspopup='true' title='Open App Launcher' class='slds-button slds-icon-waffle_container slds-context-bar__button' title='Open App Launcher' type='button'><span class='slds-icon-waffle'><span class='slds-r1'></span><span class='slds-r2'></span><span class='slds-r3'></span><span class='slds-r4'></span><span class='slds-r5'></span><span class='slds-r6'></span><span class='slds-r7'></span><span class='slds-r8'></span><span class='slds-r9'></span></span></button>",
-                    "id": "u:2b3fa19f0ca1"
+                    "className": "flex items-center",
+                    "tpl": "<div aria-haspopup='true' title='Open App Launcher' class='slds-icon-waffle_container slds-context-bar__button' title='Open App Launcher' type='button'><span class='slds-icon-waffle'><span class='slds-r1'></span><span class='slds-r2'></span><span class='slds-r3'></span><span class='slds-r4'></span><span class='slds-r5'></span><span class='slds-r6'></span><span class='slds-r7'></span><span class='slds-r8'></span><span class='slds-r9'></span></span></div>",
+                  },
+                  {
+                      type: 'tpl',
+                      className: `text-xl ml-4 ${appNameClassName} `,
+                      tpl: '${name}',
+                      hiddenOn: `${!!!showAppName}`
                   }
                 ],
                 "dialog": {
@@ -108,12 +113,6 @@ export const AmisAppLauncher = async (props) => {
                   ]
                 },
                 "id": "u:b5dc095e1c11"
-            },
-            {
-                type: 'tpl',
-                className: `text-lg ml-4 font-bold text-black ${appNameClassName} `,
-                tpl: '${name}',
-                hiddenOn: `${!!!showAppName}`
             }
         ],
         api: {

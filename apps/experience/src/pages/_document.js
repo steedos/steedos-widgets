@@ -39,7 +39,7 @@ export default class MyDocument extends Document {
           )}
 
         </Head>
-        <body className='antialiased text-black'>
+        <body className='antialiased'>
           <Main />
           <NextScript />
         </body>

@@ -109,7 +109,8 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
                           "columnClassName": "flex items-center hidden sm:block",
                           "body": [
                             {
-                              "type": "steedos-app-launcher"
+                              "type": "steedos-app-launcher",
+                              "showAppName": true
                             }
                           ],
                           "id": "u:e8a42e96eaf5",
