@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 09:31:04
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-15 16:36:39
+ * @LastEditTime: 2022-12-19 16:04:28
  * @Description:  
  */
 import React, { useState, useEffect, Fragment } from 'react';
@@ -14,6 +14,7 @@ import { getApp } from '@steedos-widgets/amis-lib';
 import { useRouter } from 'next/router'
 import { setSteedosAuth, setRootUrl, getRootUrl } from '@steedos-widgets/amis-lib';
 import { useSession, signIn } from "next-auth/react"
+import { getNavStacked } from '@/lib/layout';
 
 export function AppLayout({ children, app_id, tab_id, page_id}) {
     const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 768)
@@ -110,14 +111,15 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
 
 
     if (!session) return <Loading></Loading>
+    
+    const navStacked = getNavStacked();
 
     return (
       <div className='h-full flex flex-col'>
         <GlobalHeader navigation={app?.children} selectedTabId={tabId} app={app} SideBarToggle={SideBarToggle}/>
         {session && (
           <div id="main" className="flex flex-1 sm:overflow-hidden">
-
-            <div 
+            {!navStacked &&  <div 
                 id="sidebar" 
                 className={`absolute lg:relative z-20 h-full ease-in-out duration-300 flex flex-shrink-0 border-r overflow-y-auto bg-white border-slate-200
                   ${sidebarOpen?'block -translate-x-0 sm:w-[220px] w-64':' -translate-x-80 w-0'}`}>
@@ -131,6 +133,7 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
                 <Sidebar navigation={app?.children} selectedTabId={tabId} app={app}/>
               </div>
             </div>
+            }
             <div id="content" className="flex flex-col min-w-0 flex-1 overflow-y-auto bg-slate-50">
               {children}
             </div>

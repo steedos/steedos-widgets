@@ -10,6 +10,7 @@ import { MobileNavigation } from '@/components/mobile/MobileNavigation'
 import { AppLauncherBar } from "@/components/AppLauncherBar";
 import { Notification } from '@/components/Notification';
 import { AmisRender } from '@/components/AmisRender';
+import { getNavStacked } from '@/lib/layout';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -60,6 +61,9 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
 
   window.signOut = signOut;
 
+  console.log(`app`, app)
+  const navStacked = getNavStacked();
+
   return (
     <>
       <Disclosure
@@ -73,7 +77,9 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
                 {/* <div className="sm:hidden mr-4 flex items-center">
                   <MobileNavigation navigation={navigation} app={app} />
                 </div> */}
-                <SideBarToggle/>
+                {!navStacked && <SideBarToggle/>
+                }
+                
                 
                 {/* <a href="/app" className="flex items-center">
                   <img
@@ -85,7 +91,7 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
                   <AppLauncherBar app={app}></AppLauncherBar>
                 </div> */}
 
-                <AmisRender schema={{
+                { app && <AmisRender schema={{
                   type: "service",
                   body: [
                     {
@@ -110,7 +116,8 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
                           "body": [
                             {
                               "type": "steedos-app-launcher",
-                              "showAppName": true
+                              "showAppName": true,
+                              "appId": app.id,
                             }
                           ],
                           "id": "u:e8a42e96eaf5",
@@ -121,10 +128,45 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
                       "id": "u:6cc99950b29c"
                     }
                   ]
-                }} id="appLauncher" router={router}></AmisRender>
+                }} id="appLauncher" router={router}></AmisRender>}
 
               </div>
-              <div className="slds-global-header__item">
+              <div className="slds-global-header__item w-9/12">
+                { app && <AmisRender schema={{
+                  type: "service",
+                  body: [
+                    {
+                      "type": "grid",
+                      className: 'pl-4',
+                      "columns": [
+                        {
+                          "columnClassName": "",
+                          "body": [
+                            {
+                              "type": "steedos-app-menu",
+                              "stacked": false,
+                              showIcon: false,
+                              "appId": app.id,
+                              selectedId: selectedTabId,
+                              overflow: {
+                                  enable: true,
+                                  overflowLabel: '更多',
+                                  overflowIndicator: "fas fa-angle-double-down"
+                              },
+                              "id": "u:77851eb4aa89",
+                              // hiddenOn: `${appId === 'admin'}`
+                            }
+                          ],
+                          "id": "u:5367229505d8",
+                          "md": "",
+                          "valign": "middle",
+                          // hiddenOn: `${appId === 'admin'}`
+                        }
+                      ],
+                      "id": "u:6cc99950b29c"
+                    }
+                  ]
+                }} id="appMenu" router={router}></AmisRender>}
               </div>
 
               <div className="slds-global-header__item">
