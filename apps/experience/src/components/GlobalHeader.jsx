@@ -104,7 +104,7 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
 
       </div>
 
-      <div className="hidden sm:block pl-4 border-b-2 border-sky-500">
+      <div className="steedos-context-bar hidden sm:block h-10 leading-5 pl-4 border-b-[3px] border-sky-500">
         { app && <AmisRender schema={{
               type: "service",
               body: [
@@ -125,7 +125,7 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
                       "valign": "middle"
                     },
                     {
-                      "columnClassName": "",
+                      "columnClassName": "flex ",
                       "body": [
                         {
                           "type": "steedos-app-menu",
@@ -135,7 +135,6 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
                           selectedId: selectedTabId,
                           overflow: {
                               enable: true,
-                              overflowLabel: '更多',
                               overflowIndicator: "fas fa-angle-double-down"
                           },
                           "id": "u:77851eb4aa89",
