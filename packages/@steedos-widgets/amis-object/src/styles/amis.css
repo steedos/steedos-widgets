@@ -31,12 +31,14 @@
     --button-size-default-top-left-border-radius: 0.25rem;
     --button-size-default-bottom-right-border-radius: 0.25rem;
     --button-size-default-bottom-left-border-radius: 0.25rem;
+    --button-size-default-marginRight: 4px;
+    --button-default-default-bg-color: white;
     --button-default-default-top-border-color: #c9c9c9;
     --button-default-default-bottom-border-color: #c9c9c9;
     --button-default-default-left-border-color: #c9c9c9;
     --button-default-default-right-border-color: #c9c9c9;
-    --button-size-default-marginRight: 4px;
     --button-default-default-font-color: rgb(1, 118, 211);
+    --button-enhance-default-bg-color: white;
     --Nav-item-borderRadius: 0px;
     --Nav-item-onHover-bg: rgba(21,137,238,.1);
     --Nav-item-onActive-bg: rgba(21,137,238,.1);
