@@ -232,29 +232,25 @@ export async function getObjectCalendar(objectSchema, listView, options) {
     const appId = data.appId;
     const objectName = data.objectName;
     const eventId = data.event && data.event.id;
-    if(eventId && event.context?.env){
-      event.context.env.jumpTo("/app/" + appId + "/" + objectName + "/view/" + eventId);
-    }
-    // const title = "編輯 ${objectSchema.label}";
-    // doAction({
-    //   "actionType": "dialog",
-    //   "dialog": {
-    //     "type": "dialog",
-    //     "title": title,
-    //     "body": [
-    //       {
-    //         "type": "steedos-object-form",
-    //         "objectApiName": "\${objectName}",
-    //         "recordId": data.event && data.event.id,
-    //         "mode": "edit"
-    //       }
-    //     ],
-    //     "closeOnEsc": false,
-    //     "closeOnOutside": false,
-    //     "showCloseButton": true,
-    //     "size": "lg"
-    //   }
-    // });
+    doAction({
+      "actionType": "dialog",
+      "dialog": {
+        "type": "dialog",
+        "title": "",
+        "body": [
+          {
+            "type": "steedos-record-detail",
+            "objectApiName": "\${objectName}",
+            "recordId": data.event && data.event.id
+          }
+        ],
+        "closeOnEsc": false,
+        "closeOnOutside": false,
+        "showCloseButton": true,
+        "size": "lg",
+        "actions": []
+      }
+    });
   `;
 
   const amisSchema = {
