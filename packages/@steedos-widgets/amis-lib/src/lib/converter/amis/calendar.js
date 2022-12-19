@@ -10,7 +10,7 @@ export async function getCalendarApi(mainObject, fields, options) {
 
   if(!top){
     // 日历请求不翻页
-    top = 5000;
+    top = 200;
   }
 
   if (_.isArray(filter)) {
