@@ -6,7 +6,3 @@
  * @Description: 
  */
 
-
-export const getNavStacked = ()=>{
-    return process.env.NEXT_PUBLIC_STEEDOS_LAYOUT_NAV_STACKED === 'true'
-}
