@@ -110,7 +110,7 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
                     "rightIcon": "fa fa-caret-down",
                     "size": "sm",
                     "hideCaret": true,
-                    "btnClassName": "bg-transparent border-none text-lg h-5 font-bold p-0 text-black leading-none",
+                    "btnClassName": "!bg-transparent !border-none !hover:border-none text-lg h-5 font-bold p-0 text-black leading-none",
                     "buttons": listViewButtonOptions
                   }
                 ],
@@ -365,11 +365,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
                               "tpl": `${label}`,
                               "inline": false,
                               "wrapperComponent": "",
-                              "style": {
-                                "fontFamily": "",
-                                "fontSize": 13
-                              },
-                              "className": "leading-none"
+                              "className": "leading-5 text-md"
                             },
                             {
                               "type": "tpl",
@@ -377,13 +373,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
                               // "tpl": "${(record && uiSchema && record[uiSchema.NAME_FIELD_KEY]) || name}",
                               "inline": false,
                               "wrapperComponent": "",
-                              "style": {
-                                "fontFamily": "",
-                                "fontSize": 20,
-                                "fontWeight": "bold",
-                                "textAlign": "left"
-                              },
-                              "className": "leading-none"
+                              "className": "leading-5 text-xl font-bold"
                             }
                           ],
                         }
