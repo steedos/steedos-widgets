@@ -155,6 +155,8 @@ export async function getCalendarApi(mainObject, fields, options) {
  * @returns amisSchema
  */
 export async function getObjectCalendar(objectSchema, listView, options) {
+  // console.log("===getObjectCalendar==objectSchema=", objectSchema);
+  const permissions = objectSchema.permissions;
   if (!options) {
     options = {};
   }
@@ -192,6 +194,7 @@ export async function getObjectCalendar(objectSchema, listView, options) {
   `;
 
   const onSelectScript = `
+    // console.log("===onSelectScript=event==", event);
     const data = event.data;
     const doc = {
       name: data.title
@@ -257,6 +260,9 @@ export async function getObjectCalendar(objectSchema, listView, options) {
     "type": "steedos-fullcalendar",
     "label": "",
     "name": "fullcalendar",
+    "editable": permissions.allowEdit,
+    "selectable": permissions.allowCreate,
+    "selectMirror": permissions.allowCreate,
     "onEvent": {
       "getEvents": {
         "weight": 0,

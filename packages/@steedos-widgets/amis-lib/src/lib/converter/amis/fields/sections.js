@@ -62,20 +62,19 @@ const getSection = async (permissionFields, fieldSchemaArray, sectionName, ctx) 
       }
   }
 
-  // fieldSet 暂不支持显隐控制
-  // const sectionFieldsVisibleOn = lodash.map(lodash.compact(lodash.map(fieldSetBody, 'visibleOn')) , (visibleOn)=>{
-  //   return `(${visibleOn.substring(2, visibleOn.length -1)})`;
-  // });
-
+  // fieldSet 已支持显隐控制
+  const sectionFieldsVisibleOn = lodash.map(lodash.compact(lodash.map(fieldSetBody, 'visibleOn')) , (visibleOn)=>{
+    return `(${visibleOn.substring(2, visibleOn.length -1)})`;
+  });
   const section = {
     "type": "fieldSet",
     "title": sectionName,
     "collapsable": true,
     "body": fieldSetBody,
   }
-  // if(sectionFieldsVisibleOn.length > 0){
-  //   section.visibleOn = `\${${sectionFieldsVisibleOn.join(" || ")}}`
-  // }
+  if(sectionFieldsVisibleOn.length > 0 && fieldSetBody.length === sectionFieldsVisibleOn.length){
+    section.visibleOn = `\${${sectionFieldsVisibleOn.join(" || ")}}`
+  }
   return section
 }
 
