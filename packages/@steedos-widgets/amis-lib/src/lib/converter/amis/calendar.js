@@ -247,7 +247,8 @@ export async function getObjectCalendar(objectSchema, listView, options) {
         "closeOnEsc": false,
         "closeOnOutside": false,
         "showCloseButton": true,
-        "size": "lg"
+        "size": "lg",
+        "actions": []
       }
     });
   `;
