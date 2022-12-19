@@ -19,7 +19,7 @@ export const AmisGlobalHeader = async (props) => {
     return {
         "type": "wrapper",
         "id": "u:9c3d279be31a",
-        "className": `steedos-global-header ${className}`,
+        "className": `steedos-global-header leading-3	${className}`,
         "size": "xs",
         "body": [
           {
