@@ -500,3 +500,15 @@ export async function getApi(object, recordId, fields, options){
         }
     }
 }
+
+export function getRecordPermissionsApi(object, recordId, options){
+    const data = graphql.getRecordPermissionsQuery(object, recordId, options);
+    return {
+        method: "post",
+        url: graphql.getApi(),
+        data: data,
+        headers: {
+            Authorization: "Bearer ${context.tenantId},${context.authToken}"
+        }
+    }
+}

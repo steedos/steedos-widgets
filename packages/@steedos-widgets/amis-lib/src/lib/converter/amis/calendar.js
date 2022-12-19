@@ -1,4 +1,4 @@
-import { getApi } from './fields/table';
+import { getApi, getRecordPermissionsApi } from './fields/table';
 import { each } from 'lodash';
 
 export async function getCalendarApi(mainObject, fields, options) {
@@ -149,13 +149,31 @@ export async function getCalendarApi(mainObject, fields, options) {
   return api;
 }
 
+export function getCalendarRecordPermissionsApi(mainObject, recordId) {
+  const api = getRecordPermissionsApi(mainObject, recordId, { alias: 'rows', limit: 1 });
+  api.data.$self = "$$";
+  api.adaptor = `
+    const rows = payload.data.rows || [];
+    const selfData = api.data.$self;
+    const revert = selfData.revert;
+    const recordPermissions = rows[0] && rows[0].recordPermissions;
+    const editable = recordPermissions && recordPermissions.allowEdit;
+    if(!editable){
+      // 没有权限时还原
+      revert && revert();
+    }
+    return payload;
+  `;
+  return api;
+}
+
 /**
  * 列表视图Calendar amisSchema
  * @param {*} objectSchema 对象UISchema
  * @returns amisSchema
  */
 export async function getObjectCalendar(objectSchema, listView, options) {
-  // console.log("===getObjectCalendar==objectSchema=", objectSchema);
+  console.log("===getObjectCalendar==objectSchema=", objectSchema);
   const permissions = objectSchema.permissions;
   if (!options) {
     options = {};
@@ -194,7 +212,7 @@ export async function getObjectCalendar(objectSchema, listView, options) {
   `;
 
   const onSelectScript = `
-    // console.log("===onSelectScript=event==", event);
+    console.log("===onSelectScript=event==", event);
     const data = event.data;
     const doc = {
       name: data.title
@@ -256,6 +274,20 @@ export async function getObjectCalendar(objectSchema, listView, options) {
     });
   `;
 
+  const recordPermissionsApi = getCalendarRecordPermissionsApi(objectSchema, "${recordId}");
+  const onEventChangeScript = `
+    const data = event.data;
+    const eventData = data.event;
+    const eventId = eventData && eventData.id;
+    const api = ${JSON.stringify(recordPermissionsApi)};
+    event.data.recordId = eventId;
+    doAction({
+      "actionType": 'ajax',
+      "args": {
+        "api": api
+      },
+    });
+  `;
   const amisSchema = {
     "type": "steedos-fullcalendar",
     "label": "",
@@ -320,7 +352,7 @@ export async function getObjectCalendar(objectSchema, listView, options) {
             "args": {
             },
             "actionType": "custom",
-            "script": "console.log('eventChange'); console.log(event);"
+            "script": onEventChangeScript
           }
         ]
       },

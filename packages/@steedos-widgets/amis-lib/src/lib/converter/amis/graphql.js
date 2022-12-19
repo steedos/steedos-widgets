@@ -274,6 +274,36 @@ export async function getFindQuery(object, recordId, fields, options){
     }
 }
 
+export function getRecordPermissionsQuery(object, recordId, options){
+    let queryOptions = "";
+
+    if(recordId){
+        queryOptions = `(filters:["${object.idFieldName}", "=", "${recordId}"])`;
+    }
+    let alias = "data";
+    if(options){
+        if(options.alias){
+            alias = options.alias;
+        }
+
+        if(options.filters){
+            queryOptions = `(filters:${options.filters})`;
+        }
+        if(options.queryOptions){
+            queryOptions = `(${options.queryOptions})`;
+        }
+    }
+
+    const recordPermissionsTemplate =  `
+        recordPermissions: _permissions{
+            allowEdit
+        }
+    `;
+    return {
+        query: `{${alias}:${object.name}${queryOptions}{${object.idFieldName},${recordPermissionsTemplate}}}`
+    }
+}
+
 export function getApi (isMobile){
     if(isMobile){
         //TODO 返回 绝对路径
