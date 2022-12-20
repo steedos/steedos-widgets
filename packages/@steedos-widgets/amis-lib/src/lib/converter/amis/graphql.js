@@ -295,7 +295,7 @@ export function getRecordPermissionsQuery(object, recordId, options){
     }
 
     let recordPermissionsTemplate = getRecordPermissionsTemplate();
-    if(options.fields && options.fields.length){
+    if(options?.fields && options.fields.length){
         recordPermissionsTemplate = `
             recordPermissions: _permissions{
                 ${options.fields.join(",")}
