@@ -6,7 +6,7 @@
  * @Description: 
  */
 export const AmisAppMenu = async (props) => {
-    let { stacked = false, overflow, appId, data, links = null, showIcon = true, className = '', selectedId } = props;
+    let { stacked = false, overflow, appId, data, links = null, showIcon = true, className = '', indentSize=12, selectedId } = props;
     if(!appId){
         appId = data.context.appId || 'admin';
     }
@@ -17,6 +17,7 @@ export const AmisAppMenu = async (props) => {
         className: className,
         "stacked": stacked,
         "overflow": overflow,
+        "indentSize": indentSize,
         "links": links,
         "source": {
           "method": "get",
@@ -82,7 +83,7 @@ export const AmisAppMenu = async (props) => {
             "Authorization": "Bearer ${context.tenantId},${context.authToken}"
           },
           "sendOn": `${!!!links}`
-        }
+        },
       }
     
 }
