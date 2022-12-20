@@ -145,7 +145,7 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
                   ],
                 }
               ]
-            }} id="appLauncher" router={router} data={{selectedId: selectedTabId}}></AmisRender>}
+            }} id="appLauncher" router={router} updateProps={{location: router}}></AmisRender>}
         </div>
 
     </>
