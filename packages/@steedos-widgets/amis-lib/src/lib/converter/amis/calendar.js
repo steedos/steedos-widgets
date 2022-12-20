@@ -371,7 +371,11 @@ export async function getObjectCalendar(objectSchema, listView, options) {
             "actionType": 'ajax',
             "expression": "event.data.editable",
             "args": {
-              "api": recordUpdateApi
+              "api": recordUpdateApi,
+              "messages": {
+                "success": objectSchema.label + "修改成功",
+                "failed": objectSchema.label + "修改失败！"
+              }
             }
           }
         ]
