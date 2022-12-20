@@ -15,7 +15,7 @@ import { useRouter } from 'next/router'
 import { setSteedosAuth, setRootUrl, getRootUrl } from '@steedos-widgets/amis-lib';
 import { useSession, signIn } from "next-auth/react"
 
-const showSidebar = true;
+const showSidebar = false;
 
 export function AppLayout({ children, app_id, tab_id, page_id}) {
     const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 768)
