@@ -11,8 +11,8 @@
 
 .steedos-context-bar .antd-Nav .antd-Nav-list--tabs .antd-Nav-item > a {
     border: 0px;
-    /* padding-left: 12px;
-    padding-right: 12px; */
+    padding-left: 12px;
+    padding-right: 12px;
 }
 
 .steedos-context-bar .antd-Nav .antd-Nav-list--tabs .antd-Nav-item:hover > a,
@@ -25,6 +25,6 @@
 .steedos-context-bar .antd-Nav .antd-Nav-list--tabs .antd-Nav-item.is-active > a {
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
-    border-top: solid rgb(14 165 233) 3px;
     background: rgba(21,137,238,.1);
+    border-top: solid rgb(14 165 233) 3px;
 }
