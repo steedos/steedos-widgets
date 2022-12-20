@@ -132,7 +132,7 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
                           "stacked": false,
                           showIcon: false,
                           "appId": app.id,
-                          selectedId: selectedTabId,
+                          // selectedId: selectedTabId,
                           overflow: {
                               enable: true,
                               overflowIndicator: "fas fa-angle-double-down"
@@ -148,7 +148,7 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
                   ],
                 }
               ]
-            }} id="appLauncher" router={router}></AmisRender>}
+            }} id="appLauncher" router={router} data={{selectedId: selectedTabId}}></AmisRender>}
         </div>
 
     </>

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-16 16:27:10
+ * @LastEditTime: 2022-12-20 11:27:14
  * @Description: 
  */
 export const AmisAppMenu = async (props) => {

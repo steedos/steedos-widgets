@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 16:55:58
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-14 09:08:57
+ * @LastEditTime: 2022-12-20 11:25:45
  * @Description: 
  */
 
@@ -53,9 +53,22 @@ export const AmisRender = ({id, schema, data, router, className, assets, getModa
         if(getModalContainer){
             env.getModalContainer = getModalContainer;
         }
+        SteedosUI.refs[id] = amisRender(`#${id}`, defaultsDeep(defData , schema), {
+            // location: router
+        }, env, {router: router, assets: compact(concat(globalAssets, assets))});
+      }, [globalAssetLoaded, JSON.stringify(schema)]);
 
-        SteedosUI.refs[id] = amisRender(`#${id}`, defaultsDeep(defData , schema), {}, env, {router: router, assets: compact(concat(globalAssets, assets))});
-      }, [globalAssetLoaded, schema]);
+    useEffect(()=>{
+        const amisScope = SteedosUI.getRef(id);
+        if(amisScope){
+            const newProps = defaultsDeep({location: router}, {data: data} , {
+                data: getDefaultRenderData()
+            });
+            amisScope.updateProps( newProps, ()=>{
+                console.log(`amisScope.updateProps callback.......`)
+            });
+        }
+    }, [JSON.stringify(data)])
     return (
         <div id={`${id}`} className={`app-wrapper ${className}`} onClick={(e)=>{ return amisRootClick(router, e)}}></div>
     )
