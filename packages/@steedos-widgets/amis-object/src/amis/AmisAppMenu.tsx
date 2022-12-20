@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-20 11:27:14
+ * @LastEditTime: 2022-12-20 11:49:55
  * @Description: 
  */
 export const AmisAppMenu = async (props) => {
@@ -37,7 +37,7 @@ export const AmisAppMenu = async (props) => {
                             tpl: \`<span class='fill-slate-500  text-slate-700 block -ml-px no-underline group flex items-center text-[15px] font-medium rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
                             } : tab.name,
                             "to": tab.path,
-                            active: selectedId === tab.id,
+                            // active: selectedId === tab.id,
                         })
                         })
                     } else {
@@ -53,7 +53,7 @@ export const AmisAppMenu = async (props) => {
                                         tpl: \`<span class='fill-slate-500  text-slate-700 block -ml-px no-underline group flex items-center text-[15px] font-medium rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
                                     }  : tab.name,
                                     "to": tab.path,
-                                    active: selectedId === tab.id,
+                                    // active: selectedId === tab.id,
                                     }
                                 })
                                 })
@@ -65,7 +65,7 @@ export const AmisAppMenu = async (props) => {
                                     tpl: \`<span class='fill-slate-500  text-slate-700 block -ml-px no-underline group flex items-center text-[15px] font-medium rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
                                 } : tab.name,
                                 "to": tab.path,
-                                active: selectedId === tab.id,
+                                // active: selectedId === tab.id,
                                 });
                             })
                         }

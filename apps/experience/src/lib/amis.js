@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 11:31:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-17 17:05:10
+ * @LastEditTime: 2022-12-20 12:01:42
  * @Description:
  */
 import { each, find, isArray, isEmpty } from 'lodash';
@@ -48,6 +48,30 @@ const normalizeLink = (to, location = window.location) => {
 
   return pathname + search + hash;
 };
+function isCurrentUrl(to, ctx) {
+  try {
+    if (!to) {
+      return false;
+    }
+    const pathname = window.location.pathname;
+    const link = normalizeLink(to, {
+      ...location,
+      pathname,
+      hash: ''
+    });
+  
+    if (!~link.indexOf('http') && ~link.indexOf(':')) {
+      let strict = ctx && ctx.strict;
+      return match(link, {
+        decode: decodeURIComponent,
+        strict: typeof strict !== 'undefined' ? strict : true
+      })(pathname);
+    }
+    return decodeURI(pathname) === link || decodeURI(pathname).startsWith(`${link}/`);
+  } catch (error) {
+    console.error(`error`, error)
+  }
+}
 
 export const amisRootClick = (router, e) => {
   if (e.target.nodeName.toLocaleLowerCase() === "a" && e.target.href && e.target.target != '_blank') {
@@ -113,7 +137,8 @@ export const getEvn = (router)=>{
       } else {
         router.push(to);
       }
-    }
+    },
+    isCurrentUrl: isCurrentUrl
   }
 }
 
