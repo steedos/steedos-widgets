@@ -1,16 +1,7 @@
 import { useEffect, useState } from 'react'
-import { Fragment } from "react";
-import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { SearchIcon } from "@heroicons/react/solid";
-import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
 import { useSession, signIn, signOut } from "next-auth/react";
-import { Logo } from "@/components/Logo";
 import { useRouter } from "next/router";
-import { MobileNavigation } from '@/components/mobile/MobileNavigation'
-import { AppLauncherBar } from "@/components/AppLauncherBar";
-import { Notification } from '@/components/Notification';
 import { AmisRender } from '@/components/AmisRender';
-import { Sidebar } from '@/components/Sidebar';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
