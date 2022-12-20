@@ -3,6 +3,7 @@
 
 .steedos-context-bar .antd-Nav-list{
     border-bottom: 0px;
+    height: 40px;
 }
 
 .steedos-context-bar .antd-Nav .antd-Nav-list--tabs .antd-Nav-item.is-active  {

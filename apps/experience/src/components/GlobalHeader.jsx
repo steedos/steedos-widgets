@@ -122,8 +122,9 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
                           showIcon: false,
                           "appId": app.id,
                           overflow: {
-                              enable: true,
-                              overflowIndicator: "fas fa-angle-double-down"
+                              enable: false,
+                              itemWidth: 80,
+                              // overflowIndicator: "fas fa-angle-double-down"
                           },
                           "id": "u:77851eb4aa89",
                           hiddenOn: `${app.showSidebar === true}`
