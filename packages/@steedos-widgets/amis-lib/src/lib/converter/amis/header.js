@@ -101,7 +101,7 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
                     "tpl": `${label}`,
                     "inline": false,
                     "wrapperComponent": "",
-                    "className": "text-sm leading-none text-black",
+                    "className": "text-md leading-none text-black",
                   },
                   {
                     "type": "dropdown-button",
