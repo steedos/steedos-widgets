@@ -274,20 +274,7 @@ export async function getObjectCalendar(objectSchema, listView, options) {
     });
   `;
 
-  const recordPermissionsApi = getCalendarRecordPermissionsApi(objectSchema, "${recordId}");
-  const onEventChangeScript = `
-    const data = event.data;
-    const eventData = data.event;
-    const eventId = eventData && eventData.id;
-    const api = ${JSON.stringify(recordPermissionsApi)};
-    event.data.recordId = eventId;
-    doAction({
-      "actionType": 'ajax',
-      "args": {
-        "api": api
-      },
-    });
-  `;
+  const recordPermissionsApi = getCalendarRecordPermissionsApi(objectSchema, "${event.id}");
   const amisSchema = {
     "type": "steedos-fullcalendar",
     "label": "",
@@ -348,11 +335,10 @@ export async function getObjectCalendar(objectSchema, listView, options) {
         "weight": 0,
         "actions": [
           {
-            "componentId": "",
+            "actionType": 'ajax',
             "args": {
-            },
-            "actionType": "custom",
-            "script": onEventChangeScript
+              "api": recordPermissionsApi
+            }
           }
         ]
       },
