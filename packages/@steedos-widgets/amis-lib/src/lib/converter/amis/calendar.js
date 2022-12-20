@@ -1,5 +1,6 @@
 import { getApi, getRecordPermissionsApi } from './fields/table';
-import { each } from 'lodash';
+import { getSaveApi } from './api';
+import { each, values } from 'lodash';
 
 export async function getCalendarApi(mainObject, fields, options) {
   if (!options) {
@@ -150,18 +151,20 @@ export async function getCalendarApi(mainObject, fields, options) {
 }
 
 export function getCalendarRecordPermissionsApi(mainObject, recordId) {
-  const api = getRecordPermissionsApi(mainObject, recordId, { alias: 'rows', limit: 1 });
+  const api = getRecordPermissionsApi(mainObject, recordId, { alias: 'rows', limit: 1, fields: ["allowEdit"] });
   api.data.$self = "$$";
   api.adaptor = `
     const rows = payload.data.rows || [];
     const selfData = api.data.$self;
     const revert = selfData.revert;
     const recordPermissions = rows[0] && rows[0].recordPermissions;
-    const editable = recordPermissions && recordPermissions.allowEdit;
+    const editable = !!(recordPermissions && recordPermissions.allowEdit);
     if(!editable){
       // 没有权限时还原
       revert && revert();
     }
+    payload.data.editable = editable;
+    console.log("===getCalendarRecordPermissionsApi==payload.data====", payload.data);
     return payload;
   `;
   return api;
@@ -274,7 +277,22 @@ export async function getObjectCalendar(objectSchema, listView, options) {
     });
   `;
 
-  const recordPermissionsApi = getCalendarRecordPermissionsApi(objectSchema, "${event.id}");
+  const recordId = "${event.id}";
+  const recordPermissionsApi = getCalendarRecordPermissionsApi(objectSchema, recordId);
+  const fieldsForSave = values(objectSchema.fields);
+  const recordUpdateApi = getSaveApi(objectSchema, "${event.data.event.id}", fieldsForSave, {});
+  recordUpdateApi.data.$ = {
+    recordId: "${event.data.event.id}"
+  };
+  const idFieldName = objectSchema.idFieldName || "_id";
+  recordUpdateApi.data.$[idFieldName] = "${event.data.event.id}";
+  const nameFieldKey = objectSchema.NAME_FIELD_KEY || "name";
+  recordUpdateApi.data.$[nameFieldKey] = "${event.data.event.title}";
+  const startDateExpr = calendarOptions.startDateExpr || "start";
+  const endDateExpr = calendarOptions.endDateExpr || "end";
+  recordUpdateApi.data.$[startDateExpr] = "${event.data.event.start}";
+  recordUpdateApi.data.$[endDateExpr] = "${event.data.event.end}";
+  
   const amisSchema = {
     "type": "steedos-fullcalendar",
     "label": "",
@@ -338,6 +356,22 @@ export async function getObjectCalendar(objectSchema, listView, options) {
             "actionType": 'ajax',
             "args": {
               "api": recordPermissionsApi
+            }
+          },
+          {
+            "actionType": "toast",
+            "expression": "!event.data.editable",
+            "args": {
+              "msgType": "error",
+              "msg": "您没有编辑该记录的权限！",
+              "position": "top-center"
+            }
+          },
+          {
+            "actionType": 'ajax',
+            "expression": "event.data.editable",
+            "args": {
+              "api": recordUpdateApi
             }
           }
         ]

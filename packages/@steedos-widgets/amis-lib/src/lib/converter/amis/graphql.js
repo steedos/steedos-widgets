@@ -224,6 +224,7 @@ export function getSaveDataTpl(fields){
             query = \`mutation{record: \${objectName}__update(id: "\${formData._id}", doc: {__saveData}){_id}}\`;
         };
         delete formData._id;
+        delete formData.recordId;
         let __saveData = JSON.stringify(JSON.stringify(formData));
     `
 }
