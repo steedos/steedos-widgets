@@ -45,8 +45,6 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
 
   window.signOut = signOut;
 
-  console.log(`app`, app)
-
   return (
     <>
       <div
@@ -132,7 +130,6 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
                           "stacked": false,
                           showIcon: false,
                           "appId": app.id,
-                          // selectedId: selectedTabId,
                           overflow: {
                               enable: true,
                               overflowIndicator: "fas fa-angle-double-down"
