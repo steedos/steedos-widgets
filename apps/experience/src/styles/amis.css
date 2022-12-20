@@ -21,6 +21,7 @@
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
     background: rgba(21,137,238,.1);
+    border-top: solid rgba(21,137,238,.1) 3px;
 }
 
 .steedos-context-bar .antd-Nav .antd-Nav-list--tabs .antd-Nav-item.is-active > a {
