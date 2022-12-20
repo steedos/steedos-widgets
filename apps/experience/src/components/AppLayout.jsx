@@ -15,7 +15,7 @@ import { useRouter } from 'next/router'
 import { setSteedosAuth, setRootUrl, getRootUrl } from '@steedos-widgets/amis-lib';
 import { useSession, signIn } from "next-auth/react"
 
-const showSidebar = false;
+const showSidebar = true;
 
 export function AppLayout({ children, app_id, tab_id, page_id}) {
     const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 768)
@@ -134,7 +134,7 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
               </div>
             </div>
             }
-            <div id="content" className="flex flex-col min-w-0 flex-1 overflow-y-auto bg-slate-50">
+            <div id="content" className="flex flex-col min-w-0 flex-1 overflow-y-auto">
               {children}
             </div>
           </div>

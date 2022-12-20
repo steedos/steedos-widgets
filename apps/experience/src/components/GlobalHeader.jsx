@@ -39,7 +39,7 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
   return (
     <>
       <div
-        className="slds-global-header_container sticky top-0 z-40 w-full flex-none backdrop-blur transition-colors duration-500 lg:z-50"
+        className="slds-global-header_container sticky top-0 z-40 w-full flex-none backdrop-blur transition-colors duration-500 lg:z-50 sm:shadow"
       >
         <div className="bg-transparent slds-global-header slds-grid slds-grid_align-spread shadow-none">
           <div className="slds-global-header__item flex">
@@ -91,9 +91,7 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
                
         </div>
 
-      </div>
-
-      <div className="steedos-context-bar hidden sm:block h-10 leading-5 pl-4 border-b-[3px] border-sky-500">
+        <div className="steedos-context-bar hidden sm:block h-10 leading-5 pl-4 border-b-[3px] border-sky-500">
         { app && <AmisRender schema={{
               type: "service",
               body: [
@@ -139,6 +137,8 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
               ]
             }} id="appLauncher" router={router} updateProps={{location: router}}></AmisRender>}
         </div>
+      </div>
+
 
     </>
   );
