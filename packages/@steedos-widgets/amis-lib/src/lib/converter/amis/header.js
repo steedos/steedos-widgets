@@ -196,7 +196,7 @@ export async function getObjectListHeaderSecordLine(objectSchema, listViewName, 
           }
         ],
         "md": "auto",
-        "valign": "middle"
+        "columnClassName": "flex items-center"
       },
       {
         "body": [
@@ -380,6 +380,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
                               "className": "leading-5 text-xl font-bold"
                             }
                           ],
+                          "columnClassName": "p-l-xs"
                         }
                       ],
                       "className": "flex justify-between"
