@@ -16,7 +16,6 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { Tab, Menu, Transition } from "@headlessui/react";
 
 import { RecordHeader } from '@/components/object/RecordHeader';
-import { RecordHeader as MobileRecordHeader } from '@/components/mobile/object/RecordHeader';
 import { RecordRelateds } from '@/components/object/RecordRelateds';
 import { getRecordPermissions } from '@steedos-widgets/amis-lib';
 import { Loading } from '@/components/Loading';
@@ -63,14 +62,14 @@ export default function Record({formFactor}) {
       setSchema(res)
     })
   }, [tab_id, instanceId])
-  const Header = formFactor === "SMALL" ? MobileRecordHeader : RecordHeader;
+  
   return (
     <div className="h-full flex instance-scope">
       <div className="flex-1 w-32 border-r"><InstancesListview bulkActions={false} formFactor={formFactor} app_id={app_id} tab_id={tab_id} listViewName={box}></InstancesListview></div>
       <div className="flex-1 w-64" >
         {
           record != undefined && <div className="region-header bg-slate-50 static">
-          {schema && <Header app_id={app_id} tab_id={tab_id} record_id={record._id} record={record} schema={schema} formFactor={formFactor} permissions={permissions} hiddenTitle={true} className="p-2"></Header>}
+          {schema && <RecordHeader app_id={app_id} tab_id={tab_id} record_id={record._id} record={record} schema={schema} formFactor={formFactor} permissions={permissions} hiddenTitle={true} className="p-2"></RecordHeader>}
         </div>
         }
         <div className="relative flex flex-1 flex-col region-main overflow-auto border-t" id="instanceRoot" style={{

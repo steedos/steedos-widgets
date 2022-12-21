@@ -17,7 +17,7 @@ export default function Apps() {
   useEffect(()=>{
     getApps().then((apps)=>{
       if(apps && apps.length > 0){
-        router.push(apps[0].path)
+        router.push(apps[0].children[0].path)
       }
     })
   }, [])

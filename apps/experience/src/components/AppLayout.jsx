@@ -95,6 +95,8 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
           .then((data) => {
             console.log('setApp')
             data.showSidebar = showSidebar || (window.innerWidth <= 768);
+            if (data.id === 'admin')
+              data.showSidebar = true;
             setApp(data)
           })
       }
