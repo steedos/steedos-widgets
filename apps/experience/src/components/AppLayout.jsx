@@ -134,7 +134,7 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
               </div>
             </div>
             }
-            <div id="content" className="flex flex-col min-w-0 flex-1 overflow-y-auto bg-slate-50">
+            <div id="content" className="flex flex-col min-w-0 flex-1 overflow-y-auto">
               {children}
             </div>
           </div>

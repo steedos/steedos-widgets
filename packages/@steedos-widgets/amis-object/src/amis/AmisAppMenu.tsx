@@ -5,6 +5,8 @@
  * @LastEditTime: 2022-12-20 11:49:55
  * @Description: 
  */
+import './AmisAppMenu.less';
+
 export const AmisAppMenu = async (props) => {
     let { stacked = false, overflow, appId, data, links = null, showIcon = true, className = '', indentSize=12, selectedId } = props;
     if(!appId){

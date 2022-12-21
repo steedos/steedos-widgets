@@ -224,6 +224,7 @@ export function getSaveDataTpl(fields){
             query = \`mutation{record: \${objectName}__update(id: "\${formData._id}", doc: {__saveData}){_id}}\`;
         };
         delete formData._id;
+        delete formData.recordId;
         let __saveData = JSON.stringify(JSON.stringify(formData));
     `
 }
@@ -294,11 +295,14 @@ export function getRecordPermissionsQuery(object, recordId, options){
         }
     }
 
-    const recordPermissionsTemplate =  `
-        recordPermissions: _permissions{
-            allowEdit
-        }
-    `;
+    let recordPermissionsTemplate = getRecordPermissionsTemplate();
+    if(options?.fields && options.fields.length){
+        recordPermissionsTemplate = `
+            recordPermissions: _permissions{
+                ${options.fields.join(",")}
+            }
+        `;
+    }
     return {
         query: `{${alias}:${object.name}${queryOptions}{${object.idFieldName},${recordPermissionsTemplate}}}`
     }

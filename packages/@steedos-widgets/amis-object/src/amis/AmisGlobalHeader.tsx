@@ -230,33 +230,55 @@ export const AmisGlobalHeader = async (props) => {
             "overlay": [
               {
                 "type": "wrapper",
-                "className": "bg-white",
+                "className": "",
                 "body": [
+                  
                   {
-                    "type": "avatar",
-                    "src": avatarSrc,
-                    "icon": "fa fa-user",
-                    "id": "u:033218742221",
-                    "style": {
-                        "background": "rgb(59 130 246 / 0.5)",
-                        "color": "#FFFFFF"
-                    },
-                  },
-                  {
-                    "type": "tpl",
-                    className: "block",
-                    "tpl": "${context.user.name}",
-                    "inline": true,
-                  },
-                  {
-                    "type": "tpl",
-                    className: "block",
-                    "tpl": "${context.user.email}",
-                    "inline": true,
+                    "type": "grid",
+                    "valign": "middle",
+                    "align": "center",
+                    "className": "mb-4",
+                    "columns": [
+                      {
+                        "columnClassName": "",
+                        "md": 2,
+                        "body": [
+                          {
+                            "type": "avatar",
+                            "src": avatarSrc,
+                            "icon": "fa fa-user",
+                            "id": "u:033218742221",
+                            "style": {
+                                "background": "rgb(59 130 246 / 0.5)",
+                                "color": "#FFFFFF"
+                            },
+                          },
+                        ]
+                      },
+                      {
+                        "columnClassName": "",
+                        "md": 10,
+                        "body": [
+                          {
+                            "type": "tpl",
+                            className: "block",
+                            "tpl": "${context.user.name}",
+                            "inline": true,
+                          },
+                          {
+                            "type": "tpl",
+                            className: "block",
+                            "tpl": "${context.user.email}",
+                            "inline": true,
+                          },
+                        ]
+                      }
+                    ]
                   },
                   {
                     "type": "button",
                     "label": "个人资料",
+                    "className": "flex",
                     "onEvent": {
                       "click": {
                         "actions": [
@@ -270,32 +292,12 @@ export const AmisGlobalHeader = async (props) => {
                         ]
                       }
                     },
-                    "id": "u:1e6c26ff8721",
-                    "block": true,
-                    "level": "link"
-                  },
-                  {
-                    "type": "button",
-                    "label": "注销",
-                    "onEvent": {
-                      "click": {
-                        "actions": [
-                            {
-                                "componentId": "",
-                                "args": {},
-                                "actionType": "custom",
-                                "script": logoutScript
-                              }
-                        ]
-                      }
-                    },
-                    "id": "u:0ab9ad5a8503",
-                    "block": true,
                     "level": "link"
                   },
                   {
                     "type": "button",
                     "label": "关于",
+                    "className": "flex",
                     "onEvent": {
                       "click": {
                         "actions": [
@@ -309,16 +311,30 @@ export const AmisGlobalHeader = async (props) => {
                         ]
                       }
                     },
-                    "id": "u:1e6c26ff8721",
-                    "block": true,
                     "level": "link"
                   },
+                  {
+                    "type": "button",
+                    "label": "注销",
+                    "className": "flex",
+                    "onEvent": {
+                      "click": {
+                        "actions": [
+                            {
+                                "componentId": "",
+                                "args": {},
+                                "actionType": "custom",
+                                "script": logoutScript
+                              }
+                        ]
+                      }
+                    },
+                    "level": "link"
+                  }
                   
                 ],
-                "id": "u:b90fbd8773aa"
               }
             ],
-            "id": "u:7a8bead68a8c",
             "className": "antd-Action"
           }
         ]

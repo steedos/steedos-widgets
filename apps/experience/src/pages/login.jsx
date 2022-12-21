@@ -75,13 +75,13 @@ export default function Login({ providers = {}, csrfToken, rootUrl }) {
         </span>
       </div>
       <div className="mt-4">
-        <div className="">
           {providers &&
             Object.values(providers).map((provider) => {
               if (provider.type === "credentials")
                 return (
                   <form
                     method="post"
+                    key={provider.name}
                     action="/api/auth/callback/credentials"
                     className="my-2 rounded-md shadow-sm"
                   >
@@ -133,7 +133,6 @@ export default function Login({ providers = {}, csrfToken, rootUrl }) {
                 Object.values(providers).map((provider) => {
                   if (provider.type === "oauth")
                     return (
-                      <>
                         <div key={provider.name} className="pt-5">
                           <button
                             onClick={() => signIn(provider.id)}
@@ -142,11 +141,9 @@ export default function Login({ providers = {}, csrfToken, rootUrl }) {
                             使用 {provider.name} 登录
                           </button>
                         </div>
-                      </>
                     );
                 })}
             </div>
-        </div>
       </div>
     </>
   );

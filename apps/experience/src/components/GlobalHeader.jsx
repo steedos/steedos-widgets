@@ -1,16 +1,7 @@
 import { useEffect, useState } from 'react'
-import { Fragment } from "react";
-import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { SearchIcon } from "@heroicons/react/solid";
-import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
 import { useSession, signIn, signOut } from "next-auth/react";
-import { Logo } from "@/components/Logo";
 import { useRouter } from "next/router";
-import { MobileNavigation } from '@/components/mobile/MobileNavigation'
-import { AppLauncherBar } from "@/components/AppLauncherBar";
-import { Notification } from '@/components/Notification';
 import { AmisRender } from '@/components/AmisRender';
-import { Sidebar } from '@/components/Sidebar';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -48,7 +39,7 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
   return (
     <>
       <div
-        className="slds-global-header_container sticky top-0 z-40 w-full flex-none backdrop-blur transition-colors duration-500 lg:z-50"
+        className="slds-global-header_container sticky top-0 z-40 w-full flex-none backdrop-blur transition-colors duration-500 lg:z-50 sm:shadow"
       >
         <div className="bg-transparent slds-global-header slds-grid slds-grid_align-spread shadow-none">
           <div className="slds-global-header__item flex">
@@ -100,9 +91,7 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
                
         </div>
 
-      </div>
-
-      <div className="steedos-context-bar hidden sm:block h-10 leading-5 pl-4 border-b-[3px] border-sky-500">
+        <div className="steedos-context-bar hidden sm:block h-10 leading-5 pl-4 border-b-[3px] border-sky-500">
         { app && <AmisRender schema={{
               type: "service",
               body: [
@@ -111,7 +100,7 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
                   className: '',
                   "columns": [
                     {
-                      "columnClassName": "flex items-center hidden sm:block",
+                      "columnClassName": "items-center hidden sm:flex pb-1",
                       "body": [
                         {
                           "type": "steedos-app-launcher",
@@ -131,8 +120,9 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
                           showIcon: false,
                           "appId": app.id,
                           overflow: {
-                              enable: true,
-                              overflowIndicator: "fas fa-angle-double-down"
+                              enable: false,
+                              itemWidth: 80,
+                              // overflowIndicator: "fas fa-angle-double-down"
                           },
                           "id": "u:77851eb4aa89",
                           hiddenOn: `${app.showSidebar === true}`
@@ -147,6 +137,8 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
               ]
             }} id="appLauncher" router={router} updateProps={{location: router}}></AmisRender>}
         </div>
+      </div>
+
 
     </>
   );
