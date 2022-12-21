@@ -115,10 +115,10 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
                   }
                 ],
                 "md": "",
-                "valign": "middle",
                 "columnClassName": "p-l-xs"
               }
-            ]
+            ],
+            "className": "flex justify-between"
           }
         ],
         "md": "auto"
@@ -132,7 +132,7 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
         "valign": "middle",
       }
     ],
-    "align": "between"
+    "className": "flex justify-between"
   }
 }
 
@@ -178,7 +178,6 @@ export async function getObjectListHeaderSecordLine(objectSchema, listViewName, 
   // `;
   let secordLineSchema = {
     "type": "grid",
-    "align": "between",
     "columns": [
       {
         "body": [
@@ -233,7 +232,7 @@ export async function getObjectListHeaderSecordLine(objectSchema, listViewName, 
         "md": "auto"
       }
     ],
-    "className": ""
+    "className": "flex justify-between"
   };
   return secordLineSchema;
 }
@@ -335,6 +334,11 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
   let body = [
     {
       "type": "service",
+      "data": {
+        "&": "$$",
+        "record": "${record}",
+        "recordLoaded":"${recordLoaded}"
+      },
       "body": [
         {
           "type": "wrapper",
@@ -377,7 +381,8 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
                             }
                           ],
                         }
-                      ]
+                      ],
+                      "className": "flex justify-between"
                     }
                   ],
                   "md": "auto"
@@ -390,38 +395,14 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
                   "md": "auto"
                 }
               ],
-              "align": "between"
+              "className": "flex justify-between"
             }
           ],
           "size": "xs"
         }
       ],
       "messages": {},
-      // "api": {
-      //   "method": "post",
-      //   "url": "${context.rootUrl}/graphql",
-      //   "headers": {
-      //     "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-      //   },
-      //   "data": {
-      //     "query": `{rows:${name}(filters: ["_id","=","${recordId}"]){_id, name: ${NAME_FIELD_KEY || 'name'}} }`
-      //   },
-      //   "sendOn": `${!!recordId}`,
-      //   "requestAdaptor": "",
-      //   "adaptor": `
-      //     const rows = payload.data.rows;
-      //     let label = null;
-      //     if (rows.length) {
-      //       const objectInfo = rows[0];
-      //       label = objectInfo.name;
-      //     }
-      //     delete payload.rows;
-      //     payload.data = {
-      //       name: label
-      //     }
-      //     return payload;
-      //   `
-      // }
+      "hiddenOn": "${recordLoaded != true}"
     }
   ];
 
@@ -466,6 +447,7 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
               {
                 "type": "grid",
                 "valign": "middle",
+                "className": "flex justify-between",
                 "columns": [
                   {
                     "body": {
@@ -504,7 +486,7 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
             "md": "auto"
           }
         ],
-        "align": "between"
+        "className": "flex justify-between"
       }
     ],
     "className": "bg-gray-100 sm:rounded p-3"

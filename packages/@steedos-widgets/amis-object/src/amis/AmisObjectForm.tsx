@@ -26,7 +26,14 @@ export const AmisObjectForm = async (props) => {
     appId
   }
   if (mode === 'edit') {
-    return (await getFormSchema(objectApiName, options)).amisSchema;
+    const amisSchema = (await getFormSchema(objectApiName, options)).amisSchema;
+    // 当全局作用域中无recordId，表单接口sendOn始终为false。
+    const formData :any = {};
+    if(recordId){
+      formData.recordId = recordId;
+    }
+    amisSchema.data = Object.assign({}, amisSchema.data, formData);
+    return amisSchema;
   } else {
     // formInitProps
     if(!recordId){
