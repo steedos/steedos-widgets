@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 16:55:58
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-20 13:14:23
+ * @LastEditTime: 2022-12-21 16:38:43
  * @Description: 
  */
 
@@ -56,7 +56,7 @@ export const AmisRender = ({id, schema, data, router, className, assets, getModa
         SteedosUI.refs[id] = amisRender(`#${id}`, defaultsDeep(defData , schema), {
             // location: router
         }, env, {router: router, assets: compact(concat(globalAssets, assets))});
-      }, [globalAssetLoaded, JSON.stringify(schema)]);
+      }, [globalAssetLoaded, JSON.stringify(schema), JSON.stringify(data)]);
 
     useEffect(()=>{
         const amisScope = SteedosUI.getRef(id);
