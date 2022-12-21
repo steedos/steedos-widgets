@@ -1,6 +1,7 @@
 import { getApi, getRecordPermissionsApi } from './fields/table';
 import { getSaveApi } from './api';
 import { each, values } from 'lodash';
+import * as graphql from './graphql'
 
 export async function getCalendarApi(mainObject, fields, options) {
   if (!options) {
@@ -164,10 +165,57 @@ export function getCalendarRecordPermissionsApi(mainObject, recordId) {
       revert && revert();
     }
     payload.data.editable = editable;
-    console.log("===getCalendarRecordPermissionsApi==payload.data====", payload.data);
     return payload;
   `;
   return api;
+}
+
+export function getCalendarRecordSaveApi(object, calendarOptions) {
+  const formData = {};
+  // const idFieldName = object.idFieldName || "_id";
+  formData._id = "${event.data.event.id}";
+  const nameFieldKey = object.NAME_FIELD_KEY || "name";
+  formData[nameFieldKey] = "${event.data.event.title}";
+  const startDateExpr = calendarOptions.startDateExpr || "start";
+  const endDateExpr = calendarOptions.endDateExpr || "end";
+  formData[startDateExpr] = "${event.data.event.start}";
+  formData[endDateExpr] = "${event.data.event.end}";
+  const apiData = {
+    objectName: "${objectName}",
+    $: formData,
+    $self: "$$"
+  };
+  const saveDataTpl = `
+    const formData = api.data.$;
+    const objectName = api.data.objectName;
+    let query = \`mutation{record: \${objectName}__update(id: "\${formData._id}", doc: {__saveData}){_id}}\`;
+    delete formData._id;
+    let __saveData = JSON.stringify(JSON.stringify(formData));
+  `;
+  const requestAdaptor = `
+    ${saveDataTpl}
+    api.data.query = query.replace('{__saveData}', __saveData);
+    return api;
+  `;
+
+  return {
+    method: 'post',
+    url: graphql.getApi(),
+    data: apiData,
+    requestAdaptor: requestAdaptor,
+    adaptor: `
+        if(payload.errors){
+            payload.status = 2;
+            payload.msg = payload.errors[0].message;
+            const revert = api.data.$self.event.data.revert;
+            revert && revert();
+        }
+        return payload;
+    `,
+    headers: {
+        Authorization: "Bearer ${context.tenantId},${context.authToken}"
+    }
+  };
 }
 
 /**
@@ -176,7 +224,6 @@ export function getCalendarRecordPermissionsApi(mainObject, recordId) {
  * @returns amisSchema
  */
 export async function getObjectCalendar(objectSchema, listView, options) {
-  console.log("===getObjectCalendar==objectSchema=", objectSchema);
   const permissions = objectSchema.permissions;
   if (!options) {
     options = {};
@@ -215,7 +262,6 @@ export async function getObjectCalendar(objectSchema, listView, options) {
   `;
 
   const onSelectScript = `
-    console.log("===onSelectScript=event==", event);
     const data = event.data;
     const doc = {
       name: data.title
@@ -279,20 +325,7 @@ export async function getObjectCalendar(objectSchema, listView, options) {
 
   const recordId = "${event.id}";
   const recordPermissionsApi = getCalendarRecordPermissionsApi(objectSchema, recordId);
-  const fieldsForSave = values(objectSchema.fields);
-  const recordUpdateApi = getSaveApi(objectSchema, "${event.data.event.id}", fieldsForSave, {});
-  recordUpdateApi.data.$ = {
-    recordId: "${event.data.event.id}"
-  };
-  const idFieldName = objectSchema.idFieldName || "_id";
-  recordUpdateApi.data.$[idFieldName] = "${event.data.event.id}";
-  const nameFieldKey = objectSchema.NAME_FIELD_KEY || "name";
-  recordUpdateApi.data.$[nameFieldKey] = "${event.data.event.title}";
-  const startDateExpr = calendarOptions.startDateExpr || "start";
-  const endDateExpr = calendarOptions.endDateExpr || "end";
-  recordUpdateApi.data.$[startDateExpr] = "${event.data.event.start}";
-  recordUpdateApi.data.$[endDateExpr] = "${event.data.event.end}";
-  
+  const recordSaveApi = getCalendarRecordSaveApi(objectSchema, calendarOptions);
   const amisSchema = {
     "type": "steedos-fullcalendar",
     "label": "",
@@ -371,7 +404,7 @@ export async function getObjectCalendar(objectSchema, listView, options) {
             "actionType": 'ajax',
             "expression": "event.data.editable",
             "args": {
-              "api": recordUpdateApi,
+              "api": recordSaveApi,
               "messages": {
                 "success": objectSchema.label + "修改成功",
                 "failed": objectSchema.label + "修改失败！"
