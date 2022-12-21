@@ -263,8 +263,13 @@ export async function getObjectForm(objectSchema, ctx){
       }
       else if(!isRecordDetail){
         // 在列表视图界面新建记录时跳转到详细页面
+        const listName = event.data.listName;
+        const uiSchema = event.data.uiSchema;
+        const listView = uiSchema && uiSchema.list_views[listName];
+        const isCalendarListView = listView && listView.type === "calendar";
         const jumpTo = event.context.env && event.context.env.jumpTo;
-        if(jumpTo){
+        if(jumpTo && !isCalendarListView){
+          // TODO: 不建议使用env中的变量，要改为doAction
           const newRecordId = data.result.data?.recordId;
           jumpTo("/app/" + appId + "/" + objectName + "/view/" + newRecordId);
         }
