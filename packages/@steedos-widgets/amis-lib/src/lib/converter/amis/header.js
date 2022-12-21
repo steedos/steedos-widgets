@@ -382,7 +382,8 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
                             }
                           ],
                         }
-                      ]
+                      ],
+                      "className": "flex justify-between"
                     }
                   ],
                   "md": "auto"
@@ -395,7 +396,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
                   "md": "auto"
                 }
               ],
-              "align": "between"
+              "className": "flex justify-between"
             }
           ],
           "size": "xs"
