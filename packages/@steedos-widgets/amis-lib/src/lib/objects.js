@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-08 15:16:03
+ * @LastEditTime: 2022-12-20 15:31:45
  * @Description:
  */
 import { fetchAPI } from "./steedos.client";
@@ -371,6 +371,15 @@ export async function getRecordDetailSchema(objectName, appId){
                                 "actionType": "reload",
                                 "data": {
                                     "name": `\${record.${uiSchema?.NAME_FIELD_KEY || 'name'}}`
+                                }
+                            },
+                            {
+                                "actionType": "setValue",
+                                "args": {
+                                   value: {
+                                    "record": `\${record}`,
+                                    "recordLoaded": true,
+                                   }
                                 }
                             }
                         ]

@@ -335,6 +335,11 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
   let body = [
     {
       "type": "service",
+      "data": {
+        "&": "$$",
+        "record": "${record}",
+        "recordLoaded":"${recordLoaded}"
+      },
       "body": [
         {
           "type": "wrapper",
@@ -397,31 +402,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
         }
       ],
       "messages": {},
-      // "api": {
-      //   "method": "post",
-      //   "url": "${context.rootUrl}/graphql",
-      //   "headers": {
-      //     "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-      //   },
-      //   "data": {
-      //     "query": `{rows:${name}(filters: ["_id","=","${recordId}"]){_id, name: ${NAME_FIELD_KEY || 'name'}} }`
-      //   },
-      //   "sendOn": `${!!recordId}`,
-      //   "requestAdaptor": "",
-      //   "adaptor": `
-      //     const rows = payload.data.rows;
-      //     let label = null;
-      //     if (rows.length) {
-      //       const objectInfo = rows[0];
-      //       label = objectInfo.name;
-      //     }
-      //     delete payload.rows;
-      //     payload.data = {
-      //       name: label
-      //     }
-      //     return payload;
-      //   `
-      // }
+      "hiddenOn": "${recordLoaded != true}"
     }
   ];
 
