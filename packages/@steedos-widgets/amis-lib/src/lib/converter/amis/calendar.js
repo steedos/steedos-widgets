@@ -34,6 +34,7 @@ export async function getCalendarApi(mainObject, fields, options) {
     }
   })
 
+  const idFieldName = mainObject.idFieldName || "_id";
   let valueField = mainObject.key_field || '_id';
   const api = await getApi(mainObject, null, fields, { alias: 'rows', limit: top, queryOptions: `filters: {__filters}, top: {__top}, skip: {__skip}, sort: "{__sort}"` });
   api.data.$term = "$term";
@@ -134,15 +135,21 @@ export async function getCalendarApi(mainObject, fields, options) {
         SteedosUI.getRef(api.body.$self.scopeId)?.getComponentById(setDataToComponentId)?.setData({$count: payload.data.count})
     }
     const rows = payload.data.rows || [];
+    const selfData = api.data.$self;
+    const calendarOptions = selfData.calendarOptions || {};
+    const startDateExpr = calendarOptions.startDateExpr || "start";
+    const endDateExpr = calendarOptions.endDateExpr || "end";
+    const allDayExpr = calendarOptions.allDayExpr || "is_all_day";
+    const textExpr = calendarOptions.textExpr || "name";
     const events = rows.map(function(n){
       return {
-        id: n._id,
-        title: n.name,
-        start: n.start,
-        end: n.end
+        id: n["${idFieldName}"],
+        title: n[textExpr],
+        start: n[startDateExpr],
+        end: n[endDateExpr],
+        allDay: n[allDayExpr]
       }
     });
-    const selfData = api.data.$self;
     const successCallback = selfData.successCallback;
     const failureCallback = selfData.failureCallback;
     successCallback(events);
@@ -172,14 +179,18 @@ export function getCalendarRecordPermissionsApi(mainObject, recordId) {
 
 export function getCalendarRecordSaveApi(object, calendarOptions) {
   const formData = {};
-  // const idFieldName = object.idFieldName || "_id";
-  formData._id = "${event.data.event.id}";
+  const idFieldName = object.idFieldName || "_id";
+  formData[idFieldName] = "${event.data.event.id}";
   const nameFieldKey = object.NAME_FIELD_KEY || "name";
   formData[nameFieldKey] = "${event.data.event.title}";
   const startDateExpr = calendarOptions.startDateExpr || "start";
   const endDateExpr = calendarOptions.endDateExpr || "end";
+  const allDayExpr = calendarOptions.allDayExpr || "is_all_day";
+  // const textExpr = calendarOptions.textExpr || "name";
   formData[startDateExpr] = "${event.data.event.start}";
   formData[endDateExpr] = "${event.data.event.end}";
+  formData[allDayExpr] = "${event.data.event.allDay}";
+  // formData[textExpr] = "${event.data.event.title}";
   const apiData = {
     objectName: "${objectName}",
     $: formData,
@@ -188,8 +199,8 @@ export function getCalendarRecordSaveApi(object, calendarOptions) {
   const saveDataTpl = `
     const formData = api.data.$;
     const objectName = api.data.objectName;
-    let query = \`mutation{record: \${objectName}__update(id: "\${formData._id}", doc: {__saveData}){_id}}\`;
-    delete formData._id;
+    let query = \`mutation{record: \${objectName}__update(id: "\${formData.${idFieldName}}", doc: {__saveData}){${idFieldName}}}\`;
+    delete formData.${idFieldName};
     let __saveData = JSON.stringify(JSON.stringify(formData));
   `;
   const requestAdaptor = `
@@ -238,6 +249,11 @@ export async function getObjectCalendar(objectSchema, listView, options) {
     }
   });
 
+  const allDayExpr = calendarOptions.allDayExpr || "is_all_day";
+  if (objectSchema.fields[allDayExpr]) {
+    fields.push(objectSchema.fields[allDayExpr]);
+  }
+
   let sort = options.sort;
   if (!sort) {
     const sortField = options.sortField;
@@ -246,7 +262,7 @@ export async function getObjectCalendar(objectSchema, listView, options) {
       let sortStr = sortField + ' ' + sortOrder || 'asc';
       sort = sortStr;
     }
-  }
+  }  
 
   const api = await getCalendarApi(objectSchema, fields, options);
 
@@ -263,16 +279,19 @@ export async function getObjectCalendar(objectSchema, listView, options) {
 
   const onSelectScript = `
     const data = event.data;
-    const doc = {
-      name: data.title
-    };
+    const doc = {};
     const calendarOptions = ${JSON.stringify(calendarOptions)} || {};
     const startDateExpr = calendarOptions.startDateExpr || "start";
     const endDateExpr = calendarOptions.endDateExpr || "end";
+    const allDayExpr = calendarOptions.allDayExpr || "is_all_day";
+    const textExpr = calendarOptions.textExpr || "name";
     doc[startDateExpr] = data.start;
     doc[endDateExpr] = data.end;
+    doc[allDayExpr] = data.allDay;
+    doc[textExpr] = data.title;
     // ObjectForm会认作用域下的变量值
     // TODO: 待组件支持initValues属性后应该改掉，不应该通过data直接传值
+    // TODO: 全天事件属性传入doc了但是没有生效，需要手动在ObjectForm中勾选全天事件
     event.data = doc;
     const title = "新建 ${objectSchema.label}";
     doAction(
