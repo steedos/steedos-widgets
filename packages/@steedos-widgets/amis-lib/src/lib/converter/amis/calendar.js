@@ -285,7 +285,18 @@ export async function getObjectCalendar(objectSchema, listView, options) {
             {
               "type": "steedos-object-form",
               "objectApiName": "\${objectName}",
-              "mode": "edit"
+              "mode": "edit",
+              "onEvent": {
+                "submitSucc": {
+                  "weight": 0,
+                  "actions": [
+                    {
+                      "actionType": "custom",
+                      "script": "event.data.view?.calendar.refetchEvents();"
+                    }
+                  ]
+                }
+              }
             }
           ],
           "closeOnEsc": false,
