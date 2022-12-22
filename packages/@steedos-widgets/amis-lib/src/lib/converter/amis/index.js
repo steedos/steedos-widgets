@@ -268,7 +268,10 @@ export async function getObjectForm(objectSchema, ctx){
         const listView = uiSchema && uiSchema.list_views[listName];
         const isCalendarListView = listView && listView.type === "calendar";
         const jumpTo = event.context.env && event.context.env.jumpTo;
-        if(jumpTo && !isCalendarListView){
+        if(isCalendarListView){
+          event.data.view?.calendar.refetchEvents();
+        }
+        else if(jumpTo){
           // TODO: 不建议使用env中的变量，要改为doAction
           const newRecordId = data.result.data?.recordId;
           jumpTo("/app/" + appId + "/" + objectName + "/view/" + newRecordId);
