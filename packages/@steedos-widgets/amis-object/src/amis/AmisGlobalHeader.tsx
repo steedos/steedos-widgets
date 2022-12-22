@@ -8,7 +8,7 @@
  */
 
 export const AmisGlobalHeader = async (props) => {
-    const { className = '', data, logoutScript = "" } = props;
+    const { className = '', data, logoutScript = "", customButtons } = props;
     
     let  avatarSrc = null;
 
@@ -22,6 +22,7 @@ export const AmisGlobalHeader = async (props) => {
         "className": `steedos-global-header leading-3	${className}`,
         "size": "xs",
         "body": [
+          ...customButtons,
           {
             "type": "button",
             "id": "u:267a7e84a89d",

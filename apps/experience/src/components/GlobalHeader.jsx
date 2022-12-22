@@ -12,35 +12,17 @@ const defaultAvatar =
 
 export function GlobalHeader({app}) {
 
-  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768)
-  const SideBarToggle = ()=> {
-    return (
-      <button
-        type="button"
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="relative pr-4"
-        aria-label="Open navigation"
-      >
-        {!sidebarOpen &&(<svg className="h-6 w-6 text-slate-500" fill="none" width="1em" height="1em" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m3 18h18v-2h-18zm0-5h18v-2h-18zm0-7v2h18v-2z" fill="currentColor"></path></svg>)}
-        {sidebarOpen && (<svg className="h-6 w-6 text-slate-500" fill="none" width="1em" height="1em" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m3 18h13v-2h-13zm0-5h10v-2h-10zm0-7v2h13v-2zm18 9.59-3.58-3.59 3.58-3.59-1.41-1.41-5 5 5 5z" fill="currentColor"></path></svg>)}
-      </button>
-    )
-  }
   useEffect(()=>{
     if (app) {
       if (app.showSidebar)
-        document.querySelector("body").classList.add('sidebar')
+        document.body.classList.add('sidebar')
       else
-        document.querySelector("body").classList.remove("sidebar")
+        document.body.classList.remove("sidebar")
     }
-  }, [app])
+    if (window.innerWidth >= 768) 
+      document.body.classList.add('sidebar-open')
 
-  useEffect(()=>{
-    if (sidebarOpen)
-      document.querySelector("body").classList.add('sidebar-open')
-    else
-      document.querySelector("body").classList.remove("sidebar-open")
-  }, [sidebarOpen])
+  }, [app])
 
   const router = useRouter();
   const { data: session } = useSession();
@@ -53,60 +35,73 @@ export function GlobalHeader({app}) {
       <div
         className="slds-global-header_container sticky top-0 z-40 w-full flex-none backdrop-blur transition-colors duration-500 lg:z-50 sm:shadow  border-b-[3px] border-sky-500"
       >
-        <div className="bg-transparent slds-global-header slds-grid slds-grid_align-spread shadow-none">
-          <div className="slds-global-header__item flex">
-
-            {app && app.showSidebar && <SideBarToggle/>
-            }
             
-            { app && <AmisRender schema={{
-              type: "service",
-              body: [
+      { app && 
+      <AmisRender 
+        id="steedos-global-header"
+        data={{
+          app,
+        }} 
+        schema={{
+          type: "service",
+          body: [
+            {
+              "type": "wrapper",
+              "className": 'flex w-full px-4 h-[50px] p-0 justify-between items-center',
+              "body": [
                 {
-                  "type": "grid",
-                  className: '',
-                  "columns": [
-                    {
-                      "columnClassName": "",
-                      "body": [
-                        {
-                          "type": "steedos-logo",
-                          "src": "/logo.png",
-                          "className": 'block h-7 w-auto'
-                        }
-                      ],
-                      "md": "auto",
-                      "valign": "middle"
-                    },
-                  ],
-                }
-              ]
-            }} id="logo" router={router}></AmisRender>}
-
-          </div>
-
-
-            <AmisRender router={router} schema={{
-              type: 'service',
-              id: "globalHeader",
-              className: "slds-global-header__item",
-              body: [
+                  "type": "steedos-logo",
+                  "src": "/logo.png",
+                  "className": 'block h-7 w-auto flex flex-1'
+                },
                 {
                   "type": "steedos-global-header",
                   "label": "Global Header",
                   className: 'flex flex-nowrap gap-x-3 items-center',
-                  logoutScript: "window.signOut();"
+                  logoutScript: "window.signOut();",
+                  customButtons: [
+                    {
+                      "type": "button",
+                      "className": "toggle-sidebar",
+                      "hiddenOn": "${app.showSidebar != true}",
+                      "onEvent": {
+                        "click": {
+                          "actions": [
+                            {
+                              "actionType": "custom",
+                              "script": "document.body.classList.toggle('sidebar-open')",
+                            }
+                          ]
+                        }
+                      },
+                      "body": [
+                        {
+                          "type": "steedos-icon",
+                          "category": "utility",
+                          "name": "toggle_panel_left",
+                          "colorVariant": "default",
+                          "id": "u:afc3a08e8cf3",
+                          "className": "slds-button_icon slds-global-header__icon"
+                        }
+                      ],
+                    },]
                 }
-              ]
-            }}></AmisRender>
+              ],
+            }
+          ]
+        }}></AmisRender>}
 
-               
-        </div>
 
 
-        { app && <AmisRender schema={{
+        { app && 
+          <AmisRender 
+            data={{
+              app,
+            }}
+            id="steedos-global-navigation" 
+            schema={{
               type: "service",
-              hiddenOn: `${app.showSidebar === true}`,
+              hiddenOn: "${app.showSidebar === true}",
               body: [
                 {
                   "type": "grid",
@@ -148,43 +143,50 @@ export function GlobalHeader({app}) {
                 }
               ]
             }} 
-            id="appLauncher" 
             router={router} 
             updateProps={{location: router}}></AmisRender>}
-        </div>
-
-      {app && app.showSidebar &&  <div 
-          id="sidebar" 
-          className={`absolute lg:fixed z-20 h-full ease-in-out duration-300 flex flex-shrink-0 border-r overflow-y-auto bg-white border-slate-200
-            ${sidebarOpen?'block -translate-x-0 sm:w-[220px] w-64':' -translate-x-80 w-0'}`}>
-        <div className="flex flex-col w-full" onClick={(event)=>{
-          if(!(window.innerWidth >= 768)){
-            if(event.target.nodeName != 'A' || event.target?.lastChild?.className === 'antd-TplField' || event.target.className === 'antd-TplField'){
-              setSidebarOpen(false)
-            }
-          }
-        }}>
-
-          {app && <AmisRender schema={{
-            type: 'service',
-            body: [
-              {
-                "type": "steedos-app-launcher",
-                "showAppName": true,
-                "className": "p-4 border-b"
-              },
-              {
-                "type": "steedos-app-menu",
-                "stacked": true,
-                "appId": app.id,
-              }
-            ]
-            }} updateProps={{location: router}} router={router} id="sidebar"></AmisRender>
-          }
-        </div>
       </div>
-      }
 
+      <div className="absolute inset-0 mt-[50px]" onClick={(event)=>{
+        if(window.innerWidth < 768){
+          if(event.target.nodeName != 'A' || event.target?.lastChild?.className === 'antd-TplField' || event.target.className === 'antd-TplField'){
+            document.body.classList.remove("sidebar-open")
+          }
+        }
+      }}>
+
+      {app && <AmisRender 
+        data={{
+          app,
+        }}
+        schema={{
+          type: 'service',
+          body: [
+            {
+              type: "wrapper",
+              hiddenOn: "${app.showSidebar != true}",
+              className: 'sidebar-wrapper p-0 fixed z-20 h-full ease-in-out duration-300 flex flex-col border-r overflow-y-auto bg-white border-slate-200 block -translate-x-0 sm:w-[220px] w-64',
+              body: [
+                {
+                  "type": "steedos-app-launcher",
+                  "showAppName": true,
+                  "className": "p-4 border-b"
+                },
+                {
+                  "type": "steedos-app-menu",
+                  "stacked": true,
+                  "appId": app.id,
+                },
+              ]
+            },
+          ]
+        }} 
+        updateProps={{location: router}} 
+        router={router}
+        id="sidebar-x"
+        ></AmisRender>
+      }
+      </div>
     </>
   );
 }
