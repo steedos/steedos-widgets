@@ -89,6 +89,8 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
 
     // session 变化，获取 app
     useEffect(() => {
+      console.log('session 变化，获取 app')
+      console.log(session)
       if(!appId || !session) return ;
       if (!app || app?.id != appId) {
         getApp(appId)
@@ -100,7 +102,7 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
             setApp(data)
           })
       }
-    }, [session]);
+    }, [session, appId]);
 
     // app 变化，默认进入第一个tab
     useEffect(() => {
