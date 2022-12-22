@@ -7,11 +7,10 @@
  */
 
 export const AmisAppLauncher = async (props) => {
-    let { appId, data, className, showAppName, appNameClassName = '' } = props;
-    if(!appId){
-        appId = data.context.appId || 'admin';
+    let { app, data, className, showAppName = true, appNameClassName = '' } = props;
+    if(!app){
+      app = data.context.app ;
     }
-    // console.log(`AmisAppLauncher`, props);
     
     return {
         type: 'service',
@@ -30,8 +29,8 @@ export const AmisAppLauncher = async (props) => {
                   {
                       type: 'tpl',
                       className: `text-xl ml-4 mr-4 ${appNameClassName} `,
-                      tpl: '${name}',
-                      hiddenOn: `${!!!showAppName}`
+                      tpl: '${app.name}',
+                      hiddenOn: `${!!app && !!!showAppName}`
                   }
                 ],
                 "dialog": {
@@ -116,13 +115,5 @@ export const AmisAppLauncher = async (props) => {
                 "id": "u:b5dc095e1c11"
             }
         ],
-        api: {
-          "method": "get",
-          "url": `\${context.rootUrl}/service/api/apps/${appId}/menus`,
-          "headers": {
-            "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-          },
-          sendOn: `${!!showAppName}`
-        }
     }
 }

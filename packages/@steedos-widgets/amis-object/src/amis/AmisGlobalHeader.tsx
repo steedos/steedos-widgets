@@ -25,6 +25,7 @@ export const AmisGlobalHeader = async (props) => {
           ...customButtons,
           {
             "type": "button",
+            "hiddenOn": "window.innerWidth < 768",
             "id": "u:267a7e84a89d",
             "onEvent": {
               "click": {
@@ -53,6 +54,7 @@ export const AmisGlobalHeader = async (props) => {
           },
           {
             "type": "button",
+            "hiddenOn": "window.innerWidth < 768",
             "onEvent": {
               "click": {
                 "actions": [

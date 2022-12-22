@@ -74,8 +74,6 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
 
     // session 变化，获取 app
     useEffect(() => {
-      console.log('session 变化，获取 app')
-      console.log(session)
       if(!appId || !session) return ;
       if (!app || app?.id != appId) {
         getApp(appId)
@@ -105,7 +103,9 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
     
     return (
       <div className='h-full flex flex-col'>
-        <GlobalHeader app={app}/>
+        {app && (
+          <GlobalHeader app={app}/>
+        )}
         {session && (
           <div id="main" className="flex flex-1 sm:overflow-hidden">
             <div id="content" className="flex flex-col min-w-0 flex-1 overflow-y-auto">
@@ -113,7 +113,6 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
             </div>
           </div>
         )}
-        {/* <Footer /> */}
       </div>
     )
   }

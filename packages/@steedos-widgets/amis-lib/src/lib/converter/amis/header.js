@@ -342,7 +342,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
       "body": [
         {
           "type": "wrapper",
-          "className": "bg-gray-100 sm:shadow sm:rounded sm:border border-slate-300 p-4",
+          "className": "bg-gray-100 border-b sm:shadow sm:rounded sm:border border-slate-300 p-4",
           "body": [
             {
               "type": "grid",

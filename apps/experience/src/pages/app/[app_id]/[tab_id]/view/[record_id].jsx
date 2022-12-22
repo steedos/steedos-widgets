@@ -63,9 +63,9 @@ export default function Record({formFactor}) {
             className="steedos-record-detail"
             id={`${renderId}-page`}
             schema={{
-              "type": "page",
+              "type": "service",
+              "className": "m-0 sm:m-3",
               "name": `amis-${app_id}-${tab_id}-detail`,
-              "title": "Welcome to Steedos",
               "body": [
                 {
                   "type": "steedos-record-detail",
