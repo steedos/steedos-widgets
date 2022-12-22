@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/router";
-import { Sidebar } from '@/components/Sidebar';
 import { AmisRender } from '@/components/AmisRender';
 
 function classNames(...classes) {
