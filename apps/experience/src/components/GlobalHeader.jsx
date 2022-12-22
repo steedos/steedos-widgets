@@ -41,7 +41,7 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
       <div
         className="slds-global-header_container sticky top-0 z-40 w-full flex-none backdrop-blur transition-colors duration-500 lg:z-50 sm:shadow"
       >
-        <div className="bg-transparent slds-global-header slds-grid slds-grid_align-spread shadow-none">
+        <div className="bg-transparent slds-global-header slds-grid slds-grid_align-spread shadow-none border-b sm:border-none">
           <div className="slds-global-header__item flex">
             {app && app.showSidebar && <SideBarToggle/>
             }

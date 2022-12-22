@@ -237,14 +237,13 @@ export const AmisGlobalHeader = async (props) => {
                     "type": "grid",
                     "valign": "middle",
                     "align": "center",
-                    "className": "mb-4",
+                    "className": "m-2",
                     "columns": [
                       {
-                        "columnClassName": "",
-                        "md": 2,
                         "body": [
                           {
                             "type": "avatar",
+                            "className": "",
                             "src": avatarSrc,
                             "icon": "fa fa-user",
                             "id": "u:033218742221",
@@ -256,8 +255,6 @@ export const AmisGlobalHeader = async (props) => {
                         ]
                       },
                       {
-                        "columnClassName": "",
-                        "md": 10,
                         "body": [
                           {
                             "type": "tpl",
