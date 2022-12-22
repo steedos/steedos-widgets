@@ -34,7 +34,7 @@ export  function Sidebar({ app }) {
             "appId": app.id,
           }
         ]
-      }} updateProps={{location: router}} router={router} id="sidebarAppMenu"></AmisRender>}
+      }} updateProps={{location: router}} router={router} id="sidebar"></AmisRender>}
       </div>
     </nav>
   )

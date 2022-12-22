@@ -12,7 +12,7 @@ export default class MyDocument extends Document {
   render() {
     return (
       <Html
-        className="h-full scroll-smooth bg-white antialiased [font-feature-settings:'ss01']"
+        className="h-full scroll-smooth bg-white"
         lang="en"
       >
         <Head>
@@ -39,7 +39,7 @@ export default class MyDocument extends Document {
           )}
 
         </Head>
-        <body className='antialiased'>
+        <body className=''>
           <Main />
           <NextScript />
         </body>
