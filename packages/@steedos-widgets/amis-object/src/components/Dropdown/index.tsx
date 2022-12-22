@@ -27,12 +27,12 @@ const HeaderDropdown: React.FC<HeaderDropdownProps> = ({ overlayClassName: cls, 
 const getOverlay = (render, overlaySchema, data)=>{
   return <>
   <Spin delay={300} spinning={false} >
-    <>
+    <div className="bg-white shadow">
     {render('body', overlaySchema, {
       // data: data
         // 这里的信息会作为 props 传递给子组件，一般情况下都不需要这个
     })}
-    </>
+    </div>
   </Spin>
 </>
 }
