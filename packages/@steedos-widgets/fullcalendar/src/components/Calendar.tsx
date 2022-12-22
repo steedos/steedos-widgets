@@ -60,6 +60,8 @@ export const FullCalendar = ({
     dispatchEvent('eventRemove', event)
   };
 
+  // forceEventDuration属性设置为true修正了把全天事件拖动变更到非全天事件时end为空造成的事件在画布上看不到的问题。
+
   return (
     <FullCalendarReact 
       plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
@@ -82,6 +84,7 @@ export const FullCalendar = ({
       eventAdd={handleEventAdd}
       eventChange={handleEventChange}
       eventRemove={handleEventRemove}
+      forceEventDuration={true}
       {...props}
     />
   )
