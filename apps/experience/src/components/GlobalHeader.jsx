@@ -52,9 +52,9 @@ export function GlobalHeader({app}) {
   return (
     <>
       <div
-        className="slds-global-header_container sticky top-0 z-40 w-full flex-none backdrop-blur transition-colors duration-500 lg:z-50 sm:shadow"
+        className="slds-global-header_container sticky top-0 z-40 w-full flex-none backdrop-blur transition-colors duration-500 lg:z-50 sm:shadow  border-b-[3px] border-sky-500"
       >
-        <div className="bg-transparent slds-global-header slds-grid slds-grid_align-spread shadow-none border-b sm:border-none">
+        <div className="bg-transparent slds-global-header slds-grid slds-grid_align-spread shadow-none">
           <div className="slds-global-header__item flex">
 
             {app && app.showSidebar && <SideBarToggle/>
@@ -86,11 +86,11 @@ export function GlobalHeader({app}) {
 
           </div>
 
-          <div className="slds-global-header__item">
 
             <AmisRender router={router} schema={{
               type: 'service',
               id: "globalHeader",
+              className: "slds-global-header__item",
               body: [
                 {
                   "type": "steedos-global-header",
@@ -101,18 +101,17 @@ export function GlobalHeader({app}) {
               ]
             }}></AmisRender>
 
-          </div>
                
         </div>
 
-        <div className="steedos-context-bar hidden sm:flex h-10 leading-5 pl-4 border-b-[3px] border-sky-500">
 
         { app && <AmisRender schema={{
               type: "service",
+              hiddenOn: `${app.showSidebar === true}`,
               body: [
                 {
                   "type": "grid",
-                  className: '',
+                  className: 'steedos-context-bar hidden sm:flex h-10 leading-5 pl-4 mb-[-3px]',
                   "columns": [
                     {
                       "columnClassName": "items-center hidden sm:flex pb-0",
@@ -140,7 +139,6 @@ export function GlobalHeader({app}) {
                               // overflowIndicator: "fas fa-angle-double-down"
                           },
                           "id": "u:77851eb4aa89",
-                          hiddenOn: `${app.showSidebar === true}`
                         }
                       ],
                       "id": "u:5367229505d8",
@@ -150,9 +148,11 @@ export function GlobalHeader({app}) {
                   ],
                 }
               ]
-            }} id="appLauncher" router={router} updateProps={{location: router}}></AmisRender>}
+            }} 
+            id="appLauncher" 
+            router={router} 
+            updateProps={{location: router}}></AmisRender>}
         </div>
-      </div>
 
       {app && app.showSidebar &&  <div 
           id="sidebar" 
@@ -165,7 +165,23 @@ export function GlobalHeader({app}) {
             }
           }
         }}>
-          <Sidebar app={app}/>
+
+          {app && <AmisRender schema={{
+            type: 'service',
+            body: [
+              {
+                "type": "steedos-app-launcher",
+                "showAppName": true,
+                "className": "p-4 border-b"
+              },
+              {
+                "type": "steedos-app-menu",
+                "stacked": true,
+                "appId": app.id,
+              }
+            ]
+            }} updateProps={{location: router}} router={router} id="sidebar"></AmisRender>
+          }
         </div>
       </div>
       }

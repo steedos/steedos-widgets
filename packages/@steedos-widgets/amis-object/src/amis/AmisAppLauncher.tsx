@@ -7,7 +7,7 @@
  */
 
 export const AmisAppLauncher = async (props) => {
-    let { appId, data, showAppName, appNameClassName = '' } = props;
+    let { appId, data, className, showAppName, appNameClassName = '' } = props;
     if(!appId){
         appId = data.context.appId || 'admin';
     }
@@ -15,6 +15,7 @@ export const AmisAppLauncher = async (props) => {
     
     return {
         type: 'service',
+        className,
         body: [
             {
                 "type": "button",
