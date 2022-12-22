@@ -13,7 +13,7 @@ const defaultAvatar =
 
 export function GlobalHeader({app}) {
 
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768)
   const SideBarToggle = ()=> {
     return (
       <button
@@ -28,8 +28,12 @@ export function GlobalHeader({app}) {
     )
   }
   useEffect(()=>{
-    if (app)
-      setSidebarOpen(app.showSidebar)
+    if (app) {
+      if (app.showSidebar)
+        document.querySelector("body").classList.add('sidebar')
+      else
+        document.querySelector("body").classList.remove("sidebar")
+    }
   }, [app])
 
   useEffect(()=>{
