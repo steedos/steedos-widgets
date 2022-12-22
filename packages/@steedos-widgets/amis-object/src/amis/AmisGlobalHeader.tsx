@@ -291,25 +291,25 @@ export const AmisGlobalHeader = async (props) => {
                     },
                     "level": "link"
                   },
-                  {
-                    "type": "button",
-                    "label": "关于",
-                    "className": "flex",
-                    "onEvent": {
-                      "click": {
-                        "actions": [
-                            {
-                                "args": {
-                                  "url": "/app/admin/page/creator_about",
-                                  "blank": false
-                                },
-                                "actionType": "link"
-                              }
-                        ]
-                      }
-                    },
-                    "level": "link"
-                  },
+                  // {
+                  //   "type": "button",
+                  //   "label": "关于",
+                  //   "className": "flex",
+                  //   "onEvent": {
+                  //     "click": {
+                  //       "actions": [
+                  //           {
+                  //               "args": {
+                  //                 "url": "/app/admin/page/creator_about",
+                  //                 "blank": false
+                  //               },
+                  //               "actionType": "link"
+                  //             }
+                  //       ]
+                  //     }
+                  //   },
+                  //   "level": "link"
+                  // },
                   {
                     "type": "button",
                     "label": "注销",
