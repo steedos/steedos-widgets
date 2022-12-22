@@ -262,7 +262,28 @@ export async function getObjectCalendar(objectSchema, listView, options) {
       let sortStr = sortField + ' ' + sortOrder || 'asc';
       sort = sortStr;
     }
-  }  
+  }
+  let initialView = calendarOptions.currentView;
+  if(initialView){
+    // day, week, month, agenda
+    switch(initialView){
+      case "day":
+        initialView = "dayGridWeek"
+        break;
+      case "week":
+        initialView = "timeGridWeek"
+        break;
+      case "month":
+        initialView = "dayGridMonth"
+        break;
+      case "agenda":
+        initialView = "timeGridDay"
+        break;
+    }
+  }
+  else{
+    initialView = "timeGridWeek";
+  }
 
   const api = await getCalendarApi(objectSchema, fields, options);
 
@@ -363,6 +384,7 @@ export async function getObjectCalendar(objectSchema, listView, options) {
     "editable": permissions.allowEdit,
     "selectable": permissions.allowCreate,
     "selectMirror": permissions.allowCreate,
+    "initialView": initialView,
     "onEvent": {
       "getEvents": {
         "weight": 0,
