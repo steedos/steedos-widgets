@@ -100,7 +100,7 @@ export function GlobalHeader({ navigation, selectedTabId, app, SideBarToggle }) 
                   className: '',
                   "columns": [
                     {
-                      "columnClassName": "items-center hidden sm:flex pb-1",
+                      "columnClassName": "items-center hidden sm:flex pb-0",
                       "body": [
                         {
                           "type": "steedos-app-launcher",
