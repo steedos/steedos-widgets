@@ -2,6 +2,7 @@ import { getApi, getRecordPermissionsApi } from './fields/table';
 import { getSaveApi } from './api';
 import { each, values } from 'lodash';
 import * as graphql from './graphql'
+import _, { isEmpty } from 'lodash';
 
 export async function getCalendarApi(mainObject, fields, options) {
   if (!options) {
@@ -377,6 +378,19 @@ export async function getObjectCalendar(objectSchema, listView, options) {
   const recordId = "${event.id}";
   const recordPermissionsApi = getCalendarRecordPermissionsApi(objectSchema, recordId);
   const recordSaveApi = getCalendarRecordSaveApi(objectSchema, calendarOptions);
+  
+  const businessHours = {
+    daysOfWeek: [ 1, 2, 3, 4, 5 ],
+    startTime: '08:00',
+    endTime: '18:00',
+  };
+  if(!isEmpty(calendarOptions.startDayHour)){
+    businessHours.startTime = `${calendarOptions.startDayHour}:00`;
+  }
+  if(!isEmpty(calendarOptions.endDayHour)){
+    businessHours.endTime = `${calendarOptions.endDayHour}:00`;
+  }
+  
   const amisSchema = {
     "type": "steedos-fullcalendar",
     "label": "",
@@ -385,6 +399,7 @@ export async function getObjectCalendar(objectSchema, listView, options) {
     "selectable": permissions.allowCreate,
     "selectMirror": permissions.allowCreate,
     "initialView": initialView,
+    "businessHours": businessHours,
     "onEvent": {
       "getEvents": {
         "weight": 0,
