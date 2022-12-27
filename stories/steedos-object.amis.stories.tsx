@@ -235,6 +235,16 @@ export const ObjectListview = () => (
         "objectApiName": "space_users",
         "listName": "all"
       }]
+    },{
+      "type": "panel",
+      "title": "不显示 amis headerToolbar",
+      "body": [{
+        "type": "steedos-object-listview",
+        "objectApiName": "space_users",
+        "listName": "all",
+        "headerToolbar": [],
+        "columnsTogglable": false
+      }]
     }]
   }}
   assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
