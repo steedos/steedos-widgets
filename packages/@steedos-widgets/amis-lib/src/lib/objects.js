@@ -203,7 +203,7 @@ export async function getListSchema(
     let sort = getListViewSort(listView);
 
     if(listView.type === "calendar"){
-        const amisSchema = await getObjectCalendar(uiSchema, listView, {
+        const amisSchema = await getObjectCalendar(uiSchema, listView.options, {
             tabId: objectName,
             appId: appName,
             objectName: objectName,
@@ -339,6 +339,26 @@ export async function getTableSchema(
     return {
         uiSchema,
         amisSchema,
+    };
+}
+
+// 获取对象日历
+export async function getCalendarSchema(
+    appName,
+    objectName,
+    calendarOptions,
+    ctx = {}
+) {
+    const uiSchema = await getUISchema(objectName);
+    const amisSchema = await getObjectCalendar(uiSchema, calendarOptions, {
+        tabId: objectName,
+        appId: appName,
+        objectName: objectName,
+        ...ctx
+    });
+    return {
+        uiSchema,
+        amisSchema
     };
 }
 

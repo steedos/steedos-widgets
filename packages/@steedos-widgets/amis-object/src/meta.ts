@@ -8,6 +8,7 @@
 // import Hello from "./metas/Hello";
 import AmisObjectForm from "./metas/AmisObjectForm";
 import AmisObjectListview from "./metas/AmisObjectListview";
+import AmisObjectCalendar from "./metas/AmisObjectCalendar";
 import AmisObjectTable from "./metas/AmisObjectTable";
 import AmisRecordDetailHeader from "./metas/AmisRecordDetailHeader";
 import AmisRecordDetail from "./metas/AmisRecordDetail";
@@ -51,6 +52,7 @@ const components = [
   AmisProvider, 
   AmisObjectFieldLookup,
   AmisObjectTable,
+  AmisObjectCalendar,
   AmisObjectButton,
   SteedosDropdownButton,
   AmisAppLauncher,
@@ -79,6 +81,7 @@ const componentList = [
       AmisProvider,
       AmisObjectFieldLookup,
       AmisObjectTable,
+      AmisObjectCalendar,
       AmisObjectButton,
       SteedosDropdownButton,
       AmisAppLauncher,

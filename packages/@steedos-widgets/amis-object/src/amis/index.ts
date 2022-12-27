@@ -10,6 +10,7 @@ import './AmisObjectForm.less'
 export * from './AmisObjectForm';
 export * from './AmisObjectListview';
 export * from './AmisObjectTable';
+export * from './AmisObjectCalendar';
 export * from './AmisRecordDetailHeader';
 export * from './AmisRecordDetail';
 export * from './AmisRecordDetailRelatedList';

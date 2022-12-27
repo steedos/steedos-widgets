@@ -235,13 +235,13 @@ export function getCalendarRecordSaveApi(object, calendarOptions) {
  * @param {*} objectSchema 对象UISchema
  * @returns amisSchema
  */
-export async function getObjectCalendar(objectSchema, listView, options) {
+export async function getObjectCalendar(objectSchema, calendarOptions, options) {
   const permissions = objectSchema.permissions;
   if (!options) {
     options = {};
   }
 
-  const calendarOptions = listView.options || {};
+  // const calendarOptions = listView.options || {};
   const titleFields = calendarOptions.title || ["name"];
   let fields = [];
   each(titleFields, function (n) {
