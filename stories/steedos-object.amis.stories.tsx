@@ -245,6 +245,15 @@ export const ObjectListview = () => (
         "headerToolbar": [],
         "columnsTogglable": false
       }]
+    },{
+      "type": "panel",
+      "title": "日历视图",
+      "body": [{
+        "type": "steedos-object-listview",
+        "objectApiName": "events",
+        "listName": "calendar_view",
+        "showHeader": true
+      }]
     }]
   }}
   assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
