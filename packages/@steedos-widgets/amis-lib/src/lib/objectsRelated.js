@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-08 15:13:58
+ * @LastEditTime: 2022-12-28 17:03:21
  * @Description:
  */
 
@@ -213,6 +213,9 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
             id: componentId,
             className: "steedos-record-related-list sm:rounded sm:border border-slate-300 mb-4",
             data: {
+                "&": "$$",
+                appId: "${appId}",
+                app_id: "${appId}",
                 masterObjectName: objectName,
                 masterRecordId: "${recordId}",
                 relatedKey: relatedKey,   
@@ -223,6 +226,9 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
                 {
                     ...amisSchema,
                     data: {
+                        "&": "$$",
+                        appId: "${appId}",
+                        app_id: "${appId}",
                         // filter: ["${relatedKey}", "=", "${masterRecordId}"], 此语法不符合amis 数据映射规范
                         relatedKey: relatedKey,
                         objectName: "${objectName}",
