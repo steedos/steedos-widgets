@@ -11,7 +11,7 @@ export const AmisObjectCalendar = async (props) => {
   console.log(`AmisObjectCalendar props`, props)
   const { $schema, top, sort, filter, title, currentView, startDateExpr, endDateExpr, allDayExpr, textExpr, data, defaultData, className=""} = props;
 
-  let objectApiName = props.objectApiName || "space_users";
+  let objectApiName = props.objectApiName || "events";
 
   const amisSchemaData = Object.assign({}, data, defaultData);
   // const listViewId = ctx?.listViewId || amisSchemaData.listViewId;

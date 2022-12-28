@@ -31,7 +31,7 @@ const config: any = {
   engines: ["amis"],
   // settings for amis.
   amis: {
-    name: 'steedos-object-listview',
+    name: 'steedos-object-calendar',
     icon: "fa-fw fa fa-list-alt"
   }
 };
