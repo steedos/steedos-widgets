@@ -19,11 +19,31 @@ const config: any = {
       propType: "string",
       description: '对象名称',
     },
-    // {
-    //   name: "listName",
-    //   propType: "string",
-    //   description: '视图名称',
-    // }
+    {
+      name: "startDateExpr",
+      propType: "string",
+      description: '开始时间字段',
+    },
+    {
+      name: "endDateExpr",
+      propType: "string",
+      description: '结束时间字段',
+    },
+    {
+      name: "allDayExpr",
+      propType: "string",
+      description: '全天字段',
+    },
+    {
+      name: "textExpr",
+      propType: "string",
+      description: '标题字段',
+    },
+    {
+      name: "currentView",
+      propType: "string",
+      description: '默认视图',
+    }
   ],
   preview: {
   },
@@ -67,12 +87,12 @@ export default {
         type: config.amis.name,
         label: config.title,
         objectApiName: "${objectName}",
-        // listName: "all"
+        currentView: "timeGridWeek"
       },
       previewSchema: {
         type: config.amis.name,
         objectApiName: 'events',
-        // listName: "all"
+        currentView: "timeGridWeek"
       },
       panelTitle: "设置",
       panelControls: [
@@ -98,6 +118,42 @@ export default {
           "labelField": "label",
           "valueField": "name",
           "menuTpl": ""
+        },
+        {
+          "type": "input-text",
+          "name": "startDateExpr",
+          "label": "开始时间字段"
+        },
+        {
+          "type": "input-text",
+          "name": "endDateExpr",
+          "label": "结束时间字段"
+        },
+        {
+          "type": "input-text",
+          "name": "allDayExpr",
+          "label": "全天字段"
+        },
+        {
+          "type": "input-text",
+          "name": "textExpr",
+          "label": "标题字段"
+        },
+        {
+          "type": "select",
+          "name": "currentView",
+          "label": "默认视图",
+          "value": "timeGridWeek",
+          "options": [{
+            "label": "月",
+            "value": "dayGridMonth"
+          },{
+            "label": "周",
+            "value": "timeGridWeek"
+          },{
+            "label": "日",
+            "value": "timeGridDay"
+          }]
         }
       ]
     }
