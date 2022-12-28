@@ -266,10 +266,8 @@ export const ObjectCalendar = () => (
     type: 'page',
     title: '日历视图',
     body: [{
-      "type": "steedos-object-listview",
-      "objectApiName": "events",
-      "listName": "calendar_view",
-      "showHeader": true
+      "type": "steedos-object-calendar",
+      "objectApiName": "events"
     }]
   }}
   assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
