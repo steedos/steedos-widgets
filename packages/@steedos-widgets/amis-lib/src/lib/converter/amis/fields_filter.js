@@ -170,20 +170,23 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
     const listViewPropsStoreKey = location.pathname + "/crud/" + data.listViewId ;
     let localListViewProps = localStorage.getItem(listViewPropsStoreKey);
     if(localListViewProps){
-        localListViewProps = JSON.parse(localListViewProps);
-        let filterFormValues = _.pickBy(localListViewProps, function(n,k){
-          return /^__searchable__/g.test(k);
+      localListViewProps = JSON.parse(localListViewProps);
+      let filterFormValues = _.pickBy(localListViewProps, function(n,k){
+        return /^__searchable__/g.test(k);
+      });
+      if(!_.isEmpty(filterFormValues)){
+        setData({ filterFormValues });
+        const omitedEmptyFormValue = _.omitBy(filterFormValues, function(n){
+          return _.isNil(n) 
+            || (_.isObject(n) && _.isEmpty(n)) 
+            || (_.isArray(n) && _.isEmpty(n.filter(function(item){return !_.isNil(item)})))
+            || (_.isString(n) && n.length === 0);
         });
-        if(!_.isEmpty(filterFormValues)){
-          setData({ filterFormValues });
-          const omitedEmptyFormValue = _.omitBy(filterFormValues, function(n){
-            return _.isNil(n) || (_.isObject(n) && _.isEmpty(n)) || (_.isString(n) && n.length === 0);
-          });
-          // 有过滤条件时自动展开搜索栏
-          if(!_.isEmpty(omitedEmptyFormValue)){
-            setData({ showFieldsFilter: true });
-          }
+        // 有过滤条件时自动展开搜索栏
+        if(!_.isEmpty(omitedEmptyFormValue)){
+          setData({ showFieldsFilter: true });
         }
+      }
     }
   `;
   const onSearchableFieldsChangeScript = `
