@@ -203,14 +203,13 @@ export async function getListSchema(
     let sort = getListViewSort(listView);
 
     if(listView.type === "calendar"){
-        const amisSchema = await getObjectCalendar(uiSchema, listView.options, {
-            tabId: objectName,
-            appId: appName,
-            objectName: objectName,
-            ...ctx,
-            filter: listView.filters,
-            sort
-        });
+        const amisSchema = {
+            "type": "steedos-object-calendar",
+            "objectApiName": objectName,
+            "filters": listView.filters,
+            "sort": sort,
+            ...listView.options
+        };
         return {
             uiSchema,
             isCalendar: true,

@@ -272,7 +272,7 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
     // day, week, month, agenda
     switch(initialView){
       case "day":
-        initialView = "dayGridWeek"
+        initialView = "timeGridDay"
         break;
       case "week":
         initialView = "timeGridWeek"
