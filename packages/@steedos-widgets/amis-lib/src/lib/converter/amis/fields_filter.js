@@ -12,13 +12,10 @@ export async function getObjectFieldsFilterButtonSchema(objectSchema) {
       "click": {
         "actions": [
           {
-            "actionType": "setValue",
+            "actionType": "broadcast",
             "args": {
-              "value": {
-                "showFieldsFilter": "${!showFieldsFilter}"
-              }
-            },
-            "componentId": `service_${amisListViewId}`
+              "eventName": "broadcast_toggle_fields_filter"
+            }
           }
         ]
       }
@@ -179,6 +176,13 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
         });
         if(!_.isEmpty(filterFormValues)){
           setData({ filterFormValues });
+          const omitedEmptyFormValue = _.omitBy(filterFormValues, function(n){
+            return _.isNil(n) || (_.isObject(n) && _.isEmpty(n)) || (_.isString(n) && n.length === 0);
+          });
+          // 有过滤条件时自动展开搜索栏
+          if(!_.isEmpty(omitedEmptyFormValue)){
+            setData({ showFieldsFilter: true });
+          }
         }
     }
   `;
@@ -377,10 +381,24 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
         "className": "slds-filters"
       },
       "size": "xs",
-      "className": "border-gray slds-grid slds-grid_vertical slds-nowrap"
+      "className": "border-gray slds-grid slds-grid_vertical slds-nowrap px-1 py-1",
+      "visibleOn": "this.showFieldsFilter",
     },
-    "visibleOn": "this.showFieldsFilter",
-    "className": "px-1 py-1 bg-white b-b"
+    "className": "bg-white b-b",
+    "onEvent": {
+      "broadcast_toggle_fields_filter": {
+        "actions": [
+          {
+            "actionType": "setValue",
+            "args": {
+              "value": {
+                "showFieldsFilter": "${!showFieldsFilter}"
+              }
+            },
+          }
+        ]
+      }
+    }
   };
 }
 
