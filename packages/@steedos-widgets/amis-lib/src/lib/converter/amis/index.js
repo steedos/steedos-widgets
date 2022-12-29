@@ -347,7 +347,8 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
                 wrapWithPanel: false, 
                 body: await getFormBody(map(fields, (field)=>{field.readonly = true; return field;}), objectSchema, Object.assign({}, ctx, {showSystemFields: true})),
                 className: 'steedos-amis-form bg-white',
-                actions: [] // 不显示表单默认的提交按钮
+                actions: [], // 不显示表单默认的提交按钮
+                hiddenOn: "${recordLoaded != true}"
             }
         ],
         onEvent: {
@@ -363,7 +364,15 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
                 data: {
                   record: "${event.data}"
                 }
-              }
+              },
+              {
+                "actionType": "setValue",
+                "args": {
+                   value: {
+                    "recordLoaded": true,
+                   }
+                }
+            }
             ]
           }
         }
