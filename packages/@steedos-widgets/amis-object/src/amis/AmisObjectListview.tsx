@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-30 10:45:46
+ * @LastEditTime: 2022-12-30 17:12:33
  * @Description: 
  */
 import { getListSchema, getObjectListHeaderFirstLine } from '@steedos-widgets/amis-lib'
@@ -10,10 +10,12 @@ import { keys, pick, difference } from 'lodash';
 
 export const AmisObjectListView = async (props) => {
   // console.log(`AmisObjectListView props`, props)
-  const { $schema, top, perPage, showHeader, headerSchema, ctx, data, defaultData, className="", tableClassName } = props;
-  const urlListNameMatchs = location.pathname.match(/grid\/(\w+)/);
-  const urlListName = urlListNameMatchs && urlListNameMatchs[1]
-  let listName = urlListName || props.listName;
+  const { $schema, top, perPage, showHeader, headerSchema, ctx, data, defaultData, className="", tableClassName} = props;
+  // const urlListNameMatchs = location.pathname.match(/grid\/(\w+)/);  // 错误的规则
+  // const urlListName = urlListNameMatchs && urlListNameMatchs[1]
+  // let listName = props.listName || urlListName;
+
+  let { listName } = defaultData
 
   let defaults: any = {};
   let objectApiName = props.objectApiName || "space_users";
