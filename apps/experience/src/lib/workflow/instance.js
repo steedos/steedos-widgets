@@ -5,7 +5,7 @@ import { getOpinionFieldStepsName } from './util';
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 17:47:37
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-08 16:45:53
+ * @LastEditTime: 2022-12-30 15:26:53
  * @Description:
  */
 
@@ -143,7 +143,7 @@ const getLastCCStep = ({ traces }, userId) => {
 };
 
 const isCurrentStepOpinionField = (field, currentStep)=>{
-  return _.includes(_.map(getOpinionFieldStepsName(field), 'stepName'), currentStep.name);
+  return _.includes(_.map(getOpinionFieldStepsName(field), 'stepName'), currentStep?.name);
 }
 
 export const getInstanceInfo = async ({ instanceId, box }) => {
