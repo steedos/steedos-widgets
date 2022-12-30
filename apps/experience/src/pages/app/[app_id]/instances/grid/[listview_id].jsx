@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-08 09:20:45
+ * @LastEditTime: 2022-12-30 10:46:11
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef } from 'react';
@@ -13,10 +13,9 @@ import { InstancesListview } from '@/components/object/InstancesListview';
 
 export default function Page ({formFactor}) {
   const router = useRouter();
-  const { app_id,  } = router.query
+  const { app_id, listview_id } = router.query
   const tab_id = 'instances';
   const [schema, setSchema] = useState();
-  const listViewId = SteedosUI.getRefId({type: 'listview', appId: app_id, name: schema?.uiSchema?.name});
   
   const getListviewSchema = (listviewName)=>{
     getListSchema(app_id, tab_id, listviewName, {formFactor: formFactor}).then((data) => {
@@ -34,7 +33,7 @@ export default function Page ({formFactor}) {
 
   return (
     <div className='h-full flex instance-scope'>
-      <div className="flex-1 w-32 border-r"><InstancesListview bulkActions={false} formFactor={formFactor} app_id={app_id} tab_id={tab_id}></InstancesListview></div>
+      <div className="flex-1 w-32 border-r"><InstancesListview bulkActions={false} formFactor={formFactor} app_id={app_id} listview_id={listview_id} tab_id={tab_id}></InstancesListview></div>
       <div className="flex-1 w-64" ></div>
     </div>
   )

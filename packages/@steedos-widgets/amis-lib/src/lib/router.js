@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-16 17:02:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-14 14:50:39
+ * @LastEditTime: 2022-12-30 13:57:19
  * @Description:
  */
 
@@ -17,9 +17,10 @@ export const Router = {
     getObjectListViewPath({formFactor, appId, objectName, listViewName}){
         return `/app/${appId}/${objectName}/grid/${listViewName}`;
     },
-    getObjectDetailPath({formFactor, appId, objectName, recordId, listViewName}){
+    getObjectDetailPath(props){
+        const {formFactor, appId, objectName, recordId, listViewName} = props;
         if(objectName === 'instances'){
-            return `/workflow/space/\${context.tenantId}/${listViewName}/${recordId}`;
+            return `/workflow/space/\${context.tenantId}/\${listName}/${recordId}`;
         }
         return `/app/${appId}/${objectName}/view/${recordId}`;
     },
