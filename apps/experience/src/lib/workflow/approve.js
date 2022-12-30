@@ -109,6 +109,9 @@ const getNextStepInput = async (instance) => {
             required: true,
             "source": {
               "url": "${context.rootUrl}/api/workflow/v2/nextStep",
+              "headers": {
+                "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+              },
               "method": "post",
               "messages": {
               },
@@ -229,6 +232,9 @@ const getNextStepUsersInput = async (instance) => {
               "url": "${context.rootUrl}/api/workflow/v2/nextStepUsers",
               "method": "post",
               "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end'",
+              "headers": {
+                "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+              },
               "messages": {
               },
               "requestAdaptor": "\nconst { context, next_step } = api.data;\nconst formValues = SteedosUI.getRef(\"amis-root-workflow\").getComponentById(\"instance_form\").getValues();\n\napi.data = {\n  instanceId: context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
