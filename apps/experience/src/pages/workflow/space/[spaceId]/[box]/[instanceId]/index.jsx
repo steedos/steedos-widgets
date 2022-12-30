@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-11 14:10:02
+ * @LastEditTime: 2022-12-30 17:17:10
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -62,10 +62,9 @@ export default function Record({formFactor}) {
       setSchema(res)
     })
   }, [tab_id, instanceId])
-  
   return (
     <div className="h-full flex instance-scope">
-      <div className="flex-1 w-32 border-r"><InstancesListview bulkActions={false} formFactor={formFactor} app_id={app_id} tab_id={tab_id} listViewName={box}></InstancesListview></div>
+      <div className="flex-1 w-32 border-r"><InstancesListview bulkActions={false} formFactor={formFactor} app_id={app_id} tab_id={tab_id} listview_id={box}></InstancesListview></div>
       <div className="flex-1 w-64" >
         {
           record != undefined && <div className="region-header bg-slate-50 static">

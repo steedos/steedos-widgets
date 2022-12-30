@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-30 13:56:56
+ * @LastEditTime: 2022-12-30 17:15:44
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef } from 'react';
@@ -32,7 +32,7 @@ export function InstancesListview ({formFactor, app_id, tab_id, listview_id, bul
     return <><Loading/></>
   return (
     <div className='flex flex-col flex-1 overflow-hidden'>
-      <AmisRender
+      {listview_id && <AmisRender
             data={{
               objectName: tab_id,
               listViewId: listViewId,
@@ -54,6 +54,7 @@ export function InstancesListview ({formFactor, app_id, tab_id, listview_id, bul
             }}
             router={router}
           ></AmisRender>
+      }
     </div>
   )
 }
