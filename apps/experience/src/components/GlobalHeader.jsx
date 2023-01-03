@@ -26,7 +26,7 @@ export function GlobalHeader({app}) {
   return (
     <>
       <div
-        className="slds-global-header_container sticky top-0 z-40 w-full flex-none backdrop-blur transition-colors duration-500 lg:z-50 sm:shadow  border-b-[3px] border-sky-500"
+        className=""
       >
             
       { app && 
@@ -42,59 +42,103 @@ export function GlobalHeader({app}) {
           body: [
             {
               "type": "wrapper",
-              "className": 'flex w-full px-4 h-[50px] p-0 justify-between items-center',
-              "body": [
+              "className": "p-0 slds-global-header_container sticky top-0 z-40 w-full flex-none backdrop-blur transition-colors duration-500 lg:z-50 sm:shadow  border-b-[3px] border-sky-500",
+              body: [
                 {
-                  type: "wrapper",
-                  className: 'p-0 flex flex-1 items-center',
-                  body: [
+                  "type": "wrapper",
+                  "className": 'flex w-full px-4 h-[50px] p-0 justify-between items-center',
+                  "body": [
                     {
-                      "type": "steedos-logo",
-                      "src": "/logo.png",
-                      "className": 'block h-7 w-auto mr-4',
-                      "hiddenOn": "window.innerWidth < 768",
+                      type: "wrapper",
+                      className: 'p-0 flex flex-1 items-center',
+                      body: [
+                        {
+                          "type": "steedos-logo",
+                          "src": "/logo.png",
+                          "className": 'block h-7 w-auto mr-4',
+                          "hiddenOn": "window.innerWidth < 768",
+                        },
+                        {
+                          "type": "steedos-app-launcher",
+                          hiddenOn: "${app.showSidebar != true}",
+                          "showAppName": true
+                        },
+                      ],
                     },
                     {
-                      "type": "steedos-app-launcher",
-                      hiddenOn: "${app.showSidebar != true}",
-                      "showAppName": true
-                    },
+                      "type": "steedos-global-header",
+                      "label": "Global Header",
+                      className: 'flex flex-nowrap gap-x-3 items-center',
+                      logoutScript: "window.signOut();",
+                      customButtons: [
+                        {
+                          "type": "button",
+                          "className": "toggle-sidebar",
+                          "hiddenOn": "${app.showSidebar != true}",
+                          "onEvent": {
+                            "click": {
+                              "actions": [
+                                {
+                                  "actionType": "custom",
+                                  "script": "document.body.classList.toggle('sidebar-open')",
+                                }
+                              ]
+                            }
+                          },
+                          "body": [
+                            {
+                              "type": "steedos-icon",
+                              "category": "utility",
+                              "name": "rows",
+                              "colorVariant": "default",
+                              "id": "u:afc3a08e8cf3",
+                              "className": "slds-button_icon slds-global-header__icon"
+                            }
+                          ],
+                        },]
+                    }
                   ],
                 },
+
                 {
-                  "type": "steedos-global-header",
-                  "label": "Global Header",
-                  className: 'flex flex-nowrap gap-x-3 items-center',
-                  logoutScript: "window.signOut();",
-                  customButtons2: [
+                  "type": "grid",
+                  "className": 'steedos-context-bar hidden sm:flex h-10 leading-5 pl-4 mb-[-3px]',
+                  "columns": [
                     {
-                      "type": "button",
-                      "className": "toggle-sidebar",
-                      "hiddenOn": "${app.showSidebar != true}",
-                      "onEvent": {
-                        "click": {
-                          "actions": [
-                            {
-                              "actionType": "custom",
-                              "script": "document.body.classList.toggle('sidebar-open')",
-                            }
-                          ]
-                        }
-                      },
+                      "columnClassName": "items-center hidden sm:flex pb-0",
                       "body": [
                         {
-                          "type": "steedos-icon",
-                          "category": "utility",
-                          "name": "rows",
-                          "colorVariant": "default",
-                          "id": "u:afc3a08e8cf3",
-                          "className": "slds-button_icon slds-global-header__icon"
+                          "type": "steedos-app-launcher",
+                          "showAppName": true,
+                          "appId": "${app.id}",
                         }
                       ],
-                    },]
+                      "md": "auto",
+                      "valign": "middle"
+                    },
+                    {
+                      "columnClassName": "flex ",
+                      "body": [
+                        {
+                          "type": "steedos-app-menu",
+                          "stacked": false,
+                          showIcon: false,
+                          "appId": "${app.id}",
+                          overflow: {
+                              enable: false,
+                              itemWidth: 80,
+                          },
+                          "id": "u:77851eb4aa89",
+                        }
+                      ],
+                      "id": "u:5367229505d8",
+                      "md": "",
+                      "valign": "middle",
+                    }
+                  ],
                 }
               ],
-            }
+            },
           ]
         }}></AmisRender>}
 
@@ -110,43 +154,6 @@ export function GlobalHeader({app}) {
               type: "service",
               hiddenOn: "${app.showSidebar === true}",
               body: [
-                {
-                  "type": "grid",
-                  "className": 'steedos-context-bar hidden sm:flex h-10 leading-5 pl-4 mb-[-3px]',
-                  "columns": [
-                    {
-                      "columnClassName": "items-center hidden sm:flex pb-0",
-                      "body": [
-                        {
-                          "type": "steedos-app-launcher",
-                          "showAppName": true,
-                          "appId": app.id,
-                        }
-                      ],
-                      "md": "auto",
-                      "valign": "middle"
-                    },
-                    {
-                      "columnClassName": "flex ",
-                      "body": [
-                        {
-                          "type": "steedos-app-menu",
-                          "stacked": false,
-                          showIcon: false,
-                          "appId": app.id,
-                          overflow: {
-                              enable: false,
-                              itemWidth: 80,
-                          },
-                          "id": "u:77851eb4aa89",
-                        }
-                      ],
-                      "id": "u:5367229505d8",
-                      "md": "",
-                      "valign": "middle",
-                    }
-                  ],
-                }
               ]
             }} 
             router={router} 
