@@ -7,6 +7,8 @@
  * @Description: 
  */
 
+import './AmisGlobalHeader.less';
+
 export const AmisGlobalHeader = async (props) => {
     const { className = '', data, logoutScript = "", customButtons = [] } = props;
     

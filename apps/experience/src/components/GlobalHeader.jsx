@@ -103,6 +103,7 @@ export function GlobalHeader({app}) {
     
                     {
                       "type": "grid",
+                      hiddenOn: "${app.showSidebar === true}",
                       "className": 'steedos-context-bar hidden sm:flex h-10 leading-5 pl-4 mb-[-3px]',
                       "columns": [
                         {
