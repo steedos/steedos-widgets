@@ -8,7 +8,7 @@
  */
 
 export const AmisGlobalHeader = async (props) => {
-    const { className = '', data, logoutScript = "", customButtons } = props;
+    const { className = '', data, logoutScript = "", customButtons = [] } = props;
     
     let  avatarSrc = null;
 

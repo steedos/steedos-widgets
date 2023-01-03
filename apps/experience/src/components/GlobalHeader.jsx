@@ -66,7 +66,7 @@ export function GlobalHeader({app}) {
                   "label": "Global Header",
                   className: 'flex flex-nowrap gap-x-3 items-center',
                   logoutScript: "window.signOut();",
-                  customButtons: [
+                  customButtons2: [
                     {
                       "type": "button",
                       "className": "toggle-sidebar",
@@ -112,7 +112,7 @@ export function GlobalHeader({app}) {
               body: [
                 {
                   "type": "grid",
-                  className: 'steedos-context-bar hidden sm:flex h-10 leading-5 pl-4 mb-[-3px]',
+                  "className": 'steedos-context-bar hidden sm:flex h-10 leading-5 pl-4 mb-[-3px]',
                   "columns": [
                     {
                       "columnClassName": "items-center hidden sm:flex pb-0",
@@ -137,7 +137,6 @@ export function GlobalHeader({app}) {
                           overflow: {
                               enable: false,
                               itemWidth: 80,
-                              // overflowIndicator: "fas fa-angle-double-down"
                           },
                           "id": "u:77851eb4aa89",
                         }
