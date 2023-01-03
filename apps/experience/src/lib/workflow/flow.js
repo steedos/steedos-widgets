@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-08 17:54:55
+ * @LastEditTime: 2022-12-30 17:27:48
  * @Description:
  */
 import {
@@ -797,6 +797,9 @@ export const getFlowFormSchema = async (instance) => {
     initApi:{
       "url": "${context.rootUrl}/graphql",
       "method": "post",
+      "headers": {
+        "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+      },
       "messages": {
       },
       "requestAdaptor": `

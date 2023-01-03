@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-30 17:12:33
+ * @LastEditTime: 2023-01-03 09:42:53
  * @Description: 
  */
 import { getListSchema, getObjectListHeaderFirstLine } from '@steedos-widgets/amis-lib'
@@ -14,8 +14,7 @@ export const AmisObjectListView = async (props) => {
   // const urlListNameMatchs = location.pathname.match(/grid\/(\w+)/);  // 错误的规则
   // const urlListName = urlListNameMatchs && urlListNameMatchs[1]
   // let listName = props.listName || urlListName;
-
-  let { listName } = defaultData
+  let { listName } = defaultData || data || props
 
   let defaults: any = {};
   let objectApiName = props.objectApiName || "space_users";
