@@ -12,6 +12,9 @@ export const AmisAppLauncher = async (props) => {
       app = data.context.app ;
     }
     
+    const formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE';
+    const mobile = formFactor === "SMALL" ? true : false;
+
     return {
         type: 'service',
         className,
@@ -102,7 +105,7 @@ export const AmisAppLauncher = async (props) => {
                       },
                       "api": {
                         "method": "get",
-                        "url": "${context.rootUrl}/service/api/apps/menus",
+                        "url": "${context.rootUrl}/service/api/apps/menus?mobile="+mobile,
                         "data": null,
                         "headers": {
                           "Authorization": "Bearer ${context.tenantId},${context.authToken}"
