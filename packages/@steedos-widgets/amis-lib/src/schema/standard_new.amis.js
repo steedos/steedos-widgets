@@ -45,6 +45,7 @@ export const getSchema = async (uiSchema, ctx)=>{
                                     "data": {
                                         "$master": "$$",
                                         "&": "${defaultData}",
+                                        "appId": "${appId}",
                                         "objectName": "${objectName}",
                                         "context": "${context}",
                                         "listViewId": "${listViewId}"

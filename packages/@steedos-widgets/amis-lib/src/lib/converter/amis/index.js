@@ -266,12 +266,14 @@ export async function getObjectForm(objectSchema, ctx){
         const listName = event.data.listName;
         const uiSchema = event.data.uiSchema;
         const listView = uiSchema && uiSchema.list_views[listName];
-        const jumpTo = event.context.env && event.context.env.jumpTo;
-        if(jumpTo){
-          // TODO: 不建议使用env中的变量，要改为doAction
-          const newRecordId = data.result.data?.recordId;
-          jumpTo("/app/" + appId + "/" + objectName + "/view/" + newRecordId);
-        }
+        const newRecordId = data.result.data?.recordId;
+        doAction({
+          "args": {
+            "url": "/app/" + appId + "/" + objectName + "/view/" + newRecordId,
+            "blank": false
+          },
+          "actionType": "link"
+        });
       }
     `;
     const amisSchema =  {
