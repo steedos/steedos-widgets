@@ -226,7 +226,7 @@ export const getButton = async (objectName, buttonName, ctx)=>{
             return ;
         }
 
-        if(button.name == 'standard_edit' && button._visible.indexOf('Steedos.StandardObjects.Base.Actions.standard_edit.visible.apply') > 0){
+        if(button.name == 'standard_edit'){ // && button._visible.indexOf('Steedos.StandardObjects.Base.Actions.standard_edit.visible.apply') > 0
             return {
                 label: button.label,
                 name: button.name,
