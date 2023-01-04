@@ -46,6 +46,7 @@ export default function Record({formFactor}) {
               recordId: record_id,
               appId: app_id,
               formFactor: formFactor,
+              scopeId: renderId+"-page"
             }}
             className="steedos-record-detail"
             id={`${renderId}-page`}
@@ -59,9 +60,10 @@ export default function Record({formFactor}) {
               recordId: record_id,
               appId: app_id,
               formFactor: formFactor,
+              scopeId: renderId
             }}
             className="steedos-record-detail"
-            id={`${renderId}-page`}
+            id={renderId}
             schema={{
               "type": "service",
               "className": "m-0 sm:m-3",
