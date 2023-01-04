@@ -10,6 +10,7 @@ const config: any = {
   group: "华炎魔方",
   componentName: "AmisObjectListView",
   title: "列表视图",
+  description: "显示指定对象的列表视图。",
   docUrl: "",
   screenshot: "",
   npm: {
@@ -66,7 +67,7 @@ export default {
       rendererName: config.amis.name,
       $schema: '/schemas/UnkownSchema.json',
       name: config.title,
-      description: config.title,
+      description: config.description,
       tags: [config.group],
       order: -9999,
       icon: config.amis.icon,
@@ -74,12 +75,14 @@ export default {
         type: config.amis.name,
         label: config.title,
         objectApiName: "${objectName}",
-        listName: "all"
+        listName: "all",
+        showHeader: true,
       },
       previewSchema: {
         type: config.amis.name,
         objectApiName: 'space_users',
-        listName: "all"
+        listName: "all",
+        showHeader: true,
       },
       panelTitle: "设置",
       panelControls: [
