@@ -9,7 +9,8 @@ const config: any = {
   componentType: 'amisSchema', // amisSchema || react 
   group: "华炎魔方",
   componentName: "AmisRecordDetailRelatedList",
-  title: "相关列表-单一",
+  title: "相关表",
+  description: "显示指定对象的相关某一个相关表。",
   docUrl: "",
   screenshot: "",
   npm: {
@@ -71,7 +72,7 @@ export default {
       rendererName: config.amis.name,
       $schema: '/schemas/UnkownSchema.json',
       name: config.title,
-      description: config.title,
+      description: config.description,
       tags: [config.group],
       order: -9999,
       icon: config.amis.icon,
@@ -80,12 +81,12 @@ export default {
         label: config.title,
         objectApiName: "${objectName}",
         recordId: "${recordId}",
-        // relatedObjectApiName: "contacts"
+        relatedObjectApiName: "contacts"
       },
       previewSchema: {
         type: config.amis.name,
         objectApiName: "accounts",
-        // relatedObjectApiName: "contacts"
+        relatedObjectApiName: "contacts"
       },
       panelTitle: "设置",
       panelControls: [
