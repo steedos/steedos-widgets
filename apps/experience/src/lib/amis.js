@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 11:31:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-30 13:56:23
+ * @LastEditTime: 2023-01-04 14:17:02
  * @Description:
  */
 import { each, find, isArray, isEmpty } from 'lodash';
@@ -183,7 +183,7 @@ export const registerRenders = (assets)=>{
         // 注册amis渲染器
         if (!registerMap[asset.usage]) {
           console.error(
-            `${consoleTag}自定义组件注册失败，不存在${asset.usage}自定义组件类型。`,
+            `自定义组件注册失败，不存在${asset.usage}自定义组件类型。`, asset
           );
         } else {
           registerMap[asset.usage]({
