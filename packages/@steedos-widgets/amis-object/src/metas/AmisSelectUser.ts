@@ -1,6 +1,6 @@
 const config: any = {
   componentType: 'amisSchema', // amisSchema || react 
-  group: "华炎魔方",
+  group: "华炎魔方-界面",
   componentName: "AmisSelectUser",
   title: "选择用户",
   docUrl: "",
@@ -65,7 +65,7 @@ export default {
       weight: 1,
       framework: "react"
     },
-    plugin: {
+    plugin_disabled: {
       rendererName: config.amis.name,
       $schema: '/schemas/UnkownSchema.json',
       name: config.title,
