@@ -466,13 +466,6 @@
     "body"
   ],
   "data": {
-    "objectName": "apps",
-    "context": {
-      "rootUrl": "http://127.0.0.1:5800",
-      "tenantId": "hKdnwE55WcnWveYxS",
-      "userId": "62ede4f62161e377e35de58c",
-      "authToken": "46d54c4c5effed08b6a4bfe1bb8ae5e5196c71897a70d48c69e7d231e5486e92d9c0304ff25ef548149766"
-    }
   },
   "bodyClassName": "p-0",
   "name": "page_edit_${recordId}",
