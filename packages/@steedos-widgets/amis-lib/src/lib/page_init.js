@@ -80,7 +80,16 @@ export async function getRecordPageInitSchema(objectApiName){
                         {
                             "actionType": "reload",
                             "data": {
-                                "name": "${record.name}"
+                                "name": `\${record.${uiSchema?.NAME_FIELD_KEY || 'name'}}`
+                            }
+                        },
+                        {
+                            "actionType": "setValue",
+                            "args": {
+                               value: {
+                                "record": `\${record}`,
+                                "recordLoaded": true,
+                               }
                             }
                         }
                     ]
