@@ -10,6 +10,7 @@ const config: any = {
   group: "华炎魔方",
   componentName: "AmisRecordDetailHeader",
   title: "标题面板",
+  description: "显示在记录详情页的标题面板，包括记录按钮。",
   docUrl: "",
   screenshot: "",
   npm: {
@@ -34,7 +35,7 @@ const config: any = {
   ],
   preview: {
   },
-  targets: ["steedos__RecordPage", "steedos__AppPage", "steedos__HomePage"],
+  targets: ["steedos__RecordPage"],
   engines: ["amis"],
   // settings for amis.
   amis: {
@@ -66,7 +67,7 @@ export default {
       rendererName: config.amis.name,
       $schema: '/schemas/UnkownSchema.json',
       name: config.title,
-      description: config.title,
+      description: config.description,
       tags: [config.group],
       order: -9999,
       icon: config.amis.icon,

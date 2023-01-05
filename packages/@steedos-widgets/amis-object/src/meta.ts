@@ -46,22 +46,22 @@ const components = [
   AmisObjectListview, 
   AmisRecordDetailHeader,
   AmisRecordDetail, 
-  AmisSelectUser, 
   AmisRecordDetailRelatedList, 
   AmisRecordDetailRelatedLists,
-  AmisProvider, 
-  AmisObjectFieldLookup,
   AmisObjectTable,
   AmisObjectCalendar,
   AmisObjectButton,
+  AmisObjectFieldLookup,
+  AmisSelectUser, 
   SteedosDropdownButton,
+  AmisGlobalHeader,
   AmisAppLauncher,
+  AmisProvider, 
   AmisLogo,
   AmisAppMenu,
   SteedosIcon,
   SteedosDropdown,
   FromNow,
-  AmisGlobalHeader,
   SteedosBadge,
   SteedosBadgeRibbon
 ];
@@ -70,30 +70,7 @@ const componentList = [
   {
     title: "华炎魔方",
     icon: "",
-    children: [
-      AmisObjectForm, 
-      AmisObjectListview, 
-      AmisRecordDetailHeader, 
-      AmisRecordDetail, 
-      AmisSelectUser,
-      AmisRecordDetailRelatedList,
-      AmisRecordDetailRelatedLists,
-      AmisProvider,
-      AmisObjectFieldLookup,
-      AmisObjectTable,
-      AmisObjectCalendar,
-      AmisObjectButton,
-      SteedosDropdownButton,
-      AmisAppLauncher,
-      AmisLogo,
-      AmisAppMenu,
-      SteedosIcon,
-      SteedosDropdown,
-      FromNow,
-      AmisGlobalHeader,
-      SteedosBadge,
-      SteedosBadgeRibbon
-    ]
+    children: components
   }
 ];
 export default {

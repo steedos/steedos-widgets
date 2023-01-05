@@ -9,4 +9,22 @@
 body.sidebar-open .sidebar-wrapper {
     translate: 0 0;
 }
-  
+
+body.sidebar #sidebar {
+    margin-top: 50px; 
+}
+
+body.sidebar.sidebar-open #main {
+    padding-left: 220px;
+}
+
+@media (max-width: 768px){
+    body.sidebar.sidebar-open #sidebar {
+        margin-top: 50px; 
+    }
+
+    body.sidebar.sidebar-open #main {
+        padding-left: 0;
+    }
+
+}

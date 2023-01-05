@@ -7,9 +7,9 @@
  */
 const config: any = {
     // componentType: 'amisSchema', 
-    group: "华炎魔方",
+    group: "华炎魔方-界面",
     componentName: "SteedosIcon",
-    title: "Icon",
+    title: "图标",
     docUrl: "",
     screenshot: "",
     npm: {
@@ -50,7 +50,7 @@ const config: any = {
         weight: 1,
         framework: "react"
       },
-      plugin: {
+      plugin_disabled: {
         rendererName: config.amis.name,
         $schema: '/schemas/UnkownSchema.json',
         name: config.title,

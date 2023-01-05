@@ -43,7 +43,7 @@ export function GlobalHeader({app}) {
               body: [
                 {
                   "type": "wrapper",
-                  "className": "p-0 slds-global-header_container sticky top-0 z-40 w-full flex-none backdrop-blur transition-colors duration-500 lg:z-50 sm:shadow border-b-[3px] border-sky-500 border-solid overflow-hidden",
+                  "className": "p-0 slds-global-header_container sticky top-0 z-40 w-full flex-none backdrop-blur transition-colors duration-500 lg:z-50 sm:shadow border-b-[3px] border-sky-500 border-solid",
                   body: [
                     {
                       "type": "wrapper",
@@ -145,7 +145,7 @@ export function GlobalHeader({app}) {
                 {
 
                   "type": "button",
-                  "className": 'p-0 fixed z-10 inset-0 mt-[50px]',
+                  "className": 'p-0 absolute inset-0 mt-[50px]',
                   hiddenOn: "${app.showSidebar != true}",
                   body: [{
                     type: "wrapper",

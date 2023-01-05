@@ -67,6 +67,7 @@ export async function getRecordPageInitSchema(objectApiName){
     
     const recordId = '${recordId}';
     const relatedList = await getAmisObjectRelatedList(null, objectApiName, recordId, null);
+    const uiSchema = await getUISchema(objectApiName);
     let body = [
         // detailHeaderAmisSchema,
         {
@@ -80,7 +81,16 @@ export async function getRecordPageInitSchema(objectApiName){
                         {
                             "actionType": "reload",
                             "data": {
-                                "name": "${record.name}"
+                                "name": `\${record.${uiSchema?.NAME_FIELD_KEY || 'name'}}`
+                            }
+                        },
+                        {
+                            "actionType": "setValue",
+                            "args": {
+                               value: {
+                                "record": `\${record}`,
+                                "recordLoaded": true,
+                               }
                             }
                         }
                     ]

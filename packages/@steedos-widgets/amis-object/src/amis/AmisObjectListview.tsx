@@ -2,11 +2,11 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-01-03 09:42:53
+ * @LastEditTime: 2023-01-05 11:42:43
  * @Description: 
  */
-import { getListSchema, getObjectListHeaderFirstLine } from '@steedos-widgets/amis-lib'
-import { keys, pick, difference } from 'lodash';
+import { getListSchema, getObjectListHeaderFirstLine, getUISchema } from '@steedos-widgets/amis-lib'
+import { keys, pick, difference, find } from 'lodash';
 
 export const AmisObjectListView = async (props) => {
   // console.log(`AmisObjectListView props`, props)
@@ -14,10 +14,32 @@ export const AmisObjectListView = async (props) => {
   // const urlListNameMatchs = location.pathname.match(/grid\/(\w+)/);  // 错误的规则
   // const urlListName = urlListNameMatchs && urlListNameMatchs[1]
   // let listName = props.listName || urlListName;
-  let { listName } = defaultData || data || props
-
+  let listName = defaultData?.listName || data?.listName || props?.listName;
   let defaults: any = {};
   let objectApiName = props.objectApiName || "space_users";
+
+  const objectUiSchema = await getUISchema(objectApiName, false);
+  const listView =  find(
+    objectUiSchema.list_views,
+    (listView, name) => {
+        // 传入listViewName空值则取第一个
+        if(!listName){
+          listName = name;
+        }
+        return name === listName || listView._id === listName;
+    }
+  );
+  if(!listView) {
+    return {
+      "type": "alert",
+      "body": `当前${listName}视图不存在！`,
+      "level": "warning",
+      "showIcon": true,
+      "className": "mb-3"
+    }
+  }
+
+  listName = listView.name;
 
   if (!(ctx && ctx.defaults)) {
     // 支持把crud组件任意属性通过listSchema属性传入到底层crud组件中
