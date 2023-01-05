@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-01-03 09:42:53
+ * @LastEditTime: 2023-01-05 11:42:43
  * @Description: 
  */
 import { getListSchema, getObjectListHeaderFirstLine, getUISchema } from '@steedos-widgets/amis-lib'
@@ -38,6 +38,8 @@ export const AmisObjectListView = async (props) => {
       "className": "mb-3"
     }
   }
+
+  listName = listView.name;
 
   if (!(ctx && ctx.defaults)) {
     // 支持把crud组件任意属性通过listSchema属性传入到底层crud组件中
