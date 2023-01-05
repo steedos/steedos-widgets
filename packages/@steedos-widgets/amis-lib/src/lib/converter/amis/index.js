@@ -141,6 +141,7 @@ export async function getObjectList(objectSchema, fields, options){
       headerToolbar: getHeaderToolbar(objectSchema, options.formFactor),
       bulkActions: options.bulkActions != false ? bulkActions : false, 
       bodyClassName: "",
+      className: "border-t",
       // filterTogglable: true,
       // filterDefaultVisible: true,
       // filter: getFilter()
