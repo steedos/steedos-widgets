@@ -387,7 +387,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
       "className": "border-gray slds-grid slds-grid_vertical slds-nowrap px-1 py-1",
       "visibleOn": "this.showFieldsFilter",
     },
-    "className": "bg-white b-b",
+    "className": "bg-white",
     "onEvent": {
       "broadcast_toggle_fields_filter": {
         "actions": [
