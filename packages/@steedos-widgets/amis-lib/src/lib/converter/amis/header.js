@@ -369,7 +369,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
                               "tpl": `${label}`,
                               "inline": false,
                               "wrapperComponent": "",
-                              "className": "leading-5 text-md"
+                              "className": "leading-4 text-md"
                             },
                             {
                               "type": "tpl",
