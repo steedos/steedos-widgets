@@ -5,6 +5,7 @@ import { getFormBody } from './form';
 import { getListSchema, getCardSchema } from './fields/list';
 import _, { map } from 'lodash';
 import { defaultsDeep } from '../../defaultsDeep';
+import { getObjectHeaderToolbar, getObjectFooterToolbar, getObjectFilter } from './toolbar';
 
 function getBulkActions(objectSchema){
     return [
@@ -137,8 +138,9 @@ export async function getObjectList(objectSchema, fields, options){
 
     const bodyProps = {
       toolbar: getToolbar(), 
-      footerToolbar: footerToolbar(), 
-      headerToolbar: getHeaderToolbar(objectSchema, options.formFactor),
+      headerToolbar: getObjectHeaderToolbar(objectSchema, options.formFactor),
+      footerToolbar: getObjectFooterToolbar(), 
+      filter: !!options.filterVisible && await getObjectFilter(objectSchema, fields, options),
       bulkActions: options.bulkActions != false ? bulkActions : false, 
       bodyClassName: "",
       // filterTogglable: true,

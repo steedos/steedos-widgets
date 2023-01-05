@@ -6,6 +6,7 @@ import * as Field from './index';
 import * as Table from './table';
 import * as List from './list';
 import { getSelectUserSchema } from './user';
+import { getObjectHeaderToolbar, getObjectFooterToolbar, getObjectFilter } from './../toolbar';
 
 const getReferenceTo = async (field)=>{
     let referenceTo = field.reference_to;
@@ -125,6 +126,30 @@ export async function lookupToAmisPicker(field, readonly, ctx){
                 filters = [["${referenceTo.valueField.name}", "=", selfData.value]];
             }
         }
+
+        var searchableFilter = [];
+        _.each(selfData, (value, key)=>{
+            if(!_.isEmpty(value) || _.isBoolean(value)){
+                if(_.startsWith(key, '__searchable__between__')){
+                    searchableFilter.push([\`\${key.replace("__searchable__between__", "")}\`, "between", value])
+                }else if(_.startsWith(key, '__searchable__')){
+                    if(_.isString(value)){
+                        searchableFilter.push([\`\${key.replace("__searchable__", "")}\`, "contains", value])
+                    }else{
+                        searchableFilter.push([\`\${key.replace("__searchable__", "")}\`, "=", value])
+                    }
+                }
+            }
+        });
+
+        if(searchableFilter.length > 0){
+            if(filters.length > 0 ){
+                filters = [filters, 'and', searchableFilter];
+            }else{
+                filters = searchableFilter;
+            }
+        }
+
         if(allowSearchFields){
             allowSearchFields.forEach(function(key){
                 const keyValue = selfData[key];
@@ -194,6 +219,16 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             top:  top,
             ...ctx
         })
+
+        pickerSchema.headerToolbar = getObjectHeaderToolbar(refObjectConfig, ctx.formFactor);
+        pickerSchema.footerToolbar = getObjectFooterToolbar();
+        if(ctx.filterVisible !== false){
+            // 可以传入filterVisible为false防止死循环
+            pickerSchema.filter = await getObjectFilter(refObjectConfig, fields, ctx);
+        }
+        pickerSchema.data = Object.assign({}, pickerSchema.data, {
+            "objectName": refObjectConfig.name
+        });
     }
 
     const data = {

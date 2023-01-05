@@ -75,6 +75,7 @@ export async function getObjectFieldsFilterFormSchema(objectSchema, fields, ctx)
     const listViewPropsStoreKey = location.pathname + "/crud/" + listViewId ;
     let localListViewProps = localStorage.getItem(listViewPropsStoreKey);
     if(localListViewProps){
+      // 当变更可搜索字段时，如果被移除的可搜索字段在本地存储中已经存入过滤条件中则应该清除本地存储中相关字段的过滤条件。
       localListViewProps = JSON.parse(localListViewProps);
       let removedKeys = [];
       _.each(localListViewProps, function(n,k){
@@ -141,10 +142,14 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
     const appId = event.data.appId;
     const objectName = event.data.objectName;
     const scopeId = event.data.scopeId;
-    const scope = SteedosUI.getRef(scopeId);
-    var filterForm = scope.getComponentById("listview_filter_form_" + objectName);
+    const scope = event.context.scoped;
+    var filterForm = scope.getComponents().find(function(n){
+      return n.props.type === "form";
+    });
     var filterFormValues = filterForm.getValues();
-    var listView = scope.getComponentById("listview_" + objectName);
+    var listView = scope.parent.parent.parent.getComponents().find(function(n){
+      return n.props.type === "crud";
+    });
     listView.handleFilterSubmit(filterFormValues);
   `;
   const dataProviderInited = `
@@ -209,7 +214,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
     "data": {
       // "filterFormSearchableFields": ["name"],//默认可搜索项
       // "filterFormValues": {"__searchable__name": "xxx"},//搜索项表单值
-      "listViewId": "${listViewId}"
+      // "listViewId": "${listViewId}"
     },
     "id": `service_listview_filter_form_${objectSchema.name}`,
     "dataProvider": {
@@ -362,6 +367,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
                             "&": "$$",
                             "objectName": "${objectName}",
                             "listName": "${listName}",
+                            "listViewId": "${listViewId}",
                             "context": "${context}",
                             "fields": "${filterFormSearchableFields}"
                           }
