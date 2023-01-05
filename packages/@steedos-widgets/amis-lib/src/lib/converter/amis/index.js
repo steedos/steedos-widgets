@@ -144,7 +144,7 @@ export async function getObjectList(objectSchema, fields, options){
       filter: !!options.filterVisible && await getObjectFilter(objectSchema, fields, options),
       bulkActions: options.bulkActions != false ? bulkActions : false, 
       bodyClassName: "",
-      className: "border-t",
+      className: `${options.className || ""}`,
       // filterTogglable: true,
       // filterDefaultVisible: true,
       // filter: getFilter()
