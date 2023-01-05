@@ -15,6 +15,7 @@ function getBulkActions(objectSchema){
         "label": "批量删除",
         "actionType": "ajax",
         "confirmText": "确定要删除吗",
+        "className": "hidden",
         "id": "batchDelete",
         "api": getBatchDelete(objectSchema.name),
       }
