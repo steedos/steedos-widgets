@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-11 14:10:21
+ * @LastEditTime: 2023-01-05 17:03:49
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -19,10 +19,9 @@ import { AppLayout } from '@/components/AppLayout';
 export default function Record({formFactor}) {
   const router = useRouter();
   const { tab_id = 'instances', box } = router.query;
-
   return (
     <div className="h-full flex instance-scope">
-      <div className="flex-1 w-32 border-r"><InstancesListview bulkActions={false} formFactor={formFactor} app_id={'approve_workflow'} tab_id={tab_id} listViewName={box}></InstancesListview></div>
+      <div className="flex-1 w-32 border-r"><InstancesListview bulkActions={false} formFactor={formFactor} app_id={'approve_workflow'} tab_id={tab_id} listview_id={box}></InstancesListview></div>
       <div className="flex-1 w-64" >
         
       </div>
