@@ -232,7 +232,6 @@ export async function getTableSchema(fields, options){
         mode: "table",
         name: "thelist",
         draggable: false,
-        headerToolbar: [ 'reload'],
         defaultParams: getDefaultParams(options),
         columns: columns,
         syncLocation: false,

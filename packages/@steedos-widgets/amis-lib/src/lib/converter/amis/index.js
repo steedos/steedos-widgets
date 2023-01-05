@@ -5,6 +5,7 @@ import { getFormBody } from './form';
 import { getListSchema, getCardSchema } from './fields/list';
 import _, { map } from 'lodash';
 import { defaultsDeep } from '../../defaultsDeep';
+import { getObjectHeaderToolbar, getObjectFooterToolbar, getObjectFilter } from './toolbar';
 
 function getBulkActions(objectSchema){
     return [
@@ -14,6 +15,7 @@ function getBulkActions(objectSchema){
         "label": "批量删除",
         "actionType": "ajax",
         "confirmText": "确定要删除吗",
+        "className": "hidden",
         "id": "batchDelete",
         "api": getBatchDelete(objectSchema.name),
       }
@@ -137,8 +139,9 @@ export async function getObjectList(objectSchema, fields, options){
 
     const bodyProps = {
       toolbar: getToolbar(), 
-      footerToolbar: footerToolbar(), 
-      headerToolbar: getHeaderToolbar(objectSchema, options.formFactor),
+      headerToolbar: getObjectHeaderToolbar(objectSchema, options.formFactor),
+      footerToolbar: getObjectFooterToolbar(), 
+      filter: !!options.filterVisible && await getObjectFilter(objectSchema, fields, options),
       bulkActions: options.bulkActions != false ? bulkActions : false, 
       bodyClassName: "",
       className: "border-t",
