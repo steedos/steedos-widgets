@@ -485,7 +485,8 @@ export async function getFieldSearchable(perField, permissionFields, ctx){
         _field.multiple = true;
         _field.is_wide = false;
         _field.defaultValue = undefined;
-        const amisField = await Fields.convertSFieldToAmisField(_field, false, Object.assign({}, ctx, {fieldNamePrefix: fieldNamePrefix, required: false, showSystemFields: true}));
+        // filterVisible: false不再生成lookup字段时的filter，否则会死循环
+        const amisField = await Fields.convertSFieldToAmisField(_field, false, Object.assign({}, ctx, {fieldNamePrefix: fieldNamePrefix, required: false, showSystemFields: true, filterVisible: false}));
         if(amisField){
             return amisField;
         }

@@ -64,7 +64,9 @@ export const AmisObjectListView = async (props) => {
 
   const amisSchemaData = Object.assign({}, data, defaultData);
   const listViewId = ctx?.listViewId || amisSchemaData.listViewId;
-  let schema: any = (await getListSchema(amisSchemaData.appId, objectApiName, listName, { top, perPage, showHeader, defaults, ...ctx, listViewId, setDataToComponentId }));
+  let schema: any = (await getListSchema(amisSchemaData.appId, objectApiName, listName, { 
+    top, perPage, showHeader, defaults, ...ctx, listViewId, setDataToComponentId, filterVisible: true
+  }));
   const amisSchema = schema.amisSchema;
   const uiSchema = schema.uiSchema;
   const body = [amisSchema];
