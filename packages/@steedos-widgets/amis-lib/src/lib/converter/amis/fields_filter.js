@@ -407,7 +407,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
         "className": "slds-filters"
       },
       "size": "xs",
-      "className": "border-gray-300 border-y slds-grid slds-grid_vertical slds-nowrap",
+      "className": `border-gray-300 border-y slds-grid slds-grid_vertical slds-nowrap ${!ctx.isLookup && "mt-2"}`,
       "visibleOn": "this.showFieldsFilter",
     },
     "className": "bg-white",

@@ -226,7 +226,10 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         pickerSchema.footerToolbar = getObjectFooterToolbar();
         if(ctx.filterVisible !== false){
             // 可以传入filterVisible为false防止死循环
-            pickerSchema.filter = await getObjectFilter(refObjectConfig, fields, ctx);
+            pickerSchema.filter = await getObjectFilter(refObjectConfig, fields, {
+                isLookup: true,
+                ...ctx
+            });
         }
         pickerSchema.data = Object.assign({}, pickerSchema.data, {
             "&": "$$",

@@ -253,9 +253,7 @@ export async function getObjectListHeaderFieldsFilterBar(objectSchema, listViewN
     ),
     "sort_no"
   );
-  const fieldsFilterBarSchema = await getObjectFieldsFilterBarSchema(objectSchema, fields, {
-    isListviewInit: ctx.isListviewInit
-  });
+  const fieldsFilterBarSchema = await getObjectFieldsFilterBarSchema(objectSchema, fields, ctx);
   return fieldsFilterBarSchema;
 }
 
@@ -285,7 +283,7 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
   let headerSchema = [{
     "type": "wrapper",
     "body": body,
-    "className": `bg-gray-100 ${roundedCss} ${ctx.onlySecordLine && "pt-0"}`
+    "className": `bg-gray-100 -mb-4 ${roundedCss} ${ctx.onlySecordLine && "pt-0"}`
   }];
   // const fieldsFilterBarSchema = await getObjectListHeaderFieldsFilterBar(objectSchema, listViewName, ctx);
   // headerSchema.push(fieldsFilterBarSchema);
