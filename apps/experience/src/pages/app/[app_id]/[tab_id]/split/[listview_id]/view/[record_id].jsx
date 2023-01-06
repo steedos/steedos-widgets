@@ -57,7 +57,7 @@ export default function Record({formFactor}) {
               formFactor: formFactor,
               scopeId: listViewId,
             }}
-            className="steedos-listview p-0 sm:border bg-white border-slate-300 border-solid flex flex-1 flex-col"
+            className="steedos-listview p-0 sm:border-r bg-white border-slate-300 border-solid flex flex-1 flex-col"
             id={listViewId}
             schema={{
               "type": "steedos-object-listview",
