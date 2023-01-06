@@ -142,7 +142,7 @@ export async function getObjectList(objectSchema, fields, options){
       headerToolbar: getObjectHeaderToolbar(objectSchema, options.formFactor),
       footerToolbar: getObjectFooterToolbar(), 
       filter: !!options.filterVisible && await getObjectFilter(objectSchema, fields, options),
-      headerToolbarClassName: "py-2 px-4 border-gray-300 bg-gray-100 b-b",
+      headerToolbarClassName: "px-4 py-2 border-gray-300 bg-gray-100 b-b",
       bulkActions: options.bulkActions != false ? bulkActions : false, 
       bodyClassName: "",
       className: `${options.className || ""}`,
