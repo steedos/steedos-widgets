@@ -15,14 +15,15 @@ export const AmisRecordDetailHeader = async (props) => {
         {
           "actionType": "reload",
           "data": {
-            "name": `\${record.${objectUiSchema?.NAME_FIELD_KEY || 'name'}}`
+            "name": `\${record.${objectUiSchema?.NAME_FIELD_KEY || 'name'}}`,
+            "record": "${record}",
+            "recordLoaded": true
           }
         },
         {
           "actionType": "setValue",
           "args": {
-            value: {
-              "record": "${record}",
+            "value": {
               "recordLoaded": true,
             }
           }

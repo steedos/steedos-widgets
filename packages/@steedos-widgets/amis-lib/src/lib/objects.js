@@ -389,16 +389,9 @@ export async function getRecordDetailSchema(objectName, appId){
                             {
                                 "actionType": "reload",
                                 "data": {
-                                    "name": `\${record.${uiSchema?.NAME_FIELD_KEY || 'name'}}`
-                                }
-                            },
-                            {
-                                "actionType": "setValue",
-                                "args": {
-                                   value: {
+                                    "name": `\${record.${uiSchema?.NAME_FIELD_KEY || 'name'}}`,
                                     "record": `\${record}`,
-                                    "recordLoaded": true,
-                                   }
+                                    "recordLoaded": true
                                 }
                             }
                         ]
