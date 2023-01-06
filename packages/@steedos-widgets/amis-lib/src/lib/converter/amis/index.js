@@ -140,14 +140,14 @@ export async function getObjectList(objectSchema, fields, options){
     const bodyProps = {
       toolbar: getToolbar(),
       bodyClassName: "",
+      headerToolbar: getObjectHeaderToolbar(objectSchema, options.formFactor),
+      headerToolbarClassName: "px-4 py-2 border-gray-300 bg-gray-100 b-b",
       className: `${options.className || ""}`
     }
     if(options.formFactor !== 'SMALL'){
       Object.assign(bodyProps, {
-        headerToolbar: getObjectHeaderToolbar(objectSchema, options.formFactor),
         footerToolbar: getObjectFooterToolbar(), 
         filter: !!options.filterVisible && await getObjectFilter(objectSchema, fields, options),
-        headerToolbarClassName: "px-4 py-2 border-gray-300 bg-gray-100 b-b",
         bulkActions: options.bulkActions != false ? bulkActions : false
       });
     }
@@ -163,7 +163,7 @@ export async function getObjectList(objectSchema, fields, options){
     }
     let body = null;
     const id = `listview_${objectSchema.name}`;
-    if(options.formFactor === 'SMALL'){
+    if(options.formFactor === 'SMALL' && false){
       delete bodyProps.bulkActions;
       delete bodyProps.headerToolbar;
       delete bodyProps.footerToolbar;

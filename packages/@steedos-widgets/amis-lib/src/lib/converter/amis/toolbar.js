@@ -4,18 +4,16 @@ export function getObjectHeaderToolbar(mainObject, formFactor){
 
   if(formFactor === 'SMALL'){
     return [
-      "bulkActions",
+      // "bulkActions",
       {
-          "type": "reload",
-          "align": "right"
+        "type": "tpl",
+        "tpl": "${count} 个项目"
       },
       {
-        "type": "search-box",
+        "type": "reload",
         "align": "right",
-        "name": "__keywords",
-        "placeholder": "请输入关键字",
-        "mini": true
-      }
+        "className": "bg-white p-2 rounded border-gray-300 text-gray-500"
+      },
   ]
   }else{
     return [
