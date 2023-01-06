@@ -138,17 +138,18 @@ export async function getObjectList(objectSchema, fields, options){
     const bulkActions = getBulkActions(objectSchema)
 
     const bodyProps = {
-      toolbar: getToolbar(), 
-      headerToolbar: getObjectHeaderToolbar(objectSchema, options.formFactor),
-      footerToolbar: getObjectFooterToolbar(), 
-      filter: !!options.filterVisible && await getObjectFilter(objectSchema, fields, options),
-      headerToolbarClassName: "px-4 py-2 border-gray-300 bg-gray-100 b-b",
-      bulkActions: options.bulkActions != false ? bulkActions : false, 
+      toolbar: getToolbar(),
       bodyClassName: "",
-      className: `${options.className || ""}`,
-      // filterTogglable: true,
-      // filterDefaultVisible: true,
-      // filter: getFilter()
+      className: `${options.className || ""}`
+    }
+    if(options.formFactor !== 'SMALL'){
+      Object.assign(bodyProps, {
+        headerToolbar: getObjectHeaderToolbar(objectSchema, options.formFactor),
+        footerToolbar: getObjectFooterToolbar(), 
+        filter: !!options.filterVisible && await getObjectFilter(objectSchema, fields, options),
+        headerToolbarClassName: "px-4 py-2 border-gray-300 bg-gray-100 b-b",
+        bulkActions: options.bulkActions != false ? bulkActions : false
+      });
     }
     if(top || perPage){
       if(top){
