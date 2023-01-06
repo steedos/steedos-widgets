@@ -45,8 +45,8 @@ export default function Record({formFactor}) {
     return <Loading></Loading>
   }
   return (
-    <div className="flex">
-      <div className="flex-none w-[388px]">
+    <div className="flex flex-1">
+      <div className="flex-none w-[388px] flex flex-col">
 
           <AmisRender
             data={{
@@ -57,7 +57,7 @@ export default function Record({formFactor}) {
               formFactor: formFactor,
               scopeId: listViewId,
             }}
-            className="steedos-listview"
+            className="steedos-listview p-0 sm:border bg-white border-slate-300 border-solid flex flex-1 flex-col"
             id={listViewId}
             schema={{
               "type": "steedos-object-listview",
@@ -66,7 +66,7 @@ export default function Record({formFactor}) {
               // "headerToolbar": [],
               "columnsTogglable": false,
               "showHeader": true,
-              "className": "sm:my-3 sm:ml-3"
+              "className": ""
             }}
             router={router}
           ></AmisRender>

@@ -63,7 +63,7 @@ export default function Page ({ formFactor }) {
               formFactor: formFactor,
               scopeId: listViewId,
             }}
-            className="steedos-listview"
+            className="steedos-listview p-0 sm:border bg-white sm:shadow sm:rounded border-slate-300 border-solid	sm:m-3 flex flex-1 flex-col"
             id={listViewId}
             schema={{
               "type": "steedos-object-listview",
@@ -72,7 +72,7 @@ export default function Page ({ formFactor }) {
               // "headerToolbar": [],
               "columnsTogglable": false,
               "showHeader": true,
-              "className": "sm:m-3"
+              "className": ""
             }}
             router={router}
           ></AmisRender>
