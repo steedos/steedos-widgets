@@ -285,7 +285,7 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
   let headerSchema = [{
     "type": "wrapper",
     "body": body,
-    "className": `border-b border-gray-300 bg-gray-100 ${roundedCss} ${ctx.onlySecordLine && "pt-0"}`
+    "className": `bg-gray-100 ${roundedCss} ${ctx.onlySecordLine && "pt-0"}`
   }];
   // const fieldsFilterBarSchema = await getObjectListHeaderFieldsFilterBar(objectSchema, listViewName, ctx);
   // headerSchema.push(fieldsFilterBarSchema);
@@ -491,7 +491,7 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
         "className": "flex justify-between"
       }
     ],
-    "className": "bg-gray-100 sm:rounded p-3"
+    "className": "border-b border-gray-300 bg-gray-100 sm:rounded-t p-3"
   };
   return recordRelatedListHeader;
 }

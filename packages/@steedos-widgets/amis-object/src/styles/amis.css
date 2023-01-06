@@ -43,6 +43,7 @@
     --Nav-item-onHover-bg: rgba(21,137,238,.1);
     --Nav-item-onActive-bg: rgba(21,137,238,.1);
     --Nav-item-onActive-color: #000;
+    --Crud-toolbar-gap: 2px;
 }
 
 fieldset.antd-Collapse {
