@@ -21,6 +21,10 @@ export function getObjectHeaderToolbar(mainObject, formFactor){
     return [
       // "filter-toggler",
       "bulkActions",
+      {
+          "type": "columns-toggler",
+          "className": "mr-2"
+      },
       // {
       //     "type": "export-excel",
       //     "align": "right"
@@ -52,11 +56,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor){
             ]
           }
         }
-      },
-      // {
-      //     "type": "columns-toggler",
-      //     "align": "right"
-      // },
+      }
       // {
       //   "type": "search-box",
       //   "align": "right",
