@@ -390,7 +390,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
         "className": "slds-filters"
       },
       "size": "xs",
-      "className": "border-gray slds-grid slds-grid_vertical slds-nowrap px-1 py-1",
+      "className": "border-gray-300 border-y slds-grid slds-grid_vertical slds-nowrap",
       "visibleOn": "this.showFieldsFilter",
     },
     "className": "bg-white",

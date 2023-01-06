@@ -92,7 +92,7 @@ export async function getObjectFilter(objectSchema, fields, options) {
   return {
     "title": "",
     "submitText": "",
-    "className": "b-b",
+    "className": "",
     // "debug": true,
     "mode": "normal",
     "wrapWithPanel": false,
