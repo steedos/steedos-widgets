@@ -2,7 +2,7 @@ import { getFieldSearchable } from "./fields/index";
 import { includes, map } from "lodash";
 
 export async function getObjectFieldsFilterButtonSchema(objectSchema) {
-  const amisListViewId = `listview_${objectSchema.name}`;
+  // const amisListViewId = `listview_${objectSchema.name}`;
   return {
     "type": "button",
     "label": "",
@@ -139,9 +139,6 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
     enableSearchableFieldsVisibleOn: true
   }, ctx));
   const onSearchScript = `
-    const appId = event.data.appId;
-    const objectName = event.data.objectName;
-    const scopeId = event.data.scopeId;
     const scope = event.context.scoped;
     var filterForm = scope.getComponents().find(function(n){
       return n.props.type === "form";
@@ -153,7 +150,16 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
     listView.handleFilterSubmit(filterFormValues);
   `;
   const dataProviderInited = `
-    const searchableFieldsStoreKey = location.pathname + "/searchable_fields/" + data.listViewId ;
+    const objectName = data.objectName;
+    const isLookup = data.isLookup;
+    const listViewId = data.listViewId;
+    let searchableFieldsStoreKey = location.pathname + "/searchable_fields/";
+    if(isLookup){
+      searchableFieldsStoreKey += "lookup/" + objectName;
+    }
+    else{
+      searchableFieldsStoreKey += listViewId;
+    }
     let defaultSearchableFields = localStorage.getItem(searchableFieldsStoreKey);
     if(!defaultSearchableFields && data.uiSchema){
       let listView = data.uiSchema.list_views[data.listName];
@@ -171,25 +177,26 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
       );
     }
     setData({ filterFormSearchableFields: defaultSearchableFields });
-
-    const listViewPropsStoreKey = location.pathname + "/crud/" + data.listViewId ;
-    let localListViewProps = localStorage.getItem(listViewPropsStoreKey);
-    if(localListViewProps){
-      localListViewProps = JSON.parse(localListViewProps);
-      let filterFormValues = _.pickBy(localListViewProps, function(n,k){
-        return /^__searchable__/g.test(k);
-      });
-      if(!_.isEmpty(filterFormValues)){
-        setData({ filterFormValues });
-        const omitedEmptyFormValue = _.omitBy(filterFormValues, function(n){
-          return _.isNil(n) 
-            || (_.isObject(n) && _.isEmpty(n)) 
-            || (_.isArray(n) && _.isEmpty(n.filter(function(item){return !_.isNil(item)})))
-            || (_.isString(n) && n.length === 0);
+    if(!isLookup){
+      const listViewPropsStoreKey = location.pathname + "/crud/" + data.listViewId ;
+      let localListViewProps = localStorage.getItem(listViewPropsStoreKey);
+      if(localListViewProps){
+        localListViewProps = JSON.parse(localListViewProps);
+        let filterFormValues = _.pickBy(localListViewProps, function(n,k){
+          return /^__searchable__/g.test(k);
         });
-        // 有过滤条件时自动展开搜索栏
-        if(!_.isEmpty(omitedEmptyFormValue)){
-          setData({ showFieldsFilter: true });
+        if(!_.isEmpty(filterFormValues)){
+          setData({ filterFormValues });
+          const omitedEmptyFormValue = _.omitBy(filterFormValues, function(n){
+            return _.isNil(n) 
+              || (_.isObject(n) && _.isEmpty(n)) 
+              || (_.isArray(n) && _.isEmpty(n.filter(function(item){return !_.isNil(item)})))
+              || (_.isString(n) && n.length === 0);
+          });
+          // 有过滤条件时自动展开搜索栏
+          if(!_.isEmpty(omitedEmptyFormValue)){
+            setData({ showFieldsFilter: true });
+          }
         }
       }
     }
@@ -198,6 +205,8 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
     const data = context.props.data;
     const listName = data.listName;
     const objectName = data.objectName;
+    const isLookup = data.isLookup;
+    const listViewId = data.listViewId;
     const value = data.fields;
     doAction({
       actionType: 'setValue',
@@ -206,7 +215,13 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
       },
       componentId: "service_listview_filter_form_" + objectName,
     });
-    const searchableFieldsStoreKey = location.pathname + "/searchable_fields/" + data.listViewId;
+    let searchableFieldsStoreKey = location.pathname + "/searchable_fields/";
+    if(isLookup){
+      searchableFieldsStoreKey += "lookup/" + objectName;
+    }
+    else{
+      searchableFieldsStoreKey += listViewId;
+    }
     localStorage.setItem(searchableFieldsStoreKey, value);
   `;
   return {
@@ -368,6 +383,8 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
                             "objectName": "${objectName}",
                             "listName": "${listName}",
                             "listViewId": "${listViewId}",
+                            "uiSchema": "${uiSchema}",
+                            "isLookup": "${isLookup}",
                             "context": "${context}",
                             "fields": "${filterFormSearchableFields}"
                           }
@@ -390,7 +407,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
         "className": "slds-filters"
       },
       "size": "xs",
-      "className": "border-gray slds-grid slds-grid_vertical slds-nowrap px-1 py-1",
+      "className": `border-gray-300 border-y slds-grid slds-grid_vertical slds-nowrap ${!ctx.isLookup && "mt-2"}`,
       "visibleOn": "this.showFieldsFilter",
     },
     "className": "bg-white",
@@ -409,32 +426,5 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
       }
     }
   };
-}
-
-export function resetLocalListViewPropsWithSearchableFields(listViewId, searchableFields){
-  // 清除本地缓存中被删除字段的值
-  if(typeof searchableFields === "string"){
-    searchableFields = searchableFields.split(",");
-  }
-  const listViewPropsStoreKey = location.pathname + "/crud/" + listViewId ;
-  let localListViewProps = localStorage.getItem(listViewPropsStoreKey);
-  if(localListViewProps){
-    localListViewProps = JSON.parse(localListViewProps);
-    let removedKeys = [];
-    for(var k in localListViewProps){
-      let isField = new RegExp("__searchable__\.*").test(k);
-      // __searchable__开头的不在searchableFields范围则清除其值
-      let needRemoved = isField && !!!searchableFields.find(function(fieldName){
-        return new RegExp("__searchable__\.*" + fieldName + "$").test(k);
-      });
-      if(needRemoved){
-        removedKeys.push(k);
-      }
-    }
-    removedKeys.forEach(function(key){
-      delete localListViewProps[key];
-    });
-    localStorage.setItem(listViewPropsStoreKey, JSON.stringify(localListViewProps));
-  }
 }
 

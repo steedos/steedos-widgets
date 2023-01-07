@@ -50,9 +50,11 @@ export async function lookupToAmisPicker(field, readonly, ctx){
 
     const fieldsArr = [];
 
+    const listName = "all";
+
     const listView = _.find(
         refObjectConfig.list_views,
-        (listView, name) => name === 'all'
+        (listView, name) => name === listName
     );
     if (listView && listView.columns) {
         _.each(listView.columns, function (column) {
@@ -224,10 +226,17 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         pickerSchema.footerToolbar = getObjectFooterToolbar();
         if(ctx.filterVisible !== false){
             // 可以传入filterVisible为false防止死循环
-            pickerSchema.filter = await getObjectFilter(refObjectConfig, fields, ctx);
+            pickerSchema.filter = await getObjectFilter(refObjectConfig, fields, {
+                isLookup: true,
+                ...ctx
+            });
         }
         pickerSchema.data = Object.assign({}, pickerSchema.data, {
-            "objectName": refObjectConfig.name
+            "&": "$$",
+            "objectName": refObjectConfig.name,
+            "uiSchema": refObjectConfig,
+            "listName": listName,// 需要按视图取可搜索项
+            "isLookup": true
         });
     }
 

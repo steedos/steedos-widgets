@@ -10,13 +10,20 @@ import { keys, pick, difference, find } from 'lodash';
 
 export const AmisObjectListView = async (props) => {
   // console.log(`AmisObjectListView props`, props)
-  const { $schema, top, perPage, showHeader, headerSchema, ctx, data, defaultData, className="", tableClassName} = props;
+  const { $schema, top, perPage, showHeader, headerSchema, data, defaultData, className="", tableClassName} = props;
   // const urlListNameMatchs = location.pathname.match(/grid\/(\w+)/);  // 错误的规则
   // const urlListName = urlListNameMatchs && urlListNameMatchs[1]
   // let listName = props.listName || urlListName;
+  let ctx = props.ctx;
   let listName = defaultData?.listName || data?.listName || props?.listName;
   let defaults: any = {};
   let objectApiName = props.objectApiName || "space_users";
+  if(!ctx){
+    ctx = {};
+  }
+  if(!ctx.formFactor){
+    ctx.formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE';
+  }
 
   const objectUiSchema = await getUISchema(objectApiName, false);
   const listView =  find(

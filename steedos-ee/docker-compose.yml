@@ -26,7 +26,8 @@ services:
       - STEEDOS_IDENTITY_OIDC_CLIENT_ID=steedos-oidc-public
       - STEEDOS_IDENTITY_OIDC_CLIENT_SECRET=none
       - STEEDOS_IDENTITY_OIDC_NAME=Steedos ID
-      - STEEDOS_INITIAL_PACKAGES="@steedos-labs/project-ee@beta,@steedos-labs/demo-ee@beta"
+      - STEEDOS_INITIAL_PACKAGES="@steedos-labs/project-ee,@steedos-labs/demo-ee"
+      - STEEDOS_BUILDER_URL=https://beta.builder.steedos.com
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
       interval: 60s

@@ -4,23 +4,25 @@ export function getObjectHeaderToolbar(mainObject, formFactor){
 
   if(formFactor === 'SMALL'){
     return [
-      "bulkActions",
+      // "bulkActions",
       {
-          "type": "reload",
-          "align": "right"
+        "type": "tpl",
+        "tpl": "${count} 个项目"
       },
       {
-        "type": "search-box",
+        "type": "reload",
         "align": "right",
-        "name": "__keywords",
-        "placeholder": "请输入关键字",
-        "mini": true
-      }
+        "className": "bg-white p-2 rounded border-gray-300 text-gray-500"
+      },
   ]
   }else{
     return [
       // "filter-toggler",
       "bulkActions",
+      {
+          "type": "columns-toggler",
+          "className": "mr-2"
+      },
       // {
       //     "type": "export-excel",
       //     "align": "right"
@@ -52,11 +54,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor){
             ]
           }
         }
-      },
-      // {
-      //     "type": "columns-toggler",
-      //     "align": "right"
-      // },
+      }
       // {
       //   "type": "search-box",
       //   "align": "right",
@@ -92,6 +90,7 @@ export async function getObjectFilter(objectSchema, fields, options) {
   return {
     "title": "",
     "submitText": "",
+    "className": "",
     // "debug": true,
     "mode": "normal",
     "wrapWithPanel": false,

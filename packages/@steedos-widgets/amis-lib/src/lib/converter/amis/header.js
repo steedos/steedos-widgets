@@ -253,9 +253,7 @@ export async function getObjectListHeaderFieldsFilterBar(objectSchema, listViewN
     ),
     "sort_no"
   );
-  const fieldsFilterBarSchema = await getObjectFieldsFilterBarSchema(objectSchema, fields, {
-    isListviewInit: ctx.isListviewInit
-  });
+  const fieldsFilterBarSchema = await getObjectFieldsFilterBarSchema(objectSchema, fields, ctx);
   return fieldsFilterBarSchema;
 }
 
@@ -269,23 +267,22 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
     ctx = {};
   }
   let firstLineSchema = getObjectListHeaderFirstLine(objectSchema, listViewName, ctx);
-  let secordLineSchema = await getObjectListHeaderSecordLine(objectSchema, listViewName, ctx);
+  // let secordLineSchema = await getObjectListHeaderSecordLine(objectSchema, listViewName, ctx);
   // let body = [firstLineSchema, secordLineSchema];
   let body = [firstLineSchema];
-  let roundedCss = "sm:rounded-tl sm:rounded-tr";
-  if (ctx.onlyFirstLine) {
-    body = [firstLineSchema];
-  }
-  else if (ctx.onlySecordLine) {
-    // 列表视图自定义amisSchema时不能加圆角
-    roundedCss = "";
-    // body = [secordLineSchema];
-  }
-  // className中不可以加p-4，否则它会优先于后面的pt-0，边距效果依赖wrapper自带的antd-Wrapper--md样式类
+  // let roundedCss = "";
+  // if (ctx.onlyFirstLine) {
+  //   body = [firstLineSchema];
+  // }
+  // else if (ctx.onlySecordLine) {
+  //   // 列表视图自定义amisSchema时不能加圆角
+  //   roundedCss = "";
+  //   // body = [secordLineSchema];
+  // }
   let headerSchema = [{
     "type": "wrapper",
     "body": body,
-    "className": `border-b border-gray-300 bg-gray-100 ${roundedCss} ${ctx.onlySecordLine && "pt-0"}`
+    "className": `bg-gray-100 sm:rounded-tl sm:rounded-tr p-4 -mb-4`
   }];
   // const fieldsFilterBarSchema = await getObjectListHeaderFieldsFilterBar(objectSchema, listViewName, ctx);
   // headerSchema.push(fieldsFilterBarSchema);
@@ -335,11 +332,6 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
   let body = [
     {
       "type": "service",
-      "data": {
-        "&": "$$",
-        "record": "${record}",
-        "recordLoaded":"${recordLoaded}"
-      },
       "body": [
         {
           "type": "wrapper",
@@ -491,7 +483,7 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
         "className": "flex justify-between"
       }
     ],
-    "className": "bg-gray-100 sm:rounded p-3"
+    "className": "border-b border-gray-300 bg-gray-100 sm:rounded-t p-3"
   };
   return recordRelatedListHeader;
 }
