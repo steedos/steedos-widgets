@@ -22,7 +22,6 @@ export function GlobalHeader({app}) {
 
 
   window.signOut = signOut;
-
   return (
     <>
             
@@ -30,6 +29,7 @@ export function GlobalHeader({app}) {
       <AmisRender 
         id="steedos-global-header"
         data={{
+          appId: app.id,
           app,
         }} 
         router={router} 

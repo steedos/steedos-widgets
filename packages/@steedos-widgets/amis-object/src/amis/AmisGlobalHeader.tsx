@@ -3,7 +3,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-16 10:32:37
+ * @LastEditTime: 2023-01-07 16:20:23
  * @Description: 
  */
 
@@ -144,7 +144,7 @@ export const AmisGlobalHeader = async (props) => {
                                 "name": "notifications",
                                 "items": {
                                   "type": "tpl",
-                                  "tpl": "<div class='flex items-center p-4 hover:bg-sky-50'><img src='<%=data.context.rootUrl + `/avatar/` + data.from%>' alt='' class='h-10 w-10 flex-none rounded-full'><div class='ml-4 flex-auto'><div class='font-medium'><a href='<%=data.context.rootUrl + `/api/v4/notifications/` + data._id + `/read` %>' target='_blank'><%=data.name%></a></div><div class='mt-1 text-slate-700'><%=data.body%></div><div class='mt-1 text-slate-700'><%=moment(data.created).fromNow()%><abbr class='slds-text-link slds-m-horizontal_xxx-small <%=data.is_read ? 'hidden' : ''%>' title='unread'>●</abbr></div></div></div>",
+                                  "tpl": "<div class='flex items-center p-4 hover:bg-sky-50'><img src='<%=data.context.rootUrl + `/avatar/` + data.from%>' alt='' class='h-10 w-10 flex-none rounded-full'><div class='ml-4 flex-auto'><div class='font-medium'><a href='<%=data.context.rootUrl + `/api/v4/notifications/` + data._id + `/read?rootUrl=` + window.location.origin + `&appId=` + data.appId %>' target='_blank'><%=data.name%></a></div><div class='mt-1 text-slate-700'><%=data.body%></div><div class='mt-1 text-slate-700'><%=moment(data.created).fromNow()%><abbr class='slds-text-link slds-m-horizontal_xxx-small <%=data.is_read ? 'hidden' : ''%>' title='unread'>●</abbr></div></div></div>",
                                   "id": "u:07ece657c7b7"
                                 },
                                 "id": "u:18da41dab9ca"
