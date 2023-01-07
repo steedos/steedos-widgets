@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-20 15:31:45
+ * @LastEditTime: 2023-01-07 13:33:38
  * @Description:
  */
 import { fetchAPI } from "./steedos.client";
@@ -182,7 +182,7 @@ export async function getListSchema(
             if(!listViewName){
                 listViewName = name;
             }
-            return name === listViewName;
+            return name === listViewName || listView._id === listViewName;
         }
     );
 

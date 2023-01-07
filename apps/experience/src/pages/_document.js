@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-02 20:17:43
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-07 13:33:48
+ * @LastEditTime: 2023-01-07 14:26:21
  * @Description: 
  */
 import Document, { Html, Head, Main, Script, NextScript } from 'next/document'
@@ -24,6 +24,12 @@ export default class MyDocument extends Document {
           <script src="https://unpkg.steedos.cn/lodash/lodash.min.js"></script>
           <script src="https://unpkg.steedos.cn/moment/min/moment.min.js"></script>
           <script src="https://unpkg.steedos.cn/jquery@3.6.2/dist/jquery.min.js"></script>
+          <script src="https://unpkg.steedos.cn/i18next@22.4.8/dist/umd/i18next.min.js"></script>
+          <script>
+            window.STEEDOS_ROOT_URL = `{process.env.STEEDOS_ROOT_URL}`;
+          </script>
+          <script src="/steedos-init.js"></script>
+          <script src={`${process.env.STEEDOS_ROOT_URL}/steedos_dynamic_scripts.js`} ></script>
 
           <link rel="stylesheet" href="/tailwind-base.css" />
           <link rel="stylesheet" href="https://unpkg.steedos.cn/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css" />
