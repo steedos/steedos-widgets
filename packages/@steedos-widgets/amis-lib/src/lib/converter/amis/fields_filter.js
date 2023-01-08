@@ -52,7 +52,7 @@ export async function getObjectFieldsFilterFormSchema(objectSchema, fields, ctx)
       delete field.readonly
       delete field.hidden
       delete field.omit
-      const amisField = await getFieldSearchable(field, fields, {});
+      const amisField = await getFieldSearchable(field, fields, ctx);
       if (amisField) {
         body.push(amisField);
       }
@@ -227,6 +227,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
   return {
     "type": "service",
     "data": {
+      "showFieldsFilter": false
       // "filterFormSearchableFields": ["name"],//默认可搜索项
       // "filterFormValues": {"__searchable__name": "xxx"},//搜索项表单值
       // "listViewId": "${listViewId}"
