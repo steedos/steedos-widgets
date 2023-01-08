@@ -177,7 +177,11 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
       );
     }
     setData({ filterFormSearchableFields: defaultSearchableFields });
-    if(!isLookup){
+    if(isLookup){
+      // looup字段过滤器不在本地缓存记住过滤条件，所以初始始终隐藏过滤器
+      setData({ showFieldsFilter: false });
+    }
+    else{
       const listViewPropsStoreKey = location.pathname + "/crud/" + data.listViewId ;
       let localListViewProps = localStorage.getItem(listViewPropsStoreKey);
       if(localListViewProps){
@@ -228,7 +232,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
   return {
     "type": "service",
     "data": {
-      "showFieldsFilter": false
+      // "showFieldsFilter": false
       // "filterFormSearchableFields": ["name"],//默认可搜索项
       // "filterFormValues": {"__searchable__name": "xxx"},//搜索项表单值
       // "listViewId": "${listViewId}"
