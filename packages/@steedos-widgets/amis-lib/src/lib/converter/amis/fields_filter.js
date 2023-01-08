@@ -208,13 +208,14 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
     const isLookup = data.isLookup;
     const listViewId = data.listViewId;
     const value = data.fields;
-    doAction({
-      actionType: 'setValue',
-      args: {
-        value: { filterFormSearchableFields: value }
-      },
-      componentId: "service_listview_filter_form_" + objectName,
+    const scope = event.context.scoped;
+    const filterForm = scope.parent.parent.getComponents().find(function(n){
+      return n.props.type === "form";
     });
+    const filterService = filterForm.context.getComponents().find(function(n){
+      return n.props.type === "service";
+    });
+    filterService.setData({ filterFormSearchableFields: value });
     let searchableFieldsStoreKey = location.pathname + "/searchable_fields/";
     if(isLookup){
       searchableFieldsStoreKey += "lookup/" + objectName;
