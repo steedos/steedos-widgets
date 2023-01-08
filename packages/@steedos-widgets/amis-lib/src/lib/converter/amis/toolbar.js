@@ -16,6 +16,16 @@ export function getObjectHeaderToolbar(mainObject, formFactor){
       },
   ]
   }else{
+    const onFieldsFilterToggleScript = `
+      const scope = event.context.scoped;
+      const filterForm = scope.getComponents().find(function(n){
+        return n.props.type === "form";
+      });
+      const filterService = filterForm.context.getComponents().find(function(n){
+        return n.props.type === "service";
+      });
+      filterService.setData({showFieldsFilter: !!!filterService.props.data.showFieldsFilter});
+    `;
     return [
       // "filter-toggler",
       "bulkActions",
@@ -46,10 +56,8 @@ export function getObjectHeaderToolbar(mainObject, formFactor){
           "click": {
             "actions": [
               {
-                "actionType": "broadcast",
-                "args": {
-                  "eventName": "broadcast_toggle_fields_filter"
-                }
+                "actionType": "custom",
+                "script": onFieldsFilterToggleScript
               }
             ]
           }

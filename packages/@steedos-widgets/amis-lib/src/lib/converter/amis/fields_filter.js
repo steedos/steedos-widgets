@@ -410,21 +410,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
       "className": `border-gray-300 border-y slds-grid slds-grid_vertical slds-nowrap ${!ctx.isLookup && "mt-2"}`,
       "visibleOn": "this.showFieldsFilter",
     },
-    "className": "bg-white",
-    "onEvent": {
-      "broadcast_toggle_fields_filter": {
-        "actions": [
-          {
-            "actionType": "setValue",
-            "args": {
-              "value": {
-                "showFieldsFilter": "${!showFieldsFilter}"
-              }
-            },
-          }
-        ]
-      }
-    }
+    "className": "bg-white"
   };
 }
 
