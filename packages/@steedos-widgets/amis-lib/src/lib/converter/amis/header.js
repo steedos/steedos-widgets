@@ -332,11 +332,6 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
   let body = [
     {
       "type": "service",
-      "data": {
-        "&": "$$",
-        "record": "${record}",
-        "recordLoaded":"${recordLoaded}"
-      },
       "body": [
         {
           "type": "wrapper",

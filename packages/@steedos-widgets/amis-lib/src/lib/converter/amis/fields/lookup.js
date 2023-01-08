@@ -225,10 +225,13 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         pickerSchema.headerToolbar = getObjectHeaderToolbar(refObjectConfig, ctx.formFactor);
         pickerSchema.footerToolbar = getObjectFooterToolbar();
         if(ctx.filterVisible !== false){
+            let filterLoopCount = ctx.filterLoopCount || 0;
+            filterLoopCount++;
             // 可以传入filterVisible为false防止死循环
             pickerSchema.filter = await getObjectFilter(refObjectConfig, fields, {
                 isLookup: true,
-                ...ctx
+                ...ctx,
+                filterLoopCount,
             });
         }
         pickerSchema.data = Object.assign({}, pickerSchema.data, {

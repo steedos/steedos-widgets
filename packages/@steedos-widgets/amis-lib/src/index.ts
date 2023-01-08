@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 09:09:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-17 17:04:25
+ * @LastEditTime: 2023-01-04 16:59:09
  * @Description: 
  */
 export * from './lib/amis'
@@ -19,6 +19,8 @@ export * from './lib/public.env';
 export * from './lib/record';
 export * from './lib/space_users'
 export * from './lib/steedos.client.js'
+
+export * as Field from './lib/converter/amis/fields/index';
 
 export * from './lib/converter/amis/fields/lookup';
 export * from './lib/converter/amis/fields/user';

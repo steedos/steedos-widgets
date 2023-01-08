@@ -66,3 +66,11 @@
         overflow: hidden;
     }
 }
+
+@media (max-width: 576px){
+    // 手机端默认强制去掉了下面的样式造成toolbar无法宽度满屏，先加上改成PC一样的满屏效果
+    .antd-Crud-toolbar{
+        flex-basis: 0;
+        flex-grow: 1;
+    }
+}

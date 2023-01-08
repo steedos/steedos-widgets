@@ -4,20 +4,28 @@ export function getObjectHeaderToolbar(mainObject, formFactor){
 
   if(formFactor === 'SMALL'){
     return [
-      "bulkActions",
+      // "bulkActions",
       {
-          "type": "reload",
-          "align": "right"
+        "type": "tpl",
+        "tpl": "${count} 个项目"
       },
       {
-        "type": "search-box",
+        "type": "reload",
         "align": "right",
-        "name": "__keywords",
-        "placeholder": "请输入关键字",
-        "mini": true
-      }
+        "className": "bg-white p-2 rounded border-gray-300 text-gray-500"
+      },
   ]
   }else{
+    const onFieldsFilterToggleScript = `
+      const scope = event.context.scoped;
+      const filterForm = scope.getComponents().find(function(n){
+        return n.props.type === "form";
+      });
+      const filterService = filterForm.context.getComponents().find(function(n){
+        return n.props.type === "service";
+      });
+      filterService.setData({showFieldsFilter: !!!filterService.props.data.showFieldsFilter});
+    `;
     return [
       // "filter-toggler",
       "bulkActions",
@@ -48,10 +56,8 @@ export function getObjectHeaderToolbar(mainObject, formFactor){
           "click": {
             "actions": [
               {
-                "actionType": "broadcast",
-                "args": {
-                  "eventName": "broadcast_toggle_fields_filter"
-                }
+                "actionType": "custom",
+                "script": onFieldsFilterToggleScript
               }
             ]
           }

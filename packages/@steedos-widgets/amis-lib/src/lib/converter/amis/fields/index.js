@@ -433,6 +433,8 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
 }
 
 export async function getFieldSearchable(perField, permissionFields, ctx){
+    const filterLoopCount = ctx.filterLoopCount || 0;
+    const maxFilterLoopCount = 5;
     let field = perField;
     if(field.type === 'grid'){
         field = await Fields.getGridFieldSubFields(perField, permissionFields);
@@ -486,7 +488,7 @@ export async function getFieldSearchable(perField, permissionFields, ctx){
         _field.is_wide = false;
         _field.defaultValue = undefined;
         // filterVisible: false不再生成lookup字段时的filter，否则会死循环
-        const amisField = await Fields.convertSFieldToAmisField(_field, false, Object.assign({}, ctx, {fieldNamePrefix: fieldNamePrefix, required: false, showSystemFields: true, filterVisible: false}));
+        const amisField = await Fields.convertSFieldToAmisField(_field, false, Object.assign({}, ctx, {fieldNamePrefix: fieldNamePrefix, required: false, showSystemFields: true, filterVisible: filterLoopCount < maxFilterLoopCount}));
         if(amisField){
             return amisField;
         }

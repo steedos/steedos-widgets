@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-25 09:17:54
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-03 09:40:08
+ * @LastEditTime: 2023-01-05 17:56:58
  * @Description: 
  */
 
@@ -66,7 +66,10 @@ export const StandardObjects = {
             // TODO
             standard_submit_for_approval: {
                 visible: function (object_name, record_id, record_permissions) {
-                    return false;
+                    return (window as any).Steedos.ProcessManager.allowSubmit.apply(this, [object_name, record_id]);
+                },
+                todo: function (object_name, record_id) {
+                    return (window as any).Steedos.ProcessManager.submit.apply(this, [object_name, record_id]);
                 }
             },
             standard_follow: {
