@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-01-07 14:05:56
+ * @LastEditTime: 2023-01-09 11:59:25
  * @Description: 
  */
 import Script from 'next/script'
@@ -67,9 +67,6 @@ export default function App({
     <>
     <Script src="https://unpkg.steedos.cn/amis@2.5.2/sdk/sdk.js" strategy="beforeInteractive"/>
     <Script src="/amis-init.js" strategy="beforeInteractive"/>
-    <Script src="https://unpkg.com/i18next@22.4.8/dist/umd/i18next.min.js" strategy="beforeInteractive"/>
-    {/* <Script src="/steedos-init.js" strategy="beforeInteractive"/> */}
-    {/* <Script src="http://127.0.0.1:5300/steedos_dynamic_scripts.js" strategy="beforeInteractive"/> */}
 
     { formFactor && <SessionProvider session={session}>
       <Layout formFactor={formFactor} {...data}>
