@@ -52,7 +52,7 @@ export async function getObjectFieldsFilterFormSchema(objectSchema, fields, ctx)
       delete field.readonly
       delete field.hidden
       delete field.omit
-      const amisField = await getFieldSearchable(field, fields, {});
+      const amisField = await getFieldSearchable(field, fields, ctx);
       if (amisField) {
         body.push(amisField);
       }
@@ -177,7 +177,11 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
       );
     }
     setData({ filterFormSearchableFields: defaultSearchableFields });
-    if(!isLookup){
+    if(isLookup){
+      // looup字段过滤器不在本地缓存记住过滤条件，所以初始始终隐藏过滤器
+      setData({ showFieldsFilter: false });
+    }
+    else{
       const listViewPropsStoreKey = location.pathname + "/crud/" + data.listViewId ;
       let localListViewProps = localStorage.getItem(listViewPropsStoreKey);
       if(localListViewProps){
@@ -208,13 +212,14 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
     const isLookup = data.isLookup;
     const listViewId = data.listViewId;
     const value = data.fields;
-    doAction({
-      actionType: 'setValue',
-      args: {
-        value: { filterFormSearchableFields: value }
-      },
-      componentId: "service_listview_filter_form_" + objectName,
+    const scope = event.context.scoped;
+    const filterForm = scope.parent.parent.getComponents().find(function(n){
+      return n.props.type === "form";
     });
+    const filterService = filterForm.context.getComponents().find(function(n){
+      return n.props.type === "service";
+    });
+    filterService.setData({ filterFormSearchableFields: value });
     let searchableFieldsStoreKey = location.pathname + "/searchable_fields/";
     if(isLookup){
       searchableFieldsStoreKey += "lookup/" + objectName;
@@ -227,6 +232,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
   return {
     "type": "service",
     "data": {
+      // "showFieldsFilter": false
       // "filterFormSearchableFields": ["name"],//默认可搜索项
       // "filterFormValues": {"__searchable__name": "xxx"},//搜索项表单值
       // "listViewId": "${listViewId}"
@@ -410,21 +416,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
       "className": `border-gray-300 border-y slds-grid slds-grid_vertical slds-nowrap ${!ctx.isLookup && "mt-2"}`,
       "visibleOn": "this.showFieldsFilter",
     },
-    "className": "bg-white",
-    "onEvent": {
-      "broadcast_toggle_fields_filter": {
-        "actions": [
-          {
-            "actionType": "setValue",
-            "args": {
-              "value": {
-                "showFieldsFilter": "${!showFieldsFilter}"
-              }
-            },
-          }
-        ]
-      }
-    }
+    "className": "bg-white"
   };
 }
 
