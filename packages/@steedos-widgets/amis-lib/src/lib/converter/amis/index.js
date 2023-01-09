@@ -141,7 +141,7 @@ export async function getObjectList(objectSchema, fields, options){
       toolbar: getToolbar(),
       bodyClassName: "",
       headerToolbar: getObjectHeaderToolbar(objectSchema, options.formFactor),
-      headerToolbarClassName: "px-4 py-2 border-gray-300 bg-gray-100 b-b",
+      headerToolbarClassName: "px-4 py-2 border-gray-300 bg-gray-100 border-solid border-b",
       className: `${options.className || ""}`
     }
     if(options.formFactor !== 'SMALL'){

@@ -211,7 +211,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
         amisSchema: {
             type: "service",
             id: componentId,
-            className: "steedos-record-related-list sm:rounded sm:border border-slate-300 mb-4",
+            className: "steedos-record-related-list sm:rounded sm:border border-slate-300 bg-gray-100 mb-4",
             data: {
                 "&": "$$",
                 appId: "${appId}",
