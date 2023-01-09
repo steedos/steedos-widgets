@@ -131,3 +131,7 @@ body {
 .antd-Nav-item.is-active {
     box-shadow:var(--link-color) 4px 0 0 inset;
 }
+
+.antd-Pagination > li > a, .antd-Pagination > li > span {
+    display: flex;
+}

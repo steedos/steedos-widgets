@@ -29,10 +29,10 @@ export function getObjectHeaderToolbar(mainObject, formFactor){
     return [
       // "filter-toggler",
       "bulkActions",
-      {
-          "type": "columns-toggler",
-          "className": "mr-2"
-      },
+      // {
+      //     "type": "columns-toggler",
+      //     "className": "mr-2"
+      // },
       // {
       //     "type": "export-excel",
       //     "align": "right"
