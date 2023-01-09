@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-01-05 14:09:29
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-01-07 14:27:46
+ * @LastEditTime: 2023-01-09 10:53:53
  * @Description: 
  */
 window.Steedos = {};
@@ -37,7 +37,7 @@ window.TAPi18n = {
 
 i18next.init({ 
     lng: 'zh-CN',
-    debug: true,
+    debug: false,
     fallbackNS: [],  //'translation'
     fallbackLng: [],
     interpolation: {

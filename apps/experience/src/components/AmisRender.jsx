@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 16:55:58
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-21 16:38:43
+ * @LastEditTime: 2023-01-09 13:13:38
  * @Description: 
  */
 
@@ -10,7 +10,7 @@ import React, { useState, useEffect, Fragment, useRef, useImperativeHandle } fro
 import { amisRender, amisRootClick, getDefaultRenderData } from '@/lib/amis';
 import { defaultsDeep, concat, compact, filter, map, isEmpty } from 'lodash';
 
-export const AmisRender = ({id, schema, data, router, className, assets, getModalContainer, updateProps})=>{
+export const AmisRender = ({id, schema, data, router, className, assets, getModalContainer, updateProps, session})=>{
     const [globalAssetLoaded, setGlobalAssetLoaded] = useState(false);
     const [globalAssets, setGlobalAssets] = useState(null);
     useEffect(()=>{
@@ -52,6 +52,9 @@ export const AmisRender = ({id, schema, data, router, className, assets, getModa
 
         if(getModalContainer){
             env.getModalContainer = getModalContainer;
+        }
+        if(session){
+            env.session = session;
         }
         SteedosUI.refs[id] = amisRender(`#${id}`, defaultsDeep(defData , schema), {
             // location: router
