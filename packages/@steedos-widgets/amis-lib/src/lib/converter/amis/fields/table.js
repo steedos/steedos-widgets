@@ -231,8 +231,8 @@ export async function getTableSchema(fields, options){
     return {
         mode: "table",
         name: "thelist",
-        headerToolbarClassName: "py-2 px-2 border-gray-300 bg-gray-100 b-b",
-        className: "b-t",
+        headerToolbarClassName: "py-2 px-0",
+        className: "",
         draggable: false,
         defaultParams: getDefaultParams(options),
         columns: columns,

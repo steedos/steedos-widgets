@@ -41,7 +41,7 @@
     --button-enhance-default-bg-color: white;
     --Nav-item-borderRadius: 0px;
     --Nav-item-onHover-bg: rgba(21,137,238,.1);
-    --Nav-item-onActive-bg: rgba(21,137,238,.1);
+    --Nav-item-onActive-bg: rgba(27, 34, 41, 0.1);
     --Nav-item-onActive-color: #000;
     --Crud-toolbar-gap: 2px;
 }
@@ -130,4 +130,8 @@ body {
 
 .antd-Nav-item.is-active {
     box-shadow:var(--link-color) 4px 0 0 inset;
+}
+
+.antd-Pagination > li > a, .antd-Pagination > li > span {
+    display: flex;
 }

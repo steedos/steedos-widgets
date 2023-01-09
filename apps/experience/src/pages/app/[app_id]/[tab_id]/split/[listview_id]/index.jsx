@@ -36,7 +36,8 @@ export default function Page ({ formFactor }) {
   });
   const scopeId = `${listViewId}-page`;
   return (
-    <>
+    <div class="flex flex-1">
+      <div class="flex-none w-[388px] flex flex-col">
       {page && (
         <AmisRender
             data={{
@@ -52,7 +53,7 @@ export default function Page ({ formFactor }) {
             router={router}
           ></AmisRender>
       )}
-      {/* {!page && <DefaultListview formFactor={formFactor} router={router} listViewId={listViewId}></DefaultListview>} */}
+      
       {!page && (
           <AmisRender
             data={{
@@ -63,7 +64,7 @@ export default function Page ({ formFactor }) {
               formFactor: formFactor,
               scopeId: listViewId,
             }}
-            className="steedos-listview p-0 sm:border bg-white sm:shadow sm:rounded border-slate-300 border-solid	sm:m-3 flex flex-1 flex-col"
+            className="steedos-listview p-0 sm:border-r bg-white border-slate-300 border-solid flex flex-1 flex-col"
             id={listViewId}
             schema={{
               "type": "steedos-object-listview",
@@ -72,11 +73,12 @@ export default function Page ({ formFactor }) {
               // "headerToolbar": [],
               "columnsTogglable": false,
               "showHeader": true,
-              "className": ""
+              "className": "w-full"
             }}
             router={router}
           ></AmisRender>
         )}
-    </>
+      </div>
+    </div>
   )
 }

@@ -90,7 +90,7 @@ export const AmisObjectListView = async (props) => {
   return {
     "type": "service",
     "body": body,
-    "className": `steedos-listview p-0 sm:border bg-white sm:shadow sm:rounded border-slate-300 border-solid	${className}`,
+    "className": `${className}`,
     "data": serviceData
   }
 }

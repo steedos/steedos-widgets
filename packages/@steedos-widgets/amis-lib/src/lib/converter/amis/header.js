@@ -490,7 +490,7 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
         "className": "flex justify-between"
       }
     ],
-    "className": "border-b border-gray-300 bg-gray-100 sm:rounded-t p-3"
+    "className": "border-b border-gray-300 p-3"
   };
   return recordRelatedListHeader;
 }
