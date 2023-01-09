@@ -400,7 +400,7 @@ export async function getRecordDetailSchema(objectName, appId){
               },
               {
                 "type": "tabs",
-                "className": "mt-3 bg-white sm:shadow sm:rounded sm:border border-slate-300 p-4",
+                "className": "sm:mt-3 bg-white sm:shadow sm:rounded sm:border border-slate-300 p-4",
                 "tabs": [
                   {
                     "title": "详细",
