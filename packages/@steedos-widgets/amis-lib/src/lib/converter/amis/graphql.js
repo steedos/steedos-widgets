@@ -95,9 +95,9 @@ export async function getFindOneQuery(object, recordId, fields, options){
 
 export function getSaveQuery(object, recordId, fields, options){
     return {
-        objectName: "${objectName}",
+        objectName: object.name,
         $: "$$",
-        recordId: "${recordId}",
+        recordId: recordId,
         modalName: "${modalName}"
     }
 }
