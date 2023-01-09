@@ -166,9 +166,23 @@ export default {
           }
         },
         {
-          "type": "input-text",
+          "type": "select",
+          "label": "排序字段",
           "name": "sortField",
-          "label": "排序字段"
+          "searchable": true,
+          "multiple": false,
+          "source": {
+            "method": "get",
+            "data": {
+              "objectName": "${objectName}",
+            },
+            "sendOn": "this.objectApiName",
+            "url": "/service/api/amis-metadata-objects/objects/${objectApiName}/fields/options",
+            "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url.replaceAll('${objectName}',api.body.objectName); if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;"
+          },
+          "labelField": "label",
+          "valueField": "value",
+          "menuTpl": ""
         },
         {
           "type": "select",
