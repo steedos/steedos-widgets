@@ -361,9 +361,9 @@ export async function getCalendarSchema(
     };
 }
 
-export async function getRecordDetailHeaderSchema(objectName,recordId){
+export async function getRecordDetailHeaderSchema(objectName,recordId, options){
     const uiSchema = await getUISchema(objectName);
-    const amisSchema = await getObjectRecordDetailHeader(uiSchema, recordId);
+    const amisSchema = await getObjectRecordDetailHeader(uiSchema, recordId, options);
     return {
         uiSchema,
         amisSchema,

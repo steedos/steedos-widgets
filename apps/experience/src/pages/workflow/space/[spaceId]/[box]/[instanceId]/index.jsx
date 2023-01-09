@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-01-09 13:14:50
+ * @LastEditTime: 2023-01-09 17:50:47
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -30,17 +30,12 @@ function classNames(...classes) {
 export default function Record({formFactor}) {
   const router = useRouter();
   const { app_id= 'approve_workflow', tab_id = 'instances', instanceId, box } = router.query;
-  const [schema, setSchema] = useState(null);
-  const [permissions, setPermissions] = useState(null);
   const [formSchema, setFormSchema] = useState(null);
   const [record, setRecord] = useState(null);
 
   useEffect(()=>{
     getInstanceInfo({instanceId: instanceId, box: box}).then((res)=>{
       setRecord(res)
-    })
-    getRecordPermissions(tab_id, instanceId).then((res)=>{
-      setPermissions(res)
     })
   }, [tab_id, instanceId])
 
@@ -52,23 +47,35 @@ export default function Record({formFactor}) {
     }
   }, [record])
 
-  useEffect(()=>{
-    getViewSchema(tab_id, instanceId, {
-      recordId: instanceId,
-      tabId: tab_id,
-      appId: app_id,
-      formFactor: formFactor,
-    }).then((res)=>{
-      setSchema(res)
-    })
-  }, [tab_id, instanceId])
   return (
     <div className="h-full flex instance-scope">
       <div className="flex-1 w-32 border-r"><InstancesListview bulkActions={false} formFactor={formFactor} app_id={app_id} tab_id={tab_id} listview_id={box}></InstancesListview></div>
-      <div className="flex-1 w-64" >
+      { record != undefined && formSchema &&
+        <div className="flex-1 w-64" >
         {
           record != undefined && <div className="region-header bg-slate-50 static">
-          {schema && <RecordHeader app_id={app_id} tab_id={tab_id} record_id={record._id} record={record} schema={schema} formFactor={formFactor} permissions={permissions} hiddenTitle={true} className="p-2"></RecordHeader>}
+          <AmisRender schema={
+            {
+              "type": "service",
+              "body": [
+                {
+                  "type": "steedos-record-detail-header",
+                  "label": "标题面板",
+                  "objectApiName": "${objectName}",
+                  "recordId": "${recordId}",
+                  onEvent: {},
+                  showRecordTitle: false
+                }
+              ],
+            }
+          } router={router} data={{
+            recordLoaded: true,
+            record: record,
+            record_id: record._id,
+            recordId: record._id,
+            app_id,
+            objectName: 'instances'
+          }} id={`amis-root-workflow-instance-form-header`}></AmisRender>
         </div>
         }
         <div className="relative flex flex-1 flex-col region-main overflow-auto border-t" id="instanceRoot" style={{
@@ -95,6 +102,7 @@ export default function Record({formFactor}) {
           )}
         </div>
       </div>
+      }
    </div>
   );
 }

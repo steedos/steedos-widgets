@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-02 18:05:51
+ * @LastEditTime: 2023-01-09 16:21:20
  * @Description: 
  */
 import { getRecordDetailHeaderSchema , getUISchema} from '@steedos-widgets/amis-lib'
@@ -31,8 +31,8 @@ export const AmisRecordDetailHeader = async (props) => {
       ]
     }
   }
-  const { $schema, recordId, onEvent = defaultOnEvent } = props;
+  const { $schema, recordId, onEvent = defaultOnEvent, showRecordTitle = true } = props;
   let objectApiName = props.objectApiName || "space_users";
-  const schema = (await getRecordDetailHeaderSchema(objectApiName, recordId)).amisSchema;
+  const schema = (await getRecordDetailHeaderSchema(objectApiName, recordId, {showRecordTitle})).amisSchema;
   return Object.assign({}, schema, {onEvent: onEvent})
 }

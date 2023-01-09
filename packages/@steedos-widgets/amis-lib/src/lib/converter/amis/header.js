@@ -293,9 +293,11 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
  * 记录详细界面顶部头amisSchema，也是标题面板组件的amisSchema
  * @param {*} objectSchema 对象UISchema
  * @param {*} recordId 记录id
+ * @param {*} optioins: {showRecordTitle: true}
  * @returns amisSchema
  */
-export async function getObjectRecordDetailHeader(objectSchema, recordId) {
+export async function getObjectRecordDetailHeader(objectSchema, recordId, options) {
+  const { showRecordTitle = true } = options || {}
   // console.log('amis==>', objectSchema, recordId)
   const { name, label, icon, NAME_FIELD_KEY } = objectSchema;
   const buttons = getObjectDetailButtons(objectSchema, {});
@@ -329,6 +331,60 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
   amisButtonsSchema.push(dropdownButtonsSchema);
   const reg = new RegExp('_', 'g');
   const standardIcon = icon && icon.replace(reg, '-');
+
+  const gridBody = [];
+  if(showRecordTitle){
+    gridBody.push({
+      "body": [
+        {
+          "type": "grid",
+          "columns": [
+            {
+              "body": {
+                "type": "tpl",
+                "className": "block",
+                "tpl": `<img class='slds-icon slds-icon_container slds-icon-standard-${standardIcon}' src='\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg'>`
+              },
+              "md": "auto",
+              "className": "",
+              "columnClassName": "flex justify-center items-center"
+            },
+            {
+              "body": [
+                {
+                  "type": "tpl",
+                  "tpl": `${label}`,
+                  "inline": false,
+                  "wrapperComponent": "",
+                  "className": "leading-4 text-md"
+                },
+                {
+                  "type": "tpl",
+                  "tpl": "${name}",
+                  // "tpl": "${(record && uiSchema && record[uiSchema.NAME_FIELD_KEY]) || name}",
+                  "inline": false,
+                  "wrapperComponent": "",
+                  "className": "leading-5 text-xl font-bold"
+                }
+              ],
+              "columnClassName": "p-l-xs"
+            }
+          ],
+          "className": "flex justify-between"
+        }
+      ],
+      "md": "auto",
+    })
+  };
+
+  gridBody.push({
+    "body":  {
+      "type": "flex",
+      "items": amisButtonsSchema,
+    },
+    "md": "auto"
+  })
+
   let body = [
     {
       "type": "service",
@@ -339,56 +395,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
           "body": [
             {
               "type": "grid",
-              "columns": [
-                {
-                  "body": [
-                    {
-                      "type": "grid",
-                      "columns": [
-                        {
-                          "body": {
-                            "type": "tpl",
-                            "className": "block",
-                            "tpl": `<img class='slds-icon slds-icon_container slds-icon-standard-${standardIcon}' src='\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg'>`
-                          },
-                          "md": "auto",
-                          "className": "",
-                          "columnClassName": "flex justify-center items-center"
-                        },
-                        {
-                          "body": [
-                            {
-                              "type": "tpl",
-                              "tpl": `${label}`,
-                              "inline": false,
-                              "wrapperComponent": "",
-                              "className": "leading-4 text-md"
-                            },
-                            {
-                              "type": "tpl",
-                              "tpl": "${name}",
-                              // "tpl": "${(record && uiSchema && record[uiSchema.NAME_FIELD_KEY]) || name}",
-                              "inline": false,
-                              "wrapperComponent": "",
-                              "className": "leading-5 text-xl font-bold"
-                            }
-                          ],
-                          "columnClassName": "p-l-xs"
-                        }
-                      ],
-                      "className": "flex justify-between"
-                    }
-                  ],
-                  "md": "auto"
-                },
-                {
-                  "body":  {
-                    "type": "flex",
-                    "items": amisButtonsSchema,
-                  },
-                  "md": "auto"
-                }
-              ],
+              "columns": gridBody,
               "className": "flex justify-between"
             }
           ],
@@ -404,7 +411,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId) {
     type: 'service',
     bodyClassName: '',
     name: `page`,
-    data: { context: { rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken() }, objectName: name, _id: recordId, recordPermissions: objectSchema.permissions, uiSchema: objectSchema },
+    data: { "&":"$$", objectName: name, _id: recordId, recordPermissions: objectSchema.permissions, uiSchema: objectSchema },
     body: body
   }
 
