@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-30 17:17:10
+ * @LastEditTime: 2023-01-09 13:14:50
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -91,7 +91,7 @@ export default function Record({formFactor}) {
               context: record,
             }} getModalContainer={()=>{
               return document.querySelector('#instanceRootModalContainer')
-            }}></AmisRender>
+            }} session={"instanceForm"}></AmisRender>
           )}
         </div>
       </div>
