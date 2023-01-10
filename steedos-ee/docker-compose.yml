@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   steedos:
-    image: ecr.aws.steedos.cn/dockerhub/steedos/steedos-enterprise:2.4.0-beta.4
+    image: ecr.aws.steedos.cn/dockerhub/steedos/steedos-enterprise:2.4.0-beta.6
     command: "yarn start"
     ports:
       - "5000:3000"
@@ -56,7 +56,6 @@ services:
       - MONGODB_INITIAL_PRIMARY_HOST=mongodb
       - MONGODB_REPLICA_SET_NAME=steedos
       - MONGODB_ENABLE_JOURNAL=true
-      - MONGODB_ADVERTISED_HOSTNAME=mongodb
       - ALLOW_EMPTY_PASSWORD=yes
     healthcheck:
       test: echo 'rs.status().ok' | mongo steedos --quiet | grep 1
