@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 11:31:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-01-09 13:15:55
+ * @LastEditTime: 2023-01-10 16:44:19
  * @Description:
  */
 import { each, find, isArray, isEmpty } from 'lodash';
@@ -77,7 +77,15 @@ export const amisRootClick = (router, e) => {
   if (e.target.nodeName.toLocaleLowerCase() === "a" && e.target.href && e.target.target != '_blank') {
     e.preventDefault();
     router.push(e.target.href);
+    return ;
   }
+
+  if(e.target.parentNode.nodeName.toLocaleLowerCase() === "a" && e.target.parentNode.href && e.target.parentNode.target != '_blank'){
+    e.preventDefault();
+    router.push(e.target.parentNode.href);
+    return ;
+  }
+
 };
 
 export const getEvn = (router)=>{
