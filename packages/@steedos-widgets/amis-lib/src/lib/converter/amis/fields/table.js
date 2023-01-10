@@ -100,7 +100,7 @@ async function getTableColumns(fields, options){
                     type: type,
                     tpl: tpl,
                     toggled: field.toggled,
-                    className: field.type === 'textarea' ? 'w-56 whitespace-pre-wrap textarea' :  "whitespace-nowrap",
+                    className: field.type === 'textarea' ? 'min-w-56 whitespace-pre-wrap textarea' :  "whitespace-nowrap",
                     html: field.type === 'html' ? true : null
                     // toggled: true 
                 })
