@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-20 11:49:55
+ * @LastEditTime: 2023-01-11 15:34:33
  * @Description: 
  */
 import './AmisAppMenu.less';
@@ -16,7 +16,7 @@ export const AmisAppMenu = async (props) => {
     // console.log(`AmisAppMenu`, props)
     return {
         "type": "nav",
-        className: className,
+        className: `${className}`,
         "stacked": stacked,
         "overflow": overflow,
         "indentSize": indentSize,
