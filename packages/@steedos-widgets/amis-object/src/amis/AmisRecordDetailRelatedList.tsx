@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-08 15:13:43
+ * @LastEditTime: 2023-01-11 14:07:13
  * @Description: 
  */
 import { getRecordDetailRelatedListSchema } from '@steedos-widgets/amis-lib'
@@ -10,7 +10,7 @@ import { getRecordDetailRelatedListSchema } from '@steedos-widgets/amis-lib'
 
 export const AmisRecordDetailRelatedList = async (props) => {
   // console.log(`AmisRecordDetailRelatedList props==>`, props)
-  const { objectApiName, recordId, relatedObjectApiName, data, relatedKey, top, perPage, hiddenEmptyTable, appId } = props;
+  const { objectApiName, recordId, relatedObjectApiName, data, relatedKey, top, perPage, hiddenEmptyTable, appId, label } = props;
   if(!objectApiName || !relatedObjectApiName){
     return {
       "type": "alert",
@@ -20,6 +20,6 @@ export const AmisRecordDetailRelatedList = async (props) => {
       "className": "mb-3"
     }
   }
-  const schema = (await getRecordDetailRelatedListSchema(objectApiName, recordId, relatedObjectApiName, relatedKey, top, perPage, hiddenEmptyTable, appId)).amisSchema;
+  const schema = (await getRecordDetailRelatedListSchema(objectApiName, recordId, relatedObjectApiName, relatedKey, top, perPage, hiddenEmptyTable, appId, label)).amisSchema;
   return schema
 }

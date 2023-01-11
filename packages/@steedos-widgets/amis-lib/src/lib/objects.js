@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-01-11 11:44:42
+ * @LastEditTime: 2023-01-11 14:07:02
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -546,6 +546,7 @@ export async function getObjectRelatedList(
                         masterObjectName: objectName,
                         object_name: arr[0],
                         foreign_key: arr[1],
+                        label: relatedList.label,
                         schema: {
                             uiSchema: relatedUiSchema,
                             amisSchema: await getObjectList(relatedUiSchema, fields, {
