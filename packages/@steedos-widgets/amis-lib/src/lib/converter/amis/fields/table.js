@@ -244,6 +244,15 @@ export async function getTableSchema(fields, options){
     }
 }
 
+
+
+/**
+ * 
+ * @param {*} mainObject 
+ * @param {*} fields 
+ * @param {*} options = {globalFilter: 相关字表过滤条件, filter: listview 过滤条件, ...}
+ * @returns 
+ */
 export async function getTableApi(mainObject, fields, options){
     const searchableFields = [];
     let { globalFilter, filter, sort, top, setDataToComponentId = '' } = options;
@@ -319,12 +328,14 @@ export async function getTableApi(mainObject, fields, options){
         catch(ex){
             console.error("本地存储中crud参数解析异常：", ex);
         }
-        ${baseFilters ? `var filters = ${JSON.stringify(baseFilters)};` : 'var filters = [];'}
-        if(_.isEmpty(filters)){
-            filters = api.data.filter || [];
+        ${baseFilters ? `var systemFilters = ${JSON.stringify(baseFilters)};` : 'var systemFilters = [];'}
+        let userFilters =[];
+        
+        if(_.isEmpty(systemFilters)){
+            systemFilters = api.data.filter || [];
         }else{
             if(!_.isEmpty(api.data.filter)){
-                filters = [filters, 'and', api.data.filter];
+                systemFilters = [systemFilters, 'and', api.data.filter];
             }
         }
         var pageSize = api.data.pageSize || 10;
@@ -336,9 +347,9 @@ export async function getTableApi(mainObject, fields, options){
         sort = orderBy ? sort : "${sort}";
         var allowSearchFields = ${JSON.stringify(searchableFields)};
         if(api.data.$term){
-            filters = [["name", "contains", "'+ api.data.$term +'"]];
+            userFilters = [["name", "contains", "'+ api.data.$term +'"]];
         }else if(selfData.op === 'loadOptions' && selfData.value){
-            filters = [["${valueField.name}", "=", selfData.value]];
+            userFilters = [["${valueField.name}", "=", selfData.value]];
         }
         var searchableFilter = [];
         _.each(selfData, (value, key)=>{
@@ -356,10 +367,10 @@ export async function getTableApi(mainObject, fields, options){
         });
 
         if(searchableFilter.length > 0){
-            if(filters.length > 0 ){
-                filters = [filters, 'and', searchableFilter];
+            if(userFilters.length > 0 ){
+                userFilters = [userFilters, 'and', searchableFilter];
             }else{
-                filters = searchableFilter;
+                userFilters = searchableFilter;
             }
         }
 
@@ -367,9 +378,9 @@ export async function getTableApi(mainObject, fields, options){
             allowSearchFields.forEach(function(key){
                 const keyValue = selfData[key];
                 if(_.isString(keyValue)){
-                    filters.push([key, "contains", keyValue]);
+                    userFilters.push([key, "contains", keyValue]);
                 }else if(_.isArray(keyValue) || _.isBoolean(keyValue) || keyValue){
-                    filters.push([key, "=", keyValue]);
+                    userFilters.push([key, "=", keyValue]);
                 }
             })
         }
@@ -385,9 +396,26 @@ export async function getTableApi(mainObject, fields, options){
                     }
                 }
             })
-            filters.push(keywordsFilters);
+            userFilters.push(keywordsFilters);
+        };
+
+        let filters = [];
+
+        if(!_.isEmpty(systemFilters)){
+            filters = systemFilters;
         }
-        api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', pageSize).replace('{__skip}', skip).replace('{__sort}', sort.trim());
+
+        if(!_.isEmpty(userFilters)){
+            if(_.isEmpty(filters)){
+                filters = userFilters;
+            }else{
+                filters.push('and');
+                filters.push(userFilters)
+            }
+        }
+        api.data = {
+            query: api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', pageSize).replace('{__skip}', skip).replace('{__sort}', sort.trim())
+        }
         return api;
     `
     api.adaptor = `
