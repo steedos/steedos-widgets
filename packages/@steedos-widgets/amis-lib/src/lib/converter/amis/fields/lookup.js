@@ -33,7 +33,8 @@ const getReferenceTo = async (field)=>{
     return {
         objectName: referenceTo,
         valueField: valueField,
-        labelField: refObjectConfig.fields[refObjectConfig.NAME_FIELD_KEY || 'name']
+        labelField: refObjectConfig.fields[refObjectConfig.NAME_FIELD_KEY || 'name'],
+        NAME_FIELD_KEY: refObjectConfig.NAME_FIELD_KEY || 'name'
     }
 }
 
@@ -299,7 +300,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         var filters = '[]';
         var top = 10;
         if(api.data.$term){
-            filters = '["name", "contains", "'+ api.data.$term +'"]';
+            filters = '["${referenceTo?.NAME_FIELD_KEY || 'name'}", "contains", "'+ api.data.$term +'"]';
         }else if(api.data.$value){
             filters = '["_id", "=", "'+ api.data.$value +'"]';
         }
@@ -336,7 +337,6 @@ export async function lookupToAmisSelect(field, readonly, ctx){
     if(readonly){
         data.tpl = await Tpl.getLookupTpl(field, ctx)
     }
-
     return data;
 }
 
