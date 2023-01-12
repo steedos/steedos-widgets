@@ -194,15 +194,19 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                 valueField: 'value',
                 tpl: readonly ? Tpl.getSelectTpl(field) : null
             }
-            if(_.has(field, 'defaultValue') && !(_.isString(field.defaultValue) && field.defaultValue.startsWith("{"))){
+            let defaultValue = field.defaultValue
+            if(_.has(field, 'defaultValue') && _.isString(defaultValue)){
+                if(defaultValue.startsWith("{{")){
+                    defaultValue = `\$${defaultValue.substring(1, defaultValue.length -1)}`
+                }
                 const dataType = field.data_type || 'text';
-                if(field.defaultValue != null){
+                if(defaultValue != null){
                     if(dataType === 'text'){
-                        convertData.value = String(field.defaultValue);
+                        convertData.value = String(defaultValue);
                     }else if(dataType === 'number'){
-                        convertData.value = Number(field.defaultValue);
+                        convertData.value = Number(defaultValue);
                     }else if(dataType === 'boolean'){
-                        convertData.value = field.defaultValue === 'false' ? false : true;
+                        convertData.value = defaultValue === 'false' ? false : true;
                     }
                 }
             }

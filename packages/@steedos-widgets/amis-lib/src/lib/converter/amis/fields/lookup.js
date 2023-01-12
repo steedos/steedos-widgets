@@ -363,8 +363,12 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         autoComplete: apiInfo,
         searchable: true,
     }
-    if(_.has(field, 'defaultValue') && !(_.isString(field.defaultValue) && field.defaultValue.startsWith("{"))){
-        data.value = field.defaultValue
+    let defaultValue = field.defaultValue
+    if(_.has(field, 'defaultValue') && _.isString(defaultValue)){
+        if(defaultValue.startsWith("{{")){
+            defaultValue = `\$${defaultValue.substring(1, defaultValue.length -1)}`
+        }
+        data.value = defaultValue
     }
     if(field.multiple){
         data.multiple = true
@@ -390,7 +394,7 @@ async function getApi(object, recordId, fields, options){
 }
 
 export async function lookupToAmis(field, readonly, ctx){
-    if(readonly){
+    if(readonly && _.isEmpty(field.defaultValue)){
         return {
             type: Field.getAmisStaticFieldType('picker', readonly),
             tpl: Tpl.getRelatedFieldTpl(field, ctx)
