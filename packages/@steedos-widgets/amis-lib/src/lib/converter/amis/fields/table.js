@@ -422,7 +422,9 @@ export async function getTableApi(mainObject, fields, options){
     const enable_tree = ${mainObject.enable_tree};
     if(!enable_tree){
         _.each(payload.data.rows, function(item, index){
-            item._index = index + 1;
+            const {pageNo, pageSize} = api.body;
+            const skip = (pageNo - 1) * pageSize;
+            item._index = skip + index + 1;
         })
     }
     window.postMessage(Object.assign({type: "listview.loaded"}), "*");
