@@ -74,3 +74,7 @@
     border: none !important;
     box-shadow: none !important; 
 }
+
+#instanceRoot #amis-root-workflow .antd-List-placeholder{
+    display: none;
+}
