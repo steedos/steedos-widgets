@@ -12,7 +12,7 @@ export const getAttachments = async (instance)=>{
 
     return {
         "type": "panel",
-        className: "border-none",
+        className: "border-none bg-none shadow-none",
         headerClassName: "p-0 border-none mb-1",
         bodyClassName: "p-0",
         "title": [
@@ -78,6 +78,8 @@ export const getAttachmentUploadInput = async (instance)=>{
         "body": [
           {
             "type": "input-file",
+            labelClassName: "antd-List-heading",
+            className: "flex items-center",
             "label": "附件",
             mode:"inline",
             "name": "file",

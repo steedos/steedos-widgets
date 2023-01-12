@@ -422,7 +422,9 @@ export async function getTableApi(mainObject, fields, options){
     const enable_tree = ${mainObject.enable_tree};
     if(!enable_tree){
         _.each(payload.data.rows, function(item, index){
-            item._index = index + 1;
+            const {pageNo, pageSize} = api.body;
+            const skip = (pageNo - 1) * pageSize;
+            item._index = skip + index + 1;
         })
     }
     window.postMessage(Object.assign({type: "listview.loaded"}), "*");
@@ -472,7 +474,7 @@ export async function getTableApi(mainObject, fields, options){
 
     try{
         // TODO: 不应该直接在这里取localStorage，应该从外面传入
-        const listViewId = api.data.listViewId;
+        const listViewId = api.body.listViewId;
         const listViewPropsStoreKey = location.pathname + "/crud/" + listViewId ;
         /**
          * localListViewProps规范来自crud请求api中api.data.$self参数值的。
@@ -485,11 +487,11 @@ export async function getTableApi(mainObject, fields, options){
          * orderDir:排序方向
          */
         let localListViewProps = localStorage.getItem(listViewPropsStoreKey);
-        let selfData = JSON.parse(JSON.stringify(api.data.$self));
+        let selfData = JSON.parse(JSON.stringify(api.body.$self));
         if(localListViewProps){
             localListViewProps = JSON.parse(localListViewProps);
-            selfData = Object.assign({}, localListViewProps, selfData, { filter: api.data.filter });
-            if(!api.data.loaded){
+            selfData = Object.assign({}, localListViewProps, selfData, { filter: api.body.filter });
+            if(!api.body.loaded){
                 // 第一次加载组件，比如刷新浏览器时因为api.data.pageNo有默认值1
                 // 所以会把localSearchableFilter中已经存过的页码覆盖
                 // 如果是第一次加载组件始终让翻页页码从本地存储中取值

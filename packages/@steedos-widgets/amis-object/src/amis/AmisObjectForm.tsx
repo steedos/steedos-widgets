@@ -9,6 +9,7 @@ import { getFormSchema, getViewSchema } from '@steedos-widgets/amis-lib'
 import { keys, pick, difference } from 'lodash';
 
 export const AmisObjectForm = async (props) => {
+  // console.log("===AmisObjectForm===props==", props);
   const { $schema, recordId, mode, layout, labelAlign, appId } = props;
   let objectApiName = props.objectApiName || "space_users";
   // amis中的mode属性是表单布局,没有layout属性。defaults的变量会覆盖mode属性值。
@@ -32,7 +33,10 @@ export const AmisObjectForm = async (props) => {
     if(recordId){
       formData.recordId = recordId;
     }
-    amisSchema.data = Object.assign({}, amisSchema.data, formData);
+    if(objectApiName){
+      formData.objectName = objectApiName;
+    }
+    amisSchema.data = Object.assign({"&": "$$"}, amisSchema.data, formData);
     return amisSchema;
   } else {
     // formInitProps
