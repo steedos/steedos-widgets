@@ -22,7 +22,9 @@ async function getSource(field) {
     defaultValueOptionsData.query = defaultValueOptionsData.query.replace(/,count\:.+/, "}");
     data.query = data.query.replace(/}$/, "," + defaultValueOptionsData.query.replace(/{(.+)}/, "$1}"))
     data.$value = `$${field.name}`;
+    // data["&"] = "$$";
     const requestAdaptor = `
+        console.log("====requestAdaptor==api=", api);
         var filters = [['parent', '=', null]];
         api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters));
         var defaultValue = api.data.$value;
@@ -55,7 +57,8 @@ async function getSource(field) {
     `;
     return {
         "method": "post",
-        "url": graphql.getApi() + "?_id=${_id}",
+        // "url": graphql.getApi() + "?_id=${_id}",
+        "url": graphql.getApi() + `?value=\${${field.name}}`,
         "requestAdaptor": requestAdaptor,
         "adaptor": adaptor,
         "data": data,
