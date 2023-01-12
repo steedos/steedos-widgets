@@ -218,7 +218,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
         case 'boolean':
             convertData = {
                 type: getAmisStaticFieldType('checkbox', readonly),
-                option: field.inlineHelpText,
+                // option: field.inlineHelpText,
                 tpl: readonly ? Tpl.getSwitchTpl(field) : null
             }
             break;
