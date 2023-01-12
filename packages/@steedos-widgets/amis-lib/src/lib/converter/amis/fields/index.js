@@ -390,9 +390,9 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                 draggable: !readonly,
                 columns: []
             }
-            _.each(field.subFields, function(subField){
+            for (const subField of field.subFields) {
                 const subFieldName = subField.name.replace(`${field.name}.$.`, '').replace(`${field.name}.`, '');
-                const gridSub = convertSFieldToAmisField(Object.assign({}, subField, {name: subFieldName}), readonly);
+                const gridSub = await convertSFieldToAmisField(Object.assign({}, subField, {name: subFieldName}), readonly, ctx);
                 if(gridSub){
                     delete gridSub.name
                     delete gridSub.label
@@ -402,7 +402,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                         quickEdit: readonly ? false : gridSub
                     })
                 }
-            })
+            }
             break;
         default:
             // console.log('convertData default', field.type);

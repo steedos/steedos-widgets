@@ -34,3 +34,11 @@
     bottom: 0px;
     background: #ffffff
 }
+
+.antd-Select--multi .antd-Select-valueWrap{
+    display: flex;
+}
+.antd-Select--multi .antd-Select-valueWrap .antd-Select-value{
+    display: flex;
+    align-items: center;
+}
