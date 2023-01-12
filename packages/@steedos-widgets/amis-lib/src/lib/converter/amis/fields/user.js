@@ -2,7 +2,7 @@ import * as graphql from '../graphql';
 import * as Field from './index';
 import * as Tpl from '../tpl';
 
-async function getSource(field) {
+async function getSource(field, ctx) {
     // data.query 最终格式 "{ \tleftOptions:organizations(filters: {__filters}){value:_id,label:name,children},   children:organizations(filters: {__filters}){ref:_id,children}, defaultValueOptions:space_users(filters: {__options_filters}){user,name} }"
     const data = await graphql.getFindQuery({ name: "organizations" }, null, [{ name: "_id", alias: "value" }, { name: "name", alias: "label" }, { name: "children" }], {
         alias: "leftOptions",
@@ -21,7 +21,11 @@ async function getSource(field) {
     });
     defaultValueOptionsData.query = defaultValueOptionsData.query.replace(/,count\:.+/, "}");
     data.query = data.query.replace(/}$/, "," + defaultValueOptionsData.query.replace(/{(.+)}/, "$1}"))
-    data.$value = `$${field.name}`;
+    let valueField = `${field.name}`;
+    if(ctx.fieldNamePrefix){
+        valueField = `${ctx.fieldNamePrefix}${field.name}`;
+    }
+    data.$value = `$${valueField}`;
     // data["&"] = "$$";
     const requestAdaptor = `
         console.log("====requestAdaptor==api=", api);
@@ -206,7 +210,7 @@ export async function getSelectUserSchema(field, readonly, ctx) {
             "joinValues": false,
             "extractValue": true,
             "clearable": true,
-            "source": await getSource(field),
+            "source": await getSource(field, ctx),
             "deferApi": await getDeferApi(field),
             "searchApi": await getSearchApi(field)
         });
