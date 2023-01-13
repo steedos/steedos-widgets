@@ -3,7 +3,7 @@ import * as Field from './index';
 import * as Tpl from '../tpl';
 import * as _ from 'lodash';
 
-async function getSource(field, ctx) {
+async function getSource(field) {
     // data.query 最终格式 "{ \tleftOptions:organizations(filters: {__filters}){value:_id,label:name,children},   children:organizations(filters: {__filters}){ref:_id,children}, defaultValueOptions:space_users(filters: {__options_filters}){user,name} }"
     const data = await graphql.getFindQuery({ name: "organizations" }, null, [{ name: "_id", alias: "value" }, { name: "name", alias: "label" }, { name: "children" }], {
         alias: "leftOptions",
@@ -22,15 +22,11 @@ async function getSource(field, ctx) {
     });
     defaultValueOptionsData.query = defaultValueOptionsData.query.replace(/,count\:.+/, "}");
     data.query = data.query.replace(/}$/, "," + defaultValueOptionsData.query.replace(/{(.+)}/, "$1}"))
-    let valueField = `${field.name}`;
-    if(ctx.fieldNamePrefix){
-        valueField = `${ctx.fieldNamePrefix}${field.name}`;
-    }
-    data.$value = `$${valueField}`;
+    data.$value = `$${field.name}`;
     data.__selectUserLoaded__ = "${__selectUserLoaded__}";
     // data["&"] = "$$";
     const requestAdaptor = `
-        console.log("====requestAdaptor==api=", api);
+        console.log("select user field '${field.name}' requestAdaptor api:", api);
         var filters = [['parent', '=', null]];
         api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters));
         var defaultValue = api.data.$value;
@@ -64,14 +60,14 @@ async function getSource(field, ctx) {
     return {
         "method": "post",
         // "url": graphql.getApi() + "?_id=${_id}",
-        // "url": graphql.getApi() + `?value=\${${valueField}}`,
+        // "url": graphql.getApi() + `?value=\${${field.name}}`,
         // 要加url参数是因为amis select组件人员点选功能有bug，一定要第一次请求才能在requestAdaptor函数中取的form表单字段值
         // 见issue: https://github.com/baidu/amis/issues/6065
-        "url": graphql.getApi() + `?value=\${${field.multiple ? valueField + "|join" : valueField}}`,
+        "url": graphql.getApi() + `?value=\${${field.multiple ? field.name + "|join" : field.name}}`,
         "requestAdaptor": requestAdaptor,
         "adaptor": adaptor,
         "data": data,
-        // "sendOn": `!!this._id || !!!this.${valueField}`,
+        // "sendOn": `!!this._id || !!!this.${field.name}`,
         "sendOn": `!this.__selectUserLoaded__`,
         "headers": {
             "Authorization": "Bearer ${context.tenantId},${context.authToken}"
@@ -202,6 +198,10 @@ export async function getSelectUserSchema(field, readonly, ctx) {
         "type": Field.getAmisStaticFieldType('select', readonly)
     };
 
+    if(ctx.fieldNamePrefix){
+        field.name = `${ctx.fieldNamePrefix}${field.name}`;
+    }
+
     if (readonly) {
         amisSchema.tpl = await Tpl.getLookupTpl(field, ctx)
     }
@@ -215,7 +215,7 @@ export async function getSelectUserSchema(field, readonly, ctx) {
             "leftMode": "tree",
             "extractValue": true,
             "clearable": true,
-            "source": await getSource(field, ctx),
+            "source": await getSource(field),
             "deferApi": await getDeferApi(field),
             "searchApi": await getSearchApi(field)
         });
