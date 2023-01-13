@@ -213,13 +213,18 @@ export async function getSelectUserSchema(field, readonly, ctx) {
             "searchable": field.searchable,
             "selectMode": "associated",
             "leftMode": "tree",
-            "joinValues": false,
             "extractValue": true,
             "clearable": true,
             "source": await getSource(field, ctx),
             "deferApi": await getDeferApi(field),
             "searchApi": await getSearchApi(field)
         });
+        if(field.multiple){
+            // 单选时如果配置joinValues为false，清空字段值会把字段值设置为空数组，这是amis人员单选功能的bug，普通的select没有这个问题
+            Object.assign(amisSchema, {
+                "joinValues": false,
+            });
+        }
         let defaultValue = field.defaultValue;
         if (_.has(field, 'defaultValue') && !(_.isString(defaultValue) && defaultValue.startsWith("{"))) {
             if(_.isString(defaultValue) && defaultValue.startsWith("{{")){
