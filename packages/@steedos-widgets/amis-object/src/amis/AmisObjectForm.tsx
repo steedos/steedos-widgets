@@ -2,14 +2,13 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-08 15:04:35
+ * @LastEditTime: 2023-01-13 10:46:56
  * @Description: 
  */
 import { getFormSchema, getViewSchema } from '@steedos-widgets/amis-lib'
 import { keys, pick, difference } from 'lodash';
 
 export const AmisObjectForm = async (props) => {
-  // console.log("===AmisObjectForm===props==", props);
   const { $schema, recordId, mode, layout, labelAlign, appId } = props;
   let objectApiName = props.objectApiName || "space_users";
   // amis中的mode属性是表单布局,没有layout属性。defaults的变量会覆盖mode属性值。
@@ -26,6 +25,11 @@ export const AmisObjectForm = async (props) => {
     defaults,
     appId
   }
+
+  const globalData = props.data.global;
+
+  globalData.mode = mode === 'edit' ? 'edit' : 'read'
+
   if (mode === 'edit') {
     const amisSchema: any = (await getFormSchema(objectApiName, options)).amisSchema;
     // 当全局作用域中无recordId，表单接口sendOn始终为false。
@@ -36,7 +40,7 @@ export const AmisObjectForm = async (props) => {
     if(objectApiName){
       formData.objectName = objectApiName;
     }
-    amisSchema.data = Object.assign({"&": "$$"}, amisSchema.data, formData);
+    amisSchema.data = Object.assign({"&": "$$"}, amisSchema.data, formData, {global: globalData});
     return amisSchema;
   } else {
     // formInitProps
@@ -45,6 +49,8 @@ export const AmisObjectForm = async (props) => {
         queryOptions: "top: 1"
       };
     }
-    return (await getViewSchema(objectApiName, recordId, options)).amisSchema;
+    const amisSchema: any =  (await getViewSchema(objectApiName, recordId, options)).amisSchema;
+    amisSchema.data = Object.assign({"&": "$$"}, amisSchema.data,  {global: globalData});
+    return amisSchema;
   }
 }

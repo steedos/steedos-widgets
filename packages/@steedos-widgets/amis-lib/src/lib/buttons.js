@@ -234,7 +234,7 @@ export const getButton = async (objectName, buttonName, ctx)=>{
                 ...await StandardButtons.getStandardEdit(uiSchema, ctx)
             };
         }
-        if(objectName != 'cms_files' && button.name == 'standard_new' && button._visible.indexOf('Steedos.StandardObjects.Base.Actions.standard_new.visible.apply') > 0){
+        if(objectName != 'cms_files' && button.name == 'standard_new' ){ //&& button._visible.indexOf('Steedos.StandardObjects.Base.Actions.standard_new.visible.apply') > 0
             return {
                 label: button.label,
                 name: button.name,

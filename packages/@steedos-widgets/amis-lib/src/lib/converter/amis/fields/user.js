@@ -1,6 +1,7 @@
 import * as graphql from '../graphql';
 import * as Field from './index';
 import * as Tpl from '../tpl';
+import * as _ from 'lodash';
 
 async function getSource(field, ctx) {
     // data.query 最终格式 "{ \tleftOptions:organizations(filters: {__filters}){value:_id,label:name,children},   children:organizations(filters: {__filters}){ref:_id,children}, defaultValueOptions:space_users(filters: {__options_filters}){user,name} }"
@@ -219,8 +220,12 @@ export async function getSelectUserSchema(field, readonly, ctx) {
             "deferApi": await getDeferApi(field),
             "searchApi": await getSearchApi(field)
         });
-        if (_.has(field, 'defaultValue') && !(_.isString(field.defaultValue) && field.defaultValue.startsWith("{"))) {
-            amisSchema.value = field.defaultValue
+        let defaultValue = field.defaultValue;
+        if (_.has(field, 'defaultValue') && !(_.isString(defaultValue) && defaultValue.startsWith("{"))) {
+            if(_.isString(defaultValue) && defaultValue.startsWith("{{")){
+                defaultValue = `\$${defaultValue.substring(1, defaultValue.length -1)}`
+            }
+            amisSchema.value = defaultValue
         }
         if (typeof amisSchema.searchable !== "boolean") {
             amisSchema.searchable = true;

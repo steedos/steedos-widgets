@@ -194,15 +194,19 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                 valueField: 'value',
                 tpl: readonly ? Tpl.getSelectTpl(field) : null
             }
+            let defaultValue = field.defaultValue
             if(_.has(field, 'defaultValue') && !(_.isString(field.defaultValue) && field.defaultValue.startsWith("{"))){
+                if(_.isString(defaultValue) && defaultValue.startsWith("{{")){
+                    defaultValue = `\$${defaultValue.substring(1, defaultValue.length -1)}`
+                }
                 const dataType = field.data_type || 'text';
-                if(field.defaultValue != null){
+                if(defaultValue != null){
                     if(dataType === 'text'){
-                        convertData.value = String(field.defaultValue);
+                        convertData.value = String(defaultValue);
                     }else if(dataType === 'number'){
-                        convertData.value = Number(field.defaultValue);
+                        convertData.value = Number(defaultValue);
                     }else if(dataType === 'boolean'){
-                        convertData.value = field.defaultValue === 'false' ? false : true;
+                        convertData.value = defaultValue === 'false' ? false : true;
                     }
                 }
             }
@@ -424,7 +428,12 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
         }
 
         if(field.visible_on){
-            convertData.visibleOn = `\$${field.visible_on.substring(1, field.visible_on.length -1).replace(/formData./g, '')}`;
+            // convertData.visibleOn = `\$${field.visible_on.substring(1, field.visible_on.length -1).replace(/formData./g, '')}`;
+            if(field.visible_on.startsWith("{{")){
+                convertData.visibleOn = `${field.visible_on.substring(2, field.visible_on.length -2).replace(/formData./g, 'data.')}`
+            }else{
+                convertData.visibleOn = `${field.visible_on.replace(/formData./g, 'data.')}`
+            }
         }
 
         return Object.assign({}, baseData, convertData, { clearValueOnHidden: true, fieldName: field.name});
