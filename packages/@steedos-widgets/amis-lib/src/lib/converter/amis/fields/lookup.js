@@ -7,6 +7,7 @@ import * as Table from './table';
 import * as List from './list';
 import { getSelectUserSchema } from './user';
 import { getObjectHeaderToolbar, getObjectFooterToolbar, getObjectFilter } from './../toolbar';
+import { getListViewSort } from './../../../objects';
 
 const getReferenceTo = async (field)=>{
     let referenceTo = field.reference_to;
@@ -106,6 +107,11 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         }
     });
 
+    let sort = "";
+    if(listView){
+        sort = getListViewSort(listView);
+    }
+
     const source = await getApi(refObjectConfig, null, fields, {expand: true, alias: 'rows', queryOptions: `filters: {__filters}, top: {__top}, skip: {__skip}, sort: "{__sort}"`});
     
     if(source.url){
@@ -133,6 +139,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         var orderBy = api.data.orderBy || '';
         var orderDir = api.data.orderDir || '';
         var sort = orderBy + ' ' + orderDir;
+        sort = orderBy ? sort : "${sort}";
         var allowSearchFields = ${JSON.stringify(searchableFields)};
         if(api.data.$term){
             filters = [["name", "contains", "'+ api.data.$term +'"]];
