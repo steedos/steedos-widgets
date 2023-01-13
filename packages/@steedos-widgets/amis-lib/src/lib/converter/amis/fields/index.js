@@ -195,7 +195,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                 tpl: readonly ? Tpl.getSelectTpl(field) : null
             }
             let defaultValue = field.defaultValue
-            if(_.has(field, 'defaultValue') && _.isString(defaultValue)){
+            if(_.has(field, 'defaultValue') && !(_.isString(field.defaultValue) && field.defaultValue.startsWith("{"))){
                 if(defaultValue.startsWith("{{")){
                     defaultValue = `\$${defaultValue.substring(1, defaultValue.length -1)}`
                 }

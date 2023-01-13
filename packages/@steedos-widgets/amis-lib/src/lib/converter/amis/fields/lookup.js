@@ -364,7 +364,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         searchable: true,
     }
     let defaultValue = field.defaultValue
-    if(_.has(field, 'defaultValue') && _.isString(defaultValue)){
+    if(_.has(field, 'defaultValue') && !(_.isString(field.defaultValue) && field.defaultValue.startsWith("{"))){
         if(defaultValue.startsWith("{{")){
             defaultValue = `\$${defaultValue.substring(1, defaultValue.length -1)}`
         }
@@ -394,7 +394,7 @@ async function getApi(object, recordId, fields, options){
 }
 
 export async function lookupToAmis(field, readonly, ctx){
-    if(readonly && _.isEmpty(field.defaultValue)){
+    if(readonly){
         return {
             type: Field.getAmisStaticFieldType('picker', readonly),
             tpl: Tpl.getRelatedFieldTpl(field, ctx)

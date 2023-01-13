@@ -197,7 +197,7 @@ export async function getSelectUserSchema(field, readonly, ctx) {
         "type": Field.getAmisStaticFieldType('select', readonly)
     };
 
-    if (readonly && _.isEmpty(field.defaultValue)) {
+    if (readonly) {
         amisSchema.tpl = await Tpl.getLookupTpl(field, ctx)
     }
     else{
@@ -213,11 +213,10 @@ export async function getSelectUserSchema(field, readonly, ctx) {
             "clearable": true,
             "source": await getSource(field, ctx),
             "deferApi": await getDeferApi(field),
-            "searchApi": await getSearchApi(field),
-            "disabled": readonly
+            "searchApi": await getSearchApi(field)
         });
         let defaultValue = field.defaultValue
-        if (_.has(field, 'defaultValue') && _.isString(defaultValue)) {
+        if (_.has(field, 'defaultValue') && !(_.isString(field.defaultValue) && field.defaultValue.startsWith("{"))) {
             if(defaultValue.startsWith("{{")){
                 defaultValue = `\$${defaultValue.substring(1, defaultValue.length -1)}`
             }
