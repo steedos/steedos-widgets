@@ -31,7 +31,7 @@ export function InstancesListview ({formFactor, app_id, tab_id, listview_id, bul
   if (!schema) 
     return <><Loading/></>
   return (
-    <div className='flex flex-col flex-1 overflow-hidden'>
+    <div className='flex flex-col flex-1 overflow-hidden h-full'>
       {listview_id && <AmisRender
             data={{
               objectName: tab_id,

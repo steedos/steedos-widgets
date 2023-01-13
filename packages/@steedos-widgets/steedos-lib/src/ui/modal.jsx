@@ -2,13 +2,15 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-03-28 09:36:35
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-30 10:03:18
+ * @LastEditTime: 2023-01-13 14:37:26
  * @Description: 
  */
 import React, { useState } from 'react';
-import {createRoot} from 'react-dom/client';
+import {createRoot} from 'react-dom';
 import { has, assign } from 'lodash'
 import { Modal as AntdModal, Drawer as AntdDrawer } from "antd"
+
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 const newFunctionComponent = (Component)=>{
   return (props)=>{
@@ -39,9 +41,11 @@ const newFunctionComponent = (Component)=>{
       }
     }
     // TODO fix build error:   Error: Unexpected token (Note that you need plugins to import files that are not JavaScript)
-    // return (
-    //     <Component  visible={isVisible} onCancel={close} onClose={close} {...defProps} {...props}></Component> //ref={ref}
-    // )
+    return React.createElement(Component, _extends({
+      visible: isVisible,
+      onCancel: close,
+      onClose: close
+    }, defProps, props))
   }
 }
 

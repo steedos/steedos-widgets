@@ -28,7 +28,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor){
     `;
     return [
       // "filter-toggler",
-      // "bulkActions",
+      "bulkActions",
       {
         "type": "columns-toggler",
         "className": "hidden"
