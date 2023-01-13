@@ -429,7 +429,11 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
 
         if(field.visible_on){
             // convertData.visibleOn = `\$${field.visible_on.substring(1, field.visible_on.length -1).replace(/formData./g, '')}`;
-            convertData.visibleOn = `${field.visible_on.substring(2, field.visible_on.length -2).replace(/formData./g, 'data.')}`
+            if(field.visible_on.startsWith("{{")){
+                convertData.visibleOn = `${field.visible_on.substring(2, field.visible_on.length -2).replace(/formData./g, 'data.')}`
+            }else{
+                convertData.visibleOn = `${field.visible_on.replace(/formData./g, 'data.')}`
+            }
         }
 
         return Object.assign({}, baseData, convertData, { clearValueOnHidden: true, fieldName: field.name});
