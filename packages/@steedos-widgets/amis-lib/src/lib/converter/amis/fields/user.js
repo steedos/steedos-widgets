@@ -2,21 +2,25 @@ import * as graphql from '../graphql';
 import * as Field from './index';
 import * as Tpl from '../tpl';
 import * as _ from 'lodash';
+import { getUISchema, getListViewSort } from '../../../objects';
+
+const refUsersObjectName = "space_users";
+const refOrgsObjectName = "organizations";
 
 async function getSource(field, ctx) {
     // data.query 最终格式 "{ \tleftOptions:organizations(filters: {__filters}){value:_id,label:name,children},   children:organizations(filters: {__filters}){ref:_id,children}, defaultValueOptions:space_users(filters: {__options_filters}){user,name} }"
-    const data = await graphql.getFindQuery({ name: "organizations" }, null, [{ name: "_id", alias: "value" }, { name: "name", alias: "label" }, { name: "children" }], {
+    const data = await graphql.getFindQuery({ name: refOrgsObjectName }, null, [{ name: "_id", alias: "value" }, { name: "name", alias: "label" }, { name: "children" }], {
         alias: "leftOptions",
         filters: "{__filters}"
     });
     data.query = data.query.replace(/,count\:.+/, "}");
-    const childrenData = await graphql.getFindQuery({ name: "organizations" }, null, [{ name: "_id", alias: "ref" }], {
+    const childrenData = await graphql.getFindQuery({ name: refOrgsObjectName }, null, [{ name: "_id", alias: "ref" }], {
         alias: "children",
         filters: "{__filters}"
     });
     childrenData.query = childrenData.query.replace(/,count\:.+/, "}");
     data.query = data.query.replace(/}$/, "," + childrenData.query.replace(/{(.+)}/, "$1}"));
-    const defaultValueOptionsData = await graphql.getFindQuery({ name: "space_users" }, null, [{ name: "user" }, { name: "name" }], {
+    const defaultValueOptionsData = await graphql.getFindQuery({ name: refUsersObjectName }, null, [{ name: "user" }, { name: "name" }], {
         alias: "defaultValueOptions",
         filters: "{__options_filters}"
     });
@@ -79,11 +83,12 @@ async function getSource(field, ctx) {
     }
 }
 
-async function getDeferApi(field) {
+async function getDeferApi(field, ctx) {
     // data.query 最终格式 "{ \toptions:{__object_name}(filters:{__filters}){{__fields}} }"
     const data = await graphql.getFindQuery({ name: "{__object_name}" }, null, [], {
         alias: "options",
-        filters: "{__filters}"
+        // filters: "{__filters}",
+        queryOptions: `filters: {__filters}, sort: "{__sort}"`
     });
     // 传入的默认过滤条件，比如[["name", "contains", "三"]]，将会作为基本过滤条件
     let filters = field.filters;
@@ -104,13 +109,15 @@ async function getDeferApi(field) {
         var filters;
         var objectName;
         var fields;
+        var sort = "";
         if (dep) {
-            objectName = "organizations";
+            objectName = "${refOrgsObjectName}";
             fields = "value:_id,label:name,children";
             filters = [['parent', '=', dep]];
+            sort = "${ctx.orgsSort}";
         }
         else if (ref) { 
-            objectName = "space_users";
+            objectName = "${refUsersObjectName}";
             // 这里要额外把字段转为value和label是因为valueField和labelField在deferApi/searchApi中不生效，所以字段要取两次
             fields = "user,name,value:user,label:name";
             filters = [['user_accepted', '=', true]];
@@ -119,8 +126,9 @@ async function getDeferApi(field) {
                 filters.push(defaultFilters);
             }
             filters.push(['organizations_parents', '=', ref]);
+            sort = "${ctx.usersSort}";
         }
-        api.data.query = api.data.query.replace(/{__object_name}/g, objectName).replace(/{__fields}/g, fields).replace(/{__filters}/g, JSON.stringify(filters));
+        api.data.query = api.data.query.replace(/{__object_name}/g, objectName).replace(/{__fields}/g, fields).replace(/{__filters}/g, JSON.stringify(filters)).replace('{__sort}', sort.trim());
         return api;
     `;
     const adaptor = `
@@ -148,12 +156,13 @@ async function getDeferApi(field) {
     }
 }
 
-async function getSearchApi(field) {
+async function getSearchApi(field, ctx) {
     // data.query 最终格式 "{ \toptions:space_users(filters: {__filters}){user,name,value:user,label:name}}"
     // 这里要额外把字段转为value和label是因为valueField和labelField在deferApi/searchApi中不生效，所以字段要取两次
-    const data = await graphql.getFindQuery({ name: "space_users" }, null, [{ name: "user" }, { name: "name" }, { name: "user", alias: "value" }, { name: "name", alias: "label" }], {
+    const data = await graphql.getFindQuery({ name: refUsersObjectName }, null, [{ name: "user" }, { name: "name" }, { name: "user", alias: "value" }, { name: "name", alias: "label" }], {
         alias: "options",
-        filters: "{__filters}"
+        // filters: "{__filters}",
+        queryOptions: `filters: {__filters}, sort: "{__sort}"`
     });
     data.query = data.query.replace(/,count\:.+/, "}");
     // 传入的默认过滤条件，比如[["name", "contains", "三"]]，将会作为基本过滤条件
@@ -161,6 +170,7 @@ async function getSearchApi(field) {
     const requestAdaptor = `
         var term = api.query.term;
         var filters;
+        var sort = "";
         if (term) { 
             filters = [['user_accepted', '=', true]];
             var defaultFilters = ${filters && JSON.stringify(filters)};
@@ -175,8 +185,9 @@ async function getSearchApi(field) {
             });
             termFilters.pop();
             filters.push(termFilters);
+            sort = "${ctx.usersSort}";
         }
-        api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters));
+        api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__sort}', sort.trim());
         return api;
     `;
     return {
@@ -188,6 +199,18 @@ async function getSearchApi(field) {
             "Authorization": "Bearer ${context.tenantId},${context.authToken}"
         }
     }
+}
+
+function getRefListViewSort(refObject){
+    const listView = _.find(
+        refObject.list_views,
+        (view, name) => name === "all"
+    );
+    let sort = "";
+    if(listView){
+        sort = getListViewSort(listView);
+    }
+    return sort;
 }
 
 export async function getSelectUserSchema(field, readonly, ctx) {
@@ -206,6 +229,10 @@ export async function getSelectUserSchema(field, readonly, ctx) {
         amisSchema.tpl = await Tpl.getLookupTpl(field, ctx)
     }
     else{
+        const refUsersObjectConfig = await getUISchema(refUsersObjectName);
+        ctx.usersSort = getRefListViewSort(refUsersObjectConfig);
+        const refOrgsObjectConfig = await getUISchema(refOrgsObjectName);
+        ctx.orgsSort = getRefListViewSort(refOrgsObjectConfig);
         Object.assign(amisSchema, {
             "labelField": "name",
             "valueField": "user",
@@ -216,8 +243,8 @@ export async function getSelectUserSchema(field, readonly, ctx) {
             "extractValue": true,
             "clearable": true,
             "source": await getSource(field, ctx),
-            "deferApi": await getDeferApi(field),
-            "searchApi": await getSearchApi(field)
+            "deferApi": await getDeferApi(field, ctx),
+            "searchApi": await getSearchApi(field, ctx)
         });
         if(field.multiple){
             // 单选时如果配置joinValues为false，清空字段值会把字段值设置为空数组，这是amis人员单选功能的bug，普通的select没有这个问题
