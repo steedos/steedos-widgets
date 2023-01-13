@@ -239,10 +239,18 @@ export async function getSelectUserSchema(field, readonly, ctx) {
         // 见issue: https://github.com/baidu/amis/issues/6065
         const onChangeScript = `
             // 往上找到form，设置__selectUserLoaded__标记已经加载过选人字段不能再调用source接口初始化选人组件了
-            const scope = event.context.scoped;
-            const form = scope.parent.getComponents().find(function(n){
-                return n.props.type === "form";
-            });
+            const getClosestAmisComponentByType = function(scope, type){
+                const re = scope.getComponents().find(function(n){
+                    return n.props.type === type;
+                });
+                if(re){
+                    return re;
+                }
+                else{
+                    return getClosestAmisComponentByType(scope.parent, type);
+                }
+            }
+            const form = getClosestAmisComponentByType(event.context.scoped, "form");
             form.setData({"__selectUserLoaded__":true});
         `;
 
