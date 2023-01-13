@@ -365,7 +365,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
     }
     let defaultValue = field.defaultValue
     if(_.has(field, 'defaultValue') && !(_.isString(field.defaultValue) && field.defaultValue.startsWith("{"))){
-        if(defaultValue.startsWith("{{")){
+        if(_.isString(defaultValue) && defaultValue.startsWith("{{")){
             defaultValue = `\$${defaultValue.substring(1, defaultValue.length -1)}`
         }
         data.value = defaultValue

@@ -215,9 +215,9 @@ export async function getSelectUserSchema(field, readonly, ctx) {
             "deferApi": await getDeferApi(field),
             "searchApi": await getSearchApi(field)
         });
-        let defaultValue = field.defaultValue
-        if (_.has(field, 'defaultValue') && !(_.isString(field.defaultValue) && field.defaultValue.startsWith("{"))) {
-            if(defaultValue.startsWith("{{")){
+        let defaultValue = field.defaultValue;
+        if (_.has(field, 'defaultValue') && !(_.isString(defaultValue) && defaultValue.startsWith("{"))) {
+            if(_.isString(defaultValue) && defaultValue.startsWith("{{")){
                 defaultValue = `\$${defaultValue.substring(1, defaultValue.length -1)}`
             }
             amisSchema.value = defaultValue
