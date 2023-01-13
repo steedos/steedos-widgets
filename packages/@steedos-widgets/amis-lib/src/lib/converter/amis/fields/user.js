@@ -27,6 +27,7 @@ async function getSource(field, ctx) {
         valueField = `${ctx.fieldNamePrefix}${field.name}`;
     }
     data.$value = `$${valueField}`;
+    data.__selectUserLoaded__ = "${__selectUserLoaded__}";
     // data["&"] = "$$";
     const requestAdaptor = `
         console.log("====requestAdaptor==api=", api);
@@ -63,11 +64,15 @@ async function getSource(field, ctx) {
     return {
         "method": "post",
         // "url": graphql.getApi() + "?_id=${_id}",
-        "url": graphql.getApi() + `?value=\${${field.name}}`,
+        // "url": graphql.getApi() + `?value=\${${valueField}}`,
+        // 要加url参数是因为amis select组件人员点选功能有bug，一定要第一次请求才能在requestAdaptor函数中取的form表单字段值
+        // 见issue: https://github.com/baidu/amis/issues/6065
+        "url": graphql.getApi() + `?value=\${${field.multiple ? valueField + "|join" : valueField}}`,
         "requestAdaptor": requestAdaptor,
         "adaptor": adaptor,
         "data": data,
-        "sendOn": `!!this._id || !!!this.${field.name}`,
+        // "sendOn": `!!this._id || !!!this.${valueField}`,
+        "sendOn": `!this.__selectUserLoaded__`,
         "headers": {
             "Authorization": "Bearer ${context.tenantId},${context.authToken}"
         },
@@ -228,6 +233,51 @@ export async function getSelectUserSchema(field, readonly, ctx) {
         const onEvent = field.onEvent;
         if (onEvent) {
             amisSchema.onEvent = onEvent;
+        }
+        
+        // 这里要加change事件逻辑设置form的__selectUserLoaded__是因为人员字段多选时，每次在界面上操作变量字段值时会重新请求source接口造成选人组件重新初始化
+        // 见issue: https://github.com/baidu/amis/issues/6065
+        const onChangeScript = `
+            // 往上找到form，设置__selectUserLoaded__标记已经加载过选人字段不能再调用source接口初始化选人组件了
+            const getClosestAmisComponentByType = function(scope, type){
+                const re = scope.getComponents().find(function(n){
+                    return n.props.type === type;
+                });
+                if(re){
+                    return re;
+                }
+                else{
+                    return getClosestAmisComponentByType(scope.parent, type);
+                }
+            }
+            const form = getClosestAmisComponentByType(event.context.scoped, "form");
+            form.setData({"__selectUserLoaded__":true});
+        `;
+
+        const onChangeEvent = {
+          "actionType": "custom",
+          "script": `${onChangeScript}`
+        };
+        if(amisSchema.onEvent){
+            if(amisSchema.onEvent.change?.actions?.length){
+                amisSchema.onEvent.change.actions.unshift(onChangeEvent);
+            }
+            else{
+                amisSchema.onEvent.change = {
+                    "weight": 0,
+                    "actions": [onChangeEvent]
+                };
+            }
+        }
+        else{
+            Object.assign(amisSchema, {
+                "onEvent": {
+                    "change": {
+                      "weight": 0,
+                      "actions": [onChangeEvent]
+                    }
+                  }
+            });
         }
     }
 
