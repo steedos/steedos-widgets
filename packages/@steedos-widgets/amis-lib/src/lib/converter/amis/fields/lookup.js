@@ -299,13 +299,24 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         }, null, {
             [referenceTo.labelField.name]: Object.assign({}, referenceTo.labelField, {alias: 'label'}),
             [referenceTo.valueField.name]: Object.assign({}, referenceTo.valueField, {alias: 'value'})
-        }, {expand: false, alias: 'options', queryOptions: `filters: {__filters}, top: {__top}`})
+        }, {expand: false, alias: 'options', queryOptions: `filters: {__filters}, top: {__top}, sort: "{__sort}"`})
     }else{
         apiInfo = {
             method: "post",
             url: graphql.getApi(),
             data: {query: '{objects(filters: ["_id", "=", "-1"]){_id}}', $: "$$"}
         }
+    }
+
+    const refObjectConfig = referenceTo && await getUISchema(referenceTo.objectName);
+    const listView = refObjectConfig && _.find(
+        refObjectConfig.list_views,
+        (listView, name) => name === "all"
+    );
+
+    let sort = "";
+    if(listView){
+        sort = getListViewSort(listView);
     }
 
     if(apiInfo.url){
@@ -346,7 +357,8 @@ export async function lookupToAmisSelect(field, readonly, ctx){
                 filters.push(_filters);
             }
         }
-        api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', top);
+        var sort = "${sort}";
+        api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', top).replace('{__sort}', sort.trim());
         return api;
     `
     let labelField = referenceTo ? referenceTo.labelField.name : '';
