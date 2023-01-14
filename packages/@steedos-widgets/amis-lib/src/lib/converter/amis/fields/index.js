@@ -250,7 +250,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             convertData = {
                 type: "input-datetime-range",
                 inputFormat: 'YYYY-MM-DD HH:mm',
-                format:'YYYY-MM-DDTHH:mm:ss.SSS[Z]',
+                format:'YYYY-MM-DDTHH:mm:ss.SSSZ',
                 tpl: readonly ? Tpl.getDateTimeTpl(field) : null,
                 utc: true
             }
@@ -259,7 +259,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             convertData = {
                 type: getAmisStaticFieldType('datetime', readonly),
                 inputFormat: 'YYYY-MM-DD HH:mm',
-                format:'YYYY-MM-DDTHH:mm:ss.SSS[Z]',
+                format:'YYYY-MM-DDTHH:mm:ss.SSSZ',
                 tpl: readonly ? Tpl.getDateTimeTpl(field) : null,
                 utc: true
             }
@@ -268,7 +268,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             convertData = {
                 type: 'input-time-range',
                 inputFormat: 'HH:mm',
-                timeFormat:'1970-01-01THH:mm:00.000[Z]',
+                timeFormat:'HH:mm',
                 format:'1970-01-01THH:mm:00.000[Z]',
                 tpl: readonly ? Tpl.getDateTimeTpl(field) : null,
                 // utc: true
@@ -278,7 +278,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             convertData = {
                 type: getAmisStaticFieldType('time', readonly),
                 inputFormat: 'HH:mm',
-                timeFormat:'1970-01-01THH:mm:00.000[Z]',
+                timeFormat:'HH:mm',
                 format:'1970-01-01THH:mm:00.000[Z]',
                 tpl: readonly ? Tpl.getDateTimeTpl(field) : null,
                 // utc: true
