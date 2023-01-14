@@ -234,7 +234,8 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                 inputFormat: "YYYY-MM-DD",
                 format:'YYYY-MM-DDT00:00:00.000[Z]',
                 tpl: readonly ? Tpl.getDateTpl(field) : null,
-                // utc: true
+                // utc: true,
+                joinValues: false
             }
             break;
         case 'date':
@@ -252,7 +253,8 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                 inputFormat: 'YYYY-MM-DD HH:mm',
                 format:'YYYY-MM-DDTHH:mm:ss.SSSZ',
                 tpl: readonly ? Tpl.getDateTimeTpl(field) : null,
-                utc: true
+                utc: true,
+                joinValues: false
             }
             break;
         case 'datetime':
@@ -271,7 +273,8 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                 timeFormat:'HH:mm',
                 format:'1970-01-01THH:mm:00.000[Z]',
                 tpl: readonly ? Tpl.getDateTimeTpl(field) : null,
-                // utc: true
+                // utc: true,
+                joinValues: false
             }
             break;
         case 'time':
