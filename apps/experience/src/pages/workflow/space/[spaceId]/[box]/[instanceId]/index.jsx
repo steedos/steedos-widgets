@@ -51,7 +51,7 @@ export default function Record({formFactor}) {
     <div className="h-full flex instance-scope">
       <div className="flex-1 w-32 border-r"><InstancesListview bulkActions={false} formFactor={formFactor} app_id={app_id} tab_id={tab_id} listview_id={box}></InstancesListview></div>
       { record != undefined && formSchema &&
-        <div className="flex-1 w-64" >
+        <div className="flex-1 w-64 relative" >
         {
           record != undefined && <div className="region-header bg-slate-50 static">
           <AmisRender schema={
@@ -78,13 +78,13 @@ export default function Record({formFactor}) {
           }} id={`amis-root-workflow-instance-form-header`}></AmisRender>
         </div>
         }
+        <div className="" id="instanceRootModalContainer"></div>
         <div className="relative flex flex-1 flex-col region-main overflow-auto border-t" id="instanceRoot" style={{
           height: "calc(100% - 60px)"
         }}>
           { record === undefined && <>
             Not Find Instance
           </>}
-          <div className="" id="instanceRootModalContainer"></div>
           {record != undefined && formSchema && (
             <AmisRender  className="h-full" id={`amis-root-workflow`} schema={formSchema} router={router} data={{
               submit_date: record.submit_date,

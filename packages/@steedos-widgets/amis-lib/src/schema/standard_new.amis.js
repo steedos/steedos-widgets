@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:51:00
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-08 09:18:44
+ * @LastEditTime: 2023-01-12 18:15:27
  * @Description: 
  */
 
@@ -48,6 +48,7 @@ export const getSchema = async (uiSchema, ctx)=>{
                                         "appId": "${appId}",
                                         "objectName": "${objectName}",
                                         "context": "${context}",
+                                        "global": "${global}",
                                         "listViewId": "${listViewId}"
                                     },
                                     "title": title,

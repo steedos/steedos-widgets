@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-01 16:00:48
+ * @LastEditTime: 2023-01-11 11:35:01
  * @Description: 
  */
 import { endsWith, isEmpty, cloneDeep } from "lodash";
@@ -100,6 +100,19 @@ export function getAuthorization(){
     } catch (error) {
         console.error(error)
     }
+}
+
+export function getUserId(){
+    try {
+        const context = getBuilderContext()
+        let userId = context.userId;
+        if (!userId) {
+            return null;
+        }
+        return userId;
+    } catch (error) {
+        console.error(error)
+    } 
 }
 
 export function absoluteUrl(url){

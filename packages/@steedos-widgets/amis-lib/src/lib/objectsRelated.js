@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-28 17:03:21
+ * @LastEditTime: 2023-01-11 14:08:49
  * @Description:
  */
 
@@ -160,10 +160,13 @@ export async function getAmisObjectRelatedList(
 }
 
 // 获取单个相关表
-export async function getRecordDetailRelatedListSchema(objectName, recordId, relatedObjectName, relatedKey, top, perPage, hiddenEmptyTable, appId){
+export async function getRecordDetailRelatedListSchema(objectName, recordId, relatedObjectName, relatedKey, top, perPage, hiddenEmptyTable, appId, relatedLabel){
     // console.log('b==>',objectName,recordId,relatedObjectName)
     const relatedObjectUiSchema = await getUISchema(relatedObjectName);
     const { list_views, label , icon, fields } = relatedObjectUiSchema;
+    if(!relatedLabel){
+        relatedLabel = label;
+    }
     const firstListViewName = keys(list_views)[0];
     if(!relatedKey){
         relatedKey = findKey(fields, function(field) { 
@@ -190,7 +193,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
     } else {
         globalFilter = [`${relatedKey}`, "=", relatedValue];
     }
-    const recordRelatedListHeader = await getObjectRecordDetailRelatedListHeader(relatedObjectUiSchema);
+    const recordRelatedListHeader = await getObjectRecordDetailRelatedListHeader(relatedObjectUiSchema, relatedLabel);
     const componentId = `steedos-record-related-list-${relatedObjectName}`;
     const options = {
         globalFilter,

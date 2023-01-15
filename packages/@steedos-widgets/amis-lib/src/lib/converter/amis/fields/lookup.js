@@ -7,6 +7,7 @@ import * as Table from './table';
 import * as List from './list';
 import { getSelectUserSchema } from './user';
 import { getObjectHeaderToolbar, getObjectFooterToolbar, getObjectFilter } from './../toolbar';
+import { getListViewSort } from './../../../objects';
 
 const getReferenceTo = async (field)=>{
     let referenceTo = field.reference_to;
@@ -33,7 +34,8 @@ const getReferenceTo = async (field)=>{
     return {
         objectName: referenceTo,
         valueField: valueField,
-        labelField: refObjectConfig.fields[refObjectConfig.NAME_FIELD_KEY || 'name']
+        labelField: refObjectConfig.fields[refObjectConfig.NAME_FIELD_KEY || 'name'],
+        NAME_FIELD_KEY: refObjectConfig.NAME_FIELD_KEY || 'name'
     }
 }
 
@@ -105,7 +107,26 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         }
     });
 
+    let sort = "";
+    if(listView){
+        sort = getListViewSort(listView);
+    }
+
     const source = await getApi(refObjectConfig, null, fields, {expand: true, alias: 'rows', queryOptions: `filters: {__filters}, top: {__top}, skip: {__skip}, sort: "{__sort}"`});
+    
+    if(source.url){
+        const depend_on = [];
+        const sendOn = [];
+        _.each(field.depend_on, (fName)=>{
+            depend_on.push(`depend_on_${fName}=\${${fName}}`)
+            sendOn.push(`this.${fName}`)
+        })
+        if(depend_on.length > 0){
+            source.url = `${source.url}?${depend_on.join('&')}`;
+            source.sendOn = `${sendOn.join(' && ')}`
+        }
+    }
+    
     source.data.$term = "$term";
     source.data.$self = "$$";
    
@@ -118,6 +139,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         var orderBy = api.data.orderBy || '';
         var orderDir = api.data.orderDir || '';
         var sort = orderBy + ' ' + orderDir;
+        sort = orderBy ? sort : "${sort}";
         var allowSearchFields = ${JSON.stringify(searchableFields)};
         if(api.data.$term){
             filters = [["name", "contains", "'+ api.data.$term +'"]];
@@ -277,7 +299,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         }, null, {
             [referenceTo.labelField.name]: Object.assign({}, referenceTo.labelField, {alias: 'label'}),
             [referenceTo.valueField.name]: Object.assign({}, referenceTo.valueField, {alias: 'value'})
-        }, {expand: false, alias: 'options', queryOptions: `filters: {__filters}, top: {__top}`})
+        }, {expand: false, alias: 'options', queryOptions: `filters: {__filters}, top: {__top}, sort: "{__sort}"`})
     }else{
         apiInfo = {
             method: "post",
@@ -286,6 +308,29 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         }
     }
 
+    const refObjectConfig = referenceTo && await getUISchema(referenceTo.objectName);
+    const listView = refObjectConfig && _.find(
+        refObjectConfig.list_views,
+        (listView, name) => name === "all"
+    );
+
+    let sort = "";
+    if(listView){
+        sort = getListViewSort(listView);
+    }
+
+    if(apiInfo.url){
+        const depend_on = [];
+        const sendOn = [];
+        _.each(field.depend_on, (fName)=>{
+            depend_on.push(`depend_on_${fName}=\${${fName}}`)
+            sendOn.push(`this.${fName}`)
+        })
+        if(depend_on.length > 0){
+            apiInfo.url = `${apiInfo.url}?${depend_on.join('&')}`;
+            apiInfo.sendOn = `${sendOn.join(' && ')}`
+        }
+    }
     
     apiInfo.data.$term = "$term";
     apiInfo.data.$value = `$${field.name}.${referenceTo ? referenceTo.valueField.name : '_id'}`;
@@ -296,14 +341,24 @@ export async function lookupToAmisSelect(field, readonly, ctx){
     apiInfo.data['rfield'] = `\${object_name}`;
     // [["_id", "=", "$${field.name}._id"],"or",["name", "contains", "$term"]]
     apiInfo.requestAdaptor = `
-        var filters = '[]';
+        var filters = [];
         var top = 10;
         if(api.data.$term){
-            filters = '["name", "contains", "'+ api.data.$term +'"]';
+            filters = [["${referenceTo?.NAME_FIELD_KEY || 'name'}", "contains", api.data.$term]];
         }else if(api.data.$value){
-            filters = '["_id", "=", "'+ api.data.$value +'"]';
+            filters = [["_id", "=", api.data.$value]];
         }
-        api.data.query = api.data.query.replace(/{__filters}/g, filters).replace('{__top}', top);
+
+        const filtersFunction = ${field._filtersFunction};
+
+        if(filtersFunction){
+            const _filters = filtersFunction(filters, api.data.$);
+            if(_filters && _filters.length > 0){
+                filters.push(_filters);
+            }
+        }
+        var sort = "${sort}";
+        api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', top).replace('{__sort}', sort.trim());
         return api;
     `
     let labelField = referenceTo ? referenceTo.labelField.name : '';
@@ -323,10 +378,16 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         extractValue: true,
         // labelField: labelField,
         // valueField: valueField,
+        source: apiInfo,
         autoComplete: apiInfo,
+        searchable: true,
     }
+    let defaultValue = field.defaultValue
     if(_.has(field, 'defaultValue') && !(_.isString(field.defaultValue) && field.defaultValue.startsWith("{"))){
-        data.value = field.defaultValue
+        if(_.isString(defaultValue) && defaultValue.startsWith("{{")){
+            defaultValue = `\$${defaultValue.substring(1, defaultValue.length -1)}`
+        }
+        data.value = defaultValue
     }
     if(field.multiple){
         data.multiple = true
@@ -336,7 +397,6 @@ export async function lookupToAmisSelect(field, readonly, ctx){
     if(readonly){
         data.tpl = await Tpl.getLookupTpl(field, ctx)
     }
-
     return data;
 }
 
@@ -382,7 +442,9 @@ export async function lookupToAmis(field, readonly, ctx){
     }
 
     // 此处不参考 steedos 的 enable_enhanced_lookup 规则. 如果默认是开启弹出选择,用户选择过程操作太繁琐, 所以默认是关闭弹出选择.
-    if(refObject.enable_enhanced_lookup == true){
+    // 由于amis picker 目前不支持联动, 配置了depend_on时, 使用使用select ,以支持联动
+    // TODO: 确认 amis picker 支持联动时, 清理field.depend_on判断
+    if(refObject.enable_enhanced_lookup == true && _.isEmpty(field.depend_on)){
         return await lookupToAmisPicker(field, readonly, ctx);
     }else{
         return await lookupToAmisSelect(field, readonly, ctx);

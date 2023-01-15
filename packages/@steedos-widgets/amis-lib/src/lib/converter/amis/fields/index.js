@@ -1,5 +1,6 @@
 import { cloneDeep, includes } from 'lodash';
 import { lookupToAmis } from './lookup';
+import { getMarkdownFieldSchema, getHtmlFieldSchema } from './editor';
 import * as Fields from '../fields';
 import * as Tpl from '../tpl';
 import * as File from './file';
@@ -44,6 +45,8 @@ export function getAmisFieldType(sField){
             return 'textarea';
         case 'html':
             return 'html';
+        case 'markdown':
+            return 'markdown';
         case 'select':
             return 'select';
         case 'boolean':
@@ -173,11 +176,14 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             convertData.tpl = `<b><%=data.${field.name}%></b>`;
             break;
         case 'html':
-            convertData = {
-                type: "editor",
-                language: "html",
-                value: field.defaultValue || ''
-            }
+            convertData = getHtmlFieldSchema(field, readonly)
+            break;
+            // convertData = {
+            //     type: getAmisStaticFieldType('html', readonly)
+            // }
+            // break;
+        case 'markdown':
+            convertData = getMarkdownFieldSchema(field, readonly)
             break;
             // convertData = {
             //     type: getAmisStaticFieldType('html', readonly)
@@ -194,15 +200,19 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                 valueField: 'value',
                 tpl: readonly ? Tpl.getSelectTpl(field) : null
             }
+            let defaultValue = field.defaultValue
             if(_.has(field, 'defaultValue') && !(_.isString(field.defaultValue) && field.defaultValue.startsWith("{"))){
+                if(_.isString(defaultValue) && defaultValue.startsWith("{{")){
+                    defaultValue = `\$${defaultValue.substring(1, defaultValue.length -1)}`
+                }
                 const dataType = field.data_type || 'text';
-                if(field.defaultValue != null){
+                if(defaultValue != null){
                     if(dataType === 'text'){
-                        convertData.value = String(field.defaultValue);
+                        convertData.value = String(defaultValue);
                     }else if(dataType === 'number'){
-                        convertData.value = Number(field.defaultValue);
+                        convertData.value = Number(defaultValue);
                     }else if(dataType === 'boolean'){
-                        convertData.value = field.defaultValue === 'false' ? false : true;
+                        convertData.value = defaultValue === 'false' ? false : true;
                     }
                 }
             }
@@ -214,7 +224,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
         case 'boolean':
             convertData = {
                 type: getAmisStaticFieldType('checkbox', readonly),
-                option: field.inlineHelpText,
+                // option: field.inlineHelpText,
                 tpl: readonly ? Tpl.getSwitchTpl(field) : null
             }
             break;
@@ -224,7 +234,8 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                 inputFormat: "YYYY-MM-DD",
                 format:'YYYY-MM-DDT00:00:00.000[Z]',
                 tpl: readonly ? Tpl.getDateTpl(field) : null,
-                // utc: true
+                // utc: true,
+                joinValues: false
             }
             break;
         case 'date':
@@ -240,16 +251,17 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             convertData = {
                 type: "input-datetime-range",
                 inputFormat: 'YYYY-MM-DD HH:mm',
-                format:'YYYY-MM-DDTHH:mm:ss.SSS[Z]',
+                format:'YYYY-MM-DDTHH:mm:ss.SSSZ',
                 tpl: readonly ? Tpl.getDateTimeTpl(field) : null,
-                utc: true
+                utc: true,
+                joinValues: false
             }
             break;
         case 'datetime':
             convertData = {
                 type: getAmisStaticFieldType('datetime', readonly),
                 inputFormat: 'YYYY-MM-DD HH:mm',
-                format:'YYYY-MM-DDTHH:mm:ss.SSS[Z]',
+                format:'YYYY-MM-DDTHH:mm:ss.SSSZ',
                 tpl: readonly ? Tpl.getDateTimeTpl(field) : null,
                 utc: true
             }
@@ -258,17 +270,18 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             convertData = {
                 type: 'input-time-range',
                 inputFormat: 'HH:mm',
-                timeFormat:'1970-01-01THH:mm:00.000[Z]',
+                timeFormat:'HH:mm',
                 format:'1970-01-01THH:mm:00.000[Z]',
                 tpl: readonly ? Tpl.getDateTimeTpl(field) : null,
-                // utc: true
+                // utc: true,
+                joinValues: false
             }
             break;
         case 'time':
             convertData = {
                 type: getAmisStaticFieldType('time', readonly),
                 inputFormat: 'HH:mm',
-                timeFormat:'1970-01-01THH:mm:00.000[Z]',
+                timeFormat:'HH:mm',
                 format:'1970-01-01THH:mm:00.000[Z]',
                 tpl: readonly ? Tpl.getDateTimeTpl(field) : null,
                 // utc: true
@@ -390,9 +403,9 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                 draggable: !readonly,
                 columns: []
             }
-            _.each(field.subFields, function(subField){
+            for (const subField of field.subFields) {
                 const subFieldName = subField.name.replace(`${field.name}.$.`, '').replace(`${field.name}.`, '');
-                const gridSub = convertSFieldToAmisField(Object.assign({}, subField, {name: subFieldName}), readonly);
+                const gridSub = await convertSFieldToAmisField(Object.assign({}, subField, {name: subFieldName}), readonly, ctx);
                 if(gridSub){
                     delete gridSub.name
                     delete gridSub.label
@@ -402,7 +415,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                         quickEdit: readonly ? false : gridSub
                     })
                 }
-            })
+            }
             break;
         default:
             // console.log('convertData default', field.type);
@@ -410,7 +423,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             break;
     }
     if(!_.isEmpty(convertData)){
-        if(field.is_wide){
+        if(field.is_wide || convertData.type === 'group'){
             convertData.className = 'col-span-2 m-1';
         }else{
             convertData.className = 'm-1';
@@ -418,16 +431,23 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
         if(readonly){
             convertData.className = `${convertData.className} md:border-b`
         }
-        convertData.labelClassName = 'text-left';
         if(readonly){
             convertData.quickEdit = false;
         }
 
         if(field.visible_on){
-            convertData.visibleOn = `\$${field.visible_on.substring(1, field.visible_on.length -1).replace(/formData./g, '')}`;
+            // convertData.visibleOn = `\$${field.visible_on.substring(1, field.visible_on.length -1).replace(/formData./g, '')}`;
+            if(field.visible_on.startsWith("{{")){
+                convertData.visibleOn = `${field.visible_on.substring(2, field.visible_on.length -2).replace(/formData./g, 'data.')}`
+            }else{
+                convertData.visibleOn = `${field.visible_on.replace(/formData./g, 'data.')}`
+            }
         }
-
-        return Object.assign({}, baseData, convertData, { clearValueOnHidden: true, fieldName: field.name});
+        if(convertData.type === 'group'){
+            convertData.body[0] = Object.assign({}, baseData, convertData.body[0], { labelClassName: 'text-left', clearValueOnHidden: true, fieldName: field.name});
+            return  convertData
+        }
+        return Object.assign({}, baseData, convertData, { labelClassName: 'text-left', clearValueOnHidden: true, fieldName: field.name});
     }
     
 }

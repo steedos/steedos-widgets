@@ -1,28 +1,40 @@
 import * as graphql from '../graphql';
 import * as Field from './index';
 import * as Tpl from '../tpl';
+import * as _ from 'lodash';
+import { getUISchema, getListViewSort } from '../../../objects';
 
-async function getSource(field) {
+const refUsersObjectName = "space_users";
+const refOrgsObjectName = "organizations";
+
+async function getSource(field, ctx) {
     // data.query 最终格式 "{ \tleftOptions:organizations(filters: {__filters}){value:_id,label:name,children},   children:organizations(filters: {__filters}){ref:_id,children}, defaultValueOptions:space_users(filters: {__options_filters}){user,name} }"
-    const data = await graphql.getFindQuery({ name: "organizations" }, null, [{ name: "_id", alias: "value" }, { name: "name", alias: "label" }, { name: "children" }], {
+    const data = await graphql.getFindQuery({ name: refOrgsObjectName }, null, [{ name: "_id", alias: "value" }, { name: "name", alias: "label" }, { name: "children" }], {
         alias: "leftOptions",
         filters: "{__filters}"
     });
     data.query = data.query.replace(/,count\:.+/, "}");
-    const childrenData = await graphql.getFindQuery({ name: "organizations" }, null, [{ name: "_id", alias: "ref" }], {
+    const childrenData = await graphql.getFindQuery({ name: refOrgsObjectName }, null, [{ name: "_id", alias: "ref" }], {
         alias: "children",
         filters: "{__filters}"
     });
     childrenData.query = childrenData.query.replace(/,count\:.+/, "}");
     data.query = data.query.replace(/}$/, "," + childrenData.query.replace(/{(.+)}/, "$1}"));
-    const defaultValueOptionsData = await graphql.getFindQuery({ name: "space_users" }, null, [{ name: "user" }, { name: "name" }], {
+    const defaultValueOptionsData = await graphql.getFindQuery({ name: refUsersObjectName }, null, [{ name: "user" }, { name: "name" }], {
         alias: "defaultValueOptions",
         filters: "{__options_filters}"
     });
     defaultValueOptionsData.query = defaultValueOptionsData.query.replace(/,count\:.+/, "}");
     data.query = data.query.replace(/}$/, "," + defaultValueOptionsData.query.replace(/{(.+)}/, "$1}"))
-    data.$value = `$${field.name}`;
+    let valueField = `${field.name}`;
+    if(ctx.fieldNamePrefix){
+        valueField = `${ctx.fieldNamePrefix}${field.name}`;
+    }
+    data.$value = `$${valueField}`;
+    data.__selectUserLoaded__ = "${__selectUserLoaded__}";
+    // data["&"] = "$$";
     const requestAdaptor = `
+        console.log("select user field '${field.name}' requestAdaptor api:", api);
         var filters = [['parent', '=', null]];
         api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters));
         var defaultValue = api.data.$value;
@@ -55,22 +67,28 @@ async function getSource(field) {
     `;
     return {
         "method": "post",
-        "url": graphql.getApi() + "?_id=${_id}",
+        // "url": graphql.getApi() + "?_id=${_id}",
+        // "url": graphql.getApi() + `?value=\${${valueField}}`,
+        // 要加url参数是因为amis select组件人员点选功能有bug，一定要第一次请求才能在requestAdaptor函数中取的form表单字段值
+        // 见issue: https://github.com/baidu/amis/issues/6065
+        "url": graphql.getApi() + `?value=\${${field.multiple ? valueField + "|join" : valueField}}`,
         "requestAdaptor": requestAdaptor,
         "adaptor": adaptor,
         "data": data,
-        "sendOn": `!!this._id || !!!this.${field.name}`,
+        // "sendOn": `!!this._id || !!!this.${valueField}`,
+        "sendOn": `!this.__selectUserLoaded__`,
         "headers": {
             "Authorization": "Bearer ${context.tenantId},${context.authToken}"
         },
     }
 }
 
-async function getDeferApi(field) {
+async function getDeferApi(field, ctx) {
     // data.query 最终格式 "{ \toptions:{__object_name}(filters:{__filters}){{__fields}} }"
     const data = await graphql.getFindQuery({ name: "{__object_name}" }, null, [], {
         alias: "options",
-        filters: "{__filters}"
+        // filters: "{__filters}",
+        queryOptions: `filters: {__filters}, sort: "{__sort}"`
     });
     // 传入的默认过滤条件，比如[["name", "contains", "三"]]，将会作为基本过滤条件
     let filters = field.filters;
@@ -91,13 +109,15 @@ async function getDeferApi(field) {
         var filters;
         var objectName;
         var fields;
+        var sort = "";
         if (dep) {
-            objectName = "organizations";
+            objectName = "${refOrgsObjectName}";
             fields = "value:_id,label:name,children";
             filters = [['parent', '=', dep]];
+            sort = "${ctx.orgsSort}";
         }
         else if (ref) { 
-            objectName = "space_users";
+            objectName = "${refUsersObjectName}";
             // 这里要额外把字段转为value和label是因为valueField和labelField在deferApi/searchApi中不生效，所以字段要取两次
             fields = "user,name,value:user,label:name";
             filters = [['user_accepted', '=', true]];
@@ -106,8 +126,9 @@ async function getDeferApi(field) {
                 filters.push(defaultFilters);
             }
             filters.push(['organizations_parents', '=', ref]);
+            sort = "${ctx.usersSort}";
         }
-        api.data.query = api.data.query.replace(/{__object_name}/g, objectName).replace(/{__fields}/g, fields).replace(/{__filters}/g, JSON.stringify(filters));
+        api.data.query = api.data.query.replace(/{__object_name}/g, objectName).replace(/{__fields}/g, fields).replace(/{__filters}/g, JSON.stringify(filters)).replace('{__sort}', sort.trim());
         return api;
     `;
     const adaptor = `
@@ -135,12 +156,13 @@ async function getDeferApi(field) {
     }
 }
 
-async function getSearchApi(field) {
+async function getSearchApi(field, ctx) {
     // data.query 最终格式 "{ \toptions:space_users(filters: {__filters}){user,name,value:user,label:name}}"
     // 这里要额外把字段转为value和label是因为valueField和labelField在deferApi/searchApi中不生效，所以字段要取两次
-    const data = await graphql.getFindQuery({ name: "space_users" }, null, [{ name: "user" }, { name: "name" }, { name: "user", alias: "value" }, { name: "name", alias: "label" }], {
+    const data = await graphql.getFindQuery({ name: refUsersObjectName }, null, [{ name: "user" }, { name: "name" }, { name: "user", alias: "value" }, { name: "name", alias: "label" }], {
         alias: "options",
-        filters: "{__filters}"
+        // filters: "{__filters}",
+        queryOptions: `filters: {__filters}, sort: "{__sort}"`
     });
     data.query = data.query.replace(/,count\:.+/, "}");
     // 传入的默认过滤条件，比如[["name", "contains", "三"]]，将会作为基本过滤条件
@@ -148,6 +170,7 @@ async function getSearchApi(field) {
     const requestAdaptor = `
         var term = api.query.term;
         var filters;
+        var sort = "";
         if (term) { 
             filters = [['user_accepted', '=', true]];
             var defaultFilters = ${filters && JSON.stringify(filters)};
@@ -162,8 +185,9 @@ async function getSearchApi(field) {
             });
             termFilters.pop();
             filters.push(termFilters);
+            sort = "${ctx.usersSort}";
         }
-        api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters));
+        api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__sort}', sort.trim());
         return api;
     `;
     return {
@@ -175,6 +199,18 @@ async function getSearchApi(field) {
             "Authorization": "Bearer ${context.tenantId},${context.authToken}"
         }
     }
+}
+
+function getRefListViewSort(refObject){
+    const listView = _.find(
+        refObject.list_views,
+        (view, name) => name === "all"
+    );
+    let sort = "";
+    if(listView){
+        sort = getListViewSort(listView);
+    }
+    return sort;
 }
 
 export async function getSelectUserSchema(field, readonly, ctx) {
@@ -193,6 +229,10 @@ export async function getSelectUserSchema(field, readonly, ctx) {
         amisSchema.tpl = await Tpl.getLookupTpl(field, ctx)
     }
     else{
+        const refUsersObjectConfig = await getUISchema(refUsersObjectName);
+        ctx.usersSort = getRefListViewSort(refUsersObjectConfig);
+        const refOrgsObjectConfig = await getUISchema(refOrgsObjectName);
+        ctx.orgsSort = getRefListViewSort(refOrgsObjectConfig);
         Object.assign(amisSchema, {
             "labelField": "name",
             "valueField": "user",
@@ -200,15 +240,24 @@ export async function getSelectUserSchema(field, readonly, ctx) {
             "searchable": field.searchable,
             "selectMode": "associated",
             "leftMode": "tree",
-            "joinValues": false,
             "extractValue": true,
             "clearable": true,
-            "source": await getSource(field),
-            "deferApi": await getDeferApi(field),
-            "searchApi": await getSearchApi(field)
+            "source": await getSource(field, ctx),
+            "deferApi": await getDeferApi(field, ctx),
+            "searchApi": await getSearchApi(field, ctx)
         });
-        if (_.has(field, 'defaultValue') && !(_.isString(field.defaultValue) && field.defaultValue.startsWith("{"))) {
-            amisSchema.value = field.defaultValue
+        if(field.multiple){
+            // 单选时如果配置joinValues为false，清空字段值会把字段值设置为空数组，这是amis人员单选功能的bug，普通的select没有这个问题
+            Object.assign(amisSchema, {
+                "joinValues": false,
+            });
+        }
+        let defaultValue = field.defaultValue;
+        if (_.has(field, 'defaultValue') && !(_.isString(defaultValue) && defaultValue.startsWith("{"))) {
+            if(_.isString(defaultValue) && defaultValue.startsWith("{{")){
+                defaultValue = `\$${defaultValue.substring(1, defaultValue.length -1)}`
+            }
+            amisSchema.value = defaultValue
         }
         if (typeof amisSchema.searchable !== "boolean") {
             amisSchema.searchable = true;
@@ -216,6 +265,51 @@ export async function getSelectUserSchema(field, readonly, ctx) {
         const onEvent = field.onEvent;
         if (onEvent) {
             amisSchema.onEvent = onEvent;
+        }
+        
+        // 这里要加change事件逻辑设置form的__selectUserLoaded__是因为人员字段多选时，每次在界面上操作变量字段值时会重新请求source接口造成选人组件重新初始化
+        // 见issue: https://github.com/baidu/amis/issues/6065
+        const onChangeScript = `
+            // 往上找到form，设置__selectUserLoaded__标记已经加载过选人字段不能再调用source接口初始化选人组件了
+            const getClosestAmisComponentByType = function(scope, type){
+                const re = scope.getComponents().find(function(n){
+                    return n.props.type === type;
+                });
+                if(re){
+                    return re;
+                }
+                else{
+                    return getClosestAmisComponentByType(scope.parent, type);
+                }
+            }
+            const form = getClosestAmisComponentByType(event.context.scoped, "form");
+            form.setData({"__selectUserLoaded__":true});
+        `;
+
+        const onChangeEvent = {
+          "actionType": "custom",
+          "script": `${onChangeScript}`
+        };
+        if(amisSchema.onEvent){
+            if(amisSchema.onEvent.change?.actions?.length){
+                amisSchema.onEvent.change.actions.unshift(onChangeEvent);
+            }
+            else{
+                amisSchema.onEvent.change = {
+                    "weight": 0,
+                    "actions": [onChangeEvent]
+                };
+            }
+        }
+        else{
+            Object.assign(amisSchema, {
+                "onEvent": {
+                    "change": {
+                      "weight": 0,
+                      "actions": [onChangeEvent]
+                    }
+                  }
+            });
         }
     }
 

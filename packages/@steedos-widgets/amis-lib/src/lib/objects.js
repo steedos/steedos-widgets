@@ -2,11 +2,10 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-01-07 13:33:38
+ * @LastEditTime: 2023-01-11 14:07:02
  * @Description:
  */
-import { fetchAPI } from "./steedos.client";
-import { getAuthToken , getTenantId, getRootUrl } from './steedos.client.js';
+import { fetchAPI, getUserId } from "./steedos.client";
 import { getObjectFieldsFilterFormSchema } from './converter/amis/fields_filter';
 import { getObjectCalendar } from './converter/amis/calendar';
 
@@ -77,6 +76,23 @@ export function getListViewSort(listView) {
     }
     return sort;
 };
+
+export function getListViewFilter(listView){
+    if(!listView){
+        return ;
+    }
+    const userId = getUserId();
+    let filters = listView.filters;
+    if(listView.filter_scope === 'mine'){
+        if(_.isEmpty(filters)){
+            filters = [["owner", "=", userId]]
+        }else{
+            filters.push(["owner", "=", userId])
+        }
+    };
+    return filters;
+}
+
 
 export async function getUISchema(objectName, force) {
     if (!objectName) {
@@ -201,12 +217,12 @@ export async function getListSchema(
 
     let listViewColumns = getListViewColumns(listView, ctx.formFactor);
     let sort = getListViewSort(listView);
-
+    let listviewFilter = getListViewFilter(listView, ctx);
     if(listView.type === "calendar"){
         const amisSchema = {
             "type": "steedos-object-calendar",
             "objectApiName": objectName,
-            "filters": listView.filters,
+            "filters": listviewFilter,
             "sort": sort,
             ...listView.options
         };
@@ -269,7 +285,7 @@ export async function getListSchema(
         "objectApiName": objectName,
         "columns": listViewColumns,
         "extraColumns": listView.extra_columns,
-        "filters": listView.filters,
+        "filters": listviewFilter,
         "sort": sort,
         "ctx": ctx
     };
@@ -530,6 +546,7 @@ export async function getObjectRelatedList(
                         masterObjectName: objectName,
                         object_name: arr[0],
                         foreign_key: arr[1],
+                        label: relatedList.label,
                         schema: {
                             uiSchema: relatedUiSchema,
                             amisSchema: await getObjectList(relatedUiSchema, fields, {

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-08 15:13:34
+ * @LastEditTime: 2023-01-11 14:27:23
  * @Description: 
  */
 import { getObjectRelatedList } from '@steedos-widgets/amis-lib'
@@ -34,6 +34,7 @@ export const AmisRecordDetailRelatedLists = async (props) => {
         perPage: perPage,
         hiddenEmptyTable: true,
         appId: appId,
+        label: item.label
       }
     })
   }

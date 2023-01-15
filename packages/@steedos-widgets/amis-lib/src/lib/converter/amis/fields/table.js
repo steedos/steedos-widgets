@@ -100,7 +100,7 @@ async function getTableColumns(fields, options){
                     type: type,
                     tpl: tpl,
                     toggled: field.toggled,
-                    className: field.type === 'textarea' ? 'w-56 whitespace-pre-wrap textarea' :  "whitespace-nowrap",
+                    className: field.type === 'textarea' ? 'min-w-56 whitespace-pre-wrap textarea' :  "whitespace-nowrap",
                     html: field.type === 'html' ? true : null
                     // toggled: true 
                 })
@@ -244,6 +244,15 @@ export async function getTableSchema(fields, options){
     }
 }
 
+
+
+/**
+ * 
+ * @param {*} mainObject 
+ * @param {*} fields 
+ * @param {*} options = {globalFilter: 相关字表过滤条件, filter: listview 过滤条件, ...}
+ * @returns 
+ */
 export async function getTableApi(mainObject, fields, options){
     const searchableFields = [];
     let { globalFilter, filter, sort, top, setDataToComponentId = '' } = options;
@@ -319,12 +328,14 @@ export async function getTableApi(mainObject, fields, options){
         catch(ex){
             console.error("本地存储中crud参数解析异常：", ex);
         }
-        ${baseFilters ? `var filters = ${JSON.stringify(baseFilters)};` : 'var filters = [];'}
-        if(_.isEmpty(filters)){
-            filters = api.data.filter || [];
+        ${baseFilters ? `var systemFilters = ${JSON.stringify(baseFilters)};` : 'var systemFilters = [];'}
+        let userFilters =[];
+        
+        if(_.isEmpty(systemFilters)){
+            systemFilters = api.data.filter || [];
         }else{
             if(!_.isEmpty(api.data.filter)){
-                filters = [filters, 'and', api.data.filter];
+                systemFilters = [systemFilters, 'and', api.data.filter];
             }
         }
         var pageSize = api.data.pageSize || 10;
@@ -336,9 +347,9 @@ export async function getTableApi(mainObject, fields, options){
         sort = orderBy ? sort : "${sort}";
         var allowSearchFields = ${JSON.stringify(searchableFields)};
         if(api.data.$term){
-            filters = [["name", "contains", "'+ api.data.$term +'"]];
+            userFilters = [["name", "contains", "'+ api.data.$term +'"]];
         }else if(selfData.op === 'loadOptions' && selfData.value){
-            filters = [["${valueField.name}", "=", selfData.value]];
+            userFilters = [["${valueField.name}", "=", selfData.value]];
         }
         var searchableFilter = [];
         _.each(selfData, (value, key)=>{
@@ -356,10 +367,10 @@ export async function getTableApi(mainObject, fields, options){
         });
 
         if(searchableFilter.length > 0){
-            if(filters.length > 0 ){
-                filters = [filters, 'and', searchableFilter];
+            if(userFilters.length > 0 ){
+                userFilters = [userFilters, 'and', searchableFilter];
             }else{
-                filters = searchableFilter;
+                userFilters = searchableFilter;
             }
         }
 
@@ -367,9 +378,9 @@ export async function getTableApi(mainObject, fields, options){
             allowSearchFields.forEach(function(key){
                 const keyValue = selfData[key];
                 if(_.isString(keyValue)){
-                    filters.push([key, "contains", keyValue]);
+                    userFilters.push([key, "contains", keyValue]);
                 }else if(_.isArray(keyValue) || _.isBoolean(keyValue) || keyValue){
-                    filters.push([key, "=", keyValue]);
+                    userFilters.push([key, "=", keyValue]);
                 }
             })
         }
@@ -385,16 +396,35 @@ export async function getTableApi(mainObject, fields, options){
                     }
                 }
             })
-            filters.push(keywordsFilters);
+            userFilters.push(keywordsFilters);
+        };
+
+        let filters = [];
+
+        if(!_.isEmpty(systemFilters)){
+            filters = systemFilters;
         }
-        api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', pageSize).replace('{__skip}', skip).replace('{__sort}', sort.trim());
+
+        if(!_.isEmpty(userFilters)){
+            if(_.isEmpty(filters)){
+                filters = userFilters;
+            }else{
+                filters.push('and');
+                filters.push(userFilters)
+            }
+        }
+        api.data = {
+            query: api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', pageSize).replace('{__skip}', skip).replace('{__sort}', sort.trim())
+        }
         return api;
     `
     api.adaptor = `
     const enable_tree = ${mainObject.enable_tree};
     if(!enable_tree){
         _.each(payload.data.rows, function(item, index){
-            item._index = index + 1;
+            const {pageNo, pageSize} = api.body;
+            const skip = (pageNo - 1) * pageSize;
+            item._index = skip + index + 1;
         })
     }
     window.postMessage(Object.assign({type: "listview.loaded"}), "*");
@@ -444,7 +474,7 @@ export async function getTableApi(mainObject, fields, options){
 
     try{
         // TODO: 不应该直接在这里取localStorage，应该从外面传入
-        const listViewId = api.data.listViewId;
+        const listViewId = api.body.listViewId;
         const listViewPropsStoreKey = location.pathname + "/crud/" + listViewId ;
         /**
          * localListViewProps规范来自crud请求api中api.data.$self参数值的。
@@ -457,11 +487,11 @@ export async function getTableApi(mainObject, fields, options){
          * orderDir:排序方向
          */
         let localListViewProps = localStorage.getItem(listViewPropsStoreKey);
-        let selfData = JSON.parse(JSON.stringify(api.data.$self));
+        let selfData = JSON.parse(JSON.stringify(api.body.$self));
         if(localListViewProps){
             localListViewProps = JSON.parse(localListViewProps);
-            selfData = Object.assign({}, localListViewProps, selfData, { filter: api.data.filter });
-            if(!api.data.loaded){
+            selfData = Object.assign({}, localListViewProps, selfData, { filter: api.body.filter });
+            if(!api.body.loaded){
                 // 第一次加载组件，比如刷新浏览器时因为api.data.pageNo有默认值1
                 // 所以会把localSearchableFilter中已经存过的页码覆盖
                 // 如果是第一次加载组件始终让翻页页码从本地存储中取值

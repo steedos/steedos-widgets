@@ -151,15 +151,12 @@ export async function getObjectList(objectSchema, fields, options){
         bulkActions: options.bulkActions != false ? bulkActions : false
       });
     }
-    if(top || perPage){
-      if(top){
-        bodyProps.footerToolbar = [];
-      }
-    }else{
-      if(nonpaged){
-        options.top = 1000;
-        bodyProps.footerToolbar = [];
-      }
+    // yml里配置的不分页优先级最高，组件中输入的top次之。
+    if(nonpaged){
+      options.top = 1000;
+      bodyProps.footerToolbar = [];
+    }else if(top){
+      bodyProps.footerToolbar = [];
     }
     let body = null;
     const id = `listview_${objectSchema.name}`;

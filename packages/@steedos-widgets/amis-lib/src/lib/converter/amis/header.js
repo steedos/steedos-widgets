@@ -422,7 +422,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
  * @param {*} relatedObjectSchema 相关对象UISchema
  * @returns amisSchema
  */
-export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema) {
+export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema, relatedLabel) {
   const { icon, label } = relatedObjectSchema;
   const buttons = await getObjectRelatedListButtons(relatedObjectSchema, {});
   let amisButtonsSchema = map(buttons, (button) => {
@@ -464,7 +464,7 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
                     "body": [
                       {
                         "type": "tpl",
-                        "tpl": `<a class="text-black text-base font-bold" href="/app/\${appId}/\${masterObjectName}/\${masterRecordId}/\${objectName}/grid?related_field_name=\${relatedKey}">${label}(\${$count})</a>`,
+                        "tpl": `<a class="text-black text-base font-bold" href="/app/\${appId}/\${masterObjectName}/\${masterRecordId}/\${objectName}/grid?related_field_name=\${relatedKey}">${relatedLabel}(\${$count})</a>`,
                         "inline": false,
                         "wrapperComponent": "",
                         "className": "",
