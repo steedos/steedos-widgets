@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-01-13 17:27:54
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-01-14 10:09:29
+ * @LastEditTime: 2023-01-16 10:36:27
  * @Description: 
  */
 
@@ -49,18 +49,22 @@ export const getHtmlFieldSchema = (field, readonly, ctx)=>{
           }
     }else{
         return {
-            "type": "group",
-            "body": [
-              {
-                "type": "editor",
-                "name": field.name,
-                "language": "html"
-              },
-              {
-                "type": "html",
-                "name": field.name
-              }
-            ]
-          }
+            "type": "input-rich-text",
+            "name": field.name
+        }
+        // return {
+        //     "type": "group",
+        //     "body": [
+        //       {
+        //         "type": "editor",
+        //         "name": field.name,
+        //         "language": "html"
+        //       },
+        //       {
+        //         "type": "html",
+        //         "name": field.name
+        //       }
+        //     ]
+        //   }
     }
 }
