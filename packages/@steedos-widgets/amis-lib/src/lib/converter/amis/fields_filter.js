@@ -66,41 +66,41 @@ export async function getObjectFieldsFilterFormSchema(objectSchema, fields, ctx)
     });
   }
 
-  const onBroadcastSearchableFieldsChangeScript = `
-    const data = event.data;
-    const listViewId = data.listViewId;
-    const searchableFields = data.fields;
-    const preSearchableFields = data.__super.__super.fields;
-    const removedFields = _.difference(preSearchableFields, searchableFields);
-    const listViewPropsStoreKey = location.pathname + "/crud/" + listViewId ;
-    let localListViewProps = localStorage.getItem(listViewPropsStoreKey);
-    if(localListViewProps){
-      // 当变更可搜索字段时，如果被移除的可搜索字段在本地存储中已经存入过滤条件中则应该清除本地存储中相关字段的过滤条件。
-      localListViewProps = JSON.parse(localListViewProps);
-      let removedKeys = [];
-      _.each(localListViewProps, function(n,k){
-        // __searchable__开头的不在searchableFields范围则清除其值
-        let isRemoved = !!removedFields.find(function(fieldName){
-          return new RegExp("__searchable__\.*" + fieldName + "$").test(k);
-        });
-        if(isRemoved){
-          removedKeys.push(k);
-        }
-      });
-      const removedValues = {};
-      removedKeys.forEach(function(key){
-        delete localListViewProps[key];
-        removedValues[key] = "";
-      });
-      doAction({
-        actionType: 'setValue',
-        args: {
-          value: removedValues
-        }
-      });
-      localStorage.setItem(listViewPropsStoreKey, JSON.stringify(localListViewProps));
-    }
-  `;
+  // const onBroadcastSearchableFieldsChangeScript = `
+  //   const data = event.data;
+  //   const listViewId = data.listViewId;
+  //   const searchableFields = data.fields;
+  //   const preSearchableFields = data.__super.__super.fields;
+  //   const removedFields = _.difference(preSearchableFields, searchableFields);
+  //   const listViewPropsStoreKey = location.pathname + "/crud/" + listViewId ;
+  //   let localListViewProps = localStorage.getItem(listViewPropsStoreKey);
+  //   if(localListViewProps){
+  //     // 当变更可搜索字段时，如果被移除的可搜索字段在本地存储中已经存入过滤条件中则应该清除本地存储中相关字段的过滤条件。
+  //     localListViewProps = JSON.parse(localListViewProps);
+  //     let removedKeys = [];
+  //     _.each(localListViewProps, function(n,k){
+  //       // __searchable__开头的不在searchableFields范围则清除其值
+  //       let isRemoved = !!removedFields.find(function(fieldName){
+  //         return new RegExp("__searchable__\.*" + fieldName + "$").test(k);
+  //       });
+  //       if(isRemoved){
+  //         removedKeys.push(k);
+  //       }
+  //     });
+  //     const removedValues = {};
+  //     removedKeys.forEach(function(key){
+  //       delete localListViewProps[key];
+  //       removedValues[key] = "";
+  //     });
+  //     doAction({
+  //       actionType: 'setValue',
+  //       args: {
+  //         value: removedValues
+  //       }
+  //     });
+  //     localStorage.setItem(listViewPropsStoreKey, JSON.stringify(localListViewProps));
+  //   }
+  // `;
 
   return {
     title: "",
@@ -118,16 +118,16 @@ export async function getObjectFieldsFilterFormSchema(objectSchema, fields, ctx)
     // persistData: "crud:${id}",
     // persistDataKeys: persistDataKeys,
     body: body,
-    "onEvent": {
-      "broadcastSearchableFieldsChange": {
-        "actions": [
-          {
-            "actionType": "custom",
-            "script": onBroadcastSearchableFieldsChangeScript
-          }
-        ]
-      }
-    }
+    // "onEvent": {
+    //   "broadcastSearchableFieldsChange": {
+    //     "actions": [
+    //       {
+    //         "actionType": "custom",
+    //         "script": onBroadcastSearchableFieldsChangeScript
+    //       }
+    //     ]
+    //   }
+    // }
   };
 }
 
@@ -147,7 +147,15 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
     var listView = scope.parent.parent.parent.getComponents().find(function(n){
       return n.props.type === "crud";
     });
-    listView.handleFilterSubmit(filterFormValues);
+    const removedValues = {};
+    // 设置搜索项中移除搜索项后，filterFormValues未把其字段的空值保存为own property，即hasOwnProperty属性中
+    // 这会造成handleFilterSubmit时把移除掉的搜索项字段之前的值加到过滤条件中
+    for(var k in filterFormValues){
+      if(filterFormValues[k] === "" && !filterFormValues.hasOwnProperty(k)){
+        removedValues[k] = "";
+      }
+    }
+    listView.handleFilterSubmit(Object.assign({}, removedValues, filterFormValues));
   `;
   const dataProviderInited = `
     const objectName = data.objectName;
@@ -213,6 +221,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
     const listViewId = data.listViewId;
     const value = data.fields;
     const scope = event.context.scoped;
+    // 这里的filterForm不是name为"listview-filter-form"的内部form，而是crud自带的filter form
     const filterForm = scope.parent.parent.getComponents().find(function(n){
       return n.props.type === "form";
     });
@@ -228,9 +237,77 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
       searchableFieldsStoreKey += listViewId;
     }
     localStorage.setItem(searchableFieldsStoreKey, value);
+
+    // ===START===:当变更可搜索字段时，如果被移除的可搜索字段在本地存储中已经存入过滤条件中则应该清除本地存储中相关字段的过滤条件。
+    const searchableFields = data.fields;
+    let preSearchableFields = data.__super.fields;
+    if(typeof preSearchableFields === "string"){
+      preSearchableFields = preSearchableFields.split(",");
+    }
+    const removedFields = _.difference(preSearchableFields, searchableFields);
+
+    // const getClosestAmisComponentByType = function (scope, type, name) {
+    //   // 递归children找到listview-filter-form
+    //   let re = scope.getComponents().find(function (n) {
+    //     return n.props.type === type && n.props.name === name;
+    //   });
+    //   if (re) {
+    //     return re;
+    //   }
+    //   else {
+    //     if (scope.children && scope.children.length) {
+    //       for (let i = 0; i < scope.children.length; i++) {
+    //         re = getClosestAmisComponentByType(scope.children[i], type, name);
+    //         if (re) {
+    //           break;
+    //         }
+    //       }
+    //       return re;
+    //     }
+    
+    //   }
+    // }
+    // // 这里第二层form才是真正要提交到crud过滤条件的form
+    // filterInnerForm = getClosestAmisComponentByType(filterForm.context, "form", "listview-filter-form");
+
+    const filterFormValues = filterForm.getValues();
+    let removedKeys = [];
+    _.each(filterFormValues, function(n,k){
+      // __searchable__开头的不在searchableFields范围则清除其值
+      let isRemoved = !!removedFields.find(function(fieldName){
+        return new RegExp("__searchable__\.*" + fieldName + "$").test(k);
+      });
+      if(isRemoved){
+        removedKeys.push(k);
+      }
+    });
+    const removedValues = {};
+    removedKeys.forEach(function(key){
+      removedValues[key] = "";
+    });
+    filterForm.setValues(removedValues);//这里使用filterInnerForm也可以
+
+    if(isLookup){
+      return;
+    }
+    
+    // 列表视图crud支持本地缓存，所以需要进一步清除浏览器本地缓存里面用户在可搜索项中移除的字段值
+    const listViewPropsStoreKey = location.pathname + "/crud/" + listViewId ;
+    let localListViewProps = localStorage.getItem(listViewPropsStoreKey);
+    if(localListViewProps){
+      localListViewProps = JSON.parse(localListViewProps);
+      // const removedValues = {};
+      removedKeys.forEach(function(key){
+        delete localListViewProps[key];
+        // removedValues[key] = "";
+      });
+      localStorage.setItem(listViewPropsStoreKey, JSON.stringify(localListViewProps));
+    }
+    // ===END===
   `;
   return {
     "type": "service",
+    "name": "service_listview_filter_form",
     "data": {
       // "showFieldsFilter": false
       // "filterFormSearchableFields": ["name"],//默认可搜索项
@@ -359,16 +436,16 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
                                       "actionType": "custom",
                                       "script": onSearchableFieldsChangeScript
                                     },
-                                    {
-                                      "actionType": "broadcast",
-                                      "eventName": "broadcastSearchableFieldsChange",
-                                      "args": {
-                                        "eventName": "broadcastSearchableFieldsChange"
-                                      },
-                                      "data": {
-                                        "fields": "${event.data.fields}"
-                                      }
-                                    },
+                                    // {
+                                    //   "actionType": "broadcast",
+                                    //   "eventName": "broadcastSearchableFieldsChange",
+                                    //   "args": {
+                                    //     "eventName": "broadcastSearchableFieldsChange"
+                                    //   },
+                                    //   "data": {
+                                    //     "fields": "${event.data.fields}"
+                                    //   }
+                                    // },
                                     {
                                       "componentId": "",
                                       "args": {},
