@@ -255,7 +255,7 @@ export async function getTableSchema(fields, options){
  */
 export async function getTableApi(mainObject, fields, options){
     const searchableFields = [];
-    let { globalFilter, filter, sort, top, setDataToComponentId = '' } = options;
+    let { globalFilter, filter, filtersFunction, sort, top, setDataToComponentId = '' } = options;
 
     if(_.isArray(filter)){
         filter = _.map(filter, function(item){
@@ -329,6 +329,17 @@ export async function getTableApi(mainObject, fields, options){
             console.error("本地存储中crud参数解析异常：", ex);
         }
         ${baseFilters ? `var systemFilters = ${JSON.stringify(baseFilters)};` : 'var systemFilters = [];'}
+        const filtersFunction = ${filtersFunction};
+        if(filtersFunction){
+            const _filters = filtersFunction(systemFilters, selfData);
+            if(_filters && _filters.length > 0){
+                if(_.isEmpty(systemFilters)){
+                    systemFilters = _filters || [];
+                }else{
+                    systemFilters = [systemFilters, 'and', _filters];
+                }
+            }
+        }
         let userFilters =[];
         
         if(_.isEmpty(systemFilters)){
