@@ -26,6 +26,10 @@ export function getNumberTpl(field){
     return `<div>\${_display.${field.name}}</div>`
 }
 
+export function getTextTpl(field){
+    return `<div>\${${field.name}}</div>`
+}
+
 export function getTimeTpl(field){
     return `<div>\${_display.${field.name}}</div>`
 }
@@ -58,13 +62,18 @@ export function getSelectTpl(field){
     return `<div>\${_display.${field.name}}</div>`
 }
 
-export function getNameTpl(field, ctx){
+export function getNameTplUrl(field, ctx){
     if(ctx.objectName === 'cms_files'){
-        return `<a href="\${context.rootUrl}/api/files/files/\${versions[0]}?download=true">\${${field.name}}</a>`
+        return `\${context.rootUrl}/api/files/files/\${versions[0]}?download=true`
     }
     const href = Router.getObjectDetailPath({
         ...ctx,  formFactor: ctx.formFactor, appId: "${appId}", objectName: ctx.objectName || "${objectName}", recordId: `\${${ctx.idFieldName}}`
     })
+    return href;
+}
+
+export function getNameTpl(field, ctx){
+    const href = getNameTplUrl(field, ctx);
     return `<a href="${href}">\${${field.name}}</a>`
 }
 
@@ -138,9 +147,13 @@ export async function getFieldTpl (field, options){
         return getNameTpl(field, options)
     }
     switch (field.type) {
+        case 'text':
+            return getTextTpl(field);
         case 'password':
             return getPasswordTpl(field);
         case 'boolean':
+            return getSwitchTpl(field);
+        case 'toggle':
             return getSwitchTpl(field);
         case 'select':
             return getSelectTpl(field);
