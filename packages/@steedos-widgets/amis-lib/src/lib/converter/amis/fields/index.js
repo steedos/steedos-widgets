@@ -173,7 +173,8 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             break;
         case 'textarea':
             convertData.type = getAmisStaticFieldType('textarea', readonly);
-            convertData.tpl = `<b><%=data.${field.name}%></b>`;
+            // convertData.tpl = `<b><%=data.${field.name}%></b>`;
+            convertData.tpl = `<%=(data.${field.name} || "").split("\\n").join('<br>')%>`;
             break;
         case 'html':
             convertData = getHtmlFieldSchema(field, readonly)
