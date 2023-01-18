@@ -26,7 +26,7 @@ export const AmisObjectForm = async (props) => {
     appId
   }
 
-  const globalData = props.data.global;
+  const globalData = props.data.global || {};
 
   globalData.mode = mode === 'edit' ? 'edit' : 'read'
 
