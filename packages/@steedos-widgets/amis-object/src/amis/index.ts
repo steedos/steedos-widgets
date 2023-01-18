@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-01-04 16:54:30
+ * @LastEditTime: 2023-01-14 16:49:18
  * @Description: 
  */
 import './AmisObjectForm.less'
@@ -24,3 +24,5 @@ export * from './AmisAppMenu';
 export * from './AmisGlobalHeader';
 
 export * from './AmisSteedosField';
+
+export * from './AmisSelectFlow';

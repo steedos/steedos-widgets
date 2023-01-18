@@ -309,6 +309,15 @@ export async function getObjectForm(objectSchema, ctx){
             "weight": 0,
             "actions": [
               {
+                "componentId": `steedos-record-related-list-${objectSchema.name}`,
+                "actionType": "setValue",
+                "args": {
+                    value: {
+                    "$count": undefined,
+                    }
+                }
+              },
+              {
                 "componentId": `listview_${objectSchema.name}`,
                 "actionType": "reload",
                 "expression": "!!listViewId"

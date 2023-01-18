@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-01-04 16:54:53
+ * @LastEditTime: 2023-01-14 16:50:57
  * @Description: 
  */
 // import Hello from "./metas/Hello";
@@ -43,6 +43,8 @@ import SteedosBadgeRibbon from "./metas/SteedosBadgeRibbon";
 
 import AmisSteedosField from "./metas/AmisSteedosField";
 
+import AmisSelectFlow from './metas/AmisSelectFlow';
+
 const components = [
   AmisObjectForm, 
   AmisObjectListview, 
@@ -66,7 +68,8 @@ const components = [
   FromNow,
   SteedosBadge,
   SteedosBadgeRibbon,
-  AmisSteedosField
+  AmisSteedosField,
+  AmisSelectFlow
 ];
 
 const componentList = [

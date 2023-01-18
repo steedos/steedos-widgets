@@ -218,11 +218,13 @@ export async function getListSchema(
     let listViewColumns = getListViewColumns(listView, ctx.formFactor);
     let sort = getListViewSort(listView);
     let listviewFilter = getListViewFilter(listView, ctx);
+    let listview_filters = listView && listView._filters;
     if(listView.type === "calendar"){
         const amisSchema = {
             "type": "steedos-object-calendar",
             "objectApiName": objectName,
             "filters": listviewFilter,
+            "filtersFunction": listview_filters,
             "sort": sort,
             ...listView.options
         };
@@ -286,6 +288,7 @@ export async function getListSchema(
         "columns": listViewColumns,
         "extraColumns": listView.extra_columns,
         "filters": listviewFilter,
+        "filtersFunction": listview_filters,
         "sort": sort,
         "ctx": ctx
     };
