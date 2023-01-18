@@ -2,14 +2,14 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-01-14 16:41:24
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-01-17 15:55:17
+ * @LastEditTime: 2023-01-18 13:24:42
  * @Description: 
  */
 
 import { random } from 'lodash';
 
 const getSelectFlowSchema = (id, props)=>{
-    const { label: label, data, name, action = 'query', mode = 'input-tree', className, onEvent, multiple = false, delimiter, joinValues, extractValue, searchable, showIcon = true, showRadio=false, showOutline, initiallyOpen, unfoldedLevel, treeContainerClassName} = props;
+    const { label: label, data, name, required, action = 'query', mode = 'input-tree', className, onEvent, multiple = false, delimiter, joinValues, extractValue, searchable, showIcon = true, showRadio=false, showOutline, initiallyOpen, unfoldedLevel, treeContainerClassName} = props;
     return {
         "type": mode,
         "id": id,
@@ -25,6 +25,7 @@ const getSelectFlowSchema = (id, props)=>{
         "initiallyOpen": initiallyOpen,
         "unfoldedLevel": unfoldedLevel,
         "className": className,
+        "required": required,
         "treeContainerClassName": treeContainerClassName,
         "source": {
             "method": "post",
