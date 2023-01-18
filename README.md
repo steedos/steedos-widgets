@@ -134,11 +134,11 @@ yarn storybook
 
 - latest: 切换分支到master,并执行以下命令
 ```
-version:latest
-publish:latest
+yarn version:latest
+yarn publish:latest
 ```
 - beta: 切换分支到dev,并执行以下命令
 ```
-version:beta
-publish:beta
+yarn version:beta
+yarn publish:beta
 ```
