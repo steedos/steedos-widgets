@@ -17,7 +17,7 @@ export const getSchema = async (uiSchema, ctx)=>{
         "recordId": "",
         "id": "u:f8ad8ddf153a",
         "mode": "edit",
-        "layout": "horizontal"
+        "layout": "normal"
     };
 
     let formSchema = defaultFormSchema;

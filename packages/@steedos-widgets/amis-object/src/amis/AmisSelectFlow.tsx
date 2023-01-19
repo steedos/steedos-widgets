@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-01-14 16:41:24
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-01-18 13:24:42
+ * @LastEditTime: 2023-01-18 13:42:04
  * @Description: 
  */
 
@@ -63,6 +63,7 @@ const getSelectFlowSchema = (id, props)=>{
  * 
  * @css
  * max-h-[80vh]
+ * !max-h-[80vh]
  * !mb-6
  */
 export const AmisSelectFlow = (props)=>{
@@ -80,7 +81,7 @@ export const AmisSelectFlow = (props)=>{
         "body": [
             {
                 "type": "search-box",
-                "className": "w-full mb-2",
+                "className": "!w-full mb-2",
                 "name": "keywords",
                 "enhance": true,
                 "onEvent": {

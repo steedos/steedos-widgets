@@ -246,7 +246,7 @@ const getGlobalData = (mode)=>{
 }
 
 export async function getObjectForm(objectSchema, ctx){
-    const { recordId, formFactor, layout = formFactor === 'SMALL' ? 'normal' : "horizontal", labelAlign, tabId, appId, defaults } = ctx;
+    const { recordId, formFactor, layout = formFactor === 'SMALL' ? 'normal' : "normal", labelAlign, tabId, appId, defaults } = ctx;
     const fields = _.values(objectSchema.fields);
     const formSchema =  defaults && defaults.formSchema || {};
     const onSubmitSuccCustomScript = `
@@ -338,7 +338,7 @@ export async function getObjectForm(objectSchema, ctx){
 }
 
 export async function getObjectDetail(objectSchema, recordId, ctx){
-    const { formFactor, layout = formFactor === 'SMALL' ? 'normal' : "horizontal", labelAlign, formInitProps } = ctx;
+    const { formFactor, layout = formFactor === 'SMALL' ? 'normal' : "normal", labelAlign, formInitProps } = ctx;
     const fields = _.values(objectSchema.fields);
     return {
         type: 'service',

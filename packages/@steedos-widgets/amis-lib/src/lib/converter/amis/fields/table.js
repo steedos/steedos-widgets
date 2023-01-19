@@ -114,6 +114,92 @@ async function getTableColumns(fields, options){
     return columns;
 }
 
+function getMobileLinesByFieldTpls(tpls){
+    const columnLines = [];
+    columnLines.push({
+        "type": "wrapper",
+        "body": [{
+            "type": "tpl",
+            "tpl": tpls[0].tpl,
+            "className": "truncate text-sm font-medium text-indigo-600"
+        },{
+            "type": "tpl",
+            "tpl": tpls[1].tpl,
+            "className": "ml-2 flex flex-shrink-0"
+        }],
+        "size": "none",
+        "className": "flex items-center justify-between"
+    });
+    columnLines.push({
+        "type": "wrapper",
+        "body": [{
+            "type": "tpl",
+            "tpl": tpls[2].tpl,
+            "className": "truncate text-sm font-medium text-indigo-600"
+        },{
+            "type": "tpl",
+            "tpl": tpls[3].tpl,
+            "className": "ml-2 flex flex-shrink-0"
+        }],
+        "size": "none",
+        "className": "flex items-center justify-between"
+    });
+    return columnLines;
+}
+
+async function getMobileTableColumns(fields, options){
+    const columns = [];
+    let nameField = {};
+    let tpls = [];
+    for (const field of fields) {
+        let tpl = "";
+        if(field.is_name || field.name === options.labelFieldName){
+            nameField = field;
+            tpl = Tpl.getTextTpl(field);
+        }
+        else if(field.type === 'avatar' || field.type === 'image' || field.type === 'file'){
+            // columns.push({
+            //     type: "switch",
+            //     name: field.name,
+            //     label: field.label,
+            //     width: field.width,
+            //     toggled: field.toggled,
+            //     disabled: true,
+            //     className:"whitespace-nowrap",
+            //     ...getAmisFileReadonlySchema(field)
+            // })
+        }
+        else{
+            tpl = await Tpl.getFieldTpl(field, options);
+        }
+        if(!field.hidden && !field.extra){
+            tpls.push({ field, tpl });
+        }
+    };
+
+    const url = Tpl.getNameTplUrl(nameField, options)
+
+    const columnLines = getMobileLinesByFieldTpls(tpls);
+    
+    columns.push({
+        name: nameField.name,
+        label: nameField.label,
+        sortable: nameField.sortable,
+        type: "link",
+        blank: false,
+        href: url,
+        className: "block hover:bg-gray-50",
+        body:{
+            "type": "wrapper",
+            "body": columnLines,
+            "size": "none",
+            "className": "px-4 py-4 sm:px-6"
+        }
+    });
+
+    return columns;
+}
+
 function getDefaultParams(options){
     return {
         perPage: options.top || options.perPage || config.listView.perPage
@@ -226,12 +312,18 @@ export async function getTableSchema(fields, options){
     if(!options){
         options = {};
     }
-    const columns = await getTableColumns(fields, options);
-    columns.push(await getTableOperation(options))
+    let columns = [];
+    if(options.formFactor === 'SMALL'){
+        columns = await getMobileTableColumns(fields, options);
+    }
+    else{
+        columns = await getTableColumns(fields, options);
+        columns.push(await getTableOperation(options));
+    }
     return {
         mode: "table",
         name: "thelist",
-        headerToolbarClassName: "py-2 px-0",
+        headerToolbarClassName: "py-2 px-2 border-gray-300 bg-gray-100 border-solid border-b",
         className: "",
         draggable: false,
         defaultParams: getDefaultParams(options),
