@@ -128,3 +128,17 @@ yarn storybook
 4. 环境测试正常后，修改apps/experience文件夹下package.json文件@steedos-labs/experience软件包版本号；
 
 5. 登录npm后，执行yarn release进行发包。
+
+
+### 资产包发布版本
+
+- latest: 切换分支到master,并执行以下命令
+```
+yarn version:latest
+yarn publish:latest
+```
+- beta: 切换分支到dev,并执行以下命令
+```
+yarn version:beta
+yarn publish:beta
+```
