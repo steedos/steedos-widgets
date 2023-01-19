@@ -135,3 +135,7 @@ body {
 .antd-Pagination > li > a, .antd-Pagination > li > span {
     display: flex;
 }
+
+.rdtPicker table {
+    border-collapse: separate;
+}
