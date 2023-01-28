@@ -123,24 +123,21 @@ export default function RelatedGrid({formFactor}){
               },
             body: [
                 {
-                    "type": "panel",
-                    "title": {
-                      "type": "breadcrumb",
-                      "source": "${$breadcrumb}"
-                    },
-                    "body": [
-                      {
-                          type: 'steedos-object-related-listview',
-                          objectApiName: tab_id,
-                          recordId: record_id,
-                          relatedObjectApiName: related_object_name,
-                          foreign_key: related_field_name,
-                          relatedKey: related_field_name,
-                          hiddenOn: "!!!this.$loaded"
-                          // top: 5
-                      }
-                    ]
-                  }
+                    
+                  "type": "breadcrumb",
+                  "source": "${$breadcrumb}",
+                  "className": "m-4",
+                },
+                {
+                    type: 'steedos-object-related-listview',
+                    objectApiName: tab_id,
+                    recordId: record_id,
+                    relatedObjectApiName: related_object_name,
+                    foreign_key: related_field_name,
+                    relatedKey: related_field_name,
+                    hiddenOn: "!!!this.$loaded",
+                    "className": "mx-4",
+                }
             ]
         }
         }></AmisRender>

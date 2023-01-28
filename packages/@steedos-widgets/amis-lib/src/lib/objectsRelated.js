@@ -160,7 +160,7 @@ export async function getAmisObjectRelatedList(
 }
 
 // 获取单个相关表
-export async function getRecordDetailRelatedListSchema(objectName, recordId, relatedObjectName, relatedKey, top, perPage, hiddenEmptyTable, appId, relatedLabel){
+export async function getRecordDetailRelatedListSchema(objectName, recordId, relatedObjectName, relatedKey, top, perPage, hiddenEmptyTable, appId, relatedLabel, className){
     // console.log('b==>',objectName,recordId,relatedObjectName)
     const relatedObjectUiSchema = await getUISchema(relatedObjectName);
     const { list_views, label , icon, fields } = relatedObjectUiSchema;
@@ -214,7 +214,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
         amisSchema: {
             type: "service",
             id: componentId,
-            className: "steedos-record-related-list sm:rounded sm:border border-slate-300 bg-gray-100 mb-4",
+            className: `steedos-record-related-list sm:rounded sm:border border-slate-300 bg-gray-100 mb-4 ${className}`,
             data: {
                 "&": "$$",
                 appId: "${appId}",
