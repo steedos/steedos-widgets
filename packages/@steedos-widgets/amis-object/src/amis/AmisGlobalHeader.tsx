@@ -136,7 +136,7 @@ export const AmisGlobalHeader = async (props) => {
                         {
                             "type": "panel",
                             "title": "通知",
-                            "className": "min-w-[300px]",
+                            "className": "min-w-[300px] max-w-md",
                             "body": [
                               {
                                 "type": "each",
