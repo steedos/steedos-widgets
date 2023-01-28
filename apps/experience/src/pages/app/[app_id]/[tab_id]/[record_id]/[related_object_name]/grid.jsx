@@ -126,7 +126,7 @@ export default function RelatedGrid({formFactor}){
                     
                   "type": "breadcrumb",
                   "source": "${$breadcrumb}",
-                  "className": "m-4",
+                  "className": "mx-4 my-2",
                 },
                 {
                     type: 'steedos-object-related-listview',
