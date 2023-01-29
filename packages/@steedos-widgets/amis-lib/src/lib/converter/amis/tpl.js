@@ -80,28 +80,41 @@ export function getNameTpl(field, ctx){
 
 export function getRelatedFieldTpl(field, ctx){
     let tpl = '';
+    const onlyDisplayLabel = ctx.onlyDisplayLabel;
     if(_.isString(field.reference_to) || !field.reference_to){
         if(field.multiple){
-            const href = Router.getObjectDetailPath({
-                formFactor: ctx.formFactor, appId: ctx.appId, objectName: `<%=item.objectName%>`, recordId: `<%=item.value%>`
-            })
+            let labelTpl = `<%=item.label%>`;
+            if(!onlyDisplayLabel){
+                const href = Router.getObjectDetailPath({
+                    formFactor: ctx.formFactor, appId: ctx.appId, objectName: `<%=item.objectName%>`, recordId: `<%=item.value%>`
+                })
+                labelTpl = `<a href="${href}"><%=item.label%></a>`;
+            }
             tpl = `
-            <% if (data._display.${field.name} && data._display.${field.name}.length) { %><% data._display.${field.name}.forEach(function(item) { %> <a href="${href}"><%=item.label%></a>  <% }); %><% } %>
+            <% if (data._display.${field.name} && data._display.${field.name}.length) { %><% data._display.${field.name}.forEach(function(item) { %> ${labelTpl}  <% }); %><% } %>
             `
         }else{
-            const href = Router.getObjectDetailPath({
-                formFactor: ctx.formFactor, appId: ctx.appId, objectName: `\${_display.${field.name}.objectName}`, recordId: `\${_display.${field.name}.value}`
-            })
-            tpl = `<a href="${href}">\${_display.${field.name}.label}</a>`
+            let labelTpl = `\${_display.${field.name}.label}`;
+            if(!onlyDisplayLabel){
+                const href = Router.getObjectDetailPath({
+                    formFactor: ctx.formFactor, appId: ctx.appId, objectName: `\${_display.${field.name}.objectName}`, recordId: `\${_display.${field.name}.value}`
+                })
+                labelTpl = `<a href="${href}">\${_display.${field.name}.label}</a>`;
+            }
+            tpl = labelTpl;
         }
 
         
     }else{
-        const href = Router.getObjectDetailPath({
-            formFactor: ctx.formFactor, appId: ctx.appId, objectName: `<%=item.objectName%>`, recordId: `<%=item.value%>`
-        })
+        let labelTpl = `<%=item.label%>`;
+        if(!onlyDisplayLabel){
+            const href = Router.getObjectDetailPath({
+                formFactor: ctx.formFactor, appId: ctx.appId, objectName: `<%=item.objectName%>`, recordId: `<%=item.value%>`
+            })
+            labelTpl = `<a href="${href}"><%=item.label%></a>`;
+        }
         tpl = `
-        <% if (data._display.${field.name} && data._display.${field.name}.length) { %><% data._display.${field.name}.forEach(function(item) { %> <a href="${href}"><%=item.label%></a>  <% }); %><% } %>
+        <% if (data._display.${field.name} && data._display.${field.name}.length) { %><% data._display.${field.name}.forEach(function(item) { %> ${labelTpl}  <% }); %><% } %>
         `
     }
     return tpl

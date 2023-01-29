@@ -122,7 +122,7 @@ async function getTableColumns(fields, options){
         "body": [{
             "type": "tpl",
             "tpl": tpls[index].tpl,
-            "className": "truncate text-sm font-medium text-indigo-600"//左侧样式类
+            "className": "truncate text-sm font-medium"//左侧样式类
         },{
             "type": "tpl",
             "tpl": tpls[index + 1].tpl,
@@ -151,10 +151,10 @@ function getMobileLines(tpls){
         }
         if(isLeft){
             // 左侧半行
-            lineChildrenClassName = "truncate text-sm font-medium text-indigo-600";
+            lineChildrenClassName = "truncate text-sm font-medium";
             if(item.field.is_wide){
-                // TODO:左侧全行样式
-                lineChildrenClassName = "truncate text-sm font-medium text-indigo-600";
+                // 左侧全行样式可以单独写
+                lineChildrenClassName = "truncate text-sm font-medium";
             }
         }
         else{
@@ -202,18 +202,12 @@ async function getMobileTableColumns(fields, options){
             tpl = Tpl.getTextTpl(field);
         }
         else if(field.type === 'avatar' || field.type === 'image' || field.type === 'file'){
-            // columns.push({
-            //     type: "switch",
-            //     name: field.name,
-            //     label: field.label,
-            //     width: field.width,
-            //     toggled: field.toggled,
-            //     disabled: true,
-            //     className:"whitespace-nowrap",
-            //     ...getAmisFileReadonlySchema(field)
-            // })
+            // TODO:附件类型字段先不支持
         }
         else{
+            if(field.type === 'lookup' || field.type === 'master_detail'){
+                options.onlyDisplayLabel = true;
+            }
             tpl = await Tpl.getFieldTpl(field, options);
         }
         if(!field.hidden && !field.extra){
@@ -232,7 +226,7 @@ async function getMobileTableColumns(fields, options){
         type: "link",
         blank: false,
         href: url,
-        className: "block hover:bg-gray-50",
+        innerClassName: "block hover:bg-gray-50 text-gray-500",
         body:{
             "type": "wrapper",
             "body": columnLines,
