@@ -3,7 +3,7 @@ import * as Tpl from '../tpl';
 import * as Fields from '../index';
 import * as graphql from '../graphql';
 import config from '../../../../config'
-import { each, isBoolean, isEmpty } from 'lodash';
+import { each, forEach, isBoolean, isEmpty } from 'lodash';
 import { getAmisFileReadonlySchema } from './file'
 
 function getOperation(fields){
@@ -114,37 +114,81 @@ async function getTableColumns(fields, options){
     return columns;
 }
 
-function getMobileLinesByFieldTpls(tpls){
-    const columnLines = [];
-    columnLines.push({
+/**
+ * 生成移动端列表每行显示的amis行
+ * @param {*} tpls 要显示的每个字段的tpl
+ * @returns {
         "type": "wrapper",
         "body": [{
             "type": "tpl",
-            "tpl": tpls[0].tpl,
-            "className": "truncate text-sm font-medium text-indigo-600"
+            "tpl": tpls[index].tpl,
+            "className": "truncate text-sm font-medium text-indigo-600"//左侧样式类
         },{
             "type": "tpl",
-            "tpl": tpls[1].tpl,
-            "className": "ml-2 flex flex-shrink-0"
+            "tpl": tpls[index + 1].tpl,
+            "className": "ml-2 flex flex-shrink-0"//右侧样式类
         }],
         "size": "none",
-        "className": "flex items-center justify-between"
-    });
-    columnLines.push({
-        "type": "wrapper",
-        "body": [{
+        "className": "flex items-center justify-between"//每行样式类
+    }
+ */
+function getMobileLines(tpls){
+    let lines = [];
+    let lineChildren = [];
+    let isNewLine = false;
+    let isLeft = true;
+    let lineChildrenClassName = "";
+    let lineClassName = "flex items-center justify-between";
+    tpls.forEach(function(item){
+        if(isNewLine){
+            lines.push({
+                "type": "wrapper",
+                "body": lineChildren,
+                "size": "none",
+                "className": lineClassName
+            });
+            lineChildren = [];
+        }
+        if(isLeft){
+            // 左侧半行
+            lineChildrenClassName = "truncate text-sm font-medium text-indigo-600";
+            if(item.field.is_wide){
+                // TODO:左侧全行样式
+                lineChildrenClassName = "truncate text-sm font-medium text-indigo-600";
+            }
+        }
+        else{
+            // 右侧半行
+            lineChildrenClassName = "ml-2 flex flex-shrink-0";
+        }
+        lineChildren.push({
             "type": "tpl",
-            "tpl": tpls[2].tpl,
-            "className": "truncate text-sm font-medium text-indigo-600"
-        },{
-            "type": "tpl",
-            "tpl": tpls[3].tpl,
-            "className": "ml-2 flex flex-shrink-0"
-        }],
-        "size": "none",
-        "className": "flex items-center justify-between"
+            "tpl": item.tpl,
+            "className": lineChildrenClassName
+        });
+
+        if(item.field.is_wide){
+            // 宽字段占整行
+            isLeft = true;
+            isNewLine = true;
+        }
+        else{
+            isLeft = !isLeft;
+            isNewLine = isLeft;
+        }
     });
-    return columnLines;
+    
+    // TODO:待实现识别列表视图mobile_columns后放开
+    // if(lineChildren.length){
+    //     lines.push({
+    //         "type": "wrapper",
+    //         "body": lineChildren,
+    //         "size": "none",
+    //         "className": lineClassName
+    //     });
+    // }
+    
+    return lines;
 }
 
 async function getMobileTableColumns(fields, options){
@@ -179,7 +223,7 @@ async function getMobileTableColumns(fields, options){
 
     const url = Tpl.getNameTplUrl(nameField, options)
 
-    const columnLines = getMobileLinesByFieldTpls(tpls);
+    const columnLines = getMobileLines(tpls);
     
     columns.push({
         name: nameField.name,
