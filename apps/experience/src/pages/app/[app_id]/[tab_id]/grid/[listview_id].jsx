@@ -72,7 +72,7 @@ export default function Page ({ formFactor }) {
               // "headerToolbar": [],
               "columnsTogglable": false,
               "showHeader": true,
-              "className": "sm:border sm:shadow sm:rounded border-slate-300 border-solid"
+              "className": "sm:border sm:shadow sm:rounded border-slate-300 border-solid min-h-[320px]"
             }}
             router={router}
           ></AmisRender>
