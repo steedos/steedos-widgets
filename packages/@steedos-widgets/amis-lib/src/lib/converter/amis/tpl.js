@@ -27,7 +27,8 @@ export function getNumberTpl(field){
 }
 
 export function getTextTpl(field){
-    return `<div>\${${field.name}}</div>`
+    // 不可以加div包裹，否则不支持手机端文字超出时显示省略号
+    return `\${${field.name}}`
 }
 
 export function getTimeTpl(field){

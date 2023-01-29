@@ -71,6 +71,17 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
+
+    @media (max-width: 576px){
+        .antd-Table-content{
+            table.antd-Table-table{
+                display: block;
+                thead,tbody,tr,th,td{
+                    display: block;
+                }
+            }
+        }
+    }
 }
 
 @media (max-width: 576px){
