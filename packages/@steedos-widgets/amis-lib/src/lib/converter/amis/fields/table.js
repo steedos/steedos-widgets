@@ -178,15 +178,14 @@ function getMobileLines(tpls){
         }
     });
     
-    // TODO:待实现识别列表视图mobile_columns后放开
-    // if(lineChildren.length){
-    //     lines.push({
-    //         "type": "wrapper",
-    //         "body": lineChildren,
-    //         "size": "none",
-    //         "className": lineClassName
-    //     });
-    // }
+    if(lineChildren.length){
+        lines.push({
+            "type": "wrapper",
+            "body": lineChildren,
+            "size": "none",
+            "className": lineClassName
+        });
+    }
     
     return lines;
 }
@@ -210,7 +209,7 @@ async function getMobileTableColumns(fields, options){
             }
             tpl = await Tpl.getFieldTpl(field, options);
         }
-        if(!field.hidden && !field.extra){
+        if(tpl && !field.hidden && !field.extra){
             tpls.push({ field, tpl });
         }
     };
