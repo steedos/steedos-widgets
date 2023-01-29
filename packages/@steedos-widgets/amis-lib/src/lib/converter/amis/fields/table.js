@@ -228,9 +228,10 @@ async function getMobileTableColumns(fields, options){
         name: nameField.name,
         label: nameField.label,
         sortable: nameField.sortable,
-        type: "link",
-        blank: false,
-        href: url,
+        type: "button",
+        level: "link",
+        actionType: "link",
+        link: url,
         innerClassName: "steedos-listview-item block hover:bg-gray-50 text-gray-500",
         body:{
             "type": "wrapper",
