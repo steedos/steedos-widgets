@@ -134,13 +134,14 @@ async function getTableColumns(fields, options){
  */
 function getMobileLines(tpls){
     let lines = [];
+    let maxLineCount = 2;
     let lineChildren = [];
     let isNewLine = false;
     let isLeft = true;
     let lineChildrenClassName = "";
     let lineClassName = "flex items-center justify-between";
     tpls.forEach(function(item){
-        if(isNewLine){
+        if(isNewLine && lines.length < maxLineCount){
             lines.push({
                 "type": "wrapper",
                 "body": lineChildren,
@@ -178,7 +179,7 @@ function getMobileLines(tpls){
         }
     });
     
-    if(lineChildren.length){
+    if(lineChildren.length && lines.length < maxLineCount){
         lines.push({
             "type": "wrapper",
             "body": lineChildren,
