@@ -142,11 +142,11 @@ export async function getObjectList(objectSchema, fields, options){
       bodyClassName: "",
       headerToolbar: getObjectHeaderToolbar(objectSchema, options.formFactor),
       headerToolbarClassName: "px-4 py-2 border-gray-300 bg-gray-100 border-solid border-b",
+      footerToolbar: getObjectFooterToolbar(objectSchema, options.formFactor), 
       className: `${options.className || ""}`
     }
     if(options.formFactor !== 'SMALL'){
       Object.assign(bodyProps, {
-        footerToolbar: getObjectFooterToolbar(), 
         filter: !!options.filterVisible && await getObjectFilter(objectSchema, fields, options),
         bulkActions: options.bulkActions != false ? bulkActions : false
       });

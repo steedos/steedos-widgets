@@ -89,12 +89,19 @@ export function getObjectHeaderToolbar(mainObject, formFactor){
     
 }
 
-export function getObjectFooterToolbar(){
+export function getObjectFooterToolbar(mainObject, formFactor) {
+  if (formFactor === 'SMALL') {
     return [
-        "statistics",
-        // "switch-per-page",
-        "pagination"
-      ]
+      "load-more",
+    ]
+  }
+  else {
+    return [
+      "statistics",
+      // "switch-per-page",
+      "pagination"
+    ]
+  }
 }
 
 export async function getObjectFilter(objectSchema, fields, options) {
