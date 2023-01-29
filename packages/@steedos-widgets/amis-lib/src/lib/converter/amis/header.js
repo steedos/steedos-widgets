@@ -382,7 +382,8 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
       "type": "flex",
       "items": amisButtonsSchema,
     },
-    "md": "auto"
+    "md": "auto",
+    "hiddenOn": "${recordLoaded != true}"
   })
 
   let body = [
@@ -403,7 +404,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
         }
       ],
       "messages": {},
-      "hiddenOn": "${recordLoaded != true}"
+      // "hiddenOn": "${recordLoaded != true}"
     }
   ];
 
