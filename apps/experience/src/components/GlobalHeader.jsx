@@ -31,6 +31,7 @@ export function GlobalHeader({app}) {
         data={{
           appId: app.id,
           app,
+          isMobile: window.innerWidth <= 768
         }} 
         router={router} 
         updateProps={{location: router}}
@@ -57,25 +58,12 @@ export function GlobalHeader({app}) {
                               "type": "steedos-logo",
                               "src": "/logo.png",
                               "className": 'block h-7 w-auto mr-4',
-                              "hiddenOn": "window.innerWidth < 768",
+                              "hiddenOn": "${isMobile}",
                             },
-                            {
-                              "type": "steedos-app-launcher",
-                              hiddenOn: "${app.showSidebar != true}",
-                              "showAppName": true
-                            },
-                          ],
-                        },
-                        {
-                          "type": "steedos-global-header",
-                          "label": "Global Header",
-                          className: 'flex flex-nowrap gap-x-3 items-center',
-                          logoutScript: "window.signOut();",
-                          customButtons: [
                             {
                               "type": "button",
-                              "className": "toggle-sidebar",
-                              "hiddenOn": "${app.showSidebar != true}",
+                              "className": "toggle-sidebar flex items-center pr-4",
+                              "hiddenOn": "${!isMobile}",
                               "onEvent": {
                                 "click": {
                                   "actions": [
@@ -96,7 +84,44 @@ export function GlobalHeader({app}) {
                                   "className": "slds-button_icon slds-global-header__icon"
                                 }
                               ],
-                            },]
+                            },
+                            {
+                              "type": "steedos-app-launcher",
+                              hiddenOn: "${app.showSidebar != true}",
+                              "showAppName": true
+                            },
+                          ],
+                        },
+                        {
+                          "type": "steedos-global-header",
+                          "label": "Global Header",
+                          className: 'flex flex-nowrap gap-x-3 items-center',
+                          logoutScript: "window.signOut();",
+                          customButtons: [{
+                            "type": "button",
+                            "className": "toggle-sidebar",
+                            "visibleOn": "${AND(app.showSidebar,!isMobile)}",
+                            "onEvent": {
+                              "click": {
+                                "actions": [
+                                  {
+                                    "actionType": "custom",
+                                    "script": "document.body.classList.toggle('sidebar-open')",
+                                  }
+                                ]
+                              }
+                            },
+                            "body": [
+                              {
+                                "type": "steedos-icon",
+                                "category": "utility",
+                                "name": "rows",
+                                "colorVariant": "default",
+                                "id": "u:afc3a08e8cf3",
+                                "className": "slds-button_icon slds-global-header__icon"
+                              }
+                            ],
+                          }]
                         }
                       ],
                     },
