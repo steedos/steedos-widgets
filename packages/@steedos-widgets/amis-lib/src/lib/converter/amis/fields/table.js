@@ -122,11 +122,11 @@ async function getTableColumns(fields, options){
         "body": [{
             "type": "tpl",
             "tpl": tpls[index].tpl,
-            "className": "truncate text-sm font-medium"//左侧样式类
+            "className": "truncate"//左侧样式类
         },{
             "type": "tpl",
             "tpl": tpls[index + 1].tpl,
-            "className": "ml-2 flex flex-shrink-0"//右侧样式类
+            "className": "truncate ml-2 flex flex-shrink-0"//右侧样式类
         }],
         "size": "none",
         "className": "flex items-center justify-between"//每行样式类
@@ -134,13 +134,14 @@ async function getTableColumns(fields, options){
  */
 function getMobileLines(tpls){
     let lines = [];
+    let maxLineCount = 2;
     let lineChildren = [];
     let isNewLine = false;
     let isLeft = true;
     let lineChildrenClassName = "";
     let lineClassName = "flex items-center justify-between";
     tpls.forEach(function(item){
-        if(isNewLine){
+        if(isNewLine && lines.length < maxLineCount){
             lines.push({
                 "type": "wrapper",
                 "body": lineChildren,
@@ -151,15 +152,15 @@ function getMobileLines(tpls){
         }
         if(isLeft){
             // 左侧半行
-            lineChildrenClassName = "truncate text-sm font-medium";
+            lineChildrenClassName = "steedos-listview-item-left truncate";
             if(item.field.is_wide){
                 // 左侧全行样式可以单独写
-                lineChildrenClassName = "truncate text-sm font-medium";
+                lineChildrenClassName = "steedos-listview-item-wide truncate";
             }
         }
         else{
             // 右侧半行
-            lineChildrenClassName = "ml-2 flex flex-shrink-0";
+            lineChildrenClassName = "steedos-listview-item-right truncate ml-2 flex flex-shrink-0";
         }
         lineChildren.push({
             "type": "tpl",
@@ -178,7 +179,7 @@ function getMobileLines(tpls){
         }
     });
     
-    if(lineChildren.length){
+    if(lineChildren.length && lines.length < maxLineCount){
         lines.push({
             "type": "wrapper",
             "body": lineChildren,
@@ -198,10 +199,12 @@ async function getMobileTableColumns(fields, options){
         let tpl = "";
         if(field.is_name || field.name === options.labelFieldName){
             nameField = field;
-            tpl = Tpl.getTextTpl(field);
+            options.onlyDisplayLabel = true;
+            tpl = await Tpl.getFieldTpl(field, options);
         }
         else if(field.type === 'avatar' || field.type === 'image' || field.type === 'file'){
-            // TODO:附件类型字段先不支持
+            // 图片和附件类型字段暂时显示为附件名称，后续需要再优化
+            tpl = `\${_display.${field.name}.name}`;
         }
         else{
             if(field.type === 'lookup' || field.type === 'master_detail'){
@@ -209,7 +212,10 @@ async function getMobileTableColumns(fields, options){
             }
             tpl = await Tpl.getFieldTpl(field, options);
         }
-        if(tpl && !field.hidden && !field.extra){
+        if(!tpl){
+            tpl = `\${${field.name}}`;
+        }
+        if(!field.hidden && !field.extra){
             tpls.push({ field, tpl });
         }
     };
@@ -225,7 +231,7 @@ async function getMobileTableColumns(fields, options){
         type: "link",
         blank: false,
         href: url,
-        innerClassName: "block hover:bg-gray-50 text-gray-500",
+        innerClassName: "steedos-listview-item block hover:bg-gray-50 text-gray-500",
         body:{
             "type": "wrapper",
             "body": columnLines,

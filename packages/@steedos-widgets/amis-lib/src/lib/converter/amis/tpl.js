@@ -26,11 +26,6 @@ export function getNumberTpl(field){
     return `<div>\${_display.${field.name}}</div>`
 }
 
-export function getTextTpl(field){
-    // 不可以加div包裹，否则不支持手机端文字超出时显示省略号
-    return `\${${field.name}}`
-}
-
 export function getTimeTpl(field){
     return `<div>\${_display.${field.name}}</div>`
 }
@@ -157,12 +152,10 @@ export function getPasswordTpl(field){
 
 
 export async function getFieldTpl (field, options){
-    if(field.is_name || field.name === options.labelFieldName){
+    if((field.is_name || field.name === options.labelFieldName) && !options.onlyDisplayLabel){
         return getNameTpl(field, options)
     }
     switch (field.type) {
-        case 'text':
-            return getTextTpl(field);
         case 'password':
             return getPasswordTpl(field);
         case 'boolean':
