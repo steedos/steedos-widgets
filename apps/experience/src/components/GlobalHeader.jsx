@@ -6,6 +6,8 @@ import { AmisRender } from '@/components/AmisRender';
 
 export function GlobalHeader({app}) {
 
+  const logoSrc = '/images/logo_platform.png';
+
   useEffect(()=>{
     if (app) {
       if (app.showSidebar)
@@ -55,10 +57,10 @@ export function GlobalHeader({app}) {
                           className: 'p-0 flex flex-1 items-center',
                           body: [
                             {
-                              "type": "steedos-logo",
-                              "src": "/logo.png",
-                              "className": 'block h-7 w-auto mr-4',
-                              "hiddenOn": "${isMobile}",
+                                "className": 'block h-10 w-auto mr-4',
+                                "hiddenOn": "${isMobile}",
+                                "type": "tpl",
+                                "tpl": `<a href='/app' class='flex items-center '><img class='block h-10 w-auto' src='${logoSrc}'></a>`,      
                             },
                             {
                               "type": "button",
