@@ -237,7 +237,7 @@ async function getMobileTableColumns(fields, options){
             "type": "wrapper",
             "body": columnLines,
             "size": "none",
-            "className": "px-4 py-4 sm:px-6"
+            "className": "p-2"
         }
     });
 

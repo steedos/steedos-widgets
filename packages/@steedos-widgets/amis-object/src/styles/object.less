@@ -73,11 +73,15 @@
     }
 
     @media (max-width: 576px){
+        // 手机端支持字段值文字超长时显示省略号
         .antd-Table-content{
             table.antd-Table-table{
                 display: block;
                 thead,tbody,tr,th,td{
                     display: block;
+                }
+                thead{
+                    display: none;
                 }
             }
         }
