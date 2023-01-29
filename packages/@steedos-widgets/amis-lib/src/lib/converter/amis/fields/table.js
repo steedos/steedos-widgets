@@ -457,7 +457,9 @@ export async function getTableApi(mainObject, fields, options){
                     // 第一次加载组件，比如刷新浏览器时因为api.data.pageNo有默认值1
                     // 所以会把localSearchableFilter中已经存过的页码覆盖
                     // 如果是第一次加载组件始终让翻页页码从本地存储中取值
-                    api.data.pageNo = localListViewProps.page || 1;
+                    let formFactor = "${options.formFactor}";
+                    // 移动端不识别本地存储中的翻页页码，否则点击加载更多按钮后无法刷新回第一页
+                    api.data.pageNo = formFactor === "SMALL" ? 1 : (localListViewProps.page || 1);
                 }
             }
         }
