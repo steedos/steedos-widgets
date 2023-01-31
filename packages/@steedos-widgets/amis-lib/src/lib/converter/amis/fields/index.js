@@ -503,6 +503,9 @@ export async function getFieldSearchable(perField, permissionFields, ctx){
             _field.reference_to = 'space_users';
             _field.reference_to_field = 'user';
         }
+        else if(field.reference_to === 'space_users'){
+            _field.reference_to_field = 'user';
+        }
         _field.readonly = false;
         _field.disabled = false;
         _field.multiple = true;
