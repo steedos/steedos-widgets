@@ -164,9 +164,10 @@ export const getSchema = (uiSchema) => {
                                   {
                                     name: "template_url",
                                     label: "导入模板",
-                                    type: "markdown",
+                                    type: "tpl",//markdown在amis sdk2.5.2不支持原生html，所以换成tpl
+                                    // type: "markdown",
+                                    // html: true,
                                     className: "whitespace-nowrap",
-                                    html: true,
                                   },
                                   null,
                                 ],
