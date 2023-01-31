@@ -11,6 +11,7 @@ import { SObject } from './sObject';
 import { ListView } from './listView';
 import { Router } from './router';
 import { render } from './render';
+import { downloadFile, previewFile } from './file';
 
 export const SteedosUI = Object.assign({}, {
     render: render,
@@ -69,5 +70,7 @@ export const SteedosUI = Object.assign({}, {
         default:
           return `amis-${appId}-${name}-${type}`;
       }
-    }
+    },
+    downloadFile,
+    previewFile
 })
