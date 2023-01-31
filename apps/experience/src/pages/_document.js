@@ -45,7 +45,7 @@ export default class MyDocument extends Document {
           )}
 
         </Head>
-        <body className='fixed'>
+        <body className=''>
           <Main />
           <NextScript />
         </body>

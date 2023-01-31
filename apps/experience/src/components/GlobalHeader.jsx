@@ -30,6 +30,7 @@ export function GlobalHeader({app}) {
       { app && 
       <AmisRender 
         id="steedos-global-header"
+        className="fixed z-50 w-full"
         data={{
           appId: app.id,
           app,
@@ -46,7 +47,7 @@ export function GlobalHeader({app}) {
               body: [
                 {
                   "type": "wrapper",
-                  "className": "p-0 slds-global-header_container sticky top-0 z-40 w-full flex-none backdrop-blur transition-colors duration-500 lg:z-50 sm:shadow border-b-[3px] border-sky-500 border-solid",
+                  "className": "p-0 slds-global-header_container sticky top-0 w-full flex-none backdrop-blur transition-colors duration-500 z-50 sm:shadow border-b-[3px] border-sky-500 border-solid",
                   body: [
                     {
                       "type": "wrapper",
@@ -84,12 +85,12 @@ export function GlobalHeader({app}) {
                                   "colorVariant": "default",
                                   "id": "u:afc3a08e8cf3",
                                   "className": "slds-button_icon slds-global-header__icon"
-                                }
+                                },
                               ],
                             },
                             {
                               "type": "steedos-app-launcher",
-                              hiddenOn: "${app.showSidebar != true}",
+                              "visibleOn": "${isMobile}",
                               "showAppName": true
                             },
                           ],
@@ -130,11 +131,10 @@ export function GlobalHeader({app}) {
     
                     {
                       "type": "grid",
-                      hiddenOn: "${app.showSidebar === true}",
-                      "className": 'steedos-context-bar hidden sm:flex h-10 leading-5 pl-4 mb-[-3px]',
+                      "className": 'steedos-context-bar hidden sm:flex h-10 leading-5 pl-4 mb-[-3px] mx-0',
                       "columns": [
                         {
-                          "columnClassName": "items-center hidden sm:flex pb-0",
+                          "columnClassName": "items-center hidden sm:flex pb-0 px-0",
                           "body": [
                             {
                               "type": "steedos-app-launcher",
@@ -149,6 +149,7 @@ export function GlobalHeader({app}) {
                           "columnClassName": "flex ",
                           "body": [
                             {
+                              "visibleOn": "${AND(!app.showSidebar,!isMobile)}",
                               "type": "steedos-app-menu",
                               "stacked": false,
                               showIcon: false,
@@ -172,7 +173,7 @@ export function GlobalHeader({app}) {
                 {
 
                   "type": "button",
-                  "className": 'p-0 absolute inset-0 mt-[50px]',
+                  "className": 'p-0 absolute inset-0 mt-[50px] sm:mt-[90px]',
                   hiddenOn: "${app.showSidebar != true}",
                   body: [{
                     type: "wrapper",
