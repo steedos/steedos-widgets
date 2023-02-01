@@ -165,7 +165,6 @@ export function GlobalHeader({app}) {
                 },
 
                 {
-
                   "type": "button",
                   "className": 'p-0 absolute inset-0 mt-[50px] sm:mt-[90px]',
                   hiddenOn: "${app.showSidebar != true}",
@@ -185,6 +184,11 @@ export function GlobalHeader({app}) {
                         "appId": "${app.id}",
                       },
                     ]
+                  },
+                  {
+                    "type": "wrapper",
+                    "className": 'sidebar-overlay',
+                    "hiddenOn": "${!isMobile}",
                   }],
                   "onEvent": {
                     "click": {
@@ -196,7 +200,7 @@ export function GlobalHeader({app}) {
                       ]
                     }
                   },
-                }
+                },
               ],
             },
           ]
