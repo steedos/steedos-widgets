@@ -493,7 +493,7 @@ export async function getTableApi(mainObject, fields, options){
         var orderBy = api.data.orderBy || '';
         var orderDir = api.data.orderDir || '';
         var sort = orderBy + ' ' + orderDir;
-        sort = orderBy ? sort : "${sort}";
+        sort = orderBy ? sort : "${sort || ''}";
         var allowSearchFields = ${JSON.stringify(searchableFields)};
         if(api.data.$term){
             userFilters = [["name", "contains", "'+ api.data.$term +'"]];
