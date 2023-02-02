@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-26 16:02:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-01-12 14:30:29
+ * @LastEditTime: 2023-02-02 10:14:47
  * @Description: 
  */
 import * as Fields from '../fields';
@@ -53,9 +53,12 @@ const getSection = async (permissionFields, fieldSchemaArray, sectionName, ctx) 
           field = await Fields.getGridFieldSubFields(perField, permissionFields);
       }else if(perField.type === 'object'){
           field = await Fields.getObjectFieldSubFields(perField, permissionFields);
+          // console.log(`perField.type object ===> field`, field)
       }
       if(field.name.indexOf(".") < 0){
+          ctx.__permissionFields = permissionFields;
           const amisField = await Fields.convertSFieldToAmisField(field, field.readonly, ctx);
+          // console.log(`${field.name} amisField`, amisField)
           if(amisField){
               fieldSetBody.push(amisField);
           }
