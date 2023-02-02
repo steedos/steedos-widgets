@@ -236,6 +236,7 @@ export const ObjectListview = () => (
         "objectApiName": "space_users",
         "listName": "all",
         "showHeader": true,
+        "columnsTogglable": false,
       }]
     },{
       "type": "panel",
