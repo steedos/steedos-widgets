@@ -71,8 +71,8 @@ export const SteedosUI = Object.assign({}, {
           return `amis-${appId}-${name}-${type}`;
       }
     },
-    downloadFile,
-    previewFile,
+    // downloadFile,
+    // previewFile,
     reloadRecord: ()=>{
       if(window.FlowRouter){
         return window.FlowRouter.reload();

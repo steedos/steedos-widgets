@@ -40,24 +40,43 @@ async function getTableColumns(fields, options){
     const columns = [{name: '_index',type: 'text', width: 32, placeholder: ""}];
     for (const field of fields) {
         if((field.is_name || field.name === options.labelFieldName) && options.objectName === 'cms_files'){
+            const previewFileScript = `
+                var data = event.data;
+                var file_name = data.versions ? data.name : "${field.label}";
+                var file_id = data._id;
+                SteedosUI.previewFile && SteedosUI.previewFile({file_name, file_id});
+            `;
             columns.push({
                 "type": "button",
-                className:"whitespace-nowrap",
                 "label": `<%=data.versions ? data.name : "${field.label}"%>`,
-                "type": "button",
-                "actionType": "ajax",
-                "api": {
-                    "url": "${context.rootUrl}/api/files/files/${versions[0]}?download=true",
-                    "method": "get",
-                    "headers": {
-                        "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                    },
-                    "responseType": "blob",
-                    "dataType": "form-data"
-                  },
-                "id": "u:6c8291d1029f",
-                "level": "link"
-              })
+                "className": "whitespace-nowrap",
+                "level": "link",
+                "onEvent": {
+                  "click": {
+                    "actions": [
+                        {
+                            "args": {
+                                "api": {
+                                    "url": "${context.rootUrl}/api/files/files/${versions[0]}?download=true",
+                                    "method": "get",
+                                    "headers": {
+                                        "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                                    }
+                                }
+                            },
+                            "actionType": "download",
+                            "expression": "!!!window?.nw?.require"//浏览器上直接下载
+                        },
+                        {
+                          "args": {},
+                          "actionType": "custom",
+                          "script": previewFileScript,
+                          "expression": "!!window?.nw?.require" //PC客户端预览附件
+                        }
+                    ]
+                  }
+                }
+            })
         }else if(field.type === 'toggle'){
             columns.push({
                 type: "switch",
