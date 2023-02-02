@@ -10,7 +10,10 @@ import { keys, pick, difference, find } from 'lodash';
 
 export const AmisObjectListView = async (props) => {
   // console.log(`AmisObjectListView props`, props)
-  const { $schema, top, perPage, showHeader=true, headerSchema, data, defaultData, className="", tableClassName, columnsTogglable=false} = props;
+  const { $schema, top, perPage, showHeader=true, headerSchema, data, defaultData, 
+      className="", 
+      tableClassName, 
+      columnsTogglable=false} = props;
   // const urlListNameMatchs = location.pathname.match(/grid\/(\w+)/);  // 错误的规则
   // const urlListName = urlListNameMatchs && urlListNameMatchs[1]
   // let listName = props.listName || urlListName;

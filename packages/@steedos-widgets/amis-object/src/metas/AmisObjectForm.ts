@@ -97,7 +97,8 @@ export default {
         type: config.amis.name,
         label: config.title,
         objectApiName: "${objectName}",
-        recordId: "${recordId}"
+        recordId: "${recordId}",
+        className: "sm:border sm:shadow sm:rounded sm:border-gray-300"
       },
       previewSchema: {
         type: config.amis.name,
@@ -169,10 +170,10 @@ export default {
               "label": "横向",
               "value": "horizontal"
             },
-            {
-              "label": "内联",
-              "value": "inline"
-            }
+            // {
+            //   "label": "内联",
+            //   "value": "inline"
+            // }
           ]
         },
         /*
@@ -192,12 +193,13 @@ export default {
             }
           ]
         },
+        */
         {
           type: "text",
           name: "className",
-          label: "CSS类名"
+          label: "CSS类名",
+          value: "my-2"
         }
-        */
       ]
     }
   }

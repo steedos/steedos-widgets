@@ -46,13 +46,13 @@ import AmisSteedosField from "./metas/AmisSteedosField";
 import AmisSelectFlow from './metas/AmisSelectFlow';
 
 const components = [
+  AmisRecordDetailHeader,
   AmisObjectForm, 
   AmisObjectListview, 
-  AmisRecordDetailHeader,
-  AmisRecordDetail, 
+  AmisObjectTable,
   AmisRecordDetailRelatedList, 
   AmisRecordDetailRelatedLists,
-  AmisObjectTable,
+  AmisRecordDetail, 
   AmisObjectCalendar,
   AmisObjectButton,
   AmisObjectFieldLookup,
