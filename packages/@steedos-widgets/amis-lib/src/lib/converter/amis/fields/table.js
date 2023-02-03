@@ -396,6 +396,7 @@ export async function getTableSchema(fields, options){
         checkOnItemClick: false,
         labelTpl: `\${${options.labelFieldName}}`,
         autoFillHeight: false, // 自动高度效果不理想,先关闭
+        columnsTogglable: false,
     }
 }
 
