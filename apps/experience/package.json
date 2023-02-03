@@ -1,6 +1,6 @@
 {
   "name": "@steedos/ee_experience",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "main": "package.service.js",
   "private": false,
   "publishConfig": {
