@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-01-11 14:08:49
+ * @LastEditTime: 2023-02-03 13:17:56
  * @Description:
  */
 
@@ -209,6 +209,9 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
         appId: appId
     }
     const amisSchema= (await getListSchema(null, relatedObjectName, firstListViewName, options)).amisSchema;
+    if(!amisSchema){
+        return;
+    }
     return {
         uiSchema: relatedObjectUiSchema,
         amisSchema: {
