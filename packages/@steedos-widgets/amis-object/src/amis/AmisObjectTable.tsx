@@ -39,6 +39,7 @@ export const AmisObjectTable = async (props) => {
   const amisSchemaData = Object.assign({}, data, defaultData);
   let amisSchema = (await getTableSchema(amisSchemaData.appId, objectApiName, columns, { filters: tableFilters, filtersFunction, top, sort, sortField, sortOrder, extraColumns, defaults, ...ctx, setDataToComponentId })).amisSchema;
   amisSchema.data = Object.assign({}, amisSchema.data, amisSchemaData);
-  amisSchema.className = `${className}`
+
+  // amisSchema.className = `${className}`
   return amisSchema;
 }
