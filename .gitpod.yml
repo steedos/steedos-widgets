@@ -44,7 +44,7 @@ tasks:
       echo "STEEDOS_EXPERIENCE_ASSETURLS=$(gp url 8080)/@steedos-widgets/amis-object/dist/assets-dev.json" >> .env.local
       gp await-port 3000
       nvm use 14
-      yarn storybook
+      # yarn storybook
 
 ports:
   - port: 3000
