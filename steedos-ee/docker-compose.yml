@@ -1,43 +1,43 @@
 version: "3.9"
 
 services:
-  steedos:
-    image: ecr.aws.steedos.cn/dockerhub/steedos/steedos-enterprise:2.4.0-beta.18
-    command: "yarn start"
-    ports:
-      - "5000:3000"
-    volumes:   
-      - "steedos-installed-packages:/app/.steedos"
-      - "steedos-data:/app/storage"
-    env_file:
-      - .env.local
-    environment:
-      - MONGO_URL=mongodb://mongodb:27017/steedos
-      - MONGO_OPLOG_URL=mongodb://mongodb:27017/local
-      - STEEDOS_CFS_STORE=local
-      - STEEDOS_STORAGE_DIR=/app/storage
-      - STEEDOS_TENANT_ENABLE_PASSWORD_LOGIN=true
-      - TRANSPORTER=redis://redis:6379/2
-      - CACHER=redis://redis:6379
-      - STEEDOS_IDENTITY_JWT_ENABLED=true
-      - STEEDOS_IDENTITY_JWT_SECRET=steedos
-      - STEEDOS_IDENTITY_OIDC_ENABLED=true
-      - STEEDOS_IDENTITY_OIDC_CONFIG_URL=https://id.steedos.cn/realms/master/.well-known/openid-configuration
-      - STEEDOS_IDENTITY_OIDC_CLIENT_ID=steedos-oidc-public
-      - STEEDOS_IDENTITY_OIDC_CLIENT_SECRET=none
-      - STEEDOS_IDENTITY_OIDC_NAME=Steedos ID
-      - STEEDOS_INITIAL_PACKAGES="@steedos-labs/project-ee,@steedos-labs/demo-ee"
-      - STEEDOS_BUILDER_URL=https://beta.builder.steedos.com
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
-      interval: 60s
-      timeout: 10s
-      retries: 3
-    depends_on:
-      redis:
-        condition: service_started
-      mongodb:
-        condition: service_healthy
+  # steedos:
+  #   image: ecr.aws.steedos.cn/dockerhub/steedos/steedos-enterprise:2.4.0-beta.18
+  #   command: "yarn start"
+  #   ports:
+  #     - "5000:3000"
+  #   volumes:   
+  #     - "steedos-installed-packages:/app/.steedos"
+  #     - "steedos-data:/app/storage"
+  #   env_file:
+  #     - .env.docker
+  #   environment:
+  #     - MONGO_URL=mongodb://mongodb:27017/steedos
+  #     - MONGO_OPLOG_URL=mongodb://mongodb:27017/local
+  #     - STEEDOS_CFS_STORE=local
+  #     - STEEDOS_STORAGE_DIR=/app/storage
+  #     - STEEDOS_TENANT_ENABLE_PASSWORD_LOGIN=true
+  #     - STEEDOS_TRANSPORTER=redis://redis:6379/5
+  #     - STEEDOS_CACHER=redis://redis:6379/6
+  #     - STEEDOS_IDENTITY_JWT_ENABLED=true
+  #     - STEEDOS_IDENTITY_JWT_SECRET=steedos
+  #     - STEEDOS_IDENTITY_OIDC_ENABLED=true
+  #     - STEEDOS_IDENTITY_OIDC_CONFIG_URL=https://id.steedos.cn/realms/master/.well-known/openid-configuration
+  #     - STEEDOS_IDENTITY_OIDC_CLIENT_ID=steedos-oidc-public
+  #     - STEEDOS_IDENTITY_OIDC_CLIENT_SECRET=none
+  #     - STEEDOS_IDENTITY_OIDC_NAME=Steedos ID
+  #     - STEEDOS_INITIAL_PACKAGES="@steedos-labs/project-ee,@steedos-labs/demo-ee"
+  #     - STEEDOS_BUILDER_URL=https://beta.builder.steedos.com
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+  #     interval: 60s
+  #     timeout: 10s
+  #     retries: 3
+  #   depends_on:
+  #     redis:
+  #       condition: service_started
+  #     mongodb:
+  #       condition: service_healthy
     
   redis:
     image: ecr.aws.steedos.cn/dockerhub/bitnami/redis:6.2
