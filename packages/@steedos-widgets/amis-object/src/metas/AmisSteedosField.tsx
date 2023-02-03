@@ -9,7 +9,7 @@ const config: any = {
     componentType: 'amisSchema', 
     group: "华炎魔方",
     componentName: "AmisSteedosField",
-    title: "Steedos Field",
+    title: "对象字段",
     docUrl: "",
     screenshot: "",
     npm: {
@@ -60,16 +60,26 @@ const config: any = {
         icon: config.amis.icon,
         scaffold: {
           type: config.amis.name,
+          field: {
+            "type": "lookup",
+            "label": "Company",
+            "reference_to": "company"
+          }
         },
         previewSchema: {
           type: config.amis.name,
+          field: {
+            "type": "lookup",
+            "label": "Company",
+            "reference_to": "company"
+          }
         },
         panelTitle: "设置",
         panelControls: [
           {
             type: "editor",
             name: "field",
-            label: "Field",
+            label: "字段定义",
             language: "json"
           }
         ]

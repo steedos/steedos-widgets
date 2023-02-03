@@ -95,10 +95,11 @@ export default {
           loadJS('https://unpkg.steedos.cn/crypto-js@4.1.1/crypto-js.js'), 
           loadJS('https://unpkg.steedos.cn/lodash/lodash.min.js'),
           loadJS('https://unpkg.steedos.cn/@steedos-builder/react@0.2.30/dist/builder-react.unpkg.js'),
+          loadCss('https://unpkg.steedos.cn/@steedos-widgets/amis-object/dist/tailwind-base.css'),
           loadCss('https://unpkg.steedos.cn/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css'),
-          loadCss('https://unpkg.steedos.cn/amis/lib/themes/antd.css'),
-          loadCss('https://unpkg.steedos.cn/amis/lib/helper.css'),
-          loadCss('https://unpkg.steedos.cn/amis/sdk/iconfont.css'),
+          loadCss('https://unpkg.steedos.cn/amis@2.5.2/lib/themes/antd.css'),
+          loadCss('https://unpkg.steedos.cn/amis@2.5.2/lib/helper.css'),
+          loadCss('https://unpkg.steedos.cn/amis@2.5.2/sdk/iconfont.css'),
           loadCss('https://unpkg.steedos.cn/@fortawesome/fontawesome-free@6.2.0/css/all.min.css'),
         ]).then(()=>{
           (window as any).React = (window as any).amisRequire("react");
@@ -233,7 +234,9 @@ export const ObjectListview = () => (
       "body": [{
         "type": "steedos-object-listview",
         "objectApiName": "space_users",
-        "listName": "all"
+        "listName": "all",
+        "showHeader": true,
+        "columnsTogglable": false,
       }]
     },{
       "type": "panel",

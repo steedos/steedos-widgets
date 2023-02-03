@@ -391,16 +391,9 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
       "type": "service",
       "body": [
         {
-          "type": "wrapper",
-          "className": "bg-gray-100 border-b sm:shadow sm:rounded sm:border border-slate-300 p-4",
-          "body": [
-            {
-              "type": "grid",
-              "columns": gridBody,
-              "className": "flex justify-between"
-            }
-          ],
-          "size": "xs"
+          "type": "grid",
+          "columns": gridBody,
+          "className": "flex justify-between"
         }
       ],
       "messages": {},
@@ -413,7 +406,8 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
     bodyClassName: '',
     name: `page`,
     data: { "&":"$$", objectName: name, _id: recordId, recordPermissions: objectSchema.permissions, uiSchema: objectSchema },
-    body: body
+    body: body, 
+    className: ''
   }
 
 }

@@ -107,10 +107,8 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
           <GlobalHeader app={app}/>
         )}
         {session && (
-          <div id="main" className="flex flex-1 overlfow-scroll sm:overflow-hidden">
-            <div id="content" className="flex flex-col min-w-0 flex-1 overflow-y-auto">
+          <div id="main" className="absolute inset-0 overflow-scroll mt-[50px] sm:mt-[90px]">
               {children}
-            </div>
           </div>
         )}
       </div>

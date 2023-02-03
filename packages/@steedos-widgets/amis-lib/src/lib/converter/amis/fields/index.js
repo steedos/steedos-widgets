@@ -96,7 +96,11 @@ export function getAmisFieldType(sField){
 export function getObjectFieldSubFields(mainField, fields){
     const newMainField = Object.assign({subFields: []}, mainField);
     const subFields = _.filter(fields, function(field){
-        return field.name.startsWith(`${mainField.name}.`)
+        let result = field.name.startsWith(`${mainField.name}.`) && _.split(field.name, ".").length < 3;
+        if(result){
+            field._prefix = `${mainField.name}.`
+        }
+        return result;
     });
     newMainField.subFields = subFields;
     return newMainField;
@@ -105,7 +109,11 @@ export function getObjectFieldSubFields(mainField, fields){
 export function getGridFieldSubFields(mainField, fields){
     const newMainField = Object.assign({subFields: []}, mainField);
     const subFields = _.filter(fields, function(field){
-        return field.name.startsWith(`${mainField.name}.`)
+        let result = field.name.startsWith(`${mainField.name}.`)
+        if(result){
+            field._prefix = `${mainField.name}.`
+        }
+        return result;
     });
     newMainField.subFields = subFields;
     return newMainField;
@@ -393,28 +401,59 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             }
             break;
         case 'grid':
-            convertData = {
-                type: 'input-table',
-                strictMode:false,
-                affixHeader: false, // 是否固定表头, 不固定表头, 否则form有y轴滚动条时, 表头会跟随滚动条滚动.
-                // needConfirm: true,  此属性设置为false后，导致table不能编辑。
-                editable: !readonly,
-                addable: !readonly,
-                removable: !readonly,
-                draggable: !readonly,
-                columns: []
+            if(field.subFields){
+                convertData = {
+                    type: 'input-table',
+                    showIndex: true,
+                    columnsTogglable: false,
+                    strictMode:false,
+                    affixHeader: false, // 是否固定表头, 不固定表头, 否则form有y轴滚动条时, 表头会跟随滚动条滚动.
+                    // needConfirm: true,  此属性设置为false后，导致table不能编辑。
+                    editable: !readonly,
+                    addable: !readonly,
+                    removable: !readonly,
+                    draggable: !readonly,
+                    columns: []
+                }
+                // console.log(`convertData ==2====>`, field, convertData)
+                for (const subField of field.subFields) {
+                    const subFieldName = subField.name.replace(`${field._prefix || ''}${field.name}.$.`, '').replace(`${field.name}.`, '');
+                    const gridSub = await convertSFieldToAmisField(Object.assign({}, subField, {name: subFieldName}), readonly, ctx);
+                    if(gridSub){
+                        delete gridSub.name
+                        delete gridSub.label
+                        convertData.columns.push({
+                            name: subFieldName,
+                            label: subField.label,
+                            quickEdit: readonly ? false : gridSub
+                        })
+                    }
+                }
             }
-            for (const subField of field.subFields) {
-                const subFieldName = subField.name.replace(`${field.name}.$.`, '').replace(`${field.name}.`, '');
-                const gridSub = await convertSFieldToAmisField(Object.assign({}, subField, {name: subFieldName}), readonly, ctx);
-                if(gridSub){
-                    delete gridSub.name
-                    delete gridSub.label
-                    convertData.columns.push({
-                        name: subFieldName,
-                        label: subField.label,
-                        quickEdit: readonly ? false : gridSub
-                    })
+            break;
+        case 'object':
+            if(field.subFields){
+                convertData = {
+                    type: 'combo',
+                    items: []
+                };
+                // console.log(`convertData ======>`, field, convertData)
+                for (let subField of field.subFields) {
+                    const subFieldName = subField.name.replace(`${field.name}.$.`, '').replace(`${field.name}.`, '');
+                    if(subField.type === 'grid'){
+                        subField = await Fields.getGridFieldSubFields(subField, ctx.__permissionFields);
+                    }
+                    const gridSub = await convertSFieldToAmisField(Object.assign({}, subField, {name: subFieldName}), readonly, ctx);
+                    if(gridSub){
+                        delete gridSub.name
+                        delete gridSub.label
+                        convertData.items.push(
+                            Object.assign({}, gridSub, {
+                                name: subFieldName,
+                                label: subField.label
+                            })
+                        )
+                    }
                 }
             }
             break;

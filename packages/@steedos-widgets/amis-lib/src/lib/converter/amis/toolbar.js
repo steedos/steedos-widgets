@@ -3,6 +3,13 @@ import { getObjectListHeaderFieldsFilterBar } from './header';
 export function getObjectHeaderToolbar(mainObject, formFactor){
 
   if(formFactor === 'SMALL'){
+    const onReloadScript = `
+      const scope = event.context.scoped;
+      var listView = scope.parent.getComponents().find(function(n){
+        return n.props.type === "crud";
+      });
+      listView.handleChangePage(1);
+    `;
     return [
       // "bulkActions",
       {
@@ -10,10 +17,23 @@ export function getObjectHeaderToolbar(mainObject, formFactor){
         "tpl": "${count} 个项目"
       },
       {
-        "type": "reload",
+        // "type": "reload",//不可以直接使用reload，因为它不会设置页码到第一页
+        "type": "button",
         "align": "right",
-        "className": "bg-white p-2 rounded border-gray-300 text-gray-500"
-      },
+        "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
+        "label": "",
+        "icon": "fa fa-sync",
+        "onEvent": {
+          "click": {
+            "actions": [
+              {
+                "actionType": "custom",
+                "script": onReloadScript
+              }
+            ]
+          }
+        },
+      }
   ]
   }else{
     const onFieldsFilterToggleScript = `

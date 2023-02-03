@@ -226,7 +226,7 @@ export const getButton = async (objectName, buttonName, ctx)=>{
             return ;
         }
 
-        if(button.name == 'standard_edit'){ // && button._visible.indexOf('Steedos.StandardObjects.Base.Actions.standard_edit.visible.apply') > 0
+        if(button.name == 'standard_edit' && (button.todo === 'standard_edit' &&  button.type != "amis_button")){ // && button._visible.indexOf('Steedos.StandardObjects.Base.Actions.standard_edit.visible.apply') > 0
             return {
                 label: button.label,
                 name: button.name,
@@ -234,7 +234,7 @@ export const getButton = async (objectName, buttonName, ctx)=>{
                 ...await StandardButtons.getStandardEdit(uiSchema, ctx)
             };
         }
-        if(objectName != 'cms_files' && button.name == 'standard_new' ){ //&& button._visible.indexOf('Steedos.StandardObjects.Base.Actions.standard_new.visible.apply') > 0
+        if(objectName != 'cms_files' && button.name == 'standard_new' && (button.todo === 'standard_new' &&  button.type != "amis_button")){ //&& button._visible.indexOf('Steedos.StandardObjects.Base.Actions.standard_new.visible.apply') > 0
             return {
                 label: button.label,
                 name: button.name,
@@ -244,7 +244,7 @@ export const getButton = async (objectName, buttonName, ctx)=>{
         }
 
         // 如果是standard_delete 且 _visible 中调用了 Steedos 函数, 则自动添加标准的删除功能
-        if(button.name == 'standard_delete'){ // && button._visible.indexOf('Steedos.StandardObjects.Base.Actions.standard_delete.visible.apply') > 0
+        if(button.name == 'standard_delete' && (button.todo === 'standard_delete' &&  button.type != "amis_button")){ // && button._visible.indexOf('Steedos.StandardObjects.Base.Actions.standard_delete.visible.apply') > 0
             return {
                 label: button.label,
                 name: button.name,

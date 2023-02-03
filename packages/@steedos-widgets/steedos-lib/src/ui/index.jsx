@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-27 15:54:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-16 18:14:51
+ * @LastEditTime: 2023-02-01 13:58:36
  * @Description: 
  */
 import { message, notification, Button, Space} from 'antd';
@@ -11,6 +11,7 @@ import { SObject } from './sObject';
 import { ListView } from './listView';
 import { Router } from './router';
 import { render } from './render';
+import { downloadFile, previewFile } from './file';
 
 export const SteedosUI = Object.assign({}, {
     render: render,
@@ -68,6 +69,15 @@ export const SteedosUI = Object.assign({}, {
           return `amis-${appId}-${name}-detail`;
         default:
           return `amis-${appId}-${name}-${type}`;
+      }
+    },
+    // downloadFile,
+    // previewFile,
+    reloadRecord: ()=>{
+      if(window.FlowRouter){
+        return window.FlowRouter.reload();
+      }else{
+        // TODO 调用steedos object form 的 reload action
       }
     }
 })

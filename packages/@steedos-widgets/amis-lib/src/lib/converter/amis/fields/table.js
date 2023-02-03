@@ -40,24 +40,43 @@ async function getTableColumns(fields, options){
     const columns = [{name: '_index',type: 'text', width: 32, placeholder: ""}];
     for (const field of fields) {
         if((field.is_name || field.name === options.labelFieldName) && options.objectName === 'cms_files'){
+            const previewFileScript = `
+                var data = event.data;
+                var file_name = data.versions ? data.name : "${field.label}";
+                var file_id = data._id;
+                SteedosUI.previewFile && SteedosUI.previewFile({file_name, file_id});
+            `;
             columns.push({
                 "type": "button",
-                className:"whitespace-nowrap",
                 "label": `<%=data.versions ? data.name : "${field.label}"%>`,
-                "type": "button",
-                "actionType": "ajax",
-                "api": {
-                    "url": "${context.rootUrl}/api/files/files/${versions[0]}?download=true",
-                    "method": "get",
-                    "headers": {
-                        "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                    },
-                    "responseType": "blob",
-                    "dataType": "form-data"
-                  },
-                "id": "u:6c8291d1029f",
-                "level": "link"
-              })
+                "className": "whitespace-nowrap",
+                "level": "link",
+                "onEvent": {
+                  "click": {
+                    "actions": [
+                        {
+                            "args": {
+                                "api": {
+                                    "url": "${context.rootUrl}/api/files/files/${versions[0]}?download=true",
+                                    "method": "get",
+                                    "headers": {
+                                        "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                                    }
+                                }
+                            },
+                            "actionType": "download",
+                            "expression": "!!!window?.nw?.require"//浏览器上直接下载
+                        },
+                        {
+                          "args": {},
+                          "actionType": "custom",
+                          "script": previewFileScript,
+                          "expression": "!!window?.nw?.require" //PC客户端预览附件
+                        }
+                    ]
+                  }
+                }
+            })
         }else if(field.type === 'toggle'){
             columns.push({
                 type: "switch",
@@ -377,6 +396,7 @@ export async function getTableSchema(fields, options){
         checkOnItemClick: false,
         labelTpl: `\${${options.labelFieldName}}`,
         autoFillHeight: false, // 自动高度效果不理想,先关闭
+        columnsTogglable: false,
     }
 }
 
@@ -493,7 +513,7 @@ export async function getTableApi(mainObject, fields, options){
         var orderBy = api.data.orderBy || '';
         var orderDir = api.data.orderDir || '';
         var sort = orderBy + ' ' + orderDir;
-        sort = orderBy ? sort : "${sort}";
+        sort = orderBy ? sort : "${sort || ''}";
         var allowSearchFields = ${JSON.stringify(searchableFields)};
         if(api.data.$term){
             userFilters = [["name", "contains", "'+ api.data.$term +'"]];
@@ -644,7 +664,9 @@ export async function getTableApi(mainObject, fields, options){
                 // 第一次加载组件，比如刷新浏览器时因为api.data.pageNo有默认值1
                 // 所以会把localSearchableFilter中已经存过的页码覆盖
                 // 如果是第一次加载组件始终让翻页页码从本地存储中取值
-                selfData.page = localListViewProps.page || 1;
+                let formFactor = "${options.formFactor}";
+                // 移动端不识别本地存储中的翻页页码，否则点击加载更多按钮后无法刷新回第一页
+                selfData.page = formFactor === "SMALL" ? 1 : (localListViewProps.page || 1);
             }
         }
         delete selfData.context;

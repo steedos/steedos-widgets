@@ -94,7 +94,8 @@ export default {
         type: config.amis.name,
         label: config.title,
         objectApiName: "${objectName}",
-        columns: [{"field": "name"}]
+        columns: [{"field": "name"}],
+        className: "sm:border sm:shadow sm:rounded sm:border-gray-300"
       },
       previewSchema: {
         type: config.amis.name,
@@ -200,6 +201,12 @@ export default {
           "type": "number",
           "name": "top",
           "label": "显示的记录数量",
+        },
+        {
+          type: "text",
+          name: "className",
+          label: "CSS类名",
+          value: "my-2"
         }
       ]
     }
