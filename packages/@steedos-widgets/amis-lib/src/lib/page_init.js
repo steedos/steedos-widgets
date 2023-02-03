@@ -126,7 +126,12 @@ export async function getRecordPageInitSchema(objectApiName){
     if(relatedListSchema.length){
         contentBody.tabs.push({
             "title": "相关",
-            "body": relatedListSchema
+            "body": {
+              "type": "steedos-object-related-lists",
+              "label": "所有相关表",
+              "objectApiName": "${objectName}",
+              "recordId": "${recordId}",
+            },
         })
     }
     body.push(contentBody);
