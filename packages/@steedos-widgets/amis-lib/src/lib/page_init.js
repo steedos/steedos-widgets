@@ -55,6 +55,7 @@ export async function getListPageInitSchema(objectApiName, formFactor, userSessi
             "columnsTogglable": false,
             "showHeader": true,
             // "headerSchema": headerSchema
+            className: "sm:border bg-white sm:shadow sm:rounded border-slate-300 border-solid"
         }]
     }
 }
