@@ -110,6 +110,12 @@ export default {
           type: "text",
           name: "recordId",
           label: "记录Id"
+        },
+        {
+          type: "text",
+          name: "className",
+          label: "CSS类名",
+          value: "bg-gray-100 border-b sm:shadow sm:rounded sm:border border-slate-300 p-4 mb-4"
         }
       ]
     }

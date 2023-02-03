@@ -8,6 +8,7 @@
 import { getRecordDetailHeaderSchema , getUISchema} from '@steedos-widgets/amis-lib'
 
 export const AmisRecordDetailHeader = async (props) => {
+  const { className = 'bg-gray-100 border-b sm:shadow sm:rounded sm:border border-slate-300 p-4' } = props;
   const objectUiSchema = await getUISchema(props.objectApiName || "space_users", false);
   const defaultOnEvent = {
     "recordLoaded": {
@@ -34,5 +35,6 @@ export const AmisRecordDetailHeader = async (props) => {
   const { $schema, recordId, onEvent = defaultOnEvent, showRecordTitle = true } = props;
   let objectApiName = props.objectApiName || "space_users";
   const schema = (await getRecordDetailHeaderSchema(objectApiName, recordId, {showRecordTitle})).amisSchema;
+  schema.className = className;
   return Object.assign({}, schema, {onEvent: onEvent})
 }
