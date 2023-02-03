@@ -365,7 +365,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
     let valueField = referenceTo ? referenceTo.valueField.name : '';
     if(field._optionsFunction){
         apiInfo.adaptor = `
-        payload.data.options = eval(${field._optionsFunction})(api.data);
+        payload.data.options = eval(${field._optionsFunction})(api.data.$);
         return payload;
         `
         labelField = 'label';
