@@ -1,3 +1,4 @@
 .env.local
 logs
 storage
+.steedos
