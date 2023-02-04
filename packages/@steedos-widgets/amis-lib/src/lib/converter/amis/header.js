@@ -298,7 +298,7 @@ export async function getObjectListHeader(objectSchema, listViewName, ctx) {
  */
 export async function getObjectRecordDetailHeader(objectSchema, recordId, options) {
   const { showRecordTitle = true } = options || {}
-  // console.log('amis==>', objectSchema, recordId)
+  // console.log('getObjectRecordDetailHeader==>', objectSchema, recordId)
   const { name, label, icon, NAME_FIELD_KEY } = objectSchema;
   const buttons = getObjectDetailButtons(objectSchema, {});
   const moreButtons = getObjectDetailMoreButtons(objectSchema, {
@@ -383,12 +383,13 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
       "items": amisButtonsSchema,
     },
     "md": "auto",
-    "hiddenOn": "${recordLoaded != true}"
+    // "hiddenOn": "${recordLoaded != true}"
   })
 
   let body = [
     {
       "type": "service",
+      data: { "&":"$$", objectName: name, _id: recordId, recordPermissions: "${record.recordPermissions}", uiSchema: objectSchema},
       "body": [
         {
           "type": "grid",
@@ -397,15 +398,30 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
         }
       ],
       "messages": {},
-      // "hiddenOn": "${recordLoaded != true}"
+      "hiddenOn": "${recordLoaded != true}"
     }
   ];
+
+  if(showRecordTitle){
+    body.push({
+      "type": "service",
+      "body": [
+        {
+          "type": "grid",
+          "columns": [gridBody[0]],
+          "className": "flex justify-between"
+        }
+      ],
+      "messages": {},
+      "hiddenOn": "${recordLoaded == true}"
+    })
+  }
 
   return {
     type: 'service',
     bodyClassName: '',
     name: `page`,
-    data: { "&":"$$", objectName: name, _id: recordId, recordPermissions: objectSchema.permissions, uiSchema: objectSchema },
+    data: { "&":"$$", objectName: name, _id: recordId, recordPermissions: objectSchema.permissions, uiSchema: objectSchema, record: "${record}"},
     body: body, 
     className: ''
   }
