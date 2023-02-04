@@ -10,8 +10,15 @@ import { keys, pick, difference } from 'lodash';
 
 export const AmisObjectTable = async (props) => {
   // console.log(`AmisObjectTable props`, props)
-  const { $schema, filters, filtersFunction, amisCondition, top, headerSchema, sort, sortField, sortOrder, extraColumns, ctx, data, defaultData, 
+  const { $schema, filters, filtersFunction, amisCondition, top, headerSchema, sort, sortField, sortOrder, extraColumns, data, defaultData, 
     className = "" } = props;
+  let ctx = props.ctx;
+  if(!ctx){
+    ctx = {};
+  }
+  if(!ctx.formFactor){
+    ctx.formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE';
+  }
   const columns = props.columns || [];
   let defaults: any = {};
   let objectApiName = props.objectApiName || "space_users";

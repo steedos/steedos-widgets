@@ -11,6 +11,10 @@ import { getRecordDetailRelatedListSchema } from '@steedos-widgets/amis-lib'
 export const AmisRecordDetailRelatedList = async (props) => {
   // console.log(`AmisRecordDetailRelatedList props==>`, props)
   const { objectApiName, recordId, relatedObjectApiName, data, relatedKey, top, perPage, hiddenEmptyTable, appId, label, className = '' } = props;
+  let formFactor = props.formFactor;
+  if(!formFactor){
+    formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE';
+  }
   if(!objectApiName || !relatedObjectApiName){
     return {
       "type": "alert",
@@ -20,6 +24,6 @@ export const AmisRecordDetailRelatedList = async (props) => {
       "className": "mb-3"
     }
   }
-  const schema = (await getRecordDetailRelatedListSchema(objectApiName, recordId, relatedObjectApiName, relatedKey, top, perPage, hiddenEmptyTable, appId, label, className)).amisSchema;
+  const schema = (await getRecordDetailRelatedListSchema(objectApiName, recordId, relatedObjectApiName, relatedKey, {top, perPage, hiddenEmptyTable, appId, label, className, formFactor})).amisSchema;
   return schema
 }
