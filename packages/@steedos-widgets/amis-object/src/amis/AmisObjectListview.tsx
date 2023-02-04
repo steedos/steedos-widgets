@@ -93,7 +93,7 @@ export const AmisObjectListView = async (props) => {
   return {
     "type": "service",
     "body": body,
-    "className": `${className}`,
+    "className": `${className} steedos-object-listview`,
     "data": serviceData
   }
 }

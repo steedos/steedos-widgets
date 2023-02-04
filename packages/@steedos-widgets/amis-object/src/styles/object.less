@@ -47,7 +47,7 @@
     }   
 }
 
-.steedos-listview {
+.steedos-listview, .steedos-object-table {
     
     // .antd-Table-headToolbar{
     //     display: none;
@@ -103,6 +103,19 @@
                     &.is-disabled {
                         display: none;
                     }
+                }
+            }
+        }
+    }
+}
+
+.steedos-record-detail-related-lists{
+    .steedos-record-related-list{
+        .steedos-object-table{
+            @media (max-width: 576px){
+                // 手机上记录详细界面相关表底部不显示加载更多按钮
+                .antd-Table-footToolbar{
+                    display: none;
                 }
             }
         }
