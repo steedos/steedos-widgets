@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-02 10:15:07
+ * @LastEditTime: 2023-02-06 15:29:23
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -145,6 +145,23 @@ export async function getUISchema(objectName, force) {
         //         }
         //     }
         // }
+        each(uiSchema.fields, (field)=>{
+            try {
+                if(field.type === "lookup" && field._reference_to && _.isString(field._reference_to)){
+                    // console.log(`uischema each field`, field)
+                    field.reference_to = function(js){
+                        try{
+                            return eval(js)
+                        }catch (e){
+                            console.error(e, js);
+                        }
+                    }(`(${field._reference_to})`);
+                    // console.log('eval field===>', field)
+                }
+            } catch (exception) {
+                console.error(exception)
+            }
+        })
         each(uiSchema.list_views, (v, k)=>{
             v.name = k;
             if(!has(v, 'columns')){
@@ -167,6 +184,7 @@ export async function getField(objectName, fieldName) {
 export async function getFormSchema(objectName, ctx) {
     const uiSchema = await getUISchema(objectName);
     const amisSchema = await getObjectForm(uiSchema, ctx);
+    console.log(`getFormSchema====>`, amisSchema)
     return {
         uiSchema,
         amisSchema,

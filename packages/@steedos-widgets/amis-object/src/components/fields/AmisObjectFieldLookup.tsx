@@ -2,17 +2,20 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-12 13:18:55
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-08 09:28:53
+ * @LastEditTime: 2023-02-06 15:28:02
  * @Description: 
  */
 import React, { useEffect, useState } from 'react'
 import { getUISchema, lookupToAmisPicker, lookupToAmisSelect, createObject } from '@steedos-widgets/amis-lib'
 
-import { compact, isString } from 'lodash';
+import { compact, isString, isFunction, has } from 'lodash';
 
 
 const getSchema = async (field, value, ctx)=>{
-  const refTo = field.reference_to;
+  let refTo = field.reference_to;
+  if(refTo && isFunction(refTo)){
+    refTo = refTo();
+  }
   const leftName = `${field.name}__left`
   const options = [];
   for (const item of refTo) {
@@ -23,7 +26,9 @@ const getSchema = async (field, value, ctx)=>{
         icon: refObject.icon
     });
   }
-
+  // console.log(`getSchema refTo`, refTo);
+  // console.log(`getSchema options`, options);
+  // console.log(`getSchema value=========>`, value);
   if(!value || !value.o){
     value = {
       o: options[0].value,
@@ -59,21 +64,30 @@ const getSchema = async (field, value, ctx)=>{
 }
 
 export const AmisObjectFieldLookup = (props) => {
-  const { field, readonly = false, ctx, dispatchEvent: amisDispatchEvent, render, renderFormItems, onChange, data, formItemValue} = props;
-  const [schema, setSchema] = useState();
+  // console.log(`AmisObjectFieldLookup`, props)
   
+  let { field, readonly = false, ctx, dispatchEvent: amisDispatchEvent, render, renderFormItems, onChange, data, formItemValue, value: fValue} = props;
+  // console.log(`${field.name}=====>`, data[field.name], formItemValue, has(data, 'recordId'))
+  if(!data[field.name] && data.recordId && formItemValue === undefined){
+    return ;
+  }
+  const [schema, setSchema] = useState();
+  if(formItemValue === undefined){
+    formItemValue = data[field.name]
+  }
   const [value, setValue] = useState(formItemValue);
 
   useEffect(()=>{
     setValue(formItemValue)
-  }, [formItemValue])
+  }, [JSON.stringify(formItemValue)])
 
   useEffect(()=>{
     getSchema(field, value, ctx).then((result)=>{
       setSchema(result as any)
     })
     
-  }, [value])
+  }, [JSON.stringify(value)])
+  
   const handleChange = async (values, fieldName)=>{
     const fieldValue = Object.assign({
       o: fieldName.endsWith("_left") ? values : (value as any)?.o,
@@ -94,7 +108,6 @@ export const AmisObjectFieldLookup = (props) => {
         fieldValue
       })
     );
-
     if (rendererEvent?.prevented) {
       return;
     }
@@ -103,7 +116,7 @@ export const AmisObjectFieldLookup = (props) => {
   return (
   <div className='amis-object-field-lookup'>
     {schema ? (
-      <div className="container">
+      <div className="container p-0">
         {render('body', schema, {
           // 这里的信息会作为 props 传递给子组件，一般情况下都不需要这个
           onChange: handleChange
@@ -111,4 +124,5 @@ export const AmisObjectFieldLookup = (props) => {
       </div>
     ) : null}
   </div>)
+  // return <div>AmisObjectFieldLookup</div>
 }
