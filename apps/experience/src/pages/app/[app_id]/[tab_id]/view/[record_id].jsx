@@ -11,14 +11,30 @@ import { AmisRender } from "@/components/AmisRender";
 import { getPage, getUISchema } from "@steedos-widgets/amis-lib";
 import { Loading } from '@/components/Loading';
 
-export default function Record({formFactor}) {
+const getTabDisplayAs = (tab_id) => {
+  const key = `tab:${tab_id}:display`;
+  const value = localStorage.getItem(key)
+  return value ? value : 'grid'
+}
+
+const setTabDisplayAs = (tab_id, displayAs) => {
+  const key = `tab:${tab_id}:display`;
+  localStorage.setItem(key, displayAs)
+}
+
+export default function Record({defaultFormFactor}) {
   const router = useRouter();
   const [uiSchema, setUiSchema] = useState(null);
-  const { app_id, tab_id, listview_id, record_id } = router.query;
+  const { app_id, tab_id, listview_id, record_id, display, side_object = tab_id, side_listview_id = listview_id } = router.query;
   const [page, setPage] = useState(false);
 
+  if (display)
+    setTabDisplayAs(tab_id, display)
+
+  const displayAs = (defaultFormFactor === 'SMALL')? grid: display? display : getTabDisplayAs(tab_id);
+
   useEffect(() => {
-    const p1 = getPage({type: 'record', appId: app_id, objectName: tab_id, formFactor});
+    const p1 = getPage({type: 'record', appId: app_id, objectName: tab_id, defaultFormFactor});
     const p2 = getUISchema(tab_id);
     Promise.all([p1, p2]).then((values) => {
       setPage(values[0]);
@@ -33,69 +49,109 @@ export default function Record({formFactor}) {
     name: tab_id,
   });
 
-
-  if(page === false){
+  if(page === false || uiSchema === null){
     return <Loading></Loading>
   }
+
+  const schema = page? JSON.parse(page.schema) : {
+    "type": "service",
+    "className": "m-0 sm:m-3",
+    "name": `amis-${app_id}-${tab_id}-detail`,
+    "body": [
+      {
+        "type": "steedos-record-detail",
+        "objectApiName": "${objectName}",
+        "recordId": "${recordId}",
+        appId: app_id,
+        "id": "u:48d2c28eb755",
+        onEvent: {
+            "recordLoaded": {
+                "actions": [
+                    {
+                        "actionType": "reload",
+                        "data": {
+                          "name": `\${record.${uiSchema.NAME_FIELD_KEY || 'name'}}`
+                        }
+                    }
+                ]
+              }
+        },
+      }
+    ],
+    "regions": [
+      "body"
+    ],
+    "id": "u:d138f5276481"
+  }
+
+  const listViewId = SteedosUI.getRefId({
+    type: "listview",
+    appId: app_id,
+    name: side_object,
+  });
+  const listSchema = page? JSON.parse(page.schema) : {
+    "type": "steedos-object-listview",
+    "objectApiName": side_object,
+    "columnsTogglable": false,
+    "showHeader": true,
+    "formFactor": 'SMALL',
+    "className": "border-r border-slate-300 border-solid"
+  }
+
   return (
     <>
-      {page && (
-        <AmisRender
-            data={{
-              objectName: tab_id,
-              recordId: record_id,
-              appId: app_id,
-              formFactor: formFactor,
-              scopeId: renderId+"-page"
-            }}
-            className="steedos-record-detail"
-            id={`${renderId}-page`}
-            schema={JSON.parse(page.schema)}
-            router={router}
+      {displayAs === 'split' && (
+        <div className="flex">
+          <div className="w-[388px] flex-none">
+            <AmisRender
+              data={{
+                objectName: side_object,
+                listViewId: listViewId,
+                listName: side_listview_id,
+                appId: app_id,
+                formFactor: defaultFormFactor,
+                scopeId: listViewId,
+              }}
+              className="steedos-listview p-0	flex flex-1 flex-col"
+              id={listViewId}
+              schema={listSchema}
+              router={router}
+            ></AmisRender>
+          </div>
+          <div className="flex-1">
+            <AmisRender
+              data={{
+                objectName: tab_id,
+                recordId: record_id,
+                appId: app_id,
+                formFactor: defaultFormFactor,
+                scopeId: renderId+"-page"
+              }}
+              className="steedos-record-detail"
+              id={`${renderId}-page`}
+              schema={schema}
+              router={router}
           ></AmisRender>
+          </div>
+        </div>
       )}
-      {!page && uiSchema && <AmisRender
-            data={{
-              objectName: tab_id,
-              recordId: record_id,
-              appId: app_id,
-              formFactor: formFactor,
-              scopeId: renderId
-            }}
-            className="steedos-record-detail"
-            id={renderId}
-            schema={{
-              "type": "service",
-              "className": "m-0 sm:m-3",
-              "name": `amis-${app_id}-${tab_id}-detail`,
-              "body": [
-                {
-                  "type": "steedos-record-detail",
-                  "objectApiName": "${objectName}",
-                  "recordId": "${recordId}",
-                  appId: app_id,
-                  "id": "u:48d2c28eb755",
-                  onEvent: {
-                      "recordLoaded": {
-                          "actions": [
-                              {
-                                  "actionType": "reload",
-                                  "data": {
-                                    "name": `\${record.${uiSchema.NAME_FIELD_KEY || 'name'}}`
-                                  }
-                              }
-                          ]
-                        }
-                  },
-                }
-              ],
-              "regions": [
-                "body"
-              ],
-              "id": "u:d138f5276481"
-            }}
-            router={router}
-          ></AmisRender>}
+
+      {displayAs !== 'split' && schema && uiSchema && (
+        <AmisRender
+          data={{
+            objectName: tab_id,
+            recordId: record_id,
+            appId: app_id,
+            formFactor: defaultFormFactor,
+            scopeId: renderId+"-page"
+          }}
+          className="steedos-record-detail"
+          id={`${renderId}-page`}
+          schema={schema}
+          router={router}
+        ></AmisRender>
+      )}
+      
     </>
   )
 }

@@ -12,13 +12,29 @@ import { Loading } from '@/components/Loading';
 
 import { AmisRender } from "@/components/AmisRender";
 
+const getTabDisplayAs = (tab_id) => {
+  const key = `tab:${tab_id}:display`;
+  const value = localStorage.getItem(key)
+  return value ? value : 'grid'
+}
+
+const setTabDisplayAs = (tab_id, displayAs) => {
+  const key = `tab:${tab_id}:display`;
+  localStorage.setItem(key, displayAs)
+}
+
 export default function Page ({ defaultFormFactor }) {
   const router = useRouter();
 
-  const { app_id, tab_id, listview_id, display = 'grid' } = router.query;
+  const { app_id, tab_id, listview_id, display } = router.query;
   const [page, setPage] = useState(false);
 
-  const formFactor = (display === 'split') ? 'SMALL': defaultFormFactor
+  if (display)
+    setTabDisplayAs(tab_id, display)
+
+  const displayAs = (defaultFormFactor === 'SMALL')? grid: display? display : getTabDisplayAs(tab_id);
+
+  const formFactor = (displayAs === 'split') ? 'SMALL': defaultFormFactor
 
   useEffect(() => {
     // 微页面
@@ -43,12 +59,12 @@ export default function Page ({ defaultFormFactor }) {
     "columnsTogglable": false,
     "showHeader": true,
     "formFactor": formFactor,
-    "className": display === 'grid'? "sm:border sm:shadow sm:rounded border-slate-300 border-solid min-h-[320px]" : "border-r border-slate-300 border-solid"
+    "className": displayAs === 'grid'? "sm:border sm:shadow sm:rounded border-slate-300 border-solid min-h-[320px]" : "border-r border-slate-300 border-solid"
   }
 
   return (
     <>
-      {display === 'grid' && (
+      {displayAs === 'grid' && (
         <AmisRender
         data={{
           objectName: tab_id,
@@ -65,7 +81,7 @@ export default function Page ({ defaultFormFactor }) {
         ></AmisRender>
       )}
       
-      {display === 'split' && (
+      {displayAs === 'split' && (
         <div class="flex flex-1">
           <div class="flex-none w-[388px] flex flex-col">
             <AmisRender
