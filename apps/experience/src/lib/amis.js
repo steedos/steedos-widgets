@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 11:31:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-01-10 16:44:19
+ * @LastEditTime: 2023-02-06 16:25:56
  * @Description:
  */
 import { each, find, isArray, isEmpty } from 'lodash';
@@ -92,15 +92,16 @@ export const getEvn = (router)=>{
   return {
     theme: "antd",
     getModalContainer: (props)=>{
-      let div = document.querySelector("#amisModalContainer");
-        if(!div){
-            div = document.createElement('div');
-            div.className="amis-scope";
-            div.style.height='0px';
-            div.id="amisModalContainer";
-            document.body.appendChild(div)
-        }
-        return div;
+      // let div = document.querySelector("#amisModalContainer");
+      //   if(!div){
+      //       div = document.createElement('div');
+      //       div.className="amis-scope";
+      //       div.style.height='0px';
+      //       div.id="amisModalContainer";
+      //       document.body.appendChild(div)
+      //   }
+      //   return div;
+      return document.body;
     },
     notify: (type, msg)=>{
       if(msg.props?.schema.tpl){
