@@ -94,17 +94,22 @@
         // 手机端底部只有一个加载更多按钮，剧中显示
         .antd-Table-toolbar{
             position: relative;
-            .antd-Crud-loadMore{
-                .antd-Button{
-                    position: absolute;
-                    bottom: -10px;
-                    left: 30px;
-                    right: 30px;
-                    &.is-disabled {
-                        display: none;
-                    }
-                }
-            }
+        }
+    }
+}
+
+
+.antd-Table-toolbar{
+    .antd-Crud-loadMore{
+        .antd-Button{
+            border: none;
+            position: absolute;
+            bottom: -10px;
+            left: 30px;
+            right: 30px;
+        }
+        .antd-Button.is-disabled {
+            display: none;
         }
     }
 }

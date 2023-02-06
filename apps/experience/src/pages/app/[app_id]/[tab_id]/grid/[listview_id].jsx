@@ -12,11 +12,13 @@ import { Loading } from '@/components/Loading';
 
 import { AmisRender } from "@/components/AmisRender";
 
-export default function Page ({ formFactor }) {
+export default function Page ({ defaultFormFactor }) {
   const router = useRouter();
 
-  const { app_id, tab_id, listview_id } = router.query;
+  const { app_id, tab_id, listview_id, display = 'grid' } = router.query;
   const [page, setPage] = useState(false);
+
+  const formFactor = (display === 'split') ? 'SMALL': defaultFormFactor
 
   useEffect(() => {
     // 微页面
@@ -35,26 +37,38 @@ export default function Page ({ formFactor }) {
     name: tab_id,
   });
   const scopeId = `${listViewId}-page`;
+  const schema = page? JSON.parse(page.schema) : {
+    "type": "steedos-object-listview",
+    "objectApiName": tab_id,
+    "columnsTogglable": false,
+    "showHeader": true,
+    "formFactor": formFactor,
+    "className": display === 'grid'? "sm:border sm:shadow sm:rounded border-slate-300 border-solid min-h-[320px]" : "border-r border-slate-300 border-solid"
+  }
+
   return (
     <>
-      {page && (
+      {display === 'grid' && (
         <AmisRender
-            data={{
-              objectName: tab_id,
-              listViewId: listViewId,
-              appId: app_id,
-              formFactor: formFactor,
-              scopeId: scopeId,
-            }}
-            className="steedos-listview"
-            id={scopeId}
-            schema={JSON.parse(page.schema)}
-            router={router}
-          ></AmisRender>
+        data={{
+          objectName: tab_id,
+          listViewId: listViewId,
+          listName: listview_id,
+          appId: app_id,
+          formFactor: formFactor,
+          scopeId: listViewId,
+        }}
+        className="steedos-listview p-0	sm:m-3 flex flex-1 flex-col"
+        id={listViewId}
+        schema={schema}
+        router={router}
+        ></AmisRender>
       )}
-      {/* {!page && <DefaultListview formFactor={formFactor} router={router} listViewId={listViewId}></DefaultListview>} */}
-      {!page && (
-          <AmisRender
+      
+      {display === 'split' && (
+        <div class="flex flex-1">
+          <div class="flex-none w-[388px] flex flex-col">
+            <AmisRender
             data={{
               objectName: tab_id,
               listViewId: listViewId,
@@ -63,20 +77,14 @@ export default function Page ({ formFactor }) {
               formFactor: formFactor,
               scopeId: listViewId,
             }}
-            className="steedos-listview p-0	sm:m-3 flex flex-1 flex-col"
+            className="steedos-listview p-0	flex flex-1 flex-col"
             id={listViewId}
-            schema={{
-              "type": "steedos-object-listview",
-              "objectApiName": tab_id,
-              // "listName": "${listName}",
-              // "headerToolbar": [],
-              "columnsTogglable": false,
-              "showHeader": true,
-              "className": "sm:border sm:shadow sm:rounded border-slate-300 border-solid min-h-[320px]"
-            }}
+            schema={schema}
             router={router}
-          ></AmisRender>
-        )}
+            ></AmisRender>
+          </div>
+        </div>
+      )}
     </>
   )
 }
