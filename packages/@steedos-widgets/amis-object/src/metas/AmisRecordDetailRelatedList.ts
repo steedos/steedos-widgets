@@ -141,6 +141,7 @@ export default {
           "type": "number",
           "name": "top",
           "label": "显示的记录数量",
+          "labelRemark": "即TOP，配置该属性后不再支持翻页，始终显示该属性值配置的记录数"
         },
         {
           "type": "number",
