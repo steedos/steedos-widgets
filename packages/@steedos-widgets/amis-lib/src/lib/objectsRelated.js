@@ -168,7 +168,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
     if(!relatedLabel){
         relatedLabel = label;
     }
-    const firstListViewName = keys(list_views)[0];
+    const firstListViewName = keys(list_views).includes('all') ? 'all' : keys(list_views)[0];
     if(!relatedKey){
         relatedKey = findKey(fields, function(field) { 
            return ["lookup","master_detail"].indexOf(field.type) > -1 && field.reference_to === objectName; 
