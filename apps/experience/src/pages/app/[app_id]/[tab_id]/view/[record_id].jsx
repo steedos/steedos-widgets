@@ -22,7 +22,8 @@ const setTabDisplayAs = (tab_id, displayAs) => {
   localStorage.setItem(key, displayAs)
 }
 
-export default function Record({defaultFormFactor}) {
+export default function Record({formFactor: defaultFormFactor}) {
+  console.log(defaultFormFactor)
   const router = useRouter();
   const [uiSchema, setUiSchema] = useState(null);
   const { app_id, tab_id, listview_id, record_id, display, side_object = tab_id, side_listview_id = listview_id } = router.query;
@@ -31,7 +32,7 @@ export default function Record({defaultFormFactor}) {
   if (display)
     setTabDisplayAs(tab_id, display)
 
-  const displayAs = (defaultFormFactor === 'SMALL')? grid: display? display : getTabDisplayAs(tab_id);
+  const displayAs = (defaultFormFactor === 'SMALL')? 'grid': display? display : getTabDisplayAs(tab_id);
 
   useEffect(() => {
     const p1 = getPage({type: 'record', appId: app_id, objectName: tab_id, defaultFormFactor});

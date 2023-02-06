@@ -23,7 +23,7 @@ const setTabDisplayAs = (tab_id, displayAs) => {
   localStorage.setItem(key, displayAs)
 }
 
-export default function Page ({ defaultFormFactor }) {
+export default function Page ({ formFactor: defaultFormFactor }) {
   const router = useRouter();
 
   const { app_id, tab_id, listview_id, display } = router.query;
@@ -32,7 +32,7 @@ export default function Page ({ defaultFormFactor }) {
   if (display)
     setTabDisplayAs(tab_id, display)
 
-  const displayAs = (defaultFormFactor === 'SMALL')? grid: display? display : getTabDisplayAs(tab_id);
+  const displayAs = (defaultFormFactor === 'SMALL')? 'grid': display? display : getTabDisplayAs(tab_id);
 
   const formFactor = (displayAs === 'split') ? 'SMALL': defaultFormFactor
 
