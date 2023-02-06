@@ -13,6 +13,7 @@ export const AmisObjectListView = async (props) => {
   const { $schema, top, perPage, showHeader=true, headerSchema, data, defaultData, 
       className="", 
       tableClassName, 
+      formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE',
       columnsTogglable=false} = props;
   // const urlListNameMatchs = location.pathname.match(/grid\/(\w+)/);  // 错误的规则
   // const urlListName = urlListNameMatchs && urlListNameMatchs[1]
@@ -25,7 +26,7 @@ export const AmisObjectListView = async (props) => {
     ctx = {};
   }
   if(!ctx.formFactor){
-    ctx.formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE';
+    ctx.formFactor = formFactor;
   }
 
   const objectUiSchema = await getUISchema(objectApiName, false);

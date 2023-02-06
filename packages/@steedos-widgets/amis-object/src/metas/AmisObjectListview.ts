@@ -159,6 +159,22 @@ export default {
           "label": "显示表头",
         },
         {
+          type: "button-group-select",
+          name: "formFactor",
+          label: "显示样式",
+          value: "LARGE",
+          options: [
+            {
+              "label": "表格",
+              "value": "LARGE"
+            },
+            {
+              "label": "手机",
+              "value": "SMALL"
+            }
+          ]
+        },
+        {
           type: "text",
           name: "className",
           label: "CSS类名"
