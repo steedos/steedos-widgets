@@ -27,6 +27,7 @@ export const AmisRecordDetailRelatedLists = async (props) => {
   const relatedLists = await getObjectRelatedList(appId, objectApiName, recordId, formFactor);
   return {
     type: 'service',
+    className: "steedos-record-detail-related-lists",
     body: map(relatedLists, (item)=>{
       return {
         type: 'steedos-object-related-listview',

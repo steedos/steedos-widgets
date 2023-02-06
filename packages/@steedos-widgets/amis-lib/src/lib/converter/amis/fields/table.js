@@ -176,6 +176,10 @@ function getMobileLines(tpls){
                 // 左侧全行样式可以单独写
                 lineChildrenClassName = "steedos-listview-item-wide truncate";
             }
+            if(lines.length === 0){
+                // 第一个字段加粗黑色显示
+                lineChildrenClassName += " font-bold text-gray-800";
+            }
         }
         else{
             // 右侧半行
