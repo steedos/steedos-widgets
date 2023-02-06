@@ -125,7 +125,7 @@ export function GlobalHeader({app}) {
     
                     {
                       "type": "grid",
-                      "className": 'steedos-context-bar hidden sm:flex h-10 leading-5 pl-4 mb-[-3px] mx-0',
+                      "className": 'steedos-context-bar hidden sm:flex flex-nowrap h-10 leading-5 pl-4 mb-[-3px] mx-0',
                       "columns": [
                         {
                           "columnClassName": "items-center hidden sm:flex pb-0 px-0",
@@ -140,7 +140,7 @@ export function GlobalHeader({app}) {
                           "valign": "middle"
                         },
                         {
-                          "columnClassName": "flex ",
+                          "columnClassName": "flex overflow-hidden",
                           "body": [
                             {
                               "visibleOn": "${AND(!app.showSidebar,!isMobile)}",
