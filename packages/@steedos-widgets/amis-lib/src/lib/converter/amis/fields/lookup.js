@@ -333,7 +333,33 @@ export async function lookupToAmisSelect(field, readonly, ctx){
     }
     
     apiInfo.data.$term = "$term";
-    apiInfo.data.$value = `$${field.name}.${referenceTo ? referenceTo.valueField.name : '_id'}`;
+    // apiInfo.data.$value = `$${field.name}.${referenceTo ? referenceTo.valueField.name : '_id'}`;
+    apiInfo.data.$value = `$${field.name}`;
+    const valueFieldKey = referenceTo.valueField.name || '_id' ;
+    const labelFieldKey = referenceTo.labelField.name || 'name';
+    if(referenceTo){
+        // 字段值单独走一个请求合并到source的同一个GraphQL接口中
+        const defaultValueOptionsData = await graphql.getFindQuery({ name: referenceTo.objectName }, null, {
+            [referenceTo.labelField.name]: Object.assign({}, referenceTo.labelField, {alias: 'label'}),
+            [referenceTo.valueField.name]: Object.assign({}, referenceTo.valueField, {alias: 'value'})
+        }, {
+            alias: "defaultValueOptions",
+            filters: "{__options_filters}"
+        });
+        defaultValueOptionsData.query = defaultValueOptionsData.query.replace(/,count\:.+/, "}");
+        apiInfo.data.query = apiInfo.data.query.replace(/}$/, "," + defaultValueOptionsData.query.replace(/{(.+)}/, "$1}"))
+        apiInfo.adaptor = `
+            const data = payload.data;
+            var defaultValueOptions = data.defaultValueOptions;
+            // 字段值下拉选项合并到options中
+            data.options = _.unionWith(defaultValueOptions, data.options, function(a,b){
+                return a["${valueFieldKey}"]=== b["${valueFieldKey}"];
+            });
+            delete data.defaultValueOptions;
+            payload.data.options = data.options;
+            return payload;
+        `;
+    }
     _.each(field.depend_on, function(fName){
         apiInfo.data[fName] = `$${fName}`;
     })
@@ -345,9 +371,10 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         var top = 10;
         if(api.data.$term){
             filters = [["${referenceTo?.NAME_FIELD_KEY || 'name'}", "contains", api.data.$term]];
-        }else if(api.data.$value){
-            filters = [["_id", "=", api.data.$value]];
         }
+        // else if(api.data.$value){
+        //     filters = [["_id", "=", api.data.$value]];
+        // }
 
         const filtersFunction = ${field._filtersFunction};
 
@@ -359,6 +386,15 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         }
         var sort = "${sort}";
         api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', top).replace('{__sort}', sort.trim());
+
+        var defaultValue = api.data.$value;
+        var optionsFiltersOp = "${field.multiple ? "in" : "="}";
+        var optionsFilters = [["${valueFieldKey}", optionsFiltersOp, []]];
+        if (defaultValue && !api.data.$term) { 
+            // 字段值单独请求，没值的时候在请求中返回空
+            optionsFilters = [["${valueFieldKey}", optionsFiltersOp, defaultValue]];
+        }
+        api.data.query = api.data.query.replace(/{__options_filters}/g, JSON.stringify(optionsFilters));
         return api;
     `
     let labelField = referenceTo ? referenceTo.labelField.name : '';
