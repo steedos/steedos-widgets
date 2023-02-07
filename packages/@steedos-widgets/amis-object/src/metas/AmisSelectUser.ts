@@ -61,7 +61,7 @@ export default {
   amis: {
     render: {
       type: config.amis.name,
-      usage: "formitem",
+      usage: "renderer",//formitem
       weight: 1,
       framework: "react"
     },
