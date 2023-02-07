@@ -255,7 +255,7 @@ async function getMobileTableColumns(fields, options){
         level: "link",
         actionType: "link",
         link: url,
-        innerClassName: "steedos-listview-item block hover:bg-gray-50 text-gray-500",
+        innerClassName: "steedos-listview-item block text-gray-500",
         body:{
             "type": "wrapper",
             "body": columnLines,
