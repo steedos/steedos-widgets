@@ -417,6 +417,7 @@ export const getApprovalDrawerSchema = async (instance) => {
             minRows: 3,
             maxRows: 20,
             placeholder: "请填写意见",
+            required: "${judge} === rejected"
           },
           await getNextStepInput(instance),
           await getNextStepUsersInput(instance),
