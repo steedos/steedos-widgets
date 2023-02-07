@@ -99,7 +99,7 @@ export default function Record({formFactor: defaultFormFactor}) {
     "columnsTogglable": false,
     "showHeader": true,
     "formFactor": 'SMALL',
-    "className": "absolute top-0 bottom-0 w-[388px] border-r border-slate-300 border-solid"
+    "className": "absolute top-0 bottom-0 w-[388px] shadow border-r border-slate-300 border-solid"
   }
 
   return (

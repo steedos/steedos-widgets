@@ -158,7 +158,7 @@ function getMobileLines(tpls){
     let isNewLine = false;
     let isLeft = true;
     let lineChildrenClassName = "";
-    let lineClassName = "flex items-center justify-between";
+    let lineClassName = "flex items-center justify-between h-[20px]";
     tpls.forEach(function(item){
         if(isNewLine && lines.length < maxLineCount){
             lines.push({
