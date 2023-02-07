@@ -28,6 +28,7 @@ export default function Record({formFactor: defaultFormFactor}) {
   const [uiSchema, setUiSchema] = useState(null);
   const { app_id, tab_id, listview_id, record_id, display, side_object = tab_id, side_listview_id = listview_id } = router.query;
   const [page, setPage] = useState(false);
+  const [listPage, setListPage] = useState(false);
 
   if (display)
     setTabDisplayAs(tab_id, display)
@@ -35,11 +36,13 @@ export default function Record({formFactor: defaultFormFactor}) {
   const displayAs = (defaultFormFactor === 'SMALL')? 'grid': display? display : getTabDisplayAs(tab_id);
 
   useEffect(() => {
+    const listPage = getPage({type: 'list', appId: app_id, objectName: tab_id, defaultFormFactor});
     const p1 = getPage({type: 'record', appId: app_id, objectName: tab_id, defaultFormFactor});
     const p2 = getUISchema(tab_id);
-    Promise.all([p1, p2]).then((values) => {
-      setPage(values[0]);
-      setUiSchema(values[1]);
+    Promise.all([listPage, p1, p2]).then((values) => {
+      setListPage(values[0]);
+      setPage(values[1]);
+      setUiSchema(values[2]);
     });
 
   }, [app_id, tab_id]);
@@ -90,7 +93,7 @@ export default function Record({formFactor: defaultFormFactor}) {
     appId: app_id,
     name: side_object,
   });
-  const listSchema = page? JSON.parse(page.schema) : {
+  const listSchema = listPage? JSON.parse(listPage.schema) : {
     "type": "steedos-object-listview",
     "objectApiName": side_object,
     "columnsTogglable": false,
