@@ -105,7 +105,7 @@ export default function Record({formFactor: defaultFormFactor}) {
   return (
     <>
       {displayAs === 'split' && (
-        <>
+        <div className="flex">
             <AmisRender
               data={{
                 objectName: side_object,
@@ -115,7 +115,7 @@ export default function Record({formFactor: defaultFormFactor}) {
                 formFactor: defaultFormFactor,
                 scopeId: listViewId,
               }}
-              className="steedos-listview p-0"
+              className="steedos-listview p-0 flex-none w-[388px]"
               id={listViewId}
               schema={listSchema}
               router={router}
@@ -128,12 +128,12 @@ export default function Record({formFactor: defaultFormFactor}) {
                 formFactor: defaultFormFactor,
                 scopeId: renderId+"-page"
               }}
-              className="steedos-record-detail absolute top-0 bottom-0 left-[388px] right-0 overflow-scroll"
+              className="steedos-record-detail flex-1 overflow-scroll"
               id={`${renderId}-page`}
               schema={schema}
               router={router}
           ></AmisRender>
-        </>
+        </div>
       )}
 
       {displayAs !== 'split' && schema && uiSchema && (
