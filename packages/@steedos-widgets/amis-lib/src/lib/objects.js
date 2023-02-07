@@ -202,31 +202,6 @@ export async function getViewSchema(objectName, recordId, ctx) {
     };
 }
 
-// 获取列表视图的各个属性
-export function getDefaultListViewProps(uiSchema, listName, ctx) {
-    const listView =  find(
-        uiSchema.list_views,
-        (listView, name) => {
-            // 传入listViewName空值则取第一个
-            if(!listName){
-                listName = name;
-            }
-            return name === listName || listView._id === listName;
-        }
-    );
-    let columns = getListViewColumns(listView, ctx.formFactor);
-    let sort = getListViewSort(listView);
-    let filter = getListViewFilter(listView, ctx);
-    let filters = listView && listView._filters;
-    return {
-        listView,
-        columns,
-        sort,
-        filter,
-        filters
-    }
-};
-
 // 获取列表视图
 export async function getListSchema(
     appName,
@@ -235,8 +210,16 @@ export async function getListSchema(
     ctx = {}
 ) {
     const uiSchema = await getUISchema(objectName);
-    const listViewProps = getDefaultListViewProps(uiSchema, listViewName, ctx);
-    const { listView, columns: listViewColumns, sort: listViewSort, filter: listviewFilter, filters: listview_filters } = listViewProps;
+    const listView =  find(
+        uiSchema.list_views,
+        (listView, name) => {
+            // 传入listViewName空值则取第一个
+            if(!listViewName){
+                listViewName = name;
+            }
+            return name === listViewName || listView._id === listViewName;
+        }
+    );
 
     if (!listView) {
         return { uiSchema };
@@ -251,13 +234,17 @@ export async function getListSchema(
         };
     }
 
+    let listViewColumns = getListViewColumns(listView, ctx.formFactor);
+    let sort = getListViewSort(listView);
+    let listviewFilter = getListViewFilter(listView, ctx);
+    let listview_filters = listView && listView._filters;
     if(listView.type === "calendar"){
         const amisSchema = {
             "type": "steedos-object-calendar",
             "objectApiName": objectName,
             "filters": listviewFilter,
             "filtersFunction": listview_filters,
-            "sort": listViewSort,
+            "sort": sort,
             ...listView.options
         };
         return {
@@ -321,7 +308,7 @@ export async function getListSchema(
         "extraColumns": listView.extra_columns,
         "filters": listviewFilter,
         "filtersFunction": listview_filters,
-        "sort": listViewSort,
+        "sort": sort,
         "ctx": ctx
     };
 
@@ -618,26 +605,16 @@ export async function getObjectRelatedList(
                 } else {
                     filter = [`${arr[1]}`, "=", recordId];
                 }
-                const options = {
-                    globalFilter: filter,
-                    formFactor: formFactor,
-                    buttons: await getListViewItemButtons(relatedUiSchema, {isMobile: false})
-                }
-                const listProps = getDefaultListViewProps(relatedUiSchema, 'all', options);
+        
                 related.push({
                     masterObjectName: objectName,
                     object_name: arr[0],
                     foreign_key: arr[1],
-                    schema: {
-                        "type": "steedos-object-table",
-                        "objectApiName": arr[0],
-                        "columns": listProps.columns,
-                        "extraColumns": listProps.listView.extra_columns,
-                        "filters": listProps.filter,
-                        "filtersFunction": listProps.filters,
-                        "sort": listProps.sort,
-                        "ctx": options
-                    }
+                    schema: await getListSchema(appName, arr[0], "all", {
+                        globalFilter: filter,
+                        formFactor: formFactor,
+                        buttons: await getListViewItemButtons(relatedUiSchema, {isMobile: false})
+                    }),
                 });
             }
         }
