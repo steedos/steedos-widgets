@@ -59,12 +59,13 @@ export default function Page ({ formFactor: defaultFormFactor }) {
     "columnsTogglable": false,
     "showHeader": true,
     "formFactor": formFactor,
-    "className": displayAs === 'grid'? "sm:border sm:shadow sm:rounded border-slate-300 border-solid min-h-[320px]" : "border-r border-slate-300 border-solid"
+    "className": displayAs === 'grid'? 
+      "sm:border sm:shadow sm:rounded border-slate-300 border-solid min-h-[320px]" : 
+      "absolute top-0 bottom-0 w-[388px] border-r border-slate-300 border-solid"
   }
 
   return (
     <>
-      {displayAs === 'grid' && (
         <AmisRender
         data={{
           objectName: tab_id,
@@ -74,33 +75,11 @@ export default function Page ({ formFactor: defaultFormFactor }) {
           formFactor: formFactor,
           scopeId: listViewId,
         }}
-        className="steedos-listview p-0	sm:m-3 flex flex-1 flex-col"
+        className={displayAs === 'grid'? "steedos-listview p-0	sm:m-3": "steedos-listview p-0"}
         id={listViewId}
         schema={schema}
         router={router}
         ></AmisRender>
-      )}
-      
-      {displayAs === 'split' && (
-        <div class="flex flex-1">
-          <div class="flex-none w-[388px] flex flex-col">
-            <AmisRender
-            data={{
-              objectName: tab_id,
-              listViewId: listViewId,
-              listName: listview_id,
-              appId: app_id,
-              formFactor: formFactor,
-              scopeId: listViewId,
-            }}
-            className="steedos-listview p-0	flex flex-1 flex-col"
-            id={listViewId}
-            schema={schema}
-            router={router}
-            ></AmisRender>
-          </div>
-        </div>
-      )}
     </>
   )
 }

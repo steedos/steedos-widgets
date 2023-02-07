@@ -158,7 +158,7 @@ function getMobileLines(tpls){
     let isNewLine = false;
     let isLeft = true;
     let lineChildrenClassName = "";
-    let lineClassName = "flex items-center justify-between";
+    let lineClassName = "flex items-center justify-between h-[20px]";
     tpls.forEach(function(item){
         if(isNewLine && lines.length < maxLineCount){
             lines.push({
@@ -255,12 +255,12 @@ async function getMobileTableColumns(fields, options){
         level: "link",
         actionType: "link",
         link: url,
-        innerClassName: "steedos-listview-item block hover:bg-gray-50 text-gray-500",
+        innerClassName: "steedos-listview-item block text-gray-500",
         body:{
             "type": "wrapper",
             "body": columnLines,
             "size": "none",
-            "className": "p-2"
+            "className": "p-1"
         }
     });
 

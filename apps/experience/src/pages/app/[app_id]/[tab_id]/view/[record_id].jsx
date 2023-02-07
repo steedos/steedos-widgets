@@ -23,11 +23,12 @@ const setTabDisplayAs = (tab_id, displayAs) => {
 }
 
 export default function Record({formFactor: defaultFormFactor}) {
-  console.log(defaultFormFactor)
+  
   const router = useRouter();
   const [uiSchema, setUiSchema] = useState(null);
   const { app_id, tab_id, listview_id, record_id, display, side_object = tab_id, side_listview_id = listview_id } = router.query;
   const [page, setPage] = useState(false);
+  const [listPage, setListPage] = useState(false);
 
   if (display)
     setTabDisplayAs(tab_id, display)
@@ -35,11 +36,13 @@ export default function Record({formFactor: defaultFormFactor}) {
   const displayAs = (defaultFormFactor === 'SMALL')? 'grid': display? display : getTabDisplayAs(tab_id);
 
   useEffect(() => {
+    const listPage = getPage({type: 'list', appId: app_id, objectName: tab_id, defaultFormFactor});
     const p1 = getPage({type: 'record', appId: app_id, objectName: tab_id, defaultFormFactor});
     const p2 = getUISchema(tab_id);
-    Promise.all([p1, p2]).then((values) => {
-      setPage(values[0]);
-      setUiSchema(values[1]);
+    Promise.all([listPage, p1, p2]).then((values) => {
+      setListPage(values[0]);
+      setPage(values[1]);
+      setUiSchema(values[2]);
     });
 
   }, [app_id, tab_id]);
@@ -90,20 +93,19 @@ export default function Record({formFactor: defaultFormFactor}) {
     appId: app_id,
     name: side_object,
   });
-  const listSchema = page? JSON.parse(page.schema) : {
+  const listSchema = listPage? JSON.parse(listPage.schema) : {
     "type": "steedos-object-listview",
     "objectApiName": side_object,
     "columnsTogglable": false,
     "showHeader": true,
     "formFactor": 'SMALL',
-    "className": "border-r border-slate-300 border-solid"
+    "className": "absolute top-0 bottom-0 w-[388px] shadow border-r border-slate-300 border-solid"
   }
 
   return (
     <>
       {displayAs === 'split' && (
-        <div className="flex">
-          <div className="w-[388px] flex-none">
+        <>
             <AmisRender
               data={{
                 objectName: side_object,
@@ -113,13 +115,11 @@ export default function Record({formFactor: defaultFormFactor}) {
                 formFactor: defaultFormFactor,
                 scopeId: listViewId,
               }}
-              className="steedos-listview p-0	flex flex-1 flex-col"
+              className="steedos-listview p-0"
               id={listViewId}
               schema={listSchema}
               router={router}
             ></AmisRender>
-          </div>
-          <div className="flex-1">
             <AmisRender
               data={{
                 objectName: tab_id,
@@ -128,13 +128,12 @@ export default function Record({formFactor: defaultFormFactor}) {
                 formFactor: defaultFormFactor,
                 scopeId: renderId+"-page"
               }}
-              className="steedos-record-detail"
+              className="steedos-record-detail absolute top-0 bottom-0 left-[388px] right-0 overflow-scroll"
               id={`${renderId}-page`}
               schema={schema}
               router={router}
           ></AmisRender>
-          </div>
-        </div>
+        </>
       )}
 
       {displayAs !== 'split' && schema && uiSchema && (
