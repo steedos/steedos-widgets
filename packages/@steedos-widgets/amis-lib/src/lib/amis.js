@@ -86,7 +86,7 @@ export const getEvn = (router)=>{
       to = normalizeLink(to);
 
       if (action && action.actionType === "url") {
-        action.blank === false ? router.push(to) : window.open(to);
+        action.blank === true ? window.open(to) : router.push(to);
         return;
       }
 

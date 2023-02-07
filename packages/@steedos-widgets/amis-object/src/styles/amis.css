@@ -45,6 +45,7 @@
     --Nav-item-onActive-bg: rgba(21,137,238,.1);
     --Nav-item-onActive-color: #000;
     --Crud-toolbar-gap: 2px;
+    --DropDown-caret-marginLeft: 0;
 }
 
 fieldset.antd-Collapse {

@@ -1,5 +1,31 @@
 import { getObjectListHeaderFieldsFilterBar } from './header';
 
+const displayAsButton = 
+{
+  "type": "dropdown-button",
+  "icon": "fa fa-table-columns",
+  "btnClassName": "antd-Button--iconOnly bg-white p-2 rounded border-gray-300 text-gray-500",
+  "align": "right",
+  "buttons": [
+    {
+      "label": "显示为",
+      "children": [
+        {
+          "type": "button",
+          "label": "表格",
+          "onClick": "const url = document.location.pathname + '?display=grid'; props.env.jumpTo(url);"
+        },
+        {
+          "type": "button",
+          "label": "分栏视图",
+          "onClick": "const url = document.location.pathname + '?display=split'; props.env.jumpTo(url);"
+        }
+      ]
+    }
+  ],
+}
+
+
 export function getObjectHeaderToolbar(mainObject, formFactor){
 
   if(formFactor === 'SMALL'){
@@ -33,7 +59,8 @@ export function getObjectHeaderToolbar(mainObject, formFactor){
             ]
           }
         },
-      }
+      },
+      displayAsButton
   ]
   }else{
     const onFieldsFilterToggleScript = `
@@ -86,7 +113,8 @@ export function getObjectHeaderToolbar(mainObject, formFactor){
             ]
           }
         }
-      }
+      },
+      displayAsButton
       // {
       //   "type": "search-box",
       //   "align": "right",
