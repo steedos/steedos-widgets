@@ -335,8 +335,8 @@ export async function lookupToAmisSelect(field, readonly, ctx){
     apiInfo.data.$term = "$term";
     // apiInfo.data.$value = `$${field.name}.${referenceTo ? referenceTo.valueField.name : '_id'}`;
     apiInfo.data.$value = `$${field.name}`;
-    const valueFieldKey = referenceTo.valueField.name || '_id' ;
-    const labelFieldKey = referenceTo.labelField.name || 'name';
+    const valueFieldKey = referenceTo && referenceTo.valueField.name || '_id' ;
+    // const labelFieldKey = referenceTo && referenceTo.labelField.name || 'name';
     if(referenceTo){
         // 字段值单独走一个请求合并到source的同一个GraphQL接口中
         const defaultValueOptionsData = await graphql.getFindQuery({ name: referenceTo.objectName }, null, {
