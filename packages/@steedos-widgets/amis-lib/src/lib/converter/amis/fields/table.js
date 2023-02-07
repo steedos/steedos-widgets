@@ -260,7 +260,7 @@ async function getMobileTableColumns(fields, options){
             "type": "wrapper",
             "body": columnLines,
             "size": "none",
-            "className": "p-2"
+            "className": "p-1"
         }
     });
 
