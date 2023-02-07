@@ -439,9 +439,13 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                 };
                 // console.log(`convertData ======>`, field, convertData)
                 for (let subField of field.subFields) {
-                    const subFieldName = subField.name.replace(`${field.name}.$.`, '').replace(`${field.name}.`, '');
+                    let subFieldName = subField.name.replace(`${field.name}.$.`, '').replace(`${field.name}.`, '');
                     if(subField.type === 'grid'){
                         subField = await Fields.getGridFieldSubFields(subField, ctx.__permissionFields);
+                    }else{
+                        if(readonly){
+                            subFieldName = `${field.name}.${subFieldName}`
+                        }
                     }
                     const gridSub = await convertSFieldToAmisField(Object.assign({}, subField, {name: subFieldName}), readonly, ctx);
                     if(gridSub){

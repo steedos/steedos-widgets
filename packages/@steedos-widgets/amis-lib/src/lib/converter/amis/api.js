@@ -8,6 +8,7 @@ const API_CACHE = 100;
 function getReadonlyFormAdaptor(fields){
     let scriptStr = '';
     const selectFields = _.filter(fields, function(field){return field.name.indexOf('.') < 0 && ((field.type == 'select' && field.options) || ((field.type == 'lookup' || field.type == 'master_detail') && !field.reference_to))});
+    const gridAndObjectFieldsName = _.map(_.filter(fields, function(field){return field.name.indexOf('.') < 0 && (field.type === 'object' || field.type === 'grid')}), 'name');
     _.each(selectFields, function(field){
         if(!_.includes(OMIT_FIELDS, field.name)){
             const valueField = field.name;
@@ -26,7 +27,7 @@ function getReadonlyFormAdaptor(fields){
                 scriptStr = scriptStr + `data.${field.name}__label = ${field.name}Selected ? ${field.name}Selected.label:null;`
             }
         }
-    })
+    });
 
     // const refFields = _.filter(fields, function(field){return field.name.indexOf('.') < 0 && (field.type == 'lookup' || field.type == 'master_detail') && !field.reference_to});
     // _.each(refFields, function(field){
@@ -45,10 +46,19 @@ function getReadonlyFormAdaptor(fields){
     return  `
     if(payload.data.data){
         var data = payload.data.data[0];
+        var gridAndObjectFieldsName = ${JSON.stringify(gridAndObjectFieldsName)};
         try{
             ${scriptStr}
             ${getScriptForAddUrlPrefixForImgFields(fields)}
             ${getScriptForRewriteValueForFileFields(fields)}
+        }catch(e){
+            console.error(e)
+        }
+
+        try{
+            _.each(gridAndObjectFieldsName, function(name){
+                data[name] = data._display[name];
+            })
         }catch(e){
             console.error(e)
         }

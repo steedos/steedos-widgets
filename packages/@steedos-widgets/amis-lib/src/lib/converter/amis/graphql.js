@@ -15,6 +15,7 @@ export async function getFieldsTemplate(fields, expand){
         fieldsArr = _.values(fields);
     }
     for (const field of fieldsArr) {
+        //graphql 的  ui\display 中使用的字段需要先在query中查询. 否则会返回null
         if(field.name.indexOf('.') < 0){
             if(expand && (field.type == 'lookup' || field.type == 'master_detail')){
                 fieldsName.push(`${field.name}`)
@@ -25,7 +26,7 @@ export async function getFieldsTemplate(fields, expand){
             if(includes(['time','date','datetime','boolean','number','currency'], field.type)){
                 fieldsName.push(`${field.name}`)
             }
-            if(includes(['time','filesize','date','datetime','boolean','number','currency', 'select', 'file', 'image', 'avatar', 'formula', 'summary'], field.type)){
+            if(includes(['time','filesize','date','datetime','boolean','number','currency', 'select', 'file', 'image', 'avatar', 'formula', 'summary', 'object', 'grid'], field.type)){
                 displayFields.push(`${field.name}`)
             }
         }
@@ -108,7 +109,7 @@ export function getSaveQuery(object, recordId, fields, options){
 export function getScriptForReadonlyFields(fields){
     var scripts = [];
     fields.forEach((item)=>{
-        if(item.readonly){
+        if(item.readonly && item.name.indexOf(".") < 0){
             scripts.push(`delete formData.${item.name};`);
         }
     });
