@@ -290,16 +290,39 @@ export async function lookupToAmisPicker(field, readonly, ctx){
 
 export async function lookupToAmisSelect(field, readonly, ctx){
     let referenceTo = await getReferenceTo(field);
+    const valueFieldKey = referenceTo && referenceTo.valueField?.name || '_id' ;
+    // const labelFieldKey = referenceTo && referenceTo.labelField?.name || 'name';
 
     let apiInfo;
 
     if(referenceTo){
+        // 字段值单独走一个请求合并到source的同一个GraphQL接口中
+        const defaultValueOptionsQueryData = await graphql.getFindQuery({ name: referenceTo.objectName }, null, {
+            [referenceTo.labelField.name]: Object.assign({}, referenceTo.labelField, {alias: 'label'}),
+            [referenceTo.valueField.name]: Object.assign({}, referenceTo.valueField, {alias: 'value'})
+        }, {
+            alias: "defaultValueOptions",
+            filters: "{__options_filters}",
+            count: false
+        });
         apiInfo = await getApi({
             name: referenceTo.objectName
         }, null, {
             [referenceTo.labelField.name]: Object.assign({}, referenceTo.labelField, {alias: 'label'}),
             [referenceTo.valueField.name]: Object.assign({}, referenceTo.valueField, {alias: 'value'})
-        }, {expand: false, alias: 'options', queryOptions: `filters: {__filters}, top: {__top}, sort: "{__sort}"`})
+        }, {expand: false, alias: 'options', queryOptions: `filters: {__filters}, top: {__top}, sort: "{__sort}"`, moreQueries: [defaultValueOptionsQueryData.query]});
+
+        apiInfo.adaptor = `
+            const data = payload.data;
+            var defaultValueOptions = data.defaultValueOptions;
+            // 字段值下拉选项合并到options中
+            data.options = _.unionWith(defaultValueOptions, data.options, function(a,b){
+                return a["${valueFieldKey}"]=== b["${valueFieldKey}"];
+            });
+            delete data.defaultValueOptions;
+            payload.data.options = data.options;
+            return payload;
+        `;
     }else{
         apiInfo = {
             method: "post",
@@ -335,31 +358,6 @@ export async function lookupToAmisSelect(field, readonly, ctx){
     apiInfo.data.$term = "$term";
     // apiInfo.data.$value = `$${field.name}.${referenceTo ? referenceTo.valueField.name : '_id'}`;
     apiInfo.data.$value = `$${field.name}`;
-    const valueFieldKey = referenceTo && referenceTo.valueField.name || '_id' ;
-    // const labelFieldKey = referenceTo && referenceTo.labelField.name || 'name';
-    if(referenceTo){
-        // 字段值单独走一个请求合并到source的同一个GraphQL接口中
-        const defaultValueOptionsData = await graphql.getFindQuery({ name: referenceTo.objectName }, null, {
-            [referenceTo.labelField.name]: Object.assign({}, referenceTo.labelField, {alias: 'label'}),
-            [referenceTo.valueField.name]: Object.assign({}, referenceTo.valueField, {alias: 'value'})
-        }, {
-            alias: "defaultValueOptions",
-            filters: "{__options_filters}"
-        });
-        defaultValueOptionsData.query = defaultValueOptionsData.query.replace(/,count\:.+/, "}");
-        apiInfo.data.query = apiInfo.data.query.replace(/}$/, "," + defaultValueOptionsData.query.replace(/{(.+)}/, "$1}"))
-        apiInfo.adaptor = `
-            const data = payload.data;
-            var defaultValueOptions = data.defaultValueOptions;
-            // 字段值下拉选项合并到options中
-            data.options = _.unionWith(defaultValueOptions, data.options, function(a,b){
-                return a["${valueFieldKey}"]=== b["${valueFieldKey}"];
-            });
-            delete data.defaultValueOptions;
-            payload.data.options = data.options;
-            return payload;
-        `;
-    }
     _.each(field.depend_on, function(fName){
         apiInfo.data[fName] = `$${fName}`;
     })
