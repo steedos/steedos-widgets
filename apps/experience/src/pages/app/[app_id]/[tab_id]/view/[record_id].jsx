@@ -128,7 +128,7 @@ export default function Record({formFactor: defaultFormFactor}) {
                 formFactor: defaultFormFactor,
                 scopeId: renderId+"-page"
               }}
-              className="steedos-record-detail absolute top-0 bottom-0 left-[388px] right-0"
+              className="steedos-record-detail absolute top-0 bottom-0 left-[388px] right-0 overflow-scroll"
               id={`${renderId}-page`}
               schema={schema}
               router={router}
