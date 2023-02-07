@@ -26,7 +26,7 @@ const displayAsButton =
 }
 
 
-export function getObjectHeaderToolbar(mainObject, formFactor){
+export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = false} = {}){
 
   if(formFactor === 'SMALL'){
     const onReloadScript = `
@@ -60,7 +60,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor){
           }
         },
       },
-      displayAsButton
+      showDisplayAs? displayAsButton : {}
   ]
   }else{
     const onFieldsFilterToggleScript = `
@@ -114,7 +114,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor){
           }
         }
       },
-      displayAsButton
+      showDisplayAs? displayAsButton : {}
       // {
       //   "type": "search-box",
       //   "align": "right",

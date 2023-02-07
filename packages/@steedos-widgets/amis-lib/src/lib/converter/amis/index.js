@@ -140,7 +140,7 @@ export async function getObjectList(objectSchema, fields, options){
     const bodyProps = {
       toolbar: getToolbar(),
       bodyClassName: "",
-      headerToolbar: getObjectHeaderToolbar(objectSchema, options.formFactor),
+      headerToolbar: getObjectHeaderToolbar(objectSchema, options.formFactor, {showDisplayAs: true}),
       headerToolbarClassName: "px-4 py-2 border-gray-300 bg-gray-100 border-solid border-b",
       footerToolbar: getObjectFooterToolbar(objectSchema, options.formFactor), 
       className: `${options.className || ""}`

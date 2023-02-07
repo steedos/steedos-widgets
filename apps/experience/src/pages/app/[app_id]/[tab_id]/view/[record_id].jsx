@@ -105,7 +105,7 @@ export default function Record({formFactor: defaultFormFactor}) {
   return (
     <>
       {displayAs === 'split' && (
-        <div className="flex">
+        <div className="flex h-full">
             <AmisRender
               data={{
                 objectName: side_object,
