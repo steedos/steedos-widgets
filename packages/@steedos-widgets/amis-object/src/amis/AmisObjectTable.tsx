@@ -6,7 +6,7 @@
  * @Description: 
  */
 import { getTableSchema, conditionsToFilters } from '@steedos-widgets/amis-lib'
-import { keys, pick, difference } from 'lodash';
+import { keys, pick, difference, pickBy } from 'lodash';
 
 export const AmisObjectTable = async (props) => {
   // console.log(`AmisObjectTable props`, props)
@@ -44,6 +44,8 @@ export const AmisObjectTable = async (props) => {
   const tableFilters = filters || amisFilters;
 
   const amisSchemaData = Object.assign({}, data, defaultData);
+  // ctx中值为undefined的属性不能保留，否则会导致 filters等被覆盖。
+  ctx = pickBy(ctx, (value)=>{ return value !== undefined })
   let amisSchema = (await getTableSchema(amisSchemaData.appId, objectApiName, columns, { filters: tableFilters, filtersFunction, top, sort, sortField, sortOrder, extraColumns, defaults, ...ctx, setDataToComponentId })).amisSchema;
   amisSchema.data = Object.assign({}, amisSchema.data, amisSchemaData);
 
