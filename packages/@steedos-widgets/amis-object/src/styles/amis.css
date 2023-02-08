@@ -142,3 +142,7 @@ body {
 .rdtPicker table {
     border-collapse: separate;
 }
+
+.antd-DropDown-caret > svg {
+    top: 0px;
+}
