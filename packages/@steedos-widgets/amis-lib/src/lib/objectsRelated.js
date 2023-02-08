@@ -9,7 +9,7 @@
 
 import { getObjectRecordDetailRelatedListHeader } from './converter/amis/header';
 import { isEmpty,  find, isString, forEach, keys, findKey } from "lodash";
-import { getUISchema, getListSchema, getField } from './objects'
+import { getUISchema, getField, getListViewColumns, getListViewSort, getListViewFilter } from './objects'
 import { getRecord } from './record';
 
 export const getRelatedFieldValue = (masterObjectName, record_id, uiSchema, foreign_key) => {
@@ -58,8 +58,7 @@ export async function getObjectRelatedList(
             related.push({
                 masterObjectName: objectName,
                 object_name: arr[0],
-                foreign_key: arr[1],
-                label: uiSchema.label
+                foreign_key: arr[1]
             });
         }
     }
@@ -69,7 +68,7 @@ export async function getObjectRelatedList(
 
 // 获取单个相关表
 export async function getRecordDetailRelatedListSchema(objectName, recordId, relatedObjectName, relatedKey, ctx){
-    let { top, perPage, hiddenEmptyTable, appId, relatedLabel, className } = ctx;
+    let { top, perPage, hiddenEmptyTable, appId, label:relatedLabel, className, columns, sort, filters, visible_on } = ctx;
     // console.log('getRecordDetailRelatedListSchema==>',objectName,recordId,relatedObjectName)
     const relatedObjectUiSchema = await getUISchema(relatedObjectName);
     const { list_views, label , icon, fields } = relatedObjectUiSchema;
@@ -118,7 +117,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
         appId: appId,
         ...ctx
     }
-    const amisSchema= (await getListSchema(null, relatedObjectName, firstListViewName, options)).amisSchema;
+    const amisSchema= (await getRelatedListSchema(null, relatedObjectName, null, options)).amisSchema;
     if(!amisSchema){
         return;
     }
@@ -145,7 +144,6 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
                         "&": "$$",
                         appId: "${appId}",
                         app_id: "${appId}",
-                        // filter: ["${relatedKey}", "=", "${masterRecordId}"], 此语法不符合amis 数据映射规范
                         relatedKey: relatedKey,
                         objectName: "${objectName}",
                         recordId: "${masterRecordId}",
@@ -158,3 +156,112 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
         }
     };
 }
+
+/**
+* 
+* @param {*} uiSchema 
+* @param {*} ctx 
+* @returns 
+* 1 对象uiSchema
+* 2 列表视图名称: （排除日历视图）当无视图传入，取is_name为true的字段显示。
+* 3 options
+*/
+function getDefaultRelatedListProps(uiSchema, listName, ctx) {
+    console.log('getDefaultRelatedListProps==>', uiSchema, listName, ctx)
+    const listView = find(
+        uiSchema.list_views,
+        (listView, name) => {
+            // 日历视图不在相关子表中出现
+            if(listView.type === 'calendar'){
+                return false;
+            }
+            // 传入listViewName空值则取第一个
+            if (!listName) {
+                listName = name;
+            }
+            return name === listName;
+        }
+    );
+    let columns = [];
+    let sort = '';
+    let filter = null;
+    let filtersFunction = null;
+    if(listView){
+        columns = getListViewColumns(listView, ctx.formFactor);
+        sort = getListViewSort(listView);
+        filter = getListViewFilter(listView, ctx);
+        filtersFunction = listView && listView._filters;
+    }else{
+        const isNameField = find(
+            uiSchema.fields,
+            (field,name)=>{
+                return field.is_name;
+            }
+        )
+        columns = isNameField ? [isNameField.name] : ['name'];
+    }
+
+    return {
+        columns,
+        sort,
+        filter,
+        filtersFunction
+    }
+};
+  
+function getRelatedListProps(uiSchema, listViewName, ctx) {
+    if (ctx.columns) {
+        const sort = getListViewSort(ctx.sort);
+        let filter= ctx.filters ? [filter, ctx.globalFilter] : ctx.globalFilter;
+        return {
+            columns: ctx.columns,
+            sort,
+            filter,
+            filtersFunction: ctx.filtersFunction
+        }
+    } else {
+        return getDefaultRelatedListProps(uiSchema, listViewName, ctx);
+    }
+}
+
+// 仅提供给单个相关子表内部使用
+export async function getRelatedListSchema(
+    appName,
+    objectName,
+    listViewName,
+    ctx = {}
+  ) {
+    const uiSchema = await getUISchema(objectName);
+    const listView = uiSchema.list_views;
+    const listViewProps = getRelatedListProps(uiSchema,listViewName, ctx);
+    // console.log('listViewProps==>', listViewProps)
+    const {columns: listViewColumns, sort: listViewSort, filter: listviewFilter, filtersFunction: listview_filters } = listViewProps;
+  
+    const defaults = ctx.defaults || {};
+  
+    if(!defaults.headerSchema && ctx.showHeader){
+        defaults.headerSchema = await getObjectListHeader(uiSchema, listViewName);
+    }
+  
+    if(!ctx.showHeader){
+        defaults.headerSchema = null;
+    }
+  
+    ctx.defaults = defaults;
+  
+    const amisSchema = {
+        "type": "steedos-object-table",
+        "objectApiName": objectName,
+        "columns": listViewColumns,
+        "extraColumns": listView.extra_columns,
+        "filters": listviewFilter,
+        "filtersFunction": listview_filters,
+        "sort": listViewSort,
+        "ctx": ctx
+    };
+  
+    return {
+        uiSchema,
+        amisSchema,
+    };
+  }
