@@ -101,6 +101,7 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
 
     if (!session) return (
       <AmisRender
+        id="loading"
         schema={{
           type: 'steedos-loading'
         }}
