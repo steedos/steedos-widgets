@@ -304,6 +304,7 @@ export async function getObjectForm(objectSchema, ctx){
         panelClassName:'m-0 sm:rounded-lg shadow-none',
         bodyClassName: 'p-0',
         className: 'steedos-amis-form',
+        hiddenOn: "${editFormInited != true}",
         onEvent: {
           "submitSucc": {
             "weight": 0,

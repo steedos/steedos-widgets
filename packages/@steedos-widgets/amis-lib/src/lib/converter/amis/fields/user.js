@@ -27,11 +27,15 @@ async function getSource(field, ctx) {
     defaultValueOptionsData.query = defaultValueOptionsData.query.replace(/,count\:.+/, "}");
     data.query = data.query.replace(/}$/, "," + defaultValueOptionsData.query.replace(/{(.+)}/, "$1}"))
     let valueField = `${field.name}`;
+    if(field._prefix){
+        // field._prefix一般来object类型字段的子字段的父字段api名称，比如流程对象的字段perms.users_can_add前缀为perms.
+        valueField = `${field._prefix}${field.name}`;
+    }
     if(ctx.fieldNamePrefix){
-        valueField = `${ctx.fieldNamePrefix}${field.name}`;
+        // ctx.fieldNamePrefix一般来自列表搜索，值为__searchable__
+        valueField = `${ctx.fieldNamePrefix}${valueField}`;
     }
     data.$value = `$${valueField}`;
-    data.__selectUserLoaded__ = "${__selectUserLoaded__}";
     // data["&"] = "$$";
     const requestAdaptor = `
         console.log("select user field '${field.name}' requestAdaptor api:", api);
@@ -67,16 +71,15 @@ async function getSource(field, ctx) {
     `;
     return {
         "method": "post",
-        // "url": graphql.getApi() + "?_id=${_id}",
-        // "url": graphql.getApi() + `?value=\${${valueField}}`,
-        // 要加url参数是因为amis select组件人员点选功能有bug，一定要第一次请求才能在requestAdaptor函数中取的form表单字段值
+        // 这里需要ObjectForm在api请求成功后才显示其中的amis form，否则就会有bug
         // 见issue: https://github.com/baidu/amis/issues/6065
-        "url": graphql.getApi() + `?value=\${${field.multiple ? valueField + "|join" : valueField}}`,
+        // "url": graphql.getApi() + `?value=\${${field.multiple ? valueField + "|join" : valueField}}`,
+        // "url": graphql.getApi() + `?value=\${editFormInited}`,
+        "url": graphql.getApi(),
         "requestAdaptor": requestAdaptor,
         "adaptor": adaptor,
         "data": data,
-        // "sendOn": `!!this._id || !!!this.${valueField}`,
-        "sendOn": `!this.__selectUserLoaded__`,
+        // "sendOn": `this.editFormInited`,
         "headers": {
             "Authorization": "Bearer ${context.tenantId},${context.authToken}"
         },
@@ -266,52 +269,6 @@ export async function getSelectUserSchema(field, readonly, ctx) {
         if (onEvent) {
             amisSchema.onEvent = onEvent;
         }
-        
-        // 这里要加change事件逻辑设置form的__selectUserLoaded__是因为人员字段多选时，每次在界面上操作变量字段值时会重新请求source接口造成选人组件重新初始化
-        // 见issue: https://github.com/baidu/amis/issues/6065
-        const onChangeScript = `
-            // 往上找到form，设置__selectUserLoaded__标记已经加载过选人字段不能再调用source接口初始化选人组件了
-            const getClosestAmisComponentByType = function(scope, type){
-                const re = scope.getComponents().find(function(n){
-                    return n.props.type === type;
-                });
-                if(re){
-                    return re;
-                }
-                else{
-                    return getClosestAmisComponentByType(scope.parent, type);
-                }
-            }
-            const form = getClosestAmisComponentByType(event.context.scoped, "form");
-            form.setData({"__selectUserLoaded__":true});
-        `;
-
-        const onChangeEvent = {
-          "actionType": "custom",
-          "script": `${onChangeScript}`
-        };
-        if(amisSchema.onEvent){
-            if(amisSchema.onEvent.change?.actions?.length){
-                amisSchema.onEvent.change.actions.unshift(onChangeEvent);
-            }
-            else{
-                amisSchema.onEvent.change = {
-                    "weight": 0,
-                    "actions": [onChangeEvent]
-                };
-            }
-        }
-        else{
-            Object.assign(amisSchema, {
-                "onEvent": {
-                    "change": {
-                      "weight": 0,
-                      "actions": [onChangeEvent]
-                    }
-                  }
-            });
-        }
     }
-
     return amisSchema;
 }
