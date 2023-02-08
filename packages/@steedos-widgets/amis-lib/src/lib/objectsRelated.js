@@ -6,12 +6,9 @@
  * @Description:
  */
 
-import {
-    getObjectList
-} from "./converter/amis/index";
+
 import { getObjectRecordDetailRelatedListHeader } from './converter/amis/header';
 import { isEmpty,  find, isString, forEach, keys, findKey } from "lodash";
-import { getListViewItemButtons } from './buttons'
 import { getUISchema, getListSchema, getField } from './objects'
 import { getRecord } from './record';
 
