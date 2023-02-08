@@ -46,6 +46,7 @@
     --Nav-item-onActive-color: #000;
     --Crud-toolbar-gap: 2px;
     --DropDown-caret-marginLeft: 0;
+    --Nav-Item-maxWidth--tabs: 200px;
 }
 
 fieldset.antd-Collapse {
