@@ -10,5 +10,7 @@ import './styles/data-table.less';
 
 export * from './components';
 export * from './amis';
+export * from './pages';
+
 
 export * as AmisLib from '@steedos-widgets/amis-lib';
