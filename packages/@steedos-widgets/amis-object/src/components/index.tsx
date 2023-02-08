@@ -21,3 +21,5 @@ export * from './FromNow';
 export * from './SteedosBadge';
 
 export * from './SteedosBadgeRibbon';
+
+export * from './SteedosLoading';

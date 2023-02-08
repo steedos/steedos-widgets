@@ -7,8 +7,8 @@
  */
 import React, { useState, useEffect, Fragment } from 'react';
 
-import { Loading } from '@/components/Loading'
 import { GlobalHeader } from '@/components/GlobalHeader';
+import { AmisRender } from "@/components/AmisRender";
 import { getApp } from '@steedos-widgets/amis-lib';
 import { useRouter } from 'next/router'
 import { setSteedosAuth, setRootUrl, getRootUrl } from '@steedos-widgets/amis-lib';
@@ -99,7 +99,12 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
     }, [app]);
 
 
-    if (!session) return <Loading></Loading>
+    if (!session) return (
+      <AmisRender
+        schema={{
+          type: 'steedos-loading'
+        }}
+      />)
     
     return (
       <div className='h-full flex flex-col'>

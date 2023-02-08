@@ -37,6 +37,7 @@ import SteedosDropdown from "./metas/SteedosDropdown";
 import FromNow from './metas/FromNow';
 
 import AmisGlobalHeader from './metas/AmisGlobalHeader';
+import SteedosLoading from './metas/SteedosLoading';
 
 import SteedosBadge from "./metas/SteedosBadge";
 import SteedosBadgeRibbon from "./metas/SteedosBadgeRibbon";
@@ -69,7 +70,8 @@ const components = [
   SteedosBadge,
   SteedosBadgeRibbon,
   AmisSteedosField,
-  AmisSelectFlow
+  AmisSelectFlow,
+  SteedosLoading
 ];
 
 const componentList = [
