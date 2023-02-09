@@ -8,7 +8,7 @@
 import React, { useEffect, useState } from 'react'
 import { getUISchema, lookupToAmisPicker, lookupToAmisSelect, createObject } from '@steedos-widgets/amis-lib'
 
-import { compact, isString, isFunction, has } from 'lodash';
+import { compact, isString, isFunction, has, isArray } from 'lodash';
 
 
 const getSchema = async (field, value, ctx)=>{
@@ -40,6 +40,10 @@ const getSchema = async (field, value, ctx)=>{
   if(refObject.enable_enhanced_lookup == true){
       rightSchema = await lookupToAmisPicker(Object.assign({}, field, {reference_to: value.o}), false, ctx);
   }else{
+      if(!ctx){
+        ctx = {}
+      }
+      ctx.isRefToMutiple = isArray(refTo);
       rightSchema = await lookupToAmisSelect(Object.assign({}, field, {reference_to: value.o}), false, ctx);
   }
 
