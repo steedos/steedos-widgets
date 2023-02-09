@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-08 13:17:42
+ * @LastEditTime: 2023-02-09 16:51:33
  * @Description: 
  */
 // import Hello from "./metas/Hello";
@@ -37,6 +37,7 @@ import SteedosDropdown from "./metas/SteedosDropdown";
 import FromNow from './metas/FromNow';
 
 import AmisGlobalHeader from './metas/AmisGlobalHeader';
+import SteedosLoading from './metas/SteedosLoading';
 
 import SteedosBadge from "./metas/SteedosBadge";
 import SteedosBadgeRibbon from "./metas/SteedosBadgeRibbon";
@@ -72,7 +73,8 @@ const components = [
   SteedosBadgeRibbon,
   AmisSteedosField,
   AmisSelectFlow,
-  AmisInstanceDetail
+  AmisInstanceDetail,
+  SteedosLoading
 ];
 
 const componentList = [

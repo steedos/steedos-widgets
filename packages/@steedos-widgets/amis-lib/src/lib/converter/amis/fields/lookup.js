@@ -317,7 +317,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
             var defaultValueOptions = data.defaultValueOptions;
             // 字段值下拉选项合并到options中
             data.options = _.unionWith(defaultValueOptions, data.options, function(a,b){
-                return a["${valueFieldKey}"]=== b["${valueFieldKey}"];
+                return a["value"]=== b["value"];
             });
             delete data.defaultValueOptions;
             payload.data.options = data.options;
@@ -357,7 +357,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
     
     apiInfo.data.$term = "$term";
     // apiInfo.data.$value = `$${field.name}.${referenceTo ? referenceTo.valueField.name : '_id'}`;
-    apiInfo.data.$value = `$${field.name}`;
+    apiInfo.data.$value = ctx.isRefToMutiple ? `$${field.name}.ids` : `$${field.name}`;
     _.each(field.depend_on, function(fName){
         apiInfo.data[fName] = `$${fName}`;
     })

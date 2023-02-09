@@ -14,6 +14,7 @@ export const AmisObjectListView = async (props) => {
       className="", 
       tableClassName, 
       formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE',
+      showDisplayAs = false,
       columnsTogglable=false} = props;
   // const urlListNameMatchs = location.pathname.match(/grid\/(\w+)/);  // 错误的规则
   // const urlListName = urlListNameMatchs && urlListNameMatchs[1]
@@ -76,7 +77,7 @@ export const AmisObjectListView = async (props) => {
   const amisSchemaData = Object.assign({}, data, defaultData);
   const listViewId = ctx?.listViewId || amisSchemaData.listViewId;
   let schema: any = (await getListSchema(amisSchemaData.appId, objectApiName, listName, { 
-    top, perPage, showHeader, defaults, ...ctx, listViewId, setDataToComponentId, filterVisible: true
+    top, perPage, showHeader, defaults, ...ctx, listViewId, setDataToComponentId, filterVisible: true, showDisplayAs
   }));
   const amisSchema = schema.amisSchema;
   const uiSchema = schema.uiSchema;

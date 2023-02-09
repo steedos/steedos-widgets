@@ -36,7 +36,11 @@ export const AmisRecordDetailRelatedLists = async (props) => {
         relatedObjectApiName: item.object_name,
         foreign_key: item.foreign_key,
         relatedKey: item.foreign_key,
-        perPage: perPage,
+        columns: item.columns,
+        sort: item.sort,
+        filters: item.filters,
+        visible_on: item.visible_on,
+        perPage: item.page_size || perPage,
         hiddenEmptyTable: true,
         appId: appId,
         label: item.label

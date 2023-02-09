@@ -58,6 +58,7 @@ export default function Page ({ formFactor: defaultFormFactor }) {
     "objectApiName": tab_id,
     "columnsTogglable": false,
     "showHeader": true,
+    "showDisplayAs": true,
     "formFactor": formFactor,
     "className": displayAs === 'grid'? 
       "sm:border sm:shadow sm:rounded border-slate-300 border-solid min-h-[320px]" : 

@@ -9,8 +9,10 @@
 import React, { useState, useEffect, Fragment, useRef, useImperativeHandle } from 'react';
 import { amisRender, amisRootClick, getDefaultRenderData } from '@/lib/amis';
 import { defaultsDeep, concat, compact, filter, map, isEmpty } from 'lodash';
+import { useRouter } from 'next/router'
 
-export const AmisRender = ({id, schema, data, router, className, assets, getModalContainer, updateProps, session})=>{
+export const AmisRender = ({id, schema, data, className, assets, getModalContainer, updateProps, session})=>{
+    const router = useRouter()
     const [globalAssetLoaded, setGlobalAssetLoaded] = useState(false);
     const [globalAssets, setGlobalAssets] = useState(null);
     useEffect(()=>{
