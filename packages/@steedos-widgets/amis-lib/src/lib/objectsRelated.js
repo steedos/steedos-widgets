@@ -117,7 +117,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
         appId: appId,
         ...ctx
     }
-    const amisSchema= (await getRelatedListSchema(null, relatedObjectName, null, options)).amisSchema;
+    const amisSchema= (await getRelatedListSchema(null, relatedObjectName, 'all', options)).amisSchema;
     if(!amisSchema){
         return;
     }

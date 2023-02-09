@@ -225,7 +225,6 @@ export function getSaveDataTpl(fields){
             query = \`mutation{record: \${objectName}__update(id: "\${formData._id}", doc: {__saveData}){_id}}\`;
         };
         delete formData._id;
-        delete formData.__selectUserLoaded__;//选人控件加载标志不应该保存到数据库中
         let __saveData = JSON.stringify(JSON.stringify(formData));
     `
 }

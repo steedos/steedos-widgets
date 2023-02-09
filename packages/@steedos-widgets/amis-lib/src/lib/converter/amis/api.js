@@ -193,13 +193,28 @@ function getScriptForRewriteValueForFileFields(fields){
 }
 
 export async function getEditFormInitApi(object, recordId, fields){
+    const data = await graphql.getFindOneQuery(object, recordId, fields);
+    data.$recordId = "${recordId}";
+    data.$objectName = "${objectName}";
     return {
         method: "post",
         url: graphql.getApi(),
-        sendOn: "!!this.recordId",
+        // sendOn: "!!this.recordId",
         cache: API_CACHE,
+        requestAdaptor: `
+            var recordId = api.data.$recordId;
+            var objectName = api.data.$objectName;
+            if(!recordId){
+                // 新建则不请求任何数据
+                api.data.query = "{data:" + objectName + "(filters: " + JSON.stringify(["_id", "=", null]) + ", top: 1){_id}}";
+            }
+            // 这里不可以删除recordId，否则下面adaptor中api.body.$recordId拿不到值
+            // delete api.data.$recordId;
+            delete api.data.$objectName;
+        `,
         adaptor: `
-            if(payload.data.data){
+            const recordId = api.body.$recordId;
+            if(recordId && payload.data.data){
                 var data = payload.data.data[0];
                 if(data){
                     ${getScriptForAddUrlPrefixForImgFields(fields)}
@@ -212,11 +227,15 @@ export async function getEditFormInitApi(object, recordId, fields){
                     }
                 };
                 payload.data = data;
-                delete payload.extensions;
             }
+            else{
+                payload.data = {};
+            }
+            payload.data.editFormInited = true;
+            delete payload.extensions;
             return payload;
         `,
-        data: await graphql.getFindOneQuery(object, recordId, fields),
+        data: data,
         headers: {
             Authorization: "Bearer ${context.tenantId},${context.authToken}"
         }

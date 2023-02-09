@@ -317,7 +317,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
             var defaultValueOptions = data.defaultValueOptions;
             // 字段值下拉选项合并到options中
             data.options = _.unionWith(defaultValueOptions, data.options, function(a,b){
-                return a["${valueFieldKey}"]=== b["${valueFieldKey}"];
+                return a["value"]=== b["value"];
             });
             delete data.defaultValueOptions;
             payload.data.options = data.options;
