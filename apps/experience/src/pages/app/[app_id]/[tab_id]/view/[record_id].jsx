@@ -26,7 +26,7 @@ export default function Record({formFactor: defaultFormFactor}) {
   
   const router = useRouter();
   const [uiSchema, setUiSchema] = useState(null);
-  const { app_id, tab_id, listview_id, record_id, display, side_object = tab_id, side_listview_id = listview_id } = router.query;
+  const { app_id, tab_id, listview_id, record_id, display, main_object = tab_id, main_listview_id = listview_id } = router.query;
   const [page, setPage] = useState(false);
   const [listPage, setListPage] = useState(false);
 
@@ -91,11 +91,11 @@ export default function Record({formFactor: defaultFormFactor}) {
   const listViewId = SteedosUI.getRefId({
     type: "listview",
     appId: app_id,
-    name: side_object,
+    name: main_object,
   });
   const listSchema = listPage? JSON.parse(listPage.schema) : {
     "type": "steedos-object-listview",
-    "objectApiName": side_object,
+    "objectApiName": main_object,
     "columnsTogglable": false,
     "showHeader": true,
     "formFactor": 'SMALL',
@@ -108,9 +108,9 @@ export default function Record({formFactor: defaultFormFactor}) {
         <div className="flex h-full">
             <AmisRender
               data={{
-                objectName: side_object,
+                objectName: main_object,
                 listViewId: listViewId,
-                listName: side_listview_id,
+                listName: main_listview_id,
                 appId: app_id,
                 formFactor: defaultFormFactor,
                 scopeId: listViewId,
