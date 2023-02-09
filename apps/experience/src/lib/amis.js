@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 11:31:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-06 16:25:56
+ * @LastEditTime: 2023-02-09 16:40:00
  * @Description:
  */
 import { each, find, isArray, isEmpty } from 'lodash';
@@ -169,7 +169,7 @@ export const registerRenders = (assets)=>{
         let AmisWrapper = Component.class
         if(asset.componentType === 'amisSchema'){
           AmisWrapper = (props)=>{
-            const { body, render } = props
+            const { $schema, body, render } = props
             const [schema, setSchema] = amisReact.useState(null);
             amisReact.useEffect(()=>{
               const result = Component.class(props);
@@ -180,7 +180,7 @@ export const registerRenders = (assets)=>{
               }else{
                 setSchema(result)
               }
-            }, [])
+            }, [JSON.stringify($schema)])
             return <>
               <>{(schema && render) ? render('body', schema) : ''}</>
               <>
