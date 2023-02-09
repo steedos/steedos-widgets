@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 09:09:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-01-04 16:59:09
+ * @LastEditTime: 2023-02-09 16:45:28
  * @Description: 
  */
 export * from './lib/amis'
@@ -28,10 +28,10 @@ export * from './lib/converter/amis/filters';
 export * from './lib/converter/amis/header';
 export * from './lib/converter/amis/fields_filter';
 
-export * from './lib/workflow/flow';
-
 export * from './lib/assets';
 
 export * from './utils/object';
 
 export * from './render';
+
+export * from './workflow';

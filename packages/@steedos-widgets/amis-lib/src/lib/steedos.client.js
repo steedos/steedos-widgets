@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-01-11 11:35:01
+ * @LastEditTime: 2023-02-08 15:14:39
  * @Description: 
  */
 import { endsWith, isEmpty, cloneDeep } from "lodash";
@@ -147,5 +147,5 @@ export const getSteedosAuth = () => {
     //         name: Meteor.user().name  //TODO: 使用steedos 函数. 此属性在上传附件时使用
     //     }
     // }
-    return cloneDeep(STEEDOS_AUTH);
+    return getBuilderContext() || cloneDeep(STEEDOS_AUTH);
 }
