@@ -1,4 +1,3 @@
-import { last, map } from "lodash";
 import {
   lookupToAmisPicker,
   getSteedosAuth,
@@ -386,7 +385,7 @@ const getSubmitActions = async (instance) => {
       "componentId": "",
       "args": {
         "blank": false,
-        "url": `/workflow/space/${getSteedosAuth().spaceId}/${instance.box}`
+        "url": `/workflow/space/${getSteedosAuth().tenantId}/${instance.box}`
       },
       "actionType": "url",
       expression: "${event.data.instanceFormValidate && event.data.approvalFormValidate}"

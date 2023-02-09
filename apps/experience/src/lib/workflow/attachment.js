@@ -2,10 +2,9 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-16 17:27:24
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-17 16:42:56
+ * @LastEditTime: 2023-02-08 10:13:06
  * @Description: 
  */
-import { isEmpty } from 'lodash'
 import { getSteedosAuth } from '@steedos-widgets/amis-lib'
 // TODO attachments
 export const getAttachments = async (instance)=>{
