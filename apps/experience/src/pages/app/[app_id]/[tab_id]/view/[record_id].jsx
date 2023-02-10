@@ -33,7 +33,7 @@ export default function Record({formFactor: defaultFormFactor}) {
   if (display)
     setTabDisplayAs(tab_id, display)
 
-  const displayAs = (defaultFormFactor === 'SMALL')? 'grid': display? display : getTabDisplayAs(tab_id);
+  let displayAs = (defaultFormFactor === 'SMALL')? 'grid': display? display : main_object? 'split': getTabDisplayAs(tab_id);
 
   useEffect(() => {
     const listPage = getPage({type: 'list', appId: app_id, objectName: tab_id, defaultFormFactor});

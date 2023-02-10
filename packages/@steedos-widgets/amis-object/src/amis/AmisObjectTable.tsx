@@ -49,6 +49,6 @@ export const AmisObjectTable = async (props) => {
   let amisSchema = (await getTableSchema(appId, objectApiName, columns, { filters: tableFilters, filtersFunction, top, sort, sortField, sortOrder, extraColumns, defaults, ...ctx, setDataToComponentId, requestAdaptor,  adaptor })).amisSchema;
   amisSchema.data = Object.assign({}, amisSchema.data, amisSchemaData);
 
-  amisSchema.className = `steedos-object-table`
+  amisSchema.className = `steedos-object-table ${className}`
   return amisSchema;
 }
