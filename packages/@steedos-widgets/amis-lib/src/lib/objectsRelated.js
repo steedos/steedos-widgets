@@ -167,7 +167,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
 * 3 options
 */
 function getDefaultRelatedListProps(uiSchema, listName, ctx) {
-    console.log('getDefaultRelatedListProps==>', uiSchema, listName, ctx)
+    // console.log('getDefaultRelatedListProps==>', uiSchema, listName, ctx)
     const listView = find(
         uiSchema.list_views,
         (listView, name) => {
