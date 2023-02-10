@@ -148,17 +148,12 @@ export async function getUISchema(objectName, force) {
         each(uiSchema.fields, (field)=>{
             try {
                 if(field.type === "lookup" && field._reference_to && _.isString(field._reference_to)){
-                    // console.log(`uischema each field`, field)
-                    field.reference_to = function(js){
-                        try{
-                            return eval(js)
-                        }catch (e){
-                            console.error(e, js);
-                        }
-                    }(`(${field._reference_to})`);
-                    // console.log('eval field===>', field)
+                    // console.log(`uischema each field`, field.reference_to)
+                    field.reference_to = eval(`(${field._reference_to})`)();
+                    // console.log('eval field===>', field.reference_to)
                 }
             } catch (exception) {
+                field.reference_to = undefined;
                 console.error(exception)
             }
         })
