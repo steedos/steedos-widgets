@@ -10,7 +10,7 @@ import { getRecordDetailRelatedListSchema } from '@steedos-widgets/amis-lib'
 
 export const AmisRecordDetailRelatedList = async (props) => {
   // console.log(`AmisRecordDetailRelatedList props==>`, props)
-  const { objectApiName, recordId, relatedObjectApiName, data, relatedKey, top, perPage, hiddenEmptyTable, appId, label, className = '', columns, sort, filters, visible_on } = props;
+  const { objectApiName, recordId, relatedObjectApiName, data, relatedKey, top, perPage, hiddenEmptyTable, appId, relatedLabel, className = '', columns, sort, filters, visible_on } = props;
   let formFactor = props.formFactor;
   if(!formFactor){
     formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE';
@@ -24,6 +24,6 @@ export const AmisRecordDetailRelatedList = async (props) => {
       "className": "mb-3"
     }
   }
-  const schema = (await getRecordDetailRelatedListSchema(objectApiName, recordId, relatedObjectApiName, relatedKey, {top, perPage, hiddenEmptyTable, appId, label, className, formFactor, columns, sort, filters, visible_on})).amisSchema;
+  const schema = (await getRecordDetailRelatedListSchema(objectApiName, recordId, relatedObjectApiName, relatedKey, {top, perPage, hiddenEmptyTable, appId, relatedLabel, className, formFactor, columns, sort, filters, visible_on})).amisSchema;
   return schema
 }
