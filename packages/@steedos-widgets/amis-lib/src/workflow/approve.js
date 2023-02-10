@@ -114,7 +114,7 @@ const getNextStepInput = async (instance) => {
               "method": "post",
               "messages": {
               },
-              "requestAdaptor": "let { context, judge } = api.data; if(!judge){judge='approved'}\nconst formValues = SteedosUI.getRef(\"amis-root-workflow\").getComponentById(\"instance_form\").getValues();\n\napi.data = {\nflowVersionId: context.flowVersion._id,\n  instanceId: context._id,\n  flowId: context.flow._id,\n  step: context.step,\n  judge: judge,\n  values: formValues\n}\n\n\n return api;",
+              "requestAdaptor": "let { context, judge } = api.data; if(!judge){judge='approved'}\nconst formValues = SteedosUI.getRef(api.data.$scopeId).getComponentById(\"instance_form\").getValues();\n\napi.data = {\nflowVersionId: context.flowVersion._id,\n  instanceId: context._id,\n  flowId: context.flow._id,\n  step: context.step,\n  judge: judge,\n  values: formValues\n}\n\n\n return api;",
               "adaptor": `
                 payload.data = {
                   options: _.map(payload.nextSteps, (item)=>{
@@ -129,6 +129,7 @@ const getNextStepInput = async (instance) => {
               "data": {
                 // "&": "$$",
                 "context": "${context}",
+                "$scopeId": "${scopeId}",
                 "judge": "${new_judge}",
               }
             },
@@ -236,10 +237,11 @@ const getNextStepUsersInput = async (instance) => {
               },
               "messages": {
               },
-              "requestAdaptor": "\nconst { context, next_step } = api.data;\nconst formValues = SteedosUI.getRef(\"amis-root-workflow\").getComponentById(\"instance_form\").getValues();\n\napi.data = {\n  instanceId: context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
+              "requestAdaptor": "console.log('======requestAdaptor====');\nconst { context, next_step, $scopeId } = api.data;\nconst formValues = SteedosUI.getRef($scopeId).getComponentById(\"instance_form\").getValues();\n\napi.data = {\n  instanceId: context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
               "adaptor": "\npayload.data = payload.nextStepUsers;\nreturn payload;",
               "data": {
                 "&": "$$",
+                "$scopeId": "$scopeId",
                 "context": "${context}",
                 "next_step": "${new_next_step}",
               }
@@ -260,9 +262,9 @@ const getNextStepUsersInput = async (instance) => {
 };
 
 const getPostSubmitRequestAdaptor = async (instance) => {
-  return `  const instanceForm = SteedosUI.getRef("amis-root-workflow").getComponentById("instance_form");
+  return `  const instanceForm = SteedosUI.getRef(api.data.$scopeId).getComponentById("instance_form");
             const formValues = instanceForm.getValues();
-            const approveValues = SteedosUI.getRef("amis-root-workflow").getComponentById("instance_approval").getValues();
+            const approveValues = SteedosUI.getRef(api.data.$scopeId).getComponentById("instance_approval").getValues();
             let nextUsers = approveValues.next_users;
             if(_.isString(nextUsers)){
               nextUsers = [approveValues.next_users];
@@ -293,8 +295,8 @@ const getPostSubmitRequestAdaptor = async (instance) => {
 
 const getPostEngineRequestAdaptor = async (instance) => {
   return `  
-            const formValues = SteedosUI.getRef("amis-root-workflow").getComponentById("instance_form").getValues();
-            const approveValues = SteedosUI.getRef("amis-root-workflow").getComponentById("instance_approval").getValues();
+            const formValues = SteedosUI.getRef(api.data.$scopeId).getComponentById("instance_form").getValues();
+            const approveValues = SteedosUI.getRef(api.data.$scopeId).getComponentById("instance_approval").getValues();
             let nextUsers = approveValues.next_users;
             if(_.isString(nextUsers)){
               nextUsers = [approveValues.next_users];
@@ -324,6 +326,7 @@ const getPostEngineRequestAdaptor = async (instance) => {
  * @returns
  */
 const getSubmitActions = async (instance) => {
+  console.log(`getSubmitActions instance====`, instance)
   let api = "";
   let requestAdaptor = "";
   if (instance.state === "draft") {
@@ -343,7 +346,8 @@ const getSubmitActions = async (instance) => {
       "args": {},
       "actionType": "custom",
       "script": `
-        const form = SteedosUI.getRef("amis-root-workflow").getComponentById("instance_form");
+        console.log("======getSubmitActions");
+        const form = event.context.scoped.getComponentById("instance_form");
         return form.validate().then((instanceFormValidate)=>{
           event.setData({...event.data, instanceFormValidate})
         })
@@ -355,7 +359,7 @@ const getSubmitActions = async (instance) => {
       "args": {},
       "actionType": "custom",
       "script": `
-        const form = SteedosUI.getRef("amis-root-workflow").getComponentById("instance_approval");
+        const form = event.context.scoped.getComponentById("instance_approval");
         return form.validate().then((approvalFormValidate)=>{
           event.setData({...event.data, approvalFormValidate})
         })

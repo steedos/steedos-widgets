@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-01-05 11:42:43
+ * @LastEditTime: 2023-02-09 16:42:23
  * @Description: 
  */
 import { getListSchema, getObjectListHeaderFirstLine, getUISchema } from '@steedos-widgets/amis-lib'
@@ -91,7 +91,7 @@ export const AmisObjectListView = async (props) => {
     });
   }
   // TODO: recordPermissions和_id是右上角按钮需要强依赖的变量，应该写到按钮那边去
-  const serviceData = Object.assign({}, amisSchema.data, amisSchemaData, { listName, uiSchema, recordPermissions: uiSchema.permissions, _id: null });
+  const serviceData = Object.assign({}, amisSchema.data, amisSchemaData, { listName, uiSchema, recordPermissions: uiSchema.permissions, _id: null, $listviewId: listName });
   return {
     "type": "service",
     "body": body,

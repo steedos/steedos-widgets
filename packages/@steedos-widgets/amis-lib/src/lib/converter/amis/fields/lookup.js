@@ -357,7 +357,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
     
     apiInfo.data.$term = "$term";
     // apiInfo.data.$value = `$${field.name}.${referenceTo ? referenceTo.valueField.name : '_id'}`;
-    apiInfo.data.$value = `$${field.name}`;
+    apiInfo.data.$value = ctx.isRefToMutiple ? `$${field.name}.ids` : `$${field.name}`;
     _.each(field.depend_on, function(fName){
         apiInfo.data[fName] = `$${fName}`;
     })

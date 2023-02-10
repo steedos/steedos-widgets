@@ -121,10 +121,7 @@ export async function getRecordPageInitSchema(objectApiName){
         "className": "sm:mt-3 flex flex-col region-main bg-white sm:shadow sm:rounded sm:border border-slate-300",
         "linksClassName": "pl-4 pt-2"
     };
-    const relatedListSchema = map(relatedList,(item)=>{
-        return item.schema.amisSchema;
-    })
-    if(relatedListSchema.length){
+    if(relatedList.length){
         contentBody.tabs.push({
             "title": "相关",
             "body": {

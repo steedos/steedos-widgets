@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-08 09:37:28
+ * @LastEditTime: 2023-02-08 17:22:40
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -26,7 +26,7 @@ export default function Page(props) {
     <>
       {page && page.schema && page.name === page_id && (
         <PageRender
-          id="amis-root"
+          id={page_id}
           className="overflow-auto"
           router={router}
           schema={JSON.parse(page.schema)}
