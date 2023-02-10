@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-01 15:54:58
+ * @LastEditTime: 2023-02-10 11:53:44
  * @Description: 
  */
 import { Router } from '../../router'
@@ -85,7 +85,7 @@ export function getRelatedFieldTpl(field, ctx){
             let labelTpl = `<%=item.label%>`;
             if(!onlyDisplayLabel){
                 const href = Router.getObjectDetailPath({
-                    formFactor: ctx.formFactor, appId: ctx.appId, objectName: `<%=item.objectName%>`, recordId: `<%=item.value%>`
+                    formFactor: ctx.formFactor, appId: ctx.appId, objectName: `<%=item.objectName%>`, recordId: `<%=item.value%>`, _templateType: "JavaScript"
                 })
                 labelTpl = `<a href="${href}"><%=item.label%></a>`;
             }
@@ -108,7 +108,7 @@ export function getRelatedFieldTpl(field, ctx){
         let labelTpl = `<%=item.label%>`;
         if(!onlyDisplayLabel){
             const href = Router.getObjectDetailPath({
-                formFactor: ctx.formFactor, appId: ctx.appId, objectName: `<%=item.objectName%>`, recordId: `<%=item.value%>`
+                formFactor: ctx.formFactor, appId: ctx.appId, objectName: `<%=item.objectName%>`, recordId: `<%=item.value%>`, _templateType: "JavaScript"
             })
             labelTpl = `<a href="${href}"><%=item.label%></a>`;
         }
@@ -126,7 +126,7 @@ export async function getLookupTpl(field, ctx){
     const NAME_FIELD_KEY = await getRefObjectNameFieldName(field);
     if(field.multiple){
         const href = Router.getObjectDetailPath({
-            formFactor: ctx.formFactor, appId: ctx.appId, objectName: field.reference_to, recordId: `<%=item._id%>`
+            formFactor: ctx.formFactor, appId: ctx.appId, objectName: field.reference_to, recordId: `<%=item._id%>`, _templateType: "JavaScript"
         })
         return `
         <% if (data.${field.name} && data.${field.name}.length) { %><% data.${field.name}.forEach(function(item) { %> <a href="${href}"><%=item.${NAME_FIELD_KEY}%></a>  <% }); %><% } %>
