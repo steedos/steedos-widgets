@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-06 15:29:23
+ * @LastEditTime: 2023-02-10 10:48:12
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -309,7 +309,9 @@ export async function getListSchema(
         "filters": listviewFilter,
         "filtersFunction": listview_filters,
         "sort": sort,
-        "ctx": ctx
+        "ctx": ctx,
+        "requestAdaptor": listView.requestAdaptor,  
+        "adaptor": listView.adaptor
     };
 
     return {
