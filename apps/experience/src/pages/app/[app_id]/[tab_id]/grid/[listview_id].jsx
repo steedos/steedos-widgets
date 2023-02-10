@@ -58,11 +58,11 @@ export default function Page ({ formFactor: defaultFormFactor }) {
     "objectApiName": tab_id,
     "columnsTogglable": false,
     "showHeader": true,
-    "showDisplayAs": true,
+    "showDisplayAs": (defaultFormFactor !== 'SMALL'),
     "formFactor": formFactor,
     "className": displayAs === 'grid'? 
-      "sm:border sm:shadow sm:rounded border-slate-300 border-solid min-h-[320px]" : 
-      "absolute top-0 bottom-0 w-[388px] border-r border-slate-300 border-solid"
+      "absolute inset-0 sm:m-3 mb-0 sm:border sm:shadow sm:rounded border-slate-300 border-solid bg-gray-100" : 
+      "absolute top-0 bottom-0 w-[388px] border-r border-slate-300 border-solid bg-gray-100"
   }
 
   return (
