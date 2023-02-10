@@ -43,7 +43,7 @@ export const AmisRecordDetailRelatedLists = async (props) => {
         perPage: item.page_size || perPage,
         hiddenEmptyTable: true,
         appId: appId,
-        label: item.label
+        relatedLabel: item.label
       }
     })
   }

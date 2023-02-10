@@ -133,7 +133,7 @@ function getFilter(){
 }
 
 export async function getObjectList(objectSchema, fields, options){
-    const { top, perPage, showDisplayAs = true } = options;
+    const { top, perPage, showDisplayAs = false } = options;
     const nonpaged = objectSchema.paging && objectSchema.paging.enabled === false;
     const bulkActions = getBulkActions(objectSchema)
 

@@ -68,7 +68,7 @@ export async function getObjectRelatedList(
 
 // 获取单个相关表
 export async function getRecordDetailRelatedListSchema(objectName, recordId, relatedObjectName, relatedKey, ctx){
-    let { top, perPage, hiddenEmptyTable, appId, label:relatedLabel, className, columns, sort, filters, visible_on } = ctx;
+    let { top, perPage, hiddenEmptyTable, appId, relatedLabel, className, columns, sort, filters, visible_on } = ctx;
     // console.log('getRecordDetailRelatedListSchema==>',objectName,recordId,relatedObjectName)
     const relatedObjectUiSchema = await getUISchema(relatedObjectName);
     const { list_views, label , icon, fields } = relatedObjectUiSchema;
