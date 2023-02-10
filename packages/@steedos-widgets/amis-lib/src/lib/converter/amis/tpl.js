@@ -85,7 +85,7 @@ export function getRelatedFieldTpl(field, ctx){
             let labelTpl = `<%=item.label%>`;
             if(!onlyDisplayLabel){
                 const href = Router.getObjectDetailPath({
-                    formFactor: ctx.formFactor, appId: ctx.appId, objectName: `<%=item.objectName%>`, recordId: `<%=item.value%>`, _templateType: "JavaScript"
+                    formFactor: ctx.formFactor, appId: "<%=item.appId%>", objectName: `<%=item.objectName%>`, recordId: `<%=item.value%>`, _templateType: "JavaScript"
                 })
                 labelTpl = `<a href="${href}"><%=item.label%></a>`;
             }
@@ -96,7 +96,7 @@ export function getRelatedFieldTpl(field, ctx){
             let labelTpl = `\${_display.${field.name}.label}`;
             if(!onlyDisplayLabel){
                 const href = Router.getObjectDetailPath({
-                    formFactor: ctx.formFactor, appId: ctx.appId, objectName: `\${_display.${field.name}.objectName}`, recordId: `\${_display.${field.name}.value}`
+                    formFactor: ctx.formFactor, appId: "${appId}", objectName: `\${_display.${field.name}.objectName}`, recordId: `\${_display.${field.name}.value}`
                 })
                 labelTpl = `<a href="${href}">\${_display.${field.name}.label}</a>`;
             }
@@ -108,7 +108,7 @@ export function getRelatedFieldTpl(field, ctx){
         let labelTpl = `<%=item.label%>`;
         if(!onlyDisplayLabel){
             const href = Router.getObjectDetailPath({
-                formFactor: ctx.formFactor, appId: ctx.appId, objectName: `<%=item.objectName%>`, recordId: `<%=item.value%>`, _templateType: "JavaScript"
+                formFactor: ctx.formFactor, appId: "<%=appId%>", objectName: `<%=item.objectName%>`, recordId: `<%=item.value%>`, _templateType: "JavaScript"
             })
             labelTpl = `<a href="${href}"><%=item.label%></a>`;
         }
