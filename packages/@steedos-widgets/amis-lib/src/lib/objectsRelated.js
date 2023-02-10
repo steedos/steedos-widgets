@@ -115,6 +115,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
         setDataToComponentId: componentId,
         tableHiddenOn: hiddenEmptyTable ? "this.$count === 0" : null,
         appId: appId,
+        crudClassName: 'border-t border-slate-300',
         ...ctx
     }
     const amisSchema= (await getRelatedListSchema(null, relatedObjectName, 'all', options)).amisSchema;
@@ -126,7 +127,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
         amisSchema: {
             type: "service",
             id: componentId,
-            className: `steedos-record-related-list sm:rounded sm:border border-slate-300 bg-gray-100 mb-4 ${className}`,
+            className: `steedos-record-related-list rounded border border-slate-300 bg-gray-100 mb-4 ${className}`,
             data: {
                 "&": "$$",
                 appId: "${appId}",
@@ -229,7 +230,7 @@ export async function getRelatedListSchema(
     appName,
     objectName,
     listViewName,
-    ctx = {}
+    ctx
   ) {
     const uiSchema = await getUISchema(objectName);
     const listView = uiSchema.list_views;

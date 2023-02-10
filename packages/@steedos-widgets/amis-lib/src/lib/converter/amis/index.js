@@ -100,11 +100,6 @@ function getHeaderToolbar(mainObject, formFactor){
     
 }
 
-function getToolbar(){
-    return [
-        
-      ]
-}
 
 function footerToolbar(){
     return [
@@ -133,17 +128,16 @@ function getFilter(){
 }
 
 export async function getObjectList(objectSchema, fields, options){
-    const { top, perPage, showDisplayAs = false } = options;
+    const { top, perPage, showDisplayAs = false, crudClassName } = options;
     const nonpaged = objectSchema.paging && objectSchema.paging.enabled === false;
     const bulkActions = getBulkActions(objectSchema)
 
     const bodyProps = {
-      toolbar: getToolbar(),
-      bodyClassName: "",
+      // toolbar: getToolbar(),
       headerToolbar: getObjectHeaderToolbar(objectSchema, options.formFactor, {showDisplayAs}),
       headerToolbarClassName: "px-4 py-2 border-gray-300 bg-gray-100 border-solid border-b",
       footerToolbar: getObjectFooterToolbar(objectSchema, options.formFactor), 
-      className: `${options.className || ""}`
+      className: `${options.crudClassName || ""}`
     }
     if(options.formFactor !== 'SMALL'){
       Object.assign(bodyProps, {
