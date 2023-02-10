@@ -5,11 +5,16 @@ import { getObjectRelatedList } from './objectsRelated';
 import { getObjectListHeader,getObjectRecordDetailRelatedListHeader } from './converter/amis/header';
 // import { getListSchema } from './objects';
 
+function getScopeId(objectApiName,type){
+    return `page_${objectApiName}_${type}`;
+}
+
 // 获取表单初始化amisSchema
 export async function getFormPageInitSchema(objectApiName) {
     const schema = await getFormSchema(objectApiName, {recordId: '${recordId}'});
     return {
         type: 'page',
+        name: getScopeId(objectApiName,"form"),
         bodyClassName: '',
         regions: [
             "body"
@@ -42,6 +47,7 @@ export async function getListPageInitSchema(objectApiName, formFactor, userSessi
 
     return {
         type: 'page',
+        name: getScopeId(objectApiName,"list"),
         bodyClassName: '',
         regions: [
             "body"
@@ -136,7 +142,7 @@ export async function getRecordPageInitSchema(objectApiName){
     return {
         type: 'page',
         id: `page_${objectApiName}_record_detail`,
-        name: `page_${objectApiName}_record_detail`,
+        name: getScopeId(objectApiName,"record_detail"),
         bodyClassName: '',
         regions: [
             "body"
