@@ -9,7 +9,7 @@ import { getObjectRelatedList } from '@steedos-widgets/amis-lib'
 import { map } from 'lodash';
 
 export const AmisRecordDetailRelatedLists = async (props) => {
-  // console.log(`AmisRecordDetailRelatedList props==>`, props)
+  // console.log(`AmisRecordDetailRelatedLists props==>`, props)
   const { objectApiName, recordId, appId, data, perPage = 5 } = props;
   if(!objectApiName){
     return {
