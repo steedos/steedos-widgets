@@ -4860,13 +4860,6 @@
     systemjs "^6.12.1"
     tslib "^1.10.0"
 
-"@steedos-widgets/amis-lib@^1.0.20":
-  version "1.0.20"
-  resolved "https://registry.npmmirror.com/@steedos-widgets/amis-lib/-/amis-lib-1.0.20.tgz#b3bf918bca5e534267e4cb2f6b165ba918b2e806"
-  integrity sha512-BKR1q6gvSVC43WYuQ3p7Btm8rZQB+c7AZfdyo7O94f9AjAGNNQbKlfJMxj/ySZcVtEtOmKCW8j388tT0xpOXNA==
-  dependencies:
-    lodash "^4.17.21"
-
 "@steedos/accounts@2.4.0-beta.20":
   version "2.4.0-beta.20"
   resolved "https://registry.npmmirror.com/@steedos/accounts/-/accounts-2.4.0-beta.20.tgz#9ec4cc9b53aa51b4229846cdad1d46f3e15adb02"

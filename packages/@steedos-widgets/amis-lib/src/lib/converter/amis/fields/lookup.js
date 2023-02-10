@@ -20,7 +20,12 @@ const getReferenceTo = async (field)=>{
         field.reference_to_field = 'user'
     }
 
-    const refObjectConfig = await getUISchema(referenceTo);
+    const refObjectConfig = await getUISchema(referenceTo)
+
+    // 如果lookup 引用的对象未定义
+    if (!refObjectConfig)
+        return null;
+
     let valueField = null;
     let valueFieldName = field.reference_to_field;
     if(!valueFieldName){
