@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-10 10:55:25
+ * @LastEditTime: 2023-02-10 11:23:43
  * @Description: 
  */
 const config: any = {
@@ -220,18 +220,24 @@ export default {
           value: "my-2"
         },
         {
-          type: "editor",
-          name: "requestAdaptor",
-          label: "发送适配器",
-          language: "javascript",
-          description: "函数签名：(api) => api， 数据在 api.data 中，修改后返回 api 对象。"
-        },
-        {
-          type: "editor",
-          name: "adaptor",
-          label: "接收适配器",
-          language: "javascript",
-          description: "函数签名: (payload, response, api) => payload"
+          "type": "fieldSet",
+          "title": "数据接口",
+          "body": [
+            {
+              type: "editor",
+              name: "requestAdaptor",
+              label: "发送适配器",
+              language: "javascript",
+              description: "函数签名：(api) => api， 数据在 api.data 中，修改后返回 api 对象。"
+            },
+            {
+              type: "editor",
+              name: "adaptor",
+              label: "接收适配器",
+              language: "javascript",
+              description: "函数签名: (payload, response, api) => payload"
+            }
+          ]
         }
       ]
     }
