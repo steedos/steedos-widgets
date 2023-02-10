@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-15 10:40:37
+ * @LastEditTime: 2023-02-10 10:55:25
  * @Description: 
  */
 const config: any = {
@@ -50,6 +50,16 @@ const config: any = {
       name: "top",
       propType: "number",
       description: '显示的记录数量',
+    },
+    {
+      name: "requestAdaptor",
+      propType: "string",
+      description: '发送适配器',
+    },
+    {
+      name: "adaptor",
+      propType: "string",
+      description: '接收适配器',
     }
   ],
   preview: {
@@ -208,6 +218,20 @@ export default {
           name: "className",
           label: "CSS类名",
           value: "my-2"
+        },
+        {
+          type: "editor",
+          name: "requestAdaptor",
+          label: "发送适配器",
+          language: "javascript",
+          description: "函数签名：(api) => api， 数据在 api.data 中，修改后返回 api 对象。"
+        },
+        {
+          type: "editor",
+          name: "adaptor",
+          label: "接收适配器",
+          language: "javascript",
+          description: "函数签名: (payload, response, api) => payload"
         }
       ]
     }

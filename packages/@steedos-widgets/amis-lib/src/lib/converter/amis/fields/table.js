@@ -590,6 +590,7 @@ export async function getTableApi(mainObject, fields, options){
         api.data = {
             query: api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', pageSize).replace('{__skip}', skip).replace('{__sort}', sort.trim())
         }
+        ${options.requestAdaptor || ''}
         return api;
     `
     api.adaptor = `
@@ -689,8 +690,8 @@ export async function getTableApi(mainObject, fields, options){
     const setDataToComponentId = "${setDataToComponentId}";
     if(setDataToComponentId){
         SteedosUI.getRef(api.body.$self.scopeId)?.getComponentById(setDataToComponentId)?.setData({$count: payload.data.count})
-    }
-
+    };
+    ${options.adaptor || ''}
     return payload;
     `;
     return api;
