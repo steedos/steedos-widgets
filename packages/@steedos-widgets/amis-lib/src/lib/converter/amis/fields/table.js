@@ -689,7 +689,7 @@ export async function getTableApi(mainObject, fields, options){
 
     const setDataToComponentId = "${setDataToComponentId}";
     if(setDataToComponentId){
-        SteedosUI.getRef(api.body.$self.scopeId)?.getComponentById(setDataToComponentId)?.setData({$count: payload.data.count})
+        SteedosUI.getRef(api.body.$self.$scopeId)?.getComponentById(setDataToComponentId)?.setData({$count: payload.data.count})
     };
     ${options.adaptor || ''}
     return payload;
