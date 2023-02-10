@@ -136,6 +136,7 @@ export async function getRecordPageInitSchema(objectApiName){
     return {
         type: 'page',
         id: `page_${objectApiName}_record_detail`,
+        name: `page_${objectApiName}_record_detail`,
         bodyClassName: '',
         regions: [
             "body"
