@@ -188,6 +188,11 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             })
         }
 
+        var fieldFilters = ${JSON.stringify(field.filters)};
+        if(fieldFilters && fieldFilters.length){
+            filters.push(fieldFilters);
+        }
+        
         const filtersFunction = ${field._filtersFunction};
 
         if(filtersFunction){
