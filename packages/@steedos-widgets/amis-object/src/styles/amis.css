@@ -146,3 +146,7 @@ body {
 .antd-DropDown-caret > svg {
     top: 0px;
 }
+
+.antd-Nav-Menu-submenu-arrow > svg {
+    display: initial;
+}
