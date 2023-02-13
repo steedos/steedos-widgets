@@ -122,7 +122,7 @@ body {
 
 
 @media only screen and (min-width: 768px) {
-    .amis-scope .antd-Modal-content{
+    .antd-Modal .antd-Modal-content{
         max-height: calc(100vh - 100px);
     }
 }
