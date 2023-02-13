@@ -73,7 +73,7 @@ export async function getRecordPageInitSchema(objectApiName){
     // const objectFormAmisSchema = (await getViewSchema(objectApiName, "${recordId}", {labelAlign:"left"})).amisSchema;
     
     const recordId = '${recordId}';
-    const relatedList = await getObjectRelatedList(null, objectApiName, recordId, null);
+    const relatedList = await getObjectRelatedList(objectApiName, recordId, null);
     const uiSchema = await getUISchema(objectApiName);
     let body = [
         // detailHeaderAmisSchema,

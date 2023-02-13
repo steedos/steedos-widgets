@@ -28,7 +28,6 @@ export const getRelatedFieldValue = (masterObjectName, record_id, uiSchema, fore
 
 // 获取所有相关表
 export async function getObjectRelatedList(
-    appName,
     objectName,
     recordId,
     formFactor
@@ -118,7 +117,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
         crudClassName: 'border-t border-slate-300',
         ...ctx
     }
-    const amisSchema= (await getRelatedListSchema(null, relatedObjectName, 'all', options)).amisSchema;
+    const amisSchema= (await getRelatedListSchema(relatedObjectName, 'all', options)).amisSchema;
     if(!amisSchema){
         return;
     }
@@ -227,7 +226,6 @@ function getRelatedListProps(uiSchema, listViewName, ctx) {
 
 // 仅提供给单个相关子表内部使用
 export async function getRelatedListSchema(
-    appName,
     objectName,
     listViewName,
     ctx
