@@ -70,18 +70,30 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
     let { top, perPage, hiddenEmptyTable, appId, relatedLabel, className, columns, sort, filters, visible_on } = ctx;
     // console.log('getRecordDetailRelatedListSchema==>',objectName,recordId,relatedObjectName)
     const relatedObjectUiSchema = await getUISchema(relatedObjectName);
-    const { list_views, label , icon, fields } = relatedObjectUiSchema;
+    const { label , fields } = relatedObjectUiSchema;
     if(!relatedLabel){
         relatedLabel = label;
     }
-    const firstListViewName = keys(list_views).includes('all') ? 'all' : keys(list_views)[0];
     if(!relatedKey){
         relatedKey = findKey(fields, function(field) { 
            return ["lookup","master_detail"].indexOf(field.type) > -1 && field.reference_to === objectName; 
-       });
+        });
     }
     let globalFilter = null;
     const refField = await getField(relatedObjectName, relatedKey);
+
+    if(!refField){
+        return {
+            uiSchema: relatedObjectUiSchema,
+            amisSchema: {
+                "type": "alert",
+                "body": `未找到与相关列表对象${relatedObjectName}关联的相关表字段`,
+                "level": "warning",
+                "showIcon": true,
+                "className": "mb-3"
+            }
+        }
+    }
 
     let relatedValue = recordId;
     if(refField.reference_to_field && refField.reference_to_field != '_id'){
