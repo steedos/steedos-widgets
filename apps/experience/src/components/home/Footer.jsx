@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-import { Container } from '@/components/Container'
+import { Container } from '@/components/home/Container'
 import { Logo } from '@/components/Logo'
 
 export function Footer() {
