@@ -28,8 +28,8 @@ export const AmisRecordDetailRelatedLists = async (props) => {
   if(!relatedLists || !relatedLists.length){
     return {
       "type": "alert",
-      "body": "未找到要显示的子表",
-      "level": "warning",
+      "body": "没有相关子表",
+      "level": "info",
       "showIcon": true,
       "className": "mb-3"
     }
