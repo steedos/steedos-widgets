@@ -379,6 +379,11 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         //     filters = [["_id", "=", api.data.$value]];
         // }
 
+        var fieldFilters = ${JSON.stringify(field.filters)};
+        if(fieldFilters && fieldFilters.length){
+            filters.push(fieldFilters);
+        }
+
         const filtersFunction = ${field._filtersFunction};
 
         if(filtersFunction){
