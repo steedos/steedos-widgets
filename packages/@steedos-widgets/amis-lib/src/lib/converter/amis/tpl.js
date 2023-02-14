@@ -90,7 +90,7 @@ export function getRelatedFieldTpl(field, ctx){
                 labelTpl = `<a href="${href}"><%=item.label%></a>`;
             }
             tpl = `
-            <% if (data._display.${field.name} && data._display.${field.name}.length) { %><% data._display.${field.name}.forEach(function(item) { %> ${labelTpl}  <% }); %><% } %>
+            <% if (data._display.${field.name} && data._display.${field.name}.length) { %><% data._display.${field.name}.forEach(function(item,index) { %> <% if(index>0 && index<data._display.${field.name}.length){ %> , <% } %> ${labelTpl}  <% }); %><% } %>
             `
         }else{
             let labelTpl = `\${_display.${field.name}.label}`;
