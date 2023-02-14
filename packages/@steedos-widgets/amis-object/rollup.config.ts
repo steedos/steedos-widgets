@@ -60,7 +60,7 @@ const options = {
         require('autoprefixer')
       ],
     }),
-    terser()
+    process.env.NODE_ENV === 'production' && terser()
   ],
 };
 
