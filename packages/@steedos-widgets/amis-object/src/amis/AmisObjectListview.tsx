@@ -12,7 +12,7 @@ export const AmisObjectListView = async (props) => {
   // console.log(`AmisObjectListView props`, props)
   const { $schema, top, perPage, showHeader=true, headerSchema, data, defaultData, 
       className="", 
-      tableClassName, 
+      crudClassName, 
       formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE',
       showDisplayAs = false,
       columnsTogglable=false} = props;
@@ -57,8 +57,8 @@ export const AmisObjectListView = async (props) => {
     // 支持把crud组件任意属性通过listSchema属性传入到底层crud组件中
     const schemaKeys = difference(keys($schema), ["type", "showHeader","id"]);
     const listSchema = pick(props, schemaKeys);
-    // className不传入crud组件，crud单独识别tableClassName属性
-    listSchema.className = tableClassName;
+    // className不传入crud组件，crud单独识别crudClassName属性
+    listSchema.className = crudClassName;
     defaults = {
       listSchema
     };

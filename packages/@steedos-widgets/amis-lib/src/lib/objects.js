@@ -10,7 +10,7 @@ import { getObjectFieldsFilterFormSchema } from './converter/amis/fields_filter'
 import { getObjectCalendar } from './converter/amis/calendar';
 
 import {
-    getObjectList,
+    getObjectCRUD,
     getObjectDetail,
     getObjectForm,
 } from "./converter/amis/index";
@@ -361,7 +361,7 @@ export async function getTableSchema(
         });
     }
     
-    const amisSchema = await getObjectList(uiSchema, fields, {
+    const amisSchema = await getObjectCRUD(uiSchema, fields, {
         tabId: objectName,
         appId: appName,
         objectName: objectName,

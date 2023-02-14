@@ -127,8 +127,8 @@ function getFilter(){
       }
 }
 
-export async function getObjectList(objectSchema, fields, options){
-    const { top, perPage, showDisplayAs = false, crudClassName } = options;
+export async function getObjectCRUD(objectSchema, fields, options){
+    const { top, perPage, showDisplayAs = false, crudClassName = "" } = options;
     const nonpaged = objectSchema.paging && objectSchema.paging.enabled === false;
     const bulkActions = getBulkActions(objectSchema)
 
@@ -137,7 +137,6 @@ export async function getObjectList(objectSchema, fields, options){
       headerToolbar: getObjectHeaderToolbar(objectSchema, options.formFactor, {showDisplayAs}),
       headerToolbarClassName: "px-4 py-2 border-gray-300 bg-gray-100 border-solid border-b",
       footerToolbar: getObjectFooterToolbar(objectSchema, options.formFactor), 
-      className: `${options.crudClassName || ""}`
     }
     if(options.formFactor !== 'SMALL'){
       Object.assign(bodyProps, {
@@ -173,6 +172,7 @@ export async function getObjectList(objectSchema, fields, options){
     }else{
       const table = await getTableSchema(fields, Object.assign({idFieldName: objectSchema.idFieldName, labelFieldName: objectSchema.NAME_FIELD_KEY || 'name'}, options));
       delete table.mode;
+
       body = Object.assign({}, table, {
         type: 'crud', 
         primaryField: '_id', 
@@ -183,6 +183,8 @@ export async function getObjectList(objectSchema, fields, options){
         api: await getTableApi(objectSchema, fields, options),
         hiddenOn: options.tableHiddenOn,
         autoFillHeight: false,
+        className: crudClassName,
+        crudClassName: crudClassName,
       }, 
         bodyProps,
         )

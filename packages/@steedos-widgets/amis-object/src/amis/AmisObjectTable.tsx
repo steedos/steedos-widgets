@@ -26,6 +26,8 @@ export const AmisObjectTable = async (props) => {
   if (!(ctx && ctx.defaults)) {
     const schemaKeys = difference(keys($schema), ["type", "objectApiName", "columns", "extraColumns","id"]);
     const listSchema = pick(props, schemaKeys);
+    // className不传入crud组件，crud单独识别crudClassName属性
+    listSchema.className = ""
     defaults = {
       listSchema
     };
