@@ -87,7 +87,7 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
                 "body": {
                   "type": "tpl",
                   "className": "block",
-                  "tpl": `<img class=\"slds-icon slds-icon_container slds-icon-standard-${standardIcon} slds-page-header__icon\" src=\"\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg\" />`
+                  "tpl":`<svg class="slds-icon slds-icon_container slds-icon-standard-${standardIcon} slds-page-header__icon" aria-hidden="true"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#${icon}"></use></svg>`
                 },
                 "md": "auto",
                 "className": "",
@@ -343,7 +343,8 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
               "body": {
                 "type": "tpl",
                 "className": "block",
-                "tpl": `<img class='slds-icon slds-icon_container slds-icon-standard-${standardIcon}' src='\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg'>`
+                // "tpl": `<img class='slds-icon slds-icon_container slds-icon-standard-${standardIcon}' src='\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg'>`
+                "tpl":`<svg class="slds-icon slds-icon_container slds-icon-standard-${standardIcon} slds-page-header__icon" aria-hidden="true"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#${icon}"></use></svg>`
               },
               "md": "auto",
               "className": "",
@@ -465,7 +466,8 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
                     "body": {
                       "type": "tpl",
                       "className": "block",
-                      "tpl": `<img class=\"slds-icon_small slds-icon_container slds-icon-standard-${standardIcon}\" src=\"\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg\" />`
+                      // "tpl": `<img class=\"slds-icon_small slds-icon_container slds-icon-standard-${standardIcon}\" src=\"\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg\" />`
+                      "tpl":`<svg class="w-6 h-6 slds-icon slds-icon_container slds-icon-standard-${standardIcon}" aria-hidden="true"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#${icon}"></use></svg>`
                     },
                     "md": "auto",
                     "className": "",
