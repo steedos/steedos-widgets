@@ -18,6 +18,7 @@ import { getObjectListHeader, getObjectListHeaderFirstLine, getObjectRecordDetai
 import _, { cloneDeep, slice, isEmpty, each, has, findKey, find, isString, isObject, keys, includes, isArray, isFunction, map, forEach, defaultsDeep } from "lodash";
 import { getRecord } from './record';
 import { getListViewItemButtons } from './buttons'
+import { getObjectRelatedList } from './objectsRelated';
 
 let UI_SCHEMA_CACHE = {};
 
@@ -407,6 +408,48 @@ export async function getRecordDetailHeaderSchema(objectName,recordId, options){
 
 export async function getRecordDetailSchema(objectName, appId){
     const uiSchema = await getUISchema(objectName);
+    const relatedLists = await getObjectRelatedList(objectName, null, null);
+    const detailed = {
+        "title": "详细",
+        "className": "px-0 py-4",
+        "body": [
+            {
+                "type": "steedos-object-form",
+                "label": "对象表单",
+                "objectApiName": "${objectName}",
+                "recordId": "${recordId}",
+                "id": "u:d4a495811d57",
+                appId: appId
+            }
+        ],
+        "id": "u:5d4e7e3f6ecc"
+    };
+    const related = {
+        "title": "相关",
+        "className": "px-0 pt-4",
+        "body": [
+            {
+                "type": "steedos-object-related-lists",
+                "label": "相关列表",
+                "objectApiName": "${objectName}",
+                "recordId": "${recordId}",
+                "id": "u:3b85b7b7a7f6",
+                appId: appId
+            }
+        ],
+        "id": "u:1a0326aeec2b"
+    }
+    const content = {
+        "type": "tabs",
+        "className": "sm:mt-3 bg-white sm:shadow sm:rounded sm:border border-slate-300 p-4",
+        "tabs": [
+            detailed
+        ],
+        "id": "u:a649e4094a12"
+    };
+    if(relatedLists.length){
+        content.tabs.push(related)
+    }
     return {
         uiSchema,
         amisSchema: {
@@ -433,43 +476,7 @@ export async function getRecordDetailSchema(objectName, appId){
                       }
                 },
               },
-              {
-                "type": "tabs",
-                "className": "sm:mt-3 bg-white sm:shadow sm:rounded sm:border border-slate-300 p-4",
-                "tabs": [
-                  {
-                    "title": "详细",
-                    "className": "px-0 py-4",
-                    "body": [
-                      {
-                        "type": "steedos-object-form",
-                        "label": "对象表单",
-                        "objectApiName": "${objectName}",
-                        "recordId": "${recordId}",
-                        "id": "u:d4a495811d57", 
-                        appId: appId
-                      }
-                    ],
-                    "id": "u:5d4e7e3f6ecc"
-                  },
-                  {
-                    "title": "相关",
-                    "className": "px-0 pt-4",
-                    "body": [
-                      {
-                        "type": "steedos-object-related-lists",
-                        "label": "相关列表",
-                        "objectApiName": "${objectName}",
-                        "recordId": "${recordId}",
-                        "id": "u:3b85b7b7a7f6", 
-                        appId: appId
-                      }
-                    ],
-                    "id": "u:1a0326aeec2b"
-                  }
-                ],
-                "id": "u:a649e4094a12"
-              }
+              content
             ],
           }
     }
