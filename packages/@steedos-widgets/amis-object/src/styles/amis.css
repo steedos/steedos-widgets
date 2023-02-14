@@ -44,9 +44,10 @@
     --Nav-item-onHover-bg: rgba(21,137,238,.1);
     --Nav-item-onActive-bg: rgba(21,137,238,.1);
     --Nav-item-onActive-color: #000;
+    --Nav-Item-maxWidth--tabs: 200px;
     --Crud-toolbar-gap: 2px;
     --DropDown-caret-marginLeft: 0;
-    --Nav-Item-maxWidth--tabs: 200px;
+    --Layout-light-backgroundColor: transparent;
 }
 
 fieldset.antd-Collapse {
@@ -121,7 +122,7 @@ body {
 
 
 @media only screen and (min-width: 768px) {
-    .amis-scope .antd-Modal-content{
+    .antd-Modal .antd-Modal-content{
         max-height: calc(100vh - 100px);
     }
 }
@@ -146,3 +147,32 @@ body {
 .antd-DropDown-caret > svg {
     top: 0px;
 }
+
+/* start: amis 2.7.2, component Nav */
+:root {
+    --Nav-Item-height--horizontal: 2.5rem;
+}
+
+.antd-Nav-Menu-submenu-arrow > svg {
+    display: initial;
+}
+
+.antd-Nav-Menu-horizontal .antd-Nav-Menu-item.antd-Nav-Menu-item-selected:after {
+    height: 3px;
+    top: 0;
+    bottom: unset;
+    background: rgb(14 165 233);
+}
+
+.antd-Nav-Menu-light .antd-Nav-Menu-item.antd-Nav-Menu-item-selected {
+    background: rgba(21,137,238,.1);
+}
+
+.antd-Nav-Menu-item-selected .antd-Nav-Menu-item-label {
+    color: black !important;
+}
+
+.antd-Nav-Menu-horizontal > .antd-Nav-Menu-item-tooltip-wrap > .antd-Nav-Menu-item {
+    padding: 0 15px;
+}
+/* end: amis 2.7.2, component Nav */

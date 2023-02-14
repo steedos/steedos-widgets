@@ -10,11 +10,11 @@ import { map } from 'lodash';
 
 export const AmisRecordDetailRelatedLists = async (props) => {
   // console.log(`AmisRecordDetailRelatedLists props==>`, props)
-  const { objectApiName, recordId, appId, data, perPage = 5 } = props;
-  if(!objectApiName){
+  const { objectApiName, recordId, data, perPage = 5 } = props;
+  if(!objectApiName || !recordId){
     return {
       "type": "alert",
-      "body": "缺少父级对象",
+      "body": "缺少父级对象或父级记录属性",
       "level": "warning",
       "showIcon": true,
       "className": "mb-3"
@@ -24,7 +24,16 @@ export const AmisRecordDetailRelatedLists = async (props) => {
   if(!formFactor){
     formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE';
   }
-  const relatedLists = await getObjectRelatedList(appId, objectApiName, recordId, formFactor);
+  const relatedLists = await getObjectRelatedList(objectApiName, recordId, formFactor);
+  if(!relatedLists || !relatedLists.length){
+    return {
+      "type": "alert",
+      "body": "没有相关子表",
+      "level": "info",
+      "showIcon": true,
+      "className": "mb-3"
+    }
+  }
   return {
     type: 'service',
     className: "steedos-record-detail-related-lists",
@@ -42,7 +51,6 @@ export const AmisRecordDetailRelatedLists = async (props) => {
         visible_on: item.visible_on,
         perPage: item.page_size || perPage,
         hiddenEmptyTable: true,
-        appId: appId,
         relatedLabel: item.label
       }
     })

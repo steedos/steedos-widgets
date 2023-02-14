@@ -15,10 +15,10 @@ export const AmisRecordDetailRelatedList = async (props) => {
   if(!formFactor){
     formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE';
   }
-  if(!objectApiName || !relatedObjectApiName){
+  if(!objectApiName || !relatedObjectApiName || !recordId){
     return {
       "type": "alert",
-      "body": "缺少父级对象或相关列表对象",
+      "body": "缺少父级对象、父级记录或相关列表对象属性",
       "level": "warning",
       "showIcon": true,
       "className": "mb-3"
