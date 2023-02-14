@@ -7,21 +7,11 @@
  */
 import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { useRouter } from 'next/router'
-import { getPage } from "@steedos-widgets/amis-lib";
+import { getPage, Router } from "@steedos-widgets/amis-lib";
 import { Loading } from '@/components/Loading';
 
 import { AmisRender } from "@/components/AmisRender";
 
-const getTabDisplayAs = (tab_id) => {
-  const key = `tab:${tab_id}:display`;
-  const value = localStorage.getItem(key)
-  return value ? value : 'grid'
-}
-
-const setTabDisplayAs = (tab_id, displayAs) => {
-  const key = `tab:${tab_id}:display`;
-  localStorage.setItem(key, displayAs)
-}
 
 export default function Page ({ formFactor: defaultFormFactor }) {
   const router = useRouter();
@@ -30,9 +20,9 @@ export default function Page ({ formFactor: defaultFormFactor }) {
   const [page, setPage] = useState(false);
 
   if (display)
-    setTabDisplayAs(tab_id, display)
+    Router.setTabDisplayAs(tab_id, display)
 
-  const displayAs = (defaultFormFactor === 'SMALL')? 'grid': display? display : getTabDisplayAs(tab_id);
+  const displayAs = (defaultFormFactor === 'SMALL')? 'grid': display? display : Router.getTabDisplayAs(tab_id);
 
   const formFactor = (displayAs === 'split') ? 'SMALL': defaultFormFactor
 

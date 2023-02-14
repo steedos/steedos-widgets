@@ -35,3 +35,5 @@ export * from './utils/object';
 export * from './render';
 
 export * from './workflow';
+
+export * from './lib/router'
