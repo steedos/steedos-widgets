@@ -102,6 +102,8 @@ export async function getObjectFieldsFilterFormSchema(objectSchema, fields, ctx)
   //   }
   // `;
 
+  return body;
+
   return {
     title: "",
     type: "form",
@@ -140,22 +142,23 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
   }, ctx));
   const onSearchScript = `
     const scope = event.context.scoped;
-    var filterForm = scope.getComponents().find(function(n){
+    var filterForm = scope.parent.parent.getComponents().find(function(n){
       return n.props.type === "form";
     });
-    var filterFormValues = filterForm.getValues();
-    var listView = scope.parent.parent.parent.getComponents().find(function(n){
-      return n.props.type === "crud";
-    });
-    const removedValues = {};
-    // 设置搜索项中移除搜索项后，filterFormValues未把其字段的空值保存为own property，即hasOwnProperty属性中
-    // 这会造成handleFilterSubmit时把移除掉的搜索项字段之前的值加到过滤条件中
-    for(var k in filterFormValues){
-      if(filterFormValues[k] === "" && !filterFormValues.hasOwnProperty(k)){
-        removedValues[k] = "";
-      }
-    }
-    listView.handleFilterSubmit(Object.assign({}, removedValues, filterFormValues));
+    filterForm.handleFormSubmit(event)
+    // var filterFormValues = filterForm.getValues();
+    // var listView = scope.parent.parent.parent.getComponents().find(function(n){
+    //   return n.props.type === "crud";
+    // });
+    // const removedValues = {};
+    // // 设置搜索项中移除搜索项后，filterFormValues未把其字段的空值保存为own property，即hasOwnProperty属性中
+    // // 这会造成handleFilterSubmit时把移除掉的搜索项字段之前的值加到过滤条件中
+    // for(var k in filterFormValues){
+    //   if(filterFormValues[k] === "" && !filterFormValues.hasOwnProperty(k)){
+    //     removedValues[k] = "";
+    //   }
+    // }
+    // listView.handleFilterSubmit(Object.assign({}, removedValues, filterFormValues));
   `;
   const dataProviderInited = `
     const objectName = data.objectName;
@@ -198,7 +201,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
           return /^__searchable__/g.test(k);
         });
         if(!_.isEmpty(filterFormValues)){
-          setData({ filterFormValues });
+          setData({ ...filterFormValues });
           const omitedEmptyFormValue = _.omitBy(filterFormValues, function(n){
             return _.isNil(n) 
               || (_.isObject(n) && _.isEmpty(n)) 
@@ -329,7 +332,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
           ],
           "size": "xs",
           "visibleOn": "this.filterFormSearchableFields && this.filterFormSearchableFields.length",
-          "className": "slds-filters__body p-0"
+          "className": "slds-filters__body p-0 sm:grid sm:gap-2 sm:grid-cols-4 mb-2"
         }, {
           "type": "wrapper",
           "body": {
@@ -436,16 +439,6 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
                                       "actionType": "custom",
                                       "script": onSearchableFieldsChangeScript
                                     },
-                                    // {
-                                    //   "actionType": "broadcast",
-                                    //   "eventName": "broadcastSearchableFieldsChange",
-                                    //   "args": {
-                                    //     "eventName": "broadcastSearchableFieldsChange"
-                                    //   },
-                                    //   "data": {
-                                    //     "fields": "${event.data.fields}"
-                                    //   }
-                                    // },
                                     {
                                       "componentId": "",
                                       "args": {},
