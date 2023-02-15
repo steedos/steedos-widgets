@@ -130,6 +130,7 @@ function getFilter(){
 export async function getObjectCRUD(objectSchema, fields, options){
     const { top, perPage, showDisplayAs = false, crudClassName = "" } = options;
     const nonpaged = objectSchema.paging && objectSchema.paging.enabled === false;
+    const isTreeObject = objectSchema.enable_tree;
     const bulkActions = getBulkActions(objectSchema)
 
     const bodyProps = {
@@ -144,8 +145,8 @@ export async function getObjectCRUD(objectSchema, fields, options){
         bulkActions: options.bulkActions != false ? bulkActions : false
       });
     }
-    // yml里配置的不分页优先级最高，组件中输入的top次之。
-    if(nonpaged){
+    // yml里配置的 不分页和enable_tree:true 优先级最高，组件中输入的top次之。
+    if(nonpaged || isTreeObject){
       options.top = 1000;
       bodyProps.footerToolbar = [];
     }else if(top){

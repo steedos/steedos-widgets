@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-09 15:58:14
+ * @LastEditTime: 2023-02-11 17:49:08
  * @Description:
  */
 import {
@@ -456,7 +456,6 @@ const getTdInputTpl = async (field, label) => {
 };
 
 const getTdField = async (field, fieldsCount) => {
-  console.log(`getTdField`, field, fieldsCount)
   return {
     background: field.permission !== "editable" ? "#FFFFFF" : "rgba(255,255,0,.1)",
     colspan: field.type === "table" ? 4 : 3 - (fieldsCount - 1) * 2,
@@ -555,7 +554,6 @@ const getFormTrs = async (instance) => {
       tds: await getTds(tdFields),
     });
   }
-  console.log(`trsSchema`, trsSchema)
   return trsSchema;
 };
 
@@ -720,7 +718,6 @@ export const getFlowFormSchema = async (instance, box) => {
       "recordId": instance._id,
       "id": "u:e6b2adbe0e21",
       "showRecordTitle": false,
-      recordLoaded: true,
       "className": "p-0 m-0 p0 m0"
     },
     "css": {

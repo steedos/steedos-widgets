@@ -1,8 +1,9 @@
 import {
   lookupToAmisPicker,
-  getSteedosAuth,
+  getSteedosAuth, Router
 } from "@steedos-widgets/amis-lib";
 //TODO Meteor.settings.public?.workflow?.hideCounterSignJudgeOptions
+
 const HIDE_COUNTER_SIGN_JUDGE_OPTIONS = false;
 
 const getJudgeOptions = async (instance) => {
@@ -261,6 +262,20 @@ const getNextStepUsersInput = async (instance) => {
   };
 };
 
+const getCCSubmitRequestAdaptor = async (instance) => {
+  return `  
+            const instanceForm = SteedosUI.getRef(api.data.$scopeId).getComponentById("instance_form");
+            const approveValues = SteedosUI.getRef(api.data.$scopeId).getComponentById("instance_approval").getValues();
+            api.data = {
+              instanceId: "${instance._id}", 
+              traceId: "${instance.trace._id}", 
+              approveId: "${instance.approve._id}",  
+              description: approveValues.suggestion 
+            };
+            return api;
+            `;
+};
+
 const getPostSubmitRequestAdaptor = async (instance) => {
   return `  const instanceForm = SteedosUI.getRef(api.data.$scopeId).getComponentById("instance_form");
             const formValues = instanceForm.getValues();
@@ -295,6 +310,7 @@ const getPostSubmitRequestAdaptor = async (instance) => {
 
 const getPostEngineRequestAdaptor = async (instance) => {
   return `  
+          console.log("==========getPostEngineRequestAdaptor====");
             const formValues = SteedosUI.getRef(api.data.$scopeId).getComponentById("instance_form").getValues();
             const approveValues = SteedosUI.getRef(api.data.$scopeId).getComponentById("instance_approval").getValues();
             let nextUsers = approveValues.next_users;
@@ -329,14 +345,19 @@ const getSubmitActions = async (instance) => {
   console.log(`getSubmitActions instance====`, instance)
   let api = "";
   let requestAdaptor = "";
-  if (instance.state === "draft") {
-    api = "/api/workflow/submit";
-    requestAdaptor = await getPostSubmitRequestAdaptor(instance);
-  } else if (instance.state === "pending") {
-    api = "/api/workflow/engine";
-    requestAdaptor = await getPostEngineRequestAdaptor(instance);
-  } else {
-    return null; //TODO 考虑异常情况?
+  if(instance.approve.type == "cc"){
+    api = "/api/workflow/v2/cc_submit";
+    requestAdaptor = await getCCSubmitRequestAdaptor(instance);
+  }else{
+    if (instance.state === "draft") {
+      api = "/api/workflow/submit";
+      requestAdaptor = await getPostSubmitRequestAdaptor(instance);
+    } else if (instance.state === "pending") {
+      api = "/api/workflow/engine";
+      requestAdaptor = await getPostEngineRequestAdaptor(instance);
+    } else {
+      return null; //TODO 考虑异常情况?
+    }
   }
 
   return [
@@ -373,6 +394,10 @@ const getSubmitActions = async (instance) => {
           url: `\${context.rootUrl}${api}`,
           method: "post",
           dataType: "json",
+          data: {
+            "&": "$$",
+            "$scopeId": "${$scopeId}"
+          },
           headers: {
             Authorization: "Bearer ${context.tenantId},${context.authToken}",
           },
@@ -389,9 +414,13 @@ const getSubmitActions = async (instance) => {
       "componentId": "",
       "args": {
         "blank": false,
-        "url": `/workflow/space/${getSteedosAuth().tenantId}/${instance.box}`
+        "url": Router.getObjectListViewPath({appId: "${appId}", objectName: "${objectName}", listViewName: "${main_listview_id}"})
       },
       "actionType": "url",
+      expression: "${event.data.instanceFormValidate && event.data.approvalFormValidate}"
+    },
+    {
+      "actionType": "closeDialog",
       expression: "${event.data.instanceFormValidate && event.data.approvalFormValidate}"
     }
   ];
@@ -420,7 +449,7 @@ export const getApprovalDrawerSchema = async (instance) => {
             minRows: 3,
             maxRows: 20,
             placeholder: "请填写意见",
-            required: "${judge} === rejected"
+            requiredOn: "${judge === 'rejected'}"
           },
           await getNextStepInput(instance),
           await getNextStepUsersInput(instance),

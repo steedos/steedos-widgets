@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 09:09:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-09 16:45:28
+ * @LastEditTime: 2023-02-11 17:17:43
  * @Description: 
  */
 export * from './lib/amis'
@@ -27,6 +27,8 @@ export * from './lib/converter/amis/fields/user';
 export * from './lib/converter/amis/filters';
 export * from './lib/converter/amis/header';
 export * from './lib/converter/amis/fields_filter';
+
+export * from './lib/router';
 
 export * from './lib/assets';
 
