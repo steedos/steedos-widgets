@@ -39,7 +39,6 @@ const getJudgeOptions = async (instance) => {
 };
 
 const getJudgeInput = async (instance) => {
-  console.log("===instance==getJudgeInput===", instance, instance.approve.type != 'cc')
   const judgeOptions = await getJudgeOptions(instance);
   if (judgeOptions.length > 0 && instance.approve.type != 'cc') {
     return {
@@ -434,6 +433,7 @@ const getSubmitActions = async (instance) => {
 };
 
 export const getApprovalDrawerSchema = async (instance) => {
+  // console.log("=============getApprovalDrawerSchema=============")
   return {
     type: "drawer",
     overlay: false,

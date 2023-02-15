@@ -5,7 +5,7 @@ import { getOpinionFieldStepsName } from './util';
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 17:47:37
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-08 15:09:09
+ * @LastEditTime: 2023-02-15 16:55:50
  * @Description:
  */
 
@@ -202,7 +202,6 @@ export const getInstanceInfo = async ({ instanceId, box }) => {
   if (box === "inbox" || box === "draft") {
     userApprove = getUserApprove({ instance, userId });
   }
-  console.log(`getInstanceInfo`, box, userApprove, userId)
   const flowVersion = getFlowVersion(instance);
   const formVersion = getFormVersion(instance);
 
@@ -220,14 +219,6 @@ export const getInstanceInfo = async ({ instanceId, box }) => {
     approve: userApprove,
     box,
   });
-
-  console.log(`fields`, _.map(formVersion.fields, (field) => {
-    return Object.assign({}, field, {
-      permission: step?.permissions[field.code] || ( isCurrentStepOpinionField(field, step) ? 'editable' : ''),
-    }) ;
-  }))
-
-  console.log('step', step)
 
   return {
     box: box,
@@ -247,7 +238,7 @@ export const getInstanceInfo = async ({ instanceId, box }) => {
     name: instance.name || instance.form.name,
     fields: _.map(formVersion.fields, (field) => {
       return Object.assign({}, field, {
-        permission: step?.permissions[field.code] || ( isCurrentStepOpinionField(field, step) ? 'editable' : ''),
+        permission:  userApprove.type != 'cc' && (step?.permissions[field.code] || ( isCurrentStepOpinionField(field, step) ? 'editable' : '')),
       }) ;
     }),
     flowVersion: flowVersion,
