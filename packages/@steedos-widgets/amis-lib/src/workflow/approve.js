@@ -39,8 +39,9 @@ const getJudgeOptions = async (instance) => {
 };
 
 const getJudgeInput = async (instance) => {
+  console.log("===instance==getJudgeInput===", instance, instance.approve.type != 'cc')
   const judgeOptions = await getJudgeOptions(instance);
-  if (judgeOptions.length > 0) {
+  if (judgeOptions.length > 0 && instance.approve.type != 'cc') {
     return {
       type: "radios",
       label: false,
@@ -81,6 +82,9 @@ const getJudgeInput = async (instance) => {
 
 //TODO 只有一个下一步时,默认选中,并且禁止修改.
 const getNextStepInput = async (instance) => {
+  if(instance.approve.type == 'cc'){
+    return ;
+  }
   return {
     type: "grid",
     columns: [
@@ -185,6 +189,9 @@ const getNextStepInput = async (instance) => {
 
 //TODO 只有一个处理人时,默认选中,禁止修改. 部分情况不需要显示下一步处理人
 const getNextStepUsersInput = async (instance) => {
+  if(instance.approve.type == 'cc'){
+    return ;
+  }
   return {
     type: "grid",
     columns: [
@@ -342,7 +349,7 @@ const getPostEngineRequestAdaptor = async (instance) => {
  * @returns
  */
 const getSubmitActions = async (instance) => {
-  console.log(`getSubmitActions instance====`, instance)
+  // console.log(`getSubmitActions instance====`, instance)
   let api = "";
   let requestAdaptor = "";
   if(instance.approve.type == "cc"){
@@ -367,7 +374,7 @@ const getSubmitActions = async (instance) => {
       "args": {},
       "actionType": "custom",
       "script": `
-        console.log("======getSubmitActions");
+        // console.log("======getSubmitActions");
         const form = event.context.scoped.getComponentById("instance_form");
         return form.validate().then((instanceFormValidate)=>{
           event.setData({...event.data, instanceFormValidate})
@@ -414,7 +421,7 @@ const getSubmitActions = async (instance) => {
       "componentId": "",
       "args": {
         "blank": false,
-        "url": Router.getObjectListViewPath({appId: "${appId}", objectName: "${objectName}", listViewName: "${main_listview_id}"})
+        "url": Router.getObjectListViewPath({appId: "${appId}", objectName: "${objectName}", listViewName: "${side_listview_id}"})
       },
       "actionType": "url",
       expression: "${event.data.instanceFormValidate && event.data.approvalFormValidate}"

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-16 12:00:35
+ * @LastEditTime: 2023-02-15 10:55:31
  * @Description:
  */
 import React, { useState, useEffect, Fragment } from "react";
@@ -15,7 +15,7 @@ export default function Record({formFactor: defaultFormFactor}) {
   
   const router = useRouter();
   const [uiSchema, setUiSchema] = useState(null);
-  const { app_id, tab_id, listview_id, record_id, display, side_object = tab_id, main_listview_id = listview_id } = router.query;
+  const { app_id, tab_id, listview_id, record_id, display, side_object = tab_id, side_listview_id = listview_id } = router.query;
   const [page, setPage] = useState(false);
   const [listPage, setListPage] = useState(false);
 
@@ -100,7 +100,7 @@ export default function Record({formFactor: defaultFormFactor}) {
               data={{
                 objectName: side_object,
                 listViewId: listViewId,
-                listName: main_listview_id,
+                listName: side_listview_id,
                 appId: app_id,
                 formFactor: defaultFormFactor,
                 scopeId: listViewId,
