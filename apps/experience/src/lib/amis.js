@@ -171,6 +171,7 @@ export const registerRenders = (assets)=>{
           AmisWrapper = (props)=>{
             const { $schema, body, render } = props
             const [schema, setSchema] = amisReact.useState(null);
+            // console.debug(`AmisWrapper`, $schema, schema);
             amisReact.useEffect(()=>{
               const result = Component.class(props);
               if(result && result.then && typeof result.then === 'function'){
@@ -221,6 +222,8 @@ export const registerRenders = (assets)=>{
 
 export const amisRender = (root, schema, props = {}, env = {}, options) => {
   let amis = amisRequire("amis/embed");
+  console.log(`amisRender`)
+  console.log(schema)
   const { router, assets } = options;
   registerRenders(assets);
   return amis.embed(root, schema, props, Object.assign(getEvn(router), env));

@@ -85,18 +85,18 @@ export function getRelatedFieldTpl(field, ctx){
             let labelTpl = `<%=item.label%>`;
             if(!onlyDisplayLabel){
                 const href = Router.getObjectDetailPath({
-                    formFactor: ctx.formFactor, appId: ctx.appId, objectName: `<%=item.objectName%>`, recordId: `<%=item.value%>`, _templateType: "JavaScript"
+                    formFactor: ctx.formFactor, appId: "<%=data.appId%>", objectName: `<%=item.objectName%>`, recordId: `<%=item.value%>`, _templateType: "JavaScript"
                 })
                 labelTpl = `<a href="${href}"><%=item.label%></a>`;
             }
             tpl = `
-            <% if (data._display.${field.name} && data._display.${field.name}.length) { %><% data._display.${field.name}.forEach(function(item) { %> ${labelTpl}  <% }); %><% } %>
+            <% if (data._display.${field.name} && data._display.${field.name}.length) { %><% data._display.${field.name}.forEach(function(item,index) { %> <% if(index>0 && index<data._display.${field.name}.length){ %> , <% } %> ${labelTpl}  <% }); %><% } %>
             `
         }else{
             let labelTpl = `\${_display.${field.name}.label}`;
             if(!onlyDisplayLabel){
                 const href = Router.getObjectDetailPath({
-                    formFactor: ctx.formFactor, appId: ctx.appId, objectName: `\${_display.${field.name}.objectName}`, recordId: `\${_display.${field.name}.value}`
+                    formFactor: ctx.formFactor, appId: "${appId}", objectName: `\${_display.${field.name}.objectName}`, recordId: `\${_display.${field.name}.value}`
                 })
                 labelTpl = `<a href="${href}">\${_display.${field.name}.label}</a>`;
             }
@@ -108,7 +108,7 @@ export function getRelatedFieldTpl(field, ctx){
         let labelTpl = `<%=item.label%>`;
         if(!onlyDisplayLabel){
             const href = Router.getObjectDetailPath({
-                formFactor: ctx.formFactor, appId: ctx.appId, objectName: `<%=item.objectName%>`, recordId: `<%=item.value%>`, _templateType: "JavaScript"
+                formFactor: ctx.formFactor, appId: "<%=data.appId%>", objectName: `<%=item.objectName%>`, recordId: `<%=item.value%>`, _templateType: "JavaScript"
             })
             labelTpl = `<a href="${href}"><%=item.label%></a>`;
         }

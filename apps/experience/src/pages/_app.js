@@ -7,6 +7,7 @@
  */
 import Script from 'next/script'
 import { SessionProvider } from "next-auth/react"
+import { defaultsDeep, concat, compact, filter, map, isEmpty } from 'lodash';
 import 'focus-visible';
 import '@/styles/tailwind.css';
 import '@/styles/antd.css';
@@ -21,11 +22,36 @@ import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { usePostHog } from 'next-use-posthog'
 import { Builder } from '@steedos-builder/react'
 import { Steedos } from '@steedos-widgets/steedos-lib'
+import { registerRenders } from '@/lib/amis';
 
 export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }) {
+  const [globalAssetsLoaded, setGlobalAssetsLoaded] = useState(false);
+
+  useEffect(()=>{
+
+    const globalAssetUrl =  window.STEEDOS_EXPERIENCE_ASSETURLS
+    window.addEventListener('message', function (event) {
+        const { data } = event;
+        console.log(data)
+        if (data.type === 'builder.assetsLoaded') {
+            setGlobalAssetsLoaded(true)
+        }
+    })
+    
+    const globalAssetUrls = globalAssetUrl.split(',');
+    Builder.registerRemoteAssets(globalAssetUrls).then(()=>{
+        const amisComps = filter(Builder.registry['meta-components'], function(item){ return item.componentName && item.amis?.render});
+        const globalAssets = map(amisComps, (item)=>{
+            return { componentType: item.componentType, componentName: item.componentName, ...item.amis.render}
+        });
+        registerRenders(globalAssets)
+    })
+    
+  }, [])
+
   usePostHog('phc_Hs5rJpeE5JK3GdR3NWOf75TvjEcnYShmBxNU2Y942HB', {
     api_host: 'https://posthog.steedos.cn',
     loaded: (posthog) => {
@@ -65,10 +91,10 @@ export default function App({
 
   return (
     <>
-    <Script src="https://unpkg.steedos.cn/amis@2.5.2/sdk/sdk.js" strategy="beforeInteractive"/>
+    <Script src={`https://unpkg.steedos.cn/amis@${process.env.STEEDOS_EXPERIENCE_AMIS_VERSION}/sdk/sdk.js`} strategy="beforeInteractive"/>
     <Script src="/amis-init.js" strategy="beforeInteractive"/>
 
-    { formFactor && <SessionProvider session={session}>
+    { formFactor && globalAssetsLoaded && <SessionProvider session={session}>
       <Layout formFactor={formFactor} {...data}>
         <Component {...pageProps} formFactor={formFactor}/>
       </Layout>

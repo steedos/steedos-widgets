@@ -14,3 +14,7 @@ export * from './pages';
 
 
 export * as AmisLib from '@steedos-widgets/amis-lib';
+export * as SteedosLib from '@steedos-widgets/steedos-lib';
+
+
+

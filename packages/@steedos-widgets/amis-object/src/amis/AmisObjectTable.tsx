@@ -6,7 +6,7 @@
  * @Description: 
  */
 import { getTableSchema, conditionsToFilters } from '@steedos-widgets/amis-lib'
-import { keys, pick, difference, pickBy } from 'lodash';
+import { keys, pick, difference, pickBy, has } from 'lodash';
 
 export const AmisObjectTable = async (props) => {
   // console.log(`AmisObjectTable props`, props)
@@ -26,6 +26,8 @@ export const AmisObjectTable = async (props) => {
   if (!(ctx && ctx.defaults)) {
     const schemaKeys = difference(keys($schema), ["type", "objectApiName", "columns", "extraColumns","id"]);
     const listSchema = pick(props, schemaKeys);
+    // className不传入crud组件，crud单独识别crudClassName属性
+    listSchema.className = ""
     defaults = {
       listSchema
     };
@@ -42,13 +44,13 @@ export const AmisObjectTable = async (props) => {
   }
   const amisFilters = amisCondition && conditionsToFilters(amisCondition);
   const tableFilters = filters || amisFilters;
-
   const amisSchemaData = Object.assign({}, data, defaultData);
+  const appId = data?.appId || defaultData?.appId;
   // ctx中值为undefined的属性不能保留，否则会导致 filters等被覆盖。
   ctx = pickBy(ctx, (value)=>{ return value !== undefined })
-  let amisSchema = (await getTableSchema(amisSchemaData.appId, objectApiName, columns, { filters: tableFilters, filtersFunction, top, sort, sortField, sortOrder, extraColumns, defaults, ...ctx, setDataToComponentId, requestAdaptor,  adaptor })).amisSchema;
+  let amisSchema = (await getTableSchema(appId, objectApiName, columns, { filters: tableFilters, filtersFunction, top, sort, sortField, sortOrder, extraColumns, defaults, ...ctx, setDataToComponentId, requestAdaptor,  adaptor })).amisSchema;
   amisSchema.data = Object.assign({}, amisSchema.data, amisSchemaData);
 
-  amisSchema.className = `steedos-object-table`
+  amisSchema.className = `steedos-object-table ${className}`
   return amisSchema;
 }

@@ -47,7 +47,7 @@ const options = {
             }
         }
     },
-    uglify()
+    process.env.NODE_ENV === 'production' && uglify()
   ],
 };
 

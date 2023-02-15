@@ -11,30 +11,12 @@ import { amisRender, amisRootClick, getDefaultRenderData } from '@/lib/amis';
 import { defaultsDeep, concat, compact, filter, map, isEmpty } from 'lodash';
 import { useRouter } from 'next/router'
 
+
 export const AmisRender = ({id, schema, data, className, assets, getModalContainer, updateProps, session})=>{
     const router = useRouter()
-    const [globalAssetLoaded, setGlobalAssetLoaded] = useState(false);
-    const [globalAssets, setGlobalAssets] = useState(null);
-    useEffect(()=>{
-        const globalAssetUrl =  Builder.settings.env?.STEEDOS_EXPERIENCE_ASSETURLS
-        if(globalAssetUrl){
-            const globalAssetUrls = globalAssetUrl.split(',');
-            Builder.registerRemoteAssets(globalAssetUrls).then(()=>{
-                const amisComps = filter(Builder.registry['meta-components'], function(item){ return item.componentName && item.amis?.render});
-                setGlobalAssets(map(amisComps, (item)=>{
-                    return { componentType: item.componentType, componentName: item.componentName, ...item.amis.render}
-                }));
-                setGlobalAssetLoaded(true)
-            })
-        }else{
-            setGlobalAssetLoaded(true)
-        }
-    }, [])
 
     useEffect(() => {
-        if(!globalAssetLoaded){
-            return ;
-        }
+        
         const defData = defaultsDeep({data: {$scopeId : id }}, {data: data} , {
             data: getDefaultRenderData()
         });
@@ -46,9 +28,6 @@ export const AmisRender = ({id, schema, data, className, assets, getModalContain
                 console.error(`error`, id)
             }
         }
-        // console.log(`defData`, defData, defaultsDeep(defData , schema))
-        // console.log(`globalAssets`, globalAssets)
-
 
         const env = {};
 
@@ -60,8 +39,8 @@ export const AmisRender = ({id, schema, data, className, assets, getModalContain
         }
         SteedosUI.refs[id] = amisRender(`#${id}`, defaultsDeep(defData , schema), {
             // location: router
-        }, env, {router: router, assets: compact(concat(globalAssets, assets))});
-      }, [globalAssetLoaded, JSON.stringify(schema), JSON.stringify(data)]);
+        }, env, {router: router, assets:assets});
+      }, [JSON.stringify(schema), JSON.stringify(data)]);
 
     useEffect(()=>{
         const amisScope = SteedosUI.getRef(id);

@@ -80,13 +80,11 @@ export default {
         type: config.amis.name,
         label: config.title,
         objectApiName: "${objectName}",
-        recordId: "${recordId}",
-        relatedObjectApiName: "contacts"
+        recordId: "${recordId}"
       },
       previewSchema: {
         type: config.amis.name,
-        objectApiName: "accounts",
-        relatedObjectApiName: "contacts"
+        objectApiName: "accounts"
       },
       panelTitle: "设置",
       panelControls: [

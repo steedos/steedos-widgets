@@ -28,7 +28,6 @@ export const getRelatedFieldValue = (masterObjectName, record_id, uiSchema, fore
 
 // 获取所有相关表
 export async function getObjectRelatedList(
-    appName,
     objectName,
     recordId,
     formFactor
@@ -71,18 +70,30 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
     let { top, perPage, hiddenEmptyTable, appId, relatedLabel, className, columns, sort, filters, visible_on } = ctx;
     // console.log('getRecordDetailRelatedListSchema==>',objectName,recordId,relatedObjectName)
     const relatedObjectUiSchema = await getUISchema(relatedObjectName);
-    const { list_views, label , icon, fields } = relatedObjectUiSchema;
+    const { label , fields } = relatedObjectUiSchema;
     if(!relatedLabel){
         relatedLabel = label;
     }
-    const firstListViewName = keys(list_views).includes('all') ? 'all' : keys(list_views)[0];
     if(!relatedKey){
         relatedKey = findKey(fields, function(field) { 
            return ["lookup","master_detail"].indexOf(field.type) > -1 && field.reference_to === objectName; 
-       });
+        });
     }
     let globalFilter = null;
     const refField = await getField(relatedObjectName, relatedKey);
+
+    if(!refField){
+        return {
+            uiSchema: relatedObjectUiSchema,
+            amisSchema: {
+                "type": "alert",
+                "body": `未找到与相关列表对象${relatedObjectName}关联的相关表字段`,
+                "level": "warning",
+                "showIcon": true,
+                "className": "mb-3"
+            }
+        }
+    }
 
     let relatedValue = recordId;
     if(refField.reference_to_field && refField.reference_to_field != '_id'){
@@ -115,9 +126,10 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
         setDataToComponentId: componentId,
         tableHiddenOn: hiddenEmptyTable ? "this.$count === 0" : null,
         appId: appId,
+        crudClassName: 'border-t border-slate-300',
         ...ctx
     }
-    const amisSchema= (await getRelatedListSchema(null, relatedObjectName, 'all', options)).amisSchema;
+    const amisSchema= (await getRelatedListSchema(relatedObjectName, 'all', options)).amisSchema;
     if(!amisSchema){
         return;
     }
@@ -126,7 +138,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
         amisSchema: {
             type: "service",
             id: componentId,
-            className: `steedos-record-related-list sm:rounded sm:border border-slate-300 bg-gray-100 mb-4 ${className}`,
+            className: `steedos-record-related-list rounded border border-slate-300 bg-gray-100 mb-4 ${className}`,
             data: {
                 "&": "$$",
                 appId: "${appId}",
@@ -167,7 +179,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
 * 3 options
 */
 function getDefaultRelatedListProps(uiSchema, listName, ctx) {
-    console.log('getDefaultRelatedListProps==>', uiSchema, listName, ctx)
+    // console.log('getDefaultRelatedListProps==>', uiSchema, listName, ctx)
     const listView = find(
         uiSchema.list_views,
         (listView, name) => {
@@ -226,10 +238,9 @@ function getRelatedListProps(uiSchema, listViewName, ctx) {
 
 // 仅提供给单个相关子表内部使用
 export async function getRelatedListSchema(
-    appName,
     objectName,
     listViewName,
-    ctx = {}
+    ctx
   ) {
     const uiSchema = await getUISchema(objectName);
     const listView = uiSchema.list_views;

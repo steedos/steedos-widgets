@@ -42,7 +42,7 @@ export const AmisObjectForm = async (props) => {
     if(objectApiName){
       formData.objectName = objectApiName;
     }
-    amisSchema.className = `${className}`
+    amisSchema.className = `steedos-object-form ${className}`
     amisSchema.data = Object.assign({"&": "$$"}, amisSchema.data, formData, {global: globalData});
     return amisSchema;
   } else {
@@ -53,7 +53,7 @@ export const AmisObjectForm = async (props) => {
       };
     }
     const amisSchema: any =  (await getViewSchema(objectApiName, recordId, options)).amisSchema;
-    amisSchema.className = `${className}`
+    amisSchema.className = `steedos-object-form ${className}`
     amisSchema.data = Object.assign({"&": "$$"}, amisSchema.data,  {global: globalData});
     return amisSchema;
   }

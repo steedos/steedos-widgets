@@ -4,8 +4,8 @@ import { Popover, Transition } from '@headlessui/react'
 import clsx from 'clsx'
 import { useSession, signIn, signOut } from "next-auth/react"
 
-import { ButtonLink } from '@/components/Button'
-import { Container } from '@/components/Container'
+import { ButtonLink } from '@/components/home/Button'
+import { Container } from '@/components/home/Container'
 import { Logo } from '@/components/Logo'
 
 function MobileNavigation() {

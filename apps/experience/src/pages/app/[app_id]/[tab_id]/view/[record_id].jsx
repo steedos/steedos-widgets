@@ -8,32 +8,21 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
 import { AmisRender } from "@/components/AmisRender";
-import { getPage, getUISchema } from "@steedos-widgets/amis-lib";
+import { getPage, getUISchema, Router } from "@steedos-widgets/amis-lib";
 import { Loading } from '@/components/Loading';
-
-const getTabDisplayAs = (tab_id) => {
-  const key = `tab:${tab_id}:display`;
-  const value = localStorage.getItem(key)
-  return value ? value : 'grid'
-}
-
-const setTabDisplayAs = (tab_id, displayAs) => {
-  const key = `tab:${tab_id}:display`;
-  localStorage.setItem(key, displayAs)
-}
 
 export default function Record({formFactor: defaultFormFactor}) {
   
   const router = useRouter();
   const [uiSchema, setUiSchema] = useState(null);
-  const { app_id, tab_id, listview_id, record_id, display, main_object = tab_id, main_listview_id = listview_id } = router.query;
+  const { app_id, tab_id, listview_id, record_id, display, side_object = tab_id, main_listview_id = listview_id } = router.query;
   const [page, setPage] = useState(false);
   const [listPage, setListPage] = useState(false);
 
   if (display)
-    setTabDisplayAs(tab_id, display)
+    Router.setTabDisplayAs(tab_id, display)
 
-  const displayAs = (defaultFormFactor === 'SMALL')? 'grid': display? display : getTabDisplayAs(tab_id);
+  let displayAs = (defaultFormFactor === 'SMALL')? 'grid': display? display : side_object? 'split': Router.getTabDisplayAs(tab_id);
 
   useEffect(() => {
     const listPage = getPage({type: 'list', appId: app_id, objectName: tab_id, defaultFormFactor});
@@ -91,16 +80,16 @@ export default function Record({formFactor: defaultFormFactor}) {
   const listViewId = SteedosUI.getRefId({
     type: "listview",
     appId: app_id,
-    name: main_object,
+    name: side_object,
   });
   const listSchema = listPage? JSON.parse(listPage.schema) : {
     "type": "steedos-object-listview",
-    "objectApiName": main_object,
+    "objectApiName": side_object,
     "columnsTogglable": false,
     "showHeader": true,
     "showDisplayAs": true,
     "formFactor": 'SMALL',
-    "className": "absolute top-0 bottom-0 w-[388px] shadow border-r border-slate-300 border-solid"
+    "className": "absolute top-0 bottom-0 w-[388px] shadow border-r border-slate-300 border-solid bg-gray-100"
   }
 
   return (
@@ -109,7 +98,7 @@ export default function Record({formFactor: defaultFormFactor}) {
         <div className="flex h-full">
             <AmisRender
               data={{
-                objectName: main_object,
+                objectName: side_object,
                 listViewId: listViewId,
                 listName: main_listview_id,
                 appId: app_id,

@@ -8,6 +8,16 @@
 
 
 export const Router = {
+    getTabDisplayAs(tab_id){
+        const key = `tab:${tab_id}:display`;
+        const value = localStorage.getItem(key)
+        return value ? value : 'grid'
+    },
+  
+    setTabDisplayAs(tab_id, displayAs){
+        const key = `tab:${tab_id}:display`;
+        localStorage.setItem(key, displayAs)
+    },
     getAppPath({formFactor, appId}){
         return `/app/${appId}`;
     },
@@ -22,12 +32,14 @@ export const Router = {
         // if(objectName === 'instances'){
         //     return `/workflow/space/\${context.tenantId}/\${listName}/${recordId}`;
         // }
+        const displayAs = Router.getTabDisplayAs(objectName);
         if(_templateType === 'JavaScript'){
-            return `/app/${appId}/${objectName}/view/${recordId}?main_object=<%=item.objectName%>&main_listview_id=<%=item.listName%>`;
+            return `/app/${appId}/${objectName}/view/${recordId}?display=${displayAs}&side_object=<%=item.objectName%>&side_listview_id=<%=item.listName%>`;
         }
-        return `/app/${appId}/${objectName}/view/${recordId}?main_object=\${objectName}&main_listview_id=\${listName}`;
+        return `/app/${appId}/${objectName}/view/${recordId}?display=${displayAs}&side_object=\${objectName}&side_listview_id=\${listName}`;
     },
     getObjectRelatedViewPath({formFactor, appId, masterObjectName, masterRecordId, objectName, foreignKey}){
         return `/app/${appId}/${masterObjectName}/${masterRecordId}/${objectName}/grid?related_field_name=${foreignKey}`;
-    }
+    },
+
 }
