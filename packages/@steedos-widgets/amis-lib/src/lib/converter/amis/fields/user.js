@@ -255,13 +255,6 @@ export async function getSelectUserSchema(field, readonly, ctx) {
                 "joinValues": false,
             });
         }
-        let defaultValue = field.defaultValue;
-        if (_.has(field, 'defaultValue') && !(_.isString(defaultValue) && defaultValue.startsWith("{"))) {
-            if(_.isString(defaultValue) && defaultValue.startsWith("{{")){
-                defaultValue = `\$${defaultValue.substring(1, defaultValue.length -1)}`
-            }
-            amisSchema.value = defaultValue
-        }
         if (typeof amisSchema.searchable !== "boolean") {
             amisSchema.searchable = true;
         }

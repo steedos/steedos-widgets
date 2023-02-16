@@ -431,13 +431,6 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         autoComplete: apiInfo,
         searchable: true,
     }
-    let defaultValue = field.defaultValue
-    if(_.has(field, 'defaultValue') && !(_.isString(field.defaultValue) && field.defaultValue.startsWith("{"))){
-        if(_.isString(defaultValue) && defaultValue.startsWith("{{")){
-            defaultValue = `\$${defaultValue.substring(1, defaultValue.length -1)}`
-        }
-        data.value = defaultValue
-    }
     if(field.multiple){
         data.multiple = true
         data.extractValue = true

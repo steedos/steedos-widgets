@@ -6,6 +6,8 @@ import * as Tpl from '../tpl';
 import * as File from './file';
 import { getAmisStaticFieldType } from './type';
 import * as _ from 'lodash'
+import { getFieldDefaultValue } from './default_value';
+
 export const OMIT_FIELDS = ['created', 'created_by', 'modified', 'modified_by'];
 export { getAmisStaticFieldType } from './type';
 // const Lookup = require('./lookup');
@@ -209,22 +211,6 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                 valueField: 'value',
                 tpl: readonly ? Tpl.getSelectTpl(field) : null
             }
-            let defaultValue = field.defaultValue
-            if(_.has(field, 'defaultValue') && !(_.isString(field.defaultValue) && field.defaultValue.startsWith("{"))){
-                if(_.isString(defaultValue) && defaultValue.startsWith("{{")){
-                    defaultValue = `\$${defaultValue.substring(1, defaultValue.length -1)}`
-                }
-                const dataType = field.data_type || 'text';
-                if(defaultValue != null){
-                    if(dataType === 'text'){
-                        convertData.value = String(defaultValue);
-                    }else if(dataType === 'number'){
-                        convertData.value = Number(defaultValue);
-                    }else if(dataType === 'boolean'){
-                        convertData.value = defaultValue === 'false' ? false : true;
-                    }
-                }
-            }
             if(field.multiple){
                 convertData.multiple = true
                 convertData.extractValue = true
@@ -387,7 +373,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             convertData = {
                 type: "editor",
                 language: field.language,
-                value: field.defaultValue || ''
+                // value: field.defaultValue || ''
             }
             break;
         case 'toggle':
@@ -467,6 +453,11 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             break;
     }
     if(!_.isEmpty(convertData)){
+        const defaultValue = getFieldDefaultValue(field, readonly);
+        if(defaultValue){
+            console.log("field defaultValue:", field.name, defaultValue);
+            convertData.value = defaultValue;
+        }
         if(field.is_wide || convertData.type === 'group'){
             convertData.className = 'col-span-2 m-1';
         }else{
