@@ -1,4 +1,6 @@
 import * as _ from 'lodash';
+import { isFunction } from 'lodash';
+import { safeRunFunction, safeEval } from '../util';
 
 /**
   把原来的默认值公式表达式转换成新的表达式语法，原来的表达式语法如下所示：
@@ -46,11 +48,18 @@ export function getFieldDefaultValue(field, readonly, ctx) {
     }
 
     let defaultValue = field.defaultValue;
-    if(_.isString(defaultValue)){
+
+    if (field._defaultValue) {
+        defaultValue = safeEval(`(${field._defaultValue})`);
+    }
+    if (isFunction(defaultValue)) {
+        defaultValue = safeRunFunction(defaultValue, [], null, { name: field.name });
+    }
+    if (_.isString(defaultValue)) {
+        // 支持{userId}这种格式
         defaultValue = getCompatibleDefaultValueExpression(defaultValue, field.multiple);
     }
     const isFormula = _.isString(defaultValue) && defaultValue.startsWith("{{");
-    // TODO:{userId}这种格式未支持
     if (isFormula) {
         // 支持{{global.user.name}}这种公式
         defaultValue = `\$${defaultValue.substring(1, defaultValue.length - 1)}`
