@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { isFunction } from 'lodash';
+import { isFunction, isNumber, isBoolean, isString } from 'lodash';
 import { safeRunFunction, safeEval } from '../util';
 
 /**
@@ -67,13 +67,14 @@ export function getFieldDefaultValue(field, readonly, ctx) {
     switch (field.type) {
         case 'select':
             const dataType = field.data_type || 'text';
-            if (defaultValue && !isFormula) {
-                if (dataType === 'text') {
+            if (defaultValue && !isFormula && !field.multiple) {
+                if (dataType === 'text' && !isString(defaultValue)) {
                     defaultValue = String(defaultValue);
-                } else if (dataType === 'number') {
+                } else if (dataType === 'number' && !isNumber(defaultValue)) {
                     defaultValue = Number(defaultValue);
-                } else if (dataType === 'boolean') {
-                    defaultValue = defaultValue === 'false' ? false : true;
+                } else if (dataType === 'boolean' && !isBoolean(defaultValue)) {
+                    // defaultValue = defaultValue === 'false' ? false : true;
+                    defaultValue = defaultValue === 'true';
                 }
             }
             break;
