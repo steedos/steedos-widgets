@@ -93,8 +93,13 @@ export const AmisObjectFieldLookup = (props) => {
   }, [JSON.stringify(value)])
   
   const handleChange = async (values, fieldName)=>{
+    // 因为记录新建时右侧的选项中useEffect中获取的formItemValue中的o为undefined,而且不易解决， 所以在此检查一下，没有值就取当前左侧选项的value ｜ 左侧第一个选项的value。
+    let value_o = (value as any)?.o;
+    if(fieldName.endsWith("_right") && !value_o && schema){
+      value_o = (schema as any).body[0].value || (schema as any).body[0].options[0].value;
+    }
     const fieldValue = Object.assign({
-      o: fieldName.endsWith("_left") ? values : (value as any)?.o,
+      o: fieldName.endsWith("_left") ? values : value_o,
       ids: fieldName.endsWith("_right") ? values : (value as any)?.ids
     })
 
