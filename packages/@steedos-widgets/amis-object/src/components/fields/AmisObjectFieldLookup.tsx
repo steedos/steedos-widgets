@@ -72,9 +72,9 @@ export const AmisObjectFieldLookup = (props) => {
   
   let { field, readonly = false, ctx, dispatchEvent: amisDispatchEvent, render, renderFormItems, onChange, data, formItemValue, value: fValue} = props;
   // console.log(`${field.name}=====>`, data[field.name], formItemValue, has(data, 'recordId'))
-  if(!data[field.name] && data.recordId && formItemValue === undefined){
-    return ;
-  }
+  // if(!data[field.name] && data.recordId && formItemValue === undefined){
+  //   return ;
+  // }
   const [schema, setSchema] = useState();
   if(formItemValue === undefined){
     formItemValue = data[field.name]
