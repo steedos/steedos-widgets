@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-11 17:49:08
+ * @LastEditTime: 2023-02-20 10:21:59
  * @Description:
  */
 import {
@@ -742,6 +742,7 @@ export const getFlowFormSchema = async (instance, box) => {
         type: "form",
         debug: false,
         wrapWithPanel: false,
+        resetAfterSubmit: true,
         body: [
           {
             type: "tpl",

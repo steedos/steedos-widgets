@@ -446,6 +446,7 @@ export const getApprovalDrawerSchema = async (instance) => {
         type: "form",
         debug: false,
         id: "instance_approval",
+        resetAfterSubmit: true,
         body: [
           await getJudgeInput(instance),
           {
