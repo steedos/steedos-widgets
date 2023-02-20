@@ -5,7 +5,7 @@ import { getOpinionFieldStepsName } from './util';
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 17:47:37
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-30 15:26:53
+ * @LastEditTime: 2023-02-15 18:14:59
  * @Description:
  */
 
@@ -259,7 +259,7 @@ export const getInstanceInfo = async ({ instanceId, box }) => {
             let judge = approve.judge;
             let userName = approve.user_name;
             let opinion = approve.description;
-            if(approve.type === 'cc'){
+            if(approve?.type === 'cc'){
               userName = `${userName} (传阅)`
               opinion = approve.cc_description;
             }
