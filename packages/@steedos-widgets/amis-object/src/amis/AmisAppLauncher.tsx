@@ -89,7 +89,6 @@ export const AmisAppLauncher = async (props) => {
                                     },
                                     "className": "slds-p-horizontal_small slds-size_1-of-1 slds-medium-size_1-of-3"
                                   },
-                                  "id": "u:a0f163ed207f",
                                   "className": "slds-grid slds-wrap slds-grid_pull-padded"
                                 }
                               ]
@@ -100,16 +99,39 @@ export const AmisAppLauncher = async (props) => {
                               "header": "所有项目",
                               "body": [
                                 {
-                                  "type": "html",
-                                  "html": "<ul class='slds-grid slds-wrap'>${object_items_dom|raw}</ul>",
-                                  "className": "dec"
+                                  "type": "each",
+                                  "name": "object_items",
+                                  "items": {
+                                    "type": "button",
+                                    "level": "link",
+                                    "actionType": "link",
+                                    "link": "${path}",
+                                    "body": [{
+                                      "type": "tpl",
+                                      "wrapperComponent": "span",
+                                      "className": "app-launcher-link slds-text-link--reset slds-app-launcher__tile--small slds-truncate creator-object-nav-${id}",
+                                      "tpl": "<span class=\"slds-truncate slds-text-link\">${name}</span>",
+                                    }],
+                                    "onEvent": {
+                                      "click": {
+                                        "actions": [
+                                          {
+                                            "actionType": "closeDialog"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    "inline": true,
+                                    "style": {
+                                    },
+                                    "className": "slds-col--padded slds-p-vertical_xx-small slds-size_1-of-5 slds-grow-none oneAppLauncherItem"
+                                  },
+                                  "className": "slds-grid slds-wrap"
                                 }
                               ],
-                              "id": "u:a88a225c8832",
                               "className": ""
                             }
                           ],
-                          "id": "u:cb1c62622fd6"
                         }
                       ],
                       "className": "",
@@ -125,8 +147,8 @@ export const AmisAppLauncher = async (props) => {
                         "headers": {
                           "Authorization": "Bearer ${context.tenantId},${context.authToken}"
                         },
-                        "adaptor": "\nlet app_items = payload;\nlet object_items = [];\nlet objects = [];\napp_items.forEach((item) => {\n  item.children.forEach((i) => {\n    if (objects.indexOf(i.id) < 0) {\n      objects.push(i.id);\n      object_items.push(i)\n    }\n  })\n})\nlet object_items_dom = '';\nobject_items.forEach((item) => {\n\n  object_items_dom = object_items_dom +\n    `<li class=\"slds-col--padded slds-p-vertical_xx-small slds-size_1-of-5 slds-grow-none oneAppLauncherItem\">\n      <a data-object-name=\"${item.id}\" href=\"${item.path}\" class=\"app-launcher-link slds-text-link--reset slds-app-launcher__tile--small slds-truncate creator-object-nav-${item.id}\">\n        <span class=\"slds-truncate slds-text-link\">${item.name}</span>\n      </a>\n    </li>`\n})\npayload.data = {\n  app_items,\n  object_items_dom\n}\nreturn payload;"
-                      }
+                        "adaptor": "\nlet app_items = payload;\nlet object_items = [];\nlet objects = [];\napp_items.forEach((item) => {\n  item.children.forEach((i) => {\n    if (objects.indexOf(i.id) < 0) {\n      objects.push(i.id);\n      object_items.push(i)\n    }\n  })\n})\npayload.data = {\n  app_items,\n  object_items\n}\nreturn payload;"
+}
                     }
                   ]
                 },
