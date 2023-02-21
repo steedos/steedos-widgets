@@ -436,8 +436,10 @@ export const getApprovalDrawerSchema = async (instance) => {
   // console.log("=============getApprovalDrawerSchema=============")
   return {
     type: "drawer",
-    overlay: false,
+    overlay: true,
     resizable: false,
+    closeOnEsc: true,
+    closeOnOutside: true,
     size: "sm",
     title: `${instance.step.name}`,
     className: "approval-drawer absolute",
@@ -504,7 +506,7 @@ export const getApprovalDrawerSchema = async (instance) => {
         
       },
     ],
-    id: "u:8861156e0b23",
+    id: "u:approve_8861156e0b23",
     position: "bottom",
     actions: [
       {
