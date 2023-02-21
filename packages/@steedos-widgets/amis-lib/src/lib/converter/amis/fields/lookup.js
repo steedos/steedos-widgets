@@ -431,6 +431,17 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         autoComplete: apiInfo,
         searchable: true,
     }
+    const select_menuTpl = `<span class='flex items-center mt-0.5'>
+        <span role='img' aria-label='smile' class='anticon anticon-smile'>
+            <span class='slds-icon_container slds-icon-standard-\${REPLACE(icon,'_','-')}'>
+                <svg class='slds-icon slds-icon_x-small' aria-hidden='true'>
+                    <use xlink:href='\${context.rootUrl}/assets/icons/standard-sprite/svg/symbols.svg#\${value}'></use>
+                </svg>
+            </span> 
+        </span>
+        <span class='pl-1.5'>\${label}</span>
+    </span>`
+    data.menuTpl = "${icon ? `"+select_menuTpl+"` : ''}"
     if(field.multiple){
         data.multiple = true
         data.extractValue = true
