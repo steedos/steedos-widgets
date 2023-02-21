@@ -81,7 +81,7 @@ const getJudgeInput = async (instance) => {
 
 //TODO 只有一个下一步时,默认选中,并且禁止修改.
 const getNextStepInput = async (instance) => {
-  if(instance.approve.type == 'cc'){
+  if(instance.approve?.type == 'cc'){
     return ;
   }
   return {
@@ -188,7 +188,7 @@ const getNextStepInput = async (instance) => {
 
 //TODO 只有一个处理人时,默认选中,禁止修改. 部分情况不需要显示下一步处理人
 const getNextStepUsersInput = async (instance) => {
-  if(instance.approve.type == 'cc'){
+  if(instance.approve?.type == 'cc'){
     return ;
   }
   return {
@@ -351,7 +351,7 @@ const getSubmitActions = async (instance) => {
   // console.log(`getSubmitActions instance====`, instance)
   let api = "";
   let requestAdaptor = "";
-  if(instance.approve.type == "cc"){
+  if(instance.approve?.type == "cc"){
     api = "/api/workflow/v2/cc_submit";
     requestAdaptor = await getCCSubmitRequestAdaptor(instance);
   }else{
@@ -446,6 +446,7 @@ export const getApprovalDrawerSchema = async (instance) => {
         type: "form",
         debug: false,
         id: "instance_approval",
+        resetAfterSubmit: true,
         body: [
           await getJudgeInput(instance),
           {

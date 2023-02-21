@@ -389,7 +389,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
             filters.push(fieldFilters);
         }
 
-        const filtersFunction = ${field._filtersFunction};
+        const filtersFunction = ${field.filtersFunction || field._filtersFunction};
 
         if(filtersFunction){
             const _filters = filtersFunction(filters, api.data.$);
@@ -412,9 +412,9 @@ export async function lookupToAmisSelect(field, readonly, ctx){
     `
     let labelField = referenceTo ? referenceTo.labelField.name : '';
     let valueField = referenceTo ? referenceTo.valueField.name : '';
-    if(field._optionsFunction){
+    if(field.optionsFunction || field._optionsFunction){
         apiInfo.adaptor = `
-        payload.data.options = eval(${field._optionsFunction})(api.data.$);
+        payload.data.options = eval(${field.optionsFunction || field._optionsFunction})(api.data.$);
         return payload;
         `
         labelField = 'label';
@@ -430,13 +430,6 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         source: apiInfo,
         autoComplete: apiInfo,
         searchable: true,
-    }
-    let defaultValue = field.defaultValue
-    if(_.has(field, 'defaultValue') && !(_.isString(field.defaultValue) && field.defaultValue.startsWith("{"))){
-        if(_.isString(defaultValue) && defaultValue.startsWith("{{")){
-            defaultValue = `\$${defaultValue.substring(1, defaultValue.length -1)}`
-        }
-        data.value = defaultValue
     }
     if(field.multiple){
         data.multiple = true

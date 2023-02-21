@@ -33,7 +33,6 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
       tabId = pageId;
     }
     const [app, setApp] = useState(null)
-    const [selectedTabId, setSelectedTabId] = useState(tabId)
     const { data: session, status } = useSession()
     if(session){
       if(session.publicEnv?.STEEDOS_ROOT_URL){
@@ -88,15 +87,14 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
     }, [session, appId]);
 
     // app 变化，默认进入第一个tab
+    // 要兼容考虑在当前应用中再次进入同一个应用的情况，比如合同应用中再次点九宫格应用列表中的合同应用按钮，所以要监听tabId变化
     useEffect(() => {
       if(!session) return ;
-      if(!pageId && !tabId && !selectedTabId && app?.children[0]){
+      if(app && app.id != appId) return ;//应用切换了，要等app重新请求后再进入第一个tab
+      if(!pageId && !tabId && app?.children[0]){
         router.push(app.children[0].path)
-        setSelectedTabId(app.children[0].id)
-      } else if (tabId != selectedTabId){
-        setSelectedTabId(tabId)
       }
-    }, [app]);
+    }, [app, tabId]);
 
 
     if (!session) return (

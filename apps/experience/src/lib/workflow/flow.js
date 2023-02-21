@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-30 17:27:48
+ * @LastEditTime: 2023-02-20 14:07:29
  * @Description:
  */
 import {
@@ -250,9 +250,13 @@ const getFieldEditTpl = async (field, label)=>{
         break;
       case "date":
         tpl.type = "input-date";
+        tpl.inputFormat = "YYYY-MM-DD";
+        tpl.format = 'YYYY-MM-DDT00:00:00.000[Z]';
         break;
       case "dateTime":
         tpl.type = "input-datetime";
+        tpl.inputFormat = "YYYY-MM-DD HH:mm";
+        tpl.format = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
         break;
       case "checkbox":
         tpl.type = "checkbox";
@@ -446,6 +450,12 @@ const getFieldReadonlyTpl = async (field, label)=>{
   return tpl;
 };
 
+/**
+ * TODO 先将申请单上的字段转化为 steedos field 类型, 只读、编辑 使用 steedos field tpl
+ * @param {*} field 
+ * @param {*} label 
+ * @returns 
+ */
 const getTdInputTpl = async (field, label) => {
   const edit = field.permission === "editable";
   if(edit){
