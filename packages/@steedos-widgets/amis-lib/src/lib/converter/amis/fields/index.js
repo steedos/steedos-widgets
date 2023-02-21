@@ -456,7 +456,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
         const defaultValue = getFieldDefaultValue(field, readonly);
         if(defaultValue){
             console.log("field defaultValue:", field.name, defaultValue);
-            convertData.value = defaultValue;
+            // convertData.value = defaultValue;
         }
         if(field.is_wide || convertData.type === 'group'){
             convertData.className = 'col-span-2 m-1';
