@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-20 16:07:12
+ * @LastEditTime: 2023-02-21 17:03:53
  * @Description:
  */
 import {
@@ -365,6 +365,7 @@ const getFieldEditTpl = async (field, label)=>{
         tpl.columns = [];
         for (const sField of field.fields) {
           if (sField.type != "hidden") {
+            sField.permission = field.permission
             const column = await getTdInputTpl(sField, true);
             tpl.columns.push(column);
           }
