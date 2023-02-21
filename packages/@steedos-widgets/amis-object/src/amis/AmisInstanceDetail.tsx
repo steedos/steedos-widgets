@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-02-08 10:11:02
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-15 09:58:12
+ * @LastEditTime: 2023-02-20 09:37:14
  * @Description: 
  */
 import './AmisInstanceDetail.less';
@@ -27,7 +27,8 @@ export const AmisInstanceDetail = async (props) => {
         boxName,
         ...instanceInfo.approveValues,
         context: Object.assign({}, data.context, instanceInfo),
+        record: instanceInfo
       }
-    // console.log(`schema`, schema)
+    console.log(`AmisInstanceDetail schema`, schema)
     return schema;
 }
