@@ -67,7 +67,7 @@ const getSection = async (permissionFields, fieldSchemaArray, sectionName, ctx) 
 
   // fieldSet 已支持显隐控制
   const sectionFieldsVisibleOn = lodash.map(lodash.compact(lodash.map(fieldSetBody, 'visibleOn')) , (visibleOn)=>{
-    return `(${visibleOn.substring(2, visibleOn.length -1)})`;
+    return visibleOn;
   });
   const section = {
     "type": "fieldSet",
@@ -76,7 +76,7 @@ const getSection = async (permissionFields, fieldSchemaArray, sectionName, ctx) 
     "body": fieldSetBody,
   }
   if(sectionFieldsVisibleOn.length > 0 && fieldSetBody.length === sectionFieldsVisibleOn.length){
-    section.visibleOn = `\${${sectionFieldsVisibleOn.join(" || ")}}`
+    section.visibleOn = `${sectionFieldsVisibleOn.join(" || ")}`
   }
   return section
 }
