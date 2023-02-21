@@ -20,7 +20,7 @@ async function getSource(field, ctx) {
     });
     childrenData.query = childrenData.query.replace(/,count\:.+/, "}");
     data.query = data.query.replace(/}$/, "," + childrenData.query.replace(/{(.+)}/, "$1}"));
-    const defaultValueOptionsData = await graphql.getFindQuery({ name: refUsersObjectName }, null, [{ name: "user" }, { name: "name" }], {
+    const defaultValueOptionsData = await graphql.getFindQuery({ name: refUsersObjectName }, null, [{ name: "user", alias: "value" }, { name: "name", alias: "label" }], {
         alias: "defaultValueOptions",
         filters: "{__options_filters}"
     });
@@ -122,7 +122,8 @@ async function getDeferApi(field, ctx) {
         else if (ref) { 
             objectName = "${refUsersObjectName}";
             // 这里要额外把字段转为value和label是因为valueField和labelField在deferApi/searchApi中不生效，所以字段要取两次
-            fields = "user,name,value:user,label:name";
+            fields = "_id,value:user,label:name";
+            // fields = "user,name,value:user,label:name";
             filters = [['user_accepted', '=', true]];
             var defaultFilters = ${filters && JSON.stringify(filters)};
             if(defaultFilters){
@@ -162,7 +163,7 @@ async function getDeferApi(field, ctx) {
 async function getSearchApi(field, ctx) {
     // data.query 最终格式 "{ \toptions:space_users(filters: {__filters}){user,name,value:user,label:name}}"
     // 这里要额外把字段转为value和label是因为valueField和labelField在deferApi/searchApi中不生效，所以字段要取两次
-    const data = await graphql.getFindQuery({ name: refUsersObjectName }, null, [{ name: "user" }, { name: "name" }, { name: "user", alias: "value" }, { name: "name", alias: "label" }], {
+    const data = await graphql.getFindQuery({ name: refUsersObjectName }, null, [{ name: "user", alias: "value" }, { name: "name", alias: "label" }], {
         alias: "options",
         // filters: "{__filters}",
         queryOptions: `filters: {__filters}, sort: "{__sort}"`
@@ -237,8 +238,8 @@ export async function getSelectUserSchema(field, readonly, ctx) {
         const refOrgsObjectConfig = await getUISchema(refOrgsObjectName);
         ctx.orgsSort = getRefListViewSort(refOrgsObjectConfig);
         Object.assign(amisSchema, {
-            "labelField": "name",
-            "valueField": "user",
+            // "labelField": "name",
+            // "valueField": "user",
             "multiple": field.multiple,
             "searchable": field.searchable,
             "selectMode": "associated",
