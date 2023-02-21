@@ -8,6 +8,7 @@ import * as List from './list';
 import { getSelectUserSchema } from './user';
 import { getObjectHeaderToolbar, getObjectFooterToolbar, getObjectFilter } from './../toolbar';
 import { getListViewSort } from './../../../objects';
+import { lookupToAmisTreeSelect } from './tree_select';
 
 const getReferenceTo = async (field)=>{
     let referenceTo = field.reference_to;
@@ -499,6 +500,12 @@ export async function lookupToAmis(field, readonly, ctx){
     // TODO: 确认 amis picker 支持联动时, 清理field.depend_on判断
     if(refObject.enable_enhanced_lookup == true && _.isEmpty(field.depend_on)){
         return await lookupToAmisPicker(field, readonly, ctx);
+    }else if(refObject.enable_tree) {
+        return await lookupToAmisTreeSelect(field, readonly, Object.assign({}, ctx, {
+            labelField: referenceTo.labelField?.name || 'name',
+            valueField: referenceTo.valueField?.name || '_id',
+            objectName: referenceTo.objectName
+        }));
     }else{
         return await lookupToAmisSelect(field, readonly, ctx);
     }
