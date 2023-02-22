@@ -282,6 +282,9 @@ export async function getObjectForm(objectSchema, ctx){
       className: 'p-0',
       name: `page_edit_${recordId}`,
       api: await getEditFormInitApi(objectSchema, recordId, fields),
+      data:{
+        editFormInited: false
+      },
       // data: {global: getGlobalData('edit'), recordId: recordId, objectName: objectSchema.name, context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
       initApi: null,
       initFetch: null ,
