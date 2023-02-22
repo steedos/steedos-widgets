@@ -442,7 +442,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         </span>
         <span class='pl-1.5'>\${label}</span>
     </span>`
-    data.menuTpl = "${icon ? `"+select_menuTpl+"` : ''}"
+    data.menuTpl = "${icon ? `"+select_menuTpl+"` : label}"
     if(field.multiple){
         data.multiple = true
         data.extractValue = true
