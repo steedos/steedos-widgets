@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 import { isFunction, isNumber, isBoolean, isString } from 'lodash';
-import { safeRunFunction, safeEval } from '../util';
+import { safeRunFunction, safeEval } from '../utils';
+import { isExpression, parseSingleExpression } from '../expression';
 
 /**
   把原来的默认值公式表达式转换成新的表达式语法，原来的表达式语法如下所示：
@@ -38,12 +39,8 @@ const getCompatibleDefaultValueExpression = (express, multiple) => {
     return result;
 }
 
-export function getFieldDefaultValue(field, readonly, ctx) {
+export const getFieldDefaultValue = (field) => {
     if (!field) {
-        return null
-    }
-
-    if (readonly) {
         return null
     }
 
@@ -59,10 +56,13 @@ export function getFieldDefaultValue(field, readonly, ctx) {
         // 支持{userId}这种格式
         defaultValue = getCompatibleDefaultValueExpression(defaultValue, field.multiple);
     }
-    const isFormula = _.isString(defaultValue) && defaultValue.startsWith("{{");
+    // const isFormula = _.isString(defaultValue) && defaultValue.startsWith("{{");
+    const isFormula = isExpression(defaultValue);
     if (isFormula) {
         // 支持{{global.user.name}}这种公式
-        defaultValue = `\$${defaultValue.substring(1, defaultValue.length - 1)}`
+        const globalData = Object.assign({}, window.Creator?.USER_CONTEXT || {}, {now: new Date()})
+        defaultValue = parseSingleExpression(defaultValue, {}, "#", globalData)
+        // defaultValue = `\$${defaultValue.substring(1, defaultValue.length - 1)}`
     }
     switch (field.type) {
         case 'select':

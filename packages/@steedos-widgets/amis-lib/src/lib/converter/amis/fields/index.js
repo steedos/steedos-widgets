@@ -6,7 +6,6 @@ import * as Tpl from '../tpl';
 import * as File from './file';
 import { getAmisStaticFieldType } from './type';
 import * as _ from 'lodash'
-import { getFieldDefaultValue } from './default_value';
 
 export const OMIT_FIELDS = ['created', 'created_by', 'modified', 'modified_by'];
 export { getAmisStaticFieldType } from './type';
@@ -453,11 +452,6 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             break;
     }
     if(!_.isEmpty(convertData)){
-        const defaultValue = getFieldDefaultValue(field, readonly);
-        if(defaultValue){
-            console.log("field defaultValue:", field.name, defaultValue);
-            // convertData.value = defaultValue;
-        }
         if(field.is_wide || convertData.type === 'group'){
             convertData.className = 'col-span-2 m-1';
         }else{

@@ -11,7 +11,7 @@ import { SObject } from './sObject';
 import { ListView } from './listView';
 import { Router } from './router';
 import { render } from './render';
-import { downloadFile, previewFile } from './file';
+import { getFieldDefaultValue } from './defaultValue';
 
 export const SteedosUI = Object.assign({}, {
     render: render,
@@ -71,13 +71,12 @@ export const SteedosUI = Object.assign({}, {
           return `amis-${appId}-${name}-${type}`;
       }
     },
-    // downloadFile,
-    // previewFile,
     reloadRecord: ()=>{
       if(window.FlowRouter){
         return window.FlowRouter.reload();
       }else{
         // TODO 调用steedos object form 的 reload action
       }
-    }
+    },
+    getFieldDefaultValue
 })

@@ -49,7 +49,8 @@ export const getSchema = async (uiSchema, ctx)=>{
                                         "objectName": "${objectName}",
                                         "context": "${context}",
                                         "global": "${global}",
-                                        "listViewId": "${listViewId}"
+                                        "listViewId": "${listViewId}",
+                                        "uiSchema": "${uiSchema}"
                                     },
                                     "title": title,
                                     "bodyClassName": "",

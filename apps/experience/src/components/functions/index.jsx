@@ -45,6 +45,6 @@ export const SteedosUI = Object.assign({}, {
     }
 })
 
-if(typeof window != 'undefined' && !window.SteedosUI){
-    window.SteedosUI = SteedosUI;
-}
+// if(typeof window != 'undefined' && !window.SteedosUI){
+//     window.SteedosUI = SteedosUI;
+// }

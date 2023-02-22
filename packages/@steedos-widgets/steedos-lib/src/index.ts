@@ -9,6 +9,7 @@
 import { StandardObjects } from './standard_objects'
 import { authRequest } from './authRequest'
 import { SteedosUI } from './ui';
+import * as Expression from './expression';
 
 declare var Builder;
 
@@ -66,6 +67,7 @@ export const Steedos = {
     },
     authRequest,
     StandardObjects,
+    ...Expression
 }
 
 if(typeof window != 'undefined' && !(window as any).Steedos){

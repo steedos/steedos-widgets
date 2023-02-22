@@ -196,21 +196,20 @@ export async function getEditFormInitApi(object, recordId, fields){
     const data = await graphql.getFindOneQuery(object, recordId, fields);
     data.$recordId = "${recordId}";
     data.$objectName = "${objectName}";
+    data.$uiSchema = "${uiSchema}";
     return {
         method: "post",
         url: graphql.getApi(),
         // sendOn: "!!this.recordId",
         cache: API_CACHE,
         requestAdaptor: `
-            var recordId = api.data.$recordId;
-            var objectName = api.data.$objectName;
+            var { $recordId: recordId, $objectName: objectName, $uiSchema: uiSchema,  ...data} = api.data;
             if(!recordId){
                 // 新建则不请求任何数据
-                api.data.query = "{data:" + objectName + "(filters: " + JSON.stringify(["_id", "=", null]) + ", top: 1){_id}}";
+                data.query = "{data:" + objectName + "(filters: " + JSON.stringify(["_id", "=", null]) + ", top: 1){_id}}";
             }
-            // 这里不可以删除recordId，否则下面adaptor中api.body.$recordId拿不到值
-            // delete api.data.$recordId;
-            delete api.data.$objectName;
+            api.data = data;
+            return api;
         `,
         adaptor: `
             const recordId = api.body.$recordId;
@@ -229,7 +228,16 @@ export async function getEditFormInitApi(object, recordId, fields){
                 payload.data = data;
             }
             else{
-                payload.data = {};
+                var uiSchema = api.body.$uiSchema;
+                var defaultValues = {};
+                _.each(uiSchema?.fields, function(field){
+                    var value = SteedosUI.getFieldDefaultValue(field);
+                    if(value){
+                        defaultValues[field.name] = value;
+                    }
+                });
+                console.log("defaultValues:", defaultValues);
+                payload.data = defaultValues;
             }
             payload.data.editFormInited = true;
             delete payload.extensions;
