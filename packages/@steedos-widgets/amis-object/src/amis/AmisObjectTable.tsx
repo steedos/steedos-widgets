@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-10 16:09:28
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-02-23 17:07:16
  * @Description: 
  */
 import { getTableSchema, conditionsToFilters } from '@steedos-widgets/amis-lib'
@@ -10,14 +10,16 @@ import { keys, pick, difference, pickBy, has } from 'lodash';
 
 export const AmisObjectTable = async (props) => {
   // console.log(`AmisObjectTable props`, props)
-  const { $schema, filters, filtersFunction, amisCondition, top, headerSchema, sort, sortField, sortOrder, extraColumns, data, defaultData, 
+  const { $schema, filters, filtersFunction, amisCondition, top, headerSchema, 
+    sort, sortField, sortOrder, extraColumns, data, defaultData, 
+    formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE',
     className = "", requestAdaptor,  adaptor} = props;
   let ctx = props.ctx;
   if(!ctx){
     ctx = {};
   }
   if(!ctx.formFactor){
-    ctx.formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE';
+    ctx.formFactor = formFactor;
   }
   const columns = props.columns || [];
   let defaults: any = {};
