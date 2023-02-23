@@ -39,7 +39,7 @@ const getCompatibleDefaultValueExpression = (express, multiple) => {
     return result;
 }
 
-export const getFieldDefaultValue = (field) => {
+export const getFieldDefaultValue = (field, globalData) => {
     if (!field) {
         return null
     }
@@ -60,7 +60,7 @@ export const getFieldDefaultValue = (field) => {
     const isFormula = isExpression(defaultValue);
     if (isFormula) {
         // 支持{{global.user.name}}这种公式
-        const globalData = Object.assign({}, window.Creator?.USER_CONTEXT || {}, {now: new Date()})
+        // globalData中传入原来 window.Creator?.USER_CONTEXT || {}, {now: new Date()} 这种逻辑，可以从amis的数据链中取变量global的值
         defaultValue = parseSingleExpression(defaultValue, {}, "#", globalData)
         // defaultValue = `\$${defaultValue.substring(1, defaultValue.length - 1)}`
     }
