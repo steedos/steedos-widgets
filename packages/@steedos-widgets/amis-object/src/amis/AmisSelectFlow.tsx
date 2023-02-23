@@ -2,14 +2,14 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-01-14 16:41:24
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-01-18 13:42:04
+ * @LastEditTime: 2023-02-23 09:48:53
  * @Description: 
  */
 
 import { random } from 'lodash';
 
 const getSelectFlowSchema = (id, props)=>{
-    const { label: label, data, name, required, action = 'query', mode = 'input-tree', className, onEvent, multiple = false, delimiter, joinValues, extractValue, searchable, showIcon = true, showRadio=false, showOutline, initiallyOpen, unfoldedLevel, treeContainerClassName} = props;
+    const { label: label, data, name, required, action = 'query', distributeInstanceId="",  distributeStepId="", mode = 'input-tree', className, onEvent, multiple = false, delimiter, joinValues, extractValue, searchable, showIcon = true, showRadio=false, showOutline, initiallyOpen, unfoldedLevel, treeContainerClassName} = props;
     return {
         "type": mode,
         "id": id,
@@ -36,7 +36,7 @@ const getSelectFlowSchema = (id, props)=>{
                 api.data = {
                     query: \`
                         {
-                        options: flows__getList(action: "${action}", keywords: "\${keywords}", appId: "\${appId}"){
+                        options: flows__getList(action: "${action}", keywords: "\${keywords}", appId: "\${appId}", distributeInstanceId: "${distributeInstanceId}", distributeStepId: "${distributeStepId}"){
                           value:_id
                           label:name
                           children: flows{
