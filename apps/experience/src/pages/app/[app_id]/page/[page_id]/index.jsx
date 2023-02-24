@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-08 17:22:40
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-02-24 13:09:35
  * @Description:
  */
 import dynamic from "next/dynamic";
@@ -27,7 +27,7 @@ export default function Page(props) {
       {page && page.schema && page.name === page_id && (
         <PageRender
           id={page_id}
-          className="overflow-auto"
+          className="overflow-auto h-full"
           router={router}
           schema={JSON.parse(page.schema)}
           assetUrls={[]}
