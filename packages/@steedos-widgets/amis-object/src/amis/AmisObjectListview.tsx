@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-09 16:42:23
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-02-26 14:52:34
  * @Description: 
  */
 import { getListSchema, getObjectListHeaderFirstLine, getUISchema } from '@steedos-widgets/amis-lib'
@@ -15,6 +15,7 @@ export const AmisObjectListView = async (props) => {
       crudClassName, 
       formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE',
       showDisplayAs = false,
+      sideSchema,
       columnsTogglable=false} = props;
   // const urlListNameMatchs = location.pathname.match(/grid\/(\w+)/);  // 错误的规则
   // const urlListName = urlListNameMatchs && urlListNameMatchs[1]
@@ -67,6 +68,8 @@ export const AmisObjectListView = async (props) => {
   // 支持通过直接定义headerSchema属性来定制表头，而不一定要通过ctx.defaults.headerSchema传入
   if(headerSchema){
     defaults.headerSchema = headerSchema;
+  }  if(sideSchema){
+    defaults.sideSchema = sideSchema;
   }
 
   let setDataToComponentId = ctx && ctx.setDataToComponentId;
