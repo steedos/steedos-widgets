@@ -1,14 +1,15 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-01-13 10:46:56
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-02-26 18:10:16
  * @Description: 
  */
 import { getFormSchema, getViewSchema } from '@steedos-widgets/amis-lib'
 import { keys, pick, difference } from 'lodash';
 
 export const AmisObjectForm = async (props) => {
+  // console.log("===AmisObjectForm=props==", props);
   const { $schema, recordId, mode, layout, labelAlign, appId,
     className=""
   } = props;
@@ -31,30 +32,25 @@ export const AmisObjectForm = async (props) => {
   const globalData = props.data.global || {};
 
   globalData.mode = mode === 'edit' ? 'edit' : 'read'
-
+  let amisSchema: any;
   if (mode === 'edit') {
-    const amisSchema: any = (await getFormSchema(objectApiName, options)).amisSchema;
-    // 当全局作用域中无recordId，表单接口sendOn始终为false。
-    const formData :any = {};
-    if(recordId){
-      formData.recordId = recordId;
-    }
-    if(objectApiName){
-      formData.objectName = objectApiName;
-    }
-    amisSchema.className = `steedos-object-form ${className}`
-    amisSchema.data = Object.assign({"&": "$$"}, amisSchema.data, formData, {global: globalData});
-    return amisSchema;
+    amisSchema = (await getFormSchema(objectApiName, options)).amisSchema;
   } else {
     // formInitProps
     if(!recordId){
+      // 只读界面只返回一条记录
       options.formInitProps = {
         queryOptions: "top: 1"
       };
     }
-    const amisSchema: any =  (await getViewSchema(objectApiName, recordId, options)).amisSchema;
-    amisSchema.className = `steedos-object-form ${className}`
-    amisSchema.data = Object.assign({"&": "$$"}, amisSchema.data,  {global: globalData});
-    return amisSchema;
+    amisSchema =  (await getViewSchema(objectApiName, recordId, options)).amisSchema;
   }
+  const formData :any = {};
+  formData.recordId = recordId || null;
+  if(objectApiName){
+    formData.objectName = objectApiName;
+  }
+  amisSchema.className = `steedos-object-form ${className}`
+  amisSchema.data = Object.assign({"&": "$$"}, amisSchema.data, formData, {global: globalData});
+  return amisSchema;
 }
