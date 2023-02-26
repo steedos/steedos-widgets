@@ -194,10 +194,11 @@ function getScriptForRewriteValueForFileFields(fields){
 
 export async function getEditFormInitApi(object, recordId, fields){
     const data = await graphql.getFindOneQuery(object, recordId, fields);
-    data.$recordId = "${recordId}";
-    data.$objectName = "${objectName}";
-    data.$uiSchema = "${uiSchema}";
-    data.$global = "${global}";
+    data.recordId = "${recordId}";
+    data.objectName = "${objectName}";
+    data.uiSchema = "${uiSchema}";
+    data.global = "${global}";
+    data.context = "${context}";
     return {
         method: "post",
         url: graphql.getApi(),
@@ -205,7 +206,7 @@ export async function getEditFormInitApi(object, recordId, fields){
         cache: API_CACHE,
         requestAdaptor: `
             // 所有不想在network请求中发送的数据都应该从data中分离出来，data变量只需要留下query才需要发送出去
-            var { $recordId: recordId, $objectName: objectName, $uiSchema: uiSchema, $global: global, ...data} = api.data;
+            var { recordId, objectName, uiSchema, global, context, ...data} = api.data;
             if(!recordId){
                 // 新建则不请求任何数据
                 data.query = "{data:" + objectName + "(filters: " + JSON.stringify(["_id", "=", null]) + ", top: 1){_id}}";
@@ -214,7 +215,7 @@ export async function getEditFormInitApi(object, recordId, fields){
             return api;
         `,
         adaptor: `
-            const recordId = api.body.$recordId;
+            const recordId = api.body.recordId;
             if(recordId && payload.data.data){
                 var data = payload.data.data[0];
                 if(data){
@@ -230,10 +231,10 @@ export async function getEditFormInitApi(object, recordId, fields){
                 payload.data = data;
             }
             else{
-                var uiSchema = api.body.$uiSchema;
+                var uiSchema = api.body.uiSchema;
                 var defaultValues = {};
                 _.each(uiSchema?.fields, function(field){
-                    var value = SteedosUI.getFieldDefaultValue(field, api.body.$global);
+                    var value = SteedosUI.getFieldDefaultValue(field, api.body.global);
                     if(value){
                         defaultValues[field.name] = value;
                     }
