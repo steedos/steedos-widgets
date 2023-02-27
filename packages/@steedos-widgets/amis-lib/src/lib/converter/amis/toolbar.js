@@ -1,30 +1,38 @@
 import { getObjectListHeaderFieldsFilterBar } from './header';
 
-const displayAsButton = 
-{
-  "type": "dropdown-button",
-  "icon": "fa fa-table-columns",
-  "btnClassName": "antd-Button--iconOnly bg-white p-2 rounded border-gray-300 text-gray-500",
-  "align": "right",
-  "buttons": [
+const getDisplayAsButton = function(columnsCount){
+  let buttons = [
     {
-      "label": "显示为",
-      "children": [
-        {
-          "type": "button",
-          "label": "表格",
-          "onClick": "const url = document.location.pathname + '?display=grid'; props.env.jumpTo(url);"
-        },
-        {
-          "type": "button",
-          "label": "分栏视图",
-          "onClick": "const url = document.location.pathname + '?display=split'; props.env.jumpTo(url);"
-        }
-      ]
+      "type": "button",
+      "label": "表格",
+      "onClick": "const url = document.location.pathname + '?display=grid'; props.env.jumpTo(url);"
+    },
+    {
+      "type": "button",
+      "label": "分栏视图",
+      "onClick": "const url = document.location.pathname + '?display=split'; props.env.jumpTo(url);"
     }
-  ],
+  ];
+  if(columnsCount > 2){
+    buttons.push({
+      "type": "button",
+      "label": "三栏视图",
+      "onClick": "const url = document.location.pathname + '?display=split_three'; props.env.jumpTo(url);"
+    });
+  }
+  return {
+    "type": "dropdown-button",
+    "icon": "fa fa-table-columns",
+    "btnClassName": "antd-Button--iconOnly bg-white p-2 rounded border-gray-300 text-gray-500",
+    "align": "right",
+    "buttons": [
+      {
+        "label": "显示为",
+        "children": buttons
+      }
+    ]
+  };
 }
-
 
 export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = false} = {}){
 
@@ -60,7 +68,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
           }
         },
       },
-      showDisplayAs? displayAsButton : {}
+      showDisplayAs? getDisplayAsButton(showDisplayAs) : {}
   ]
   }else{
     const onFieldsFilterToggleScript = `
@@ -114,7 +122,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
           }
         }
       },
-      showDisplayAs? displayAsButton : {}
+      showDisplayAs? getDisplayAsButton(showDisplayAs) : {}
       // {
       //   "type": "search-box",
       //   "align": "right",

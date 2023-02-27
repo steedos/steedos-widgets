@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-15 10:55:31
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-02-26 23:04:26
  * @Description:
  */
 import React, { useState, useEffect, Fragment } from "react";
@@ -82,6 +82,8 @@ export default function Record({formFactor: defaultFormFactor}) {
     appId: app_id,
     name: side_object,
   });
+
+  const splitOffset = displayAs === "split_three" ? "1/2" : "[388px]";
   const listSchema = listPage? JSON.parse(listPage.schema) : {
     "type": "steedos-object-listview",
     "objectApiName": side_object,
@@ -89,12 +91,12 @@ export default function Record({formFactor: defaultFormFactor}) {
     "showHeader": true,
     "showDisplayAs": true,
     "formFactor": 'SMALL',
-    "className": "absolute top-0 bottom-0 w-[388px] shadow border-r border-slate-300 border-solid bg-gray-100"
+    "className": `absolute top-0 bottom-0 w-${splitOffset} shadow border-r border-slate-300 border-solid bg-gray-100`
   }
 
   return (
     <>
-      {displayAs === 'split' && (
+      {["split_three", "split"].indexOf(displayAs) > -1 && (
         <div className="flex h-full">
             <AmisRender
               data={{
@@ -105,7 +107,7 @@ export default function Record({formFactor: defaultFormFactor}) {
                 formFactor: defaultFormFactor,
                 scopeId: listViewId,
               }}
-              className="steedos-listview p-0 flex-none w-[388px]"
+              className={`steedos-listview p-0 flex-none w-${splitOffset}`}
               id={listViewId}
               schema={listSchema}
               router={router}
@@ -126,7 +128,7 @@ export default function Record({formFactor: defaultFormFactor}) {
         </div>
       )}
 
-      {displayAs !== 'split' && schema && uiSchema && (
+      {["split_three", "split"].indexOf(displayAs) < 0 && schema && uiSchema && (
         <AmisRender
           data={{
             objectName: tab_id,
