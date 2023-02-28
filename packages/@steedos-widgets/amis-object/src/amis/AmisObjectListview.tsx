@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-02-26 14:52:34
+ * @LastEditTime: 2023-02-28 14:04:19
  * @Description: 
  */
 import { getListSchema, getObjectListHeaderFirstLine, getUISchema } from '@steedos-widgets/amis-lib'
@@ -60,6 +60,14 @@ export const AmisObjectListView = async (props) => {
     const listSchema = pick(props, schemaKeys);
     // className不传入crud组件，crud单独识别crudClassName属性
     listSchema.className = crudClassName;
+    listSchema.onEvent = {};
+    listSchema.onEvent[`data_change_${objectApiName}`] = {
+      "actions": [
+        {
+          "actionType": "reload"
+        }
+      ]
+    }
     defaults = {
       listSchema
     };
