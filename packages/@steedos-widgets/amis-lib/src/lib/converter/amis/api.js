@@ -199,6 +199,7 @@ export async function getEditFormInitApi(object, recordId, fields){
     data.uiSchema = "${uiSchema}";
     data.global = "${global}";
     data.context = "${context}";
+    data.defaultData = "${defaultData}";
     return {
         method: "post",
         url: graphql.getApi(),
@@ -218,6 +219,15 @@ export async function getEditFormInitApi(object, recordId, fields){
             const recordId = api.body.recordId;
             if(recordId && payload.data.data){
                 var data = payload.data.data[0];
+                const dataKeys = _.keys(data);
+                const uiSchema = api.body.uiSchema;
+                const fieldKeys = uiSchema && _.keys(uiSchema.fields);
+                _.each(dataKeys, function(key){
+                    if(fieldKeys.indexOf(key)<0){
+                        delete data[key];
+                    }
+                })
+
                 if(data){
                     ${getScriptForAddUrlPrefixForImgFields(fields)}
                     ${getScriptForRewriteValueForFileFields(fields)}
@@ -228,10 +238,11 @@ export async function getEditFormInitApi(object, recordId, fields){
                         }
                     }
                 };
-                payload.data = data;
+                payload.data._initialValue = data;
             }
             else{
                 var uiSchema = api.body.uiSchema;
+                var defaultData = api.body.defaultData;
                 var defaultValues = {};
                 _.each(uiSchema?.fields, function(field){
                     var value = SteedosUI.getFieldDefaultValue(field, api.body.global);
@@ -239,8 +250,10 @@ export async function getEditFormInitApi(object, recordId, fields){
                         defaultValues[field.name] = value;
                     }
                 });
-                console.log("defaultValues:", defaultValues);
-                payload.data = defaultValues;
+                if(defaultData && _.isObject(defaultData) && !_.isArray(defaultData)){
+                    defaultValues = Object.assign({}, defaultValues, defaultData)
+                }
+                payload.data._initialValue = defaultValues;
             }
             payload.data.editFormInited = true;
             delete payload.extensions;
