@@ -128,7 +128,7 @@ function getFilter(){
 }
 
 export async function getObjectCRUD(objectSchema, fields, options){
-    const { top, perPage, showDisplayAs = false, crudClassName = "" } = options;
+    const { top, perPage, showDisplayAs = false, displayAs, crudClassName = "" } = options;
     const nonpaged = objectSchema.paging && objectSchema.paging.enabled === false;
     const isTreeObject = objectSchema.enable_tree;
     const bulkActions = getBulkActions(objectSchema)
@@ -208,6 +208,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
               "type": "wrapper",
               "size": "none",
               "className": "border-r border-slate-300 border-solid w-72 bg-white",
+              "visibleOn": `${displayAs === "split_three"}`,
               "body": sideSchema
             }, 
             body

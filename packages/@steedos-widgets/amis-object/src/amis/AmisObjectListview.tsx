@@ -2,10 +2,10 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-02-28 14:04:19
+ * @LastEditTime: 2023-02-28 17:09:52
  * @Description: 
  */
-import { getListSchema, getObjectListHeaderFirstLine, getUISchema } from '@steedos-widgets/amis-lib'
+import { getListSchema, getObjectListHeaderFirstLine, getUISchema, Router } from '@steedos-widgets/amis-lib'
 import { keys, pick, difference, find } from 'lodash';
 
 export const AmisObjectListView = async (props) => {
@@ -53,6 +53,7 @@ export const AmisObjectListView = async (props) => {
   }
 
   listName = listView.name;
+  const displayAs = Router.getTabDisplayAs(objectApiName);
 
   if (!(ctx && ctx.defaults)) {
     // 支持把crud组件任意属性通过listSchema属性传入到底层crud组件中
@@ -88,7 +89,7 @@ export const AmisObjectListView = async (props) => {
   const amisSchemaData = Object.assign({}, data, defaultData);
   const listViewId = ctx?.listViewId || amisSchemaData.listViewId;
   let schema: any = (await getListSchema(amisSchemaData.appId, objectApiName, listName, { 
-    top, perPage, showHeader, defaults, ...ctx, listViewId, setDataToComponentId, filterVisible: true, showDisplayAs
+    top, perPage, showHeader, defaults, ...ctx, listViewId, setDataToComponentId, filterVisible: true, showDisplayAs, displayAs
   }));
   const amisSchema = schema.amisSchema;
   const uiSchema = schema.uiSchema;
@@ -102,7 +103,7 @@ export const AmisObjectListView = async (props) => {
     });
   }
   // TODO: recordPermissions和_id是右上角按钮需要强依赖的变量，应该写到按钮那边去
-  const serviceData = Object.assign({}, amisSchema.data, amisSchemaData, { listName, uiSchema, recordPermissions: uiSchema.permissions, _id: null, $listviewId: listName });
+  const serviceData = Object.assign({}, amisSchema.data, amisSchemaData, { listName, uiSchema, showDisplayAs, displayAs, recordPermissions: uiSchema.permissions, _id: null, $listviewId: listName });
   return {
     "type": "service",
     "body": body,
