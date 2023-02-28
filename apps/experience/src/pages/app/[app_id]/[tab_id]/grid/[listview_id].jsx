@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-14 18:16:53
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-02-28 23:21:12
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef } from 'react';
@@ -24,7 +24,7 @@ export default function Page ({ formFactor: defaultFormFactor }) {
 
   const displayAs = (defaultFormFactor === 'SMALL')? 'grid': display? display : Router.getTabDisplayAs(tab_id);
 
-  const formFactor = (displayAs === 'split') ? 'SMALL': defaultFormFactor
+  const formFactor = (["split_three", "split"].indexOf(displayAs) > -1) ? 'SMALL': defaultFormFactor
 
   useEffect(() => {
     // 微页面
@@ -64,6 +64,7 @@ export default function Page ({ formFactor: defaultFormFactor }) {
           listName: listview_id,
           appId: app_id,
           formFactor: formFactor,
+          displayAs: displayAs,
           scopeId: listViewId,
         }}
         className={displayAs === 'grid'? "steedos-listview p-0	sm:m-3": "steedos-listview p-0"}

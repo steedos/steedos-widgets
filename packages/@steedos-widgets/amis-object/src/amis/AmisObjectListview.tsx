@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-02-28 17:09:52
+ * @LastEditTime: 2023-02-28 23:24:06
  * @Description: 
  */
 import { getListSchema, getObjectListHeaderFirstLine, getUISchema, Router } from '@steedos-widgets/amis-lib'
@@ -13,7 +13,6 @@ export const AmisObjectListView = async (props) => {
   const { $schema, top, perPage, showHeader=true, headerSchema, data, defaultData, 
       className="", 
       crudClassName, 
-      formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE',
       showDisplayAs = false,
       sideSchema,
       columnsTogglable=false} = props;
@@ -27,6 +26,21 @@ export const AmisObjectListView = async (props) => {
   if(!ctx){
     ctx = {};
   }
+  const displayAs = Router.getTabDisplayAs(objectApiName);
+  let formFactor = props.formFactor;
+  if(!formFactor){
+    const isMobile = window.innerWidth < 768;
+    if(isMobile){
+      formFactor = 'SMALL';
+    }
+    else{
+      formFactor = 'LARGE';
+      if(["split_three", "split"].indexOf(displayAs) > -1){
+        formFactor = 'SMALL';
+      }
+    }
+  }
+
   if(!ctx.formFactor){
     ctx.formFactor = formFactor;
   }
@@ -53,7 +67,6 @@ export const AmisObjectListView = async (props) => {
   }
 
   listName = listView.name;
-  const displayAs = Router.getTabDisplayAs(objectApiName);
 
   if (!(ctx && ctx.defaults)) {
     // 支持把crud组件任意属性通过listSchema属性传入到底层crud组件中
