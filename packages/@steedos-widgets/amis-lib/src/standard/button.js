@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:53:07
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-05 10:49:23
+ * @LastEditTime: 2023-02-28 17:06:22
  * @Description: 
  */
 
@@ -43,7 +43,6 @@ export const StandardButtons = {
                 const scopeId = this.scopeId || `amis-${appId}-${objectName}-listview`;
                 const scope = this.scope || SteedosUI?.getRef(scopeId);
                 const listViewRef = scope.getComponentById(`listview_${uiSchema.name}`);
-                console.log(`listViewRef`, listViewRef)
                 if(_.isEmpty(listViewRef.props.store.toJSON().selectedItems)){
                     listViewRef.handleAction({}, {
                         "actionType": "toast",

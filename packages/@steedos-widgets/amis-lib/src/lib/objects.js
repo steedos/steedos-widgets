@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-28 14:34:58
+ * @LastEditTime: 2023-02-28 17:05:38
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -177,7 +177,7 @@ export async function getField(objectName, fieldName) {
 export async function getFormSchema(objectName, ctx) {
     const uiSchema = await getUISchema(objectName);
     const amisSchema = await getObjectForm(uiSchema, ctx);
-    console.log(`getFormSchema====>`, amisSchema)
+    // console.log(`getFormSchema====>`, amisSchema)
     return {
         uiSchema,
         amisSchema,
@@ -188,7 +188,7 @@ export async function getFormSchema(objectName, ctx) {
 export async function getViewSchema(objectName, recordId, ctx) {
     const uiSchema = await getUISchema(objectName);
     const amisSchema = await getObjectDetail(uiSchema, recordId, ctx);
-    console.log(`getViewSchema amisSchema`, amisSchema)
+    // console.log(`getViewSchema amisSchema`, amisSchema)
     return {
         uiSchema,
         amisSchema,

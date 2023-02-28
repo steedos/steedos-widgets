@@ -38,7 +38,6 @@ async function getSource(field, ctx) {
     data.$value = `$${valueField}`;
     // data["&"] = "$$";
     const requestAdaptor = `
-        console.log("select user field '${field.name}' requestAdaptor api:", api);
         var filters = [['parent', '=', null]];
         api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters));
         var defaultValue = api.data.$value;
