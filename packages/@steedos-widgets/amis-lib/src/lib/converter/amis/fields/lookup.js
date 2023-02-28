@@ -436,7 +436,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         <span role='img' aria-label='smile' class='anticon anticon-smile'>
             <span class='slds-icon_container slds-icon-standard-\${REPLACE(icon,'_','-')}'>
                 <svg class='slds-icon slds-icon_x-small' aria-hidden='true'>
-                    <use xlink:href='\${context.rootUrl}/assets/icons/standard-sprite/svg/symbols.svg#\${value}'></use>
+                    <use xlink:href='\${context.rootUrl}/assets/icons/standard-sprite/svg/symbols.svg#\${icon}'></use>
                 </svg>
             </span> 
         </span>
