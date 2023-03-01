@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-02-26 23:04:26
+ * @LastEditTime: 2023-03-01 10:12:49
  * @Description:
  */
 import React, { useState, useEffect, Fragment } from "react";
@@ -91,8 +91,8 @@ export default function Record({formFactor: defaultFormFactor}) {
     "showHeader": true,
     "showDisplayAs": true,
     "formFactor": 'SMALL',
-    "className": `absolute top-0 bottom-0 w-${splitOffset} shadow border-r border-slate-300 border-solid bg-gray-100`
   }
+  listSchema.className = `absolute top-0 bottom-0 w-${splitOffset} shadow border-r border-slate-300 border-solid bg-gray-100`;
 
   return (
     <>
