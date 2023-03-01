@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-27 15:54:12
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-01 13:58:36
+ * @LastEditors: 廖大雪 2291335922@qq.com
+ * @LastEditTime: 2023-03-01 15:08:20
  * @Description: 
  */
 import { message, notification, Button, Space} from 'antd';
@@ -12,6 +12,7 @@ import { ListView } from './listView';
 import { Router } from './router';
 import { render } from './render';
 import { getFieldDefaultValue } from './defaultValue';
+import { openNewRecordDialog } from './openNewRecordDialog';
 
 export const SteedosUI = Object.assign({}, {
     render: render,
@@ -78,5 +79,6 @@ export const SteedosUI = Object.assign({}, {
         // TODO 调用steedos object form 的 reload action
       }
     },
-    getFieldDefaultValue
+    getFieldDefaultValue,
+    openNewRecordDialog
 })
