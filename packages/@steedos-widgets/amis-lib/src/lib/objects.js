@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-28 17:05:38
+ * @LastEditTime: 2023-03-01 09:39:16
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -280,11 +280,11 @@ export async function getListSchema(
         if(localListViewProps.orderDir){
             listSchema.orderDir = localListViewProps.orderDir;
         }
-        if(localListViewProps.perPage){
-            listSchema.defaultParams = {
-                perPage: localListViewProps.perPage
-            }
-        }
+        // if(localListViewProps.perPage){
+        //     listSchema.defaultParams = {
+        //         perPage: localListViewProps.perPage
+        //     }
+        // }
         defaults.listSchema = defaultsDeep({}, listSchema, defaults.listSchema || {});
       }
     }
@@ -306,7 +306,6 @@ export async function getListSchema(
         "requestAdaptor": listView.requestAdaptor,  
         "adaptor": listView.adaptor
     };
-
     return {
         uiSchema,
         amisSchema,
@@ -367,7 +366,6 @@ export async function getTableSchema(
         sort,
         buttons: await getListViewItemButtons(uiSchema, ctx)
     });
-
     return {
         uiSchema,
         amisSchema,
