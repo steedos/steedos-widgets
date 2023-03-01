@@ -26,7 +26,7 @@ const displayAsButton =
 }
 
 
-export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = false} = {}){
+export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = false, hiddenCount = false} = {}){
 
   if(formFactor === 'SMALL'){
     const onReloadScript = `
@@ -38,7 +38,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
     `;
     return [
       // "bulkActions",
-      {
+      hiddenCount ? {} :{
         "type": "tpl",
         "tpl": "${count} 个项目"
       },
@@ -88,9 +88,9 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
       //     "type": "export-excel",
       //     "align": "right"
       // },
-      {
+      hiddenCount ? {} : {
         "type": "tpl",
-        "tpl": "${count} 个项目"
+        "tpl":  "${count} 个项目"
       },
       {
         "type": "reload",

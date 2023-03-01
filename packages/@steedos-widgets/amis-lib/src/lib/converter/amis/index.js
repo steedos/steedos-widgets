@@ -135,9 +135,11 @@ export async function getObjectCRUD(objectSchema, fields, options){
 
     const bodyProps = {
       // toolbar: getToolbar(),
-      headerToolbar: getObjectHeaderToolbar(objectSchema, options.formFactor, {showDisplayAs}),
+      // headerToolbar: getObjectHeaderToolbar(objectSchema, options.formFactor, {showDisplayAs}),
       headerToolbarClassName: "px-4 py-2 border-gray-300 bg-gray-100 border-solid border-b",
-      footerToolbar: getObjectFooterToolbar(objectSchema, options.formFactor), 
+      footerToolbar: getObjectFooterToolbar(objectSchema, options.formFactor, {
+        disableStatistics: options.queryCount === false
+      }), 
     }
     if(options.formFactor !== 'SMALL'){
       Object.assign(bodyProps, {
@@ -146,12 +148,19 @@ export async function getObjectCRUD(objectSchema, fields, options){
       });
     }
     // yml里配置的 不分页和enable_tree:true 优先级最高，组件中输入的top次之。
+    options.queryCount = true;
     if(nonpaged || isTreeObject){
-      options.top = 1000;
+      options.top = 50000;
       bodyProps.footerToolbar = [];
+      options.queryCount = false;
     }else if(top){
       bodyProps.footerToolbar = [];
+      options.queryCount = false;
     }
+
+    bodyProps.headerToolbar = getObjectHeaderToolbar(objectSchema, options.formFactor, {showDisplayAs, hiddenCount: options.queryCount === false});
+
+
     let body = null;
     const id = `listview_${objectSchema.name}`;
     if(options.formFactor === 'SMALL' && false){
