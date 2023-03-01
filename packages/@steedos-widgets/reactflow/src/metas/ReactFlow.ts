@@ -55,7 +55,8 @@ export default {
       icon: config.amis.icon,
       scaffold: {
         type: config.amis.name,
-        label: config.title,
+        name: "flow_chart",
+        wrapperClassName: "h-80",
         title: "",
         content: ""
       },
@@ -63,16 +64,11 @@ export default {
         type: config.amis.name,
       },
       panelTitle: "设置",
-      panelControls: [
+      panelControls: [,
         {
           type: "text",
-          name: "title",
-          label: "标题",
-        },
-        {
-          type: "text",
-          name: "content",
-          label: "内容"
+          name: "wrapperClassName",
+          label: "CSS类名"
         }
       ],
       events: [{
@@ -89,20 +85,6 @@ export default {
           }
         }]
       }],
-    //   panelBodyCreator: function(context) {
-    //     return window['AmisEditorCore'].getSchemaTpl('tabs', [
-    //       {
-    //         title: '常规',
-    //         controls: [
-    //           {
-    //             name: 'name',
-    //             label: '标题',
-    //             type: 'text'
-    //           }
-    //         ]
-    //       },
-    //     ]);
-    //   }
     },
   }
 };

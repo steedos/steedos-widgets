@@ -7,11 +7,21 @@ import { createObject } from '@steedos-widgets/amis-lib';
 
 export const AmisReactFlow = ({ 
   dispatchEvent: amisDispatchEvent, 
+  wrapperClassName,
   data: amisData,
-  className,
+  env,
+  store,
+  topStore,
+  rootStore,
+  scope,
+  id,
+  render,
+  getValue,
+  setValue,
+  value,
   ...props }
 ) => {
-  const initialLocaleCode = 'zh-cn';
+  console.log(props)
 
   const dispatchEvent = async (action: string, value?: object) => {
 
@@ -60,7 +70,7 @@ export const AmisReactFlow = ({
   // forceEventDuration属性设置为true修正了把全天事件拖动变更到非全天事件时end为空造成的事件在画布上看不到的问题。
 
   return (
-    <div className={className}>
+    <div className={wrapperClassName}>
       <ReactFlow {...props}>
         <Background />
         <Controls />
