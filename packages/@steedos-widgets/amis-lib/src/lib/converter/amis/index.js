@@ -286,6 +286,9 @@ export async function getObjectForm(objectSchema, ctx){
         });
       }
     `;
+    if(_.has(formSchema, 'className')){
+      formSchema.className = 'steedos-amis-form'
+    }
     const amisSchema =  {
       type: 'service',
       className: 'p-0',
