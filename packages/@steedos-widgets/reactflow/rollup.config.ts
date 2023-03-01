@@ -19,12 +19,14 @@ const external = [
   "react",
   "react-dom",
   'lodash',
+  // 'reactflow',
 ]
 
 const globals = { 
   react: 'React',
   'react-dom': 'ReactDOM',
   'lodash': '_',
+  // 'reactflow': 'ReactFlow',
 }
 
 const options = {

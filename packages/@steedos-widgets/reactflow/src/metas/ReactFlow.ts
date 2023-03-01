@@ -41,7 +41,7 @@ export default {
   amis: {
     render: {
       type: config.amis.name,
-      usage: "formitem",
+      usage: "renderer",
       weight: 1,
       framework: "react"
     },
@@ -57,19 +57,56 @@ export default {
         type: config.amis.name,
         name: "flow_chart",
         wrapperClassName: "h-80",
-        title: "",
-        content: ""
+        config: JSON.stringify({
+          nodes: [
+            {
+              id: 'start',
+              data: { label: '开始' },
+              position: { x: 0, y: 0 },
+              type: 'input',
+            },
+            {
+              id: 'end',
+              data: { label: '结束' },
+              position: { x: 100, y: 100 },
+            },
+          ],
+          "edges": [
+            {
+              "id": "start-end",
+              "source": "start",
+              "target": "end",
+              "label": "",
+              "type": "step"
+            }
+          ]
+        })
       },
       previewSchema: {
         type: config.amis.name,
       },
       panelTitle: "设置",
-      panelControls: [,
+      panelControls: [
+        {
+          type: "editor",
+          "language": "json",
+          name: "config",
+          label: "React Flow 配置"
+        },
+        {
+          type: "editor",
+          "language": "javascript",
+          name: "dataFilter",
+          label: "数据加工",
+          description: "如果后端没有直接返回 Echart 配置，可以自己写一段函数来包装。\
+          签名：(config, ReactFlow, data) => config \
+          "
+        },
         {
           type: "text",
           name: "wrapperClassName",
           label: "CSS类名"
-        }
+        },
       ],
       events: [{
         eventName: "eventClick",

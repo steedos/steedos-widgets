@@ -19,9 +19,38 @@ export const AmisReactFlow = ({
   getValue,
   setValue,
   value,
+  config,
   ...props }
 ) => {
-  console.log(props)
+  let configJSON = {}
+  if (typeof config === 'string') {
+    try {
+      configJSON = JSON.parse(config);
+    } catch(e) {console.log(e)}
+  }
+  if (typeof config === 'object') {
+    configJSON = config
+  }
+
+
+  let onDataFilter = props.onDataFilter;
+  const dataFilter = props.dataFilter;
+
+  if (!onDataFilter && typeof dataFilter === 'string') {
+    onDataFilter = new Function(
+      'config',
+      'ReactFlow',
+      'data',
+      dataFilter
+    ) as any;
+  }
+  try {
+    onDataFilter &&
+      (configJSON =
+        onDataFilter(configJSON, (window as any).ReactFlow, amisData) || configJSON);
+  } catch (e) {
+    console.warn(e);
+  }
 
   const dispatchEvent = async (action: string, value?: object) => {
 
@@ -71,7 +100,7 @@ export const AmisReactFlow = ({
 
   return (
     <div className={wrapperClassName}>
-      <ReactFlow {...props}>
+      <ReactFlow {...configJSON}>
         <Background />
         <Controls />
       </ReactFlow>
