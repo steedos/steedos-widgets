@@ -217,7 +217,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
               "type": "wrapper",
               "size": "none",
               // "className": "border-r border-slate-300 border-solid w-72 bg-white",
-              "visibleOn": `${displayAs === "split_three"}`,
+              // "visibleOn": `${displayAs === "split_three"}`,
               "body": sideSchema
             }, 
             body
