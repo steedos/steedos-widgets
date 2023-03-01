@@ -217,6 +217,7 @@ export async function getEditFormInitApi(object, recordId, fields){
         `,
         adaptor: `
             const recordId = api.body.recordId;
+            let initialValues={};
             if(recordId && payload.data.data){
                 var data = payload.data.data[0];
                 const dataKeys = _.keys(data);
@@ -238,7 +239,7 @@ export async function getEditFormInitApi(object, recordId, fields){
                         }
                     }
                 };
-                payload.data._initialValue = data;
+                initialValues = data;
             }
             else{
                 var uiSchema = api.body.uiSchema;
@@ -253,10 +254,12 @@ export async function getEditFormInitApi(object, recordId, fields){
                 if(defaultData && _.isObject(defaultData) && !_.isArray(defaultData)){
                     defaultValues = Object.assign({}, defaultValues, defaultData)
                 }
-                payload.data._initialValue = defaultValues;
+                initialValues = defaultValues;
             }
-            payload.data.editFormInited = true;
-            delete payload.extensions;
+            payload.data = {
+                initialValues,
+                editFormInited: true
+            }
             return payload;
         `,
         data: data,

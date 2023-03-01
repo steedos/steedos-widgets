@@ -322,7 +322,7 @@ export async function getObjectForm(objectSchema, ctx){
         type: "form",
         mode: layout,
         data: {
-          "&": "${_initialValue}"
+          "&": "${initialValues}"
         },
         labelAlign,
         persistData: false,

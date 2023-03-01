@@ -9,6 +9,7 @@ import { getSelectUserSchema } from './user';
 import { getObjectHeaderToolbar, getObjectFooterToolbar, getObjectFilter } from './../toolbar';
 import { getListViewSort } from './../../../objects';
 import { lookupToAmisTreeSelect } from './tree_select';
+import * as standardNew from '../../../../schema/standard_new.amis'
 
 const getReferenceTo = async (field)=>{
     let referenceTo = field.reference_to;
@@ -256,6 +257,12 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         })
 
         pickerSchema.headerToolbar = getObjectHeaderToolbar(refObjectConfig, ctx.formFactor);
+        const isAllowCreate = refObjectConfig.permissions.allowCreate;
+        if (isAllowCreate) {
+            const new_button = await standardNew.getSchema(refObjectConfig, { appId: ctx.appId, objectName: refObjectConfig.name, formFactor: ctx.formFactor });
+            new_button.align = "right";
+            pickerSchema.headerToolbar.push(new_button);
+        }
         pickerSchema.footerToolbar = getObjectFooterToolbar();
         if(ctx.filterVisible !== false){
             let filterLoopCount = ctx.filterLoopCount || 0;
