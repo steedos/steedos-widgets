@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-02-28 23:21:12
+ * @LastEditTime: 2023-03-01 10:08:58
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef } from 'react';
@@ -43,17 +43,18 @@ export default function Page ({ formFactor: defaultFormFactor }) {
     name: tab_id,
   });
   const scopeId = `${listViewId}-page`;
+  const splitOffset = displayAs === "split_three" ? "1/2" : "[388px]";
+  const gridClassName = "absolute inset-0 sm:m-3 sm:mb-0 sm:border sm:shadow sm:rounded border-slate-300 border-solid bg-gray-100";
+  const splitClassName = `absolute top-0 bottom-0 w-${splitOffset} border-r border-slate-300 border-solid bg-gray-100`;
   const schema = page? JSON.parse(page.schema) : {
     "type": "steedos-object-listview",
     "objectApiName": tab_id,
     "columnsTogglable": false,
     "showHeader": true,
     "showDisplayAs": (defaultFormFactor !== 'SMALL'),
-    "formFactor": formFactor,
-    "className": displayAs === 'grid'? 
-      "absolute inset-0 sm:m-3 sm:mb-0 sm:border sm:shadow sm:rounded border-slate-300 border-solid bg-gray-100" : 
-      "absolute top-0 bottom-0 w-[388px] border-r border-slate-300 border-solid bg-gray-100"
+    "formFactor": formFactor
   }
+  schema.className = `${schema.className || ""} ${displayAs === 'grid' ? gridClassName : splitClassName}`
 
   return (
     <>
