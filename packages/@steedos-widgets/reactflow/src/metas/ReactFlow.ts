@@ -56,7 +56,7 @@ export default {
       scaffold: {
         type: config.amis.name,
         name: "flow_chart",
-        wrapperClassName: "h-80",
+        wrapperClassName: "w-full h-full",
         config: JSON.stringify({
           nodes: [
             {
