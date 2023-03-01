@@ -309,9 +309,13 @@ export async function getObjectForm(objectSchema, ctx){
       body: [defaultsDeep({}, formSchema, {
         type: "form",
         mode: layout,
+        data: {
+          "&": "${_initialValue}"
+        },
         labelAlign,
         persistData: false,
         promptPageLeave: true,
+        canAccessSuperData: false,
         name: `form_edit_${recordId}`,
         debug: false,
         title: "",

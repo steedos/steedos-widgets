@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-04 17:10:53
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-30 10:10:44
+ * @LastEditTime: 2023-02-24 17:52:04
  * @Description: 
  */
 // import { AmisRender } from "@/components/AmisRender";
@@ -10,7 +10,6 @@
 import { isEmpty, isFunction } from "lodash";
 import { conditionsToFilters, filtersToConditions } from '@steedos-widgets/amis-lib'
 import { getSteedosAuth, fetchAPI } from "@steedos-widgets/amis-lib";
-import { getUISchema } from '@steedos-widgets/amis-lib'
 
 // const filtersAmisSchema = require('@/amis/listview_filters.amis.json')
 
@@ -31,7 +30,7 @@ const saveFilters = async (listView, filters)=>{
             filters: filters
         })
     });
-    await getUISchema(listView.object_name, true)
+    await window.getUISchema(listView.object_name, true)
 }
 
 export const ListView = {
@@ -97,5 +96,9 @@ export const ListView = {
                 return [listView.filters, 'and', userFilter];
             }
         }
+    },
+    getFirstListView: async(objectName)=>{
+        const uiSchema = await window.getUISchema(objectName);
+        return _.first(_.sortBy(_.values(uiSchema.list_views) , 'sort_no'));
     }
 }

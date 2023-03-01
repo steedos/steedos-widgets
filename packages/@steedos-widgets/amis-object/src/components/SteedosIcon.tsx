@@ -4,7 +4,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-14 14:52:59
+ * @LastEditTime: 2023-02-28 16:28:47
  * @Description: 
  */
 
@@ -31,6 +31,6 @@ export const SteedosIcon = (props) => {
     //   })
     // }, [xlinkHref])
     return <span className={`slds-icon_container slds-icon-${category}-${name} ${containerClassName}`}>
-            <svg className={`slds-icon slds-icon_${size} slds-icon-text-${colorVariant} ${className}`}><use xlinkHref={`${basePath}/assets/icons/${category}-sprite/svg/symbols.svg#${name}`}></use></svg>
+            <svg className={`slds-icon slds-icon_${size} slds-icon-text-${colorVariant} ${className}`}><use xlinkHref={`/assets/icons/${category}-sprite/svg/symbols.svg#${name}`}></use></svg>
           </span>
 }

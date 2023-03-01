@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-21 17:03:53
+ * @LastEditTime: 2023-02-28 17:06:07
  * @Description:
  */
 import {
@@ -378,7 +378,7 @@ const getFieldEditTpl = async (field, label)=>{
         break;
     }
   }
-  console.log('getFieldEditTpl ', label, tpl)
+  // console.log('getFieldEditTpl ', label, tpl)
   return tpl;
 };
 
@@ -844,7 +844,6 @@ export const getFlowFormSchema = async (instance, box) => {
         return api;
       `,
       "adaptor": `
-        console.log("======adaptor", payload);
         payload.data = {
           related_instances: payload.data.instance.related_instances
         };

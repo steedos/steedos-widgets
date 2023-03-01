@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-10 10:48:12
+ * @LastEditTime: 2023-03-01 09:39:16
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -94,6 +94,25 @@ export function getListViewFilter(listView){
     return filters;
 }
 
+function formatUISchemaCache(objectName, uiSchema){
+    setUISchemaCache(objectName, uiSchema);
+    each(uiSchema.fields, (field)=>{
+        try {
+            if(field.type === "lookup" && field._reference_to && _.isString(field._reference_to)){
+                field.reference_to = eval(`(${field._reference_to})`)();
+            }
+        } catch (exception) {
+            field.reference_to = undefined;
+            console.error(exception)
+        }
+    })
+    each(uiSchema.list_views, (v, k)=>{
+        v.name = k;
+        if(!has(v, 'columns')){
+            v.columns = uiSchema.list_views.all.columns;
+        }
+    })
+}
 
 export async function getUISchema(objectName, force) {
     if (!objectName) {
@@ -114,56 +133,34 @@ export async function getUISchema(objectName, force) {
         if(!uiSchema){
             return ;
         }
-        setUISchemaCache(objectName, uiSchema);
-        // for (const fieldName in uiSchema.fields) {
-        //     if (uiSchema.fields) {
-        //         const field = uiSchema.fields[fieldName];
+        formatUISchemaCache(objectName, uiSchema);
+    } catch (error) {
+        console.error(`getUISchema`, objectName, error);
+        setUISchemaCache(objectName, null);
+    }
+    return getUISchemaCache(objectName);
+}
 
-        //         if (
-        //             (field.type === "lookup" || field.type === "master_detail") &&
-        //             field.reference_to
-        //         ) {
-        //             let refTo = null;
-        //             if(isFunction(field.reference_to)){
-        //                 try {
-        //                     refTo = eval(field.reference_to)();
-        //                 } catch (error) {
-        //                     console.error(error)
-        //                 }
-        //             }
-        //             if(isString(field.reference_to)){
-        //                 refTo = [field.reference_to]
-        //             }else if(isArray(field.reference_to)){
-        //                 refTo = field.reference_to
-        //             }
-        //             for (const item of refTo) {
-        //                 const refUiSchema = await getUISchema(item);
-        //                 if (!refUiSchema) {
-        //                     delete uiSchema.fields[fieldName];
-        //                 }
-        //             }
-                   
-        //         }
-        //     }
-        // }
-        each(uiSchema.fields, (field)=>{
-            try {
-                if(field.type === "lookup" && field._reference_to && _.isString(field._reference_to)){
-                    // console.log(`uischema each field`, field.reference_to)
-                    field.reference_to = eval(`(${field._reference_to})`)();
-                    // console.log('eval field===>', field.reference_to)
-                }
-            } catch (exception) {
-                field.reference_to = undefined;
-                console.error(exception)
-            }
-        })
-        each(uiSchema.list_views, (v, k)=>{
-            v.name = k;
-            if(!has(v, 'columns')){
-                v.columns = uiSchema.list_views.all.columns;
-            }
-        })
+export function getUISchemaSync(objectName, force) {
+    if (!objectName) {
+        return;
+    }
+    if (hasUISchemaCache(objectName) && !force) {
+        return getUISchemaCache(objectName);
+    }
+    let uiSchema = null;
+    try {
+        
+        const url = `/service/api/@${objectName.replace(/\./g, "_")}/uiSchema`;
+        uiSchema = Steedos.authRequest(url, {
+            type: 'GET',
+            async: false,
+        });
+
+        if(!uiSchema){
+            return ;
+        }
+        formatUISchemaCache(objectName, uiSchema);
     } catch (error) {
         console.error(`getUISchema`, objectName, error);
         setUISchemaCache(objectName, null);
@@ -180,7 +177,7 @@ export async function getField(objectName, fieldName) {
 export async function getFormSchema(objectName, ctx) {
     const uiSchema = await getUISchema(objectName);
     const amisSchema = await getObjectForm(uiSchema, ctx);
-    console.log(`getFormSchema====>`, amisSchema)
+    // console.log(`getFormSchema====>`, amisSchema)
     return {
         uiSchema,
         amisSchema,
@@ -283,11 +280,11 @@ export async function getListSchema(
         if(localListViewProps.orderDir){
             listSchema.orderDir = localListViewProps.orderDir;
         }
-        if(localListViewProps.perPage){
-            listSchema.defaultParams = {
-                perPage: localListViewProps.perPage
-            }
-        }
+        // if(localListViewProps.perPage){
+        //     listSchema.defaultParams = {
+        //         perPage: localListViewProps.perPage
+        //     }
+        // }
         defaults.listSchema = defaultsDeep({}, listSchema, defaults.listSchema || {});
       }
     }
@@ -309,7 +306,6 @@ export async function getListSchema(
         "requestAdaptor": listView.requestAdaptor,  
         "adaptor": listView.adaptor
     };
-
     return {
         uiSchema,
         amisSchema,
@@ -370,7 +366,6 @@ export async function getTableSchema(
         sort,
         buttons: await getListViewItemButtons(uiSchema, ctx)
     });
-
     return {
         uiSchema,
         amisSchema,
@@ -568,4 +563,9 @@ export async function getObjectRelated(
 
 export async function getSearchableFieldsFilterSchema(objectSchema, fields, ctx) {
     return await getObjectFieldsFilterFormSchema(objectSchema, fields, ctx);
+}
+
+if(typeof window != 'undefined'){
+    window.getUISchema = getUISchema;
+    window.getUISchemaSync = getUISchemaSync;
 }
