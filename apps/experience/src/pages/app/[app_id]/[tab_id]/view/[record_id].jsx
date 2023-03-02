@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-02 12:43:14
+ * @LastEditTime: 2023-03-02 12:48:44
  * @Description:
  */
 import React, { useState, useEffect, Fragment } from "react";
@@ -107,7 +107,7 @@ export default function Record({formFactor: defaultFormFactor}) {
                 formFactor: defaultFormFactor,
                 scopeId: listViewId,
               }}
-              className={`steedos-listview p-0 flex-none w-${splitOffset}`}
+              className={`steedos-listview p-0 flex-none ${splitOffset}`}
               id={listViewId}
               schema={listSchema}
               router={router}
