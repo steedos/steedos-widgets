@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 16:55:58
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-09 13:59:07
+ * @LastEditTime: 2023-03-02 16:01:49
  * @Description: 
  */
 
@@ -40,6 +40,18 @@ export const AmisRender = ({id, schema, data, className, assets, getModalContain
         SteedosUI.refs[id] = amisRender(`#${id}`, defaultsDeep(defData , schema), {
             // location: router
         }, env, {router: router, assets:assets});
+
+        return ()=>{
+            if(SteedosUI.refs[id]){
+                try {
+                    SteedosUI.refs[id].unmount();
+                    SteedosUI.refs[id] = null;
+                } catch (error) {
+                    console.error(`error`, id)
+                }
+            }
+        }
+
       }, [JSON.stringify(schema), JSON.stringify(data)]);
 
     useEffect(()=>{
