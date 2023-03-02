@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-03-01 10:08:58
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2023-03-02 12:43:07
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef } from 'react';
@@ -43,9 +43,9 @@ export default function Page ({ formFactor: defaultFormFactor }) {
     name: tab_id,
   });
   const scopeId = `${listViewId}-page`;
-  const splitOffset = displayAs === "split_three" ? "1/2" : "[388px]";
+  const splitOffset = displayAs === "split_three" ? "w-1/2" : "w-[388px]";
   const gridClassName = "absolute inset-0 sm:m-3 sm:mb-0 sm:border sm:shadow sm:rounded border-slate-300 border-solid bg-gray-100";
-  const splitClassName = `absolute top-0 bottom-0 w-${splitOffset} border-r border-slate-300 border-solid bg-gray-100`;
+  const splitClassName = `absolute top-0 bottom-0 ${splitOffset} border-r border-slate-300 border-solid bg-gray-100`;
   const schema = page? JSON.parse(page.schema) : {
     "type": "steedos-object-listview",
     "objectApiName": tab_id,

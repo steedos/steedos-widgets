@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-03-01 10:12:49
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2023-03-02 12:43:14
  * @Description:
  */
 import React, { useState, useEffect, Fragment } from "react";
@@ -83,7 +83,7 @@ export default function Record({formFactor: defaultFormFactor}) {
     name: side_object,
   });
 
-  const splitOffset = displayAs === "split_three" ? "1/2" : "[388px]";
+  const splitOffset = displayAs === "split_three" ? "w-1/2" : "w-[388px]";
   const listSchema = listPage? JSON.parse(listPage.schema) : {
     "type": "steedos-object-listview",
     "objectApiName": side_object,
@@ -92,7 +92,7 @@ export default function Record({formFactor: defaultFormFactor}) {
     "showDisplayAs": true,
     "formFactor": 'SMALL',
   }
-  listSchema.className = `absolute top-0 bottom-0 w-${splitOffset} shadow border-r border-slate-300 border-solid bg-gray-100`;
+  listSchema.className = `absolute top-0 bottom-0 ${splitOffset} shadow border-r border-slate-300 border-solid bg-gray-100`;
 
   return (
     <>
