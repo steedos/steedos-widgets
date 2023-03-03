@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-03 11:32:48
+ * @LastEditTime: 2023-03-03 15:00:16
  * @Description: 
  */
 import { getListSchema, getObjectListHeaderFirstLine, getUISchema, Router } from '@steedos-widgets/amis-lib'
@@ -78,7 +78,16 @@ export const AmisObjectListView = async (props) => {
     listSchema.onEvent[`@data.changed.${objectApiName}`] = {
       "actions": [
         {
-          "actionType": "reload"
+          "args": {
+            "url": "/app/${appId}/${objectName}/view/${event.data.result.data.recordId}?display=${ls:tab.project.display || 'grid'}&side_object=${objectName}&side_listview_id=${listName}",
+            "blank": false
+          },
+          "actionType": "link",
+          "expression": "!!!this.recordId" //是新建, 则进入详细页面. 
+        },
+        {
+          "actionType": "reload",
+          "expression": "this.recordId" //不是新建, 则刷新列表
         }
       ]
     }

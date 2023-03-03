@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:51:00
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-03 12:28:03
+ * @LastEditTime: 2023-03-03 14:29:38
  * @Description: 
  */
 
@@ -55,7 +55,8 @@ export const getSchema = async (uiSchema, ctx) => {
                                         "global": "${global}",
                                         "listViewId": "${listViewId}",
                                         "uiSchema": "${uiSchema}",
-                                        "isLookup": "${isLookup}"
+                                        "isLookup": "${isLookup}",
+                                        "listName": "${listName}"
                                     },
                                     "title": "新建 ${uiSchema.label}",
                                     "body": [

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 11:31:12
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-09 16:40:00
+ * @LastEditTime: 2023-03-02 14:53:19
  * @Description:
  */
 import { each, find, isArray, isEmpty } from 'lodash';
@@ -222,8 +222,6 @@ export const registerRenders = (assets)=>{
 
 export const amisRender = (root, schema, props = {}, env = {}, options) => {
   let amis = amisRequire("amis/embed");
-  console.log(`amisRender`)
-  console.log(schema)
   const { router, assets } = options;
   registerRenders(assets);
   return amis.embed(root, schema, props, Object.assign(getEvn(router), env));

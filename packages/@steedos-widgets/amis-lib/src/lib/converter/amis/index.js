@@ -273,37 +273,37 @@ export async function getObjectForm(objectSchema, ctx){
     const { recordId, formFactor, layout = formFactor === 'SMALL' ? 'normal' : "normal", labelAlign, tabId, appId, defaults } = ctx;
     const fields = _.values(objectSchema.fields);
     const formSchema =  defaults && defaults.formSchema || {};
-    const onSubmitSuccCustomScript = `
-      const { recordId, listViewId } = context.props.data;
-      const data = event.data;
-      const appId = data.appId;
-      const objectName = data.objectName;
-      // 在记录详细界面时isRecordDetail为true
-      // TODO: isRecordDetail这个判断需要优化
-      const isRecordDetail = !!data.$master && data.$master.$master?.recordId;
-      if(recordId){
-        // 编辑记录时，刷新主表单
-        doAction({
-          componentId: \`detail_\${recordId}\`,
-          actionType: "reload",
-          expression: \`!\${listViewId}\`
-        });
-      }
-      else if(!isRecordDetail){
-        // 在列表视图界面新建记录时跳转到详细页面
-        const listName = event.data.listName;
-        const uiSchema = event.data.uiSchema;
-        const listView = uiSchema && uiSchema.list_views[listName];
-        const newRecordId = data.result.data?.recordId;
-        doAction({
-          "args": {
-            "url": "/app/" + appId + "/" + objectName + "/view/" + newRecordId,
-            "blank": false
-          },
-          "actionType": "link"
-        });
-      }
-    `;
+    // const onSubmitSuccCustomScript = `
+    //   const { recordId, listViewId } = context.props.data;
+    //   const data = event.data;
+    //   const appId = data.appId;
+    //   const objectName = data.objectName;
+    //   // 在记录详细界面时isRecordDetail为true
+    //   // TODO: isRecordDetail这个判断需要优化
+    //   const isRecordDetail = !!data.$master && data.$master.$master?.recordId;
+    //   if(recordId){
+    //     // 编辑记录时，刷新主表单
+    //     doAction({
+    //       componentId: \`detail_\${recordId}\`,
+    //       actionType: "reload",
+    //       expression: \`!\${listViewId}\`
+    //     });
+    //   }
+    //   else if(!isRecordDetail){
+    //     // 在列表视图界面新建记录时跳转到详细页面
+    //     const listName = event.data.listName;
+    //     const uiSchema = event.data.uiSchema;
+    //     const listView = uiSchema && uiSchema.list_views[listName];
+    //     const newRecordId = data.result.data?.recordId;
+    //     doAction({
+    //       "args": {
+    //         "url": "/app/" + appId + "/" + objectName + "/view/" + newRecordId,
+    //         "blank": false
+    //       },
+    //       "actionType": "link"
+    //     });
+    //   }
+    // `;
     if(_.has(formSchema, 'className')){
       formSchema.className = 'steedos-amis-form'
     }
@@ -343,15 +343,6 @@ export async function getObjectForm(objectSchema, ctx){
           "submitSucc": {
             "weight": 0,
             "actions": [
-              // {
-              //   "componentId": `steedos-record-related-list-${objectSchema.name}`,
-              //   "actionType": "setValue",
-              //   "args": {
-              //       value: {
-              //       "$count": undefined,
-              //       }
-              //   }
-              // },
               {
                 "actionType": "broadcast",
                 "args": {
@@ -361,15 +352,6 @@ export async function getObjectForm(objectSchema, ctx){
                   "objectName": `${objectSchema.name}`
                 }
               },
-              {
-                   "actionType": "custom",
-                "script": `console.log("broadcast: ----> @data.changed.${objectSchema.name}")`
-              }
-              // {
-              //   "componentId": `listview_${objectSchema.name}`,
-              //   "actionType": "reload",
-              //   "expression": "!!listViewId"
-              // },
               // {
               //   "actionType": "custom",
               //   "script": onSubmitSuccCustomScript
@@ -420,7 +402,16 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
                   "actions": [
                     {
                       "actionType": "reload",
-                      "componentId": serviceId
+                      "componentId": serviceId,
+                      "expression": "this.__deletedRecord != true"
+                    },
+                    {
+                      "args": {
+                        "url": "/app/${appId}/${objectName}/grid/${side_listview_id}",
+                        "blank": false
+                      },
+                      "actionType": "link",
+                      "expression": "this.__deletedRecord === true"
                     }
                   ]
                 }

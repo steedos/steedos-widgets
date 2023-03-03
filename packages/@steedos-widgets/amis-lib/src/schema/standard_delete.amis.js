@@ -40,19 +40,15 @@ export const getSchema = (uiSchema)=>{
                               "actionType": "ajax"
                             },
                             {
-                                "componentId": "",
+                                "actionType": "broadcast",
                                 "args": {
-                                  "url": "/app/${app_id}/${objectName}/grid/all",
-                                  "blank": false
+                                  "eventName": `@data.changed.${uiSchema.name}`
                                 },
-                                "actionType": "link",
-                                "expression": "!!!listViewId"
-                            },
-                            {
-                                "componentId": `listview_${uiSchema.name}`,
-                                "actionType": "reload",
-                                "expression": "!!listViewId"
-                            },
+                                "data": {
+                                  "objectName": `${uiSchema.name}`,
+                                  "__deletedRecord": true
+                                }
+                            }
                           ]
                     }
                 }

@@ -2,20 +2,20 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-16 17:02:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-10 12:08:35
+ * @LastEditTime: 2023-03-03 14:52:18
  * @Description:
  */
 
 
 export const Router = {
     getTabDisplayAs(tab_id){
-        const key = `tab:${tab_id}:display`;
+        const key = `tab.${tab_id}.display`;
         const value = localStorage.getItem(key)
         return value ? value : 'grid'
     },
   
     setTabDisplayAs(tab_id, displayAs){
-        const key = `tab:${tab_id}:display`;
+        const key = `tab.${tab_id}.display`;
         localStorage.setItem(key, displayAs)
     },
     getAppPath({formFactor, appId}){
