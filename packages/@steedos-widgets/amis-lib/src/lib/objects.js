@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-03 15:13:35
+ * @LastEditTime: 2023-03-03 15:34:22
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -82,16 +82,29 @@ export function getListViewFilter(listView){
     if(!listView){
         return ;
     }
-    const userId = getUserId();
-    let filters = listView.filters;
-    if(listView.filter_scope === 'mine'){
-        if(_.isEmpty(filters)){
-            filters = [["owner", "=", userId]]
-        }else{
-            filters.push(["owner", "=", userId])
-        }
-    };
-    return filters;
+    try {
+        const userId = getUserId();
+        let filters = listView.filters;
+        if(listView.filter_scope === 'mine'){
+            if(_.isEmpty(filters)){
+                filters = [["owner", "=", userId]]
+            }else{
+                if(_.isString(filters) && _.startsWith(_.trim(filters), "function")){
+                    filters = new Function(`return ${filters}`);
+                    filters = filters();
+                }
+                if(_.isArray(filters)){
+                    filters.push(["owner", "=", userId])
+                }else{
+                    console.debug(`listView filters is not array`, listView)
+                    throw new Error('filters is not array')
+                }
+            }
+        };
+        return filters;
+    } catch (error) {
+        console.error(error)
+    }
 }
 
 function formatUISchemaCache(objectName, uiSchema){
