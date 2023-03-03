@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-01 09:39:16
+ * @LastEditTime: 2023-03-03 11:06:39
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -188,10 +188,10 @@ export async function getFormSchema(objectName, ctx) {
 export async function getViewSchema(objectName, recordId, ctx) {
     const uiSchema = await getUISchema(objectName);
     const amisSchema = await getObjectDetail(uiSchema, recordId, ctx);
-    // console.log(`getViewSchema amisSchema`, amisSchema)
+    console.log(`getViewSchema amisSchema`, amisSchema)
     return {
         uiSchema,
-        amisSchema,
+        amisSchema
     };
 }
 
@@ -366,6 +366,7 @@ export async function getTableSchema(
         sort,
         buttons: await getListViewItemButtons(uiSchema, ctx)
     });
+    console.log(`object table ====> `, amisSchema)
     return {
         uiSchema,
         amisSchema,
@@ -462,9 +463,18 @@ export async function getRecordDetailSchema(objectName, appId){
                             {
                                 "actionType": "reload",
                                 "data": {
-                                    "name": `\${record.${uiSchema?.NAME_FIELD_KEY || 'name'}}`,
-                                    "record": `\${record}`,
-                                    "recordLoaded": true
+                                    "name": `\${event.data.record.${uiSchema?.NAME_FIELD_KEY || 'name'}}`,
+                                    "record": `\${event.data.record}`,
+                                    "recordLoaded": true,
+                                }
+                            },
+                            {
+                                "actionType": "reload",
+                                "componentId": `page_readonly_${objectName}_header`,  //刷新标题, 详细页面header service 嵌套太多, 导致仅刷新第一层service无法更新recordName
+                                "data": {
+                                    "name": `\${event.data.record.${uiSchema?.NAME_FIELD_KEY || 'name'}}`,
+                                    "record": `\${event.data.record}`,
+                                    "recordLoaded": true,
                                 }
                             }
                         ]

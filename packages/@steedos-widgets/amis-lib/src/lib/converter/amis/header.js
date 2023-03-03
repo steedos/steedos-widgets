@@ -390,6 +390,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
   let body = [
     {
       "type": "service",
+      "id": `page_readonly_${name}_header`,
       data: { "&":"$$", objectName: name, _id: recordId, recordPermissions: "${record.recordPermissions}", uiSchema: objectSchema},
       "body": [
         {

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-03 13:17:56
+ * @LastEditTime: 2023-03-03 11:44:50
  * @Description:
  */
 
@@ -117,7 +117,19 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
     const options = {
         globalFilter,
         defaults: {
-            listSchema: { headerToolbar:[],columnsTogglable:false },
+            listSchema: { 
+                headerToolbar:[],
+                columnsTogglable: false,
+                onEvent: {
+                    [`@data.changed.${relatedObjectName}`]: {
+                        "actions": [
+                            {
+                                "actionType": "reload"
+                            }
+                        ]
+                    }
+                }
+            },
             headerSchema: recordRelatedListHeader
         },
         showHeader: true,

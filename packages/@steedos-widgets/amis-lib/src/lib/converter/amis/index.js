@@ -343,24 +343,37 @@ export async function getObjectForm(objectSchema, ctx){
           "submitSucc": {
             "weight": 0,
             "actions": [
+              // {
+              //   "componentId": `steedos-record-related-list-${objectSchema.name}`,
+              //   "actionType": "setValue",
+              //   "args": {
+              //       value: {
+              //       "$count": undefined,
+              //       }
+              //   }
+              // },
               {
-                "componentId": `steedos-record-related-list-${objectSchema.name}`,
-                "actionType": "setValue",
+                "actionType": "broadcast",
                 "args": {
-                    value: {
-                    "$count": undefined,
-                    }
+                  "eventName": `@data.changed.${objectSchema.name}`
+                },
+                "data": {
+                  "objectName": `${objectSchema.name}`
                 }
               },
               {
-                "componentId": `listview_${objectSchema.name}`,
-                "actionType": "reload",
-                "expression": "!!listViewId"
-              },
-              {
-                "actionType": "custom",
-                "script": onSubmitSuccCustomScript
+                   "actionType": "custom",
+                "script": `console.log("broadcast: ----> @data.changed.${objectSchema.name}")`
               }
+              // {
+              //   "componentId": `listview_${objectSchema.name}`,
+              //   "actionType": "reload",
+              //   "expression": "!!listViewId"
+              // },
+              // {
+              //   "actionType": "custom",
+              //   "script": onSubmitSuccCustomScript
+              // }
             ]
           }
         }
@@ -375,31 +388,46 @@ export async function getObjectForm(objectSchema, ctx){
 export async function getObjectDetail(objectSchema, recordId, ctx){
     const { formFactor, layout = formFactor === 'SMALL' ? 'normal' : "normal", labelAlign, formInitProps } = ctx;
     const fields = _.values(objectSchema.fields);
+    const serviceId = `detail_${recordId}`;
     return {
         type: 'service',
         name: `page_readonly_${recordId}`,
-        id: `detail_${recordId}`,
+        id: serviceId,
         data: {global: getGlobalData('read'), context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
         api: await getReadonlyFormInitApi(objectSchema, recordId, fields, formInitProps),
         body: [
-            {
-                type: "form",
-                mode: layout,
-                labelAlign,
-                persistData: false,
-                promptPageLeave: false,
-                name: `form_readonly_${recordId}`,
-                debug: false,
-                title: "",
-                data: {
-                  "formData": "$$"
-                },
-                wrapWithPanel: false, 
-                body: await getFormBody(map(fields, (field)=>{field.readonly = true; return field;}), objectSchema, Object.assign({}, ctx, {showSystemFields: true})),
-                className: 'steedos-amis-form bg-white',
-                actions: [], // 不显示表单默认的提交按钮
-                hiddenOn: "${recordLoaded != true}"
-            }
+          {
+            "type": "wrapper",   //form 的 hiddenOn 会导致 form onEvent 异常, 使用wrapper包裹一次form,并在wrapper上控制显隐
+            hiddenOn: "${recordLoaded != true}",
+            "body": {
+              type: "form",
+              mode: layout,
+              labelAlign,
+              persistData: false,
+              promptPageLeave: false,
+              name: `form_readonly_${recordId}`,
+              debug: false,
+              title: "",
+              data: {
+                "formData": "$$"
+              },
+              wrapWithPanel: false, 
+              body: await getFormBody(map(fields, (field)=>{field.readonly = true; return field;}), objectSchema, Object.assign({}, ctx, {showSystemFields: true})),
+              className: 'steedos-amis-form bg-white',
+              actions: [], // 不显示表单默认的提交按钮
+              onEvent: {
+                [`@data.changed.${objectSchema.name}`]: {  // 由于amis service 组件的 onEvent 存在bug ,此处借助form来刷新 上层 service https://github.com/baidu/amis/issues/6294
+                  "actions": [
+                    {
+                      "actionType": "reload",
+                      "componentId": serviceId
+                    }
+                  ]
+                }
+              }
+          },
+            "className": "b"
+          }
         ],
         onEvent: {
           "fetchInited": {

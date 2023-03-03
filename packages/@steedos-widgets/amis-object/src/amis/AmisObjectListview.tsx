@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-02-28 23:24:06
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2023-03-03 11:32:48
  * @Description: 
  */
 import { getListSchema, getObjectListHeaderFirstLine, getUISchema, Router } from '@steedos-widgets/amis-lib'
@@ -74,8 +74,8 @@ export const AmisObjectListView = async (props) => {
     const listSchema = pick(props, schemaKeys);
     // className不传入crud组件，crud单独识别crudClassName属性
     listSchema.className = crudClassName;
-    listSchema.onEvent = {};
-    listSchema.onEvent[`data_change_${objectApiName}`] = {
+    listSchema.onEvent = {}; // 为啥要将一个内置event放在此处?
+    listSchema.onEvent[`@data.changed.${objectApiName}`] = {
       "actions": [
         {
           "actionType": "reload"
