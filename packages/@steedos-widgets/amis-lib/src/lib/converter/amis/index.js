@@ -152,7 +152,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
     if(nonpaged || isTreeObject){
       options.top = 50000;
       bodyProps.footerToolbar = [];
-      options.queryCount = false;
+      options.queryCount = true; // 禁止翻页的时候, 需要查找总数
     }else if(top){
       bodyProps.footerToolbar = [];
       options.queryCount = false;
