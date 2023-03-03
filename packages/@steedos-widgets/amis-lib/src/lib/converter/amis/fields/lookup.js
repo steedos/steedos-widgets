@@ -281,6 +281,18 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             "listName": listName,// 需要按视图取可搜索项
             "isLookup": true
         });
+
+        if(!pickerSchema.onEvent){
+            pickerSchema.onEvent = {}
+        }
+
+        pickerSchema.onEvent[`@data.changed.${refObjectConfig.name}`] = {
+            "actions": [
+              {
+                "actionType": "reload"
+              }
+            ]
+          }
     }
 
     const data = {

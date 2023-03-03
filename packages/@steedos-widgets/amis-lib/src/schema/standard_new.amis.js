@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:51:00
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-03-02 17:33:51
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2023-03-03 12:28:03
  * @Description: 
  */
 
@@ -25,21 +25,6 @@ export const getSchema = async (uiSchema, ctx) => {
             // 设置form的wrapWithPanel属性隐藏其底部保存取消按钮
             formSchema.wrapWithPanel = false;
             formSchema.className = "steedos-amis-form";
-        }
-        // TODO: 后续可以改为直接调用data_change_\${objectName}广播事件来刷新子表，就不用找到formSchema给配置onEvent来处理刷新问题
-        const isLookup = api.body?.isLookup;
-        if (isLookup) {
-            formSchema.onEvent = {
-                submitSucc: {
-                    "weight": 0,
-                    "actions": [
-                        {
-                            "actionType": "custom",
-                            "script": "const scope = event.context.scoped; const listView = scope.parent.parent.parent.parent.getComponents().find(function(n){ return n.props.type === 'crud'; }); listView.reload();"
-                        }
-                    ]
-                }
-            }
         }
         return {
             data: formSchema
