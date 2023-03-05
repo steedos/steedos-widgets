@@ -180,7 +180,12 @@ export async function getObjectCRUD(objectSchema, fields, options){
         bodyProps
         );
     }else{
-      const table = await getTableSchema(fields, Object.assign({idFieldName: objectSchema.idFieldName, labelFieldName: objectSchema.NAME_FIELD_KEY || 'name'}, options));
+      let labelFieldName = objectSchema.NAME_FIELD_KEY || 'name';
+      // organizations 对象的历史遗留问题, fullname 被标记为了 名称字段. 在此处特殊处理.
+      if(objectSchema.name === 'organizations'){
+        labelFieldName = 'name';
+      }
+      const table = await getTableSchema(fields, Object.assign({idFieldName: objectSchema.idFieldName, labelFieldName: labelFieldName}, options));
       delete table.mode;
 
       body = Object.assign({}, table, {
