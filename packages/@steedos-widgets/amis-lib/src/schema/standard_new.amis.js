@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:51:00
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-03 14:29:38
+ * @LastEditors: 廖大雪 2291335922@qq.com
+ * @LastEditTime: 2023-03-05 13:44:36
  * @Description: 
  */
 
@@ -18,13 +18,7 @@ export const getSchema = async (uiSchema, ctx) => {
         };
 
         if (payload && payload.schema) {
-            const pageSchema = _.isString(payload.schema) ? JSON.parse(payload.schema) : payload.schema;
-            formSchema = pageSchema.body[0];
-            // 设置form的canAccessSuperData属性防止弹出窗口从父级取字段默认值
-            formSchema.canAccessSuperData = false;
-            // 设置form的wrapWithPanel属性隐藏其底部保存取消按钮
-            formSchema.wrapWithPanel = false;
-            formSchema.className = "steedos-amis-form";
+            formSchema = _.isString(payload.schema) ? JSON.parse(payload.schema) : payload.schema;
         }
         return {
             data: formSchema
