@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-03 11:44:50
+ * @LastEditors: 廖大雪 2291335922@qq.com
+ * @LastEditTime: 2023-03-06 16:18:37
  * @Description:
  */
 
@@ -236,7 +236,7 @@ function getDefaultRelatedListProps(uiSchema, listName, ctx) {
 function getRelatedListProps(uiSchema, listViewName, ctx) {
     if (ctx.columns) {
         const sort = getListViewSort(ctx.sort);
-        let filter= ctx.filters ? [filter, ctx.globalFilter] : ctx.globalFilter;
+        let filter= ctx.filters ? [ctx.filters, ctx.globalFilter] : ctx.globalFilter;
         return {
             columns: ctx.columns,
             sort,
