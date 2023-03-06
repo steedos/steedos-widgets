@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-01 16:06:37
+ * @LastEditTime: 2023-03-06 14:31:14
  * @Description: 
  */
 const config: any = {
@@ -101,7 +101,7 @@ export default {
             "adaptor": `
               let data = payload.data;
               payload.unshift({
-                label: "\${objectName}",
+                label: "当前对象",
                 name: "\${objectName}"
               });
               return payload;
