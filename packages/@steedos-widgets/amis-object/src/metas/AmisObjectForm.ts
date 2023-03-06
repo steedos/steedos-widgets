@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-02 09:04:33
+ * @LastEditTime: 2023-03-06 14:30:38
  * @Description: 
  */
 
@@ -126,7 +126,7 @@ export default {
             "adaptor": `
               let data = payload.data;
               payload.unshift({
-                label: "\${objectName}",
+                label: "当前对象",
                 name: "\${objectName}"
               });
               return payload;

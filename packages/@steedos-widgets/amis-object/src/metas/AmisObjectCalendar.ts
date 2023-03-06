@@ -109,7 +109,7 @@ export default {
             "adaptor": `
               let data = payload.data;
               payload.unshift({
-                label: "\${objectName}",
+                label: "当前对象",
                 name: "\${objectName}"
               });
               return payload;
