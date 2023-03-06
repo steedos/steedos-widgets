@@ -5,12 +5,14 @@
  * @LastEditTime: 2023-03-02 12:43:07
  * @Description: 
  */
+import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { getPage, Router } from "@steedos-widgets/amis-lib";
 
 
-export const PageListView = async (props) => {
+export const PageRecordDetail = async (props) => {
   const { formFactor: defaultFormFactor, app_id, tab_id, listview_id, display, $schema } = props
-
+  
+  console.log(props);
   if (display)
     Router.setTabDisplayAs(tab_id, display)
 
