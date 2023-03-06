@@ -4931,10 +4931,10 @@
     systemjs "^6.12.1"
     tslib "^1.10.0"
 
-"@steedos/accounts@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/accounts/-/accounts-2.4.0-beta.36.tgz#41b76fb0f2b7687883e758dd56f829f0c3991d54"
-  integrity sha512-pA608ZSOeIlui55Yr/wQKFwMWk2u2n5jknk6SIlkXAdgjDTe5meqUKcv4mzn5K6JOo8sd6vtZftW5O+73kCP/g==
+"@steedos/accounts@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/accounts/-/accounts-2.4.0-beta.37.tgz#bef44356a77fb6f316ecaca39816908d5c6e4717"
+  integrity sha512-cXXJZ758nIsWAsv2QRrXhLgzQDZ7t2MwQLlryRQ4Ko8UQAxSHgRwnse9TaDzLqTLamjHkRXURUowNBlYX3gHGg==
   dependencies:
     "@accounts/mongo" "^0.19.0"
     "@accounts/server" "^0.19.0"
@@ -4965,13 +4965,13 @@
     url-join "^4.0.1"
     validator "^13.6.0"
 
-"@steedos/auth@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/auth/-/auth-2.4.0-beta.36.tgz#bf90dac049eb3fcebc8aceca5d76e8c740e6dab1"
-  integrity sha512-rlSCAOeATltHr0E1advbiIHZS5RzPDbN2JMue7JE9AyWPzsq5RgNqG8gGYF9F7A85cCazFmu6RjKaDgmy2lhgQ==
+"@steedos/auth@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/auth/-/auth-2.4.0-beta.37.tgz#51d97709918e3d2e0cbd0353651e79b7d6a62920"
+  integrity sha512-voYyUSIlAvDbVuse7g60FzXR/VwW1BQhus7bp/KnZSz0v5QSsmRyYaCrxryaEdp5lpJOPGICxe1Eho2Ct4GQFw==
   dependencies:
-    "@steedos/cachers" "2.4.0-beta.36"
-    "@steedos/objectql" "2.4.0-beta.36"
+    "@steedos/cachers" "2.4.0-beta.37"
+    "@steedos/objectql" "2.4.0-beta.37"
     cookies "^0.8.0"
     express "^4.16.4"
     ismobilejs "^1.1.1"
@@ -4979,37 +4979,37 @@
     sha256 "^0.2.0"
     underscore "^1.9.1"
 
-"@steedos/cachers@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/cachers/-/cachers-2.4.0-beta.36.tgz#ad12c5e94331bbb72f77a9ddd527fc2e88d1cb38"
-  integrity sha512-M3NOKX1pI4A0NjIRDh2Tl0drBvyz+PIuLd4AugoGpoj2743sbGQGtI89RSR1gI7sCCkzR8Nb4H5moKcqgyMvAA==
+"@steedos/cachers@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/cachers/-/cachers-2.4.0-beta.37.tgz#2e5c21aad538e232631b84744673d21b999f76b1"
+  integrity sha512-PMYWtQ2Ozow2X372kUzmn8j8hCaBzpkrAJ/6qkaq1DpNkFr24dP6TymYYepV3X1p8IzwPsvBZLX0F6dpIuW7/A==
   dependencies:
     lodash "^4.17.21"
     lru-cache "^7.10.1"
 
-"@steedos/client@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/client/-/client-2.4.0-beta.36.tgz#b77739f2245683c56f27bec1daf81230d68fa175"
-  integrity sha512-hVQvggePA8oyWMPZ2UGC44pQejiqoM1UzRKRNd0HNiTc2qsbvvyok5581NomDjKECMKgEKtHx4ycKZZP2ioyfQ==
+"@steedos/client@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/client/-/client-2.4.0-beta.37.tgz#782dca72773b131644d71d4233e0ce651e6d0f61"
+  integrity sha512-GbVrQjrU/HpnHGkn099g3Y94/y6DG7y/50deXs4nirkH+suVyzX67vc7ILb/ul/t0n4uEz6a0ddJb1IEYDQsCg==
   dependencies:
-    "@steedos/filters" "2.4.0-beta.36"
+    "@steedos/filters" "2.4.0-beta.37"
     node-fetch "^2.6.7"
 
-"@steedos/core@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/core/-/core-2.4.0-beta.36.tgz#cef0f147707eff0927f1b8e7afc4df91412bc7dd"
-  integrity sha512-T+dt/afpygP7KzL/p44kMh0U1jnrRjV6zwiJnzlTVqTtmnusk/nzpBsyWAkt35kprqhNfpogDK0HoeuJLIGcGw==
+"@steedos/core@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/core/-/core-2.4.0-beta.37.tgz#2c7d7e9ea9f59d31b5d91ca2a0e729486ad3db74"
+  integrity sha512-T8ZrCie6xvi3I7Xepjux2nh0fch0I1U+2sHpAkygmYlNt7G5KmU9nQylqJHzj7rJPDFRGr1aY5yz6cO4Er3q9w==
   dependencies:
-    "@steedos/auth" "2.4.0-beta.36"
-    "@steedos/i18n" "2.4.0-beta.36"
+    "@steedos/auth" "2.4.0-beta.37"
+    "@steedos/i18n" "2.4.0-beta.37"
     "@steedos/license" "2.2.8"
-    "@steedos/metadata-core" "2.4.0-beta.36"
-    "@steedos/migrate" "2.4.0-beta.36"
-    "@steedos/objectql" "2.4.0-beta.36"
-    "@steedos/odata-v4-mongodb" "2.4.0-beta.36"
-    "@steedos/process" "2.4.0-beta.36"
-    "@steedos/standard-objects" "2.4.0-beta.36"
-    "@steedos/steedos-plugin-schema-builder" "2.4.0-beta.36"
+    "@steedos/metadata-core" "2.4.0-beta.37"
+    "@steedos/migrate" "2.4.0-beta.37"
+    "@steedos/objectql" "2.4.0-beta.37"
+    "@steedos/odata-v4-mongodb" "2.4.0-beta.37"
+    "@steedos/process" "2.4.0-beta.37"
+    "@steedos/standard-objects" "2.4.0-beta.37"
+    "@steedos/steedos-plugin-schema-builder" "2.4.0-beta.37"
     body-parser "^1.18.1"
     bunyan-sfdx-no-dtrace "^1.8.2"
     clone "^2.1.2"
@@ -5029,37 +5029,37 @@
     simpl-schema "^1.5.5"
     underscore "1.5.2"
 
-"@steedos/data-import@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/data-import/-/data-import-2.4.0-beta.36.tgz#07d5443c2687ab159a19e3bc80f781f7f8edd008"
-  integrity sha512-5oj2e6ly3vEDAWJW1qPIlJKnemxaRrJLogPmIxXrjG3uGaAzvso3ChpUGvMB81UyKmOEM867FjC1rw5RsWQ/2Q==
+"@steedos/data-import@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/data-import/-/data-import-2.4.0-beta.37.tgz#186135e65c94e4fe9ec220e06b627f09e4dec92d"
+  integrity sha512-5v1j9sjKXCcjpqalc07DMrvzh/3bo3YIKSrAdtRNbE8/AFFkQ44+IBotDaFexGsNoFNlxJ+9jqwobCY/9/PIag==
   dependencies:
-    "@steedos/core" "2.4.0-beta.36"
-    "@steedos/metadata-api" "2.4.0-beta.36"
-    "@steedos/metadata-core" "2.4.0-beta.36"
-    "@steedos/objectql" "2.4.0-beta.36"
+    "@steedos/core" "2.4.0-beta.37"
+    "@steedos/metadata-api" "2.4.0-beta.37"
+    "@steedos/metadata-core" "2.4.0-beta.37"
+    "@steedos/objectql" "2.4.0-beta.37"
     bson "4.6.4"
     csvtojson "~2.0.10"
     dotenv-flow "^3.1.0"
     lodash "^4.17.21"
     node-xlsx "^0.16.1"
 
-"@steedos/ee_audit-records@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/ee_audit-records/-/ee_audit-records-2.4.0-beta.36.tgz#dd7cb1a13487ce33ce91c57927d9167c40e67903"
-  integrity sha512-JncO10r33rFObjKEOGLTTDMKSsz8DEk9axtMQcSe/I0RubeEQqydLgxggheR6dskxm6Lue3feZYJyC8y8D5Hzw==
+"@steedos/ee_audit-records@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/ee_audit-records/-/ee_audit-records-2.4.0-beta.37.tgz#7cf70f7e76e677e2bcc871df5e9d95b802f8d149"
+  integrity sha512-+/6cITo1SqxDfUqZ5ntHGfHkq4lQ0/4ZxL3INbxjCcRgeHXkdICpvwYlcmd66FheRefPJHkS2cm/s9euvsGpZg==
 
-"@steedos/ee_branding@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/ee_branding/-/ee_branding-2.4.0-beta.36.tgz#89967e234214590031d29aa23cc21e60ba9d0217"
-  integrity sha512-83dOahSZ+HybuTAZgAxCEpyKa0sHy28eFoAeiUKpE5qw5vm9yYDQ4Ho9oI4suOt29memxoeWdMD8ybefonrNBg==
+"@steedos/ee_branding@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/ee_branding/-/ee_branding-2.4.0-beta.37.tgz#39e23ca5ad7e4e576135359cdc66b163ce7eb54e"
+  integrity sha512-N6XKVi7bucTX2DARlvQXKuKJ+g6VYDQQ98Qfaj5oVTVy97N/6M/AILgVkzEtxCGPdbZ861QJQ+QTpxx6gFv7DQ==
   dependencies:
     "@steedos/license" "2.2.8"
 
-"@steedos/ee_mongodb-bi-connector@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/ee_mongodb-bi-connector/-/ee_mongodb-bi-connector-2.4.0-beta.36.tgz#dd5b85912661b971aea65515535637bf6d1fc442"
-  integrity sha512-2De8/7wEwpa4I7HYFQhlC5ZeUA0mWnnGe0M+NhTEFYaZOLE3aj4djq8CZaqigEzMAu5DJW7RCMCIgTdrmympAA==
+"@steedos/ee_mongodb-bi-connector@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/ee_mongodb-bi-connector/-/ee_mongodb-bi-connector-2.4.0-beta.37.tgz#b56e3cc42a41c268e2f6c7e0d6a4bab27dda9db8"
+  integrity sha512-D9dbRGUxaqOCQwQHYmaqMiUjk+Ey+3L5Qphq8jVu7MBN1+0rJmmw6d/tgfAzeRP81thl7ufyfsH71VQTU8ccbA==
   dependencies:
     dotenv-flow "^3.1.0"
     ioredis "^4.22.0"
@@ -5074,54 +5074,54 @@
   dependencies:
     axios "^0.21.4"
 
-"@steedos/ee_sso-oidc@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/ee_sso-oidc/-/ee_sso-oidc-2.4.0-beta.36.tgz#338ef2cadfcb0850126263b81cd7b061ebdd7b9f"
-  integrity sha512-J7OQS60CLxITzY3T/QuN+QF2s9RUvN5Ad7f4IQWWO8s/Q7iF9I3n4PEi6JyfBpihBr1b79RntWDESqHLVydT9g==
+"@steedos/ee_sso-oidc@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/ee_sso-oidc/-/ee_sso-oidc-2.4.0-beta.37.tgz#d0977b1a9eb474d1e2dc25ccb8603e3db395918c"
+  integrity sha512-jyRoCQeFInm9I49K7wqB2XgF00fcmkorlQoN79SbaJLFs4tDdIAMBOHnvRUZfa8rFkuyttHLAPpHBqTnbvM28w==
   dependencies:
-    "@steedos/accounts" "2.4.0-beta.36"
+    "@steedos/accounts" "2.4.0-beta.37"
     "@steedos/license" "2.2.8"
-    "@steedos/objectql" "2.4.0-beta.36"
-    "@steedos/service-package-loader" "2.4.0-beta.36"
+    "@steedos/objectql" "2.4.0-beta.37"
+    "@steedos/service-package-loader" "2.4.0-beta.37"
     "@techpass/passport-openidconnect" "^0.3.2"
     express "4.18.1"
     node-fetch "^2.6.7"
     passport "^0.6.0"
     request-ip "^2.2.0"
 
-"@steedos/ee_stimulsoft-reports@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/ee_stimulsoft-reports/-/ee_stimulsoft-reports-2.4.0-beta.36.tgz#cacf17c60dcd6740ef13fb6fdf7c1d2c3ebf23e0"
-  integrity sha512-YuK/YvkDsjYeJV08NRC7aP4OS2YyE58tjqQ6lJ/x/PmgDhpifXK5hcNxscM7DMqs7wnDrwN2kD3Lg0EWStERaw==
+"@steedos/ee_stimulsoft-reports@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/ee_stimulsoft-reports/-/ee_stimulsoft-reports-2.4.0-beta.37.tgz#eef3b980133837d7bf3eff1a71741a7402310c20"
+  integrity sha512-E08jv7xC8KNqtyh+fcj18GkAjRfe2zdJeAsLPrgpl3Xbpn5WwcZVVE7m+i0wrPhvc6q+ooPHuiD6+uo1Bzm64A==
   dependencies:
     stimulsoft-reports-js "^2021.4.3-b"
     stream-to-string "^1.2.0"
 
-"@steedos/ee_virus-scan@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/ee_virus-scan/-/ee_virus-scan-2.4.0-beta.36.tgz#17a4ac9c513b1f7184eb9eb5058d1bd360068e52"
-  integrity sha512-OGQZJMtd4AwmJ9ds7SVumfvRVEBrfAgFlLMluymEh8C5fIFT0GZuMMMfH14i+aHj8vZ1jt6IcW8+K7geP9DMRg==
+"@steedos/ee_virus-scan@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/ee_virus-scan/-/ee_virus-scan-2.4.0-beta.37.tgz#6da0340f8d919e5e975fee56026abf2fa8089a05"
+  integrity sha512-KOjp1DOrxX7+2UiqwnOrqgEU6jiUJjkeLvYbFW+I30zWh42Ob8V1PpJr7OiwTkfEgmzC+EY4OlmUz16am4rk5A==
 
-"@steedos/filters@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/filters/-/filters-2.4.0-beta.36.tgz#7ea48bf2239856aecb73907fe43f3086a1744393"
-  integrity sha512-/iDS0M56tNihf9ndFXZsYpkaPVIshNvXLCx/AaRbEGgkVyZ4ZDZpOmXC/C8iCno32EDi4+B5X7+MysrWuvnPGQ==
+"@steedos/filters@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/filters/-/filters-2.4.0-beta.37.tgz#ed2b6f2d7b1bec397182bfadf926f83f041a215d"
+  integrity sha512-UJMx6Cm0sDL6/DzeFrotuqwhChAqejb7LNIcDTkrZFsL/wVe5B+4VhbYHzplc+zTorF9cB8Q3qZ/53UdvwDihw==
   dependencies:
     "@babel/runtime" "7.12.18"
     lodash "4.17.21"
     moment "^2.24.0"
 
-"@steedos/formula@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/formula/-/formula-2.4.0-beta.36.tgz#72eda73491bd803b4c5338d843908ca9dbb4d004"
-  integrity sha512-odUEAY/6qYOLo+AmuwpNq1oPofQNfar57keU4MM6iIx7jIXS5r+TxSqIgk2m0552fhzTW08/3BYSbSastGQIxg==
+"@steedos/formula@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/formula/-/formula-2.4.0-beta.37.tgz#17e328ce24f1f2d8f1d80d5627d27df7d5fea752"
+  integrity sha512-mkSwkvlixE2f9oVP+qj8ppbrdlreZsg3JlGleHfG52JgKTDk6wAhwiiJycp0NnR+UwjM6CEGZBSwoTj/iW5v6w==
 
-"@steedos/i18n@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/i18n/-/i18n-2.4.0-beta.36.tgz#88866207d7e9893435132ba02eef77dd2acb6d5d"
-  integrity sha512-HF9kd+lfJ58WrEXxM3KNenhQ/dLMLK6lmczmW1x8HaC8PfalmPU5+8Fv0RuhbA5ZtTu0NgJ2QiXrReyOb29Yew==
+"@steedos/i18n@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/i18n/-/i18n-2.4.0-beta.37.tgz#3d0160ed81c25f89d9b807e97c5da0048d8f9c6a"
+  integrity sha512-yH11CWQOwlYl+h9NCnCj1iFDcDBFj/mjiZgM4MswbISAUvqt1rIXYdHEWZWHiB6e6+bhbkzXJD5B5A5FwZJXNA==
   dependencies:
-    "@steedos/cachers" "2.4.0-beta.36"
+    "@steedos/cachers" "2.4.0-beta.37"
     i18next "^19.3.4"
     i18next-sprintf-postprocessor "^0.2.2"
     underscore "1.13.4"
@@ -5136,15 +5136,15 @@
     node-fetch "^2.6.0"
     systeminformation "5.9.17"
 
-"@steedos/metadata-api@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/metadata-api/-/metadata-api-2.4.0-beta.36.tgz#bb6b59fee1aea851d32bbe3725ca5761b4d22a3a"
-  integrity sha512-9dNEFRBB2VgQc3nbe9Nhgk38xqKaYqZ5kxZV01Emfd5u8nXkH/5UejviToSBYaeWlJVxl59Vix+OEvyq7joP9w==
+"@steedos/metadata-api@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/metadata-api/-/metadata-api-2.4.0-beta.37.tgz#4083c042c0984ebd9d6ce526b25f2b909ea203a5"
+  integrity sha512-Z8NV1zrOJk9fLTw+oBxsCFbd87l+crOfqUri5eTOGIaPrr7Ea6nGB9OSlbsECejG1zg7BMDrE652pfTnGs8kvg==
   dependencies:
-    "@steedos/auth" "2.4.0-beta.36"
-    "@steedos/core" "2.4.0-beta.36"
-    "@steedos/metadata-core" "2.4.0-beta.36"
-    "@steedos/objectql" "2.4.0-beta.36"
+    "@steedos/auth" "2.4.0-beta.37"
+    "@steedos/core" "2.4.0-beta.37"
+    "@steedos/metadata-core" "2.4.0-beta.37"
+    "@steedos/objectql" "2.4.0-beta.37"
     chalk "^4.1.0"
     clone "2.1.2"
     compressing "^1.5.1"
@@ -5155,12 +5155,12 @@
     node-fetch "^2.6.7"
     underscore "^1.11.0"
 
-"@steedos/metadata-core@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/metadata-core/-/metadata-core-2.4.0-beta.36.tgz#67b7e55237aefa89e69f111fb1bd9f8ba0694720"
-  integrity sha512-JBlsH1qWFMYprZb+ZeC9o3oWHFGW7qcICRp1YSiaeCejDLbTevfv8t7Vu/K2qI+TJX0NpCEK/hDX7E0RI5je9w==
+"@steedos/metadata-core@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/metadata-core/-/metadata-core-2.4.0-beta.37.tgz#fed3f4f51da3fcca064c4bbdba45b9cd4caa9826"
+  integrity sha512-xGVSFxKfmhd02u+5yAITDsnCbFi2EhdTZTzQbi+jQ+eved80cRaaLt2KEq/cavGyxT2gRRnSDdCsRjTmJe2uWQ==
   dependencies:
-    "@steedos/client" "2.4.0-beta.36"
+    "@steedos/client" "2.4.0-beta.37"
     archiver "^5.1.0"
     chalk "^4.1.0"
     clone "^2.1.2"
@@ -5175,12 +5175,12 @@
     js-yaml "^3.14.1"
     underscore "^1.11.0"
 
-"@steedos/metadata-registrar@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/metadata-registrar/-/metadata-registrar-2.4.0-beta.36.tgz#c3a46cd3e64906dcc99f5e958efcc742c1112646"
-  integrity sha512-xUYtfwUU+dHZQhLW4d+2iGYKW8WPluStEyDWOAqzFC3sTA9XZrw2/xMuyB33kL+W4fopXxR0qudaBfssCJ9/Qg==
+"@steedos/metadata-registrar@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/metadata-registrar/-/metadata-registrar-2.4.0-beta.37.tgz#c6c6e57a307266d6a800287eb020f92a89a1902e"
+  integrity sha512-jB5mTVoPnZr9r+CpEb0EYUHGE3gb8KAQVFzePMnPlpBneoDY3xRN58nHcZYOZSOk2wO32J0VbKh6yv5B2lA8ZQ==
   dependencies:
-    "@steedos/client" "2.4.0-beta.36"
+    "@steedos/client" "2.4.0-beta.37"
     archiver "^5.1.0"
     chalk "^4.1.0"
     clone "^2.1.2"
@@ -5194,10 +5194,10 @@
     lodash "^4.17.21"
     underscore "^1.11.0"
 
-"@steedos/meteor-bundle-dependencies@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/meteor-bundle-dependencies/-/meteor-bundle-dependencies-2.4.0-beta.36.tgz#475377480a41df2898316afbd9942f23b0c22894"
-  integrity sha512-6TftTKE63iH2rgQRYYfJ7ybGsBFyQw5lGg3Rjxzfs27ceqM6qhZi2x79ycryBjGg+7pwlKeUj9V1lBwVga6TyQ==
+"@steedos/meteor-bundle-dependencies@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/meteor-bundle-dependencies/-/meteor-bundle-dependencies-2.4.0-beta.37.tgz#b6943a13464e258c4295999dc42912ba8bcc064d"
+  integrity sha512-zW/cAD8/J4jNWNy7VZHuYDz+Eeq2sQhlkK7PMsRFDtJqr0lOQoA8Azg0AKDrD89iFHZii2EHPR1YSpqIJ28LoQ==
   dependencies:
     apn "1.6.2"
     arson "0.2.6"
@@ -5242,10 +5242,10 @@
     uuid "^8.3.2"
     whatwg-fetch "2.0.4"
 
-"@steedos/meteor-bundle-runner@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/meteor-bundle-runner/-/meteor-bundle-runner-2.4.0-beta.36.tgz#4b01273444c94e8d4b983663c851a3f552c92e85"
-  integrity sha512-Ec7ehPD/vCqh8yM1pKK4eRdIu2fbXpO73Aeh7xXDgj3jzu09lqK+G0Rie4EJdEmJ6ihUesTuRbgZ+AoG3RwtGw==
+"@steedos/meteor-bundle-runner@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/meteor-bundle-runner/-/meteor-bundle-runner-2.4.0-beta.37.tgz#f30e9c22d7ca564fab518357549ff57cae6cbe90"
+  integrity sha512-PdOm09/X71+vEvvPL1VA3ZcZs1nGjI96BFOLchFCPgDeGIf8jjUTaAfgE88jBYZGIahZb1OihyxI0cDXGN46aA==
   dependencies:
     "@mapbox/node-pre-gyp" "1.0.9"
     fibers "4.0.3"
@@ -5256,10 +5256,10 @@
     source-map-support "^0.5.10"
     underscore "1.5.2"
 
-"@steedos/migrate@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/migrate/-/migrate-2.4.0-beta.36.tgz#07110a8aaa388a9c42e4c769bffdeb170d7ba08c"
-  integrity sha512-Cs7pIOgI9PQTsToYL1ImRA08hfXIp4KF2kI37frxPuicvRAptFmuH/AJka3FtJ1AUC9D3NMJSMS8nQGCDWL4yg==
+"@steedos/migrate@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/migrate/-/migrate-2.4.0-beta.37.tgz#0dafc79a1de27581ba60d6db50aac990d15f48a8"
+  integrity sha512-plg5qrEWN25M5h3XJMDy0W/Av8x0EhQfkiiQTUHDPU/FWZs/AnS/OA5kBLONEVDOsw511+b0+T/YBdwU7CNalA==
   dependencies:
     migrate "^1.6.2"
     mongodb "^3.7.3"
@@ -5290,23 +5290,23 @@
   optionalDependencies:
     rimraf "^3.0.2"
 
-"@steedos/objectql@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/objectql/-/objectql-2.4.0-beta.36.tgz#4916aa91196b4f3f91ff30295511ba55d7dc375c"
-  integrity sha512-Xu8LpxV/eR4yA+IT3odyUluqn3nEcwQxgWV6FAh5xNtyf+SpKaPVW8jxALqnOP1zxa8WQaFULBVYkzrLIs4OIA==
+"@steedos/objectql@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/objectql/-/objectql-2.4.0-beta.37.tgz#733867f73d3f6e1141cf048d39d670c26f760302"
+  integrity sha512-59OLPwdV0nh4fFmRN21ruCAB87bOuqlJ427GKH3TvEcwu1+uHHp0ojA181DGYJF/Sjgg4c5fBuqBPE6VsrktXw==
   dependencies:
     "@salesforce/kit" "1.0.4"
     "@salesforce/ts-types" "1.1.1"
-    "@steedos/cachers" "2.4.0-beta.36"
-    "@steedos/filters" "2.4.0-beta.36"
-    "@steedos/formula" "2.4.0-beta.36"
-    "@steedos/i18n" "2.4.0-beta.36"
-    "@steedos/metadata-core" "2.4.0-beta.36"
-    "@steedos/odata-v4-mongodb" "2.4.0-beta.36"
-    "@steedos/odata-v4-sql" "2.4.0-beta.36"
-    "@steedos/odata-v4-typeorm" "2.4.0-beta.36"
-    "@steedos/schemas" "2.4.0-beta.36"
-    "@steedos/standard-objects" "2.4.0-beta.36"
+    "@steedos/cachers" "2.4.0-beta.37"
+    "@steedos/filters" "2.4.0-beta.37"
+    "@steedos/formula" "2.4.0-beta.37"
+    "@steedos/i18n" "2.4.0-beta.37"
+    "@steedos/metadata-core" "2.4.0-beta.37"
+    "@steedos/odata-v4-mongodb" "2.4.0-beta.37"
+    "@steedos/odata-v4-sql" "2.4.0-beta.37"
+    "@steedos/odata-v4-typeorm" "2.4.0-beta.37"
+    "@steedos/schemas" "2.4.0-beta.37"
+    "@steedos/standard-objects" "2.4.0-beta.37"
     app-root-path "^2.2.1"
     body-parser "^1.18.1"
     bunyan-sfdx-no-dtrace "^1.8.2"
@@ -5332,83 +5332,83 @@
     typeorm "0.2.28"
     underscore "1.5.2"
 
-"@steedos/odata-v4-mongodb@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/odata-v4-mongodb/-/odata-v4-mongodb-2.4.0-beta.36.tgz#7cbc0e0af538fc98f033cb05cb69d4ba00f954e6"
-  integrity sha512-NpffwwKclziGDAb15R8fO1ylTZax6pNZcBZNxkNBOOps2WZb/g3MWCcc0ZQOomq93uKvtwLY4o4gYdo0UPGyaA==
+"@steedos/odata-v4-mongodb@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/odata-v4-mongodb/-/odata-v4-mongodb-2.4.0-beta.37.tgz#bc8cb1ac36400186505ab05e61aa8928fc5ba7ba"
+  integrity sha512-NKuJ+0u2ile05Hbpjovg2m/5L59ApvDHtpFvRNOSChFWuCjfE2PM5uqCZ4h1OE1wYMh0W2ysMWBGjhkYRN85FQ==
   dependencies:
-    "@steedos/odata-v4-parser" "2.4.0-beta.36"
+    "@steedos/odata-v4-parser" "2.4.0-beta.37"
     odata-v4-literal "^0.1.0"
 
-"@steedos/odata-v4-parser@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/odata-v4-parser/-/odata-v4-parser-2.4.0-beta.36.tgz#52ded85363656b8c8dc6d4b7f5b325bfce1a35b5"
-  integrity sha512-3aTuhHbiJY24lRLZx+qPG6X2aY77kWvauJr4bWdJLkYwBG6YNwvcireGaZrarIPfuWzlKofEF/SaSXP+Bi5eIw==
+"@steedos/odata-v4-parser@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/odata-v4-parser/-/odata-v4-parser-2.4.0-beta.37.tgz#f33cc5447513e31239176d4dc1d2acf3aa251286"
+  integrity sha512-Tc6U/dR7YHDZ37OhmVtdhh/Z2KM66TrjkUZebucwKOapg3TcB/aqwnYcMfo3Dwf5iNXvj0WHvwegzyEsY0oT3w==
 
-"@steedos/odata-v4-sql@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/odata-v4-sql/-/odata-v4-sql-2.4.0-beta.36.tgz#a06fc53cfc051d1eb67e2ed9d2e509eed7a159b5"
-  integrity sha512-bxVkTgMO46OoA7P81+FZz7jOEZa9Bvy9QTJ3AwSe207f1B9w/NtIuV5P91DcbNPZknTSLQew5mrOoUAy4uzkmw==
+"@steedos/odata-v4-sql@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/odata-v4-sql/-/odata-v4-sql-2.4.0-beta.37.tgz#6a9b82bccf524413af5fd62abe9965c781f6806e"
+  integrity sha512-QZNfVodQxvzE2vmh9Up1ysU+Uupalk3Bqnfh4SdTMbkLh6Hh0rxjBx4G2z8DNQfVAmjV0TfHXH+r4xlz5EoqPQ==
   dependencies:
-    "@steedos/odata-v4-parser" "2.4.0-beta.36"
+    "@steedos/odata-v4-parser" "2.4.0-beta.37"
     odata-v4-literal "^0.1.0"
 
-"@steedos/odata-v4-typeorm@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/odata-v4-typeorm/-/odata-v4-typeorm-2.4.0-beta.36.tgz#50b8ae60f6ff5f1255634ce36607c0ae7ab33cdd"
-  integrity sha512-rkcYmw13OhGtexEe+DwasNJNQreo1BzRIgSjpu7NRKgVQF0U+vZEhsBC98D2JxgBH9nBX89R/xB5OF+dlkTTsg==
+"@steedos/odata-v4-typeorm@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/odata-v4-typeorm/-/odata-v4-typeorm-2.4.0-beta.37.tgz#429c1bd2e9c3ad84520aa7c51f99830362b43ac4"
+  integrity sha512-W6o35SFqbZC9GPf3x0eL/Ne7Dvs1JRrqMsPqrfD2pbIbHsGnpnsdoXfVWu8BnGcZjrt/Q9rKG1lRwOxTdqvN+Q==
   dependencies:
-    "@steedos/odata-v4-parser" "2.4.0-beta.36"
-    "@steedos/odata-v4-sql" "2.4.0-beta.36"
+    "@steedos/odata-v4-parser" "2.4.0-beta.37"
+    "@steedos/odata-v4-sql" "2.4.0-beta.37"
     odata-v4-literal "^0.1.0"
 
-"@steedos/plugin-company@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/plugin-company/-/plugin-company-2.4.0-beta.36.tgz#a9bb0fbee40513cb8604257bb1a47a24159c1f11"
-  integrity sha512-jCc4lGNNLYjH9yqR0vCYvHkd0aWpLxx8oLReo276Xf5fPv1FsjyFayhJdNHmA8iEU/csFDbRh76r2kLrIrj8PQ==
+"@steedos/plugin-company@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/plugin-company/-/plugin-company-2.4.0-beta.37.tgz#a17a85703d6b8b7a25fb6a8edec3df76d9097c04"
+  integrity sha512-XUn+PlhoLMDFOuigIU0Lj9gFdwLmdm82/mJOhJ2cH7fsVK+RTfumGB2XOwqyV1lbDIatu5zxvpG61cSH0mQIww==
 
-"@steedos/process@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/process/-/process-2.4.0-beta.36.tgz#fbad8c6fea8820336b55c868145ae4dd6e5eec7a"
-  integrity sha512-kF6C0bLYn937ZyyW9nuCeDVTGD8iNiQUvJdFBPshQgqktS1FHpFt6axXxQ0TTeqa+MvrDsHCqCnQHwmB5UOhpQ==
+"@steedos/process@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/process/-/process-2.4.0-beta.37.tgz#1b238c81e1c20538e4da78497b80285f5e3f7330"
+  integrity sha512-ISQjxnv3KIVmr0zgiYBiEHj5dFfxmukXyiUfX03yO/OEpSudsQ7mJdsWbzFdMofmaViwiTTTfNqFAt2+LRtO9g==
   dependencies:
-    "@steedos/auth" "2.4.0-beta.36"
-    "@steedos/objectql" "2.4.0-beta.36"
+    "@steedos/auth" "2.4.0-beta.37"
+    "@steedos/objectql" "2.4.0-beta.37"
     express "4.18.1"
 
-"@steedos/router@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/router/-/router-2.4.0-beta.36.tgz#7429fc90badc49ff8007eb2cce4d06c0580b3804"
-  integrity sha512-4v2Qxn9ryTxbDC63KTUfZ67wo9mJCLDjHzcg9R+VhVoejUMui/lNEBwrMzUbekLMsGrHZCWk2z4VKx4+OO6u6w==
+"@steedos/router@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/router/-/router-2.4.0-beta.37.tgz#14413f5fb17a266eeaa1fa2253e11d3f4a52ea2f"
+  integrity sha512-pQr4Za5bmd8hKV1m2ZGanmLDqwsQ4WyJ1PeYDBZqJtKbDDkDiW235dFICj3vEtbVFilZer2vzP2Js2t8PxocMw==
   dependencies:
     compression "1.7.4"
     cors "2.8.5"
 
-"@steedos/schemas@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/schemas/-/schemas-2.4.0-beta.36.tgz#67a4d34577ff70f662ac97d72acb22a5aab0b4c4"
-  integrity sha512-cn1DsgLPqmicn+2sd3vMrlt3zigQ8Cj1EI7eHoWo9mUb+Dw+LObIimbiORcSkaxjMtg+QJDaWYCMMWkvme/eJA==
+"@steedos/schemas@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/schemas/-/schemas-2.4.0-beta.37.tgz#5ef9165a4c974ece29156b6f67550e670fe93a7c"
+  integrity sha512-H/ZiaXHmpdstUUkj8YUyarf7Zkvf9F7dY+DBZsYhdM021q7Pbdt9Kffp01GO3mgOosJrUuZTGM8U8YDPGpPDEg==
 
-"@steedos/service-accounts@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-accounts/-/service-accounts-2.4.0-beta.36.tgz#7fe670b4607905f91166ec0f28b48498f68de2a8"
-  integrity sha512-MGeaWuN3aKWfLmrSuyGeJXdhNyRpfC69pAmNEuHG7RYV1bpxJ0JBdR+6MWaRjPxlNbCQYPlaCtr35vibi6AZYg==
+"@steedos/service-accounts@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-accounts/-/service-accounts-2.4.0-beta.37.tgz#e782a9514005fef2f69f72b14c95e7cea407bf51"
+  integrity sha512-Adc5wCT2pNH05T/6ztP10OoAF4RP8BrzoDLOjUX3xKSwEDr+cEqdAdWyuJWw3cRvd5Qb8SD3Qrm5mCY+49cC0A==
   dependencies:
     node-schedule "^2.0.0"
 
-"@steedos/service-analytics@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-analytics/-/service-analytics-2.4.0-beta.36.tgz#28a64a589f7e1e7637e2884c97ecb1d7f4611a62"
-  integrity sha512-M0rFY3Zk0L7W0BUT8Ki9WQq/fxUXJ3E9RyBhWqM8DzhrRgyOi2pU5mmhizcmCecuTALUzYyO97by4MPseHTjLw==
+"@steedos/service-analytics@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-analytics/-/service-analytics-2.4.0-beta.37.tgz#fb22db8c677c2e7bdae008395d06b04373317ce5"
+  integrity sha512-oUaU4tbJLhb4lAqPvsHIfRkMMRmJid7wio7BuNv6HYf9onHQ9K/50m2uPQ9/aRMEACQKGTL3sdaFqE8ahmAGrA==
 
-"@steedos/service-api@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-api/-/service-api-2.4.0-beta.36.tgz#f01b62f277a6684bfe06bee7a2bc4c4544b901c9"
-  integrity sha512-lq0Nmt4mKkrAAUxh/H1Zds4EZ/mF02BogWNZqBOmz4zQ26TOqicPhp5UXdfB0jz+/NpLfarl8ARyHIdM86vzzg==
+"@steedos/service-api@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-api/-/service-api-2.4.0-beta.37.tgz#0f490ef60f3ef705a28e5c98e7ace6a1cca8a145"
+  integrity sha512-g8LnDcwVcbWNUKOllElhCqZnVtnFMNm6aZLnTrKZBuZZSdNHNfwmrhuMc/pmhjj7qop+CCNcqqvM+0klGrcxkg==
   dependencies:
-    "@steedos/auth" "2.4.0-beta.36"
-    "@steedos/router" "2.4.0-beta.36"
-    "@steedos/service-ui" "2.4.0-beta.36"
+    "@steedos/auth" "2.4.0-beta.37"
+    "@steedos/router" "2.4.0-beta.37"
+    "@steedos/service-ui" "2.4.0-beta.37"
     graphql "^15.8.0"
     graphql-iso-date "^3.6.1"
     graphql-type-json "^0.3.2"
@@ -5416,17 +5416,17 @@
     moleculer-apollo-server "^0.3.6"
     moleculer-web "^0.10.4"
 
-"@steedos/service-cachers-manager@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-cachers-manager/-/service-cachers-manager-2.4.0-beta.36.tgz#c6d899c2c45fa72221f62f582854882471895d1c"
-  integrity sha512-0rEPaO2mi20g8GVQmI4EfuM5Vxy+5H4RyMut1LVClP0m+sguuO6RTy53ie8GNF+argTDapyhiGe/6T6aGkw43A==
+"@steedos/service-cachers-manager@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-cachers-manager/-/service-cachers-manager-2.4.0-beta.37.tgz#742203fb34a9686c493de1e6b45eb0eceae3137b"
+  integrity sha512-PwC3kbtwg2S55xvhBhgoF/+LGunAIJqXW8jpf3dBpyqKE/H3bBfHM3lYHOgxLUkDd7/TZEr8EQAq2iSauIKLWg==
   dependencies:
-    "@steedos/cachers" "2.4.0-beta.36"
+    "@steedos/cachers" "2.4.0-beta.37"
 
-"@steedos/service-charts@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-charts/-/service-charts-2.4.0-beta.36.tgz#c2d48d30053bc4ec2ce67657460cb001e1da04c2"
-  integrity sha512-gNRcVTEMdz20Jmqu4MpESTpyj2XkWxZ+nvhtbpcopzazXP1XobT9oD2cknPV6GAW6ZqbTMQiU1MoGtEy4uqoPg==
+"@steedos/service-charts@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-charts/-/service-charts-2.4.0-beta.37.tgz#2814e900ef9a605d6913e3425ac1eb98370cbd50"
+  integrity sha512-enK29fck8JzfCjDwgRe9nk/CLqShUk0lLLAlqncBZsNMY03tX0n5eebgAPJ7G7zPSuwrWNY82hnx/TH7NHDo+Q==
   dependencies:
     duration "^0.2.2"
     json2csv "5.0.6"
@@ -5434,38 +5434,38 @@
     mustache "^4.2.0"
     string-to-stream "3.0.1"
 
-"@steedos/service-cloud-init@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-cloud-init/-/service-cloud-init-2.4.0-beta.36.tgz#432c29de770b2d310a0c436a37456d7d054d5448"
-  integrity sha512-qLxqAiczjbO7sGSTCsg0YxzJ+LDTu3Z86xvFIhcJeoJDQ5IBcfW4QyebHyf6Tm+79+/N6eixf70OSW8XrCooDw==
+"@steedos/service-cloud-init@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-cloud-init/-/service-cloud-init-2.4.0-beta.37.tgz#4920ba12db634b3e377066604b18e340c1e713e0"
+  integrity sha512-ioHh944/Ag1B9WF917ssnySo+5Q3o/s6XKNsFgsAo6C8ZyNflkYlv1gaIhvBg0JTEo0zv4tS/z0auTxcrDIEDw==
   dependencies:
-    "@steedos/objectql" "2.4.0-beta.36"
+    "@steedos/objectql" "2.4.0-beta.37"
     axios "^0.21.4"
     bcryptjs "^2.4.3"
     chalk "^4.1.2"
     randomstring "1.2.2"
 
-"@steedos/service-community@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-community/-/service-community-2.4.0-beta.36.tgz#f315edc3fb3093ed1b7601a8850b5c9a52f24335"
-  integrity sha512-33z3zisGKh+DqmCR/V1LYZnH1H4FJMoKKGUWqSNPbnK4IsOnT85H1/saAKjh/JeX953CciXAhqITQCX60HAbJA==
+"@steedos/service-community@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-community/-/service-community-2.4.0-beta.37.tgz#8e83e3eb484ceea96eb504dd17173130e63668d2"
+  integrity sha512-G2cOjfAPA2llxWRa2mqq03YEGyPpcqiv0ZnVIufJQa4qqVMfKilnJF2o6yyP0vCV5sGRQSSSa4hQrqC8+ROGFg==
   dependencies:
-    "@steedos/ee_sso-oidc" "2.4.0-beta.36"
-    "@steedos/service-analytics" "2.4.0-beta.36"
-    "@steedos/service-charts" "2.4.0-beta.36"
-    "@steedos/service-i18n" "2.4.0-beta.36"
-    "@steedos/service-identity-jwt" "2.4.0-beta.36"
-    "@steedos/service-metadata-server" "2.4.0-beta.36"
-    "@steedos/service-mongodb-server" "2.4.0-beta.36"
-    "@steedos/service-package-loader" "2.4.0-beta.36"
-    "@steedos/service-package-registry" "2.4.0-beta.36"
-    "@steedos/service-package-tool" "2.4.0-beta.36"
-    "@steedos/service-pages" "2.4.0-beta.36"
-    "@steedos/service-saas" "2.4.0-beta.36"
-    "@steedos/service-sentry" "2.4.0-beta.36"
-    "@steedos/service-sidecar" "2.4.0-beta.36"
-    "@steedos/service-steedos-server" "2.4.0-beta.36"
-    "@steedos/unpkg" "2.4.0-beta.36"
+    "@steedos/ee_sso-oidc" "2.4.0-beta.37"
+    "@steedos/service-analytics" "2.4.0-beta.37"
+    "@steedos/service-charts" "2.4.0-beta.37"
+    "@steedos/service-i18n" "2.4.0-beta.37"
+    "@steedos/service-identity-jwt" "2.4.0-beta.37"
+    "@steedos/service-metadata-server" "2.4.0-beta.37"
+    "@steedos/service-mongodb-server" "2.4.0-beta.37"
+    "@steedos/service-package-loader" "2.4.0-beta.37"
+    "@steedos/service-package-registry" "2.4.0-beta.37"
+    "@steedos/service-package-tool" "2.4.0-beta.37"
+    "@steedos/service-pages" "2.4.0-beta.37"
+    "@steedos/service-saas" "2.4.0-beta.37"
+    "@steedos/service-sentry" "2.4.0-beta.37"
+    "@steedos/service-sidecar" "2.4.0-beta.37"
+    "@steedos/service-steedos-server" "2.4.0-beta.37"
+    "@steedos/unpkg" "2.4.0-beta.37"
     aliyun-sdk "1.12.3"
     async-retry "^1.3.1"
     axios "^0.21.1"
@@ -5491,78 +5491,78 @@
     randomcolor "^0.6.2"
     randomstring "^1.2.1"
     redlock "^4.2.0"
-    steedos-cli "2.4.0-beta.36"
+    steedos-cli "2.4.0-beta.37"
     tslib "^2.4.0"
     validator "^13.6.0"
 
-"@steedos/service-enterprise@^2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-enterprise/-/service-enterprise-2.4.0-beta.36.tgz#bccda1e1819af0bc9a1ca10cd8ff6c193c250bdb"
-  integrity sha512-N4VRX8WIyQogwPUH0jdijnP40rgooZgm93iODW+41GQ50IKYbijrHCXivlGoJTOurytaaiQOK5xHL0k3r19LxQ==
+"@steedos/service-enterprise@^2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-enterprise/-/service-enterprise-2.4.0-beta.37.tgz#842ecae48ded38d049e329e2bdaedd5432ba0f62"
+  integrity sha512-dIVTjz9BGTuq7F3MAahuJ1vTxWV4nYewIJb0uenN/2h3TFLlkvvx8E3MP6jMoJ4qdl3suGc05A/lzibrNZ8CTQ==
   dependencies:
-    "@steedos/ee_audit-records" "2.4.0-beta.36"
-    "@steedos/ee_branding" "2.4.0-beta.36"
-    "@steedos/ee_mongodb-bi-connector" "2.4.0-beta.36"
+    "@steedos/ee_audit-records" "2.4.0-beta.37"
+    "@steedos/ee_branding" "2.4.0-beta.37"
+    "@steedos/ee_mongodb-bi-connector" "2.4.0-beta.37"
     "@steedos/ee_service-plugin-license" "^2.2.5"
-    "@steedos/ee_sso-oidc" "2.4.0-beta.36"
-    "@steedos/ee_stimulsoft-reports" "2.4.0-beta.36"
-    "@steedos/ee_virus-scan" "2.4.0-beta.36"
-    "@steedos/service-community" "2.4.0-beta.36"
+    "@steedos/ee_sso-oidc" "2.4.0-beta.37"
+    "@steedos/ee_stimulsoft-reports" "2.4.0-beta.37"
+    "@steedos/ee_virus-scan" "2.4.0-beta.37"
+    "@steedos/service-community" "2.4.0-beta.37"
     mongodb "^3.7.3"
     mssql "^8.1.2"
     nats "^1.4.12"
     validator "^13.6.0"
 
-"@steedos/service-fields-indexs@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-fields-indexs/-/service-fields-indexs-2.4.0-beta.36.tgz#21d308e16e97a4ff82936a66542f1d69caa0a796"
-  integrity sha512-lYgUkrIJ9Hauv5fNIX/gml5TEaY8A+U3vluKogrZlEv3roMsQCazMiGe4Yes4lw5SwwE13FnpWx1WnIr6Xjhow==
+"@steedos/service-fields-indexs@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-fields-indexs/-/service-fields-indexs-2.4.0-beta.37.tgz#da248af7cbc09df6925ede068781358484201b4c"
+  integrity sha512-sWruAM9eAyYSWzQUY4XCXwpj1685Dz80JhNID38DkhT9GEYeVQGQ7W7owdKrz2h4Ra+fYSgPsJMD4VKc+zM+OQ==
   dependencies:
     node-schedule "^2.0.0"
 
-"@steedos/service-files@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-files/-/service-files-2.4.0-beta.36.tgz#4f458e7ce7878ca7ceef4420383d94b45804c288"
-  integrity sha512-mdtLRZcREDWYDICuNDlnKalpZdtZQ7LAMc4wNBLgp7skisvxQlGACCPKTNdQFC/XYmntijBvxVaPyd0zJtq83Q==
+"@steedos/service-files@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-files/-/service-files-2.4.0-beta.37.tgz#fb8196809458b47bb005976f9c279bd5ef1ae91e"
+  integrity sha512-KrsADmdZU8DR94pQipOcsFDNAr72dJw+G58LTnMV0itJ/f5ROOT7sFV7M8L/dbANtqieri7nBUkW8Z8JF6M8ag==
   dependencies:
     aws-sdk "2.0.23"
     formidable "2.0.1"
     mkdirp "^1.0.4"
     moment "^2.29.1"
 
-"@steedos/service-i18n@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-i18n/-/service-i18n-2.4.0-beta.36.tgz#da4e28445332fcbacdf2b97a4d57b1a4af86976a"
-  integrity sha512-v5j8VBJBYHq53/lf6VgeBzlNqmyAMxjvyppUa61F4wcs2Dgxm3UHTH1GLfVX/gS44q1yFc2h0kpksmGMCI8/bA==
+"@steedos/service-i18n@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-i18n/-/service-i18n-2.4.0-beta.37.tgz#79b6c632dabdfa3fc6f1df970948595a654c4df4"
+  integrity sha512-m3WivyaS8tCVSYN0FsvA/lx3fVpp4Th/iQ9ymWp/lBk7R+ddBIXPVA6/tjBvicMApFObFcTJYuG5rAGzAgp16A==
 
-"@steedos/service-identity-jwt@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-identity-jwt/-/service-identity-jwt-2.4.0-beta.36.tgz#51ff7b561a2f73e099608915cb7ce8f3220e667f"
-  integrity sha512-DMq9BlQ82ZSx0QB530aKHaFvl8v05TmIP3uVuaT89ODv0dVQjGMf96yTaj3hacUPpH6W90iYORvxFyb5XCTWFg==
+"@steedos/service-identity-jwt@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-identity-jwt/-/service-identity-jwt-2.4.0-beta.37.tgz#718c1cd2e3935e9ee330b247624dbe9c1042ac58"
+  integrity sha512-T3SBf8mhXxSFTQBOzXzLK9tkUsl5jzG6QtktZuMo4by6E8c+wvUv5ZzvRoBUJUDR2xLvO+J/o4Te519jZ1tiUQ==
   dependencies:
-    "@steedos/accounts" "2.4.0-beta.36"
+    "@steedos/accounts" "2.4.0-beta.37"
     express "4.18.1"
     jsonwebtoken "8.5.1"
     passport "^0.6.0"
     passport-jwt "^4.0.0"
 
-"@steedos/service-metadata-apps@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-metadata-apps/-/service-metadata-apps-2.4.0-beta.36.tgz#d27084b928401dfd03544ea0b3291bff30bf2545"
-  integrity sha512-OEaA10z6XXLfXEGh397x/i7W5eKOLJsb70d+0+1MHssYZDWz5yCqVJpc+UHV9LRBdhqsGWKdJAts4f1D/hNqYg==
+"@steedos/service-metadata-apps@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-metadata-apps/-/service-metadata-apps-2.4.0-beta.37.tgz#93a723e962e1bba7e3fbcb453b54ce99426232e2"
+  integrity sha512-jL4tcO91bCMYp8iX9X15gHejBqDlzbc620YUT9mE4oTAP55OkoeaH4+ieWpVMMmVeZra8Yu/BI32vUngibpNaQ==
   dependencies:
-    "@steedos/i18n" "2.4.0-beta.36"
-    "@steedos/objectql" "2.4.0-beta.36"
+    "@steedos/i18n" "2.4.0-beta.37"
+    "@steedos/objectql" "2.4.0-beta.37"
     dotenv-flow "^3.1.0"
     ioredis "^4.22.0"
     lodash "^4.17.21"
     moleculer "^0.14.25"
     moleculer-web "^0.10.4"
 
-"@steedos/service-metadata-layouts@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-metadata-layouts/-/service-metadata-layouts-2.4.0-beta.36.tgz#cd8ca5d2d435a294f63440b5354ca6c2b57ea461"
-  integrity sha512-b6FldbP3vRCXgRpMdGv66hgEetfcubZROcDj6zzUxTq8fzVWf9Fc6kguevJdlsbcHFsczBU+aAVGjhlAvEjnzQ==
+"@steedos/service-metadata-layouts@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-metadata-layouts/-/service-metadata-layouts-2.4.0-beta.37.tgz#db3e39761ad82e03f07f4b6f25f5165d8bf56cb3"
+  integrity sha512-DIWg9upI4TkOdveHJYAaU2EgkbFqsgNyoR7YphDEaegMjnyZmZtcn67U7imbnUIP75F9N9LfrL5/tyTWKmu6ZA==
   dependencies:
     dotenv-flow "^3.1.0"
     ioredis "^4.22.0"
@@ -5571,25 +5571,25 @@
     moleculer-web "^0.10.4"
     tslib "^2.4.0"
 
-"@steedos/service-metadata-objects@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-metadata-objects/-/service-metadata-objects-2.4.0-beta.36.tgz#0ddca812451ec7f980f732e5edf26712ac0fdd7a"
-  integrity sha512-Ke7pf+cnvPHu7eYA6JM2kxptsPuV/3bQgn87/nweDOz7IAY1XhRAV4rupW/binGiTRujM07WksDoHz3KcFm8vg==
+"@steedos/service-metadata-objects@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-metadata-objects/-/service-metadata-objects-2.4.0-beta.37.tgz#2dc675617bf065f95732628bf380d561af8cb9e8"
+  integrity sha512-tB0w9lESHIqW2TOURg99mY10hKsJw2M2bRxSsCjbl9Qgrx21sY4nNcIPg+mSFSjEIvFfIRUTPPXMUnj1aqysxQ==
   dependencies:
     "@salesforce/ts-types" "1.1.2"
-    "@steedos/formula" "2.4.0-beta.36"
-    "@steedos/i18n" "2.4.0-beta.36"
-    "@steedos/metadata-registrar" "2.4.0-beta.36"
+    "@steedos/formula" "2.4.0-beta.37"
+    "@steedos/i18n" "2.4.0-beta.37"
+    "@steedos/metadata-registrar" "2.4.0-beta.37"
     dotenv-flow "^3.1.0"
     ioredis "^4.22.0"
     lodash "^4.17.21"
     moleculer "^0.14.25"
     moleculer-web "^0.10.4"
 
-"@steedos/service-metadata-permissionsets@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-metadata-permissionsets/-/service-metadata-permissionsets-2.4.0-beta.36.tgz#63b5f0e7e32a9a5f2bc4cf368876dde32aafae06"
-  integrity sha512-X3aPOVrbOoAwSLxtCV0S2tWtjFvTKqa8fAXuzNQTPTiUiTbM3VOaEOAc6Ldez4t+xmr1Umna/+aej0MIZq17Og==
+"@steedos/service-metadata-permissionsets@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-metadata-permissionsets/-/service-metadata-permissionsets-2.4.0-beta.37.tgz#3e4d601b5d2a5ee4149f27731bea99579e677bba"
+  integrity sha512-nGrSDdW4p7WxCWLqXh8dQisGGSD21lko+DI3YwO/nYFgvAhDcEuXCHeqBbje6qNX10Uy59bsUpZ8Af+7uOWaUw==
   dependencies:
     dotenv-flow "^3.1.0"
     ioredis "^4.22.0"
@@ -5597,28 +5597,28 @@
     moleculer "^0.14.25"
     moleculer-web "^0.10.4"
 
-"@steedos/service-metadata-server@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-metadata-server/-/service-metadata-server-2.4.0-beta.36.tgz#5793052756edaf47a32f535d939c73f44c6a235d"
-  integrity sha512-6AnXVtw12bvLOywVyjhq7cxJ/ZiHWkU6Ze3FUvGCB39xVVUbZoNdZERIy0YMqz/b4oZAbFhSCSMEgANv/2jMZw==
+"@steedos/service-metadata-server@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-metadata-server/-/service-metadata-server-2.4.0-beta.37.tgz#3995901b1ef043ab5bb955878d2b3399522f91cf"
+  integrity sha512-d0L/LdmFzKv+kzezYKtFBKG4h30ZMXJHYoFISjX/JhZx07hiyszRJWboODNZbj2q2jMbdnlnhVTgPGY0Yy5uXg==
   dependencies:
-    "@steedos/objectql" "2.4.0-beta.36"
-    "@steedos/service-metadata" "2.4.0-beta.36"
-    "@steedos/service-metadata-apps" "2.4.0-beta.36"
-    "@steedos/service-metadata-layouts" "2.4.0-beta.36"
-    "@steedos/service-metadata-objects" "2.4.0-beta.36"
-    "@steedos/service-metadata-permissionsets" "2.4.0-beta.36"
-    "@steedos/service-metadata-tabs" "2.4.0-beta.36"
-    "@steedos/service-metadata-translations" "2.4.0-beta.36"
-    "@steedos/service-metadata-triggers" "2.4.0-beta.36"
-    "@steedos/service-packages" "2.4.0-beta.36"
+    "@steedos/objectql" "2.4.0-beta.37"
+    "@steedos/service-metadata" "2.4.0-beta.37"
+    "@steedos/service-metadata-apps" "2.4.0-beta.37"
+    "@steedos/service-metadata-layouts" "2.4.0-beta.37"
+    "@steedos/service-metadata-objects" "2.4.0-beta.37"
+    "@steedos/service-metadata-permissionsets" "2.4.0-beta.37"
+    "@steedos/service-metadata-tabs" "2.4.0-beta.37"
+    "@steedos/service-metadata-translations" "2.4.0-beta.37"
+    "@steedos/service-metadata-triggers" "2.4.0-beta.37"
+    "@steedos/service-packages" "2.4.0-beta.37"
     lodash "^4.17.21"
     underscore "1.13.4"
 
-"@steedos/service-metadata-tabs@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-metadata-tabs/-/service-metadata-tabs-2.4.0-beta.36.tgz#8a2d245cad3c6aac02b85f5efeab8ea0054ba99f"
-  integrity sha512-Y3tSNluBXFDaPduBKABPD7XeFOlaAS1Gp1X1FYZSA80xhrzZPCCCWkzWdbFgLQ0omJZw04tG3Uo0+hnmHqmPgg==
+"@steedos/service-metadata-tabs@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-metadata-tabs/-/service-metadata-tabs-2.4.0-beta.37.tgz#6f75c3cb98e447a1fd0f77a0773f89a2a8bd927b"
+  integrity sha512-+WVfSIFdS6SNtNv26ZvEwr9jZgSX/ceYhMfBh9NbRS7lIww1egAqRcFs7wQkRUtBj+N+P+GVOVqTHnjdTXXGxg==
   dependencies:
     dotenv-flow "^3.1.0"
     ioredis "^4.22.0"
@@ -5626,36 +5626,23 @@
     moleculer "^0.14.12"
     moleculer-web "^0.10.4"
 
-"@steedos/service-metadata-translations@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-metadata-translations/-/service-metadata-translations-2.4.0-beta.36.tgz#79ff8df17f3d391fdd302a54f70d3b13d0b757b6"
-  integrity sha512-+aCiiq1xZk9XFxzWBnWxOQf4lE5lzp1n31OiqtWvHFC2iT/3RKp6IjAEiwz+hMdVL9muc6ailSOS/fkmM/24KA==
+"@steedos/service-metadata-translations@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-metadata-translations/-/service-metadata-translations-2.4.0-beta.37.tgz#998aaa3202f9cd38085cb968b44f3b1aa527acc9"
+  integrity sha512-NXCQu8k7EcvYans11w69DTkvIJH0Knlwd2GU0FV/vyi77wDDp3VEr8VK1C9c5v8DbdULyeMYUvqcx/l6p8dFkw==
   dependencies:
-    "@steedos/metadata-registrar" "2.4.0-beta.36"
+    "@steedos/metadata-registrar" "2.4.0-beta.37"
     dotenv-flow "^3.1.0"
     ioredis "^4.22.0"
     lodash "^4.17.21"
     moleculer "^0.14.25"
     moleculer-web "^0.10.4"
 
-"@steedos/service-metadata-triggers@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-metadata-triggers/-/service-metadata-triggers-2.4.0-beta.36.tgz#d74abcbbbb5cc5ccfa143c7a6a46224d536e4c8c"
-  integrity sha512-qXtbHuRae8K94MgxvaWG8ahopshcD/THSq70agYyMw4fWs1YyRpDrVf1A+vNsGknDWgQvIBSkFrzmYcTqoCnmg==
+"@steedos/service-metadata-triggers@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-metadata-triggers/-/service-metadata-triggers-2.4.0-beta.37.tgz#feba5d3b9ca42fd0ab6f0cc03183bca07bf4da11"
+  integrity sha512-SRszmkFnLVuo//MbhaG7IelAvt6ifAgr9fV9EZnWU0yN/1BWxbxUle2WQHAyx7k4vP2slOefnHOpWhIEZwc66Q==
   dependencies:
-    dotenv-flow "^3.1.0"
-    ioredis "^4.22.0"
-    lodash "^4.17.21"
-    moleculer "^0.14.25"
-    moleculer-web "^0.10.4"
-    underscore "1.13.4"
-
-"@steedos/service-metadata@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-metadata/-/service-metadata-2.4.0-beta.36.tgz#8b54d4a716b5eaf318d9d1a083b7e4f6df3fff11"
-  integrity sha512-qnqeHaQYS7R3Y2KM02okjkQE3xR3MutI5if+MA/9kJ3y/bM1lwd0UDlmW2mWXhZnYqc6PKzBUUlc4sx/N5625g==
-  dependencies:
-    "@steedos/metadata-registrar" "2.4.0-beta.36"
     dotenv-flow "^3.1.0"
     ioredis "^4.22.0"
     lodash "^4.17.21"
@@ -5663,56 +5650,69 @@
     moleculer-web "^0.10.4"
     underscore "1.13.4"
 
-"@steedos/service-meteor-package-loader@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-meteor-package-loader/-/service-meteor-package-loader-2.4.0-beta.36.tgz#a3a6402e1bb2fc06cd95a00c37872fd000183e8f"
-  integrity sha512-Bm8iWlaejWlZNAx7rEsTcyl9DD1bgbJ/59jMh9FLCjMb9ZWpS593XEv6jKVJnO+8TbdYj3vnwiavBhiRQTa+5Q==
+"@steedos/service-metadata@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-metadata/-/service-metadata-2.4.0-beta.37.tgz#c7854139eebc7deb36f17e074210d0635a81c764"
+  integrity sha512-W0pui3/90wZIh9zemXNbjfz/zUExn1IKBlmHjGfLAKxleBKBJ6KUdRtWitlVR+RTwLDkWc9bFuWuIP4z4TfqAg==
   dependencies:
-    "@steedos/metadata-core" "2.4.0-beta.36"
-    "@steedos/objectql" "2.4.0-beta.36"
-    "@steedos/router" "2.4.0-beta.36"
+    "@steedos/metadata-registrar" "2.4.0-beta.37"
+    dotenv-flow "^3.1.0"
+    ioredis "^4.22.0"
+    lodash "^4.17.21"
+    moleculer "^0.14.25"
+    moleculer-web "^0.10.4"
+    underscore "1.13.4"
+
+"@steedos/service-meteor-package-loader@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-meteor-package-loader/-/service-meteor-package-loader-2.4.0-beta.37.tgz#d870037ecd399ca582a6054c6dd09cbca1a8afab"
+  integrity sha512-I7Qtxx/ZEtVT4zeCbhzsZGYAvvZbmbkHRlXxvUnONAmi5FgTzNSNky7XU0kM+MQgrlbXHkF6UMudn/nRkc1JBQ==
+  dependencies:
+    "@steedos/metadata-core" "2.4.0-beta.37"
+    "@steedos/objectql" "2.4.0-beta.37"
+    "@steedos/router" "2.4.0-beta.37"
     clone "^2.1.2"
     moleculer "^0.14.25"
     underscore "^1.12.0"
 
-"@steedos/service-mongodb-server@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-mongodb-server/-/service-mongodb-server-2.4.0-beta.36.tgz#c78c7586dcb3e6e19ea03b2f14edb8af9a9f20e1"
-  integrity sha512-3eALWItrjKSKNsAY/CzT6RKC6SU/h/JZERgTYmwf8uc4kuppn7e4iMpnpNhBFMXwSMJvR4xAEsXar/pdRfzPGQ==
+"@steedos/service-mongodb-server@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-mongodb-server/-/service-mongodb-server-2.4.0-beta.37.tgz#48bce5a1714828b4f62fb47aa90178464a66ff60"
+  integrity sha512-PV0zXeTKOkWZ0vwqG1/ESSfTGzJeWajItHK//bRmt9MgxdWmbbBVKJgvZJ/LtIYT08oEoloeq5nMfmAuqWfxvw==
   dependencies:
     "@steedos/mongodb-memory-server-core" "^7.0.0-beta.14"
 
-"@steedos/service-package-license@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-package-license/-/service-package-license-2.4.0-beta.36.tgz#2d4be0ab5b4cb7161183a3b09c86596c996363cc"
-  integrity sha512-wRxn9TOFNkwM7l8Owr2o2mAUAlltn4qkOD00859e5vcJEzLDPg4LpA6RE44X3CkjPYsLQo49BEmUGiIMDacOrw==
+"@steedos/service-package-license@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-package-license/-/service-package-license-2.4.0-beta.37.tgz#1a5d3720f71c6d5784ad3a9bf1c6862e50f4db8c"
+  integrity sha512-K+kuh7j7obxz4c+bxYbcb1VLV4H07nYOn7eAfXy9cA3gpRCfbC7HdrCtm3xl4FMIMVrczWDLd1oHXpUXR2hPSw==
   dependencies:
     axios "^0.21.4"
 
-"@steedos/service-package-loader@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-package-loader/-/service-package-loader-2.4.0-beta.36.tgz#3acc508c6cf98c6a81bd3c890376409a0317652a"
-  integrity sha512-sX0jI74inxfUxWYauq+c/W5JbyGDNujqXgMpdJZAX7R0zwsUnLqFINnY8sakKTggDSnHRCrWA9o15ktL+JYp9Q==
+"@steedos/service-package-loader@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-package-loader/-/service-package-loader-2.4.0-beta.37.tgz#fc5122c3f4586d541c911db536b2341c5314c178"
+  integrity sha512-zDGQxon+E5e4k/Xqhrr/NNvkwgnMgmx0eCXKVH5uQxZZniDgJB/Luqoo0JLQ8V3pIVBJdjsHpjvGB02C5H2nIg==
   dependencies:
-    "@steedos/core" "2.4.0-beta.36"
-    "@steedos/metadata-core" "2.4.0-beta.36"
-    "@steedos/objectql" "2.4.0-beta.36"
-    "@steedos/router" "2.4.0-beta.36"
+    "@steedos/core" "2.4.0-beta.37"
+    "@steedos/metadata-core" "2.4.0-beta.37"
+    "@steedos/objectql" "2.4.0-beta.37"
+    "@steedos/router" "2.4.0-beta.37"
     clone "^2.1.2"
     moleculer "^0.14.25"
     underscore "^1.12.0"
 
-"@steedos/service-package-registry@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-package-registry/-/service-package-registry-2.4.0-beta.36.tgz#39df4a5d1280269a6d1c42379e5753aa012156da"
-  integrity sha512-Qg74IQbFERfSAcFaRJixW+12VgBXFLex4CYF2gxvC8Gkelt7yewtqMgqaGsSBIKOUUTJmCwagSqWpGjm9nCvwA==
+"@steedos/service-package-registry@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-package-registry/-/service-package-registry-2.4.0-beta.37.tgz#99c78449e379265d7b61944c862c491b49e1286f"
+  integrity sha512-muGFaG047oT00wy6g0Xzyq4JhmhSaTIKBadN/1D+7d0DKHNqOfGQP0SKnufG78SW8GYXmeu89ZAD1Zfj9uSBnw==
   dependencies:
-    "@steedos/auth" "2.4.0-beta.36"
-    "@steedos/core" "2.4.0-beta.36"
-    "@steedos/metadata-core" "2.4.0-beta.36"
-    "@steedos/objectql" "2.4.0-beta.36"
-    "@steedos/service-package-license" "2.4.0-beta.36"
-    "@steedos/service-package-loader" "2.4.0-beta.36"
+    "@steedos/auth" "2.4.0-beta.37"
+    "@steedos/core" "2.4.0-beta.37"
+    "@steedos/metadata-core" "2.4.0-beta.37"
+    "@steedos/objectql" "2.4.0-beta.37"
+    "@steedos/service-package-license" "2.4.0-beta.37"
+    "@steedos/service-package-loader" "2.4.0-beta.37"
     fs-extra "8.1.0"
     i18next "20.3.2"
     json-stringify-safe "5.0.1"
@@ -5726,17 +5726,17 @@
     radwag-mass "~1.0.5"
     validator "^13.5.2"
 
-"@steedos/service-package-tool@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-package-tool/-/service-package-tool-2.4.0-beta.36.tgz#e3babed8e9ff7e96e4e408cf2ea3bdc04aba42b9"
-  integrity sha512-g0SiAnBAvo3H36J8wKbS/lI3V13oRSan7XXMTVaxA4Xy4YGtVa3aiI+nLHR7R0JL3CEj7gk1ZFt+34q2QCvtpQ==
+"@steedos/service-package-tool@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-package-tool/-/service-package-tool-2.4.0-beta.37.tgz#20db87ddf822c732651c46d5db696f8afa0ff491"
+  integrity sha512-oCWyId2AtzyAPWwfQF/Fx1jiWyrFGNnXD+PJajNXkZ04gk+bG1fwR5oiw9hzJQ5XphkTSdEnCKEpqafGvqiRpA==
   dependencies:
-    "@steedos/auth" "2.4.0-beta.36"
-    "@steedos/core" "2.4.0-beta.36"
-    "@steedos/metadata-core" "2.4.0-beta.36"
-    "@steedos/objectql" "2.4.0-beta.36"
-    "@steedos/service-package-license" "2.4.0-beta.36"
-    "@steedos/service-package-loader" "2.4.0-beta.36"
+    "@steedos/auth" "2.4.0-beta.37"
+    "@steedos/core" "2.4.0-beta.37"
+    "@steedos/metadata-core" "2.4.0-beta.37"
+    "@steedos/objectql" "2.4.0-beta.37"
+    "@steedos/service-package-license" "2.4.0-beta.37"
+    "@steedos/service-package-loader" "2.4.0-beta.37"
     fs-extra "8.1.0"
     i18next "20.3.2"
     json-stringify-safe "5.0.1"
@@ -5750,171 +5750,171 @@
     radwag-mass "~1.0.5"
     validator "^13.5.2"
 
-"@steedos/service-packages@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-packages/-/service-packages-2.4.0-beta.36.tgz#ef1471ab96d8c18a0dd333ed0277900f113536b0"
-  integrity sha512-6PvqFyAXiB03/+sebQOu5j19lWaeQJuHQPGGJ1WzCiw4j0CeAO3nL7ZWGShUo8Y6w3islccoXjAVxNeXDBRadQ==
+"@steedos/service-packages@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-packages/-/service-packages-2.4.0-beta.37.tgz#7b2d0c65a1974de8427c85ebf5f8748962562c56"
+  integrity sha512-TgS+SfVJAAH2Aqwy6ZeTpzVYSnZTQ+oV1vCrAT18aFADhjkRO82kI0LfbhI47olh6N0fBcvhm1K8s9V+OZouIA==
 
-"@steedos/service-pages@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-pages/-/service-pages-2.4.0-beta.36.tgz#6d6e4216b8e8b1a62f8607e603f7ea17fd178cf8"
-  integrity sha512-F4Foq0rmsgYL1uyKH06Clg0lYse84K5N30t5nmrcplv9b9dYyybUk9VX++dmWsdf+zutZg6CYcmrO4rDNXeBYA==
+"@steedos/service-pages@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-pages/-/service-pages-2.4.0-beta.37.tgz#99a3459cb911b20e189cc25330edc03c61e06d82"
+  integrity sha512-bx8WILI006qq0pqE8LLCzk2PbPg9X8son2pvv8r4We3utT8b3FJfva2uk8e7uz+d62SiiMvi6WFkitGLDFkzHw==
   dependencies:
     ejs "^3.1.8"
 
-"@steedos/service-plugin-amis@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-plugin-amis/-/service-plugin-amis-2.4.0-beta.36.tgz#6b8396a17d16e6bc49b0646635d2302a77d33ea0"
-  integrity sha512-70QqbimIrVu5lnXJYsAd1GjOYWdPLdm5d+2xLfCdkTq+PSX3JjbnLFIGI8NcYtJCOrfOGXe0s1mBV6RPftU6gg==
+"@steedos/service-plugin-amis@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-plugin-amis/-/service-plugin-amis-2.4.0-beta.37.tgz#36d6de3f6eedd17c4519616160aabfb54e1155d5"
+  integrity sha512-zVeFExnTTo1Ecq6MClQ7Opn3Ltovp01ELglAlcBc7Hk5POrqmGBRawyv93FZaXC3zIUOd+X10AsasNN/Uv7caw==
   dependencies:
     "@steedos-widgets/amis-lib" "^1.0.22"
 
-"@steedos/service-saas@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-saas/-/service-saas-2.4.0-beta.36.tgz#2ed92ec48cc0d1bffd40500148497e3ff3414729"
-  integrity sha512-TLMO2ORexwhB/6tg0arCQYRk2LvP02BBjCFmSboNQA+WHXKAuSKDmb/LZKutHAmb25d/6CRY4TIV5QQDN95lGg==
+"@steedos/service-saas@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-saas/-/service-saas-2.4.0-beta.37.tgz#baea337319727e97c97b38a0b6c1ae6f4a1587f3"
+  integrity sha512-B0348e1Gdow0Ti2TFFUoyc+3veRdTMPqZw0AAB+kBg9T77RBx5yWJ4Ib3oLPJsEByLQ8Ofc+onk6NK99CzQZPQ==
 
-"@steedos/service-sentry@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-sentry/-/service-sentry-2.4.0-beta.36.tgz#e007d07a5fd236c032bcec724f506bee9e53f33d"
-  integrity sha512-bcc8pQ0CREcccOysi6ZW07X3/mBm63V7LsfxErrEVyYT0mcbFPgTEIXFUxJb9LsvTdpoF9RzvIctH3YV65+o7w==
+"@steedos/service-sentry@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-sentry/-/service-sentry-2.4.0-beta.37.tgz#6be52e714a85ea881ece64b204fe0e3b0dd7a242"
+  integrity sha512-s0Uw8bp53K9gJZGgz9w+wQIUWO8E5Qy2kGAz1294KrVt1W91l2VMgp4LqujW0oIh1K5LZTyQGURB85MxTO6+eQ==
   dependencies:
     "@sentry/node" "7.7.0"
     "@sentry/tracing" "7.7.0"
     "@sentry/utils" "7.7.0"
 
-"@steedos/service-sidecar@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-sidecar/-/service-sidecar-2.4.0-beta.36.tgz#74519ed9329a95f70064f48259ee102e24e63300"
-  integrity sha512-zjv1hfZ8n/V44SMQOmGRmIe/qDUsakXp7VjaNb2UgQ5BguWwgI3unf8ekCuGu5AKOVPzWMrgduT/BfLq93vjxg==
+"@steedos/service-sidecar@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-sidecar/-/service-sidecar-2.4.0-beta.37.tgz#7d64ec661a79741217f3d8499befbaa08439de54"
+  integrity sha512-p68/VQzkh/PBH+gN2dHxTSzfyt3qtTvvDTkYPZu8V5TtQ2+xp/Sz6kO8w40DN1LUxBHXfTW0g597U5tT033TbQ==
   dependencies:
     kleur "^4.1.3"
     lodash "^4.17.21"
     moleculer "^0.14.25"
     node-fetch "^2.6.7"
 
-"@steedos/service-steedos-server@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-steedos-server/-/service-steedos-server-2.4.0-beta.36.tgz#240bf62109510e0352f6814eebf40240d2cbf805"
-  integrity sha512-6M4+AbL7jnhw6ISMh8kigaxESp7gaFyqN+v4e4Y172R2XSp1GV+xfVZDmyJ4iMXw8GQiMXOQS+lWBM0Zv5GBxw==
+"@steedos/service-steedos-server@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-steedos-server/-/service-steedos-server-2.4.0-beta.37.tgz#1cbc2ea2ad0f031e069a03b4ecbf4fad10146c1e"
+  integrity sha512-mN2TT2XcJAiGBkY3XDZ0KixjLkrd2LPcy87e1WDSRzeFOZg1kLGbKF5uSvY9t66vYXqUUKi2pJhJLriTu0xMHQ==
   dependencies:
-    "@steedos/accounts" "2.4.0-beta.36"
-    "@steedos/core" "2.4.0-beta.36"
-    "@steedos/data-import" "2.4.0-beta.36"
-    "@steedos/metadata-api" "2.4.0-beta.36"
-    "@steedos/meteor-bundle-runner" "2.4.0-beta.36"
-    "@steedos/plugin-company" "2.4.0-beta.36"
-    "@steedos/service-accounts" "2.4.0-beta.36"
-    "@steedos/service-api" "2.4.0-beta.36"
-    "@steedos/service-cachers-manager" "2.4.0-beta.36"
-    "@steedos/service-charts" "2.4.0-beta.36"
-    "@steedos/service-cloud-init" "2.4.0-beta.36"
-    "@steedos/service-fields-indexs" "2.4.0-beta.36"
-    "@steedos/service-files" "2.4.0-beta.36"
-    "@steedos/service-meteor-package-loader" "2.4.0-beta.36"
-    "@steedos/service-pages" "2.4.0-beta.36"
-    "@steedos/service-plugin-amis" "2.4.0-beta.36"
-    "@steedos/service-ui" "2.4.0-beta.36"
-    "@steedos/service-workflow" "2.4.0-beta.36"
-    "@steedos/standard-cms" "2.4.0-beta.36"
-    "@steedos/standard-collaboration" "2.4.0-beta.36"
-    "@steedos/standard-object-database" "2.4.0-beta.36"
-    "@steedos/standard-permission" "2.4.0-beta.36"
-    "@steedos/standard-process" "2.4.0-beta.36"
-    "@steedos/standard-process-approval" "2.4.0-beta.36"
-    "@steedos/standard-space" "2.4.0-beta.36"
-    "@steedos/standard-ui" "2.4.0-beta.36"
-    "@steedos/steedos-plugin-schema-builder" "2.4.0-beta.36"
-    "@steedos/unpkg" "2.4.0-beta.36"
-    "@steedos/webapp-accounts" "2.4.0-beta.36"
-    "@steedos/webapp-public" "2.4.0-beta.36"
-    "@steedos/workflow" "2.4.0-beta.36"
+    "@steedos/accounts" "2.4.0-beta.37"
+    "@steedos/core" "2.4.0-beta.37"
+    "@steedos/data-import" "2.4.0-beta.37"
+    "@steedos/metadata-api" "2.4.0-beta.37"
+    "@steedos/meteor-bundle-runner" "2.4.0-beta.37"
+    "@steedos/plugin-company" "2.4.0-beta.37"
+    "@steedos/service-accounts" "2.4.0-beta.37"
+    "@steedos/service-api" "2.4.0-beta.37"
+    "@steedos/service-cachers-manager" "2.4.0-beta.37"
+    "@steedos/service-charts" "2.4.0-beta.37"
+    "@steedos/service-cloud-init" "2.4.0-beta.37"
+    "@steedos/service-fields-indexs" "2.4.0-beta.37"
+    "@steedos/service-files" "2.4.0-beta.37"
+    "@steedos/service-meteor-package-loader" "2.4.0-beta.37"
+    "@steedos/service-pages" "2.4.0-beta.37"
+    "@steedos/service-plugin-amis" "2.4.0-beta.37"
+    "@steedos/service-ui" "2.4.0-beta.37"
+    "@steedos/service-workflow" "2.4.0-beta.37"
+    "@steedos/standard-cms" "2.4.0-beta.37"
+    "@steedos/standard-collaboration" "2.4.0-beta.37"
+    "@steedos/standard-object-database" "2.4.0-beta.37"
+    "@steedos/standard-permission" "2.4.0-beta.37"
+    "@steedos/standard-process" "2.4.0-beta.37"
+    "@steedos/standard-process-approval" "2.4.0-beta.37"
+    "@steedos/standard-space" "2.4.0-beta.37"
+    "@steedos/standard-ui" "2.4.0-beta.37"
+    "@steedos/steedos-plugin-schema-builder" "2.4.0-beta.37"
+    "@steedos/unpkg" "2.4.0-beta.37"
+    "@steedos/webapp-accounts" "2.4.0-beta.37"
+    "@steedos/webapp-public" "2.4.0-beta.37"
+    "@steedos/workflow" "2.4.0-beta.37"
     dotenv-flow "^3.2.0"
     moleculer "^0.14.25"
     moleculer-db "^0.8.4"
     moleculer-web "^0.10.4"
-    steedos-server "2.4.0-beta.36"
+    steedos-server "2.4.0-beta.37"
 
-"@steedos/service-ui@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-ui/-/service-ui-2.4.0-beta.36.tgz#02bbdadb1b296f332950b82089bb7333bd1c8b0f"
-  integrity sha512-olb/FHwINpA6IlUQyR9dZ4MTcWSpC7tKyw3nUjvH+XGgfOgaLVgUDiDet/gFTh2JfcXwEsfkvrP1qHnJDAe1kA==
+"@steedos/service-ui@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-ui/-/service-ui-2.4.0-beta.37.tgz#bc67b03180ed7dad465be0257aea40ca18d0c9eb"
+  integrity sha512-laQ9aJ0ouGV/7aD2+qvtVJ7+XFrW0gkZ5UIvX9kKiUCLwX+dRas1jIa6j8+uGQ/okFBv2X78VyMHMUqjWxmzQw==
   dependencies:
-    "@steedos/core" "2.4.0-beta.36"
-    "@steedos/i18n" "2.4.0-beta.36"
-    "@steedos/objectql" "2.4.0-beta.36"
+    "@steedos/core" "2.4.0-beta.37"
+    "@steedos/i18n" "2.4.0-beta.37"
+    "@steedos/objectql" "2.4.0-beta.37"
     express "4.18.1"
 
-"@steedos/service-workflow@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/service-workflow/-/service-workflow-2.4.0-beta.36.tgz#40714af30322774d84b9e2017722fb0baba6f2e0"
-  integrity sha512-h27DMVrs+XycaGUlqc7DCBiUtq5At/3NKjO7IGUExYbinEMQQ2PQ07th81ed9iRESIzf1Ii9krrbsOxOOQRQKw==
+"@steedos/service-workflow@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/service-workflow/-/service-workflow-2.4.0-beta.37.tgz#b9df28e81a6b1cb178250385fe81c2d252926a75"
+  integrity sha512-xDOXwQfH0nqFQjNsorg3BiICk6u3AY9f3hdxbahEDChhWe+6VtPpx3hjFVu6EjB0JjAncSyY8zpqKs9UmZFN0g==
   dependencies:
-    "@steedos/workflow" "2.4.0-beta.36"
+    "@steedos/workflow" "2.4.0-beta.37"
     lodash "^4.17.21"
     node-schedule "^2.0.0"
 
-"@steedos/standard-cms@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/standard-cms/-/standard-cms-2.4.0-beta.36.tgz#8cf171db525a3359abda92a903d93995ea0dd3b1"
-  integrity sha512-bZF/CD4JBXjeQCZgDng/ghAV7bntMVLX3sDCUti/erSQ6jRCNPLAc3dLqBtJwRSf19LJa3Fv1QRpbOoxwL+AtA==
+"@steedos/standard-cms@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/standard-cms/-/standard-cms-2.4.0-beta.37.tgz#00a35818b121f1d28de5ca3c713b5c2bf8254be0"
+  integrity sha512-ii/KqK/HfDKS4mTcbU9iOG6zolR39Uq9GzfHQ0+ZYabSJhHpfBwL9KNzexU3nwwY63oTG64C07WKQIe+HqCfIw==
 
-"@steedos/standard-collaboration@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/standard-collaboration/-/standard-collaboration-2.4.0-beta.36.tgz#32080cbfeffd05827cb1042e7f043b6b605c67b3"
-  integrity sha512-hXGfS1Jza/q0mfDUETJdLgdg4FLIRg3Ag43SstIVRJD9jRzc3nq0WGZm8k1ul7qPVVcxdpw25rXuOxinZub5tQ==
+"@steedos/standard-collaboration@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/standard-collaboration/-/standard-collaboration-2.4.0-beta.37.tgz#e0d73ff799afe0de2eb96c2b2f2fc12ca905fae8"
+  integrity sha512-Fs7xvEph+DxqNjVyQpu1ZYOTpZwSK8EPuVzRuM1Lyj64o/fR/P6UO5weA35cuRTRJM+4Ug/HTjs4GAjeKpXVUw==
 
-"@steedos/standard-object-database@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/standard-object-database/-/standard-object-database-2.4.0-beta.36.tgz#f5a2bad092cd812ea65ee1bb0832dcc4c81492dd"
-  integrity sha512-8tLQjrq1MLg4HARwwKBoteuBHYhAUg6AT+VBY8fgjrFSC1PK3Ylld59aK9oEOhA0WpRwlyH35jVmwO5O8MQ/5A==
+"@steedos/standard-object-database@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/standard-object-database/-/standard-object-database-2.4.0-beta.37.tgz#a2362eed08323aef0eada2d7f0ae37b9ff748ff3"
+  integrity sha512-khUm49goRdofjzHKI2eFPR5Gb/lYYR/M51ssEe+zhf00u5L9IyQHTp6AWliUasuT+HO5qKizOEtym5XLXzzAkA==
   dependencies:
     "@steedos-widgets/amis-lib" "^1.0.22"
 
-"@steedos/standard-objects@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/standard-objects/-/standard-objects-2.4.0-beta.36.tgz#c30adae37a0ab2f13bbf3a29a6436dcdf2a5fb7e"
-  integrity sha512-PIb1CMA5wCgh/XqOv0+8CGeJWNdPQ44fQJpyZ7cVjNLXe1Gy7jIdhG+JUtFHarvW7JBiQGNForK73A2lBeNh1w==
+"@steedos/standard-objects@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/standard-objects/-/standard-objects-2.4.0-beta.37.tgz#b7e1ec16e97630db6a9e10f2454c0f976245d666"
+  integrity sha512-OCnlpJLkURvOGy8F0/agR+9/8bgwDxG20+wgRSmlLOP9gJDFftkuG7z61z/s3QwHUgfuRHyy4dmyQLND4Sdwqw==
   dependencies:
-    "@steedos/auth" "2.4.0-beta.36"
-    "@steedos/core" "2.4.0-beta.36"
-    "@steedos/filters" "2.4.0-beta.36"
-    "@steedos/i18n" "2.4.0-beta.36"
-    "@steedos/metadata-core" "2.4.0-beta.36"
+    "@steedos/auth" "2.4.0-beta.37"
+    "@steedos/core" "2.4.0-beta.37"
+    "@steedos/filters" "2.4.0-beta.37"
+    "@steedos/i18n" "2.4.0-beta.37"
+    "@steedos/metadata-core" "2.4.0-beta.37"
 
-"@steedos/standard-permission@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/standard-permission/-/standard-permission-2.4.0-beta.36.tgz#1d710cb4bc69b040669ea1c6facdc43fb9dd7c45"
-  integrity sha512-M1HIDVRGnKAdMIy3xcEwPnNw0VNG18GeB3gMpf11n5+wycftYwcqQsF6XViBglqvDb/P/uXXf7kxYg8UJI4g7w==
+"@steedos/standard-permission@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/standard-permission/-/standard-permission-2.4.0-beta.37.tgz#e1552951b18784710c56ef09eaa6a04bd2c43466"
+  integrity sha512-wZDUI54Vam7fYXNdrO4JAuOUEsTrkz/YL+OeUFrDVBATqfLBqMgW8j/uXI+0NNIl7V0PAd4IYNkgpSEdukq1zw==
 
-"@steedos/standard-process-approval@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/standard-process-approval/-/standard-process-approval-2.4.0-beta.36.tgz#76ff8e0d805bc886df47e64e0c7241fc7b4bf9fb"
-  integrity sha512-Gnd0vHkNY9xIMqKmh4gwGMiH/xC7F2OleTlA72JdoldqWbE41bi18LxMqpmXzxsrWEfwiEWvBZSxJ1EYidlwVg==
+"@steedos/standard-process-approval@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/standard-process-approval/-/standard-process-approval-2.4.0-beta.37.tgz#4d4e1628aa536e32e4e5a2e232ff5ba6bb468cf5"
+  integrity sha512-kxvLcSYuY7MuH1DokzxmqmYV/nwnVP3jPbxYFLXj9SpEU3FHuOQnUwbQROWLdn1NEs2UZQD7eZzoS1nzLXOHYA==
   dependencies:
-    "@steedos/process" "2.4.0-beta.36"
+    "@steedos/process" "2.4.0-beta.37"
 
-"@steedos/standard-process@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/standard-process/-/standard-process-2.4.0-beta.36.tgz#da9b4af28b0a7a79ccb486cfe74de7b63e455514"
-  integrity sha512-jb+Gi48UI9aRXdpD9+ZRtCExIW3A0Femh6kF8s7l24C5zgfechW5Bra8OWmzNjL4BmWj7zcmf/5Qw+0NVG5qvw==
+"@steedos/standard-process@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/standard-process/-/standard-process-2.4.0-beta.37.tgz#e105d25aefb5641c32d5ca6ff4ddc381cf0ee95f"
+  integrity sha512-QancXd9SnEL+yg+rNpt5q105NPyJ/vU4mmzmqy+6NMLMHDeU5qyevO7j46AkS/sE1ZVmdrSRXpGVjW30yTNiwA==
   dependencies:
     lodash "^4.17.21"
 
-"@steedos/standard-space@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/standard-space/-/standard-space-2.4.0-beta.36.tgz#840030dc5dadc1fe0754d0cd324f10f8c28a9590"
-  integrity sha512-aQiJBDwVRkdCqxo73HCncpKV25Ugnafu0MZvdMMNFTjOpUAf3DIDaaxWLjrpvjFcqVkzkx18LxmZ8XgKJptRBQ==
+"@steedos/standard-space@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/standard-space/-/standard-space-2.4.0-beta.37.tgz#577c521a0d4382dc679e93ac1266bb97195b6bd4"
+  integrity sha512-b3dWpGY3fJYXY2ebQUWjMj4qGA5ld7+NHgauTHrVw0TG3OtBmBNvJzMtXMVDgY8w8v2KZbAwYtmah7z8Gq3apA==
 
-"@steedos/standard-ui@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/standard-ui/-/standard-ui-2.4.0-beta.36.tgz#5cf1de4ff5755b3a34646656a5ed38746955a030"
-  integrity sha512-FkBCuwQATZVInWbjDvQC4SvZ5NqCq0EUkti26WxrJB6CgIngV+LzEKNg4PWps7Uw500Ozg3uGO9fdNRWR3vkRg==
+"@steedos/standard-ui@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/standard-ui/-/standard-ui-2.4.0-beta.37.tgz#385014958101a349b37e5b40d5770efca23fd16f"
+  integrity sha512-EjAw9rxl5+q4pw+S4Wl6uhA7KLLKfOtPhzlQp0aQP0BDMjkht+0dswW/pBEHsIZuIgTOlP9JQYyKVQJNwhI9rg==
 
-"@steedos/steedos-plugin-schema-builder@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/steedos-plugin-schema-builder/-/steedos-plugin-schema-builder-2.4.0-beta.36.tgz#0e9f5a60ae979e2c500361a076391994cdc1bcb9"
-  integrity sha512-tItGUJBRQZIfX5hQTSxIAm7uc33/fbIkyllebn+NOUWBDOLTyPxWv4Yakr2iqIeRNlSRDG7lACT9ATWBEkInnw==
+"@steedos/steedos-plugin-schema-builder@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/steedos-plugin-schema-builder/-/steedos-plugin-schema-builder-2.4.0-beta.37.tgz#6b43bf884384f8501b0d2d84ce6adf57aab117d7"
+  integrity sha512-4kbazkL9bUkIJvjrNKK6UyGcsEJmFTg41BO3OUt1NG0+/B4cCMY1LnJ1LDYcSHKFREZRvCBIfnkQrKz8beEQnw==
 
 "@steedos/steedos-plugin-workflow@^2.1.3":
   version "2.1.3"
@@ -5925,22 +5925,22 @@
     express "^4.17.1"
     underscore "^1.9.1"
 
-"@steedos/unpkg@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/unpkg/-/unpkg-2.4.0-beta.36.tgz#f2364c71b0876d9dceea9f640caa3c584e31d575"
-  integrity sha512-+E63TX3xUbNn7Kpo/InEGiFoWyCvmcGOnKR1zqhNp82liRTkEycFSsPccFWkYR54Uj/bLxPFi+d2PDc/eV08TQ==
+"@steedos/unpkg@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/unpkg/-/unpkg-2.4.0-beta.37.tgz#9b2af66c4d4f43df45ea66da722f6fb33947e8f8"
+  integrity sha512-VmofrOR7h2904pPP14kPDZY5Vtp5jLBJdeqjYky37iUHqRtXpXrbKC8Te2/ZGpFQHIBz9jb2eCnePN8Lp0EUvw==
 
-"@steedos/webapp-accounts@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/webapp-accounts/-/webapp-accounts-2.4.0-beta.36.tgz#271aa9720a3d452b14cbb37665c0646bf7bc3af5"
-  integrity sha512-9SiG0Nr9fhhJblMWYXnTQmr+oXUdDmeafP7QFVKXRrn2MkMSt4dUQTOzmO0nCRgM/v3txnyI5dIa7VBvzk7kbQ==
+"@steedos/webapp-accounts@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/webapp-accounts/-/webapp-accounts-2.4.0-beta.37.tgz#c857374dd9fd533054b679443ea07a012d749f8b"
+  integrity sha512-mFsoA5amJfJacv55l3KBF1yM7fQ3sUCv3uWl3GDXC4JJ73PQBUBfZjItKZGPCZaiCAP6xYVobR9aCx3EdNVD6w==
   dependencies:
     lodash "^4.17.21"
 
-"@steedos/webapp-public@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/webapp-public/-/webapp-public-2.4.0-beta.36.tgz#0da31973296511d2a831674594e023eb1543e013"
-  integrity sha512-3yzCi2VXvRD8ym01XZ/zWGPN/E1rqA4BC5YUfnnMTuqRk/Gihkg5yTg9xum0EJy2HszJKRGQe+Xhg/SpJ4ckuQ==
+"@steedos/webapp-public@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/webapp-public/-/webapp-public-2.4.0-beta.37.tgz#25caf091dc7d90e221be932196ad8061d46b063f"
+  integrity sha512-RcRsFl1xcr15zXxMD8kaLLXFrSJyxAlZp8IBDOs2se20JtBlkKU+NJ1GNlydKLeoaEJA9TWcDr9PDZPFxCfxkw==
   dependencies:
     lodash "^4.17.21"
 
@@ -5949,13 +5949,13 @@
   resolved "https://registry.npmmirror.com/@steedos/webapp/-/webapp-2.2.25.tgz#efe3af7bc204513658e08e9d793e5f9a836e4b85"
   integrity sha512-+kjDN7GJCm9aLaSz5hGdYCvTdG9mUm3ZZjANxqhSuw/ZHN3nGu/hDmm9UtGz5i5sXlrYHX9g4Lrrl3iNF8kedg==
 
-"@steedos/workflow@2.4.0-beta.36":
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/@steedos/workflow/-/workflow-2.4.0-beta.36.tgz#1d668f82a50c3cf421c372d7c3160e58a86bcc2e"
-  integrity sha512-968eC6J7L1jFI5WiOzEHvkSLVsEVeU7o49GInD47GGCDZvIHGq2CW9T3M5Pht0I/MSWExRPlx2tkByNrnpJt4w==
+"@steedos/workflow@2.4.0-beta.37":
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/@steedos/workflow/-/workflow-2.4.0-beta.37.tgz#7e4357f9d0eef2c7a87d38f0766dc11177725283"
+  integrity sha512-z4ic1dzvEP3jGcD7L6BZ0G1kSUoDsSfhQGV0/6eZk3SsNzh28PnbXI4mhiFB9/0PpCCwmKsl1E8SZTgduIQYZA==
   dependencies:
-    "@steedos/auth" "2.4.0-beta.36"
-    "@steedos/objectql" "2.4.0-beta.36"
+    "@steedos/auth" "2.4.0-beta.37"
+    "@steedos/objectql" "2.4.0-beta.37"
     "@steedos/steedos-plugin-workflow" "^2.1.3"
     body-parser "^1.19.0"
     express "^4.17.1"
@@ -24987,16 +24987,16 @@ stealthy-require@^1.1.1:
   resolved "https://registry.npmmirror.com/stealthy-require/-/stealthy-require-1.1.1.tgz#35b09875b4ff49f26a777e509b3090a3226bf24b"
   integrity sha512-ZnWpYnYugiOVEY5GkcuJK1io5V8QmNYChG62gSit9pQVGErXtrKuPC55ITaVSukmMta5qpMU7vqLt2Lnni4f/g==
 
-steedos-cli@2.4.0-beta.36:
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/steedos-cli/-/steedos-cli-2.4.0-beta.36.tgz#bf40ebb48db15d7a2e0aea1608c965070d61a381"
-  integrity sha512-AnzTgdKPA95p8MNQPhp/zdALaUftTr/eBaRbNvvoub4uRCnZgRcg+Td/fCfJAQJ2GltqagYBGlS0Iwsyr7A47g==
+steedos-cli@2.4.0-beta.37:
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/steedos-cli/-/steedos-cli-2.4.0-beta.37.tgz#2c4b37325d8f1a82f2a24f475976f8fad3ac1336"
+  integrity sha512-l5s2uPSIS2N0oFyI5DHqb7hEq2Pb8XbghQhhkg6XQgRMLWgUAh46QWVukxJKwtX4IvoX44sGt7dVf69hMX3vYg==
   dependencies:
     "@geek/spinner" "1.0.0"
     "@oclif/command" "^1.8.16"
     "@oclif/config" "^1.8.3"
     "@oclif/plugin-help" "^5.1.12"
-    "@steedos/metadata-core" "2.4.0-beta.36"
+    "@steedos/metadata-core" "2.4.0-beta.37"
     archiver "^5.0.2"
     chalk "2.4.2"
     change-case "^3.1.0"
@@ -25024,25 +25024,25 @@ steedos-cli@2.4.0-beta.36:
     yargs "^13.2.1"
     yn "^2.0.0"
 
-steedos-server@2.4.0-beta.36:
-  version "2.4.0-beta.36"
-  resolved "https://registry.npmmirror.com/steedos-server/-/steedos-server-2.4.0-beta.36.tgz#284a7db804c1e3a5da10ae3350f7615636a1de15"
-  integrity sha512-ah3ByyH8IKrUXwMTdadF1/BGDwM+Ui+b/A4ZMdggYgo7Pq/DnZcD/I+kX6IA6rXWMqCqkbyp/LgWidTYkr7x5Q==
+steedos-server@2.4.0-beta.37:
+  version "2.4.0-beta.37"
+  resolved "https://registry.npmmirror.com/steedos-server/-/steedos-server-2.4.0-beta.37.tgz#a671733f5c6455925eba5a9725a3d7be1ef7e552"
+  integrity sha512-ON5bfVYWhjb7fKcBcmnRS/5e4BbtCwBNDLqoKkB97qHUC5ini4mOHcId1VW0ClGy7kwys84xwPCyF/wF8RIq3w==
   dependencies:
     "@babel/runtime" "7.12.18"
-    "@steedos/accounts" "2.4.0-beta.36"
-    "@steedos/auth" "2.4.0-beta.36"
-    "@steedos/core" "2.4.0-beta.36"
-    "@steedos/filters" "2.4.0-beta.36"
-    "@steedos/i18n" "2.4.0-beta.36"
+    "@steedos/accounts" "2.4.0-beta.37"
+    "@steedos/auth" "2.4.0-beta.37"
+    "@steedos/core" "2.4.0-beta.37"
+    "@steedos/filters" "2.4.0-beta.37"
+    "@steedos/i18n" "2.4.0-beta.37"
     "@steedos/license" "2.2.8"
-    "@steedos/meteor-bundle-dependencies" "2.4.0-beta.36"
-    "@steedos/meteor-bundle-runner" "2.4.0-beta.36"
-    "@steedos/objectql" "2.4.0-beta.36"
-    "@steedos/odata-v4-mongodb" "2.4.0-beta.36"
-    "@steedos/odata-v4-parser" "2.4.0-beta.36"
-    "@steedos/process" "2.4.0-beta.36"
-    "@steedos/standard-objects" "2.4.0-beta.36"
+    "@steedos/meteor-bundle-dependencies" "2.4.0-beta.37"
+    "@steedos/meteor-bundle-runner" "2.4.0-beta.37"
+    "@steedos/objectql" "2.4.0-beta.37"
+    "@steedos/odata-v4-mongodb" "2.4.0-beta.37"
+    "@steedos/odata-v4-parser" "2.4.0-beta.37"
+    "@steedos/process" "2.4.0-beta.37"
+    "@steedos/standard-objects" "2.4.0-beta.37"
     "@steedos/webapp" "2.2.25"
     basic-auth "^2.0.1"
     bcryptjs "^2.4.3"
