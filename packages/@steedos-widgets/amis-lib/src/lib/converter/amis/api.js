@@ -256,6 +256,7 @@ export async function getEditFormInitApi(object, recordId, fields){
                 }
                 initialValues = defaultValues;
             }
+            // data下的变量需要在保存接口（getSaveApi）中被删除。
             payload.data = {
                 initialValues,
                 editFormInited: true
