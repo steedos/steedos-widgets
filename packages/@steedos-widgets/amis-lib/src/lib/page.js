@@ -7,16 +7,7 @@
  */
 import { fetchAPI } from './steedos.client';
 
-export async function getPage({type, pageId, appId, objectName = '', recordId, formFactor = 'LARGE'}){
-    if(!objectName){
-        objectName = ''
-    }
-    if(!recordId){
-        recordId = ''
-    }
-    if(!pageId){
-        pageId = ''
-    }
+export async function getPage({type, pageId = '', appId, objectName = '', recordId = '', formFactor = 'LARGE'}){
     const api = `/api/pageSchema/${type}?app=${appId}&objectApiName=${objectName}&recordId=${recordId}&pageId=${pageId}&formFactor=${formFactor}`;
     const page = await fetchAPI(api);
     if (page && page.schema) {

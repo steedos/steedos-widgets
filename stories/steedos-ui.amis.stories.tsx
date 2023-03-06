@@ -9,7 +9,6 @@ import React, {useEffect, useState} from 'react';
 import { registerRemoteAssets, amisRender, getSteedosAuth, getRootUrl, defaultsDeep, getTenantId, getAuthToken } from '@steedos-widgets/amis-lib';
 // import { defaultsDeep } from 'lodash';
 import { Builder } from '@steedos-builder/react';
-import ReactDOM from 'react-dom';
 import * as _ from 'lodash';
 
 // window.defaultsDeep = defaultsDeep;
@@ -29,7 +28,7 @@ if (Builder.isBrowser){
     } 
   });
 }
-const AmisRender = ({schema, data = {}, router = null, assetUrls = null, getModalContainer = null})=> {
+const AmisRender = ({schema, data = {}, router = null, getModalContainer = null})=> {
   useEffect(()=>{
     const defaultSchema = defaultsDeep({}, data , {
         "initApi": {
@@ -53,7 +52,7 @@ const AmisRender = ({schema, data = {}, router = null, assetUrls = null, getModa
     registerRemoteAssets(assetUrls).then((assets)=>{
       amisRender(`#amis-root`, defaultsDeep(defaultSchema , schema), data, {getModalContainer: getModalContainer}, {router: router, assets: assets});
     })
-  }, [])
+  }, [schema])
   return (
   <>
     <div id="amis-root">loading...</div>
@@ -88,14 +87,15 @@ export default {
     const [isLoaded, setIsLoaded] = useState(false);
       useEffect(() => {
         Promise.all([
-          loadJS('https://unpkg.steedos.cn/amis/sdk/sdk.js'), 
+          loadJS(`https://unpkg.steedos.cn/amis@${process.env.STEEDOS_EXPERIENCE_AMIS_VERSION}/sdk/sdk.js`), 
           loadJS('https://unpkg.steedos.cn/crypto-js@4.1.1/crypto-js.js'), 
           loadJS('https://unpkg.steedos.cn/lodash/lodash.min.js'),
           loadJS('https://unpkg.steedos.cn/@steedos-builder/react@0.2.30/dist/builder-react.unpkg.js'),
+          loadCss('/tailwind-base.css'),
           loadCss('https://unpkg.steedos.cn/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css'),
-          loadCss('https://unpkg.steedos.cn/amis/lib/themes/antd.css'),
-          loadCss('https://unpkg.steedos.cn/amis/lib/helper.css'),
-          loadCss('https://unpkg.steedos.cn/amis/sdk/iconfont.css'),
+          loadCss(`https://unpkg.steedos.cn/amis@${process.env.STEEDOS_EXPERIENCE_AMIS_VERSION}/lib/themes/antd.css`),
+          loadCss(`https://unpkg.steedos.cn/amis@${process.env.STEEDOS_EXPERIENCE_AMIS_VERSION}/lib/helper.css`),
+          loadCss(`https://unpkg.steedos.cn/amis@${process.env.STEEDOS_EXPERIENCE_AMIS_VERSION}/sdk/iconfont.css`),
           loadCss('https://unpkg.steedos.cn/@fortawesome/fontawesome-free@6.2.0/css/all.min.css'),
         ]).then(()=>{
           (window as any).React = (window as any).amisRequire("react");
@@ -248,7 +248,6 @@ export const AppHeader = () => (
     ],
     "id": "u:53a05f7c471a"
   }}
-  assetUrls={assetUrls}
   />
 )
 
@@ -263,7 +262,6 @@ export const GlobalHeader = () => (
       }
     ],
   }}
-  assetUrls={assetUrls}
   />
 )
 
@@ -280,7 +278,6 @@ export const AppMenuLeft = () => (
               }
             ],
     }}
-  assetUrls={assetUrls}
   />
 )
 
@@ -296,6 +293,38 @@ export const AppMenuTop = () => (
               }
             ],
     }}
-  assetUrls={assetUrls}
   />
 )
+
+
+
+const PageListViewTemplate = (args) => {
+  console.log(args);
+  return (
+    <AmisRender schema={{
+      "type": "page",
+      "body": [
+          {
+            "type": "steedos-page-listview",
+            ...args
+          }
+        ],
+      }}
+    />
+  )
+}
+
+export const PageListView = PageListViewTemplate.bind({});
+PageListView.args = {
+  app_id: 'admin',
+  tab_id: 'space_users',
+  display: 'grid',
+};
+PageListView.argTypes = {
+  display: {
+    options: [
+      'grid', 'split'
+    ],
+    control: { type: 'radio' },
+  },
+}

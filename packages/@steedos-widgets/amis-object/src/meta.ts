@@ -48,6 +48,8 @@ import AmisSelectFlow from './metas/AmisSelectFlow';
 
 import AmisInstanceDetail from './metas/AmisInstanceDetail';
 
+import PageListViewMeta from './pages/PageListView.meta';
+
 const components = [
   AmisRecordDetailHeader,
   AmisObjectForm, 
@@ -74,7 +76,8 @@ const components = [
   AmisSteedosField,
   AmisSelectFlow,
   AmisInstanceDetail,
-  SteedosLoading
+  SteedosLoading,
+  PageListViewMeta,
 ];
 
 const componentList = [

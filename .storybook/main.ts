@@ -7,7 +7,7 @@
  */
 const path = require('path');
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
-require('dotenv-flow').config();
+require('dotenv-flow').config({path: path.join(__dirname, '../')});
 
 module.exports = {
   stories: ['../stories/**/*.stories.tsx'],
