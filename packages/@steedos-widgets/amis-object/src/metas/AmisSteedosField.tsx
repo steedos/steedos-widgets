@@ -2,12 +2,12 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-11 09:39:38
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-07 15:37:59
+ * @LastEditTime: 2023-03-06 18:29:59
  * @Description: 
  */
 const config: any = {
     componentType: 'amisSchema', 
-    group: "华炎魔方",
+    group: "华炎魔方-原子组件",
     componentName: "AmisSteedosField",
     title: "对象字段",
     docUrl: "",
@@ -50,40 +50,38 @@ const config: any = {
         weight: 1,
         framework: "react"
       },
-      // plugin: {
-      //   rendererName: config.amis.name,
-      //   $schema: '/schemas/UnkownSchema.json',
-      //   name: config.title,
-      //   description: config.title,
-      //   tags: [config.group],
-      //   order: -9999,
-      //   icon: config.amis.icon,
-      //   scaffold: {
-      //     type: config.amis.name,
-      //     field: {
-      //       "type": "lookup",
-      //       "label": "Company",
-      //       "reference_to": "company"
-      //     }
-      //   },
-      //   previewSchema: {
-      //     type: config.amis.name,
-      //     field: {
-      //       "type": "lookup",
-      //       "label": "Company",
-      //       "reference_to": "company"
-      //     }
-      //   },
-      //   panelTitle: "设置",
-      //   panelControls: [
-      //     {
-      //       type: "editor",
-      //       name: "field",
-      //       label: "字段定义",
-      //       language: "json"
-      //     }
-      //   ]
-      // }
+      plugin: {
+        rendererName: config.amis.name,
+        $schema: '/schemas/UnkownSchema.json',
+        name: config.title,
+        description: config.title,
+        tags: [config.group],
+        order: -9999,
+        icon: config.amis.icon,
+        scaffold: {
+          type: config.amis.name,
+          config: {
+            "type": "text",
+            "label": "字段1"
+          }
+        },
+        previewSchema: {
+          type: config.amis.name,
+          config: {
+            "type": "text",
+            "label": "字段1"
+          }
+        },
+        panelTitle: "设置",
+        panelControls: [
+          {
+            type: "editor",
+            name: "config",
+            label: "字段定义",
+            language: "json"
+          }
+        ]
+      }
     }
   };
   
