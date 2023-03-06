@@ -30,7 +30,7 @@ export default class MyDocument extends Document {
             window.STEEDOS_EXPERIENCE_ASSETURLS = `{process.env.STEEDOS_EXPERIENCE_ASSETURLS}`;
           </script>
           <script src="/steedos-init.js"></script>
-          <script src={`${process.env.STEEDOS_ROOT_URL}/steedos_dynamic_scripts.js`} ></script>
+          {/* <script src={`${process.env.STEEDOS_ROOT_URL}/steedos_dynamic_scripts.js`} ></script> */}
 
           <link rel="stylesheet" href="/tailwind-base.css" />
           <link rel="stylesheet" href="https://unpkg.steedos.cn/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css" />
