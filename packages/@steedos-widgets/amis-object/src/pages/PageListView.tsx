@@ -9,8 +9,10 @@ import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { getPage, Router } from "@steedos-widgets/amis-lib";
 
 
-export const PageListView = async ({ formFactor: defaultFormFactor, app_id, tab_id, listview_id, display }) => {
-
+export const PageListView = async (props) => {
+  const { formFactor: defaultFormFactor, app_id, tab_id, listview_id, display, defaultData } = props
+  
+  console.log(props);
   if (display)
     Router.setTabDisplayAs(tab_id, display)
 
@@ -19,7 +21,6 @@ export const PageListView = async ({ formFactor: defaultFormFactor, app_id, tab_
   const formFactor = (["split_three", "split"].indexOf(displayAs) > -1) ? 'SMALL': defaultFormFactor
 
   const page = await getPage({type: 'list', appId: app_id, objectName: tab_id, formFactor})
-
 
   if(page === false){
     return {
@@ -42,15 +43,17 @@ export const PageListView = async ({ formFactor: defaultFormFactor, app_id, tab_
     "columnsTogglable": false,
     "showHeader": true,
     "showDisplayAs": (defaultFormFactor !== 'SMALL'),
-    "formFactor": formFactor
+    "formFactor": formFactor,
+    className: displayAs === 'grid' ? gridClassName : splitClassName
   }
-  schema.className = `${schema.className || ""} ${displayAs === 'grid' ? gridClassName : splitClassName}`
+  
 
   return {
     type: 'service',
     id: listViewId,
-    className: displayAs === 'grid'? "steedos-listview p-0	sm:m-3": "steedos-listview p-0",
+    className: "steedos-listview static",
     data: {
+      ...defaultData,
       objectName: tab_id,
       listViewId: listViewId,
       listName: listview_id,
