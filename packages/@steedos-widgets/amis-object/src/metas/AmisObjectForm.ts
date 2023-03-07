@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-06 14:30:38
+ * @LastEditTime: 2023-03-07 16:30:11
  * @Description: 
  */
 
@@ -199,6 +199,12 @@ export default {
           name: "className",
           label: "CSS类名",
           value: "mb-4"
+        },
+        {
+          type: "editor",
+          name: "fields",
+          label: "指定字段",
+          language: "json"
         }
       ]
     }
