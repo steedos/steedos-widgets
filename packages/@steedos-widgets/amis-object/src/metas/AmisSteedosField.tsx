@@ -9,7 +9,7 @@ const config: any = {
     componentType: 'amisSchema', 
     group: "华炎魔方-原子组件",
     componentName: "AmisSteedosField",
-    title: "对象字段",
+    title: "字段",
     docUrl: "",
     screenshot: "",
     npm: {
