@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-03 15:34:22
+ * @LastEditTime: 2023-03-07 12:52:05
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -414,7 +414,7 @@ export async function getRecordDetailHeaderSchema(objectName,recordId, options){
     };
 }
 
-export async function getRecordDetailSchema(objectName, appId){
+export async function getRecordDetailSchema(objectName, appId, props = {}){
     const uiSchema = await getUISchema(objectName);
     const relatedLists = await getObjectRelatedList(objectName, null, null);
     const detailed = {
@@ -495,6 +495,20 @@ export async function getRecordDetailSchema(objectName, appId){
               },
               content
             ],
+            onEvent: {
+                "recordLoaded": {
+                    "actions": [
+                        {
+                            "actionType": "reload",
+                            "data": {
+                            "name": `\${record.${uiSchema.NAME_FIELD_KEY || 'name'}}`,
+                            "record": `\${record}`
+                            }
+                        }
+                    ]
+                },
+                ...props.onEvent
+            },
           }
     }
 }

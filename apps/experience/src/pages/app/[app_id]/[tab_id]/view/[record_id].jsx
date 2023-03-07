@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-02 12:48:44
+ * @LastEditTime: 2023-03-07 12:36:43
  * @Description:
  */
 import React, { useState, useEffect, Fragment } from "react";
@@ -56,19 +56,7 @@ export default function Record({formFactor: defaultFormFactor}) {
         "objectApiName": "${objectName}",
         "recordId": "${recordId}",
         appId: app_id,
-        "id": "u:48d2c28eb755",
-        onEvent: {
-            "recordLoaded": {
-                "actions": [
-                    {
-                        "actionType": "reload",
-                        "data": {
-                          "name": `\${record.${uiSchema.NAME_FIELD_KEY || 'name'}}`
-                        }
-                    }
-                ]
-              }
-        },
+        "id": "u:48d2c28eb755"
       }
     ],
     "regions": [
