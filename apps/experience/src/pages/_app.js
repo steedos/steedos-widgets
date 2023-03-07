@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-01-09 11:59:25
+ * @LastEditTime: 2023-03-07 12:31:49
  * @Description: 
  */
 import Script from 'next/script'
@@ -35,7 +35,7 @@ export default function App({
     const globalAssetUrl =  window.STEEDOS_EXPERIENCE_ASSETURLS
     window.addEventListener('message', function (event) {
         const { data } = event;
-        console.log(data)
+        // console.log(data)
         if (data.type === 'builder.assetsLoaded') {
             setGlobalAssetsLoaded(true)
         }
