@@ -1,6 +1,6 @@
 import { getObjectListHeaderFieldsFilterBar } from './header';
 
-const getDisplayAsButton = function(columnsCount){
+const getDisplayAsButton = function(showDisplayAs){
   let buttons = [
     {
       "type": "button",
@@ -11,15 +11,12 @@ const getDisplayAsButton = function(columnsCount){
       "type": "button",
       "label": "分栏视图",
       "onClick": "const url = document.location.pathname + '?display=split'; props.env.jumpTo(url);"
-    }
-  ];
-  if(columnsCount > 2){
-    buttons.push({
+    },{
       "type": "button",
       "label": "三栏视图",
       "onClick": "const url = document.location.pathname + '?display=split_three'; props.env.jumpTo(url);"
-    });
-  }
+    }
+  ];
   return {
     "type": "dropdown-button",
     "icon": "fa fa-table-columns",

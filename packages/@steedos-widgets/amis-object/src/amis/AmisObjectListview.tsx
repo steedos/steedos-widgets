@@ -99,10 +99,8 @@ export const AmisObjectListView = async (props) => {
   // 支持通过直接定义headerSchema属性来定制表头，而不一定要通过ctx.defaults.headerSchema传入
   if(headerSchema){
     defaults.headerSchema = headerSchema;
-  }  if(sideSchema){
-    defaults.sideSchema = sideSchema;
-  }
-
+  }  
+  
   let setDataToComponentId = ctx && ctx.setDataToComponentId;
   if(!setDataToComponentId){
     setDataToComponentId = `service_listview_${objectApiName}`;
@@ -115,7 +113,7 @@ export const AmisObjectListView = async (props) => {
   }));
   const amisSchema = schema.amisSchema;
   const uiSchema = schema.uiSchema;
-  const body = [amisSchema];
+  let body = [amisSchema];
   if(schema.isCustomAmisSchema || schema.isCalendar){
     let firstLineSchema = getObjectListHeaderFirstLine(uiSchema, listName, ctx);
     body.unshift({
@@ -123,6 +121,29 @@ export const AmisObjectListView = async (props) => {
       "body": [firstLineSchema],
       "className": "bg-gray-100 pb-0 sm:rounded-tl sm:rounded-tr",
     });
+  }
+
+  if (sideSchema && displayAs === 'split_three') {
+    body = [{
+      "type": "wrapper",
+      "size": "none",
+      "className": "flex",
+      "body": [
+        {
+          "type": "wrapper",
+          "size": "none",
+          "className": "flex-none",
+          "body": sideSchema
+        }, 
+        {
+          "type": "wrapper",
+          "size": "none",
+          "className": "flex-1",
+          "body": body
+        }, 
+        
+      ]
+    }];
   }
   // TODO: recordPermissions和_id是右上角按钮需要强依赖的变量，应该写到按钮那边去
   const serviceData = Object.assign({}, amisSchema.data, amisSchemaData, { listName, uiSchema, showDisplayAs, displayAs, recordPermissions: uiSchema.permissions, _id: null, $listviewId: listName });

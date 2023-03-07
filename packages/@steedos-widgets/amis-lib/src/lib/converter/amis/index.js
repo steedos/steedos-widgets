@@ -210,24 +210,6 @@ export async function getObjectCRUD(objectSchema, fields, options){
       body = defaultsDeep({}, listSchema, body);
       const headerSchema = defaults.headerSchema;
       const footerSchema = defaults.footerSchema;
-      const sideSchema = defaults.sideSchema;
-      if (sideSchema) {
-        body = {
-          "type": "wrapper",
-          "size": "none",
-          "className": "flex",
-          "body": [
-            {
-              "type": "wrapper",
-              "size": "none",
-              // "className": "border-r border-slate-300 border-solid w-72 bg-white",
-              // "visibleOn": `${displayAs === "split_three"}`,
-              "body": sideSchema
-            }, 
-            body
-          ]
-        };
-      }
       if (headerSchema || footerSchema) {
         let wrappedBody = [body];
         if (headerSchema) {
