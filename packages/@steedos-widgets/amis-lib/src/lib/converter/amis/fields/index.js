@@ -165,6 +165,7 @@ export function getSelectFieldOptions(field){
 }
 
 export async function convertSFieldToAmisField(field, readonly, ctx) {
+    // console.log('convertSFieldToAmisField====>', field, readonly, ctx)
     let rootUrl = null;
     // 创建人和修改人、创建时间和修改时间不显示
     if(_.includes(OMIT_FIELDS, field.name) && ctx.showSystemFields != true){

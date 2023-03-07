@@ -486,13 +486,13 @@ async function getApi(object, recordId, fields, options){
 }
 
 export async function lookupToAmis(field, readonly, ctx){
+    // console.log(`lookupToAmis====`, field, readonly, ctx)
     if(readonly){
         return {
             type: Field.getAmisStaticFieldType('picker', readonly),
             tpl: Tpl.getRelatedFieldTpl(field, ctx)
         }
     }
-    // console.log(`referenceTo.objectName====`, field)
     if(field.reference_to && !_.isString(field.reference_to) && !readonly){
         return {
             type: 'steedos-field-lookup',

@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: 廖大雪 2291335922@qq.com
- * @LastEditTime: 2023-03-06 16:18:37
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2023-03-07 12:51:26
  * @Description:
  */
 
@@ -11,6 +11,19 @@ import { getObjectRecordDetailRelatedListHeader } from './converter/amis/header'
 import { isEmpty,  find, isString, forEach, keys, findKey } from "lodash";
 import { getUISchema, getField, getListViewColumns, getListViewSort, getListViewFilter } from './objects'
 import { getRecord } from './record';
+
+function str2function(
+    contents,
+    ...args
+  ) {
+    try {
+      let fn = new Function(...args, contents);
+      return fn;
+    } catch (e) {
+      console.warn(e);
+      return null;
+    }
+}
 
 export const getRelatedFieldValue = (masterObjectName, record_id, uiSchema, foreign_key) => {
     const relatedField = find(uiSchema.fields, (field) => {
@@ -236,12 +249,19 @@ function getDefaultRelatedListProps(uiSchema, listName, ctx) {
 function getRelatedListProps(uiSchema, listViewName, ctx) {
     if (ctx.columns) {
         const sort = getListViewSort(ctx.sort);
-        let filter= ctx.filters ? [ctx.filters, ctx.globalFilter] : ctx.globalFilter;
+        let { filters , filtersFunction} = ctx;
+        if(!filtersFunction && filters){
+            filtersFunction = str2function(
+                filters,
+                'filters',
+                'data'
+            ) 
+        }
         return {
             columns: ctx.columns,
             sort,
-            filter,
-            filtersFunction: ctx.filtersFunction
+            filter: ctx.globalFilter,
+            filtersFunction: filtersFunction
         }
     } else {
         return getDefaultRelatedListProps(uiSchema, listViewName, ctx);
@@ -258,7 +278,7 @@ export async function getRelatedListSchema(
     const listView = uiSchema.list_views;
     const listViewProps = getRelatedListProps(uiSchema,listViewName, ctx);
     // console.log('listViewProps==>', listViewProps)
-    const {columns: listViewColumns, sort: listViewSort, filter: listviewFilter, filtersFunction: listview_filters } = listViewProps;
+    const {columns: listViewColumns, sort: listViewSort, filter: listviewFilter, filtersFunction } = listViewProps;
   
     const defaults = ctx.defaults || {};
   
@@ -271,18 +291,26 @@ export async function getRelatedListSchema(
     }
   
     ctx.defaults = defaults;
-  
+
+    // 由于steedos-object-table组件的上下文覆盖规则异常,此处手动删除无需的ctx参数
+    delete ctx.filtersFunction;
+    delete ctx.sort;
+    delete ctx.extraColumns;
+    delete ctx.filters;
+
+    delete ctx.globalFilter
+
     const amisSchema = {
         "type": "steedos-object-table",
         "objectApiName": objectName,
         "columns": listViewColumns,
         "extraColumns": listView.extra_columns,
         "filters": listviewFilter,
-        "filtersFunction": listview_filters,
+        "filtersFunction": filtersFunction,
         "sort": listViewSort,
         "ctx": ctx
     };
-  
+    // console.log(`getRelatedListSchema amisSchema`, amisSchema);
     return {
         uiSchema,
         amisSchema,
