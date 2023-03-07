@@ -44,22 +44,17 @@ export default function Record({formFactor: defaultFormFactor}) {
   }
 
   const schema = page? JSON.parse(page.schema) : {
-    "type": "service",
-    "className": "m-0 sm:m-3",
+    "type": "wrapper",
+    "className": "p-0 m-0 sm:m-3",
     "name": `amis-${app_id}-${tab_id}-detail`,
     "body": [
       {
         "type": "steedos-record-detail",
-        "objectApiName": "${objectName}",
         "recordId": "${recordId}",
+        "objectApiName": "${objectName}",
         appId: app_id,
-        "id": "u:48d2c28eb755"
       }
     ],
-    "regions": [
-      "body"
-    ],
-    "id": "u:d138f5276481"
   }
 
   const listViewId = SteedosUI.getRefId({
@@ -77,58 +72,49 @@ export default function Record({formFactor: defaultFormFactor}) {
     "showDisplayAs": true,
     "formFactor": 'SMALL',
   }
-  listSchema.className = `absolute top-0 bottom-0 ${splitOffset} shadow border-r border-slate-300 border-solid bg-gray-100`;
+  const listClassName = `steedos-listview fixed mt-[50px] sm:mt-[90px] top-0 bottom-0 ${splitOffset} shadow border-r border-slate-300 border-solid bg-gray-100 overflow-scroll`;
 
+  const splitSchema = {
+    type: 'service',
+    "className": 'p-0',
+    body: (displayAs === 'grid') ? schema : [
+      {
+        "type": "wrapper",
+        "className": `p-0 ${listClassName}`,
+        "body": listSchema
+      },
+      {
+        "type": "wrapper",
+        "className": 'p-0 pl-[388px]',
+        "body": schema
+      },
+      {
+        "type": "tpl",
+        "tpl": "${objectName}, ${recordId},"
+      },
+    ]
+  }
   return (
     <>
-      {["split_three", "split"].indexOf(displayAs) > -1 && (
-        <div className="flex h-full">
-            <AmisRender
-              data={{
-                objectName: side_object,
-                listViewId: listViewId,
-                listName: side_listview_id,
-                appId: app_id,
-                formFactor: defaultFormFactor,
-                scopeId: listViewId,
-              }}
-              className={`steedos-listview p-0 flex-none ${splitOffset}`}
-              id={listViewId}
-              schema={listSchema}
-              router={router}
-            ></AmisRender>
-            <AmisRender
-              data={{
-                objectName: tab_id,
-                recordId: record_id,
-                appId: app_id,
-                formFactor: defaultFormFactor,
-                scopeId: renderId+"-page"
-              }}
-              className="steedos-record-detail flex-1 overflow-scroll"
-              id={`${renderId}-page`}
-              schema={schema}
-              router={router}
-          ></AmisRender>
-        </div>
-      )}
-
-      {["split_three", "split"].indexOf(displayAs) < 0 && schema && (
-        <AmisRender
-          data={{
-            objectName: tab_id,
+      <AmisRender
+        id = {renderId}
+        data ={{
+          objectName: side_object,
+          listViewId: listViewId,
+          listName: side_listview_id,
+          appId: app_id,
+          formFactor: defaultFormFactor,
+          displayAs,
+          recordId: record_id,
+        }}
+        schema={splitSchema}
+        updateProps = {{
+          data: {
             recordId: record_id,
-            appId: app_id,
-            formFactor: defaultFormFactor,
-            scopeId: renderId+"-page"
-          }}
-          className="steedos-record-detail"
-          id={`${renderId}-page`}
-          schema={schema}
-          router={router}
-        ></AmisRender>
-      )}
-      
+          }
+        }}
+      ></AmisRender>
+
     </>
   )
 }

@@ -37,7 +37,7 @@ export function GlobalHeader({app}) {
           isMobile: window.innerWidth <= 768
         }} 
         router={router} 
-        updateProps={{location: router}}
+        // updateProps={{location: router}}
         schema={{
           type: "service",
           body: [
