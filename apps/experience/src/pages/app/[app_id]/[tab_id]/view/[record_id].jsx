@@ -8,13 +8,12 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
 import { AmisRender } from "@/components/AmisRender";
-import { getPage, getUISchema, Router } from "@steedos-widgets/amis-lib";
+import { getPage, Router } from "@steedos-widgets/amis-lib";
 import { Loading } from '@/components/Loading';
 
 export default function Record({formFactor: defaultFormFactor}) {
   
   const router = useRouter();
-  const [uiSchema, setUiSchema] = useState(null);
   const { app_id, tab_id, listview_id, record_id, display, side_object = tab_id, side_listview_id = listview_id } = router.query;
   const [page, setPage] = useState(false);
   const [listPage, setListPage] = useState(false);
@@ -27,11 +26,9 @@ export default function Record({formFactor: defaultFormFactor}) {
   useEffect(() => {
     const listPage = getPage({type: 'list', appId: app_id, objectName: tab_id, defaultFormFactor});
     const p1 = getPage({type: 'record', appId: app_id, objectName: tab_id, defaultFormFactor});
-    const p2 = getUISchema(tab_id);
-    Promise.all([listPage, p1, p2]).then((values) => {
+    Promise.all([listPage, p1]).then((values) => {
       setListPage(values[0]);
       setPage(values[1]);
-      setUiSchema(values[2]);
     });
 
   }, [app_id, tab_id]);
@@ -42,7 +39,7 @@ export default function Record({formFactor: defaultFormFactor}) {
     name: tab_id,
   });
 
-  if(page === false || uiSchema === null){
+  if(page === false){
     return <Loading></Loading>
   }
 
@@ -116,7 +113,7 @@ export default function Record({formFactor: defaultFormFactor}) {
         </div>
       )}
 
-      {["split_three", "split"].indexOf(displayAs) < 0 && schema && uiSchema && (
+      {["split_three", "split"].indexOf(displayAs) < 0 && schema && (
         <AmisRender
           data={{
             objectName: tab_id,
