@@ -477,7 +477,11 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             convertData.body[0] = Object.assign({}, baseData, convertData.body[0], { labelClassName: 'text-left', clearValueOnHidden: true, fieldName: field.name});
             return  convertData
         }
-        return Object.assign({}, baseData, convertData, { labelClassName: 'text-left', clearValueOnHidden: true, fieldName: field.name});
+        // if(ctx.mode === 'edit'){
+        return Object.assign({}, baseData, convertData, { labelClassName: 'text-left', clearValueOnHidden: true, fieldName: field.name}, field.amis, baseData.name);
+        // }else{
+        //     return Object.assign({}, baseData, convertData, { labelClassName: 'text-left', clearValueOnHidden: true, fieldName: field.name});
+        // }
     }
     
 }
