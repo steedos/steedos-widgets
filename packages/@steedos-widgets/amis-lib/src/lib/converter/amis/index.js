@@ -350,6 +350,7 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
           {
             "type": "wrapper",   //form 的 hiddenOn 会导致 form onEvent 异常, 使用wrapper包裹一次form,并在wrapper上控制显隐
             hiddenOn: "${recordLoaded != true}",
+            "className": "p-0 m-0",
             "body": {
               type: "form",
               mode: layout,
@@ -386,7 +387,6 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
                 }
               }
           },
-            "className": "b"
           }
         ],
         onEvent: {
