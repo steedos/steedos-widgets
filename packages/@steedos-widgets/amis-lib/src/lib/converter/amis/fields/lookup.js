@@ -346,9 +346,9 @@ export async function lookupToAmisSelect(field, readonly, ctx){
             const data = payload.data;
             var defaultValueOptions = data.defaultValueOptions;
             // 字段值下拉选项合并到options中
-            data.options = _.unionWith(defaultValueOptions, data.options, function(a,b){
-                return a["value"]=== b["value"];
-            });
+            // data.options = _.unionWith(defaultValueOptions, data.options, function(a,b){
+            //     return a["value"]=== b["value"];
+            // });
             delete data.defaultValueOptions;
             payload.data.options = data.options;
             return payload;
