@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-10 11:53:44
+ * @LastEditTime: 2023-03-08 14:19:14
  * @Description: 
  */
 import { Router } from '../../router'
@@ -80,6 +80,13 @@ export function getRelatedFieldTpl(field, ctx){
     }
 
     const onlyDisplayLabel = ctx.onlyDisplayLabel;
+
+    let fieldDataStrTpl = `data._display.${field.name}`;
+
+    if(field.isTableField){
+        fieldDataStrTpl = `data.${field.name}`;
+    }
+
     if(_.isString(field.reference_to) || !field.reference_to){
         if(field.multiple){
             let labelTpl = `<%=item.label%>`;
@@ -90,15 +97,22 @@ export function getRelatedFieldTpl(field, ctx){
                 labelTpl = `<a href="${href}"><%=item.label%></a>`;
             }
             tpl = `
-            <% if (data._display.${field.name} && data._display.${field.name}.length) { %><% data._display.${field.name}.forEach(function(item,index) { %> <% if(index>0 && index<data._display.${field.name}.length){ %> , <% } %> ${labelTpl}  <% }); %><% } %>
+            <% if (${fieldDataStrTpl} && ${fieldDataStrTpl}.length) { %><% ${fieldDataStrTpl}.forEach(function(item,index) { %> <% if(index>0 && index<${fieldDataStrTpl}.length){ %> , <% } %> ${labelTpl}  <% }); %><% } %>
             `
         }else{
             let labelTpl = `\${_display.${field.name}.label}`;
+            let objectNameTpl = `\${_display.${field.name}.objectName}`;
+            let recordIdTpl = `\${_display.${field.name}.value}`;
+            if(field.isTableField){
+                labelTpl = `\${${field.name}.label}`;
+                objectNameTpl = `\${${field.name}.objectName}`;
+                recordIdTpl = `\${${field.name}.value}`;
+            }
             if(!onlyDisplayLabel){
                 const href = Router.getObjectDetailPath({
-                    formFactor: ctx.formFactor, appId: "${appId}", objectName: `\${_display.${field.name}.objectName}`, recordId: `\${_display.${field.name}.value}`
+                    formFactor: ctx.formFactor, appId: "${appId}", objectName: `${objectNameTpl}`, recordId: `${recordIdTpl}`
                 })
-                labelTpl = `<a href="${href}">\${_display.${field.name}.label}</a>`;
+                labelTpl = `<a href="${href}">${labelTpl}</a>`;
             }
             tpl = labelTpl;
         }
@@ -113,7 +127,7 @@ export function getRelatedFieldTpl(field, ctx){
             labelTpl = `<a href="${href}"><%=item.label%></a>`;
         }
         tpl = `
-        <% if (data._display.${field.name} && data._display.${field.name}.length) { %><% data._display.${field.name}.forEach(function(item) { %> ${labelTpl}  <% }); %><% } %>
+        <% if (${fieldDataStrTpl} && ${fieldDataStrTpl}.length) { %><% ${fieldDataStrTpl}.forEach(function(item) { %> ${labelTpl}  <% }); %><% } %>
         `
     }
     return tpl
