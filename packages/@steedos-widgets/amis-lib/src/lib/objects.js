@@ -506,7 +506,7 @@ export async function getRecordDetailSchema(objectName, appId, props = {}){
                             "actionType": "reload",
                             "data": {
                                 "name": `\${record.${uiSchema.NAME_FIELD_KEY || 'name'}}`,
-                                "_master": `\${record}`, 
+                                "_master.record": `\${record}`, 
                                 // 不清楚reload 如何给对象下的某个key复制, 所以此处重复设置_master的objectName、recordId
                                 "_master.objectName": "${objectName}", 
                                 "_master.recordId": "${recordId}"
