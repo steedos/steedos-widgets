@@ -59,7 +59,7 @@ export const PageListView = async (props) => {
     body: (displayAs === 'grid') ? listSchema : [
       {
         "type": "wrapper",
-        "className": `p-0 flex-shrink-0 min-w-32 overflow-y-auto border-r border-gray-200 hidden lg:order-first lg:flex lg:flex-col`,
+        "className": `p-0 flex-shrink-0 min-w-32 overflow-y-auto border-r border-gray-200 lg:order-first lg:flex lg:flex-col`,
         "body": listSchema
       },
       {

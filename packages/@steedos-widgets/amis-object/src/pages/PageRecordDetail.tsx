@@ -29,7 +29,7 @@ export const PageRecordDetail = async (props) => {
   let recordSchema = {}
   if (recordId) {
 
-    const recordPage = await getPage({type: 'record', appId: app_id, objectName: tab_id, defaultFormFactor});
+    const recordPage = await getPage({type: 'record', appId: app_id, objectName: tab_id, formFactor: defaultFormFactor});
     recordSchema = recordPage? JSON.parse(recordPage.schema) : {
       "type": "wrapper",
       "className": "p-0 m-0 sm:m-3 flex-1",
@@ -77,12 +77,12 @@ export const PageRecordDetail = async (props) => {
     body: (displayAs === 'grid') ? recordSchema : [
       {
         "type": "wrapper",
-        "className": `p-0 flex-shrink-0 min-w-32 overflow-y-auto border-r border-gray-200 xl:order-first xl:flex xl:flex-col`,
+        "className": `p-0 flex-shrink-0 min-w-32 overflow-y-auto border-r border-gray-200 lg:order-first lg:flex lg:flex-col`,
         "body": listSchema
       },
       {
         "type": "wrapper",
-        "className": 'p-0 flex-1 overflow-y-auto focus:outline-none xl:order-last',
+        "className": 'p-0 flex-1 overflow-y-auto focus:outline-none lg:order-last',
         "body": recordSchema
       }
     ]
