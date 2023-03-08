@@ -17,7 +17,7 @@ export async function getCalendarApi(mainObject, fields, options) {
   }
   const calendarOptions = options.calendarOptions;
   const searchableFields = [];
-  let { globalFilter, filter, sort, top, setDataToComponentId = '' } = options;
+  let { filter, sort, top, setDataToComponentId = '' } = options;
 
   if(!top){
     // 日历请求不翻页
@@ -52,12 +52,7 @@ export async function getCalendarApi(mainObject, fields, options) {
   api.data.pageSize = top || 10;
   api.requestAdaptor = `
     let selfData = JSON.parse(JSON.stringify(api.data.$self));
-    ${globalFilter ? `var filters = ${JSON.stringify(globalFilter)};` : 'var filters = [];'}
-    if(_.isEmpty(filters)){
-        filters = api.data.filter || ${JSON.stringify(filter)};
-    }else{
-        filters = [filters, 'and', api.data.filter || ${JSON.stringify(filter)}]
-    }
+    var filters = api.data.filter || ${JSON.stringify(filter)} || [];
     const eventFetchInfo = selfData.fetchInfo;
     const startDateExpr = "${calendarOptions.startDateExpr}";
     const endDateExpr = "${calendarOptions.endDateExpr}";

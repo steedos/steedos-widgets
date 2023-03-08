@@ -410,12 +410,12 @@ export async function getTableSchema(fields, options){
  * 
  * @param {*} mainObject 
  * @param {*} fields 
- * @param {*} options = {globalFilter: 相关字表过滤条件, filter: listview 过滤条件, ...}
+ * @param {*} options = {filter: listview 过滤条件, ...}
  * @returns 
  */
 export async function getTableApi(mainObject, fields, options){
     const searchableFields = [];
-    let { globalFilter, filter, filtersFunction, sort, top, setDataToComponentId = '' } = options;
+    let { filter, filtersFunction, sort, top, setDataToComponentId = '' } = options;
 
     if(_.isArray(filter)){
         filter = _.map(filter, function(item){
@@ -429,13 +429,8 @@ export async function getTableApi(mainObject, fields, options){
     if(!filter){
         filter = [];
     }
-    // gloablFilter: 是定义为相关子表的过滤条件， filter 是列表视图自带的过滤条件。
     let baseFilters = null;
-    if(!isEmpty(globalFilter) && !isEmpty(filter)){
-        baseFilters = [globalFilter, 'and', filter]
-    }else if(globalFilter){
-        baseFilters = globalFilter;
-    }else if(filter){
+    if(filter){
         baseFilters = filter;
     }
     _.each(fields,function(field){

@@ -1,14 +1,14 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-08 13:16:47
+ * @LastEditors: 廖大雪 2291335922@qq.com
+ * @LastEditTime: 2023-03-08 18:31:28
  * @Description:
  */
 
 
 import { getObjectRecordDetailRelatedListHeader } from './converter/amis/header';
-import { isEmpty,  find, isString, forEach, keys, findKey } from "lodash";
+import { isEmpty,  find, isString, forEach, keys, findKey, isArray } from "lodash";
 import { getUISchema, getField, getListViewColumns, getListViewSort, getListViewFilter } from './objects'
 import { getRecord } from './record';
 
@@ -227,7 +227,14 @@ function getDefaultRelatedListProps(uiSchema, listName, ctx) {
     if(listView){
         columns = getListViewColumns(listView, ctx.formFactor);
         sort = getListViewSort(listView);
-        filter = getListViewFilter(listView, ctx);
+        filter = getListViewFilter(listView);
+        if(isArray(ctx.globalFilter) && ctx.globalFilter.length && isArray(filter) && filter.length){
+            // 都有值
+            filter = [ctx.globalFilter, 'and', filter]
+        }else if(ctx.globalFilter && (!filter || !filter.length)){
+            // globalFilter有值，filter无值
+            filter = ctx.globalFilter;
+        }
         filtersFunction = listView && listView._filters;
     }else{
         const isNameField = find(
@@ -299,6 +306,7 @@ export async function getRelatedListSchema(
     delete ctx.extraColumns;
     delete ctx.filters;
 
+    delete ctx.globalFilter;
     const amisSchema = {
         "type": "steedos-object-table",
         "objectApiName": objectName,
