@@ -75,7 +75,7 @@ const config: any = {
         panelTitle: "设置",
         panelControls: [
           {
-            type: "json-editor",
+            type: "editor",
             name: "config",
             label: "字段定义",
             language: "json",     
