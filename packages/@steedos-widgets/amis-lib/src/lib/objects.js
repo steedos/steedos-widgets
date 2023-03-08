@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-07 12:52:05
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-03-07 22:40:25
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -272,7 +272,7 @@ export async function getListSchema(
 
     try {
       const listViewPropsStoreKey = location.pathname + "/crud/" + ctx.listViewId;
-      let localListViewProps = localStorage.getItem(listViewPropsStoreKey);
+      let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
       /**
        * localListViewProps规范来自crud请求api中api.data.$self参数值的。
        * 比如：{"perPage":20,"page":1,"__searchable__name":"7","__searchable__between__n1__c":[null,null],"filter":[["name","contains","a"]]}
