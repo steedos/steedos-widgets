@@ -21,21 +21,29 @@ export default function Record({formFactor}) {
     app_id,
     tab_id,
     listview_id,
-    recordId: record_id,
     display,
     formFactor,
     side_object,
-    side_listview_id
+    side_listview_id,
+    recordId: record_id,
   };
 
+  console.log(schema)
 
   return (
     <>
       <AmisRender
         id={`listview-${listview_id}`}
+        data={{
+          recordId: record_id,
+        }}
         className="h-full"
         schema={schema}
-        router={router}
+        updateProps = {{
+          data: {
+            recordId: record_id,
+          }
+        }}
       ></AmisRender>
     </>
   )
