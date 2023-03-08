@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-26 16:02:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-07 17:17:51
+ * @LastEditTime: 2023-03-08 10:49:19
  * @Description: 
  */
 import * as Fields from '../fields';
@@ -12,7 +12,7 @@ const getFieldSchemaArray = (formFields)=>{
   let fieldSchemaArray = [];
   fieldSchemaArray.length = 0
 
-  lodash.forEach(lodash.sortBy(formFields, "sort_no"), (field) => {
+  lodash.forEach(formFields, (field) => {
     if (!field.group || field.group == 'null' || field.group == '-')
       field.group = '通用'
     const fieldName = field.name;

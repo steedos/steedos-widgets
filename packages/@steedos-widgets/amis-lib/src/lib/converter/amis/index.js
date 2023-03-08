@@ -239,7 +239,6 @@ export async function getObjectCRUD(objectSchema, fields, options){
       id: `service_${id}`,
       name: `page`,
       data: {
-        "$master": '$$',
         objectName: objectSchema.name,
         _id: null,
         recordPermissions: objectSchema.permissions,
@@ -269,7 +268,7 @@ const getFormFields = (objectSchema, formProps)=>{
       }
       fieldsArr.push(field)
     });
-    return fieldsArr;
+    return lodash.sortBy(fieldsArr, "sort_no");
   }
 
   const fields = [];
