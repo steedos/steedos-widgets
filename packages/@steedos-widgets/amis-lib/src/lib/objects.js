@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-03-07 22:40:25
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2023-03-08 12:20:03
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -495,14 +495,21 @@ export async function getRecordDetailSchema(objectName, appId, props = {}){
               },
               content
             ],
+            data: {
+                "_master.objectName": "${objectName}",  
+                "_master.recordId": "${recordId}"
+            },
             onEvent: {
                 "recordLoaded": {
                     "actions": [
                         {
                             "actionType": "reload",
                             "data": {
-                            "name": `\${record.${uiSchema.NAME_FIELD_KEY || 'name'}}`,
-                            "record": `\${record}`
+                                "name": `\${record.${uiSchema.NAME_FIELD_KEY || 'name'}}`,
+                                "_master": `\${record}`, 
+                                // 不清楚reload 如何给对象下的某个key复制, 所以此处重复设置_master的objectName、recordId
+                                "_master.objectName": "${objectName}", 
+                                "_master.recordId": "${recordId}"
                             }
                         }
                     ]
