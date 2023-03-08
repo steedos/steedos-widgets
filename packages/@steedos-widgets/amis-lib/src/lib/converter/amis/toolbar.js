@@ -28,6 +28,17 @@ const getDisplayAsButton = function(showDisplayAs){
 }
 
 
+
+let x = `return {
+  
+  api,
+  data: {
+    api.data,    
+    foo: 'bar'
+  }
+}`
+
+
 export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = false, hiddenCount = false} = {}){
 
   if(formFactor === 'SMALL'){
@@ -98,6 +109,29 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
         "type": "reload",
         "align": "right",
         "className": "bg-white p-2 rounded border-gray-300 text-gray-500"
+      },
+      {
+        "type": "button",
+        "label": "",
+        "align": "right", 
+        "className": "fa fa-download",
+        "tooltipPlacement": "top",
+        "tooltip": "点击下载文件",
+        "onEvent": {
+          "click": {
+            "actions": {
+                  "args": {
+                      "api": {
+                          "url": "/api/record/export/${object_name}",
+                          "method": "get",
+                          "responseType": "blob",
+                          "requestAdaptor": "\nselect = [];\nlet list_view = Creator.getObject().list_views.all.columns;\nfor (let i = 0; i < list_view.length; i++) {\n  select.push(list_view[i].field);\n}\nlet str = select.toString();\n\nlet filename = Creator.getObject('project').label + \"-\" + Creator.getListView(\"project\", \"all\")?.label;\napi.url += '?$select=' + str + '&filename=' + filename;\n\nreturn api;"
+                        }
+                    },
+                  "actionType": "download"
+              }
+          }
+        }
       },
       {
         "label": "",
