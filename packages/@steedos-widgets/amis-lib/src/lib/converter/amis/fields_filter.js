@@ -171,7 +171,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
     else{
       searchableFieldsStoreKey += listViewId;
     }
-    let defaultSearchableFields = localStorage.getItem(searchableFieldsStoreKey);
+    let defaultSearchableFields = sessionStorage.getItem(searchableFieldsStoreKey);
     if(!defaultSearchableFields && data.uiSchema){
       let listView = data.uiSchema.list_views[data.listName];
       defaultSearchableFields = listView && listView.searchable_fields;
@@ -194,7 +194,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
     }
     else{
       const listViewPropsStoreKey = location.pathname + "/crud/" + data.listViewId ;
-      let localListViewProps = localStorage.getItem(listViewPropsStoreKey);
+      let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
       if(localListViewProps){
         localListViewProps = JSON.parse(localListViewProps);
         let filterFormValues = _.pickBy(localListViewProps, function(n,k){
@@ -239,7 +239,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
     else{
       searchableFieldsStoreKey += listViewId;
     }
-    localStorage.setItem(searchableFieldsStoreKey, value);
+    sessionStorage.setItem(searchableFieldsStoreKey, value);
 
     // ===START===:当变更可搜索字段时，如果被移除的可搜索字段在本地存储中已经存入过滤条件中则应该清除本地存储中相关字段的过滤条件。
     const searchableFields = data.fields;
@@ -296,7 +296,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
     
     // 列表视图crud支持本地缓存，所以需要进一步清除浏览器本地缓存里面用户在可搜索项中移除的字段值
     const listViewPropsStoreKey = location.pathname + "/crud/" + listViewId ;
-    let localListViewProps = localStorage.getItem(listViewPropsStoreKey);
+    let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
     if(localListViewProps){
       localListViewProps = JSON.parse(localListViewProps);
       // const removedValues = {};
@@ -304,7 +304,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
         delete localListViewProps[key];
         // removedValues[key] = "";
       });
-      localStorage.setItem(listViewPropsStoreKey, JSON.stringify(localListViewProps));
+      sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify(localListViewProps));
     }
     // ===END===
   `;

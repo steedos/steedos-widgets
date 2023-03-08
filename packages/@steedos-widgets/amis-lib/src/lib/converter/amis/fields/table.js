@@ -471,7 +471,7 @@ export async function getTableApi(mainObject, fields, options){
             // TODO: 不应该直接在这里取localStorage，应该从外面传入
             const listViewId = api.data.listViewId;
             const listViewPropsStoreKey = location.pathname + "/crud/" + listViewId ;
-            let localListViewProps = localStorage.getItem(listViewPropsStoreKey);
+            let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
             if(localListViewProps){
                 localListViewProps = JSON.parse(localListViewProps);
                 selfData = Object.assign({}, localListViewProps, selfData);
@@ -661,7 +661,7 @@ export async function getTableApi(mainObject, fields, options){
          * orderBy:排序字段
          * orderDir:排序方向
          */
-        let localListViewProps = localStorage.getItem(listViewPropsStoreKey);
+        let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
         let selfData = JSON.parse(JSON.stringify(api.body.$self));
         if(localListViewProps){
             localListViewProps = JSON.parse(localListViewProps);
@@ -677,7 +677,7 @@ export async function getTableApi(mainObject, fields, options){
         }
         delete selfData.context;
         delete selfData.global;
-        localStorage.setItem(listViewPropsStoreKey, JSON.stringify(selfData));
+        sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify(selfData));
         // 返回页码到UI界面
         payload.data.page= selfData.page;
     }

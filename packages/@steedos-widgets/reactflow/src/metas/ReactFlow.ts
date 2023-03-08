@@ -91,14 +91,21 @@ export default {
           type: "editor",
           "language": "json",
           name: "config",
-          label: "React Flow 配置"
+          label: "ReactFlow 配置",   
+          pipeOut: (value) => {
+            try {
+              return value ? JSON.parse(value) : null;
+            } catch (e) {
+            }
+            return value;
+          }
         },
         {
           type: "editor",
           "language": "javascript",
           name: "dataFilter",
           label: "数据加工",
-          description: "如果后端没有直接返回 Echart 配置，可以自己写一段函数来包装。\
+          description: "如果后端没有直接返回 ReactFlow 配置，可以自己写一段函数来包装。\
           签名：(config, ReactFlow, data) => config \
           "
         },

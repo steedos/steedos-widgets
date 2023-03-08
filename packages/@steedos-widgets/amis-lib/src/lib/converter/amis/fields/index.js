@@ -404,15 +404,20 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                 // console.log(`convertData ==2====>`, field, convertData)
                 for (const subField of field.subFields) {
                     const subFieldName = subField.name.replace(`${field._prefix || ''}${field.name}.$.`, '').replace(`${field.name}.`, '');
-                    const gridSub = await convertSFieldToAmisField(Object.assign({}, subField, {name: subFieldName}), readonly, ctx);
+                    const gridSub = await convertSFieldToAmisField(Object.assign({}, subField, {name: subFieldName, isTableField: true}), readonly, ctx);
                     if(gridSub){
                         delete gridSub.name
                         delete gridSub.label
-                        convertData.columns.push({
+                        const gridItemSchema = {
                             name: subFieldName,
                             label: subField.label,
                             quickEdit: readonly ? false : gridSub
-                        })
+                        };
+                        if(subField.type === 'lookup'){
+                            gridItemSchema.type = gridSub.type;
+                            gridItemSchema.tpl = gridSub.tpl;
+                        }
+                        convertData.columns.push(gridItemSchema)
                     }
                 }
             }
@@ -478,7 +483,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             return  convertData
         }
         // if(ctx.mode === 'edit'){
-        return Object.assign({}, baseData, convertData, { labelClassName: 'text-left', clearValueOnHidden: true, fieldName: field.name}, field.amis, baseData.name);
+        return Object.assign({}, baseData, convertData, { labelClassName: 'text-left', clearValueOnHidden: true, fieldName: field.name}, field.amis, {name: baseData.name});
         // }else{
         //     return Object.assign({}, baseData, convertData, { labelClassName: 'text-left', clearValueOnHidden: true, fieldName: field.name});
         // }

@@ -210,24 +210,6 @@ export async function getObjectCRUD(objectSchema, fields, options){
       body = defaultsDeep({}, listSchema, body);
       const headerSchema = defaults.headerSchema;
       const footerSchema = defaults.footerSchema;
-      const sideSchema = defaults.sideSchema;
-      if (sideSchema) {
-        body = {
-          "type": "wrapper",
-          "size": "none",
-          "className": "flex",
-          "body": [
-            {
-              "type": "wrapper",
-              "size": "none",
-              // "className": "border-r border-slate-300 border-solid w-72 bg-white",
-              // "visibleOn": `${displayAs === "split_three"}`,
-              "body": sideSchema
-            }, 
-            body
-          ]
-        };
-      }
       if (headerSchema || footerSchema) {
         let wrappedBody = [body];
         if (headerSchema) {
@@ -257,7 +239,6 @@ export async function getObjectCRUD(objectSchema, fields, options){
       id: `service_${id}`,
       name: `page`,
       data: {
-        "$master": '$$',
         objectName: objectSchema.name,
         _id: null,
         recordPermissions: objectSchema.permissions,
@@ -273,9 +254,37 @@ const getGlobalData = (mode)=>{
   return {mode: mode, user: user, spaceId: user.spaceId, userId: user.userId}
 }
 
+const getFormFields = (objectSchema, formProps)=>{
+  // console.log(`getFormFields`, objectSchema, formProps)
+  const { fields: objectFields } = objectSchema;
+  
+  const { fields: formFields } = formProps;
+  
+  if(!formFields){
+    const fieldsArr = [];
+    _.forEach(objectSchema.fields, (field, fieldName)=>{
+      if(!lodash.has(field, "name")){
+        field.name = fieldName
+      }
+      fieldsArr.push(field)
+    });
+    return lodash.sortBy(fieldsArr, "sort_no");
+  }
+
+  const fields = [];
+
+  _.each(formFields, (item)=>{
+    if(item && item.name){
+      fields.push(Object.assign({}, objectFields[item.name], item))
+    }
+  })
+  return fields;
+}
+
 export async function getObjectForm(objectSchema, ctx){
     const { recordId, formFactor, layout = formFactor === 'SMALL' ? 'normal' : "normal", labelAlign, tabId, appId, defaults } = ctx;
     const fields = _.values(objectSchema.fields);
+    const formFields = getFormFields(objectSchema, ctx);
     const formSchema =  defaults && defaults.formSchema || {};
     if(_.has(formSchema, 'className')){
       formSchema.className = 'steedos-amis-form'
@@ -307,7 +316,7 @@ export async function getObjectForm(objectSchema, ctx){
         submitText: "", // amis 表单不显示提交按钮, 表单提交由项目代码接管
         api: await getSaveApi(objectSchema, recordId, fields, {}),
         initFetch: recordId != 'new',
-        body: await getFormBody(fields, objectSchema, ctx),
+        body: await getFormBody(fields, formFields, ctx),
         panelClassName:'m-0 sm:rounded-lg shadow-none',
         bodyClassName: 'p-0',
         className: 'steedos-amis-form',
@@ -339,6 +348,7 @@ export async function getObjectForm(objectSchema, ctx){
 export async function getObjectDetail(objectSchema, recordId, ctx){
     const { formFactor, layout = formFactor === 'SMALL' ? 'normal' : "normal", labelAlign, formInitProps } = ctx;
     const fields = _.values(objectSchema.fields);
+    const formFields = getFormFields(objectSchema, ctx);
     const serviceId = `detail_${recordId}`;
     return {
         type: 'service',
@@ -364,7 +374,7 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
                 "formData": "$$"
               },
               wrapWithPanel: false, 
-              body: await getFormBody(map(fields, (field)=>{field.readonly = true; return field;}), objectSchema, Object.assign({}, ctx, {showSystemFields: true})),
+              body: await getFormBody(map(fields, (field)=>{field.readonly = true; return field;}), formFields, Object.assign({}, ctx, {showSystemFields: true})),
               className: 'steedos-amis-form bg-white',
               actions: [], // 不显示表单默认的提交按钮
               onEvent: {

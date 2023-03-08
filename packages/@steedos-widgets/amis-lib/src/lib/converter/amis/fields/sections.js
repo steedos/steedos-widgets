@@ -2,25 +2,17 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-26 16:02:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-02 10:14:47
+ * @LastEditTime: 2023-03-08 10:49:19
  * @Description: 
  */
 import * as Fields from '../fields';
 import * as lodash from 'lodash';
 
-const getFieldSchemaArray = (mergedSchema)=>{
+const getFieldSchemaArray = (formFields)=>{
   let fieldSchemaArray = [];
   fieldSchemaArray.length = 0
 
-  const fieldsArr = [];
-  lodash.forEach(mergedSchema.fields, (field, fieldName)=>{
-    if(!lodash.has(field, "name")){
-      field.name = fieldName
-    }
-        fieldsArr.push(field)
-  })
-
-  lodash.forEach(lodash.sortBy(mergedSchema.fields, "sort_no"), (field) => {
+  lodash.forEach(formFields, (field) => {
     if (!field.group || field.group == 'null' || field.group == '-')
       field.group = '通用'
     const fieldName = field.name;
@@ -81,8 +73,8 @@ const getSection = async (permissionFields, fieldSchemaArray, sectionName, ctx) 
   return section
 }
 
-export const getSections = async (permissionFields, mergedSchema, ctx) => {
-  const fieldSchemaArray = getFieldSchemaArray(mergedSchema)
+export const getSections = async (permissionFields, formFields, ctx) => {
+  const fieldSchemaArray = getFieldSchemaArray(formFields)
   const _sections = lodash.groupBy(fieldSchemaArray, 'group');
   const sections = [];
   for (const key in _sections) {

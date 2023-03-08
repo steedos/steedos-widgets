@@ -1,16 +1,16 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-02-26 18:10:16
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2023-03-07 17:42:25
  * @Description: 
  */
 import { getFormSchema, getViewSchema } from '@steedos-widgets/amis-lib'
-import { keys, pick, difference } from 'lodash';
+import { keys, pick, difference, isString } from 'lodash';
 
 export const AmisObjectForm = async (props) => {
   // console.log("===AmisObjectForm=props==", props);
-  const { $schema, recordId, mode, layout, labelAlign, appId,
+  const { $schema, recordId, mode, layout, labelAlign, appId, fields,
     className=""
   } = props;
   let objectApiName = props.objectApiName || "space_users";
@@ -27,6 +27,12 @@ export const AmisObjectForm = async (props) => {
     labelAlign,
     defaults,
     appId
+  }
+
+  try {
+    options.fields = isString(fields) ? JSON.parse(fields) : fields
+  } catch (error) {
+    console.warn(error)
   }
 
   const globalData = props.data.global || {};
@@ -52,5 +58,6 @@ export const AmisObjectForm = async (props) => {
   }
   amisSchema.className = `steedos-object-form ${className}`
   amisSchema.data = Object.assign({"&": "$$"}, amisSchema.data, formData, {global: globalData});
+  // console.log(`amisSchema`, amisSchema)
   return amisSchema;
 }

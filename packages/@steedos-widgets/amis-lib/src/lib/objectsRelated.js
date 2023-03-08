@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-07 12:51:26
+ * @LastEditTime: 2023-03-08 13:16:47
  * @Description:
  */
 
@@ -173,6 +173,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
                 relatedKey: relatedKey,   
                 objectName: relatedObjectName,
                 listViewId: `amis-\${appId}-${relatedObjectName}-listview`,
+                _isRelated: true
             },
             body:[
                 {
@@ -297,8 +298,6 @@ export async function getRelatedListSchema(
     delete ctx.sort;
     delete ctx.extraColumns;
     delete ctx.filters;
-
-    delete ctx.globalFilter
 
     const amisSchema = {
         "type": "steedos-object-table",

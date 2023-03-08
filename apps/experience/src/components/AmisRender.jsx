@@ -58,11 +58,8 @@ export const AmisRender = ({id, schema, data, className, assets, getModalContain
         const amisScope = SteedosUI.getRef(id);
         if(amisScope && !isEmpty(updateProps)){
             if(updateProps.data){
-                updateProps.data = defaultsDeep(data , getDefaultRenderData());
+                updateProps.data = defaultsDeep(updateProps.data, data, getDefaultRenderData());
             }
-            // const newProps = defaultsDeep({location: router}, {data: data} , {
-            //     data: getDefaultRenderData()
-            // });
             amisScope.updateProps( updateProps, ()=>{
                 console.log(`amisScope.updateProps callback.......`)
             });

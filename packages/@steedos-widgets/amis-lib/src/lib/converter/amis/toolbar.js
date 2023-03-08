@@ -11,10 +11,6 @@ const getDisplayAsButton = function(showDisplayAs){
       "type": "button",
       "label": "分栏视图",
       "onClick": "const url = document.location.pathname + '?display=split'; props.env.jumpTo(url);"
-    },{
-      "type": "button",
-      "label": "三栏视图",
-      "onClick": "const url = document.location.pathname + '?display=split_three'; props.env.jumpTo(url);"
     }
   ];
   return {

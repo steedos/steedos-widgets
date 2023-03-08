@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-06 18:39:22
+ * @LastEditTime: 2023-03-07 17:42:47
  * @Description: 
  */
 import { Field } from '@steedos-widgets/amis-lib';
@@ -12,8 +12,13 @@ export const AmisSteedosField = async (props)=>{
 
     let steedosField = null;
 
-    let { field, readonly = false, ctx = {}, config } = props;
+    let { field, readonly = false, ctx = {}, config, $schema } = props;
     // console.log(`AmisSteedosField`, props)
+
+    if($schema.config && isString($schema.config)){
+        $schema.config = JSON.parse($schema.config)
+        props.config = $schema.config
+    }
 
     if(isString(ctx)){
         ctx = JSON.parse(ctx);

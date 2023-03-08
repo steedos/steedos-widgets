@@ -78,7 +78,14 @@ const config: any = {
             type: "editor",
             name: "config",
             label: "字段定义",
-            language: "json"
+            language: "json",     
+            pipeOut: (value) => {
+              try {
+                return value ? JSON.parse(value) : null;
+              } catch (e) {
+              }
+              return value;
+            }
           }
         ]
       }

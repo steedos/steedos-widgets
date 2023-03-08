@@ -10,58 +10,81 @@ import { getPage, Router } from "@steedos-widgets/amis-lib";
 
 
 export const PageRecordDetail = async (props) => {
-  const { formFactor: defaultFormFactor, app_id, tab_id, listview_id, display, $schema } = props
+  const { formFactor: defaultFormFactor, app_id, tab_id, listview_id, recordId, display, side_object = tab_id, side_listview_id = listview_id, $schema } = props
   
-  console.log(props);
   if (display)
     Router.setTabDisplayAs(tab_id, display)
 
-  const displayAs = (defaultFormFactor === 'SMALL')? 'grid': display? display : Router.getTabDisplayAs(tab_id);
+  let displayAs = (defaultFormFactor === 'SMALL')? 'grid': display? display : side_object? 'split': Router.getTabDisplayAs(tab_id);
+  const formFactor = (["split"].indexOf(displayAs) > -1) ? 'SMALL': defaultFormFactor
 
-  const formFactor = (["split_three", "split"].indexOf(displayAs) > -1) ? 'SMALL': defaultFormFactor
+  const renderId = SteedosUI.getRefId({
+    type: "detail",
+    appId: app_id,
+    name: tab_id,
+  });
 
-  const page = await getPage({type: 'list', appId: app_id, objectName: tab_id, formFactor})
+  const listPage = await getPage({type: 'list', appId: app_id, objectName: tab_id, formFactor})
 
-  if(page === false){
-    return {
-      "type": "spinner",
-      "show": true
+  let recordSchema = {}
+  if (recordId) {
+
+    const recordPage = await getPage({type: 'record', appId: app_id, objectName: tab_id, formFactor: defaultFormFactor});
+    recordSchema = recordPage? JSON.parse(recordPage.schema) : {
+      "type": "wrapper",
+      "className": "p-0 m-0 sm:m-3 flex-1",
+      "name": `amis-${app_id}-${tab_id}-detail`,
+      "body": [
+        {
+          "type": "steedos-record-detail",
+          "recordId": "${recordId}",
+          "objectApiName": "${objectName}",
+          appId: app_id,
+        }
+      ],
     }
   }
 
   const listViewId = SteedosUI.getRefId({
     type: "listview",
     appId: app_id,
-    name: tab_id,
+    name: side_object,
   });
-  const splitOffset = displayAs === "split_three" ? "w-1/2" : "w-[388px]";
-  const gridClassName = "absolute inset-0 sm:m-3 sm:mb-0 sm:border sm:shadow sm:rounded border-slate-300 border-solid bg-gray-100";
-  const splitClassName = `absolute top-0 bottom-0 ${splitOffset} border-r border-slate-300 border-solid bg-gray-100`;
-  const schema = page? JSON.parse(page.schema) : {
+
+  const listSchema = listPage? JSON.parse(listPage.schema) : {
     "type": "steedos-object-listview",
-    "objectApiName": tab_id,
+    "objectApiName": side_object,
     "columnsTogglable": false,
     "showHeader": true,
-    "showDisplayAs": (defaultFormFactor !== 'SMALL'),
-    "formFactor": formFactor,
-    className: displayAs === 'grid' ? gridClassName : splitClassName
+    "showDisplayAs": true,
+    "formFactor": 'SMALL',
   }
-  
 
   return {
     type: 'service',
-    id: listViewId,
-    className: "steedos-listview static",
     data: {
       ...$schema.data,
       objectName: tab_id,
       listViewId: listViewId,
       listName: listview_id,
+      recordId,
       appId: app_id,
       formFactor: formFactor,
       displayAs: displayAs,
       scopeId: listViewId,
     },
-    body: schema
+    "className": 'p-0 flex flex-1 overflow-hidden h-full',
+    body: (displayAs === 'grid') ? recordSchema : [
+      {
+        "type": "wrapper",
+        "className": `p-0 flex-shrink-0 min-w-32 overflow-y-auto border-r border-gray-200 lg:order-first lg:flex lg:flex-col`,
+        "body": listSchema
+      },
+      {
+        "type": "wrapper",
+        "className": 'p-0 flex-1 overflow-y-auto focus:outline-none lg:order-last',
+        "body": recordSchema
+      }
+    ]
   }
 }
