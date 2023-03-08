@@ -35,10 +35,11 @@ export const AmisObjectListView = async (props) => {
     }
     else{
       formFactor = 'LARGE';
-      if(["split_three", "split"].indexOf(displayAs) > -1){
-        formFactor = 'SMALL';
-      }
     }
+  }
+
+  if(["split"].indexOf(displayAs) > -1){
+    formFactor = 'SMALL';
   }
 
   if(!ctx.formFactor){
@@ -123,22 +124,22 @@ export const AmisObjectListView = async (props) => {
     });
   }
 
-  if (sideSchema && displayAs === 'split_three') {
+  if (sideSchema) {
     body = [{
       "type": "wrapper",
       "size": "none",
-      "className": "flex",
+      "className": "flex flex-1 overflow-hidden h-full",
       "body": [
         {
           "type": "wrapper",
           "size": "none",
-          "className": "flex-none",
+          "className": "flex-shrink-0 min-w-32 overflow-y-auto border-r border-gray-200 xl:order-first xl:flex xl:flex-col",
           "body": sideSchema
         }, 
         {
           "type": "wrapper",
           "size": "none",
-          "className": "flex-1",
+          "className": "flex-1 overflow-y-auto focus:outline-none xl:order-last w-96",
           "body": body
         }, 
         

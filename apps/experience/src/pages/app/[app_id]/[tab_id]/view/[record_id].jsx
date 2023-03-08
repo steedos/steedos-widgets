@@ -45,7 +45,7 @@ export default function Record({formFactor: defaultFormFactor}) {
 
   const schema = page? JSON.parse(page.schema) : {
     "type": "wrapper",
-    "className": "p-0 m-0 sm:m-3",
+    "className": "p-0 m-0 sm:m-3 flex-1",
     "name": `amis-${app_id}-${tab_id}-detail`,
     "body": [
       {
@@ -63,7 +63,6 @@ export default function Record({formFactor: defaultFormFactor}) {
     name: side_object,
   });
 
-  const splitOffset = displayAs === "split_three" ? "w-1/2" : "w-[388px]";
   const listSchema = listPage? JSON.parse(listPage.schema) : {
     "type": "steedos-object-listview",
     "objectApiName": side_object,
@@ -72,26 +71,21 @@ export default function Record({formFactor: defaultFormFactor}) {
     "showDisplayAs": true,
     "formFactor": 'SMALL',
   }
-  const listClassName = `steedos-listview fixed mt-[50px] sm:mt-[90px] top-0 bottom-0 ${splitOffset} shadow border-r border-slate-300 border-solid bg-gray-100 overflow-scroll`;
 
   const splitSchema = {
     type: 'service',
-    "className": 'p-0',
+    "className": 'p-0 flex flex-1 overflow-hidden h-full',
     body: (displayAs === 'grid') ? schema : [
       {
         "type": "wrapper",
-        "className": `p-0 ${listClassName}`,
+        "className": `p-0 flex-shrink-0 min-w-32 overflow-y-auto border-r border-gray-200 xl:order-first xl:flex xl:flex-col`,
         "body": listSchema
       },
       {
         "type": "wrapper",
-        "className": 'p-0 pl-[388px]',
+        "className": 'p-0 flex-1 overflow-y-auto focus:outline-none xl:order-last',
         "body": schema
-      },
-      {
-        "type": "tpl",
-        "tpl": "${objectName}, ${recordId},"
-      },
+      }
     ]
   }
   return (

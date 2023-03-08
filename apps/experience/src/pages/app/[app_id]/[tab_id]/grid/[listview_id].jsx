@@ -9,6 +9,7 @@ import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { useRouter } from 'next/router'
 import { getPage, Router } from "@steedos-widgets/amis-lib";
 import { Loading } from '@/components/Loading';
+import { PageListView } from "@steedos-widgets/amis-object";
 
 import { AmisRender } from "@/components/AmisRender";
 
@@ -18,17 +19,31 @@ export default function Page ({ formFactor }) {
 
   const { app_id, tab_id, listview_id, display } = router.query;
 
-  const schema = {
+  let schema = {
     "type": "steedos-page-listview",
     app_id,
     tab_id,
     listview_id,
     display,
     formFactor,
-  }
+  };
+
+  // useEffect(async () => {
+  //   schema = await PageListView({
+  //     app_id,
+  //     tab_id,
+  //     listview_id,
+  //     display,
+  //     formFactor,
+  //   })
+  // }, [display]);
+
+
   return (
     <>
       <AmisRender
+        id={`listview-${listview_id}`}
+        className="h-full"
         schema={schema}
         router={router}
       ></AmisRender>
