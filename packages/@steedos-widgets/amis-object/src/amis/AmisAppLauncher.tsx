@@ -15,10 +15,11 @@ export const AmisAppLauncher = async (props) => {
     const formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE';
     const mobile = formFactor === "SMALL" ? true : false;
 
-    return {   
-      "type": "service",
-      "body": [
-              {
+    return {
+        type: 'service',
+        className,
+        body: [
+            {
                 "type": "button",
                 "actionType": "dialog",
                 "className": "flex items-center",
@@ -27,14 +28,6 @@ export const AmisAppLauncher = async (props) => {
                     "type": "tpl",
                     "className": "flex items-center",
                     "tpl": "<div aria-haspopup='true' title='Open App Launcher' class='slds-icon-waffle_container slds-context-bar__button' title='Open App Launcher' type='button'><span class='slds-icon-waffle'><span class='slds-r1'></span><span class='slds-r2'></span><span class='slds-r3'></span><span class='slds-r4'></span><span class='slds-r5'></span><span class='slds-r6'></span><span class='slds-r7'></span><span class='slds-r8'></span><span class='slds-r9'></span></span></div>",
-                    "badge": {
-                      "mode": "text",
-                      "text": "${sum}",
-                      "style": {
-                        "right": "50%",
-                        "margin-right": "-23px"
-                      }
-                    }
                   },
                   {
                       type: 'tpl',
@@ -53,67 +46,6 @@ export const AmisAppLauncher = async (props) => {
                   "actions": [
                   ],
                   "body": [
-                    mobile ? {
-                      "type": "service",
-                      "affixFooter": false,
-                      "body": [
-                        {
-                          "type": "each",
-                          "name": "app_items",
-                          "items": {
-                            "type": "button",
-                            "level": "link",
-                            "actionType": "link",
-                            "link": "${path}",
-                            "body": [
-                              {
-                                "type": "tpl",
-                                "tpl": "<div class='flex flex-col justify-center'><div class='text-center'><svg class='w-12 h-12 slds-icon slds-icon_container slds-icon-standard-${REPLACE(icon, '_', '-' )}' aria-hidden='true'><use xlink:href='/assets/icons/standard-sprite/svg/symbols.svg#${icon}'></use></svg></div><div class='text-center text-lg'>${name}</div></div>",
-                                "badge": {
-                                  "mode": "text",
-                                  "text": "${value.${id}}",
-                                  "style": {
-                                    "right": "50%",
-                                    "margin-right": "-23px"
-                                  }
-                                }
-                              }
-                            ],
-                            "onEvent": {
-                              "click": {
-                                "actions": [
-                                  {
-                                    "actionType": "closeDialog"
-                                  }
-                                ]
-                              }
-                            },
-                            "className": "block w-1/3 py-4 border",
-                            "style": {
-                              "display": "inline-flex",
-                              "justify-content": "center"
-                            }
-                          },
-                          "className": "flex flex-wrap",
-                          "id": "u:a98e9f6fb4db"
-                        }
-                      ],
-                      "clearValueOnHidden": false,
-                      "visible": true,
-                      "messages": {
-                      },
-                      "api": {
-                        "method": "get",
-                        "url": "${context.rootUrl}/service/api/apps/menus?mobile=true",
-                        "headers": {
-                          "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                        },
-                        "adaptor": "\nlet app_items = payload;\npayload.data = {\n  app_items\n}\nreturn payload;",
-                        "messages": {
-                        }
-                      },
-                      "id": "u:2c8bd22d4ea8"
-                    } :
                     {
                       "type": "service",
                       "id": "u:0f6224a0836f",
@@ -221,23 +153,7 @@ export const AmisAppLauncher = async (props) => {
                   ]
                 },
                 "id": "u:b5dc095e1c11"
-              }
-      ],
-      "id": "u:06ee48db134a",
-      "messages": {
-      },
-      "api": {
-        "url": "${context.rootUrl}/graphql",
-        "method": "post",
-        "messages": {
-        },
-        "headers": {
-          "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-        },
-        "data": {
-          "query": "{steedos_keyvalues{value}}"
-        },
-        "adaptor": "payload.data.value = payload.data.steedos_keyvalues[0].value\nvar sum = 0;\nfor (var v in payload.data.value) sum += payload.data.value[v];\npayload.data.sum = sum;\nreturn payload"
-      }          
+            }
+        ],
     }
 }
