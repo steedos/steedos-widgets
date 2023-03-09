@@ -77,7 +77,7 @@ export const PageRecordDetail = async (props) => {
     body: (displayAs === 'grid') ? recordSchema : [
       {
         "type": "wrapper",
-        "className": `p-0 flex-shrink-0 min-w-[388px] overflow-y-auto border-r border-gray-200 lg:order-first lg:flex lg:flex-col`,
+        "className": `p-0 flex-shrink-0 min-w-[388px] overflow-y-auto border-r border-gray-300 bg-gray-100 shadow lg:order-first lg:flex lg:flex-col`,
         "body": listSchema
       },
       {
