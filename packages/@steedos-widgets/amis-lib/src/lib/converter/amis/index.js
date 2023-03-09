@@ -139,10 +139,10 @@ export async function getObjectCRUD(objectSchema, fields, options){
       footerToolbar: getObjectFooterToolbar(objectSchema, options.formFactor, {
         disableStatistics: options.queryCount === false
       }), 
+      filter: !!options.filterVisible && await getObjectFilter(objectSchema, fields, options),
     }
     if(options.formFactor !== 'SMALL'){
       Object.assign(bodyProps, {
-        filter: !!options.filterVisible && await getObjectFilter(objectSchema, fields, options),
         bulkActions: options.bulkActions != false ? bulkActions : false
       });
     }

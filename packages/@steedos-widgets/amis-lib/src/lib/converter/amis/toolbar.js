@@ -38,6 +38,16 @@ let x = `return {
   }
 }`
 
+const onFieldsFilterToggleScript = `
+const scope = event.context.scoped;
+const filterForm = scope.getComponents().find(function(n){
+  return n.props.type === "form";
+});
+const filterService = filterForm.context.getComponents().find(function(n){
+  return n.props.type === "service";
+});
+filterService.setData({showFieldsFilter: !!!filterService.props.data.showFieldsFilter});
+`;
 
 export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = false, hiddenCount = false} = {}){
 
@@ -73,19 +83,26 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
           }
         },
       },
+      {
+        "label": "",
+        "icon": "fa fa-search",
+        "type": "button",
+        "align": "right",
+        "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
+        "onEvent": {
+          "click": {
+            "actions": [
+              {
+                "actionType": "custom",
+                "script": onFieldsFilterToggleScript
+              }
+            ]
+          }
+        }
+      },
       showDisplayAs? getDisplayAsButton(showDisplayAs) : {}
   ]
   }else{
-    const onFieldsFilterToggleScript = `
-      const scope = event.context.scoped;
-      const filterForm = scope.getComponents().find(function(n){
-        return n.props.type === "form";
-      });
-      const filterService = filterForm.context.getComponents().find(function(n){
-        return n.props.type === "service";
-      });
-      filterService.setData({showFieldsFilter: !!!filterService.props.data.showFieldsFilter});
-    `;
     return [
       // "filter-toggler",
       "bulkActions",
@@ -108,6 +125,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
       {
         "type": "reload",
         "align": "right",
+        "tooltipPlacement": "bottom",
         "className": "bg-white p-2 rounded border-gray-300 text-gray-500"
       },
       {
@@ -115,7 +133,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
         "label": "",
         "align": "right", 
         "className": "fa fa-download",
-        "tooltipPlacement": "top",
+        "tooltipPlacement": "bottom",
         "tooltip": "点击下载文件",
         "onEvent": {
           "click": {

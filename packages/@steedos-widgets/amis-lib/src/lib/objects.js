@@ -6,7 +6,6 @@
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
-import { getObjectFieldsFilterFormSchema } from './converter/amis/fields_filter';
 import { getObjectCalendar } from './converter/amis/calendar';
 
 import {
@@ -604,9 +603,6 @@ export async function getObjectRelated(
     };
 }
 
-export async function getSearchableFieldsFilterSchema(objectSchema, fields, ctx) {
-    return await getObjectFieldsFilterFormSchema(objectSchema, fields, ctx);
-}
 
 if(typeof window != 'undefined'){
     window.getUISchema = getUISchema;

@@ -134,6 +134,7 @@ export async function getObjectFieldsFilterFormSchema(objectSchema, fields, ctx)
 }
 
 export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) {
+  console.log(ctx)
   if(!ctx){
     ctx = {};
   }
@@ -332,7 +333,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
           ],
           "size": "xs",
           "visibleOn": "this.filterFormSearchableFields && this.filterFormSearchableFields.length",
-          "className": "slds-filters__body p-0 sm:grid sm:gap-2 sm:grid-cols-4 mb-2"
+          "className": ctx.formFactor === 'SMALL' ? "slds-filters__body p-0 mb-2": "slds-filters__body p-0 sm:grid sm:gap-2 sm:grid-cols-4 mb-2"
         }, {
           "type": "wrapper",
           "body": {
