@@ -135,6 +135,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
         "align": "right", 
         "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
         "tooltipPlacement": "bottom",
+        "visibleOn": "${!isLookup}",
         "tooltip": "导出Excel",
         "onEvent": {
           "click": {
