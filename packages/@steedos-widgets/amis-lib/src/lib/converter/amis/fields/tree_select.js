@@ -59,9 +59,9 @@ async function getSource(field, ctx) {
         });
         var defaultValueOptions = data.defaultValueOptions;
         // 字段值下拉选项合并到options中
-        // data.options = _.unionWith(data.options, defaultValueOptions, function(a,b){
-        //     return a["value"]=== b["value"];
-        // });
+        data.options = _.unionWith(data.options, defaultValueOptions, function(a,b){
+            return a["value"]=== b["value"];
+        });
         delete data.defaultValueOptions;
         payload.data = data;
         return payload;
