@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:51:00
  * @LastEditors: 廖大雪 2291335922@qq.com
- * @LastEditTime: 2023-03-05 13:44:36
+ * @LastEditTime: 2023-03-09 15:16:10
  * @Description: 
  */
 
@@ -65,6 +65,9 @@ export const getSchema = async (uiSchema, ctx) => {
                                                 "url": "${context.rootUrl}/api/pageSchema/form?app=${appId}&objectApiName=${objectName}&formFactor=${formFactor}",
                                                 "method": "get",
                                                 "messages": {
+                                                },
+                                                "headers": {
+                                                    "Authorization": "Bearer ${context.tenantId},${context.authToken}"
                                                 },
                                                 "requestAdaptor": "",
                                                 "adaptor": schemaApiAdaptor
