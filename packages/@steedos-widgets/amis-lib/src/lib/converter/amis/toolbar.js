@@ -134,7 +134,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
         "icon": "fa fa-download",
         "align": "right", 
         "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
-        "tooltipPlacement": "top",
+        "tooltipPlacement": "bottom",
         "tooltip": "导出Excel",
         "onEvent": {
           "click": {
