@@ -171,7 +171,6 @@ export const registerRenders = (assets)=>{
           AmisWrapper = (props)=>{
             const { $schema, body, render } = props
             const [schema, setSchema] = amisReact.useState(null);
-            // console.debug(`AmisWrapper`, $schema, schema);
             amisReact.useEffect(()=>{
               const result = Component.class(props);
               if(result && result.then && typeof result.then === 'function'){
@@ -181,7 +180,21 @@ export const registerRenders = (assets)=>{
               }else{
                 setSchema(result)
               }
+
             }, [JSON.stringify($schema)])
+
+            if (!schema)
+              return render('body', {
+                "type": "spinner",
+                "show": true
+              })
+
+            if (props.env.enableAMISDebug && schema) {
+              console.groupCollapsed("amis debug", `Render ${asset.componentName}`);
+              console.trace('Props: ', props, 'Generated Schema: ', schema);
+              console.groupEnd();
+            }
+  
             return <>
               <>{(schema && render) ? render('body', schema) : ''}</>
               <>
