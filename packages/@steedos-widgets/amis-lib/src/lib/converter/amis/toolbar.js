@@ -119,17 +119,23 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
         "tooltip": "点击下载文件",
         "onEvent": {
           "click": {
-            "actions": {
-                  "args": {
-                      "api": {
-                          "url": "/api/record/export/${object_name}",
-                          "method": "get",
-                          "responseType": "blob",
-                          "requestAdaptor": "\nselect = [];\nlet list_view = Creator.getObject().list_views.all.columns;\nfor (let i = 0; i < list_view.length; i++) {\n  select.push(list_view[i].field);\n}\nlet str = select.toString();\n\nlet filename = Creator.getObject('project').label + \"-\" + Creator.getListView(\"project\", \"all\")?.label;\napi.url += '?$select=' + str + '&filename=' + filename;\n\nreturn api;"
-                        }
-                    },
-                  "actionType": "download"
+            "weight": 0,
+            "actions": [
+              {
+                "args": {
+                  "api": {
+                    "url": "/api/record/export/${object_name}",
+                    "method": "get",
+                    "messages": {},
+                    "requestAdaptor": "// debugger;\nlet select = [];\nlet filename = \"testname\";\n\n// 获取列表视图的属性\nlet uiSchema = api.body.uiSchema;\nlet list_views = uiSchema.list_views;\nlet col = list_views.all.columns;\nlet sort_test = list_views.all.sort;\nlet order2 = [];\nlet order = [];\n\n_.each(col, (col) => {\n    select.push(col.field);\n});\n\nlet sort = [];\n_.forEach(sort_test, (sortField) => {\n    sort.push([sortField.field_name, sortField.order]);\n})\norders = [];\n_.map(sort, (value) => {\n    if (value[1] == \"desc\")\n        order2 = value[0] + ' desc';\n    else\n        order2 = value[0];\n    orders.push(order2);\n});\norder = orders.join(',');\n\nurl_tmp = api.url.split('?')[0];\napi.url = url_tmp + \"?$select=\" + select.toString() + \"&filename=\" + filename;\n\n// 判断是否有sort条件\nif( sort.length > 0 )\n    api.url += \"&$orderby=\" + order;\nlet $filter;\n// if ($filter)\n// \tapi.url = api.url + \"&$filter=\" + $filter;\n    \n// debugger;\nconsole.log(order);\n\nreturn api;",
+                    "data": {
+                      "uiSchema": "${uiSchema}"
+                    }
+                  }
+                },
+                "actionType": "download"
               }
+            ]
           }
         }
       },
