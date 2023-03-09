@@ -274,7 +274,8 @@ const getFormFields = (objectSchema, formProps)=>{
   const fields = [];
 
   _.each(formFields, (item)=>{
-    if(item && item.name){
+    // 指定显示的字段必须要在用户的字段权限范围内, 禁止无效的扩展
+    if(item && item.name && objectSchema.fields[item.name]){
       fields.push(Object.assign({}, objectFields[item.name], item))
     }
   })
