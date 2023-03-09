@@ -14,18 +14,25 @@ import { Loading } from '@/components/Loading';
 export default function Record({formFactor}) {
   
   const router = useRouter();
-  const { app_id, tab_id, listview_id, record_id, display, side_object = tab_id, side_listview_id = listview_id } = router.query;
+  const { 
+    app_id: appId, 
+    tab_id: tabId, 
+    listview_id: listviewId, 
+    record_id: recordId, 
+    display, 
+    side_object : sideObject = tabId, 
+    side_listview_id : sideListviewId = listviewId } = router.query;
 
   let schema = {
     "type": "steedos-page-record-detail",
-    app_id,
-    tab_id,
-    listview_id,
+    appId,
+    tabId,
+    listviewId,
     display,
     formFactor,
-    side_object,
-    side_listview_id,
-    recordId: record_id,
+    sideObject,
+    sideListviewId,
+    recordId,
   };
 
   console.log(schema)
@@ -33,15 +40,15 @@ export default function Record({formFactor}) {
   return (
     <>
       <AmisRender
-        id={`listview-${listview_id}`}
+        id={`listview-${listviewId}`}
         data={{
-          recordId: record_id,
+          recordId,
         }}
         className="h-full"
         schema={schema}
         updateProps = {{
           data: {
-            recordId: record_id,
+            recordId,
           }
         }}
       ></AmisRender>
