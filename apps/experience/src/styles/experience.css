@@ -1,6 +1,6 @@
 
 :root {
-    --body-bg: white; 
+    --body-bg: top / cover no-repeat url(/images/defaultBackground.png); 
 }
 
 @media only screen and (max-width: 768px) {
@@ -11,8 +11,4 @@
 
 body {
     background: var(--body-bg);
-}
-
-#main {
-    background: top / cover no-repeat url(/images/defaultBackground.png); 
 }
