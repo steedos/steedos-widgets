@@ -2,12 +2,12 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-11 09:39:38
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-16 10:15:58
+ * @LastEditTime: 2023-03-09 19:01:10
  * @Description: 
  */
 const config: any = {
     // componentType: 'amisSchema', 
-    group: "华炎魔方",
+    group: "华炎魔方-原子组件",
     componentName: "SteedosBadge",
     title: "徽标数",
     docUrl: "",
@@ -50,7 +50,7 @@ const config: any = {
         weight: 1,
         framework: "react"
       },
-      plugin_disabled: {
+      plugin: {
         rendererName: config.amis.name,
         $schema: '/schemas/UnkownSchema.json',
         name: config.title,
