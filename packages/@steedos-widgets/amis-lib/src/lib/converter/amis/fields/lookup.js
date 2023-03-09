@@ -346,9 +346,9 @@ export async function lookupToAmisSelect(field, readonly, ctx){
             const data = payload.data;
             var defaultValueOptions = data.defaultValueOptions;
             // 字段值下拉选项合并到options中
-            // data.options = _.unionWith(defaultValueOptions, data.options, function(a,b){
-            //     return a["value"]=== b["value"];
-            // });
+            data.options = _.unionWith(defaultValueOptions, data.options, function(a,b){
+                return a["value"]=== b["value"];
+            });
             delete data.defaultValueOptions;
             payload.data.options = data.options;
             return payload;
@@ -426,6 +426,9 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         if (defaultValue && !api.data.$term) { 
             // 字段值单独请求，没值的时候在请求中返回空
             optionsFilters = [["${valueFieldKey}", optionsFiltersOp, defaultValue]];
+            if(filters.length > 0){
+                optionsFilters = [filters, optionsFilters];
+            }
         }
         api.data.query = api.data.query.replace(/{__options_filters}/g, JSON.stringify(optionsFilters));
         return api;
