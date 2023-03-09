@@ -10,10 +10,10 @@ import { getPage, Router } from "@steedos-widgets/amis-lib";
 
 
 export const PageRecordDetail = async (props) => {
-  const { formFactor: defaultFormFactor, appId, tabId, listviewId, recordId, display, sideObject = tabId, sideListviewId = listviewId, $schema } = props
+  const { formFactor: defaultFormFactor, appId, objectApiName, listviewId, recordId, display, sideObject = objectApiName, sideListviewId = listviewId, $schema } = props
   
   if (display)
-    Router.setTabDisplayAs(tabId, display)
+    Router.setTabDisplayAs(objectApiName, display)
 
   let displayAs = (defaultFormFactor === 'SMALL')? 'grid': display? display : sideObject? 'split': Router.getTabDisplayAs(tabId);
   const formFactor = (["split"].indexOf(displayAs) > -1) ? 'SMALL': defaultFormFactor
@@ -21,19 +21,19 @@ export const PageRecordDetail = async (props) => {
   const renderId = SteedosUI.getRefId({
     type: "detail",
     appId: appId,
-    name: tabId,
+    name: objectApiName,
   });
 
-  const listPage = await getPage({type: 'list', appId: appId, objectName: tabId, formFactor})
+  const listPage = await getPage({type: 'list', appId: appId, objectName: objectApiName, formFactor})
 
   let recordSchema = {}
   if (recordId) {
 
-    const recordPage = await getPage({type: 'record', appId: appId, objectName: tabId, formFactor: defaultFormFactor});
+    const recordPage = await getPage({type: 'record', appId: appId, objectName: objectApiName, formFactor: defaultFormFactor});
     recordSchema = recordPage? JSON.parse(recordPage.schema) : {
       "type": "wrapper",
       "className": "p-0 m-0 sm:m-3 flex-1",
-      "name": `amis-${appId}-${tabId}-detail`,
+      "name": `amis-${appId}-${objectApiName}-detail`,
       "body": [
         {
           "type": "steedos-record-detail",
@@ -64,7 +64,7 @@ export const PageRecordDetail = async (props) => {
     type: 'service',
     data: {
       ...$schema.data,
-      objectName: tabId,
+      objectName: objectApiName,
       listViewId: sideListviewId,
       listName: sideListviewId,
       recordId,

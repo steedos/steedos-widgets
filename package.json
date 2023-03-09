@@ -21,7 +21,7 @@
     "version:beta": "lerna version prerelease --preid beta --force-publish --exact --allow-branch dev",
     "publish:beta": "yarn kill-nextjs && NODE_ENV=production yarn build && yarn build-app && lerna publish from-package --registry https://registry.npmjs.org --dist-tag beta",
     "start": "cd apps/experience && NODE_ENV=production node server.js",
-    "kill-nextjs": "kill -9 $(lsof -ti:3000)",
+    "kill-nextjs": "kill -9 $(lsof -ti:3000) | echo ok",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
