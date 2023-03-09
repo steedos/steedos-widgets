@@ -1,6 +1,6 @@
 
 const config: any = {
-  group: "华炎魔方",
+  group: "华炎魔方-原子组件",
   componentName: "AmisReactFlow",
   title: "流程图",
   docUrl: "",
