@@ -131,10 +131,11 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
       {
         "type": "button",
         "label": "",
+        "icon": "fa fa-download",
         "align": "right", 
-        "className": "fa fa-download",
-        "tooltipPlacement": "bottom",
-        "tooltip": "点击下载文件",
+        "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
+        "tooltipPlacement": "top",
+        "tooltip": "导出Excel",
         "onEvent": {
           "click": {
             "weight": 0,
@@ -145,9 +146,10 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                     "url": "/api/record/export/${object_name}",
                     "method": "get",
                     "messages": {},
-                    "requestAdaptor": "// debugger;\nlet select = [];\nlet filename = \"testname\";\n\n// 获取列表视图的属性\nlet uiSchema = api.body.uiSchema;\nlet list_views = uiSchema.list_views;\nlet col = list_views.all.columns;\nlet sort_test = list_views.all.sort;\nlet order2 = [];\nlet order = [];\n\n_.each(col, (col) => {\n    select.push(col.field);\n});\n\nlet sort = [];\n_.forEach(sort_test, (sortField) => {\n    sort.push([sortField.field_name, sortField.order]);\n})\norders = [];\n_.map(sort, (value) => {\n    if (value[1] == \"desc\")\n        order2 = value[0] + ' desc';\n    else\n        order2 = value[0];\n    orders.push(order2);\n});\norder = orders.join(',');\n\nurl_tmp = api.url.split('?')[0];\napi.url = url_tmp + \"?$select=\" + select.toString() + \"&filename=\" + filename;\n\n// 判断是否有sort条件\nif( sort.length > 0 )\n    api.url += \"&$orderby=\" + order;\nlet $filter;\n// if ($filter)\n// \tapi.url = api.url + \"&$filter=\" + $filter;\n    \n// debugger;\nconsole.log(order);\n\nreturn api;",
+                    "requestAdaptor": " // debugger;\n\n// 获取列表视图的属性\nlet uiSchema = api.body.uiSchema;\nlet list_views = uiSchema.list_views;\nlet list_views_name = api.body.listName;\nlet col = list_views[list_views_name].columns;\nlet sort_test = list_views[list_views_name].sort;\n\nlet select = [];\n_.each(col, (col) => {\n    if (col.field == undefined)\n        select.push(col);\n    else select.push(col.field);\n});\n\n// debugger;\n\nlet sort = [];\n_.forEach(sort_test, (sortField) => {\n    if (sortField.field_name == undefined)\n        sort.push(sortField);\n    else sort.push([sortField.field_name, sortField.order]);\n})\n\nlet orders = [];\n_.map(sort, (value) => {\n    let order_tmp = [];\n    if (value[1] == \"desc\")\n        order_tmp = value[0] + ' desc';\n    else\n        order_tmp = value[0];\n    orders.push(order_tmp);\n});\nlet order = orders.join(',');\n\nlet filename = uiSchema.label + \"-\" + list_views[list_views_name].label;\n// debugger;\nurl_tmp = api.url.split('?')[0];\napi.url = url_tmp + \"?$select=\" + select.toString() + \"&filename=\" + filename;\n\n// 判断是否有sort条件\nif (sort.length > 0)\n    api.url += \"&$orderby=\" + order;\n\n// let $filter = JSON.stringify(list_views.test.filters);\n// if ($filter)\n// \tapi.url = api.url + \"&$filter=\" + $filter;\n // debugger;\nreturn api;",
                     "data": {
-                      "uiSchema": "${uiSchema}"
+                      "uiSchema": "${uiSchema}",
+                      "listName": "${listName}"
                     }
                   }
                 },
