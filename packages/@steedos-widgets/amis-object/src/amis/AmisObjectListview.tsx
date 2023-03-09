@@ -133,7 +133,7 @@ export const AmisObjectListView = async (props) => {
         {
           "type": "wrapper",
           "size": "none",
-          "className": "flex-shrink-0 min-w-32 overflow-y-auto border-r border-gray-200 lg:order-first lg:flex lg:flex-col",
+          "className": "flex-shrink-0 min-w-[200px] overflow-y-auto border-r border-gray-200 lg:order-first lg:flex lg:flex-col",
           "body": sideSchema
         }, 
         {

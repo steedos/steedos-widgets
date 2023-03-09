@@ -17,13 +17,13 @@ import { AmisRender } from "@/components/AmisRender";
 export default function Page ({ formFactor }) {
   const router = useRouter();
 
-  const { app_id, tab_id, listview_id, display } = router.query;
+  const { app_id: appId, tab_id: objectApiName, listview_id: listviewId, display } = router.query;
 
   let schema = {
     "type": "steedos-page-listview",
-    app_id,
-    tab_id,
-    listview_id,
+    appId,
+    objectApiName,
+    listviewId,
     display,
     formFactor,
   };
@@ -42,7 +42,7 @@ export default function Page ({ formFactor }) {
   return (
     <>
       <AmisRender
-        id={`listview-${listview_id}`}
+        id={`listview-${listviewId}`}
         className="h-full"
         schema={schema}
         router={router}

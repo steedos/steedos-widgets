@@ -10,36 +10,36 @@ import { getPage, Router } from "@steedos-widgets/amis-lib";
 
 
 export const PageRecordDetail = async (props) => {
-  const { formFactor: defaultFormFactor, app_id, tab_id, listview_id, recordId, display, side_object = tab_id, side_listview_id = listview_id, $schema } = props
+  const { formFactor: defaultFormFactor, appId, tabId, listviewId, recordId, display, sideObject = tabId, sideListviewId = listviewId, $schema } = props
   
   if (display)
-    Router.setTabDisplayAs(tab_id, display)
+    Router.setTabDisplayAs(tabId, display)
 
-  let displayAs = (defaultFormFactor === 'SMALL')? 'grid': display? display : side_object? 'split': Router.getTabDisplayAs(tab_id);
+  let displayAs = (defaultFormFactor === 'SMALL')? 'grid': display? display : sideObject? 'split': Router.getTabDisplayAs(tabId);
   const formFactor = (["split"].indexOf(displayAs) > -1) ? 'SMALL': defaultFormFactor
 
   const renderId = SteedosUI.getRefId({
     type: "detail",
-    appId: app_id,
-    name: tab_id,
+    appId: appId,
+    name: tabId,
   });
 
-  const listPage = await getPage({type: 'list', appId: app_id, objectName: tab_id, formFactor})
+  const listPage = await getPage({type: 'list', appId: appId, objectName: tabId, formFactor})
 
   let recordSchema = {}
   if (recordId) {
 
-    const recordPage = await getPage({type: 'record', appId: app_id, objectName: tab_id, formFactor: defaultFormFactor});
+    const recordPage = await getPage({type: 'record', appId: appId, objectName: tabId, formFactor: defaultFormFactor});
     recordSchema = recordPage? JSON.parse(recordPage.schema) : {
       "type": "wrapper",
       "className": "p-0 m-0 sm:m-3 flex-1",
-      "name": `amis-${app_id}-${tab_id}-detail`,
+      "name": `amis-${appId}-${tabId}-detail`,
       "body": [
         {
           "type": "steedos-record-detail",
           "recordId": "${recordId}",
           "objectApiName": "${objectName}",
-          appId: app_id,
+          appId: appId,
         }
       ],
     }
@@ -47,13 +47,13 @@ export const PageRecordDetail = async (props) => {
 
   const listViewId = SteedosUI.getRefId({
     type: "listview",
-    appId: app_id,
-    name: side_object,
+    appId: appId,
+    name: sideObject,
   });
 
   const listSchema = listPage? JSON.parse(listPage.schema) : {
     "type": "steedos-object-listview",
-    "objectApiName": side_object,
+    "objectApiName": sideObject,
     "columnsTogglable": false,
     "showHeader": true,
     "showDisplayAs": true,
@@ -64,11 +64,11 @@ export const PageRecordDetail = async (props) => {
     type: 'service',
     data: {
       ...$schema.data,
-      objectName: tab_id,
-      listViewId: listViewId,
-      listName: listview_id,
+      objectName: tabId,
+      listViewId: sideListviewId,
+      listName: sideListviewId,
       recordId,
-      appId: app_id,
+      appId: appId,
       formFactor: formFactor,
       displayAs: displayAs,
       scopeId: listViewId,
@@ -77,7 +77,7 @@ export const PageRecordDetail = async (props) => {
     body: (displayAs === 'grid') ? recordSchema : [
       {
         "type": "wrapper",
-        "className": `p-0 flex-shrink-0 min-w-32 overflow-y-auto border-r border-gray-200 lg:order-first lg:flex lg:flex-col`,
+        "className": `p-0 flex-shrink-0 min-w-[388px] overflow-y-auto border-r border-gray-200 lg:order-first lg:flex lg:flex-col`,
         "body": listSchema
       },
       {
