@@ -317,7 +317,7 @@ export async function getObjectForm(objectSchema, ctx){
         api: await getSaveApi(objectSchema, recordId, fields, {}),
         initFetch: recordId != 'new',
         body: await getFormBody(fields, formFields, ctx),
-        panelClassName:'m-0 sm:rounded-lg shadow-none',
+        panelClassName:'m-0 sm:rounded-lg shadow-none border-none',
         bodyClassName: 'p-0',
         className: 'steedos-amis-form',
         hiddenOn: "${editFormInited != true}",
