@@ -16,7 +16,7 @@ export default function Record({formFactor}) {
   const router = useRouter();
   const { 
     app_id: appId, 
-    tab_id: tabId, 
+    tab_id: objectApiName, 
     listview_id: listviewId, 
     record_id: recordId, 
     display, 
@@ -26,7 +26,7 @@ export default function Record({formFactor}) {
   let schema = {
     "type": "steedos-page-record-detail",
     appId,
-    tabId,
+    objectApiName,
     listviewId,
     display,
     formFactor,
