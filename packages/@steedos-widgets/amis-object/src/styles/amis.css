@@ -47,7 +47,10 @@
     --Nav-Item-maxWidth--tabs: 200px;
     --Crud-toolbar-gap: 2px;
     --DropDown-caret-marginLeft: 0;
-    --Layout-light-backgroundColor: transparent;
+}
+
+.steedos-header-container .antd-Nav-Menu {
+    --Menu-light-backgroundColor: transparent;
 }
 
 fieldset.antd-Collapse {

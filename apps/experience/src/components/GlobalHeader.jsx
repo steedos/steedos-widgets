@@ -47,7 +47,7 @@ export function GlobalHeader({app}) {
               body: [
                 {
                   "type": "wrapper",
-                  "className": "p-0 slds-global-header_container sticky top-0 w-full flex-none backdrop-blur transition-colors duration-500 z-50 sm:shadow border-b-[3px] border-sky-500 border-solid",
+                  "className": "p-0 slds-global-header_container sticky top-0 w-full flex-none backdrop-blur transition-colors duration-500 z-50 sm:shadow border-b-[3px] border-sky-500 border-solid steedos-header-container",
                   body: [
                     {
                       "type": "wrapper",
