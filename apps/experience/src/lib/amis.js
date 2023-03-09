@@ -185,13 +185,17 @@ export const registerRenders = (assets)=>{
 
             if (!schema)
               return render('body', {
-                "type": "spinner",
-                "show": true
+                "type": "wrapper",
+                "className": "h-full flex items-center justify-center",
+                "body": {
+                  "type": "spinner",
+                  "show": true
+                }
               })
 
             if (props.env.enableAMISDebug && schema) {
-              console.groupCollapsed("amis debug", `Render ${asset.componentName}`);
-              console.trace('Props: ', props, 'Generated Schema: ', schema);
+              console.groupCollapsed("steedos debug", `Render ${asset.componentName}`);
+              console.trace('Component: ', props, 'Generated Amis Schema: ', schema);
               console.groupEnd();
             }
   
