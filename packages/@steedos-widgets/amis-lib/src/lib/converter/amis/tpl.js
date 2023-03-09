@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-08 14:19:14
+ * @LastEditTime: 2023-03-09 10:00:44
  * @Description: 
  */
 import { Router } from '../../router'
@@ -76,7 +76,11 @@ export function getNameTpl(field, ctx){
 export function getRelatedFieldTpl(field, ctx){
     let tpl = '';
     if(!field.reference_to && (field.optionsFunction || field._optionsFunction)){
-        return `\${${field.name}__label}`
+        if(field.isTableField){
+            return `\${${field.name}}`
+        }else{
+            return `\${${field.name}__label}`
+        }
     }
 
     const onlyDisplayLabel = ctx.onlyDisplayLabel;
