@@ -257,29 +257,43 @@ const getGlobalData = (mode)=>{
 const getFormFields = (objectSchema, formProps)=>{
   // console.log(`getFormFields`, objectSchema, formProps)
   const { fields: objectFields } = objectSchema;
+  /**
+   * fieldsExtend: 重写字段定义
+   * includedFields: 包含的字段
+   * excludedFields: 排除的字段
+   */
+  const { fieldsExtend, includedFields, excludedFields } = formProps;
   
-  const { fields: formFields } = formProps;
-  
-  if(!formFields){
-    const fieldsArr = [];
-    _.forEach(objectSchema.fields, (field, fieldName)=>{
-      if(!lodash.has(field, "name")){
-        field.name = fieldName
+  let fields = {};
+  // 以uiSchema fields  为基础, 遍历字段, 并更新字段定义
+  _.forEach(objectSchema.fields, (field, fieldName)=>{
+    if(!lodash.has(field, "name")){
+      field.name = fieldName
+    }
+    if(fieldsExtend && fieldsExtend[fieldName]){
+      fields[field.name] = Object.assign({}, field, fieldsExtend[fieldName], {name: field.name})
+    }else{
+      fields[field.name] = field
+    }
+  });
+
+  if(!_.isEmpty(includedFields) && _.isArray(includedFields)){
+    const includedFieldsMap = {}
+    _.each(includedFields, (fName, index)=>{
+      if(fields[fName]){
+        includedFieldsMap[fName] = Object.assign({}, fields[fName], {sort_no: index})
       }
-      fieldsArr.push(field)
-    });
-    return lodash.sortBy(fieldsArr, "sort_no");
+    })
+    fields = includedFieldsMap
   }
 
-  const fields = [];
+  if(!_.isEmpty(excludedFields) && _.isArray(excludedFields)){
+    _.each(excludedFields, (fName)=>{
+      delete fields[fName]
+    })
+  }
 
-  _.each(formFields, (item)=>{
-    // 指定显示的字段必须要在用户的字段权限范围内, 禁止无效的扩展
-    if(item && item.name && objectSchema.fields[item.name]){
-      fields.push(Object.assign({}, objectFields[item.name], item))
-    }
-  })
-  return fields;
+  return lodash.sortBy(_.values(fields), "sort_no");
 }
 
 export async function getObjectForm(objectSchema, ctx){

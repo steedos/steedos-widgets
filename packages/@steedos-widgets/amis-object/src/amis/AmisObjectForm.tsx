@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-07 17:42:25
+ * @LastEditTime: 2023-03-10 14:52:07
  * @Description: 
  */
 import { getFormSchema, getViewSchema } from '@steedos-widgets/amis-lib'
@@ -10,7 +10,7 @@ import { keys, pick, difference, isString } from 'lodash';
 
 export const AmisObjectForm = async (props) => {
   // console.log("===AmisObjectForm=props==", props);
-  const { $schema, recordId, mode, layout, labelAlign, appId, fields,
+  const { $schema, recordId, mode, layout, labelAlign, appId, fieldsExtend, excludedFields = null, includedFields = null,
     className=""
   } = props;
   let objectApiName = props.objectApiName || "space_users";
@@ -26,11 +26,13 @@ export const AmisObjectForm = async (props) => {
     layout: layout === 'vertical' ? 'normal' : layout,
     labelAlign,
     defaults,
-    appId
+    appId,
+    excludedFields,
+    includedFields
   }
 
   try {
-    options.fields = isString(fields) ? JSON.parse(fields) : fields
+    options.fieldsExtend = isString(fieldsExtend) ? JSON.parse(fieldsExtend) : fieldsExtend
   } catch (error) {
     console.warn(error)
   }

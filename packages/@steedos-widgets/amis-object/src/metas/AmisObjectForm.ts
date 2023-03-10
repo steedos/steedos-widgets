@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-07 16:30:11
+ * @LastEditTime: 2023-03-10 14:49:15
  * @Description: 
  */
 
@@ -107,105 +107,292 @@ export default {
       panelTitle: "设置",
       panelControls: [
         {
-          "type": "select",
-          "label": "对象",
-          "name": "objectApiName",
-          "searchable": true,
-          "multiple": false,
-          "source": {
-            "method": "get",
-            "url": "/service/api/amis-design/objects",
-            "requestAdaptor": `
-                api.url = Builder.settings.rootUrl  + api.url; 
-                if(!api.headers){
-                  api.headers = {}
-                };
-                api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;
-                return api;
-            `,
-            "adaptor": `
-              let data = payload.data;
-              payload.unshift({
-                label: "当前对象",
-                name: "\${objectName}"
-              });
-              return payload;
-            `
-          },
-          "labelField": "label",
-          "valueField": "name",
-          "menuTpl": ""
-        },
-        {
-          type: "text",
-          name: "recordId",
-          label: "记录ID"
-        },
-        {
-          type: "button-group-select",
-          name: "mode",
-          label: "显示状态",
-          value: "read",
-          options: [
+          "type": "tabs",
+          tabsMode: 'line',
+          className: 'editor-prop-config-tabs',
+          linksClassName: 'editor-prop-config-tabs-links',
+          contentClassName: 'no-border editor-prop-config-tabs-cont',
+          "tabs": [
             {
-              "label": "只读",
-              "value": "read"
+              "title": "属性",
+              className: 'p-none',
+              "body": [
+                {
+                  "type": "collapse-group",
+                  expandIconPosition: 'right',
+                  expandIcon: {
+                    type: 'icon',
+                    icon: 'chevron-right'
+                  },
+                  className: 'ae-formItemControl',
+                  "activeKey": [
+                    "1",
+                    "2"
+                  ],
+                  "body": [
+                    {
+                      "type": "collapse",
+                      headingClassName: 'ae-formItemControl-header',
+                      bodyClassName: 'ae-formItemControl-body',
+                      "key": "1",
+                      "header": "基本",
+                      "body": [
+                        {
+                          "type": "select",
+                          mode: 'horizontal',
+                          horizontal: {
+                            left: 4,
+                            right: 8,
+                            justify: true
+                          },
+                          "label": "对象",
+                          "name": "objectApiName",
+                          "searchable": true,
+                          "multiple": false,
+                          "source": {
+                            "method": "get",
+                            "url": "/service/api/amis-design/objects",
+                            "requestAdaptor": `
+                                api.url = Builder.settings.rootUrl  + api.url; 
+                                if(!api.headers){
+                                  api.headers = {}
+                                };
+                                api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;
+                                return api;
+                            `,
+                            "adaptor": `
+                              let data = payload.data;
+                              payload.unshift({
+                                label: "当前对象",
+                                name: "\${objectName}"
+                              });
+                              return payload;
+                            `
+                          },
+                          "labelField": "label",
+                          "valueField": "name",
+                          "menuTpl": ""
+                        },
+                        {
+                          type: "input-text",
+                          name: "recordId",
+                          label: "记录ID",
+                          mode: 'horizontal',
+                          horizontal: {
+                            left: 4,
+                            right: 8,
+                            justify: true
+                          },
+                        },
+                        {
+                          type: "button-group-select",
+                          mode: 'horizontal',
+                          horizontal: {
+                            left: 4,
+                            right: 8,
+                            justify: true
+                          },
+                          name: "mode",
+                          label: "显示状态",
+                          value: "read",
+                          options: [
+                            {
+                              "label": "只读",
+                              "value": "read"
+                            },
+                            {
+                              "label": "编辑",
+                              "value": "edit"
+                            }
+                          ]
+                        },
+                        {
+                          type: "button-group-select",
+                          name: "layout",
+                          mode: 'horizontal',
+                          horizontal: {
+                            left: 4,
+                            right: 8,
+                            justify: true
+                          },
+                          label: "表单项布局",
+                          options: [
+                            {
+                              "label": "纵向",
+                              "value": "normal"
+                            },
+                            {
+                              "label": "横向",
+                              "value": "horizontal"
+                            },
+                            // {
+                            //   "label": "内联",
+                            //   "value": "inline"
+                            // }
+                          ]
+                        },
+                        /*
+                        {
+                          type: "button-group-select",
+                          name: "labelAlign",
+                          label: "表单项标签对齐方式",
+                          hiddenOn: "this.layout !== 'horizontal'",
+                          options: [
+                            {
+                              "label": "左",
+                              "value": "left"
+                            },
+                            {
+                              "label": "右",
+                              "value": "right"
+                            }
+                          ]
+                        },
+                        */
+                        
+                      ]
+                    },
+                    {
+                      "type": "collapse",
+                      headingClassName: 'ae-formItemControl-header',
+                      bodyClassName: 'ae-formItemControl-body',
+                      "key": "2",
+                      "header": "字段",
+                      "body": [
+                        
+                        {
+                          type: "transfer-picker",
+                          name: "includedFields",
+                          label: "显示的字段",
+                          // mode: 'horizontal',
+                          // horizontal: {
+                          //   left: 4,
+                          //   right: 8,
+                          //   justify: true
+                          // },
+                          // visibleOn: "this.fieldsControl === 'excluded'",
+                          "options": [],
+                          "multiple": true,
+                          "source": {
+                              "method": "get",
+                              "url": "${context.rootUrl}/service/api/amis-metadata-objects/objects/${objectApiName}/fields/options",
+                              "headers": {
+                                  "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                              },
+                              "data": null,
+                              "requestAdaptor": "",
+                              "adaptor": "",
+                              "sendOn": "this.objectApiName"
+                          },
+                          "className": "col-span-2 m-0",
+                          "checkAll": true,
+                          "searchable": true,
+                          "sortable": true,
+                          "joinValues": false,
+                          "extractValue": true,
+                        },
+                        {
+                          type: "transfer-picker",
+                          name: "excludedFields",
+                          label: "排除的字段",
+                          // mode: 'horizontal',
+                          // horizontal: {
+                          //   left: 4,
+                          //   right: 8,
+                          //   justify: true
+                          // },
+                          // visibleOn: "this.fieldsControl === 'excluded'",
+                          "options": [],
+                          "multiple": true,
+                          "source": {
+                              "method": "get",
+                              "url": "${context.rootUrl}/service/api/amis-metadata-objects/objects/${objectApiName}/fields/options",
+                              "headers": {
+                                  "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                              },
+                              "data": null,
+                              "requestAdaptor": "",
+                              "adaptor": "",
+                              "sendOn": "this.objectApiName"
+                          },
+                          "className": "col-span-2 m-0",
+                          "checkAll": true,
+                          "searchable": true,
+                          "sortable": true,
+                          "joinValues": false,
+                          "extractValue": true,
+                        },
+                        {
+                          type: "editor",
+                          name: "fieldsExtend",
+                          label: "重写字段配置",
+                          "options": {
+                            "lineNumbers": "off"
+                          },
+                          // mode: 'horizontal',
+                          // horizontal: {
+                          //   left: 4,
+                          //   right: 8,
+                          //   justify: true
+                          // },
+                          language: "json",
+                          // visibleOn: "this.fieldsControl === 'included'"
+                        },
+                        {
+                          type: "markdown",
+                          value: '重写字段配置. 例如\n```\n{\n    "name": {\n        "is_wide": true,  //设置为宽字段\n        "required": true, //设置为必填\n        "amis": { // 设置渲染属性\n            "type": "input-color" //将字段重写为 颜色选择器\n            ...\n        } \n    }, \n    "title": {\n        "group": "分组1" // 设置分组\n        ...\n    }\n}\n```'
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
             },
             {
-              "label": "编辑",
-              "value": "edit"
+              "title": "外观",
+              className: 'p-none',
+              "body": [
+                
+                {
+                  "type": "collapse-group",
+                  expandIconPosition: 'right',
+                  expandIcon: {
+                    type: 'icon',
+                    icon: 'chevron-right'
+                  },
+                  className: 'ae-formItemControl',
+                  "activeKey": [
+                    "1"
+                  ],
+                  "body": [
+                    {
+                      "type": "collapse",
+                      headingClassName: 'ae-formItemControl-header',
+                      bodyClassName: 'ae-formItemControl-body',
+                      "key": "1",
+                      "header": "CSS 类名",
+                      "body": [
+                        {
+                          type: "input-text",
+                          name: "className",
+                          mode: 'horizontal',
+                          horizontal: {
+                            left: 4,
+                            right: 8,
+                            justify: true
+                          },
+                          label: "表单",
+                          value: "mb-4"
+                        }
+                      ]
+                    },
+                  ]
+                }
+              ]
             }
           ]
-        },
-        {
-          type: "button-group-select",
-          name: "layout",
-          label: "表单项布局",
-          options: [
-            {
-              "label": "纵向",
-              "value": "normal"
-            },
-            {
-              "label": "横向",
-              "value": "horizontal"
-            },
-            // {
-            //   "label": "内联",
-            //   "value": "inline"
-            // }
-          ]
-        },
-        /*
-        {
-          type: "button-group-select",
-          name: "labelAlign",
-          label: "表单项标签对齐方式",
-          hiddenOn: "this.layout !== 'horizontal'",
-          options: [
-            {
-              "label": "左",
-              "value": "left"
-            },
-            {
-              "label": "右",
-              "value": "right"
-            }
-          ]
-        },
-        */
-        {
-          type: "text",
-          name: "className",
-          label: "CSS类名",
-          value: "mb-4"
-        },
-        {
-          type: "editor",
-          name: "fields",
-          label: "指定字段",
-          language: "json"
         }
+        
       ]
     }
   }
