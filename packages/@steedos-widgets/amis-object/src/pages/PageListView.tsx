@@ -2,10 +2,11 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-02 12:43:07
+ * @LastEditTime: 2023-03-10 11:26:29
  * @Description: 
  */
 import { getPage, Router } from "@steedos-widgets/amis-lib";
+import { defaultsDeep } from 'lodash';
 
 
 export const PageListView = async (props) => {
@@ -43,24 +44,26 @@ export const PageListView = async (props) => {
     "className": (displayAs === 'split')? 'w-full': 'p-0 flex-1 overflow-hidden h-full sm:m-3 sm:mb-0 sm:border sm:shadow sm:rounded border-slate-300 border-solid bg-gray-100'
   }
 
+  const defData = {
+    ...$schema.data,
+    objectName: objectApiName,
+    listViewId: listViewId,
+    listName: listviewId,
+    appId: appId,
+    formFactor: formFactor,
+    displayAs: displayAs,
+    scopeId: listViewId,
+  }
+
   return {
     type: 'service',
-    data: {
-      ...$schema.data,
-      objectName: objectApiName,
-      listViewId: listViewId,
-      listName: listviewId,
-      appId: appId,
-      formFactor: formFactor,
-      displayAs: displayAs,
-      scopeId: listViewId,
-    },
-    "className": 'p-0 flex flex-1 overflow-hidden h-full',
-    body: (displayAs === 'grid') ? listSchema : [
+    data: defData,
+    "className": (displayAs === 'grid') ? '' : 'p-0 flex flex-1 overflow-hidden h-full',
+    body: (displayAs === 'grid') ? defaultsDeep({data: defData} , listSchema) : [
       {
         "type": "wrapper",
         "className": `p-0 flex-shrink-0 min-w-[388px] overflow-y-auto border-r border-gray-300 bg-gray-100 shadow lg:order-first lg:flex lg:flex-col`,
-        "body": listSchema
+        "body": defaultsDeep({data: defData} , listSchema)
       },
       {
         "type": "wrapper",

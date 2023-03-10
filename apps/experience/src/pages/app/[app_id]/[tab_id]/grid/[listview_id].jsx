@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-02 12:43:07
+ * @LastEditTime: 2023-03-10 11:54:57
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef } from 'react';
@@ -42,7 +42,7 @@ export default function Page ({ formFactor }) {
   return (
     <>
       <AmisRender
-        id={`listview-${listviewId}`}
+        id={`${objectApiName}-listview-${listviewId}`}
         className="h-full"
         schema={schema}
         router={router}

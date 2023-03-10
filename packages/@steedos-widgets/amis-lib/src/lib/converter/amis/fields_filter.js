@@ -134,7 +134,7 @@ export async function getObjectFieldsFilterFormSchema(objectSchema, fields, ctx)
 }
 
 export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) {
-  console.log(ctx)
+  // console.log(ctx)
   if(!ctx){
     ctx = {};
   }

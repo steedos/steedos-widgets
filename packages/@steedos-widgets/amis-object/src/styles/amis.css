@@ -179,3 +179,18 @@ body {
     padding: 0 15px;
 }
 /* end: amis 2.7.2, component Nav */
+
+/* 处理amis debug 滚动条异常 */
+.AMISDebug-content{
+    height: 100%;
+}
+
+.AMISDebug-content .AMISDebug-inspect{
+    overflow: scroll;
+    height: calc(100% - 40px);
+}
+
+.AMISDebug-content .AMISDebug-log{
+    overflow: scroll;
+    height: calc(100% - 40px);
+}
