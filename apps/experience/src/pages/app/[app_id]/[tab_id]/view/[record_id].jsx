@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-07 12:36:43
+ * @LastEditTime: 2023-03-10 11:55:08
  * @Description:
  */
 import React, { useState, useEffect, Fragment } from "react";
@@ -40,7 +40,7 @@ export default function Record({formFactor}) {
   return (
     <>
       <AmisRender
-        id={`listview-${listviewId}`}
+        id={`${objectApiName}-recordDetail-${recordId}`}
         data={{
           recordId,
         }}
