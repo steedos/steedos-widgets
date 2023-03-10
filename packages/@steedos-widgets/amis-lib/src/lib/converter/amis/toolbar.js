@@ -135,7 +135,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
         "align": "right", 
         "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
         "tooltipPlacement": "bottom",
-        "visibleOn": "${!isLookup}",
+        "visibleOn": "${!isLookup && global.user.is_space_admin}",
         "tooltip": "导出Excel",
         "onEvent": {
           "click": {
@@ -147,7 +147,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                     "url": "/api/record/export/${object_name}",
                     "method": "get",
                     "messages": {},
-                    "requestAdaptor": " // debugger;\n\n// 获取列表视图的属性\nlet uiSchema = api.body.uiSchema;\nlet list_views = uiSchema.list_views;\nlet list_views_name = api.body.listName;\nlet col = list_views[list_views_name].columns;\nlet sort_test = list_views[list_views_name].sort;\n\nlet select = [];\n_.each(col, (col) => {\n    if (col.field == undefined)\n        select.push(col);\n    else select.push(col.field);\n});\n\n// debugger;\n\nlet sort = [];\n_.forEach(sort_test, (sortField) => {\n    if (sortField.field_name == undefined)\n        sort.push(sortField);\n    else sort.push([sortField.field_name, sortField.order]);\n})\n\nlet orders = [];\n_.map(sort, (value) => {\n    let order_tmp = [];\n    if (value[1] == \"desc\")\n        order_tmp = value[0] + ' desc';\n    else\n        order_tmp = value[0];\n    orders.push(order_tmp);\n});\nlet order = orders.join(',');\n\nlet filename = uiSchema.label + \"-\" + list_views[list_views_name].label;\n// debugger;\nurl_tmp = api.url.split('?')[0];\napi.url = url_tmp + \"?$select=\" + select.toString() + \"&filename=\" + filename;\n\n// 判断是否有sort条件\nif (sort.length > 0)\n    api.url += \"&$orderby=\" + order;\n\n// let $filter = JSON.stringify(list_views.test.filters);\n// if ($filter)\n// \tapi.url = api.url + \"&$filter=\" + $filter;\n // debugger;\nreturn api;",
+                    "requestAdaptor": "// 获取列表视图的属性\nlet uiSchema = api.body.uiSchema;\nlet list_views = uiSchema.list_views;\nlet list_views_name = api.body.listName;\nlet col = list_views[list_views_name].columns;\nlet sort_test = list_views[list_views_name].sort;\n\n// 获取下载字段\nlet select = [];\n_.each(col, (col) => {\n    console.log(typeof value);\n    if (col.field == undefined)\n        select.push(col);\n    else select.push(col.field);\n});\n\n// 获取排序字段\nlet sort = [];\n_.forEach(sort_test, (sortField) => {\n    if (sortField.field_name == undefined)\n        sort.push(sortField);\n    else sort.push([sortField.field_name, sortField.order]);\n})\n\nlet orders = [];\n_.map(sort, (value) => {\n    let order_tmp = [];\n    if (value[1] == \"desc\")\n        order_tmp = value[0] + ' desc';\n    else\n        order_tmp = value[0];\n    orders.push(order_tmp);\n});\nlet order = orders.join(',');\n\nlet filename = uiSchema.label + \"-\" + list_views[list_views_name].label;\nurl_tmp = api.url.split('?')[0];\napi.url = url_tmp + \"?$select=\" + select.toString() + \"&filename=\" + filename;\n\n// 判断sort\nif (sort.length > 0)\n    api.url += \"&$orderby=\" + order;\nlet filter = JSON.stringify(list_views[list_views_name].filters);\nif (filter)\n    api.url = api.url + \"&filters=\" + filter;\nreturn api;",
                     "data": {
                       "uiSchema": "${uiSchema}",
                       "listName": "${listName}"
