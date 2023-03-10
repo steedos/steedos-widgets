@@ -55,7 +55,7 @@ export const PageListView = async (props) => {
       displayAs: displayAs,
       scopeId: listViewId,
     },
-    "className": (displayAs === 'grid') ? '' : 'p-0 flex flex-1 overflow-hidden h-full',
+    "className": (displayAs === 'grid') ? 'p-0 min-h-[50px]' : 'p-0 flex flex-1 overflow-hidden h-full',
     body: (displayAs === 'grid') ? listSchema : [
       {
         "type": "wrapper",
