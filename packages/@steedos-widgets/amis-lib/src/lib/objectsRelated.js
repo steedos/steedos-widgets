@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: 廖大雪 2291335922@qq.com
- * @LastEditTime: 2023-03-08 18:31:28
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-03-10 18:38:55
  * @Description:
  */
 
@@ -244,6 +244,9 @@ function getDefaultRelatedListProps(uiSchema, listName, ctx) {
             }
         )
         columns = isNameField ? [isNameField.name] : ['name'];
+        if(ctx.globalFilter){
+            filter = ctx.globalFilter;
+        }
     }
 
     return {
