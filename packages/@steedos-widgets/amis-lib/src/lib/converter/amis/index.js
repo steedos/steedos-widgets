@@ -425,7 +425,7 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
                   eventName: "recordLoaded"
                 },
                 data: {
-                  record: "${event.data}"
+                  record: "${event.data.__record}"
                 }
               },
               {

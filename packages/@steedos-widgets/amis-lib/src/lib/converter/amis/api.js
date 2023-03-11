@@ -54,7 +54,8 @@ function getReadonlyFormAdaptor(fields){
         }catch(e){
             console.error(e)
         }
-
+        // 原始记录
+        var record = _.cloneDeep(data);
         try{
             _.each(gridAndObjectFieldsName, function(name){
                 data[name] = data._display[name];
@@ -63,7 +64,8 @@ function getReadonlyFormAdaptor(fields){
             console.error(e)
         }
         payload.data = data;
-        window.postMessage(Object.assign({type: "record.loaded"}, {record: data}), "*")
+        payload.data.__record = record;
+        window.postMessage(Object.assign({type: "record.loaded"}, {record: record}), "*")
     }
     if(payload.errors){
         payload.status = 2;
