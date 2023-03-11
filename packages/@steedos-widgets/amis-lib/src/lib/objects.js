@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-08 12:20:03
+ * @LastEditTime: 2023-03-11 17:02:30
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -351,7 +351,8 @@ export async function getTableSchema(
             fields.push(
                 Object.assign({}, uiSchema.fields[column.field], {
                     width: column.width,
-                    wrap: column.wrap,
+                    wrap: column.wrap, // wrap = true 是没效果的
+                    amis: column.amis
                 })
             );
         }

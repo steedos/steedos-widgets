@@ -78,7 +78,7 @@ async function getTableColumns(fields, options){
                 }
             })
         }else if(field.type === 'toggle'){
-            columns.push({
+            columns.push(Object.assign({}, {
                 type: "switch",
                 name: field.name,
                 label: field.label,
@@ -86,9 +86,9 @@ async function getTableColumns(fields, options){
                 toggled: field.toggled,
                 disabled: true,
                 className:"whitespace-nowrap",
-            })
+            }, field.amis, {name: field.name}))
         }else if(field.type === 'avatar' || field.type === 'image' || field.type === 'file'){
-            columns.push({
+            columns.push(Object.assign({}, {
                 type: "switch",
                 name: field.name,
                 label: field.label,
@@ -97,7 +97,7 @@ async function getTableColumns(fields, options){
                 disabled: true,
                 className:"whitespace-nowrap",
                 ...getAmisFileReadonlySchema(field)
-            })
+            }, field.amis, {name: field.name}))
         }
         
         else{
@@ -110,7 +110,7 @@ async function getTableColumns(fields, options){
                 type = 'markdown';
             }
             if(!field.hidden && !field.extra){
-                columns.push({
+                columns.push(Object.assign({}, {
                     name: field.name,
                     label: field.label,
                     sortable: field.sortable,
@@ -122,7 +122,7 @@ async function getTableColumns(fields, options){
                     className: field.type === 'textarea' ? 'min-w-56 whitespace-pre-wrap textarea' :  "whitespace-nowrap",
                     html: field.type === 'html' ? true : null
                     // toggled: true 
-                })
+                }, field.amis, {name: field.name}))
             }
         }
         

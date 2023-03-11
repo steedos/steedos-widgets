@@ -1,16 +1,46 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-02-26 14:54:00
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2023-03-11 17:01:56
  * @Description: 
  */
 import { getTableSchema, conditionsToFilters } from '@steedos-widgets/amis-lib'
-import { keys, pick, difference, pickBy, has } from 'lodash';
+import { keys, pick, difference, pickBy, has, each, isString } from 'lodash';
+
+
+function getTableColumns(columns, includedFields, fieldsExtend = {}){
+  if(columns){
+    return columns;
+  }
+
+  const tableColumns = [];
+
+  let _fieldsExtend = fieldsExtend;
+
+  if(isString(_fieldsExtend)){
+    try {
+      _fieldsExtend = JSON.parse(_fieldsExtend);
+    } catch (error) {
+      _fieldsExtend = {}
+    }
+  }
+
+  each(includedFields, (fName)=>{
+    let extend = {};
+    try {
+      extend = _fieldsExtend[fName] || {}
+    } catch (error) {
+      
+    }
+    tableColumns.push(Object.assign({}, extend, { field: fName}))
+  })
+  return tableColumns;
+}
 
 export const AmisObjectTable = async (props) => {
   // console.log(`AmisObjectTable props`, props)
-  const { $schema, filters, filtersFunction, amisCondition, top, headerSchema, 
+  const { $schema, filters, filtersFunction, amisCondition, top, headerSchema, includedFields, fieldsExtend,
     sort, sortField, sortOrder, extraColumns, data, defaultData, 
     formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE',
     className = "", requestAdaptor,  adaptor} = props;
@@ -21,7 +51,7 @@ export const AmisObjectTable = async (props) => {
   if(!ctx.formFactor){
     ctx.formFactor = formFactor;
   }
-  const columns = props.columns || [];
+  const columns = getTableColumns(props.columns, includedFields, fieldsExtend) || [];
   let defaults: any = {};
   let objectApiName = props.objectApiName || "space_users";
 
