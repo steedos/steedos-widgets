@@ -417,7 +417,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                             gridItemSchema.type = gridSub.type;
                             gridItemSchema.tpl = gridSub.tpl;
                         }
-                        convertData.columns.push(gridItemSchema)
+                        convertData.columns.push(Object.assign({}, gridItemSchema, subField.amis, {name: subFieldName}))
                     }
                 }
             }
@@ -432,7 +432,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                 for (let subField of field.subFields) {
                     let subFieldName = subField.name.replace(`${field.name}.$.`, '').replace(`${field.name}.`, '');
                     if(subField.type === 'grid'){
-                        subField = await Fields.getGridFieldSubFields(subField, ctx.__permissionFields);
+                        subField = await Fields.getGridFieldSubFields(subField, ctx.__formFields);
                     }else{
                         if(readonly){
                             subFieldName = `${field.name}.${subFieldName}`
@@ -443,9 +443,8 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                         delete gridSub.name
                         delete gridSub.label
                         convertData.items.push(
-                            Object.assign({}, gridSub, {
-                                name: subFieldName,
-                                label: subField.label
+                            Object.assign({}, gridSub, {label: subField.label}, subField.amis, {
+                                name: subFieldName
                             })
                         )
                     }

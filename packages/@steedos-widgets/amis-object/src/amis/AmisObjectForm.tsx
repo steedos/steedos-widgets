@@ -10,7 +10,7 @@ import { keys, pick, difference, isString } from 'lodash';
 
 export const AmisObjectForm = async (props) => {
   // console.log("===AmisObjectForm=props==", props);
-  const { $schema, recordId, mode, layout, labelAlign, appId, fieldsExtend, excludedFields = null, includedFields = null,
+  const { $schema, recordId, mode, layout, labelAlign, appId, fieldsExtend, excludedFields = null, fields = null,
     className=""
   } = props;
   let objectApiName = props.objectApiName || "space_users";
@@ -28,7 +28,7 @@ export const AmisObjectForm = async (props) => {
     defaults,
     appId,
     excludedFields,
-    includedFields
+    fields
   }
 
   try {

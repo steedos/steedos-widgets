@@ -40,7 +40,7 @@ function getTableColumns(columns, includedFields, fieldsExtend = {}){
 
 export const AmisObjectTable = async (props) => {
   // console.log(`AmisObjectTable props`, props)
-  const { $schema, filters, filtersFunction, amisCondition, top, headerSchema, includedFields, fieldsExtend,
+  const { $schema, filters, filtersFunction, amisCondition, top, headerSchema, fields: includedFields, fieldsExtend,
     sort, sortField, sortOrder, extraColumns, data, defaultData, 
     formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE',
     className = "", requestAdaptor,  adaptor} = props;

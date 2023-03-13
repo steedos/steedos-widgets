@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 16:55:58
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-02 16:01:49
+ * @LastEditTime: 2023-03-13 11:40:59
  * @Description: 
  */
 
@@ -17,7 +17,7 @@ export const AmisRender = ({id, schema, data, className, assets, getModalContain
 
     useEffect(() => {
         
-        const defData = defaultsDeep({data: {$scopeId : id }}, {data: data} , {
+        const defData = defaultsDeep({data: {$scopeId : id ,scopeId : id }}, {data: data} , {
             data: getDefaultRenderData()
         });
         // 如果已存在,则先销毁, 再创建新实例

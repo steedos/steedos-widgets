@@ -259,10 +259,10 @@ const getFormFields = (objectSchema, formProps)=>{
   const { fields: objectFields } = objectSchema;
   /**
    * fieldsExtend: 重写字段定义
-   * includedFields: 包含的字段
+   * fields: 包含的字段
    * excludedFields: 排除的字段
    */
-  const { fieldsExtend, includedFields, excludedFields } = formProps;
+  const { fieldsExtend, fields: includedFields, excludedFields } = formProps;
   
   let fields = {};
   // 以uiSchema fields  为基础, 遍历字段, 并更新字段定义
