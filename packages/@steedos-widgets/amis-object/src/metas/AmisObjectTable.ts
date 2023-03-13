@@ -104,13 +104,13 @@ export default {
         type: config.amis.name,
         label: config.title,
         objectApiName: "${objectName}",
-        includedFields: [ "name"],
+        fields: [ "name"],
         className: "sm:border sm:shadow sm:rounded sm:border-gray-300"
       },
       previewSchema: {
         type: config.amis.name,
         objectApiName: 'space_users',
-        includedFields: [ "name"]
+        fields: [ "name"]
       },
       panelTitle: "设置",
       panelControls: [
@@ -169,7 +169,7 @@ export default {
                         },
                         {
                           type: "transfer-picker",
-                          name: "includedFields",
+                          name: "fields",
                           label: "显示的字段",
                           // mode: 'horizontal',
                           // horizontal: {

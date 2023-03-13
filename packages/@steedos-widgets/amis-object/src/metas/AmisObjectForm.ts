@@ -262,7 +262,7 @@ export default {
                         
                         {
                           type: "transfer-picker",
-                          name: "includedFields",
+                          name: "fields",
                           label: "显示的字段",
                           // mode: 'horizontal',
                           // horizontal: {
