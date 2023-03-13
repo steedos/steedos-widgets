@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-26 16:02:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-08 10:49:19
+ * @LastEditTime: 2023-03-13 16:01:40
  * @Description: 
  */
 import * as Fields from '../fields';
@@ -31,7 +31,7 @@ const getFieldSchemaArray = (formFields)=>{
   return fieldSchemaArray;
 }
 
-const getSection = async (permissionFields, fieldSchemaArray, sectionName, ctx) => {
+const getSection = async (formFields, permissionFields, fieldSchemaArray, sectionName, ctx) => {
   const sectionFields = lodash.filter(fieldSchemaArray, { 'group': sectionName });
   if(sectionFields.length == lodash.filter(sectionFields, ['hidden', true]).length){
     return ;
@@ -42,15 +42,16 @@ const getSection = async (permissionFields, fieldSchemaArray, sectionName, ctx) 
   for (const perField of sectionFields) {
     let field = perField;
       if(perField.type === 'grid'){
-          field = await Fields.getGridFieldSubFields(perField, permissionFields);
+          field = await Fields.getGridFieldSubFields(perField, formFields);
+          // console.log(`perField.type grid ===> field`, field)
       }else if(perField.type === 'object'){
-          field = await Fields.getObjectFieldSubFields(perField, permissionFields);
+          field = await Fields.getObjectFieldSubFields(perField, formFields);
           // console.log(`perField.type object ===> field`, field)
       }
       if(field.name.indexOf(".") < 0){
-          ctx.__permissionFields = permissionFields;
+          ctx.__formFields = formFields;
           const amisField = await Fields.convertSFieldToAmisField(field, field.readonly, ctx);
-          // console.log(`${field.name} amisField`, amisField)
+          // console.log(`${field.name} amisField`, field, amisField)
           if(amisField){
               fieldSetBody.push(amisField);
           }
@@ -78,7 +79,7 @@ export const getSections = async (permissionFields, formFields, ctx) => {
   const _sections = lodash.groupBy(fieldSchemaArray, 'group');
   const sections = [];
   for (const key in _sections) {
-    const section = await getSection(permissionFields, fieldSchemaArray, key, ctx);
+    const section = await getSection(formFields, permissionFields, fieldSchemaArray, key, ctx);
     if(section.body.length > 0){
       sections.push(section)
     }
