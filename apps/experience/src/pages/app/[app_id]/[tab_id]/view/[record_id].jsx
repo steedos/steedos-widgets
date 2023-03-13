@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-10 11:55:08
+ * @LastEditTime: 2023-03-13 11:24:09
  * @Description:
  */
 import React, { useState, useEffect, Fragment } from "react";
@@ -20,7 +20,7 @@ export default function Record({formFactor}) {
     listview_id: listviewId, 
     record_id: recordId, 
     display, 
-    side_object : sideObject = tabId, 
+    side_object : sideObject = router.query.tabId, 
     side_listview_id : sideListviewId = listviewId } = router.query;
 
   let schema = {
