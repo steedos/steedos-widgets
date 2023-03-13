@@ -232,28 +232,38 @@ export async function getSelectUserSchema(field, readonly, ctx) {
         amisSchema.tpl = await Tpl.getLookupTpl(field, ctx)
     }
     else{
-        const refUsersObjectConfig = await getUISchema(refUsersObjectName);
-        ctx.usersSort = getRefListViewSort(refUsersObjectConfig);
-        const refOrgsObjectConfig = await getUISchema(refOrgsObjectName);
-        ctx.orgsSort = getRefListViewSort(refOrgsObjectConfig);
-        Object.assign(amisSchema, {
-            // "labelField": "name",
-            // "valueField": "user",
-            "multiple": field.multiple,
-            "searchable": field.searchable,
-            "selectMode": "associated",
-            "leftMode": "tree",
-            "extractValue": true,
-            "clearable": true,
-            "source": await getSource(field, ctx),
-            "deferApi": await getDeferApi(field, ctx),
-            "searchApi": await getSearchApi(field, ctx)
-        });
-        if(field.multiple){
-            // 单选时如果配置joinValues为false，清空字段值会把字段值设置为空数组，这是amis人员单选功能的bug，普通的select没有这个问题
+        const { options } = ctx;
+        if(options && options.length){
             Object.assign(amisSchema, {
-                "joinValues": false,
+                "type": "picker",
+                "multiple": field.multiple,
+                "options": options
             });
+        }
+        else {
+            const refUsersObjectConfig = await getUISchema(refUsersObjectName);
+            ctx.usersSort = getRefListViewSort(refUsersObjectConfig);
+            const refOrgsObjectConfig = await getUISchema(refOrgsObjectName);
+            ctx.orgsSort = getRefListViewSort(refOrgsObjectConfig);
+            Object.assign(amisSchema, {
+                // "labelField": "name",
+                // "valueField": "user",
+                "multiple": field.multiple,
+                "searchable": field.searchable,
+                "selectMode": "associated",
+                "leftMode": "tree",
+                "extractValue": true,
+                "clearable": true,
+                "source": await getSource(field, ctx),
+                "deferApi": await getDeferApi(field, ctx),
+                "searchApi": await getSearchApi(field, ctx)
+            });
+            if(field.multiple){
+                // 单选时如果配置joinValues为false，清空字段值会把字段值设置为空数组，这是amis人员单选功能的bug，普通的select没有这个问题
+                Object.assign(amisSchema, {
+                    "joinValues": false,
+                });
+            }
         }
         if (typeof amisSchema.searchable !== "boolean") {
             amisSchema.searchable = true;
