@@ -536,3 +536,85 @@ export async function lookupToAmis(field, readonly, ctx){
 export async function lookupToAmisSelectUser(field, readonly, ctx){
     return getSelectUserSchema(field, readonly, ctx);
 }
+
+export async function getIdsPickerSchema(field, readonly, ids, ctx){
+    let referenceTo = await getReferenceTo(field);
+    if(!referenceTo){
+        return ;
+    }
+    const refObjectConfig = await getUISchema(referenceTo.objectName);
+
+    const fields = {
+        [referenceTo.labelField.name]: referenceTo.labelField,
+        [referenceTo.valueField.name]: referenceTo.valueField
+    };
+
+    const tableFields = [referenceTo.labelField];
+
+    const source = await getApi(refObjectConfig, null, fields, {expand: true, alias: 'rows', queryOptions: `filters: {__filters}, top: {__top}, skip: {__skip}`});
+    
+    source.data.$term = "$term";
+    source.data.$self = "$$";
+   
+    source.requestAdaptor = `
+        const selfData = JSON.parse(JSON.stringify(api.data.$self));
+        var filters = [];
+        var pageSize = api.data.pageSize || 1000;
+        var pageNo = api.data.pageNo || 1;
+        var skip = (pageNo - 1) * pageSize;
+        if(selfData.op === 'loadOptions' && selfData.value){
+            if(selfData.value?.indexOf(',') > 0){
+                filters = [["${referenceTo.valueField.name}", "=", selfData.value.split(',')]];
+            }else{
+                filters = [["${referenceTo.valueField.name}", "=", selfData.value]];
+            }
+        }
+        
+        var ids = ${JSON.stringify(ids)};
+        if(ids && ids.length){
+            filters.push(["${referenceTo.valueField.name}", "=", ids]);
+        }
+
+        api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', pageSize).replace('{__skip}', skip);
+        return api;
+    `;
+
+    let top = 1000;
+
+    let pickerSchema = null;
+    if(ctx.formFactor === 'SMALL'){
+        pickerSchema = await List.getListSchema(tableFields, {
+            top:  top,
+            ...ctx,
+            actions: false
+        })
+    }else{
+        pickerSchema = await Table.getTableSchema(tableFields, {
+            labelFieldName: refObjectConfig.NAME_FIELD_KEY,
+            top:  top,
+            ...ctx
+        })
+    }
+
+    const data = {
+        type: Field.getAmisStaticFieldType('picker', readonly),
+        labelField: referenceTo.labelField.name,
+        valueField: referenceTo.valueField.name,
+        modalMode: 'dialog', 
+        source: source,
+        size: "lg",
+        pickerSchema: pickerSchema,
+        joinValues: false,
+        extractValue: true
+    }
+    if(field.multiple){
+        data.multiple = true
+        data.extractValue = true
+    }
+
+    if(readonly){
+        data.tpl = await Tpl.getLookupTpl(field, ctx)
+    }
+
+    return data;
+}
