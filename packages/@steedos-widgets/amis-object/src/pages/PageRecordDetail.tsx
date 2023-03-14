@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-13 16:02:46
+ * @LastEditTime: 2023-03-14 09:15:44
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef } from 'react';
@@ -10,12 +10,12 @@ import { getPage, Router } from "@steedos-widgets/amis-lib";
 import { defaultsDeep } from 'lodash';
 
 export const PageRecordDetail = async (props) => {
-  const { formFactor: defaultFormFactor, appId, objectApiName, listviewId, recordId, display, sideObject = objectApiName, sideListviewId = listviewId, $schema } = props
+  const { formFactor: defaultFormFactor, appId, objectApiName, recordId, display, sideObject, sideListviewId, $schema } = props
   
   if (display)
     Router.setTabDisplayAs(objectApiName, display)
 
-  let displayAs = (defaultFormFactor === 'SMALL')? 'grid': display? display : sideObject? 'split': Router.getTabDisplayAs(tabId);
+  let displayAs = (defaultFormFactor === 'SMALL')? 'grid': display? display : sideObject? 'split': Router.getTabDisplayAs(objectApiName);
   const formFactor = (["split"].indexOf(displayAs) > -1) ? 'SMALL': defaultFormFactor
 
   const listPage = await getPage({type: 'list', appId: appId, objectName: objectApiName, formFactor})
@@ -38,12 +38,6 @@ export const PageRecordDetail = async (props) => {
       ],
     }
   }
-
-  const listViewId = SteedosUI.getRefId({
-    type: "listview",
-    appId: appId,
-    name: sideObject,
-  });
 
   const listSchema = listPage? JSON.parse(listPage.schema) : {
     "type": "steedos-object-listview",
