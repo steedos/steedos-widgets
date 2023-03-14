@@ -506,6 +506,10 @@ export async function lookupToAmis(field, readonly, ctx){
         // return await lookupToAmisGroup(field, readonly, ctx);
     }
 
+    if(field.ids){
+        return await lookupToAmisIdsPicker(field, readonly, ctx);
+    }
+
     let referenceTo = await getReferenceTo(field);
     if(!referenceTo){
         return await lookupToAmisSelect(field, readonly, ctx);
@@ -537,13 +541,18 @@ export async function lookupToAmisSelectUser(field, readonly, ctx){
     return getSelectUserSchema(field, readonly, ctx);
 }
 
-export async function getIdsPickerSchema(field, readonly, ids, ctx){
+export async function lookupToAmisIdsPicker(field, readonly, ctx){
+    return getIdsPickerSchema(field, readonly, ctx);
+}
+
+export async function getIdsPickerSchema(field, readonly, ctx){
     let referenceTo = await getReferenceTo(field);
     if(!referenceTo){
         return ;
     }
     const refObjectConfig = await getUISchema(referenceTo.objectName);
 
+    const ids = field.ids;
     const fields = {
         [referenceTo.labelField.name]: referenceTo.labelField,
         [referenceTo.valueField.name]: referenceTo.valueField

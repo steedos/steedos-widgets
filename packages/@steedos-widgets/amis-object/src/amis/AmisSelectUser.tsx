@@ -11,8 +11,9 @@ export const AmisSelectUser = async (props) => {
       searchable: $schema.searchable,
       onEvent: $schema.onEvent,
       filters: $schema.filters,
-      reference_to: "users"
-    }, false, ids, {});
+      reference_to: "users",
+      ids
+    }, false, {});
   }
   else{
     amisSchema = await getSelectUserSchema({
