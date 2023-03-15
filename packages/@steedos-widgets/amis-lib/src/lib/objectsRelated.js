@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-03-10 18:38:55
+ * @LastEditors: 廖大雪 2291335922@qq.com
+ * @LastEditTime: 2023-03-15 10:57:31
  * @Description:
  */
 
@@ -88,9 +88,24 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
         relatedLabel = label;
     }
     if(!relatedKey){
-        relatedKey = findKey(fields, function(field) { 
-           return ["lookup","master_detail"].indexOf(field.type) > -1 && field.reference_to === objectName; 
-        });
+        let mainRelated = {};
+        const mainObjectUiSchema = await getUISchema(objectName);
+        if(mainObjectUiSchema){
+            const mainRelatedLists = mainObjectUiSchema.related_lists || [];
+            if(!isEmpty(mainRelatedLists)){
+                for (const relatedList of mainRelatedLists) {
+                    const arr = relatedList.related_field_fullname.split(".");
+                    mainRelated[arr[0]] = arr[1];
+                }
+            }else{
+                const details = mainObjectUiSchema.details || [];
+                for (const detail of details) {
+                    const arr = detail.split(".");
+                    mainRelated[arr[0]] = arr[1];
+                }
+            }
+        }
+        relatedKey = mainRelated[relatedObjectName];
     }
     let globalFilter = null;
     const refField = await getField(relatedObjectName, relatedKey);
