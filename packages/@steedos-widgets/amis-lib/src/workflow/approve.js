@@ -111,7 +111,7 @@ const getNextStepInput = async (instance) => {
             multiple: false,
             required: true,
             "source": {
-              "url": "${context.rootUrl}/api/workflow/v2/nextStep",
+              "url": "${context.rootUrl}/api/workflow/v2/nextStep?judge=${new_judge}",
               "headers": {
                 "Authorization": "Bearer ${context.tenantId},${context.authToken}"
               },
@@ -211,19 +211,25 @@ const getNextStepUsersInput = async (instance) => {
       {
         body: [
           // TODO 处理下一步处理人默认值
-          Object.assign({}, await lookupToAmisPicker(
-            {
-              name: "next_users",
-              label: false,
-              reference_to: "space_users",
-              reference_to_field: 'user',
-              multiple: false,
-            },
-            false,
-            {}
-          ),{
+          Object.assign({}, 
+          //   await lookupToAmisPicker(
+          //   {
+          //     name: "next_users",
+          //     label: false,
+          //     reference_to: "space_users",
+          //     reference_to_field: 'user',
+          //     multiple: false,
+          //   },
+          //   false,
+          //   {}
+          // ),
+          {
+            "type": "steedos-select-user"
+          },
+          
+          {
             name: "next_users", 
-            value: "",
+            // value: "",
             hiddenOn: "this.new_next_step.deal_type != 'pickupAtRuntime'",
             required: true
           }),
@@ -234,7 +240,7 @@ const getNextStepUsersInput = async (instance) => {
             // options: await getNextStepOptions(instance),
             id: "u:next_users",
             required: true,
-            multiple: false,
+            multiple: "this.new_next_step.deal_type === 'counterSign'",
             "source": {
               "url": "${context.rootUrl}/api/workflow/v2/nextStepUsers",
               "method": "post",
@@ -448,6 +454,8 @@ export const getApprovalDrawerSchema = async (instance) => {
         debug: false,
         id: "instance_approval",
         resetAfterSubmit: true,
+        clearPersistDataAfterSubmit: true,
+        persistData: `workflow_approve_form_${instance.approve._id}`,
         body: [
           await getJudgeInput(instance),
           {

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-28 17:06:07
+ * @LastEditTime: 2023-03-15 10:56:18
  * @Description:
  */
 import {
@@ -803,21 +803,28 @@ export const getFlowFormSchema = async (instance, box) => {
       "header"
     ],
     onEvent: {
-      inited: {
-        weight: 0,
+      "@data.@instanceDetail.changed": {
         actions: [
           {
-            componentId: "u:cc1afbdc3868",
-            actionType: "click",
-          },
-          // {
-          //   "componentId": "",
-          //   "args": {},
-          //   "actionType": "drawer",
-          //   "drawer": await getApprovalDrawerSchema()
-          // }
-        ],
+            actionType: "reload"
+          }
+        ]
       }
+      // inited: {
+      //   weight: 0,
+      //   actions: [
+      //     // {
+      //     //   componentId: "u:cc1afbdc3868",
+      //     //   actionType: "click",
+      //     // },
+      //     // {
+      //     //   "componentId": "",
+      //     //   "args": {},
+      //     //   "actionType": "drawer",
+      //     //   "drawer": await getApprovalDrawerSchema()
+      //     // }
+      //   ],
+      // }
     },
     initApi:{
       "url": "${context.rootUrl}/graphql",
