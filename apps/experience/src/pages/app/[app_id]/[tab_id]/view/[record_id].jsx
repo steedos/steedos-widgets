@@ -2,14 +2,14 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-13 11:24:09
+ * @LastEditTime: 2023-03-15 13:37:16
  * @Description:
  */
 import React, { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
 import { AmisRender } from "@/components/AmisRender";
-import { getPage, Router } from "@steedos-widgets/amis-lib";
-import { Loading } from '@/components/Loading';
+// import { getPage, Router } from "@steedos-widgets/amis-lib";
+// import { Loading } from '@/components/Loading';
 
 export default function Record({formFactor}) {
   

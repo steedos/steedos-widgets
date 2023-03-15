@@ -7,9 +7,9 @@
  */
 import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { useRouter } from 'next/router'
-import { getPage, Router } from "@steedos-widgets/amis-lib";
-import { Loading } from '@/components/Loading';
-import { PageListView } from "@steedos-widgets/amis-object";
+// import { getPage, Router } from "@steedos-widgets/amis-lib";
+// import { Loading } from '@/components/Loading';
+// import { PageListView } from "@steedos-widgets/amis-object";
 
 import { AmisRender } from "@/components/AmisRender";
 

@@ -2,12 +2,12 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-04 15:01:06
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-01-10 16:43:32
+ * @LastEditTime: 2023-03-15 13:37:22
  * @Description: 
  */
 import React, { useState, useEffect, Fragment } from "react";
 import { getObjectRelated, getUISchema } from '@steedos-widgets/amis-lib';
-import { RelatedList } from "@/components/object/RelatedList";
+// import { RelatedList } from "@/components/object/RelatedList";
 import { useRouter } from 'next/router'
 import { AmisRender } from "@/components/AmisRender";
 
