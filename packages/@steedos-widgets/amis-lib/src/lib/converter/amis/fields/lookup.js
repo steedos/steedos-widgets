@@ -195,7 +195,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             filters.push(fieldFilters);
         }
         
-        const filtersFunction = ${field._filtersFunction};
+        const filtersFunction = ${field.filtersFunction || field._filtersFunction};
 
         if(filtersFunction){
             const _filters = filtersFunction(filters, api.data.$self.__super.__super);
@@ -236,6 +236,12 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     }
     return payload;
     `;
+    if(field.optionsFunction || field._optionsFunction){
+        source.adaptor = `
+        payload.data.rows = eval(${field.optionsFunction || field._optionsFunction})(api.data.$self);
+        return payload;
+        `
+    }
     let top = 20;
 
     if(refObjectConfig.paging && refObjectConfig.paging.enabled === false){
