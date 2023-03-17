@@ -500,7 +500,6 @@ export async function getFieldSearchable(perField, permissionFields, ctx){
         field = await Fields.getObjectFieldSubFields(perField, permissionFields);
     }
 
-    
     let fieldNamePrefix = '__searchable__';
     if(field.name.indexOf(".") < 0){
         let _field = cloneDeep(field)
@@ -508,7 +507,16 @@ export async function getFieldSearchable(perField, permissionFields, ctx){
             _field.type = 'text'
         }
 
-        if(field.type === 'number' || field.type === 'currency'){
+        if(includes(['formula', 'summary'], field.type)){
+            _field.type = field.data_type;
+            _field.precision = field.precision;
+            _field.scale = field.scale;
+        }
+        else if(field.type === "select" && field.data_type && field.data_type != "text"){
+            _field.type = field.data_type;
+        }
+
+        if(_field.type === 'number' || _field.type === 'currency'){
             _field.type = 'input-array';
             _field.inline = true;
             _field.addable = false;
@@ -521,22 +529,22 @@ export async function getFieldSearchable(perField, permissionFields, ctx){
             fieldNamePrefix = `${fieldNamePrefix}between__`
         }
 
-        if(field.type ==='date'){
+        if(_field.type ==='date'){
             _field.type = 'input-date-range';
             _field.is_wide = true;
             fieldNamePrefix = `${fieldNamePrefix}between__`
         }
-        if(field.type === 'datetime'){
+        if(_field.type === 'datetime'){
             _field.type = 'input-datetime-range'
             _field.is_wide = true;
             fieldNamePrefix = `${fieldNamePrefix}between__`
         }
-        if(field.type === 'time'){
+        if(_field.type === 'time'){
             _field.type = 'input-time-range'
             _field.is_wide = true;
             fieldNamePrefix = `${fieldNamePrefix}between__`
         }
-        if(field.reference_to === 'users'){
+        if(_field.reference_to === 'users'){
             _field.reference_to = 'space_users';
             _field.reference_to_field = 'user';
         }
