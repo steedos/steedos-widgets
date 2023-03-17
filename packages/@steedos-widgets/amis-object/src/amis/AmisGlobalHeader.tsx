@@ -3,7 +3,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 廖大雪 2291335922@qq.com
- * @LastEditTime: 2023-03-16 15:35:14
+ * @LastEditTime: 2023-03-17 14:09:53
  * @Description: 
  */
 
@@ -154,7 +154,7 @@ export const AmisGlobalHeader = async (props) => {
                                           "args": {
                                             "options": {},
                                             "api": {
-                                              "url": "${context.rootUrl}/api/v4/notifications/${_id}/read?rootUrl="+window.location.origin+"&appId=${appId}&async=true",
+                                              "url": "${context.rootUrl}/api/v4/notifications/${_id}/read?rootUrl=&appId=${appId}&async=true",
                                               "method": "get",
                                               "messages": {},
                                               "headers": {
@@ -170,6 +170,7 @@ export const AmisGlobalHeader = async (props) => {
                                             "url": "${event.data.responseResult.responseData.redirect}",
                                             "blank": true
                                           },
+                                          "expression": "${!!event.data.responseResult.responseData.redirect}",
                                           "actionType": "url"
                                         }
                                       ]
