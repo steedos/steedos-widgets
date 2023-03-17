@@ -512,10 +512,6 @@ export async function lookupToAmis(field, readonly, ctx){
         // return await lookupToAmisGroup(field, readonly, ctx);
     }
 
-    if(field.ids){
-        return await lookupToAmisIdsPicker(field, readonly, ctx);
-    }
-
     let referenceTo = await getReferenceTo(field);
     if(!referenceTo){
         return await lookupToAmisSelect(field, readonly, ctx);
