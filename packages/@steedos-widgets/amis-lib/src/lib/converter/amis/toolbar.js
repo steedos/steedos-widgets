@@ -144,10 +144,62 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
               {
                 "args": {
                   "api": {
-                    "url": "${context.rootUrl}/api/record/export/${object_name}",
+                    "url": "${context.rootUrl}/api/record/export/${objectName}",
                     "method": "get",
                     "messages": {},
-                    "requestAdaptor": "// 获取列表视图的属性\nlet uiSchema = api.body.uiSchema;\nlet list_views = uiSchema.list_views;\nlet list_views_name = api.body.listName;\nlet col = list_views[list_views_name].columns;\nlet sort_test = list_views[list_views_name].sort;\n\n// 获取下载字段\nlet select = [];\n_.each(col, (col) => {\n    if (col.field == undefined)\n        select.push(col);\n    else select.push(col.field);\n});\n\n// 获取排序字段\nlet sort = [];\n_.forEach(sort_test, (sortField) => {\n    if (sortField.field_name == undefined)\n        sort.push(sortField);\n    else sort.push([sortField.field_name, sortField.order]);\n})\n\nlet orders = [];\n_.map(sort, (value) => {\n    let order_tmp = [];\n    if (value[1] == \"desc\")\n        order_tmp = value[0] + ' desc';\n    else\n        order_tmp = value[0];\n    orders.push(order_tmp);\n});\nlet order = orders.join(',');\n\nlet filename = uiSchema.label + \"-\" + list_views[list_views_name].label;\nurl_tmp = api.url.split('?')[0];\napi.url = url_tmp + \"?$select=\" + select.toString() + \"&filename=\" + filename;\n\n// 判断sort 和 filters\nif (sort.length > 0) {\n    api.url += \"&$orderby=\" + order;\n}\nlet filters = list_views[list_views_name].filters;\nif (filters && filters.length > 0) {\n    api.url = api.url + \"&filters=\" + JSON.stringify(filters);\n}\nreturn api;",
+                    "requestAdaptor": `
+                      console.log(api.url);
+                      // 获取列表视图的属性
+                      let uiSchema = api.body.uiSchema;
+                      let list_views = uiSchema.list_views;
+                      let list_views_name = api.body.listName;
+                      let col = list_views[list_views_name].columns;
+                      let sort_test = list_views[list_views_name].sort;
+                      
+                      // 获取下载字段
+                      let select = [];
+                      _.each(col, (col) => {
+                          if (col.field == undefined)
+                              select.push(col);
+                          else select.push(col.field);
+                      });
+                      
+                      // 获取排序字段
+                      
+                      let sort = [];
+                      _.forEach(sort_test, (sortField) => {
+                          if (sortField.field_name == undefined)
+                              sort.push(sortField);
+                          else sort.push([sortField.field_name, sortField.order]);
+                      })
+                      
+                      let orders = [];
+                      _.map(sort, (value) => {
+                          let order_tmp = [];
+                          if (value[1] == "desc")
+                              order_tmp = value[0] + ' desc';
+                          else
+                              order_tmp = value[0];
+                          orders.push(order_tmp);
+                      });
+                      let order = orders.join(',');
+                      
+                      let filename = uiSchema.label + "-" + list_views[list_views_name].label;
+                      
+                      url_tmp = api.url.split('?')[0];
+                      api.url = url_tmp + "?$select=" + select.toString() + "&filename=" + filename;
+                      
+                      // 判断sort 和 filters
+                      if (sort.length > 0) {
+                          api.url += "&$orderby=" + order;
+                      }
+                      let filters = list_views[list_views_name].filters;
+                      if (filters && filters.length > 0) {
+                          api.url = api.url + "&filters=" + JSON.stringify(filters);
+                      }
+                      console.log(api.url);
+                      return api;
+                      `,
                     "data": {
                       "uiSchema": "${uiSchema}",
                       "listName": "${listName}"
