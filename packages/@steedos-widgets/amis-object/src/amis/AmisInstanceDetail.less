@@ -91,3 +91,49 @@
 .steedos-amis-instance-view .form-control{
     background: no-repeat;
 }
+
+.steedos-amis-instance-view .form-control .antd-Table-table{
+    thead{
+        th{
+            background: transparent !important;
+            border-color: #000
+        }
+    }
+
+    tbody{
+        td{
+            border: 1px solid #000;
+            padding-left: 0.75rem !important;
+        }
+        td:last-child{
+            border-right: none !important;
+        }
+        td:first-child{
+            border-left: none !important;
+        }
+
+        tr:last-child{
+            td{
+                border-bottom: none !important;
+            }
+        }
+    }
+}
+
+.steedos-amis-instance-view .form-control .antd-InputTable{
+    .antd-Table{
+        margin-bottom: 0px;
+    }
+
+    .antd-InputTable-toolbar{
+        border-top: 1px solid #000;
+        button{
+            width: 100%;
+            height: 100%;
+            border-radius: 0px;
+            background: transparent;
+            border: none;
+            color: #000;
+        }
+    }
+}

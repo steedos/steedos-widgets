@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-15 10:56:18
+ * @LastEditTime: 2023-03-17 09:54:51
  * @Description:
  */
 import {
@@ -362,6 +362,7 @@ const getFieldEditTpl = async (field, label)=>{
         tpl.addable = field.permission === "editable";
         tpl.editable = tpl.addable;
         tpl.copyable = tpl.addable;
+        tpl.removable = tpl.addable;
         tpl.columns = [];
         for (const sField of field.fields) {
           if (sField.type != "hidden") {
@@ -383,6 +384,7 @@ const getFieldEditTpl = async (field, label)=>{
 };
 
 const getFieldReadonlyTpl = async (field, label)=>{
+  console.log(`getFieldReadonlyTpl`, label, field)
   const tpl = {
     label: label === true ? field.name : false,
     name: field.code,
@@ -414,6 +416,10 @@ const getFieldReadonlyTpl = async (field, label)=>{
   }else if(field.type === 'password'){
     tpl.type = 'static'
     tpl.tpl = `******`
+  }else if(field.type === 'date'){
+    tpl.type = 'static'
+    // tpl.format = 'YYYY-MM-DD HH:mm'
+    tpl.tpl = `<%=data.${field.code} ? date(new Date(data.${field.code}), 'YYYY-MM-DD') : '' %>`
   }else if(field.type === 'dateTime'){
     tpl.type = 'static'
     // tpl.format = 'YYYY-MM-DD HH:mm'
@@ -434,6 +440,7 @@ const getFieldReadonlyTpl = async (field, label)=>{
     tpl.type = "input-table"; //TODO
     tpl.addable = field.permission === "editable";
     tpl.editable = tpl.addable;
+    tpl.removable = tpl.addable;
     tpl.copyable = tpl.addable;
     tpl.columns = [];
     for (const sField of field.fields) {
@@ -569,12 +576,14 @@ const getFormTrs = async (instance) => {
 };
 
 const getFormTableView = async (instance) => {
-  return {
+  const formSchema = {
     type: "table-view",
     className: "instance-form-view",
     trs: await getFormTrs(instance),
     id: "u:047f3669468b",
   };
+  console.log(`getFormTableView formSchema=====>`, formSchema)
+  return formSchema;
 };
 
 const getApplicantTableView = async (instance) => {
