@@ -5,7 +5,7 @@ import { getOpinionFieldStepsName } from './util';
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 17:47:37
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-15 18:14:45
+ * @LastEditTime: 2023-03-18 15:32:34
  * @Description:
  */
 
@@ -192,6 +192,8 @@ export const getInstanceInfo = async ({ instanceId, box }) => {
       query: query,
     }),
   });
+  
+
   let userApprove = null;
   let trace = null;
   let step = null;
@@ -210,6 +212,8 @@ export const getInstanceInfo = async ({ instanceId, box }) => {
     step = getStep({ flowVersion, stepId: trace.step });
   }
 
+  let currentStep = getStep({ flowVersion, stepId: _.last(instance.traces).step });
+
   const lastCCStep = getLastCCStep(instance, userId);
 
   const values = getApproveValues({
@@ -218,6 +222,10 @@ export const getInstanceInfo = async ({ instanceId, box }) => {
     step,
     approve: userApprove,
     box,
+  });
+
+  const flowPermissions = await fetchAPI(`/api/workflow/v2/flow_permissions/${instance.flow._id}`, {
+    method: "get",
   });
 
   return {
@@ -246,6 +254,8 @@ export const getInstanceInfo = async ({ instanceId, box }) => {
     step: step,
     lastCCStep: lastCCStep,
     trace: trace,
+    currentStep,
+    flowPermissions: flowPermissions?.permissions || [],
     approve: userApprove,
     record_ids: instance.record_ids,
     related_instances: instance.related_instances,
