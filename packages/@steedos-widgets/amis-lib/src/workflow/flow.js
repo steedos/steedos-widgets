@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-17 09:54:51
+ * @LastEditTime: 2023-03-18 16:19:49
  * @Description:
  */
 import {
@@ -384,7 +384,7 @@ const getFieldEditTpl = async (field, label)=>{
 };
 
 const getFieldReadonlyTpl = async (field, label)=>{
-  console.log(`getFieldReadonlyTpl`, label, field)
+  // console.log(`getFieldReadonlyTpl`, label, field)
   const tpl = {
     label: label === true ? field.name : false,
     name: field.code,
