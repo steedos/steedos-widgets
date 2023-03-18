@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-18 16:19:49
+ * @LastEditTime: 2023-03-18 17:29:01
  * @Description:
  */
 import {
@@ -719,7 +719,7 @@ const getApproveButton = async (instance)=>{
         ],
       },
     },
-    id: "u:cc1afbdc3868",
+    id: "steedos-approve-button",
     level: "primary",
     className:
       "approve-button w-14 h-14 rounded-full fixed bottom-4 right-4 shadow-lg text-white text-base text-center font-semibold bg-blue-500 p-0",
@@ -823,7 +823,7 @@ export const getFlowFormSchema = async (instance, box) => {
       //   weight: 0,
       //   actions: [
       //     // {
-      //     //   componentId: "u:cc1afbdc3868",
+      //     //   componentId: "steedos-approve-button",
       //     //   actionType: "click",
       //     // },
       //     // {
