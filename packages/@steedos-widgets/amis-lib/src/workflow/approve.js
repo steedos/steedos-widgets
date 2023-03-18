@@ -448,6 +448,9 @@ export const getApprovalDrawerSchema = async (instance) => {
     size: "sm",
     title: `${instance.step.name}`,
     className: "approval-drawer absolute",
+    drawerContainer: ()=>{
+      return window.$(".antd-Page-content",window.$(".steedos-instance-wrapper"))[0];
+    },
     body: [
       {
         type: "form",
