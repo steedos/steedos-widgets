@@ -566,6 +566,16 @@ export async function getIdsPickerSchema(field, readonly, ctx){
     
     source.data.$term = "$term";
     source.data.$self = "$$";
+
+    if(ids && ids.length){
+        source.sendOn = true;
+    }
+    else{
+        source.sendOn = false;
+    }
+    if(idsTrackOn){
+        source.sendOn = `\${${idsTrackOn} && ${idsTrackOn}.length}`;
+    }
    
     source.requestAdaptor = `
         const selfData = JSON.parse(JSON.stringify(api.data.$self));
