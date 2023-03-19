@@ -106,7 +106,10 @@ function getExportApiRequestAdaptorScript(){
 }
 
 export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = false, hiddenCount = false} = {}){
-
+  const isMobile = window.innerWidth < 768;
+  if(isMobile){
+    showDisplayAs = false;
+  }
   if(formFactor === 'SMALL'){
     const onReloadScript = `
       const scope = event.context.scoped;
