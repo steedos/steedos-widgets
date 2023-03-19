@@ -495,6 +495,9 @@ async function getApi(object, recordId, fields, options){
 }
 
 export async function lookupToAmis(field, readonly, ctx){
+    if(!ctx){
+        ctx = {};
+    }
     // console.log(`lookupToAmis====`, field, readonly, ctx)
     if(readonly){
         return {
@@ -510,6 +513,10 @@ export async function lookupToAmis(field, readonly, ctx){
             ctx: {},
         }
         // return await lookupToAmisGroup(field, readonly, ctx);
+    }
+
+    if(ctx.ids || ctx.idsTrackOn){
+        return await lookupToAmisIdsPicker(field, readonly, ctx);
     }
 
     let referenceTo = await getReferenceTo(field);
@@ -541,6 +548,10 @@ export async function lookupToAmis(field, readonly, ctx){
 
 export async function lookupToAmisSelectUser(field, readonly, ctx){
     return getSelectUserSchema(field, readonly, ctx);
+}
+
+export async function lookupToAmisIdsPicker(field, readonly, ctx){
+    return getIdsPickerSchema(field, readonly, ctx);
 }
 
 export async function getIdsPickerSchema(field, readonly, ctx){
