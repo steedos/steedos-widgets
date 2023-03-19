@@ -543,18 +543,18 @@ export async function lookupToAmisSelectUser(field, readonly, ctx){
     return getSelectUserSchema(field, readonly, ctx);
 }
 
-export async function lookupToAmisIdsPicker(field, readonly, ctx){
-    return getIdsPickerSchema(field, readonly, ctx);
-}
-
 export async function getIdsPickerSchema(field, readonly, ctx){
+    if(!ctx){
+        ctx = {};
+    }
     let referenceTo = await getReferenceTo(field);
     if(!referenceTo){
         return ;
     }
     const refObjectConfig = await getUISchema(referenceTo.objectName);
 
-    const ids = field.ids;
+    const { ids, idsTrackOn } = ctx;
+
     const fields = {
         [referenceTo.labelField.name]: referenceTo.labelField,
         [referenceTo.valueField.name]: referenceTo.valueField
@@ -580,8 +580,12 @@ export async function getIdsPickerSchema(field, readonly, ctx){
                 filters = [["${referenceTo.valueField.name}", "=", selfData.value]];
             }
         }
-        
+
         var ids = ${JSON.stringify(ids)};
+        var idsTrackOn = "${idsTrackOn}";
+        if(idsTrackOn){
+            ids = api.data.$self[idsTrackOn];
+        }
         if(ids && ids.length){
             filters.push(["${referenceTo.valueField.name}", "=", ids]);
         }
