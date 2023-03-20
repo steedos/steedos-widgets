@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-13 09:31:04
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-19 16:04:28
+ * @LastEditTime: 2023-03-20 16:55:40
  * @Description:  
  */
 import React, { useState, useEffect, Fragment } from 'react';
@@ -111,7 +111,7 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
           <GlobalHeader app={app}/>
         )}
         {session && (
-          <div id="main" className="absolute inset-0 overflow-scroll mt-[50px] sm:mt-[90px]">
+          <div id="main" className="absolute inset-0 overflow-auto mt-[50px] sm:mt-[90px]">
               {children}
           </div>
         )}
