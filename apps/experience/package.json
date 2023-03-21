@@ -1,6 +1,6 @@
 {
   "name": "@steedos/ee_experience",
-  "version": "1.0.42",
+  "version": "1.1.0-beta.1",
   "main": "package.service.js",
   "private": false,
   "publishConfig": {
@@ -57,5 +57,5 @@
     "prettier-plugin-tailwindcss": "^0.1.11",
     "typescript": "4.6.3"
   },
-  "gitHead": "efa7c30e03eb5895152af848c005940fe106cbf6"
+  "gitHead": "7a5beff69165a6d5e2536678ad757bbb27f5f589"
 }
