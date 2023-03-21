@@ -13,6 +13,7 @@
     "prebuild": "rimraf dist",
     "watch": "rollup -c rollup.config.ts -w",
     "build": "yarn build-types && yarn build-rollup",
+    "build-object": "yarn prebuild && yarn build-types && yarn build-rollup",
     "build-types": "tsc --emitDeclarationOnly --declaration --declarationDir dist/types",
     "build-rollup": "rollup -c rollup.config.ts",
     "uglifyjs": "yarn uglifyjs dist/index.umd.js -o dist/index.umd.min.js"
