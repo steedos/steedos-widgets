@@ -17,7 +17,6 @@
     "build-app": "lerna run build-app --parallel",
     "unpkg": "http-server ./packages --port 8080 --cors -c -1",
     "start": "cd apps/experience && NODE_ENV=production node server.js",
-    "kill-nextjs": "kill -9 $(lsof -ti:3000) | echo OK",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "cnpm-sync": "lerna exec --no-private  -- cnpm sync \\$LERNA_PACKAGE_NAME"
