@@ -23,7 +23,8 @@
     "start": "cd apps/experience && NODE_ENV=production node server.js",
     "kill-nextjs": "kill -9 $(lsof -ti:3000) | echo OK",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "cnpm-sync": "lerna exec --no-private  -- cnpm sync \\$LERNA_PACKAGE_NAME"
   },
   "dependencies": {
     "lerna": "^5.4.3",
@@ -45,6 +46,7 @@
     "@storybook/manager-webpack5": "^6.5.10",
     "@storybook/react": "^6.5.10",
     "@storybook/testing-library": "^0.0.13",
+    "cnpm": "9.0.1",
     "babel-loader": "^8.2.5",
     "http-server": "^14.1.1",
     "ts-node": "^10.9.1",
