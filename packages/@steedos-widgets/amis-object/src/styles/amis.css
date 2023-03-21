@@ -194,3 +194,8 @@ body {
     overflow: scroll;
     height: calc(100% - 40px);
 }
+
+/*  nav下配置itemBadge属性后item不会自动撑开 */ 
+.antd-Nav-Menu-item-wrap .antd-Badge{
+    width: -webkit-fill-available;
+}
