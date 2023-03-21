@@ -36,7 +36,7 @@ jobs:
           echo "ref_branch: ${{ steps.branch-name.outputs.ref_branch }}"
 
       - name: Check valid branch
-        if: ${{ !startsWith(steps.branch-name.outputs.tag, '1.0') && !startsWith(steps.branch-name.outputs.tag, '2.4') && !startsWith(steps.branch-name.outputs.tag, '2.5')  }}
+        if: ${{ !startsWith(steps.branch-name.outputs.tag, '1.0') && !startsWith(steps.branch-name.outputs.tag, '1.1') && !startsWith(steps.branch-name.outputs.tag, '1.2')  }}
         run: exit 1
  
       # checkout branch 1.0
@@ -46,12 +46,12 @@ jobs:
         with: 
           ref: '1.0'
 
-      # checkout branch 2.4
-      - name: Checkout branch 2.4
+      # checkout branch 1.1
+      - name: Checkout branch 1.1
         uses: actions/checkout@v2
-        if: ${{ startsWith(steps.branch-name.outputs.tag, '2.4') }}
+        if: ${{ startsWith(steps.branch-name.outputs.tag, '1.1') }}
         with: 
-          ref: '2.4'
+          ref: '1.1'
      
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
@@ -95,8 +95,8 @@ jobs:
           CI: false
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
           
-      - name: Lerna publish 2.4
-        if: ${{ startsWith(steps.branch-name.outputs.tag, '2.4') && steps.version.outputs.is_stable == 'true' }}
+      - name: Lerna publish 1.1
+        if: ${{ startsWith(steps.branch-name.outputs.tag, '1.1') && steps.version.outputs.is_stable == 'true' }}
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
@@ -109,12 +109,12 @@ jobs:
           CI: false
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
-      - name: Merge 2.4 -> master
-        if: ${{ startsWith(steps.branch-name.outputs.tag, '2.4') }}
+      - name: Merge 1.1 -> master
+        if: ${{ startsWith(steps.branch-name.outputs.tag, '1.1') }}
         uses: devmasx/merge-branch@master
         with:
           type: now
-          from_branch: 2.4
+          from_branch: 1.1
           target_branch: master
           github_token: ${{ github.token }}
 
