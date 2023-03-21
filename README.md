@@ -26,7 +26,8 @@ STEEDOS_PUBLIC_PAGE_ASSETURLS=https://8080-steedos-steedoswebappne-pm96cp6i82c.w
 
 ```
 cd steedos-ee
-docker-compose up
+yarn
+yarn start
 ```
 
 启动远程开发环境会自动配置相关环境变量并启动该服务。
@@ -116,29 +117,3 @@ yarn storybook
 
 修改storybook本身的示例代码并不需要停止服务并执行`yarn storybook`重启，但是修改了资产包源码，即`packages`文件夹下的源码需要执行yarn build来重新编译资产包。
 
-
-### @steedos-labs/experience版本发布
-
-1. 拉取最新代码后，在最外层目录执行yarn build编译；
-
-2. 编译完成后，进入apps/experience文件夹，执行yarn build-app进行编译；
-
-3. 编译完成后，执行yarn start进行环境测试；
-
-4. 环境测试正常后，修改apps/experience文件夹下package.json文件@steedos-labs/experience软件包版本号；
-
-5. 登录npm后，执行yarn release进行发包。
-
-
-### 资产包发布版本
-
-- latest: 切换分支到master,并执行以下命令
-```
-yarn version:latest
-yarn publish:latest
-```
-- beta: 切换分支到dev,并执行以下命令
-```
-yarn version:beta
-yarn publish:beta
-```
