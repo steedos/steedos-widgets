@@ -16,12 +16,7 @@
     "build-object": "lerna run build-object",
     "build-app": "lerna run build-app --parallel",
     "unpkg": "http-server ./packages --port 8080 --cors -c -1",
-    "version:latest": "lerna version --force-publish --exact --allow-branch master",
-    "publish:latest": "yarn kill-nextjs && NODE_ENV=production yarn build && yarn build-app && lerna publish from-package --registry https://registry.npmjs.org",
-    "version:beta": "lerna version prerelease --preid beta --force-publish --exact --allow-branch dev",
-    "publish:beta": "yarn kill-nextjs && NODE_ENV=production yarn build && yarn build-app && lerna publish from-package --registry https://registry.npmjs.org --dist-tag beta",
     "start": "cd apps/experience && NODE_ENV=production node server.js",
-    "kill-nextjs": "kill -9 $(lsof -ti:3000) | echo OK",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "cnpm-sync": "lerna exec --no-private  -- cnpm sync \\$LERNA_PACKAGE_NAME"
