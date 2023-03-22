@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-18 17:29:01
+ * @LastEditTime: 2023-03-22 14:43:18
  * @Description:
  */
 import {
@@ -731,6 +731,7 @@ export const getFlowFormSchema = async (instance, box) => {
     type: "page",
     name: "instancePage",
     className: "steedos-amis-instance-view",
+    bodyClassName: "overflow-y-auto h-full",
     "title": {
       "type": "steedos-record-detail-header",
       "label": "标题面板",

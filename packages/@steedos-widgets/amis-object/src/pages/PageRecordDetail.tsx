@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-18 16:49:33
+ * @LastEditTime: 2023-03-22 15:43:07
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef } from 'react';
@@ -26,13 +26,14 @@ export const PageRecordDetail = async (props) => {
     const recordPage = await getPage({type: 'record', appId: appId, objectName: objectApiName, formFactor: defaultFormFactor});
     recordSchema = recordPage? JSON.parse(recordPage.schema) : {
       "type": "wrapper",
-      "className": "p-0 m-0 sm:m-3 flex-1",
+      "className": "overflow-y-auto p-0 m-0 flex-1 h-full",
       "name": `amis-${appId}-${objectApiName}-detail`,
       "body": [
         {
           "type": "steedos-record-detail",
           "recordId": "${recordId}",
           "objectApiName": "${objectName}",
+          className: "sm:m-3",
           appId: appId,
         }
       ],
@@ -71,7 +72,7 @@ export const PageRecordDetail = async (props) => {
       },
       {
         "type": "wrapper",
-        "className": 'p-0 flex-1 overflow-y-auto focus:outline-none lg:order-last',
+        "className": 'p-0 flex-1 focus:outline-none lg:order-last h-full',
         "body": defaultsDeep({data: defData} , recordSchema)
       }
     ]
