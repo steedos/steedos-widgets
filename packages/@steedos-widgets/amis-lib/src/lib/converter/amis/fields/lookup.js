@@ -649,6 +649,14 @@ export async function getIdsPickerSchema(field, readonly, ctx){
         data.extractValue = true
     }
 
+    if(ctx.value){
+        data.value = ctx.value;
+    }
+
+    if(ctx.selectFirst != undefined){
+        data.selectFirst = ctx.selectFirst;
+    }
+
     if(readonly){
         data.tpl = await Tpl.getLookupTpl(field, ctx)
     }
