@@ -110,6 +110,7 @@ const getNextStepInput = async (instance) => {
             id: "u:next_step",
             multiple: false,
             required: true,
+            selectFirst: true,
             "source": {
               "url": "${context.rootUrl}/api/workflow/v2/nextStep?judge=${new_judge}",
               "headers": {
@@ -137,20 +138,7 @@ const getNextStepInput = async (instance) => {
                 "judge": "${new_judge}",
               }
             },
-            // "labelField": "name",
-            // "valueField": "_id",
             "onEvent": {
-              // "change": {
-              //   "weight": 0,
-              //   "actions": [
-              //     {
-              //       "componentId": "u:next_users",
-              //       "args": {
-              //       },
-              //       "actionType": "reload"
-              //     }
-              //   ]
-              // },
               "change": {
                 "weight": 0,
                 "actions": [
@@ -164,7 +152,6 @@ const getNextStepInput = async (instance) => {
                     "actionType": "setValue"
                   },
                   {
-                    // "componentId": "u:next_step",
                     "args": {
                       next_step: "${event.data.value}",
                     },
@@ -173,7 +160,6 @@ const getNextStepInput = async (instance) => {
                   },
                 ]
               }
-              
             }
           },
         ],
