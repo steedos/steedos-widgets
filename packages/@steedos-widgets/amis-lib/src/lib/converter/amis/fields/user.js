@@ -149,7 +149,7 @@ async function getDeferApi(field, ctx) {
     `;
     return {
         "method": "post",
-        "url": graphql.getApi() + "?ref=${ref}&dep=${value}",
+        "url": graphql.getApi() + "&ref=${ref}&dep=${value}",
         "requestAdaptor": requestAdaptor,
         "adaptor": adaptor,
         "data": data,
