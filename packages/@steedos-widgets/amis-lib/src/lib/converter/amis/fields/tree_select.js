@@ -129,7 +129,7 @@ async function getDeferApi(field, ctx) {
     `;
     return {
         "method": "post",
-        "url": graphql.getApi() + "?dep=${value}",
+        "url": graphql.getApi() + "&dep=${value}",
         "requestAdaptor": requestAdaptor,
         "adaptor": adaptor,
         "data": data,
@@ -175,7 +175,7 @@ async function getSearchApi(field, ctx) {
     `;
     return {
         "method": "post",
-        "url": graphql.getApi() + "?term=${term}",
+        "url": graphql.getApi() + "&term=${term}",
         "requestAdaptor": requestAdaptor,
         "data": data,
         "headers": {
