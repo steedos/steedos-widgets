@@ -266,6 +266,9 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
   if(initialView){
     // day, week, month, agenda
     switch(initialView){
+      case "year":
+        initialView = "multiMonthYear"
+        break;
       case "day":
         initialView = "timeGridDay"
         break;
@@ -276,7 +279,7 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
         initialView = "dayGridMonth"
         break;
       case "agenda":
-        initialView = "timeGridDay"
+        initialView = "listWeek"
         break;
     }
   }
