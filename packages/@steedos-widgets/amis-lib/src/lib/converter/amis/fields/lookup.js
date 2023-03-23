@@ -578,8 +578,9 @@ export async function getIdsPickerSchema(field, readonly, ctx){
     source.data.$term = "$term";
     source.data.$self = "$$";
 
-    if(idsDependOn){
+    if(idsDependOn && source.url){
         source.sendOn = `\${${idsDependOn} && ${idsDependOn}.length}`;
+        source.url = `${source.url}&depend_on_${idsDependOn}=\${${idsDependOn}|join}`;
     }
    
     source.requestAdaptor = `
