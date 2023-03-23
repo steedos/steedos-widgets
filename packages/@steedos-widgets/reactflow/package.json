@@ -1,7 +1,7 @@
 {
   "name": "@steedos-widgets/reactflow",
   "private": false,
-  "version": "1.1.0-beta.1",
+  "version": "1.1.0-beta.2",
   "main": "dist/reactflow.cjs.js",
   "module": "dist/reactflow.esm.js",
   "unpkg": "dist/reactflow.umd.js",
@@ -49,8 +49,8 @@
   },
   "dependencies": {
     "@rollup/plugin-replace": "^5.0.2",
-    "@steedos-widgets/amis-lib": "1.1.0-beta.1",
+    "@steedos-widgets/amis-lib": "1.1.0-beta.2",
     "reactflow": "^11.5.6"
   },
-  "gitHead": "7a5beff69165a6d5e2536678ad757bbb27f5f589"
+  "gitHead": "139b31ee61017f20ff040f27b4082386f8244c03"
 }
