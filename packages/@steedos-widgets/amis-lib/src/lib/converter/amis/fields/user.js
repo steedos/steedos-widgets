@@ -38,17 +38,10 @@ async function getSource(field, ctx) {
     data.$value = `$${valueField}`;
     // data["&"] = "$$";
 
-    const fieldValue = ctx.value;
-
     const requestAdaptor = `
         var filters = [['parent', '=', null]];
         api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters));
         var defaultValue = api.data.$value;
-        var fieldValue = ${JSON.stringify(fieldValue)};
-        if(!defaultValue && fieldValue){
-            // 如果表单中没有字段值，则认字段上配置的value属性
-            defaultValue = fieldValue;
-        }
         var optionsFiltersOp = "${field.multiple ? "in" : "="}";
         var optionsFilters = [["user", optionsFiltersOp, []]];
         if (defaultValue) { 
