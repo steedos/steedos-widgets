@@ -225,15 +225,17 @@ export async function getEditFormInitApi(object, recordId, fields){
                 const dataKeys = _.keys(data);
                 const uiSchema = api.body.uiSchema;
                 const fieldKeys = uiSchema && _.keys(uiSchema.fields);
-                _.each(dataKeys, function(key){
-                    if(fieldKeys.indexOf(key)<0){
-                        delete data[key];
-                    }
-                })
 
                 if(data){
                     ${getScriptForAddUrlPrefixForImgFields(fields)}
                     ${getScriptForRewriteValueForFileFields(fields)}
+
+                    _.each(dataKeys, function(key){
+                        if(fieldKeys.indexOf(key)<0){
+                            delete data[key];
+                        }
+                    })
+                    
                     //初始化接口返回的字段移除字段值为null的字段
                     for (key in data){
                         if(data[key] === null){

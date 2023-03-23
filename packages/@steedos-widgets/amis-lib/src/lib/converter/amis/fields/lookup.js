@@ -454,6 +454,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         type: Field.getAmisStaticFieldType('select', readonly),
         joinValues: false,
         extractValue: true,
+        clearable: true,
         // labelField: labelField,
         // valueField: valueField,
         source: apiInfo,
@@ -646,6 +647,14 @@ export async function getIdsPickerSchema(field, readonly, ctx){
     if(field.multiple){
         data.multiple = true
         data.extractValue = true
+    }
+
+    if(ctx.value){
+        data.value = ctx.value;
+    }
+
+    if(ctx.selectFirst != undefined){
+        data.selectFirst = ctx.selectFirst;
     }
 
     if(readonly){

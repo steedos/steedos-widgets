@@ -30,51 +30,49 @@ export const AmisAppMenu = async (props) => {
                     const stacked = ${stacked};
                     const showIcon = ${showIcon};
                     const selectedId = '${selectedId}';
-                    _.each(_.groupBy(payload.children, 'group'), (tabs, groupName) => {
-                    if (groupName === 'undefined') {
-                        _.each(tabs, (tab) => {
-                        data.nav.push({
+                    if(stacked){
+                        _.each(_.groupBy(payload.children, 'group'), (tabs, groupName) => {
+                            if (groupName === 'undefined' || groupName === '') {
+                                _.each(tabs, (tab) => {
+                                    data.nav.push({
+                                        "label": showIcon ? {
+                                        type: 'tpl',
+                                        tpl: \`<span class='fill-slate-500  text-slate-700 block -ml-px no-underline group flex items-center text-[15px] font-medium rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
+                                        } : tab.name,
+                                        "to": tab.path,
+                                        // active: selectedId === tab.id,
+                                    })
+                                })
+                            } else {
+                                data.nav.push({
+                                    "label": groupName,
+                                    "unfolded": true,
+                                    "children": _.map(tabs, (tab) => {
+                                        return {
+                                        "label": showIcon ? {
+                                            type: 'tpl',
+                                            tpl: \`<span class='fill-slate-500  text-slate-700 block -ml-px no-underline group flex items-center text-[15px] font-medium rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
+                                        }  : tab.name,
+                                        "to": tab.path,
+                                        // active: selectedId === tab.id,
+                                        }
+                                    })
+                                })   
+                            }
+                            });
+                    }else{
+                        _.each(payload.children, (tab)=>{
+                            data.nav.push({
                             "label": showIcon ? {
-                            type: 'tpl',
-                            tpl: \`<span class='fill-slate-500  text-slate-700 block -ml-px no-underline group flex items-center text-[15px] font-medium rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
+                                type: 'tpl',
+                                tpl: \`<span class='fill-slate-500  text-slate-700 block -ml-px no-underline group flex items-center text-[15px] font-medium rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
                             } : tab.name,
                             "to": tab.path,
                             // active: selectedId === tab.id,
+                            });
                         })
-                        })
-                    } else {
-
-                        if(stacked){
-                            data.nav.push({
-                                "label": groupName,
-                                "unfolded": true,
-                                "children": _.map(tabs, (tab) => {
-                                    return {
-                                    "label": showIcon ? {
-                                        type: 'tpl',
-                                        tpl: \`<span class='fill-slate-500  text-slate-700 block -ml-px no-underline group flex items-center text-[15px] font-medium rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
-                                    }  : tab.name,
-                                    "to": tab.path,
-                                    // active: selectedId === tab.id,
-                                    }
-                                })
-                                })
-                        }else{
-                            _.each(tabs, (tab) => {
-                                data.nav.push({
-                                "label": showIcon ? {
-                                    type: 'tpl',
-                                    tpl: \`<span class='fill-slate-500  text-slate-700 block -ml-px no-underline group flex items-center text-[15px] font-medium rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
-                                } : tab.name,
-                                "to": tab.path,
-                                // active: selectedId === tab.id,
-                                });
-                            })
-                        }
-
-                        
                     }
-                    });
+                    
                     payload.data = data.nav;
                 } catch (error) {
                     console.log(\`error\`, error)
