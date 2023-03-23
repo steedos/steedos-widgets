@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-22 14:43:18
+ * @LastEditTime: 2023-03-23 16:49:44
  * @Description:
  */
 import {
@@ -582,7 +582,6 @@ const getFormTableView = async (instance) => {
     trs: await getFormTrs(instance),
     id: "u:047f3669468b",
   };
-  console.log(`getFormTableView formSchema=====>`, formSchema)
   return formSchema;
 };
 
