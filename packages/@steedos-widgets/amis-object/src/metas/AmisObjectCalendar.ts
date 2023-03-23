@@ -145,9 +145,6 @@ export default {
           "label": "默认视图",
           "value": "timeGridWeek",
           "options": [{
-            "label": "年",
-            "value": "multiMonthYear"
-          },{
             "label": "月",
             "value": "dayGridMonth"
           },{
