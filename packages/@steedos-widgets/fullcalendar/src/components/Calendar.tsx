@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-03-22 09:31:21
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-03-23 19:07:02
+ * @LastEditTime: 2023-03-24 09:15:37
  * @FilePath: /steedos-widgets/packages/@steedos-widgets/fullcalendar/src/components/Calendar.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -69,6 +69,14 @@ export const FullCalendar = ({
     dispatchEvent('eventRemove', event)
   };
 
+  const handleEventDidMount = (event)=> {
+    dispatchEvent('eventDidMount', event)
+  };
+
+  const handleEventWillUnmount = (event)=> {
+    dispatchEvent('eventWillUnmount', event)
+  };
+
   // forceEventDuration属性设置为true修正了把全天事件拖动变更到非全天事件时end为空造成的事件在画布上看不到的问题。
 
   return (
@@ -93,6 +101,8 @@ export const FullCalendar = ({
       eventAdd={handleEventAdd}
       eventChange={handleEventChange}
       eventRemove={handleEventRemove}
+      eventDidMount={handleEventDidMount}
+      eventWillUnmount={handleEventWillUnmount}
       forceEventDuration={true}
       views={{
         listWeek: {

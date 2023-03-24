@@ -498,6 +498,30 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
           }
         ]
       },
+      "eventDidMount": {
+        "weight": 0,
+        "actions": [
+          {
+            "componentId": "",
+            "args": {
+            },
+            "actionType": "custom",
+            "script": "console.log('eventDidMount'); console.log(event);"
+          }
+        ]
+      },
+      "eventWillUnmount": {
+        "weight": 0,
+        "actions": [
+          {
+            "componentId": "",
+            "args": {
+            },
+            "actionType": "custom",
+            "script": "console.log('eventWillUnmount'); console.log(event);"
+          }
+        ]
+      },
     }
   };
   return amisSchema;
