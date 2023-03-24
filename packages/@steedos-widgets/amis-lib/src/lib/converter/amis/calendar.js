@@ -527,6 +527,7 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
     "selectMirror": permissions.allowCreate,
     "initialView": initialView,
     "businessHours": businessHours,
+    ...options.config,
     "onEvent": onEvent
   };
   return amisSchema;
