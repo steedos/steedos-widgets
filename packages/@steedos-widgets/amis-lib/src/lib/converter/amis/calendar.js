@@ -518,6 +518,20 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
 
   Object.assign(onEvent, options.onEvent);
 
+  const config = options.config || {};
+  if(config.eventContent && typeof config.eventContent === "string"){
+    const hasReturn = /\breturn\b/.test(config.eventContent);
+    if(hasReturn){
+      try {
+        // 如果是包括return语句的字符串，则按函数解析，见 https://fullcalendar.io/docs/content-injection
+        let fn = new Function("arg", config.eventContent);
+        config.eventContent = fn;
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+  }
+
   const amisSchema = {
     "type": "steedos-fullcalendar",
     "label": "",
@@ -527,7 +541,7 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
     "selectMirror": permissions.allowCreate,
     "initialView": initialView,
     "businessHours": businessHours,
-    ...options.config,
+    ...config,
     "onEvent": onEvent
   };
   return amisSchema;
