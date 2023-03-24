@@ -508,6 +508,19 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
     }
   }
 
+  if(config.noEventsContent && typeof config.noEventsContent === "string"){
+    const hasReturn = /\breturn\b/.test(config.noEventsContent);
+    if(hasReturn){
+      try {
+        // 如果是包括return语句的字符串，则按函数解析，见 https://fullcalendar.io/docs/content-injection
+        let fn = new Function("arg", config.noEventsContent);
+        config.noEventsContent = fn;
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+  }
+
   const amisSchema = {
     "type": "steedos-fullcalendar",
     "label": "",
