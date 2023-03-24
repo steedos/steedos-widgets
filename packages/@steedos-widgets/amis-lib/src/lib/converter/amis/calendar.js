@@ -489,31 +489,7 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
           "script": "console.log('eventsSet'); console.log(event);"
         }
       ]
-    },
-    "eventDidMount": {
-      "weight": 0,
-      "actions": [
-        {
-          "componentId": "",
-          "args": {
-          },
-          "actionType": "custom",
-          "script": "console.log('eventDidMount'); console.log(event);"
-        }
-      ]
-    },
-    "eventWillUnmount": {
-      "weight": 0,
-      "actions": [
-        {
-          "componentId": "",
-          "args": {
-          },
-          "actionType": "custom",
-          "script": "console.log('eventWillUnmount'); console.log(event);"
-        }
-      ]
-    },
+    }
   };
 
   Object.assign(onEvent, options.onEvent);
