@@ -209,6 +209,11 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     `
     source.adaptor = `
     const enable_tree = ${refObjectConfig.enable_tree};
+    const value = api.data.$self.value;
+    if(!_.isEmpty(value)){
+        // value 不为空值，表示返回当前选中节点信息
+        return payload;
+    }
     if(enable_tree){
         const records = payload.data.rows;
         const treeRecords = [];

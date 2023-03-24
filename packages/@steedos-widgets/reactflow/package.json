@@ -1,7 +1,7 @@
 {
   "name": "@steedos-widgets/reactflow",
   "private": false,
-  "version": "1.1.0",
+  "version": "1.1.1",
   "main": "dist/reactflow.cjs.js",
   "module": "dist/reactflow.esm.js",
   "unpkg": "dist/reactflow.umd.js",
@@ -12,7 +12,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "http": "npx http-server ../ --port 8080 --cors -c -1",
-    "build_": "yarn build-types && yarn build-rollup",
+    "build": "yarn build-types && yarn build-rollup",
     "build-types": "tsc --emitDeclarationOnly --declaration --declarationDir dist/types",
     "build-rollup": "rollup -c rollup.config.ts"
   },
@@ -49,8 +49,8 @@
   },
   "dependencies": {
     "@rollup/plugin-replace": "^5.0.2",
-    "@steedos-widgets/amis-lib": "1.1.0",
+    "@steedos-widgets/amis-lib": "1.1.1",
     "reactflow": "^11.5.6"
   },
-  "gitHead": "bbc151f7f45493e1ff1449ff441ad689deee6e25"
+  "gitHead": "0e618339b9d23c8b90660bb3334db17637d324ab"
 }

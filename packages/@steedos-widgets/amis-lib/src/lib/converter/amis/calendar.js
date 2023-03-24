@@ -19,7 +19,7 @@ export async function getCalendarApi(mainObject, fields, options) {
   const searchableFields = [];
   let { filter, sort, top, setDataToComponentId = '' } = options;
 
-  if(!top){
+  if (!top) {
     // 日历请求不翻页
     top = 200;
   }
@@ -145,7 +145,8 @@ export async function getCalendarApi(mainObject, fields, options) {
         title: n["${calendarOptions.textExpr}"],
         start: n["${calendarOptions.startDateExpr}"],
         end: n["${calendarOptions.endDateExpr}"],
-        allDay: n["${calendarOptions.allDayExpr}"]
+        allDay: n["${calendarOptions.allDayExpr}"],
+        extendedProps: n
       }
     });
     const successCallback = selfData.successCallback;
@@ -218,7 +219,7 @@ export function getCalendarRecordSaveApi(object, calendarOptions) {
         return payload;
     `,
     headers: {
-        Authorization: "Bearer ${context.tenantId},${context.authToken}"
+      Authorization: "Bearer ${context.tenantId},${context.authToken}"
     }
   };
 }
@@ -237,9 +238,9 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
   calendarOptions = Object.assign({}, DEFAULT_CALENDAR_OPTIONS, omitBy(calendarOptions, isNil));
 
   const titleFields = calendarOptions.title || [
-    calendarOptions.startDateExpr, 
-    calendarOptions.endDateExpr, 
-    calendarOptions.allDayExpr, 
+    calendarOptions.startDateExpr,
+    calendarOptions.endDateExpr,
+    calendarOptions.allDayExpr,
     calendarOptions.textExpr
   ];
   let fields = [];
@@ -263,9 +264,9 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
     }
   }
   let initialView = calendarOptions.currentView;
-  if(initialView){
+  if (initialView) {
     // day, week, month, agenda
-    switch(initialView){
+    switch (initialView) {
       case "day":
         initialView = "timeGridDay"
         break;
@@ -280,7 +281,7 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
         break;
     }
   }
-  else{
+  else {
     initialView = "timeGridWeek";
   }
 
@@ -372,19 +373,154 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
   const recordId = "${event.id}";
   const recordPermissionsApi = getCalendarRecordPermissionsApi(objectSchema, recordId);
   const recordSaveApi = getCalendarRecordSaveApi(objectSchema, calendarOptions);
-  
+
   const businessHours = {
-    daysOfWeek: [ 1, 2, 3, 4, 5 ],
+    daysOfWeek: [1, 2, 3, 4, 5],
     startTime: '08:00',
     endTime: '18:00',
   };
-  if(!isEmpty(calendarOptions.startDayHour)){
+  if (!isEmpty(calendarOptions.startDayHour)) {
     businessHours.startTime = `${calendarOptions.startDayHour}:00`;
   }
-  if(!isEmpty(calendarOptions.endDayHour)){
+  if (!isEmpty(calendarOptions.endDayHour)) {
     businessHours.endTime = `${calendarOptions.endDayHour}:00`;
   }
-  
+
+  const onEvent = {
+    "getEvents": {
+      "weight": 0,
+      "actions": [
+        {
+          "componentId": "",
+          "args": {
+          },
+          "actionType": "custom",
+          "script": onGetEventsScript
+        }
+      ]
+    },
+    "select": {
+      "weight": 0,
+      "actions": [
+        {
+          "componentId": "",
+          "args": {
+          },
+          "actionType": "custom",
+          "script": onSelectScript
+        }
+      ]
+    },
+    "eventClick": {
+      "weight": 0,
+      "actions": [
+        {
+          "componentId": "",
+          "args": {
+          },
+          "actionType": "custom",
+          "script": onEventClickScript
+        }
+      ]
+    },
+    "eventAdd": {
+      "weight": 0,
+      "actions": [
+        {
+          "componentId": "",
+          "args": {
+          },
+          "actionType": "custom",
+          "script": "console.log('eventAdd'); console.log(event);"
+        }
+      ]
+    },
+    "eventChange": {
+      "weight": 0,
+      "actions": [
+        {
+          "actionType": 'ajax',
+          "args": {
+            "api": recordPermissionsApi
+          }
+        },
+        {
+          "actionType": "toast",
+          "expression": "!event.data.editable",
+          "args": {
+            "msgType": "error",
+            "msg": "您没有编辑该记录的权限！",
+            "position": "top-center"
+          }
+        },
+        {
+          "actionType": 'ajax',
+          "expression": "event.data.editable",
+          "args": {
+            "api": recordSaveApi,
+            "messages": {
+              "success": objectSchema.label + "修改成功",
+              "failed": objectSchema.label + "修改失败！"
+            }
+          }
+        }
+      ]
+    },
+    "eventRemove": {
+      "weight": 0,
+      "actions": [
+        {
+          "componentId": "",
+          "args": {
+          },
+          "actionType": "custom",
+          "script": "console.log('eventRemove'); console.log(event);"
+        }
+      ]
+    },
+    "eventsSet": {
+      "weight": 0,
+      "actions": [
+        {
+          "componentId": "",
+          "args": {
+          },
+          "actionType": "custom",
+          "script": "console.log('eventsSet'); console.log(event);"
+        }
+      ]
+    }
+  };
+
+  Object.assign(onEvent, options.onEvent);
+
+  const config = options.config || {};
+  if(config.eventContent && typeof config.eventContent === "string"){
+    const hasReturn = /\breturn\b/.test(config.eventContent);
+    if(hasReturn){
+      try {
+        // 如果是包括return语句的字符串，则按函数解析，见 https://fullcalendar.io/docs/content-injection
+        let fn = new Function("arg", config.eventContent);
+        config.eventContent = fn;
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+  }
+
+  if(config.noEventsContent && typeof config.noEventsContent === "string"){
+    const hasReturn = /\breturn\b/.test(config.noEventsContent);
+    if(hasReturn){
+      try {
+        // 如果是包括return语句的字符串，则按函数解析，见 https://fullcalendar.io/docs/content-injection
+        let fn = new Function("arg", config.noEventsContent);
+        config.noEventsContent = fn;
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+  }
+
   const amisSchema = {
     "type": "steedos-fullcalendar",
     "label": "",
@@ -394,135 +530,8 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
     "selectMirror": permissions.allowCreate,
     "initialView": initialView,
     "businessHours": businessHours,
-    "onEvent": {
-      "getEvents": {
-        "weight": 0,
-        "actions": [
-          {
-            "componentId": "",
-            "args": {
-            },
-            "actionType": "custom",
-            "script": onGetEventsScript
-          }
-        ]
-      },
-      "select": {
-        "weight": 0,
-        "actions": [
-          {
-            "componentId": "",
-            "args": {
-            },
-            "actionType": "custom",
-            "script": onSelectScript
-          }
-        ]
-      },
-      "eventClick": {
-        "weight": 0,
-        "actions": [
-          {
-            "componentId": "",
-            "args": {
-            },
-            "actionType": "custom",
-            "script": onEventClickScript
-          }
-        ]
-      },
-      "eventAdd": {
-        "weight": 0,
-        "actions": [
-          {
-            "componentId": "",
-            "args": {
-            },
-            "actionType": "custom",
-            "script": "console.log('eventAdd'); console.log(event);"
-          }
-        ]
-      },
-      "eventChange": {
-        "weight": 0,
-        "actions": [
-          {
-            "actionType": 'ajax',
-            "args": {
-              "api": recordPermissionsApi
-            }
-          },
-          {
-            "actionType": "toast",
-            "expression": "!event.data.editable",
-            "args": {
-              "msgType": "error",
-              "msg": "您没有编辑该记录的权限！",
-              "position": "top-center"
-            }
-          },
-          {
-            "actionType": 'ajax',
-            "expression": "event.data.editable",
-            "args": {
-              "api": recordSaveApi,
-              "messages": {
-                "success": objectSchema.label + "修改成功",
-                "failed": objectSchema.label + "修改失败！"
-              }
-            }
-          }
-        ]
-      },
-      "eventRemove": {
-        "weight": 0,
-        "actions": [
-          {
-            "componentId": "",
-            "args": {
-            },
-            "actionType": "custom",
-            "script": "console.log('eventRemove'); console.log(event);"
-          }
-        ]
-      },
-      "eventsSet": {
-        "weight": 0,
-        "actions": [
-          {
-            "componentId": "",
-            "args": {
-            },
-            "actionType": "custom",
-            "script": "console.log('eventsSet'); console.log(event);"
-          }
-        ]
-      },
-      "eventDidMount": {
-        "weight": 0,
-        "actions": [
-          {
-            "componentId": "",
-            "args": {
-            },
-            "actionType": "custom",
-            "script": "console.log('eventDidMount'); console.log(event);"
-          }
-        ]
-      },
-      "eventWillUnmount": {
-        "weight": 0,
-        "actions": [
-          {
-            "componentId": "",
-            "args": {
-            },
-            "actionType": "custom",
-            "script": "console.log('eventWillUnmount'); console.log(event);"
-          }
-        ]
-      },
-    }
+    ...config,
+    "onEvent": onEvent
   };
   return amisSchema;
 }
