@@ -19,7 +19,7 @@ export async function getCalendarApi(mainObject, fields, options) {
   const searchableFields = [];
   let { filter, sort, top, setDataToComponentId = '' } = options;
 
-  if(!top){
+  if (!top) {
     // 日历请求不翻页
     top = 200;
   }
@@ -219,7 +219,7 @@ export function getCalendarRecordSaveApi(object, calendarOptions) {
         return payload;
     `,
     headers: {
-        Authorization: "Bearer ${context.tenantId},${context.authToken}"
+      Authorization: "Bearer ${context.tenantId},${context.authToken}"
     }
   };
 }
@@ -238,9 +238,9 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
   calendarOptions = Object.assign({}, DEFAULT_CALENDAR_OPTIONS, omitBy(calendarOptions, isNil));
 
   const titleFields = calendarOptions.title || [
-    calendarOptions.startDateExpr, 
-    calendarOptions.endDateExpr, 
-    calendarOptions.allDayExpr, 
+    calendarOptions.startDateExpr,
+    calendarOptions.endDateExpr,
+    calendarOptions.allDayExpr,
     calendarOptions.textExpr
   ];
   let fields = [];
@@ -264,9 +264,9 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
     }
   }
   let initialView = calendarOptions.currentView;
-  if(initialView){
+  if (initialView) {
     // day, week, month, agenda
-    switch(initialView){
+    switch (initialView) {
       case "day":
         initialView = "timeGridDay"
         break;
@@ -281,7 +281,7 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
         break;
     }
   }
-  else{
+  else {
     initialView = "timeGridWeek";
   }
 
@@ -373,16 +373,16 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
   const recordId = "${event.id}";
   const recordPermissionsApi = getCalendarRecordPermissionsApi(objectSchema, recordId);
   const recordSaveApi = getCalendarRecordSaveApi(objectSchema, calendarOptions);
-  
+
   const businessHours = {
-    daysOfWeek: [ 1, 2, 3, 4, 5 ],
+    daysOfWeek: [1, 2, 3, 4, 5],
     startTime: '08:00',
     endTime: '18:00',
   };
-  if(!isEmpty(calendarOptions.startDayHour)){
+  if (!isEmpty(calendarOptions.startDayHour)) {
     businessHours.startTime = `${calendarOptions.startDayHour}:00`;
   }
-  if(!isEmpty(calendarOptions.endDayHour)){
+  if (!isEmpty(calendarOptions.endDayHour)) {
     businessHours.endTime = `${calendarOptions.endDayHour}:00`;
   }
 
@@ -515,9 +515,9 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
       ]
     },
   };
-  
+
   Object.assign(onEvent, options.onEvent);
-  
+
   const amisSchema = {
     "type": "steedos-fullcalendar",
     "label": "",
