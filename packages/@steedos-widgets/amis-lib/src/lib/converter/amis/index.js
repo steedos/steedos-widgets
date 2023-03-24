@@ -348,6 +348,16 @@ export async function getObjectForm(objectSchema, ctx){
                 "data": {
                   "objectName": `${objectSchema.name}`
                 }
+              },
+              {
+                "actionType": "broadcast",
+                "args": {
+                  "eventName": "@data.changed.${$master.masterObjectName}"
+                },
+                "data": {
+                  "objectName": "${$master.masterObjectName}"
+                },
+                "expression": "${$master.masterObjectName}"
               }
             ]
           }
