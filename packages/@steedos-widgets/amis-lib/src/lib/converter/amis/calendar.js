@@ -384,6 +384,138 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
   if(!isEmpty(calendarOptions.endDayHour)){
     businessHours.endTime = `${calendarOptions.endDayHour}:00`;
   }
+
+  const onEvent = {
+    "getEvents": {
+      "weight": 0,
+      "actions": [
+        {
+          "componentId": "",
+          "args": {
+          },
+          "actionType": "custom",
+          "script": onGetEventsScript
+        }
+      ]
+    },
+    "select": {
+      "weight": 0,
+      "actions": [
+        {
+          "componentId": "",
+          "args": {
+          },
+          "actionType": "custom",
+          "script": onSelectScript
+        }
+      ]
+    },
+    "eventClick": {
+      "weight": 0,
+      "actions": [
+        {
+          "componentId": "",
+          "args": {
+          },
+          "actionType": "custom",
+          "script": onEventClickScript
+        }
+      ]
+    },
+    "eventAdd": {
+      "weight": 0,
+      "actions": [
+        {
+          "componentId": "",
+          "args": {
+          },
+          "actionType": "custom",
+          "script": "console.log('eventAdd'); console.log(event);"
+        }
+      ]
+    },
+    "eventChange": {
+      "weight": 0,
+      "actions": [
+        {
+          "actionType": 'ajax',
+          "args": {
+            "api": recordPermissionsApi
+          }
+        },
+        {
+          "actionType": "toast",
+          "expression": "!event.data.editable",
+          "args": {
+            "msgType": "error",
+            "msg": "您没有编辑该记录的权限！",
+            "position": "top-center"
+          }
+        },
+        {
+          "actionType": 'ajax',
+          "expression": "event.data.editable",
+          "args": {
+            "api": recordSaveApi,
+            "messages": {
+              "success": objectSchema.label + "修改成功",
+              "failed": objectSchema.label + "修改失败！"
+            }
+          }
+        }
+      ]
+    },
+    "eventRemove": {
+      "weight": 0,
+      "actions": [
+        {
+          "componentId": "",
+          "args": {
+          },
+          "actionType": "custom",
+          "script": "console.log('eventRemove'); console.log(event);"
+        }
+      ]
+    },
+    "eventsSet": {
+      "weight": 0,
+      "actions": [
+        {
+          "componentId": "",
+          "args": {
+          },
+          "actionType": "custom",
+          "script": "console.log('eventsSet'); console.log(event);"
+        }
+      ]
+    },
+    "eventDidMount": {
+      "weight": 0,
+      "actions": [
+        {
+          "componentId": "",
+          "args": {
+          },
+          "actionType": "custom",
+          "script": "console.log('eventDidMount'); console.log(event);"
+        }
+      ]
+    },
+    "eventWillUnmount": {
+      "weight": 0,
+      "actions": [
+        {
+          "componentId": "",
+          "args": {
+          },
+          "actionType": "custom",
+          "script": "console.log('eventWillUnmount'); console.log(event);"
+        }
+      ]
+    },
+  };
+  
+  Object.assign(onEvent, options.onEvent);
   
   const amisSchema = {
     "type": "steedos-fullcalendar",
@@ -394,135 +526,7 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
     "selectMirror": permissions.allowCreate,
     "initialView": initialView,
     "businessHours": businessHours,
-    "onEvent": {
-      "getEvents": {
-        "weight": 0,
-        "actions": [
-          {
-            "componentId": "",
-            "args": {
-            },
-            "actionType": "custom",
-            "script": onGetEventsScript
-          }
-        ]
-      },
-      "select": {
-        "weight": 0,
-        "actions": [
-          {
-            "componentId": "",
-            "args": {
-            },
-            "actionType": "custom",
-            "script": onSelectScript
-          }
-        ]
-      },
-      "eventClick": {
-        "weight": 0,
-        "actions": [
-          {
-            "componentId": "",
-            "args": {
-            },
-            "actionType": "custom",
-            "script": onEventClickScript
-          }
-        ]
-      },
-      "eventAdd": {
-        "weight": 0,
-        "actions": [
-          {
-            "componentId": "",
-            "args": {
-            },
-            "actionType": "custom",
-            "script": "console.log('eventAdd'); console.log(event);"
-          }
-        ]
-      },
-      "eventChange": {
-        "weight": 0,
-        "actions": [
-          {
-            "actionType": 'ajax',
-            "args": {
-              "api": recordPermissionsApi
-            }
-          },
-          {
-            "actionType": "toast",
-            "expression": "!event.data.editable",
-            "args": {
-              "msgType": "error",
-              "msg": "您没有编辑该记录的权限！",
-              "position": "top-center"
-            }
-          },
-          {
-            "actionType": 'ajax',
-            "expression": "event.data.editable",
-            "args": {
-              "api": recordSaveApi,
-              "messages": {
-                "success": objectSchema.label + "修改成功",
-                "failed": objectSchema.label + "修改失败！"
-              }
-            }
-          }
-        ]
-      },
-      "eventRemove": {
-        "weight": 0,
-        "actions": [
-          {
-            "componentId": "",
-            "args": {
-            },
-            "actionType": "custom",
-            "script": "console.log('eventRemove'); console.log(event);"
-          }
-        ]
-      },
-      "eventsSet": {
-        "weight": 0,
-        "actions": [
-          {
-            "componentId": "",
-            "args": {
-            },
-            "actionType": "custom",
-            "script": "console.log('eventsSet'); console.log(event);"
-          }
-        ]
-      },
-      "eventDidMount": {
-        "weight": 0,
-        "actions": [
-          {
-            "componentId": "",
-            "args": {
-            },
-            "actionType": "custom",
-            "script": "console.log('eventDidMount'); console.log(event);"
-          }
-        ]
-      },
-      "eventWillUnmount": {
-        "weight": 0,
-        "actions": [
-          {
-            "componentId": "",
-            "args": {
-            },
-            "actionType": "custom",
-            "script": "console.log('eventWillUnmount'); console.log(event);"
-          }
-        ]
-      },
-    }
+    "onEvent": onEvent
   };
   return amisSchema;
 }
