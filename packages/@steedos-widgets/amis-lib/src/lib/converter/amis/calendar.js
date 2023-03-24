@@ -145,7 +145,8 @@ export async function getCalendarApi(mainObject, fields, options) {
         title: n["${calendarOptions.textExpr}"],
         start: n["${calendarOptions.startDateExpr}"],
         end: n["${calendarOptions.endDateExpr}"],
-        allDay: n["${calendarOptions.allDayExpr}"]
+        allDay: n["${calendarOptions.allDayExpr}"],
+        extendedProps: n
       }
     });
     const successCallback = selfData.successCallback;
