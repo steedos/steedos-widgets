@@ -153,6 +153,9 @@ export default {
           },{
             "label": "日",
             "value": "timeGridDay"
+          },{
+            "label": "列表",
+            "value": "listWeek"
           }]
         }
       ]

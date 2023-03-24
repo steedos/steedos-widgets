@@ -276,7 +276,7 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
         initialView = "dayGridMonth"
         break;
       case "agenda":
-        initialView = "timeGridDay"
+        initialView = "listWeek"
         break;
     }
   }
@@ -495,6 +495,30 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
             },
             "actionType": "custom",
             "script": "console.log('eventsSet'); console.log(event);"
+          }
+        ]
+      },
+      "eventDidMount": {
+        "weight": 0,
+        "actions": [
+          {
+            "componentId": "",
+            "args": {
+            },
+            "actionType": "custom",
+            "script": "console.log('eventDidMount'); console.log(event);"
+          }
+        ]
+      },
+      "eventWillUnmount": {
+        "weight": 0,
+        "actions": [
+          {
+            "componentId": "",
+            "args": {
+            },
+            "actionType": "custom",
+            "script": "console.log('eventWillUnmount'); console.log(event);"
           }
         ]
       },

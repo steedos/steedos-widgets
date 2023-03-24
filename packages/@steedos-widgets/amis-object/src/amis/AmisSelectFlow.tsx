@@ -2,14 +2,14 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-01-14 16:41:24
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-23 09:48:53
+ * @LastEditTime: 2023-03-23 11:37:25
  * @Description: 
  */
 
 import { random } from 'lodash';
 
 const getSelectFlowSchema = (id, props)=>{
-    const { label: label, data, name, required, action = 'query', distributeInstanceId="",  distributeStepId="", mode = 'input-tree', className, onEvent, multiple = false, delimiter, joinValues, extractValue, searchable, showIcon = true, showRadio=false, showOutline, initiallyOpen, unfoldedLevel, treeContainerClassName} = props;
+    const { label: label, data, name, required, action = 'query', distributeInstanceId="",  distributeStepId="", mode = 'input-tree', className, onEvent, multiple = false, delimiter, joinValues, extractValue, searchable, showIcon = true, showRadio=false, showOutline, initiallyOpen, unfoldedLevel, treeContainerClassName, amis = {}} = props;
     return {
         "type": mode,
         "id": id,
@@ -27,6 +27,28 @@ const getSelectFlowSchema = (id, props)=>{
         "className": className,
         "required": required,
         "treeContainerClassName": treeContainerClassName,
+        // "menuTpl": {
+        //     type: "tpl",
+        //     tpl: "<div class='flex justify-between'><span>${label}</span><span class='rounded p-1 text-xs text-center w-14 ${children != null ? \'hidden\' : \'\'}'><button onClick='console.log(11111)'><i class='fa-regular fa-star'></i></button></span></div>",
+        //     "onEvent": {
+        //         "click": {
+        //           "weight": 0,
+        //           "actions": [
+        //             {
+        //               "args": {
+        //                 "api": {
+        //                   "url": "/aaa",
+        //                   "method": "get",
+        //                   "messages": {
+        //                   }
+        //                 }
+        //               },
+        //               "actionType": "download"
+        //             }
+        //           ]
+        //         }
+        //       }
+        // },
         "source": {
             "method": "post",
             "url": "${context.rootUrl}/graphql?keywords=${keywords}",
@@ -56,6 +78,7 @@ const getSelectFlowSchema = (id, props)=>{
         "showRadio": showRadio,
         "onlyLeaf": true,
         "onEvent": onEvent,
+        ...amis
     }
 }
 

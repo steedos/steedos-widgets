@@ -58,7 +58,6 @@ const getJudgeInput = async (instance) => {
               "args": {
                 "value": {
                   new_judge: "${event.data.value}",
-                  new_next_step: undefined,
                   next_step: undefined,
                 }
               },
@@ -110,7 +109,11 @@ const getNextStepInput = async (instance) => {
             id: "u:next_step",
             multiple: false,
             required: true,
-            selectFirst: true,
+            // selectFirst: true,
+            autoFill: {
+              "new_next_step": "${step}",
+              "next_users": null
+            },
             "source": {
               "url": "${context.rootUrl}/api/workflow/v2/nextStep?judge=${new_judge}",
               "headers": {
@@ -122,10 +125,12 @@ const getNextStepInput = async (instance) => {
               "requestAdaptor": "let { context, judge } = api.data; if(!judge){judge='approved'}\nconst formValues = SteedosUI.getRef(api.data.$scopeId).getComponentById(\"instance_form\").getValues();\n\napi.data = {\nflowVersionId: context.flowVersion._id,\n  instanceId: context._id,\n  flowId: context.flow._id,\n  step: context.step,\n  judge: judge,\n  values: formValues\n}\n\n\n return api;",
               "adaptor": `
                 payload.data = {
+                  value: payload.nextSteps.length === 1 ? payload.nextSteps[0]._id : null, 
                   options: _.map(payload.nextSteps, (item)=>{
                     return {
                       label: item.name, 
-                      value: item
+                      value: item._id,
+                      step: item
                     }
                   })
                 };
@@ -138,29 +143,29 @@ const getNextStepInput = async (instance) => {
                 "judge": "${new_judge}",
               }
             },
-            "onEvent": {
-              "change": {
-                "weight": 0,
-                "actions": [
-                  {
-                    "componentId": "instance_approval",
-                    "args": {
-                      "value": {
-                        new_next_step: "${event.data.value}",
-                      }
-                    },
-                    "actionType": "setValue"
-                  },
-                  {
-                    "args": {
-                      next_step: "${event.data.value}",
-                    },
-                    "actionType": "broadcast",
-                    eventName: "approve_next_step_change"
-                  },
-                ]
-              }
-            }
+            // "onEvent": {
+            //   "change": {
+            //     "weight": 0,
+            //     "actions": [
+            //       {
+            //         "componentId": "instance_approval",
+            //         "args": {
+            //           "value": {
+            //             new_next_step: "${event.data.value}",
+            //           }
+            //         },
+            //         "actionType": "setValue"
+            //       },
+            //       // {
+            //       //   "args": {
+            //       //     next_step: "${event.data.value}",
+            //       //   },
+            //       //   "actionType": "broadcast",
+            //       //   eventName: "approve_next_step_change"
+            //       // },
+            //     ]
+            //   }
+            // }
           },
         ],
         id: "u:4d3a884b437c",
@@ -198,56 +203,44 @@ const getNextStepUsersInput = async (instance) => {
         body: [
           // TODO 处理下一步处理人默认值
           Object.assign({}, 
-          //   await lookupToAmisPicker(
-          //   {
-          //     name: "next_users",
-          //     label: false,
-          //     reference_to: "space_users",
-          //     reference_to_field: 'user',
-          //     multiple: false,
-          //   },
-          //   false,
-          //   {}
-          // ),
           {
             "type": "steedos-select-user"
           },
-          
           {
             name: "next_users", 
-            // value: "",
             hiddenOn: "this.new_next_step.deal_type != 'pickupAtRuntime'",
             required: true
           }),
           {
-            type: "list-select",
+            type: "steedos-select-user",
             label: "",
             name: "next_users",
-            // options: await getNextStepOptions(instance),
             id: "u:next_users",
             required: true,
-            multiple: "this.new_next_step.deal_type === 'counterSign'",
-            "source": {
-              "url": "${context.rootUrl}/api/workflow/v2/nextStepUsers",
-              "method": "post",
-              "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end'",
-              "headers": {
-                "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+            hiddenOn: "this.new_next_step.deal_type === 'pickupAtRuntime'",
+            amis: {
+              multiple: "this.new_next_step.deal_type === 'counterSign'",
+              "source": {
+                "url": "${context.rootUrl}/api/workflow/v2/nextStepUsers",
+                "method": "post",
+                "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end'",
+                "headers": {
+                  "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                },
+                "messages": {
+                },
+                "requestAdaptor": "\nconst { context, next_step, $scopeId } = api.data;\nconst formValues = SteedosUI.getRef($scopeId).getComponentById(\"instance_form\").getValues();\n\napi.data = {\n  instanceId: context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
+                "adaptor": "\npayload.data = {value: payload.nextStepUsers.length === 1 ? payload.nextStepUsers[0].id : null, options: payload.nextStepUsers};\nreturn payload;",
+                "data": {
+                  "&": "$$",
+                  "$scopeId": "$scopeId",
+                  "context": "${context}",
+                  "next_step": "${new_next_step}",
+                }
               },
-              "messages": {
-              },
-              "requestAdaptor": "console.log('======requestAdaptor====');\nconst { context, next_step, $scopeId } = api.data;\nconst formValues = SteedosUI.getRef($scopeId).getComponentById(\"instance_form\").getValues();\n\napi.data = {\n  instanceId: context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
-              "adaptor": "\npayload.data = payload.nextStepUsers;\nreturn payload;",
-              "data": {
-                "&": "$$",
-                "$scopeId": "$scopeId",
-                "context": "${context}",
-                "next_step": "${new_next_step}",
-              }
-            },
-            "labelField": "name",
-            "valueField": "id",
-            hiddenOn: "this.new_next_step.deal_type === 'pickupAtRuntime'"
+              "labelField": "name",
+              "valueField": "id",
+            }
           }
         ],
         id: "u:81a4913c61cc",
@@ -449,6 +442,10 @@ export const getApprovalDrawerSchema = async (instance) => {
         clearPersistDataAfterSubmit: true,
         persistData: `workflow_approve_form_${instance.approve._id}`,
         body: [
+          {
+            type: 'hidden',
+            name: 'new_next_step'
+          },
           await getJudgeInput(instance),
           {
             type: "textarea",
@@ -479,7 +476,7 @@ export const getApprovalDrawerSchema = async (instance) => {
           //     {
           //       "actionType": "reload",
           //       "componentId": "u:nex_users",
-          //       "args": {t
+          //       "args": {
           //       }
           //     }
           //   ]

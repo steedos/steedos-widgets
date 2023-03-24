@@ -516,20 +516,19 @@ export async function lookupToAmis(field, readonly, ctx){
         // return await lookupToAmisGroup(field, readonly, ctx);
     }
 
-    if(ctx.ids || ctx.idsTrackOn){
-        return await lookupToAmisIdsPicker(field, readonly, ctx);
-    }
-
     let referenceTo = await getReferenceTo(field);
     if(!referenceTo){
         return await lookupToAmisSelect(field, readonly, ctx);
     }
 
-    const refObject = await getUISchema(referenceTo.objectName);
-
     if(referenceTo.objectName === "space_users" && field.reference_to_field === "user"){
+        if(ctx.idsDependOn || field.amis){
+            return await lookupToAmisIdsPicker(field, readonly, ctx);
+        }
         return await lookupToAmisSelectUser(field, readonly, ctx);
     }
+
+    const refObject = await getUISchema(referenceTo.objectName);
 
     // 此处不参考 steedos 的 enable_enhanced_lookup 规则. 如果默认是开启弹出选择,用户选择过程操作太繁琐, 所以默认是关闭弹出选择.
     // 由于amis picker 目前不支持联动, 配置了depend_on时, 使用使用select ,以支持联动
@@ -565,7 +564,7 @@ export async function getIdsPickerSchema(field, readonly, ctx){
     }
     const refObjectConfig = await getUISchema(referenceTo.objectName);
 
-    const { ids, idsTrackOn } = ctx;
+    const { idsDependOn } = ctx;
 
     const fields = {
         [referenceTo.labelField.name]: referenceTo.labelField,
@@ -579,14 +578,9 @@ export async function getIdsPickerSchema(field, readonly, ctx){
     source.data.$term = "$term";
     source.data.$self = "$$";
 
-    if(ids && ids.length){
-        source.sendOn = true;
-    }
-    else{
-        source.sendOn = false;
-    }
-    if(idsTrackOn){
-        source.sendOn = `\${${idsTrackOn} && ${idsTrackOn}.length}`;
+    if(idsDependOn && source.url){
+        source.sendOn = `\${${idsDependOn} && ${idsDependOn}.length}`;
+        source.url = `${source.url}&depend_on_${idsDependOn}=\${${idsDependOn}|join}`;
     }
    
     source.requestAdaptor = `
@@ -603,10 +597,10 @@ export async function getIdsPickerSchema(field, readonly, ctx){
             }
         }
 
-        var ids = ${JSON.stringify(ids)};
-        var idsTrackOn = "${idsTrackOn}";
-        if(idsTrackOn){
-            ids = api.data.$self[idsTrackOn];
+        var ids;
+        var idsDependOn = "${idsDependOn}";
+        if(idsDependOn){
+            ids = api.data.$self[idsDependOn];
         }
         if(ids && ids.length){
             filters.push(["${referenceTo.valueField.name}", "=", ids]);
