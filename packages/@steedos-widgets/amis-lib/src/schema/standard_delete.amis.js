@@ -1,3 +1,9 @@
+/*
+ * @Author: 殷亮辉 yinlianghui@hotoa.com
+ * @Date: 2023-03-22 09:31:21
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-03-25 22:41:27
+ */
 export const getSchema = (uiSchema)=>{
     return {
         "type": "service",
@@ -48,6 +54,16 @@ export const getSchema = (uiSchema)=>{
                                   "objectName": `${uiSchema.name}`,
                                   "__deletedRecord": true
                                 }
+                            },
+                            {
+                                "actionType": "broadcast",
+                                "args": {
+                                  "eventName": "@data.changed.${masterObjectName}"
+                                },
+                                "data": {
+                                  "objectName": "${masterObjectName}"
+                                },
+                                "expression": "${masterObjectName}"
                             }
                           ]
                     }
