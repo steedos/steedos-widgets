@@ -209,9 +209,13 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     `
     source.adaptor = `
     const enable_tree = ${refObjectConfig.enable_tree};
-    const value = api.data.$self.value;
-    if(!_.isEmpty(value)){
-        // value 不为空值，表示返回当前选中节点信息
+    const op = api.data.$self.op;
+    if(!_.isEmpty(op)){
+        // op不为空，表示处于字段初始编辑状态，不是点击后出现弹窗状态。
+        const rows = _.map(payload.data.rows, (item)=>{
+            return _.pick(item, ["${referenceTo.labelField.name}", "${referenceTo.valueField.name}"]);
+        })
+        payload.data.rows = rows;
         return payload;
     }
     if(enable_tree){
