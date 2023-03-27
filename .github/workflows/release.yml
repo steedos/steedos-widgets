@@ -63,7 +63,7 @@ jobs:
         env:
           CI: false
         run: |
-          lerna version ${{ steps.branch-name.outputs.tag }} --no-git-tag-version --force-publish --exact --yes
+          lerna version ${{ steps.branch-name.outputs.tag }}  --git-tag-command "git tag -a v${{ steps.branch-name.outputs.tag }}-release -m lerna" --force-publish --exact --yes
 
       - name: Yarn
         run: yarn --frozen-lockfile
