@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-07 17:42:47
+ * @LastEditTime: 2023-03-27 18:55:29
  * @Description: 
  */
 import { Field } from '@steedos-widgets/amis-lib';
@@ -30,6 +30,7 @@ export const AmisSteedosField = async (props)=>{
             steedosField = JSON.parse(config);
         }
     }else{
+        steedosField = field;
         if(isString(field)){
             steedosField = JSON.parse(field);
         }
