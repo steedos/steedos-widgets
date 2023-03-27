@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-03-22 09:31:21
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-03-25 22:41:27
+ * @LastEditTime: 2023-03-27 16:03:34
  */
 export const getSchema = (uiSchema)=>{
     return {
@@ -58,12 +58,12 @@ export const getSchema = (uiSchema)=>{
                             {
                                 "actionType": "broadcast",
                                 "args": {
-                                  "eventName": "@data.changed.${masterObjectName}"
+                                  "eventName": "@data.changed.${_master.objectName}"
                                 },
                                 "data": {
-                                  "objectName": "${masterObjectName}"
+                                  "objectName": "${_master.objectName}"
                                 },
-                                "expression": "${masterObjectName}"
+                                "expression": "${_master.objectName}"
                             }
                           ]
                     }
