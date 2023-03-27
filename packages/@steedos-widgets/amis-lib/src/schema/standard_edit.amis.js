@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:49:58
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-03-25 17:22:00
+ * @LastEditTime: 2023-03-27 11:36:49
  * @Description:
  */
 
@@ -48,10 +48,6 @@ export const getSchema = async (uiSchema, ctx) => {
                 actionType: "dialog",
                 dialog: {
                   type: "dialog",
-                  "data": {
-                    "&": "$$",
-                    "$master": "$$"
-                  },
                   title: title,
                   bodyClassName: "",
                   body: [formSchema],

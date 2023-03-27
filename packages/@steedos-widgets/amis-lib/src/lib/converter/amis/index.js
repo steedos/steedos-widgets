@@ -352,12 +352,12 @@ export async function getObjectForm(objectSchema, ctx){
               {
                 "actionType": "broadcast",
                 "args": {
-                  "eventName": "@data.changed.${$master.masterObjectName}"
+                  "eventName": "@data.changed.${_master.objectName}"
                 },
                 "data": {
-                  "objectName": "${$master.masterObjectName}"
+                  "objectName": "${_master.objectName}"
                 },
-                "expression": "${$master.masterObjectName}"
+                "expression": "${_master.objectName}"
               }
             ]
           }

@@ -59,9 +59,19 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "yarn"
 
-      - run: yarn --frozen-lockfile
+      - name: Lerna version 
+        env:
+          CI: false
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          npm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
+          lerna version ${{ steps.branch-name.outputs.tag }}  --force-publish --exact --yes
 
-      - name: Build 
+      - name: Yarn
+        run: yarn --frozen-lockfile
+
+      - name: Yarn Build 
         env:
           CI: false
         run: |
@@ -70,13 +80,8 @@ jobs:
       - name: Lerna publish beta
         if: ${{ steps.version.outputs.is_stable != 'true' }}
         run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
           npm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
-          lerna publish ${{ steps.branch-name.outputs.tag }}  --no-git-tag-version --no-git-reset --force-publish --exact --yes --dist-tag beta
-          git add . 
-          git commit -m "action: release ${{ steps.branch-name.outputs.tag }}"
-          git push
+          lerna publish from-package --yes --registry https://registry.npmjs.org --dist-tag beta
         env:
           CI: false
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
@@ -84,13 +89,8 @@ jobs:
       - name: Lerna publish 1.0
         if: ${{ startsWith(steps.branch-name.outputs.tag, '1.0') && steps.version.outputs.is_stable == 'true' }}
         run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
           npm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
-          lerna publish ${{ steps.branch-name.outputs.tag }}  --no-git-tag-version --no-git-reset --force-publish --exact --yes --dist-tag 1.0
-          git add . 
-          git commit -m "action: release ${{ steps.branch-name.outputs.tag }}"
-          git push
+          lerna publish from-package --yes --registry https://registry.npmjs.org --dist-tag 1.0
         env:
           CI: false
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
@@ -98,13 +98,8 @@ jobs:
       - name: Lerna publish 1.1
         if: ${{ startsWith(steps.branch-name.outputs.tag, '1.1') && steps.version.outputs.is_stable == 'true' }}
         run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
           npm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
-          lerna publish ${{ steps.branch-name.outputs.tag }}  --no-git-tag-version --no-git-reset --force-publish --exact --yes
-          git add . 
-          git commit -m "action: release ${{ steps.branch-name.outputs.tag }}"
-          git push
+          lerna publish from-package --registry https://registry.npmjs.org --yes
         env:
           CI: false
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}

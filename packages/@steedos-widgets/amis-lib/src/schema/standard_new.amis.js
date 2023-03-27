@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:51:00
- * @LastEditors: 廖大雪 2291335922@qq.com
- * @LastEditTime: 2023-03-09 15:16:10
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-03-27 15:42:24
  * @Description: 
  */
 
@@ -42,6 +42,7 @@ export const getSchema = async (uiSchema, ctx) => {
                                     "type": "dialog",
                                     "data": {
                                         "$master": "$$",
+                                        "_master": "${_master}",
                                         "defaultData": "${defaultData}",
                                         "appId": "${appId}",
                                         "objectName": "${objectName}",
