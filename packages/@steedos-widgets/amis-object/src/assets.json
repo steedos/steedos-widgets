@@ -19,7 +19,7 @@
     {
         "package": "steedos-lib",
         "urls": [
-            "https://unpkg.com/@steedos-widgets/steedos-lib/dist/index.umd.js"
+            "https://unpkg.com/@steedos-widgets/steedos-lib@{{version}}/dist/index.umd.js"
         ],
         "library": "SteedosLib"
     },
