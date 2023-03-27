@@ -7,7 +7,8 @@
   ],
   "command": {
     "version": {
-      "exact": true
+      "exact": true,
+      "gitTagCommand": "git tag %s-lerna -m %s"
     },
     "publish": {
       "npmClient": "npm",
