@@ -247,6 +247,21 @@ export async function getEditFormInitApi(object, recordId, fields){
             }
             else{
                 var uiSchema = api.body.uiSchema;
+                if(uiSchema.form){
+                    try{
+                        var objectFormConfig = JSON.parse(uiSchema.form);
+                        initialValues = objectFormConfig.initialValues;
+                        if(initialValues){
+                            initialValues = new Function("return " + initialValues)();
+                        }
+                        if(typeof initialValues === "function"){
+                            initialValues = initialValues();
+                        }
+                    }
+                    catch(ex){
+                        console.warn(ex);
+                    }
+                }
                 var defaultData = api.body.defaultData;
                 var defaultValues = {};
                 _.each(uiSchema?.fields, function(field){
@@ -258,7 +273,13 @@ export async function getEditFormInitApi(object, recordId, fields){
                 if(defaultData && _.isObject(defaultData) && !_.isArray(defaultData)){
                     defaultValues = Object.assign({}, defaultValues, defaultData)
                 }
-                initialValues = defaultValues;
+                if(_.isObject(initialValues)){
+                    // uiSchema.form.initialValues为函数且执行后为json，则优先取initialValues中的默认值
+                    initialValues = Object.assign({}, defaultValues, initialValues);
+                }
+                else{
+                    initialValues = defaultValues;
+                }
             }
             // data下的变量需要在保存接口（getSaveApi）中被删除。
             payload.data = {
