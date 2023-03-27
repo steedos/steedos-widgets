@@ -59,9 +59,16 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "yarn"
 
-      - run: yarn --frozen-lockfile
+      - name: Lerna version 
+        env:
+          CI: false
+        run: |
+          lerna version ${{ steps.branch-name.outputs.tag }} --no-git-tag-version --force-publish --exact
 
-      - name: Build 
+      - name: Yarn
+        run: yarn --frozen-lockfile
+
+      - name: Yarn Build 
         env:
           CI: false
         run: |
@@ -73,7 +80,7 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           npm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
-          lerna publish ${{ steps.branch-name.outputs.tag }}  --no-git-tag-version --no-git-reset --force-publish --exact --yes --dist-tag beta
+          lerna publish --no-git-reset --yes --dist-tag beta
           git add . 
           git commit -m "action: release ${{ steps.branch-name.outputs.tag }}"
           git push
@@ -87,7 +94,7 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           npm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
-          lerna publish ${{ steps.branch-name.outputs.tag }}  --no-git-tag-version --no-git-reset --force-publish --exact --yes --dist-tag 1.0
+          lerna publish --no-git-reset --yes --dist-tag 1.0
           git add . 
           git commit -m "action: release ${{ steps.branch-name.outputs.tag }}"
           git push
@@ -101,7 +108,7 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           npm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
-          lerna publish ${{ steps.branch-name.outputs.tag }}  --no-git-tag-version --no-git-reset --force-publish --exact --yes
+          lerna publish --no-git-reset --yes
           git add . 
           git commit -m "action: release ${{ steps.branch-name.outputs.tag }}"
           git push
