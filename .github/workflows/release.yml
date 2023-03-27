@@ -80,7 +80,7 @@ jobs:
       - name: Lerna publish beta
         if: ${{ steps.version.outputs.is_stable != 'true' }}
         run: |
-          lerna publish from-package --yes --dist-tag beta
+          lerna publish from-package --yes --registry https://registry.npmjs.org --dist-tag beta
         env:
           CI: false
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
@@ -88,7 +88,7 @@ jobs:
       - name: Lerna publish 1.0
         if: ${{ startsWith(steps.branch-name.outputs.tag, '1.0') && steps.version.outputs.is_stable == 'true' }}
         run: |
-          lerna publish from-package --yes --dist-tag 1.0
+          lerna publish from-package --yes --registry https://registry.npmjs.org --dist-tag 1.0
         env:
           CI: false
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
@@ -96,7 +96,7 @@ jobs:
       - name: Lerna publish 1.1
         if: ${{ startsWith(steps.branch-name.outputs.tag, '1.1') && steps.version.outputs.is_stable == 'true' }}
         run: |
-          lerna publish from-package --yes
+          lerna publish from-package --registry https://registry.npmjs.org --yes
         env:
           CI: false
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
