@@ -225,7 +225,7 @@ export function getSaveDataTpl(fields){
         ${getScriptForSimplifiedValueForFileFields(fields)}
         let query = \`mutation{record: \${objectName}__insert(doc: {__saveData}){_id}}\`;
         if(formData.recordId && formData.recordId !='new'){
-            query = \`mutation{record: \${objectName}__update(id: "\${formData._id}", doc: {__saveData}){_id}}\`;
+            query = \`mutation{record: \${objectName}__update(id: "\${formData.recordId}", doc: {__saveData}){_id}}\`;
         };
         delete formData._id;
         let __saveData = JSON.stringify(JSON.stringify(formData));

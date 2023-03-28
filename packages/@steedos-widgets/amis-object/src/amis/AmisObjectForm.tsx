@@ -41,8 +41,11 @@ export const AmisObjectForm = async (props) => {
 
   globalData.mode = mode === 'edit' ? 'edit' : 'read'
   let amisSchema: any;
+  let uiSchema: any;
   if (mode === 'edit') {
-    amisSchema = (await getFormSchema(objectApiName, options)).amisSchema;
+    const schema = await getFormSchema(objectApiName, options);
+    amisSchema = schema.amisSchema;
+    uiSchema = schema.uiSchema;
   } else {
     // formInitProps
     if(!recordId){
@@ -51,7 +54,9 @@ export const AmisObjectForm = async (props) => {
         queryOptions: "top: 1"
       };
     }
-    amisSchema =  (await getViewSchema(objectApiName, recordId, options)).amisSchema;
+    const schema =  await getViewSchema(objectApiName, recordId, options);
+    amisSchema =  schema.amisSchema;
+    uiSchema =  schema.uiSchema;
   }
   const formData :any = {};
   formData.recordId = recordId || null;
@@ -59,7 +64,7 @@ export const AmisObjectForm = async (props) => {
     formData.objectName = objectApiName;
   }
   amisSchema.className = `steedos-object-form ${className}`
-  amisSchema.data = Object.assign({"&": "$$"}, amisSchema.data, formData, {global: globalData});
+  amisSchema.data = Object.assign({"&": "$$"}, amisSchema.data, formData, {global: globalData, uiSchema:uiSchema});
   // console.log(`amisSchema`, amisSchema)
   return amisSchema;
 }
