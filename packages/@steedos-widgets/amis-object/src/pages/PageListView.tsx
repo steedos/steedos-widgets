@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-27 18:27:16
+ * @LastEditTime: 2023-03-28 10:12:04
  * @Description: 
  */
 import { getPage, Router } from "@steedos-widgets/amis-lib";
@@ -49,7 +49,7 @@ export const PageListView = async (props) => {
     ...$schema.data,
     objectName: objectApiName,
     listViewId: listViewId,
-    listName: listName,
+    listName: listName || listviewId,
     appId: appId,
     formFactor: formFactor,
     displayAs: displayAs
