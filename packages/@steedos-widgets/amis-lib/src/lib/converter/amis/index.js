@@ -357,7 +357,7 @@ export async function getObjectForm(objectSchema, ctx){
                 "data": {
                   "objectName": "${_master.objectName}"
                 },
-                "expression": "${_master.objectName}"
+                "expression": `\${_master.objectName != '${objectSchema.name}' && _master.objectName}`
               }
             ]
           }
