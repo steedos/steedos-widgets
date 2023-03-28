@@ -204,6 +204,10 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             }
         }
 
+        const enable_tree = ${refObjectConfig.enable_tree};
+        if(enable_tree){
+            pageSize = 10000;
+        }
         api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', pageSize).replace('{__skip}', skip).replace('{__sort}', sort.trim());
         return api;
     `
@@ -278,7 +282,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             new_button.align = "right";
             pickerSchema.headerToolbar.push(new_button);
         }
-        pickerSchema.footerToolbar = getObjectFooterToolbar();
+        pickerSchema.footerToolbar = refObjectConfig.enable_tree ? [] : getObjectFooterToolbar();
         if(ctx.filterVisible !== false){
             let filterLoopCount = ctx.filterLoopCount || 0;
             filterLoopCount++;
