@@ -376,7 +376,10 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         apiInfo = {
             method: "post",
             url: graphql.getApi(),
-            data: {query: '{objects(filters: ["_id", "=", "-1"]){_id}}', $: "$$"}
+            data: {query: '{objects(filters: ["_id", "=", "-1"]){_id}}', $: "$$"},
+            "headers": {
+                "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+            }
         }
     }
 
