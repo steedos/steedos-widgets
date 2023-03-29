@@ -374,7 +374,7 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
     const { formFactor, layout = formFactor === 'SMALL' ? 'normal' : "normal", labelAlign, formInitProps } = ctx;
     const fields = _.values(objectSchema.fields);
     const formFields = getFormFields(objectSchema, ctx);
-    const serviceId = `detail_${recordId}`;
+    const serviceId = `service_detail_page`;
     return {
         type: 'service',
         name: `page_readonly_${recordId}`,
