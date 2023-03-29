@@ -9,7 +9,7 @@ const refOrgsObjectName = "organizations";
 
 async function getSource(field, ctx) {
     // data.query 最终格式 "{ \tleftOptions:organizations(filters: {__filters}){value:_id,label:name,children},   children:organizations(filters: {__filters}){ref:_id,children}, defaultValueOptions:space_users(filters: {__options_filters}){user,name} }"
-    const data = await graphql.getFindQuery({ name: refOrgsObjectName }, null, [{ name: "_id", alias: "value" }, { name: "name", alias: "label" }, { name: "children" }], {
+    const data = await graphql.getFindQuery({ name: refOrgsObjectName }, null, [{ name: "_id", alias: "value" },{name: "parent"}, { name: "name", alias: "label" }, { name: "children" }], {
         alias: "leftOptions",
         filters: "{__filters}"
     });
@@ -39,7 +39,7 @@ async function getSource(field, ctx) {
     // data["&"] = "$$";
 
     const requestAdaptor = `
-        var filters = [['parent', '=', null]];
+        var filters = [];
         api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters));
         var defaultValue = api.data.$value;
         var optionsFiltersOp = "${field.multiple ? "in" : "="}";
@@ -52,17 +52,18 @@ async function getSource(field, ctx) {
     `;
     const adaptor = `
         const data = payload.data;
+        const rows = data.leftOptions
         data.children = data.children.map(function (child) { 
             // child.defer = !!(child.children && child.children.length);
             child.defer = true;
             delete child.children;
             return child;
         });
-        data.leftOptions = data.leftOptions.map(function (leftOption) {
-            leftOption.defer = !!(leftOption.children && leftOption.children.length);
-            delete leftOption.children;
-            return leftOption;
-        });
+
+        var getTreeOptions = SteedosUI.getTreeOptions
+        data.leftOptions = getTreeOptions(rows);
+
+        
         var defaultValueOptions = data.defaultValueOptions;
         data.children = _.union(data.children, defaultValueOptions);
         delete data.defaultValueOptions;
