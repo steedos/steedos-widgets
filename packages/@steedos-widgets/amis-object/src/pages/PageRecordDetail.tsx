@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-22 15:43:07
+ * @LastEditTime: 2023-03-29 14:47:05
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef } from 'react';
@@ -10,7 +10,10 @@ import { getPage, Router } from "@steedos-widgets/amis-lib";
 import { defaultsDeep } from 'lodash';
 
 export const PageRecordDetail = async (props) => {
-  const { formFactor: defaultFormFactor, appId, objectApiName, recordId, display, sideObject, sideListviewId, $schema } = props
+
+  // console.log("PageRecordDetail=====>", props)
+
+  const { formFactor: defaultFormFactor, appId, objectApiName, recordId, display, sideObject, sideListviewId, $schema, data } = props
   
   if (display)
     Router.setTabDisplayAs(objectApiName, display)
@@ -54,12 +57,11 @@ export const PageRecordDetail = async (props) => {
     objectName: objectApiName,
     listViewId: sideListviewId,
     listName: sideListviewId,
-    recordId,
+    recordId: data.recordId || recordId,
     appId: appId,
     formFactor: formFactor,
     displayAs: displayAs
   }
-
   return {
     type: 'service',
     data: defData,
