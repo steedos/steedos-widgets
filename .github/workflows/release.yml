@@ -36,7 +36,7 @@ jobs:
           echo "ref_branch: ${{ steps.branch-name.outputs.ref_branch }}"
 
       - name: Check valid branch
-        if: ${{ !startsWith(steps.branch-name.outputs.tag, '1.0') && !startsWith(steps.branch-name.outputs.tag, '1.1') && !startsWith(steps.branch-name.outputs.tag, '1.2')  }}
+        if: ${{ !startsWith(steps.branch-name.outputs.tag, '1.')  }}
         run: exit 1
  
       # checkout branch 1.0
@@ -53,6 +53,20 @@ jobs:
         with: 
           ref: '1.1'
      
+      # checkout branch 1.2
+      - name: Checkout branch 1.2
+        uses: actions/checkout@v2
+        if: ${{ startsWith(steps.branch-name.outputs.tag, '1.2') }}
+        with: 
+          ref: '1.2'
+
+      # checkout branch 1.3
+      - name: Checkout branch 1.3
+        uses: actions/checkout@v2
+        if: ${{ startsWith(steps.branch-name.outputs.tag, '1.3') }}
+        with: 
+          ref: '1.3'
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
@@ -100,6 +114,24 @@ jobs:
         run: |
           npm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
           lerna publish from-package --registry https://registry.npmjs.org --yes
+        env:
+          CI: false
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+   
+      - name: Lerna publish 1.2
+        if: ${{ startsWith(steps.branch-name.outputs.tag, '1.2') && steps.version.outputs.is_stable == 'true' }}
+        run: |
+          npm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
+          lerna publish from-package --registry https://registry.npmjs.org --yes --dist-tag next
+        env:
+          CI: false
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+   
+      - name: Lerna publish 1.3
+        if: ${{ startsWith(steps.branch-name.outputs.tag, '1.3') && steps.version.outputs.is_stable == 'true' }}
+        run: |
+          npm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
+          lerna publish from-package --registry https://registry.npmjs.org --yes --dist-tag next
         env:
           CI: false
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
