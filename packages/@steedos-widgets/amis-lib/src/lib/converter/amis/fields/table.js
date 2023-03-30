@@ -290,7 +290,7 @@ function getButtonVisibleOn(button){
         //     return 'false';
         // }
         if(visible.trim().startsWith('function')){
-            return `${visible}(objectName, _id, typeof record === 'undefined' ? {} : record.recordPermissions, data)`
+            return `${visible}(objectName, _id, typeof record === 'undefined' ? (typeof recordPermissions === 'undefined' ? {} : recordPermissions) : record.recordPermissions, data)`
         }
         return visible;
     }
