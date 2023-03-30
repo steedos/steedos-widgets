@@ -24,7 +24,8 @@ export const AmisObjectCalendar = async (props) => {
   }, { top, sort, filter: filters, filtersFunction, onEvent, config }));
   const uiSchema = schema.uiSchema;
   const amisSchema = schema.amisSchema;
-  const serviceData = Object.assign({}, amisSchema.data, amisSchemaData, { objectName: objectApiName, uiSchema });
+  // const serviceData = Object.assign({}, amisSchema.data, amisSchemaData, { objectName: objectApiName, uiSchema });
+  const serviceData = Object.assign({}, { objectName: objectApiName, uiSchema });
   return {
     "type": "service",
     "body": amisSchema,
