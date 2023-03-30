@@ -225,6 +225,19 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     if(enable_tree){
         const records = payload.data.rows;
         const treeRecords = [];
+
+        const getParentIds = (records)=>{
+            const ids = _.map(records, (item)=>{
+                return item._id;
+            });
+            const parents = _.filter(records,(record)=>{
+                return !record.parent || !_.includes(ids,record.parent);
+            })
+            const parentsIds = _.map(parents,(item)=>{
+                return item._id;
+            })
+            return parentsIds;
+        }
         const getChildren = (records, childrenIds)=>{
             if(!childrenIds){
                 return;
@@ -240,8 +253,9 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             return children;
         }
 
+        const parentIds = getParentIds(records);
         _.each(records, (record)=>{
-            if(!record.parent){
+            if(!record.parent || _.includes(parentIds, record._id)){
                 treeRecords.push(Object.assign({}, record, {children: getChildren(records, record.children)}));
             }
         });

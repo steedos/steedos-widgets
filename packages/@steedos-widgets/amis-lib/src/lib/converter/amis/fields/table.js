@@ -290,7 +290,7 @@ function getButtonVisibleOn(button){
         //     return 'false';
         // }
         if(visible.trim().startsWith('function')){
-            return `${visible}(objectName, _id, record.recordPermissions, data)`
+            return `${visible}(objectName, _id, typeof record === 'undefined' ? (typeof recordPermissions === 'undefined' ? {} : recordPermissions) : record.recordPermissions, data)`
         }
         return visible;
     }
@@ -359,14 +359,15 @@ async function getTableOperation(ctx){
                         formFactor: "${formFactor}",
                         context: `\${context}`
                     },
-                    "responseData": {
-                        "recordPermissions": "$$"
-                    },
                     headers: {
                         Authorization: "Bearer ${context.tenantId},${context.authToken}"
                     },
                     adaptor: `
-                        payload.recordPermissions = payload;
+                        payload = {
+                            record: {
+                                recordPermissions: payload
+                            }
+                        };
                         return payload;
                     `,
                 }

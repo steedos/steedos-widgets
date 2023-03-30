@@ -12,6 +12,7 @@ import { ListView } from './listView';
 import { Router } from './router';
 import { render } from './render';
 import { getFieldDefaultValue } from './defaultValue';
+import {getTreeOptions} from './tree'
 
 export const SteedosUI = Object.assign({}, {
     render: render,
@@ -78,5 +79,6 @@ export const SteedosUI = Object.assign({}, {
         // TODO 调用steedos object form 的 reload action
       }
     },
-    getFieldDefaultValue
+    getFieldDefaultValue,
+    getTreeOptions
 })
