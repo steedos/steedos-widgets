@@ -154,7 +154,11 @@ export async function getObjectCRUD(objectSchema, fields, options){
       options.queryCount = true; // 禁止翻页的时候, 需要查找总数
     }else if(top){
       bodyProps.footerToolbar = [];
-      options.queryCount = false;
+      if(options.isRelated){
+        options.queryCount = true;
+      }else{
+        options.queryCount = false;
+      }
     }
 
     bodyProps.headerToolbar = getObjectHeaderToolbar(objectSchema, options.formFactor, {showDisplayAs, hiddenCount: options.queryCount === false});
