@@ -359,14 +359,15 @@ async function getTableOperation(ctx){
                         formFactor: "${formFactor}",
                         context: `\${context}`
                     },
-                    "responseData": {
-                        "recordPermissions": "$$"
-                    },
                     headers: {
                         Authorization: "Bearer ${context.tenantId},${context.authToken}"
                     },
                     adaptor: `
-                        payload.recordPermissions = payload;
+                        payload = {
+                            record: {
+                                recordPermissions: payload
+                            }
+                        };
                         return payload;
                     `,
                 }
