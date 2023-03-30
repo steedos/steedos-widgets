@@ -1,6 +1,6 @@
 import { getObjectListHeaderFieldsFilterBar } from './header';
 
-const getDisplayAsButton = function(showDisplayAs){
+const getDisplayAsButton = function (showDisplayAs) {
   let buttons = [
     {
       "type": "button",
@@ -29,14 +29,6 @@ const getDisplayAsButton = function(showDisplayAs){
 
 
 
-let x = `return {
-  
-  api,
-  data: {
-    api.data,    
-    foo: 'bar'
-  }
-}`
 
 const onFieldsFilterToggleScript = `
 const scope = event.context.scoped;
@@ -49,9 +41,8 @@ const filterService = filterForm.context.getComponents().find(function(n){
 filterService.setData({showFieldsFilter: !!!filterService.props.data.showFieldsFilter});
 `;
 
-function getExportApiRequestAdaptorScript(){
+function getExportApiRequestAdaptorScript() {
   return `
-    console.log(api.url);
     // 获取列表视图的属性
     let uiSchema = api.body.uiSchema;
     let list_views = uiSchema.list_views;
@@ -100,17 +91,16 @@ function getExportApiRequestAdaptorScript(){
     if (filters && filters.length > 0) {
         api.url = api.url + "&filters=" + JSON.stringify(filters);
     }
-    console.log(api.url);
     return api;
   `
 }
 
-export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = false, hiddenCount = false} = {}){
+export function getObjectHeaderToolbar(mainObject, formFactor, { showDisplayAs = false, hiddenCount = false } = {}) {
   const isMobile = window.innerWidth < 768;
-  if(isMobile){
+  if (isMobile) {
     showDisplayAs = false;
   }
-  if(formFactor === 'SMALL'){
+  if (formFactor === 'SMALL') {
     const onReloadScript = `
       const scope = event.context.scoped;
       var listView = scope.parent.getComponents().find(function(n){
@@ -120,7 +110,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
     `;
     return [
       // "bulkActions",
-      hiddenCount ? {} :{
+      hiddenCount ? {} : {
         "type": "tpl",
         "tpl": "${count} 个项目"
       },
@@ -159,9 +149,9 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
           }
         }
       },
-      showDisplayAs? getDisplayAsButton(showDisplayAs) : {}
-  ]
-  }else{
+      showDisplayAs ? getDisplayAsButton(showDisplayAs) : {}
+    ]
+  } else {
     return [
       // "filter-toggler",
       "bulkActions",
@@ -173,13 +163,9 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
       //     "type": "columns-toggler",
       //     "className": "mr-2"
       // },
-      // {
-      //     "type": "export-excel",
-      //     "align": "right"
-      // },
       hiddenCount ? {} : {
         "type": "tpl",
-        "tpl":  "${count} 个项目"
+        "tpl": "${count} 个项目"
       },
       {
         "type": "reload",
@@ -191,8 +177,8 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
         "type": "button",
         "label": "",
         "icon": "fa fa-download",
-        "align": "right", 
-        "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
+        "align": "right",
+        "className": "bg-white rounded border-gray-300 text-gray-500",
         "tooltipPlacement": "bottom",
         "visibleOn": "${!isLookup && global.user.is_space_admin}",
         "tooltip": "导出Excel",
@@ -239,7 +225,414 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
           }
         }
       },
-      showDisplayAs? getDisplayAsButton(showDisplayAs) : {}
+      {
+        "type": "dropdown-button",
+        "trigger": "click",
+        "icon": "fa fa-cog",
+        "btnClassName": "antd-Button--iconOnly bg-white p-2 rounded border-gray-300 text-gray-500",
+        "align": "right",
+        "visibleOn": "${!isLookup && global.user.is_space_admin}",
+        "buttons": [
+          {
+            "label": "列表视图操作",
+            "children": [
+              {
+                "type": "button",
+                "label": "新建",
+                "onEvent": {
+                  "click": {
+                    "weight": 0,
+                    "actions": [
+                      {
+                        "dialog": {
+                          "type": "dialog",
+                          "title": "新建 列表视图",
+                          "data": {
+                            "&": "$$",
+                            "all": "${uiSchema.list_views.all}",
+                            "appId": "${appId}"
+                          },
+                          "body": [
+                            {
+                              "type": "steedos-object-form",
+                              "label": "对象表单",
+                              "objectApiName": "object_listviews",
+                              "recordId": "",
+                              "className": "sm:border sm:shadow sm:rounded sm:border-gray-300 bg-white p-4",
+                              "mode": "edit",
+                              "defaultData": {
+                                "object_name": "${all.object_name}",
+                                "filter_scope": "${all.filter_scope}",
+                                "columns": "${all.columns}",
+                                "filter_fields": "${all.filter_fields}",
+                                "scrolling_mode": "${all.scrolling_mode}",
+                                "shared": "${all.shared}",
+                                "sort": "${all.sort}",
+                                "show_count": "${all.show_count}",
+                                "type": "${all.type}"
+                              },
+                              "fieldsExtend": "{\n  \"label\":{\n    \"is_wide\":true\n  },\n  \"name\":{\n    \"is_wide\":true\n  },\n  \"object_name\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"filter_scope\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"columns\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"filter_fields\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"scrolling_mode\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"sort\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"show_count\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"type\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  }\n}",
+                              "fields": [
+                                "label",
+                                "name",
+                                "object_name",
+                                "filter_scope",
+                                "show_count",
+                                "columns.$.field",
+                                "columns.$.width",
+                                "sort.$.field_name",
+                                "sort.$.order",
+                                "filters",
+                                "mobile_columns.$.field",
+                                "searchable_fields.$.field",
+                                "is_system",
+                                "shared"
+                              ],
+                              "onEvent": {
+                                "submitSucc": {
+                                  "weight": 0,
+                                  "actions": [
+                                    {
+                                      "args": {
+                                        "url": "${context.rootUrl}/app/${appId}/${object_name}/grid/${name}",
+                                        "blank": false
+                                      },
+                                      "actionType": "url",
+                                    },
+                                  ]
+                                }
+                              },
+                              "messages": {
+                                "success": "成功",
+                                "failed": "失败"
+                              },
+                            }
+                          ],
+                          "showCloseButton": true,
+                          "showErrorMsg": true,
+                          "showLoading": true,
+                          "closeOnEsc": false,
+                          "dataMapSwitch": false,
+                          "size": "lg"
+                        },
+                        "actionType": "dialog"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "button",
+                "label": "复制",
+                "onEvent": {
+                  "click": {
+                    "weight": 0,
+                    "actions": [
+                      {
+                        "dialog": {
+                          "type": "dialog",
+                          "title": "复制 列表视图",
+                          "data": {
+                            "&": "$$",
+                            "listName": "${listName}",
+                            "list_view": "${uiSchema.list_views[listName]}",
+                            "appId": "${appId}"
+                          },
+                          "body": [
+                            {
+                              "type": "steedos-object-form",
+                              "label": "对象表单",
+                              "objectApiName": "object_listviews",
+                              "recordId": "",
+                              "className": "sm:border sm:shadow sm:rounded sm:border-gray-300 bg-white p-4",
+                              "mode": "edit",
+                              "fields": [
+                              ],
+                              "defaultData": {
+                                "object_name": "${list_view.object_name}",
+                                "filter_scope": "${list_view.filter_scope}",
+                                "columns": "${list_view.columns}",
+                                "filter_fields": "${list_view.filter_fields}",
+                                "scrolling_mode": "${list_view.scrolling_mode}",
+                                "shared": "${list_view.shared}",
+                                "sort": "${list_view.sort}",
+                                "show_count": "${list_view.show_count}",
+                                "type": "${list_view.type}"
+                              },
+                              "fieldsExtend": "{\n  \"label\":{\n    \"is_wide\":true\n  },\n  \"name\":{\n    \"is_wide\":true\n  },\n  \"object_name\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"filter_scope\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"columns\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"filter_fields\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"scrolling_mode\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"sort\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"show_count\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"type\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  }\n}",
+                              "fields": [
+                                "label",
+                                "name",
+                                "object_name",
+                                "filter_scope",
+                                "show_count",
+                                "columns.$.field",
+                                "columns.$.width",
+                                "sort.$.field_name",
+                                "sort.$.order",
+                                "filters",
+                                "mobile_columns.$.field",
+                                "searchable_fields.$.field",
+                                "is_system",
+                                "shared"
+                              ],
+                              "onEvent": {
+                                "submitSucc": {
+                                  "weight": 0,
+                                  "actions": [
+                                    {
+                                      "args": {
+                                        "url": "${context.rootUrl}/app/${appId}/${object_name}/grid/${name}",
+                                        "blank": false
+                                      },
+                                      "actionType": "url",
+                                    },
+                                  ]
+                                }
+                              },
+                            }
+                          ],
+                          "showCloseButton": true,
+                          "showErrorMsg": true,
+                          "showLoading": true,
+                          "closeOnEsc": false,
+                          "dataMapSwitch": false,
+                          "size": "lg"
+                        },
+                        "actionType": "dialog"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "button",
+                "label": "重命名",
+                "onEvent": {
+                  "click": {
+                    "weight": 0,
+                    "actions": [
+                      {
+                        "dialog": {
+                          "type": "dialog",
+                          "title": "重命名 列表视图",
+                          "body": [
+                            {
+                              "type": "steedos-object-form",
+                              "label": "对象表单",
+                              "objectApiName": "object_listviews",
+                              "recordId": "${uiSchema.list_views[listName]._id}",
+                              "className": "sm:border sm:shadow sm:rounded sm:border-gray-300 bg-white p-4",
+                              "mode": "edit",
+                              "fields": [
+                                "label"
+                              ],
+                              "fieldsExtend": "{\n  \"label\":{\n    \"is_wide\": true\n  }\n}",
+                              "onEvent": {
+                                "submitSucc": {
+                                  "weight": 0,
+                                  "actions": [
+                                    {
+                                      "args": {
+                                        "url": "${context.rootUrl}/app/${appId}/${object_name}/grid/${name}",
+                                        "blank": false
+                                      },
+                                      "actionType": "url",
+                                    },
+                                  ]
+                                }
+                              }
+                            }
+                          ],
+                          "showCloseButton": true,
+                          "showErrorMsg": true,
+                          "showLoading": true,
+                          "size": "lg"
+                        },
+                        "actionType": "dialog"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "button",
+                "label": "共享设置",
+                "onEvent": {
+                  "click": {
+                    "weight": 0,
+                    "actions": [
+                      {
+                        "dialog": {
+                          "type": "dialog",
+                          "title": "共享设置 列表视图",
+                          "body": [
+                            {
+                              "type": "steedos-object-form",
+                              "label": "对象表单",
+                              "objectApiName": "object_listviews",
+                              "recordId": "${uiSchema.list_views[listName]._id}",
+                              "className": "sm:border sm:shadow sm:rounded sm:border-gray-300 bg-white p-4",
+                              "mode": "edit",
+                              "fields": [
+                                "shared"
+                              ]
+                            }
+                          ],
+                          "showCloseButton": true,
+                          "showErrorMsg": true,
+                          "showLoading": true,
+                          "closeOnEsc": false,
+                          "dataMapSwitch": false,
+                          "size": "md"
+                        },
+                        "actionType": "dialog"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "button",
+                "label": "过滤设置(todo)",
+                "onEvent": {
+                  "click": {
+                    "weight": 0,
+                    "actions": [
+                      {
+                        "dialog": {
+                          "type": "dialog",
+                          "title": "过滤设置 列表视图",
+                          "body": [
+                            {
+                              "type": "steedos-object-form",
+                              "label": "对象表单",
+                              "objectApiName": "object_listviews",
+                              "recordId": "${uiSchema.list_views[listName]._id}",
+                              "className": "sm:border sm:shadow sm:rounded sm:border-gray-300 bg-white p-4",
+                              "mode": "read",
+
+                              "fields": [
+                                "filters"
+                              ]
+                            }
+                          ],
+                          "showCloseButton": true,
+                          "showErrorMsg": true,
+                          "showLoading": true,
+                          "closeOnEsc": false,
+                          "dataMapSwitch": false,
+                          "size": "lg"
+                        },
+                        "actionType": "dialog"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "button",
+                "label": "显示的列(todo)",
+                "onEvent": {
+                  "click": {
+                    "weight": 0,
+                    "actions": [
+                      {
+                        "args": {},
+                        "dialog": {
+                          "type": "dialog",
+                          "title": "显示的列 列表视图",
+                          "body": [
+                            {
+                              "type": "steedos-object-form",
+                              "label": "对象表单",
+                              "objectApiName": "object_listviews",
+                              "recordId": "${uiSchema.list_views[listName]._id}",
+                              "className": "sm:border sm:shadow sm:rounded sm:border-gray-300 bg-white p-4",
+                              "mode": "edit",
+                              "excludedFields": [
+                                "label",
+                                "name",
+                                "object_name",
+                                "filter_scope",
+                                "shared",
+                                "show_count",
+                                "filter_fields",
+                                "sort.$.field_name",
+                                "sort.$.order",
+                                "filters",
+                                "mobile_columns.$.field",
+                                "searchable_fields.$.field",
+                                "sort_no",
+                                "is_system",
+                                "enable_amis_schema",
+                                "amis_schema",
+                                "requestAdaptor",
+                                "adaptor",
+                                "instance_state",
+                                "created",
+                                "created_by",
+                                "modified",
+                                "modified_by",
+                                "instances.$._id",
+                                "instances.$.state"
+                              ],
+                            }
+                          ],
+                          "showCloseButton": true,
+                          "showErrorMsg": true,
+                          "showLoading": true,
+                          "size": "lg"
+                        },
+                        "actionType": "dialog"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "button",
+                "label": "删除",
+                "confirmText": "如果您删除此列表视图，该视图将为所有具备访问权限的用户永久删除。是否确定要删除？",
+                "api": {
+                  "url": "${context.rootUrl}/graphql",
+                  "method": "post",
+                  "headers": {
+                    "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                  },
+                  "data": {
+                    "&": "$$",
+                    "recordId": "${uiSchema.list_views[listName]._id}",
+                    "objectName": "${objectName}",
+                    "appId": "${appId}"
+                  },
+                  "messages": {
+                    "success": "删除成功",
+                    "failed": "删除失败"
+                  },
+                  "requestAdaptor": "const { recordId } = api.body;\nvar deleteArray = [];\nif (recordId) { deleteArray.push(`delete:object_listviews__delete(id: \"${recordId}\")`); }\napi.data = { query: `mutation{${deleteArray.join(',')}}` };\n  return api;\n",
+                  "adaptor": "if (payload.errors) {\n  payload.status = 2;\n  payload.msg = payload.errors[0].message;\n}\nreturn payload;",
+                },
+                "redirect": "./all",
+                "actionType": "ajax",
+                "outputVar": "responseResult",
+              },
+              {
+                "type": "button",
+                "label": "保存宽度(todo)"
+              },
+              // {
+              //   type: 'steedos-object-button',
+              //   name: 'standard_delete',
+              //   objectName: 'test0321__c',
+              //   // visibleOn: getButtonVisibleOn(button),
+              //   className: 'antd-Button--default'
+              // }
+            ]
+          }
+        ]
+      },
+      showDisplayAs ? getDisplayAsButton(showDisplayAs) : {}
       // {
       //   "type": "search-box",
       //   "align": "right",
@@ -259,7 +652,6 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
   }
 
 
-    
 }
 
 export function getObjectFooterToolbar(mainObject, formFactor) {
