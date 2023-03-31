@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-31 09:15:50
+ * @LastEditTime: 2023-03-31 13:53:06
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef } from 'react';
@@ -24,7 +24,7 @@ export const PageRecordDetail = async (props) => {
   const listPage = await getPage({type: 'list', appId: appId, objectName: objectApiName, formFactor})
 
   let recordSchema = {}
-  if (recordId) {
+  if (true || recordId) {
 
     const recordPage = await getPage({type: 'record', appId: appId, objectName: objectApiName, formFactor: defaultFormFactor});
     recordSchema = recordPage? JSON.parse(recordPage.schema) : {
@@ -34,7 +34,7 @@ export const PageRecordDetail = async (props) => {
       "body": [
         {
           "type": "steedos-record-detail",
-          "recordId": "${recordId}",
+          // "recordId": "${recordId}",
           "objectApiName": "${objectName}",
           className: "sm:m-3",
           appId: appId,
@@ -57,8 +57,8 @@ export const PageRecordDetail = async (props) => {
     objectName: objectApiName,
     listViewId: sideListviewId,
     listName: sideListviewId,
-    recordId: "${recordId}",
-    appId: appId,
+    // recordId: "${recordId}",
+    // appId: appId,
     formFactor: formFactor,
     displayAs: displayAs
   }

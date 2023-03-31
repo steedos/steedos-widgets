@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-30 14:28:50
+ * @LastEditTime: 2023-03-31 12:14:34
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -196,7 +196,7 @@ export async function getFormSchema(objectName, ctx) {
     };
 }
 
-// 获取只读页面
+// 获取只读页面 recordId 已废弃, 函数签名保持不变, 但recordId变量不可再使用, 请使用运行时的${recordId}
 export async function getViewSchema(objectName, recordId, ctx) {
     const uiSchema = await getUISchema(objectName);
     const amisSchema = await getObjectDetail(uiSchema, recordId, ctx);

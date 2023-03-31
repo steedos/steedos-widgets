@@ -71,11 +71,7 @@ export function getRecordPermissionsTemplate(){
 }
 
 export async function getFindOneQuery(object, recordId, fields, options){
-    let queryOptions = "";
-    
-    if(recordId){
-        queryOptions = `(filters:["${object.idFieldName}", "=", "${recordId}"])`;
-    }
+    let queryOptions = `(filters:["${object.idFieldName}", "=", "\${recordId}"])`;
     let alias = "data";
     if(options){
         if(options.alias){

@@ -2,14 +2,14 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-30 15:53:43
+ * @LastEditTime: 2023-03-31 16:54:02
  * @Description: 
  */
 import { getFormSchema, getViewSchema } from '@steedos-widgets/amis-lib'
 import { keys, pick, difference, isString } from 'lodash';
 
 export const AmisObjectForm = async (props) => {
-  console.log("===AmisObjectForm=props==", props);
+  // console.log("===AmisObjectForm=props==", props);
   const { $schema, recordId, mode, layout, labelAlign, appId, fieldsExtend, excludedFields = null, fields = null,
     className=""
   } = props;
@@ -48,23 +48,23 @@ export const AmisObjectForm = async (props) => {
     uiSchema = schema.uiSchema;
   } else {
     // formInitProps
-    if(!recordId){
-      // 只读界面只返回一条记录
-      options.formInitProps = {
-        queryOptions: "top: 1"
-      };
-    }
+    // if(!recordId){
+    //   // 只读界面只返回一条记录
+    //   options.formInitProps = {
+    //     queryOptions: "top: 1"
+    //   };
+    // }
     const schema =  await getViewSchema(objectApiName, recordId, options);
     amisSchema =  schema.amisSchema;
     uiSchema =  schema.uiSchema;
   }
   const formData :any = {};
-  formData.recordId = recordId || null;
-  if(objectApiName){
-    formData.objectName = objectApiName;
-  }
+  // formData.recordId = recordId || null;
+  // if(objectApiName){
+  //   formData.objectName = objectApiName;
+  // }
   amisSchema.className = `steedos-object-form ${className}`
-  amisSchema.data = Object.assign({"&": "$$"}, amisSchema.data, formData, {global: globalData, uiSchema:uiSchema});
-  console.log(`===AmisObjectForm=amisSchema==`, amisSchema)
+  amisSchema.data = Object.assign( amisSchema.data, formData, {global: globalData, uiSchema:uiSchema});
+  // console.log(`===AmisObjectForm=amisSchema==`, amisSchema)
   return amisSchema;
 }

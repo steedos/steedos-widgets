@@ -139,7 +139,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
       footerToolbar: getObjectFooterToolbar(objectSchema, options.formFactor, {
         disableStatistics: options.queryCount === false
       }), 
-      // filter: options.filterVisible !== false && await getObjectFilter(objectSchema, fields, options),
+      filter: options.filterVisible !== false && await getObjectFilter(objectSchema, fields, options),
     }
     if(options.formFactor !== 'SMALL'){
       Object.assign(bodyProps, {
