@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: 廖大雪 2291335922@qq.com
- * @LastEditTime: 2023-03-15 10:57:31
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2023-03-30 13:45:04
  * @Description:
  */
 
@@ -180,13 +180,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
             id: componentId,
             className: `steedos-record-related-list rounded border border-slate-300 bg-gray-100 mb-4 ${className}`,
             data: {
-                "&": "$$",
-                appId: "${appId}",
-                app_id: "${appId}",
-                masterObjectName: objectName,
-                masterRecordId: "${recordId}",
                 relatedKey: relatedKey,   
-                objectName: relatedObjectName,
                 listViewId: `amis-\${appId}-${relatedObjectName}-listview`,
                 _isRelated: true
             },
@@ -194,12 +188,6 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
                 {
                     ...amisSchema,
                     data: {
-                        "&": "$$",
-                        appId: "${appId}",
-                        app_id: "${appId}",
-                        relatedKey: relatedKey,
-                        objectName: "${objectName}",
-                        recordId: "${masterRecordId}",
                         defaultData: {
                             ...{[relatedKey]: getRelatedFieldValue(objectName, relatedValue, relatedObjectUiSchema, relatedKey)}
                         }
@@ -333,6 +321,7 @@ export async function getRelatedListSchema(
         "filters": listviewFilter,
         "filtersFunction": filtersFunction,
         "sort": listViewSort,
+        "filterVisible": false,
         "ctx": ctx
     };
     // console.log(`getRelatedListSchema amisSchema`, amisSchema);

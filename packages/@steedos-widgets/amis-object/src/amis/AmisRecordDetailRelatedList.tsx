@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-03 11:41:13
+ * @LastEditTime: 2023-03-30 11:24:06
  * @Description: 
  */
 import { getRecordDetailRelatedListSchema } from '@steedos-widgets/amis-lib'
@@ -25,5 +25,6 @@ export const AmisRecordDetailRelatedList = async (props) => {
     }
   }
   const schema = (await getRecordDetailRelatedListSchema(objectApiName, recordId, relatedObjectApiName, relatedKey, {top, perPage, hiddenEmptyTable, appId, relatedLabel, className, formFactor, columns, sort, filters, visible_on})).amisSchema;
+  console.log(`AmisRecordDetailRelatedList===>schema`, schema)
   return schema
 }

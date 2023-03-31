@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-11 17:02:30
+ * @LastEditTime: 2023-03-30 14:28:50
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -189,7 +189,7 @@ export async function getField(objectName, fieldName) {
 export async function getFormSchema(objectName, ctx) {
     const uiSchema = await getUISchema(objectName);
     const amisSchema = await getObjectForm(uiSchema, ctx);
-    // console.log(`getFormSchema====>`, amisSchema)
+    console.log(`getFormSchema====>`, amisSchema)
     return {
         uiSchema,
         amisSchema,
@@ -200,7 +200,7 @@ export async function getFormSchema(objectName, ctx) {
 export async function getViewSchema(objectName, recordId, ctx) {
     const uiSchema = await getUISchema(objectName);
     const amisSchema = await getObjectDetail(uiSchema, recordId, ctx);
-    // console.log(`getViewSchema amisSchema`, amisSchema)
+    console.log(`getViewSchema amisSchema`, amisSchema)
     return {
         uiSchema,
         amisSchema
@@ -379,6 +379,7 @@ export async function getTableSchema(
         sort,
         buttons: await getListViewItemButtons(uiSchema, ctx)
     });
+    console.log('getTableSchema====>amisSchema', amisSchema)
     return {
         uiSchema,
         amisSchema,
@@ -519,51 +520,6 @@ export async function getRecordDetailSchema(objectName, appId, props = {}){
           }
     }
 }
-
-// export async function getRecordDetailRelatedListSchema(objectName,recordId,relatedObjectName){
-//     // console.log('b==>',objectName,recordId,relatedObjectName)
-//     const relatedObjectUiSchema = await getUISchema(relatedObjectName);
-//     const { list_views, label , icon, fields } = relatedObjectUiSchema;
-//     const firstListViewName = keys(list_views)[0];
-//     const relatedKey = findKey(fields, function(field) { 
-//         return ["lookup","master_detail"].indexOf(field.type) > -1 && field.reference_to === objectName; 
-//     });
-//     const globalFilter = [relatedKey,'=',recordId];
-//     const recordRelatedListHeader = await getObjectRecordDetailRelatedListHeader(relatedObjectUiSchema);
-//     const options = {
-//         globalFilter,
-//         defaults: {
-//             listSchema: { headerToolbar:[],columnsTogglable:false },
-//             headerSchema: recordRelatedListHeader
-//         },
-//         showHeader: true
-//     }
-//     const amisSchema= (await getListSchema(null, relatedObjectName, firstListViewName, options)).amisSchema;
-//     return {
-//         uiSchema: relatedObjectUiSchema,
-//         amisSchema: {
-//             type: "service",
-//             data: {
-//                 masterObjectName: objectName,
-//                 masterRecordId: "${recordId}",
-//                 relatedKey: relatedKey,   
-//                 objectName: relatedObjectName,
-//                 listViewId: `amis-\${appId}-${relatedObjectName}-listview`,
-//             },
-//             body:[
-//                 {
-//                     ...amisSchema,
-//                     data: {
-//                         filter: ["${relatedKey}", "=", "${masterRecordId}"],
-//                         objectName: "${objectName}",
-//                         recordId: "${masterRecordId}",
-//                         ...{[relatedKey]: getRelatedFieldValue(objectName, "${recordId}", relatedSchema.uiSchema, relatedKey)}
-//                     }
-//                 }
-//             ]
-//         }
-//     };
-// }
 
 
 // 获取单个相关表

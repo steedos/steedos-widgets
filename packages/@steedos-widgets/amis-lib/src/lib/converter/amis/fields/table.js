@@ -290,7 +290,7 @@ function getButtonVisibleOn(button){
         //     return 'false';
         // }
         if(visible.trim().startsWith('function')){
-            return `${visible}(objectName, _id, typeof record === 'undefined' ? (typeof recordPermissions === 'undefined' ? {} : recordPermissions) : record.recordPermissions, data)`
+            return `${visible}(objectName, typeof _id === 'undefined' ? null: _id, typeof record === 'undefined' ? (typeof recordPermissions === 'undefined' ? {} : recordPermissions) : record.recordPermissions, data)`
         }
         return visible;
     }
@@ -701,7 +701,7 @@ export async function getApi(object, recordId, fields, options){
     const data = await graphql.getFindQuery(object, recordId, fields, options);
     return {
         method: "post",
-        url: graphql.getApi(),
+        url: graphql.getApi(), // + "&recordId=${recordId}"
         data: data,
         headers: {
             Authorization: "Bearer ${context.tenantId},${context.authToken}"

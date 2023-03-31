@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-21 10:27:43
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-11 17:52:50
+ * @LastEditTime: 2023-03-30 16:28:44
  * @Description: 
  */
 import React, { useEffect, useState } from 'react'
@@ -69,7 +69,13 @@ export const AmisObjectButton = (props) => {
         // if(className){
         //     schema.className = schema.className + ' ' + className;
         // }
-        const renderData = Object.assign(data, {recordId: data._id, objectName: objectName, listViewId: data.listViewId, app_id: appId, className: className})
+        const renderData = Object.assign(data, {objectName: objectName, app_id: appId, className: className});
+        if(data._id){
+            renderData.recordId = data._id
+        }
+        if(data.listViewId){
+            renderData.listViewId = data.listViewId
+        }
         if(schema){
             schema.data = defaultsDeep({}, renderData, getDefaultRenderData(), schema.data);
         }
