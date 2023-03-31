@@ -140,7 +140,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
         disableStatistics: options.queryCount === false
       }), 
       filter: options.filterVisible !== false && await getObjectFilter(objectSchema, fields, options),
-    }
+    };
     if(options.formFactor !== 'SMALL'){
       Object.assign(bodyProps, {
         bulkActions: options.bulkActions != false ? bulkActions : false

@@ -278,20 +278,7 @@ export function getObjectFooterToolbar(mainObject, formFactor) {
 }
 
 export async function getObjectFilter(objectSchema, fields, options) {
-  return null
-  if(!window.getObjectFilterCountTime){
-    window.getObjectFilterCountTime = 0;
-  }
-  if(!window.getObjectFilterCount){
-    window.getObjectFilterCount = 1;
-  }else{
-    window.getObjectFilterCount += 1;
-  }
-  const s = new Date().getTime();
   const fieldsFilterBarSchema = await getObjectListHeaderFieldsFilterBar(objectSchema, null, options);
-  window.getObjectFilterCountTime = window.getObjectFilterCountTime + new Date().getTime() - s;
-  console.log("window.getObjectFilterCount=======>", window.getObjectFilterCount)
-  console.log("window.getObjectFilterCountTime=======>", window.getObjectFilterCountTime)
   return {
     "title": "",
     "submitText": "",
