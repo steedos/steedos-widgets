@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-03-31 17:38:31
+ * @LastEditTime: 2023-03-31 23:36:11
  * @Description: 
  */
 
@@ -363,7 +363,70 @@ export default {
                           value: '重写字段配置. 例如\n```\n{\n    "name": {\n        "is_wide": true,  //设置为宽字段\n        "required": true, //设置为必填\n        "amis": { // 设置渲染属性\n            "type": "input-color" //将字段重写为 颜色选择器\n            ...\n        } \n    }, \n    "title": {\n        "group": "分组1" // 设置分组\n        ...\n    }\n}\n```'
                         }
                       ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "title": "外观",
+              className: 'p-none',
+              "body": [
+                
+                {
+                  "type": "collapse-group",
+                  expandIconPosition: 'right',
+                  expandIcon: {
+                    type: 'icon',
+                    icon: 'chevron-right'
+                  },
+                  className: 'ae-formItemControl',
+                  "activeKey": [
+                    "1"
+                  ],
+                  "body": [
+                    {
+                      "type": "collapse",
+                      headingClassName: 'ae-formItemControl-header',
+                      bodyClassName: 'ae-formItemControl-body',
+                      "key": "5",
+                      "header": "CSS 类名",
+                      "body": [
+                        {
+                          type: "input-text",
+                          name: "className",
+                          mode: 'horizontal',
+                          horizontal: {
+                            left: 4,
+                            right: 8,
+                            justify: true
+                          },
+                          label: "表单",
+                          value: "mb-4"
+                        }
+                      ]
                     },
+                  ]
+                }
+              ]
+            },
+            {
+              "title": "接口",
+              className: 'p-none',
+              "body": [
+                {
+                  "type": "collapse-group",
+                  expandIconPosition: 'right',
+                  expandIcon: {
+                    type: 'icon',
+                    icon: 'chevron-right'
+                  },
+                  className: 'ae-formItemControl',
+                  "activeKey": [
+                    "1",
+                    "2"
+                  ],
+                  "body": [
                     {
                       "type": "collapse",
                       headingClassName: 'ae-formItemControl-header',
@@ -410,48 +473,6 @@ export default {
                         }
                       ]
                     }
-                  ]
-                }
-              ]
-            },
-            {
-              "title": "外观",
-              className: 'p-none',
-              "body": [
-                
-                {
-                  "type": "collapse-group",
-                  expandIconPosition: 'right',
-                  expandIcon: {
-                    type: 'icon',
-                    icon: 'chevron-right'
-                  },
-                  className: 'ae-formItemControl',
-                  "activeKey": [
-                    "1"
-                  ],
-                  "body": [
-                    {
-                      "type": "collapse",
-                      headingClassName: 'ae-formItemControl-header',
-                      bodyClassName: 'ae-formItemControl-body',
-                      "key": "5",
-                      "header": "CSS 类名",
-                      "body": [
-                        {
-                          type: "input-text",
-                          name: "className",
-                          mode: 'horizontal',
-                          horizontal: {
-                            left: 4,
-                            right: 8,
-                            justify: true
-                          },
-                          label: "表单",
-                          value: "mb-4"
-                        }
-                      ]
-                    },
                   ]
                 }
               ]
