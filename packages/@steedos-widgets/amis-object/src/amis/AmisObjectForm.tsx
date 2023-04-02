@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-31 16:54:02
+ * @LastEditTime: 2023-04-02 10:55:34
  * @Description: 
  */
 import { getFormSchema, getViewSchema } from '@steedos-widgets/amis-lib'
@@ -11,7 +11,7 @@ import { keys, pick, difference, isString } from 'lodash';
 export const AmisObjectForm = async (props) => {
   // console.log("===AmisObjectForm=props==", props);
   const { $schema, recordId, mode, layout, labelAlign, appId, fieldsExtend, excludedFields = null, fields = null,
-    className=""
+    className="", initApiRequestAdaptor, initApiAdaptor, apiRequestAdaptor, apiAdaptor
   } = props;
   let objectApiName = props.objectApiName || "space_users";
   // amis中的mode属性是表单布局,没有layout属性。defaults的变量会覆盖mode属性值。
@@ -43,7 +43,9 @@ export const AmisObjectForm = async (props) => {
   let amisSchema: any;
   let uiSchema: any;
   if (mode === 'edit') {
-    const schema = await getFormSchema(objectApiName, options);
+    const schema = await getFormSchema(objectApiName, Object.assign({}, options, {
+      initApiRequestAdaptor, initApiAdaptor, apiRequestAdaptor, apiAdaptor
+    }));
     amisSchema = schema.amisSchema;
     uiSchema = schema.uiSchema;
   } else {

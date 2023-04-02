@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-30 13:45:04
+ * @LastEditTime: 2023-04-02 10:55:26
  * @Description:
  */
 
@@ -83,6 +83,13 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
     let { top, perPage, hiddenEmptyTable, appId, relatedLabel, className, columns, sort, filters, visible_on } = ctx;
     // console.log('getRecordDetailRelatedListSchema==>',objectName,recordId,relatedObjectName)
     const relatedObjectUiSchema = await getUISchema(relatedObjectName);
+    if(!relatedObjectUiSchema){
+        // 子表对象不存在时直接返回空值.
+        return {
+            uiSchema: {},
+            amisSchema: {}
+        }
+    }
     const { label , fields } = relatedObjectUiSchema;
     if(!relatedLabel){
         relatedLabel = label;
