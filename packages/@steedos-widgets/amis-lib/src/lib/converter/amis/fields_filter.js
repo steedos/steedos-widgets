@@ -307,6 +307,10 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
       });
       sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify(localListViewProps));
     }
+    //触发amis crud 高度重算
+    setTimeout(()=>{
+      window.dispatchEvent(new Event("resize"))
+    }, 100)
     // ===END===
   `;
   return {
