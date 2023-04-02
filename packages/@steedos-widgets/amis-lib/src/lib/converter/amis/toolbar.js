@@ -47,6 +47,10 @@ const filterService = filterForm.context.getComponents().find(function(n){
   return n.props.type === "service";
 });
 filterService.setData({showFieldsFilter: !!!filterService.props.data.showFieldsFilter});
+//触发amis crud 高度重算
+setTimeout(()=>{
+  window.dispatchEvent(new Event("resize"))
+}, 100)
 `;
 
 function getExportApiRequestAdaptorScript(){
