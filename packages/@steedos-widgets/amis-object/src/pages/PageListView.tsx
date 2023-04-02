@@ -49,7 +49,7 @@ export const PageListView = async (props) => {
     ...$schema.data,
     objectName: objectApiName,
     listViewId: listViewId,
-    listName: listName || listviewId,
+    // listName: listName || listviewId,
     appId: appId,
     formFactor: formFactor,
     displayAs: displayAs
