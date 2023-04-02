@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-10 14:49:15
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-03-31 23:36:11
  * @Description: 
  */
 
@@ -54,6 +54,26 @@ const config: any = {
       },
       description: '表单布局',
     },
+    {
+      name: "initApiRequestAdaptor",
+      propType: "string",
+      description: '初始化接口发送适配器',
+    },
+    {
+      name: "initApiAdaptor",
+      propType: "string",
+      description: '初始化接口接收适配器',
+    },
+    {
+      name: "apiRequestAdaptor",
+      propType: "string",
+      description: '保存接口发送适配器',
+    },
+    {
+      name: "apiAdaptor",
+      propType: "string",
+      description: '保存接口接收适配器',
+    }
   ],
   preview: {
   },
@@ -369,7 +389,7 @@ export default {
                       "type": "collapse",
                       headingClassName: 'ae-formItemControl-header',
                       bodyClassName: 'ae-formItemControl-body',
-                      "key": "1",
+                      "key": "5",
                       "header": "CSS 类名",
                       "body": [
                         {
@@ -386,6 +406,73 @@ export default {
                         }
                       ]
                     },
+                  ]
+                }
+              ]
+            },
+            {
+              "title": "接口",
+              className: 'p-none',
+              "body": [
+                {
+                  "type": "collapse-group",
+                  expandIconPosition: 'right',
+                  expandIcon: {
+                    type: 'icon',
+                    icon: 'chevron-right'
+                  },
+                  className: 'ae-formItemControl',
+                  "activeKey": [
+                    "1",
+                    "2"
+                  ],
+                  "body": [
+                    {
+                      "type": "collapse",
+                      headingClassName: 'ae-formItemControl-header',
+                      bodyClassName: 'ae-formItemControl-body',
+                      "key": "3",
+                      "header": "初始化数据接口",
+                      "body": [
+                        {
+                          type: "editor",
+                          name: "initApiRequestAdaptor",
+                          label: "发送适配器",
+                          language: "javascript",
+                          description: "函数签名：(api) => api， 数据在 api.data 中，修改后返回 api 对象。"
+                        },
+                        {
+                          type: "editor",
+                          name: "initApiAdaptor",
+                          label: "接收适配器",
+                          language: "javascript",
+                          description: "函数签名: (payload, response, api) => payload"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "collapse",
+                      headingClassName: 'ae-formItemControl-header',
+                      bodyClassName: 'ae-formItemControl-body',
+                      "key": "4",
+                      "header": "保存数据接口",
+                      "body": [
+                        {
+                          type: "editor",
+                          name: "apiRequestAdaptor",
+                          label: "发送适配器",
+                          language: "javascript",
+                          description: "函数签名：(api) => api， 数据在 api.data 中，修改后返回 api 对象。"
+                        },
+                        {
+                          type: "editor",
+                          name: "apiAdaptor",
+                          label: "接收适配器",
+                          language: "javascript",
+                          description: "函数签名: (payload, response, api) => payload"
+                        }
+                      ]
+                    }
                   ]
                 }
               ]
