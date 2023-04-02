@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-31 13:53:06
+ * @LastEditTime: 2023-04-02 10:09:10
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef } from 'react';
@@ -62,6 +62,8 @@ export const PageRecordDetail = async (props) => {
     formFactor: formFactor,
     displayAs: displayAs
   }
+
+  // console.log('defData====>', defData)
   
   return {
     type: 'service',
@@ -70,7 +72,7 @@ export const PageRecordDetail = async (props) => {
     body: (displayAs === 'grid') ? defaultsDeep({data: defData} , recordSchema) : [
       {
         "type": "wrapper",
-        "className": `p-0 flex-shrink-0 min-w-[388px] overflow-y-auto border-r border-gray-300 bg-gray-100 shadow lg:order-first lg:flex lg:flex-col`,
+        "className": `p-0 flex-shrink-0 min-w-[388px] border-r border-gray-300 bg-gray-100 shadow lg:order-first lg:flex lg:flex-col`,
         "body": defaultsDeep({data: defData} , listSchema)
       },
       {
