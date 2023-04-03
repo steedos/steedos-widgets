@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-28 10:12:04
+ * @LastEditTime: 2023-04-02 10:56:30
  * @Description: 
  */
 import { getPage, Router } from "@steedos-widgets/amis-lib";
@@ -42,7 +42,7 @@ export const PageListView = async (props) => {
     "showHeader": true,
     "showDisplayAs": (defaultFormFactor !== 'SMALL'),
     "formFactor": formFactor,
-    "className": (displayAs === 'split')? 'w-full': 'p-0 flex-1 sm:m-3 sm:mb-0 sm:border sm:shadow sm:rounded border-slate-300 border-solid bg-gray-100'
+    "className": (displayAs === 'split')? 'w-full': 'p-0 flex-1 sm:m-3 sm:border sm:shadow sm:rounded border-slate-300 border-solid bg-gray-100'
   }
 
   const defData = {
@@ -53,7 +53,7 @@ export const PageListView = async (props) => {
     appId: appId,
     formFactor: formFactor,
     displayAs: displayAs
-  }
+  };
 
   // console.log("defData====>", defData)
 
@@ -64,12 +64,12 @@ export const PageListView = async (props) => {
     body: (displayAs === 'grid') ? defaultsDeep({data: defData} , listSchema) : [
       {
         "type": "wrapper",
-        "className": `p-0 flex-shrink-0 min-w-[388px] overflow-y-auto border-r border-gray-300 bg-gray-100 shadow lg:order-first lg:flex lg:flex-col`,
+        "className": `p-0 flex-shrink-0 min-w-[388px] border-r border-gray-300 bg-gray-100 shadow lg:order-first lg:flex lg:flex-col`,
         "body": defaultsDeep({data: defData} , listSchema)
       },
       {
         "type": "wrapper",
-        "className": 'p-0 flex-1 overflow-y-auto focus:outline-none xl:order-last',
+        "className": 'p-0 flex-1 focus:outline-none xl:order-last',
         "body": []
       }
     ]

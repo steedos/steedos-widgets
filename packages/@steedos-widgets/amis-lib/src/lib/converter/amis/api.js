@@ -194,7 +194,7 @@ function getScriptForRewriteValueForFileFields(fields){
     `
 }
 
-export async function getEditFormInitApi(object, recordId, fields){
+export async function getEditFormInitApi(object, recordId, fields, options){
     const data = await graphql.getFindOneQuery(object, recordId, fields);
     data.recordId = "${recordId}";
     data.objectName = "${objectName}";
@@ -215,6 +215,7 @@ export async function getEditFormInitApi(object, recordId, fields){
                 data.query = "{data:" + objectName + "(filters: " + JSON.stringify(["_id", "=", null]) + ", top: 1){_id}}";
             }
             api.data = data;
+            ${options.initApiRequestAdaptor || ''}
             return api;
         `,
         adaptor: `
@@ -286,6 +287,7 @@ export async function getEditFormInitApi(object, recordId, fields){
                 initialValues,
                 editFormInited: true
             }
+            ${options.initApiAdaptor || ''}
             return payload;
         `,
         data: data,
@@ -301,7 +303,7 @@ export function getSaveApi(object, recordId, fields, options){
         method: 'post',
         url: graphql.getApi(),
         data: graphql.getSaveQuery(object, recordId, fields, options),
-        requestAdaptor: graphql.getSaveRequestAdaptor(fields),
+        requestAdaptor: graphql.getSaveRequestAdaptor(fields, options),
         responseData: {
             "recordId": "${record._id}"
         },
@@ -310,6 +312,7 @@ export function getSaveApi(object, recordId, fields, options){
                 payload.status = 2;
                 payload.msg = window.t ? window.t(payload.errors[0].message) : payload.errors[0].message;
             }
+            ${options.apiAdaptor || ''}
             return payload;
         `,
         headers: {

@@ -62,6 +62,11 @@ export async function getCalendarApi(mainObject, fields, options) {
     }else{
         filters = [filters, 'and', eventDurationFilters]
     }
+
+    if(api.data.$self.additionalFilters){
+      filters.push(api.data.$self.additionalFilters)
+    }
+
     var pageSize = api.data.pageSize || 10;
     var pageNo = api.data.pageNo || 1;
     var skip = (pageNo - 1) * pageSize;
@@ -525,6 +530,7 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
     "type": "steedos-fullcalendar",
     "label": "",
     "name": "fullcalendar",
+    "placeholder":"${additionalFilters}",//用于触发reload
     "editable": permissions.allowEdit,
     "selectable": permissions.allowCreate,
     "selectMirror": permissions.allowCreate,

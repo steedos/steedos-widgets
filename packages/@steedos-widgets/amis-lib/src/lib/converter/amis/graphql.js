@@ -232,10 +232,11 @@ export function getSaveDataTpl(fields){
     `
 }
 
-export function getSaveRequestAdaptor(fields){
+export function getSaveRequestAdaptor(fields, options){
     return `
         ${getSaveDataTpl(fields)}
         api.data = {query: query.replace('{__saveData}', __saveData)};
+        ${options.apiRequestAdaptor || ''}
         return api;
     `
 }
