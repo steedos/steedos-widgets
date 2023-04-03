@@ -231,7 +231,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, { showDisplayAs =
         "icon": "fa fa-cog",
         "btnClassName": "antd-Button--iconOnly bg-white p-2 rounded border-gray-300 text-gray-500",
         "align": "right",
-        "visibleOn": "${!isLookup && global.user.is_space_admin}",
+        "visibleOn": "${!isLookup}",
         "buttons": [
           {
             "label": "列表视图操作",
@@ -271,7 +271,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, { showDisplayAs =
                                 "show_count": "${all.show_count}",
                                 "type": "${all.type}"
                               },
-                              "fieldsExtend": "{\n  \"label\":{\n    \"is_wide\":true\n  },\n  \"name\":{\n    \"is_wide\":true\n  },\n  \"object_name\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"filter_scope\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"columns\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"filter_fields\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"scrolling_mode\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"sort\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"show_count\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"type\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  }\n}",
+                              "fieldsExtend": "{\n  \"label\": {\n    \"is_wide\": true\n  },\n  \"name\": {\n    \"is_wide\": true,\n    \"amis\":{\n      \"hidden\": true\n    }\n  },\n  \"object_name\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"filter_scope\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"columns\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"filter_fields\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"scrolling_mode\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"sort\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"show_count\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"type\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  }\n}",
                               "fields": [
                                 "label",
                                 "name",
@@ -294,11 +294,12 @@ export function getObjectHeaderToolbar(mainObject, formFactor, { showDisplayAs =
                                   "actions": [
                                     {
                                       "args": {
-                                        "url": "${context.rootUrl}/app/${appId}/${object_name}/grid/${name}",
+                                        // 直接使用recordId不能拿到数据，只能通过result里面拿数据
+                                        "url": "${context.rootUrl}/app/${appId}/${object_name}/grid/listview_${result.data.recordId|lowerCase}",
                                         "blank": false
                                       },
                                       "actionType": "url",
-                                    },
+                                    }
                                   ]
                                 }
                               },
@@ -359,7 +360,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, { showDisplayAs =
                                 "show_count": "${list_view.show_count}",
                                 "type": "${list_view.type}"
                               },
-                              "fieldsExtend": "{\n  \"label\":{\n    \"is_wide\":true\n  },\n  \"name\":{\n    \"is_wide\":true\n  },\n  \"object_name\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"filter_scope\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"columns\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"filter_fields\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"scrolling_mode\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"sort\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"show_count\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"type\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  }\n}",
+                              "fieldsExtend": "{\n  \"label\": {\n    \"is_wide\": true\n  },\n  \"name\": {\n    \"is_wide\": true,\n    \"amis\":{\n      \"hidden\": true\n    }\n  },\n  \"object_name\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"filter_scope\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"columns\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"filter_fields\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"scrolling_mode\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"sort\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"show_count\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"type\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  }\n}",
                               "fields": [
                                 "label",
                                 "name",
@@ -382,14 +383,15 @@ export function getObjectHeaderToolbar(mainObject, formFactor, { showDisplayAs =
                                   "actions": [
                                     {
                                       "args": {
-                                        "url": "${context.rootUrl}/app/${appId}/${object_name}/grid/${name}",
+                                        // 直接使用recordId不能拿到数据，只能通过result里面拿数据
+                                        "url": "${context.rootUrl}/app/${appId}/${object_name}/grid/listview_${result.data.recordId|lowerCase}",
                                         "blank": false
                                       },
                                       "actionType": "url",
-                                    },
+                                    }
                                   ]
                                 }
-                              },
+                              }
                             }
                           ],
                           "showCloseButton": true,
