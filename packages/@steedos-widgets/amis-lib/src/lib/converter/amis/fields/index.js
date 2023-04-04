@@ -313,12 +313,18 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             }
             break;
         case 'percent':
-            //TODO
-            convertData = {
-                type: getAmisStaticFieldType('number', readonly),
-                min: field.min,
-                max: field.max,
-                precision: field.scale
+            if(readonly){
+                convertData = {
+                    type: 'static-tpl',
+                    tpl: Tpl.getUiFieldTpl(field)
+                }
+            }else{
+                convertData = {
+                    type: getAmisStaticFieldType('number', readonly),
+                    min: field.min,
+                    max: field.max,
+                    precision: field.scale
+                }
             }
             break;
         case 'password':
@@ -361,12 +367,18 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             break;
         case 'formula':
             if(readonly){
-                convertData.type = getAmisStaticFieldType(field.data_type, readonly);
+                convertData = {
+                    type: 'static-tpl',
+                    tpl: Tpl.getUiFieldTpl(field)
+                }
             }
             break;
         case 'summary':
             if(readonly){
-                convertData.type = getAmisStaticFieldType(field.data_type, readonly);
+                convertData = {
+                    type: 'static-tpl',
+                    tpl: Tpl.getUiFieldTpl(field)
+                }
             }
             break;
         case 'code':
