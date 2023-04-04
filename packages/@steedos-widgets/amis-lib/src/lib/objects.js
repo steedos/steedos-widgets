@@ -316,7 +316,8 @@ export async function getListSchema(
         "sort": sort,
         "ctx": ctx,
         "requestAdaptor": listView.requestAdaptor,  
-        "adaptor": listView.adaptor
+        "adaptor": listView.adaptor,
+        "headerToolbarItems": ctx.headerToolbarItems
     };
     return {
         uiSchema,
@@ -377,6 +378,7 @@ export async function getTableSchema(
         ...ctx,
         filter: ctx.filters,
         sort,
+        headerToolbarItems: ctx.headerToolbarItems,
         buttons: await getListViewItemButtons(uiSchema, ctx)
     });
     return {

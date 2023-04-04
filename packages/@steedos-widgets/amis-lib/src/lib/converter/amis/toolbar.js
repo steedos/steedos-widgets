@@ -109,7 +109,7 @@ function getExportApiRequestAdaptorScript(){
   `
 }
 
-export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = false, hiddenCount = false} = {}){
+export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = false, hiddenCount = false, headerToolbarItems} = {}){
   const isMobile = window.innerWidth < 768;
   if(isMobile){
     showDisplayAs = false;
@@ -168,6 +168,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
   }else{
     return [
       // "filter-toggler",
+      ...(headerToolbarItems || []),
       "bulkActions",
       {
         "type": "columns-toggler",

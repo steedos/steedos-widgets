@@ -161,7 +161,11 @@ export async function getObjectCRUD(objectSchema, fields, options){
       }
     }
 
-    bodyProps.headerToolbar = getObjectHeaderToolbar(objectSchema, options.formFactor, {showDisplayAs, hiddenCount: options.queryCount === false});
+    bodyProps.headerToolbar = getObjectHeaderToolbar(objectSchema, options.formFactor, {
+      showDisplayAs, 
+      hiddenCount: options.queryCount === false, 
+      headerToolbarItems: options.headerToolbarItems
+    });
 
 
     let body = null;
