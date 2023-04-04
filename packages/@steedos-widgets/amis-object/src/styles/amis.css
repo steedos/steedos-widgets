@@ -199,3 +199,10 @@ body {
 .antd-Nav-Menu-item-wrap .antd-Badge{
     width: -webkit-fill-available;
 }
+
+
+/* 实现弹框中的crud中的inputTree高度满屏，目前选人控件的左侧树样式 */
+.amis-scope .antd-Modal-body .antd-Crud .antd-Table .antd-Tree{
+    max-height: unset;
+    overflow: unset;
+}
