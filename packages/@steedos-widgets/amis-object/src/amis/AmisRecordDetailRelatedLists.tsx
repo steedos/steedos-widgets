@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-01-11 14:27:23
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-04-06 10:17:36
  * @Description: 
  */
 import { getObjectRelatedList } from '@steedos-widgets/amis-lib'
@@ -11,7 +11,8 @@ import { map } from 'lodash';
 export const AmisRecordDetailRelatedLists = async (props) => {
   // console.log(`AmisRecordDetailRelatedLists props==>`, props)
   const { objectApiName, recordId, data, perPage = 5 } = props;
-  if(!objectApiName || !recordId){
+  if(!objectApiName){
+  // if(!objectApiName || !recordId){
     return {
       "type": "alert",
       "body": "缺少父级对象或父级记录属性",
@@ -41,7 +42,7 @@ export const AmisRecordDetailRelatedLists = async (props) => {
       return {
         type: 'steedos-object-related-listview',
         objectApiName: objectApiName,
-        recordId: recordId,
+        // recordId: recordId,
         relatedObjectApiName: item.object_name,
         foreign_key: item.foreign_key,
         relatedKey: item.foreign_key,

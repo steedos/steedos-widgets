@@ -455,12 +455,18 @@ export async function getTableApi(mainObject, fields, options){
 
     let valueField = mainObject.key_field || '_id';
     const api = await getApi(mainObject, null, fields, {count: options.queryCount, alias: 'rows', limit: top, queryOptions: `filters: {__filters}, top: {__top}, skip: {__skip}, sort: "{__sort}"`});
+
+    if(options.isRelated){
+        api.url += "&recordId=${recordId}";
+    }
+
     api.data.$term = "$term";
     api.data.$self = "$$";
     api.data.filter = "$filter"
     api.data.loaded = "${loaded}";
     api.data.listViewId = "${listViewId}";
     api.requestAdaptor = `
+        debugger;
         // selfData 中的数据由 CRUD 控制. selfData中,只能获取到 CRUD 给定的data. 无法从数据链中获取数据.
         let selfData = JSON.parse(JSON.stringify(api.data.$self));
         try{
@@ -574,9 +580,36 @@ export async function getTableApi(mainObject, fields, options){
         if(!_.isEmpty(systemFilters)){
             filters = systemFilters;
         };
-
+        console.log("===api.data.$self.additionalFilters===", api.data.$self.additionalFilters);
         if(api.data.$self.additionalFilters){
             userFilters.push(api.data.$self.additionalFilters)
+        }
+
+        if(api.data.$self._isRelated){
+            const self = api.data.$self;
+            const relatedKey = self.relatedKey;
+            const recordId = self.recordId;
+            const refField = self.uiSchema.fields[relatedKey];
+            const masterRecord = self._master.record;
+            const masterObjectName = self._master.objectName;
+            console.log("====masterObjectName===", masterObjectName);
+            let relatedValue = recordId;
+            if(refField.reference_to_field && refField.reference_to_field != '_id'){
+                relatedValue = masterRecord[refField.reference_to_field]
+            }
+            let relatedFilters;
+            if (
+                refField._reference_to ||
+                (refField.reference_to && !_.isString(refField.reference_to))
+            ) {
+                relatedFilters = [
+                    [relatedKey + "/o", "=", masterObjectName],
+                    [relatedKey + "/ids", "=", relatedValue],
+                ];
+            } else {
+                relatedFilters = [relatedKey, "=", relatedValue];
+            }
+            userFilters.push(relatedFilters)
         }
 
         if(!_.isEmpty(userFilters)){

@@ -1,21 +1,22 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-02 10:55:40
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-04-06 10:16:40
  * @Description: 
  */
 import { getRecordDetailRelatedListSchema } from '@steedos-widgets/amis-lib'
 
 
-export const AmisRecordDetailRelatedList = async (props) => {
+export const AmisRecordDetailRelatedList = async (props: any) => {
   // console.log(`AmisRecordDetailRelatedList props==>`, props)
   const { objectApiName, recordId, relatedObjectApiName, data, relatedKey, top, perPage, hiddenEmptyTable, appId, relatedLabel, className = '', columns, sort, filters, visible_on } = props;
   let formFactor = props.formFactor;
   if(!formFactor){
     formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE';
   }
-  if(!objectApiName || !relatedObjectApiName || !recordId){
+  if(!objectApiName || !relatedObjectApiName){
+  // if(!objectApiName || !relatedObjectApiName || !recordId){
     return {
       "type": "alert",
       "body": "缺少父级对象、父级记录或相关列表对象属性",
@@ -24,6 +25,6 @@ export const AmisRecordDetailRelatedList = async (props) => {
       "className": "mb-3"
     }
   }
-  const schema = (await getRecordDetailRelatedListSchema(objectApiName, recordId, relatedObjectApiName, relatedKey, {top, perPage, hiddenEmptyTable, appId, relatedLabel, className, formFactor, columns, sort, filters, visible_on, isRelated: true})).amisSchema;
+  const schema: any = (await getRecordDetailRelatedListSchema(objectApiName, recordId, relatedObjectApiName, relatedKey, {top, perPage, hiddenEmptyTable, appId, relatedLabel, className, formFactor, columns, sort, filters, visible_on, isRelated: true})).amisSchema;
   return schema
 }
