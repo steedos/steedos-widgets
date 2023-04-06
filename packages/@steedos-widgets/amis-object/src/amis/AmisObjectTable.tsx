@@ -43,7 +43,7 @@ export const AmisObjectTable = async (props) => {
   const { $schema, filters, filtersFunction, amisCondition, top, headerSchema, fields: includedFields, fieldsExtend,
     sort, sortField, sortOrder, extraColumns, data, defaultData, 
     formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE',
-    className = "", requestAdaptor,  adaptor} = props;
+    className = "", requestAdaptor, adaptor, headerToolbarItems} = props;
   let ctx = props.ctx;
   if(!ctx){
     ctx = {};
@@ -80,7 +80,7 @@ export const AmisObjectTable = async (props) => {
   const appId = data?.appId || defaultData?.appId;
   // ctx中值为undefined的属性不能保留，否则会导致 filters等被覆盖。
   ctx = pickBy(ctx, (value)=>{ return value !== undefined })
-  let amisSchema = (await getTableSchema(appId, objectApiName, columns, { filters: tableFilters, filtersFunction, top, sort, sortField, sortOrder, extraColumns, defaults, ...ctx, setDataToComponentId, requestAdaptor,  adaptor })).amisSchema;
+  let amisSchema = (await getTableSchema(appId, objectApiName, columns, { filters: tableFilters, filtersFunction, top, sort, sortField, sortOrder, extraColumns, defaults, ...ctx, setDataToComponentId, requestAdaptor, adaptor, headerToolbarItems})).amisSchema;
   amisSchema.data = Object.assign({}, amisSchema.data, amisSchemaData);
 
   amisSchema.className = `steedos-object-table h-full flex flex-col ${className}`
