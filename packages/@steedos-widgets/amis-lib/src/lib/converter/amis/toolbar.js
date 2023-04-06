@@ -501,7 +501,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
               },
               {
                 "type": "button",
-                "label": "过滤设置(todo)",
+                "label": "过滤设置",
                 "onEvent": {
                   "click": {
                     "weight": 0,
@@ -518,7 +518,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                               "recordId": "${uiSchema.list_views[listName]._id}",
                               "className": "sm:border sm:shadow sm:rounded sm:border-gray-300 bg-white p-4",
                               "mode": "read",
-
+                              "initApiAdaptor": "",
                               "fields": [
                                 "filters"
                               ]
@@ -539,7 +539,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
               },
               {
                 "type": "button",
-                "label": "显示的列(todo)",
+                "label": "显示的列",
                 "onEvent": {
                   "click": {
                     "weight": 0,
@@ -557,15 +557,12 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                               "recordId": "${uiSchema.list_views[listName]._id}",
                               "className": "sm:border sm:shadow sm:rounded sm:border-gray-300 bg-white p-4",
                               "mode": "edit",
-                              "fieldsExtend": "{\n  \"label\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"name\": {\n    \"hidden\": true\n  },\n  \"object_name\": {\n    \"amis\":{\n    \"hidden\": true\n    }\n  },\n  \"columns\": {\n    \"amis\": {\n      \"type\": \"transfer\",\n      \"source\": {\n        \"method\": \"get\",\n        \"url\": \"${context.rootUrl}/service/api/amis-metadata-objects/objects/${objectName}/fields/options\",\n        \"headers\": {\n          \"Authorization\": \"Bearer ${context.tenantId},${context.authToken}\"\n        }\n      }\n    }\n  }\n}",
-                              "initApiAdaptor": "const recordId_tmp = api.body.recordId;\nlet columns_tmp = {};\nif (recordId_tmp) {\n  columns_tmp = payload.data.initialValues.columns;\n  if (columns_tmp) {\n    columns_tmp = lodash.map(columns_tmp, 'field');\n  }\n}\npayload.data.initialValues.columns = columns_tmp;\ndelete payload.extensions;\nreturn payload;",
-                              // "apiRequestAdaptor": "console.log('api表单请求适配器=======>', api);\nreturn api;",
-                              "apiRequestAdaptor": "const formData_tmp = api.body.$;\nconst objectName_tmp = api.body.objectName;\nconst recordId_tmp = api.body.recordId;\nconsole.log('formData_tmp.columns==>', formData_tmp.columns);\nif (typeof formData_tmp.columns == 'string') {\n  formData_tmp.columns = formData_tmp.columns?.split(',');\n}\n// 数据格式转换\nformData_tmp.columns = lodash.map(formData_tmp.columns, (item) => {\n  return { field: item };\n});\n\n// 字符串拼接（不支持ES6语法）\nlet query_tmp = 'mutation{record: ' + objectName_tmp + '__insert(doc: {__saveData}){_id}}';\nif (api.body.recordId) {\n  query_tmp = 'mutation{record: ' + objectName_tmp + '__update(id: \"' + recordId_tmp +'\", doc: {__saveData}){_id}}';\n};\ndelete formData_tmp._id;\nlet __saveData_tmp = JSON.stringify(JSON.stringify(formData_tmp));\napi.data = { query: query_tmp.replace('{__saveData}', __saveData_tmp) };\n\nreturn api;",
+                              "fieldsExtend": "{\n  \"columns\": {\n    \"amis\": {\n      \"type\": \"transfer\",\n      \"source\": {\n        \"method\": \"get\",\n        \"url\": \"${context.rootUrl}/service/api/amis-metadata-objects/objects/${objectName}/fields/options\",\n        \"headers\": {\n          \"Authorization\": \"Bearer ${context.tenantId},${context.authToken}\"\n        }\n      }\n    }\n  },\n  \"mobile_columns\": {\n    \"amis\": {\n      \"type\": \"transfer\",\n      \"source\": {\n        \"method\": \"get\",\n        \"url\": \"${context.rootUrl}/service/api/amis-metadata-objects/objects/${object_name}/fields/options\",\n        \"headers\": {\n          \"Authorization\": \"Bearer ${context.tenantId},${context.authToken}\"\n        }\n      }\n    }\n  }\n\n}",
+                              "initApiAdaptor": "const recordId_tmp = api.body.recordId;\nlet columns_tmp = {}, mobile_columns_tmp = {};\nif (recordId_tmp) {\n  columns_tmp = payload.data.initialValues.columns;\n  mobile_columns_tmp = payload.data.initialValues.mobile_columns;\n  if (columns_tmp) {\n    columns_tmp = lodash.map(columns_tmp, 'field');\n  }\n  if (mobile_columns_tmp) {\n    mobile_columns_tmp = lodash.map(mobile_columns_tmp, 'field');\n  }\n}\npayload.data.initialValues.columns = columns_tmp;\npayload.data.initialValues.mobile_columns = mobile_columns_tmp;\n\ndelete payload.extensions;\nreturn payload;",
+                              "apiRequestAdaptor": "const formData_tmp = api.body.$;\nconst objectName_tmp = api.body.objectName;\nconst recordId_tmp = api.body.recordId;\n\nif (typeof formData_tmp.columns == 'string') {\n  formData_tmp.columns = formData_tmp.columns?.split(',');\n}\nif (typeof formData_tmp.mobile_columns == 'string') {\n  formData_tmp.mobile_columns = formData_tmp.mobile_columns?.split(',');\n}\n\n// 数据格式转换\nformData_tmp.columns = lodash.map(formData_tmp.columns, (item) => {\n  return { field: item };\n});\nformData.mobile_columns = lodash.map(formData.mobile_columns, (item) => {\n  return { field: item };\n});\n\n// 字符串拼接（不支持ES6语法）\nlet query_tmp = 'mutation{record: ' + objectName_tmp + '__insert(doc: {__saveData}){_id}}';\nif (api.body.recordId) {\n  query_tmp = 'mutation{record: ' + objectName_tmp + '__update(id: \"' + recordId_tmp +'\", doc: {__saveData}){_id}}';\n};\ndelete formData_tmp._id;\nlet __saveData_tmp = JSON.stringify(JSON.stringify(formData_tmp));\napi.data = { query: query_tmp.replace('{__saveData}', __saveData_tmp) };\n\nreturn api;",
                               "fields": [
-                                "label",
-                                "name",
-                                "object_name",
-                                "columns"
+                                "columns",
+                                "mobile_columns"
                               ],
                               "onEvent": {
                                 "submitSucc": {
@@ -584,6 +581,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                               },
                             }
                           ],
+                          "searchable": true,
                           "showCloseButton": true,
                           "showErrorMsg": true,
                           "showLoading": true,
