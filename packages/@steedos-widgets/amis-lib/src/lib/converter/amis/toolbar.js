@@ -557,33 +557,31 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                               "recordId": "${uiSchema.list_views[listName]._id}",
                               "className": "sm:border sm:shadow sm:rounded sm:border-gray-300 bg-white p-4",
                               "mode": "edit",
-                              "excludedFields": [
+                              "fieldsExtend": "{\n  \"label\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"name\": {\n    \"hidden\": true\n  },\n  \"object_name\": {\n    \"amis\":{\n    \"hidden\": true\n    }\n  },\n  \"columns\": {\n    \"amis\": {\n      \"type\": \"transfer\",\n      \"source\": {\n        \"method\": \"get\",\n        \"url\": \"${context.rootUrl}/service/api/amis-metadata-objects/objects/${objectName}/fields/options\",\n        \"headers\": {\n          \"Authorization\": \"Bearer ${context.tenantId},${context.authToken}\"\n        }\n      }\n    }\n  }\n}",
+                              "initApiAdaptor": "const recordId_tmp = api.body.recordId;\nlet columns_tmp = {};\nif (recordId_tmp) {\n  columns_tmp = payload.data.initialValues.columns;\n  if (columns_tmp) {\n    columns_tmp = lodash.map(columns_tmp, 'field');\n  }\n}\npayload.data.initialValues.columns = columns_tmp;\ndelete payload.extensions;\nreturn payload;",
+                              // "apiRequestAdaptor": "console.log('api表单请求适配器=======>', api);\nreturn api;",
+                              "apiRequestAdaptor": "const formData_tmp = api.body.$;\nconst objectName_tmp = api.body.objectName;\nconst recordId_tmp = api.body.recordId;\nconsole.log('formData_tmp.columns==>', formData_tmp.columns);\nif (typeof formData_tmp.columns == 'string') {\n  formData_tmp.columns = formData_tmp.columns?.split(',');\n}\n// 数据格式转换\nformData_tmp.columns = lodash.map(formData_tmp.columns, (item) => {\n  return { field: item };\n});\n\n// 字符串拼接（不支持ES6语法）\nlet query_tmp = 'mutation{record: ' + objectName_tmp + '__insert(doc: {__saveData}){_id}}';\nif (api.body.recordId) {\n  query_tmp = 'mutation{record: ' + objectName_tmp + '__update(id: \"' + recordId_tmp +'\", doc: {__saveData}){_id}}';\n};\ndelete formData_tmp._id;\nlet __saveData_tmp = JSON.stringify(JSON.stringify(formData_tmp));\napi.data = { query: query_tmp.replace('{__saveData}', __saveData_tmp) };\n\nreturn api;",
+                              "fields": [
                                 "label",
                                 "name",
                                 "object_name",
-                                "filter_scope",
-                                "shared",
-                                "show_count",
-                                "filter_fields",
-                                "sort.$.field_name",
-                                "sort.$.order",
-                                "filters",
-                                "mobile_columns.$.field",
-                                "searchable_fields.$.field",
-                                "sort_no",
-                                "is_system",
-                                "enable_amis_schema",
-                                "amis_schema",
-                                "requestAdaptor",
-                                "adaptor",
-                                "instance_state",
-                                "created",
-                                "created_by",
-                                "modified",
-                                "modified_by",
-                                "instances.$._id",
-                                "instances.$.state"
+                                "columns"
                               ],
+                              "onEvent": {
+                                "submitSucc": {
+                                  "weight": 0,
+                                  "actions": [
+                                    {
+                                      "args": {
+                                        // 直接使用recordId不能拿到数据，只能通过result里面拿数据
+                                        "url": "${context.rootUrl}/app/${appId}/${object_name}/grid/${listName}",
+                                        "blank": false
+                                      },
+                                      "actionType": "url",
+                                    }
+                                  ]
+                                }
+                              },
                             }
                           ],
                           "showCloseButton": true,
