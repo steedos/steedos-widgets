@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-04-06 10:20:55
+ * @LastEditTime: 2023-04-07 15:43:32
  * @Description:
  */
 
@@ -80,7 +80,7 @@ export async function getObjectRelatedList(
 
 // 获取单个相关表
 export async function getRecordDetailRelatedListSchema(objectName, recordId, relatedObjectName, relatedKey, ctx){
-    let { top, perPage, hiddenEmptyTable, appId, relatedLabel, className, columns, sort, filters, visible_on } = ctx;
+    let { top, perPage, appId, relatedLabel, className, columns, sort, filters, visible_on } = ctx;
     // console.log('getRecordDetailRelatedListSchema==>',objectName,recordId,relatedObjectName)
     const relatedObjectUiSchema = await getUISchema(relatedObjectName);
     if(!relatedObjectUiSchema){
@@ -172,9 +172,9 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
         top: top,
         perPage: perPage,
         setDataToComponentId: componentId,
-        tableHiddenOn: hiddenEmptyTable ? "this.$count === 0" : null,
+        // tableHiddenOn: hiddenEmptyTable ? "this.$count === 0" : null,
         appId: appId,
-        crudClassName: 'border-t border-slate-300',
+        crudClassName: 'border-t border-slate-300 hidden',
         ...ctx
     }
     const amisSchema= (await getRelatedListSchema(relatedObjectName, 'all', options)).amisSchema;
@@ -186,7 +186,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
         amisSchema: {
             type: "service",
             id: componentId,
-            className: `steedos-record-related-list rounded border border-slate-300 bg-gray-100 mb-4 ${className}`,
+            className: `steedos-record-related-list ${componentId} rounded border border-slate-300 bg-gray-100 mb-4 ${className}`,
             data: {
                 relatedKey: relatedKey,   
                 listViewId: `amis-\${appId}-${relatedObjectName}-listview`,
@@ -321,6 +321,17 @@ export async function getRelatedListSchema(
     delete ctx.filters;
 
     delete ctx.globalFilter;
+
+    const adaptor = `
+        if(setDataToComponentId){
+            debugger;
+            if(payload.data.count){
+                setTimeout(function(){
+                    window.$("." + setDataToComponentId + " .antd-Crud").removeClass("hidden");
+                }, 10);
+            }
+        };
+    `;
     const amisSchema = {
         "type": "steedos-object-table",
         "objectApiName": objectName,
@@ -330,6 +341,7 @@ export async function getRelatedListSchema(
         "filtersFunction": filtersFunction,
         "sort": listViewSort,
         "filterVisible": false,
+        adaptor,
         "ctx": ctx
     };
     // console.log(`getRelatedListSchema amisSchema`, amisSchema);
