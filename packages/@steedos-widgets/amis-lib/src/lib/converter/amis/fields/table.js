@@ -580,7 +580,6 @@ export async function getTableApi(mainObject, fields, options){
         if(!_.isEmpty(systemFilters)){
             filters = systemFilters;
         };
-        console.log("===api.data.$self.additionalFilters===", api.data.$self.additionalFilters);
         if(api.data.$self.additionalFilters){
             userFilters.push(api.data.$self.additionalFilters)
         }
