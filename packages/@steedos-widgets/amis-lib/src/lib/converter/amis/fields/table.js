@@ -591,7 +591,6 @@ export async function getTableApi(mainObject, fields, options){
             const refField = self.uiSchema.fields[relatedKey];
             const masterRecord = self._master.record;
             const masterObjectName = self._master.objectName;
-            console.log("====masterObjectName===", masterObjectName);
             let relatedValue = recordId;
             if(refField.reference_to_field && refField.reference_to_field != '_id'){
                 relatedValue = masterRecord[refField.reference_to_field]
