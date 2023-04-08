@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-02 10:56:35
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-04-08 18:05:14
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef } from 'react';
@@ -24,7 +24,7 @@ export const PageRecordDetail = async (props) => {
   const listPage = await getPage({type: 'list', appId: appId, objectName: objectApiName, formFactor})
 
   let recordSchema = {}
-  if (recordId) {
+  if (true || recordId) {
 
     const recordPage = await getPage({type: 'record', appId: appId, objectName: objectApiName, formFactor: defaultFormFactor});
     recordSchema = recordPage? JSON.parse(recordPage.schema) : {
@@ -34,12 +34,35 @@ export const PageRecordDetail = async (props) => {
       "body": [
         {
           "type": "steedos-record-detail",
-          "recordId": "${recordId}",
+          // "recordId": "${recordId}",
           "objectApiName": "${objectName}",
           className: "sm:m-3",
           appId: appId,
         }
       ],
+    }
+    recordSchema = {
+      "type": "service",
+      "body": [recordSchema],
+      data: {
+        "_master.objectName": "${objectName}",
+        "_master.recordId": "${recordId}"
+      },
+      onEvent: {
+        "recordLoaded": {
+          "actions": [
+            {
+              "actionType": "reload",
+              "data": {
+                "_master.record": `\${record}`,
+                // 不清楚reload 如何给对象下的某个key复制, 所以此处重复设置_master的objectName、recordId
+                "_master.objectName": "${objectName}",
+                "_master.recordId": "${recordId}"
+              }
+            }
+          ]
+        }
+      }
     }
   }
 
@@ -57,8 +80,8 @@ export const PageRecordDetail = async (props) => {
     objectName: objectApiName,
     listViewId: sideListviewId,
     listName: sideListviewId,
-    recordId: data.recordId || recordId,
-    appId: appId,
+    // recordId: "${recordId}",
+    // appId: appId,
     formFactor: formFactor,
     displayAs: displayAs
   }

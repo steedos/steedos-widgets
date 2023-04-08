@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-11 17:02:30
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-04-08 17:31:57
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -189,14 +189,14 @@ export async function getField(objectName, fieldName) {
 export async function getFormSchema(objectName, ctx) {
     const uiSchema = await getUISchema(objectName);
     const amisSchema = await getObjectForm(uiSchema, ctx);
-    // console.log(`getFormSchema====>`, amisSchema)
+    console.log(`getFormSchema====>`, amisSchema)
     return {
         uiSchema,
         amisSchema,
     };
 }
 
-// 获取只读页面
+// 获取只读页面 recordId 已废弃, 函数签名保持不变, 但recordId变量不可再使用, 请使用运行时的${recordId}
 export async function getViewSchema(objectName, recordId, ctx) {
     const uiSchema = await getUISchema(objectName);
     const amisSchema = await getObjectDetail(uiSchema, recordId, ctx);
@@ -381,6 +381,7 @@ export async function getTableSchema(
         headerToolbarItems: ctx.headerToolbarItems,
         buttons: await getListViewItemButtons(uiSchema, ctx)
     });
+    // console.log('getTableSchema====>amisSchema', amisSchema)
     return {
         uiSchema,
         amisSchema,
@@ -479,15 +480,8 @@ export async function getRecordDetailSchema(objectName, appId, props = {}){
                                 "data": {
                                     "name": `\${event.data.record.${uiSchema?.NAME_FIELD_KEY || 'name'}}`,
                                     "record": `\${event.data.record}`,
-                                    "recordLoaded": true,
-                                }
-                            },
-                            {
-                                "actionType": "reload",
-                                "componentId": `page_readonly_${objectName}_header`,  //刷新标题, 详细页面header service 嵌套太多, 导致仅刷新第一层service无法更新recordName
-                                "data": {
-                                    "name": `\${event.data.record.${uiSchema?.NAME_FIELD_KEY || 'name'}}`,
-                                    "record": `\${event.data.record}`,
+                                    "_id": "\${event.data.record._id}",
+                                    "recordId": "\${event.data.record._id}",
                                     "recordLoaded": true,
                                 }
                             }
@@ -497,10 +491,10 @@ export async function getRecordDetailSchema(objectName, appId, props = {}){
               },
               content
             ],
-            data: {
-                "_master.objectName": "${objectName}",  
-                "_master.recordId": "${recordId}"
-            },
+            // data: {
+            //     "_master.objectName": "${objectName}",  
+            //     "_master.recordId": "${recordId}"
+            // },
             onEvent: {
                 "recordLoaded": {
                     "actions": [
@@ -508,10 +502,10 @@ export async function getRecordDetailSchema(objectName, appId, props = {}){
                             "actionType": "reload",
                             "data": {
                                 "name": `\${record.${uiSchema.NAME_FIELD_KEY || 'name'}}`,
-                                "_master.record": `\${record}`, 
-                                // 不清楚reload 如何给对象下的某个key复制, 所以此处重复设置_master的objectName、recordId
-                                "_master.objectName": "${objectName}", 
-                                "_master.recordId": "${recordId}"
+                                // "_master.record": `\${record}`, 
+                                // // 不清楚reload 如何给对象下的某个key复制, 所以此处重复设置_master的objectName、recordId
+                                // "_master.objectName": "${objectName}", 
+                                // "_master.recordId": "${recordId}"
                             }
                         }
                     ]
@@ -521,51 +515,6 @@ export async function getRecordDetailSchema(objectName, appId, props = {}){
           }
     }
 }
-
-// export async function getRecordDetailRelatedListSchema(objectName,recordId,relatedObjectName){
-//     // console.log('b==>',objectName,recordId,relatedObjectName)
-//     const relatedObjectUiSchema = await getUISchema(relatedObjectName);
-//     const { list_views, label , icon, fields } = relatedObjectUiSchema;
-//     const firstListViewName = keys(list_views)[0];
-//     const relatedKey = findKey(fields, function(field) { 
-//         return ["lookup","master_detail"].indexOf(field.type) > -1 && field.reference_to === objectName; 
-//     });
-//     const globalFilter = [relatedKey,'=',recordId];
-//     const recordRelatedListHeader = await getObjectRecordDetailRelatedListHeader(relatedObjectUiSchema);
-//     const options = {
-//         globalFilter,
-//         defaults: {
-//             listSchema: { headerToolbar:[],columnsTogglable:false },
-//             headerSchema: recordRelatedListHeader
-//         },
-//         showHeader: true
-//     }
-//     const amisSchema= (await getListSchema(null, relatedObjectName, firstListViewName, options)).amisSchema;
-//     return {
-//         uiSchema: relatedObjectUiSchema,
-//         amisSchema: {
-//             type: "service",
-//             data: {
-//                 masterObjectName: objectName,
-//                 masterRecordId: "${recordId}",
-//                 relatedKey: relatedKey,   
-//                 objectName: relatedObjectName,
-//                 listViewId: `amis-\${appId}-${relatedObjectName}-listview`,
-//             },
-//             body:[
-//                 {
-//                     ...amisSchema,
-//                     data: {
-//                         filter: ["${relatedKey}", "=", "${masterRecordId}"],
-//                         objectName: "${objectName}",
-//                         recordId: "${masterRecordId}",
-//                         ...{[relatedKey]: getRelatedFieldValue(objectName, "${recordId}", relatedSchema.uiSchema, relatedKey)}
-//                     }
-//                 }
-//             ]
-//         }
-//     };
-// }
 
 
 // 获取单个相关表

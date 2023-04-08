@@ -31,7 +31,7 @@ export function getButtonVisibleOn(button){
         if(visible.trim().startsWith('function')){
             return `${visible}.apply({
                 object: uiSchema
-            }, [objectName, _id, typeof record === 'undefined' ? (typeof recordPermissions === 'undefined' ? {} : recordPermissions) : record.recordPermissions, data])`
+            }, [objectName, typeof _id === 'undefined' ? null: _id, typeof record === 'undefined' ? (typeof recordPermissions === 'undefined' ? {} : recordPermissions) : record.recordPermissions, data])`
         }
         return visible;
     }

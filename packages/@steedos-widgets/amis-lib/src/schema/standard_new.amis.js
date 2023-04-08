@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:51:00
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-03-27 15:42:24
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-04-08 12:05:19
  * @Description: 
  */
 
@@ -20,6 +20,32 @@ export const getSchema = async (uiSchema, ctx) => {
         if (payload && payload.schema) {
             formSchema = _.isString(payload.schema) ? JSON.parse(payload.schema) : payload.schema;
         }
+
+        const _master = api.body._master;
+        if(_master && _master._isRelated){
+            const relatedKey = _master.relatedKey;
+            const masterObjectName = _master.objectName;
+            const recordId = _master.recordId;
+            const fields = ${JSON.stringify(uiSchema.fields)};
+            const relatedField = fields[relatedKey];
+            let defaultData = {}; 
+            let relatedKeyValue; 
+            if(!_.isString(relatedField.reference_to)){
+                relatedKeyValue = { o: masterObjectName, ids: [recordId] };
+            }else if (relatedField.multiple) {
+                relatedKeyValue = [recordId];
+            } else {
+                relatedKeyValue = recordId;
+            }
+            defaultData[relatedKey]=relatedKeyValue;
+            if(payload.schema){
+                // 表单微页面第一层要求是page
+                formSchema.data.defaultData = defaultData;
+            }else{
+                formSchema.defaultData = defaultData;
+            }
+        }
+
         return {
             data: formSchema
         };
@@ -43,6 +69,8 @@ export const getSchema = async (uiSchema, ctx) => {
                                     "data": {
                                         "$master": "$$",
                                         "_master": "${_master}",
+                                        "_master._isRelated": "${_isRelated}",
+                                        "_master.relatedKey": "${relatedKey}",
                                         "defaultData": "${defaultData}",
                                         "appId": "${appId}",
                                         "objectName": "${objectName}",
@@ -61,7 +89,8 @@ export const getSchema = async (uiSchema, ctx) => {
                                             "messages": {},
                                             "schemaApi": {
                                                 "data": {
-                                                    "isLookup": "${isLookup}"
+                                                    "isLookup": "${isLookup}",
+                                                    "_master": "${_master}"
                                                 },
                                                 "url": "${context.rootUrl}/api/pageSchema/form?app=${appId}&objectApiName=${objectName}&formFactor=${formFactor}",
                                                 "method": "get",

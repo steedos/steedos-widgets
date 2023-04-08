@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-30 17:44:53
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-04-08 18:14:55
  * @Description:
  */
 
@@ -80,7 +80,7 @@ export async function getObjectRelatedList(
 
 // 获取单个相关表
 export async function getRecordDetailRelatedListSchema(objectName, recordId, relatedObjectName, relatedKey, ctx){
-    let { top, perPage, hiddenEmptyTable, appId, relatedLabel, className, columns, sort, filters, visible_on } = ctx;
+    let { top, perPage, appId, relatedLabel, className, columns, sort, filters, visible_on } = ctx;
     // console.log('getRecordDetailRelatedListSchema==>',objectName,recordId,relatedObjectName)
     const relatedObjectUiSchema = await getUISchema(relatedObjectName);
     if(!relatedObjectUiSchema){
@@ -115,6 +115,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
         relatedKey = mainRelated[relatedObjectName];
     }
     let globalFilter = null;
+    // TODO: refField变量去掉，写到amis运行时脚本中，uiSchema.fields[relatedKey];可以取到
     const refField = await getField(relatedObjectName, relatedKey);
 
     if(!refField){
@@ -130,23 +131,23 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
         }
     }
 
-    let relatedValue = recordId;
-    if(refField.reference_to_field && refField.reference_to_field != '_id'){
-        const masterRecord = await getRecord(objectName, recordId, [refField.reference_to_field]);
-        relatedValue = masterRecord[refField.reference_to_field]
-    }
+    let relatedValue = "${recordId}";
+    // if(refField.reference_to_field && refField.reference_to_field != '_id'){
+    //     const masterRecord = await getRecord(objectName, recordId, [refField.reference_to_field]);
+    //     relatedValue = masterRecord[refField.reference_to_field]
+    // }
     
-    if (
-        refField._reference_to ||
-        (refField.reference_to && !isString(refField.reference_to))
-    ) {
-        globalFilter = [
-            [`${relatedKey}/o`, "=", objectName],
-            [`${relatedKey}/ids`, "=", relatedValue],
-        ];
-    } else {
-        globalFilter = [`${relatedKey}`, "=", relatedValue];
-    }
+    // if (
+    //     refField._reference_to ||
+    //     (refField.reference_to && !isString(refField.reference_to))
+    // ) {
+    //     globalFilter = [
+    //         [`${relatedKey}/o`, "=", objectName],
+    //         [`${relatedKey}/ids`, "=", relatedValue],
+    //     ];
+    // } else {
+    //     globalFilter = [`${relatedKey}`, "=", relatedValue];
+    // }
     const recordRelatedListHeader = await getObjectRecordDetailRelatedListHeader(relatedObjectUiSchema, relatedLabel);
     const componentId = `steedos-record-related-list-${relatedObjectName}`;
     const options = {
@@ -171,9 +172,9 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
         top: top,
         perPage: perPage,
         setDataToComponentId: componentId,
-        tableHiddenOn: hiddenEmptyTable ? "this.$count === 0" : null,
+        // tableHiddenOn: hiddenEmptyTable ? "this.$count === 0" : null,
         appId: appId,
-        crudClassName: 'border-t border-slate-300',
+        crudClassName: 'border-t border-slate-300 hidden',
         ...ctx
     }
     const amisSchema= (await getRelatedListSchema(relatedObjectName, 'all', options)).amisSchema;
@@ -185,15 +186,9 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
         amisSchema: {
             type: "service",
             id: componentId,
-            className: `steedos-record-related-list rounded border border-slate-300 bg-gray-100 mb-4 ${className}`,
+            className: `steedos-record-related-list ${componentId} rounded border border-slate-300 bg-gray-100 mb-4 ${className}`,
             data: {
-                "&": "$$",
-                appId: "${appId}",
-                app_id: "${appId}",
-                masterObjectName: objectName,
-                masterRecordId: "${recordId}",
                 relatedKey: relatedKey,   
-                objectName: relatedObjectName,
                 listViewId: `amis-\${appId}-${relatedObjectName}-listview`,
                 _isRelated: true
             },
@@ -201,12 +196,6 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
                 {
                     ...amisSchema,
                     data: {
-                        "&": "$$",
-                        appId: "${appId}",
-                        app_id: "${appId}",
-                        relatedKey: relatedKey,
-                        objectName: "${objectName}",
-                        recordId: "${masterRecordId}",
                         defaultData: {
                             ...{[relatedKey]: getRelatedFieldValue(objectName, relatedValue, relatedObjectUiSchema, relatedKey)}
                         }
@@ -250,13 +239,13 @@ function getDefaultRelatedListProps(uiSchema, listName, ctx) {
         columns = getListViewColumns(listView, ctx.formFactor);
         sort = getListViewSort(listView);
         filter = getListViewFilter(listView);
-        if(isArray(ctx.globalFilter) && ctx.globalFilter.length && isArray(filter) && filter.length){
-            // 都有值
-            filter = [ctx.globalFilter, 'and', filter]
-        }else if(ctx.globalFilter && (!filter || !filter.length)){
-            // globalFilter有值，filter无值
-            filter = ctx.globalFilter;
-        }
+        // if(isArray(ctx.globalFilter) && ctx.globalFilter.length && isArray(filter) && filter.length){
+        //     // 都有值
+        //     filter = [ctx.globalFilter, 'and', filter]
+        // }else if(ctx.globalFilter && (!filter || !filter.length)){
+        //     // globalFilter有值，filter无值
+        //     filter = ctx.globalFilter;
+        // }
         filtersFunction = listView && listView._filters;
     }else{
         const isNameField = find(
@@ -266,9 +255,9 @@ function getDefaultRelatedListProps(uiSchema, listName, ctx) {
             }
         )
         columns = isNameField ? [isNameField.name] : ['name'];
-        if(ctx.globalFilter){
-            filter = ctx.globalFilter;
-        }
+        // if(ctx.globalFilter){
+        //     filter = ctx.globalFilter;
+        // }
     }
 
     return {
@@ -293,7 +282,7 @@ function getRelatedListProps(uiSchema, listViewName, ctx) {
         return {
             columns: ctx.columns,
             sort,
-            filter: ctx.globalFilter,
+            // filter: ctx.globalFilter,
             filtersFunction: filtersFunction
         }
     } else {
@@ -332,6 +321,16 @@ export async function getRelatedListSchema(
     delete ctx.filters;
 
     delete ctx.globalFilter;
+
+    const adaptor = `
+        if(setDataToComponentId){
+            if(payload.data.count){
+                setTimeout(function(){
+                    window.$("." + setDataToComponentId + " .antd-Crud").removeClass("hidden");
+                }, 10);
+            }
+        };
+    `;
     const amisSchema = {
         "type": "steedos-object-table",
         "objectApiName": objectName,
@@ -340,6 +339,8 @@ export async function getRelatedListSchema(
         "filters": listviewFilter,
         "filtersFunction": filtersFunction,
         "sort": listViewSort,
+        "filterVisible": false,
+        adaptor,
         "ctx": ctx
     };
     // console.log(`getRelatedListSchema amisSchema`, amisSchema);
