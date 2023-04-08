@@ -1,16 +1,22 @@
 import { getObjectListHeaderFieldsFilterBar } from './header';
+import { Router } from "@steedos-widgets/amis-lib";
 
-const getDisplayAsButton = function(showDisplayAs){
+const getDisplayAsButton = function(objectName, showDisplayAs){
+  let displayAs = Router.getTabDisplayAs(objectName);
   let buttons = [
     {
       "type": "button",
       "label": "表格",
-      "onClick": "const url = document.location.pathname + '?display=grid'; props.env.jumpTo(url);"
+      "onClick": "let url = document.location.pathname; var urlSearch = new URLSearchParams(document.location.search); if(urlSearch.get(\"side_object\") && urlSearch.get(\"side_listview_id\")){url=`/app/${props.data.appId}/${urlSearch.get(\"side_object\")}/grid/${urlSearch.get(\"side_listview_id\")}`;}; props.env.jumpTo(url + '?display=grid');",
+      "rightIcon": displayAs != 'split' ? "fa fa-check" : null,
+      "rightIconClassName": "m-l-sm"
     },
     {
       "type": "button",
       "label": "分栏视图",
-      "onClick": "const url = document.location.pathname + '?display=split'; props.env.jumpTo(url);"
+      "onClick": "const url = document.location.pathname + '?display=split'; props.env.jumpTo(url);",
+      "rightIcon": displayAs === 'split' ? "fa fa-check" : null,
+      "rightIconClassName": "m-l-sm"
     }
   ];
   return {
@@ -163,7 +169,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
           }
         }
       },
-      showDisplayAs? getDisplayAsButton(showDisplayAs) : {}
+      showDisplayAs? getDisplayAsButton(mainObject?.name, showDisplayAs) : {}
   ]
   }else{
     return [

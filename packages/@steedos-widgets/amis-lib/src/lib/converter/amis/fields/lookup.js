@@ -456,20 +456,20 @@ export async function lookupToAmisSelect(field, readonly, ctx){
 
     if(referenceTo){
         // 字段值单独走一个请求合并到source的同一个GraphQL接口中
-        const defaultValueOptionsQueryData = await graphql.getFindQuery({ name: referenceTo.objectName }, null, {
-            [referenceTo.labelField.name]: Object.assign({}, referenceTo.labelField, {alias: 'label'}),
-            [referenceTo.valueField.name]: Object.assign({}, referenceTo.valueField, {alias: 'value'})
-        }, {
+        const defaultValueOptionsQueryData = await graphql.getFindQuery({ name: referenceTo.objectName }, null, [
+            Object.assign({}, referenceTo.labelField, {alias: 'label'}),
+            Object.assign({}, referenceTo.valueField, {alias: 'value'})
+        ], {
             alias: "defaultValueOptions",
             filters: "{__options_filters}",
             count: false
         });
         apiInfo = await getApi({
             name: referenceTo.objectName
-        }, null, {
-            [referenceTo.labelField.name]: Object.assign({}, referenceTo.labelField, {alias: 'label'}),
-            [referenceTo.valueField.name]: Object.assign({}, referenceTo.valueField, {alias: 'value'})
-        }, {expand: false, alias: 'options', queryOptions: `filters: {__filters}, top: {__top}, sort: "{__sort}"`, moreQueries: [defaultValueOptionsQueryData.query]});
+        }, null, [
+            Object.assign({}, referenceTo.labelField, {alias: 'label'}),
+            Object.assign({}, referenceTo.valueField, {alias: 'value'})
+        ], {expand: false, alias: 'options', queryOptions: `filters: {__filters}, top: {__top}, sort: "{__sort}"`, moreQueries: [defaultValueOptionsQueryData.query]});
 
         apiInfo.adaptor = `
             const data = payload.data;
