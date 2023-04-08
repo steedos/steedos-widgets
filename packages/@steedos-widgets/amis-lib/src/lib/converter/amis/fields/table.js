@@ -466,7 +466,6 @@ export async function getTableApi(mainObject, fields, options){
     api.data.loaded = "${loaded}";
     api.data.listViewId = "${listViewId}";
     api.requestAdaptor = `
-        debugger;
         // selfData 中的数据由 CRUD 控制. selfData中,只能获取到 CRUD 给定的data. 无法从数据链中获取数据.
         let selfData = JSON.parse(JSON.stringify(api.data.$self));
         try{

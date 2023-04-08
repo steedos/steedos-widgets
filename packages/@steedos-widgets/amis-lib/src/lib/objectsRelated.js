@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-04-07 15:43:32
+ * @LastEditTime: 2023-04-08 18:14:55
  * @Description:
  */
 
@@ -324,7 +324,6 @@ export async function getRelatedListSchema(
 
     const adaptor = `
         if(setDataToComponentId){
-            debugger;
             if(payload.data.count){
                 setTimeout(function(){
                     window.$("." + setDataToComponentId + " .antd-Crud").removeClass("hidden");
