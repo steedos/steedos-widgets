@@ -204,13 +204,9 @@ export async function getEditFormInitApi(object, recordId, fields, options){
     data.context = "${context}";
     data.defaultData = "${defaultData}";
 
-    let url = graphql.getApi();
-    if(recordId){
-        url+="&recordId=${recordId}";
-    }
     return {
         method: "post",
-        url: url,
+        url: graphql.getApi(),
         // sendOn: "!!this.recordId",
         cache: API_CACHE,
         requestAdaptor: `
