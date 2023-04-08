@@ -204,7 +204,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
         keepItemSelectionOnPageChange: true, 
         api: await getTableApi(objectSchema, fields, options),
         hiddenOn: options.tableHiddenOn,
-        autoFillHeight: true,
+        autoFillHeight: options.isRelated ? false : true,
         className: `flex-auto ${crudClassName || ""}`,
         crudClassName: crudClassName,
       }, 
@@ -366,6 +366,10 @@ export async function getObjectForm(objectSchema, ctx){
                   "objectName": "${_master.objectName}"
                 },
                 "expression": `\${_master.objectName != '${objectSchema.name}' && _master.objectName}`
+              },
+              {
+                "args": {},
+                "actionType": "closeDialog"
               }
             ]
           }

@@ -1,8 +1,8 @@
 /*
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-03-22 09:31:21
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-28 14:06:47
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2023-04-06 16:04:20
  */
 export const getSchema = (uiSchema)=>{
     return {
@@ -32,15 +32,11 @@ export const getSchema = (uiSchema)=>{
                                     },
                                     "adaptor": `
                                         if(payload.errors){
-                                            payload.status = 2;
-                                            payload.msg = payload.errors[0].message;
+                                          payload.status = 2;
+                                          payload.msg = window.t ? window.t(payload.errors[0].message) : payload.errors[0].message;
                                         }
                                         return payload;
                                     `,
-                                },
-                                "messages": {
-                                    "success": "删除成功",
-                                    "failed": "删除失败"
                                 }
                               },
                               "actionType": "ajax"
