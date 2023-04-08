@@ -389,9 +389,8 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
 
   let body = [
     {
-      "type": "service",
-      "id": `page_readonly_${name}_header`,
-      data: { "&":"$$", objectName: name, _id: recordId, recordPermissions: "${record.recordPermissions}", uiSchema: objectSchema},
+      "type": "wrapper",
+      "className": "p-0",
       "body": [
         {
           "type": "grid",
@@ -399,14 +398,14 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
           "className": "flex justify-between"
         }
       ],
-      "messages": {},
       "hiddenOn": "${recordLoaded != true}"
     }
   ];
 
   if(showRecordTitle){
     body.push({
-      "type": "service",
+      "type": "wrapper",
+      "className": "p-0",
       "body": [
         {
           "type": "grid",
@@ -414,16 +413,15 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
           "className": "flex justify-between"
         }
       ],
-      "messages": {},
       "hiddenOn": "${recordLoaded == true}"
     })
   }
 
   return {
     type: 'service',
-    bodyClassName: '',
+    id: `page_readonly_${name}_header`,
     name: `page`,
-    data: { "&":"$$", objectName: name, _id: recordId, recordPermissions: objectSchema.permissions, uiSchema: objectSchema, record: "${record}"},
+    data: { objectName: name, _id: recordId, recordPermissions: objectSchema.permissions, uiSchema: objectSchema, record: "${record}" },
     body: body, 
     className: ''
   }
