@@ -3,24 +3,14 @@
 # and commit this file to your remote git repository to share the goodness with others.
 # echo "ROOT_URL=$(gp url 5000)" >> .env.local
 tasks:
-  - name: Mongodb
-    command: |
-      cd steedos-ee
-      docker-compose up
-  - name: Steedos EE
-    command: |
-      cd steedos-ee
+  - name: Steedos
+    command: 
       echo "ROOT_URL=$(gp url 5000)" >> .env.local
-      echo "STEEDOS_PUBLIC_PAGE_ASSETURLS=$(gp url 8080)/@steedos-widgets/amis-object/dist/assets-dev.json" >> .env.local
-      gp await-port 3000
-      nvm use 14
-      yarn
-      yarn start
+      echo "METADATA_SERVER=$(gp url 5000)" >> .env.local
+      docker-compose up
   - name: Nextjs
     command: |
       git config pull.rebase false
-      nvm install 14
-      nvm use 14
       yarn config set registry https://registry.npmmirror.com
       yarn install
       yarn build
@@ -36,7 +26,6 @@ tasks:
       echo "STEEDOS_UNPKG_URL=$(gp url 8080)" >> packages/@steedos-widgets/sortable/.env.local
       echo "STEEDOS_UNPKG_URL=$(gp url 8080)" >> packages/@steedos-widgets/fullcalendar/.env.local
       gp await-port 3000
-      nvm use 14
       yarn unpkg
   - name: storybook
     command: |
@@ -44,7 +33,6 @@ tasks:
       echo "STEEDOS_ROOT_URL=$(gp url 5000)" >> .env.local
       echo "STEEDOS_EXPERIENCE_ASSETURLS=$(gp url 8080)/@steedos-widgets/amis-object/dist/assets-dev.json" >> .env.local
       gp await-port 3000
-      nvm use 14
       # yarn storybook
 
 ports:
