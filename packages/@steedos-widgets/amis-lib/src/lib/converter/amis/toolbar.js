@@ -263,7 +263,8 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                           "data": {
                             "&": "$$",
                             "all": "${uiSchema.list_views.all}",
-                            "appId": "${appId}"
+                            "appId": "${appId}",
+                            "global": "${global}"
                           },
                           "body": [
                             {
@@ -284,7 +285,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                                 "show_count": "${all.show_count}",
                                 "type": "${all.type}"
                               },
-                              "fieldsExtend": "{\n  \"label\": {\n    \"is_wide\": true\n  },\n  \"name\": {\n    \"is_wide\": true,\n    \"amis\":{\n      \"hidden\": true\n    }\n  },\n  \"object_name\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"filter_scope\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"columns\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"filter_fields\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"scrolling_mode\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"sort\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"show_count\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"type\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  }\n}",
+                              "fieldsExtend": "{\n  \"label\": {\n    \"is_wide\": true\n  },\n  \"name\": {\n    \"is_wide\": true,\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"object_name\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"filter_scope\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"columns\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"filter_fields\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"scrolling_mode\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"sort\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"show_count\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"type\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"shared\":{\n    \"amis\":{\n      \"visibleOn\":\"${global.user.is_space_admin}\"\n  }\n}\n}",
                               "fields": [
                                 "label",
                                 "name",
@@ -350,7 +351,8 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                             "&": "$$",
                             "listName": "${listName}",
                             "list_view": "${uiSchema.list_views[listName]}",
-                            "appId": "${appId}"
+                            "appId": "${appId}",
+                            "global": "${global}"
                           },
                           "body": [
                             {
@@ -373,7 +375,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                                 "show_count": "${list_view.show_count}",
                                 "type": "${list_view.type}"
                               },
-                              "fieldsExtend": "{\n  \"label\": {\n    \"is_wide\": true\n  },\n  \"name\": {\n    \"is_wide\": true,\n    \"amis\":{\n      \"hidden\": true\n    }\n  },\n  \"object_name\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"filter_scope\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"columns\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"filter_fields\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"scrolling_mode\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"sort\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"show_count\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"type\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  }\n}",
+                              "fieldsExtend": "{\n  \"label\": {\n    \"is_wide\": true\n  },\n  \"name\": {\n    \"is_wide\": true,\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"object_name\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"filter_scope\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"columns\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"filter_fields\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"scrolling_mode\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"sort\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"show_count\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"type\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"shared\":{\n    \"amis\":{\n      \"visibleOn\":\"${global.user.is_space_admin}\"\n  }\n}\n}",
                               "fields": [
                                 "label",
                                 "name",
@@ -422,6 +424,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
               {
                 "type": "button",
                 "label": "重命名",
+                "visibleOn": "${global.user.is_space_admin || global.userId == uiSchema.list_views[listName].owner}",
                 "onEvent": {
                   "click": {
                     "weight": 0,
@@ -472,6 +475,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
               {
                 "type": "button",
                 "label": "共享设置",
+                "visibleOn": "${global.user.is_space_admin}",
                 "onEvent": {
                   "click": {
                     "weight": 0,
@@ -509,6 +513,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
               {
                 "type": "button",
                 "label": "过滤设置",
+                "visibleOn": "${global.user.is_space_admin || global.userId == uiSchema.list_views[listName].owner}",
                 "onEvent": {
                   "click": {
                     "weight": 0,
@@ -565,6 +570,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
               {
                 "type": "button",
                 "label": "显示的列",
+                "visibleOn": "${global.user.is_space_admin || global.userId == uiSchema.list_views[listName].owner}",
                 "onEvent": {
                   "click": {
                     "weight": 0,
@@ -602,7 +608,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                                     }
                                   ]
                                 }
-                              },
+                              }
                             }
                           ],
                           "searchable": true,
@@ -620,6 +626,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
               {
                 "type": "button",
                 "label": "删除",
+                "visibleOn": "${(global.user.is_space_admin || global.userId == uiSchema.list_views[listName].owner) && !ARRAYINCLUDES(['all', 'recent', 'my'], listName) }",
                 "confirmText": "如果您删除此列表视图，该视图将为所有具备访问权限的用户永久删除。是否确定要删除？",
                 "api": {
                   "url": "${context.rootUrl}/graphql",
@@ -629,9 +636,8 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                   },
                   "data": {
                     "&": "$$",
-                    "recordId": "${uiSchema.list_views[listName]._id}",
-                    "objectName": "${objectName}",
-                    "appId": "${appId}"
+                    "uiSchema": "${uiSchema}",
+                    "recordId": "${uiSchema.list_views[listName]._id}"
                   },
                   "messages": {
                     "success": "删除成功",
@@ -646,6 +652,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
               },
               {
                 "type": "button",
+                "visibleOn": "${false}",
                 "label": "保存宽度(todo)"
               },
               // {
