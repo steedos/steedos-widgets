@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-04-08 18:05:14
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-04-10 09:49:26
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef } from 'react';
@@ -100,7 +100,7 @@ export const PageRecordDetail = async (props) => {
       },
       {
         "type": "wrapper",
-        "className": 'p-0 flex-1 focus:outline-none lg:order-last h-full',
+        "className": 'overflow-y-auto p-0 flex-1 focus:outline-none lg:order-last h-full',
         "body": defaultsDeep({data: defData} , recordSchema)
       }
     ]
