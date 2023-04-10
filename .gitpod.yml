@@ -45,5 +45,18 @@ ports:
   - port: 8080
     onOpen: ignore
     visibility: public
+  - port: 4222
+    onOpen: ignore
+  - port: 8222
+    onOpen: ignore
+  - port: 6379
+    onOpen: ignore
+  - port: 27017
+    onOpen: ignore
+
+
+
+
+
 
 
