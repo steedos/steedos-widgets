@@ -39,7 +39,7 @@ export function getTreeOptions(rows, options) {
             rows[i].noParent = 0;
             rows[i].unfolded = false;//将所有节点的默认展开设置关闭
             if (!!rows[i]["parent"]) {
-                biaozhi = 1;
+                let biaozhi = 1;
                 for (var j = 0; j < rows.length; j++) {
                     if (rows[i]["parent"] == rows[j][valueField])
                         biaozhi = 0;

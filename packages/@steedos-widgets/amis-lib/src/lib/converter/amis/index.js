@@ -140,7 +140,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
         disableStatistics: options.queryCount === false
       }), 
       filter: options.filterVisible !== false && await getObjectFilter(objectSchema, fields, options),
-    }
+    };
     if(options.formFactor !== 'SMALL'){
       Object.assign(bodyProps, {
         bulkActions: options.bulkActions != false ? bulkActions : false
@@ -247,11 +247,11 @@ export async function getObjectCRUD(objectSchema, fields, options){
       id: `service_${id}`,
       name: `page`,
       data: {
-        objectName: objectSchema.name,
-        _id: null,
+        // objectName: objectSchema.name,
+        // _id: null,
         recordPermissions: objectSchema.permissions,
         uiSchema: objectSchema,
-        loaded: false //crud接收适配器中设置为true，否则就是刷新浏览器第一次加载
+        // loaded: false //crud接收适配器中设置为true，否则就是刷新浏览器第一次加载
       },
       body: body
     }

@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-07 17:15:42
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-04-08 23:02:28
  * @Description: 
  */
 import { getPage, Router } from "@steedos-widgets/amis-lib";
@@ -49,11 +49,15 @@ export const PageListView = async (props) => {
     ...$schema.data,
     objectName: objectApiName,
     listViewId: listViewId,
-    listName: listName || listviewId,
+    // listName: listName || listviewId,
     appId: appId,
     formFactor: formFactor,
     displayAs: displayAs
   };
+
+  if(listName){
+    defData.listName = listName || listviewId
+  }
 
   // console.log("defData====>", defData)
 

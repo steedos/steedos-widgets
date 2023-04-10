@@ -290,7 +290,7 @@ function getButtonVisibleOn(button){
         //     return 'false';
         // }
         if(visible.trim().startsWith('function')){
-            return `${visible}(objectName, _id, typeof record === 'undefined' ? (typeof recordPermissions === 'undefined' ? {} : recordPermissions) : record.recordPermissions, data)`
+            return `${visible}(objectName, typeof _id === 'undefined' ? null: _id, typeof record === 'undefined' ? (typeof recordPermissions === 'undefined' ? {} : recordPermissions) : record.recordPermissions, data)`
         }
         return visible;
     }
@@ -455,6 +455,11 @@ export async function getTableApi(mainObject, fields, options){
 
     let valueField = mainObject.key_field || '_id';
     const api = await getApi(mainObject, null, fields, {count: options.queryCount, alias: 'rows', limit: top, queryOptions: `filters: {__filters}, top: {__top}, skip: {__skip}, sort: "{__sort}"`});
+
+    if(options.isRelated){
+        api.url += "&recordId=${recordId}";
+    }
+
     api.data.$term = "$term";
     api.data.$self = "$$";
     api.data.filter = "$filter"
@@ -574,9 +579,34 @@ export async function getTableApi(mainObject, fields, options){
         if(!_.isEmpty(systemFilters)){
             filters = systemFilters;
         };
-
         if(api.data.$self.additionalFilters){
             userFilters.push(api.data.$self.additionalFilters)
+        }
+
+        if(api.data.$self._isRelated){
+            const self = api.data.$self;
+            const relatedKey = self.relatedKey;
+            const recordId = self.recordId;
+            const refField = self.uiSchema.fields[relatedKey];
+            const masterRecord = self._master.record;
+            const masterObjectName = self._master.objectName;
+            let relatedValue = recordId;
+            if(refField.reference_to_field && refField.reference_to_field != '_id'){
+                relatedValue = masterRecord[refField.reference_to_field]
+            }
+            let relatedFilters;
+            if (
+                refField._reference_to ||
+                (refField.reference_to && !_.isString(refField.reference_to))
+            ) {
+                relatedFilters = [
+                    [relatedKey + "/o", "=", masterObjectName],
+                    [relatedKey + "/ids", "=", relatedValue],
+                ];
+            } else {
+                relatedFilters = [relatedKey, "=", relatedValue];
+            }
+            userFilters.push(relatedFilters)
         }
 
         if(!_.isEmpty(userFilters)){
@@ -701,7 +731,7 @@ export async function getApi(object, recordId, fields, options){
     const data = await graphql.getFindQuery(object, recordId, fields, options);
     return {
         method: "post",
-        url: graphql.getApi(),
+        url: graphql.getApi(), // + "&recordId=${recordId}"
         data: data,
         headers: {
             Authorization: "Bearer ${context.tenantId},${context.authToken}"

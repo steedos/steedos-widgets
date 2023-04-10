@@ -46,6 +46,90 @@ const getReferenceTo = async (field)=>{
     }
 }
 
+export function getLookupSapceUserTreeSchema(){
+    const tree = [{
+        "type": "input-tree",
+        "className": "",
+        "id": "u:7fd77b7915b0",
+        "source": {
+          "method": "post",
+          "url": "${context.rootUrl}/graphql",
+          "headers": {
+            "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+          },
+          "adaptor": "if (payload.data.treeCache == true) {\n                return payload;\n        }\n        const records = payload.data.options;\n        const treeRecords = [];\n        const getChildren = (records, childrenIds) => {\n                if (!childrenIds) {\n                        return;\n                }\n                const children = _.filter(records, (record) => {\n                        return _.includes(childrenIds, record.value)\n                });\n                _.each(children, (item) => {\n                        if (item.children) {\n                                item.children = getChildren(records, item.children)\n                        }\n                })\n                return children;\n        }\n\n        const getRoot = (records) => {\n                for (var i = 0; i < records.length; i++){\n                        records[i].noParent = 0;\n                        if (!!records[i].parent) {\n                                biaozhi = 1\n                                for (var j = 0; j < records.length; j++){\n                                        if (records[i].parent == records[j].value)\n                                                biaozhi = 0;\n                                }\n                                if (biaozhi == 1) records[i].noParent = 1;\n                        } else records[i].noParent = 1;\n                }\n        }\n        getRoot(records);\n        console.log(records)\n\n        _.each(records, (record) => {\n                if (record.noParent ==1) {\n                        treeRecords.push(Object.assign({}, record, { children: getChildren(records, record.children) }));\n                }\n        });\n        console.log(treeRecords)\n\n        payload.data.options = treeRecords;\n       payload.data.treeCache = true;\n       return payload;\n    ",
+          "requestAdaptor": "\n    ",
+          "data": {
+            "query": "{options:organizations(filters:[\"hidden\", \"!=\", true],sort:\"sort_no desc\"){value:_id label:name,parent,children}}"
+          },
+          "messages": {
+          },
+          "cache": 300000
+        },
+        "onEvent": {
+          "change": {
+            "actions": [
+              {
+                "actionType": "custom",
+                "script": `
+                debugger;
+                const scope = event.context.scoped;
+                //TODO: 将form中的value一同加入筛选内
+                // var filterForm = scope.parent.parent.getComponents().find(function(n){
+                //     return n.props.type === "form";
+                //   });
+                // var filterFormValues = filterForm.getValues();
+                filterFormValues={
+                    "__searchable__organizations_parents":event.data.value.value
+                }
+                var listView = scope.parent.getComponents().find(function(n){
+                  return n.props.type === "crud";
+                });
+                const removedValues = {};
+                // for(var k in filterFormValues){
+                    //   if(filterFormValues[k] === "" && !filterFormValues.hasOwnProperty(k)){
+                    //     removedValues[k] = "";
+                    //   }
+                    // }
+                listView.handleFilterSubmit(Object.assign({}, removedValues, filterFormValues));
+              `
+              }
+            ]
+          }
+        },
+        "label": "",
+        "name": "organizations",
+        "multiple": false,
+        "joinValues": false,
+        "clearValueOnHidden": false,
+        "fieldName": "organizations",
+        "hideRoot": true,
+        "initiallyOpen": false,
+        "extractValue": true,
+        "onlyChildren": true,
+        "treeContainerClassName": "no-border",
+        "showIcon": false,
+        "enableNodePath": false,
+        "autoCheckChildren": false,
+        "searchable": true,
+        "searchConfig": {
+          "sticky": true
+        },
+        "unfoldedLevel": 2,
+        "style": {
+          "max-height": "100%",
+          "position": "absolute",
+          "left": "-190px",
+          "width": "190px",
+          "bottom": 0,
+          "top": "0",
+          "overflow": "auto",
+          "min-height":"300px"
+        },
+        "originPosition": "left-top"
+    }]
+    return tree;
+}
 
 export async function lookupToAmisPicker(field, readonly, ctx){
     let referenceTo = await getReferenceTo(field);
@@ -289,7 +373,16 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             ...ctx
         })
 
-        pickerSchema.headerToolbar = getObjectHeaderToolbar(refObjectConfig, ctx.formFactor);
+        var headerToolbarItems = [];
+        const isMobile = window.innerWidth < 768;
+        if(referenceTo.objectName === "space_users" && field.reference_to_field === "user" && !isMobile){
+             headerToolbarItems = getLookupSapceUserTreeSchema();
+             pickerSchema["style"] = {
+                "margin-left":"200px",
+                "min-height": "300px"
+             }
+        }
+        pickerSchema.headerToolbar = getObjectHeaderToolbar(refObjectConfig, ctx.formFactor, { headerToolbarItems });
         const isAllowCreate = refObjectConfig.permissions.allowCreate;
         if (isAllowCreate) {
             const new_button = await standardNew.getSchema(refObjectConfig, { appId: ctx.appId, objectName: refObjectConfig.name, formFactor: ctx.formFactor });
@@ -297,15 +390,18 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             pickerSchema.headerToolbar.push(new_button);
         }
         pickerSchema.footerToolbar = refObjectConfig.enable_tree ? [] : getObjectFooterToolbar();
-        if(ctx.filterVisible !== false){
-            let filterLoopCount = ctx.filterLoopCount || 0;
-            filterLoopCount++;
-            // 可以传入filterVisible为false防止死循环
-            pickerSchema.filter = await getObjectFilter(refObjectConfig, fields, {
-                isLookup: true,
-                ...ctx,
-                filterLoopCount,
-            });
+        //TODO: 等待放大镜bug修复,if会去掉，始终显示放大镜
+        if(referenceTo.objectName != "space_users" || field.reference_to_field != "user"){
+            if (ctx.filterVisible !== false) {
+                let filterLoopCount = ctx.filterLoopCount || 0;
+                filterLoopCount++;
+                // 可以传入filterVisible为false防止死循环
+                pickerSchema.filter = await getObjectFilter(refObjectConfig, fields, {
+                    isLookup: true,
+                    ...ctx,
+                    filterLoopCount,
+                });
+            }
         }
         pickerSchema.data = Object.assign({}, pickerSchema.data, {
             "&": "$$",
@@ -555,7 +651,7 @@ export async function lookupToAmis(field, readonly, ctx){
         if(ctx.idsDependOn || field.amis){
             return await lookupToAmisIdsPicker(field, readonly, ctx);
         }
-        return await lookupToAmisSelectUser(field, readonly, ctx);
+        // return await lookupToAmisSelectUser(field, readonly, ctx);
     }
 
     const refObject = await getUISchema(referenceTo.objectName);

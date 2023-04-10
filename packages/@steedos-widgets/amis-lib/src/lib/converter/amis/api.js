@@ -78,8 +78,9 @@ function getReadonlyFormAdaptor(fields){
 export async function getReadonlyFormInitApi(object, recordId, fields, options){
     return {
         method: "post",
-        url: graphql.getApi()+"?rf="+ (new Date()).getTime(),
+        url: graphql.getApi()+"&recordId=${recordId}",
         cache: API_CACHE,
+        // requestAdaptor: "console.log('getReadonlyFormInitApi requestAdaptor', api);return api;",
         adaptor: getReadonlyFormAdaptor(fields),
         data: await graphql.getFindOneQuery(object, recordId, fields, options),
         headers: {
@@ -202,6 +203,7 @@ export async function getEditFormInitApi(object, recordId, fields, options){
     data.global = "${global}";
     data.context = "${context}";
     data.defaultData = "${defaultData}";
+
     return {
         method: "post",
         url: graphql.getApi(),
