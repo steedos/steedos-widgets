@@ -366,6 +366,10 @@ export async function getObjectForm(objectSchema, ctx){
                   "objectName": "${_master.objectName}"
                 },
                 "expression": `\${_master.objectName != '${objectSchema.name}' && _master.objectName}`
+              },
+              {
+                "args": {},
+                "actionType": "closeDialog"
               }
             ]
           }

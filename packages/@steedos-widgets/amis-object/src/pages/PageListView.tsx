@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-02 10:56:30
+ * @LastEditTime: 2023-04-07 17:15:42
  * @Description: 
  */
 import { getPage, Router } from "@steedos-widgets/amis-lib";
@@ -42,7 +42,7 @@ export const PageListView = async (props) => {
     "showHeader": true,
     "showDisplayAs": (defaultFormFactor !== 'SMALL'),
     "formFactor": formFactor,
-    "className": (displayAs === 'split')? 'w-full': 'p-0 flex-1 sm:m-3 sm:border sm:shadow sm:rounded border-slate-300 border-solid bg-gray-100'
+    "className": (displayAs === 'split')? 'w-full': 'p-0 flex-1 m-0 sm:border sm:shadow sm:rounded border-slate-300 border-solid bg-gray-100'
   }
 
   const defData = {
@@ -60,7 +60,7 @@ export const PageListView = async (props) => {
   return {
     type: 'service',
     data: defData,
-    "className": (displayAs === 'grid') ? 'h-full' : 'p-0 flex flex-1 overflow-hidden h-full',
+    "className": (displayAs === 'grid') ? 'h-full sm:p-3' : 'p-0 flex flex-1 overflow-hidden h-full',
     body: (displayAs === 'grid') ? defaultsDeep({data: defData} , listSchema) : [
       {
         "type": "wrapper",
