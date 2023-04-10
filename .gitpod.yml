@@ -12,7 +12,9 @@ tasks:
     command: |
       git config pull.rebase false
       yarn config set registry https://registry.npmmirror.com
-      yarn install
+      nvm i 16
+      nvm use 16
+      yarn
       yarn build
       cd apps/experience
       echo "STEEDOS_EXPERIENCE_URL=$(gp url 3000)" >> .env.local
