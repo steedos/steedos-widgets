@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-04-08 18:14:55
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-04-11 13:13:00
  * @Description:
  */
 
@@ -193,14 +193,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
                 _isRelated: true
             },
             body:[
-                {
-                    ...amisSchema,
-                    data: {
-                        defaultData: {
-                            ...{[relatedKey]: getRelatedFieldValue(objectName, relatedValue, relatedObjectUiSchema, relatedKey)}
-                        }
-                    }
-                }
+                amisSchema
             ]
         }
     };
