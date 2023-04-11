@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-06 14:31:03
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-04-10 22:41:41
  * @Description: 
  */
 const config: any = {
@@ -62,7 +62,7 @@ export default {
       weight: 1,
       framework: "react"
     },
-    plugin_disabled: {
+    plugin: {
       rendererName: config.amis.name,
       $schema: '/schemas/UnkownSchema.json',
       name: config.title,
@@ -72,10 +72,17 @@ export default {
       icon: config.amis.icon,
       scaffold: {
         type: config.amis.name,
+        body: [],// 容器类字段
         label: config.title,
         objectApiName: "${objectName}",
         recordId: "${recordId}"
       },
+      regions: [
+        {
+          key: 'body',
+          label: '内容区'
+        }
+      ],
       previewSchema: {
         type: config.amis.name,
         objectApiName: 'space_users'
@@ -108,7 +115,7 @@ export default {
         {
           type: "text",
           name: "recordId",
-          label: "记录Id"
+          label: "记录ID"
         }
       ]
     }
