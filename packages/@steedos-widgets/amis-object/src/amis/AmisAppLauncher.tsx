@@ -121,8 +121,6 @@ export const AmisAppLauncher = async (props) => {
                   "items": {
                     "type": "button",
                     "level": "link",
-                    "actionType": "link",
-                    "link": "${path}",
                     "body": [{
                       "type": "tpl",
                       "tpl": "<div class='slds-app-launcher__tile slds-text-link_reset'><div class='slds-app-launcher__tile-figure'><svg class='w-12 h-12 slds-icon slds-icon_container slds-icon-standard-${REPLACE(icon, '_', '-')}' aria-hidden='true'><use xlink:href='/assets/icons/standard-sprite/svg/symbols.svg#${icon}'></use></svg><span class='slds-assistive-text'>${name}</span></div><div class='slds-app-launcher__tile-body'><span class='slds-link text-blue-600 text-lg'><span title='${name}'>${name}</span></span><div style='display: -webkit-box; -webkit-line-clamp: 1;-webkit-box-orient: vertical;overflow: hidden;'><span title='${description}'>${description}</span></div></div></div>",
@@ -149,6 +147,21 @@ export const AmisAppLauncher = async (props) => {
                         "actions": [
                           {
                             "actionType": "closeDialog"
+                          },
+                          {
+                            "actionType": "link",
+                            "args": {
+                              "link": "${path}"
+                            },
+                            "expression": "${!blank}"
+                          },
+                          {
+                            "actionType": "url",
+                            "args": {
+                              "url": "${path}",
+                              "blank": true
+                            },
+                            "expression": "${blank}"
                           }
                         ]
                       }

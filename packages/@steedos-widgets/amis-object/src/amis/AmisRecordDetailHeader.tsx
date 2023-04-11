@@ -9,7 +9,7 @@ import { getRecordDetailHeaderSchema , getUISchema} from '@steedos-widgets/amis-
 
 export const AmisRecordDetailHeader = async (props) => {
   // console.log(`AmisRecordDetailHeader=====>`, props)
-  const { className = 'sticky top-0 z-50 bg-gray-100 border-b sm:shadow sm:rounded sm:border border-slate-300 p-4' } = props;
+  const { className = 'sticky top-0 z-10 bg-gray-100 border-b sm:shadow sm:rounded sm:border border-slate-300 p-4' } = props;
   const objectUiSchema = await getUISchema(props.objectApiName || "space_users", false);
   const defaultOnEvent = {
     "recordLoaded": {
