@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:51:00
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-08 12:05:19
+ * @LastEditTime: 2023-04-11 13:41:36
  * @Description: 
  */
 
@@ -26,16 +26,20 @@ export const getSchema = async (uiSchema, ctx) => {
             const relatedKey = _master.relatedKey;
             const masterObjectName = _master.objectName;
             const recordId = _master.recordId;
+            let relatedKeySaveValue = recordId;
             const fields = ${JSON.stringify(uiSchema.fields)};
             const relatedField = fields[relatedKey];
+            if(relatedField.reference_to_field && relatedField.reference_to_field !== '_id'){
+                relatedKeySaveValue = _master.record[relatedField.reference_to_field];
+            }
             let defaultData = {}; 
             let relatedKeyValue; 
             if(!_.isString(relatedField.reference_to)){
-                relatedKeyValue = { o: masterObjectName, ids: [recordId] };
+                relatedKeyValue = { o: masterObjectName, ids: [relatedKeySaveValue] };
             }else if (relatedField.multiple) {
-                relatedKeyValue = [recordId];
+                relatedKeyValue = [relatedKeySaveValue];
             } else {
-                relatedKeyValue = recordId;
+                relatedKeyValue = relatedKeySaveValue;
             }
             defaultData[relatedKey]=relatedKeyValue;
             if(payload.schema){
