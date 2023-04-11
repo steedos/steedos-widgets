@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-10 09:49:26
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2023-04-11 10:35:16
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef } from 'react';
@@ -27,7 +27,7 @@ export const PageRecordDetail = async (props) => {
   if (true || recordId) {
 
     const recordPage = await getPage({type: 'record', appId: appId, objectName: objectApiName, formFactor: defaultFormFactor});
-    recordSchema = recordPage? JSON.parse(recordPage.schema) : {
+    recordSchema = recordPage? recordPage.schema : {
       "type": "wrapper",
       "className": "overflow-y-auto p-0 m-0 flex-1 h-full",
       "name": `amis-${appId}-${objectApiName}-detail`,
@@ -66,7 +66,7 @@ export const PageRecordDetail = async (props) => {
     }
   }
 
-  const listSchema = listPage? JSON.parse(listPage.schema) : {
+  const listSchema = listPage? listPage.schema : {
     "type": "steedos-object-listview",
     "objectApiName": sideObject,
     "columnsTogglable": false,
