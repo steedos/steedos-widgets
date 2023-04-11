@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-16 17:02:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-03 14:52:18
+ * @LastEditTime: 2023-04-11 09:57:37
  * @Description:
  */
 
@@ -29,10 +29,11 @@ export const Router = {
     },
     getObjectDetailPath(props){
         const {formFactor, appId, objectName, recordId, listViewName, _templateType} = props;
+        // var urlParams = new URLSearchParams(window.location.search);
         // if(objectName === 'instances'){
         //     return `/workflow/space/\${context.tenantId}/\${listName}/${recordId}`;
         // }
-        const displayAs = Router.getTabDisplayAs(objectName);
+        const displayAs =  Router.getTabDisplayAs(objectName); //urlParams.get("display") ||
         if(_templateType === 'JavaScript'){
             return `/app/${appId}/${objectName}/view/${recordId}?display=${displayAs}&side_object=<%=item.objectName%>&side_listview_id=<%=item.listName%>`;
         }
