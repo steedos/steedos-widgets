@@ -26,7 +26,7 @@ export async function getFieldsTemplate(fields, expand){
             if(includes(['time','date','datetime','boolean','number','currency'], field.type)){
                 fieldsName.push(`${field.name}`)
             }
-            if(includes(['time','filesize','date','datetime','boolean','number','currency', 'select', 'file', 'image', 'avatar', 'formula', 'summary', 'object', 'grid'], field.type)){
+            if(includes(['percent','time','filesize','date','datetime','boolean','number','currency', 'select', 'file', 'image', 'avatar', 'formula', 'summary', 'object', 'grid'], field.type)){
                 displayFields.push(`${field.name}`)
             }
         }

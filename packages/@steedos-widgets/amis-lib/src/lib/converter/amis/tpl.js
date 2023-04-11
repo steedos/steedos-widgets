@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-09 10:00:44
+ * @LastEditTime: 2023-04-10 11:22:54
  * @Description: 
  */
 import { Router } from '../../router'
@@ -199,6 +199,7 @@ export async function getFieldTpl (field, options){
         case 'number':
         case 'currency':
             return await getNumberTpl(field);
+        case 'percent':
         case 'formula':
         case 'summary':
             return getUiFieldTpl(field)
