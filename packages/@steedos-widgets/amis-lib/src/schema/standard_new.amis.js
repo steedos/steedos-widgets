@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:51:00
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-11 13:41:36
+ * @LastEditTime: 2023-04-11 13:58:24
  * @Description: 
  */
 
@@ -75,7 +75,6 @@ export const getSchema = async (uiSchema, ctx) => {
                                         "_master": "${_master}",
                                         "_master._isRelated": "${_isRelated}",
                                         "_master.relatedKey": "${relatedKey}",
-                                        "defaultData": "${defaultData}",
                                         "appId": "${appId}",
                                         "objectName": "${objectName}",
                                         "context": "${context}",
