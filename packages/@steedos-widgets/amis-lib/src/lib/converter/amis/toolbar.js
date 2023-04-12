@@ -262,6 +262,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                           "data": {
                             "&": "$$",
                             "all": "${uiSchema.list_views.all}",
+                            "list_view": "${uiSchema.list_views[listName]}",
                             "appId": "${appId}",
                             "global": "${global}",
                             "objectName": "${objectName}",
@@ -272,12 +273,12 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                               "label": "对象表单",
                               "objectApiName": "object_listviews",
                               "recordId": "",
-                              "className": "sm:border sm:shadow sm:rounded sm:border-gray-300 bg-white p-4",
                               "mode": "edit",
                               "defaultData": {
-                                "&": "${all}",
+                                "&": "${list_view}",
                                 "name":"",
                                 "label":"",
+                                "filters":"",
                                 "shared":false
                               },
                               "fieldsExtend": "{\n  \"label\": {\n    \"is_wide\": true\n  },\n  \"name\": {\n    \"is_wide\": true,\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"object_name\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"filter_scope\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"columns\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"filter_fields\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"scrolling_mode\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"sort\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"show_count\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"type\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"shared\":{\n    \"amis\":{\n      \"visibleOn\":\"${global.user.is_space_admin}\"\n  }\n}\n}",
@@ -356,7 +357,6 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                               "label": "对象表单",
                               "objectApiName": "object_listviews",
                               "recordId": "",
-                              "className": "sm:border sm:shadow sm:rounded sm:border-gray-300 bg-white p-4",
                               "mode": "edit",
                               "fields": [
                               ],
@@ -435,7 +435,6 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                               "label": "对象表单",
                               "objectApiName": "object_listviews",
                               "recordId": "${recordId}",
-                              "className": "sm:border sm:shadow sm:rounded sm:border-gray-300 bg-white p-4",
                               "mode": "edit",
                               "fields": [
                                 "label"
@@ -489,7 +488,6 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                               "label": "对象表单",
                               "objectApiName": "object_listviews",
                               "recordId": "${recordId}",
-                              "className": "sm:border sm:shadow sm:rounded sm:border-gray-300 bg-white p-4",
                               "mode": "edit",
                               "fields": [
                                 "shared"
@@ -533,7 +531,6 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                               "label": "对象表单",
                               "objectApiName": "object_listviews",
                               "recordId": "${recordId}",
-                              "className": "sm:border sm:shadow sm:rounded sm:border-gray-300 bg-white p-4",
                               "mode": "edit",
                               "initApiAdaptor": "",
                               "fields": [
@@ -598,9 +595,8 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                               "label": "对象表单",
                               "objectApiName": "object_listviews",
                               "recordId": "${recordId}",
-                              "className": "sm:border sm:shadow sm:rounded sm:border-gray-300 bg-white p-4",
                               "mode": "edit",
-                              "fieldsExtend": "{\n  \"columns\": {\n    \"amis\": {\n      \"type\": \"transfer\",\n  \"source\": {\n        \"method\": \"get\",\n        \"url\": \"${context.rootUrl}/service/api/amis-metadata-objects/objects/${objectName}/fields/options\",\n        \"headers\": {\n          \"Authorization\": \"Bearer ${context.tenantId},${context.authToken}\"\n        }\n      }\n    }\n  },\n  \"mobile_columns\": {\n \"group\": \"手机端\",\n   \"amis\": {\n      \"type\": \"transfer\",\n      \"source\": {\n        \"method\": \"get\",\n        \"url\": \"${context.rootUrl}/service/api/amis-metadata-objects/objects/${objectName}/fields/options\",\n        \"headers\": {\n          \"Authorization\": \"Bearer ${context.tenantId},${context.authToken}\"\n        }\n      }\n    }\n  }\n\n}",
+                              "fieldsExtend": "{\n  \"columns\": {\n    \"amis\": {\n      \"type\": \"transfer\",\n      \"sortable\": true,\n      \"searchable\": true,\n      \"source\": {\n        \"method\": \"get\",\n        \"url\": \"${context.rootUrl}/service/api/amis-metadata-objects/objects/${objectName}/fields/options\",\n        \"headers\": {\n          \"Authorization\": \"Bearer ${context.tenantId},${context.authToken}\"\n        }\n      }\n    }\n  },\n  \"mobile_columns\": {\n    \"group\": \"手机端\",\n    \"amis\": {\n      \"type\": \"transfer\",\n      \"sortable\": true,\n      \"searchable\": true,\n      \"source\": {\n        \"method\": \"get\",\n        \"url\": \"${context.rootUrl}/service/api/amis-metadata-objects/objects/${objectName}/fields/options\",\n        \"headers\": {\n          \"Authorization\": \"Bearer ${context.tenantId},${context.authToken}\"\n        }\n      }\n    }\n  }\n}",
                               "initApiAdaptor": "const recordId_tmp = api.body.recordId;\nlet columns_tmp = {}, mobile_columns_tmp = {};\nif (recordId_tmp) {\n  columns_tmp = payload.data.initialValues.columns;\n  mobile_columns_tmp = payload.data.initialValues.mobile_columns;\n  if (columns_tmp) {\n    columns_tmp = lodash.map(columns_tmp, 'field');\n  }\n  if (mobile_columns_tmp) {\n    mobile_columns_tmp = lodash.map(mobile_columns_tmp, 'field');\n  }\n}\npayload.data.initialValues.columns = columns_tmp;\npayload.data.initialValues.mobile_columns = mobile_columns_tmp;\n\ndelete payload.extensions;\nreturn payload;",
                               "apiRequestAdaptor": "const formData_tmp = api.body.$;\nconst objectName_tmp = api.body.objectName;\nconst recordId_tmp = api.body.recordId;\n\nif (typeof formData_tmp.columns == 'string') {\n  formData_tmp.columns = formData_tmp.columns?.split(',');\n}\nif (typeof formData_tmp.mobile_columns == 'string') {\n  formData_tmp.mobile_columns = formData_tmp.mobile_columns?.split(',');\n}\n\n// 数据格式转换\nformData_tmp.columns = lodash.map(formData_tmp.columns, (item) => {\n  return { field: item };\n});\nformData.mobile_columns = lodash.map(formData.mobile_columns, (item) => {\n  return { field: item };\n});\n\n// 字符串拼接（不支持ES6语法）\nlet query_tmp = 'mutation{record: ' + objectName_tmp + '__insert(doc: {__saveData}){_id}}';\nif (api.body.recordId) {\n  query_tmp = 'mutation{record: ' + objectName_tmp + '__update(id: \"' + recordId_tmp +'\", doc: {__saveData}){_id}}';\n};\ndelete formData_tmp._id;\nlet __saveData_tmp = JSON.stringify(JSON.stringify(formData_tmp));\napi.data = { query: query_tmp.replace('{__saveData}', __saveData_tmp) };\n\nreturn api;",
                               "fields": [
@@ -616,7 +612,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                                         "url": "${context.rootUrl}/app/${appId}/${objectName}/grid/${listName}",
                                         "blank": false
                                       },
-                                      "actionType": "url",
+                                      "actionType": "url"
                                     }
                                   ]
                                 }
@@ -675,8 +671,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                       }
                     ]
                   }
-                },
-
+                }
               },
               {
                 "type": "button",
