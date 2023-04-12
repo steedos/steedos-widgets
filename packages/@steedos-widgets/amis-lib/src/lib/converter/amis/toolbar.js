@@ -237,8 +237,6 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
           }
         }
       } : {},
-      showDisplayAs? getDisplayAsButton(showDisplayAs) : {}
-      ,
       {
         "type": "dropdown-button",
         "trigger": "click",
