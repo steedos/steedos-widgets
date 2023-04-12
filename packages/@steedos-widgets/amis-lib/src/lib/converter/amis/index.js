@@ -364,7 +364,8 @@ export async function getObjectForm(objectSchema, ctx){
                   "eventName": "@data.changed.${_master.objectName}"
                 },
                 "data": {
-                  "objectName": "${_master.objectName}"
+                  "objectName": "${_master.objectName}",
+                  "_isRelated": "${_isRelated || _master._isRelated}"
                 },
                 "expression": `\${_master.objectName != '${objectSchema.name}' && _master.objectName}`
               },
