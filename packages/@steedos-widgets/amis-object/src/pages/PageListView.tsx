@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-11 10:34:57
+ * @LastEditTime: 2023-04-12 14:35:03
  * @Description: 
  */
 import { getPage, Router } from "@steedos-widgets/amis-lib";
@@ -10,6 +10,7 @@ import { defaultsDeep } from 'lodash';
 
 
 export const PageListView = async (props) => {
+  // console.time('PageListView')
   // console.log(`PageListView====>`, props)
   const { formFactor: defaultFormFactor, appId, objectApiName, listviewId, display, $schema = {}, listName } = props
 
@@ -60,11 +61,15 @@ export const PageListView = async (props) => {
   }
 
   // console.log("defData====>", defData)
+  // console.timeEnd('PageListView')
+
+  const pageGridClassName = listSchema.pageGridClassName || 'h-full sm:p-3'
+  const pageSplitClassName = listSchema.pageSplitClassName || 'p-0 flex flex-1 overflow-hidden h-full'
 
   return {
     type: 'service',
     data: defData,
-    "className": (displayAs === 'grid') ? 'h-full sm:p-3' : 'p-0 flex flex-1 overflow-hidden h-full',
+    "className": (displayAs === 'grid') ? pageGridClassName : pageSplitClassName,
     body: (displayAs === 'grid') ? defaultsDeep({data: defData} , listSchema) : [
       {
         "type": "wrapper",
