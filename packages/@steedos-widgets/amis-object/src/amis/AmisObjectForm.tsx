@@ -1,12 +1,12 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-04-12 12:02:17
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-04-08 12:05:54
  * @Description: 
  */
 import { getFormSchema, getViewSchema } from '@steedos-widgets/amis-lib'
-import { keys, pick, difference, isString, has } from 'lodash';
+import { keys, pick, difference, isString } from 'lodash';
 
 export const AmisObjectForm = async (props) => {
   // console.log("===AmisObjectForm=props==", props);
@@ -71,10 +71,6 @@ export const AmisObjectForm = async (props) => {
   // if(objectApiName){
   //   formData.objectName = objectApiName;
   // }
-
-  if(has(props, "recordId")){
-    formData.recordId = props.recordId;
-  }
   amisSchema.className = `steedos-object-form ${className}`
   amisSchema.data = Object.assign( amisSchema.data, formData, {global: globalData, uiSchema:uiSchema});
   // console.log(`===AmisObjectForm=amisSchema==`, amisSchema)
