@@ -50,6 +50,7 @@ export function getLookupSapceUserTreeSchema(){
     const tree = [{
         "type": "input-tree",
         "className": "",
+        "inputClassName": "pl-0",
         "id": "u:7fd77b7915b0",
         "source": {
           "method": "post",
@@ -119,10 +120,10 @@ export function getLookupSapceUserTreeSchema(){
         "style": {
           "max-height": "100%",
           "position": "absolute",
-          "left": "-190px",
+          "left": "-200px",
           "width": "190px",
           "bottom": 0,
-          "top": "0",
+          "top": "-14px",
           "overflow": "auto",
           "min-height":"300px"
         },
