@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-07 18:23:05
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-04-12 23:32:03
  * @Description: 
  */
 // import Hello from "./metas/Hello";
@@ -12,6 +12,7 @@ import AmisObjectCalendar from "./metas/AmisObjectCalendar";
 import AmisObjectTable from "./metas/AmisObjectTable";
 import AmisRecordDetailHeader from "./metas/AmisRecordDetailHeader";
 import AmisRecordDetail from "./metas/AmisRecordDetail";
+import AmisRecordService from "./metas/AmisRecordService";
 import AmisSelectUser from "./metas/AmisSelectUser";
 import AmisRecordDetailRelatedList from "./metas/AmisRecordDetailRelatedList";
 import AmisRecordDetailRelatedLists from "./metas/AmisRecordDetailRelatedLists";
@@ -59,7 +60,8 @@ const components = [
   AmisObjectTable,
   AmisRecordDetailRelatedList, 
   AmisRecordDetailRelatedLists,
-  AmisRecordDetail, 
+  AmisRecordDetail,
+  AmisRecordService,
   AmisObjectCalendar,
   AmisObjectButton,
   AmisObjectFieldLookup,

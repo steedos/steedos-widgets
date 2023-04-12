@@ -1,21 +1,14 @@
-/*
- * @Author: baozhoutao@steedos.com
- * @Date: 2022-08-31 16:32:35
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-04-12 23:29:24
- * @Description: 
- */
 const config: any = {
   componentType: 'amisSchema', // amisSchema || react 
   group: "华炎魔方",
-  componentName: "AmisRecordDetail",
-  title: "记录详细",
+  componentName: "AmisRecordService",
+  title: "记录数据",
   docUrl: "",
   screenshot: "",
   npm: {
     package: "@steedos-widgets/amis-object",
     version: "{{version}}",
-    exportName: "AmisRecordDetail",
+    exportName: "AmisRecordService",
     main: "",
     destructuring: true,
     subName: ""
@@ -38,7 +31,7 @@ const config: any = {
   engines: ["amis"],
   // settings for amis.
   amis: {
-    name: 'steedos-record-detail',
+    name: 'steedos-record-service',
     icon: "fa-fw fa fa-list-alt"
   }
 };
@@ -62,7 +55,7 @@ export default {
       weight: 1,
       framework: "react"
     },
-    plugin__disable: {
+    plugin: {
       rendererName: config.amis.name,
       $schema: '/schemas/UnkownSchema.json',
       name: config.title,
