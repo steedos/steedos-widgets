@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-05 18:17:42
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-04-12 10:39:47
  * @Description: 
  */
 import { getListSchema, getObjectListHeaderFirstLine, getUISchema, Router } from '@steedos-widgets/amis-lib'
@@ -85,11 +85,11 @@ export const AmisObjectListView = async (props) => {
             "blank": false
           },
           "actionType": "link",
-          "expression": "${!!!event.data.recordId && event.data.__deletedRecord != true}" //是新建, 则进入详细页面. 
+          "expression": "${!!!event.data.recordId && event.data.__deletedRecord != true && event.data._isRelated != true}" //是新建, 则进入详细页面. 
         },
         {
           "actionType": "reload",
-          "expression": "${event.data.recordId || event.data.__deletedRecord === true}" //不是新建, 则刷新列表
+          "expression": "${(event.data.recordId || event.data.__deletedRecord === true) && event.data._isRelated != true}" //不是新建, 则刷新列表
         }
       ]
     }

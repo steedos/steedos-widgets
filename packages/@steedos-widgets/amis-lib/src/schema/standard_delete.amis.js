@@ -1,8 +1,8 @@
 /*
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-03-22 09:31:21
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-06 16:04:20
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-04-12 10:35:36
  */
 export const getSchema = (uiSchema)=>{
     return {
@@ -57,7 +57,8 @@ export const getSchema = (uiSchema)=>{
                                   "eventName": "@data.changed.${_master.objectName}"
                                 },
                                 "data": {
-                                  "objectName": "${_master.objectName}"
+                                  "objectName": "${_master.objectName}",
+                                  "_isRelated": "${_isRelated}"
                                 },
                                 "expression": `\${_master.objectName != '${uiSchema.name}' && _master.objectName}`
                             }
