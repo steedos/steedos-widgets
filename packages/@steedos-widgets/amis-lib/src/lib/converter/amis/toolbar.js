@@ -115,7 +115,8 @@ function getExportApiRequestAdaptorScript(){
   `
 }
 
-export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = false, hiddenCount = false, headerToolbarItems} = {}){
+export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = false, hiddenCount = false, headerToolbarItems, filterVisible = true} = {}){
+  // console.log(`getObjectHeaderToolbar====>`, filterVisible)
   const isMobile = window.innerWidth < 768;
   if(isMobile){
     showDisplayAs = false;
@@ -152,7 +153,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
           }
         },
       },
-      {
+      filterVisible ? {
         "label": "",
         "icon": "fa fa-search",
         "type": "button",
@@ -168,7 +169,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
             ]
           }
         }
-      },
+      } : {},
       showDisplayAs? getDisplayAsButton(mainObject?.name, showDisplayAs) : {}
   ]
   }else{
@@ -233,7 +234,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
           }
         }
       },
-      {
+      filterVisible ? {
         "label": "",
         "icon": "fa fa-search",
         "type": "button",
@@ -249,7 +250,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
             ]
           }
         }
-      },
+      } : {},
       showDisplayAs? getDisplayAsButton(showDisplayAs) : {}
       // {
       //   "type": "search-box",

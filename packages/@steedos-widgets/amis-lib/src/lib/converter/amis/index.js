@@ -127,11 +127,11 @@ function getFilter(){
 }
 
 export async function getObjectCRUD(objectSchema, fields, options){
+    // console.time('getObjectCRUD');
     const { top, perPage, showDisplayAs = false, displayAs, crudClassName = "" } = options;
     const nonpaged = objectSchema.paging && objectSchema.paging.enabled === false;
     const isTreeObject = objectSchema.enable_tree;
     const bulkActions = getBulkActions(objectSchema)
-
     const bodyProps = {
       // toolbar: getToolbar(),
       // headerToolbar: getObjectHeaderToolbar(objectSchema, options.formFactor, {showDisplayAs}),
@@ -160,11 +160,12 @@ export async function getObjectCRUD(objectSchema, fields, options){
         options.queryCount = false;
       }
     }
-
+    // console.log(`getObjectHeaderToolbar====2===>`, options.filterVisible)
     bodyProps.headerToolbar = getObjectHeaderToolbar(objectSchema, options.formFactor, {
       showDisplayAs, 
       hiddenCount: options.queryCount === false, 
-      headerToolbarItems: options.headerToolbarItems
+      headerToolbarItems: options.headerToolbarItems,
+      filterVisible: options.filterVisible
     });
 
 
@@ -239,7 +240,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
         body = wrappedBody;
       }
     }
-
+    // console.timeEnd('getObjectCRUD');
     // TODO: data应该只留loaded，其他属性都改为从上层传递下来
     return {
       type: 'service',

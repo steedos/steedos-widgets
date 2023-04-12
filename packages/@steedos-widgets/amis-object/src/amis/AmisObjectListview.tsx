@@ -2,13 +2,14 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-05 18:17:42
+ * @LastEditTime: 2023-04-12 14:24:30
  * @Description: 
  */
 import { getListSchema, getObjectListHeaderFirstLine, getUISchema, Router } from '@steedos-widgets/amis-lib'
 import { keys, pick, difference, find } from 'lodash';
 
 export const AmisObjectListView = async (props) => {
+  // console.time('AmisObjectListView')
   // console.log(`AmisObjectListView props`, props)
   const { $schema, top, perPage, showHeader=true, headerSchema, data, defaultData, 
       className="", 
@@ -16,6 +17,7 @@ export const AmisObjectListView = async (props) => {
       showDisplayAs = false,
       sideSchema,
       columnsTogglable=false,
+      filterVisible = true,
       headerToolbarItems} = props;
   // const urlListNameMatchs = location.pathname.match(/grid\/(\w+)/);  // 错误的规则
   // const urlListName = urlListNameMatchs && urlListNameMatchs[1]
@@ -111,8 +113,9 @@ export const AmisObjectListView = async (props) => {
   const amisSchemaData = Object.assign({}, data, defaultData);
   const listViewId = ctx?.listViewId || amisSchemaData.listViewId;
   let schema: any = (await getListSchema(amisSchemaData.appId, objectApiName, listName, { 
-    top, perPage, showHeader, defaults, ...ctx, listViewId, setDataToComponentId, filterVisible: true, showDisplayAs, displayAs, headerToolbarItems
+    top, perPage, showHeader, defaults, ...ctx, listViewId, setDataToComponentId, filterVisible, showDisplayAs, displayAs, headerToolbarItems
   }));
+  // console.log(`getListSchema filterVisible`, filterVisible)
   const amisSchema = schema.amisSchema;
   const uiSchema = schema.uiSchema;
   let body = [amisSchema];
@@ -134,13 +137,13 @@ export const AmisObjectListView = async (props) => {
         {
           "type": "wrapper",
           "size": "none",
-          "className": "flex-shrink-0 min-w-[200px] overflow-y-auto border-r border-gray-200 lg:order-first lg:flex lg:flex-col",
+          "className": "flex-shrink-0 min-w-[200px] h-full border-r border-gray-200 lg:order-first lg:flex lg:flex-col",
           "body": sideSchema
         }, 
         {
           "type": "wrapper",
           "size": "none",
-          "className": "flex-1 overflow-y-auto focus:outline-none lg:order-last w-96",
+          "className": "flex-1 focus:outline-none lg:order-last w-96 h-full",
           "body": body
         }, 
         
@@ -150,6 +153,7 @@ export const AmisObjectListView = async (props) => {
   // TODO: recordPermissions和_id是右上角按钮需要强依赖的变量，应该写到按钮那边去
   const serviceData = Object.assign({}, { listName, uiSchema, showDisplayAs, displayAs, recordPermissions: uiSchema.permissions, _id: null, $listviewId: listName });
   const temp = "sm:p-3 hidden"  //人员列表内需要引用该类名
+  // console.timeEnd('AmisObjectListView')
   return {
     "type": "service",
     "body": body,

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-04 14:09:31
+ * @LastEditTime: 2023-04-12 14:24:49
  * @Description: 
  */
 import { getTableSchema, conditionsToFilters } from '@steedos-widgets/amis-lib'
@@ -39,6 +39,7 @@ function getTableColumns(columns, includedFields, fieldsExtend = {}){
 }
 
 export const AmisObjectTable = async (props) => {
+  // console.time('AmisObjectTable')
   // console.log(`AmisObjectTable props`, props)
   const { $schema, filters, filtersFunction, amisCondition, top, headerSchema, fields: includedFields, fieldsExtend,
     sort, sortField, sortOrder, extraColumns, data, defaultData, 
@@ -84,5 +85,6 @@ export const AmisObjectTable = async (props) => {
   amisSchema.data = Object.assign({}, amisSchema.data, amisSchemaData);
   amisSchema.className = `steedos-object-table h-full flex flex-col ${className}`
   // console.log(`AmisObjectTable===>amisSchema`, amisSchema)
+  // console.timeEnd('AmisObjectTable')
   return amisSchema;
 }
