@@ -8,6 +8,11 @@ import './styles/steedos.css';
 
 import './styles/data-table.less';
 
+/**
+ * 请勿删除, 让tailwind编译出一下class
+ * min-w-[240px]
+ */
+
 export * from './components';
 export * from './amis';
 export * from './pages';
