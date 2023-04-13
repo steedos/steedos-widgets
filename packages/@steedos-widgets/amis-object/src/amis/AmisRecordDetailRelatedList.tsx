@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-30 16:45:14
+ * @LastEditTime: 2023-04-12 18:24:27
  * @Description: 
  */
 import { getRecordDetailRelatedListSchema } from '@steedos-widgets/amis-lib'
@@ -10,7 +10,7 @@ import { getRecordDetailRelatedListSchema } from '@steedos-widgets/amis-lib'
 
 export const AmisRecordDetailRelatedList = async (props) => {
   // console.log(`AmisRecordDetailRelatedList props==>`, props)
-  const { objectApiName, recordId, relatedObjectApiName, data, relatedKey, top, perPage, hiddenEmptyTable, appId, relatedLabel, className = '', columns, sort, filters, visible_on } = props;
+  const { objectApiName, recordId, relatedObjectApiName, data, relatedKey, top, perPage, hiddenEmptyTable, appId, relatedLabel, className = '', columns, sort, filters, visible_on, requestAdaptor, adaptor } = props;
   let formFactor = props.formFactor;
   if(!formFactor){
     formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE';
@@ -24,6 +24,6 @@ export const AmisRecordDetailRelatedList = async (props) => {
       "className": "mb-3"
     }
   }
-  const schema = (await getRecordDetailRelatedListSchema(objectApiName, recordId, relatedObjectApiName, relatedKey, {top, perPage, hiddenEmptyTable, appId, relatedLabel, className, formFactor, columns, sort, filters, visible_on, isRelated: true})).amisSchema;
+  const schema = (await getRecordDetailRelatedListSchema(objectApiName, recordId, relatedObjectApiName, relatedKey, {top, perPage, hiddenEmptyTable, appId, relatedLabel, className, formFactor, columns, sort, filters, visible_on, isRelated: true, requestAdaptor, adaptor})).amisSchema;
   return schema
 }

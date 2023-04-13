@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-30 17:44:53
+ * @LastEditTime: 2023-04-13 09:20:21
  * @Description:
  */
 
@@ -340,6 +340,8 @@ export async function getRelatedListSchema(
         "filters": listviewFilter,
         "filtersFunction": filtersFunction,
         "sort": listViewSort,
+        "requestAdaptor": ctx.requestAdaptor,  
+        "adaptor": ctx.adaptor,
         "ctx": ctx
     };
     // console.log(`getRelatedListSchema amisSchema`, amisSchema);
