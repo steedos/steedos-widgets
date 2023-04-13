@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-12 14:24:49
+ * @LastEditTime: 2023-04-13 10:14:41
  * @Description: 
  */
 import { getTableSchema, conditionsToFilters } from '@steedos-widgets/amis-lib'
@@ -40,7 +40,7 @@ function getTableColumns(columns, includedFields, fieldsExtend = {}){
 
 export const AmisObjectTable = async (props) => {
   // console.time('AmisObjectTable')
-  // console.log(`AmisObjectTable props`, props)
+  console.log(`AmisObjectTable props`, props)
   const { $schema, filters, filtersFunction, amisCondition, top, headerSchema, fields: includedFields, fieldsExtend,
     sort, sortField, sortOrder, extraColumns, data, defaultData, 
     formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE',

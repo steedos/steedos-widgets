@@ -9,12 +9,8 @@ import { map, each, sortBy, compact, keys } from 'lodash';
  * @returns amisSchema
  */
 export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
-  if (!ctx) {
-    ctx = {};
-  }
   const { icon, label } = objectSchema;
   const listViewButtonOptions = [];
-  // let currentListView;
   each(
     objectSchema.list_views,
     (listView, name) => {
@@ -22,18 +18,10 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
         type: "button",
         label: listView.label,
         actionType: "link",
-        // icon: "fa fa-plus",
         link: `/app/\${appId}/${objectSchema.name}/grid/${name}`
       });
-      // if(name === listViewName){
-      //   currentListView = listView;
-      // }
     }
   );
-
-  // if(!currentListView){
-  //   return {};
-  // }
 
   const buttons = getListViewButtons(objectSchema, {});
   let amisButtonsSchema = map(buttons, (button) => {
@@ -45,34 +33,7 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
       className: `button_${button.name}`
     }
   });
-  // if(objectSchema.permissions?.allowDelete){
-  //   const bulkDeleteScript = `
-  //     const data = event.data;
-  //     const listViewId = data.listViewId;
-  //     const uiSchema = data.uiSchema;
-  //     const scopeId = data.scopeId;
-  //     BuilderAmisObject.AmisLib.standardButtonsTodo.standard_delete_many.call({
-  //       listViewId, 
-  //       uiSchema, 
-  //       scopeId
-  //     })
-  //   `;
-  //   amisButtonsSchema.push({
-  //     type: 'button',
-  //     label: "删除",
-  //     className: `antd-Button antd-Button--default antd-Button--size-default`,
-  //     "onEvent": {
-  //       "click": {
-  //         "actions": [
-  //           {
-  //             "actionType": "custom",
-  //             "script": bulkDeleteScript
-  //           }
-  //         ]
-  //       }
-  //     }
-  //   });
-  // }
+  
   const reg = new RegExp('_', 'g');
   const standardIcon = icon && icon.replace(reg, '-');
   return {
@@ -262,30 +223,17 @@ export async function getObjectListHeaderFieldsFilterBar(objectSchema, listViewN
  * @param {*} objectSchema 对象UISchema
  * @returns amisSchema
  */
-export async function getObjectListHeader(objectSchema, listViewName, ctx) {
+export function getObjectListHeader(objectSchema, listViewName, ctx) {
   if (!ctx) {
     ctx = {};
   }
   let firstLineSchema = getObjectListHeaderFirstLine(objectSchema, listViewName, ctx);
-  // let secordLineSchema = await getObjectListHeaderSecordLine(objectSchema, listViewName, ctx);
-  // let body = [firstLineSchema, secordLineSchema];
   let body = [firstLineSchema];
-  // let roundedCss = "";
-  // if (ctx.onlyFirstLine) {
-  //   body = [firstLineSchema];
-  // }
-  // else if (ctx.onlySecordLine) {
-  //   // 列表视图自定义amisSchema时不能加圆角
-  //   roundedCss = "";
-  //   // body = [secordLineSchema];
-  // }
   let headerSchema = [{
     "type": "wrapper",
     "body": body,
     "className": `bg-gray-100 sm:rounded-tl sm:rounded-tr p-4 -mb-4`
   }];
-  // const fieldsFilterBarSchema = await getObjectListHeaderFieldsFilterBar(objectSchema, listViewName, ctx);
-  // headerSchema.push(fieldsFilterBarSchema);
   return headerSchema;
 }
 

@@ -2,16 +2,16 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-12 14:37:06
+ * @LastEditTime: 2023-04-13 18:13:20
  * @Description: 
  */
-import { getListSchema, getObjectListHeaderFirstLine, getUISchema, Router } from '@steedos-widgets/amis-lib'
+import { getListSchema, getObjectListHeader, getUISchema, Router } from '@steedos-widgets/amis-lib'
 import { keys, pick, difference, find } from 'lodash';
 
 export const AmisObjectListView = async (props) => {
   // console.time('AmisObjectListView')
-  // console.log(`AmisObjectListView props`, props)
-  const { $schema, top, perPage, showHeader=true, headerSchema, data, defaultData, 
+  console.log(`AmisObjectListView props`, props)
+  const { $schema, top, perPage, showHeader=true, data, defaultData, 
       className="", 
       crudClassName, 
       showDisplayAs = false,
@@ -19,13 +19,12 @@ export const AmisObjectListView = async (props) => {
       columnsTogglable=false,
       filterVisible = true,
       headerToolbarItems} = props;
-  // const urlListNameMatchs = location.pathname.match(/grid\/(\w+)/);  // 错误的规则
-  // const urlListName = urlListNameMatchs && urlListNameMatchs[1]
-  // let listName = props.listName || urlListName;
+  let { headerSchema } = props;
   let ctx = props.ctx;
   let listName = defaultData?.listName || data?.listName || props?.listName;
+  console.log('AmisObjectListView ==listName=>', listName)
   let defaults: any = {};
-  let objectApiName = props.objectApiName || "space_users";
+  let objectApiName = props.objectApiName || "space_users"; // 只是为了设计器,才在此处设置了默认值. TODO , 使用其他方式来辨别是否再设计器中
   if(!ctx){
     ctx = {};
   }
@@ -49,9 +48,9 @@ export const AmisObjectListView = async (props) => {
     ctx.formFactor = formFactor;
   }
 
-  const objectUiSchema = await getUISchema(objectApiName, false);
+  const uiSchema = await getUISchema(objectApiName, false);
   const listView =  find(
-    objectUiSchema.list_views,
+    uiSchema.list_views,
     (listView, name) => {
         // 传入listViewName空值则取第一个
         if(!listName){
@@ -75,6 +74,7 @@ export const AmisObjectListView = async (props) => {
   if (!(ctx && ctx.defaults)) {
     // 支持把crud组件任意属性通过listSchema属性传入到底层crud组件中
     const schemaKeys = difference(keys($schema), ["type", "showHeader","id"]);
+    // 此次是从 props中 抓取到 用户配置的 crud属性, 此处是一个排除法
     const listSchema = pick(props, schemaKeys);
     // className不传入crud组件，crud单独识别crudClassName属性
     listSchema.className = crudClassName;
@@ -100,11 +100,6 @@ export const AmisObjectListView = async (props) => {
     };
   }
 
-  // 支持通过直接定义headerSchema属性来定制表头，而不一定要通过ctx.defaults.headerSchema传入
-  if(headerSchema){
-    defaults.headerSchema = headerSchema;
-  }  
-  
   let setDataToComponentId = ctx && ctx.setDataToComponentId;
   if(!setDataToComponentId){
     setDataToComponentId = `service_listview_${objectApiName}`;
@@ -112,52 +107,76 @@ export const AmisObjectListView = async (props) => {
 
   const amisSchemaData = Object.assign({}, data, defaultData);
   const listViewId = ctx?.listViewId || amisSchemaData.listViewId;
-  let schema: any = (await getListSchema(amisSchemaData.appId, objectApiName, listName, { 
+  const listViewSchemaProps = { 
     top, perPage, showHeader, defaults, ...ctx, listViewId, setDataToComponentId, filterVisible, showDisplayAs, displayAs, headerToolbarItems
-  }));
-  // console.log(`getListSchema filterVisible`, filterVisible)
-  const amisSchema = schema.amisSchema;
-  const uiSchema = schema.uiSchema;
-  let body = [amisSchema];
-  if(schema.isCustomAmisSchema || schema.isCalendar){
-    let firstLineSchema = getObjectListHeaderFirstLine(uiSchema, listName, ctx);
-    body.unshift({
-      "type": "wrapper",
-      "body": [firstLineSchema],
-      "className": "bg-gray-100 pb-0 sm:rounded-tl sm:rounded-tr",
-    });
   }
 
-  if (sideSchema) {
-    body = [{
+  if(!headerSchema){
+    headerSchema = getObjectListHeader(uiSchema, listName, ctx); 
+  }
+
+  // TODO: recordPermissions和_id是右上角按钮需要强依赖的变量，应该写到按钮那边去
+  const serviceData = Object.assign({}, { listName, uiSchema, showDisplayAs, displayAs, recordPermissions: uiSchema.permissions, _id: null, $listviewId: listName });
+  // console.timeEnd('AmisObjectListView')
+  delete serviceData.listName;
+  return {
+    type: "service",
+    data: serviceData,
+    className: `${className} steedos-object-listview`,
+    body: [{
       "type": "wrapper",
       "size": "none",
       "className": "flex flex-1 overflow-hidden h-full",
-      "body": [
-        {
+      body: [
+        sideSchema ? {
           "type": "wrapper",
           "size": "none",
           "className": "flex-shrink-0 min-w-[200px] h-full border-r border-gray-200 lg:order-first lg:flex lg:flex-col",
           "body": sideSchema
-        }, 
+        } : null,
         {
           "type": "wrapper",
           "size": "none",
-          "className": "flex-1 focus:outline-none lg:order-last w-96 h-full",
-          "body": body
-        }, 
-        
+          "className": sideSchema ? `flex-1 focus:outline-none lg:order-last w-96 h-full` : 'w-full h-full',
+          "body": {
+            type: "wrapper",
+            className: "p-0 m-0 steedos-object-table h-full flex flex-col",
+            body: [
+              ...headerSchema, //list view header,
+              {
+                "type": "service",
+                "schemaApi": {
+                    "url": "${context.rootUrl}/graphql?listName=${listName}&display=${display}",
+                    "method": "post",
+                    "messages": {
+                    },
+                    "headers": {
+                        "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                    },
+                    "requestAdaptor": "console.log('service listview schemaApi requestAdaptor======>');api.data={query: '{spaces__findOne(id: \"xxx\"){_id,name}}'};return api;",
+                    "adaptor": `
+                        console.log('service listview schemaApi adaptor....', api.body); 
+                        const { appId, objectName, listName, display, formFactor: defaultFormFactor} = api.body;
+                        return new Promise((resolve)=>{
+                          const listViewSchemaProps = ${JSON.stringify(listViewSchemaProps)};
+                          const formFactor = (["split"].indexOf(display) > -1) ? 'SMALL': defaultFormFactor;
+                          listViewSchemaProps.formFactor = formFactor;
+                          console.log("====listViewSchemaProps===>", listViewSchemaProps)
+                          window.getListSchema(appId, objectName, listName, listViewSchemaProps).then((schema)=>{
+                            payload.data = schema.amisSchema;
+                            resolve(payload)
+                          });
+                        });
+                      `
+                },
+                // "body": body,
+                // "data": serviceData
+              }
+            ]
+          }
+        }
       ]
-    }];
-  }
-  // TODO: recordPermissions和_id是右上角按钮需要强依赖的变量，应该写到按钮那边去
-  const serviceData = Object.assign({}, { listName, uiSchema, showDisplayAs, displayAs, recordPermissions: uiSchema.permissions, _id: null, $listviewId: listName });
-  const temp = "sm:p-3 hidden"  //人员列表内需要引用该类名
-  // console.timeEnd('AmisObjectListView')
-  return {
-    "type": "service",
-    "body": body,
-    "className": `${className} steedos-object-listview`,
-    "data": serviceData
+    }
+    ]
   }
 }

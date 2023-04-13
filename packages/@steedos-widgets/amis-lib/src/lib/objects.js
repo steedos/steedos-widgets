@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-12 14:24:09
+ * @LastEditTime: 2023-04-13 14:54:07
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -230,6 +230,7 @@ export async function getListSchema(
         return { uiSchema };
     }
 
+    // 直接返回自定义的列表视图schema
     if(listView.enable_amis_schema && listView.amis_schema){
         const amisSchema = isString(listView.amis_schema) ? JSON.parse(listView.amis_schema) : listView.amis_schema;
         return {
@@ -243,6 +244,7 @@ export async function getListSchema(
     let sort = getListViewSort(listView);
     let listviewFilter = getListViewFilter(listView, ctx);
     let listview_filters = listView && listView._filters;
+    // 返回 calendar 组件
     if(listView.type === "calendar"){
         const amisSchema = {
             "type": "steedos-object-calendar",
@@ -261,14 +263,21 @@ export async function getListSchema(
 
     const defaults = ctx.defaults || {};
 
-    if(!defaults.headerSchema && ctx.showHeader){
-        defaults.headerSchema = await getObjectListHeader(uiSchema, listViewName);
-    }
+    // // 未自定义header 且显示header的时候, 使用系统header
+    // if(!defaults.headerSchema && ctx.showHeader){
+    //     defaults.headerSchema = getObjectListHeader(uiSchema, listViewName);
+    // }
+    
+    // // 如果不显示header,则清理掉
+    // if(!ctx.showHeader){
+    //     defaults.headerSchema = null;
+    // }
 
-    if(!ctx.showHeader){
-        defaults.headerSchema = null;
-    }
+    defaults.headerSchema = null;
 
+    /**
+     * 本次存储代码段
+     */
     try {
       const listViewPropsStoreKey = location.pathname + "/crud/" + ctx.listViewId;
       let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
@@ -383,7 +392,7 @@ export async function getTableSchema(
         headerToolbarItems: ctx.headerToolbarItems,
         buttons: await getListViewItemButtons(uiSchema, ctx)
     });
-    // console.log('getTableSchema====>amisSchema', amisSchema)
+    console.log('getTableSchema====>amisSchema', amisSchema)
     // console.timeEnd('getTableSchema');
     return {
         uiSchema,
@@ -546,4 +555,5 @@ export async function getObjectRelated(
 if(typeof window != 'undefined'){
     window.getUISchema = getUISchema;
     window.getUISchemaSync = getUISchemaSync;
+    window.getListSchema = getListSchema;
 }

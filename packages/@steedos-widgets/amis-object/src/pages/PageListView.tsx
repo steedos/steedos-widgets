@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-12 14:35:03
+ * @LastEditTime: 2023-04-13 16:17:06
  * @Description: 
  */
 import { getPage, Router } from "@steedos-widgets/amis-lib";
@@ -11,15 +11,15 @@ import { defaultsDeep } from 'lodash';
 
 export const PageListView = async (props) => {
   // console.time('PageListView')
-  // console.log(`PageListView====>`, props)
-  const { formFactor: defaultFormFactor, appId, objectApiName, listviewId, display, $schema = {}, listName } = props
+  console.log(`PageListView====>`, props)
+  const { formFactor, appId, objectApiName, listviewId, display, $schema = {}, listName } = props
 
   if (display)
     Router.setTabDisplayAs(objectApiName, display)
 
-  const displayAs = (defaultFormFactor === 'SMALL')? 'grid': display? display : Router.getTabDisplayAs(objectApiName);
+  // const displayAs = (defaultFormFactor === 'SMALL')? 'grid': display? display : Router.getTabDisplayAs(objectApiName);
 
-  const formFactor = (["split"].indexOf(displayAs) > -1) ? 'SMALL': defaultFormFactor
+  // const formFactor = (["split"].indexOf(displayAs) > -1) ? 'SMALL': defaultFormFactor
 
   const page = await getPage({type: 'list', appId: appId, objectName: objectApiName, formFactor})
 
@@ -41,9 +41,9 @@ export const PageListView = async (props) => {
     "objectApiName": objectApiName,
     "columnsTogglable": false,
     "showHeader": true,
-    "showDisplayAs": (defaultFormFactor !== 'SMALL'),
-    "formFactor": formFactor,
-    "className": (displayAs === 'split')? 'w-full': 'p-0 flex-1 m-0 sm:border sm:shadow sm:rounded border-slate-300 border-solid bg-gray-100'
+    "showDisplayAs": (formFactor !== 'SMALL'),
+    // "formFactor": formFactor,
+    // "className": (displayAs === 'split')? 'w-full': 'p-0 flex-1 m-0 sm:border sm:shadow sm:rounded border-slate-300 border-solid bg-gray-100'
   }
 
   const defData = {
@@ -52,8 +52,8 @@ export const PageListView = async (props) => {
     listViewId: listViewId,
     // listName: listName || listviewId,
     appId: appId,
-    formFactor: formFactor,
-    displayAs: displayAs
+    // formFactor: formFactor,
+    // displayAs: displayAs
   };
 
   if(listName){
@@ -63,24 +63,13 @@ export const PageListView = async (props) => {
   // console.log("defData====>", defData)
   // console.timeEnd('PageListView')
 
-  const pageGridClassName = listSchema.pageGridClassName || 'h-full sm:p-3'
-  const pageSplitClassName = listSchema.pageSplitClassName || 'p-0 flex flex-1 overflow-hidden h-full'
+  // const pageGridClassName = listSchema.pageGridClassName || 'h-full sm:p-3'
+  // const pageSplitClassName = listSchema.pageSplitClassName || 'p-0 flex flex-1 overflow-hidden h-full'
 
   return {
     type: 'service',
     data: defData,
-    "className": (displayAs === 'grid') ? pageGridClassName : pageSplitClassName,
-    body: (displayAs === 'grid') ? defaultsDeep({data: defData} , listSchema) : [
-      {
-        "type": "wrapper",
-        "className": `p-0 flex-shrink-0 min-w-[388px] border-r border-gray-300 bg-gray-100 shadow lg:order-first lg:flex lg:flex-col`,
-        "body": defaultsDeep({data: defData} , listSchema)
-      },
-      {
-        "type": "wrapper",
-        "className": 'p-0 flex-1 focus:outline-none xl:order-last',
-        "body": []
-      }
-    ]
+    "className": "h-full",
+    body: defaultsDeep({data: defData} , listSchema)
   }
 }

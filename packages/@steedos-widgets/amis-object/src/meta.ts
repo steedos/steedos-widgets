@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-07 18:23:05
+ * @LastEditTime: 2023-04-12 15:07:01
  * @Description: 
  */
 // import Hello from "./metas/Hello";
@@ -52,6 +52,8 @@ import PageListViewMeta from './pages/PageListView.meta';
 import PageRecordDetailMeta from './pages/PageRecordDetail.meta';
 import SteedosSkeleton from './metas/SteedosSkeleton';
 
+import PageObject from './pages/PageObject.meta';
+
 const components = [
   AmisRecordDetailHeader,
   AmisObjectForm, 
@@ -81,7 +83,8 @@ const components = [
   SteedosLoading,
   PageListViewMeta,
   PageRecordDetailMeta,
-  SteedosSkeleton
+  SteedosSkeleton,
+  PageObject
 ];
 
 const componentList = [
