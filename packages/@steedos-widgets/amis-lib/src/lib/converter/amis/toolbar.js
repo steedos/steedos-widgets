@@ -415,7 +415,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
               {
                 "type": "button",
                 "label": "重命名",
-                "visibleOn": "(global.user.is_space_admin || global.userId == uiSchema.list_views[listName].owner) && ['all', 'recent', 'my'].indexOf(listName) == -1",
+                "disabledOn": "!((global.user.is_space_admin || global.userId == uiSchema.list_views[listName].owner) && !!uiSchema.list_views[listName].owner)",
                 "onEvent": {
                   "click": {
                     "weight": 0,
@@ -470,7 +470,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
               {
                 "type": "button",
                 "label": "共享设置",
-                "visibleOn": "global.user.is_space_admin && ['all', 'recent', 'my'].indexOf(listName) == -1",
+                "disabledOn": "!(global.user.is_space_admin && !!uiSchema.list_views[listName].owner)",
                 "onEvent": {
                   "click": {
                     "weight": 0,
@@ -510,7 +510,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
               {
                 "type": "button",
                 "label": "过滤设置",
-                "visibleOn": "(global.user.is_space_admin || global.userId == uiSchema.list_views[listName].owner) && ['all', 'recent', 'my'].indexOf(listName) == -1",
+                "disabledOn": "!((global.user.is_space_admin || global.userId == uiSchema.list_views[listName].owner) && !!uiSchema.list_views[listName].owner)",
                 "onEvent": {
                   "click": {
                     "weight": 0,
@@ -572,7 +572,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
               {
                 "type": "button",
                 "label": "显示的列",
-                "visibleOn": "(global.user.is_space_admin || global.userId == uiSchema.list_views[listName].owner) && ['all', 'recent', 'my'].indexOf(listName) == -1",
+                "disabledOn": "!((global.user.is_space_admin || global.userId == uiSchema.list_views[listName].owner) && !!uiSchema.list_views[listName].owner)",
                 "onEvent": {
                   "click": {
                     "weight": 0,
@@ -634,7 +634,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
               {
                 "type": "button",
                 "label": "删除",
-                "visibleOn": "(global.user.is_space_admin || global.userId == uiSchema.list_views[listName].owner) && ['all', 'recent', 'my'].indexOf(listName) == -1",
+                "disabledOn": "!((global.user.is_space_admin || global.userId == uiSchema.list_views[listName].owner) && !!uiSchema.list_views[listName].owner)",
                 "confirmText": "如果您删除此列表视图，该视图将为所有具备访问权限的用户永久删除。是否确定要删除？",
                 "onEvent": {
                   "click": {
