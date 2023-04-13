@@ -3,9 +3,8 @@
 ### 目录说明
 
 - `apps/experience`：新版本Steedos UI项目，这是一个独立的NextJS项目，依赖了资产包及华炎魔方服务。
+- `apps/storybook`：前端组件示例项目，这是一个storybook服务。
 - `packages/@steedos-widgets`：资产包，目前只有@steedos-widgets这一个资产包，可以新建文件夹添加其他资产包。
-- `steedos-ee`：华炎魔方服务，包括原生Web UI及服务端接口。
-- `stories`：前端组件示例项目，这是一个storyook服务。
 
 ### 启动魔方服务
 
@@ -25,9 +24,7 @@ STEEDOS_PUBLIC_PAGE_ASSETURLS=https://8080-steedos-steedoswebappne-pm96cp6i82c.w
 可以通过执行以下指令来启动Docker下的魔方服务：
 
 ```
-cd steedos-ee
-yarn
-yarn start
+docker-compose up
 ```
 
 启动远程开发环境会自动配置相关环境变量并启动该服务。
@@ -112,6 +109,7 @@ STEEDOS_EXPERIENCE_ASSETURLS=https://8080-steedos-steedoswebappne-pm96cp6i82c.ws
 
 #### 启动
 ```
+cd apps/storybook
 yarn storybook
 ```
 
