@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-06 14:31:14
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-04-13 11:24:17
  * @Description: 
  */
 const config: any = {
@@ -36,6 +36,16 @@ const config: any = {
       name: "relatedObjectApiName",
       propType: "string",
       description: '相关列表对象',
+    },
+    {
+      name: "requestAdaptor",
+      propType: "string",
+      description: '发送适配器',
+    },
+    {
+      name: "adaptor",
+      propType: "string",
+      description: '接收适配器',
     }
   ],
   preview: {
@@ -89,62 +99,123 @@ export default {
       panelTitle: "设置",
       panelControls: [
         {
-          "type": "select",
-          "label": "父级对象",
-          "name": "objectApiName",
-          "searchable": true,
-          "multiple": false,
-          "source": {
-            "method": "get",
-            "url": "/service/api/amis-design/objects",
-            "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
-            "adaptor": `
-              let data = payload.data;
-              payload.unshift({
-                label: "当前对象",
-                name: "\${objectName}"
-              });
-              return payload;
-            `
-          },
-          "labelField": "label",
-          "valueField": "name",
-          "menuTpl": ""
-        },
-        {
-          type: "text",
-          name: "recordId",
-          label: "父级记录"
-        },
-        {
-          "type": "select",
-          "label": "相关列表对象",
-          "name": "relatedObjectApiName",
-          "searchable": true,
-          "multiple": false,
-          "source": {
-            "method": "get",
-            "data": {
-              "objectName": "${objectName}"
-            },
-            "url": "/service/api/amis-design/related_objects/${objectApiName}",
-            "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url.replaceAll('${objectName}',api.body.objectName); if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
-            "sendOn": "this.objectApiName"
-          },
-          "labelField": "label",
-          "valueField": "name",
-          "menuTpl": ""
-        },
-        {
-          "type": "number",
-          "name": "top",
-          "label": "显示的记录数量",
-          "labelRemark": "即TOP，配置该属性后不再支持翻页，始终显示该属性值配置的记录数"
-        },
-        {
-          "type": "number",
-          "name": "perPage",
-          "label": "每页显示记录数量",
+          "type": "tabs",
+          tabsMode: 'line',
+          className: 'editor-prop-config-tabs',
+          linksClassName: 'editor-prop-config-tabs-links',
+          contentClassName: 'no-border editor-prop-config-tabs-cont',
+          tabs: [
+            {
+              "title": "属性",
+              className: 'p-none',
+              "body": [
+                {
+                  "type": "collapse-group",
+                  expandIconPosition: 'right',
+                  expandIcon: {
+                    type: 'icon',
+                    icon: 'chevron-right'
+                  },
+                  className: 'ae-formItemControl',
+                  "activeKey": [
+                    "1",
+                  ],
+                  "body": [
+                    {
+                      "type": "collapse",
+                      headingClassName: 'ae-formItemControl-header',
+                      bodyClassName: 'ae-formItemControl-body',
+                      "key": "1",
+                      "header": "基本属性",
+                      body: [
+                        {
+                          "type": "select",
+                          "label": "父级对象",
+                          "name": "objectApiName",
+                          "searchable": true,
+                          "multiple": false,
+                          "source": {
+                            "method": "get",
+                            "url": "/service/api/amis-design/objects",
+                            "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
+                            "adaptor": `
+                              let data = payload.data;
+                              payload.unshift({
+                                label: "当前对象",
+                                name: "\${objectName}"
+                              });
+                              return payload;
+                            `
+                          },
+                          "labelField": "label",
+                          "valueField": "name",
+                          "menuTpl": ""
+                        },
+                        {
+                          type: "input-text",
+                          name: "recordId",
+                          label: "父级记录"
+                        },
+                        {
+                          "type": "select",
+                          "label": "相关列表对象",
+                          "name": "relatedObjectApiName",
+                          "searchable": true,
+                          "multiple": false,
+                          "source": {
+                            "method": "get",
+                            "data": {
+                              "objectName": "${objectName}"
+                            },
+                            "url": "/service/api/amis-design/related_objects/${objectApiName}",
+                            "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url.replaceAll('${objectName}',api.body.objectName); if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
+                            "sendOn": "this.objectApiName"
+                          },
+                          "labelField": "label",
+                          "valueField": "name",
+                          "menuTpl": ""
+                        },
+                        {
+                          "type": "input-number",
+                          "name": "top",
+                          "label": "显示的记录数量",
+                          "labelRemark": "即TOP，配置该属性后不再支持翻页，始终显示该属性值配置的记录数"
+                        },
+                        {
+                          "type": "input-number",
+                          "name": "perPage",
+                          "label": "每页显示记录数量",
+                        },
+                      ]
+                    },
+                    {
+                      "type": "collapse",
+                      headingClassName: 'ae-formItemControl-header',
+                      bodyClassName: 'ae-formItemControl-body',
+                      "key": "2",
+                      "header": "数据接口",
+                      "body": [
+                        {
+                          type: "editor",
+                          name: "requestAdaptor",
+                          label: "发送适配器",
+                          language: "javascript",
+                          description: "函数签名：(api) => api， 数据在 api.data 中，修改后返回 api 对象。"
+                        },
+                        {
+                          type: "editor",
+                          name: "adaptor",
+                          label: "接收适配器",
+                          language: "javascript",
+                          description: "函数签名: (payload, response, api) => payload"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         }
       ]
     }
