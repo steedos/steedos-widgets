@@ -2,7 +2,7 @@ const config: any = {
   componentType: 'amisSchema', // amisSchema || react 
   group: "华炎魔方",
   componentName: "AmisRecordService",
-  title: "记录数据",
+  title: "记录服务",
   docUrl: "",
   screenshot: "",
   npm: {
