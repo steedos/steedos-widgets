@@ -5,7 +5,7 @@ import * as _ from 'lodash';
 
 const API_CACHE = 100;
 
-function getReadonlyFormAdaptor(fields){
+function getReadonlyFormAdaptor(object, fields){
     let scriptStr = '';
     const selectFields = _.filter(fields, function(field){return field.name.indexOf('.') < 0 && ((field.type == 'select' && field.options) || ((field.type == 'lookup' || field.type == 'master_detail') && !field.reference_to))});
     const gridAndObjectFieldsName = _.map(_.filter(fields, function(field){return field.name.indexOf('.') < 0 && (field.type === 'object' || field.type === 'grid')}), 'name');
@@ -64,6 +64,7 @@ function getReadonlyFormAdaptor(fields){
             console.error(e)
         }
         payload.data = data;
+        payload.data.__objectName = "${object.name}";
         payload.data.__record = record;
         window.postMessage(Object.assign({type: "record.loaded"}, {record: record}), "*")
     }
@@ -81,7 +82,7 @@ export async function getReadonlyFormInitApi(object, recordId, fields, options){
         url: graphql.getApi()+"&recordId=${recordId}",
         cache: API_CACHE,
         // requestAdaptor: "console.log('getReadonlyFormInitApi requestAdaptor', api);return api;",
-        adaptor: getReadonlyFormAdaptor(fields),
+        adaptor: getReadonlyFormAdaptor(object, fields),
         data: await graphql.getFindOneQuery(object, recordId, fields, options),
         headers: {
             Authorization: "Bearer ${context.tenantId},${context.authToken}"
