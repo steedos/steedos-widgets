@@ -456,13 +456,17 @@ export async function getTableApi(mainObject, fields, options){
     let valueField = mainObject.key_field || '_id';
     const api = await getApi(mainObject, null, fields, {count: options.queryCount, alias: 'rows', limit: top, queryOptions: `filters: {__filters}, top: {__top}, skip: {__skip}, sort: "{__sort}"`});
     api.data.$term = "$term";
+    api.data.term = "$term";
     api.data.$self = "$$";
+    api.data.self = "$$";
     api.data.filter = "$filter"
     api.data.loaded = "${loaded}";
     api.data.listViewId = "${listViewId}";
     api.requestAdaptor = `
         // selfData 中的数据由 CRUD 控制. selfData中,只能获取到 CRUD 给定的data. 无法从数据链中获取数据.
         let selfData = JSON.parse(JSON.stringify(api.data.$self));
+        // 保留一份初始data，以供自定义发送适配器中获取原始数据。
+        const data = _.cloneDeep(api.data);
         try{
             // TODO: 不应该直接在这里取localStorage，应该从外面传入
             const listViewId = api.data.listViewId;
