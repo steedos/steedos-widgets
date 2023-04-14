@@ -64,6 +64,7 @@ function getReadonlyFormAdaptor(fields){
             console.error(e)
         }
         payload.data = data;
+        debugger;
         payload.data.__record = record;
         window.postMessage(Object.assign({type: "record.loaded"}, {record: record}), "*")
     }
