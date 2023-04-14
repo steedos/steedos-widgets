@@ -257,7 +257,7 @@ export const AmisGlobalHeader = async (props) => {
               },
               {
                 "type":"tpl",
-                "tpl":"<span class=\"hidden-xs user-name text-overflow\" style=\"height: 30px;line-height: 30px;font-size: 16px;font-weight: bold;margin-left: 10px;\">${global.user.name}<i class=\"fa fa-angle-down\" style=\"margin-left: 4px;\"></i></span>"
+                "tpl":"<span id=\"headerName\" class=\"user-name text-overflow \" style=\"display: none;height: 30px;line-height: 30px;font-size: 16px;font-weight: bold;margin-left: 10px;\">${global.user.name}<i class=\"fa fa-angle-down\" style=\"margin-left: 4px;\"></i></span>"
               }
             ],
             "overlay": [
