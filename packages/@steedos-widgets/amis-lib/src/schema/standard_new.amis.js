@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:51:00
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-11 13:58:24
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-04-16 17:04:16
  * @Description: 
  */
 
@@ -80,6 +80,7 @@ export const getSchema = async (uiSchema, ctx) => {
                                         "context": "${context}",
                                         "global": "${global}",
                                         "listViewId": "${listViewId}",
+                                        "displayAs": "${displayAs}",
                                         "uiSchema": "${uiSchema}",
                                         "isLookup": "${isLookup}",
                                         "listName": "${listName}"
