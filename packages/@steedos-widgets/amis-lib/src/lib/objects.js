@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-13 18:46:35
+ * @LastEditTime: 2023-04-17 15:26:17
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -522,6 +522,10 @@ export async function getRecordServiceSchema(objectName, appId, props = {}) {
             data: {
                 "_master.objectName": "${objectName}",
                 "_master.recordId": "${recordId}"
+            },
+            "style": {
+                "padding": "var(--Page-body-padding)",
+                ...props.style
             },
             onEvent: {
                 "recordLoaded": {

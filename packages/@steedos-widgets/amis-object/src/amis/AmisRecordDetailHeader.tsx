@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-04-10 17:01:29
+ * @LastEditTime: 2023-04-15 00:42:00
  * @Description: 
  */
 import { getRecordDetailHeaderSchema , getUISchema} from '@steedos-widgets/amis-lib'
@@ -15,14 +15,15 @@ export const AmisRecordDetailHeader = async (props) => {
     "recordLoaded": {
       "actions": [
         {
-            "actionType": "reload",
-            "data": {
-                "name": `\${event.data.record.${objectUiSchema?.NAME_FIELD_KEY || 'name'}}`,
-                "record": `\${event.data.record}`,
-                "_id": "\${event.data.record._id}",
-                "recordId": "\${event.data.record._id}",
-                "recordLoaded": true,
-            }
+          "actionType": "reload",
+          "data": {
+            "name": `\${event.data.record.${objectUiSchema?.NAME_FIELD_KEY || 'name'}}`,
+            "record": `\${event.data.record}`,
+            "_id": "\${event.data.record._id}",
+            "recordId": "\${event.data.record._id}",
+            "recordLoaded": true,
+          },
+          "expression": `\${event.data.objectName == '${objectUiSchema?.name}'}`
         }
       ]
     }

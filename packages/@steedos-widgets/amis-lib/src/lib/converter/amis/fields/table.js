@@ -457,7 +457,7 @@ export async function getTableApi(mainObject, fields, options){
     const api = await getApi(mainObject, null, fields, {count: options.queryCount, alias: 'rows', limit: top, queryOptions: `filters: {__filters}, top: {__top}, skip: {__skip}, sort: "{__sort}"`});
 
     if(options.isRelated){
-        api.url += "&recordId=${recordId}";
+        api.url += "&recordId=${_master.recordId}";
     }
 
     api.data.$term = "$term";

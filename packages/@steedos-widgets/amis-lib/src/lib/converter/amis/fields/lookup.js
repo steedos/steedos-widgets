@@ -73,7 +73,6 @@ export function getLookupSapceUserTreeSchema(){
               {
                 "actionType": "custom",
                 "script": `
-                debugger;
                 const scope = event.context.scoped;
                 //TODO: 将form中的value一同加入筛选内
                 // var filterForm = scope.parent.parent.getComponents().find(function(n){
