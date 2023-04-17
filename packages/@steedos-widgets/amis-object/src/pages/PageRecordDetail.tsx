@@ -2,29 +2,21 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-13 18:31:41
+ * @LastEditTime: 2023-04-14 09:47:57
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { getPage, Router } from "@steedos-widgets/amis-lib";
-import { defaultsDeep } from 'lodash';
 
 export const PageRecordDetail = async (props) => {
 
-  // console.log("PageRecordDetail=====>", props)
-
-  const { formFactor: defaultFormFactor, appId, objectApiName, recordId, display, sideObject, sideListviewId, $schema, data } = props
+  const { formFactor: defaultFormFactor, appId, objectApiName, recordId, display } = props
   
-  if (display)
-    Router.setTabDisplayAs(objectApiName, display)
-
-  let displayAs = (defaultFormFactor === 'SMALL')? 'grid': display? display : sideObject? 'split': Router.getTabDisplayAs(objectApiName);
-  const formFactor = (["split"].indexOf(displayAs) > -1) ? 'SMALL': defaultFormFactor
-
+  //TODO  此代码应该在object page template中处理
+  Router.setTabDisplayAs(objectApiName, display)
 
   let recordSchema = {}
   if (true || recordId) {
-
     const recordPage = await getPage({type: 'record', appId: appId, objectName: objectApiName, formFactor: defaultFormFactor});
     recordSchema = recordPage? recordPage.schema : {
       "type": "wrapper",
@@ -41,22 +33,9 @@ export const PageRecordDetail = async (props) => {
       ],
     }
   }
-
-  const defData = {
-    ...$schema.data,
-    objectName: objectApiName,
-    listViewId: sideListviewId,
-    listName: sideListviewId,
-    // recordId: "${recordId}",
-    // appId: appId,
-    formFactor: formFactor,
-    displayAs: displayAs
-  }
-  // console.log('defData====>', defData)
   
   return {
     type: 'service',
-    // data: defData,
     "className":  'h-full',
     body: recordSchema
   }

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-13 18:13:20
+ * @LastEditTime: 2023-04-17 15:08:23
  * @Description: 
  */
 import { getListSchema, getObjectListHeader, getUISchema, Router } from '@steedos-widgets/amis-lib'
@@ -22,7 +22,7 @@ export const AmisObjectListView = async (props) => {
   let { headerSchema } = props;
   let ctx = props.ctx;
   let listName = defaultData?.listName || data?.listName || props?.listName;
-  console.log('AmisObjectListView ==listName=>', listName)
+  // console.log('AmisObjectListView ==listName=>', listName)
   let defaults: any = {};
   let objectApiName = props.objectApiName || "space_users"; // 只是为了设计器,才在此处设置了默认值. TODO , 使用其他方式来辨别是否再设计器中
   if(!ctx){
@@ -83,7 +83,7 @@ export const AmisObjectListView = async (props) => {
       "actions": [
         {
           "args": {
-            "url": "/app/${appId}/${objectName}/view/${event.data.result.data.recordId}?display=${ls:tab.project.display || 'grid'}&side_object=${objectName}&side_listview_id=${listName}",
+            "url": "/app/${appId}/${objectName}/view/${event.data.result.data.recordId}?display=${ls:page.display || 'grid'}&side_object=${objectName}&side_listview_id=${listName}",
             "blank": false
           },
           "actionType": "link",
@@ -116,9 +116,8 @@ export const AmisObjectListView = async (props) => {
   }
 
   // TODO: recordPermissions和_id是右上角按钮需要强依赖的变量，应该写到按钮那边去
-  const serviceData = Object.assign({}, { listName, uiSchema, showDisplayAs, displayAs, recordPermissions: uiSchema.permissions, _id: null, $listviewId: listName });
+  const serviceData = Object.assign({}, { showDisplayAs, displayAs, recordPermissions: uiSchema.permissions, _id: null, $listviewId: listName });
   // console.timeEnd('AmisObjectListView')
-  delete serviceData.listName;
   return {
     type: "service",
     data: serviceData,
@@ -161,7 +160,7 @@ export const AmisObjectListView = async (props) => {
                           const listViewSchemaProps = ${JSON.stringify(listViewSchemaProps)};
                           const formFactor = (["split"].indexOf(display) > -1) ? 'SMALL': defaultFormFactor;
                           listViewSchemaProps.formFactor = formFactor;
-                          console.log("====listViewSchemaProps===>", listViewSchemaProps)
+                          // console.log("====listViewSchemaProps===>", listViewSchemaProps)
                           window.getListSchema(appId, objectName, listName, listViewSchemaProps).then((schema)=>{
                             payload.data = schema.amisSchema;
                             resolve(payload)

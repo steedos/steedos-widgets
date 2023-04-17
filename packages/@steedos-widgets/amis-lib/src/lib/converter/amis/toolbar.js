@@ -24,6 +24,7 @@ const getDisplayAsButton = function(objectName, showDisplayAs){
     "icon": "fa fa-table-columns",
     "btnClassName": "antd-Button--iconOnly bg-white p-2 rounded border-gray-300 text-gray-500",
     "align": "right",
+    "visibleOn": "${formFactor !== 'SMALL'}",
     "buttons": [
       {
         "label": "显示为",
@@ -160,7 +161,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
           }
         }
       } : {},
-      showDisplayAs? getDisplayAsButton(mainObject?.name, showDisplayAs) : {}
+      getDisplayAsButton(mainObject?.name, showDisplayAs)
   ]
   }else{
     return [
@@ -689,7 +690,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
           }
         ]
       },
-      showDisplayAs ? getDisplayAsButton(showDisplayAs) : {}
+      getDisplayAsButton(showDisplayAs)
       // {
       //   "type": "search-box",
       //   "align": "right",

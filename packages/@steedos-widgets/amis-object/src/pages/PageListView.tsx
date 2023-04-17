@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-13 16:17:06
+ * @LastEditTime: 2023-04-14 09:49:11
  * @Description: 
  */
 import { getPage, Router } from "@steedos-widgets/amis-lib";
@@ -14,6 +14,7 @@ export const PageListView = async (props) => {
   console.log(`PageListView====>`, props)
   const { formFactor, appId, objectApiName, listviewId, display, $schema = {}, listName } = props
 
+  //TODO  此代码应该在object page template中处理
   if (display)
     Router.setTabDisplayAs(objectApiName, display)
 
@@ -30,35 +31,35 @@ export const PageListView = async (props) => {
     }
   }
 
-  const listViewId = SteedosUI.getRefId({
-    type: "listview",
-    appId: appId,
-    name: objectApiName,
-  });
+  // const listViewId = SteedosUI.getRefId({
+  //   type: "listview",
+  //   appId: appId,
+  //   name: objectApiName,
+  // });
   
   const listSchema = page? page.schema : {
     "type": "steedos-object-listview",
     "objectApiName": objectApiName,
     "columnsTogglable": false,
     "showHeader": true,
-    "showDisplayAs": (formFactor !== 'SMALL'),
+    // "showDisplayAs": (formFactor !== 'SMALL'),
     // "formFactor": formFactor,
     // "className": (displayAs === 'split')? 'w-full': 'p-0 flex-1 m-0 sm:border sm:shadow sm:rounded border-slate-300 border-solid bg-gray-100'
   }
 
-  const defData = {
-    ...$schema.data,
-    objectName: objectApiName,
-    listViewId: listViewId,
-    // listName: listName || listviewId,
-    appId: appId,
-    // formFactor: formFactor,
-    // displayAs: displayAs
-  };
+  // const defData = {
+  //   ...$schema.data,
+  //   objectName: objectApiName,
+  //   listViewId: listViewId,
+  //   // listName: listName || listviewId,
+  //   appId: appId,
+  //   // formFactor: formFactor,
+  //   // displayAs: displayAs
+  // };
 
-  if(listName){
-    defData.listName = listName || listviewId
-  }
+  // if(listName){
+  //   defData.listName = listName || listviewId
+  // }
 
   // console.log("defData====>", defData)
   // console.timeEnd('PageListView')
@@ -68,8 +69,7 @@ export const PageListView = async (props) => {
 
   return {
     type: 'service',
-    data: defData,
-    "className": "h-full",
-    body: defaultsDeep({data: defData} , listSchema)
+    className: "h-full",
+    body: listSchema
   }
 }
