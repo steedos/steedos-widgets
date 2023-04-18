@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-03-31 18:08:20
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-04-18 18:14:30
  * @Description: 
  */
 import { getFormSchema, getViewSchema } from '@steedos-widgets/amis-lib'
@@ -15,7 +15,7 @@ export const AmisObjectForm = async (props) => {
   } = props;
   let objectApiName = props.objectApiName || "space_users";
   // amis中的mode属性是表单布局,没有layout属性。defaults的变量会覆盖mode属性值。
-  const schemaKeys = difference(keys($schema), ["type","mode","layout"]);
+  const schemaKeys = difference(keys($schema), ["type","mode","layout","defaultData"]);
   const formSchema = pick(props, schemaKeys);
   const defaults = {
     formSchema
