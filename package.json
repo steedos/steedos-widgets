@@ -17,8 +17,6 @@
     "build-app": "lerna run build-app --parallel",
     "unpkg": "http-server ./packages --port 8080 --cors -c -1",
     "start": "cd apps/experience && NODE_ENV=production node server.js",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook",
     "cnpm-sync": "lerna exec --no-private  -- cnpm sync \\$LERNA_PACKAGE_NAME"
   },
   "dependencies": {
@@ -32,15 +30,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.18.13",
-    "@storybook/addon-actions": "^6.5.10",
-    "@storybook/addon-essentials": "^6.5.10",
-    "@storybook/addon-interactions": "^6.5.10",
-    "@storybook/addon-links": "^6.5.10",
-    "@storybook/builder-vite": "^0.2.2",
-    "@storybook/builder-webpack5": "^6.5.10",
-    "@storybook/manager-webpack5": "^6.5.10",
-    "@storybook/react": "^6.5.10",
-    "@storybook/testing-library": "^0.0.13",
     "cnpm": "9.0.1",
     "babel-loader": "^8.2.5",
     "http-server": "^14.1.1",

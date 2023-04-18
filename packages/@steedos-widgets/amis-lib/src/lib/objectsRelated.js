@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-11 13:13:00
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2023-04-18 16:31:40
  * @Description:
  */
 
@@ -316,13 +316,17 @@ export async function getRelatedListSchema(
     delete ctx.globalFilter;
 
     const adaptor = `
-        if(setDataToComponentId){
-            if(payload.data.count){
-                setTimeout(function(){
-                    window.$("." + setDataToComponentId + " .antd-Crud").removeClass("hidden");
-                }, 10);
-            }
-        };
+        try{
+            if(setDataToComponentId){
+                if(payload.data.count){
+                    setTimeout(function(){
+                        window.$("." + setDataToComponentId + " .antd-Crud").removeClass("hidden");
+                    }, 10);
+                }
+            };
+        }catch(e){
+            console.log(e);
+        }
     `;
     const amisSchema = {
         "type": "steedos-object-table",
@@ -333,7 +337,8 @@ export async function getRelatedListSchema(
         "filtersFunction": filtersFunction,
         "sort": listViewSort,
         "filterVisible": false,
-        adaptor,
+        "requestAdaptor": ctx.requestAdaptor,  
+        "adaptor": adaptor + ctx.adaptor || '',
         "ctx": ctx
     };
     // console.log(`getRelatedListSchema amisSchema`, amisSchema);

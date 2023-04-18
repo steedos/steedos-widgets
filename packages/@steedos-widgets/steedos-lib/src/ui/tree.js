@@ -3,11 +3,12 @@
  * 
  * @param {*} rows rows内必须有value，parent，children
  * @returns 把扁平的数据转换为树状结构的数据
- * @options unfoldedNum默认展开层数，默认值为1
+ * @options unfoldedNum默认展开层数，默认值为1;valueField为每一条记录的id
  */
 export function getTreeOptions(rows, options) {
 
-    const valueField = "value";
+    const valueField = options?.valueField || "value";
+    const labelField = options?.labelField || "label";
     const unfoldedNum = options?.unfoldedNum || 1;
 
     const treeRecords = [];

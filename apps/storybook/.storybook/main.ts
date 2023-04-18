@@ -11,7 +11,7 @@ require('dotenv-flow').config({path: path.join(__dirname, '../')});
 
 module.exports = {
   stories: ['../stories/**/*.stories.tsx'],
-  staticDirs: ['../apps/experience/public'],
+  staticDirs: ['../../apps/experience/public'],
   reactOptions: {
     legacyRootApi: false,
   },
@@ -75,12 +75,12 @@ module.exports = {
     ];
 
 
-    config.resolve.plugins = config.resolve.plugins || [];
-    config.resolve.plugins.push(
-      new TsconfigPathsPlugin({
-        configFile: path.resolve(__dirname, "../tsconfig.json"),
-      })
-    );
+    // config.resolve.plugins = config.resolve.plugins || [];
+    // config.resolve.plugins.push(
+    //   new TsconfigPathsPlugin({
+    //     configFile: path.resolve(__dirname, "../tsconfig.json"),
+    //   })
+    // );
     
     return config;
   },

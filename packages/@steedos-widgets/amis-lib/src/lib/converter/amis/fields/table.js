@@ -461,13 +461,17 @@ export async function getTableApi(mainObject, fields, options){
     }
 
     api.data.$term = "$term";
+    api.data.term = "$term";
     api.data.$self = "$$";
+    api.data.self = "$$";
     api.data.filter = "$filter"
     api.data.loaded = "${loaded}";
     api.data.listViewId = "${listViewId}";
     api.requestAdaptor = `
         // selfData 中的数据由 CRUD 控制. selfData中,只能获取到 CRUD 给定的data. 无法从数据链中获取数据.
         let selfData = JSON.parse(JSON.stringify(api.data.$self));
+        // 保留一份初始data，以供自定义发送适配器中获取原始数据。
+        const data = _.cloneDeep(api.data);
         try{
             // TODO: 不应该直接在这里取localStorage，应该从外面传入
             const listViewId = api.data.listViewId;
@@ -652,28 +656,8 @@ export async function getTableApi(mainObject, fields, options){
     
     if(enable_tree){
         const records = payload.data.rows;
-        const treeRecords = [];
-        const getChildren = (records, childrenIds)=>{
-            if(!childrenIds){
-                return;
-            }
-            const children = _.filter(records, (record)=>{
-                return _.includes(childrenIds, record._id)
-            });
-            _.each(children, (item)=>{
-                if(item.children){
-                    item.children = getChildren(records, item.children)
-                }
-            })
-            return children;
-        }
-
-        _.each(records, (record)=>{
-            if(!record.parent){
-                treeRecords.push(Object.assign({}, record, {children: getChildren(records, record.children)}));
-            }
-        });
-        payload.data.rows = treeRecords;
+        const getTreeOptions = SteedosUI.getTreeOptions
+        payload.data.rows = getTreeOptions(records,{"valueField":"_id"});
     }
 
 

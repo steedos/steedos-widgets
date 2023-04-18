@@ -2,20 +2,11 @@ name: 🛠️ Feature request 功能需求
 description: Suggest an idea to improve Steedos. 提出您的改进建议，帮助我们改进华炎魔方。
 title: "[Feature]: "
 labels: [new feature]
-assignees:
-- hotlong
 body:
 - type: markdown
   attributes:
     value: |
       Thanks for taking the time to request a feature for Steedos! 感谢您填写华炎魔方功能需求表单！
-- type: checkboxes
-  attributes:
-    label: Is there an existing issue for this? 你是否已经搜索过类似的需求？
-    description: Please search to see if an issue related to this feature request already exists. 请搜索是否已经有用户提出过类似的需求。
-    options:
-    - label: I have searched the existing issues. 我已经搜索过了。
-      required: true
 - type: textarea
   attributes:
     label: Summary 摘要
