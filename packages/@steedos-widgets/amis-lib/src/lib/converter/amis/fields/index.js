@@ -490,7 +490,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             }
         }
 
-        if(baseData.required){
+        if(_.isString(baseData.required)){
             if(baseData.required.startsWith("{{")){
                 baseData.requiredOn = `${baseData.required.substring(2, baseData.required.length -2).replace(/formData./g, 'data.')}`;
                 delete baseData.required;
