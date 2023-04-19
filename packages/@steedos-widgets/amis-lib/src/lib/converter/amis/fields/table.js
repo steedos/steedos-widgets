@@ -655,7 +655,7 @@ export async function getTableApi(mainObject, fields, options){
     })
     
     if(enable_tree){
-        const records = payload.data.rows;
+        const records = payload.data.rows || [];
         const getTreeOptions = SteedosUI.getTreeOptions
         payload.data.rows = getTreeOptions(records,{"valueField":"_id"});
     }
