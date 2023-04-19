@@ -489,6 +489,14 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                 convertData.visibleOn = `${field.visible_on.replace(/formData./g, 'data.')}`
             }
         }
+
+        if(baseData.required){
+            if(baseData.required.startsWith("{{")){
+                baseData.requiredOn = `${baseData.required.substring(2, baseData.required.length -2).replace(/formData./g, 'data.')}`;
+                delete baseData.required;
+            }
+        }
+
         if(convertData.type === 'group'){
             convertData.body[0] = Object.assign({}, baseData, convertData.body[0], { labelClassName: 'text-left', clearValueOnHidden: true, fieldName: field.name});
             return  convertData
