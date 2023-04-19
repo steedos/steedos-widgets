@@ -39,13 +39,20 @@ export async function getObjectFieldsFilterFormSchema(objectSchema, fields, ctx)
         $self: "$$",
         query: "{\n data: objects(filters: [[\"_id\",\"=\",null]],top: 1, skip: 0){_id}\n    }"
       },
-      // requestAdapt≈or: graphql.getSaveRequestAdaptor(fields, options),
+      requestAdaptor: `
+        return {
+          ...api,
+          data: {
+            query: api.data.query
+          }
+        };
+      `,
       adaptor: `
           if(payload.errors){
               payload.status = 2;
               payload.msg = window.t ? window.t(payload.errors[0].message) : payload.errors[0].message;
           }
-          const selfData = api.data.$self;
+          const selfData = api.body.$self;
           const filterFormSearchableFields = selfData.filterFormSearchableFields;
           const uiSchema = selfData.uiSchema;
           const fields = uiSchema.fields;
@@ -101,7 +108,7 @@ export async function getObjectFieldsFilterFormSchema(objectSchema, fields, ctx)
   };
 
   return formSchema;
-  
+
   const body = [];
   for (let field of fields) {
     if (
