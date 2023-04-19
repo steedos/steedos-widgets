@@ -1,14 +1,14 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-18 16:31:40
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-04-18 19:13:30
  * @Description:
  */
 
 
 import { getObjectRecordDetailRelatedListHeader } from './converter/amis/header';
-import { isEmpty,  find, isString, forEach, keys, findKey, isArray } from "lodash";
+import { isEmpty,  find, isString, forEach, keys, findKey, isArray, union } from "lodash";
 import { getUISchema, getField, getListViewColumns, getListViewSort, getListViewFilter } from './objects'
 import { getRecord } from './record';
 
@@ -105,7 +105,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
                     mainRelated[arr[0]] = arr[1];
                 }
             }else{
-                const details = mainObjectUiSchema.details || [];
+                const details = union(mainObjectUiSchema.details,mainObjectUiSchema.lookup_details) || [];
                 for (const detail of details) {
                     const arr = detail.split(".");
                     mainRelated[arr[0]] = arr[1];

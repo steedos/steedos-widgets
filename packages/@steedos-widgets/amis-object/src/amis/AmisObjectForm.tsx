@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-04-13 16:29:54
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-04-18 18:14:30
  * @Description: 
  */
 import { getFormSchema, getViewSchema } from '@steedos-widgets/amis-lib'

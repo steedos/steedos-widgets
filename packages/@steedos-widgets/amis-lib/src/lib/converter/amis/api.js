@@ -265,12 +265,12 @@ export async function getEditFormInitApi(object, recordId, fields, options){
                 if(uiSchema.form){
                     try{
                         var objectFormConfig = JSON.parse(uiSchema.form);
-                        initialValues = objectFormConfig.initialValues;
-                        if(initialValues){
-                            initialValues = new Function("return " + initialValues)();
+                        var formInitialValuesFun = objectFormConfig.initialValues;
+                        if(formInitialValuesFun){
+                            formInitialValuesFun = new Function("return " + formInitialValuesFun)();
                         }
-                        if(typeof initialValues === "function"){
-                            initialValues = initialValues.apply({doc: defaultValues || {} })
+                        if(typeof formInitialValuesFun === "function"){
+                            initialValues = formInitialValuesFun.apply({doc: defaultValues || {} , global: api.body.global})
                         }
                     }
                     catch(ex){
@@ -287,12 +287,15 @@ export async function getEditFormInitApi(object, recordId, fields, options){
             }
             // data下的变量需要在保存接口（getSaveApi）中被删除。
             payload.data = {
-                initialValues,
-                editFormInited: true
+                ...initialValues
             }
             ${options.initApiAdaptor || ''}
             return payload;
         `,
+        responseData: {
+            initialValues: "$$",
+            editFormInited: true
+        },
         data: data,
         headers: {
             Authorization: "Bearer ${context.tenantId},${context.authToken}"
