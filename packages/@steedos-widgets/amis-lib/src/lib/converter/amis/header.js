@@ -205,16 +205,7 @@ export async function getObjectListHeaderSecordLine(objectSchema, listViewName, 
  * @returns amisSchema
  */
 export async function getObjectListHeaderFieldsFilterBar(objectSchema, listViewName, ctx) {
-  const searchableFields = keys(objectSchema.fields);
-  const fields = sortBy(
-    compact(
-      map(searchableFields, (fieldName) => {
-        return objectSchema.fields[fieldName];
-      })
-    ),
-    "sort_no"
-  );
-  const fieldsFilterBarSchema = await getObjectFieldsFilterBarSchema(objectSchema, fields, ctx);
+  const fieldsFilterBarSchema = await getObjectFieldsFilterBarSchema(objectSchema, ctx);
   return fieldsFilterBarSchema;
 }
 

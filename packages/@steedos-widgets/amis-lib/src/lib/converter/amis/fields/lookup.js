@@ -393,13 +393,9 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         //TODO: 等待放大镜bug修复,if会去掉，始终显示放大镜
         if(referenceTo.objectName != "space_users" || field.reference_to_field != "user"){
             if (ctx.filterVisible !== false) {
-                let filterLoopCount = ctx.filterLoopCount || 0;
-                filterLoopCount++;
-                // 可以传入filterVisible为false防止死循环
                 pickerSchema.filter = await getObjectFilter(refObjectConfig, fields, {
                     isLookup: true,
-                    ...ctx,
-                    filterLoopCount,
+                    ...ctx
                 });
             }
         }

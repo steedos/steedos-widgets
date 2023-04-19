@@ -23,7 +23,7 @@ export async function getObjectFieldsFilterButtonSchema(objectSchema) {
   }
 }
 
-export async function getObjectFieldsFilterFormSchema(objectSchema, fields, ctx) {
+export async function getObjectFieldsFilterFormSchema(ctx) {
 
   if (!ctx) {
     ctx = {};
@@ -108,118 +108,13 @@ export async function getObjectFieldsFilterFormSchema(objectSchema, fields, ctx)
   };
 
   return formSchema;
-
-  const body = [];
-  for (let field of fields) {
-    if (
-      !includes(
-        [
-          "grid",
-          "avatar",
-          "image",
-          "object",
-          "[object]",
-          "[Object]",
-          "[grid]",
-          "[text]",
-          "audio",
-          "file",
-        ],
-        field.type
-      )
-    ) {
-      delete field.defaultValue
-      delete field.required
-      delete field.is_wide
-      delete field.readonly
-      delete field.hidden
-      delete field.omit
-      const amisField = await getFieldSearchable(field, fields, ctx);
-      if (amisField) {
-        body.push(amisField);
-      }
-    }
-  }
-  let persistDataKeys = map(body, "name");
-  if (ctx.enableSearchableFieldsVisibleOn) {
-    body.forEach(function (fieldItem) {
-      fieldItem.visibleOn = `this.filterFormSearchableFields && this.filterFormSearchableFields.indexOf("${fieldItem.fieldName}") > -1`;
-      // fieldItem.clearValueOnHidden = true;//这个属性会把form字段值删除，但是点击搜索时crud还是把值给传递到过滤条件(api.requestAdaptor的data.$self)中了，应该是crud的bug
-    });
-  }
-
-  // const onBroadcastSearchableFieldsChangeScript = `
-  //   const data = event.data;
-  //   const listViewId = data.listViewId;
-  //   const searchableFields = data.fields;
-  //   const preSearchableFields = data.__super.__super.fields;
-  //   const removedFields = _.difference(preSearchableFields, searchableFields);
-  //   const listViewPropsStoreKey = location.pathname + "/crud/" + listViewId ;
-  //   let localListViewProps = localStorage.getItem(listViewPropsStoreKey);
-  //   if(localListViewProps){
-  //     // 当变更可搜索字段时，如果被移除的可搜索字段在本地存储中已经存入过滤条件中则应该清除本地存储中相关字段的过滤条件。
-  //     localListViewProps = JSON.parse(localListViewProps);
-  //     let removedKeys = [];
-  //     _.each(localListViewProps, function(n,k){
-  //       // __searchable__开头的不在searchableFields范围则清除其值
-  //       let isRemoved = !!removedFields.find(function(fieldName){
-  //         return new RegExp("__searchable__\.*" + fieldName + "$").test(k);
-  //       });
-  //       if(isRemoved){
-  //         removedKeys.push(k);
-  //       }
-  //     });
-  //     const removedValues = {};
-  //     removedKeys.forEach(function(key){
-  //       delete localListViewProps[key];
-  //       removedValues[key] = "";
-  //     });
-  //     doAction({
-  //       actionType: 'setValue',
-  //       args: {
-  //         value: removedValues
-  //       }
-  //     });
-  //     localStorage.setItem(listViewPropsStoreKey, JSON.stringify(localListViewProps));
-  //   }
-  // `;
-
-  return body;
-
-  return {
-    title: "",
-    type: "form",
-    // debug: true,
-    name: "listview-filter-form",
-    id: `listview_filter_form_${objectSchema.name}`,
-    mode: "normal",
-    wrapWithPanel: false,
-    className: `sm:grid sm:gap-2 sm:grid-cols-4 mb-2`,
-    data: {
-      "&": "${filterFormValues || {}}",
-      ...ctx.initData
-    },
-    // persistData: "crud:${id}",
-    // persistDataKeys: persistDataKeys,
-    body: body,
-    // "onEvent": {
-    //   "broadcastSearchableFieldsChange": {
-    //     "actions": [
-    //       {
-    //         "actionType": "custom",
-    //         "script": onBroadcastSearchableFieldsChangeScript
-    //       }
-    //     ]
-    //   }
-    // }
-  };
 }
 
-export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) {
+export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
   if (!ctx) {
     ctx = {};
   }
-  const filterFormSchema = await getObjectFieldsFilterFormSchema(objectSchema, fields, ctx);
+  const filterFormSchema = await getObjectFieldsFilterFormSchema(ctx);
   const onSearchScript = `
     const scope = event.context.scoped;
     var filterForm = scope.parent.parent.getComponents().find(function(n){
