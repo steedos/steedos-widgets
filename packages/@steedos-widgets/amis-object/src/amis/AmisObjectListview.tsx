@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-17 15:26:30
+ * @LastEditTime: 2023-04-19 15:24:51
  * @Description: 
  */
 import { getListSchema, getObjectListHeader, getUISchema, Router } from '@steedos-widgets/amis-lib'
@@ -83,7 +83,7 @@ export const AmisObjectListView = async (props) => {
       "actions": [
         {
           "args": {
-            "url": "/app/${appId}/${objectName}/view/${event.data.result.data.recordId}?display=${ls:page.display || 'grid'}&side_object=${objectName}&side_listview_id=${listName}",
+            "url": "/app/${appId}/${objectName}/view/${event.data.result.data.recordId}?display=${ls:page_display || 'grid'}&side_object=${objectName}&side_listview_id=${listName}",
             "blank": false
           },
           "actionType": "link",
