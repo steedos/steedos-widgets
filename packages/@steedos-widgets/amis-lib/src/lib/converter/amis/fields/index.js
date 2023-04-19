@@ -584,4 +584,6 @@ export async function getFieldSearchable(perField, permissionFields, ctx){
     }
 }
 
-window.getFieldSearchable = getFieldSearchable;
+if(typeof window != 'undefined'){
+    window.getFieldSearchable = getFieldSearchable;
+}
