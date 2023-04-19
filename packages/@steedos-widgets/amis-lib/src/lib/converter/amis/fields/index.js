@@ -511,6 +511,9 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
 }
 
 export async function getFieldSearchable(perField, permissionFields, ctx){
+    if(!ctx){
+        ctx = {};
+    }
     const filterLoopCount = ctx.filterLoopCount || 0;
     const maxFilterLoopCount = 5;
     let field = perField;
@@ -580,3 +583,5 @@ export async function getFieldSearchable(perField, permissionFields, ctx){
         }
     }
 }
+
+window.getFieldSearchable = getFieldSearchable;

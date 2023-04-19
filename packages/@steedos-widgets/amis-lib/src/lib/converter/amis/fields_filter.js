@@ -24,9 +24,84 @@ export async function getObjectFieldsFilterButtonSchema(objectSchema) {
 }
 
 export async function getObjectFieldsFilterFormSchema(objectSchema, fields, ctx) {
-  if(!ctx){
+
+  if (!ctx) {
     ctx = {};
   }
+  const formSchema = {
+    "type": "service",
+    "visibleOn": "this.filterFormSearchableFields && this.filterFormSearchableFields.length",
+    "className": ctx.formFactor === 'SMALL' ? "slds-filters__body p-0 mb-2" : "slds-filters__body p-0 sm:grid sm:gap-2 sm:grid-cols-4 mb-2",
+    "schemaApi": {
+      method: 'post',
+      url: `\${context.rootUrl}/graphql?reload=\${filterFormSearchableFields|join}`,
+      data: {
+        $self: "$$",
+        query: "{\n data: objects(filters: [[\"_id\",\"=\",null]],top: 1, skip: 0){_id}\n    }"
+      },
+      // requestAdapt≈or: graphql.getSaveRequestAdaptor(fields, options),
+      adaptor: `
+          if(payload.errors){
+              payload.status = 2;
+              payload.msg = window.t ? window.t(payload.errors[0].message) : payload.errors[0].message;
+          }
+          const selfData = api.data.$self;
+          const filterFormSearchableFields = selfData.filterFormSearchableFields;
+          const uiSchema = selfData.uiSchema;
+          const fields = uiSchema.fields;
+          const searchableFields = [];
+
+          const resolveAll = function(values){
+            debugger;
+            payload.data = {
+              "body": values
+            };
+            return payload;
+          }
+
+          const rejectAll = function(){
+            console.warn("run function getFieldSearchable failed.");
+          }
+
+          return Promise.all(filterFormSearchableFields.map(function (item) {
+            const field = _.clone(fields[item]);
+            if (
+              !_.includes(
+                [
+                  "grid",
+                  "avatar",
+                  "image",
+                  "object",
+                  "[object]",
+                  "[Object]",
+                  "[grid]",
+                  "[text]",
+                  "audio",
+                  "file",
+                ],
+                field.type
+              )
+            ) {
+              delete field.defaultValue;
+              delete field.required;
+              delete field.is_wide;
+              delete field.readonly;
+              delete field.hidden;
+              delete field.omit;
+              var ctx = ${JSON.stringify(ctx)};
+              const amisField = window.getFieldSearchable(field, fields, ctx);
+              return amisField;
+            }
+          })).then(resolveAll, rejectAll);
+      `,
+      headers: {
+        Authorization: "Bearer ${context.tenantId},${context.authToken}"
+      }
+    }
+  };
+
+  return formSchema;
+  
   const body = [];
   for (let field of fields) {
     if (
@@ -59,8 +134,8 @@ export async function getObjectFieldsFilterFormSchema(objectSchema, fields, ctx)
     }
   }
   let persistDataKeys = map(body, "name");
-  if(ctx.enableSearchableFieldsVisibleOn){
-    body.forEach(function(fieldItem){
+  if (ctx.enableSearchableFieldsVisibleOn) {
+    body.forEach(function (fieldItem) {
       fieldItem.visibleOn = `this.filterFormSearchableFields && this.filterFormSearchableFields.indexOf("${fieldItem.fieldName}") > -1`;
       // fieldItem.clearValueOnHidden = true;//这个属性会把form字段值删除，但是点击搜索时crud还是把值给传递到过滤条件(api.requestAdaptor的data.$self)中了，应该是crud的bug
     });
@@ -134,13 +209,10 @@ export async function getObjectFieldsFilterFormSchema(objectSchema, fields, ctx)
 }
 
 export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) {
-  // console.log(ctx)
-  if(!ctx){
+  if (!ctx) {
     ctx = {};
   }
-  const filterFormSchema = await getObjectFieldsFilterFormSchema(objectSchema, fields, Object.assign({}, {
-    enableSearchableFieldsVisibleOn: true
-  }, ctx));
+  const filterFormSchema = await getObjectFieldsFilterFormSchema(objectSchema, fields, ctx);
   const onSearchScript = `
     const scope = event.context.scoped;
     var filterForm = scope.parent.parent.getComponents().find(function(n){
@@ -173,18 +245,21 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
       searchableFieldsStoreKey += listViewId;
     }
     let defaultSearchableFields = sessionStorage.getItem(searchableFieldsStoreKey);
-    if(!defaultSearchableFields && data.uiSchema){
+    if(defaultSearchableFields){
+      defaultSearchableFields = defaultSearchableFields.split(",");
+    }
+    if(_.isEmpty(defaultSearchableFields) && data.uiSchema){
       let listView = data.uiSchema.list_views[data.listName];
-      defaultSearchableFields = listView && listView.searchable_fields;
-      if(defaultSearchableFields && defaultSearchableFields.length){
-        defaultSearchableFields = _.map(defaultSearchableFields, 'field');
+      const sFields = listView && listView.searchable_fields;
+      if(sFields && sFields.length){
+        defaultSearchableFields = _.map(sFields, 'field');
       }
     }
     if(_.isEmpty(defaultSearchableFields) && data.uiSchema){
       defaultSearchableFields = _.map(
-        _.filter(_.values(data.uiSchema.fields), (field) => {
+        _.sortBy(_.filter(_.values(data.uiSchema.fields), (field) => {
           return field.searchable;
-        }),
+        }), "sort_no"),
         "name"
       );
     }
@@ -330,15 +405,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, fields, ctx) 
       "type": "wrapper",
       "body": {
         "type": "wrapper",
-        "body": [{
-          "type": "wrapper",
-          "body": [
-            filterFormSchema
-          ],
-          "size": "xs",
-          "visibleOn": "this.filterFormSearchableFields && this.filterFormSearchableFields.length",
-          "className": ctx.formFactor === 'SMALL' ? "slds-filters__body p-0 mb-2": "slds-filters__body p-0 sm:grid sm:gap-2 sm:grid-cols-4 mb-2"
-        }, {
+        "body": [filterFormSchema, {
           "type": "wrapper",
           "body": {
             "type": "wrapper",
