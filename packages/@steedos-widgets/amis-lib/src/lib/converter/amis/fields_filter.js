@@ -59,7 +59,6 @@ export async function getObjectFieldsFilterFormSchema(ctx) {
           const searchableFields = [];
 
           const resolveAll = function(values){
-            debugger;
             payload.data = {
               "body": values
             };
