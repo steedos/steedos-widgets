@@ -298,7 +298,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       // "filterFormValues": {"__searchable__name": "xxx"},//搜索项表单值
       // "listViewId": "${listViewId}"
     },
-    "id": `service_listview_filter_form_${objectSchema.name}`,
+    // "id": `service_listview_filter_form_${objectSchema.name}`,
     "dataProvider": {
       "inited": dataProviderInited
     },
