@@ -332,6 +332,8 @@ export async function getObjectForm(objectSchema, ctx){
         },
         labelAlign,
         persistData: false,
+        resetAfterSubmit: true,
+        preventEnterSubmit: true,
         promptPageLeave: true,
         canAccessSuperData: false,
         name: `form_edit_${recordId}`,
@@ -369,10 +371,14 @@ export async function getObjectForm(objectSchema, ctx){
                 },
                 "expression": `\${_master.objectName != '${objectSchema.name}' && _master.objectName}`
               },
-              {
-                "args": {},
-                "actionType": "closeDialog"
-              }
+              // {
+              //   "actionType": "custom",
+              //   "script": "debugger;"
+              // },
+              // {
+              //   "args": {},
+              //   "actionType": "closeDialog"
+              // }
             ]
           }
         }

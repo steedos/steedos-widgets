@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:51:00
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-04-16 17:04:16
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2023-04-19 20:26:27
  * @Description: 
  */
 
@@ -112,7 +112,27 @@ export const getSchema = async (uiSchema, ctx) => {
                                     "id": "u:e11347411d2d",
                                     "closeOnEsc": false,
                                     "closeOnOutside": false,
-                                    "size": "lg"
+                                    "size": "lg",
+                                    "actions": [
+                                        {
+                                            type: 'button',
+                                            actionType: 'cancel',
+                                            label: "取消"
+                                        },
+                                        {
+                                            type: 'button',
+                                            label: "保存并新建",
+                                            actionType: 'confirm',
+                                            close: false,
+                                            id: "confirmAndNew"
+                                        },
+                                        {
+                                            type: 'button',
+                                            actionType: 'confirm',
+                                            label: "保存",
+                                            primary: true
+                                        },
+                                    ]
                                 }
                             }
                         ]
