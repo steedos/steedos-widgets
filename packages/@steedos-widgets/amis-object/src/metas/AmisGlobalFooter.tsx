@@ -8,23 +8,23 @@
 const config: any = {
     componentType: 'amisSchema', 
     group: "华炎魔方",
-    componentName: "AmisGlobalHeader",
-    title: "GlobalHeader",
+    componentName: "AmisGlobalFooter",
+    title: "GlobalFooter",
     docUrl: "",
     screenshot: "",
     npm: {
       package: "@steedos-widgets/amis-object",
       version: "{{version}}",
-      exportName: "AmisGlobalHeader",
+      exportName: "AmisGlobalFooter",
       main: "",
       destructuring: true,
       subName: ""
     },
     props: [
       {
-        name: "logoSrc",
+        name: "stacked",
         propType: "string",
-        description: '图标地址',
+        description: '是否竖着摆放',
       }
     ],
     preview: {
@@ -33,7 +33,7 @@ const config: any = {
     engines: ["amis"],
     // settings for amis.
     amis: {
-      name: 'steedos-global-header',
+      name: 'steedos-global-footer',
       icon: "fa-fw fa fa-list-alt"
     }
   };
@@ -77,6 +77,16 @@ const config: any = {
         },
         panelTitle: "设置",
         panelControls: [
+          {
+            type: "switch",
+            name: "stacked",
+            label: "是否竖着摆放"
+          },
+          {
+            type: 'switch',
+            name: 'showIcon',
+            label: '是否显示Icon'
+          }
         ]
       }
     }

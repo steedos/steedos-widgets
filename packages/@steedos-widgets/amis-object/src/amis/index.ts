@@ -22,7 +22,12 @@ export * from './AmisAppLauncher';
 export * from './AmisLogo';
 export * from './AmisAppMenu';
 
+export * from './AmisGlobalFooter';
+
+export * from './AmisGlobalHeaderToolbar';
+
 export * from './AmisGlobalHeader';
+
 
 export * from './AmisSteedosField';
 
