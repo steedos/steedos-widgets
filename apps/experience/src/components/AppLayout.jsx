@@ -8,6 +8,7 @@
 import React, { useState, useEffect, Fragment } from 'react';
 
 import { GlobalHeader } from '@/components/GlobalHeader';
+import { GlobalFooter } from '@/components/GlobalFooter';
 import { AmisRender } from "@/components/AmisRender";
 import { getApp } from '@steedos-widgets/amis-lib';
 import { useRouter } from 'next/router'
@@ -114,6 +115,9 @@ export function AppLayout({ children, app_id, tab_id, page_id}) {
           <div id="main" className="absolute inset-0 overflow-auto mt-[50px] sm:mt-[90px]">
               {children}
           </div>
+        )}
+        {app && (
+          <GlobalFooter app={app}/>
         )}
       </div>
     )

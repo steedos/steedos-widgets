@@ -2,30 +2,26 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-11 09:39:38
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-16 14:17:37
+ * @LastEditTime: 2022-12-14 13:38:52
  * @Description: 
  */
 const config: any = {
     componentType: 'amisSchema', 
     group: "华炎魔方",
-    componentName: "AmisGlobalHeader",
-    title: "GlobalHeader",
+    componentName: "AmisGlobalHeaderToolbar",
+    title: "Global Header",
     docUrl: "",
     screenshot: "",
     npm: {
       package: "@steedos-widgets/amis-object",
       version: "{{version}}",
-      exportName: "AmisGlobalHeader",
+      exportName: "AmisGlobalHeaderToolbar",
       main: "",
       destructuring: true,
       subName: ""
     },
     props: [
-      {
-        name: "logoSrc",
-        propType: "string",
-        description: '图标地址',
-      }
+      
     ],
     preview: {
     },
@@ -33,7 +29,7 @@ const config: any = {
     engines: ["amis"],
     // settings for amis.
     amis: {
-      name: 'steedos-global-header',
+      name: 'steedos-global-header-toolbar',
       icon: "fa-fw fa fa-list-alt"
     }
   };
@@ -69,14 +65,14 @@ const config: any = {
           type: config.amis.name,
           label: config.title,
           columns: 1,
-          vertical: false,
-          showIcon: true
+          vertical: false
         },
         previewSchema: {
           type: config.amis.name,
         },
         panelTitle: "设置",
         panelControls: [
+          
         ]
       }
     }

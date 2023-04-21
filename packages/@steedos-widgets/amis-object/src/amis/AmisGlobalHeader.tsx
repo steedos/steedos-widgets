@@ -1,373 +1,187 @@
-
-  /*
+/*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: 廖大雪 2291335922@qq.com
- * @LastEditTime: 2023-03-17 14:09:53
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2023-04-11 13:51:50
  * @Description: 
  */
 
-import './AmisGlobalHeader.less';
-
 export const AmisGlobalHeader = async (props) => {
-    const { className = '', data, logoutScript = "", customButtons = [] } = props;
-    
-    let  avatarSrc = null;
+    const { logoSrc } = props
+    const isMobile = window.innerWidth <= 768
 
-    if(data.context?.user?.avatar){
-        avatarSrc = `${data.context.rootUrl || ""}/avatar/${data.context.user.userId}?w=220&h=200&fs=160&avatar=${data.context.user.avatar}`;
-    }
-
-    return {
+    const schema = {
         "type": "wrapper",
-        "id": "u:9c3d279be31a",
-        "className": `steedos-global-header leading-3	${className}`,
-        "size": "xs",
-        "body": [
-          ...customButtons,
-          {
-            "type": "button",
-            "hiddenOn": "window.innerWidth < 768",
-            "id": "u:267a7e84a89d",
-            "onEvent": {
-              "click": {
-                "actions": [
-                  {
-                    "componentId": "",
-                    "args": {
-                      "url": "https://www.steedos.com/docs"
-                    },
-                    "actionType": "url"
-                  }
-                ]
-              }
-            },
-            "body": [
-              {
-                "type": "steedos-icon",
-                "category": "utility",
-                "name": "help",
-                "colorVariant": "default",
-                "id": "u:afc3a08e8cf3",
-                "className": "slds-button_icon slds-global-header__icon"
-              }
-            ],
-            "label": "帮助"
-          },
-          {
-            "type": "button",
-            "hiddenOn": "window.innerWidth < 768",
-            "onEvent": {
-              "click": {
-                "actions": [
-                  {
-                    "componentId": "",
-                    "args": {
-                      "url": "/app/admin"
-                    },
-                    "actionType": "url"
-                  }
-                ]
-              }
-            },
-            "id": "u:b5d0ab3a32b5",
-            "body": [
-              {
-                "type": "steedos-icon",
-                "category": "utility",
-                "name": "setup",
-                "colorVariant": "default",
-                "id": "u:793a86f8a9e4",
-                "className": "slds-button_icon slds-global-header__icon"
-              }
-            ],
-            "label": "设置"
-          },
-          {
-            "type": "steedos-dropdown",
-            "placement": "bottomRight",
-            "trigger": [
-              "click"
-            ],
-            "body": [
-              {
-                "type": "service",
-                "body": [
+        "className": 'p-0',
+        body: [
+            {
+                "type": "wrapper",
+                "className": "bg-white sticky p-0 top-0 z-40 w-full flex-none backdrop-blur transition-colors duration-500 lg:z-50 sm:shadow  border-b-[3px] border-sky-500 border-solid steedos-header-container",
+                body: [
                     {
-                        "type": "steedos-badge",
+                        "type": "wrapper",
+                        "className": 'flex w-full px-4 h-[50px] p-0 justify-between items-center steedos-header-container-line-one',
                         "body": [
                             {
-                                "type": "steedos-icon",
-                                "category": "utility",
-                                "name": "notification",
-                                "colorVariant": "default",
-                                "className": "slds-button_icon slds-global-header__icon"
+                                type: "wrapper",
+                                className: 'p-0 flex flex-1 items-center',
+                                body: [
+                                    {
+                                        "type": "button",
+                                        "className": "toggle-sidebar flex items-center pr-4",
+                                        "hiddenOn": "true",
+                                        "onEvent": {
+                                            "click": {
+                                                "actions": [
+                                                    {
+                                                        "actionType": "custom",
+                                                        "script": "document.body.classList.toggle('sidebar-open')",
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "body": [
+                                            {
+                                                "type": "steedos-icon",
+                                                "category": "utility",
+                                                "name": "rows",
+                                                "colorVariant": "default",
+                                                "id": "u:afc3a08e8cf3",
+                                                "className": "slds-button_icon slds-global-header__icon"
+                                            }
+                                        ],
+                                    },
+                                    {
+                                        "className": 'block h-10 w-auto mr-4',
+                                        "type": "tpl",
+                                        "tpl": `<a href='/app' class='flex items-center '><img class='block h-10 w-auto' src='${logoSrc}'></a>`,
+                                    },
+                                ],
+                            },
+                            {
+                                "type": "steedos-global-header-toolbar",
+                                "label": "Global Header",
+                                className: 'flex flex-nowrap gap-x-3 items-center',
+                                logoutScript: "window.signOut();",
+                                customButtons: [
+                                    {
+                                        "type": "button",
+                                        "className": "toggle-sidebar",
+                                        "visibleOn": "${AND(app.showSidebar,!" + isMobile + ")}",
+                                        "onEvent": {
+                                            "click": {
+                                                "actions": [
+                                                    {
+                                                        "actionType": "custom",
+                                                        "script": "document.body.classList.toggle('sidebar-open')",
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "body": [
+                                            {
+                                                "type": "steedos-icon",
+                                                "category": "utility",
+                                                "name": "rows",
+                                                "colorVariant": "default",
+                                                "id": "u:afc3a08e8cf3",
+                                                "className": "slds-button_icon slds-global-header__icon"
+                                            }
+                                        ],
+                                    },
+                                    {
+                                        "type": "steedos-app-launcher",
+                                        "showAppName": false,
+                                        "appId": "${app.id}",
+                                        "visibleOn": "${isMobile}"
+                                    }
+                                ]
                             }
                         ],
-                        "count": "${unReadCount}"
                     },
-                ],
-                "id": "u:aba521eed5b7",
-                "messages": {
-                },
-                "api": {
-                  "method": "post",
-                  "url": "${context.rootUrl}/graphql",
-                  "data": {
-                    "&": "$$",
-                    "context": "${context}",
-                    "userId": "${context.userId}"
-                  },
-                  "dataType": "json",
-                  "requestAdaptor": "const { userId } = api.data;\napi.data = {\n    query: `{\n unReadCount: notifications__count(filters: [[\"owner\",\"=\",\"${userId}\"], [\"is_read\", \"!=\", true]])\n    }`\n}",
-                  "headers": {
-                    "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                  },
-                  "adaptor": "return payload.data"
-                },
-                "interval": 30000,
-                "silentPolling": true
-              }
-            ],
-            "overlay": [
-                {
-                    "type": "service",
-                    "body": [
-                        {
-                            "type": "panel",
-                            "title": "通知",
-                            "className": "min-w-[300px] max-w-md",
-                            "body": [
-                              {
-                                "type": "each",
-                                className: "overflow-auto max-h-96",
-                                "name": "notifications",
-                                "items": {
-                                  "type": "tpl",
-                                  "tpl": "<div class='flex items-center p-4 hover:bg-sky-50'><img src='<%=data.context.rootUrl + `/avatar/` + data.from%>' alt='' class='h-10 w-10 flex-none rounded-full'><div class='ml-4 flex-auto'><div class='font-medium'><span class='text-primary'><%=data.name%></span></div><div class='mt-1 text-slate-700'><%=data.body%></div><div class='mt-1 text-slate-700'><%=moment(data.created).fromNow()%><abbr class='slds-text-link slds-m-horizontal_xxx-small <%=data.is_read ? 'hidden' : ''%>' title='unread'>●</abbr></div></div></div>",
-                                  "id": "u:07ece657c7b7",
-                                  "onEvent": {
-                                    "click": {
-                                      "weight": 0,
-                                      "actions": [
-                                        {
-                                          "args": {
-                                            "options": {},
-                                            "api": {
-                                              "url": "${context.rootUrl}/api/v4/notifications/${_id}/read?rootUrl=&appId=${appId}&async=true",
-                                              "method": "get",
-                                              "messages": {},
-                                              "headers": {
-                                                "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                                              },
-                                              "adaptor": "payload = {\n  status: 0,\n  msg: '',\n  data: {\n    redirect: payload.redirect || payload \n  }} \nreturn payload;"
-                                            }
-                                          },
-                                          "actionType": "ajax"
-                                        },
-                                        {
-                                          "args": {
-                                            "url": "${event.data.responseResult.responseData.redirect}",
-                                            "blank": true
-                                          },
-                                          "expression": "${!!event.data.responseResult.responseData.redirect}",
-                                          "actionType": "url"
-                                        }
-                                      ]
+
+                    {
+                        "type": "grid",
+                        "className": 'steedos-context-bar flex flex-nowrap h-10 leading-5 pl-4 mb-[-3px] steedos-header-container-line-two',
+                        "hiddenOn": "${"+isMobile+"}",
+                        "columns": [
+                            {
+                                "columnClassName": "items-center flex pb-0",
+                                "body": [
+                                    {
+                                        "type": "steedos-app-launcher",
+                                        "showAppName": true,
+                                        "appId": "${app.id}",
                                     }
-                                  }
-                                },
-                                "id": "u:18da41dab9ca"
-                              },
-                            ],
-                            actions: [
-                              {
-                                "type": "button",
-                                "label": "全部标记为已读",
-                                "id": "u:5530f3779e3a",
-                                "onEvent": {
-                                  "click": {
-                                    "actions": [
-                                      {
-                                        "componentId": "",
-                                        "args": {
-                                          "api": {
-                                            "url": "${context.rootUrl}/api/v4/notifications/all/markReadAll",
-                                            "method": "post",
-                                            "headers": {
-                                              "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                                            }
-                                          },
-                                          "messages": {
-                                            "success": "已全部标记为已读"
-                                          }
-                                        },
-                                        "actionType": "ajax"
-                                      }
-                                    ],
-                                    "weight": 0
-                                  }
-                                }
-                              }
-                            ]
-                          },
-                          
-                    ],
-                    "id": "u:aba521eed5b7",
-                    "messages": {
-                    },
-                    "api": {
-                      "method": "post",
-                      "url": "${context.rootUrl}/graphql",
-                      "data": {
-                        "&": "$$",
-                        "context": "${context}",
-                        "userId": "${context.userId}"
-                      },
-                      "dataType": "json",
-                      "requestAdaptor": "const { userId } = api.data;\napi.data = {\n    query: `{\n        notifications(filters: [\"owner\",\"=\",\"${userId}\"], sort: \"created desc,name\", top : 10){\n          _id,name,body,related_to,related_name,url,owner,is_read,from,created\n        }  }`\n}",
-                      "headers": {
-                        "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                      },
-                      "adaptor": "return payload.data"
-                    },
-                  }
-            ],
-            "id": "u:857e8161c96b",
-            "className": "antd-Action",
-            "open": false
-          },
-          {
-            "type": "steedos-dropdown",
-            "placement": "bottomRight",
-            "trigger": [
-              "click"
-            ],
-            "body": [
-              {
-                "type": "avatar",
-                "src": avatarSrc,
-                "icon": "fa fa-user",
-                "id": "u:033218742221",
-                "style": {
-                    "background": "rgb(59 130 246 / 0.5)",
-                    "color": "#FFFFFF"
-                },
-                size: 30
-              },
-              {
-                "type":"tpl",
-                "tpl":"<span id=\"headerName\" class=\"user-name text-overflow \" style=\"display: none;height: 30px;line-height: 30px;font-size: 16px;font-weight: bold;margin-left: 10px;\">${global.user.name}<i class=\"fa fa-angle-down\" style=\"margin-left: 4px;\"></i></span>"
-              }
-            ],
-            "overlay": [
-              {
-                "type": "wrapper",
-                "className": "",
-                "body": [
-                  
-                  {
-                    "type": "grid",
-                    "valign": "middle",
-                    "align": "center",
-                    "className": "m-2",
-                    "columns": [
-                      {
-                        "body": [
-                          {
-                            "type": "avatar",
-                            "className": "",
-                            "src": avatarSrc,
-                            "icon": "fa fa-user",
-                            "id": "u:033218742221",
-                            "style": {
-                                "background": "rgb(59 130 246 / 0.5)",
-                                "color": "#FFFFFF"
+                                ],
+                                "md": "auto",
+                                "valign": "middle"
                             },
-                          },
-                        ]
-                      },
-                      {
-                        "body": [
-                          {
-                            "type": "tpl",
-                            className: "block",
-                            "tpl": "${context.user.name}",
-                            "inline": true,
-                          },
-                          {
-                            "type": "tpl",
-                            className: "block",
-                            "tpl": "${context.user.email}",
-                            "inline": true,
-                          },
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "type": "button",
-                    "label": "个人资料",
-                    "className": "flex",
-                    "onEvent": {
-                      "click": {
-                        "actions": [
                             {
-                                "args": {
-                                  "url": "/app/admin/space_users/view/${context.user.spaceUserId}",
-                                  "blank": false
-                                },
-                                "actionType": "link"
-                              }
-                        ]
-                      }
+                                "columnClassName": "flex overflow-hidden",
+                                "hiddenOn": "${app.showSidebar === true}",
+                                "body": [
+                                    {
+                                        "visibleOn": "${AND(!app.showSidebar,!" + isMobile + ")}",
+                                        "type": "steedos-app-menu",
+                                        "stacked": false,
+                                        showIcon: false,
+                                        "appId": "${app.id}",
+                                        overflow: {
+                                            enable: false,
+                                            itemWidth: 80,
+                                        },
+                                        "id": "u:77851eb4aa89",
+                                    }
+                                ],
+                                "id": "u:5367229505d8",
+                                "md": "",
+                                "valign": "middle",
+                            }
+                        ],
                     },
-                    "level": "link"
-                  },
-                  // {
-                  //   "type": "button",
-                  //   "label": "关于",
-                  //   "className": "flex",
-                  //   "onEvent": {
-                  //     "click": {
-                  //       "actions": [
-                  //           {
-                  //               "args": {
-                  //                 "url": "/app/admin/page/creator_about",
-                  //                 "blank": false
-                  //               },
-                  //               "actionType": "link"
-                  //             }
-                  //       ]
-                  //     }
-                  //   },
-                  //   "level": "link"
-                  // },
-                  {
-                    "type": "button",
-                    "label": "注销",
-                    "className": "flex",
-                    "onEvent": {
-                      "click": {
-                        "actions": [
-                            {
-                                "componentId": "",
-                                "args": {},
-                                "actionType": "custom",
-                                "script": logoutScript
-                              }
-                        ]
-                      }
-                    },
-                    "level": "link"
-                  }
-                  
                 ],
-              }
-            ],
-            "className": "antd-Action"
-          }
-        ]
-      }
-    
+            },
+            {
+                "type": "button",
+                "className": 'p-0 absolute inset-0 mt-[50px] sm:mt-[90px]',
+                hiddenOn: "${app.showSidebar != true}",
+                body: [
+                    {
+                        type: "wrapper",
+                        className: 'sidebar-wrapper px-0 pt-4 pb-16 fixed z-20 h-full h-fill ease-in-out duration-300 flex flex-col border-r overflow-y-auto bg-white border-slate-200 block -translate-x-0 sm:w-[220px] w-64',
+                        body: [
+                            {
+                                "type": "steedos-app-launcher",
+                                "className": "px-4 pb-4",
+                                "visibleOn": "${isMobile}",
+                                "showAppName": true
+                            },
+                            {
+                                "type": "steedos-app-menu",
+                                "stacked": true,
+                                "appId": "${app.id}",
+                            },
+                        ]
+                    },
+                    {
+                        "type": "wrapper",
+                        "className": 'sidebar-overlay',
+                        "hiddenOn": "${!isMobile}",
+                    }
+                ],
+                "onEvent": {
+                    "click": {
+                        "actions": [
+                            {
+                                "actionType": "custom",
+                                "script": "console.log(event.target); if(window.innerWidth < 768){ document.body.classList.remove('sidebar-open'); }",
+                            }
+                        ]
+                    }
+                },
+            },
+        ],
+    }
+    return schema;
 }
