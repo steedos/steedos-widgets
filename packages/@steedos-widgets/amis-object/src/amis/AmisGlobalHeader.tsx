@@ -29,7 +29,7 @@ export const AmisGlobalHeader = async (props) => {
                                     {
                                         "type": "button",
                                         "className": "toggle-sidebar flex items-center pr-4",
-                                        "hiddenOn": "${!" + isMobile + "}",
+                                        "hiddenOn": "true",
                                         "onEvent": {
                                             "click": {
                                                 "actions": [
