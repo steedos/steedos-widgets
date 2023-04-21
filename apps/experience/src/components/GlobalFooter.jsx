@@ -24,28 +24,18 @@ export function GlobalFooter({ app }) {
           // updateProps={{location: router}}
           schema={{
             type: "service",
-            mobile: {
-              body: [
-                {
-                  "type": "steedos-global-footer",
-                  "stacked": false,
-                  showIcon: false,
-                  "appId": "${app.id}",
-                  hiddenOn: "false",
-                  overflow: {
-                    enable: false,
-                    maxVisibleCount: 4,
-                    overflowPopoverClassName: "footer-popup"
-                  },
-                  "className": "fixed bottom-0 z-20 flex justify-evenly w-full h-16 bg-gray-100",
-                  "id": "u:77851eb4aa89",
-                }
-              ]
-            }
+            body: [
+              {
+                "type": "steedos-global-footer",
+                overflow: {
+                  enable: false,
+                  maxVisibleCount: 4,
+                  overflowPopoverClassName: "footer-popup"
+                },
+                "id": "u:77851eb4aa89",
+              }
+            ]
           }}></AmisRender>}
-
-
-
     </>
   );
 }
