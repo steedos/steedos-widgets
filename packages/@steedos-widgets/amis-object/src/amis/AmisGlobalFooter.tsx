@@ -13,7 +13,6 @@ export const AmisGlobalFooter = async (props) => {
     if(!appId){
         appId = data.context.appId || 'admin';
     }
-    // console.log(`AmisAppMenu appId`, appId)
 
     if(links){
         return {
@@ -32,7 +31,6 @@ export const AmisGlobalFooter = async (props) => {
             "url": `\${context.rootUrl}/service/api/apps/${appId}/menus?try=1111111`,
             "adaptor": `
                   try {
-                      console.log('payload====>', payload)
                       if(payload.nav_schema){
                         payload.data = payload.nav_schema;
                         return payload
@@ -65,7 +63,6 @@ export const AmisGlobalFooter = async (props) => {
                   } catch (error) {
                       console.log(\`error\`, error)
                   }
-                  console.log('payload===2==>', payload)
                   return payload;
             `,
             "headers": {

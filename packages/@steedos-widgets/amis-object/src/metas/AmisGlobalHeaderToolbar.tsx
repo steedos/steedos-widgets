@@ -9,7 +9,7 @@ const config: any = {
     componentType: 'amisSchema', 
     group: "华炎魔方",
     componentName: "AmisGlobalHeaderToolbar",
-    title: "Global Header",
+    title: "Global Header Toolbar",
     docUrl: "",
     screenshot: "",
     npm: {

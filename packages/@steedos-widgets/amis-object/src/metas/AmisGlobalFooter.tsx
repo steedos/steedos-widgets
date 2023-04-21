@@ -9,7 +9,7 @@ const config: any = {
     componentType: 'amisSchema', 
     group: "华炎魔方",
     componentName: "AmisGlobalFooter",
-    title: "GlobalFooter",
+    title: "Global Footer",
     docUrl: "",
     screenshot: "",
     npm: {
@@ -67,26 +67,13 @@ const config: any = {
         icon: config.amis.icon,
         scaffold: {
           type: config.amis.name,
-          label: config.title,
-          columns: 1,
-          vertical: false,
-          showIcon: true
+          label: config.title
         },
         previewSchema: {
           type: config.amis.name,
         },
         panelTitle: "设置",
         panelControls: [
-          {
-            type: "switch",
-            name: "stacked",
-            label: "是否竖着摆放"
-          },
-          {
-            type: 'switch',
-            name: 'showIcon',
-            label: '是否显示Icon'
-          }
         ]
       }
     }
