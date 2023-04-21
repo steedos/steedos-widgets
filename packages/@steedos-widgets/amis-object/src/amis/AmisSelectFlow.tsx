@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-01-14 16:41:24
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-23 18:00:25
+ * @LastEditTime: 2023-04-21 11:50:26
  * @Description: 
  */
 
@@ -30,34 +30,34 @@ const getSelectFlowSchema = (id, props)=>{
         "className": className,
         "required": required,
         "treeContainerClassName": treeContainerClassName,
-        "menuTpl": {
-            // type: "button",
-            type: "tpl",
-            tpl: "<div class='flex justify-between'><span>${label}</span><span class='rounded p-1 text-xs text-center w-14 ${children != null ? \'hidden\' : \'\'}'><button><i class='fa-regular fa-star'></i></button></span></div>",
-            "onEvent": {
-                "click": {
-                  "weight": 0,
-                  "actions": [
-                    {
-                        actionType: 'custom',
-                        script: "console.log('====event', event), event.preventDefault(); event.stopPropagation()"
-                    },
-                    {
-                      "args": {
-                        "api": {
-                          "url": "/aaa",
-                          "method": "get",
-                          "messages": {
-                          }
-                        }
-                      },
-                      "actionType": "download",
-                      "stopPropagation": true
-                    }
-                  ]
-                }
-              }
-        },
+        // "menuTpl": {
+        //     // type: "button",
+        //     type: "tpl",
+        //     tpl: "<div class='flex justify-between'><span>${label}</span><span class='rounded p-1 text-xs text-center w-14 ${children != null ? \'hidden\' : \'\'}'><button><i class='fa-regular fa-star'></i></button></span></div>",
+        //     "onEvent": {
+        //         "click": {
+        //           "weight": 0,
+        //           "actions": [
+        //             {
+        //                 actionType: 'custom',
+        //                 script: "console.log('====event', event), event.preventDefault(); event.stopPropagation()"
+        //             },
+        //             {
+        //               "args": {
+        //                 "api": {
+        //                   "url": "/aaa",
+        //                   "method": "get",
+        //                   "messages": {
+        //                   }
+        //                 }
+        //               },
+        //               "actionType": "download",
+        //               "stopPropagation": true
+        //             }
+        //           ]
+        //         }
+        //       }
+        // },
         "source": {
             "method": "post",
             "url": "${context.rootUrl}/graphql?keywords=${keywords}",
