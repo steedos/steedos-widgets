@@ -5,7 +5,8 @@
  * @LastEditTime: 2023-04-12 23:45:54
  * @Description: 
  */
-import './AmisObjectForm.less'
+import './AmisObjectForm.less';
+import './AmisObjectListView.less';
 
 export * from './AmisObjectForm';
 export * from './AmisObjectListview';

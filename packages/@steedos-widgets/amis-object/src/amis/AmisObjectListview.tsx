@@ -7,7 +7,6 @@
  */
 import { getListSchema, getObjectListHeader, getUISchema, Router } from '@steedos-widgets/amis-lib'
 import { keys, pick, difference, find } from 'lodash';
-import './AmisObjectListView.less';
 
 export const AmisObjectListView = async (props) => {
   // console.time('AmisObjectListView')
