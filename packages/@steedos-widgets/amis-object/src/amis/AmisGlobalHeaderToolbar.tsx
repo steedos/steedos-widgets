@@ -333,7 +333,7 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                         "actions": [
                             {
                                 "args": {
-                                  "url": "/app/admin/page/oa_home",
+                                  "url": "/app/-/page/about",
                                   "blank": false
                                 },
                                 "actionType": "link"
