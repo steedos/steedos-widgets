@@ -14,7 +14,8 @@ export const AmisGlobalFooter = async (props) => {
         appId = data.context.appId || 'admin';
     }
     const isMobile = window.innerWidth <= 768;
-    const className = 'fixed bottom-0 z-20 flex justify-evenly w-full h-16 bg-gray-100';
+    const className = 'fixed bottom-0 z-20 flex justify-evenly w-full h-16 bg-gray-100 AmisGlobalFooter';
+    const className1 = 'fixed bottom-0 z-20 flex justify-center w-full h-16 bg-gray-100 AmisGlobalFooter';
 
     let schema = {}
     if (links) {
@@ -24,7 +25,7 @@ export const AmisGlobalFooter = async (props) => {
                 body: [
                     {
                         "type": "nav",
-                        "className": `${className} AmisGlobalFooter`,
+                        "className": links.length ==1 ? `${className1}` : `${className}`,
                         "stacked": stacked,
                         "overflow": overflow,
                         "indentSize": indentSize,
@@ -63,9 +64,10 @@ export const AmisGlobalFooter = async (props) => {
                     // active: selectedId === tab.id,
                     });
                 })
+
                   payload.data = {
                     "type": "nav",
-                    className: "${className} AmisGlobalFooter",
+                    className: payload.children.length ==1 ? '${className1}' : '${className}',
                     "stacked": ${stacked},
                     "overflow": ${JSON.stringify(overflow)},
                     "indentSize": ${indentSize},
