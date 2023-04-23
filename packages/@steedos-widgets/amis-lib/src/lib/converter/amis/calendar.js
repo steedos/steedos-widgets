@@ -314,7 +314,6 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
     // ObjectForm会认作用域下的变量值
     // TODO: 待组件支持initValues属性后应该改掉，不应该通过data直接传值
     // TODO: 全天事件属性传入doc了但是没有生效，需要手动在ObjectForm中勾选全天事件
-    event.data = doc;
     const title = "新建 ${objectSchema.label}";
     doAction(
       {
@@ -327,6 +326,7 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
               "type": "steedos-object-form",
               "objectApiName": "\${objectName}",
               "mode": "edit",
+              "defaultData": doc,
               "onEvent": {
                 "submitSucc": {
                   "weight": 0,
