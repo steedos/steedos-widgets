@@ -6,7 +6,6 @@
  * @Description: 
  */
 import './AmisObjectForm.less';
-import './AmisObjectListView.less';
 
 export * from './AmisObjectForm';
 export * from './AmisObjectListview';
