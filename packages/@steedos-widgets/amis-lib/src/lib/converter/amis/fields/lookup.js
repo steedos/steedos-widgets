@@ -232,13 +232,16 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         var sort = orderBy + ' ' + orderDir;
         sort = orderBy ? sort : "${sort}";
         var allowSearchFields = ${JSON.stringify(searchableFields)};
+        let fieldValue;
         if(api.data.$term){
             filters = [["name", "contains", "'+ api.data.$term +'"]];
         }else if(selfData.op === 'loadOptions' && selfData.value){
             if(selfData.value?.indexOf(',') > 0){
-                filters = [["${referenceTo.valueField.name}", "=", selfData.value.split(',')]];
+                fieldValue = selfData.value.split(',');
+                filters = [["${referenceTo.valueField.name}", "=", fieldValue]];
             }else{
-                filters = [["${referenceTo.valueField.name}", "=", selfData.value]];
+                fieldValue = selfData.value;
+                filters = [["${referenceTo.valueField.name}", "=", fieldValue]];
             }
         }
 
@@ -291,6 +294,9 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         const enable_tree = ${refObjectConfig.enable_tree};
         if(enable_tree){
             pageSize = 10000;
+        }
+        if(fieldValue && _.isArray(fieldValue) && fieldValue.length > pageSize){
+            pageSize = fieldValue.length;
         }
         api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', pageSize).replace('{__skip}', skip).replace('{__sort}', sort.trim());
         return api;
