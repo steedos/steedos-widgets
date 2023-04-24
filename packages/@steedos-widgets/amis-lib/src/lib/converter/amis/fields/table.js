@@ -109,6 +109,13 @@ async function getTableColumns(fields, options){
             }else if(field.type === 'html'){
                 type = 'markdown';
             }
+            let className = "";
+            if(field.type === 'textarea'){
+                className = 'min-w-56';
+            }
+            if(field.wrap === false){
+                className += " whitespace-nowrap"
+            }
             if(!field.hidden && !field.extra){
                 columns.push(Object.assign({}, {
                     name: field.name,
@@ -119,7 +126,7 @@ async function getTableColumns(fields, options){
                     type: type,
                     tpl: tpl,
                     toggled: field.toggled,
-                    className: field.type === 'textarea' ? 'min-w-56 whitespace-pre-wrap textarea' :  "whitespace-nowrap",
+                    className,
                     html: field.type === 'html' ? true : null
                     // toggled: true 
                 }, field.amis, {name: field.name}))
