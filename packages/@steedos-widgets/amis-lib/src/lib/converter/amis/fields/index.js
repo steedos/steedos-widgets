@@ -406,7 +406,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                     columnsTogglable: false,
                     strictMode:false,
                     affixHeader: false, // 是否固定表头, 不固定表头, 否则form有y轴滚动条时, 表头会跟随滚动条滚动.
-                    // needConfirm: true,  此属性设置为false后，导致table不能编辑。
+                    needConfirm: false,
                     editable: !readonly,
                     addable: !readonly,
                     removable: !readonly,
