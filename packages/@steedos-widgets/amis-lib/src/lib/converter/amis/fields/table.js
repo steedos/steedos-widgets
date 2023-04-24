@@ -617,7 +617,6 @@ export async function getTableApi(mainObject, fields, options){
             if(_.isEmpty(filters)){
                 filters = userFilters;
             }else{
-                filters.push('and');
                 filters.push(userFilters)
             }
         }
