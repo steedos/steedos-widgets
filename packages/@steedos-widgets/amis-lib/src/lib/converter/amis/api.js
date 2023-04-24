@@ -184,12 +184,12 @@ function getScriptForRewriteValueForFileFields(fields){
                                 });
                             }
                         }else{
-                            data[item] = {
+                            data[item] = [{
                                 value: fileFieldValue,
                                 name: fileFieldDisplayValue.name,
                                 url: fileFieldDisplayValue.url + "?download=true",
                                 state: "uploaded"
-                            };
+                            }];
                         }
                     }
                 })
