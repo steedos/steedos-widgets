@@ -17,12 +17,11 @@
     background-color: unset;
     fill: #64748b;
 }
-//2.9selected类名不会跟随点击变化，因此改用active
-.steedos-global-footer .antd-Nav-Menu-item-active .text-slate-700,.steedos-global-footer .antd-Nav-Menu-submenu-open .text-slate-700{
+.steedos-global-footer .antd-Nav-Menu-item-selected .text-slate-700{
     color: #0970d1 !important;
 }
 
-.steedos-global-footer .antd-Nav-Menu-item-active svg,.steedos-global-footer .antd-Nav-Menu-submenu-open svg{
+.steedos-global-footer .antd-Nav-Menu-item-selected svg{
     fill: #0970d1;
 }
 .steedos-global-footer .antd-Nav-Menu-item-link,.steedos-global-footer .antd-Nav-Menu-item-wrap,.antd-Nav-Menu-overflow-item{
@@ -62,6 +61,10 @@
 
 .steedos-global-footer-popup .nav-label{
     font-size: 17px;
+}
+
+.steedos-global-footer-popup .antd-Nav-Menu-item-label-subTitle{
+    max-width: 100% !important;
 }
 
 .steedos-global-footer-root .antd-Nav-Menu-horizontal.antd-Nav-Menu-light{
