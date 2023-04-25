@@ -145,7 +145,7 @@ export const AmisGlobalHeader = async (props) => {
             {
                 "type": "button",
                 "className": 'p-0 absolute inset-0 mt-[50px] sm:mt-[90px]',
-                hiddenOn: "${app.showSidebar != true}",
+                hiddenOn: "${OR(app.showSidebar != true,isMobile)}",
                 body: [
                     {
                         type: "wrapper",
