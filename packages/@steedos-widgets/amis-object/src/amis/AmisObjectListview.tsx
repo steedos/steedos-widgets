@@ -121,7 +121,7 @@ export const AmisObjectListView = async (props) => {
   return {
     type: "service",
     data: serviceData,
-    className: `${className} steedos-object-listview`,
+    className: `${className} sm:bg-gray-100 h-full sm:shadow sm:rounded-tl sm:rounded-tr steedos-object-listview`,
     body: [{
       "type": "wrapper",
       "size": "none",
