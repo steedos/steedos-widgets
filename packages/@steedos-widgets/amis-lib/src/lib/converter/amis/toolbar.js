@@ -122,6 +122,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
     `;
     return [
       // "bulkActions",
+      ...(headerToolbarItems || []),
       hiddenCount ? {} :{
         "type": "tpl",
         "tpl": "${count} 个项目"
