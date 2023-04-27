@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-11 13:51:50
+ * @LastEditTime: 2023-04-27 13:25:07
  * @Description: 
  */
 
@@ -40,7 +40,7 @@ export const AmisGlobalFooter = async (props) => {
             type: 'service',
             schemaApi: {
                 "method": "get",
-                "url": `\${context.rootUrl}/service/api/apps/${appId}/menus?try=1111111`,
+                "url": `\${context.rootUrl}/service/api/apps/${appId}/menus`,
                 "adaptor": `
               try {
                   if(payload.nav_schema){
