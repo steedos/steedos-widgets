@@ -385,7 +385,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             convertData = {
                 type: "editor",
                 language: field.language,
-                // value: field.defaultValue || ''
+                editorDidMount: new Function('editor', 'monaco', field.editorDidMount)
             }
             break;
         case 'toggle':
