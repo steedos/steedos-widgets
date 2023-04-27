@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:51:00
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-19 20:26:27
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-04-26 11:52:04
  * @Description: 
  */
 
@@ -94,7 +94,8 @@ export const getSchema = async (uiSchema, ctx) => {
                                             "schemaApi": {
                                                 "data": {
                                                     "isLookup": "${isLookup}",
-                                                    "_master": "${_master}"
+                                                    "_master": "${_master}",
+                                                    "url": "${context.rootUrl}/api/pageSchema/form?app=${appId}&objectApiName=${objectName}&formFactor=${formFactor}"
                                                 },
                                                 "url": "${context.rootUrl}/api/pageSchema/form?app=${appId}&objectApiName=${objectName}&formFactor=${formFactor}",
                                                 "method": "get",
@@ -103,7 +104,7 @@ export const getSchema = async (uiSchema, ctx) => {
                                                 "headers": {
                                                     "Authorization": "Bearer ${context.tenantId},${context.authToken}"
                                                 },
-                                                "requestAdaptor": "",
+                                                "requestAdaptor": "return { ...api, url: api.body.url }",
                                                 "adaptor": schemaApiAdaptor
                                             }
                                         }

@@ -69,7 +69,10 @@ export const PageListView = async (props) => {
 
   return {
     type: 'service',
-    className: "h-full",
+    className: {
+      "h-full" : "true",
+      "sm:px-3 sm:pt-3" : "${display != 'split'}"
+    },
     body: listSchema
   }
 }
