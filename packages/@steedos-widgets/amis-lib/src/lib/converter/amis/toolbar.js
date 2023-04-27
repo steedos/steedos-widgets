@@ -24,8 +24,8 @@ const getDisplayAsButton = function(objectName, showDisplayAs){
     "icon": "fa fa-table-columns",
     "btnClassName": "antd-Button--iconOnly bg-white p-2 rounded border-gray-300 text-gray-500",
     "align": "right",
-    "visibleOn": "${formFactor !== 'SMALL'}",
-    "buttons": [
+    "visibleOn": "${window:innerWidth > 768}",
+    "buttons": [ 
       {
         "label": "显示为",
         "children": buttons
