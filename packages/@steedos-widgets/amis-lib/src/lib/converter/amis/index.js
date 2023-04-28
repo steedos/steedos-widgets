@@ -457,7 +457,8 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
                 data: {
                   objectName: "${event.data.__objectName}",
                   record: "${event.data.__record}"
-                }
+                },
+                expression: "${event.data.__response.error != true}"
               },
               {
                 "actionType": "setValue",
@@ -465,7 +466,8 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
                    value: {
                     "recordLoaded": true,
                    }
-                }
+                },
+                expression: "${event.data.__response.error != true}"
             }
             ]
           }

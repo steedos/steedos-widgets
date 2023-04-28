@@ -44,6 +44,12 @@ function getReadonlyFormAdaptor(object, fields){
     // })
 
     return  `
+    if(payload.data.data.length === 0){
+        return {
+            status: 2,
+            msg: "无法找到记录"
+        }
+    }
     if(payload.data.data){
         var data = payload.data.data[0];
         var gridAndObjectFieldsName = ${JSON.stringify(gridAndObjectFieldsName)};
