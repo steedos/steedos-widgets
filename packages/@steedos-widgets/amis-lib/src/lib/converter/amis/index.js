@@ -357,7 +357,8 @@ export async function getObjectForm(objectSchema, ctx){
                   "eventName": `@data.changed.${objectSchema.name}`
                 },
                 "data": {
-                  "objectName": `${objectSchema.name}`
+                  "objectName": `${objectSchema.name}`,
+                  "displayAs": "${displayAs}"
                 }
               },
               {
