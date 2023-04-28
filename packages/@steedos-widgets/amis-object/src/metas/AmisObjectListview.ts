@@ -116,7 +116,7 @@ export default {
           multiple: false,
           label: "视图",
           "source": {
-            "url": "/service/api/amis-design/object/${objectApiName}",
+            "url": "/service/api/amis-design/object/${objectApiName || 'space_users'}",
             "method": "get",
             "messages": {
             },

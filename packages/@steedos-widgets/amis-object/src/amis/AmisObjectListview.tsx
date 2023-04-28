@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-19 15:24:51
+ * @LastEditTime: 2023-04-28 11:11:42
  * @Description: 
  */
 import { getListSchema, getObjectListHeader, getUISchema, Router } from '@steedos-widgets/amis-lib'
@@ -116,7 +116,10 @@ export const AmisObjectListView = async (props) => {
   }
 
   // TODO: recordPermissions和_id是右上角按钮需要强依赖的变量，应该写到按钮那边去
-  const serviceData = Object.assign({}, { showDisplayAs, displayAs, recordPermissions: uiSchema.permissions, _id: null, $listviewId: listName });
+  const serviceData: any = Object.assign({}, { showDisplayAs, displayAs, recordPermissions: uiSchema.permissions, _id: null, $listviewId: listName });
+  if(objectApiName){
+    serviceData.objectName = objectApiName;
+  }
   // console.timeEnd('AmisObjectListView')
   return {
     type: "service",
@@ -152,7 +155,7 @@ export const AmisObjectListView = async (props) => {
                     "headers": {
                         "Authorization": "Bearer ${context.tenantId},${context.authToken}"
                     },
-                    "requestAdaptor": "console.log('service listview schemaApi requestAdaptor======>');api.data={query: '{spaces__findOne(id: \"xxx\"){_id,name}}'};return api;",
+                    "requestAdaptor": "console.log('service listview schemaApi requestAdaptor======>');api.data={query: '{spaces__findOne(id: \"none\"){_id,name}}'};return api;",
                     "adaptor": `
                         console.log('service listview schemaApi adaptor....', api.body); 
                         const { appId, objectName, listName, display, formFactor: defaultFormFactor} = api.body;
@@ -163,6 +166,7 @@ export const AmisObjectListView = async (props) => {
                           // console.log("====listViewSchemaProps===>", listViewSchemaProps)
                           window.getListSchema(appId, objectName, listName, listViewSchemaProps).then((schema)=>{
                             payload.data = schema.amisSchema;
+                            // console.log("payload================>", payload)
                             resolve(payload)
                           });
                         });

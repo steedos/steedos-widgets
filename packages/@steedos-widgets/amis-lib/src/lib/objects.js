@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-17 15:26:17
+ * @LastEditTime: 2023-04-28 11:11:29
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -215,6 +215,9 @@ export async function getListSchema(
     ctx = {}
 ) {
     const uiSchema = await getUISchema(objectName);
+    if(!uiSchema){
+        return {}
+    }
     const listView =  find(
         uiSchema.list_views,
         (listView, name) => {
