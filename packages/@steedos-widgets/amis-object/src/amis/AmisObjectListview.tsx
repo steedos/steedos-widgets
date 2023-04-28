@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-28 11:43:05
+ * @LastEditTime: 2023-04-28 14:21:28
  * @Description: 
  */
 import { getListSchema, getObjectListHeader, getUISchema, Router } from '@steedos-widgets/amis-lib'
@@ -120,7 +120,7 @@ export const AmisObjectListView = async (props) => {
   if(has(props, 'objectApiName')){
     serviceData.objectName = objectApiName;
   }
-  if(has(props, 'listName')){
+  if(has(props, 'listName') && has(props, '$$editor')){
     serviceData.listName = listName;
   }
   if(!has(data, 'uiSchema')){
