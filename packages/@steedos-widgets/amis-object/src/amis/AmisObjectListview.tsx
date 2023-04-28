@@ -2,11 +2,11 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-28 11:11:42
+ * @LastEditTime: 2023-04-28 11:43:05
  * @Description: 
  */
 import { getListSchema, getObjectListHeader, getUISchema, Router } from '@steedos-widgets/amis-lib'
-import { keys, pick, difference, find } from 'lodash';
+import { keys, pick, difference, find, has } from 'lodash';
 
 export const AmisObjectListView = async (props) => {
   // console.time('AmisObjectListView')
@@ -22,7 +22,7 @@ export const AmisObjectListView = async (props) => {
   let { headerSchema } = props;
   let ctx = props.ctx;
   let listName = defaultData?.listName || data?.listName || props?.listName;
-  // console.log('AmisObjectListView ==listName=>', listName)
+  console.log('AmisObjectListView ==listName=>', listName)
   let defaults: any = {};
   let objectApiName = props.objectApiName || "space_users"; // 只是为了设计器,才在此处设置了默认值. TODO , 使用其他方式来辨别是否再设计器中
   if(!ctx){
@@ -117,10 +117,18 @@ export const AmisObjectListView = async (props) => {
 
   // TODO: recordPermissions和_id是右上角按钮需要强依赖的变量，应该写到按钮那边去
   const serviceData: any = Object.assign({}, { showDisplayAs, displayAs, recordPermissions: uiSchema.permissions, _id: null, $listviewId: listName });
-  if(objectApiName){
+  if(has(props, 'objectApiName')){
     serviceData.objectName = objectApiName;
   }
+  if(has(props, 'listName')){
+    serviceData.listName = listName;
+  }
+  if(!has(data, 'uiSchema')){
+    serviceData.uiSchema = uiSchema;
+  }
   // console.timeEnd('AmisObjectListView')
+  // console.log('serviceData===>', serviceData)
+  // console.log('headerSchema===>', headerSchema)
   return {
     type: "service",
     data: serviceData,
