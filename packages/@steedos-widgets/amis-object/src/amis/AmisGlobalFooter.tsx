@@ -52,18 +52,32 @@ export const AmisGlobalFooter = async (props) => {
                             const stacked = ${stacked};
                             const showIcon = ${showIcon};
                             const selectedId = '${selectedId}';
+                            let sum = 0;
                             _.each(payload.children, (tab)=>{
+                                sum++;
                                 const classIcon = tab.icon.replace(/_/g,"-");
-                                data.nav.push({
-                                "label": {
-                                    type: 'tpl',
-                                    tpl: \`<span class='fill-slate-500  text-slate-700 block -ml-px no-underline group flex items-center text-[13px] font-medium rounded-md flex-col leading-3 nav-label'><svg class="slds-icon slds-icon_container slds-icon-standard-\`+classIcon+\` flex-shrink-0 h-10 w-10"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`,
-                                    className:'h-full flex items-center'
-                                },
-                                "to": tab.path,
-                                "target":tab.target
-                                // active: selectedId === tab.id,
-                                });
+                                if(sum >= 5){
+                                    data.nav.push({
+                                        "label": {
+                                            type: 'tpl',
+                                            tpl: \`<span class='fill-slate-500  text-slate-700 block -ml-px no-underline group flex items-center text-[12px] font-medium rounded-md flex-col leading-3 nav-label'><svg class="slds-icon slds-icon_container slds-icon-standard-\`+classIcon+\` flex-shrink-0 h-10 w-10"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg><span>\${tab.name}</span><i class="fa fa-angle-right" aria-hidden="true" style="position: absolute;right: 20px;color: #bababa;"></i></span>\`,
+                                            className:'h-full flex items-center'
+                                        },
+                                        "to": tab.path,
+                                        "target":tab.target
+                                    });
+                                }else{
+                                    data.nav.push({
+                                        "label": {
+                                            type: 'tpl',
+                                            tpl: \`<span class='fill-slate-500  text-slate-700 block -ml-px no-underline group flex items-center text-[12px] font-medium rounded-md flex-col leading-3 nav-label'><svg class="slds-icon slds-icon_container slds-icon-standard-\`+classIcon+\` flex-shrink-0 h-10 w-10"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`,
+                                            className:'h-full flex items-center'
+                                        },
+                                        "to": tab.path,
+                                        "target":tab.target
+                                    });
+                                }
+                                
                             })
 
                             payload.data = {
@@ -76,7 +90,7 @@ export const AmisGlobalFooter = async (props) => {
                                     "overflowPopoverClassName": "steedos-global-footer-popup",
                                     "overflowLabel":{
                                         "type": 'tpl',
-                                        "tpl": \`<span class='fill-slate-500  text-slate-700 block -ml-px no-underline group flex items-center text-[13px] font-medium rounded-md flex-col leading-3 nav-label'><svg class=" flex-shrink-0 h-10 w-10"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#lead_list"></use></svg>菜单</span>\`,
+                                        "tpl": \`<span class='fill-slate-500  text-slate-700 block -ml-px no-underline group flex items-center text-[12px] font-medium rounded-md flex-col leading-3 nav-label'><svg class=" flex-shrink-0 h-10 w-10"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#lead_list"></use></svg>菜单</span>\`,
                                         "className":'h-full flex items-center'
                                     },
                                     "overflowIndicator":""
