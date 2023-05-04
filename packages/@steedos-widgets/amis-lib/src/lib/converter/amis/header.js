@@ -66,8 +66,8 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
                   },
                   {
                     "type": "dropdown-button",
-                    "className": "",
-                    "label": "\${uiSchema.list_views[listName].label}",
+                    "className": "", 
+                    "label": "\${listName ? uiSchema.list_views[listName].label : uiSchema.list_views[defaultListName].label}",
                     "rightIcon": "fa fa-caret-down",
                     "size": "sm",
                     "hideCaret": true,
