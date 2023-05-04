@@ -591,7 +591,11 @@ export async function getTableApi(mainObject, fields, options){
             filters = systemFilters;
         };
         if(api.data.$self.additionalFilters){
-            userFilters.push(api.data.$self.additionalFilters)
+            if(_.isString(api.data.$self.additionalFilters)){
+                userFilters.push(eval(api.data.$self.additionalFilters))
+            }else{
+                userFilters.push(api.data.$self.additionalFilters)
+            }
         }
 
         if(api.data.$self._isRelated){
