@@ -379,6 +379,8 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             ...ctx
         })
 
+        pickerSchema.affixHeader = false;
+
         var headerToolbarItems = [];
         const isMobile = window.innerWidth < 768;
         if(referenceTo.objectName === "space_users" && field.reference_to_field === "user" && !isMobile){
@@ -753,6 +755,9 @@ export async function getIdsPickerSchema(field, readonly, ctx){
             top:  top,
             ...ctx
         })
+
+        pickerSchema.affixHeader = false;
+
     }
 
     const data = {
@@ -782,6 +787,5 @@ export async function getIdsPickerSchema(field, readonly, ctx){
     if(readonly){
         data.tpl = await Tpl.getLookupTpl(field, ctx)
     }
-
     return data;
 }
