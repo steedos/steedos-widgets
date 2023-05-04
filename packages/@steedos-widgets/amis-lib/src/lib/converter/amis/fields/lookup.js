@@ -398,14 +398,11 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             pickerSchema.headerToolbar.push(new_button);
         }
         pickerSchema.footerToolbar = refObjectConfig.enable_tree ? [] : getObjectFooterToolbar();
-        //TODO: 等待放大镜bug修复,if会去掉，始终显示放大镜
-        if(referenceTo.objectName != "space_users" || field.reference_to_field != "user"){
-            if (ctx.filterVisible !== false) {
-                pickerSchema.filter = await getObjectFilter(refObjectConfig, fields, {
-                    isLookup: true,
-                    ...ctx
-                });
-            }
+        if (ctx.filterVisible !== false) {
+            pickerSchema.filter = await getObjectFilter(refObjectConfig, fields, {
+                isLookup: true,
+                ...ctx
+            });
         }
         pickerSchema.data = Object.assign({}, pickerSchema.data, {
             "&": "$$",
@@ -653,8 +650,10 @@ export async function lookupToAmis(field, readonly, ctx){
 
     if(referenceTo.objectName === "space_users" && field.reference_to_field === "user"){
         if(ctx.idsDependOn || field.amis){
+            // ids人员点选模式
             return await lookupToAmisIdsPicker(field, readonly, ctx);
         }
+        // 左侧树右侧人员列表的下拉框模式，不再支持，而是执行下面的lookupToAmisPicker函数弹出选人窗口
         // return await lookupToAmisSelectUser(field, readonly, ctx);
     }
 
