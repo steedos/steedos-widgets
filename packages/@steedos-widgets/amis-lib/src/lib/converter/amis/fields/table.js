@@ -477,7 +477,6 @@ export async function getTableApi(mainObject, fields, options){
     api.requestAdaptor = `
         // selfData 中的数据由 CRUD 控制. selfData中,只能获取到 CRUD 给定的data. 无法从数据链中获取数据.
         let selfData = JSON.parse(JSON.stringify(api.data.$self));
-        console.log('selfData====>', api.data.$self);
         // 保留一份初始data，以供自定义发送适配器中获取原始数据。
         const data = _.cloneDeep(api.data);
         try{
@@ -592,11 +591,7 @@ export async function getTableApi(mainObject, fields, options){
             filters = systemFilters;
         };
         if(api.data.$self.additionalFilters){
-            if(_.isString(api.data.$self.additionalFilters)){
-                userFilters.push(eval(api.data.$self.additionalFilters))
-            }else{
-                userFilters.push(api.data.$self.additionalFilters)
-            }
+            userFilters.push(api.data.$self.additionalFilters)
         }
 
         if(api.data.$self._isRelated){
