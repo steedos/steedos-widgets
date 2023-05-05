@@ -1,12 +1,20 @@
 .sidebar-wrapper {
-    transition: 0.5s ease translate;
-    translate: -100% 0;
+    transition: 0.5s ease transform;
     will-change: transform;
+    transform:translate(-100%,0); // W3c标准
+    -webkit-transform:translate(-100%,0); // Safari Chrome
+    -moz-transform:translate(-100%,0); // firefox
+    -ms-transform:translate(-100%,0); // IE9
+    -o-transform:translate(-100%,0); // opera
 }
 
 
 body.sidebar-open .sidebar-wrapper {
-    translate: 0 0;
+    transform:translate(0,0); // W3c标准
+    -webkit-transform:translate(0,0); // Safari Chrome
+    -moz-transform:translate(0,0); // firefox
+    -ms-transform:translate(0,0); // IE9
+    -o-transform:translate(0,0); // opera
 }
 
 body.sidebar #sidebar {
