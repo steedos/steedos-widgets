@@ -1,7 +1,5 @@
 import _ from "lodash";
 import { isExpression, parseSingleExpression } from "./expression";
-import { getApi } from './converter/amis/graphql';
-import config from "../config";
 import { getUISchema } from "./objects";
 
 import { StandardButtons } from '../standard/button'
@@ -316,3 +314,163 @@ export const execute = (button, props) => {
 };
 
 export const executeButton = execute;
+
+
+const getObjectDetailHeaderButtons = (objectSchema, recordId)=>{
+    const { name } = objectSchema;
+    const buttons = getObjectDetailButtons(objectSchema, {});
+    const moreButtons = getObjectDetailMoreButtons(objectSchema, {
+        recordId: recordId,
+        objectName: name
+    })
+    let amisButtonsSchema = _.map(buttons, (button) => {
+        return {
+        type: 'steedos-object-button',
+        name: button.name,
+        objectName: button.objectName,
+        visibleOn: getButtonVisibleOn(button),
+        className: `button_${button.name}`
+        }
+    })
+    let dropdownButtons = _.map(moreButtons, (button) => {
+        return {
+        type: 'steedos-object-button',
+        name: button.name,
+        objectName: button.objectName,
+        visibleOn: getButtonVisibleOn(button),
+        }
+    })
+    return {
+        buttons: amisButtonsSchema,
+        moreButtons: dropdownButtons
+    };
+}
+
+export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
+    const { buttons, moreButtons } = getObjectDetailHeaderButtons(objectSchema, recordId);
+    if(ctx.formFactor === 'SMALL'){
+        return {
+            "type": "button",
+            "icon": "fa fa-angle-down",
+            "onEvent": {
+              "click": {
+                "actions": [
+                  {
+                    "actionType": "drawer",
+                    "drawer": {
+                      "type": "drawer",
+                      "title": "操作",
+                      "body": [
+                        {
+                          "type": "button-group",
+                          "id": "u:fd837823be5b",
+                          "vertical": true,
+                          "tiled": true,
+                          "buttons": [
+                            ..._.map(buttons, (button)=>{
+                                button.className += ' w-full';
+                                return button;
+                            }),
+                            ..._.map(moreButtons, (button)=>{
+                                button.className += ' w-full';
+                                return button;
+                            })
+                          ],
+                          "btnLevel": "enhance",
+                          "className": "w-full",
+                          "btnClassName": "w-full",
+                          "size": "lg"
+                        }
+                      ],
+                      "id": "u:9815f7366b9f",
+                      "position": "bottom",
+                      "closeOnOutside": true,
+                      "resizable": false,
+                      "className": "buttons-drawer",
+                      "bodyClassName": "m-none p-none",
+                      "actions": []
+                    }
+                  }
+                ]
+              }
+            },
+            "id": "u:ee7c7929e6ae"
+          }
+    }else{
+        if(moreButtons.length > 0){
+            const dropdownButtonsSchema = {
+                type: "steedos-dropdown-button",
+                label: "",
+                buttons: moreButtons,
+                className: 'slds-icon'
+            }
+            buttons.push(dropdownButtonsSchema);
+        }
+        return buttons;
+    }
+}
+
+
+export const getObjectListViewButtonsSchemas = (objectSchema, ctx)=>{
+    const buttons = getListViewButtons(objectSchema, ctx);
+    if(ctx.formFactor === 'SMALL'){
+        return {
+            "type": "button",
+            "icon": "fa fa-angle-down",
+            "onEvent": {
+              "click": {
+                "actions": [
+                  {
+                    "actionType": "drawer",
+                    "drawer": {
+                      "type": "drawer",
+                      "title": "操作",
+                      "body": [
+                        {
+                          "type": "button-group",
+                          "id": "u:fd837823be5b",
+                          "vertical": true,
+                          "tiled": true,
+                          "buttons": [
+                            ..._.map(buttons, (button)=>{
+                                return {
+                                    type: 'steedos-object-button',
+                                    name: button.name,
+                                    objectName: button.objectName,
+                                    visibleOn: getButtonVisibleOn(button),
+                                    className: `button_${button.name} w-full`
+                                }
+                            })
+                          ],
+                          "btnLevel": "enhance",
+                          "className": "w-full",
+                          "btnClassName": "w-full",
+                          "size": "lg"
+                        }
+                      ],
+                      "id": "u:9815f7366b9f",
+                      "position": "bottom",
+                      "closeOnOutside": true,
+                      "resizable": false,
+                      "className": "buttons-drawer",
+                      "bodyClassName": "m-none p-none",
+                      "actions": []
+                    }
+                  }
+                ]
+              }
+            },
+            "id": "u:ee7c7929e6ae"
+          }
+    }else{
+        return _.map(buttons, (button) => {
+            return {
+            type: 'steedos-object-button',
+            name: button.name,
+            objectName: button.objectName,
+            visibleOn: getButtonVisibleOn(button),
+            className: `button_${button.name}`
+            }
+        });
+    }
+}

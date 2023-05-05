@@ -42,3 +42,7 @@
     display: flex;
     align-items: center;
 }
+
+.antd-ButtonGroup > .antd-Button {
+    max-width: none !important;
+}

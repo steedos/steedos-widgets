@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-21 10:27:43
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-30 16:28:44
+ * @LastEditTime: 2023-05-05 19:39:47
  * @Description: 
  */
 import React, { useEffect, useState } from 'react'
@@ -60,15 +60,18 @@ export const AmisObjectButton = (props) => {
       </svg>
       </>)
     }
+    // console.log('AmisObjectButton===>', button, className);
     if ((button as any).type === "amis_button") {
         const amisSchema = (button as any).amis_schema;
         const schema = isString(amisSchema) ? JSON.parse(amisSchema) : amisSchema;
         if(schema && schema.body.length > 0){
             delete schema.body[0]['visibleOn']
         }
-        // if(className){
-        //     schema.className = schema.className + ' ' + className;
-        // }
+
+        if(className){
+            schema.className = schema.className + ' ' + className;
+        }
+        
         const renderData = Object.assign(data, {objectName: objectName, app_id: appId, className: className});
         if(data._id){
             renderData.recordId = data._id

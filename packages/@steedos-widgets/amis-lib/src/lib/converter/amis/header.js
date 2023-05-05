@@ -1,7 +1,8 @@
-import { getAuthToken, getTenantId, getRootUrl } from '../../steedos.client.js';
-import { getListViewButtons, getObjectDetailButtons, getObjectDetailMoreButtons, getObjectRelatedListButtons, getButtonVisibleOn } from '../../buttons'
+import { getObjectRelatedListButtons, getButtonVisibleOn } from '../../buttons'
 import { getObjectFieldsFilterButtonSchema, getObjectFieldsFilterBarSchema } from './fields_filter';
 import { map, each, sortBy, compact, keys } from 'lodash';
+
+import { getObjectDetailButtonsSchemas, getObjectListViewButtonsSchemas } from '../../buttons'
 
 /**
  * 列表视图顶部第一行amisSchema
@@ -23,17 +24,7 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
     }
   );
 
-  const buttons = getListViewButtons(objectSchema, {});
-  let amisButtonsSchema = map(buttons, (button) => {
-    return {
-      type: 'steedos-object-button',
-      name: button.name,
-      objectName: button.objectName,
-      visibleOn: getButtonVisibleOn(button),
-      className: `button_${button.name}`
-    }
-  });
-  
+  let amisButtonsSchema = getObjectListViewButtonsSchemas(objectSchema, {formFactor: ctx.formFactor})
   const reg = new RegExp('_', 'g');
   const standardIcon = icon && icon.replace(reg, '-');
   return {
@@ -239,35 +230,11 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
   const { showRecordTitle = true } = options || {}
   // console.log('getObjectRecordDetailHeader==>', objectSchema, recordId)
   const { name, label, icon, NAME_FIELD_KEY } = objectSchema;
-  const buttons = getObjectDetailButtons(objectSchema, {});
-  const moreButtons = getObjectDetailMoreButtons(objectSchema, {
-    recordId: recordId,
-    objectName: name
-  })
-  let amisButtonsSchema = map(buttons, (button) => {
-    return {
-      type: 'steedos-object-button',
-      name: button.name,
-      objectName: button.objectName,
-      visibleOn: getButtonVisibleOn(button),
-      className: `button_${button.name}`
-    }
-  })
-  let dropdownButtons = map(moreButtons, (button) => {
-    return {
-      type: 'steedos-object-button',
-      name: button.name,
-      objectName: button.objectName,
-      visibleOn: getButtonVisibleOn(button),
-    }
-  })
-  const dropdownButtonsSchema = {
-    type: "steedos-dropdown-button",
-    label: "",
-    buttons: dropdownButtons,
-    className: 'slds-icon'
-  }
-  amisButtonsSchema.push(dropdownButtonsSchema);
+  
+  let amisButtonsSchema = getObjectDetailButtonsSchemas(objectSchema, recordId, options);
+
+  // console.log(`getObjectRecordDetailHeader==>`, amisButtonsSchema)
+  
   const reg = new RegExp('_', 'g');
   const standardIcon = icon && icon.replace(reg, '-');
 

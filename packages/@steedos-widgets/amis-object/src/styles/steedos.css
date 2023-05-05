@@ -5,3 +5,40 @@
 #steedosPageRoot{
     overflow: auto;
 }
+
+.buttons-drawer .antd-Drawer-content{
+    height: auto !important;
+    max-height: 70% !important;
+}
+
+.buttons-drawer .antd-Drawer-body{
+    overflow: inherit !important;
+}
+
+.buttons-drawer .antd-Drawer-body button{
+    border-color: #c9c9c9;
+    border-right: none !important;
+    border-left: none !important;
+    border-bottom: none !important;
+    border-radius: 0px !important;;
+}
+
+@media screen and (max-width: 767px) {
+    /* 手机版Modal全屏 */
+    .antd-Modal-content{
+        max-height: 100% !important;
+        margin: 0px !important;
+        border-radius: 0px !important;
+        height: 100% !important;
+    }
+
+    /* 修正手机版TreeSelect样式异常 */
+    .antd-TreeSelect-popup .antd-Tree{
+        width: 100% !important;
+    }
+
+    /* 修正手机版 body上的sidebar导致y滚动条异常 */
+    .sidebar{
+        padding-bottom: 0px !important;
+    }
+}

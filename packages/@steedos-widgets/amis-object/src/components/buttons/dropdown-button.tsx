@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-22 17:26:21
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-27 13:34:00
+ * @LastEditTime: 2023-05-05 18:43:18
  * @Description: 
  */
 import React, { useEffect, useState } from 'react'
@@ -10,18 +10,21 @@ import { Dropdown, Menu } from 'antd';
 import { map, defaultsDeep } from 'lodash';
 import { createObject } from '@steedos-widgets/amis-lib';
 
-const getMenu = (render, buttons, btnClassName, props)=>{
-    return map(buttons, (button)=>{
+const getMenu = (render, buttons, btnClassName, props) => {
+  return map(buttons, (button) => {
+    if (btnClassName) {
       button.className = `${button.className} ${btnClassName}`
-        return {
-            key: button.name,
-            label: (
-              <>
-                {render('body', button, props)}
-              </>
-            )
-          }
-    })
+    }
+    delete button.className;
+    return {
+      key: button.name,
+      label: (
+        <>
+          {render('body', button, props)}
+        </>
+      )
+    }
+  })
 }
 
 export const SteedosDropdownButton = (props)=>{
