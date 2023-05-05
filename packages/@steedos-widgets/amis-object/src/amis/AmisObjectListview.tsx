@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-05-05 11:32:25
+ * @LastEditTime: 2023-05-05 12:02:01
  * @Description: 
  */
 import { getListSchema, getObjectListHeader, getUISchema, Router } from '@steedos-widgets/amis-lib'
@@ -168,7 +168,7 @@ export const AmisObjectListView = async (props) => {
                     "requestAdaptor": "console.log('service listview schemaApi requestAdaptor======>');api.data={query: '{spaces__findOne(id: \"none\"){_id,name}}'};return api;",
                     "adaptor": `
                         console.log('service listview schemaApi adaptor....', api.body); 
-                        const { appId, objectName, listName, display, formFactor: defaultFormFactor} = api.body;
+                        const { appId, objectName, defaultListName: listName, display, formFactor: defaultFormFactor} = api.body;
                         return new Promise((resolve)=>{
                           const listViewSchemaProps = ${JSON.stringify(listViewSchemaProps)};
                           const formFactor = (["split"].indexOf(display) > -1) ? 'SMALL': defaultFormFactor;
