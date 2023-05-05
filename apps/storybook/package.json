@@ -1,6 +1,6 @@
 {
   "name": "storybook",
-  "version": "1.2.6-beta.15",
+  "version": "1.2.6-beta.16",
   "main": "index.js",
   "private": true,
   "license": "MIT",
