@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-05-04 16:22:32
+ * @LastEditTime: 2023-05-05 11:32:25
  * @Description: 
  */
 import { getListSchema, getObjectListHeader, getUISchema, Router } from '@steedos-widgets/amis-lib'
@@ -127,7 +127,7 @@ export const AmisObjectListView = async (props) => {
     serviceData.uiSchema = uiSchema;
   }
 
-  serviceData.defaultListName = first(values(uiSchema.list_views))?.name
+  serviceData.defaultListName = listName ? listName : first(values(uiSchema.list_views))?.name
   // console.timeEnd('AmisObjectListView')
   // console.log('serviceData===>', serviceData)
   // console.log('headerSchema===>', headerSchema)
