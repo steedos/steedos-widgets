@@ -388,7 +388,7 @@ export async function getTableSchema(fields, options){
         options = {};
     }
     let columns = [];
-    if(options.formFactor === 'SMALL'){
+    if(options.formFactor === 'SMALL' || ["split"].indexOf(options.displayAs) > -1){
         columns = await getMobileTableColumns(fields, options);
     }
     else{

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-05-05 12:02:01
+ * @LastEditTime: 2023-05-06 13:43:49
  * @Description: 
  */
 import { getListSchema, getObjectListHeader, getUISchema, Router } from '@steedos-widgets/amis-lib'
@@ -40,9 +40,10 @@ export const AmisObjectListView = async (props) => {
     }
   }
 
-  if(["split"].indexOf(displayAs) > -1){
-    formFactor = 'SMALL';
-  }
+  // 分栏模式不应该改变尺寸变量值
+  // if(["split"].indexOf(displayAs) > -1){
+  //   formFactor = 'SMALL';
+  // }
 
   if(!ctx.formFactor){
     ctx.formFactor = formFactor;

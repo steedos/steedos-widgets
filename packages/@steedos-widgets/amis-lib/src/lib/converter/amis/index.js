@@ -141,7 +141,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
       }), 
       filter: options.filterVisible !== false && await getObjectFilter(objectSchema, fields, options),
     };
-    if(options.formFactor !== 'SMALL'){
+    if(options.formFactor !== 'SMALL' || ["split"].indexOf(options.displayAs) == -1){
       Object.assign(bodyProps, {
         bulkActions: options.bulkActions != false ? bulkActions : false
       });
