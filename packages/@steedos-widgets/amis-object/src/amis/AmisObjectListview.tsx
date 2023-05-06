@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-05-06 13:43:49
+ * @LastEditTime: 2023-05-06 15:05:50
  * @Description: 
  */
 import { getListSchema, getObjectListHeader, getUISchema, Router } from '@steedos-widgets/amis-lib'
@@ -168,13 +168,16 @@ export const AmisObjectListView = async (props) => {
                     },
                     "requestAdaptor": "console.log('service listview schemaApi requestAdaptor======>');api.data={query: '{spaces__findOne(id: \"none\"){_id,name}}'};return api;",
                     "adaptor": `
-                        console.log('service listview schemaApi adaptor....', api.body); 
-                        const { appId, objectName, defaultListName: listName, display, formFactor: defaultFormFactor} = api.body;
+                        // console.log('service listview schemaApi adaptor....', api.body); 
+                        let { appId, objectName, defaultListName: listName, display, formFactor: defaultFormFactor} = api.body;
+                        if(api.body.listName){
+                          listName = api.body.listName;
+                        }
                         return new Promise((resolve)=>{
                           const listViewSchemaProps = ${JSON.stringify(listViewSchemaProps)};
                           const formFactor = (["split"].indexOf(display) > -1) ? 'SMALL': defaultFormFactor;
                           listViewSchemaProps.formFactor = formFactor;
-                          // console.log("====listViewSchemaProps===>", listViewSchemaProps)
+                          // console.log("====listViewSchemaProps===>", listName, listViewSchemaProps)
                           window.getListSchema(appId, objectName, listName, listViewSchemaProps).then((schema)=>{
                             payload.data = schema.amisSchema;
                             // console.log("payload================>", payload)
