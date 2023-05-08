@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-20 11:43:14
+ * @LastEditTime: 2023-05-08 16:34:25
  * @Description:
  */
 
@@ -265,7 +265,7 @@ function getDefaultRelatedListProps(uiSchema, listName, ctx) {
   
 function getRelatedListProps(uiSchema, listViewName, ctx) {
     if (ctx.columns) {
-        const sort = getListViewSort(ctx.sort);
+        const sort = getListViewSort({sort: ctx.sort});
         let { filters , filtersFunction} = ctx;
         if(!filtersFunction && filters){
             filtersFunction = str2function(
