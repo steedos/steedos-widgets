@@ -253,8 +253,9 @@ async function getMobileTableColumns(fields, options){
     const url = Tpl.getNameTplUrl(nameField, options)
 
     const columnLines = getMobileLines(tpls);
-    
-    columns.push({
+
+
+    let column = {
         name: nameField.name,
         label: nameField.label,
         sortable: nameField.sortable,
@@ -263,13 +264,66 @@ async function getMobileTableColumns(fields, options){
         actionType: "link",
         link: url,
         innerClassName: "steedos-listview-item block text-gray-500",
-        body:{
+        body: {
             "type": "wrapper",
             "body": columnLines,
             "size": "none",
             "className": "p-1"
         }
-    });
+    }
+    
+    if(options.objectName === 'cms_files'){
+        if(Meteor.isCordova){
+            column = {
+                ...column,
+                actionType: "",
+                link: "",
+                onEvent: {
+                    "click": {
+                        "actions": [
+                            {
+                                "script": `
+                                    let cms_url = "/api/files/files/"+event.data.versions[0]+"?download=true"
+                                    Steedos.cordovaDownload(encodeURI(Steedos.absoluteUrl(cms_url)), event.data.name);
+                                `,
+                                "actionType": "custom"
+                            }
+                        ],
+                        "weight": 0
+                    }
+                }
+            }
+        }else{
+            column = {
+                ...column,
+                actionType: "",
+                link: "",
+                onEvent: {
+                    "click": {
+                        "actions": [
+                            {
+                                "args": {
+                                    "api": {
+                                        "url": url,
+                                        "method": "get",
+                                        "headers": {
+                                            "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                                        }
+                                    }
+                                },
+                                "actionType": "download"
+                            }
+                        ],
+                        "weight": 0
+                    }
+                }
+            }
+        }
+        
+    }
+
+    columns.push(column);
+    
 
     return columns;
 }
