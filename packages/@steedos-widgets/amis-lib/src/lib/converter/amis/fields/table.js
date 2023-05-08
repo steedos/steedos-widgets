@@ -273,7 +273,7 @@ async function getMobileTableColumns(fields, options){
     }
     
     if(options.objectName === 'cms_files'){
-        if(Meteor.isCordova){
+        if(window.Meteor?.isCordova){
             column = {
                 ...column,
                 actionType: "",
