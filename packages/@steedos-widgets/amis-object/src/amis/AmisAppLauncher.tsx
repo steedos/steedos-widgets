@@ -14,6 +14,10 @@ export const AmisAppLauncher = async (props) => {
 
   const formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE';
   const isMobile = formFactor === "SMALL" ? true : false;
+  const on_click_script = `
+    var evalFunString = "(function(){" + event.data.on_click + "})()";
+    eval(evalFunString);
+  `
   let dialogSchema = {}
   if(isMobile){
     dialogSchema = {
@@ -26,8 +30,6 @@ export const AmisAppLauncher = async (props) => {
           "items": {
             "type": "button",
             "level": "link",
-            "actionType": "link",
-            "link": "${path}",
             "body": [
               {
                 "type": "tpl",
@@ -53,6 +55,26 @@ export const AmisAppLauncher = async (props) => {
                 "actions": [
                   {
                     "actionType": "closeDialog"
+                  },
+                  {
+                    "actionType": "link",
+                    "args": {
+                      "link": "${path}"
+                    },
+                    "expression": "${AND(!blank , !on_click)}"
+                  },
+                  {
+                    "actionType": "url",
+                    "args": {
+                      "url": "${path}",
+                      "blank": true
+                    },
+                    "expression": "${AND(blank , !on_click)}"
+                  },
+                  {
+                    "actionType": "custom",
+                    "script": on_click_script,
+                    "expression": "${on_click}"
                   }
                 ]
               }
@@ -85,12 +107,7 @@ export const AmisAppLauncher = async (props) => {
         "@data.changed.steedos_keyvalues": {
           "actions": [
             {
-              "actionType": "setValue",
-              "args": {
-                "value": {
-                  "keyvalue": "${event.data.keyvalue.value}"
-                }
-              }
+              "actionType": "reload"
             }
           ]
         },
@@ -166,7 +183,7 @@ export const AmisAppLauncher = async (props) => {
                             "args": {
                               "link": "${path}"
                             },
-                            "expression": "${!blank}"
+                            "expression": "${AND(!blank , !on_click)}"
                           },
                           {
                             "actionType": "url",
@@ -174,8 +191,13 @@ export const AmisAppLauncher = async (props) => {
                               "url": "${path}",
                               "blank": true
                             },
-                            "expression": "${blank}"
-                          }
+                            "expression": "${AND(blank , !on_click)}"
+                          },
+                          {
+                            "actionType": "custom",
+                            "script": on_click_script,
+                            "expression": "${!!on_click}"
+                          }      
                         ]
                       }
                     },
@@ -239,12 +261,7 @@ export const AmisAppLauncher = async (props) => {
         "@data.changed.steedos_keyvalues": {
           "actions": [
             {
-              "actionType": "setValue",
-              "args": {
-                "value": {
-                  "keyvalue": "${event.data.keyvalue.value}"
-                }
-              }
+              "actionType": "reload"
             }
           ]
         },
@@ -326,12 +343,7 @@ export const AmisAppLauncher = async (props) => {
       "@data.changed.steedos_keyvalues": {
         "actions": [
           {
-            "actionType": "setValue",
-            "args": {
-              "value": {
-                "keyvalue": "${event.data.keyvalue.value}"
-              }
-            }
+            "actionType": "reload"
           }
         ]
       }
