@@ -1,16 +1,16 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-04-06 10:17:36
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-05-08 12:01:04
  * @Description: 
  */
 import { getObjectRelatedList } from '@steedos-widgets/amis-lib'
-import { map } from 'lodash';
+import { map, has } from 'lodash';
 
 export const AmisRecordDetailRelatedLists = async (props) => {
   // console.log(`AmisRecordDetailRelatedLists props==>`, props)
-  const { objectApiName, recordId, data, perPage = 5 } = props;
+  const {$schema, objectApiName, recordId, data, perPage = 5 } = props;
   if(!objectApiName){
   // if(!objectApiName || !recordId){
     return {
@@ -35,11 +35,16 @@ export const AmisRecordDetailRelatedLists = async (props) => {
       "className": "mb-3"
     }
   }
+  let staticRecordId = '';
+  if(has(props, "recordId") && $schema.recordId !== "${recordId}"){
+    staticRecordId = recordId;
+  }
+
   return {
     type: 'service',
     className: "steedos-record-detail-related-lists",
     body: map(relatedLists, (item)=>{
-      return {
+      let relatedList: any = {
         type: 'steedos-object-related-listview',
         objectApiName: objectApiName,
         // recordId: recordId,
@@ -54,6 +59,10 @@ export const AmisRecordDetailRelatedLists = async (props) => {
         hiddenEmptyTable: true,
         relatedLabel: item.label
       }
+      if(staticRecordId){
+        relatedList.recordId = staticRecordId;
+      }
+      return relatedList;
     })
   }
 }
