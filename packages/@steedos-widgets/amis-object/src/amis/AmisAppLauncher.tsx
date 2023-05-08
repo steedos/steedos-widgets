@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-03-13 16:19:22
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2023-05-08 15:05:32
  * @Description: 
  */
 
@@ -77,7 +77,7 @@ export const AmisAppLauncher = async (props) => {
         "headers": {
           "Authorization": "Bearer ${context.tenantId},${context.authToken}"
         },
-        "adaptor": "\nlet app_items = payload;\npayload.data = {\n  app_items\n}\nreturn payload;",
+        "adaptor": "\nlet app_items = payload;\npayload = {\n  app_items\n}\nreturn payload;",
         "messages": {
         }
       },
@@ -90,6 +90,19 @@ export const AmisAppLauncher = async (props) => {
                 "value": {
                   "keyvalue": "${event.data.keyvalue.value}"
                 }
+              }
+            }
+          ]
+        },
+        "fetchInited": {
+          "actions": [
+            {
+              "actionType": "broadcast",
+              "args": {
+                "eventName": "@appsLoaded"
+              },
+              "data": {
+                "apps": "${event.data.app_items}"
               }
             }
           ]
@@ -234,6 +247,19 @@ export const AmisAppLauncher = async (props) => {
               }
             }
           ]
+        },
+        "fetchInited": {
+          "actions": [
+            {
+              "actionType": "broadcast",
+              "args": {
+                "eventName": "@appsLoaded"
+              },
+              "data": {
+                "apps": "${event.data.app_items}"
+              }
+            }
+          ]
         }
       },
       "api": {
@@ -243,7 +269,7 @@ export const AmisAppLauncher = async (props) => {
         "headers": {
           "Authorization": "Bearer ${context.tenantId},${context.authToken}"
         },
-        "adaptor": "\nlet app_items = payload;\nlet object_items = [];\nlet objects = [];\napp_items.forEach((item) => {\n  item.children.forEach((i) => {\n    if (objects.indexOf(i.id) < 0) {\n      objects.push(i.id);\n      object_items.push(i)\n    }\n  })\n})\npayload.data = {\n  app_items,\n  object_items\n}\nreturn payload;"
+        "adaptor": "\nlet app_items = payload;\nlet object_items = [];\nlet objects = [];\napp_items.forEach((item) => {\n  item.children.forEach((i) => {\n    if (objects.indexOf(i.id) < 0) {\n      objects.push(i.id);\n      object_items.push(i)\n    }\n  })\n})\npayload = {\n  app_items,\n  object_items\n}\nreturn payload;"
       }
     }
   }
