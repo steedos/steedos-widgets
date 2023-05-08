@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-21 10:27:43
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-05-05 19:39:47
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-05-08 14:02:19
  * @Description: 
  */
 import React, { useEffect, useState } from 'react'
@@ -68,7 +68,7 @@ export const AmisObjectButton = (props) => {
             delete schema.body[0]['visibleOn']
         }
 
-        if(className){
+        if(schema && className){
             schema.className = schema.className + ' ' + className;
         }
         
