@@ -21,6 +21,7 @@
     border-left: none !important;
     border-bottom: none !important;
     border-radius: 0px !important;;
+    min-height: 50px;
 }
 
 @media screen and (max-width: 767px) {
