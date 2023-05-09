@@ -90,7 +90,7 @@ export const AmisGlobalFooter = async (props) => {
                                     "overflowPopoverClassName": "steedos-global-footer-popup",
                                     "overflowLabel":{
                                         "type": 'tpl',
-                                        "tpl": \`<span class='fill-slate-500  text-slate-700 block -ml-px no-underline group flex items-center text-[12px] font-medium rounded-md flex-col leading-3 nav-label'><svg class=" flex-shrink-0 h-10 w-10"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#lead_list"></use></svg>菜单</span>\`,
+                                        "tpl": \`<span class='fill-slate-500  text-slate-700 block -ml-px no-underline group flex items-center text-[12px] font-medium rounded-md flex-col leading-3 nav-label'><svg class=" flex-shrink-0 h-10 w-10" style="padding:7px"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#rows"></use></svg>菜单</span>\`,
                                         "className":'h-full flex items-center'
                                     },
                                     "overflowIndicator":""
