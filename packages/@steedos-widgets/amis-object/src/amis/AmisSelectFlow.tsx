@@ -6,6 +6,7 @@
  * @Description: 
  */
 
+import './AmisSelectFlow.less';
 import { random } from 'lodash';
 
 const getSelectFlowSchema = (id, props)=>{
@@ -110,6 +111,7 @@ export const AmisSelectFlow = (props)=>{
     return {
         "type": "service",
         "id": "selectFlowService",
+        "className":"steedos-select-flow-service",
         "body": [
             {
                 "type": "search-box",
