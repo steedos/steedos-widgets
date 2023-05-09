@@ -134,6 +134,35 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     // }
     // listView.handleFilterSubmit(Object.assign({}, removedValues, filterFormValues));
   `;
+  const onResetScript = `
+    const scope = event.context.scoped;
+    var filterForm = scope.parent.parent.getComponents().find(function(n){
+      return n.props.type === "form";
+    });
+    var filterFormValues = filterForm.getValues();
+    var listView = scope.parent.parent.parent.getComponents().find(function(n){
+      return n.props.type === "crud";
+    });
+    const removedValues = {};
+    for(var k in filterFormValues){
+      if(/^__searchable__/.test(k)){
+        removedValues[k] = "";
+      }
+    }
+    if(!event.data.isLookup){
+      // 刷新浏览器后，filterFormValues值是空的，只能从本地存储中取出并重置为空值
+      const listViewId = event.data.listViewId;
+      const listViewPropsStoreKey = location.pathname + "/crud/" + listViewId ;
+      let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
+      if(localListViewProps){
+        localListViewProps = JSON.parse(localListViewProps);
+        for(var k in localListViewProps){
+          removedValues[k] = "";
+        }
+      }
+    }
+    listView.handleFilterSubmit(removedValues);
+  `;
   const dataProviderInited = `
     const objectName = data.objectName;
     const isLookup = data.isLookup;
@@ -322,6 +351,21 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
                       {
                         "actionType": "custom",
                         "script": onSearchScript
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "button",
+                "label": "重置",
+                "visibleOn": "this.filterFormSearchableFields && this.filterFormSearchableFields.length",
+                "onEvent": {
+                  "click": {
+                    "actions": [
+                      {
+                        "actionType": "custom",
+                        "script": onResetScript
                       }
                     ]
                   }
