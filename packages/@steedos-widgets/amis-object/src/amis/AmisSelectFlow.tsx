@@ -31,6 +31,7 @@ const getSelectFlowSchema = (id, props)=>{
         "className": className,
         "required": required,
         "treeContainerClassName": treeContainerClassName,
+        "heightAuto":true,
         // "menuTpl": {
         //     // type: "button",
         //     type: "tpl",
