@@ -16,7 +16,20 @@ export const AmisAppLauncher = async (props) => {
   const isMobile = formFactor === "SMALL" ? true : false;
   const on_click_script = `
     var evalFunString = "(function(){" + event.data.on_click + "})()";
-    eval(evalFunString);
+    try{
+      eval(evalFunString);
+    }
+    catch(e){
+      console.error("catch some error when eval the on_click script for app link:");
+      console.error(e.message + "\\r\\n" + e.stack);
+    }
+  `
+  const mobile_blank_script = `
+    if(event.data.path[0] == "/"){
+      Steedos.openWindow(event.data.context.rootUrl + event.data.path)
+    }else{
+      Steedos.openWindow(event.data.path)
+    }
   `
   let dialogSchema = {}
   if(isMobile){
@@ -64,11 +77,8 @@ export const AmisAppLauncher = async (props) => {
                     "expression": "${AND(!blank , !on_click)}"
                   },
                   {
-                    "actionType": "url",
-                    "args": {
-                      "url": "${path}",
-                      "blank": true
-                    },
+                    "actionType": "custom",
+                    "script": mobile_blank_script,
                     "expression": "${AND(blank , !on_click)}"
                   },
                   {
