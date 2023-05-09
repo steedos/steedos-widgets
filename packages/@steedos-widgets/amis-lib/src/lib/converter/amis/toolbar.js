@@ -267,7 +267,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                             "list_view": "${uiSchema.list_views[listName]}",
                             "appId": "${appId}",
                             "global": "${global}",
-                            "objectName": "${objectName}",
+                            "targetObjectName": "${objectName}",
                           },
                           "body": [
                             {
@@ -307,7 +307,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                                     {
                                       "args": {
                                         // 直接使用recordId不能拿到数据，只能通过result里面拿数据
-                                        "url": "${context.rootUrl}/app/${appId}/${objectName}/grid/listview_${result.data.recordId|lowerCase}",
+                                        "url": "${context.rootUrl}/app/${appId}/${targetObjectName}/grid/listview_${result.data.recordId|lowerCase}",
                                         "blank": false
                                       },
                                       "actionType": "url",
@@ -348,7 +348,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                           "data": {
                             "&": "$$",
                             "listName": "${listName}",
-                            "objectName": "${objectName}",
+                            "targetObjectName": "${objectName}",
                             "list_view": "${uiSchema.list_views[listName]}",
                             "appId": "${appId}",
                             "global": "${global}"
@@ -391,7 +391,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                                   "actions": [
                                     {
                                       "args": {
-                                        "url": "${context.rootUrl}/app/${appId}/${objectName}/grid/listview_${result.data.recordId|lowerCase}",
+                                        "url": "${context.rootUrl}/app/${appId}/${targetObjectName}/grid/listview_${result.data.recordId|lowerCase}",
                                         "blank": false
                                       },
                                       "actionType": "url",
@@ -427,7 +427,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                           "type": "dialog",
                           "title": "重命名 列表视图",
                           "data": {
-                            "objectName": "${objectName}",
+                            "targetObjectName": "${objectName}",
                             "recordId": "${uiSchema.list_views[listName]._id}",
                             "appId": "${appId}"
                           },
@@ -448,7 +448,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                                   "actions": [
                                     {
                                       "args": {
-                                        "url": "${context.rootUrl}/app/${appId}/${objectName}/grid/${name}",
+                                        "url": "${context.rootUrl}/app/${appId}/${targetObjectName}/grid/${name}",
                                         "blank": false
                                       },
                                       "actionType": "url",
@@ -522,6 +522,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                           "type": "dialog",
                           "title": "过滤设置",
                           "data": {
+                            "targetObjectName": "${objectName}",
                             "objectName": "${objectName}",
                             "recordId": "${uiSchema.list_views[listName]._id}",
                             "listName": "${listName}",
@@ -547,7 +548,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                                   "actions": [
                                     {
                                       "args": {
-                                        "url": "${context.rootUrl}/app/${appId}/${objectName}/grid/${listName}",
+                                        "url": "${context.rootUrl}/app/${appId}/${targetObjectName}/grid/${listName}",
                                         "blank": false
                                       },
                                       "actionType": "url",
@@ -585,6 +586,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                           "title": "显示的列",
                           "data": {
                             "&": "$$",
+                            "targetObjectName": "${objectName}",
                             "objectName": "${objectName}",
                             "recordId": "${uiSchema.list_views[listName]._id}",
                             "listName": "${listName}",
@@ -610,7 +612,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                                   "actions": [
                                     {
                                       "args": {
-                                        "url": "${context.rootUrl}/app/${appId}/${objectName}/grid/${listName}",
+                                        "url": "${context.rootUrl}/app/${appId}/${targetObjectName}/grid/${listName}",
                                         "blank": false
                                       },
                                       "actionType": "url"
@@ -646,6 +648,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                           "title": "弹框标题",
                           "data": {
                             "&": "$$",
+                            "targetObjectName": "${objectName}",
                             "objectName": "${objectName}",
                             "recordId": "${uiSchema.list_views[listName]._id}",
                             "listName": "${listName}",
@@ -671,7 +674,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
                                   "actions": [
                                     {
                                       "args": {
-                                        "url": "${context.rootUrl}/app/${appId}/${objectName}/grid/${listName}",
+                                        "url": "${context.rootUrl}/app/${appId}/${targetObjectName}/grid/${listName}",
                                         "blank": false
                                       },
                                       "actionType": "url"
