@@ -367,6 +367,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
               {
                 "type": "button",
                 "label": "取消",
+                "name": "btn_filter_form_cancel",
                 "visibleOn": "this.filterFormSearchableFields && this.filterFormSearchableFields.length",
                 "onEvent": {
                   "click": {

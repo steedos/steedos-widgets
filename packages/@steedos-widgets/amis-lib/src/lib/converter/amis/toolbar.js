@@ -45,11 +45,26 @@ const filterForm = scope.getComponents().find(function(n){
 const filterService = filterForm.context.getComponents().find(function(n){
   return n.props.type === "service";
 });
-filterService.setData({showFieldsFilter: !!!filterService.props.data.showFieldsFilter});
-//触发amis crud 高度重算
-setTimeout(()=>{
-  window.dispatchEvent(new Event("resize"))
-}, 100)
+// filterService.setData({showFieldsFilter: !!!filterService.props.data.showFieldsFilter});
+let resizeWindow = function(){
+  //触发amis crud 高度重算
+  setTimeout(()=>{
+    window.dispatchEvent(new Event("resize"))
+  }, 100)
+}
+if(filterService.props.data.showFieldsFilter){
+  let buttonCancel = SteedosUI.getClosestAmisComponentByType(filterForm.context, "button", { 
+    direction: "down", 
+    name: "btn_filter_form_cancel" 
+  });
+  buttonCancel.props.dispatchEvent('click', {}).then(function(){
+    resizeWindow();
+  });
+}
+else{
+  filterService.setData({showFieldsFilter: true});
+  resizeWindow();
+}
 `;
 
 function getExportApiRequestAdaptorScript(){
