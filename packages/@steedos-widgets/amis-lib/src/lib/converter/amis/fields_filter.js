@@ -134,7 +134,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     // }
     // listView.handleFilterSubmit(Object.assign({}, removedValues, filterFormValues));
   `;
-  const onResetScript = `
+  const onCancelScript = `
     const scope = event.context.scoped;
     var filterForm = scope.parent.parent.getComponents().find(function(n){
       return n.props.type === "form";
@@ -162,6 +162,14 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       }
     }
     listView.handleFilterSubmit(removedValues);
+    const filterService = filterForm.context.getComponents().find(function(n){
+      return n.props.type === "service";
+    });
+    filterService.setData({showFieldsFilter: !!!filterService.props.data.showFieldsFilter});
+    //触发amis crud 高度重算
+    setTimeout(()=>{
+      window.dispatchEvent(new Event("resize"))
+    }, 100);
   `;
   const dataProviderInited = `
     const objectName = data.objectName;
@@ -358,14 +366,14 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
               },
               {
                 "type": "button",
-                "label": "重置",
+                "label": "取消",
                 "visibleOn": "this.filterFormSearchableFields && this.filterFormSearchableFields.length",
                 "onEvent": {
                   "click": {
                     "actions": [
                       {
                         "actionType": "custom",
-                        "script": onResetScript
+                        "script": onCancelScript
                       }
                     ]
                   }
