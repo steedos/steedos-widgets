@@ -206,3 +206,35 @@ body {
     max-height: unset;
     overflow: unset;
 }
+
+/* 手机端native时间控件样式 */
+@media (max-width: 768px){
+    .steedos-combo-edit .antd-Form-row{
+        display: flex !important;
+        column-gap: unset !important;
+    }
+    .steedos-combo-edit .antd-Form::before{
+        content: unset;
+    }
+    
+    .steedos-combo-edit .antd-Form .antd-Form-item::after{
+        content: unset;
+    }
+    
+    .steedos-combo-edit .antd-Form .antd-Form-item{
+        padding: 0;
+    }
+
+    .steedos-combo-edit{
+        flex-wrap:nowrap !important;
+    }
+
+    .steedos-combo-edit .steedos-native-date .antd-TextControl-input input{
+        min-width: 120px;
+        align-items: start !important;
+    }
+
+    .steedos-combo-edit .steedos-native-time .antd-TextControl-input input{
+        min-width: 70px;
+    }
+}
