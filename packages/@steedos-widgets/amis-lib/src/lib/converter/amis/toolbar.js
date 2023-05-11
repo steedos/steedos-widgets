@@ -50,7 +50,7 @@ let resizeWindow = function(){
   //触发amis crud 高度重算
   setTimeout(()=>{
     window.dispatchEvent(new Event("resize"))
-  }, 100)
+  }, 500);
 }
 if(filterService.props.data.showFieldsFilter){
   let buttonCancel = SteedosUI.getClosestAmisComponentByType(filterForm.context, "button", { 
