@@ -206,7 +206,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
         api: await getTableApi(objectSchema, fields, options),
         hiddenOn: options.tableHiddenOn,
         autoFillHeight: options.isRelated ? false : true,
-        className: `flex-auto ${crudClassName || ""}`,
+        className: `flex-auto bg-white ${crudClassName || ""}`,
         crudClassName: crudClassName,
       }, 
         bodyProps,
