@@ -803,8 +803,8 @@ export function getObjectFooterToolbar(mainObject, formFactor) {
   }
   else {
     return [
-      "statistics",
       "switch-per-page",
+      "statistics",
       "pagination"
     ]
   }
