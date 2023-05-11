@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-27 15:54:12
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-03-02 19:54:34
+ * @LastEditTime: 2023-05-10 22:52:45
  * @Description: 
  */
 import { message, notification, Button, Space} from 'antd';
@@ -12,7 +12,8 @@ import { ListView } from './listView';
 import { Router } from './router';
 import { render } from './render';
 import { getFieldDefaultValue } from './defaultValue';
-import {getTreeOptions} from './tree'
+import { getTreeOptions } from './tree';
+import { getClosestAmisComponentByType } from './amis';
 
 export const SteedosUI = Object.assign({}, {
     render: render,
@@ -80,5 +81,6 @@ export const SteedosUI = Object.assign({}, {
       }
     },
     getFieldDefaultValue,
-    getTreeOptions
+    getTreeOptions,
+    getClosestAmisComponentByType
 })
