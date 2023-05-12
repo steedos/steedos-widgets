@@ -164,6 +164,15 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
         "label": "",
         "icon": "fa fa-search",
         "type": "button",
+        "badge": {
+          "offsetx": [
+            -2,
+            2
+          ],
+          "size":8,
+          "animation": true,
+          "visibleOn": "${isFieldsFilterEmpty == false}"
+        },
         "align": "right",
         "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
         "onEvent": {

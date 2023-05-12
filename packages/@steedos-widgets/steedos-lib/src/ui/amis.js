@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-05-10 22:08:05
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-05-10 23:17:53
+ * @LastEditTime: 2023-05-12 13:39:53
  */
 
 /**
@@ -43,4 +43,29 @@ export function getClosestAmisComponentByType(scope, type, options) {
             return getClosestAmisComponentByType(scope.parent, type, options);
         }
     }
+}
+
+/**
+ * 判断是否crud顶部的搜索栏设置了非空的过滤条件
+ * @param {*} formValues filterFormValues，crud顶部的搜索栏表单项值
+ * @returns boolean
+ */
+export function isFilterFormValuesEmpty(formValues) {
+    let isEmpty = true;
+    let filterFormValues = _.pickBy(formValues, function (n, k) {
+        return /^__searchable__/g.test(k);
+    });
+    if (!_.isEmpty(filterFormValues)) {
+        const omitedEmptyFormValue = _.omitBy(filterFormValues, function (n) {
+            return _.isNil(n)
+                || (_.isObject(n) && _.isEmpty(n))
+                || (_.isArray(n) && _.isEmpty(n.filter(function (item) { return !_.isNil(item) })))
+                || (_.isString(n) && n.length === 0);
+        });
+        // 有过滤条件时自动展开搜索栏
+        if (!_.isEmpty(omitedEmptyFormValue)) {
+            isEmpty = false;
+        }
+    }
+    return isEmpty;
 }
