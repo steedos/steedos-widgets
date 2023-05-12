@@ -119,7 +119,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     var filterForm = scope.parent.parent.getComponents().find(function(n){
       return n.props.type === "form";
     });
-    filterForm.handleFormSubmit(event)
+    filterForm.handleFormSubmit(event);
     // var filterFormValues = filterForm.getValues();
     // var listView = scope.parent.parent.parent.getComponents().find(function(n){
     //   return n.props.type === "crud";
@@ -133,6 +133,21 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     //   }
     // }
     // listView.handleFilterSubmit(Object.assign({}, removedValues, filterFormValues));
+    let isMobile = Steedos.isMobile();
+    if(isMobile){
+      // 手机端点击搜索的时候自动收起搜索栏
+      let resizeWindow = function(){
+        //触发amis crud 高度重算
+        setTimeout(()=>{
+          window.dispatchEvent(new Event("resize"))
+        }, 500);
+      }
+      const filterService = filterForm.context.getComponents().find(function(n){
+        return n.props.type === "service";
+      });
+      filterService.setData({showFieldsFilter: false});
+      resizeWindow();
+    }
   `;
   const onCancelScript = `
     const scope = event.context.scoped;
