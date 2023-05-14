@@ -52,7 +52,12 @@ let resizeWindow = function(){
     window.dispatchEvent(new Event("resize"))
   }, 500);
 }
+let isMobile = Steedos.isMobile();
 if(filterService.props.data.showFieldsFilter){
+  if(isMobile){
+    // 手机上只能通过取消按钮来关闭搜索栏
+    return;
+  }
   let buttonCancel = SteedosUI.getClosestAmisComponentByType(filterForm.context, "button", { 
     direction: "down", 
     name: "btn_filter_form_cancel" 
@@ -64,6 +69,11 @@ if(filterService.props.data.showFieldsFilter){
 else{
   filterService.setData({showFieldsFilter: true});
   resizeWindow();
+  if(isMobile){
+    // 手机端在显示搜索栏时隐藏刷新按钮
+    let crudService = scope.getComponentById("service_listview_" + event.data.objectName);
+    crudService && crudService.setData({showFieldsFilter: true});
+  }
 }
 `;
 
@@ -149,6 +159,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
         "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
         "label": "",
         "icon": "fa fa-sync",
+        "visibleOn": "${!showFieldsFilter}",
         "onEvent": {
           "click": {
             "actions": [

@@ -134,11 +134,6 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     // }
     // listView.handleFilterSubmit(Object.assign({}, removedValues, filterFormValues));
 
-    // 使用filterForm.getValues()的话，并不能拿到本地存储中的过滤条件，所以需要从event.data中取。
-    let filterFormValues = event.data;
-    let isFieldsFilterEmpty = SteedosUI.isFilterFormValuesEmpty(filterFormValues);
-    scope.getComponentById("service_listview_" + event.data.objectName).setData({isFieldsFilterEmpty});
-
     let isMobile = Steedos.isMobile();
     if(isMobile){
       // 手机端点击搜索的时候自动收起搜索栏
@@ -153,6 +148,12 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       });
       filterService.setData({showFieldsFilter: false});
       resizeWindow();
+      // 使用filterForm.getValues()的话，并不能拿到本地存储中的过滤条件，所以需要从event.data中取。
+      let filterFormValues = event.data;
+      let isFieldsFilterEmpty = SteedosUI.isFilterFormValuesEmpty(filterFormValues);
+      let crud = SteedosUI.getClosestAmisComponentByType(scope, "crud");
+      let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service");
+      crudService && crudService.setData({isFieldsFilterEmpty, showFieldsFilter: false});
     }
   `;
   const onCancelScript = `
@@ -191,8 +192,13 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     setTimeout(()=>{
       window.dispatchEvent(new Event("resize"))
     }, 100);
-    scope.getComponentById("service_listview_" + event.data.objectName).setData({isFieldsFilterEmpty: true});
-  `;
+    let isMobile = Steedos.isMobile();
+    if(isMobile){
+      // 手机端移除搜索按钮上的红点
+      let crudService = scope.getComponentById("service_listview_" + event.data.objectName);
+      crudService && crudService.setData({isFieldsFilterEmpty: true, showFieldsFilter: false});
+    }
+    `;
   const dataProviderInited = `
     const objectName = data.objectName;
     const isLookup = data.isLookup;
@@ -246,14 +252,15 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
           });
           // 有过滤条件时自动展开搜索栏
           if(!_.isEmpty(omitedEmptyFormValue)){
-            if(!Steedos.isMobile()){
-              // 手机端不展开，只显示红点
+            let isMobile = Steedos.isMobile();
+            if(isMobile){
+              // 手机端不展开，只显示搜索按钮上的红点
+              let crudService = SteedosUI.getRef(data.$scopeId).getComponentById("service_listview_" + data.objectName)
+              crudService && crudService.setData({isFieldsFilterEmpty: false});
+            }
+            else{
               setData({ showFieldsFilter: true });
             }
-            setTimeout(function(){
-              // 加setTimeout是因为过滤条件不为空时PC端会报错
-              SteedosUI.getRef(data.$scopeId).getComponentById("service_listview_" + data.objectName).setData({isFieldsFilterEmpty: false});
-            },200);
           }
         }
       }
