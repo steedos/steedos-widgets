@@ -246,11 +246,14 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
           });
           // 有过滤条件时自动展开搜索栏
           if(!_.isEmpty(omitedEmptyFormValue)){
-            SteedosUI.getRef(data.scopeId).getComponentById("service_listview_" + data.objectName).setData({isFieldsFilterEmpty: false});
             if(!Steedos.isMobile()){
               // 手机端不展开，只显示红点
               setData({ showFieldsFilter: true });
             }
+            setTimeout(function(){
+              // 加setTimeout是因为过滤条件不为空时PC端会报错
+              SteedosUI.getRef(data.$scopeId).getComponentById("service_listview_" + data.objectName).setData({isFieldsFilterEmpty: false});
+            },200);
           }
         }
       }
