@@ -72,7 +72,7 @@ export async function getObjectFieldsFilterFormSchema(ctx) {
           return Promise.all(filterFormSearchableFields.map(function (item) {
             const field = _.clone(fields[item]);
             if (
-              !_.includes(
+              field && !_.includes(
                 [
                   "grid",
                   "avatar",
