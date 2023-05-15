@@ -176,9 +176,9 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
         "icon": "fa fa-search",
         "type": "button",
         "badge": {
-          "offsetx": [
-            -2,
-            2
+          "offset": [
+            -5,
+            1
           ],
           "size":8,
           "animation": true,
