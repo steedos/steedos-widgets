@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-08 12:21:13
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2023-05-15 15:01:19
  * @Description: 
  */
 import { getRecordDetailRelatedListSchema } from '@steedos-widgets/amis-lib'
@@ -30,6 +30,17 @@ export const AmisRecordDetailRelatedList = async (props: any) => {
     formData.recordId = recordId;
   }
   const schema: any = (await getRecordDetailRelatedListSchema(objectApiName, recordId, relatedObjectApiName, relatedKey, {top, perPage, appId, relatedLabel, className, formFactor, columns, sort, filters, visible_on, isRelated: true, hiddenEmptyTable, requestAdaptor, adaptor})).amisSchema;
+  
   schema.data = Object.assign(schema.data, formData);
+
+  if(recordId){
+    schema.data = Object.assign(schema.data, {
+      _master: {
+        objectName: objectApiName,
+        recordId: recordId
+      }
+    });
+  }
+  
   return schema
 }
