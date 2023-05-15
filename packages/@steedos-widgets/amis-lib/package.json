@@ -1,7 +1,7 @@
 {
   "name": "@steedos-widgets/amis-lib",
   "private": false,
-  "version": "1.2.8",
+  "version": "1.2.9-beta.1",
   "unpkg": "./dist/index.umd.js",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.esm.js",
