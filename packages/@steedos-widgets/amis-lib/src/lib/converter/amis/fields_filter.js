@@ -53,11 +53,11 @@ export async function getObjectFieldsFilterFormSchema(ctx) {
               payload.msg = window.t ? window.t(payload.errors[0].message) : payload.errors[0].message;
           }
           const selfData = api.body.$self;
-          const filterFormSearchableFields = selfData.filterFormSearchableFields;
           const uiSchema = selfData.uiSchema;
           const fields = uiSchema.fields;
-          const searchableFields = [];
-
+          const filterFormSearchableFields = (selfData.filterFormSearchableFields || []).filter(function(item){
+            return !!fields[item]
+          });
           const resolveAll = function(values){
             payload.data = {
               "body": values
@@ -72,21 +72,7 @@ export async function getObjectFieldsFilterFormSchema(ctx) {
           return Promise.all(filterFormSearchableFields.map(function (item) {
             const field = _.clone(fields[item]);
             if (
-              field && !_.includes(
-                [
-                  "grid",
-                  "avatar",
-                  "image",
-                  "object",
-                  "[object]",
-                  "[Object]",
-                  "[grid]",
-                  "[text]",
-                  "audio",
-                  "file",
-                ],
-                field.type
-              )
+              field && window.isFieldTypeSearchable(field.type)
             ) {
               delete field.defaultValue;
               delete field.required;
@@ -445,9 +431,27 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
                                     "headers": {
                                       "Authorization": "Bearer ${context.tenantId},${context.authToken}"
                                     },
-                                    "data": null,
+                                    "data": {
+                                      "$self": "$$"
+                                    },
                                     "requestAdaptor": "",
-                                    "adaptor": ""
+                                    "adaptor": `
+                                      if(payload.errors){
+                                          payload.status = 2;
+                                          payload.msg = window.t ? window.t(payload.errors[0].message) : payload.errors[0].message;
+                                      }
+                                      const selfData = api.body.$self;
+                                      const uiSchema = selfData.uiSchema;
+                                      const fields = uiSchema.fields;
+                                      const options = (payload.data?.options || []).filter(function(item){
+                                        let field = fields[item.value];
+                                        return !!field && window.isFieldTypeSearchable(field.type)
+                                      });
+                                      payload.data = {
+                                        "options": options
+                                      };
+                                      return payload;
+                                    `
                                   },
                                   "options": [],
                                   "required": true,

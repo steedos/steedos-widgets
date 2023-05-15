@@ -689,3 +689,26 @@ export async function getFieldSearchable(perField, permissionFields, ctx){
 if(typeof window != 'undefined'){
     window.getFieldSearchable = getFieldSearchable;
 }
+
+
+export function isFieldTypeSearchable(fieldType) {
+    return !_.includes(
+        [
+            "grid",
+            "avatar",
+            "image",
+            "object",
+            "[object]",
+            "[Object]",
+            "[grid]",
+            "[text]",
+            "audio",
+            "file",
+        ],
+        fieldType
+    )
+}
+
+if (typeof window != 'undefined') {
+    window.isFieldTypeSearchable = isFieldTypeSearchable;
+}
