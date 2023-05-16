@@ -1,4 +1,5 @@
 export const newListview = ()=>{
+  
     return {
         "type": "button",
         "label": "新建",
@@ -32,8 +33,23 @@ export const newListview = ()=>{
                         "filters":"",
                         "shared":false
                       },
-                      "fieldsExtend": fieldsExtend(),
-                      "fields": fields(),
+                      "fieldsExtend": "{\n  \"label\": {\n    \"is_wide\": true\n  },\n  \"name\": {\n    \"is_wide\": true,\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"object_name\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"filter_scope\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"columns\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"filter_fields\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"scrolling_mode\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"sort\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"show_count\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"type\": {\n    \"amis\": {\n      \"hidden\": true\n    }\n  },\n  \"shared\":{\n    \"amis\":{\n      \"visibleOn\":\"${global.user.is_space_admin}\"\n  }\n}\n}",
+                      "fields": [
+                        "label",
+                        "name",
+                        "object_name",
+                        "filter_scope",
+                        "show_count",
+                        "columns.$.field",
+                        "columns.$.width",
+                        "sort.$.field_name",
+                        "sort.$.order",
+                        "filters",
+                        "mobile_columns.$.field",
+                        "searchable_fields.$.field",
+                        "is_system",
+                        "shared"
+                      ],
                       "onEvent": {
                         "submitSucc": {
                           "weight": 0,
@@ -68,81 +84,5 @@ export const newListview = ()=>{
           }
         }
     }
-}
 
-function fields(){
-  return [
-    "label",
-    "name",
-    "object_name",
-    "filter_scope",
-    "show_count",
-    "columns.$.field",
-    "columns.$.width",
-    "sort.$.field_name",
-    "sort.$.order",
-    "filters",
-    "mobile_columns.$.field",
-    "searchable_fields.$.field",
-    "is_system",
-    "shared"
-  ]
-}
-
-function fieldsExtend(){
-  return {
-    "label": {
-      "is_wide": true
-    },
-    "name": {
-      "amis": {
-        "hidden": true
-      }
-    },
-    "object_name": {
-      "amis": {
-        "hidden": true
-      }
-    },
-    "filter_scope": {
-      "amis": {
-        "hidden": true
-      }
-    },
-    "columns": {
-      "amis": {
-        "hidden": true
-      }
-    },
-    "filter_fields": {
-      "amis": {
-        "hidden": true
-      }
-    },
-    "scrolling_mode": {
-      "amis": {
-        "hidden": true
-      }
-    },
-    "sort": {
-      "amis": {
-        "hidden": true
-      }
-    },
-    "show_count": {
-      "amis": {
-        "hidden": true
-      }
-    },
-    "type": {
-      "amis": {
-        "hidden": true
-      }
-    },
-    "shared": {
-      "amis": {
-        "visibleOn": "${global.user.is_space_admin}"
-      }
-    }
-  }
 }

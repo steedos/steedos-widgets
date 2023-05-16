@@ -1,4 +1,5 @@
 export const shareListview = ()=>{
+  
     return {
         "type": "button",
         "label": "共享设置",

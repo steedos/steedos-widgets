@@ -1,7 +1,7 @@
 import { getObjectListHeaderFieldsFilterBar } from './header';
 import { Router } from "@steedos-widgets/amis-lib";
 import { exportExcel } from './toolbars/exportExcel';
-import { settingListview } from './toolbars/settingListview'; 
+import { edit } from './toolbars/edit';
 
 const getDisplayAsButton = function(objectName, showDisplayAs){
   let displayAs = Router.getTabDisplayAs(objectName);
@@ -187,7 +187,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
           }
         }
       } : {},
-      settingListview(),
+      edit(),
       getDisplayAsButton(showDisplayAs)
       // {
       //   "type": "search-box",

@@ -1,13 +1,13 @@
-import { newListview } from "./settingListview/newListview"
-import { copyListview } from "./settingListview/copyListview"
-import { renameListview } from "./settingListview/renameListview"
-import { shareListview } from "./settingListview/shareListview"
-import { filtersListview } from "./settingListview/filtersListview"
-import { showListview } from "./settingListview/showListview"
-import { sortListview } from "./settingListview/sortListview"
-import { deleteListview } from "./settingListview/deleteListview"
+import { newListview } from "./edit/newListview"
+import { copyListview } from "./edit/copyListview"
+import { renameListview } from "./edit/renameListview"
+import { shareListview } from "./edit/shareListview"
+import { filtersListview } from "./edit/filtersListview"
+import { showListview } from "./edit/showListview"
+import { sortListview } from "./edit/sortListview"
+import { deleteListview } from "./edit/deleteListview"
 
-export const settingListview = ()=>{
+export const edit = ()=>{
     return {
         "type": "dropdown-button",
         "trigger": "click",
