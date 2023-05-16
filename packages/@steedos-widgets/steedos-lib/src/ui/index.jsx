@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-27 15:54:12
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-05-12 22:30:37
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2023-05-16 17:55:46
  * @Description: 
  */
 import { message, notification, Button, Space} from 'antd';
@@ -83,5 +83,22 @@ export const SteedosUI = Object.assign({}, {
     getFieldDefaultValue,
     getTreeOptions,
     getClosestAmisComponentByType,
-    isFilterFormValuesEmpty
+    isFilterFormValuesEmpty,
+    getSearchFilter: (data)=>{
+      var searchableFilter = [];
+      _.each(data, (value, key)=>{
+          if(!_.isEmpty(value) || _.isBoolean(value)){
+              if(_.startsWith(key, '__searchable__between__')){
+                  searchableFilter.push([`${key.replace("__searchable__between__", "")}`, "between", value])
+              }else if(_.startsWith(key, '__searchable__')){
+                  if(_.isString(value)){
+                      searchableFilter.push([`${key.replace("__searchable__", "")}`, "contains", value])
+                  }else{
+                      searchableFilter.push([`${key.replace("__searchable__", "")}`, "=", value])
+                  }
+              }
+          }
+      });
+      return searchableFilter;
+    }
 })
