@@ -1,4 +1,4 @@
-export const getShowListviewButtonSchema = ()=>{
+export const getSetListviewColumnsButtonSchema = ()=>{
     return {
         "type": "button",
         "label": "显示的列",

@@ -1,4 +1,4 @@
-export const getShareListviewButtonSchema = ()=>{
+export const getSetListviewShareButtonSchema = ()=>{
     return {
         "type": "button",
         "label": "共享设置",

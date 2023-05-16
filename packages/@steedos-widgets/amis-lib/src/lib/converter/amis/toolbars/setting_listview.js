@@ -1,10 +1,10 @@
 import { getNewListviewButtonSchema } from "./setting_listview/new"
 import { getCopyListviewButtonSchema } from "./setting_listview/copy"
 import { getRenameListviewButtonSchema } from "./setting_listview/rename"
-import { getShareListviewButtonSchema } from "./setting_listview/share"
-import { getFiltersListviewButtonSchema } from "./setting_listview/filters"
-import { getShowListviewButtonSchema } from "./setting_listview/show"
-import { getSortListviewButtonSchema } from "./setting_listview/sort"
+import { getSetListviewShareButtonSchema } from "./setting_listview/share"
+import { getSetListviewFiltersButtonSchema } from "./setting_listview/filters"
+import { getShowListviewButtonSchema } from "./setting_listview/columns"
+import { getSetListviewSortButtonSchema } from "./setting_listview/sort"
 import { getDeleteListviewButtonSchema } from "./setting_listview/delete"
 
 export const getSettingListviewToolbarButtonSchema = ()=>{
@@ -22,10 +22,10 @@ export const getSettingListviewToolbarButtonSchema = ()=>{
               getNewListviewButtonSchema(),
               getCopyListviewButtonSchema(),
               getRenameListviewButtonSchema(),
-              getShareListviewButtonSchema(),
-              getFiltersListviewButtonSchema(),
+              getSetListviewShareButtonSchema(),
+              getSetListviewFiltersButtonSchema(),
               getShowListviewButtonSchema(),
-              getSortListviewButtonSchema(),
+              getSetListviewSortButtonSchema(),
               getDeleteListviewButtonSchema()
             ]
           }
