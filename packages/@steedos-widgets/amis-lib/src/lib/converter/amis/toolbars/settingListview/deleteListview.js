@@ -1,5 +1,4 @@
 export const deleteListview = ()=>{
-  
     return {
         "type": "button",
         "label": "删除",
@@ -25,8 +24,8 @@ export const deleteListview = ()=>{
                     "messages": {
                       "success": "删除成功"
                     },
-                    "requestAdaptor": "const { recordId } = api.body;\nvar deleteArray = [];\nif (recordId) { deleteArray.push(`delete:object_listviews__delete(id: \"${recordId}\")`); }\napi.data = { query: `mutation{${deleteArray.join(',')}}` };\n  return api;\n",
-                    "adaptor": "if (payload.errors) {\n  payload.status = 2;\n  payload.msg = payload.errors[0].message;\n}\nreturn payload;",
+                    "requestAdaptor": requestAdaptor(),
+                    "adaptor": adaptor(),
                   }
                 }
               },
@@ -42,4 +41,25 @@ export const deleteListview = ()=>{
           }
         }
     }
+}
+
+
+function requestAdaptor(){
+  return `
+    const { recordId } = api.body;
+    var deleteArray = [];
+    if (recordId) { deleteArray.push(\`delete:object_listviews__delete(id: "\${recordId}")\`); }
+    api.data = { query: \`mutation{\${deleteArray.join(',')}}\` };
+    return api;
+  `
+}
+
+function adaptor(){
+  return  `
+    if (payload.errors) {
+      payload.status = 2;
+      payload.msg = payload.errors[0].message;
+    }
+    return payload;
+  `
 }
