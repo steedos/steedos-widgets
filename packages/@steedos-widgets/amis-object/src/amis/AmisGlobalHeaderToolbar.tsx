@@ -125,7 +125,16 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                   },
                   "adaptor": "return payload.data"
                 },
-                "interval": 30000,
+                "onEvent": {
+                  "@data.changed.notifications": {
+                    "actions": [
+                      {
+                        "actionType": "reload"
+                      }
+                    ]
+                  }
+                },
+                // "interval": 30000,
                 "silentPolling": true
               }
             ],
@@ -214,6 +223,15 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                           
                     ],
                     "id": "u:aba521eed5b7",
+                    "onEvent": {
+                      "@data.changed.notifications": {
+                        "actions": [
+                          {
+                            "actionType": "reload"
+                          }
+                        ]
+                      }
+                    },
                     "messages": {
                     },
                     "api": {
