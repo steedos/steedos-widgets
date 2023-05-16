@@ -1,5 +1,4 @@
 export const renameListview = ()=>{
-  
     return {
         "type": "button",
         "label": "重命名",

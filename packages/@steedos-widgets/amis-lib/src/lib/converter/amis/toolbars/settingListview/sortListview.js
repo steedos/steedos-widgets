@@ -1,5 +1,4 @@
 export const sortListview = ()=>{
-  
     return {
         "type": "button",
         "label": "默认排序规则",
@@ -15,7 +14,6 @@ export const sortListview = ()=>{
                   "data": {
                     "&": "$$",
                     "targetObjectName": "${objectName}",
-                    "objectName": "${objectName}",
                     "recordId": "${uiSchema.list_views[listName]._id}",
                     "listName": "${listName}",
                     "appId": "${appId}"
@@ -48,9 +46,9 @@ export const sortListview = ()=>{
                           ]
                         }
                       },
-                      "fieldsExtend": "{\n  \"sort\": {\n    \"amis\": {\n      \"type\": \"tabs-transfer\",\n      \"sortable\": true,\n      \"searchable\": true,\n      \"source\": {\n        \"method\": \"get\",\n        \"url\": \"${context.rootUrl}/service/api/amis-metadata-objects/objects/${objectName}/sortFields/options\",\n        \"headers\": {\n          \"Authorization\": \"Bearer ${context.tenantId},${context.authToken}\"\n        }\n      }\n    }\n  }\n}",
-                      "initApiAdaptor": "let sort;\nif (recordId) {\n  sort = payload.data.sort;\n  //数据格式转换\n  if (sort instanceof Array) {\n    sort = lodash.map(sort, (item) => {\n      return item.field_name + ':' + (item.order || 'asc')\n    });\n  }\n}\npayload.data.sort = sort;\ndelete payload.extensions;",
-                      "apiRequestAdaptor": "const recordId = api.body.recordId;\n//数据格式转换\nif (typeof formData.sort == 'string') {\n  formData.sort = formData.sort?.split(',');\n}\nformData.sort = lodash.map(formData.sort, (item) => {\n  const arr = item.split(':');\n  return { field_name: arr[0], order: arr[1] };\n});\nif (recordId) {\n  query = 'mutation{record: ' + objectName + '__update(id: \"' + recordId + '\", doc: {__saveData}){_id}}';\n}\n__saveData = JSON.stringify(JSON.stringify(formData));\napi.data = { query: query.replace('{__saveData}', __saveData) };\n"
+                      "fieldsExtend": fieldsExtend(),
+                      "initApiAdaptor": initApiAdaptor(),
+                      "apiRequestAdaptor": apiRequestAdaptor()
                     }
                   ],
                   "showCloseButton": true,
@@ -65,4 +63,61 @@ export const sortListview = ()=>{
           }
         }
     }
+}
+
+function fieldsExtend(){
+  return {
+    "sort": {
+      "amis": {
+        "type": "tabs-transfer",
+        "sortable": true,
+        "searchable": true,
+        "source": {
+          "method": "get",
+          "url": "${context.rootUrl}/service/api/amis-metadata-objects/objects/${targetObjectName}/sortFields/options",
+          "headers": {
+            "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+          }
+        }
+      }
+    }
+  }
+}
+
+function initApiAdaptor(){
+  return `
+    let sort;
+    if (recordId) {
+      sort = payload.data.sort;
+      //数据格式转换
+      if (sort instanceof Array) {
+        sort = lodash.map(sort, (item) => {
+          return item.field_name + ':' + (item.order || 'asc')
+        });
+      }
+    }
+    payload.data.sort = sort;
+    delete payload.extensions;
+    return payload;
+  `
+}
+
+function apiRequestAdaptor(){
+  return `
+    const recordId = api.body.recordId;
+    //数据格式转换
+    if (typeof formData.sort == 'string') {
+      formData.sort = formData.sort?.split(',');
+    }
+    formData.sort = lodash.map(formData.sort, (item) => {
+      const arr = item.split(':');
+      return { field_name: arr[0], order: arr[1] };
+    });
+    if (recordId) {
+      query = 'mutation{record: ' + objectName + '__update(id: "' + recordId + '", doc: {__saveData}){_id}}';
+    }
+    __saveData = JSON.stringify(JSON.stringify(formData));
+    api.data = { query: query.replace('{__saveData}', __saveData) };
+    return api;
+  `
 }
