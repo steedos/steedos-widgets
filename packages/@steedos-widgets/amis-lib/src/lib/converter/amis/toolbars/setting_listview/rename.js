@@ -1,4 +1,4 @@
-export const renameListview = ()=>{
+export const getRenameListviewButtonSchema = ()=>{
     return {
         "type": "button",
         "label": "重命名",

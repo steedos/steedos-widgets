@@ -1,4 +1,4 @@
-export const showListview = ()=>{
+export const getShowListviewButtonSchema = ()=>{
     return {
         "type": "button",
         "label": "显示的列",

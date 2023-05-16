@@ -1,4 +1,4 @@
-export const exportExcel = ()=>{
+export const getExportExcelToolbarButtonSchema = ()=>{
     return {
         "type": "button",
         "icon": "fa fa-download",

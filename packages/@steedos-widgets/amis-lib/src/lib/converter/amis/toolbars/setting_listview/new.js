@@ -1,4 +1,4 @@
-export const newListview = ()=>{
+export const getNewListviewButtonSchema = ()=>{
     return {
         "type": "button",
         "label": "新建",

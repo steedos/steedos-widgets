@@ -1,4 +1,4 @@
-export const sortListview = ()=>{
+export const getSortListviewButtonSchema = ()=>{
     return {
         "type": "button",
         "label": "默认排序规则",

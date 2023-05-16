@@ -1,7 +1,7 @@
 import { getObjectListHeaderFieldsFilterBar } from './header';
 import { Router } from "@steedos-widgets/amis-lib";
-import { exportExcel } from './toolbars/exportExcel';
-import { settingListview } from './toolbars/settingListview'; 
+import { getExportExcelToolbarButtonSchema } from './toolbars/export_excel';
+import { getSettingListviewToolbarButtonSchema } from './toolbars/setting_listview'; 
 
 const getDisplayAsButton = function(objectName, showDisplayAs){
   let displayAs = Router.getTabDisplayAs(objectName);
@@ -169,7 +169,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
         "tooltipPlacement": "bottom",
         "className": "bg-white p-2 rounded border-gray-300 text-gray-500"
       },
-      exportExcel(),
+      getExportExcelToolbarButtonSchema(),
       filterVisible ? {
         "label": "",
         "icon": "fa fa-search",
@@ -187,7 +187,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
           }
         }
       } : {},
-      settingListview(),
+      getSettingListviewToolbarButtonSchema(),
       getDisplayAsButton(showDisplayAs)
       // {
       //   "type": "search-box",

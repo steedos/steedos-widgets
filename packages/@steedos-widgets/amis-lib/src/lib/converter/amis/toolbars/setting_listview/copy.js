@@ -1,4 +1,4 @@
-export const copyListview = ()=>{
+export const getCopyListviewButtonSchema = ()=>{
     return {
         "type": "button",
         "label": "复制",

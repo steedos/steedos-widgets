@@ -1,4 +1,4 @@
-export const deleteListview = ()=>{
+export const getDeleteListviewButtonSchema = ()=>{
     return {
         "type": "button",
         "label": "删除",

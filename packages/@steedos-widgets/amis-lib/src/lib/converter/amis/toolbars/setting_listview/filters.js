@@ -1,4 +1,4 @@
-export const filtersListview = ()=>{
+export const getFiltersListviewButtonSchema = ()=>{
     return {
         "type": "button",
         "label": "过滤设置",
