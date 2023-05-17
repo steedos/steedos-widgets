@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-11 13:51:50
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-05-17 17:26:22
  * @Description: 
  */
 
@@ -23,8 +23,17 @@ export const AmisGlobalHeader = async (props) => {
                         "className": 'flex w-full px-4 h-[50px] p-0 justify-between items-center steedos-header-container-line-one',
                         "body": [
                             {
-                                type: "wrapper",
+                                type: "service",
                                 className: 'p-0 flex flex-1 items-center',
+                                "onEvent": {
+                                    "@history_paths.changed": {
+                                        "actions": [
+                                            {
+                                                "actionType": "reload"
+                                            }
+                                        ]
+                                    }
+                                },
                                 body: [
                                     {
                                         "type": "button",
@@ -52,9 +61,33 @@ export const AmisGlobalHeader = async (props) => {
                                         ],
                                     },
                                     {
+                                        "type": "button",
+                                        "visibleOn": "${window:innerWidth < 768 && window:historyPaths.length > 1}",
+                                        "onEvent": {
+                                            "click": {
+                                                "actions": [
+                                                    {
+                                                        "actionType": "custom",
+                                                        "script": "Steedos.goBack()"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "body": [
+                                            {
+                                                "type": "steedos-icon",
+                                                "category": "utility",
+                                                "name": "chevronleft",
+                                                "colorVariant": "default",
+                                                "className": "slds-button_icon slds-global-header__icon"
+                                            }
+                                        ]
+                                    },
+                                    {
                                         "className": 'block h-10 w-auto mr-4',
                                         "type": "tpl",
                                         "tpl": `<a href='/app' class='flex items-center '><img class='block h-10 w-auto' src='${logoSrc}'></a>`,
+                                        "hiddenOn": "${window:innerWidth < 768 && window:historyPaths.length > 1}"
                                     },
                                 ],
                             },
@@ -103,7 +136,7 @@ export const AmisGlobalHeader = async (props) => {
                     {
                         "type": "grid",
                         "className": 'steedos-context-bar flex flex-nowrap h-10 leading-5 pl-4 mb-[-3px] steedos-header-container-line-two',
-                        "hiddenOn": "${"+isMobile+"}",
+                        "hiddenOn": "${" + isMobile + "}",
                         "columns": [
                             {
                                 "columnClassName": "items-center flex pb-0",
