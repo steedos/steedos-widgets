@@ -62,6 +62,7 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
                     "rightIcon": "fa fa-caret-down",
                     "size": "sm",
                     "hideCaret": true,
+                    "closeOnClick": true,
                     "btnClassName": "!bg-transparent !border-none !hover:border-none text-lg h-5 font-bold p-0 text-black leading-none",
                     "buttons": listViewButtonOptions
                   }
