@@ -247,12 +247,47 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
           "type": "grid",
           "columns": [
             {
-              "body": {
+              "body": [{
+                "type": "service",
+                "onEvent": {
+                    "@history_paths.changed": {
+                        "actions": [
+                            {
+                                "actionType": "reload"
+                            }
+                        ]
+                    }
+                },
+                "body":[{
+                  "type": "button",
+                  "visibleOn": "${window:innerWidth > 768 && window:historyPaths.length > 1}",
+                  "className":"flex mr-2",
+                  "onEvent": {
+                      "click": {
+                          "actions": [
+                              {
+                                  "actionType": "custom",
+                                  "script": "Steedos.goBack()"
+                              }
+                          ]
+                      }
+                  },
+                  "body": [
+                      {
+                          "type": "steedos-icon",
+                          "category": "utility",
+                          "name": "back",
+                          "colorVariant": "default",
+                          "className": "slds-button_icon slds-global-header__icon"
+                      }
+                  ]
+                }]
+              },{
                 "type": "tpl",
                 "className": "block",
                 // "tpl": `<img class='slds-icon slds-icon_container slds-icon-standard-${standardIcon}' src='\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg'>`
                 "tpl":`<svg class="slds-icon slds-icon_container slds-icon-standard-${standardIcon} slds-page-header__icon" aria-hidden="true"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#${icon}"></use></svg>`
-              },
+              }],
               "md": "auto",
               "className": "",
               "columnClassName": "flex justify-center items-center"
