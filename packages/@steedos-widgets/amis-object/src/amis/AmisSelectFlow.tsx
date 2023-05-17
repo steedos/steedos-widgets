@@ -81,6 +81,14 @@ const getSelectFlowSchema = (id, props)=>{
                     \`
                 }
             `,
+            "adaptor": `
+                payload.data.options?.forEach(function(item,index) {
+                    if(!item.children || item.children.length == 0){
+                        payload.data.options.splice(index)
+                    }
+                })
+                return payload;
+            `,
             "headers": {
                 "Authorization": "Bearer ${context.tenantId},${context.authToken}"
             }
