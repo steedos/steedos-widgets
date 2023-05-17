@@ -63,6 +63,7 @@ export const AmisGlobalHeader = async (props) => {
                                     {
                                         "type": "button",
                                         "visibleOn": "${window:innerWidth < 768 && window:historyPaths.length > 1}",
+                                        "className":"flex",
                                         "onEvent": {
                                             "click": {
                                                 "actions": [
