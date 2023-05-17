@@ -169,6 +169,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
         }
       }
     }
+    filterForm.reset();
     listView.handleFilterSubmit(removedValues);
     const filterService = filterForm.context.getComponents().find(function(n){
       return n.props.type === "service";
