@@ -187,7 +187,7 @@ export const getListViewItemButtons = async (uiSchema, ctx)=>{
     return listButtons;
 }
 
-export const getObjectRelatedListButtons = async (uiSchema, ctx)=>{
+export const getObjectRelatedListButtons = (uiSchema, ctx)=>{
     // const buttons = getButtons(uiSchema, ctx);
     // const relatedListButtons = _.filter(buttons, (button) => {
     //     if(button.objectName === 'cms_files'){
@@ -470,6 +470,67 @@ export const getObjectListViewButtonsSchemas = (objectSchema, ctx)=>{
             objectName: button.objectName,
             visibleOn: getButtonVisibleOn(button),
             className: `button_${button.name}`
+            }
+        });
+    }
+}
+
+export const getObjectRecordDetailRelatedListButtonsSchemas = (objectSchema, ctx)=>{
+    const buttons = getObjectRelatedListButtons(objectSchema, ctx);
+    if(ctx.formFactor === 'SMALL'){
+        return {
+            "type": "button",
+            "icon": "fa fa-angle-down",
+            "onEvent": {
+              "click": {
+                "actions": [
+                  {
+                    "actionType": "drawer",
+                    "drawer": {
+                      "type": "drawer",
+                      "title": "操作",
+                      "body": [
+                        {
+                          "type": "button-group",
+                          "vertical": true,
+                          "tiled": true,
+                          "buttons": [
+                            ..._.map(buttons, (button)=>{
+                                return {
+                                    type: 'steedos-object-button',
+                                    name: button.name,
+                                    objectName: button.objectName,
+                                    visibleOn: getButtonVisibleOn(button),
+                                    className: `button_${button.name} w-full`
+                                }
+                            })
+                          ],
+                          "btnLevel": "enhance",
+                          "className": "w-full",
+                          "btnClassName": "w-full",
+                          "size": "lg"
+                        }
+                      ],
+                      "position": "bottom",
+                      "closeOnOutside": true,
+                      "resizable": false,
+                      "className": "buttons-drawer",
+                      "bodyClassName": "m-none p-none",
+                      "actions": []
+                    }
+                  }
+                ]
+              }
+            }
+          }
+    }else{
+        return _.map(buttons, (button) => {
+            return {
+                type: 'steedos-object-button',
+                name: button.name,
+                objectName: button.objectName,
+                visibleOn: getButtonVisibleOn(button),
+                className: `button_${button.name}`
             }
         });
     }

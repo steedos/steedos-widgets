@@ -249,7 +249,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
       id: `service_${id}`,
       name: `page`,
       data: {
-        // objectName: objectSchema.name,
+        objectName: objectSchema.name,
         // _id: null,
         recordPermissions: objectSchema.permissions,
         uiSchema: objectSchema,

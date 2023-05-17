@@ -2,7 +2,7 @@ import { getObjectRelatedListButtons, getButtonVisibleOn } from '../../buttons'
 import { getObjectFieldsFilterButtonSchema, getObjectFieldsFilterBarSchema } from './fields_filter';
 import { map, each, sortBy, compact, keys } from 'lodash';
 
-import { getObjectDetailButtonsSchemas, getObjectListViewButtonsSchemas } from '../../buttons'
+import { getObjectDetailButtonsSchemas, getObjectListViewButtonsSchemas, getObjectRecordDetailRelatedListButtonsSchemas } from '../../buttons'
 
 /**
  * 列表视图顶部第一行amisSchema
@@ -340,18 +340,9 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
  * @param {*} relatedObjectSchema 相关对象UISchema
  * @returns amisSchema
  */
-export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema, relatedLabel) {
+export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema, relatedLabel, ctx) {
   const { icon, label } = relatedObjectSchema;
-  const buttons = await getObjectRelatedListButtons(relatedObjectSchema, {});
-  let amisButtonsSchema = map(buttons, (button) => {
-    return {
-      type: 'steedos-object-button',
-      name: button.name,
-      objectName: button.objectName,
-      visibleOn: getButtonVisibleOn(button),
-      className: `button_${button.name}`
-    }
-  })
+  let amisButtonsSchema = getObjectRecordDetailRelatedListButtonsSchemas(relatedObjectSchema, {formFactor: ctx.formFactor});
   const reg = new RegExp('_', 'g');
   const standardIcon = icon && icon.replace(reg, '-');
   const recordRelatedListHeader = {
