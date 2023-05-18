@@ -261,7 +261,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
                 "body":[{
                   "type": "button",
                   "visibleOn": "${window:innerWidth > 768 && window:historyPaths.length > 1 && display !== 'split'}",
-                  "className":"flex mr-2",
+                  "className":"flex mr-4",
                   "onEvent": {
                       "click": {
                           "actions": [
