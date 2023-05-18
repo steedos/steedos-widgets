@@ -278,7 +278,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
                           "category": "utility",
                           "name": "back",
                           "colorVariant": "default",
-                          "className": "slds-button_icon slds-global-header__icon"
+                          "className": "slds-button_icon slds-global-header__icon w-4"
                       }
                   ]
                 }]
