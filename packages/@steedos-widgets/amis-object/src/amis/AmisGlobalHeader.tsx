@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-05-17 17:26:22
+ * @LastEditTime: 2023-05-18 22:39:31
  * @Description: 
  */
 
@@ -62,7 +62,7 @@ export const AmisGlobalHeader = async (props) => {
                                     },
                                     {
                                         "type": "button",
-                                        "visibleOn": "${window:innerWidth < 768 && window:historyPaths.length > 1}",
+                                        "visibleOn": "${window:innerWidth < 768 && (window:historyPaths.length > 1 || window:historyPaths[0].params.record_id)}",
                                         "className":"flex",
                                         "onEvent": {
                                             "click": {
@@ -88,7 +88,7 @@ export const AmisGlobalHeader = async (props) => {
                                         "className": 'block h-10 w-auto mr-4',
                                         "type": "tpl",
                                         "tpl": `<a href='/app' class='flex items-center '><img class='block h-10 w-auto' src='${logoSrc}'></a>`,
-                                        "hiddenOn": "${window:innerWidth < 768 && window:historyPaths.length > 1}"
+                                        "hiddenOn": "${window:innerWidth < 768 && (window:historyPaths.length > 1 || window:historyPaths[0].params.record_id)}"
                                     },
                                 ],
                             },
