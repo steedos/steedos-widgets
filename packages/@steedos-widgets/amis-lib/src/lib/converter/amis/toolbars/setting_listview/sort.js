@@ -10,7 +10,7 @@ export const getSetListviewSortButtonSchema = ()=>{
               {
                 "dialog": {
                   "type": "dialog",
-                  "title": "弹框标题",
+                  "title": "默认排序规则",
                   "data": {
                     "&": "$$",
                     "targetObjectName": "${objectName}",
