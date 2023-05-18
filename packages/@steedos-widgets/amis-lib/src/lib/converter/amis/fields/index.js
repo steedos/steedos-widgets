@@ -6,7 +6,6 @@ import * as Tpl from '../tpl';
 import * as File from './file';
 import { getAmisStaticFieldType } from './type';
 import * as _ from 'lodash'
-import { getContrastColor } from './../util'
 
 export const OMIT_FIELDS = ['created', 'created_by', 'modified', 'modified_by'];
 export { getAmisStaticFieldType } from './type';
@@ -204,19 +203,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             // break;
         case 'select':
             if(readonly){
-                const selectOptions = field.options;
-                let map = {};
-                _.forEach(selectOptions,(option)=>{
-                    const optionValue = option.value + '';
-                    if(option.color){
-                        const background = '#'+option.color;
-                        const color = getContrastColor(background);
-                        const optionColorStyle = 'background:'+background+';color:'+color;
-                        map[optionValue] = `<span class="rounded-xl px-2 py-1" style='${optionColorStyle}'>${option.label}</span>`
-                    }else{
-                        map[optionValue] = option.label;
-                    }
-                })
+                const map = Tpl.getSelectMap(field.options);
                 convertData = {
                     type: "static-mapping",
                     name: field.name,

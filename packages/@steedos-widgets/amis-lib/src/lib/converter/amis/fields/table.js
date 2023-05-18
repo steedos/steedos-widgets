@@ -5,7 +5,6 @@ import * as graphql from '../graphql';
 import config from '../../../../config'
 import { each, forEach, isBoolean, isEmpty } from 'lodash';
 import { getAmisFileReadonlySchema } from './file'
-import { getContrastColor } from './../util'
 
 function getOperation(fields){
     const controls = [];
@@ -101,19 +100,7 @@ async function getTableColumns(fields, options){
             }, field.amis, {name: field.name}))
         }
         else if(field.type === 'select'){
-            const selectOptions = field.options;
-            let map = {};
-            forEach(selectOptions,(option)=>{
-                const optionValue = option.value + '';
-                if(option.color){
-                    const background = '#'+option.color;
-                    const color = getContrastColor(background);
-                    const optionColorStyle = 'background:'+background+';color:'+color;
-                    map[optionValue] = `<span class="rounded-xl px-2 py-1" style='${optionColorStyle}'>${option.label}</span>`
-                }else{
-                    map[optionValue] = option.label;
-                }
-            })
+            const map = Tpl.getSelectMap(field.options);
             columns.push(Object.assign({}, {
                 type: "mapping",
                 name: field.name,

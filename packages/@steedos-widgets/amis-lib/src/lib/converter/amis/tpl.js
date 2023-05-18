@@ -1,12 +1,14 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-10 11:22:54
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-05-18 16:34:39
  * @Description: 
  */
 import { Router } from '../../router'
  import { getUISchema } from '../../objects'
+import { forEach } from 'lodash';
+import { getContrastColor } from './util'
 
 export function getCreatedInfoTpl(formFactor){
     const href = Router.getObjectDetailPath({
@@ -56,6 +58,21 @@ export async function getRefObjectNameFieldName(field){
 
 export function getSelectTpl(field){
     return `<div>\${_display.${field.name}}</div>`
+}
+export function getSelectMap(selectOptions){
+    let map = {};
+    forEach(selectOptions,(option)=>{
+        const optionValue = option.value + '';
+        if(option.color){
+            const background = option.color.charAt(0) === '#' ? option.color : '#'+option.color;
+            const color = getContrastColor(background);
+            const optionColorStyle = 'background:'+background+';color:'+color;
+            map[optionValue] = `<span class="rounded-xl px-2 py-1" style='${optionColorStyle}'>${option.label}</span>`
+        }else{
+            map[optionValue] = option.label;
+        }
+    })
+    return map;
 }
 
 export function getNameTplUrl(field, ctx){
