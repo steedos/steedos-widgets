@@ -210,7 +210,8 @@ export async function getEditFormInitApi(object, recordId, fields, options){
     data.global = "${global}";
     data.context = "${context}";
     data.defaultData = "${defaultData}";
-
+    data._master = "${_master}";
+    
     return {
         method: "post",
         url: graphql.getApi() + '&objectName=${objectName}' ,
@@ -276,7 +277,7 @@ export async function getEditFormInitApi(object, recordId, fields, options){
                             formInitialValuesFun = new Function("return " + formInitialValuesFun)();
                         }
                         if(typeof formInitialValuesFun === "function"){
-                            initialValues = formInitialValuesFun.apply({doc: defaultValues || {} , global: api.body.global})
+                            initialValues = formInitialValuesFun.apply({doc: defaultValues || {} , global: api.body.global, master: api.body._master })
                         }
                     }
                     catch(ex){
