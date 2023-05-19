@@ -205,7 +205,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
 
     const source = await getApi(refObjectConfig, null, fields, {expand: true, alias: 'rows', queryOptions: `filters: {__filters}, top: {__top}, skip: {__skip}, sort: "{__sort}"`});
     
-    if(source.url){
+    if(source.url && !ctx.inFilterForm){
         const depend_on = [];
         const sendOn = [];
         _.each(field.depend_on, (fName)=>{
@@ -269,9 +269,10 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             filters.push(fieldFilters);
         }
         
+        const inFilterForm = ${ctx.inFilterForm};
         const filtersFunction = ${field.filtersFunction || field._filtersFunction};
 
-        if(filtersFunction){
+        if(filtersFunction && !inFilterForm){
             const _filters = filtersFunction(filters, api.data.$self.__super.__super);
             if(_filters && _filters.length > 0){
                 filters.push(_filters);
@@ -492,7 +493,8 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         sort = getListViewSort(listView);
     }
 
-    if(apiInfo.url){
+    // 列表视图搜索栏中，即inFilterForm=true时，不需要执行depend_on
+    if(apiInfo.url && !ctx.inFilterForm){
         const depend_on = [];
         const sendOn = [];
         _.each(field.depend_on, (fName)=>{
@@ -529,9 +531,10 @@ export async function lookupToAmisSelect(field, readonly, ctx){
             filters.push(fieldFilters);
         }
 
+        const inFilterForm = ${ctx.inFilterForm};
         const filtersFunction = ${field.filtersFunction || field._filtersFunction};
 
-        if(filtersFunction){
+        if(filtersFunction && !inFilterForm){
             const _filters = filtersFunction(filters, api.data.$);
             if(_filters && _filters.length > 0){
                 filters.push(_filters);
@@ -695,7 +698,7 @@ export async function getIdsPickerSchema(field, readonly, ctx){
     source.data.$term = "$term";
     source.data.$self = "$$";
 
-    if(idsDependOn && source.url){
+    if(idsDependOn && source.url && !ctx.inFilterForm){
         source.sendOn = `\${${idsDependOn} && ${idsDependOn}.length}`;
         source.url = `${source.url}&depend_on_${idsDependOn}=\${${idsDependOn}|join}`;
     }
