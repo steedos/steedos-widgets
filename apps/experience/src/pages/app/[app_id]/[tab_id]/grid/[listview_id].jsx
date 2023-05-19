@@ -20,12 +20,17 @@ export default function Page ({ formFactor }) {
   const { app_id: appId, tab_id: objectApiName, listview_id: listviewId, display } = router.query;
 
   let schema = {
-    "type": "steedos-page-listview",
-    appId,
-    objectApiName,
-    listviewId,
-    display,
-    formFactor,
+    type: "service",
+    body:[
+      {
+        "type": "steedos-page-listview",
+        appId,
+        objectApiName,
+        listviewId,
+        display,
+        formFactor
+      }
+    ]
   };
 
   // useEffect(async () => {
@@ -45,6 +50,13 @@ export default function Page ({ formFactor }) {
         id={`${objectApiName}-listview-${listviewId}`}
         className="h-full"
         schema={schema}
+        data={{
+          appId,
+          objectApiName,
+          listviewId,
+          display,
+          formFactor
+        }}
         router={router}
       ></AmisRender>
     </>
