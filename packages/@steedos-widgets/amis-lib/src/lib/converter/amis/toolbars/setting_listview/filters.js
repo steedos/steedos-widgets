@@ -15,7 +15,8 @@ export const getSetListviewFiltersButtonSchema = ()=>{
                     "targetObjectName": "${objectName}",
                     "recordId": "${uiSchema.list_views[listName]._id}",
                     "listName": "${listName}",
-                    "appId": "${appId}"
+                    "appId": "${appId}",
+                    "context": "${context}"
                   },
                   "body": [
                     {

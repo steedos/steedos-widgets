@@ -16,7 +16,8 @@ export const getCopyListviewButtonSchema = ()=>{
                     "targetObjectName": "${objectName}",
                     "list_view": "${uiSchema.list_views[listName]}",
                     "appId": "${appId}",
-                    "global": "${global}"
+                    "global": "${global}",
+                    "context": "${context}"
                   },
                   "body": [
                     {

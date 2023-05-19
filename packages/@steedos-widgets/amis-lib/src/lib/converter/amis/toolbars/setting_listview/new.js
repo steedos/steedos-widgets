@@ -17,6 +17,7 @@ export const getNewListviewButtonSchema = ()=>{
                     "appId": "${appId}",
                     "global": "${global}",
                     "targetObjectName": "${objectName}",
+                    "context": "${context}",
                   },
                   "body": [
                     {

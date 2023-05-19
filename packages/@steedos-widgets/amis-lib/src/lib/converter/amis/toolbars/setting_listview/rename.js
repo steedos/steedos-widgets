@@ -14,7 +14,8 @@ export const getRenameListviewButtonSchema = ()=>{
                   "data": {
                     "targetObjectName": "${objectName}",
                     "recordId": "${uiSchema.list_views[listName]._id}",
-                    "appId": "${appId}"
+                    "appId": "${appId}",
+                    "context": "${context}"
                   },
                   "body": [
                     {

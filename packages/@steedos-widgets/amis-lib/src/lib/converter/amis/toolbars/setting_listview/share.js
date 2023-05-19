@@ -13,6 +13,7 @@ export const getSetListviewShareButtonSchema = ()=>{
                   "title": "共享设置",
                   "data": {
                     "recordId": "${uiSchema.list_views[listName]._id}",
+                    "context": "${context}"
                   },
                   "body": [
                     {
