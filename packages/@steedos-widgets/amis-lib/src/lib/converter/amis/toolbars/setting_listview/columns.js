@@ -13,7 +13,7 @@ export const getSetListviewColumnsButtonSchema = ()=>{
                   "type": "dialog",
                   "title": "显示的列",
                   "data": {
-                    "&": "$$",
+                    //"&":"$$",2.7、2.9、3.0在此处失效
                     "targetObjectName": "${objectName}",
                     "recordId": "${uiSchema.list_views[listName]._id}",
                     "listName": "${listName}",

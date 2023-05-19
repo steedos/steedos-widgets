@@ -12,7 +12,7 @@ export const getSetListviewSortButtonSchema = ()=>{
                   "type": "dialog",
                   "title": "默认排序规则",
                   "data": {
-                    "&": "$$",
+                    //"&":"$$",2.7、2.9、3.0在此处失效
                     "targetObjectName": "${objectName}",
                     "recordId": "${uiSchema.list_views[listName]._id}",
                     "listName": "${listName}",

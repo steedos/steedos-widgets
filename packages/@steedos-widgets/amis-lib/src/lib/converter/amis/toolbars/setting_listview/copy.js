@@ -11,7 +11,7 @@ export const getCopyListviewButtonSchema = ()=>{
                   "type": "dialog",
                   "title": "复制 列表视图",
                   "data": {
-                    "&": "$$",
+                    //"&":"$$",2.7、2.9、3.0在此处失效
                     "listName": "${listName}",
                     "targetObjectName": "${objectName}",
                     "list_view": "${uiSchema.list_views[listName]}",

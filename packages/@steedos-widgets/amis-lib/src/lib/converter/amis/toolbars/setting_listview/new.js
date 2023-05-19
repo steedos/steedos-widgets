@@ -11,13 +11,13 @@ export const getNewListviewButtonSchema = ()=>{
                   "type": "dialog",
                   "title": "新建 列表视图",
                   "data": {
-                    "&": "$$",
+                    //"&":"$$",2.7、2.9、3.0在此处失效
                     "all": "${uiSchema.list_views.all}",
                     "list_view": "${uiSchema.list_views[listName]}",
                     "appId": "${appId}",
                     "global": "${global}",
                     "targetObjectName": "${objectName}",
-                    "context": "${context}",
+                    "context": "${context}"
                   },
                   "body": [
                     {
