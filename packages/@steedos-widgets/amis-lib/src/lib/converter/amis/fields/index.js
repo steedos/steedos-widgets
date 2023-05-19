@@ -573,7 +573,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             convertData.className = fieldTypeClassName;
         }
 
-        if(field.visible_on){
+        if(field.visible_on && !ctx.inFilterForm){
             // convertData.visibleOn = `\$${field.visible_on.substring(1, field.visible_on.length -1).replace(/formData./g, '')}`;
             if(field.visible_on.startsWith("{{")){
                 convertData.visibleOn = `${field.visible_on.substring(2, field.visible_on.length -2).replace(/formData./g, 'data.')}`
@@ -666,7 +666,7 @@ export async function getFieldSearchable(perField, permissionFields, ctx){
         _field.multiple = true;
         _field.is_wide = false;
         _field.defaultValue = undefined;
-        const amisField = await Fields.convertSFieldToAmisField(_field, false, Object.assign({}, ctx, {fieldNamePrefix: fieldNamePrefix, required: false, showSystemFields: true}));
+        const amisField = await Fields.convertSFieldToAmisField(_field, false, Object.assign({}, ctx, {fieldNamePrefix: fieldNamePrefix, required: false, showSystemFields: true, inFilterForm: true}));
         if(amisField){
             return amisField;
         }
