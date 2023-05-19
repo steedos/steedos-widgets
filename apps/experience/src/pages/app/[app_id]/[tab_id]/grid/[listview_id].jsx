@@ -55,7 +55,9 @@ export default function Page ({ formFactor }) {
           objectApiName,
           listviewId,
           display,
-          formFactor
+          formFactor,
+          listName: listviewId,
+          scopeId: listviewId
         }}
         router={router}
       ></AmisRender>
