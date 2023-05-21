@@ -99,6 +99,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
   if (!ctx) {
     ctx = {};
   }
+  const btnSearchId = "btn_filter_form_search_" + new Date().getTime();
   const filterFormSchema = await getObjectFieldsFilterFormSchema(ctx);
   const onSearchScript = `
     const scope = event.context.scoped;
@@ -336,10 +337,14 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
     if(localListViewProps){
       localListViewProps = JSON.parse(localListViewProps);
-      // const removedValues = {};
-      removedKeys.forEach(function(key){
-        delete localListViewProps[key];
-        // removedValues[key] = "";
+      _.each(localListViewProps, function(n,k){
+        // __searchable__开头的不在searchableFields范围则清除其值
+        let isRemoved = !!removedFields.find(function(fieldName){
+          return new RegExp("__searchable__\.*" + fieldName + "$").test(k);
+        });
+        if(isRemoved){
+          delete localListViewProps[k];
+        }
       });
       sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify(localListViewProps));
     }
@@ -373,6 +378,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
             "body": [
               {
                 "type": "button",
+                "id": btnSearchId,
                 "label": "搜索",
                 "icon": "fa fa-search",
                 "visibleOn": "this.filterFormSearchableFields && this.filterFormSearchableFields.length",
@@ -505,6 +511,10 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
                                     {
                                       "actionType": "custom",
                                       "script": onSearchableFieldsChangeScript
+                                    },
+                                    {
+                                      "actionType": "click",
+                                      "componentId": btnSearchId
                                     },
                                     {
                                       "componentId": "",
