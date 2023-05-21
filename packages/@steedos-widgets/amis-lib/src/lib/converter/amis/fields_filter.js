@@ -116,7 +116,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     // // 这会造成handleFilterSubmit时把移除掉的搜索项字段之前的值加到过滤条件中
     // for(var k in filterFormValues){
     //   if(filterFormValues[k] === "" && !filterFormValues.hasOwnProperty(k)){
-    //     removedValues[k] = "";
+    //     removedValues[k] = null;
     //   }
     // }
     // listView.handleFilterSubmit(Object.assign({}, removedValues, filterFormValues));
@@ -155,7 +155,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     const removedValues = {};
     for(var k in filterFormValues){
       if(/^__searchable__/.test(k)){
-        removedValues[k] = "";
+        removedValues[k] = null;
       }
     }
     if(!event.data.isLookup){
@@ -166,7 +166,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       if(localListViewProps){
         localListViewProps = JSON.parse(localListViewProps);
         for(var k in localListViewProps){
-          removedValues[k] = "";
+          removedValues[k] = null;
         }
       }
     }
@@ -324,7 +324,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     });
     const removedValues = {};
     removedKeys.forEach(function(key){
-      removedValues[key] = "";
+      removedValues[key] = null;
     });
     filterForm.setValues(removedValues);//这里使用filterInnerForm也可以
 
