@@ -381,7 +381,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
                 "id": btnSearchId,
                 "label": "搜索",
                 "icon": "fa fa-search",
-                "visibleOn": "this.filterFormSearchableFields && this.filterFormSearchableFields.length",
+                // "visibleOn": "this.filterFormSearchableFields && this.filterFormSearchableFields.length",
                 "onEvent": {
                   "click": {
                     "actions": [
@@ -397,7 +397,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
                 "type": "button",
                 "label": "取消",
                 "name": "btn_filter_form_cancel",
-                "visibleOn": "this.filterFormSearchableFields && this.filterFormSearchableFields.length",
+                // "visibleOn": "this.filterFormSearchableFields && this.filterFormSearchableFields.length",
                 "onEvent": {
                   "click": {
                     "actions": [
