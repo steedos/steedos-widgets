@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-18 16:34:39
+ * @LastEditTime: 2023-05-22 15:13:18
  * @Description: 
  */
 import { Router } from '../../router'
@@ -63,8 +63,9 @@ export function getSelectMap(selectOptions){
     let map = {};
     forEach(selectOptions,(option)=>{
         const optionValue = option.value + '';
-        if(option.color){
-            const background = option.color.charAt(0) === '#' ? option.color : '#'+option.color;
+        const optionColor = option.color + '';
+        if(optionColor){
+            const background = optionColor.charAt(0) === '#' ? optionColor : '#'+optionColor;
             const color = getContrastColor(background);
             const optionColorStyle = 'background:'+background+';color:'+color;
             map[optionValue] = `<span class="rounded-xl px-2 py-1" style='${optionColorStyle}'>${option.label}</span>`
