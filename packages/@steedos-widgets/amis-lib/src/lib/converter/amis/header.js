@@ -316,6 +316,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
           "className": "flex justify-between"
         }
       ],
+      "columnClassName": "flex-initial",
       "md": "auto",
     })
   };
@@ -337,7 +338,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
         {
           "type": "grid",
           "columns": gridBody,
-          "className": "flex justify-between"
+          "className": "flex justify-between flex-nowrap"
         }
       ],
       "hiddenOn": "${recordLoaded != true}"
