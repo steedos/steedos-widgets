@@ -164,9 +164,10 @@ export const getSchema = (uiSchema) => {
                                   {
                                     name: "template_url",
                                     label: "导入模板",
-                                    type: "tpl",
-                                    // type: "markdown",
-                                    // html: true,
+                                    type: "markdown",
+                                    options: {
+                                      html: true
+                                    },
                                     className: "whitespace-nowrap",
                                   },
                                   null,

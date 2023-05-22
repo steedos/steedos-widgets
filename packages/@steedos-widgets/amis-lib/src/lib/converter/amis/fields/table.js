@@ -139,7 +139,7 @@ async function getTableColumns(fields, options){
                     tpl: tpl,
                     toggled: field.toggled,
                     className,
-                    html: field.type === 'html' ? true : null
+                    options: field.type === 'html' ? {html: true} : null
                     // toggled: true 
                 }, field.amis, {name: field.name}))
             }
