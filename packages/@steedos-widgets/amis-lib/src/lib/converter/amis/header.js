@@ -307,7 +307,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
                   // "tpl": "${(record && uiSchema && record[uiSchema.NAME_FIELD_KEY]) || name}",
                   "inline": false,
                   "wrapperComponent": "",
-                  "className": "leading-5 text-xl font-bold"
+                  "className": "record-detail-header-name leading-5 text-xl font-bold"
                 }
               ],
               "columnClassName": "p-l-xs"
