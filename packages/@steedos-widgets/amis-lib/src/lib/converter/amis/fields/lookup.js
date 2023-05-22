@@ -74,24 +74,13 @@ export function getLookupSapceUserTreeSchema(){
                 "actionType": "custom",
                 "script": `
                 const scope = event.context.scoped;
-                //TODO: 将form中的value一同加入筛选内
-                // var filterForm = scope.parent.parent.getComponents().find(function(n){
-                //     return n.props.type === "form";
-                //   });
-                // var filterFormValues = filterForm.getValues();
-                filterFormValues={
+                var filterFormValues={
                     "__searchable__organizations_parents":event.data.value.value
                 }
                 var listView = scope.parent.getComponents().find(function(n){
                   return n.props.type === "crud";
                 });
-                const removedValues = {};
-                // for(var k in filterFormValues){
-                    //   if(filterFormValues[k] === "" && !filterFormValues.hasOwnProperty(k)){
-                    //     removedValues[k] = "";
-                    //   }
-                    // }
-                listView.handleFilterSubmit(Object.assign({}, removedValues, filterFormValues));
+                listView.handleFilterSubmit(Object.assign({}, filterFormValues));
               `
               }
             ]
