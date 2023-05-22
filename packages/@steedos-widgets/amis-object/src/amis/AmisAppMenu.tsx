@@ -42,6 +42,7 @@ export const AmisAppMenu = async (props) => {
                       const stacked = ${stacked};
                       const showIcon = ${showIcon};
                       const selectedId = '${selectedId}';
+                      const tab_groups = payload.tab_groups;
                       if(stacked){
                           _.each(_.groupBy(payload.children, 'group'), (tabs, groupName) => {
                               if (groupName === 'undefined' || groupName === '') {
@@ -59,7 +60,7 @@ export const AmisAppMenu = async (props) => {
                               } else {
                                   data.nav.push({
                                       "label": groupName,
-                                      "unfolded": true,
+                                      "unfolded": _.find(tab_groups, {"group_name": groupName})?.default_open != false,
                                       "children": _.map(tabs, (tab) => {
                                           return {
                                           "label": showIcon ? {
