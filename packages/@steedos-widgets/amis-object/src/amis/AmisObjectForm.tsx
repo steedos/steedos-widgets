@@ -1,10 +1,11 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-28 11:51:54
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-05-23 09:25:22
  * @Description: 
  */
+import './AmisObjectForm.less';
 import { getFormSchema, getViewSchema } from '@steedos-widgets/amis-lib'
 import { keys, pick, difference, isString, has } from 'lodash';
 
