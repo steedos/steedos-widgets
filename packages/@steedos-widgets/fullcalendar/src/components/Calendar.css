@@ -33,3 +33,26 @@
     margin: var(--gap-md);
     margin-top: var(--gap-sm);
 }
+
+@media (max-width: 768px){
+    .steedos-object-listview  .fc-header-toolbar{
+        display: flex;
+        flex-direction: column-reverse;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding: 0;
+    }
+    .steedos-object-listview  .fc-header-toolbar .fc-toolbar-chunk:first-child{
+        margin-top: 10px;
+    }
+    .steedos-object-listview  .fc-header-toolbar .fc-toolbar-chunk:last-of-type{
+        width: 100%;
+    }
+    .steedos-object-listview  .fc-header-toolbar .fc-toolbar-chunk:last-of-type .fc-button-group:first-child{
+        float: right;
+        margin-right: .75em;
+    }
+    .steedos-object-listview  .fc-header-toolbar .fc-toolbar-chunk:last-of-type .fc-button-group:last-of-type{
+        float: left;
+    }
+}
