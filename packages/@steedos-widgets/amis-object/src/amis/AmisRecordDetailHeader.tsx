@@ -1,10 +1,11 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-05-05 19:39:36
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-05-22 18:47:35
  * @Description: 
  */
+import './AmisRecordDetailHeader.less'
 import { getRecordDetailHeaderSchema , getUISchema} from '@steedos-widgets/amis-lib'
 
 export const AmisRecordDetailHeader = async (props) => {
