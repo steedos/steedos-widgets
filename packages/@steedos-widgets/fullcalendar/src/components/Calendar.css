@@ -55,4 +55,7 @@
     .steedos-object-listview  .fc-header-toolbar .fc-toolbar-chunk:last-of-type .fc-button-group:last-of-type{
         float: left;
     }
+    .steedos-object-listview .fc-media-screen .fc-view-harness{
+        min-height: calc(100vh - 262px);
+    }
 }
