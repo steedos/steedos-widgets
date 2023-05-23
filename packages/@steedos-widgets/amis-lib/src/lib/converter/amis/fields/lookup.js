@@ -549,7 +549,14 @@ export async function lookupToAmisSelect(field, readonly, ctx){
     let valueField = referenceTo ? referenceTo.valueField.name : '';
     if(field.optionsFunction || field._optionsFunction){
         apiInfo.adaptor = `
-        payload.data.options = eval(${field.optionsFunction || field._optionsFunction})(api.data.$);
+        var options = eval(${field.optionsFunction || field._optionsFunction})(api.data.$);
+        if(api.data.$term){
+            options = _.filter(options, function(o) {
+                var label = o.label;
+                return label.toLowerCase().indexOf(api.data.$term.toLowerCase()) > -1;
+            });
+        }
+        payload.data.options = options;
         return payload;
         `
         labelField = 'label';
