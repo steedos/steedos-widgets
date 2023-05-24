@@ -332,7 +332,14 @@ const getObjectDetailHeaderButtons = (objectSchema, recordId)=>{
         className: `button_${button.name}`
         }
     })
-    let dropdownButtons = _.map(moreButtons, (button) => {
+    let moreButtonsVisibleOn = '';
+    let dropdownButtons = _.map(moreButtons, (button, index) => {
+        if(index === 0){
+            moreButtonsVisibleOn = getButtonVisibleOn(button);
+        }else{
+            moreButtonsVisibleOn = moreButtonsVisibleOn + ' || ' +getButtonVisibleOn(button);
+        }
+       
         return {
         type: 'steedos-object-button',
         name: button.name,
@@ -342,12 +349,13 @@ const getObjectDetailHeaderButtons = (objectSchema, recordId)=>{
     })
     return {
         buttons: amisButtonsSchema,
-        moreButtons: dropdownButtons
+        moreButtons: dropdownButtons,
+        moreButtonsVisibleOn
     };
 }
 
 export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
-    const { buttons, moreButtons } = getObjectDetailHeaderButtons(objectSchema, recordId);
+    const { buttons, moreButtons, moreButtonsVisibleOn } = getObjectDetailHeaderButtons(objectSchema, recordId);
     if(ctx.formFactor === 'SMALL'){
         return {
             "type": "button",
@@ -402,7 +410,8 @@ export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
                 type: "steedos-dropdown-button",
                 label: "",
                 buttons: moreButtons,
-                className: 'slds-icon'
+                className: 'slds-icon',
+                visibleOn: moreButtonsVisibleOn
             }
             buttons.push(dropdownButtonsSchema);
         }
