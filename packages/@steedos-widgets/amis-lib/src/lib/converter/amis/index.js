@@ -433,11 +433,12 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
                       "expression": "this.__deletedRecord != true"
                     },
                     {
-                      "args": {
-                        "url": "/app/${appId}/${objectName}/grid/${side_listview_id}",
-                        "blank": false
-                      },
-                      "actionType": "link",
+                      // "args": {
+                      //   "url": "/app/${appId}/${objectName}/grid/${side_listview_id}",
+                      //   "blank": false
+                      // },
+                      "actionType": "custom",
+                      "script": "Steedos.goBack()",
                       "expression": "this.__deletedRecord === true"
                     }
                   ]
