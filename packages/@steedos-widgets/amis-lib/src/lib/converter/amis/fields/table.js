@@ -709,7 +709,7 @@ export async function getTableApi(mainObject, fields, options){
     let lookupFields = ${JSON.stringify(lookupFields)};
     _.each(payload.data.rows, function(item, index){
         _.each(fileFields , (field, key)=>{
-            if(item[key] && item._display && item._display [key]){
+            if(item[key] && item._display && item._display[key]){
                 let value = item._display[key];
                 if(!_.isArray(value)){
                     value = [value]
