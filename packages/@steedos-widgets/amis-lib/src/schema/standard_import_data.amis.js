@@ -164,7 +164,23 @@ export const getSchema = (uiSchema) => {
                                   {
                                     name: "template_url",
                                     label: "导入模板",
-                                    type: "markdown",
+                                    type: "button-group",
+                                    buttons: [
+                                      {
+                                        type: "button",
+                                        label: "下载",
+                                        visibleOn: "${template_url}",
+                                        level: "link",
+                                        actionType: "download",
+                                        api:{
+                                          url: "${template_url}",
+                                          method: "get",
+                                          headers: {
+                                            Authorization: "Bearer ${context.tenantId},${context.authToken}"
+                                          }
+                                        }
+                                      }
+                                    ],
                                     options: {
                                       html: true
                                     },
