@@ -515,6 +515,8 @@ export async function getTableApi(mainObject, fields, options){
 
     const fileFields = {};
     const fileFieldsKeys = [];
+    // 含有optionsFunction属性， 无reference_to属性的lookup字段
+    const lookupFields = {};
     fields.forEach((item)=>{
         if(_.includes(['image','avatar','file'], item.type)){
             fileFieldsKeys.push(item.name);
@@ -523,6 +525,9 @@ export async function getTableApi(mainObject, fields, options){
                 type: item.type,
                 multiple: item.multiple
             };
+        }
+        if(_.includes(['lookup'], item.type) && !item.reference_to ){
+            lookupFields[item.name] = item;
         }
     })
 
@@ -701,6 +706,7 @@ export async function getTableApi(mainObject, fields, options){
     }
     window.postMessage(Object.assign({type: "listview.loaded"}), "*");
     let fileFields = ${JSON.stringify(fileFields)};
+    let lookupFields = ${JSON.stringify(lookupFields)};
     _.each(payload.data.rows, function(item, index){
         _.each(fileFields , (field, key)=>{
             if(item[key] && item._display && item._display [key]){
@@ -712,6 +718,14 @@ export async function getTableApi(mainObject, fields, options){
                     item[key] = value
                 }else{
                     item[key] = _.map(value, 'url')
+                }
+            }
+        })
+        _.each(lookupFields , (field, key)=>{
+            if(item[key]){
+                if(field._optionsFunction){
+                    const optionsFunction = eval("(" + field._optionsFunction+ ")")(item);
+                    item[key + '__label'] = _.map(_.filter(optionsFunction, function(option){return _.includes(item[key], option.value)}), 'label').join(' ');
                 }
             }
         })
