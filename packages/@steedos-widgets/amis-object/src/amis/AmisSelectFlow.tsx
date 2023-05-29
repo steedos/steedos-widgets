@@ -84,7 +84,7 @@ const getSelectFlowSchema = (id, props)=>{
             "adaptor": `
                 payload.data.options?.forEach(function(item,index) {
                     if(!item.children || item.children.length == 0){
-                        payload.data.options.splice(index)
+                        payload.data.options.splice(index,1)
                     }
                 })
                 return payload;
