@@ -78,11 +78,39 @@ export const getSections = async (permissionFields, formFields, ctx) => {
   const fieldSchemaArray = getFieldSchemaArray(formFields)
   const _sections = lodash.groupBy(fieldSchemaArray, 'group');
   const sections = [];
+  var sectionHeaderVisibleOn=[];
   for (const key in _sections) {
     const section = await getSection(formFields, permissionFields, fieldSchemaArray, key, ctx);
     if(section.body.length > 0){
+      if(section.visibleOn){
+        sectionHeaderVisibleOn.push(section.visibleOn);
+      }
       sections.push(section)
     }
+  }
+  /*
+  为了实现只有一个分组时隐藏该分组标题，需要分三种情况(分组如果没有visibleon属性就代表一定显示，有visibleon需要进行判断)
+  1.所有分组中只有一个分组没有visibleon，还需要判断其他有visibleon的分组是否显示，只有其他都不显示时，才需要隐藏标题；反之，有任何一个显示，就不需要隐藏标题
+  2.所有分组都有visibleon
+    2.1 当前分组为隐藏时，标题就设置为隐藏
+    2.2 当前分组为显示时，其他分组只要有一个是显示，就显示该分组标题
+    2.3 当前分组为显示时，其他分组都隐藏，就隐藏该分组标题
+  3.所有分组中有两个以上的分组没有visibleon（这种情况不用处理）
+  */
+  if(sections.length - sectionHeaderVisibleOn.length == 1){
+    sections.forEach((section)=>{
+      section.headingClassName = {
+        "hidden":`!(${sectionHeaderVisibleOn.join(" || ") || 'false'})`
+      }
+    })
+  }else if(sections.length == sectionHeaderVisibleOn.length){
+    sections.forEach((section,index)=>{
+      var tempSectionHeaderVisibleOn = sectionHeaderVisibleOn.slice();
+      tempSectionHeaderVisibleOn.splice(index,1);
+      section.headingClassName = {
+        "hidden":`!((${tempSectionHeaderVisibleOn.join(" || ") || 'false'}) && ${sectionHeaderVisibleOn[index]})`
+      }
+    })
   }
   return sections;
 }
