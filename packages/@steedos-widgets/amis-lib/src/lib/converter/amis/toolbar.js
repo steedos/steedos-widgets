@@ -21,9 +21,11 @@ const getDisplayAsButton = function(objectName, showDisplayAs){
       "rightIconClassName": "m-l-sm"
     }
   ];
+  const displayAsLabel = displayAs === 'split'? "分栏视图" : "表格";
   return {
     "type": "dropdown-button",
     "icon": "fa fa-table-columns",
+    "tooltip": `显示为 ${displayAsLabel}`,
     "btnClassName": "antd-Button--iconOnly bg-white p-2 rounded border-gray-300 text-gray-500",
     "align": "right",
     "visibleOn": "${window:innerWidth > 768 && !!!isLookup}",
@@ -103,6 +105,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
         // "type": "reload",//不可以直接使用reload，因为它不会设置页码到第一页
         "type": "button",
         "align": "right",
+        "tooltip": "刷新",
         "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
         "label": "",
         "icon": "fa fa-sync",
@@ -122,6 +125,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
         "label": "",
         "icon": "fa fa-search",
         "type": "button",
+        "tooltip": "搜索",
         "badge": {
           "offset": [
             -5,
@@ -166,6 +170,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
       {
         "type": "reload",
         "align": "right",
+        "tooltip": "刷新",
         "tooltipPlacement": "bottom",
         "className": "bg-white p-2 rounded border-gray-300 text-gray-500"
       },
@@ -173,6 +178,8 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
       filterVisible ? {
         "label": "",
         "icon": "fa fa-search",
+        "tooltip": "搜索",
+        "tooltipPlacement": "bottom",
         "type": "button",
         "align": "right",
         "className": "bg-white p-2 rounded border-gray-300 text-gray-500",

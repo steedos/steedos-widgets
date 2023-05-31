@@ -12,12 +12,13 @@ export const getSettingListviewToolbarButtonSchema = ()=>{
         "type": "dropdown-button",
         "trigger": "click",
         "icon": "fa fa-cog",
+        "tooltip": "列表视图控制",
         "btnClassName": "antd-Button--iconOnly bg-white p-2 rounded border-gray-300 text-gray-500",
         "align": "right",
         "visibleOn": "${!isLookup}",
         "buttons": [
           {
-            "label": "列表视图操作",
+            "label": "列表视图控制",
             "children": [
               getNewListviewButtonSchema(),
               getCopyListviewButtonSchema(),
