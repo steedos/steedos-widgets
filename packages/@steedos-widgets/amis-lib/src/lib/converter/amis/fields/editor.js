@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-01-13 17:27:54
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-01-16 10:36:27
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-05-31 13:34:22
  * @Description: 
  */
 
@@ -44,8 +44,12 @@ export const getMarkdownFieldSchema = (field, readonly, ctx)=>{
 export const getHtmlFieldSchema = (field, readonly, ctx)=>{
     if(readonly){
         return {
-            "type": "html",
-            "name": field.name
+            "type": "control",
+            "label": field.label,
+            "body": {
+              "type": "html",
+              "name": field.name
+            }
           }
     }else{
         return {

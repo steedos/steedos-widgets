@@ -435,6 +435,17 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             convertData = {
                 type: getAmisStaticFieldType('url', readonly, field)
             }
+            if(readonly && field.show_as_qr){
+                convertData = {
+                    type: "control",
+                    label: field.label,
+                    body: {
+                        type: "qr-code",
+                        codeSize: 128,
+                        name: field.name
+                    }
+                }
+            }
             break;
         case 'email':
             convertData = {
