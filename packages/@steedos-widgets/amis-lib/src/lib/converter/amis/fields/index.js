@@ -480,6 +480,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
         case 'code':
             convertData = {
                 type: "editor",
+                disabled: readonly ? true : false,
                 language: field.language,
                 editorDidMount: new Function('editor', 'monaco', field.editorDidMount)
             }
