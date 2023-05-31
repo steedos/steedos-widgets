@@ -318,6 +318,24 @@ export async function getListSchema(
 
     ctx.defaults = defaults;
 
+    if (listViewName == "recent") {
+        listview_filters = `
+            function(filters, data) {
+                var result = Steedos.authRequest('/graphql', {
+                    type: 'POST',
+                    async: false,
+                    data: JSON.stringify({
+                        query: '{object_recent_viewed(filters: [["record.o","=","' + data.objectName + '"],["space","=","' + data.context.tenantId + '"],["owner","=","' + data.context.userId + '"]],sort:"modified desc",top:50){ _id,record}  }'
+                    }),
+                });
+                var _ids = []
+                result.data.object_recent_viewed.forEach(function (item) {
+                    _ids = _ids.concat(item.record.ids)
+                })
+                return ["_id", "=", _ids];
+            }
+        `
+    }
     const amisSchema = {
         "type": "steedos-object-table",
         "objectApiName": objectName,
