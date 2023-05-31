@@ -5,6 +5,7 @@ import * as graphql from '../graphql';
 import config from '../../../../config'
 import { each, forEach, isBoolean, isEmpty } from 'lodash';
 import { getAmisFileReadonlySchema } from './file'
+import { Router } from '../../../router'
 
 function getOperation(fields){
     const controls = [];
@@ -150,7 +151,13 @@ async function getTableColumns(fields, options){
     };
 
     // columns.push(getOperation(fields));
-
+    if(!_.some(columns, { name: options.labelFieldName })){
+        const href = Router.getObjectDetailPath({
+            ...options,  formFactor: options.formFactor, appId: "${appId}", objectName: options.objectName || "${objectName}", recordId: `\${${options.idFieldName}}`
+        })
+        columns[0].type = "tpl";
+        columns[0].tpl = `<a href="${href}">\${${columns[0].name}}</a>`
+    }
     return columns;
 }
 
