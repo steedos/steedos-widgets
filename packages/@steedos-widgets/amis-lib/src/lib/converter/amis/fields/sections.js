@@ -97,20 +97,23 @@ export const getSections = async (permissionFields, formFields, ctx) => {
     2.3 当前分组为显示时，其他分组都隐藏，就隐藏该分组标题
   3.所有分组中有两个以上的分组没有visibleon（这种情况不用处理）
   */
-  if(sections.length - sectionHeaderVisibleOn.length == 1){
-    sections.forEach((section)=>{
-      section.headingClassName = {
-        "hidden":`!(${sectionHeaderVisibleOn.join(" || ") || 'false'})`
-      }
-    })
-  }else if(sections.length == sectionHeaderVisibleOn.length){
-    sections.forEach((section,index)=>{
-      var tempSectionHeaderVisibleOn = sectionHeaderVisibleOn.slice();
-      tempSectionHeaderVisibleOn.splice(index,1);
-      section.headingClassName = {
-        "hidden":`!((${tempSectionHeaderVisibleOn.join(" || ") || 'false'}) && ${sectionHeaderVisibleOn[index]})`
-      }
-    })
-  }
+ if(ctx.mode == "edit"){
+   if (sections.length - sectionHeaderVisibleOn.length == 1) {
+     sections.forEach((section) => {
+       section.headingClassName = {
+         "hidden": `!(${sectionHeaderVisibleOn.join(" || ") || 'false'})`
+       }
+     })
+   } else if (sections.length == sectionHeaderVisibleOn.length) {
+     sections.forEach((section, index) => {
+       var tempSectionHeaderVisibleOn = sectionHeaderVisibleOn.slice();
+       tempSectionHeaderVisibleOn.splice(index, 1);
+       section.headingClassName = {
+         "hidden": `!((${tempSectionHeaderVisibleOn.join(" || ") || 'false'}) && ${sectionHeaderVisibleOn[index]})`
+       }
+     })
+   }
+ }
+  
   return sections;
 }

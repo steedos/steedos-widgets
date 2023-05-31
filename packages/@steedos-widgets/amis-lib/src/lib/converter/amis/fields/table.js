@@ -547,6 +547,7 @@ export async function getTableApi(mainObject, fields, options){
     api.data.filter = "$filter"
     api.data.loaded = "${loaded}";
     api.data.listViewId = "${listViewId}";
+    api.data.listName = "${listName}";
     api.requestAdaptor = `
         // selfData 中的数据由 CRUD 控制. selfData中,只能获取到 CRUD 给定的data. 无法从数据链中获取数据.
         let selfData = JSON.parse(JSON.stringify(api.data.$self));
@@ -577,9 +578,13 @@ export async function getTableApi(mainObject, fields, options){
             console.error("本地存储中crud参数解析异常：", ex);
         }
         ${baseFilters ? `var systemFilters = ${JSON.stringify(baseFilters)};` : 'var systemFilters = [];'}
+        var _ids = []
         const filtersFunction = ${filtersFunction};
         if(filtersFunction){
             const _filters = filtersFunction(systemFilters, api.data.$self);
+            if(api.data.listName == "recent"){
+                _ids = _filters[2]
+            }
             if(_filters && _filters.length > 0){
                 if(_.isEmpty(systemFilters)){
                     systemFilters = _filters || [];
@@ -691,6 +696,7 @@ export async function getTableApi(mainObject, fields, options){
                 filters = [filters, 'and', userFilters]
             }
         }
+        api.data._ids = _ids;
         api.data = {
             query: api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', pageSize).replace('{__skip}', skip).replace('{__sort}', sort.trim())
         }
@@ -698,6 +704,11 @@ export async function getTableApi(mainObject, fields, options){
         return api;
     `
     api.adaptor = `
+    if(api.body.listName == "recent"){
+        payload.data.rows = _.sortBy(payload.data.rows, function(item){
+            return _.indexOf(api.body._ids, item._id)
+        });
+    }
     const enable_tree = ${mainObject.enable_tree};
     if(!enable_tree){
         _.each(payload.data.rows, function(item, index){
