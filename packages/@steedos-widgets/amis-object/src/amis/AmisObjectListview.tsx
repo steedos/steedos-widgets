@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-05-06 15:05:50
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-05-31 13:54:53
  * @Description: 
  */
 import { getListSchema, getObjectListHeader, getUISchema, Router } from '@steedos-widgets/amis-lib'
@@ -80,6 +80,7 @@ export const AmisObjectListView = async (props) => {
     // className不传入crud组件，crud单独识别crudClassName属性
     listSchema.className = crudClassName;
     listSchema.onEvent = {}; // 为啥要将一个内置event放在此处?
+    // 下面expression中_isRelated参数判断的是列表视图分栏模式下，新建、编辑、删除相关子表记录时不应该刷新左侧（主表）列表视图组件
     listSchema.onEvent[`@data.changed.${objectApiName}`] = {
       "actions": [
         {
