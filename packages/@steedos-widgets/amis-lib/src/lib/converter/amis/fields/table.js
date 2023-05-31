@@ -120,6 +120,8 @@ async function getTableColumns(fields, options){
                 type = 'tpl';
             }else if(field.type === 'html'){
                 type = 'markdown';
+            }else if(field.type === 'url' && field.show_as_qr){
+                type = 'qr-code';
             }
             let className = "";
             if(field.type === 'textarea'){

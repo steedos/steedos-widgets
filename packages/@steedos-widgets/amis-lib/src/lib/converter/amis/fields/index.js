@@ -433,7 +433,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             break;
         case 'url':
             convertData = {
-                type: getAmisStaticFieldType('url', readonly)
+                type: getAmisStaticFieldType('url', readonly, field)
             }
             break;
         case 'email':
