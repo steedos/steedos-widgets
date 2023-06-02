@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-26 16:02:08
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-06-02 15:25:51
+ * @LastEditTime: 2023-06-02 16:36:18
  * @Description: 
  */
 import * as Fields from '../fields';
@@ -93,12 +93,12 @@ export const getSections = async (permissionFields, formFields, ctx) => {
   const fieldSchemaArray = getFieldSchemaArray(formFields)
   const _sections = lodash.groupBy(fieldSchemaArray, 'group');
   const sections = [];
-  var sectionHeaderVisibleOn = [];
+  var sectionVisibleOns = [];
   for (const key in _sections) {
     const section = await getSection(formFields, permissionFields, fieldSchemaArray, key, ctx);
     if (section.body.length > 0) {
       if (section.visibleOn) {
-        sectionHeaderVisibleOn.push(section.visibleOn);
+        sectionVisibleOns.push(section.visibleOn);
       }
       sections.push(section)
     }
@@ -112,18 +112,20 @@ export const getSections = async (permissionFields, formFields, ctx) => {
     2.3 当前分组为显示时，其他分组都隐藏，就隐藏该分组标题
   3.所有分组中有两个以上的分组没有visibleon（这种情况不用处理）
   */
-  if (sections.length - sectionHeaderVisibleOn.length == 1) {
+  if (sections.length - sectionVisibleOns.length == 1) {
+    // 第1种情况
     sections.forEach((section) => {
       section.headingClassName = {
-        "hidden": `!(${sectionHeaderVisibleOn.join(" || ") || 'false'})`
+        "hidden": `!(${sectionVisibleOns.join(" || ") || 'false'})`
       }
     })
-  } else if (sections.length == sectionHeaderVisibleOn.length) {
+  } else if (sections.length == sectionVisibleOns.length) {
+    // 第2种情况
     sections.forEach((section, index) => {
-      var tempSectionHeaderVisibleOn = sectionHeaderVisibleOn.slice();
-      tempSectionHeaderVisibleOn.splice(index, 1);
+      var tempSectionVisibleOns = sectionVisibleOns.slice();
+      tempSectionVisibleOns.splice(index, 1);
       section.headingClassName = {
-        "hidden": `!((${tempSectionHeaderVisibleOn.join(" || ") || 'false'}) && ${sectionHeaderVisibleOn[index]})`
+        "hidden": `!((${tempSectionVisibleOns.join(" || ") || 'false'}) && ${sectionVisibleOns[index]})`
       }
     })
   }
