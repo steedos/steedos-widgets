@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-26 16:02:08
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-13 16:01:40
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-06-02 15:24:50
  * @Description: 
  */
 import * as Fields from '../fields';
@@ -32,6 +32,9 @@ const getFieldSchemaArray = (formFields)=>{
 }
 
 const getSection = async (formFields, permissionFields, fieldSchemaArray, sectionName, ctx) => {
+  if(!ctx){
+    ctx = {};
+  }
   const sectionFields = lodash.filter(fieldSchemaArray, { 'group': sectionName });
   if(sectionFields.length == lodash.filter(sectionFields, ['hidden', true]).length){
     return ;
@@ -62,12 +65,21 @@ const getSection = async (formFields, permissionFields, fieldSchemaArray, sectio
   const sectionFieldsVisibleOn = lodash.map(lodash.compact(lodash.map(fieldSetBody, 'visibleOn')) , (visibleOn)=>{
     return visibleOn;
   });
-  const section = {
+
+  let section = {
     "type": "fieldSet",
     "title": sectionName,
     "collapsable": true,
     "body": fieldSetBody,
   }
+
+  if(ctx.enableTabs){
+    section = {
+      "title": sectionName,
+      "body": fieldSetBody,
+    }
+  }
+
   if(sectionFieldsVisibleOn.length > 0 && fieldSetBody.length === sectionFieldsVisibleOn.length){
     section.visibleOn = `${sectionFieldsVisibleOn.join(" || ")}`
   }
@@ -75,6 +87,9 @@ const getSection = async (formFields, permissionFields, fieldSchemaArray, sectio
 }
 
 export const getSections = async (permissionFields, formFields, ctx) => {
+  if(!ctx){
+    ctx = {};
+  }
   const fieldSchemaArray = getFieldSchemaArray(formFields)
   const _sections = lodash.groupBy(fieldSchemaArray, 'group');
   const sections = [];
@@ -114,6 +129,16 @@ export const getSections = async (permissionFields, formFields, ctx) => {
      })
    }
  }
+
+  if(ctx.enableTabs){
+    return [
+      {
+        "type": "tabs",
+        "tabs": sections,
+        "tabsMode": ctx.tabsMode
+      }
+    ]
+  }
   
   return sections;
 }

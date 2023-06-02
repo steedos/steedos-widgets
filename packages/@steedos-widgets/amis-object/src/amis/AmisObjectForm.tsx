@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-23 09:25:22
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-06-01 18:05:21
  * @Description: 
  */
 import './AmisObjectForm.less';
@@ -12,7 +12,7 @@ import { keys, pick, difference, isString, has } from 'lodash';
 export const AmisObjectForm = async (props) => {
   // console.log("===AmisObjectForm=props==", props);
   const { $schema, recordId, defaultData, mode, layout, labelAlign, appId, fieldsExtend, excludedFields = null, fields = null,
-    className="", initApiRequestAdaptor, initApiAdaptor, apiRequestAdaptor, apiAdaptor
+    className="", initApiRequestAdaptor, initApiAdaptor, apiRequestAdaptor, apiAdaptor, enableTabs, tabsMode
   } = props;
   let objectApiName = props.objectApiName || "space_users";
   // amis中的mode属性是表单布局,没有layout属性。defaults的变量会覆盖mode属性值。
@@ -45,7 +45,7 @@ export const AmisObjectForm = async (props) => {
   let uiSchema: any;
   if (mode === 'edit') {
     const schema = await getFormSchema(objectApiName, Object.assign({}, options, {
-      initApiRequestAdaptor, initApiAdaptor, apiRequestAdaptor, apiAdaptor
+      initApiRequestAdaptor, initApiAdaptor, apiRequestAdaptor, apiAdaptor, enableTabs, tabsMode
     }));
     amisSchema = schema.amisSchema;
     if(defaultData){
