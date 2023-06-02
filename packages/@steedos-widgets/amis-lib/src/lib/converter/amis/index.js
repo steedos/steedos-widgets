@@ -195,6 +195,20 @@ export async function getObjectCRUD(objectSchema, fields, options){
       }
       const table = await getTableSchema(fields, Object.assign({idFieldName: objectSchema.idFieldName, labelFieldName: labelFieldName}, options));
       delete table.mode;
+      const requestAdaptor = `
+        var graphqlOrder = "";
+        api.data.rowsDiff.forEach(function (item, index) {
+          const itemOrder = 'update' + index + ':' + api.data.objectName + '__update(id:"' + item._id + '", doc:' + JSON.stringify(JSON.stringify(_.omit(item, '_id'))) + ') {_id}';
+            graphqlOrder += itemOrder;
+        })
+        graphqlOrder = 'mutation {' + graphqlOrder + '}';
+        return {
+            ...api,
+            data: {
+                query: graphqlOrder
+            }
+        }
+      `
 
       body = Object.assign({}, table, {
         type: 'crud', 
@@ -209,6 +223,15 @@ export async function getObjectCRUD(objectSchema, fields, options){
         className: `flex-auto ${crudClassName || ""}`,
         bodyClassName: "bg-white",
         crudClassName: crudClassName,
+        quickSaveApi: {
+          url: `\${context.rootUrl}/graphql`,
+          method: "post",
+          dataType: "json",
+          headers: {
+            Authorization: "Bearer ${context.tenantId},${context.authToken}",
+          },
+          requestAdaptor: requestAdaptor,
+        },
       }, 
         bodyProps,
         )

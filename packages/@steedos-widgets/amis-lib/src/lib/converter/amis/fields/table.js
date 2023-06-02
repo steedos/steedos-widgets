@@ -1,6 +1,6 @@
 import * as _ from 'lodash'
 import * as Tpl from '../tpl';
-import * as Fields from '../index';
+import * as Fields from '../fields/index';
 import * as graphql from '../graphql';
 import config from '../../../../config'
 import { each, forEach, isBoolean, isEmpty } from 'lodash';
@@ -40,6 +40,139 @@ function getDetailColumn(){}
 async function getTableColumns(fields, options){
     const columns = [{name: '_index',type: 'text', width: 32, placeholder: ""}];
     for (const field of fields) {
+        console.log("getTableColumns===>field",field)
+        //增加quickEdit属性，实现快速编辑
+        const quickEditId = options.objectName + "_" + field.name + "QuickEdit";//定义快速编辑的表单id，用于setvalue传值
+        var quickEditSchema = {debug:true,body:[],id:quickEditId};
+        if (field.disabled) {
+            quickEditSchema = false;
+        } else {
+            quickEditSchema.body.push(await Fields.convertSFieldToAmisField(field, false, options));
+            //存在属性上可编辑，实际不可编辑的字段，convertSFieldToAmisField函数可能会返回undefined，如summary
+            if (quickEditSchema.body.length > 0 && !!quickEditSchema.body[0]) {
+                //以下字段使用_display的数据,因此在触发change事件时对数据_display进行修改，以实现保存前的回显
+                var displayField = ``;
+                //lookup或master_detail字段使用相同代码
+                //TODO:amis的picker组件直接点击选项x时不会触发change事件，待处理
+                const onEventType = "";
+                const lookupOrMasterDetail = function(field,quickEditSchema){
+                    var displayField = "";
+                    if (field.multiple){
+                        displayField = `
+                            _display["${field.name}"] = [];
+                            event.data.value.forEach(function(item,index){
+                                _display["${field.name}"].push(
+                                    {
+                                        "label": event.data.option[index].${quickEditSchema.body[0].labelField},
+                                        "value": item,
+                                        "objectName": "${field.reference_to}"
+                                    }
+                                )
+                            })
+                        `
+                    }else{
+                        displayField = `
+                            _display["${field.name}"] = {
+                                "label": event.data.option.${quickEditSchema.body[0].labelField},
+                                "value": event.data.value,
+                                "objectName": "${field.reference_to}"
+                            }
+                        `
+                    }
+                    return displayField;
+                }
+                switch (field.type){
+                    case "lookup":
+                        displayField = lookupOrMasterDetail(field,quickEditSchema);
+                        onEventType = "change";
+                        break;
+                    case "master_detail":
+                        displayField = lookupOrMasterDetail(field,quickEditSchema);
+                        onEventType = "change";
+                        break;
+                    case "select":
+                        displayField = `
+                            _display["${field.name}"] = event.data.selectedItems.label;
+                        `
+                        onEventType = "change";
+                        break;
+                    case "percent":
+                        displayField = `
+                            _display["${field.name}"] = (event.data.value * 100).toFixed(${field.scale}) + '%';
+                        `
+                        onEventType = "change";
+                        break;
+                    case "time":
+                        displayField = `
+                            _display["${field.name}"] = moment(event.data.value).utc().format('HH:mm');
+                        `
+                        onEventType = "change";
+                        break;
+                    case "date":
+                        displayField = `
+                            _display["${field.name}"] = moment(event.data.value).utc().format('YYYY-MM-DD');
+                        `
+                        onEventType = "change";
+                        break;
+                    case "datetime":
+                        displayField = `
+                            _display["${field.name}"] = moment(event.data.value).format('YYYY-MM-DD HH:mm');
+                        `
+                        onEventType = "change";
+                        break;
+                    case "boolean":
+                        displayField = `
+                            _display["${field.name}"] = event.data.value?"√":"";
+                        `
+                        onEventType = "change";
+                        break;
+                    case "number":
+                        displayField = `
+                            _display["${field.name}"] = event.data.value.toFixed(${field.scale});
+                        `
+                        onEventType = "change";
+                        break;
+                    case "currency":
+                        displayField = `
+                            _display["${field.name}"] = event.data.value.toFixed(${field.scale});
+                        `
+                        onEventType = "change";
+                        break;
+                    // case "file":
+                    //     if (field.multiple){
+                    //     }else{
+                    //         displayField = `
+                    //         debugger;    
+                    //         //_display["${field.name}"] = event.data.value.toFixed(${field.scale});
+                    //         `
+                    //     }
+                    //     onEventType = "success";
+                    //     break;
+                    // case "image":
+                    //     break;
+                    // case "avatar":
+                    //     break;
+                    default:
+                        break;
+                }
+                quickEditSchema.body[0].onEvent[onEventType] = {
+                    "actions": [
+                        {
+                            "actionType": "custom",
+                            "script": `
+                                debugger;
+                                var _display = event.data._display;
+                                ${displayField}
+                                doAction({actionType: 'setValue', args: {"args": {"value": {_display}}},componentId: "${quickEditId}"});
+                            `
+                        }
+                    ]
+                };
+            }else{
+                quickEditSchema = false;
+            }
+        }
+        console.log("quickEditSchema",quickEditSchema)
         if((field.is_name || field.name === options.labelFieldName) && options.objectName === 'cms_files'){
             const previewFileScript = `
                 var data = event.data;
@@ -52,6 +185,7 @@ async function getTableColumns(fields, options){
                 "label": `<%=data.versions ? data.name : "${field.label}"%>`,
                 "className": "whitespace-nowrap",
                 "level": "link",
+                "quickEdit": quickEditSchema,
                 "onEvent": {
                   "click": {
                     "actions": [
@@ -85,8 +219,7 @@ async function getTableColumns(fields, options){
                 label: field.label,
                 width: field.width,
                 toggled: field.toggled,
-                disabled: true,
-                className:"whitespace-nowrap",
+                className:"whitespace-nowrap"
             }, field.amis, {name: field.name}))
         }else if(field.type === 'avatar' || field.type === 'image' || field.type === 'file'){
             columns.push(Object.assign({}, {
@@ -95,7 +228,7 @@ async function getTableColumns(fields, options){
                 label: field.label,
                 width: field.width,
                 toggled: field.toggled,
-                disabled: true,
+                quickEdit: quickEditSchema,
                 className:"whitespace-nowrap",
                 ...getAmisFileReadonlySchema(field)
             }, field.amis, {name: field.name}))
@@ -111,11 +244,11 @@ async function getTableColumns(fields, options){
                 width: field.width,
                 toggled: field.toggled,
                 className:"whitespace-nowrap",
+                quickEdit: quickEditSchema
             }, field.amis, {name: field.name}))
         }
         else{
             const tpl = await Tpl.getFieldTpl(field, options);
-
             let type = 'text';
             if(tpl){
                 type = 'tpl';
@@ -142,12 +275,12 @@ async function getTableColumns(fields, options){
                     tpl: tpl,
                     toggled: field.toggled,
                     className,
+                    quickEdit: quickEditSchema,
                     options: field.type === 'html' ? {html: true} : null
                     // toggled: true 
                 }, field.amis, {name: field.name}))
             }
         }
-        
     };
 
     // columns.push(getOperation(fields));
