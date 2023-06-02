@@ -2,13 +2,13 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-26 16:02:08
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-06-02 15:24:50
+ * @LastEditTime: 2023-06-02 15:25:51
  * @Description: 
  */
 import * as Fields from '../fields';
 import * as lodash from 'lodash';
 
-const getFieldSchemaArray = (formFields)=>{
+const getFieldSchemaArray = (formFields) => {
   let fieldSchemaArray = [];
   fieldSchemaArray.length = 0
 
@@ -21,10 +21,10 @@ const getFieldSchemaArray = (formFields)=>{
       // field.group = field.label
       field.is_wide = true;
     }
-    
-    if (!isObjectField){
-      if(!field.hidden){
-          fieldSchemaArray.push(Object.assign({name: fieldName}, field, {permission: {allowEdit: true}}))
+
+    if (!isObjectField) {
+      if (!field.hidden) {
+        fieldSchemaArray.push(Object.assign({ name: fieldName }, field, { permission: { allowEdit: true } }))
       }
     }
   })
@@ -32,37 +32,37 @@ const getFieldSchemaArray = (formFields)=>{
 }
 
 const getSection = async (formFields, permissionFields, fieldSchemaArray, sectionName, ctx) => {
-  if(!ctx){
+  if (!ctx) {
     ctx = {};
   }
   const sectionFields = lodash.filter(fieldSchemaArray, { 'group': sectionName });
-  if(sectionFields.length == lodash.filter(sectionFields, ['hidden', true]).length){
-    return ;
+  if (sectionFields.length == lodash.filter(sectionFields, ['hidden', true]).length) {
+    return;
   }
 
   const fieldSetBody = [];
 
   for (const perField of sectionFields) {
     let field = perField;
-      if(perField.type === 'grid'){
-          field = await Fields.getGridFieldSubFields(perField, formFields);
-          // console.log(`perField.type grid ===> field`, field)
-      }else if(perField.type === 'object'){
-          field = await Fields.getObjectFieldSubFields(perField, formFields);
-          // console.log(`perField.type object ===> field`, field)
+    if (perField.type === 'grid') {
+      field = await Fields.getGridFieldSubFields(perField, formFields);
+      // console.log(`perField.type grid ===> field`, field)
+    } else if (perField.type === 'object') {
+      field = await Fields.getObjectFieldSubFields(perField, formFields);
+      // console.log(`perField.type object ===> field`, field)
+    }
+    if (field.name.indexOf(".") < 0) {
+      ctx.__formFields = formFields;
+      const amisField = await Fields.convertSFieldToAmisField(field, field.readonly, ctx);
+      // console.log(`${field.name} amisField`, field, amisField)
+      if (amisField) {
+        fieldSetBody.push(amisField);
       }
-      if(field.name.indexOf(".") < 0){
-          ctx.__formFields = formFields;
-          const amisField = await Fields.convertSFieldToAmisField(field, field.readonly, ctx);
-          // console.log(`${field.name} amisField`, field, amisField)
-          if(amisField){
-              fieldSetBody.push(amisField);
-          }
-      }
+    }
   }
 
   // fieldSet 已支持显隐控制
-  const sectionFieldsVisibleOn = lodash.map(lodash.compact(lodash.map(fieldSetBody, 'visibleOn')) , (visibleOn)=>{
+  const sectionFieldsVisibleOn = lodash.map(lodash.compact(lodash.map(fieldSetBody, 'visibleOn')), (visibleOn) => {
     return visibleOn;
   });
 
@@ -73,31 +73,31 @@ const getSection = async (formFields, permissionFields, fieldSchemaArray, sectio
     "body": fieldSetBody,
   }
 
-  if(ctx.enableTabs){
+  if (ctx.enableTabs) {
     section = {
       "title": sectionName,
       "body": fieldSetBody,
     }
   }
 
-  if(sectionFieldsVisibleOn.length > 0 && fieldSetBody.length === sectionFieldsVisibleOn.length){
+  if (sectionFieldsVisibleOn.length > 0 && fieldSetBody.length === sectionFieldsVisibleOn.length) {
     section.visibleOn = `${sectionFieldsVisibleOn.join(" || ")}`
   }
   return section
 }
 
 export const getSections = async (permissionFields, formFields, ctx) => {
-  if(!ctx){
+  if (!ctx) {
     ctx = {};
   }
   const fieldSchemaArray = getFieldSchemaArray(formFields)
   const _sections = lodash.groupBy(fieldSchemaArray, 'group');
   const sections = [];
-  var sectionHeaderVisibleOn=[];
+  var sectionHeaderVisibleOn = [];
   for (const key in _sections) {
     const section = await getSection(formFields, permissionFields, fieldSchemaArray, key, ctx);
-    if(section.body.length > 0){
-      if(section.visibleOn){
+    if (section.body.length > 0) {
+      if (section.visibleOn) {
         sectionHeaderVisibleOn.push(section.visibleOn);
       }
       sections.push(section)
@@ -112,25 +112,25 @@ export const getSections = async (permissionFields, formFields, ctx) => {
     2.3 当前分组为显示时，其他分组都隐藏，就隐藏该分组标题
   3.所有分组中有两个以上的分组没有visibleon（这种情况不用处理）
   */
- if(ctx.mode == "edit"){
-   if (sections.length - sectionHeaderVisibleOn.length == 1) {
-     sections.forEach((section) => {
-       section.headingClassName = {
-         "hidden": `!(${sectionHeaderVisibleOn.join(" || ") || 'false'})`
-       }
-     })
-   } else if (sections.length == sectionHeaderVisibleOn.length) {
-     sections.forEach((section, index) => {
-       var tempSectionHeaderVisibleOn = sectionHeaderVisibleOn.slice();
-       tempSectionHeaderVisibleOn.splice(index, 1);
-       section.headingClassName = {
-         "hidden": `!((${tempSectionHeaderVisibleOn.join(" || ") || 'false'}) && ${sectionHeaderVisibleOn[index]})`
-       }
-     })
-   }
- }
+  if (ctx.mode == "edit") {
+    if (sections.length - sectionHeaderVisibleOn.length == 1) {
+      sections.forEach((section) => {
+        section.headingClassName = {
+          "hidden": `!(${sectionHeaderVisibleOn.join(" || ") || 'false'})`
+        }
+      })
+    } else if (sections.length == sectionHeaderVisibleOn.length) {
+      sections.forEach((section, index) => {
+        var tempSectionHeaderVisibleOn = sectionHeaderVisibleOn.slice();
+        tempSectionHeaderVisibleOn.splice(index, 1);
+        section.headingClassName = {
+          "hidden": `!((${tempSectionHeaderVisibleOn.join(" || ") || 'false'}) && ${sectionHeaderVisibleOn[index]})`
+        }
+      })
+    }
+  }
 
-  if(ctx.enableTabs){
+  if (ctx.enableTabs) {
     return [
       {
         "type": "tabs",
@@ -139,6 +139,6 @@ export const getSections = async (permissionFields, formFields, ctx) => {
       }
     ]
   }
-  
+
   return sections;
 }
