@@ -209,6 +209,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
         className: `flex-auto ${crudClassName || ""}`,
         bodyClassName: "bg-white",
         crudClassName: crudClassName,
+        rowClassNameExpr: options.rowClassNameExpr
       }, 
         bodyProps,
         )

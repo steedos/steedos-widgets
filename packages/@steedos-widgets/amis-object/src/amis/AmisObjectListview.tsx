@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-05-31 13:54:53
+ * @LastEditTime: 2023-06-04 17:06:39
  * @Description: 
  */
 import { getListSchema, getObjectListHeader, getUISchema, Router } from '@steedos-widgets/amis-lib'
@@ -18,7 +18,7 @@ export const AmisObjectListView = async (props) => {
       sideSchema,
       columnsTogglable=false,
       filterVisible = true,
-      headerToolbarItems} = props;
+      headerToolbarItems, rowClassNameExpr } = props;
   let { headerSchema } = props;
   let ctx = props.ctx;
   let listName = defaultData?.listName || data?.listName || props?.listName;
@@ -110,7 +110,7 @@ export const AmisObjectListView = async (props) => {
   const amisSchemaData = Object.assign({}, data, defaultData);
   const listViewId = ctx?.listViewId || amisSchemaData.listViewId;
   const listViewSchemaProps = { 
-    top, perPage, showHeader, defaults, ...ctx, listViewId, setDataToComponentId, filterVisible, showDisplayAs, displayAs, headerToolbarItems
+    top, perPage, showHeader, defaults, ...ctx, listViewId, setDataToComponentId, filterVisible, showDisplayAs, displayAs, headerToolbarItems, rowClassNameExpr
   }
 
   if(!headerSchema){
