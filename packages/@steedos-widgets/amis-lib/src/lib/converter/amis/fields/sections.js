@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-26 16:02:08
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-06-02 16:54:41
+ * @LastEditTime: 2023-06-04 15:49:23
  * @Description: 
  */
 import * as Fields from '../fields';
@@ -121,9 +121,24 @@ export const getSections = async (permissionFields, formFields, ctx) => {
   });
 
   if (ctx.enableTabs) {
+    // TODO: 以下sectionHeaderVisibleOn代码逻辑是为实现只有一个选项卡时给选项卡添加sectionHeaderVisibleOn样式类来把选项卡顶部卡头隐藏
+    // 但是 amis filter过滤器有两个bug造成此功能不好实现：
+    // 1.filter过滤器只支持对象数组，并不支持boolean或字符串数组，见： https://github.com/baidu/amis/issues/7078
+    // 2.filter过滤器的返回结果无法进一步获取最终过滤后的数组长度，见：https://github.com/baidu/amis/issues/7077
+    // let sectionHeaderVisibleOn = "false";
+    // if(sectionVisibleOns.length){
+    //   sectionHeaderVisibleOn = "[" + sectionVisibleOns.join(",") + "]" + "|filter:equals:true.length > 1";
+    // }
+    // console.log("===sectionHeaderVisibleOn===", sectionHeaderVisibleOn);
+    // sectionHeaderVisibleOn = "[true]|filter:equals:true.length > 1";
+    // sectionHeaderVisibleOn = "false";
+    // sectionHeaderVisibleOn = "[1,1,1]|filter:equals:1.length > 1";
     return [
       {
         "type": "tabs",
+        // "className": {
+        //   "hiddenFormTabs": `!(${sectionHeaderVisibleOn})`
+        // },
         "tabs": sections,
         "tabsMode": ctx.tabsMode
       }
