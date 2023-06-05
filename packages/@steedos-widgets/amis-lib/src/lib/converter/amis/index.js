@@ -195,11 +195,27 @@ export async function getObjectCRUD(objectSchema, fields, options){
       }
       const table = await getTableSchema(fields, Object.assign({idFieldName: objectSchema.idFieldName, labelFieldName: labelFieldName}, options));
       delete table.mode;
-      const requestAdaptor = `
+      //image与avatar需要在提交修改时特别处理
+      const imageNames = _.compact(_.map(_.filter(fields, (field) => ["image","avatar"].includes(field.type)), 'name'));
+      const quickSaveApiRequestAdaptor = `
         var graphqlOrder = "";
+        var imageNames = ${JSON.stringify(imageNames)};
         api.data.rowsDiff.forEach(function (item, index) {
+          for(key in item){
+            if(_.includes(imageNames, key)){
+              if(typeof item[key] == "string"){
+                const match = item[key].match(/\\/([^\\/]+)$/);
+                item[key] = match && match.length > 1?match[1]:"";
+              }else{
+                item[key] = _.map(item[key], function(ele){
+                  const match = ele.match(/\\/([^\\/]+)$/);
+                  return match && match.length > 1?match[1]:"";
+                })
+              }
+            }
+          }
           const itemOrder = 'update' + index + ':' + api.data.objectName + '__update(id:"' + item._id + '", doc:' + JSON.stringify(JSON.stringify(_.omit(item, '_id'))) + ') {_id}';
-            graphqlOrder += itemOrder;
+          graphqlOrder += itemOrder;
         })
         graphqlOrder = 'mutation {' + graphqlOrder + '}';
         return {
@@ -230,7 +246,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
           headers: {
             Authorization: "Bearer ${context.tenantId},${context.authToken}",
           },
-          requestAdaptor: requestAdaptor,
+          requestAdaptor: quickSaveApiRequestAdaptor,
         },
       }, 
         bodyProps,
