@@ -76,7 +76,7 @@ async function getQuickEditSchema(field, options){
                                     _display["${field.name}"].push(
                                         {
                                             "label": event.data.option[index].${quickEditSchema.body[0].labelField},
-                                            "value": item,
+                                            "value": event.data.option[index]._id,
                                             "objectName": "${field.reference_to}"
                                         }
                                     )
@@ -86,7 +86,7 @@ async function getQuickEditSchema(field, options){
                         displayField = `
                                 _display["${field.name}"] = {
                                     "label": event.data.option.${quickEditSchema.body[0].labelField},
-                                    "value": event.data.value,
+                                    "value": event.data._id,
                                     "objectName": "${field.reference_to}"
                                 }
                             `
