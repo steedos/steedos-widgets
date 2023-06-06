@@ -43,9 +43,10 @@ async function getQuickEditSchema(field, options){
     if (field.disabled) {
         quickEditSchema = false;
     } else {
-        quickEditSchema.body.push(await Fields.convertSFieldToAmisField(field, false, options));
+        var fieldSchema = await Fields.convertSFieldToAmisField(field, false, options);
         //存在属性上可编辑，实际不可编辑的字段，convertSFieldToAmisField函数可能会返回undefined，如summary
-        if (quickEditSchema.body.length > 0 && !!quickEditSchema.body[0]) {
+        if (!!fieldSchema) {
+            quickEditSchema.body.push(fieldSchema);
             //以下字段使用_display的数据,因此在触发change等事件时对数据_display进行修改，以实现保存前的回显
             var TempDisplayField = ``;
             quickEditSchema.body[0].onEvent = {};
@@ -177,7 +178,7 @@ async function getQuickEditSchema(field, options){
                         status: response.status == 200 ? 0 : response.status,
                         msg: response.statusText,
                         data: {
-                            value: rootUrl + payload._id,
+                            value: rootUrl + payload._id,//为了实现图片crud的回显，需要将value从id改为url，当保存数据数据时，再在发送适配器内重新将id提取出来
                             name: payload.original.name,
                             url: rootUrl + payload._id,
                         }
@@ -192,6 +193,7 @@ async function getQuickEditSchema(field, options){
         } else {
             quickEditSchema = false;
         }
+        //TODO:附件多选时会覆盖老数据，暂时禁用
         if(field.type == "file" && field.multiple){
             quickEditSchema = false;
         }
