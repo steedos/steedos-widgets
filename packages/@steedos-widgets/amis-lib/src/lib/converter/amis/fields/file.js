@@ -39,7 +39,6 @@ export const getAmisFileReadonlySchema = (steedosField)=>{
         return {
             type: amisFieldType,
             tpl: `
-                <% data %> 
                 <% let fileData = data._display.${steedosField.name}; if (fileData) { %>
                     <% if(!Array.isArray(fileData)){ fileData = [fileData]}  %>
                     <% fileData.forEach(function(item) { %> 

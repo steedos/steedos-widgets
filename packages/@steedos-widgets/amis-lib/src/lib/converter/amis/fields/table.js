@@ -39,7 +39,7 @@ function getDetailColumn(){}
 
 async function getQuickEditSchema(field, options){
     const quickEditId = options.objectName + "_" + field.name + "QuickEdit";//定义快速编辑的表单id，用于setvalue传值
-    var quickEditSchema = { debug: true, body: [], id: quickEditId };
+    var quickEditSchema = { body: [], id: quickEditId };
     if (field.disabled) {
         quickEditSchema = false;
     } else {
@@ -47,7 +47,7 @@ async function getQuickEditSchema(field, options){
         //存在属性上可编辑，实际不可编辑的字段，convertSFieldToAmisField函数可能会返回undefined，如summary
         if (quickEditSchema.body.length > 0 && !!quickEditSchema.body[0]) {
             //以下字段使用_display的数据,因此在触发change等事件时对数据_display进行修改，以实现保存前的回显
-            var displayField = ``;
+            var TempDisplayField = ``;
             quickEditSchema.body[0].onEvent = {};
             const quickEditOnEvent = function (displayField) {
                 const EventType = {
@@ -55,7 +55,6 @@ async function getQuickEditSchema(field, options){
                         {
                             "actionType": "custom",
                             "script": `
-                                    debugger;
                                     var _display = event.data._display;
                                     ${displayField}
                                     doAction({actionType: 'setValue', "args": {"value": {_display}},componentId: "${quickEditId}"});
@@ -70,7 +69,7 @@ async function getQuickEditSchema(field, options){
                 case "lookup":
                 case "master_detail":
                     if (field.multiple) {
-                        displayField = `
+                        TempDisplayField = `
                                 _display["${field.name}"] = [];
                                 event.data.value.forEach(function(item,index){
                                     _display["${field.name}"].push(
@@ -83,7 +82,7 @@ async function getQuickEditSchema(field, options){
                                 })
                             `
                     } else {
-                        displayField = `
+                        TempDisplayField = `
                                 _display["${field.name}"] = {
                                     "label": event.data.option.${quickEditSchema.body[0].labelField},
                                     "value": event.data._id,
@@ -91,56 +90,56 @@ async function getQuickEditSchema(field, options){
                                 }
                             `
                     }
-                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(displayField)
+                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(TempDisplayField)
                     break;
                 case "select":
-                    displayField = `
+                    TempDisplayField = `
                             _display["${field.name}"] = event.data.selectedItems.label;
                         `
-                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(displayField)
+                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(TempDisplayField)
                     break;
                 case "percent":
-                    displayField = `
+                    TempDisplayField = `
                             _display["${field.name}"] = (event.data.value * 100).toFixed(${field.scale}) + '%';
                         `
-                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(displayField)
+                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(TempDisplayField)
                     break;
                 case "time":
-                    displayField = `
+                    TempDisplayField = `
                             _display["${field.name}"] = moment(event.data.value).utc().format('HH:mm');
                         `
-                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(displayField)
+                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(TempDisplayField)
                     break;
                 case "date":
-                    displayField = `
+                    TempDisplayField = `
                             _display["${field.name}"] = moment(event.data.value).utc().format('YYYY-MM-DD');
                         `
-                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(displayField)
+                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(TempDisplayField)
                     break;
                 case "datetime":
-                    displayField = `
+                    TempDisplayField = `
                             _display["${field.name}"] = moment(event.data.value).format('YYYY-MM-DD HH:mm');
                         `
-                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(displayField)
+                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(TempDisplayField)
                     break;
                 case "boolean":
-                    displayField = `
+                    TempDisplayField = `
                             _display["${field.name}"] = event.data.value?"√":"";
                         `
-                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(displayField)
+                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(TempDisplayField)
                     break;
                 case "number":
                 case "currency":
-                    displayField = `
+                    TempDisplayField = `
                             _display["${field.name}"] = event.data.value?.toFixed(${field.scale});
                         `
-                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(displayField)
+                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(TempDisplayField)
 
                     break;
                 case "file":
-                    var OtherDisplayField = ``;
+                    var removeDisplayField = ``;
                     if (field.multiple) {
-                        displayField = `
+                        TempDisplayField = `
                                 _display["${field.name}"].push({
                                     "name": event.data.result.name,
                                     "url": event.data.result.url,
@@ -148,11 +147,11 @@ async function getQuickEditSchema(field, options){
                                     "size": event.data.item.size
                                 });
                             `
-                        OtherDisplayField = `
+                        removeDisplayField = `
                                 _.remove(_display["${field.name}"], function(file){return file.url == event.data.item.url});
                             `
                     } else {
-                        displayField = `  
+                        TempDisplayField = `  
                                 _display["${field.name}"] = {
                                     "name": event.data.result.name,
                                     "url": event.data.result.url,
@@ -160,14 +159,14 @@ async function getQuickEditSchema(field, options){
                                     "size": event.data.item.size
                                 };
                             `
-                        OtherDisplayField = `
+                        removeDisplayField = `
                                 if(_display["${field.name}"].url == event.data.item.url){
                                     _display["${field.name}"] = {};
                                 }
                             `
                     }
-                    quickEditSchema.body[0].onEvent["success"] = quickEditOnEvent(displayField)
-                    quickEditSchema.body[0].onEvent["remove"] = quickEditOnEvent(OtherDisplayField)
+                    quickEditSchema.body[0].onEvent["success"] = quickEditOnEvent(TempDisplayField)
+                    quickEditSchema.body[0].onEvent["remove"] = quickEditOnEvent(removeDisplayField)
                     break;
                 case "avatar":
                 case "image":
@@ -193,17 +192,20 @@ async function getQuickEditSchema(field, options){
         } else {
             quickEditSchema = false;
         }
+        if(field.type == "file" && field.multiple){
+            quickEditSchema = false;
+        }
     }
     return quickEditSchema;
 }
 
 async function getTableColumns(fields, options){
     const columns = [{name: '_index',type: 'text', width: 32, placeholder: ""}];
+
+    const allowEdit = options.permissions?.allowEdit && !options.isLookup;
     for (const field of fields) {
-        console.log("getTableColumns===>field",field)
         //增加quickEdit属性，实现快速编辑
-        const quickEditSchema = await getQuickEditSchema(field, options);
-        console.log("quickEditSchema===>",quickEditSchema)
+        const quickEditSchema = allowEdit ? await getQuickEditSchema(field, options) : allowEdit;
         if((field.is_name || field.name === options.labelFieldName) && options.objectName === 'cms_files'){
             const previewFileScript = `
                 var data = event.data;

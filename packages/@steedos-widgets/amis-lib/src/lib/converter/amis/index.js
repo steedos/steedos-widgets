@@ -149,7 +149,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
     // yml里配置的 不分页和enable_tree:true 优先级最高，组件中输入的top次之。
     options.queryCount = true;
     if(nonpaged || isTreeObject){
-      options.top = 50000;
+      options.top = 5000;
       bodyProps.footerToolbar = [];
       options.queryCount = true; // 禁止翻页的时候, 需要查找总数
     }else if(top){
@@ -193,7 +193,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
       if(objectSchema.name === 'organizations'){
         labelFieldName = 'name';
       }
-      const table = await getTableSchema(fields, Object.assign({idFieldName: objectSchema.idFieldName, labelFieldName: labelFieldName}, options));
+      const table = await getTableSchema(fields, Object.assign({idFieldName: objectSchema.idFieldName, labelFieldName: labelFieldName, permissions:objectSchema.permissions}, options));
       delete table.mode;
       //image与avatar需要在提交修改时特别处理
       const imageNames = _.compact(_.map(_.filter(fields, (field) => ["image","avatar"].includes(field.type)), 'name'));
