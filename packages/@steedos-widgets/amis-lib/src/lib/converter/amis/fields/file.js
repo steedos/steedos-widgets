@@ -39,7 +39,7 @@ export const getAmisFileReadonlySchema = (steedosField)=>{
         return {
             type: amisFieldType,
             tpl: `
-                <% let fileData = data.${steedosField.name}; if (fileData) { %>
+                <% let fileData = data._display.${steedosField.name}; if (fileData) { %>
                     <% if(!Array.isArray(fileData)){ fileData = [fileData]}  %>
                     <% fileData.forEach(function(item) { %> 
                         <a href='<%= item.url %>' target='_self' class='block'><%= item.name %></a> 
@@ -80,7 +80,6 @@ export const getAmisFileEditSchema = (steedosField)=>{
             }
         }
     }
-    
     if(steedosField.multiple){
         convertData.multiple = true;
         convertData.joinValues = false;

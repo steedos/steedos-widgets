@@ -193,8 +193,38 @@ export async function getObjectCRUD(objectSchema, fields, options){
       if(objectSchema.name === 'organizations'){
         labelFieldName = 'name';
       }
-      const table = await getTableSchema(fields, Object.assign({idFieldName: objectSchema.idFieldName, labelFieldName: labelFieldName}, options));
+      const table = await getTableSchema(fields, Object.assign({idFieldName: objectSchema.idFieldName, labelFieldName: labelFieldName, permissions:objectSchema.permissions,enable_inline_edit:objectSchema.enable_inline_edit}, options));
       delete table.mode;
+      //image与avatar需要在提交修改时特别处理
+      const imageNames = _.compact(_.map(_.filter(fields, (field) => ["image","avatar"].includes(field.type)), 'name'));
+      const quickSaveApiRequestAdaptor = `
+        var graphqlOrder = "";
+        var imageNames = ${JSON.stringify(imageNames)};
+        api.data.rowsDiff.forEach(function (item, index) {
+          for(key in item){
+            if(_.includes(imageNames, key)){
+              if(typeof item[key] == "string"){
+                const match = item[key].match(/\\/([^\\/]+)$/);
+                item[key] = match && match.length > 1?match[1]:"";
+              }else{
+                item[key] = _.map(item[key], function(ele){
+                  const match = ele.match(/\\/([^\\/]+)$/);
+                  return match && match.length > 1?match[1]:"";
+                })
+              }
+            }
+          }
+          const itemOrder = 'update' + index + ':' + api.data.objectName + '__update(id:"' + item._id + '", doc:' + JSON.stringify(JSON.stringify(_.omit(item, '_id'))) + ') {_id}';
+          graphqlOrder += itemOrder;
+        })
+        graphqlOrder = 'mutation {' + graphqlOrder + '}';
+        return {
+            ...api,
+            data: {
+                query: graphqlOrder
+            }
+        }
+      `
 
       body = Object.assign({}, table, {
         type: 'crud', 
@@ -209,6 +239,15 @@ export async function getObjectCRUD(objectSchema, fields, options){
         className: `flex-auto ${crudClassName || ""}`,
         bodyClassName: "bg-white",
         crudClassName: crudClassName,
+        quickSaveApi: {
+          url: `\${context.rootUrl}/graphql`,
+          method: "post",
+          dataType: "json",
+          headers: {
+            Authorization: "Bearer ${context.tenantId},${context.authToken}",
+          },
+          requestAdaptor: quickSaveApiRequestAdaptor,
+        },
         rowClassNameExpr: options.rowClassNameExpr
       }, 
         bodyProps,

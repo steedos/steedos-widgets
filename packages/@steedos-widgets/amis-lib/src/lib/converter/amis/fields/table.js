@@ -1,6 +1,6 @@
 import * as _ from 'lodash'
 import * as Tpl from '../tpl';
-import * as Fields from '../index';
+import * as Fields from '../fields/index';
 import * as graphql from '../graphql';
 import config from '../../../../config'
 import { each, forEach, isBoolean, isEmpty } from 'lodash';
@@ -37,9 +37,176 @@ function getOperation(fields){
 //获取name字段，如果没有，则_index字段添加链接
 function getDetailColumn(){}
 
+async function getQuickEditSchema(field, options){
+    const quickEditId = options.objectName + "_" + field.name + "QuickEdit";//定义快速编辑的表单id，用于setvalue传值
+    var quickEditSchema = { body: [], id: quickEditId };
+    if (field.disabled) {
+        quickEditSchema = false;
+    } else {
+        var fieldSchema = await Fields.convertSFieldToAmisField(field, false, _.omit(options, 'buttons'));
+        //存在属性上可编辑，实际不可编辑的字段，convertSFieldToAmisField函数可能会返回undefined，如summary
+        if (!!fieldSchema) {
+            quickEditSchema.body.push(fieldSchema);
+            //以下字段使用_display的数据,因此在触发change等事件时对数据_display进行修改，以实现保存前的回显
+            var TempDisplayField = ``;
+            quickEditSchema.body[0].onEvent = {};
+            const quickEditOnEvent = function (displayField) {
+                const EventType = {
+                    "actions": [
+                        {
+                            "actionType": "custom",
+                            "script": `
+                                    var _display = event.data._display;
+                                    ${displayField}
+                                    doAction({actionType: 'setValue', "args": {"value": {_display}},componentId: "${quickEditId}"});
+                                `
+                        }
+                    ]
+                };
+                return EventType;
+            }
+            switch (field.type) {
+                //TODO:amis的picker组件直接点击选项x时不会触发change事件，待处理
+                case "lookup":
+                case "master_detail":
+                    if (field.multiple) {
+                        TempDisplayField = `
+                                _display["${field.name}"] = [];
+                                event.data.value.forEach(function(item,index){
+                                    _display["${field.name}"].push(
+                                        {
+                                            "label": event.data.option[index].${quickEditSchema.body[0].labelField},
+                                            "value": event.data.option[index]._id,
+                                            "objectName": "${field.reference_to}"
+                                        }
+                                    )
+                                })
+                            `
+                    } else {
+                        TempDisplayField = `
+                                _display["${field.name}"] = {
+                                    "label": event.data.option.${quickEditSchema.body[0].labelField},
+                                    "value": event.data._id,
+                                    "objectName": "${field.reference_to}"
+                                }
+                            `
+                    }
+                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(TempDisplayField)
+                    break;
+                case "select":
+                    TempDisplayField = `
+                            _display["${field.name}"] = event.data.selectedItems.label;
+                        `
+                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(TempDisplayField)
+                    break;
+                case "percent":
+                    TempDisplayField = `
+                            _display["${field.name}"] = (event.data.value * 100).toFixed(${field.scale}) + '%';
+                        `
+                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(TempDisplayField)
+                    break;
+                case "time":
+                    TempDisplayField = `
+                            _display["${field.name}"] = moment(event.data.value).utc().format('HH:mm');
+                        `
+                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(TempDisplayField)
+                    break;
+                case "date":
+                    TempDisplayField = `
+                            _display["${field.name}"] = moment(event.data.value).utc().format('YYYY-MM-DD');
+                        `
+                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(TempDisplayField)
+                    break;
+                case "datetime":
+                    TempDisplayField = `
+                            _display["${field.name}"] = moment(event.data.value).format('YYYY-MM-DD HH:mm');
+                        `
+                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(TempDisplayField)
+                    break;
+                case "boolean":
+                    TempDisplayField = `
+                            _display["${field.name}"] = event.data.value?"√":"";
+                        `
+                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(TempDisplayField)
+                    break;
+                case "number":
+                case "currency":
+                    TempDisplayField = `
+                            _display["${field.name}"] = event.data.value?.toFixed(${field.scale});
+                        `
+                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(TempDisplayField)
+
+                    break;
+                case "file":
+                    var removeDisplayField = ``;
+                    if (field.multiple) {
+                        TempDisplayField = `
+                                _display["${field.name}"].push({
+                                    "name": event.data.result.name,
+                                    "url": event.data.result.url,
+                                    "type": event.data.item.type,
+                                    "size": event.data.item.size
+                                });
+                            `
+                        removeDisplayField = `
+                                _.remove(_display["${field.name}"], function(file){return file.url == event.data.item.url});
+                            `
+                    } else {
+                        TempDisplayField = `  
+                                _display["${field.name}"] = {
+                                    "name": event.data.result.name,
+                                    "url": event.data.result.url,
+                                    "type": event.data.item.type,
+                                    "size": event.data.item.size
+                                };
+                            `
+                        removeDisplayField = `
+                                if(_display["${field.name}"].url == event.data.item.url){
+                                    _display["${field.name}"] = {};
+                                }
+                            `
+                    }
+                    quickEditSchema.body[0].onEvent["success"] = quickEditOnEvent(TempDisplayField)
+                    quickEditSchema.body[0].onEvent["remove"] = quickEditOnEvent(removeDisplayField)
+                    break;
+                case "avatar":
+                case "image":
+                quickEditSchema.body[0].receiver.adaptor = `
+                    const { context } = api.body; 
+                    var rootUrl = context.rootUrl + "/api/files/${field.type}s/";
+                    payload = {
+                        status: response.status == 200 ? 0 : response.status,
+                        msg: response.statusText,
+                        data: {
+                            value: rootUrl + payload._id,//为了实现图片crud的回显，需要将value从id改为url，当保存数据数据时，再在发送适配器内重新将id提取出来
+                            name: payload.original.name,
+                            url: rootUrl + payload._id,
+                        }
+                    }
+                    return payload;
+                `
+                break;
+                default:
+                    break;
+            }
+
+        } else {
+            quickEditSchema = false;
+        }
+        //TODO:附件多选时会覆盖老数据，暂时禁用
+        if(field.type == "file" && field.multiple){
+            quickEditSchema = false;
+        }
+    }
+    return quickEditSchema;
+}
+
 async function getTableColumns(fields, options){
     const columns = [{name: '_index',type: 'text', width: 32, placeholder: ""}];
+    const allowEdit = options.permissions?.allowEdit && options.permissions?.modifyAllRecords && !options.isLookup && options.enable_inline_edit != false;
     for (const field of fields) {
+        //增加quickEdit属性，实现快速编辑
+        const quickEditSchema = allowEdit ? await getQuickEditSchema(field, options) : allowEdit;
         if((field.is_name || field.name === options.labelFieldName) && options.objectName === 'cms_files'){
             const previewFileScript = `
                 var data = event.data;
@@ -52,6 +219,7 @@ async function getTableColumns(fields, options){
                 "label": `<%=data.versions ? data.name : "${field.label}"%>`,
                 "className": "whitespace-nowrap",
                 "level": "link",
+                "quickEdit": quickEditSchema,
                 "onEvent": {
                   "click": {
                     "actions": [
@@ -85,8 +253,7 @@ async function getTableColumns(fields, options){
                 label: field.label,
                 width: field.width,
                 toggled: field.toggled,
-                disabled: true,
-                className:"whitespace-nowrap",
+                className:"whitespace-nowrap"
             }, field.amis, {name: field.name}))
         }else if(field.type === 'avatar' || field.type === 'image' || field.type === 'file'){
             columns.push(Object.assign({}, {
@@ -95,7 +262,7 @@ async function getTableColumns(fields, options){
                 label: field.label,
                 width: field.width,
                 toggled: field.toggled,
-                disabled: true,
+                quickEdit: quickEditSchema,
                 className:"whitespace-nowrap",
                 ...getAmisFileReadonlySchema(field)
             }, field.amis, {name: field.name}))
@@ -111,11 +278,11 @@ async function getTableColumns(fields, options){
                 width: field.width,
                 toggled: field.toggled,
                 className:"whitespace-nowrap",
+                quickEdit: quickEditSchema
             }, field.amis, {name: field.name}))
         }
         else{
             const tpl = await Tpl.getFieldTpl(field, options);
-
             let type = 'text';
             if(tpl){
                 type = 'tpl';
@@ -142,12 +309,12 @@ async function getTableColumns(fields, options){
                     tpl: tpl,
                     toggled: field.toggled,
                     className,
+                    quickEdit: quickEditSchema,
                     options: field.type === 'html' ? {html: true} : null
                     // toggled: true 
                 }, field.amis, {name: field.name}))
             }
         }
-        
     };
 
     // columns.push(getOperation(fields));

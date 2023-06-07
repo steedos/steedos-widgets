@@ -353,6 +353,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         pickerSchema = await Table.getTableSchema(tableFields, {
             labelFieldName: refObjectConfig.NAME_FIELD_KEY,
             top:  top,
+            isLookup: true,
             ...ctx
         })
 

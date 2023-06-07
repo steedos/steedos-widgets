@@ -5,6 +5,7 @@
  * @LastEditTime: 2023-04-17 11:02:56
  * @Description: 
  */
+import './AmisObjectTable.less';
 import { getTableSchema, conditionsToFilters } from '@steedos-widgets/amis-lib'
 import { keys, pick, difference, pickBy, has, each, isString } from 'lodash';
 
