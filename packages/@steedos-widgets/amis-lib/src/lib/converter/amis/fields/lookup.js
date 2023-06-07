@@ -403,6 +403,10 @@ export async function lookupToAmisPicker(field, readonly, ctx){
           }
     }
 
+    if(field.pickerSchema){
+        pickerSchema = Object.assign({}, pickerSchema, field.pickerSchema)
+    }
+
     const data = {
         type: Field.getAmisStaticFieldType('picker', readonly),
         labelField: referenceTo.labelField.name,

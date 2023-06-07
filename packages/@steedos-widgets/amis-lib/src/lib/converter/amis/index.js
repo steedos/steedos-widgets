@@ -248,6 +248,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
           },
           requestAdaptor: quickSaveApiRequestAdaptor,
         },
+        rowClassNameExpr: options.rowClassNameExpr
       }, 
         bodyProps,
         )

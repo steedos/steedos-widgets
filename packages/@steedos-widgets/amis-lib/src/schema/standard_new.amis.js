@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:51:00
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-26 11:52:04
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-06-06 11:12:33
  * @Description: 
  */
 
@@ -85,7 +85,7 @@ export const getSchema = async (uiSchema, ctx) => {
                                         "isLookup": "${isLookup}",
                                         "listName": "${listName}"
                                     },
-                                    "title": "新建 ${uiSchema.label}",
+                                    "title": "新建 ${uiSchema.label | raw}",
                                     "body": [
                                         {
                                             "type": "service",
