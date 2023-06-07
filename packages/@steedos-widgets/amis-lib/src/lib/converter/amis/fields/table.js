@@ -43,7 +43,7 @@ async function getQuickEditSchema(field, options){
     if (field.disabled) {
         quickEditSchema = false;
     } else {
-        var fieldSchema = await Fields.convertSFieldToAmisField(field, false, options);
+        var fieldSchema = await Fields.convertSFieldToAmisField(field, false, _.omit(options, 'buttons'));
         //存在属性上可编辑，实际不可编辑的字段，convertSFieldToAmisField函数可能会返回undefined，如summary
         if (!!fieldSchema) {
             quickEditSchema.body.push(fieldSchema);
@@ -204,7 +204,7 @@ async function getQuickEditSchema(field, options){
 async function getTableColumns(fields, options){
     const columns = [{name: '_index',type: 'text', width: 32, placeholder: ""}];
 
-    const allowEdit = options.permissions?.allowEdit && !options.isLookup;
+    const allowEdit = options.permissions?.allowEdit && options.permissions?.modifyAllRecords && !options.isLookup;
     for (const field of fields) {
         //增加quickEdit属性，实现快速编辑
         const quickEditSchema = allowEdit ? await getQuickEditSchema(field, options) : allowEdit;
