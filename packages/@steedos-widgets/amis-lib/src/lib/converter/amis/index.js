@@ -193,7 +193,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
       if(objectSchema.name === 'organizations'){
         labelFieldName = 'name';
       }
-      const table = await getTableSchema(fields, Object.assign({idFieldName: objectSchema.idFieldName, labelFieldName: labelFieldName, permissions:objectSchema.permissions}, options));
+      const table = await getTableSchema(fields, Object.assign({idFieldName: objectSchema.idFieldName, labelFieldName: labelFieldName, permissions:objectSchema.permissions,enable_inline_edit:objectSchema.enable_inline_edit}, options));
       delete table.mode;
       //image与avatar需要在提交修改时特别处理
       const imageNames = _.compact(_.map(_.filter(fields, (field) => ["image","avatar"].includes(field.type)), 'name'));

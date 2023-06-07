@@ -203,8 +203,7 @@ async function getQuickEditSchema(field, options){
 
 async function getTableColumns(fields, options){
     const columns = [{name: '_index',type: 'text', width: 32, placeholder: ""}];
-
-    const allowEdit = options.permissions?.allowEdit && options.permissions?.modifyAllRecords && !options.isLookup;
+    const allowEdit = options.permissions?.allowEdit && options.permissions?.modifyAllRecords && !options.isLookup && options.enable_inline_edit != false;
     for (const field of fields) {
         //增加quickEdit属性，实现快速编辑
         const quickEditSchema = allowEdit ? await getQuickEditSchema(field, options) : allowEdit;
