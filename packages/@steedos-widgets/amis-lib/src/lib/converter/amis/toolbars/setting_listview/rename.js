@@ -1,7 +1,8 @@
+import i18next from "../../../../../i18n"
 export const getRenameListviewButtonSchema = ()=>{
     return {
         "type": "button",
-        "label": "重命名",
+        "label": i18next.t('frontend_listview_control_rename_label'),
         "disabledOn": "!((global.user.is_space_admin || global.userId == uiSchema.list_views[listName].owner) && !!uiSchema.list_views[listName].owner)",
         "onEvent": {
           "click": {
@@ -10,7 +11,7 @@ export const getRenameListviewButtonSchema = ()=>{
               {
                 "dialog": {
                   "type": "dialog",
-                  "title": "重命名 列表视图",
+                  "title": i18next.t('frontend_listview_control_rename_title'),
                   "data": {
                     "targetObjectName": "${objectName}",
                     "recordId": "${uiSchema.list_views[listName]._id}",

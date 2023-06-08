@@ -1,7 +1,8 @@
+import i18next from "../../../../../i18n"
 export const getNewListviewButtonSchema = ()=>{
     return {
         "type": "button",
-        "label": "新建",
+        "label": i18next.t('frontend_listview_control_new_label'),
         "onEvent": {
           "click": {
             "weight": 0,
@@ -9,7 +10,7 @@ export const getNewListviewButtonSchema = ()=>{
               {
                 "dialog": {
                   "type": "dialog",
-                  "title": "新建 列表视图",
+                  "title": i18next.t('frontend_listview_control_new_title'),
                   "data": {
                     //"&":"$$",2.7、2.9、3.0在此处失效
                     "all": "${uiSchema.list_views.all}",
@@ -51,8 +52,8 @@ export const getNewListviewButtonSchema = ()=>{
                         }
                       },
                       "messages": {
-                        "success": "成功",
-                        "failed": "失败"
+                        "success": i18next.t('frontend_listview_control_new_message_success'),
+                        "failed": i18next.t('frontend_listview_control_new_message_failed')
                       },
                     }
                   ],

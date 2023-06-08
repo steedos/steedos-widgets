@@ -5,6 +5,7 @@
  * @LastEditTime: 2023-06-06 11:12:33
  * @Description: 
  */
+import i18next from "../i18n";
 
 export const getSchema = async (uiSchema, ctx) => {
     const schemaApiAdaptor = `
@@ -59,7 +60,7 @@ export const getSchema = async (uiSchema, ctx) => {
         "body": [
             {
                 "type": "button",
-                "label": "新建",
+                "label": i18next.t('frontend_form_new'),
                 "id": "u:standard_new",
                 "level": "default",
                 "onEvent": {
@@ -85,7 +86,7 @@ export const getSchema = async (uiSchema, ctx) => {
                                         "isLookup": "${isLookup}",
                                         "listName": "${listName}"
                                     },
-                                    "title": "新建 ${uiSchema.label | raw}",
+                                    "title":i18next.t('frontend_form_new') + " ${uiSchema.label | raw}",
                                     "body": [
                                         {
                                             "type": "service",

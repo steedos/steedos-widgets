@@ -5,11 +5,11 @@
  * @LastEditTime: 2023-03-27 11:36:49
  * @Description:
  */
-
+import i18next from "../i18n";
 import { getPage } from '../lib/page'
 
 export const getSchema = async (uiSchema, ctx) => {
-  const title = "编辑 " + uiSchema.label;
+  const title = i18next.t('frontend_form_edit') + " " + uiSchema.label;
 
   const defaultFormSchema = {
     type: "steedos-object-form",
@@ -39,7 +39,7 @@ export const getSchema = async (uiSchema, ctx) => {
     body: [
       {
         type: "button",
-        label: "编辑",
+        label: i18next.t('frontend_form_edit'),
         id: "u:standard_edit",
         onEvent: {
           click: {

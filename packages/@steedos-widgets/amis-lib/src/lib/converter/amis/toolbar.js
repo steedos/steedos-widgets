@@ -2,36 +2,37 @@ import { getObjectListHeaderFieldsFilterBar } from './header';
 import { Router } from "@steedos-widgets/amis-lib";
 import { getExportExcelToolbarButtonSchema } from './toolbars/export_excel';
 import { getSettingListviewToolbarButtonSchema } from './toolbars/setting_listview'; 
+import i18next from "../../../i18n"
 
 const getDisplayAsButton = function(objectName, showDisplayAs){
   let displayAs = Router.getTabDisplayAs(objectName);
   let buttons = [
     {
       "type": "button",
-      "label": "表格",
+      "label": i18next.t('frontend_display_type_is_table'),
       "onClick": "let url = document.location.pathname; var urlSearch = new URLSearchParams(document.location.search); if(urlSearch.get(\"side_object\") && urlSearch.get(\"side_listview_id\")){url=`/app/${props.data.appId}/${urlSearch.get(\"side_object\")}/grid/${urlSearch.get(\"side_listview_id\")}`;}; props.env.jumpTo(url + '?display=grid');",
       "rightIcon": displayAs != 'split' ? "fa fa-check" : null,
       "rightIconClassName": "m-l-sm"
     },
     {
       "type": "button",
-      "label": "分栏视图",
+      "label": i18next.t('frontend_display_type_is_split'),
       "onClick": "const url = document.location.pathname + '?display=split'; props.env.jumpTo(url);",
       "rightIcon": displayAs === 'split' ? "fa fa-check" : null,
       "rightIconClassName": "m-l-sm"
     }
   ];
-  const displayAsLabel = displayAs === 'split'? "分栏视图" : "表格";
+  const displayAsLabel = displayAs === 'split'? i18next.t('frontend_display_type_is_split') : i18next.t('frontend_display_type_is_table');
   return {
     "type": "dropdown-button",
     "icon": "fa fa-table-columns",
-    "tooltip": `显示为 ${displayAsLabel}`,
+    "tooltip": `${i18next.t('frontend_display_as')} ${displayAsLabel}`,
     "btnClassName": "antd-Button--iconOnly bg-white p-2 rounded border-gray-300 text-gray-500",
     "align": "right",
     "visibleOn": "${window:innerWidth > 768 && !!!isLookup}",
     "buttons": [ 
       {
-        "label": "显示为",
+        "label": i18next.t('frontend_display_as'),
         "children": buttons
       }
     ]
@@ -99,13 +100,13 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
       ...(headerToolbarItems || []),
       hiddenCount ? {} :{
         "type": "tpl",
-        "tpl": "${count} 个项目"
+        "tpl": "${count} " + i18next.t('frontend_record_sum')
       },
       {
         // "type": "reload",//不可以直接使用reload，因为它不会设置页码到第一页
         "type": "button",
         "align": "right",
-        "tooltip": "刷新",
+        "tooltip": i18next.t('frontend_button_reload_tooltip'),
         "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
         "label": "",
         "icon": "fa fa-sync",
@@ -125,7 +126,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
         "label": "",
         "icon": "fa fa-search",
         "type": "button",
-        "tooltip": "搜索",
+        "tooltip": i18next.t('frontend_button_search_tooltip'),
         "badge": {
           "offset": [
             -5,
@@ -165,12 +166,12 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
       // },
       hiddenCount ? {} : {
         "type": "tpl",
-        "tpl":  "${count} 个项目"
+        "tpl":  "${count} " + i18next.t('frontend_record_sum')
       },
       {
         "type": "reload",
         "align": "right",
-        "tooltip": "刷新",
+        "tooltip": i18next.t('frontend_button_reload_tooltip'),
         "tooltipPlacement": "bottom",
         "className": "bg-white p-2 rounded border-gray-300 text-gray-500"
       },
@@ -178,7 +179,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
       filterVisible ? {
         "label": "",
         "icon": "fa fa-search",
-        "tooltip": "搜索",
+        "tooltip": i18next.t('frontend_button_search_tooltip'),
         "tooltipPlacement": "bottom",
         "type": "button",
         "align": "right",

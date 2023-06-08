@@ -1,7 +1,8 @@
+import i18next from "../../../../../i18n"
 export const getSetListviewSortButtonSchema = ()=>{
     return {
         "type": "button",
-        "label": "默认排序规则",
+        "label": i18next.t('frontend_listview_control_sort'),
         "disabledOn": "!((global.user.is_space_admin || global.userId == uiSchema.list_views[listName].owner) && !!uiSchema.list_views[listName].owner)",
         "onEvent": {
           "click": {
@@ -10,7 +11,7 @@ export const getSetListviewSortButtonSchema = ()=>{
               {
                 "dialog": {
                   "type": "dialog",
-                  "title": "默认排序规则",
+                  "title": i18next.t('frontend_listview_control_sort'),
                   "data": {
                     //"&":"$$",2.7、2.9、3.0在此处失效
                     "targetObjectName": "${objectName}",

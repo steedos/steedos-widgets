@@ -5,7 +5,7 @@
  * @LastEditTime: 2023-02-28 17:06:22
  * @Description: 
  */
-
+import i18next from "../i18n";
 import * as standardNew from '../schema/standard_new.amis.js'
 import * as standardEdit from '../schema/standard_edit.amis.js'
 import * as standardDelete from '../schema/standard_delete.amis.js'
@@ -50,7 +50,7 @@ export const StandardButtons = {
                             "items": [
                               {
                                 "position": "top-right",
-                                "body": "请选择要删除的项"
+                                "body": i18next.t('frontend_delete_many_selected_required')
                               }
                             ]
                           }

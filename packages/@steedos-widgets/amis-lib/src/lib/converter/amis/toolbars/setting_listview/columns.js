@@ -1,7 +1,9 @@
+import i18next from "../../../../../i18n"
+
 export const getSetListviewColumnsButtonSchema = ()=>{
     return {
         "type": "button",
-        "label": "显示的列",
+        "label": i18next.t('frontend_listview_control_columns'),
         "disabledOn": "!((global.user.is_space_admin || global.userId == uiSchema.list_views[listName].owner) && !!uiSchema.list_views[listName].owner)",
         "onEvent": {
           "click": {
@@ -11,7 +13,7 @@ export const getSetListviewColumnsButtonSchema = ()=>{
                 "args": {},
                 "dialog": {
                   "type": "dialog",
-                  "title": "显示的列",
+                  "title": i18next.t('frontend_listview_control_columns'),
                   "data": {
                     //"&":"$$",2.7、2.9、3.0在此处失效
                     "targetObjectName": "${objectName}",
@@ -81,7 +83,7 @@ function fieldsExtend(){
       }
     },
     "mobile_columns": {
-      "group": "手机端",
+      "group": i18next.t('frontend_listview_control_columns_mobile_group'),
       "amis": {
         "type": "transfer",
         "sortable": true,

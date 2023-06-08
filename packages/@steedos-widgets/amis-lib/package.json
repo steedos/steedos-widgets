@@ -57,7 +57,9 @@
     "uglify-js": "^3.17.0"
   },
   "dependencies": {
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "i18next": "22.5.1",
+    "react-i18next": "12.3.1"
   },
   "gitHead": "ffb730e16642eb8e7a7ae5d98d0773c42482e7d2"
 }

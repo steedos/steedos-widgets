@@ -1,7 +1,8 @@
+import i18next from "../../../../../i18n"
 export const getSetListviewShareButtonSchema = ()=>{
     return {
         "type": "button",
-        "label": "共享设置",
+        "label": i18next.t('frontend_listview_control_share'),
         "disabledOn": "!(global.user.is_space_admin && !!uiSchema.list_views[listName].owner)",
         "onEvent": {
           "click": {
@@ -10,7 +11,7 @@ export const getSetListviewShareButtonSchema = ()=>{
               {
                 "dialog": {
                   "type": "dialog",
-                  "title": "共享设置",
+                  "title": i18next.t('frontend_listview_control_share'),
                   "data": {
                     "recordId": "${uiSchema.list_views[listName]._id}",
                     "context": "${context}"

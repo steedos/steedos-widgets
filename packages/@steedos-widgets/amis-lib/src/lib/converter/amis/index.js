@@ -6,6 +6,7 @@ import { getListSchema, getCardSchema } from './fields/list';
 import _, { map } from 'lodash';
 import { defaultsDeep } from '../../defaultsDeep';
 import { getObjectHeaderToolbar, getObjectFooterToolbar, getObjectFilter } from './toolbar';
+import i18next from "../../../i18n"
 function getBulkActions(objectSchema){
     return [
       {
@@ -13,7 +14,7 @@ function getBulkActions(objectSchema){
         "level": "danger",
         "label": "批量删除",
         "actionType": "ajax",
-        "confirmText": "确定要删除吗",
+        "confirmText": i18next.t('frontend_delete_many_confirm_text'),
         "className": "hidden",
         "id": "batchDelete",
         "api": getBatchDelete(objectSchema.name),

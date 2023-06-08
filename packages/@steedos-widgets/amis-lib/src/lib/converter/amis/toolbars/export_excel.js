@@ -1,3 +1,5 @@
+import i18next from "../../../../i18n"
+
 export const getExportExcelToolbarButtonSchema = ()=>{
     return {
         "type": "button",
@@ -6,7 +8,7 @@ export const getExportExcelToolbarButtonSchema = ()=>{
         "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
         "tooltipPlacement": "bottom",
         "visibleOn": "${!isLookup && global.user.is_space_admin}",
-        "tooltip": "导出Excel",
+        "tooltip": i18next.t('frontend_export_excel'),
         "onEvent": {
           "click": { 
             "weight": 0,

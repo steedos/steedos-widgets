@@ -1,9 +1,10 @@
+import i18next from "../../../../../i18n"
 export const getDeleteListviewButtonSchema = ()=>{
     return {
         "type": "button",
-        "label": "删除",
+        "label": i18next.t('frontend_listview_control_delete_label'),
         "disabledOn": "!((global.user.is_space_admin || global.userId == uiSchema.list_views[listName].owner) && !!uiSchema.list_views[listName].owner)",
-        "confirmText": "如果您删除此列表视图，该视图将为所有具备访问权限的用户永久删除。是否确定要删除？",
+        "confirmText": i18next.t('frontend_listview_control_delete_confirm_text'),
         "onEvent": {
           "click": {
             "actions": [
@@ -22,7 +23,7 @@ export const getDeleteListviewButtonSchema = ()=>{
                       "recordId": "${uiSchema.list_views[listName]._id}"
                     },
                     "messages": {
-                      "success": "删除成功"
+                      "success": i18next.t('frontend_listview_control_delete_message_success')
                     },
                     "requestAdaptor": requestAdaptor(),
                     "adaptor": adaptor(),
