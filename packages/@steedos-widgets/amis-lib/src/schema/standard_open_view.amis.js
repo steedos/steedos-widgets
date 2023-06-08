@@ -5,6 +5,8 @@
  * @LastEditTime: 2022-11-07 17:12:20
  * @Description: 
  */
+import i18next from "../i18n";
+
 export const getSchema = (uiSchema)=>{
     return {
         "type": "service",
@@ -12,7 +14,7 @@ export const getSchema = (uiSchema)=>{
         "body": [
             {
                 "type": "button",
-                "label": "查看",
+                "label": i18next.t('frontend_form_view'),
                 "className": "border-none",
                 "onEvent": {
                   "click": {

@@ -7,6 +7,7 @@
  */
 import { fetchAPI, getUserId } from "./steedos.client";
 import { getObjectCalendar } from './converter/amis/calendar';
+import i18next from '../i18n'
 
 import {
     getObjectCRUD,
@@ -455,7 +456,7 @@ export async function getRecordDetailSchema(objectName, appId, props = {}){
     const uiSchema = await getUISchema(objectName);
     const relatedLists = await getObjectRelatedList(objectName, null, null);
     const detailed = {
-        "title": "详细",
+        "title": i18next.t('frontend_record_detail_tab_detailed'),
         "className": "px-0 py-4",
         "body": [
             {
@@ -470,7 +471,7 @@ export async function getRecordDetailSchema(objectName, appId, props = {}){
         "id": "u:5d4e7e3f6ecc"
     };
     const related = {
-        "title": "相关",
+        "title": i18next.t('frontend_record_detail_tab_related'),
         "className": "px-0 pt-4",
         "body": [
             {

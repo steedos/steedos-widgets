@@ -1,10 +1,12 @@
+import i18next from "../i18n";
+
 export const getSchema = (uiSchema) => {
   return {
     type: "service",
     body: [
       {
         type: "button",
-        label: "导入数据",
+        label: i18next.t('frontend_import_data'),
         id: "u:import_data",
         onEvent: {
           click: {
@@ -17,7 +19,7 @@ export const getSchema = (uiSchema) => {
                     "object_name": "${objectName}"
                   },
                   type: "dialog",
-                  title: "导入数据",
+                  title: i18next.t('frontend_import_data'),
                   body: [
                     {
                       type: "form",
@@ -52,12 +54,12 @@ export const getSchema = (uiSchema) => {
                       body: [
                         {
                           type: "fieldSet",
-                          title: "通用",
+                          title: i18next.t('frontend_field_group_generalization'),
                           collapsable: true,
                           body: [
                             {
                               name: "object_name",
-                              label: "导入对象",
+                              label: i18next.t('frontend_import_data_object_name'),
                               required: false,
                               type: "select",
                               joinValues: false,
@@ -93,7 +95,7 @@ export const getSchema = (uiSchema) => {
                             },
                             {
                               name: "queue_import",
-                              label: "数据导入",
+                              label: i18next.t('frontend_import_data_queue_import'),
                               required: true,
                               type: "picker",
                               labelField: "description",
@@ -139,7 +141,7 @@ export const getSchema = (uiSchema) => {
                                   },
                                   {
                                     name: "description",
-                                    label: "导入描述",
+                                    label: i18next.t('frontend_import_data_queue_import_description'),
                                     type: "tpl",
                                     tpl: '<a href="/app/undefined/undefined/view/${undefined}">${description}</a>',
                                     className: "whitespace-nowrap",
@@ -147,7 +149,7 @@ export const getSchema = (uiSchema) => {
                                   },
                                   {
                                     name: "object_name",
-                                    label: "导入对象",
+                                    label: i18next.t('frontend_import_data_object_name'),
                                     type: "tpl",
                                     tpl: '<a href="/app/undefined/${_display.object_name.objectName}/view/${_display.object_name.value}">${_display.object_name.label}</a>',
                                     className: "whitespace-nowrap",
@@ -155,7 +157,7 @@ export const getSchema = (uiSchema) => {
                                   },
                                   {
                                     name: "encoding",
-                                    label: "字符代码",
+                                    label: i18next.t('frontend_import_data_queue_import_encoding'),
                                     type: "tpl",
                                     tpl: "<div>${_display.encoding}</div>",
                                     className: "whitespace-nowrap",
@@ -163,12 +165,12 @@ export const getSchema = (uiSchema) => {
                                   },
                                   {
                                     name: "template_url",
-                                    label: "导入模板",
+                                    label: i18next.t('frontend_import_data_queue_import_template_url'),
                                     type: "button-group",
                                     buttons: [
                                       {
                                         type: "button",
-                                        label: "下载",
+                                        label: i18next.t('frontend_download'),
                                         visibleOn: "${template_url}",
                                         level: "link",
                                         actionType: "download",
@@ -202,7 +204,7 @@ export const getSchema = (uiSchema) => {
                             },
                             {
                               name: "file",
-                              label: "Excel文件",
+                              label: i18next.t('frontend_import_data_file'),
                               required: true,
                               type: "input-file",
                               className: "m-1",
@@ -258,8 +260,8 @@ export const getSchema = (uiSchema) => {
                                   },
                                 },
                                 messages: {
-                                  success: "已开始导入...",
-                                  failed: "导入失败",
+                                  success: i18next.t('frontend_import_data_message_success'),
+                                  failed: i18next.t('frontend_import_data_message_failed'),
                                 },
                               },
                               actionType: "ajax",

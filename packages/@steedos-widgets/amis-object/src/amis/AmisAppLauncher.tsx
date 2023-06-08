@@ -6,6 +6,8 @@
  * @Description: 
  */
 
+import i18next from '@steedos-widgets/amis-lib/src/i18n'
+
 export const AmisAppLauncher = async (props) => {
   let { app, data, className, showAppName = true, appNameClassName = '' } = props;
   if (!app) {
@@ -153,7 +155,7 @@ export const AmisAppLauncher = async (props) => {
             {
               "type": "collapse",
               "key": "1",
-              "header": "所有应用",
+              "header": i18next.t('frontend_all_apps'),
               "body": [
                 {
                   "type": "each",
@@ -223,7 +225,7 @@ export const AmisAppLauncher = async (props) => {
             {
               "type": "collapse",
               "key": "2",
-              "header": "所有项目",
+              "header": i18next.t('frontend_all_projects'),
               "body": [
                 {
                   "type": "each",
@@ -334,7 +336,7 @@ export const AmisAppLauncher = async (props) => {
           "size": "xl",
           "title": {
             "type": "tpl",
-            "tpl": "应用程序启动器",
+            "tpl": i18next.t('frontend_application_launcher'),
             "className": "block text-xl text-center"
           },
           "actions": [

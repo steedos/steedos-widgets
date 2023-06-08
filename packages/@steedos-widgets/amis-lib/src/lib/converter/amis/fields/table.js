@@ -6,7 +6,7 @@ import config from '../../../../config'
 import { each, forEach, isBoolean, isEmpty } from 'lodash';
 import { getAmisFileReadonlySchema } from './file'
 import { Router } from '../../../router'
-
+import i18next from '../../../../i18n'
 function getOperation(fields){
     const controls = [];
     _.each(fields, function(field){
@@ -584,7 +584,7 @@ async function getTableOperation(ctx){
     }
     return {
         type: 'operation',
-        label: '操作',
+        label: i18next.t('frontend_ercord_operation'),
         fixed: 'right',
         labelClassName: 'text-center',
         className: 'text-center steedos-listview-operation w-20',

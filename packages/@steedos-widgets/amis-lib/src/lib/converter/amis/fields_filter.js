@@ -1,6 +1,6 @@
 import { getFieldSearchable } from "./fields/index";
 import { includes, map } from "lodash";
-
+import i18next from "../../../i18n"
 export async function getObjectFieldsFilterButtonSchema(objectSchema) {
   // const amisListViewId = `listview_${objectSchema.name}`;
   return {
@@ -379,7 +379,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
               {
                 "type": "button",
                 "id": btnSearchId,
-                "label": "搜索",
+                "label": i18next.t('frontend_fields_filter_button_search'),
                 "icon": "fa fa-search",
                 // "visibleOn": "this.filterFormSearchableFields && this.filterFormSearchableFields.length",
                 "onEvent": {
@@ -395,7 +395,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
               },
               {
                 "type": "button",
-                "label": "取消",
+                "label": i18next.t('frontend_form_cancel'),
                 "name": "btn_filter_form_cancel",
                 // "visibleOn": "this.filterFormSearchableFields && this.filterFormSearchableFields.length",
                 "onEvent": {
@@ -411,7 +411,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
               },
               {
                 "type": "button",
-                "label": "设置搜索项",
+                "label": i18next.t('frontend_fields_filter_button_settings'),
                 "onEvent": {
                   "click": {
                     "actions": [
@@ -420,7 +420,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
                         "dialog": {
                           "type": "dialog",
                           "size": "md",
-                          "title": "设置搜索项",
+                          "title": i18next.t('frontend_fields_filter_button_settings'),
                           "body": [
                             {
                               "type": "form",
@@ -488,7 +488,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
                           "actions": [
                             {
                               "type": "button",
-                              "label": "取消",
+                              "label": i18next.t('frontend_form_cancel'),
                               "onEvent": {
                                 "click": {
                                   "actions": [
@@ -504,7 +504,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
                             },
                             {
                               "type": "button",
-                              "label": "确认",
+                              "label": i18next.t('frontend_form_confirm'),
                               "onEvent": {
                                 "click": {
                                   "actions": [

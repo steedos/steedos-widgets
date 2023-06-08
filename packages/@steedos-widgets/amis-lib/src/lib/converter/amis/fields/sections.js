@@ -7,6 +7,7 @@
  */
 import * as Fields from '../fields';
 import * as lodash from 'lodash';
+import i18next from '../../../../i18n'
 
 const getFieldSchemaArray = (formFields) => {
   let fieldSchemaArray = [];
@@ -14,7 +15,7 @@ const getFieldSchemaArray = (formFields) => {
 
   lodash.forEach(formFields, (field) => {
     if (!field.group || field.group == 'null' || field.group == '-')
-      field.group = '通用'
+      field.group = i18next.t('frontend_field_group_generalization')
     const fieldName = field.name;
     let isObjectField = /\w+\.\w+/.test(fieldName)
     if (field.type == 'grid' || field.type == 'object') {
