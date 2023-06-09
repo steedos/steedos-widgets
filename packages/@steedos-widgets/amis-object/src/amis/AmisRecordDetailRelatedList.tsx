@@ -7,6 +7,7 @@
  */
 import { getRecordDetailRelatedListSchema } from '@steedos-widgets/amis-lib'
 import { has } from 'lodash';
+import i18next from '@steedos-widgets/amis-lib/src/i18n';
 
 export const AmisRecordDetailRelatedList = async (props: any) => {
   // console.log(`AmisRecordDetailRelatedList props==>`, props)
@@ -19,7 +20,7 @@ export const AmisRecordDetailRelatedList = async (props: any) => {
   // if(!objectApiName || !relatedObjectApiName || !recordId){
     return {
       "type": "alert",
-      "body": "缺少父级对象、父级记录或相关列表对象属性",
+      "body": i18next.t('frontend_record_detail_related_list_warning'),
       "level": "warning",
       "showIcon": true,
       "className": "mb-3"

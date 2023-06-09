@@ -119,11 +119,11 @@ export const getSchema = async (uiSchema, ctx) => {
                                         {
                                             type: 'button',
                                             actionType: 'cancel',
-                                            label: "取消"
+                                            label: i18next.t('frontend_form_cancel')
                                         },
                                         {
                                             type: 'button',
-                                            label: "保存并新建",
+                                            label: i18next.t('frontend_form_save_and_new'),
                                             actionType: 'confirm',
                                             close: false,
                                             id: "confirmAndNew"
@@ -131,7 +131,7 @@ export const getSchema = async (uiSchema, ctx) => {
                                         {
                                             type: 'button',
                                             actionType: 'confirm',
-                                            label: "保存",
+                                            label: i18next.t('frontend_form_save'),
                                             primary: true
                                         },
                                     ]

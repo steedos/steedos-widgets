@@ -3,6 +3,7 @@ import { getSaveApi } from './api';
 import { each, values } from 'lodash';
 import * as graphql from './graphql'
 import _, { isEmpty, omitBy, isNil } from 'lodash';
+import i18next from "../../../i18n"
 
 export const DEFAULT_CALENDAR_OPTIONS = {
   startDateExpr: "start",
@@ -301,7 +302,7 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
     // ObjectForm会认作用域下的变量值
     // TODO: 待组件支持initValues属性后应该改掉，不应该通过data直接传值
     // TODO: 全天事件属性传入doc了但是没有生效，需要手动在ObjectForm中勾选全天事件
-    const title = "新建 ${objectSchema.label}";
+    const title = "${i18next.t('frontend_form_new')} ${objectSchema.label}";
     doAction(
       {
         "actionType": "dialog",
@@ -441,7 +442,7 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
           "expression": "!event.data.editable",
           "args": {
             "msgType": "error",
-            "msg": "您没有编辑该记录的权限！",
+            "msg": i18next.t('frontend_message_no_permission_to_edit'),
             "position": "top-center"
           }
         },
@@ -451,8 +452,8 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
           "args": {
             "api": recordSaveApi,
             "messages": {
-              "success": objectSchema.label + "修改成功",
-              "failed": objectSchema.label + "修改失败！"
+              "success": objectSchema.label + i18next.t('frontend_message_modification_successful'),
+              "failed": objectSchema.label + i18next.t('frontend_message_modification_successful')
             }
           }
         }

@@ -7,6 +7,7 @@
  */
 import { getListSchema, getObjectListHeader, getUISchema, Router } from '@steedos-widgets/amis-lib'
 import { keys, pick, difference, find, has, first, values } from 'lodash';
+import i18next from '@steedos-widgets/amis-lib/src/i18n';
 
 export const AmisObjectListView = async (props) => {
   // console.time('AmisObjectListView')
@@ -63,7 +64,7 @@ export const AmisObjectListView = async (props) => {
   if(!listView) {
     return {
       "type": "alert",
-      "body": `当前${listName}视图不存在！`,
+      "body": `${i18next.t('frontend_listview_warning_start')}${listName}${i18next.t('frontend_listview_warning_end')}`,
       "level": "warning",
       "showIcon": true,
       "className": "mb-3"
