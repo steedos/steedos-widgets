@@ -33,6 +33,9 @@
     margin: var(--gap-md);
     margin-top: var(--gap-sm);
 }
+.steedos-object-listview .fc-timegrid-event-harness a:hover{
+    background-color: var(--fc-event-bg-color, #3788d8);
+}
 
 @media (max-width: 768px){
     .steedos-object-listview  .fc-header-toolbar{
