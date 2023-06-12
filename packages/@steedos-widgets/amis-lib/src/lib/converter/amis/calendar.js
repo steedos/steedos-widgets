@@ -408,11 +408,10 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
       "weight": 0,
       "actions": [
         {
-          "componentId": "",
+          "actionType": "link",
           "args": {
-          },
-          "actionType": "custom",
-          "script": onEventClickScript
+            "link": "/app/${appId}/${objectName}/view/${event.id}"
+          }
         }
       ]
     },
