@@ -212,7 +212,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     if(_.isEmpty(defaultSearchableFields) && data.uiSchema){
       defaultSearchableFields = _.map(
         _.sortBy(_.filter(_.values(data.uiSchema.fields), (field) => {
-          return field.searchable;
+          return field.filterable;
         }), "sort_no"),
         "name"
       );
