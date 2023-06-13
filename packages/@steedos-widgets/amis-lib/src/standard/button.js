@@ -11,6 +11,7 @@ import * as standardEdit from '../schema/standard_edit.amis.js'
 import * as standardDelete from '../schema/standard_delete.amis.js'
 import * as standardImportData from '../schema/standard_import_data.amis.js'
 import * as standardOpenView from '../schema/standard_open_view.amis.js'
+import * as standardExportExcel from '../schema/standard_export_excel.amis.js'
 
 export const StandardButtons = {
     getStandardNew: async (uiSchema, ctx)=>{
@@ -71,6 +72,12 @@ export const StandardButtons = {
         return {
             type: 'amis_button',
             amis_schema: await standardOpenView.getSchema(uiSchema, ctx)
+        }
+    },
+    getStandardExportExcel: async (uiSchema, ctx)=>{
+        return {
+            type: 'amis_button',
+            amis_schema: await standardExportExcel.getSchema(uiSchema, ctx)
         }
     }
 }
