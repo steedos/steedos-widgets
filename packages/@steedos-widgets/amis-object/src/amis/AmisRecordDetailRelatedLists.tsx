@@ -5,9 +5,8 @@
  * @LastEditTime: 2023-05-08 12:01:04
  * @Description: 
  */
-import { getObjectRelatedList } from '@steedos-widgets/amis-lib'
+import { getObjectRelatedList, i18next } from '@steedos-widgets/amis-lib'
 import { map, has } from 'lodash';
-import i18next from '@steedos-widgets/amis-lib/src/i18n';
 
 export const AmisRecordDetailRelatedLists = async (props) => {
   // console.log(`AmisRecordDetailRelatedLists props==>`, props)

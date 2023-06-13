@@ -5,9 +5,8 @@
  * @LastEditTime: 2023-06-04 17:06:39
  * @Description: 
  */
-import { getListSchema, getObjectListHeader, getUISchema, Router } from '@steedos-widgets/amis-lib'
+import { getListSchema, getObjectListHeader, getUISchema, Router, i18next } from '@steedos-widgets/amis-lib'
 import { keys, pick, difference, find, has, first, values } from 'lodash';
-import i18next from '@steedos-widgets/amis-lib/src/i18n';
 
 export const AmisObjectListView = async (props) => {
   // console.time('AmisObjectListView')

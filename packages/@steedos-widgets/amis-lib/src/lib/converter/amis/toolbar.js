@@ -2,7 +2,7 @@ import { getObjectListHeaderFieldsFilterBar } from './header';
 import { Router } from "@steedos-widgets/amis-lib";
 import { getExportExcelToolbarButtonSchema } from './toolbars/export_excel';
 import { getSettingListviewToolbarButtonSchema } from './toolbars/setting_listview'; 
-import i18next from "../../../i18n"
+import { i18next } from "../../../i18n"
 
 const getDisplayAsButton = function(objectName, showDisplayAs){
   let displayAs = Router.getTabDisplayAs(objectName);

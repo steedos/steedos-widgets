@@ -39,3 +39,5 @@ export * from './render';
 export * from './workflow';
 
 export * from './lib/router'
+
+export * from './i18n'

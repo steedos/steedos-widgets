@@ -6,7 +6,7 @@ import config from '../../../../config'
 import { each, forEach, isBoolean, isEmpty } from 'lodash';
 import { getAmisFileReadonlySchema } from './file'
 import { Router } from '../../../router'
-import i18next from '../../../../i18n'
+import { i18next } from '../../../../i18n'
 function getOperation(fields){
     const controls = [];
     _.each(fields, function(field){

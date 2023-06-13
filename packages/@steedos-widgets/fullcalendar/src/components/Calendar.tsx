@@ -15,7 +15,6 @@ import listPlugin from '@fullcalendar/list';
 // import multimonthPlugin from '@fullcalendar/multimonth';
 import allLocales from '@fullcalendar/core/locales-all';
 import './Calendar.css';
-import i18next from '@steedos-widgets/amis-lib/src/i18n'
 
 import { createObject } from '@steedos-widgets/amis-lib';
 
@@ -115,11 +114,6 @@ export const FullCalendar = ({
       noEventsDidMount={handleNoEventsDidMount}
       noEventsWillUnmount={handleNoEventsWillUnmount}
       forceEventDuration={true}
-      views={{
-        listWeek: {
-          buttonText: i18next.t('frontend_calendar_listWeek')
-        }
-      }}
       {...props}
     />
   )
