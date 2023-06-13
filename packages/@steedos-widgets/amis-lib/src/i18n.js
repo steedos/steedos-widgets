@@ -12,11 +12,14 @@ const resources = {
   }
 };
 var locale = "zh-CN";
-if (Builder.settings.locale == "en-us") {
-  locale = "en-US";
-} else if (Builder.settings.locale == "zh-CN") {
-  locale = "zh-CN";
+if (typeof window != 'undefined') {
+  if (window.Builder?.settings.locale == "en-us") {
+    locale = "en-US";
+  } else if (window.Builder?.settings.locale == "zh-cn") {
+    locale = "zh-CN";
+  }
 }
+
 
 i18n
   .use(initReactI18next)
