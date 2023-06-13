@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-11 16:46:21
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-06-13 17:37:10
  * @Description: 
  */
 const config: any = {
@@ -186,8 +186,10 @@ export default {
                               "headers": {
                                   "Authorization": "Bearer ${context.tenantId},${context.authToken}"
                               },
-                              "data": null,
-                              "requestAdaptor": "",
+                              "data": {
+                                "objectName": "${objectName}"
+                              },
+                              "requestAdaptor": "debugger;api.url = api.url.replaceAll('${objectName}',api.body.objectName); return api;",
                               "adaptor": "",
                               "sendOn": "this.objectApiName"
                           },
