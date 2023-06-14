@@ -40,15 +40,15 @@ export const getSchema = async (uiSchema, ctx) => {
       let filename = uiSchema.label + "-" + list_views[list_views_name].label;
 
       url_tmp = api.url.split('?')[0];
-      api.url = url_tmp + "?$select=" + select.toString() + "&filename=" + filename;
+      api.url = url_tmp + "?$select=" + encodeURIComponent(select.toString()) + "&filename=" + encodeURIComponent(filename);
 
       // 判断sort 和 filters
       if (sort.length > 0) {
-          api.url += "&$orderby=" + order;
+          api.url += "&$orderby=" + encodeURIComponent(order);
       }
       let filters = list_views[list_views_name].filters;
       if (filters && filters.length > 0) {
-          api.url = api.url + "&filters=" + JSON.stringify(filters);
+          api.url = api.url + "&filters=" + encodeURIComponent(JSON.stringify(filters));
       }
       return api;
   `;
