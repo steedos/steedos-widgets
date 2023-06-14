@@ -175,7 +175,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
         "tooltipPlacement": "bottom",
         "className": "bg-white p-2 rounded border-gray-300 text-gray-500"
       },
-      getExportExcelToolbarButtonSchema(),
+      // getExportExcelToolbarButtonSchema(),
       filterVisible ? {
         "label": "",
         "icon": "fa fa-search",
