@@ -429,6 +429,8 @@ export async function getObjectForm(objectSchema, ctx){
     };
     if(formSchema.id){
       amisSchema.id = `service-${formSchema.id}`;
+    }else{
+      amisSchema.id = `new-${objectSchema.name}`;
     }
     return amisSchema;
 }
