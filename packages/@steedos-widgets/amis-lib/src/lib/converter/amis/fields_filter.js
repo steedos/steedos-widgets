@@ -130,7 +130,10 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     const filterService = filterForm.context.getComponents().find(function(n){
       return n.props.type === "service";
     });
-    filterService.setData({showFieldsFilter: false});
+    if(!event.data.__from_fields_filter_settings_confirm){
+      // 从设置搜索项点击确认按钮触发的搜索事件不应该自动关闭搜索栏
+      filterService.setData({showFieldsFilter: false});
+    }
     resizeWindow();
     // 使用filterForm.getValues()的话，并不能拿到本地存储中的过滤条件，所以需要从event.data中取。
     let filterFormValues = event.data;
@@ -501,7 +504,10 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
                                     },
                                     {
                                       "actionType": "click",
-                                      "componentId": btnSearchId
+                                      "componentId": btnSearchId,
+                                      "args": {
+                                        "__from_fields_filter_settings_confirm": true
+                                      }
                                     },
                                     {
                                       "componentId": "",
