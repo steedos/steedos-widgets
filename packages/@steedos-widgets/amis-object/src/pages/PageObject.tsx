@@ -31,7 +31,7 @@ export const PageObject = async (props) => {
                     "type": "wrapper",
                     "size": "none",
                     "className": {
-                        "p-0 flex-shrink-0 w-[388px] border-r border-gray-300 bg-gray-100 shadow lg:order-first lg:flex lg:flex-col": "${display == 'split'}",
+                        "p-0 flex-shrink-0 min-w-[388px] w-fit border-r border-gray-300 bg-gray-100 shadow lg:order-first lg:flex lg:flex-col": "${display == 'split'}",
                         'h-full': "${display != 'split'}",
                     },
                     "body": {
