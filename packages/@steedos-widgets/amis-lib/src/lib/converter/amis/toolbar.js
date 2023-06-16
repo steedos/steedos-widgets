@@ -48,36 +48,38 @@ const filterForm = scope.getComponents().find(function(n){
 const filterService = filterForm.context.getComponents().find(function(n){
   return n.props.type === "service";
 });
-// filterService.setData({showFieldsFilter: !!!filterService.props.data.showFieldsFilter});
+let toShowFieldsFilter = !!!filterService.props.data.showFieldsFilter;
+filterService.setData({showFieldsFilter: toShowFieldsFilter});
 let resizeWindow = function(){
   //触发amis crud 高度重算
   setTimeout(()=>{
     window.dispatchEvent(new Event("resize"))
   }, 500);
 }
-let isMobile = Steedos.isMobile();
-if(filterService.props.data.showFieldsFilter){
-  if(isMobile){
-    // 手机上只能通过取消按钮来关闭搜索栏
-    return;
-  }
-  let buttonCancel = SteedosUI.getClosestAmisComponentByType(filterForm.context, "button", { 
-    direction: "down", 
-    name: "btn_filter_form_cancel" 
-  });
-  buttonCancel.props.dispatchEvent('click', {}).then(function(){
-    resizeWindow();
-  });
-}
-else{
-  filterService.setData({showFieldsFilter: true});
-  resizeWindow();
-  if(isMobile){
-    // 手机端在显示搜索栏时隐藏刷新按钮
-    let crudService = scope.getComponentById("service_listview_" + event.data.objectName);
-    crudService && crudService.setData({showFieldsFilter: true});
-  }
-}
+resizeWindow();
+// 手机端在显示搜索栏时隐藏crud上的刷新按钮，因为点击后crud高度显示有问题
+let crudService = scope.getComponentById("service_listview_" + event.data.objectName);
+crudService && crudService.setData({showFieldsFilter: toShowFieldsFilter});
+// if(filterService.props.data.showFieldsFilter){
+//   if(isMobile){
+//     // 手机上只能通过取消按钮来关闭搜索栏
+//     return;
+//   }
+//   let buttonCancel = SteedosUI.getClosestAmisComponentByType(filterForm.context, "button", { 
+//     direction: "down", 
+//     name: "btn_filter_form_cancel" 
+//   });
+//   buttonCancel.props.dispatchEvent('click', {}).then(function(){
+//     resizeWindow();
+//   });
+// }
+// else{
+//   if(isMobile){
+//     // 手机端在显示搜索栏时隐藏crud上的刷新按钮，因为点击后crud高度显示有问题
+//     let crudService = scope.getComponentById("service_listview_" + event.data.objectName);
+//     crudService && crudService.setData({showFieldsFilter: true});
+//   }
+// }
 `;
 
 
@@ -184,6 +186,15 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
         "tooltip": i18next.t('frontend_button_search_tooltip'),
         "tooltipPlacement": "bottom",
         "type": "button",
+        "badge": {
+          "offset": [
+            -5,
+            1
+          ],
+          "size":8,
+          "animation": true,
+          "visibleOn": "${isFieldsFilterEmpty == false}"
+        },
         "align": "right",
         "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
         "onEvent": {

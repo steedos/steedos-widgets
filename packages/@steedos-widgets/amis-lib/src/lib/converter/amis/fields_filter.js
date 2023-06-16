@@ -120,28 +120,24 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     //   }
     // }
     // listView.handleFilterSubmit(Object.assign({}, removedValues, filterFormValues));
-
-    let isMobile = Steedos.isMobile();
-    if(isMobile){
-      // 手机端点击搜索的时候自动收起搜索栏
-      let resizeWindow = function(){
-        //触发amis crud 高度重算
-        setTimeout(()=>{
-          window.dispatchEvent(new Event("resize"))
-        }, 500);
-      }
-      const filterService = filterForm.context.getComponents().find(function(n){
-        return n.props.type === "service";
-      });
-      filterService.setData({showFieldsFilter: false});
-      resizeWindow();
-      // 使用filterForm.getValues()的话，并不能拿到本地存储中的过滤条件，所以需要从event.data中取。
-      let filterFormValues = event.data;
-      let isFieldsFilterEmpty = SteedosUI.isFilterFormValuesEmpty(filterFormValues);
-      let crud = SteedosUI.getClosestAmisComponentByType(scope, "crud");
-      let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service");
-      crudService && crudService.setData({isFieldsFilterEmpty, showFieldsFilter: false});
+    // 点击搜索的时候自动收起搜索栏
+    let resizeWindow = function(){
+      //触发amis crud 高度重算
+      setTimeout(()=>{
+        window.dispatchEvent(new Event("resize"))
+      }, 500);
     }
+    const filterService = filterForm.context.getComponents().find(function(n){
+      return n.props.type === "service";
+    });
+    filterService.setData({showFieldsFilter: false});
+    resizeWindow();
+    // 使用filterForm.getValues()的话，并不能拿到本地存储中的过滤条件，所以需要从event.data中取。
+    let filterFormValues = event.data;
+    let isFieldsFilterEmpty = SteedosUI.isFilterFormValuesEmpty(filterFormValues);
+    let crud = SteedosUI.getClosestAmisComponentByType(scope, "crud");
+    let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service");
+    crudService && crudService.setData({isFieldsFilterEmpty, showFieldsFilter: false});
   `;
   const onCancelScript = `
     const scope = event.context.scoped;
@@ -180,12 +176,9 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     setTimeout(()=>{
       window.dispatchEvent(new Event("resize"))
     }, 100);
-    let isMobile = Steedos.isMobile();
-    if(isMobile){
-      // 手机端移除搜索按钮上的红点
-      let crudService = scope.getComponentById("service_listview_" + event.data.objectName);
-      crudService && crudService.setData({isFieldsFilterEmpty: true, showFieldsFilter: false});
-    }
+    // 移除搜索按钮上的红点
+    let crudService = scope.getComponentById("service_listview_" + event.data.objectName);
+    crudService && crudService.setData({isFieldsFilterEmpty: true, showFieldsFilter: false});
     `;
   const dataProviderInited = `
     const objectName = data.objectName;
@@ -238,17 +231,11 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
               || (_.isArray(n) && _.isEmpty(n.filter(function(item){return !_.isNil(item)})))
               || (_.isString(n) && n.length === 0);
           });
-          // 有过滤条件时自动展开搜索栏
+          // 有过滤条件时只显示搜索按钮上的红点，不自动展开搜索栏
           if(!_.isEmpty(omitedEmptyFormValue)){
-            let isMobile = Steedos.isMobile();
-            if(isMobile){
-              // 手机端不展开，只显示搜索按钮上的红点
-              let crudService = SteedosUI.getRef(data.$scopeId).getComponentById("service_listview_" + data.objectName)
-              crudService && crudService.setData({isFieldsFilterEmpty: false});
-            }
-            else{
-              setData({ showFieldsFilter: true });
-            }
+            let crudService = SteedosUI.getRef(data.$scopeId).getComponentById("service_listview_" + data.objectName)
+            crudService && crudService.setData({isFieldsFilterEmpty: false});
+            // setData({ showFieldsFilter: true });//自动展开搜索栏
           }
         }
       }
