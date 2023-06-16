@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-01-13 17:27:54
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-31 13:34:22
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-06-16 15:58:21
  * @Description: 
  */
 
@@ -54,6 +54,7 @@ export const getHtmlFieldSchema = (field, readonly, ctx)=>{
     }else{
         return {
             "type": "input-rich-text",
+            "receiver": "${context.rootUrl}/s3/images",
             "name": field.name
         }
         // return {
