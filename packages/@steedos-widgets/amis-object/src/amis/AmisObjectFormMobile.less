@@ -1,0 +1,33 @@
+@media (max-width: 767px) {
+    .steedos-amis-form.antd-Form {
+        /* start ======== 移动端给部分input加边框，并使输入框上下居中*/
+        .antd-Form-item .antd-Form-control > .antd-TextControl-input,
+        .antd-Form-item div.antd-TextareaControl {
+            border: var(--Form-input-borderWidth) solid var(--Form-input-borderColor);
+            border-radius: var(--Form-input-borderRadius);
+            &:hover{
+                border: var(--Form-input-borderWidth) solid var(--Form-input-borderColor);
+                border-radius: var(--Form-input-borderRadius);
+            }
+        }
+
+        .antd-Form-item .antd-TextControl.is-focused > .antd-TextControl-input,
+        .antd-Form-item div.is-focused.antd-TextareaControl {
+            border-color: var(--input-default-active-top-border-color) var(--input-default-active-right-border-color) var(--input-default-active-bottom-border-color) var(--input-default-active-left-border-color) ;
+            border-style: var(--input-default-active-top-border-style) var(--input-default-active-right-border-style) var(--input-default-active-bottom-border-style) var(--input-default-active-left-border-style) ;
+            border-width: var(--input-default-active-top-border-width) var(--input-default-active-right-border-width) var(--input-default-active-bottom-border-width) var(--input-default-active-left-border-width) ;
+            &:hover{
+                border: var(--Form-input-borderWidth) solid var(--Form-input-borderColor);
+                border-radius: var(--Form-input-borderRadius);
+            }
+        }
+        .antd-Form-item input{
+            height: 100%;
+        }
+        .antd-Form-item{
+            margin-top:0;
+            align-items: center;
+        }
+        /* =========end */
+    }
+}

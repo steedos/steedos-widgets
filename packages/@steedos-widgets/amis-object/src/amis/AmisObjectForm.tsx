@@ -6,6 +6,7 @@
  * @Description: 
  */
 import './AmisObjectForm.less';
+import './AmisObjectFormMobile.less';
 import { getFormSchema, getViewSchema } from '@steedos-widgets/amis-lib'
 import { keys, pick, difference, isString, has } from 'lodash';
 
