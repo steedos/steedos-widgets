@@ -7,7 +7,7 @@
  */
 import * as Fields from '../fields';
 import * as lodash from 'lodash';
-import i18next from '../../../../i18n'
+import { i18next } from '../../../../i18n'
 
 const getFieldSchemaArray = (formFields) => {
   let fieldSchemaArray = [];

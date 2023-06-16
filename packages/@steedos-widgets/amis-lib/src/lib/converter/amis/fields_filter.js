@@ -1,6 +1,6 @@
 import { getFieldSearchable } from "./fields/index";
 import { includes, map } from "lodash";
-import i18next from "../../../i18n"
+import { i18next } from "../../../i18n"
 export async function getObjectFieldsFilterButtonSchema(objectSchema) {
   // const amisListViewId = `listview_${objectSchema.name}`;
   return {

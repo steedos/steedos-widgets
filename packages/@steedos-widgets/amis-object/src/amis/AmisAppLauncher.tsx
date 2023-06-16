@@ -6,7 +6,7 @@
  * @Description: 
  */
 
-import i18next from '@steedos-widgets/amis-lib/src/i18n'
+import { i18next } from '@steedos-widgets/amis-lib';
 
 export const AmisAppLauncher = async (props) => {
   let { app, data, className, showAppName = true, appNameClassName = '' } = props;

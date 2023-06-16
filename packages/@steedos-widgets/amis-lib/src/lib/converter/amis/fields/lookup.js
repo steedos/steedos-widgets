@@ -398,6 +398,58 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             "actions": [
               {
                 "actionType": "reload"
+              },
+              {
+                "actionType": "custom",
+                "script": `
+                    const masterRecord = event.data._master?.record;
+                    const fieldConfig = ${JSON.stringify(field)};
+                    let reference_to = fieldConfig.reference_to;
+                    let saveValue;
+                    const newRecord = {
+                        _id: event.data.result.data.recordId,
+                        ...event.data.__super.__super
+                    }
+                    const saveField = fieldConfig.reference_to_field || '_id';
+                    const saveFieldValue = newRecord[saveField];
+
+                    if( fieldConfig._reference_to && (_.isArray(fieldConfig._reference_to) || _.isFunction(fieldConfig._reference_to) || fieldConfig._reference_to.startsWith('function') ) ){
+                        
+                        const fieldValue = masterRecord ? masterRecord[fieldConfig.name] : {o: reference_to, ids: []};
+                        const baseSaveValue = {
+                            o: reference_to,
+                            ids: [saveFieldValue]
+                        };
+                        if(fieldValue && fieldValue.o){
+                            if(fieldValue.o === reference_to){
+                                saveValue = fieldConfig.multiple ? { o: reference_to, ids: fieldValue.ids.concat(saveFieldValue)} : baseSaveValue;
+                            }else{
+                                saveValue = baseSaveValue;
+                            }
+                        }else{
+                            saveValue = baseSaveValue;
+                        }
+
+                    }else{
+                        if(fieldConfig.multiple){
+                            // TODO: 连续新建多个记录时，因为获取的主记录不是实时的，所以只会勾选最后一个新建的记录。
+                            const fieldValue = (masterRecord && masterRecord[fieldConfig.name]) || [];
+                            saveValue = fieldValue.concat(saveFieldValue);
+                        }else{
+                            saveValue = saveFieldValue;
+                        }
+                    }
+                    
+                    const ctx = ${JSON.stringify(ctx)};
+                    const componentId = ctx.defaults.formSchema.id ? 'service-'+ctx.defaults.formSchema.id : 'new-'+ctx.defaults.formSchema.objectApiName;
+                    doAction({
+                        actionType: 'setValue',
+                        componentId: componentId, 
+                        args: {
+                            value: { [fieldConfig.name]: saveValue  }
+                        }
+                    });
+                `
               }
             ]
           }
@@ -630,7 +682,7 @@ export async function lookupToAmis(field, readonly, ctx){
             type: 'steedos-field-lookup',
             field,
             readonly,
-            ctx: {},
+            ctx,
         }
         // return await lookupToAmisGroup(field, readonly, ctx);
     }

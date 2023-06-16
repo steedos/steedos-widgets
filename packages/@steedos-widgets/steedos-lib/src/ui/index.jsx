@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-27 15:54:12
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-05-16 17:55:46
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-06-13 18:23:02
  * @Description: 
  */
 import { message, notification, Button, Space} from 'antd';
@@ -93,7 +93,16 @@ export const SteedosUI = Object.assign({}, {
               }else if(_.startsWith(key, '__searchable__')){
                   if(_.isString(value)){
                       searchableFilter.push([`${key.replace("__searchable__", "")}`, "contains", value])
-                  }else{
+                  }else if(_.isObject(value) && value.o){
+                    // reference_to是数组的lookup字段
+                    let leftKey = `${key.replace("__searchable__", "")}`;
+                    let lookupFieldFilter = [[leftKey + "/o", "=", value.o]];
+                    if(value.ids.length){
+                      lookupFieldFilter.push([leftKey + "/ids", "=", value.ids])
+                    }
+                    searchableFilter.push(lookupFieldFilter)
+                  }
+                  else{
                       searchableFilter.push([`${key.replace("__searchable__", "")}`, "=", value])
                   }
               }

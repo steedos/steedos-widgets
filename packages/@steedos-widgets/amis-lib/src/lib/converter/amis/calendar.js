@@ -3,7 +3,7 @@ import { getSaveApi } from './api';
 import { each, values } from 'lodash';
 import * as graphql from './graphql'
 import _, { isEmpty, omitBy, isNil } from 'lodash';
-import i18next from "../../../i18n"
+import { i18next } from "../../../i18n"
 
 export const DEFAULT_CALENDAR_OPTIONS = {
   startDateExpr: "start",
@@ -524,7 +524,12 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
     "initialView": initialView,
     "businessHours": businessHours,
     ...config,
-    "onEvent": onEvent
+    "onEvent": onEvent,
+    "views":{
+      listWeek: {
+        buttonText: i18next.t('frontend_calendar_listWeek')
+      }
+    }
   };
   return amisSchema;
 }

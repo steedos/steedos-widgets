@@ -262,6 +262,16 @@ export const getButton = async (objectName, buttonName, ctx)=>{
             }
         }
 
+        if(button.name === 'standard_export_excel'){
+            return {
+                label: button.label,
+                name: button.name,
+                on: button.on,
+                sort: button.sort,
+                ...await StandardButtons.getStandardExportExcel(uiSchema, ctx)
+            }
+        }
+
         if(button.name === 'standard_open_view'){
             return {
                 label: button.label,

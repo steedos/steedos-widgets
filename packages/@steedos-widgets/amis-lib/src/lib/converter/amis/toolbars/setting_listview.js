@@ -6,7 +6,7 @@ import { getSetListviewFiltersButtonSchema } from "./setting_listview/filters"
 import { getSetListviewColumnsButtonSchema } from "./setting_listview/columns"
 import { getSetListviewSortButtonSchema } from "./setting_listview/sort"
 import { getDeleteListviewButtonSchema } from "./setting_listview/delete"
-import i18next from "../../../../i18n"
+import { i18next } from "../../../../i18n"
 
 export const getSettingListviewToolbarButtonSchema = ()=>{
     return {

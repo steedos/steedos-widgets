@@ -8,7 +8,7 @@
  */
 
 import './AmisGlobalHeaderToolbar.less';
-import i18next from '@steedos-widgets/amis-lib/src/i18n';
+import { i18next } from '@steedos-widgets/amis-lib';
 
 export const AmisGlobalHeaderToolbar = async (props) => {
     const { className = '', data, logoutScript = "", customButtons = [] } = props;

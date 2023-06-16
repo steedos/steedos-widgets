@@ -6,7 +6,7 @@ import config from '../../../../config'
 import { each, forEach, isBoolean, isEmpty } from 'lodash';
 import { getAmisFileReadonlySchema } from './file'
 import { Router } from '../../../router'
-import i18next from '../../../../i18n'
+import { i18next } from '../../../../i18n'
 function getOperation(fields){
     const controls = [];
     _.each(fields, function(field){
@@ -451,7 +451,10 @@ async function getMobileTableColumns(fields, options){
         level: "link",
         actionType: "link",
         link: url,
-        innerClassName: "steedos-listview-item block text-gray-500",
+        innerClassName: {
+            "steedos-listview-item block text-gray-500":"true",
+            "max-w-[360px]": "${display == 'split'}",
+        },
         body: {
             "type": "wrapper",
             "body": columnLines,
