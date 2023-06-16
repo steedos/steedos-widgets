@@ -123,7 +123,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
         },
       },
       filterVisible ? {
-        "label": "",
+        "label": i18next.t('frontend_button_search_tooltip'),
         "icon": "fa fa-search",
         "type": "button",
         "tooltip": i18next.t('frontend_button_search_tooltip'),
@@ -176,8 +176,10 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
         "className": "bg-white p-2 rounded border-gray-300 text-gray-500"
       },
       // getExportExcelToolbarButtonSchema(),
+      getSettingListviewToolbarButtonSchema(),
+      getDisplayAsButton(showDisplayAs),
       filterVisible ? {
-        "label": "",
+        "label": i18next.t('frontend_button_search_tooltip'),
         "icon": "fa fa-search",
         "tooltip": i18next.t('frontend_button_search_tooltip'),
         "tooltipPlacement": "bottom",
@@ -194,9 +196,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
             ]
           }
         }
-      } : {},
-      getSettingListviewToolbarButtonSchema(),
-      getDisplayAsButton(showDisplayAs)
+      } : {}
       // {
       //   "type": "search-box",
       //   "align": "right",
