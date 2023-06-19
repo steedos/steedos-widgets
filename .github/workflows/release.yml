@@ -73,17 +73,13 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "yarn"
 
-      - name: Lerna version 
-        env:
-          CI: false
+      - name: Lerna version
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
           npm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
+          yarn --frozen-lockfile
           yarn lerna version ${{ steps.branch-name.outputs.tag }}  --force-publish --exact --yes
-
-      - name: Yarn
-        run: yarn --frozen-lockfile
 
       - name: Yarn Build 
         env:
