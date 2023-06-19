@@ -80,7 +80,7 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           npm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
-          lerna version ${{ steps.branch-name.outputs.tag }}  --force-publish --exact --yes
+          yarn lerna version ${{ steps.branch-name.outputs.tag }}  --force-publish --exact --yes
 
       - name: Yarn
         run: yarn --frozen-lockfile
@@ -95,7 +95,7 @@ jobs:
         if: ${{ steps.version.outputs.is_stable != 'true' }}
         run: |
           npm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
-          lerna publish from-package --yes --registry https://registry.npmjs.org --dist-tag beta
+          yarn lerna publish from-package --yes --registry https://registry.npmjs.org --dist-tag beta
         env:
           CI: false
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
