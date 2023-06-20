@@ -31,7 +31,10 @@ export async function getObjectFieldsFilterFormSchema(ctx) {
   const formSchema = {
     "type": "service",
     "visibleOn": "this.filterFormSearchableFields && this.filterFormSearchableFields.length",
-    "className": ctx.formFactor === 'SMALL' ? "slds-filters__body p-0 mb-2" : "slds-filters__body p-0 sm:grid sm:gap-2 sm:grid-cols-4 mb-2",
+    "className": ctx.formFactor === 'SMALL' ? "slds-filters__body p-0 mb-2 overflow-y-auto overflow-x-hidden" : "slds-filters__body p-0 sm:grid sm:gap-2 sm:grid-cols-4 mb-2",
+    "style":{
+      "max-height":ctx.formFactor === 'SMALL'?"30vh":"unset"
+    },
     "schemaApi": {
       method: 'post',
       url: `\${context.rootUrl}/graphql?reload=\${filterFormSearchableFields|join}`,
