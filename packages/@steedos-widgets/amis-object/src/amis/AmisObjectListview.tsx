@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-06-04 17:06:39
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2023-06-20 13:50:29
  * @Description: 
  */
 import { getListSchema, getObjectListHeader, getUISchema, Router, i18next } from '@steedos-widgets/amis-lib'
@@ -10,7 +10,7 @@ import { keys, pick, difference, find, has, first, values } from 'lodash';
 
 export const AmisObjectListView = async (props) => {
   // console.time('AmisObjectListView')
-  console.log(`AmisObjectListView props`, props)
+  // console.log(`AmisObjectListView props`, props)
   const { $schema, top, perPage, showHeader=true, data, defaultData, 
       className="", 
       crudClassName, 
@@ -22,13 +22,14 @@ export const AmisObjectListView = async (props) => {
   let { headerSchema } = props;
   let ctx = props.ctx;
   let listName = defaultData?.listName || data?.listName || props?.listName;
-  console.log('AmisObjectListView ==listName=>', listName)
+  // console.log('AmisObjectListView ==listName=>', listName)
   let defaults: any = {};
   let objectApiName = props.objectApiName || "space_users"; // 只是为了设计器,才在此处设置了默认值. TODO , 使用其他方式来辨别是否再设计器中
   if(!ctx){
     ctx = {};
   }
   const displayAs = Router.getTabDisplayAs(objectApiName);
+  // console.log(`AmisObjectListView`, 'displayAs===>', displayAs, objectApiName)
   let formFactor = props.formFactor;
   if(!formFactor){
     const isMobile = window.innerWidth < 768;
@@ -85,7 +86,7 @@ export const AmisObjectListView = async (props) => {
       "actions": [
         {
           "args": {
-            "url": "/app/${appId}/${objectName}/view/${event.data.result.data.recordId}?display=${ls:page_display || 'grid'}&side_object=${objectName}&side_listview_id=${listName}",
+            "url": "/app/${appId}/${objectName}/view/${event.data.result.data.recordId}?side_object=${objectName}&side_listview_id=${listName}",
             "blank": false
           },
           "actionType": "link",
@@ -167,7 +168,7 @@ export const AmisObjectListView = async (props) => {
                     "headers": {
                         "Authorization": "Bearer ${context.tenantId},${context.authToken}"
                     },
-                    "requestAdaptor": "console.log('service listview schemaApi requestAdaptor======>');api.data={query: '{spaces__findOne(id: \"none\"){_id,name}}'};return api;",
+                    "requestAdaptor": "api.data={query: '{spaces__findOne(id: \"none\"){_id,name}}'};return api;",
                     "adaptor": `
                         // console.log('service listview schemaApi adaptor....', api.body); 
                         let { appId, objectName, defaultListName: listName, display, formFactor: defaultFormFactor} = api.body;
@@ -178,7 +179,8 @@ export const AmisObjectListView = async (props) => {
                           const listViewSchemaProps = ${JSON.stringify(listViewSchemaProps)};
                           const formFactor = (["split"].indexOf(display) > -1) ? 'SMALL': defaultFormFactor;
                           listViewSchemaProps.formFactor = formFactor;
-                          // console.log("====listViewSchemaProps===>", listName, listViewSchemaProps)
+                          listViewSchemaProps.displayAs = display;
+                          // console.log("====listViewSchemaProps===>", listName, display, listViewSchemaProps)
                           window.getListSchema(appId, objectName, listName, listViewSchemaProps).then((schema)=>{
                             payload.data = schema.amisSchema;
                             // console.log("payload================>", payload)
