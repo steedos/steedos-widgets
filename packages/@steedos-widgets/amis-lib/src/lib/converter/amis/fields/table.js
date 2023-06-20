@@ -848,13 +848,13 @@ export async function getTableApi(mainObject, fields, options){
             const masterRecord = self._master.record;
             const masterObjectName = self._master.objectName;
             let relatedValue = self._master.recordId;
-            if(refField.reference_to_field && refField.reference_to_field != '_id'){
+            if(refField && refField.reference_to_field && refField.reference_to_field != '_id'){
                 relatedValue = masterRecord[refField.reference_to_field]
             }
             let relatedFilters;
             if (
-                refField._reference_to ||
-                (refField.reference_to && !_.isString(refField.reference_to))
+                refField && (refField._reference_to ||
+                (refField.reference_to && !_.isString(refField.reference_to)))
             ) {
                 relatedFilters = [
                     [relatedKey + "/o", "=", masterObjectName],

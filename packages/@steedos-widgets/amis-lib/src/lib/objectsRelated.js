@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-17 09:09:33
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-06-20 14:05:50
  * @Description:
  */
 
@@ -51,10 +51,11 @@ export async function getObjectRelatedList(
     if(!isEmpty(relatedLists)){
         for (const relatedList of relatedLists) {
             const arr = relatedList.related_field_fullname.split(".");
+            const foreign_key = arr[2] ? arr[1]+'.'+arr[2] : arr[1];
             related.push({
                 masterObjectName: objectName,
                 object_name: arr[0],
-                foreign_key: arr[1],
+                foreign_key,
                 label: relatedList.label,
                 columns: relatedList.field_names,
                 sort: relatedList.sort,
@@ -67,10 +68,11 @@ export async function getObjectRelatedList(
         const details = [].concat(uiSchema.details || []);
         for (const detail of details) {
             const arr = detail.split(".");
+            const foreign_key = arr[2] ? arr[1]+'.'+arr[2] : arr[1];
             related.push({
                 masterObjectName: objectName,
                 object_name: arr[0],
-                foreign_key: arr[1]
+                foreign_key
             });
         }
     }
@@ -102,14 +104,16 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
             if(!isEmpty(mainRelatedLists)){
                 for (const relatedList of mainRelatedLists) {
                     const arr = relatedList.related_field_fullname.split(".");
-                    mainRelated[arr[0]] = arr[1];
+                    const foreign_key_value = arr[2] ? arr[1]+'.'+arr[2] : arr[1];
+                    mainRelated[arr[0]] = foreign_key_value;
                 }
             }else{
                 const details = union(mainObjectUiSchema.details,mainObjectUiSchema.lookup_details) || [];
                 for (const detail of details) {
                     const arr = detail.split(".");
+                    const foreign_key_value = arr[2] ? arr[1]+'.'+arr[2] : arr[1];
                     if(!has(mainRelated,arr[0])){
-                        mainRelated[arr[0]] = arr[1];
+                        mainRelated[arr[0]] = foreign_key_value;
                     }
                 }
             }
