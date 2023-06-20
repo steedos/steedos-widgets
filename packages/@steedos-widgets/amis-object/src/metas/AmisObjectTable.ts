@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-06-13 17:37:10
+ * @LastEditTime: 2023-06-20 10:55:46
  * @Description: 
  */
 const config: any = {
@@ -189,7 +189,7 @@ export default {
                               "data": {
                                 "objectName": "${objectName}"
                               },
-                              "requestAdaptor": "debugger;api.url = api.url.replaceAll('${objectName}',api.body.objectName); return api;",
+                              "requestAdaptor": "api.url = api.url.replaceAll('${objectName}',api.body.objectName); return api;",
                               "adaptor": "",
                               "sendOn": "this.objectApiName"
                           },
