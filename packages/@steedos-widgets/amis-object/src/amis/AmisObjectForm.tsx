@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-06-01 18:05:21
+ * @LastEditTime: 2023-06-21 10:59:38
  * @Description: 
  */
 import './AmisObjectForm.less';
@@ -53,8 +53,8 @@ export const AmisObjectForm = async (props) => {
       // 让ObjectForm支持props中的dafaultData属性与上层组件配置的defaultData混合
       // 为了解决相关表新建时如果是表单类型微页面，因为找不到ObjectForm在哪层而造成无法设置ObjectForm的defaultData的问题
       amisSchema.data.defaultData = {
-        "&": "${defaultData}",
-        ...defaultData
+        "&": "${defaultData}",//这里的defaultData是上层的data中的defaultData变量值
+        ...defaultData//这里的defaultData是form组件的defaultData属性值
       }
     }
     uiSchema = schema.uiSchema;
