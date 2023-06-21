@@ -1,10 +1,11 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-12 13:18:55
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-06 15:28:02
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-06-21 17:42:05
  * @Description: 
  */
+import './AmisObjectFieldLookup.less';
 import React, { useEffect, useState } from 'react'
 import { getUISchema, lookupToAmisPicker, lookupToAmisSelect, createObject } from '@steedos-widgets/amis-lib'
 
@@ -53,6 +54,7 @@ const getSchema = async (field, value, ctx)=>{
     "body": [
       {
         "type": "select",
+        "inputClassName": "select_left",
         "name": leftName,
         "options": options,
         "value": `${value.o}`
