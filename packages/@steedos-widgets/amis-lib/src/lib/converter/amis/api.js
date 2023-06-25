@@ -71,7 +71,7 @@ function getReadonlyFormAdaptor(object, fields, options){
         var record = _.cloneDeep(data);
         try{
             _.each(gridAndObjectFieldsName, function(name){
-                data[name] = data._display[name];
+                data[name] = data._display && data._display[name];
             })
         }catch(e){
             console.error(e)
