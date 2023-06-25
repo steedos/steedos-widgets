@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-06-21 10:59:38
+ * @LastEditTime: 2023-06-25 11:24:32
  * @Description: 
  */
 import './AmisObjectForm.less';
@@ -60,12 +60,14 @@ export const AmisObjectForm = async (props) => {
     uiSchema = schema.uiSchema;
   } else {
     // formInitProps
-    // if(!recordId){
-    //   // 只读界面只返回一条记录
-    //   options.formInitProps = {
-    //     queryOptions: "top: 1"
-    //   };
-    // }
+    if(!recordId && props.$$editor){
+      // 设计器中只读表单返回第一条记录
+      options.formInitProps = {
+        filters: [],
+        queryOptions: "top: 1",
+        isEditor: true
+      };
+    }
     const schema =  await getViewSchema(objectApiName, recordId, options);
     amisSchema =  schema.amisSchema;
     uiSchema =  schema.uiSchema;
