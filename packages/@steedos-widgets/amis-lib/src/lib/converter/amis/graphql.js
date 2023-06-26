@@ -29,6 +29,10 @@ export async function getFieldsTemplate(fields, expand){
             if(includes(['percent','time','filesize','date','datetime','boolean','number','currency', 'select', 'file', 'image', 'avatar', 'formula', 'summary', 'object', 'grid'], field.type)){
                 displayFields.push(`${field.name}`)
             }
+        }else{
+            objectFieldName = field.name.split('.')[0];
+            fieldsName.push(objectFieldName);
+            displayFields.push(objectFieldName)
         }
     }
 
