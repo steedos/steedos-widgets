@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-12 13:18:55
  * @LastEditors: liaodaxue
- * @LastEditTime: 2023-06-26 14:34:13
+ * @LastEditTime: 2023-06-26 14:37:52
  * @Description: 
  */
 import './AmisObjectFieldLookup.less';
@@ -19,7 +19,6 @@ const getSchema = async (field, value, ctx)=>{
   }
   const leftName = `${field.name}__left`
   // const options = [];
-  console.log('refTo==>', refTo)
   // for (const item of refTo) {
   //   const refObject = await getUISchema(item, false);
   //   options.push({
@@ -67,7 +66,7 @@ const getSchema = async (field, value, ctx)=>{
           "headers": {
             "Authorization": "Bearer ${context.tenantId},${context.authToken}"
           },
-          "requestAdaptor": `\nvar filters = [\"name\",\"in\", ${JSON.stringify(refTo)}]; console.log('vv==>',filters); \nvar top = ${JSON.stringify(refTo)}.length;\n\nvar sort = \"\";\napi.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', top).replace('{__sort}', sort.trim());\nreturn api;`,    
+          "requestAdaptor": `\nvar filters = [\"name\",\"in\", ${JSON.stringify(refTo)}]; \nvar top = ${JSON.stringify(refTo)}.length;\n\nvar sort = \"\";\napi.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', top).replace('{__sort}', sort.trim());\nreturn api;`,    
         },
         "value": `${value.o}`
       },
