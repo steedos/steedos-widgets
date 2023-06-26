@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-06-20 10:55:30
+ * @LastEditTime: 2023-06-26 11:48:44
  * @Description: 
  */
 
@@ -300,7 +300,7 @@ export default {
                                   "Authorization": "Bearer ${context.tenantId},${context.authToken}"
                               },
                               "data": {
-                                "objectName": "${objectName}"
+                                "objectName": "${objectName || 'space_users'}"
                               },
                               "requestAdaptor": "api.url = api.url.replaceAll('${objectName}',api.body.objectName); return api;",
                               "adaptor": "",
@@ -333,7 +333,7 @@ export default {
                                   "Authorization": "Bearer ${context.tenantId},${context.authToken}"
                               },
                               "data": {
-                                "objectName": "${objectName}"
+                                "objectName": "${objectName || 'space_users'}"
                               },
                               "requestAdaptor": "api.url = api.url.replaceAll('${objectName}',api.body.objectName); return api;",
                               "adaptor": "",

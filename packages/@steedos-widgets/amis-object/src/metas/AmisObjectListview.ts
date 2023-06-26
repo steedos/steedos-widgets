@@ -121,7 +121,7 @@ export default {
             "messages": {
             },
             "data": {
-              "objectName": "${objectName}"
+              "objectName": "${objectName || 'space_users'}"
             },
             "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url.replaceAll('${objectName}',api.body.objectName); if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
             "adaptor": `

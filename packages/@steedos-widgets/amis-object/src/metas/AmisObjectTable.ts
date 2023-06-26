@@ -187,7 +187,7 @@ export default {
                                   "Authorization": "Bearer ${context.tenantId},${context.authToken}"
                               },
                               "data": {
-                                "objectName": "${objectName}"
+                                "objectName": "${objectName || 'space_users'}"
                               },
                               "requestAdaptor": "api.url = api.url.replaceAll('${objectName}',api.body.objectName); return api;",
                               "adaptor": "",
@@ -320,7 +320,7 @@ export default {
                   "source": {
                     "method": "get",
                     "data": {
-                      "objectName": "${objectName}",
+                      "objectName": "${objectName || 'space_users'}",
                     },
                     "sendOn": "this.objectApiName",
                     "url": "/service/api/amis-metadata-objects/objects/${objectApiName}/fields/options",
