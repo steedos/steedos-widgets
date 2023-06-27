@@ -43,12 +43,18 @@ function getReadonlyFormAdaptor(object, fields, options){
     //     }
     // })
 
+    var fieldNames = _.map(fields, function(n){return n.name});
     return  `
     if(payload.data.data.length === 0){
         var isEditor = !!${options && options.isEditor};
         if(isEditor){
+            var fieldNames = ${JSON.stringify(fieldNames)};
+            var emptyDoc = {};//这里如果不把每个字段值设置为空的话，表单上会显示上一次表单上的字段值
+            fieldNames.forEach(function(n){
+                emptyDoc[n] = null;
+            });
             // 设计器中始终显示表单，有记录则显示第一条记录，没记录时显示为空表单
-            payload.data.data = [{}];
+            payload.data.data = [emptyDoc];
         }
         else{
             return {
