@@ -713,6 +713,7 @@ export async function getTableApi(mainObject, fields, options){
     let valueField = mainObject.key_field || '_id';
     const api = await getApi(mainObject, null, fields, {count: options.queryCount, alias: 'rows', limit: top, queryOptions: `filters: {__filters}, top: {__top}, skip: {__skip}, sort: "{__sort}"`});
 
+    api.url += "&objectName=${objectName}";//设计器上对象表格组件需要切换对象重新请求列表数据
     if(options.isRelated){
         api.url += "&recordId=${_master.recordId}";
     }
