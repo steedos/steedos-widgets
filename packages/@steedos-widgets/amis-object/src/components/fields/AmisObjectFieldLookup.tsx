@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-12 13:18:55
  * @LastEditors: liaodaxue
- * @LastEditTime: 2023-06-26 14:37:52
+ * @LastEditTime: 2023-06-27 11:41:57
  * @Description: 
  */
 import './AmisObjectFieldLookup.less';
@@ -54,7 +54,7 @@ const getSchema = async (field, value, ctx)=>{
     "body": [
       {
         "type": "select",
-        "inputClassName": "select_left",
+        "inputClassName": "lookup-left",
         "name": leftName,
         // "options": options,
         "source": {
