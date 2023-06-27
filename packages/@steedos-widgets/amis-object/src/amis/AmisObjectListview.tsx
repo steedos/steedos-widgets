@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-06-20 13:50:29
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-06-27 15:30:26
  * @Description: 
  */
 import { getListSchema, getObjectListHeader, getUISchema, Router, i18next } from '@steedos-widgets/amis-lib'
@@ -161,7 +161,8 @@ export const AmisObjectListView = async (props) => {
               {
                 "type": "service",
                 "schemaApi": {
-                    "url": "${context.rootUrl}/graphql?listName=${listName}&display=${display}",
+                    // 这里url上加objectApiName属性是因为设计器中切换对象时不会变更列表视图界面，不可以用objectName=${objectName}使用作用域中objectName变量是因为设计器那边不会监听识别data变化来render组件
+                    "url": "${context.rootUrl}/graphql?objectName=" + objectApiName + "&listName=${listName}&display=${display}",
                     "method": "post",
                     "messages": {
                     },
