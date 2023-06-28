@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:51:00
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-06-28 22:22:25
+ * @LastEditTime: 2023-06-28 23:19:41
  * @Description: 
  */
 import { i18next } from "../i18n";
@@ -61,7 +61,7 @@ export const getSchema = async (uiSchema, ctx) => {
         setTimeout(function(){
             doAction({
                 "actionType": "cancel",
-                "componentId": "object_actions_drawer"
+                "componentId": "object_actions_drawer_${uiSchema.name}"
             });
         }, 200);
     `;

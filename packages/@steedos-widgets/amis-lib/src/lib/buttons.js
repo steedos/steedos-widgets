@@ -378,7 +378,7 @@ export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
                     "drawer": {
                       "type": "drawer",
                       "title": "操作",
-                      "id": "object_actions_drawer",
+                      "id": "object_actions_drawer_" + objectSchema.name,
                       "body": [
                         {
                           "type": "button-group",
@@ -443,7 +443,7 @@ export const getObjectListViewButtonsSchemas = (objectSchema, ctx)=>{
                     "drawer": {
                       "type": "drawer",
                       "title": "操作",
-                      "id": "object_actions_drawer",
+                      "id": "object_actions_drawer_" + objectSchema.name,
                       "body": [
                         {
                           "type": "button-group",
@@ -506,6 +506,7 @@ export const getObjectRecordDetailRelatedListButtonsSchemas = (objectSchema, ctx
                     "drawer": {
                       "type": "drawer",
                       "title": "操作",
+                      "id": "object_actions_drawer_" + objectSchema.name,
                       "body": [
                         {
                           "type": "button-group",
