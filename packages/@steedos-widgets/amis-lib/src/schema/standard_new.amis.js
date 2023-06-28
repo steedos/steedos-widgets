@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:51:00
- * @LastEditors: liaodaxue
- * @LastEditTime: 2023-06-06 11:12:33
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-06-28 18:16:15
  * @Description: 
  */
 import { i18next } from "../i18n";
@@ -54,6 +54,14 @@ export const getSchema = async (uiSchema, ctx) => {
         return {
             data: formSchema
         };
+    `;
+    const onDialogCancelScript = `
+        setTimeout(function(){
+            doAction({
+                "actionType": "cancel",
+                "componentId": "object_actions_drawer"
+            });
+        }, 200);
     `;
     return {
         "type": "service",
@@ -115,6 +123,17 @@ export const getSchema = async (uiSchema, ctx) => {
                                     "closeOnEsc": false,
                                     "closeOnOutside": false,
                                     "size": "lg",
+                                    "onEvent": {
+                                        "cancel": {
+                                            "actions": [
+                                                {
+                                                    "actionType": "custom",
+                                                    "script": onDialogCancelScript,
+                                                    "expression": "${window:innerWidth < 768}",
+                                                }
+                                            ]
+                                        }
+                                    },
                                     "actions": [
                                         {
                                             type: 'button',

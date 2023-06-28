@@ -444,6 +444,7 @@ export const getObjectListViewButtonsSchemas = (objectSchema, ctx)=>{
                     "drawer": {
                       "type": "drawer",
                       "title": "操作",
+                      "id": "object_actions_drawer",
                       "body": [
                         {
                           "type": "button-group",
@@ -467,7 +468,6 @@ export const getObjectListViewButtonsSchemas = (objectSchema, ctx)=>{
                           "size": "lg"
                         }
                       ],
-                      "id": "u:9815f7366b9f",
                       "position": "bottom",
                       "closeOnOutside": true,
                       "resizable": false,
@@ -478,8 +478,7 @@ export const getObjectListViewButtonsSchemas = (objectSchema, ctx)=>{
                   }
                 ]
               }
-            },
-            "id": "u:ee7c7929e6ae"
+            }
           }
     }else{
         return _.map(buttons, (button) => {
