@@ -378,6 +378,7 @@ export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
                     "drawer": {
                       "type": "drawer",
                       "title": "操作",
+                      "id": "object_actions_drawer",
                       "body": [
                         {
                           "type": "button-group",
@@ -400,7 +401,6 @@ export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
                           "size": "lg"
                         }
                       ],
-                      "id": "u:9815f7366b9f",
                       "position": "bottom",
                       "closeOnOutside": true,
                       "resizable": false,
@@ -411,8 +411,7 @@ export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
                   }
                 ]
               }
-            },
-            "id": "u:ee7c7929e6ae"
+            }
           }
     }else{
         if(moreButtons.length > 0){
