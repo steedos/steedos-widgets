@@ -130,6 +130,8 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     const fieldsArr = [];
 
     const listName = "all";
+    
+    const isMobile = window.innerWidth < 768;
 
     const listView = _.find(
         refObjectConfig.list_views,
@@ -206,6 +208,11 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     
     source.data.$term = "$term";
     source.data.$self = "$$";
+
+    let is_user_picker = false;
+    if(referenceTo.objectName === "space_users" && field.reference_to_field === "user" && !isMobile){
+        is_user_picker = true;
+   }
    
     source.requestAdaptor = `
         const selfData = JSON.parse(JSON.stringify(api.data.$self));
@@ -239,6 +246,10 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             }else{
                 filters = searchableFilter;
             }
+        }
+
+        if(${is_user_picker}){
+            filters.push(["user_accepted", "=", true]);
         }
 
         if(allowSearchFields){
@@ -357,7 +368,6 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         pickerSchema.affixHeader = false;
 
         var headerToolbarItems = [];
-        const isMobile = window.innerWidth < 768;
         if(referenceTo.objectName === "space_users" && field.reference_to_field === "user" && !isMobile){
              headerToolbarItems = getLookupSapceUserTreeSchema();
              pickerSchema["style"] = {
