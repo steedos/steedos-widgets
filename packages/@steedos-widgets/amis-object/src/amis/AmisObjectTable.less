@@ -1,10 +1,32 @@
-@media (min-width: 767px){
-    .steedos-object-table{
-        .antd-Field-quickEditBtn{
-            display: none;
+@media (min-width: 767px) {
+    .steedos-object-table {
+        tbody td.antd-Field--quickEditable {
+            div {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                .antd-Field-quickEditBtn {
+                    padding-right: 13px;
+
+                    svg {
+                        display: none;
+                    }
+                }
+            }
         }
-        .antd-Field--quickEditable:hover .antd-Field-quickEditBtn{
-            display: inline-block;
+
+        tbody td.antd-Field--quickEditable:hover {
+            div {
+                .antd-Field-quickEditBtn {
+                    padding-right: 0;
+
+                    svg {
+                        display: inline-block;
+                    }
+                }
+            }
+
         }
     }
 }
