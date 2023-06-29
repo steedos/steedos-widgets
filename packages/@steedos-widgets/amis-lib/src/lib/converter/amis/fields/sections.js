@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-26 16:02:08
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-06-04 15:49:23
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-06-29 17:27:19
  * @Description: 
  */
 import * as Fields from '../fields';
@@ -99,7 +99,7 @@ export const getSections = async (permissionFields, formFields, ctx) => {
     const section = await getSection(formFields, permissionFields, fieldSchemaArray, key, ctx);
     if (section.body.length > 0) {
       if (section.visibleOn) {
-        sectionVisibleOns.push(section.visibleOn);
+        sectionVisibleOns.push("("+section.visibleOn+")");
       }
       else{
         sectionVisibleOns.push("true");
