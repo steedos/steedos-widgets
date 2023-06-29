@@ -106,14 +106,11 @@ export function getLookupSapceUserTreeSchema(){
         },
         "unfoldedLevel": 2,
         "style": {
-          "max-height": "100%",
           "position": "absolute",
           "left": "-200px",
           "width": "190px",
           "bottom": 0,
           "top": "-14px",
-          "overflow": "auto",
-          "min-height":"300px"
         },
         "originPosition": "left-top"
     }]
@@ -365,7 +362,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
              headerToolbarItems = getLookupSapceUserTreeSchema();
              pickerSchema["style"] = {
                 "margin-left":"200px",
-                "min-height": "300px"
+                "min-height": "69vh"
              }
         }
         pickerSchema.headerToolbar = getObjectHeaderToolbar(refObjectConfig, ctx.formFactor, { headerToolbarItems });
