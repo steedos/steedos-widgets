@@ -355,8 +355,12 @@ export async function getObjectForm(objectSchema, ctx){
     if(_.has(formSchema, 'className')){
       formSchema.className = 'steedos-amis-form'
     }
+    if(!formSchema.id){
+      formSchema.id = 'form_' + objectSchema.name;
+    }
     const amisSchema =  {
       type: 'service',
+      id: `service_${formSchema.id}`,
       className: 'p-0',
       name: `page_edit_${recordId}`,
       api: await getEditFormInitApi(objectSchema, recordId, fields, ctx),
@@ -427,11 +431,6 @@ export async function getObjectForm(objectSchema, ctx){
         }
       })]
     };
-    if(formSchema.id){
-      amisSchema.id = `service-${formSchema.id}`;
-    }else{
-      amisSchema.id = `new-${objectSchema.name}`;
-    }
     return amisSchema;
 }
 
