@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-06-27 16:34:37
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-06-30 16:10:32
  * @Description: 
  */
 import './AmisObjectTable.less';
@@ -43,7 +43,7 @@ export const AmisObjectTable = async (props) => {
   // console.time('AmisObjectTable')
   console.log(`AmisObjectTable props`, props)
   const { $schema, filters, filtersFunction, amisCondition, top, headerSchema, fields: includedFields, fieldsExtend,
-    sort, sortField, sortOrder, extraColumns, data, defaultData, 
+    sort, sortField, sortOrder, extraColumns, data, defaultData, crud = {},
     formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE',
     className = "", requestAdaptor,  adaptor, filterVisible = true, headerToolbarItems} = props;
   let ctx = props.ctx;
@@ -58,12 +58,12 @@ export const AmisObjectTable = async (props) => {
   let objectApiName = props.objectApiName || "space_users";
 
   if (!(ctx && ctx.defaults)) {
-    const schemaKeys = difference(keys($schema), ["type", "objectApiName", "columns", "extraColumns","id"]);
+    const schemaKeys = difference(keys($schema), ["type", "objectApiName", "columns", "extraColumns","id","crud"]);
     const listSchema = pick(props, schemaKeys);
     // className不传入crud组件，crud单独识别crudClassName属性
     listSchema.className = ""
     defaults = {
-      listSchema
+      listSchema: Object.assign( {}, listSchema, crud )
     };
   }
 

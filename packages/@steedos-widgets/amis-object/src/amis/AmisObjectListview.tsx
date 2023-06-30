@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-06-27 15:30:26
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-06-30 17:13:26
  * @Description: 
  */
 import { getListSchema, getObjectListHeader, getUISchema, Router, i18next } from '@steedos-widgets/amis-lib'
@@ -12,6 +12,7 @@ export const AmisObjectListView = async (props) => {
   // console.time('AmisObjectListView')
   // console.log(`AmisObjectListView props`, props)
   const { $schema, top, perPage, showHeader=true, data, defaultData, 
+      crud = {},
       className="", 
       crudClassName, 
       showDisplayAs = false,
@@ -75,7 +76,7 @@ export const AmisObjectListView = async (props) => {
 
   if (!(ctx && ctx.defaults)) {
     // 支持把crud组件任意属性通过listSchema属性传入到底层crud组件中
-    const schemaKeys = difference(keys($schema), ["type", "showHeader","id"]);
+    const schemaKeys = difference(keys($schema), ["type", "showHeader","id", "crud"]);
     // 此次是从 props中 抓取到 用户配置的 crud属性, 此处是一个排除法
     const listSchema = pick(props, schemaKeys);
     // className不传入crud组件，crud单独识别crudClassName属性
@@ -99,7 +100,7 @@ export const AmisObjectListView = async (props) => {
       ]
     }
     defaults = {
-      listSchema
+      listSchema: Object.assign( {}, listSchema, crud )
     };
   }
 
