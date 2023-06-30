@@ -203,7 +203,8 @@ body {
 
 /* 实现弹框中的crud中的inputTree高度满屏，目前选人控件的左侧树样式 */
 .antd-Modal-body .antd-Crud .antd-Table .antd-Tree{
-    max-height: 60vh;
+    max-height: unset;
+    overflow: unset;
 }
 
 /* 手机端native时间控件样式 */
