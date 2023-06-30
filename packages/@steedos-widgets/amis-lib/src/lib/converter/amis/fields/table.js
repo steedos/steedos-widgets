@@ -204,6 +204,7 @@ async function getQuickEditSchema(field, options){
 async function getTableColumns(fields, options){
     const columns = [{name: '_index',type: 'text', width: 32, placeholder: ""}];
     const allowEdit = options.permissions?.allowEdit && options.permissions?.modifyAllRecords && !options.isLookup && options.enable_inline_edit != false;
+    const defaultWidth = "unset";//用于使table内的td标签下生成div，实现将快速编辑按钮固定在右侧的效果，并不是为了unset效果
     for (const field of fields) {
         //增加quickEdit属性，实现快速编辑
         const quickEditSchema = allowEdit ? await getQuickEditSchema(field, options) : allowEdit;
@@ -260,7 +261,7 @@ async function getTableColumns(fields, options){
                 type: "switch",
                 name: field.name,
                 label: field.label,
-                width: field.width || "150",
+                width: field.width || defaultWidth,
                 toggled: field.toggled,
                 quickEdit: quickEditSchema,
                 className:"whitespace-nowrap",
@@ -275,7 +276,7 @@ async function getTableColumns(fields, options){
                 label: field.label,
                 map: map,
                 sortable: field.sortable,
-                width: field.width || "150",
+                width: field.width || defaultWidth,
                 toggled: field.toggled,
                 className:"whitespace-nowrap",
                 quickEdit: quickEditSchema
@@ -304,7 +305,7 @@ async function getTableColumns(fields, options){
                     label: field.label,
                     sortable: field.sortable,
                     // searchable: field.searchable,
-                    width: field.width || "150",
+                    width: field.width || defaultWidth,
                     type: type,
                     tpl: tpl,
                     toggled: field.toggled,
