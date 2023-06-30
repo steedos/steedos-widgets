@@ -207,6 +207,7 @@ export const getSchema = (uiSchema) => {
                               label: i18next.t('frontend_import_data_file'),
                               required: true,
                               type: "input-file",
+                              accept: ".xlsx,.xls",
                               className: "m-1",
                               labelClassName: "text-left",
                               clearValueOnHidden: true,
