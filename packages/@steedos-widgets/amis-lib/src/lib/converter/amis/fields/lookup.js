@@ -212,10 +212,6 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     source.data.$term = "$term";
     source.data.$self = "$$";
 
-    let is_user_picker = false;
-    if(referenceTo.objectName === "space_users" && field.reference_to_field === "user" && !isMobile){
-        is_user_picker = true;
-   }
    
     source.requestAdaptor = `
         const selfData = JSON.parse(JSON.stringify(api.data.$self));
@@ -251,9 +247,6 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             }
         }
 
-        if(${is_user_picker}){
-            filters.push(["user_accepted", "=", true]);
-        }
 
         if(allowSearchFields){
             allowSearchFields.forEach(function(key){
@@ -706,6 +699,11 @@ export async function lookupToAmis(field, readonly, ctx){
         if(ctx.idsDependOn || field.amis){
             // ids人员点选模式
             return await lookupToAmisIdsPicker(field, readonly, ctx);
+        }
+        if(!field.filters || field.filters.length == 0){
+            field.filters = [["user_accepted", "=", true]];
+        }else{
+            field.filters = [ ["user_accepted", "=", true], "and", field.filters ]
         }
         // 左侧树右侧人员列表的下拉框模式，不再支持，而是执行下面的lookupToAmisPicker函数弹出选人窗口
         // return await lookupToAmisSelectUser(field, readonly, ctx);
