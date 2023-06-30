@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: liaodaxue
- * @LastEditTime: 2023-06-29 18:05:29
+ * @LastEditTime: 2023-06-30 15:26:40
  * @Description: 
  */
 import './AmisObjectForm.less';
@@ -12,15 +12,15 @@ import { keys, pick, difference, isString, has } from 'lodash';
 
 export const AmisObjectForm = async (props) => {
   // console.log("===AmisObjectForm=props==", props);
-  const { $schema, recordId, defaultData, mode, layout, labelAlign, appId, fieldsExtend, excludedFields = null, fields = null,
+  const { $schema, recordId, defaultData, mode, layout, labelAlign, appId, fieldsExtend, excludedFields = null, fields = null, form = {},
     className="", initApiRequestAdaptor, initApiAdaptor, apiRequestAdaptor, apiAdaptor, enableTabs, tabsMode
   } = props;
   let objectApiName = props.objectApiName || "space_users";
   // amis中的mode属性是表单布局,没有layout属性。defaults的变量会覆盖mode属性值。
-  const schemaKeys = difference(keys($schema), ["type","mode","layout","defaultData"]);
+  const schemaKeys = difference(keys($schema), ["id","form","type","mode","layout","defaultData"]);
   const formSchema = pick(props, schemaKeys);
   const defaults = {
-    formSchema
+    formSchema: Object.assign( {}, formSchema, form )
   };
   const options: any = {
     recordId,
