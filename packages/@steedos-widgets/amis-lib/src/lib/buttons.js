@@ -452,15 +452,11 @@ export const getObjectListViewButtonsSchemas = (objectSchema, ctx)=>{
                           "tiled": true,
                           "buttons": [
                             ..._.map(buttons, (button)=>{
-                                let buttonVisibleOn = getButtonVisibleOn(button);
-                                if(button.name == 'standard_delete_many'){
-                                    buttonVisibleOn = "false";
-                                }
                                 return {
                                     type: 'steedos-object-button',
                                     name: button.name,
                                     objectName: button.objectName,
-                                    visibleOn: buttonVisibleOn,
+                                    visibleOn: getButtonVisibleOn(button),
                                     className: `button_${button.name} w-full`
                                 }
                             })
