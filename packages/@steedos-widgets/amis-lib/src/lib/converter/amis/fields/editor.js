@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-01-13 17:27:54
  * @LastEditors: liaodaxue
- * @LastEditTime: 2023-06-16 15:58:21
+ * @LastEditTime: 2023-06-30 10:29:52
  * @Description: 
  */
 
@@ -10,12 +10,16 @@
 export const getMarkdownFieldSchema = (field, readonly, ctx)=>{
     if(readonly){
         return {
-            "type": "markdown",
-            "name": field.name,
-            "options": {
-                "linkify": true,
-                "html": true,
-                "breaks": true
+            "type": "control",
+            "label": field.label,
+            "body": {
+              "type": "markdown",
+              "name": field.name,
+              "options": {
+                  "linkify": true,
+                  "html": true,
+                  "breaks": true
+              }
             }
           }
     }else{
