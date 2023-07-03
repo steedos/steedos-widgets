@@ -6,7 +6,7 @@ export const getExportExcelToolbarButtonSchema = ()=>{
         "icon": "fa fa-download",
         "align": "right", 
         "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
-        "tooltipPlacement": "bottom",
+        "tooltipPlacement": "top",
         "visibleOn": "${!isLookup && global.user.is_space_admin}",
         "tooltip": i18next.t('frontend_export_excel'),
         "onEvent": {

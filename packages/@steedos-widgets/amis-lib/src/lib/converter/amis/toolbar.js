@@ -109,6 +109,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
         "type": "button",
         "align": "right",
         "tooltip": i18next.t('frontend_button_reload_tooltip'),
+        "tooltipPlacement": "top",
         "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
         "label": "",
         "icon": "fa fa-sync",
@@ -128,6 +129,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
         "label": i18next.t('frontend_button_search_tooltip'),
         "icon": "fa fa-search",
         "type": "button",
+        "tooltipPlacement": "top",
         "tooltip": i18next.t('frontend_button_search_tooltip'),
         "badge": {
           "offset": [
@@ -174,7 +176,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
         "type": "reload",
         "align": "right",
         "tooltip": i18next.t('frontend_button_reload_tooltip'),
-        "tooltipPlacement": "bottom",
+        "tooltipPlacement": "top",
         "className": "bg-white p-2 rounded border-gray-300 text-gray-500"
       },
       // getExportExcelToolbarButtonSchema(),
@@ -184,7 +186,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
         "label": i18next.t('frontend_button_search_tooltip'),
         "icon": "fa fa-search",
         "tooltip": i18next.t('frontend_button_search_tooltip'),
-        "tooltipPlacement": "bottom",
+        "tooltipPlacement": "top",
         "type": "button",
         "badge": {
           "offset": [
