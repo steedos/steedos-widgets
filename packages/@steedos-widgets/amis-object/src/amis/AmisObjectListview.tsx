@@ -5,6 +5,7 @@
  * @LastEditTime: 2023-06-30 17:13:26
  * @Description: 
  */
+import './AmisObjectListView.less';
 import { getListSchema, getObjectListHeader, getUISchema, Router, i18next } from '@steedos-widgets/amis-lib'
 import { keys, pick, difference, find, has, first, values } from 'lodash';
 

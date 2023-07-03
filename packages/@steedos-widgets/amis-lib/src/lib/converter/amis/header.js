@@ -27,6 +27,28 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
   let amisButtonsSchema = getObjectListViewButtonsSchemas(objectSchema, {formFactor: ctx.formFactor})
   const reg = new RegExp('_', 'g');
   const standardIcon = icon && icon.replace(reg, '-');
+  const standardNewButton = _.find(amisButtonsSchema, { name: "standard_new" });
+  const buttonSchema = [{
+    "type": "flex",
+    "items": amisButtonsSchema,
+    "visibleOn": "${display == 'split'?false:true}"
+  }]
+  if(ctx.formFactor !== 'SMALL'){
+    buttonSchema.push({
+      "type": "flex",
+      "items":[
+        standardNewButton,
+        {
+          "type": "dropdown-button",
+          "buttons": Array.isArray(amisButtonsSchema) ? amisButtonsSchema.filter(obj => obj.name !== "standard_new"):{},
+          "menuClassName": "p-none split-dropdown-buttons",
+          "align": "right",
+          "size": "sm"
+        }
+      ],
+      "visibleOn": "${display == 'split'?true:false}"
+    })
+  }
   return {
     "type": "grid",
     "columns": [
@@ -77,10 +99,7 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
         "md": "auto"
       },
       {
-        "body":  {
-          "type": "flex",
-          "items": amisButtonsSchema,
-        },
+        "body": buttonSchema,
         "md": "auto",
         "valign": "middle",
       }
