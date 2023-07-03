@@ -1,6 +1,7 @@
 import _ from "lodash";
 import { isExpression, parseSingleExpression } from "./expression";
 import { getUISchema } from "./objects";
+import { i18next } from '../i18n'
 
 import { StandardButtons } from '../standard/button'
 
@@ -377,7 +378,7 @@ export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
                     "actionType": "drawer",
                     "drawer": {
                       "type": "drawer",
-                      "title": "操作",
+                      "title": i18next.t('frontend_operation'),
                       "id": "object_actions_drawer_" + objectSchema.name,
                       "body": [
                         {
@@ -442,7 +443,7 @@ export const getObjectListViewButtonsSchemas = (objectSchema, ctx)=>{
                     "actionType": "drawer",
                     "drawer": {
                       "type": "drawer",
-                      "title": "操作",
+                      "title": i18next.t('frontend_operation'),
                       "id": "object_actions_drawer_" + objectSchema.name,
                       "body": [
                         {
@@ -505,7 +506,7 @@ export const getObjectRecordDetailRelatedListButtonsSchemas = (objectSchema, ctx
                     "actionType": "drawer",
                     "drawer": {
                       "type": "drawer",
-                      "title": "操作",
+                      "title": i18next.t('frontend_operation'),
                       "id": "object_actions_drawer_" + objectSchema.name,
                       "body": [
                         {

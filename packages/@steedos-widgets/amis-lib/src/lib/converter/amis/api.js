@@ -2,7 +2,7 @@ import { OMIT_FIELDS } from './fields';
 import { absoluteUrl } from '../../steedos.client'
 import * as graphql from './graphql'
 import * as _ from 'lodash';
-
+import { i18next } from "../../../i18n"
 const API_CACHE = 100;
 
 function getReadonlyFormAdaptor(object, fields, options){
@@ -59,7 +59,7 @@ function getReadonlyFormAdaptor(object, fields, options){
         else{
             return {
                 status: 2,
-                msg: "无法找到记录"
+                msg: "${i18next.t('frontend_no_records_found')}"
             }
         }
     }

@@ -43,7 +43,7 @@
     "frontend_listview_control_share": "Sharing Settings",
     "frontend_listview_control_sort": "Default sorting rule",
     "frontend_export_excel": "Export Excel",
-    "frontend_ercord_operation": "Operation",
+    "frontend_operation": "Operation",
     "frontend_import_data": "Import data",
     "frontend_import_data_object_name": "Import object",
     "frontend_import_data_queue_import": "Data import",
@@ -75,5 +75,8 @@
     "frontend_calendar_listWeek": "List",
     "frontend_message_no_permission_to_edit": "You don't have permission to edit this record!",
     "frontend_message_modification_successful": "Modification successful!",
-    "frontend_message_modification_failed": "Modification failed!"
+    "frontend_message_modification_failed": "Modification failed!",
+    "frontend_objects_related_alert_start": "No related table fields associated with the related list object",
+    "frontend_objects_related_alert_end": "were found.",
+    "frontend_no_records_found": "No records found."
 }

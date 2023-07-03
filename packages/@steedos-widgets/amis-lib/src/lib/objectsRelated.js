@@ -11,6 +11,7 @@ import { getObjectRecordDetailRelatedListHeader } from './converter/amis/header'
 import { isEmpty,  find, isString, forEach, keys, findKey, isArray, union, has } from "lodash";
 import { getUISchema, getField, getListViewColumns, getListViewSort, getListViewFilter } from './objects'
 import { getRecord } from './record';
+import { i18next } from '../i18n'
 
 function str2function(
     contents,
@@ -129,7 +130,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
             uiSchema: relatedObjectUiSchema,
             amisSchema: {
                 "type": "alert",
-                "body": `未找到与相关列表对象${relatedObjectName}关联的相关表字段`,
+                "body": `${i18next.t('frontend_objects_related_alert_start')} ${relatedObjectName} ${i18next.t('frontend_objects_related_alert_end')}`,
                 "level": "warning",
                 "showIcon": true,
                 "className": "mb-3"

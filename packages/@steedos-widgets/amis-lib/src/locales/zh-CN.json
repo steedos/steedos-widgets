@@ -44,7 +44,7 @@
     "frontend_listview_control_share": "共享设置",
     "frontend_listview_control_sort": "默认排序规则",
     "frontend_export_excel": "导出",
-    "frontend_ercord_operation": "操作",
+    "frontend_operation": "操作",
     "frontend_import_data": "导入数据",
     "frontend_import_data_object_name": "导入对象",
     "frontend_import_data_queue_import": "数据导入",
@@ -76,5 +76,8 @@
     "frontend_calendar_listWeek": "列表",
     "frontend_message_no_permission_to_edit": "您没有编辑该记录的权限！",
     "frontend_message_modification_successful": "修改成功！",
-    "frontend_message_modification_failed": "修改失败！"
+    "frontend_message_modification_failed": "修改失败！",
+    "frontend_objects_related_alert_start": "未找到与相关列表对象",
+    "frontend_objects_related_alert_end": "关联的相关表字段",
+    "frontend_no_records_found": "无法找到记录"
 }
