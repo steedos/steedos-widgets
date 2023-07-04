@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-06-20 10:55:46
+ * @LastEditTime: 2023-07-04 18:04:30
  * @Description: 
  */
 const config: any = {
@@ -158,14 +158,18 @@ export default {
                               let data = payload.data;
                               payload.unshift({
                                 label: "当前对象",
-                                name: "\${objectName}"
+                                name: "\${objectName}",
+                                NAME_FIELD_KEY: "name"
                               });
                               return payload;
                             `
                           },
                           "labelField": "label",
                           "valueField": "name",
-                          "menuTpl": ""
+                          "menuTpl": "",
+                          "autoFill": {
+                            "fields": "${(NAME_FIELD_KEY || 'name')|asArray}"
+                          }
                         },
                         {
                           type: "transfer-picker",
