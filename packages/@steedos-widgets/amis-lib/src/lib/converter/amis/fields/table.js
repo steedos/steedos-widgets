@@ -254,7 +254,9 @@ async function getTableColumns(fields, options){
                 label: field.label,
                 width: field.width,
                 toggled: field.toggled,
-                className:"whitespace-nowrap"
+                static: true,
+                className:"whitespace-nowrap",
+                quickEdit: quickEditSchema
             }, field.amis, {name: field.name}))
         }else if(field.type === 'avatar' || field.type === 'image' || field.type === 'file'){
             columns.push(Object.assign({}, {
@@ -264,6 +266,7 @@ async function getTableColumns(fields, options){
                 width: field.width || defaultWidth,
                 toggled: field.toggled,
                 quickEdit: quickEditSchema,
+                static: true,
                 className:"whitespace-nowrap",
                 ...getAmisFileReadonlySchema(field)
             }, field.amis, {name: field.name}))
@@ -279,6 +282,7 @@ async function getTableColumns(fields, options){
                 width: field.width || defaultWidth,
                 toggled: field.toggled,
                 className:"whitespace-nowrap",
+                static: true,
                 quickEdit: quickEditSchema
             }, field.amis, {name: field.name}))
         }
@@ -310,6 +314,7 @@ async function getTableColumns(fields, options){
                     tpl: tpl,
                     toggled: field.toggled,
                     className,
+                    static: true,
                     quickEdit: quickEditSchema,
                     options: field.type === 'html' ? {html: true} : null
                     // toggled: true 

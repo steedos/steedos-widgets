@@ -97,6 +97,7 @@ const getSelectFlowSchema = (id, props)=>{
         "showRadio": showRadio,
         "onlyLeaf": true,
         "onEvent": onEvent,
+        "static": !!props.static,
         ...amis
     }
 }
