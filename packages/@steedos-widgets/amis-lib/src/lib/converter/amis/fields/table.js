@@ -252,7 +252,7 @@ async function getTableColumns(fields, options){
                 type: "switch",
                 name: field.name,
                 label: field.label,
-                width: field.width,
+                width: field.width || defaultWidth,
                 toggled: field.toggled,
                 static: true,
                 className:"whitespace-nowrap",
