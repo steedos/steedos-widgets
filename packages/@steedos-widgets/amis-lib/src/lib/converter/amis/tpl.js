@@ -93,7 +93,7 @@ export function getNameTpl(field, ctx){
 
 export function getRelatedFieldTpl(field, ctx){
     let tpl = '';
-    if(!field.reference_to && (field.optionsFunction || field._optionsFunction)){
+    if(!field.reference_to && (field.optionsFunction || field._optionsFunction || field.options)){
         if(field.isTableField){
             return `\${${field.name}}`
         }else{

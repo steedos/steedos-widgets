@@ -621,6 +621,20 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         `
         labelField = 'label';
         valueField = 'value';
+    }else if(field.options){
+        apiInfo.adaptor = `
+        var options = ${JSON.stringify(field.options)}
+        if(api.data.$term){
+            options = _.filter(options, function(o) {
+                var label = o.label;
+                return label.toLowerCase().indexOf(api.data.$term.toLowerCase()) > -1;
+            });
+        }
+        payload.data.options = options;
+        return payload;
+        `
+        labelField = 'label';
+        valueField = 'value';
     }
 
     const data = {
