@@ -149,13 +149,13 @@ export function getSelectFieldOptions(field){
     _.each(field.options, (item)=>{
         switch (dataType) {
             case 'number':
-                options.push({label: item.label, value: Number(item.value)});
+                options.push({label: item.label, value: Number(item.value), icon: item.icon});
                 break;
             case 'text':
-                options.push({label: item.label, value: String(item.value)});
+                options.push({label: item.label, value: String(item.value), icon: item.icon});
                 break;
             case 'boolean':
-                options.push({label: item.label, value: item.value === 'false' ? false : true});
+                options.push({label: item.label, value: item.value === 'false' ? false : true, icon: item.icon});
                 break;
             default:
                 break;
@@ -220,6 +220,17 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                     labelField: 'label',
                     valueField: 'value'
                 }
+                const select_menuTpl = `<span class='flex items-center mt-0.5'>
+                    <span role='img' aria-label='smile' class='anticon anticon-smile'>
+                        <span class='slds-icon_container slds-icon-standard-\${REPLACE(icon,'_','-')}'>
+                            <svg class='slds-icon slds-icon_x-small' aria-hidden='true'>
+                                <use xlink:href='/assets/icons/standard-sprite/svg/symbols.svg#\${icon}'></use>
+                            </svg>
+                        </span> 
+                    </span>
+                    <span class='pl-1.5'>\${label}</span>
+                </span>`
+                convertData.menuTpl = "${icon ? `"+select_menuTpl+"` : label}"
                 if(field.multiple){
                     convertData.multiple = true
                     convertData.extractValue = true
