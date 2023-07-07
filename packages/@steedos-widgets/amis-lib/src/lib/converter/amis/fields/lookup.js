@@ -11,7 +11,7 @@ import { getListViewSort } from './../../../objects';
 import { lookupToAmisTreeSelect } from './tree_select';
 import * as standardNew from '../../../../schema/standard_new.amis'
 
-const getReferenceTo = async (field)=>{
+export const getReferenceTo = async (field)=>{
     let referenceTo = field.reference_to;
     if(!referenceTo){
         return ;
