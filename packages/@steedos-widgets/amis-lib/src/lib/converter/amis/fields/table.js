@@ -273,6 +273,10 @@ async function getTableColumns(fields, options){
         }
         else if(field.type === 'select'){
             const map = Tpl.getSelectMap(field.options);
+            let className = "";
+            if(field.wrap === false){
+                className += " whitespace-nowrap"
+            }
             columns.push(Object.assign({}, {
                 type: "mapping",
                 name: field.name,
@@ -281,7 +285,7 @@ async function getTableColumns(fields, options){
                 sortable: field.sortable,
                 width: field.width || defaultWidth,
                 toggled: field.toggled,
-                className:"whitespace-nowrap",
+                className,
                 static: true,
                 quickEdit: quickEditSchema
             }, field.amis, {name: field.name}))
