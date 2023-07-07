@@ -926,10 +926,10 @@ export async function getTableApi(mainObject, fields, options){
             if(item[key]){
                 if(field._optionsFunction){
                     const optionsFunction = eval("(" + field._optionsFunction+ ")")(item);
-                    item[key + '__label'] = _.map(_.filter(optionsFunction, function(option){return _.includes(item[key], option.value)}), 'label').join(' ');
+                    item[key + '__label'] = _.map(_.filter(optionsFunction, function(option){return item[key] == option.value}), 'label').join(' ');
                 }else if(field.options){
                     const options = field.options;
-                    item[key + '__label'] = _.map(_.filter(options, function(option){return _.includes(item[key], option.value)}), 'label').join(' ');
+                    item[key + '__label'] = _.map(_.filter(options, function(option){return item[key] == option.value}), 'label').join(' ');
                 }
             }
         })
