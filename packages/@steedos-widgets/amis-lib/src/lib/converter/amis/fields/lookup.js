@@ -247,7 +247,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             }
         }
 
-        if(${referenceTo.objectName === "space_users"} && ${field.reference_to_field === "user"}){
+        if(${referenceTo?.objectName === "space_users"} && ${field.reference_to_field === "user"}){
             if(filters.length > 0){
                 filters = [ ["user_accepted", "=", true], "and", filters ]
             }else{
@@ -588,7 +588,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
             filters.push(fieldFilters);
         }
 
-        if(${referenceTo.objectName === "space_users"} && ${field.reference_to_field === "user"}){
+        if(${referenceTo?.objectName === "space_users"} && ${field.reference_to_field === "user"}){
             if(filters.length > 0){
                 filters = [ ["user_accepted", "=", true], "and", filters ]
             }else{
