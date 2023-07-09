@@ -238,3 +238,19 @@ body {
         min-width: 70px;
     }
 }
+
+/* TODO: amis3.2.0 .antd-Nav-Menu-item-link类中缺少flex，影响nav样式 */
+.antd-Nav-Menu-item-link{
+    display: flex;
+    align-items: center;
+}
+
+/* TODO: amis3.2.0 .antd-Nav类中多了background属性，影响nav样式 */
+.antd-Nav{
+    background-color: unset;
+}
+
+/* TODO: amis3.2.0 fieldset.antd-Collapse > legend类中多了background属性，影响分组样式 */
+fieldset.antd-Collapse > legend{
+    height: unset;
+}
