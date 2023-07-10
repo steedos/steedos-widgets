@@ -984,7 +984,8 @@ export async function getTableApi(mainObject, fields, options){
 
     const setDataToComponentId = "${setDataToComponentId}";
     if(setDataToComponentId){
-        SteedosUI.getRef(api.body.$self.$scopeId)?.getComponentById(setDataToComponentId)?.setData({$count: payload.data.count})
+        //https://github.com/baidu/amis/pull/6807 .parent的改动是为适应3.2getComponentById的规则改动，不影响2.9
+        SteedosUI.getRef(api.body.$self.$scopeId)?.parent?.getComponentById(setDataToComponentId)?.setData({$count: payload.data.count})
     };
     ${options.adaptor || ''}
     return payload;
