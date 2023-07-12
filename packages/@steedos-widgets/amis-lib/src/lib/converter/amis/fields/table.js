@@ -66,17 +66,19 @@ async function getQuickEditSchema(field, options){
                 return EventType;
             }
             switch (field.type) {
-                //TODO:amis的picker组件直接点击选项x时不会触发change事件，待处理
+                //TODO: amis的picker组件直接点击选项x时不会触发change事件，待处理
                 case "lookup":
                 case "master_detail":
+                    let labelField = quickEditSchema.body[0].labelField || "label";
+                    let valueField = quickEditSchema.body[0].valueField || "value";
                     if (field.multiple) {
                         TempDisplayField = `
                                 _display["${field.name}"] = [];
-                                event.data.value.forEach(function(item,index){
+                                event.data.selectedItems.forEach(function(item,index){
                                     _display["${field.name}"].push(
                                         {
-                                            "label": event.data.option[index].${quickEditSchema.body[0].labelField},
-                                            "value": event.data.option[index]._id,
+                                            "label": item.${labelField},
+                                            "value": item.${valueField},
                                             "objectName": "${field.reference_to}"
                                         }
                                     )
@@ -85,8 +87,8 @@ async function getQuickEditSchema(field, options){
                     } else {
                         TempDisplayField = `
                                 _display["${field.name}"] = {
-                                    "label": event.data.option.${quickEditSchema.body[0].labelField},
-                                    "value": event.data._id,
+                                    "label": event.data.selectedItems.${labelField},
+                                    "value": event.data.selectedItems.${valueField},
                                     "objectName": "${field.reference_to}"
                                 }
                             `
