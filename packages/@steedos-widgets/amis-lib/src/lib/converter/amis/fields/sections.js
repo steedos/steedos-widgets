@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-26 16:02:08
  * @LastEditors: liaodaxue
- * @LastEditTime: 2023-06-29 17:27:19
+ * @LastEditTime: 2023-07-12 14:40:32
  * @Description: 
  */
 import * as Fields from '../fields';
@@ -64,7 +64,7 @@ const getSection = async (formFields, permissionFields, fieldSchemaArray, sectio
 
   // fieldSet 已支持显隐控制
   const sectionFieldsVisibleOn = lodash.map(lodash.compact(lodash.map(fieldSetBody, 'visibleOn')), (visibleOn) => {
-    return visibleOn;
+    return "("+visibleOn+")";
   });
 
   let section = {
