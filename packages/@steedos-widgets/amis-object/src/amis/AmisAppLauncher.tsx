@@ -233,8 +233,6 @@ export const AmisAppLauncher = async (props) => {
                   "items": {
                     "type": "button",
                     "level": "link",
-                    "actionType": "link",
-                    "link": "${path}",
                     "body": [{
                       "type": "tpl",
                       "wrapperComponent": "span",
@@ -244,6 +242,21 @@ export const AmisAppLauncher = async (props) => {
                     "onEvent": {
                       "click": {
                         "actions": [
+                          {
+                            "actionType": "link",
+                            "args":{
+                              "link": "${path}"
+                            }
+                          },
+                          {
+                            "actionType": "broadcast",
+                            "args": {
+                              "eventName": "@tabId.changed"
+                            },
+                            "data":{
+                              "tabId": "${event.data.id}"
+                            }
+                          },
                           {
                             "actionType": "closeDialog"
                           }
