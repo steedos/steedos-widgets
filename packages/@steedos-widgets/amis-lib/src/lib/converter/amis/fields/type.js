@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-28 14:52:55
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-31 13:25:53
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-07-14 17:18:42
  * @Description: 
  */
 import * as _ from 'lodash';
@@ -35,6 +35,8 @@ export function getAmisStaticFieldType(type, readonly, options){
             return `static-images`;
         }
         return `static-${type}`;
+    }else if(type === 'url'){
+        return "input-url"
     }else{
         return 'static';
     }
