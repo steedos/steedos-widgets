@@ -476,6 +476,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         modalTitle:  i18next.t('frontend_form_please_select') + " " + refObjectConfig.label,
         labelField: referenceTo.labelField.name,
         valueField: referenceTo.valueField.name,
+        disabledOn:  `${readonly} || ( (this._master && (this._master.relatedKey ==='${field.name}')) || (this.relatedKey ==='${field.name}') )`,
         modalMode: 'dialog', //TODO 设置 dialog 或者 drawer，用来配置弹出方式
         source: source,
         size: "lg",
@@ -660,6 +661,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         joinValues: false,
         extractValue: true,
         clearable: true,
+        disabledOn:  `${readonly} || ( (this._master && (this._master.relatedKey ==='${field.name}')) || (this.relatedKey ==='${field.name}') )`,
         // labelField: labelField,
         // valueField: valueField,
         source: apiInfo,
@@ -844,6 +846,7 @@ export async function getIdsPickerSchema(field, readonly, ctx){
         valueField: referenceTo.valueField.name,
         modalMode: 'dialog', 
         source: source,
+        disabledOn:  `${readonly} || ( (this._master && (this._master.relatedKey ==='${field.name}')) || (this.relatedKey ==='${field.name}') )`,
         size: "lg",
         pickerSchema: pickerSchema,
         joinValues: false,
