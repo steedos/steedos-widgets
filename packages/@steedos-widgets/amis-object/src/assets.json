@@ -17,6 +17,14 @@
         "library": "BuilderFullCalendar"
     },
     {
+        "package": "@steedos-widgets/reactflow",
+        "urls": [
+            "https://unpkg.com/@steedos-widgets/reactflow@{{version}}/dist/reactflow.umd.js",
+            "https://unpkg.com/@steedos-widgets/reactflow@{{version}}/dist/reactflow.umd.css"
+        ],
+        "library": "BuilderReactFlow"
+    },
+    {
         "package": "steedos-lib",
         "urls": [
             "https://unpkg.com/@steedos-widgets/steedos-lib@{{version}}/dist/index.umd.js"
@@ -42,6 +50,17 @@
         "urls": {
             "default": "https://unpkg.com/@steedos-widgets/fullcalendar@{{version}}/dist/meta.js",
             "design": "https://unpkg.com/@steedos-widgets/fullcalendar@{{version}}/dist/meta.js"
+        }
+    },
+    {
+        "exportName": "BuilderReactFlowMeta",
+        "npm": {
+            "package": "@steedos-widgets/reactflow"
+        },
+        "url": "https://unpkg.com/@steedos-widgets/reactflow@{{version}}/dist/meta.js",
+        "urls": {
+            "default": "https://unpkg.com/@steedos-widgets/reactflow@{{version}}/dist/meta.js",
+            "design": "https://unpkg.com/@steedos-widgets/reactflow@{{version}}/dist/meta.js"
         }
     },
     {
