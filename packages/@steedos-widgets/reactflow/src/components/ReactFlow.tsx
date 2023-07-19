@@ -7,7 +7,7 @@ import { createObject } from '@steedos-widgets/amis-lib';
 
 export const AmisReactFlow = ({ 
   dispatchEvent: amisDispatchEvent, 
-  wrapperClassName,
+  wrapperClassName = "w-full h-full",
   data: amisData,
   env,
   store,
