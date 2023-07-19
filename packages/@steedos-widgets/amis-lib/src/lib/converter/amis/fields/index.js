@@ -444,7 +444,8 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             break;
         case 'url':
             convertData = {
-                type: getAmisStaticFieldType('url', readonly, field)
+                type: getAmisStaticFieldType('url', readonly, field),
+                static: readonly ? true : false
             }
             if(readonly && field.show_as_qr){
                 convertData = {

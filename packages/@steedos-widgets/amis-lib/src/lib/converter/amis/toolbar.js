@@ -27,7 +27,7 @@ const getDisplayAsButton = function(objectName, showDisplayAs){
     "type": "dropdown-button",
     "icon": "fa fa-table-columns",
     "tooltip": `${i18next.t('frontend_display_as')} ${displayAsLabel}`,
-    "btnClassName": "antd-Button--iconOnly bg-white p-2 rounded border-gray-300 text-gray-500",
+    "btnClassName": "antd-Button--iconOnly bg-white !p-2 rounded border-gray-300 text-gray-500",
     "align": "right",
     "visibleOn": "${window:innerWidth > 768 && !!!isLookup}",
     "buttons": [ 

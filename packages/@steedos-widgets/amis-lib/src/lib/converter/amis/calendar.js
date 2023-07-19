@@ -315,17 +315,18 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
               "objectApiName": "\${objectName}",
               "mode": "edit",
               "defaultData": doc,
-              "onEvent": {
-                "submitSucc": {
-                  "weight": 0,
-                  "actions": [
-                    {
-                      "actionType": "custom",
-                      "script": "event.data.view?.calendar.refetchEvents();"
-                    }
-                  ]
-                }
-              }
+              //改回为通用的提交事件
+              // "onEvent": {
+              //   "submitSucc": {
+              //     "weight": 0,
+              //     "actions": [
+              //       {
+              //         "actionType": "custom",
+              //         "script": "event.data.view?.calendar.refetchEvents();"
+              //       }
+              //     ]
+              //   }
+              // }
             }
           ],
           "closeOnEsc": false,
@@ -481,6 +482,20 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
           "script": "console.log('eventsSet'); console.log(event);"
         }
       ]
+    },
+    "getRef": {
+      "weight": 0,
+      "actions": [
+        {
+          "componentId": `service_${options.id}`,
+          "args": {
+            "value":{
+              "calendarRef": "${event.data.calendarRef}"
+            }
+          },
+          "actionType": "setValue",
+        }
+      ]
     }
   };
 
@@ -516,6 +531,7 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
   const amisSchema = {
     "type": "steedos-fullcalendar",
     "label": "",
+    "id": options.id,
     "name": "fullcalendar",
     "placeholder":"${additionalFilters}",//用于触发reload
     "editable": permissions.allowEdit,

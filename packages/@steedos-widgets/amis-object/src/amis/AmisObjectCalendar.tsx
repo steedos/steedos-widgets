@@ -14,14 +14,15 @@ export const AmisObjectCalendar = async (props) => {
   let objectApiName = props.objectApiName || "events";
 
   const amisSchemaData = Object.assign({}, data, defaultData);
+  const id = props.id || `steedos_object_calendar_${objectApiName}`;
   let schema: any = (await getCalendarSchema(amisSchemaData.appId, objectApiName, {
     title,
     currentView,
     startDateExpr,
     endDateExpr,
     allDayExpr,
-    textExpr
-  }, { top, sort, filter: filters, filtersFunction, onEvent, config }));
+    textExpr,
+  }, { top, sort, filter: filters, filtersFunction, onEvent, config, id }));
   const uiSchema = schema.uiSchema;
   const amisSchema = schema.amisSchema;
   // const serviceData = Object.assign({}, amisSchema.data, amisSchemaData, { objectName: objectApiName, uiSchema });
@@ -29,7 +30,18 @@ export const AmisObjectCalendar = async (props) => {
   return {
     "type": "service",
     "body": amisSchema,
+    "id": `service_${id}`,
     "className": `${className}`,
-    "data": serviceData
+    "data": serviceData,
+    "onEvent":{
+      [`@data.changed.${objectApiName}`]: {
+        "actions": [
+            {
+              "actionType": "custom",
+              "script": "context.props.data.calendarRef.current.getApi().refetchEvents()"
+            }
+        ]
+    }
+    }
   }
 }

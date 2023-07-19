@@ -43,17 +43,27 @@ export const AmisAppMenu = async (props) => {
                       const showIcon = ${showIcon};
                       const selectedId = '${selectedId}';
                       const tab_groups = payload.tab_groups;
+                      const locationPathname = window.location.pathname;
+                      var customTabId = "";
+                      var objectTabId = "";
                       if(stacked){
                           _.each(_.groupBy(payload.children, 'group'), (tabs, groupName) => {
                               if (groupName === 'undefined' || groupName === '') {
                                   _.each(tabs, (tab) => {
+                                      if(locationPathname == tab.path){
+                                        customTabId = tab.id;
+                                      }else if(locationPathname.startsWith(tab.path + "/")){
+                                        objectTabId = tab.id;
+                                      }
                                       data.nav.push({
                                           "label": showIcon ? {
                                           type: 'tpl',
                                           tpl: \`<span class='fill-slate-500  text-slate-700 block -ml-px no-underline group flex items-center text-[15px] font-medium rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
                                           } : tab.name,
                                           "to": tab.path,
-                                          "target":tab.target
+                                          "target":tab.target,
+                                          "id": tab.id,
+                                          "activeOn": "\\\\\${tabId == '"+ tab.id +"'}"
                                           // active: selectedId === tab.id,
                                       })
                                   })
@@ -62,13 +72,20 @@ export const AmisAppMenu = async (props) => {
                                       "label": groupName,
                                       "unfolded": _.find(tab_groups, {"group_name": groupName})?.default_open != false,
                                       "children": _.map(tabs, (tab) => {
+                                          if(locationPathname == tab.path){
+                                            customTabId = tab.id;
+                                          }else if(locationPathname.startsWith(tab.path + "/")){
+                                            objectTabId = tab.id;
+                                          }
                                           return {
                                           "label": showIcon ? {
                                               type: 'tpl',
                                               tpl: \`<span class='fill-slate-500  text-slate-700 block -ml-px no-underline group flex items-center text-[15px] font-medium rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
                                           }  : tab.name,
                                           "to": tab.path,
-                                          "target":tab.target
+                                          "target":tab.target,
+                                          "id": tab.id,
+                                          "activeOn": "\\\\\${tabId == '"+ tab.id +"'}"
                                           // active: selectedId === tab.id,
                                           }
                                       })
@@ -77,24 +94,72 @@ export const AmisAppMenu = async (props) => {
                               });
                       }else{
                           _.each(payload.children, (tab)=>{
+                              if(locationPathname == tab.path){
+                                customTabId = tab.id;
+                              }else if(locationPathname.startsWith(tab.path + "/")){
+                                objectTabId = tab.id;
+                              }
                               data.nav.push({
                               "label": showIcon ? {
                                   type: 'tpl',
                                   tpl: \`<span class='fill-slate-500  text-slate-700 block -ml-px no-underline group flex items-center text-[15px] font-medium rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
                               } : tab.name,
                               "to": tab.path,
-                              "target":tab.target
+                              "target":tab.target,
+                              "id": tab.id,
+                              "activeOn": "\\\\\${tabId == '"+ tab.id +"'}"
                               // active: selectedId === tab.id,
                               });
                           })
                       }
+
                       payload.data = {
-                        "type": "nav",
-                        className: "${className}",
-                        "stacked": ${stacked},
-                        "overflow": ${JSON.stringify(overflow)},
-                        "indentSize": ${indentSize},
-                        "links": data.nav,
+                        "type":"service",
+                        "data":{
+                            "tabId": customTabId || objectTabId,
+                            "items": data.nav
+                        },
+                        "id": "appMenuService",
+                        "body":{
+                            "type": "nav",
+                            className: "${className}",
+                            "stacked": ${stacked},
+                            "overflow": ${JSON.stringify(overflow)},
+                            "indentSize": ${indentSize},
+                            "source": "\${items}",
+                            "onEvent": {
+                                "click": {
+                                    "actions": [
+                                        {
+                                            "actionType": "setValue",
+                                            "componentId": "appMenuService",
+                                            "args": {
+                                                "value": {
+                                                    "tabId": "\${event.data.item.id}",
+                                                    "items": data.nav
+                                                }
+                                            },
+                                            "expression":"\${event.data.item.id}"
+                                        }
+                                    ]
+                                },
+                                "@tabId.changed":{
+                                    "actions":[
+                                        {
+                                            "actionType": "setValue",
+                                            "componentId": "appMenuService",
+                                            "args": {
+                                                "value": {
+                                                    "tabId": "\${event.data.tabId}",
+                                                    "items": data.nav
+                                                }
+                                            },
+                                            "expression":"\${event.data.tabId}"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
                       };
                   } catch (error) {
                       console.log(\`error\`, error)
@@ -105,7 +170,7 @@ export const AmisAppMenu = async (props) => {
             "headers": {
               "Authorization": "Bearer ${context.tenantId},${context.authToken}"
             }
-          }
+        }
     }
     console.log(`schema=====>`, schema)
     return schema;
