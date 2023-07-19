@@ -621,6 +621,7 @@ async function getTableOperation(ctx){
                         formFactor: "${formFactor}",
                         context: `\${context}`
                     },
+                    requestAdaptor: "api.data={}; return api;",
                     headers: {
                         Authorization: "Bearer ${context.tenantId},${context.authToken}"
                     },
