@@ -476,6 +476,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         modalTitle:  i18next.t('frontend_form_please_select') + " " + refObjectConfig.label,
         labelField: referenceTo.labelField.name,
         valueField: referenceTo.valueField.name,
+        // disabledOn: this._master目的是相关表新建时禁止编辑关联字段； this.relatedKey目的是相关表编辑时禁止编辑关联字段。
         disabledOn:  `${readonly} || ( (this._master && (this._master.relatedKey ==='${field.name}')) || (this.relatedKey ==='${field.name}') )`,
         modalMode: 'dialog', //TODO 设置 dialog 或者 drawer，用来配置弹出方式
         source: source,
@@ -661,6 +662,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         joinValues: false,
         extractValue: true,
         clearable: true,
+        // disabledOn: this._master目的是相关表新建时禁止编辑关联字段； this.relatedKey目的是相关表编辑时禁止编辑关联字段。
         disabledOn:  `${readonly} || ( (this._master && (this._master.relatedKey ==='${field.name}')) || (this.relatedKey ==='${field.name}') )`,
         // labelField: labelField,
         // valueField: valueField,
@@ -846,6 +848,7 @@ export async function getIdsPickerSchema(field, readonly, ctx){
         valueField: referenceTo.valueField.name,
         modalMode: 'dialog', 
         source: source,
+        // disabledOn: this._master目的是相关表新建时禁止编辑关联字段； this.relatedKey目的是相关表编辑时禁止编辑关联字段。
         disabledOn:  `${readonly} || ( (this._master && (this._master.relatedKey ==='${field.name}')) || (this.relatedKey ==='${field.name}') )`,
         size: "lg",
         pickerSchema: pickerSchema,
