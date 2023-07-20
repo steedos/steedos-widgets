@@ -15,8 +15,7 @@ export const AmisGlobalFooter = async (props) => {
         appId = data.context.appId || 'admin';
     }
     const isMobile = window.innerWidth <= 768;
-    const className = 'fixed bottom-0 z-20 flex justify-evenly w-full h-16 bg-gray-100 steedos-global-footer';
-    const className1 = 'fixed bottom-0 z-20 flex justify-center w-full h-16 bg-gray-100 steedos-global-footer';
+    const className = 'steedos-global-footer';
 
     let schema = {}
     if (links) {
@@ -26,7 +25,7 @@ export const AmisGlobalFooter = async (props) => {
                 body: [
                     {
                         "type": "nav",
-                        "className": links.length == 1 ? `${className1}` : `${className}`,
+                        "className": className,
                         "stacked": stacked,
                         "overflow": overflow,
                         "indentSize": indentSize,
@@ -100,7 +99,7 @@ export const AmisGlobalFooter = async (props) => {
                                 "id": "footerService",
                                 "body": {
                                     "type": "nav",
-                                    className: payload.children.length ==1 ? '${className1}' : '${className}',
+                                    className: "${className}",
                                     "stacked": ${stacked},
                                     "overflow": {
                                         "enable": true,
@@ -108,7 +107,7 @@ export const AmisGlobalFooter = async (props) => {
                                         "overflowPopoverClassName": "steedos-global-footer-popup",
                                         "overflowLabel":{
                                             "type": 'tpl',
-                                            "tpl": \`<span class='fill-slate-500 truncate text-slate-700 block -ml-px no-underline group flex items-center text-[12px] font-medium rounded-md flex-col leading-3 nav-label'><svg class=" flex-shrink-0 h-10 w-10" style="padding:7px"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#rows"></use></svg><span class="truncate" style="max-width: 20vw">${i18next.t('frontend_menu')}</span></span>\`,
+                                            "tpl": \`<span class=' truncate text-slate-700 block -ml-px no-underline group flex items-center text-[12px] font-medium rounded-md flex-col leading-3 nav-label'><svg class="!fill-slate-500 flex-shrink-0 !h-10 !w-10" style="padding:7px"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#rows"></use></svg><span class="truncate" style="max-width: 20vw">${i18next.t('frontend_menu')}</span></span>\`,
                                             "className":'h-full flex items-center'
                                         },
                                         "overflowIndicator":""
