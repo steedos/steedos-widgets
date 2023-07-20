@@ -1,0 +1,3 @@
+.ae-Editor .ae-Preview-body .ae-Preview-inner .steedos-react-flow{
+    height: calc(100vh - 165px)!important;
+}

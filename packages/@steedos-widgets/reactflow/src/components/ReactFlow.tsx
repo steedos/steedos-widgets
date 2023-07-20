@@ -99,7 +99,7 @@ export const AmisReactFlow = ({
   // forceEventDuration属性设置为true修正了把全天事件拖动变更到非全天事件时end为空造成的事件在画布上看不到的问题。
 
   return (
-    <div className={wrapperClassName}>
+    <div className={"steedos-react-flow " + wrapperClassName}>
       <ReactFlow {...configJSON}>
         <Background />
         <Controls />
