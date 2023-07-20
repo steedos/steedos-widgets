@@ -634,14 +634,6 @@ async function getTableOperation(ctx){
                 onOpenApi: {
                     url: `\${context.rootUrl}/service/api/@\${objectName}/recordPermissions/\${_id}`,
                     method: "get",
-                    data: {
-                        $: "$$",
-                        objectName: "${objectName}",
-                        listViewId: "${listViewId}",
-                        appId: "${appId}",
-                        formFactor: "${formFactor}",
-                        context: `\${context}`
-                    },
                     requestAdaptor: "api.data={}; return api;",
                     headers: {
                         Authorization: "Bearer ${context.tenantId},${context.authToken}"
