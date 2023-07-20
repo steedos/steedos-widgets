@@ -1,3 +1,4 @@
 .ae-Editor .ae-Preview-body .ae-Preview-inner .steedos-react-flow{
+    /*设计器中height 100%无效，只能强制加上高度*/
     height: calc(100vh - 165px)!important;
 }
