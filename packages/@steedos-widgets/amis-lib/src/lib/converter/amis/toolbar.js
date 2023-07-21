@@ -26,7 +26,8 @@ const getDisplayAsButton = function(objectName, showDisplayAs){
   return {
     "type": "dropdown-button",
     "icon": "fa fa-table-columns",
-    "tooltip": `${i18next.t('frontend_display_as')} ${displayAsLabel}`,
+    //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330
+    // "tooltip": `${i18next.t('frontend_display_as')} ${displayAsLabel}`,
     "btnClassName": "antd-Button--iconOnly bg-white !p-2 rounded border-gray-300 text-gray-500",
     "align": "right",
     "visibleOn": "${window:innerWidth > 768 && !!!isLookup}",
@@ -108,7 +109,8 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
         // "type": "reload",//不可以直接使用reload，因为它不会设置页码到第一页
         "type": "button",
         "align": "right",
-        "tooltip": i18next.t('frontend_button_reload_tooltip'),
+        //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，为保持统一，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330
+        // "tooltip": i18next.t('frontend_button_reload_tooltip'),
         "tooltipPlacement": "top",
         "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
         "label": "",
@@ -130,7 +132,8 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
         "icon": "fa fa-search",
         "type": "button",
         "tooltipPlacement": "top",
-        "tooltip": i18next.t('frontend_button_search_tooltip'),
+        //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，为保持统一，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330
+        // "tooltip": i18next.t('frontend_button_search_tooltip'),
         "badge": {
           "offset": [
             -5,
@@ -175,7 +178,9 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
       {
         "type": "reload",
         "align": "right",
-        "tooltip": i18next.t('frontend_button_reload_tooltip'),
+        //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，为保持统一，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330
+        // "tooltip": i18next.t('frontend_button_reload_tooltip'),
+        "tooltip":"",
         "tooltipPlacement": "top",
         "className": "bg-white p-2 rounded border-gray-300 text-gray-500"
       },
@@ -185,8 +190,9 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
       filterVisible ? {
         "label": i18next.t('frontend_button_search_tooltip'),
         "icon": "fa fa-search",
-        "tooltip": i18next.t('frontend_button_search_tooltip'),
-        "tooltipPlacement": "top",
+        //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，为保持统一，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330
+        // "tooltip": i18next.t('frontend_button_search_tooltip'),
+        // "tooltipPlacement": "top",
         "type": "button",
         "badge": {
           "offset": [

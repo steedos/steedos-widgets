@@ -8,7 +8,8 @@ export const getExportExcelToolbarButtonSchema = ()=>{
         "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
         "tooltipPlacement": "top",
         "visibleOn": "${!isLookup && global.user.is_space_admin}",
-        "tooltip": i18next.t('frontend_export_excel'),
+        //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，为保持统一，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330
+        // "tooltip": i18next.t('frontend_export_excel'),
         "onEvent": {
           "click": { 
             "weight": 0,
