@@ -1,9 +1,30 @@
 import React from 'react';
-import ReactFlow, { Controls, Background } from 'reactflow';
+import ReactFlow, { Controls, Background, ReactFlowProvider, useReactFlow } from 'reactflow';
 import 'reactflow/dist/style.css';
 import './ReactFlow.css';
 
 import { createObject } from '@steedos-widgets/amis-lib';
+
+const Flow = ({
+  dispatchEvent, 
+  config,
+  ...props
+}) => {
+  console.log("Flow render start with config:", config);
+  // 这里只要useReactFlow，就会造成Flow组件rend两次，即上面的日志会执行两次
+  // 见：https://reactflow.dev/docs/guides/uncontrolled-flow/#updating-nodes-and-edges
+  const reactFlowInstance = useReactFlow();
+  setTimeout(() => {
+    dispatchEvent('getInstance', { reactFlowInstance })
+  }, 100);
+
+  return (
+    <ReactFlow {...config}>
+      <Background />
+      <Controls />
+    </ReactFlow>
+  )
+};
 
 export const AmisReactFlow = ({ 
   dispatchEvent: amisDispatchEvent, 
@@ -22,6 +43,7 @@ export const AmisReactFlow = ({
   config,
   ...props }
 ) => {
+  console.log("AmisReactFlow render start with config:", config);
   let configJSON = {}
   if (typeof config === 'string') {
     try {
@@ -96,14 +118,11 @@ export const AmisReactFlow = ({
     dispatchEvent('eventRemove', event)
   };
 
-  // forceEventDuration属性设置为true修正了把全天事件拖动变更到非全天事件时end为空造成的事件在画布上看不到的问题。
-
   return (
     <div className={"steedos-react-flow " + wrapperClassName}>
-      <ReactFlow {...configJSON}>
-        <Background />
-        <Controls />
-      </ReactFlow>
+      <ReactFlowProvider>
+        <Flow dispatchEvent={dispatchEvent} config={configJSON}></Flow>
+      </ReactFlowProvider>
     </div>
   )
 }

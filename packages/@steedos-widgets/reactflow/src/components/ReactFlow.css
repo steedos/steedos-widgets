@@ -1,4 +1,11 @@
-.ae-Editor .ae-Preview-body .ae-Preview-inner .steedos-react-flow{
-    /*设计器中height 100%无效，只能强制加上高度*/
-    height: calc(100vh - 165px)!important;
+.antd-Form-item .steedos-react-flow.h-full{
+    /*
+        组件作为formitem而不是renderer模式时，外面会包一层form-item div，造成react flow组件高度100%无效
+        把h-full设置为以下值可以有满屏效果
+    */
+    height: calc(100vh - 115px);
+}
+#__next .ae-Editor .ae-Preview-body .ae-Preview-inner .steedos-react-flow.h-full{
+    /*设计器中height 100%无效，把h-full设置为以下值可以有满屏效果*/
+    height: calc(100vh - 165px);
 }

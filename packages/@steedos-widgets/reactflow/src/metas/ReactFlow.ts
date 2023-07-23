@@ -41,7 +41,7 @@ export default {
   amis: {
     render: {
       type: config.amis.name,
-      usage: "renderer",
+      usage: "formitem",//使用renderer会无法监听到onEvent中配置的事件
       weight: 1,
       framework: "react"
     },
