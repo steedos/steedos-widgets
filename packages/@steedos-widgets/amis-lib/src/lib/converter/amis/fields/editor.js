@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-01-13 17:27:54
  * @LastEditors: liaodaxue
- * @LastEditTime: 2023-06-30 10:29:52
+ * @LastEditTime: 2023-07-24 15:23:12
  * @Description: 
  */
 
@@ -24,21 +24,39 @@ export const getMarkdownFieldSchema = (field, readonly, ctx)=>{
           }
     }else{
         return {
-            "type": "group",
+            "type": "control",
+            "label": field.label,
             "body": [
               {
-                "type": "editor",
-                "name": field.name,
-                "language": "markdown",
-              },
-              {
-                "type": "markdown",
-                "name": field.name,
-                "options": {
-                    "linkify": true,
-                    "html": true,
-                    "breaks": true
-                }
+                "type": "tabs",
+                "tabsMode": "strong",
+                "className": "steedos-markdown",
+                "tabs": [
+                  {
+                    "title": "Write",
+                    "tab": [
+                      {
+                        "type": "editor",
+                        "name": field.name,
+                        "language": "markdown",
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Preview",
+                    "tab": [
+                      {
+                        "type": "markdown",
+                        "name": field.name,
+                        "options": {
+                          "linkify": true,
+                          "html": true,
+                          "breaks": true
+                        }
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
