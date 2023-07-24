@@ -1,5 +1,5 @@
-import React from 'react';
-import ReactFlow, { Controls, Background, ReactFlowProvider, useReactFlow } from 'reactflow';
+import React, { useCallback, useRef } from 'react';
+import ReactFlow, { Controls, Background, ReactFlowProvider, useReactFlow, useNodesState, useEdgesState, updateEdge, addEdge } from 'reactflow';
 import 'reactflow/dist/style.css';
 import './ReactFlow.css';
 
@@ -14,13 +14,35 @@ const Flow = ({
   console.log("Flow render start with config:", config);
   // 这里只要useReactFlow，就会造成Flow组件rend两次，即上面的日志会执行两次
   // 见：https://reactflow.dev/docs/guides/uncontrolled-flow/#updating-nodes-and-edges
+  const edgeUpdateSuccessful = useRef(true);
   const reactFlowInstance = useReactFlow();
+  const [nodes, setNodes, onNodesChange] = useNodesState(config.nodes || config.defaultNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(config.edges || config.defaultEdges);
+  const onConnect = useCallback((params) => setEdges((els) => addEdge(params, els)), []);
+
+  const onEdgeUpdateStart = useCallback(() => {
+    // edgeUpdateSuccessful.current = false;
+  }, []);
+
+  const onEdgeUpdate = useCallback((oldEdge, newConnection) => {
+    // 这里实现移动连线到其他节点上
+    setEdges((els) => updateEdge(oldEdge, newConnection, els));
+  }, []);
+
+  const onEdgeUpdateEnd = useCallback((_, edge) => {
+    // edgeUpdateSuccessful.current = true;
+  }, []);
+
   setTimeout(() => {
     dispatchEvent('getInstance', { reactFlowInstance })
   }, 100);
 
   return (
-    <ReactFlow {...config}>
+    <ReactFlow { ...config } 
+      nodes={nodes} edges={edges}
+      onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} onConnect={onConnect}
+      onEdgeUpdateStart={onEdgeUpdateStart} onEdgeUpdate={onEdgeUpdate} onEdgeUpdateEnd={onEdgeUpdateEnd}
+    >
       {backgroundConfig === false ? null : <Background {...backgroundConfig}/>}
       <Controls />
     </ReactFlow>
@@ -135,7 +157,6 @@ export const AmisReactFlow = ({
     <div className={"steedos-react-flow " + wrapperClassName}>
       <ReactFlowProvider>
         <Flow dispatchEvent={dispatchEvent} config={configJSON} backgroundConfig={backgroundConfigJSON}></Flow>
-        
       </ReactFlowProvider>
     </div>
   )
