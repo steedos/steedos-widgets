@@ -8,6 +8,7 @@ import { createObject } from '@steedos-widgets/amis-lib';
 const Flow = ({
   dispatchEvent, 
   config,
+  backgroundConfig,
   ...props
 }) => {
   console.log("Flow render start with config:", config);
@@ -20,7 +21,7 @@ const Flow = ({
 
   return (
     <ReactFlow {...config}>
-      <Background />
+      {backgroundConfig === false ? null : <Background {...backgroundConfig}/>}
       <Controls />
     </ReactFlow>
   )
@@ -41,9 +42,10 @@ export const AmisReactFlow = ({
   setValue,
   value,
   config,
+  backgroundConfig,
   ...props }
 ) => {
-  console.log("AmisReactFlow render start with config:", config);
+  console.log("AmisReactFlow render start with config:", config, backgroundConfig);
   let configJSON = {}
   if (typeof config === 'string') {
     try {
@@ -52,6 +54,17 @@ export const AmisReactFlow = ({
   }
   if (typeof config === 'object') {
     configJSON = config
+  }
+
+  let backgroundConfigJSON = {}
+  if (typeof backgroundConfig === 'string') {
+    try {
+      backgroundConfigJSON = JSON.parse(backgroundConfig);
+    } catch(e) {console.log(e)}
+  }else if (typeof backgroundConfig === 'object') {
+    backgroundConfigJSON = backgroundConfig;
+  }else if(backgroundConfig === false){
+    backgroundConfigJSON = false;
   }
 
 
@@ -121,7 +134,8 @@ export const AmisReactFlow = ({
   return (
     <div className={"steedos-react-flow " + wrapperClassName}>
       <ReactFlowProvider>
-        <Flow dispatchEvent={dispatchEvent} config={configJSON}></Flow>
+        <Flow dispatchEvent={dispatchEvent} config={configJSON} backgroundConfig={backgroundConfigJSON}></Flow>
+        
       </ReactFlowProvider>
     </div>
   )

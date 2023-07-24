@@ -80,6 +80,11 @@ export default {
               "type": "step"
             }
           ]
+        }),
+        backgroundConfig: JSON.stringify({
+          variant: 'dots',
+          gap: 25,
+          size: 1
         })
       },
       previewSchema: {
@@ -108,6 +113,19 @@ export default {
           description: "如果后端没有直接返回 ReactFlow 配置，可以自己写一段函数来包装。\
           签名：(config, ReactFlow, data) => config \
           "
+        },
+        {
+          type: "editor",
+          "language": "json",
+          name: "backgroundConfig",
+          label: "Background 配置",   
+          pipeOut: (value) => {
+            try {
+              return value ? JSON.parse(value) : null;
+            } catch (e) {
+            }
+            return value;
+          }
         },
         {
           type: "text",
