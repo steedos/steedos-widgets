@@ -23,16 +23,18 @@ export const FullCalendar = ({
   data: amisData,
   ...props }
 ) => {
+  if(!props.data){
+    props.data = {}
+  }
   const calendarRef = useRef();
   const initialLocaleCode = 'zh-cn';
-
   const dispatchEvent = async (action: string, value?: object) => {
-
     if (!amisDispatchEvent) return;
-
     const rendererEvent = await amisDispatchEvent(
       action,
-      value ? createObject(amisData, value) : amisData
+      value ? createObject(amisData, value) : amisData,
+      //为了解决3.2dispatchevent不生效的问题, https://github.com/baidu/amis/issues/7488
+      calendarRef.current
     );
 
     return rendererEvent?.prevented ?? false;
