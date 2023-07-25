@@ -1,5 +1,5 @@
 import React, { useCallback, useRef } from 'react';
-import ReactFlow, { Controls, Background, ReactFlowProvider, useReactFlow, useNodesState, useEdgesState, updateEdge, addEdge } from 'reactflow';
+import ReactFlow, { Controls, Background, ReactFlowProvider, useReactFlow, useNodesState, useEdgesState, updateEdge, addEdge, useOnSelectionChange } from 'reactflow';
 import 'reactflow/dist/style.css';
 import './ReactFlow.css';
 
@@ -22,16 +22,25 @@ const Flow = ({
 
   const onEdgeUpdateStart = useCallback(() => {
     // edgeUpdateSuccessful.current = false;
+    dispatchEvent('edgeUpdateStart', { edgeUpdateSuccessful });
   }, []);
 
   const onEdgeUpdate = useCallback((oldEdge, newConnection) => {
     // 这里实现移动连线到其他节点上
     setEdges((els) => updateEdge(oldEdge, newConnection, els));
+    dispatchEvent('edgeUpdate', {  oldEdge, newConnection, setEdges, updateEdge, edgeUpdateSuccessful });
   }, []);
 
   const onEdgeUpdateEnd = useCallback((_, edge) => {
     // edgeUpdateSuccessful.current = true;
+      dispatchEvent('edgeUpdateEnd', { _, edge, edgeUpdateSuccessful });
   }, []);
+  
+  useOnSelectionChange({
+    onChange: ({ nodes, edges }) => {
+      dispatchEvent('selectionChange', { nodes, edges });
+    },
+  });
 
   setTimeout(() => {
     dispatchEvent('getInstance', { reactFlowInstance })
