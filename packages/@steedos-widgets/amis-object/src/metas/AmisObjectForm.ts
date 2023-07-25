@@ -380,7 +380,7 @@ export default {
                           type: "checkbox",
                           mode: "horizontal",
                           horizontal: {
-                            left: 8,
+                            left: 10,
                             right: 4,
                             justify: true
                           },
