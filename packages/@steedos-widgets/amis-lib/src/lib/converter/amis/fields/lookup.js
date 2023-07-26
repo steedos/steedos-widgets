@@ -51,7 +51,7 @@ export function getLookupSapceUserTreeSchema(){
     const tree = [{
         "type": "input-tree",
         "className": "",
-        "inputClassName": "pl-0",
+        "inputClassName": "p-0",
         "id": "u:7fd77b7915b0",
         "source": {
           "method": "post",
@@ -112,7 +112,7 @@ export function getLookupSapceUserTreeSchema(){
           "left": "-200px",
           "width": "190px",
           "bottom": 0,
-          "top": "-14px",
+          "top": "2px",
           "overflow": "auto",
           "min-height":"300px"
         },
@@ -379,7 +379,9 @@ export async function lookupToAmisPicker(field, readonly, ctx){
                 "margin-left":"200px",
                 "min-height": "300px"
              }
+             pickerSchema.className = pickerSchema.className || "" + " steedos-select-user";
         }
+
         pickerSchema.headerToolbar = getObjectHeaderToolbar(refObjectConfig, ctx.formFactor, { headerToolbarItems });
         const isAllowCreate = refObjectConfig.permissions.allowCreate;
         if (isAllowCreate) {
