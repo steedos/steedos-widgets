@@ -72,26 +72,45 @@ async function getQuickEditSchema(field, options){
                     let labelField = quickEditSchema.body[0].labelField || "label";
                     let valueField = quickEditSchema.body[0].valueField || "value";
                     if (field.multiple) {
+                        /*
+                            多选分两种情况。
+                            第一种是减少选项时（判断新的数据是否比老的数据短），按照index删除_display中对应选项，保证回显没问题；
+                            第二种是增加选项时，按照value的值，找到对应选项，并按照_display的规则为其赋值
+                        */
                         TempDisplayField = `
+                            const preData = event.data.__super.${field.name};
+                            if(preData && event.data.${field.name}.length < preData.length){
+                                let deletedIndex;
+                                preData.forEach(function(item,index){
+                                    if(_.indexOf(event.data.${field.name}, item) == -1) _display["${field.name}"].splice(index, 1);
+                                })
+                            }else{
                                 _display["${field.name}"] = [];
-                                event.data.selectedItems.forEach(function(item,index){
+                                event.data.value.forEach(function(val,index){
+                                    const item = _.find(event.data.selectedItems, { ${valueField}: val });
                                     _display["${field.name}"].push(
                                         {
                                             "label": item.${labelField},
-                                            "value": item.${valueField},
+                                            "value": item[event.data.uiSchema.idFieldName],
                                             "objectName": "${field.reference_to}"
                                         }
                                     )
                                 })
-                            `
+                            }
+                            
+                        `
                     } else {
                         TempDisplayField = `
+                            if(event.data.value){
                                 _display["${field.name}"] = {
                                     "label": event.data.selectedItems.${labelField},
-                                    "value": event.data.selectedItems.${valueField},
+                                    "value": event.data.selectedItems[event.data.uiSchema.idFieldName],
                                     "objectName": "${field.reference_to}"
                                 }
-                            `
+                            }else{
+                                _display["${field.name}"] = {}
+                            }
+                        `
                     }
                     quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(TempDisplayField)
                     break;
