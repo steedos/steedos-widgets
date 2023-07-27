@@ -244,6 +244,10 @@ async function getTableColumns(fields, options){
     for (const field of fields) {
         //增加quickEdit属性，实现快速编辑
         const quickEditSchema = allowEdit ? await getQuickEditSchema(field, options) : allowEdit;
+        let className = "";
+        if(field.wrap != true){
+            className += " whitespace-nowrap"
+        }
         if((field.is_name || field.name === options.labelFieldName) && options.objectName === 'cms_files'){
             const previewFileScript = `
                 var data = event.data;
@@ -254,7 +258,7 @@ async function getTableColumns(fields, options){
             columns.push({
                 "type": "button",
                 "label": `<%=data.versions ? data.name : "${field.label}"%>`,
-                "className": "whitespace-nowrap",
+                className,
                 "level": "link",
                 "quickEdit": quickEditSchema,
                 "onEvent": {
@@ -291,7 +295,7 @@ async function getTableColumns(fields, options){
                 width: getFieldWidth(field.width),
                 toggled: field.toggled,
                 static: true,
-                className:"whitespace-nowrap",
+                className,
                 quickEdit: quickEditSchema
             }, field.amis, {name: field.name}))
         }else if(field.type === 'avatar' || field.type === 'image' || field.type === 'file'){
@@ -303,16 +307,12 @@ async function getTableColumns(fields, options){
                 toggled: field.toggled,
                 quickEdit: quickEditSchema,
                 static: true,
-                className:"whitespace-nowrap",
+                className,
                 ...getAmisFileReadonlySchema(field)
             }, field.amis, {name: field.name}))
         }
         else if(field.type === 'select'){
             const map = Tpl.getSelectMap(field.options);
-            let className = "";
-            if(field.wrap === false){
-                className += " whitespace-nowrap"
-            }
             columns.push(Object.assign({}, {
                 type: "mapping",
                 name: field.name,
@@ -340,12 +340,8 @@ async function getTableColumns(fields, options){
                     type = 'input-url'
                 }
             }
-            let className = "";
             if(field.type === 'textarea'){
-                className = 'min-w-56';
-            }
-            if(field.wrap === false){
-                className += " whitespace-nowrap"
+                className += 'min-w-56';
             }
             if(!field.hidden && !field.extra){
                 columns.push(Object.assign({}, {
@@ -365,6 +361,7 @@ async function getTableColumns(fields, options){
                 }, field.amis, {name: field.name}))
             }
         }
+
     };
 
     // columns.push(getOperation(fields));
