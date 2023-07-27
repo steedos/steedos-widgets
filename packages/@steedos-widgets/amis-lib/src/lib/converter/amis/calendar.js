@@ -539,13 +539,13 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
     "selectMirror": permissions.allowCreate,
     "initialView": initialView,
     "businessHours": businessHours,
-    ...config,
-    "onEvent": onEvent,
     "views":{
       listWeek: {
         buttonText: i18next.t('frontend_calendar_listWeek')
       }
-    }
+    },
+    ...config,
+    "onEvent": onEvent
   };
   return amisSchema;
 }
