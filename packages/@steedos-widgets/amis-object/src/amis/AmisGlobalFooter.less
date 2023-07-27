@@ -98,13 +98,18 @@
 }
 
 @media (max-width: 767px) {
+    //由于存在footer组件，crud计算高度的时候不会计算，因此需要给他设置一个最大高度
     .steedos-object-listview .antd-Table-content {
         max-height: calc(~"100vh - 263px");
+    }
+    .steedos-object-table .antd-Table-content{
+        max-height: calc(~"100vh - 195px");
     }
     .steedos-global-footer-root .antd-Nav-Menu-horizontal:after{
         /*手机端底部导航左右间隔不平衡*/
         content: unset;
     }
+    
 }
 
 .steedos-global-footer ul{
