@@ -2,10 +2,10 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-01-13 17:27:54
  * @LastEditors: liaodaxue
- * @LastEditTime: 2023-07-24 15:23:12
+ * @LastEditTime: 2023-07-27 17:33:54
  * @Description: 
  */
-
+import { i18next } from "../../../../i18n"
 
 export const getMarkdownFieldSchema = (field, readonly, ctx)=>{
     if(readonly){
@@ -33,7 +33,7 @@ export const getMarkdownFieldSchema = (field, readonly, ctx)=>{
                 "className": "steedos-markdown",
                 "tabs": [
                   {
-                    "title": "Write",
+                    "title": i18next.t('frontend_form_edit'),
                     "tab": [
                       {
                         "type": "editor",
@@ -43,7 +43,7 @@ export const getMarkdownFieldSchema = (field, readonly, ctx)=>{
                     ]
                   },
                   {
-                    "title": "Preview",
+                    "title": i18next.t('frontend_form_preview'),
                     "tab": [
                       {
                         "type": "markdown",
