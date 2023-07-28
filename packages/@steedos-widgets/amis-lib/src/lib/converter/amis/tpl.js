@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-22 15:13:18
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-07-28 16:26:31
  * @Description: 
  */
 import { Router } from '../../router'
@@ -190,6 +190,9 @@ export function getPasswordTpl(field){
         <% } %>`
 }
 
+export function getLocationTpl(field){
+    return `\${${field.name} ? ${field.name}.address : ''}`
+}
 
 export async function getFieldTpl (field, options){
     if((field.is_name || field.name === options.labelFieldName) && !options.onlyDisplayLabel){
@@ -214,6 +217,8 @@ export async function getFieldTpl (field, options){
             return await getRelatedFieldTpl(field, options);
         case 'master_detail':
             return await getRelatedFieldTpl(field, options);
+        case 'location':
+            return await getLocationTpl(field);
         case 'number':
         case 'currency':
             return await getNumberTpl(field);

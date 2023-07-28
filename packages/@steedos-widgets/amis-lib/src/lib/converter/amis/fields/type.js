@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-28 14:52:55
  * @LastEditors: liaodaxue
- * @LastEditTime: 2023-07-14 17:18:42
+ * @LastEditTime: 2023-07-28 16:16:29
  * @Description: 
  */
 import * as _ from 'lodash';
@@ -27,6 +27,8 @@ export function getAmisStaticFieldType(type, readonly, options){
     if(!readonly){
         if(_.includes(AmisFormInputs, type)){
             return `input-${type}`;
+        }else if(type === 'location'){
+            return "location-picker"
         }
         return type;
     }

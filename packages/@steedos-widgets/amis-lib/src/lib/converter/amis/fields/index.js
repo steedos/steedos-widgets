@@ -464,6 +464,30 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                 type: getAmisStaticFieldType('email', readonly)
             }
             break;
+        case 'location':
+            // 申请ak后需要设置白名单； https://lbsyun.baidu.com/apiconsole/key/create#/home
+            // console.log('fie==>', field.name, field);
+            let ak = "LiZT5dVbGTsPI91tFGcOlSpe5FDehpf7";
+            let vendor = "baidu";  /* 'baidu' | 'gaode' */
+            if(window.Meteor){
+                const map_ak = Meteor.settings?.public?.amis?.map_ak;
+                if(map_ak){
+                    ak = map_ak;
+                }
+                const map_vendor = Meteor.settings?.public?.amis?.map_vendor;
+                if(map_vendor){
+                    vendor = map_vendor;
+                }
+            }
+            
+            convertData = {
+                type: getAmisStaticFieldType('location', readonly),
+                tpl: readonly ? Tpl.getLocationTpl(field) : null,
+                ak,
+                vendor,
+                label: field.label
+            }
+            break;
         case 'avatar':
             convertData = File.getAmisFileSchema(field, readonly);
             break;
