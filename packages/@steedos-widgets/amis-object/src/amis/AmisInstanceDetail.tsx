@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-02-08 10:11:02
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-13 17:00:31
+ * @LastEditTime: 2023-07-29 13:58:36
  * @Description: 
  */
 import './AmisInstanceDetail.less';

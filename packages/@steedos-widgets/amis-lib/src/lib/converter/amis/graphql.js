@@ -2,9 +2,10 @@ import * as _ from 'lodash';
 import { includes } from 'lodash';
 import { getUISchema } from '../../objects';
 
-export async function getFieldsTemplate(fields, expand){
-    if(expand != false){
-        expand = true;
+export async function getFieldsTemplate(fields, display){
+    let expandFields = [];
+    if(display != false){
+        display = true;
     }
     let fieldsName = ['_id'];
     let displayFields = [];
@@ -16,33 +17,43 @@ export async function getFieldsTemplate(fields, expand){
     }
     for (const field of fieldsArr) {
         //graphql 的  ui\display 中使用的字段需要先在query中查询. 否则会返回null
-        if(field.name.indexOf('.') < 0){
-            if(expand && (field.type == 'lookup' || field.type == 'master_detail')){
-                fieldsName.push(`${field.name}`)
-                displayFields.push(`${field.name}`)
-            }else{
-                fieldsName.push( field.alias ? `${field.alias}:${field.name}` : field.name)
-            }
-            if(includes(['time','date','datetime','boolean','number','currency'], field.type)){
-                fieldsName.push(`${field.name}`)
-            }
-            if(includes(['percent','time','filesize','date','datetime','boolean','number','currency', 'select', 'file', 'image', 'avatar', 'formula', 'summary', 'object', 'grid'], field.type)){
-                displayFields.push(`${field.name}`)
-            }
+        if(field.expand){
+            expandFields.push(field);
         }else{
-            objectFieldName = field.name.split('.')[0];
-            fieldsName.push(objectFieldName);
-            displayFields.push(objectFieldName)
+            if(field.name.indexOf('.') < 0){
+                if(display && (field.type == 'lookup' || field.type == 'master_detail')){
+                    fieldsName.push(`${field.name}`)
+                    displayFields.push(`${field.name}`)
+                }else{
+                    fieldsName.push( field.alias ? `${field.alias}:${field.name}` : field.name)
+                }
+                if(includes(['time','date','datetime','boolean','number','currency'], field.type)){
+                    fieldsName.push(`${field.name}`)
+                }
+                if(includes(['percent','time','filesize','date','datetime','boolean','number','currency', 'select', 'file', 'image', 'avatar', 'formula', 'summary', 'object', 'grid'], field.type)){
+                    displayFields.push(`${field.name}`)
+                }
+            }else{
+                objectFieldName = field.name.split('.')[0];
+                fieldsName.push(objectFieldName);
+                displayFields.push(objectFieldName)
+            }
         }
     }
 
     displayFields = _.uniq(displayFields);
     fieldsName = _.uniq(fieldsName);
+    let expandFieldsQuery = "";
+    if(expandFields.length > 0){
+        _.each(expandFields, function(field){
+            expandFieldsQuery = expandFieldsQuery + `${field.expandInfo.fieldName}:${field.expandInfo.fieldName}__expand{${field.expandInfo.displayName}}`
+        })
+    }
 
     if(displayFields.length > 0){
-        return `${fieldsName.join(',')},_display:_ui{${displayFields.join(',')}}`;
+        return `${fieldsName.join(',')},${expandFieldsQuery},_display:_ui{${displayFields.join(',')}}`;
     }
-    return `${fieldsName.join(' ')}`
+    return `${fieldsName.join(' ')},${expandFieldsQuery}`
 }
 
 export function getRecordPermissionsTemplate(){

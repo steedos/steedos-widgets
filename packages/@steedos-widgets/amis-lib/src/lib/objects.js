@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-06-04 17:36:49
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2023-07-29 13:58:07
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -352,6 +352,7 @@ export async function getListSchema(
         "filterVisible": ctx.filterVisible,
         "rowClassNameExpr": ctx.rowClassNameExpr
     };
+    // console.log(`getListSchema===>`,amisSchema)
     return {
         uiSchema,
         amisSchema,
@@ -365,7 +366,7 @@ export async function getTableSchema(
     columns,
     ctx = {}
 ) {
-    // console.time('getTableSchema');
+    // console.time('getTableSchema', columns);
     const uiSchema = await getUISchema(objectName);
 
     let sort = ctx.sort;
@@ -379,19 +380,52 @@ export async function getTableSchema(
     }
 
     let fields = [];
-    each(columns, function (column) {
-        if (isString(column) && uiSchema.fields[column]) {
-            fields.push(uiSchema.fields[column]);
-        } else if (isObject(column) && uiSchema.fields[column.field]) {
-            fields.push(
-                Object.assign({}, uiSchema.fields[column.field], {
-                    width: column.width,
-                    wrap: column.wrap, // wrap = true 是没效果的
-                    amis: column.amis
-                })
-            );
+    for(const column of columns){
+        if (isString(column)) {
+            if(column.indexOf('.') > 0){
+                const fieldName = column.split('.')[0];
+                const displayName = column.split('.')[1];
+                const filedInfo = uiSchema.fields[fieldName];
+                if(filedInfo && (filedInfo.type === 'lookup' || filedInfo.type === 'master_detail') && isString(filedInfo.reference_to) ){
+                    const rfUiSchema = await getUISchema(filedInfo.reference_to);
+                    const rfFieldInfo = rfUiSchema.fields[displayName];
+                    fields.push(Object.assign({}, rfFieldInfo, {name: column, expand: true, expandInfo: {fieldName, displayName}}));
+                }
+            }else{
+                if(uiSchema.fields[column]){
+                    fields.push(uiSchema.fields[column]);
+                }
+            }
+        } else if (isObject(column)) {
+            if(column.field.indexOf('.') > 0){
+                const fieldName = column.field.split('.')[0];
+                const displayName = column.field.split('.')[1];
+                const filedInfo = uiSchema.fields[fieldName];
+                if(filedInfo && (filedInfo.type === 'lookup' || filedInfo.type === 'master_detail') && isString(filedInfo.reference_to) ){
+                    const rfUiSchema = await getUISchema(filedInfo.reference_to);
+                    const rfFieldInfo = rfUiSchema.fields[displayName];
+                    fields.push(Object.assign({}, rfFieldInfo, 
+                        {name: column.field, expand: true, expandInfo: {fieldName, displayName}},
+                        {
+                            width: column.width,
+                            wrap: column.wrap, // wrap = true 是没效果的
+                            amis: column.amis
+                        }
+                    ));
+                }
+            }else{
+                if(uiSchema.fields[column.field]){
+                    fields.push(
+                        Object.assign({}, uiSchema.fields[column.field], {
+                            width: column.width,
+                            wrap: column.wrap, // wrap = true 是没效果的
+                            amis: column.amis
+                        })
+                    );
+                }
+            }
         }
-    });
+    }
 
     const extraColumns = ctx.extraColumns;
 
