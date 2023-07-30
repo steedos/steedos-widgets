@@ -76,6 +76,12 @@ export const AmisReactFlow = ({
   backgroundConfig,
   ...props }
 ) => {
+  if(!props.data){
+    // 为了解决3.2 dispatchevent不生效的问题, https://github.com/baidu/amis/issues/7488
+    // 如果data为undefined，dispatchEvent时第三个参数传入的current的data为undefined会报错
+    props.data = {}
+  }
+  const reactFlowRef: any = useRef();
   console.log("AmisReactFlow render start with config:", config, backgroundConfig);
   let configJSON = {}
   if (typeof config === 'string') {
@@ -124,7 +130,9 @@ export const AmisReactFlow = ({
 
     const rendererEvent = await amisDispatchEvent(
       action,
-      value ? createObject(amisData, value) : amisData
+      value ? createObject(amisData, value) : amisData,
+      //为了解决3.2 dispatchevent不生效的问题, https://github.com/baidu/amis/issues/7488
+      reactFlowRef.current
     );
 
     return rendererEvent?.prevented ?? false;
@@ -162,11 +170,17 @@ export const AmisReactFlow = ({
     dispatchEvent('eventRemove', event)
   };
 
-  return (
-    <div className={"steedos-react-flow " + wrapperClassName}>
-      <ReactFlowProvider>
+  let flow = (
+    <ReactFlowProvider {...props}>
+      <div className={"steedos-react-flow " + wrapperClassName}>
         <Flow dispatchEvent={dispatchEvent} config={configJSON} backgroundConfig={backgroundConfigJSON}></Flow>
-      </ReactFlowProvider>
-    </div>
+      </div>
+    </ReactFlowProvider>
   )
+
+  // 为了解决3.2 dispatchevent不生效的问题, https://github.com/baidu/amis/issues/7488
+  // dispatchEvent时第三个参数传入的current必须是一个带props属性的对象，不可以是一个dom标签
+  reactFlowRef.current = flow;
+
+  return flow;
 }
