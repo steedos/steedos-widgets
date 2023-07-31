@@ -480,12 +480,35 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                 }
             }
             
+            const coordinatesType = field.coordinatesType || "bd09";
             convertData = {
                 type: getAmisStaticFieldType('location', readonly),
                 tpl: readonly ? Tpl.getLocationTpl(field) : null,
                 ak,
                 vendor,
-                label: field.label
+                clearable: true,
+                coordinatesType,
+                label: field.label,
+                pipeOut: (value, oldValue, data) => {
+                    if (value) {
+                        const lng = value.lng;
+                        const lat = value.lat;
+                        let coordinates = [lng,lat];
+                        if(window.coordtransform){
+                            if(coordinatesType.toLowerCase() === 'bd09'){
+                                const bd09togcj02 = window.coordtransform.bd09togcj02(lng,lat);
+                                coordinates = window.coordtransform.gcj02towgs84(bd09togcj02[0],bd09togcj02[1]);
+                            }else if(coordinatesType.toLowerCase() === 'gcj02'){
+                                coordinates = window.coordtransform.gcj02towgs84(bd09togcj02[0],bd09togcj02[1]);
+                            }
+                        }
+                        value.wgs84 = {
+                            type: "Point",
+                            coordinates
+                        }
+                       return value; // 切换到数字之后的默认值
+                    }
+                }
             }
             break;
         case 'avatar':
