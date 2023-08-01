@@ -218,6 +218,10 @@ async function getQuickEditSchema(field, options){
         if(field.type == "file" && field.multiple){
             quickEditSchema = false;
         }
+        //TODO:location字段在列表中快速编辑后存在bug,保存时可能会丢失部分数据，暂时禁用
+        if(field.type == "location"){
+            quickEditSchema = false;
+        }
     }
     return quickEditSchema;
 }
