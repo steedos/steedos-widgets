@@ -86,6 +86,7 @@ crudService && crudService.setData({showFieldsFilter: toShowFieldsFilter});
 
 export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = false, hiddenCount = false, headerToolbarItems, filterVisible = true} = {}){
   // console.log(`getObjectHeaderToolbar====>`, filterVisible)
+  console.log(`getObjectHeaderToolbar`, mainObject)
   const isMobile = window.innerWidth < 768;
   if(isMobile){
     showDisplayAs = false;
@@ -185,7 +186,7 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
         "className": "bg-white p-2 rounded border-gray-300 text-gray-500"
       },
       // getExportExcelToolbarButtonSchema(),
-      getSettingListviewToolbarButtonSchema(),
+      mainObject?.permissions?.allowCreateListViews ? getSettingListviewToolbarButtonSchema() : {},
       getDisplayAsButton(mainObject?.name, showDisplayAs),
       filterVisible ? {
         "label": i18next.t('frontend_button_search_tooltip'),
