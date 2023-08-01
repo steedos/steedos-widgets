@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-07-29 13:58:07
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-08-01 14:50:23
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -283,7 +283,7 @@ export async function getListSchema(
      * 本次存储代码段
      */
     try {
-      const listViewPropsStoreKey = location.pathname + "/crud/" + ctx.listViewId;
+      const listViewPropsStoreKey = location.pathname + "/crud/" + (ctx.listViewId || "");
       let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
       /**
        * localListViewProps规范来自crud请求api中api.data.$self参数值的。

@@ -178,7 +178,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     if(!event.data.isLookup){
       // 刷新浏览器后，filterFormValues值是空的，只能从本地存储中取出并重置为空值
       const listViewId = event.data.listViewId;
-      const listViewPropsStoreKey = location.pathname + "/crud/" + listViewId ;
+      const listViewPropsStoreKey = location.pathname + "/crud/" + (listViewId || "");
       let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
       if(localListViewProps){
         localListViewProps = JSON.parse(localListViewProps);
@@ -210,7 +210,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       searchableFieldsStoreKey += "lookup/" + objectName;
     }
     else{
-      searchableFieldsStoreKey += listViewId;
+      searchableFieldsStoreKey += (listViewId || "");
     }
     let defaultSearchableFields = sessionStorage.getItem(searchableFieldsStoreKey);
     if(defaultSearchableFields){
@@ -237,7 +237,9 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       setData({ showFieldsFilter: false });
     }
     else{
-      const listViewPropsStoreKey = location.pathname + "/crud/" + data.listViewId ;
+      console.log("===listViewPropsStoreKey=data==", data);
+      const listViewPropsStoreKey = location.pathname + "/crud/" + (data.listViewId || "");
+      console.log("===listViewPropsStoreKey=122==", listViewPropsStoreKey);
       let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
       if(localListViewProps){
         localListViewProps = JSON.parse(localListViewProps);
@@ -283,7 +285,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       searchableFieldsStoreKey += "lookup/" + objectName;
     }
     else{
-      searchableFieldsStoreKey += listViewId;
+      searchableFieldsStoreKey += (listViewId || "");
     }
     sessionStorage.setItem(searchableFieldsStoreKey, value);
 
@@ -341,7 +343,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     }
     
     // 列表视图crud支持本地缓存，所以需要进一步清除浏览器本地缓存里面用户在可搜索项中移除的字段值
-    const listViewPropsStoreKey = location.pathname + "/crud/" + listViewId ;
+    const listViewPropsStoreKey = location.pathname + "/crud/" + (listViewId || "");
     let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
     if(localListViewProps){
       localListViewProps = JSON.parse(localListViewProps);
