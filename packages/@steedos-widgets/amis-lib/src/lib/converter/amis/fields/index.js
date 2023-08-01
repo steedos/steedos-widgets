@@ -499,7 +499,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                                 const bd09togcj02 = window.coordtransform.bd09togcj02(lng,lat);
                                 coordinates = window.coordtransform.gcj02towgs84(bd09togcj02[0],bd09togcj02[1]);
                             }else if(coordinatesType.toLowerCase() === 'gcj02'){
-                                coordinates = window.coordtransform.gcj02towgs84(bd09togcj02[0],bd09togcj02[1]);
+                                coordinates = window.coordtransform.gcj02towgs84(lng,lat);
                             }
                         }
                         value.wgs84 = {
