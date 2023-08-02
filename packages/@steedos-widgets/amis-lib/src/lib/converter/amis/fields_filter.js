@@ -77,12 +77,6 @@ export async function getObjectFieldsFilterFormSchema(ctx) {
             if (
               field && window.isFieldTypeSearchable(field.type)
             ) {
-              delete field.defaultValue;
-              delete field.required;
-              delete field.is_wide;
-              delete field.readonly;
-              delete field.hidden;
-              delete field.omit;
               var ctx = ${JSON.stringify(ctx)};
               const amisField = window.getFieldSearchable(field, fields, ctx);
               return amisField;

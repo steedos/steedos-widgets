@@ -737,6 +737,24 @@ export async function getFieldSearchable(perField, permissionFields, ctx){
         _field.multiple = true;
         _field.is_wide = false;
         _field.defaultValue = undefined;
+        _field.required = false;
+        _field.hidden = false;
+        _field.omit = false;
+
+        if(_field.amis){
+            delete _field.amis.static;
+            delete _field.amis.staticOn;
+            delete _field.amis.disabled;
+            delete _field.amis.disabledOn;
+            delete _field.amis.required;
+            delete _field.amis.requiredOn;
+            delete _field.amis.visible;
+            delete _field.amis.visibleOn;
+            delete _field.amis.hidden;
+            delete _field.amis.hiddenOn;
+            delete _field.amis.autoFill;
+        }
+
         const amisField = await Fields.convertSFieldToAmisField(_field, false, Object.assign({}, ctx, {fieldNamePrefix: fieldNamePrefix, required: false, showSystemFields: true, inFilterForm: true}));
         if(amisField){
             return amisField;
