@@ -127,6 +127,10 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         return ;
     }
     const refObjectConfig = await getUISchema(referenceTo.objectName);
+
+    ctx.idFieldName = refObjectConfig.idFieldName
+    ctx.objectName = refObjectConfig.name
+
     const tableFields = [];
     let i = 0;
     const searchableFields = [];
@@ -495,7 +499,6 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     if(readonly){
         data.tpl = await Tpl.getLookupTpl(field, ctx)
     }
-
     return data;
 }
 
