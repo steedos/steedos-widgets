@@ -231,9 +231,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       setData({ showFieldsFilter: false });
     }
     else{
-      console.log("===listViewPropsStoreKey=data==", data);
       const listViewPropsStoreKey = location.pathname + "/crud/" + (data.listViewId || "");
-      console.log("===listViewPropsStoreKey=122==", listViewPropsStoreKey);
       let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
       if(localListViewProps){
         localListViewProps = JSON.parse(localListViewProps);
