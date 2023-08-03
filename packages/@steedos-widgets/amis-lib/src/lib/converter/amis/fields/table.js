@@ -252,6 +252,7 @@ async function getTableColumns(fields, options){
         if(field.wrap != true){
             className += " whitespace-nowrap"
         }
+        let columnItem;
         if((field.is_name || field.name === options.labelFieldName) && options.objectName === 'cms_files'){
             const previewFileScript = `
                 var data = event.data;
@@ -259,12 +260,11 @@ async function getTableColumns(fields, options){
                 var file_id = data._id;
                 SteedosUI.previewFile && SteedosUI.previewFile({file_name, file_id});
             `;
-            columns.push({
+            columnItem = {
                 "type": "button",
                 "label": `<%=data.versions ? data.name : "${field.label}"%>`,
                 className,
                 "level": "link",
-                "quickEdit": quickEditSchema,
                 "onEvent": {
                   "click": {
                     "actions": [
@@ -290,9 +290,9 @@ async function getTableColumns(fields, options){
                     ]
                   }
                 }
-            })
+            };
         }else if(field.type === 'toggle'){
-            columns.push(Object.assign({}, {
+            columnItem = Object.assign({}, {
                 type: "switch",
                 name: field.name,
                 label: field.label,
@@ -300,24 +300,22 @@ async function getTableColumns(fields, options){
                 toggled: field.toggled,
                 static: true,
                 className,
-                quickEdit: quickEditSchema
-            }, field.amis, {name: field.name}))
+            }, field.amis, {name: field.name});
         }else if(field.type === 'avatar' || field.type === 'image' || field.type === 'file'){
-            columns.push(Object.assign({}, {
+            columnItem = Object.assign({}, {
                 type: "switch",
                 name: field.name,
                 label: field.label,
                 width: getFieldWidth(field.width),
                 toggled: field.toggled,
-                quickEdit: quickEditSchema,
                 static: true,
                 className,
                 ...getAmisFileReadonlySchema(field)
-            }, field.amis, {name: field.name}))
+            }, field.amis, {name: field.name});
         }
         else if(field.type === 'select'){
             const map = Tpl.getSelectMap(field.options);
-            columns.push(Object.assign({}, {
+            columnItem = Object.assign({}, {
                 type: "mapping",
                 name: field.name,
                 label: field.label,
@@ -327,8 +325,7 @@ async function getTableColumns(fields, options){
                 toggled: field.toggled,
                 className,
                 static: true,
-                quickEdit: quickEditSchema
-            }, field.amis, {name: field.name}))
+            }, field.amis, {name: field.name});
         }
         else{
             const tpl = await Tpl.getFieldTpl(field, options);
@@ -348,7 +345,7 @@ async function getTableColumns(fields, options){
                 className += 'min-w-56';
             }
             if(!field.hidden && !field.extra){
-                columns.push(Object.assign({}, {
+                columnItem = Object.assign({}, {
                     name: field.name,
                     label: field.label,
                     sortable: field.sortable,
@@ -359,13 +356,18 @@ async function getTableColumns(fields, options){
                     toggled: field.toggled,
                     className,
                     static: true,
-                    quickEdit: quickEditSchema,
                     options: field.type === 'html' ? {html: true} : null
                     // toggled: true 
-                }, field.amis, {name: field.name}))
+                }, field.amis, {name: field.name});
             }
         }
-
+        if(columnItem){
+            if(quickEditSchema){
+                columnItem.quickEdit = quickEditSchema;
+                columnItem.quickEditEnabledOn = "${is_system !== true}";
+            }
+            columns.push(columnItem);
+        }
     };
 
     // columns.push(getOperation(fields));
