@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
- * @LastEditors: liaodaxue
- * @LastEditTime: 2023-07-28 16:26:31
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-08-03 17:50:55
  * @Description: 
  */
 import { Router } from '../../router'
@@ -88,7 +88,11 @@ export function getNameTplUrl(field, ctx){
 
 export function getNameTpl(field, ctx){
     const href = getNameTplUrl(field, ctx);
-    return `<a href="${href}">\${${field.name}}</a>`
+    let linkTarget = "";
+    if(ctx.isLookup){
+        linkTarget = "target='_blank'"
+    }
+    return `<a href="${href}" ${linkTarget}>\${${field.name}}</a>`
 }
 
 export function getRelatedFieldTpl(field, ctx){
@@ -99,6 +103,11 @@ export function getRelatedFieldTpl(field, ctx){
         }else{
             return `\${${field.name}__label}`
         }
+    }
+
+    let linkTarget = "";
+    if(ctx.isLookup){
+        linkTarget = "target='_blank'"
     }
 
     const onlyDisplayLabel = ctx.onlyDisplayLabel;
@@ -116,7 +125,7 @@ export function getRelatedFieldTpl(field, ctx){
                 const href = Router.getObjectDetailPath({
                     formFactor: ctx.formFactor, appId: "<%=data.appId%>", objectName: `<%=item.objectName%>`, recordId: `<%=item.value%>`, _templateType: "JavaScript"
                 })
-                labelTpl = `<a href="${href}"><%=item.label%></a>`;
+                labelTpl = `<a href="${href}" ${linkTarget}><%=item.label%></a>`;
             }
             tpl = `
             <% if (${fieldDataStrTpl} && ${fieldDataStrTpl}.length) { %><% ${fieldDataStrTpl}.forEach(function(item,index) { %> <% if(index>0 && index<${fieldDataStrTpl}.length){ %> , <% } %> ${labelTpl}  <% }); %><% } %>
@@ -134,7 +143,7 @@ export function getRelatedFieldTpl(field, ctx){
                 const href = Router.getObjectDetailPath({
                     formFactor: ctx.formFactor, appId: "${appId}", objectName: `${objectNameTpl}`, recordId: `${recordIdTpl}`
                 })
-                labelTpl = `<a href="${href}">${labelTpl}</a>`;
+                labelTpl = `<a href="${href}" ${linkTarget}>${labelTpl}</a>`;
             }
             tpl = labelTpl;
         }
@@ -146,7 +155,7 @@ export function getRelatedFieldTpl(field, ctx){
             const href = Router.getObjectDetailPath({
                 formFactor: ctx.formFactor, appId: "<%=data.appId%>", objectName: `<%=item.objectName%>`, recordId: `<%=item.value%>`, _templateType: "JavaScript"
             })
-            labelTpl = `<a href="${href}"><%=item.label%></a>`;
+            labelTpl = `<a href="${href}" ${linkTarget}><%=item.label%></a>`;
         }
         tpl = `
         <% if (${fieldDataStrTpl} && ${fieldDataStrTpl}.length) { %><% ${fieldDataStrTpl}.forEach(function(item) { %> ${labelTpl}  <% }); %><% } %>
