@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-08-03 17:50:55
+ * @LastEditTime: 2023-08-03 18:07:54
  * @Description: 
  */
 import { Router } from '../../router'
@@ -89,7 +89,7 @@ export function getNameTplUrl(field, ctx){
 export function getNameTpl(field, ctx){
     const href = getNameTplUrl(field, ctx);
     let linkTarget = "";
-    if(ctx.isLookup){
+    if(ctx && ctx.isLookup){
         linkTarget = "target='_blank'"
     }
     return `<a href="${href}" ${linkTarget}>\${${field.name}}</a>`
@@ -106,7 +106,7 @@ export function getRelatedFieldTpl(field, ctx){
     }
 
     let linkTarget = "";
-    if(ctx.isLookup){
+    if(ctx && ctx.isLookup){
         linkTarget = "target='_blank'"
     }
 
