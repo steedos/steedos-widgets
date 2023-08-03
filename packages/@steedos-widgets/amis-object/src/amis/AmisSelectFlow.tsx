@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-01-14 16:41:24
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-07-31 10:22:56
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-08-03 13:32:08
  * @Description:
  */
 
@@ -50,7 +50,8 @@ const getSelectFlowSchema = (id, props) => {
     showOutline: showOutline,
     initiallyOpen: initiallyOpen,
     unfoldedLevel: unfoldedLevel,
-    className: `overflow-y-auto ` + className,
+    // className: `overflow-y-auto ` + className,
+    className: className,
     required: required,
     treeContainerClassName: treeContainerClassName,
     heightAuto: true,
