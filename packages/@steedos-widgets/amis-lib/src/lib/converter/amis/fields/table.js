@@ -675,6 +675,7 @@ async function getTableOperation(ctx){
 }
 
 export async function getTableSchema(fields, options){
+    let isLookup = options && options.isLookup;
     if(!options){
         options = {};
     }
@@ -684,7 +685,9 @@ export async function getTableSchema(fields, options){
     }
     else{
         columns = await getTableColumns(fields, options);
-        columns.push(await getTableOperation(options));
+        if(!isLookup){
+            columns.push(await getTableOperation(options));
+        }
     }
     return {
         mode: "table",
