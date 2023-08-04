@@ -782,8 +782,8 @@ export async function getTableApi(mainObject, fields, options){
         const data = _.cloneDeep(api.data);
         try{
             // TODO: 不应该直接在这里取localStorage，应该从外面传入
-            const listViewId = api.data.listViewId;
-            const listViewPropsStoreKey = location.pathname + "/crud/" + (listViewId || "");
+            const listName = api.data.listName;
+            const listViewPropsStoreKey = location.pathname + "/crud/" + (listName || "");
             let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
             if(localListViewProps){
                 localListViewProps = JSON.parse(localListViewProps);
@@ -983,8 +983,8 @@ export async function getTableApi(mainObject, fields, options){
 
     try{
         // TODO: 不应该直接在这里取localStorage，应该从外面传入
-        const listViewId = api.body.listViewId;
-        const listViewPropsStoreKey = location.pathname + "/crud/" + (listViewId || "");
+        const listName = api.body.listName;
+        const listViewPropsStoreKey = location.pathname + "/crud/" + (listName || "");
         /**
          * localListViewProps规范来自crud请求api中api.data.$self参数值的。
          * 比如：{"perPage":20,"page":1,"__searchable__name":"7","__searchable__between__n1__c":[null,null],"filter":[["name","contains","a"]]}

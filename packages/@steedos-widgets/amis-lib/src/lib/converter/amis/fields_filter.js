@@ -171,8 +171,8 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     }
     if(!event.data.isLookup){
       // 刷新浏览器后，filterFormValues值是空的，只能从本地存储中取出并重置为空值
-      const listViewId = event.data.listViewId;
-      const listViewPropsStoreKey = location.pathname + "/crud/" + (listViewId || "");
+      const listName = event.data.listName;
+      const listViewPropsStoreKey = location.pathname + "/crud/" + (listName || "");
       let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
       if(localListViewProps){
         localListViewProps = JSON.parse(localListViewProps);
@@ -198,13 +198,13 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
   const dataProviderInited = `
     const objectName = data.objectName;
     const isLookup = data.isLookup;
-    const listViewId = data.listViewId;
+    const listName = data.listName;
     let searchableFieldsStoreKey = location.pathname + "/searchable_fields/";
     if(isLookup){
       searchableFieldsStoreKey += "lookup/" + objectName;
     }
     else{
-      searchableFieldsStoreKey += (listViewId || "");
+      searchableFieldsStoreKey += (listName || "");
     }
     let defaultSearchableFields = sessionStorage.getItem(searchableFieldsStoreKey);
     if(defaultSearchableFields){
@@ -231,7 +231,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       setData({ showFieldsFilter: false });
     }
     else{
-      const listViewPropsStoreKey = location.pathname + "/crud/" + (data.listViewId || "");
+      const listViewPropsStoreKey = location.pathname + "/crud/" + (listName || "");
       let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
       if(localListViewProps){
         localListViewProps = JSON.parse(localListViewProps);
@@ -261,7 +261,6 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     const listName = data.listName;
     const objectName = data.objectName;
     const isLookup = data.isLookup;
-    const listViewId = data.listViewId;
     const value = data.fields;
     const scope = event.context.scoped;
     // 这里的filterForm不是name为"listview-filter-form"的内部form，而是crud自带的filter form
@@ -277,7 +276,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       searchableFieldsStoreKey += "lookup/" + objectName;
     }
     else{
-      searchableFieldsStoreKey += (listViewId || "");
+      searchableFieldsStoreKey += (listName || "");
     }
     sessionStorage.setItem(searchableFieldsStoreKey, value);
 
@@ -335,7 +334,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     }
     
     // 列表视图crud支持本地缓存，所以需要进一步清除浏览器本地缓存里面用户在可搜索项中移除的字段值
-    const listViewPropsStoreKey = location.pathname + "/crud/" + (listViewId || "");
+    const listViewPropsStoreKey = location.pathname + "/crud/" + (listName || "");
     let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
     if(localListViewProps){
       localListViewProps = JSON.parse(localListViewProps);
