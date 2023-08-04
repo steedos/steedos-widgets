@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { includes } from 'lodash';
+import { includes, trimEnd } from 'lodash';
 import { getUISchema } from '../../objects';
 
 export async function getFieldsTemplate(fields, display){
@@ -53,7 +53,7 @@ export async function getFieldsTemplate(fields, display){
     if(displayFields.length > 0){
         return `${fieldsName.join(',')},${expandFieldsQuery},_display:_ui{${displayFields.join(',')}}`;
     }
-    return `${fieldsName.join(' ')},${expandFieldsQuery}`
+    return trimEnd(`${fieldsName.join(' ')},${expandFieldsQuery}`, ",")
 }
 
 export function getRecordPermissionsTemplate(){
