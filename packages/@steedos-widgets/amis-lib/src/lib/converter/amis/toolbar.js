@@ -239,18 +239,27 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
     
 }
 
-export function getObjectFooterToolbar(mainObject, formFactor) {
+export function getObjectFooterToolbar(mainObject, formFactor, options) {
   if (formFactor === 'SMALL') {
     return [
       "load-more",
     ]
   }
   else {
-    return [
-      "switch-per-page",
-      "statistics",
-      "pagination"
-    ]
+    if(options && options.isRelated){
+      return [
+        "statistics",
+        "pagination"
+      ]
+
+    }
+    else{
+      return [
+        "switch-per-page",
+        "statistics",
+        "pagination"
+      ]
+    }
   }
 }
 

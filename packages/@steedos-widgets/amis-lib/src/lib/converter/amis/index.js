@@ -138,6 +138,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
       // headerToolbar: getObjectHeaderToolbar(objectSchema, options.formFactor, {showDisplayAs}),
       headerToolbarClassName: "px-4 py-2 border-gray-300 bg-gray-100 border-solid border-b",
       footerToolbar: getObjectFooterToolbar(objectSchema, options.formFactor, {
+        ...options,
         disableStatistics: options.queryCount === false
       }), 
       filter: options.filterVisible !== false && await getObjectFilter(objectSchema, fields, options),
