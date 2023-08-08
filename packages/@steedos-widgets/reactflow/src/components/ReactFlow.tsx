@@ -29,7 +29,7 @@ const Flow = ({
 
   const onEdgesChange = useCallback((changes) => {
     setEdges((eds) => applyEdgeChanges(changes, eds));
-    dispatchEvent('edgesChange', {  changes, setNodes, applyNodeChanges });
+    dispatchEvent('edgesChange', {  changes, setEdges, applyEdgeChanges });
   }, [setEdges]);
 
   const onEdgeUpdateStart = useCallback(() => {
