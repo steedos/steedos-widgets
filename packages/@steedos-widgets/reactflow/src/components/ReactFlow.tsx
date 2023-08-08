@@ -1,5 +1,5 @@
 import React, { useCallback, useRef } from 'react';
-import ReactFlow, { Controls, Background, ReactFlowProvider, useReactFlow, useNodesState, useEdgesState, updateEdge, addEdge, useOnSelectionChange } from 'reactflow';
+import ReactFlow, { Controls, Background, ReactFlowProvider, useReactFlow, useNodesState, useEdgesState, updateEdge, addEdge, useOnSelectionChange, applyNodeChanges, applyEdgeChanges } from 'reactflow';
 import 'reactflow/dist/style.css';
 import './ReactFlow.css';
 
@@ -16,9 +16,21 @@ const Flow = ({
   // 见：https://reactflow.dev/docs/guides/uncontrolled-flow/#updating-nodes-and-edges
   const edgeUpdateSuccessful = useRef(true);
   const reactFlowInstance = useReactFlow();
-  const [nodes, setNodes, onNodesChange] = useNodesState(config.nodes || config.defaultNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(config.edges || config.defaultEdges);
+  // const [nodes, setNodes, onNodesChange] = useNodesState(config.nodes || config.defaultNodes);
+  const [nodes, setNodes] = useNodesState(config.nodes || config.defaultNodes);
+  // const [edges, setEdges, onEdgesChange] = useEdgesState(config.edges || config.defaultEdges);
+  const [edges, setEdges] = useEdgesState(config.edges || config.defaultEdges);
   const onConnect = useCallback((params) => setEdges((els) => addEdge(params, els)), []);
+
+  const onNodesChange = useCallback((changes) => {
+    setNodes((nds) => applyNodeChanges(changes, nds));
+    dispatchEvent('nodesChange', {  changes, setNodes, applyNodeChanges });
+  }, [setNodes]);
+
+  const onEdgesChange = useCallback((changes) => {
+    setEdges((eds) => applyEdgeChanges(changes, eds));
+    dispatchEvent('edgesChange', {  changes, setNodes, applyNodeChanges });
+  }, [setEdges]);
 
   const onEdgeUpdateStart = useCallback(() => {
     // edgeUpdateSuccessful.current = false;
