@@ -288,6 +288,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
     return {
       type: 'service',
       className: '',
+      //目前crud的service层id不认用户自定义id，只支持默认规则id
       id: `service_${id}`,
       name: `page`,
       data: {
