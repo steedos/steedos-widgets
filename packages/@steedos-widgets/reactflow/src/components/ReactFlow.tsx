@@ -50,7 +50,7 @@ const Flow = ({
   
   useOnSelectionChange({
     onChange: ({ nodes, edges }) => {
-      dispatchEvent('selectionChange', { nodes, edges, reactFlowInstance });
+      dispatchEvent('selectionChange', { nodes, setNodes, edges, setEdges, reactFlowInstance });
     },
   });
 
