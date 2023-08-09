@@ -210,7 +210,43 @@ async function getQuickEditSchema(field, options){
                 default:
                     break;
             }
-
+            quickEditSchema.body[0].visibleOn = "${__recordPermissions.allowEdit}"
+            quickEditSchema.body.push({
+                "type":"service",
+                "body":{
+                    "type": "tpl",
+                    "tpl": i18next.t('frontend_records_no_allowedit'),
+                    "visibleOn": "${!__recordPermissions.allowEdit}"
+                },
+                "onEvent":{
+                    "init":{
+                        "actions":[
+                            {
+                                "actionType": "ajax",
+                                "args": {
+                                    "api": {
+                                      "url": "${context.rootUrl}/service/api/@\${objectName}/recordPermissions/${_id}",
+                                      "method": "get",
+                                      "headers": {
+                                        "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                                      }
+                                    }
+                                }
+                            },
+                            {
+                                "actionType": "setValue",
+                                "componentId": `service_listview_${options.objectName}`,
+                                "args": {
+                                    "value":{
+                                        "__recordPermissions": "${event.data}"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+                
+            })
         } else {
             quickEditSchema = false;
         }
@@ -243,7 +279,7 @@ function getFieldWidth(width){
 
 async function getTableColumns(fields, options){
     const columns = [{name: '_index',type: 'text', width: 32, placeholder: ""}];
-    const allowEdit = options.permissions?.allowEdit && options.permissions?.modifyAllRecords && !options.isLookup && options.enable_inline_edit != false;
+    const allowEdit = options.permissions?.allowEdit && !options.isLookup && options.enable_inline_edit != false;
     
     for (const field of fields) {
         //增加quickEdit属性，实现快速编辑

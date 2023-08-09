@@ -80,5 +80,6 @@
     "frontend_message_modification_failed": "Modification failed!",
     "frontend_objects_related_alert_start": "No related table fields associated with the related list object",
     "frontend_objects_related_alert_end": "were found.",
-    "frontend_no_records_found": "No records found."
+    "frontend_no_records_found": "No records found.",
+    "frontend_records_no_allowedit": "You do not have edit permission for this record"
 }

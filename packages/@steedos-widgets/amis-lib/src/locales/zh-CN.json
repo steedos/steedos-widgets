@@ -81,5 +81,6 @@
     "frontend_message_modification_failed": "修改失败！",
     "frontend_objects_related_alert_start": "未找到与相关列表对象",
     "frontend_objects_related_alert_end": "关联的相关表字段",
-    "frontend_no_records_found": "无法找到记录"
+    "frontend_no_records_found": "无法找到记录",
+    "frontend_records_no_allowedit": "您对这条记录没有编辑权限"
 }
