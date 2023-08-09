@@ -24,12 +24,12 @@ const Flow = ({
 
   const onNodesChange = useCallback((changes) => {
     setNodes((nds) => applyNodeChanges(changes, nds));
-    dispatchEvent('nodesChange', {  changes, setNodes, applyNodeChanges });
+    dispatchEvent('nodesChange', {  changes, nodes, setNodes, edges, setEdges, applyNodeChanges, reactFlowInstance });
   }, [setNodes]);
 
   const onEdgesChange = useCallback((changes) => {
     setEdges((eds) => applyEdgeChanges(changes, eds));
-    dispatchEvent('edgesChange', {  changes, setEdges, applyEdgeChanges });
+    dispatchEvent('edgesChange', {  changes, nodes, setNodes, edges, setEdges, applyEdgeChanges, reactFlowInstance });
   }, [setEdges]);
 
   const onEdgeUpdateStart = useCallback(() => {
@@ -40,17 +40,17 @@ const Flow = ({
   const onEdgeUpdate = useCallback((oldEdge, newConnection) => {
     // 这里实现移动连线到其他节点上
     setEdges((els) => updateEdge(oldEdge, newConnection, els));
-    dispatchEvent('edgeUpdate', {  oldEdge, newConnection, setEdges, updateEdge, edgeUpdateSuccessful });
+    dispatchEvent('edgeUpdate', {  oldEdge, newConnection, setEdges, updateEdge, edgeUpdateSuccessful, reactFlowInstance });
   }, []);
 
   const onEdgeUpdateEnd = useCallback((_, edge) => {
     // edgeUpdateSuccessful.current = true;
-      dispatchEvent('edgeUpdateEnd', { _, edge, edgeUpdateSuccessful });
+      dispatchEvent('edgeUpdateEnd', { _, edge, edgeUpdateSuccessful, reactFlowInstance });
   }, []);
   
   useOnSelectionChange({
     onChange: ({ nodes, edges }) => {
-      dispatchEvent('selectionChange', { nodes, edges });
+      dispatchEvent('selectionChange', { nodes, edges, reactFlowInstance });
     },
   });
 
