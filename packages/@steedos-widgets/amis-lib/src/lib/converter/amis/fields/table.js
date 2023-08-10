@@ -210,17 +210,32 @@ async function getQuickEditSchema(field, options){
                 default:
                     break;
             }
-            quickEditSchema.body[0].visibleOn = "${__recordPermissions.allowEdit}"
+            quickEditSchema.body[0].visibleOn = "${quickedit_record_permissions.allowEdit && quickedit_record_permissions_loading == false}"
             quickEditSchema.body.push({
                 "type":"service",
-                "body":{
-                    "type": "tpl",
-                    "tpl": i18next.t('frontend_records_no_allowedit'),
-                    "visibleOn": "${!__recordPermissions.allowEdit}"
-                },
+                "body":[
+                    {
+                        "type": "tpl",
+                        "tpl": i18next.t('frontend_records_no_allowedit'),
+                        "visibleOn": "${!quickedit_record_permissions.allowEdit && quickedit_record_permissions_loading == false}"
+                    },
+                    {
+                        "type": "spinner",
+                        "showOn": "${quickedit_record_permissions_loading}"
+                    }
+                ],
                 "onEvent":{
                     "init":{
                         "actions":[
+                            {
+                                "actionType": "setValue",
+                                "componentId": `service_listview_${options.objectName}`,
+                                "args": {
+                                    "value":{
+                                        "quickedit_record_permissions_loading": true
+                                    }
+                                }
+                            },
                             {
                                 "actionType": "ajax",
                                 "args": {
@@ -229,6 +244,10 @@ async function getQuickEditSchema(field, options){
                                       "method": "get",
                                       "headers": {
                                         "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                                      },
+                                      "cache": 30000,
+                                      "messages": {
+                                        "failed": "失败了呢。。"
                                       }
                                     }
                                 }
@@ -238,7 +257,16 @@ async function getQuickEditSchema(field, options){
                                 "componentId": `service_listview_${options.objectName}`,
                                 "args": {
                                     "value":{
-                                        "__recordPermissions": "${event.data}"
+                                        "quickedit_record_permissions_loading": false
+                                    }
+                                }
+                            },
+                            {
+                                "actionType": "setValue",
+                                "componentId": `service_listview_${options.objectName}`,
+                                "args": {
+                                    "value":{
+                                        "quickedit_record_permissions": "${event.data}"
                                     }
                                 }
                             }
