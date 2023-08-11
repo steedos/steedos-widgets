@@ -244,7 +244,9 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {showDisp
             "type": "search-box",
             "name": "__keywords",
             "placeholder": "请输入关键字",
-            "value": crudKeywords
+            "value": crudKeywords,
+            "clearable": true,
+            "clearAndSubmit": true
           }
         ]
       },
