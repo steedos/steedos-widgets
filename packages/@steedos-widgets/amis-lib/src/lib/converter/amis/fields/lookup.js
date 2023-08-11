@@ -103,7 +103,8 @@ export function getLookupSapceUserTreeSchema(){
         "autoCheckChildren": false,
         "searchable": true,
         "searchConfig": {
-          "sticky": true
+          "sticky": true,
+          "placeholder": "查找部门"
         },
         "unfoldedLevel": 2,
         "style": {
