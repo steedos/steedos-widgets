@@ -110,8 +110,8 @@ export function getLookupSapceUserTreeSchema(){
         "style": {
           "max-height": "100%",
           "position": "absolute",
-          "left": "-200px",
-          "width": "190px",
+          "left": "-220px",
+          "width": "210px",
           "bottom": 0,
           "top": "0",
           "overflow": "auto",
@@ -132,7 +132,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     ctx.idFieldName = refObjectConfig.idFieldName
     ctx.objectName = refObjectConfig.name
 
-    const tableFields = [];
+    let tableFields = [];
     let i = 0;
     const searchableFields = [];
 
@@ -360,6 +360,14 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         top = 1000;
     };
 
+    if(referenceTo.objectName === "space_users"){
+        //出于保密需求，在lookup字段中隐藏人员对象的手机与邮箱字段
+        tableFields = _.filter(tableFields,function(field){
+            if(field.name != "email" && field.name != "mobile") return true;
+            else return false;
+        })
+    }
+
     let pickerSchema = null;
     if(ctx.formFactor === 'SMALL'){
         pickerSchema = await List.getListSchema(tableFields, {
@@ -381,7 +389,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         if(referenceTo.objectName === "space_users" && field.reference_to_field === "user" && !isMobile){
              headerToolbarItems = getLookupSapceUserTreeSchema();
              pickerSchema["style"] = {
-                "margin-left":"200px",
+                "margin-left":"220px",
                 "min-height": "300px"
              }
              pickerSchema.className = pickerSchema.className || "" + " steedos-select-user";
