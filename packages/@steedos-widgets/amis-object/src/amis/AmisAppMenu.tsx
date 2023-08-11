@@ -18,7 +18,7 @@ export const AmisAppMenu = async (props) => {
     if(links){
         return {
             "type": "nav",
-            className: `${className}`,
+            className: `${className} text-black`,
             "stacked": stacked,
             "overflow": overflow,
             "indentSize": indentSize,
@@ -58,7 +58,7 @@ export const AmisAppMenu = async (props) => {
                                       data.nav.push({
                                           "label": showIcon ? {
                                           type: 'tpl',
-                                          tpl: \`<span class='fill-slate-500  text-slate-700 block -ml-px no-underline group flex items-center text-[15px] font-medium rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
+                                          tpl: \`<span class='fill-slate-500 word-break leading-6 block -ml-px no-underline group flex items-center text-[15px] rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
                                           } : tab.name,
                                           "to": tab.path,
                                           "target":tab.target,
@@ -80,7 +80,7 @@ export const AmisAppMenu = async (props) => {
                                           return {
                                           "label": showIcon ? {
                                               type: 'tpl',
-                                              tpl: \`<span class='fill-slate-500  text-slate-700 block -ml-px no-underline group flex items-center text-[15px] font-medium rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
+                                              tpl: \`<span class='fill-slate-500 word-break leading-6 block -ml-px no-underline group flex items-center text-[15px] rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
                                           }  : tab.name,
                                           "to": tab.path,
                                           "target":tab.target,
@@ -102,7 +102,7 @@ export const AmisAppMenu = async (props) => {
                               data.nav.push({
                               "label": showIcon ? {
                                   type: 'tpl',
-                                  tpl: \`<span class='fill-slate-500  text-slate-700 block -ml-px no-underline group flex items-center text-[15px] font-medium rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
+                                  tpl: \`<span class='fill-slate-500 word-break leading-6 block -ml-px no-underline group flex items-center text-[15px] rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
                               } : tab.name,
                               "to": tab.path,
                               "target":tab.target,
@@ -122,7 +122,7 @@ export const AmisAppMenu = async (props) => {
                         "id": "appMenuService",
                         "body":{
                             "type": "nav",
-                            className: "${className}",
+                            className: "${className} text-black",
                             "stacked": ${stacked},
                             "overflow": ${JSON.stringify(overflow)},
                             "indentSize": ${indentSize},
