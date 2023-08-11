@@ -177,7 +177,9 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       if(localListViewProps){
         localListViewProps = JSON.parse(localListViewProps);
         for(var k in localListViewProps){
-          removedValues[k] = null;
+          if(k !== "__keywords"){
+            removedValues[k] = null;
+          }
         }
       }
     }
