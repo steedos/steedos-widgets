@@ -261,15 +261,30 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             }
         }
 
-
         if(allowSearchFields){
             allowSearchFields.forEach(function(key){
                 const keyValue = selfData[key];
-                if(keyValue){
+                if(_.isString(keyValue)){
                     filters.push([key, "contains", keyValue]);
+                }else if(_.isArray(keyValue) || _.isBoolean(keyValue) || keyValue){
+                    filters.push([key, "=", keyValue]);
                 }
             })
         }
+
+        if(selfData.__keywords && allowSearchFields){
+            const keywordsFilters = [];
+            allowSearchFields.forEach(function(key, index){
+                const keyValue = selfData.__keywords;
+                if(keyValue){
+                    keywordsFilters.push([key, "contains", keyValue]);
+                    if(index < allowSearchFields.length - 1){
+                        keywordsFilters.push('or');
+                    }
+                }
+            })
+            filters.push(keywordsFilters);
+        };
 
         var fieldFilters = ${JSON.stringify(field.filters)};
         if(fieldFilters && fieldFilters.length){
