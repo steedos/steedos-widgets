@@ -93,8 +93,13 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {showDisp
       searchableFieldsLabel.push(field.label);
     }
   });
-  // const listViewKeywordsStoreKey = location.pathname + "/crud_keywords";
-  // let crudKeywords = sessionStorage.getItem(listViewKeywordsStoreKey) || "";
+  const listViewPropsStoreKey = location.pathname + "/crud";
+  let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
+  let crudKeywords = "";
+  if(localListViewProps){
+    localListViewProps = JSON.parse(localListViewProps);
+    crudKeywords = (localListViewProps && localListViewProps.__keywords) || "";
+  }
 
   const isMobile = window.innerWidth < 768;
   if(isMobile){
@@ -239,7 +244,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {showDisp
             "type": "search-box",
             "name": "__keywords",
             "placeholder": "请输入关键字",
-            // "value": crudKeywords
+            "value": crudKeywords
           }
         ]
       },

@@ -847,7 +847,7 @@ export async function getTableApi(mainObject, fields, options){
         try{
             // TODO: 不应该直接在这里取localStorage，应该从外面传入
             const listName = api.data.listName;
-            const listViewPropsStoreKey = location.pathname + "/crud/" + (listName || "");
+            const listViewPropsStoreKey = location.pathname + "/crud";
             let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
             if(localListViewProps){
                 localListViewProps = JSON.parse(localListViewProps);
@@ -1048,7 +1048,7 @@ export async function getTableApi(mainObject, fields, options){
     try{
         // TODO: 不应该直接在这里取localStorage，应该从外面传入
         const listName = api.body.listName;
-        const listViewPropsStoreKey = location.pathname + "/crud/" + (listName || "");
+        const listViewPropsStoreKey = location.pathname + "/crud";
         /**
          * localListViewProps规范来自crud请求api中api.data.$self参数值的。
          * 比如：{"perPage":20,"page":1,"__searchable__name":"7","__searchable__between__n1__c":[null,null],"filter":[["name","contains","a"]]}
@@ -1076,9 +1076,6 @@ export async function getTableApi(mainObject, fields, options){
         delete selfData.context;
         delete selfData.global;
         sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify(selfData));
-        // const listViewKeywordsStoreKey = location.pathname + "/crud_keywords";
-        // console.log("==sessionStorage __keywords===", selfData);
-        // sessionStorage.setItem(listViewKeywordsStoreKey, selfData.__keywords || "");
         // 返回页码到UI界面
         payload.data.page= selfData.page;
     }
