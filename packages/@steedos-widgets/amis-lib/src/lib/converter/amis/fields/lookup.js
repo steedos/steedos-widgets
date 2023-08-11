@@ -393,7 +393,8 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         if (isAllowCreate) {
             const new_button = await standardNew.getSchema(refObjectConfig, { appId: ctx.appId, objectName: refObjectConfig.name, formFactor: ctx.formFactor });
             new_button.align = "right";
-            pickerSchema.headerToolbar.push(new_button);
+            // 保持快速搜索放在最左侧，新建按钮往里插，而不是push到最后
+            pickerSchema.headerToolbar.splice(pickerSchema.headerToolbar.length - 1, 0, new_button);
         }
         pickerSchema.footerToolbar = refObjectConfig.enable_tree ? [] : getObjectFooterToolbar();
         if (ctx.filterVisible !== false) {

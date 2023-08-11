@@ -84,9 +84,18 @@ crudService && crudService.setData({showFieldsFilter: toShowFieldsFilter});
 `;
 
 
-export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = false, hiddenCount = false, headerToolbarItems, filterVisible = true} = {}){
+export function getObjectHeaderToolbar(mainObject, fields, formFactor, {showDisplayAs = false, hiddenCount = false, headerToolbarItems, filterVisible = true} = {}){
   // console.log(`getObjectHeaderToolbar====>`, filterVisible)
-  console.log(`getObjectHeaderToolbar`, mainObject)
+  // console.log(`getObjectHeaderToolbar`, mainObject)
+  const searchableFieldsLabel = [];
+  _.each(fields, function (field) {
+    if (field.searchable) {
+      searchableFieldsLabel.push(field.label);
+    }
+  });
+  // const listViewKeywordsStoreKey = location.pathname + "/crud_keywords";
+  // let crudKeywords = sessionStorage.getItem(listViewKeywordsStoreKey) || "";
+
   const isMobile = window.innerWidth < 768;
   if(isMobile){
     showDisplayAs = false;
@@ -176,21 +185,9 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
         "type": "tpl",
         "tpl":  "${count} " + i18next.t('frontend_record_sum')
       },
-      {
-        "type": "reload",
-        "align": "right",
-        //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，为保持统一，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330
-        // "tooltip": i18next.t('frontend_button_reload_tooltip'),
-        "tooltip":"",
-        "tooltipPlacement": "top",
-        "className": "bg-white p-2 rounded border-gray-300 text-gray-500"
-      },
-      // getExportExcelToolbarButtonSchema(),
-      mainObject?.permissions?.allowCreateListViews ? getSettingListviewToolbarButtonSchema() : {},
-      getDisplayAsButton(mainObject?.name, showDisplayAs),
       filterVisible ? {
         "label": i18next.t('frontend_button_search_tooltip'),
-        "icon": "fa fa-search",
+        "icon": "fa fa-filter",
         //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，为保持统一，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330
         // "tooltip": i18next.t('frontend_button_search_tooltip'),
         // "tooltipPlacement": "top",
@@ -216,14 +213,36 @@ export function getObjectHeaderToolbar(mainObject, formFactor, {showDisplayAs = 
             ]
           }
         }
-      } : {}
-      // {
-      //   "type": "search-box",
-      //   "align": "right",
-      //   "name": "__keywords",
-      //   "placeholder": "请输入关键字",
-      //   "mini": true
-      // },
+      } : {},
+      {
+        "type": "reload",
+        "align": "right",
+        //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，为保持统一，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330
+        // "tooltip": i18next.t('frontend_button_reload_tooltip'),
+        "tooltip":"",
+        "tooltipPlacement": "top",
+        "className": "bg-white p-2 rounded border-gray-300 text-gray-500"
+      },
+      // getExportExcelToolbarButtonSchema(),
+      mainObject?.permissions?.allowCreateListViews ? getSettingListviewToolbarButtonSchema() : {},
+      getDisplayAsButton(mainObject?.name, showDisplayAs),
+      {
+        "type": "tooltip-wrapper",
+        "align": "right",
+        "title": "",
+        "content": "可模糊搜索字段：" + searchableFieldsLabel.join(","),
+        "placement": "bottom",
+        "tooltipTheme": "dark",
+        "trigger": "click",
+        "body": [
+          {
+            "type": "search-box",
+            "name": "__keywords",
+            "placeholder": "请输入关键字",
+            // "value": crudKeywords
+          }
+        ]
+      },
       // {
       //     "type": "drag-toggler",
       //     "align": "right"

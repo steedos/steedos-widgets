@@ -163,7 +163,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
       }
     }
     // console.log(`getObjectHeaderToolbar====2===>`, options.filterVisible)
-    bodyProps.headerToolbar = getObjectHeaderToolbar(objectSchema, options.formFactor, {
+    bodyProps.headerToolbar = getObjectHeaderToolbar(objectSchema, fields, options.formFactor, {
       showDisplayAs, 
       hiddenCount: options.queryCount === false, 
       headerToolbarItems: options.headerToolbarItems,

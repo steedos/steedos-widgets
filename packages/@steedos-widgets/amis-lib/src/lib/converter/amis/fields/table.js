@@ -1076,6 +1076,9 @@ export async function getTableApi(mainObject, fields, options){
         delete selfData.context;
         delete selfData.global;
         sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify(selfData));
+        // const listViewKeywordsStoreKey = location.pathname + "/crud_keywords";
+        // console.log("==sessionStorage __keywords===", selfData);
+        // sessionStorage.setItem(listViewKeywordsStoreKey, selfData.__keywords || "");
         // 返回页码到UI界面
         payload.data.page= selfData.page;
     }
