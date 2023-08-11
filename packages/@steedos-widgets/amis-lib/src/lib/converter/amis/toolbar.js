@@ -239,6 +239,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {showDisp
         "placement": "bottom",
         "tooltipTheme": "dark",
         "trigger": "click",
+        "className": "mr-1",
         "body": [
           {
             "type": "search-box",
