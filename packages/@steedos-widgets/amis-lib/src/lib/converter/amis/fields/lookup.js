@@ -360,13 +360,6 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         top = 1000;
     };
 
-    if(referenceTo.objectName === "space_users"){
-        //出于保密需求，在lookup字段中隐藏人员对象的手机与邮箱字段
-        tableFields = _.filter(tableFields,function(field){
-            if(field.name != "email" && field.name != "mobile") return true;
-            else return false;
-        })
-    }
 
     let pickerSchema = null;
     if(ctx.formFactor === 'SMALL'){
