@@ -112,7 +112,7 @@ export function getLookupSapceUserTreeSchema(){
           "left": "-200px",
           "width": "190px",
           "bottom": 0,
-          "top": "2px",
+          "top": "0",
           "overflow": "auto",
           "min-height":"300px"
         },
