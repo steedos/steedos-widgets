@@ -85,7 +85,7 @@ crudService && crudService.setData({showFieldsFilter: toShowFieldsFilter});
 `;
 
 
-export function getObjectHeaderToolbar(mainObject, fields, formFactor, {showDisplayAs = false, hiddenCount = false, headerToolbarItems, filterVisible = true} = {}){
+export function getObjectHeaderToolbar(mainObject, fields, formFactor, { showDisplayAs = false, hiddenCount = false, headerToolbarItems, filterVisible = true, isLookup = false } = {}){
   // console.log(`getObjectHeaderToolbar====>`, filterVisible)
   // console.log(`getObjectHeaderToolbar`, mainObject)
   const searchableFieldsLabel = [];
@@ -97,7 +97,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {showDisp
   const listViewPropsStoreKey = location.pathname + "/crud";
   let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
   let crudKeywords = "";
-  if(localListViewProps){
+  if(localListViewProps && !isLookup){
     localListViewProps = JSON.parse(localListViewProps);
     crudKeywords = (localListViewProps && localListViewProps.__keywords) || "";
   }
