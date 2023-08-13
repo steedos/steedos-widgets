@@ -171,7 +171,27 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {showDisp
           }
         }
       } : {},
-      getDisplayAsButton(mainObject?.name, showDisplayAs)
+      getDisplayAsButton(mainObject?.name, showDisplayAs),
+      {
+        "type": "tooltip-wrapper",
+        "align": "right",
+        "title": "",
+        "content": "可模糊搜索字段：" + searchableFieldsLabel.join(","),
+        "placement": "bottom",
+        "tooltipTheme": "dark",
+        "trigger": "click",
+        // "className": "mr-1",
+        "body": [
+          {
+            "type": "search-box",
+            "name": "__keywords",
+            "placeholder": "请输入关键字",
+            "value": crudKeywords,
+            "clearable": true,
+            "clearAndSubmit": true
+          }
+        ]
+      },
   ]
   }else{
     return [
