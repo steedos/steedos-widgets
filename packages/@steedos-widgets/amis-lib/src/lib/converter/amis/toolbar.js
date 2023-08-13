@@ -3,6 +3,7 @@ import { Router } from "@steedos-widgets/amis-lib";
 import { getExportExcelToolbarButtonSchema } from './toolbars/export_excel';
 import { getSettingListviewToolbarButtonSchema } from './toolbars/setting_listview'; 
 import { i18next } from "../../../i18n"
+import * as Fields from './fields/index';
 
 const getDisplayAsButton = function(objectName, showDisplayAs){
   let displayAs = Router.getTabDisplayAs(objectName);
@@ -89,7 +90,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {showDisp
   // console.log(`getObjectHeaderToolbar`, mainObject)
   const searchableFieldsLabel = [];
   _.each(fields, function (field) {
-    if (field.searchable) {
+    if (field.searchable && Fields.SEARCHABLE_FIELD_TYPES.indexOf(field.type) > -1) {
       searchableFieldsLabel.push(field.label);
     }
   });
@@ -176,7 +177,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {showDisp
         "type": "tooltip-wrapper",
         "align": "right",
         "title": "",
-        "content": "可模糊搜索字段：" + searchableFieldsLabel.join(","),
+        "content": "可搜索字段：" + searchableFieldsLabel.join(","),
         "placement": "bottom",
         "tooltipTheme": "dark",
         "trigger": "click",
@@ -255,7 +256,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {showDisp
         "type": "tooltip-wrapper",
         "align": "right",
         "title": "",
-        "content": "可模糊搜索字段：" + searchableFieldsLabel.join(","),
+        "content": "可搜索字段：" + searchableFieldsLabel.join(","),
         "placement": "bottom",
         "tooltipTheme": "dark",
         "trigger": "click",
