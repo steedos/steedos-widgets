@@ -110,8 +110,8 @@ export function getLookupSapceUserTreeSchema(){
         "style": {
           "max-height": "100%",
           "position": "absolute",
-          "left": "-220px",
-          "width": "210px",
+          "left": "-330px",
+          "width": "320px",
           "bottom": 0,
           "top": "0",
           "overflow": "auto",
@@ -397,7 +397,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         if(referenceTo.objectName === "space_users" && field.reference_to_field === "user" && !isMobile){
              headerToolbarItems = getLookupSapceUserTreeSchema();
              pickerSchema["style"] = {
-                "margin-left":"220px",
+                "margin-left":"330px",
                 "min-height": "300px"
              }
              pickerSchema.className = pickerSchema.className || "" + " steedos-select-user";
