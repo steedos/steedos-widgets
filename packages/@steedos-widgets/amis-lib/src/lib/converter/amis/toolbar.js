@@ -157,7 +157,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {showDisp
           ],
           "size":8,
           "animation": true,
-          "visibleOn": "${isFieldsFilterEmpty == false}"
+          "visibleOn": "${isFieldsFilterEmpty == false && isLookup != true}"
         },
         "align": "right",
         "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
@@ -225,7 +225,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {showDisp
           ],
           "size":8,
           "animation": true,
-          "visibleOn": "${isFieldsFilterEmpty == false}"
+          "visibleOn": "${isFieldsFilterEmpty == false && isLookup != true}"
         },
         "align": "right",
         "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
