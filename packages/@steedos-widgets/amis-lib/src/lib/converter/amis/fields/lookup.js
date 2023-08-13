@@ -403,7 +403,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
              pickerSchema.className = pickerSchema.className || "" + " steedos-select-user";
         }
 
-        pickerSchema.headerToolbar = getObjectHeaderToolbar(refObjectConfig, ctx.formFactor, { headerToolbarItems });
+        pickerSchema.headerToolbar = getObjectHeaderToolbar(refObjectConfig, fieldsArr, ctx.formFactor, { headerToolbarItems });
         const isAllowCreate = refObjectConfig.permissions.allowCreate;
         if (isAllowCreate) {
             const new_button = await standardNew.getSchema(refObjectConfig, { appId: ctx.appId, objectName: refObjectConfig.name, formFactor: ctx.formFactor });
