@@ -7,6 +7,7 @@ import * as File from './file';
 import { getAmisStaticFieldType } from './type';
 import * as _ from 'lodash'
 
+export const SEARCHABLE_FIELD_TYPES = ["text", "textarea", "autonumber", "url", "email"];
 export const OMIT_FIELDS = ['created', 'created_by', 'modified', 'modified_by'];
 export { getAmisStaticFieldType } from './type';
 // const Lookup = require('./lookup');

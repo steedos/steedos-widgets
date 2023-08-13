@@ -7,6 +7,7 @@ import { each, forEach, isBoolean, isEmpty } from 'lodash';
 import { getAmisFileReadonlySchema } from './file'
 import { Router } from '../../../router'
 import { i18next } from '../../../../i18n'
+
 function getOperation(fields){
     const controls = [];
     _.each(fields, function(field){
@@ -800,7 +801,7 @@ export async function getTableApi(mainObject, fields, options){
         baseFilters = filter;
     }
     _.each(fields,function(field){
-        if(field.searchable){
+        if(field.searchable && Fields.SEARCHABLE_FIELD_TYPES.indexOf(field.type) > -1){
             searchableFields.push(field.name);
         }
     })
