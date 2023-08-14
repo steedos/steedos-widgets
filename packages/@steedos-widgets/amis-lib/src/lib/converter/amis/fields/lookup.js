@@ -272,19 +272,10 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             })
         }
 
-        if(selfData.__keywords && allowSearchFields){
-            const keywordsFilters = [];
-            allowSearchFields.forEach(function(key, index){
-                const keyValue = selfData.__keywords;
-                if(keyValue){
-                    keywordsFilters.push([key, "contains", keyValue]);
-                    if(index < allowSearchFields.length - 1){
-                        keywordsFilters.push('or');
-                    }
-                }
-            })
+        var keywordsFilters = SteedosUI.getKeywordsSearchFilter(selfData.__keywords, allowSearchFields);
+        if(keywordsFilters && keywordsFilters.length > 0){
             filters.push(keywordsFilters);
-        };
+        }
 
         var fieldFilters = ${JSON.stringify(field.filters)};
         if(fieldFilters && fieldFilters.length){

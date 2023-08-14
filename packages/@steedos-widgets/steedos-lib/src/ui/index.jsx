@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-27 15:54:12
- * @LastEditors: liaodaxue
- * @LastEditTime: 2023-06-13 18:23:02
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-08-14 15:47:27
  * @Description: 
  */
 import { message, notification, Button, Space} from 'antd';
@@ -109,5 +109,20 @@ export const SteedosUI = Object.assign({}, {
           }
       });
       return searchableFilter;
+    },
+    getKeywordsSearchFilter: (keywords, allowSearchFields)=>{
+      const keywordsFilters = [];
+      if(keywords && allowSearchFields){
+          allowSearchFields.forEach(function(key, index){
+              const keyValue = keywords;
+              if(keyValue){
+                  keywordsFilters.push([key, "contains", keyValue]);
+                  if(index < allowSearchFields.length - 1){
+                      keywordsFilters.push('or');
+                  }
+              }
+          })
+      };
+      return keywordsFilters;
     }
 })
