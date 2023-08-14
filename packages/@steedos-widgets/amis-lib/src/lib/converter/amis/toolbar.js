@@ -186,7 +186,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, { showDis
           {
             "type": "search-box",
             "name": "__keywords",
-            "placeholder": "请输入关键字",
+            "placeholder": "快速搜索",
             "value": crudKeywords,
             "clearable": true,
             "clearAndSubmit": true
@@ -265,7 +265,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, { showDis
           {
             "type": "search-box",
             "name": "__keywords",
-            "placeholder": "请输入关键字",
+            "placeholder": "快速搜索",
             "value": crudKeywords,
             "clearable": true,
             "clearAndSubmit": true
