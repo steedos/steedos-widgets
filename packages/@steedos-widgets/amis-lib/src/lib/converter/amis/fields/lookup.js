@@ -746,7 +746,7 @@ export async function lookupToAmis(field, readonly, ctx){
     }
 
     if(referenceTo.objectName === "space_users" && field.reference_to_field === "user"){
-        if(ctx.idsDependOn || field.amis){
+        if(ctx.idsDependOn){
             // ids人员点选模式
             return await lookupToAmisIdsPicker(field, readonly, ctx);
         }
