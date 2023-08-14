@@ -7,7 +7,7 @@ import * as File from './file';
 import { getAmisStaticFieldType } from './type';
 import * as _ from 'lodash'
 
-export const SEARCHABLE_FIELD_TYPES = ["text", "textarea", "autonumber", "url", "email"];
+export const QUICK_SEARCHABLE_FIELD_TYPES = ["text", "textarea", "autonumber", "url", "email"];
 export const OMIT_FIELDS = ['created', 'created_by', 'modified', 'modified_by'];
 export { getAmisStaticFieldType } from './type';
 // const Lookup = require('./lookup');
@@ -788,4 +788,17 @@ export function isFieldTypeSearchable(fieldType) {
 
 if (typeof window != 'undefined') {
     window.isFieldTypeSearchable = isFieldTypeSearchable;
+}
+
+
+export function isFieldQuickSearchable(field, nameFieldKey) {
+    let fieldSearchable = field.searchable;
+    if(fieldSearchable !== false && field.name === nameFieldKey){
+        // 对象上名称字段的searchable默认认为是true
+        fieldSearchable = true;
+    }
+    if (fieldSearchable && QUICK_SEARCHABLE_FIELD_TYPES.indexOf(field.type) > -1) {
+        return true;
+    }
+    return false;
 }

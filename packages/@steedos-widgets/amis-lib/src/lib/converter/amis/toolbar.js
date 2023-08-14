@@ -84,10 +84,10 @@ crudService && crudService.setData({showFieldsFilter: toShowFieldsFilter});
 // }
 `;
 
-function getObjectHeaderQuickSearchBox(fields, formFactor, { isLookup = false } = {}){
+function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup = false } = {}){
   const searchableFieldsLabel = [];
   _.each(fields, function (field) {
-    if (field.searchable && Fields.SEARCHABLE_FIELD_TYPES.indexOf(field.type) > -1) {
+    if (Fields.isFieldQuickSearchable(field, mainObject.NAME_FIELD_KEY)) {
       searchableFieldsLabel.push(field.label);
     }
   });
@@ -109,6 +109,7 @@ function getObjectHeaderQuickSearchBox(fields, formFactor, { isLookup = false } 
     "tooltipTheme": "dark",
     "trigger": "click",
     "className": formFactor !== 'SMALL' ? "mr-1" : '',
+    "visible": !!searchableFieldsLabel.length,
     "body": [
       {
         "type": "search-box",
@@ -197,7 +198,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, { showDis
         }
       } : {},
       getDisplayAsButton(mainObject?.name, showDisplayAs),
-      getObjectHeaderQuickSearchBox(fields, formFactor, { isLookup })
+      getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup })
   ]
   }else{
     return [
@@ -257,7 +258,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, { showDis
       // getExportExcelToolbarButtonSchema(),
       mainObject?.permissions?.allowCreateListViews ? getSettingListviewToolbarButtonSchema() : {},
       getDisplayAsButton(mainObject?.name, showDisplayAs),
-      getObjectHeaderQuickSearchBox(fields, formFactor, { isLookup }),
+      getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup }),
       // {
       //     "type": "drag-toggler",
       //     "align": "right"

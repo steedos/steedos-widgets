@@ -177,7 +177,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             })){
                 i++;
                 tableFields.push(field)
-                if(field.searchable && Field.SEARCHABLE_FIELD_TYPES.indexOf(field.type) > -1){
+                if(Field.isFieldQuickSearchable(field, refObjectConfig.NAME_FIELD_KEY)){
                     searchableFields.push(field.name);
                 }
             }
