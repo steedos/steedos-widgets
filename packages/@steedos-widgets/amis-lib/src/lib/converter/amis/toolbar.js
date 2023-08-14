@@ -84,16 +84,14 @@ crudService && crudService.setData({showFieldsFilter: toShowFieldsFilter});
 // }
 `;
 
-
-export function getObjectHeaderToolbar(mainObject, fields, formFactor, { showDisplayAs = false, hiddenCount = false, headerToolbarItems, filterVisible = true, isLookup = false } = {}){
-  // console.log(`getObjectHeaderToolbar====>`, filterVisible)
-  // console.log(`getObjectHeaderToolbar`, mainObject)
+function getObjectHeaderQuickSearchBox(fields, formFactor, { isLookup = false } = {}){
   const searchableFieldsLabel = [];
   _.each(fields, function (field) {
     if (field.searchable && Fields.SEARCHABLE_FIELD_TYPES.indexOf(field.type) > -1) {
       searchableFieldsLabel.push(field.label);
     }
   });
+
   const listViewPropsStoreKey = location.pathname + "/crud";
   let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
   let crudKeywords = "";
@@ -101,6 +99,32 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, { showDis
     localListViewProps = JSON.parse(localListViewProps);
     crudKeywords = (localListViewProps && localListViewProps.__keywords) || "";
   }
+
+  return {
+    "type": "tooltip-wrapper",
+    "align": "right",
+    "title": "",
+    "content": "可搜索字段：" + searchableFieldsLabel.join(","),
+    "placement": "bottom",
+    "tooltipTheme": "dark",
+    "trigger": "click",
+    "className": formFactor !== 'SMALL' ? "mr-1" : '',
+    "body": [
+      {
+        "type": "search-box",
+        "name": "__keywords",
+        "placeholder": "快速搜索",
+        "value": crudKeywords,
+        "clearable": true,
+        "clearAndSubmit": true
+      }
+    ]
+  }
+}
+
+export function getObjectHeaderToolbar(mainObject, fields, formFactor, { showDisplayAs = false, hiddenCount = false, headerToolbarItems, filterVisible = true, isLookup = false } = {}){
+  // console.log(`getObjectHeaderToolbar====>`, filterVisible)
+  // console.log(`getObjectHeaderToolbar`, mainObject)
 
   const isMobile = window.innerWidth < 768;
   if(isMobile){
@@ -173,26 +197,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, { showDis
         }
       } : {},
       getDisplayAsButton(mainObject?.name, showDisplayAs),
-      {
-        "type": "tooltip-wrapper",
-        "align": "right",
-        "title": "",
-        "content": "可搜索字段：" + searchableFieldsLabel.join(","),
-        "placement": "bottom",
-        "tooltipTheme": "dark",
-        "trigger": "click",
-        // "className": "mr-1",
-        "body": [
-          {
-            "type": "search-box",
-            "name": "__keywords",
-            "placeholder": "快速搜索",
-            "value": crudKeywords,
-            "clearable": true,
-            "clearAndSubmit": true
-          }
-        ]
-      },
+      getObjectHeaderQuickSearchBox(fields, formFactor, { isLookup })
   ]
   }else{
     return [
@@ -252,26 +257,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, { showDis
       // getExportExcelToolbarButtonSchema(),
       mainObject?.permissions?.allowCreateListViews ? getSettingListviewToolbarButtonSchema() : {},
       getDisplayAsButton(mainObject?.name, showDisplayAs),
-      {
-        "type": "tooltip-wrapper",
-        "align": "right",
-        "title": "",
-        "content": "可搜索字段：" + searchableFieldsLabel.join(","),
-        "placement": "bottom",
-        "tooltipTheme": "dark",
-        "trigger": "click",
-        "className": "mr-1",
-        "body": [
-          {
-            "type": "search-box",
-            "name": "__keywords",
-            "placeholder": "快速搜索",
-            "value": crudKeywords,
-            "clearable": true,
-            "clearAndSubmit": true
-          }
-        ]
-      },
+      getObjectHeaderQuickSearchBox(fields, formFactor, { isLookup }),
       // {
       //     "type": "drag-toggler",
       //     "align": "right"
