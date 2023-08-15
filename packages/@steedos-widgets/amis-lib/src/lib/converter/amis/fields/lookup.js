@@ -218,7 +218,8 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     source.data.$term = "$term";
     source.data.$self = "$$";
 
-   
+    let keywordsSearchBoxName = `__keywords_lookup__${field.name}__to__${refObjectConfig.name}`;
+    
     source.requestAdaptor = `
         const selfData = JSON.parse(JSON.stringify(api.data.$self));
         var filters = [];
@@ -272,7 +273,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             })
         }
 
-        var keywordsFilters = SteedosUI.getKeywordsSearchFilter(selfData.__keywords, allowSearchFields);
+        var keywordsFilters = SteedosUI.getKeywordsSearchFilter(selfData.${keywordsSearchBoxName}, allowSearchFields);
         if(keywordsFilters && keywordsFilters.length > 0){
             filters.push(keywordsFilters);
         }
@@ -394,7 +395,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
              pickerSchema.className = pickerSchema.className || "" + " steedos-select-user";
         }
 
-        pickerSchema.headerToolbar = getObjectHeaderToolbar(refObjectConfig, fieldsArr, ctx.formFactor, { headerToolbarItems, isLookup: true });
+        pickerSchema.headerToolbar = getObjectHeaderToolbar(refObjectConfig, fieldsArr, ctx.formFactor, { headerToolbarItems, isLookup: true, keywordsSearchBoxName });
         const isAllowCreate = refObjectConfig.permissions.allowCreate;
         if (isAllowCreate) {
             const new_button = await standardNew.getSchema(refObjectConfig, { appId: ctx.appId, objectName: refObjectConfig.name, formFactor: ctx.formFactor });

@@ -84,7 +84,7 @@ crudService && crudService.setData({showFieldsFilter: toShowFieldsFilter});
 // }
 `;
 
-function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup = false } = {}){
+function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup = false, keywordsSearchBoxName = "__keywords" } = {}){
   const searchableFieldsLabel = [];
   _.each(fields, function (field) {
     if (Fields.isFieldQuickSearchable(field, mainObject.NAME_FIELD_KEY)) {
@@ -113,7 +113,7 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
     "body": [
       {
         "type": "search-box",
-        "name": "__keywords",
+        "name": keywordsSearchBoxName,
         "placeholder": "快速搜索",
         "value": crudKeywords,
         "clearable": true,
@@ -123,7 +123,9 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
   }
 }
 
-export function getObjectHeaderToolbar(mainObject, fields, formFactor, { showDisplayAs = false, hiddenCount = false, headerToolbarItems, filterVisible = true, isLookup = false } = {}){
+export function getObjectHeaderToolbar(mainObject, fields, formFactor, { 
+  showDisplayAs = false, hiddenCount = false, headerToolbarItems, 
+  filterVisible = true, isLookup = false, keywordsSearchBoxName } = {}){
   // console.log(`getObjectHeaderToolbar====>`, filterVisible)
   // console.log(`getObjectHeaderToolbar`, mainObject)
 
@@ -198,7 +200,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, { showDis
         }
       } : {},
       getDisplayAsButton(mainObject?.name, showDisplayAs),
-      getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup })
+      getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup, keywordsSearchBoxName })
   ]
   }else{
     return [
@@ -258,7 +260,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, { showDis
       // getExportExcelToolbarButtonSchema(),
       mainObject?.permissions?.allowCreateListViews ? getSettingListviewToolbarButtonSchema() : {},
       getDisplayAsButton(mainObject?.name, showDisplayAs),
-      getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup }),
+      getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup, keywordsSearchBoxName }),
       // {
       //     "type": "drag-toggler",
       //     "align": "right"
