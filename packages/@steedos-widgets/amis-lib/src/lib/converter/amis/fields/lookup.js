@@ -406,8 +406,9 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         pickerSchema.footerToolbar = refObjectConfig.enable_tree ? [] : getObjectFooterToolbar();
         if (ctx.filterVisible !== false) {
             pickerSchema.filter = await getObjectFilter(refObjectConfig, fields, {
+                ...ctx,
                 isLookup: true,
-                ...ctx
+                keywordsSearchBoxName
             });
         }
         pickerSchema.data = Object.assign({}, pickerSchema.data, {
