@@ -98,6 +98,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
   }
   const btnSearchId = "btn_filter_form_search_" + new Date().getTime();
   const filterFormSchema = await getObjectFieldsFilterFormSchema(ctx);
+  const keywordsSearchBoxName = ctx.keywordsSearchBoxName || "__keywords";
   const onSearchScript = `
     const scope = event.context.scoped;
     var filterForm = scope.parent.parent.getComponents().find(function(n){
@@ -182,6 +183,11 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
           }
         }
       }
+    }
+    else{
+      const keywordsSearchBoxName = "${keywordsSearchBoxName}";
+      //lookup字段保留快速搜索条件
+      removedValues[keywordsSearchBoxName] = filterFormValues[keywordsSearchBoxName];
     }
     filterForm.reset();
     listView.handleFilterSubmit(removedValues);

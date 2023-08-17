@@ -110,8 +110,8 @@ export function getLookupSapceUserTreeSchema(){
         "style": {
           "max-height": "100%",
           "position": "absolute",
-          "left": "-220px",
-          "width": "210px",
+          "left": "-330px",
+          "width": "320px",
           "bottom": 0,
           "top": "0",
           "overflow": "auto",
@@ -177,7 +177,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             })){
                 i++;
                 tableFields.push(field)
-                if(field.searchable){
+                if(Field.isFieldQuickSearchable(field, refObjectConfig.NAME_FIELD_KEY)){
                     searchableFields.push(field.name);
                 }
             }
@@ -218,7 +218,8 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     source.data.$term = "$term";
     source.data.$self = "$$";
 
-   
+    let keywordsSearchBoxName = `__keywords_lookup__${field.name}__to__${refObjectConfig.name}`;
+    
     source.requestAdaptor = `
         const selfData = JSON.parse(JSON.stringify(api.data.$self));
         var filters = [];
@@ -272,19 +273,10 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             })
         }
 
-        if(selfData.__keywords && allowSearchFields){
-            const keywordsFilters = [];
-            allowSearchFields.forEach(function(key, index){
-                const keyValue = selfData.__keywords;
-                if(keyValue){
-                    keywordsFilters.push([key, "contains", keyValue]);
-                    if(index < allowSearchFields.length - 1){
-                        keywordsFilters.push('or');
-                    }
-                }
-            })
+        var keywordsFilters = SteedosUI.getKeywordsSearchFilter(selfData.${keywordsSearchBoxName}, allowSearchFields);
+        if(keywordsFilters && keywordsFilters.length > 0){
             filters.push(keywordsFilters);
-        };
+        }
 
         var fieldFilters = ${JSON.stringify(field.filters)};
         if(fieldFilters && fieldFilters.length){
@@ -397,13 +389,13 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         if(referenceTo.objectName === "space_users" && field.reference_to_field === "user" && !isMobile){
              headerToolbarItems = getLookupSapceUserTreeSchema();
              pickerSchema["style"] = {
-                "margin-left":"220px",
+                "margin-left":"330px",
                 "min-height": "300px"
              }
              pickerSchema.className = pickerSchema.className || "" + " steedos-select-user";
         }
 
-        pickerSchema.headerToolbar = getObjectHeaderToolbar(refObjectConfig, ctx.formFactor, { headerToolbarItems });
+        pickerSchema.headerToolbar = getObjectHeaderToolbar(refObjectConfig, fieldsArr, ctx.formFactor, { headerToolbarItems, isLookup: true, keywordsSearchBoxName });
         const isAllowCreate = refObjectConfig.permissions.allowCreate;
         if (isAllowCreate) {
             const new_button = await standardNew.getSchema(refObjectConfig, { appId: ctx.appId, objectName: refObjectConfig.name, formFactor: ctx.formFactor });
@@ -414,8 +406,9 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         pickerSchema.footerToolbar = refObjectConfig.enable_tree ? [] : getObjectFooterToolbar();
         if (ctx.filterVisible !== false) {
             pickerSchema.filter = await getObjectFilter(refObjectConfig, fields, {
+                ...ctx,
                 isLookup: true,
-                ...ctx
+                keywordsSearchBoxName
             });
         }
         pickerSchema.data = Object.assign({}, pickerSchema.data, {
@@ -755,7 +748,7 @@ export async function lookupToAmis(field, readonly, ctx){
     }
 
     if(referenceTo.objectName === "space_users" && field.reference_to_field === "user"){
-        if(ctx.idsDependOn || field.amis){
+        if(ctx.idsDependOn){
             // ids人员点选模式
             return await lookupToAmisIdsPicker(field, readonly, ctx);
         }

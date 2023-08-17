@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-27 15:54:12
- * @LastEditors: liaodaxue
- * @LastEditTime: 2023-06-13 18:23:02
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-08-14 16:52:49
  * @Description: 
  */
 import { message, notification, Button, Space} from 'antd';
@@ -14,6 +14,7 @@ import { render } from './render';
 import { getFieldDefaultValue } from './defaultValue';
 import { getTreeOptions } from './tree';
 import { getClosestAmisComponentByType, isFilterFormValuesEmpty } from './amis';
+import { compact } from 'lodash';
 
 export const SteedosUI = Object.assign({}, {
     render: render,
@@ -109,5 +110,34 @@ export const SteedosUI = Object.assign({}, {
           }
       });
       return searchableFilter;
+    },
+    getKeywordsSearchFilter: (keywords, allowSearchFields) => {
+      const keywordsFilters = [];
+      if (keywords && allowSearchFields) {
+        var keyValues = keywords.split(/\s+/);//按空格分隔转为数组
+        keyValues = compact(keyValues);//移除空字符串元素
+        allowSearchFields.forEach(function (key, index) {
+          let everyFieldFilters = [];
+          if(keyValues.length == 1){
+            // 长度为1时说明没有空格分隔，直接赋值简化处理，而不是push，可以让输出的过滤条件少套一层无意义的数组
+            everyFieldFilters = [key, "contains", keyValues[0]];
+          }
+          else{
+            keyValues.forEach(function(valueItem, valueIndex){
+              everyFieldFilters.push([key, "contains", valueItem]);
+              if (valueIndex < keyValues.length - 1) {
+                everyFieldFilters.push('or');
+              }
+            });
+          }
+          if(everyFieldFilters.length){
+            keywordsFilters.push(everyFieldFilters);
+            if (index < allowSearchFields.length - 1) {
+              keywordsFilters.push('or');
+            }
+          }
+        })
+      };
+      return keywordsFilters;
     }
 })

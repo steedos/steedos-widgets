@@ -3,6 +3,7 @@ import { Router } from "@steedos-widgets/amis-lib";
 import { getExportExcelToolbarButtonSchema } from './toolbars/export_excel';
 import { getSettingListviewToolbarButtonSchema } from './toolbars/setting_listview'; 
 import { i18next } from "../../../i18n"
+import * as Fields from './fields/index';
 
 const getDisplayAsButton = function(objectName, showDisplayAs){
   let displayAs = Router.getTabDisplayAs(objectName);
@@ -83,23 +84,50 @@ crudService && crudService.setData({showFieldsFilter: toShowFieldsFilter});
 // }
 `;
 
-
-export function getObjectHeaderToolbar(mainObject, fields, formFactor, {showDisplayAs = false, hiddenCount = false, headerToolbarItems, filterVisible = true} = {}){
-  // console.log(`getObjectHeaderToolbar====>`, filterVisible)
-  // console.log(`getObjectHeaderToolbar`, mainObject)
+function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup = false, keywordsSearchBoxName = "__keywords" } = {}){
   const searchableFieldsLabel = [];
   _.each(fields, function (field) {
-    if (field.searchable) {
+    if (Fields.isFieldQuickSearchable(field, mainObject.NAME_FIELD_KEY)) {
       searchableFieldsLabel.push(field.label);
     }
   });
+
   const listViewPropsStoreKey = location.pathname + "/crud";
   let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
   let crudKeywords = "";
-  if(localListViewProps){
+  if(localListViewProps && !isLookup){
     localListViewProps = JSON.parse(localListViewProps);
     crudKeywords = (localListViewProps && localListViewProps.__keywords) || "";
   }
+
+  return {
+    "type": "tooltip-wrapper",
+    "align": "right",
+    "title": "",
+    "content": "可搜索字段：" + searchableFieldsLabel.join(","),
+    "placement": "bottom",
+    "tooltipTheme": "dark",
+    "trigger": "click",
+    "className": formFactor !== 'SMALL' ? "mr-1" : '',
+    "visible": !!searchableFieldsLabel.length,
+    "body": [
+      {
+        "type": "search-box",
+        "name": keywordsSearchBoxName,
+        "placeholder": "快速搜索",
+        "value": crudKeywords,
+        "clearable": true,
+        "clearAndSubmit": true
+      }
+    ]
+  }
+}
+
+export function getObjectHeaderToolbar(mainObject, fields, formFactor, { 
+  showDisplayAs = false, hiddenCount = false, headerToolbarItems, 
+  filterVisible = true, isLookup = false, keywordsSearchBoxName } = {}){
+  // console.log(`getObjectHeaderToolbar====>`, filterVisible)
+  // console.log(`getObjectHeaderToolbar`, mainObject)
 
   const isMobile = window.innerWidth < 768;
   if(isMobile){
@@ -156,7 +184,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {showDisp
           ],
           "size":8,
           "animation": true,
-          "visibleOn": "${isFieldsFilterEmpty == false}"
+          "visibleOn": "${isFieldsFilterEmpty == false && isLookup != true}"
         },
         "align": "right",
         "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
@@ -171,7 +199,8 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {showDisp
           }
         }
       } : {},
-      getDisplayAsButton(mainObject?.name, showDisplayAs)
+      getDisplayAsButton(mainObject?.name, showDisplayAs),
+      getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup, keywordsSearchBoxName })
   ]
   }else{
     return [
@@ -204,7 +233,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {showDisp
           ],
           "size":8,
           "animation": true,
-          "visibleOn": "${isFieldsFilterEmpty == false}"
+          "visibleOn": "${isFieldsFilterEmpty == false && isLookup != true}"
         },
         "align": "right",
         "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
@@ -231,26 +260,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {showDisp
       // getExportExcelToolbarButtonSchema(),
       mainObject?.permissions?.allowCreateListViews ? getSettingListviewToolbarButtonSchema() : {},
       getDisplayAsButton(mainObject?.name, showDisplayAs),
-      {
-        "type": "tooltip-wrapper",
-        "align": "right",
-        "title": "",
-        "content": "可模糊搜索字段：" + searchableFieldsLabel.join(","),
-        "placement": "bottom",
-        "tooltipTheme": "dark",
-        "trigger": "click",
-        "className": "mr-1",
-        "body": [
-          {
-            "type": "search-box",
-            "name": "__keywords",
-            "placeholder": "请输入关键字",
-            "value": crudKeywords,
-            "clearable": true,
-            "clearAndSubmit": true
-          }
-        ]
-      },
+      getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup, keywordsSearchBoxName }),
       // {
       //     "type": "drag-toggler",
       //     "align": "right"

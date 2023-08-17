@@ -18,3 +18,36 @@
         }
     }
 }
+/*
+    列表快速搜索，手机端及PC端分栏模式需要独占一行
+*/
+.steedos-crud-mobile-search-box {
+    .antd-Crud {
+        .antd-Crud-toolbar {
+            .antd-Crud-toolbar-item--right {
+                &:last-child {
+                    width: 100%;
+                    margin-top: 8px;
+                    .antd-TooltipWrapper {
+                        width: 100%;
+                        .antd-SearchBox.is-active {
+                            width: 100%;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.page-list-split{
+    .steedos-object-listview{
+        .steedos-crud-mobile-search-box
+    } 
+}
+
+@media (max-width: 768px){
+    .steedos-object-listview{
+        .steedos-crud-mobile-search-box
+    } 
+}

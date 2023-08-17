@@ -1,7 +1,7 @@
 {
   "name": "@steedos-widgets/example",
   "private": true,
-  "version": "1.2.39-beta.1",
+  "version": "1.2.40",
   "main": "dist/meta.js",
   "module": "dist/meta.js",
   "unpkg": "dist/meta.js",

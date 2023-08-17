@@ -7,6 +7,7 @@ import { each, forEach, isBoolean, isEmpty } from 'lodash';
 import { getAmisFileReadonlySchema } from './file'
 import { Router } from '../../../router'
 import { i18next } from '../../../../i18n'
+
 function getOperation(fields){
     const controls = [];
     _.each(fields, function(field){
@@ -799,8 +800,9 @@ export async function getTableApi(mainObject, fields, options){
     if(filter){
         baseFilters = filter;
     }
-    _.each(fields,function(field){
-        if(field.searchable){
+
+    _.each(fields, function (field) {
+        if (Fields.isFieldQuickSearchable(field, mainObject.NAME_FIELD_KEY)) {
             searchableFields.push(field.name);
         }
     })
@@ -928,19 +930,10 @@ export async function getTableApi(mainObject, fields, options){
             })
         }
 
-        if(selfData.__keywords && allowSearchFields){
-            const keywordsFilters = [];
-            allowSearchFields.forEach(function(key, index){
-                const keyValue = selfData.__keywords;
-                if(keyValue){
-                    keywordsFilters.push([key, "contains", keyValue]);
-                    if(index < allowSearchFields.length - 1){
-                        keywordsFilters.push('or');
-                    }
-                }
-            })
+        var keywordsFilters = SteedosUI.getKeywordsSearchFilter(selfData.__keywords, allowSearchFields);
+        if(keywordsFilters && keywordsFilters.length > 0){
             userFilters.push(keywordsFilters);
-        };
+        }
 
         let filters = [];
 
