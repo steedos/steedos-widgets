@@ -46,7 +46,7 @@ export async function getFieldsTemplate(fields, display){
     let expandFieldsQuery = "";
     if(expandFields.length > 0){
         _.each(expandFields, function(field){
-            expandFieldsQuery = expandFieldsQuery + `${field.expandInfo.fieldName}:${field.expandInfo.fieldName}__expand{${field.expandInfo.displayName}}`
+            expandFieldsQuery = expandFieldsQuery + `${field.expandInfo.fieldName}__expand{${field.expandInfo.displayName}}`
         })
     }
 

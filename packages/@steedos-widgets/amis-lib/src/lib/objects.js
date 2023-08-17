@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-08-04 12:27:48
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2023-08-17 18:03:51
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -389,7 +389,7 @@ export async function getTableSchema(
                 if(filedInfo && (filedInfo.type === 'lookup' || filedInfo.type === 'master_detail') && isString(filedInfo.reference_to) ){
                     const rfUiSchema = await getUISchema(filedInfo.reference_to);
                     const rfFieldInfo = rfUiSchema.fields[displayName];
-                    fields.push(Object.assign({}, rfFieldInfo, {name: column, expand: true, expandInfo: {fieldName, displayName}}));
+                    fields.push(Object.assign({}, rfFieldInfo, {name: `${fieldName}__expand.${displayName}`, expand: true, expandInfo: {fieldName, displayName}}));
                 }
             }else{
                 if(uiSchema.fields[column]){
@@ -405,7 +405,7 @@ export async function getTableSchema(
                     const rfUiSchema = await getUISchema(filedInfo.reference_to);
                     const rfFieldInfo = rfUiSchema.fields[displayName];
                     fields.push(Object.assign({}, rfFieldInfo, 
-                        {name: column.field, expand: true, expandInfo: {fieldName, displayName}},
+                        {name: `${fieldName}__expand.${displayName}`, expand: true, expandInfo: {fieldName, displayName}},
                         {
                             width: column.width,
                             wrap: column.wrap, // wrap = true 是没效果的
