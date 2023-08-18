@@ -344,24 +344,30 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
     const objectName = data.objectName;
     const eventId = data.event && data.event.id;
     doAction({
-      "actionType": "dialog",
-      "dialog": {
-        "type": "dialog",
-        "title": "",
-        "body": [
-          {
-            "type": "steedos-record-detail",
-            "objectApiName": "\${objectName}",
-            "recordId": data.event && data.event.id
-          }
-        ],
-        "closeOnEsc": false,
-        "closeOnOutside": false,
-        "showCloseButton": true,
-        "size": "lg",
-        "actions": []
+      "actionType": "link",
+      "args": {
+        "link": "/app/" + appId + "/" + objectName + "/view/" + eventId
       }
     });
+    // doAction({
+    //   "actionType": "dialog",
+    //   "dialog": {
+    //     "type": "dialog",
+    //     "title": "",
+    //     "body": [
+    //       {
+    //         "type": "steedos-record-detail",
+    //         "objectApiName": "\${objectName}",
+    //         "recordId": data.event && data.event.id
+    //       }
+    //     ],
+    //     "closeOnEsc": false,
+    //     "closeOnOutside": false,
+    //     "showCloseButton": true,
+    //     "size": "lg",
+    //     "actions": []
+    //   }
+    // });
   `;
 
   const recordId = "${event.id}";
@@ -409,11 +415,16 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
       "weight": 0,
       "actions": [
         {
-          "actionType": "link",
-          "args": {
-            "link": "/app/${appId}/${objectName}/view/${event.id}"
-          }
-        }
+          "actionType": "custom",
+          "script": onEventClickScript
+        },
+        // amis 升级到 3.2后，以下的"actionType": "link"方式拿不到appId和objectName了
+        // {
+        //   "actionType": "link",
+        //   "args": {
+        //     "link": "/app/${appId}/${objectName}/view/${event.id}"
+        //   }
+        // }
       ]
     },
     "eventAdd": {
