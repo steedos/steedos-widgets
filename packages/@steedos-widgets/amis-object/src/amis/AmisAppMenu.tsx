@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-27 13:25:12
+ * @LastEditTime: 2023-08-18 11:51:07
  * @Description: 
  */
 import './AmisAppMenu.less';
@@ -140,6 +140,10 @@ export const AmisAppMenu = async (props) => {
                                                 }
                                             },
                                             "expression":"\${event.data.item.id}"
+                                        },
+                                        {
+                                            "actionType": "custom",
+                                            "script" : "window.postMessage(Object.assign({type: 'nav.click', data: event.data.item}), '*');"
                                         }
                                     ]
                                 },
@@ -155,6 +159,10 @@ export const AmisAppMenu = async (props) => {
                                                 }
                                             },
                                             "expression":"\${event.data.tabId}"
+                                        },
+                                        {
+                                            "actionType": "custom",
+                                            "script" : "window.postMessage(Object.assign({type: 'nav.click', data: event.data.item}), '*');"
                                         }
                                     ]
                                 }
