@@ -253,7 +253,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
           });
           // 有过滤条件时只显示搜索按钮上的红点，不自动展开搜索栏
           if(!_.isEmpty(omitedEmptyFormValue)){
-            let crudService = SteedosUI.getRef(data.$scopeId).getComponentById("service_listview_" + data.objectName)
+            let crudService = SteedosUI.getRef(data.$scopeId).parent.getComponentById("service_listview_" + data.objectName)
             crudService && crudService.setData({isFieldsFilterEmpty: false});
             // setData({ showFieldsFilter: true });//自动展开搜索栏
           }
