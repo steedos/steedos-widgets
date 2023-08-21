@@ -2,8 +2,8 @@
   /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: 廖大雪 2291335922@qq.com
- * @LastEditTime: 2023-03-17 14:09:53
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-08-21 14:00:27
  * @Description: 
  */
 
@@ -154,7 +154,21 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                                 "name": "notifications",
                                 "items": {
                                   "type": "tpl",
-                                  "tpl": "<div class='flex items-center p-4 hover:bg-sky-50'><img src='<%=data.context.rootUrl + `/avatar/` + data.from%>' alt='' class='h-10 w-10 flex-none rounded-full'><div class='ml-4 flex-auto'><div class='font-medium'><span class='text-primary'><%=data.name%></span></div><div class='mt-1 text-slate-700'><%=data.body%></div><div class='mt-1 text-slate-700'><%=moment(data.created).fromNow()%><abbr class='slds-text-link slds-m-horizontal_xxx-small <%=data.is_read ? 'hidden' : ''%>' title='unread'>●</abbr></div></div></div>",
+                                  "tpl": `<div class='flex items-center p-4 hover:bg-sky-50'>
+                                      <img src='<%=data.context.rootUrl + "/avatar/" + data.from%>' alt='' class='h-10 w-10 flex-none rounded-full'>
+                                      <div class='ml-4 flex-auto'>
+                                        <div class='font-medium'>
+                                          <span class='text-primary'><%=data.name%></span>
+                                        </div>
+                                        <div class='mt-1 text-slate-700'>
+                                          <%=data.body%>
+                                        </div>
+                                        <div class='mt-1 text-slate-700'>
+                                          <%=moment(data.created).fromNow()%>
+                                          <abbr class='slds-text-link slds-m-horizontal_xxx-small <%=data.is_read ? 'hidden' : ''%>' title='unread'>●</abbr>
+                                        </div>
+                                      </div>
+                                    </div>`,
                                   "id": "u:07ece657c7b7",
                                   "onEvent": {
                                     "click": {
