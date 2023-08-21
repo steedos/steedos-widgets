@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-01-14 16:41:24
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-08-03 13:32:08
+ * @LastEditTime: 2023-08-21 10:03:05
  * @Description:
  */
 
@@ -232,6 +232,7 @@ const getSelectFlowSchema = (id, props) => {
         "onlyLeaf": true,
         "onEvent": onEvent,
         "static": !!props.static,
+        "onlyChildren": true,
         ...amis
     }
 };
