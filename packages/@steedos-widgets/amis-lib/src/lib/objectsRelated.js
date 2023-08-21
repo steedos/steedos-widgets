@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: liaodaxue
- * @LastEditTime: 2023-06-20 14:05:50
+ * @LastEditTime: 2023-08-21 14:50:21
  * @Description:
  */
 
@@ -161,7 +161,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
         globalFilter,
         defaults: {
             listSchema: { 
-                headerToolbar:[],
+                headerToolbar:["bulkActions"],
                 columnsTogglable: false,
                 onEvent: {
                     [`@data.changed.${relatedObjectName}`]: {
