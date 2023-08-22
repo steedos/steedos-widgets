@@ -129,10 +129,10 @@ function apiRequestAdaptor(){
     const recordId_tmp = api.body.recordId;
     
     if (typeof formData_tmp.columns == 'string') {
-      formData_tmp.columns = formData_tmp.columns?.split(',');
+      formData_tmp.columns = formData_tmp.columns && formData_tmp.columns.split(',');
     }
     if (typeof formData_tmp.mobile_columns == 'string') {
-      formData_tmp.mobile_columns = formData_tmp.mobile_columns?.split(',');
+      formData_tmp.mobile_columns = formData_tmp.mobile_columns && formData_tmp.mobile_columns.split(',');
     }
     
     // 数据格式转换

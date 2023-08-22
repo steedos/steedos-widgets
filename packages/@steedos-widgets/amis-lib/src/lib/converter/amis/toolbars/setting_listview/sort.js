@@ -109,7 +109,7 @@ function apiRequestAdaptor(){
     const recordId = api.body.recordId;
     //数据格式转换
     if (typeof formData.sort == 'string') {
-      formData.sort = formData.sort?.split(',');
+      formData.sort = formData.sort && formData.sort.split(',');
     }
     formData.sort = lodash.map(formData.sort, (item) => {
       const arr = item.split(':');

@@ -155,7 +155,7 @@ export function getScriptForRemoveUrlPrefixForImgFields(fields){
                 if(imgFields[item].multiple){
                     if(imgFieldValue instanceof Array){
                         formData[item] = imgFieldValue.map((value)=>{ 
-                            let itemValue = value?.split('/');
+                            let itemValue = value && value.split('/');
                             return itemValue[itemValue.length - 1];
                         });
                     }

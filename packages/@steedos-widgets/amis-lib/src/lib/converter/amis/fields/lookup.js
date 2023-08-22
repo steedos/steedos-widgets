@@ -235,7 +235,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         if(api.data.$term){
             filters = [["name", "contains", "'+ api.data.$term +'"]];
         }else if(selfData.op === 'loadOptions' && selfData.value){
-            if(selfData.value?.indexOf(',') > 0){
+            if(selfData.value && selfData.value.indexOf(',') > 0){
                 fieldValue = selfData.value.split(',');
                 filters = [["${referenceTo.valueField.name}", "=", fieldValue]];
             }else{
@@ -431,7 +431,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
               {
                 "actionType": "custom",
                 "script": `
-                    const masterRecord = event.data._master?.record;
+                    const masterRecord = event.data._master && event.data._master.record;
                     const fieldConfig = ${JSON.stringify(field)};
                     let reference_to = fieldConfig.reference_to;
                     let saveValue;
@@ -818,7 +818,7 @@ export async function getIdsPickerSchema(field, readonly, ctx){
         var pageNo = api.data.pageNo || 1;
         var skip = (pageNo - 1) * pageSize;
         if(selfData.op === 'loadOptions' && selfData.value){
-            if(selfData.value?.indexOf(',') > 0){
+            if(selfData.value && selfData.value.indexOf(',') > 0){
                 filters = [["${referenceTo.valueField.name}", "=", selfData.value.split(',')]];
             }else{
                 filters = [["${referenceTo.valueField.name}", "=", selfData.value]];

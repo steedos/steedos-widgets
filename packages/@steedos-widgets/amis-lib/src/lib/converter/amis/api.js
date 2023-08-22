@@ -273,7 +273,7 @@ export async function getEditFormInitApi(object, recordId, fields, options){
                 var uiSchema = api.body.uiSchema;
                 var defaultData = api.body.defaultData;
                 var defaultValues = {};
-                _.each(uiSchema?.fields, function(field){
+                _.each(uiSchema && uiSchema.fields, function(field){
                     var value = SteedosUI.getFieldDefaultValue(field, api.body.global);
                     if(value){
                         defaultValues[field.name] = value;

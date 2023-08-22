@@ -216,11 +216,14 @@ const getSelectFlowSchema = (id, props) => {
                 }
             `,
       adaptor: `
-                payload.data.options?.forEach(function(item,index) {
-                    if(item.value != 'startFlows' && (!item.children || item.children.length == 0)){
-                        payload.data.options.splice(index,1)
-                    }
-                })
+                var options = payload.data.options;
+                if(options){
+                  options.forEach(function(item,index) {
+                      if(item.value != 'startFlows' && (!item.children || item.children.length == 0)){
+                          payload.data.options.splice(index,1)
+                      }
+                  })
+                }
                 return payload;
             `,
             "headers": {

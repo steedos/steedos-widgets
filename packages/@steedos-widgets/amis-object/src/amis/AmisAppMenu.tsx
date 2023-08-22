@@ -68,9 +68,10 @@ export const AmisAppMenu = async (props) => {
                                       })
                                   })
                               } else {
+                                  var tabGroup = _.find(tab_groups, {"group_name": groupName});
                                   data.nav.push({
                                       "label": groupName,
-                                      "unfolded": _.find(tab_groups, {"group_name": groupName})?.default_open != false,
+                                      "unfolded": tabGroup && tabGroup.default_open != false,
                                       "children": _.map(tabs, (tab) => {
                                           if(locationPathname == tab.path){
                                             customTabId = tab.id;

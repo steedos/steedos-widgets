@@ -128,7 +128,12 @@ export async function getCalendarApi(mainObject, fields, options) {
     window.postMessage(Object.assign({type: "listview.loaded"}), "*");
     const setDataToComponentId = "${setDataToComponentId}";
     if(setDataToComponentId){
-        SteedosUI.getRef(api.body.$self.scopeId)?.getComponentById(setDataToComponentId)?.setData({$count: payload.data.count})
+        var scope = SteedosUI.getRef(api.body.$self.scopeId);
+        var setDataToComponent = scope && scope.getComponentById(setDataToComponentId);
+        if(setDataToComponent){
+          setDataToComponent.setData({$count: payload.data.count});
+        }
+        // SteedosUI.getRef(api.body.$self.scopeId)?.getComponentById(setDataToComponentId)?.setData({$count: payload.data.count})
     }
     const rows = payload.data.rows || [];
     const selfData = api.data.$self;

@@ -154,7 +154,7 @@ async function getQuickEditSchema(field, options){
                 case "number":
                 case "currency":
                     TempDisplayField = `
-                            _display["${field.name}"] = event.data.value?.toFixed(${field.scale});
+                            _display["${field.name}"] = event.data.value && event.data.value.toFixed(${field.scale});
                         `
                     quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(TempDisplayField)
 
@@ -344,13 +344,15 @@ async function getTableColumns(fields, options){
                                 }
                             },
                             "actionType": "download",
-                            "expression": "!!!window?.nw?.require"//浏览器上直接下载
+                            // "expression": "!!!window?.nw?.require"//浏览器上直接下载
+                            "expression": "!!!(window && window.nw && window.nw.require)"//浏览器上直接下载
                         },
                         {
                           "args": {},
                           "actionType": "custom",
                           "script": previewFileScript,
-                          "expression": "!!window?.nw?.require" //PC客户端预览附件
+                        //   "expression": "!!window?.nw?.require" //PC客户端预览附件
+                          "expression": "!!!(window && window.nw && window.nw.require)"//PC客户端预览附件
                         }
                     ]
                   }
@@ -1087,7 +1089,13 @@ export async function getTableApi(mainObject, fields, options){
     const setDataToComponentId = "${setDataToComponentId}";
     if(setDataToComponentId){
         //https://github.com/baidu/amis/pull/6807 .parent的改动是为适应3.2getComponentById的规则改动，不影响2.9
-        SteedosUI.getRef(api.body.$self.$scopeId)?.parent?.getComponentById(setDataToComponentId)?.setData({$count: payload.data.count})
+        var scope = SteedosUI.getRef(api.body.$self.$scopeId);
+        var scopeParent = scope && scope.parent;
+        var setDataToComponent = scopeParent && scopeParent.getComponentById(setDataToComponentId);
+        if(setDataToComponent){
+            setDataToComponent.setData({$count: payload.data.count});
+        }
+        // SteedosUI.getRef(api.body.$self.$scopeId)?.parent?.getComponentById(setDataToComponentId)?.setData({$count: payload.data.count})
     };
     ${options.adaptor || ''}
     return payload;

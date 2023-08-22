@@ -453,7 +453,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
                                       const selfData = api.body.$self;
                                       const uiSchema = selfData.uiSchema;
                                       const fields = uiSchema.fields;
-                                      const options = (payload.data?.options || []).filter(function(item){
+                                      const options = ((payload.data && payload.data.options) || []).filter(function(item){
                                         let field = fields[item.value];
                                         // TODO: 暂时禁用location类型字段的列表搜索
                                         return !!field && window.isFieldTypeSearchable(field.type) && field.type !== 'location'

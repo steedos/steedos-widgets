@@ -400,7 +400,7 @@ const getFieldReadonlyTpl = async (field, label)=>{
       map[item.value] = item.label;
     })
     tpl.type = 'static';
-    tpl.tpl = `<% var options = ${JSON.stringify(map)}; return options?.[data.${field.code}] || ''%>`
+    tpl.tpl = `<% var options = ${JSON.stringify(map)}; return (options && options[data.${field.code}]) || ''%>`
   }else if(field.type === 'odata'){
     tpl.type = 'static';
     tpl.tpl = `<div>\${${field.code}['@label']}</div>`
@@ -430,7 +430,7 @@ const getFieldReadonlyTpl = async (field, label)=>{
     if(field.is_multiselect){
       tpl.tpl = `\${_.map(${field.code}, 'name')}`
     }else{
-      tpl.tpl = `\${${field.code}?.name}`
+      tpl.tpl = `\${${field.code} && ${field.code}.name}`
     }
   }else if(field.type === 'group'){
     tpl.type = 'static'
