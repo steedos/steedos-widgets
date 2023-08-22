@@ -477,7 +477,7 @@ function getMobileLines(tpls){
     let isNewLine = false;
     let isLeft = true;
     let lineChildrenClassName = "";
-    let lineClassName = "flex items-center justify-between h-[20px]";
+    let lineClassName = "flex items-center justify-between";
     tpls.forEach(function(item){
         if(isNewLine && lines.length < maxLineCount){
             lines.push({
@@ -490,7 +490,7 @@ function getMobileLines(tpls){
         }
         if(isLeft){
             // 左侧半行
-            lineChildrenClassName = "steedos-listview-item-left truncate";
+            lineChildrenClassName = "steedos-listview-item-left two-lines-truncate";
             if(item.field.is_wide){
                 // 左侧全行样式可以单独写
                 lineChildrenClassName = "steedos-listview-item-wide truncate";
