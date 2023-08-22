@@ -409,6 +409,12 @@ async function getTableColumns(fields, options){
             if(field.type === 'textarea'){
                 className += 'min-w-56';
             }
+            if(field.type === 'date'){
+                className += 'date-min-w';
+            }
+            if(field.type === 'datetime'){
+                className += 'datetime-min-w';
+            }
             if(!field.hidden && !field.extra){
                 columnItem = Object.assign({}, {
                     name: field.name,
