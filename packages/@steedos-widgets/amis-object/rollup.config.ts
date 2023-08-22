@@ -5,6 +5,8 @@ import typescript from '@rollup/plugin-typescript';
 import json from 'rollup-plugin-json';
 import { terser } from "rollup-plugin-terser";
 import fg from 'fast-glob';
+import babel, { getBabelOutputPlugin } from '@rollup/plugin-babel';
+
 
 require('dotenv-flow').config();
 
@@ -91,6 +93,10 @@ export default [
         strict: false,
         intro: 'const global = window; const process = {env: {NODE_ENV: "production"}};',
         globals,
+        plugins: [getBabelOutputPlugin({
+          allowAllFormats: true,
+          presets: [['@babel/preset-env', { modules: 'umd' }]],
+        })]
       },
     ],
   },

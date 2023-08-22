@@ -11,6 +11,7 @@ import resolve from 'rollup-plugin-node-resolve';
 import { uglify } from 'rollup-plugin-uglify';
 import json from 'rollup-plugin-json';
 import fg from 'fast-glob';
+import babel, { getBabelOutputPlugin } from '@rollup/plugin-babel';
 
 import pkg from './package.json';
 
@@ -65,6 +66,10 @@ export default [
         strict: false,
         intro: 'const global = window;',
         globals,
+        plugins: [getBabelOutputPlugin({
+          allowAllFormats: true,
+          presets: [['@babel/preset-env', { modules: 'umd' }]],
+        })]
       },
       {
         format: 'cjs',
