@@ -807,7 +807,7 @@ export async function getTableApi(mainObject, fields, options){
         baseFilters = filter;
     }
 
-    _.each(fields, function (field) {
+    _.each(mainObject.fields, function (field) {
         if (Fields.isFieldQuickSearchable(field, mainObject.NAME_FIELD_KEY)) {
             searchableFields.push(field.name);
         }

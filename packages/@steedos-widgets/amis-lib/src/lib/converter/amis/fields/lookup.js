@@ -177,11 +177,14 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             })){
                 i++;
                 tableFields.push(field)
-                if(Field.isFieldQuickSearchable(field, refObjectConfig.NAME_FIELD_KEY)){
-                    searchableFields.push(field.name);
-                }
             }
         }
+    });
+
+    _.each(refObjectConfig.fields, function (field) {
+      if(Field.isFieldQuickSearchable(field, refObjectConfig.NAME_FIELD_KEY)){
+          searchableFields.push(field.name);
+      }
     });
 
     const fields = {
