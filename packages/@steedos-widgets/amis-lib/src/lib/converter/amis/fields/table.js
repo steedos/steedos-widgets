@@ -495,7 +495,7 @@ function getMobileLines(tpls){
             lineChildrenClassName = "steedos-listview-item-left two-lines-truncate";
             if(item.field.is_wide){
                 // 左侧全行样式可以单独写
-                lineChildrenClassName = "steedos-listview-item-wide truncate";
+                lineChildrenClassName = "steedos-listview-item-wide two-lines-truncate";
             }
             if(lines.length === 0){
                 // 第一个字段加粗黑色显示
