@@ -86,7 +86,7 @@ crudService && crudService.setData({showFieldsFilter: toShowFieldsFilter});
 
 function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup = false, keywordsSearchBoxName = "__keywords" } = {}){
   const searchableFieldsLabel = [];
-  _.each(fields, function (field) {
+  _.each(mainObject.fields, function (field) {
     if (Fields.isFieldQuickSearchable(field, mainObject.NAME_FIELD_KEY)) {
       searchableFieldsLabel.push(field.label);
     }
