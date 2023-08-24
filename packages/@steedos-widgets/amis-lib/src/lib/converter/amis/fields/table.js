@@ -871,9 +871,10 @@ export async function getTableApi(mainObject, fields, options){
                     // 所以会把localSearchableFilter中已经存过的页码覆盖
                     // 如果是第一次加载组件始终让翻页页码从本地存储中取值
                     let formFactor = "${options.formFactor}";
-                    // api.data.pageNo = formFactor === "SMALL" ? 1 : (localListViewProps.page || 1);
+                    // 移动端不识别本地存储中的翻页页码，否则点击加载更多按钮后无法刷新回第一页
+                    api.data.pageNo = formFactor === "SMALL" ? 1 : (localListViewProps.page || 1);
                     // 移动端暂时去除加载更多，放开翻页
-                    api.data.pageNo = localListViewProps.page || 1;
+                    // api.data.pageNo = localListViewProps.page || 1;
                 }
             }
         }
@@ -1073,8 +1074,8 @@ export async function getTableApi(mainObject, fields, options){
                 // 如果是第一次加载组件始终让翻页页码从本地存储中取值
                 let formFactor = "${options.formFactor}";
                 // 移动端不识别本地存储中的翻页页码，否则点击加载更多按钮后无法刷新回第一页
-                // selfData.page = formFactor === "SMALL" ? 1 : (localListViewProps.page || 1);
-                selfData.page = localListViewProps.page || 1;
+                selfData.page = formFactor === "SMALL" ? 1 : (localListViewProps.page || 1);
+                // selfData.page = localListViewProps.page || 1;
             }
         }
         delete selfData.context;
