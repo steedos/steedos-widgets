@@ -142,11 +142,21 @@
     }
 }
 
-@media (max-width: 576px){
+@media (max-width: 768px){
     // 手机端默认强制去掉了下面的样式造成toolbar无法宽度满屏，先加上改成PC一样的满屏效果
     .antd-Crud-toolbar{
         flex-basis: 0;
         flex-grow: 1;
+    }
+    .steedos-object-table .antd-Table-footToolbar{
+        border-top: 1px solid #e5e7eb;
+        .antd-Crud-toolbar-item{
+            justify-content: center;
+            width: 100%;
+            .antd-Pagination-inputGroup-left{
+                display: none;
+            }
+        }
     }
 }
 
@@ -158,3 +168,4 @@
     -webkit-line-clamp: 2; /* 显示的行数 */
     -webkit-box-orient: vertical;
 }
+

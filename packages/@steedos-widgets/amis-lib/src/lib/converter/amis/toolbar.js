@@ -86,7 +86,7 @@ crudService && crudService.setData({showFieldsFilter: toShowFieldsFilter});
 
 function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup = false, keywordsSearchBoxName = "__keywords" } = {}){
   const searchableFieldsLabel = [];
-  _.each(fields, function (field) {
+  _.each(mainObject.fields, function (field) {
     if (Fields.isFieldQuickSearchable(field, mainObject.NAME_FIELD_KEY)) {
       searchableFieldsLabel.push(field.label);
     }
@@ -278,8 +278,14 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
 
 export function getObjectFooterToolbar(mainObject, formFactor, options) {
   if (formFactor === 'SMALL') {
+    // return [
+    //   "load-more",
+    // ]
     return [
-      "load-more",
+      {
+        "type": "pagination",
+        "maxButtons": 5
+      }
     ]
   }
   else {

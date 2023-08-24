@@ -482,7 +482,7 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
                       //   "blank": false
                       // },
                       "actionType": "custom",
-                      "script": "Steedos.goBack()",
+                      "script": "window.goBack()",
                       "expression": "this.__deletedRecord === true"
                     }
                   ]

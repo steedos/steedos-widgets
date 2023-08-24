@@ -495,7 +495,7 @@ function getMobileLines(tpls){
             lineChildrenClassName = "steedos-listview-item-left two-lines-truncate";
             if(item.field.is_wide){
                 // 左侧全行样式可以单独写
-                lineChildrenClassName = "steedos-listview-item-wide truncate";
+                lineChildrenClassName = "steedos-listview-item-wide two-lines-truncate";
             }
             if(lines.length === 0){
                 // 第一个字段加粗黑色显示
@@ -810,7 +810,7 @@ export async function getTableApi(mainObject, fields, options){
         baseFilters = filter;
     }
 
-    _.each(fields, function (field) {
+    _.each(mainObject.fields, function (field) {
         if (Fields.isFieldQuickSearchable(field, mainObject.NAME_FIELD_KEY)) {
             searchableFields.push(field.name);
         }
@@ -871,8 +871,9 @@ export async function getTableApi(mainObject, fields, options){
                     // 所以会把localSearchableFilter中已经存过的页码覆盖
                     // 如果是第一次加载组件始终让翻页页码从本地存储中取值
                     let formFactor = "${options.formFactor}";
-                    // 移动端不识别本地存储中的翻页页码，否则点击加载更多按钮后无法刷新回第一页
-                    api.data.pageNo = formFactor === "SMALL" ? 1 : (localListViewProps.page || 1);
+                    // api.data.pageNo = formFactor === "SMALL" ? 1 : (localListViewProps.page || 1);
+                    // 移动端暂时去除加载更多，放开翻页
+                    api.data.pageNo = localListViewProps.page || 1;
                 }
             }
         }
@@ -1072,7 +1073,8 @@ export async function getTableApi(mainObject, fields, options){
                 // 如果是第一次加载组件始终让翻页页码从本地存储中取值
                 let formFactor = "${options.formFactor}";
                 // 移动端不识别本地存储中的翻页页码，否则点击加载更多按钮后无法刷新回第一页
-                selfData.page = formFactor === "SMALL" ? 1 : (localListViewProps.page || 1);
+                // selfData.page = formFactor === "SMALL" ? 1 : (localListViewProps.page || 1);
+                selfData.page = localListViewProps.page || 1;
             }
         }
         delete selfData.context;

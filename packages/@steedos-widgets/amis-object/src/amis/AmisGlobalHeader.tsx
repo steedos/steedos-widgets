@@ -69,7 +69,7 @@ export const AmisGlobalHeader = async (props) => {
                                                 "actions": [
                                                     {
                                                         "actionType": "custom",
-                                                        "script": "Steedos.goBack()"
+                                                        "script": "window.goBack()"
                                                     }
                                                 ]
                                             }
