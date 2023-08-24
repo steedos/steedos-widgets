@@ -286,7 +286,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
                           "actions": [
                               {
                                   "actionType": "custom",
-                                  "script": "Steedos.goBack()"
+                                  "script": "window.goBack()"
                               }
                           ]
                       }
