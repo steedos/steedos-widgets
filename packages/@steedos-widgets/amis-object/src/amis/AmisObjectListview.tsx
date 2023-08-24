@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-07-05 09:50:22
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2023-08-24 16:51:56
  * @Description: 
  */
 import './AmisObjectListview.less';
@@ -20,7 +20,7 @@ export const AmisObjectListView = async (props) => {
       sideSchema,
       columnsTogglable=false,
       filterVisible = true,
-      headerToolbarItems, rowClassNameExpr } = props;
+      headerToolbarItems, rowClassNameExpr, hiddenColumnOperation=false } = props;
   let { headerSchema } = props;
   let ctx = props.ctx;
   let listName = defaultData?.listName || data?.listName || props?.listName;
@@ -113,7 +113,7 @@ export const AmisObjectListView = async (props) => {
   const amisSchemaData = Object.assign({}, data, defaultData);
   const listViewId = ctx?.listViewId || amisSchemaData.listViewId;
   const listViewSchemaProps = { 
-    top, perPage, showHeader, defaults, ...ctx, listViewId, setDataToComponentId, filterVisible, showDisplayAs, displayAs, headerToolbarItems, rowClassNameExpr
+    top, perPage, showHeader, defaults, ...ctx, listViewId, setDataToComponentId, filterVisible, showDisplayAs, displayAs, headerToolbarItems, rowClassNameExpr, hiddenColumnOperation
   }
 
   if(!headerSchema){

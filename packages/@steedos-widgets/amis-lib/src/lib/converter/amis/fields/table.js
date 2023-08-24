@@ -749,6 +749,7 @@ async function getTableOperation(ctx){
 
 export async function getTableSchema(fields, options){
     let isLookup = options && options.isLookup;
+    let hiddenColumnOperation = options && options.hiddenColumnOperation;
     if(!options){
         options = {};
     }
@@ -758,7 +759,7 @@ export async function getTableSchema(fields, options){
     }
     else{
         columns = await getTableColumns(fields, options);
-        if(!isLookup){
+        if(!isLookup && !hiddenColumnOperation){
             columns.push(await getTableOperation(options));
         }
     }
