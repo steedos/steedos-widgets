@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-08-17 18:03:51
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-08-25 11:55:15
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -283,7 +283,7 @@ export async function getListSchema(
      * 本次存储代码段
      */
     try {
-      const listViewPropsStoreKey = location.pathname + "/crud/" + (listViewName || "");
+      const listViewPropsStoreKey = location.pathname + "/crud";
       let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
       /**
        * localListViewProps规范来自crud请求api中api.data.$self参数值的。
@@ -305,11 +305,12 @@ export async function getListSchema(
         if(localListViewProps.orderDir){
             listSchema.orderDir = localListViewProps.orderDir;
         }
-        // if(localListViewProps.perPage){
-        //     listSchema.defaultParams = {
-        //         perPage: localListViewProps.perPage
-        //     }
-        // }
+
+        if(localListViewProps.perPage){
+            listSchema.defaultParams = {
+                perPage: localListViewProps.perPage
+            }
+        }
         defaults.listSchema = defaultsDeep({}, listSchema, defaults.listSchema || {});
       }
     }
