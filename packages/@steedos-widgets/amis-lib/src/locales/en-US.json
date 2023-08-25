@@ -45,6 +45,7 @@
     "frontend_listview_control_share": "Sharing Settings",
     "frontend_listview_control_sort": "Default sorting rule",
     "frontend_export_excel": "Export Excel",
+    "frontend_export_excel_toast": "Exporting, please wait",
     "frontend_operation": "Operation",
     "frontend_import_data": "Import data",
     "frontend_import_data_object_name": "Import object",

@@ -994,7 +994,17 @@ export async function getTableApi(mainObject, fields, options){
         api.data = {
             query: api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', pageSize).replace('{__skip}', skip).replace('{__sort}', sort.trim())
         }
-        ${options.requestAdaptor || ''}
+        ${options.requestAdaptor || ''};
+
+        //写入本次存储filters、sort
+        const listViewPropsStoreKey = location.pathname + "/crud/query";
+        sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify({
+            filters: filters,
+            sort: sort.trim(),
+            pageSize: pageSize,
+            skip: skip,
+            fields: ${JSON.stringify(_.map(fields, 'name'))}
+        }));
         return api;
     `
     api.adaptor = `
