@@ -278,15 +278,15 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
 
 export function getObjectFooterToolbar(mainObject, formFactor, options) {
   if (formFactor === 'SMALL') {
-    return [
-      "load-more",
-    ]
     // return [
-    //   {
-    //     "type": "pagination",
-    //     "maxButtons": 5
-    //   }
+    //   "load-more",
     // ]
+    return [
+      {
+        "type": "pagination",
+        "maxButtons": 5
+      }
+    ]
   }
   else {
     if(options && options.isRelated){
