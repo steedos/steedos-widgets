@@ -47,6 +47,8 @@
     --Nav-Item-maxWidth--tabs: 200px;
     --Crud-toolbar-gap: 2px;
     --DropDown-caret-marginLeft: 0;
+    --Tabs--vertical-width: 180px;
+    --Tabs-link-maxWidth: 180px;
 }
 
 .steedos-header-container .antd-Nav-Menu {

@@ -474,7 +474,7 @@ async function getTableColumns(fields, options){
  */
 function getMobileLines(tpls){
     let lines = [];
-    let maxLineCount = 2;
+    let maxLineCount = 3;
     let lineChildren = [];
     let isNewLine = false;
     let isLeft = true;
@@ -492,10 +492,10 @@ function getMobileLines(tpls){
         }
         if(isLeft){
             // 左侧半行
-            lineChildrenClassName = "steedos-listview-item-left two-lines-truncate";
+            lineChildrenClassName = "steedos-listview-item-left truncate";
             if(item.field.is_wide){
-                // 左侧全行样式可以单独写
-                lineChildrenClassName = "steedos-listview-item-wide two-lines-truncate";
+                // 左侧全行样式可以单独写，如果需要配置两行省略号效果，可以加样式类 two-lines-truncate
+                lineChildrenClassName = "steedos-listview-item-wide";
             }
             if(lines.length === 0){
                 // 第一个字段加粗黑色显示
@@ -503,7 +503,7 @@ function getMobileLines(tpls){
             }
         }
         else{
-            // 右侧半行
+            // 右侧半行，这里加样式类 flex flex-shrink-0，是为了省略号只显示在左半行，右半行文字一般比较短，如果也加省略号效果的话，左侧文字多的话，右侧没几个字就显示省略号了
             lineChildrenClassName = "steedos-listview-item-right truncate ml-2 flex flex-shrink-0";
         }
         lineChildren.push({
@@ -763,6 +763,7 @@ export async function getTableSchema(fields, options){
             columns.push(await getTableOperation(options));
         }
     }
+
     return {
         mode: "table",
         name: "thelist",
@@ -871,6 +872,7 @@ export async function getTableApi(mainObject, fields, options){
                     // 所以会把localSearchableFilter中已经存过的页码覆盖
                     // 如果是第一次加载组件始终让翻页页码从本地存储中取值
                     let formFactor = "${options.formFactor}";
+                    // 移动端不识别本地存储中的翻页页码，否则点击加载更多按钮后无法刷新回第一页
                     // api.data.pageNo = formFactor === "SMALL" ? 1 : (localListViewProps.page || 1);
                     // 移动端暂时去除加载更多，放开翻页
                     api.data.pageNo = localListViewProps.page || 1;

@@ -227,6 +227,10 @@ export async function getObjectCRUD(objectSchema, fields, options){
             }
         }
       `
+      let autoFillHeight = true
+      if(options.isRelated || Steedos.isMobile()){
+        autoFillHeight = false
+      }
 
       body = Object.assign({}, table, {
         type: 'crud', 
@@ -237,7 +241,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
         keepItemSelectionOnPageChange: true, 
         api: await getTableApi(objectSchema, fields, options),
         hiddenOn: options.tableHiddenOn,
-        autoFillHeight: options.isRelated ? false : true,
+        autoFillHeight,
         className: `flex-auto ${crudClassName || ""}`,
         bodyClassName: "bg-white",
         crudClassName: crudClassName,
