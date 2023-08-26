@@ -37,6 +37,7 @@ export const AmisAppLauncher = async (props) => {
   if(isMobile){
     dialogSchema = {
       "type": "service",
+      "className": "steedos-apps-service",
       "affixFooter": false,
       "body": [
         {
@@ -276,7 +277,7 @@ export const AmisAppLauncher = async (props) => {
           ],
         }
       ],
-      "className": "",
+      "className": "steedos-apps-service",
       "visibleOn": "",
       "clearValueOnHidden": false,
       "visible": true,
