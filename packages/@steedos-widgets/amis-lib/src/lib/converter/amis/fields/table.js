@@ -557,7 +557,8 @@ async function getMobileTableColumns(fields, options){
             tpl = await Tpl.getFieldTpl(field, options);
         }
         if(!tpl){
-            tpl = `\${${field.name}}`;
+            //qhd需求简易处理，加上raw以支持审批王名称字段通过颜色区分缓急，若之后手机端列表支持配置amis，则可以去掉
+            tpl = `\${${field.name} | raw}`;
         }
         if(!field.hidden && !field.extra){
             tpls.push({ field, tpl });
