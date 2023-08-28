@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-01-13 17:27:54
- * @LastEditors: liaodaxue
- * @LastEditTime: 2023-07-27 17:33:54
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-08-28 17:45:38
  * @Description: 
  */
 import { i18next } from "../../../../i18n"
@@ -65,14 +65,29 @@ export const getMarkdownFieldSchema = (field, readonly, ctx)=>{
 
 export const getHtmlFieldSchema = (field, readonly, ctx)=>{
     if(readonly){
+        // return {
+        //     "type": "control",
+        //     "label": field.label,
+        //     "body": {
+        //       "type": "html",
+        //       "name": field.name
+        //     }
+        //   }
         return {
-            "type": "control",
-            "label": field.label,
-            "body": {
-              "type": "html",
-              "name": field.name
-            }
+          "type": "input-rich-text",
+          "receiver": "${context.rootUrl}/s3/images",
+          "name": field.name,
+          "options": {
+            "plugins": [
+              "autoresize"
+            ],
+            // "max_height": 2000,
+            "statusbar": false,
+            "readonly": true,
+            "toolbar": false,
+            "menubar": false
           }
+        }
     }else{
         return {
             "type": "input-rich-text",
