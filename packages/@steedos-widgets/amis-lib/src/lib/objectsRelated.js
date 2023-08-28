@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: liaodaxue
- * @LastEditTime: 2023-08-21 14:50:21
+ * @LastEditTime: 2023-08-28 14:55:23
  * @Description:
  */
 
@@ -157,11 +157,16 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
     // }
     const recordRelatedListHeader = await getObjectRecordDetailRelatedListHeader(relatedObjectUiSchema, relatedLabel, ctx);
     const componentId = `steedos-record-related-list-${relatedObjectName}`;
+    const isMobile = window.innerWidth < 768;
+    let headerToolbar = [];
+    if(!isMobile){
+        headerToolbar.push("bulkActions");
+    }
     const options = {
         globalFilter,
         defaults: {
             listSchema: { 
-                headerToolbar:["bulkActions"],
+                headerToolbar,
                 columnsTogglable: false,
                 onEvent: {
                     [`@data.changed.${relatedObjectName}`]: {
