@@ -3,7 +3,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-08-21 14:00:27
+ * @LastEditTime: 2023-08-28 15:04:28
  * @Description: 
  */
 
@@ -164,7 +164,7 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                                           <%=data.body%>
                                         </div>
                                         <div class='mt-1 text-slate-700'>
-                                          <%=moment(data.created).fromNow()%>
+                                          <%=moment(data.created).locale(data.global.user.language).fromNow()%>
                                           <abbr class='slds-text-link slds-m-horizontal_xxx-small <%=data.is_read ? 'hidden' : ''%>' title='unread'>●</abbr>
                                         </div>
                                       </div>
