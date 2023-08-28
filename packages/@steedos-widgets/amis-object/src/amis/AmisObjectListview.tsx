@@ -143,7 +143,7 @@ export const AmisObjectListView = async (props) => {
     body: [{
       "type": "wrapper",
       "size": "none",
-      "className": "flex flex-1 overflow-hidden h-full",
+      "className": "flex flex-1 h-full",
       body: [
         sideSchema ? {
           "type": "wrapper",
