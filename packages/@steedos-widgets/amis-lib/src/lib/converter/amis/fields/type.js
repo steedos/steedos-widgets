@@ -33,6 +33,9 @@ export function getAmisStaticFieldType(type, readonly, options){
         return type;
     }
     if(_.includes(['text','image'], type)){
+        if('text' === type && options && options.amis && options.amis.tpl){
+            return 'static';
+        }
         if('image' === type && options && options.multiple){
             return `static-images`;
         }

@@ -181,7 +181,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
     // }
     switch (field.type) {
         case 'text':
-            convertData.type = getAmisStaticFieldType('text', readonly);
+            convertData.type = getAmisStaticFieldType('text', readonly, field);
             break;
         case 'textarea':
             convertData.type = getAmisStaticFieldType('textarea', readonly);
