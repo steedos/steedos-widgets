@@ -266,3 +266,11 @@ fieldset.antd-Collapse > legend{
 .antd-Crud .antd-Crud-toolbar .antd-SearchBox.is-active svg.icon{
     top: unset
 }
+
+/* 
+    .antd-Crud-toolbar .antd-Crud-toolbar-item中每个.antd-Button--size-default  使用了变量 var(--button-size-default-marginRight) 右侧会有margin，
+    移除最后一个（按元素的所在位置其实是每一个，因为有float right所以界面上显示的是最后一个）按钮的右侧margin来实现整行左右边距对齐 
+*/
+.antd-Crud .antd-Crud-toolbar .antd-Crud-toolbar-item.antd-Crud-toolbar-item--right:not(.antd-Crud-toolbar-item.antd-Crud-toolbar-item--right + .antd-Crud-toolbar-item.antd-Crud-toolbar-item--right)  .antd-Button{
+    margin-right: 0;
+}

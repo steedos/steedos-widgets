@@ -436,6 +436,7 @@ export const getObjectListViewButtonsSchemas = (objectSchema, ctx)=>{
         return {
             "type": "button",
             "icon": "fa fa-angle-down",
+            "className": "mr-0",
             "onEvent": {
               "click": {
                 "actions": [
@@ -487,7 +488,7 @@ export const getObjectListViewButtonsSchemas = (objectSchema, ctx)=>{
             name: button.name,
             objectName: button.objectName,
             visibleOn: getButtonVisibleOn(button),
-            className: `button_${button.name}`
+            className: `button_${button.name} mr-0`
             }
         });
     }
