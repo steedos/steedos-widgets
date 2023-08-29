@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-08-03 18:07:54
+ * @LastEditTime: 2023-08-29 15:04:39
  * @Description: 
  */
 import { Router } from '../../router'
@@ -110,7 +110,7 @@ export function getRelatedFieldTpl(field, ctx){
         linkTarget = "target='_blank'"
     }
 
-    const onlyDisplayLabel = ctx.onlyDisplayLabel;
+    const onlyDisplayLookLabel = ctx.onlyDisplayLookLabel;
 
     let fieldDataStrTpl = `data._display.${field.name}`;
 
@@ -121,7 +121,7 @@ export function getRelatedFieldTpl(field, ctx){
     if(_.isString(field.reference_to) || !field.reference_to){
         if(field.multiple){
             let labelTpl = `<%=item.label%>`;
-            if(!onlyDisplayLabel){
+            if(!onlyDisplayLookLabel){
                 const href = Router.getObjectDetailPath({
                     formFactor: ctx.formFactor, appId: "<%=data.appId%>", objectName: `<%=item.objectName%>`, recordId: `<%=item.value%>`, _templateType: "JavaScript"
                 })
@@ -139,7 +139,7 @@ export function getRelatedFieldTpl(field, ctx){
                 objectNameTpl = `\${${field.name}.objectName}`;
                 recordIdTpl = `\${${field.name}.value}`;
             }
-            if(!onlyDisplayLabel){
+            if(!onlyDisplayLookLabel){
                 const href = Router.getObjectDetailPath({
                     formFactor: ctx.formFactor, appId: "${appId}", objectName: `${objectNameTpl}`, recordId: `${recordIdTpl}`
                 })
@@ -151,7 +151,7 @@ export function getRelatedFieldTpl(field, ctx){
         
     }else{
         let labelTpl = `<%=item.label%>`;
-        if(!onlyDisplayLabel){
+        if(!onlyDisplayLookLabel){
             const href = Router.getObjectDetailPath({
                 formFactor: ctx.formFactor, appId: "<%=data.appId%>", objectName: `<%=item.objectName%>`, recordId: `<%=item.value%>`, _templateType: "JavaScript"
             })
@@ -204,7 +204,7 @@ export function getLocationTpl(field){
 }
 
 export async function getFieldTpl (field, options){
-    if((field.is_name || field.name === options.labelFieldName) && !options.onlyDisplayLabel){
+    if((field.is_name || field.name === options.labelFieldName) && !options.onlyDisplayLookLabel){
         return getNameTpl(field, options)
     }
     switch (field.type) {
