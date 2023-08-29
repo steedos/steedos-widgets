@@ -755,7 +755,12 @@ export async function getTableSchema(fields, options){
         options = {};
     }
     let columns = [];
-    if(options.formFactor === 'SMALL' || ["split"].indexOf(options.displayAs) > -1){
+    let useMobileColumns = options.formFactor === 'SMALL' || ["split"].indexOf(options.displayAs) > -1;
+    if(isLookup){
+        // 在lookup手机端列表模式调式好之前不使用getMobileTableColumns
+        useMobileColumns = false;
+    }
+    if(useMobileColumns){
         columns = await getMobileTableColumns(fields, options);
     }
     else{

@@ -372,7 +372,8 @@ export async function lookupToAmisPicker(field, readonly, ctx){
 
 
     let pickerSchema = null;
-    if(ctx.formFactor === 'SMALL'){
+    if(false){
+    // if(ctx.formFactor === 'SMALL'){
         pickerSchema = await List.getListSchema(tableFields, {
             top:  top,
             ...ctx,
