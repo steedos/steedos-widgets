@@ -751,9 +751,9 @@ export async function lookupToAmis(field, readonly, ctx){
     }
 
     if(referenceTo.objectName === "space_users" && field.reference_to_field === "user"){
+        ctx.onlyDisplayLookLabel = true;
         if(ctx.idsDependOn){
             // ids人员点选模式
-            ctx.onlyDisplayLookLabel = true;
             return await lookupToAmisIdsPicker(field, readonly, ctx);
         }
         // 左侧树右侧人员列表的下拉框模式，不再支持，而是执行下面的lookupToAmisPicker函数弹出选人窗口
