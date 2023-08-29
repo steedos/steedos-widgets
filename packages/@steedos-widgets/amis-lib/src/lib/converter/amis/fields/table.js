@@ -775,7 +775,7 @@ export async function getTableSchema(fields, options){
         columns: columns,
         syncLocation: false,
         keepItemSelectionOnPageChange: true,
-        checkOnItemClick: false,
+        checkOnItemClick: isLookup ? true : false,
         labelTpl: `\${${options.labelFieldName}}`,
         autoFillHeight: false, // 自动高度效果不理想,先关闭
         columnsTogglable: false,
