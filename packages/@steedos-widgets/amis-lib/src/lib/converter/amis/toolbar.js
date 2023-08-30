@@ -142,34 +142,45 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
   }
   let toolbarReloadButton;
   if(formFactor === 'SMALL'){
-    const onReloadScript = `
-      const scope = event.context.scoped;
-      var listView = scope.parent.getComponents().find(function(n){
-        return n.props.type === "crud";
-      });
-      listView.handleChangePage(1);
-    `;
+    // const onReloadScript = `
+    //   const scope = event.context.scoped;
+    //   var listView = scope.parent.getComponents().find(function(n){
+    //     return n.props.type === "crud";
+    //   });
+    //   listView.handleChangePage(1);
+    // `;
+    // toolbarReloadButton = {
+    //   // "type": "reload",//不可以直接使用reload，因为它不会设置页码到第一页，这在加载更多按钮的翻页模式下会有问题
+    //   "type": "button",
+    //   "align": "right",
+    //   //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，为保持统一，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330
+    //   // "tooltip": i18next.t('frontend_button_reload_tooltip'),
+    //   "tooltipPlacement": "top",
+    //   "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
+    //   "label": "",
+    //   "icon": "fa fa-sync",
+    //   "visibleOn": "${!showFieldsFilter}",
+    //   "onEvent": {
+    //     "click": {
+    //       "actions": [
+    //         {
+    //           "actionType": "custom",
+    //           "script": onReloadScript
+    //         }
+    //       ]
+    //     }
+    //   },
+    // };
+
+    // 后续如果换成加载更多按钮的翻页模式的话，不可以直接使用下面的reload，需要换成上面的自定义脚本模式
     toolbarReloadButton = {
-      // "type": "reload",//不可以直接使用reload，因为它不会设置页码到第一页
-      "type": "button",
+      "type": "reload",
       "align": "right",
       //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，为保持统一，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330
       // "tooltip": i18next.t('frontend_button_reload_tooltip'),
+      "tooltip":"",
       "tooltipPlacement": "top",
-      "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
-      "label": "",
-      "icon": "fa fa-sync",
-      "visibleOn": "${!showFieldsFilter}",
-      "onEvent": {
-        "click": {
-          "actions": [
-            {
-              "actionType": "custom",
-              "script": onReloadScript
-            }
-          ]
-        }
-      },
+      "className": "bg-white p-2 rounded border-gray-300 text-gray-500"
     };
   }
   else{
