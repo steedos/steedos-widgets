@@ -1,6 +1,22 @@
 @media (max-width: 767px) {
     .steedos-amis-form.antd-Form {
-        /* start ======== 移动端给部分input加边框，并使输入框上下居中*/
+        /* start ======== 移动端参照电脑端样式*/
+        .antd-Picker-valueWrap{
+            display: flex;
+        }
+        .antd-Form-item > .antd-Form-label{
+            max-width: var(--Form-mode-default-width)
+        }
+        .antd-Select.is-mobile{
+            border-width: var(--Form-select-borderWidth);
+            border-style: var(--select-base-default-top-border-style) var(--select-base-default-right-border-style) var(--select-base-default-bottom-border-style) var(--select-base-default-left-border-style);
+            border-color: var(--Form-select-borderColor);
+            padding: var(--select-base-default-paddingTop) var(--select-base-default-paddingRight) var(--select-base-default-paddingBottom) var(--select-base-default-paddingLeft);
+            min-height: var(--Form-selectOption-height);
+        }
+        .antd-Form-item::after{
+            border-bottom:unset
+        }
         .antd-Form-item .antd-Form-control > .antd-TextControl-input,
         .antd-Form-item div.antd-TextareaControl {
             border: var(--Form-input-borderWidth) solid var(--Form-input-borderColor);
@@ -25,8 +41,16 @@
             height: 100%;
         }
         .antd-Form-item{
-            margin-top:0;
+            .antd-Form-static{
+                padding-top: var(--Form-label-paddingTop);
+                padding-bottom: var(--Form-label-paddingTop);
+                min-height: var(--Form-input-height);
+            }
+            display: block;
+            margin-top:0.25rem;
+            margin-bottom:0.25rem;
             align-items: center;
+            padding:0;
         }
         /* =========end */
     }

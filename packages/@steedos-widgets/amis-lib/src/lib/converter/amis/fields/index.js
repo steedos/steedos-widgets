@@ -632,7 +632,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             convertData.className = 'm-1';
         }
         if(readonly){
-            convertData.className = `${convertData.className} md:border-b`
+            convertData.className = `${convertData.className} border-b`
         }
         if(readonly){
             convertData.quickEdit = false;
