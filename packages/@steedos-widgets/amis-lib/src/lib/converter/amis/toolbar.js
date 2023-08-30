@@ -133,6 +133,14 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
   if(isMobile){
     showDisplayAs = false;
   }
+  let toolbarCount;
+  if(!hiddenCount){
+    toolbarCount = {
+      "type": "tpl",
+      "tpl":  "${count} " + i18next.t('frontend_record_sum')
+    };
+  }
+  let toolbarReloadButton;
   if(formFactor === 'SMALL'){
     const onReloadScript = `
       const scope = event.context.scoped;
@@ -141,68 +149,106 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
       });
       listView.handleChangePage(1);
     `;
+    toolbarReloadButton = {
+      // "type": "reload",//不可以直接使用reload，因为它不会设置页码到第一页
+      "type": "button",
+      "align": "right",
+      //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，为保持统一，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330
+      // "tooltip": i18next.t('frontend_button_reload_tooltip'),
+      "tooltipPlacement": "top",
+      "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
+      "label": "",
+      "icon": "fa fa-sync",
+      "visibleOn": "${!showFieldsFilter}",
+      "onEvent": {
+        "click": {
+          "actions": [
+            {
+              "actionType": "custom",
+              "script": onReloadScript
+            }
+          ]
+        }
+      },
+    };
+  }
+  else{
+    toolbarReloadButton = {
+      "type": "reload",
+      "align": "right",
+      //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，为保持统一，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330
+      // "tooltip": i18next.t('frontend_button_reload_tooltip'),
+      "tooltip":"",
+      "tooltipPlacement": "top",
+      "className": "bg-white p-2 rounded border-gray-300 text-gray-500"
+    };
+  }
+  let toolbarFilter;
+  if(filterVisible){
+    toolbarFilter ={
+      "label": i18next.t('frontend_button_search_tooltip'),
+      "icon": "fa fa-filter",
+      //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，为保持统一，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330
+      // "tooltip": i18next.t('frontend_button_search_tooltip'),
+      // "tooltipPlacement": "top",
+      "type": "button",
+      "badge": {
+        "offset": [
+          -5,
+          1
+        ],
+        "size":8,
+        "animation": true,
+        "visibleOn": "${isFieldsFilterEmpty == false && isLookup != true}"
+      },
+      "align": "right",
+      "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
+      "onEvent": {
+        "click": {
+          "actions": [
+            {
+              "actionType": "custom",
+              "script": onFieldsFilterToggleScript
+            }
+          ]
+        }
+      }
+    };
+  }
+  let toolbarDisplayAsButton = getDisplayAsButton(mainObject?.name, showDisplayAs);
+  let toolbarDQuickSearchBox = getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup, keywordsSearchBoxName });
+
+  // toolbars返回的数组元素不可以是空对象{}，比如hiddenCount ? {} : {"type": "tpl",...}，因为空对象最终还是会生成一个空的.antd-Crud-toolbar-item dom
+  // 当出现空的.antd-Crud-toolbar-item dom时会影响toolbar元素的maring-right css样式计算，如果有动态需要应该加到动态数组变量toolbars中
+  let toolbars = [];
+  if(formFactor === 'SMALL'){
+    if(toolbarCount){
+      toolbars.push(toolbarCount);
+    }
+    toolbars.push(toolbarReloadButton);
+    if(toolbarFilter){
+      toolbars.push(toolbarFilter);
+    }
+    toolbars.push(toolbarDisplayAsButton);
+    toolbars.push(toolbarDQuickSearchBox);
     return [
       // "bulkActions",
       ...(headerToolbarItems || []),
-      hiddenCount ? {} :{
-        "type": "tpl",
-        "tpl": "${count} " + i18next.t('frontend_record_sum')
-      },
-      {
-        // "type": "reload",//不可以直接使用reload，因为它不会设置页码到第一页
-        "type": "button",
-        "align": "right",
-        //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，为保持统一，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330
-        // "tooltip": i18next.t('frontend_button_reload_tooltip'),
-        "tooltipPlacement": "top",
-        "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
-        "label": "",
-        "icon": "fa fa-sync",
-        "visibleOn": "${!showFieldsFilter}",
-        "onEvent": {
-          "click": {
-            "actions": [
-              {
-                "actionType": "custom",
-                "script": onReloadScript
-              }
-            ]
-          }
-        },
-      },
-      filterVisible ? {
-        "label": i18next.t('frontend_button_search_tooltip'),
-        "icon": "fa fa-search",
-        "type": "button",
-        "tooltipPlacement": "top",
-        //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，为保持统一，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330
-        // "tooltip": i18next.t('frontend_button_search_tooltip'),
-        "badge": {
-          "offset": [
-            -5,
-            1
-          ],
-          "size":8,
-          "animation": true,
-          "visibleOn": "${isFieldsFilterEmpty == false && isLookup != true}"
-        },
-        "align": "right",
-        "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
-        "onEvent": {
-          "click": {
-            "actions": [
-              {
-                "actionType": "custom",
-                "script": onFieldsFilterToggleScript
-              }
-            ]
-          }
-        }
-      } : {},
-      getDisplayAsButton(mainObject?.name, showDisplayAs),
-      getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup, keywordsSearchBoxName })
+      ...toolbars,
   ]
   }else{
+    if(toolbarCount){
+      toolbars.push(toolbarCount);
+    }
+    if(toolbarFilter){
+      toolbars.push(toolbarFilter);
+    }
+    toolbars.push(toolbarReloadButton);
+    if(mainObject?.permissions?.allowCreateListViews){
+      toolbars.push(getSettingListviewToolbarButtonSchema());
+    }
+    toolbars.push(toolbarDisplayAsButton);
+    toolbars.push(toolbarDQuickSearchBox);
     return [
       // "filter-toggler",
       ...(headerToolbarItems || []),
@@ -211,56 +257,12 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
         "type": "columns-toggler",
         "className": "hidden"
       },
+      ...toolbars,
       // {
       //     "type": "columns-toggler",
       //     "className": "mr-2"
       // },
-      hiddenCount ? {} : {
-        "type": "tpl",
-        "tpl":  "${count} " + i18next.t('frontend_record_sum')
-      },
-      filterVisible ? {
-        "label": i18next.t('frontend_button_search_tooltip'),
-        "icon": "fa fa-filter",
-        //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，为保持统一，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330
-        // "tooltip": i18next.t('frontend_button_search_tooltip'),
-        // "tooltipPlacement": "top",
-        "type": "button",
-        "badge": {
-          "offset": [
-            -5,
-            1
-          ],
-          "size":8,
-          "animation": true,
-          "visibleOn": "${isFieldsFilterEmpty == false && isLookup != true}"
-        },
-        "align": "right",
-        "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
-        "onEvent": {
-          "click": {
-            "actions": [
-              {
-                "actionType": "custom",
-                "script": onFieldsFilterToggleScript
-              }
-            ]
-          }
-        }
-      } : {},
-      {
-        "type": "reload",
-        "align": "right",
-        //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，为保持统一，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330
-        // "tooltip": i18next.t('frontend_button_reload_tooltip'),
-        "tooltip":"",
-        "tooltipPlacement": "top",
-        "className": "bg-white p-2 rounded border-gray-300 text-gray-500"
-      },
       // getExportExcelToolbarButtonSchema(),
-      mainObject?.permissions?.allowCreateListViews ? getSettingListviewToolbarButtonSchema() : {},
-      getDisplayAsButton(mainObject?.name, showDisplayAs),
-      getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup, keywordsSearchBoxName }),
       // {
       //     "type": "drag-toggler",
       //     "align": "right"
