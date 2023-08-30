@@ -193,3 +193,24 @@
     -webkit-box-orient: vertical;
 }
 
+/* 魔方定义的按钮，统一把 .antd-Button--size-default 的右侧margin值 var(--button-size-default-marginRight) 去除 */
+.steedos-object-button{
+    .antd-Button{
+        margin-right: 0px;
+    }
+    &.antd-Button{
+        margin-right: 0px;
+    }
+}
+
+/* 魔方定义的按钮，连续的按钮左侧加间隔分开 */
+.steedos-object-button + .steedos-object-button{
+    margin-left: 4px;
+}
+
+/* 魔方定义的按钮，如果是显示在下拉菜单作为菜单按钮则不能加间隔 */
+.antd-ButtonGroup--vertical{
+    .steedos-object-button + .steedos-object-button{
+        margin-left: 0px;
+    }
+}

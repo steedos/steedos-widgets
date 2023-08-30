@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-21 10:27:43
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-08 14:02:19
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-08-30 13:52:10
  * @Description: 
  */
 import React, { useEffect, useState } from 'react'
@@ -69,7 +69,7 @@ export const AmisObjectButton = (props) => {
         }
 
         if(schema && className){
-            schema.className = schema.className + ' ' + className;
+            schema.className = schema.className + ' steedos-object-button ' + className;
         }
         
         const renderData = Object.assign(data, {objectName: objectName, app_id: appId, className: className});
@@ -100,7 +100,7 @@ export const AmisObjectButton = (props) => {
         return (
             <button
               onClick={buttonClick}
-              className={`antd-Button antd-Button--default antd-Button--size-default ${className ? className : ''}`}
+              className={`antd-Button antd-Button--default antd-Button--size-default steedos-object-button ${className ? className : ''}`}
             >
               {(button as any).label}
             </button>

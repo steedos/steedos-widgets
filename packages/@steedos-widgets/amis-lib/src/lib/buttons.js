@@ -488,7 +488,7 @@ export const getObjectListViewButtonsSchemas = (objectSchema, ctx)=>{
             name: button.name,
             objectName: button.objectName,
             visibleOn: getButtonVisibleOn(button),
-            className: `button_${button.name} mr-0`
+            className: `button_${button.name}`
             }
         });
     }
