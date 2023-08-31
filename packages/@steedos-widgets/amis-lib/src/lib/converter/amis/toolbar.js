@@ -102,6 +102,7 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
 
   return {
     "type": "tooltip-wrapper",
+    "id": "steedos_crud_toolbar_quick_search",
     "align": "right",
     "title": "",
     "content": "可搜索字段：" + searchableFieldsLabel.join(","),
@@ -223,7 +224,8 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
             }
           ]
         }
-      }
+      },
+      "id": "steedos_crud_toolbar_filter"
     };
   }
   let toolbarDisplayAsButton = getDisplayAsButton(mainObject?.name, showDisplayAs);

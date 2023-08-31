@@ -47,12 +47,11 @@ export const getReferenceTo = async (field)=>{
     }
 }
 
-export function getLookupSapceUserTreeSchema(){
-    const tree = [{
+export function getLookupSapceUserTreeSchema(isMobile){
+    const treeSchema = {
         "type": "input-tree",
-        "className": "",
+        "className":"steedos-select-user-tree",
         "inputClassName": "p-0",
-        "id": "u:7fd77b7915b0",
         "source": {
           "method": "post",
           "url": "${context.rootUrl}/graphql",
@@ -83,6 +82,10 @@ export function getLookupSapceUserTreeSchema(){
                 });
                 listView.handleFilterSubmit(Object.assign({}, filterFormValues));
               `
+              },
+              {
+                "actionType": "custom",
+                "script": " if(window.innerWidth < 768){ document.querySelector('.steedos-select-user-sidebar').classList.remove('steedos-select-user-sidebar-open'); }"
               }
             ]
           }
@@ -107,18 +110,56 @@ export function getLookupSapceUserTreeSchema(){
           "placeholder": "查找部门"
         },
         "unfoldedLevel": 2,
-        "style": {
-          "max-height": "100%",
-          "position": "absolute",
-          "left": "-330px",
-          "width": "320px",
-          "bottom": 0,
-          "top": "0",
-          "overflow": "auto",
-          "min-height":"300px"
-        },
         "originPosition": "left-top"
-    }]
+    }
+    const tree = []
+    if(isMobile){
+        tree.push({
+            type: "action",
+            body:[
+                {
+                    type: "action",
+                    body:[
+                        treeSchema
+                    ],
+                    className:"h-full w-[240px]"
+                }
+            ],
+            className: "absolute inset-0 steedos-select-user-sidebar",
+            "onEvent": {
+                "click": {
+                  "actions": [
+                    {
+                      "actionType": "custom",
+                      "script": "document.querySelector('.steedos-select-user-sidebar').classList.remove('steedos-select-user-sidebar-open')"
+                    }
+                  ]
+                }
+            },
+            id: "steedos_crud_toolbar_select_user_tree"
+        })
+        tree.push({
+            "type": "button",
+            "label": "组织",
+            "icon": "fa fa-sitemap",
+            "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
+            "align": "left",
+            "onEvent": {
+              "click": {
+                "actions": [
+                  {
+                    "actionType": "custom",
+                    "script": "document.querySelector('.steedos-select-user-sidebar').classList.toggle('steedos-select-user-sidebar-open')"
+                  }
+                ]
+              }
+            },
+            "id": "steedos_crud_toolbar_organization_button"
+        })
+    }else{
+        tree.push(treeSchema)
+    }
+    
     return tree;
 }
 
@@ -390,13 +431,9 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         pickerSchema.affixHeader = false;
 
         var headerToolbarItems = [];
-        if(referenceTo.objectName === "space_users" && field.reference_to_field === "user" && !isMobile){
-             headerToolbarItems = getLookupSapceUserTreeSchema();
-             pickerSchema["style"] = {
-                "margin-left":"330px",
-                "min-height": "300px"
-             }
-             pickerSchema.className = pickerSchema.className || "" + " steedos-select-user";
+        if(referenceTo.objectName === "space_users" && field.reference_to_field === "user"){
+            headerToolbarItems = getLookupSapceUserTreeSchema(isMobile);
+            pickerSchema.className = pickerSchema.className || "" + " steedos-select-user";
         }
 
         pickerSchema.headerToolbar = getObjectHeaderToolbar(refObjectConfig, fieldsArr, ctx.formFactor, { headerToolbarItems, isLookup: true, keywordsSearchBoxName });
@@ -490,6 +527,18 @@ export async function lookupToAmisPicker(field, readonly, ctx){
 
     if(field.pickerSchema){
         pickerSchema = Object.assign({}, pickerSchema, field.pickerSchema)
+    }
+
+    if(referenceTo.objectName === "space_users" && field.reference_to_field === "user" && isMobile){
+        //手机端选人控件只保留部分toolbar
+        pickerSchema.headerToolbar = pickerSchema.headerToolbar && pickerSchema.headerToolbar.filter(function(item){
+            if(["steedos_crud_toolbar_quick_search","steedos_crud_toolbar_filter","steedos_crud_toolbar_select_user_tree","steedos_crud_toolbar_organization_button"].indexOf(item.id) > -1){
+                return true;
+            }else{
+                return false;
+            }
+        })
+        pickerSchema.footerToolbar = ["pagination"]
     }
 
     const data = {
