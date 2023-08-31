@@ -63,7 +63,8 @@ export const AmisAppMenu = async (props) => {
                                           "to": tab.path,
                                           "target":tab.target,
                                           "id": tab.id,
-                                          "activeOn": "\\\\\${tabId == '"+ tab.id +"'}"
+                                          "activeOn": "\\\\\${tabId == '"+ tab.id +"'}",
+                                          "index": tab.index
                                           // active: selectedId === tab.id,
                                       })
                                   })
@@ -72,27 +73,30 @@ export const AmisAppMenu = async (props) => {
                                   data.nav.push({
                                       "label": groupName,
                                       "unfolded": tabGroup && tabGroup.default_open != false,
-                                      "children": _.map(tabs, (tab) => {
-                                          if(locationPathname == tab.path){
+                                      "isGroup": true,
+                                      "children": _.sortBy(_.map(tabs, (tab) => {
+                                            if(locationPathname == tab.path){
                                             customTabId = tab.id;
-                                          }else if(locationPathname.startsWith(tab.path + "/")){
+                                            }else if(locationPathname.startsWith(tab.path + "/")){
                                             objectTabId = tab.id;
-                                          }
-                                          return {
-                                          "label": showIcon ? {
-                                              type: 'tpl',
-                                              tpl: \`<span class='fill-slate-500 word-break leading-6 block -ml-px no-underline group flex items-center text-[15px] rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
-                                          }  : tab.name,
-                                          "to": tab.path,
-                                          "target":tab.target,
-                                          "id": tab.id,
-                                          "activeOn": "\\\\\${tabId == '"+ tab.id +"'}"
-                                          // active: selectedId === tab.id,
-                                          }
-                                      })
+                                            }
+                                            return {
+                                            "label": showIcon ? {
+                                                type: 'tpl',
+                                                tpl: \`<span class='fill-slate-500 word-break leading-6 block -ml-px no-underline group flex items-center text-[15px] rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
+                                            }  : tab.name,
+                                            "to": tab.path,
+                                            "target":tab.target,
+                                            "id": tab.id,
+                                            "activeOn": "\\\\\${tabId == '"+ tab.id +"'}",
+                                            "index": tab.index
+                                            // active: selectedId === tab.id,
+                                            }
+                                        }),(tab) => {return tab.index})
                                   })   
                               }
                               });
+                        
                       }else{
                           _.each(payload.children, (tab)=>{
                               if(locationPathname == tab.path){
@@ -108,12 +112,23 @@ export const AmisAppMenu = async (props) => {
                               "to": tab.path,
                               "target":tab.target,
                               "id": tab.id,
-                              "activeOn": "\\\\\${tabId == '"+ tab.id +"'}"
+                              "activeOn": "\\\\\${tabId == '"+ tab.id +"'}",
+                              "index": tab.index
                               // active: selectedId === tab.id,
                               });
                           })
                       }
-
+                      //以下为nav第一层排序，包括分组与选项卡
+                      let groupLength = ((payload.tab_groups && payload.tab_groups.length) || 0) + 1000;
+                      data.nav = _.sortBy(data.nav, function(tab){
+                        if(tab.isGroup){
+                            return _.findIndex(payload.tab_groups, function(group){
+                                return group.group_name === tab.label;
+                            });
+                        }else{
+                            return groupLength + tab.index;
+                        }
+                      })
                       payload.data = {
                         "type":"service",
                         "data":{

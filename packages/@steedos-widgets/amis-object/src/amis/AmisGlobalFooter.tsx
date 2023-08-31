@@ -55,6 +55,9 @@ export const AmisGlobalFooter = async (props) => {
                             var customTabId = "";
                             var objectTabId = "";
                             let sum = 0;
+                            payload.children = _.sortBy(payload.children, function(tab){
+                                return tab.index;
+                            })
                             _.each(payload.children, (tab)=>{
                                 sum++;
                                 const classIcon = tab.icon.replace(/_/g,"-");
@@ -73,7 +76,8 @@ export const AmisGlobalFooter = async (props) => {
                                         "to": tab.path,
                                         "target":tab.target,
                                         "id": tab.id,
-                                        "activeOn": "\\\\\${tabId == '"+ tab.id +"'}"
+                                        "activeOn": "\\\\\${tabId == '"+ tab.id +"'}",
+                                        "index": tab.index
                                     });
                                 }else{
                                     data.nav.push({
@@ -85,11 +89,11 @@ export const AmisGlobalFooter = async (props) => {
                                         "to": tab.path,
                                         "target":tab.target,
                                         "id": tab.id,
-                                        "activeOn": "\\\\\${tabId == '"+ tab.id +"'}"
+                                        "activeOn": "\\\\\${tabId == '"+ tab.id +"'}",
+                                        "index": tab.index
                                     });
                                 }
                             })
-
                             payload.data = {
                                 "type": "service",
                                 "data":{
