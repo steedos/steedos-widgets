@@ -30,6 +30,15 @@ export const getSchema = (uiSchema) => {
                       debug: false,
                       title: "",
                       submitText: "",
+                      initApi: {
+                        url: '/api/v1/queue_import_history/${recordId}?fields=["state"]',
+                        sendOn: 'this.recordId',
+                        responseData: {
+                          importState: "${state}",
+                        }
+                      },
+                      interval: 3000,
+                      stopAutoRefreshWhen: "this.importState === 'finished'",
                       api: {
                         method: "post",
                         url: "${context.rootUrl}/graphql",
@@ -50,7 +59,7 @@ export const getSchema = (uiSchema) => {
                         },
                         dataType: "json",
                       },
-                      initFetch: true,
+                      initFetch: false,
                       body: [
                         {
                           type: "fieldSet",
@@ -239,6 +248,27 @@ export const getSchema = (uiSchema) => {
                       objectApiName: "queue_import_history",
                       id: "u:e4ef598eed61",
                       onEvent: {
+                        inited: {
+                          weight: 0,
+                          actions: [
+                            {
+                              "actionType": "broadcast",
+                              "args": {
+                                "eventName": `@data.changed.${uiSchema.name}`
+                              },
+                              "data": {
+                                "objectName": `${uiSchema.name}`,
+                                "displayAs": "${displayAs}",
+                                "recordId": "xxxx" //不可以省略，否则会进入进入记录详细页面
+                              },
+                              "expression": "this.importState === 'finished'"
+                            },
+                            {
+                              "actionType": "closeDialog",
+                              "expression": "this.importState === 'finished'"
+                            }
+                          ]
+                        },
                         submitSucc: {
                           weight: 0,
                           actions: [
@@ -271,7 +301,7 @@ export const getSchema = (uiSchema) => {
                           ],
                         },
                       },
-                      closeDialogOnSubmit: true,
+                      closeDialogOnSubmit: false,
                     },
                   ],
                   id: "u:dc05498d3bd4",
