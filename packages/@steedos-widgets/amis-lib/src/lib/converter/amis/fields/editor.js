@@ -78,6 +78,12 @@ export const getHtmlFieldSchema = (field, readonly, ctx)=>{
           "receiver": "${context.rootUrl}/s3/images",
           "name": field.name,
           "options": {
+            "menu": {
+              "insert": {
+                "title": "Insert",
+                "items": "image link media addcomment pageembed codesample inserttable | charmap emoticons hr | pagebreak nonbreaking anchor tableofcontents | insertdatetime"
+              }
+            },
             "plugins": [
               "autoresize"
             ],
@@ -92,6 +98,14 @@ export const getHtmlFieldSchema = (field, readonly, ctx)=>{
         return {
             "type": "input-rich-text",
             "receiver": "${context.rootUrl}/s3/images",
+            "options":{
+              "menu": {
+                "insert": {
+                  "title": "Insert",
+                  "items": "image link media addcomment pageembed codesample inserttable | charmap emoticons hr | pagebreak nonbreaking anchor tableofcontents | insertdatetime"
+                }
+              }
+            },
             "name": field.name
         }
         // return {
