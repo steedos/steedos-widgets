@@ -307,7 +307,10 @@ function getFieldWidth(width){
 }
 
 async function getTableColumns(fields, options){
-    const columns = [{name: '_index',type: 'text', width: 32, placeholder: ""}];
+    const columns = [];
+    if(!options.isLookup){
+        columns.push({name: '_index',type: 'text', width: 32, placeholder: ""});
+    }
     const allowEdit = options.permissions?.allowEdit && !options.isLookup && options.enable_inline_edit != false;
     
     for (const field of fields) {
