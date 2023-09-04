@@ -1,10 +1,10 @@
 /*
- * @LastEditTime: 2023-09-04 16:55:47
+ * @LastEditTime: 2023-09-04 22:43:04
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
  * @customMade: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import * as _ from 'lodash';
-import { isFunction, isNumber, isBoolean, isString } from 'lodash';
+import { isFunction, isNumber, isBoolean, isString, isNil } from 'lodash';
 import { safeRunFunction, safeEval } from '../utils';
 import { isExpression, parseSingleExpression } from '../expression';
 
@@ -85,22 +85,22 @@ export const getFieldDefaultValue = (field, globalData) => {
             if (defaultValue && !isFormula && !field.multiple) {
                 if (dataType === 'text' && !isString(defaultValue)) {
                     defaultValue = String(defaultValue);
-                } else if (dataType === 'number' && !isNumber(defaultValue)) {
+                } else if (dataType === 'number' && isString(defaultValue)) {
                     defaultValue = Number(defaultValue);
-                } else if (dataType === 'boolean' && !isBoolean(defaultValue)) {
+                } else if (dataType === 'boolean' && isString(defaultValue)) {
                     // defaultValue = defaultValue === 'false' ? false : true;
-                    defaultValue = defaultValue === 'true' || defaultValue === '1';
+                    defaultValue = defaultValue.toLowerCase() === 'true' || defaultValue === '1';
                 }
             }
             break;
         case 'number':
-            if(!isNumber(defaultValue)){
+            if(isString(defaultValue)){
                 defaultValue = Number(defaultValue);
             }
             break;
         case 'boolean':
-            if (!isBoolean(defaultValue)) {
-                defaultValue = defaultValue === 'true' || defaultValue === '1';
+            if (isString(defaultValue)) {
+                defaultValue = defaultValue.toLowerCase() === 'true' || defaultValue === '1';
             }
             break;
         default:
