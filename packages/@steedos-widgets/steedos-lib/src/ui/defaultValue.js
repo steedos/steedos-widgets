@@ -1,6 +1,6 @@
 /*
- * @LastEditTime: 2023-07-14 16:20:00
- * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-09-04 16:55:47
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
  * @customMade: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import * as _ from 'lodash';
@@ -89,8 +89,18 @@ export const getFieldDefaultValue = (field, globalData) => {
                     defaultValue = Number(defaultValue);
                 } else if (dataType === 'boolean' && !isBoolean(defaultValue)) {
                     // defaultValue = defaultValue === 'false' ? false : true;
-                    defaultValue = defaultValue === 'true';
+                    defaultValue = defaultValue === 'true' || defaultValue === '1';
                 }
+            }
+            break;
+        case 'number':
+            if(!isNumber(defaultValue)){
+                defaultValue = Number(defaultValue);
+            }
+            break;
+        case 'boolean':
+            if (!isBoolean(defaultValue)) {
+                defaultValue = defaultValue === 'true' || defaultValue === '1';
             }
             break;
         default:
