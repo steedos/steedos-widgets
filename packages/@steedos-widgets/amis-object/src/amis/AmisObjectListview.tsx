@@ -2,33 +2,36 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-05-06 15:05:50
+ * @LastEditTime: 2023-08-24 16:51:56
  * @Description: 
  */
-import { getListSchema, getObjectListHeader, getUISchema, Router } from '@steedos-widgets/amis-lib'
+import './AmisObjectListview.less';
+import { getListSchema, getObjectListHeader, getUISchema, Router, i18next } from '@steedos-widgets/amis-lib'
 import { keys, pick, difference, find, has, first, values } from 'lodash';
 
 export const AmisObjectListView = async (props) => {
   // console.time('AmisObjectListView')
-  console.log(`AmisObjectListView props`, props)
+  // console.log(`AmisObjectListView props`, props)
   const { $schema, top, perPage, showHeader=true, data, defaultData, 
+      crud = {},
       className="", 
       crudClassName, 
       showDisplayAs = false,
       sideSchema,
       columnsTogglable=false,
       filterVisible = true,
-      headerToolbarItems} = props;
+      headerToolbarItems, rowClassNameExpr, hiddenColumnOperation=false } = props;
   let { headerSchema } = props;
   let ctx = props.ctx;
   let listName = defaultData?.listName || data?.listName || props?.listName;
-  console.log('AmisObjectListView ==listName=>', listName)
+  // console.log('AmisObjectListView ==listName=>', listName)
   let defaults: any = {};
   let objectApiName = props.objectApiName || "space_users"; // 只是为了设计器,才在此处设置了默认值. TODO , 使用其他方式来辨别是否再设计器中
   if(!ctx){
     ctx = {};
   }
   const displayAs = Router.getTabDisplayAs(objectApiName);
+  // console.log(`AmisObjectListView`, 'displayAs===>', displayAs, objectApiName)
   let formFactor = props.formFactor;
   if(!formFactor){
     const isMobile = window.innerWidth < 768;
@@ -63,7 +66,7 @@ export const AmisObjectListView = async (props) => {
   if(!listView) {
     return {
       "type": "alert",
-      "body": `当前${listName}视图不存在！`,
+      "body": `${i18next.t('frontend_listview_warning_start')}${listName}${i18next.t('frontend_listview_warning_end')}`,
       "level": "warning",
       "showIcon": true,
       "className": "mb-3"
@@ -74,17 +77,18 @@ export const AmisObjectListView = async (props) => {
 
   if (!(ctx && ctx.defaults)) {
     // 支持把crud组件任意属性通过listSchema属性传入到底层crud组件中
-    const schemaKeys = difference(keys($schema), ["type", "showHeader","id"]);
+    const schemaKeys = difference(keys($schema), ["type", "showHeader","id", "crud"]);
     // 此次是从 props中 抓取到 用户配置的 crud属性, 此处是一个排除法
     const listSchema = pick(props, schemaKeys);
     // className不传入crud组件，crud单独识别crudClassName属性
     listSchema.className = crudClassName;
     listSchema.onEvent = {}; // 为啥要将一个内置event放在此处?
+    // 下面expression中_isRelated参数判断的是列表视图分栏模式下，新建、编辑、删除相关子表记录时不应该刷新左侧（主表）列表视图组件
     listSchema.onEvent[`@data.changed.${objectApiName}`] = {
       "actions": [
         {
           "args": {
-            "url": "/app/${appId}/${objectName}/view/${event.data.result.data.recordId}?display=${ls:page_display || 'grid'}&side_object=${objectName}&side_listview_id=${listName}",
+            "url": "/app/${appId}/${objectName}/view/${event.data.result.data.recordId}?side_object=${objectName}&side_listview_id=${listName}",
             "blank": false
           },
           "actionType": "link",
@@ -97,7 +101,7 @@ export const AmisObjectListView = async (props) => {
       ]
     }
     defaults = {
-      listSchema
+      listSchema: Object.assign( {}, listSchema, crud )
     };
   }
 
@@ -109,7 +113,7 @@ export const AmisObjectListView = async (props) => {
   const amisSchemaData = Object.assign({}, data, defaultData);
   const listViewId = ctx?.listViewId || amisSchemaData.listViewId;
   const listViewSchemaProps = { 
-    top, perPage, showHeader, defaults, ...ctx, listViewId, setDataToComponentId, filterVisible, showDisplayAs, displayAs, headerToolbarItems
+    top, perPage, showHeader, defaults, ...ctx, listViewId, setDataToComponentId, filterVisible, showDisplayAs, displayAs, headerToolbarItems, rowClassNameExpr, hiddenColumnOperation
   }
 
   if(!headerSchema){
@@ -139,7 +143,7 @@ export const AmisObjectListView = async (props) => {
     body: [{
       "type": "wrapper",
       "size": "none",
-      "className": "flex flex-1 overflow-hidden h-full",
+      "className": "flex flex-1 h-full",
       body: [
         sideSchema ? {
           "type": "wrapper",
@@ -159,14 +163,15 @@ export const AmisObjectListView = async (props) => {
               {
                 "type": "service",
                 "schemaApi": {
-                    "url": "${context.rootUrl}/graphql?listName=${listName}&display=${display}",
+                    // 这里url上加objectApiName属性是因为设计器中切换对象时不会变更列表视图界面，不可以用objectName=${objectName}使用作用域中objectName变量是因为设计器那边不会监听识别data变化来render组件
+                    "url": "${context.rootUrl}/graphql?objectName=" + objectApiName + "&listName=${listName}&display=${display}",
                     "method": "post",
                     "messages": {
                     },
                     "headers": {
                         "Authorization": "Bearer ${context.tenantId},${context.authToken}"
                     },
-                    "requestAdaptor": "console.log('service listview schemaApi requestAdaptor======>');api.data={query: '{spaces__findOne(id: \"none\"){_id,name}}'};return api;",
+                    "requestAdaptor": "api.data={query: '{spaces__findOne(id: \"none\"){_id,name}}'};return api;",
                     "adaptor": `
                         // console.log('service listview schemaApi adaptor....', api.body); 
                         let { appId, objectName, defaultListName: listName, display, formFactor: defaultFormFactor} = api.body;
@@ -177,7 +182,8 @@ export const AmisObjectListView = async (props) => {
                           const listViewSchemaProps = ${JSON.stringify(listViewSchemaProps)};
                           const formFactor = (["split"].indexOf(display) > -1) ? 'SMALL': defaultFormFactor;
                           listViewSchemaProps.formFactor = formFactor;
-                          // console.log("====listViewSchemaProps===>", listName, listViewSchemaProps)
+                          listViewSchemaProps.displayAs = display;
+                          // console.log("====listViewSchemaProps===>", listName, display, listViewSchemaProps)
                           window.getListSchema(appId, objectName, listName, listViewSchemaProps).then((schema)=>{
                             payload.data = schema.amisSchema;
                             // console.log("payload================>", payload)

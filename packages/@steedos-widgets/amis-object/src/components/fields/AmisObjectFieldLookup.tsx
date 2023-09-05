@@ -1,10 +1,11 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-12 13:18:55
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-06 15:28:02
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-06-27 11:41:57
  * @Description: 
  */
+import './AmisObjectFieldLookup.less';
 import React, { useEffect, useState } from 'react'
 import { getUISchema, lookupToAmisPicker, lookupToAmisSelect, createObject } from '@steedos-widgets/amis-lib'
 
@@ -17,21 +18,21 @@ const getSchema = async (field, value, ctx)=>{
     refTo = refTo();
   }
   const leftName = `${field.name}__left`
-  const options = [];
-  for (const item of refTo) {
-    const refObject = await getUISchema(item, false);
-    options.push({
-        label: refObject.label,
-        value: item,
-        icon: refObject.icon
-    });
-  }
+  // const options = [];
+  // for (const item of refTo) {
+  //   const refObject = await getUISchema(item, false);
+  //   options.push({
+  //       label: refObject.label,
+  //       value: item,
+  //       icon: refObject.icon
+  //   });
+  // }
   // console.log(`getSchema refTo`, refTo);
   // console.log(`getSchema options`, options);
   // console.log(`getSchema value=========>`, value);
   if(!value || !value.o){
     value = {
-      o: options[0].value,
+      o: refTo[0],
       ids: []
     }
   }
@@ -53,8 +54,20 @@ const getSchema = async (field, value, ctx)=>{
     "body": [
       {
         "type": "select",
+        "inputClassName": "lookup-left",
         "name": leftName,
-        "options": options,
+        // "options": options,
+        "source": {
+          "method": "post",
+          "url": "${context.rootUrl}/graphql",
+          "data": {
+            "query": "{options:objects(filters: {__filters}, top: {__top}, sort: \"{__sort}\"){_id label:label value:name icon},count:objects__count(filters:{__filters})}"
+          },
+          "headers": {
+            "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+          },
+          "requestAdaptor": `\nvar filters = [\"name\",\"in\", ${JSON.stringify(refTo)}]; \nvar top = ${JSON.stringify(refTo)}.length;\n\nvar sort = \"\";\napi.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', top).replace('{__sort}', sort.trim());\nreturn api;`,    
+        },
         "value": `${value.o}`
       },
       Object.assign({}, rightSchema, {

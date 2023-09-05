@@ -1,5 +1,10 @@
+/*
+ * @LastEditTime: 2023-09-04 22:43:04
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @customMade: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 import * as _ from 'lodash';
-import { isFunction, isNumber, isBoolean, isString } from 'lodash';
+import { isFunction, isNumber, isBoolean, isString, isNil } from 'lodash';
 import { safeRunFunction, safeEval } from '../utils';
 import { isExpression, parseSingleExpression } from '../expression';
 
@@ -23,6 +28,7 @@ import { isExpression, parseSingleExpression } from '../expression';
  */
 const getCompatibleDefaultValueExpression = (express, multiple) => {
     const reg = /^\{\w+(\.*\w+)*\}$/;//只转换{}包着的老语法，新语法是两层大括号{{}}，不运行转换
+    const reg2 = /^{{[\s\S]*}}$/; //转换{{ function(){} }} 或 {{ (item)=>{} }}
     let result = express;
     if (reg.test(express)) {
         if (express.indexOf("userId") > -1 || express.indexOf("spaceId") > -1 || express.indexOf("user.") > -1 || express.indexOf("now") > -1) {
@@ -34,6 +40,15 @@ const getCompatibleDefaultValueExpression = (express, multiple) => {
         if (multiple) {
             // 如果是多选字段，则返回值应该加上中括号包裹，表示返回数组
             result = result.replace(/\{\{(.+)\}\}/, "{{[$1]}}")
+        }
+    }
+    if(reg2.test(express) && (express.indexOf('function')>-1 || express.indexOf('=>')>-1)){
+        // 使用正则表达式提取函数
+        let regex = /\{\{([\s\S]*)\}\}/;
+        let matches = regex.exec(express);
+        if (matches && matches.length > 1) {
+            let functionCode = matches[1];
+            result = eval("(" + functionCode + ")")();
         }
     }
     return result;
@@ -70,12 +85,22 @@ export const getFieldDefaultValue = (field, globalData) => {
             if (defaultValue && !isFormula && !field.multiple) {
                 if (dataType === 'text' && !isString(defaultValue)) {
                     defaultValue = String(defaultValue);
-                } else if (dataType === 'number' && !isNumber(defaultValue)) {
+                } else if (dataType === 'number' && isString(defaultValue)) {
                     defaultValue = Number(defaultValue);
-                } else if (dataType === 'boolean' && !isBoolean(defaultValue)) {
+                } else if (dataType === 'boolean' && isString(defaultValue)) {
                     // defaultValue = defaultValue === 'false' ? false : true;
-                    defaultValue = defaultValue === 'true';
+                    defaultValue = defaultValue.toLowerCase() === 'true' || defaultValue === '1';
                 }
+            }
+            break;
+        case 'number':
+            if(isString(defaultValue)){
+                defaultValue = Number(defaultValue);
+            }
+            break;
+        case 'boolean':
+            if (isString(defaultValue)) {
+                defaultValue = defaultValue.toLowerCase() === 'true' || defaultValue === '1';
             }
             break;
         default:

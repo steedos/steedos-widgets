@@ -1,10 +1,11 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:51:00
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-26 11:52:04
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-06-28 23:19:41
  * @Description: 
  */
+import { i18next } from "../i18n";
 
 export const getSchema = async (uiSchema, ctx) => {
     const schemaApiAdaptor = `
@@ -54,12 +55,22 @@ export const getSchema = async (uiSchema, ctx) => {
             data: formSchema
         };
     `;
+    const onDialogCancelScript = `
+        // 这里加setTimeout是因为amis的Bug，它会先触发cancel事件执行此脚本关闭父窗口然后再关闭子窗口
+        // 正确的顺序应该是先关闭子窗口再关闭父窗口，顺序错了会造成第二次点击新建按钮的时候异常
+        setTimeout(function(){
+            doAction({
+                "actionType": "cancel",
+                "componentId": "object_actions_drawer_${uiSchema.name}"
+            });
+        }, 200);
+    `;
     return {
         "type": "service",
         "body": [
             {
                 "type": "button",
-                "label": "新建",
+                "label": i18next.t('frontend_form_new'),
                 "id": "u:standard_new",
                 "level": "default",
                 "onEvent": {
@@ -85,7 +96,7 @@ export const getSchema = async (uiSchema, ctx) => {
                                         "isLookup": "${isLookup}",
                                         "listName": "${listName}"
                                     },
-                                    "title": "新建 ${uiSchema.label}",
+                                    "title":i18next.t('frontend_form_new') + " ${uiSchema.label | raw}",
                                     "body": [
                                         {
                                             "type": "service",
@@ -114,15 +125,26 @@ export const getSchema = async (uiSchema, ctx) => {
                                     "closeOnEsc": false,
                                     "closeOnOutside": false,
                                     "size": "lg",
+                                    "onEvent": {
+                                        "cancel": {
+                                            "actions": [
+                                                {
+                                                    "actionType": "custom",
+                                                    "script": onDialogCancelScript,
+                                                    "expression": "${window:innerWidth < 768}",
+                                                }
+                                            ]
+                                        }
+                                    },
                                     "actions": [
                                         {
                                             type: 'button',
                                             actionType: 'cancel',
-                                            label: "取消"
+                                            label: i18next.t('frontend_form_cancel')
                                         },
                                         {
                                             type: 'button',
-                                            label: "保存并新建",
+                                            label: i18next.t('frontend_form_save_and_new'),
                                             actionType: 'confirm',
                                             close: false,
                                             id: "confirmAndNew"
@@ -130,7 +152,7 @@ export const getSchema = async (uiSchema, ctx) => {
                                         {
                                             type: 'button',
                                             actionType: 'confirm',
-                                            label: "保存",
+                                            label: i18next.t('frontend_form_save'),
                                             primary: true
                                         },
                                     ]

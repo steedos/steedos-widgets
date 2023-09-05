@@ -1,6 +1,6 @@
 import { getFieldSearchable } from "./fields/index";
 import { includes, map } from "lodash";
-
+import { i18next } from "../../../i18n"
 export async function getObjectFieldsFilterButtonSchema(objectSchema) {
   // const amisListViewId = `listview_${objectSchema.name}`;
   return {
@@ -31,7 +31,10 @@ export async function getObjectFieldsFilterFormSchema(ctx) {
   const formSchema = {
     "type": "service",
     "visibleOn": "this.filterFormSearchableFields && this.filterFormSearchableFields.length",
-    "className": ctx.formFactor === 'SMALL' ? "slds-filters__body p-0 mb-2" : "slds-filters__body p-0 sm:grid sm:gap-2 sm:grid-cols-4 mb-2",
+    "className": ctx.formFactor === 'SMALL' ? "slds-filters__body p-0 mb-2 overflow-y-auto overflow-x-hidden" : "slds-filters__body p-0 sm:grid sm:gap-2 sm:grid-cols-4 mb-2",
+    "style":{
+      "max-height":ctx.formFactor === 'SMALL'?"30vh":"unset"
+    },
     "schemaApi": {
       method: 'post',
       url: `\${context.rootUrl}/graphql?reload=\${filterFormSearchableFields|join}`,
@@ -74,12 +77,6 @@ export async function getObjectFieldsFilterFormSchema(ctx) {
             if (
               field && window.isFieldTypeSearchable(field.type)
             ) {
-              delete field.defaultValue;
-              delete field.required;
-              delete field.is_wide;
-              delete field.readonly;
-              delete field.hidden;
-              delete field.omit;
               var ctx = ${JSON.stringify(ctx)};
               const amisField = window.getFieldSearchable(field, fields, ctx);
               return amisField;
@@ -99,7 +96,9 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
   if (!ctx) {
     ctx = {};
   }
+  const btnSearchId = "btn_filter_form_search_" + new Date().getTime();
   const filterFormSchema = await getObjectFieldsFilterFormSchema(ctx);
+  const keywordsSearchBoxName = ctx.keywordsSearchBoxName || "__keywords";
   const onSearchScript = `
     const scope = event.context.scoped;
     var filterForm = scope.parent.parent.getComponents().find(function(n){
@@ -115,32 +114,46 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     // // 这会造成handleFilterSubmit时把移除掉的搜索项字段之前的值加到过滤条件中
     // for(var k in filterFormValues){
     //   if(filterFormValues[k] === "" && !filterFormValues.hasOwnProperty(k)){
-    //     removedValues[k] = "";
+    //     removedValues[k] = null;
     //   }
     // }
     // listView.handleFilterSubmit(Object.assign({}, removedValues, filterFormValues));
-
-    let isMobile = Steedos.isMobile();
-    if(isMobile){
-      // 手机端点击搜索的时候自动收起搜索栏
-      let resizeWindow = function(){
-        //触发amis crud 高度重算
-        setTimeout(()=>{
-          window.dispatchEvent(new Event("resize"))
-        }, 500);
-      }
-      const filterService = filterForm.context.getComponents().find(function(n){
-        return n.props.type === "service";
-      });
-      filterService.setData({showFieldsFilter: false});
-      resizeWindow();
-      // 使用filterForm.getValues()的话，并不能拿到本地存储中的过滤条件，所以需要从event.data中取。
-      let filterFormValues = event.data;
-      let isFieldsFilterEmpty = SteedosUI.isFilterFormValuesEmpty(filterFormValues);
-      let crud = SteedosUI.getClosestAmisComponentByType(scope, "crud");
-      let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service");
-      crudService && crudService.setData({isFieldsFilterEmpty, showFieldsFilter: false});
+    // 点击搜索的时候自动收起搜索栏
+    let resizeWindow = function(){
+      //触发amis crud 高度重算
+      setTimeout(()=>{
+        window.dispatchEvent(new Event("resize"))
+      }, 500);
     }
+    const filterService = filterForm.context.getComponents().find(function(n){
+      return n.props.type === "service";
+    });
+    let showFieldsFilter = false;
+    const isMobile = window.innerWidth < 768;
+    if(event.data.__from_fields_filter_settings_confirm){
+      // 如果是从设置搜索项点击确认按钮触发的搜索事件不应该自动关闭搜索栏
+      showFieldsFilter = true;
+    }
+    else if(isMobile){
+      // 如果是手机端，点击搜索后自动关闭搜索栏
+      showFieldsFilter = false;
+    }
+    else if(event.data.displayAs === "split") {
+      // PC上分栏模式下的列表，始终按手机上效果处理，即自动关闭搜索栏
+      showFieldsFilter = false;
+    }
+    else if(window.innerHeight >= 1200){
+      // 高分辨率屏幕（2k+），列表高度比较高，没必要自动关闭搜索栏
+      showFieldsFilter = true;
+    }
+    filterService.setData({showFieldsFilter});
+    resizeWindow();
+    // 使用filterForm.getValues()的话，并不能拿到本地存储中的过滤条件，所以需要从event.data中取。
+    let filterFormValues = event.data;
+    let isFieldsFilterEmpty = SteedosUI.isFilterFormValuesEmpty(filterFormValues);
+    let crud = SteedosUI.getClosestAmisComponentByType(scope, "crud");
+    let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service");
+    crudService && crudService.setData({isFieldsFilterEmpty, showFieldsFilter});
   `;
   const onCancelScript = `
     const scope = event.context.scoped;
@@ -154,21 +167,29 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     const removedValues = {};
     for(var k in filterFormValues){
       if(/^__searchable__/.test(k)){
-        removedValues[k] = "";
+        removedValues[k] = null;
       }
     }
     if(!event.data.isLookup){
       // 刷新浏览器后，filterFormValues值是空的，只能从本地存储中取出并重置为空值
-      const listViewId = event.data.listViewId;
-      const listViewPropsStoreKey = location.pathname + "/crud/" + listViewId ;
+      const listName = event.data.listName;
+      const listViewPropsStoreKey = location.pathname + "/crud";
       let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
       if(localListViewProps){
         localListViewProps = JSON.parse(localListViewProps);
         for(var k in localListViewProps){
-          removedValues[k] = "";
+          if(k !== "__keywords"){
+            removedValues[k] = null;
+          }
         }
       }
     }
+    else{
+      const keywordsSearchBoxName = "${keywordsSearchBoxName}";
+      //lookup字段保留快速搜索条件
+      removedValues[keywordsSearchBoxName] = filterFormValues[keywordsSearchBoxName];
+    }
+    filterForm.reset();
     listView.handleFilterSubmit(removedValues);
     const filterService = filterForm.context.getComponents().find(function(n){
       return n.props.type === "service";
@@ -178,23 +199,17 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     setTimeout(()=>{
       window.dispatchEvent(new Event("resize"))
     }, 100);
-    let isMobile = Steedos.isMobile();
-    if(isMobile){
-      // 手机端移除搜索按钮上的红点
-      let crudService = scope.getComponentById("service_listview_" + event.data.objectName);
-      crudService && crudService.setData({isFieldsFilterEmpty: true, showFieldsFilter: false});
-    }
+    // 移除搜索按钮上的红点
+    let crudService = scope.getComponentById("service_listview_" + event.data.objectName);
+    crudService && crudService.setData({isFieldsFilterEmpty: true, showFieldsFilter: false});
     `;
   const dataProviderInited = `
     const objectName = data.objectName;
     const isLookup = data.isLookup;
-    const listViewId = data.listViewId;
-    let searchableFieldsStoreKey = location.pathname + "/searchable_fields/";
+    const listName = data.listName;
+    let searchableFieldsStoreKey = location.pathname + "/searchable_fields";
     if(isLookup){
-      searchableFieldsStoreKey += "lookup/" + objectName;
-    }
-    else{
-      searchableFieldsStoreKey += listViewId;
+      searchableFieldsStoreKey += "/lookup/" + objectName;
     }
     let defaultSearchableFields = sessionStorage.getItem(searchableFieldsStoreKey);
     if(defaultSearchableFields){
@@ -210,7 +225,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     if(_.isEmpty(defaultSearchableFields) && data.uiSchema){
       defaultSearchableFields = _.map(
         _.sortBy(_.filter(_.values(data.uiSchema.fields), (field) => {
-          return field.searchable;
+          return field.filterable;
         }), "sort_no"),
         "name"
       );
@@ -221,7 +236,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       setData({ showFieldsFilter: false });
     }
     else{
-      const listViewPropsStoreKey = location.pathname + "/crud/" + data.listViewId ;
+      const listViewPropsStoreKey = location.pathname + "/crud";
       let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
       if(localListViewProps){
         localListViewProps = JSON.parse(localListViewProps);
@@ -236,17 +251,11 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
               || (_.isArray(n) && _.isEmpty(n.filter(function(item){return !_.isNil(item)})))
               || (_.isString(n) && n.length === 0);
           });
-          // 有过滤条件时自动展开搜索栏
+          // 有过滤条件时只显示搜索按钮上的红点，不自动展开搜索栏
           if(!_.isEmpty(omitedEmptyFormValue)){
-            let isMobile = Steedos.isMobile();
-            if(isMobile){
-              // 手机端不展开，只显示搜索按钮上的红点
-              let crudService = SteedosUI.getRef(data.$scopeId).getComponentById("service_listview_" + data.objectName)
-              crudService && crudService.setData({isFieldsFilterEmpty: false});
-            }
-            else{
-              setData({ showFieldsFilter: true });
-            }
+            let crudService = SteedosUI.getRef(data.$scopeId).parent.getComponentById("service_listview_" + data.objectName)
+            crudService && crudService.setData({isFieldsFilterEmpty: false});
+            // setData({ showFieldsFilter: true });//自动展开搜索栏
           }
         }
       }
@@ -257,7 +266,6 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     const listName = data.listName;
     const objectName = data.objectName;
     const isLookup = data.isLookup;
-    const listViewId = data.listViewId;
     const value = data.fields;
     const scope = event.context.scoped;
     // 这里的filterForm不是name为"listview-filter-form"的内部form，而是crud自带的filter form
@@ -268,12 +276,9 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       return n.props.type === "service";
     });
     filterService.setData({ filterFormSearchableFields: value });
-    let searchableFieldsStoreKey = location.pathname + "/searchable_fields/";
+    let searchableFieldsStoreKey = location.pathname + "/searchable_fields";
     if(isLookup){
-      searchableFieldsStoreKey += "lookup/" + objectName;
-    }
-    else{
-      searchableFieldsStoreKey += listViewId;
+      searchableFieldsStoreKey += "/lookup/" + objectName;
     }
     sessionStorage.setItem(searchableFieldsStoreKey, value);
 
@@ -322,7 +327,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     });
     const removedValues = {};
     removedKeys.forEach(function(key){
-      removedValues[key] = "";
+      removedValues[key] = null;
     });
     filterForm.setValues(removedValues);//这里使用filterInnerForm也可以
 
@@ -331,14 +336,18 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     }
     
     // 列表视图crud支持本地缓存，所以需要进一步清除浏览器本地缓存里面用户在可搜索项中移除的字段值
-    const listViewPropsStoreKey = location.pathname + "/crud/" + listViewId ;
+    const listViewPropsStoreKey = location.pathname + "/crud";
     let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
     if(localListViewProps){
       localListViewProps = JSON.parse(localListViewProps);
-      // const removedValues = {};
-      removedKeys.forEach(function(key){
-        delete localListViewProps[key];
-        // removedValues[key] = "";
+      _.each(localListViewProps, function(n,k){
+        // __searchable__开头的不在searchableFields范围则清除其值
+        let isRemoved = !!removedFields.find(function(fieldName){
+          return new RegExp("__searchable__\.*" + fieldName + "$").test(k);
+        });
+        if(isRemoved){
+          delete localListViewProps[k];
+        }
       });
       sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify(localListViewProps));
     }
@@ -372,9 +381,10 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
             "body": [
               {
                 "type": "button",
-                "label": "搜索",
+                "id": btnSearchId,
+                "label": i18next.t('frontend_fields_filter_button_search'),
                 "icon": "fa fa-search",
-                "visibleOn": "this.filterFormSearchableFields && this.filterFormSearchableFields.length",
+                // "visibleOn": "this.filterFormSearchableFields && this.filterFormSearchableFields.length",
                 "onEvent": {
                   "click": {
                     "actions": [
@@ -388,9 +398,9 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
               },
               {
                 "type": "button",
-                "label": "取消",
+                "label": i18next.t('frontend_form_cancel'),
                 "name": "btn_filter_form_cancel",
-                "visibleOn": "this.filterFormSearchableFields && this.filterFormSearchableFields.length",
+                // "visibleOn": "this.filterFormSearchableFields && this.filterFormSearchableFields.length",
                 "onEvent": {
                   "click": {
                     "actions": [
@@ -404,7 +414,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
               },
               {
                 "type": "button",
-                "label": "设置搜索项",
+                "label": i18next.t('frontend_fields_filter_button_settings'),
                 "onEvent": {
                   "click": {
                     "actions": [
@@ -413,7 +423,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
                         "dialog": {
                           "type": "dialog",
                           "size": "md",
-                          "title": "设置搜索项",
+                          "title": i18next.t('frontend_fields_filter_button_settings'),
                           "body": [
                             {
                               "type": "form",
@@ -443,9 +453,10 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
                                       const selfData = api.body.$self;
                                       const uiSchema = selfData.uiSchema;
                                       const fields = uiSchema.fields;
-                                      const options = (payload.data?.options || []).filter(function(item){
+                                      const options = ((payload.data && payload.data.options) || []).filter(function(item){
                                         let field = fields[item.value];
-                                        return !!field && window.isFieldTypeSearchable(field.type)
+                                        // TODO: 暂时禁用location类型字段的列表搜索
+                                        return !!field && window.isFieldTypeSearchable(field.type) && field.type !== 'location'
                                       });
                                       payload.data = {
                                         "options": options
@@ -481,7 +492,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
                           "actions": [
                             {
                               "type": "button",
-                              "label": "取消",
+                              "label": i18next.t('frontend_form_cancel'),
                               "onEvent": {
                                 "click": {
                                   "actions": [
@@ -497,13 +508,20 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
                             },
                             {
                               "type": "button",
-                              "label": "确认",
+                              "label": i18next.t('frontend_form_confirm'),
                               "onEvent": {
                                 "click": {
                                   "actions": [
                                     {
                                       "actionType": "custom",
                                       "script": onSearchableFieldsChangeScript
+                                    },
+                                    {
+                                      "actionType": "click",
+                                      "componentId": btnSearchId,
+                                      "args": {
+                                        "__from_fields_filter_settings_confirm": true
+                                      }
                                     },
                                     {
                                       "componentId": "",

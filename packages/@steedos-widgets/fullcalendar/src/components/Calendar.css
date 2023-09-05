@@ -8,27 +8,57 @@
     --fc-button-active-border-color: #c9c9c9;
 }
 
-.steedos-listview .fc-media-screen{
+.steedos-object-listview .fc-media-screen{
     --tw-bg-opacity: 1;
     background-color: rgb(243 244 246 / var(--tw-bg-opacity));
 }
-.steedos-listview .fc-media-screen .fc-view-harness{
+.steedos-object-listview .fc-media-screen .fc-view-harness{
     background: #fff;
+    max-height: calc(100vh - 240px);
 }
-.steedos-listview .fc-theme-standard .fc-scrollgrid{
+.steedos-object-listview .fc-theme-standard .fc-scrollgrid{
     border-left: none;
     border-right: none;
 }
-.steedos-listview .fc .fc-scrollgrid-section > *{
+.steedos-object-listview .fc .fc-scrollgrid-section > *{
     border-right-width: 0;
 }
-.steedos-listview .fc .fc-scrollgrid-section-liquid > td{
+.steedos-object-listview .fc .fc-scrollgrid-section-liquid > td{
     border-right-width: 0;
 }
-.steedos-listview .fc .fc-scrollgrid-section > td{
+.steedos-object-listview .fc .fc-scrollgrid-section > td{
     border-right-width: 0;
 }
-.steedos-listview .fc .fc-toolbar.fc-header-toolbar{
+.steedos-object-listview .fc .fc-toolbar.fc-header-toolbar{
     margin: var(--gap-md);
     margin-top: var(--gap-sm);
+}
+.fc-media-screen a:hover{
+    background-color: var(--fc-event-bg-color, #3788d8) !important;
+}
+
+@media (max-width: 768px){
+    .steedos-object-listview  .fc-header-toolbar{
+        display: flex;
+        flex-direction: column-reverse;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding: 0;
+    }
+    .steedos-object-listview  .fc-header-toolbar .fc-toolbar-chunk:first-child{
+        margin-top: 10px;
+    }
+    .steedos-object-listview  .fc-header-toolbar .fc-toolbar-chunk:last-of-type{
+        width: 100%;
+    }
+    .steedos-object-listview  .fc-header-toolbar .fc-toolbar-chunk:last-of-type .fc-button-group:first-child{
+        float: right;
+        margin-right: .75em;
+    }
+    .steedos-object-listview  .fc-header-toolbar .fc-toolbar-chunk:last-of-type .fc-button-group:last-of-type{
+        float: left;
+    }
+    .steedos-object-listview .fc-media-screen .fc-view-harness{
+        min-height: calc(100vh - 262px);
+    }
 }

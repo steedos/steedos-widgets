@@ -3,6 +3,7 @@ import { getSaveApi } from './api';
 import { each, values } from 'lodash';
 import * as graphql from './graphql'
 import _, { isEmpty, omitBy, isNil } from 'lodash';
+import { i18next } from "../../../i18n"
 
 export const DEFAULT_CALENDAR_OPTIONS = {
   startDateExpr: "start",
@@ -80,20 +81,7 @@ export async function getCalendarApi(mainObject, fields, options) {
     }else if(selfData.op === 'loadOptions' && selfData.value){
         filters = [["${valueField.name}", "=", selfData.value]];
     }
-    var searchableFilter = [];
-    _.each(selfData, (value, key)=>{
-        if(!_.isEmpty(value) || _.isBoolean(value)){
-            if(_.startsWith(key, '__searchable__between__')){
-                searchableFilter.push([\`\${key.replace("__searchable__between__", "")}\`, "between", value])
-            }else if(_.startsWith(key, '__searchable__')){
-                if(_.isString(value)){
-                    searchableFilter.push([\`\${key.replace("__searchable__", "")}\`, "contains", value])
-                }else{
-                    searchableFilter.push([\`\${key.replace("__searchable__", "")}\`, "=", value])
-                }
-            }
-        }
-    });
+    var searchableFilter = SteedosUI.getSearchFilter(selfData) || [];
 
     if(searchableFilter.length > 0){
         if(filters.length > 0 ){
@@ -140,7 +128,12 @@ export async function getCalendarApi(mainObject, fields, options) {
     window.postMessage(Object.assign({type: "listview.loaded"}), "*");
     const setDataToComponentId = "${setDataToComponentId}";
     if(setDataToComponentId){
-        SteedosUI.getRef(api.body.$self.scopeId)?.getComponentById(setDataToComponentId)?.setData({$count: payload.data.count})
+        var scope = SteedosUI.getRef(api.body.$self.scopeId);
+        var setDataToComponent = scope && scope.getComponentById(setDataToComponentId);
+        if(setDataToComponent){
+          setDataToComponent.setData({$count: payload.data.count});
+        }
+        // SteedosUI.getRef(api.body.$self.scopeId)?.getComponentById(setDataToComponentId)?.setData({$count: payload.data.count})
     }
     const rows = payload.data.rows || [];
     const selfData = api.data.$self;
@@ -314,7 +307,7 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
     // ObjectForm会认作用域下的变量值
     // TODO: 待组件支持initValues属性后应该改掉，不应该通过data直接传值
     // TODO: 全天事件属性传入doc了但是没有生效，需要手动在ObjectForm中勾选全天事件
-    const title = "新建 ${objectSchema.label}";
+    const title = "${i18next.t('frontend_form_new')} ${objectSchema.label}";
     doAction(
       {
         "actionType": "dialog",
@@ -327,17 +320,18 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
               "objectApiName": "\${objectName}",
               "mode": "edit",
               "defaultData": doc,
-              "onEvent": {
-                "submitSucc": {
-                  "weight": 0,
-                  "actions": [
-                    {
-                      "actionType": "custom",
-                      "script": "event.data.view?.calendar.refetchEvents();"
-                    }
-                  ]
-                }
-              }
+              //改回为通用的提交事件
+              // "onEvent": {
+              //   "submitSucc": {
+              //     "weight": 0,
+              //     "actions": [
+              //       {
+              //         "actionType": "custom",
+              //         "script": "event.data.view?.calendar.refetchEvents();"
+              //       }
+              //     ]
+              //   }
+              // }
             }
           ],
           "closeOnEsc": false,
@@ -355,24 +349,30 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
     const objectName = data.objectName;
     const eventId = data.event && data.event.id;
     doAction({
-      "actionType": "dialog",
-      "dialog": {
-        "type": "dialog",
-        "title": "",
-        "body": [
-          {
-            "type": "steedos-record-detail",
-            "objectApiName": "\${objectName}",
-            "recordId": data.event && data.event.id
-          }
-        ],
-        "closeOnEsc": false,
-        "closeOnOutside": false,
-        "showCloseButton": true,
-        "size": "lg",
-        "actions": []
+      "actionType": "link",
+      "args": {
+        "link": "/app/" + appId + "/" + objectName + "/view/" + eventId
       }
     });
+    // doAction({
+    //   "actionType": "dialog",
+    //   "dialog": {
+    //     "type": "dialog",
+    //     "title": "",
+    //     "body": [
+    //       {
+    //         "type": "steedos-record-detail",
+    //         "objectApiName": "\${objectName}",
+    //         "recordId": data.event && data.event.id
+    //       }
+    //     ],
+    //     "closeOnEsc": false,
+    //     "closeOnOutside": false,
+    //     "showCloseButton": true,
+    //     "size": "lg",
+    //     "actions": []
+    //   }
+    // });
   `;
 
   const recordId = "${event.id}";
@@ -420,12 +420,16 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
       "weight": 0,
       "actions": [
         {
-          "componentId": "",
-          "args": {
-          },
           "actionType": "custom",
           "script": onEventClickScript
-        }
+        },
+        // amis 升级到 3.2后，以下的"actionType": "link"方式拿不到appId和objectName了
+        // {
+        //   "actionType": "link",
+        //   "args": {
+        //     "link": "/app/${appId}/${objectName}/view/${event.id}"
+        //   }
+        // }
       ]
     },
     "eventAdd": {
@@ -454,7 +458,7 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
           "expression": "!event.data.editable",
           "args": {
             "msgType": "error",
-            "msg": "您没有编辑该记录的权限！",
+            "msg": i18next.t('frontend_message_no_permission_to_edit'),
             "position": "top-center"
           }
         },
@@ -464,8 +468,8 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
           "args": {
             "api": recordSaveApi,
             "messages": {
-              "success": objectSchema.label + "修改成功",
-              "failed": objectSchema.label + "修改失败！"
+              "success": objectSchema.label + i18next.t('frontend_message_modification_successful'),
+              "failed": objectSchema.label + i18next.t('frontend_message_modification_successful')
             }
           }
         }
@@ -492,6 +496,20 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
           },
           "actionType": "custom",
           "script": "console.log('eventsSet'); console.log(event);"
+        }
+      ]
+    },
+    "getRef": {
+      "weight": 0,
+      "actions": [
+        {
+          "componentId": `service_${options.id}`,
+          "args": {
+            "value":{
+              "calendarRef": "${event.data.calendarRef}"
+            }
+          },
+          "actionType": "setValue",
         }
       ]
     }
@@ -529,6 +547,7 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
   const amisSchema = {
     "type": "steedos-fullcalendar",
     "label": "",
+    "id": options.id,
     "name": "fullcalendar",
     "placeholder":"${additionalFilters}",//用于触发reload
     "editable": permissions.allowEdit,
@@ -536,6 +555,11 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
     "selectMirror": permissions.allowCreate,
     "initialView": initialView,
     "businessHours": businessHours,
+    "views":{
+      listWeek: {
+        buttonText: i18next.t('frontend_calendar_listWeek')
+      }
+    },
     ...config,
     "onEvent": onEvent
   };

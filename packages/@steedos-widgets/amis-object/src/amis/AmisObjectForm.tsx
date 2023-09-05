@@ -1,24 +1,26 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-28 11:51:54
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-06-30 15:26:40
  * @Description: 
  */
+import './AmisObjectForm.less';
+import './AmisObjectFormMobile.less';
 import { getFormSchema, getViewSchema } from '@steedos-widgets/amis-lib'
 import { keys, pick, difference, isString, has } from 'lodash';
 
 export const AmisObjectForm = async (props) => {
   // console.log("===AmisObjectForm=props==", props);
-  const { $schema, recordId, defaultData, mode, layout, labelAlign, appId, fieldsExtend, excludedFields = null, fields = null,
-    className="", initApiRequestAdaptor, initApiAdaptor, apiRequestAdaptor, apiAdaptor
+  const { $schema, recordId, defaultData, mode, layout, labelAlign, appId, fieldsExtend, excludedFields = null, fields = null, form = {},
+    className="", initApiRequestAdaptor, initApiAdaptor, apiRequestAdaptor, apiAdaptor, enableTabs, tabsMode
   } = props;
   let objectApiName = props.objectApiName || "space_users";
   // amis中的mode属性是表单布局,没有layout属性。defaults的变量会覆盖mode属性值。
-  const schemaKeys = difference(keys($schema), ["type","mode","layout","defaultData"]);
+  const schemaKeys = difference(keys($schema), ["id","form","type","mode","layout","defaultData"]);
   const formSchema = pick(props, schemaKeys);
   const defaults = {
-    formSchema
+    formSchema: Object.assign( {}, formSchema, form )
   };
   const options: any = {
     recordId,
@@ -44,26 +46,28 @@ export const AmisObjectForm = async (props) => {
   let uiSchema: any;
   if (mode === 'edit') {
     const schema = await getFormSchema(objectApiName, Object.assign({}, options, {
-      initApiRequestAdaptor, initApiAdaptor, apiRequestAdaptor, apiAdaptor
+      initApiRequestAdaptor, initApiAdaptor, apiRequestAdaptor, apiAdaptor, enableTabs, tabsMode
     }));
     amisSchema = schema.amisSchema;
     if(defaultData){
       // 让ObjectForm支持props中的dafaultData属性与上层组件配置的defaultData混合
       // 为了解决相关表新建时如果是表单类型微页面，因为找不到ObjectForm在哪层而造成无法设置ObjectForm的defaultData的问题
       amisSchema.data.defaultData = {
-        "&": "${defaultData}",
-        ...defaultData
+        "&": "${defaultData}",//这里的defaultData是上层的data中的defaultData变量值
+        ...defaultData//这里的defaultData是form组件的defaultData属性值
       }
     }
     uiSchema = schema.uiSchema;
   } else {
     // formInitProps
-    // if(!recordId){
-    //   // 只读界面只返回一条记录
-    //   options.formInitProps = {
-    //     queryOptions: "top: 1"
-    //   };
-    // }
+    if(!recordId && props.$$editor){
+      // 设计器中只读表单返回第一条记录
+      options.formInitProps = {
+        filters: [],
+        queryOptions: "top: 1",
+        isEditor: true
+      };
+    }
     const schema =  await getViewSchema(objectApiName, recordId, options);
     amisSchema =  schema.amisSchema;
     uiSchema =  schema.uiSchema;

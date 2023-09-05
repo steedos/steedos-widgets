@@ -6,6 +6,8 @@
  * @Description: 
  */
 
+import { i18next } from '@steedos-widgets/amis-lib';
+
 export const AmisAppLauncher = async (props) => {
   let { app, data, className, showAppName = true, appNameClassName = '' } = props;
   if (!app) {
@@ -35,6 +37,7 @@ export const AmisAppLauncher = async (props) => {
   if(isMobile){
     dialogSchema = {
       "type": "service",
+      "className": "steedos-apps-service",
       "affixFooter": false,
       "body": [
         {
@@ -153,7 +156,7 @@ export const AmisAppLauncher = async (props) => {
             {
               "type": "collapse",
               "key": "1",
-              "header": "所有应用",
+              "header": i18next.t('frontend_all_apps'),
               "body": [
                 {
                   "type": "each",
@@ -223,7 +226,7 @@ export const AmisAppLauncher = async (props) => {
             {
               "type": "collapse",
               "key": "2",
-              "header": "所有项目",
+              "header": i18next.t('frontend_all_projects'),
               "body": [
                 {
                   "type": "each",
@@ -231,8 +234,6 @@ export const AmisAppLauncher = async (props) => {
                   "items": {
                     "type": "button",
                     "level": "link",
-                    "actionType": "link",
-                    "link": "${path}",
                     "body": [{
                       "type": "tpl",
                       "wrapperComponent": "span",
@@ -242,6 +243,21 @@ export const AmisAppLauncher = async (props) => {
                     "onEvent": {
                       "click": {
                         "actions": [
+                          {
+                            "actionType": "link",
+                            "args":{
+                              "link": "${path}"
+                            }
+                          },
+                          {
+                            "actionType": "broadcast",
+                            "args": {
+                              "eventName": "@tabId.changed"
+                            },
+                            "data":{
+                              "tabId": "${event.data.id}"
+                            }
+                          },
                           {
                             "actionType": "closeDialog"
                           }
@@ -261,7 +277,7 @@ export const AmisAppLauncher = async (props) => {
           ],
         }
       ],
-      "className": "",
+      "className": "steedos-apps-service",
       "visibleOn": "",
       "clearValueOnHidden": false,
       "visible": true,
@@ -334,7 +350,7 @@ export const AmisAppLauncher = async (props) => {
           "size": "xl",
           "title": {
             "type": "tpl",
-            "tpl": "应用程序启动器",
+            "tpl": i18next.t('frontend_application_launcher'),
             "className": "block text-xl text-center"
           },
           "actions": [

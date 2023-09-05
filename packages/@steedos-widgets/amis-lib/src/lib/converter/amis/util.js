@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-20 16:29:22
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-11 11:19:54
+ * @LastEditTime: 2023-05-18 15:22:51
  * @Description: 
  */
 import { getRootUrl } from "../../steedos.client";
@@ -27,5 +27,5 @@ export function getContrastColor(bgColor) {
   var g = parseInt(backgroundColor.substr(2, 2), 16);
   var b = parseInt(backgroundColor.substr(4, 2), 16);
   var brightness = (r * 299 + g * 587 + b * 114) / 1000;
-  return brightness >= 128 ? "#000000" : "#ffffff";
+  return brightness < 128 ? "#ffffff" : "#000000";
 }

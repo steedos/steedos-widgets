@@ -5,7 +5,7 @@
  * @LastEditTime: 2023-05-08 12:01:04
  * @Description: 
  */
-import { getObjectRelatedList } from '@steedos-widgets/amis-lib'
+import { getObjectRelatedList, i18next } from '@steedos-widgets/amis-lib'
 import { map, has } from 'lodash';
 
 export const AmisRecordDetailRelatedLists = async (props) => {
@@ -15,7 +15,7 @@ export const AmisRecordDetailRelatedLists = async (props) => {
   // if(!objectApiName || !recordId){
     return {
       "type": "alert",
-      "body": "缺少父级对象或父级记录属性",
+      "body": i18next.t('frontend_record_detail_related_lists_warning'),
       "level": "warning",
       "showIcon": true,
       "className": "mb-3"
@@ -29,7 +29,7 @@ export const AmisRecordDetailRelatedLists = async (props) => {
   if(!relatedLists || !relatedLists.length){
     return {
       "type": "alert",
-      "body": "没有相关子表",
+      "body": i18next.t('frontend_record_detail_related_lists_info'),
       "level": "info",
       "showIcon": true,
       "className": "mb-3"

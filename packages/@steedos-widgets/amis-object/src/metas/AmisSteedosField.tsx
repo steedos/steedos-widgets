@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-11 09:39:38
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-06 18:29:59
+ * @LastEditTime: 2023-06-30 14:41:35
  * @Description: 
  */
 const config: any = {
@@ -62,14 +62,16 @@ const config: any = {
           type: config.amis.name,
           config: {
             "type": "text",
-            "label": "字段1"
+            "label": "字段1",
+            "amis": {}
           }
         },
         previewSchema: {
           type: config.amis.name,
           config: {
             "type": "text",
-            "label": "字段1"
+            "label": "字段1",
+            "amis": {}
           }
         },
         panelTitle: "设置",

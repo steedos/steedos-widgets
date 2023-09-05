@@ -1,40 +1,62 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-01-13 17:27:54
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-01-16 10:36:27
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-08-28 17:45:38
  * @Description: 
  */
-
+import { i18next } from "../../../../i18n"
 
 export const getMarkdownFieldSchema = (field, readonly, ctx)=>{
     if(readonly){
         return {
-            "type": "markdown",
-            "name": field.name,
-            "options": {
-                "linkify": true,
-                "html": true,
-                "breaks": true
+            "type": "control",
+            "label": field.label,
+            "body": {
+              "type": "markdown",
+              "name": field.name,
+              "options": {
+                  "linkify": true,
+                  "html": true,
+                  "breaks": true
+              }
             }
           }
     }else{
         return {
-            "type": "group",
+            "type": "control",
+            "label": field.label,
             "body": [
               {
-                "type": "editor",
-                "name": field.name,
-                "language": "markdown",
-              },
-              {
-                "type": "markdown",
-                "name": field.name,
-                "options": {
-                    "linkify": true,
-                    "html": true,
-                    "breaks": true
-                }
+                "type": "tabs",
+                "tabsMode": "strong",
+                "className": "steedos-markdown",
+                "tabs": [
+                  {
+                    "title": i18next.t('frontend_form_edit'),
+                    "tab": [
+                      {
+                        "type": "editor",
+                        "name": field.name,
+                        "language": "markdown",
+                      }
+                    ]
+                  },
+                  {
+                    "title": i18next.t('frontend_form_preview'),
+                    "tab": [
+                      {
+                        "type": "markdown",
+                        "name": field.name,
+                        "options": {
+                          "linkify": true,
+                          "html": true,
+                          "breaks": true
+                        }
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
@@ -43,13 +65,47 @@ export const getMarkdownFieldSchema = (field, readonly, ctx)=>{
 
 export const getHtmlFieldSchema = (field, readonly, ctx)=>{
     if(readonly){
+        // return {
+        //     "type": "control",
+        //     "label": field.label,
+        //     "body": {
+        //       "type": "html",
+        //       "name": field.name
+        //     }
+        //   }
         return {
-            "type": "html",
-            "name": field.name
+          "type": "input-rich-text",
+          "receiver": "${context.rootUrl}/s3/images",
+          "name": field.name,
+          "options": {
+            "menu": {
+              "insert": {
+                "title": "Insert",
+                "items": "image link media addcomment pageembed codesample inserttable | charmap emoticons hr | pagebreak nonbreaking anchor tableofcontents | insertdatetime"
+              }
+            },
+            "plugins": [
+              "autoresize"
+            ],
+            // "max_height": 2000,
+            "statusbar": false,
+            "readonly": true,
+            "toolbar": false,
+            "menubar": false
           }
+        }
     }else{
         return {
             "type": "input-rich-text",
+            "receiver": "${context.rootUrl}/s3/images",
+            "options":{
+              "menu": {
+                "insert": {
+                  "title": "Insert",
+                  "items": "image link media addcomment pageembed codesample inserttable | charmap emoticons hr | pagebreak nonbreaking anchor tableofcontents | insertdatetime"
+                }
+              }
+            },
             "name": field.name
         }
         // return {

@@ -5,12 +5,13 @@
  * @LastEditTime: 2023-02-28 17:06:22
  * @Description: 
  */
-
+import { i18next } from "../i18n";
 import * as standardNew from '../schema/standard_new.amis.js'
 import * as standardEdit from '../schema/standard_edit.amis.js'
 import * as standardDelete from '../schema/standard_delete.amis.js'
 import * as standardImportData from '../schema/standard_import_data.amis.js'
 import * as standardOpenView from '../schema/standard_open_view.amis.js'
+import * as standardExportExcel from '../schema/standard_export_excel.amis.js'
 
 export const StandardButtons = {
     getStandardNew: async (uiSchema, ctx)=>{
@@ -42,7 +43,8 @@ export const StandardButtons = {
                 } = this;
                 const scopeId = this.scopeId || `amis-${appId}-${objectName}-listview`;
                 const scope = this.scope || SteedosUI?.getRef(scopeId);
-                const listViewRef = scope.getComponentById(`listview_${uiSchema.name}`);
+                //https://github.com/baidu/amis/pull/6807 .parent的改动是为适应3.2getComponentById的规则改动，不影响2.9
+                const listViewRef = scope.parent?.getComponentById(`listview_${uiSchema.name}`);
                 if(_.isEmpty(listViewRef.props.store.toJSON().selectedItems)){
                     listViewRef.handleAction({}, {
                         "actionType": "toast",
@@ -50,7 +52,7 @@ export const StandardButtons = {
                             "items": [
                               {
                                 "position": "top-right",
-                                "body": "请选择要删除的项"
+                                "body": i18next.t('frontend_delete_many_selected_required')
                               }
                             ]
                           }
@@ -71,6 +73,12 @@ export const StandardButtons = {
         return {
             type: 'amis_button',
             amis_schema: await standardOpenView.getSchema(uiSchema, ctx)
+        }
+    },
+    getStandardExportExcel: async (uiSchema, ctx)=>{
+        return {
+            type: 'amis_button',
+            amis_schema: await standardExportExcel.getSchema(uiSchema, ctx)
         }
     }
 }

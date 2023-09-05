@@ -1,11 +1,11 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-08 10:32:17
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-13 18:40:42
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-05-22 18:47:19
  * @Description: 
  */
-
+// import './AmisRecordDetailHeader.less'
 import { getRecordDetailSchema } from '@steedos-widgets/amis-lib'
 import { has } from 'lodash';
 

@@ -2,12 +2,13 @@
   /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: 廖大雪 2291335922@qq.com
- * @LastEditTime: 2023-03-17 14:09:53
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-08-28 15:04:28
  * @Description: 
  */
 
 import './AmisGlobalHeaderToolbar.less';
+import { i18next } from '@steedos-widgets/amis-lib';
 
 export const AmisGlobalHeaderToolbar = async (props) => {
     const { className = '', data, logoutScript = "", customButtons = [] } = props;
@@ -52,7 +53,7 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                 "className": "slds-button_icon slds-global-header__icon"
               }
             ],
-            "label": "帮助"
+            "label": i18next.t('frontend_help')
           },
           {
             "type": "button",
@@ -81,7 +82,7 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                 "className": "slds-button_icon slds-global-header__icon"
               }
             ],
-            "label": "设置"
+            "label": i18next.t('frontend_setup')
           },
           {
             "type": "steedos-dropdown",
@@ -144,7 +145,7 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                     "body": [
                         {
                             "type": "panel",
-                            "title": "通知",
+                            "title": i18next.t('frontend_notifications'),
                             "className": "min-w-[300px] max-w-md",
                             "body": [
                               {
@@ -153,7 +154,21 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                                 "name": "notifications",
                                 "items": {
                                   "type": "tpl",
-                                  "tpl": "<div class='flex items-center p-4 hover:bg-sky-50'><img src='<%=data.context.rootUrl + `/avatar/` + data.from%>' alt='' class='h-10 w-10 flex-none rounded-full'><div class='ml-4 flex-auto'><div class='font-medium'><span class='text-primary'><%=data.name%></span></div><div class='mt-1 text-slate-700'><%=data.body%></div><div class='mt-1 text-slate-700'><%=moment(data.created).fromNow()%><abbr class='slds-text-link slds-m-horizontal_xxx-small <%=data.is_read ? 'hidden' : ''%>' title='unread'>●</abbr></div></div></div>",
+                                  "tpl": `<div class='flex items-center p-4 hover:bg-sky-50'>
+                                      <img src='<%=data.context.rootUrl + "/avatar/" + data.from%>' alt='' class='h-10 w-10 flex-none rounded-full'>
+                                      <div class='ml-4 flex-auto'>
+                                        <div class='font-medium'>
+                                          <span class='text-primary'><%=data.name%></span>
+                                        </div>
+                                        <div class='mt-1 text-slate-700'>
+                                          <%=data.body%>
+                                        </div>
+                                        <div class='mt-1 text-slate-700'>
+                                          <%=moment(data.created).locale(data.global.user.language).fromNow()%>
+                                          <abbr class='slds-text-link slds-m-horizontal_xxx-small <%=data.is_read ? 'hidden' : ''%>' title='unread'>●</abbr>
+                                        </div>
+                                      </div>
+                                    </div>`,
                                   "id": "u:07ece657c7b7",
                                   "onEvent": {
                                     "click": {
@@ -192,7 +207,7 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                             actions: [
                               {
                                 "type": "button",
-                                "label": "全部标记为已读",
+                                "label": i18next.t('frontend_notifications_allread'),
                                 "id": "u:5530f3779e3a",
                                 "onEvent": {
                                   "click": {
@@ -208,7 +223,7 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                                             }
                                           },
                                           "messages": {
-                                            "success": "已全部标记为已读"
+                                            "success": i18next.t('frontend_notifications_allread_message')
                                           }
                                         },
                                         "actionType": "ajax"
@@ -325,7 +340,7 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                   },
                   {
                     "type": "button",
-                    "label": "个人资料",
+                    "label": i18next.t('frontend_profile'),
                     "className": "flex",
                     "onEvent": {
                       "click": {
@@ -344,7 +359,7 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                   },
                   {
                     "type": "button",
-                    "label": "关于",
+                    "label": i18next.t('frontend_about'),
                     "className": "flex",
                     "onEvent": {
                       "click": {
@@ -363,7 +378,7 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                   },
                   {
                     "type": "button",
-                    "label": "注销",
+                    "label": i18next.t('frontend_log_out'),
                     "className": "flex",
                     "onEvent": {
                       "click": {

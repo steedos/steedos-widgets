@@ -29,7 +29,7 @@ export default function Page(props) {
           id={page_id}
           className="overflow-auto h-full"
           router={router}
-          schema={JSON.parse(page.schema)}
+          schema={typeof page.schema == 'string'? JSON.parse(page.schema) : page.schema}
           assetUrls={[]}
         />
       )}

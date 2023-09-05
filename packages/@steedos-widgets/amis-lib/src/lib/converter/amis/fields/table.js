@@ -1,11 +1,12 @@
 import * as _ from 'lodash'
 import * as Tpl from '../tpl';
-import * as Fields from '../index';
+import * as Fields from '../fields/index';
 import * as graphql from '../graphql';
 import config from '../../../../config'
 import { each, forEach, isBoolean, isEmpty } from 'lodash';
 import { getAmisFileReadonlySchema } from './file'
-import { getContrastColor } from './../util'
+import { Router } from '../../../router'
+import { i18next } from '../../../../i18n'
 
 function getOperation(fields){
     const controls = [];
@@ -37,9 +38,289 @@ function getOperation(fields){
 //获取name字段，如果没有，则_index字段添加链接
 function getDetailColumn(){}
 
+async function getQuickEditSchema(field, options){
+    const quickEditId = options.objectName + "_" + field.name + "QuickEdit";//定义快速编辑的表单id，用于setvalue传值
+    var quickEditSchema = { body: [], id: quickEditId };
+    if (field.disabled) {
+        quickEditSchema = false;
+    } else {
+        var fieldSchema = await Fields.convertSFieldToAmisField(field, false, _.omit(options, 'buttons'));
+        //存在属性上可编辑，实际不可编辑的字段，convertSFieldToAmisField函数可能会返回undefined，如summary
+        if (!!fieldSchema) {
+            quickEditSchema.body.push(fieldSchema);
+            //以下字段使用_display的数据,因此在触发change等事件时对数据_display进行修改，以实现保存前的回显
+            var TempDisplayField = ``;
+            quickEditSchema.body[0].onEvent = {};
+            const quickEditOnEvent = function (displayField) {
+                const EventType = {
+                    "actions": [
+                        {
+                            "actionType": "custom",
+                            "script": `
+                                    var _display = event.data._display;
+                                    ${displayField}
+                                    doAction({actionType: 'setValue', "args": {"value": {_display}},componentId: "${quickEditId}"});
+                                `
+                        }
+                    ]
+                };
+                return EventType;
+            }
+            switch (field.type) {
+                //TODO: amis的picker组件直接点击选项x时不会触发change事件，待处理
+                case "lookup":
+                case "master_detail":
+                    let labelField = quickEditSchema.body[0].labelField || "label";
+                    let valueField = quickEditSchema.body[0].valueField || "value";
+                    if (field.multiple) {
+                        /*
+                            多选分两种情况。
+                            第一种是减少选项时（判断新的数据是否比老的数据短），按照index删除_display中对应选项，保证回显没问题；
+                            第二种是增加选项时，按照value的值，找到对应选项，并按照_display的规则为其赋值
+                        */
+                        TempDisplayField = `
+                            const preData = event.data.__super.${field.name};
+                            if(preData && event.data.${field.name}.length < preData.length){
+                                let deletedIndex;
+                                preData.forEach(function(item,index){
+                                    if(_.indexOf(event.data.${field.name}, item) == -1) _display["${field.name}"].splice(index, 1);
+                                })
+                            }else{
+                                _display["${field.name}"] = [];
+                                event.data.value.forEach(function(val,index){
+                                    const item = _.find(event.data.selectedItems, { ${valueField}: val });
+                                    _display["${field.name}"].push(
+                                        {
+                                            "label": item.${labelField},
+                                            "value": item[event.data.uiSchema.idFieldName],
+                                            "objectName": "${field.reference_to}"
+                                        }
+                                    )
+                                })
+                            }
+                            
+                        `
+                    } else {
+                        TempDisplayField = `
+                            if(event.data.value){
+                                _display["${field.name}"] = {
+                                    "label": event.data.selectedItems.${labelField},
+                                    "value": event.data.selectedItems[event.data.uiSchema.idFieldName],
+                                    "objectName": "${field.reference_to}"
+                                }
+                            }else{
+                                _display["${field.name}"] = {}
+                            }
+                        `
+                    }
+                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(TempDisplayField)
+                    break;
+                case "select":
+                    TempDisplayField = `
+                            _display["${field.name}"] = event.data.selectedItems.label;
+                        `
+                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(TempDisplayField)
+                    break;
+                case "percent":
+                    TempDisplayField = `
+                            _display["${field.name}"] = (event.data.value * 100).toFixed(${field.scale}) + '%';
+                        `
+                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(TempDisplayField)
+                    break;
+                case "time":
+                    TempDisplayField = `
+                            _display["${field.name}"] = moment(event.data.value).utc().format('HH:mm');
+                        `
+                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(TempDisplayField)
+                    break;
+                case "date":
+                    TempDisplayField = `
+                            _display["${field.name}"] = moment(event.data.value).utc().format('YYYY-MM-DD');
+                        `
+                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(TempDisplayField)
+                    break;
+                case "datetime":
+                    TempDisplayField = `
+                            _display["${field.name}"] = moment(event.data.value).format('YYYY-MM-DD HH:mm');
+                        `
+                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(TempDisplayField)
+                    break;
+                case "boolean":
+                    TempDisplayField = `
+                            _display["${field.name}"] = event.data.value?"√":"";
+                        `
+                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(TempDisplayField)
+                    break;
+                case "number":
+                case "currency":
+                    TempDisplayField = `
+                            _display["${field.name}"] = event.data.value && event.data.value.toFixed(${field.scale});
+                        `
+                    quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(TempDisplayField)
+
+                    break;
+                case "file":
+                    var removeDisplayField = ``;
+                    if (field.multiple) {
+                        TempDisplayField = `
+                                _display["${field.name}"].push({
+                                    "name": event.data.result.name,
+                                    "url": event.data.result.url,
+                                    "type": event.data.item.type,
+                                    "size": event.data.item.size
+                                });
+                            `
+                        removeDisplayField = `
+                                _.remove(_display["${field.name}"], function(file){return file.url == event.data.item.url});
+                            `
+                    } else {
+                        TempDisplayField = `  
+                                _display["${field.name}"] = {
+                                    "name": event.data.result.name,
+                                    "url": event.data.result.url,
+                                    "type": event.data.item.type,
+                                    "size": event.data.item.size
+                                };
+                            `
+                        removeDisplayField = `
+                                if(_display["${field.name}"].url == event.data.item.url){
+                                    _display["${field.name}"] = {};
+                                }
+                            `
+                    }
+                    quickEditSchema.body[0].onEvent["success"] = quickEditOnEvent(TempDisplayField)
+                    quickEditSchema.body[0].onEvent["remove"] = quickEditOnEvent(removeDisplayField)
+                    break;
+                case "avatar":
+                case "image":
+                quickEditSchema.body[0].receiver.adaptor = `
+                    const { context } = api.body; 
+                    var rootUrl = context.rootUrl + "/api/files/${field.type}s/";
+                    payload = {
+                        status: response.status == 200 ? 0 : response.status,
+                        msg: response.statusText,
+                        data: {
+                            value: rootUrl + payload._id,//为了实现图片crud的回显，需要将value从id改为url，当保存数据数据时，再在发送适配器内重新将id提取出来
+                            name: payload.original.name,
+                            url: rootUrl + payload._id,
+                        }
+                    }
+                    return payload;
+                `
+                break;
+                default:
+                    break;
+            }
+            quickEditSchema.body[0].visibleOn = "${quickedit_record_permissions.allowEdit && quickedit_record_permissions_loading == false}"
+            quickEditSchema.body.push({
+                "type":"service",
+                "body":[
+                    {
+                        "type": "tpl",
+                        "tpl": i18next.t('frontend_records_no_allowedit'),
+                        "visibleOn": "${!quickedit_record_permissions.allowEdit && quickedit_record_permissions_loading == false}"
+                    },
+                    {
+                        "type": "spinner",
+                        "showOn": "${quickedit_record_permissions_loading}"
+                    }
+                ],
+                "onEvent":{
+                    "init":{
+                        "actions":[
+                            {
+                                "actionType": "setValue",
+                                "componentId": `service_listview_${options.objectName}`,
+                                "args": {
+                                    "value":{
+                                        "quickedit_record_permissions_loading": true
+                                    }
+                                }
+                            },
+                            {
+                                "actionType": "ajax",
+                                "args": {
+                                    "api": {
+                                      "url": "${context.rootUrl}/service/api/@\${objectName}/recordPermissions/${_id}",
+                                      "method": "get",
+                                      "headers": {
+                                        "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                                      },
+                                      "cache": 30000,
+                                      "messages": {
+                                        "failed": "失败了呢。。"
+                                      }
+                                    }
+                                }
+                            },
+                            {
+                                "actionType": "setValue",
+                                "componentId": `service_listview_${options.objectName}`,
+                                "args": {
+                                    "value":{
+                                        "quickedit_record_permissions_loading": false
+                                    }
+                                }
+                            },
+                            {
+                                "actionType": "setValue",
+                                "componentId": `service_listview_${options.objectName}`,
+                                "args": {
+                                    "value":{
+                                        "quickedit_record_permissions": "${event.data}"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+                
+            })
+        } else {
+            quickEditSchema = false;
+        }
+        //TODO:附件多选时会覆盖老数据，暂时禁用
+        if(field.type == "file" && field.multiple){
+            quickEditSchema = false;
+        }
+        //TODO:location字段在列表中快速编辑后存在bug,保存时可能会丢失部分数据，暂时禁用
+        if(field.type == "location"){
+            quickEditSchema = false;
+        }
+    }
+    return quickEditSchema;
+}
+
+function getFieldWidth(width){
+    const defaultWidth = "unset";//用于使table内的td标签下生成div，实现将快速编辑按钮固定在右侧的效果，并不是为了unset效果
+    if(typeof width == 'string'){
+        if(isNaN(width)){
+            return width;
+        }else{
+            return Number(width);
+        }
+    }else if(typeof width == 'number'){
+        return width;
+    }else{
+        return defaultWidth;
+    }
+}
+
 async function getTableColumns(fields, options){
-    const columns = [{name: '_index',type: 'text', width: 32, placeholder: ""}];
+    const columns = [];
+    if(!options.isLookup){
+        columns.push({name: '_index',type: 'text', width: 32, placeholder: ""});
+    }
+    const allowEdit = options.permissions?.allowEdit && !options.isLookup && options.enable_inline_edit != false;
+    
     for (const field of fields) {
+        //增加quickEdit属性，实现快速编辑
+        const quickEditSchema = allowEdit ? await getQuickEditSchema(field, options) : allowEdit;
+        let className = "";
+        if(field.wrap != true){
+            className += " whitespace-nowrap"
+        }
+        let columnItem;
         if((field.is_name || field.name === options.labelFieldName) && options.objectName === 'cms_files'){
             const previewFileScript = `
                 var data = event.data;
@@ -47,10 +328,10 @@ async function getTableColumns(fields, options){
                 var file_id = data._id;
                 SteedosUI.previewFile && SteedosUI.previewFile({file_name, file_id});
             `;
-            columns.push({
+            columnItem = {
                 "type": "button",
                 "label": `<%=data.versions ? data.name : "${field.label}"%>`,
-                "className": "whitespace-nowrap",
+                className,
                 "level": "link",
                 "onEvent": {
                   "click": {
@@ -66,102 +347,113 @@ async function getTableColumns(fields, options){
                                 }
                             },
                             "actionType": "download",
-                            "expression": "!!!window?.nw?.require"//浏览器上直接下载
+                            // "expression": "!!!window?.nw?.require"//浏览器上直接下载
+                            "expression": "!!!(window && window.nw && window.nw.require)"//浏览器上直接下载
                         },
                         {
                           "args": {},
                           "actionType": "custom",
                           "script": previewFileScript,
-                          "expression": "!!window?.nw?.require" //PC客户端预览附件
+                        //   "expression": "!!window?.nw?.require" //PC客户端预览附件
+                          "expression": "!!!(window && window.nw && window.nw.require)"//PC客户端预览附件
                         }
                     ]
                   }
                 }
-            })
+            };
         }else if(field.type === 'toggle'){
-            columns.push(Object.assign({}, {
+            columnItem = Object.assign({}, {
                 type: "switch",
                 name: field.name,
                 label: field.label,
-                width: field.width,
+                width: getFieldWidth(field.width),
                 toggled: field.toggled,
-                disabled: true,
-                className:"whitespace-nowrap",
-            }, field.amis, {name: field.name}))
+                static: true,
+                className,
+            }, field.amis, {name: field.name});
         }else if(field.type === 'avatar' || field.type === 'image' || field.type === 'file'){
-            columns.push(Object.assign({}, {
+            columnItem = Object.assign({}, {
                 type: "switch",
                 name: field.name,
                 label: field.label,
-                width: field.width,
+                width: getFieldWidth(field.width),
                 toggled: field.toggled,
-                disabled: true,
-                className:"whitespace-nowrap",
+                static: true,
+                className,
                 ...getAmisFileReadonlySchema(field)
-            }, field.amis, {name: field.name}))
+            }, field.amis, {name: field.name});
         }
         else if(field.type === 'select'){
-            const selectOptions = field.options;
-            let map = {};
-            forEach(selectOptions,(option)=>{
-                const optionValue = option.value + '';
-                if(option.color){
-                    const background = '#'+option.color;
-                    const color = getContrastColor(background);
-                    const optionColorStyle = 'background:'+background+';color:'+color;
-                    map[optionValue] = `<span class="rounded-xl px-2 py-1" style='${optionColorStyle}'>${option.label}</span>`
-                }else{
-                    map[optionValue] = option.label;
-                }
-            })
-            columns.push(Object.assign({}, {
+            const map = Tpl.getSelectMap(field.options);
+            columnItem = Object.assign({}, {
                 type: "mapping",
                 name: field.name,
                 label: field.label,
                 map: map,
                 sortable: field.sortable,
-                width: field.width,
+                width: getFieldWidth(field.width),
                 toggled: field.toggled,
-                className:"whitespace-nowrap",
-            }, field.amis, {name: field.name}))
+                className,
+                static: true,
+            }, field.amis, {name: field.name});
         }
         else{
             const tpl = await Tpl.getFieldTpl(field, options);
-
             let type = 'text';
             if(tpl){
                 type = 'tpl';
             }else if(field.type === 'html'){
                 type = 'markdown';
+            }else if(field.type === 'url'){
+                if(field.show_as_qr){
+                    type = 'qr-code';
+                }else{
+                    type = 'input-url'
+                }
             }
-            let className = "";
             if(field.type === 'textarea'){
-                className = 'min-w-56';
+                className += 'min-w-56';
             }
-            if(field.wrap === false){
-                className += " whitespace-nowrap"
+            if(field.type === 'date'){
+                className += 'date-min-w';
+            }
+            if(field.type === 'datetime'){
+                className += 'datetime-min-w';
             }
             if(!field.hidden && !field.extra){
-                columns.push(Object.assign({}, {
+                columnItem = Object.assign({}, {
                     name: field.name,
                     label: field.label,
                     sortable: field.sortable,
                     // searchable: field.searchable,
-                    width: field.width,
+                    width: getFieldWidth(field.width),
                     type: type,
                     tpl: tpl,
                     toggled: field.toggled,
                     className,
-                    html: field.type === 'html' ? true : null
+                    static: true,
+                    options: field.type === 'html' ? {html: true} : null
                     // toggled: true 
-                }, field.amis, {name: field.name}))
+                }, field.amis, {name: field.name});
             }
         }
-        
+        if(columnItem){
+            if(quickEditSchema){
+                columnItem.quickEdit = quickEditSchema;
+                columnItem.quickEditEnabledOn = "${is_system !== true}";
+            }
+            columns.push(columnItem);
+        }
     };
 
     // columns.push(getOperation(fields));
-
+    if(!_.some(columns, { name: options.labelFieldName })){
+        const href = Router.getObjectDetailPath({
+            ...options,  formFactor: options.formFactor, appId: "${appId}", objectName: options.objectName || "${objectName}", recordId: `\${${options.idFieldName}}`
+        })
+        columns[0].type = "tpl";
+        columns[0].tpl = `<a href="${href}">\${${columns[0].name}}</a>`
+    }
     return columns;
 }
 
@@ -185,12 +477,12 @@ async function getTableColumns(fields, options){
  */
 function getMobileLines(tpls){
     let lines = [];
-    let maxLineCount = 2;
+    let maxLineCount = 3;
     let lineChildren = [];
     let isNewLine = false;
     let isLeft = true;
     let lineChildrenClassName = "";
-    let lineClassName = "flex items-center justify-between h-[20px]";
+    let lineClassName = "flex items-center justify-between";
     tpls.forEach(function(item){
         if(isNewLine && lines.length < maxLineCount){
             lines.push({
@@ -205,8 +497,8 @@ function getMobileLines(tpls){
             // 左侧半行
             lineChildrenClassName = "steedos-listview-item-left truncate";
             if(item.field.is_wide){
-                // 左侧全行样式可以单独写
-                lineChildrenClassName = "steedos-listview-item-wide truncate";
+                // 左侧全行样式可以单独写，如果需要配置两行省略号效果，可以加样式类 two-lines-truncate
+                lineChildrenClassName = "steedos-listview-item-wide";
             }
             if(lines.length === 0){
                 // 第一个字段加粗黑色显示
@@ -214,7 +506,7 @@ function getMobileLines(tpls){
             }
         }
         else{
-            // 右侧半行
+            // 右侧半行，这里加样式类 flex flex-shrink-0，是为了省略号只显示在左半行，右半行文字一般比较短，如果也加省略号效果的话，左侧文字多的话，右侧没几个字就显示省略号了
             lineChildrenClassName = "steedos-listview-item-right truncate ml-2 flex flex-shrink-0";
         }
         lineChildren.push({
@@ -254,7 +546,7 @@ async function getMobileTableColumns(fields, options){
         let tpl = "";
         if(field.is_name || field.name === options.labelFieldName){
             nameField = field;
-            options.onlyDisplayLabel = true;
+            options.onlyDisplayLookLabel = true;
             tpl = await Tpl.getFieldTpl(field, options);
         }
         else if(field.type === 'avatar' || field.type === 'image' || field.type === 'file'){
@@ -263,12 +555,13 @@ async function getMobileTableColumns(fields, options){
         }
         else{
             if(field.type === 'lookup' || field.type === 'master_detail'){
-                options.onlyDisplayLabel = true;
+                options.onlyDisplayLookLabel = true;
             }
             tpl = await Tpl.getFieldTpl(field, options);
         }
         if(!tpl){
-            tpl = `\${${field.name}}`;
+            //qhd需求简易处理，加上raw以支持审批王名称字段通过颜色区分缓急，若之后手机端列表支持配置amis，则可以去掉
+            tpl = `\${${field.name} | raw}`;
         }
         if(!field.hidden && !field.extra){
             tpls.push({ field, tpl });
@@ -288,7 +581,10 @@ async function getMobileTableColumns(fields, options){
         level: "link",
         actionType: "link",
         link: url,
-        innerClassName: "steedos-listview-item block text-gray-500",
+        innerClassName: {
+            "steedos-listview-item block text-gray-500":"true",
+            "max-w-[360px]": "${display == 'split'}",
+        },
         body: {
             "type": "wrapper",
             "body": columnLines,
@@ -421,7 +717,7 @@ async function getTableOperation(ctx){
     }
     return {
         type: 'operation',
-        label: '操作',
+        label: i18next.t('frontend_operation'),
         fixed: 'right',
         labelClassName: 'text-center',
         className: 'text-center steedos-listview-operation w-20',
@@ -437,14 +733,7 @@ async function getTableOperation(ctx){
                 onOpenApi: {
                     url: `\${context.rootUrl}/service/api/@\${objectName}/recordPermissions/\${_id}`,
                     method: "get",
-                    data: {
-                        $: "$$",
-                        objectName: "${objectName}",
-                        listViewId: "${listViewId}",
-                        appId: "${appId}",
-                        formFactor: "${formFactor}",
-                        context: `\${context}`
-                    },
+                    requestAdaptor: "api.data={}; return api;",
                     headers: {
                         Authorization: "Bearer ${context.tenantId},${context.authToken}"
                     },
@@ -463,17 +752,27 @@ async function getTableOperation(ctx){
 }
 
 export async function getTableSchema(fields, options){
+    let isLookup = options && options.isLookup;
+    let hiddenColumnOperation = options && options.hiddenColumnOperation;
     if(!options){
         options = {};
     }
     let columns = [];
-    if(options.formFactor === 'SMALL' || ["split"].indexOf(options.displayAs) > -1){
+    let useMobileColumns = options.formFactor === 'SMALL' || ["split"].indexOf(options.displayAs) > -1;
+    if(isLookup){
+        // 在lookup手机端列表模式调式好之前不使用getMobileTableColumns
+        useMobileColumns = false;
+    }
+    if(useMobileColumns){
         columns = await getMobileTableColumns(fields, options);
     }
     else{
         columns = await getTableColumns(fields, options);
-        columns.push(await getTableOperation(options));
+        if(!isLookup && !hiddenColumnOperation){
+            columns.push(await getTableOperation(options));
+        }
     }
+
     return {
         mode: "table",
         name: "thelist",
@@ -484,7 +783,7 @@ export async function getTableSchema(fields, options){
         columns: columns,
         syncLocation: false,
         keepItemSelectionOnPageChange: true,
-        checkOnItemClick: false,
+        checkOnItemClick: isLookup ? true : false,
         labelTpl: `\${${options.labelFieldName}}`,
         autoFillHeight: false, // 自动高度效果不理想,先关闭
         columnsTogglable: false,
@@ -520,14 +819,17 @@ export async function getTableApi(mainObject, fields, options){
     if(filter){
         baseFilters = filter;
     }
-    _.each(fields,function(field){
-        if(field.searchable){
+
+    _.each(mainObject.fields, function (field) {
+        if (Fields.isFieldQuickSearchable(field, mainObject.NAME_FIELD_KEY)) {
             searchableFields.push(field.name);
         }
     })
 
     const fileFields = {};
     const fileFieldsKeys = [];
+    // 含有optionsFunction属性， 无reference_to属性的lookup字段
+    const lookupFields = {};
     fields.forEach((item)=>{
         if(_.includes(['image','avatar','file'], item.type)){
             fileFieldsKeys.push(item.name);
@@ -537,11 +839,15 @@ export async function getTableApi(mainObject, fields, options){
                 multiple: item.multiple
             };
         }
+        if(_.includes(['lookup'], item.type) && !item.reference_to ){
+            lookupFields[item.name] = item;
+        }
     })
 
     let valueField = mainObject.key_field || '_id';
     const api = await getApi(mainObject, null, fields, {count: options.queryCount, alias: 'rows', limit: top, queryOptions: `filters: {__filters}, top: {__top}, skip: {__skip}, sort: "{__sort}"`});
 
+    api.url += "&objectName=${objectName}";//设计器上对象表格组件需要切换对象重新请求列表数据
     if(options.isRelated){
         api.url += "&recordId=${_master.recordId}";
     }
@@ -553,6 +859,7 @@ export async function getTableApi(mainObject, fields, options){
     api.data.filter = "$filter"
     api.data.loaded = "${loaded}";
     api.data.listViewId = "${listViewId}";
+    api.data.listName = "${listName}";
     api.requestAdaptor = `
         // selfData 中的数据由 CRUD 控制. selfData中,只能获取到 CRUD 给定的data. 无法从数据链中获取数据.
         let selfData = JSON.parse(JSON.stringify(api.data.$self));
@@ -560,8 +867,8 @@ export async function getTableApi(mainObject, fields, options){
         const data = _.cloneDeep(api.data);
         try{
             // TODO: 不应该直接在这里取localStorage，应该从外面传入
-            const listViewId = api.data.listViewId;
-            const listViewPropsStoreKey = location.pathname + "/crud/" + listViewId ;
+            const listName = api.data.listName;
+            const listViewPropsStoreKey = location.pathname + "/crud";
             let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
             if(localListViewProps){
                 localListViewProps = JSON.parse(localListViewProps);
@@ -575,7 +882,9 @@ export async function getTableApi(mainObject, fields, options){
                     // 如果是第一次加载组件始终让翻页页码从本地存储中取值
                     let formFactor = "${options.formFactor}";
                     // 移动端不识别本地存储中的翻页页码，否则点击加载更多按钮后无法刷新回第一页
-                    api.data.pageNo = formFactor === "SMALL" ? 1 : (localListViewProps.page || 1);
+                    // api.data.pageNo = formFactor === "SMALL" ? 1 : (localListViewProps.page || 1);
+                    // 移动端暂时去除加载更多，放开翻页
+                    api.data.pageNo = localListViewProps.page || 1;
                 }
             }
         }
@@ -583,9 +892,13 @@ export async function getTableApi(mainObject, fields, options){
             console.error("本地存储中crud参数解析异常：", ex);
         }
         ${baseFilters ? `var systemFilters = ${JSON.stringify(baseFilters)};` : 'var systemFilters = [];'}
+        var _ids = []
         const filtersFunction = ${filtersFunction};
         if(filtersFunction){
             const _filters = filtersFunction(systemFilters, api.data.$self);
+            if(api.data.listName == "recent"){
+                _ids = _filters[2]
+            }
             if(_filters && _filters.length > 0){
                 if(_.isEmpty(systemFilters)){
                     systemFilters = _filters || [];
@@ -616,20 +929,8 @@ export async function getTableApi(mainObject, fields, options){
         }else if(selfData.op === 'loadOptions' && selfData.value){
             userFilters = [["${valueField.name}", "=", selfData.value]];
         }
-        var searchableFilter = [];
-        _.each(selfData, (value, key)=>{
-            if(!_.isEmpty(value) || _.isBoolean(value)){
-                if(_.startsWith(key, '__searchable__between__')){
-                    searchableFilter.push([\`\${key.replace("__searchable__between__", "")}\`, "between", value])
-                }else if(_.startsWith(key, '__searchable__')){
-                    if(_.isString(value)){
-                        searchableFilter.push([\`\${key.replace("__searchable__", "")}\`, "contains", value])
-                    }else{
-                        searchableFilter.push([\`\${key.replace("__searchable__", "")}\`, "=", value])
-                    }
-                }
-            }
-        });
+        
+        var searchableFilter = SteedosUI.getSearchFilter(selfData) || [];
 
         if(searchableFilter.length > 0){
             if(userFilters.length > 0 ){
@@ -650,19 +951,10 @@ export async function getTableApi(mainObject, fields, options){
             })
         }
 
-        if(selfData.__keywords && allowSearchFields){
-            const keywordsFilters = [];
-            allowSearchFields.forEach(function(key, index){
-                const keyValue = selfData.__keywords;
-                if(keyValue){
-                    keywordsFilters.push([key, "contains", keyValue]);
-                    if(index < allowSearchFields.length - 1){
-                        keywordsFilters.push('or');
-                    }
-                }
-            })
+        var keywordsFilters = SteedosUI.getKeywordsSearchFilter(selfData.__keywords, allowSearchFields);
+        if(keywordsFilters && keywordsFilters.length > 0){
             userFilters.push(keywordsFilters);
-        };
+        }
 
         let filters = [];
 
@@ -680,18 +972,17 @@ export async function getTableApi(mainObject, fields, options){
         if(api.data.$self._isRelated){
             const self = api.data.$self;
             const relatedKey = self.relatedKey;
-            const recordId = self.recordId;
             const refField = self.uiSchema.fields[relatedKey];
             const masterRecord = self._master.record;
             const masterObjectName = self._master.objectName;
-            let relatedValue = recordId;
-            if(refField.reference_to_field && refField.reference_to_field != '_id'){
+            let relatedValue = self._master.recordId;
+            if(refField && refField.reference_to_field && refField.reference_to_field != '_id'){
                 relatedValue = masterRecord[refField.reference_to_field]
             }
             let relatedFilters;
             if (
-                refField._reference_to ||
-                (refField.reference_to && !_.isString(refField.reference_to))
+                refField && (refField._reference_to ||
+                (refField.reference_to && !_.isString(refField.reference_to)))
             ) {
                 relatedFilters = [
                     [relatedKey + "/o", "=", masterObjectName],
@@ -710,13 +1001,29 @@ export async function getTableApi(mainObject, fields, options){
                 filters = [filters, 'and', userFilters]
             }
         }
+        api.data._ids = _ids;
         api.data = {
             query: api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', pageSize).replace('{__skip}', skip).replace('{__sort}', sort.trim())
         }
-        ${options.requestAdaptor || ''}
+        ${options.requestAdaptor || ''};
+
+        //写入本次存储filters、sort
+        const listViewPropsStoreKey = location.pathname + "/crud/query";
+        sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify({
+            filters: filters,
+            sort: sort.trim(),
+            pageSize: pageSize,
+            skip: skip,
+            fields: ${JSON.stringify(_.map(fields, 'name'))}
+        }));
         return api;
     `
     api.adaptor = `
+    if(api.body.listName == "recent"){
+        payload.data.rows = _.sortBy(payload.data.rows, function(item){
+            return _.indexOf(api.body._ids, item._id)
+        });
+    }
     const enable_tree = ${mainObject.enable_tree};
     if(!enable_tree){
         _.each(payload.data.rows, function(item, index){
@@ -727,9 +1034,10 @@ export async function getTableApi(mainObject, fields, options){
     }
     window.postMessage(Object.assign({type: "listview.loaded"}), "*");
     let fileFields = ${JSON.stringify(fileFields)};
+    let lookupFields = ${JSON.stringify(lookupFields)};
     _.each(payload.data.rows, function(item, index){
         _.each(fileFields , (field, key)=>{
-            if(item[key] && item._display && item._display [key]){
+            if(item[key] && item._display && item._display[key]){
                 let value = item._display[key];
                 if(!_.isArray(value)){
                     value = [value]
@@ -738,6 +1046,17 @@ export async function getTableApi(mainObject, fields, options){
                     item[key] = value
                 }else{
                     item[key] = _.map(value, 'url')
+                }
+            }
+        })
+        _.each(lookupFields , (field, key)=>{
+            if(item[key]){
+                if(field._optionsFunction){
+                    const optionsFunction = eval("(" + field._optionsFunction+ ")")(item);
+                    item[key + '__label'] = _.map(_.filter(optionsFunction, function(option){return item[key] == option.value}), 'label').join(' ');
+                }else if(field.options){
+                    const options = field.options;
+                    item[key + '__label'] = _.map(_.filter(options, function(option){return item[key] == option.value}), 'label').join(' ');
                 }
             }
         })
@@ -752,8 +1071,8 @@ export async function getTableApi(mainObject, fields, options){
 
     try{
         // TODO: 不应该直接在这里取localStorage，应该从外面传入
-        const listViewId = api.body.listViewId;
-        const listViewPropsStoreKey = location.pathname + "/crud/" + listViewId ;
+        const listName = api.body.listName;
+        const listViewPropsStoreKey = location.pathname + "/crud";
         /**
          * localListViewProps规范来自crud请求api中api.data.$self参数值的。
          * 比如：{"perPage":20,"page":1,"__searchable__name":"7","__searchable__between__n1__c":[null,null],"filter":[["name","contains","a"]]}
@@ -775,7 +1094,8 @@ export async function getTableApi(mainObject, fields, options){
                 // 如果是第一次加载组件始终让翻页页码从本地存储中取值
                 let formFactor = "${options.formFactor}";
                 // 移动端不识别本地存储中的翻页页码，否则点击加载更多按钮后无法刷新回第一页
-                selfData.page = formFactor === "SMALL" ? 1 : (localListViewProps.page || 1);
+                // selfData.page = formFactor === "SMALL" ? 1 : (localListViewProps.page || 1);
+                selfData.page = localListViewProps.page || 1;
             }
         }
         delete selfData.context;
@@ -792,7 +1112,14 @@ export async function getTableApi(mainObject, fields, options){
 
     const setDataToComponentId = "${setDataToComponentId}";
     if(setDataToComponentId){
-        SteedosUI.getRef(api.body.$self.$scopeId)?.getComponentById(setDataToComponentId)?.setData({$count: payload.data.count})
+        //https://github.com/baidu/amis/pull/6807 .parent的改动是为适应3.2getComponentById的规则改动，不影响2.9
+        var scope = SteedosUI.getRef(api.body.$self.$scopeId);
+        var scopeParent = scope && scope.parent;
+        var setDataToComponent = scopeParent && scopeParent.getComponentById(setDataToComponentId);
+        if(setDataToComponent){
+            setDataToComponent.setData({$count: payload.data.count});
+        }
+        // SteedosUI.getRef(api.body.$self.$scopeId)?.parent?.getComponentById(setDataToComponentId)?.setData({$count: payload.data.count})
     };
     ${options.adaptor || ''}
     return payload;

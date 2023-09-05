@@ -10,8 +10,9 @@ import { getObjectHeaderToolbar, getObjectFooterToolbar, getObjectFilter } from 
 import { getListViewSort } from './../../../objects';
 import { lookupToAmisTreeSelect } from './tree_select';
 import * as standardNew from '../../../../schema/standard_new.amis'
+import { i18next } from "../../../../i18n";
 
-const getReferenceTo = async (field)=>{
+export const getReferenceTo = async (field)=>{
     let referenceTo = field.reference_to;
     if(!referenceTo){
         return ;
@@ -46,12 +47,11 @@ const getReferenceTo = async (field)=>{
     }
 }
 
-export function getLookupSapceUserTreeSchema(){
-    const tree = [{
+export function getLookupSapceUserTreeSchema(isMobile){
+    const treeSchema = {
         "type": "input-tree",
-        "className": "",
-        "inputClassName": "pl-0",
-        "id": "u:7fd77b7915b0",
+        "className":"steedos-select-user-tree",
+        "inputClassName": "p-0",
         "source": {
           "method": "post",
           "url": "${context.rootUrl}/graphql",
@@ -74,25 +74,18 @@ export function getLookupSapceUserTreeSchema(){
                 "actionType": "custom",
                 "script": `
                 const scope = event.context.scoped;
-                //TODO: 将form中的value一同加入筛选内
-                // var filterForm = scope.parent.parent.getComponents().find(function(n){
-                //     return n.props.type === "form";
-                //   });
-                // var filterFormValues = filterForm.getValues();
-                filterFormValues={
+                var filterFormValues={
                     "__searchable__organizations_parents":event.data.value.value
                 }
                 var listView = scope.parent.getComponents().find(function(n){
                   return n.props.type === "crud";
                 });
-                const removedValues = {};
-                // for(var k in filterFormValues){
-                    //   if(filterFormValues[k] === "" && !filterFormValues.hasOwnProperty(k)){
-                    //     removedValues[k] = "";
-                    //   }
-                    // }
-                listView.handleFilterSubmit(Object.assign({}, removedValues, filterFormValues));
+                listView.handleFilterSubmit(Object.assign({}, filterFormValues));
               `
+              },
+              {
+                "actionType": "custom",
+                "script": " if(window.innerWidth < 768){ document.querySelector('.steedos-select-user-sidebar').classList.remove('steedos-select-user-sidebar-open'); }"
               }
             ]
           }
@@ -113,21 +106,60 @@ export function getLookupSapceUserTreeSchema(){
         "autoCheckChildren": false,
         "searchable": true,
         "searchConfig": {
-          "sticky": true
+          "sticky": true,
+          "placeholder": "查找部门"
         },
         "unfoldedLevel": 2,
-        "style": {
-          "max-height": "100%",
-          "position": "absolute",
-          "left": "-200px",
-          "width": "190px",
-          "bottom": 0,
-          "top": "-14px",
-          "overflow": "auto",
-          "min-height":"300px"
-        },
         "originPosition": "left-top"
-    }]
+    }
+    const tree = []
+    if(isMobile){
+        tree.push({
+            type: "action",
+            body:[
+                {
+                    type: "action",
+                    body:[
+                        treeSchema
+                    ],
+                    className:"h-full w-[240px]"
+                }
+            ],
+            className: "absolute inset-0 steedos-select-user-sidebar",
+            "onEvent": {
+                "click": {
+                  "actions": [
+                    {
+                      "actionType": "custom",
+                      "script": "document.querySelector('.steedos-select-user-sidebar').classList.remove('steedos-select-user-sidebar-open')"
+                    }
+                  ]
+                }
+            },
+            id: "steedos_crud_toolbar_select_user_tree"
+        })
+        tree.push({
+            "type": "button",
+            "label": "组织",
+            "icon": "fa fa-sitemap",
+            "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
+            "align": "left",
+            "onEvent": {
+              "click": {
+                "actions": [
+                  {
+                    "actionType": "custom",
+                    "script": "document.querySelector('.steedos-select-user-sidebar').classList.toggle('steedos-select-user-sidebar-open')"
+                  }
+                ]
+              }
+            },
+            "id": "steedos_crud_toolbar_organization_button"
+        })
+    }else{
+        tree.push(treeSchema)
+    }
+    
     return tree;
 }
 
@@ -137,13 +169,19 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         return ;
     }
     const refObjectConfig = await getUISchema(referenceTo.objectName);
-    const tableFields = [];
+
+    ctx.idFieldName = refObjectConfig.idFieldName
+    ctx.objectName = refObjectConfig.name
+
+    let tableFields = [];
     let i = 0;
     const searchableFields = [];
 
     const fieldsArr = [];
 
     const listName = "all";
+    
+    const isMobile = window.innerWidth < 768;
 
     const listView = _.find(
         refObjectConfig.list_views,
@@ -180,11 +218,14 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             })){
                 i++;
                 tableFields.push(field)
-                if(field.searchable){
-                    searchableFields.push(field.name);
-                }
             }
         }
+    });
+
+    _.each(refObjectConfig.fields, function (field) {
+      if(Field.isFieldQuickSearchable(field, refObjectConfig.NAME_FIELD_KEY)){
+          searchableFields.push(field.name);
+      }
     });
 
     const fields = {
@@ -205,7 +246,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
 
     const source = await getApi(refObjectConfig, null, fields, {expand: true, alias: 'rows', queryOptions: `filters: {__filters}, top: {__top}, skip: {__skip}, sort: "{__sort}"`});
     
-    if(source.url){
+    if(source.url && !ctx.inFilterForm){
         const depend_on = [];
         const sendOn = [];
         _.each(field.depend_on, (fName)=>{
@@ -220,7 +261,9 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     
     source.data.$term = "$term";
     source.data.$self = "$$";
-   
+
+    let keywordsSearchBoxName = `__keywords_lookup__${field.name}__to__${refObjectConfig.name}`;
+    
     source.requestAdaptor = `
         const selfData = JSON.parse(JSON.stringify(api.data.$self));
         var filters = [];
@@ -236,7 +279,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         if(api.data.$term){
             filters = [["name", "contains", "'+ api.data.$term +'"]];
         }else if(selfData.op === 'loadOptions' && selfData.value){
-            if(selfData.value?.indexOf(',') > 0){
+            if(selfData.value && selfData.value.indexOf(',') > 0){
                 fieldValue = selfData.value.split(',');
                 filters = [["${referenceTo.valueField.name}", "=", fieldValue]];
             }else{
@@ -245,20 +288,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             }
         }
 
-        var searchableFilter = [];
-        _.each(selfData, (value, key)=>{
-            if(!_.isEmpty(value) || _.isBoolean(value)){
-                if(_.startsWith(key, '__searchable__between__')){
-                    searchableFilter.push([\`\${key.replace("__searchable__between__", "")}\`, "between", value])
-                }else if(_.startsWith(key, '__searchable__')){
-                    if(_.isString(value)){
-                        searchableFilter.push([\`\${key.replace("__searchable__", "")}\`, "contains", value])
-                    }else{
-                        searchableFilter.push([\`\${key.replace("__searchable__", "")}\`, "=", value])
-                    }
-                }
-            }
-        });
+        var searchableFilter = SteedosUI.getSearchFilter(selfData) || [];
 
         if(searchableFilter.length > 0){
             if(filters.length > 0 ){
@@ -268,13 +298,28 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             }
         }
 
+        if(${referenceTo?.objectName === "space_users"} && ${field.reference_to_field === "user"}){
+            if(filters.length > 0){
+                filters = [ ["user_accepted", "=", true], "and", filters ]
+            }else{
+                filters = [["user_accepted", "=", true]];
+            }
+        }
+
         if(allowSearchFields){
             allowSearchFields.forEach(function(key){
                 const keyValue = selfData[key];
-                if(keyValue){
+                if(_.isString(keyValue)){
                     filters.push([key, "contains", keyValue]);
+                }else if(_.isArray(keyValue) || _.isBoolean(keyValue) || keyValue){
+                    filters.push([key, "=", keyValue]);
                 }
             })
+        }
+
+        var keywordsFilters = SteedosUI.getKeywordsSearchFilter(selfData.${keywordsSearchBoxName}, allowSearchFields);
+        if(keywordsFilters && keywordsFilters.length > 0){
+            filters.push(keywordsFilters);
         }
 
         var fieldFilters = ${JSON.stringify(field.filters)};
@@ -282,9 +327,10 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             filters.push(fieldFilters);
         }
         
+        const inFilterForm = ${ctx.inFilterForm};
         const filtersFunction = ${field.filtersFunction || field._filtersFunction};
 
-        if(filtersFunction){
+        if(filtersFunction && !inFilterForm){
             const _filters = filtersFunction(filters, api.data.$self.__super.__super);
             if(_filters && _filters.length > 0){
                 filters.push(_filters);
@@ -365,8 +411,10 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         top = 1000;
     };
 
+
     let pickerSchema = null;
-    if(ctx.formFactor === 'SMALL'){
+    if(false){
+    // if(ctx.formFactor === 'SMALL'){
         pickerSchema = await List.getListSchema(tableFields, {
             top:  top,
             ...ctx,
@@ -376,32 +424,32 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         pickerSchema = await Table.getTableSchema(tableFields, {
             labelFieldName: refObjectConfig.NAME_FIELD_KEY,
             top:  top,
+            isLookup: true,
             ...ctx
         })
 
         pickerSchema.affixHeader = false;
 
         var headerToolbarItems = [];
-        const isMobile = window.innerWidth < 768;
-        if(referenceTo.objectName === "space_users" && field.reference_to_field === "user" && !isMobile){
-             headerToolbarItems = getLookupSapceUserTreeSchema();
-             pickerSchema["style"] = {
-                "margin-left":"200px",
-                "min-height": "300px"
-             }
+        if(referenceTo.objectName === "space_users" && field.reference_to_field === "user"){
+            headerToolbarItems = getLookupSapceUserTreeSchema(isMobile);
+            pickerSchema.className = pickerSchema.className || "" + " steedos-select-user";
         }
-        pickerSchema.headerToolbar = getObjectHeaderToolbar(refObjectConfig, ctx.formFactor, { headerToolbarItems });
+
+        pickerSchema.headerToolbar = getObjectHeaderToolbar(refObjectConfig, fieldsArr, ctx.formFactor, { headerToolbarItems, isLookup: true, keywordsSearchBoxName });
         const isAllowCreate = refObjectConfig.permissions.allowCreate;
         if (isAllowCreate) {
             const new_button = await standardNew.getSchema(refObjectConfig, { appId: ctx.appId, objectName: refObjectConfig.name, formFactor: ctx.formFactor });
             new_button.align = "right";
-            pickerSchema.headerToolbar.push(new_button);
+            // 保持快速搜索放在最左侧，新建按钮往里插，而不是push到最后
+            pickerSchema.headerToolbar.splice(pickerSchema.headerToolbar.length - 1, 0, new_button);
         }
         pickerSchema.footerToolbar = refObjectConfig.enable_tree ? [] : getObjectFooterToolbar();
         if (ctx.filterVisible !== false) {
             pickerSchema.filter = await getObjectFilter(refObjectConfig, fields, {
+                ...ctx,
                 isLookup: true,
-                ...ctx
+                keywordsSearchBoxName
             });
         }
         pickerSchema.data = Object.assign({}, pickerSchema.data, {
@@ -420,15 +468,86 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             "actions": [
               {
                 "actionType": "reload"
+              },
+              {
+                "actionType": "custom",
+                "script": `
+                    const masterRecord = event.data._master && event.data._master.record;
+                    const fieldConfig = ${JSON.stringify(field)};
+                    let reference_to = fieldConfig.reference_to;
+                    let saveValue;
+                    const newRecord = {
+                        _id: event.data.result.data.recordId,
+                        ...event.data.__super.__super
+                    }
+                    const saveField = fieldConfig.reference_to_field || '_id';
+                    const saveFieldValue = newRecord[saveField];
+
+                    if( fieldConfig._reference_to && (_.isArray(fieldConfig._reference_to) || _.isFunction(fieldConfig._reference_to) || fieldConfig._reference_to.startsWith('function') ) ){
+                        
+                        const fieldValue = masterRecord ? masterRecord[fieldConfig.name] : {o: reference_to, ids: []};
+                        const baseSaveValue = {
+                            o: reference_to,
+                            ids: [saveFieldValue]
+                        };
+                        if(fieldValue && fieldValue.o){
+                            if(fieldValue.o === reference_to){
+                                saveValue = fieldConfig.multiple ? { o: reference_to, ids: fieldValue.ids.concat(saveFieldValue)} : baseSaveValue;
+                            }else{
+                                saveValue = baseSaveValue;
+                            }
+                        }else{
+                            saveValue = baseSaveValue;
+                        }
+
+                    }else{
+                        if(fieldConfig.multiple){
+                            // TODO: 连续新建多个记录时，因为获取的主记录不是实时的，所以只会勾选最后一个新建的记录。
+                            const fieldValue = (masterRecord && masterRecord[fieldConfig.name]) || [];
+                            saveValue = fieldValue.concat(saveFieldValue);
+                        }else{
+                            saveValue = saveFieldValue;
+                        }
+                    }
+                    
+                    const ctx = ${JSON.stringify(ctx)};
+                    const componentId = ctx.defaults.formSchema.id;
+                    doAction({
+                        actionType: 'setValue',
+                        componentId: componentId, 
+                        args: {
+                            value: { [fieldConfig.name]: saveValue  }
+                        }
+                    });
+                `
               }
             ]
           }
     }
 
+    if(field.pickerSchema){
+        pickerSchema = Object.assign({}, pickerSchema, field.pickerSchema)
+    }
+
+    if(referenceTo.objectName === "space_users" && field.reference_to_field === "user" && isMobile){
+        //手机端选人控件只保留部分toolbar
+        pickerSchema.headerToolbar = pickerSchema.headerToolbar && pickerSchema.headerToolbar.filter(function(item){
+            if(["steedos_crud_toolbar_quick_search","steedos_crud_toolbar_filter","steedos_crud_toolbar_select_user_tree","steedos_crud_toolbar_organization_button"].indexOf(item.id) > -1){
+                return true;
+            }else{
+                return false;
+            }
+        })
+        pickerSchema.footerToolbar = ["pagination"]
+    }
+
     const data = {
         type: Field.getAmisStaticFieldType('picker', readonly),
+        modalTitle:  i18next.t('frontend_form_please_select') + " " + refObjectConfig.label,
         labelField: referenceTo.labelField.name,
         valueField: referenceTo.valueField.name,
+        // disabledOn: this._master目的是相关表新建时禁止编辑关联字段； this.relatedKey目的是相关表编辑时禁止编辑关联字段，多选字段可以编辑。
+        disabledOn:  `${readonly} || ( (this._master && (this._master.relatedKey ==='${field.name}')) || ((this.relatedKey ==='${field.name}') && (${field.multiple} != true)) )`,
         modalMode: 'dialog', //TODO 设置 dialog 或者 drawer，用来配置弹出方式
         source: source,
         size: "lg",
@@ -444,7 +563,6 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     if(readonly){
         data.tpl = await Tpl.getLookupTpl(field, ctx)
     }
-
     return data;
 }
 
@@ -505,7 +623,8 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         sort = getListViewSort(listView);
     }
 
-    if(apiInfo.url){
+    // 列表视图搜索栏中，即inFilterForm=true时，不需要执行depend_on
+    if(apiInfo.url && !ctx.inFilterForm){
         const depend_on = [];
         const sendOn = [];
         _.each(field.depend_on, (fName)=>{
@@ -542,9 +661,18 @@ export async function lookupToAmisSelect(field, readonly, ctx){
             filters.push(fieldFilters);
         }
 
+        if(${referenceTo?.objectName === "space_users"} && ${field.reference_to_field === "user"}){
+            if(filters.length > 0){
+                filters = [ ["user_accepted", "=", true], "and", filters ]
+            }else{
+                filters = [["user_accepted", "=", true]];
+            }
+        }
+
+        const inFilterForm = ${ctx.inFilterForm};
         const filtersFunction = ${field.filtersFunction || field._filtersFunction};
 
-        if(filtersFunction){
+        if(filtersFunction && !inFilterForm){
             const _filters = filtersFunction(filters, api.data.$);
             if(_filters && _filters.length > 0){
                 filters.push(_filters);
@@ -570,7 +698,28 @@ export async function lookupToAmisSelect(field, readonly, ctx){
     let valueField = referenceTo ? referenceTo.valueField.name : '';
     if(field.optionsFunction || field._optionsFunction){
         apiInfo.adaptor = `
-        payload.data.options = eval(${field.optionsFunction || field._optionsFunction})(api.data.$);
+        var options = eval(${field.optionsFunction || field._optionsFunction})(api.data.$);
+        if(api.data.$term){
+            options = _.filter(options, function(o) {
+                var label = o.label;
+                return label.toLowerCase().indexOf(api.data.$term.toLowerCase()) > -1;
+            });
+        }
+        payload.data.options = options;
+        return payload;
+        `
+        labelField = 'label';
+        valueField = 'value';
+    }else if(field.options){
+        apiInfo.adaptor = `
+        var options = ${JSON.stringify(field.options)}
+        if(api.data.$term){
+            options = _.filter(options, function(o) {
+                var label = o.label;
+                return label.toLowerCase().indexOf(api.data.$term.toLowerCase()) > -1;
+            });
+        }
+        payload.data.options = options;
         return payload;
         `
         labelField = 'label';
@@ -582,6 +731,8 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         joinValues: false,
         extractValue: true,
         clearable: true,
+        // disabledOn: this._master目的是相关表新建时禁止编辑关联字段； this.relatedKey目的是相关表编辑时禁止编辑关联字段，多选字段可以编辑。
+        disabledOn:  `${readonly} || ( (this._master && (this._master.relatedKey ==='${field.name}')) || ((this.relatedKey ==='${field.name}') && (${field.multiple} != true)) )`,
         // labelField: labelField,
         // valueField: valueField,
         source: apiInfo,
@@ -639,7 +790,7 @@ export async function lookupToAmis(field, readonly, ctx){
             type: 'steedos-field-lookup',
             field,
             readonly,
-            ctx: {},
+            ctx,
         }
         // return await lookupToAmisGroup(field, readonly, ctx);
     }
@@ -650,7 +801,8 @@ export async function lookupToAmis(field, readonly, ctx){
     }
 
     if(referenceTo.objectName === "space_users" && field.reference_to_field === "user"){
-        if(ctx.idsDependOn || field.amis){
+        ctx.onlyDisplayLookLabel = true;
+        if(ctx.idsDependOn){
             // ids人员点选模式
             return await lookupToAmisIdsPicker(field, readonly, ctx);
         }
@@ -708,7 +860,7 @@ export async function getIdsPickerSchema(field, readonly, ctx){
     source.data.$term = "$term";
     source.data.$self = "$$";
 
-    if(idsDependOn && source.url){
+    if(idsDependOn && source.url && !ctx.inFilterForm){
         source.sendOn = `\${${idsDependOn} && ${idsDependOn}.length}`;
         source.url = `${source.url}&depend_on_${idsDependOn}=\${${idsDependOn}|join}`;
     }
@@ -720,7 +872,7 @@ export async function getIdsPickerSchema(field, readonly, ctx){
         var pageNo = api.data.pageNo || 1;
         var skip = (pageNo - 1) * pageSize;
         if(selfData.op === 'loadOptions' && selfData.value){
-            if(selfData.value?.indexOf(',') > 0){
+            if(selfData.value && selfData.value.indexOf(',') > 0){
                 filters = [["${referenceTo.valueField.name}", "=", selfData.value.split(',')]];
             }else{
                 filters = [["${referenceTo.valueField.name}", "=", selfData.value]];
@@ -753,6 +905,7 @@ export async function getIdsPickerSchema(field, readonly, ctx){
         pickerSchema = await Table.getTableSchema(tableFields, {
             labelFieldName: refObjectConfig.NAME_FIELD_KEY,
             top:  top,
+            isLookup: true,
             ...ctx
         })
 
@@ -766,6 +919,8 @@ export async function getIdsPickerSchema(field, readonly, ctx){
         valueField: referenceTo.valueField.name,
         modalMode: 'dialog', 
         source: source,
+        // disabledOn: this._master目的是相关表新建时禁止编辑关联字段； this.relatedKey目的是相关表编辑时禁止编辑关联字段，多选字段可以编辑。
+        disabledOn:  `${readonly} || ( (this._master && (this._master.relatedKey ==='${field.name}')) || ((this.relatedKey ==='${field.name}') && (${field.multiple} != true)) )`,
         size: "lg",
         pickerSchema: pickerSchema,
         joinValues: false,

@@ -1,6 +1,7 @@
-import _ from "lodash";
+import * as _ from 'lodash';
 import { isExpression, parseSingleExpression } from "./expression";
 import { getUISchema } from "./objects";
+import { i18next } from '../i18n'
 
 import { StandardButtons } from '../standard/button'
 
@@ -187,7 +188,7 @@ export const getListViewItemButtons = async (uiSchema, ctx)=>{
     return listButtons;
 }
 
-export const getObjectRelatedListButtons = async (uiSchema, ctx)=>{
+export const getObjectRelatedListButtons = (uiSchema, ctx)=>{
     // const buttons = getButtons(uiSchema, ctx);
     // const relatedListButtons = _.filter(buttons, (button) => {
     //     if(button.objectName === 'cms_files'){
@@ -262,6 +263,16 @@ export const getButton = async (objectName, buttonName, ctx)=>{
             }
         }
 
+        if(button.name === 'standard_export_excel'){
+            return {
+                label: button.label,
+                name: button.name,
+                on: button.on,
+                sort: button.sort,
+                ...await StandardButtons.getStandardExportExcel(uiSchema, ctx)
+            }
+        }
+
         if(button.name === 'standard_open_view'){
             return {
                 label: button.label,
@@ -332,7 +343,14 @@ const getObjectDetailHeaderButtons = (objectSchema, recordId)=>{
         className: `button_${button.name}`
         }
     })
-    let dropdownButtons = _.map(moreButtons, (button) => {
+    let moreButtonsVisibleOn = '';
+    let dropdownButtons = _.map(moreButtons, (button, index) => {
+        if(index === 0){
+            moreButtonsVisibleOn = getButtonVisibleOn(button);
+        }else{
+            moreButtonsVisibleOn = moreButtonsVisibleOn + ' || ' +getButtonVisibleOn(button);
+        }
+       
         return {
         type: 'steedos-object-button',
         name: button.name,
@@ -342,12 +360,13 @@ const getObjectDetailHeaderButtons = (objectSchema, recordId)=>{
     })
     return {
         buttons: amisButtonsSchema,
-        moreButtons: dropdownButtons
+        moreButtons: dropdownButtons,
+        moreButtonsVisibleOn
     };
 }
 
 export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
-    const { buttons, moreButtons } = getObjectDetailHeaderButtons(objectSchema, recordId);
+    const { buttons, moreButtons, moreButtonsVisibleOn } = getObjectDetailHeaderButtons(objectSchema, recordId);
     if(ctx.formFactor === 'SMALL'){
         return {
             "type": "button",
@@ -359,7 +378,8 @@ export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
                     "actionType": "drawer",
                     "drawer": {
                       "type": "drawer",
-                      "title": "操作",
+                      "title": i18next.t('frontend_operation'),
+                      "id": "object_actions_drawer_" + objectSchema.name,
                       "body": [
                         {
                           "type": "button-group",
@@ -382,7 +402,6 @@ export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
                           "size": "lg"
                         }
                       ],
-                      "id": "u:9815f7366b9f",
                       "position": "bottom",
                       "closeOnOutside": true,
                       "resizable": false,
@@ -393,8 +412,7 @@ export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
                   }
                 ]
               }
-            },
-            "id": "u:ee7c7929e6ae"
+            }
           }
     }else{
         if(moreButtons.length > 0){
@@ -402,7 +420,8 @@ export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
                 type: "steedos-dropdown-button",
                 label: "",
                 buttons: moreButtons,
-                className: 'slds-icon'
+                className: 'slds-icon',
+                visibleOn: moreButtonsVisibleOn
             }
             buttons.push(dropdownButtonsSchema);
         }
@@ -417,6 +436,7 @@ export const getObjectListViewButtonsSchemas = (objectSchema, ctx)=>{
         return {
             "type": "button",
             "icon": "fa fa-angle-down",
+            "className": "mr-0",
             "onEvent": {
               "click": {
                 "actions": [
@@ -424,7 +444,8 @@ export const getObjectListViewButtonsSchemas = (objectSchema, ctx)=>{
                     "actionType": "drawer",
                     "drawer": {
                       "type": "drawer",
-                      "title": "操作",
+                      "title": i18next.t('frontend_operation'),
+                      "id": "object_actions_drawer_" + objectSchema.name,
                       "body": [
                         {
                           "type": "button-group",
@@ -448,7 +469,6 @@ export const getObjectListViewButtonsSchemas = (objectSchema, ctx)=>{
                           "size": "lg"
                         }
                       ],
-                      "id": "u:9815f7366b9f",
                       "position": "bottom",
                       "closeOnOutside": true,
                       "resizable": false,
@@ -459,8 +479,7 @@ export const getObjectListViewButtonsSchemas = (objectSchema, ctx)=>{
                   }
                 ]
               }
-            },
-            "id": "u:ee7c7929e6ae"
+            }
           }
     }else{
         return _.map(buttons, (button) => {
@@ -470,6 +489,68 @@ export const getObjectListViewButtonsSchemas = (objectSchema, ctx)=>{
             objectName: button.objectName,
             visibleOn: getButtonVisibleOn(button),
             className: `button_${button.name}`
+            }
+        });
+    }
+}
+
+export const getObjectRecordDetailRelatedListButtonsSchemas = (objectSchema, ctx)=>{
+    const buttons = getObjectRelatedListButtons(objectSchema, ctx);
+    if(ctx.formFactor === 'SMALL'){
+        return {
+            "type": "button",
+            "icon": "fa fa-angle-down",
+            "onEvent": {
+              "click": {
+                "actions": [
+                  {
+                    "actionType": "drawer",
+                    "drawer": {
+                      "type": "drawer",
+                      "title": i18next.t('frontend_operation'),
+                      "id": "object_actions_drawer_" + objectSchema.name,
+                      "body": [
+                        {
+                          "type": "button-group",
+                          "vertical": true,
+                          "tiled": true,
+                          "buttons": [
+                            ..._.map(buttons, (button)=>{
+                                return {
+                                    type: 'steedos-object-button',
+                                    name: button.name,
+                                    objectName: button.objectName,
+                                    visibleOn: getButtonVisibleOn(button),
+                                    className: `button_${button.name} w-full`
+                                }
+                            })
+                          ],
+                          "btnLevel": "enhance",
+                          "className": "w-full",
+                          "btnClassName": "w-full",
+                          "size": "lg"
+                        }
+                      ],
+                      "position": "bottom",
+                      "closeOnOutside": true,
+                      "resizable": false,
+                      "className": "buttons-drawer",
+                      "bodyClassName": "m-none p-none",
+                      "actions": []
+                    }
+                  }
+                ]
+              }
+            }
+          }
+    }else{
+        return _.map(buttons, (button) => {
+            return {
+                type: 'steedos-object-button',
+                name: button.name,
+                objectName: button.objectName,
+                visibleOn: getButtonVisibleOn(button),
+                className: `button_${button.name}`
             }
         });
     }

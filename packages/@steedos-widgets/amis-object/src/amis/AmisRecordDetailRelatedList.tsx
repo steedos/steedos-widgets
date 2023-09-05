@@ -1,11 +1,11 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-05-15 17:29:53
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-07-27 11:28:54
  * @Description: 
  */
-import { getRecordDetailRelatedListSchema } from '@steedos-widgets/amis-lib'
+import { getRecordDetailRelatedListSchema, i18next } from '@steedos-widgets/amis-lib'
 import { has } from 'lodash';
 
 export const AmisRecordDetailRelatedList = async (props: any) => {
@@ -19,7 +19,7 @@ export const AmisRecordDetailRelatedList = async (props: any) => {
   // if(!objectApiName || !relatedObjectApiName || !recordId){
     return {
       "type": "alert",
-      "body": "缺少父级对象、父级记录或相关列表对象属性",
+      "body": i18next.t('frontend_record_detail_related_list_warning'),
       "level": "warning",
       "showIcon": true,
       "className": "mb-3"
@@ -31,7 +31,7 @@ export const AmisRecordDetailRelatedList = async (props: any) => {
   }
   const schema: any = (await getRecordDetailRelatedListSchema(objectApiName, recordId, relatedObjectApiName, relatedKey, {top, perPage, appId, relatedLabel, className, formFactor, columns, sort, filters, visible_on, isRelated: true, hiddenEmptyTable, requestAdaptor, adaptor})).amisSchema;
   
-  schema.data = Object.assign(schema.data, formData);
+  schema.data = Object.assign(schema.data || {}, formData);
 
   if(has(props, "recordId") && $schema.recordId !== "${recordId}"){
     schema.data = Object.assign(schema.data, {

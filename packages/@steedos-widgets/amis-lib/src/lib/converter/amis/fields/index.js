@@ -6,8 +6,8 @@ import * as Tpl from '../tpl';
 import * as File from './file';
 import { getAmisStaticFieldType } from './type';
 import * as _ from 'lodash'
-import { getContrastColor } from './../util'
 
+export const QUICK_SEARCHABLE_FIELD_TYPES = ["text", "textarea", "autonumber", "url", "email"];
 export const OMIT_FIELDS = ['created', 'created_by', 'modified', 'modified_by'];
 export { getAmisStaticFieldType } from './type';
 // const Lookup = require('./lookup');
@@ -150,13 +150,13 @@ export function getSelectFieldOptions(field){
     _.each(field.options, (item)=>{
         switch (dataType) {
             case 'number':
-                options.push({label: item.label, value: Number(item.value)});
+                options.push({label: item.label, value: Number(item.value), icon: item.icon});
                 break;
             case 'text':
-                options.push({label: item.label, value: String(item.value)});
+                options.push({label: item.label, value: String(item.value), icon: item.icon});
                 break;
             case 'boolean':
-                options.push({label: item.label, value: item.value === 'false' ? false : true});
+                options.push({label: item.label, value: item.value === 'false' ? false : true, icon: item.icon});
                 break;
             default:
                 break;
@@ -181,7 +181,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
     // }
     switch (field.type) {
         case 'text':
-            convertData.type = getAmisStaticFieldType('text', readonly);
+            convertData.type = getAmisStaticFieldType('text', readonly, field);
             break;
         case 'textarea':
             convertData.type = getAmisStaticFieldType('textarea', readonly);
@@ -204,19 +204,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             // break;
         case 'select':
             if(readonly){
-                const selectOptions = field.options;
-                let map = {};
-                _.forEach(selectOptions,(option)=>{
-                    const optionValue = option.value + '';
-                    if(option.color){
-                        const background = '#'+option.color;
-                        const color = getContrastColor(background);
-                        const optionColorStyle = 'background:'+background+';color:'+color;
-                        map[optionValue] = `<span class="rounded-xl px-2 py-1" style='${optionColorStyle}'>${option.label}</span>`
-                    }else{
-                        map[optionValue] = option.label;
-                    }
-                })
+                const map = Tpl.getSelectMap(field.options);
                 convertData = {
                     type: "static-mapping",
                     name: field.name,
@@ -233,6 +221,17 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                     labelField: 'label',
                     valueField: 'value'
                 }
+                const select_menuTpl = `<span class='flex items-center mt-0.5'>
+                    <span role='img' aria-label='smile' class='anticon anticon-smile'>
+                        <span class='slds-icon_container slds-icon-standard-\${REPLACE(icon,'_','-')}'>
+                            <svg class='slds-icon slds-icon_x-small' aria-hidden='true'>
+                                <use xlink:href='/assets/icons/standard-sprite/svg/symbols.svg#\${icon}'></use>
+                            </svg>
+                        </span> 
+                    </span>
+                    <span class='pl-1.5'>\${label}</span>
+                </span>`
+                convertData.menuTpl = "${icon ? `"+select_menuTpl+"` : label}"
                 if(field.multiple){
                     convertData.multiple = true
                     convertData.extractValue = true
@@ -446,12 +445,71 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             break;
         case 'url':
             convertData = {
-                type: getAmisStaticFieldType('url', readonly)
+                type: getAmisStaticFieldType('url', readonly, field),
+                static: readonly ? true : false
+            }
+            if(readonly && field.show_as_qr){
+                convertData = {
+                    type: "control",
+                    label: field.label,
+                    body: {
+                        type: "qr-code",
+                        codeSize: 128,
+                        name: field.name
+                    }
+                }
             }
             break;
         case 'email':
             convertData = {
                 type: getAmisStaticFieldType('email', readonly)
+            }
+            break;
+        case 'location':
+            // 申请ak后需要设置白名单； https://lbsyun.baidu.com/apiconsole/key/create#/home
+            // console.log('fie==>', field.name, field);
+            let ak = "LiZT5dVbGTsPI91tFGcOlSpe5FDehpf7";
+            let vendor = "baidu";  /* 'baidu' | 'gaode' */
+            if(window.Meteor){
+                const map_ak = Meteor.settings?.public?.amis?.map_ak;
+                if(map_ak){
+                    ak = map_ak;
+                }
+                const map_vendor = Meteor.settings?.public?.amis?.map_vendor;
+                if(map_vendor){
+                    vendor = map_vendor;
+                }
+            }
+            
+            const coordinatesType = field.coordinatesType || "bd09";
+            convertData = {
+                type: getAmisStaticFieldType('location', readonly),
+                tpl: readonly ? Tpl.getLocationTpl(field) : null,
+                ak,
+                vendor,
+                clearable: true,
+                coordinatesType,
+                label: field.label,
+                pipeOut: (value, oldValue, data) => {
+                    if (value) {
+                        const lng = value.lng;
+                        const lat = value.lat;
+                        let coordinates = [lng,lat];
+                        if(window.coordtransform){
+                            if(coordinatesType.toLowerCase() === 'bd09'){
+                                const bd09togcj02 = window.coordtransform.bd09togcj02(lng,lat);
+                                coordinates = window.coordtransform.gcj02towgs84(bd09togcj02[0],bd09togcj02[1]);
+                            }else if(coordinatesType.toLowerCase() === 'gcj02'){
+                                coordinates = window.coordtransform.gcj02towgs84(lng,lat);
+                            }
+                        }
+                        value.wgs84 = {
+                            type: "Point",
+                            coordinates
+                        }
+                       return value; // 切换到数字之后的默认值
+                    }
+                }
             }
             break;
         case 'avatar':
@@ -482,6 +540,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
         case 'code':
             convertData = {
                 type: "editor",
+                disabled: readonly ? true : false,
                 language: field.language,
                 editorDidMount: new Function('editor', 'monaco', field.editorDidMount)
             }
@@ -573,7 +632,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             convertData.className = 'm-1';
         }
         if(readonly){
-            convertData.className = `${convertData.className} md:border-b`
+            convertData.className = `${convertData.className} border-b`
         }
         if(readonly){
             convertData.quickEdit = false;
@@ -586,7 +645,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             convertData.className = fieldTypeClassName;
         }
 
-        if(field.visible_on){
+        if(field.visible_on && !ctx.inFilterForm){
             // convertData.visibleOn = `\$${field.visible_on.substring(1, field.visible_on.length -1).replace(/formData./g, '')}`;
             if(field.visible_on.startsWith("{{")){
                 convertData.visibleOn = `${field.visible_on.substring(2, field.visible_on.length -2).replace(/formData./g, 'data.')}`
@@ -679,7 +738,25 @@ export async function getFieldSearchable(perField, permissionFields, ctx){
         _field.multiple = true;
         _field.is_wide = false;
         _field.defaultValue = undefined;
-        const amisField = await Fields.convertSFieldToAmisField(_field, false, Object.assign({}, ctx, {fieldNamePrefix: fieldNamePrefix, required: false, showSystemFields: true}));
+        _field.required = false;
+        _field.hidden = false;
+        _field.omit = false;
+
+        if(_field.amis){
+            delete _field.amis.static;
+            delete _field.amis.staticOn;
+            delete _field.amis.disabled;
+            delete _field.amis.disabledOn;
+            delete _field.amis.required;
+            delete _field.amis.requiredOn;
+            delete _field.amis.visible;
+            delete _field.amis.visibleOn;
+            delete _field.amis.hidden;
+            delete _field.amis.hiddenOn;
+            delete _field.amis.autoFill;
+        }
+
+        const amisField = await Fields.convertSFieldToAmisField(_field, false, Object.assign({}, ctx, {fieldNamePrefix: fieldNamePrefix, required: false, showSystemFields: true, inFilterForm: true}));
         if(amisField){
             return amisField;
         }
@@ -711,4 +788,17 @@ export function isFieldTypeSearchable(fieldType) {
 
 if (typeof window != 'undefined') {
     window.isFieldTypeSearchable = isFieldTypeSearchable;
+}
+
+
+export function isFieldQuickSearchable(field, nameFieldKey) {
+    let fieldSearchable = field.searchable;
+    if(fieldSearchable !== false && field.name === nameFieldKey){
+        // 对象上名称字段的searchable默认认为是true
+        fieldSearchable = true;
+    }
+    if (fieldSearchable && QUICK_SEARCHABLE_FIELD_TYPES.indexOf(field.type) > -1) {
+        return true;
+    }
+    return false;
 }

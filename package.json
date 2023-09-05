@@ -20,7 +20,7 @@
     "cnpm-sync": "lerna exec --no-private  -- cnpm sync \\$LERNA_PACKAGE_NAME"
   },
   "dependencies": {
-    "lerna": "^5.4.3",
+    "lerna": "^6.6.2",
     "postcss": "^8.1.10",
     "postcss-loader": "^4.1.0",
     "postcss-nested": "^5.0.1",

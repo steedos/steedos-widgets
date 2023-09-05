@@ -4,6 +4,7 @@
  * @LastEditors: Please set LastEditors
  * @LastEditTime: 2023-04-12 10:35:36
  */
+import { i18next } from "../i18n";
 export const getSchema = (uiSchema)=>{
     return {
         "type": "service",
@@ -11,8 +12,8 @@ export const getSchema = (uiSchema)=>{
         "body": [
             {
                 "type": "button",
-                "label": "删除",
-                "confirmText": "确定要删除此项目?",
+                "label": i18next.t('frontend_form_delete'),
+                "confirmText": i18next.t('frontend_delete_many_confirm_text'),
                 "onEvent": {
                     "click": {
                         "actions": [

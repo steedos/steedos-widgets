@@ -1,12 +1,13 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-28 11:11:29
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-08-25 11:55:15
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
 import { getObjectCalendar } from './converter/amis/calendar';
+import { i18next } from '../i18n'
 
 import {
     getObjectCRUD,
@@ -282,7 +283,7 @@ export async function getListSchema(
      * 本次存储代码段
      */
     try {
-      const listViewPropsStoreKey = location.pathname + "/crud/" + ctx.listViewId;
+      const listViewPropsStoreKey = location.pathname + "/crud";
       let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
       /**
        * localListViewProps规范来自crud请求api中api.data.$self参数值的。
@@ -304,11 +305,12 @@ export async function getListSchema(
         if(localListViewProps.orderDir){
             listSchema.orderDir = localListViewProps.orderDir;
         }
-        // if(localListViewProps.perPage){
-        //     listSchema.defaultParams = {
-        //         perPage: localListViewProps.perPage
-        //     }
-        // }
+
+        if(localListViewProps.perPage){
+            listSchema.defaultParams = {
+                perPage: localListViewProps.perPage
+            }
+        }
         defaults.listSchema = defaultsDeep({}, listSchema, defaults.listSchema || {});
       }
     }
@@ -318,6 +320,24 @@ export async function getListSchema(
 
     ctx.defaults = defaults;
 
+    if (listViewName == "recent") {
+        listview_filters = `
+            function(filters, data) {
+                var result = Steedos.authRequest('/graphql', {
+                    type: 'POST',
+                    async: false,
+                    data: JSON.stringify({
+                        query: '{object_recent_viewed(filters: [["record.o","=","' + data.objectName + '"],["space","=","' + data.context.tenantId + '"],["owner","=","' + data.context.userId + '"]],sort:"modified desc",top:50){ _id,record}  }'
+                    }),
+                });
+                var _ids = []
+                result.data.object_recent_viewed.forEach(function (item) {
+                    _ids = _ids.concat(item.record.ids)
+                })
+                return ["_id", "=", _ids];
+            }
+        `
+    }
     const amisSchema = {
         "type": "steedos-object-table",
         "objectApiName": objectName,
@@ -330,8 +350,10 @@ export async function getListSchema(
         "requestAdaptor": listView.requestAdaptor,  
         "adaptor": listView.adaptor,
         "headerToolbarItems": ctx.headerToolbarItems,
-        "filterVisible": ctx.filterVisible
+        "filterVisible": ctx.filterVisible,
+        "rowClassNameExpr": ctx.rowClassNameExpr
     };
+    // console.log(`getListSchema===>`,amisSchema)
     return {
         uiSchema,
         amisSchema,
@@ -345,7 +367,7 @@ export async function getTableSchema(
     columns,
     ctx = {}
 ) {
-    // console.time('getTableSchema');
+    // console.time('getTableSchema', columns);
     const uiSchema = await getUISchema(objectName);
 
     let sort = ctx.sort;
@@ -359,19 +381,52 @@ export async function getTableSchema(
     }
 
     let fields = [];
-    each(columns, function (column) {
-        if (isString(column) && uiSchema.fields[column]) {
-            fields.push(uiSchema.fields[column]);
-        } else if (isObject(column) && uiSchema.fields[column.field]) {
-            fields.push(
-                Object.assign({}, uiSchema.fields[column.field], {
-                    width: column.width,
-                    wrap: column.wrap, // wrap = true 是没效果的
-                    amis: column.amis
-                })
-            );
+    for(const column of columns){
+        if (isString(column)) {
+            if(column.indexOf('.') > 0){
+                const fieldName = column.split('.')[0];
+                const displayName = column.split('.')[1];
+                const filedInfo = uiSchema.fields[fieldName];
+                if(filedInfo && (filedInfo.type === 'lookup' || filedInfo.type === 'master_detail') && isString(filedInfo.reference_to) ){
+                    const rfUiSchema = await getUISchema(filedInfo.reference_to);
+                    const rfFieldInfo = rfUiSchema.fields[displayName];
+                    fields.push(Object.assign({}, rfFieldInfo, {name: `${fieldName}__expand.${displayName}`, expand: true, expandInfo: {fieldName, displayName}}));
+                }
+            }else{
+                if(uiSchema.fields[column]){
+                    fields.push(uiSchema.fields[column]);
+                }
+            }
+        } else if (isObject(column)) {
+            if(column.field.indexOf('.') > 0){
+                const fieldName = column.field.split('.')[0];
+                const displayName = column.field.split('.')[1];
+                const filedInfo = uiSchema.fields[fieldName];
+                if(filedInfo && (filedInfo.type === 'lookup' || filedInfo.type === 'master_detail') && isString(filedInfo.reference_to) ){
+                    const rfUiSchema = await getUISchema(filedInfo.reference_to);
+                    const rfFieldInfo = rfUiSchema.fields[displayName];
+                    fields.push(Object.assign({}, rfFieldInfo, 
+                        {name: `${fieldName}__expand.${displayName}`, expand: true, expandInfo: {fieldName, displayName}},
+                        {
+                            width: column.width,
+                            wrap: column.wrap, // wrap = true 是没效果的
+                            amis: column.amis
+                        }
+                    ));
+                }
+            }else{
+                if(uiSchema.fields[column.field]){
+                    fields.push(
+                        Object.assign({}, uiSchema.fields[column.field], {
+                            width: column.width,
+                            wrap: column.wrap, // wrap = true 是没效果的
+                            amis: column.amis
+                        })
+                    );
+                }
+            }
         }
-    });
+    }
 
     const extraColumns = ctx.extraColumns;
 
@@ -436,7 +491,7 @@ export async function getRecordDetailSchema(objectName, appId, props = {}){
     const uiSchema = await getUISchema(objectName);
     const relatedLists = await getObjectRelatedList(objectName, null, null);
     const detailed = {
-        "title": "详细",
+        "title": i18next.t('frontend_record_detail_tab_detailed'),
         "className": "px-0 py-4",
         "body": [
             {
@@ -451,7 +506,7 @@ export async function getRecordDetailSchema(objectName, appId, props = {}){
         "id": "u:5d4e7e3f6ecc"
     };
     const related = {
-        "title": "相关",
+        "title": i18next.t('frontend_record_detail_tab_related'),
         "className": "px-0 pt-4",
         "body": [
             {

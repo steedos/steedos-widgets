@@ -1,7 +1,8 @@
+import { i18next } from "../../../../../i18n"
 export const getCopyListviewButtonSchema = ()=>{
     return {
         "type": "button",
-        "label": "复制",
+        "label": i18next.t('frontend_listview_control_clone_label'),
         "onEvent": {
           "click": {
             "weight": 0,
@@ -9,14 +10,15 @@ export const getCopyListviewButtonSchema = ()=>{
               {
                 "dialog": {
                   "type": "dialog",
-                  "title": "复制 列表视图",
+                  "title": i18next.t('frontend_listview_control_clone_title'),
                   "data": {
-                    "&": "$$",
+                    //"&":"$$",2.7、2.9、3.0在此处失效
                     "listName": "${listName}",
                     "targetObjectName": "${objectName}",
                     "list_view": "${uiSchema.list_views[listName]}",
                     "appId": "${appId}",
-                    "global": "${global}"
+                    "global": "${global}",
+                    "context": "${context}"
                   },
                   "body": [
                     {
@@ -28,7 +30,7 @@ export const getCopyListviewButtonSchema = ()=>{
                       "defaultData": {
                         "&": "${list_view}",
                         "name":"",
-                        "label": "${list_view.label} 的副本",
+                        "label": i18next.t('frontend_listview_control_clone_defaultData_label_start') + " ${list_view.label} " + i18next.t('frontend_listview_control_clone_defaultData_label_end'),
                         "shared":false
                       },
                       "fieldsExtend": fieldsExtend(),

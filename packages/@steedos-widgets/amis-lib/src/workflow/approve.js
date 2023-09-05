@@ -249,7 +249,7 @@ const getNextStepUsersInput = async (instance) => {
     id: "u:ffff15b76c89",
     className: "b-a b-1x p-xs m-b-none m-l-none m-r-none m-t-sm",
     subFormMode: "",
-    hiddenOn: "!!!this.new_next_step || this.new_next_step?.step_type === 'end'"
+    hiddenOn: "!!!this.new_next_step || (this.new_next_step && this.new_next_step.step_type === 'end')"
   };
 };
 

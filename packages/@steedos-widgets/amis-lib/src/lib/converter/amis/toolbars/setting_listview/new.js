@@ -1,7 +1,8 @@
+import { i18next } from "../../../../../i18n"
 export const getNewListviewButtonSchema = ()=>{
     return {
         "type": "button",
-        "label": "新建",
+        "label": i18next.t('frontend_listview_control_new_label'),
         "onEvent": {
           "click": {
             "weight": 0,
@@ -9,14 +10,15 @@ export const getNewListviewButtonSchema = ()=>{
               {
                 "dialog": {
                   "type": "dialog",
-                  "title": "新建 列表视图",
+                  "title": i18next.t('frontend_listview_control_new_title'),
                   "data": {
-                    "&": "$$",
+                    //"&":"$$",2.7、2.9、3.0在此处失效
                     "all": "${uiSchema.list_views.all}",
                     "list_view": "${uiSchema.list_views[listName]}",
                     "appId": "${appId}",
                     "global": "${global}",
                     "targetObjectName": "${objectName}",
+                    "context": "${context}"
                   },
                   "body": [
                     {
@@ -30,7 +32,8 @@ export const getNewListviewButtonSchema = ()=>{
                         "name":"",
                         "label":"",
                         "filters":"",
-                        "shared":false
+                        "shared":false,
+                        "object_name": "${targetObjectName}",
                       },
                       "fieldsExtend": fieldsExtend(),
                       "fields": fields(),
@@ -50,8 +53,8 @@ export const getNewListviewButtonSchema = ()=>{
                         }
                       },
                       "messages": {
-                        "success": "成功",
-                        "failed": "失败"
+                        "success": i18next.t('frontend_listview_control_new_message_success'),
+                        "failed": i18next.t('frontend_listview_control_new_message_failed')
                       },
                     }
                   ],
@@ -77,13 +80,11 @@ function fields(){
     "object_name",
     "filter_scope",
     "show_count",
-    "columns.$.field",
-    "columns.$.width",
-    "sort.$.field_name",
-    "sort.$.order",
+    "columns",
+    "sort",
     "filters",
-    "mobile_columns.$.field",
-    "searchable_fields.$.field",
+    "mobile_columns",
+    "searchable_fields",
     "is_system",
     "shared"
   ]
@@ -96,7 +97,8 @@ function fieldsExtend(){
     },
     "name": {
       "amis": {
-        "hidden": true
+        "hidden": true,
+        "required": false
       }
     },
     "object_name": {
@@ -106,37 +108,56 @@ function fieldsExtend(){
     },
     "filter_scope": {
       "amis": {
-        "hidden": true
+        "hidden": true,
+        "required": false
       }
     },
     "columns": {
       "amis": {
-        "hidden": true
+        "hidden": true,
+        "required": false
+      }
+    },
+    "mobile_columns":{
+      "amis": {
+        "hidden": true,
+        "required": false
+      }
+    },
+    "searchable_fields":{
+      "amis": {
+        "hidden": true,
+        "required": false
       }
     },
     "filter_fields": {
       "amis": {
-        "hidden": true
+        "hidden": true,
+        "required": false
       }
     },
     "scrolling_mode": {
       "amis": {
-        "hidden": true
+        "hidden": true,
+        "required": false
       }
     },
     "sort": {
       "amis": {
-        "hidden": true
+        "hidden": true,
+        "required": false
       }
     },
     "show_count": {
       "amis": {
-        "hidden": true
+        "hidden": true,
+        "required": false
       }
     },
     "type": {
       "amis": {
-        "hidden": true
+        "hidden": true,
+        "required": false
       }
     },
     "shared": {

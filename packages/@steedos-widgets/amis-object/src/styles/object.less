@@ -109,9 +109,9 @@
             right: 30px;
             background: transparent;
         }
-        .antd-Button.is-disabled {
-            display: none;
-        }
+        // .antd-Button.is-disabled {
+        //     display: none;
+        // }
     }
 }
 
@@ -128,10 +128,146 @@
     }
 }
 
-@media (max-width: 576px){
+//通用选人控件样式
+.steedos-select-user{
+    margin-left: 330px;
+    min-height: 300px;
+    .antd-Table{
+        //选人控件内的crud的table的position设置为unset，可实现让左侧树不基于其绝对定位，而是基于table的上层
+        margin-bottom: 0;
+        position: unset;
+        @media (min-width: 768px){
+            .antd-Table-content{
+                max-height: calc(100vh - 343px);
+            }
+            .antd-SearchBox{
+                margin-top: 0;
+            }
+        }
+    }
+    .steedos-select-user-tree{
+        max-height: 100%;
+        position: absolute;
+        left: -330px;
+        width: 320px;
+        bottom: 0;
+        top: 0;
+        overflow: auto;
+        min-height:300px;
+    }
+    @media (max-width: 768px){
+        .steedos-select-user-tree{
+            position: absolute;
+            left: 0;
+            width: 240px;
+            bottom: 0;
+            top: 0;
+            overflow: auto;
+            z-index: 100;
+            background: white;
+        }
+    }
+}
+@media (max-width: 768px){
+    .steedos-select-user{
+        margin: 0;
+        height: calc(100% - 10px);
+        .steedos-select-user-sidebar{
+            margin-right: -24px;
+            transition: 0.5s ease transform;
+            z-index: 1000;
+            transform: translate(-100%,0);
+            -webkit-transform: translate(-100%,0);
+            -moz-transform: translate(-100%,0);
+            -ms-transform: translate(-100%,0);
+            -o-transform: translate(-100%,0);
+        }
+        .steedos-select-user-sidebar.steedos-select-user-sidebar-open{
+            .steedos-select-user-tree{
+                border-right: #e5e7eb 1px solid;
+                padding-right: 20px;
+            }
+        }
+        .steedos-select-user-sidebar.steedos-select-user-sidebar-open{
+            transform: translate(0,0);
+            -webkit-transform: translate(0,0);
+            -moz-transform: translate(0,0);
+            -ms-transform: translate(0,0);
+            -o-transform: translate(0,0);
+        }
+    }
+}
+
+
+@media (max-width: 768px){
     // 手机端默认强制去掉了下面的样式造成toolbar无法宽度满屏，先加上改成PC一样的满屏效果
     .antd-Crud-toolbar{
         flex-basis: 0;
         flex-grow: 1;
+    }
+    //分页器相关样式调整
+    .steedos-object-table{
+        .antd-Table-footToolbar{
+            border-top: 1px solid #e5e7eb;
+            .antd-Crud-toolbar-item{
+                justify-content: center;
+                width: 100%;
+                .antd-Pagination-inputGroup-left{
+                    display: none;
+                }
+                .antd-Pagination-inputGroup-input{
+                    min-width: 0;
+                    width: 30px;
+                }
+                .antd-Pagination-inputGroup-right{
+                    width: 25px;
+                }
+            }
+        }
+    }
+    body.zoom-large .steedos-object-table .antd-Table-footToolbar{
+        zoom: 90%;
+    }
+    body.zoom-extra-large .steedos-object-table .antd-Table-footToolbar{
+        zoom: 80%;
+    }
+}
+
+
+/* 手机屏幕宽度小于380px时隐藏分页器快速跳转*/
+@media (max-width:380px) {
+    .steedos-object-table .antd-Table-footToolbar .antd-Pagination-inputGroup{
+        display: none
+    }
+}
+
+.steedos-object-table .two-lines-truncate{
+    white-space: pre-wrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* 显示的行数 */
+    -webkit-box-orient: vertical;
+}
+
+/* 魔方定义的按钮，统一把 .antd-Button--size-default 的右侧margin值 var(--button-size-default-marginRight) 去除 */
+.steedos-object-button{
+    .antd-Button{
+        margin-right: 0px;
+    }
+    &.antd-Button{
+        margin-right: 0px;
+    }
+}
+
+/* 魔方定义的按钮，连续的按钮左侧加间隔分开，第一个按钮不会识别此样式 */
+.steedos-object-button + .steedos-object-button{
+    margin-left: 4px;
+}
+
+/* 魔方定义的按钮，如果是显示在下拉菜单作为菜单按钮则不能加间隔 */
+.antd-ButtonGroup--vertical{
+    .steedos-object-button + .steedos-object-button{
+        margin-left: 0px;
     }
 }

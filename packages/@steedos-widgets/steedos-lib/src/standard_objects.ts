@@ -87,6 +87,12 @@ export const StandardObjects = {
                        return record_permissions["allowDelete"];
                    }
                 }
+            },
+            // TODO
+            standard_export_excel: {
+                visible: function (object_name, record_id, record_permissions) {
+                    return false;
+                }
             }
         }
     }

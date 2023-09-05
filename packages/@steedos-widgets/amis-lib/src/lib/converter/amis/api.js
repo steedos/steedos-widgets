@@ -2,10 +2,10 @@ import { OMIT_FIELDS } from './fields';
 import { absoluteUrl } from '../../steedos.client'
 import * as graphql from './graphql'
 import * as _ from 'lodash';
-
+import { i18next } from "../../../i18n"
 const API_CACHE = 100;
 
-function getReadonlyFormAdaptor(object, fields){
+function getReadonlyFormAdaptor(object, fields, options){
     let scriptStr = '';
     const selectFields = _.filter(fields, function(field){return field.name.indexOf('.') < 0 && ((field.type == 'select' && field.options) || ((field.type == 'lookup' || field.type == 'master_detail') && !field.reference_to))});
     const gridAndObjectFieldsName = _.map(_.filter(fields, function(field){return field.name.indexOf('.') < 0 && (field.type === 'object' || field.type === 'grid')}), 'name');
@@ -43,11 +43,24 @@ function getReadonlyFormAdaptor(object, fields){
     //     }
     // })
 
+    var fieldNames = _.map(fields, function(n){return n.name});
     return  `
     if(payload.data.data.length === 0){
-        return {
-            status: 2,
-            msg: "无法找到记录"
+        var isEditor = !!${options && options.isEditor};
+        if(isEditor){
+            var fieldNames = ${JSON.stringify(fieldNames)};
+            var emptyDoc = {};//这里如果不把每个字段值设置为空的话，表单上会显示上一次表单上的字段值
+            fieldNames.forEach(function(n){
+                emptyDoc[n] = null;
+            });
+            // 设计器中始终显示表单，有记录则显示第一条记录，没记录时显示为空表单
+            payload.data.data = [emptyDoc];
+        }
+        else{
+            return {
+                status: 2,
+                msg: "${i18next.t('frontend_no_records_found')}"
+            }
         }
     }
     if(payload.data.data){
@@ -64,7 +77,7 @@ function getReadonlyFormAdaptor(object, fields){
         var record = _.cloneDeep(data);
         try{
             _.each(gridAndObjectFieldsName, function(name){
-                data[name] = data._display[name];
+                data[name] = data._display && data._display[name];
             })
         }catch(e){
             console.error(e)
@@ -85,10 +98,10 @@ function getReadonlyFormAdaptor(object, fields){
 export async function getReadonlyFormInitApi(object, recordId, fields, options){
     return {
         method: "post",
-        url: graphql.getApi()+"&recordId=${recordId}",
+        url: graphql.getApi() + '&objectName=${objectName}' + "&recordId=${recordId}",
         cache: API_CACHE,
         // requestAdaptor: "console.log('getReadonlyFormInitApi requestAdaptor', api);return api;",
-        adaptor: getReadonlyFormAdaptor(object, fields),
+        adaptor: getReadonlyFormAdaptor(object, fields, options),
         data: await graphql.getFindOneQuery(object, recordId, fields, options),
         headers: {
             Authorization: "Bearer ${context.tenantId},${context.authToken}"
@@ -210,7 +223,8 @@ export async function getEditFormInitApi(object, recordId, fields, options){
     data.global = "${global}";
     data.context = "${context}";
     data.defaultData = "${defaultData}";
-
+    data._master = "${_master}";
+    
     return {
         method: "post",
         url: graphql.getApi() + '&objectName=${objectName}' ,
@@ -259,7 +273,7 @@ export async function getEditFormInitApi(object, recordId, fields, options){
                 var uiSchema = api.body.uiSchema;
                 var defaultData = api.body.defaultData;
                 var defaultValues = {};
-                _.each(uiSchema?.fields, function(field){
+                _.each(uiSchema && uiSchema.fields, function(field){
                     var value = SteedosUI.getFieldDefaultValue(field, api.body.global);
                     if(value){
                         defaultValues[field.name] = value;
@@ -276,7 +290,7 @@ export async function getEditFormInitApi(object, recordId, fields, options){
                             formInitialValuesFun = new Function("return " + formInitialValuesFun)();
                         }
                         if(typeof formInitialValuesFun === "function"){
-                            initialValues = formInitialValuesFun.apply({doc: defaultValues || {} , global: api.body.global})
+                            initialValues = formInitialValuesFun.apply({doc: defaultValues || {} , global: api.body.global, master: api.body._master })
                         }
                     }
                     catch(ex){

@@ -1,11 +1,10 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-04-12 23:45:54
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-05-23 10:17:03
  * @Description: 
  */
-import './AmisObjectForm.less';
 
 export * from './AmisObjectForm';
 export * from './AmisObjectListview';

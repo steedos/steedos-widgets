@@ -7,6 +7,7 @@
  */
 
 import './AmisGlobalFooter.less';
+import {i18next} from '@steedos-widgets/amis-lib';
 
 export const AmisGlobalFooter = async (props) => {
     let { stacked = false, overflow, appId, data, links = null, showIcon = true, indentSize = 12, selectedId } = props;
@@ -14,8 +15,7 @@ export const AmisGlobalFooter = async (props) => {
         appId = data.context.appId || 'admin';
     }
     const isMobile = window.innerWidth <= 768;
-    const className = 'fixed bottom-0 z-20 flex justify-evenly w-full h-16 bg-gray-100 steedos-global-footer';
-    const className1 = 'fixed bottom-0 z-20 flex justify-center w-full h-16 bg-gray-100 steedos-global-footer';
+    const className = 'steedos-global-footer';
 
     let schema = {}
     if (links) {
@@ -25,7 +25,7 @@ export const AmisGlobalFooter = async (props) => {
                 body: [
                     {
                         "type": "nav",
-                        "className": links.length == 1 ? `${className1}` : `${className}`,
+                        "className": className,
                         "stacked": stacked,
                         "overflow": overflow,
                         "indentSize": indentSize,
@@ -43,7 +43,6 @@ export const AmisGlobalFooter = async (props) => {
                 "url": `\${context.rootUrl}/service/api/apps/${appId}/menus?mobile=true`,
                 "adaptor": `
                         try {
-
                             if(payload.children.length == 0){
                                 payload.data = {};
                                 return payload
@@ -52,10 +51,21 @@ export const AmisGlobalFooter = async (props) => {
                             const stacked = ${stacked};
                             const showIcon = ${showIcon};
                             const selectedId = '${selectedId}';
+                            const locationPathname = window.location.pathname;
+                            var customTabId = "";
+                            var objectTabId = "";
                             let sum = 0;
+                            payload.children = _.sortBy(payload.children, function(tab){
+                                return tab.index;
+                            })
                             _.each(payload.children, (tab)=>{
                                 sum++;
                                 const classIcon = tab.icon.replace(/_/g,"-");
+                                if(locationPathname == tab.path){
+                                    customTabId = tab.id;
+                                }else if(locationPathname.startsWith(tab.path + "/")){
+                                    objectTabId = tab.id;
+                                }
                                 if(sum >= 5){
                                     data.nav.push({
                                         "label": {
@@ -64,39 +74,84 @@ export const AmisGlobalFooter = async (props) => {
                                             className:'h-full flex items-center'
                                         },
                                         "to": tab.path,
-                                        "target":tab.target
+                                        "target":tab.target,
+                                        "id": tab.id,
+                                        "activeOn": "\\\\\${tabId == '"+ tab.id +"'}",
+                                        "index": tab.index
                                     });
                                 }else{
                                     data.nav.push({
                                         "label": {
                                             type: 'tpl',
-                                            tpl: \`<span class='fill-slate-500  text-slate-700 block -ml-px no-underline group flex items-center text-[12px] font-medium rounded-md flex-col leading-3 nav-label'><svg class="slds-icon slds-icon_container slds-icon-standard-\`+classIcon+\` flex-shrink-0 h-10 w-10"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`,
+                                            tpl: \`<span class='fill-slate-500 truncate text-slate-700 block -ml-px no-underline group flex items-center text-[12px] font-medium rounded-md flex-col leading-3 nav-label'><svg class="slds-icon slds-icon_container slds-icon-standard-\`+classIcon+\` flex-shrink-0 h-10 w-10"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg><span class="truncate" style="max-width: 20vw">\${tab.name}</span></span>\`,
                                             className:'h-full flex items-center'
                                         },
                                         "to": tab.path,
-                                        "target":tab.target
+                                        "target":tab.target,
+                                        "id": tab.id,
+                                        "activeOn": "\\\\\${tabId == '"+ tab.id +"'}",
+                                        "index": tab.index
                                     });
                                 }
-                                
                             })
-
                             payload.data = {
-                                "type": "nav",
-                                className: payload.children.length ==1 ? '${className1}' : '${className}',
-                                "stacked": ${stacked},
-                                "overflow": {
-                                    "enable": true,
-                                    "maxVisibleCount": 4,
-                                    "overflowPopoverClassName": "steedos-global-footer-popup",
-                                    "overflowLabel":{
-                                        "type": 'tpl',
-                                        "tpl": \`<span class='fill-slate-500  text-slate-700 block -ml-px no-underline group flex items-center text-[12px] font-medium rounded-md flex-col leading-3 nav-label'><svg class=" flex-shrink-0 h-10 w-10" style="padding:7px"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#rows"></use></svg>菜单</span>\`,
-                                        "className":'h-full flex items-center'
-                                    },
-                                    "overflowIndicator":""
+                                "type": "service",
+                                "data":{
+                                    "tabId": customTabId || objectTabId,
+                                    "items": data.nav
                                 },
-                                "indentSize": ${indentSize},
-                                "links": data.nav,
+                                "id": "footerService",
+                                "body": {
+                                    "type": "nav",
+                                    className: "${className}",
+                                    "stacked": ${stacked},
+                                    "overflow": {
+                                        "enable": true,
+                                        "maxVisibleCount": 4,
+                                        "overflowPopoverClassName": "steedos-global-footer-popup",
+                                        "overflowLabel":{
+                                            "type": 'tpl',
+                                            "tpl": \`<span class=' truncate text-slate-700 block -ml-px no-underline group flex items-center text-[12px] font-medium rounded-md flex-col leading-3 nav-label'><svg class="!fill-slate-500 flex-shrink-0 !h-10 !w-10" style="padding:7px"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#rows"></use></svg><span class="truncate" style="max-width: 20vw">${i18next.t('frontend_menu')}</span></span>\`,
+                                            "className":'h-full flex items-center'
+                                        },
+                                        "overflowIndicator":""
+                                    },
+                                    "indentSize": ${indentSize},
+                                    "source": "\${items}",
+                                    "onEvent": {
+                                        "click": {
+                                            "actions": [
+                                                {
+                                                    "actionType": "setValue",
+                                                    "componentId": "footerService",
+                                                    "args": {
+                                                        "value": {
+                                                            "tabId": "\${event.data.item.id}",
+                                                            "items": data.nav
+                                                        }
+                                                    },
+                                                    "expression":"\${event.data.item.id}"
+                                                }
+                                            ]
+                                        },
+                                        "@tabId.changed":{
+                                            "actions":[
+                                                {
+                                                    "actionType": "setValue",
+                                                    "componentId": "footerService",
+                                                    "args": {
+                                                        "value": {
+                                                            "tabId": "\${event.data.tabId}",
+                                                            "items": data.nav
+                                                        }
+                                                    },
+                                                    "expression":"\${event.data.tabId}"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                                
                             };
                         } catch (error) {
                             console.log(\`error\`, error)

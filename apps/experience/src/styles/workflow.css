@@ -78,3 +78,17 @@
 #instanceRoot #amis-root-workflow .antd-List-placeholder{
     display: none;
 }
+
+/* amis3.0可用属性控制antd-Tree的maxheight */
+.instance-box-tree .antd-Tree{
+    max-height: 100% !important;
+}
+
+/* 选中效果修改 */
+.instance-box-tree .antd-Tree-item .is-checked{
+    background-color: rgba(21,137,238,.1);
+}
+
+.instance-box-tree .antd-Tree-item .is-checked .antd-Tree-itemLabel-item{
+    background-color: unset;
+}

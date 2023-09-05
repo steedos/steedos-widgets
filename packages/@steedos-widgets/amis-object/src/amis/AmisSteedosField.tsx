@@ -2,17 +2,17 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-27 18:55:29
+ * @LastEditTime: 2023-07-09 09:47:03
  * @Description: 
  */
-import { Field } from '@steedos-widgets/amis-lib';
-import { isString } from 'lodash';
+import { Field, getReferenceTo } from '@steedos-widgets/amis-lib';
+import { isArray, isEmpty, isString, pick } from 'lodash';
 
 export const AmisSteedosField = async (props)=>{
 
     let steedosField = null;
 
-    let { field, readonly = false, ctx = {}, config, $schema } = props;
+    let { field, readonly = false, ctx = {}, config, $schema, static: fStatic } = props;
     // console.log(`AmisSteedosField`, props)
 
     if($schema.config && isString($schema.config)){
@@ -36,9 +36,64 @@ export const AmisSteedosField = async (props)=>{
         }
     }
     try {
-        const schema = await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
-        // console.log(`schema`, schema)
-        return schema
+        if(fStatic && (steedosField.type === 'lookup' || steedosField.type === 'master_detail')){
+            let objectName, filters, valueFieldKey, labelFieldKey;
+            if(!props.data[steedosField.name]){
+                return {};
+            }
+            if(isString(steedosField.reference_to)){
+                const referenceTo = await getReferenceTo(steedosField);
+                const referenceToField = steedosField.reference_to_field || '_id';
+
+                objectName = referenceTo.objectName
+                valueFieldKey = referenceTo && referenceTo.valueField?.name || '_id' ;
+                labelFieldKey = referenceTo && referenceTo.labelField?.name || 'name';
+                let value = props.data[steedosField.name];
+                if(isString(value)){
+                    value = [value]
+                }
+                filters = [referenceToField, "in", value];
+            }else{
+                const _steedosField = {
+                    ...steedosField,
+                    reference_to: props.data[steedosField.name].o
+                }
+                const referenceTo = await getReferenceTo(_steedosField);
+                const referenceToField = _steedosField.reference_to_field || '_id';
+
+                objectName = referenceTo.objectName
+                valueFieldKey = referenceTo && referenceTo.valueField?.name || '_id' ;
+                labelFieldKey = referenceTo && referenceTo.labelField?.name || 'name';
+                
+                filters = [referenceToField, "in", props.data[_steedosField.name].ids];
+            }
+            
+            const schema = Object.assign({}, {
+                type: 'select',
+                multiple: steedosField.multiple,
+                name: steedosField.name,
+                label: steedosField.label,
+                static: true,
+                className: steedosField.amis?.className,
+                source: {
+                    "method": "post",
+                    "url": "${context.rootUrl}/graphql",
+                    "requestAdaptor": `
+                        api.data = {
+                            query: '{options:${objectName}(filters: ${JSON.stringify(filters)}){label: ${labelFieldKey},value: ${valueFieldKey}}}'
+                        }
+                        return api;
+                    `
+                }
+            }, pick(steedosField.amis || {}, ['className', 'inline', 'label', 'labelAlign', 'name', 'labelRemark', 'description', 'placeholder', 'staticClassName', 'staticLabelClassName', 'staticInputClassName', 'staticSchema']));
+            // console.log(`AmisSteedosField return schema`, schema)
+            return schema;
+        }else{
+            const schema = await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
+            // console.log(`AmisSteedosField return schema`, schema)
+            return schema
+        }
+        
     } catch (error) {
         console.log(`error`, error)
     }

@@ -1,10 +1,11 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-17 11:02:56
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-06-30 16:10:32
  * @Description: 
  */
+import './AmisObjectTable.less';
 import { getTableSchema, conditionsToFilters } from '@steedos-widgets/amis-lib'
 import { keys, pick, difference, pickBy, has, each, isString } from 'lodash';
 
@@ -42,7 +43,7 @@ export const AmisObjectTable = async (props) => {
   // console.time('AmisObjectTable')
   console.log(`AmisObjectTable props`, props)
   const { $schema, filters, filtersFunction, amisCondition, top, headerSchema, fields: includedFields, fieldsExtend,
-    sort, sortField, sortOrder, extraColumns, data, defaultData, 
+    sort, sortField, sortOrder, extraColumns, data, defaultData, crud = {},
     formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE',
     className = "", requestAdaptor,  adaptor, filterVisible = true, headerToolbarItems} = props;
   let ctx = props.ctx;
@@ -57,12 +58,12 @@ export const AmisObjectTable = async (props) => {
   let objectApiName = props.objectApiName || "space_users";
 
   if (!(ctx && ctx.defaults)) {
-    const schemaKeys = difference(keys($schema), ["type", "objectApiName", "columns", "extraColumns","id"]);
+    const schemaKeys = difference(keys($schema), ["type", "objectApiName", "columns", "extraColumns","id","crud"]);
     const listSchema = pick(props, schemaKeys);
     // className不传入crud组件，crud单独识别crudClassName属性
     listSchema.className = ""
     defaults = {
-      listSchema
+      listSchema: Object.assign( {}, listSchema, crud )
     };
   }
 
@@ -83,7 +84,11 @@ export const AmisObjectTable = async (props) => {
   ctx = pickBy(ctx, (value)=>{ return value !== undefined })
   let amisSchema = (await getTableSchema(appId, objectApiName, columns, { filters: tableFilters, filtersFunction, top, sort, sortField, sortOrder, extraColumns, defaults, ...ctx, setDataToComponentId, requestAdaptor,  adaptor, filterVisible, headerToolbarItems })).amisSchema;
   amisSchema.data = Object.assign({}, amisSchema.data, amisSchemaData);
-  amisSchema.className = `steedos-object-table h-full flex flex-col ${className}`
+  if(has(props, 'objectApiName')){
+    amisSchema.data.objectName = objectApiName;
+  }
+  amisSchema.className = `steedos-object-table h-full flex flex-col ${className}`;
+  amisSchema.objectApiName = objectApiName;//设计器中切换对象时画布中显示的列未同步变更
   // console.log(`AmisObjectTable===>amisSchema`, amisSchema)
   // console.timeEnd('AmisObjectTable')
   return amisSchema;

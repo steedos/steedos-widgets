@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-11 16:46:21
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-07-04 18:04:30
  * @Description: 
  */
 const config: any = {
@@ -158,14 +158,18 @@ export default {
                               let data = payload.data;
                               payload.unshift({
                                 label: "当前对象",
-                                name: "\${objectName}"
+                                name: "\${objectName}",
+                                NAME_FIELD_KEY: "name"
                               });
                               return payload;
                             `
                           },
                           "labelField": "label",
                           "valueField": "name",
-                          "menuTpl": ""
+                          "menuTpl": "",
+                          "autoFill": {
+                            "fields": "${(NAME_FIELD_KEY || 'name')|asArray}"
+                          }
                         },
                         {
                           type: "transfer-picker",
@@ -186,8 +190,10 @@ export default {
                               "headers": {
                                   "Authorization": "Bearer ${context.tenantId},${context.authToken}"
                               },
-                              "data": null,
-                              "requestAdaptor": "",
+                              "data": {
+                                "objectName": "${objectName || 'space_users'}"
+                              },
+                              "requestAdaptor": "api.url = api.url.replaceAll('${objectName}',api.body.objectName); return api;",
                               "adaptor": "",
                               "sendOn": "this.objectApiName"
                           },
@@ -318,7 +324,7 @@ export default {
                   "source": {
                     "method": "get",
                     "data": {
-                      "objectName": "${objectName}",
+                      "objectName": "${objectName || 'space_users'}",
                     },
                     "sendOn": "this.objectApiName",
                     "url": "/service/api/amis-metadata-objects/objects/${objectApiName}/fields/options",

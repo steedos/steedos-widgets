@@ -8,6 +8,7 @@
 
 import * as Tpl from '../tpl';
 import { Router } from '../../../router'
+import { i18next } from '../../../../i18n'
 
 async function getListBody(fields, options){
     const columns = [];
@@ -64,7 +65,7 @@ export async function getListSchema(fields, options){
             actions: options.actions === false ? null : [
                 {
                     icon: "fa fa-eye",
-                    label: "查看",
+                    label: i18next.t('frontend_form_view'),
                     type: "button",
                     actionType: "link",
                     link: Router.getObjectDetailPath({

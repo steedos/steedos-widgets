@@ -1,7 +1,8 @@
+import { i18next } from "../../../../../i18n"
 export const getSetListviewFiltersButtonSchema = ()=>{
     return {
         "type": "button",
-        "label": "过滤设置",
+        "label": i18next.t('frontend_listview_control_filters'),
         "disabledOn": "!((global.user.is_space_admin || global.userId == uiSchema.list_views[listName].owner) && !!uiSchema.list_views[listName].owner)",
         "onEvent": {
           "click": {
@@ -10,12 +11,13 @@ export const getSetListviewFiltersButtonSchema = ()=>{
               {
                 "dialog": {
                   "type": "dialog",
-                  "title": "过滤设置",
+                  "title": i18next.t('frontend_listview_control_filters'),
                   "data": {
                     "targetObjectName": "${objectName}",
                     "recordId": "${uiSchema.list_views[listName]._id}",
                     "listName": "${listName}",
-                    "appId": "${appId}"
+                    "appId": "${appId}",
+                    "context": "${context}"
                   },
                   "body": [
                     {
@@ -130,7 +132,7 @@ function fieldsExtend(){
       "visible_on": "true",
       "amis": {
         "type": "condition-builder",
-        "label": "条件组件1",
+        "label": i18next.t('frontend_listview_control_filters_fields_extend'),
         "source": {
           "method": "get",
           "url": "${context.rootUrl}/service/api/amis-metadata-listviews/getFilterFields?objectName=${targetObjectName}",

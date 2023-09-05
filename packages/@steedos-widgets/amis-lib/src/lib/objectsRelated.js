@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-05-16 16:33:59
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-08-28 14:55:23
  * @Description:
  */
 
@@ -11,6 +11,7 @@ import { getObjectRecordDetailRelatedListHeader } from './converter/amis/header'
 import { isEmpty,  find, isString, forEach, keys, findKey, isArray, union, has } from "lodash";
 import { getUISchema, getField, getListViewColumns, getListViewSort, getListViewFilter } from './objects'
 import { getRecord } from './record';
+import { i18next } from '../i18n'
 
 function str2function(
     contents,
@@ -51,10 +52,11 @@ export async function getObjectRelatedList(
     if(!isEmpty(relatedLists)){
         for (const relatedList of relatedLists) {
             const arr = relatedList.related_field_fullname.split(".");
+            const foreign_key = arr[2] ? arr[1]+'.'+arr[2] : arr[1];
             related.push({
                 masterObjectName: objectName,
                 object_name: arr[0],
-                foreign_key: arr[1],
+                foreign_key,
                 label: relatedList.label,
                 columns: relatedList.field_names,
                 sort: relatedList.sort,
@@ -67,10 +69,11 @@ export async function getObjectRelatedList(
         const details = [].concat(uiSchema.details || []);
         for (const detail of details) {
             const arr = detail.split(".");
+            const foreign_key = arr[2] ? arr[1]+'.'+arr[2] : arr[1];
             related.push({
                 masterObjectName: objectName,
                 object_name: arr[0],
-                foreign_key: arr[1]
+                foreign_key
             });
         }
     }
@@ -102,14 +105,16 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
             if(!isEmpty(mainRelatedLists)){
                 for (const relatedList of mainRelatedLists) {
                     const arr = relatedList.related_field_fullname.split(".");
-                    mainRelated[arr[0]] = arr[1];
+                    const foreign_key_value = arr[2] ? arr[1]+'.'+arr[2] : arr[1];
+                    mainRelated[arr[0]] = foreign_key_value;
                 }
             }else{
                 const details = union(mainObjectUiSchema.details,mainObjectUiSchema.lookup_details) || [];
                 for (const detail of details) {
                     const arr = detail.split(".");
+                    const foreign_key_value = arr[2] ? arr[1]+'.'+arr[2] : arr[1];
                     if(!has(mainRelated,arr[0])){
-                        mainRelated[arr[0]] = arr[1];
+                        mainRelated[arr[0]] = foreign_key_value;
                     }
                 }
             }
@@ -125,7 +130,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
             uiSchema: relatedObjectUiSchema,
             amisSchema: {
                 "type": "alert",
-                "body": `未找到与相关列表对象${relatedObjectName}关联的相关表字段`,
+                "body": `${i18next.t('frontend_objects_related_alert_start')} ${relatedObjectName} ${i18next.t('frontend_objects_related_alert_end')}`,
                 "level": "warning",
                 "showIcon": true,
                 "className": "mb-3"
@@ -150,13 +155,18 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
     // } else {
     //     globalFilter = [`${relatedKey}`, "=", relatedValue];
     // }
-    const recordRelatedListHeader = await getObjectRecordDetailRelatedListHeader(relatedObjectUiSchema, relatedLabel);
+    const recordRelatedListHeader = await getObjectRecordDetailRelatedListHeader(relatedObjectUiSchema, relatedLabel, ctx);
     const componentId = `steedos-record-related-list-${relatedObjectName}`;
+    const isMobile = window.innerWidth < 768;
+    let headerToolbar = [];
+    if(!isMobile){
+        headerToolbar.push("bulkActions");
+    }
     const options = {
         globalFilter,
         defaults: {
             listSchema: { 
-                headerToolbar:[],
+                headerToolbar,
                 columnsTogglable: false,
                 onEvent: {
                     [`@data.changed.${relatedObjectName}`]: {

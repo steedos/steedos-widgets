@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-13 11:24:17
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-06-26 11:52:53
  * @Description: 
  */
 const config: any = {
@@ -165,7 +165,7 @@ export default {
                           "source": {
                             "method": "get",
                             "data": {
-                              "objectName": "${objectName}"
+                              "objectName": "${objectName || 'space_users'}"
                             },
                             "url": "/service/api/amis-design/related_objects/${objectApiName}",
                             "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url.replaceAll('${objectName}',api.body.objectName); if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",

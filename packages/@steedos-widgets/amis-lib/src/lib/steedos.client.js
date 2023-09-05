@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-23 09:20:32
+ * @LastEditTime: 2023-06-12 11:51:15
  * @Description: 
  */
 import { endsWith, isEmpty, cloneDeep } from "lodash";
@@ -33,7 +33,6 @@ export async function fetchAPI(api, options = { credentials: 'include' }) {
 
     options.headers = Object.assign({}, headers, options.headers);
     options.credentials = 'include'
-
     const res = await fetch(`${getRootUrl()}${api}`, options)
     
     if(res.status === 401){
@@ -128,7 +127,7 @@ export function getRootUrl(defaultRootUrl){
     if(rootUrl){
         return rootUrl
     }
-    return defaultRootUrl;
+    return defaultRootUrl || '';
 }
 
 export function setRootUrl(rootUrl){

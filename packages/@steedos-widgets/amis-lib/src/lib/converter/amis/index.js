@@ -6,6 +6,7 @@ import { getListSchema, getCardSchema } from './fields/list';
 import _, { map } from 'lodash';
 import { defaultsDeep } from '../../defaultsDeep';
 import { getObjectHeaderToolbar, getObjectFooterToolbar, getObjectFilter } from './toolbar';
+import { i18next } from "../../../i18n"
 function getBulkActions(objectSchema){
     return [
       {
@@ -13,7 +14,7 @@ function getBulkActions(objectSchema){
         "level": "danger",
         "label": "批量删除",
         "actionType": "ajax",
-        "confirmText": "确定要删除吗",
+        "confirmText": i18next.t('frontend_delete_many_confirm_text'),
         "className": "hidden",
         "id": "batchDelete",
         "api": getBatchDelete(objectSchema.name),
@@ -137,6 +138,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
       // headerToolbar: getObjectHeaderToolbar(objectSchema, options.formFactor, {showDisplayAs}),
       headerToolbarClassName: "px-4 py-2 border-gray-300 bg-gray-100 border-solid border-b",
       footerToolbar: getObjectFooterToolbar(objectSchema, options.formFactor, {
+        ...options,
         disableStatistics: options.queryCount === false
       }), 
       filter: options.filterVisible !== false && await getObjectFilter(objectSchema, fields, options),
@@ -149,7 +151,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
     // yml里配置的 不分页和enable_tree:true 优先级最高，组件中输入的top次之。
     options.queryCount = true;
     if(nonpaged || isTreeObject){
-      options.top = 50000;
+      options.top = 5000;
       bodyProps.footerToolbar = [];
       options.queryCount = true; // 禁止翻页的时候, 需要查找总数
     }else if(top){
@@ -161,7 +163,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
       }
     }
     // console.log(`getObjectHeaderToolbar====2===>`, options.filterVisible)
-    bodyProps.headerToolbar = getObjectHeaderToolbar(objectSchema, options.formFactor, {
+    bodyProps.headerToolbar = getObjectHeaderToolbar(objectSchema, fields, options.formFactor, {
       showDisplayAs, 
       hiddenCount: options.queryCount === false, 
       headerToolbarItems: options.headerToolbarItems,
@@ -193,8 +195,42 @@ export async function getObjectCRUD(objectSchema, fields, options){
       if(objectSchema.name === 'organizations'){
         labelFieldName = 'name';
       }
-      const table = await getTableSchema(fields, Object.assign({idFieldName: objectSchema.idFieldName, labelFieldName: labelFieldName}, options));
+      const table = await getTableSchema(fields, Object.assign({idFieldName: objectSchema.idFieldName, labelFieldName: labelFieldName, permissions:objectSchema.permissions,enable_inline_edit:objectSchema.enable_inline_edit}, options));
       delete table.mode;
+      //image与avatar需要在提交修改时特别处理
+      const imageNames = _.compact(_.map(_.filter(fields, (field) => ["image","avatar"].includes(field.type)), 'name'));
+      const quickSaveApiRequestAdaptor = `
+        var graphqlOrder = "";
+        var imageNames = ${JSON.stringify(imageNames)};
+        api.data.rowsDiff.forEach(function (item, index) {
+          for(key in item){
+            if(_.includes(imageNames, key)){
+              if(typeof item[key] == "string"){
+                const match = item[key].match(/\\/([^\\/]+)$/);
+                item[key] = match && match.length > 1?match[1]:"";
+              }else{
+                item[key] = _.map(item[key], function(ele){
+                  const match = ele.match(/\\/([^\\/]+)$/);
+                  return match && match.length > 1?match[1]:"";
+                })
+              }
+            }
+          }
+          const itemOrder = 'update' + index + ':' + api.data.objectName + '__update(id:"' + item._id + '", doc:' + JSON.stringify(JSON.stringify(_.omit(item, '_id'))) + ') {_id}';
+          graphqlOrder += itemOrder;
+        })
+        graphqlOrder = 'mutation {' + graphqlOrder + '}';
+        return {
+            ...api,
+            data: {
+                query: graphqlOrder
+            }
+        }
+      `
+      let autoFillHeight = true
+      if(options.isRelated || Steedos.isMobile()){
+        autoFillHeight = false
+      }
 
       body = Object.assign({}, table, {
         type: 'crud', 
@@ -205,10 +241,20 @@ export async function getObjectCRUD(objectSchema, fields, options){
         keepItemSelectionOnPageChange: true, 
         api: await getTableApi(objectSchema, fields, options),
         hiddenOn: options.tableHiddenOn,
-        autoFillHeight: options.isRelated ? false : true,
+        autoFillHeight,
         className: `flex-auto ${crudClassName || ""}`,
         bodyClassName: "bg-white",
         crudClassName: crudClassName,
+        quickSaveApi: {
+          url: `\${context.rootUrl}/graphql`,
+          method: "post",
+          dataType: "json",
+          headers: {
+            Authorization: "Bearer ${context.tenantId},${context.authToken}",
+          },
+          requestAdaptor: quickSaveApiRequestAdaptor,
+        },
+        rowClassNameExpr: options.rowClassNameExpr
       }, 
         bodyProps,
         )
@@ -246,10 +292,11 @@ export async function getObjectCRUD(objectSchema, fields, options){
     return {
       type: 'service',
       className: '',
+      //目前crud的service层id不认用户自定义id，只支持默认规则id
       id: `service_${id}`,
       name: `page`,
       data: {
-        // objectName: objectSchema.name,
+        objectName: objectSchema.name,
         // _id: null,
         recordPermissions: objectSchema.permissions,
         uiSchema: objectSchema,
@@ -314,8 +361,12 @@ export async function getObjectForm(objectSchema, ctx){
     if(_.has(formSchema, 'className')){
       formSchema.className = 'steedos-amis-form'
     }
+    if(!formSchema.id){
+      formSchema.id = 'form_' + objectSchema.name;
+    }
     const amisSchema =  {
       type: 'service',
+      id: `service_${formSchema.id}`,
       className: 'p-0',
       name: `page_edit_${recordId}`,
       api: await getEditFormInitApi(objectSchema, recordId, fields, ctx),
@@ -386,9 +437,6 @@ export async function getObjectForm(objectSchema, ctx){
         }
       })]
     };
-    if(formSchema.id){
-      amisSchema.id = `service-${formSchema.id}`;
-    }
     return amisSchema;
 }
 
@@ -433,11 +481,12 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
                       "expression": "this.__deletedRecord != true"
                     },
                     {
-                      "args": {
-                        "url": "/app/${appId}/${objectName}/grid/${side_listview_id}",
-                        "blank": false
-                      },
-                      "actionType": "link",
+                      // "args": {
+                      //   "url": "/app/${appId}/${objectName}/grid/${side_listview_id}",
+                      //   "blank": false
+                      // },
+                      "actionType": "custom",
+                      "script": "window.goBack()",
                       "expression": "this.__deletedRecord === true"
                     }
                   ]

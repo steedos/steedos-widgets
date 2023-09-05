@@ -1,12 +1,15 @@
+import { i18next } from "../../../../i18n"
+
 export const getExportExcelToolbarButtonSchema = ()=>{
     return {
         "type": "button",
         "icon": "fa fa-download",
         "align": "right", 
         "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
-        "tooltipPlacement": "bottom",
+        "tooltipPlacement": "top",
         "visibleOn": "${!isLookup && global.user.is_space_admin}",
-        "tooltip": "导出Excel",
+        //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，为保持统一，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330
+        // "tooltip": i18next.t('frontend_export_excel'),
         "onEvent": {
           "click": { 
             "weight": 0,
@@ -75,15 +78,15 @@ function requestAdaptor(){
     let filename = uiSchema.label + "-" + list_views[list_views_name].label;
     
     url_tmp = api.url.split('?')[0];
-    api.url = url_tmp + "?$select=" + select.toString() + "&filename=" + filename;
-    
+    api.url = url_tmp + "?$select=" + encodeURIComponent(select.toString()) + "&filename=" + encodeURIComponent(filename);
+
     // 判断sort 和 filters
     if (sort.length > 0) {
-        api.url += "&$orderby=" + order;
+        api.url += "&$orderby=" + encodeURIComponent(order);
     }
     let filters = list_views[list_views_name].filters;
     if (filters && filters.length > 0) {
-        api.url = api.url + "&filters=" + JSON.stringify(filters);
+        api.url = api.url + "&filters=" + encodeURIComponent(JSON.stringify(filters));
     }
     return api;
   `

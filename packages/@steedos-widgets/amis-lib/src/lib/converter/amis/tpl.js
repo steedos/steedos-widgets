@@ -1,12 +1,14 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-10 11:22:54
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-08-29 15:04:39
  * @Description: 
  */
 import { Router } from '../../router'
  import { getUISchema } from '../../objects'
+import { forEach } from 'lodash';
+import { getContrastColor } from './util'
 
 export function getCreatedInfoTpl(formFactor){
     const href = Router.getObjectDetailPath({
@@ -57,6 +59,22 @@ export async function getRefObjectNameFieldName(field){
 export function getSelectTpl(field){
     return `<div>\${_display.${field.name}}</div>`
 }
+export function getSelectMap(selectOptions){
+    let map = {};
+    forEach(selectOptions,(option)=>{
+        const optionValue = option.value + '';
+        const optionColor = option.color + '';
+        if(optionColor){
+            const background = optionColor.charAt(0) === '#' ? optionColor : '#'+optionColor;
+            const color = getContrastColor(background);
+            const optionColorStyle = 'background:'+background+';color:'+color;
+            map[optionValue] = `<span class="rounded-xl px-2 py-1" style='${optionColorStyle}'>${option.label}</span>`
+        }else{
+            map[optionValue] = option.label;
+        }
+    })
+    return map;
+}
 
 export function getNameTplUrl(field, ctx){
     if(ctx.objectName === 'cms_files'){
@@ -70,12 +88,16 @@ export function getNameTplUrl(field, ctx){
 
 export function getNameTpl(field, ctx){
     const href = getNameTplUrl(field, ctx);
-    return `<a href="${href}">\${${field.name}}</a>`
+    let linkTarget = "";
+    if(ctx && ctx.isLookup){
+        linkTarget = "target='_blank'"
+    }
+    return `<a href="${href}" ${linkTarget}>\${${field.name}}</a>`
 }
 
 export function getRelatedFieldTpl(field, ctx){
     let tpl = '';
-    if(!field.reference_to && (field.optionsFunction || field._optionsFunction)){
+    if(!field.reference_to && (field.optionsFunction || field._optionsFunction || field.options)){
         if(field.isTableField){
             return `\${${field.name}}`
         }else{
@@ -83,7 +105,12 @@ export function getRelatedFieldTpl(field, ctx){
         }
     }
 
-    const onlyDisplayLabel = ctx.onlyDisplayLabel;
+    let linkTarget = "";
+    if(ctx && ctx.isLookup){
+        linkTarget = "target='_blank'"
+    }
+
+    const onlyDisplayLookLabel = ctx.onlyDisplayLookLabel;
 
     let fieldDataStrTpl = `data._display.${field.name}`;
 
@@ -94,11 +121,11 @@ export function getRelatedFieldTpl(field, ctx){
     if(_.isString(field.reference_to) || !field.reference_to){
         if(field.multiple){
             let labelTpl = `<%=item.label%>`;
-            if(!onlyDisplayLabel){
+            if(!onlyDisplayLookLabel){
                 const href = Router.getObjectDetailPath({
                     formFactor: ctx.formFactor, appId: "<%=data.appId%>", objectName: `<%=item.objectName%>`, recordId: `<%=item.value%>`, _templateType: "JavaScript"
                 })
-                labelTpl = `<a href="${href}"><%=item.label%></a>`;
+                labelTpl = `<a href="${href}" ${linkTarget}><%=item.label%></a>`;
             }
             tpl = `
             <% if (${fieldDataStrTpl} && ${fieldDataStrTpl}.length) { %><% ${fieldDataStrTpl}.forEach(function(item,index) { %> <% if(index>0 && index<${fieldDataStrTpl}.length){ %> , <% } %> ${labelTpl}  <% }); %><% } %>
@@ -112,11 +139,11 @@ export function getRelatedFieldTpl(field, ctx){
                 objectNameTpl = `\${${field.name}.objectName}`;
                 recordIdTpl = `\${${field.name}.value}`;
             }
-            if(!onlyDisplayLabel){
+            if(!onlyDisplayLookLabel){
                 const href = Router.getObjectDetailPath({
                     formFactor: ctx.formFactor, appId: "${appId}", objectName: `${objectNameTpl}`, recordId: `${recordIdTpl}`
                 })
-                labelTpl = `<a href="${href}">${labelTpl}</a>`;
+                labelTpl = `<a href="${href}" ${linkTarget}>${labelTpl}</a>`;
             }
             tpl = labelTpl;
         }
@@ -124,11 +151,11 @@ export function getRelatedFieldTpl(field, ctx){
         
     }else{
         let labelTpl = `<%=item.label%>`;
-        if(!onlyDisplayLabel){
+        if(!onlyDisplayLookLabel){
             const href = Router.getObjectDetailPath({
                 formFactor: ctx.formFactor, appId: "<%=data.appId%>", objectName: `<%=item.objectName%>`, recordId: `<%=item.value%>`, _templateType: "JavaScript"
             })
-            labelTpl = `<a href="${href}"><%=item.label%></a>`;
+            labelTpl = `<a href="${href}" ${linkTarget}><%=item.label%></a>`;
         }
         tpl = `
         <% if (${fieldDataStrTpl} && ${fieldDataStrTpl}.length) { %><% ${fieldDataStrTpl}.forEach(function(item) { %> ${labelTpl}  <% }); %><% } %>
@@ -172,9 +199,12 @@ export function getPasswordTpl(field){
         <% } %>`
 }
 
+export function getLocationTpl(field){
+    return `\${${field.name} ? ${field.name}.address : ''}`
+}
 
 export async function getFieldTpl (field, options){
-    if((field.is_name || field.name === options.labelFieldName) && !options.onlyDisplayLabel){
+    if((field.is_name || field.name === options.labelFieldName) && !options.onlyDisplayLookLabel){
         return getNameTpl(field, options)
     }
     switch (field.type) {
@@ -196,6 +226,8 @@ export async function getFieldTpl (field, options){
             return await getRelatedFieldTpl(field, options);
         case 'master_detail':
             return await getRelatedFieldTpl(field, options);
+        case 'location':
+            return await getLocationTpl(field);
         case 'number':
         case 'currency':
             return await getNumberTpl(field);

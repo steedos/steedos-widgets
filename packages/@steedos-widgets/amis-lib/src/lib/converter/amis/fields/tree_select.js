@@ -37,9 +37,16 @@ async function getSource(field, ctx) {
         valueField = `${ctx.fieldNamePrefix}${valueField}`;
     }
     data.$value = `$${valueField}`;
-    // data["&"] = "$$";
+    data['$'] = `$$`;
     const requestAdaptor = `
         var filters = [['parent', '=', null]];
+        const filtersFunction = ${field.filtersFunction || field._filtersFunction};
+        if(filtersFunction){
+            const _filters = filtersFunction(filters, api.data.$);
+            if(_filters && _filters.length > 0){
+                filters.push(_filters);
+            }
+        }
         api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters));
         var defaultValue = api.data.$value;
         var optionsFiltersOp = "${field.multiple ? "in" : "="}";

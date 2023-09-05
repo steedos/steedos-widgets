@@ -12,8 +12,9 @@ export const PageRecordDetail = async (props) => {
 
   const { formFactor: defaultFormFactor, appId, objectApiName, recordId, display } = props
   
-  //TODO  此代码应该在object page template中处理
-  Router.setTabDisplayAs(objectApiName, display)
+  if(display){
+    Router.setTabDisplayAs(objectApiName, display)
+  }
 
   let recordSchema = {}
   if (true || recordId) {

@@ -2,7 +2,7 @@ import { getObjectRelatedListButtons, getButtonVisibleOn } from '../../buttons'
 import { getObjectFieldsFilterButtonSchema, getObjectFieldsFilterBarSchema } from './fields_filter';
 import { map, each, sortBy, compact, keys } from 'lodash';
 
-import { getObjectDetailButtonsSchemas, getObjectListViewButtonsSchemas } from '../../buttons'
+import { getObjectDetailButtonsSchemas, getObjectListViewButtonsSchemas, getObjectRecordDetailRelatedListButtonsSchemas } from '../../buttons'
 
 /**
  * 列表视图顶部第一行amisSchema
@@ -27,6 +27,28 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
   let amisButtonsSchema = getObjectListViewButtonsSchemas(objectSchema, {formFactor: ctx.formFactor})
   const reg = new RegExp('_', 'g');
   const standardIcon = icon && icon.replace(reg, '-');
+  const standardNewButton = _.find(amisButtonsSchema, { name: "standard_new" });
+  const buttonSchema = [{
+    "type": "flex",
+    "items": amisButtonsSchema,
+    "visibleOn": "${display == 'split'?false:true}"
+  }]
+  if(ctx.formFactor !== 'SMALL'){
+    buttonSchema.push({
+      "type": "flex",
+      "items":[
+        standardNewButton,
+        {
+          "type": "dropdown-button",
+          "buttons": Array.isArray(amisButtonsSchema) ? amisButtonsSchema.filter(obj => obj.name !== "standard_new"):{},
+          "menuClassName": "p-none split-dropdown-buttons",
+          "align": "right",
+          "size": "sm"
+        }
+      ],
+      "visibleOn": "${display == 'split'?true:false}"
+    })
+  }
   return {
     "type": "grid",
     "columns": [
@@ -62,6 +84,7 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
                     "rightIcon": "fa fa-caret-down",
                     "size": "sm",
                     "hideCaret": true,
+                    "closeOnClick": true,
                     "btnClassName": "!bg-transparent !border-none !hover:border-none text-lg h-5 font-bold p-0 text-black leading-none",
                     "buttons": listViewButtonOptions
                   }
@@ -76,10 +99,7 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
         "md": "auto"
       },
       {
-        "body":  {
-          "type": "flex",
-          "items": amisButtonsSchema,
-        },
+        "body": buttonSchema,
         "md": "auto",
         "valign": "middle",
       }
@@ -246,12 +266,47 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
           "type": "grid",
           "columns": [
             {
-              "body": {
+              "body": [{
+                "type": "service",
+                "onEvent": {
+                    "@history_paths.changed": {
+                        "actions": [
+                            {
+                                "actionType": "reload"
+                            }
+                        ]
+                    }
+                },
+                "body":[{
+                  "type": "button",
+                  "visibleOn": "${window:innerWidth > 768 && (window:historyPaths.length > 1 || window:historyPaths[0].params.record_id) && display !== 'split'}",
+                  "className":"flex mr-4",
+                  "onEvent": {
+                      "click": {
+                          "actions": [
+                              {
+                                  "actionType": "custom",
+                                  "script": "window.goBack()"
+                              }
+                          ]
+                      }
+                  },
+                  "body": [
+                      {
+                          "type": "steedos-icon",
+                          "category": "utility",
+                          "name": "back",
+                          "colorVariant": "default",
+                          "className": "slds-button_icon slds-global-header__icon w-4"
+                      }
+                  ]
+                }]
+              },{
                 "type": "tpl",
                 "className": "block",
                 // "tpl": `<img class='slds-icon slds-icon_container slds-icon-standard-${standardIcon}' src='\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg'>`
                 "tpl":`<svg class="slds-icon slds-icon_container slds-icon-standard-${standardIcon} slds-page-header__icon" aria-hidden="true"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#${icon}"></use></svg>`
-              },
+              }],
               "md": "auto",
               "className": "",
               "columnClassName": "flex justify-center items-center"
@@ -271,7 +326,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
                   // "tpl": "${(record && uiSchema && record[uiSchema.NAME_FIELD_KEY]) || name}",
                   "inline": false,
                   "wrapperComponent": "",
-                  "className": "leading-5 text-xl font-bold"
+                  "className": "record-detail-header-name leading-5 text-xl font-bold"
                 }
               ],
               "columnClassName": "p-l-xs"
@@ -280,6 +335,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
           "className": "flex justify-between"
         }
       ],
+      "columnClassName": "flex-initial",
       "md": "auto",
     })
   };
@@ -301,7 +357,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
         {
           "type": "grid",
           "columns": gridBody,
-          "className": "flex justify-between"
+          "className": "flex justify-between flex-nowrap"
         }
       ],
       "hiddenOn": "${recordLoaded != true}"
@@ -339,18 +395,9 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
  * @param {*} relatedObjectSchema 相关对象UISchema
  * @returns amisSchema
  */
-export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema, relatedLabel) {
+export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema, relatedLabel, ctx) {
   const { icon, label } = relatedObjectSchema;
-  const buttons = await getObjectRelatedListButtons(relatedObjectSchema, {});
-  let amisButtonsSchema = map(buttons, (button) => {
-    return {
-      type: 'steedos-object-button',
-      name: button.name,
-      objectName: button.objectName,
-      visibleOn: getButtonVisibleOn(button),
-      className: `button_${button.name}`
-    }
-  })
+  let amisButtonsSchema = getObjectRecordDetailRelatedListButtonsSchemas(relatedObjectSchema, {formFactor: ctx.formFactor});
   const reg = new RegExp('_', 'g');
   const standardIcon = icon && icon.replace(reg, '-');
   const recordRelatedListHeader = {

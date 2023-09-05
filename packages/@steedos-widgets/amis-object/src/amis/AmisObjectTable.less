@@ -1,0 +1,39 @@
+@media (min-width: 767px) {
+    .steedos-object-table {
+        tbody td.antd-Field--quickEditable {
+            div {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                .antd-Field-quickEditBtn {
+                    padding-right: 13px;
+
+                    svg {
+                        display: none;
+                    }
+                }
+            }
+        }
+
+        tbody td.antd-Field--quickEditable:hover {
+            div {
+                .antd-Field-quickEditBtn {
+                    padding-right: 0;
+
+                    svg {
+                        display: inline-block;
+                    }
+                }
+            }
+
+        }
+
+        .date-min-w {
+            min-width: 9em;
+        }
+        .datetime-min-w {
+            min-width: 12em;
+        }
+    }
+}

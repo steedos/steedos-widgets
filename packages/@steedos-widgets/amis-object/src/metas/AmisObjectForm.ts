@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-03-31 23:36:11
+ * @LastEditTime: 2023-06-26 11:48:44
  * @Description: 
  */
 
@@ -250,7 +250,7 @@ export default {
                             //   "value": "inline"
                             // }
                           ]
-                        },
+                        }
                         /*
                         {
                           type: "button-group-select",
@@ -299,8 +299,10 @@ export default {
                               "headers": {
                                   "Authorization": "Bearer ${context.tenantId},${context.authToken}"
                               },
-                              "data": null,
-                              "requestAdaptor": "",
+                              "data": {
+                                "objectName": "${objectName || 'space_users'}"
+                              },
+                              "requestAdaptor": "api.url = api.url.replaceAll('${objectName}',api.body.objectName); return api;",
                               "adaptor": "",
                               "sendOn": "this.objectApiName"
                           },
@@ -330,8 +332,10 @@ export default {
                               "headers": {
                                   "Authorization": "Bearer ${context.tenantId},${context.authToken}"
                               },
-                              "data": null,
-                              "requestAdaptor": "",
+                              "data": {
+                                "objectName": "${objectName || 'space_users'}"
+                              },
+                              "requestAdaptor": "api.url = api.url.replaceAll('${objectName}',api.body.objectName); return api;",
                               "adaptor": "",
                               "sendOn": "this.objectApiName"
                           },
@@ -361,6 +365,80 @@ export default {
                         {
                           type: "markdown",
                           value: '重写字段配置. 例如\n```\n{\n    "name": {\n        "is_wide": true,  //设置为宽字段\n        "required": true, //设置为必填\n        "amis": { // 设置渲染属性\n            "type": "input-color" //将字段重写为 颜色选择器\n            ...\n        } \n    }, \n    "title": {\n        "group": "分组1" // 设置分组\n        ...\n    }\n}\n```'
+                        }
+                      ]
+                    },
+                    {
+                      type: "collapse",
+                      headingClassName: 'ae-formItemControl-header',
+                      bodyClassName: 'ae-formItemControl-body',
+                      key: "3",
+                      header: "选项卡",
+                      body:[
+                        {
+                          name: "enableTabs",
+                          type: "checkbox",
+                          mode: "horizontal",
+                          horizontal: {
+                            left: 10,
+                            right: 4,
+                            justify: true
+                          },
+                          label: "是否启用"
+                        },
+                        {
+                          "type": "select",
+                          mode: 'horizontal',
+                          horizontal: {
+                            left: 4,
+                            right: 8,
+                            justify: true
+                          },
+                          "label": "展示模式",
+                          "name": "tabsMode",
+                          "multiple": false,
+                          value: "line",
+                          "options":[
+                            {
+                              "label":"line",
+                              "value":"line"
+                            },
+                            {
+                              "label":"card",
+                              "value":"card"
+                            },
+                            {
+                              "label":"radio",
+                              "value":"radio"
+                            },
+                            {
+                              "label":"vertical",
+                              "value":"vertical"
+                            },
+                            {
+                              "label":"chrome",
+                              "value":"chrome"
+                            },
+                            {
+                              "label":"simple",
+                              "value":"simple"
+                            },
+                            {
+                              "label":"strong",
+                              "value":"strong"
+                            },
+                            {
+                              "label":"tiled",
+                              "value":"tiled"
+                            },
+                            {
+                              "label":"sidebar",
+                              "value":"sidebar"
+                            }
+                          ],
+                          "labelField": "label",
+                          "valueField": "value",
+                          "visibleOn": "${enableTabs}"
                         }
                       ]
                     }
