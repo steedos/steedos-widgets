@@ -1,5 +1,5 @@
 /*
- * @LastEditTime: 2023-09-04 22:43:04
+ * @LastEditTime: 2023-09-05 16:58:51
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
  * @customMade: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -101,6 +101,10 @@ export const getFieldDefaultValue = (field, globalData) => {
         case 'boolean':
             if (isString(defaultValue)) {
                 defaultValue = defaultValue.toLowerCase() === 'true' || defaultValue === '1';
+            }
+            else if(!isBoolean(defaultValue)){
+                // 未设置值时默认给定false值，这样字段必填时就不会校验不通过
+                defaultValue = false;
             }
             break;
         default:
