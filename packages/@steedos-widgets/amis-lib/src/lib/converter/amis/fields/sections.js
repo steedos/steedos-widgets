@@ -1,17 +1,18 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-26 16:02:08
- * @LastEditors: liaodaxue
- * @LastEditTime: 2023-07-12 15:45:55
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-09-05 15:42:26
  * @Description: 
  */
 import * as Fields from '../fields';
 import * as lodash from 'lodash';
 import { i18next } from '../../../../i18n'
 
-const getFieldSchemaArray = (formFields) => {
+const getFieldSchemaArray = (formFields, ctx) => {
   let fieldSchemaArray = [];
   fieldSchemaArray.length = 0
+  const recordId = ctx && ctx.recordId;
 
   lodash.forEach(formFields, (field) => {
     if (!field.group || field.group == 'null' || field.group == '-')
@@ -23,8 +24,14 @@ const getFieldSchemaArray = (formFields) => {
       field.is_wide = true;
     }
 
+    let forceHidden = false;
+    if(!recordId && field.readonly){
+      // 新建记录时，只读字段先隐藏，后续支持显示后，即任务：https://github.com/steedos/steedos-platform/issues/3164 完成后再放开
+      forceHidden = true;
+    }
+
     if (!isObjectField) {
-      if (!field.hidden) {
+      if (!field.hidden && !forceHidden) {
         fieldSchemaArray.push(Object.assign({ name: fieldName }, field, { permission: { allowEdit: true } }))
       }
     }
@@ -95,7 +102,7 @@ export const getSections = async (permissionFields, formFields, ctx) => {
   if (!ctx) {
     ctx = {};
   }
-  const fieldSchemaArray = getFieldSchemaArray(formFields)
+  const fieldSchemaArray = getFieldSchemaArray(formFields, ctx)
   const _sections = lodash.groupBy(fieldSchemaArray, 'group');
   const sections = [];
   var sectionVisibleOns = [];
