@@ -5,6 +5,7 @@ import * as Tpl from '../tpl';
 import * as Field from './index';
 import * as Table from './table';
 import * as List from './list';
+import { getLookupListView } from '../util';
 import { getSelectUserSchema } from './user';
 import { getObjectHeaderToolbar, getObjectFooterToolbar, getObjectFilter } from './../toolbar';
 import { getListViewSort } from './../../../objects';
@@ -180,22 +181,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     
     const isMobile = window.innerWidth < 768;
 
-    const listNameAll = "all";
-    const listNameLookup = "lookup";
-    let listViewAll, listViewLookup;
-
-    _.each(
-        refObjectConfig.list_views,
-        (view, name) => {
-            if(name === listNameAll){
-                listViewAll = view;
-            }
-            else if(name === listNameLookup){
-                listViewLookup = view;
-            }
-        }
-    );
-    let listView = listViewLookup || listViewAll;
+    let listView = getLookupListView(refObjectConfig);
     let listName = listView && listView.name;
     if (listView && listView.columns) {
         _.each(listView.columns, function (column) {
@@ -622,22 +608,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
     }
 
     const refObjectConfig = referenceTo && await getUISchema(referenceTo.objectName);
-    const listNameAll = "all";
-    const listNameLookup = "lookup";
-    let listViewAll, listViewLookup;
-
-    _.each(
-        refObjectConfig.list_views,
-        (view, name) => {
-            if(name === listNameAll){
-                listViewAll = view;
-            }
-            else if(name === listNameLookup){
-                listViewLookup = view;
-            }
-        }
-    );
-    let listView = listViewLookup || listViewAll;
+    let listView = getLookupListView(refObjectConfig);
 
     let sort = "";
     if(listView){

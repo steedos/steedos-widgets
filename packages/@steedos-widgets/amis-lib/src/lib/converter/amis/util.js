@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-20 16:29:22
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-18 15:22:51
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-09-06 18:59:40
  * @Description: 
  */
 import { getRootUrl } from "../../steedos.client";
@@ -28,4 +28,30 @@ export function getContrastColor(bgColor) {
   var b = parseInt(backgroundColor.substr(4, 2), 16);
   var brightness = (r * 299 + g * 587 + b * 114) / 1000;
   return brightness < 128 ? "#ffffff" : "#000000";
+}
+
+export function getLookupListView(refObjectConfig) {
+  const listNameAll = "all";
+  const listNameLookup = "lookup";
+  let listViewAll, listViewLookup;
+
+  _.each(
+    refObjectConfig.list_views,
+    (view, name) => {
+      if (name === listNameAll) {
+        listViewAll = view;
+        if(!listViewAll.name){
+          listViewAll.name = name;
+        }
+      }
+      else if (name === listNameLookup) {
+        listViewLookup = view;
+        if(!listViewLookup.name){
+          listViewLookup.name = name;
+        }
+      }
+    }
+  );
+  let listView = listViewLookup || listViewAll;
+  return listView;
 }
