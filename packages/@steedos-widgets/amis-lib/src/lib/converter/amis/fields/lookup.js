@@ -622,10 +622,22 @@ export async function lookupToAmisSelect(field, readonly, ctx){
     }
 
     const refObjectConfig = referenceTo && await getUISchema(referenceTo.objectName);
-    const listView = refObjectConfig && _.find(
+    const listNameAll = "all";
+    const listNameLookup = "lookup";
+    let listViewAll, listViewLookup;
+
+    _.each(
         refObjectConfig.list_views,
-        (listView, name) => name === "all"
+        (view, name) => {
+            if(name === listNameAll){
+                listViewAll = view;
+            }
+            else if(name === listNameLookup){
+                listViewLookup = view;
+            }
+        }
     );
+    let listView = listViewLookup || listViewAll;
 
     let sort = "";
     if(listView){
