@@ -174,10 +174,9 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     ctx.objectName = refObjectConfig.name
 
     let tableFields = [];
-    let i = 0;
     const searchableFields = [];
 
-    const fieldsArr = [];
+    let fieldsArr = [];
     
     const isMobile = window.innerWidth < 768;
 
@@ -197,7 +196,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         }
     );
     let listView = listViewLookup || listViewAll;
-    let listName = listView.name;
+    let listName = listView && listView.name;
     if (listView && listView.columns) {
         _.each(listView.columns, function (column) {
             if (_.isString(column) && refObjectConfig.fields[column]) {
@@ -212,21 +211,22 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             }
         });
     }else{
-        _.each(refObjectConfig.fields , (field, field_name)=>{
+        _.each(refObjectConfig.fields, (field, field_name)=>{
             if(field_name != '_id' && !field.hidden){
                 if(!_.has(field, "name")){
                     field.name = field_name
                 }
                 fieldsArr.push(field)
             }
-        })
+        });
+        // 没有视图权限时，取对象上前5个字段，按sort_no排序
+        fieldsArr = _.sortBy(fieldsArr, "sort_no").slice(0,5);
     }
 
     _.each(fieldsArr,function(field){
         if(!_.find(tableFields, function(f){
             return f.name === field.name
         })){
-            i++;
             tableFields.push(field)
         }
     });
