@@ -192,10 +192,23 @@ async function getSearchApi(field, ctx) {
 }
 
 function getRefListViewSort(refObject){
-    const listView = _.find(
+    const listNameAll = "all";
+    const listNameLookup = "lookup";
+    let listViewAll, listViewLookup;
+
+    _.each(
         refObject.list_views,
-        (view, name) => name === "all"
+        (view, name) => {
+            if(name === listNameAll){
+                listViewAll = view;
+            }
+            else if(name === listNameLookup){
+                listViewLookup = view;
+            }
+        }
     );
+    let listView = listViewLookup || listViewAll;
+
     let sort = "";
     if(listView){
         sort = getListViewSort(listView);

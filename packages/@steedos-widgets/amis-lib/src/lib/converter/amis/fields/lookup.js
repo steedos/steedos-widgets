@@ -178,15 +178,26 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     const searchableFields = [];
 
     const fieldsArr = [];
-
-    const listName = "all";
     
     const isMobile = window.innerWidth < 768;
 
-    const listView = _.find(
+    const listNameAll = "all";
+    const listNameLookup = "lookup";
+    let listViewAll, listViewLookup;
+
+    _.each(
         refObjectConfig.list_views,
-        (listView, name) => name === listName
+        (view, name) => {
+            if(name === listNameAll){
+                listViewAll = view;
+            }
+            else if(name === listNameLookup){
+                listViewLookup = view;
+            }
+        }
     );
+    let listView = listViewLookup || listViewAll;
+    let listName = listView.name;
     if (listView && listView.columns) {
         _.each(listView.columns, function (column) {
             if (_.isString(column) && refObjectConfig.fields[column]) {
