@@ -211,14 +211,12 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         })
     }
 
-    _.each(_.sortBy(fieldsArr, "sort_no"),function(field){
-        if(i < 5){
-            if(!_.find(tableFields, function(f){
-                return f.name === field.name
-            })){
-                i++;
-                tableFields.push(field)
-            }
+    _.each(fieldsArr,function(field){
+        if(!_.find(tableFields, function(f){
+            return f.name === field.name
+        })){
+            i++;
+            tableFields.push(field)
         }
     });
 
