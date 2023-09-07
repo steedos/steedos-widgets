@@ -847,7 +847,7 @@ export async function getIdsPickerSchema(field, readonly, ctx){
 
     const tableFields = [referenceTo.labelField];
 
-    const source = await getApi(refObjectConfig, null, fields, {expand: true, alias: 'rows', queryOptions: `filters: {__filters}, top: {__top}, skip: {__skip}`});
+    const source = await getApi(refObjectConfig, null, fields, {expand: true, alias: 'rows', queryOptions: `filters: {__filters}, top: {__top}, skip: {__skip}, sort: "{__sort}"`});
     
     source.data.$term = "$term";
     source.data.$self = "$$";
@@ -856,6 +856,12 @@ export async function getIdsPickerSchema(field, readonly, ctx){
         source.sendOn = `\${${idsDependOn} && ${idsDependOn}.length}`;
         source.url = `${source.url}&depend_on_${idsDependOn}=\${${idsDependOn}|join}`;
     }
+
+    let listView = getLookupListView(refObjectConfig);
+    let sort = "";
+    if(listView){
+        sort = getListViewSort(listView);
+    }
    
     source.requestAdaptor = `
         const selfData = JSON.parse(JSON.stringify(api.data.$self));
@@ -863,6 +869,10 @@ export async function getIdsPickerSchema(field, readonly, ctx){
         var pageSize = api.data.pageSize || 1000;
         var pageNo = api.data.pageNo || 1;
         var skip = (pageNo - 1) * pageSize;
+        var orderBy = api.data.orderBy || '';
+        var orderDir = api.data.orderDir || '';
+        var sort = orderBy + ' ' + orderDir;
+        sort = orderBy ? sort : "${sort}";
         if(selfData.op === 'loadOptions' && selfData.value){
             if(selfData.value && selfData.value.indexOf(',') > 0){
                 filters = [["${referenceTo.valueField.name}", "=", selfData.value.split(',')]];
@@ -880,7 +890,7 @@ export async function getIdsPickerSchema(field, readonly, ctx){
             filters.push(["${referenceTo.valueField.name}", "=", ids]);
         }
 
-        api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', pageSize).replace('{__skip}', skip);
+        api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', pageSize).replace('{__skip}', skip).replace('{__sort}', sort.trim());
         return api;
     `;
 
