@@ -228,7 +228,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
         }
       `
       let autoFillHeight = true
-      if(options.isRelated || Steedos.isMobile()){
+      if(options.isRelated || window.innerWidth < 768){
         autoFillHeight = false
       }
 
