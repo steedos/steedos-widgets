@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-20 16:29:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-09-06 18:59:40
+ * @LastEditTime: 2023-09-08 14:09:48
  * @Description: 
  */
 import { getRootUrl } from "../../steedos.client";
@@ -31,6 +31,9 @@ export function getContrastColor(bgColor) {
 }
 
 export function getLookupListView(refObjectConfig) {
+  if(!refObjectConfig){
+    return null;
+  }
   const listNameAll = "all";
   const listNameLookup = "lookup";
   let listViewAll, listViewLookup;
