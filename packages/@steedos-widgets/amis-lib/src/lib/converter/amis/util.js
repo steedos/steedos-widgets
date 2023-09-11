@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-20 16:29:22
  * @LastEditors: liaodaxue
- * @LastEditTime: 2023-09-11 15:18:22
+ * @LastEditTime: 2023-09-11 17:19:53
  * @Description: 
  */
 import { getRootUrl } from "../../steedos.client";
@@ -32,7 +32,9 @@ export function getImageFieldUrl(url) {
   return url;
 }
 
-window.getImageFieldUrl = getImageFieldUrl;
+if(typeof window  != 'undefined'){
+  window.getImageFieldUrl = getImageFieldUrl;
+}
 
 export function getContrastColor(bgColor) {
   var backgroundColor = (bgColor.charAt(0) === '#') ? bgColor.substring(1, 7) : bgColor;
