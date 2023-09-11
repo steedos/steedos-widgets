@@ -155,10 +155,14 @@ function getScriptForAddUrlPrefixForImgFields(fields){
                         let fieldProps = imgFields[item];
                         if(fieldProps.multiple){
                             if(imgFieldDisplayValue instanceof Array){
-                                data[item] = imgFieldDisplayValue.map((i)=>{ return i.url });
+                                data[item] = imgFieldDisplayValue.map((i)=>{ 
+                                    const url = window.getImageFieldUrl(i.url);
+                                    return url;
+                                });
                             }
                         }else{
-                            data[item] = imgFieldDisplayValue && imgFieldDisplayValue.url;
+                            const url = imgFieldDisplayValue && window.getImageFieldUrl(imgFieldDisplayValue.url);
+                            data[item] = url;
                         }
                     }
                 })

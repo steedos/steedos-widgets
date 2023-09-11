@@ -1045,7 +1045,13 @@ export async function getTableApi(mainObject, fields, options){
                 if(field.type === 'file'){
                     item[key] = value
                 }else{
-                    item[key] = _.map(value, 'url')
+                    item[key] = _.map(value, (item)=>{
+                        if(field.type === 'image'){
+                            const url = window.getImageFieldUrl(item.url);
+                            return url;
+                        }
+                        return item.url;
+                    })
                 }
             }
         })
