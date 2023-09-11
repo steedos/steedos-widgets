@@ -5,6 +5,7 @@ import * as Tpl from '../tpl';
 import * as Field from './index';
 import * as Table from './table';
 import * as List from './list';
+import { getLookupListView } from '../util';
 import { getSelectUserSchema } from './user';
 import { getObjectHeaderToolbar, getObjectFooterToolbar, getObjectFilter } from './../toolbar';
 import { getListViewSort } from './../../../objects';
@@ -174,19 +175,14 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     ctx.objectName = refObjectConfig.name
 
     let tableFields = [];
-    let i = 0;
     const searchableFields = [];
 
-    const fieldsArr = [];
-
-    const listName = "all";
+    let fieldsArr = [];
     
     const isMobile = window.innerWidth < 768;
 
-    const listView = _.find(
-        refObjectConfig.list_views,
-        (listView, name) => name === listName
-    );
+    let listView = getLookupListView(refObjectConfig);
+    let listName = listView && listView.name;
     if (listView && listView.columns) {
         _.each(listView.columns, function (column) {
             if (_.isString(column) && refObjectConfig.fields[column]) {
@@ -201,24 +197,23 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             }
         });
     }else{
-        _.each(refObjectConfig.fields , (field, field_name)=>{
+        _.each(refObjectConfig.fields, (field, field_name)=>{
             if(field_name != '_id' && !field.hidden){
                 if(!_.has(field, "name")){
                     field.name = field_name
                 }
                 fieldsArr.push(field)
             }
-        })
+        });
+        // 没有视图权限时，取对象上前5个字段，按sort_no排序
+        fieldsArr = _.sortBy(fieldsArr, "sort_no").slice(0,5);
     }
 
-    _.each(_.sortBy(fieldsArr, "sort_no"),function(field){
-        if(i < 5){
-            if(!_.find(tableFields, function(f){
-                return f.name === field.name
-            })){
-                i++;
-                tableFields.push(field)
-            }
+    _.each(fieldsArr,function(field){
+        if(!_.find(tableFields, function(f){
+            return f.name === field.name
+        })){
+            tableFields.push(field)
         }
     });
 
@@ -613,10 +608,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
     }
 
     const refObjectConfig = referenceTo && await getUISchema(referenceTo.objectName);
-    const listView = refObjectConfig && _.find(
-        refObjectConfig.list_views,
-        (listView, name) => name === "all"
-    );
+    let listView = getLookupListView(refObjectConfig);
 
     let sort = "";
     if(listView){
@@ -855,7 +847,7 @@ export async function getIdsPickerSchema(field, readonly, ctx){
 
     const tableFields = [referenceTo.labelField];
 
-    const source = await getApi(refObjectConfig, null, fields, {expand: true, alias: 'rows', queryOptions: `filters: {__filters}, top: {__top}, skip: {__skip}`});
+    const source = await getApi(refObjectConfig, null, fields, {expand: true, alias: 'rows', queryOptions: `filters: {__filters}, top: {__top}, skip: {__skip}, sort: "{__sort}"`});
     
     source.data.$term = "$term";
     source.data.$self = "$$";
@@ -864,6 +856,12 @@ export async function getIdsPickerSchema(field, readonly, ctx){
         source.sendOn = `\${${idsDependOn} && ${idsDependOn}.length}`;
         source.url = `${source.url}&depend_on_${idsDependOn}=\${${idsDependOn}|join}`;
     }
+
+    let listView = getLookupListView(refObjectConfig);
+    let sort = "";
+    if(listView){
+        sort = getListViewSort(listView);
+    }
    
     source.requestAdaptor = `
         const selfData = JSON.parse(JSON.stringify(api.data.$self));
@@ -871,6 +869,10 @@ export async function getIdsPickerSchema(field, readonly, ctx){
         var pageSize = api.data.pageSize || 1000;
         var pageNo = api.data.pageNo || 1;
         var skip = (pageNo - 1) * pageSize;
+        var orderBy = api.data.orderBy || '';
+        var orderDir = api.data.orderDir || '';
+        var sort = orderBy + ' ' + orderDir;
+        sort = orderBy ? sort : "${sort}";
         if(selfData.op === 'loadOptions' && selfData.value){
             if(selfData.value && selfData.value.indexOf(',') > 0){
                 filters = [["${referenceTo.valueField.name}", "=", selfData.value.split(',')]];
@@ -888,7 +890,7 @@ export async function getIdsPickerSchema(field, readonly, ctx){
             filters.push(["${referenceTo.valueField.name}", "=", ids]);
         }
 
-        api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', pageSize).replace('{__skip}', skip);
+        api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', pageSize).replace('{__skip}', skip).replace('{__sort}', sort.trim());
         return api;
     `;
 

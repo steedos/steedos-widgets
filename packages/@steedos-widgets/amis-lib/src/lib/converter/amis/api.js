@@ -155,10 +155,14 @@ function getScriptForAddUrlPrefixForImgFields(fields){
                         let fieldProps = imgFields[item];
                         if(fieldProps.multiple){
                             if(imgFieldDisplayValue instanceof Array){
-                                data[item] = imgFieldDisplayValue.map((i)=>{ return i.url });
+                                data[item] = imgFieldDisplayValue.map((i)=>{ 
+                                    const url = window.getImageFieldUrl(i.url);
+                                    return url;
+                                });
                             }
                         }else{
-                            data[item] = imgFieldDisplayValue && imgFieldDisplayValue.url;
+                            const url = imgFieldDisplayValue && window.getImageFieldUrl(imgFieldDisplayValue.url);
+                            data[item] = url;
                         }
                     }
                 })
@@ -275,7 +279,7 @@ export async function getEditFormInitApi(object, recordId, fields, options){
                 var defaultValues = {};
                 _.each(uiSchema && uiSchema.fields, function(field){
                     var value = SteedosUI.getFieldDefaultValue(field, api.body.global);
-                    if(value){
+                    if(!_.isNil(value)){
                         defaultValues[field.name] = value;
                     }
                 });

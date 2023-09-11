@@ -3,6 +3,7 @@ import * as Field from './index';
 import * as Tpl from '../tpl';
 import * as _ from 'lodash';
 import { getUISchema, getListViewSort } from '../../../objects';
+import { getLookupListView } from '../util';
 
 const refUsersObjectName = "space_users";
 const refOrgsObjectName = "organizations";
@@ -192,10 +193,8 @@ async function getSearchApi(field, ctx) {
 }
 
 function getRefListViewSort(refObject){
-    const listView = _.find(
-        refObject.list_views,
-        (view, name) => name === "all"
-    );
+    let listView = getLookupListView(refObject);
+    
     let sort = "";
     if(listView){
         sort = getListViewSort(listView);

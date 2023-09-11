@@ -15,6 +15,10 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
   each(
     objectSchema.list_views,
     (listView, name) => {
+      if(name === "lookup"){
+        // 内置lookup为弹出选择专用视图，不显示在列表切换区域
+        return;
+      }
       listViewButtonOptions.push({
         type: "button",
         label: listView.label,
