@@ -360,6 +360,57 @@ export async function getListSchema(
     };
 }
 
+async function convertColumnsToTableFields(columns, uiSchema, ctx = {}) {
+    let fields = [];
+    for (const column of columns) {
+        if (isString(column)) {
+            if (column.indexOf('.') > 0) {
+                const fieldName = column.split('.')[0];
+                const displayName = column.split('.')[1];
+                const filedInfo = uiSchema.fields[fieldName];
+                if (filedInfo && (filedInfo.type === 'lookup' || filedInfo.type === 'master_detail') && isString(filedInfo.reference_to)) {
+                    const rfUiSchema = await getUISchema(filedInfo.reference_to);
+                    const rfFieldInfo = rfUiSchema.fields[displayName];
+                    fields.push(Object.assign({}, rfFieldInfo, { name: `${fieldName}__expand.${displayName}`, expand: true, expandInfo: { fieldName, displayName } }, ctx));
+                }
+            } else {
+                if (uiSchema.fields[column]) {
+                    fields.push(Object.assign({}, uiSchema.fields[column], ctx));
+                }
+            }
+        } else if (isObject(column)) {
+            if (column.field.indexOf('.') > 0) {
+                const fieldName = column.field.split('.')[0];
+                const displayName = column.field.split('.')[1];
+                const filedInfo = uiSchema.fields[fieldName];
+                if (filedInfo && (filedInfo.type === 'lookup' || filedInfo.type === 'master_detail') && isString(filedInfo.reference_to)) {
+                    const rfUiSchema = await getUISchema(filedInfo.reference_to);
+                    const rfFieldInfo = rfUiSchema.fields[displayName];
+                    fields.push(Object.assign({}, rfFieldInfo, ctx,
+                        { name: `${fieldName}__expand.${displayName}`, expand: true, expandInfo: { fieldName, displayName } },
+                        {
+                            width: column.width,
+                            wrap: column.wrap, // wrap = true 是没效果的
+                            amis: column.amis
+                        }
+                    ));
+                }
+            } else {
+                if (uiSchema.fields[column.field]) {
+                    fields.push(
+                        Object.assign({}, uiSchema.fields[column.field], ctx, {
+                            width: column.width,
+                            wrap: column.wrap, // wrap = true 是没效果的
+                            amis: column.amis
+                        })
+                    );
+                }
+            }
+        }
+    }
+    return fields;
+}
+
 // 获取对象表格
 export async function getTableSchema(
     appName,
@@ -380,64 +431,13 @@ export async function getTableSchema(
         }
     }
 
-    let fields = [];
-    for(const column of columns){
-        if (isString(column)) {
-            if(column.indexOf('.') > 0){
-                const fieldName = column.split('.')[0];
-                const displayName = column.split('.')[1];
-                const filedInfo = uiSchema.fields[fieldName];
-                if(filedInfo && (filedInfo.type === 'lookup' || filedInfo.type === 'master_detail') && isString(filedInfo.reference_to) ){
-                    const rfUiSchema = await getUISchema(filedInfo.reference_to);
-                    const rfFieldInfo = rfUiSchema.fields[displayName];
-                    fields.push(Object.assign({}, rfFieldInfo, {name: `${fieldName}__expand.${displayName}`, expand: true, expandInfo: {fieldName, displayName}}));
-                }
-            }else{
-                if(uiSchema.fields[column]){
-                    fields.push(uiSchema.fields[column]);
-                }
-            }
-        } else if (isObject(column)) {
-            if(column.field.indexOf('.') > 0){
-                const fieldName = column.field.split('.')[0];
-                const displayName = column.field.split('.')[1];
-                const filedInfo = uiSchema.fields[fieldName];
-                if(filedInfo && (filedInfo.type === 'lookup' || filedInfo.type === 'master_detail') && isString(filedInfo.reference_to) ){
-                    const rfUiSchema = await getUISchema(filedInfo.reference_to);
-                    const rfFieldInfo = rfUiSchema.fields[displayName];
-                    fields.push(Object.assign({}, rfFieldInfo, 
-                        {name: `${fieldName}__expand.${displayName}`, expand: true, expandInfo: {fieldName, displayName}},
-                        {
-                            width: column.width,
-                            wrap: column.wrap, // wrap = true 是没效果的
-                            amis: column.amis
-                        }
-                    ));
-                }
-            }else{
-                if(uiSchema.fields[column.field]){
-                    fields.push(
-                        Object.assign({}, uiSchema.fields[column.field], {
-                            width: column.width,
-                            wrap: column.wrap, // wrap = true 是没效果的
-                            amis: column.amis
-                        })
-                    );
-                }
-            }
-        }
-    }
+    let fields = await convertColumnsToTableFields(columns, uiSchema);
 
     const extraColumns = ctx.extraColumns;
 
     if (extraColumns) {
-        each(extraColumns, function (column) {
-            if (isString(column)) {
-                fields.push({ extra: true, name: column });
-            } else if (isObject(column)) {
-                fields.push({ extra: true, name: column.field });
-            }
-        });
+        let extraFields = await convertColumnsToTableFields(extraColumns, uiSchema, {extra: true});
+        fields = fields.concat(extraFields);
     }
     
     const amisSchema = await getObjectCRUD(uiSchema, fields, {
