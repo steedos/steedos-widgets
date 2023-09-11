@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-20 16:29:22
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-09-08 14:09:48
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-09-11 15:18:22
  * @Description: 
  */
 import { getRootUrl } from "../../steedos.client";
@@ -20,6 +20,19 @@ export function getSvgUrl(source, name) {
     url = "/assets/icons/" + source + "/svg/symbols.svg#" + name;
     return `${getRootUrl()}${url}`;
 }
+
+export function getImageFieldUrl(url) {
+  if (window.Meteor && window.Meteor.isCordova != true) {
+    //  '//'的位置
+    const doubleSlashIndex = url.indexOf('//');
+    const urlIndex = url.indexOf('/', doubleSlashIndex + 2);
+    const rootUrl = url.substring(urlIndex);
+    return rootUrl;
+  }
+  return url;
+}
+
+window.getImageFieldUrl = getImageFieldUrl;
 
 export function getContrastColor(bgColor) {
   var backgroundColor = (bgColor.charAt(0) === '#') ? bgColor.substring(1, 7) : bgColor;
