@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-08-24 16:51:56
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-09-11 09:49:19
  * @Description: 
  */
 import './AmisObjectListview.less';
@@ -20,7 +20,8 @@ export const AmisObjectListView = async (props) => {
       sideSchema,
       columnsTogglable=false,
       filterVisible = true,
-      headerToolbarItems, rowClassNameExpr, hiddenColumnOperation=false } = props;
+      headerToolbarItems, rowClassNameExpr, hiddenColumnOperation=false, columns,
+      crudColumns, crudColumnsDataFilter, onCrudColumnsDataFilter, env} = props;
   let { headerSchema } = props;
   let ctx = props.ctx;
   let listName = defaultData?.listName || data?.listName || props?.listName;
@@ -113,7 +114,9 @@ export const AmisObjectListView = async (props) => {
   const amisSchemaData = Object.assign({}, data, defaultData);
   const listViewId = ctx?.listViewId || amisSchemaData.listViewId;
   const listViewSchemaProps = { 
-    top, perPage, showHeader, defaults, ...ctx, listViewId, setDataToComponentId, filterVisible, showDisplayAs, displayAs, headerToolbarItems, rowClassNameExpr, hiddenColumnOperation
+    top, perPage, showHeader, defaults, ...ctx, listViewId, setDataToComponentId, filterVisible, showDisplayAs, displayAs, 
+    headerToolbarItems, rowClassNameExpr, hiddenColumnOperation, columns,
+    crudColumns, crudColumnsDataFilter, onCrudColumnsDataFilter, amisData: amisSchemaData, env
   }
 
   if(!headerSchema){
@@ -183,10 +186,10 @@ export const AmisObjectListView = async (props) => {
                           const formFactor = (["split"].indexOf(display) > -1) ? 'SMALL': defaultFormFactor;
                           listViewSchemaProps.formFactor = formFactor;
                           listViewSchemaProps.displayAs = display;
-                          // console.log("====listViewSchemaProps===>", listName, display, listViewSchemaProps)
+                          console.log("====listViewSchemaProps===>", listName, display, listViewSchemaProps)
                           window.getListSchema(appId, objectName, listName, listViewSchemaProps).then((schema)=>{
                             payload.data = schema.amisSchema;
-                            // console.log("payload================>", payload)
+                            console.log("payload================>", payload)
                             resolve(payload)
                           });
                         });

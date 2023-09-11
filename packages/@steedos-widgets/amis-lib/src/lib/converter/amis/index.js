@@ -129,6 +129,7 @@ function getFilter(){
 
 export async function getObjectCRUD(objectSchema, fields, options){
     // console.time('getObjectCRUD');
+    console.log("==getObjectCRUD===options===", options);
     const { top, perPage, showDisplayAs = false, displayAs, crudClassName = "" } = options;
     const nonpaged = objectSchema.paging && objectSchema.paging.enabled === false;
     const isTreeObject = objectSchema.enable_tree;
@@ -170,6 +171,14 @@ export async function getObjectCRUD(objectSchema, fields, options){
       filterVisible: options.filterVisible
     });
 
+    options.amisData = Object.assign({}, {
+      objectName: objectSchema.name,
+      // _id: null,
+      recordPermissions: objectSchema.permissions,
+      uiSchema: objectSchema,
+      // loaded: false //crud接收适配器中设置为true，否则就是刷新浏览器第一次加载
+    }, options.amisData);
+
 
     let body = null;
     const id = `listview_${objectSchema.name}`;
@@ -195,7 +204,9 @@ export async function getObjectCRUD(objectSchema, fields, options){
       if(objectSchema.name === 'organizations'){
         labelFieldName = 'name';
       }
-      const table = await getTableSchema(fields, Object.assign({idFieldName: objectSchema.idFieldName, labelFieldName: labelFieldName, permissions:objectSchema.permissions,enable_inline_edit:objectSchema.enable_inline_edit}, options));
+      const table = await getTableSchema(fields, Object.assign({
+        idFieldName: objectSchema.idFieldName, labelFieldName: labelFieldName, 
+        permissions:objectSchema.permissions,enable_inline_edit:objectSchema.enable_inline_edit}, options));
       delete table.mode;
       //image与avatar需要在提交修改时特别处理
       const imageNames = _.compact(_.map(_.filter(fields, (field) => ["image","avatar"].includes(field.type)), 'name'));
@@ -295,13 +306,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
       //目前crud的service层id不认用户自定义id，只支持默认规则id
       id: `service_${id}`,
       name: `page`,
-      data: {
-        objectName: objectSchema.name,
-        // _id: null,
-        recordPermissions: objectSchema.permissions,
-        uiSchema: objectSchema,
-        // loaded: false //crud接收适配器中设置为true，否则就是刷新浏览器第一次加载
-      },
+      data: options.amisData,
       body: body
     }
 }
