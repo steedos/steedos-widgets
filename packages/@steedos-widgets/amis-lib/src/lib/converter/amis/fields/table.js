@@ -755,7 +755,7 @@ export async function getTableSchema(fields, options){
     if(!options){
         options = {};
     }
-    let { isLookup, hiddenColumnOperation, crudColumns, crudColumnsDataFilter, onCrudColumnsDataFilter, amisData, env } = options;
+    let { isLookup, hiddenColumnOperation } = options;
     let columns = [];
     let useMobileColumns = options.formFactor === 'SMALL' || ["split"].indexOf(options.displayAs) > -1;
     if(isLookup){
@@ -766,29 +766,7 @@ export async function getTableSchema(fields, options){
         columns = await getMobileTableColumns(fields, options);
     }
     else{
-        if(crudColumns && crudColumns.length){
-            columns = [...crudColumns];//clone crudColumns是为了防止后面的columns.push语句会造成死循环
-        }
-        else{
-            columns = await getTableColumns(fields, options);
-        }
-      
-        if (!onCrudColumnsDataFilter && typeof crudColumnsDataFilter === 'string') {
-          onCrudColumnsDataFilter = new Function(
-            'columns',
-            'env',
-            'data',
-            crudColumnsDataFilter
-          );
-        }
-
-        try {
-          onCrudColumnsDataFilter &&
-            (columns =
-              onCrudColumnsDataFilter(columns, env, amisData) || columns);
-        } catch (e) {
-          console.warn(e);
-        }
+        columns = await getTableColumns(fields, options);
 
         if(!isLookup && !hiddenColumnOperation){
             columns.push(await getTableOperation(options));

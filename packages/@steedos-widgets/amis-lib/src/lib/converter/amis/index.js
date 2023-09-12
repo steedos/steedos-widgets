@@ -129,9 +129,30 @@ function getFilter(){
       }
 }
 
+function getCrudSchemaWithDataFilter(crud, options = {}){
+  const { crudDataFilter, amisData, env } = options;
+  let onCrudDataFilter = options.onCrudDataFilter;
+  if (!onCrudDataFilter && typeof crudDataFilter === 'string') {
+    onCrudDataFilter = new Function(
+      'crud',
+      'env',
+      'data',
+      crudDataFilter
+    );
+  }
+
+  try {
+    onCrudDataFilter && (crud = onCrudDataFilter(crud, env, amisData) || crud);
+  } catch (e) {
+    console.warn(e);
+  }
+  return crud;
+}
+
 export async function getObjectCRUD(objectSchema, fields, options){
     // console.time('getObjectCRUD');
-    const { top, perPage, showDisplayAs = false, displayAs, crudClassName = "" } = options;
+    const { top, perPage, showDisplayAs = false, displayAs, crudClassName = "",
+      crudDataFilter, onCrudDataFilter, amisData, env } = options;
     const nonpaged = objectSchema.paging && objectSchema.paging.enabled === false;
     const isTreeObject = objectSchema.enable_tree;
     const bulkActions = getBulkActions(objectSchema)
@@ -270,9 +291,9 @@ export async function getObjectCRUD(objectSchema, fields, options){
           requestAdaptor: quickSaveApiRequestAdaptor,
         },
         rowClassNameExpr: options.rowClassNameExpr
-      }, 
-        bodyProps,
-        )
+      }, bodyProps);
+
+      body = getCrudSchemaWithDataFilter(body, { crudDataFilter, onCrudDataFilter, amisData, env });
     }
 
     const defaults = options.defaults;
