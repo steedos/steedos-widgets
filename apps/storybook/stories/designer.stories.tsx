@@ -157,7 +157,7 @@ export const Sortable = () => {
   }
   
   
-  const containerSource = [
+  const boardSource = [
     {
       id: 'A',
       label: 'Board A',
@@ -168,7 +168,7 @@ export const Sortable = () => {
     }
   ]
   
-  const itemSource = [
+  const cardSource = [
     {
       id: 'A1',
       label: 'Item A1',
@@ -193,7 +193,7 @@ export const Sortable = () => {
     },
   ]
   
-  const itemSchema = [{
+  const cardSchema = [{
     "type": "tpl",
     "tpl": "${label}",
     "inline": false,
@@ -203,15 +203,15 @@ export const Sortable = () => {
     type: "page",
     title: "Welcome to Steedos",
     body: [{
-      "type": "sortable-multiple-containers",
+      "type": "steedos-board",
       "label": "容器排序",
       "name": "board",
       "columns": 1,
       "vertical": false,
       "value": defaultValue,
-      "containerSource": containerSource,
-      "itemSource": itemSource,
-      "itemSchema": itemSchema,
+      "boardSource": boardSource,
+      "cardSource": cardSource,
+      "cardSchema": cardSchema,
     }],
     regions: ["body"],
     data: {

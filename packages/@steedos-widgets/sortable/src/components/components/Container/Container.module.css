@@ -20,7 +20,7 @@
     grid-gap: 10px;
     grid-template-columns: repeat(var(--columns, 1), 1fr);
     list-style: none;
-    padding: 10px;
+    padding: 10px 0;
     margin: 0;
   }
 
@@ -74,14 +74,14 @@
 
 .Header {
   display: flex;
-  padding: 5px 20px;
-  padding-right: 8px;
+  /* padding: 5px 20px;
+  padding-right: 8px; */
   align-items: center;
   justify-content: space-between;
-  background-color: #fff;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  /* background-color: #fff; */
+  /* border-top-left-radius: 5px;
+  border-top-right-radius: 5px; */
+  /* border-bottom: 1px solid rgba(0, 0, 0, 0.08); */
 
   &:hover {
     .Actions > * {
@@ -92,6 +92,8 @@
 
 .Actions {
   display: flex;
+  position: absolute;
+  right: 6px;
 
   > *:first-child:not(:last-child) {
     opacity: 0;
