@@ -2,8 +2,8 @@
   /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-08-28 15:04:28
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2023-09-08 17:54:54
  * @Description: 
  */
 
@@ -28,7 +28,7 @@ export const AmisGlobalHeaderToolbar = async (props) => {
           ...customButtons,
           {
             "type": "button",
-            "hiddenOn": "window.innerWidth < 768",
+            "hiddenOn": "${window:innerWidth < 768 || (window:Meteor.settings.public && window:Meteor.settings.public.platform && window:Meteor.settings.public.platform.is_oem)}",
             "id": "u:267a7e84a89d",
             "onEvent": {
               "click": {
@@ -361,6 +361,7 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                     "type": "button",
                     "label": i18next.t('frontend_about'),
                     "className": "flex",
+                    "hiddenOn": "${window:Meteor.settings.public && window:Meteor.settings.public.platform && window:Meteor.settings.public.platform.is_oem}",
                     "onEvent": {
                       "click": {
                         "actions": [

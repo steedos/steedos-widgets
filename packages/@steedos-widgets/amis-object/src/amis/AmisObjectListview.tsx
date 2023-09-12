@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-09-11 09:49:19
+ * @LastEditTime: 2023-09-12 09:31:08
  * @Description: 
  */
 import './AmisObjectListview.less';
@@ -11,7 +11,7 @@ import { keys, pick, difference, find, has, first, values } from 'lodash';
 
 export const AmisObjectListView = async (props) => {
   // console.time('AmisObjectListView')
-  // console.log(`AmisObjectListView props`, props)
+  console.log(`AmisObjectListView props`, props)
   const { $schema, top, perPage, showHeader=true, data, defaultData, 
       crud = {},
       className="", 
@@ -188,6 +188,24 @@ export const AmisObjectListView = async (props) => {
                           listViewSchemaProps.displayAs = display;
                           console.log("====listViewSchemaProps===>", listName, display, listViewSchemaProps)
                           window.getListSchema(appId, objectName, listName, listViewSchemaProps).then((schema)=>{
+                            try{
+                              const uiSchema = schema.uiSchema;
+                              const listView = _.find(
+                                uiSchema.list_views,
+                                (listView, name) => {
+                                    // 传入listViewName空值则取第一个
+                                    if(!listName){
+                                      listName = name;
+                                    }
+                                    return name === listName || listView._id === listName;
+                                }
+                              );
+                              if(listView){
+                                window.Steedos && window.Steedos.setDocumentTitle && window.Steedos.setDocumentTitle({pageName: listView.label || listView.name})
+                              }
+                            }catch(e){
+                              console.error(e)
+                            }
                             payload.data = schema.amisSchema;
                             console.log("payload================>", payload)
                             resolve(payload)

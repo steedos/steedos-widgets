@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-04-14 09:47:57
+ * @LastEditTime: 2023-09-09 13:43:15
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef } from 'react';
@@ -38,6 +38,16 @@ export const PageRecordDetail = async (props) => {
   return {
     type: 'service',
     "className":  'h-full',
-    body: recordSchema
+    body: recordSchema,
+    "onEvent": {
+      "recordLoaded": {
+        "actions": [
+          {
+            "actionType": "custom",
+            "script": "window.Steedos && window.Steedos.setDocumentTitle && Steedos.setDocumentTitle({pageName: event.data.record.name})"
+          }
+        ]
+      }
+    }
   }
 }

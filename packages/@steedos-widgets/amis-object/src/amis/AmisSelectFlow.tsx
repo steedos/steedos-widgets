@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-01-14 16:41:24
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-09-05 17:06:44
+ * @LastEditTime: 2023-09-11 16:48:35
  * @Description:
  */
 
@@ -224,9 +224,9 @@ const getSelectFlowSchema = (id, props) => {
                       }
                   })
                 }
-                if(payload.data.options.length === 1 && payload.data.options[0].children.length === 1){
-                  payload.data.value = payload.data.options[0].children[0].value
-                }
+                // if(payload.data.options.length === 1 && payload.data.options[0].children.length === 1){
+                //   payload.data.value = payload.data.options[0].children[0].value
+                // }
                 return payload;
             `,
             "headers": {
