@@ -7,13 +7,13 @@
   appearance: none;
   outline: none;
   min-width: 350px;
-  margin: 10px;
-  border-radius: 5px;
-  min-height: 200px;
+  /* margin: 10px; */
+  /* border-radius: 5px; */
+  min-height: 100px;
   transition: background-color 350ms ease;
-  background-color: rgba(246, 246, 246, 1);
+  /* background-color: rgba(246, 246, 246, 1);
   border: 1px solid rgba(0, 0, 0, 0.05);
-  font-size: 1em;
+  font-size: 1em; */
 
   ul {
     display: grid;
@@ -50,8 +50,8 @@
 
   &.unstyled {
     overflow: visible;
-    background-color: transparent !important;
-    border: none !important;
+    /* background-color: transparent !important;
+    border: none !important; */
   }
 
   &.horizontal {
@@ -63,7 +63,7 @@
   }
 
   &.shadow {
-    box-shadow: 0 1px 10px 0 rgba(34, 33, 81, 0.1);
+    /* box-shadow: 0 1px 10px 0 rgba(34, 33, 81, 0.1); */
   }
 
   &:focus-visible {

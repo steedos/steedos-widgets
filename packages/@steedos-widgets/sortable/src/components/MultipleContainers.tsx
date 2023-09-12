@@ -58,12 +58,14 @@ function DroppableContainer({
   id,
   items,
   style,
+  className,
   ...props
 }: ContainerProps & {
   disabled?: boolean;
   id: UniqueIdentifier;
   items: UniqueIdentifier[];
   style?: React.CSSProperties;
+  className: string
 }) {
   const {
     active,
@@ -96,6 +98,7 @@ function DroppableContainer({
         transform: CSS.Translate.toString(transform),
         opacity: isDragging ? 0.5 : undefined,
       }}
+      className={className}
       hover={isOverContainer}
       handleProps={{
         ...attributes,
@@ -155,7 +158,8 @@ interface Props {
   data: any,
   dispatchEvent: Function,
   render: Function,
-  itemBody: any
+  itemSchema: any,
+  containerClassName: string,
 }
 
 export const TRASH_ID = 'void';
@@ -189,11 +193,12 @@ export function MultipleContainers(props) {
     data: amisData,
     dispatchEvent: amisDispatchEvent,
     render: amisRender,
-    itemBody: amisItemBody = [{
+    itemSchema: amisItemBody = [{
       "type": "tpl",
       "tpl": "${label}",
       "inline": false,
     }],
+    containerClassName = "border",
   }: Props = props
 
   defaultValue && delete(defaultValue.$$id);
@@ -530,6 +535,7 @@ export function MultipleContainers(props) {
               items={items[containerId]}
               scrollable={scrollable}
               style={containerStyle}
+              className={containerClassName}
               unstyled={minimal}
               onRemove={() => handleRemove(containerId)}
               {...container}

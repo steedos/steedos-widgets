@@ -1,5 +1,5 @@
 const config: any = {
-    group: "华炎魔方",
+    group: "华炎魔方-原子组件",
     componentName: "MultipleContainers",
     title: "容器排序",
     docUrl: "",
@@ -63,7 +63,7 @@ const config: any = {
           name: 'board',
           columns: 1,
           vertical: false,
-          "value": {
+          "defaultValue": {
             "A": [
               "A1",
               "B1"
@@ -83,6 +83,12 @@ const config: any = {
               "label": "Board B"
             }
           ],
+          "containerClassName": "m-2 border rounded",
+          "itemSchema": {
+            "type": "tpl",
+            "className": "bg-white border w-full p-2 rounded",
+            "tpl": "Hello ${label}"
+          },
           "itemSource": [
             {
               "id": "A1",

@@ -19,6 +19,7 @@ export interface Props {
   shadow?: boolean;
   placeholder?: boolean;
   unstyled?: boolean;
+  className: string;
   onClick?(): void;
   onRemove?(): void;
 }
@@ -39,6 +40,7 @@ export const Container = forwardRef<HTMLDivElement, Props>(
       scrollable,
       shadow,
       unstyled,
+      className,
       ...props
     }: Props,
     ref
@@ -62,7 +64,8 @@ export const Container = forwardRef<HTMLDivElement, Props>(
           hover && styles.hover,
           placeholder && styles.placeholder,
           scrollable && styles.scrollable,
-          shadow && styles.shadow
+          shadow && styles.shadow,
+          className
         )}
         onClick={onClick}
         tabIndex={onClick ? 0 : undefined}

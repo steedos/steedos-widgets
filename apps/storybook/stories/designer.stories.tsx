@@ -193,7 +193,7 @@ export const Sortable = () => {
     },
   ]
   
-  const itemBody = [{
+  const itemSchema = [{
     "type": "tpl",
     "tpl": "${label}",
     "inline": false,
@@ -211,7 +211,7 @@ export const Sortable = () => {
       "value": defaultValue,
       "containerSource": containerSource,
       "itemSource": itemSource,
-      "itemBody": itemBody,
+      "itemSchema": itemSchema,
     }],
     regions: ["body"],
     data: {
