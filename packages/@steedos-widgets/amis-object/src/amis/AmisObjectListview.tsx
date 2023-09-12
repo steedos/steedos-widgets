@@ -2,11 +2,11 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-09-12 09:31:08
+ * @LastEditTime: 2023-09-12 16:50:58
  * @Description: 
  */
 import './AmisObjectListview.less';
-import { getListSchema, getObjectListHeader, getUISchema, Router, i18next } from '@steedos-widgets/amis-lib'
+import { getListSchema, getObjectListHeader, getUISchema, Router, i18next, createObject } from '@steedos-widgets/amis-lib'
 import { keys, pick, difference, find, has, first, values } from 'lodash';
 
 export const AmisObjectListView = async (props) => {
@@ -111,7 +111,8 @@ export const AmisObjectListView = async (props) => {
     setDataToComponentId = `service_listview_${objectApiName}`;
   }
 
-  const amisSchemaData = Object.assign({}, data, defaultData);
+  // const amisSchemaData = Object.assign({}, data, defaultData);
+  const amisSchemaData = createObject(data, defaultData);
   const listViewId = ctx?.listViewId || amisSchemaData.listViewId;
   const listViewSchemaProps = { 
     top, perPage, showHeader, defaults, ...ctx, listViewId, setDataToComponentId, filterVisible, showDisplayAs, displayAs, 

@@ -2,12 +2,13 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-09-11 10:21:49
+ * @LastEditTime: 2023-09-12 16:46:30
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
 import { getObjectCalendar } from './converter/amis/calendar';
 import { i18next } from '../i18n'
+import { createObject } from '../utils/object'
 
 import {
     getObjectCRUD,
@@ -443,7 +444,7 @@ export async function getTableSchema(
         fields = fields.concat(extraFields);
     }
     
-    const amisSchema = await getObjectCRUD(uiSchema, fields, {
+    let crudOptions = {
         tabId: objectName,
         appId: appName,
         objectName: objectName,
@@ -452,8 +453,9 @@ export async function getTableSchema(
         sort,
         headerToolbarItems: ctx.headerToolbarItems,
         buttons: await getListViewItemButtons(uiSchema, ctx)
-    });
-    console.log('getTableSchema====>amisSchema', amisSchema)
+    };
+    crudOptions.amisData = createObject(ctx.amisData || {}, {}).__super;
+    const amisSchema = await getObjectCRUD(uiSchema, fields, crudOptions);
     // console.timeEnd('getTableSchema');
     return {
         uiSchema,

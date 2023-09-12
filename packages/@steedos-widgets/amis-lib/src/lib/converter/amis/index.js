@@ -7,6 +7,8 @@ import _, { map } from 'lodash';
 import { defaultsDeep } from '../../defaultsDeep';
 import { getObjectHeaderToolbar, getObjectFooterToolbar, getObjectFilter } from './toolbar';
 import { i18next } from "../../../i18n"
+import { createObject } from '../../../utils/object';
+
 function getBulkActions(objectSchema){
     return [
       {
@@ -129,7 +131,6 @@ function getFilter(){
 
 export async function getObjectCRUD(objectSchema, fields, options){
     // console.time('getObjectCRUD');
-    console.log("==getObjectCRUD===options===", options);
     const { top, perPage, showDisplayAs = false, displayAs, crudClassName = "" } = options;
     const nonpaged = objectSchema.paging && objectSchema.paging.enabled === false;
     const isTreeObject = objectSchema.enable_tree;
@@ -171,13 +172,13 @@ export async function getObjectCRUD(objectSchema, fields, options){
       filterVisible: options.filterVisible
     });
 
-    options.amisData = Object.assign({}, {
+    options.amisData = createObject(options.amisData, {
       objectName: objectSchema.name,
       // _id: null,
       recordPermissions: objectSchema.permissions,
       uiSchema: objectSchema,
       // loaded: false //crud接收适配器中设置为true，否则就是刷新浏览器第一次加载
-    }, options.amisData);
+    });
 
 
     let body = null;
@@ -204,9 +205,12 @@ export async function getObjectCRUD(objectSchema, fields, options){
       if(objectSchema.name === 'organizations'){
         labelFieldName = 'name';
       }
-      const table = await getTableSchema(fields, Object.assign({
+      let tableOptions = Object.assign({
         idFieldName: objectSchema.idFieldName, labelFieldName: labelFieldName, 
-        permissions:objectSchema.permissions,enable_inline_edit:objectSchema.enable_inline_edit}, options));
+        permissions:objectSchema.permissions,enable_inline_edit:objectSchema.enable_inline_edit
+      }, options);
+      tableOptions.amisData = createObject(options.amisData || {}, {}).__super;
+      const table = await getTableSchema(fields, tableOptions);
       delete table.mode;
       //image与avatar需要在提交修改时特别处理
       const imageNames = _.compact(_.map(_.filter(fields, (field) => ["image","avatar"].includes(field.type)), 'name'));
