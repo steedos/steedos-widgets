@@ -129,7 +129,7 @@ function getFilter(){
       }
 }
 
-function getCrudSchemaWithDataFilter(crud, options = {}){
+async function getCrudSchemaWithDataFilter(crud, options = {}){
   const { crudDataFilter, amisData, env } = options;
   let onCrudDataFilter = options.onCrudDataFilter;
   if (!onCrudDataFilter && typeof crudDataFilter === 'string') {
@@ -142,7 +142,7 @@ function getCrudSchemaWithDataFilter(crud, options = {}){
   }
 
   try {
-    onCrudDataFilter && (crud = onCrudDataFilter(crud, env, amisData) || crud);
+    onCrudDataFilter && (crud = await onCrudDataFilter(crud, env, amisData) || crud);
   } catch (e) {
     console.warn(e);
   }
@@ -293,7 +293,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
         rowClassNameExpr: options.rowClassNameExpr
       }, bodyProps);
 
-      body = getCrudSchemaWithDataFilter(body, { crudDataFilter, onCrudDataFilter, amisData, env });
+      body = await getCrudSchemaWithDataFilter(body, { crudDataFilter, onCrudDataFilter, amisData, env });
     }
 
     const defaults = options.defaults;
