@@ -2,18 +2,18 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-09-09 13:43:15
+ * @LastEditTime: 2023-09-13 16:12:37
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { getPage, Router } from "@steedos-widgets/amis-lib";
 
 export const PageRecordDetail = async (props) => {
-
-  const { formFactor: defaultFormFactor, appId, objectApiName, recordId, display } = props
-  
-  if(display){
-    Router.setTabDisplayAs(objectApiName, display)
+  // console.log(`PageRecordDetail`, props)
+  const { formFactor: defaultFormFactor, appId, objectApiName, recordId, display, data } = props
+  const _display = data.display || display
+  if(_display){
+    Router.setTabDisplayAs(objectApiName, _display)
   }
 
   let recordSchema = {}
