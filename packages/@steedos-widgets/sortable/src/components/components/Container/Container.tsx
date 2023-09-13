@@ -11,6 +11,7 @@ export interface Props {
   children: React.ReactNode;
   columns?: number;
   label?: string;
+  footer?: any;
   style?: React.CSSProperties;
   horizontal?: boolean;
   hover?: boolean;
@@ -35,6 +36,7 @@ export const Container = forwardRef<HTMLDivElement, Props>(
       onClick,
       onRemove,
       label,
+      footer,
       placeholder,
       style,
       scrollable,
@@ -80,6 +82,7 @@ export const Container = forwardRef<HTMLDivElement, Props>(
           </div>
         ) : null}
         {placeholder ? children : <ul>{children}</ul>}
+        {footer? footer : <></>}
       </Component>
     );
   }

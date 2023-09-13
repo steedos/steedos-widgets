@@ -160,6 +160,7 @@ interface Props {
   render: Function,
   cardSchema: any,
   boardHeader: any,
+  boardFooter: any,
   wrapperClassName: string,
   boardClassName: string,
   cardClassName: string,
@@ -205,6 +206,7 @@ export function MultipleContainers(props) {
       "type": "tpl",
       "tpl": "${label}",
     }],
+    boardFooter = [],
     wrapperClassName = "gap-2",
     boardClassName = "border rounded",
     cardClassName = "",
@@ -552,6 +554,7 @@ export function MultipleContainers(props) {
               label={amisRender? amisRender('body', boardHeader, {data: {...container}}) : (
                 <span>{container.label}</span>
               )}
+              footer={amisRender? amisRender('body', boardFooter, {data: {...container}}) : (<></>)}
             >
               <SortableContext 
                 items={items[containerId]} 

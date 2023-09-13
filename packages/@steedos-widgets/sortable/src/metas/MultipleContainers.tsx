@@ -88,6 +88,10 @@ const config: any = {
             "type": "tpl",
             "tpl": "Board ${label}"
           },
+          "boardFooter": {
+            "type": "tpl",
+            "tpl": "Board ${label} Footer"
+          },
           "cardClassName": "bg-white border w-full p-2 rounded shadow",
           "cardSchema": {
             "type": "card",
