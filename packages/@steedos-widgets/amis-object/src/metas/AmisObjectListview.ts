@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-06 14:30:43
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-09-13 11:28:10
  * @Description: 
  */
 const config: any = {
@@ -178,6 +178,26 @@ export default {
           type: "text",
           name: "className",
           label: "CSS类名"
+        },
+        {
+          "type": "collapse",
+          headingClassName: 'ae-formItemControl-header',
+          bodyClassName: 'ae-formItemControl-body',
+          "key": "3",
+          "header": "高级",
+          "body": [
+            {
+              type: "editor",
+              name: "crudDataFilter",
+              label: "CRUD",
+              description: ""
+            },
+            {
+              "type": "markdown",
+              "value": "如果需要对组件原始返回的crud进行加工，可以自己写一段函数脚本来实现。\n\n函数签名：(crud, env, data) => crud\n\n参数说明：\n\ncrud 组件原始返回的crud schema\n\nenv amis env，可以调用env.fetcher函数实现异步请求\n\ndata 数据域中的data\n\n返回值：\n\n最后需要返回加工后的crud schema\n\n示例：\n\n```\nconsole.log('data===>', data);\nconst api = ...;\nreturn env.fetcher(api, {}).then((result) => {\n  console.log(result);\n  crud.columns.push({'label': 'xxx', name: 'xxx'});\n  return crud;\n});\n\n```\n",
+              "className": "text-gray-500"
+            }
+          ]
         }
       ]
     }
