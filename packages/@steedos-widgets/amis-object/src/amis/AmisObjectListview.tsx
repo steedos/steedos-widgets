@@ -21,7 +21,7 @@ export const AmisObjectListView = async (props) => {
       columnsTogglable=false,
       filterVisible = true,
       headerToolbarItems, rowClassNameExpr, hiddenColumnOperation=false, columns,
-      crudDataFilter, onCrudDataFilter, env} = props;
+      crudDataFilter, onCrudDataFilter, env, rebuildOn} = props;
   let { headerSchema } = props;
   let ctx = props.ctx;
   let listName = defaultData?.listName || data?.listName || props?.listName;
@@ -166,9 +166,10 @@ export const AmisObjectListView = async (props) => {
               ...headerSchema, //list view header,
               {
                 "type": "service",
+                "id": "service_schema_api_" + objectApiName,
                 "schemaApi": {
                     // 这里url上加objectApiName属性是因为设计器中切换对象时不会变更列表视图界面，不可以用objectName=${objectName}使用作用域中objectName变量是因为设计器那边不会监听识别data变化来render组件
-                    "url": "${context.rootUrl}/graphql?objectName=" + objectApiName + "&listName=${listName}&display=${display}",
+                    "url": "${context.rootUrl}/graphql?objectName=" + objectApiName + "&listName=${listName}&display=${display}&rebuildOn=" + rebuildOn,
                     "method": "post",
                     "messages": {
                     },
