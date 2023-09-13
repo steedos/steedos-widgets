@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-09-13 11:28:10
+ * @LastEditTime: 2023-09-13 13:48:03
  * @Description: 
  */
 const config: any = {
@@ -181,9 +181,9 @@ export default {
         },
         {
           "type": "collapse",
-          headingClassName: 'ae-formItemControl-header',
-          bodyClassName: 'ae-formItemControl-body',
-          "key": "3",
+          headingClassName: 'pl-0',
+          bodyClassName: '',
+          "collapsed": true,
           "header": "高级",
           "body": [
             {
