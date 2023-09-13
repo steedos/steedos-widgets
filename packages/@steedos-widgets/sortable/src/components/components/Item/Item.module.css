@@ -85,7 +85,7 @@ $focused-outline-color: #4c9ffe;
 
   &.dragging:not(.dragOverlay) {
     opacity: var(--dragging-opacity, 0.5);
-    z-index: 0;
+    /* z-index: -1; */
 
     &:focus {
       box-shadow: $box-shadow;

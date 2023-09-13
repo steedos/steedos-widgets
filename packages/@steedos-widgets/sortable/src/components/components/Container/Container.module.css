@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   grid-auto-rows: max-content;
-  overflow: hidden;
+  /* overflow: hidden; */
   box-sizing: border-box;
   appearance: none;
   outline: none;

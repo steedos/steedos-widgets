@@ -549,7 +549,7 @@ export function MultipleContainers(props) {
               style={containerStyle}
               className={boardClassName}
               unstyled={minimal}
-              onRemove={() => handleRemove(containerId)}
+              // onRemove={() => handleRemove(containerId)}
               {...container}
               label={amisRender? amisRender('body', boardHeader, {data: {...container}}) : (
                 <span>{container.label}</span>
