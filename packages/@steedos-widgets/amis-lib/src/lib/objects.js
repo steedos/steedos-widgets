@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-09-14 11:34:23
+ * @LastEditTime: 2023-09-14 13:57:32
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -380,6 +380,7 @@ async function convertColumnsToTableFields(columns, uiSchema, ctx = {}) {
                 else if(ctx.extra){
                     // 配置列表视图extra_columns时允许字段是hidden的，hidden的字段在uiSchema.fields中不存在
                     fields.push({
+                        extra: true,
                         name: column
                     });
                 }
@@ -410,6 +411,13 @@ async function convertColumnsToTableFields(columns, uiSchema, ctx = {}) {
                             amis: column.amis
                         })
                     );
+                }
+                else if(ctx.extra){
+                    // 配置列表视图extra_columns时允许字段是hidden的，hidden的字段在uiSchema.fields中不存在
+                    fields.push({
+                        extra: true,
+                        name: column.field
+                    });
                 }
             }
         }
