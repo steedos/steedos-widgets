@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: liaodaxue
- * @LastEditTime: 2023-08-25 11:55:15
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-09-14 10:19:56
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -376,6 +376,11 @@ async function convertColumnsToTableFields(columns, uiSchema, ctx = {}) {
             } else {
                 if (uiSchema.fields[column]) {
                     fields.push(Object.assign({}, uiSchema.fields[column], ctx));
+                }
+                else if(ctx.extra){
+                    fields.push({
+                        name: column
+                    });
                 }
             }
         } else if (isObject(column)) {
