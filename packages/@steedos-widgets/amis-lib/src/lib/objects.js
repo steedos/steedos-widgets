@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-09-12 17:16:02
+ * @LastEditTime: 2023-09-15 09:04:49
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -380,6 +380,13 @@ async function convertColumnsToTableFields(columns, uiSchema, ctx = {}) {
                 if (uiSchema.fields[column]) {
                     fields.push(Object.assign({}, uiSchema.fields[column], ctx));
                 }
+                else if(ctx.extra){
+                    // 配置列表视图extra_columns时允许字段是hidden的，hidden的字段在uiSchema.fields中不存在
+                    fields.push({
+                        extra: true,
+                        name: column
+                    });
+                }
             }
         } else if (isObject(column)) {
             if (column.field.indexOf('.') > 0) {
@@ -407,6 +414,13 @@ async function convertColumnsToTableFields(columns, uiSchema, ctx = {}) {
                             amis: column.amis
                         })
                     );
+                }
+                else if(ctx.extra){
+                    // 配置列表视图extra_columns时允许字段是hidden的，hidden的字段在uiSchema.fields中不存在
+                    fields.push({
+                        extra: true,
+                        name: column.field
+                    });
                 }
             }
         }

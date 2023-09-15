@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-01-14 16:41:24
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-09-11 16:48:35
+ * @LastEditTime: 2023-09-14 13:08:43
  * @Description:
  */
 
@@ -35,6 +35,10 @@ const getSelectFlowSchema = (id, props) => {
     amis = {},
   } = props;
   // console.log(`=====onEvent`, onEvent)
+  let { allData } = props
+  if(allData != true){
+    allData = false;
+  }
 
   return {
     type: mode,
@@ -203,7 +207,7 @@ const getSelectFlowSchema = (id, props) => {
                 api.data = {
                     query: \`
                         {
-                        options: flows__getList(action: "${action}", keywords: "\${keywords}", appId: "\${appId}", distributeInstanceId: "${distributeInstanceId}", distributeStepId: "${distributeStepId}"){
+                        options: flows__getList(action: "${action}", keywords: "\${keywords}", appId: "\${appId}", distributeInstanceId: "${distributeInstanceId}", distributeStepId: "${distributeStepId}", allData: ${allData}){
                           value:_id
                           label:name
                           children: flows{

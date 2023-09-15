@@ -433,7 +433,8 @@ export async function lookupToAmisPicker(field, readonly, ctx){
 
         pickerSchema.headerToolbar = getObjectHeaderToolbar(refObjectConfig, fieldsArr, ctx.formFactor, { headerToolbarItems, isLookup: true, keywordsSearchBoxName });
         const isAllowCreate = refObjectConfig.permissions.allowCreate;
-        if (isAllowCreate) {
+        const isCreate = _.isBoolean(field.create) ? field.create : true;
+        if (isAllowCreate && isCreate) {
             const new_button = await standardNew.getSchema(refObjectConfig, { appId: ctx.appId, objectName: refObjectConfig.name, formFactor: ctx.formFactor });
             new_button.align = "right";
             // 保持快速搜索放在最左侧，新建按钮往里插，而不是push到最后

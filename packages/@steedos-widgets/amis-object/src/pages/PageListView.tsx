@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-09-09 14:19:49
+ * @LastEditTime: 2023-09-13 16:12:22
  * @Description: 
  */
 import { getPage, Router } from "@steedos-widgets/amis-lib";
@@ -11,12 +11,12 @@ import { defaultsDeep } from 'lodash';
 
 export const PageListView = async (props) => {
   // console.time('PageListView')
-  console.log(`PageListView====>`, props)
-  const { formFactor, appId, objectApiName, listviewId, display, $schema = {}, listName } = props
-
+  // console.log(`PageListView====>`, props)
+  const { formFactor, appId, objectApiName, listviewId, display, $schema = {}, listName, data } = props
+  const _display = data.display || display
   //TODO  此代码应该在object page template中处理
-  if (display)
-    Router.setTabDisplayAs(objectApiName, display)
+  if (_display)
+    Router.setTabDisplayAs(objectApiName, _display)
 
   // const displayAs = (defaultFormFactor === 'SMALL')? 'grid': display? display : Router.getTabDisplayAs(objectApiName);
 
