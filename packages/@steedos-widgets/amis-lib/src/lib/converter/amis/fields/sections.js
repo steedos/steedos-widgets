@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-26 16:02:08
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-09-05 15:42:26
+ * @LastEditTime: 2023-09-15 14:50:05
  * @Description: 
  */
 import * as Fields from '../fields';
@@ -94,6 +94,20 @@ const getSection = async (formFields, permissionFields, fieldSchemaArray, sectio
 
   if (sectionFieldsVisibleOn.length > 0 && fieldSetBody.length === sectionFieldsVisibleOn.length) {
     section.visibleOn = `${sectionFieldsVisibleOn.join(" || ")}`
+  }
+
+  const fieldGroups = ctx.fieldGroups;
+  const group = fieldGroups.find(function(groupItem){
+    return groupItem.group_name == sectionName;
+  });
+  const groupVisibleOn = group && group.group_visible_on;
+  if(groupVisibleOn){
+    if(section.visibleOn){
+      section.visibleOn = `${section.visibleOn + " && " + groupVisibleOn}`;
+    }
+    else{
+      section.visibleOn = groupVisibleOn;
+    }
   }
   return section
 }
