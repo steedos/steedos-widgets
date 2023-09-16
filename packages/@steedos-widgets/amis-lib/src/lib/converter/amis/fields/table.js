@@ -319,6 +319,8 @@ async function getTableColumns(fields, options){
         let className = "";
         if(field.wrap != true){
             className += " whitespace-nowrap "
+        }else{
+            className += " break-all "
         }
         let columnItem;
         if((field.is_name || field.name === options.labelFieldName) && options.objectName === 'cms_files'){
