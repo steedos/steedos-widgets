@@ -318,7 +318,9 @@ async function getTableColumns(fields, options){
         const quickEditSchema = allowEdit ? await getQuickEditSchema(field, options) : allowEdit;
         let className = "";
         if(field.wrap != true){
-            className += " whitespace-nowrap"
+            className += " whitespace-nowrap "
+        }else{
+            className += " break-all "
         }
         let columnItem;
         if((field.is_name || field.name === options.labelFieldName) && options.objectName === 'cms_files'){

@@ -424,7 +424,7 @@ export async function getObjectForm(objectSchema, ctx){
         submitText: "", // amis 表单不显示提交按钮, 表单提交由项目代码接管
         api: await getSaveApi(objectSchema, recordId, fields, ctx),
         initFetch: recordId != 'new',
-        body: await getFormBody(fields, formFields, ctx),
+        body: await getFormBody(fields, formFields, Object.assign({}, ctx, {fieldGroups: objectSchema.field_groups})),
         panelClassName:'m-0 sm:rounded-lg shadow-none border-none',
         bodyClassName: 'p-0',
         className: 'steedos-amis-form',
@@ -499,7 +499,7 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
                 "formData": "$$"
               },
               wrapWithPanel: false, 
-              body: await getFormBody(map(fields, (field)=>{field.readonly = true; return field;}), map(formFields, (field)=>{field.readonly = true; return field;}), Object.assign({}, ctx, {showSystemFields: true})),
+              body: await getFormBody(map(fields, (field)=>{field.readonly = true; return field;}), map(formFields, (field)=>{field.readonly = true; return field;}), Object.assign({}, ctx, {showSystemFields: true,fieldGroups: objectSchema.field_groups})),
               className: 'steedos-amis-form bg-white',
               actions: [], // 不显示表单默认的提交按钮
               onEvent: {
