@@ -296,12 +296,22 @@ export function getObjectFooterToolbar(mainObject, formFactor, options) {
     // return [
     //   "load-more",
     // ]
-    return [
-      {
-        "type": "pagination",
-        "maxButtons": 5
-      }
-    ]
+    if(options.displayAs === 'split'){
+      return [
+        "switch-per-page",
+        {
+          "type": "pagination",
+          "maxButtons": 5
+        }
+      ]
+    }else{
+      return [
+        {
+          "type": "pagination",
+          "maxButtons": 5
+        }
+      ]
+    }
   }
   else {
     if(options && options.isRelated){
