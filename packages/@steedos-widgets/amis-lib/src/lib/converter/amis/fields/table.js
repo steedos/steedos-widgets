@@ -449,7 +449,8 @@ async function getTableColumns(fields, options){
     };
 
     // columns.push(getOperation(fields));
-    if(!_.some(columns, { name: options.labelFieldName })){
+    if(!options.isLookup && !_.some(columns, { name: options.labelFieldName })){
+        // 没有名称字段时显示序号字段为链接，lookup弹出的picker不需要此功能
         const href = Router.getObjectDetailPath({
             ...options,  formFactor: options.formFactor, appId: "${appId}", objectName: options.objectName || "${objectName}", recordId: `\${${options.idFieldName}}`
         })

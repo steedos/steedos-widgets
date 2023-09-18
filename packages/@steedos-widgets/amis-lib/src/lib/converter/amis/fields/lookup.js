@@ -416,8 +416,13 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             actions: false
         })
     }else{
+        let labelFieldName = refObjectConfig.NAME_FIELD_KEY || 'name';
+        // organizations 对象的历史遗留问题, fullname 被标记为了 名称字段. 在此处特殊处理.
+        if(refObjectConfig.name === 'organizations'){
+          labelFieldName = 'name';
+        }
         pickerSchema = await Table.getTableSchema(tableFields, {
-            labelFieldName: refObjectConfig.NAME_FIELD_KEY,
+            labelFieldName,
             top:  top,
             isLookup: true,
             ...ctx
