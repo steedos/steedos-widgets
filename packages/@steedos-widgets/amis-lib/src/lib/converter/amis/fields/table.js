@@ -548,7 +548,9 @@ async function getMobileTableColumns(fields, options){
         let tpl = "";
         if(field.is_name || field.name === options.labelFieldName){
             nameField = field;
-            options.onlyDisplayLookLabel = true;
+            options = Object.assign({}, options, {
+                onlyDisplayLookLabel: true
+            });
             tpl = await Tpl.getFieldTpl(field, options);
         }
         else if(field.type === 'avatar' || field.type === 'image' || field.type === 'file'){
@@ -557,7 +559,9 @@ async function getMobileTableColumns(fields, options){
         }
         else{
             if(field.type === 'lookup' || field.type === 'master_detail'){
-                options.onlyDisplayLookLabel = true;
+                options = Object.assign({}, options, {
+                    onlyDisplayLookLabel: true
+                });
             }
             tpl = await Tpl.getFieldTpl(field, options);
         }
