@@ -462,12 +462,12 @@ export async function lookupToAmisPicker(field, readonly, ctx){
 
         pickerSchema.onEvent[`@data.changed.${refObjectConfig.name}`] = {
             "actions": [
-              {
-                "actionType": "reload"
-              },
-              {
-                "actionType": "custom",
-                "script": `
+                {
+                    "actionType": "reload"
+                },
+                {
+                    "actionType": "custom",
+                    "script": `
                     const masterRecord = event.data._master && event.data._master.record;
                     const fieldConfig = ${JSON.stringify(field)};
                     let reference_to = fieldConfig.reference_to;
@@ -516,9 +516,9 @@ export async function lookupToAmisPicker(field, readonly, ctx){
                         }
                     });
                 `
-              }
+                }
             ]
-          }
+        }
     }
 
     if(field.pickerSchema){
