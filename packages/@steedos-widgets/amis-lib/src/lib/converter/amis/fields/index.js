@@ -582,7 +582,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                             label: subField.label,
                             quickEdit: readonly ? false : gridSub
                         };
-                        if(subField.type === 'lookup'){
+                        if(["lookup", "boolean", "toggle"].indexOf(subField.type) > -1){
                             gridItemSchema.type = gridSub.type;
                             gridItemSchema.tpl = gridSub.tpl;
                         }

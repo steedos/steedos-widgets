@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-08-29 15:04:39
+ * @LastEditTime: 2023-09-19 14:38:39
  * @Description: 
  */
 import { Router } from '../../router'
@@ -186,9 +186,13 @@ export async function getLookupTpl(field, ctx){
 }
 
 export function getSwitchTpl(field){
+    let fieldDataStrTpl = `data._display.${field.name}`;
+    if(field.isTableField){
+        fieldDataStrTpl = `data.${field.name}`;
+    }
     return `<% if (data.${field.name}) { %>
-    <span class="slds-icon_container slds-icon-utility-check slds-current-color" title="<%=data._display.${field.name}%>">
-        <span ><%= data._display.${field.name} === "√" ? "<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor' class='w-4 h-4'><path stroke-linecap='round' stroke-linejoin='round' d='M4.5 12.75l6 6 9-13.5' /></svg>" : data._display.${field.name} %></span>
+    <span class="slds-icon_container slds-icon-utility-check slds-current-color" title="<%=${fieldDataStrTpl}%>">
+        <span ><%= ${fieldDataStrTpl} === "√" ? "<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor' class='w-4 h-4'><path stroke-linecap='round' stroke-linejoin='round' d='M4.5 12.75l6 6 9-13.5' /></svg>" : ${fieldDataStrTpl} %></span>
     </span>
     <% } %>`
 }
