@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-05-08 15:05:32
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-09-19 11:12:17
  * @Description: 
  */
 
@@ -244,10 +244,8 @@ export const AmisAppLauncher = async (props) => {
                       "click": {
                         "actions": [
                           {
-                            "actionType": "link",
-                            "args":{
-                              "link": "${path}"
-                            }
+                            "actionType": "custom",
+                            "script": "\nconst path = context.props.data.path;\ndoAction({\n  actionType: 'url',\n  args: {\n    \"url\": path,\n    \"blank\": false\n  }\n});"
                           },
                           {
                             "actionType": "broadcast",

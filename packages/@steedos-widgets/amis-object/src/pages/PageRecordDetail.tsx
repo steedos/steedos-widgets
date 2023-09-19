@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-09-13 16:12:37
+ * @LastEditTime: 2023-09-19 11:28:02
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef } from 'react';
@@ -18,7 +18,7 @@ export const PageRecordDetail = async (props) => {
 
   let recordSchema = {}
   if (true || recordId) {
-    const recordPage = await getPage({type: 'record', appId: appId, objectName: objectApiName, formFactor: defaultFormFactor});
+    const recordPage = await getPage({type: 'record', appId: appId, objectName: objectApiName, formFactor: defaultFormFactor || data.formFactor});
     recordSchema = recordPage? recordPage.schema : {
       "type": "wrapper",
       "className": "overflow-y-auto p-0 m-0 flex-1 h-full",

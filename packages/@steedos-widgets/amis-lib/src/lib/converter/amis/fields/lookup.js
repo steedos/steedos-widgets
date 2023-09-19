@@ -416,8 +416,13 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             actions: false
         })
     }else{
+        let labelFieldName = refObjectConfig.NAME_FIELD_KEY || 'name';
+        // organizations 对象的历史遗留问题, fullname 被标记为了 名称字段. 在此处特殊处理.
+        if(refObjectConfig.name === 'organizations'){
+          labelFieldName = 'name';
+        }
         pickerSchema = await Table.getTableSchema(tableFields, {
-            labelFieldName: refObjectConfig.NAME_FIELD_KEY,
+            labelFieldName,
             top:  top,
             isLookup: true,
             ...ctx
@@ -462,12 +467,12 @@ export async function lookupToAmisPicker(field, readonly, ctx){
 
         pickerSchema.onEvent[`@data.changed.${refObjectConfig.name}`] = {
             "actions": [
-              {
-                "actionType": "reload"
-              },
-              {
-                "actionType": "custom",
-                "script": `
+                {
+                    "actionType": "reload"
+                },
+                {
+                    "actionType": "custom",
+                    "script": `
                     const masterRecord = event.data._master && event.data._master.record;
                     const fieldConfig = ${JSON.stringify(field)};
                     let reference_to = fieldConfig.reference_to;
@@ -516,9 +521,9 @@ export async function lookupToAmisPicker(field, readonly, ctx){
                         }
                     });
                 `
-              }
+                }
             ]
-          }
+        }
     }
 
     if(field.pickerSchema){
@@ -794,7 +799,9 @@ export async function lookupToAmis(field, readonly, ctx){
     }
 
     if(referenceTo.objectName === "space_users" && field.reference_to_field === "user"){
-        ctx.onlyDisplayLookLabel = true;
+        ctx = Object.assign({}, ctx, {
+            onlyDisplayLookLabel: true
+        });
         if(ctx.idsDependOn){
             // ids人员点选模式
             return await lookupToAmisIdsPicker(field, readonly, ctx);

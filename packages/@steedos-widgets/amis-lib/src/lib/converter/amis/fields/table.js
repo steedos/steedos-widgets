@@ -449,7 +449,8 @@ async function getTableColumns(fields, options){
     };
 
     // columns.push(getOperation(fields));
-    if(!_.some(columns, { name: options.labelFieldName })){
+    if(!options.isLookup && !_.some(columns, { name: options.labelFieldName })){
+        // 没有名称字段时显示序号字段为链接，lookup弹出的picker不需要此功能
         const href = Router.getObjectDetailPath({
             ...options,  formFactor: options.formFactor, appId: "${appId}", objectName: options.objectName || "${objectName}", recordId: `\${${options.idFieldName}}`
         })
@@ -548,7 +549,9 @@ async function getMobileTableColumns(fields, options){
         let tpl = "";
         if(field.is_name || field.name === options.labelFieldName){
             nameField = field;
-            options.onlyDisplayLookLabel = true;
+            options = Object.assign({}, options, {
+                onlyDisplayLookLabel: true
+            });
             tpl = await Tpl.getFieldTpl(field, options);
         }
         else if(field.type === 'avatar' || field.type === 'image' || field.type === 'file'){
@@ -557,7 +560,9 @@ async function getMobileTableColumns(fields, options){
         }
         else{
             if(field.type === 'lookup' || field.type === 'master_detail'){
-                options.onlyDisplayLookLabel = true;
+                options = Object.assign({}, options, {
+                    onlyDisplayLookLabel: true
+                });
             }
             tpl = await Tpl.getFieldTpl(field, options);
         }
