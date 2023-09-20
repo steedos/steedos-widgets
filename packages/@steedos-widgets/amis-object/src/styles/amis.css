@@ -276,6 +276,8 @@ fieldset.antd-Collapse > legend{
 }
 
 /* crud中的顶部选中项未垂直居中 */
-.antd-Crud .antd-Crud-selection{
-    margin-bottom: var(--gap-xs);
+.antd-Crud .antd-Crud-selection{      
+    padding: var(--gap-sm);
+    border-bottom: 1px solid var(--Table-thead-borderColor);
+    margin-bottom: 0;
 }
