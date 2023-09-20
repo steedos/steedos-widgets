@@ -5,7 +5,7 @@ import { Logo } from '@/components/Logo'
 
 export function Footer() {
   return (
-    <footer className="bg-slate-50">
+    <footer className="bg-gray-50">
       <Container>
         <div className="py-16">
           <Logo className="mx-auto h-10 w-auto" />
@@ -13,21 +13,21 @@ export function Footer() {
             <ul className="-my-1 flex justify-center space-x-6">
               {/* <li>
                 <Link href="#features">
-                  <a className="rounded-lg px-2 py-1 text-slate-700 hover:bg-slate-100 hover:text-slate-900">
+                  <a className="rounded-lg px-2 py-1 text-gray-700 hover:bg-gray-100 hover:text-gray-900">
                     Features
                   </a>
                 </Link>
               </li>
               <li>
                 <Link href="#testimonials">
-                  <a className="rounded-lg px-2 py-1 text-slate-700 hover:bg-slate-100 hover:text-slate-900">
+                  <a className="rounded-lg px-2 py-1 text-gray-700 hover:bg-gray-100 hover:text-gray-900">
                     Testimonials
                   </a>
                 </Link>
               </li>
               <li>
                 <Link href="#pricing">
-                  <a className="rounded-lg px-2 py-1 text-slate-700 hover:bg-slate-100 hover:text-slate-900">
+                  <a className="rounded-lg px-2 py-1 text-gray-700 hover:bg-gray-100 hover:text-gray-900">
                     Pricing
                   </a>
                 </Link>
@@ -60,7 +60,7 @@ export function Footer() {
               </a>
             </Link>
           </div>
-          <p className="mt-6 text-sm text-slate-500 sm:mt-0">
+          <p className="mt-6 text-sm text-gray-500 sm:mt-0">
             Copyright &copy; {new Date().getFullYear()} Steedos. All rights
             reserved.
           </p>

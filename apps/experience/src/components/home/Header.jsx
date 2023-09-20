@@ -47,7 +47,7 @@ function MobileNavigation() {
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <Popover.Overlay className="fixed inset-0 bg-slate-300/50" />
+              <Popover.Overlay className="fixed inset-0 bg-gray-300/50" />
             </Transition.Child>
             <Transition.Child
               as={Fragment}
@@ -60,7 +60,7 @@ function MobileNavigation() {
             >
               <Popover.Panel
                 as="ul"
-                className="absolute inset-x-0 top-full mt-4 origin-top space-y-4 rounded-2xl bg-white p-6 text-lg tracking-tight text-slate-900 shadow-xl ring-1 ring-slate-900/5"
+                className="absolute inset-x-0 top-full mt-4 origin-top space-y-4 rounded-2xl bg-white p-6 text-lg tracking-tight text-gray-900 shadow-xl ring-1 ring-slate-900/5"
               >
                 {/* <li>
                   <Link href="#features">
@@ -83,7 +83,7 @@ function MobileNavigation() {
                     </a>
                   </Link>
                 </li> */}
-                <li className="border-t border-slate-300/40 pt-4">
+                <li className="border-t border-gray-300/40 pt-4">
                   <Link href="/login">
                     <a className="block w-full">Sign in</a>
                   </Link>
@@ -106,7 +106,7 @@ export function Header() {
           <ul className="flex items-center">
             <li>
               <Link href="#">
-                <a className="flex items-center text-lg font-bold text-slate-800">
+                <a className="flex items-center text-lg font-bold text-gray-800">
                   <span className="sr-only">Home</span>
                   <Logo className="h-8 w-auto mr-2" />
                   <span>Steedos Experience</span>
@@ -115,21 +115,21 @@ export function Header() {
             </li>
             {/* <li className="ml-12 hidden md:block">
               <Link href="#features">
-                <a className="rounded-lg py-1 px-2 text-slate-700 hover:bg-slate-100 hover:text-slate-900">
+                <a className="rounded-lg py-1 px-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900">
                   Features
                 </a>
               </Link>
             </li>
             <li className="ml-6 hidden md:block">
               <Link href="#testimonials">
-                <a className="rounded-lg py-1 px-2 text-slate-700 hover:bg-slate-100 hover:text-slate-900">
+                <a className="rounded-lg py-1 px-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900">
                   Testimonials
                 </a>
               </Link>
             </li>
             <li className="ml-6 hidden md:block">
               <Link href="#pricing">
-                <a className="rounded-lg py-1 px-2 text-slate-700 hover:bg-slate-100 hover:text-slate-900">
+                <a className="rounded-lg py-1 px-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900">
                   Pricing
                 </a>
               </Link>
@@ -137,13 +137,13 @@ export function Header() {
             
             <li className="ml-auto hidden md:block">
               {!session && (
-                <a href="#" onClick={signIn} className="rounded-lg py-1 px-2 text-slate-700 hover:bg-slate-100 hover:text-slate-900">
+                <a href="#" onClick={signIn} className="rounded-lg py-1 px-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900">
                   Sign in
                 </a>
               )}
               {session && (
                 <>
-                  <a href="#" onClick={signOut} className="rounded-lg py-1 px-2 text-slate-700 hover:bg-slate-100 hover:text-slate-900">
+                  <a href="#" onClick={signOut} className="rounded-lg py-1 px-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900">
                     Sign out {session.user.name}
                   </a>
                 </>

@@ -143,7 +143,7 @@ export const AmisObjectListView = async (props) => {
   return {
     type: "service",
     data: serviceData,
-    className: `${className} sm:bg-gray-100 h-full  border-slate-300 steedos-object-listview ${displayAs === 'split'? 'sm:border-r sm:shadow':'sm:shadow sm:rounded sm:border'}`,
+    className: `${className} sm:bg-gray-100 h-full  border-gray-300 steedos-object-listview ${displayAs === 'split'? 'sm:border-r sm:shadow':'sm:shadow sm:rounded sm:border'}`,
     body: [{
       "type": "wrapper",
       "size": "none",

@@ -183,7 +183,7 @@ export const AmisGlobalHeader = async (props) => {
                 body: [
                     {
                         type: "wrapper",
-                        className: 'sidebar-wrapper px-0 pt-4 pb-16 fixed z-20 h-full h-fill ease-in-out duration-300 flex flex-col border-r overflow-y-auto bg-white border-slate-300 sm:shadow block -translate-x-0 sm:w-[220px] w-64',
+                        className: 'sidebar-wrapper px-0 pt-4 pb-16 fixed z-20 h-full h-fill ease-in-out duration-300 flex flex-col border-r overflow-y-auto bg-white border-gray-300 sm:shadow block -translate-x-0 sm:w-[220px] w-64',
                         body: [
                             {
                                 "type": "steedos-app-launcher",

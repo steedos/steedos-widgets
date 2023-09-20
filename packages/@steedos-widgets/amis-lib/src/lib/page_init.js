@@ -61,7 +61,7 @@ export async function getListPageInitSchema(objectApiName, formFactor, userSessi
             "columnsTogglable": false,
             "showHeader": true,
             // "headerSchema": headerSchema
-            className: "sm:border bg-white sm:shadow sm:rounded border-slate-300 border-solid"
+            className: "sm:border bg-white sm:shadow sm:rounded border-gray-300 border-solid"
         }]
     }
 }
@@ -124,7 +124,7 @@ export async function getRecordPageInitSchema(objectApiName){
                 ]
             }
         ],
-        "className": "sm:mt-3 flex flex-col region-main bg-white sm:shadow sm:rounded sm:border border-slate-300",
+        "className": "sm:mt-3 flex flex-col region-main bg-white sm:shadow sm:rounded sm:border border-gray-300",
         "linksClassName": "pl-4 pt-2"
     };
     if(relatedList.length){

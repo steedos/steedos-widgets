@@ -44,7 +44,7 @@ export const PageListView = async (props) => {
     "showHeader": true,
     // "showDisplayAs": (formFactor !== 'SMALL'),
     // "formFactor": formFactor,
-    // "className": (displayAs === 'split')? 'w-full': 'p-0 flex-1 m-0 sm:border sm:shadow sm:rounded border-slate-300 border-solid bg-gray-100'
+    // "className": (displayAs === 'split')? 'w-full': 'p-0 flex-1 m-0 sm:border sm:shadow sm:rounded border-gray-300 border-solid bg-gray-100'
   }
 
   // const defData = {
