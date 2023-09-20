@@ -1,4 +1,5 @@
 :root {
+    --body-bg: #f9fafb;
     --Page-main-bg: transparent;
     --fontFamilyBase: -apple-system,BlinkMacSystemFont,Helvetica,Arial,Microsoft Yahei,SimHei;
     --Form-item-fontSize: 12px;
@@ -280,4 +281,8 @@ fieldset.antd-Collapse > legend{
     padding: var(--gap-sm);
     border-bottom: 1px solid var(--Table-thead-borderColor);
     margin-bottom: 0;
+}
+
+.bg-white {
+  color: var(--body-color);
 }
