@@ -115,7 +115,7 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
       {
         "type": "search-box",
         "name": keywordsSearchBoxName,
-        "placeholder": "快速搜索",
+        "placeholder": "搜索此列表",
         "value": crudKeywords,
         "clearable": true,
         "clearAndSubmit": true
@@ -238,10 +238,10 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
     if(toolbarCount){
       toolbars.push(toolbarCount);
     }
-    toolbars.push(toolbarReloadButton);
     if(toolbarFilter){
       toolbars.push(toolbarFilter);
     }
+    toolbars.push(toolbarReloadButton);
     toolbars.push(toolbarDisplayAsButton);
     toolbars.push(toolbarDQuickSearchBox);
     return [
@@ -257,10 +257,10 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
       toolbars.push(toolbarFilter);
     }
     toolbars.push(toolbarReloadButton);
+    toolbars.push(toolbarDisplayAsButton);
     if(mainObject?.permissions?.allowCreateListViews){
       toolbars.push(getSettingListviewToolbarButtonSchema());
     }
-    toolbars.push(toolbarDisplayAsButton);
     toolbars.push(toolbarDQuickSearchBox);
     return [
       // "filter-toggler",

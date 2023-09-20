@@ -420,7 +420,7 @@ export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
                 type: "steedos-dropdown-button",
                 label: "",
                 buttons: moreButtons,
-                className: 'slds-icon',
+                className: 'slds-icon ml-1',
                 visibleOn: moreButtonsVisibleOn
             }
             buttons.push(dropdownButtonsSchema);

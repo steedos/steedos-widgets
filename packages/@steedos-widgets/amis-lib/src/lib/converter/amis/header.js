@@ -38,13 +38,15 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
     "visibleOn": "${display == 'split'?false:true}"
   }]
   if(ctx.formFactor !== 'SMALL'){
+    const restButtons = Array.isArray(amisButtonsSchema) ? amisButtonsSchema.filter(obj => obj.name !== "standard_new"):[]
     buttonSchema.push({
       "type": "flex",
       "items":[
         standardNewButton,
-        {
+        (restButtons.length > 0) && {
           "type": "dropdown-button",
-          "buttons": Array.isArray(amisButtonsSchema) ? amisButtonsSchema.filter(obj => obj.name !== "standard_new"):{},
+          "buttons": restButtons,
+          "className": " ml-1",
           "menuClassName": "p-none split-dropdown-buttons",
           "align": "right",
           "size": "sm"
@@ -176,7 +178,6 @@ export async function getObjectListHeaderSecordLine(objectSchema, listViewName, 
       },
       {
         "body": [
-          fieldsFilterButtonSchema,
           {
             "type": "button",
             "label": "",
@@ -185,6 +186,7 @@ export async function getObjectListHeaderSecordLine(objectSchema, listViewName, 
             "target": amisListViewId,
             "className": "bg-white p-2 rounded border-gray-300 text-gray-500"
           },
+          fieldsFilterButtonSchema,
           // {
           //   "type": "button",
           //   "label": "",
