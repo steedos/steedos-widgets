@@ -32,7 +32,7 @@ export const AmisObjectListView = async (props) => {
     ctx = {};
   }
   const displayAs = Router.getTabDisplayAs(objectApiName);
-  // console.log(`AmisObjectListView`, 'displayAs===>', displayAs, objectApiName)
+  console.log(`AmisObjectListView`, 'displayAs===>', displayAs, objectApiName, data)
   let formFactor = props.formFactor;
   if(!formFactor){
     const isMobile = window.innerWidth < 768;
@@ -143,7 +143,7 @@ export const AmisObjectListView = async (props) => {
   return {
     type: "service",
     data: serviceData,
-    className: `${className} sm:bg-gray-100 h-full sm:shadow sm:rounded-tl sm:rounded-tr steedos-object-listview`,
+    className: `${className} sm:bg-gray-100 h-full  border-slate-300 steedos-object-listview ${displayAs === 'split'? 'sm:border-r sm:shadow':'sm:shadow sm:rounded sm:border'}`,
     body: [{
       "type": "wrapper",
       "size": "none",
