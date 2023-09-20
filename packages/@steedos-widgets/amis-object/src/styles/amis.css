@@ -1,7 +1,6 @@
 :root {
     --body-bg: #f9fafb;
     --Page-main-bg: transparent;
-    --fontFamilyBase: -apple-system,BlinkMacSystemFont,Helvetica,Arial,Microsoft Yahei,SimHei;
     --Form-item-fontSize: 12px;
     --Form-fontSize: 14px;
     --Form-selectValue-fontSize: 14px;
@@ -97,10 +96,6 @@ fieldset.antd-Collapse > legend.antd-Collapse-header > .antd-Collapse-arrow:befo
 
 .steedos-listview .antd-List-toolbar{
     display: none;
-}
-
-body {
-    font-family: -apple-system,BlinkMacSystemFont,Helvetica,Arial,Microsoft Yahei,SimHei;
 }
 
 @media (max-width: 768px){
