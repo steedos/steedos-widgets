@@ -60,7 +60,7 @@ fieldset.antd-Collapse {
     margin-bottom: 1rem;
 }
 
-fieldset.antd-Collapse > legend.antd-Collapse-header {
+/* fieldset.antd-Collapse > legend.antd-Collapse-header {
     border-left: 0;
     background: rgb(241 245 249);
     padding: 0.5rem;
@@ -70,7 +70,7 @@ fieldset.antd-Collapse > legend.antd-Collapse-header {
 
 fieldset.antd-Collapse > legend.antd-Collapse-header > .antd-Collapse-arrow:before {
     border-color: initial
-}
+} */
 
 .amis-scope .antd-Select-option > label {
     display: block;
