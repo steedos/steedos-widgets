@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-09-12 17:20:36
+ * @LastEditTime: 2023-09-21 17:33:59
  * @Description: 
  */
 import './AmisObjectListview.less';
@@ -111,13 +111,13 @@ export const AmisObjectListView = async (props) => {
     setDataToComponentId = `service_listview_${objectApiName}`;
   }
 
-  // const amisSchemaData = Object.assign({}, data, defaultData);
-  const amisSchemaData = createObject(data, defaultData);
+  const amisSchemaData = Object.assign({}, data, defaultData);
   const listViewId = ctx?.listViewId || amisSchemaData.listViewId;
+  const allData = createObject(data, defaultData);
   const listViewSchemaProps = { 
     top, perPage, showHeader, defaults, ...ctx, listViewId, setDataToComponentId, filterVisible, showDisplayAs, displayAs, 
     headerToolbarItems, rowClassNameExpr, hiddenColumnOperation, columns,
-    crudDataFilter, onCrudDataFilter, amisData: amisSchemaData, env
+    crudDataFilter, onCrudDataFilter, amisData: allData, env
   }
 
   if(!headerSchema){

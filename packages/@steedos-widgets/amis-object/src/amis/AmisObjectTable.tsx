@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-09-12 17:20:48
+ * @LastEditTime: 2023-09-21 17:31:28
  * @Description: 
  */
 import './AmisObjectTable.less';
@@ -78,16 +78,16 @@ export const AmisObjectTable = async (props) => {
   }
   const amisFilters = amisCondition && conditionsToFilters(amisCondition);
   const tableFilters = filters || amisFilters;
-  // const amisSchemaData = Object.assign({}, data, defaultData);
-  const amisSchemaData = createObject(data, defaultData);
+  const amisSchemaData = Object.assign({}, data, defaultData);
+  const allData = createObject(data, defaultData);
   const appId = data?.appId || defaultData?.appId;
   // ctx中值为undefined的属性不能保留，否则会导致 filters等被覆盖。
   ctx = pickBy(ctx, (value)=>{ return value !== undefined })
   let amisSchema = (await getTableSchema(appId, objectApiName, columns, { 
     filters: tableFilters, filtersFunction, top, sort, sortField, sortOrder, extraColumns, defaults, ...ctx, 
     setDataToComponentId, requestAdaptor, adaptor, filterVisible, headerToolbarItems, 
-    crudDataFilter, onCrudDataFilter, amisData: amisSchemaData, env })).amisSchema;
-  amisSchema.data = createObject(amisSchema.data, amisSchemaData);
+    crudDataFilter, onCrudDataFilter, amisData: allData, env })).amisSchema;
+  amisSchema.data = Object.assign({}, amisSchema.data, amisSchemaData);
   if(has(props, 'objectApiName')){
     amisSchema.data.objectName = objectApiName;
   }

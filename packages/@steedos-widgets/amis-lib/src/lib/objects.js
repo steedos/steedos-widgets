@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-09-15 09:04:49
+ * @LastEditTime: 2023-09-21 17:35:06
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -467,7 +467,7 @@ export async function getTableSchema(
         headerToolbarItems: ctx.headerToolbarItems,
         buttons: await getListViewItemButtons(uiSchema, ctx)
     };
-    crudOptions.amisData = createObject(ctx.amisData || {}, {}).__super;
+    crudOptions.amisData = createObject(ctx.amisData || {}, {});
     const amisSchema = await getObjectCRUD(uiSchema, fields, crudOptions);
     // console.timeEnd('getTableSchema');
     return {

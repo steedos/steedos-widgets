@@ -230,7 +230,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
         idFieldName: objectSchema.idFieldName, labelFieldName: labelFieldName, 
         permissions:objectSchema.permissions,enable_inline_edit:objectSchema.enable_inline_edit
       }, options);
-      tableOptions.amisData = createObject(options.amisData || {}, {}).__super;
+      tableOptions.amisData = createObject(options.amisData || {}, {});
       const table = await getTableSchema(fields, tableOptions);
       delete table.mode;
       //image与avatar需要在提交修改时特别处理
