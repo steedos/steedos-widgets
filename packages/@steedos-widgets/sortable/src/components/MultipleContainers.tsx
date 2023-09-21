@@ -469,7 +469,7 @@ export function MultipleContainers(props) {
               ),
               [newContainerId]: [active.id],
             }));
-            console.log('拖动结束，更新form value')
+            // console.log('拖动结束，更新form value')
             handleChange()
             setActiveId(null);
           });
@@ -496,7 +496,7 @@ export function MultipleContainers(props) {
 
         setActiveId(null);
 
-        console.log('拖动结束2，更新form value')
+        // console.log('拖动结束2，更新form value')
         handleChange()
       }}
       cancelDrop={cancelDrop}

@@ -11,7 +11,7 @@ import { keys, pick, difference, find, has, first, values } from 'lodash';
 
 export const AmisObjectListView = async (props) => {
   // console.time('AmisObjectListView')
-  console.log(`AmisObjectListView props`, props)
+  // console.log(`AmisObjectListView props`, props)
   const { $schema, top, perPage, showHeader=true, data, defaultData, 
       crud = {},
       className="", 
@@ -32,7 +32,7 @@ export const AmisObjectListView = async (props) => {
     ctx = {};
   }
   const displayAs = Router.getTabDisplayAs(objectApiName);
-  console.log(`AmisObjectListView`, 'displayAs===>', displayAs, objectApiName, data)
+  // console.log(`AmisObjectListView`, 'displayAs===>', displayAs, objectApiName, data)
   let formFactor = props.formFactor;
   if(!formFactor){
     const isMobile = window.innerWidth < 768;
@@ -188,7 +188,7 @@ export const AmisObjectListView = async (props) => {
                           const formFactor = (["split"].indexOf(display) > -1) ? 'SMALL': defaultFormFactor;
                           listViewSchemaProps.formFactor = formFactor;
                           listViewSchemaProps.displayAs = display;
-                          console.log("====listViewSchemaProps===>", listName, display, listViewSchemaProps)
+                          // console.log("====listViewSchemaProps===>", listName, display, listViewSchemaProps)
                           window.getListSchema(appId, objectName, listName, listViewSchemaProps).then((schema)=>{
                             try{
                               const uiSchema = schema.uiSchema;

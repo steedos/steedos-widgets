@@ -13,7 +13,7 @@ export const AmisAppMenu = async (props) => {
         appId = data.context.appId || 'admin';
     }
     // console.log(`AmisAppMenu appId`, appId)
-    console.log(`AmisAppMenu`, appId, props)
+    // console.log(`AmisAppMenu`, appId, props)
 
     if(links){
         return {
@@ -32,7 +32,7 @@ export const AmisAppMenu = async (props) => {
             "url": `\${context.rootUrl}/service/api/apps/${appId}/menus`,
             "adaptor": `
                   try {
-                      console.log('payload====>', payload)
+                    //   console.log('payload====>', payload)
                       if(payload.nav_schema){
                         payload.data = payload.nav_schema;
                         return payload
@@ -188,7 +188,7 @@ export const AmisAppMenu = async (props) => {
                   } catch (error) {
                       console.log(\`error\`, error)
                   }
-                  console.log('payload===2==>', payload)
+                //   console.log('payload===2==>', payload)
                   return payload;
             `,
             "headers": {
@@ -196,6 +196,6 @@ export const AmisAppMenu = async (props) => {
             }
         }
     }
-    console.log(`schema=====>`, schema)
+    // console.log(`schema=====>`, schema)
     return schema;
 }

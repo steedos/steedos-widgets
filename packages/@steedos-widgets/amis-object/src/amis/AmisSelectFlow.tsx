@@ -258,7 +258,7 @@ export const AmisSelectFlow = (props) => {
   //mode: "input-tree" | "tree-select"
   const { mode = "input-tree", id = "selectFlow" + random(10000, 99999) } =
     props;
-  console.log(`AmisSelectFlow props`, props);
+  // console.log(`AmisSelectFlow props`, props);
   const inputId = `${id}_input`;
   const flowSchema = getSelectFlowSchema(inputId, props);
   if (mode === "tree-select") {
