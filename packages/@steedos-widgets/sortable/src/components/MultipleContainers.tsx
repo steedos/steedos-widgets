@@ -58,12 +58,14 @@ function DroppableContainer({
   id,
   items,
   style,
+  className,
   ...props
 }: ContainerProps & {
   disabled?: boolean;
   id: UniqueIdentifier;
   items: UniqueIdentifier[];
   style?: React.CSSProperties;
+  className: string
 }) {
   const {
     active,
@@ -96,6 +98,7 @@ function DroppableContainer({
         transform: CSS.Translate.toString(transform),
         opacity: isDragging ? 0.5 : undefined,
       }}
+      className={className}
       hover={isOverContainer}
       handleProps={{
         ...attributes,
@@ -148,14 +151,19 @@ interface Props {
   addable?: boolean;
   scrollable?: boolean;
   vertical?: boolean;
-  containerSource: [{id:string, label:string}?],
-  itemSource: [{id:string, label:string, color: string, columnSpan: number, body: [any]}?],
+  boardSource: [{id:string, label:string}?],
+  cardSource: [{id:string, label:string, color: string, columnSpan: number, body: [any]}?],
   defaultValue: any,
   onChange: Function,
   data: any,
   dispatchEvent: Function,
   render: Function,
-  itemBody: any
+  cardSchema: any,
+  boardHeader: any,
+  boardFooter: any,
+  wrapperClassName: string,
+  boardClassName: string,
+  cardClassName: string,
 }
 
 export const TRASH_ID = 'void';
@@ -169,7 +177,7 @@ export function MultipleContainers(props) {
     itemCount = 3,
     cancelDrop,
     columns = 1,
-    handle = false,
+    handle = true,
     containerStyle,
     coordinateGetter = multipleContainersCoordinateGetter,
     getItemStyles = () => ({}),
@@ -182,18 +190,26 @@ export function MultipleContainers(props) {
     trashable = false,
     vertical = false,
     scrollable,
-    containerSource = [],
-    itemSource = [],
+    boardSource = [],
+    cardSource = [],
     defaultValue,
     onChange: amisOnChange,
     data: amisData,
     dispatchEvent: amisDispatchEvent,
     render: amisRender,
-    itemBody: amisItemBody = [{
+    cardSchema = [{
       "type": "tpl",
       "tpl": "${label}",
       "inline": false,
     }],
+    boardHeader = [{
+      "type": "tpl",
+      "tpl": "${label}",
+    }],
+    boardFooter = [],
+    wrapperClassName = "gap-2",
+    boardClassName = "border rounded",
+    cardClassName = "",
   }: Props = props
 
   defaultValue && delete(defaultValue.$$id);
@@ -510,6 +526,7 @@ export function MultipleContainers(props) {
           gridAutoFlow: vertical ? 'row' : 'column',
           width: vertical? '100%': 'auto'
         }}
+        className={wrapperClassName}
       >
         <SortableContext
           items={[...containers, PLACEHOLDER_ID]}
@@ -520,7 +537,7 @@ export function MultipleContainers(props) {
           }
         >
           {containers.map((containerId) => {
-            const container = cloneDeep(keyBy(containerSource, 'id')[containerId]) || {id: containerId, label: 'Container ' + containerId}
+            const container = cloneDeep(keyBy(boardSource, 'id')[containerId]) || {id: containerId, label: 'Container ' + containerId}
             return (
             <DroppableContainer
               key={containerId}
@@ -530,20 +547,25 @@ export function MultipleContainers(props) {
               items={items[containerId]}
               scrollable={scrollable}
               style={containerStyle}
+              className={boardClassName}
               unstyled={minimal}
-              onRemove={() => handleRemove(containerId)}
+              // onRemove={() => handleRemove(containerId)}
               {...container}
+              label={amisRender? amisRender('body', boardHeader, {data: {...container}}) : (
+                <span>{container.label}</span>
+              )}
+              footer={amisRender? amisRender('body', boardFooter, {data: {...container}}) : (<></>)}
             >
               <SortableContext 
                 items={items[containerId]} 
                 strategy={strategy}
                 >
                 {items[containerId].map((value, index) => {
-                  const item = cloneDeep(keyBy(itemSource, 'id')[value]) || {id: value, label: '' + value, columnSpan:1, body: amisItemBody}
+                  const item = cloneDeep(keyBy(cardSource, 'id')[value]) || {id: value, label: '' + value, columnSpan:1, body: cardSchema}
                   if (item.columnSpan && item.columnSpan > columns)
                     item.columnSpan = columns
                   if (!item.body) 
-                    item.body = amisItemBody
+                    item.body = cardSchema
                   return (
                     <SortableItem
                       disabled={isSortingContainer}
@@ -558,6 +580,7 @@ export function MultipleContainers(props) {
                       renderItem={renderItem}
                       containerId={containerId}
                       getIndex={getIndex}
+                      className={cardClassName}
                       {...item}
                     />
                   );
@@ -596,12 +619,12 @@ export function MultipleContainers(props) {
   );
 
   function renderSortableItemDragOverlay(id: UniqueIdentifier) {
-    const item = cloneDeep(keyBy(itemSource, 'id')[id]) || {id: id, label: '' + id, columnSpan:1}
+    const item = cloneDeep(keyBy(cardSource, 'id')[id]) || {id: id, label: '' + id, columnSpan:1}
     if (item.columnSpan && item.columnSpan > columns)
       item.columnSpan = columns
     return (
       <Item
-        value={amisRender? amisRender('body', amisItemBody, {data: {...item}}) : (
+        value={amisRender? amisRender('body', cardSchema, {data: {...item}}) : (
           <span>{item.label}</span>
         )}
         handle={handle}
@@ -622,36 +645,46 @@ export function MultipleContainers(props) {
     );
   }
 
-  function renderContainerDragOverlay(containerId: UniqueIdentifier) {
+  function renderContainerDragOverlay(containerId: UniqueIdentifier) {            
+    const container = cloneDeep(keyBy(boardSource, 'id')[containerId]) || {id: containerId, label: 'Container ' + containerId}
+
     return (
       <Container
-        label={`Column ${containerId}`}
+        label={amisRender? amisRender('body', boardHeader, {data: {...container}}) : (
+          <span>{container.label}</span>
+        )}
         columns={columns}
         style={{
           height: '100%',
         }}
-        shadow
+        className={boardClassName}
         unstyled={false}
       >
-        {items[containerId].map((item, index) => (
+        {items[containerId].map((id, index) => {
+          const item = cloneDeep(keyBy(cardSource, 'id')[id]) || {id: id, label: '' + id, columnSpan:1}
+          return (
           <Item
-            key={item}
-            value={item}
+            key={id}
             handle={handle}
             style={getItemStyles({
               containerId,
               overIndex: -1,
-              index: getIndex(item),
-              value: item,
+              index: getIndex(id),
+              value: id,
               isDragging: false,
               isSorting: false,
               isDragOverlay: false,
             })}
-            color={getColor(item)}
-            wrapperStyle={wrapperStyle({ index })}
+            color={getColor(id)}
+            wrapperStyle={wrapperStyle({ id })}
             renderItem={renderItem}
+            className={cardClassName}
+            value={amisRender? amisRender('body', cardSchema, {data: {...item}}) : (
+              <span>{item.label}</span>
+            )}
           />
-        ))}
+          )}
+        )}
       </Container>
     );
   }
@@ -682,7 +715,7 @@ export function MultipleContainers(props) {
   }
 
   function getColor(id: UniqueIdentifier) {
-    const item  = cloneDeep(keyBy(itemSource, 'id')[id])
+    const item  = cloneDeep(keyBy(cardSource, 'id')[id])
     return item && item.color? item.color : undefined
   }
 
@@ -698,6 +731,7 @@ export function MultipleContainers(props) {
     getIndex,
     value,
     wrapperStyle,
+    className,
     ...props
   }: SortableItemProps) {
     const {
@@ -740,6 +774,7 @@ export function MultipleContainers(props) {
         fadeIn={mountedWhileDragging}
         listeners={listeners}
         renderItem={renderItem}
+        className={className}
         {...props}
       />
     );
@@ -783,6 +818,7 @@ interface SortableItemProps {
   handle: boolean;
   value: any;
   disabled?: boolean;
+  className: string;
   style(args: any): React.CSSProperties;
   getIndex(id: UniqueIdentifier): number;
   renderItem(): React.ReactElement;

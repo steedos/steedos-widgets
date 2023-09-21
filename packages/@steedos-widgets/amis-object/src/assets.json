@@ -25,6 +25,14 @@
         "library": "BuilderReactFlow"
     },
     {
+        "package": "@steedos-widgets/sortable",
+        "urls": [
+            "https://unpkg.com/@steedos-widgets/sortable@{{version}}/dist/sortable.umd.js",
+            "https://unpkg.com/@steedos-widgets/sortable@{{version}}/dist/sortable.umd.css"
+        ],
+        "library": "BuilderSortable"
+    },
+    {
         "package": "steedos-lib",
         "urls": [
             "https://unpkg.com/@steedos-widgets/steedos-lib@{{version}}/dist/index.umd.js"
@@ -61,6 +69,17 @@
         "urls": {
             "default": "https://unpkg.com/@steedos-widgets/reactflow@{{version}}/dist/meta.js",
             "design": "https://unpkg.com/@steedos-widgets/reactflow@{{version}}/dist/meta.js"
+        }
+    },
+    {
+        "exportName": "BuilderSortableMeta",
+        "npm": {
+            "package": "@steedos-widgets/sortable"
+        },
+        "url": "https://unpkg.com/@steedos-widgets/sortable@{{version}}/dist/meta.js",
+        "urls": {
+            "default": "https://unpkg.com/@steedos-widgets/sortable@{{version}}/dist/meta.js",
+            "design": "https://unpkg.com/@steedos-widgets/sortable@{{version}}/dist/meta.js"
         }
     },
     {

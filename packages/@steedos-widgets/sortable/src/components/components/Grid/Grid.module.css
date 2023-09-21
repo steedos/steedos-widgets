@@ -19,7 +19,7 @@
       #ddd var(--grid-size)
     );
   background-size: var(--grid-size) var(--grid-size);
-  z-index: -1;
+  /* z-index: -1; */
   pointer-events: none;
 }
 

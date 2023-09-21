@@ -11,6 +11,7 @@ export interface Props {
   children: React.ReactNode;
   columns?: number;
   label?: string;
+  footer?: any;
   style?: React.CSSProperties;
   horizontal?: boolean;
   hover?: boolean;
@@ -19,6 +20,7 @@ export interface Props {
   shadow?: boolean;
   placeholder?: boolean;
   unstyled?: boolean;
+  className: string;
   onClick?(): void;
   onRemove?(): void;
 }
@@ -34,11 +36,13 @@ export const Container = forwardRef<HTMLDivElement, Props>(
       onClick,
       onRemove,
       label,
+      footer,
       placeholder,
       style,
       scrollable,
       shadow,
       unstyled,
+      className,
       ...props
     }: Props,
     ref
@@ -62,7 +66,8 @@ export const Container = forwardRef<HTMLDivElement, Props>(
           hover && styles.hover,
           placeholder && styles.placeholder,
           scrollable && styles.scrollable,
-          shadow && styles.shadow
+          shadow && styles.shadow,
+          className
         )}
         onClick={onClick}
         tabIndex={onClick ? 0 : undefined}
@@ -77,6 +82,7 @@ export const Container = forwardRef<HTMLDivElement, Props>(
           </div>
         ) : null}
         {placeholder ? children : <ul>{children}</ul>}
+        {footer? footer : <></>}
       </Component>
     );
   }
