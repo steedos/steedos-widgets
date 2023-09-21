@@ -540,7 +540,7 @@ export async function getRecordDetailSchema(objectName, appId, props = {}){
     }
     const content = {
         "type": "tabs",
-        "className": "sm:mt-3 bg-white sm:shadow sm:rounded sm:border border-gray-300 p-4",
+        "className": "sm:mt-3 bg-white sm:rounded sm:border border-gray-300 p-4",
         "tabs": [
             detailed
         ],

@@ -16,7 +16,7 @@ export const AmisGlobalHeader = async (props) => {
         body: [
             {
                 "type": "wrapper",
-                "className": "bg-white sticky p-0 top-0 z-40 w-full flex-none backdrop-blur transition-colors duration-500 lg:z-50 sm:shadow  border-b-[3px] border-sky-500 border-solid steedos-header-container",
+                "className": "bg-white sticky p-0 top-0 z-40 w-full flex-none backdrop-blur transition-colors duration-500 lg:z-50  border-b-[3px] border-sky-500 border-solid steedos-header-container",
                 body: [
                     {
                         "type": "wrapper",
@@ -183,7 +183,7 @@ export const AmisGlobalHeader = async (props) => {
                 body: [
                     {
                         type: "wrapper",
-                        className: 'sidebar-wrapper px-0 pt-4 pb-16 fixed z-20 h-full h-fill ease-in-out duration-300 flex flex-col border-r overflow-y-auto bg-white border-gray-300 sm:shadow block -translate-x-0 sm:w-[220px] w-64',
+                        className: 'sidebar-wrapper px-0 pt-4 pb-16 fixed z-20 h-full h-fill ease-in-out duration-300 flex flex-col border-r overflow-y-auto bg-white border-gray-300 block -translate-x-0 sm:w-[220px] w-64',
                         body: [
                             {
                                 "type": "steedos-app-launcher",

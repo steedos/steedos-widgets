@@ -77,7 +77,7 @@ export default {
         objectApiName: "${objectName}",
         listName: "all",
         showHeader: true,
-        className: "sm:border sm:shadow sm:rounded sm:border-gray-300 mb-4"
+        className: "sm:border sm:rounded sm:border-gray-300 mb-4"
       },
       previewSchema: {
         type: config.amis.name,

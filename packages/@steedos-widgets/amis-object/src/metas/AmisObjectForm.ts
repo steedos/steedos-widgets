@@ -118,7 +118,7 @@ export default {
         label: config.title,
         objectApiName: "${objectName}",
         recordId: "${recordId}",
-        className: "sm:border sm:shadow sm:rounded sm:border-gray-300 bg-white p-4"
+        className: "sm:border sm:rounded sm:border-gray-300 bg-white p-4"
       },
       previewSchema: {
         type: config.amis.name,
