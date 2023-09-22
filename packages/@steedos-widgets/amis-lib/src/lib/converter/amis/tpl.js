@@ -14,39 +14,39 @@ export function getCreatedInfoTpl(formFactor){
     const href = Router.getObjectDetailPath({
         formFactor, appId: "admin", objectName: 'users', recordId: '${created_by._id}'
     })
-    return `<div><a href='${href}'>\${_display.created_by.label}</a>\${_display.created}</div>`
+    return `<span><a href='${href}'>\${_display.created_by.label}</a>\${_display.created}</span>`
 }
 
 export function getModifiedInfoTpl(formFactor){
     const href = Router.getObjectDetailPath({
         formFactor, appId: "admin", objectName: 'users', recordId: '${modified_by._id}'
     })
-    return `<div><a href='${href}'>\${_display.modified_by.label}</a>\${_display.modified}</div>`
+    return `<span><a href='${href}'>\${_display.modified_by.label}</a>\${_display.modified}</span>`
 }
 
 export function getNumberTpl(field){
-    return `<div>\${_display.${field.name}}</div>`
+    return `<span>\${_display.${field.name}}</span>`
 }
 
 export function getTimeTpl(field){
-    return `<div>\${_display.${field.name}}</div>`
+    return `<span>\${_display.${field.name}}</span>`
 }
 
 export function getDateTpl(field){
-    return `<div>\${_display.${field.name}}</div>`
+    return `<span>\${_display.${field.name}}</span>`
 }
 
 
 export function getDateTimeTpl(field){
-    return `<div>\${_display.${field.name}}</div>`
+    return `<span>\${_display.${field.name}}</span>`
 }
 
 export function getUiFieldTpl(field){
-    return `<div>\${_display.${field.name}}</div>`
+    return `<span>\${_display.${field.name}}</span>`
 }
 
 export function getUiFileSizeTpl(field){
-    return `<div>\${_display.${field.name}}</div>`
+    return `<span>\${_display.${field.name}}</span>`
 }
 
 //TODO 处理name字段
@@ -57,7 +57,7 @@ export async function getRefObjectNameFieldName(field){
 }
 
 export function getSelectTpl(field){
-    return `<div>\${_display.${field.name}}</div>`
+    return `<span>\${_display.${field.name}}</span>`
 }
 export function getSelectMap(selectOptions){
     let map = {};
