@@ -293,13 +293,15 @@ export async function getObjectCRUD(objectSchema, fields, options){
         rowClassNameExpr: options.rowClassNameExpr
       }, bodyProps);
 
-      body = await getCrudSchemaWithDataFilter(body, { crudDataFilter, onCrudDataFilter, amisData, env });
     }
 
     const defaults = options.defaults;
+    
+    const listSchema = (defaults && defaults.listSchema) || {};
+    body = defaultsDeep({}, listSchema, body);
+    body = await getCrudSchemaWithDataFilter(body, { crudDataFilter, onCrudDataFilter, amisData, env });
+
     if (defaults) {
-      const listSchema = defaults.listSchema || {};
-      body = defaultsDeep({}, listSchema, body);
       const headerSchema = defaults.headerSchema;
       const footerSchema = defaults.footerSchema;
       if (headerSchema || footerSchema) {
