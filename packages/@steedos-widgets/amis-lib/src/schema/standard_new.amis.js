@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:51:00
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-09-23 10:59:24
+ * @LastEditTime: 2023-09-23 11:25:18
  * @Description: 
  */
 import { i18next } from "../i18n";
@@ -85,7 +85,7 @@ export const getSchema = async (uiSchema, ctx) => {
         const uiSchema = event.data.uiSchema;
         const objectName = event.data.objectName;
         const listViewRef = event.context.scoped.getComponentById("listview_" + objectName);
-        const selectedItems = listViewRef.props.store.toJSON().selectedItems;
+        const selectedItems = listViewRef.props.store.toJSON().selectedItems || [];
         event.data.selectedIds = _.map(selectedItems, uiSchema.idFieldName || '_id');
     `;
     return {
@@ -112,7 +112,8 @@ export const getSchema = async (uiSchema, ctx) => {
                                         "url": "${context.rootUrl}/api/v1/${uiSchema.name}/${selectedIds|first}",
                                         "method": "get"
                                     }
-                                }
+                                },
+                                "expression": "${selectedIds.length > 0}"
                             },
                             {
                                 "actionType": "dialog",
