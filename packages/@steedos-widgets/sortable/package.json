@@ -1,6 +1,6 @@
 {
   "name": "@steedos-widgets/sortable",
-  "version": "1.3.4-beta.5",
+  "version": "1.3.4-beta.6",
   "main": "dist/sortable.cjs.js",
   "module": "dist/sortable.esm.js",
   "unpkg": "dist/sortable.umd.js",
@@ -45,7 +45,7 @@
   "dependencies": {
     "@dnd-kit/core": "^6.0.5",
     "@dnd-kit/sortable": "^7.0.1",
-    "@steedos-widgets/amis-lib": "1.3.4-beta.5"
+    "@steedos-widgets/amis-lib": "1.3.4-beta.6"
   },
   "gitHead": "ffb730e16642eb8e7a7ae5d98d0773c42482e7d2"
 }
