@@ -289,6 +289,13 @@ export async function getObjectCRUD(objectSchema, fields, options){
             Authorization: "Bearer ${context.tenantId},${context.authToken}",
           },
           requestAdaptor: quickSaveApiRequestAdaptor,
+          adaptor: `
+              if(payload.errors){
+                  payload.status = 2;
+                  payload.msg = window.t ? window.t(payload.errors[0].message) : payload.errors[0].message;
+              }
+              return payload;
+          `
         },
         rowClassNameExpr: options.rowClassNameExpr
       }, bodyProps);
