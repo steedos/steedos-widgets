@@ -15,33 +15,6 @@
                 }
             }
         }
-        tbody td.whitespace-nowrap{
-            &> div{
-                /*各种字段类型在不支持快速编辑的单元格中文字超长时显示省略号*/
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-            &.antd-Field--quickEditable{
-                /*各种字段类型在支持快速编辑的单元格中文字超长时显示省略号*/
-                &> div {
-                    &> div{
-                        /*这里写在第二层div中是因为第一层div是display: flex;无法实现省略号，见上面第5行*/
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                        &>.antd-Form-static{
-                            /*上面的样式无法解决url类型字段省略号问题*/
-                            overflow: hidden;
-                            text-overflow: ellipsis;
-                            &>.antd-Form-control .antd-TplField > span > a{
-                                /*上面的样式无法解决附件类型字段省略号问题*/
-                                overflow: hidden;
-                                text-overflow: ellipsis;
-                            }
-                        }
-                    }
-                }
-            }
-        }
 
         tbody td.antd-Field--quickEditable:hover {
             div {
