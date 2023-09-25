@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-09-25 14:22:44
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-09-25 17:18:08
  * @Description:
  */
 
@@ -303,7 +303,16 @@ export async function getRelatedListSchema(
     ctx
   ) {
     const uiSchema = await getUISchema(objectName);
-    const listView = uiSchema.list_views;
+    const listView =  find(
+        uiSchema.list_views,
+        (listView, name) => {
+            // 传入listViewName空值则取第一个
+            if(!listViewName){
+                listViewName = name;
+            }
+            return name === listViewName || listView._id === listViewName;
+        }
+    );
     const listViewProps = getRelatedListProps(uiSchema,listViewName, ctx);
     // console.log('listViewProps==>', listViewProps)
     const {columns: listViewColumns, sort: listViewSort, filter: listviewFilter, filtersFunction } = listViewProps;
