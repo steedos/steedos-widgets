@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: liaodaxue
- * @LastEditTime: 2023-08-28 14:55:23
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-09-25 14:22:44
  * @Description:
  */
 
@@ -187,6 +187,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
         // tableHiddenOn: hiddenEmptyTable ? "this.$count === 0" : null,
         appId: appId,
         crudClassName: 'border-t border-gray-300 hidden',
+        refField,
         ...ctx
     }
     const amisSchema= (await getRelatedListSchema(relatedObjectName, 'all', options)).amisSchema;
@@ -306,6 +307,20 @@ export async function getRelatedListSchema(
     const listViewProps = getRelatedListProps(uiSchema,listViewName, ctx);
     // console.log('listViewProps==>', listViewProps)
     const {columns: listViewColumns, sort: listViewSort, filter: listviewFilter, filtersFunction } = listViewProps;
+
+    const refFieldName = ctx.refField && ctx.refField.name;
+
+    let relatedListColumns = listViewColumns;
+    if(refFieldName){
+        relatedListColumns = listViewColumns.filter(function(columnItem){
+            if(typeof columnItem === "string"){
+                return columnItem !== refFieldName;
+            }
+            else{
+                return columnItem.field !== refFieldName;
+            }
+        });
+    }
   
     const defaults = ctx.defaults || {};
   
@@ -343,7 +358,7 @@ export async function getRelatedListSchema(
     const amisSchema = {
         "type": "steedos-object-table",
         "objectApiName": objectName,
-        "columns": listViewColumns,
+        "columns": relatedListColumns,
         "extraColumns": listView.extra_columns,
         "filters": listviewFilter,
         "filtersFunction": filtersFunction,
