@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:51:00
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-09-23 11:25:18
+ * @LastEditTime: 2023-09-25 14:53:05
  * @Description: 
  */
 import { i18next } from "../i18n";
@@ -82,10 +82,15 @@ export const getSchema = async (uiSchema, ctx) => {
         }, 200);
     `;
     const getSelectedRowsScript = `
+        const isLookup = event.data.isLookup;
+        if(isLookup){
+            // lookup弹出窗口的新建功能不需要支持复制新建
+            return;
+        }
         const uiSchema = event.data.uiSchema;
         const objectName = event.data.objectName;
         const listViewRef = event.context.scoped.getComponentById("listview_" + objectName);
-        const selectedItems = listViewRef.props.store.toJSON().selectedItems || [];
+        const selectedItems = listViewRef && listViewRef.props.store.toJSON().selectedItems || [];
         event.data.selectedIds = _.map(selectedItems, uiSchema.idFieldName || '_id');
     `;
     return {
