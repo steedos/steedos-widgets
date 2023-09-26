@@ -266,10 +266,11 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
       // "filter-toggler",
       ...(headerToolbarItems || []),
       "bulkActions",
-      {
-        "type": "columns-toggler",
-        "className": "hidden"
-      },
+      // 不能放开crud columns-toggler否则crud card模式会报错
+      // {
+      //   "type": "columns-toggler",
+      //   "className": "hidden"
+      // },
       ...toolbars,
       // {
       //     "type": "columns-toggler",
