@@ -347,10 +347,13 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     const op = api.data.$self.op;
     if(!_.isEmpty(op)){
         // op不为空，表示处于字段初始编辑状态，不是点击后出现弹窗状态。
+        // 这里不可以用_.pick函数让payload只返回labelField和valueField，因为字段上配置的amis autoFill功能可能依赖了其他字段
+        /*
         const rows = _.map(payload.data.rows, (item)=>{
             return _.pick(item, ["${referenceTo.labelField.name}", "${referenceTo.valueField.name}"]);
         })
         payload.data.rows = rows;
+        */
         return payload;
     }
     if(enable_tree){
