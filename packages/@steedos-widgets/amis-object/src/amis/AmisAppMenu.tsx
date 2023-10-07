@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-08-18 11:51:07
+ * @LastEditTime: 2023-10-07 16:01:54
  * @Description: 
  */
 import './AmisAppMenu.less';
@@ -45,7 +45,7 @@ export const AmisAppMenu = async (props) => {
                       const tab_groups = payload.tab_groups;
                       const locationPathname = window.location.pathname;
                       var customTabId = "";
-                      var objectTabId = "";
+                      var objectTabId = "${data.tabId}";
                       if(stacked){
                           _.each(_.groupBy(payload.children, 'group'), (tabs, groupName) => {
                               if (groupName === 'undefined' || groupName === '') {
