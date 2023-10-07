@@ -368,9 +368,30 @@ const getObjectDetailHeaderButtons = (objectSchema, recordId)=>{
 export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
     const { buttons, moreButtons, moreButtonsVisibleOn } = getObjectDetailHeaderButtons(objectSchema, recordId);
     if(ctx.formFactor === 'SMALL'){
+        const dropdownButtons = [
+            ..._.map(buttons, (button) => {
+                button.className += ' w-full';
+                return button;
+            }),
+            ..._.map(moreButtons, (button) => {
+                button.className += ' w-full';
+                return button;
+            })
+        ];
+
+        let phoneMoreButtonsVisibleOn = '';
+        _.forEach(dropdownButtons, (button, index) => {
+            if(index === 0){
+                phoneMoreButtonsVisibleOn = button.visibleOn;
+            }else{
+                phoneMoreButtonsVisibleOn = phoneMoreButtonsVisibleOn + ' || ' + button.visibleOn;
+            }
+        })
+
         return {
             "type": "button",
             "icon": "fa fa-angle-down",
+            "visibleOn": phoneMoreButtonsVisibleOn,
             "onEvent": {
               "click": {
                 "actions": [
@@ -386,16 +407,7 @@ export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
                           "id": "u:fd837823be5b",
                           "vertical": true,
                           "tiled": true,
-                          "buttons": [
-                            ..._.map(buttons, (button)=>{
-                                button.className += ' w-full';
-                                return button;
-                            }),
-                            ..._.map(moreButtons, (button)=>{
-                                button.className += ' w-full';
-                                return button;
-                            })
-                          ],
+                          "buttons": dropdownButtons,
                           "btnLevel": "enhance",
                           "className": "w-full",
                           "btnClassName": "w-full",
