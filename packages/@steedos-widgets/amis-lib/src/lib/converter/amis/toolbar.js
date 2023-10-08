@@ -307,6 +307,7 @@ export function getObjectFooterToolbar(mainObject, formFactor, options) {
       ]
     }else{
       return [
+        "statistics",
         {
           "type": "pagination",
           "maxButtons": 5
