@@ -46,3 +46,31 @@
 .antd-ButtonGroup > .antd-Button {
     max-width: none !important;
 }
+
+
+/* env.notify时的toast样式参考amis toast，而不是使用antd本身的样式效果 */
+.ant-message {
+    top: var(--gap-base);
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: var(--Toast-width);
+}
+
+.ant-message .ant-message-notice {
+    padding: 2px 0;
+    max-width: var(--Toast-width);
+    margin: 0 4px;
+}
+
+.ant-message .ant-message-notice .ant-message-notice-content {
+    width: 100%;
+    padding: var(--Toast-paddingY) var(--Toast-paddingX);
+    border-radius: var(--Toast-borderRadius);
+}
+
+.ant-message .ant-message-notice .ant-message-notice-content .ant-message-custom-content {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    text-align: left;
+}
