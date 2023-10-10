@@ -44,3 +44,8 @@
 .sidebar{
     padding-bottom: 0px !important;
 }
+
+body.steedos {
+    /*此样式可能造成ios17系统的iphone svg显示不出来，移除就好了*/
+    -webkit-overflow-scrolling: unset;
+}
