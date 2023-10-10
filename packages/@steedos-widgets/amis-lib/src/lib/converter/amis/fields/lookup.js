@@ -576,10 +576,10 @@ export async function lookupToAmisSelect(field, readonly, ctx){
     // const labelFieldKey = referenceTo && referenceTo.labelField?.name || 'name';
 
     let apiInfo;
-
+    let defaultValueOptionsQueryData;
     if(referenceTo){
         // 字段值单独走一个请求合并到source的同一个GraphQL接口中
-        const defaultValueOptionsQueryData = await graphql.getFindQuery({ name: referenceTo.objectName }, null, [
+        defaultValueOptionsQueryData = await graphql.getFindQuery({ name: referenceTo.objectName }, null, [
             Object.assign({}, referenceTo.labelField, {alias: 'label'}),
             Object.assign({}, referenceTo.valueField, {alias: 'value'})
         ], {
@@ -592,7 +592,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         }, null, [
             Object.assign({}, referenceTo.labelField, {alias: 'label'}),
             Object.assign({}, referenceTo.valueField, {alias: 'value'})
-        ], {expand: false, alias: 'options', queryOptions: `filters: {__filters}, top: {__top}, sort: "{__sort}"`, moreQueries: [defaultValueOptionsQueryData.query]});
+        ], {expand: false, alias: 'options', queryOptions: `filters: {__filters}, top: {__top}, sort: "{__sort}"`});
 
         apiInfo.adaptor = `
             const data = payload.data;
@@ -686,13 +686,16 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         var optionsFiltersOp = "${field.multiple ? "in" : "="}";
         var optionsFilters = [["${valueFieldKey}", optionsFiltersOp, []]];
         if (defaultValue && !api.data.$term) { 
+            const defaultValueOptionsQueryData = ${JSON.stringify(defaultValueOptionsQueryData)};
+            const defaultValueOptionsQuery = defaultValueOptionsQueryData.query.replace(/^{/,"").replace(/}$/,"");
             // 字段值单独请求，没值的时候在请求中返回空
             optionsFilters = [["${valueFieldKey}", optionsFiltersOp, defaultValue]];
             if(filters.length > 0){
                 optionsFilters = [filters, optionsFilters];
             }
+            api.data.query = "{"+api.data.query.replace(/^{/,"").replace(/}$/,"")+","+defaultValueOptionsQuery+"}";
+            api.data.query = api.data.query.replace(/{__options_filters}/g, JSON.stringify(optionsFilters))
         }
-        api.data.query = api.data.query.replace(/{__options_filters}/g, JSON.stringify(optionsFilters));
         return api;
     `
     let labelField = referenceTo ? referenceTo.labelField.name : '';

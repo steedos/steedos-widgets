@@ -282,17 +282,17 @@ export async function getFindQuery(object, recordId, fields, options){
     }
 
     const countQuery = options.count === false ? "" : `,count:${object.name}__count(filters:{__filters})`;
-    const moreQuerie = options.moreQueries?.length ? ("," + options.moreQueries.map(function(item){
-        // 把最外层的{}去除
-        return item.replace(/^{/,"").replace(/}$/,"");
-    }).join(",")) : "";
+    // const moreQuerie = options.moreQueries?.length ? ("," + options.moreQueries.map(function(item){
+    //     // 把最外层的{}去除
+    //     return item.replace(/^{/,"").replace(/}$/,"");
+    // }).join(",")) : "";
 
     return {
         orderBy: "${orderBy}",
         orderDir: "${orderDir}",
         pageNo: "${page}",
         pageSize: "${perPage}",
-        query: `{${alias}:${object.name}${queryOptions}{${await getFieldsTemplate(fields, options.expand)}${treeFields}${cfsFields}}${countQuery}${moreQuerie}}`
+        query: `{${alias}:${object.name}${queryOptions}{${await getFieldsTemplate(fields, options.expand)}${treeFields}${cfsFields}}${countQuery}}`
     }
 }
 
