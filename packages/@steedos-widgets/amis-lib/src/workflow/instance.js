@@ -5,9 +5,17 @@ import { getOpinionFieldStepsName } from './util';
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 17:47:37
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-18 15:32:34
+ * @LastEditTime: 2023-10-10 13:57:02
  * @Description:
  */
+
+const getMoment = ()=>{
+  if(window.amisRequire){
+    return window.amisRequire("moment");
+  }else if(window.moment){
+    return window.moment;
+  }
+}
 
 const getTrace = ({ instance, traceId }) => {
   return find(instance.traces, (trace) => {
@@ -228,6 +236,8 @@ export const getInstanceInfo = async ({ instanceId, box }) => {
     method: "get",
   });
 
+  const moment = getMoment();
+
   return {
     box: box,
     _id: instanceId,
@@ -238,7 +248,7 @@ export const getInstanceInfo = async ({ instanceId, box }) => {
     applicant_name: instance.applicant_name,
     submitter: instance.submitter,
     submit_date: instance.submit_date
-      ? amisRequire("moment")(instance.submit_date).format("YYYY-MM-DD")
+      ? (moment && moment(instance.submit_date).format("YYYY-MM-DD"))
       : "",
     state: instance.state,
     approveValues: values,
@@ -278,8 +288,7 @@ export const getInstanceInfo = async ({ instanceId, box }) => {
               finishDate = approve.is_read ? "已读" : "未处理";
               judge = null;
             } else {
-              finishDate =
-                amisRequire("moment")(finishDate).format("YYYY-MM-DD HH:mm");
+              finishDate = moment && moment(finishDate).format("YYYY-MM-DD HH:mm");
             }
 
             switch (judge) {
