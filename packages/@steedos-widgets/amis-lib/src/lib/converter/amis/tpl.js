@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-09-19 14:38:39
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-10-11 17:32:17
  * @Description: 
  */
 import { Router } from '../../router'
@@ -67,7 +67,7 @@ export function getSelectMap(selectOptions){
         if(optionColor){
             const background = optionColor.charAt(0) === '#' ? optionColor : '#'+optionColor;
             const color = getContrastColor(background);
-            const optionColorStyle = 'background:'+background+';color:'+color;
+            const optionColorStyle = 'background:'+background+';color:'+color+';line-height:1.5rem';
             map[optionValue] = `<span class="rounded-xl px-2 py-1" style='${optionColorStyle}'>${option.label}</span>`
         }else{
             map[optionValue] = option.label;
