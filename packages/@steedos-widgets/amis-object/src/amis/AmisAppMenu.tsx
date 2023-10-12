@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-10-07 16:01:54
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-10-12 15:38:15
  * @Description: 
  */
 import './AmisAppMenu.less';
@@ -119,14 +119,15 @@ export const AmisAppMenu = async (props) => {
                           })
                       }
                       //以下为nav第一层排序，包括分组与选项卡
-                      let groupLength = ((payload.tab_groups && payload.tab_groups.length) || 0) + 1000;
+                      // let groupLength = ((payload.tab_groups && payload.tab_groups.length) || 0) + 1000;
                       data.nav = _.sortBy(data.nav, function(tab){
                         if(tab.isGroup){
                             return _.findIndex(payload.tab_groups, function(group){
                                 return group.group_name === tab.label;
                             });
                         }else{
-                            return groupLength + tab.index;
+                            // 没有分组的选项卡按index排列在有分组的选项卡前方
+                            return (tab.index || 0) - 1000;
                         }
                       })
                       payload.data = {
