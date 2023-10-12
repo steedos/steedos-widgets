@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-26 16:02:08
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-09-15 15:36:17
+ * @LastEditTime: 2023-10-12 18:25:05
  * @Description: 
  */
 import * as Fields from '../fields';
@@ -25,8 +25,9 @@ const getFieldSchemaArray = (formFields, ctx) => {
     }
 
     let forceHidden = false;
-    if(!recordId && field.readonly){
+    if(!recordId && field.readonly && !ctx.isEditor){
       // 新建记录时，只读字段先隐藏，后续支持显示后，即任务：https://github.com/steedos/steedos-platform/issues/3164 完成后再放开
+      // 表单只读时所有字段都是readonly，设计器中如果forceHidden会造成整个表单在只读的时候显示为空白了，所以要排除掉
       forceHidden = true;
     }
 
