@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-06-26 11:48:44
+ * @LastEditTime: 2023-10-12 17:10:07
  * @Description: 
  */
 
@@ -534,6 +534,7 @@ export default {
                       bodyClassName: 'ae-formItemControl-body',
                       "key": "4",
                       "header": "保存数据接口",
+                      "visibleOn": "${mode == 'edit'}",
                       "body": [
                         {
                           type: "editor",
