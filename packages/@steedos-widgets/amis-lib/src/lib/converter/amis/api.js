@@ -91,18 +91,30 @@ function getReadonlyFormAdaptor(object, fields, options){
         payload.status = 2;
         payload.msg = payload.errors[0].message;
     }
+    ${options && options.initApiAdaptor || ''}
     return payload;
 `
 }
 
 export async function getReadonlyFormInitApi(object, recordId, fields, options){
+    let findOneOptions;
+    if (!recordId && options && options.isEditor) {
+        // 设计器中只读表单返回第一条记录
+        findOneOptions = {
+            filters: [],
+            queryOptions: "top: 1"
+        };
+    }
     return {
         method: "post",
         url: graphql.getApi() + '&objectName=${objectName}' + "&recordId=${recordId}",
         cache: API_CACHE,
-        // requestAdaptor: "console.log('getReadonlyFormInitApi requestAdaptor', api);return api;",
+        requestAdaptor: `
+            ${options && options.initApiRequestAdaptor || ''}
+            return api;
+        `,
         adaptor: getReadonlyFormAdaptor(object, fields, options),
-        data: await graphql.getFindOneQuery(object, recordId, fields, options),
+        data: await graphql.getFindOneQuery(object, recordId, fields, findOneOptions),
         headers: {
             Authorization: "Bearer ${context.tenantId},${context.authToken}"
         }

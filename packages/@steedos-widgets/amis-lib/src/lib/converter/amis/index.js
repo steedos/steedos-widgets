@@ -480,7 +480,7 @@ export async function getObjectForm(objectSchema, ctx){
 }
 
 export async function getObjectDetail(objectSchema, recordId, ctx){
-    const { formFactor, layout = formFactor === 'SMALL' ? 'normal' : "normal", labelAlign, formInitProps } = ctx;
+    const { formFactor, layout = formFactor === 'SMALL' ? 'normal' : "normal", labelAlign } = ctx;
     const fields = _.values(objectSchema.fields);
     const formFields = getFormFields(objectSchema, ctx);
     const serviceId = `service_detail_page`;
@@ -489,7 +489,7 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
         name: `page_readonly_${recordId}`,
         id: serviceId,
         data: {global: getGlobalData('read'), context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
-        api: await getReadonlyFormInitApi(objectSchema, recordId, fields, formInitProps),
+        api: await getReadonlyFormInitApi(objectSchema, recordId, fields, ctx),
         body: [
           {
             "type": "wrapper",   //form 的 hiddenOn 会导致 form onEvent 异常, 使用wrapper包裹一次form,并在wrapper上控制显隐
