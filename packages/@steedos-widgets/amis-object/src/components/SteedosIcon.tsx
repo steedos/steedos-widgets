@@ -4,14 +4,14 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-28 16:28:47
+ * @LastEditTime: 2023-10-13 15:57:39
  * @Description: 
  */
 
 import React, { useEffect, useState } from 'react'
-
+import { Image, Avatar } from 'antd';
 export const SteedosIcon = (props) => {
-    let { basePath, category = 'standard', className = '', containerClassName = '', colorVariant = 'default', inverse, name = 'account', size='medium', title, rootUrl = props.data?.context?.rootUrl || '' } = props;
+    let { alt,height,width, basePath, category = 'standard', className = '', containerClassName = '', colorVariant = 'default', inverse, name = 'account', size='medium', title, rootUrl = props.data?.context?.rootUrl || '' } = props;
     if(!basePath){
       basePath = '';
     }
@@ -30,6 +30,25 @@ export const SteedosIcon = (props) => {
     //     }
     //   })
     // }, [xlinkHref])
+
+
+    if(name.startsWith('http://') || name.startsWith('https://') || name.endsWith('.jpg') || name.endsWith('.png')){
+      return <Image
+        alt={alt}
+        height={height}
+        width={width}
+        className={className}
+        preview={false}
+        src={name}
+      />
+    }
+
+    if(name.indexOf('.') > -1){
+      const foo = name.split('.');
+      category = foo[0];
+      name = foo[1];
+    }
+
     return <span className={`slds-icon_container slds-icon-${category}-${name} ${containerClassName}`}>
             <svg className={`slds-icon slds-icon_${size} slds-icon-text-${colorVariant} ${className}`}><use xlinkHref={`/assets/icons/${category}-sprite/svg/symbols.svg#${name}`}></use></svg>
           </span>
