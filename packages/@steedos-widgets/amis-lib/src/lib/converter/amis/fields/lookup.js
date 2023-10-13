@@ -739,7 +739,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         disabledOn:  `${readonly} || ( (this._master && (this._master.relatedKey ==='${field.name}')) || ((this.relatedKey ==='${field.name}') && (${field.multiple} != true)) )`,
         // labelField: labelField,
         // valueField: valueField,
-        source: apiInfo,
+        // source: apiInfo,
         autoComplete: apiInfo,
         searchable: true,
     }
