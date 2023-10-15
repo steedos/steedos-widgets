@@ -393,7 +393,7 @@ const getFormFields = (objectSchema, formProps)=>{
 }
 
 export async function getObjectForm(objectSchema, ctx){
-    const { recordId, formFactor, layout = formFactor === 'SMALL' ? 'normal' : "normal", labelAlign, tabId, appId, defaults } = ctx;
+    const { recordId, formFactor, layout = formFactor === 'SMALL' ? 'normal' : "normal", labelAlign, tabId, appId, defaults, submitSuccActions = [] } = ctx;
     const fields = _.values(objectSchema.fields);
     const formFields = getFormFields(objectSchema, ctx);
     const formSchema =  defaults && defaults.formSchema || {};
@@ -463,9 +463,10 @@ export async function getObjectForm(objectSchema, ctx){
                 },
                 "expression": `\${_master.objectName != '${objectSchema.name}' && _master.objectName}`
               },
+              ...submitSuccActions,
               // {
               //   "actionType": "custom",
-              //   "script": "debugger;"
+              //   "script": `setTimeout(function(){doAction({'actionType': 'setValue','componentId': '${formSchema.id}','args': {'value': {'sort_no': 879}}})}, 300)`
               // },
               // {
               //   "args": {},
