@@ -155,7 +155,10 @@ export async function getObjectCRUD(objectSchema, fields, options){
       crudDataFilter, onCrudDataFilter, amisData, env } = options;
     const nonpaged = objectSchema.paging && objectSchema.paging.enabled === false;
     const isTreeObject = objectSchema.enable_tree;
-    const bulkActions = getBulkActions(objectSchema)
+    const bulkActions = getBulkActions(objectSchema);
+    const defaults = options.defaults;
+    const listSchema = (defaults && defaults.listSchema) || {};
+
     const bodyProps = {
       // toolbar: getToolbar(),
       // headerToolbar: getObjectHeaderToolbar(objectSchema, options.formFactor, {showDisplayAs}),
@@ -167,9 +170,12 @@ export async function getObjectCRUD(objectSchema, fields, options){
       filter: options.filterVisible !== false && await getObjectFilter(objectSchema, fields, options),
     };
     if(options.formFactor !== 'SMALL' || ["split"].indexOf(options.displayAs) == -1){
-      Object.assign(bodyProps, {
-        bulkActions: options.bulkActions != false ? bulkActions : false
-      });
+      if(listSchema.mode !== "cards"){
+        // card模式时默认不显示勾选框
+        Object.assign(bodyProps, {
+          bulkActions: options.bulkActions != false ? bulkActions : false
+        });
+      }
     }
     // yml里配置的 不分页和enable_tree:true 优先级最高，组件中输入的top次之。
     options.queryCount = true;
@@ -232,7 +238,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
       }, options);
       tableOptions.amisData = createObject(options.amisData || {}, {});
       const table = await getTableSchema(fields, tableOptions);
-      delete table.mode;
+      // delete table.mode;
       //image与avatar需要在提交修改时特别处理
       const imageNames = _.compact(_.map(_.filter(fields, (field) => ["image","avatar"].includes(field.type)), 'name'));
       const quickSaveApiRequestAdaptor = `
@@ -302,9 +308,6 @@ export async function getObjectCRUD(objectSchema, fields, options){
 
     }
 
-    const defaults = options.defaults;
-    
-    const listSchema = (defaults && defaults.listSchema) || {};
     body = defaultsDeep({}, listSchema, body);
     body = await getCrudSchemaWithDataFilter(body, { crudDataFilter, onCrudDataFilter, amisData, env });
 

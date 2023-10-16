@@ -758,6 +758,34 @@ async function getTableOperation(ctx){
     }
 }
 
+async function getDefaultCrudCard(columns, options) {
+    let labelFieldName = options?.labelFieldName || "name";
+    let titleColumn, bodyColumns = [];
+    columns.forEach(function (item) {
+        delete item.quickEdit;
+        if (item.name === labelFieldName) {
+            titleColumn = item;
+        }
+        else {
+            if (item.name !== "_index") {
+                bodyColumns.push(item);
+            }
+        }
+    });
+    let tableOperation = await getTableOperation(options);
+    if (tableOperation) {
+        tableOperation.className += " inline-block w-auto";
+    }
+    return {
+        "header": {
+            "title": titleColumn.tpl
+        },
+        body: bodyColumns,
+        // useCardLabel: false,
+        toolbar: [tableOperation]
+    }
+}
+
 export async function getTableSchema(fields, options){
     if(!options){
         options = {};
@@ -774,6 +802,31 @@ export async function getTableSchema(fields, options){
     }
     else{
         columns = await getTableColumns(fields, options);
+
+        const defaults = options.defaults;
+    
+        const listSchema = (defaults && defaults.listSchema) || {};
+        if(listSchema.mode === "cards"){
+            let card = listSchema.card;
+            if(!card){
+                card = await getDefaultCrudCard(columns, options);
+            }
+            return {
+                mode: "cards",
+                name: "thelist",
+                headerToolbarClassName: "py-2 px-2 border-gray-300 border-solid border-b",
+                className: "",
+                draggable: false,
+                defaultParams: getDefaultParams(options),
+                card: card,
+                syncLocation: false,
+                keepItemSelectionOnPageChange: true,
+                checkOnItemClick: isLookup ? true : false,
+                labelTpl: `\${${options.labelFieldName}}`,
+                autoFillHeight: false, // 自动高度效果不理想,先关闭
+                columnsTogglable: false
+            }
+        }
 
         if(!isLookup && !hiddenColumnOperation){
             columns.push(await getTableOperation(options));

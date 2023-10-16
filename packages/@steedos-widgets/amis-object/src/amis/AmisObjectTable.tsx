@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-09-21 17:31:28
+ * @LastEditTime: 2023-10-16 18:27:08
  * @Description: 
  */
 import './AmisObjectTable.less';
@@ -42,11 +42,12 @@ function getTableColumns(columns, includedFields, fieldsExtend = {}){
 export const AmisObjectTable = async (props) => {
   // console.time('AmisObjectTable')
   const { $schema, filters, filtersFunction, amisCondition, top, headerSchema, fields: includedFields, fieldsExtend,
-    sort, sortField, sortOrder, extraColumns, data, defaultData, crud = {},
+    sort, sortField, sortOrder, extraColumns, data, defaultData,
     formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE',
     className = "", requestAdaptor,  adaptor, filterVisible = true, headerToolbarItems,
-    crudDataFilter, onCrudDataFilter, env } = props;
+    crudDataFilter, onCrudDataFilter, env, crudMode } = props;
   let ctx = props.ctx;
+  let crud = props.crud || {};
   if(!ctx){
     ctx = {};
   }
@@ -57,8 +58,18 @@ export const AmisObjectTable = async (props) => {
   let defaults: any = {};
   let objectApiName = props.objectApiName || "space_users";
 
+  if (crudMode) {
+    // 把crudMode属性传入到crud.mode属性值中
+    // 如果只配置了crudMode属性，则后续内核代码会自动生成对应mode的默认属性值，比如card,listItem
+    // 这样可以手动配置crud.card或crud.listItem属性的时间提高开发效率
+    crud = Object.assign({
+      mode: crudMode
+    }, crud);
+  }
+
   if (!(ctx && ctx.defaults)) {
-    const schemaKeys = difference(keys($schema), ["type", "objectApiName", "columns", "extraColumns","id","crud"]);
+    const schemaKeys = difference(keys($schema), ["type", "objectApiName", "columns", "extraColumns","id",
+      "crud", "crudDataFilter", "onCrudDataFilter", "env", "crudMode"]);
     const listSchema = pick(props, schemaKeys);
     // className不传入crud组件，crud单独识别crudClassName属性
     listSchema.className = ""

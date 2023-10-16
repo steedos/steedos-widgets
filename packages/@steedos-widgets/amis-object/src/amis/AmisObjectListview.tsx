@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-09-21 17:33:59
+ * @LastEditTime: 2023-10-16 18:26:38
  * @Description: 
  */
 import './AmisObjectListview.less';
@@ -13,7 +13,6 @@ export const AmisObjectListView = async (props) => {
   // console.time('AmisObjectListView')
   // console.log(`AmisObjectListView props`, props)
   const { $schema, top, perPage, showHeader=true, data, defaultData, 
-      crud = {},
       className="", 
       style={},
       crudClassName, 
@@ -22,9 +21,10 @@ export const AmisObjectListView = async (props) => {
       columnsTogglable=false,
       filterVisible = true,
       headerToolbarItems, rowClassNameExpr, hiddenColumnOperation=false, columns,
-      crudDataFilter, onCrudDataFilter, env, rebuildOn} = props;
+      crudDataFilter, onCrudDataFilter, env, rebuildOn, crudMode} = props;
   let { headerSchema } = props;
   let ctx = props.ctx;
+  let crud = props.crud || {};
   let listName = defaultData?.listName || data?.listName || props?.listName;
   // console.log('AmisObjectListView ==listName=>', listName)
   let defaults: any = {};
@@ -77,9 +77,19 @@ export const AmisObjectListView = async (props) => {
 
   listName = listView.name;
 
+  if (crudMode) {
+    // 把crudMode属性传入到crud.mode属性值中
+    // 如果只配置了crudMode属性，则后续内核代码会自动生成对应mode的默认属性值，比如card,listItem
+    // 这样可以手动配置crud.card或crud.listItem属性的时间提高开发效率
+    crud = Object.assign({
+      mode: crudMode
+    }, crud);
+  }
+
   if (!(ctx && ctx.defaults)) {
     // 支持把crud组件任意属性通过listSchema属性传入到底层crud组件中
-    const schemaKeys = difference(keys($schema), ["type", "showHeader","id", "crud"]);
+    const schemaKeys = difference(keys($schema), ["type", "showHeader","id", 
+      "crud", "crudDataFilter", "onCrudDataFilter", "env", "rebuildOn", "crudMode"]);
     // 此次是从 props中 抓取到 用户配置的 crud属性, 此处是一个排除法
     const listSchema = pick(props, schemaKeys);
     // className不传入crud组件，crud单独识别crudClassName属性
