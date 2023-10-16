@@ -153,7 +153,7 @@ interface Props {
   vertical?: boolean;
   boardSource: [{id:string, label:string}?],
   cardSource: [{id:string, label:string, color: string, columnSpan: number, body: [any]}?],
-  defaultValue: any,
+  value: any,
   onChange: Function,
   data: any,
   dispatchEvent: Function,
@@ -171,7 +171,6 @@ const PLACEHOLDER_ID = 'placeholder';
 const empty: UniqueIdentifier[] = [];
 
 export function MultipleContainers(props) {
-
   let {
     adjustScale = false,
     itemCount = 3,
@@ -192,7 +191,7 @@ export function MultipleContainers(props) {
     scrollable,
     boardSource = [],
     cardSource = [],
-    defaultValue,
+    value,
     onChange: amisOnChange,
     data: amisData,
     dispatchEvent: amisDispatchEvent,
@@ -212,11 +211,11 @@ export function MultipleContainers(props) {
     cardClassName = "",
   }: Props = props
 
-  defaultValue && delete(defaultValue.$$id);
+  // defaultValue && delete(defaultValue.$$id);
 
   const [items, setItems] = useState<Items>(
     () => {
-      return (defaultValue as Items) ?? {
+      return (value as Items) ?? {
         A: ['A1', 'A2'],
         B: ['B1', 'B2'],
         C: ['C1', 'C2'],
