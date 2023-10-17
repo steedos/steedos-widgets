@@ -39,7 +39,7 @@
     }
 }
 
-.steedos-crud-mode-cards.steedos-object-table{
+.steedos-object-table.steedos-crud-mode-cards{
     .antd-Crud{
         height: 100%;
         .antd-Cards {
@@ -66,6 +66,14 @@
             }
             .antd-Cards-body{
                 margin: 0.25rem;
+                .antd-Card-field{
+                    .antd-Card-fieldLabel{
+                        color: inherit;
+                        &:after{
+                            content: ":";
+                        }
+                    }
+                }
             }
         }
     }
