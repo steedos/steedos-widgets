@@ -791,10 +791,17 @@ export async function getTableSchema(fields, options){
         options = {};
     }
     let { isLookup, hiddenColumnOperation } = options;
+    const defaults = options.defaults;
+    const listSchema = (defaults && defaults.listSchema) || {};
+
     let columns = [];
     let useMobileColumns = options.formFactor === 'SMALL' || ["split"].indexOf(options.displayAs) > -1;
     if(isLookup){
         // 在lookup手机端列表模式调式好之前不使用getMobileTableColumns
+        useMobileColumns = false;
+    }
+    if(listSchema.mode && listSchema.mode !== "table"){
+        // 如果指定的mode，则不走我们内置的手机端列表效果，使用steedos组件内部开发的默认card/list效果，或者由用户自己实现card/list模式的crud列表
         useMobileColumns = false;
     }
     if(useMobileColumns){
@@ -803,9 +810,6 @@ export async function getTableSchema(fields, options){
     else{
         columns = await getTableColumns(fields, options);
 
-        const defaults = options.defaults;
-    
-        const listSchema = (defaults && defaults.listSchema) || {};
         if(listSchema.mode === "cards"){
             let card = listSchema.card;
             if(!card){
