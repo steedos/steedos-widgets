@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-10-16 18:27:08
+ * @LastEditTime: 2023-10-17 14:41:17
  * @Description: 
  */
 import './AmisObjectTable.less';
@@ -102,7 +102,7 @@ export const AmisObjectTable = async (props) => {
   if(has(props, 'objectApiName')){
     amisSchema.data.objectName = objectApiName;
   }
-  amisSchema.className = `steedos-object-table h-full flex flex-col ${className}`;
+  amisSchema.className = `steedos-object-table ${amisSchema.className} h-full flex flex-col ${className}`;
   amisSchema.objectApiName = objectApiName;//设计器中切换对象时画布中显示的列未同步变更
   // console.timeEnd('AmisObjectTable')
   return amisSchema;

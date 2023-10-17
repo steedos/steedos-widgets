@@ -1,4 +1,5 @@
 @media (min-width: 767px) {
+    /* 列表快速编辑功能样式 */
     .steedos-object-table {
         tbody td.antd-Field--quickEditable {
             &> div {
@@ -34,6 +35,38 @@
         }
         .datetime-min-w {
             min-width: 12em;
+        }
+    }
+}
+
+.steedos-crud-mode-cards.steedos-object-table{
+    .antd-Crud{
+        height: 100%;
+        .antd-Cards {
+            height: 100%;
+            .antd-Cards-toolbar{
+                /* crud的card模式不支持headerToolbarClassName和footerToolbarClassName，这里只能用first-child和last-child来区别 */
+                &:first-child{
+                    padding-top: 0.5rem;
+                    padding-bottom: 0.5rem;
+                    padding-left: 1rem;
+                    padding-right: 1rem;
+                    background-color: rgb(243 244 246 / 1);
+                    border-color: rgb(209 213 219 / 1);
+                    border-style: solid;
+                    border-bottom-width: 1px;
+                }
+                &:last-child{
+                    padding-left: 1rem;
+                    padding-right: 1rem;
+                    background-color: transparent;
+                    border-bottom-width: 0;
+                    margin-bottom: 0;
+                }
+            }
+            .antd-Cards-body{
+                margin: 0.25rem;
+            }
         }
     }
 }

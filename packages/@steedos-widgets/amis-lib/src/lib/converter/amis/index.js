@@ -311,6 +311,11 @@ export async function getObjectCRUD(objectSchema, fields, options){
     body = defaultsDeep({}, listSchema, body);
     body = await getCrudSchemaWithDataFilter(body, { crudDataFilter, onCrudDataFilter, amisData, env });
 
+    let crudModeClassName = "";
+    if(body.mode){
+      crudModeClassName = `steedos-crud-mode-${body.mode}`;
+    }
+
     if (defaults) {
       const headerSchema = defaults.headerSchema;
       const footerSchema = defaults.footerSchema;
@@ -339,7 +344,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
     // TODO: data应该只留loaded，其他属性都改为从上层传递下来
     return {
       type: 'service',
-      className: '',
+      className: crudModeClassName,
       //目前crud的service层id不认用户自定义id，只支持默认规则id，许多地方的格式都写死了service_listview_${objectname}
       id: `service_${id}`,
       name: `page`,
