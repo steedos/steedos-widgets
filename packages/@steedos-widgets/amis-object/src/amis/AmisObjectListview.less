@@ -19,19 +19,22 @@
     }
 }
 /*
-    列表快速搜索，手机端及PC端分栏模式需要独占一行
+    列表快速搜索，手机端及PC端分栏模式需要独占一行，另外card模式，即antd-Cards-toolbar也一样
 */
+// .steedos-object-table .antd-Crud .antd-Cards-toolbar .antd-Crud-toolbar .antd-Crud-toolbar-item--right:last-child
 .steedos-crud-mobile-search-box {
-    .antd-Crud .antd-Table-headToolbar{
-        .antd-Crud-toolbar {
-            .antd-Crud-toolbar-item--right {
-                &:last-child {
-                    width: 100%;
-                    margin-top: 8px;
-                    .antd-TooltipWrapper {
+    .antd-Crud {
+        .antd-Table-headToolbar, .antd-Cards-toolbar{
+            .antd-Crud-toolbar {
+                .antd-Crud-toolbar-item--right {
+                    &:last-child {
                         width: 100%;
-                        .antd-SearchBox.is-active {
+                        margin-top: 8px;
+                        .antd-TooltipWrapper {
                             width: 100%;
+                            .antd-SearchBox.is-active {
+                                width: 100%;
+                            }
                         }
                     }
                 }
@@ -55,5 +58,13 @@
     // lookup弹出窗口
     .antd-Modal .antd-Modal-body{
         .steedos-crud-mobile-search-box
+    }
+    .steedos-object-table{
+        .antd-Crud{
+            &>form.antd-Form:before{
+                // crud card模式顶部多了一条连线
+                border-bottom: none;
+            }
+        }
     }
 }
