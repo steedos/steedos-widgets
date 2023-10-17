@@ -293,6 +293,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
 }
 
 export function getObjectFooterToolbar(mainObject, formFactor, options) {
+  // crud card模式与table模式两种情况下showPageInput默认值不一样，所以需要显式设置为false
   if (formFactor === 'SMALL') {
     // return [
     //   "load-more",
@@ -302,7 +303,8 @@ export function getObjectFooterToolbar(mainObject, formFactor, options) {
         "switch-per-page",
         {
           "type": "pagination",
-          "maxButtons": 5
+          "maxButtons": 4,
+          "showPageInput": false
         }
       ]
     }else{
@@ -310,7 +312,8 @@ export function getObjectFooterToolbar(mainObject, formFactor, options) {
         "statistics",
         {
           "type": "pagination",
-          "maxButtons": 5
+          "maxButtons": 4,
+          "showPageInput": false
         }
       ]
     }
@@ -319,7 +322,11 @@ export function getObjectFooterToolbar(mainObject, formFactor, options) {
     if(options && options.isRelated){
       return [
         "statistics",
-        "pagination"
+        {
+          "type": "pagination",
+          "maxButtons": 10,
+          "showPageInput": false
+        }
       ]
 
     }
@@ -327,7 +334,11 @@ export function getObjectFooterToolbar(mainObject, formFactor, options) {
       return [
         "switch-per-page",
         "statistics",
-        "pagination"
+        {
+          "type": "pagination",
+          "maxButtons": 10,
+          "showPageInput": false
+        }
       ]
     }
   }
