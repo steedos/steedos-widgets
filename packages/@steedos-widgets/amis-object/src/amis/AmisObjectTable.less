@@ -66,12 +66,25 @@
             }
             .antd-Cards-body{
                 margin: 0.25rem;
-                .antd-Card-field{
-                    .antd-Card-fieldLabel{
-                        color: inherit;
-                        margin-right: 6px;
-                        &:after{
-                            content: ":";
+                .antd-Card{
+                    @media (max-width: 768px){
+                        border-left: none;
+                        border-right: none;
+                        border-top: none;
+                        border-radius: unset;
+                        margin-top: -14px;
+                        margin-left: 14px;
+                        margin-right: 10px;
+                    }
+                    .antd-Card-body{
+                        .antd-Card-field{
+                            .antd-Card-fieldLabel{
+                                color: inherit;
+                                margin-right: 6px;
+                                &:after{
+                                    content: ":";
+                                }
+                            }
                         }
                     }
                 }
