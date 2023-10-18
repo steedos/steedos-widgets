@@ -57,8 +57,6 @@
                     border-bottom-width: 1px;
                 }
                 &:last-child{
-                    padding-left: 1rem;
-                    padding-right: 1rem;
                     background-color: transparent;
                     border-bottom-width: 0;
                     margin-bottom: 0;
@@ -78,18 +76,6 @@
                     .antd-Card-body{
                         margin-top: -10px;
                     }
-                    // @media (max-width: 768px){
-                    //     border-left: none;
-                    //     border-right: none;
-                    //     border-top: none;
-                    //     border-radius: unset;
-                    //     margin-top: -10px;
-                    //     margin-left: 8px;
-                    //     margin-right: 8px;
-                    //     .antd-Card-heading, .antd-Card-body{
-                    //         padding: var(--gap-sm);
-                    //     }
-                    // }
                     .antd-Card-body{
                         .antd-Card-field{
                             .antd-Card-fieldLabel{
@@ -107,7 +93,7 @@
     }
 }
 
-.steedos-crud-mobile-card {
+.steedos-crud-mobile-cards {
     .steedos-object-table.steedos-crud-mode-cards {
         .antd-Crud {
             .antd-Cards {
@@ -133,10 +119,29 @@
 }
 
 @media (max-width: 768px) {
-    .steedos-crud-mobile-card 
+    .steedos-crud-mobile-cards
 }
 
 .page-list-split{
     //分栏模式
-    .steedos-crud-mobile-card 
+    .steedos-crud-mobile-cards
+}
+
+@media (max-width: 768px) {
+    .steedos-object-table.steedos-crud-mode-cards {
+        .antd-Crud {
+            .antd-Cards {
+                .antd-Cards-toolbar{
+                    /* crud的card模式不支持headerToolbarClassName和footerToolbarClassName，这里只能用first-child和last-child来区别 */
+                    &:last-child{
+                        // card底部toolbar只有翻页，居中对齐而不是靠右显示
+                        text-align: center;
+                        .antd-Crud-toolbar-item.antd-Crud-toolbar-item--right{
+                            float: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
