@@ -78,18 +78,18 @@
                     .antd-Card-body{
                         margin-top: -10px;
                     }
-                    @media (max-width: 768px){
-                        border-left: none;
-                        border-right: none;
-                        border-top: none;
-                        border-radius: unset;
-                        margin-top: -10px;
-                        margin-left: 8px;
-                        margin-right: 8px;
-                        .antd-Card-heading, .antd-Card-body{
-                            padding: var(--gap-sm);
-                        }
-                    }
+                    // @media (max-width: 768px){
+                    //     border-left: none;
+                    //     border-right: none;
+                    //     border-top: none;
+                    //     border-radius: unset;
+                    //     margin-top: -10px;
+                    //     margin-left: 8px;
+                    //     margin-right: 8px;
+                    //     .antd-Card-heading, .antd-Card-body{
+                    //         padding: var(--gap-sm);
+                    //     }
+                    // }
                     .antd-Card-body{
                         .antd-Card-field{
                             .antd-Card-fieldLabel{
@@ -105,4 +105,39 @@
             }
         }
     }
+}
+
+.steedos-crud-mobile-card {
+    .steedos-object-table.steedos-crud-mode-cards {
+        .antd-Crud {
+            .antd-Cards {
+                .antd-Cards-body {
+                    .antd-Card {
+                        border-left: none;
+                        border-right: none;
+                        border-top: none;
+                        border-radius: unset;
+                        margin-top: -10px;
+                        margin-left: 8px;
+                        margin-right: 8px;
+
+                        .antd-Card-heading,
+                        .antd-Card-body {
+                            padding: var(--gap-sm);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .steedos-crud-mobile-card 
+}
+
+
+.page-list-split{
+    //分栏模式
+    .steedos-crud-mobile-card 
 }
