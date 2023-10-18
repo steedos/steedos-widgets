@@ -67,3 +67,54 @@
         }
     }
 }
+
+.page-list-grid, .page-list-split{
+    &>.antd-Page > .antd-Page-content > .antd-Page-main > .antd-Page-body{
+        // crud card模式内容滚动条依赖了此高度满屏设置
+        height: 100%;
+    }
+    .steedos-object-listview {
+        .steedos-object-listview-content-wrapper {
+            .steedos-object-listview-content {
+                // crud card模式内容滚动条依赖了此高度计算设置，实现在列表内部显示滚动条
+                // 此高度设置实测不会影响grid模式列表视图效果
+                max-height: calc(100% - 78px);
+                .steedos-object-table.steedos-crud-mode-cards {
+                    .antd-Crud {
+                        .antd-Cards {
+                            .antd-Cards-body{
+                                max-height: calc(100% - 110px);
+                                overflow-y: auto;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.page-list-split{
+    .steedos-object-listview {
+        .steedos-object-listview-content-wrapper {
+            .steedos-object-listview-content {
+                .steedos-object-table.steedos-crud-mode-cards {
+                    .antd-Crud {
+                        .antd-Cards {
+                            // 分栏模式下不固定宽度的话会自动适应每个card的内容宽度
+                            width: 386px;
+                            .antd-Cards-body{
+                                // 分栏模式下高度计算跟grid模式不一样
+                                max-height: calc(100% - 150px);
+                                &> div{
+                                    flex-basis: 100%;
+                                    max-width: 100%; 
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
