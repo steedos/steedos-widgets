@@ -772,18 +772,23 @@ async function getDefaultCrudCard(columns, options) {
             }
         }
     });
-    let tableOperation = await getTableOperation(options);
-    if (tableOperation) {
-        tableOperation.className += " inline-block w-auto";
-    }
-    return {
+    let card = {
         "header": {
             "title": titleColumn.tpl
         },
         body: bodyColumns,
         // useCardLabel: false,
-        toolbar: [tableOperation]
+        toolbar: []
+    };
+    let hideToolbarOperation = options.formFactor === 'SMALL' || ["split"].indexOf(options.displayAs) > -1;
+    if(!hideToolbarOperation){
+        let toolbarOperation = await getTableOperation(options);
+        if (toolbarOperation) {
+            toolbarOperation.className += " inline-block w-auto";
+        }
+        card.toolbar.push(toolbarOperation);
     }
+    return card;
 }
 
 export async function getTableSchema(fields, options){
