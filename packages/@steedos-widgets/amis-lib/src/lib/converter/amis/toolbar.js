@@ -303,16 +303,16 @@ export function getObjectFooterToolbar(mainObject, formFactor, options) {
         "switch-per-page",
         {
           "type": "pagination",
-          "maxButtons": 4,
+          "maxButtons": 5,
           "showPageInput": false
         }
       ]
     }else{
       return [
-        "statistics",
+        // "statistics",
         {
           "type": "pagination",
-          "maxButtons": 4,
+          "maxButtons": 5,
           "showPageInput": false
         }
       ]
