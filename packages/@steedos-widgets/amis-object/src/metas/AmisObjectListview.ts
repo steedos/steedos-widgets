@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-09-13 13:48:03
+ * @LastEditTime: 2023-10-19 14:01:07
  * @Description: 
  */
 const config: any = {
@@ -158,19 +158,35 @@ export default {
           "name": "showHeader",
           "label": "显示表头",
         },
+        // {
+        //   type: "button-group-select",
+        //   name: "formFactor",
+        //   label: "显示样式",
+        //   value: "LARGE",
+        //   options: [
+        //     {
+        //       "label": "表格",
+        //       "value": "LARGE"
+        //     },
+        //     {
+        //       "label": "手机",
+        //       "value": "SMALL"
+        //     }
+        //   ]
+        // },
         {
           type: "button-group-select",
-          name: "formFactor",
-          label: "显示样式",
-          value: "LARGE",
+          name: "crudMode",
+          label: "显示模式",
+          value: "table",
           options: [
             {
               "label": "表格",
-              "value": "LARGE"
+              "value": "table"
             },
             {
-              "label": "手机",
-              "value": "SMALL"
+              "label": "卡片",
+              "value": "cards"
             }
           ]
         },
