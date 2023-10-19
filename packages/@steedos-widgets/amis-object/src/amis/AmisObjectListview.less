@@ -106,11 +106,17 @@
                             width: 386px;
                             .antd-Cards-body{
                                 // 分栏模式下高度计算跟grid模式不一样
-                                max-height: calc(100% - 150px);
+                                max-height: calc(100% - 142px);
                                 &> div{
                                     flex-basis: 100%;
                                     max-width: 100%;
                                     padding: 0;
+                                }
+                            }
+                            .antd-Cards-toolbar{
+                                /* crud的card模式不支持headerToolbarClassName和footerToolbarClassName，这里只能用first-child和last-child来区别 */
+                                &:last-child{
+                                    margin-top: -6px;
                                 }
                             }
                         }
@@ -123,15 +129,23 @@
 
 
 @media (max-width: 768px) {
-    .steedos-object-listview {
-        .steedos-object-listview-content-wrapper {
-            .steedos-object-listview-content {
-                .steedos-object-table.steedos-crud-mode-cards {
-                    .antd-Crud {
-                        .antd-Cards {
-                            .antd-Cards-body{
-                                // 手机端高度计算跟grid模式不一样，而是跟分栏模式一样多减去一些高度
-                                max-height: calc(100% - 150px);
+    .page-list-grid, .page-list-split{
+        .steedos-object-listview {
+            .steedos-object-listview-content-wrapper {
+                .steedos-object-listview-content {
+                    .steedos-object-table.steedos-crud-mode-cards {
+                        .antd-Crud {
+                            .antd-Cards {
+                                .antd-Cards-body{
+                                    // 手机端高度计算跟grid模式不一样，而是跟分栏模式一样多减去一些高度
+                                    max-height: calc(100% - 148px);
+                                }
+                                .antd-Cards-toolbar{
+                                    /* crud的card模式不支持headerToolbarClassName和footerToolbarClassName，这里只能用first-child和last-child来区别 */
+                                    &:last-child{
+                                        margin-top: -6px;
+                                    }
+                                }
                             }
                         }
                     }
