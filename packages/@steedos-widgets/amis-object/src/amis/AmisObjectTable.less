@@ -57,6 +57,8 @@
                     border-bottom-width: 1px;
                 }
                 &:last-child{
+                    padding-left: 1rem;
+                    padding-right: 1rem;
                     background-color: transparent;
                     border-bottom-width: 0;
                     margin-bottom: 0;
@@ -94,6 +96,7 @@
 }
 
 .steedos-crud-mobile-cards {
+    // crud分栏模式及手机端上card模式时参考salefore显示为只有底边线的card
     .steedos-object-table.steedos-crud-mode-cards {
         .antd-Crud {
             .antd-Cards {
@@ -134,7 +137,7 @@
                 .antd-Cards-toolbar{
                     /* crud的card模式不支持headerToolbarClassName和footerToolbarClassName，这里只能用first-child和last-child来区别 */
                     &:last-child{
-                        // card底部toolbar只有翻页，居中对齐而不是靠右显示
+                        // 手机端card底部toolbar只有翻页，居中对齐而不是靠右显示，分栏模式时底部左侧有perPage组件所以没有这个居中的样式需求
                         text-align: center;
                         .antd-Crud-toolbar-item.antd-Crud-toolbar-item--right{
                             float: none;

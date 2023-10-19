@@ -95,6 +95,7 @@
 }
 
 .page-list-split{
+    // 列表分栏模式时，crud card不支持使用amis useMobileUI参数来控制显示为手机端样式效果，这里手动实现
     .steedos-object-listview {
         .steedos-object-listview-content-wrapper {
             .steedos-object-listview-content {
@@ -108,8 +109,29 @@
                                 max-height: calc(100% - 150px);
                                 &> div{
                                     flex-basis: 100%;
-                                    max-width: 100%; 
+                                    max-width: 100%;
+                                    padding: 0;
                                 }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+@media (max-width: 768px) {
+    .steedos-object-listview {
+        .steedos-object-listview-content-wrapper {
+            .steedos-object-listview-content {
+                .steedos-object-table.steedos-crud-mode-cards {
+                    .antd-Crud {
+                        .antd-Cards {
+                            .antd-Cards-body{
+                                // 手机端高度计算跟grid模式不一样，而是跟分栏模式一样多减去一些高度
+                                max-height: calc(100% - 150px);
                             }
                         }
                     }
