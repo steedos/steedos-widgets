@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-09-13 11:27:12
+ * @LastEditTime: 2023-10-19 14:04:12
  * @Description: 
  */
 const config: any = {
@@ -219,6 +219,22 @@ export default {
                           // },
                           language: "json",
                           // visibleOn: "this.fieldsControl === 'included'"
+                        },
+                        {
+                          type: "button-group-select",
+                          name: "crudMode",
+                          label: "显示模式",
+                          value: "table",
+                          options: [
+                            {
+                              "label": "表格",
+                              "value": "table"
+                            },
+                            {
+                              "label": "卡片",
+                              "value": "cards"
+                            }
+                          ]
                         }
                       ]
                     },
