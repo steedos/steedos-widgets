@@ -420,7 +420,20 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                     type: getAmisStaticFieldType('number', readonly),
                     min: field.min,
                     max: field.max,
-                    precision: field.scale
+                    precision: field.scale,
+                    suffix: "%",
+                    pipeIn: (value, data) => {
+                        if(value){
+                            return value*100;
+                        }
+                        return value;
+                    },
+                    pipeOut: (value, oldValue, data) => {
+                        if(value){
+                            return value/100;
+                        }
+                        return value;
+                    },
                 }
             }
             break;
