@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-10-19 14:01:07
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-10-20 13:24:39
  * @Description: 
  */
 const config: any = {
@@ -31,6 +31,16 @@ const config: any = {
       name: "listName",
       propType: "string",
       description: '视图名称',
+    },
+    {
+      name: "requestAdaptor",
+      propType: "string",
+      description: '发送适配器',
+    },
+    {
+      name: "adaptor",
+      propType: "string",
+      description: '接收适配器',
     }
   ],
   preview: {
@@ -194,6 +204,29 @@ export default {
           type: "text",
           name: "className",
           label: "CSS类名"
+        },
+        {
+          "type": "collapse",
+          headingClassName: 'pl-0',
+          bodyClassName: '',
+          "collapsed": true,
+          "header": "数据接口",
+          "body": [
+            {
+              type: "editor",
+              name: "requestAdaptor",
+              label: "发送适配器",
+              language: "javascript",
+              description: "函数签名：(api) => api， 数据在 api.data 中，修改后返回 api 对象。"
+            },
+            {
+              type: "editor",
+              name: "adaptor",
+              label: "接收适配器",
+              language: "javascript",
+              description: "函数签名: (payload, response, api) => payload"
+            }
+          ]
         },
         {
           "type": "collapse",

@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-09-21 17:35:06
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-10-20 11:38:25
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -348,8 +348,8 @@ export async function getListSchema(
         "filtersFunction": listview_filters,
         "sort": sort,
         "ctx": ctx,
-        "requestAdaptor": listView.requestAdaptor,  
-        "adaptor": listView.adaptor,
+        "requestAdaptor": listView.requestAdaptor || ctx.requestAdaptor,  
+        "adaptor": listView.adaptor || ctx.adaptor,
         "headerToolbarItems": ctx.headerToolbarItems,
         "filterVisible": ctx.filterVisible,
         "rowClassNameExpr": ctx.rowClassNameExpr,

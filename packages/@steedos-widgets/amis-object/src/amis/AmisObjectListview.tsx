@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-10-18 14:57:23
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-10-20 11:35:29
  * @Description: 
  */
 import './AmisObjectListview.less';
@@ -21,7 +21,7 @@ export const AmisObjectListView = async (props) => {
       columnsTogglable=false,
       filterVisible = true,
       headerToolbarItems, rowClassNameExpr, hiddenColumnOperation=false, columns,
-      crudDataFilter, onCrudDataFilter, env, rebuildOn, crudMode} = props;
+      crudDataFilter, onCrudDataFilter, env, rebuildOn, crudMode, requestAdaptor, adaptor} = props;
   let { headerSchema } = props;
   let ctx = props.ctx;
   let crud = props.crud || {};
@@ -128,7 +128,7 @@ export const AmisObjectListView = async (props) => {
   const listViewSchemaProps = { 
     top, perPage, showHeader, defaults, ...ctx, listViewId, setDataToComponentId, filterVisible, showDisplayAs, displayAs, 
     headerToolbarItems, rowClassNameExpr, hiddenColumnOperation, columns,
-    crudDataFilter, onCrudDataFilter, amisData: allData, env
+    crudDataFilter, onCrudDataFilter, amisData: allData, env, requestAdaptor, adaptor
   }
 
   if(!headerSchema){
