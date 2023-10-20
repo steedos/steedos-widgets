@@ -274,6 +274,10 @@ export async function getObjectCRUD(objectSchema, fields, options){
         autoFillHeight = false
       }
 
+      let tableClassName = {};
+      tableClassName[`flex-auto ${crudClassName || ""}`] = true;
+      tableClassName["crud-has-pagination"] = "${count > perPage}";
+
       body = Object.assign({}, table, {
         type: 'crud', 
         primaryField: '_id', 
@@ -284,7 +288,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
         api: await getTableApi(objectSchema, fields, options),
         hiddenOn: options.tableHiddenOn,
         autoFillHeight,
-        className: `flex-auto ${crudClassName || ""}`,
+        className: tableClassName,
         bodyClassName: "bg-white",
         crudClassName: crudClassName,
         quickSaveApi: {
