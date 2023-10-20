@@ -83,8 +83,16 @@
                     .antd-Crud {
                         .antd-Cards {
                             .antd-Cards-body{
-                                max-height: calc(100% - 110px);
+                                max-height: calc(100% - 72px);
                                 overflow-y: auto;
+                            }
+                        }
+                        &.crud-has-pagination{
+                            .antd-Cards {
+                                .antd-Cards-body{
+                                    // 底部显示分页器时高度应该高一点
+                                    max-height: calc(100% - 110px);
+                                }
                             }
                         }
                     }
@@ -106,7 +114,7 @@
                             width: 386px;
                             .antd-Cards-body{
                                 // 分栏模式下高度计算跟grid模式不一样
-                                max-height: calc(100% - 142px);
+                                max-height: calc(100% - 104px);
                                 &> div{
                                     flex-basis: 100%;
                                     max-width: 100%;
@@ -117,6 +125,14 @@
                                 /* crud的card模式不支持headerToolbarClassName和footerToolbarClassName，这里只能用first-child和last-child来区别 */
                                 &:last-child{
                                     margin-top: -6px;
+                                }
+                            }
+                        }
+                        &.crud-has-pagination{
+                            .antd-Cards {
+                                .antd-Cards-body{
+                                    // 底部显示分页器时高度应该高一点
+                                    max-height: calc(100% - 142px);
                                 }
                             }
                         }
@@ -138,12 +154,20 @@
                             .antd-Cards {
                                 .antd-Cards-body{
                                     // 手机端高度计算跟grid模式不一样，而是跟分栏模式一样多减去一些高度
-                                    max-height: calc(100% - 148px);
+                                    max-height: calc(100% - 110px);
                                 }
                                 .antd-Cards-toolbar{
                                     /* crud的card模式不支持headerToolbarClassName和footerToolbarClassName，这里只能用first-child和last-child来区别 */
                                     &:last-child{
                                         margin-top: -6px;
+                                    }
+                                }
+                            }
+                            &.crud-has-pagination{
+                                .antd-Cards {
+                                    .antd-Cards-body{
+                                        // 底部显示分页器时高度应该高一点
+                                        max-height: calc(100% - 148px);
                                     }
                                 }
                             }
