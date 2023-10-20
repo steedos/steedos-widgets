@@ -138,7 +138,9 @@
                             .antd-Cards {
                                 .antd-Cards-body{
                                     // 手机端高度计算跟grid模式不一样，而是跟分栏模式一样多减去一些高度
-                                    max-height: calc(100% - 148px);
+                                    // max-height: calc(100% - 148px);
+                                    // 手机端可能在配置为大字段的情况下，翻页器有可能显示为2行，无法算出max-height值，所以使用最外面的大滚动条
+                                    max-height: unset;
                                 }
                                 .antd-Cards-toolbar{
                                     /* crud的card模式不支持headerToolbarClassName和footerToolbarClassName，这里只能用first-child和last-child来区别 */
