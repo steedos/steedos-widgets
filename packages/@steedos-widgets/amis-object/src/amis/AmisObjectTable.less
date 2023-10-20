@@ -39,6 +39,13 @@
     }
 }
 
+.text-ellipsis(){
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .steedos-object-table.steedos-crud-mode-cards{
     .antd-Crud{
         height: 100%;
@@ -68,10 +75,13 @@
                 margin: 0.25rem;
                 .antd-Card{
                     .antd-Card-heading{
-                        .antd-Card-title{
-                            .antd-TplField a{
-                                // 标题字段字体加大
-                                font-size: 16px;
+                        .antd-Card-meta{
+                            overflow: hidden;
+                            .antd-Card-title{
+                                .antd-TplField a{
+                                    // 标题字段字体加大
+                                    font-size: 16px;
+                                }
                             }
                         }
                     }
@@ -83,8 +93,17 @@
                             .antd-Card-fieldLabel{
                                 color: inherit;
                                 margin-right: 6px;
+                                flex: 1;
+                                .text-ellipsis();
                                 &:after{
                                     content: ":";
+                                }
+                            }
+                            .antd-Card-fieldValue{
+                                flex: 3;
+                                .text-ellipsis();
+                                .antd-TplField,.antd-PlainField{
+                                    .text-ellipsis();
                                 }
                             }
                         }
