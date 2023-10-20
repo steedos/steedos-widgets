@@ -763,6 +763,7 @@ async function getDefaultCrudCard(columns, options) {
     let titleColumn, bodyColumns = [];
     columns.forEach(function (item) {
         delete item.quickEdit;
+        delete item.width;
         if (item.name === labelFieldName) {
             titleColumn = item;
         }
