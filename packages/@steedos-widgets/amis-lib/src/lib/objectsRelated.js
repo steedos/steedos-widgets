@@ -2,13 +2,13 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: liaodaxue
- * @LastEditTime: 2023-09-25 17:18:08
+ * @LastEditTime: 2023-10-23 15:55:46
  * @Description:
  */
 
 
 import { getObjectRecordDetailRelatedListHeader } from './converter/amis/header';
-import { isEmpty,  find, isString, forEach, keys, findKey, isArray, union, has } from "lodash";
+import { isEmpty,  find, isString, forEach, keys, findKey, isArray, union, has, map } from "lodash";
 import { getUISchema, getField, getListViewColumns, getListViewSort, getListViewFilter } from './objects'
 import { getRecord } from './record';
 import { i18next } from '../i18n'
@@ -303,11 +303,15 @@ export async function getRelatedListSchema(
     ctx
   ) {
     const uiSchema = await getUISchema(objectName);
+    if(!uiSchema){
+        return {}
+    }
+    const listViewNames = map(uiSchema.list_views, 'name');
     const listView =  find(
         uiSchema.list_views,
         (listView, name) => {
-            // 传入listViewName空值则取第一个
-            if(!listViewName){
+            // 传入listViewName空值 或者 不存在 则取第一个
+            if(!listViewName || listViewNames.indexOf(listViewName)<0){
                 listViewName = name;
             }
             return name === listViewName || listView._id === listViewName;
