@@ -227,10 +227,10 @@ export function MultipleContainers(props) {
     Object.keys(items) as UniqueIdentifier[]
   );
 
-  const handleChange = async () => {
+  const handleChange = async (newItems? : any) => {
     if (!amisDispatchEvent || !amisOnChange)
       return 
-    const value = items;
+    const value = newItems || items;
 
     // 支持 amis OnEvent.change
     const rendererEvent = await amisDispatchEvent(
@@ -493,26 +493,31 @@ export function MultipleContainers(props) {
 
         const overContainer = findContainer(overId);
 
+        let newItems = items;
+
         if (overContainer) {
           const activeIndex = items[activeContainer].indexOf(active.id);
           const overIndex = items[overContainer].indexOf(overId);
 
           if (activeIndex !== overIndex) {
-            setItems((items) => ({
-              ...items,
-              [overContainer]: arrayMove(
-                items[overContainer],
-                activeIndex,
-                overIndex
-              ),
-            }));
+            setItems((items) => {
+              newItems = {
+                ...items,
+                [overContainer]: arrayMove(
+                  items[overContainer],
+                  activeIndex,
+                  overIndex
+                ),
+              }
+              return newItems;
+            });
           }
         }
 
         setActiveId(null);
 
         // console.log('拖动结束2，更新form value')
-        handleChange()
+        handleChange(newItems)
       }}
       cancelDrop={cancelDrop}
       onDragCancel={onDragCancel}
