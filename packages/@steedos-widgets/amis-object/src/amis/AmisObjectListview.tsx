@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: liaodaxue
- * @LastEditTime: 2023-10-20 11:35:29
+ * @LastEditTime: 2023-10-23 09:32:53
  * @Description: 
  */
 import './AmisObjectListview.less';
@@ -76,13 +76,13 @@ export const AmisObjectListView = async (props) => {
   }
 
   listName = listView.name;
-
-  if (crudMode) {
+  const crud_mode = listView.crud_mode || crudMode;
+  if (crud_mode) {
     // 把crudMode属性传入到crud.mode属性值中
     // 如果只配置了crudMode属性，则后续内核代码会自动生成对应mode的默认属性值，比如card,listItem
     // 这样可以手动配置crud.card或crud.listItem属性的时间提高开发效率
     crud = Object.assign({
-      mode: crudMode
+      mode: crud_mode
     }, crud);
   }
 
