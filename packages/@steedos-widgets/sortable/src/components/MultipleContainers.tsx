@@ -211,7 +211,7 @@ export function MultipleContainers(props) {
     cardClassName = "",
   }: Props = props
 
-  // defaultValue && delete(defaultValue.$$id);
+  value && delete(value.$$id);
 
   const [items, setItems] = useState<Items>(
     () => {
