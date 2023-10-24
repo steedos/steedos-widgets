@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal, unstable_batchedUpdates } from 'react-dom';
-import { map, keyBy, cloneDeep } from 'lodash';
+import { map, keyBy, cloneDeep, keys } from 'lodash';
 
 import { createObject } from '@steedos-widgets/amis-lib'
 
@@ -384,6 +384,7 @@ export function MultipleContainers(props) {
         const overId = over?.id;
 
         if (overId == null || overId === TRASH_ID || active.id in items) {
+          // 拖动的是分组则跳过后面的逻辑
           return;
         }
 
@@ -496,21 +497,45 @@ export function MultipleContainers(props) {
         let newItems = items;
 
         if (overContainer) {
-          const activeIndex = items[activeContainer].indexOf(active.id);
-          const overIndex = items[overContainer].indexOf(overId);
-
-          if (activeIndex !== overIndex) {
-            setItems((items) => {
-              newItems = {
-                ...items,
-                [overContainer]: arrayMove(
-                  items[overContainer],
-                  activeIndex,
-                  overIndex
-                ),
+          if(activeContainer !== overContainer){
+            // 拖动变更分组之间的顺序时，activeContainer 与 overContainer 值不相等
+            setTimeout(function(){
+              const sortedGroups = over.data.current.sortable.items; //不加setTimeout的话，这里拿到的会是变更前的数据
+              newItems = {};
+              sortedGroups.forEach((groupKey: string) => {
+                newItems[groupKey] = items[groupKey];
+              });
+              delete newItems[TRASH_ID];
+              delete newItems[PLACEHOLDER_ID];
+              if(keys(items).join(",") !== keys(newItems).join(",")){
+              // 只有顺序发生变化时才触发change事件
+                setItems(newItems);
+                // console.log('拖动结束2，更新form value')
+                handleChange(newItems)
               }
-              return newItems;
-            });
+
+              setActiveId(null);
+            },1000);
+            return;
+          }
+          else {
+            // 同一个分组中字段顺序变更以及把一个字段从某个分组拖动到另一个分组内时，activeContainer 与 overContainer 值相等
+            const activeIndex = items[activeContainer].indexOf(active.id);
+            const overIndex = items[overContainer].indexOf(overId);
+  
+            if (activeIndex !== overIndex) {
+              setItems((items) => {
+                newItems = {
+                  ...items,
+                  [overContainer]: arrayMove(
+                    items[overContainer],
+                    activeIndex,
+                    overIndex
+                  ),
+                }
+                return newItems;
+              });
+            }
           }
         }
 
