@@ -2,9 +2,9 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-03-22 09:31:21
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-10-25 14:41:57
+ * @LastEditTime: 2023-10-25 17:40:14
  */
-import {get} from 'lodash'
+import { get } from 'lodash'
 
 const globalTag = '__G_L_O_B_A_L__';
 
@@ -45,12 +45,29 @@ export const isExpression = function (func) {
     return false;
 };
 
+const getMoment = () => {
+    if (window.amisRequire) {
+        return window.amisRequire("moment");
+    } else if (window.moment) {
+        return window.moment;
+    }
+}
+
 export const parseSingleExpression = function (func, formData, dataPath, global, userSession = {}) {
     if (global) {
-      Object.assign(global, {
-        now: new Date()
-      });
+        let now = new Date();
+        let moment = getMoment();
+        let today = moment().utc();
+        today.set("hours", 0);
+        today.set("minutes", 0);
+        today.set("seconds", 0);
+        today = today.toDate();
+        Object.assign(global, {
+            now,
+            today
+        });
     }
+
     var error, funcBody, parent, parentPath, str;
 
     if (formData === void 0) {

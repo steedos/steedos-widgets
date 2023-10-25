@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-03-22 09:31:21
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-10-25 17:31:20
+ * @LastEditTime: 2023-10-25 17:35:18
  */
 export const isExpression = function (func) {
   var pattern, reg1, reg2;
@@ -18,10 +18,26 @@ export const isExpression = function (func) {
   return false;
 };
 
+const getMoment = ()=>{
+  if(window.amisRequire){
+    return window.amisRequire("moment");
+  }else if(window.moment){
+    return window.moment;
+  }
+}
+
 export const parseSingleExpression = function (func, formData, dataPath, global) {
   if (global) {
+    let now = new Date();
+    let moment = getMoment();
+    let today = moment().utc();
+    today.set("hours",0);
+    today.set("minutes",0);
+    today.set("seconds",0);
+    today = today.toDate();
     Object.assign(global, {
-      now: new Date()
+      now,
+      today
     });
   }
   var error, funcBody, getParentPath, getValueByPath, globalTag, parent, parentPath, str;
