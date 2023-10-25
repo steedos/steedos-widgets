@@ -1,3 +1,9 @@
+/*
+ * @Author: 殷亮辉 yinlianghui@hotoa.com
+ * @Date: 2023-03-22 09:31:21
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-10-25 14:41:57
+ */
 import {get} from 'lodash'
 
 const globalTag = '__G_L_O_B_A_L__';
@@ -40,6 +46,11 @@ export const isExpression = function (func) {
 };
 
 export const parseSingleExpression = function (func, formData, dataPath, global, userSession = {}) {
+    if (global) {
+      Object.assign(global, {
+        now: new Date()
+      });
+    }
     var error, funcBody, parent, parentPath, str;
 
     if (formData === void 0) {

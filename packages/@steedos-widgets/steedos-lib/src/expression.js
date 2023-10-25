@@ -1,3 +1,9 @@
+/*
+ * @Author: 殷亮辉 yinlianghui@hotoa.com
+ * @Date: 2023-03-22 09:31:21
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-10-25 14:41:37
+ */
 export const isExpression = function(func) {
     var pattern, reg1, reg2;
     if (typeof func !== 'string') {
@@ -13,6 +19,11 @@ export const isExpression = function(func) {
   };
   
   export const parseSingleExpression = function(func, formData, dataPath, global) {
+    if (global) {
+      Object.assign(global, {
+        now: new Date()
+      });
+    }
     var error, funcBody, getParentPath, getValueByPath, globalTag, parent, parentPath, str;
     getParentPath = function(path) {
       var pathArr;
