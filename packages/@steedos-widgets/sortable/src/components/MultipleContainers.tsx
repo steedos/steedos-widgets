@@ -243,7 +243,7 @@ export function MultipleContainers(props) {
       return;
     }
 
-    setTimeout(()=> amisOnChange(value), 1000);
+    setTimeout(()=> amisOnChange(value), 500);
   }
   
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
@@ -515,7 +515,7 @@ export function MultipleContainers(props) {
               }
 
               setActiveId(null);
-            },1000);
+            },500);
             return;
           }
           else {
