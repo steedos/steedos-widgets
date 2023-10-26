@@ -400,8 +400,29 @@ const getFormFields = (objectSchema, formProps)=>{
   return lodash.sortBy(_.values(fields), "sort_no");
 }
 
+async function getFormSchemaWithDataFilter(form, options = {}){
+  const { formDataFilter, amisData, env } = options;
+  let onFormDataFilter = options.onFormDataFilter;
+  if (!onFormDataFilter && typeof formDataFilter === 'string') {
+    onFormDataFilter = new Function(
+      'form',
+      'env',
+      'data',
+      formDataFilter
+    );
+  }
+
+  try {
+    onFormDataFilter && (form = await onFormDataFilter(form, env, amisData) || form);
+  } catch (e) {
+    console.warn(e);
+  }
+  return form;
+}
+
 export async function getObjectForm(objectSchema, ctx){
-    const { recordId, formFactor, layout = formFactor === 'SMALL' ? 'normal' : "normal", labelAlign, tabId, appId, defaults, submitSuccActions = [] } = ctx;
+    const { recordId, formFactor, layout = formFactor === 'SMALL' ? 'normal' : "normal", labelAlign, tabId, appId, defaults, submitSuccActions = [], 
+      formDataFilter, onFormDataFilter, amisData, env } = ctx;
     const fields = _.values(objectSchema.fields);
     const formFields = getFormFields(objectSchema, ctx);
     const formSchema =  defaults && defaults.formSchema || {};
@@ -418,7 +439,8 @@ export async function getObjectForm(objectSchema, ctx){
       name: `page_edit_${recordId}`,
       api: await getEditFormInitApi(objectSchema, recordId, fields, ctx),
       data:{
-        editFormInited: false
+        editFormInited: false,
+        ...amisData
       },
       // data: {global: getGlobalData('edit'), recordId: recordId, objectName: objectSchema.name, context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
       initApi: null,
@@ -485,6 +507,7 @@ export async function getObjectForm(objectSchema, ctx){
         }
       })]
     };
+    amisSchema.body[0] = await getFormSchemaWithDataFilter(amisSchema.body[0], { formDataFilter, onFormDataFilter, amisData, env });
     return amisSchema;
 }
 

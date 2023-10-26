@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
- * @LastEditors: liaodaxue
- * @LastEditTime: 2023-10-18 09:15:47
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-10-26 16:31:32
  * @Description: 
  */
 
@@ -451,6 +451,26 @@ export default {
                           "labelField": "label",
                           "valueField": "value",
                           "visibleOn": "${enableTabs}"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "collapse",
+                      headingClassName: 'ae-formItemControl-header',
+                      bodyClassName: 'ae-formItemControl-body',
+                      "key": "4",
+                      "header": "高级",
+                      "body": [
+                        {
+                          type: "editor",
+                          name: "formDataFilter",
+                          label: "FORM",
+                          description: ""
+                        },
+                        {
+                          "type": "markdown",
+                          "value": "如果需要对组件原始返回的form进行加工，可以自己写一段函数脚本来实现。\n\n函数签名：(form, env, data) => form\n\n参数说明：\n\nform 组件原始返回的form schema\n\nenv amis env，可以调用env.fetcher函数实现异步请求\n\ndata 数据域中的data\n\n返回值：\n\n最后需要返回加工后的form schema\n\n示例：\n\n```\nconsole.log('data===>', data);\nconst api = ...;\nreturn env.fetcher(api, {}).then((result) => {\n  console.log(result);\n  form.body[0].tabs[0].title='基础信息';\n  return form;\n});\n\n```\n",
+                          "className": "text-gray-500"
                         }
                       ]
                     }
