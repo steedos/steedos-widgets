@@ -2,18 +2,18 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-10-26 17:18:51
+ * @LastEditTime: 2023-10-26 17:52:51
  * @Description: 
  */
 import './AmisObjectForm.less';
 import './AmisObjectFormMobile.less';
-import { getFormSchema, getViewSchema } from '@steedos-widgets/amis-lib'
+import { getFormSchema, getViewSchema, createObject } from '@steedos-widgets/amis-lib'
 import { keys, pick, difference, isString, has } from 'lodash';
 
 export const AmisObjectForm = async (props) => {
   // console.log("===AmisObjectForm=props==", props);
   const { $schema, recordId, defaultData, mode, layout, labelAlign, appId, fieldsExtend, excludedFields = null, fields = null, form = {},
-    className="", initApiRequestAdaptor, initApiAdaptor, apiRequestAdaptor, apiAdaptor, enableTabs, tabsMode, submitSuccActions,
+    className="", initApiRequestAdaptor, initApiAdaptor, apiRequestAdaptor, apiAdaptor, enableTabs, tabsMode, submitSuccActions, data,
     formDataFilter, onFormDataFilter, env
   } = props;
   let objectApiName = props.objectApiName || "space_users";
@@ -46,7 +46,7 @@ export const AmisObjectForm = async (props) => {
   let amisSchema: any;
   let uiSchema: any;
   if (mode === 'edit') {
-    let allData: any = {};
+    const allData = createObject(data, {}); //这里不把defaultData传入createObject是因为此处defaultData是表单字段默认值，不属于上下文data
     if(defaultData){
       // 让ObjectForm支持props中的dafaultData属性与上层组件配置的defaultData混合
       // 为了解决相关表新建时如果是表单类型微页面，因为找不到ObjectForm在哪层而造成无法设置ObjectForm的defaultData的问题
