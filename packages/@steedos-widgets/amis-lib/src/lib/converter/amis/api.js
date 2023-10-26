@@ -271,7 +271,7 @@ export async function getEditFormInitApi(object, recordId, fields, options){
                     ${getScriptForRewriteValueForFileFields(fields)}
 
                     _.each(dataKeys, function(key){
-                        if(fieldKeys.indexOf(key)<0){
+                        if(fieldKeys.indexOf(key)<0 && key !== "_display"){
                             delete data[key];
                         }
                     })
