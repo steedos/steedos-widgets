@@ -227,6 +227,11 @@ export function MultipleContainers(props) {
     Object.keys(items) as UniqueIdentifier[]
   );
 
+  useEffect(() => {
+    setItems(value as Items);
+    setContainers(Object.keys(value) as UniqueIdentifier[]);
+  }, [value]);
+
   const handleChange = async (newItems? : any) => {
     if (!amisDispatchEvent || !amisOnChange)
       return 
