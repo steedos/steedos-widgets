@@ -1,10 +1,11 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-10-26 16:31:32
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-10-27 13:23:35
  * @Description: 
  */
+import * as _ from 'lodash';
 
 const config: any = {
   componentType: 'amisSchema', // amisSchema || react 
@@ -367,9 +368,14 @@ export default {
                           },
                           "pipeOut": (value, data) => {
                             if(value){
-                              return JSON.parse(value);
+                              const v = JSON.parse(value);
+                              if(_.isObject(v) && _.isEmpty(v)){
+                                return ""
+                              }else{
+                                return v;
+                              }
                             }
-                            return undefined;
+                            return "";
                           },
                           language: "json",
                           // visibleOn: "this.fieldsControl === 'included'"
