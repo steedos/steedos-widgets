@@ -512,11 +512,12 @@ export async function getObjectForm(objectSchema, ctx){
 }
 
 export async function getObjectDetail(objectSchema, recordId, ctx){
-    const { formFactor, layout = formFactor === 'SMALL' ? 'normal' : "normal", labelAlign } = ctx;
+    const { formFactor, layout = formFactor === 'SMALL' ? 'normal' : "normal", labelAlign, 
+      formDataFilter, onFormDataFilter, amisData, env } = ctx;
     const fields = _.values(objectSchema.fields);
     const formFields = getFormFields(objectSchema, ctx);
     const serviceId = `service_detail_page`;
-    return {
+    const amisSchema = {
         type: 'service',
         name: `page_readonly_${recordId}`,
         id: serviceId,
@@ -599,4 +600,7 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
           }
         }
     }
+
+    amisSchema.body[0].body = await getFormSchemaWithDataFilter(amisSchema.body[0].body, { formDataFilter, onFormDataFilter, amisData, env });
+    return amisSchema;
 }

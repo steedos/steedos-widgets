@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-10-27 10:15:36
+ * @LastEditTime: 2023-10-27 14:02:41
  * @Description: 
  */
 import './AmisObjectForm.less';
@@ -45,8 +45,8 @@ export const AmisObjectForm = async (props) => {
   globalData.mode = mode === 'edit' ? 'edit' : 'read'
   let amisSchema: any;
   let uiSchema: any;
-  if (mode === 'edit') {
-    const allData = createObject(data, {}); //这里不把defaultData传入createObject是因为此处defaultData是表单字段默认值，不属于上下文data
+  const allData = createObject(data, {}); 
+  if (mode === 'edit') {//这里不把defaultData传入createObject是因为此处defaultData是表单字段默认值，不属于上下文data
     if(defaultData){
       // 让ObjectForm支持props中的dafaultData属性与上层组件配置的defaultData混合
       // 为了解决相关表新建时如果是表单类型微页面，因为找不到ObjectForm在哪层而造成无法设置ObjectForm的defaultData的问题
@@ -66,7 +66,8 @@ export const AmisObjectForm = async (props) => {
       options.isEditor = true;
     }
     const schema =  await getViewSchema(objectApiName, recordId, Object.assign({}, options, {
-      initApiRequestAdaptor, initApiAdaptor, enableTabs, tabsMode
+      initApiRequestAdaptor, initApiAdaptor, enableTabs, tabsMode,
+      formDataFilter, onFormDataFilter, amisData: allData, env
     }));
     amisSchema =  schema.amisSchema;
     uiSchema =  schema.uiSchema;
