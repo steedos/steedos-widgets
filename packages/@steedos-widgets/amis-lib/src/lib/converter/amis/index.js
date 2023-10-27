@@ -432,16 +432,16 @@ export async function getObjectForm(objectSchema, ctx){
     if(!formSchema.id){
       formSchema.id = 'form_' + objectSchema.name;
     }
-    const amisSchemaData = createObject(amisData, {
-      editFormInited: false
-    });
     const amisSchema =  {
       type: 'service',
       id: `service_${formSchema.id}`,
       className: 'p-0',
       name: `page_edit_${recordId}`,
       api: await getEditFormInitApi(objectSchema, recordId, fields, ctx),
-      data: amisSchemaData,
+      data:{
+        editFormInited: false,
+        ...amisData
+      },
       // data: {global: getGlobalData('edit'), recordId: recordId, objectName: objectSchema.name, context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
       initApi: null,
       initFetch: null ,
