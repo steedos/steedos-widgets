@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-07-09 09:47:03
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-10-29 18:26:05
  * @Description: 
  */
 import { Field, getReferenceTo } from '@steedos-widgets/amis-lib';
@@ -11,14 +11,13 @@ import { isArray, isEmpty, isString, pick } from 'lodash';
 export const AmisSteedosField = async (props)=>{
 
     let steedosField = null;
-
     let { field, readonly = false, ctx = {}, config, $schema, static: fStatic } = props;
     // console.log(`AmisSteedosField`, props)
 
-    if($schema.config && isString($schema.config)){
-        $schema.config = JSON.parse($schema.config)
-        props.config = $schema.config
-    }
+    // if($schema.config && isString($schema.config)){
+    //     $schema.config = JSON.parse($schema.config)
+    //     props.config = $schema.config
+    // }
 
     if(isString(ctx)){
         ctx = JSON.parse(ctx);
