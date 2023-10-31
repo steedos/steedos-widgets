@@ -31,7 +31,8 @@ export const getCopyListviewButtonSchema = ()=>{
                         "&": "${list_view}",
                         "name":"",
                         "label": i18next.t('frontend_listview_control_clone_defaultData_label_start') + " ${list_view.label} " + i18next.t('frontend_listview_control_clone_defaultData_label_end'),
-                        "shared":false
+                        "shared":false,
+                        "object_name": "${targetObjectName}",
                       },
                       "fieldsExtend": fieldsExtend(),
                       "fields": fields(),
