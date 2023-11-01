@@ -40,7 +40,36 @@ function getDetailColumn(){}
 
 async function getQuickEditSchema(field, options){
     const quickEditId = options.objectName + "_" + field.name + "QuickEdit";//定义快速编辑的表单id，用于setvalue传值
-    var quickEditSchema = { body: [], id: quickEditId };
+    const submitEvent = {
+        submit: {
+            actions: [
+                {
+                    actionType: "custom",
+                    script: `
+                        const items = event.data.items;
+                        const selectedItems = event.data.selectedItems;
+                        if(event.data.isBatchEdit){
+                            selectedItems.forEach(function(selectedItem){
+                                items[selectedItem._index-1]._display.${field.name} = event.data._display.${field.name};
+                            })
+                            doAction({actionType: 'setValue', "args": {"value": {items}},componentId: "${options.crudId}","dataMergeMode": "override"});
+                            selectedItems.forEach(function(selectedItem){
+                                doAction({actionType: 'setValue', "args": {"value": event.data.${field.name}},componentId: "${options.objectName + "_" + field.name + "_"}" + selectedItem._index});
+                            })
+                        }else{
+                            items[event.data._index-1]._display.${field.name} = event.data._display.${field.name};
+                            doAction({actionType: 'setValue', "args": {"value": {items}},componentId: "${options.crudId}","dataMergeMode": "override"});
+                            doAction({actionType: 'setValue', "args": {"value": event.data.${field.name}},componentId: "${options.objectName + "_" + field.name + "_"}" + event.data._index});
+                        }
+                    `
+                },
+                {
+                    "actionType": "closeDialog"
+                }
+            ]
+        }
+    }
+    var quickEditSchema = { body: [], id: quickEditId, onEvent: submitEvent };
     if (field.disabled) {
         quickEditSchema = false;
     } else {
@@ -276,6 +305,12 @@ async function getQuickEditSchema(field, options){
                 }
                 
             })
+            quickEditSchema.body.push({
+                "name": "isBatchEdit",
+                "type": "checkbox",
+                "option": "更新${COUNT(selectedItems)}个选定记录",
+                "visibleOn": "${ARRAYSOME(selectedItems, item => item._id === _id)}"
+            })
         } else {
             quickEditSchema = false;
         }
@@ -403,7 +438,7 @@ async function getTableColumns(fields, options){
             const tpl = await Tpl.getFieldTpl(field, options);
             let type = 'text';
             if(tpl){
-                type = 'tpl';
+                type = 'static';
             }else if(field.type === 'html'){
                 type = 'markdown';
             }else if(field.type === 'url'){
@@ -444,6 +479,7 @@ async function getTableColumns(fields, options){
                 columnItem.quickEdit = quickEditSchema;
                 columnItem.quickEditEnabledOn = "${is_system !== true}";
             }
+            columnItem.id = `${options.objectName}_${field.name}_\${_index}`
             columns.push(columnItem);
         }
     };
