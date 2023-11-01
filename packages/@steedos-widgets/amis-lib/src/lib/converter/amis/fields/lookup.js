@@ -823,8 +823,6 @@ export async function lookupToAmis(field, readonly, ctx){
     const refObject = await getUISchema(referenceTo.objectName);
 
     // 此处不参考 steedos 的 enable_enhanced_lookup 规则. 如果默认是开启弹出选择,用户选择过程操作太繁琐, 所以默认是关闭弹出选择.
-    // 由于amis picker 目前不支持联动, 配置了depend_on时, 使用使用select ,以支持联动
-    // TODO: 确认 amis picker 支持联动时, 清理field.depend_on判断
     if(refObject.enable_enhanced_lookup == true){
         return await lookupToAmisPicker(field, readonly, ctx);
     }else if(refObject.enable_tree) {
