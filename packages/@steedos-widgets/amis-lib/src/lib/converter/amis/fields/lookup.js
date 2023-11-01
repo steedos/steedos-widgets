@@ -822,8 +822,10 @@ export async function lookupToAmis(field, readonly, ctx){
 
     const refObject = await getUISchema(referenceTo.objectName);
 
-    // 此处不参考 steedos 的 enable_enhanced_lookup 规则. 如果默认是开启弹出选择,用户选择过程操作太繁琐, 所以默认是关闭弹出选择.
-    if(refObject.enable_enhanced_lookup == true){
+    // 优先取字段中配置的enable_enhanced_lookup，字段上没配置时，才从对象上取enable_enhanced_lookup属性
+    let enableEnhancedLookup = _.isBoolean(field.enable_enhanced_lookup) ? field.enable_enhanced_lookup : refObject.enable_enhanced_lookup;
+    // 默认使用下拉框模式显示lookup选项，只能配置了enable_enhanced_lookup才使用弹出增强模式
+    if(enableEnhancedLookup == true){
         return await lookupToAmisPicker(field, readonly, ctx);
     }else if(refObject.enable_tree) {
         return await lookupToAmisTreeSelect(field, readonly, Object.assign({}, ctx, {
