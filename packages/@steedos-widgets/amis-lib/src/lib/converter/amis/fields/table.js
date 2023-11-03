@@ -39,37 +39,44 @@ function getOperation(fields){
 function getDetailColumn(){}
 
 async function getQuickEditSchema(field, options){
+    //判断在amis3.2以上环境下，放开批量编辑
+    const isAmisVersionforBatchEdit = amisRequire('amis').version[0] >= 3 && amisRequire('amis').version[2] >= 2;
     const quickEditId = options.objectName + "_" + field.name + "QuickEdit";//定义快速编辑的表单id，用于setvalue传值
-    const submitEvent = {
-        submit: {
-            actions: [
-                {
-                    actionType: "custom",
-                    script: `
-                        const items = event.data.items;
-                        const selectedItems = event.data.selectedItems;
-                        if(event.data.isBatchEdit){
-                            selectedItems.forEach(function(selectedItem){
-                                items[selectedItem._index-1]._display.${field.name} = event.data._display.${field.name};
-                            })
-                            doAction({actionType: 'setValue', "args": {"value": {items}},componentId: "${options.crudId}","dataMergeMode": "override"});
-                            selectedItems.forEach(function(selectedItem){
-                                doAction({actionType: 'setValue', "args": {"value": event.data.${field.name}},componentId: "${options.objectName + "_" + field.name + "_"}" + selectedItem._index});
-                            })
-                        }else{
-                            items[event.data._index-1]._display.${field.name} = event.data._display.${field.name};
-                            doAction({actionType: 'setValue', "args": {"value": {items}},componentId: "${options.crudId}","dataMergeMode": "override"});
-                            doAction({actionType: 'setValue', "args": {"value": event.data.${field.name}},componentId: "${options.objectName + "_" + field.name + "_"}" + event.data._index});
-                        }
-                    `
-                },
-                {
-                    "actionType": "closeDialog"
-                }
-            ]
+    var quickEditSchema = { body: [], id: quickEditId };
+    //select,avatar,image,file等组件无法行记录字段赋值，暂不支持批量编辑；
+    if(field.type != "select" && field.type != 'avatar' && field.type != 'image' && field.type != 'file' && isAmisVersionforBatchEdit){
+        const submitEvent = {
+            submit: {
+                actions: [
+                    {
+                        actionType: "custom",
+                        script: `
+                            const items = event.data.items;
+                            const selectedItems = event.data.selectedItems;
+                            if(event.data.isBatchEdit){
+                                selectedItems.forEach(function(selectedItem){
+                                    items[selectedItem._index-1]._display.${field.name} = event.data._display.${field.name};
+                                })
+                                doAction({actionType: 'setValue', "args": {"value": {items}},componentId: "${options.crudId}","dataMergeMode": "override"});
+                                selectedItems.forEach(function(selectedItem){
+                                    doAction({actionType: 'setValue', "args": {"value": event.data.${field.name}},componentId: "${options.objectName + "_" + field.name + "_"}" + selectedItem._index});
+                                })
+                            }else{
+                                items[event.data._index-1]._display.${field.name} = event.data._display.${field.name};
+                                doAction({actionType: 'setValue', "args": {"value": {items}},componentId: "${options.crudId}","dataMergeMode": "override"});
+                                doAction({actionType: 'setValue', "args": {"value": event.data.${field.name}},componentId: "${options.objectName + "_" + field.name + "_"}" + event.data._index});
+                            }
+                        `
+                    },
+                    {
+                        "actionType": "closeDialog"
+                    }
+                ]
+            }
         }
+        quickEditSchema.onEvent = submitEvent;
     }
-    var quickEditSchema = { body: [], id: quickEditId, onEvent: submitEvent };
+    
     if (field.disabled) {
         quickEditSchema = false;
     } else {
@@ -305,12 +312,14 @@ async function getQuickEditSchema(field, options){
                 }
                 
             })
-            quickEditSchema.body.push({
-                "name": "isBatchEdit",
-                "type": "checkbox",
-                "option": "更新${COUNT(selectedItems)}个选定记录",
-                "visibleOn": "${ARRAYSOME(selectedItems, item => item._id === _id)}"
-            })
+            if(field.type != "select" && field.type != 'avatar' && field.type != 'image' && field.type != 'file' && isAmisVersionforBatchEdit){
+                quickEditSchema.body.push({
+                    "name": "isBatchEdit",
+                    "type": "checkbox",
+                    "option": "更新${COUNT(selectedItems)}个选定记录",
+                    "visibleOn": "${ARRAYSOME(selectedItems, item => item._id === _id) && COUNT(selectedItems)>1}"
+                })
+            }
         } else {
             quickEditSchema = false;
         }
