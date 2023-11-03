@@ -44,7 +44,7 @@ async function getQuickEditSchema(field, options){
     const quickEditId = options.objectName + "_" + field.name + "QuickEdit";//定义快速编辑的表单id，用于setvalue传值
     var quickEditSchema = { body: [], id: quickEditId };
     //select,avatar,image,file等组件无法行记录字段赋值，暂不支持批量编辑；
-    if(field.type != "select" && field.type != 'avatar' && field.type != 'image' && field.type != 'file' && isAmisVersionforBatchEdit){
+    if(field.type != 'avatar' && field.type != 'image' && field.type != 'file' && isAmisVersionforBatchEdit){
         const submitEvent = {
             submit: {
                 actions: [
@@ -312,7 +312,7 @@ async function getQuickEditSchema(field, options){
                 }
                 
             })
-            if(field.type != "select" && field.type != 'avatar' && field.type != 'image' && field.type != 'file' && isAmisVersionforBatchEdit){
+            if(field.type != 'avatar' && field.type != 'image' && field.type != 'file' && isAmisVersionforBatchEdit){
                 quickEditSchema.body.push({
                     "name": "isBatchEdit",
                     "type": "checkbox",
@@ -432,7 +432,7 @@ async function getTableColumns(fields, options){
         else if(field.type === 'select'){
             const map = Tpl.getSelectMap(field.options);
             columnItem = Object.assign({}, {
-                type: "mapping",
+                type: "static-mapping",
                 name: field.name,
                 label: field.label,
                 map: map,
