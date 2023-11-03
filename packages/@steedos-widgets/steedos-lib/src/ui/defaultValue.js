@@ -1,5 +1,5 @@
 /*
- * @LastEditTime: 2023-10-25 18:15:35
+ * @LastEditTime: 2023-11-03 16:48:19
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
  * @customMade: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -27,7 +27,6 @@ import { isExpression, parseSingleExpression } from '../expression';
  * @param express 
  */
 const getCompatibleDefaultValueExpression = (express, multiple) => {
-    console.log("===getCompatibleDefaultValueExpression====", express, multiple);
     const reg = /^\{\w+(\.*\w+)*\}$/;//只转换{}包着的老语法，新语法是两层大括号{{}}，不运行转换
     const reg2 = /^{{[\s\S]*}}$/; //转换{{ function(){} }} 或 {{ (item)=>{} }}
     let result = express;
