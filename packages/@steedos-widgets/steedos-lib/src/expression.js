@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-03-22 09:31:21
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-10-25 17:35:18
+ * @LastEditTime: 2023-11-03 10:58:11
  */
 export const isExpression = function (func) {
   var pattern, reg1, reg2;
@@ -34,6 +34,7 @@ export const parseSingleExpression = function (func, formData, dataPath, global)
     today.set("hours",0);
     today.set("minutes",0);
     today.set("seconds",0);
+    today.set("milliseconds",0);
     today = today.toDate();
     Object.assign(global, {
       now,
