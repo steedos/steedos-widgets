@@ -2,12 +2,12 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-10-27 14:02:41
+ * @LastEditTime: 2023-11-05 16:33:49
  * @Description: 
  */
 import './AmisObjectForm.less';
 import './AmisObjectFormMobile.less';
-import { getFormSchema, getViewSchema, createObject } from '@steedos-widgets/amis-lib'
+import { getFormSchema, getViewSchema, createObject, getGlobalNowData } from '@steedos-widgets/amis-lib'
 import { keys, pick, difference, isString, has } from 'lodash';
 
 export const AmisObjectForm = async (props) => {
@@ -42,10 +42,11 @@ export const AmisObjectForm = async (props) => {
 
   const globalData = props.data.global || {};
 
-  globalData.mode = mode === 'edit' ? 'edit' : 'read'
+  globalData.mode = mode === 'edit' ? 'edit' : 'read';
+  Object.assign(globalData, getGlobalNowData());
   let amisSchema: any;
   let uiSchema: any;
-  const allData = createObject(data, {}); 
+  const allData: any = createObject(data, {}); 
   if (mode === 'edit') {//这里不把defaultData传入createObject是因为此处defaultData是表单字段默认值，不属于上下文data
     if(defaultData){
       // 让ObjectForm支持props中的dafaultData属性与上层组件配置的defaultData混合
