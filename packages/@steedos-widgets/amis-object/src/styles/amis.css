@@ -292,3 +292,11 @@ fieldset.antd-Collapse > legend{
     white-space: break-spaces;
     word-break: break-all;
 }
+
+.steedos-crud-mode-cards .antd-Card-actions a[disabled]{
+    box-shadow: none;
+    cursor: not-allowed
+}
+.steedos-crud-mode-cards .antd-Card-actions a[disabled]:hover{
+    color: rgba(0,0,0,.25)
+}
