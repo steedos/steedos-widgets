@@ -2,11 +2,11 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: liaodaxue
- * @LastEditTime: 2023-07-27 11:28:54
+ * @LastEditTime: 2023-11-07 16:57:30
  * @Description: 
  */
 import { getRecordDetailRelatedListSchema, i18next } from '@steedos-widgets/amis-lib'
-import { has } from 'lodash';
+import { has, isEmpty } from 'lodash';
 
 export const AmisRecordDetailRelatedList = async (props: any) => {
   // console.log(`AmisRecordDetailRelatedList props==>`, props)
@@ -31,6 +31,9 @@ export const AmisRecordDetailRelatedList = async (props: any) => {
   }
   const schema: any = (await getRecordDetailRelatedListSchema(objectApiName, recordId, relatedObjectApiName, relatedKey, {top, perPage, appId, relatedLabel, className, formFactor, columns, sort, filters, visible_on, isRelated: true, hiddenEmptyTable, requestAdaptor, adaptor})).amisSchema;
   
+  if(isEmpty(schema)){
+    return {}
+  }
   schema.data = Object.assign(schema.data || {}, formData);
 
   if(has(props, "recordId") && $schema.recordId !== "${recordId}"){
