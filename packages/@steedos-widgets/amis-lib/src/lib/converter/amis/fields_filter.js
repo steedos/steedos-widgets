@@ -211,7 +211,8 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     if(isLookup){
       searchableFieldsStoreKey += "/lookup/" + objectName;
     }
-    let defaultSearchableFields = sessionStorage.getItem(searchableFieldsStoreKey);
+    searchableFieldsStoreKey = searchableFieldsStoreKey + "/" + (data.context && data.context.userId);
+    let defaultSearchableFields = localStorage.getItem(searchableFieldsStoreKey);
     if(defaultSearchableFields){
       defaultSearchableFields = defaultSearchableFields.split(",");
     }
@@ -280,7 +281,8 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     if(isLookup){
       searchableFieldsStoreKey += "/lookup/" + objectName;
     }
-    sessionStorage.setItem(searchableFieldsStoreKey, value);
+    searchableFieldsStoreKey = searchableFieldsStoreKey + "/" + (data.context && data.context.userId);
+    localStorage.setItem(searchableFieldsStoreKey, value);
 
     // ===START===:当变更可搜索字段时，如果被移除的可搜索字段在本地存储中已经存入过滤条件中则应该清除本地存储中相关字段的过滤条件。
     const searchableFields = data.fields;
