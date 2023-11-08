@@ -41,7 +41,7 @@ function getDetailColumn(){}
 async function getQuickEditSchema(field, options){
     //判断在amis3.2以上环境下，放开批量编辑
     const isAmisVersionforBatchEdit = amisRequire('amis').version[0] >= 3 && amisRequire('amis').version[2] >= 2;
-    const quickEditId = options.objectName + "_" + field.name + "QuickEdit";//定义快速编辑的表单id，用于setvalue传值
+    const quickEditId = options.objectName + "_" + field.name + "_quickEdit";//定义快速编辑的表单id，用于setvalue传值
     var quickEditSchema = { body: [], id: quickEditId };
     //select,avatar,image,file等组件无法行记录字段赋值，暂不支持批量编辑；
     if(field.type != 'avatar' && field.type != 'image' && field.type != 'file' && isAmisVersionforBatchEdit){
@@ -51,19 +51,16 @@ async function getQuickEditSchema(field, options){
                     {
                         actionType: "custom",
                         script: `
-                            const items = event.data.items;
-                            const selectedItems = event.data.selectedItems;
+                            let items = _.cloneDeep(event.data.items);
+                            let selectedItems = _.cloneDeep(event.data.selectedItems);
                             if(event.data.isBatchEdit){
                                 selectedItems.forEach(function(selectedItem){
-                                    items[selectedItem._index-1]._display.${field.name} = event.data._display.${field.name};
-                                })
-                                doAction({actionType: 'setValue', "args": {"value": {items}},componentId: "${options.crudId}","dataMergeMode": "override"});
-                                selectedItems.forEach(function(selectedItem){
+                                    selectedItem._display.${field.name} = event.data._display.${field.name};
+                                    doAction({actionType: 'setValue', "args": {"value": selectedItem._display},componentId: "_display_" + selectedItem._index});
                                     doAction({actionType: 'setValue', "args": {"value": event.data.${field.name}},componentId: "${options.objectName + "_" + field.name + "_"}" + selectedItem._index});
                                 })
                             }else{
-                                items[event.data._index-1]._display.${field.name} = event.data._display.${field.name};
-                                doAction({actionType: 'setValue', "args": {"value": {items}},componentId: "${options.crudId}","dataMergeMode": "override"});
+                                doAction({actionType: 'setValue', "args": {"value": event.data._display},componentId: "_display_" + event.data._index});
                                 doAction({actionType: 'setValue', "args": {"value": event.data.${field.name}},componentId: "${options.objectName + "_" + field.name + "_"}" + event.data._index});
                             }
                         `
@@ -93,7 +90,7 @@ async function getQuickEditSchema(field, options){
                         {
                             "actionType": "custom",
                             "script": `
-                                    var _display = event.data._display;
+                                    var _display = _.cloneDeep(event.data._display);
                                     ${displayField}
                                     doAction({actionType: 'setValue', "args": {"value": {_display}},componentId: "${quickEditId}"});
                                 `
@@ -115,7 +112,7 @@ async function getQuickEditSchema(field, options){
                             第二种是增加选项时，按照value的值，找到对应选项，并按照_display的规则为其赋值
                         */
                         TempDisplayField = `
-                            const preData = event.data.__super.${field.name};
+                            const preData = _.cloneDeep(event.data.__super.${field.name});
                             if(preData && event.data.${field.name}.length < preData.length){
                                 let deletedIndex;
                                 preData.forEach(function(item,index){
@@ -316,8 +313,124 @@ async function getQuickEditSchema(field, options){
                 quickEditSchema.body.push({
                     "name": "isBatchEdit",
                     "type": "checkbox",
-                    "option": "更新${COUNT(selectedItems)}个选定记录",
-                    "visibleOn": "${ARRAYSOME(selectedItems, item => item._id === _id) && COUNT(selectedItems)>1}"
+                    "option": [
+                        {
+                            "type": "tpl",
+                            "tpl": "更新${COUNT(selectedItems)}个选定记录"
+                        },
+                        {
+                            "type": "spinner",
+                            "showOn": "${batchPermissionLoading}",
+                            "size": "sm",
+                            "className": "mr-4"
+                        }
+                    ],
+                    "visibleOn": "${ARRAYSOME(selectedItems, item => item._id === _id) && COUNT(selectedItems)>1 && quickedit_record_permissions.allowEdit && quickedit_record_permissions_loading == false}",
+                    "disabledOn": "${batchPermissionLoading}",
+                    "onEvent":{
+                        "change":{
+                            "actions":[
+                                {
+                                    "actionType": "setValue",
+                                    "componentId": `service_listview_${options.objectName}`,
+                                    "args": {
+                                        "value":{
+                                            "batchPermissionLoading": true
+                                        }
+                                    },
+                                    "expression":"${event.data.value}"
+                                },
+                                {
+                                    "actionType": "ajax",
+                                    "args": {
+                                        "api": {
+                                          "url": "${context.rootUrl}/graphql",
+                                          "method": "post",
+                                          "headers": {
+                                            "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                                          },
+                                          "data": {
+                                            "query": "{rows:${objectName}(filters:[\"_id\",\"in\",${selectedItems | pick:_id | split | json}]){_id,_permissions{allowEdit}}}"
+                                          },
+                                          "adaptor": `
+                                            const noPermission = [];
+                                            payload.data.rows.forEach(function (row) {
+                                                if(!row._permissions.allowEdit){
+                                                    noPermission.push(row._id);
+                                                }
+                                            })
+                                            return payload = {data:{noPermission}};
+                                          `
+                                        }
+                                    },
+                                    "expression":"${event.data.value}"
+                                },
+                                {
+                                    "actionType": "setValue",
+                                    "componentId": `service_listview_${options.objectName}`,
+                                    "args": {
+                                        "value":{
+                                            "batchPermissionLoading": false
+                                        }
+                                    },
+                                    "expression":"${event.data.value}"
+                                },
+                                {
+                                    "actionType": "dialog",
+                                    "dialog":{
+                                        "title": "",
+                                        "showCloseButton": false,
+                                        "body":[
+                                            {
+                                                "type": "tpl",
+                                                "tpl": "当前已勾选记录中，存在${COUNT(noPermission)}条记录无权限编辑，请问是否去除对应勾选？"
+                                            }
+                                        ],
+                                        "onEvent":{
+                                            "confirm":{
+                                                "actions":[
+                                                    {
+                                                        "actionType": "custom",
+                                                        "script": `
+                                                            const noPermission = event.data.noPermission;
+                                                            const crudComponent = event.context.scoped.getComponentById("${options.crudId}");
+                                                            const selectedItems = crudComponent && crudComponent.props.store.selectedItems.concat();
+                                                            noPermission.forEach(function (item) {
+                                                                crudComponent && crudComponent.unSelectItem(_.find(selectedItems,{_id:item}));
+                                                            })
+                                                        `
+                                                    },
+                                                    {
+                                                        "actionType": "setValue",
+                                                        "componentId": quickEditId,
+                                                        "args": {
+                                                            "value":{
+                                                                "isBatchEdit": true
+                                                            }
+                                                        },
+                                                    }
+                                                ]
+                                            },
+                                            "cancel":{
+                                                "actions":[
+                                                    {
+                                                        "actionType": "setValue",
+                                                        "componentId": quickEditId,
+                                                        "args": {
+                                                            "value":{
+                                                                "isBatchEdit": false
+                                                            }
+                                                        },
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "expression":"${COUNT(event.data.noPermission)>0}"
+                                }
+                            ]
+                        }
+                    }
                 })
             }
         } else {
@@ -354,6 +467,8 @@ async function getTableColumns(fields, options){
     const columns = [];
     if(!options.isLookup){
         columns.push({name: '_index',type: 'text', width: 32, placeholder: ""});
+        //将_display放入crud的columns中，可以通过setvalue修改行内数据域的_display，而不影响上层items的_display,用于批量编辑
+        columns.push({name: '_display',type: 'static', width: 32, placeholder: "",id: "_display_${_index}", className: "hidden"});
     }
     const allowEdit = options.permissions?.allowEdit && !options.isLookup && options.enable_inline_edit != false;
     

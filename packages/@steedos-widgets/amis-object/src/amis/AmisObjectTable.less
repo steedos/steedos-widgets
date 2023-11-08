@@ -1,6 +1,11 @@
 @media (min-width: 767px) {
     /* 列表快速编辑功能样式 */
     .steedos-object-table {
+        //隐藏为批量编辑而加的_display列
+        thead tr th:nth-child(3){
+            display: none;
+        }
+
         tbody td.antd-Field--quickEditable {
             &> div {
                 display: flex;

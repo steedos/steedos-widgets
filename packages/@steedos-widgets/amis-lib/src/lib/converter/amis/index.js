@@ -245,7 +245,8 @@ export async function getObjectCRUD(objectSchema, fields, options){
       const quickSaveApiRequestAdaptor = `
         var graphqlOrder = "";
         var imageNames = ${JSON.stringify(imageNames)};
-        api.data.rowsDiff.forEach(function (item, index) {
+        const rowsDiff = _.cloneDeep(api.data.rowsDiff);
+        rowsDiff.forEach(function (item, index) {
           for(key in item){
             if(_.includes(imageNames, key)){
               if(typeof item[key] == "string"){
@@ -259,6 +260,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
               }
             }
           }
+          item = _.omit(item, '_display');
           const itemOrder = 'update' + index + ':' + api.data.objectName + '__update(id:"' + item._id + '", doc:' + JSON.stringify(JSON.stringify(_.omit(item, '_id'))) + ') {_id}';
           graphqlOrder += itemOrder;
         })
