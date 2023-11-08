@@ -257,26 +257,33 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             }
             break;
         case 'date':
-            convertData = isMobile && !readonly ? {
-                type: "native-date",
-                pipeIn: (value, data) => {
-                    if (value) {
-                        value = moment(value).utc().format('YYYY-MM-DD');
-                        return value;
-                    } else {
-                        return "";
-                    }
+            // convertData = isMobile && !readonly ? {
+            //     type: "native-date",
+            //     pipeIn: (value, data) => {
+            //         if (value) {
+            //             value = moment(value).utc().format('YYYY-MM-DD');
+            //             return value;
+            //         } else {
+            //             return "";
+            //         }
 
-                },
-                pipeOut: (value, oldValue, data) => {
-                    if (value) {
-                        value = moment(value).format('YYYY-MM-DDT00:00:00.000[Z]');
-                        return value;
-                    } else {
-                        return "";
-                    }
-                }
-            } : {
+            //     },
+            //     pipeOut: (value, oldValue, data) => {
+            //         if (value) {
+            //             value = moment(value).format('YYYY-MM-DDT00:00:00.000[Z]');
+            //             return value;
+            //         } else {
+            //             return "";
+            //         }
+            //     }
+            // } : {
+            //     type: getAmisStaticFieldType('date', readonly),
+            //     inputFormat: "YYYY-MM-DD",
+            //     format:'YYYY-MM-DDT00:00:00.000[Z]',
+            //     tpl: readonly ? Tpl.getDateTpl(field) : null,
+            //     // utc: true
+            // }
+            convertData = {
                 type: getAmisStaticFieldType('date', readonly),
                 inputFormat: "YYYY-MM-DD",
                 format:'YYYY-MM-DDT00:00:00.000[Z]',
@@ -295,43 +302,51 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             }
             break;
         case 'datetime':
-            convertData = isMobile && !readonly ? {
-                type: "combo",
-                pipeIn: (value, data) => {
-                    let revalue = {};
-                    if (value && value != "Invalid date") {
-                        value = moment(value).format('YYYY-MM-DD HH:mm:ss');
-                        revalue[field.name + "-native-date"] = value.split(' ')[0];
-                        revalue[field.name + "-native-time"] = value.split(' ')[1];
-                    } else {
-                        revalue[field.name + "-native-date"] = "";
-                        revalue[field.name + "-native-time"] = "";
-                    }
-                    return revalue;
-                },
-                pipeOut: (value, oldValue, data) => {
-                    let revalue = "";
-                    if (value[field.name + "-native-date"] && value[field.name + "-native-time"]) {
-                        revalue = value[field.name + "-native-date"] + " " + value[field.name + "-native-time"];
-                        revalue = moment(revalue).utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]');
-                    }
-                    return revalue;
-                },
-                items: [
-                    {
-                        type: "native-date",
-                        name: field.name + "-native-date",
-                        className: "steedos-native-date",
-                        value: ""
-                    },
-                    {
-                        type: "native-time",
-                        name: field.name + "-native-time",
-                        className: "steedos-native-time",
-                        value: ""
-                    }
-                ]
-            } : {
+            // convertData = isMobile && !readonly ? {
+            //     type: "combo",
+            //     pipeIn: (value, data) => {
+            //         let revalue = {};
+            //         if (value && value != "Invalid date") {
+            //             value = moment(value).format('YYYY-MM-DD HH:mm:ss');
+            //             revalue[field.name + "-native-date"] = value.split(' ')[0];
+            //             revalue[field.name + "-native-time"] = value.split(' ')[1];
+            //         } else {
+            //             revalue[field.name + "-native-date"] = "";
+            //             revalue[field.name + "-native-time"] = "";
+            //         }
+            //         return revalue;
+            //     },
+            //     pipeOut: (value, oldValue, data) => {
+            //         let revalue = "";
+            //         if (value[field.name + "-native-date"] && value[field.name + "-native-time"]) {
+            //             revalue = value[field.name + "-native-date"] + " " + value[field.name + "-native-time"];
+            //             revalue = moment(revalue).utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]');
+            //         }
+            //         return revalue;
+            //     },
+            //     items: [
+            //         {
+            //             type: "native-date",
+            //             name: field.name + "-native-date",
+            //             className: "steedos-native-date",
+            //             value: ""
+            //         },
+            //         {
+            //             type: "native-time",
+            //             name: field.name + "-native-time",
+            //             className: "steedos-native-time",
+            //             value: ""
+            //         }
+            //     ]
+            // } : {
+            //     type: getAmisStaticFieldType('datetime', readonly),
+            //     inputFormat: 'YYYY-MM-DD HH:mm',
+            //     format: 'YYYY-MM-DDTHH:mm:ss.SSSZ',
+            //     tpl: readonly ? Tpl.getDateTimeTpl(field) : null,
+            //     utc: true,
+            // }
+
+            convertData = {
                 type: getAmisStaticFieldType('datetime', readonly),
                 inputFormat: 'YYYY-MM-DD HH:mm',
                 format: 'YYYY-MM-DDTHH:mm:ss.SSSZ',
@@ -351,26 +366,34 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             }
             break;
         case 'time':
-            convertData = isMobile && !readonly ? {
-                type: "native-time",
-                pipeIn: (value, data) => {
-                    if (value) {
-                        value = moment(value).utc().format('HH:mm');
-                        return value;
-                    } else {
-                        return "";
-                    }
+            // convertData = isMobile && !readonly ? {
+            //     type: "native-time",
+            //     pipeIn: (value, data) => {
+            //         if (value) {
+            //             value = moment(value).utc().format('HH:mm');
+            //             return value;
+            //         } else {
+            //             return "";
+            //         }
 
-                },
-                pipeOut: (value, oldValue, data) => {
-                    if (value) {
-                        value = moment('1970-01-01 ' + value).format('1970-01-01THH:mm:00.000[Z]');
-                        return value;
-                    } else {
-                        return "";
-                    }
-                }
-            } : {
+            //     },
+            //     pipeOut: (value, oldValue, data) => {
+            //         if (value) {
+            //             value = moment('1970-01-01 ' + value).format('1970-01-01THH:mm:00.000[Z]');
+            //             return value;
+            //         } else {
+            //             return "";
+            //         }
+            //     }
+            // } : {
+            //     type: getAmisStaticFieldType('time', readonly),
+            //     inputFormat: 'HH:mm',
+            //     timeFormat:'HH:mm',
+            //     format:'1970-01-01THH:mm:00.000[Z]',
+            //     tpl: readonly ? Tpl.getDateTimeTpl(field) : null,
+            //     // utc: true
+            // }
+            convertData = {
                 type: getAmisStaticFieldType('time', readonly),
                 inputFormat: 'HH:mm',
                 timeFormat:'HH:mm',
