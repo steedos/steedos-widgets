@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-07 17:13:53
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-11-08 11:05:17
  * @Description: 
  */
 import './AmisObjectForm.less';
@@ -86,5 +86,17 @@ export const AmisObjectForm = async (props) => {
   if(has(props, 'objectApiName')){
     amisSchema.data.objectName = objectApiName;
   }
+
+  if(props.$$editor){
+    const fieldsArray = fields || [];
+    const excludedFieldsArray = excludedFields || [];
+    const InitApiResendOn = fieldsArray.concat(excludedFieldsArray).join('');
+    if(InitApiResendOn){
+      amisSchema.data.InitApiResendOn = InitApiResendOn;
+      amisSchema.api.url += "&InitApiResendOn=${InitApiResendOn}";
+      // amisSchema.api.InitApiResendOn = "${InitApiResendOn}"; 这种写法有bug，当多选几个显示的字段/排除的字段时，表单一直loding。
+    }
+  }
+
   return amisSchema;
 }
