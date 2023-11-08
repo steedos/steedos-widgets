@@ -83,7 +83,7 @@ export const AmisGlobalFooter = async (props) => {
                                     data.nav.push({
                                         "label": {
                                             type: 'tpl',
-                                            tpl: \`<span class='fill-slate-500 truncate text-gray-700 block -ml-px no-underline group flex items-center text-[12px] font-medium rounded-md flex-col leading-3 nav-label'><svg class="slds-icon slds-icon_container slds-icon-standard-\`+classIcon+\` flex-shrink-0 h-10 w-10"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg><span class="truncate" style="max-width: 20vw">\${tab.name}</span></span>\`,
+                                            tpl: \`<span class='fill-slate-500 truncate text-gray-700 block -ml-px no-underline group flex items-center text-[11px] rounded-md flex-col leading-3 nav-label'><svg class="slds-icon slds-icon_container slds-icon-standard-\`+classIcon+\` flex-shrink-0 h-10 w-10"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg><span class="truncate" style="max-width: 20vw">\${tab.name}</span></span>\`,
                                             className:'h-full flex items-center'
                                         },
                                         "to": tab.path,
@@ -111,7 +111,7 @@ export const AmisGlobalFooter = async (props) => {
                                         "overflowPopoverClassName": "steedos-global-footer-popup",
                                         "overflowLabel":{
                                             "type": 'tpl',
-                                            "tpl": \`<span class=' truncate text-gray-700 block -ml-px no-underline group flex items-center text-[12px] font-medium rounded-md flex-col leading-3 nav-label'><svg class="!fill-slate-500 flex-shrink-0 !h-10 !w-10" style="padding:7px"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#rows"></use></svg><span class="truncate" style="max-width: 20vw">${i18next.t('frontend_menu')}</span></span>\`,
+                                            "tpl": \`<span class=' truncate text-gray-700 block -ml-px no-underline group flex items-center text-[11px] rounded-md flex-col leading-3 nav-label'><svg class="!fill-slate-500 flex-shrink-0 !h-10 !w-10" style="padding:7px"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#rows"></use></svg><span class="truncate" style="max-width: 20vw">${i18next.t('frontend_menu')}</span></span>\`,
                                             "className":'h-full flex items-center'
                                         },
                                         "overflowIndicator":""
