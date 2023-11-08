@@ -887,7 +887,7 @@ async function getTableOperation(ctx){
         label: i18next.t('frontend_operation'),
         fixed: 'right',
         labelClassName: 'text-center',
-        className: 'text-center steedos-listview-operation w-10',
+        className: 'text-center steedos-listview-operation',
         buttons: [
               {
                 "type": "steedos-dropdown-button",
