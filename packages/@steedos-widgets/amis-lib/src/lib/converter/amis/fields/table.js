@@ -378,12 +378,12 @@ async function getQuickEditSchema(field, options){
                                 {
                                     "actionType": "dialog",
                                     "dialog":{
-                                        "title": "",
+                                        "title": "记录权限",
                                         "showCloseButton": false,
                                         "body":[
                                             {
                                                 "type": "tpl",
-                                                "tpl": "当前已勾选记录中，存在${COUNT(noPermission)}条记录无权限编辑，请问是否去除对应勾选？"
+                                                "tpl": "当前选中记录中，有${COUNT(noPermission)}条记录无编辑权限，是否需要批量编辑其他记录？"
                                             }
                                         ],
                                         "onEvent":{
