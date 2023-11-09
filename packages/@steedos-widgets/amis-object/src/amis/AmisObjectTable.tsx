@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-10-17 14:41:17
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-11-09 17:12:30
  * @Description: 
  */
 import './AmisObjectTable.less';
@@ -45,7 +45,7 @@ export const AmisObjectTable = async (props) => {
     sort, sortField, sortOrder, extraColumns, data, defaultData,
     formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE',
     className = "", requestAdaptor,  adaptor, filterVisible = true, headerToolbarItems,
-    crudDataFilter, onCrudDataFilter, env, crudMode } = props;
+    crudDataFilter, onCrudDataFilter, env, crudMode, hiddenColumnOperation=false } = props;
   let ctx = props.ctx;
   let crud = props.crud || {};
   if(!ctx){
@@ -97,7 +97,7 @@ export const AmisObjectTable = async (props) => {
   let amisSchema = (await getTableSchema(appId, objectApiName, columns, { 
     filters: tableFilters, filtersFunction, top, sort, sortField, sortOrder, extraColumns, defaults, ...ctx, 
     setDataToComponentId, requestAdaptor, adaptor, filterVisible, headerToolbarItems, 
-    crudDataFilter, onCrudDataFilter, amisData: allData, env })).amisSchema;
+    crudDataFilter, onCrudDataFilter, amisData: allData, env, hiddenColumnOperation })).amisSchema;
   amisSchema.data = Object.assign({}, amisSchema.data, amisSchemaData);
   if(has(props, 'objectApiName')){
     amisSchema.data.objectName = objectApiName;
