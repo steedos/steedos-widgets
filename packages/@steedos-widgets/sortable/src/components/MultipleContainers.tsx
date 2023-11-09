@@ -33,6 +33,7 @@ import {
   arrayMove,
   defaultAnimateLayoutChanges,
   verticalListSortingStrategy,
+  rectSortingStrategy,
   SortingStrategy,
   horizontalListSortingStrategy,
 } from '@dnd-kit/sortable';
@@ -184,7 +185,8 @@ export function MultipleContainers(props) {
     minimal = false,
     modifiers,
     renderItem,
-    strategy = verticalListSortingStrategy,
+    // strategy = verticalListSortingStrategy,
+    strategy = rectSortingStrategy,//这里默认值不用rectSortingStrategy的话，会出现字段在左右两边拖动变更顺序时拖动过程中dragOverlay丢失问题
     addable = false,
     trashable = false,
     vertical = false,
