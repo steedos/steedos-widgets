@@ -884,7 +884,7 @@ async function getTableOperation(ctx){
     }
     return {
         type: 'operation',
-        label: i18next.t('frontend_operation'),
+        label: "",
         fixed: 'right',
         labelClassName: 'text-center',
         className: 'text-center steedos-listview-operation w-10',
