@@ -331,15 +331,22 @@ export function getObjectFooterToolbar(mainObject, formFactor, options) {
 
     }
     else{
-      return [
-        "switch-per-page",
+      const no_pagination = mainObject.paging && (mainObject.paging.enabled === false);
+      const is_lookup = options.isLookup;
+      const commonConfig = [
         "statistics",
         {
           "type": "pagination",
           "maxButtons": 10,
           "showPageInput": false
         }
-      ]
+      ];
+
+      if (no_pagination && is_lookup) {
+        return commonConfig;
+      } else {
+        return ["switch-per-page", ...commonConfig];
+      }
     }
   }
 }

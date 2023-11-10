@@ -450,7 +450,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             // 保持快速搜索放在最左侧，新建按钮往里插，而不是push到最后
             pickerSchema.headerToolbar.splice(pickerSchema.headerToolbar.length - 1, 0, new_button);
         }
-        pickerSchema.footerToolbar = refObjectConfig.enable_tree ? [] : getObjectFooterToolbar();
+        pickerSchema.footerToolbar = refObjectConfig.enable_tree ? [] : getObjectFooterToolbar(refObjectConfig,ctx.formFactor,{isLookup: true});
         if (ctx.filterVisible !== false) {
             pickerSchema.filter = await getObjectFilter(refObjectConfig, fields, {
                 ...ctx,
