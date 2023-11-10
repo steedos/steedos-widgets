@@ -332,7 +332,7 @@ async function getQuickEditSchema(field, options){
                             "actions":[
                                 {
                                     "actionType": "setValue",
-                                    "componentId": `service_listview_${options.objectName}`,
+                                    "componentId": quickEditId,
                                     "args": {
                                         "value":{
                                             "batchPermissionLoading": true
@@ -359,7 +359,8 @@ async function getQuickEditSchema(field, options){
                                                     noPermission.push(row._id);
                                                 }
                                             })
-                                            return payload = {data:{noPermission}};
+                                            payload.data.noPermission = noPermission;
+                                            return payload;
                                           `
                                         }
                                     },
@@ -367,7 +368,7 @@ async function getQuickEditSchema(field, options){
                                 },
                                 {
                                     "actionType": "setValue",
-                                    "componentId": `service_listview_${options.objectName}`,
+                                    "componentId": quickEditId,
                                     "args": {
                                         "value":{
                                             "batchPermissionLoading": false
