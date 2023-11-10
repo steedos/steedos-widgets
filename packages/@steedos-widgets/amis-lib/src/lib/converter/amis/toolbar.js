@@ -56,7 +56,7 @@ let resizeWindow = function(){
   //触发amis crud 高度重算
   setTimeout(()=>{
     window.dispatchEvent(new Event("resize"))
-  }, 500);
+  }, 1000);
 }
 resizeWindow();
 // 手机端在显示搜索栏时隐藏crud上的刷新按钮，因为点击后crud高度显示有问题
