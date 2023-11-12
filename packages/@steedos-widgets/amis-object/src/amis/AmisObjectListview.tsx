@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-10-29 16:48:28
+ * @LastEditTime: 2023-11-12 16:10:34
  * @Description: 
  */
 import './AmisObjectListview.less';
@@ -108,6 +108,19 @@ export const AmisObjectListView = async (props) => {
         {
           "actionType": "reload",
           "expression": "${(event.data.recordId || event.data.__deletedRecord === true || event.data.displayAs === 'split') && event.data._isRelated != true}" //不是新建, 或分栏模式下新建主对象记录, 则刷新列表
+        }
+      ]
+    }
+    listSchema.onEvent["selectedChange"] = {
+      "actions": [
+        {
+          "actionType": "custom",
+          "script": `
+            //触发amis crud 高度重算
+            setTimeout(()=>{
+              window.dispatchEvent(new Event("resize"))
+            }, 500);
+          `
         }
       ]
     }
