@@ -40,7 +40,7 @@ function getDetailColumn(){}
 
 async function getQuickEditSchema(field, options){
     //判断在amis3.2以上环境下，放开批量编辑
-    const isAmisVersionforBatchEdit = amisRequire('amis').version[0] >= 3 && amisRequire('amis').version[2] >= 2;
+    const isAmisVersionforBatchEdit = window.Amis.version[0] >= 3 && window.Amis.version[2] >= 2;
     const quickEditId = options.objectName + "_" + field.name + "_quickEdit";//定义快速编辑的表单id，用于setvalue传值
     var quickEditSchema = { body: [], id: quickEditId };
     //select,avatar,image,file等组件无法行记录字段赋值，暂不支持批量编辑；
