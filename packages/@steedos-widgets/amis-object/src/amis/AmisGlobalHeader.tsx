@@ -136,7 +136,7 @@ export const AmisGlobalHeader = async (props) => {
 
                     {
                         "type": "grid",
-                        "className": 'steedos-context-bar flex flex-nowrap h-10 leading-5 pl-4 mb-[-3px] steedos-header-container-line-two',
+                        "className": 'steedos-context-bar flex flex-nowrap h-10 leading-5 pl-5 mb-[-3px] steedos-header-container-line-two',
                         "hiddenOn": "${" + isMobile + "}",
                         "columns": [
                             {
