@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-08 12:01:04
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-11-14 15:40:55
  * @Description: 
  */
 import { getObjectRelatedList, i18next } from '@steedos-widgets/amis-lib'
@@ -36,7 +36,8 @@ export const AmisRecordDetailRelatedLists = async (props) => {
     }
   }
   let staticRecordId = '';
-  if(has(props, "recordId") && $schema.recordId !== "${recordId}"){
+  // 在设计器中的设计状态，当上层有recordId具体值，相关表组件的$schema.recordId的默认值就是 "${recordId}"； 会导致获取不到 _master, 进而导致组件显示不了数据。
+  if(has(props, "recordId") && ( $schema.recordId !== "${recordId}" || (props.$$editor && props.recordId !== "${recordId}") )){
     staticRecordId = recordId;
   }
 

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: liaodaxue
- * @LastEditTime: 2023-10-23 15:55:46
+ * @LastEditTime: 2023-11-14 15:55:32
  * @Description:
  */
 
@@ -360,7 +360,11 @@ export async function getRelatedListSchema(
             if(setDataToComponentId){
                 if(payload.data.count){
                     setTimeout(function(){
-                        window.$("." + setDataToComponentId + " .antd-Crud").removeClass("hidden");
+                        // 设计器中获取不到window.$从而导致报错， 所以用纯js替换下。
+                        // window.$("." + setDataToComponentId + " .antd-Crud").removeClass("hidden");		
+                        document.querySelectorAll("." + setDataToComponentId + " .antd-Crud").forEach(function(element) {
+                            element.classList.remove("hidden");
+                        });
                     }, 10);
                 }
             };

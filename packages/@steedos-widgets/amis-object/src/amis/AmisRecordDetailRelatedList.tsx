@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: liaodaxue
- * @LastEditTime: 2023-11-07 16:57:30
+ * @LastEditTime: 2023-11-14 15:39:43
  * @Description: 
  */
 import { getRecordDetailRelatedListSchema, i18next } from '@steedos-widgets/amis-lib'
@@ -36,7 +36,7 @@ export const AmisRecordDetailRelatedList = async (props: any) => {
   }
   schema.data = Object.assign(schema.data || {}, formData);
 
-  if(has(props, "recordId") && $schema.recordId !== "${recordId}"){
+  if(has(props, "recordId") && ( $schema.recordId !== "${recordId}" || (props.$$editor && props.recordId !== "${recordId}") )){
     schema.data = Object.assign(schema.data, {
       _master: {
         record: data?._master?.record,
