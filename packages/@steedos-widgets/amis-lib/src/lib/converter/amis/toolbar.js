@@ -354,15 +354,49 @@ export function getObjectFooterToolbar(mainObject, formFactor, options) {
 
 export async function getObjectFilter(objectSchema, fields, options) {
   const fieldsFilterBarSchema = await getObjectListHeaderFieldsFilterBar(objectSchema, null, options);
+  let onSubmitSuccScript = `
+    let isLookup = event.data.isLookup;
+    if(isLookup){
+      return;
+    }
+    // 列表搜索栏字段值变更后立刻触发提交表单执行crud搜索，所以这里需要额外重算crud高度及筛选按钮红色星号图标显示隐藏
+    let resizeWindow = function(){
+      //触发amis crud 高度重算
+      setTimeout(()=>{
+        window.dispatchEvent(new Event("resize"))
+      }, 1000);
+    }
+    resizeWindow();
+    const scope = event.context.scoped;
+    // let filterFormValues = event.data;
+    let filterForm = SteedosUI.getClosestAmisComponentByType(scope, "form");
+    let filterFormService = SteedosUI.getClosestAmisComponentByType(filterForm.context, "service");
+    // 使用event.data的话，并不能拿到本地存储中的过滤条件，所以需要从filterFormService中取。
+    let filterFormValues = filterFormService.getData()
+    let isFieldsFilterEmpty = SteedosUI.isFilterFormValuesEmpty(filterFormValues);
+    let crud = SteedosUI.getClosestAmisComponentByType(scope, "crud");
+    let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service");
+    crudService && crudService.setData({isFieldsFilterEmpty});
+  `;
   return {
     "title": "",
     "submitText": "",
     "className": "",
-    // "debug": true,
+    "debug": true,
     "mode": "normal",
     "wrapWithPanel": false,
     "body": [
       fieldsFilterBarSchema
-    ]
+    ],
+    "onEvent": {
+      "submitSucc": {
+        "actions": [
+          {
+            "actionType": "custom",
+            "script": onSubmitSuccScript
+          }
+        ]
+      }
+    }
   }
 }

@@ -147,7 +147,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       showFieldsFilter = true;
     }
     filterService.setData({showFieldsFilter});
-    resizeWindow();
+    // resizeWindow();//已迁移到搜索栏表单提交事件中执行，因为表单项change后也会触发表单提交了
     // 使用filterForm.getValues()的话，并不能拿到本地存储中的过滤条件，所以需要从event.data中取。
     let filterFormValues = event.data;
     let isFieldsFilterEmpty = SteedosUI.isFilterFormValuesEmpty(filterFormValues);
