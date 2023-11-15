@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: liaodaxue
- * @LastEditTime: 2023-11-09 17:12:30
+ * @LastEditTime: 2023-11-15 17:05:16
  * @Description: 
  */
 import './AmisObjectTable.less';
@@ -51,6 +51,9 @@ export const AmisObjectTable = async (props) => {
   if(!ctx){
     ctx = {};
   }
+  if(!ctx.hiddenColumnOperation){
+    ctx.hiddenColumnOperation = hiddenColumnOperation;
+  }
   if(!ctx.formFactor){
     ctx.formFactor = formFactor;
   }
@@ -97,7 +100,7 @@ export const AmisObjectTable = async (props) => {
   let amisSchema = (await getTableSchema(appId, objectApiName, columns, { 
     filters: tableFilters, filtersFunction, top, sort, sortField, sortOrder, extraColumns, defaults, ...ctx, 
     setDataToComponentId, requestAdaptor, adaptor, filterVisible, headerToolbarItems, 
-    crudDataFilter, onCrudDataFilter, amisData: allData, env, hiddenColumnOperation })).amisSchema;
+    crudDataFilter, onCrudDataFilter, amisData: allData, env })).amisSchema;
   amisSchema.data = Object.assign({}, amisSchema.data, amisSchemaData);
   if(has(props, 'objectApiName')){
     amisSchema.data.objectName = objectApiName;
