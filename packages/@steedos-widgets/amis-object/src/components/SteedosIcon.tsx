@@ -3,8 +3,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-10-13 15:57:39
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-11-15 11:32:11
  * @Description: 
  */
 
@@ -49,7 +49,7 @@ export const SteedosIcon = (props) => {
       name = foo[1];
     }
 
-    return <span className={`slds-icon_container slds-icon-${category}-${name} ${containerClassName}`}>
-            <svg className={`slds-icon slds-icon_${size} slds-icon-text-${colorVariant} ${className}`}><use xlinkHref={`/assets/icons/${category}-sprite/svg/symbols.svg#${name}`}></use></svg>
+    return <span className={`slds-icon_container slds-icon-${category}-${name.replace("_", "-")} ${containerClassName}`}>
+            <svg className={`slds-icon slds-icon_${size} slds-icon-text-${colorVariant} ${className}`}><use xlinkHref={`/assets/icons/${category}-sprite/svg/symbols.svg#${name.replace("-", "_")}`}></use></svg>
           </span>
 }
