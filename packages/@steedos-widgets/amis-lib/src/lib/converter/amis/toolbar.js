@@ -382,7 +382,7 @@ export async function getObjectFilter(objectSchema, fields, options) {
     "title": "",
     "submitText": "",
     "className": "",
-    "debug": true,
+    "debug": false,
     "mode": "normal",
     "wrapWithPanel": false,
     "body": [
