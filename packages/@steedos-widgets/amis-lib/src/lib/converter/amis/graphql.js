@@ -231,6 +231,7 @@ export function getSaveDataTpl(fields){
         delete formData.initialValues;
         delete formData.editFormInited;
         delete formData.isLookup;
+        delete formData.selectedRowResponseResult;
         ${getScriptForReadonlyFields(fields)}
         ${getScriptForRemoveUrlPrefixForImgFields(fields)}
         ${getScriptForSimplifiedValueForFileFields(fields)}
