@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-01-14 16:41:24
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-09-14 13:08:43
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-11-17 10:53:59
  * @Description:
  */
 
@@ -221,12 +221,11 @@ const getSelectFlowSchema = (id, props) => {
             `,
       adaptor: `
                 var options = payload.data.options;
-                if(options){
-                  options.forEach(function(item,index) {
-                      if(item.value != 'startFlows' && (!item.children || item.children.length == 0)){
-                          payload.data.options.splice(index,1)
-                      }
-                  })
+                if (options) {
+                    var filteredOptions = options.filter(function(item) {
+                        return item.value == 'startFlows' || (item.children && item.children.length > 0);
+                    });
+                    payload.data.options = filteredOptions;
                 }
                 // if(payload.data.options.length === 1 && payload.data.options[0].children.length === 1){
                 //   payload.data.value = payload.data.options[0].children[0].value
