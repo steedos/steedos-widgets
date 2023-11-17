@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-16 18:54:18
+ * @LastEditTime: 2023-11-17 20:35:06
  */
 const config: any = {
   componentType: 'amisSchema', // amisSchema || react 
@@ -107,12 +107,22 @@ export default {
           {
             "name": "a",
             "label": "A",
-            "type": "input-text"
+            "type": "text"
           },
           {
             "name": "b",
             "label": "B",
-            "type": "input-text"
+            "type": "select",
+            "options": [
+              {
+                "label": "选项1",
+                "value": "op1"
+              },
+              {
+                "label": "选项2",
+                "value": "op2"
+              }
+            ]
           }
         ],
         addable: false,
@@ -127,12 +137,22 @@ export default {
           {
             "name": "a",
             "label": "A",
-            "type": "input-text"
+            "type": "text"
           },
           {
             "name": "b",
             "label": "B",
-            "type": "input-text"
+            "type": "select",
+            "options": [
+              {
+                "label": "选项1",
+                "value": "op1"
+              },
+              {
+                "label": "选项2",
+                "value": "op2"
+              }
+            ]
           }
         ],
         addable: false,
