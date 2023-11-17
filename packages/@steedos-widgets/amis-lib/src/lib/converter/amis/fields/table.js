@@ -39,7 +39,7 @@ function getOperation(fields){
 function getDetailColumn(){}
 
 async function getQuickEditSchema(field, options){
-    //判断在amis3.2以上环境下，放开批量编辑
+    //判断在amis3.2以上环境下，放开批量编辑与lookup的单元格编辑
     let isAmisVersionforBatchEdit = false;
     if(window.amisRequire && window.amisRequire('amis')){
         isAmisVersionforBatchEdit = window.amisRequire('amis').version[0] >= 3 && window.amisRequire('amis').version[2] >= 2;
@@ -440,6 +440,10 @@ async function getQuickEditSchema(field, options){
                 })
             }
         } else {
+            quickEditSchema = false;
+        }
+        //amis3.2以下禁用lookup的单元格编辑
+        if(field.type == "lookup" && !isAmisVersionforBatchEdit){
             quickEditSchema = false;
         }
         //TODO:附件多选时会覆盖老数据，暂时禁用
