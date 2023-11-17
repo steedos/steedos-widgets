@@ -475,7 +475,7 @@ function getFieldWidth(width){
 
 async function getTableColumns(fields, options){
     const columns = [];
-    if(!options.isLookup){
+    if(!options.isLookup && !options.isInputTable){
         //将_display放入crud的columns中，可以通过setvalue修改行内数据域的_display，而不影响上层items的_display,用于批量编辑
         columns.push({name: '_display',type: 'static', width: 32, placeholder: "",id: "_display_${_index}", className: "hidden"});
         columns.push({name: '_index',type: 'text', width: 32, placeholder: ""});
@@ -619,7 +619,7 @@ async function getTableColumns(fields, options){
     };
 
     // columns.push(getOperation(fields));
-    if(!options.isLookup && !_.some(columns, { name: options.labelFieldName })){
+    if(!options.isLookup && !options.isInputTable && !_.some(columns, { name: options.labelFieldName })){
         // 没有名称字段时显示序号字段为链接，lookup弹出的picker不需要此功能
         const href = Router.getObjectDetailPath({
             ...options,  formFactor: options.formFactor, appId: "${appId}", objectName: options.objectName || "${objectName}", recordId: `\${${options.idFieldName}}`
