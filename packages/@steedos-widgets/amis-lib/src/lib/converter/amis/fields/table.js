@@ -566,14 +566,14 @@ async function getTableColumns(fields, options){
         }
         else{
             const tpl = await Tpl.getFieldTpl(field, options);
-            let type = 'text';
+            let type = 'static-text';
             if(tpl){
                 type = 'static';
             }else if(field.type === 'html'){
-                type = 'markdown';
+                type = 'static-markdown';
             }else if(field.type === 'url'){
                 if(field.show_as_qr){
-                    type = 'qr-code';
+                    type = 'static-qr-code';
                 }else{
                     type = 'input-url'
                 }
