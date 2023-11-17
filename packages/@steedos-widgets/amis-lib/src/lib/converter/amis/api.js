@@ -351,6 +351,7 @@ export function getSaveApi(object, recordId, fields, options){
         },
         adaptor: `
             if(payload.errors){
+                delete payload.data;
                 payload.status = 2;
                 payload.msg = window.t ? window.t(payload.errors[0].message) : payload.errors[0].message;
             }
