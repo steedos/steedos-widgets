@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-17 20:17:56
+ * @LastEditTime: 2023-11-19 17:23:10
  */
 
 import { getTableColumns } from './converter/amis/fields/table';
@@ -25,21 +25,24 @@ function getFormFields(props, mode = "edit") {
  * @param {*} mode edit/new/readonly
  */
 async function getInputTableColumns(props) {
-    // return props.fields.map(function(item){
-    //     return {
-    //         "type": "steedos-field",
-    //         "config": item,
-    //         "static": true,
-    //         "readonly": true
-    //     }
-    // }) || [];
-
-    let columns = await getTableColumns(props.fields || [], {
-        isInputTable: true,
-        permissions: {
-            allowEdit: false //快速编辑开关与权限有关
+    return props.fields.map(function(item){
+        return {
+            "type": "steedos-field",
+            "config": item,
+            "static": true,
+            "readonly": true,
+            label: item.label,
+            name: item.name,
+            isTableColumn: true
         }
-    });
+    }) || [];
+
+    // let columns = await getTableColumns(props.fields || [], {
+    //     isInputTable: true,
+    //     permissions: {
+    //         allowEdit: false //快速编辑开关与权限有关
+    //     }
+    // });
     // columns = columns.map(function(item){
     //     if(["text"].indexOf(item.type) > -1){
     //         return Object.assign({}, item, {

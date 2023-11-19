@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-17 20:49:05
+ * @LastEditTime: 2023-11-19 09:19:23
  */
 const config: any = {
   componentType: 'amisSchema', // amisSchema || react 
@@ -92,7 +92,8 @@ export default {
       weight: 1,
       framework: "react"
     },
-    plugin_disabled: {
+    plugin: {
+    // plugin_disabled: {
       rendererName: config.amis.name,
       $schema: '/schemas/UnkownSchema.json',
       name: config.title,
