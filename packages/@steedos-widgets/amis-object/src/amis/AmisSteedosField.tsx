@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-19 19:25:24
+ * @LastEditTime: 2023-11-19 21:22:38
  * @Description: 
  */
 import { Field, getReferenceTo } from '@steedos-widgets/amis-lib';
@@ -114,15 +114,19 @@ export const AmisSteedosField = async (props)=>{
                 source: {
                     "method": "post",
                     "url": "${context.rootUrl}/graphql",
+                    // "url": "${context.rootUrl}/graphql?reload=" + "${" + steedosField.name + "}",
                     "requestAdaptor": `
                         api.data = {
                             query: '{options:${objectName}(filters: ${JSON.stringify(filters)}){label: ${labelFieldKey},value: ${valueFieldKey}}}'
                         }
                         return api;
-                    `
-                }
+                    `,
+                    // "trackExpression": "${" + steedosField.name + "}"
+                },
             }, pick(steedosField.amis || {}, ['className', 'inline', 'label', 'labelAlign', 'name', 'labelRemark', 'description', 'placeholder', 'staticClassName', 'staticLabelClassName', 'staticInputClassName', 'staticSchema']));
-            console.log(`AmisSteedosField return schema===lookup====`, schema)
+            if(isTableColumn){
+                schema.placeholder = "";
+            }
             return schema;
         }
         else if(fStatic){
