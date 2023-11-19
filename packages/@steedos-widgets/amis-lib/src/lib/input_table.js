@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-19 17:23:10
+ * @LastEditTime: 2023-11-19 21:20:39
  */
 
 import { getTableColumns } from './converter/amis/fields/table';
@@ -137,7 +137,7 @@ function getButtonNew(props) {
                         "actionType": "dialog",
                         "dialog": {
                             "type": "dialog",
-                            "title": "弹框标题",
+                            "title": "新增行",
                             "body": [
                                 getForm(props, "new")
                             ],
@@ -166,7 +166,7 @@ function getButtonEdit(props) {
                         "actionType": "dialog",
                         "dialog": {
                             "type": "dialog",
-                            "title": "弹框标题",
+                            "title": "编辑行",
                             "body": [
                                 getForm(props, "edit")
                             ],
