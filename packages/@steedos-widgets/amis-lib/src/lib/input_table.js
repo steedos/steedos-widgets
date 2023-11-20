@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-19 21:20:39
+ * @LastEditTime: 2023-11-20 17:34:41
  */
 
 import { getTableColumns } from './converter/amis/fields/table';
@@ -141,6 +141,7 @@ function getButtonNew(props) {
                             "body": [
                                 getForm(props, "new")
                             ],
+                            "size": "md",
                             "showCloseButton": true,
                             "showErrorMsg": true,
                             "showLoading": true,
@@ -170,6 +171,7 @@ function getButtonEdit(props) {
                             "body": [
                                 getForm(props, "edit")
                             ],
+                            "size": "md",
                             "showCloseButton": true,
                             "showErrorMsg": true,
                             "showLoading": true,
