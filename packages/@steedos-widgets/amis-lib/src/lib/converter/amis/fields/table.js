@@ -894,7 +894,7 @@ async function getTableOperation(ctx){
     }
     return {
         type: 'operation',
-        label: "",
+        label: "&nbsp;",
         fixed: 'right',
         labelClassName: 'text-center',
         className: 'text-center steedos-listview-operation w-10',

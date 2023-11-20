@@ -300,3 +300,10 @@ fieldset.antd-Collapse > legend{
 .steedos-crud-mode-cards .antd-Card-actions a[disabled]:hover{
     color: rgba(0,0,0,.25)
 }
+
+.antd-Transfer .antd-GroupedSelection-item .antd-GroupedSelection-itemLabel,
+.antd-Transfer .antd-Selections-item .antd-Selections-label{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
