@@ -2,10 +2,10 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-19 21:22:38
+ * @LastEditTime: 2023-11-20 17:11:02
  * @Description: 
  */
-import { Field, getReferenceTo } from '@steedos-widgets/amis-lib';
+import { Field } from '@steedos-widgets/amis-lib';
 import { isArray, isEmpty, isString, pick, includes } from 'lodash';
 
 const AmisFormInputs = [
@@ -73,37 +73,6 @@ export const AmisSteedosField = async (props)=>{
     }
     try {
         if(fStatic && (steedosField.type === 'lookup' || steedosField.type === 'master_detail')){
-            let objectName, filters, valueFieldKey, labelFieldKey;
-            if(!props.data[steedosField.name]){
-                return {};
-            }
-            if(isString(steedosField.reference_to)){
-                const referenceTo = await getReferenceTo(steedosField);
-                const referenceToField = steedosField.reference_to_field || '_id';
-
-                objectName = referenceTo.objectName
-                valueFieldKey = referenceTo && referenceTo.valueField?.name || '_id' ;
-                labelFieldKey = referenceTo && referenceTo.labelField?.name || 'name';
-                let value = props.data[steedosField.name];
-                if(isString(value)){
-                    value = [value]
-                }
-                filters = [referenceToField, "in", value];
-            }else{
-                const _steedosField = {
-                    ...steedosField,
-                    reference_to: props.data[steedosField.name].o
-                }
-                const referenceTo = await getReferenceTo(_steedosField);
-                const referenceToField = _steedosField.reference_to_field || '_id';
-
-                objectName = referenceTo.objectName
-                valueFieldKey = referenceTo && referenceTo.valueField?.name || '_id' ;
-                labelFieldKey = referenceTo && referenceTo.labelField?.name || 'name';
-                
-                filters = [referenceToField, "in", props.data[_steedosField.name].ids];
-            }
-            
             const schema = Object.assign({}, {
                 type: 'select',
                 multiple: steedosField.multiple,
@@ -114,14 +83,41 @@ export const AmisSteedosField = async (props)=>{
                 source: {
                     "method": "post",
                     "url": "${context.rootUrl}/graphql",
-                    // "url": "${context.rootUrl}/graphql?reload=" + "${" + steedosField.name + "}",
                     "requestAdaptor": `
+                        var steedosField = ${JSON.stringify(steedosField)};
+                        var objectName, filters, valueFieldKey, labelFieldKey;
+                        if(_.isString(steedosField.reference_to)){
+                            const referenceTo = getReferenceToSync(steedosField);
+                            const referenceToField = steedosField.reference_to_field || '_id';
+
+                            objectName = referenceTo.objectName
+                            valueFieldKey = referenceTo && referenceTo.valueField?.name || '_id' ;
+                            labelFieldKey = referenceTo && referenceTo.labelField?.name || 'name';
+                            let value = api.data[steedosField.name];
+                            if(_.isString(value)){
+                                value = [value]
+                            }
+                            filters = [referenceToField, "in", value || []];
+                        }else{
+                            const _steedosField = {
+                                ...steedosField,
+                                reference_to: api.data[steedosField.name].o
+                            }
+                            const referenceTo = getReferenceToSync(_steedosField);
+                            const referenceToField = _steedosField.reference_to_field || '_id';
+
+                            objectName = referenceTo.objectName
+                            valueFieldKey = referenceTo && referenceTo.valueField?.name || '_id' ;
+                            labelFieldKey = referenceTo && referenceTo.labelField?.name || 'name';
+                            let value = api.data[_steedosField.name] && api.data[_steedosField.name].ids;
+                            filters = [referenceToField, "in", value || []];
+                        }
                         api.data = {
-                            query: '{options:${objectName}(filters: ${JSON.stringify(filters)}){label: ${labelFieldKey},value: ${valueFieldKey}}}'
+                            query: '{options:' + objectName + '(filters: ' + JSON.stringify(filters) + '){label: ' + labelFieldKey + ',value: ' + valueFieldKey + '}}'
                         }
                         return api;
                     `,
-                    // "trackExpression": "${" + steedosField.name + "}"
+                    "trackExpression": "${" + steedosField.name + "}"
                 },
             }, pick(steedosField.amis || {}, ['className', 'inline', 'label', 'labelAlign', 'name', 'labelRemark', 'description', 'placeholder', 'staticClassName', 'staticLabelClassName', 'staticInputClassName', 'staticSchema']));
             if(isTableColumn){

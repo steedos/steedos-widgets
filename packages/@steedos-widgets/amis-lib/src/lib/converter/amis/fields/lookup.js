@@ -13,18 +13,11 @@ import { lookupToAmisTreeSelect } from './tree_select';
 import * as standardNew from '../../../../schema/standard_new.amis'
 import { i18next } from "../../../../i18n";
 
-export const getReferenceTo = async (field)=>{
+export const getReferenceToFieldSchema = (field, refObjectConfig)=>{
     let referenceTo = field.reference_to;
     if(!referenceTo){
-        return ;
+        return;
     }
-
-    if(referenceTo === 'users'){
-        referenceTo = 'space_users';
-        field.reference_to_field = 'user'
-    }
-
-    const refObjectConfig = await getUISchema(referenceTo)
 
     // 如果lookup 引用的对象未定义
     if (!refObjectConfig)
@@ -46,6 +39,28 @@ export const getReferenceTo = async (field)=>{
         labelField: refObjectConfig.fields[refObjectConfig.NAME_FIELD_KEY || 'name'],
         NAME_FIELD_KEY: refObjectConfig.NAME_FIELD_KEY || 'name'
     }
+}
+
+export const getReferenceTo = async (field)=>{
+    let referenceTo = field.reference_to;
+    if(referenceTo === 'users'){
+        referenceTo = 'space_users';
+        field.reference_to_field = 'user'
+    }
+
+    const refObjectConfig = await getUISchema(referenceTo);
+    return getReferenceToFieldSchema(field, refObjectConfig);
+}
+
+export function getReferenceToSync(field) {
+    let referenceTo = field.reference_to;
+    if(referenceTo === 'users'){
+        referenceTo = 'space_users';
+        field.reference_to_field = 'user'
+    }
+
+    const refObjectConfig = getUISchemaSync(referenceTo);
+    return getReferenceToFieldSchema(field, refObjectConfig);
 }
 
 export function getLookupSapceUserTreeSchema(isMobile){
@@ -963,4 +978,10 @@ export async function getIdsPickerSchema(field, readonly, ctx){
         data.tpl = await Tpl.getLookupTpl(field, ctx)
     }
     return data;
+}
+
+
+if(typeof window != 'undefined'){
+    window.getReferenceTo = getReferenceTo;
+    window.getReferenceToSync = getReferenceToSync;
 }
