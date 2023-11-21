@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-21 18:24:42
+ * @LastEditTime: 2023-11-21 18:27:20
  * @Description: 
  */
 import { Field } from '@steedos-widgets/amis-lib';
@@ -188,6 +188,7 @@ export const AmisSteedosField = async (props)=>{
                 });
             }
             else if(steedosField.type === "file"){
+                // 附件static模式先保持原来的逻辑
                 return await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
             }
             return schema;
