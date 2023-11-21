@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-21 17:59:33
+ * @LastEditTime: 2023-11-21 18:24:42
  * @Description: 
  */
 import { Field } from '@steedos-widgets/amis-lib';
@@ -186,6 +186,9 @@ export const AmisSteedosField = async (props)=>{
                         return value;
                     }
                 });
+            }
+            else if(steedosField.type === "file"){
+                return await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
             }
             return schema;
         } else{
