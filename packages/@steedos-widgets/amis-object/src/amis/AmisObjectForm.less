@@ -61,6 +61,15 @@
         // height: 100%;
         vertical-align: middle;
     }
+
+    // 列表视图上"过滤设置"按钮弹出的表单弹窗样式调整
+    .steedos-overflow-visible-dialog.antd-Modal .antd-Modal-content{
+        max-height: unset;
+        .antd-Modal-body{
+            overflow: visible;
+        }
+    } 
+    
 }
 
 // html 控件只读状态下不要显示边框 https://github.com/steedos/steedos-widgets/issues/488
