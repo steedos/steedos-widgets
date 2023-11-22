@@ -48,6 +48,7 @@ export const getSetListviewFiltersButtonSchema = ()=>{
                       }
                     }
                   ],
+                  "className": "steedos-overflow-visible-dialog",
                   "showCloseButton": true,
                   "showErrorMsg": true,
                   "showLoading": true,
