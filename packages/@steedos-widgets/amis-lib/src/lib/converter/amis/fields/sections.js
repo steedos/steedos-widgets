@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-26 16:02:08
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-10-12 18:25:05
+ * @LastEditTime: 2023-11-22 14:30:34
  * @Description: 
  */
 import * as Fields from '../fields';
@@ -63,6 +63,13 @@ const getSection = async (formFields, permissionFields, fieldSchemaArray, sectio
     if (field.name.indexOf(".") < 0) {
       ctx.__formFields = formFields;
       const amisField = await Fields.convertSFieldToAmisField(field, field.readonly, ctx);
+      // 如果steedos-field稳定了，可以放开下面的代码直接用组件统一渲染字段
+      // const amisField = {
+      //   "type": "steedos-field",
+      //   "config": field,
+      //   "readonly": field.readonly,
+      //   "ctx": ctx
+      // };
       // console.log(`${field.name} amisField`, field, amisField)
       if (amisField) {
         fieldSetBody.push(amisField);
