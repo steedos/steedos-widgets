@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-22 08:48:43
+ * @LastEditTime: 2023-11-22 10:14:14
  * @Description: 
  */
 import { Field } from '@steedos-widgets/amis-lib';
@@ -78,6 +78,7 @@ export const AmisSteedosField = async (props)=>{
     }
     try {
         if(fStatic && (steedosField.type === 'lookup' || steedosField.type === 'master_detail')){
+            // 这里有_display时不可以不走以下的static逻辑代码，因为审批王会特意传入_display，且其中lookup字段static时需要走下面的代码
             const schema = Object.assign({}, {
                 type: 'select',
                 multiple: steedosField.multiple,
@@ -129,6 +130,10 @@ export const AmisSteedosField = async (props)=>{
             return schema;
         }
         else if(fStatic){
+            if(props.data.hasOwnProperty("_display")){
+                // 有_display时保持原来的逻辑不变，不走以下新的逻辑，审批王中会特意传入_display以跳过后面新加的代码
+                return await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
+            }
             const schema = Object.assign({}, steedosField, {
                 type: getAmisStaticFieldType(steedosField.type, steedosField.data_type, steedosField),
                 static: true,
@@ -186,71 +191,74 @@ export const AmisSteedosField = async (props)=>{
                 });
             }
             else if(steedosField.type === "file"){
-                // 附件static模式先保持原来的逻辑
+                // 附件static模式先保持原来的逻辑，依赖_display，审批王中相关功能在creator中
                 return await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
             }
             return schema;
         } else{
             const schema = await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
-            if(steedosField.type === "image"){
-                Object.assign(schema, {
-                    pipeIn: (value, data) => {
-                        console.log("=edit==pipeIn==steedosField.multiple====", steedosField.multiple);
-                        console.log("=edit==pipeIn==typeof====", typeof value);
-                        console.log("=edit==pipeIn===", value);
-                        if(steedosField.multiple){
-                            value = value && value.map(function(item: string){
-                                if(item && item.split("/").length === 1){
+            if(!props.data.hasOwnProperty("_display")){
+                // 有_display时保持原来的逻辑不变，不走以下新的逻辑，审批王中会特意传入_display以跳过后面新加的代码
+                if(steedosField.type === "image"){
+                    Object.assign(schema, {
+                        pipeIn: (value, data) => {
+                            console.log("=edit==pipeIn==steedosField.multiple====", steedosField.multiple);
+                            console.log("=edit==pipeIn==typeof====", typeof value);
+                            console.log("=edit==pipeIn===", value);
+                            if(steedosField.multiple){
+                                value = value && value.map(function(item: string){
+                                    if(item && item.split("/").length === 1){
+                                        // 不是url格式时转为url格式显示
+                                        return (window as any).getImageFieldUrl((window as any).Meteor.absoluteUrl(`/api/files/images/${item}`))
+                                    }
+                                    else{
+                                        return item;
+                                    }
+                                });
+                            }
+                            else{
+                                if(isArray(value)){
+                                    value = value[0];
+                                }
+                                if(value && value.split("/").length === 1){
                                     // 不是url格式时转为url格式显示
-                                    return (window as any).getImageFieldUrl((window as any).Meteor.absoluteUrl(`/api/files/images/${item}`))
+                                    return (window as any).getImageFieldUrl((window as any).Meteor.absoluteUrl(`/api/files/images/${value}`))
                                 }
-                                else{
-                                    return item;
-                                }
-                            });
-                        }
-                        else{
-                            if(isArray(value)){
-                                value = value[0];
                             }
-                            if(value && value.split("/").length === 1){
-                                // 不是url格式时转为url格式显示
-                                return (window as any).getImageFieldUrl((window as any).Meteor.absoluteUrl(`/api/files/images/${value}`))
-                            }
-                        }
-                        return value;
-                    },
-                    pipeOut: (value, data) => {
-                        console.log("=edit==pipeOut==steedosField.multiple====", steedosField.multiple);
-                        console.log("=edit==pipeOut==typeof====", typeof value);
-                        console.log("=edit==pipeOut===", value);
-                        // if(value && value.split("/").length > 1){
-                        //     return value.split("/").pop();
-                        // }
+                            return value;
+                        },
+                        pipeOut: (value, data) => {
+                            console.log("=edit==pipeOut==steedosField.multiple====", steedosField.multiple);
+                            console.log("=edit==pipeOut==typeof====", typeof value);
+                            console.log("=edit==pipeOut===", value);
+                            // if(value && value.split("/").length > 1){
+                            //     return value.split("/").pop();
+                            // }
 
-                        if(steedosField.multiple){
-                            value = value && value.map(function(item: string){
-                                if(item && item.split("/").length > 1){
+                            if(steedosField.multiple){
+                                value = value && value.map(function(item: string){
+                                    if(item && item.split("/").length > 1){
+                                        // 是url格式时转_id值输出用于保存
+                                        return item.split("/").pop();
+                                    }
+                                    else{
+                                        return item;
+                                    }
+                                });
+                            }
+                            else{
+                                if(isArray(value)){
+                                    value = value[0];
+                                }
+                                if(value && value.split("/").length > 1){
                                     // 是url格式时转_id值输出用于保存
-                                    return item.split("/").pop();
+                                    return value.split("/").pop();
                                 }
-                                else{
-                                    return item;
-                                }
-                            });
-                        }
-                        else{
-                            if(isArray(value)){
-                                value = value[0];
                             }
-                            if(value && value.split("/").length > 1){
-                                // 是url格式时转_id值输出用于保存
-                                return value.split("/").pop();
-                            }
+                            return value;
                         }
-                        return value;
-                    }
-                });
+                    });
+                }
             }
             console.log(`AmisSteedosField return schema`, schema)
             return schema
