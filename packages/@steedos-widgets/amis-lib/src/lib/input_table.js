@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-20 17:34:41
+ * @LastEditTime: 2023-11-22 17:20:03
  */
 
 import { getTableColumns } from './converter/amis/fields/table';
@@ -33,7 +33,7 @@ async function getInputTableColumns(props) {
             "readonly": true,
             label: item.label,
             name: item.name,
-            isTableColumn: true
+            hideLabel: true
         }
     }) || [];
 
@@ -64,6 +64,7 @@ function getForm(props, mode = "edit") {
     let schema = {
         "type": "form",
         "title": "表单",
+        "debug": true,
         "body": getFormFields(props, mode)
     };
     if (mode === "edit") {
