@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-22 10:14:14
+ * @LastEditTime: 2023-11-22 14:48:01
  * @Description: 
  */
 import { Field } from '@steedos-widgets/amis-lib';
@@ -153,7 +153,11 @@ export const AmisSteedosField = async (props)=>{
                 Object.assign(schema, {
                     "revealPassword": false //没生效，需要用样式隐藏
                 });
-            } 
+            } else if(steedosField.type === "select"){
+                Object.assign(schema, {
+                    "placeholder": ""
+                });
+            }
             else if(steedosField.type === "image"){
                 Object.assign(schema, {
                     enlargeAble: true,
