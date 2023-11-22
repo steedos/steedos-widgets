@@ -447,7 +447,9 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                     suffix: "%",
                     pipeIn: (value, data) => {
                         if(value){
-                            return value*100;
+                            // 因为例如 1.11 * 100 的值不是111，所以调整下。
+                            const result = value*100;
+                            return Number(result.toFixed(field.scale));
                         }
                         return value;
                     },
