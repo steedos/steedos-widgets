@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-22 16:00:55
+ * @LastEditTime: 2023-11-22 17:19:42
  * @Description: 
  */
 import { Field } from '@steedos-widgets/amis-lib';
@@ -53,7 +53,7 @@ function getAmisStaticFieldType(type: string, data_type?: string, options?: any)
 export const AmisSteedosField = async (props)=>{
 
     let steedosField = null;
-    let { field, readonly = false, ctx = {}, config, $schema, static: fStatic, isTableColumn } = props;
+    let { field, readonly = false, ctx = {}, config, $schema, static: fStatic, hideLabel } = props;
     // console.log(`AmisSteedosField`, props)
 
     // if($schema.config && isString($schema.config)){
@@ -83,7 +83,7 @@ export const AmisSteedosField = async (props)=>{
                 type: 'select',
                 multiple: steedosField.multiple,
                 name: steedosField.name,
-                label: isTableColumn ? undefined : steedosField.label,
+                label: hideLabel ? undefined : steedosField.label,
                 static: true,
                 className: steedosField.amis?.className,
                 source: {
@@ -137,7 +137,7 @@ export const AmisSteedosField = async (props)=>{
             const schema = Object.assign({}, steedosField, {
                 type: getAmisStaticFieldType(steedosField.type, steedosField.data_type, steedosField),
                 static: true,
-                label: isTableColumn ? undefined : steedosField.label
+                label: hideLabel ? undefined : steedosField.label
             });
             if(steedosField.type === "time"){
                 Object.assign(schema, {
