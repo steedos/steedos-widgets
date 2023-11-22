@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-21 18:27:20
+ * @LastEditTime: 2023-11-22 08:48:43
  * @Description: 
  */
 import { Field } from '@steedos-widgets/amis-lib';
@@ -125,9 +125,7 @@ export const AmisSteedosField = async (props)=>{
                     "trackExpression": "${" + steedosField.name + "}"
                 },
             }, pick(steedosField.amis || {}, ['className', 'inline', 'label', 'labelAlign', 'name', 'labelRemark', 'description', 'placeholder', 'staticClassName', 'staticLabelClassName', 'staticInputClassName', 'staticSchema']));
-            if(isTableColumn){
-                schema.placeholder = "";
-            }
+            schema.placeholder = "";
             return schema;
         }
         else if(fStatic){
