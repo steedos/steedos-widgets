@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-01-14 16:41:24
- * @LastEditors: liaodaxue
- * @LastEditTime: 2023-11-17 10:53:59
+ * @LastEditors: 涂佳俊 tujiajun@steedos.com
+ * @LastEditTime: 2023-11-23 18:27:18
  * @Description:
  */
 
@@ -203,7 +203,10 @@ const getSelectFlowSchema = (id, props) => {
       url: "${context.rootUrl}/graphql?keywords=${keywords}",
       requestAdaptor: `
                 const keywords = api.body.keywords || '';
-                const appId = '${data.app_id || ""}';
+                let appId = '${data.app_id || ""}';
+                if(appId == "approve_workflow"){
+                  appId = "";
+                }
                 api.data = {
                     query: \`
                         {
