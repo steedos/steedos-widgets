@@ -119,7 +119,7 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
         "value": crudKeywords,
         "clearable": true,
         "clearAndSubmit": true,
-        "searchImediately": true
+        "searchImediately": false
       }
     ]
   }
