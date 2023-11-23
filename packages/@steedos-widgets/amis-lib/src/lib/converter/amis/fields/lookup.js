@@ -44,22 +44,22 @@ export const getReferenceToFieldSchema = (field, refObjectConfig)=>{
 export const getReferenceTo = async (field)=>{
     let referenceTo = field.reference_to;
     if(referenceTo === 'users'){
-        referenceTo = 'space_users';
+        field.reference_to = 'space_users';
         field.reference_to_field = 'user'
     }
 
-    const refObjectConfig = await getUISchema(referenceTo);
+    const refObjectConfig = await getUISchema(field.reference_to);
     return getReferenceToFieldSchema(field, refObjectConfig);
 }
 
 export function getReferenceToSync(field) {
     let referenceTo = field.reference_to;
     if(referenceTo === 'users'){
-        referenceTo = 'space_users';
+        field.reference_to = 'space_users';
         field.reference_to_field = 'user'
     }
 
-    const refObjectConfig = getUISchemaSync(referenceTo);
+    const refObjectConfig = getUISchemaSync(field.reference_to);
     return getReferenceToFieldSchema(field, refObjectConfig);
 }
 
