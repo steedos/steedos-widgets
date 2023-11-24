@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-28 14:15:09
- * @LastEditors: liaodaxue
- * @LastEditTime: 2023-10-30 17:51:54
+ * @LastEditors: 孙浩林 sunhaolin@steedos.com
+ * @LastEditTime: 2023-11-24 13:45:24
  * @Description: 
  */
 import { getAmisStaticFieldType } from './type';
@@ -42,7 +42,7 @@ export const getAmisFileReadonlySchema = (steedosField)=>{
                 <% let fileData = data._display.${steedosField.name}; if (fileData) { %>
                     <% if(!Array.isArray(fileData)){ fileData = [fileData]}  %>
                     <% fileData.forEach(function(item) { %> 
-                        <a href='<%= item.url %>' target='_self' class='block'><%= item.name %></a> 
+                        <a href='<%= item.url+"?download=1" %>' target='_self' class='block'><%= item.name %></a> 
                 <% });} %>`
         }
     }
