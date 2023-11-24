@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 涂佳俊 tujiajun@steedos.com
- * @LastEditTime: 2023-11-22 09:07:37
+ * @LastEditTime: 2023-11-24 15:31:12
  * @Description: 
  */
 
@@ -34,7 +34,7 @@ export const AmisAppLauncher = async (props) => {
     }
   `
   let dialogSchema = {}
-  const badgeText = "${IF(${id} == 'approve_workflow',${ss:keyvalues.badge.value|pick:'workflow'},${keyvalues.badge.value|pick:${id}}) | toInt}";
+  const badgeText = "${IF(${id} == 'approve_workflow',${ss:keyvalues.badge.value|pick:'workflow'},${ss:keyvalues.badge.value|pick:${id}}) | toInt}";
   if(isMobile){
     dialogSchema = {
       "type": "service",
