@@ -1093,6 +1093,7 @@ export async function getTableApi(mainObject, fields, options){
     if(options.isRelated){
         api.url += "&recordId=${_master.recordId}";
     }
+    api.cache = 3000;
 
     api.data.$term = "$term";
     api.data.term = "$term";
