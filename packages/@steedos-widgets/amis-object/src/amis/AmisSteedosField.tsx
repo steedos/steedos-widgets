@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-22 17:19:42
+ * @LastEditTime: 2023-11-24 13:33:27
  * @Description: 
  */
 import { Field } from '@steedos-widgets/amis-lib';
@@ -54,7 +54,7 @@ export const AmisSteedosField = async (props)=>{
 
     let steedosField = null;
     let { field, readonly = false, ctx = {}, config, $schema, static: fStatic, hideLabel } = props;
-    // console.log(`AmisSteedosField`, props)
+    console.log(`AmisSteedosField`, props)
 
     // if($schema.config && isString($schema.config)){
     //     $schema.config = JSON.parse($schema.config)
@@ -192,15 +192,18 @@ export const AmisSteedosField = async (props)=>{
             }
             else if(steedosField.type === "file"){
                 // 附件static模式先保持原来的逻辑，依赖_display，审批王中相关功能在creator中
+                // convertSFieldToAmisField中会合并steedosField.amis，所以也不需要再次合并steedosField.amis，直接return就好
                 return await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
             }
+            Object.assign(schema, steedosField.amis || {});
             return schema;
         } else{
-            const schema = await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
+            let fieldAmis = steedosField.amis || {};
             if(!props.data.hasOwnProperty("_display")){
                 // 有_display时保持原来的逻辑不变，不走以下新的逻辑，审批王中会特意传入_display以跳过后面新加的代码
+                // 重写amis中相关属性，但是允许用户通过配置组件的config.amis覆盖下面重写的逻辑
                 if(steedosField.type === "image"){
-                    Object.assign(schema, {
+                    fieldAmis = Object.assign({}, {
                         pipeIn: (value, data) => {
                             if(steedosField.multiple){
                                 value = value && value.map(function(item: string){
@@ -247,9 +250,12 @@ export const AmisSteedosField = async (props)=>{
                             }
                             return value;
                         }
-                    });
+                    }, fieldAmis);
+                    steedosField.amis = fieldAmis;
                 }
             }
+
+            const schema = await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
             // console.log(`AmisSteedosField return schema`, schema)
             return schema
         }
