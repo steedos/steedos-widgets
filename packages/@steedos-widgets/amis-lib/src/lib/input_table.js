@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-26 09:27:43
+ * @LastEditTime: 2023-11-26 09:30:58
  */
 
 import { getTableColumns } from './converter/amis/fields/table';
@@ -75,24 +75,6 @@ async function getInputTableColumns(props) {
             }
         }) || [];
     }
-
-    // let columns = await getTableColumns(props.fields || [], {
-    //     isInputTable: true,
-    //     permissions: {
-    //         allowEdit: false //快速编辑开关与权限有关
-    //     }
-    // });
-    // columns = columns.map(function(item){
-    //     if(["text"].indexOf(item.type) > -1){
-    //         return Object.assign({}, item, {
-    //             "type": "static"
-    //         });
-    //     }
-    //     else{
-    //         return item;
-    //     }
-    // }) || [];
-    return columns;
 }
 
 /**
