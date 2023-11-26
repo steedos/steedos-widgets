@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-26 09:43:35
+ * @LastEditTime: 2023-11-26 11:11:19
  */
 
 import { getTableColumns } from './converter/amis/fields/table';
@@ -30,7 +30,7 @@ async function getInputTableColumns(props) {
     let fields = props.fields;
     if(columns && columns.length){
         return columns.map(function(column){
-            let field;
+            let field, extendColumnProps = {};
             if(typeof column === "string"){
                 // 如果字符串，则取出要显示的列配置
                 field = fields.find(function(fieldItem){
@@ -43,7 +43,9 @@ async function getInputTableColumns(props) {
                     return fieldItem.name === column.name;
                 });
                 if(field){
-                    field.amis = Object.assign({}, field.amis, column);
+                    // field.amis = Object.assign({}, field.amis, column);
+                    // 如果把column合并到field.amis，column的label/width等属性不会生效，只能放外层合并
+                    extendColumnProps = column;
                 }
             }
             if(field){
@@ -54,7 +56,8 @@ async function getInputTableColumns(props) {
                     "readonly": true,
                     label: field.label,
                     name: field.name,
-                    hideLabel: true
+                    hideLabel: true,
+                    ...extendColumnProps
                 }
             }
             else{

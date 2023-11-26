@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-24 13:33:27
+ * @LastEditTime: 2023-11-26 11:17:01
  * @Description: 
  */
 import { Field } from '@steedos-widgets/amis-lib';
@@ -83,7 +83,7 @@ export const AmisSteedosField = async (props)=>{
                 type: 'select',
                 multiple: steedosField.multiple,
                 name: steedosField.name,
-                label: hideLabel ? undefined : steedosField.label,
+                label: steedosField.label,
                 static: true,
                 className: steedosField.amis?.className,
                 source: {
@@ -127,6 +127,9 @@ export const AmisSteedosField = async (props)=>{
                 },
             }, pick(steedosField.amis || {}, ['className', 'inline', 'label', 'labelAlign', 'name', 'labelRemark', 'description', 'placeholder', 'staticClassName', 'staticLabelClassName', 'staticInputClassName', 'staticSchema']));
             schema.placeholder = "";
+            if(hideLabel){
+                delete schema.label;
+            }
             return schema;
         }
         else if(fStatic){
@@ -137,7 +140,7 @@ export const AmisSteedosField = async (props)=>{
             const schema = Object.assign({}, steedosField, {
                 type: getAmisStaticFieldType(steedosField.type, steedosField.data_type, steedosField),
                 static: true,
-                label: hideLabel ? undefined : steedosField.label
+                label: steedosField.label
             });
             if(steedosField.type === "time"){
                 Object.assign(schema, {
@@ -196,6 +199,9 @@ export const AmisSteedosField = async (props)=>{
                 return await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
             }
             Object.assign(schema, steedosField.amis || {});
+            if(hideLabel){
+                delete schema.label;
+            }
             return schema;
         } else{
             let fieldAmis = steedosField.amis || {};
