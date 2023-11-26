@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-19 09:19:23
+ * @LastEditTime: 2023-11-24 15:17:45
  */
 const config: any = {
   componentType: 'amisSchema', // amisSchema || react 
@@ -173,6 +173,22 @@ export default {
           type: "editor",
           name: "fields",
           label: "字段配置",
+          "options": {
+            "lineNumbers": "off"
+          },
+          pipeOut: (value) => {
+            try {
+              return value ? JSON.parse(value) : null;
+            } catch (e) {
+            }
+            return value;
+          },
+          language: "json"
+        },
+        {
+          type: "editor",
+          name: "columns",
+          label: "显示的列",
           "options": {
             "lineNumbers": "off"
           },

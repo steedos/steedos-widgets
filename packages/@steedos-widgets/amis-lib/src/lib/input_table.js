@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-22 17:20:03
+ * @LastEditTime: 2023-11-26 09:27:43
  */
 
 import { getTableColumns } from './converter/amis/fields/table';
@@ -25,17 +25,56 @@ function getFormFields(props, mode = "edit") {
  * @param {*} mode edit/new/readonly
  */
 async function getInputTableColumns(props) {
-    return props.fields.map(function(item){
-        return {
-            "type": "steedos-field",
-            "config": item,
-            "static": true,
-            "readonly": true,
-            label: item.label,
-            name: item.name,
-            hideLabel: true
-        }
-    }) || [];
+    let columns = props.columns || [];
+    // 实测过，直接不生成对应的隐藏column并不会对input-table值造成丢失问题，隐藏的列字段值能正常维护
+    let fields = props.fields;
+    if(columns && columns.length){
+        return columns.map(function(column){
+            let field;
+            if(typeof column === "string"){
+                // 如果字符串，则取出要显示的列配置
+                field = fields.find(function(fieldItem){
+                    return fieldItem.name === column;
+                });
+            }
+            else{
+                // 如果是对象，则合并到steedos-field的config.amis属性中，steedos组件会把config.amis属性混合到最终生成的input-table column
+                field = fields.find(function(fieldItem){
+                    return fieldItem.name === column.name;
+                });
+                if(field){
+                    field.amis = Object.assign({}, field.amis, column);
+                }
+            }
+            if(field){
+                return {
+                    "type": "steedos-field",
+                    "config": field,
+                    "static": true,
+                    "readonly": true,
+                    label: field.label,
+                    name: field.name,
+                    hideLabel: true
+                }
+            }
+            else{
+                return column;
+            }
+        });
+    }
+    else{
+        return fields.map(function(field){
+            return {
+                "type": "steedos-field",
+                "config": field,
+                "static": true,
+                "readonly": true,
+                label: field.label,
+                name: field.name,
+                hideLabel: true
+            }
+        }) || [];
+    }
 
     // let columns = await getTableColumns(props.fields || [], {
     //     isInputTable: true,
