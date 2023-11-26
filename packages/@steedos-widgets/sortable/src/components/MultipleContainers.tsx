@@ -213,6 +213,13 @@ export function MultipleContainers(props) {
     cardClassName = "",
   }: Props = props
 
+  if(!props.data){
+    // 为了解决3.2 dispatchevent不生效的问题, https://github.com/baidu/amis/issues/7488
+    // 如果data为undefined，dispatchEvent时第三个参数传入的current的data为undefined会报错
+    props.data = {}
+  }
+  const MultipleContainersRef: any = useRef();
+
   value && delete(value.$$id);
 
   const [items, setItems] = useState<Items>(
@@ -244,7 +251,8 @@ export function MultipleContainers(props) {
       'change',
       createObject(amisData, {
         value
-      })
+      }),
+      MultipleContainersRef.current
     );
     if (rendererEvent?.prevented) {
       return;
@@ -374,7 +382,7 @@ export function MultipleContainers(props) {
     });
   }, [items]);
 
-  return (
+  let multipleContainers = (
     <DndContext
       sensors={sensors}
       collisionDetection={collisionDetectionStrategy}
@@ -554,6 +562,7 @@ export function MultipleContainers(props) {
       cancelDrop={cancelDrop}
       onDragCancel={onDragCancel}
       modifiers={modifiers}
+      {...props}//dispatchevent需要实例中的props有amis的各项属性，因此将所有props一起传下来
     >
       <div
         style={{
@@ -653,6 +662,11 @@ export function MultipleContainers(props) {
       </div>
     </DndContext>
   );
+
+  // 为了解决3.2 dispatchevent不生效的问题, https://github.com/baidu/amis/issues/7488
+  // dispatchEvent时第三个参数传入的current必须是一个带props属性的对象
+  MultipleContainersRef.current = multipleContainers;
+  return multipleContainers;
 
   function renderSortableItemDragOverlay(id: UniqueIdentifier) {
     const item = cloneDeep(keyBy(cardSource, 'id')[id]) || {id: id, label: '' + id, columnSpan:1}

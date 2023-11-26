@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: 涂佳俊 tujiajun@steedos.com
- * @LastEditTime: 2023-11-22 09:07:37
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-11-24 15:52:55
  * @Description: 
  */
 
@@ -34,7 +34,7 @@ export const AmisAppLauncher = async (props) => {
     }
   `
   let dialogSchema = {}
-  const badgeText = "${IF(${id} == 'approve_workflow',${ss:keyvalues.badge.value|pick:'workflow'},${keyvalues.badge.value|pick:${id}}) | toInt}";
+  const badgeText = "${IF(${id} == 'approve_workflow',${ss:keyvalues.badge.value|pick:'workflow'},${ss:keyvalues.badge.value|pick:${id}}) | toInt}";
   if(isMobile){
     dialogSchema = {
       "type": "service",
@@ -328,7 +328,7 @@ export const AmisAppLauncher = async (props) => {
           {
             "type": "tpl",
             "className": "flex items-center",
-            "tpl": "<div aria-haspopup='true' title='Open App Launcher' class='slds-icon-waffle_container slds-context-bar__button' title='Open App Launcher' type='button'><span class='slds-icon-waffle'><span class='slds-r1'></span><span class='slds-r2'></span><span class='slds-r3'></span><span class='slds-r4'></span><span class='slds-r5'></span><span class='slds-r6'></span><span class='slds-r7'></span><span class='slds-r8'></span><span class='slds-r9'></span></span></div>",
+            "tpl": `<div aria-haspopup='true' title='${i18next.t('frontend_open_app_launcher')}' class='slds-icon-waffle_container slds-context-bar__button' type='button'><span class='slds-icon-waffle'><span class='slds-r1'></span><span class='slds-r2'></span><span class='slds-r3'></span><span class='slds-r4'></span><span class='slds-r5'></span><span class='slds-r6'></span><span class='slds-r7'></span><span class='slds-r8'></span><span class='slds-r9'></span></span></div>`,
             "badge": {
               "visibleOn": "${ss:keyvalues.badge.value.workflow | toInt}",
               "offset": [3, -3],

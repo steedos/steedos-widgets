@@ -13,6 +13,8 @@ import { lookupToAmisTreeSelect } from './tree_select';
 import * as standardNew from '../../../../schema/standard_new.amis'
 import { i18next } from "../../../../i18n";
 
+const keywordsSearchBoxName = `__keywords_lookup`;
+
 export const getReferenceToFieldSchema = (field, refObjectConfig)=>{
     let referenceTo = field.reference_to;
     if(!referenceTo){
@@ -271,8 +273,6 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     
     source.data.$term = "$term";
     source.data.$self = "$$";
-
-    let keywordsSearchBoxName = `__keywords_lookup__${field.name}__to__${refObjectConfig.name}`;
     
     source.requestAdaptor = `
         const selfData = JSON.parse(JSON.stringify(api.data.$self));
