@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-26 10:18:41
+ * @LastEditTime: 2023-11-26 10:38:52
  */
 const config: any = {
   componentType: 'amisSchema', // amisSchema || react 
@@ -208,55 +208,55 @@ export default {
           language: "json"
         },
         {
-          type: "checkbox",
+          type: "switch",
           name: "addable",
           mode: "horizontal",
           horizontal: {
-            left: 10,
+            left: 9,
             right: 4,
             justify: true
           },
           label: '可新增',
         },
         {
-          type: "checkbox",
+          type: "switch",
           name: "editable",
           mode: "horizontal",
           horizontal: {
-            left: 10,
+            left: 9,
             right: 4,
             justify: true
           },
           label: '可编辑',
         },
         {
-          type: "checkbox",
+          type: "switch",
           name: "removable",
           mode: "horizontal",
           horizontal: {
-            left: 10,
+            left: 9,
             right: 4,
             justify: true
           },
           label: '可删除',
         },
         {
-          type: "checkbox",
+          type: "switch",
           name: "draggable",
           mode: "horizontal",
           horizontal: {
-            left: 10,
+            left: 9,
             right: 4,
             justify: true
           },
           label: '可拖拽',
         },
         {
-          type: "checkbox",
+          type: "switch",
           name: "showIndex",
           mode: "horizontal",
           horizontal: {
-            left: 10,
+            left: 9,
             right: 4,
             justify: true
           },
