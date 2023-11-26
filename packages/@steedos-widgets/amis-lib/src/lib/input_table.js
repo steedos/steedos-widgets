@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-26 11:11:19
+ * @LastEditTime: 2023-11-26 12:06:44
  */
 
 import { getTableColumns } from './converter/amis/fields/table';
@@ -13,10 +13,14 @@ import { getTableColumns } from './converter/amis/fields/table';
  */
 function getFormFields(props, mode = "edit") {
     return (props.fields || []).map(function (item) {
-        return {
+        let formItem = {
             "type": "steedos-field",
             "config": item
         }
+        if(mode === "readonly"){
+            formItem.static = true;
+        }
+        return formItem;
     }) || [];
 }
 
@@ -210,6 +214,35 @@ function getButtonEdit(props) {
     };
 }
 
+function getButtonView(props) {
+    return {
+        "type": "button",
+        "label": "查看",
+        "onEvent": {
+            "click": {
+                "actions": [
+                    {
+                        "actionType": "dialog",
+                        "dialog": {
+                            "type": "dialog",
+                            "title": "查看行",
+                            "body": [
+                                getForm(props, "readonly")
+                            ],
+                            "size": "md",
+                            "showCloseButton": true,
+                            "showErrorMsg": true,
+                            "showLoading": true,
+                            "className": "app-popover",
+                            "closeOnEsc": false
+                        }
+                    }
+                ]
+            }
+        }
+    };
+}
+
 function getButtonDelete(props) {
     return {
         "type": "button",
@@ -234,15 +267,22 @@ export const getAmisInputTableSchema = async (props, readonly) => {
     if (!props.id) {
         props.id = "steedos_input_table_" + props.name + "_" + Math.random().toString(36).substr(2, 9);
     }
-    let buttonNewSchema = getButtonNew(props);
-    let buttonEditSchema = getButtonEdit(props);
-    let buttonDeleteSchema = getButtonDelete(props);
     let buttonsForColumnOperations = [];
     if (props.editable) {
-        buttonsForColumnOperations.push(buttonEditSchema)
+        let buttonEditSchema = getButtonEdit(props);
+        buttonsForColumnOperations.push(buttonEditSchema);
+    }
+    else{
+        // 只读时显示查看按钮
+        if(props.columns && props.columns.length > 0 && props.columns.length < props.fields.length){
+            // 只在有列被隐藏时才需要显示查看按钮
+            let buttonViewSchema = getButtonView(props);
+            buttonsForColumnOperations.push(buttonViewSchema);
+        }
     }
     if (props.removable) {
-        buttonsForColumnOperations.push(buttonDeleteSchema)
+        let buttonDeleteSchema = getButtonDelete(props);
+        buttonsForColumnOperations.push(buttonDeleteSchema);
     }
     let inputTableSchema = {
         "type": "input-table",
@@ -277,6 +317,7 @@ export const getAmisInputTableSchema = async (props, readonly) => {
         ]
     };
     if (props.addable) {
+        let buttonNewSchema = getButtonNew(props);
         schema.body.push(buttonNewSchema);
     }
     if (props.amis) {
