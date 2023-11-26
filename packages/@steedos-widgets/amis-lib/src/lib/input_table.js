@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-26 09:30:58
+ * @LastEditTime: 2023-11-26 09:43:35
  */
 
 import { getTableColumns } from './converter/amis/fields/table';
@@ -275,6 +275,9 @@ export const getAmisInputTableSchema = async (props, readonly) => {
     };
     if (props.addable) {
         schema.body.push(buttonNewSchema);
+    }
+    if (props.amis) {
+        Object.assign(schema.body[0], props.amis);
     }
     return schema;
 }
