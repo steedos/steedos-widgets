@@ -119,30 +119,7 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
         "value": crudKeywords,
         "clearable": true,
         "clearAndSubmit": true,
-        "searchImediately": false,
-        "onEvent": {
-          "blur": {
-            "actions": [
-              {
-                "actionType": "custom",
-                "script": `
-                    try {
-                        const scope = event.context.scoped;
-                        const filterCrud = scope.parent.getComponents().find(function(n) {
-                            return n.props.type === "crud";
-                        });
-                        if (filterCrud && typeof filterCrud.reload === 'function') {
-                            const keyWords = { '${keywordsSearchBoxName}': event.data.value };
-                            filterCrud.reload(null, keyWords);
-                        }
-                    } catch (error) {
-                        console.error('An error occurred:', error);
-                    }
-                `
-              }
-            ]
-          }
-        }
+        "searchImediately": false
       }
     ]
   }

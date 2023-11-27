@@ -796,38 +796,9 @@ export async function getFieldSearchable(perField, permissionFields, ctx){
 
         const amisField = await Fields.convertSFieldToAmisField(_field, false, Object.assign({}, ctx, {fieldNamePrefix: fieldNamePrefix, required: false, showSystemFields: true, inFilterForm: true}));
         if(amisField){
-            const changeActionsFields = ['select', 'boolean', 'toggle', 'date', 'datetime', 'time', 'number', 'currency', 'lookup', 'master_detail'];
-            const isChangeActions = changeActionsFields.indexOf(field.type) > -1;
-            let additionalProps = {
+            return Object.assign({}, amisField,{
                 submitOnChange: false
-            }
-            if (isChangeActions) {
-                additionalProps.submitOnChange = true
-            } else {
-                additionalProps.onEvent = {
-                    blur: {
-                        actions: [
-                            {
-                                actionType: "custom",
-                                script: `
-                                    try {
-                                        const scope = event.context.scoped;
-                                        const filterForm = scope.parent.parent.parent.getComponents().find(function(n) {
-                                            return n.props.type === "form";
-                                        });
-                                        if (filterForm && typeof filterForm.handleFormSubmit === 'function') {
-                                            filterForm.handleFormSubmit(event);
-                                        }
-                                    } catch (error) {
-                                        console.error('An error occurred:', error);
-                                    }
-                                `
-                            }
-                        ]
-                    }
-                }
-            }
-            return Object.assign({}, amisField, additionalProps);
+            });
         }
     }
 }
