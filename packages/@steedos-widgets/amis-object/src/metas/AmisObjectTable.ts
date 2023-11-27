@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-10-19 14:04:12
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-11-27 09:24:29
  * @Description: 
  */
 const config: any = {
@@ -375,7 +375,7 @@ export default {
                   "name": "sortOrder",
                   "label": "排序顺序",
                   "options": [{
-                    "label": "升级",
+                    "label": "升序",
                     "value": "asc"
                   },{
                     "label": "倒序",
