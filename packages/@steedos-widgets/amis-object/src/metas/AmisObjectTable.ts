@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: liaodaxue
- * @LastEditTime: 2023-11-27 09:24:29
+ * @LastEditTime: 2023-11-27 15:19:03
  * @Description: 
  */
 const config: any = {
@@ -167,14 +167,25 @@ export default {
                           "labelField": "label",
                           "valueField": "name",
                           "menuTpl": "",
-                          "autoFill": {
-                            "fields": "${(NAME_FIELD_KEY || 'name')|asArray}"
+                          "onEvent": {
+                            "change": {
+                              "actions": [
+                                {
+                                  "componentId": "transfer-picker-fields",
+                                  "actionType": "setValue",
+                                  "args": {
+                                    "value": "${(NAME_FIELD_KEY || 'name')|asArray}"
+                                  }
+                                }
+                              ]
+                            }
                           }
                         },
                         {
                           type: "transfer-picker",
                           name: "fields",
                           label: "显示的字段",
+                          id: "transfer-picker-fields",
                           // mode: 'horizontal',
                           // horizontal: {
                           //   left: 4,
