@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-26 12:06:44
+ * @LastEditTime: 2023-11-27 09:53:05
  */
 
 import { getTableColumns } from './converter/amis/fields/table';
@@ -92,7 +92,7 @@ function getForm(props, mode = "edit") {
     let schema = {
         "type": "form",
         "title": "表单",
-        "debug": true,
+        "debug": false,
         "body": getFormFields(props, mode)
     };
     if (mode === "edit") {
