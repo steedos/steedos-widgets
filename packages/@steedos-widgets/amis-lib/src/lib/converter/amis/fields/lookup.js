@@ -666,7 +666,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
     // [["_id", "=", "$${field.name}._id"],"or",["name", "contains", "$term"]]
     apiInfo.requestAdaptor = `
         var filters = [];
-        var top = 10;
+        var top = 200;
         if(api.data.$term){
             filters = [["${referenceTo?.NAME_FIELD_KEY || 'name'}", "contains", api.data.$term]];
         }
