@@ -84,7 +84,7 @@ crudService && crudService.setData({showFieldsFilter: toShowFieldsFilter});
 // }
 `;
 
-function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup = false, keywordsSearchBoxName = "__keywords" } = {}){
+function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup = false, keywordsSearchBoxName = "__keywords", crudId } = {}){
   const searchableFieldsLabel = [];
   _.each(mainObject.fields, function (field) {
     if (Fields.isFieldQuickSearchable(field, mainObject.NAME_FIELD_KEY)) {
@@ -119,14 +119,36 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
         "value": crudKeywords,
         "clearable": true,
         "clearAndSubmit": true,
-        "searchImediately": false
+        "searchImediately": false,
+        "onEvent": {
+          "change": {
+            "actions": [
+              {
+                "actionType": "custom",
+                "script": `
+                  doAction(
+                      {
+                        "componentId": 'service_${crudId}',
+                        "actionType": "setValue",
+                        "args": {
+                          "value": {
+                            "__serachBoxValues": event.data
+                          }
+                        }
+                      }
+                  )
+                `
+              }
+            ]
+          }
+        }
       }
     ]
   }
 }
 
 export function getObjectHeaderToolbar(mainObject, fields, formFactor, { 
-  showDisplayAs = false, hiddenCount = false, headerToolbarItems, 
+  showDisplayAs = false, hiddenCount = false, headerToolbarItems, crudId,
   filterVisible = true, isLookup = false, keywordsSearchBoxName } = {}){
   // console.log(`getObjectHeaderToolbar====>`, filterVisible)
   // console.log(`getObjectHeaderToolbar`, mainObject)
@@ -230,7 +252,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
     };
   }
   let toolbarDisplayAsButton = getDisplayAsButton(mainObject?.name, showDisplayAs);
-  let toolbarDQuickSearchBox = getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup, keywordsSearchBoxName });
+  let toolbarDQuickSearchBox = getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup, keywordsSearchBoxName, crudId });
 
   // toolbars返回的数组元素不可以是空对象{}，比如hiddenCount ? {} : {"type": "tpl",...}，因为空对象最终还是会生成一个空的.antd-Crud-toolbar-item dom
   // 当出现空的.antd-Crud-toolbar-item dom时会影响toolbar元素的maring-right css样式计算，如果有动态需要应该加到动态数组变量toolbars中
@@ -394,6 +416,26 @@ export async function getObjectFilter(objectSchema, fields, options) {
           {
             "actionType": "custom",
             "script": onSubmitSuccScript
+          }
+        ]
+      },
+      "change": {
+        "actions": [
+          {
+            "actionType": "custom",
+            "script": `
+              doAction(
+                  {
+                    "componentId": 'service_${options.crudId}',
+                    "actionType": "setValue",
+                    "args": {
+                      "value": {
+                        "__filterFormValues": event.data
+                      }
+                    }
+                  }
+              )
+            `
           }
         ]
       }

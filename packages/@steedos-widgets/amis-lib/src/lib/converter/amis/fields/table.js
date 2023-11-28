@@ -1093,13 +1093,15 @@ export async function getTableApi(mainObject, fields, options){
     if(options.isRelated){
         api.url += "&recordId=${_master.recordId}";
     }
-    api.cache = 3000;
+    // api.cache = 3000;
 
     api.data.$term = "$term";
     api.data.term = "$term";
     api.data.$self = "$$";
     api.data.self = "$$";
-    api.data.filter = "$filter"
+    api.data.filter = "$filter";
+    api.data.__filterFormValues = "${__filterFormValues}";
+    api.data.__serachBoxValues = "${__serachBoxValues}";
     api.data.loaded = "${loaded}";
     api.data.listViewId = "${listViewId}";
     api.data.listName = "${listName}";
@@ -1172,9 +1174,12 @@ export async function getTableApi(mainObject, fields, options){
         }else if(selfData.op === 'loadOptions' && selfData.value){
             userFilters = [["${valueField.name}", "=", selfData.value]];
         }
-        
-        var searchableFilter = SteedosUI.getSearchFilter(selfData) || [];
 
+        const __filterFormValues = api.data.__filterFormValues;
+        const __serachBoxValues = api.data.__serachBoxValues;
+        // 筛选按钮
+        const filterSelfData = __filterFormValues ? __filterFormValues : selfData;
+        var searchableFilter = SteedosUI.getSearchFilter(filterSelfData) || [];
         if(searchableFilter.length > 0){
             if(userFilters.length > 0 ){
                 userFilters = [userFilters, 'and', searchableFilter];
@@ -1183,6 +1188,7 @@ export async function getTableApi(mainObject, fields, options){
             }
         }
 
+        // "搜索此列表"搜索框
         if(allowSearchFields){
             allowSearchFields.forEach(function(key){
                 const keyValue = selfData[key];
@@ -1194,7 +1200,8 @@ export async function getTableApi(mainObject, fields, options){
             })
         }
 
-        var keywordsFilters = SteedosUI.getKeywordsSearchFilter(selfData.__keywords, allowSearchFields);
+        const keyWords = __serachBoxValues ? __serachBoxValues.__keywords : selfData.__keywords;
+        var keywordsFilters = SteedosUI.getKeywordsSearchFilter(keyWords, allowSearchFields);
         if(keywordsFilters && keywordsFilters.length > 0){
             userFilters.push(keywordsFilters);
         }
