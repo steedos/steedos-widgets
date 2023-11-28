@@ -99,21 +99,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
   const btnSearchId = "btn_filter_form_search_" + new Date().getTime();
   const filterFormSchema = await getObjectFieldsFilterFormSchema(ctx);
   const keywordsSearchBoxName = ctx.keywordsSearchBoxName || "__keywords";
-  const clear__filterFormValues = `
-    doAction(
-      {
-        "componentId": 'service_${ctx.crudId}',
-        "actionType": "setValue",
-        "args": {
-          "value": {
-            "__filterFormValues": null
-          }
-        }
-      }
-    )
-  `
   const onSearchScript = `
-    ${clear__filterFormValues}
     const scope = event.context.scoped;
     var filterForm = scope.parent.parent.getComponents().find(function(n){
       return n.props.type === "form";
@@ -170,7 +156,17 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     crudService && crudService.setData({isFieldsFilterEmpty, showFieldsFilter});
   `;
   const onCancelScript = `
-    ${clear__filterFormValues}
+    doAction(
+      {
+        "componentId": 'service_${ctx.crudId}',
+        "actionType": "setValue",
+        "args": {
+          "value": {
+            "__filterFormValues": null
+          }
+        }
+      }
+    )
     const scope = event.context.scoped;
     var filterForm = scope.parent.parent.getComponents().find(function(n){
       return n.props.type === "form";
