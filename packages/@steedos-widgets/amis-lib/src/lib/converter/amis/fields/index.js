@@ -654,7 +654,6 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                     removable: !readonly,
                     draggable: !readonly,
                     fields: [],
-                    columns: field.columns,
                     amis:{
                         columnsTogglable: false
                     }
@@ -743,7 +742,9 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             return  convertData
         }
         // if(ctx.mode === 'edit'){
-        return Object.assign({}, baseData, convertData, { labelClassName: 'text-left', clearValueOnHidden: true, fieldName: field.name}, field.amis, {name: baseData.name});
+        let convertDataResult = Object.assign({}, baseData, convertData, { labelClassName: 'text-left', clearValueOnHidden: true, fieldName: field.name}, field.amis, {name: baseData.name});
+        // console.log("convertDataResult:", convertDataResult);
+        return convertDataResult;
         // }else{
         //     return Object.assign({}, baseData, convertData, { labelClassName: 'text-left', clearValueOnHidden: true, fieldName: field.name});
         // }
