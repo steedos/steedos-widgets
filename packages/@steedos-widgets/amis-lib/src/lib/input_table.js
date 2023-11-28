@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-27 09:53:05
+ * @LastEditTime: 2023-11-28 10:17:23
  */
 
 import { getTableColumns } from './converter/amis/fields/table';
@@ -188,7 +188,9 @@ function getButtonNew(props) {
 function getButtonEdit(props) {
     return {
         "type": "button",
-        "label": "编辑",
+        "label": "",
+        "icon": "fa fa-pencil",
+        "level": "link",
         "onEvent": {
             "click": {
                 "actions": [
@@ -217,7 +219,9 @@ function getButtonEdit(props) {
 function getButtonView(props) {
     return {
         "type": "button",
-        "label": "查看",
+        "label": "",
+        "icon": "fa fa-external-link",
+        "level": "link",
         "onEvent": {
             "click": {
                 "actions": [
@@ -246,7 +250,9 @@ function getButtonView(props) {
 function getButtonDelete(props) {
     return {
         "type": "button",
-        "label": "删除",
+        "label": "",
+        "icon": "fa fa-minus",
+        "level": "link",
         "onEvent": {
             "click": {
                 "actions": [
