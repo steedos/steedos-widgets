@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-26 16:02:08
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-22 14:30:34
+ * @LastEditTime: 2023-11-28 17:00:28
  * @Description: 
  */
 import * as Fields from '../fields';
@@ -56,6 +56,8 @@ const getSection = async (formFields, permissionFields, fieldSchemaArray, sectio
     if (perField.type === 'grid') {
       field = await Fields.getGridFieldSubFields(perField, formFields);
       // console.log(`perField.type grid ===> field`, field)
+    } else if (perField.type === 'table') {
+      field = await Fields.getTabledFieldSubFields(perField, formFields);
     } else if (perField.type === 'object') {
       field = await Fields.getObjectFieldSubFields(perField, formFields);
       // console.log(`perField.type object ===> field`, field)

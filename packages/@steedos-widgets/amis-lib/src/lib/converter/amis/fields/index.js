@@ -87,6 +87,8 @@ export function getAmisFieldType(sField){
             break;
         case 'grid':
             return 'table';
+        case 'table':
+            return 'steedos-input-table';
         default:
             console.log('convertData default', sField.type);
             // convertData.type = field.type
@@ -109,6 +111,19 @@ export function getObjectFieldSubFields(mainField, fields){
 }
 
 export function getGridFieldSubFields(mainField, fields){
+    const newMainField = Object.assign({subFields: []}, mainField);
+    const subFields = _.filter(fields, function(field){
+        let result = field.name.startsWith(`${mainField.name}.`)
+        if(result){
+            field._prefix = `${mainField.name}.`
+        }
+        return result;
+    });
+    newMainField.subFields = subFields;
+    return newMainField;
+}
+
+export function getTabledFieldSubFields(mainField, fields){
     const newMainField = Object.assign({subFields: []}, mainField);
     const subFields = _.filter(fields, function(field){
         let result = field.name.startsWith(`${mainField.name}.`)
@@ -625,6 +640,30 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                             gridItemSchema.tpl = gridSub.tpl;
                         }
                         convertData.columns.push(Object.assign({}, gridItemSchema, subField.amis, {name: subFieldName}))
+                    }
+                }
+            }
+            break;
+        case 'table':
+            if(field.subFields){
+                convertData = {
+                    type: 'steedos-input-table',
+                    showIndex: true,
+                    editable: !readonly,
+                    addable: !readonly,
+                    removable: !readonly,
+                    draggable: !readonly,
+                    fields: [],
+                    columns: field.columns,
+                    amis:{
+                        columnsTogglable: false
+                    }
+                }
+                for (const subField of field.subFields) {
+                    const subFieldName = subField.name.replace(`${field._prefix || ''}${field.name}.$.`, '').replace(`${field.name}.`, '');
+                    const gridSub = await convertSFieldToAmisField(Object.assign({}, subField, {name: subFieldName, isTableField: true}), readonly, ctx);
+                    if(gridSub){
+                        convertData.fields.push(Object.assign({}, subField, {name: subFieldName}))
                     }
                 }
             }
