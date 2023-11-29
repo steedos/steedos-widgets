@@ -853,6 +853,7 @@ export function isFieldTypeSearchable(fieldType) {
     return !_.includes(
         [
             "grid",
+            "table",
             "avatar",
             "image",
             "object",

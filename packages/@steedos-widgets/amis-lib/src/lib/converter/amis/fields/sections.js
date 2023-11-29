@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-26 16:02:08
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-28 17:00:28
+ * @LastEditTime: 2023-11-29 10:49:20
  * @Description: 
  */
 import * as Fields from '../fields';
@@ -19,7 +19,7 @@ const getFieldSchemaArray = (formFields, ctx) => {
       field.group = i18next.t('frontend_field_group_generalization')
     const fieldName = field.name;
     let isObjectField = /\w+\.\w+/.test(fieldName)
-    if (field.type == 'grid' || field.type == 'object') {
+    if (field.type == 'grid' || field.type == 'object' || field.type == 'table') {
       // field.group = field.label
       field.is_wide = true;
     }
