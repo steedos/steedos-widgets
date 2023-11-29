@@ -658,10 +658,11 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                         columnsTogglable: false
                     }
                 }
+                // console.log(`convertData ======>`, field, convertData)
                 for (const subField of field.subFields) {
-                    const subFieldName = subField.name.replace(`${field._prefix || ''}${field.name}.$.`, '').replace(`${field.name}.`, '');
-                    const gridSub = await convertSFieldToAmisField(Object.assign({}, subField, {name: subFieldName, isTableField: true}), readonly, ctx);
-                    if(gridSub){
+                    if(!subField.name.endsWith(".$")){
+                        const subFieldName = subField.name.replace(`${field._prefix || ''}${field.name}.$.`, '').replace(`${field.name}.`, '');
+                        // const gridSub = await convertSFieldToAmisField(Object.assign({}, subField, {name: subFieldName, isTableField: true}), readonly, ctx);
                         convertData.fields.push(Object.assign({}, subField, {name: subFieldName}))
                     }
                 }
