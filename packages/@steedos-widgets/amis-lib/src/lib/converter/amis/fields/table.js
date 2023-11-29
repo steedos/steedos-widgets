@@ -1093,7 +1093,7 @@ export async function getTableApi(mainObject, fields, options){
     if(options.isRelated){
         api.url += "&recordId=${_master.recordId}";
     }
-    api.cache = 3000;
+    // api.cache = 3000; 
 
     api.data.$term = "$term";
     api.data.term = "$term";
@@ -1354,6 +1354,20 @@ export async function getTableApi(mainObject, fields, options){
                 selfData.page = localListViewProps.page || 1;
             }
         }
+
+        // 列表视图（对象表格）筛选按钮表单输入框输入内容后，如果不按回车键或者搜索按钮，selfData中该输入框是没有最新值的。
+        const __filterFormValues = api.body.__filterFormValues;
+        if(__filterFormValues){
+            let filterFormValues = JSON.parse(JSON.stringify(__filterFormValues)) || {};
+            selfData = Object.assign({}, selfData, filterFormValues);
+        }
+        // “搜索此列表”搜索框同理。
+        const __serachBoxValues = api.body.__serachBoxValues;
+        if(__serachBoxValues){
+            let serachBoxValues = JSON.parse(JSON.stringify(__serachBoxValues)) || {};
+            selfData = Object.assign({}, selfData, serachBoxValues);
+        }
+        
         delete selfData.context;
         delete selfData.global;
         sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify(selfData));
