@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-26 16:02:08
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-29 10:49:20
+ * @LastEditTime: 2023-11-29 17:48:27
  * @Description: 
  */
 import * as Fields from '../fields';
@@ -63,18 +63,24 @@ const getSection = async (formFields, permissionFields, fieldSchemaArray, sectio
       // console.log(`perField.type object ===> field`, field)
     }
     if (field.name.indexOf(".") < 0) {
-      ctx.__formFields = formFields;
-      const amisField = await Fields.convertSFieldToAmisField(field, field.readonly, ctx);
-      // 如果steedos-field稳定了，可以放开下面的代码直接用组件统一渲染字段
-      // const amisField = {
-      //   "type": "steedos-field",
-      //   "config": field,
-      //   "readonly": field.readonly,
-      //   "ctx": ctx
-      // };
-      // console.log(`${field.name} amisField`, field, amisField)
-      if (amisField) {
-        fieldSetBody.push(amisField);
+      if(field.type === "steedos-field"){
+        // 如果是steedos-field则不需要通过convertSFieldToAmisField函数转换，因为steedos-field组件会转换
+        fieldSetBody.push(field);
+      }
+      else{
+        ctx.__formFields = formFields;
+        const amisField = await Fields.convertSFieldToAmisField(field, field.readonly, ctx);
+        // 如果steedos-field稳定了，可以放开下面的代码直接用组件统一渲染字段
+        // const amisField = {
+        //   "type": "steedos-field",
+        //   "config": field,
+        //   "readonly": field.readonly,
+        //   "ctx": ctx
+        // };
+        // console.log(`${field.name} amisField`, field, amisField)
+        if (amisField) {
+          fieldSetBody.push(amisField);
+        }
       }
     }
   }

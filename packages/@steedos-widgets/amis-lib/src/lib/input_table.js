@@ -2,10 +2,10 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-29 11:40:32
+ * @LastEditTime: 2023-11-29 17:48:02
  */
 
-import { getTableColumns } from './converter/amis/fields/table';
+import { getFormBody } from './converter/amis/form';
 
 /**
  * @param {*} props 
@@ -15,6 +15,7 @@ function getFormFields(props, mode = "edit") {
     return (props.fields || []).map(function (item) {
         let formItem = {
             "type": "steedos-field",
+            "name": item.name,
             "config": item
         }
         if(mode === "readonly"){
@@ -88,12 +89,16 @@ async function getInputTableColumns(props) {
  * @param {*} props 
  * @param {*} mode edit/new/readonly
  */
-function getForm(props, mode = "edit") {
+async function getForm(props, mode = "edit") {
+    let formFields = getFormFields(props, mode)
+    let body = await getFormBody(null, formFields);
     let schema = {
         "type": "form",
         "title": "表单",
         "debug": false,
-        "body": getFormFields(props, mode)
+        "mode": "normal",
+        "body": body,
+        "className": "steedos-object-form steedos-amis-form"
     };
     if (mode === "edit") {
         Object.assign(schema, {
@@ -154,7 +159,7 @@ function getForm(props, mode = "edit") {
     return schema;
 }
 
-function getButtonNew(props) {
+async function getButtonNew(props) {
     return {
         "label": "新增",
         "type": "button",
@@ -168,9 +173,9 @@ function getButtonNew(props) {
                             "type": "dialog",
                             "title": "新增行",
                             "body": [
-                                getForm(props, "new")
+                                await getForm(props, "new")
                             ],
-                            "size": "md",
+                            "size": "lg",
                             "showCloseButton": true,
                             "showErrorMsg": true,
                             "showLoading": true,
@@ -185,7 +190,7 @@ function getButtonNew(props) {
     };
 }
 
-function getButtonEdit(props) {
+async function getButtonEdit(props) {
     return {
         "type": "button",
         "label": "",
@@ -200,9 +205,9 @@ function getButtonEdit(props) {
                             "type": "dialog",
                             "title": "编辑行",
                             "body": [
-                                getForm(props, "edit")
+                                await getForm(props, "edit")
                             ],
-                            "size": "md",
+                            "size": "lg",
                             "showCloseButton": true,
                             "showErrorMsg": true,
                             "showLoading": true,
@@ -216,7 +221,7 @@ function getButtonEdit(props) {
     };
 }
 
-function getButtonView(props) {
+async function getButtonView(props) {
     return {
         "type": "button",
         "label": "",
@@ -231,9 +236,9 @@ function getButtonView(props) {
                             "type": "dialog",
                             "title": "查看行",
                             "body": [
-                                getForm(props, "readonly")
+                                await getForm(props, "readonly")
                             ],
-                            "size": "md",
+                            "size": "lg",
                             "showCloseButton": true,
                             "showErrorMsg": true,
                             "showLoading": true,
@@ -275,14 +280,14 @@ export const getAmisInputTableSchema = async (props, readonly) => {
     }
     let buttonsForColumnOperations = [];
     if (props.editable) {
-        let buttonEditSchema = getButtonEdit(props);
+        let buttonEditSchema = await getButtonEdit(props);
         buttonsForColumnOperations.push(buttonEditSchema);
     }
     else{
         // 只读时显示查看按钮
         if(props.columns && props.columns.length > 0 && props.columns.length < props.fields.length){
             // 只在有列被隐藏时才需要显示查看按钮
-            let buttonViewSchema = getButtonView(props);
+            let buttonViewSchema = await getButtonView(props);
             buttonsForColumnOperations.push(buttonViewSchema);
         }
     }
