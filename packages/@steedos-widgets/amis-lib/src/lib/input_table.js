@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-28 11:34:24
+ * @LastEditTime: 2023-11-29 11:40:32
  */
 
 import { getTableColumns } from './converter/amis/fields/table';
@@ -306,7 +306,8 @@ export const getAmisInputTableSchema = async (props, readonly) => {
         // "needConfirm": false, //不可以配置为false，否则，单元格都是可编辑状态，且很多static类型无法正常显示，比如static-mapping
         "strictMode": true,
         "showTableAddBtn": false,
-        "showFooterAddBtn": false
+        "showFooterAddBtn": false,
+        "className": props.tableClassName
     };
     if (buttonsForColumnOperations.length) {
         inputTableSchema.columns.push({
@@ -321,7 +322,8 @@ export const getAmisInputTableSchema = async (props, readonly) => {
         "size": "none",
         "body": [
             inputTableSchema
-        ]
+        ],
+        "className": props.className
     };
     if (props.addable) {
         let buttonNewSchema = getButtonNew(props);
