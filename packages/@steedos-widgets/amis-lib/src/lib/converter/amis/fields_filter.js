@@ -100,6 +100,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
   const filterFormSchema = await getObjectFieldsFilterFormSchema(ctx);
   const keywordsSearchBoxName = ctx.keywordsSearchBoxName || "__keywords";
   const onSearchScript = `
+    // console.log("===onSearchScript=form==");
     const scope = event.context.scoped;
     var filterForm = scope.parent.parent.getComponents().find(function(n){
       return n.props.type === "form";
@@ -156,6 +157,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     crudService && crudService.setData({isFieldsFilterEmpty, showFieldsFilter});
   `;
   const onCancelScript = `
+    // console.log("===onCancelScript=form==");
     const scope = event.context.scoped;
     var filterForm = scope.parent.parent.getComponents().find(function(n){
       return n.props.type === "form";
@@ -201,18 +203,22 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     // filterForm.handleAction({},{
     //   "actionType": "clear"
     // });
+
+    // 清除__changedFilterFormValues中的值
+    crud && crud.setData({__changedFilterFormValues: {}});
     filterForm.handleFormSubmit(event);
     // crud.handleFilterSubmit(removedValues);
+
     let filterFormService = SteedosUI.getClosestAmisComponentByType(filterForm.context, "service");
     filterFormService.setData({showFieldsFilter: !!!filterFormService.props.data.showFieldsFilter});
     //触发amis crud 高度重算
     setTimeout(()=>{
       window.dispatchEvent(new Event("resize"))
     }, 100);
-    // 移除搜索按钮上的红点，同时清除__changedFilterFormValues中的值
+    // 移除搜索按钮上的红点
     // let crudService = scope.getComponentById("service_listview_" + event.data.objectName);
     let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service");
-    crudService && crudService.setData({isFieldsFilterEmpty: true, showFieldsFilter: false, __changedFilterFormValues: {}});
+    crudService && crudService.setData({isFieldsFilterEmpty: true, showFieldsFilter: false});
     `;
   const dataProviderInited = `
     const objectName = data.objectName;
