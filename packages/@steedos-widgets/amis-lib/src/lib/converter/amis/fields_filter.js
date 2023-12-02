@@ -156,25 +156,12 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     crudService && crudService.setData({isFieldsFilterEmpty, showFieldsFilter});
   `;
   const onCancelScript = `
-    doAction(
-      {
-        "componentId": 'service_${ctx.crudId}',
-        "actionType": "setValue",
-        "args": {
-          "value": {
-            "__filterFormValues": null
-          }
-        }
-      }
-    )
     const scope = event.context.scoped;
     var filterForm = scope.parent.parent.getComponents().find(function(n){
       return n.props.type === "form";
     });
     var filterFormValues = filterForm.getValues();
-    var listView = scope.parent.parent.parent.getComponents().find(function(n){
-      return n.props.type === "crud";
-    });
+    let crud = SteedosUI.getClosestAmisComponentByType(scope, "crud");
     const removedValues = {};
     for(var k in filterFormValues){
       if(/^__searchable__/.test(k)){
@@ -189,7 +176,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       if(localListViewProps){
         localListViewProps = JSON.parse(localListViewProps);
         for(var k in localListViewProps){
-          if(k !== "__keywords"){
+          if(/^__searchable__/.test(k)){
             removedValues[k] = null;
           }
         }
@@ -200,21 +187,32 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       //lookup字段保留快速搜索条件
       removedValues[keywordsSearchBoxName] = filterFormValues[keywordsSearchBoxName];
     }
-    filterForm.reset();
-    setTimeout(()=>{
-      listView.handleFilterSubmit(removedValues);
-    }, 100); 
-    const filterService = filterForm.context.getComponents().find(function(n){
-      return n.props.type === "service";
-    });
-    filterService.setData({showFieldsFilter: !!!filterService.props.data.showFieldsFilter});
+    filterForm.setValues(removedValues);//会把表单提交到toolbar的快速搜索区域，造成在快速搜索框中触发搜索时再次把搜索表单中的字段值清除掉的bug，已单独在快速搜索框那边添加搜索事件代码处理过了
+    // 以下方法都无法实现清除表单值
+    // filterForm.setValues({}, true)
+    // filterForm.reset();
+    // filterForm.handleAction({},{
+    //   "actionType": "setValue",
+    //   "args": {
+    //     "value": removedValues
+    //   }
+    // });
+    // 下面触发clear动作可以清除表单值，且不会把表单提交到toolbar的快速搜索区域，但是会把金额等范围字段清空成非范围字段
+    // filterForm.handleAction({},{
+    //   "actionType": "clear"
+    // });
+    filterForm.handleFormSubmit(event);
+    // crud.handleFilterSubmit(removedValues);
+    let filterFormService = SteedosUI.getClosestAmisComponentByType(filterForm.context, "service");
+    filterFormService.setData({showFieldsFilter: !!!filterFormService.props.data.showFieldsFilter});
     //触发amis crud 高度重算
     setTimeout(()=>{
       window.dispatchEvent(new Event("resize"))
     }, 100);
-    // 移除搜索按钮上的红点
-    let crudService = scope.getComponentById("service_listview_" + event.data.objectName);
-    crudService && crudService.setData({isFieldsFilterEmpty: true, showFieldsFilter: false});
+    // 移除搜索按钮上的红点，同时清除__changedFilterFormValues中的值
+    // let crudService = scope.getComponentById("service_listview_" + event.data.objectName);
+    let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service");
+    crudService && crudService.setData({isFieldsFilterEmpty: true, showFieldsFilter: false, __changedFilterFormValues: {}});
     `;
   const dataProviderInited = `
     const objectName = data.objectName;

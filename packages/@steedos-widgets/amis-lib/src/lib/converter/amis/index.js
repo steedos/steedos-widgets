@@ -158,7 +158,6 @@ export async function getObjectCRUD(objectSchema, fields, options){
     const bulkActions = getBulkActions(objectSchema);
     const defaults = options.defaults;
     const listSchema = (defaults && defaults.listSchema) || {};
-    const id = `listview_${objectSchema.name}`;
 
     const bodyProps = {
       // toolbar: getToolbar(),
@@ -168,7 +167,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
         ...options,
         disableStatistics: options.queryCount === false
       }), 
-      filter: options.filterVisible !== false && await getObjectFilter(objectSchema, fields,  Object.assign({}, options, {crudId: id})),
+      filter: options.filterVisible !== false && await getObjectFilter(objectSchema, fields, options),
     };
     if(options.formFactor !== 'SMALL' || ["split"].indexOf(options.displayAs) == -1){
       if(listSchema.mode !== "cards"){
@@ -197,8 +196,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
       showDisplayAs, 
       hiddenCount: options.queryCount === false, 
       headerToolbarItems: options.headerToolbarItems,
-      filterVisible: options.filterVisible,
-      crudId: id
+      filterVisible: options.filterVisible
     });
 
     options.amisData = createObject(options.amisData, {
@@ -211,6 +209,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
 
 
     let body = null;
+    const id = `listview_${objectSchema.name}`;
     if(options.formFactor === 'SMALL' && false){
       delete bodyProps.bulkActions;
       delete bodyProps.headerToolbar;

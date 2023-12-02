@@ -837,9 +837,7 @@ export async function getFieldSearchable(perField, permissionFields, ctx){
 
         const amisField = await Fields.convertSFieldToAmisField(_field, false, Object.assign({}, ctx, {fieldNamePrefix: fieldNamePrefix, required: false, showSystemFields: true, inFilterForm: true}));
         if(amisField){
-            return Object.assign({}, amisField,{
-                submitOnChange: false
-            });
+            return amisField;
         }
     }
 }

@@ -1093,19 +1093,25 @@ export async function getTableApi(mainObject, fields, options){
     if(options.isRelated){
         api.url += "&recordId=${_master.recordId}";
     }
-    // api.cache = 3000; 
-
+    api.cache = 3000; 
     api.data.$term = "$term";
     api.data.term = "$term";
     api.data.$self = "$$";
     api.data.self = "$$";
     api.data.filter = "$filter";
-    api.data.__filterFormValues = "${__filterFormValues}";
-    api.data.__serachBoxValues = "${__serachBoxValues}";
     api.data.loaded = "${loaded}";
     api.data.listViewId = "${listViewId}";
     api.data.listName = "${listName}";
     api.requestAdaptor = `
+        let __changedFilterFormValues = api.data.$self.__changedFilterFormValues || {};
+        let __changedSearchBoxValues = api.data.$self.__changedSearchBoxValues || {};
+        // 把表单搜索和快速搜索中的change事件中记录的过滤条件也拼到$self中，是为解决触发搜索请求时，两边输入的过滤条件都带上，即：
+        // 有时在搜索表单中输入过滤条件事，忘记点击回车键或搜索按钮，而是进一步修改快速搜索框中的关键字点击其中回车键触发搜索
+        // 这种情况下，触发的搜索请求中没有带上搜索表单中输入的过滤条件。
+        // 反过来先在快速搜索框中输入过滤条件却不点击其中回车键触发搜索，而是到搜索表单中触发搜索请求也是一样的。
+        // 这里直接合并到api.data.$self，而不是后面定义的selfData变量，是因为可以省去在接收适配器中写一样的合并逻辑
+        // 如果有问题可以改为合并到selfData变量中，但是要在接收适配器中写上一样的合并逻辑，否则里面的过滤条件不会存入本地存储中
+        Object.assign(api.data.$self, __changedSearchBoxValues, __changedFilterFormValues);
         // selfData 中的数据由 CRUD 控制. selfData中,只能获取到 CRUD 给定的data. 无法从数据链中获取数据.
         let selfData = JSON.parse(JSON.stringify(api.data.$self));
         // 保留一份初始data，以供自定义发送适配器中获取原始数据。
@@ -1175,11 +1181,7 @@ export async function getTableApi(mainObject, fields, options){
             userFilters = [["${valueField.name}", "=", selfData.value]];
         }
 
-        const __filterFormValues = api.data.__filterFormValues;
-        const __serachBoxValues = api.data.__serachBoxValues;
-        // 筛选按钮
-        const filterSelfData = __filterFormValues ? __filterFormValues : selfData;
-        var searchableFilter = SteedosUI.getSearchFilter(filterSelfData) || [];
+        var searchableFilter = SteedosUI.getSearchFilter(selfData) || [];
         if(searchableFilter.length > 0){
             if(userFilters.length > 0 ){
                 userFilters = [userFilters, 'and', searchableFilter];
@@ -1200,8 +1202,7 @@ export async function getTableApi(mainObject, fields, options){
             })
         }
 
-        const keyWords = __serachBoxValues ? __serachBoxValues.__keywords : selfData.__keywords;
-        var keywordsFilters = SteedosUI.getKeywordsSearchFilter(keyWords, allowSearchFields);
+        var keywordsFilters = SteedosUI.getKeywordsSearchFilter(selfData.__keywords, allowSearchFields);
         if(keywordsFilters && keywordsFilters.length > 0){
             userFilters.push(keywordsFilters);
         }
@@ -1353,19 +1354,6 @@ export async function getTableApi(mainObject, fields, options){
                 // selfData.page = formFactor === "SMALL" ? 1 : (localListViewProps.page || 1);
                 selfData.page = localListViewProps.page || 1;
             }
-        }
-
-        // 列表视图（对象表格）筛选按钮表单输入框输入内容后，如果不按回车键或者搜索按钮，selfData中该输入框是没有最新值的。
-        const __filterFormValues = api.body.__filterFormValues;
-        if(__filterFormValues){
-            let filterFormValues = JSON.parse(JSON.stringify(__filterFormValues)) || {};
-            selfData = Object.assign({}, selfData, filterFormValues);
-        }
-        // “搜索此列表”搜索框同理。
-        const __serachBoxValues = api.body.__serachBoxValues;
-        if(__serachBoxValues){
-            let serachBoxValues = JSON.parse(JSON.stringify(__serachBoxValues)) || {};
-            selfData = Object.assign({}, selfData, serachBoxValues);
         }
         
         delete selfData.context;

@@ -84,7 +84,8 @@ crudService && crudService.setData({showFieldsFilter: toShowFieldsFilter});
 // }
 `;
 
-function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup = false, keywordsSearchBoxName = "__keywords", crudId } = {}){
+// function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup = false, keywordsSearchBoxName = "__keywords", crudId } = {}){
+function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup = false, keywordsSearchBoxName = "__keywords" } = {}){
   const searchableFieldsLabel = [];
   _.each(mainObject.fields, function (field) {
     if (Fields.isFieldQuickSearchable(field, mainObject.NAME_FIELD_KEY)) {
@@ -99,6 +100,26 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
     localListViewProps = JSON.parse(localListViewProps);
     crudKeywords = (localListViewProps && localListViewProps.__keywords) || "";
   }
+
+  const onSearchScript = `
+    // 这段脚本只为解决点击搜索表单取消按钮，再重新在其中输入过滤条件但是不点击搜索按钮或回车按键触发搜索，此时在快速搜索框输入过滤条件按回车按键会把搜索表单中的过滤条件清空的问题
+    const scope = event.context.scoped;
+    // 如果点击过顶部搜索栏表单的取消按钮，会把此处event.data.__super.__super.__super中的搜索表单项的所有字段设置为null
+    // 点击取消按钮后继续在表单项中输入过滤条件且最后没有点击回车按键或点击表单项搜索按钮的话，在快速搜索中点击回车按钮提交搜索会所顶部搜索表单中的字段值清空
+    let filterForm = SteedosUI.getClosestAmisComponentByType(scope, "form");
+    setTimeout(function(){
+      filterForm.setValues(event.data.__changedFilterFormValues);
+    }, 500);
+  `;
+
+  const onChangeScript = `
+    const scope = event.context.scoped;
+    let crud = SteedosUI.getClosestAmisComponentByType(scope, "crud");
+    let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service");
+    let __changedSearchBoxValues = {};
+    __changedSearchBoxValues["${keywordsSearchBoxName}"] = event.data.value;
+    crudService && crudService.setData({__changedSearchBoxValues: __changedSearchBoxValues});
+  `;
 
   return {
     "type": "tooltip-wrapper",
@@ -121,24 +142,20 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
         "clearAndSubmit": true,
         "searchImediately": false,
         "onEvent": {
+          "search": {
+            "actions": [
+              {
+                "actionType": "custom",
+                "script": onSearchScript
+              }
+            ]
+          },
           "change": {
             "actions": [
               {
                 "actionType": "custom",
-                "script": `
-                  doAction(
-                      {
-                        "componentId": 'service_${crudId}',
-                        "actionType": "setValue",
-                        "args": {
-                          "value": {
-                            "__serachBoxValues": event.data
-                          }
-                        }
-                      }
-                  )
-                `
-              }
+                "script": onChangeScript
+              },
             ]
           }
         }
@@ -148,7 +165,7 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
 }
 
 export function getObjectHeaderToolbar(mainObject, fields, formFactor, { 
-  showDisplayAs = false, hiddenCount = false, headerToolbarItems, crudId,
+  showDisplayAs = false, hiddenCount = false, headerToolbarItems,
   filterVisible = true, isLookup = false, keywordsSearchBoxName } = {}){
   // console.log(`getObjectHeaderToolbar====>`, filterVisible)
   // console.log(`getObjectHeaderToolbar`, mainObject)
@@ -252,7 +269,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
     };
   }
   let toolbarDisplayAsButton = getDisplayAsButton(mainObject?.name, showDisplayAs);
-  let toolbarDQuickSearchBox = getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup, keywordsSearchBoxName, crudId });
+  let toolbarDQuickSearchBox = getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup, keywordsSearchBoxName });
 
   // toolbars返回的数组元素不可以是空对象{}，比如hiddenCount ? {} : {"type": "tpl",...}，因为空对象最终还是会生成一个空的.antd-Crud-toolbar-item dom
   // 当出现空的.antd-Crud-toolbar-item dom时会影响toolbar元素的maring-right css样式计算，如果有动态需要应该加到动态数组变量toolbars中
@@ -400,11 +417,24 @@ export async function getObjectFilter(objectSchema, fields, options) {
     let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service");
     crudService && crudService.setData({isFieldsFilterEmpty});
   `;
+  let onChangeScript = `
+    const scope = event.context.scoped;
+    // let filterFormValues = event.data;
+    let filterForm = SteedosUI.getClosestAmisComponentByType(scope, "form");
+    let filterFormService = SteedosUI.getClosestAmisComponentByType(filterForm.context, "service");
+    // 使用event.data的话，并不能拿到本地存储中的过滤条件，所以需要从filterFormService中取。
+    let filterFormValues = filterFormService.getData();
+    let crud = SteedosUI.getClosestAmisComponentByType(scope, "crud");
+    const changedFilterFormValues = _.pickBy(filterFormValues, function(n,k){return /^__searchable__/.test(k);});;
+    // crud && crud.setData(changedFilterFormValues);
+    let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service");
+    crudService && crudService.setData({__changedFilterFormValues: changedFilterFormValues});
+  `;
   return {
     "title": "",
     "submitText": "",
     "className": "",
-    "debug": false,
+    "debug": true,
     "mode": "normal",
     "wrapWithPanel": false,
     "body": [
@@ -423,19 +453,7 @@ export async function getObjectFilter(objectSchema, fields, options) {
         "actions": [
           {
             "actionType": "custom",
-            "script": `
-              doAction(
-                  {
-                    "componentId": 'service_${options.crudId}',
-                    "actionType": "setValue",
-                    "args": {
-                      "value": {
-                        "__filterFormValues": event.data
-                      }
-                    }
-                  }
-              )
-            `
+            "script": onChangeScript
           }
         ]
       }
