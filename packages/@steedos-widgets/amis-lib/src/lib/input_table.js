@@ -123,12 +123,16 @@ async function getForm(props, mode = "edit") {
     }
     else if (mode === "new") {
         let onNewItemSubmitScript = `
-            event.data["${props.name}"].push(JSON.parse(JSON.stringify(event.data)));
+            let fieldValue = _.cloneDeep(event.data["${props.name}"]);
+            if(!fieldValue){
+                fieldValue = [];
+            }
+            fieldValue.push(JSON.parse(JSON.stringify(event.data)));
             doAction({
                 "componentId": "${props.id}",
                 "actionType": "setValue",
                 "args": {
-                    "value": event.data["${props.name}"]
+                    "value": fieldValue
                 }
             });
         `;
