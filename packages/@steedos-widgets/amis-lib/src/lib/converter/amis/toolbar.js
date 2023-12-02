@@ -150,7 +150,7 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
               }
             ]
           },
-          "change": {
+          "blur": { //这里把change事件换成blur是因为amis 3.2change事件中setData会卡
             "actions": [
               {
                 "actionType": "custom",
