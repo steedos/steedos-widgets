@@ -331,7 +331,7 @@ export const getAmisInputTableSchema = async (props, readonly) => {
         "className": props.className
     };
     if (props.addable) {
-        let buttonNewSchema = getButtonNew(props);
+        let buttonNewSchema = await getButtonNew(props);
         schema.body.push(buttonNewSchema);
     }
     if (props.amis) {
