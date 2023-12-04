@@ -2,10 +2,11 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-04 16:02:48
+ * @LastEditTime: 2023-12-04 17:36:50
  */
 
 import { getFormBody } from './converter/amis/form';
+import { clone } from 'lodash';
 
 /**
  * @param {*} props 
@@ -334,9 +335,17 @@ export const getAmisInputTableSchema = async (props, readonly) => {
         ],
         "className": props.className
     };
+    let footerToolbar = clone(props.footerToolbar || []); //这里不clone的话，会造成死循环，应该是因为props属性变更会让组件重新渲染
     if (props.addable) {
         let buttonNewSchema = await getButtonNew(props);
-        schema.body.push(buttonNewSchema);
+        footerToolbar.unshift(buttonNewSchema);
+    }
+    if (footerToolbar.length) {
+        schema.body.push({
+            "type": "wrapper",
+            "size": "none",
+            "body": footerToolbar
+        });
     }
     if (props.amis) {
         delete props.amis.id;
