@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-29 17:48:02
+ * @LastEditTime: 2023-12-04 16:02:48
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -339,6 +339,7 @@ export const getAmisInputTableSchema = async (props, readonly) => {
         schema.body.push(buttonNewSchema);
     }
     if (props.amis) {
+        delete props.amis.id;
         Object.assign(schema.body[0], props.amis);
     }
     return schema;
