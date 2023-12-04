@@ -13,8 +13,6 @@ import { lookupToAmisTreeSelect } from './tree_select';
 import * as standardNew from '../../../../schema/standard_new.amis'
 import { i18next } from "../../../../i18n";
 
-const keywordsSearchBoxName = `__keywords_lookup`;
-
 export const getReferenceToFieldSchema = (field, refObjectConfig)=>{
     let referenceTo = field.reference_to;
     if(!referenceTo){
@@ -273,7 +271,10 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     
     source.data.$term = "$term";
     source.data.$self = "$$";
-    
+
+    // field.name可能是带点的名称，比如审批王中子表字段'instances.instances_submitter'，如果不替换掉点，会造成审批王表单中新建子表行时报错
+    let keywordsSearchBoxName = `__keywords_lookup__${field.name.replace(/\./g, "_")}__to__${refObjectConfig.name}`;
+
     source.requestAdaptor = `
         let __changedFilterFormValues = api.data.$self.__changedFilterFormValues || {};
         let __changedSearchBoxValues = api.data.$self.__changedSearchBoxValues || {};
