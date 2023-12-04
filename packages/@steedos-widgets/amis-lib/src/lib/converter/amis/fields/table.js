@@ -1323,6 +1323,14 @@ export async function getTableApi(mainObject, fields, options){
         const records = payload.data.rows || [];
         const getTreeOptions = SteedosUI.getTreeOptions
         payload.data.rows = getTreeOptions(records,{"valueField":"_id"});
+        try{
+            setTimeout(() => {
+                $('.steedos-object-listview-content .antd-Table-content .antd-Table-table thead .antd-Table-expandBtn')[0]?.click();
+            }, 600);
+        }
+        catch(ex){
+            console.error("tree数据格式展开异常：", ex);
+        }
     }
 
 

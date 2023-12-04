@@ -417,6 +417,14 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             }
         });
         payload.data.rows = treeRecords;
+        try{
+            setTimeout(() => {
+                $('.amis-dialog-widget.antd-Modal .antd-Table-content .antd-Table-table thead .antd-Table-expandBtn')[0]?.click();
+            }, 600);
+        }
+        catch(ex){
+            console.error("tree数据格式展开异常：", ex);
+        }
     }
     return payload;
     `;
