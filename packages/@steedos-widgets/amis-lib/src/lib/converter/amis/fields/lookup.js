@@ -597,6 +597,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
 
 export async function lookupToAmisSelect(field, readonly, ctx){
     let referenceTo = await getReferenceTo(field);
+    const isMobile = window.innerWidth <= 768;
     const valueFieldKey = referenceTo && referenceTo.valueField?.name || '_id' ;
     // const labelFieldKey = referenceTo && referenceTo.labelField?.name || 'name';
 
@@ -781,7 +782,11 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         </span>
         <span class='pl-1.5'>\${label}</span>
     </span>`
-    data.menuTpl = "${icon ? `"+select_menuTpl+"` : label}"
+    const menuTpl = "${icon ? `"+select_menuTpl+"` : label}"
+    // TODO: 待amis修复了此bug， 就可以撤销添加menuTpl的判断。
+    if(!(isMobile && field.multiple)){
+        data.menuTpl = menuTpl;
+    }
     if(field.multiple){
         data.multiple = true
         data.extractValue = true

@@ -246,7 +246,11 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                     </span>
                     <span class='pl-1.5'>\${label}</span>
                 </span>`
-                convertData.menuTpl = "${icon ? `"+select_menuTpl+"` : label}"
+                const menuTpl = "${icon ? `"+select_menuTpl+"` : label}"
+                // TODO: 待amis修复了此bug， 就可以撤销添加menuTpl的判断。
+                if(!(isMobile && field.multiple)){
+                    convertData.menuTpl = menuTpl;
+                }
                 if(field.multiple){
                     convertData.multiple = true
                     convertData.extractValue = true
