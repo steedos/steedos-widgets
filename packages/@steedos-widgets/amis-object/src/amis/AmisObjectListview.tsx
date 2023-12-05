@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-12 16:10:34
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-12-05 13:57:54
  * @Description: 
  */
 import './AmisObjectListview.less';
@@ -138,7 +138,7 @@ export const AmisObjectListView = async (props) => {
   const listViewId = ctx?.listViewId || amisSchemaData.listViewId;
   const allData = createObject(data, defaultData);
   const listViewSchemaProps = { 
-    top, perPage, showHeader, defaults, ...ctx, listViewId, setDataToComponentId, filterVisible, showDisplayAs, displayAs, 
+    top, perPage, defaults, ...ctx, listViewId, setDataToComponentId, filterVisible, showDisplayAs, displayAs, 
     headerToolbarItems, rowClassNameExpr, hiddenColumnOperation, columns,
     crudDataFilter, onCrudDataFilter, amisData: allData, env, requestAdaptor, adaptor
   }
@@ -162,6 +162,9 @@ export const AmisObjectListView = async (props) => {
   }
 
   serviceData.defaultListName = listName ? listName : first(values(uiSchema.list_views))?.name
+  if(!showHeader){
+    headerSchema = {};
+  }
   // console.timeEnd('AmisObjectListView')
   // console.log('serviceData===>', serviceData)
   // console.log('headerSchema===>', headerSchema)
