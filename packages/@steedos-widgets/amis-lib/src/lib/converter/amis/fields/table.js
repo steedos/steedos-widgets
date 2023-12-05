@@ -477,8 +477,8 @@ export async function getTableColumns(fields, options){
     const columns = [];
     if(!options.isLookup && !options.isInputTable){
         //将_display放入crud的columns中，可以通过setvalue修改行内数据域的_display，而不影响上层items的_display,用于批量编辑
-        columns.push({name: '_display',type: 'static', width: 32, placeholder: "",id: "_display_${_index}", className: "hidden"});
         columns.push({name: '_index',type: 'text', width: 32, placeholder: ""});
+        columns.push({name: '_display',type: 'static', width: 32, placeholder: "",id: "_display_${_index}", className: "hidden"});
     }
     const allowEdit = options.permissions?.allowEdit && !options.isLookup && options.enable_inline_edit != false;
     
