@@ -83,7 +83,6 @@ function fieldsExtend(){
       }
     },
     "mobile_columns": {
-      "group": i18next.t('frontend_listview_control_columns_mobile_group'),
       "amis": {
         "type": "transfer",
         "sortable": true,

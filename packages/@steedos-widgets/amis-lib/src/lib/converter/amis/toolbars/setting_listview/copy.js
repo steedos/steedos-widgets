@@ -141,6 +141,12 @@ function fieldsExtend(){
       "amis": {
         "visibleOn": "${global.user.is_space_admin}"
       }
+    },
+    "filters": {
+      "group": "",
+      "amis": {
+        "hidden": true
+      }
     }
   }
 }
