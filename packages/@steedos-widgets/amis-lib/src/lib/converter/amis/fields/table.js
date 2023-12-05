@@ -462,9 +462,9 @@ function getFieldWidth(width){
     const defaultWidth = "unset";//用于使table内的td标签下生成div，实现将快速编辑按钮固定在右侧的效果，并不是为了unset效果
     if(typeof width == 'string'){
         if(isNaN(width)){
-            return width;
+            return width || defaultWidth;
         }else{
-            return Number(width);
+            return Number(width) || defaultWidth;
         }
     }else if(typeof width == 'number'){
         return width;
@@ -565,6 +565,7 @@ export async function getTableColumns(fields, options){
                 width: getFieldWidth(field.width),
                 toggled: field.toggled,
                 className,
+                inputClassName: "inline",
                 static: true,
             }, field.amis, {name: field.name});
         }
@@ -602,6 +603,7 @@ export async function getTableColumns(fields, options){
                     tpl: tpl,
                     toggled: field.toggled,
                     className,
+                    inputClassName: "inline",
                     static: true,
                     options: field.type === 'html' ? {html: true} : null
                     // toggled: true 
