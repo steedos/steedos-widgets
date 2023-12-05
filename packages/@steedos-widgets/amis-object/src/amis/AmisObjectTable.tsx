@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: liaodaxue
- * @LastEditTime: 2023-11-15 17:05:16
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-12-05 15:37:54
  * @Description: 
  */
 import './AmisObjectTable.less';
@@ -97,15 +97,17 @@ export const AmisObjectTable = async (props) => {
   const appId = data?.appId || defaultData?.appId;
   // ctx中值为undefined的属性不能保留，否则会导致 filters等被覆盖。
   ctx = pickBy(ctx, (value)=>{ return value !== undefined })
-  let amisSchema = (await getTableSchema(appId, objectApiName, columns, { 
+  let tableSchema = await getTableSchema(appId, objectApiName, columns, { 
     filters: tableFilters, filtersFunction, top, sort, sortField, sortOrder, extraColumns, defaults, ...ctx, 
     setDataToComponentId, requestAdaptor, adaptor, filterVisible, headerToolbarItems, 
-    crudDataFilter, onCrudDataFilter, amisData: allData, env })).amisSchema;
+    crudDataFilter, onCrudDataFilter, amisData: allData, env });
+  let amisSchema: any = tableSchema.amisSchema;
+  let uiSchema = tableSchema.uiSchema;
   amisSchema.data = Object.assign({}, amisSchema.data, amisSchemaData);
   if(has(props, 'objectApiName')){
     amisSchema.data.objectName = objectApiName;
   }
-  amisSchema.className = `steedos-object-table ${amisSchema.className} h-full flex flex-col ${className}`;
+  amisSchema.className = `steedos-object-table ${uiSchema.enable_tree ? "is-steedos-tree-table" : ""} ${amisSchema.className} h-full flex flex-col ${className}`;
   amisSchema.objectApiName = objectApiName;//设计器中切换对象时画布中显示的列未同步变更
   // console.timeEnd('AmisObjectTable')
   return amisSchema;

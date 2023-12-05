@@ -6,6 +6,15 @@
             display: none;
         }
 
+        &.is-steedos-tree-table {
+            thead tr th:nth-child(3){
+                display: none;
+            }
+            thead tr th:nth-child(2){
+                display: table-cell;
+            }
+        }
+
         tbody td.antd-Field--quickEditable {
             &> div {
                 display: flex;
@@ -40,15 +49,6 @@
         }
         .datetime-min-w {
             min-width: 12em;
-        }
-    }
-
-    .is-steedos-tree-crud {
-        thead tr th:nth-child(3){
-            display: none;
-        }
-        thead tr th:nth-child(2){
-            display: table-cell;
         }
     }
 

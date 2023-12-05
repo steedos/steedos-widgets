@@ -287,7 +287,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
         api: await getTableApi(objectSchema, fields, options),
         hiddenOn: options.tableHiddenOn,
         autoFillHeight,
-        className: `${objectSchema.enable_tree?"is-steedos-tree-crud":""} flex-auto ${crudClassName || ""}`,
+        className: `flex-auto ${crudClassName || ""}`,
         bodyClassName: "bg-white",
         crudClassName: crudClassName,
         quickSaveApi: {
