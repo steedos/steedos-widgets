@@ -2,7 +2,7 @@
     /* 列表快速编辑功能样式 */
     .steedos-object-table {
         //隐藏为批量编辑而加的_display列
-        thead tr th:nth-child(3){
+        thead tr th:nth-child(2){
             display: none;
         }
 
@@ -40,6 +40,15 @@
         }
         .datetime-min-w {
             min-width: 12em;
+        }
+    }
+
+    .is-steedos-tree-crud {
+        thead tr th:nth-child(3){
+            display: none;
+        }
+        thead tr th:nth-child(2){
+            display: table-cell;
         }
     }
 
