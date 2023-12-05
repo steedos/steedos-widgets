@@ -287,11 +287,13 @@ export async function getObjectCRUD(objectSchema, fields, options){
         api: await getTableApi(objectSchema, fields, options),
         hiddenOn: options.tableHiddenOn,
         autoFillHeight,
-        className: {
-          [`flex-auto ${crudClassName || ""}`]: "true",
-          "is-steedos-crud-data-empty": "${!items || COUNT(items) == 0}"
-        },
-        bodyClassName: "bg-white",
+        className: `flex-auto ${crudClassName || ""}`,
+        // 这里不可以用动态className，因为它会把样式类加到.antd-Crud和.antd-Table.antd-Crud-body这两层div中，而子表列表中crudClassName中有hidden样式类会造成所有子表都不显示的bug
+        // className: {
+        //   [`flex-auto ${crudClassName || ""}`]: "true",
+        //   "is-steedos-crud-data-empty": "${!items || COUNT(items) == 0}"
+        // },
+        bodyClassName: "bg-white",//上面className写成动态的class变量对象的话，bodyClassName不会生效，会被上面的className值覆盖
         crudClassName: crudClassName,
         quickSaveApi: {
           url: `\${context.rootUrl}/graphql`,
