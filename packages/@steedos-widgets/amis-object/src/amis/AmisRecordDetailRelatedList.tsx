@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: liaodaxue
- * @LastEditTime: 2023-11-14 15:39:43
+ * @LastEditTime: 2023-12-05 16:48:02
  * @Description: 
  */
 import { getRecordDetailRelatedListSchema, i18next } from '@steedos-widgets/amis-lib'
@@ -10,7 +10,7 @@ import { has, isEmpty } from 'lodash';
 
 export const AmisRecordDetailRelatedList = async (props: any) => {
   // console.log(`AmisRecordDetailRelatedList props==>`, props)
-  const { $schema, objectApiName, recordId, relatedObjectApiName, data, relatedKey, top, perPage, hiddenEmptyTable, appId, relatedLabel, className = '', columns, sort, filters, visible_on, requestAdaptor, adaptor } = props;
+  const { $schema, objectApiName, recordId, relatedObjectApiName, data, relatedKey, top, perPage, hiddenEmptyTable, appId, relatedLabel, className = '', columns, sort, filters, visible_on, requestAdaptor, adaptor, visibleOn } = props;
   let formFactor = props.formFactor;
   if(!formFactor){
     formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE';
@@ -45,6 +45,9 @@ export const AmisRecordDetailRelatedList = async (props: any) => {
       }
     });
   }
-  
+  // 因为 visibleOn 的值格式是字符串，所以这里加个判断条件。
+  if(visibleOn){
+    schema.visibleOn = visibleOn;
+  }
   return schema
 }
