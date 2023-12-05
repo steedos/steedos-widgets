@@ -1334,7 +1334,10 @@ export async function getTableApi(mainObject, fields, options){
         }
         try{
             setTimeout(() => {
-                $('.steedos-object-listview-content .antd-Table-content .antd-Table-table thead .antd-Table-expandBtn')[0]?.click();
+                let expandBtn = $('.steedos-object-listview-content .antd-Table-content .antd-Table-table thead .antd-Table-expandBtn');
+                if(expandBtn && expandBtn.length > 0 && !expandBtn.hasClass("is-active")){
+                    expandBtn[0].click();
+                }
             }, 600);
         }
         catch(ex){
