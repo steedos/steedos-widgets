@@ -95,16 +95,7 @@ yarn dev
 
 需要在根目录文件`.env.local`中配置环境变量：
 ```
-STEEDOS_UNPKG_URL=unpkg服务地址，需要配置为unpkg服务地址。
-STEEDOS_ROOT_URL=魔方后台服务地址，需要配置为华炎魔方ROOT_URL.
-STEEDOS_EXPERIENCE_ASSETURLS=资产包地址，需要配置为unpkg服务中assets-dev.json文件访问地址。
-```
-
-以下是环境变量配置示例：
-```
-STEEDOS_UNPKG_URL=https://8080-steedos-steedoswebappne-pm96cp6i82c.ws-us73.gitpod.io
-STEEDOS_ROOT_URL=https://5000-steedos-steedoswebappne-pm96cp6i82c.ws-us73.gitpod.io
-STEEDOS_EXPERIENCE_ASSETURLS=https://8080-steedos-steedoswebappne-pm96cp6i82c.ws-us73.gitpod.io/@steedos-widgets/amis-object/dist/assets-dev.json
+STEEDOS_PUBLIC_PAGE_ASSETURLS=http://127.0.0.1:8080/@steedos-widgets/amis-object/dist/assets-dev.json
 ``` 
 
 #### 启动

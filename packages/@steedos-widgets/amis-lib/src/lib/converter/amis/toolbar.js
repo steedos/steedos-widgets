@@ -56,7 +56,7 @@ let resizeWindow = function(){
   //触发amis crud 高度重算
   setTimeout(()=>{
     window.dispatchEvent(new Event("resize"))
-  }, 500);
+  }, 1000);
 }
 resizeWindow();
 // 手机端在显示搜索栏时隐藏crud上的刷新按钮，因为点击后crud高度显示有问题
@@ -84,6 +84,7 @@ crudService && crudService.setData({showFieldsFilter: toShowFieldsFilter});
 // }
 `;
 
+// function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup = false, keywordsSearchBoxName = "__keywords", crudId } = {}){
 function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup = false, keywordsSearchBoxName = "__keywords" } = {}){
   const searchableFieldsLabel = [];
   _.each(mainObject.fields, function (field) {
@@ -100,6 +101,33 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
     crudKeywords = (localListViewProps && localListViewProps.__keywords) || "";
   }
 
+  const onChangeScript = `
+    const scope = event.context.scoped;
+    let crud = SteedosUI.getClosestAmisComponentByType(scope, "crud");
+    // let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service");
+    let __changedSearchBoxValues = {};
+    __changedSearchBoxValues["${keywordsSearchBoxName}"] = event.data["${keywordsSearchBoxName}"];
+    // crudService && crudService.setData({__changedSearchBoxValues: __changedSearchBoxValues});
+    // 这里不用crudService而用crud是因为lookup字段弹出的列表中的crudService中的变量无法传入crud的发送适配器中
+    crud && crud.setData({__changedSearchBoxValues: __changedSearchBoxValues});
+  `;
+
+  // onSearchScript中加上了onChangeScript中的脚本，是因为amis 3.2不能用change事件执行onChangeScript
+  // 而点击回车按键又不会触发blur事件，所以只能每次回车事件中额外再执行一次onChangeScript
+  // 等升级到amis 3.4+，blur事件换成change事件执行onChangeScript，就可以不用在onSearchScript中执行onChangeScript了
+  const onSearchScript = `
+    ${onChangeScript}
+
+    // 下面的脚本只为解决点击搜索表单取消按钮，再重新在其中输入过滤条件但是不点击搜索按钮或回车按键触发搜索，此时在快速搜索框输入过滤条件按回车按键会把搜索表单中的过滤条件清空的问题
+    // const scope = event.context.scoped;
+    // 如果点击过顶部搜索栏表单的取消按钮，会把此处event.data.__super.__super.__super中的搜索表单项的所有字段设置为null
+    // 点击取消按钮后继续在表单项中输入过滤条件且最后没有点击回车按键或点击表单项搜索按钮的话，在快速搜索中点击回车按钮提交搜索会所顶部搜索表单中的字段值清空
+    let filterForm = SteedosUI.getClosestAmisComponentByType(scope, "form");
+    setTimeout(function(){
+      filterForm.setValues(event.data.__changedFilterFormValues);
+    }, 500);
+  `;
+
   return {
     "type": "tooltip-wrapper",
     "id": "steedos_crud_toolbar_quick_search",
@@ -115,17 +143,36 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
       {
         "type": "search-box",
         "name": keywordsSearchBoxName,
-        "placeholder": "快速搜索",
+        "placeholder": "搜索此列表",
         "value": crudKeywords,
         "clearable": true,
-        "clearAndSubmit": true
+        // "clearAndSubmit": true,//因为清除并不会触发失去焦点事件，只有禁用，但是它会触发change事件，所以等升级到amis 3.4+后可以重新放开
+        "searchImediately": false,
+        "onEvent": {
+          "search": {
+            "actions": [
+              {
+                "actionType": "custom",
+                "script": onSearchScript
+              }
+            ]
+          },
+          "blur": { //这里把change事件换成blur是因为amis 3.2change事件中setData会卡，升级到3.4+后就可以换回change事件
+            "actions": [
+              {
+                "actionType": "custom",
+                "script": onChangeScript
+              },
+            ]
+          }
+        }
       }
     ]
   }
 }
 
 export function getObjectHeaderToolbar(mainObject, fields, formFactor, { 
-  showDisplayAs = false, hiddenCount = false, headerToolbarItems, 
+  showDisplayAs = false, hiddenCount = false, headerToolbarItems,
   filterVisible = true, isLookup = false, keywordsSearchBoxName } = {}){
   // console.log(`getObjectHeaderToolbar====>`, filterVisible)
   // console.log(`getObjectHeaderToolbar`, mainObject)
@@ -238,10 +285,10 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
     if(toolbarCount){
       toolbars.push(toolbarCount);
     }
-    toolbars.push(toolbarReloadButton);
     if(toolbarFilter){
       toolbars.push(toolbarFilter);
     }
+    toolbars.push(toolbarReloadButton);
     toolbars.push(toolbarDisplayAsButton);
     toolbars.push(toolbarDQuickSearchBox);
     return [
@@ -257,19 +304,20 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
       toolbars.push(toolbarFilter);
     }
     toolbars.push(toolbarReloadButton);
+    toolbars.push(toolbarDisplayAsButton);
     if(mainObject?.permissions?.allowCreateListViews){
       toolbars.push(getSettingListviewToolbarButtonSchema());
     }
-    toolbars.push(toolbarDisplayAsButton);
     toolbars.push(toolbarDQuickSearchBox);
     return [
       // "filter-toggler",
       ...(headerToolbarItems || []),
       "bulkActions",
-      {
-        "type": "columns-toggler",
-        "className": "hidden"
-      },
+      // 不能放开crud columns-toggler否则crud card模式会报错
+      // {
+      //   "type": "columns-toggler",
+      //   "className": "hidden"
+      // },
       ...toolbars,
       // {
       //     "type": "columns-toggler",
@@ -292,46 +340,131 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
 }
 
 export function getObjectFooterToolbar(mainObject, formFactor, options) {
+  // crud card模式与table模式两种情况下showPageInput默认值不一样，所以需要显式设置为false
   if (formFactor === 'SMALL') {
     // return [
     //   "load-more",
     // ]
-    return [
-      {
-        "type": "pagination",
-        "maxButtons": 5
-      }
-    ]
+    if(options.displayAs === 'split'){
+      return [
+        "switch-per-page",
+        {
+          "type": "pagination",
+          "maxButtons": 5,
+          "showPageInput": false
+        }
+      ]
+    }else{
+      return [
+        // "statistics",
+        {
+          "type": "pagination",
+          "maxButtons": 5,
+          "showPageInput": false
+        }
+      ]
+    }
   }
   else {
     if(options && options.isRelated){
       return [
         "statistics",
-        "pagination"
+        {
+          "type": "pagination",
+          "maxButtons": 10,
+          "showPageInput": false
+        }
       ]
 
     }
     else{
-      return [
-        "switch-per-page",
+      const no_pagination = mainObject.paging && (mainObject.paging.enabled === false);
+      const is_lookup = options.isLookup;
+      const commonConfig = [
         "statistics",
-        "pagination"
-      ]
+        {
+          "type": "pagination",
+          "maxButtons": 10,
+          "showPageInput": false
+        }
+      ];
+
+      if (no_pagination && is_lookup) {
+        return commonConfig;
+      } else {
+        return ["switch-per-page", ...commonConfig];
+      }
     }
   }
 }
 
 export async function getObjectFilter(objectSchema, fields, options) {
   const fieldsFilterBarSchema = await getObjectListHeaderFieldsFilterBar(objectSchema, null, options);
+  let onSubmitSuccScript = `
+    let isLookup = event.data.isLookup;
+    if(isLookup){
+      return;
+    }
+    // 列表搜索栏字段值变更后立刻触发提交表单执行crud搜索，所以这里需要额外重算crud高度及筛选按钮红色星号图标显示隐藏
+    let resizeWindow = function(){
+      //触发amis crud 高度重算
+      setTimeout(()=>{
+        window.dispatchEvent(new Event("resize"))
+      }, 1000);
+    }
+    resizeWindow();
+    const scope = event.context.scoped;
+    // let filterFormValues = event.data;
+    let filterForm = SteedosUI.getClosestAmisComponentByType(scope, "form");
+    let filterFormService = SteedosUI.getClosestAmisComponentByType(filterForm.context, "service");
+    // 使用event.data的话，并不能拿到本地存储中的过滤条件，所以需要从filterFormService中取。
+    let filterFormValues = filterFormService.getData()
+    let isFieldsFilterEmpty = SteedosUI.isFilterFormValuesEmpty(filterFormValues);
+    let crud = SteedosUI.getClosestAmisComponentByType(scope, "crud");
+    let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service");
+    crudService && crudService.setData({isFieldsFilterEmpty});
+  `;
+  let onChangeScript = `
+    const scope = event.context.scoped;
+    // let filterFormValues = event.data;
+    let filterForm = SteedosUI.getClosestAmisComponentByType(scope, "form");
+    let filterFormService = SteedosUI.getClosestAmisComponentByType(filterForm.context, "service");
+    // 使用event.data的话，并不能拿到本地存储中的过滤条件，所以需要从filterFormService中取。
+    let filterFormValues = filterFormService.getData();
+    let crud = SteedosUI.getClosestAmisComponentByType(scope, "crud");
+    const changedFilterFormValues = _.pickBy(filterFormValues, function(n,k){return /^__searchable__/.test(k);});;
+    // let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service");
+    // crudService && crudService.setData({__changedFilterFormValues: changedFilterFormValues});
+    // 这里不用crudService而用crud是因为lookup字段弹出的列表中的crudService中的变量无法传入crud的发送适配器中
+    crud && crud.setData({__changedFilterFormValues: changedFilterFormValues});
+  `;
   return {
     "title": "",
     "submitText": "",
     "className": "",
-    // "debug": true,
+    "debug": false,
     "mode": "normal",
     "wrapWithPanel": false,
     "body": [
       fieldsFilterBarSchema
-    ]
+    ],
+    "onEvent": {
+      "submitSucc": {
+        "actions": [
+          {
+            "actionType": "custom",
+            "script": onSubmitSuccScript
+          }
+        ]
+      },
+      "change": {
+        "actions": [
+          {
+            "actionType": "custom",
+            "script": onChangeScript
+          }
+        ]
+      }
+    }
   }
 }

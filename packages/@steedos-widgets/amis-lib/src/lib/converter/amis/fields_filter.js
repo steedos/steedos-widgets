@@ -100,6 +100,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
   const filterFormSchema = await getObjectFieldsFilterFormSchema(ctx);
   const keywordsSearchBoxName = ctx.keywordsSearchBoxName || "__keywords";
   const onSearchScript = `
+    // console.log("===onSearchScript=form==");
     const scope = event.context.scoped;
     var filterForm = scope.parent.parent.getComponents().find(function(n){
       return n.props.type === "form";
@@ -147,7 +148,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       showFieldsFilter = true;
     }
     filterService.setData({showFieldsFilter});
-    resizeWindow();
+    // resizeWindow();//已迁移到搜索栏表单提交事件中执行，因为表单项change后也会触发表单提交了
     // 使用filterForm.getValues()的话，并不能拿到本地存储中的过滤条件，所以需要从event.data中取。
     let filterFormValues = event.data;
     let isFieldsFilterEmpty = SteedosUI.isFilterFormValuesEmpty(filterFormValues);
@@ -156,14 +157,13 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     crudService && crudService.setData({isFieldsFilterEmpty, showFieldsFilter});
   `;
   const onCancelScript = `
+    // console.log("===onCancelScript=form==");
     const scope = event.context.scoped;
     var filterForm = scope.parent.parent.getComponents().find(function(n){
       return n.props.type === "form";
     });
     var filterFormValues = filterForm.getValues();
-    var listView = scope.parent.parent.parent.getComponents().find(function(n){
-      return n.props.type === "crud";
-    });
+    let crud = SteedosUI.getClosestAmisComponentByType(scope, "crud");
     const removedValues = {};
     for(var k in filterFormValues){
       if(/^__searchable__/.test(k)){
@@ -178,7 +178,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       if(localListViewProps){
         localListViewProps = JSON.parse(localListViewProps);
         for(var k in localListViewProps){
-          if(k !== "__keywords"){
+          if(/^__searchable__/.test(k)){
             removedValues[k] = null;
           }
         }
@@ -189,18 +189,35 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       //lookup字段保留快速搜索条件
       removedValues[keywordsSearchBoxName] = filterFormValues[keywordsSearchBoxName];
     }
-    filterForm.reset();
-    listView.handleFilterSubmit(removedValues);
-    const filterService = filterForm.context.getComponents().find(function(n){
-      return n.props.type === "service";
-    });
-    filterService.setData({showFieldsFilter: !!!filterService.props.data.showFieldsFilter});
+    filterForm.setValues(removedValues);//会把表单提交到toolbar的快速搜索区域，造成在快速搜索框中触发搜索时再次把搜索表单中的字段值清除掉的bug，已单独在快速搜索框那边添加搜索事件代码处理过了
+    // 以下方法都无法实现清除表单值
+    // filterForm.setValues({}, true)
+    // filterForm.reset();
+    // filterForm.handleAction({},{
+    //   "actionType": "setValue",
+    //   "args": {
+    //     "value": removedValues
+    //   }
+    // });
+    // 下面触发clear动作可以清除表单值，且不会把表单提交到toolbar的快速搜索区域，但是会把金额等范围字段清空成非范围字段
+    // filterForm.handleAction({},{
+    //   "actionType": "clear"
+    // });
+
+    // 清除__changedFilterFormValues中的值
+    crud && crud.setData({__changedFilterFormValues: {}});
+    filterForm.handleFormSubmit(event);
+    // crud.handleFilterSubmit(removedValues);
+
+    let filterFormService = SteedosUI.getClosestAmisComponentByType(filterForm.context, "service");
+    filterFormService.setData({showFieldsFilter: !!!filterFormService.props.data.showFieldsFilter});
     //触发amis crud 高度重算
     setTimeout(()=>{
       window.dispatchEvent(new Event("resize"))
     }, 100);
     // 移除搜索按钮上的红点
-    let crudService = scope.getComponentById("service_listview_" + event.data.objectName);
+    // let crudService = scope.getComponentById("service_listview_" + event.data.objectName);
+    let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service");
     crudService && crudService.setData({isFieldsFilterEmpty: true, showFieldsFilter: false});
     `;
   const dataProviderInited = `
@@ -211,7 +228,8 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     if(isLookup){
       searchableFieldsStoreKey += "/lookup/" + objectName;
     }
-    let defaultSearchableFields = sessionStorage.getItem(searchableFieldsStoreKey);
+    searchableFieldsStoreKey = searchableFieldsStoreKey + "/" + (data.context && data.context.userId);
+    let defaultSearchableFields = localStorage.getItem(searchableFieldsStoreKey);
     if(defaultSearchableFields){
       defaultSearchableFields = defaultSearchableFields.split(",");
     }
@@ -280,7 +298,8 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     if(isLookup){
       searchableFieldsStoreKey += "/lookup/" + objectName;
     }
-    sessionStorage.setItem(searchableFieldsStoreKey, value);
+    searchableFieldsStoreKey = searchableFieldsStoreKey + "/" + (data.context && data.context.userId);
+    localStorage.setItem(searchableFieldsStoreKey, value);
 
     // ===START===:当变更可搜索字段时，如果被移除的可搜索字段在本地存储中已经存入过滤条件中则应该清除本地存储中相关字段的过滤条件。
     const searchableFields = data.fields;

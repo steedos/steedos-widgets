@@ -1,28 +1,30 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-09-09 14:24:38
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-12-05 13:57:54
  * @Description: 
  */
 import './AmisObjectListview.less';
-import { getListSchema, getObjectListHeader, getUISchema, Router, i18next } from '@steedos-widgets/amis-lib'
+import { getListSchema, getObjectListHeader, getUISchema, Router, i18next, createObject } from '@steedos-widgets/amis-lib'
 import { keys, pick, difference, find, has, first, values } from 'lodash';
 
 export const AmisObjectListView = async (props) => {
   // console.time('AmisObjectListView')
-  console.log(`AmisObjectListView props`, props)
+  // console.log(`AmisObjectListView props`, props)
   const { $schema, top, perPage, showHeader=true, data, defaultData, 
-      crud = {},
       className="", 
+      style={},
       crudClassName, 
       showDisplayAs = false,
       sideSchema,
       columnsTogglable=false,
       filterVisible = true,
-      headerToolbarItems, rowClassNameExpr, hiddenColumnOperation=false } = props;
+      headerToolbarItems, rowClassNameExpr, hiddenColumnOperation=false, columns,
+      crudDataFilter, onCrudDataFilter, env, rebuildOn, crudMode, requestAdaptor, adaptor} = props;
   let { headerSchema } = props;
   let ctx = props.ctx;
+  let crud = props.crud || {};
   let listName = defaultData?.listName || data?.listName || props?.listName;
   // console.log('AmisObjectListView ==listName=>', listName)
   let defaults: any = {};
@@ -31,7 +33,7 @@ export const AmisObjectListView = async (props) => {
     ctx = {};
   }
   const displayAs = Router.getTabDisplayAs(objectApiName);
-  // console.log(`AmisObjectListView`, 'displayAs===>', displayAs, objectApiName)
+  // console.log(`AmisObjectListView`, 'displayAs===>', displayAs, objectApiName, data)
   let formFactor = props.formFactor;
   if(!formFactor){
     const isMobile = window.innerWidth < 768;
@@ -74,10 +76,19 @@ export const AmisObjectListView = async (props) => {
   }
 
   listName = listView.name;
+  if (crudMode) {
+    // 把crudMode属性传入到crud.mode属性值中
+    // 如果只配置了crudMode属性，则后续内核代码会自动生成对应mode的默认属性值，比如card,listItem
+    // 这样可以手动配置crud.card或crud.listItem属性的时间提高开发效率
+    crud = Object.assign({
+      mode: crudMode
+    }, crud);
+  }
 
   if (!(ctx && ctx.defaults)) {
     // 支持把crud组件任意属性通过listSchema属性传入到底层crud组件中
-    const schemaKeys = difference(keys($schema), ["type", "showHeader","id", "crud"]);
+    const schemaKeys = difference(keys($schema), ["type", "showHeader","id", 
+      "crud", "crudDataFilter", "onCrudDataFilter", "env", "rebuildOn", "crudMode"]);
     // 此次是从 props中 抓取到 用户配置的 crud属性, 此处是一个排除法
     const listSchema = pick(props, schemaKeys);
     // className不传入crud组件，crud单独识别crudClassName属性
@@ -100,6 +111,19 @@ export const AmisObjectListView = async (props) => {
         }
       ]
     }
+    listSchema.onEvent["selectedChange"] = {
+      "actions": [
+        {
+          "actionType": "custom",
+          "script": `
+            //触发amis crud 高度重算
+            setTimeout(()=>{
+              window.dispatchEvent(new Event("resize"))
+            }, 500);
+          `
+        }
+      ]
+    }
     defaults = {
       listSchema: Object.assign( {}, listSchema, crud )
     };
@@ -112,13 +136,18 @@ export const AmisObjectListView = async (props) => {
 
   const amisSchemaData = Object.assign({}, data, defaultData);
   const listViewId = ctx?.listViewId || amisSchemaData.listViewId;
+  const allData = createObject(data, defaultData);
   const listViewSchemaProps = { 
-    top, perPage, showHeader, defaults, ...ctx, listViewId, setDataToComponentId, filterVisible, showDisplayAs, displayAs, headerToolbarItems, rowClassNameExpr, hiddenColumnOperation
+    top, perPage, defaults, ...ctx, listViewId, setDataToComponentId, filterVisible, showDisplayAs, displayAs, 
+    headerToolbarItems, rowClassNameExpr, hiddenColumnOperation, columns,
+    crudDataFilter, onCrudDataFilter, amisData: allData, env, requestAdaptor, adaptor
   }
 
   if(!headerSchema){
     headerSchema = getObjectListHeader(uiSchema, listName, ctx); 
   }
+
+  headerSchema.className = "steedos-object-listview-header " + headerSchema.className || "";
 
   // TODO: recordPermissions和_id是右上角按钮需要强依赖的变量，应该写到按钮那边去
   const serviceData: any = Object.assign({}, { showDisplayAs, displayAs, recordPermissions: uiSchema.permissions, _id: null, $listviewId: listName });
@@ -133,13 +162,17 @@ export const AmisObjectListView = async (props) => {
   }
 
   serviceData.defaultListName = listName ? listName : first(values(uiSchema.list_views))?.name
+  if(!showHeader){
+    headerSchema = {};
+  }
   // console.timeEnd('AmisObjectListView')
   // console.log('serviceData===>', serviceData)
   // console.log('headerSchema===>', headerSchema)
   return {
     type: "service",
     data: serviceData,
-    className: `${className} sm:bg-gray-100 h-full sm:shadow sm:rounded-tl sm:rounded-tr steedos-object-listview`,
+    style: style,
+    className: `${className} sm:bg-gray-100 h-full  border-gray-300 steedos-object-listview ${displayAs === 'split'? 'sm:border-r':'sm:rounded sm:border'}`,
     body: [{
       "type": "wrapper",
       "size": "none",
@@ -157,14 +190,16 @@ export const AmisObjectListView = async (props) => {
           "className": sideSchema ? `flex-1 focus:outline-none lg:order-last w-96 h-full` : 'w-full h-full',
           "body": {
             type: "wrapper",
-            className: "p-0 m-0 steedos-object-table h-full flex flex-col",
+            className: "p-0 m-0 steedos-object-listview-content-wrapper h-full flex flex-col",
             body: [
               ...headerSchema, //list view header,
               {
                 "type": "service",
+                "id": "service_schema_api_" + objectApiName,
+                "className": " steedos-object-listview-content grow",//这里加grow是因为crud card模式下底部会有灰色背影
                 "schemaApi": {
                     // 这里url上加objectApiName属性是因为设计器中切换对象时不会变更列表视图界面，不可以用objectName=${objectName}使用作用域中objectName变量是因为设计器那边不会监听识别data变化来render组件
-                    "url": "${context.rootUrl}/graphql?objectName=" + objectApiName + "&listName=${listName}&display=${display}",
+                    "url": "${context.rootUrl}/graphql?objectName=" + objectApiName + "&listName=${listName}&display=${display}&rebuildOn=" + rebuildOn,
                     "method": "post",
                     "messages": {
                     },
@@ -174,16 +209,36 @@ export const AmisObjectListView = async (props) => {
                     "requestAdaptor": "api.data={query: '{spaces__findOne(id: \"none\"){_id,name}}'};return api;",
                     "adaptor": `
                         // console.log('service listview schemaApi adaptor....', api.body); 
-                        let { appId, objectName, defaultListName: listName, display, formFactor: defaultFormFactor} = api.body;
+                        let { appId, objectName, defaultListName: listName, display, formFactor: defaultFormFactor, uiSchema} = api.body;
                         if(api.body.listName){
                           listName = api.body.listName;
                         }
+                        const listView = _.find(
+                          uiSchema.list_views,
+                          (listView, name) => {
+                              // 传入listViewName空值则取第一个
+                              if(!listName){
+                                listName = name;
+                              }
+                              return name === listName || listView._id === listName;
+                          }
+                        );
                         return new Promise((resolve)=>{
                           const listViewSchemaProps = ${JSON.stringify(listViewSchemaProps)};
                           const formFactor = (["split"].indexOf(display) > -1) ? 'SMALL': defaultFormFactor;
                           listViewSchemaProps.formFactor = formFactor;
                           listViewSchemaProps.displayAs = display;
-                          
+                          // console.log("====listViewSchemaProps===>", listName, display, listViewSchemaProps)
+                          const crud_mode = listView.crud_mode;
+                          if(crud_mode){
+                            if(!listViewSchemaProps.defaults.listSchema.mode){
+                              // 这里优先认微页面中为列表视图组件配置的crudMode及crud.mode属性，
+                              // 只有组件中未配置该属性时才取元数据中为当前列表视图配置的crud_mode属性作为crud的mode值
+                              // 不优先认各个列表视图元数据中的配置，是因为在界面上新建编辑列表视图时，crud_mode字段值默认值是table，这会让微页面中列表视图组件中配置的crudMode及crud.mode属性值不生效
+                              // 如果想优先认各个列表视图元数据中的配置，只要把微页面中列表视图组件的crudMode及crud.mode属性值清除即可
+                              listViewSchemaProps.defaults.listSchema.mode = crud_mode;
+                            }
+                          }
                           window.getListSchema(appId, objectName, listName, listViewSchemaProps).then((schema)=>{
                             try{
                               const uiSchema = schema.uiSchema;
@@ -204,7 +259,7 @@ export const AmisObjectListView = async (props) => {
                               console.error(e)
                             }
                             payload.data = schema.amisSchema;
-                            // console.log("schema================>", schema)
+                            console.log("payload================>", payload)
                             resolve(payload)
                           });
                         });

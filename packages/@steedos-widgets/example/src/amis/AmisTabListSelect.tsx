@@ -1,5 +1,5 @@
 export const AmisTabListSelect = async (props) => {
-  console.log(`AmisTabListSelect props`, props)
+  // console.log(`AmisTabListSelect props`, props)
   const { $schema, data } = props;
   return {
     "type": "tabs",

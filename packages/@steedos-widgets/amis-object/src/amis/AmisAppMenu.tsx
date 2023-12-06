@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-08-18 11:51:07
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-10-30 15:55:23
  * @Description: 
  */
 import './AmisAppMenu.less';
@@ -13,7 +13,7 @@ export const AmisAppMenu = async (props) => {
         appId = data.context.appId || 'admin';
     }
     // console.log(`AmisAppMenu appId`, appId)
-    console.log(`AmisAppMenu`, appId, props)
+    // console.log(`AmisAppMenu`, appId, props)
 
     if(links){
         return {
@@ -32,7 +32,7 @@ export const AmisAppMenu = async (props) => {
             "url": `\${context.rootUrl}/service/api/apps/${appId}/menus`,
             "adaptor": `
                   try {
-                      console.log('payload====>', payload)
+                    //   console.log('payload====>', payload)
                       if(payload.nav_schema){
                         payload.data = payload.nav_schema;
                         return payload
@@ -45,7 +45,7 @@ export const AmisAppMenu = async (props) => {
                       const tab_groups = payload.tab_groups;
                       const locationPathname = window.location.pathname;
                       var customTabId = "";
-                      var objectTabId = "";
+                      var objectTabId = "${data.tabId}";
                       if(stacked){
                           _.each(_.groupBy(payload.children, 'group'), (tabs, groupName) => {
                               if (groupName === 'undefined' || groupName === '') {
@@ -58,7 +58,7 @@ export const AmisAppMenu = async (props) => {
                                       data.nav.push({
                                           "label": showIcon ? {
                                           type: 'tpl',
-                                          tpl: \`<span class='fill-slate-500 word-break leading-6 block -ml-px no-underline group flex items-center text-[15px] rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
+                                          tpl: \`<span class='fill-slate-500 whitespace-normal leading-6 block -ml-px no-underline group flex items-center text-[14px] rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
                                           } : tab.name,
                                           "to": tab.path,
                                           "target":tab.target,
@@ -83,7 +83,7 @@ export const AmisAppMenu = async (props) => {
                                             return {
                                             "label": showIcon ? {
                                                 type: 'tpl',
-                                                tpl: \`<span class='fill-slate-500 word-break leading-6 block -ml-px no-underline group flex items-center text-[15px] rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
+                                                tpl: \`<span class='fill-slate-500 whitespace-normal leading-6 block -ml-px no-underline group flex items-center text-[14px] rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
                                             }  : tab.name,
                                             "to": tab.path,
                                             "target":tab.target,
@@ -107,7 +107,7 @@ export const AmisAppMenu = async (props) => {
                               data.nav.push({
                               "label": showIcon ? {
                                   type: 'tpl',
-                                  tpl: \`<span class='fill-slate-500 word-break leading-6 block -ml-px no-underline group flex items-center text-[15px] rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
+                                  tpl: \`<span class='fill-slate-500 whitespace-normal leading-6 block -ml-px no-underline group flex items-center text-[14px] rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
                               } : tab.name,
                               "to": tab.path,
                               "target":tab.target,
@@ -119,14 +119,15 @@ export const AmisAppMenu = async (props) => {
                           })
                       }
                       //以下为nav第一层排序，包括分组与选项卡
-                      let groupLength = ((payload.tab_groups && payload.tab_groups.length) || 0) + 1000;
+                      // let groupLength = ((payload.tab_groups && payload.tab_groups.length) || 0) + 1000;
                       data.nav = _.sortBy(data.nav, function(tab){
                         if(tab.isGroup){
                             return _.findIndex(payload.tab_groups, function(group){
                                 return group.group_name === tab.label;
                             });
                         }else{
-                            return groupLength + tab.index;
+                            // 没有分组的选项卡按index排列在有分组的选项卡前方
+                            return (tab.index || 0) - 1000;
                         }
                       })
                       payload.data = {
@@ -188,7 +189,7 @@ export const AmisAppMenu = async (props) => {
                   } catch (error) {
                       console.log(\`error\`, error)
                   }
-                  console.log('payload===2==>', payload)
+                //   console.log('payload===2==>', payload)
                   return payload;
             `,
             "headers": {
@@ -196,6 +197,6 @@ export const AmisAppMenu = async (props) => {
             }
         }
     }
-    console.log(`schema=====>`, schema)
+    // console.log(`schema=====>`, schema)
     return schema;
 }

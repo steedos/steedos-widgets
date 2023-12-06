@@ -92,77 +92,96 @@ function fields(){
 
 function fieldsExtend(){
   return {
+    "group": "",
     "label": {
       "is_wide": true
     },
     "name": {
+      "group": "",
       "amis": {
         "hidden": true,
         "required": false
       }
     },
     "object_name": {
+      "group": "",
       "amis": {
         "hidden": true
       }
     },
     "filter_scope": {
+      "group": "",
       "amis": {
         "hidden": true,
         "required": false
       }
     },
     "columns": {
+      "group": "",
       "amis": {
         "hidden": true,
         "required": false
       }
     },
     "mobile_columns":{
+      "group": "",
       "amis": {
         "hidden": true,
         "required": false
       }
     },
     "searchable_fields":{
+      "group": "",
       "amis": {
         "hidden": true,
         "required": false
       }
     },
     "filter_fields": {
+      "group": "",
       "amis": {
         "hidden": true,
         "required": false
       }
     },
     "scrolling_mode": {
+      "group": "",
       "amis": {
         "hidden": true,
         "required": false
       }
     },
     "sort": {
+      "group": "",
       "amis": {
         "hidden": true,
         "required": false
       }
     },
     "show_count": {
+      "group": "",
       "amis": {
         "hidden": true,
         "required": false
       }
     },
     "type": {
+      "group": "",
       "amis": {
         "hidden": true,
         "required": false
       }
     },
     "shared": {
+      "group": "",
       "amis": {
         "visibleOn": "${global.user.is_space_admin}"
+      }
+    },
+    "filters": {
+      "group": "",
+      "amis": {
+        "hidden": true
       }
     }
   }

@@ -209,9 +209,14 @@
     .steedos-object-table{
         .antd-Table-footToolbar{
             border-top: 1px solid #e5e7eb;
-            .antd-Crud-toolbar-item{
+            .antd-Crud-toolbar{
+                display: flex;
+                align-items: center;
                 justify-content: center;
-                width: 100%;
+            }
+            .antd-Crud-toolbar-item{
+                // justify-content: center;
+                // width: 100%;
                 .antd-Pagination-inputGroup-left{
                     display: none;
                 }
@@ -270,4 +275,57 @@
     .steedos-object-button + .steedos-object-button{
         margin-left: 0px;
     }
+}
+
+
+.whitespace-nowrap-table-cell-text-overflow-ellipsis-content{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    &>.antd-Form-static{
+        /*上面的样式无法解决url类型字段省略号问题*/
+        overflow: hidden;
+        text-overflow: ellipsis;
+        &>.antd-Form-control .antd-TplField > span > a{
+            /*上面的样式无法解决附件类型字段省略号问题*/
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+}
+
+.whitespace-nowrap-table-cell-text-overflow-ellipsis{
+    .antd-Crud{
+        .antd-Table{
+            .antd-Table-content{
+                tbody td.whitespace-nowrap{
+                    &> div{
+                        /*各种字段类型在不支持快速编辑的单元格中文字超长时显示省略号*/
+                        .whitespace-nowrap-table-cell-text-overflow-ellipsis-content
+                    }
+                    &.antd-Field--quickEditable{
+                        /*各种字段类型在支持快速编辑的单元格中文字超长时显示省略号*/
+                        &> div {
+                            &> div{
+                                /*这里写在第二层div中是因为第一层div是display: flex;无法实现省略号*/
+                                .whitespace-nowrap-table-cell-text-overflow-ellipsis-content
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+@media (min-width: 767px) {
+    .steedos-object-table {
+        /*对象表格组件各种字段类型文字超长时显示省略号*/
+        .whitespace-nowrap-table-cell-text-overflow-ellipsis
+    }
+}
+
+.antd-Modal .antd-Modal-body {
+    /*lookup字段弹出窗口中各种字段类型的列文字超长时显示省略号*/
+    .whitespace-nowrap-table-cell-text-overflow-ellipsis
 }

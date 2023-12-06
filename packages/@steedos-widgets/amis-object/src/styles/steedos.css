@@ -38,8 +38,14 @@
         width: 100% !important;
     }
 
-    /* 修正手机版 body上的sidebar导致y滚动条异常 */
-    .sidebar{
-        padding-bottom: 0px !important;
-    }
+}
+
+/* 修正手机版 body上的sidebar导致y滚动条异常 */
+.sidebar{
+    padding-bottom: 0px !important;
+}
+
+body.steedos {
+    /*此样式可能造成ios17系统的iphone svg显示不出来，移除就好了*/
+    -webkit-overflow-scrolling: unset;
 }

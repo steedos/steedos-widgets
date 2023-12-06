@@ -1,7 +1,31 @@
 @media (min-width: 767px) {
+    /* 列表快速编辑功能样式 */
     .steedos-object-table {
+        //隐藏为批量编辑而加的_display列
+        thead tr th:nth-child(2){
+            display: none;
+        }
+
+        &.is-steedos-tree-table {
+            thead tr th:nth-child(3){
+                display: none;
+            }
+            thead tr th:nth-child(2){
+                display: table-cell;
+            }
+        }
+
+        .is-steedos-crud-data-empty {
+            thead tr th:nth-child(3){
+                display: table-cell;
+            }
+            thead tr th:nth-child(2){
+                display: none;
+            }
+        }
+
         tbody td.antd-Field--quickEditable {
-            div {
+            &> div {
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
@@ -36,4 +60,146 @@
             min-width: 12em;
         }
     }
+
+    .steedos-object-table .antd-Table-table thead tr th{
+        height: 32px !important;
+    }
+    
+    .steedos-object-table .antd-Table-table tbody tr{
+        height: 46px;
+    }
+
+    .page-list-split .steedos-object-table .antd-Table-table tbody tr.antd-Table-placeholder{
+        height: var(--Table-placeholder-height);
+    }
 }
+
+.text-ellipsis(){
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.steedos-object-table.steedos-crud-mode-cards{
+    .antd-Crud{
+        height: 100%;
+        .antd-Cards {
+            height: 100%;
+            .antd-Cards-toolbar{
+                /* crud的card模式不支持headerToolbarClassName和footerToolbarClassName，这里只能用first-child和last-child来区别 */
+                &:first-child{
+                    padding-top: 0.5rem;
+                    padding-bottom: 0.5rem;
+                    padding-left: 1rem;
+                    padding-right: 1rem;
+                    background-color: rgb(243 244 246 / 1);
+                    border-color: rgb(209 213 219 / 1);
+                    border-style: solid;
+                    border-bottom-width: 1px;
+                }
+                &:last-child{
+                    padding-left: 1rem;
+                    padding-right: 1rem;
+                    background-color: transparent;
+                    border-bottom-width: 0;
+                    margin-bottom: 0;
+                }
+            }
+            .antd-Cards-body{
+                margin: 0.25rem;
+                .antd-Card{
+                    .antd-Card-heading{
+                        .antd-Card-meta{
+                            overflow: hidden;
+                            .antd-Card-title{
+                                .antd-TplField a{
+                                    // 标题字段字体加大
+                                    font-size: 16px;
+                                }
+                            }
+                        }
+                    }
+                    .antd-Card-body{
+                        margin-top: -10px;
+                    }
+                    .antd-Card-body{
+                        .antd-Card-field{
+                            .antd-Card-fieldLabel{
+                                color: inherit;
+                                margin-right: 6px;
+                                flex: 1;
+                                .text-ellipsis();
+                                &:after{
+                                    content: ":";
+                                }
+                            }
+                            .antd-Card-fieldValue{
+                                flex: 3;
+                                .text-ellipsis();
+                                .antd-TplField,.antd-PlainField{
+                                    .text-ellipsis();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.steedos-crud-mobile-cards() {
+    // crud分栏模式及手机端上card模式时参考salefore显示为只有底边线的card
+    .steedos-object-table.steedos-crud-mode-cards {
+        .antd-Crud {
+            .antd-Cards {
+                .antd-Cards-body {
+                    .antd-Card {
+                        border-left: none;
+                        border-right: none;
+                        border-top: none;
+                        border-radius: unset;
+                        margin-top: -10px;
+                        margin-left: 8px;
+                        margin-right: 8px;
+
+                        .antd-Card-heading,
+                        .antd-Card-body {
+                            padding: var(--gap-sm);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .steedos-crud-mobile-cards()
+}
+
+.page-list-split{
+    //分栏模式
+    .steedos-crud-mobile-cards()
+}
+
+@media (max-width: 768px) {
+    .steedos-object-table.steedos-crud-mode-cards {
+        .antd-Crud {
+            .antd-Cards {
+                .antd-Cards-toolbar{
+                    /* crud的card模式不支持headerToolbarClassName和footerToolbarClassName，这里只能用first-child和last-child来区别 */
+                    &:last-child{
+                        // 手机端card底部toolbar只有翻页，居中对齐而不是靠右显示，分栏模式时底部左侧有perPage组件所以没有这个居中的样式需求
+                        text-align: center;
+                        .antd-Crud-toolbar-item.antd-Crud-toolbar-item--right{
+                            float: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+

@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-01-14 16:41:24
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-09-11 16:48:35
+ * @LastEditors: 涂佳俊 tujiajun@steedos.com
+ * @LastEditTime: 2023-11-23 18:27:18
  * @Description:
  */
 
@@ -35,6 +35,10 @@ const getSelectFlowSchema = (id, props) => {
     amis = {},
   } = props;
   // console.log(`=====onEvent`, onEvent)
+  let { allData } = props
+  if(allData != true){
+    allData = false;
+  }
 
   return {
     type: mode,
@@ -199,11 +203,14 @@ const getSelectFlowSchema = (id, props) => {
       url: "${context.rootUrl}/graphql?keywords=${keywords}",
       requestAdaptor: `
                 const keywords = api.body.keywords || '';
-                const appId = '${data.app_id || ""}';
+                let appId = '${data.app_id || ""}';
+                if(appId == "approve_workflow"){
+                  appId = "";
+                }
                 api.data = {
                     query: \`
                         {
-                        options: flows__getList(action: "${action}", keywords: "\${keywords}", appId: "\${appId}", distributeInstanceId: "${distributeInstanceId}", distributeStepId: "${distributeStepId}"){
+                        options: flows__getList(action: "${action}", keywords: "\${keywords}", appId: "\${appId}", distributeInstanceId: "${distributeInstanceId}", distributeStepId: "${distributeStepId}", allData: ${allData}){
                           value:_id
                           label:name
                           children: flows{
@@ -217,12 +224,11 @@ const getSelectFlowSchema = (id, props) => {
             `,
       adaptor: `
                 var options = payload.data.options;
-                if(options){
-                  options.forEach(function(item,index) {
-                      if(item.value != 'startFlows' && (!item.children || item.children.length == 0)){
-                          payload.data.options.splice(index,1)
-                      }
-                  })
+                if (options) {
+                    var filteredOptions = options.filter(function(item) {
+                        return item.value == 'startFlows' || (item.children && item.children.length > 0);
+                    });
+                    payload.data.options = filteredOptions;
                 }
                 // if(payload.data.options.length === 1 && payload.data.options[0].children.length === 1){
                 //   payload.data.value = payload.data.options[0].children[0].value
@@ -254,7 +260,7 @@ export const AmisSelectFlow = (props) => {
   //mode: "input-tree" | "tree-select"
   const { mode = "input-tree", id = "selectFlow" + random(10000, 99999) } =
     props;
-  console.log(`AmisSelectFlow props`, props);
+  // console.log(`AmisSelectFlow props`, props);
   const inputId = `${id}_input`;
   const flowSchema = getSelectFlowSchema(inputId, props);
   if (mode === "tree-select") {

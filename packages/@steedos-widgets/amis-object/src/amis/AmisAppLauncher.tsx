@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-05-08 15:05:32
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-11-24 15:52:55
  * @Description: 
  */
 
@@ -34,6 +34,7 @@ export const AmisAppLauncher = async (props) => {
     }
   `
   let dialogSchema = {}
+  const badgeText = "${IF(${id} == 'approve_workflow',${ss:keyvalues.badge.value|pick:'workflow'},${ss:keyvalues.badge.value|pick:${id}}) | toInt}";
   if(isMobile){
     dialogSchema = {
       "type": "service",
@@ -52,8 +53,8 @@ export const AmisAppLauncher = async (props) => {
                 "tpl": "<div class='flex flex-col justify-center'><div class='text-center'><svg class='w-12 h-12 slds-icon slds-icon_container slds-icon-standard-${REPLACE(icon, '_', '-' )}' aria-hidden='true'><use xlink:href='/assets/icons/standard-sprite/svg/symbols.svg#${icon}'></use></svg></div><div class='text-center text-lg'>${name}</div></div>",
                 "badge": {
                   "mode": "text",
-                  "text": "${ss:keyvalues.badge.value|pick:${id} | toInt}",
-                  "visibleOn": "${ss:keyvalues.badge.value|pick:${id} | toInt}",
+                  "text": badgeText,
+                  "visibleOn": badgeText,
                   "overflowCount": 99,
                   "style": {
                     "right": "50%",
@@ -169,8 +170,8 @@ export const AmisAppLauncher = async (props) => {
                       "tpl": "<div class='slds-app-launcher__tile slds-text-link_reset'><div class='slds-app-launcher__tile-figure'><svg class='w-12 h-12 slds-icon slds-icon_container slds-icon-standard-${REPLACE(icon, '_', '-')}' aria-hidden='true'><use xlink:href='/assets/icons/standard-sprite/svg/symbols.svg#${icon}'></use></svg><span class='slds-assistive-text'>${name}</span></div><div class='slds-app-launcher__tile-body'><span class='slds-link text-blue-600 text-lg'><span title='${name}'>${name}</span></span><div style='display: -webkit-box; -webkit-line-clamp: 1;-webkit-box-orient: vertical;overflow: hidden;'><span title='${description}'>${description}</span></div></div></div>",
                       "badge": {
                         "mode": "text",
-                        "text": "${ss:keyvalues.badge.value|pick:${id} | toInt}",
-                        "visibleOn": "${ss:keyvalues.badge.value|pick:${id} | toInt}",
+                        "text": badgeText,
+                        "visibleOn": badgeText,
                         "className": "w-full",
                         "overflowCount": 99,
                         "style": {
@@ -179,7 +180,7 @@ export const AmisAppLauncher = async (props) => {
                           "height": "20px",
                           "border-radius": "10px",
                           "line-height": "18px",
-                          "margin-left": "${${ss:keyvalues.badge.value|pick:${id}}>9?(${ss:keyvalues.badge.value|pick:${id}}>99?'-21px':'-11px'):'0'}",
+                          "margin-left": "${"+ badgeText +">9?("+ badgeText +">99?'-21px':'-11px'):'0'}",
                           "right": "auto",
                           "font-size": "16px"
                         }
@@ -244,10 +245,8 @@ export const AmisAppLauncher = async (props) => {
                       "click": {
                         "actions": [
                           {
-                            "actionType": "link",
-                            "args":{
-                              "link": "${path}"
-                            }
+                            "actionType": "custom",
+                            "script": "\nconst path = context.props.data.path;\ndoAction({\n  actionType: 'link',\n  args: {\n    \"url\": path,\n    \"blank\": false\n  }\n});"
                           },
                           {
                             "actionType": "broadcast",
@@ -329,7 +328,7 @@ export const AmisAppLauncher = async (props) => {
           {
             "type": "tpl",
             "className": "flex items-center",
-            "tpl": "<div aria-haspopup='true' title='Open App Launcher' class='slds-icon-waffle_container slds-context-bar__button' title='Open App Launcher' type='button'><span class='slds-icon-waffle'><span class='slds-r1'></span><span class='slds-r2'></span><span class='slds-r3'></span><span class='slds-r4'></span><span class='slds-r5'></span><span class='slds-r6'></span><span class='slds-r7'></span><span class='slds-r8'></span><span class='slds-r9'></span></span></div>",
+            "tpl": `<div aria-haspopup='true' title='${i18next.t('frontend_open_app_launcher')}' class='slds-icon-waffle_container slds-context-bar__button' type='button'><span class='slds-icon-waffle'><span class='slds-r1'></span><span class='slds-r2'></span><span class='slds-r3'></span><span class='slds-r4'></span><span class='slds-r5'></span><span class='slds-r6'></span><span class='slds-r7'></span><span class='slds-r8'></span><span class='slds-r9'></span></span></div>`,
             "badge": {
               "visibleOn": "${ss:keyvalues.badge.value.workflow | toInt}",
               "offset": [3, -3],

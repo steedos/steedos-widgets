@@ -6,7 +6,7 @@ import { Container } from '@/components/home/Container'
 export function Hero() {
   return (
     <Container className="pt-20 pb-16 text-center lg:pt-32 lg:pb-32">
-      <h1 className="mx-auto max-w-4xl font-display text-5xl font-medium tracking-tight text-slate-900 sm:text-7xl">
+      <h1 className="mx-auto max-w-4xl font-display text-5xl font-medium tracking-tight text-gray-900 sm:text-7xl">
         Build {' '}
         <span className="relative whitespace-nowrap text-blue-600">
           <svg
@@ -21,7 +21,7 @@ export function Hero() {
         </span>{' '}
         on a powerful digital experience platform.
       </h1>
-      <p className="mx-auto mt-6 max-w-2xl text-lg tracking-tight text-slate-700">
+      <p className="mx-auto mt-6 max-w-2xl text-lg tracking-tight text-gray-700">
         With Steedos Digital Experience Platform (DXP), any user can build, manage, and deliver connected digital experiences across the customer lifecycle.
       </p>
       <div className="mt-10 flex justify-center space-x-6">

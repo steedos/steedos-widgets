@@ -103,7 +103,7 @@ const config: any = {
               "data": {
                 "category": "${category}"
               },
-              "adaptor": "if (payload && payload.length) {\n  let data = {};\n  let sldsStandardIcons = _.find(payload, { name: api.body.category || \"standard\" });\n  sldsStandardIcons = sldsStandardIcons && sldsStandardIcons.icons;\n  data.options = sldsStandardIcons;\n  payload.data = data;\n}\nconsole.log('payload=====',payload);return payload;\n",
+              "adaptor": "if (payload && payload.length) {\n  let data = {};\n  let sldsStandardIcons = _.find(payload, { name: api.body.category || \"standard\" });\n  sldsStandardIcons = sldsStandardIcons && sldsStandardIcons.icons;\n  data.options = sldsStandardIcons;\n  payload.data = data;\n}\nreturn payload;\n",
               "headers": {
                   "Authorization": "Bearer ${context.tenantId},${context.authToken}"
               },

@@ -19,19 +19,21 @@
     }
 }
 /*
-    列表快速搜索，手机端及PC端分栏模式需要独占一行
+    列表快速搜索，手机端及PC端分栏模式需要独占一行，另外card模式，即antd-Cards-toolbar也一样
 */
-.steedos-crud-mobile-search-box {
-    .antd-Crud .antd-Table-headToolbar{
-        .antd-Crud-toolbar {
-            .antd-Crud-toolbar-item--right {
-                &:last-child {
-                    width: 100%;
-                    margin-top: 8px;
-                    .antd-TooltipWrapper {
+.steedos-crud-mobile-search-box() {
+    .antd-Crud {
+        .antd-Table-headToolbar, .antd-Cards-toolbar:first-child{
+            .antd-Crud-toolbar {
+                .antd-Crud-toolbar-item--right {
+                    &:last-child {
                         width: 100%;
-                        .antd-SearchBox.is-active {
+                        margin-top: 8px;
+                        .antd-TooltipWrapper {
                             width: 100%;
+                            .antd-SearchBox.is-active {
+                                width: 100%;
+                            }
                         }
                     }
                 }
@@ -43,17 +45,114 @@
 .page-list-split{
     //分栏模式
     .steedos-object-listview{
-        .steedos-crud-mobile-search-box
+        .steedos-crud-mobile-search-box()
     } 
 }
 
 @media (max-width: 768px){
     //存在单独调用object-table的组件，所以这里没用，steedos-object-listview
     .steedos-object-table{
-        .steedos-crud-mobile-search-box
+        .steedos-crud-mobile-search-box()
     }
     // lookup弹出窗口
     .antd-Modal .antd-Modal-body{
-        .steedos-crud-mobile-search-box
+        .steedos-crud-mobile-search-box()
+    }
+    .steedos-object-table{
+        .antd-Crud{
+            &>form.antd-Form:before{
+                // crud card模式顶部多了一条连线
+                border-bottom: none;
+            }
+        }
+    }
+}
+
+.page-list-grid, .page-list-split{
+    &>.antd-Page > .antd-Page-content > .antd-Page-main > .antd-Page-body{
+        // crud card模式内容滚动条依赖了此高度满屏设置
+        height: 100%;
+    }
+    .steedos-object-listview {
+        .steedos-object-listview-content-wrapper {
+            .steedos-object-listview-content {
+                // crud card模式内容滚动条依赖了此高度计算设置，实现在列表内部显示滚动条
+                // 此高度设置实测不会影响grid模式列表视图效果
+                height: calc(100% - 78px);
+                .steedos-object-table.steedos-crud-mode-cards {
+                    .antd-Crud {
+                        .antd-Cards {
+                            .antd-Cards-body{
+                                max-height: calc(100% - 110px);
+                                overflow-y: auto;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.page-list-split{
+    // 列表分栏模式时，crud card不支持使用amis useMobileUI参数来控制显示为手机端样式效果，这里手动实现
+    .steedos-object-listview {
+        .steedos-object-listview-content-wrapper {
+            .steedos-object-listview-content {
+                .steedos-object-table.steedos-crud-mode-cards {
+                    .antd-Crud {
+                        .antd-Cards {
+                            // 分栏模式下不固定宽度的话会自动适应每个card的内容宽度
+                            width: 386px;
+                            .antd-Cards-body{
+                                // 分栏模式下高度计算跟grid模式不一样
+                                max-height: calc(100% - 142px);
+                                &> div{
+                                    flex-basis: 100%;
+                                    max-width: 100%;
+                                    padding: 0;
+                                }
+                            }
+                            .antd-Cards-toolbar{
+                                /* crud的card模式不支持headerToolbarClassName和footerToolbarClassName，这里只能用first-child和last-child来区别 */
+                                &:last-child{
+                                    margin-top: -6px;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+@media (max-width: 768px) {
+    .page-list-grid, .page-list-split{
+        .steedos-object-listview {
+            .steedos-object-listview-content-wrapper {
+                .steedos-object-listview-content {
+                    .steedos-object-table.steedos-crud-mode-cards {
+                        .antd-Crud {
+                            .antd-Cards {
+                                .antd-Cards-body{
+                                    // 手机端高度计算跟grid模式不一样，而是跟分栏模式一样多减去一些高度
+                                    // max-height: calc(100% - 148px);
+                                    // 手机端可能在配置为大字段的情况下，翻页器有可能显示为2行，无法算出max-height值，所以使用最外面的大滚动条
+                                    max-height: unset;
+                                }
+                                .antd-Cards-toolbar{
+                                    /* crud的card模式不支持headerToolbarClassName和footerToolbarClassName，这里只能用first-child和last-child来区别 */
+                                    &:last-child{
+                                        margin-top: -6px;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

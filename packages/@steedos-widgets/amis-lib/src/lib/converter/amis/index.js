@@ -7,6 +7,8 @@ import _, { map } from 'lodash';
 import { defaultsDeep } from '../../defaultsDeep';
 import { getObjectHeaderToolbar, getObjectFooterToolbar, getObjectFilter } from './toolbar';
 import { i18next } from "../../../i18n"
+import { createObject } from '../../../utils/object';
+
 function getBulkActions(objectSchema){
     return [
       {
@@ -127,12 +129,36 @@ function getFilter(){
       }
 }
 
+async function getCrudSchemaWithDataFilter(crud, options = {}){
+  const { crudDataFilter, amisData, env } = options;
+  let onCrudDataFilter = options.onCrudDataFilter;
+  if (!onCrudDataFilter && typeof crudDataFilter === 'string') {
+    onCrudDataFilter = new Function(
+      'crud',
+      'env',
+      'data',
+      crudDataFilter
+    );
+  }
+
+  try {
+    onCrudDataFilter && (crud = await onCrudDataFilter(crud, env, amisData) || crud);
+  } catch (e) {
+    console.warn(e);
+  }
+  return crud;
+}
+
 export async function getObjectCRUD(objectSchema, fields, options){
     // console.time('getObjectCRUD');
-    const { top, perPage, showDisplayAs = false, displayAs, crudClassName = "" } = options;
+    const { top, perPage, showDisplayAs = false, displayAs, crudClassName = "",
+      crudDataFilter, onCrudDataFilter, amisData, env } = options;
     const nonpaged = objectSchema.paging && objectSchema.paging.enabled === false;
     const isTreeObject = objectSchema.enable_tree;
-    const bulkActions = getBulkActions(objectSchema)
+    const bulkActions = getBulkActions(objectSchema);
+    const defaults = options.defaults;
+    const listSchema = (defaults && defaults.listSchema) || {};
+
     const bodyProps = {
       // toolbar: getToolbar(),
       // headerToolbar: getObjectHeaderToolbar(objectSchema, options.formFactor, {showDisplayAs}),
@@ -144,9 +170,12 @@ export async function getObjectCRUD(objectSchema, fields, options){
       filter: options.filterVisible !== false && await getObjectFilter(objectSchema, fields, options),
     };
     if(options.formFactor !== 'SMALL' || ["split"].indexOf(options.displayAs) == -1){
-      Object.assign(bodyProps, {
-        bulkActions: options.bulkActions != false ? bulkActions : false
-      });
+      if(listSchema.mode !== "cards"){
+        // card模式时默认不显示勾选框
+        Object.assign(bodyProps, {
+          bulkActions: options.bulkActions != false ? bulkActions : false
+        });
+      }
     }
     // yml里配置的 不分页和enable_tree:true 优先级最高，组件中输入的top次之。
     options.queryCount = true;
@@ -168,6 +197,14 @@ export async function getObjectCRUD(objectSchema, fields, options){
       hiddenCount: options.queryCount === false, 
       headerToolbarItems: options.headerToolbarItems,
       filterVisible: options.filterVisible
+    });
+
+    options.amisData = createObject(options.amisData, {
+      objectName: objectSchema.name,
+      // _id: null,
+      recordPermissions: objectSchema.permissions,
+      uiSchema: objectSchema,
+      // loaded: false //crud接收适配器中设置为true，否则就是刷新浏览器第一次加载
     });
 
 
@@ -195,14 +232,21 @@ export async function getObjectCRUD(objectSchema, fields, options){
       if(objectSchema.name === 'organizations'){
         labelFieldName = 'name';
       }
-      const table = await getTableSchema(fields, Object.assign({idFieldName: objectSchema.idFieldName, labelFieldName: labelFieldName, permissions:objectSchema.permissions,enable_inline_edit:objectSchema.enable_inline_edit}, options));
-      delete table.mode;
+      let tableOptions = Object.assign({
+        idFieldName: objectSchema.idFieldName, labelFieldName: labelFieldName, 
+        permissions:objectSchema.permissions,enable_inline_edit:objectSchema.enable_inline_edit,
+        crudId: listSchema.id || id
+      }, options);
+      tableOptions.amisData = createObject(options.amisData || {}, {});
+      const table = await getTableSchema(fields, tableOptions);
+      // delete table.mode;
       //image与avatar需要在提交修改时特别处理
       const imageNames = _.compact(_.map(_.filter(fields, (field) => ["image","avatar"].includes(field.type)), 'name'));
       const quickSaveApiRequestAdaptor = `
         var graphqlOrder = "";
         var imageNames = ${JSON.stringify(imageNames)};
-        api.data.rowsDiff.forEach(function (item, index) {
+        const rowsDiff = _.cloneDeep(api.data.rowsDiff);
+        rowsDiff.forEach(function (item, index) {
           for(key in item){
             if(_.includes(imageNames, key)){
               if(typeof item[key] == "string"){
@@ -216,6 +260,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
               }
             }
           }
+          item = _.omit(item, '_display');
           const itemOrder = 'update' + index + ':' + api.data.objectName + '__update(id:"' + item._id + '", doc:' + JSON.stringify(JSON.stringify(_.omit(item, '_id'))) + ') {_id}';
           graphqlOrder += itemOrder;
         })
@@ -243,7 +288,15 @@ export async function getObjectCRUD(objectSchema, fields, options){
         hiddenOn: options.tableHiddenOn,
         autoFillHeight,
         className: `flex-auto ${crudClassName || ""}`,
-        bodyClassName: "bg-white",
+        // 这里不可以用动态className，因为它会把样式类加到.antd-Crud和.antd-Table.antd-Crud-body这两层div中，而子表列表中crudClassName中有hidden样式类会造成所有子表都不显示的bug
+        // className: {
+        //   [`flex-auto ${crudClassName || ""}`]: "true",
+        //   "is-steedos-crud-data-empty": "${!items || COUNT(items) == 0}"
+        // },
+        bodyClassName: {
+          "bg-white": "true",
+          "is-steedos-crud-data-empty": "${!items || COUNT(items) == 0}"
+        },
         crudClassName: crudClassName,
         quickSaveApi: {
           url: `\${context.rootUrl}/graphql`,
@@ -253,17 +306,28 @@ export async function getObjectCRUD(objectSchema, fields, options){
             Authorization: "Bearer ${context.tenantId},${context.authToken}",
           },
           requestAdaptor: quickSaveApiRequestAdaptor,
+          adaptor: `
+              if(payload.errors){
+                  payload.status = 2;
+                  payload.msg = window.t ? window.t(payload.errors[0].message) : payload.errors[0].message;
+              }
+              return payload;
+          `
         },
         rowClassNameExpr: options.rowClassNameExpr
-      }, 
-        bodyProps,
-        )
+      }, bodyProps);
+
     }
 
-    const defaults = options.defaults;
+    body = defaultsDeep({}, listSchema, body);
+    body = await getCrudSchemaWithDataFilter(body, { crudDataFilter, onCrudDataFilter, amisData, env });
+
+    let crudModeClassName = "";
+    if(body.mode){
+      crudModeClassName = `steedos-crud-mode-${body.mode}`;
+    }
+
     if (defaults) {
-      const listSchema = defaults.listSchema || {};
-      body = defaultsDeep({}, listSchema, body);
       const headerSchema = defaults.headerSchema;
       const footerSchema = defaults.footerSchema;
       if (headerSchema || footerSchema) {
@@ -291,17 +355,11 @@ export async function getObjectCRUD(objectSchema, fields, options){
     // TODO: data应该只留loaded，其他属性都改为从上层传递下来
     return {
       type: 'service',
-      className: '',
-      //目前crud的service层id不认用户自定义id，只支持默认规则id
+      className: crudModeClassName,
+      //目前crud的service层id不认用户自定义id，只支持默认规则id，许多地方的格式都写死了service_listview_${objectname}
       id: `service_${id}`,
       name: `page`,
-      data: {
-        objectName: objectSchema.name,
-        // _id: null,
-        recordPermissions: objectSchema.permissions,
-        uiSchema: objectSchema,
-        // loaded: false //crud接收适配器中设置为true，否则就是刷新浏览器第一次加载
-      },
+      data: options.amisData,
       body: body
     }
 }
@@ -353,8 +411,29 @@ const getFormFields = (objectSchema, formProps)=>{
   return lodash.sortBy(_.values(fields), "sort_no");
 }
 
+async function getFormSchemaWithDataFilter(form, options = {}){
+  const { formDataFilter, amisData, env } = options;
+  let onFormDataFilter = options.onFormDataFilter;
+  if (!onFormDataFilter && typeof formDataFilter === 'string') {
+    onFormDataFilter = new Function(
+      'form',
+      'env',
+      'data',
+      formDataFilter
+    );
+  }
+
+  try {
+    onFormDataFilter && (form = await onFormDataFilter(form, env, amisData) || form);
+  } catch (e) {
+    console.warn(e);
+  }
+  return form;
+}
+
 export async function getObjectForm(objectSchema, ctx){
-    const { recordId, formFactor, layout = formFactor === 'SMALL' ? 'normal' : "normal", labelAlign, tabId, appId, defaults } = ctx;
+    const { recordId, formFactor, layout = formFactor === 'SMALL' ? 'normal' : "normal", labelAlign, tabId, appId, defaults, submitSuccActions = [], 
+      formDataFilter, onFormDataFilter, amisData, env } = ctx;
     const fields = _.values(objectSchema.fields);
     const formFields = getFormFields(objectSchema, ctx);
     const formSchema =  defaults && defaults.formSchema || {};
@@ -371,7 +450,8 @@ export async function getObjectForm(objectSchema, ctx){
       name: `page_edit_${recordId}`,
       api: await getEditFormInitApi(objectSchema, recordId, fields, ctx),
       data:{
-        editFormInited: false
+        editFormInited: false,
+        ...amisData
       },
       // data: {global: getGlobalData('edit'), recordId: recordId, objectName: objectSchema.name, context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
       initApi: null,
@@ -394,7 +474,7 @@ export async function getObjectForm(objectSchema, ctx){
         submitText: "", // amis 表单不显示提交按钮, 表单提交由项目代码接管
         api: await getSaveApi(objectSchema, recordId, fields, ctx),
         initFetch: recordId != 'new',
-        body: await getFormBody(fields, formFields, ctx),
+        body: await getFormBody(fields, formFields, Object.assign({}, ctx, {fieldGroups: objectSchema.field_groups})),
         panelClassName:'m-0 sm:rounded-lg shadow-none border-none',
         bodyClassName: 'p-0',
         className: 'steedos-amis-form',
@@ -424,9 +504,10 @@ export async function getObjectForm(objectSchema, ctx){
                 },
                 "expression": `\${_master.objectName != '${objectSchema.name}' && _master.objectName}`
               },
+              ...submitSuccActions,
               // {
               //   "actionType": "custom",
-              //   "script": "debugger;"
+              //   "script": `setTimeout(function(){doAction({'actionType': 'setValue','componentId': '${formSchema.id}','args': {'value': {'sort_no': 879}}})}, 300)`
               // },
               // {
               //   "args": {},
@@ -437,20 +518,22 @@ export async function getObjectForm(objectSchema, ctx){
         }
       })]
     };
+    amisSchema.body[0] = await getFormSchemaWithDataFilter(amisSchema.body[0], { formDataFilter, onFormDataFilter, amisData, env });
     return amisSchema;
 }
 
 export async function getObjectDetail(objectSchema, recordId, ctx){
-    const { formFactor, layout = formFactor === 'SMALL' ? 'normal' : "normal", labelAlign, formInitProps } = ctx;
+    const { formFactor, layout = formFactor === 'SMALL' ? 'normal' : "normal", labelAlign, 
+      formDataFilter, onFormDataFilter, amisData, env } = ctx;
     const fields = _.values(objectSchema.fields);
     const formFields = getFormFields(objectSchema, ctx);
     const serviceId = `service_detail_page`;
-    return {
+    const amisSchema = {
         type: 'service',
         name: `page_readonly_${recordId}`,
         id: serviceId,
         data: {global: getGlobalData('read'), context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
-        api: await getReadonlyFormInitApi(objectSchema, recordId, fields, formInitProps),
+        api: await getReadonlyFormInitApi(objectSchema, recordId, fields, ctx),
         body: [
           {
             "type": "wrapper",   //form 的 hiddenOn 会导致 form onEvent 异常, 使用wrapper包裹一次form,并在wrapper上控制显隐
@@ -469,7 +552,11 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
                 "formData": "$$"
               },
               wrapWithPanel: false, 
-              body: await getFormBody(map(fields, (field)=>{field.readonly = true; return field;}), map(formFields, (field)=>{field.readonly = true; return field;}), Object.assign({}, ctx, {showSystemFields: true})),
+              body: await getFormBody(
+                map(fields, (field) => { field.readonly = true; return field; }),
+                map(formFields, (field) => { field.readonly = true; return field; }),
+                Object.assign({}, ctx, { showSystemFields: true, fieldGroups: objectSchema.field_groups })
+              ),
               className: 'steedos-amis-form bg-white',
               actions: [], // 不显示表单默认的提交按钮
               onEvent: {
@@ -524,4 +611,7 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
           }
         }
     }
+
+    amisSchema.body[0].body = await getFormSchemaWithDataFilter(amisSchema.body[0].body, { formDataFilter, onFormDataFilter, amisData, env });
+    return amisSchema;
 }

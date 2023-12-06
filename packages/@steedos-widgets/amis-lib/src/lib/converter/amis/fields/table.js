@@ -39,8 +39,46 @@ function getOperation(fields){
 function getDetailColumn(){}
 
 async function getQuickEditSchema(field, options){
-    const quickEditId = options.objectName + "_" + field.name + "QuickEdit";//定义快速编辑的表单id，用于setvalue传值
+    //判断在amis3.2以上环境下，放开批量编辑与lookup的单元格编辑
+    let isAmisVersionforBatchEdit = false;
+    if(window.amisRequire && window.amisRequire('amis')){
+        isAmisVersionforBatchEdit = window.amisRequire('amis').version[0] >= 3 && window.amisRequire('amis').version[2] >= 2;
+    }else if(window.Amis){
+        isAmisVersionforBatchEdit = window.Amis.version[0] >= 3 && window.Amis.version[2] >= 2;
+    }
+    const quickEditId = options.objectName + "_" + field.name + "_quickEdit";//定义快速编辑的表单id，用于setvalue传值
     var quickEditSchema = { body: [], id: quickEditId };
+    //select,avatar,image,file等组件无法行记录字段赋值，暂不支持批量编辑；
+    if(field.type != 'avatar' && field.type != 'image' && field.type != 'file' && isAmisVersionforBatchEdit){
+        const submitEvent = {
+            submit: {
+                actions: [
+                    {
+                        actionType: "custom",
+                        script: `
+                            let items = _.cloneDeep(event.data.items);
+                            let selectedItems = _.cloneDeep(event.data.selectedItems);
+                            if(event.data.isBatchEdit){
+                                selectedItems.forEach(function(selectedItem){
+                                    selectedItem._display.${field.name} = event.data._display.${field.name};
+                                    doAction({actionType: 'setValue', "args": {"value": selectedItem._display},componentId: "_display_" + selectedItem._index});
+                                    doAction({actionType: 'setValue', "args": {"value": event.data.${field.name}},componentId: "${options.objectName + "_" + field.name + "_"}" + selectedItem._index});
+                                })
+                            }else{
+                                doAction({actionType: 'setValue', "args": {"value": event.data._display},componentId: "_display_" + event.data._index});
+                                doAction({actionType: 'setValue', "args": {"value": event.data.${field.name}},componentId: "${options.objectName + "_" + field.name + "_"}" + event.data._index});
+                            }
+                        `
+                    },
+                    {
+                        "actionType": "closeDialog"
+                    }
+                ]
+            }
+        }
+        quickEditSchema.onEvent = submitEvent;
+    }
+    
     if (field.disabled) {
         quickEditSchema = false;
     } else {
@@ -57,7 +95,7 @@ async function getQuickEditSchema(field, options){
                         {
                             "actionType": "custom",
                             "script": `
-                                    var _display = event.data._display;
+                                    var _display = _.cloneDeep(event.data._display);
                                     ${displayField}
                                     doAction({actionType: 'setValue', "args": {"value": {_display}},componentId: "${quickEditId}"});
                                 `
@@ -79,7 +117,7 @@ async function getQuickEditSchema(field, options){
                             第二种是增加选项时，按照value的值，找到对应选项，并按照_display的规则为其赋值
                         */
                         TempDisplayField = `
-                            const preData = event.data.__super.${field.name};
+                            const preData = _.cloneDeep(event.data.__super.${field.name});
                             if(preData && event.data.${field.name}.length < preData.length){
                                 let deletedIndex;
                                 preData.forEach(function(item,index){
@@ -123,7 +161,7 @@ async function getQuickEditSchema(field, options){
                     break;
                 case "percent":
                     TempDisplayField = `
-                            _display["${field.name}"] = (event.data.value * 100).toFixed(${field.scale}) + '%';
+                            _display["${field.name}"] = event.data.value.toFixed(${field.scale}) + '%';
                         `
                     quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(TempDisplayField)
                     break;
@@ -276,7 +314,136 @@ async function getQuickEditSchema(field, options){
                 }
                 
             })
+            if(field.type != 'avatar' && field.type != 'image' && field.type != 'file' && isAmisVersionforBatchEdit){
+                quickEditSchema.body.push({
+                    "name": "isBatchEdit",
+                    "type": "checkbox",
+                    "option": [
+                        {
+                            "type": "tpl",
+                            "tpl": "更新${COUNT(selectedItems)}个选定记录"
+                        },
+                        {
+                            "type": "spinner",
+                            "showOn": "${batchPermissionLoading}",
+                            "size": "sm",
+                            "className": "mr-4"
+                        }
+                    ],
+                    "visibleOn": "${ARRAYSOME(selectedItems, item => item._id === _id) && COUNT(selectedItems)>1 && quickedit_record_permissions.allowEdit && quickedit_record_permissions_loading == false}",
+                    "disabledOn": "${batchPermissionLoading}",
+                    "onEvent":{
+                        "change":{
+                            "actions":[
+                                {
+                                    "actionType": "setValue",
+                                    "componentId": quickEditId,
+                                    "args": {
+                                        "value":{
+                                            "batchPermissionLoading": true
+                                        }
+                                    },
+                                    "expression":"${event.data.value}"
+                                },
+                                {
+                                    "actionType": "ajax",
+                                    "args": {
+                                        "api": {
+                                          "url": "${context.rootUrl}/graphql",
+                                          "method": "post",
+                                          "headers": {
+                                            "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                                          },
+                                          "data": {
+                                            "query": "{rows:${objectName}(filters:[\"_id\",\"in\",${selectedItems | pick:_id | split | json}]){_id,_permissions{allowEdit}}}"
+                                          },
+                                          "adaptor": `
+                                            const noPermission = [];
+                                            payload.data.rows.forEach(function (row) {
+                                                if(!row._permissions.allowEdit){
+                                                    noPermission.push(row._id);
+                                                }
+                                            })
+                                            payload.data.noPermission = noPermission;
+                                            return payload;
+                                          `
+                                        }
+                                    },
+                                    "expression":"${event.data.value}"
+                                },
+                                {
+                                    "actionType": "setValue",
+                                    "componentId": quickEditId,
+                                    "args": {
+                                        "value":{
+                                            "batchPermissionLoading": false
+                                        }
+                                    },
+                                    "expression":"${event.data.value}"
+                                },
+                                {
+                                    "actionType": "dialog",
+                                    "dialog":{
+                                        "title": "记录权限",
+                                        "showCloseButton": false,
+                                        "body":[
+                                            {
+                                                "type": "tpl",
+                                                "tpl": "当前选中记录中，有${COUNT(noPermission)}条记录无编辑权限，是否需要批量编辑其他记录？"
+                                            }
+                                        ],
+                                        "onEvent":{
+                                            "confirm":{
+                                                "actions":[
+                                                    {
+                                                        "actionType": "custom",
+                                                        "script": `
+                                                            const noPermission = event.data.noPermission;
+                                                            const crudComponent = event.context.scoped.getComponentById("${options.crudId}");
+                                                            const selectedItems = crudComponent && crudComponent.props.store.selectedItems.concat();
+                                                            noPermission.forEach(function (item) {
+                                                                crudComponent && crudComponent.unSelectItem(_.find(selectedItems,{_id:item}));
+                                                            })
+                                                        `
+                                                    },
+                                                    {
+                                                        "actionType": "setValue",
+                                                        "componentId": quickEditId,
+                                                        "args": {
+                                                            "value":{
+                                                                "isBatchEdit": true
+                                                            }
+                                                        },
+                                                    }
+                                                ]
+                                            },
+                                            "cancel":{
+                                                "actions":[
+                                                    {
+                                                        "actionType": "setValue",
+                                                        "componentId": quickEditId,
+                                                        "args": {
+                                                            "value":{
+                                                                "isBatchEdit": false
+                                                            }
+                                                        },
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "expression":"${COUNT(event.data.noPermission)>0}"
+                                }
+                            ]
+                        }
+                    }
+                })
+            }
         } else {
+            quickEditSchema = false;
+        }
+        //amis3.2以下禁用lookup的单元格编辑
+        if(field.type == "lookup" && !isAmisVersionforBatchEdit){
             quickEditSchema = false;
         }
         //TODO:附件多选时会覆盖老数据，暂时禁用
@@ -295,9 +462,9 @@ function getFieldWidth(width){
     const defaultWidth = "unset";//用于使table内的td标签下生成div，实现将快速编辑按钮固定在右侧的效果，并不是为了unset效果
     if(typeof width == 'string'){
         if(isNaN(width)){
-            return width;
+            return width || defaultWidth;
         }else{
-            return Number(width);
+            return Number(width) || defaultWidth;
         }
     }else if(typeof width == 'number'){
         return width;
@@ -306,9 +473,11 @@ function getFieldWidth(width){
     }
 }
 
-async function getTableColumns(fields, options){
+export async function getTableColumns(fields, options){
     const columns = [];
-    if(!options.isLookup){
+    if(!options.isLookup && !options.isInputTable){
+        //将_display放入crud的columns中，可以通过setvalue修改行内数据域的_display，而不影响上层items的_display,用于批量编辑
+        columns.push({name: '_display',type: 'static', width: 32, placeholder: "",id: "_display_${_index}", className: "hidden"});
         columns.push({name: '_index',type: 'text', width: 32, placeholder: ""});
     }
     const allowEdit = options.permissions?.allowEdit && !options.isLookup && options.enable_inline_edit != false;
@@ -318,7 +487,9 @@ async function getTableColumns(fields, options){
         const quickEditSchema = allowEdit ? await getQuickEditSchema(field, options) : allowEdit;
         let className = "";
         if(field.wrap != true){
-            className += " whitespace-nowrap"
+            className += " whitespace-nowrap "
+        }else{
+            className += " break-all "
         }
         let columnItem;
         if((field.is_name || field.name === options.labelFieldName) && options.objectName === 'cms_files'){
@@ -339,7 +510,7 @@ async function getTableColumns(fields, options){
                         {
                             "args": {
                                 "api": {
-                                    "url": "${context.rootUrl}/api/files/files/${versions[0]}?download=true",
+                                    "url": "${(versions[0] && versions[0].url) ? versions[0].url+'?download=true' : context.rootUrl+'/api/files/files/'+versions[0]+'?download=true'}",
                                     "method": "get",
                                     "headers": {
                                         "Authorization": "Bearer ${context.tenantId},${context.authToken}"
@@ -386,7 +557,7 @@ async function getTableColumns(fields, options){
         else if(field.type === 'select'){
             const map = Tpl.getSelectMap(field.options);
             columnItem = Object.assign({}, {
-                type: "mapping",
+                type: "static-mapping",
                 name: field.name,
                 label: field.label,
                 map: map,
@@ -394,19 +565,20 @@ async function getTableColumns(fields, options){
                 width: getFieldWidth(field.width),
                 toggled: field.toggled,
                 className,
+                inputClassName: "inline",
                 static: true,
             }, field.amis, {name: field.name});
         }
         else{
             const tpl = await Tpl.getFieldTpl(field, options);
-            let type = 'text';
+            let type = 'static-text';
             if(tpl){
-                type = 'tpl';
+                type = 'static';
             }else if(field.type === 'html'){
-                type = 'markdown';
+                type = 'static-markdown';
             }else if(field.type === 'url'){
                 if(field.show_as_qr){
-                    type = 'qr-code';
+                    type = 'static-qr-code';
                 }else{
                     type = 'input-url'
                 }
@@ -431,6 +603,7 @@ async function getTableColumns(fields, options){
                     tpl: tpl,
                     toggled: field.toggled,
                     className,
+                    inputClassName: "inline",
                     static: true,
                     options: field.type === 'html' ? {html: true} : null
                     // toggled: true 
@@ -442,17 +615,19 @@ async function getTableColumns(fields, options){
                 columnItem.quickEdit = quickEditSchema;
                 columnItem.quickEditEnabledOn = "${is_system !== true}";
             }
+            columnItem.id = `${options.objectName}_${field.name}_\${_index}`
             columns.push(columnItem);
         }
     };
 
     // columns.push(getOperation(fields));
-    if(!_.some(columns, { name: options.labelFieldName })){
+    if(!options.isLookup && !options.isInputTable && !_.some(columns, { name: options.labelFieldName })){
+        // 没有名称字段时显示序号字段为链接，lookup弹出的picker不需要此功能
         const href = Router.getObjectDetailPath({
             ...options,  formFactor: options.formFactor, appId: "${appId}", objectName: options.objectName || "${objectName}", recordId: `\${${options.idFieldName}}`
         })
-        columns[0].type = "tpl";
-        columns[0].tpl = `<a href="${href}">\${${columns[0].name}}</a>`
+        columns[1].type = "tpl";
+        columns[1].tpl = `<a href="${href}">\${${columns[1].name}}</a>`
     }
     return columns;
 }
@@ -546,7 +721,9 @@ async function getMobileTableColumns(fields, options){
         let tpl = "";
         if(field.is_name || field.name === options.labelFieldName){
             nameField = field;
-            options.onlyDisplayLookLabel = true;
+            options = Object.assign({}, options, {
+                onlyDisplayLookLabel: true
+            });
             tpl = await Tpl.getFieldTpl(field, options);
         }
         else if(field.type === 'avatar' || field.type === 'image' || field.type === 'file'){
@@ -555,7 +732,9 @@ async function getMobileTableColumns(fields, options){
         }
         else{
             if(field.type === 'lookup' || field.type === 'master_detail'){
-                options.onlyDisplayLookLabel = true;
+                options = Object.assign({}, options, {
+                    onlyDisplayLookLabel: true
+                });
             }
             tpl = await Tpl.getFieldTpl(field, options);
         }
@@ -717,10 +896,10 @@ async function getTableOperation(ctx){
     }
     return {
         type: 'operation',
-        label: i18next.t('frontend_operation'),
+        label: "&nbsp;",
         fixed: 'right',
         labelClassName: 'text-center',
-        className: 'text-center steedos-listview-operation w-20',
+        className: 'text-center steedos-listview-operation w-10',
         buttons: [
               {
                 "type": "steedos-dropdown-button",
@@ -751,16 +930,56 @@ async function getTableOperation(ctx){
     }
 }
 
+async function getDefaultCrudCard(columns, options) {
+    let labelFieldName = options?.labelFieldName || "name";
+    let titleColumn, bodyColumns = [];
+    columns.forEach(function (item) {
+        delete item.quickEdit;
+        delete item.width;
+        if (item.name === labelFieldName) {
+            titleColumn = item;
+        }
+        else {
+            if (item.name !== "_index") {
+                bodyColumns.push(item);
+            }
+        }
+    });
+    let card = {
+        "header": {
+            "title": titleColumn.tpl
+        },
+        body: bodyColumns,
+        // useCardLabel: false,
+        toolbar: []
+    };
+    let hideToolbarOperation = options.formFactor === 'SMALL' || ["split"].indexOf(options.displayAs) > -1;
+    if(!hideToolbarOperation){
+        let toolbarOperation = await getTableOperation(options);
+        if (toolbarOperation) {
+            toolbarOperation.className += " inline-block w-auto";
+        }
+        card.toolbar.push(toolbarOperation);
+    }
+    return card;
+}
+
 export async function getTableSchema(fields, options){
-    let isLookup = options && options.isLookup;
-    let hiddenColumnOperation = options && options.hiddenColumnOperation;
     if(!options){
         options = {};
     }
+    let { isLookup, hiddenColumnOperation } = options;
+    const defaults = options.defaults;
+    const listSchema = (defaults && defaults.listSchema) || {};
+
     let columns = [];
     let useMobileColumns = options.formFactor === 'SMALL' || ["split"].indexOf(options.displayAs) > -1;
     if(isLookup){
         // 在lookup手机端列表模式调式好之前不使用getMobileTableColumns
+        useMobileColumns = false;
+    }
+    if(listSchema.mode && listSchema.mode !== "table"){
+        // 如果指定的mode，则不走我们内置的手机端列表效果，使用steedos组件内部开发的默认card/list效果，或者由用户自己实现card/list模式的crud列表
         useMobileColumns = false;
     }
     if(useMobileColumns){
@@ -768,6 +987,30 @@ export async function getTableSchema(fields, options){
     }
     else{
         columns = await getTableColumns(fields, options);
+
+        if(listSchema.mode === "cards"){
+            let card = listSchema.card;
+            if(!card){
+                card = await getDefaultCrudCard(columns, options);
+            }
+            return {
+                mode: "cards",
+                perPageAvailable: [5, 10, 20, 50, 100, 500],
+                name: "thelist",
+                headerToolbarClassName: "py-2 px-2 border-gray-300 border-solid border-b",
+                className: "",
+                draggable: false,
+                defaultParams: getDefaultParams(options),
+                card: card,
+                syncLocation: false,
+                keepItemSelectionOnPageChange: true,
+                checkOnItemClick: isLookup ? true : false,
+                labelTpl: `\${${options.labelFieldName}}`,
+                autoFillHeight: false, // 自动高度效果不理想,先关闭
+                columnsTogglable: false
+            }
+        }
+
         if(!isLookup && !hiddenColumnOperation){
             columns.push(await getTableOperation(options));
         }
@@ -775,8 +1018,9 @@ export async function getTableSchema(fields, options){
 
     return {
         mode: "table",
+        perPageAvailable: [5, 10, 20, 50, 100, 500],
         name: "thelist",
-        headerToolbarClassName: "py-2 px-2 border-gray-300 bg-gray-100 border-solid border-b",
+        headerToolbarClassName: "py-2 px-2 border-gray-300 border-solid border-b",
         className: "",
         draggable: false,
         defaultParams: getDefaultParams(options),
@@ -851,16 +1095,25 @@ export async function getTableApi(mainObject, fields, options){
     if(options.isRelated){
         api.url += "&recordId=${_master.recordId}";
     }
-
+    api.cache = 3000; 
     api.data.$term = "$term";
     api.data.term = "$term";
     api.data.$self = "$$";
     api.data.self = "$$";
-    api.data.filter = "$filter"
+    api.data.filter = "$filter";
     api.data.loaded = "${loaded}";
     api.data.listViewId = "${listViewId}";
     api.data.listName = "${listName}";
     api.requestAdaptor = `
+        let __changedFilterFormValues = api.data.$self.__changedFilterFormValues || {};
+        let __changedSearchBoxValues = api.data.$self.__changedSearchBoxValues || {};
+        // 把表单搜索和快速搜索中的change事件中记录的过滤条件也拼到$self中，是为解决触发搜索请求时，两边输入的过滤条件都带上，即：
+        // 有时在搜索表单中输入过滤条件事，忘记点击回车键或搜索按钮，而是进一步修改快速搜索框中的关键字点击其中回车键触发搜索
+        // 这种情况下，触发的搜索请求中没有带上搜索表单中输入的过滤条件。
+        // 反过来先在快速搜索框中输入过滤条件却不点击其中回车键触发搜索，而是到搜索表单中触发搜索请求也是一样的。
+        // 这里直接合并到api.data.$self，而不是后面定义的selfData变量，是因为可以省去在接收适配器中写一样的合并逻辑
+        // 如果有问题可以改为合并到selfData变量中，但是要在接收适配器中写上一样的合并逻辑，否则里面的过滤条件不会存入本地存储中
+        Object.assign(api.data.$self, __changedSearchBoxValues, __changedFilterFormValues);
         // selfData 中的数据由 CRUD 控制. selfData中,只能获取到 CRUD 给定的data. 无法从数据链中获取数据.
         let selfData = JSON.parse(JSON.stringify(api.data.$self));
         // 保留一份初始data，以供自定义发送适配器中获取原始数据。
@@ -929,9 +1182,8 @@ export async function getTableApi(mainObject, fields, options){
         }else if(selfData.op === 'loadOptions' && selfData.value){
             userFilters = [["${valueField.name}", "=", selfData.value]];
         }
-        
-        var searchableFilter = SteedosUI.getSearchFilter(selfData) || [];
 
+        var searchableFilter = SteedosUI.getSearchFilter(selfData) || [];
         if(searchableFilter.length > 0){
             if(userFilters.length > 0 ){
                 userFilters = [userFilters, 'and', searchableFilter];
@@ -940,6 +1192,7 @@ export async function getTableApi(mainObject, fields, options){
             }
         }
 
+        // "搜索此列表"搜索框
         if(allowSearchFields){
             allowSearchFields.forEach(function(key){
                 const keyValue = selfData[key];
@@ -1071,7 +1324,25 @@ export async function getTableApi(mainObject, fields, options){
     if(enable_tree){
         const records = payload.data.rows || [];
         const getTreeOptions = SteedosUI.getTreeOptions
-        payload.data.rows = getTreeOptions(records,{"valueField":"_id"});
+        let isTreeOptionsComputed = false;
+        if(records.length === 1 && records[0].children){
+            isTreeOptionsComputed = true;
+        }
+        if(!isTreeOptionsComputed){
+            // 如果api接口设置在缓存，缓存期间并不会重新请求接口，payload.data.rows是上次计算后的结果
+            payload.data.rows = getTreeOptions(records,{"valueField":"_id"});
+        }
+        try{
+            setTimeout(() => {
+                let expandBtn = $('.steedos-object-listview-content .antd-Table-content .antd-Table-table thead .antd-Table-expandBtn');
+                if(expandBtn && expandBtn.length > 0 && !expandBtn.hasClass("is-active")){
+                    expandBtn[0].click();
+                }
+            }, 600);
+        }
+        catch(ex){
+            console.error("tree数据格式展开异常：", ex);
+        }
     }
 
 
@@ -1104,6 +1375,7 @@ export async function getTableApi(mainObject, fields, options){
                 selfData.page = localListViewProps.page || 1;
             }
         }
+        
         delete selfData.context;
         delete selfData.global;
         sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify(selfData));

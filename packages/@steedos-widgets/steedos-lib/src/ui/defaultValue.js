@@ -1,5 +1,5 @@
 /*
- * @LastEditTime: 2023-09-05 16:58:51
+ * @LastEditTime: 2023-11-03 16:54:54
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
  * @customMade: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -31,7 +31,7 @@ const getCompatibleDefaultValueExpression = (express, multiple) => {
     const reg2 = /^{{[\s\S]*}}$/; //转换{{ function(){} }} 或 {{ (item)=>{} }}
     let result = express;
     if (reg.test(express)) {
-        if (express.indexOf("userId") > -1 || express.indexOf("spaceId") > -1 || express.indexOf("user.") > -1 || express.indexOf("now") > -1) {
+        if (express.indexOf("userId") > -1 || express.indexOf("spaceId") > -1 || express.indexOf("user.") > -1 || express.indexOf("now") > -1 || express.indexOf("today") > -1 || express.indexOf("timeNow") > -1) {
             result = `{${express}}`.replace("{{", "{{global.");
         }
         else {
@@ -76,6 +76,14 @@ export const getFieldDefaultValue = (field, globalData) => {
     if (isFormula) {
         // 支持{{global.user.name}}这种公式
         // globalData中传入原来 window.Creator?.USER_CONTEXT || {}, {now: new Date()} 这种逻辑，可以从amis的数据链中取变量global的值
+        if(field.type === "date"){
+            // 日期类型字段，兼容老代码配置的now，值应该存储为today
+            defaultValue = defaultValue.replace(/\bglobal.now\b/g, "global.today");
+        }
+        else if(field.type === "time"){
+            // 时间类型字段，支持配置now表示timeNow
+            defaultValue = defaultValue.replace(/\bglobal.now\b/g, "global.timeNow");
+        }
         defaultValue = parseSingleExpression(defaultValue, {}, "#", globalData)
         // defaultValue = `\$${defaultValue.substring(1, defaultValue.length - 1)}`
     }

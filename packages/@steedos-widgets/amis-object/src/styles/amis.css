@@ -1,6 +1,6 @@
 :root {
+    --body-bg: #f9fafb;
     --Page-main-bg: transparent;
-    --fontFamilyBase: -apple-system,BlinkMacSystemFont,Helvetica,Arial,Microsoft Yahei,SimHei;
     --Form-item-fontSize: 12px;
     --Form-fontSize: 14px;
     --Form-selectValue-fontSize: 14px;
@@ -59,7 +59,7 @@ fieldset.antd-Collapse {
     margin-bottom: 1rem;
 }
 
-fieldset.antd-Collapse > legend.antd-Collapse-header {
+/* fieldset.antd-Collapse > legend.antd-Collapse-header {
     border-left: 0;
     background: rgb(241 245 249);
     padding: 0.5rem;
@@ -69,7 +69,7 @@ fieldset.antd-Collapse > legend.antd-Collapse-header {
 
 fieldset.antd-Collapse > legend.antd-Collapse-header > .antd-Collapse-arrow:before {
     border-color: initial
-}
+} */
 
 .amis-scope .antd-Select-option > label {
     display: block;
@@ -96,10 +96,6 @@ fieldset.antd-Collapse > legend.antd-Collapse-header > .antd-Collapse-arrow:befo
 
 .steedos-listview .antd-List-toolbar{
     display: none;
-}
-
-body {
-    font-family: -apple-system,BlinkMacSystemFont,Helvetica,Arial,Microsoft Yahei,SimHei;
 }
 
 @media (max-width: 768px){
@@ -276,6 +272,38 @@ fieldset.antd-Collapse > legend{
 }
 
 /* crud中的顶部选中项未垂直居中 */
-.antd-Crud .antd-Crud-selection{
-    margin-bottom: var(--gap-xs);
+.antd-Crud .antd-Crud-selection{      
+    padding: var(--gap-sm);
+    border-bottom: 1px solid var(--Table-thead-borderColor);
+    margin-bottom: 0;
+}
+
+.bg-white {
+  color: var(--body-color);
+}
+
+.antd-SearchBox.is-mobile {
+    border: var(--Form-input-borderWidth) solid transparent;
+    border-radius: var(--Form-input-borderRadius);
+}
+
+.antd-Picker .antd-Picker-input .antd-Picker-values .antd-Picker-value{
+    /* lookup字段值选中项值字符很多超长时换行，包括单选和多选 */
+    white-space: break-spaces;
+    word-break: break-all;
+}
+
+.steedos-crud-mode-cards .antd-Card-actions a[disabled]{
+    box-shadow: none;
+    cursor: not-allowed
+}
+.steedos-crud-mode-cards .antd-Card-actions a[disabled]:hover{
+    color: rgba(0,0,0,.25)
+}
+
+.antd-Transfer .antd-GroupedSelection-item .antd-GroupedSelection-itemLabel,
+.antd-Transfer .antd-Selections-item .antd-Selections-label{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

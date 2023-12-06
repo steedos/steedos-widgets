@@ -2,13 +2,13 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: liaodaxue
- * @LastEditTime: 2023-08-28 14:55:23
+ * @LastEditTime: 2023-11-14 15:55:32
  * @Description:
  */
 
 
 import { getObjectRecordDetailRelatedListHeader } from './converter/amis/header';
-import { isEmpty,  find, isString, forEach, keys, findKey, isArray, union, has } from "lodash";
+import { isEmpty,  find, isString, forEach, keys, findKey, isArray, union, has, map } from "lodash";
 import { getUISchema, getField, getListViewColumns, getListViewSort, getListViewFilter } from './objects'
 import { getRecord } from './record';
 import { i18next } from '../i18n'
@@ -186,7 +186,8 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
         setDataToComponentId: componentId,
         // tableHiddenOn: hiddenEmptyTable ? "this.$count === 0" : null,
         appId: appId,
-        crudClassName: 'border-t border-slate-300 hidden',
+        crudClassName: 'border-t border-gray-300 hidden',
+        refField,
         ...ctx
     }
     const amisSchema= (await getRelatedListSchema(relatedObjectName, 'all', options)).amisSchema;
@@ -198,7 +199,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
         amisSchema: {
             type: "service",
             id: componentId,
-            className: `steedos-record-related-list ${componentId} rounded border border-slate-300 bg-gray-100 mb-4 ${className}`,
+            className: `steedos-record-related-list ${componentId} rounded border border-gray-300 bg-gray-100 mb-4 ${className}`,
             data: {
                 relatedKey: relatedKey,   
                 listViewId: `amis-\${appId}-${relatedObjectName}-listview`,
@@ -302,10 +303,37 @@ export async function getRelatedListSchema(
     ctx
   ) {
     const uiSchema = await getUISchema(objectName);
-    const listView = uiSchema.list_views;
+    if(!uiSchema){
+        return {}
+    }
+    const listViewNames = map(uiSchema.list_views, 'name');
+    const listView =  find(
+        uiSchema.list_views,
+        (listView, name) => {
+            // 传入listViewName空值 或者 不存在 则取第一个
+            if(!listViewName || listViewNames.indexOf(listViewName)<0){
+                listViewName = name;
+            }
+            return name === listViewName || listView._id === listViewName;
+        }
+    );
     const listViewProps = getRelatedListProps(uiSchema,listViewName, ctx);
     // console.log('listViewProps==>', listViewProps)
     const {columns: listViewColumns, sort: listViewSort, filter: listviewFilter, filtersFunction } = listViewProps;
+
+    const refFieldName = ctx.refField && ctx.refField.name;
+
+    let relatedListColumns = listViewColumns;
+    if(refFieldName){
+        relatedListColumns = listViewColumns.filter(function(columnItem){
+            if(typeof columnItem === "string"){
+                return columnItem !== refFieldName;
+            }
+            else{
+                return columnItem.field !== refFieldName;
+            }
+        });
+    }
   
     const defaults = ctx.defaults || {};
   
@@ -332,7 +360,11 @@ export async function getRelatedListSchema(
             if(setDataToComponentId){
                 if(payload.data.count){
                     setTimeout(function(){
-                        window.$("." + setDataToComponentId + " .antd-Crud").removeClass("hidden");
+                        // 设计器中获取不到window.$从而导致报错， 所以用纯js替换下。
+                        // window.$("." + setDataToComponentId + " .antd-Crud").removeClass("hidden");		
+                        document.querySelectorAll("." + setDataToComponentId + " .antd-Crud").forEach(function(element) {
+                            element.classList.remove("hidden");
+                        });
                     }, 10);
                 }
             };
@@ -343,7 +375,7 @@ export async function getRelatedListSchema(
     const amisSchema = {
         "type": "steedos-object-table",
         "objectApiName": objectName,
-        "columns": listViewColumns,
+        "columns": relatedListColumns,
         "extraColumns": listView.extra_columns,
         "filters": listviewFilter,
         "filtersFunction": filtersFunction,

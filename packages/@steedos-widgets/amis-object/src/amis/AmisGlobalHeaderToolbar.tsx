@@ -160,10 +160,10 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                                         <div class='font-medium'>
                                           <span class='text-primary'><%=data.name%></span>
                                         </div>
-                                        <div class='mt-1 text-slate-700'>
+                                        <div class='mt-1 text-gray-700'>
                                           <%=data.body%>
                                         </div>
-                                        <div class='mt-1 text-slate-700'>
+                                        <div class='mt-1 text-gray-700'>
                                           <%=moment(data.created).locale(data.global.user.language).fromNow()%>
                                           <abbr class='slds-text-link slds-m-horizontal_xxx-small <%=data.is_read ? 'hidden' : ''%>' title='unread'>●</abbr>
                                         </div>

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:51:00
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-06-28 23:19:41
+ * @LastEditTime: 2023-09-25 14:53:05
  * @Description: 
  */
 import { i18next } from "../i18n";
@@ -22,18 +22,31 @@ export const getSchema = async (uiSchema, ctx) => {
             formSchema = _.isString(payload.schema) ? JSON.parse(payload.schema) : payload.schema;
         }
 
+        const fields = ${JSON.stringify(uiSchema.fields)};
+        const selectedRowResponseResult = api.body.selectedRowResponseResult;
+        let defaultData = {}; 
+
+        if(!_.isEmpty(selectedRowResponseResult)){
+            const fieldsKeys = _.keys(fields);
+            // 如果新建记录时复制的数据中有omit或其他不相关字段数据时不应该一起保存到数据库，
+            // 原规则见：https://github.com/steedos/steedos-frontend/issues/297
+            _.forEach(selectedRowResponseResult, (val, key) => {
+              if (fieldsKeys.indexOf(key) > -1 && fields[key].omit !== true) {
+                defaultData[key] = val;
+              }
+            })
+        }
+
         const _master = api.body._master;
         if(_master && _master._isRelated){
             const relatedKey = _master.relatedKey;
             const masterObjectName = _master.objectName;
             const recordId = _master.recordId;
             let relatedKeySaveValue = recordId;
-            const fields = ${JSON.stringify(uiSchema.fields)};
             const relatedField = fields[relatedKey];
             if(relatedField.reference_to_field && relatedField.reference_to_field !== '_id'){
                 relatedKeySaveValue = _master.record[relatedField.reference_to_field];
             }
-            let defaultData = {}; 
             let relatedKeyValue; 
             if(!_.isString(relatedField.reference_to)){
                 relatedKeyValue = { o: masterObjectName, ids: [relatedKeySaveValue] };
@@ -43,6 +56,9 @@ export const getSchema = async (uiSchema, ctx) => {
                 relatedKeyValue = relatedKeySaveValue;
             }
             defaultData[relatedKey]=relatedKeyValue;
+        }
+
+        if(!_.isEmpty(defaultData)){
             if(payload.schema){
                 // 表单微页面第一层要求是page
                 formSchema.data.defaultData = defaultData;
@@ -65,6 +81,18 @@ export const getSchema = async (uiSchema, ctx) => {
             });
         }, 200);
     `;
+    const getSelectedRowsScript = `
+        const isLookup = event.data.isLookup;
+        if(isLookup){
+            // lookup弹出窗口的新建功能不需要支持复制新建
+            return;
+        }
+        const uiSchema = event.data.uiSchema;
+        const objectName = event.data.objectName;
+        const listViewRef = event.context.scoped.getComponentById("listview_" + objectName);
+        const selectedItems = listViewRef && listViewRef.props.store.toJSON().selectedItems || [];
+        event.data.selectedIds = _.map(selectedItems, uiSchema.idFieldName || '_id');
+    `;
     return {
         "type": "service",
         "body": [
@@ -77,6 +105,21 @@ export const getSchema = async (uiSchema, ctx) => {
                     "click": {
                         "weight": 0,
                         "actions": [
+                            {
+                                "actionType": "custom",
+                                "script": getSelectedRowsScript
+                            },
+                            {
+                                "actionType": "ajax",
+                                "outputVar": "selectedRowResponseResult",
+                                "args": {
+                                    "api": {
+                                        "url": "${context.rootUrl}/api/v1/${uiSchema.name}/${selectedIds|first}",
+                                        "method": "get"
+                                    }
+                                },
+                                "expression": "${selectedIds.length > 0}"
+                            },
                             {
                                 "actionType": "dialog",
                                 "dialog": {
@@ -94,7 +137,8 @@ export const getSchema = async (uiSchema, ctx) => {
                                         "displayAs": "${displayAs}",
                                         "uiSchema": "${uiSchema}",
                                         "isLookup": "${isLookup}",
-                                        "listName": "${listName}"
+                                        "listName": "${listName}",
+                                        "selectedRowResponseResult": "${selectedRowResponseResult}",
                                     },
                                     "title":i18next.t('frontend_form_new') + " ${uiSchema.label | raw}",
                                     "body": [
@@ -106,7 +150,8 @@ export const getSchema = async (uiSchema, ctx) => {
                                                 "data": {
                                                     "isLookup": "${isLookup}",
                                                     "_master": "${_master}",
-                                                    "url": "${context.rootUrl}/api/pageSchema/form?app=${appId}&objectApiName=${objectName}&formFactor=${formFactor}"
+                                                    "url": "${context.rootUrl}/api/pageSchema/form?app=${appId}&objectApiName=${objectName}&formFactor=${formFactor}",
+                                                    "selectedRowResponseResult": "${selectedRowResponseResult}"
                                                 },
                                                 "url": "${context.rootUrl}/api/pageSchema/form?app=${appId}&objectApiName=${objectName}&formFactor=${formFactor}",
                                                 "method": "get",

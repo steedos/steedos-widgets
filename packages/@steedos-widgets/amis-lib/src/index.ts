@@ -1,11 +1,12 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 09:09:12
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-11 17:17:43
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-11-16 10:10:42
  * @Description: 
  */
 export * from './lib/amis'
+export * from './lib/input_table'
 export * from './lib/objects'
 export * from './lib/objectsRelated'
 export * from './lib/page_init'

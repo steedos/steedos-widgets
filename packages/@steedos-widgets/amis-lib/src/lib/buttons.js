@@ -28,20 +28,29 @@ export function getButtonVisibleOn(button){
         //     return 'false';
         // }
         if(visible.trim().startsWith('function')){
-            return `${visible}.apply({
+            visible = `${visible}.apply({
                 object: uiSchema
             }, [objectName, typeof _id === 'undefined' ? null: _id, typeof record === 'undefined' ? (typeof recordPermissions === 'undefined' ? {} : recordPermissions) : record.recordPermissions, data])`
         }
-        return visible;
     }
 
     if(button.type === 'amis_button'){
-        const amisSchema = button.amis_schema;
+        let amisSchema = button.amis_schema;
+        if(_.isString(amisSchema)){
+            amisSchema = JSON.parse(amisSchema);
+        }
         if(amisSchema && amisSchema.body && amisSchema.body.length > 0){
             const btn1 = amisSchema.body[0];
-            return btn1.visibleOn
+            if(_.hasIn(btn1, 'visibleOn')){
+                /*  当含有“更多”按钮或者“下拉”箭头按钮时，单个按钮的visibleOn需要合并到 “更多”按钮或者“下拉”箭头按钮的 visibleOn 中，用||隔开。
+                    visibleOn的格式需要保持一致； 不能是 js  和  ${xxx} 混合的表达式；
+                    visibleOn的值需要是js格式，因为默认的编辑、删除等系统按钮的visibleOn的格式就是js格式（function(){}）; 
+                */
+                return btn1.visibleOn
+            }   
         }
     }
+    return visible;
 }
 
 export const getButtonVisible = (button, ctx) => {
@@ -368,9 +377,30 @@ const getObjectDetailHeaderButtons = (objectSchema, recordId)=>{
 export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
     const { buttons, moreButtons, moreButtonsVisibleOn } = getObjectDetailHeaderButtons(objectSchema, recordId);
     if(ctx.formFactor === 'SMALL'){
+        const dropdownButtons = [
+            ..._.map(buttons, (button) => {
+                button.className += ' w-full';
+                return button;
+            }),
+            ..._.map(moreButtons, (button) => {
+                button.className += ' w-full';
+                return button;
+            })
+        ];
+
+        let phoneMoreButtonsVisibleOn = '';
+        _.forEach(dropdownButtons, (button, index) => {
+            if(index === 0){
+                phoneMoreButtonsVisibleOn = button.visibleOn;
+            }else{
+                phoneMoreButtonsVisibleOn = phoneMoreButtonsVisibleOn + ' || ' + button.visibleOn;
+            }
+        })
+
         return {
             "type": "button",
             "icon": "fa fa-angle-down",
+            "visibleOn": phoneMoreButtonsVisibleOn,
             "onEvent": {
               "click": {
                 "actions": [
@@ -386,16 +416,7 @@ export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
                           "id": "u:fd837823be5b",
                           "vertical": true,
                           "tiled": true,
-                          "buttons": [
-                            ..._.map(buttons, (button)=>{
-                                button.className += ' w-full';
-                                return button;
-                            }),
-                            ..._.map(moreButtons, (button)=>{
-                                button.className += ' w-full';
-                                return button;
-                            })
-                          ],
+                          "buttons": dropdownButtons,
                           "btnLevel": "enhance",
                           "className": "w-full",
                           "btnClassName": "w-full",
@@ -420,7 +441,7 @@ export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
                 type: "steedos-dropdown-button",
                 label: "",
                 buttons: moreButtons,
-                className: 'slds-icon',
+                className: 'slds-icon ml-1',
                 visibleOn: moreButtonsVisibleOn
             }
             buttons.push(dropdownButtonsSchema);

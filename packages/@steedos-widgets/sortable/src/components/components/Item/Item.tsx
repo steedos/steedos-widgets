@@ -25,6 +25,7 @@ export interface Props {
   transition?: string | null;
   wrapperStyle?: React.CSSProperties;
   value: React.ReactNode;
+  className: string;
   onRemove?(): void;
   renderItem?(args: {
     dragOverlay: boolean;
@@ -64,6 +65,7 @@ export const Item = React.memo(
         transform,
         value,
         wrapperStyle,
+        className,
         ...props
       },
       ref
@@ -100,7 +102,8 @@ export const Item = React.memo(
             styles.Wrapper,
             fadeIn && styles.fadeIn,
             sorting && styles.sorting,
-            dragOverlay && styles.dragOverlay
+            dragOverlay && styles.dragOverlay,
+            className
           )}
           style={
             {

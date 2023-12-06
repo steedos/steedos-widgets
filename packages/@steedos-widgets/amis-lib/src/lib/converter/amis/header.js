@@ -11,12 +11,13 @@ import { getObjectDetailButtonsSchemas, getObjectListViewButtonsSchemas, getObje
  */
 export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
   const { icon, label } = objectSchema;
+  const disabled_list_views = objectSchema.permissions.disabled_list_views;
   const listViewButtonOptions = [];
   each(
     objectSchema.list_views,
     (listView, name) => {
-      if(name === "lookup"){
-        // 内置lookup为弹出选择专用视图，不显示在列表切换区域
+      if(name === "lookup" || (disabled_list_views && disabled_list_views.indexOf(listView._id)>-1)){
+        // 内置lookup为弹出选择专用视图，根据用户权限被禁用的视图，不显示在列表切换区域
         return;
       }
       listViewButtonOptions.push({
@@ -38,13 +39,15 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
     "visibleOn": "${display == 'split'?false:true}"
   }]
   if(ctx.formFactor !== 'SMALL'){
+    const restButtons = Array.isArray(amisButtonsSchema) ? amisButtonsSchema.filter(obj => obj.name !== "standard_new"):[]
     buttonSchema.push({
       "type": "flex",
       "items":[
         standardNewButton,
-        {
+        (restButtons.length > 0) && {
           "type": "dropdown-button",
-          "buttons": Array.isArray(amisButtonsSchema) ? amisButtonsSchema.filter(obj => obj.name !== "standard_new"):{},
+          "buttons": restButtons,
+          "className": " ml-1",
           "menuClassName": "p-none split-dropdown-buttons",
           "align": "right",
           "size": "sm"
@@ -176,7 +179,6 @@ export async function getObjectListHeaderSecordLine(objectSchema, listViewName, 
       },
       {
         "body": [
-          fieldsFilterButtonSchema,
           {
             "type": "button",
             "label": "",
@@ -185,6 +187,7 @@ export async function getObjectListHeaderSecordLine(objectSchema, listViewName, 
             "target": amisListViewId,
             "className": "bg-white p-2 rounded border-gray-300 text-gray-500"
           },
+          fieldsFilterButtonSchema,
           // {
           //   "type": "button",
           //   "label": "",
@@ -433,7 +436,7 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
                     "body": [
                       {
                         "type": "tpl",
-                        "tpl": `<a class="text-black text-base font-bold" href="/app/\${appId}/\${_master.objectName}/\${_master.recordId}/\${objectName}/grid?related_field_name=\${relatedKey}">${relatedLabel}(\${$count})</a>`,
+                        "tpl": `<a class="text-black text-base font-bold hover:font-bold" href="/app/\${appId}/\${_master.objectName}/\${_master.recordId}/\${objectName}/grid?related_field_name=\${relatedKey}">${relatedLabel}(\${$count})</a>`,
                         "inline": false,
                         "wrapperComponent": "",
                         "className": "",

@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-28 14:15:09
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-11-02 18:06:16
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-10-30 17:51:54
  * @Description: 
  */
 import { getAmisStaticFieldType } from './type';
@@ -56,11 +56,26 @@ export const getAmisFileEditSchema = (steedosField)=>{
         useChunk: false, // 关闭分块上传
         receiver: {
             method: "post",
+            dataType: "form-data",
             url: `\${context.rootUrl}/s3/${tableName}`,
-            data: {
-                $: "$$",
-                context: `\${context}`,
-            },
+            requestAdaptor: `
+                const { _master, global,context } = api.body;
+                // const { recordId, objectName } = _master;
+                const { spaceId, userId, user } = global;
+                /*
+                    record_id: recordId,
+                    parent: recordId,
+                    object_name: objectName,
+                    owner_name: user.name,
+                    space: spaceId,
+                    owner: userId
+                */
+                // 参考platform 2.2版本，附件字段保存时cfs.files.filerecord、cfs.images.filerecord表中的metadata下只保存space、owner两个属性值。
+                api.data.append('space', spaceId);
+                api.data.append('owner', userId);
+
+                return api;
+            `,
             adaptor: `
                 const { context } = api.body; 
                 var rootUrl = context.rootUrl + "/api/files/${tableName}/";

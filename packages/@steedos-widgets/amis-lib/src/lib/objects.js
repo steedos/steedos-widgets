@@ -2,12 +2,13 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: liaodaxue
- * @LastEditTime: 2023-08-25 11:55:15
+ * @LastEditTime: 2023-10-20 11:38:25
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
 import { getObjectCalendar } from './converter/amis/calendar';
 import { i18next } from '../i18n'
+import { createObject } from '../utils/object'
 
 import {
     getObjectCRUD,
@@ -347,11 +348,13 @@ export async function getListSchema(
         "filtersFunction": listview_filters,
         "sort": sort,
         "ctx": ctx,
-        "requestAdaptor": listView.requestAdaptor,  
-        "adaptor": listView.adaptor,
+        "requestAdaptor": listView.requestAdaptor || ctx.requestAdaptor,  
+        "adaptor": listView.adaptor || ctx.adaptor,
         "headerToolbarItems": ctx.headerToolbarItems,
         "filterVisible": ctx.filterVisible,
-        "rowClassNameExpr": ctx.rowClassNameExpr
+        "rowClassNameExpr": ctx.rowClassNameExpr,
+        "crudDataFilter": ctx.crudDataFilter,
+        "onCrudDataFilter": ctx.onCrudDataFilter
     };
     // console.log(`getListSchema===>`,amisSchema)
     return {
@@ -376,6 +379,13 @@ async function convertColumnsToTableFields(columns, uiSchema, ctx = {}) {
             } else {
                 if (uiSchema.fields[column]) {
                     fields.push(Object.assign({}, uiSchema.fields[column], ctx));
+                }
+                else if(ctx.extra){
+                    // 配置列表视图extra_columns时允许字段是hidden的，hidden的字段在uiSchema.fields中不存在
+                    fields.push({
+                        extra: true,
+                        name: column
+                    });
                 }
             }
         } else if (isObject(column)) {
@@ -404,6 +414,13 @@ async function convertColumnsToTableFields(columns, uiSchema, ctx = {}) {
                             amis: column.amis
                         })
                     );
+                }
+                else if(ctx.extra){
+                    // 配置列表视图extra_columns时允许字段是hidden的，hidden的字段在uiSchema.fields中不存在
+                    fields.push({
+                        extra: true,
+                        name: column.field
+                    });
                 }
             }
         }
@@ -440,7 +457,7 @@ export async function getTableSchema(
         fields = fields.concat(extraFields);
     }
     
-    const amisSchema = await getObjectCRUD(uiSchema, fields, {
+    let crudOptions = {
         tabId: objectName,
         appId: appName,
         objectName: objectName,
@@ -449,8 +466,9 @@ export async function getTableSchema(
         sort,
         headerToolbarItems: ctx.headerToolbarItems,
         buttons: await getListViewItemButtons(uiSchema, ctx)
-    });
-    console.log('getTableSchema====>amisSchema', amisSchema)
+    };
+    crudOptions.amisData = createObject(ctx.amisData || {}, {});
+    const amisSchema = await getObjectCRUD(uiSchema, fields, crudOptions);
     // console.timeEnd('getTableSchema');
     return {
         uiSchema,
@@ -522,7 +540,7 @@ export async function getRecordDetailSchema(objectName, appId, props = {}){
     }
     const content = {
         "type": "tabs",
-        "className": "sm:mt-3 bg-white sm:shadow sm:rounded sm:border border-slate-300 p-4",
+        "className": "sm:mt-3 bg-white sm:rounded sm:border border-gray-300 p-4",
         "tabs": [
             detailed
         ],

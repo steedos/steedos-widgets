@@ -96,8 +96,8 @@ export default function Page ({ formFactor }) {
 //   });
 //   const scopeId = `${listViewId}-page`;
 //   const splitOffset = displayAs === "split_three" ? "w-1/2" : "w-[388px]";
-//   const gridClassName = "absolute inset-0 sm:m-3 sm:mb-0 sm:border sm:shadow sm:rounded border-slate-300 border-solid bg-gray-100";
-//   const splitClassName = `absolute top-0 bottom-0 ${splitOffset} border-r border-slate-300 border-solid bg-gray-100`;
+//   const gridClassName = "absolute inset-0 sm:m-3 sm:mb-0 sm:border sm:shadow sm:rounded border-gray-300 border-solid bg-gray-100";
+//   const splitClassName = `absolute top-0 bottom-0 ${splitOffset} border-r border-gray-300 border-solid bg-gray-100`;
 //   const schema = page? JSON.parse(page.schema) : {
 //     "type": "steedos-object-listview",
 //     "objectApiName": tab_id,

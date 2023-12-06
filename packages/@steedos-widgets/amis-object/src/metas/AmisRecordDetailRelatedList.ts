@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-06-26 11:52:53
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-12-05 16:37:13
  * @Description: 
  */
 const config: any = {
@@ -186,6 +186,12 @@ export default {
                           "name": "perPage",
                           "label": "每页显示记录数量",
                         },
+                        {
+                          "type": "textarea",
+                          "name": "visibleOn",
+                          "label": "显示条件",
+                          "labelRemark": "格式：静态/表达式"
+                        }
                       ]
                     },
                     {

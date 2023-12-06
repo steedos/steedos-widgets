@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-06 14:30:43
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-10-20 13:24:39
  * @Description: 
  */
 const config: any = {
@@ -31,6 +31,16 @@ const config: any = {
       name: "listName",
       propType: "string",
       description: '视图名称',
+    },
+    {
+      name: "requestAdaptor",
+      propType: "string",
+      description: '发送适配器',
+    },
+    {
+      name: "adaptor",
+      propType: "string",
+      description: '接收适配器',
     }
   ],
   preview: {
@@ -77,7 +87,7 @@ export default {
         objectApiName: "${objectName}",
         listName: "all",
         showHeader: true,
-        className: "sm:border sm:shadow sm:rounded sm:border-gray-300 mb-4"
+        className: "sm:border sm:rounded sm:border-gray-300 mb-4"
       },
       previewSchema: {
         type: config.amis.name,
@@ -158,19 +168,35 @@ export default {
           "name": "showHeader",
           "label": "显示表头",
         },
+        // {
+        //   type: "button-group-select",
+        //   name: "formFactor",
+        //   label: "显示样式",
+        //   value: "LARGE",
+        //   options: [
+        //     {
+        //       "label": "表格",
+        //       "value": "LARGE"
+        //     },
+        //     {
+        //       "label": "手机",
+        //       "value": "SMALL"
+        //     }
+        //   ]
+        // },
         {
           type: "button-group-select",
-          name: "formFactor",
-          label: "显示样式",
-          value: "LARGE",
+          name: "crudMode",
+          label: "显示模式",
+          value: "table",
           options: [
             {
               "label": "表格",
-              "value": "LARGE"
+              "value": "table"
             },
             {
-              "label": "手机",
-              "value": "SMALL"
+              "label": "卡片",
+              "value": "cards"
             }
           ]
         },
@@ -178,6 +204,49 @@ export default {
           type: "text",
           name: "className",
           label: "CSS类名"
+        },
+        {
+          "type": "collapse",
+          headingClassName: 'pl-0',
+          bodyClassName: '',
+          "collapsed": true,
+          "header": "数据接口",
+          "body": [
+            {
+              type: "editor",
+              name: "requestAdaptor",
+              label: "发送适配器",
+              language: "javascript",
+              description: "函数签名：(api) => api， 数据在 api.data 中，修改后返回 api 对象。"
+            },
+            {
+              type: "editor",
+              name: "adaptor",
+              label: "接收适配器",
+              language: "javascript",
+              description: "函数签名: (payload, response, api) => payload"
+            }
+          ]
+        },
+        {
+          "type": "collapse",
+          headingClassName: 'pl-0',
+          bodyClassName: '',
+          "collapsed": true,
+          "header": "高级",
+          "body": [
+            {
+              type: "editor",
+              name: "crudDataFilter",
+              label: "CRUD",
+              description: ""
+            },
+            {
+              "type": "markdown",
+              "value": "如果需要对组件原始返回的crud进行加工，可以自己写一段函数脚本来实现。\n\n函数签名：(crud, env, data) => crud\n\n参数说明：\n\ncrud 组件原始返回的crud schema\n\nenv amis env，可以调用env.fetcher函数实现异步请求\n\ndata 数据域中的data\n\n返回值：\n\n最后需要返回加工后的crud schema\n\n示例：\n\n```\nconsole.log('data===>', data);\nconst api = ...;\nreturn env.fetcher(api, {}).then((result) => {\n  console.log(result);\n  crud.columns.push({'label': 'xxx', name: 'xxx'});\n  return crud;\n});\n\n```\n",
+              "className": "text-gray-500"
+            }
+          ]
         }
       ]
     }

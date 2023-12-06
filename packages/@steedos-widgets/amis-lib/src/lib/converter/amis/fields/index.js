@@ -87,6 +87,8 @@ export function getAmisFieldType(sField){
             break;
         case 'grid':
             return 'table';
+        case 'table':
+            return 'steedos-input-table';
         default:
             console.log('convertData default', sField.type);
             // convertData.type = field.type
@@ -109,6 +111,19 @@ export function getObjectFieldSubFields(mainField, fields){
 }
 
 export function getGridFieldSubFields(mainField, fields){
+    const newMainField = Object.assign({subFields: []}, mainField);
+    const subFields = _.filter(fields, function(field){
+        let result = field.name.startsWith(`${mainField.name}.`)
+        if(result){
+            field._prefix = `${mainField.name}.`
+        }
+        return result;
+    });
+    newMainField.subFields = subFields;
+    return newMainField;
+}
+
+export function getTabledFieldSubFields(mainField, fields){
     const newMainField = Object.assign({subFields: []}, mainField);
     const subFields = _.filter(fields, function(field){
         let result = field.name.startsWith(`${mainField.name}.`)
@@ -231,7 +246,11 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                     </span>
                     <span class='pl-1.5'>\${label}</span>
                 </span>`
-                convertData.menuTpl = "${icon ? `"+select_menuTpl+"` : label}"
+                const menuTpl = "${icon ? `"+select_menuTpl+"` : label}"
+                // TODO: 待amis修复了此bug， 就可以撤销添加menuTpl的判断。
+                if(!(isMobile && field.multiple)){
+                    convertData.menuTpl = menuTpl;
+                }
                 if(field.multiple){
                     convertData.multiple = true
                     convertData.extractValue = true
@@ -257,26 +276,33 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             }
             break;
         case 'date':
-            convertData = isMobile && !readonly ? {
-                type: "native-date",
-                pipeIn: (value, data) => {
-                    if (value) {
-                        value = moment(value).utc().format('YYYY-MM-DD');
-                        return value;
-                    } else {
-                        return "";
-                    }
+            // convertData = isMobile && !readonly ? {
+            //     type: "native-date",
+            //     pipeIn: (value, data) => {
+            //         if (value) {
+            //             value = moment(value).utc().format('YYYY-MM-DD');
+            //             return value;
+            //         } else {
+            //             return "";
+            //         }
 
-                },
-                pipeOut: (value, oldValue, data) => {
-                    if (value) {
-                        value = moment(value).format('YYYY-MM-DDT00:00:00.000[Z]');
-                        return value;
-                    } else {
-                        return "";
-                    }
-                }
-            } : {
+            //     },
+            //     pipeOut: (value, oldValue, data) => {
+            //         if (value) {
+            //             value = moment(value).format('YYYY-MM-DDT00:00:00.000[Z]');
+            //             return value;
+            //         } else {
+            //             return "";
+            //         }
+            //     }
+            // } : {
+            //     type: getAmisStaticFieldType('date', readonly),
+            //     inputFormat: "YYYY-MM-DD",
+            //     format:'YYYY-MM-DDT00:00:00.000[Z]',
+            //     tpl: readonly ? Tpl.getDateTpl(field) : null,
+            //     // utc: true
+            // }
+            convertData = {
                 type: getAmisStaticFieldType('date', readonly),
                 inputFormat: "YYYY-MM-DD",
                 format:'YYYY-MM-DDT00:00:00.000[Z]',
@@ -295,43 +321,51 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             }
             break;
         case 'datetime':
-            convertData = isMobile && !readonly ? {
-                type: "combo",
-                pipeIn: (value, data) => {
-                    let revalue = {};
-                    if (value && value != "Invalid date") {
-                        value = moment(value).format('YYYY-MM-DD HH:mm:ss');
-                        revalue[field.name + "-native-date"] = value.split(' ')[0];
-                        revalue[field.name + "-native-time"] = value.split(' ')[1];
-                    } else {
-                        revalue[field.name + "-native-date"] = "";
-                        revalue[field.name + "-native-time"] = "";
-                    }
-                    return revalue;
-                },
-                pipeOut: (value, oldValue, data) => {
-                    let revalue = "";
-                    if (value[field.name + "-native-date"] && value[field.name + "-native-time"]) {
-                        revalue = value[field.name + "-native-date"] + " " + value[field.name + "-native-time"];
-                        revalue = moment(revalue).utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]');
-                    }
-                    return revalue;
-                },
-                items: [
-                    {
-                        type: "native-date",
-                        name: field.name + "-native-date",
-                        className: "steedos-native-date",
-                        value: ""
-                    },
-                    {
-                        type: "native-time",
-                        name: field.name + "-native-time",
-                        className: "steedos-native-time",
-                        value: ""
-                    }
-                ]
-            } : {
+            // convertData = isMobile && !readonly ? {
+            //     type: "combo",
+            //     pipeIn: (value, data) => {
+            //         let revalue = {};
+            //         if (value && value != "Invalid date") {
+            //             value = moment(value).format('YYYY-MM-DD HH:mm:ss');
+            //             revalue[field.name + "-native-date"] = value.split(' ')[0];
+            //             revalue[field.name + "-native-time"] = value.split(' ')[1];
+            //         } else {
+            //             revalue[field.name + "-native-date"] = "";
+            //             revalue[field.name + "-native-time"] = "";
+            //         }
+            //         return revalue;
+            //     },
+            //     pipeOut: (value, oldValue, data) => {
+            //         let revalue = "";
+            //         if (value[field.name + "-native-date"] && value[field.name + "-native-time"]) {
+            //             revalue = value[field.name + "-native-date"] + " " + value[field.name + "-native-time"];
+            //             revalue = moment(revalue).utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]');
+            //         }
+            //         return revalue;
+            //     },
+            //     items: [
+            //         {
+            //             type: "native-date",
+            //             name: field.name + "-native-date",
+            //             className: "steedos-native-date",
+            //             value: ""
+            //         },
+            //         {
+            //             type: "native-time",
+            //             name: field.name + "-native-time",
+            //             className: "steedos-native-time",
+            //             value: ""
+            //         }
+            //     ]
+            // } : {
+            //     type: getAmisStaticFieldType('datetime', readonly),
+            //     inputFormat: 'YYYY-MM-DD HH:mm',
+            //     format: 'YYYY-MM-DDTHH:mm:ss.SSSZ',
+            //     tpl: readonly ? Tpl.getDateTimeTpl(field) : null,
+            //     utc: true,
+            // }
+
+            convertData = {
                 type: getAmisStaticFieldType('datetime', readonly),
                 inputFormat: 'YYYY-MM-DD HH:mm',
                 format: 'YYYY-MM-DDTHH:mm:ss.SSSZ',
@@ -351,26 +385,34 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             }
             break;
         case 'time':
-            convertData = isMobile && !readonly ? {
-                type: "native-time",
-                pipeIn: (value, data) => {
-                    if (value) {
-                        value = moment(value).utc().format('HH:mm');
-                        return value;
-                    } else {
-                        return "";
-                    }
+            // convertData = isMobile && !readonly ? {
+            //     type: "native-time",
+            //     pipeIn: (value, data) => {
+            //         if (value) {
+            //             value = moment(value).utc().format('HH:mm');
+            //             return value;
+            //         } else {
+            //             return "";
+            //         }
 
-                },
-                pipeOut: (value, oldValue, data) => {
-                    if (value) {
-                        value = moment('1970-01-01 ' + value).format('1970-01-01THH:mm:00.000[Z]');
-                        return value;
-                    } else {
-                        return "";
-                    }
-                }
-            } : {
+            //     },
+            //     pipeOut: (value, oldValue, data) => {
+            //         if (value) {
+            //             value = moment('1970-01-01 ' + value).format('1970-01-01THH:mm:00.000[Z]');
+            //             return value;
+            //         } else {
+            //             return "";
+            //         }
+            //     }
+            // } : {
+            //     type: getAmisStaticFieldType('time', readonly),
+            //     inputFormat: 'HH:mm',
+            //     timeFormat:'HH:mm',
+            //     format:'1970-01-01THH:mm:00.000[Z]',
+            //     tpl: readonly ? Tpl.getDateTimeTpl(field) : null,
+            //     // utc: true
+            // }
+            convertData = {
                 type: getAmisStaticFieldType('time', readonly),
                 inputFormat: 'HH:mm',
                 timeFormat:'HH:mm',
@@ -420,7 +462,22 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                     type: getAmisStaticFieldType('number', readonly),
                     min: field.min,
                     max: field.max,
-                    precision: field.scale
+                    precision: field.scale,
+                    suffix: "%",
+                    pipeIn: (value, data) => {
+                        if(value){
+                            // 因为例如 1.11 * 100 的值不是111，所以调整下。
+                            const result = value*100;
+                            return Number(result.toFixed(field.scale));
+                        }
+                        return value;
+                    },
+                    pipeOut: (value, oldValue, data) => {
+                        if(value){
+                            return value/100;
+                        }
+                        return value;
+                    },
                 }
             }
             break;
@@ -582,11 +639,35 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                             label: subField.label,
                             quickEdit: readonly ? false : gridSub
                         };
-                        if(subField.type === 'lookup'){
+                        if(["lookup", "boolean", "toggle"].indexOf(subField.type) > -1){
                             gridItemSchema.type = gridSub.type;
                             gridItemSchema.tpl = gridSub.tpl;
                         }
                         convertData.columns.push(Object.assign({}, gridItemSchema, subField.amis, {name: subFieldName}))
+                    }
+                }
+            }
+            break;
+        case 'table':
+            if(field.subFields){
+                convertData = {
+                    type: 'steedos-input-table',
+                    showIndex: true,
+                    editable: !readonly,
+                    addable: !readonly,
+                    removable: !readonly,
+                    draggable: !readonly,
+                    fields: [],
+                    amis:{
+                        columnsTogglable: false
+                    }
+                }
+                // console.log(`convertData ======>`, field, convertData)
+                for (const subField of field.subFields) {
+                    if(!subField.name.endsWith(".$")){
+                        const subFieldName = subField.name.replace(`${field._prefix || ''}${field.name}.$.`, '').replace(`${field.name}.`, '');
+                        // const gridSub = await convertSFieldToAmisField(Object.assign({}, subField, {name: subFieldName, isTableField: true}), readonly, ctx);
+                        convertData.fields.push(Object.assign({}, subField, {name: subFieldName}))
                     }
                 }
             }
@@ -666,7 +747,9 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             return  convertData
         }
         // if(ctx.mode === 'edit'){
-        return Object.assign({}, baseData, convertData, { labelClassName: 'text-left', clearValueOnHidden: true, fieldName: field.name}, field.amis, {name: baseData.name});
+        let convertDataResult = Object.assign({}, baseData, convertData, { labelClassName: 'text-left', clearValueOnHidden: true, fieldName: field.name}, field.amis, {name: baseData.name});
+        // console.log("convertDataResult:", convertDataResult);
+        return convertDataResult;
         // }else{
         //     return Object.assign({}, baseData, convertData, { labelClassName: 'text-left', clearValueOnHidden: true, fieldName: field.name});
         // }
@@ -772,6 +855,7 @@ export function isFieldTypeSearchable(fieldType) {
     return !_.includes(
         [
             "grid",
+            "table",
             "avatar",
             "image",
             "object",

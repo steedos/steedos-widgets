@@ -1,7 +1,7 @@
 const config: any = {
-    group: "华炎魔方",
+    group: "华炎魔方-原子组件",
     componentName: "MultipleContainers",
-    title: "容器排序",
+    title: "看板",
     docUrl: "",
     screenshot: "",
     npm: {
@@ -25,7 +25,7 @@ const config: any = {
     engines: ["amis"],
     // settings for amis.
     amis: {
-      name: 'sortable-multiple-containers',
+      name: 'steedos-board',
       icon: "fa-fw fa fa-list-alt"
     }
   };
@@ -73,7 +73,7 @@ const config: any = {
               "B2"
             ]
           },
-          "containerSource": [
+          "boardSource": [
             {
               "id": "A",
               "label": "Board A"
@@ -83,7 +83,54 @@ const config: any = {
               "label": "Board B"
             }
           ],
-          "itemSource": [
+          "boardClassName": "bg-gray-50 p-2 border rounded shadow",
+          "boardHeader": {
+            "type": "tpl",
+            "tpl": "Board ${label}"
+          },
+          "boardFooter": {
+            "type": "tpl",
+            "tpl": "Board ${label} Footer"
+          },
+          "cardClassName": "bg-white border w-full p-2 rounded shadow",
+          "cardSchema": {
+            "type": "card",
+            "header": {
+              "className": "items-center",
+              "title": "${label}",
+            },
+            "toolbar": [
+              {
+                "type": "dropdown-button",
+                "level": "link",
+                "icon": "fa fa-ellipsis-h",
+                "className": "pr-1 flex",
+                "hideCaret": true,
+                "buttons": [
+                  {
+                    "type": "button",
+                    "label": "编辑",
+                    "actionType": "dialog",
+                    "dialog": {
+                      "title": "编辑",
+                      "body": "你正在编辑该卡片"
+                    }
+                  },
+                  {
+                    "type": "button",
+                    "label": "删除",
+                    "actionType": "dialog",
+                    "dialog": {
+                      "title": "提示",
+                      "body": "你删掉了该卡片"
+                    }
+                  }
+                ]
+              }
+            ],
+            "className": "mb-0"
+          },
+          "cardSource": [
             {
               "id": "A1",
               "label": "Item A1",

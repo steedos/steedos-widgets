@@ -13,18 +13,11 @@ import { lookupToAmisTreeSelect } from './tree_select';
 import * as standardNew from '../../../../schema/standard_new.amis'
 import { i18next } from "../../../../i18n";
 
-export const getReferenceTo = async (field)=>{
+export const getReferenceToFieldSchema = (field, refObjectConfig)=>{
     let referenceTo = field.reference_to;
     if(!referenceTo){
-        return ;
+        return;
     }
-
-    if(referenceTo === 'users'){
-        referenceTo = 'space_users';
-        field.reference_to_field = 'user'
-    }
-
-    const refObjectConfig = await getUISchema(referenceTo)
 
     // 如果lookup 引用的对象未定义
     if (!refObjectConfig)
@@ -46,6 +39,28 @@ export const getReferenceTo = async (field)=>{
         labelField: refObjectConfig.fields[refObjectConfig.NAME_FIELD_KEY || 'name'],
         NAME_FIELD_KEY: refObjectConfig.NAME_FIELD_KEY || 'name'
     }
+}
+
+export const getReferenceTo = async (field)=>{
+    let referenceTo = field.reference_to;
+    if(referenceTo === 'users'){
+        field.reference_to = 'space_users';
+        field.reference_to_field = 'user'
+    }
+
+    const refObjectConfig = await getUISchema(field.reference_to);
+    return getReferenceToFieldSchema(field, refObjectConfig);
+}
+
+export function getReferenceToSync(field) {
+    let referenceTo = field.reference_to;
+    if(referenceTo === 'users'){
+        field.reference_to = 'space_users';
+        field.reference_to_field = 'user'
+    }
+
+    const refObjectConfig = getUISchemaSync(field.reference_to);
+    return getReferenceToFieldSchema(field, refObjectConfig);
 }
 
 export function getLookupSapceUserTreeSchema(isMobile){
@@ -257,9 +272,17 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     source.data.$term = "$term";
     source.data.$self = "$$";
 
-    let keywordsSearchBoxName = `__keywords_lookup__${field.name}__to__${refObjectConfig.name}`;
-    
+    // field.name可能是带点的名称，比如审批王中子表字段'instances.instances_submitter'，如果不替换掉点，会造成审批王表单中新建子表行时报错
+    let keywordsSearchBoxName = `__keywords_lookup__${field.name.replace(/\./g, "_")}__to__${refObjectConfig.name}`;
+
     source.requestAdaptor = `
+        let __changedFilterFormValues = api.data.$self.__changedFilterFormValues || {};
+        let __changedSearchBoxValues = api.data.$self.__changedSearchBoxValues || {};
+        // 把表单搜索和快速搜索中的change事件中记录的过滤条件也拼到$self中，是为解决触发搜索请求时，两边输入的过滤条件都带上，即：
+        // 有时在搜索表单中输入过滤条件事，忘记点击回车键或搜索按钮，而是进一步修改快速搜索框中的关键字点击其中回车键触发搜索
+        // 这种情况下，触发的搜索请求中没有带上搜索表单中输入的过滤条件。
+        // 反过来先在快速搜索框中输入过滤条件却不点击其中回车键触发搜索，而是到搜索表单中触发搜索请求也是一样的。
+        Object.assign(api.data.$self, __changedSearchBoxValues, __changedFilterFormValues);
         const selfData = JSON.parse(JSON.stringify(api.data.$self));
         var filters = [];
         var pageSize = api.data.pageSize || 10;
@@ -326,7 +349,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         const filtersFunction = ${field.filtersFunction || field._filtersFunction};
 
         if(filtersFunction && !inFilterForm){
-            const _filters = filtersFunction(filters, api.data.$self.__super.__super);
+            const _filters = filtersFunction(filters, api.data.$self.__super);
             if(_filters && _filters.length > 0){
                 filters.push(_filters);
             }
@@ -347,10 +370,13 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     const op = api.data.$self.op;
     if(!_.isEmpty(op)){
         // op不为空，表示处于字段初始编辑状态，不是点击后出现弹窗状态。
+        // 这里不可以用_.pick函数让payload只返回labelField和valueField，因为字段上配置的amis autoFill功能可能依赖了其他字段
+        /*
         const rows = _.map(payload.data.rows, (item)=>{
             return _.pick(item, ["${referenceTo.labelField.name}", "${referenceTo.valueField.name}"]);
         })
         payload.data.rows = rows;
+        */
         return payload;
     }
     if(enable_tree){
@@ -391,6 +417,14 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             }
         });
         payload.data.rows = treeRecords;
+        try{
+            setTimeout(() => {
+                $('.amis-dialog-widget.antd-Modal .antd-Table-content .antd-Table-table thead .antd-Table-expandBtn')[0]?.click();
+            }, 600);
+        }
+        catch(ex){
+            console.error("tree数据格式展开异常：", ex);
+        }
     }
     return payload;
     `;
@@ -416,8 +450,13 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             actions: false
         })
     }else{
+        let labelFieldName = refObjectConfig.NAME_FIELD_KEY || 'name';
+        // organizations 对象的历史遗留问题, fullname 被标记为了 名称字段. 在此处特殊处理.
+        if(refObjectConfig.name === 'organizations'){
+          labelFieldName = 'name';
+        }
         pickerSchema = await Table.getTableSchema(tableFields, {
-            labelFieldName: refObjectConfig.NAME_FIELD_KEY,
+            labelFieldName,
             top:  top,
             isLookup: true,
             ...ctx
@@ -434,13 +473,15 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         pickerSchema.headerToolbar = getObjectHeaderToolbar(refObjectConfig, fieldsArr, ctx.formFactor, { headerToolbarItems, isLookup: true, keywordsSearchBoxName });
         const isAllowCreate = refObjectConfig.permissions.allowCreate;
         const isCreate = _.isBoolean(field.create) ? field.create : true;
-        if (isAllowCreate && isCreate) {
+        // lookup字段配置过滤条件就强制不显示新建按钮
+        let isHasFilters = (field.filters || field._filtersFunction) ? true : false;
+        if (isAllowCreate && isCreate && !isHasFilters) {
             const new_button = await standardNew.getSchema(refObjectConfig, { appId: ctx.appId, objectName: refObjectConfig.name, formFactor: ctx.formFactor });
             new_button.align = "right";
             // 保持快速搜索放在最左侧，新建按钮往里插，而不是push到最后
             pickerSchema.headerToolbar.splice(pickerSchema.headerToolbar.length - 1, 0, new_button);
         }
-        pickerSchema.footerToolbar = refObjectConfig.enable_tree ? [] : getObjectFooterToolbar();
+        pickerSchema.footerToolbar = refObjectConfig.enable_tree ? [] : getObjectFooterToolbar(refObjectConfig,ctx.formFactor,{isLookup: true});
         if (ctx.filterVisible !== false) {
             pickerSchema.filter = await getObjectFilter(refObjectConfig, fields, {
                 ...ctx,
@@ -462,12 +503,12 @@ export async function lookupToAmisPicker(field, readonly, ctx){
 
         pickerSchema.onEvent[`@data.changed.${refObjectConfig.name}`] = {
             "actions": [
-              {
-                "actionType": "reload"
-              },
-              {
-                "actionType": "custom",
-                "script": `
+                {
+                    "actionType": "reload"
+                },
+                {
+                    "actionType": "custom",
+                    "script": `
                     const masterRecord = event.data._master && event.data._master.record;
                     const fieldConfig = ${JSON.stringify(field)};
                     let reference_to = fieldConfig.reference_to;
@@ -516,9 +557,9 @@ export async function lookupToAmisPicker(field, readonly, ctx){
                         }
                     });
                 `
-              }
+                }
             ]
-          }
+        }
     }
 
     if(field.pickerSchema){
@@ -564,14 +605,15 @@ export async function lookupToAmisPicker(field, readonly, ctx){
 
 export async function lookupToAmisSelect(field, readonly, ctx){
     let referenceTo = await getReferenceTo(field);
+    const isMobile = window.innerWidth <= 768;
     const valueFieldKey = referenceTo && referenceTo.valueField?.name || '_id' ;
     // const labelFieldKey = referenceTo && referenceTo.labelField?.name || 'name';
 
     let apiInfo;
-
+    let defaultValueOptionsQueryData;
     if(referenceTo){
         // 字段值单独走一个请求合并到source的同一个GraphQL接口中
-        const defaultValueOptionsQueryData = await graphql.getFindQuery({ name: referenceTo.objectName }, null, [
+        defaultValueOptionsQueryData = await graphql.getFindQuery({ name: referenceTo.objectName }, null, [
             Object.assign({}, referenceTo.labelField, {alias: 'label'}),
             Object.assign({}, referenceTo.valueField, {alias: 'value'})
         ], {
@@ -584,7 +626,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         }, null, [
             Object.assign({}, referenceTo.labelField, {alias: 'label'}),
             Object.assign({}, referenceTo.valueField, {alias: 'value'})
-        ], {expand: false, alias: 'options', queryOptions: `filters: {__filters}, top: {__top}, sort: "{__sort}"`, moreQueries: [defaultValueOptionsQueryData.query]});
+        ], {expand: false, alias: 'options', queryOptions: `filters: {__filters}, top: {__top}, sort: "{__sort}"`});
 
         apiInfo.adaptor = `
             const data = payload.data;
@@ -641,7 +683,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
     // [["_id", "=", "$${field.name}._id"],"or",["name", "contains", "$term"]]
     apiInfo.requestAdaptor = `
         var filters = [];
-        var top = 10;
+        var top = 200;
         if(api.data.$term){
             filters = [["${referenceTo?.NAME_FIELD_KEY || 'name'}", "contains", api.data.$term]];
         }
@@ -678,11 +720,16 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         var optionsFiltersOp = "${field.multiple ? "in" : "="}";
         var optionsFilters = [["${valueFieldKey}", optionsFiltersOp, []]];
         if (defaultValue && !api.data.$term) { 
+            const defaultValueOptionsQueryData = ${JSON.stringify(defaultValueOptionsQueryData)};
+            const defaultValueOptionsQuery = defaultValueOptionsQueryData?.query?.replace(/^{/,"").replace(/}$/,"");
             // 字段值单独请求，没值的时候在请求中返回空
             optionsFilters = [["${valueFieldKey}", optionsFiltersOp, defaultValue]];
             if(filters.length > 0){
                 optionsFilters = [filters, optionsFilters];
             }
+            if(defaultValueOptionsQuery){
+                api.data.query = "{"+api.data.query.replace(/^{/,"").replace(/}$/,"")+","+defaultValueOptionsQuery+"}";
+            } 
         }
         api.data.query = api.data.query.replace(/{__options_filters}/g, JSON.stringify(optionsFilters));
         return api;
@@ -728,7 +775,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         disabledOn:  `${readonly} || ( (this._master && (this._master.relatedKey ==='${field.name}')) || ((this.relatedKey ==='${field.name}') && (${field.multiple} != true)) )`,
         // labelField: labelField,
         // valueField: valueField,
-        source: apiInfo,
+        // source: apiInfo,
         autoComplete: apiInfo,
         searchable: true,
     }
@@ -743,7 +790,11 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         </span>
         <span class='pl-1.5'>\${label}</span>
     </span>`
-    data.menuTpl = "${icon ? `"+select_menuTpl+"` : label}"
+    const menuTpl = "${icon ? `"+select_menuTpl+"` : label}"
+    // TODO: 待amis修复了此bug， 就可以撤销添加menuTpl的判断。
+    if(!(isMobile && field.multiple)){
+        data.menuTpl = menuTpl;
+    }
     if(field.multiple){
         data.multiple = true
         data.extractValue = true
@@ -794,7 +845,9 @@ export async function lookupToAmis(field, readonly, ctx){
     }
 
     if(referenceTo.objectName === "space_users" && field.reference_to_field === "user"){
-        ctx.onlyDisplayLookLabel = true;
+        ctx = Object.assign({}, ctx, {
+            onlyDisplayLookLabel: true
+        });
         if(ctx.idsDependOn){
             // ids人员点选模式
             return await lookupToAmisIdsPicker(field, readonly, ctx);
@@ -805,10 +858,10 @@ export async function lookupToAmis(field, readonly, ctx){
 
     const refObject = await getUISchema(referenceTo.objectName);
 
-    // 此处不参考 steedos 的 enable_enhanced_lookup 规则. 如果默认是开启弹出选择,用户选择过程操作太繁琐, 所以默认是关闭弹出选择.
-    // 由于amis picker 目前不支持联动, 配置了depend_on时, 使用使用select ,以支持联动
-    // TODO: 确认 amis picker 支持联动时, 清理field.depend_on判断
-    if(refObject.enable_enhanced_lookup == true && _.isEmpty(field.depend_on)){
+    // 优先取字段中配置的enable_enhanced_lookup，字段上没配置时，才从对象上取enable_enhanced_lookup属性
+    let enableEnhancedLookup = _.isBoolean(field.enable_enhanced_lookup) ? field.enable_enhanced_lookup : refObject.enable_enhanced_lookup;
+    // 默认使用下拉框模式显示lookup选项，只能配置了enable_enhanced_lookup才使用弹出增强模式
+    if(enableEnhancedLookup == true){
         return await lookupToAmisPicker(field, readonly, ctx);
     }else if(refObject.enable_tree) {
         return await lookupToAmisTreeSelect(field, readonly, Object.assign({}, ctx, {
@@ -946,4 +999,10 @@ export async function getIdsPickerSchema(field, readonly, ctx){
         data.tpl = await Tpl.getLookupTpl(field, ctx)
     }
     return data;
+}
+
+
+if(typeof window != 'undefined'){
+    window.getReferenceTo = getReferenceTo;
+    window.getReferenceToSync = getReferenceToSync;
 }

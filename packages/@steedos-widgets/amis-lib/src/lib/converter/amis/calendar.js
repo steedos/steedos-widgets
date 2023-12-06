@@ -66,6 +66,8 @@ export async function getCalendarApi(mainObject, fields, options) {
 
     if(api.data.$self.additionalFilters){
       filters.push(api.data.$self.additionalFilters)
+    }else if(api.data.$self.event.data.additionalFilters){
+      filters.push(api.data.$self.event.data.additionalFilters)
     }
 
     var pageSize = api.data.pageSize || 10;
@@ -391,6 +393,7 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
     businessHours.endTime = `${calendarOptions.endDayHour}:00`;
   }
 
+  // api.trackExpression="\\\${additionalFilters}";
   const onEvent = {
     "getEvents": {
       "weight": 0,
@@ -402,6 +405,22 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
           "actionType": "custom",
           "script": onGetEventsScript
         }
+        // {
+        //   "actionType": "ajax",
+        //   "outputVar": "responseResult",
+        //   "args": {
+        //     "options": {
+        //     },
+        //     "api": api
+        //     // {
+        //     //   "url": "111",
+        //     //   "method": "post",
+        //     //   "data": {
+        //     //     "calendarOptions": JSON.stringify(calendarOptions);
+        //     //   }
+        //     // }
+        //   }
+        // }
       ]
     },
     "select": {

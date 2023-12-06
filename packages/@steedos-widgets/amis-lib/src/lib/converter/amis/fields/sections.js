@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-26 16:02:08
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-09-05 15:42:26
+ * @LastEditTime: 2023-11-29 17:48:27
  * @Description: 
  */
 import * as Fields from '../fields';
@@ -19,14 +19,15 @@ const getFieldSchemaArray = (formFields, ctx) => {
       field.group = i18next.t('frontend_field_group_generalization')
     const fieldName = field.name;
     let isObjectField = /\w+\.\w+/.test(fieldName)
-    if (field.type == 'grid' || field.type == 'object') {
+    if (field.type == 'grid' || field.type == 'object' || field.type == 'table') {
       // field.group = field.label
       field.is_wide = true;
     }
 
     let forceHidden = false;
-    if(!recordId && field.readonly){
+    if(!recordId && field.readonly && !ctx.isEditor){
       // 新建记录时，只读字段先隐藏，后续支持显示后，即任务：https://github.com/steedos/steedos-platform/issues/3164 完成后再放开
+      // 表单只读时所有字段都是readonly，设计器中如果forceHidden会造成整个表单在只读的时候显示为空白了，所以要排除掉
       forceHidden = true;
     }
 
@@ -55,16 +56,31 @@ const getSection = async (formFields, permissionFields, fieldSchemaArray, sectio
     if (perField.type === 'grid') {
       field = await Fields.getGridFieldSubFields(perField, formFields);
       // console.log(`perField.type grid ===> field`, field)
+    } else if (perField.type === 'table') {
+      field = await Fields.getTabledFieldSubFields(perField, formFields);
     } else if (perField.type === 'object') {
       field = await Fields.getObjectFieldSubFields(perField, formFields);
       // console.log(`perField.type object ===> field`, field)
     }
     if (field.name.indexOf(".") < 0) {
-      ctx.__formFields = formFields;
-      const amisField = await Fields.convertSFieldToAmisField(field, field.readonly, ctx);
-      // console.log(`${field.name} amisField`, field, amisField)
-      if (amisField) {
-        fieldSetBody.push(amisField);
+      if(field.type === "steedos-field"){
+        // 如果是steedos-field则不需要通过convertSFieldToAmisField函数转换，因为steedos-field组件会转换
+        fieldSetBody.push(field);
+      }
+      else{
+        ctx.__formFields = formFields;
+        const amisField = await Fields.convertSFieldToAmisField(field, field.readonly, ctx);
+        // 如果steedos-field稳定了，可以放开下面的代码直接用组件统一渲染字段
+        // const amisField = {
+        //   "type": "steedos-field",
+        //   "config": field,
+        //   "readonly": field.readonly,
+        //   "ctx": ctx
+        // };
+        // console.log(`${field.name} amisField`, field, amisField)
+        if (amisField) {
+          fieldSetBody.push(amisField);
+        }
       }
     }
   }
@@ -94,6 +110,25 @@ const getSection = async (formFields, permissionFields, fieldSchemaArray, sectio
 
   if (sectionFieldsVisibleOn.length > 0 && fieldSetBody.length === sectionFieldsVisibleOn.length) {
     section.visibleOn = `${sectionFieldsVisibleOn.join(" || ")}`
+  }
+
+  const fieldGroups = ctx.fieldGroups;
+  const group = fieldGroups && fieldGroups.find(function(groupItem){
+    return groupItem.group_name == sectionName;
+  });
+  let groupVisibleOn = group && group.visible_on;
+  if (groupVisibleOn) {
+    if (groupVisibleOn.startsWith("{{")) {
+      groupVisibleOn = `${groupVisibleOn.substring(2, groupVisibleOn.length - 2).replace(/formData./g, 'data.')}`
+    } else {
+      groupVisibleOn = `${groupVisibleOn.replace(/formData./g, 'data.')}`
+    }
+    if (section.visibleOn) {
+      section.visibleOn = `${section.visibleOn + " && " + groupVisibleOn}`;
+    }
+    else {
+      section.visibleOn = groupVisibleOn;
+    }
   }
   return section
 }
