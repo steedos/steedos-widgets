@@ -293,7 +293,10 @@ export async function getObjectCRUD(objectSchema, fields, options){
         //   [`flex-auto ${crudClassName || ""}`]: "true",
         //   "is-steedos-crud-data-empty": "${!items || COUNT(items) == 0}"
         // },
-        bodyClassName: "bg-white",//上面className写成动态的class变量对象的话，bodyClassName不会生效，会被上面的className值覆盖
+        bodyClassName: {
+          "bg-white": "true",
+          "is-steedos-crud-data-empty": "${!items || COUNT(items) == 0}"
+        },
         crudClassName: crudClassName,
         quickSaveApi: {
           url: `\${context.rootUrl}/graphql`,
