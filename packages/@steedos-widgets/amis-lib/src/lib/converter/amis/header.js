@@ -11,12 +11,13 @@ import { getObjectDetailButtonsSchemas, getObjectListViewButtonsSchemas, getObje
  */
 export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
   const { icon, label } = objectSchema;
+  const disabled_list_views = objectSchema.permissions.disabled_list_views;
   const listViewButtonOptions = [];
   each(
     objectSchema.list_views,
     (listView, name) => {
-      if(name === "lookup"){
-        // 内置lookup为弹出选择专用视图，不显示在列表切换区域
+      if(name === "lookup" || (disabled_list_views && disabled_list_views.indexOf(listView._id)>-1)){
+        // 内置lookup为弹出选择专用视图，根据用户权限被禁用的视图，不显示在列表切换区域
         return;
       }
       listViewButtonOptions.push({
