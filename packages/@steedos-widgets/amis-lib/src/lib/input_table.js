@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-07 14:25:37
+ * @LastEditTime: 2023-12-07 15:23:04
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -298,18 +298,29 @@ export const getAmisInputTableSchema = async (props) => {
     let buttonsForColumnOperations = [];
     let inlineEditMode = props.inlineEditMode;
     let showAsInlineEditMode = inlineEditMode && props.editable;
-    if(!showAsInlineEditMode){
-        if (props.editable) {
+    if (props.editable) {
+        let showEditButton = true;
+        if(showAsInlineEditMode){
+            // inline edit模式下只在有列被隐藏时才需要显示编辑按钮
+            if(props.columns && props.columns.length > 0 && props.columns.length < props.fields.length){
+                showEditButton = true;
+            }
+            else{
+                showEditButton = false;
+            }
+        }
+        // 编辑时显示编辑按钮
+        if(showEditButton){
             let buttonEditSchema = await getButtonEdit(props);
             buttonsForColumnOperations.push(buttonEditSchema);
         }
-        else{
-            // 只读时显示查看按钮
-            if(props.columns && props.columns.length > 0 && props.columns.length < props.fields.length){
-                // 只在有列被隐藏时才需要显示查看按钮
-                let buttonViewSchema = await getButtonView(props);
-                buttonsForColumnOperations.push(buttonViewSchema);
-            }
+    }
+    else{
+        // 只读时显示查看按钮
+        if(props.columns && props.columns.length > 0 && props.columns.length < props.fields.length){
+            // 只在有列被隐藏时才需要显示查看按钮
+            let buttonViewSchema = await getButtonView(props);
+            buttonsForColumnOperations.push(buttonViewSchema);
         }
     }
     if (props.removable) {
