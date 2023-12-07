@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-04 17:36:50
+ * @LastEditTime: 2023-12-07 09:47:35
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -279,7 +279,7 @@ function getButtonDelete(props) {
     };
 }
 
-export const getAmisInputTableSchema = async (props, readonly) => {
+export const getAmisInputTableSchema = async (props) => {
     if (!props.id) {
         props.id = "steedos_input_table_" + props.name + "_" + Math.random().toString(36).substr(2, 9);
     }
