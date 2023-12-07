@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-28 16:55:13
+ * @LastEditTime: 2023-12-07 14:24:57
  * @Description: 
  */
 import { Field } from '@steedos-widgets/amis-lib';
@@ -51,6 +51,7 @@ function getAmisStaticFieldType(type: string, data_type?: string, options?: any)
 };
 
 export const AmisSteedosField = async (props)=>{
+    // console.log(`AmisSteedosField===props===`, props);
 
     let steedosField = null;
     let { field, readonly = false, ctx = {}, config, $schema, static: fStatic, hideLabel } = props;
@@ -273,6 +274,9 @@ export const AmisSteedosField = async (props)=>{
             }
 
             const schema = await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
+            if(hideLabel){
+                delete schema.label;
+            }
             // console.log(`AmisSteedosField return schema`, schema)
             return schema
         }

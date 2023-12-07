@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-07 09:47:35
+ * @LastEditTime: 2023-12-07 14:25:37
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -26,12 +26,39 @@ function getFormFields(props, mode = "edit") {
     }) || [];
 }
 
+function getInputTableCell(field, showAsInlineEditMode) {
+    if(showAsInlineEditMode){
+        return {
+            label: field.label,
+            name: field.name,
+            quickEdit: {
+                "type": "steedos-field",
+                "config": field,
+                hideLabel: true
+            }
+        }
+    }
+    else{
+        return {
+            "type": "steedos-field",
+            "config": field,
+            "static": true,
+            "readonly": true,
+            label: field.label,
+            name: field.name,
+            hideLabel: true
+        }
+    }
+}
+
 /**
  * @param {*} props 
  * @param {*} mode edit/new/readonly
  */
 async function getInputTableColumns(props) {
     let columns = props.columns || [];
+    let inlineEditMode = props.inlineEditMode;
+    let showAsInlineEditMode = inlineEditMode && props.editable;
     // 实测过，直接不生成对应的隐藏column并不会对input-table值造成丢失问题，隐藏的列字段值能正常维护
     let fields = props.fields;
     if(columns && columns.length){
@@ -55,16 +82,8 @@ async function getInputTableColumns(props) {
                 }
             }
             if(field){
-                return {
-                    "type": "steedos-field",
-                    "config": field,
-                    "static": true,
-                    "readonly": true,
-                    label: field.label,
-                    name: field.name,
-                    hideLabel: true,
-                    ...extendColumnProps
-                }
+                let tableCell = getInputTableCell(field, showAsInlineEditMode);
+                return Object.assign({}, tableCell, extendColumnProps);
             }
             else{
                 return column;
@@ -73,15 +92,8 @@ async function getInputTableColumns(props) {
     }
     else{
         return fields.map(function(field){
-            return {
-                "type": "steedos-field",
-                "config": field,
-                "static": true,
-                "readonly": true,
-                label: field.label,
-                name: field.name,
-                hideLabel: true
-            }
+            let tableCell = getInputTableCell(field, showAsInlineEditMode);
+            return tableCell;
         }) || [];
     }
 }
@@ -284,16 +296,20 @@ export const getAmisInputTableSchema = async (props) => {
         props.id = "steedos_input_table_" + props.name + "_" + Math.random().toString(36).substr(2, 9);
     }
     let buttonsForColumnOperations = [];
-    if (props.editable) {
-        let buttonEditSchema = await getButtonEdit(props);
-        buttonsForColumnOperations.push(buttonEditSchema);
-    }
-    else{
-        // 只读时显示查看按钮
-        if(props.columns && props.columns.length > 0 && props.columns.length < props.fields.length){
-            // 只在有列被隐藏时才需要显示查看按钮
-            let buttonViewSchema = await getButtonView(props);
-            buttonsForColumnOperations.push(buttonViewSchema);
+    let inlineEditMode = props.inlineEditMode;
+    let showAsInlineEditMode = inlineEditMode && props.editable;
+    if(!showAsInlineEditMode){
+        if (props.editable) {
+            let buttonEditSchema = await getButtonEdit(props);
+            buttonsForColumnOperations.push(buttonEditSchema);
+        }
+        else{
+            // 只读时显示查看按钮
+            if(props.columns && props.columns.length > 0 && props.columns.length < props.fields.length){
+                // 只在有列被隐藏时才需要显示查看按钮
+                let buttonViewSchema = await getButtonView(props);
+                buttonsForColumnOperations.push(buttonViewSchema);
+            }
         }
     }
     if (props.removable) {
@@ -327,6 +343,9 @@ export const getAmisInputTableSchema = async (props) => {
             "width": buttonsForColumnOperations.length > 1 ? "46px" : "20px"
         });
     }
+    if(showAsInlineEditMode){
+        inputTableSchema.needConfirm = false;
+    }
     let schema = {
         "type": "wrapper",
         "size": "none",
@@ -351,5 +370,6 @@ export const getAmisInputTableSchema = async (props) => {
         delete props.amis.id;
         Object.assign(schema.body[0], props.amis);
     }
+    // console.log("===schema===", schema);
     return schema;
 }
