@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-07 15:23:04
+ * @LastEditTime: 2023-12-07 15:49:56
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -207,11 +207,11 @@ async function getButtonNew(props) {
     };
 }
 
-async function getButtonEdit(props) {
+async function getButtonEdit(props, showAsInlineEditMode) {
     return {
         "type": "button",
         "label": "",
-        "icon": "fa fa-pencil",
+        "icon": `fa fa-${showAsInlineEditMode ? "expand" : "pencil"}`,//inline edit模式时显示为放开按钮，只读时显示为笔按钮
         "level": "link",
         "onEvent": {
             "click": {
@@ -242,7 +242,7 @@ async function getButtonView(props) {
     return {
         "type": "button",
         "label": "",
-        "icon": "fa fa-external-link",
+        "icon": "fa fa-expand",//fa-external-link
         "level": "link",
         "onEvent": {
             "click": {
@@ -311,7 +311,7 @@ export const getAmisInputTableSchema = async (props) => {
         }
         // 编辑时显示编辑按钮
         if(showEditButton){
-            let buttonEditSchema = await getButtonEdit(props);
+            let buttonEditSchema = await getButtonEdit(props, showAsInlineEditMode);
             buttonsForColumnOperations.push(buttonEditSchema);
         }
     }
