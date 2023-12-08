@@ -19,7 +19,7 @@ function getFormFields(props, mode = "edit") {
             "name": item.name,
             "config": item
         }
-        if(mode === "readonly"){
+        if (mode === "readonly") {
             formItem.static = true;
         }
         return formItem;
@@ -27,7 +27,7 @@ function getFormFields(props, mode = "edit") {
 }
 
 function getInputTableCell(field, showAsInlineEditMode) {
-    if(showAsInlineEditMode){
+    if (showAsInlineEditMode) {
         return {
             label: field.label,
             name: field.name,
@@ -38,7 +38,7 @@ function getInputTableCell(field, showAsInlineEditMode) {
             }
         }
     }
-    else{
+    else {
         return {
             "type": "steedos-field",
             "config": field,
@@ -61,37 +61,37 @@ async function getInputTableColumns(props) {
     let showAsInlineEditMode = inlineEditMode && props.editable;
     // 实测过，直接不生成对应的隐藏column并不会对input-table值造成丢失问题，隐藏的列字段值能正常维护
     let fields = props.fields;
-    if(columns && columns.length){
-        return columns.map(function(column){
+    if (columns && columns.length) {
+        return columns.map(function (column) {
             let field, extendColumnProps = {};
-            if(typeof column === "string"){
+            if (typeof column === "string") {
                 // 如果字符串，则取出要显示的列配置
-                field = fields.find(function(fieldItem){
+                field = fields.find(function (fieldItem) {
                     return fieldItem.name === column;
                 });
             }
-            else{
+            else {
                 // 如果是对象，则合并到steedos-field的config.amis属性中，steedos组件会把config.amis属性混合到最终生成的input-table column
-                field = fields.find(function(fieldItem){
+                field = fields.find(function (fieldItem) {
                     return fieldItem.name === column.name;
                 });
-                if(field){
+                if (field) {
                     // field.amis = Object.assign({}, field.amis, column);
                     // 如果把column合并到field.amis，column的label/width等属性不会生效，只能放外层合并
                     extendColumnProps = column;
                 }
             }
-            if(field){
+            if (field) {
                 let tableCell = getInputTableCell(field, showAsInlineEditMode);
                 return Object.assign({}, tableCell, extendColumnProps);
             }
-            else{
+            else {
                 return column;
             }
         });
     }
-    else{
-        return fields.map(function(field){
+    else {
+        return fields.map(function (field) {
             let tableCell = getInputTableCell(field, showAsInlineEditMode);
             return tableCell;
         }) || [];
@@ -300,24 +300,24 @@ export const getAmisInputTableSchema = async (props) => {
     let showAsInlineEditMode = inlineEditMode && props.editable;
     if (props.editable) {
         let showEditButton = true;
-        if(showAsInlineEditMode){
+        if (showAsInlineEditMode) {
             // inline edit模式下只在有列被隐藏时才需要显示编辑按钮
-            if(props.columns && props.columns.length > 0 && props.columns.length < props.fields.length){
+            if (props.columns && props.columns.length > 0 && props.columns.length < props.fields.length) {
                 showEditButton = true;
             }
-            else{
+            else {
                 showEditButton = false;
             }
         }
         // 编辑时显示编辑按钮
-        if(showEditButton){
+        if (showEditButton) {
             let buttonEditSchema = await getButtonEdit(props, showAsInlineEditMode);
             buttonsForColumnOperations.push(buttonEditSchema);
         }
     }
-    else{
+    else {
         // 只读时显示查看按钮
-        if(props.columns && props.columns.length > 0 && props.columns.length < props.fields.length){
+        if (props.columns && props.columns.length > 0 && props.columns.length < props.fields.length) {
             // 只在有列被隐藏时才需要显示查看按钮
             let buttonViewSchema = await getButtonView(props);
             buttonsForColumnOperations.push(buttonViewSchema);
@@ -354,7 +354,7 @@ export const getAmisInputTableSchema = async (props) => {
             "width": buttonsForColumnOperations.length > 1 ? "46px" : "20px"
         });
     }
-    if(showAsInlineEditMode){
+    if (showAsInlineEditMode) {
         inputTableSchema.needConfirm = false;
     }
     let schema = {
