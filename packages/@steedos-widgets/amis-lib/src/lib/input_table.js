@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-12 11:45:13
+ * @LastEditTime: 2023-12-12 12:00:17
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -512,6 +512,7 @@ async function getButtonView(props) {
                             "showLoading": true,
                             "className": "app-popover",
                             "closeOnEsc": false,
+                            "actions": [],
                             "data": {
                                 "grid": "${grid}",
                                 "index": "${index}",
