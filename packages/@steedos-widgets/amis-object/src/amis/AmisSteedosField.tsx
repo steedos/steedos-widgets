@@ -2,11 +2,11 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-28 16:55:13
+ * @LastEditTime: 2023-12-11 11:30:30
  * @Description: 
  */
 import { Field } from '@steedos-widgets/amis-lib';
-import { isArray, isEmpty, isString, pick, includes } from 'lodash';
+import { isArray, isEmpty, isString, pick, includes, clone } from 'lodash';
 
 const defaultImageValue = "data:image/svg+xml,%3C%3Fxml version='1.0' standalone='no'%3F%3E%3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3E%3Csvg t='1631083237695' class='icon' viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg' p-id='2420' xmlns:xlink='http://www.w3.org/1999/xlink' width='1024' height='1024'%3E%3Cdefs%3E%3Cstyle type='text/css'%3E%3C/style%3E%3C/defs%3E%3Cpath d='M959.872 128c0.032 0.032 0.096 0.064 0.128 0.128v767.776c-0.032 0.032-0.064 0.096-0.128 0.128H64.096c-0.032-0.032-0.096-0.064-0.128-0.128V128.128c0.032-0.032 0.064-0.096 0.128-0.128h895.776zM960 64H64C28.8 64 0 92.8 0 128v768c0 35.2 28.8 64 64 64h896c35.2 0 64-28.8 64-64V128c0-35.2-28.8-64-64-64z' p-id='2421' fill='%23bfbfbf'%3E%3C/path%3E%3Cpath d='M832 288c0 53.024-42.976 96-96 96s-96-42.976-96-96 42.976-96 96-96 96 42.976 96 96zM896 832H128V704l224-384 256 320h64l224-192z' p-id='2422' fill='%23bfbfbf'%3E%3C/path%3E%3C/svg%3E";
 
@@ -51,6 +51,7 @@ function getAmisStaticFieldType(type: string, data_type?: string, options?: any)
 };
 
 export const AmisSteedosField = async (props)=>{
+    // console.log(`AmisSteedosField===props===`, props);
 
     let steedosField = null;
     let { field, readonly = false, ctx = {}, config, $schema, static: fStatic, hideLabel } = props;
@@ -65,17 +66,20 @@ export const AmisSteedosField = async (props)=>{
         ctx = JSON.parse(ctx);
     }
 
-    if(config){
-        steedosField = config;
-        if(isString(steedosField)){
-            steedosField = JSON.parse(config);
-        }
-    }else{
-        steedosField = field;
-        if(isString(field)){
-            steedosField = JSON.parse(field);
-        }
+    steedosField = config ? config : field;
+    if(isString(steedosField)){
+        steedosField = JSON.parse(steedosField);
     }
+    else{
+        // 这里要clone是因为后面图片字段类型执行steedosField.amis = ...的时候会造成input-table中的图片字段在弹出编辑表单点击确认后整个input-table组件重新渲染了，从而导致其翻页功能异常
+        steedosField = clone(steedosField);
+    }
+    
+    if(!fStatic && steedosField.readonly && !props.data.hasOwnProperty("_display")){
+        // 字段配置为只读，强制走fStatic模式，加上_display判断是为了不影响历史代码，比如直接在ObjectForm中调用steedos-field组件
+        fStatic = true;
+    }
+
     try {
         if(fStatic && (steedosField.type === 'lookup' || steedosField.type === 'master_detail')){
             // 这里有_display时不可以不走以下的static逻辑代码，因为审批王会特意传入_display，且其中lookup字段static时需要走下面的代码
@@ -273,6 +277,9 @@ export const AmisSteedosField = async (props)=>{
             }
 
             const schema = await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
+            if(hideLabel){
+                delete schema.label;
+            }
             // console.log(`AmisSteedosField return schema`, schema)
             return schema
         }

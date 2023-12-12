@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-26 10:38:52
+ * @LastEditTime: 2023-12-07 16:02:55
  */
 const config: any = {
   componentType: 'amisSchema', // amisSchema || react 
@@ -250,6 +250,18 @@ export default {
             justify: true
           },
           label: '可拖拽',
+        },
+        {
+          type: "switch",
+          name: "inlineEditMode",
+          mode: "horizontal",
+          labelRemark: "可编辑时显示为内联模式直接在单元格中编辑字段值。",
+          horizontal: {
+            left: 9,
+            right: 4,
+            justify: true
+          },
+          label: '内联模式',
         },
         {
           type: "switch",
