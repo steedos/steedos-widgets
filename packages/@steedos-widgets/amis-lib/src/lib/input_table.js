@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-12 11:26:24
+ * @LastEditTime: 2023-12-12 11:45:13
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -224,7 +224,7 @@ function getFormPaginationWrapper(props, form) {
         {
             "type": "wrapper",
             "size": "none",
-            "className": "flex justify-end border-y border-gray-200 -mx-6 shadow-inner",
+            "className": "flex justify-end border-y border-gray-200 -mx-6 shadow-inner sticky top-0 right-0 left-0 z-20 bg-white mb-4",
             "body": [
                 getFormPagination(props)
             ]
