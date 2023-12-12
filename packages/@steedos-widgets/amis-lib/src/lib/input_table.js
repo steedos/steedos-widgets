@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-12 12:00:17
+ * @LastEditTime: 2023-12-12 13:50:23
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -238,6 +238,25 @@ function getFormPaginationWrapper(props, form) {
             }
         })
     ];
+    let onServiceInitedScript = `
+        // 以下脚本在inlineEditMode模式时才有必要执行（不过执行了也没有坏处，纯粹是没必要），是为了解决：
+        // inlineEditMode模式时，用户在表格单元格中直接修改数据，然后弹出的表单form中并没有包含单元格中修改的内容
+        // 思路是每次弹出form之前先把其changedItems同步更新为最新值，这样就能在弹出form中包含单元格中做的修改
+        // 注意：service init事件只会在每次弹出窗口时才执行，在触发翻页时并不会触发service init事件
+        let inlineEditMode = ${props.inlineEditMode};
+        if(!inlineEditMode){
+            return;
+        }
+        let scope = event.context.scoped;
+        let wrapperServiceId = event.data.wrapperServiceId;
+        let wrapperService = scope.getComponentById(wrapperServiceId);
+        let wrapperServiceData = wrapperService.getData();
+        let lastestFieldValue = wrapperServiceData["${props.name}"];//这里不可以用event.data["${props.name}"]因为amis input talbe有一层单独的作用域，其值会延迟一拍
+        //不可以直接像event.data.changedItems = originalFieldValue; 这样整个赋值，否则作用域会断
+        event.data.changedItems.forEach(function(n,i){
+            event.data.changedItems[i] = lastestFieldValue[i];
+        });
+    `;
     let schema = {
         "type": "service",
         "id": serviceId,
@@ -250,6 +269,7 @@ function getFormPaginationWrapper(props, form) {
             },
             "requestAdaptor": "api.data={query: '{spaces__findOne(id: \"none\"){_id,name}}'};return api;",
             "adaptor": `
+                console.log("==adaptor===");
                 const formBody = ${JSON.stringify(formBody)};
                 return {
                     "body": formBody
@@ -263,6 +283,16 @@ function getFormPaginationWrapper(props, form) {
             "total": "${changedItems.length}",
             "paginationServiceId": serviceId,
             "formId": form.id
+        },
+        "onEvent": {
+          "init": {
+            "actions": [
+              {
+                "actionType": "custom",
+                "script": onServiceInitedScript
+              }
+            ]
+          }
         }
     };
     return schema;
@@ -424,10 +454,9 @@ async function getButtonEdit(props, showAsInlineEditMode) {
     let onCancelScript = `
         let scope = event.context.scoped;
         let wrapperServiceId = event.data.wrapperServiceId;
-        let wrapperService = scope.getComponentById(event.data.wrapperServiceId);
+        let wrapperService = scope.getComponentById(wrapperServiceId);
         let wrapperServiceData = wrapperService.getData();
         let originalFieldValue = wrapperServiceData["${props.name}"];//这里不可以用event.data["${props.name}"]因为amis input talbe有一层单独的作用域，其值会延迟一拍
-        let newFieldValue = wrapperServiceData.changedItems;
         //不可以直接像event.data.changedItems = originalFieldValue; 这样整个赋值，否则作用域会断，造成无法还原
         event.data.changedItems.forEach(function(n,i){
             event.data.changedItems[i] = originalFieldValue[i];
