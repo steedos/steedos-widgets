@@ -483,6 +483,9 @@ export async function getTableColumns(fields, options){
     const allowEdit = options.permissions?.allowEdit && !options.isLookup && options.enable_inline_edit != false;
     
     for (const field of fields) {
+        if(field.hidden || field.extra){
+            continue;
+        }
         //增加quickEdit属性，实现快速编辑
         const quickEditSchema = allowEdit ? await getQuickEditSchema(field, options) : allowEdit;
         let className = "";
