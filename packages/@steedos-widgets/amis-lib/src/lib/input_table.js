@@ -269,7 +269,6 @@ function getFormPaginationWrapper(props, form) {
             },
             "requestAdaptor": "api.data={query: '{spaces__findOne(id: \"none\"){_id,name}}'};return api;",
             "adaptor": `
-                console.log("==adaptor===");
                 const formBody = ${JSON.stringify(formBody)};
                 return {
                     "body": formBody
