@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-12 10:46:48
+ * @LastEditTime: 2023-12-12 11:26:24
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -164,7 +164,7 @@ function getFormPagination(props) {
     `;
     return {
         "type": "wrapper",
-        "size": "none",
+        "className": "py-2",
         "body": [
             {
                 "type": "button",
@@ -187,7 +187,7 @@ function getFormPagination(props) {
             },
             {
                 "type": "tpl",
-                "tpl": "${page}/${total}---${index}"
+                "tpl": "${page}/${total}"
             },
             {
                 "type": "button",
@@ -224,7 +224,7 @@ function getFormPaginationWrapper(props, form) {
         {
             "type": "wrapper",
             "size": "none",
-            "className": "flex justify-end",
+            "className": "flex justify-end border-y border-gray-200 -mx-6 shadow-inner",
             "body": [
                 getFormPagination(props)
             ]
