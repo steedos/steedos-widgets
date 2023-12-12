@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-12 13:50:23
+ * @LastEditTime: 2023-12-12 16:56:43
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -284,14 +284,14 @@ function getFormPaginationWrapper(props, form) {
             "formId": form.id
         },
         "onEvent": {
-          "init": {
-            "actions": [
-              {
-                "actionType": "custom",
-                "script": onServiceInitedScript
-              }
-            ]
-          }
+            "init": {
+                "actions": [
+                    {
+                        "actionType": "custom",
+                        "script": onServiceInitedScript
+                    }
+                ]
+            }
         }
     };
     return schema;
