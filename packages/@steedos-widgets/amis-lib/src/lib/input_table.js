@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-12 16:56:43
+ * @LastEditTime: 2023-12-12 17:08:33
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -494,6 +494,12 @@ async function getButtonEdit(props, showAsInlineEditMode) {
                             "className": "app-popover",
                             "closeOnEsc": false,
                             "data": {
+                                // 这里必须加data数据映射，否则翻页功能中取changedItems值时会乱，比如翻页编辑后会把上一页中没改过的字段值带过去
+                                // 额外把华炎魔方主表记录ObjectForm中的字段值从record变量中映射到子表form中，因为子表lookup字段filtersFunction中可能依赖了主表记录中的字段值，比如“工作流规则”对象“时间触发器”字段中的“日期字段”字段
+                                // 额外把global、uiSchema也映射过去，有可能要用，后续需要用到其他变更可以这里加映射
+                                "&": "${record}",
+                                "global": "${global}",
+                                "uiSchema": "${uiSchema}",
                                 "grid": "${grid}",
                                 "index": "${index}",
                                 "changedItems": "${changedItems}",
@@ -542,6 +548,10 @@ async function getButtonView(props) {
                             "closeOnEsc": false,
                             "actions": [],
                             "data": {
+                                // 这里必须加data数据映射，否则翻页功能中取changedItems值时会乱，比如翻页编辑后会把上一页中没改过的字段值带过去
+                                // 额外把华炎魔方主表记录ObjectForm中的字段值从formData变量中映射到子表form中，因为子表lookup字段filtersFunction中可能依赖了主表记录中的字段值，比如“工作流规则”对象“时间触发器”字段中的“日期字段”字段
+                                // global、uiSchema等常用变量本来就在formData变量已经存在了，无需另外映射
+                                "&": "${formData}",
                                 "grid": "${grid}",
                                 "index": "${index}",
                                 "changedItems": "${changedItems}",
