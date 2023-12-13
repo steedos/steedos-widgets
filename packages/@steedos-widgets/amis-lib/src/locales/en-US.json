@@ -12,6 +12,7 @@
     "frontend_form_confirm": "Confirm",
     "frontend_form_delete": "Delete",
     "frontend_form_view": "view",
+    "frontend_form_details": "details",
     "frontend_delete_confirm_text": "Are you sure you want to delete this item?",
     "frontend_delete_many_selected_required": "Please select the item to be deleted",
     "frontend_delete_many_confirm_text": "Are you sure you want to delete?",
