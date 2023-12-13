@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-11 11:30:30
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-12-13 15:53:55
  * @Description: 
  */
 import { Field } from '@steedos-widgets/amis-lib';
@@ -82,6 +82,57 @@ export const AmisSteedosField = async (props)=>{
 
     try {
         if(fStatic && (steedosField.type === 'lookup' || steedosField.type === 'master_detail')){
+            const defaultSource = {
+                "method": "post",
+                "url": "${context.rootUrl}/graphql",
+                "requestAdaptor": `
+                    var steedosField = ${JSON.stringify(steedosField)};
+                    var objectName, filters, valueFieldKey, labelFieldKey;
+                    if(_.isString(steedosField.reference_to)){
+                        const referenceTo = getReferenceToSync(steedosField);
+                        const referenceToField = steedosField.reference_to_field || '_id';
+
+                        objectName = referenceTo.objectName
+                        valueFieldKey = referenceTo && referenceTo.valueField?.name || '_id' ;
+                        labelFieldKey = referenceTo && referenceTo.labelField?.name || 'name';
+                        let value = api.data[steedosField.name];
+                        if(_.isString(value)){
+                            value = [value]
+                        }
+                        filters = [referenceToField, "in", value || []];
+                        if(objectName == "object_fields"){
+                            //对象为object_fields时，必须加上object的过滤条件
+                            const filtersFunction = ${steedosField.filtersFunction || steedosField._filtersFunction};
+                            if(filtersFunction){
+                                const _filters = filtersFunction(filters, api.data);
+                                if(_filters && _filters.length > 0){
+                                    filters = [filters,_filters]
+                                }
+                            }
+                        }
+                    }else{
+                        const _steedosField = {
+                            ...steedosField,
+                            reference_to: api.data[steedosField.name].o
+                        }
+                        const referenceTo = getReferenceToSync(_steedosField);
+                        const referenceToField = _steedosField.reference_to_field || '_id';
+
+                        objectName = referenceTo.objectName
+                        valueFieldKey = referenceTo && referenceTo.valueField?.name || '_id' ;
+                        labelFieldKey = referenceTo && referenceTo.labelField?.name || 'name';
+                        let value = api.data[_steedosField.name] && api.data[_steedosField.name].ids;
+                        filters = [referenceToField, "in", value || []];
+                    }
+                    api.data = {
+                        query: '{options:' + objectName + '(filters: ' + JSON.stringify(filters) + '){label: ' + labelFieldKey + ',value: ' + valueFieldKey + '}}'
+                    }
+                    return api;
+                `,
+                "trackExpression": "${" + steedosField.name + "}",
+                "cache": 3000
+            };
+            const source = steedosField.amis?.source || steedosField.amis?.autoComplete || defaultSource;
             // 这里有_display时不可以不走以下的static逻辑代码，因为审批王会特意传入_display，且其中lookup字段static时需要走下面的代码
             const schema = Object.assign({}, {
                 type: 'select',
@@ -90,56 +141,7 @@ export const AmisSteedosField = async (props)=>{
                 label: steedosField.label,
                 static: true,
                 className: steedosField.amis?.className,
-                source: {
-                    "method": "post",
-                    "url": "${context.rootUrl}/graphql",
-                    "requestAdaptor": `
-                        var steedosField = ${JSON.stringify(steedosField)};
-                        var objectName, filters, valueFieldKey, labelFieldKey;
-                        if(_.isString(steedosField.reference_to)){
-                            const referenceTo = getReferenceToSync(steedosField);
-                            const referenceToField = steedosField.reference_to_field || '_id';
-
-                            objectName = referenceTo.objectName
-                            valueFieldKey = referenceTo && referenceTo.valueField?.name || '_id' ;
-                            labelFieldKey = referenceTo && referenceTo.labelField?.name || 'name';
-                            let value = api.data[steedosField.name];
-                            if(_.isString(value)){
-                                value = [value]
-                            }
-                            filters = [referenceToField, "in", value || []];
-                            if(objectName == "object_fields"){
-                                //对象为object_fields时，必须加上object的过滤条件
-                                const filtersFunction = ${steedosField.filtersFunction || steedosField._filtersFunction};
-                                if(filtersFunction){
-                                    const _filters = filtersFunction(filters, api.data);
-                                    if(_filters && _filters.length > 0){
-                                        filters = [filters,_filters]
-                                    }
-                                }
-                            }
-                        }else{
-                            const _steedosField = {
-                                ...steedosField,
-                                reference_to: api.data[steedosField.name].o
-                            }
-                            const referenceTo = getReferenceToSync(_steedosField);
-                            const referenceToField = _steedosField.reference_to_field || '_id';
-
-                            objectName = referenceTo.objectName
-                            valueFieldKey = referenceTo && referenceTo.valueField?.name || '_id' ;
-                            labelFieldKey = referenceTo && referenceTo.labelField?.name || 'name';
-                            let value = api.data[_steedosField.name] && api.data[_steedosField.name].ids;
-                            filters = [referenceToField, "in", value || []];
-                        }
-                        api.data = {
-                            query: '{options:' + objectName + '(filters: ' + JSON.stringify(filters) + '){label: ' + labelFieldKey + ',value: ' + valueFieldKey + '}}'
-                        }
-                        return api;
-                    `,
-                    "trackExpression": "${" + steedosField.name + "}",
-                    "cache": 3000
-                },
+                source: source,
             }, pick(steedosField.amis || {}, ['className', 'inline', 'label', 'labelAlign', 'name', 'labelRemark', 'description', 'placeholder', 'staticClassName', 'staticLabelClassName', 'staticInputClassName', 'staticSchema']));
             schema.placeholder = "";
             if(hideLabel){
