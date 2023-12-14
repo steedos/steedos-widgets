@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-14 13:32:44
+ * @LastEditTime: 2023-12-14 14:39:27
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -729,6 +729,15 @@ export const getAmisInputTableSchema = async (props) => {
     if (props.amis) {
         delete props.amis.id;
         Object.assign(schema.body[0], props.amis);
+    }
+    const isAnyFieldHasDependOn = (props.fields || []).find(function (item) {
+        return item.depend_on;
+    });
+    if(isAnyFieldHasDependOn){
+        // 有任意一个子字段有depend_on属性时，强制设置禁用静态模式
+        Object.assign(schema.body[0], {
+            strictMode: false
+        });
     }
     // console.log("===schema===", schema);
     return schema;
