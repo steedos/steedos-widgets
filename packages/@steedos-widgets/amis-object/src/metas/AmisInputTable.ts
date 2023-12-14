@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-14 11:56:41
+ * @LastEditTime: 2023-12-14 14:51:35
  */
 const config: any = {
   componentType: 'amisSchema', // amisSchema || react 
@@ -279,7 +279,7 @@ export default {
           type: "switch",
           name: "strictMode",
           mode: "horizontal",
-          labelRemark: "为了性能，默认其他表单项项值变化不会让当前表格更新，有时候为了同步获取主表单项字段值，比如有类型为lookup且配置了depend_on属性的子字段时，需要关闭静态模式。",
+          labelRemark: "为了性能，默认其他表单项项值变化不会让当前表格更新，有时候为了同步获取其它主表单项字段值，需要关闭静态模式，当有类型为lookup且配置了depend_on属性的子字段时，会自动强制关闭静态模式。",
           horizontal: {
             left: 9,
             right: 4,
