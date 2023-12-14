@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-14 14:39:27
+ * @LastEditTime: 2023-12-14 17:41:21
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -222,8 +222,9 @@ function getFormPaginationWrapper(props, form) {
     let serviceId = `service_popup_pagination_wrapper__${props.id}`;
     let innerForm = Object.assign({}, form, {
         "data": {
-            // "&": `\${${props.name}[index]}`,
-            "&": "${changedItems[index]}"
+            //这里加__super前缀是因为__parentForm变量（即主表单）中可能会正好有名为index的字段
+            // 比如“对象字段”对象options字段是一个子表字段，但是主表（即“对象字段”对象）中正好有一个名为index的字段
+            "&": "${changedItems[__super.index]}" 
         }
     });
     let formBody = [
