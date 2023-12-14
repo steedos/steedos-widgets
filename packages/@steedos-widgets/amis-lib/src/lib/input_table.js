@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-14 11:17:40
+ * @LastEditTime: 2023-12-14 11:27:27
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -511,7 +511,6 @@ async function getButtonEdit(props, showAsInlineEditMode) {
                                 "__parentForm": "${__super.__super || {}}",
                                 "global": "${global}",
                                 "uiSchema": "${uiSchema}",
-                                "grid": "${grid}",
                                 "index": "${index}",
                                 "changedItems": "${changedItems}",
                                 "wrapperServiceId": "${wrapperServiceId}"
@@ -566,7 +565,6 @@ async function getButtonView(props) {
                                 // 换成从__super来映射上级表单数据是因为对象列表视图界面中每行下拉菜单中的编辑按钮弹出的表单中的子表所在作用域中没有formData变量
                                 // 映射到中间变量__parentForm而不是直接用&展开映射是为了避免表单中字段名与作用域中变量重名
                                 "__parentForm": "${__super.__super || {}}",
-                                "grid": "${grid}",
                                 "index": "${index}",
                                 "changedItems": "${changedItems}",
                                 "wrapperServiceId": "${wrapperServiceId}"
