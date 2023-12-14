@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-12 17:13:37
+ * @LastEditTime: 2023-12-14 11:17:40
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -220,6 +220,13 @@ function getFormPagination(props) {
  */
 function getFormPaginationWrapper(props, form) {
     let serviceId = `service_popup_pagination_wrapper__${props.id}`;
+    let innerForm = Object.assign({}, form, {
+        "canAccessSuperData": false,
+        "data": {
+            // "&": `\${${props.name}[index]}`,
+            "&": "${changedItems[index]}"
+        }
+    });
     let formBody = [
         {
             "type": "wrapper",
@@ -229,14 +236,15 @@ function getFormPaginationWrapper(props, form) {
                 getFormPagination(props)
             ]
         },
-        // form
-        Object.assign({}, form, {
-            "canAccessSuperData": false,
+        {
+            "type": "service",
+            "body": [
+                innerForm
+            ],
             "data": {
-                // "&": `\${${props.name}[index]}`,
-                "&": "${changedItems[index]}"
+                "&": "${__parentForm}"
             }
-        })
+        }
     ];
     let onServiceInitedScript = `
         // 以下脚本在inlineEditMode模式时才有必要执行（不过执行了也没有坏处，纯粹是没必要），是为了解决：
@@ -497,7 +505,10 @@ async function getButtonEdit(props, showAsInlineEditMode) {
                                 // 这里必须加data数据映射，否则翻页功能中取changedItems值时会乱，比如翻页编辑后会把上一页中没改过的字段值带过去
                                 // 额外把华炎魔方主表记录ObjectForm中的字段值从record变量中映射到子表form中，因为子表lookup字段filtersFunction中可能依赖了主表记录中的字段值，比如“工作流规则”对象“时间触发器”字段中的“日期字段”字段
                                 // 额外把global、uiSchema也映射过去，有可能要用，后续需要用到其他变更可以这里加映射
-                                "&": "${record || {}}",
+                                // "&": "${record || {}}",
+                                // 换成从__super来映射上级表单数据是因为对象列表视图界面中每行下拉菜单中的编辑按钮弹出的表单中的子表所在作用域中没有record变量
+                                // 映射到中间变量__parentForm而不是直接用&展开映射是为了避免表单中字段名与作用域中变量重名
+                                "__parentForm": "${__super.__super || {}}",
                                 "global": "${global}",
                                 "uiSchema": "${uiSchema}",
                                 "grid": "${grid}",
@@ -551,7 +562,10 @@ async function getButtonView(props) {
                                 // 这里必须加data数据映射，否则翻页功能中取changedItems值时会乱，比如翻页编辑后会把上一页中没改过的字段值带过去
                                 // 额外把华炎魔方主表记录ObjectForm中的字段值从formData变量中映射到子表form中，因为子表lookup字段filtersFunction中可能依赖了主表记录中的字段值，比如“工作流规则”对象“时间触发器”字段中的“日期字段”字段
                                 // global、uiSchema等常用变量本来就在formData变量已经存在了，无需另外映射
-                                "&": "${formData || {}}",
+                                // "&": "${formData || {}}",
+                                // 换成从__super来映射上级表单数据是因为对象列表视图界面中每行下拉菜单中的编辑按钮弹出的表单中的子表所在作用域中没有formData变量
+                                // 映射到中间变量__parentForm而不是直接用&展开映射是为了避免表单中字段名与作用域中变量重名
+                                "__parentForm": "${__super.__super || {}}",
                                 "grid": "${grid}",
                                 "index": "${index}",
                                 "changedItems": "${changedItems}",
@@ -671,7 +685,8 @@ export const getAmisInputTableSchema = async (props) => {
         "strictMode": true,
         "showTableAddBtn": false,
         "showFooterAddBtn": false,
-        "className": props.tableClassName
+        "className": props.tableClassName,
+        "strictMode": false
     };
     if (buttonsForColumnOperations.length) {
         inputTableSchema.columns.push({
