@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-14 11:57:21
+ * @LastEditTime: 2023-12-14 13:32:44
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -221,7 +221,6 @@ function getFormPagination(props) {
 function getFormPaginationWrapper(props, form) {
     let serviceId = `service_popup_pagination_wrapper__${props.id}`;
     let innerForm = Object.assign({}, form, {
-        "canAccessSuperData": false,
         "data": {
             // "&": `\${${props.name}[index]}`,
             "&": "${changedItems[index]}"
@@ -321,6 +320,7 @@ async function getForm(props, mode = "edit") {
         "mode": "normal",
         "body": body,
         "wrapWithPanel": false,
+        "canAccessSuperData": false,
         "className": "steedos-object-form steedos-amis-form"
     };
     if (mode === "edit") {
