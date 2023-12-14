@@ -258,6 +258,13 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             }
 
             break;
+        case 'color':
+            convertData = {
+                type: getAmisStaticFieldType('color', readonly),
+                name: field.name,
+                label: field.label
+            }
+            break;
         case 'boolean':
             convertData = {
                 type: getAmisStaticFieldType('checkbox', readonly),
