@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-15 11:19:11
+ * @LastEditTime: 2023-12-15 13:41:53
  * @Description: 
  */
 import { Field } from '@steedos-widgets/amis-lib';
@@ -82,7 +82,7 @@ export const AmisSteedosField = async (props)=>{
 
     try {
         if(fStatic && (steedosField.type === 'lookup' || steedosField.type === 'master_detail')){
-            let defaultSource = {
+            let defaultSource: any = {
                 "method": "post",
                 "url": "${context.rootUrl}/graphql",
                 "requestAdaptor": `
@@ -137,6 +137,26 @@ export const AmisSteedosField = async (props)=>{
             if(!steedosField.reference_to){
                 // 兼容lookup字段未配置reference_to属性的情况，当普通下拉框字段用
                 defaultSource = null;
+                if(steedosField.optionsFunction || steedosField._optionsFunction){
+                    defaultSource = {
+                        "url": "${context.rootUrl}/api/v1/spaces/none",
+                        data: {$: "$$"},
+                    };
+                    defaultSource.adaptor = `
+                        var options = eval(${steedosField.optionsFunction || steedosField._optionsFunction})(api.body.$);
+                        if(api.body.$term){
+                            options = _.filter(options, function(o) {
+                                var label = o.label;
+                                return label.toLowerCase().indexOf(api.body.$term.toLowerCase()) > -1;
+                            });
+                        }
+                        if(!payload.data){
+                            payload.data = {};
+                        }
+                        payload.data.options = options;
+                        return payload;
+                    `;
+                }
             }
             const source = steedosField.amis?.source || steedosField.amis?.autoComplete || defaultSource;
             // 这里有_display时不可以不走以下的static逻辑代码，因为审批王会特意传入_display，且其中lookup字段static时需要走下面的代码
