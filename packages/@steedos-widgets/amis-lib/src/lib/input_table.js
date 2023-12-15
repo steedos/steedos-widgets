@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-15 16:36:15
+ * @LastEditTime: 2023-12-15 17:27:04
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -730,9 +730,11 @@ export const getAmisInputTableSchema = async (props) => {
             "body": footerToolbar
         });
     }
-    if (props.amis) {
-        delete props.amis.id;
-        Object.assign(schema.body[0], props.amis);
+    let amis = props["input-table"] || props.amis;//额外支持"input-table"代替amis属性，是因为在字段yml文件中用amis作为key不好理解
+    if (amis) {
+        // 支持配置amis属性重写或添加最终生成的input-table中任何属性。
+        delete amis.id;//如果steedos-input-table组件配置了amis.id属性，会造成新建编辑行功能不生效
+        Object.assign(schema.body[0], amis);
     }
     const isAnyFieldHasDependOn = (props.fields || []).find(function (item) {
         return item.depend_on;
