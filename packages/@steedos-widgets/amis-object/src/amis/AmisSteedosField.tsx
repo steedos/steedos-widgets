@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-15 11:03:00
+ * @LastEditTime: 2023-12-15 11:19:11
  * @Description: 
  */
 import { Field } from '@steedos-widgets/amis-lib';
@@ -55,7 +55,7 @@ export const AmisSteedosField = async (props)=>{
 
     let steedosField = null;
     let { field, readonly = false, ctx = {}, config, $schema, static: fStatic, hideLabel } = props;
-    console.log(`AmisSteedosField`, props)
+    // console.log(`AmisSteedosField`, props)
 
     // if($schema.config && isString($schema.config)){
     //     $schema.config = JSON.parse($schema.config)
@@ -87,7 +87,6 @@ export const AmisSteedosField = async (props)=>{
                 "url": "${context.rootUrl}/graphql",
                 "requestAdaptor": `
                     var steedosField = ${JSON.stringify(steedosField)};
-                    console.log("===AmisSteedosField==steedosField===", steedosField);
                     var objectName, filters, valueFieldKey, labelFieldKey;
                     if(_.isString(steedosField.reference_to)){
                         // reference_to为单选
