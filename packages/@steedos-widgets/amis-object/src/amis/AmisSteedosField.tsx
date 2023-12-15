@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-15 13:41:53
+ * @LastEditTime: 2023-12-15 15:16:18
  * @Description: 
  */
 import { Field } from '@steedos-widgets/amis-lib';
@@ -136,14 +136,29 @@ export const AmisSteedosField = async (props)=>{
             };
             if(!steedosField.reference_to){
                 // 兼容lookup字段未配置reference_to属性的情况，当普通下拉框字段用
-                defaultSource = null;
+                defaultSource = {
+                    "url": "${context.rootUrl}/api/v1/spaces/none",
+                    data: {$: "$$"},
+                };
                 if(steedosField.optionsFunction || steedosField._optionsFunction){
-                    defaultSource = {
-                        "url": "${context.rootUrl}/api/v1/spaces/none",
-                        data: {$: "$$"},
-                    };
                     defaultSource.adaptor = `
                         var options = eval(${steedosField.optionsFunction || steedosField._optionsFunction})(api.body.$);
+                        if(api.body.$term){
+                            options = _.filter(options, function(o) {
+                                var label = o.label;
+                                return label.toLowerCase().indexOf(api.body.$term.toLowerCase()) > -1;
+                            });
+                        }
+                        if(!payload.data){
+                            payload.data = {};
+                        }
+                        payload.data.options = options;
+                        return payload;
+                    `;
+                }
+                else if(steedosField.options){
+                    defaultSource.adaptor = `
+                        var options = ${JSON.stringify(steedosField.options)}
                         if(api.body.$term){
                             options = _.filter(options, function(o) {
                                 var label = o.label;
