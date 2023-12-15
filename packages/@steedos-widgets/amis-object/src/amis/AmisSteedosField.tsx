@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
- * @LastEditors: liaodaxue
- * @LastEditTime: 2023-12-13 15:53:55
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-12-15 11:03:00
  * @Description: 
  */
 import { Field } from '@steedos-widgets/amis-lib';
@@ -82,13 +82,15 @@ export const AmisSteedosField = async (props)=>{
 
     try {
         if(fStatic && (steedosField.type === 'lookup' || steedosField.type === 'master_detail')){
-            const defaultSource = {
+            let defaultSource = {
                 "method": "post",
                 "url": "${context.rootUrl}/graphql",
                 "requestAdaptor": `
                     var steedosField = ${JSON.stringify(steedosField)};
+                    console.log("===AmisSteedosField==steedosField===", steedosField);
                     var objectName, filters, valueFieldKey, labelFieldKey;
                     if(_.isString(steedosField.reference_to)){
+                        // reference_to为单选
                         const referenceTo = getReferenceToSync(steedosField);
                         const referenceToField = steedosField.reference_to_field || '_id';
 
@@ -111,6 +113,7 @@ export const AmisSteedosField = async (props)=>{
                             }
                         }
                     }else{
+                        // reference_to为多选
                         const _steedosField = {
                             ...steedosField,
                             reference_to: api.data[steedosField.name].o
@@ -132,6 +135,10 @@ export const AmisSteedosField = async (props)=>{
                 "trackExpression": "${" + steedosField.name + "}",
                 "cache": 3000
             };
+            if(!steedosField.reference_to){
+                // 兼容lookup字段未配置reference_to属性的情况，当普通下拉框字段用
+                defaultSource = null;
+            }
             const source = steedosField.amis?.source || steedosField.amis?.autoComplete || defaultSource;
             // 这里有_display时不可以不走以下的static逻辑代码，因为审批王会特意传入_display，且其中lookup字段static时需要走下面的代码
             const schema = Object.assign({}, {
