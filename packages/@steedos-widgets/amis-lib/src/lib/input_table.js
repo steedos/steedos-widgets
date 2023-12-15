@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-15 17:27:04
+ * @LastEditTime: 2023-12-15 17:43:20
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -329,9 +329,9 @@ async function getForm(props, mode = "edit") {
             // let fieldValue = _.cloneDeep(event.data["${props.name}"]);
             let fieldValue = event.data.changedItems;//这里不可以_.cloneDeep，因为翻页form中用的是event.data.changedItems，直接变更其值即可改变表单中的值
 
-            //这里加__super前缀是因为__parentForm变量（即主表单）中可能会正好有名为index的字段
+            //这里加__super.__super前缀是因为__parentForm变量（即主表单）中可能会正好有名为index的字段
             // 比如“对象字段”对象options字段是一个子表字段，但是主表（即“对象字段”对象）中正好有一个名为index的字段
-            fieldValue[event.data.__super.index] = JSON.parse(JSON.stringify(event.data));
+            fieldValue[event.data.__super.__super.index] = JSON.parse(JSON.stringify(event.data));
             doAction({
                 "componentId": "${props.id}",
                 "actionType": "setValue",
