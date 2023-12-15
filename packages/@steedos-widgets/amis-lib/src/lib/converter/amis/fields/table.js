@@ -611,6 +611,11 @@ export async function getTableColumns(fields, options){
                     options: field.type === 'html' ? {html: true} : null
                     // toggled: true 
                 }, field.amis, {name: field.name});
+                
+                if(field.type === 'color'){
+                    columnItem.type = 'color';
+                    columnItem.defaultColor = null;
+                }
             }
         }
         if(columnItem){

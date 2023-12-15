@@ -264,6 +264,9 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                 name: field.name,
                 label: field.label
             }
+            if(readonly){
+                convertData.defaultColor = null;
+            }
             break;
         case 'boolean':
             convertData = {

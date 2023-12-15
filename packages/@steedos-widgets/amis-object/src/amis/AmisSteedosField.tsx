@@ -203,6 +203,10 @@ export const AmisSteedosField = async (props)=>{
                 Object.assign(schema, {
                     "placeholder": ""
                 });
+            } else if(steedosField.type === "color"){
+                Object.assign(schema, {
+                    "defaultColor": null
+                });
             }
             else if(steedosField.type === "image"){
                 Object.assign(schema, {
