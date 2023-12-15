@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-15 17:43:20
+ * @LastEditTime: 2023-12-15 17:58:57
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -101,24 +101,24 @@ async function getInputTableColumns(props) {
 function getFormPagination(props) {
     let onPageChangeScript = `
         let scope = event.context.scoped;
-        let paginationServiceId = event.data.paginationServiceId;
-        let wrapperServiceId = event.data.wrapperServiceId;
-        let formId = event.data.formId;
-        let fieldValue = event.data.changedItems;//这里不可以_.cloneDeep，因为翻页form中用的是event.data.changedItems，直接变更其值即可改变表单中的值
+        let __paginationServiceId = event.data.__paginationServiceId;
+        let __wrapperServiceId = event.data.__wrapperServiceId;
+        let __formId = event.data.__formId;
+        let fieldValue = event.data.__changedItems;//这里不可以_.cloneDeep，因为翻页form中用的是event.data.changedItems，直接变更其值即可改变表单中的值
         let pageChangeDirection = context.props.pageChangeDirection;
-        let currentPage = event.data.page;
+        let currentPage = event.data.__page;
         let currentIndex = event.data.index;
 
         // 翻页到下一页之前需要先把当前页改动的内容保存到中间变量changedItems中
-        let currentFormValues = scope.getComponentById(formId).getValues();
+        let currentFormValues = scope.getComponentById(__formId).getValues();
         fieldValue[currentIndex] = currentFormValues;
         // // 因为翻页form中用的是event.data.changedItems中的数据，所以不需要像下面这样doAction setValue变更中间变量changedItems值
         // doAction({
-        //     "componentId": wrapperServiceId,
+        //     "componentId": __wrapperServiceId,
         //     "actionType": "setValue",
         //     "args": {
         //         "value": {
-        //             "changedItems": fieldValue
+        //             "__changedItems": fieldValue
         //         }
         //     }
         // });
@@ -141,13 +141,13 @@ function getFormPagination(props) {
             targetPage = currentPage - 1;
         }
         let targetIndex = targetPage - 1;//input-table组件行索引，从0开始的索引
-        // let targetFormData = changedItems[targetIndex];
+        // let targetFormData = __changedItems[targetIndex];
         doAction({
             "actionType": "setValue",
-            "componentId": paginationServiceId,
+            "componentId": __paginationServiceId,
             "args": {
                 "value": {
-                    "page": targetPage,
+                    "__page": targetPage,
                     "index": targetIndex
                 }
             }
@@ -155,7 +155,7 @@ function getFormPagination(props) {
         // 这里不用进一步把表单内容setValue到form中，是因为编辑表单中schemaApi监听了行索引index的变化，其值变化时会重新build整个form
         // doAction({
         //     "actionType": "setValue",
-        //     "componentId": formId,
+        //     "componentId": __formId,
         //     "args": {
         //         "value": targetFormData
         //     },
@@ -172,7 +172,7 @@ function getFormPagination(props) {
                 "icon": `fa fa-angle-left`,
                 "level": "link",
                 "pageChangeDirection": "prev",
-                "disabledOn": "${page <= 1}",
+                "disabledOn": "${__page <= 1}",
                 "size": "sm",
                 "onEvent": {
                     "click": {
@@ -187,7 +187,7 @@ function getFormPagination(props) {
             },
             {
                 "type": "tpl",
-                "tpl": "${page}/${total}"
+                "tpl": "${__page}/${__total}"
             },
             {
                 "type": "button",
@@ -195,7 +195,7 @@ function getFormPagination(props) {
                 "icon": `fa fa-angle-right`,
                 "level": "link",
                 "pageChangeDirection": "next",
-                "disabledOn": "${page >= total}",
+                "disabledOn": "${__page >= __total}",
                 "size": "sm",
                 "onEvent": {
                     "click": {
@@ -224,7 +224,7 @@ function getFormPaginationWrapper(props, form) {
         "data": {
             //这里加__super前缀是因为__parentForm变量（即主表单）中可能会正好有名为index的字段
             // 比如“对象字段”对象options字段是一个子表字段，但是主表（即“对象字段”对象）中正好有一个名为index的字段
-            "&": "${changedItems[__super.index]}" 
+            "&": "${__changedItems[__super.index]}" 
         }
     });
     let formBody = [
@@ -256,13 +256,13 @@ function getFormPaginationWrapper(props, form) {
             return;
         }
         let scope = event.context.scoped;
-        let wrapperServiceId = event.data.wrapperServiceId;
-        let wrapperService = scope.getComponentById(wrapperServiceId);
+        let __wrapperServiceId = event.data.__wrapperServiceId;
+        let wrapperService = scope.getComponentById(__wrapperServiceId);
         let wrapperServiceData = wrapperService.getData();
         let lastestFieldValue = wrapperServiceData["${props.name}"];//这里不可以用event.data["${props.name}"]因为amis input talbe有一层单独的作用域，其值会延迟一拍
-        //不可以直接像event.data.changedItems = originalFieldValue; 这样整个赋值，否则作用域会断
-        event.data.changedItems.forEach(function(n,i){
-            event.data.changedItems[i] = lastestFieldValue[i];
+        //不可以直接像event.data.__changedItems = originalFieldValue; 这样整个赋值，否则作用域会断
+        event.data.__changedItems.forEach(function(n,i){
+            event.data.__changedItems[i] = lastestFieldValue[i];
         });
     `;
     let schema = {
@@ -285,11 +285,11 @@ function getFormPaginationWrapper(props, form) {
         },
         // "body": formBody,
         "data": {
-            "page": "${index + 1}",
-            // "total": `\${${props.name}.length}`,
-            "total": "${changedItems.length}",
-            "paginationServiceId": serviceId,
-            "formId": form.id
+            "__page": "${index + 1}",
+            // "__total": `\${${props.name}.length}`,
+            "__total": "${__changedItems.length}",
+            "__paginationServiceId": serviceId,
+            "__formId": form.id
         },
         "onEvent": {
             "init": {
@@ -327,7 +327,7 @@ async function getForm(props, mode = "edit") {
     if (mode === "edit") {
         let onEditItemSubmitScript = `
             // let fieldValue = _.cloneDeep(event.data["${props.name}"]);
-            let fieldValue = event.data.changedItems;//这里不可以_.cloneDeep，因为翻页form中用的是event.data.changedItems，直接变更其值即可改变表单中的值
+            let fieldValue = event.data.__changedItems;//这里不可以_.cloneDeep，因为翻页form中用的是event.data.changedItems，直接变更其值即可改变表单中的值
 
             //这里加__super.__super前缀是因为__parentForm变量（即主表单）中可能会正好有名为index的字段
             // 比如“对象字段”对象options字段是一个子表字段，但是主表（即“对象字段”对象）中正好有一个名为index的字段
@@ -341,11 +341,11 @@ async function getForm(props, mode = "edit") {
             });
             // // 因为翻页form中用的是event.data.changedItems中的数据，所以不需要像下面这样doAction setValue变更中间变量changedItems值
             // doAction({
-            //     "componentId": event.data.wrapperServiceId,
+            //     "componentId": event.data.__wrapperServiceId,
             //     "actionType": "setValue",
             //     "args": {
             //         "value": {
-            //             "changedItems": fieldValue
+            //             "__changedItems": fieldValue
             //         }
             //     }
             // });
@@ -377,10 +377,10 @@ async function getForm(props, mode = "edit") {
     else if (mode === "new") {
         let onNewItemSubmitScript = `
             // let fieldValue = _.cloneDeep(event.data["${props.name}"]);
-            if(!event.data.changedItems){
-                event.data.changedItems = [];
+            if(!event.data.__changedItems){
+                event.data.__changedItems = [];
             }
-            let fieldValue = event.data.changedItems;
+            let fieldValue = event.data.__changedItems;
             fieldValue.push(JSON.parse(JSON.stringify(event.data)));
             doAction({
                 "componentId": "${props.id}",
@@ -391,11 +391,11 @@ async function getForm(props, mode = "edit") {
             });
             // // 因为翻页form中用的是event.data.changedItems中的数据，所以不需要像下面这样doAction setValue变更中间变量changedItems值
             // doAction({
-            //     "componentId": event.data.wrapperServiceId,
+            //     "componentId": event.data.__wrapperServiceId,
             //     "actionType": "setValue",
             //     "args": {
             //         "value": {
-            //             "changedItems": fieldValue
+            //             "__changedItems": fieldValue
             //         }
             //     }
             // });
@@ -464,21 +464,21 @@ async function getButtonNew(props) {
 async function getButtonEdit(props, showAsInlineEditMode) {
     let onCancelScript = `
         let scope = event.context.scoped;
-        let wrapperServiceId = event.data.wrapperServiceId;
-        let wrapperService = scope.getComponentById(wrapperServiceId);
+        let __wrapperServiceId = event.data.__wrapperServiceId;
+        let wrapperService = scope.getComponentById(__wrapperServiceId);
         let wrapperServiceData = wrapperService.getData();
         let originalFieldValue = wrapperServiceData["${props.name}"];//这里不可以用event.data["${props.name}"]因为amis input talbe有一层单独的作用域，其值会延迟一拍
-        //不可以直接像event.data.changedItems = originalFieldValue; 这样整个赋值，否则作用域会断，造成无法还原
-        event.data.changedItems.forEach(function(n,i){
-            event.data.changedItems[i] = originalFieldValue[i];
+        //不可以直接像event.data.__changedItems = originalFieldValue; 这样整个赋值，否则作用域会断，造成无法还原
+        event.data.__changedItems.forEach(function(n,i){
+            event.data.__changedItems[i] = originalFieldValue[i];
         });
         // 因为翻页form中用的是event.data.changedItems中的数据，所以像下面这样doAction setValue无法实现还原
         // doAction({
-        //     "componentId": wrapperServiceId,
+        //     "componentId": __wrapperServiceId,
         //     "actionType": "setValue",
         //     "args": {
         //         "value": {
-        //             "changedItems": originalFieldValue
+        //             "__changedItems": originalFieldValue
         //         }
         //     }
         // });
@@ -516,8 +516,8 @@ async function getButtonEdit(props, showAsInlineEditMode) {
                                 "global": "${global}",
                                 "uiSchema": "${uiSchema}",
                                 "index": "${index}",
-                                "changedItems": "${changedItems}",
-                                "wrapperServiceId": "${wrapperServiceId}"
+                                "__changedItems": "${__changedItems}",
+                                "__wrapperServiceId": "${__wrapperServiceId}"
                             },
                             "onEvent": {
                                 "cancel": {
@@ -570,8 +570,8 @@ async function getButtonView(props) {
                                 // 映射到中间变量__parentForm而不是直接用&展开映射是为了避免表单中字段名与作用域中变量重名
                                 "__parentForm": "${__super.__super || {}}",
                                 "index": "${index}",
-                                "changedItems": "${changedItems}",
-                                "wrapperServiceId": "${wrapperServiceId}"
+                                "__changedItems": "${__changedItems}",
+                                "__wrapperServiceId": "${__wrapperServiceId}"
                             }
                         }
                     }
@@ -584,10 +584,10 @@ async function getButtonView(props) {
 function getButtonDelete(props) {
     let onDeleteItemScript = `
         // let fieldValue = _.cloneDeep(event.data["${props.name}"]);
-        if(!event.data.changedItems){
-            event.data.changedItems = [];
+        if(!event.data.__changedItems){
+            event.data.__changedItems = [];
         }
-        let fieldValue = event.data.changedItems;
+        let fieldValue = event.data.__changedItems;
         // fieldValue.push(JSON.parse(JSON.stringify(event.data)));
         fieldValue.splice(event.data.index, 1)
         doAction({
@@ -599,11 +599,11 @@ function getButtonDelete(props) {
         });
         // // 因为翻页form中用的是event.data.changedItems中的数据，所以不需要像下面这样doAction setValue变更中间变量changedItems值
         // doAction({
-        //     "componentId": event.data.wrapperServiceId,
+        //     "componentId": event.data.__wrapperServiceId,
         //     "actionType": "setValue",
         //     "args": {
         //         "value": {
-        //             "changedItems": fieldValue
+        //             "__changedItems": fieldValue
         //         }
         //     }
         // });
@@ -702,7 +702,7 @@ export const getAmisInputTableSchema = async (props) => {
     }
     let dataProviderInited = `
         // 单独维护一份中间变量changedItems，因为原变量在input-table组件有单独的作用域，翻页功能中无法维护此作用域中的行记录值
-        setData({ changedItems: _.cloneDeep(data["${props.name}"]) || []});
+        setData({ __changedItems: _.cloneDeep(data["${props.name}"]) || []});
     `;
     let schema = {
         "type": "service",
@@ -712,7 +712,7 @@ export const getAmisInputTableSchema = async (props) => {
         "className": props.className,
         "id": serviceId,
         "data": {
-            "wrapperServiceId": serviceId
+            "__wrapperServiceId": serviceId
         },
         "dataProvider": {
             "inited": dataProviderInited
