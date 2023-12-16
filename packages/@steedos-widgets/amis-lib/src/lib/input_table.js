@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-16 12:06:54
+ * @LastEditTime: 2023-12-16 16:39:49
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -216,15 +216,21 @@ function getFormPagination(props) {
  * 传入formSchema输出带翻页容器的wrapper
  * @param {*} props input-table组件props
  * @param {*} form formSchema
+ * @param {*} mode edit/readonly
  * @returns 带翻页容器的wrapper
  */
-function getFormPaginationWrapper(props, form) {
+function getFormPaginationWrapper(props, form, mode) {
     let serviceId = `service_popup_pagination_wrapper__${props.id}`;
+    // 这里加__super前缀是因为__parentForm变量（即主表单）中可能会正好有名为index的字段
+    // 比如“对象字段”对象options字段是一个子表字段，但是主表（即“对象字段”对象）中正好有一个名为index的字段
+    // 只读的时候不可以走中间变量__changedItems，比如工作流规则详细页面修改了子表字段”时间触发器“值后，在只读界面点击查看按钮弹出的表单中__changedItems值是修改前的值
+    let formValues = mode === "readonly" ? `\${${props.name}[__super.index]}` : "${__changedItems[__super.index]}";
+    // 这时用__readonlyItemsLength是因为`\${${props.name}.length}`拿不到值
+    let totalValue = mode === "readonly" ? "${__readonlyItemsLength}" : "${__changedItems.length}";
     let innerForm = Object.assign({}, form, {
         "data": {
-            //这里加__super前缀是因为__parentForm变量（即主表单）中可能会正好有名为index的字段
-            // 比如“对象字段”对象options字段是一个子表字段，但是主表（即“对象字段”对象）中正好有一个名为index的字段
-            "&": "${__changedItems[__super.index]}" 
+            // "&": "${__changedItems[__super.index]}"
+            "&": formValues,
         }
     });
     let formBody = [
@@ -287,7 +293,7 @@ function getFormPaginationWrapper(props, form) {
         "data": {
             "__page": "${index + 1}",
             // "__total": `\${${props.name}.length}`,
-            "__total": "${__changedItems.length}",
+            "__total": totalValue,
             "__paginationServiceId": serviceId,
             "__formId": form.id
         },
@@ -425,7 +431,7 @@ async function getForm(props, mode = "edit") {
         });
     }
     if (mode === "edit" || mode === "readonly") {
-        schema = getFormPaginationWrapper(props, schema);
+        schema = getFormPaginationWrapper(props, schema, mode);
     }
     return schema;
 }
@@ -571,7 +577,8 @@ async function getButtonView(props) {
                                 "__parentForm": "${__super.__super || {}}",
                                 "index": "${index}",
                                 "__changedItems": "${__changedItems}",
-                                "__wrapperServiceId": "${__wrapperServiceId}"
+                                "__wrapperServiceId": "${__wrapperServiceId}",
+                                "__readonlyItemsLength": `\${${props.name}.length}`
                             }
                         }
                     }
