@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-28 14:52:55
  * @LastEditors: liaodaxue
- * @LastEditTime: 2023-07-28 16:16:29
+ * @LastEditTime: 2023-12-14 12:01:22
  * @Description: 
  */
 import * as _ from 'lodash';
@@ -20,6 +20,7 @@ const AmisFormInputs = [
     'percent',
     'password',
     'url',
+    "color",
     'email'
 ]
 
@@ -32,7 +33,7 @@ export function getAmisStaticFieldType(type, readonly, options){
         }
         return type;
     }
-    if(_.includes(['text','image'], type)){
+    if(_.includes(['text','image','color'], type)){
         if('text' === type && options && options.amis && options.amis.tpl){
             return 'static';
         }

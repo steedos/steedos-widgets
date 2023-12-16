@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-07 16:02:55
+ * @LastEditTime: 2023-12-14 14:51:35
  */
 const config: any = {
   componentType: 'amisSchema', // amisSchema || react 
@@ -50,6 +50,16 @@ const config: any = {
       name: "draggable",
       propType: "boolean",
       description: '可拖拽',
+    },
+    {
+      name: "inlineEditMode",
+      propType: "boolean",
+      description: '内联模式',
+    },
+    {
+      name: "strictMode",
+      propType: "boolean",
+      description: '静态模式',
     },
     {
       name: "showIndex",
@@ -130,6 +140,7 @@ export default {
         editable: false,
         removable: false,
         draggable: false,
+        strictMode: true,
         showIndex: false
       },
       previewSchema: {
@@ -160,6 +171,7 @@ export default {
         editable: false,
         removable: false,
         draggable: false,
+        strictMode: true,
         showIndex: false
       },
       panelTitle: "设置",
@@ -262,6 +274,18 @@ export default {
             justify: true
           },
           label: '内联模式',
+        },
+        {
+          type: "switch",
+          name: "strictMode",
+          mode: "horizontal",
+          labelRemark: "为了性能，默认其他表单项项值变化不会让当前表格更新，有时候为了同步获取其它主表单项字段值，需要关闭静态模式，当有类型为lookup且配置了depend_on属性的子字段时，会自动强制关闭静态模式。",
+          horizontal: {
+            left: 9,
+            right: 4,
+            justify: true
+          },
+          label: '静态模式',
         },
         {
           type: "switch",
