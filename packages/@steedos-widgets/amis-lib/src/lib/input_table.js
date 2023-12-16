@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-15 17:58:57
+ * @LastEditTime: 2023-12-16 12:06:54
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -704,6 +704,30 @@ export const getAmisInputTableSchema = async (props) => {
         // 单独维护一份中间变量changedItems，因为原变量在input-table组件有单独的作用域，翻页功能中无法维护此作用域中的行记录值
         setData({ __changedItems: _.cloneDeep(data["${props.name}"]) || []});
     `;
+    let onInitScript = `
+        // 上面dataProviderInited中setData有时不生效，没有成功给service组件设置__changedItems变量值
+        // 比如设计字段布局界面中的设置分组功能就因为__changedItems变量值不存在而报错，应该是因为把steedos-input-table组件单独放到弹出窗口中会有这个问题
+        // 所以额外在service init事件中手动设置一次__changedItems值
+        let __wrapperServiceId = event.data.__wrapperServiceId;
+        let fieldValue = _.cloneDeep(event.data["${props.name}"]) || [];
+        doAction({
+            "componentId": __wrapperServiceId,
+            "actionType": "setValue",
+            "args": {
+                "value": {
+                    "__changedItems": fieldValue
+                }
+            }
+        });
+        // 下面的doAction好像不是必须的
+        // doAction({
+        //     "componentId": "${props.id}",
+        //     "actionType": "setValue",
+        //     "args": {
+        //         "value": fieldValue
+        //     }
+        // });
+    `;
     let schema = {
         "type": "service",
         "body": [
@@ -716,6 +740,16 @@ export const getAmisInputTableSchema = async (props) => {
         },
         "dataProvider": {
             "inited": dataProviderInited
+        },
+        "onEvent": {
+          "init": {
+            "actions": [
+              {
+                "actionType": "custom",
+                "script": onInitScript
+              }
+            ]
+          }
         }
     };
     let footerToolbar = clone(props.footerToolbar || []); //这里不clone的话，会造成死循环，应该是因为props属性变更会让组件重新渲染
