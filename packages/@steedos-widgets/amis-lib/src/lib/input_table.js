@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-18 16:23:32
+ * @LastEditTime: 2023-12-18 17:12:23
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -763,11 +763,47 @@ export const getAmisInputTableSchema = async (props) => {
         //     }
         // });
     `;
+    let amis = props["input-table"] || props.amis;//额外支持"input-table"代替amis属性，是因为在字段yml文件中用amis作为key不好理解
+    if (amis) {
+        // 支持配置amis属性重写或添加最终生成的input-table中任何属性。
+        delete amis.id;//如果steedos-input-table组件配置了amis.id属性，会造成新建编辑行功能不生效
+        Object.assign(inputTableSchema, amis);
+    }
+    const isAnyFieldHasDependOn = (props.fields || []).find(function (item) {
+        return item.depend_on;
+    });
+    if (isAnyFieldHasDependOn) {
+        // 有任意一个子字段有depend_on属性时，强制设置禁用静态模式
+        Object.assign(inputTableSchema, {
+            strictMode: false
+        });
+    }
+    let schemaBody = [inputTableSchema];
+    let footerToolbar = clone(props.footerToolbar || []); //这里不clone的话，会造成死循环，应该是因为props属性变更会让组件重新渲染
+    if (props.addable) {
+        let buttonNewSchema = await getButtonNew(props);
+        footerToolbar.unshift(buttonNewSchema);
+    }
+    if (footerToolbar.length) {
+        schemaBody.push({
+            "type": "wrapper",
+            "size": "none",
+            "body": footerToolbar
+        });
+    }
+    // 不可以直接把headerToolbar unshift进schemaBody，因为它没有显示在label下面，而是显示在上面了，这没有意义
+    // 看起来amis官方后续会支持给input-table组件配置headerToolbar，见：https://github.com/baidu/amis/issues/7246
+    // let headerToolbar = clone(props.headerToolbar || []); //这里不clone的话，会造成死循环，应该是因为props属性变更会让组件重新渲染
+    // if (headerToolbar.length) {
+    //     schemaBody.unshift({
+    //         "type": "wrapper",
+    //         "size": "none",
+    //         "body": headerToolbar
+    //     });
+    // }
     let schema = {
         "type": "service",
-        "body": [
-            inputTableSchema
-        ],
+        "body": schemaBody,
         "className": props.className,
         "id": serviceId,
         "data": {
@@ -787,33 +823,6 @@ export const getAmisInputTableSchema = async (props) => {
           }
         }
     };
-    let footerToolbar = clone(props.footerToolbar || []); //这里不clone的话，会造成死循环，应该是因为props属性变更会让组件重新渲染
-    if (props.addable) {
-        let buttonNewSchema = await getButtonNew(props);
-        footerToolbar.unshift(buttonNewSchema);
-    }
-    if (footerToolbar.length) {
-        schema.body.push({
-            "type": "wrapper",
-            "size": "none",
-            "body": footerToolbar
-        });
-    }
-    let amis = props["input-table"] || props.amis;//额外支持"input-table"代替amis属性，是因为在字段yml文件中用amis作为key不好理解
-    if (amis) {
-        // 支持配置amis属性重写或添加最终生成的input-table中任何属性。
-        delete amis.id;//如果steedos-input-table组件配置了amis.id属性，会造成新建编辑行功能不生效
-        Object.assign(schema.body[0], amis);
-    }
-    const isAnyFieldHasDependOn = (props.fields || []).find(function (item) {
-        return item.depend_on;
-    });
-    if(isAnyFieldHasDependOn){
-        // 有任意一个子字段有depend_on属性时，强制设置禁用静态模式
-        Object.assign(schema.body[0], {
-            strictMode: false
-        });
-    }
     // console.log("===schema===", schema);
     return schema;
 }
