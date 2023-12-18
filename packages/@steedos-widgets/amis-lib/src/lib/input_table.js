@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-18 17:12:23
+ * @LastEditTime: 2023-12-18 18:04:17
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -679,13 +679,15 @@ export const getAmisInputTableSchema = async (props) => {
     if (props.editable) {
         let showEditButton = true;
         if (showAsInlineEditMode) {
-            // inline edit模式下只在有列被隐藏时才需要显示编辑按钮
-            if (props.columns && props.columns.length > 0 && props.columns.length < props.fields.length) {
-                showEditButton = true;
-            }
-            else {
-                showEditButton = false;
-            }
+            // 始终显示弹出子表表单按钮，如果需要判断只在有列被隐藏时才需要显示弹出表单按钮放开下面的if逻辑就好
+            showEditButton = true;
+            // // inline edit模式下只在有列被隐藏时才需要显示编辑按钮
+            // if (props.columns && props.columns.length > 0 && props.columns.length < props.fields.length) {
+            //     showEditButton = true;
+            // }
+            // else {
+            //     showEditButton = false;
+            // }
         }
         // 编辑时显示编辑按钮
         if (showEditButton) {
@@ -695,11 +697,9 @@ export const getAmisInputTableSchema = async (props) => {
     }
     else {
         // 只读时显示查看按钮
-        if (props.columns && props.columns.length > 0 && props.columns.length < props.fields.length) {
-            // 只在有列被隐藏时才需要显示查看按钮
-            let buttonViewSchema = await getButtonView(props);
-            buttonsForColumnOperations.push(buttonViewSchema);
-        }
+        // 如果想只在有列被隐藏时才需要显示查看按钮可以加上判断：if (props.columns && props.columns.length > 0 && props.columns.length < props.fields.length)
+        let buttonViewSchema = await getButtonView(props);
+        buttonsForColumnOperations.push(buttonViewSchema);
     }
     if (props.removable) {
         let buttonDeleteSchema = getButtonDelete(props);
