@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-18 14:58:04
+ * @LastEditTime: 2023-12-18 16:23:32
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -275,19 +275,17 @@ function getFormPaginationWrapper(props, form, mode) {
         "type": "service",
         "id": serviceId,
         "schemaApi": {
-            "url": "${context.rootUrl}/graphql?rebuildOn=${index}",
-            // "url": "${context.rootUrl}/graphql",
-            "method": "post",
-            "headers": {
-                "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-            },
-            "requestAdaptor": "api.data={query: '{spaces__findOne(id: \"none\"){_id,name}}'};return api;",
+            // "url": "${context.rootUrl}/graphql?rebuildOn=${index}",
+            "url": "${context.rootUrl}/api/v1/spaces/none",
+            "trackExpression": "${index}",
+            "method": "get",
             "adaptor": `
                 const formBody = ${JSON.stringify(formBody)};
                 return {
                     "body": formBody
                 }
-            `
+            `,
+            "cache": 600000
         },
         // "body": formBody,
         "data": {
