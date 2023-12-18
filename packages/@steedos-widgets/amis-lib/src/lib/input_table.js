@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-16 16:39:49
+ * @LastEditTime: 2023-12-18 13:57:22
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -315,13 +315,15 @@ function getFormPaginationWrapper(props, form, mode) {
  * @param {*} props 
  * @param {*} mode edit/new/readonly
  */
-async function getForm(props, mode = "edit") {
+async function getForm(props, mode = "edit", formId) {
     let formFields = getFormFields(props, mode)
     let body = await getFormBody(null, formFields);
-    let forId = `form_popup__${props.id}`;
+    if(!formId){
+        formId = `form_popup__${props.id}`;
+    }
     let schema = {
         "type": "form",
-        "id": forId,
+        "id": formId,
         "title": "表单",
         "debug": false,
         "mode": "normal",
@@ -437,6 +439,7 @@ async function getForm(props, mode = "edit") {
 }
 
 async function getButtonNew(props) {
+    let formId = `form_popup__${props.id}`;
     return {
         "label": "新增",
         "type": "button",
@@ -450,14 +453,28 @@ async function getButtonNew(props) {
                             "type": "dialog",
                             "title": "新增行",
                             "body": [
-                                await getForm(props, "new")
+                                await getForm(props, "new", formId)
                             ],
                             "size": "lg",
                             "showCloseButton": true,
                             "showErrorMsg": true,
                             "showLoading": true,
                             "className": "app-popover",
-                            "closeOnEsc": false
+                            "closeOnEsc": false,
+                            "onEvent": {
+                                "confirm": {
+                                  "actions": [
+                                    {
+                                      "actionType": "validate",//触发表单校验，amis 3.2不支持，高版本比如 3.5.3支持
+                                      "componentId": formId
+                                    },
+                                    {
+                                      "preventDefault": true,
+                                      "expression": "${event.data.validateResult.error}"
+                                    }
+                                  ]
+                                }
+                            }
                         }
                     }
                 ]
@@ -468,6 +485,7 @@ async function getButtonNew(props) {
 }
 
 async function getButtonEdit(props, showAsInlineEditMode) {
+    let formId = `form_popup__${props.id}`;
     let onCancelScript = `
         let scope = event.context.scoped;
         let __wrapperServiceId = event.data.__wrapperServiceId;
@@ -503,7 +521,7 @@ async function getButtonEdit(props, showAsInlineEditMode) {
                             "type": "dialog",
                             "title": "编辑行",
                             "body": [
-                                await getForm(props, "edit")
+                                await getForm(props, "edit", formId)
                             ],
                             "size": "lg",
                             "showCloseButton": true,
@@ -526,6 +544,18 @@ async function getButtonEdit(props, showAsInlineEditMode) {
                                 "__wrapperServiceId": "${__wrapperServiceId}"
                             },
                             "onEvent": {
+                                "confirm": {
+                                  "actions": [
+                                    {
+                                      "actionType": "validate",//触发表单校验，amis 3.2不支持，高版本比如 3.5.3支持
+                                      "componentId": formId
+                                    },
+                                    {
+                                      "preventDefault": true,
+                                      "expression": "${event.data.validateResult.error}"
+                                    }
+                                  ]
+                                },
                                 "cancel": {
                                     "actions": [
                                         {
