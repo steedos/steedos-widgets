@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-18 13:57:22
+ * @LastEditTime: 2023-12-18 14:28:22
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -465,12 +465,12 @@ async function getButtonNew(props) {
                                 "confirm": {
                                   "actions": [
                                     {
-                                      "actionType": "validate",//触发表单校验，amis 3.2不支持，高版本比如 3.5.3支持
+                                      "actionType": "validate",
                                       "componentId": formId
                                     },
                                     {
                                       "preventDefault": true,
-                                      "expression": "${event.data.validateResult.error}"
+                                      "expression": "${event.data.validateResult.error}"//触发表单校验结果会存入validateResult，amis 3.2不支持，高版本比如 3.5.3支持
                                     }
                                   ]
                                 }
@@ -547,12 +547,12 @@ async function getButtonEdit(props, showAsInlineEditMode) {
                                 "confirm": {
                                   "actions": [
                                     {
-                                      "actionType": "validate",//触发表单校验，amis 3.2不支持，高版本比如 3.5.3支持
+                                      "actionType": "validate",
                                       "componentId": formId
                                     },
                                     {
                                       "preventDefault": true,
-                                      "expression": "${event.data.validateResult.error}"
+                                      "expression": "${event.data.validateResult.error}"//触发表单校验结果会存入validateResult，amis 3.2不支持，高版本比如 3.5.3支持
                                     }
                                   ]
                                 },
