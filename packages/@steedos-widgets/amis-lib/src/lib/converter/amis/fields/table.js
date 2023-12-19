@@ -231,21 +231,21 @@ async function getQuickEditSchema(field, options){
                     break;
                 case "avatar":
                 case "image":
-                quickEditSchema.body[0].receiver.adaptor = `
-                    const { context } = api.body; 
-                    var rootUrl = context.rootUrl + "/api/files/${field.type}s/";
-                    payload = {
-                        status: response.status == 200 ? 0 : response.status,
-                        msg: response.statusText,
-                        data: {
-                            value: rootUrl + payload._id,//为了实现图片crud的回显，需要将value从id改为url，当保存数据数据时，再在发送适配器内重新将id提取出来
-                            name: payload.original.name,
-                            url: rootUrl + payload._id,
+                    quickEditSchema.body[0].receiver.adaptor = `
+                        const { context } = api.body; 
+                        var rootUrl = context.rootUrl + "/api/files/${field.type}s/";
+                        payload = {
+                            status: response.status == 200 ? 0 : response.status,
+                            msg: response.statusText,
+                            data: {
+                                value: rootUrl + payload._id,//为了实现图片crud的回显，需要将value从id改为url，当保存数据数据时，再在发送适配器内重新将id提取出来
+                                name: payload.original.name,
+                                url: rootUrl + payload._id,
+                            }
                         }
-                    }
-                    return payload;
-                `
-                break;
+                        return payload;
+                    `
+                    break;
                 default:
                     break;
             }
@@ -453,6 +453,11 @@ async function getQuickEditSchema(field, options){
         //TODO:location字段在列表中快速编辑后存在bug,保存时可能会丢失部分数据，暂时禁用
         if(field.type == "location"){
             quickEditSchema = false;
+        }
+        if(field.type == "color"){
+            quickEditSchema = {
+                type: "input-color"
+            }
         }
     }
     return quickEditSchema;

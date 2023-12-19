@@ -57,8 +57,8 @@ export const AmisAppMenu = async (props) => {
                                       }
                                       data.nav.push({
                                           "label": showIcon ? {
-                                          type: 'tpl',
-                                          tpl: \`<span class='fill-slate-500 whitespace-normal leading-6 block -ml-px no-underline group flex items-center text-[14px] rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
+                                            type: 'tpl',
+                                            tpl: \`<span class='fill-slate-500 whitespace-normal leading-6 block -ml-px no-underline group flex items-center text-[14px] rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
                                           } : tab.name,
                                           "to": tab.path,
                                           "target":tab.target,
@@ -76,9 +76,9 @@ export const AmisAppMenu = async (props) => {
                                       "isGroup": true,
                                       "children": _.sortBy(_.map(tabs, (tab) => {
                                             if(locationPathname == tab.path){
-                                            customTabId = tab.id;
+                                                customTabId = tab.id;
                                             }else if(locationPathname.startsWith(tab.path + "/")){
-                                            objectTabId = tab.id;
+                                                objectTabId = tab.id;
                                             }
                                             return {
                                             "label": showIcon ? {
@@ -130,6 +130,7 @@ export const AmisAppMenu = async (props) => {
                             return (tab.index || 0) - 1000;
                         }
                       })
+                      const badgeText = "\${IF(${appId} == 'approve_workflow',\${ss:keyvalues.badge.value|pick:'workflow'},\${ss:keyvalues.badge.value|pick:${appId}}) | toInt}";
                       payload.data = {
                         "type":"service",
                         "data":{
@@ -144,6 +145,22 @@ export const AmisAppMenu = async (props) => {
                             "overflow": ${JSON.stringify(overflow)},
                             "indentSize": ${indentSize},
                             "source": "\${items}",
+                            //左层显示时审批单显示badge数量
+                            "itemBadge": stacked?{
+                                "mode": "text",
+                                "text": badgeText,
+                                "visibleOn": "\${id == 'instances'}",
+                                "overflowCount": 99,
+                                "style": {
+                                  "right": "20%",
+                                  "margin-right": "-23px",
+                                  "height": "20px",
+                                  "border-radius": "10px",
+                                  "font-size": "16px",
+                                  "line-height": "18px",
+                                  "top": "50%"
+                                }
+                            }:"",
                             "onEvent": {
                                 "click": {
                                     "actions": [

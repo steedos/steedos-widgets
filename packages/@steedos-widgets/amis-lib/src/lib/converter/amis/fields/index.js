@@ -266,6 +266,13 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             }
             if(readonly){
                 convertData.defaultColor = null;
+            }else{
+                convertData.pipeIn = (value, data) => {
+                    if(value && value.indexOf('#')<0){
+                        return '#'+value;
+                    }
+                    return value;
+                }
             }
             break;
         case 'boolean':
