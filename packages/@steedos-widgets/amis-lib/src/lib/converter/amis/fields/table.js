@@ -454,6 +454,11 @@ async function getQuickEditSchema(field, options){
         if(field.type == "location"){
             quickEditSchema = false;
         }
+        if(field.type == "color"){
+            quickEditSchema = {
+                type: "input-color"
+            }
+        }
     }
     return quickEditSchema;
 }
