@@ -700,6 +700,8 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                     let subFieldName = subField.name.replace(`${field.name}.$.`, '').replace(`${field.name}.`, '');
                     if(subField.type === 'grid'){
                         subField = await Fields.getGridFieldSubFields(subField, ctx.__formFields);
+                    }else if(subField.type === 'table'){
+                        subField = await Fields.getTabledFieldSubFields(subField, ctx.__formFields);
                     }else{
                         if(readonly){
                             subFieldName = `${field.name}.${subFieldName}`
