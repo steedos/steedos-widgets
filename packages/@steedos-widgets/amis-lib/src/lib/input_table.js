@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-21 10:50:04
+ * @LastEditTime: 2023-12-21 11:12:48
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -242,6 +242,7 @@ function getFormPagination(props) {
  */
 function getFormPaginationWrapper(props, form, mode) {
     let serviceId = getComponentId("form_pagination", props.id);
+    let tableServiceId = getComponentId("table_service", props.id);
     let innerForm = Object.assign({}, form, {
         "data": {
             // 这里加__super前缀是因为__parentForm变量（即主表单）中可能会正好有名为index的字段
@@ -276,7 +277,7 @@ function getFormPaginationWrapper(props, form, mode) {
         // 处理思路是每次弹出form之前先把其__tableItems同步更新为最新值，这样就能在弹出form中包含单元格中做的修改
         // 注意：service init事件只会在每次弹出窗口时才执行，在触发翻页时并不会触发service init事件
         let scope = event.context.scoped;
-        let __wrapperServiceId = event.data.__wrapperServiceId;
+        let __wrapperServiceId = "${tableServiceId}";
         let wrapperService = scope.getComponentById(__wrapperServiceId);
         let wrapperServiceData = wrapperService.getData();
         let lastestFieldValue = wrapperServiceData["${props.name}"];//这里不可以用event.data["${props.name}"]因为amis input talbe有一层单独的作用域，其值会延迟一拍
@@ -306,8 +307,8 @@ function getFormPaginationWrapper(props, form, mode) {
             "__page": "${index + 1}",
             // "__total": `\${${props.name}.length}`,
             // "__total": "${__tableItems.length}",
-            "__paginationServiceId": serviceId,
-            "__formId": form.id
+            // "__paginationServiceId": serviceId,
+            // "__formId": form.id
         },
         "onEvent": {
             "init": {
@@ -504,7 +505,6 @@ async function getButtonEdit(props, showAsInlineEditMode) {
             }
         });
         let buttonNextId = "${buttonNextId}";
-        debugger
         let __paginationServiceId = "${formPaginationId}";
         let __paginationData = scope.getComponentById(__paginationServiceId).getData();
         event.data.index = __paginationData.index;
@@ -528,7 +528,6 @@ async function getButtonEdit(props, showAsInlineEditMode) {
             }
         });
         let buttonNextId = "${buttonNextId}";
-        debugger
         let __paginationServiceId = "${formPaginationId}";
         let __paginationData = scope.getComponentById(__paginationServiceId).getData();
         event.data.index = __paginationData.index;
@@ -570,8 +569,7 @@ async function getButtonEdit(props, showAsInlineEditMode) {
                                 "global": "${global}",
                                 "uiSchema": "${uiSchema}",
                                 "index": "${index}",
-                                "__tableItems": `\${${props.name}}`,
-                                "__wrapperServiceId": "${__wrapperServiceId}"
+                                "__tableItems": `\${${props.name}}`
                             },
                             "actions": [
                                 {
@@ -666,8 +664,7 @@ async function getButtonView(props) {
                                 // 映射到中间变量__parentForm而不是直接用&展开映射是为了避免表单中字段名与作用域中变量重名
                                 "__parentForm": "${__super.__super || {}}",
                                 "index": "${index}",
-                                "__tableItems": `\${${props.name}}`,
-                                "__wrapperServiceId": "${__wrapperServiceId}"
+                                "__tableItems": `\${${props.name}}`
                             }
                         }
                     }
@@ -678,10 +675,11 @@ async function getButtonView(props) {
 }
 
 function getButtonDelete(props) {
+    let tableServiceId = getComponentId("table_service", props.id);
     let onDeleteItemScript = `
         // let fieldValue = event.data["${props.name}"];
         let scope = event.context.scoped;
-        let __wrapperServiceId = event.data.__wrapperServiceId;
+        let __wrapperServiceId = "${tableServiceId}";
         let wrapperService = scope.getComponentById(__wrapperServiceId);
         let wrapperServiceData = wrapperService.getData();
         let lastestFieldValue = wrapperServiceData["${props.name}"];//这里不可以用event.data["${props.name}"]因为amis input talbe有一层单独的作用域，其值会延迟一拍
@@ -828,10 +826,7 @@ export const getAmisInputTableSchema = async (props) => {
         "type": "service",
         "body": schemaBody,
         "className": props.className,
-        "id": serviceId,
-        "data": {
-            "__wrapperServiceId": serviceId
-        }
+        "id": serviceId
     };
     // console.log("===schema===", schema);
     return schema;
