@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-21 11:12:48
+ * @LastEditTime: 2023-12-21 11:46:07
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -331,7 +331,7 @@ function getFormPaginationWrapper(props, form, mode) {
 async function getForm(props, mode = "edit", formId) {
     let formFields = getFormFields(props, mode)
     let body = await getFormBody(null, formFields);
-    if(!formId){
+    if (!formId) {
         formId = getComponentId("form", props.id);
     }
     let schema = {
@@ -466,16 +466,16 @@ async function getButtonNew(props) {
                             "closeOnEsc": false,
                             "onEvent": {
                                 "confirm": {
-                                  "actions": [
-                                    {
-                                      "actionType": "validate",
-                                      "componentId": formId
-                                    },
-                                    {
-                                      "preventDefault": true,
-                                      "expression": "${event.data.validateResult.error}" //触发表单校验结果会存入validateResult，amis 3.2不支持，高版本比如 3.5.3支持
-                                    }
-                                  ]
+                                    "actions": [
+                                        {
+                                            "actionType": "validate",
+                                            "componentId": formId
+                                        },
+                                        {
+                                            "preventDefault": true,
+                                            "expression": "${event.data.validateResult.error}" //触发表单校验结果会存入validateResult，amis 3.2不支持，高版本比如 3.5.3支持
+                                        }
+                                    ]
                                 }
                             }
                         }
@@ -611,16 +611,16 @@ async function getButtonEdit(props, showAsInlineEditMode) {
                             ],
                             "onEvent": {
                                 "confirm": {
-                                  "actions": [
-                                    {
-                                      "actionType": "validate",
-                                      "componentId": formId
-                                    },
-                                    {
-                                      "preventDefault": true,
-                                      "expression": "${event.data.validateResult.error}" //触发表单校验结果会存入validateResult，amis 3.2不支持，高版本比如 3.5.3支持
-                                    }
-                                  ]
+                                    "actions": [
+                                        {
+                                            "actionType": "validate",
+                                            "componentId": formId
+                                        },
+                                        {
+                                            "preventDefault": true,
+                                            "expression": "${event.data.validateResult.error}" //触发表单校验结果会存入validateResult，amis 3.2不支持，高版本比如 3.5.3支持
+                                        }
+                                    ]
                                 }
                             }
                         }
