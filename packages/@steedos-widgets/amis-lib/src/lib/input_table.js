@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-19 15:53:32
+ * @LastEditTime: 2023-12-21 10:50:04
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -49,6 +49,28 @@ function getInputTableCell(field, showAsInlineEditMode) {
             hideLabel: true
         }
     }
+}
+
+function getComponentId(name, tag) {
+    let id = "";
+    switch (name) {
+        case "table_service":
+            id = `service_wrapper__${tag}`;
+            break;
+        case "form_pagination":
+            id = `service_popup_pagination_wrapper__${tag}`;
+            break;
+        case "form":
+            id = `form_popup__${tag}`;
+            break;
+        case "dialog":
+            id = `dialog_popup__${tag}`;
+            break;
+        default:
+            id = `${name}__${tag}`;
+            break;
+    }
+    return id;
 }
 
 /**
@@ -99,16 +121,24 @@ async function getInputTableColumns(props) {
 }
 
 function getFormPagination(props) {
+    let buttonPrevId = getComponentId("button_prev", props.id);
+    let buttonNextId = getComponentId("button_next", props.id);
+    let formId = getComponentId("form", props.id);
+    let tableServiceId = getComponentId("table_service", props.id);
+    let formPaginationId = getComponentId("form_pagination", props.id);
     let onPageChangeScript = `
         let scope = event.context.scoped;
-        let __paginationServiceId = event.data.__paginationServiceId;
-        let __wrapperServiceId = event.data.__wrapperServiceId;
-        let __formId = event.data.__formId;
+        let __paginationServiceId = "${formPaginationId}";
+        let __wrapperServiceId = "${tableServiceId}";
+        let __formId = "${formId}";
         let fieldValue = event.data.__tableItems;//这里不可以_.cloneDeep，因为翻页form中用的是event.data.__tableItems，直接变更其值即可改变表单中的值
         let pageChangeDirection = context.props.pageChangeDirection;
+        // event.data中的index和__page分别表示当前要把表单数据提交到的行索引和用于标定下一页页码的当前页页码
+        // 一般来说__page = index + 1，但是可以让event.data中传入__page和index值不是这种联系。
+        // 比如__page设置为3，index设置为0表示把当前表单数据提交到第一页，但是跳转到第4页，弹出的表单中底下的新增和复制按钮依赖了此功能
+        // let currentPage = currentIndex + 1;
         let currentPage = event.data.__page;
         let currentIndex = event.data.index;
-
         // 翻页到下一页之前需要先把当前页改动的内容保存到中间变量__tableItems中
         let currentFormValues = scope.getComponentById(__formId).getValues();
         fieldValue[currentIndex] = currentFormValues;
@@ -163,6 +193,7 @@ function getFormPagination(props) {
                 "pageChangeDirection": "prev",
                 "disabledOn": "${__page <= 1}",
                 "size": "sm",
+                "id": buttonPrevId,
                 "onEvent": {
                     "click": {
                         "actions": [
@@ -176,7 +207,7 @@ function getFormPagination(props) {
             },
             {
                 "type": "tpl",
-                "tpl": "${__page}/${__total}"
+                "tpl": "${__page}/${__tableItems.length}"
             },
             {
                 "type": "button",
@@ -184,8 +215,9 @@ function getFormPagination(props) {
                 "icon": `fa fa-angle-right`,
                 "level": "link",
                 "pageChangeDirection": "next",
-                "disabledOn": "${__page >= __total}",
+                "disabledOn": "${__page >= __tableItems.length}",
                 "size": "sm",
+                "id": buttonNextId,
                 "onEvent": {
                     "click": {
                         "actions": [
@@ -209,7 +241,7 @@ function getFormPagination(props) {
  * @returns 带翻页容器的wrapper
  */
 function getFormPaginationWrapper(props, form, mode) {
-    let serviceId = `service_popup_pagination_wrapper__${props.id}`;
+    let serviceId = getComponentId("form_pagination", props.id);
     let innerForm = Object.assign({}, form, {
         "data": {
             // 这里加__super前缀是因为__parentForm变量（即主表单）中可能会正好有名为index的字段
@@ -273,7 +305,7 @@ function getFormPaginationWrapper(props, form, mode) {
         "data": {
             "__page": "${index + 1}",
             // "__total": `\${${props.name}.length}`,
-            "__total": "${__tableItems.length}",
+            // "__total": "${__tableItems.length}",
             "__paginationServiceId": serviceId,
             "__formId": form.id
         },
@@ -299,7 +331,7 @@ async function getForm(props, mode = "edit", formId) {
     let formFields = getFormFields(props, mode)
     let body = await getFormBody(null, formFields);
     if(!formId){
-        formId = `form_popup__${props.id}`;
+        formId = getComponentId("form", props.id);
     }
     let schema = {
         "type": "form",
@@ -409,7 +441,7 @@ async function getForm(props, mode = "edit", formId) {
 }
 
 async function getButtonNew(props) {
-    let formId = `form_popup__${props.id}`;
+    let formId = getComponentId("form", props.id);
     return {
         "label": "新增",
         "type": "button",
@@ -455,7 +487,55 @@ async function getButtonNew(props) {
 }
 
 async function getButtonEdit(props, showAsInlineEditMode) {
-    let formId = `form_popup__${props.id}`;
+    let formId = getComponentId("form", props.id);
+    let dialogId = getComponentId("dialog", props.id);
+    let buttonNextId = getComponentId("button_next", props.id);
+    let formPaginationId = getComponentId("form_pagination", props.id);
+    let onNewItemSubmitScript = `
+        let scope = event.context.scoped;
+        let fieldValue = event.data.__tableItems;//这里不可以_.cloneDeep，因为翻页form中用的是event.data.__tableItems，直接变更其值即可改变表单中的值
+        // 新建一条空白行并保存到子表组件
+        fieldValue.push({});
+        doAction({
+            "componentId": "${props.id}",
+            "actionType": "setValue",
+            "args": {
+                "value": fieldValue
+            }
+        });
+        let buttonNextId = "${buttonNextId}";
+        debugger
+        let __paginationServiceId = "${formPaginationId}";
+        let __paginationData = scope.getComponentById(__paginationServiceId).getData();
+        event.data.index = __paginationData.index;
+        event.data.__page = fieldValue.length - 1;//这里不可以用Object.assign否则，event.data中上层作用域数据会丢失
+        // 触发翻页按钮事件，实现保存当前页数据并跳转到最后一行
+        scope.getComponentById(buttonNextId).props.dispatchEvent("click", event.data);
+    `;
+    let onCopyItemSubmitScript = `
+        let scope = event.context.scoped;
+        let __formId = "${formId}";
+        // let newItem = JSON.parse(JSON.stringify(event.data));
+        let newItem = scope.getComponentById(__formId).getValues();//这里不可以用event.data，因为其拿到的是弹出表单时的初始值，不是用户实时填写的数据
+        let fieldValue = event.data.__tableItems;//这里不可以_.cloneDeep，因为翻页form中用的是event.data.__tableItems，直接变更其值即可改变表单中的值
+        // 复制当前页数据到新建行并保存到子表组件
+        fieldValue.push(newItem);
+        doAction({
+            "componentId": "${props.id}",
+            "actionType": "setValue",
+            "args": {
+                "value": fieldValue
+            }
+        });
+        let buttonNextId = "${buttonNextId}";
+        debugger
+        let __paginationServiceId = "${formPaginationId}";
+        let __paginationData = scope.getComponentById(__paginationServiceId).getData();
+        event.data.index = __paginationData.index;
+        event.data.__page = fieldValue.length - 1;//这里不可以用Object.assign否则，event.data中上层作用域数据会丢失
+        // 触发翻页按钮事件，实现保存当前页数据并跳转到最后一行
+        scope.getComponentById(buttonNextId).props.dispatchEvent("click", event.data);
+    `;
     return {
         "type": "button",
         "label": "",
@@ -468,6 +548,7 @@ async function getButtonEdit(props, showAsInlineEditMode) {
                         "actionType": "dialog",
                         "dialog": {
                             "type": "dialog",
+                            "id": dialogId,
                             "title": "编辑行",
                             "body": [
                                 await getForm(props, "edit", formId)
@@ -492,6 +573,44 @@ async function getButtonEdit(props, showAsInlineEditMode) {
                                 "__tableItems": `\${${props.name}}`,
                                 "__wrapperServiceId": "${__wrapperServiceId}"
                             },
+                            "actions": [
+                                {
+                                    "type": "button",
+                                    "label": "新增",
+                                    "tooltip": "保存并新增一行，即保存当前行数据并新增一条空白行",
+                                    "onEvent": {
+                                        "click": {
+                                            "actions": [
+                                                {
+                                                    "actionType": "custom",
+                                                    "script": onNewItemSubmitScript
+                                                }
+                                            ]
+                                        }
+                                    }
+                                },
+                                {
+                                    "type": "button",
+                                    "label": "复制",
+                                    "tooltip": "复制并新增一行，即保存当前行数据并复制当前行数据到新增行",
+                                    "onEvent": {
+                                        "click": {
+                                            "actions": [
+                                                {
+                                                    "actionType": "custom",
+                                                    "script": onCopyItemSubmitScript
+                                                }
+                                            ]
+                                        }
+                                    }
+                                },
+                                {
+                                    "type": "button",
+                                    "label": "完成",
+                                    "actionType": "confirm",
+                                    "level": "primary"
+                                },
+                            ],
                             "onEvent": {
                                 "confirm": {
                                   "actions": [
@@ -604,7 +723,7 @@ export const getAmisInputTableSchema = async (props) => {
     if (!props.id) {
         props.id = "steedos_input_table_" + props.name + "_" + Math.random().toString(36).substr(2, 9);
     }
-    let serviceId = `service_wrapper__${props.id}`;
+    let serviceId = getComponentId("table_service", props.id);
     let buttonsForColumnOperations = [];
     let inlineEditMode = props.inlineEditMode;
     let showAsInlineEditMode = inlineEditMode && props.editable;
