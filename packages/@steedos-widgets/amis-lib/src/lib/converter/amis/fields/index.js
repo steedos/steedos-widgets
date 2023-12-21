@@ -289,7 +289,16 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                 format:'YYYY-MM-DDT00:00:00.000[Z]',
                 tpl: readonly ? Tpl.getDateTpl(field) : null,
                 // utc: true,
-                joinValues: false
+                joinValues: false,
+                "shortcuts": [
+                    "thismonth",
+                    "2monthsago",
+                    "3monthslater",
+                    "prevquarter",
+                    "thisquarter",
+                    "thisyear",
+                    "lastYear"
+                  ]
             }
             break;
         case 'date':
@@ -822,7 +831,8 @@ export async function getFieldSearchable(perField, permissionFields, ctx){
             fieldNamePrefix = `${fieldNamePrefix}between__`
         }
         if(_field.type === 'datetime'){
-            _field.type = 'input-datetime-range'
+            // 特意改为日期范围而不是日期时间范围，因为搜索时一般精确到日期就足够了，需要精确到日期时间范围需要在字段上配置amis属性来实现
+            _field.type = 'input-date-range'
             _field.is_wide = true;
             fieldNamePrefix = `${fieldNamePrefix}between__`
         }
