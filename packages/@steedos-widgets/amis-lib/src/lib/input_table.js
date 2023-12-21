@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-21 11:46:07
+ * @LastEditTime: 2023-12-21 17:20:10
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -812,16 +812,17 @@ export const getAmisInputTableSchema = async (props) => {
             "body": footerToolbar
         });
     }
-    // 不可以直接把headerToolbar unshift进schemaBody，因为它没有显示在label下面，而是显示在上面了，这没有意义
+    // 直接把headerToolbar unshift进schemaBody，不会显示在label下面，而是显示在上面了，这个暂时没有解决办法，只能等amis 升级
     // 看起来amis官方后续会支持给input-table组件配置headerToolbar，见：https://github.com/baidu/amis/issues/7246
-    // let headerToolbar = clone(props.headerToolbar || []); //这里不clone的话，会造成死循环，应该是因为props属性变更会让组件重新渲染
-    // if (headerToolbar.length) {
-    //     schemaBody.unshift({
-    //         "type": "wrapper",
-    //         "size": "none",
-    //         "body": headerToolbar
-    //     });
-    // }
+    // 不过依然放开此功能的意义在于有的场景字段label本来就不需要显示出来，此时headerToolbar就有意义
+    let headerToolbar = clone(props.headerToolbar || []); //这里不clone的话，会造成死循环，应该是因为props属性变更会让组件重新渲染
+    if (headerToolbar.length) {
+        schemaBody.unshift({
+            "type": "wrapper",
+            "size": "none",
+            "body": headerToolbar
+        });
+    }
     let schema = {
         "type": "service",
         "body": schemaBody,
