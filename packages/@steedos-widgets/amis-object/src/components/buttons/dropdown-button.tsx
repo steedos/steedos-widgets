@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-22 17:26:21
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-05-05 18:43:18
+ * @LastEditTime: 2023-12-21 14:00:40
  * @Description: 
  */
 import React, { useEffect, useState } from 'react'
@@ -29,7 +29,6 @@ const getMenu = (render, buttons, btnClassName, props) => {
 
 export const SteedosDropdownButton = (props)=>{
     const { data, render, className, btnClassName, buttons, placement, trigger=['click'], onOpenApi, store, env, overlayClassName, arrow } = props;
-
     const [menu, setMenu] = useState([]);
     
     const onOpenChange = (open)=>{
@@ -39,7 +38,7 @@ export const SteedosDropdownButton = (props)=>{
                     env.fetcher(onOpenApi, createObject(data, {})).then(result => {
                         const openData = result?.hasOwnProperty('ok') ? result.data : result;
                         setMenu(getMenu(render, buttons, btnClassName, {
-                            data: createObject(data, defaultsDeep(openData, data))
+                            data: createObject(data, defaultsDeep(openData, data, {record: data}))
                         }))
                       }).catch((e)=>{
                         console.error(e)
