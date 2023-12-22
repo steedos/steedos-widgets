@@ -207,25 +207,51 @@
     }
     //分页器相关样式调整
     .steedos-object-table{
-        .antd-Table-footToolbar{
-            border-top: 1px solid #e5e7eb;
-            .antd-Crud-toolbar{
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            .antd-Crud-toolbar-item{
-                // justify-content: center;
-                // width: 100%;
-                .antd-Pagination-inputGroup-left{
-                    display: none;
-                }
-                .antd-Pagination-inputGroup-input{
-                    min-width: 0;
-                    width: 30px;
-                }
-                .antd-Pagination-inputGroup-right{
-                    width: 25px;
+        .antd-Crud{
+            .antd-Table.antd-Crud-body{
+                margin-bottom: 0;
+                .antd-Table-toolbar.antd-Table-footToolbar{
+                    // border-top: 1px solid #e5e7eb;
+                    padding-top: 0.4rem;
+                    padding-bottom: 0.5rem;
+                    .antd-Crud-toolbar{
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+                    .antd-Crud-toolbar-item{
+                        // justify-content: center;
+                        width: 100%;
+                        .antd-Crud-pager{
+                            width: 100%;
+                            .antd-Pagination-wrap{
+                                display: flex;
+                                justify-content: center;
+                                .antd-Pagination-item{
+                                    height: 100%;
+                                }
+                                .antd-Pagination > li.is-active > a{
+                                    border: unset;
+                                    font-size: 16px;
+                                }
+                                .antd-Pagination{
+                                    margin-left: 0 
+                                }
+                                .antd-Pagination-total{
+                                    position: absolute;
+                                    left: 0.5rem;
+                                    top: 0;
+                                    display: inline-flex;
+                                    align-items: center;
+                                }
+                                .antd-Pagination-inputGroup{
+                                    position: absolute;
+                                    right: 0.5rem;
+                                    top: 0rem;
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -239,12 +265,6 @@
 }
 
 
-/* 手机屏幕宽度小于380px时隐藏分页器快速跳转*/
-@media (max-width:380px) {
-    .steedos-object-table .antd-Table-footToolbar .antd-Pagination-inputGroup{
-        display: none
-    }
-}
 
 .steedos-object-table .two-lines-truncate{
     white-space: pre-wrap;
