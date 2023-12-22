@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-22 18:24:29
+ * @LastEditTime: 2023-12-22 18:28:29
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -612,6 +612,9 @@ async function getButtonActions(props, mode) {
                     }
                 }
             }
+        }
+        if(props.dialog){
+            Object.assign(actionShowEditDialog.dialog, props.dialog);
         }
         if (mode == "new") {
             let onNewLineScript = `
