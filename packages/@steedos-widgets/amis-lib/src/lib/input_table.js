@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-21 17:20:10
+ * @LastEditTime: 2023-12-22 17:56:16
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -441,46 +441,225 @@ async function getForm(props, mode = "edit", formId) {
     return schema;
 }
 
-async function getButtonNew(props) {
+
+/**
+ * 编辑、新增和查看按钮actions
+ * @param {*} props 
+ * @param {*} mode edit/new/readonly
+ */
+async function getButtonActions(props, mode) {
+    let actions = [];
     let formId = getComponentId("form", props.id);
+    let dialogId = getComponentId("dialog", props.id);
+    let buttonNextId = getComponentId("button_next", props.id);
+    let formPaginationId = getComponentId("form_pagination", props.id);
+    if (mode == "new" || mode == "edit") {
+        // let actionShowNewDialog = {
+        //     "actionType": "dialog",
+        //     "dialog": {
+        //         "type": "dialog",
+        //         "title": "新增行",
+        //         "body": [
+        //             await getForm(props, "new", formId)
+        //         ],
+        //         "size": "lg",
+        //         "showCloseButton": true,
+        //         "showErrorMsg": true,
+        //         "showLoading": true,
+        //         "className": "app-popover",
+        //         "closeOnEsc": false,
+        //         "onEvent": {
+        //             "confirm": {
+        //                 "actions": [
+        //                     {
+        //                         "actionType": "validate",
+        //                         "componentId": formId
+        //                     },
+        //                     {
+        //                         "preventDefault": true,
+        //                         "expression": "${event.data.validateResult.error}" //触发表单校验结果会存入validateResult，amis 3.2不支持，高版本比如 3.5.3支持
+        //                     }
+        //                 ]
+        //             }
+        //         }
+        //     }
+        // };
+        let onSaveAndNewItemScript = `
+            let scope = event.context.scoped;
+            let fieldValue = event.data.__tableItems;//这里不可以_.cloneDeep，因为翻页form中用的是event.data.__tableItems，直接变更其值即可改变表单中的值
+            // 新建一条空白行并保存到子表组件
+            fieldValue.push({});
+            doAction({
+                "componentId": "${props.id}",
+                "actionType": "setValue",
+                "args": {
+                    "value": fieldValue
+                }
+            });
+            let buttonNextId = "${buttonNextId}";
+            let __paginationServiceId = "${formPaginationId}";
+            let __paginationData = scope.getComponentById(__paginationServiceId).getData();
+            event.data.index = __paginationData.index;
+            event.data.__page = fieldValue.length - 1;//这里不可以用Object.assign否则，event.data中上层作用域数据会丢失
+            // 触发翻页按钮事件，实现保存当前页数据并跳转到最后一行
+            scope.getComponentById(buttonNextId).props.dispatchEvent("click", event.data);
+        `;
+        let onSaveAndCopyItemScript = `
+            let scope = event.context.scoped;
+            let __formId = "${formId}";
+            // let newItem = JSON.parse(JSON.stringify(event.data));
+            let newItem = scope.getComponentById(__formId).getValues();//这里不可以用event.data，因为其拿到的是弹出表单时的初始值，不是用户实时填写的数据
+            let fieldValue = event.data.__tableItems;//这里不可以_.cloneDeep，因为翻页form中用的是event.data.__tableItems，直接变更其值即可改变表单中的值
+            // 复制当前页数据到新建行并保存到子表组件
+            fieldValue.push(newItem);
+            doAction({
+                "componentId": "${props.id}",
+                "actionType": "setValue",
+                "args": {
+                    "value": fieldValue
+                }
+            });
+            let buttonNextId = "${buttonNextId}";
+            let __paginationServiceId = "${formPaginationId}";
+            let __paginationData = scope.getComponentById(__paginationServiceId).getData();
+            event.data.index = __paginationData.index;
+            event.data.__page = fieldValue.length - 1;//这里不可以用Object.assign否则，event.data中上层作用域数据会丢失
+            // 触发翻页按钮事件，实现保存当前页数据并跳转到最后一行
+            scope.getComponentById(buttonNextId).props.dispatchEvent("click", event.data);
+        `;
+        let actionShowEditDialog = {
+            "actionType": "dialog",
+            "dialog": {
+                "type": "dialog",
+                "id": dialogId,
+                "title": "编辑行",
+                "body": [
+                    await getForm(props, "edit", formId)
+                ],
+                "size": "lg",
+                "showCloseButton": true,
+                "showErrorMsg": true,
+                "showLoading": true,
+                "className": "app-popover",
+                "closeOnEsc": false,
+                "data": {
+                    // 这里必须加data数据映射，否则翻页功能中取__tableItems值时会乱，比如翻页编辑后会把上一页中没改过的字段值带过去
+                    // 额外把华炎魔方主表记录ObjectForm中的字段值从record变量中映射到子表form中，因为子表lookup字段filtersFunction中可能依赖了主表记录中的字段值，比如“工作流规则”对象“时间触发器”字段中的“日期字段”字段
+                    // 额外把global、uiSchema也映射过去，有可能要用，后续需要用到其他变更可以这里加映射
+                    // "&": "${record || {}}",
+                    // 换成从__super来映射上级表单数据是因为对象列表视图界面中每行下拉菜单中的编辑按钮弹出的表单中的子表所在作用域中没有record变量
+                    // 映射到中间变量__parentForm而不是直接用&展开映射是为了避免表单中字段名与作用域中变量重名
+                    // "__parentForm": "${__super.__super || {}}",
+                    "__parentForm": mode == "new" ? "$$" : "${__super.__super || {}}",
+                    "global": "${global}",
+                    "uiSchema": "${uiSchema}",
+                    "index": "${index}",
+                    "__tableItems": `\${${props.name}}`
+                },
+                "actions": [
+                    {
+                        "type": "button",
+                        "label": "新增",
+                        "tooltip": "保存并新增一行，即保存当前行数据并新增一条空白行",
+                        "onEvent": {
+                            "click": {
+                                "actions": [
+                                    {
+                                        "actionType": "custom",
+                                        "script": onSaveAndNewItemScript
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "type": "button",
+                        "label": "复制",
+                        "tooltip": "复制并新增一行，即保存当前行数据并复制当前行数据到新增行",
+                        "onEvent": {
+                            "click": {
+                                "actions": [
+                                    {
+                                        "actionType": "custom",
+                                        "script": onSaveAndCopyItemScript
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "type": "button",
+                        "label": "完成",
+                        "actionType": "confirm",
+                        "level": "primary"
+                    },
+                ],
+                "onEvent": {
+                    "confirm": {
+                        "actions": [
+                            {
+                                "actionType": "validate",
+                                "componentId": formId
+                            },
+                            {
+                                "preventDefault": true,
+                                "expression": "${event.data.validateResult.error}" //触发表单校验结果会存入validateResult，amis 3.2不支持，高版本比如 3.5.3支持
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+        if (mode == "new") {
+            let onNewLineScript = `
+                let newItem = {};
+                if(event.data["${props.name}"]){
+                    // let fieldValue = event.data.__tableItems;
+                    // 这里不用__tableItems是因为新建的时候没有翻页，里面没有也不需要走__tableItems变量
+                    let fieldValue = event.data["${props.name}"];
+                    fieldValue.push(newItem);
+                    doAction({
+                        "componentId": "${props.id}",
+                        "actionType": "setValue",
+                        "args": {
+                            "value": fieldValue
+                        }
+                    });
+                    event.data.index = fieldValue.length - 1;
+                }
+                else{
+                    // 这里不可以执行event.data["${props.name}"]=[newItem]，数据域会断掉
+                    doAction({
+                        "componentId": "${props.id}",
+                        "actionType": "setValue",
+                        "args": {
+                            "value": [newItem]
+                        }
+                    });
+                    event.data.index = 1;
+                }
+            `;
+            let actionNewLine = {
+                "actionType": "custom",
+                "script": onNewLineScript
+            };
+            actions = [actionNewLine, actionShowEditDialog];
+        }
+        else if (mode == "edit") {
+            actions = [actionShowEditDialog];
+        }
+    }
+    return actions;
+}
+
+async function getButtonNew(props) {
     return {
         "label": "新增",
         "type": "button",
         "icon": "fa fa-plus",
         "onEvent": {
             "click": {
-                "actions": [
-                    {
-                        "actionType": "dialog",
-                        "dialog": {
-                            "type": "dialog",
-                            "title": "新增行",
-                            "body": [
-                                await getForm(props, "new", formId)
-                            ],
-                            "size": "lg",
-                            "showCloseButton": true,
-                            "showErrorMsg": true,
-                            "showLoading": true,
-                            "className": "app-popover",
-                            "closeOnEsc": false,
-                            "onEvent": {
-                                "confirm": {
-                                    "actions": [
-                                        {
-                                            "actionType": "validate",
-                                            "componentId": formId
-                                        },
-                                        {
-                                            "preventDefault": true,
-                                            "expression": "${event.data.validateResult.error}" //触发表单校验结果会存入validateResult，amis 3.2不支持，高版本比如 3.5.3支持
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    }
-                ]
+                "actions": await getButtonActions(props, "new")
             }
         },
         "level": "primary"
@@ -488,53 +667,6 @@ async function getButtonNew(props) {
 }
 
 async function getButtonEdit(props, showAsInlineEditMode) {
-    let formId = getComponentId("form", props.id);
-    let dialogId = getComponentId("dialog", props.id);
-    let buttonNextId = getComponentId("button_next", props.id);
-    let formPaginationId = getComponentId("form_pagination", props.id);
-    let onNewItemSubmitScript = `
-        let scope = event.context.scoped;
-        let fieldValue = event.data.__tableItems;//这里不可以_.cloneDeep，因为翻页form中用的是event.data.__tableItems，直接变更其值即可改变表单中的值
-        // 新建一条空白行并保存到子表组件
-        fieldValue.push({});
-        doAction({
-            "componentId": "${props.id}",
-            "actionType": "setValue",
-            "args": {
-                "value": fieldValue
-            }
-        });
-        let buttonNextId = "${buttonNextId}";
-        let __paginationServiceId = "${formPaginationId}";
-        let __paginationData = scope.getComponentById(__paginationServiceId).getData();
-        event.data.index = __paginationData.index;
-        event.data.__page = fieldValue.length - 1;//这里不可以用Object.assign否则，event.data中上层作用域数据会丢失
-        // 触发翻页按钮事件，实现保存当前页数据并跳转到最后一行
-        scope.getComponentById(buttonNextId).props.dispatchEvent("click", event.data);
-    `;
-    let onCopyItemSubmitScript = `
-        let scope = event.context.scoped;
-        let __formId = "${formId}";
-        // let newItem = JSON.parse(JSON.stringify(event.data));
-        let newItem = scope.getComponentById(__formId).getValues();//这里不可以用event.data，因为其拿到的是弹出表单时的初始值，不是用户实时填写的数据
-        let fieldValue = event.data.__tableItems;//这里不可以_.cloneDeep，因为翻页form中用的是event.data.__tableItems，直接变更其值即可改变表单中的值
-        // 复制当前页数据到新建行并保存到子表组件
-        fieldValue.push(newItem);
-        doAction({
-            "componentId": "${props.id}",
-            "actionType": "setValue",
-            "args": {
-                "value": fieldValue
-            }
-        });
-        let buttonNextId = "${buttonNextId}";
-        let __paginationServiceId = "${formPaginationId}";
-        let __paginationData = scope.getComponentById(__paginationServiceId).getData();
-        event.data.index = __paginationData.index;
-        event.data.__page = fieldValue.length - 1;//这里不可以用Object.assign否则，event.data中上层作用域数据会丢失
-        // 触发翻页按钮事件，实现保存当前页数据并跳转到最后一行
-        scope.getComponentById(buttonNextId).props.dispatchEvent("click", event.data);
-    `;
     return {
         "type": "button",
         "label": "",
@@ -542,90 +674,7 @@ async function getButtonEdit(props, showAsInlineEditMode) {
         "level": "link",
         "onEvent": {
             "click": {
-                "actions": [
-                    {
-                        "actionType": "dialog",
-                        "dialog": {
-                            "type": "dialog",
-                            "id": dialogId,
-                            "title": "编辑行",
-                            "body": [
-                                await getForm(props, "edit", formId)
-                            ],
-                            "size": "lg",
-                            "showCloseButton": true,
-                            "showErrorMsg": true,
-                            "showLoading": true,
-                            "className": "app-popover",
-                            "closeOnEsc": false,
-                            "data": {
-                                // 这里必须加data数据映射，否则翻页功能中取__tableItems值时会乱，比如翻页编辑后会把上一页中没改过的字段值带过去
-                                // 额外把华炎魔方主表记录ObjectForm中的字段值从record变量中映射到子表form中，因为子表lookup字段filtersFunction中可能依赖了主表记录中的字段值，比如“工作流规则”对象“时间触发器”字段中的“日期字段”字段
-                                // 额外把global、uiSchema也映射过去，有可能要用，后续需要用到其他变更可以这里加映射
-                                // "&": "${record || {}}",
-                                // 换成从__super来映射上级表单数据是因为对象列表视图界面中每行下拉菜单中的编辑按钮弹出的表单中的子表所在作用域中没有record变量
-                                // 映射到中间变量__parentForm而不是直接用&展开映射是为了避免表单中字段名与作用域中变量重名
-                                "__parentForm": "${__super.__super || {}}",
-                                "global": "${global}",
-                                "uiSchema": "${uiSchema}",
-                                "index": "${index}",
-                                "__tableItems": `\${${props.name}}`
-                            },
-                            "actions": [
-                                {
-                                    "type": "button",
-                                    "label": "新增",
-                                    "tooltip": "保存并新增一行，即保存当前行数据并新增一条空白行",
-                                    "onEvent": {
-                                        "click": {
-                                            "actions": [
-                                                {
-                                                    "actionType": "custom",
-                                                    "script": onNewItemSubmitScript
-                                                }
-                                            ]
-                                        }
-                                    }
-                                },
-                                {
-                                    "type": "button",
-                                    "label": "复制",
-                                    "tooltip": "复制并新增一行，即保存当前行数据并复制当前行数据到新增行",
-                                    "onEvent": {
-                                        "click": {
-                                            "actions": [
-                                                {
-                                                    "actionType": "custom",
-                                                    "script": onCopyItemSubmitScript
-                                                }
-                                            ]
-                                        }
-                                    }
-                                },
-                                {
-                                    "type": "button",
-                                    "label": "完成",
-                                    "actionType": "confirm",
-                                    "level": "primary"
-                                },
-                            ],
-                            "onEvent": {
-                                "confirm": {
-                                    "actions": [
-                                        {
-                                            "actionType": "validate",
-                                            "componentId": formId
-                                        },
-                                        {
-                                            "preventDefault": true,
-                                            "expression": "${event.data.validateResult.error}" //触发表单校验结果会存入validateResult，amis 3.2不支持，高版本比如 3.5.3支持
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    }
-                ]
+                "actions": await getButtonActions(props, "edit")
             }
         }
     };
