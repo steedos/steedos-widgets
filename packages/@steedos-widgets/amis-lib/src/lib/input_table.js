@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-22 17:56:16
+ * @LastEditTime: 2023-12-22 18:08:49
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -554,7 +554,10 @@ async function getButtonActions(props, mode) {
                     "global": "${global}",
                     "uiSchema": "${uiSchema}",
                     "index": "${index}",
-                    "__tableItems": `\${${props.name}}`
+                    // "__tableItems": `\${${props.name}}`
+                    // 为了解决"弹出的dialog窗口中子表组件会影响页面布局界面中父作用域字段值"，比如设计字段布局微页面中的设置分组功能，弹出的就是子表dialog
+                    // 所以这里使用json|toJson转一次，断掉event.data.__tableItems与上层任用域中props.name的联系
+                    "__tableItems": `\${${props.name}|json|toJson}`
                 },
                 "actions": [
                     {
