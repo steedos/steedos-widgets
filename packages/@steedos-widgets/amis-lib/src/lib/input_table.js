@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-23 15:17:32
+ * @LastEditTime: 2023-12-23 21:23:41
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -528,6 +528,49 @@ async function getButtonActions(props, mode) {
             // 触发翻页按钮事件，实现保存当前页数据并跳转到最后一行
             scope.getComponentById(buttonNextId).props.dispatchEvent("click", event.data);
         `;
+        let dialogButtons = [
+            {
+            "type": "button",
+            "label": "完成",
+            "actionType": "confirm",
+            "level": "primary"
+            }
+        ];
+        if(props.addable){
+            dialogButtons = [
+                {
+                    "type": "button",
+                    "label": "新增",
+                    "tooltip": "保存并新增一行，即保存当前行数据并新增一条空白行",
+                    "onEvent": {
+                        "click": {
+                            "actions": [
+                                {
+                                    "actionType": "custom",
+                                    "script": onSaveAndNewItemScript
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "type": "button",
+                    "label": "复制",
+                    "tooltip": "复制并新增一行，即保存当前行数据并复制当前行数据到新增行",
+                    "onEvent": {
+                        "click": {
+                            "actions": [
+                                {
+                                    "actionType": "custom",
+                                    "script": onSaveAndCopyItemScript
+                                }
+                            ]
+                        }
+                    }
+                },
+                dialogButtons[0]
+            ];
+        }
         let actionShowEditDialog = {
             "actionType": "dialog",
             "dialog": {
@@ -560,44 +603,7 @@ async function getButtonActions(props, mode) {
                     // 所以这里使用json|toJson转一次，断掉event.data.__tableItems与上层任用域中props.name的联系
                     "__tableItems": `\${${props.name}|json|toJson}`
                 },
-                "actions": [
-                    {
-                        "type": "button",
-                        "label": "新增",
-                        "tooltip": "保存并新增一行，即保存当前行数据并新增一条空白行",
-                        "onEvent": {
-                            "click": {
-                                "actions": [
-                                    {
-                                        "actionType": "custom",
-                                        "script": onSaveAndNewItemScript
-                                    }
-                                ]
-                            }
-                        }
-                    },
-                    {
-                        "type": "button",
-                        "label": "复制",
-                        "tooltip": "复制并新增一行，即保存当前行数据并复制当前行数据到新增行",
-                        "onEvent": {
-                            "click": {
-                                "actions": [
-                                    {
-                                        "actionType": "custom",
-                                        "script": onSaveAndCopyItemScript
-                                    }
-                                ]
-                            }
-                        }
-                    },
-                    {
-                        "type": "button",
-                        "label": "完成",
-                        "actionType": "confirm",
-                        "level": "primary"
-                    },
-                ],
+                "actions": dialogButtons,
                 "onEvent": {
                     "confirm": {
                         "actions": [
@@ -656,7 +662,7 @@ async function getButtonActions(props, mode) {
             actions = [actionShowEditDialog];
         }
     }
-    else if (mode == "readonly"){
+    else if (mode == "readonly") {
         actions = [
             {
                 "actionType": "dialog",
