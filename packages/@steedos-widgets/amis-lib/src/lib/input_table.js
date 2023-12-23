@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-19 15:53:32
+ * @LastEditTime: 2023-12-23 22:13:22
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -49,6 +49,28 @@ function getInputTableCell(field, showAsInlineEditMode) {
             hideLabel: true
         }
     }
+}
+
+function getComponentId(name, tag) {
+    let id = "";
+    switch (name) {
+        case "table_service":
+            id = `service_wrapper__${tag}`;
+            break;
+        case "form_pagination":
+            id = `service_popup_pagination_wrapper__${tag}`;
+            break;
+        case "form":
+            id = `form_popup__${tag}`;
+            break;
+        case "dialog":
+            id = `dialog_popup__${tag}`;
+            break;
+        default:
+            id = `${name}__${tag}`;
+            break;
+    }
+    return id;
 }
 
 /**
@@ -98,17 +120,35 @@ async function getInputTableColumns(props) {
     }
 }
 
-function getFormPagination(props) {
+/**
+ * @param {*} props input-table组件props
+ * @param {*} mode edit/new/readonly
+ * @returns 翻页组件
+ */
+function getFormPagination(props, mode) {
+    let showPagination = true;
+    if(mode === "new" && !!!props.editable){
+        //不允许编辑只允许新建时不应该让用户操作翻页
+        showPagination = false;
+    }
+    let buttonPrevId = getComponentId("button_prev", props.id);
+    let buttonNextId = getComponentId("button_next", props.id);
+    let formId = getComponentId("form", props.id);
+    let tableServiceId = getComponentId("table_service", props.id);
+    let formPaginationId = getComponentId("form_pagination", props.id);
     let onPageChangeScript = `
         let scope = event.context.scoped;
-        let __paginationServiceId = event.data.__paginationServiceId;
-        let __wrapperServiceId = event.data.__wrapperServiceId;
-        let __formId = event.data.__formId;
+        let __paginationServiceId = "${formPaginationId}";
+        let __wrapperServiceId = "${tableServiceId}";
+        let __formId = "${formId}";
         let fieldValue = event.data.__tableItems;//这里不可以_.cloneDeep，因为翻页form中用的是event.data.__tableItems，直接变更其值即可改变表单中的值
         let pageChangeDirection = context.props.pageChangeDirection;
+        // event.data中的index和__page分别表示当前要把表单数据提交到的行索引和用于标定下一页页码的当前页页码
+        // 一般来说__page = index + 1，但是可以让event.data中传入__page和index值不是这种联系。
+        // 比如__page设置为3，index设置为0表示把当前表单数据提交到第一页，但是跳转到第4页，弹出的表单中底下的新增和复制按钮依赖了此功能
+        // let currentPage = currentIndex + 1;
         let currentPage = event.data.__page;
         let currentIndex = event.data.index;
-
         // 翻页到下一页之前需要先把当前页改动的内容保存到中间变量__tableItems中
         let currentFormValues = scope.getComponentById(__formId).getValues();
         fieldValue[currentIndex] = currentFormValues;
@@ -153,7 +193,8 @@ function getFormPagination(props) {
     `;
     return {
         "type": "wrapper",
-        "className": "py-2",
+        "size": "none",
+        "className": "mr-1",
         "body": [
             {
                 "type": "button",
@@ -161,8 +202,9 @@ function getFormPagination(props) {
                 "icon": `fa fa-angle-left`,
                 "level": "link",
                 "pageChangeDirection": "prev",
-                "disabledOn": "${__page <= 1}",
+                "disabledOn": showPagination ? "${__page <= 1}" : "true",
                 "size": "sm",
+                "id": buttonPrevId,
                 "onEvent": {
                     "click": {
                         "actions": [
@@ -176,7 +218,7 @@ function getFormPagination(props) {
             },
             {
                 "type": "tpl",
-                "tpl": "${__page}/${__total}"
+                "tpl": "${__page}/${__tableItems.length}"
             },
             {
                 "type": "button",
@@ -184,8 +226,9 @@ function getFormPagination(props) {
                 "icon": `fa fa-angle-right`,
                 "level": "link",
                 "pageChangeDirection": "next",
-                "disabledOn": "${__page >= __total}",
+                "disabledOn": showPagination ? "${__page >= __tableItems.length}" : "true",
                 "size": "sm",
+                "id": buttonNextId,
                 "onEvent": {
                     "click": {
                         "actions": [
@@ -205,11 +248,13 @@ function getFormPagination(props) {
  * 传入formSchema输出带翻页容器的wrapper
  * @param {*} props input-table组件props
  * @param {*} form formSchema
- * @param {*} mode edit/readonly
+ * @param {*} mode edit/new/readonly
  * @returns 带翻页容器的wrapper
  */
 function getFormPaginationWrapper(props, form, mode) {
-    let serviceId = `service_popup_pagination_wrapper__${props.id}`;
+    console.log("==getFormPaginationWrapper===", props, mode);
+    let serviceId = getComponentId("form_pagination", props.id);
+    let tableServiceId = getComponentId("table_service", props.id);
     let innerForm = Object.assign({}, form, {
         "data": {
             // 这里加__super前缀是因为__parentForm变量（即主表单）中可能会正好有名为index的字段
@@ -221,9 +266,9 @@ function getFormPaginationWrapper(props, form, mode) {
         {
             "type": "wrapper",
             "size": "none",
-            "className": "flex justify-end border-y border-gray-200 -mx-6 shadow-inner sticky top-0 right-0 left-0 z-20 bg-white mb-4",
+            "className": "flex justify-end sticky top-0 right-0 left-0 z-20 bg-white -mt-2",
             "body": [
-                getFormPagination(props)
+                getFormPagination(props, mode)
             ]
         },
         {
@@ -244,7 +289,7 @@ function getFormPaginationWrapper(props, form, mode) {
         // 处理思路是每次弹出form之前先把其__tableItems同步更新为最新值，这样就能在弹出form中包含单元格中做的修改
         // 注意：service init事件只会在每次弹出窗口时才执行，在触发翻页时并不会触发service init事件
         let scope = event.context.scoped;
-        let __wrapperServiceId = event.data.__wrapperServiceId;
+        let __wrapperServiceId = "${tableServiceId}";
         let wrapperService = scope.getComponentById(__wrapperServiceId);
         let wrapperServiceData = wrapperService.getData();
         let lastestFieldValue = wrapperServiceData["${props.name}"];//这里不可以用event.data["${props.name}"]因为amis input talbe有一层单独的作用域，其值会延迟一拍
@@ -273,9 +318,9 @@ function getFormPaginationWrapper(props, form, mode) {
         "data": {
             "__page": "${index + 1}",
             // "__total": `\${${props.name}.length}`,
-            "__total": "${__tableItems.length}",
-            "__paginationServiceId": serviceId,
-            "__formId": form.id
+            // "__total": "${__tableItems.length}",
+            // "__paginationServiceId": serviceId,
+            // "__formId": form.id
         },
         "onEvent": {
             "init": {
@@ -298,8 +343,8 @@ function getFormPaginationWrapper(props, form, mode) {
 async function getForm(props, mode = "edit", formId) {
     let formFields = getFormFields(props, mode)
     let body = await getFormBody(null, formFields);
-    if(!formId){
-        formId = `form_popup__${props.id}`;
+    if (!formId) {
+        formId = getComponentId("form", props.id);
     }
     let schema = {
         "type": "form",
@@ -402,52 +447,279 @@ async function getForm(props, mode = "edit", formId) {
             }
         });
     }
-    if (mode === "edit" || mode === "readonly") {
-        schema = getFormPaginationWrapper(props, schema, mode);
-    }
+    schema = getFormPaginationWrapper(props, schema, mode);
     return schema;
 }
 
+
+/**
+ * 编辑、新增和查看按钮actions
+ * @param {*} props 
+ * @param {*} mode edit/new/readonly
+ */
+async function getButtonActions(props, mode) {
+    let actions = [];
+    let formId = getComponentId("form", props.id);
+    let dialogId = getComponentId("dialog", props.id);
+    let buttonNextId = getComponentId("button_next", props.id);
+    let formPaginationId = getComponentId("form_pagination", props.id);
+    if (mode == "new" || mode == "edit") {
+        // let actionShowNewDialog = {
+        //     "actionType": "dialog",
+        //     "dialog": {
+        //         "type": "dialog",
+        //         "title": "新增行",
+        //         "body": [
+        //             await getForm(props, "new", formId)
+        //         ],
+        //         "size": "lg",
+        //         "showCloseButton": true,
+        //         "showErrorMsg": true,
+        //         "showLoading": true,
+        //         "className": "app-popover",
+        //         "closeOnEsc": false,
+        //         "onEvent": {
+        //             "confirm": {
+        //                 "actions": [
+        //                     {
+        //                         "actionType": "validate",
+        //                         "componentId": formId
+        //                     },
+        //                     {
+        //                         "preventDefault": true,
+        //                         "expression": "${event.data.validateResult.error}" //触发表单校验结果会存入validateResult，amis 3.2不支持，高版本比如 3.5.3支持
+        //                     }
+        //                 ]
+        //             }
+        //         }
+        //     }
+        // };
+        let onSaveAndNewItemScript = `
+            let scope = event.context.scoped;
+            let fieldValue = event.data.__tableItems;//这里不可以_.cloneDeep，因为翻页form中用的是event.data.__tableItems，直接变更其值即可改变表单中的值
+            // 新建一条空白行并保存到子表组件
+            fieldValue.push({});
+            doAction({
+                "componentId": "${props.id}",
+                "actionType": "setValue",
+                "args": {
+                    "value": fieldValue
+                }
+            });
+            let buttonNextId = "${buttonNextId}";
+            let __paginationServiceId = "${formPaginationId}";
+            let __paginationData = scope.getComponentById(__paginationServiceId).getData();
+            event.data.index = __paginationData.index;
+            event.data.__page = fieldValue.length - 1;//这里不可以用Object.assign否则，event.data中上层作用域数据会丢失
+            // 触发翻页按钮事件，实现保存当前页数据并跳转到最后一行
+            scope.getComponentById(buttonNextId).props.dispatchEvent("click", event.data);
+        `;
+        let onSaveAndCopyItemScript = `
+            let scope = event.context.scoped;
+            let __formId = "${formId}";
+            // let newItem = JSON.parse(JSON.stringify(event.data));
+            let newItem = scope.getComponentById(__formId).getValues();//这里不可以用event.data，因为其拿到的是弹出表单时的初始值，不是用户实时填写的数据
+            let fieldValue = event.data.__tableItems;//这里不可以_.cloneDeep，因为翻页form中用的是event.data.__tableItems，直接变更其值即可改变表单中的值
+            // 复制当前页数据到新建行并保存到子表组件
+            fieldValue.push(newItem);
+            doAction({
+                "componentId": "${props.id}",
+                "actionType": "setValue",
+                "args": {
+                    "value": fieldValue
+                }
+            });
+            let buttonNextId = "${buttonNextId}";
+            let __paginationServiceId = "${formPaginationId}";
+            let __paginationData = scope.getComponentById(__paginationServiceId).getData();
+            event.data.index = __paginationData.index;
+            event.data.__page = fieldValue.length - 1;//这里不可以用Object.assign否则，event.data中上层作用域数据会丢失
+            // 触发翻页按钮事件，实现保存当前页数据并跳转到最后一行
+            scope.getComponentById(buttonNextId).props.dispatchEvent("click", event.data);
+        `;
+        let dialogButtons = [
+            {
+            "type": "button",
+            "label": "完成",
+            "actionType": "confirm",
+            "level": "primary"
+            }
+        ];
+        if(props.addable){
+            dialogButtons = [
+                {
+                    "type": "button",
+                    "label": "新增",
+                    "tooltip": "保存并新增一行，即保存当前行数据并新增一条空白行",
+                    "onEvent": {
+                        "click": {
+                            "actions": [
+                                {
+                                    "actionType": "custom",
+                                    "script": onSaveAndNewItemScript
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "type": "button",
+                    "label": "复制",
+                    "tooltip": "复制并新增一行，即保存当前行数据并复制当前行数据到新增行",
+                    "onEvent": {
+                        "click": {
+                            "actions": [
+                                {
+                                    "actionType": "custom",
+                                    "script": onSaveAndCopyItemScript
+                                }
+                            ]
+                        }
+                    }
+                },
+                dialogButtons[0]
+            ];
+        }
+        let actionShowEditDialog = {
+            "actionType": "dialog",
+            "dialog": {
+                "type": "dialog",
+                "id": dialogId,
+                "title": `\${uiSchema.fields.${props.name}.label} 明细`,
+                "body": [
+                    await getForm(props, mode, formId)
+                ],
+                "size": "lg",
+                "showCloseButton": true,
+                "showErrorMsg": true,
+                "showLoading": true,
+                "className": "app-popover",
+                "closeOnEsc": false,
+                "data": {
+                    // 这里必须加data数据映射，否则翻页功能中取__tableItems值时会乱，比如翻页编辑后会把上一页中没改过的字段值带过去
+                    // 额外把华炎魔方主表记录ObjectForm中的字段值从record变量中映射到子表form中，因为子表lookup字段filtersFunction中可能依赖了主表记录中的字段值，比如“工作流规则”对象“时间触发器”字段中的“日期字段”字段
+                    // 额外把global、uiSchema也映射过去，有可能要用，后续需要用到其他变更可以这里加映射
+                    // "&": "${record || {}}",
+                    // 换成从__super来映射上级表单数据是因为对象列表视图界面中每行下拉菜单中的编辑按钮弹出的表单中的子表所在作用域中没有record变量
+                    // 映射到中间变量__parentForm而不是直接用&展开映射是为了避免表单中字段名与作用域中变量重名
+                    // "__parentForm": "${__super.__super || {}}",
+                    "__parentForm": mode == "new" ? "$$" : "${__super.__super || {}}",
+                    "global": "${global}",
+                    "uiSchema": "${uiSchema}",
+                    "index": "${index}",
+                    // "__tableItems": `\${${props.name}}`
+                    // 为了解决"弹出的dialog窗口中子表组件会影响页面布局界面中父作用域字段值"，比如设计字段布局微页面中的设置分组功能，弹出的就是子表dialog
+                    // 所以这里使用json|toJson转一次，断掉event.data.__tableItems与上层任用域中props.name的联系
+                    "__tableItems": `\${${props.name}|json|toJson}`
+                },
+                "actions": dialogButtons,
+                "onEvent": {
+                    "confirm": {
+                        "actions": [
+                            {
+                                "actionType": "validate",
+                                "componentId": formId
+                            },
+                            {
+                                "preventDefault": true,
+                                "expression": "${event.data.validateResult.error}" //触发表单校验结果会存入validateResult，amis 3.2不支持，高版本比如 3.5.3支持
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+        if (props.dialog) {
+            Object.assign(actionShowEditDialog.dialog, props.dialog);
+        }
+        if (mode == "new") {
+            let onNewLineScript = `
+                let newItem = {};
+                if(event.data["${props.name}"]){
+                    // let fieldValue = event.data.__tableItems;
+                    // 这里不用__tableItems是因为新建的时候没有翻页，里面没有也不需要走__tableItems变量
+                    let fieldValue = event.data["${props.name}"];
+                    fieldValue.push(newItem);
+                    doAction({
+                        "componentId": "${props.id}",
+                        "actionType": "setValue",
+                        "args": {
+                            "value": fieldValue
+                        }
+                    });
+                    event.data.index = fieldValue.length - 1;
+                }
+                else{
+                    // 这里不可以执行event.data["${props.name}"]=[newItem]，数据域会断掉
+                    doAction({
+                        "componentId": "${props.id}",
+                        "actionType": "setValue",
+                        "args": {
+                            "value": [newItem]
+                        }
+                    });
+                    event.data.index = 1;
+                }
+            `;
+            let actionNewLine = {
+                "actionType": "custom",
+                "script": onNewLineScript
+            };
+            actions = [actionNewLine, actionShowEditDialog];
+        }
+        else if (mode == "edit") {
+            actions = [actionShowEditDialog];
+        }
+    }
+    else if (mode == "readonly") {
+        actions = [
+            {
+                "actionType": "dialog",
+                "dialog": {
+                    "type": "dialog",
+                    "title": `\${uiSchema.fields.${props.name}.label} 明细`,
+                    "body": [
+                        await getForm(props, "readonly")
+                    ],
+                    "size": "lg",
+                    "showCloseButton": true,
+                    "showErrorMsg": true,
+                    "showLoading": true,
+                    "className": "app-popover",
+                    "closeOnEsc": false,
+                    "actions": [],
+                    "data": {
+                        // 这里必须加data数据映射，否则翻页功能中取__tableItems值时会乱，比如翻页编辑后会把上一页中没改过的字段值带过去
+                        // 额外把华炎魔方主表记录ObjectForm中的字段值从record变量中映射到子表form中，因为子表lookup字段filtersFunction中可能依赖了主表记录中的字段值，比如“工作流规则”对象“时间触发器”字段中的“日期字段”字段
+                        // 额外把global、uiSchema也映射过去，有可能要用，后续需要用到其他变更可以这里加映射
+                        // "&": "${record || {}}",
+                        // 换成从__super来映射上级表单数据是因为对象列表视图界面中每行下拉菜单中的编辑按钮弹出的表单中的子表所在作用域中没有record变量
+                        // 映射到中间变量__parentForm而不是直接用&展开映射是为了避免表单中字段名与作用域中变量重名
+                        // "__parentForm": "${__super.__super || {}}",
+                        "__parentForm": "${__super.__super || {}}",
+                        "global": "${global}",
+                        "uiSchema": "${uiSchema}",
+                        "index": "${index}",
+                        // "__tableItems": `\${${props.name}}`
+                        // 为了解决"弹出的dialog窗口中子表组件会影响页面布局界面中父作用域字段值"，比如设计字段布局微页面中的设置分组功能，弹出的就是子表dialog
+                        // 所以这里使用json|toJson转一次，断掉event.data.__tableItems与上层任用域中props.name的联系
+                        "__tableItems": `\${${props.name}|json|toJson}`
+                    },
+                }
+            }
+        ];
+    }
+    return actions;
+}
+
 async function getButtonNew(props) {
-    let formId = `form_popup__${props.id}`;
     return {
         "label": "新增",
         "type": "button",
         "icon": "fa fa-plus",
         "onEvent": {
             "click": {
-                "actions": [
-                    {
-                        "actionType": "dialog",
-                        "dialog": {
-                            "type": "dialog",
-                            "title": "新增行",
-                            "body": [
-                                await getForm(props, "new", formId)
-                            ],
-                            "size": "lg",
-                            "showCloseButton": true,
-                            "showErrorMsg": true,
-                            "showLoading": true,
-                            "className": "app-popover",
-                            "closeOnEsc": false,
-                            "onEvent": {
-                                "confirm": {
-                                  "actions": [
-                                    {
-                                      "actionType": "validate",
-                                      "componentId": formId
-                                    },
-                                    {
-                                      "preventDefault": true,
-                                      "expression": "${event.data.validateResult.error}" //触发表单校验结果会存入validateResult，amis 3.2不支持，高版本比如 3.5.3支持
-                                    }
-                                  ]
-                                }
-                            }
-                        }
-                    }
-                ]
+                "actions": await getButtonActions(props, "new")
             }
         },
         "level": "primary"
@@ -455,60 +727,14 @@ async function getButtonNew(props) {
 }
 
 async function getButtonEdit(props, showAsInlineEditMode) {
-    let formId = `form_popup__${props.id}`;
     return {
         "type": "button",
         "label": "",
-        "icon": `fa fa-${showAsInlineEditMode ? "expand" : "pencil"}`,//inline edit模式时显示为放开按钮，只读时显示为笔按钮
+        "icon": `fa fa-${showAsInlineEditMode ? "expand-alt" : "pencil"}`,//inline edit模式时显示为放开按钮，只读时显示为笔按钮
         "level": "link",
         "onEvent": {
             "click": {
-                "actions": [
-                    {
-                        "actionType": "dialog",
-                        "dialog": {
-                            "type": "dialog",
-                            "title": "编辑行",
-                            "body": [
-                                await getForm(props, "edit", formId)
-                            ],
-                            "size": "lg",
-                            "showCloseButton": true,
-                            "showErrorMsg": true,
-                            "showLoading": true,
-                            "className": "app-popover",
-                            "closeOnEsc": false,
-                            "data": {
-                                // 这里必须加data数据映射，否则翻页功能中取__tableItems值时会乱，比如翻页编辑后会把上一页中没改过的字段值带过去
-                                // 额外把华炎魔方主表记录ObjectForm中的字段值从record变量中映射到子表form中，因为子表lookup字段filtersFunction中可能依赖了主表记录中的字段值，比如“工作流规则”对象“时间触发器”字段中的“日期字段”字段
-                                // 额外把global、uiSchema也映射过去，有可能要用，后续需要用到其他变更可以这里加映射
-                                // "&": "${record || {}}",
-                                // 换成从__super来映射上级表单数据是因为对象列表视图界面中每行下拉菜单中的编辑按钮弹出的表单中的子表所在作用域中没有record变量
-                                // 映射到中间变量__parentForm而不是直接用&展开映射是为了避免表单中字段名与作用域中变量重名
-                                "__parentForm": "${__super.__super || {}}",
-                                "global": "${global}",
-                                "uiSchema": "${uiSchema}",
-                                "index": "${index}",
-                                "__tableItems": `\${${props.name}}`,
-                                "__wrapperServiceId": "${__wrapperServiceId}"
-                            },
-                            "onEvent": {
-                                "confirm": {
-                                  "actions": [
-                                    {
-                                      "actionType": "validate",
-                                      "componentId": formId
-                                    },
-                                    {
-                                      "preventDefault": true,
-                                      "expression": "${event.data.validateResult.error}" //触发表单校验结果会存入validateResult，amis 3.2不支持，高版本比如 3.5.3支持
-                                    }
-                                  ]
-                                }
-                            }
-                        }
-                    }
-                ]
+                "actions": await getButtonActions(props, "edit")
             }
         }
     };
@@ -518,51 +744,22 @@ async function getButtonView(props) {
     return {
         "type": "button",
         "label": "",
-        "icon": "fa fa-expand",//fa-external-link
+        "icon": "fa fa-expand-alt",//fa-external-link
         "level": "link",
         "onEvent": {
             "click": {
-                "actions": [
-                    {
-                        "actionType": "dialog",
-                        "dialog": {
-                            "type": "dialog",
-                            "title": "查看行",
-                            "body": [
-                                await getForm(props, "readonly")
-                            ],
-                            "size": "lg",
-                            "showCloseButton": true,
-                            "showErrorMsg": true,
-                            "showLoading": true,
-                            "className": "app-popover",
-                            "closeOnEsc": false,
-                            "actions": [],
-                            "data": {
-                                // 这里必须加data数据映射，否则翻页功能中取__tableItems值时会乱，比如翻页编辑后会把上一页中没改过的字段值带过去
-                                // 额外把华炎魔方主表记录ObjectForm中的字段值从formData变量中映射到子表form中，因为子表lookup字段filtersFunction中可能依赖了主表记录中的字段值，比如“工作流规则”对象“时间触发器”字段中的“日期字段”字段
-                                // global、uiSchema等常用变量本来就在formData变量已经存在了，无需另外映射
-                                // "&": "${formData || {}}",
-                                // 换成从__super来映射上级表单数据是因为对象列表视图界面中每行下拉菜单中的编辑按钮弹出的表单中的子表所在作用域中没有formData变量
-                                // 映射到中间变量__parentForm而不是直接用&展开映射是为了避免表单中字段名与作用域中变量重名
-                                "__parentForm": "${__super.__super || {}}",
-                                "index": "${index}",
-                                "__tableItems": `\${${props.name}}`,
-                                "__wrapperServiceId": "${__wrapperServiceId}"
-                            }
-                        }
-                    }
-                ]
+                "actions": await getButtonActions(props, "readonly")
             }
         }
     };
 }
 
 function getButtonDelete(props) {
+    let tableServiceId = getComponentId("table_service", props.id);
     let onDeleteItemScript = `
         // let fieldValue = event.data["${props.name}"];
         let scope = event.context.scoped;
-        let __wrapperServiceId = event.data.__wrapperServiceId;
+        let __wrapperServiceId = "${tableServiceId}";
         let wrapperService = scope.getComponentById(__wrapperServiceId);
         let wrapperServiceData = wrapperService.getData();
         let lastestFieldValue = wrapperServiceData["${props.name}"];//这里不可以用event.data["${props.name}"]因为amis input talbe有一层单独的作用域，其值会延迟一拍
@@ -578,7 +775,7 @@ function getButtonDelete(props) {
     return {
         "type": "button",
         "label": "",
-        "icon": "fa fa-minus",
+        "icon": "fa fa-trash-alt",//不可以用fa-trash-o，因为设计字段布局界面中弹出的设置分组列表中显示不了这个图标
         "level": "link",
         "onEvent": {
             "click": {
@@ -604,7 +801,7 @@ export const getAmisInputTableSchema = async (props) => {
     if (!props.id) {
         props.id = "steedos_input_table_" + props.name + "_" + Math.random().toString(36).substr(2, 9);
     }
-    let serviceId = `service_wrapper__${props.id}`;
+    let serviceId = getComponentId("table_service", props.id);
     let buttonsForColumnOperations = [];
     let inlineEditMode = props.inlineEditMode;
     let showAsInlineEditMode = inlineEditMode && props.editable;
@@ -695,24 +892,22 @@ export const getAmisInputTableSchema = async (props) => {
             "body": footerToolbar
         });
     }
-    // 不可以直接把headerToolbar unshift进schemaBody，因为它没有显示在label下面，而是显示在上面了，这没有意义
+    // 直接把headerToolbar unshift进schemaBody，不会显示在label下面，而是显示在上面了，这个暂时没有解决办法，只能等amis 升级
     // 看起来amis官方后续会支持给input-table组件配置headerToolbar，见：https://github.com/baidu/amis/issues/7246
-    // let headerToolbar = clone(props.headerToolbar || []); //这里不clone的话，会造成死循环，应该是因为props属性变更会让组件重新渲染
-    // if (headerToolbar.length) {
-    //     schemaBody.unshift({
-    //         "type": "wrapper",
-    //         "size": "none",
-    //         "body": headerToolbar
-    //     });
-    // }
+    // 不过依然放开此功能的意义在于有的场景字段label本来就不需要显示出来，此时headerToolbar就有意义
+    let headerToolbar = clone(props.headerToolbar || []); //这里不clone的话，会造成死循环，应该是因为props属性变更会让组件重新渲染
+    if (headerToolbar.length) {
+        schemaBody.unshift({
+            "type": "wrapper",
+            "size": "none",
+            "body": headerToolbar
+        });
+    }
     let schema = {
         "type": "service",
         "body": schemaBody,
         "className": props.className,
-        "id": serviceId,
-        "data": {
-            "__wrapperServiceId": serviceId
-        }
+        "id": serviceId
     };
     // console.log("===schema===", schema);
     return schema;

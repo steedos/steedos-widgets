@@ -139,6 +139,8 @@ fieldset.antd-Collapse > legend.antd-Collapse-header > .antd-Collapse-arrow:befo
 
 .antd-Pagination > li > a, .antd-Pagination > li > span {
     display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .rdtPicker table {

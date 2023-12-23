@@ -360,7 +360,8 @@ export function getObjectFooterToolbar(mainObject, formFactor, options) {
         {
           "type": "pagination",
           "maxButtons": 5,
-          "showPageInput": false
+          "showPageInput": true,
+          "layout": "total,pager,go"
         }
       ]
     }

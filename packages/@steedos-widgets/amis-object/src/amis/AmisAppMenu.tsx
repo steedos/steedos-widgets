@@ -14,6 +14,10 @@ export const AmisAppMenu = async (props) => {
     }
     // console.log(`AmisAppMenu appId`, appId)
     // console.log(`AmisAppMenu`, appId, props)
+    let badgeText = `\${ss:keyvalues.badge.value | pick:${appId} | toInt}`;
+    if(appId == "approve_workflow"){
+        badgeText = "${ss:keyvalues.badge.value | pick:'workflow' | toInt}";
+    }
 
     if(links){
         return {
@@ -130,7 +134,6 @@ export const AmisAppMenu = async (props) => {
                             return (tab.index || 0) - 1000;
                         }
                       })
-                      const badgeText = "\${IF(${appId} == 'approve_workflow',\${ss:keyvalues.badge.value|pick:'workflow'},\${ss:keyvalues.badge.value|pick:${appId}}) | toInt}";
                       payload.data = {
                         "type":"service",
                         "data":{
@@ -146,12 +149,12 @@ export const AmisAppMenu = async (props) => {
                             "indentSize": ${indentSize},
                             "source": "\${items}",
                             //左层显示时审批单显示badge数量
-                            "itemBadge": stacked?{
+                            "itemBadge": {
                                 "mode": "text",
-                                "text": badgeText,
+                                "text": "${badgeText}",
                                 "visibleOn": "\${id == 'instances'}",
                                 "overflowCount": 99,
-                                "style": {
+                                "style": stacked?{
                                   "right": "20%",
                                   "margin-right": "-23px",
                                   "height": "20px",
@@ -159,8 +162,15 @@ export const AmisAppMenu = async (props) => {
                                   "font-size": "16px",
                                   "line-height": "18px",
                                   "top": "50%"
+                                }:{
+                                    "transform": "translate(calc(50% - 17px), calc(-50% + 10px))",
+                                    "border-radius": "6.5px",
+                                    "height": "15px",
+                                    "line-height": "13px",
+                                    "padding": "0px 4px",
+                                    "font-size": "12px"
                                 }
-                            }:"",
+                            },
                             "onEvent": {
                                 "click": {
                                     "actions": [

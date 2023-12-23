@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-15 15:16:18
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2023-12-21 18:59:57
  * @Description: 
  */
 import { Field } from '@steedos-widgets/amis-lib';
@@ -96,7 +96,7 @@ export const AmisSteedosField = async (props)=>{
                         objectName = referenceTo.objectName
                         valueFieldKey = referenceTo && referenceTo.valueField?.name || '_id' ;
                         labelFieldKey = referenceTo && referenceTo.labelField?.name || 'name';
-                        let value = api.data[steedosField.name];
+                        let value = _.get(api.data, steedosField.name);
                         if(_.isString(value)){
                             value = [value]
                         }
