@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-23 13:36:38
+ * @LastEditTime: 2023-12-23 14:01:18
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -533,7 +533,7 @@ async function getButtonActions(props, mode) {
             "dialog": {
                 "type": "dialog",
                 "id": dialogId,
-                "title": "行明细",
+                "title": `\${uiSchema.fields.${props.name}.label} 明细`,
                 "body": [
                     await getForm(props, "edit", formId)
                 ],
@@ -700,7 +700,7 @@ async function getButtonView(props) {
                         "actionType": "dialog",
                         "dialog": {
                             "type": "dialog",
-                            "title": "查看行",
+                            "title": `\${uiSchema.fields.${props.name}.label} 明细`,
                             "body": [
                                 await getForm(props, "readonly")
                             ],
