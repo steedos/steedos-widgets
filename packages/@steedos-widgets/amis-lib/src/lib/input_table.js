@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-23 14:41:57
+ * @LastEditTime: 2023-12-23 15:12:55
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -760,7 +760,7 @@ function getButtonDelete(props) {
     return {
         "type": "button",
         "label": "",
-        "icon": "fa fa-trash-o",
+        "icon": "fa fa-trash",//不可以用fa-trash-o，因为设计字段布局界面中弹出的设置分组列表中显示不了这个图标
         "level": "link",
         "onEvent": {
             "click": {
