@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-23 14:01:18
+ * @LastEditTime: 2023-12-23 14:03:42
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -614,7 +614,7 @@ async function getButtonActions(props, mode) {
                 }
             }
         }
-        if(props.dialog){
+        if (props.dialog) {
             Object.assign(actionShowEditDialog.dialog, props.dialog);
         }
         if (mode == "new") {
@@ -656,6 +656,38 @@ async function getButtonActions(props, mode) {
             actions = [actionShowEditDialog];
         }
     }
+    else if (mode == "readonly"){
+        actions = [
+            {
+                "actionType": "dialog",
+                "dialog": {
+                    "type": "dialog",
+                    "title": `\${uiSchema.fields.${props.name}.label} 明细`,
+                    "body": [
+                        await getForm(props, "readonly")
+                    ],
+                    "size": "lg",
+                    "showCloseButton": true,
+                    "showErrorMsg": true,
+                    "showLoading": true,
+                    "className": "app-popover",
+                    "closeOnEsc": false,
+                    "actions": [],
+                    "data": {
+                        // 这里必须加data数据映射，否则翻页功能中取__tableItems值时会乱，比如翻页编辑后会把上一页中没改过的字段值带过去
+                        // 额外把华炎魔方主表记录ObjectForm中的字段值从formData变量中映射到子表form中，因为子表lookup字段filtersFunction中可能依赖了主表记录中的字段值，比如“工作流规则”对象“时间触发器”字段中的“日期字段”字段
+                        // global、uiSchema等常用变量本来就在formData变量已经存在了，无需另外映射
+                        // "&": "${formData || {}}",
+                        // 换成从__super来映射上级表单数据是因为对象列表视图界面中每行下拉菜单中的编辑按钮弹出的表单中的子表所在作用域中没有formData变量
+                        // 映射到中间变量__parentForm而不是直接用&展开映射是为了避免表单中字段名与作用域中变量重名
+                        "__parentForm": "${__super.__super || {}}",
+                        "index": "${index}",
+                        "__tableItems": `\${${props.name}}`
+                    }
+                }
+            }
+        ];
+    }
     return actions;
 }
 
@@ -695,36 +727,7 @@ async function getButtonView(props) {
         "level": "link",
         "onEvent": {
             "click": {
-                "actions": [
-                    {
-                        "actionType": "dialog",
-                        "dialog": {
-                            "type": "dialog",
-                            "title": `\${uiSchema.fields.${props.name}.label} 明细`,
-                            "body": [
-                                await getForm(props, "readonly")
-                            ],
-                            "size": "lg",
-                            "showCloseButton": true,
-                            "showErrorMsg": true,
-                            "showLoading": true,
-                            "className": "app-popover",
-                            "closeOnEsc": false,
-                            "actions": [],
-                            "data": {
-                                // 这里必须加data数据映射，否则翻页功能中取__tableItems值时会乱，比如翻页编辑后会把上一页中没改过的字段值带过去
-                                // 额外把华炎魔方主表记录ObjectForm中的字段值从formData变量中映射到子表form中，因为子表lookup字段filtersFunction中可能依赖了主表记录中的字段值，比如“工作流规则”对象“时间触发器”字段中的“日期字段”字段
-                                // global、uiSchema等常用变量本来就在formData变量已经存在了，无需另外映射
-                                // "&": "${formData || {}}",
-                                // 换成从__super来映射上级表单数据是因为对象列表视图界面中每行下拉菜单中的编辑按钮弹出的表单中的子表所在作用域中没有formData变量
-                                // 映射到中间变量__parentForm而不是直接用&展开映射是为了避免表单中字段名与作用域中变量重名
-                                "__parentForm": "${__super.__super || {}}",
-                                "index": "${index}",
-                                "__tableItems": `\${${props.name}}`
-                            }
-                        }
-                    }
-                ]
+                "actions": await getButtonActions(props, "readonly")
             }
         }
     };
