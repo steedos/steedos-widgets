@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-23 21:23:41
+ * @LastEditTime: 2023-12-23 22:13:22
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -120,7 +120,17 @@ async function getInputTableColumns(props) {
     }
 }
 
-function getFormPagination(props) {
+/**
+ * @param {*} props input-table组件props
+ * @param {*} mode edit/new/readonly
+ * @returns 翻页组件
+ */
+function getFormPagination(props, mode) {
+    let showPagination = true;
+    if(mode === "new" && !!!props.editable){
+        //不允许编辑只允许新建时不应该让用户操作翻页
+        showPagination = false;
+    }
     let buttonPrevId = getComponentId("button_prev", props.id);
     let buttonNextId = getComponentId("button_next", props.id);
     let formId = getComponentId("form", props.id);
@@ -192,7 +202,7 @@ function getFormPagination(props) {
                 "icon": `fa fa-angle-left`,
                 "level": "link",
                 "pageChangeDirection": "prev",
-                "disabledOn": "${__page <= 1}",
+                "disabledOn": showPagination ? "${__page <= 1}" : "true",
                 "size": "sm",
                 "id": buttonPrevId,
                 "onEvent": {
@@ -216,7 +226,7 @@ function getFormPagination(props) {
                 "icon": `fa fa-angle-right`,
                 "level": "link",
                 "pageChangeDirection": "next",
-                "disabledOn": "${__page >= __tableItems.length}",
+                "disabledOn": showPagination ? "${__page >= __tableItems.length}" : "true",
                 "size": "sm",
                 "id": buttonNextId,
                 "onEvent": {
@@ -238,10 +248,11 @@ function getFormPagination(props) {
  * 传入formSchema输出带翻页容器的wrapper
  * @param {*} props input-table组件props
  * @param {*} form formSchema
- * @param {*} mode edit/readonly
+ * @param {*} mode edit/new/readonly
  * @returns 带翻页容器的wrapper
  */
 function getFormPaginationWrapper(props, form, mode) {
+    console.log("==getFormPaginationWrapper===", props, mode);
     let serviceId = getComponentId("form_pagination", props.id);
     let tableServiceId = getComponentId("table_service", props.id);
     let innerForm = Object.assign({}, form, {
@@ -257,7 +268,7 @@ function getFormPaginationWrapper(props, form, mode) {
             "size": "none",
             "className": "flex justify-end sticky top-0 right-0 left-0 z-20 bg-white -mt-2",
             "body": [
-                getFormPagination(props)
+                getFormPagination(props, mode)
             ]
         },
         {
@@ -436,9 +447,7 @@ async function getForm(props, mode = "edit", formId) {
             }
         });
     }
-    if (mode === "edit" || mode === "readonly") {
-        schema = getFormPaginationWrapper(props, schema, mode);
-    }
+    schema = getFormPaginationWrapper(props, schema, mode);
     return schema;
 }
 
@@ -578,7 +587,7 @@ async function getButtonActions(props, mode) {
                 "id": dialogId,
                 "title": `\${uiSchema.fields.${props.name}.label} 明细`,
                 "body": [
-                    await getForm(props, "edit", formId)
+                    await getForm(props, mode, formId)
                 ],
                 "size": "lg",
                 "showCloseButton": true,
