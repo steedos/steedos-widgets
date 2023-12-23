@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-23 14:15:02
+ * @LastEditTime: 2023-12-23 14:41:57
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -715,7 +715,7 @@ async function getButtonEdit(props, showAsInlineEditMode) {
     return {
         "type": "button",
         "label": "",
-        "icon": `fa fa-${showAsInlineEditMode ? "expand" : "pencil"}`,//inline edit模式时显示为放开按钮，只读时显示为笔按钮
+        "icon": `fa fa-${showAsInlineEditMode ? "expand-alt" : "pencil"}`,//inline edit模式时显示为放开按钮，只读时显示为笔按钮
         "level": "link",
         "onEvent": {
             "click": {
@@ -729,7 +729,7 @@ async function getButtonView(props) {
     return {
         "type": "button",
         "label": "",
-        "icon": "fa fa-expand",//fa-external-link
+        "icon": "fa fa-expand-alt",//fa-external-link
         "level": "link",
         "onEvent": {
             "click": {
@@ -760,7 +760,7 @@ function getButtonDelete(props) {
     return {
         "type": "button",
         "label": "",
-        "icon": "fa fa-minus",
+        "icon": "fa fa-trash-o",
         "level": "link",
         "onEvent": {
             "click": {
