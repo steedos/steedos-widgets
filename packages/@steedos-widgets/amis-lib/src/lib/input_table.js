@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-23 22:13:22
+ * @LastEditTime: 2023-12-24 09:26:53
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -453,9 +453,9 @@ async function getForm(props, mode = "edit", formId) {
 
 
 /**
- * 编辑、新增和查看按钮actions
+ * 编辑、新增、删除、查看按钮actions
  * @param {*} props 
- * @param {*} mode edit/new/readonly
+ * @param {*} mode edit/new/readonly/delete
  */
 async function getButtonActions(props, mode) {
     let actions = [];
@@ -709,6 +709,38 @@ async function getButtonActions(props, mode) {
             }
         ];
     }
+    else if (mode == "delete") {
+        let tableServiceId = getComponentId("table_service", props.id);
+        let onDeleteItemScript = `
+            // let fieldValue = event.data["${props.name}"];
+            let scope = event.context.scoped;
+            let __wrapperServiceId = "${tableServiceId}";
+            let wrapperService = scope.getComponentById(__wrapperServiceId);
+            let wrapperServiceData = wrapperService.getData();
+            let lastestFieldValue = wrapperServiceData["${props.name}"];//这里不可以用event.data["${props.name}"]因为amis input talbe有一层单独的作用域，其值会延迟一拍
+            lastestFieldValue.splice(event.data.index, 1);
+            doAction({
+                "componentId": "${props.id}",
+                "actionType": "setValue",
+                "args": {
+                    "value": lastestFieldValue
+                }
+            });
+        `;
+        actions = [
+            // {
+            //     "actionType": "deleteItem",
+            //     "args": {
+            //         "index": "${index+','}" //这里不加逗号后续会报错，语法是逗号分隔可以删除多行
+            //     },
+            //     "componentId": props.id
+            // },
+            {
+                "actionType": "custom",
+                "script": onDeleteItemScript
+            }
+        ]
+    }
     return actions;
 }
 
@@ -754,24 +786,7 @@ async function getButtonView(props) {
     };
 }
 
-function getButtonDelete(props) {
-    let tableServiceId = getComponentId("table_service", props.id);
-    let onDeleteItemScript = `
-        // let fieldValue = event.data["${props.name}"];
-        let scope = event.context.scoped;
-        let __wrapperServiceId = "${tableServiceId}";
-        let wrapperService = scope.getComponentById(__wrapperServiceId);
-        let wrapperServiceData = wrapperService.getData();
-        let lastestFieldValue = wrapperServiceData["${props.name}"];//这里不可以用event.data["${props.name}"]因为amis input talbe有一层单独的作用域，其值会延迟一拍
-        lastestFieldValue.splice(event.data.index, 1);
-        doAction({
-            "componentId": "${props.id}",
-            "actionType": "setValue",
-            "args": {
-                "value": lastestFieldValue
-            }
-        });
-    `;
+async function getButtonDelete(props) {
     return {
         "type": "button",
         "label": "",
@@ -779,19 +794,7 @@ function getButtonDelete(props) {
         "level": "link",
         "onEvent": {
             "click": {
-                "actions": [
-                    // {
-                    //     "actionType": "deleteItem",
-                    //     "args": {
-                    //         "index": "${index+','}" //这里不加逗号后续会报错，语法是逗号分隔可以删除多行
-                    //     },
-                    //     "componentId": props.id
-                    // },
-                    {
-                        "actionType": "custom",
-                        "script": onDeleteItemScript
-                    }
-                ]
+                "actions": await getButtonActions(props, "delete")
             }
         }
     };
@@ -831,7 +834,7 @@ export const getAmisInputTableSchema = async (props) => {
         buttonsForColumnOperations.push(buttonViewSchema);
     }
     if (props.removable) {
-        let buttonDeleteSchema = getButtonDelete(props);
+        let buttonDeleteSchema = await getButtonDelete(props);
         buttonsForColumnOperations.push(buttonDeleteSchema);
     }
     let inputTableSchema = {
