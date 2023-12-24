@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-24 09:50:53
+ * @LastEditTime: 2023-12-24 18:10:05
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -346,6 +346,10 @@ async function getForm(props, mode = "edit", formId) {
     if (!formId) {
         formId = getComponentId("form", props.id);
     }
+    if(mode === "new"){
+        // 新增行弹出编辑行表单，在弹出之前已经先增加了一行
+        mode = "edit";
+    }
     let schema = {
         "type": "form",
         "id": formId,
@@ -546,6 +550,7 @@ async function getButtonActions(props, mode) {
             }
         ];
         if(props.addable){
+            // 有新增行权限时额外添加新增和复制按钮
             dialogButtons = [
                 {
                     "type": "button",
@@ -638,6 +643,7 @@ async function getButtonActions(props, mode) {
                 if(event.data["${props.name}"]){
                     // let fieldValue = event.data.__tableItems;
                     // 这里不用__tableItems是因为新建的时候没有翻页，里面没有也不需要走__tableItems变量
+                    // let fieldValue = _.clone(event.data["${props.name}"]);
                     let fieldValue = event.data["${props.name}"];
                     fieldValue.push(newItem);
                     doAction({
