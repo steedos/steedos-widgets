@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-24 09:26:53
+ * @LastEditTime: 2023-12-24 09:50:53
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -717,7 +717,9 @@ async function getButtonActions(props, mode) {
             let __wrapperServiceId = "${tableServiceId}";
             let wrapperService = scope.getComponentById(__wrapperServiceId);
             let wrapperServiceData = wrapperService.getData();
-            let lastestFieldValue = wrapperServiceData["${props.name}"];//这里不可以用event.data["${props.name}"]因为amis input talbe有一层单独的作用域，其值会延迟一拍
+            // 这里不可以用event.data["${props.name}"]因为amis input talbe有一层单独的作用域，其值会延迟一拍
+            // 这里_.clone是因为字段设计布局设置分组这种弹出窗口中的子表组件，直接删除后，点取消无法还原
+            let lastestFieldValue = _.clone(wrapperServiceData["${props.name}"]);
             lastestFieldValue.splice(event.data.index, 1);
             doAction({
                 "componentId": "${props.id}",
