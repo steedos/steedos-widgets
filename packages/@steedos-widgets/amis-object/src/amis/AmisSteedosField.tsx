@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-12-21 18:59:57
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-12-25 15:07:46
  * @Description: 
  */
 import { Field } from '@steedos-widgets/amis-lib';
@@ -75,6 +75,10 @@ export const AmisSteedosField = async (props)=>{
         steedosField = clone(steedosField);
     }
     
+    if(props.label && !steedosField.label){
+        steedosField.label = props.label;
+    }
+
     if(!fStatic && steedosField.readonly && !props.data.hasOwnProperty("_display")){
         // 字段配置为只读，强制走fStatic模式，加上_display判断是为了不影响历史代码，比如直接在ObjectForm中调用steedos-field组件
         fStatic = true;
