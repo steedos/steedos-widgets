@@ -1,20 +1,30 @@
 @media (min-width: 767px) {
     /* 列表快速编辑功能样式 */
     .steedos-object-table {
-        //隐藏为批量编辑而加的_display列
+        //有数据的普通列表隐藏第二列，_display列
         thead tr th:nth-child(2){
             display: none;
         }
 
         &.is-steedos-tree-table {
+            //有数据的树结构列表隐藏第三列，_display列
             thead tr th:nth-child(3){
                 display: none;
             }
             thead tr th:nth-child(2){
                 display: table-cell;
             }
+            //无数据的树结构列表隐藏第一列，_display列
+            .is-steedos-crud-data-empty{
+                thead tr th:nth-child(2),thead tr th:nth-child(3){
+                    display: table-cell;
+                }
+                thead tr th:nth-child(1){
+                    display: none;
+                }
+            }
         }
-
+        //无数据的普通列表隐藏第二列，_display列
         .is-steedos-crud-data-empty {
             thead tr th:nth-child(3){
                 display: table-cell;

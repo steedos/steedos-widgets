@@ -95,6 +95,7 @@ async function getQuickEditSchema(field, options){
                         {
                             "actionType": "custom",
                             "script": `
+
                                     var _display = _.cloneDeep(event.data._display);
                                     ${displayField}
                                     doAction({actionType: 'setValue', "args": {"value": {_display}},componentId: "${quickEditId}"});
@@ -483,7 +484,9 @@ export async function getTableColumns(fields, options){
     if(!options.isLookup && !options.isInputTable){
         //将_display放入crud的columns中，可以通过setvalue修改行内数据域的_display，而不影响上层items的_display,用于批量编辑
         columns.push({name: '_display',type: 'static', width: 32, placeholder: "",id: "_display_${_index}", className: "hidden"});
-        columns.push({name: '_index',type: 'text', width: 32, placeholder: ""});
+        if(!options.enable_tree){
+            columns.push({name: '_index',type: 'text', width: 32, placeholder: ""});
+        }
     }
     const allowEdit = options.permissions?.allowEdit && !options.isLookup && options.enable_inline_edit != false;
     
@@ -1336,7 +1339,21 @@ export async function getTableApi(mainObject, fields, options){
     
     if(enable_tree){
         const records = payload.data.rows || [];
-        const getTreeOptions = SteedosUI.getTreeOptions
+        const getTreeOptions = SteedosUI.getTreeOptions;
+        const assignIndexToTreeRecords = function(tree, parentIndex) {
+            tree.forEach(function (node, index) {
+                // 构建当前节点的 _index
+                var currentIndex = parentIndex ? parentIndex + '-' + (index + 1) : '' + (index + 1);
+        
+                // 赋值给节点
+                node._index = currentIndex;
+        
+                // 如果有子节点，递归调用函数
+                if (node.children && node.children.length > 0) {
+                    assignIndexToTreeRecords(node.children, currentIndex);
+                }
+            });
+        };
         let isTreeOptionsComputed = false;
         if(records.length === 1 && records[0].children){
             isTreeOptionsComputed = true;
@@ -1344,6 +1361,7 @@ export async function getTableApi(mainObject, fields, options){
         if(!isTreeOptionsComputed){
             // 如果api接口设置在缓存，缓存期间并不会重新请求接口，payload.data.rows是上次计算后的结果
             payload.data.rows = getTreeOptions(records,{"valueField":"_id"});
+            assignIndexToTreeRecords(payload.data.rows, '');
         }
         try{
             setTimeout(() => {
