@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-25 11:33:31
+ * @LastEditTime: 2023-12-25 11:49:19
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -295,12 +295,23 @@ function getFormPaginationWrapper(props, form, mode) {
         let lastestFieldValue = wrapperServiceData["${props.name}"] || [];//这里不可以用event.data["${props.name}"]因为amis input talbe有一层单独的作用域，其值会延迟一拍
         //不可以直接像event.data.__tableItems = lastestFieldValue; 这样整个赋值，否则作用域会断
         let mode = "${mode}";
+        debugger;
         if(mode === "new"){
+            // 点击子表组件底部新增按钮时新增一条空白行并自动翻页到新增行
+            // 注意点击弹出的子表行详细表单中的新增按钮不会进此service init事件函数中
             let newItem = {};
             event.data.__tableItems.push(newItem);
             lastestFieldValue.push(newItem);
             event.data.index = lastestFieldValue.length - 1;
             event.data.__page = lastestFieldValue.length;
+            // 这里新增空白行时要把值同步保存到子表组件中，如果不同步保存的话，用户点击弹出表单右上角的关闭窗口时不会自动删除这里自动增加的空白行，同步后可以让用户手动删除此行
+            doAction({
+                "componentId": "${props.id}",
+                "actionType": "setValue",
+                "args": {
+                    "value": lastestFieldValue
+                }
+            });
         }
         event.data.__tableItems.forEach(function(n,i){
             event.data.__tableItems[i] = lastestFieldValue[i];
