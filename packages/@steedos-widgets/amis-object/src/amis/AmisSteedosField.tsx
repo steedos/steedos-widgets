@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-25 15:07:46
+ * @LastEditTime: 2023-12-25 16:41:53
  * @Description: 
  */
 import { Field } from '@steedos-widgets/amis-lib';
@@ -24,25 +24,25 @@ const AmisFormInputs = [
     'email'
 ]
 
-function getAmisStaticFieldType(type: string, data_type?: string, options?: any){
-    if(includes(AmisFormInputs, type)){
+function getAmisStaticFieldType(type: string, data_type?: string, options?: any) {
+    if (includes(AmisFormInputs, type)) {
         return `input-${type}`;
-    }else if(type === 'boolean'){
+    } else if (type === 'boolean') {
         return "checkbox";
-    }else if(type === 'toggle'){
+    } else if (type === 'toggle') {
         return "switch";
-    }else if(type === 'currency'){
+    } else if (type === 'currency') {
         return "number";
-    }else if(type === 'autonumber'){
+    } else if (type === 'autonumber') {
         return "text"
-    }else if(type === 'percent'){
+    } else if (type === 'percent') {
         return "number";
-    }else if(type === 'formula' || type === 'summary'){
+    } else if (type === 'formula' || type === 'summary') {
         return getAmisStaticFieldType(data_type, null, options);
-    }else if(type === 'location'){
+    } else if (type === 'location') {
         return "location-picker";
-    }else if(type === 'image'){
-        if(options && options.multiple){
+    } else if (type === 'image') {
+        if (options && options.multiple) {
             return `static-images`;
         }
         return `static-image`;
@@ -50,7 +50,7 @@ function getAmisStaticFieldType(type: string, data_type?: string, options?: any)
     return type;
 };
 
-export const AmisSteedosField = async (props)=>{
+export const AmisSteedosField = async (props) => {
     // console.log(`AmisSteedosField===props===`, props);
 
     let steedosField = null;
@@ -62,30 +62,30 @@ export const AmisSteedosField = async (props)=>{
     //     props.config = $schema.config
     // }
 
-    if(isString(ctx)){
+    if (isString(ctx)) {
         ctx = JSON.parse(ctx);
     }
 
     steedosField = config ? config : field;
-    if(isString(steedosField)){
+    if (isString(steedosField)) {
         steedosField = JSON.parse(steedosField);
     }
-    else{
+    else {
         // 这里要clone是因为后面图片字段类型执行steedosField.amis = ...的时候会造成input-table中的图片字段在弹出编辑表单点击确认后整个input-table组件重新渲染了，从而导致其翻页功能异常
         steedosField = clone(steedosField);
     }
-    
-    if(props.label && !steedosField.label){
+
+    if (props.label && !steedosField.label) {
         steedosField.label = props.label;
     }
 
-    if(!fStatic && steedosField.readonly && !props.data.hasOwnProperty("_display")){
+    if (!fStatic && steedosField.readonly && !props.data.hasOwnProperty("_display")) {
         // 字段配置为只读，强制走fStatic模式，加上_display判断是为了不影响历史代码，比如直接在ObjectForm中调用steedos-field组件
         fStatic = true;
     }
 
     try {
-        if(fStatic && (steedosField.type === 'lookup' || steedosField.type === 'master_detail')){
+        if (fStatic && (steedosField.type === 'lookup' || steedosField.type === 'master_detail')) {
             let defaultSource: any = {
                 "method": "post",
                 "url": "${context.rootUrl}/graphql",
@@ -138,13 +138,13 @@ export const AmisSteedosField = async (props)=>{
                 "trackExpression": "${" + steedosField.name + "}",
                 "cache": 3000
             };
-            if(!steedosField.reference_to){
+            if (!steedosField.reference_to) {
                 // 兼容lookup字段未配置reference_to属性的情况，当普通下拉框字段用
                 defaultSource = {
                     "url": "${context.rootUrl}/api/v1/spaces/none",
-                    data: {$: "$$"},
+                    data: { $: "$$" },
                 };
-                if(steedosField.optionsFunction || steedosField._optionsFunction){
+                if (steedosField.optionsFunction || steedosField._optionsFunction) {
                     defaultSource.adaptor = `
                         var options = eval(${steedosField.optionsFunction || steedosField._optionsFunction})(api.body.$);
                         if(api.body.$term){
@@ -160,7 +160,7 @@ export const AmisSteedosField = async (props)=>{
                         return payload;
                     `;
                 }
-                else if(steedosField.options){
+                else if (steedosField.options) {
                     defaultSource.adaptor = `
                         var options = ${JSON.stringify(steedosField.options)}
                         if(api.body.$term){
@@ -189,13 +189,13 @@ export const AmisSteedosField = async (props)=>{
                 source: source,
             }, pick(steedosField.amis || {}, ['className', 'inline', 'label', 'labelAlign', 'name', 'labelRemark', 'description', 'placeholder', 'staticClassName', 'staticLabelClassName', 'staticInputClassName', 'staticSchema']));
             schema.placeholder = "";
-            if(hideLabel){
+            if (hideLabel) {
                 delete schema.label;
             }
             return schema;
         }
-        else if(fStatic){
-            if(props.data.hasOwnProperty("_display")){
+        else if (fStatic) {
+            if (props.data.hasOwnProperty("_display")) {
                 // 有_display时保持原来的逻辑不变，不走以下新的逻辑，审批王中会特意传入_display以跳过后面新加的代码
                 return await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
             }
@@ -204,53 +204,53 @@ export const AmisSteedosField = async (props)=>{
                 static: true,
                 label: steedosField.label
             });
-            if(steedosField.type === "time"){
+            if (steedosField.type === "time") {
                 Object.assign(schema, {
                     inputFormat: 'HH:mm',
-                    timeFormat:'HH:mm',
-                    format:'1970-01-01THH:mm:00.000[Z]',
+                    timeFormat: 'HH:mm',
+                    format: '1970-01-01THH:mm:00.000[Z]',
                 });
-            } else if(steedosField.type === "percent"){
+            } else if (steedosField.type === "percent") {
                 Object.assign(schema, {
                     "percent": steedosField.scale ? steedosField.scale : true
                 });
-            } else if(steedosField.type === "password"){
+            } else if (steedosField.type === "password") {
                 Object.assign(schema, {
                     "revealPassword": false //没生效，需要用样式隐藏
                 });
-            } else if(steedosField.type === "select"){
+            } else if (steedosField.type === "select") {
                 Object.assign(schema, {
                     "placeholder": ""
                 });
-            } else if(steedosField.type === "color"){
+            } else if (steedosField.type === "color") {
                 Object.assign(schema, {
                     "defaultColor": null
                 });
             }
-            else if(steedosField.type === "image"){
+            else if (steedosField.type === "image") {
                 Object.assign(schema, {
                     enlargeAble: true,
                     showToolbar: true,
                     pipeIn: (value, data) => {
-                        if(steedosField.multiple){
-                            if(!value){
+                        if (steedosField.multiple) {
+                            if (!value) {
                                 value = [defaultImageValue];
                             }
-                            value = value.map(function(item: string){
-                                if(item && item.split("/").length === 1){
+                            value = value.map(function (item: string) {
+                                if (item && item.split("/").length === 1) {
                                     // 不是url格式时转为url格式显示
                                     return (window as any).getImageFieldUrl((window as any).Meteor.absoluteUrl(`/api/files/images/${item}`))
                                 }
-                                else{
+                                else {
                                     return item;
                                 }
                             });
                         }
-                        else{
-                            if(isArray(value)){
+                        else {
+                            if (isArray(value)) {
                                 value = value[0];
                             }
-                            if(value && value.split("/").length === 1){
+                            if (value && value.split("/").length === 1) {
                                 // 不是url格式时转为url格式显示
                                 return (window as any).getImageFieldUrl((window as any).Meteor.absoluteUrl(`/api/files/images/${value}`))
                             }
@@ -259,40 +259,40 @@ export const AmisSteedosField = async (props)=>{
                     }
                 });
             }
-            else if(steedosField.type === "file"){
+            else if (steedosField.type === "file") {
                 // 附件static模式先保持原来的逻辑，依赖_display，审批王中相关功能在creator中
                 // convertSFieldToAmisField中会合并steedosField.amis，所以也不需要再次合并steedosField.amis，直接return就好
                 return await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
             }
             Object.assign(schema, steedosField.amis || {});
-            if(hideLabel){
+            if (hideLabel) {
                 delete schema.label;
             }
             return schema;
-        } else{
+        } else {
             let fieldAmis = steedosField.amis || {};
-            if(!props.data.hasOwnProperty("_display")){
+            if (!props.data.hasOwnProperty("_display")) {
                 // 有_display时保持原来的逻辑不变，不走以下新的逻辑，审批王中会特意传入_display以跳过后面新加的代码
                 // 重写amis中相关属性，但是允许用户通过配置组件的config.amis覆盖下面重写的逻辑
-                if(steedosField.type === "image"){
+                if (steedosField.type === "image") {
                     fieldAmis = Object.assign({}, {
                         pipeIn: (value, data) => {
-                            if(steedosField.multiple){
-                                value = value && value.map(function(item: string){
-                                    if(item && item.split("/").length === 1){
+                            if (steedosField.multiple) {
+                                value = value && value.map(function (item: string) {
+                                    if (item && item.split("/").length === 1) {
                                         // 不是url格式时转为url格式显示
                                         return (window as any).getImageFieldUrl((window as any).Meteor.absoluteUrl(`/api/files/images/${item}`))
                                     }
-                                    else{
+                                    else {
                                         return item;
                                     }
                                 });
                             }
-                            else{
-                                if(isArray(value)){
+                            else {
+                                if (isArray(value)) {
                                     value = value[0];
                                 }
-                                if(value && value.split("/").length === 1){
+                                if (value && value.split("/").length === 1) {
                                     // 不是url格式时转为url格式显示
                                     return (window as any).getImageFieldUrl((window as any).Meteor.absoluteUrl(`/api/files/images/${value}`))
                                 }
@@ -300,22 +300,22 @@ export const AmisSteedosField = async (props)=>{
                             return value;
                         },
                         pipeOut: (value, data) => {
-                            if(steedosField.multiple){
-                                value = value && value.map(function(item: string){
-                                    if(item && item.split("/").length > 1){
+                            if (steedosField.multiple) {
+                                value = value && value.map(function (item: string) {
+                                    if (item && item.split("/").length > 1) {
                                         // 是url格式时转_id值输出用于保存
                                         return item.split("/").pop();
                                     }
-                                    else{
+                                    else {
                                         return item;
                                     }
                                 });
                             }
-                            else{
-                                if(isArray(value)){
+                            else {
+                                if (isArray(value)) {
                                     value = value[0];
                                 }
-                                if(value && value.split("/").length > 1){
+                                if (value && value.split("/").length > 1) {
                                     // 是url格式时转_id值输出用于保存
                                     return value.split("/").pop();
                                 }
@@ -328,13 +328,13 @@ export const AmisSteedosField = async (props)=>{
             }
 
             const schema = await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
-            if(hideLabel){
+            if (hideLabel) {
                 delete schema.label;
             }
             // console.log(`AmisSteedosField return schema`, schema)
             return schema
         }
-        
+
     } catch (error) {
         console.log(`error`, error)
     }
