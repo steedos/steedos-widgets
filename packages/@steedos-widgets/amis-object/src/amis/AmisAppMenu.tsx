@@ -152,7 +152,7 @@ export const AmisAppMenu = async (props) => {
                             "itemBadge": {
                                 "mode": "text",
                                 "text": "${badgeText}",
-                                "visibleOn": "\${id == 'instances'}",
+                                "visibleOn": "\${id == 'instance_tasks'}",
                                 "overflowCount": 99,
                                 "style": stacked?{
                                   "right": "20%",

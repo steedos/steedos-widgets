@@ -101,7 +101,7 @@ export const AmisSteedosField = async (props)=>{
                             value = [value]
                         }
                         filters = [referenceToField, "in", value || []];
-                        if(objectName == "object_fields"){
+                        if(objectName == "object_fields" || objectName == "object_actions"){
                             //对象为object_fields时，必须加上object的过滤条件
                             const filtersFunction = ${steedosField.filtersFunction || steedosField._filtersFunction};
                             if(filtersFunction){

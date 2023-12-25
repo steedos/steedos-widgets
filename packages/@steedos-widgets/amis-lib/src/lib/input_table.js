@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-23 22:13:22
+ * @LastEditTime: 2023-12-25 13:13:56
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -252,7 +252,7 @@ function getFormPagination(props, mode) {
  * @returns 带翻页容器的wrapper
  */
 function getFormPaginationWrapper(props, form, mode) {
-    console.log("==getFormPaginationWrapper===", props, mode);
+    // console.log("==getFormPaginationWrapper===", props, mode);
     let serviceId = getComponentId("form_pagination", props.id);
     let tableServiceId = getComponentId("table_service", props.id);
     let innerForm = Object.assign({}, form, {
@@ -292,8 +292,26 @@ function getFormPaginationWrapper(props, form, mode) {
         let __wrapperServiceId = "${tableServiceId}";
         let wrapperService = scope.getComponentById(__wrapperServiceId);
         let wrapperServiceData = wrapperService.getData();
-        let lastestFieldValue = wrapperServiceData["${props.name}"];//这里不可以用event.data["${props.name}"]因为amis input talbe有一层单独的作用域，其值会延迟一拍
+        let lastestFieldValue = wrapperServiceData["${props.name}"] || [];//这里不可以用event.data["${props.name}"]因为amis input talbe有一层单独的作用域，其值会延迟一拍
         //不可以直接像event.data.__tableItems = lastestFieldValue; 这样整个赋值，否则作用域会断
+        let mode = "${mode}";
+        if(mode === "new"){
+            // 点击子表组件底部新增按钮时新增一条空白行并自动翻页到新增行
+            // 注意点击弹出的子表行详细表单中的新增按钮不会进此service init事件函数中
+            let newItem = {};
+            event.data.__tableItems.push(newItem);
+            lastestFieldValue.push(newItem);
+            event.data.index = lastestFieldValue.length - 1;
+            event.data.__page = lastestFieldValue.length;
+            // 这里新增空白行时要把值同步保存到子表组件中，如果不同步保存的话，用户点击弹出表单右上角的关闭窗口时不会自动删除这里自动增加的空白行，同步后可以让用户手动删除此行
+            doAction({
+                "componentId": "${props.id}",
+                "actionType": "setValue",
+                "args": {
+                    "value": lastestFieldValue
+                }
+            });
+        }
         event.data.__tableItems.forEach(function(n,i){
             event.data.__tableItems[i] = lastestFieldValue[i];
         });
@@ -357,7 +375,8 @@ async function getForm(props, mode = "edit", formId) {
         "canAccessSuperData": false,
         "className": "steedos-object-form steedos-amis-form"
     };
-    if (mode === "edit") {
+    if (mode === "edit" || mode === "new") {
+        // 新增行弹出编辑行表单，在弹出之前已经不用先增加一行，因为在翻页service初始化的时候会判断mode为new时自动新增一行
         let onEditItemSubmitScript = `
             // let fieldValue = _.cloneDeep(event.data["${props.name}"]);
             let fieldValue = event.data.__tableItems;//这里不可以_.cloneDeep，因为翻页form中用的是event.data.__tableItems，直接变更其值即可改变表单中的值
@@ -396,66 +415,66 @@ async function getForm(props, mode = "edit", formId) {
             }
         });
     }
-    else if (mode === "new") {
-        let onNewItemSubmitScript = `
-            let newItem = JSON.parse(JSON.stringify(event.data));
-            if(event.data["${props.name}"]){
-                // let fieldValue = event.data.__tableItems;
-                // 这里不用__tableItems是因为新建的时候没有翻页，里面没有也不需要走__tableItems变量
-                let fieldValue = event.data["${props.name}"];
-                fieldValue.push(newItem);
-                doAction({
-                    "componentId": "${props.id}",
-                    "actionType": "setValue",
-                    "args": {
-                        "value": fieldValue
-                    }
-                });
-            }
-            else{
-                // 这里不可以执行event.data["${props.name}"]=[newItem]，数据域会断掉
-                doAction({
-                    "componentId": "${props.id}",
-                    "actionType": "setValue",
-                    "args": {
-                        "value": [newItem]
-                    }
-                });
-            }
-        `;
-        Object.assign(schema, {
-            "onEvent": {
-                "submit": {
-                    "weight": 0,
-                    "actions": [
-                        {
-                            "actionType": "custom",
-                            "script": onNewItemSubmitScript
-                        },
-                        // {
-                        //     "componentId": props.id,
-                        //     "actionType": "addItem",//input-table组件的needConfirm属性为true时，addItem动作会把新加的行显示为编辑状态，所以只能使用上面的custom script来setValue实现添加行
-                        //     "args": {
-                        //         "index": `\${${props.name}.length || 9000}`,//这里加9000是因为字段如果没放在form组件内，props.name.length拿不到值
-                        //         "item": {
-                        //             "&": "$$"
-                        //         }
-                        //     }
-                        // }
-                    ]
-                }
-            }
-        });
-    }
+    // else if (mode === "new") {
+    //     let onNewItemSubmitScript = `
+    //         let newItem = JSON.parse(JSON.stringify(event.data));
+    //         if(event.data["${props.name}"]){
+    //             // let fieldValue = event.data.__tableItems;
+    //             // 这里不用__tableItems是因为新建的时候没有翻页，里面没有也不需要走__tableItems变量
+    //             let fieldValue = event.data["${props.name}"];
+    //             fieldValue.push(newItem);
+    //             doAction({
+    //                 "componentId": "${props.id}",
+    //                 "actionType": "setValue",
+    //                 "args": {
+    //                     "value": fieldValue
+    //                 }
+    //             });
+    //         }
+    //         else{
+    //             // 这里不可以执行event.data["${props.name}"]=[newItem]，数据域会断掉
+    //             doAction({
+    //                 "componentId": "${props.id}",
+    //                 "actionType": "setValue",
+    //                 "args": {
+    //                     "value": [newItem]
+    //                 }
+    //             });
+    //         }
+    //     `;
+    //     Object.assign(schema, {
+    //         "onEvent": {
+    //             "submit": {
+    //                 "weight": 0,
+    //                 "actions": [
+    //                     {
+    //                         "actionType": "custom",
+    //                         "script": onNewItemSubmitScript
+    //                     },
+    //                     // {
+    //                     //     "componentId": props.id,
+    //                     //     "actionType": "addItem",//input-table组件的needConfirm属性为true时，addItem动作会把新加的行显示为编辑状态，所以只能使用上面的custom script来setValue实现添加行
+    //                     //     "args": {
+    //                     //         "index": `\${${props.name}.length || 9000}`,//这里加9000是因为字段如果没放在form组件内，props.name.length拿不到值
+    //                     //         "item": {
+    //                     //             "&": "$$"
+    //                     //         }
+    //                     //     }
+    //                     // }
+    //                 ]
+    //             }
+    //         }
+    //     });
+    // }
     schema = getFormPaginationWrapper(props, schema, mode);
     return schema;
 }
 
 
 /**
- * 编辑、新增和查看按钮actions
+ * 编辑、新增、删除、查看按钮actions
  * @param {*} props 
- * @param {*} mode edit/new/readonly
+ * @param {*} mode edit/new/readonly/delete
  */
 async function getButtonActions(props, mode) {
     let actions = [];
@@ -546,6 +565,7 @@ async function getButtonActions(props, mode) {
             }
         ];
         if(props.addable){
+            // 有新增行权限时额外添加新增和复制按钮
             dialogButtons = [
                 {
                     "type": "button",
@@ -610,7 +630,8 @@ async function getButtonActions(props, mode) {
                     // "__tableItems": `\${${props.name}}`
                     // 为了解决"弹出的dialog窗口中子表组件会影响页面布局界面中父作用域字段值"，比如设计字段布局微页面中的设置分组功能，弹出的就是子表dialog
                     // 所以这里使用json|toJson转一次，断掉event.data.__tableItems与上层任用域中props.name的联系
-                    "__tableItems": `\${${props.name}|json|toJson}`
+                    // "__tableItems": `\${${props.name}|json|toJson}`
+                    "__tableItems": `\${(${props.name} || [])|json|toJson}`
                 },
                 "actions": dialogButtons,
                 "onEvent": {
@@ -638,6 +659,7 @@ async function getButtonActions(props, mode) {
                 if(event.data["${props.name}"]){
                     // let fieldValue = event.data.__tableItems;
                     // 这里不用__tableItems是因为新建的时候没有翻页，里面没有也不需要走__tableItems变量
+                    // let fieldValue = _.clone(event.data["${props.name}"]);
                     let fieldValue = event.data["${props.name}"];
                     fieldValue.push(newItem);
                     doAction({
@@ -665,7 +687,9 @@ async function getButtonActions(props, mode) {
                 "actionType": "custom",
                 "script": onNewLineScript
             };
-            actions = [actionNewLine, actionShowEditDialog];
+            // 新增行时不需要在弹出编辑表单前先加一行，因为会在编辑表单所在service初始化时判断到是新增就自动增加一行，因为这里拿不到event.data.__tableItems，也无法变更其值
+            // actions = [actionNewLine, actionShowEditDialog];
+            actions = [actionShowEditDialog];
         }
         else if (mode == "edit") {
             actions = [actionShowEditDialog];
@@ -703,11 +727,46 @@ async function getButtonActions(props, mode) {
                         // "__tableItems": `\${${props.name}}`
                         // 为了解决"弹出的dialog窗口中子表组件会影响页面布局界面中父作用域字段值"，比如设计字段布局微页面中的设置分组功能，弹出的就是子表dialog
                         // 所以这里使用json|toJson转一次，断掉event.data.__tableItems与上层任用域中props.name的联系
-                        "__tableItems": `\${${props.name}|json|toJson}`
-                    },
+                        // "__tableItems": `\${${props.name}|json|toJson}`
+                        "__tableItems": `\${(${props.name} || [])|json|toJson}`
+                },
                 }
             }
         ];
+    }
+    else if (mode == "delete") {
+        let tableServiceId = getComponentId("table_service", props.id);
+        let onDeleteItemScript = `
+            // let fieldValue = event.data["${props.name}"];
+            let scope = event.context.scoped;
+            let __wrapperServiceId = "${tableServiceId}";
+            let wrapperService = scope.getComponentById(__wrapperServiceId);
+            let wrapperServiceData = wrapperService.getData();
+            // 这里不可以用event.data["${props.name}"]因为amis input talbe有一层单独的作用域，其值会延迟一拍
+            // 这里_.clone是因为字段设计布局设置分组这种弹出窗口中的子表组件，直接删除后，点取消无法还原
+            let lastestFieldValue = _.clone(wrapperServiceData["${props.name}"]);
+            lastestFieldValue.splice(event.data.index, 1);
+            doAction({
+                "componentId": "${props.id}",
+                "actionType": "setValue",
+                "args": {
+                    "value": lastestFieldValue
+                }
+            });
+        `;
+        actions = [
+            // {
+            //     "actionType": "deleteItem",
+            //     "args": {
+            //         "index": "${index+','}" //这里不加逗号后续会报错，语法是逗号分隔可以删除多行
+            //     },
+            //     "componentId": props.id
+            // },
+            {
+                "actionType": "custom",
+                "script": onDeleteItemScript
+            }
+        ]
     }
     return actions;
 }
@@ -754,24 +813,7 @@ async function getButtonView(props) {
     };
 }
 
-function getButtonDelete(props) {
-    let tableServiceId = getComponentId("table_service", props.id);
-    let onDeleteItemScript = `
-        // let fieldValue = event.data["${props.name}"];
-        let scope = event.context.scoped;
-        let __wrapperServiceId = "${tableServiceId}";
-        let wrapperService = scope.getComponentById(__wrapperServiceId);
-        let wrapperServiceData = wrapperService.getData();
-        let lastestFieldValue = wrapperServiceData["${props.name}"];//这里不可以用event.data["${props.name}"]因为amis input talbe有一层单独的作用域，其值会延迟一拍
-        lastestFieldValue.splice(event.data.index, 1);
-        doAction({
-            "componentId": "${props.id}",
-            "actionType": "setValue",
-            "args": {
-                "value": lastestFieldValue
-            }
-        });
-    `;
+async function getButtonDelete(props) {
     return {
         "type": "button",
         "label": "",
@@ -779,19 +821,7 @@ function getButtonDelete(props) {
         "level": "link",
         "onEvent": {
             "click": {
-                "actions": [
-                    // {
-                    //     "actionType": "deleteItem",
-                    //     "args": {
-                    //         "index": "${index+','}" //这里不加逗号后续会报错，语法是逗号分隔可以删除多行
-                    //     },
-                    //     "componentId": props.id
-                    // },
-                    {
-                        "actionType": "custom",
-                        "script": onDeleteItemScript
-                    }
-                ]
+                "actions": await getButtonActions(props, "delete")
             }
         }
     };
@@ -831,7 +861,7 @@ export const getAmisInputTableSchema = async (props) => {
         buttonsForColumnOperations.push(buttonViewSchema);
     }
     if (props.removable) {
-        let buttonDeleteSchema = getButtonDelete(props);
+        let buttonDeleteSchema = await getButtonDelete(props);
         buttonsForColumnOperations.push(buttonDeleteSchema);
     }
     let inputTableSchema = {
