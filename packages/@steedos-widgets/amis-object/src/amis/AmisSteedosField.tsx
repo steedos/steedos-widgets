@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-25 16:41:53
+ * @LastEditTime: 2023-12-25 16:48:35
  * @Description: 
  */
 import { Field } from '@steedos-widgets/amis-lib';
@@ -226,8 +226,12 @@ export const AmisSteedosField = async (props) => {
                 Object.assign(schema, {
                     "defaultColor": null
                 });
-            }
-            else if (steedosField.type === "image") {
+            } else if (steedosField.type === "number") {
+                // amis input-number和number组件中的precision表示小数位数，并不是魔方平台的精度概念，要转换下，否则小数点后会显示很多的0
+                Object.assign(schema, {
+                    "precision": steedosField.scale || 0
+                });
+            } else if (steedosField.type === "image") {
                 Object.assign(schema, {
                     enlargeAble: true,
                     showToolbar: true,
