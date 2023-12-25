@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-25 13:13:56
+ * @LastEditTime: 2023-12-25 16:54:15
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -292,7 +292,7 @@ function getFormPaginationWrapper(props, form, mode) {
         let __wrapperServiceId = "${tableServiceId}";
         let wrapperService = scope.getComponentById(__wrapperServiceId);
         let wrapperServiceData = wrapperService.getData();
-        let lastestFieldValue = wrapperServiceData["${props.name}"] || [];//这里不可以用event.data["${props.name}"]因为amis input talbe有一层单独的作用域，其值会延迟一拍
+        let lastestFieldValue = _.clone(wrapperServiceData["${props.name}"] || []);//这里不可以用event.data["${props.name}"]因为amis input talbe有一层单独的作用域，其值会延迟一拍
         //不可以直接像event.data.__tableItems = lastestFieldValue; 这样整个赋值，否则作用域会断
         let mode = "${mode}";
         if(mode === "new"){
