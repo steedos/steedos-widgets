@@ -1,7 +1,7 @@
 @media (min-width: 767px) {
     /* 列表快速编辑功能样式 */
 
-    /* amis3.2版本快速编辑单元格样式:end */
+    /* amis3.2版本快速编辑单元格样式:start */
     body.amis-3-2 .steedos-object-table{
         tbody td.antd-Field--quickEditable {
             &> div {
@@ -34,41 +34,18 @@
     /* amis3.2版本快速编辑单元格样式:end */
 
     .steedos-object-table {
-        //有数据的普通列表隐藏第二列，_display列
-        thead tr th:nth-child(2){
+        //隐藏最后一列，_display
+        thead tr th:last-child, colgroup col:last-child{
             display: none;
         }
+        thead tr th:nth-last-child(2) .antd-Table-content-colDragLine{
+            width: 4px;
+            right: 0;
+        }
 
-        &.is-steedos-tree-table {
-            //有数据的树结构列表隐藏第三列，_display列
-            thead tr th:nth-child(3){
-                display: none;
-            }
-            thead tr th:nth-child(2){
-                display: table-cell;
-            }
-            //无数据的树结构列表隐藏第一列，_display列
-            .is-steedos-crud-data-empty{
-                thead tr th:nth-child(2),thead tr th:nth-child(3){
-                    display: table-cell;
-                }
-                thead tr th:nth-child(1){
-                    display: none;
-                }
-            }
-        }
-        //无数据的普通列表隐藏第二列，_display列
-        .is-steedos-crud-data-empty {
-            thead tr th:nth-child(3){
-                display: table-cell;
-            }
-            thead tr th:nth-child(2){
-                display: none;
-            }
-        }
 
         tbody td.antd-Field--quickEditable {
-            &> * {
+            &> .antd-Form-static {
                 display: inline;
             }
             .antd-Field-quickEditBtn {
