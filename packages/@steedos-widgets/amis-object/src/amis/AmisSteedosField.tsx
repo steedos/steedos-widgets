@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
- * @LastEditors: liaodaxue
- * @LastEditTime: 2023-12-26 14:17:48
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-12-26 15:14:10
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -35,7 +35,7 @@ function getAmisStaticFieldType(type: string, data_type?: string, options?: any)
     } else if (type === 'currency') {
         return "number";
     } else if (type === 'autonumber') {
-        return "text"
+        return "input-text" //不可以用text，因为会出现字段label显示不出来的问题
     } else if (type === 'percent') {
         return "number";
     } else if (type === 'formula' || type === 'summary') {
