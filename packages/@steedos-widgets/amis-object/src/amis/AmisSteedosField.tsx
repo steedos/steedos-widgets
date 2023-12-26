@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
- * @LastEditors: liaodaxue
- * @LastEditTime: 2023-12-26 11:16:57
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-12-26 11:20:10
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -55,7 +55,7 @@ export const AmisSteedosField = async (props) => {
     // console.log(`AmisSteedosField===props===`, props);
 
     let steedosField = null;
-    let { field, readonly = false, ctx = {}, config, $schema, static: fStatic, hideLabel } = props;
+    let { field, readonly = false, ctx = {}, config, $schema, static: fStatic } = props;
     // console.log(`AmisSteedosField`, props)
 
     // if($schema.config && isString($schema.config)){
@@ -76,7 +76,11 @@ export const AmisSteedosField = async (props) => {
         steedosField = clone(steedosField);
     }
 
-    if (props.label && !steedosField.label) {
+    // if (props.label && !steedosField.label) {
+    //     steedosField.label = props.label;
+    // }
+    if (typeof props.label === "string" || props.label === false) {
+        // 始终优先取组件上配置的label，且可以通过配置组件的label属性值为false来隐藏字段label
         steedosField.label = props.label;
     }
 
@@ -190,9 +194,6 @@ export const AmisSteedosField = async (props) => {
                 source: source,
             }, pick(steedosField.amis || {}, ['className', 'inline', 'label', 'labelAlign', 'name', 'labelRemark', 'description', 'placeholder', 'staticClassName', 'staticLabelClassName', 'staticInputClassName', 'staticSchema']));
             schema.placeholder = "";
-            if (hideLabel) {
-                delete schema.label;
-            }
             return schema;
         }
         else if (fStatic) {
@@ -270,9 +271,6 @@ export const AmisSteedosField = async (props) => {
                 return await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
             }
             Object.assign(schema, steedosField.amis || {});
-            if (hideLabel) {
-                delete schema.label;
-            }
             return schema;
         } else {
             let fieldAmis = steedosField.amis || {};
@@ -333,9 +331,6 @@ export const AmisSteedosField = async (props) => {
             }
 
             const schema = await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
-            if (hideLabel) {
-                delete schema.label;
-            }
             // console.log(`AmisSteedosField return schema`, schema)
             return schema
         }
