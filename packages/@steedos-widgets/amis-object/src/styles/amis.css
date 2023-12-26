@@ -314,3 +314,7 @@ fieldset.antd-Collapse > legend{
 .antd-Tree-itemText{
     flex: 1 auto;
 }
+/* amis3.6.3 .antd-Picker-input类中多了 overflow: auto; 样式 */
+.antd-Picker-input{
+    overflow: hidden;
+}
