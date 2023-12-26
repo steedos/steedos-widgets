@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: liaodaxue
- * @LastEditTime: 2023-12-26 10:41:49
+ * @LastEditTime: 2023-12-26 11:16:57
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -198,42 +198,7 @@ export const AmisSteedosField = async (props) => {
         else if (fStatic) {
             if (props.data.hasOwnProperty("_display")) {
                 // 有_display时保持原来的逻辑不变，不走以下新的逻辑，审批王中会特意传入_display以跳过后面新加的代码
-                const fieldSchema = await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
-                if( ['image','file'].indexOf(steedosField.type)>-1 && fieldSchema.disabled ){
-                    if(fieldSchema.value.length){
-                        let url = fieldSchema.value[0];
-                        if(['file'].indexOf(steedosField.type)>-1){
-                            const fileName = fieldSchema.value[0].name;
-                            if(fileName && fileName.slice(-4) !== '.pdf'){
-                                return fieldSchema;
-                            }
-                            url = fieldSchema.value[0].url;
-                            const indexOfQuestionMark = url.indexOf('?');
-                            if(indexOfQuestionMark>-1){
-                                url = url.substring(0, indexOfQuestionMark)
-                            }
-                        }
-                        return {
-                            "type": "combo",
-                            "name": fieldSchema.name,
-                            "className": "instance_image_and_file_field",
-                            "label": "",
-                            "items": [
-                                fieldSchema,
-                                {
-                                    "type": "link",
-                                    "href": url,
-                                    "body": "预览",
-                                    "blank": true,
-                                    "en-US": {
-                                        "label": "Preview"
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-                return fieldSchema;
+                return await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
             }
             const schema = Object.assign({}, steedosField, {
                 type: getAmisStaticFieldType(steedosField.type, steedosField.data_type, steedosField),
