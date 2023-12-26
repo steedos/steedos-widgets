@@ -269,7 +269,7 @@ async function getQuickEditSchema(field, options){
                         "actions":[
                             {
                                 "actionType": "setValue",
-                                "componentId": `service_listview_${options.objectName}`,
+                                "componentId": quickEditId,
                                 "args": {
                                     "value":{
                                         "quickedit_record_permissions_loading": true
@@ -294,7 +294,7 @@ async function getQuickEditSchema(field, options){
                             },
                             {
                                 "actionType": "setValue",
-                                "componentId": `service_listview_${options.objectName}`,
+                                "componentId": quickEditId,
                                 "args": {
                                     "value":{
                                         "quickedit_record_permissions_loading": false
@@ -303,7 +303,7 @@ async function getQuickEditSchema(field, options){
                             },
                             {
                                 "actionType": "setValue",
-                                "componentId": `service_listview_${options.objectName}`,
+                                "componentId": quickEditId,
                                 "args": {
                                     "value":{
                                         "quickedit_record_permissions": "${event.data}"

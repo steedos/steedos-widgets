@@ -1,5 +1,38 @@
 @media (min-width: 767px) {
     /* 列表快速编辑功能样式 */
+
+    /* amis3.2版本快速编辑单元格样式:end */
+    body.amis-3-2 .steedos-object-table{
+        tbody td.antd-Field--quickEditable {
+            &> div {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+    
+                .antd-Field-quickEditBtn {
+                    padding-right: 13px;
+    
+                    svg {
+                        display: none;
+                    }
+                }
+            }
+        }
+        tbody td.antd-Field--quickEditable:hover {
+            div {
+                .antd-Field-quickEditBtn {
+                    padding-right: 0;
+    
+                    svg {
+                        display: inline-block;
+                    }
+                }
+            }
+    
+        }
+    }
+    /* amis3.2版本快速编辑单元格样式:end */
+
     .steedos-object-table {
         //有数据的普通列表隐藏第二列，_display列
         thead tr th:nth-child(2){
@@ -35,29 +68,24 @@
         }
 
         tbody td.antd-Field--quickEditable {
-            &> div {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
+            &> * {
+                display: inline;
+            }
+            .antd-Field-quickEditBtn {
+                padding-right: 13px;
 
-                .antd-Field-quickEditBtn {
-                    padding-right: 13px;
-
-                    svg {
-                        display: none;
-                    }
+                svg {
+                    display: none;
                 }
             }
         }
 
         tbody td.antd-Field--quickEditable:hover {
-            div {
-                .antd-Field-quickEditBtn {
-                    padding-right: 0;
+            .antd-Field-quickEditBtn {
+                padding-right: 0;
 
-                    svg {
-                        display: inline-block;
-                    }
+                svg {
+                    display: inline-block;
                 }
             }
 
