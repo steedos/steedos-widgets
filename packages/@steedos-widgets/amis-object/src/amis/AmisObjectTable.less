@@ -35,12 +35,8 @@
 
     .steedos-object-table {
         //隐藏最后一列，_display
-        thead tr th:last-child, colgroup col:last-child{
+        thead tr th:nth-last-child(2), colgroup col:nth-last-child(2){
             display: none;
-        }
-        thead tr th:nth-last-child(2) .antd-Table-content-colDragLine{
-            width: 4px;
-            right: 0;
         }
 
 
