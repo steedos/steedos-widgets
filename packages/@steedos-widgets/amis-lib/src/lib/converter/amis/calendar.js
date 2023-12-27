@@ -316,6 +316,7 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
         "dialog": {
           "type": "dialog",
           "title": title,
+          data,
           "body": [
             {
               "type": "steedos-object-form",

@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-25 13:13:56
+ * @LastEditTime: 2023-12-27 13:50:26
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -33,20 +33,22 @@ function getInputTableCell(field, showAsInlineEditMode) {
             name: field.name,
             quickEdit: {
                 "type": "steedos-field",
-                "config": field,
-                hideLabel: true
+                "config": Object.assign({}, field, {
+                    label: false
+                })
             }
         }
     }
     else {
         return {
             "type": "steedos-field",
-            "config": field,
+            "config": Object.assign({}, field, {
+                label: false
+            }),
             "static": true,
             "readonly": true,
             label: field.label,
-            name: field.name,
-            hideLabel: true
+            name: field.name
         }
     }
 }
@@ -292,7 +294,9 @@ function getFormPaginationWrapper(props, form, mode) {
         let __wrapperServiceId = "${tableServiceId}";
         let wrapperService = scope.getComponentById(__wrapperServiceId);
         let wrapperServiceData = wrapperService.getData();
-        let lastestFieldValue = wrapperServiceData["${props.name}"] || [];//这里不可以用event.data["${props.name}"]因为amis input talbe有一层单独的作用域，其值会延迟一拍
+        // 这里不可以用event.data["${props.name}"]因为amis input talbe有一层单独的作用域，其值会延迟一拍
+        // 这里如果不.clone的话，在弹出窗口中显示的子表组件，添加行后点窗口的取消按钮关闭窗口后无法把之前的操作还原，即把之前添加的行自动移除
+        let lastestFieldValue = _.clone(wrapperServiceData["${props.name}"] || []);
         //不可以直接像event.data.__tableItems = lastestFieldValue; 这样整个赋值，否则作用域会断
         let mode = "${mode}";
         if(mode === "new"){
@@ -888,7 +892,7 @@ export const getAmisInputTableSchema = async (props) => {
             "name": "__op__",
             "type": "operation",
             "buttons": buttonsForColumnOperations,
-            "width": buttonsForColumnOperations.length > 1 ? "46px" : "20px"
+            "width": buttonsForColumnOperations.length > 1 ? "60px" : "20px"
         });
     }
     if (showAsInlineEditMode) {

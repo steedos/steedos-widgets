@@ -379,6 +379,9 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         */
         return payload;
     }
+    if(!payload.data.rows){
+        payload.data.rows = [];
+    }
     if(enable_tree){
         const records = payload.data.rows;
         const treeRecords = [];

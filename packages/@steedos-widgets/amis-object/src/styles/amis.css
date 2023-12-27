@@ -309,3 +309,12 @@ fieldset.antd-Collapse > legend{
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+/* amis3.6.3 .antd-Tree-itemText类中缺了flex样式 */
+.antd-Tree-itemText{
+    flex: 1 auto;
+}
+/* amis3.6.3 .antd-Picker-input类中多了 overflow: auto; 样式 */
+.antd-Picker-input{
+    overflow: hidden;
+}
