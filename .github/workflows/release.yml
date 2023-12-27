@@ -36,7 +36,7 @@ jobs:
           echo "ref_branch: ${{ steps.branch-name.outputs.ref_branch }}"
 
       - name: Check valid branch
-        if: ${{ !startsWith(steps.branch-name.outputs.tag, '1.')  }}
+        if: ${{ !startsWith(steps.branch-name.outputs.tag, '3.')  }}
         run: exit 1
  
       # checkout branch 1.0
