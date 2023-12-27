@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-26 11:15:04
+ * @LastEditTime: 2023-12-27 13:50:26
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -892,7 +892,7 @@ export const getAmisInputTableSchema = async (props) => {
             "name": "__op__",
             "type": "operation",
             "buttons": buttonsForColumnOperations,
-            "width": buttonsForColumnOperations.length > 1 ? "46px" : "20px"
+            "width": buttonsForColumnOperations.length > 1 ? "60px" : "20px"
         });
     }
     if (showAsInlineEditMode) {
