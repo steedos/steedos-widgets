@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-26 15:14:10
+ * @LastEditTime: 2023-12-26 19:18:41
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -204,9 +204,9 @@ export const AmisSteedosField = async (props) => {
                     const fieldValue = fieldSchema.value;
                     if (fieldValue && fieldValue.length) {
                         let hasImageOrFile = false;
-                        forEach(fieldValue,(item)=>{
+                        forEach(fieldValue, (item) => {
                             const fileName = item.name;
-                            if([".pdf",".jpg",".jpeg",".png",".gif"].indexOf(fileName.slice(-4))>-1){
+                            if ([".pdf", ".jpg", ".jpeg", ".png", ".gif"].indexOf(fileName.slice(-4)) > -1) {
                                 hasImageOrFile = true;
                             }
                         })
@@ -214,11 +214,11 @@ export const AmisSteedosField = async (props) => {
                             return fieldSchema;
                         }
                         let fieldHtml = "";
-                        forEach(fieldValue,(item)=>{
+                        forEach(fieldValue, (item) => {
                             const fileName = item.name;
                             const fileUrl = item.url;
                             let filePreviewHtml = '';
-                            if([".pdf",".jpg",".jpeg",".png",".gif"].indexOf(fileName.slice(-4))>-1){
+                            if ([".pdf", ".jpg", ".jpeg", ".png", ".gif"].indexOf(fileName.slice(-4)) > -1) {
                                 const indexOfQuestionMark = fileUrl.indexOf('?');
                                 if (indexOfQuestionMark > -1) {
                                     const filePreviewUrl = fileUrl.substring(0, indexOfQuestionMark);
@@ -229,7 +229,7 @@ export const AmisSteedosField = async (props) => {
                                 <div class="antd-FileControl-itemInfo flex-wrap">
                                     <span class="antd-FileControl-itemInfoIcon flex justify-center items-center"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 16" class="icon icon-file"><path d="M0 0v16h14V4.001L9.939 0H0Zm1 1h8v4h4v10H1V1Zm9 .464 2.575 2.537H10V1.464Z"></path><path d="M4 12h6v-1H4zM4 9h6V8H4z"></path></svg></span>
                                     <a class="antd-FileControl-itemInfoText" target="_blank" rel="noopener" href="${fileUrl}">${fileName}</a>
-                                    ${ filePreviewHtml ? filePreviewHtml : ''}
+                                    ${filePreviewHtml ? filePreviewHtml : ''}
                                 </div>
                             `;
                             fieldHtml += tpl;
@@ -274,6 +274,30 @@ export const AmisSteedosField = async (props) => {
                 Object.assign(schema, {
                     "precision": steedosField.scale || 0
                 });
+            } else if (steedosField.type === "table") {
+                if (steedosField.subFields) {
+                    // console.log(`convertData ======>`, field, convertData)
+                    let tableFields = [];
+                    for (const subField of field.subFields) {
+                        if (!subField.name.endsWith(".$")) {
+                            const subFieldName = subField.name.replace(`${field._prefix || ''}${field.name}.$.`, '').replace(`${field.name}.`, '');
+                            // const gridSub = await convertSFieldToAmisField(Object.assign({}, subField, {name: subFieldName, isTableField: true}), readonly, ctx);
+                            tableFields.push(Object.assign({}, subField, { name: subFieldName }))
+                        }
+                    }
+                    Object.assign(schema, {
+                        type: 'steedos-input-table',
+                        showIndex: true,
+                        editable: false,
+                        addable: false,
+                        removable: false,
+                        draggable: false,
+                        fields: tableFields,
+                        amis: {
+                            columnsTogglable: false
+                        }
+                    });
+                }
             } else if (steedosField.type === "image") {
                 Object.assign(schema, {
                     enlargeAble: true,
@@ -305,8 +329,7 @@ export const AmisSteedosField = async (props) => {
                         return value;
                     }
                 });
-            }
-            else if (steedosField.type === "file") {
+            } else if (steedosField.type === "file") {
                 // 附件static模式先保持原来的逻辑，依赖_display，审批王中相关功能在creator中
                 // convertSFieldToAmisField中会合并steedosField.amis，所以也不需要再次合并steedosField.amis，直接return就好
                 return await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
