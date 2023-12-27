@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: liaodaxue
- * @LastEditTime: 2023-12-05 13:57:54
+ * @LastEditTime: 2023-12-27 14:50:48
  * @Description: 
  */
 import './AmisObjectListview.less';
@@ -107,6 +107,7 @@ export const AmisObjectListView = async (props) => {
         },
         {
           "actionType": "reload",
+          "componentId": "listview_" + objectApiName,
           "expression": "${(event.data.recordId || event.data.__deletedRecord === true || event.data.displayAs === 'split') && event.data._isRelated != true}" //不是新建, 或分栏模式下新建主对象记录, 则刷新列表
         }
       ]
