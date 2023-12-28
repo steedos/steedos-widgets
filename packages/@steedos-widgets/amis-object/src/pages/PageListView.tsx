@@ -71,7 +71,7 @@ export const PageListView = async (props) => {
     type: 'service',
     className: {
       "h-full" : "true",
-      "sm:px-3 sm:pt-3 page-list-grid" : "${display != 'split'}",
+      "page-list-grid" : "${display != 'split'}",
       "page-list-split" : "${display == 'split'}"
     },
     body: listSchema

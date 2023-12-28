@@ -13,9 +13,9 @@ export { getAmisStaticFieldType } from './type';
 // const Lookup = require('./lookup');
 
 export function getBaseFields(readonly){
-    let calssName = 'm-1';
+    let className = 'm-0';
     if(readonly){
-        calssName = `${calssName}`
+        className = `${className}`
     }
     return [
         { 
@@ -23,7 +23,7 @@ export function getBaseFields(readonly){
             label: "创建人",
             type: "static",
             labelClassName: 'text-left',
-            className: calssName,
+            className: className,
             tpl: Tpl.getCreatedInfoTpl()
         },
         { 
@@ -31,7 +31,7 @@ export function getBaseFields(readonly){
             label: "修改人",
             type: "static",
             labelClassName: 'text-left',
-            className: calssName,
+            className: className,
             tpl: Tpl.getModifiedInfoTpl()
         }
     ]
@@ -736,9 +736,9 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
     }
     if(!_.isEmpty(convertData)){
         if(field.is_wide || convertData.type === 'group'){
-            convertData.className = 'col-span-2 m-1';
+            convertData.className = 'col-span-2 m-0';
         }else{
-            convertData.className = 'm-1';
+            convertData.className = 'm-0';
         }
         if(readonly){
             convertData.className = `${convertData.className} border-b`
