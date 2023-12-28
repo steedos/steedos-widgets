@@ -640,8 +640,8 @@ export async function getTableColumns(fields, options){
         const href = Router.getObjectDetailPath({
             ...options,  formFactor: options.formFactor, appId: "${appId}", objectName: options.objectName || "${objectName}", recordId: `\${${options.idFieldName}}`
         })
-        columns[1].type = "tpl";
-        columns[1].tpl = `<a href="${href}">\${${columns[1].name}}</a>`
+        columns[0].type = "tpl";
+        columns[0].tpl = `<a href="${href}">\${${columns[0].name}}</a>`
     }
     return columns;
 }
