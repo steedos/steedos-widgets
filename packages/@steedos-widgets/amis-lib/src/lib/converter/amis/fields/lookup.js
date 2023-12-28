@@ -5,7 +5,7 @@ import * as Tpl from '../tpl';
 import * as Field from './index';
 import * as Table from './table';
 import * as List from './list';
-import { getLookupListView } from '../util';
+import { getLookupListView, getComparableAmisVersion } from '../util';
 import { getSelectUserSchema } from './user';
 import { getObjectHeaderToolbar, getObjectFooterToolbar, getObjectFilter } from './../toolbar';
 import { getListViewSort } from './../../../objects';
@@ -670,7 +670,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
             sendOn.push(`this.${fName}`)
         })
         if(depend_on.length > 0){
-            apiInfo.url = `${apiInfo.url}?${depend_on.join('&')}`;
+            apiInfo.url = `${apiInfo.url}&${depend_on.join('&')}`;
             apiInfo.sendOn = `${sendOn.join(' && ')}`
         }
     }
@@ -781,6 +781,12 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         // source: apiInfo,
         autoComplete: apiInfo,
         searchable: true,
+    }
+    let amisVersion = getComparableAmisVersion();
+    if(amisVersion >= 3.6){
+        // amis 3.6中不加source会造成子表组件中弹出行编辑窗口的lookup字段有时不请求接口（概率现象，同一个地方反复操作有时请求有时不请求）
+        // 但是同时配置autoComplete和source会多请求一次接口
+        data.source = apiInfo;
     }
     //删除xlink:href中的rootUrl前缀，解决客户端svg为空的问题
     const select_menuTpl = `<span class='flex items-center mt-0.5'>
