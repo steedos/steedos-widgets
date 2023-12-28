@@ -80,7 +80,8 @@ export const AmisObjectButton = (props) => {
             renderData.listViewId = data.listViewId
         }
         if(schema){
-            schema.data = defaultsDeep({}, renderData, getDefaultRenderData(), schema.data);
+            //3.6版本的schema.data内多了event变量，影响了组件渲染
+            schema.data = defaultsDeep({}, {event: null}, renderData, getDefaultRenderData(), schema.data);
         }
         return (
             <>

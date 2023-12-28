@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-20 16:29:22
- * @LastEditors: liaodaxue
- * @LastEditTime: 2023-09-11 17:19:53
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2023-12-28 14:59:08
  * @Description: 
  */
 import { getRootUrl } from "../../steedos.client";
@@ -72,4 +72,19 @@ export function getLookupListView(refObjectConfig) {
   );
   let listView = listViewLookup || listViewAll;
   return listView;
+}
+
+
+/**
+ * 获取可比较的amis版本号
+ * @returns 只返回前两位版本，第三位忽略，比如3.6.3返回3.6
+ */
+export function getComparableAmisVersion() {
+  let amis = (window.amisRequire && window.amisRequire('amis')) || window.Amis;
+  let amisVersion = amis && amis.version;
+  if(amisVersion){
+      let comparableVersions = amisVersion.split(".");
+      let comparableVersion = parseFloat(comparableVersions[0].toString() + "." + comparableVersions[1].toString());
+      return comparableVersion;
+  }
 }

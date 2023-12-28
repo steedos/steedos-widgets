@@ -1,7 +1,9 @@
 :root {
     --body-bg: #f9fafb;
     --Page-main-bg: transparent;
+    --Form-mode-default-labelGap: 2px;
     --Form-item-fontSize: 12px;
+    --Form-item-fontColor: rgb(68, 68, 68);
     --Form-fontSize: 14px;
     --Form-selectValue-fontSize: 14px;
     --Form-item-gap: 0.75rem;
@@ -253,6 +255,7 @@ fieldset.antd-Collapse > legend.antd-Collapse-header > .antd-Collapse-arrow:befo
 /* TODO: amis3.2.0 fieldset.antd-Collapse > legend类中多了background属性，影响分组样式 */
 fieldset.antd-Collapse > legend{
     height: unset;
+    width: unset;
 }
 
 /* crud中的快速搜索框样式改成与按钮风格统一的边框 */

@@ -2,10 +2,11 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-27 13:50:26
+ * @LastEditTime: 2023-12-28 15:54:36
  */
 
 import { getFormBody } from './converter/amis/form';
+import { getComparableAmisVersion } from './converter/amis/util';
 import { clone } from 'lodash';
 
 /**
@@ -486,6 +487,11 @@ async function getButtonActions(props, mode) {
     let dialogId = getComponentId("dialog", props.id);
     let buttonNextId = getComponentId("button_next", props.id);
     let formPaginationId = getComponentId("form_pagination", props.id);
+    let parentFormData = "${__super.__super.__super.__super || {}}";
+    let amisVersion = getComparableAmisVersion();
+    if(amisVersion < 3.6){
+        parentFormData = "${__super.__super || {}}";
+    }
     if (mode == "new" || mode == "edit") {
         // let actionShowNewDialog = {
         //     "actionType": "dialog",
@@ -627,7 +633,8 @@ async function getButtonActions(props, mode) {
                     // 换成从__super来映射上级表单数据是因为对象列表视图界面中每行下拉菜单中的编辑按钮弹出的表单中的子表所在作用域中没有record变量
                     // 映射到中间变量__parentForm而不是直接用&展开映射是为了避免表单中字段名与作用域中变量重名
                     // "__parentForm": "${__super.__super || {}}",
-                    "__parentForm": mode == "new" ? "$$" : "${__super.__super || {}}",
+                    // "__parentForm": mode == "new" ? "$$" : "${__super.__super || {}}",
+                    "__parentForm": mode == "new" ? "$$" : parentFormData,
                     "global": "${global}",
                     "uiSchema": "${uiSchema}",
                     "index": "${index}",
@@ -724,7 +731,7 @@ async function getButtonActions(props, mode) {
                         // 换成从__super来映射上级表单数据是因为对象列表视图界面中每行下拉菜单中的编辑按钮弹出的表单中的子表所在作用域中没有record变量
                         // 映射到中间变量__parentForm而不是直接用&展开映射是为了避免表单中字段名与作用域中变量重名
                         // "__parentForm": "${__super.__super || {}}",
-                        "__parentForm": "${__super.__super || {}}",
+                        "__parentForm": parentFormData,
                         "global": "${global}",
                         "uiSchema": "${uiSchema}",
                         "index": "${index}",
