@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-27 13:50:26
+ * @LastEditTime: 2023-12-28 14:37:56
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -604,6 +604,16 @@ async function getButtonActions(props, mode) {
                 dialogButtons[0]
             ];
         }
+        let editFormParentForm = "${__super.__super.__super.__super || {}}";
+        let amis = (window.amisRequire && window.amisRequire('amis')) || window.Amis;
+        let amisVersion = amis && amis.version;
+        if(amisVersion){
+            let comparableVersions = amisVersion.split(".");
+            let comparableVersion = parseFloat(comparableVersions[0].toString() + "." + comparableVersions[1].toString());
+            if(comparableVersion < 3.6){
+                editFormParentForm = "${__super.__super || {}}";
+            }
+        }
         let actionShowEditDialog = {
             "actionType": "dialog",
             "dialog": {
@@ -627,7 +637,8 @@ async function getButtonActions(props, mode) {
                     // 换成从__super来映射上级表单数据是因为对象列表视图界面中每行下拉菜单中的编辑按钮弹出的表单中的子表所在作用域中没有record变量
                     // 映射到中间变量__parentForm而不是直接用&展开映射是为了避免表单中字段名与作用域中变量重名
                     // "__parentForm": "${__super.__super || {}}",
-                    "__parentForm": mode == "new" ? "$$" : "${__super.__super || {}}",
+                    // "__parentForm": mode == "new" ? "$$" : "${__super.__super || {}}",
+                    "__parentForm": mode == "new" ? "$$" : editFormParentForm,
                     "global": "${global}",
                     "uiSchema": "${uiSchema}",
                     "index": "${index}",
