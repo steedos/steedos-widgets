@@ -16,7 +16,7 @@ export const AmisGlobalHeader = async (props) => {
         body: [
             {
                 "type": "wrapper",
-                "className": "bg-white sticky p-0 top-0 z-40 w-full flex-none backdrop-blur transition-colors duration-500 lg:z-50  border-b-[3px] border-sky-500 border-solid steedos-header-container",
+                "className": "bg-white sticky p-0 top-0 z-40 w-full flex-none backdrop-blur transition-colors duration-500 lg:z-50  border-b-[3px] border-sky-500 border-solid steedos-header-container sm:shadow",
                 body: [
                     {
                         "type": "wrapper",
