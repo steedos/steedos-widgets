@@ -786,6 +786,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
     if(amisVersion >= 3.6){
         // amis 3.6中不加source会造成子表组件中弹出行编辑窗口的lookup字段有时不请求接口（概率现象，同一个地方反复操作有时请求有时不请求）
         // 但是同时配置autoComplete和source会多请求一次接口
+        // TODO:应该想办法把是否字段在子表组件内，即ctx.isInputTable，如果不在子表组件内不需要加source
         data.source = apiInfo;
     }
     //删除xlink:href中的rootUrl前缀，解决客户端svg为空的问题
