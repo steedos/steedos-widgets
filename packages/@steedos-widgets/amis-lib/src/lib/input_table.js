@@ -2,10 +2,11 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-28 14:37:56
+ * @LastEditTime: 2023-12-28 15:05:42
  */
 
 import { getFormBody } from './converter/amis/form';
+import { getComparableAmisVersion } from './converter/amis/util';
 import { clone } from 'lodash';
 
 /**
@@ -605,14 +606,9 @@ async function getButtonActions(props, mode) {
             ];
         }
         let editFormParentForm = "${__super.__super.__super.__super || {}}";
-        let amis = (window.amisRequire && window.amisRequire('amis')) || window.Amis;
-        let amisVersion = amis && amis.version;
-        if(amisVersion){
-            let comparableVersions = amisVersion.split(".");
-            let comparableVersion = parseFloat(comparableVersions[0].toString() + "." + comparableVersions[1].toString());
-            if(comparableVersion < 3.6){
-                editFormParentForm = "${__super.__super || {}}";
-            }
+        let amisVersion = getComparableAmisVersion();
+        if(amisVersion < 3.6){
+            editFormParentForm = "${__super.__super || {}}";
         }
         let actionShowEditDialog = {
             "actionType": "dialog",
