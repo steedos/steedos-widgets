@@ -349,3 +349,12 @@
     /*lookup字段弹出窗口中各种字段类型的列文字超长时显示省略号*/
     .whitespace-nowrap-table-cell-text-overflow-ellipsis
 }
+
+.antd-Crud{
+    .antd-Table{
+        //所有对象表格单元格td下样式错乱（应用场景比如树结构列表、单元格编辑等），需设置.antd-Form-static的display为inline
+        tbody td > .antd-Form-static{
+            display: inline;
+        }
+    }
+}
