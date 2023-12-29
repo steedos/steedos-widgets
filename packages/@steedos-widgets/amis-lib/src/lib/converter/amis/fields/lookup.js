@@ -870,6 +870,14 @@ export async function lookupToAmis(field, readonly, ctx){
 
     // 优先取字段中配置的enable_enhanced_lookup，字段上没配置时，才从对象上取enable_enhanced_lookup属性
     let enableEnhancedLookup = _.isBoolean(field.enable_enhanced_lookup) ? field.enable_enhanced_lookup : refObject.enable_enhanced_lookup;
+    let amisVersion = getComparableAmisVersion();
+    if(amisVersion >= 3.6){
+        // amis 3.6.3单选的树picker有严重bug（https://github.com/baidu/amis/issues/9279），先强制使用下拉方式显示
+        // amis 3.6.3多选的树会自动把下层节点，及下下层等所有子节点自动选中，跟amis 3.2不一样，而且目前没有开关，这不适合目前的业务场景，也先强制使用下拉方式显示
+        if(enableEnhancedLookup && refObject.enable_tree){
+            enableEnhancedLookup = false;
+        }
+    }
     // 默认使用下拉框模式显示lookup选项，只能配置了enable_enhanced_lookup才使用弹出增强模式
     if(enableEnhancedLookup == true){
         return await lookupToAmisPicker(field, readonly, ctx);
