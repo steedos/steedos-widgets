@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-03-23 16:49:44
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-12-29 16:06:35
  * @Description:
  */
 import {
@@ -844,7 +844,6 @@ export const getFlowFormSchema = async (instance, box) => {
       "messages": {
       },
       "requestAdaptor": `
-        const { context } = api.data;
         api.data = {
           query: \`
             {
@@ -867,7 +866,7 @@ export const getFlowFormSchema = async (instance, box) => {
       `,
       "data": {
         // "&": "$$",
-        "context": "${context}",
+        // "context": "${context}",
         "judge": "${new_judge}",
       }
     },
