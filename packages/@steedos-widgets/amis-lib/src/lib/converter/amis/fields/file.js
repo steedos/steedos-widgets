@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-28 14:15:09
  * @LastEditors: liaodaxue
- * @LastEditTime: 2023-10-30 17:51:54
+ * @LastEditTime: 2023-12-29 10:46:50
  * @Description: 
  */
 import { getAmisStaticFieldType } from './type';
@@ -59,7 +59,8 @@ export const getAmisFileEditSchema = (steedosField)=>{
             dataType: "form-data",
             url: `\${context.rootUrl}/s3/${tableName}`,
             requestAdaptor: `
-                const { _master, global,context } = api.body;
+                const superData = (typeof context != 'undefined') ? context : api.body; 
+                const { _master, global } = superData;
                 // const { recordId, objectName } = _master;
                 const { spaceId, userId, user } = global;
                 /*
@@ -77,8 +78,9 @@ export const getAmisFileEditSchema = (steedosField)=>{
                 return api;
             `,
             adaptor: `
-                const { context } = api.body; 
-                var rootUrl = context.rootUrl + "/api/files/${tableName}/";
+                const superData = (typeof context != 'undefined') ? context : api.body; 
+                const { context:pageContext } = superData; 
+                var rootUrl = pageContext.rootUrl + "/api/files/${tableName}/";
                 payload = {
                     status: response.status == 200 ? 0 : response.status,
                     msg: response.statusText,
