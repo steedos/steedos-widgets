@@ -92,7 +92,7 @@ export function getNameTpl(field, ctx){
     if(ctx && ctx.isLookup){
         linkTarget = "target='_blank'"
     }
-    return `<a href="${href}" ${linkTarget}>\${${field.name}}</a>`
+    return `<a href="${href}" ${linkTarget}>\${${field.name} | raw}</a>`
 }
 
 export function getRelatedFieldTpl(field, ctx){
