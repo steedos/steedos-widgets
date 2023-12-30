@@ -902,7 +902,7 @@ async function getTableOperation(ctx){
             type: 'steedos-object-button',
             name: button.name,
             objectName: button.objectName,
-            visibleOn: getButtonVisibleOn(button),
+            visibleOnAlias: getButtonVisibleOn(button),
             className: 'antd-Button--default'
         })
     })
@@ -1027,7 +1027,8 @@ export async function getTableSchema(fields, options){
         }
 
         if(!isLookup && !hiddenColumnOperation){
-            columns.push(await getTableOperation(options));
+            const toolbarOperation = await getTableOperation(options);
+            columns.push(toolbarOperation);
         }
         
     }
