@@ -291,7 +291,9 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         // 有时在搜索表单中输入过滤条件事，忘记点击回车键或搜索按钮，而是进一步修改快速搜索框中的关键字点击其中回车键触发搜索
         // 这种情况下，触发的搜索请求中没有带上搜索表单中输入的过滤条件。
         // 反过来先在快速搜索框中输入过滤条件却不点击其中回车键触发搜索，而是到搜索表单中触发搜索请求也是一样的。
-        Object.assign(api.data.$self, __changedSearchBoxValues, __changedFilterFormValues);
+        if(api.data.$self.op !== 'loadOptions'){
+            Object.assign(api.data.$self, __changedSearchBoxValues, __changedFilterFormValues);
+        }
         const selfData = JSON.parse(JSON.stringify(api.data.$self));
         var filters = [];
         var pageSize = api.data.pageSize || 10;
