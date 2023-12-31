@@ -205,7 +205,12 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     // });
 
     // 清除__changedFilterFormValues中的值
-    crud && crud.setData({__changedFilterFormValues: {}});
+    // crud && crud.setData({__changedFilterFormValues: {}});
+    if(crud){
+      let crudData = crud.getData();
+      crudData.__changedFilterFormValues = {};
+      crud.setData(crudData);
+    }
     filterForm.handleFormSubmit(event);
     // crud.handleFilterSubmit(removedValues);
 

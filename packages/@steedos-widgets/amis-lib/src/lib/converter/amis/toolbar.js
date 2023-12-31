@@ -109,7 +109,12 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
     __changedSearchBoxValues["${keywordsSearchBoxName}"] = event.data["${keywordsSearchBoxName}"];
     // crudService && crudService.setData({__changedSearchBoxValues: __changedSearchBoxValues});
     // 这里不用crudService而用crud是因为lookup字段弹出的列表中的crudService中的变量无法传入crud的发送适配器中
-    crud && crud.setData({__changedSearchBoxValues: __changedSearchBoxValues});
+    // crud && crud.setData({__changedSearchBoxValues: __changedSearchBoxValues});
+    if(crud){
+      let crudData = crud.getData();
+      crudData.__changedSearchBoxValues = __changedSearchBoxValues;
+      crud.setData(crudData);
+    }
   `;
 
   // onSearchScript中加上了onChangeScript中的脚本，是因为amis 3.2不能用change事件执行onChangeScript
@@ -437,7 +442,12 @@ export async function getObjectFilter(objectSchema, fields, options) {
     // let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service");
     // crudService && crudService.setData({__changedFilterFormValues: changedFilterFormValues});
     // 这里不用crudService而用crud是因为lookup字段弹出的列表中的crudService中的变量无法传入crud的发送适配器中
-    crud && crud.setData({__changedFilterFormValues: changedFilterFormValues});
+    // crud && crud.setData({__changedFilterFormValues: changedFilterFormValues});
+    if(crud){
+      let crudData = crud.getData();
+      crudData.__changedFilterFormValues = changedFilterFormValues;
+      crud.setData(crudData);
+    }
   `;
   return {
     "title": "",
