@@ -233,8 +233,9 @@ async function getQuickEditSchema(field, options){
                 case "avatar":
                 case "image":
                     quickEditSchema.body[0].receiver.adaptor = `
-                        const { context } = api.body; 
-                        var rootUrl = context.rootUrl + "/api/files/${field.type}s/";
+                        const superData = (typeof context != 'undefined') ? context : api.body; 
+                        const { context:pageContext } = superData; 
+                        var rootUrl = pageContext.rootUrl + "/api/files/${field.type}s/";
                         payload = {
                             status: response.status == 200 ? 0 : response.status,
                             msg: response.statusText,
@@ -901,7 +902,7 @@ async function getTableOperation(ctx){
             type: 'steedos-object-button',
             name: button.name,
             objectName: button.objectName,
-            visibleOn: getButtonVisibleOn(button),
+            visibleOnAlias: getButtonVisibleOn(button),
             className: 'antd-Button--default'
         })
     })
@@ -1026,7 +1027,8 @@ export async function getTableSchema(fields, options){
         }
 
         if(!isLookup && !hiddenColumnOperation){
-            columns.push(await getTableOperation(options));
+            const toolbarOperation = await getTableOperation(options);
+            columns.push(toolbarOperation);
         }
         
     }

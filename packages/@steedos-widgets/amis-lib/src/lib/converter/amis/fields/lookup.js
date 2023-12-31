@@ -276,13 +276,24 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     let keywordsSearchBoxName = `__keywords_lookup__${field.name.replace(/\./g, "_")}__to__${refObjectConfig.name}`;
 
     source.requestAdaptor = `
-        let __changedFilterFormValues = api.data.$self.__changedFilterFormValues || {};
+        let __changedFilterFormValuesKey = "__changedFilterFormValues";
+        let __lookupField = api.data.$self.__lookupField;
+        if(__lookupField){
+            let lookupTag = "__" + __lookupField.name + "__" + __lookupField.reference_to;
+            if(__lookupField.reference_to_field){
+                lookupTag += "__" + __lookupField.reference_to_field;
+            }
+            __changedFilterFormValuesKey += lookupTag;
+        }
+        let __changedFilterFormValues = api.data.$self[__changedFilterFormValuesKey] || {};
         let __changedSearchBoxValues = api.data.$self.__changedSearchBoxValues || {};
         // 把表单搜索和快速搜索中的change事件中记录的过滤条件也拼到$self中，是为解决触发搜索请求时，两边输入的过滤条件都带上，即：
         // 有时在搜索表单中输入过滤条件事，忘记点击回车键或搜索按钮，而是进一步修改快速搜索框中的关键字点击其中回车键触发搜索
         // 这种情况下，触发的搜索请求中没有带上搜索表单中输入的过滤条件。
         // 反过来先在快速搜索框中输入过滤条件却不点击其中回车键触发搜索，而是到搜索表单中触发搜索请求也是一样的。
-        Object.assign(api.data.$self, __changedSearchBoxValues, __changedFilterFormValues);
+        if(api.data.$self.op !== 'loadOptions'){
+            Object.assign(api.data.$self, __changedSearchBoxValues, __changedFilterFormValues);
+        }
         const selfData = JSON.parse(JSON.stringify(api.data.$self));
         var filters = [];
         var pageSize = api.data.pageSize || 10;
@@ -497,7 +508,12 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             "objectName": refObjectConfig.name,
             "uiSchema": refObjectConfig,
             "listName": listName,// 需要按视图取可搜索项
-            "isLookup": true
+            "isLookup": true,
+            "__lookupField": {
+                "name": field.name,
+                "reference_to": refObjectConfig.name,
+                "reference_to_field": field.reference_to_field
+            }
         });
 
         if(!pickerSchema.onEvent){
@@ -870,6 +886,14 @@ export async function lookupToAmis(field, readonly, ctx){
 
     // 优先取字段中配置的enable_enhanced_lookup，字段上没配置时，才从对象上取enable_enhanced_lookup属性
     let enableEnhancedLookup = _.isBoolean(field.enable_enhanced_lookup) ? field.enable_enhanced_lookup : refObject.enable_enhanced_lookup;
+    let amisVersion = getComparableAmisVersion();
+    if(amisVersion >= 3.6){
+        // amis 3.6.3单选的树picker有严重bug（https://github.com/baidu/amis/issues/9279），先强制使用下拉方式显示
+        // amis 3.6.3多选的树会自动把下层节点，及下下层等所有子节点自动选中，跟amis 3.2不一样，而且目前没有开关，这不适合目前的业务场景，也先强制使用下拉方式显示
+        if(enableEnhancedLookup && refObject.enable_tree){
+            enableEnhancedLookup = false;
+        }
+    }
     // 默认使用下拉框模式显示lookup选项，只能配置了enable_enhanced_lookup才使用弹出增强模式
     if(enableEnhancedLookup == true){
         return await lookupToAmisPicker(field, readonly, ctx);

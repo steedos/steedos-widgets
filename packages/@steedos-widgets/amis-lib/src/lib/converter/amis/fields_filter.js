@@ -158,6 +158,8 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
   `;
   const onCancelScript = `
     // console.log("===onCancelScript=form==");
+    let isLookup = event.data.isLookup;
+    let __lookupField = event.data.__lookupField;
     const scope = event.context.scoped;
     var filterForm = scope.parent.parent.getComponents().find(function(n){
       return n.props.type === "form";
@@ -205,7 +207,20 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     // });
 
     // 清除__changedFilterFormValues中的值
-    crud && crud.setData({__changedFilterFormValues: {}});
+    // crud && crud.setData({__changedFilterFormValues: {}});
+    let __changedFilterFormValuesKey = "__changedFilterFormValues";
+    if(isLookup && __lookupField){
+      let lookupTag = "__" + __lookupField.name + "__" + __lookupField.reference_to;
+      if(__lookupField.reference_to_field){
+        lookupTag += "__" + __lookupField.reference_to_field;
+      }
+      __changedFilterFormValuesKey += lookupTag;
+    }
+    if(crud){
+      let crudData = crud.getData();
+      crudData[__changedFilterFormValuesKey] = {};
+      crud.setData(crudData);
+    }
     filterForm.handleFormSubmit(event);
     // crud.handleFilterSubmit(removedValues);
 
