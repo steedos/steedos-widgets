@@ -127,9 +127,19 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
     // const scope = event.context.scoped;
     // 如果点击过顶部搜索栏表单的取消按钮，会把此处event.data.__super.__super.__super中的搜索表单项的所有字段设置为null
     // 点击取消按钮后继续在表单项中输入过滤条件且最后没有点击回车按键或点击表单项搜索按钮的话，在快速搜索中点击回车按钮提交搜索会所顶部搜索表单中的字段值清空
+    let isLookup = event.data.isLookup;
+    let __lookupField = event.data.__lookupField;
+    let __changedFilterFormValuesKey = "__changedFilterFormValues";
+    if(isLookup && __lookupField){
+      let lookupTag = "__" + __lookupField.name + "__" + __lookupField.reference_to;
+      if(__lookupField.reference_to_field){
+        lookupTag += "__" + __lookupField.reference_to_field;
+      }
+      __changedFilterFormValuesKey += lookupTag;
+    }
     let filterForm = SteedosUI.getClosestAmisComponentByType(scope, "form");
     setTimeout(function(){
-      filterForm.setValues(event.data.__changedFilterFormValues);
+      filterForm.setValues(event.data[__changedFilterFormValuesKey]);
     }, 500);
   `;
 
@@ -431,6 +441,9 @@ export async function getObjectFilter(objectSchema, fields, options) {
     crudService && crudService.setData({isFieldsFilterEmpty});
   `;
   let onChangeScript = `
+    let isLookup = event.data.isLookup;
+    let __lookupField = event.data.__lookupField;
+    console.log("==onChangeScript=isLookup===", isLookup);
     const scope = event.context.scoped;
     // let filterFormValues = event.data;
     let filterForm = SteedosUI.getClosestAmisComponentByType(scope, "form");
@@ -443,9 +456,17 @@ export async function getObjectFilter(objectSchema, fields, options) {
     // crudService && crudService.setData({__changedFilterFormValues: changedFilterFormValues});
     // 这里不用crudService而用crud是因为lookup字段弹出的列表中的crudService中的变量无法传入crud的发送适配器中
     // crud && crud.setData({__changedFilterFormValues: changedFilterFormValues});
+    let __changedFilterFormValuesKey = "__changedFilterFormValues";
+    if(isLookup && __lookupField){
+      let lookupTag = "__" + __lookupField.name + "__" + __lookupField.reference_to;
+      if(__lookupField.reference_to_field){
+        lookupTag += "__" + __lookupField.reference_to_field;
+      }
+      __changedFilterFormValuesKey += lookupTag;
+    }
     if(crud){
       let crudData = crud.getData();
-      crudData.__changedFilterFormValues = changedFilterFormValues;
+      crudData[__changedFilterFormValuesKey] = changedFilterFormValues;
       crud.setData(crudData);
     }
   `;
