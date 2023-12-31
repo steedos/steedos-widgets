@@ -210,7 +210,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     // crud && crud.setData({__changedFilterFormValues: {}});
     let __changedFilterFormValuesKey = "__changedFilterFormValues";
     if(isLookup && __lookupField){
-      let lookupTag = "__" + __lookupField.name + "__" + __lookupField.reference_to;
+      let lookupTag = "__lookup__" + __lookupField.name + "__" + __lookupField.reference_to;
       if(__lookupField.reference_to_field){
         lookupTag += "__" + __lookupField.reference_to_field;
       }

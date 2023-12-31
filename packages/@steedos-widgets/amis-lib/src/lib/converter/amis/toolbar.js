@@ -131,7 +131,7 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
     let __lookupField = event.data.__lookupField;
     let __changedFilterFormValuesKey = "__changedFilterFormValues";
     if(isLookup && __lookupField){
-      let lookupTag = "__" + __lookupField.name + "__" + __lookupField.reference_to;
+      let lookupTag = "__lookup__" + __lookupField.name + "__" + __lookupField.reference_to;
       if(__lookupField.reference_to_field){
         lookupTag += "__" + __lookupField.reference_to_field;
       }
@@ -458,7 +458,7 @@ export async function getObjectFilter(objectSchema, fields, options) {
     // crud && crud.setData({__changedFilterFormValues: changedFilterFormValues});
     let __changedFilterFormValuesKey = "__changedFilterFormValues";
     if(isLookup && __lookupField){
-      let lookupTag = "__" + __lookupField.name + "__" + __lookupField.reference_to;
+      let lookupTag = "__lookup__" + __lookupField.name + "__" + __lookupField.reference_to;
       if(__lookupField.reference_to_field){
         lookupTag += "__" + __lookupField.reference_to_field;
       }
