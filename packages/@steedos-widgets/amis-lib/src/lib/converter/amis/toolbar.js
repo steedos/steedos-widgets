@@ -160,8 +160,8 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
         "name": keywordsSearchBoxName,
         "placeholder": "搜索此列表",
         "value": crudKeywords,
-        "clearable": true,
-        // "clearAndSubmit": true,//因为清除并不会触发失去焦点事件，只有禁用，但是它会触发change事件，所以等升级到amis 3.4+后可以重新放开
+        // "clearable": true,//因为清除并不会触发失去焦点事件，只有禁用，但是它会触发change事件，所以等升级到amis 3.4+后可以重新放开
+        "clearAndSubmit": true,
         "searchImediately": false,
         "onEvent": {
           "search": {
