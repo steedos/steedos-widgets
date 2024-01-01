@@ -450,6 +450,7 @@ export async function getObjectFilter(objectSchema, fields, options) {
     let filterFormService = SteedosUI.getClosestAmisComponentByType(filterForm.context, "service");
     // 使用event.data的话，并不能拿到本地存储中的过滤条件，所以需要从filterFormService中取。
     let filterFormValues = filterFormService.getData();
+    filterFormValues = JSON.parse(JSON.stringify(filterFormValues)); //只取当层数据域中数据，去除__super层数据
     let crud = SteedosUI.getClosestAmisComponentByType(scope, "crud");
     const changedFilterFormValues = _.pickBy(filterFormValues, function(n,k){return /^__searchable__/.test(k);});;
     // let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service");
