@@ -443,7 +443,6 @@ export async function getObjectFilter(objectSchema, fields, options) {
   let onChangeScript = `
     let isLookup = event.data.isLookup;
     let __lookupField = event.data.__lookupField;
-    console.log("==onChangeScript=isLookup===", isLookup);
     const scope = event.context.scoped;
     // let filterFormValues = event.data;
     let filterForm = SteedosUI.getClosestAmisComponentByType(scope, "form");
