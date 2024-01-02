@@ -279,7 +279,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         let __changedFilterFormValuesKey = "__changedFilterFormValues";
         let __lookupField = api.data.$self.__lookupField;
         if(__lookupField){
-            let lookupTag = "__" + __lookupField.name + "__" + __lookupField.reference_to;
+            let lookupTag = "__lookup__" + __lookupField.name + "__" + __lookupField.reference_to;
             if(__lookupField.reference_to_field){
                 lookupTag += "__" + __lookupField.reference_to_field;
             }

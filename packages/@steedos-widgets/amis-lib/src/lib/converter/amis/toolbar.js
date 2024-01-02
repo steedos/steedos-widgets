@@ -131,7 +131,7 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
     let __lookupField = event.data.__lookupField;
     let __changedFilterFormValuesKey = "__changedFilterFormValues";
     if(isLookup && __lookupField){
-      let lookupTag = "__" + __lookupField.name + "__" + __lookupField.reference_to;
+      let lookupTag = "__lookup__" + __lookupField.name + "__" + __lookupField.reference_to;
       if(__lookupField.reference_to_field){
         lookupTag += "__" + __lookupField.reference_to_field;
       }
@@ -443,13 +443,13 @@ export async function getObjectFilter(objectSchema, fields, options) {
   let onChangeScript = `
     let isLookup = event.data.isLookup;
     let __lookupField = event.data.__lookupField;
-    console.log("==onChangeScript=isLookup===", isLookup);
     const scope = event.context.scoped;
     // let filterFormValues = event.data;
     let filterForm = SteedosUI.getClosestAmisComponentByType(scope, "form");
     let filterFormService = SteedosUI.getClosestAmisComponentByType(filterForm.context, "service");
     // 使用event.data的话，并不能拿到本地存储中的过滤条件，所以需要从filterFormService中取。
     let filterFormValues = filterFormService.getData();
+    filterFormValues = JSON.parse(JSON.stringify(filterFormValues)); //只取当层数据域中数据，去除__super层数据
     let crud = SteedosUI.getClosestAmisComponentByType(scope, "crud");
     const changedFilterFormValues = _.pickBy(filterFormValues, function(n,k){return /^__searchable__/.test(k);});;
     // let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service");
@@ -458,7 +458,7 @@ export async function getObjectFilter(objectSchema, fields, options) {
     // crud && crud.setData({__changedFilterFormValues: changedFilterFormValues});
     let __changedFilterFormValuesKey = "__changedFilterFormValues";
     if(isLookup && __lookupField){
-      let lookupTag = "__" + __lookupField.name + "__" + __lookupField.reference_to;
+      let lookupTag = "__lookup__" + __lookupField.name + "__" + __lookupField.reference_to;
       if(__lookupField.reference_to_field){
         lookupTag += "__" + __lookupField.reference_to_field;
       }
