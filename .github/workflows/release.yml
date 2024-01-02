@@ -127,19 +127,10 @@ jobs:
         if: ${{ startsWith(steps.branch-name.outputs.tag, '1.3') && steps.version.outputs.is_stable == 'true' }}
         run: |
           npm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
-          yarn lerna publish from-package --registry https://registry.npmjs.org --yes
+          yarn lerna publish from-package --registry https://registry.npmjs.org --yes --dist-tag 1.3
         env:
           CI: false
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-
-      - name: Merge 1.3 -> master
-        if: ${{ startsWith(steps.branch-name.outputs.tag, '1.3') }}
-        uses: devmasx/merge-branch@master
-        with:
-          type: now
-          from_branch: 1.3
-          target_branch: master
-          github_token: ${{ github.token }}
 
       - name: Sleep 60s, wait for npm cache
         uses: juliangruber/sleep-action@v1
