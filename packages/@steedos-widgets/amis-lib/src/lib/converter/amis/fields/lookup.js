@@ -64,6 +64,54 @@ export function getReferenceToSync(field) {
 }
 
 export function getLookupSapceUserTreeSchema(isMobile){
+    let apiAdaptor = `
+        if (payload.data.treeCache == true) {
+            return payload;
+        }
+        const records = payload.data.options;
+        const treeRecords = [];
+        const getChildren = (records, childrenIds) => {
+            if (!childrenIds) {
+                return;
+            }
+            const children = _.filter(records, (record) => {
+                return _.includes(childrenIds, record.value)
+            });
+            _.each(children, (item) => {
+                if (item.children) {
+                    item.children = getChildren(records, item.children)
+                }
+            })
+            return children;
+        }
+        
+        const getRoot = (records) => {
+            for (var i = 0; i < records.length; i++) {
+                records[i].noParent = 0;
+                if (!!records[i].parent) {
+                    biaozhi = 1
+                    for (var j = 0; j < records.length; j++) {
+                        if (records[i].parent == records[j].value)
+                            biaozhi = 0;
+                    }
+                    if (biaozhi == 1) records[i].noParent = 1;
+                } else records[i].noParent = 1;
+            }
+        }
+        getRoot(records);
+        console.log(records)
+        
+        _.each(records, (record) => {
+            if (record.noParent == 1) {
+                treeRecords.push(Object.assign({}, record, { children: getChildren(records, record.children) }));
+            }
+        });
+        console.log(treeRecords)
+        
+        payload.data.options = treeRecords;
+        payload.data.treeCache = true;
+        return payload;
+    `;
     const treeSchema = {
         "type": "input-tree",
         "className":"steedos-select-user-tree",
@@ -74,8 +122,7 @@ export function getLookupSapceUserTreeSchema(isMobile){
           "headers": {
             "Authorization": "Bearer ${context.tenantId},${context.authToken}"
           },
-          "adaptor": "if (payload.data.treeCache == true) {\n                return payload;\n        }\n        const records = payload.data.options;\n        const treeRecords = [];\n        const getChildren = (records, childrenIds) => {\n                if (!childrenIds) {\n                        return;\n                }\n                const children = _.filter(records, (record) => {\n                        return _.includes(childrenIds, record.value)\n                });\n                _.each(children, (item) => {\n                        if (item.children) {\n                                item.children = getChildren(records, item.children)\n                        }\n                })\n                return children;\n        }\n\n        const getRoot = (records) => {\n                for (var i = 0; i < records.length; i++){\n                        records[i].noParent = 0;\n                        if (!!records[i].parent) {\n                                biaozhi = 1\n                                for (var j = 0; j < records.length; j++){\n                                        if (records[i].parent == records[j].value)\n                                                biaozhi = 0;\n                                }\n                                if (biaozhi == 1) records[i].noParent = 1;\n                        } else records[i].noParent = 1;\n                }\n        }\n        getRoot(records);\n        console.log(records)\n\n        _.each(records, (record) => {\n                if (record.noParent ==1) {\n                        treeRecords.push(Object.assign({}, record, { children: getChildren(records, record.children) }));\n                }\n        });\n        console.log(treeRecords)\n\n        payload.data.options = treeRecords;\n       payload.data.treeCache = true;\n       return payload;\n    ",
-          "requestAdaptor": "\n    ",
+          "adaptor": apiAdaptor,
           "data": {
             "query": "{options:organizations(filters:[\"hidden\", \"!=\", true],sort:\"sort_no desc\"){value:_id label:name,parent,children}}"
           },
