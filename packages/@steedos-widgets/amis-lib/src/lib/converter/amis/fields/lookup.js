@@ -64,6 +64,58 @@ export function getReferenceToSync(field) {
 }
 
 export function getLookupSapceUserTreeSchema(isMobile){
+    let apiAdaptor = `
+        // console.log("===getLookupSapceUserTreeSchema===", JSON.stringify(payload));
+        const records = payload.data.options;
+        let isTreeOptionsComputed = false;
+        if(records.length === 1 && records[0].children){
+            isTreeOptionsComputed = true;
+        }
+        if(isTreeOptionsComputed){
+            return payload;
+        }
+        const treeRecords = [];
+        const getChildren = (records, childrenIds) => {
+            if (!childrenIds) {
+                return;
+            }
+            const children = _.filter(records, (record) => {
+                return _.includes(childrenIds, record.value)
+            });
+            _.each(children, (item) => {
+                if (item.children) {
+                    item.children = getChildren(records, item.children)
+                }
+            })
+            return children;
+        }
+        
+        const getRoot = (records) => {
+            for (var i = 0; i < records.length; i++) {
+                records[i].noParent = 0;
+                if (!!records[i].parent) {
+                    biaozhi = 1
+                    for (var j = 0; j < records.length; j++) {
+                        if (records[i].parent == records[j].value)
+                            biaozhi = 0;
+                    }
+                    if (biaozhi == 1) records[i].noParent = 1;
+                } else records[i].noParent = 1;
+            }
+        }
+        getRoot(records);
+        console.log(records)
+        
+        _.each(records, (record) => {
+            if (record.noParent == 1) {
+                treeRecords.push(Object.assign({}, record, { children: getChildren(records, record.children) }));
+            }
+        });
+        console.log(treeRecords)
+        
+        payload.data.options = treeRecords;
+        return payload;
+    `;
     const treeSchema = {
         "type": "input-tree",
         "className":"steedos-select-user-tree",
@@ -74,8 +126,7 @@ export function getLookupSapceUserTreeSchema(isMobile){
           "headers": {
             "Authorization": "Bearer ${context.tenantId},${context.authToken}"
           },
-          "adaptor": "if (payload.data.treeCache == true) {\n                return payload;\n        }\n        const records = payload.data.options;\n        const treeRecords = [];\n        const getChildren = (records, childrenIds) => {\n                if (!childrenIds) {\n                        return;\n                }\n                const children = _.filter(records, (record) => {\n                        return _.includes(childrenIds, record.value)\n                });\n                _.each(children, (item) => {\n                        if (item.children) {\n                                item.children = getChildren(records, item.children)\n                        }\n                })\n                return children;\n        }\n\n        const getRoot = (records) => {\n                for (var i = 0; i < records.length; i++){\n                        records[i].noParent = 0;\n                        if (!!records[i].parent) {\n                                biaozhi = 1\n                                for (var j = 0; j < records.length; j++){\n                                        if (records[i].parent == records[j].value)\n                                                biaozhi = 0;\n                                }\n                                if (biaozhi == 1) records[i].noParent = 1;\n                        } else records[i].noParent = 1;\n                }\n        }\n        getRoot(records);\n        console.log(records)\n\n        _.each(records, (record) => {\n                if (record.noParent ==1) {\n                        treeRecords.push(Object.assign({}, record, { children: getChildren(records, record.children) }));\n                }\n        });\n        console.log(treeRecords)\n\n        payload.data.options = treeRecords;\n       payload.data.treeCache = true;\n       return payload;\n    ",
-          "requestAdaptor": "\n    ",
+          "adaptor": apiAdaptor,
           "data": {
             "query": "{options:organizations(filters:[\"hidden\", \"!=\", true],sort:\"sort_no desc\"){value:_id label:name,parent,children}}"
           },
@@ -279,7 +330,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         let __changedFilterFormValuesKey = "__changedFilterFormValues";
         let __lookupField = api.data.$self.__lookupField;
         if(__lookupField){
-            let lookupTag = "__" + __lookupField.name + "__" + __lookupField.reference_to;
+            let lookupTag = "__lookup__" + __lookupField.name + "__" + __lookupField.reference_to;
             if(__lookupField.reference_to_field){
                 lookupTag += "__" + __lookupField.reference_to_field;
             }
@@ -888,10 +939,11 @@ export async function lookupToAmis(field, readonly, ctx){
     let enableEnhancedLookup = _.isBoolean(field.enable_enhanced_lookup) ? field.enable_enhanced_lookup : refObject.enable_enhanced_lookup;
     let amisVersion = getComparableAmisVersion();
     if(amisVersion >= 3.6){
-        // amis 3.6.3单选的树picker有严重bug（https://github.com/baidu/amis/issues/9279），先强制使用下拉方式显示
-        // amis 3.6.3多选的树会自动把下层节点，及下下层等所有子节点自动选中，跟amis 3.2不一样，而且目前没有开关，这不适合目前的业务场景，也先强制使用下拉方式显示
-        if(enableEnhancedLookup && refObject.enable_tree){
-            enableEnhancedLookup = false;
+        // amis 3.6.3单选和多选的树picker都有bug（https://github.com/baidu/amis/issues/9279，https://github.com/baidu/amis/issues/9295），我们改amis源码修正了
+        // amis 3.6.3多选的下拉树组件有bug，多选树字段的选中值在编辑模式展开树时不会自动勾选树里面的节点，而是始终勾选显示在最外面的选中值选项（即defaultValueOptions）,amis 3.2没有这个问题
+        // 这里强制禁用多选下拉树，统一改为弹出树，如果以后需要下拉树功能，可以把下拉树组件改为一次性加载所有树节点数据模式来跳过这个问题
+        if(!enableEnhancedLookup && refObject.enable_tree && field.multiple){
+            enableEnhancedLookup = true;
         }
     }
     // 默认使用下拉框模式显示lookup选项，只能配置了enable_enhanced_lookup才使用弹出增强模式

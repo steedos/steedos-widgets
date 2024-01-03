@@ -1,8 +1,8 @@
 /*
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-28 15:54:36
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2024-01-02 15:43:50
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -635,6 +635,7 @@ async function getButtonActions(props, mode) {
                     // "__parentForm": "${__super.__super || {}}",
                     // "__parentForm": mode == "new" ? "$$" : "${__super.__super || {}}",
                     "__parentForm": mode == "new" ? "$$" : parentFormData,
+                    "_master": "${_master}",
                     "global": "${global}",
                     "uiSchema": "${uiSchema}",
                     "index": "${index}",

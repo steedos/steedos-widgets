@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-21 10:27:43
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-08-30 13:52:10
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2024-01-02 14:35:39
  * @Description: 
  */
 import React, { useEffect, useState } from 'react'
@@ -81,7 +81,13 @@ export const AmisObjectButton = (props) => {
         }
         if(schema){
             //3.6版本的schema.data内多了event变量，影响了组件渲染
-            schema.data = defaultsDeep({}, {event: null}, renderData, getDefaultRenderData(), schema.data);
+            if(schema.data){
+                delete schema.data.event;
+            }
+            if(renderData){
+                delete renderData.event;
+            }
+            schema.data = defaultsDeep({}, renderData, getDefaultRenderData(), schema.data);
         }
         return (
             <>
