@@ -65,10 +65,15 @@ export function getReferenceToSync(field) {
 
 export function getLookupSapceUserTreeSchema(isMobile){
     let apiAdaptor = `
-        if (payload.data.treeCache == true) {
+        // console.log("===getLookupSapceUserTreeSchema===", JSON.stringify(payload));
+        const records = payload.data.options;
+        let isTreeOptionsComputed = false;
+        if(records.length === 1 && records[0].children){
+            isTreeOptionsComputed = true;
+        }
+        if(isTreeOptionsComputed){
             return payload;
         }
-        const records = payload.data.options;
         const treeRecords = [];
         const getChildren = (records, childrenIds) => {
             if (!childrenIds) {
@@ -109,7 +114,6 @@ export function getLookupSapceUserTreeSchema(isMobile){
         console.log(treeRecords)
         
         payload.data.options = treeRecords;
-        payload.data.treeCache = true;
         return payload;
     `;
     const treeSchema = {
