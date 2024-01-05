@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-05-18 22:39:31
+ * @LastEditTime: 2024-01-04 09:24:11
  * @Description: 
  */
 
@@ -29,7 +29,10 @@ export const AmisGlobalHeader = async (props) => {
                                     "@history_paths.changed": {
                                         "actions": [
                                             {
-                                                "actionType": "reload"
+                                                "actionType": "reload",
+                                                // amis 3.6需要传入data来触发下面的window:historyPaths重新计算
+                                                "data": {
+                                                }
                                             }
                                         ]
                                     }

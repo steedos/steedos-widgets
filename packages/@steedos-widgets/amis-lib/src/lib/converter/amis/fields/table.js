@@ -1033,6 +1033,14 @@ export async function getTableSchema(fields, options){
         
     }
 
+    const treeConfig = {};
+
+    if(options.enable_tree){
+        treeConfig.expandConfig = {
+            expand: 'first'
+        }
+    }
+
     return {
         mode: "table",
         perPageAvailable: [5, 10, 20, 50, 100, 500],
@@ -1048,6 +1056,7 @@ export async function getTableSchema(fields, options){
         labelTpl: `\${${options.labelFieldName}}`,
         autoFillHeight: false, // 自动高度效果不理想,先关闭
         columnsTogglable: false,
+        ...treeConfig
     }
 }
 
@@ -1363,17 +1372,6 @@ export async function getTableApi(mainObject, fields, options){
             // 如果api接口设置在缓存，缓存期间并不会重新请求接口，payload.data.rows是上次计算后的结果
             payload.data.rows = getTreeOptions(records,{"valueField":"_id"});
             assignIndexToTreeRecords(payload.data.rows, '');
-        }
-        try{
-            setTimeout(() => {
-                let expandBtn = $('.steedos-object-listview-content .antd-Table-content .antd-Table-table thead .antd-Table-expandBtn');
-                if(expandBtn && expandBtn.length > 0 && !expandBtn.hasClass("is-active")){
-                    expandBtn[0].click();
-                }
-            }, 600);
-        }
-        catch(ex){
-            console.error("tree数据格式展开异常：", ex);
         }
     }
 

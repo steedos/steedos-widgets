@@ -279,7 +279,10 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
                     "@history_paths.changed": {
                         "actions": [
                             {
-                                "actionType": "reload"
+                                "actionType": "reload",
+                                // amis 3.6需要传入data来触发下面的window:historyPaths重新计算，此问题随机偶发，加上data后正常
+                                "data": {
+                                }
                             }
                         ]
                     }
