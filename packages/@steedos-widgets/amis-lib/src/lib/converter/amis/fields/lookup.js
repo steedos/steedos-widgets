@@ -939,18 +939,28 @@ export async function lookupToAmis(field, readonly, ctx){
             enableEnhancedLookup = true;
         }
     }
+    let amisSchema;
     // 默认使用下拉框模式显示lookup选项，只能配置了enable_enhanced_lookup才使用弹出增强模式
     if(enableEnhancedLookup == true){
-        return await lookupToAmisPicker(field, readonly, ctx);
+        amisSchema = await lookupToAmisPicker(field, readonly, ctx);
     }else if(refObject.enable_tree) {
-        return await lookupToAmisTreeSelect(field, readonly, Object.assign({}, ctx, {
+        amisSchema = await lookupToAmisTreeSelect(field, readonly, Object.assign({}, ctx, {
             labelField: referenceTo.labelField?.name || 'name',
             valueField: referenceTo.valueField?.name || '_id',
             objectName: referenceTo.objectName
         }));
     }else{
-        return await lookupToAmisSelect(field, readonly, ctx);
+        amisSchema = await lookupToAmisSelect(field, readonly, ctx);
     }
+    let refLookupPage = refObject.pages && refObject.pages.lookup;
+    if(refLookupPage){
+        if(typeof refLookupPage == 'string'){
+            refLookupPage = JSON.parse(refLookupPage);
+        }
+        // 先不放开此功能，amis picker组件有bug，无法正常识别deferApi属性，见：https://github.com/baidu/amis/issues/9349，待其修正后才能放开
+        // Object.assign(amisSchema, refLookupPage);
+    }
+    return amisSchema;
 }
 
 export async function lookupToAmisSelectUser(field, readonly, ctx){
