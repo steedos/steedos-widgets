@@ -957,8 +957,8 @@ export async function lookupToAmis(field, readonly, ctx){
         if(typeof refLookupPage == 'string'){
             refLookupPage = JSON.parse(refLookupPage);
         }
-        // 先不放开此功能，amis picker组件有bug，无法正常识别deferApi属性，见：https://github.com/baidu/amis/issues/9349，待其修正后才能放开
         // Object.assign(amisSchema, refLookupPage);
+        // amisSchema = _.defaultsDeep({}, refLookupPage, amisSchema);
     }
     return amisSchema;
 }
