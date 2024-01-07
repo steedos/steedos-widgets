@@ -366,7 +366,24 @@ export async function getObjectCRUD(objectSchema, fields, options){
       id: `service_${id}`,
       name: `page`,
       data: options.amisData,
-      body: body
+      body: body,
+      //监听广播事件，重算crud高度
+      onEvent: {
+        [`@height.changed.${objectSchema.name}`]: {
+          "actions": [
+            {
+              "actionType": "custom",
+              "script": `
+                var crudScoped = event.context.scoped.getComponentById('${body.id}');
+                var timeOut = event.data.timeOut || 500;
+                setTimeout(()=>{
+                  crudScoped && crudScoped.control.updateAutoFillHeight();
+                }, timeOut);
+              `
+            }
+          ]
+        }
+      }
     }
 }
 

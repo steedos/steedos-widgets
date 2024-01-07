@@ -112,16 +112,17 @@ export const AmisObjectListView = async (props) => {
         }
       ]
     }
+    //触发amis crud 高度重算
     listSchema.onEvent["selectedChange"] = {
       "actions": [
         {
-          "actionType": "custom",
-          "script": `
-            //触发amis crud 高度重算
-            setTimeout(()=>{
-              window.dispatchEvent(new Event("resize"))
-            }, 500);
-          `
+          "actionType": "broadcast",
+          "args": {
+            "eventName": `@height.changed.${objectApiName}`,
+          },
+          "data": {
+            "timeOut": 500
+          }
         }
       ]
     }
