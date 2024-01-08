@@ -52,13 +52,16 @@ const filterService = filterForm.context.getComponents().find(function(n){
 });
 let toShowFieldsFilter = !!!filterService.props.data.showFieldsFilter;
 filterService.setData({showFieldsFilter: toShowFieldsFilter});
-let resizeWindow = function(){
-  //触发amis crud 高度重算
-  setTimeout(()=>{
-    window.dispatchEvent(new Event("resize"))
-  }, 1000);
-}
-resizeWindow();
+//触发amis crud 高度重算
+doAction({
+  "actionType": "broadcast",
+  "args": {
+    "eventName": "@height.changed." + event.data.objectName
+  },
+  "data": {
+    "timeOut": 1000
+  }
+});
 // 手机端在显示搜索栏时隐藏crud上的刷新按钮，因为点击后crud高度显示有问题
 let crudService = scope.getComponentById("service_listview_" + event.data.objectName);
 crudService && crudService.setData({showFieldsFilter: toShowFieldsFilter});
@@ -422,12 +425,16 @@ export async function getObjectFilter(objectSchema, fields, options) {
       return;
     }
     // 列表搜索栏字段值变更后立刻触发提交表单执行crud搜索，所以这里需要额外重算crud高度及筛选按钮红色星号图标显示隐藏
-    let resizeWindow = function(){
-      //触发amis crud 高度重算
-      setTimeout(()=>{
-        window.dispatchEvent(new Event("resize"))
-      }, 1000);
-    }
+    //触发amis crud 高度重算
+    doAction({
+      "actionType": "broadcast",
+      "args": {
+        "eventName": "@height.changed.${objectSchema.name}"
+      },
+      "data": {
+        "timeOut": 1000
+      }
+    });
     resizeWindow();
     const scope = event.context.scoped;
     // let filterFormValues = event.data;

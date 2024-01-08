@@ -95,7 +95,6 @@ async function getQuickEditSchema(field, options){
                         {
                             "actionType": "custom",
                             "script": `
-
                                     var _display = _.cloneDeep(event.data._display);
                                     ${displayField}
                                     doAction({actionType: 'setValue', "args": {"value": {_display}},componentId: "${quickEditId}"});
@@ -268,6 +267,23 @@ async function getQuickEditSchema(field, options){
                 "onEvent":{
                     "init":{
                         "actions":[
+                            //amis3.6无法从数据域中直接拿到正确的selectitems，需要通过crud组件的getSelected()函数获取
+                            {
+                                "actionType": "custom",
+                                "script": `
+                                    crudScoped = event.context.scoped.getComponentById('${options.crudId}');
+                                    const selectedItems = crudScoped && crudScoped.control.getSelected();
+                                    doAction({
+                                        "componentId": "${quickEditId}",
+                                        "actionType": "setValue",
+                                        "args": {
+                                            "value": {
+                                                selectedItems
+                                            }
+                                        }
+                                    });
+                                `
+                            },
                             {
                                 "actionType": "setValue",
                                 "componentId": quickEditId,

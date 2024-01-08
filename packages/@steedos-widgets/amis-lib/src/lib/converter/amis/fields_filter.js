@@ -120,12 +120,16 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     // }
     // listView.handleFilterSubmit(Object.assign({}, removedValues, filterFormValues));
     // 点击搜索的时候自动收起搜索栏
-    let resizeWindow = function(){
-      //触发amis crud 高度重算
-      setTimeout(()=>{
-        window.dispatchEvent(new Event("resize"))
-      }, 500);
-    }
+    //触发amis crud 高度重算
+    doAction({
+      "actionType": "broadcast",
+      "args": {
+        "eventName": "@height.changed.${objectSchema.name}"
+      },
+      "data": {
+        "timeOut": 500
+      }
+    });
     const filterService = filterForm.context.getComponents().find(function(n){
       return n.props.type === "service";
     });
@@ -227,9 +231,16 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     let filterFormService = SteedosUI.getClosestAmisComponentByType(filterForm.context, "service");
     filterFormService.setData({showFieldsFilter: !!!filterFormService.props.data.showFieldsFilter});
     //触发amis crud 高度重算
-    setTimeout(()=>{
-      window.dispatchEvent(new Event("resize"))
-    }, 100);
+    doAction({
+      "actionType": "broadcast",
+      "args": {
+        "eventName": "@height.changed.${objectSchema.name}"
+      },
+      "data": {
+        "timeOut": 100
+      }
+    });
+    
     // 移除搜索按钮上的红点
     // let crudService = scope.getComponentById("service_listview_" + event.data.objectName);
     let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service");
@@ -386,9 +397,15 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify(localListViewProps));
     }
     //触发amis crud 高度重算
-    setTimeout(()=>{
-      window.dispatchEvent(new Event("resize"))
-    }, 100)
+    doAction({
+      "actionType": "broadcast",
+      "args": {
+        "eventName": "@height.changed.${objectSchema.name}"
+      },
+      "data": {
+        "timeOut": 100
+      }
+    });
     // ===END===
   `;
   return {

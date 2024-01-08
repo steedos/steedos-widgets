@@ -939,18 +939,28 @@ export async function lookupToAmis(field, readonly, ctx){
             enableEnhancedLookup = true;
         }
     }
+    let amisSchema;
     // 默认使用下拉框模式显示lookup选项，只能配置了enable_enhanced_lookup才使用弹出增强模式
     if(enableEnhancedLookup == true){
-        return await lookupToAmisPicker(field, readonly, ctx);
+        amisSchema = await lookupToAmisPicker(field, readonly, ctx);
     }else if(refObject.enable_tree) {
-        return await lookupToAmisTreeSelect(field, readonly, Object.assign({}, ctx, {
+        amisSchema = await lookupToAmisTreeSelect(field, readonly, Object.assign({}, ctx, {
             labelField: referenceTo.labelField?.name || 'name',
             valueField: referenceTo.valueField?.name || '_id',
             objectName: referenceTo.objectName
         }));
     }else{
-        return await lookupToAmisSelect(field, readonly, ctx);
+        amisSchema = await lookupToAmisSelect(field, readonly, ctx);
     }
+    let refLookupPage = refObject.pages && refObject.pages.lookup;
+    if(refLookupPage){
+        if(typeof refLookupPage == 'string'){
+            refLookupPage = JSON.parse(refLookupPage);
+        }
+        // Object.assign(amisSchema, refLookupPage);
+        // amisSchema = _.defaultsDeep({}, refLookupPage, amisSchema);
+    }
+    return amisSchema;
 }
 
 export async function lookupToAmisSelectUser(field, readonly, ctx){
