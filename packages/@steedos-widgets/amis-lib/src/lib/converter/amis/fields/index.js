@@ -500,7 +500,8 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                     },
                     pipeOut: (value, oldValue, data) => {
                         if(value){
-                            return value/100;
+                            const result = value/100;
+                            return Number(result.toFixed(field.scale+2));
                         }
                         return value;
                     },
