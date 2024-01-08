@@ -500,7 +500,8 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                     },
                     pipeOut: (value, oldValue, data) => {
                         if(value){
-                            return value/100;
+                            const result = value/100;
+                            return Number(result.toFixed(field.scale+2));
                         }
                         return value;
                     },
@@ -738,7 +739,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
         if(field.is_wide || convertData.type === 'group'){
             convertData.className = 'col-span-2 m-0';
         }else{
-            convertData.className = 'm-0';
+            convertData.className = 'm-1';
         }
         if(readonly){
             convertData.className = `${convertData.className} border-b`

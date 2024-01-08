@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-22 17:26:21
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-12-30 17:43:29
+ * @LastEditTime: 2024-01-08 14:00:29
  * @Description: 
  */
 import React, { useEffect, useState } from 'react'
@@ -15,7 +15,7 @@ const getMenu = (render, buttons, btnClassName, props) => {
     if (btnClassName) {
       button.className = `${button.className} ${btnClassName}`
     }
-    if(button.visibleOn){
+    if(button.visibleOnAlias){
       button.visibleOn = button.visibleOnAlias;
     }
     delete button.className;
