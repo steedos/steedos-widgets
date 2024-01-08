@@ -85,6 +85,8 @@ export function getLookupSapceUserTreeSchema(isMobile){
             _.each(children, (item) => {
                 if (item.children) {
                     item.children = getChildren(records, item.children)
+                }else{
+                    item.children = [];
                 }
             })
             return children;
@@ -439,6 +441,14 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         })
         payload.data.rows = rows;
         */
+        if(enable_tree){
+            const rows = _.map(payload.data.rows, (item)=>{
+                delete item.children;
+                delete item.parent;
+                return item;
+            })
+            payload.data.rows = rows;
+        }
         return payload;
     }
     if(!payload.data.rows){
@@ -470,6 +480,8 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             _.each(children, (item)=>{
                 if(item.children){
                     item.children = getChildren(records, item.children)
+                }else{
+                    item.children = [];
                 }
             })
             return children;
