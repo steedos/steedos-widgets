@@ -969,8 +969,7 @@ export async function lookupToAmis(field, readonly, ctx){
         if(typeof refLookupPage == 'string'){
             refLookupPage = JSON.parse(refLookupPage);
         }
-        // Object.assign(amisSchema, refLookupPage);
-        // amisSchema = _.defaultsDeep({}, refLookupPage, amisSchema);
+        amisSchema = _.defaultsDeep({}, refLookupPage, amisSchema);
     }
     return amisSchema;
 }
