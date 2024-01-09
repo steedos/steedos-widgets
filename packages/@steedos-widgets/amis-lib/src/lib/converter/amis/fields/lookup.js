@@ -966,10 +966,13 @@ export async function lookupToAmis(field, readonly, ctx){
     }
     let refLookupPage = refObject.pages && refObject.pages.lookup;
     if(refLookupPage){
-        if(typeof refLookupPage == 'string'){
-            refLookupPage = JSON.parse(refLookupPage);
+        if(refLookupPage.is_enable){
+            let pageAmisSchema = refLookupPage.amis_schema;
+            if(typeof pageAmisSchema == 'string'){
+                pageAmisSchema = JSON.parse(pageAmisSchema);
+            }
+            amisSchema = _.defaultsDeep({}, pageAmisSchema, amisSchema);
         }
-        amisSchema = _.defaultsDeep({}, refLookupPage, amisSchema);
     }
     return amisSchema;
 }
