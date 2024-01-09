@@ -61,11 +61,11 @@ async function getQuickEditSchema(field, options){
                             if(event.data.isBatchEdit){
                                 selectedItems.forEach(function(selectedItem){
                                     selectedItem._display.${field.name} = event.data._display.${field.name};
-                                    doAction({actionType: 'setValue', "args": {"value": selectedItem._display},componentId: "_display_" + selectedItem._index});
+                                    doAction({actionType: 'setValue', "args": {"value": selectedItem._display},componentId: ${options.objectName} + "_display_" + selectedItem._index});
                                     doAction({actionType: 'setValue', "args": {"value": event.data.${field.name}},componentId: "${options.objectName + "_" + field.name + "_"}" + selectedItem._index});
                                 })
                             }else{
-                                doAction({actionType: 'setValue', "args": {"value": event.data._display},componentId: "_display_" + event.data._index});
+                                doAction({actionType: 'setValue', "args": {"value": event.data._display},componentId: ${options.objectName} + "_display_" + event.data._index});
                                 doAction({actionType: 'setValue', "args": {"value": event.data.${field.name}},componentId: "${options.objectName + "_" + field.name + "_"}" + event.data._index});
                             }
                         `

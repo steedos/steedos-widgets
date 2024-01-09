@@ -329,7 +329,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
 
     if(body.columns && options.formFactor != 'SMALL'){
       //将_display放入crud的columns的倒数第二列中（最后一列会影响固定列），可以通过setvalue修改行内数据域的_display，而不影响上层items的_display,用于批量编辑
-      body.columns.splice(body.columns.length - 1, 0, {name: '_display',type: 'static', width: 32, placeholder: "",id: "_display_${_index}", className: "hidden"});
+      body.columns.splice(body.columns.length - 1, 0, {name: '_display',type: 'static', width: 32, placeholder: "",id: objectSchema.name + "_display_${_index}", className: "hidden"});
     }
 
     if (defaults) {
