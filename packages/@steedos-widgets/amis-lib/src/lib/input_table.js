@@ -1,8 +1,8 @@
 /*
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-02 15:43:50
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2024-01-09 18:12:28
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -46,6 +46,7 @@ function getInputTableCell(field, showAsInlineEditMode) {
             "config": Object.assign({}, field, {
                 label: false
             }),
+            inInputTable: true,
             "static": true,
             "readonly": true,
             label: field.label,

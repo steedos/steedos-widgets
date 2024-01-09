@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: liaodaxue
- * @LastEditTime: 2024-01-05 18:24:58
+ * @LastEditTime: 2024-01-09 18:08:36
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -55,7 +55,7 @@ export const AmisSteedosField = async (props) => {
     // console.log(`AmisSteedosField===props===`, props);
 
     let steedosField = null;
-    let { field, readonly = false, ctx = {}, config, $schema, static: fStatic, env } = props;
+    let { field, readonly = false, ctx = {}, config, $schema, static: fStatic, env, inInputTable } = props;
     // console.log(`AmisSteedosField`, props)
 
     // if($schema.config && isString($schema.config)){
@@ -184,27 +184,37 @@ export const AmisSteedosField = async (props) => {
             }
             const source = steedosField.amis?.source || steedosField.amis?.autoComplete || defaultSource;
             // 这里有_display时不可以不走以下的static逻辑代码，因为审批王会特意传入_display，且其中lookup字段static时需要走下面的代码
-            let tpl = '';
-            const res = await env.fetcher(source, props.data);
-            const valueOptions = res?.data?.options || [];
-            if(valueOptions && valueOptions.length){
-                forEach(valueOptions,(item,index)=>{
-                    const { label, value } = item;
-                    const optionTpl = `<a href="/app/-/${steedosField.reference_to}/view/${value}" >${label}</a>`;
-                    tpl += index ? '，'+optionTpl : optionTpl;
-                })
-            }
-
-            const schema = Object.assign({}, {
-                type: 'static',
-                tpl,
+            let fieldBaseProps = {
                 multiple: steedosField.multiple,
                 name: steedosField.name,
                 label: steedosField.label,
                 static: true,
-                className: steedosField.amis?.className,
-                // source: source,
-            }, pick(steedosField.amis || {}, ['className', 'inline', 'label', 'labelAlign', 'name', 'labelRemark', 'description', 'placeholder', 'staticClassName', 'staticLabelClassName', 'staticInputClassName', 'staticSchema']));
+                className: steedosField.amis?.className
+            };
+            if(inInputTable){
+                fieldBaseProps = Object.assign({}, fieldBaseProps, { type: 'select', source: source});
+            }else{
+                let tpl = '';
+                const res = await env.fetcher(source, props.data);
+                const valueOptions = res?.data?.options || [];
+                const fieldValue = props.data?.[steedosField.name];
+                if( fieldValue && fieldValue.length && valueOptions && valueOptions.length){
+                    const reference_to_field = steedosField.reference_to_field;
+                    forEach(valueOptions,(item,index)=>{
+                        const { label, value } = item;
+                        if(fieldValue.indexOf(value)>-1){
+                            // 因为lookup、master_detail字段配置了reference_to_field != _id的情况下，source中返回的值不能当作链接的后缀值，所以移除字段链接。
+                            let optionTpl = `<a href="/app/-/${steedosField.reference_to}/view/${value}" >${label}</a>`;
+                            if(reference_to_field && reference_to_field != '_id'){
+                                optionTpl = `${label}`;
+                            }
+                            tpl += tpl ? '，'+optionTpl : optionTpl;
+                        }
+                    })
+                }
+                fieldBaseProps = Object.assign({}, fieldBaseProps, { type: 'static', tpl: tpl});
+            }
+            const schema = Object.assign({}, fieldBaseProps, pick(steedosField.amis || {}, ['className', 'inline', 'label', 'labelAlign', 'name', 'labelRemark', 'description', 'placeholder', 'staticClassName', 'staticLabelClassName', 'staticInputClassName', 'staticSchema']));
             schema.placeholder = "";
             return schema;
         }
