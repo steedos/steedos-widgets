@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: liaodaxue
- * @LastEditTime: 2024-01-05 18:24:58
+ * @LastEditTime: 2024-01-09 15:12:04
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -187,11 +187,19 @@ export const AmisSteedosField = async (props) => {
             let tpl = '';
             const res = await env.fetcher(source, props.data);
             const valueOptions = res?.data?.options || [];
-            if(valueOptions && valueOptions.length){
+            const fieldValue = props.data?.[steedosField.name];
+            if( fieldValue && fieldValue.length && valueOptions && valueOptions.length){
+                const reference_to_field = steedosField.reference_to_field;
                 forEach(valueOptions,(item,index)=>{
                     const { label, value } = item;
-                    const optionTpl = `<a href="/app/-/${steedosField.reference_to}/view/${value}" >${label}</a>`;
-                    tpl += index ? '，'+optionTpl : optionTpl;
+                    if(fieldValue.indexOf(value)>-1){
+                        // 因为lookup、master_detail字段配置了reference_to_field != _id的情况下，source中返回的值不能当作链接的后缀值，所以移除字段链接。
+                        let optionTpl = `<a href="/app/-/${steedosField.reference_to}/view/${value}" >${label}</a>`;
+                        if(reference_to_field && reference_to_field != '_id'){
+                            optionTpl = `${label}`;
+                        }
+                        tpl += tpl ? '，'+optionTpl : optionTpl;
+                    }
                 })
             }
 
