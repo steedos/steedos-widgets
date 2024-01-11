@@ -809,7 +809,7 @@ async function getMobileTableColumns(fields, options){
 
     let column = {
         name: nameField.name,
-        label: nameField.label,
+        label: options.displayAs == 'split' ? '' : nameField.label,
         sortable: nameField.sortable,
         type: "button",
         level: "link",
