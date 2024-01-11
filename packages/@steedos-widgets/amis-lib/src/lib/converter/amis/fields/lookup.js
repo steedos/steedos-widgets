@@ -443,9 +443,11 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         */
         if(enable_tree){
             const rows = _.map(payload.data.rows, (item)=>{
-                delete item.children;
-                delete item.parent;
-                return item;
+                if (!item.children) {
+                    return { ...item, children: [] };
+                } else {
+                    return item;
+                }
             })
             payload.data.rows = rows;
         }
