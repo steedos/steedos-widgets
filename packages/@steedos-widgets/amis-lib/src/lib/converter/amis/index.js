@@ -248,6 +248,10 @@ export async function getObjectCRUD(objectSchema, fields, options){
         const rowsDiff = _.cloneDeep(api.data.rowsDiff);
         rowsDiff.forEach(function (item, index) {
           for(key in item){
+            // image、select等字段清空值后保存的空字符串转换为null。
+            if(item[key] === ''){
+              item[key] = null;
+            }
             if(_.includes(imageNames, key)){
               if(typeof item[key] == "string"){
                 const match = item[key].match(/\\/([^\\/]+)$/);
