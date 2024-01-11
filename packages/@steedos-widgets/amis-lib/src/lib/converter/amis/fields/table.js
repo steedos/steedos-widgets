@@ -619,6 +619,18 @@ export async function getTableColumns(fields, options){
             if(field.type === 'datetime'){
                 className += 'datetime-min-w';
             }
+
+            //field上的amis属性里的clssname需要单独判断类型合并
+            if (typeof field.amis?.className == "object") {
+                className = {
+                    [className]: "true",
+                    ...field.amis.className
+                }
+            } else if (typeof field.amis?.className == "string") {
+                className = `${className} ${field.amis.className} `
+            }
+            delete field.amis?.className;
+
             if(!field.hidden && !field.extra){
                 columnItem = Object.assign({}, {
                     name: field.name,
@@ -716,12 +728,24 @@ function getMobileLines(tpls){
             // 右侧半行，这里加样式类 flex flex-shrink-0，是为了省略号只显示在左半行，右半行文字一般比较短，如果也加省略号效果的话，左侧文字多的话，右侧没几个字就显示省略号了
             lineChildrenClassName = "steedos-listview-item-right truncate ml-2 flex flex-shrink-0";
         }
+        //支持字段amis属性配置classname，识别classname的类型，与原样式合并
+        var className;
+        if (typeof item.field.amis?.className == "object") {
+            className = {
+                [lineChildrenClassName]: "true",
+                ...item.field.amis.className
+            }
+        } else if (typeof item.field.amis?.className == "string") {
+            className = `${lineChildrenClassName} ${item.field.amis.className} `
+        } else {
+            className = lineChildrenClassName;
+        }
         lineChildren.push({
             "type": "tpl",
             "tpl": item.tpl,
-            "className": lineChildrenClassName
+            className
         });
-
+        
         if(item.field.is_wide){
             // 宽字段占整行
             isLeft = true;
@@ -771,8 +795,7 @@ async function getMobileTableColumns(fields, options){
             tpl = await Tpl.getFieldTpl(field, options);
         }
         if(!tpl){
-            //qhd需求简易处理，加上raw以支持审批王名称字段通过颜色区分缓急，若之后手机端列表支持配置amis，则可以去掉
-            tpl = `\${${field.name} | raw}`;
+            tpl = `\${${field.name}}`;
         }
         if(!field.hidden && !field.extra){
             tpls.push({ field, tpl });
