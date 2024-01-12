@@ -20,6 +20,29 @@ function getBulkActions(objectSchema){
         "className": "hidden",
         "id": "batchDelete",
         "api": getBatchDelete(objectSchema.name),
+        "feedback": {
+          "title": "删除警告",
+          "visibleOn": "${deleteErrorMessage}",
+          "body": [
+            {
+              "type": "each",
+              "name": "deleteErrorMessage",
+              "items": {
+                "type": "alert",
+                "body": "${item}",
+                "level": "danger",
+                "className": "mb-3"
+              }
+            }
+          ],
+          "actions": [
+            {
+              "type": "button",
+              "actionType": "close",
+              "label": "关闭"
+            }
+          ]
+        }
       }
         // {
         //   "label": "批量修改",
