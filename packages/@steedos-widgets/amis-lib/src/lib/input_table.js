@@ -1,8 +1,8 @@
 /*
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
- * @LastEditors: liaodaxue
- * @LastEditTime: 2024-01-09 18:12:28
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2024-01-12 14:51:00
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -155,7 +155,12 @@ function getFormPagination(props, mode) {
         let currentIndex = event.data.index;
         // 翻页到下一页之前需要先把当前页改动的内容保存到中间变量__tableItems中
         let currentFormValues = scope.getComponentById(__formId).getValues();
-        fieldValue[currentIndex] = currentFormValues;
+        if(event.data.parent){
+            fieldValue[event.data.__parentIndex].children[currentIndex] = currentFormValues;
+        }
+        else{
+            fieldValue[currentIndex] = currentFormValues;
+        }
         // 翻页到下一页前需要同时把改动的内容保存到最终正式的表单字段中，所以额外给正式表单字段执行一次setValue
         doAction({
             "componentId": "${props.id}",
@@ -222,7 +227,8 @@ function getFormPagination(props, mode) {
             },
             {
                 "type": "tpl",
-                "tpl": "${__page}/${__tableItems.length}"
+                // 这里用__super.parent，加__super是为了防止当前记录有字段名为parent的重名变量
+                "tpl": "${__page}/${__super.parent ? __tableItems[__parentIndex]['children'].length : __tableItems.length}"
             },
             {
                 "type": "button",
@@ -230,7 +236,9 @@ function getFormPagination(props, mode) {
                 "icon": `fa fa-angle-right`,
                 "level": "link",
                 "pageChangeDirection": "next",
-                "disabledOn": showPagination ? "${__page >= __tableItems.length}" : "true",
+                // "disabledOn": showPagination ? "${__page >= __tableItems.length}" : "true",
+                // 这里用__super.parent，加__super是为了防止当前记录有字段名为parent的重名变量
+                "disabledOn": showPagination ? "${__page >= (__super.parent ? __tableItems[__parentIndex]['children'].length : __tableItems.length)}" : "true",
                 "size": "sm",
                 "id": buttonNextId,
                 "onEvent": {
@@ -263,7 +271,7 @@ function getFormPaginationWrapper(props, form, mode) {
         "data": {
             // 这里加__super前缀是因为__parentForm变量（即主表单）中可能会正好有名为index的字段
             // 比如“对象字段”对象options字段是一个子表字段，但是主表（即“对象字段”对象）中正好有一个名为index的字段
-            "&": "${__tableItems[__super.index]}"
+            "&": "${__super.parent ? __tableItems[__parentIndex]['children'][__super.index] : __tableItems[__super.index]}"
         }
     });
     let formBody = [
@@ -286,6 +294,10 @@ function getFormPaginationWrapper(props, form, mode) {
         }
     ];
     let onServiceInitedScript = `
+        if(event.data.parent){
+            // 如果是子行，即在节点嵌套情况下，当前节点如果是children属性下的子节点时，则算出其所属父行的索引值
+            event.data.__parentIndex = _.findIndex(event.data.__tableItems, {_id: event.data.parent._id});
+        }
         // 以下脚本是为了解决有时弹出编辑表单时，表单中的值比最后一次编辑保存的值会延迟一拍。
         // 比如：inlineEditMode模式时，用户在表格单元格中直接修改数据，然后弹出的表单form中并没有包含单元格中修改的内容
         // 另外有的地方在非inlineEditMode模式时也会有这种延迟一拍问题，比如对象字段中下拉框类型字段的”选择项“属性
@@ -341,6 +353,7 @@ function getFormPaginationWrapper(props, form, mode) {
         // "body": formBody,
         "data": {
             "__page": "${index + 1}",
+            "__parentIndex": null,//兼容节点嵌套情况，即节点中有children属性时，这里记录当前节点所属上层节点index，只支持向上找一层，不支持多层
             // "__total": `\${${props.name}.length}`,
             // "__total": "${__tableItems.length}",
             // "__paginationServiceId": serviceId,
@@ -388,7 +401,17 @@ async function getForm(props, mode = "edit", formId) {
             let fieldValue = event.data.__tableItems;//这里不可以_.cloneDeep，因为翻页form中用的是event.data.__tableItems，直接变更其值即可改变表单中的值
             //这里加__super.__super前缀是因为__parentForm变量（即主表单）中可能会正好有名为index的字段
             // 比如“对象字段”对象options字段是一个子表字段，但是主表（即“对象字段”对象）中正好有一个名为index的字段
-            fieldValue[event.data.__super.__super.index] = JSON.parse(JSON.stringify(event.data));
+            // fieldValue[event.data.__super.__super.index] = JSON.parse(JSON.stringify(event.data));
+            var currentIndex = event.data.__super.__super.index;
+            var currentFormValues = JSON.parse(JSON.stringify(event.data));
+            var parent = event.data.__super.__super.parent;
+            var __parentIndex = event.data.__super.__super.__parentIndex;
+            if(parent){
+                fieldValue[__parentIndex].children[currentIndex] = currentFormValues;
+            }
+            else{
+                fieldValue[currentIndex] = currentFormValues;
+            }
             doAction({
                 "componentId": "${props.id}",
                 "actionType": "setValue",
@@ -528,7 +551,14 @@ async function getButtonActions(props, mode) {
             let scope = event.context.scoped;
             let fieldValue = event.data.__tableItems;//这里不可以_.cloneDeep，因为翻页form中用的是event.data.__tableItems，直接变更其值即可改变表单中的值
             // 新建一条空白行并保存到子表组件
-            fieldValue.push({});
+            var parent = event.data.__super.parent;
+            var __parentIndex = parent && _.findIndex(fieldValue, {_id: parent._id});
+            if(parent){
+                fieldValue[__parentIndex].children.push({});
+            }
+            else{
+                fieldValue.push({});
+            }
             doAction({
                 "componentId": "${props.id}",
                 "actionType": "setValue",
@@ -540,7 +570,13 @@ async function getButtonActions(props, mode) {
             let __paginationServiceId = "${formPaginationId}";
             let __paginationData = scope.getComponentById(__paginationServiceId).getData();
             event.data.index = __paginationData.index;
-            event.data.__page = fieldValue.length - 1;//这里不可以用Object.assign否则，event.data中上层作用域数据会丢失
+            if(parent){
+                event.data.__page = fieldValue[__parentIndex].children.length - 1;//这里不可以用Object.assign否则，event.data中上层作用域数据会丢失
+                event.data.__parentIndex = __parentIndex; //执行下面的翻页按钮事件中依赖了__parentIndex值
+            }
+            else{
+                event.data.__page = fieldValue.length - 1;//这里不可以用Object.assign否则，event.data中上层作用域数据会丢失
+            }
             // 触发翻页按钮事件，实现保存当前页数据并跳转到最后一行
             scope.getComponentById(buttonNextId).props.dispatchEvent("click", event.data);
         `;
@@ -551,7 +587,15 @@ async function getButtonActions(props, mode) {
             let newItem = scope.getComponentById(__formId).getValues();//这里不可以用event.data，因为其拿到的是弹出表单时的初始值，不是用户实时填写的数据
             let fieldValue = event.data.__tableItems;//这里不可以_.cloneDeep，因为翻页form中用的是event.data.__tableItems，直接变更其值即可改变表单中的值
             // 复制当前页数据到新建行并保存到子表组件
-            fieldValue.push(newItem);
+            // fieldValue.push(newItem);
+            var parent = event.data.__super.parent;
+            var __parentIndex = parent && _.findIndex(fieldValue, {_id: parent._id});
+            if(parent){
+                fieldValue[__parentIndex].children.push(newItem);
+            }
+            else{
+                fieldValue.push(newItem);
+            }
             doAction({
                 "componentId": "${props.id}",
                 "actionType": "setValue",
@@ -563,7 +607,14 @@ async function getButtonActions(props, mode) {
             let __paginationServiceId = "${formPaginationId}";
             let __paginationData = scope.getComponentById(__paginationServiceId).getData();
             event.data.index = __paginationData.index;
-            event.data.__page = fieldValue.length - 1;//这里不可以用Object.assign否则，event.data中上层作用域数据会丢失
+            // event.data.__page = fieldValue.length - 1;//这里不可以用Object.assign否则，event.data中上层作用域数据会丢失
+            if(parent){
+                event.data.__page = fieldValue[__parentIndex].children.length - 1;//这里不可以用Object.assign否则，event.data中上层作用域数据会丢失
+                event.data.__parentIndex = __parentIndex; //执行下面的翻页按钮事件中依赖了__parentIndex值
+            }
+            else{
+                event.data.__page = fieldValue.length - 1;//这里不可以用Object.assign否则，event.data中上层作用域数据会丢失
+            }
             // 触发翻页按钮事件，实现保存当前页数据并跳转到最后一行
             scope.getComponentById(buttonNextId).props.dispatchEvent("click", event.data);
         `;
@@ -639,7 +690,8 @@ async function getButtonActions(props, mode) {
                     "_master": "${_master}",
                     "global": "${global}",
                     "uiSchema": "${uiSchema}",
-                    "index": "${index}",
+                    "index": "${index}",//amis组件自带行索引,在节点嵌套情况下，当前节点如果是children属性下的子节点时，这里的index是当前节点在children中的索引，而不是外层父节点的index
+                    "parent": "${parent}",//amis组件自带父节点数据域数据，即节点嵌套情况下，当前节点为某个节点（比如A节点）的children属性下的子节点时，当前节点的父节点（即A节点）的数据域数据
                     // "__tableItems": `\${${props.name}}`
                     // 为了解决"弹出的dialog窗口中子表组件会影响页面布局界面中父作用域字段值"，比如设计字段布局微页面中的设置分组功能，弹出的就是子表dialog
                     // 所以这里使用json|toJson转一次，断掉event.data.__tableItems与上层任用域中props.name的联系
@@ -667,39 +719,39 @@ async function getButtonActions(props, mode) {
             Object.assign(actionShowEditDialog.dialog, props.dialog);
         }
         if (mode == "new") {
-            let onNewLineScript = `
-                let newItem = {};
-                if(event.data["${props.name}"]){
-                    // let fieldValue = event.data.__tableItems;
-                    // 这里不用__tableItems是因为新建的时候没有翻页，里面没有也不需要走__tableItems变量
-                    // let fieldValue = _.clone(event.data["${props.name}"]);
-                    let fieldValue = event.data["${props.name}"];
-                    fieldValue.push(newItem);
-                    doAction({
-                        "componentId": "${props.id}",
-                        "actionType": "setValue",
-                        "args": {
-                            "value": fieldValue
-                        }
-                    });
-                    event.data.index = fieldValue.length - 1;
-                }
-                else{
-                    // 这里不可以执行event.data["${props.name}"]=[newItem]，数据域会断掉
-                    doAction({
-                        "componentId": "${props.id}",
-                        "actionType": "setValue",
-                        "args": {
-                            "value": [newItem]
-                        }
-                    });
-                    event.data.index = 1;
-                }
-            `;
-            let actionNewLine = {
-                "actionType": "custom",
-                "script": onNewLineScript
-            };
+            // let onNewLineScript = `
+            //     let newItem = {};
+            //     if(event.data["${props.name}"]){
+            //         // let fieldValue = event.data.__tableItems;
+            //         // 这里不用__tableItems是因为新建的时候没有翻页，里面没有也不需要走__tableItems变量
+            //         // let fieldValue = _.clone(event.data["${props.name}"]);
+            //         let fieldValue = event.data["${props.name}"];
+            //         fieldValue.push(newItem);
+            //         doAction({
+            //             "componentId": "${props.id}",
+            //             "actionType": "setValue",
+            //             "args": {
+            //                 "value": fieldValue
+            //             }
+            //         });
+            //         event.data.index = fieldValue.length - 1;
+            //     }
+            //     else{
+            //         // 这里不可以执行event.data["${props.name}"]=[newItem]，数据域会断掉
+            //         doAction({
+            //             "componentId": "${props.id}",
+            //             "actionType": "setValue",
+            //             "args": {
+            //                 "value": [newItem]
+            //             }
+            //         });
+            //         event.data.index = 1;
+            //     }
+            // `;
+            // let actionNewLine = {
+            //     "actionType": "custom",
+            //     "script": onNewLineScript
+            // };
             // 新增行时不需要在弹出编辑表单前先加一行，因为会在编辑表单所在service初始化时判断到是新增就自动增加一行，因为这里拿不到event.data.__tableItems，也无法变更其值
             // actions = [actionNewLine, actionShowEditDialog];
             actions = [actionShowEditDialog];
@@ -758,7 +810,15 @@ async function getButtonActions(props, mode) {
             // 这里不可以用event.data["${props.name}"]因为amis input talbe有一层单独的作用域，其值会延迟一拍
             // 这里_.clone是因为字段设计布局设置分组这种弹出窗口中的子表组件，直接删除后，点取消无法还原
             let lastestFieldValue = _.clone(wrapperServiceData["${props.name}"]);
-            lastestFieldValue.splice(event.data.index, 1);
+            var currentIndex = event.data.index;
+            var parent = event.data.__super.parent;
+            var __parentIndex = parent && _.findIndex(lastestFieldValue, {_id: parent._id});
+            if(parent){
+                lastestFieldValue[__parentIndex].children.splice(currentIndex, 1);
+            }
+            else{
+                lastestFieldValue.splice(currentIndex, 1);
+            }
             doAction({
                 "componentId": "${props.id}",
                 "actionType": "setValue",
