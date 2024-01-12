@@ -368,6 +368,18 @@ export function getBatchDelete(objectName){
     return {
         method: 'post',
         url: graphql.getApi(),
+        adaptor: `
+            if(payload.errors){
+                payload.data.deleteErrorMessage = [];
+                payload.errors.forEach(function(error){
+                    let errorRecord = error.path.map(function (item) {
+                        return item.split('delete__')[1].to_float() + 1;
+                    }).toString();
+                    payload.data.deleteErrorMessage.push("第" + errorRecord + "条记录删除出现异常，报错信息为(" + (window.t ? window.t(error.message) : error.message) + ")");
+                })
+            }
+            return payload;
+        `,
         requestAdaptor: `
             var ids = api.data.ids.split(",");
             var deleteArray = [];
