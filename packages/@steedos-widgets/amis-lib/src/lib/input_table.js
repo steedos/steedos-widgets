@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-14 17:35:25
+ * @LastEditTime: 2024-01-14 21:08:32
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -787,15 +787,17 @@ async function getButtonActions(props, mode) {
                         // 映射到中间变量__parentForm而不是直接用&展开映射是为了避免表单中字段名与作用域中变量重名
                         // "__parentForm": "${__super.__super || {}}",
                         "__parentForm": parentFormData,
+                        "_master": "${_master}",
                         "global": "${global}",
                         "uiSchema": "${uiSchema}",
                         "index": "${index}",
+                        "parent": "${__super.parent}",//amis组件自带父节点数据域数据，即节点嵌套情况下，当前节点为某个节点（比如A节点）的children属性下的子节点时，当前节点的父节点（即A节点）的数据域数据
                         // "__tableItems": `\${${props.name}}`
                         // 为了解决"弹出的dialog窗口中子表组件会影响页面布局界面中父作用域字段值"，比如设计字段布局微页面中的设置分组功能，弹出的就是子表dialog
                         // 所以这里使用json|toJson转一次，断掉event.data.__tableItems与上层任用域中props.name的联系
                         // "__tableItems": `\${${props.name}|json|toJson}`
-                        "__tableItems": `\${(${props.name} || [])|json|toJson}`
-                },
+                        "__tableItems": `\${((__super.parent ? __super.__super.${props.name} : __super.${props.name}) || [])|json|toJson}`
+                    },
                 }
             }
         ];
