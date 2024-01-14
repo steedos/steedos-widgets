@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-14 10:47:06
+ * @LastEditTime: 2024-01-14 17:35:25
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -697,8 +697,8 @@ async function getButtonActions(props, mode) {
                     // 所以这里使用json|toJson转一次，断掉event.data.__tableItems与上层任用域中props.name的联系
                     // "__tableItems": `\${${props.name}|json|toJson}`
                     // 这里加__super.__super是因为要让映射到准确的作用域层，如果不加，在节点嵌套情况下，当前节点正好是带children属性的节点的话，这里弹出的dialog映射到的会是children数组
-                    "__tableItems": `\${(__super.__super.${props.name} || [])|json|toJson}`
-                },
+                    "__tableItems": `\${((__super.parent ? __super.__super.${props.name} : __super.${props.name}) || [])|json|toJson}`
+        },
                 "actions": dialogButtons,
                 "onEvent": {
                     "confirm": {
