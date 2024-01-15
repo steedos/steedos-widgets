@@ -1,7 +1,7 @@
 {
   "name": "@steedos-widgets/steedos-lib",
   "private": false,
-  "version": "3.6.2-beta.4",
+  "version": "3.6.2-beta.5",
   "unpkg": "./dist/index.umd.js",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.esm.js",
