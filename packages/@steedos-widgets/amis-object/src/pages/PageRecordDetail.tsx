@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-09-19 11:28:02
+ * @LastEditTime: 2024-01-12 13:11:23
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef } from 'react';
@@ -28,7 +28,7 @@ export const PageRecordDetail = async (props) => {
           "type": "steedos-record-detail",
           // "recordId": "${recordId}",
           "objectApiName": "${objectName}",
-          className: "sm:m-3",
+          // className: "sm:m-3",
           appId: appId,
         }
       ],

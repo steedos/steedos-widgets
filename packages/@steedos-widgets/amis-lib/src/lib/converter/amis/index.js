@@ -356,7 +356,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
 
     if(body.columns && options.formFactor != 'SMALL'){
       //将_display放入crud的columns的倒数第二列中（最后一列会影响固定列），可以通过setvalue修改行内数据域的_display，而不影响上层items的_display,用于批量编辑
-      body.columns.splice(body.columns.length - 1, 0, {name: '_display',type: 'static', width: 32, placeholder: "",id: objectSchema.name + "_display_${_index}", className: "hidden"});
+      body.columns.splice(body.columns.length -1 , 0, {name: '_display',type: 'static', width: 1, placeholder: "",id: objectSchema.name + "_display_${_index}", tpl: "${}"});
     }
 
     if (defaults) {
@@ -582,8 +582,7 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
         type: 'service',
         name: `page_readonly_${recordId}`,
         id: serviceId,
-        data: {global: getGlobalData('read'), context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
-        api: await getReadonlyFormInitApi(objectSchema, recordId, fields, ctx),
+        // api: await getReadonlyFormInitApi(objectSchema, recordId, fields, ctx),
         body: [
           {
             "type": "wrapper",   //form 的 hiddenOn 会导致 form onEvent 异常, 使用wrapper包裹一次form,并在wrapper上控制显隐
@@ -609,59 +608,40 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
               ),
               className: 'steedos-amis-form bg-white',
               actions: [], // 不显示表单默认的提交按钮
-              onEvent: {
-                [`@data.changed.${objectSchema.name}`]: {  // 由于amis service 组件的 onEvent 存在bug ,此处借助form来刷新 上层 service https://github.com/baidu/amis/issues/6294
-                  "actions": [
-                    {
-                      "actionType": "reload",
-                      "componentId": serviceId,
-                      "expression": "this.__deletedRecord != true"
-                    },
-                    {
-                      // "args": {
-                      //   "url": "/app/${appId}/${objectName}/grid/${side_listview_id}",
-                      //   "blank": false
-                      // },
-                      "actionType": "custom",
-                      "script": "window.goBack()",
-                      "expression": "this.__deletedRecord === true"
-                    }
-                  ]
-                }
-              }
           },
           }
         ],
-        onEvent: {
-          "fetchInited": {
-            "weight": 0,
-            "actions": [
-              {
-                actionType: 'broadcast',
-                eventName: "recordLoaded",
-                args: {
-                  eventName: "recordLoaded"
-                },
-                data: {
-                  objectName: "${event.data.__objectName}",
-                  record: "${event.data.__record}"
-                },
-                expression: "${event.data.__response.error != true}"
-              },
-              {
-                "actionType": "setValue",
-                "args": {
-                   value: {
-                    "recordLoaded": true,
-                   }
-                },
-                expression: "${event.data.__response.error != true}"
-            }
-            ]
-          }
-        }
+        // onEvent: {
+        //   "fetchInited": {
+        //     "weight": 0,
+        //     "actions": [
+        //       {
+        //         actionType: 'broadcast',
+        //         eventName: "recordLoaded",
+        //         args: {
+        //           eventName: "recordLoaded"
+        //         },
+        //         data: {
+        //           objectName: "${event.data.__objectName}",
+        //           record: "${event.data.__record}"
+        //         },
+        //         expression: "${event.data.__response.error != true}"
+        //       },
+        //       {
+        //         "actionType": "setValue",
+        //         "args": {
+        //            value: {
+        //             "recordLoaded": true,
+        //            }
+        //         },
+        //         expression: "${event.data.__response.error != true}"
+        //     }
+        //     ]
+        //   }
+        // }
     }
 
     amisSchema.body[0].body = await getFormSchemaWithDataFilter(amisSchema.body[0].body, { formDataFilter, onFormDataFilter, amisData, env });
+    // console.log('getObjectDetail=====>', amisSchema);
     return amisSchema;
 }

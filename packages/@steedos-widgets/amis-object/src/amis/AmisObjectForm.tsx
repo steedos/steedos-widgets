@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: liaodaxue
- * @LastEditTime: 2023-11-08 11:05:17
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2024-01-15 15:51:15
  * @Description: 
  */
 import './AmisObjectForm.less';
@@ -82,7 +82,8 @@ export const AmisObjectForm = async (props) => {
     formData.recordId = props.recordId;
   }
   amisSchema.className = `steedos-object-form ${className}`
-  amisSchema.data = Object.assign( amisSchema.data, formData, {global: globalData, uiSchema:uiSchema});
+  // console.log('AmisObjectForm amisSchema======>', amisSchema)
+  amisSchema.data = Object.assign({},  amisSchema.data || {}, formData, {global: globalData, uiSchema:uiSchema});
   if(has(props, 'objectApiName')){
     amisSchema.data.objectName = objectApiName;
   }

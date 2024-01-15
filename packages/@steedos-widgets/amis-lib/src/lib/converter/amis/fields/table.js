@@ -513,11 +513,12 @@ export async function getTableColumns(fields, options){
         //增加quickEdit属性，实现快速编辑
         const quickEditSchema = allowEdit ? await getQuickEditSchema(field, options) : allowEdit;
         let className = "";
-        if(field.wrap != true){
-            className += " whitespace-nowrap "
-        }else{
-            className += " break-all "
-        }
+        //crud内默认换行
+        // if(field.wrap != true){
+        //     className += " whitespace-nowrap "
+        // }else{
+        //     className += " break-words "
+        // }
         let columnItem;
         if((field.is_name || field.name === options.labelFieldName) && options.objectName === 'cms_files'){
             const previewFileScript = `
@@ -954,7 +955,8 @@ async function getTableOperation(ctx){
         label: "&nbsp;",
         fixed: 'right',
         labelClassName: 'text-center',
-        className: 'text-center steedos-listview-operation w-10',
+        //TODO:目前3.6.3-patch.3版本中对于动态classname处理存在问题，简单处理固定列问题，等待amis解决crud的columns不支持动态classname的问题
+        className: 'text-center steedos-listview-operation w-10 is-sticky is-sticky-right is-sticky-first-right',
         buttons: [
               {
                 "type": "steedos-dropdown-button",

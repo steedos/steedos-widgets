@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: liaodaxue
- * @LastEditTime: 2023-11-14 15:40:55
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2024-01-15 15:52:34
  * @Description: 
  */
 import { getObjectRelatedList, i18next } from '@steedos-widgets/amis-lib'
@@ -25,6 +25,7 @@ export const AmisRecordDetailRelatedLists = async (props) => {
   if(!formFactor){
     formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE';
   }
+  // console.log(`getObjectRelatedList====>`,objectApiName, recordId, formFactor)
   const relatedLists = await getObjectRelatedList(objectApiName, recordId, formFactor);
   if(!relatedLists || !relatedLists.length){
     return {
@@ -35,12 +36,12 @@ export const AmisRecordDetailRelatedLists = async (props) => {
       "className": "mb-3"
     }
   }
-  let staticRecordId = '';
+  let staticRecordId = props.staticRecordId;
   // 在设计器中的设计状态，当上层有recordId具体值，相关表组件的$schema.recordId的默认值就是 "${recordId}"； 会导致获取不到 _master, 进而导致组件显示不了数据。
   if(has(props, "recordId") && ( $schema.recordId !== "${recordId}" || (props.$$editor && props.recordId !== "${recordId}") )){
     staticRecordId = recordId;
   }
-
+  // console.log('relatedLists======>', relatedLists, staticRecordId)
   return {
     type: 'service',
     className: "steedos-record-detail-related-lists",
@@ -49,6 +50,7 @@ export const AmisRecordDetailRelatedLists = async (props) => {
         type: 'steedos-object-related-listview',
         objectApiName: objectApiName,
         // recordId: recordId,
+        formFactor: formFactor,
         relatedObjectApiName: item.object_name,
         foreign_key: item.foreign_key,
         relatedKey: item.foreign_key,
@@ -63,6 +65,7 @@ export const AmisRecordDetailRelatedLists = async (props) => {
       if(staticRecordId){
         relatedList.recordId = staticRecordId;
       }
+      // console.log('relatedList=====>', relatedList)
       return relatedList;
     })
   }

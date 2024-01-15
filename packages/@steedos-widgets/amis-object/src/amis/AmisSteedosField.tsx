@@ -1,13 +1,13 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
- * @LastEditors: liaodaxue
- * @LastEditTime: 2024-01-09 18:08:36
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2024-01-15 15:53:14
  * @Description: 
  */
 import "./AmisSteedosField.less";
-import { Field } from '@steedos-widgets/amis-lib';
-import { isArray, isEmpty, isString, pick, includes, clone, forEach } from 'lodash';
+import { Field, getUISchema } from '@steedos-widgets/amis-lib';
+import { has, isArray, isEmpty, isString, pick, includes, clone, forEach, each, isObject } from 'lodash';
 
 const defaultImageValue = "data:image/svg+xml,%3C%3Fxml version='1.0' standalone='no'%3F%3E%3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3E%3Csvg t='1631083237695' class='icon' viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg' p-id='2420' xmlns:xlink='http://www.w3.org/1999/xlink' width='1024' height='1024'%3E%3Cdefs%3E%3Cstyle type='text/css'%3E%3C/style%3E%3C/defs%3E%3Cpath d='M959.872 128c0.032 0.032 0.096 0.064 0.128 0.128v767.776c-0.032 0.032-0.064 0.096-0.128 0.128H64.096c-0.032-0.032-0.096-0.064-0.128-0.128V128.128c0.032-0.032 0.064-0.096 0.128-0.128h895.776zM960 64H64C28.8 64 0 92.8 0 128v768c0 35.2 28.8 64 64 64h896c35.2 0 64-28.8 64-64V128c0-35.2-28.8-64-64-64z' p-id='2421' fill='%23bfbfbf'%3E%3C/path%3E%3Cpath d='M832 288c0 53.024-42.976 96-96 96s-96-42.976-96-96 42.976-96 96-96 96 42.976 96 96zM896 832H128V704l224-384 256 320h64l224-192z' p-id='2422' fill='%23bfbfbf'%3E%3C/path%3E%3C/svg%3E";
 
@@ -53,9 +53,8 @@ function getAmisStaticFieldType(type: string, data_type?: string, options?: any)
 
 export const AmisSteedosField = async (props) => {
     // console.log(`AmisSteedosField===props===`, props);
-
     let steedosField = null;
-    let { field, readonly = false, ctx = {}, config, $schema, static: fStatic, env, inInputTable } = props;
+    let { field, readonly = false, ctx = {}, config, $schema, static: fStatic, env, inInputTable, className } = props;
     // console.log(`AmisSteedosField`, props)
 
     // if($schema.config && isString($schema.config)){
@@ -96,6 +95,7 @@ export const AmisSteedosField = async (props) => {
                 "url": "${context.rootUrl}/graphql",
                 "requestAdaptor": `
                     var steedosField = ${JSON.stringify(steedosField)};
+                    // console.log('defaultSource====>steedosField', steedosField);
                     var objectName, filters, valueFieldKey, labelFieldKey;
                     if(_.isString(steedosField.reference_to)){
                         // reference_to为单选
@@ -135,8 +135,10 @@ export const AmisSteedosField = async (props) => {
                         let value = api.data[_steedosField.name] && api.data[_steedosField.name].ids;
                         filters = [referenceToField, "in", value || []];
                     }
+
+                    // 额外返回_id字段
                     api.data = {
-                        query: '{options:' + objectName + '(filters: ' + JSON.stringify(filters) + '){label: ' + labelFieldKey + ',value: ' + valueFieldKey + '}}'
+                        query: '{options:' + objectName + '(filters: ' + JSON.stringify(filters) + '){label: ' + labelFieldKey + ',value: ' + valueFieldKey + ', _id}}'
                     }
                     return api;
                 `,
@@ -186,36 +188,154 @@ export const AmisSteedosField = async (props) => {
             // 这里有_display时不可以不走以下的static逻辑代码，因为审批王会特意传入_display，且其中lookup字段static时需要走下面的代码
             let fieldBaseProps = {
                 multiple: steedosField.multiple,
-                name: steedosField.name,
+                name: steedosField.name,  
                 label: steedosField.label,
                 static: true,
-                className: steedosField.amis?.className
+                className: `${className || ''} ${steedosField.amis?.className || ''}`
             };
             if(inInputTable){
                 fieldBaseProps = Object.assign({}, fieldBaseProps, { type: 'select', source: source});
             }else{
-                let tpl = '';
-                const res = await env.fetcher(source, props.data);
-                const valueOptions = res?.data?.options || [];
-                const fieldValue = props.data?.[steedosField.name];
-                if( fieldValue && fieldValue.length && valueOptions && valueOptions.length){
-                    const reference_to_field = steedosField.reference_to_field;
-                    forEach(valueOptions,(item,index)=>{
-                        const { label, value } = item;
-                        if(fieldValue.indexOf(value)>-1){
-                            // 因为lookup、master_detail字段配置了reference_to_field != _id的情况下，source中返回的值不能当作链接的后缀值，所以移除字段链接。
-                            let optionTpl = `<a href="/app/-/${steedosField.reference_to}/view/${value}" >${label}</a>`;
-                            if(reference_to_field && reference_to_field != '_id'){
-                                optionTpl = `${label}`;
-                            }
-                            tpl += tpl ? '，'+optionTpl : optionTpl;
-                        }
-                    })
+                let referenceTo = steedosField.reference_to;
+                let referenceToField = steedosField.reference_to_field;
+                if(referenceTo === 'users'){
+                    referenceTo = 'space_users';
+                    referenceToField = 'user';
                 }
-                fieldBaseProps = Object.assign({}, fieldBaseProps, { type: 'static', tpl: tpl});
+
+                let fieldRefObject = await getUISchema(referenceTo)
+                if(props.data._display && has(props.data._display, steedosField.name)){
+                    let disPlayValue = props.data._display[steedosField.name];
+                    if(disPlayValue){
+                        if(!isArray(disPlayValue) && isObject(disPlayValue)){
+                            disPlayValue = [disPlayValue]
+                        }
+                        fieldBaseProps = Object.assign({}, fieldBaseProps, { 
+                            type: 'control', 
+                            name: null, //name 会导致底层的each异常,无法从数据链中获取数据. 如果给了name 会导致下层的each多了value 属性, value属性会引起each无法从数据链中获取数据
+                            body: {
+                                type: 'wrapper',
+                                className: `steedos-field-lookup-wrapper p-0`,
+                                "wrapWithPanel": false,
+                                "actions": [],
+                                body: [
+                                    {
+                                        type: 'each',
+                                        className: `steedos-field-lookup-each flex flex-wrap gap-2`,
+                                        source: `\${_display.${steedosField.name}|asArray}`,
+                                        items: { 
+                                            type: 'static', 
+                                            className: 'm-0',
+                                            tpl: `<a href="/app/-/\${objectName}/view/\${value}" target="_blank">\${label}</a>`, 
+                                            popOver: fieldRefObject.compactLayouts ? {
+                                                "trigger": "hover",
+                                                "className": "steedos-record-detail-popover",
+                                                "position": "left-bottom",
+                                                "showIcon": false,
+                                                "title": false,
+                                                "offset": {
+                                                    "top": 0,
+                                                    "left": 20
+                                                },
+                                                "body": [
+                                                    {
+                                                        "type": "steedos-record-mini",
+                                                        "objectApiName": "${objectName}",
+                                                        "recordId": "${value}",
+                                                        "showButtons": false,
+                                                        "showBackButton": false,
+                                                        "data": {
+                                                            "objectName": "${objectName}",
+                                                            "recordId": "${value}"
+                                                        }
+                                                    }
+                                                ]
+                                            } : null
+                                        }
+                                    }
+                                ]
+                        }});
+                    }else{
+                        fieldBaseProps = Object.assign({}, fieldBaseProps, { type: 'static', tpl: '-', className: `${fieldBaseProps.className || ''} text-muted`});
+                    }
+                }else{
+                    const res = await env.fetcher(source, props.data);
+                    const valueOptions = res?.data?.options || [];
+                    const fieldValue = props.data?.[steedosField.name];
+
+                    // console.log(`fieldValue`, fieldValue, steedosField, valueOptions);
+                    let values = fieldValue
+                    if(isString(values)){
+                        values = [values]
+                    }
+
+                    if(values && values.length > 0){
+
+                        const disPlayValue = []
+                        each(values, (value)=>{
+                            const option = valueOptions.find((item)=>item.value === value);
+                            if(option){
+                                disPlayValue.push({
+                                    objectName: referenceTo,
+                                    value: option._id || option.value,
+                                    label: option.label
+                                })
+                            }
+                        })
+
+                        fieldBaseProps = Object.assign({}, fieldBaseProps, { type: 'control', name: null, body: {
+                            type: 'form',
+                            className: `steedos-field-lookup-wrapper p-0`,
+                            "wrapWithPanel": false,
+                            "actions": [],
+                            data: {
+                                [steedosField.name]: disPlayValue
+                            },
+                            body: [
+                                {
+                                    type: 'each',
+                                    className: `steedos-field-lookup-each flex flex-wrap gap-2`,
+                                    source: `\${${steedosField.name}}`,
+                                    items: { 
+                                        type: 'static', 
+                                        className: 'm-0',
+                                        tpl: `<a href="/app/-/\${objectName}/view/\${value}" target="_blank">\${label}</a>`, 
+                                        popOver: fieldRefObject.compactLayouts ? {
+                                            "trigger": "hover",
+                                            "className": "steedos-record-detail-popover",
+                                            "position": "left-bottom",
+                                            "showIcon": false,
+                                            "title": false,
+                                            "offset": {
+                                                "top": 0,
+                                                "left": 20
+                                            },
+                                            "body": [
+                                                {
+                                                    "type": "steedos-record-mini",
+                                                    "objectApiName": "${objectName}",
+                                                    "recordId": "${value}",
+                                                    "showButtons": false,
+                                                    "showBackButton": false,
+                                                    "data": {
+                                                        "objectName": "${objectName}",
+                                                        "recordId": "${value}"
+                                                    }
+                                                }
+                                            ]
+                                        } : null
+                                    }
+                                }
+                            ]
+                        }});
+                    }else{
+                        fieldBaseProps = Object.assign({}, fieldBaseProps, { type: 'static', tpl: '-', className: `${fieldBaseProps.className || ''} text-muted`});
+                    }
+                }
             }
             const schema = Object.assign({}, fieldBaseProps, pick(steedosField.amis || {}, ['className', 'inline', 'label', 'labelAlign', 'name', 'labelRemark', 'description', 'placeholder', 'staticClassName', 'staticLabelClassName', 'staticInputClassName', 'staticSchema']));
             schema.placeholder = "";
+            // console.log(`steedos field [lookup] schema:`, schema)
             return schema;
         }
         else if (fStatic) {
