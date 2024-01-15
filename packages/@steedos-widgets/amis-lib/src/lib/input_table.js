@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-15 16:24:20
+ * @LastEditTime: 2024-01-15 17:50:02
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -995,7 +995,6 @@ export const getAmisInputTableSchema = async (props) => {
         "showFooterAddBtn": false,
         "className": props.tableClassName,
         "pipeOut": (value, data) => {
-            console.log("===pipeOut===", value);
             return (value || []).map(function(item){
                 delete item.__fix_rerender_after_children_modified_tag;
                 return item;
