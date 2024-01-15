@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-15 15:40:47
+ * @LastEditTime: 2024-01-15 16:24:20
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -301,9 +301,14 @@ function getFormPaginationWrapper(props, form, mode) {
         }
     ];
     let onServiceInitedScript = `
-        if(event.data.parent){
+        var parent = event.data.parent;
+        var fieldValue = event.data.__tableItems;
+        if(parent){
             // 如果是子行，即在节点嵌套情况下，当前节点如果是children属性下的子节点时，则算出其所属父行的索引值
-            event.data.__parentIndex = _.findIndex(event.data.__tableItems, {_id: event.data.parent._id});
+            var primaryKey = "${props.primaryKey}";
+            event.data.__parentIndex = _.findIndex(fieldValue, function(item){
+                return item[primaryKey] == parent[primaryKey];
+            });
         }
         // 以下脚本是为了解决有时弹出编辑表单时，表单中的值比最后一次编辑保存的值会延迟一拍。
         // 比如：inlineEditMode模式时，用户在表格单元格中直接修改数据，然后弹出的表单form中并没有包含单元格中修改的内容
@@ -564,7 +569,10 @@ async function getButtonActions(props, mode) {
             let fieldValue = event.data.__tableItems;//这里不可以_.cloneDeep，因为翻页form中用的是event.data.__tableItems，直接变更其值即可改变表单中的值
             // 新建一条空白行并保存到子表组件
             var parent = event.data.__super.parent;
-            var __parentIndex = parent && _.findIndex(fieldValue, {_id: parent._id});
+            var primaryKey = "${props.primaryKey}";
+            var __parentIndex = parent && _.findIndex(fieldValue, function(item){
+                return item[primaryKey] == parent[primaryKey];
+            });
             if(parent){
                 fieldValue[__parentIndex].children.push({});
                 // 这里实测不需要fieldValue[__parentIndex] = ... 来重写整个父行让子表回显，所以没加相关代码
@@ -602,7 +610,10 @@ async function getButtonActions(props, mode) {
             // 复制当前页数据到新建行并保存到子表组件
             // fieldValue.push(newItem);
             var parent = event.data.__super.parent;
-            var __parentIndex = parent && _.findIndex(fieldValue, {_id: parent._id});
+            var primaryKey = "${props.primaryKey}";
+            var __parentIndex = parent && _.findIndex(fieldValue, function(item){
+                return item[primaryKey] == parent[primaryKey];
+            });
             if(parent){
                 fieldValue[__parentIndex].children.push(newItem);
                 // 这里实测不需要fieldValue[__parentIndex] = ... 来重写整个父行让子表回显，所以没加相关代码
@@ -621,7 +632,6 @@ async function getButtonActions(props, mode) {
             let __paginationServiceId = "${formPaginationId}";
             let __paginationData = scope.getComponentById(__paginationServiceId).getData();
             event.data.index = __paginationData.index;
-            // event.data.__page = fieldValue.length - 1;//这里不可以用Object.assign否则，event.data中上层作用域数据会丢失
             if(parent){
                 event.data.__page = fieldValue[__parentIndex].children.length - 1;//这里不可以用Object.assign否则，event.data中上层作用域数据会丢失
                 event.data.__parentIndex = __parentIndex; //执行下面的翻页按钮事件中依赖了__parentIndex值
@@ -830,7 +840,10 @@ async function getButtonActions(props, mode) {
             let lastestFieldValue = _.clone(wrapperServiceData["${props.name}"]);
             var currentIndex = event.data.index;
             var parent = event.data.__super.parent;
-            var __parentIndex = parent && _.findIndex(lastestFieldValue, {_id: parent._id});
+            var primaryKey = "${props.primaryKey}";
+            var __parentIndex = parent && _.findIndex(lastestFieldValue, function(item){
+                return item[primaryKey] == parent[primaryKey];
+            });
             if(parent){
                 lastestFieldValue[__parentIndex].children.splice(currentIndex, 1);
                 // 重写父节点，并且改变其某个属性以让子节点修改的内容回显到界面上
@@ -926,6 +939,9 @@ async function getButtonDelete(props) {
 export const getAmisInputTableSchema = async (props) => {
     if (!props.id) {
         props.id = "steedos_input_table_" + props.name + "_" + Math.random().toString(36).substr(2, 9);
+    }
+    if (!props.primaryKey) {
+        props.primaryKey = "_id";
     }
     let serviceId = getComponentId("table_service", props.id);
     let buttonsForColumnOperations = [];
