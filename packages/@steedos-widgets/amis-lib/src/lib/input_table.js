@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-14 21:08:32
+ * @LastEditTime: 2024-01-15 14:57:49
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -155,8 +155,15 @@ function getFormPagination(props, mode) {
         let currentIndex = event.data.index;
         // 翻页到下一页之前需要先把当前页改动的内容保存到中间变量__tableItems中
         let currentFormValues = scope.getComponentById(__formId).getValues();
-        if(event.data.parent){
-            fieldValue[event.data.__parentIndex].children[currentIndex] = currentFormValues;
+        var parent = event.data.parent;
+        var __parentIndex = event.data.__parentIndex;
+        if(parent){
+            fieldValue[__parentIndex].children[currentIndex] = currentFormValues;
+            // 重写父节点，并且改变其某个属性以让子节点修改的内容回显到界面上
+            fieldValue[__parentIndex] = Object.assign({}, fieldValue[__parentIndex], {
+                children: fieldValue[__parentIndex].children,
+                __fix_rerender_after_children_modified_tag: new Date().getTime()
+            });
         }
         else{
             fieldValue[currentIndex] = currentFormValues;
@@ -408,6 +415,11 @@ async function getForm(props, mode = "edit", formId) {
             var __parentIndex = event.data.__super.__super.__parentIndex;
             if(parent){
                 fieldValue[__parentIndex].children[currentIndex] = currentFormValues;
+                // 重写父节点，并且改变其某个属性以让子节点修改的内容回显到界面上
+                fieldValue[__parentIndex] = Object.assign({}, fieldValue[__parentIndex], {
+                    children: fieldValue[__parentIndex].children,
+                    __fix_rerender_after_children_modified_tag: new Date().getTime()
+                });
             }
             else{
                 fieldValue[currentIndex] = currentFormValues;
@@ -555,6 +567,7 @@ async function getButtonActions(props, mode) {
             var __parentIndex = parent && _.findIndex(fieldValue, {_id: parent._id});
             if(parent){
                 fieldValue[__parentIndex].children.push({});
+                // 这里实测不需要fieldValue[__parentIndex] = ... 来重写整个父行让子表回显，所以没加相关代码
             }
             else{
                 fieldValue.push({});
@@ -592,6 +605,7 @@ async function getButtonActions(props, mode) {
             var __parentIndex = parent && _.findIndex(fieldValue, {_id: parent._id});
             if(parent){
                 fieldValue[__parentIndex].children.push(newItem);
+                // 这里实测不需要fieldValue[__parentIndex] = ... 来重写整个父行让子表回显，所以没加相关代码
             }
             else{
                 fieldValue.push(newItem);
@@ -818,6 +832,11 @@ async function getButtonActions(props, mode) {
             var __parentIndex = parent && _.findIndex(lastestFieldValue, {_id: parent._id});
             if(parent){
                 lastestFieldValue[__parentIndex].children.splice(currentIndex, 1);
+                // 重写父节点，并且改变其某个属性以让子节点修改的内容回显到界面上
+                lastestFieldValue[__parentIndex] = Object.assign({}, lastestFieldValue[__parentIndex], {
+                    children: lastestFieldValue[__parentIndex].children,
+                    __fix_rerender_after_children_modified_tag: new Date().getTime()
+                });
             }
             else{
                 lastestFieldValue.splice(currentIndex, 1);
@@ -957,7 +976,14 @@ export const getAmisInputTableSchema = async (props) => {
         "strictMode": props.strictMode,
         "showTableAddBtn": false,
         "showFooterAddBtn": false,
-        "className": props.tableClassName
+        "className": props.tableClassName,
+        "pipeOut": (value, data) => {
+            console.log("===pipeOut===", value);
+            return (value || []).map(function(item){
+                delete item.__fix_rerender_after_children_modified_tag;
+                return item;
+            });
+        }
     };
     if (buttonsForColumnOperations.length) {
         inputTableSchema.columns.push({
