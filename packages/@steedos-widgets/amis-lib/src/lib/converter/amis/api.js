@@ -84,12 +84,21 @@ function getReadonlyFormAdaptor(object, fields, options){
         }
         payload.data = data;
         payload.data.__objectName = "${object.name}";
-        payload.data.__record = record;
+        payload.data.record = record;
+
+        payload.data.name = record.${object.NAME_FIELD_KEY || 'name'};
+        payload.data._master = {
+            record: record,
+            objectName: "${object.name}",
+            recordId: record._id
+        }
         window.postMessage(Object.assign({type: "record.loaded"}, {record: record}), "*")
     }
     if(payload.errors){
         payload.status = 2;
         payload.msg = payload.errors[0].message;
+    }else{
+        payload.data.recordLoaded = true;
     }
     ${options && options.initApiAdaptor || ''}
     return payload;

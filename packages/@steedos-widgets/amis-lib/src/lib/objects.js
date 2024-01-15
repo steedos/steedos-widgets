@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: liaodaxue
- * @LastEditTime: 2023-10-20 11:38:25
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2024-01-15 15:50:40
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -10,13 +10,15 @@ import { getObjectCalendar } from './converter/amis/calendar';
 import { i18next } from '../i18n'
 import { createObject } from '../utils/object'
 
+import { getReadonlyFormInitApi } from './converter/amis/api'
+
 import {
     getObjectCRUD,
     getObjectDetail,
     getObjectForm,
 } from "./converter/amis/index";
 import { getObjectListHeader, getObjectListHeaderFirstLine, getObjectRecordDetailHeader, getObjectRecordDetailRelatedListHeader } from './converter/amis/header';
-import _, { cloneDeep, slice, isEmpty, each, has, findKey, find, isString, isObject, keys, includes, isArray, isFunction, map, forEach, defaultsDeep } from "lodash";
+import _, { reverse, cloneDeep, slice, isEmpty, each, has, findKey, find, isString, isObject, keys, includes, isArray, isFunction, map, forEach, defaultsDeep } from "lodash";
 import { getRecord } from './record';
 import { getListViewItemButtons } from './buttons'
 import { getObjectRelatedList } from './objectsRelated';
@@ -191,7 +193,7 @@ export async function getField(objectName, fieldName) {
 export async function getFormSchema(objectName, ctx) {
     const uiSchema = await getUISchema(objectName);
     const amisSchema = await getObjectForm(uiSchema, ctx);
-    console.log(`getFormSchema====>`, amisSchema)
+    // console.log(`getFormSchema====>`, amisSchema)
     return {
         uiSchema,
         amisSchema,
@@ -549,61 +551,95 @@ export async function getRecordDetailSchema(objectName, appId, props = {}){
     if(relatedLists.length){
         content.tabs.push(related)
     }
+    content.tabs = reverse(content.tabs)
     return {
         uiSchema,
         amisSchema: {
-            "type": "service",
+            "type": "steedos-record-service",
             "body": [
                 {
                     "type": "steedos-record-detail-header",
                     "label": "标题面板",
                     "objectApiName": "${objectName}",
                     "recordId": "${recordId}",
-                    "id": "u:48d2c28eb755"
+                    "id": "u:48d2c28eb755",
+                    "showButtons": props.showButtons,
+                    "showBackButton": props.showBackButton,
                 },
                 content
             ],
-            data: {
-                "_master.objectName": "${objectName}",  
-                "_master.recordId": "${recordId}"
-            },
-            onEvent: {
-                "recordLoaded": {
-                    "actions": [
-                        {
-                            "actionType": "reload",
-                            "data": {
-                                "name": `\${record.${uiSchema.NAME_FIELD_KEY || 'name'}}`,
-                                "_master.record": `\${record}`, 
-                                // 不清楚reload 如何给对象下的某个key复制, 所以此处重复设置_master的objectName、recordId
-                                "_master.objectName": "${objectName}", 
-                                "_master.recordId": "${recordId}"
-                            }
-                        }
-                    ]
-                },
-                ...props.onEvent
-            },
+            "objectApiName": "${objectName}",
+            "recordId": "${recordId}",
+            onEvent: props.onEvent,
           }
     }
 }
 
 export async function getRecordServiceSchema(objectName, appId, props = {}) {
     const uiSchema = await getUISchema(objectName);
+    const fields = _.values(uiSchema.fields);
     return {
         uiSchema,
         amisSchema: {
             "type": "service",
-            "body": [],
+            className: 'steedos-record-service p-0 md:p-2',
+            api: await getReadonlyFormInitApi(uiSchema, props.recordId, fields, props),
+            "body":  {
+                "type": "wrapper",
+                "className": "p-0 m-0",
+                "body": [],
+                "hiddenOn": "${recordLoaded != true}"
+              },
             data: {
                 "_master.objectName": "${objectName}",
-                "_master.recordId": "${recordId}"
+                "_master.recordId": "${recordId}",
+                ...(props.data || {})
             },
             "style": {
-                "padding": "var(--Page-body-padding)",
+                // "padding": "var(--Page-body-padding)",
                 ...props.style
             },
             onEvent: {
+                [`@data.changed.${objectName}`]: {
+                    "actions": [
+                      {
+                        "actionType": "reload",
+                        "expression": "this.__deletedRecord != true"
+                      },
+                      {
+                        "actionType": "custom",
+                        "script": "window.goBack()",
+                        "expression": "this.__deletedRecord === true"
+                      }
+                    ]
+                },
+                // 如果定义了fetchInited,则无法接收到广播事件@data.changed
+                // "fetchInited": {  
+                //     "weight": 0,
+                //     "actions": [
+                //     //   {
+                //     //     actionType: 'broadcast',
+                //     //     eventName: "recordLoaded",
+                //     //     args: {
+                //     //       eventName: "recordLoaded"
+                //     //     },
+                //     //     data: {
+                //     //       objectName: "${event.data.__objectName}",
+                //     //       record: "${event.data.__record}"
+                //     //     },
+                //     //     expression: "${event.data.__response.error != true}"
+                //     //   },
+                //       {
+                //         "actionType": "setValue",
+                //         "args": {
+                //            value: {
+                //             "recordLoaded": true,
+                //            }
+                //         },
+                //         expression: "${event.data.__response.error != true}"
+                //     }
+                //     ]
+                // },
                 "recordLoaded": {
                     "actions": [
                         {
@@ -621,6 +657,45 @@ export async function getRecordServiceSchema(objectName, appId, props = {}) {
                 ...props.onEvent
             }
         }
+    }
+}
+
+export async function getRecordDetailMiniSchema(objectName, appId, props = {}){
+    const uiSchema = await getUISchema(objectName);
+    const fields = _.values(uiSchema.fields);
+
+    props.initApiAdaptor = 'payload.data=Object.assign({}, payload.data, payload.data.record); payload.data._finished=true; console.log("payload data is ====>", payload)'
+
+    // TODO 处理相关表
+    // getObjectRelatedListsMiniSchema
+
+    return {
+        type: "form",
+        wrapWithPanel: false,
+        actions: [],
+        initApi: await getReadonlyFormInitApi(uiSchema, props.recordId, fields, props),
+        body: {
+            "type": "wrapper",
+            "className": "p-0 m-0",
+            "body": [
+                {
+                    "type": "steedos-record-detail-header",
+                    "showButtons": false,
+                    "showBackButton": false,
+                    "objectApiName": "${objectName}",
+                    "recordId": "${recordId}",
+                },
+                // {
+                //     "type": "steedos-object-related-lists",
+                //     "label": "相关列表",
+                //     "objectApiName": "${objectName}",
+                //     "staticRecordId": "${recordId}",
+                //     formFactor: "SMALL",                
+                //     appId: appId
+                // }
+            ],
+            "hiddenOn": "${_finished != true}"
+          }
     }
 }
 

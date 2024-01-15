@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: liaodaxue
- * @LastEditTime: 2023-11-14 15:55:32
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2024-01-15 10:34:46
  * @Description:
  */
 
@@ -391,3 +391,41 @@ export async function getRelatedListSchema(
         amisSchema,
     };
   }
+
+
+async function getObjectRelatedListMiniSchema(){
+    
+}
+
+export async function getObjectRelatedListsMiniSchema(objectApiName){
+    const relatedLists = await getObjectRelatedList(objectApiName);
+
+    const relatedListsMiniSchema = [];
+
+    for (const relatedList of relatedLists) {
+        relatedListsMiniSchema.push(
+            {
+                type: 'steedos-record-detail-list-mini',
+                objectApiName: objectApiName,
+                // recordId: recordId,
+                formFactor: formFactor,
+                relatedObjectApiName: relatedList.object_name,
+                foreign_key: relatedList.foreign_key,
+                relatedKey: relatedList.foreign_key,
+                columns: relatedList.columns,
+                sort: relatedList.sort,
+                filters: relatedList.filters,
+                visible_on: relatedList.visible_on,
+                perPage: relatedList.page_size || perPage,
+                hiddenEmptyTable: true,
+                relatedLabel: relatedList.label
+            }
+        )
+    }
+
+    return {
+        type: 'wrapper',
+        className: "steedos-record-detail-related-lists-mini",
+        body: relatedListsMiniSchema
+    }
+}

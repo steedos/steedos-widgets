@@ -246,6 +246,48 @@ export function getObjectListHeader(objectSchema, listViewName, ctx) {
   return headerSchema;
 }
 
+function getBackButtonSchema(){
+  return {
+    "type": "service",
+    "onEvent": {
+        "@history_paths.changed": {
+            "actions": [
+                {
+                    "actionType": "reload",
+                    // amis 3.6需要传入data来触发下面的window:historyPaths重新计算，此问题随机偶发，加上data后正常
+                    "data": {
+                    }
+                }
+            ]
+        }
+    },
+    "body":[{
+      "type": "button",
+      "visibleOn": "${window:innerWidth > 768 && (window:historyPaths.length > 1 || window:historyPaths[0].params.record_id) && display !== 'split'}",
+      "className":"flex mr-4",
+      "onEvent": {
+          "click": {
+              "actions": [
+                  {
+                      "actionType": "custom",
+                      "script": "window.goBack()"
+                  }
+              ]
+          }
+      },
+      "body": [
+          {
+              "type": "steedos-icon",
+              "category": "utility",
+              "name": "back",
+              "colorVariant": "default",
+              "className": "slds-button_icon slds-global-header__icon w-4"
+          }
+      ]
+    }]
+  }
+}
+
 /**
  * 记录详细界面顶部头amisSchema，也是标题面板组件的amisSchema
  * @param {*} objectSchema 对象UISchema
@@ -254,11 +296,21 @@ export function getObjectListHeader(objectSchema, listViewName, ctx) {
  * @returns amisSchema
  */
 export async function getObjectRecordDetailHeader(objectSchema, recordId, options) {
+  // console.log(`getObjectRecordDetailHeader====>`, options)
   const { showRecordTitle = true } = options || {}
   // console.log('getObjectRecordDetailHeader==>', objectSchema, recordId)
   const { name, label, icon, NAME_FIELD_KEY } = objectSchema;
   
-  let amisButtonsSchema = getObjectDetailButtonsSchemas(objectSchema, recordId, options);
+  let amisButtonsSchema = []
+  if(options.showButtons != false){
+    amisButtonsSchema = getObjectDetailButtonsSchemas(objectSchema, recordId, options);
+  }
+
+  let backButtonsSchema = null;
+
+  if(options.showBackButton != false){
+    backButtonsSchema = getBackButtonSchema();
+  }
 
   // console.log(`getObjectRecordDetailHeader==>`, amisButtonsSchema)
   
@@ -273,45 +325,9 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
           "type": "grid",
           "columns": [
             {
-              "body": [{
-                "type": "service",
-                "onEvent": {
-                    "@history_paths.changed": {
-                        "actions": [
-                            {
-                                "actionType": "reload",
-                                // amis 3.6需要传入data来触发下面的window:historyPaths重新计算，此问题随机偶发，加上data后正常
-                                "data": {
-                                }
-                            }
-                        ]
-                    }
-                },
-                "body":[{
-                  "type": "button",
-                  "visibleOn": "${window:innerWidth > 768 && (window:historyPaths.length > 1 || window:historyPaths[0].params.record_id) && display !== 'split'}",
-                  "className":"flex mr-4",
-                  "onEvent": {
-                      "click": {
-                          "actions": [
-                              {
-                                  "actionType": "custom",
-                                  "script": "window.goBack()"
-                              }
-                          ]
-                      }
-                  },
-                  "body": [
-                      {
-                          "type": "steedos-icon",
-                          "category": "utility",
-                          "name": "back",
-                          "colorVariant": "default",
-                          "className": "slds-button_icon slds-global-header__icon w-4"
-                      }
-                  ]
-                }]
-              },{
+              "body": [
+                backButtonsSchema
+              ,{
                 "type": "tpl",
                 "className": "block",
                 // "tpl": `<img class='slds-icon slds-icon_container slds-icon-standard-${standardIcon}' src='\${context.rootUrl}/unpkg.com/@salesforce-ux/design-system/assets/icons/standard/${icon}.svg'>`
@@ -362,7 +378,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
   let body = [
     {
       "type": "wrapper",
-      "className": "p-0",
+      "className": "p-4",
       "body": [
         {
           "type": "grid",
@@ -377,7 +393,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
   if(showRecordTitle){
     body.push({
       "type": "wrapper",
-      "className": "p-0",
+      "className": "p-4",
       "body": [
         {
           "type": "grid",
@@ -386,6 +402,34 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
         }
       ],
       "hiddenOn": "${recordLoaded == true}"
+    })
+  }
+
+  let max = 10;
+  if(options.formFactor === 'SMALL'){
+    max = 4;
+  }
+
+  if(objectSchema.compactLayouts){
+    const details = [];
+    _.each(_.slice(_.difference(objectSchema.compactLayouts, [objectSchema.NAME_FIELD_KEY]), 0, max), (fieldName)=>{
+      const field = objectSchema.fields[fieldName];
+      if(field){
+        details.push({
+          type: 'steedos-field',
+          static: true,
+          config: field,
+        })
+      }
+    })
+
+    body.push({
+      "type": "form",
+      "className": "p-4 pb-0 bg-white compact-layouts",
+      "wrapWithPanel": false,
+      "actions": [],
+      "body": details,
+      "hiddenOn": "${recordLoaded != true}"
     })
   }
 

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-21 10:27:43
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-09 18:03:15
+ * @LastEditTime: 2024-01-13 16:12:19
  * @Description: 
  */
 import React, { useEffect, useState } from 'react'
@@ -10,7 +10,7 @@ import { isString, defaultsDeep } from 'lodash';
 import { getButton, executeButton, getUISchema, getDefaultRenderData } from '@steedos-widgets/amis-lib';
 
 export const AmisObjectButton = (props) => {
-    // console.log(`AmisObjectButton`, props)
+    // console.log(`AmisObjectButton=====》`, props)
     const { objectName, name, data, render, className,  listViewId} = props;
     const [button, setButton] = useState();
     const [uiSchema, setUiSchema] = useState();

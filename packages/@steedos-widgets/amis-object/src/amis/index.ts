@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-16 11:33:21
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2024-01-13 11:34:24
  * @Description: 
  */
 
@@ -35,3 +35,5 @@ export * from './AmisSelectFlow';
 export * from './AmisInstanceDetail';
 
 export * from './AmisInputTable';
+
+export * from './AmisRecordDetailMini';

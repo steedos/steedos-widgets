@@ -907,9 +907,15 @@ export async function lookupToAmis(field, readonly, ctx){
     // console.log(`lookupToAmis====`, field, readonly, ctx)
     if(readonly){
         return {
-            type: Field.getAmisStaticFieldType('picker', readonly),
-            tpl: Tpl.getRelatedFieldTpl(field, ctx)
+            type: 'steedos-field',
+            config: field,
+            static: true
         }
+
+        // return {
+        //     type: Field.getAmisStaticFieldType('picker', readonly),
+        //     tpl: Tpl.getRelatedFieldTpl(field, ctx)
+        // }
     }
     if(field.reference_to && !_.isString(field.reference_to) && !readonly){
         return {
