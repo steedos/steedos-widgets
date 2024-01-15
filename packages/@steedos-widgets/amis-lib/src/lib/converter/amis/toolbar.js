@@ -365,7 +365,10 @@ export function getObjectFooterToolbar(mainObject, formFactor, options) {
     // ]
     if(options.displayAs === 'split'){
       return [
-        "switch-per-page",
+        {
+          "type": "switch-per-page",
+          "visibleOn": "${count >= 20}"
+        },
         {
           "type": "pagination",
           "maxButtons": 5,
@@ -387,7 +390,6 @@ export function getObjectFooterToolbar(mainObject, formFactor, options) {
   else {
     if(options && options.isRelated){
       return [
-        "statistics",
         {
           "type": "pagination",
           "maxButtons": 10,
@@ -400,7 +402,6 @@ export function getObjectFooterToolbar(mainObject, formFactor, options) {
       const no_pagination = mainObject.paging && (mainObject.paging.enabled === false);
       const is_lookup = options.isLookup;
       const commonConfig = [
-        "statistics",
         {
           "type": "pagination",
           "maxButtons": 10,
@@ -411,7 +412,10 @@ export function getObjectFooterToolbar(mainObject, formFactor, options) {
       if (no_pagination && is_lookup) {
         return commonConfig;
       } else {
-        return ["switch-per-page", ...commonConfig];
+        return [{
+          "type": "switch-per-page",
+          "visibleOn": "${count >= 20}"
+        }, ...commonConfig];
       }
     }
   }

@@ -20,6 +20,29 @@ function getBulkActions(objectSchema){
         "className": "hidden",
         "id": "batchDelete",
         "api": getBatchDelete(objectSchema.name),
+        "feedback": {
+          "title": "删除警告",
+          "visibleOn": "${deleteErrorMessage}",
+          "body": [
+            {
+              "type": "each",
+              "name": "deleteErrorMessage",
+              "items": {
+                "type": "alert",
+                "body": "${item}",
+                "level": "danger",
+                "className": "mb-3"
+              }
+            }
+          ],
+          "actions": [
+            {
+              "type": "button",
+              "actionType": "close",
+              "label": "关闭"
+            }
+          ]
+        }
       }
         // {
         //   "label": "批量修改",
@@ -248,6 +271,10 @@ export async function getObjectCRUD(objectSchema, fields, options){
         const rowsDiff = _.cloneDeep(api.data.rowsDiff);
         rowsDiff.forEach(function (item, index) {
           for(key in item){
+            // image、select等字段清空值后保存的空字符串转换为null。
+            if(item[key] === ''){
+              item[key] = null;
+            }
             if(_.includes(imageNames, key)){
               if(typeof item[key] == "string"){
                 const match = item[key].match(/\\/([^\\/]+)$/);
@@ -329,7 +356,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
 
     if(body.columns && options.formFactor != 'SMALL'){
       //将_display放入crud的columns的倒数第二列中（最后一列会影响固定列），可以通过setvalue修改行内数据域的_display，而不影响上层items的_display,用于批量编辑
-      body.columns.splice(body.columns.length - 1, 0, {name: '_display',type: 'static', width: 32, placeholder: "",id: objectSchema.name + "_display_${_index}", className: "hidden"});
+      body.columns.splice(body.columns.length -1 , 0, {name: '_display',type: 'static', width: 1, placeholder: "",id: objectSchema.name + "_display_${_index}", tpl: "${}"});
     }
 
     if (defaults) {

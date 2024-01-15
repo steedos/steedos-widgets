@@ -679,11 +679,9 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             if(field.subFields){
                 convertData = {
                     type: 'steedos-input-table',
-                    showIndex: true,
                     editable: !readonly,
                     addable: !readonly,
                     removable: !readonly,
-                    draggable: !readonly,
                     fields: [],
                     amis:{
                         columnsTogglable: false
