@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-15 14:57:49
+ * @LastEditTime: 2024-01-15 15:40:47
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -710,8 +710,9 @@ async function getButtonActions(props, mode) {
                     // 为了解决"弹出的dialog窗口中子表组件会影响页面布局界面中父作用域字段值"，比如设计字段布局微页面中的设置分组功能，弹出的就是子表dialog
                     // 所以这里使用json|toJson转一次，断掉event.data.__tableItems与上层任用域中props.name的联系
                     // "__tableItems": `\${${props.name}|json|toJson}`
-                    // 这里加__super.__super是因为要让映射到准确的作用域层，如果不加，在节点嵌套情况下，当前节点正好是带children属性的节点的话，这里弹出的dialog映射到的会是children数组
-                    "__tableItems": `\${((__super.parent ? __super.__super.${props.name} : __super.${props.name}) || [])|json|toJson}`
+                    // 在节点嵌套情况下，当前节点正好是带children属性的节点的话，这里弹出的dialog映射到的会是children数组，这是amis目前的规则，
+                    // 所以这里加判断有children时，用__super.__super让映射到正确的作用域层，如果不加，则__tableItems取到的会是children数组，而不是整个子表组件的值
+                    "__tableItems": `\${((children ? __super.__super.${props.name} : __super.${props.name}) || [])|json|toJson}`
         },
                 "actions": dialogButtons,
                 "onEvent": {
