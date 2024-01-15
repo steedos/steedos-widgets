@@ -35,9 +35,14 @@
 
     .steedos-object-table {
 
-        //隐藏最后一列，_display
-        thead tr th:nth-last-child(2), colgroup col:nth-last-child(2){
-            display: none;
+        //最后一列，_display
+        thead tr th:nth-last-child(2), colgroup col:nth-last-child(2),tbody tr td:nth-last-child(2){
+            padding: 0;
+            border: 0;
+        }
+        colgroup col:nth-last-child(2){
+            width: 0.5px !important;
+            min-width: 0.5px !important;
         }
 
 
