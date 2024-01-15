@@ -955,7 +955,8 @@ async function getTableOperation(ctx){
         label: "&nbsp;",
         fixed: 'right',
         labelClassName: 'text-center',
-        className: 'text-center steedos-listview-operation w-10',
+        //TODO:目前3.6.3-patch.3版本中对于动态classname处理存在问题，简单处理固定列问题，等待amis解决crud的columns不支持动态classname的问题
+        className: 'text-center steedos-listview-operation w-10 is-sticky is-sticky-right is-sticky-first-right',
         buttons: [
               {
                 "type": "steedos-dropdown-button",
