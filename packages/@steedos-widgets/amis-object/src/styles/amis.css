@@ -321,3 +321,22 @@ fieldset.antd-Collapse > legend{
 .antd-Picker-input{
     overflow: hidden;
 }
+
+
+/* === amis 3.6 子表组件showIndex设置为false隐藏索引列后，且有嵌套行存在时，第一列样式顶部都多了空白半行 start === */
+.antd-InputTable .antd-Table-primayCell .antd-Table-indent{
+    display: none;
+}
+
+.antd-InputTable .antd-Table-primayCell .antd-Table-expandSpace{
+    display: none;
+}
+/* === end === */
+
+/* === amis 3.6 子表组件showIndex设置为false隐藏索引列后，children子行缩进样式末生效 start === */
+.antd-InputTable .antd-Table-tr--2th .antd-Table-primayCell .antd-Table-expandSpace{
+    display: block;
+    height: 1rem;
+    float: left;
+}
+/* === end === */
