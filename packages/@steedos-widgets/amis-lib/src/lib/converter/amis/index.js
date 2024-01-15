@@ -534,14 +534,6 @@ export async function getObjectForm(objectSchema, ctx){
             "weight": 0,
             "actions": [
               {
-                "actionType": "toast",
-                "args": {
-                  "msgType": "warning",
-                  "msg": `broadcast: @data.changed.${objectSchema.name}`,
-                  "position": "top-right"
-                }
-              },
-              {
                 "actionType": "broadcast",
                 "args": {
                   "eventName": `@data.changed.${objectSchema.name}`
