@@ -500,9 +500,7 @@ export async function getObjectForm(objectSchema, ctx){
       id: `service_${formSchema.id}`,
       className: 'p-0',
       name: `page_edit_${recordId}`,
-      api: await getEditFormInitApi(objectSchema, recordId, fields, ctx),
       data:{
-        editFormInited: false,
         ...amisData
       },
       // data: {global: getGlobalData('edit'), recordId: recordId, objectName: objectSchema.name, context: {rootUrl: getRootUrl(), tenantId: getTenantId(), authToken: getAuthToken()}},
@@ -511,8 +509,9 @@ export async function getObjectForm(objectSchema, ctx){
       body: [defaultsDeep({}, formSchema, {
         type: "form",
         mode: layout,
+        initApi: await getEditFormInitApi(objectSchema, recordId, fields, ctx),
         data: {
-          "&": "${initialValues}"
+          editFormInited: false,
         },
         labelAlign,
         persistData: false,
@@ -526,11 +525,15 @@ export async function getObjectForm(objectSchema, ctx){
         submitText: "", // amis 表单不显示提交按钮, 表单提交由项目代码接管
         api: await getSaveApi(objectSchema, recordId, fields, ctx),
         initFetch: recordId != 'new',
-        body: await getFormBody(fields, formFields, Object.assign({}, ctx, {fieldGroups: objectSchema.field_groups})),
+        body: {
+          type: 'wrapper',
+          className: 'p-0 m-0',
+          body: await getFormBody(fields, formFields, Object.assign({}, ctx, {fieldGroups: objectSchema.field_groups})),
+          hiddenOn: "${editFormInited != true}",
+        },
         panelClassName:'m-0 sm:rounded-lg shadow-none border-none',
         bodyClassName: 'p-0',
         className: 'steedos-amis-form',
-        hiddenOn: "${editFormInited != true}",
         onEvent: {
           "submitSucc": {
             "weight": 0,
