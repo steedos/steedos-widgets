@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-08 10:32:17
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-15 17:15:12
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2024-01-16 13:27:47
  * @Description: 
  */
 
@@ -29,7 +29,12 @@ export const AmisRecordService = async (props) => {
     schema.className = className;
   }
   if (style) {
-    Object.assign(schema.style, style);
+    if(schema.style){
+      Object.assign(schema.style, style);
+    }
+    else{
+      schema.style = style;
+    }
   }
   // console.log(`AmisRecordService====schema==>`, schema)
   return schema
