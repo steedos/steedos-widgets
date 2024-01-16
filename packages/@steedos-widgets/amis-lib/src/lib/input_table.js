@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-16 11:54:34
+ * @LastEditTime: 2024-01-16 14:58:51
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -1028,7 +1028,7 @@ export const getAmisInputTableSchema = async (props) => {
         return item.depend_on;
     });
     if (isAnyFieldHasDependOn) {
-        // 有任意一个子字段有depend_on属性时，强制设置禁用静态模式
+        // 有任意一个子字段有depend_on属性时，强制设置禁用静态模式，因为strictMode模式下，dependOn的字段值变更后，不会rerender整个子表
         Object.assign(inputTableSchema, {
             strictMode: false
         });
