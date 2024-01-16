@@ -519,34 +519,29 @@ export async function getRecordDetailSchema(objectName, appId, props = {}){
                 "label": "对象表单",
                 "objectApiName": "${objectName}",
                 "recordId": "${recordId}",
-                "id": "u:d4a495811d57",
                 appId: appId
             }
         ],
-        "id": "u:5d4e7e3f6ecc"
     };
     const related = {
         "title": i18next.t('frontend_record_detail_tab_related'),
-        "className": "px-0 pt-4",
+        "className": "px-0 py-4",
         "body": [
             {
                 "type": "steedos-object-related-lists",
                 "label": "相关列表",
                 "objectApiName": "${objectName}",
                 "recordId": "${recordId}",
-                "id": "u:3b85b7b7a7f6",
                 appId: appId
             }
         ],
-        "id": "u:1a0326aeec2b"
     }
     const content = {
         "type": "tabs",
-        "className": "sm:mt-3 bg-white sm:rounded sm:border border-gray-300 p-4",
+        "className": "steedos-record-tabs p-4 m-0",
         "tabs": [
             detailed
         ],
-        "id": "u:a649e4094a12"
     };
     if(relatedLists.length){
         content.tabs.push(related)
@@ -603,7 +598,7 @@ export async function getRecordServiceSchema(objectName, appId, props = {}, body
             body: {
                 "type": "service",
                 id: serviceId,
-                className: 'steedos-record-service p-0 md:p-2',
+                className: 'steedos-record-service p-0',
                 api: await getReadonlyFormInitApi(uiSchema, props.recordId, fields, props),
                 body:  {
                     "type": "wrapper",
