@@ -377,7 +377,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
   let body = [
     {
       "type": "wrapper",
-      "className": "p-4",
+      "className": "p-4 bg-gray-100 border-b sm:sticky top-0 z-10",
       "body": [
         {
           "type": "grid",
@@ -424,7 +424,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
 
     body.push({
       "type": "form",
-      "className": "p-4 pb-0 bg-white compact-layouts",
+      "className": "p-4 bg-white compact-layouts",
       "wrapWithPanel": false,
       "actions": [],
       "body": details,
@@ -507,7 +507,7 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
         "className": "flex justify-between"
       }
     ],
-    "className": "p-3"
+    "className": "pt-0 pb-2 px-0"
   };
   return recordRelatedListHeader;
 }
