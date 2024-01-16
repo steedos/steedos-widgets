@@ -86,7 +86,7 @@ function getReadonlyFormAdaptor(object, fields, options){
         payload.data.__objectName = "${object.name}";
         payload.data.record = record;
 
-        payload.data.name = record.${object.NAME_FIELD_KEY || 'name'};
+        payload.data.NAME_FIELD_VALUE = record.${object.NAME_FIELD_KEY || 'name'};
         payload.data._master = {
             record: record,
             objectName: "${object.name}",
