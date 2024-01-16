@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-15 15:50:40
+ * @LastEditTime: 2024-01-16 11:14:34
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -575,88 +575,73 @@ export async function getRecordDetailSchema(objectName, appId, props = {}){
     }
 }
 
-export async function getRecordServiceSchema(objectName, appId, props = {}) {
+export async function getRecordServiceSchema(objectName, appId, props = {}, body) {
     const uiSchema = await getUISchema(objectName);
     const fields = _.values(uiSchema.fields);
+    const serviceId = `u:steedos-record-service-${objectName}`;
     return {
         uiSchema,
         amisSchema: {
-            "type": "service",
-            className: 'steedos-record-service p-0 md:p-2',
-            api: await getReadonlyFormInitApi(uiSchema, props.recordId, fields, props),
-            "body":  {
-                "type": "wrapper",
-                "className": "p-0 m-0",
-                "body": [],
-                "hiddenOn": "${recordLoaded != true}"
-              },
-            data: {
-                "_master.objectName": "${objectName}",
-                "_master.recordId": "${recordId}",
-                ...(props.data || {})
-            },
-            "style": {
-                // "padding": "var(--Page-body-padding)",
-                ...props.style
-            },
+            type: 'service',
+            className: "p-0 m-0",
             onEvent: {
                 [`@data.changed.${objectName}`]: {
                     "actions": [
-                      {
-                        "actionType": "reload",
-                        "expression": "this.__deletedRecord != true"
-                      },
-                      {
-                        "actionType": "custom",
-                        "script": "window.goBack()",
-                        "expression": "this.__deletedRecord === true"
-                      }
-                    ]
-                },
-                // 如果定义了fetchInited,则无法接收到广播事件@data.changed
-                // "fetchInited": {  
-                //     "weight": 0,
-                //     "actions": [
-                //     //   {
-                //     //     actionType: 'broadcast',
-                //     //     eventName: "recordLoaded",
-                //     //     args: {
-                //     //       eventName: "recordLoaded"
-                //     //     },
-                //     //     data: {
-                //     //       objectName: "${event.data.__objectName}",
-                //     //       record: "${event.data.__record}"
-                //     //     },
-                //     //     expression: "${event.data.__response.error != true}"
-                //     //   },
-                //       {
-                //         "actionType": "setValue",
-                //         "args": {
-                //            value: {
-                //             "recordLoaded": true,
-                //            }
-                //         },
-                //         expression: "${event.data.__response.error != true}"
-                //     }
-                //     ]
-                // },
-                "recordLoaded": {
-                    "actions": [
                         {
                             "actionType": "reload",
-                            "data": {
-                                "name": `\${record.${uiSchema.NAME_FIELD_KEY || 'name'}}`,
-                                "_master.record": `\${record}`,
-                                // 不清楚reload 如何给对象下的某个key复制, 所以此处重复设置_master的objectName、recordId
-                                "_master.objectName": "${objectName}",
-                                "_master.recordId": "${recordId}"
-                            }
+                            "componentId": serviceId,
+                            "expression": "this.__deletedRecord != true"
+                        },
+                        {
+                            "actionType": "custom",
+                            "script": "window.goBack()",
+                            "expression": "this.__deletedRecord === true"
                         }
                     ]
                 },
-                ...props.onEvent
+            },
+            body: {
+                "type": "service",
+                id: serviceId,
+                className: 'steedos-record-service p-0 md:p-2',
+                api: await getReadonlyFormInitApi(uiSchema, props.recordId, fields, props),
+                body:  {
+                    "type": "wrapper",
+                    "className": "p-0 m-0",
+                    "body": body || [],
+                    "hiddenOn": "${recordLoaded != true}"
+                  },
+                data: {
+                    "_master.objectName": "${objectName}",
+                    "_master.recordId": "${recordId}",
+                    ...(props.data || {})
+                },
+                "style": {
+                    // "padding": "var(--Page-body-padding)",
+                    ...props.style
+                },
+                onEvent: {
+                    // 如果定义了fetchInited,则无法接收到广播事件@data.changed
+                    "fetchInited": {  
+                        "weight": 0,
+                        "actions": [
+                            {
+                                actionType: 'broadcast',
+                                eventName: "recordLoaded",
+                                data: {
+                                    objectName: "${event.data.__objectName}",
+                                    record: "${event.data.record}"
+                                },
+                                expression: "${event.data.__response.error != true}"
+                            },
+                        ]
+                    },
+                    ...props.onEvent
+                }
             }
         }
+        
+        
     }
 }
 

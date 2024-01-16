@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-15 15:53:14
+ * @LastEditTime: 2024-01-16 17:47:02
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -33,11 +33,11 @@ function getAmisStaticFieldType(type: string, data_type?: string, options?: any)
     } else if (type === 'toggle') {
         return "switch";
     } else if (type === 'currency') {
-        return "number";
+        return "input-number";
     } else if (type === 'autonumber') {
         return "input-text" //不可以用text，因为会出现字段label显示不出来的问题
     } else if (type === 'percent') {
-        return "number";
+        return "input-number";
     } else if (type === 'formula' || type === 'summary') {
         return getAmisStaticFieldType(data_type, null, options);
     } else if (type === 'location') {
@@ -411,25 +411,24 @@ export const AmisSteedosField = async (props) => {
                 Object.assign(schema, {
                     "defaultColor": null
                 });
-            } else if (steedosField.type === "number") {
+            } else if (steedosField.type === "number" || steedosField.type === 'currency') {
                 // amis input-number和number组件中的precision表示小数位数，并不是魔方平台的精度概念，要转换下，否则小数点后会显示很多的0
                 Object.assign(schema, {
                     "precision": steedosField.scale || 0
                 });
             } else if (steedosField.type === "table") {
                 if (steedosField.subFields) {
-                    // console.log(`convertData ======>`, field, convertData)
+                    // console.log(`convertData ======>`, steedosField, convertData)
                     let tableFields = [];
-                    for (const subField of field.subFields) {
+                    for (const subField of steedosField.subFields) {
                         if (!subField.name.endsWith(".$")) {
-                            const subFieldName = subField.name.replace(`${field._prefix || ''}${field.name}.$.`, '').replace(`${field.name}.`, '');
+                            const subFieldName = subField.name.replace(`${steedosField._prefix || ''}${steedosField.name}.$.`, '').replace(`${steedosField.name}.`, '');
                             // const gridSub = await convertSFieldToAmisField(Object.assign({}, subField, {name: subFieldName, isTableField: true}), readonly, ctx);
                             tableFields.push(Object.assign({}, subField, { name: subFieldName }))
                         }
                     }
                     Object.assign(schema, {
                         type: 'steedos-input-table',
-                        showIndex: true,
                         editable: false,
                         addable: false,
                         removable: false,
@@ -475,6 +474,12 @@ export const AmisSteedosField = async (props) => {
                 // 附件static模式先保持原来的逻辑，依赖_display，审批王中相关功能在creator中
                 // convertSFieldToAmisField中会合并steedosField.amis，所以也不需要再次合并steedosField.amis，直接return就好
                 return await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
+            }else if(steedosField.type === 'formula' || steedosField.type === 'summary'){
+                if(steedosField.data_type === 'number' || steedosField.data_type === 'currency'){
+                    Object.assign(schema, {
+                        "precision": steedosField.scale || 0
+                    });
+                }
             }
             Object.assign(schema, steedosField.amis || {});
             return schema;

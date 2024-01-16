@@ -86,7 +86,7 @@ function getReadonlyFormAdaptor(object, fields, options){
         payload.data.__objectName = "${object.name}";
         payload.data.record = record;
 
-        payload.data.name = record.${object.NAME_FIELD_KEY || 'name'};
+        payload.data.NAME_FIELD_VALUE = record.${object.NAME_FIELD_KEY || 'name'};
         payload.data._master = {
             record: record,
             objectName: "${object.name}",
@@ -257,7 +257,7 @@ export async function getEditFormInitApi(object, recordId, fields, options){
         cache: API_CACHE,
         requestAdaptor: `
             // 所有不想在network请求中发送的数据都应该从data中分离出来，data变量只需要留下query才需要发送出去
-            var { recordId, objectName, uiSchema, global, context, ...data} = api.data;
+            var { recordId, objectName, uiSchema, global, context, _master, ...data} = api.data;
             if(!recordId){
                 // 新建则不请求任何数据
                 data.query = "{data:" + objectName + "(filters: " + JSON.stringify(["_id", "=", null]) + ", top: 1){_id}}";
@@ -332,15 +332,17 @@ export async function getEditFormInitApi(object, recordId, fields, options){
             }
             // data下的变量需要在保存接口（getSaveApi）中被删除。
             payload.data = {
-                ...initialValues
+                ...initialValues,
+                editFormInited: true
             }
             ${options.initApiAdaptor || ''}
+            // console.log('getEditFormInitApi======>', payload);
             return payload;
         `,
-        responseData: {
-            initialValues: "$$",
-            editFormInited: true
-        },
+        // responseData: {
+        //     initialValues: "$$",
+        //     editFormInited: true
+        // },
         data: data,
         headers: {
             Authorization: "Bearer ${context.tenantId},${context.authToken}"

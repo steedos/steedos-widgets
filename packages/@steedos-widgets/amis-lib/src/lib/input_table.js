@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-15 17:50:02
+ * @LastEditTime: 2024-01-16 14:58:51
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -943,38 +943,44 @@ export const getAmisInputTableSchema = async (props) => {
     if (!props.primaryKey) {
         props.primaryKey = "_id";
     }
+    let showOperation = props.showOperation;
+    if(showOperation !== false){
+        showOperation = true;
+    }
     let serviceId = getComponentId("table_service", props.id);
     let buttonsForColumnOperations = [];
     let inlineEditMode = props.inlineEditMode;
     let showAsInlineEditMode = inlineEditMode && props.editable;
-    if (props.editable) {
-        let showEditButton = true;
-        if (showAsInlineEditMode) {
-            // 始终显示弹出子表表单按钮，如果需要判断只在有列被隐藏时才需要显示弹出表单按钮放开下面的if逻辑就好
-            showEditButton = true;
-            // // inline edit模式下只在有列被隐藏时才需要显示编辑按钮
-            // if (props.columns && props.columns.length > 0 && props.columns.length < props.fields.length) {
-            //     showEditButton = true;
-            // }
-            // else {
-            //     showEditButton = false;
-            // }
+    if(showOperation){
+        if (props.editable) {
+            let showEditButton = true;
+            if (showAsInlineEditMode) {
+                // 始终显示弹出子表表单按钮，如果需要判断只在有列被隐藏时才需要显示弹出表单按钮放开下面的if逻辑就好
+                showEditButton = true;
+                // // inline edit模式下只在有列被隐藏时才需要显示编辑按钮
+                // if (props.columns && props.columns.length > 0 && props.columns.length < props.fields.length) {
+                //     showEditButton = true;
+                // }
+                // else {
+                //     showEditButton = false;
+                // }
+            }
+            // 编辑时显示编辑按钮
+            if (showEditButton) {
+                let buttonEditSchema = await getButtonEdit(props, showAsInlineEditMode);
+                buttonsForColumnOperations.push(buttonEditSchema);
+            }
         }
-        // 编辑时显示编辑按钮
-        if (showEditButton) {
-            let buttonEditSchema = await getButtonEdit(props, showAsInlineEditMode);
-            buttonsForColumnOperations.push(buttonEditSchema);
+        else {
+            // 只读时显示查看按钮
+            // 如果想只在有列被隐藏时才需要显示查看按钮可以加上判断：if (props.columns && props.columns.length > 0 && props.columns.length < props.fields.length)
+            let buttonViewSchema = await getButtonView(props);
+            buttonsForColumnOperations.push(buttonViewSchema);
         }
-    }
-    else {
-        // 只读时显示查看按钮
-        // 如果想只在有列被隐藏时才需要显示查看按钮可以加上判断：if (props.columns && props.columns.length > 0 && props.columns.length < props.fields.length)
-        let buttonViewSchema = await getButtonView(props);
-        buttonsForColumnOperations.push(buttonViewSchema);
-    }
-    if (props.removable) {
-        let buttonDeleteSchema = await getButtonDelete(props);
-        buttonsForColumnOperations.push(buttonDeleteSchema);
+        if (props.removable) {
+            let buttonDeleteSchema = await getButtonDelete(props);
+            buttonsForColumnOperations.push(buttonDeleteSchema);
+        }
     }
     let inputTableSchema = {
         "type": "input-table",
@@ -1022,7 +1028,7 @@ export const getAmisInputTableSchema = async (props) => {
         return item.depend_on;
     });
     if (isAnyFieldHasDependOn) {
-        // 有任意一个子字段有depend_on属性时，强制设置禁用静态模式
+        // 有任意一个子字段有depend_on属性时，强制设置禁用静态模式，因为strictMode模式下，dependOn的字段值变更后，不会rerender整个子表
         Object.assign(inputTableSchema, {
             strictMode: false
         });

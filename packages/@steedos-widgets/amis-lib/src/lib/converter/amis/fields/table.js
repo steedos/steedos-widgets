@@ -513,12 +513,11 @@ export async function getTableColumns(fields, options){
         //增加quickEdit属性，实现快速编辑
         const quickEditSchema = allowEdit ? await getQuickEditSchema(field, options) : allowEdit;
         let className = "";
-        //crud内默认换行
-        // if(field.wrap != true){
-        //     className += " whitespace-nowrap "
-        // }else{
-        //     className += " break-words "
-        // }
+        if(field.wrap != true){
+            className += " whitespace-nowrap "
+        }else{
+            className += " break-words "
+        }
         let columnItem;
         if((field.is_name || field.name === options.labelFieldName) && options.objectName === 'cms_files'){
             const previewFileScript = `
@@ -1052,7 +1051,7 @@ export async function getTableSchema(fields, options){
             }
             return {
                 mode: "cards",
-                perPageAvailable: [5, 10, 20, 50, 100, 500],
+                perPageAvailable: [20, 50, 100, 500],
                 name: "thelist",
                 headerToolbarClassName: "py-2 px-2 border-gray-300 border-solid border-b",
                 className: "",
@@ -1085,7 +1084,7 @@ export async function getTableSchema(fields, options){
 
     return {
         mode: "table",
-        perPageAvailable: [5, 10, 20, 50, 100, 500],
+        perPageAvailable: [20, 50, 100, 500],
         name: "thelist",
         headerToolbarClassName: "py-2 px-2 border-gray-300 border-solid border-b",
         className: "",

@@ -348,8 +348,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
                 },
                 {
                   "type": "tpl",
-                  "tpl": "${name}",
-                  // "tpl": "${(record && uiSchema && record[uiSchema.NAME_FIELD_KEY]) || name}",
+                  "tpl": "${NAME_FIELD_VALUE}",
                   "inline": false,
                   "wrapperComponent": "",
                   "className": "record-detail-header-name leading-5 text-xl font-bold"
@@ -437,7 +436,6 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
     type: 'service',
     id: `page_readonly_${name}_header`,
     name: `page`,
-    data: { objectName: name, _id: recordId, recordPermissions: objectSchema.permissions, uiSchema: objectSchema, record: "${record}" },
     body: body, 
     className: ''
   }

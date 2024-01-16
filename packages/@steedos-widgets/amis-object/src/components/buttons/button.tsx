@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-21 10:27:43
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-13 16:12:19
+ * @LastEditTime: 2024-01-16 11:15:03
  * @Description: 
  */
 import React, { useEffect, useState } from 'react'
@@ -72,7 +72,7 @@ export const AmisObjectButton = (props) => {
             schema.className = schema.className + ' steedos-object-button ' + className;
         }
         
-        const renderData = Object.assign(data, {objectName: objectName, app_id: appId, className: className});
+        const renderData: any = Object.assign({}, {objectName: objectName, app_id: appId, className: className});
         if(data._id){
             renderData.recordId = data._id
         }

@@ -82,28 +82,7 @@ export async function getRecordPageInitSchema(objectApiName){
             "label": "标题面板",
             "objectApiName": "${objectName}",
             "recordId": "${recordId}",
-            "onEvent": {
-                "recordLoaded": {
-                    "actions": [
-                        {
-                            "actionType": "setValue",
-                            "args": {
-                              "value": {
-                                "recordLoaded": true,
-                              }
-                            }
-                        },
-                        {
-                            "actionType": "reload",
-                            "data": {
-                                "name": `\${record.${uiSchema?.NAME_FIELD_KEY || 'name'}}`,
-                                "record": `\${record}`,
-                                "recordLoaded": true,
-                            }
-                        }
-                    ]
-                }
-            }
+            "onEvent": {}
         }
     ];
     let contentBody = {
