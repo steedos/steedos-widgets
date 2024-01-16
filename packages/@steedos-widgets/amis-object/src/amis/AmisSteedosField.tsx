@@ -429,7 +429,6 @@ export const AmisSteedosField = async (props) => {
                     }
                     Object.assign(schema, {
                         type: 'steedos-input-table',
-                        showIndex: true,
                         editable: false,
                         addable: false,
                         removable: false,
