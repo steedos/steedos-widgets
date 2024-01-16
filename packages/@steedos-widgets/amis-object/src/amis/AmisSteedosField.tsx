@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-15 15:53:14
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2024-01-16 17:17:35
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -418,11 +418,11 @@ export const AmisSteedosField = async (props) => {
                 });
             } else if (steedosField.type === "table") {
                 if (steedosField.subFields) {
-                    // console.log(`convertData ======>`, field, convertData)
+                    // console.log(`convertData ======>`, steedosField, convertData)
                     let tableFields = [];
-                    for (const subField of field.subFields) {
+                    for (const subField of steedosField.subFields) {
                         if (!subField.name.endsWith(".$")) {
-                            const subFieldName = subField.name.replace(`${field._prefix || ''}${field.name}.$.`, '').replace(`${field.name}.`, '');
+                            const subFieldName = subField.name.replace(`${steedosField._prefix || ''}${steedosField.name}.$.`, '').replace(`${steedosField.name}.`, '');
                             // const gridSub = await convertSFieldToAmisField(Object.assign({}, subField, {name: subFieldName, isTableField: true}), readonly, ctx);
                             tableFields.push(Object.assign({}, subField, { name: subFieldName }))
                         }
