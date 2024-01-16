@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-09 13:25:53
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2024-01-16 11:41:04
  * @Description: 
  */
 import './AmisObjectListview.less';
@@ -260,7 +260,6 @@ export const AmisObjectListView = async (props) => {
                               console.error(e)
                             }
                             payload.data = schema.amisSchema;
-                            console.log("payload================>", payload)
                             resolve(payload)
                           });
                         });
