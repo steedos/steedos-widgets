@@ -1051,7 +1051,7 @@ export async function getTableSchema(fields, options){
             }
             return {
                 mode: "cards",
-                perPageAvailable: [5, 10, 20, 50, 100, 500],
+                perPageAvailable: [20, 50, 100, 500],
                 name: "thelist",
                 headerToolbarClassName: "py-2 px-2 border-gray-300 border-solid border-b",
                 className: "",
@@ -1084,7 +1084,7 @@ export async function getTableSchema(fields, options){
 
     return {
         mode: "table",
-        perPageAvailable: [5, 10, 20, 50, 100, 500],
+        perPageAvailable: [20, 50, 100, 500],
         name: "thelist",
         headerToolbarClassName: "py-2 px-2 border-gray-300 border-solid border-b",
         className: "",
