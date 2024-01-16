@@ -341,7 +341,9 @@ export async function getObjectCRUD(objectSchema, fields, options){
               return payload;
           `
         },
-        rowClassNameExpr: options.rowClassNameExpr
+        // 外层data发生变化的时候, 不会重新渲染rowClassNameExpr, 所以先用css标记tr唯一标识
+        // 使用表达式给tr添加初始选中状态
+        rowClassNameExpr: options.rowClassNameExpr || "<%= data._id === data.recordId ? 'steedos-record-tr steedos-record-tr-' + data._id + ' steedos-record-selected' : 'steedos-record-tr steedos-record-tr-' + data._id %>" 
       }, bodyProps);
 
     }

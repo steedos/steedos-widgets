@@ -312,7 +312,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
     backButtonsSchema = getBackButtonSchema();
   }
 
-  // console.log(`getObjectRecordDetailHeader==>`, amisButtonsSchema)
+  console.log(`getObjectRecordDetailHeader==>`, amisButtonsSchema)
   
   const reg = new RegExp('_', 'g');
   const standardIcon = icon && icon.replace(reg, '-');
@@ -437,7 +437,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
     type: 'service',
     id: `page_readonly_${name}_header`,
     name: `page`,
-    data: { objectName: name, _id: recordId, recordPermissions: objectSchema.permissions, uiSchema: objectSchema, record: "${record}" },
+    // data: { objectName: name, _id: recordId, recordPermissions: objectSchema.permissions, uiSchema: objectSchema, record: "${record}" },
     body: body, 
     className: ''
   }

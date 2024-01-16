@@ -2,9 +2,11 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-04-12 15:00:42
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-09-11 13:57:02
+ * @LastEditTime: 2024-01-16 10:32:11
  * @Description: 
  */
+import './PageObject.less';
+
 import { getUISchema } from '@steedos-widgets/amis-lib'
 
 export const PageObject = async (props) => {
@@ -74,6 +76,20 @@ export const PageObject = async (props) => {
                     "visibleOn": "${pageType !== 'record' && pageType !== 'list'}"
                 }
             ]
-        }
+        },
+        // onEvent: {
+        //     "recordLoaded": {
+        //       "actions": [
+        //         {
+        //           "actionType": "setValue",
+        //           "args": {
+        //             "value": {
+        //               "steedos_selected_recordId": "${event.data.record._id}"
+        //             }
+        //           }
+        //         }
+        //       ]
+        //     }
+        // }
     }
 }

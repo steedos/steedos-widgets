@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-08 10:32:17
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-15 15:52:55
+ * @LastEditTime: 2024-01-15 17:15:12
  * @Description: 
  */
 
@@ -24,10 +24,7 @@ export const AmisRecordService = async (props) => {
   if(props.$$editor){
     options.isEditor = true;
   }
-  const schema = (await getRecordServiceSchema(objectApiName, appId, options)).amisSchema;
-  if (body) {
-    schema.body.body = body;
-  }
+  const schema = (await getRecordServiceSchema(objectApiName, appId, options, body)).amisSchema;
   if(className){
     schema.className = className;
   }
