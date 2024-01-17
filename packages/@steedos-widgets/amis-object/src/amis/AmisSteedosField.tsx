@@ -225,6 +225,8 @@ export const AmisSteedosField = async (props) => {
                                             source: `\${_display.${steedosField.name}|asArray}`,
                                             items: { 
                                                 type: 'static', 
+                                                labelClassName: "hidden",
+                                                label: false,
                                                 className: 'm-0',
                                                 tpl: `<a href="/app/-/\${objectName}/view/\${value}" target="_blank">\${label}</a>`, 
                                                 popOver: fieldRefObject.compactLayouts ? {
