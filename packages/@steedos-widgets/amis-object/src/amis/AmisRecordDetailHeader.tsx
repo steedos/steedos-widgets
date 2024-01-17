@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-15 17:32:39
+ * @LastEditTime: 2024-01-17 17:30:09
  * @Description: 
  */
 import './AmisRecordDetailHeader.less'
@@ -11,7 +11,7 @@ import { getRecordDetailHeaderSchema , getUISchema} from '@steedos-widgets/amis-
 export const AmisRecordDetailHeader = async (props) => {
   // console.log(`AmisRecordDetailHeader=====>`, props)
   //sticky在最新版ios上存在bug，因此暂时去除手机版sticky
-  const { className = 'z-10 p-0 bg-gray-100', schemaFilter, showButtons, showBackButton } = props;
+  const { className = 'sm:sticky top-0 z-10 p-0 bg-gray-100', schemaFilter, showButtons, showBackButton } = props;
   const objectUiSchema = await getUISchema(props.objectApiName || "space_users", false);
   const defaultOnEvent = {}
   const { $schema, recordId, onEvent = defaultOnEvent, showRecordTitle = true } = props;

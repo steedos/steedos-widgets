@@ -538,7 +538,8 @@ export async function getRecordDetailSchema(objectName, appId, props = {}){
     }
     const content = {
         "type": "tabs",
-        "className": "steedos-record-tabs p-4 m-0",
+        "className": "steedos-record-tabs bg-white p-4 m-0 mt-2 border-y",
+        "contentClassName": "bg-none",
         "tabs": [
             detailed
         ],
@@ -546,7 +547,7 @@ export async function getRecordDetailSchema(objectName, appId, props = {}){
     if(relatedLists.length){
         content.tabs.push(related)
     }
-    content.tabs = reverse(content.tabs)
+    // content.tabs = reverse(content.tabs)
     return {
         uiSchema,
         amisSchema: {

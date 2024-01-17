@@ -377,7 +377,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
   let body = [
     {
       "type": "wrapper",
-      "className": "p-4 bg-gray-100 border-b sm:sticky top-0 z-10",
+      "className": "p-4 bg-gray-100 border-b",
       "body": [
         {
           "type": "grid",
@@ -423,12 +423,16 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
     })
 
     body.push({
-      "type": "form",
-      "className": "p-4 bg-white compact-layouts",
-      "wrapWithPanel": false,
-      "actions": [],
-      "body": details,
-      "hiddenOn": "${recordLoaded != true}"
+      "type": "wrapper",
+      "body": {
+        "type": "form",
+        "className": "gap-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-5 3xl:grid-cols-8 4xl:grid-cols-8 5xl:grid-cols-10", //max-h-12 overflow-hidden 
+        "wrapWithPanel": false,
+        "actions": [],
+        "body": details,
+        "hiddenOn": "${recordLoaded != true}"
+      },
+      "className": "steedos-record-compact-layouts p-4 bg-white compact-layouts border-b"
     })
   }
 
@@ -507,7 +511,7 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
         "className": "flex justify-between"
       }
     ],
-    "className": "pt-0 pb-2 px-0"
+    "className": "steedos-record-related-header py-2 px-0"
   };
   return recordRelatedListHeader;
 }

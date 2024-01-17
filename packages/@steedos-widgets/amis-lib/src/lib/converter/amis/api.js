@@ -332,17 +332,16 @@ export async function getEditFormInitApi(object, recordId, fields, options){
             }
             // data下的变量需要在保存接口（getSaveApi）中被删除。
             payload.data = {
-                ...initialValues,
-                editFormInited: true
+                ...initialValues
             }
             ${options.initApiAdaptor || ''}
             // console.log('getEditFormInitApi======>', payload);
             return payload;
         `,
-        // responseData: {
-        //     initialValues: "$$",
-        //     editFormInited: true
-        // },
+        responseData: {
+            "&": "$$",
+            editFormInited: true
+        },
         data: data,
         headers: {
             Authorization: "Bearer ${context.tenantId},${context.authToken}"
