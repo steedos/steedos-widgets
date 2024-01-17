@@ -377,7 +377,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
   let body = [
     {
       "type": "wrapper",
-      "className": "p-4 bg-gray-100 border-b sm:sticky top-0 z-10",
+      "className": "p-4 bg-gray-100 border-b",
       "body": [
         {
           "type": "grid",
