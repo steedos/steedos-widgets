@@ -511,7 +511,7 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
         "className": "flex justify-between"
       }
     ],
-    "className": "steedos-record-related-header pt-0 pb-2 px-0"
+    "className": "steedos-record-related-header py-2 px-0"
   };
   return recordRelatedListHeader;
 }
