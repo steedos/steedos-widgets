@@ -1,13 +1,13 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-04 09:24:11
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2024-01-16 13:45:42
  * @Description: 
  */
 
 export const AmisGlobalHeader = async (props) => {
-    const { logoSrc } = props
+    const { logoSrc, customButtons } = props
     const isMobile = window.innerWidth <= 768
 
     const schema = {
@@ -100,39 +100,7 @@ export const AmisGlobalHeader = async (props) => {
                                 "label": "Global Header",
                                 className: 'flex flex-nowrap gap-x-3 items-center',
                                 logoutScript: "window.signOut();",
-                                customButtons: [
-                                    {
-                                        "type": "button",
-                                        "className": "toggle-sidebar",
-                                        "visibleOn": "${AND(app.showSidebar,!" + isMobile + ")}",
-                                        "onEvent": {
-                                            "click": {
-                                                "actions": [
-                                                    {
-                                                        "actionType": "custom",
-                                                        "script": "document.body.classList.toggle('sidebar-open')",
-                                                    }
-                                                ]
-                                            }
-                                        },
-                                        "body": [
-                                            {
-                                                "type": "steedos-icon",
-                                                "category": "utility",
-                                                "name": "rows",
-                                                "colorVariant": "default",
-                                                "id": "u:afc3a08e8cf3",
-                                                "className": "slds-button_icon slds-global-header__icon"
-                                            }
-                                        ],
-                                    },
-                                    {
-                                        "type": "steedos-app-launcher",
-                                        "showAppName": false,
-                                        "appId": "${app.id}",
-                                        "visibleOn": "${isMobile}"
-                                    }
-                                ]
+                                customButtons: customButtons
                             }
                         ],
                     },
