@@ -538,7 +538,8 @@ export async function getRecordDetailSchema(objectName, appId, props = {}){
     }
     const content = {
         "type": "tabs",
-        "className": "steedos-record-tabs bg-white p-4 m-0",
+        "className": "steedos-record-tabs bg-white p-4 m-0 mt-2 border-y",
+        "contentClassName": "bg-none",
         "tabs": [
             detailed
         ],
@@ -598,7 +599,7 @@ export async function getRecordServiceSchema(objectName, appId, props = {}, body
             body: {
                 "type": "service",
                 id: serviceId,
-                className: 'steedos-record-service p-0 bg-white',
+                className: 'steedos-record-service p-0',
                 api: await getReadonlyFormInitApi(uiSchema, props.recordId, fields, props),
                 body:  {
                     "type": "wrapper",

@@ -54,7 +54,7 @@ export const PageObject = async (props) => {
                     "type": "wrapper",
                     "size": "none",
                     "className": {
-                        "overflow-y-auto p-0 flex-1 focus:outline-none lg:order-last h-full bg-white": "${display == 'split'}",
+                        "overflow-y-auto p-0 flex-1 focus:outline-none lg:order-last h-full": "${display == 'split'}",
                         'h-full': "${display != 'split'}",
                     },
                     "body": {
