@@ -426,7 +426,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
       "type": "wrapper",
       "body": {
         "type": "form",
-        "className": "max-h-12 overflow-hidden gap-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-5 3xl:grid-cols-8 4xl:grid-cols-8 5xl:grid-cols-10",
+        "className": "gap-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-5 3xl:grid-cols-8 4xl:grid-cols-8 5xl:grid-cols-10", //max-h-12 overflow-hidden 
         "wrapWithPanel": false,
         "actions": [],
         "body": details,
