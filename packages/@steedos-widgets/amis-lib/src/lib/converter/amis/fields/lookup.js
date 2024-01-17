@@ -661,8 +661,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         labelField: referenceTo.labelField.name,
         valueField: referenceTo.valueField.name,
         // disabledOn: this._master目的是相关表新建时禁止编辑关联字段； this.relatedKey目的是相关表编辑时禁止编辑关联字段，多选字段可以编辑。
-        disabledOn:  `${readonly}`,
-        hiddenOn: `( (this._master && (this._master.relatedKey ==='${field.name}')) || ((this.relatedKey ==='${field.name}') && (${field.multiple} != true)) )`,
+        disabledOn:  `${readonly} || ( (this._master && (this._master.relatedKey ==='${field.name}')) || ((this.relatedKey ==='${field.name}') && (${field.multiple} != true)) )`,
         modalMode: 'dialog', //TODO 设置 dialog 或者 drawer，用来配置弹出方式
         source: source,
         size: "lg",
