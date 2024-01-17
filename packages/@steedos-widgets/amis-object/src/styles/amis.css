@@ -10,6 +10,7 @@
     --Table-borderColor: #e5e7eb;
     --Table-borderWidth: 1px;
     --Table-fontSize: 13px;
+    --Table-fixedRight-boxShadow: none;
     --Table-thead-borderColor: rgb(209 213 219);
     --Table-thead-fontSize: 13px;
     --Table-thead-bg: rgb(243 244 246);
