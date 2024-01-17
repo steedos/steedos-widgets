@@ -13,6 +13,7 @@
     --Table-thead-borderColor: rgb(209 213 219);
     --Table-thead-fontSize: 13px;
     --Table-thead-bg: rgb(243 244 246);
+    --Table-thead-borderColor: var(--Table-borderColor);
     --Table-toolbar-marginY: 0;
     --TableCell--edge-paddingX: 1rem;
     --TableCell-paddingY: 0.3rem;
@@ -340,3 +341,11 @@ fieldset.antd-Collapse > legend{
     float: left;
 }
 /* === end === */
+
+.steedos-record-related-crud {
+    --Table-thead-bg: white;
+}
+
+.steedos-record-related-crud .antd-Table-table > thead > tr > th:not(:last-child) {
+    border-right: 0px;
+}

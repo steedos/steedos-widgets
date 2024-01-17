@@ -424,7 +424,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
 
     body.push({
       "type": "form",
-      "className": "p-4 bg-white compact-layouts",
+      "className": "p-4 bg-white compact-layouts border-b",
       "wrapWithPanel": false,
       "actions": [],
       "body": details,
@@ -507,7 +507,7 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
         "className": "flex justify-between"
       }
     ],
-    "className": "pt-0 pb-2 px-0"
+    "className": "pt-0 pb-2 px-0 border-b"
   };
   return recordRelatedListHeader;
 }
