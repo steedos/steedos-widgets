@@ -2,12 +2,44 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-16 14:58:51
+ * @LastEditTime: 2024-01-17 17:15:57
  */
 
 import { getFormBody } from './converter/amis/form';
 import { getComparableAmisVersion } from './converter/amis/util';
 import { clone } from 'lodash';
+
+/**
+ * 子表组件字段值中每行数据的键值key移除指定前缀
+ * @param {*} value 子表组件字段值，数组
+ * @param {*} fieldPrefix 字段前缀
+ * @returns 转换后的子表组件字段值
+ */
+function getTableValueWithoutFieldPrefix(value, fieldPrefix){
+    let convertedValue = [];
+    (value || []).forEach((itemValue)=>{
+        var newItemValue = {};
+        for(let n in itemValue){
+            newItemValue[n.replace(new RegExp(`^${fieldPrefix}`), "")] = itemValue[n];
+        }
+        convertedValue.push(newItemValue);
+    });
+    return convertedValue;
+}
+
+/**
+ * 子表组件字段集合属性中每个字段name移除指定前缀
+ * @param {*} fields 子表组件字段集合，数组
+ * @param {*} fieldPrefix 字段前缀
+ * @returns 转换后的子表组件字段值
+ */
+function getTableFieldsWithoutFieldPrefix(fields, fieldPrefix){
+    return (fields || []).map((item) => {
+        const newItem = clone(item);//这里不clone的话，会造成子表组件重新render，从而审批王那边点开子表行编辑窗口时报错
+        newItem.name = newItem.name.replace(new RegExp(`^${fieldPrefix}`), "");
+        return newItem;
+    });
+}
 
 /**
  * @param {*} props 
@@ -301,16 +333,8 @@ function getFormPaginationWrapper(props, form, mode) {
         }
     ];
     let onServiceInitedScript = `
-        var parent = event.data.parent;
-        var fieldValue = event.data.__tableItems;
-        if(parent){
-            // 如果是子行，即在节点嵌套情况下，当前节点如果是children属性下的子节点时，则算出其所属父行的索引值
-            var primaryKey = "${props.primaryKey}";
-            event.data.__parentIndex = _.findIndex(fieldValue, function(item){
-                return item[primaryKey] == parent[primaryKey];
-            });
-        }
-        // 以下脚本是为了解决有时弹出编辑表单时，表单中的值比最后一次编辑保存的值会延迟一拍。
+
+        // 以下脚本解决了有时弹出编辑表单时，表单中的值比最后一次编辑保存的值会延迟一拍。
         // 比如：inlineEditMode模式时，用户在表格单元格中直接修改数据，然后弹出的表单form中并没有包含单元格中修改的内容
         // 另外有的地方在非inlineEditMode模式时也会有这种延迟一拍问题，比如对象字段中下拉框类型字段的”选择项“属性
         // 再比如工作流规则详细页面修改了子表字段”时间触发器“值后，在只读界面点击查看按钮弹出的表单中__tableItems值是修改前的值
@@ -323,6 +347,11 @@ function getFormPaginationWrapper(props, form, mode) {
         // 这里不可以用event.data["${props.name}"]因为amis input talbe有一层单独的作用域，其值会延迟一拍
         // 这里如果不.clone的话，在弹出窗口中显示的子表组件，添加行后点窗口的取消按钮关闭窗口后无法把之前的操作还原，即把之前添加的行自动移除
         let lastestFieldValue = _.clone(wrapperServiceData["${props.name}"] || []);
+        let fieldPrefix = "${props.fieldPrefix}";
+        if(fieldPrefix){
+            let getTableValueWithoutFieldPrefix = new Function('v', 'f', "return (" + ${getTableValueWithoutFieldPrefix.toString()} + ")(v, f)");
+            lastestFieldValue = getTableValueWithoutFieldPrefix(lastestFieldValue, fieldPrefix);
+        }
         //不可以直接像event.data.__tableItems = lastestFieldValue; 这样整个赋值，否则作用域会断
         let mode = "${mode}";
         if(mode === "new"){
@@ -345,6 +374,16 @@ function getFormPaginationWrapper(props, form, mode) {
         event.data.__tableItems.forEach(function(n,i){
             event.data.__tableItems[i] = lastestFieldValue[i];
         });
+
+        var parent = event.data.parent;
+        var fieldValue = event.data.__tableItems;
+        if(parent){
+            // 如果是子行，即在节点嵌套情况下，当前节点如果是children属性下的子节点时，则算出其所属父行的索引值
+            var primaryKey = "${props.primaryKey}";
+            event.data.__parentIndex = _.findIndex(fieldValue, function(item){
+                return item[primaryKey] == parent[primaryKey];
+            });
+        }
     `;
     let schema = {
         "type": "service",
@@ -947,6 +986,11 @@ export const getAmisInputTableSchema = async (props) => {
     if(showOperation !== false){
         showOperation = true;
     }
+    // props.fieldPrefix = "project_milestone_";
+    if (props.fieldPrefix) {
+        props.fields = getTableFieldsWithoutFieldPrefix(props.fields, props.fieldPrefix);
+    }
+    console.log("=getAmisInputTableSchema==props.fields, props.fieldPrefix===", props.fields, props.fieldPrefix);
     let serviceId = getComponentId("table_service", props.id);
     let buttonsForColumnOperations = [];
     let inlineEditMode = props.inlineEditMode;
@@ -1007,6 +1051,11 @@ export const getAmisInputTableSchema = async (props) => {
             });
         }
     };
+    if(props.fieldPrefix){
+        inputTableSchema.pipeIn = (value, data) => {
+            return getTableValueWithoutFieldPrefix(value, props.fieldPrefix);
+        };
+    }
     if (buttonsForColumnOperations.length) {
         inputTableSchema.columns.push({
             "name": "__op__",
