@@ -317,7 +317,7 @@ function getFormPaginationWrapper(props, form, mode) {
         {
             "type": "wrapper",
             "size": "none",
-            "className": "flex justify-end sticky top-0 right-0 left-0 z-20 bg-white -mt-2",
+            "className": "flex justify-end sticky top-0 right-0 left-0 z-20 bg-white",
             "body": [
                 getFormPagination(props, mode)
             ]
