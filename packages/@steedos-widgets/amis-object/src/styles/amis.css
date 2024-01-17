@@ -15,11 +15,12 @@
     --Table-thead-bg: rgb(243 244 246);
     --Table-thead-borderColor: var(--Table-borderColor);
     --Table-toolbar-marginY: 0;
+    --Table-thead-borderWidth: 1px;
+    --Table-bg: white;
     --TableCell--edge-paddingX: 1rem;
     --TableCell-paddingY: 0.3rem;
     --TableCell-paddingX: 0.5rem;
     --TableCell--edge-paddingX: 0.5rem;
-    --Table-thead-borderWidth: 1px;
     --text--muted-color: #d9dcde;
     --Collapse-header-padding: 0px;
     --Collapse-content-fontSize: 14px;
@@ -29,6 +30,7 @@
     --Collapse-header-onHover-bg: #EEEEEE;
     --Collapse-header-padding: 4px;
     --Collapse-content-padding: 4px;
+    --collapse-default-bg-color: unset;
     --Button-height: 2rem;
     --Button-paddingX: 16px;
     --button-size-default-top-right-border-radius: 0.25rem;
@@ -52,6 +54,7 @@
     --DropDown-caret-marginLeft: 0;
     --Tabs--vertical-width: 180px;
     --Tabs-link-maxWidth: 180px;
+    --Tabs-content-bg: unset;
 }
 
 .steedos-header-container .antd-Nav-Menu {

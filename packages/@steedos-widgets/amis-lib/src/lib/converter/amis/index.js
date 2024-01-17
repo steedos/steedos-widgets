@@ -321,7 +321,6 @@ export async function getObjectCRUD(objectSchema, fields, options){
         //   "is-steedos-crud-data-empty": "${!items || COUNT(items) == 0}"
         // },
         bodyClassName: {
-          "bg-white": true,
           "mb-0": true,
           "is-steedos-crud-data-empty": "${!items || COUNT(items) == 0}"
         },
