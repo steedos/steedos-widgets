@@ -1470,12 +1470,15 @@ export async function getTableApi(mainObject, fields, options){
         }
         // SteedosUI.getRef(api.body.$self.$scopeId)?.parent?.getComponentById(setDataToComponentId)?.setData({$count: payload.data.count})
     };
-    const listviewComponent = $(".steedos-object-listview .antd-Table-table");
-    const firstListviewComponent = listviewComponent && listviewComponent[0];
-    if(firstListviewComponent){
-        setTimeout(()=>{
-            firstListviewComponent.scrollIntoView();
-        }, 600);
+    let formFactor = "${options.formFactor}";
+    if(formFactor !== "SMALL"){
+        const listviewComponent = $(".steedos-object-listview .antd-Table-table");
+        const firstListviewComponent = listviewComponent && listviewComponent[0];
+        if(firstListviewComponent){
+            setTimeout(()=>{
+                firstListviewComponent.scrollIntoView();
+            }, 600);
+        }
     }
     ${options.adaptor || ''}
     return payload;
