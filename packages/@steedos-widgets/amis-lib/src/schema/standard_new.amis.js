@@ -15,7 +15,6 @@ export const getSchema = async (uiSchema, ctx) => {
             "objectApiName": "\${objectName}",
             "recordId": "",
             "mode": "edit",
-            "layout": "normal"
         };
 
         if (payload && payload.schema) {

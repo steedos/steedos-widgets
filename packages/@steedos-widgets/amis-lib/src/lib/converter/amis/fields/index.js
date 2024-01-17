@@ -737,7 +737,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
         if(field.is_wide || convertData.type === 'group'){
             convertData.className = 'col-span-2 m-0';
         }else{
-            convertData.className = 'm-1';
+            convertData.className = 'm-0';
         }
         if(readonly){
             convertData.className = `${convertData.className} border-b`
