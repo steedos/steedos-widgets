@@ -598,7 +598,7 @@ export async function getRecordServiceSchema(objectName, appId, props = {}, body
             body: {
                 "type": "service",
                 id: serviceId,
-                className: 'steedos-record-service p-0',
+                className: 'steedos-record-service p-0 bg-white',
                 api: await getReadonlyFormInitApi(uiSchema, props.recordId, fields, props),
                 body:  {
                     "type": "wrapper",
