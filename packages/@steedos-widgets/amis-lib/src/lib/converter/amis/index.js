@@ -484,7 +484,7 @@ async function getFormSchemaWithDataFilter(form, options = {}){
 }
 
 export async function getObjectForm(objectSchema, ctx){
-    const { recordId, formFactor, layout = formFactor === 'SMALL' ? 'normal' : "normal", labelAlign, tabId, appId, defaults, submitSuccActions = [], 
+    const { recordId, formFactor, layout = formFactor === 'SMALL' ? 'normal' : "horizontal", labelAlign, tabId, appId, defaults, submitSuccActions = [], 
       formDataFilter, onFormDataFilter, amisData, env } = ctx;
     const fields = _.values(objectSchema.fields);
     const formFields = getFormFields(objectSchema, ctx);
@@ -578,7 +578,7 @@ export async function getObjectForm(objectSchema, ctx){
 }
 
 export async function getObjectDetail(objectSchema, recordId, ctx){
-    const { formFactor, layout = formFactor === 'SMALL' ? 'normal' : "normal", labelAlign, 
+    const { formFactor, layout = formFactor === 'SMALL' ? 'normal' : "horizontal", labelAlign, 
       formDataFilter, onFormDataFilter, amisData, env } = ctx;
     const fields = _.values(objectSchema.fields);
     const formFields = getFormFields(objectSchema, ctx);
