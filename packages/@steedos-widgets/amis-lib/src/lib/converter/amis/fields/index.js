@@ -762,6 +762,10 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             }
         }
 
+        if(ctx.amisData && ctx.amisData._master && ctx.amisData._master.relatedKey === field.name){
+            convertData.className = `${convertData.className || ''} hidden`
+        }
+
         if(_.isString(baseData.required)){
             if(baseData.required.startsWith("{{")){
                 baseData.requiredOn = `${baseData.required.substring(2, baseData.required.length -2).replace(/formData./g, 'data.')}`;
