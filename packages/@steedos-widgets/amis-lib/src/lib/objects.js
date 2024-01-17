@@ -547,7 +547,7 @@ export async function getRecordDetailSchema(objectName, appId, props = {}){
     if(relatedLists.length){
         content.tabs.push(related)
     }
-    content.tabs = reverse(content.tabs)
+    // content.tabs = reverse(content.tabs)
     return {
         uiSchema,
         amisSchema: {
