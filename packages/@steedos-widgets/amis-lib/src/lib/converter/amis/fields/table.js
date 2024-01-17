@@ -838,7 +838,15 @@ async function getMobileTableColumns(fields, options){
                         "actions": [
                             {
                                 "script": `
-                                    let cms_url = "/api/files/files/"+event.data.versions[0]+"?download=true"
+                                    let cms_url = '';
+                                    let value = event.data.versions[0];
+                                    if(value){
+                                        if(value.url){
+                                            cms_url = value.url;
+                                        }else{
+                                            cms_url = "/api/files/files/"+value+"?download=true"
+                                        }
+                                    }
                                     Steedos.cordovaDownload(encodeURI(Steedos.absoluteUrl(cms_url)), event.data.name);
                                 `,
                                 "actionType": "custom"

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
  * @LastEditors: liaodaxue
- * @LastEditTime: 2023-10-11 17:32:17
+ * @LastEditTime: 2024-01-17 16:00:27
  * @Description: 
  */
 import { Router } from '../../router'
@@ -78,7 +78,7 @@ export function getSelectMap(selectOptions){
 
 export function getNameTplUrl(field, ctx){
     if(ctx.objectName === 'cms_files'){
-        return `\${context.rootUrl}/api/files/files/\${versions[0]}?download=true`
+        return "${(versions[0] && versions[0].url) ? versions[0].url+'?download=true' : context.rootUrl+'/api/files/files/'+versions[0]+'?download=true'}"
     }
     const href = Router.getObjectDetailPath({
         ...ctx,  formFactor: ctx.formFactor, appId: "${appId}", objectName: ctx.objectName || "${objectName}", recordId: `\${${ctx.idFieldName}}`
