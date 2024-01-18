@@ -514,9 +514,13 @@ export async function getTableColumns(fields, options){
         const quickEditSchema = allowEdit ? await getQuickEditSchema(field, options) : allowEdit;
         let className = "";
         if(field.wrap != true){
-            className += " whitespace-nowrap "
+            if(field.wrap != false && field.is_wide){
+                className += " break-words ";
+            }else{
+                className += " whitespace-nowrap ";
+            }
         }else{
-            className += " break-words "
+            className += " break-words ";
         }
         let columnItem;
         if((field.is_name || field.name === options.labelFieldName) && options.objectName === 'cms_files'){
@@ -613,12 +617,12 @@ export async function getTableColumns(fields, options){
             if(field.type === 'textarea'){
                 className += 'min-w-56';
             }
-            if(field.type === 'date'){
-                className += 'date-min-w';
-            }
-            if(field.type === 'datetime'){
-                className += 'datetime-min-w';
-            }
+            // if(field.type === 'date'){
+            //     className += 'date-min-w';
+            // }
+            // if(field.type === 'datetime'){
+            //     className += 'datetime-min-w';
+            // }
 
             //field上的amis属性里的clssname需要单独判断类型合并
             if (typeof field.amis?.className == "object") {

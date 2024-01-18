@@ -1,0 +1,32 @@
+{
+  "packages": [
+    {
+        "package": "ag-grid-enterprise",
+        "urls": [
+            "https://unpkg.steedos.cn/ag-grid-enterprise@31.0.2/dist/ag-grid-enterprise.min.js"
+        ],
+        "library": "agGrid"
+    },
+    {
+        "package": "@steedos-widgets/ag-grid",
+        "urls": [
+            "https://unpkg.com/@steedos-widgets/ag-grid@{{version}}/dist/ag-grid.umd.js",
+            "https://unpkg.com/@steedos-widgets/ag-grid@{{version}}/dist/ag-grid.umd.css"
+        ],
+        "library": "BuilderAgGrid"
+    }
+  ],
+  "components": [
+      {
+          "exportName": "BuilderAgGridMeta",
+          "npm": {
+              "package": "@steedos-widgets/ag-grid"
+          },
+          "url": "https://unpkg.com/@steedos-widgets/ag-grid@{{version}}/dist/meta.js",
+          "urls": {
+              "default": "https://unpkg.com/@steedos-widgets/ag-grid@{{version}}/dist/meta.js",
+              "design": "https://unpkg.com/@steedos-widgets/ag-grid@{{version}}/dist/meta.js"
+          }
+      }
+  ]
+}
