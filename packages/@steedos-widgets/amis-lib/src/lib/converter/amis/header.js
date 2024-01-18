@@ -442,25 +442,25 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
     });
 
     // 注意: 以下注释不能删除. tailwind css 动态编译时会识别以下注释, 生成对应的样式
-    // xl:grid-cols-1
-    // xl:grid-cols-2
-    // xl:grid-cols-3
-    // xl:grid-cols-4
-    // xl:grid-cols-5
-    // xl:grid-cols-6
-    // xl:grid-cols-7
-    // xl:grid-cols-8
-    // xl:grid-cols-9
-    // xl:grid-cols-10
-    // xl:grid-cols-11
-    // xl:grid-cols-12
+    // lg:grid-cols-1
+    // lg:grid-cols-2
+    // lg:grid-cols-3
+    // lg:grid-cols-4
+    // lg:grid-cols-5
+    // lg:grid-cols-6
+    // lg:grid-cols-7
+    // lg:grid-cols-8
+    // lg:grid-cols-9
+    // lg:grid-cols-10
+    // lg:grid-cols-11
+    // lg:grid-cols-12
 
     body.push({
       "type": "wrapper",
       "body": {
         "type": "form",
         // "className": "gap-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-5 3xl:grid-cols-8 4xl:grid-cols-8 5xl:grid-cols-10", //max-h-12 overflow-hidden 
-        "className": `gap-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-${max}`,
+        "className": `gap-2 grid grid-cols-1 lg:grid-cols-${max}`,
         "wrapWithPanel": false,
         "actions": [],
         "body": details,
