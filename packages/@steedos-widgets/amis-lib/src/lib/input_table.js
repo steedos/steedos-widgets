@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-17 17:15:57
+ * @LastEditTime: 2024-01-18 10:29:57
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -21,6 +21,26 @@ function getTableValueWithoutFieldPrefix(value, fieldPrefix){
         var newItemValue = {};
         for(let n in itemValue){
             newItemValue[n.replace(new RegExp(`^${fieldPrefix}`), "")] = itemValue[n];
+        }
+        convertedValue.push(newItemValue);
+    });
+    return convertedValue;
+}
+
+/**
+ * 子表组件字段值中每行数据的键值key补上指定前缀
+ * @param {*} value 子表组件字段值，数组
+ * @param {*} fieldPrefix 字段前缀
+ * @returns 转换后的子表组件字段值
+ */
+function getTableValuePrependFieldPrefix(value, fieldPrefix){
+    let convertedValue = [];
+    (value || []).forEach((itemValue)=>{
+        var newItemValue = {};
+        for(let n in itemValue){
+            if(typeof itemValue[n] !== undefined){
+                newItemValue[`${fieldPrefix}${n}`] = itemValue[n];
+            }
         }
         convertedValue.push(newItemValue);
     });
@@ -990,7 +1010,6 @@ export const getAmisInputTableSchema = async (props) => {
     if (props.fieldPrefix) {
         props.fields = getTableFieldsWithoutFieldPrefix(props.fields, props.fieldPrefix);
     }
-    console.log("=getAmisInputTableSchema==props.fields, props.fieldPrefix===", props.fields, props.fieldPrefix);
     let serviceId = getComponentId("table_service", props.id);
     let buttonsForColumnOperations = [];
     let inlineEditMode = props.inlineEditMode;
@@ -1026,6 +1045,7 @@ export const getAmisInputTableSchema = async (props) => {
             buttonsForColumnOperations.push(buttonDeleteSchema);
         }
     }
+    let amis = props["input-table"] || props.amis;//额外支持"input-table"代替amis属性，是因为在字段yml文件中用amis作为key不好理解
     let inputTableSchema = {
         "type": "input-table",
         "label": props.label,
@@ -1045,15 +1065,41 @@ export const getAmisInputTableSchema = async (props) => {
         "showFooterAddBtn": false,
         "className": props.tableClassName,
         "pipeOut": (value, data) => {
-            return (value || []).map(function(item){
+            value = (value || []).map(function(item){
                 delete item.__fix_rerender_after_children_modified_tag;
                 return item;
             });
+            if(props.fieldPrefix){
+                value = getTableValuePrependFieldPrefix(value, props.fieldPrefix);
+            }
+            if(amis.pipeOut){
+                if(typeof amis.pipeOut === 'function'){
+                    return amis.pipeOut(value, data);
+                }
+                else{
+                    // TODO: 如果需要支持amis.pipeOut为字符串脚本在这里处理
+                    // amis.pipeOut;
+                }
+            }
+            return value;
         }
     };
+    if(amis.pipeIn){
+        inputTableSchema.pipeIn = amis.pipeIn;
+    }
     if(props.fieldPrefix){
         inputTableSchema.pipeIn = (value, data) => {
-            return getTableValueWithoutFieldPrefix(value, props.fieldPrefix);
+            value = getTableValueWithoutFieldPrefix(value, props.fieldPrefix);
+            if(amis.pipeIn){
+                if(typeof amis.pipeIn === 'function'){
+                    return amis.pipeIn(value, data);
+                }
+                else{
+                    // TODO: 如果需要支持amis.pipeIn为字符串脚本在这里处理
+                    // amis.pipeIn;
+                }
+            }
+            return value;
         };
     }
     if (buttonsForColumnOperations.length) {
@@ -1067,10 +1113,11 @@ export const getAmisInputTableSchema = async (props) => {
     if (showAsInlineEditMode) {
         inputTableSchema.needConfirm = false;
     }
-    let amis = props["input-table"] || props.amis;//额外支持"input-table"代替amis属性，是因为在字段yml文件中用amis作为key不好理解
     if (amis) {
         // 支持配置amis属性重写或添加最终生成的input-table中任何属性。
         delete amis.id;//如果steedos-input-table组件配置了amis.id属性，会造成新建编辑行功能不生效
+        delete amis.pipeIn;//该属性在上面合并过了
+        delete amis.pipeOut;//该属性在上面合并过了
         Object.assign(inputTableSchema, amis);
     }
     const isAnyFieldHasDependOn = (props.fields || []).find(function (item) {
