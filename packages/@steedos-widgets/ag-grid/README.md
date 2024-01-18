@@ -4,6 +4,10 @@ AG Grid is a fully-featured and highly customizable JavaScript data grid. It del
 
 https://github.com/ag-grid/ag-grid
 
+## 许可证
+
+此资产包涌动 AG Grid 企业版功能，使用此资产包需要先购买许可证，否则会显示试用水印。
+
 ## 加载资产包
 
 ```

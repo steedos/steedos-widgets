@@ -1,6 +1,13 @@
 {
   "packages": [
     {
+        "package": "ag-grid-enterprise",
+        "urls": [
+            "https://cdn.jsdelivr.net/npm/ag-grid-enterprise@31.0.2/dist/ag-grid-enterprise.min.js"
+        ],
+        "library": "agGrid"
+    },
+    {
         "package": "@steedos-widgets/ag-grid",
         "urls": [
             "https://unpkg.com/@steedos-widgets/ag-grid@{{version}}/dist/ag-grid.umd.js",
