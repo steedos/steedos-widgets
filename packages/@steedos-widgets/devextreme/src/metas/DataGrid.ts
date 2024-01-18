@@ -75,6 +75,22 @@ export default {
       },
       previewSchema: {
         type: config.amis.name,
+        config: {
+          // Row Data: The data to be displayed.
+          dataSource: [
+            { id: "Tesla", model: "Model Y", price: 64950, electric: true },
+            { id: "Ford", model: "F-Series", price: 33850, electric: false },
+            { id: "Toyota", model: "Corolla", price: 29600, electric: false },
+          ],
+          keyExpr: "id",
+          // Column Definitions: Defines & controls grid columns.
+          columns: [
+            { dataField: "id", caption: "ID" },
+            { dataField: "model" },
+            { dataField: "price" },
+            { dataField: "electric" }
+          ]
+        },
       },
       panelTitle: "设置",
       panelControls: [
