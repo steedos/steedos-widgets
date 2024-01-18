@@ -1,6 +1,6 @@
 
 const config: any = {
-  group: "华炎魔方-原子组件",
+  group: "DevExtreme",
   componentName: "AmisDataGrid",
   title: "DataGrid",
   docUrl: "",
@@ -66,10 +66,10 @@ export default {
           keyExpr: "id",
           // Column Definitions: Defines & controls grid columns.
           columns: [
-            { name: "id", caption: "ID" },
-            { name: "model" },
-            { name: "price" },
-            { name: "electric" }
+            { dataField: "id", caption: "ID" },
+            { dataField: "model" },
+            { dataField: "price" },
+            { dataField: "electric" }
           ]
         },
       },

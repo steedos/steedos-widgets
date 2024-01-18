@@ -9,7 +9,7 @@ import DevExtreme from "./metas/DataGrid";
 const components = [DevExtreme];
 const componentList = [
   {
-    title: "华炎魔方",
+    title: "DevExtreme",
     icon: "",
     children: [DevExtreme]
   }
