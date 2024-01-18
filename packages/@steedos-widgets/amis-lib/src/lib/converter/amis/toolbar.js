@@ -11,14 +11,14 @@ const getDisplayAsButton = function(objectName, showDisplayAs){
     {
       "type": "button",
       "label": i18next.t('frontend_display_type_is_table'),
-      "onClick": "const key = 'tab_"+objectName+"_display';localStorage.setItem(key, 'grid');let url = document.location.pathname; var urlSearch = new URLSearchParams(document.location.search); if(urlSearch.get(\"side_object\") && urlSearch.get(\"side_listview_id\")){url=`/app/${props.data.appId}/${urlSearch.get(\"side_object\")}/grid/${urlSearch.get(\"side_listview_id\")}`;}; props.env.jumpTo(url + '?display=grid');",
+      "onClick": "const key = 'tab_"+objectName+"_display';sessionStorage.setItem(key, 'grid');let url = document.location.pathname; var urlSearch = new URLSearchParams(document.location.search); if(urlSearch.get(\"side_object\") && urlSearch.get(\"side_listview_id\")){url=`/app/${props.data.appId}/${urlSearch.get(\"side_object\")}/grid/${urlSearch.get(\"side_listview_id\")}`;}; props.env.jumpTo(url + '?display=grid');",
       "rightIcon": displayAs != 'split' ? "fa fa-check" : null,
       "rightIconClassName": "m-l-sm"
     },
     {
       "type": "button",
       "label": i18next.t('frontend_display_type_is_split'),
-      "onClick": "const key = 'tab_"+objectName+"_display';localStorage.setItem(key, 'split');const url = document.location.pathname + '?display=split'; props.env.jumpTo(url);",
+      "onClick": "const key = 'tab_"+objectName+"_display';sessionStorage.setItem(key, 'split');const url = document.location.pathname + '?display=split'; props.env.jumpTo(url);",
       "rightIcon": displayAs === 'split' ? "fa fa-check" : null,
       "rightIconClassName": "m-l-sm"
     }

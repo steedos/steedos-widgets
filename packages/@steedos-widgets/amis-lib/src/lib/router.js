@@ -16,7 +16,7 @@ export const Router = {
         }
         const key = `tab_${tab_id}_display`;
         // const key = `page_display`;
-        const value = localStorage.getItem(key)
+        const value = sessionStorage.getItem(key)
         let defaultDisplay = "grid";
         if(uiSchema.enable_split){
             defaultDisplay = "split";
@@ -26,7 +26,7 @@ export const Router = {
   
     setTabDisplayAs(tab_id, displayAs){
         const key = `tab_${tab_id}_display`;
-        localStorage.setItem(key, displayAs)
+        sessionStorage.setItem(key, displayAs)
     },
     getAppPath({formFactor, appId}){
         return `/app/${appId}`;
