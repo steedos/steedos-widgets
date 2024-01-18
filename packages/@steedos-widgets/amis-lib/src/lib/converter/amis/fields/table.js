@@ -617,12 +617,12 @@ export async function getTableColumns(fields, options){
             if(field.type === 'textarea'){
                 className += 'min-w-56';
             }
-            if(field.type === 'date'){
-                className += 'date-min-w';
-            }
-            if(field.type === 'datetime'){
-                className += 'datetime-min-w';
-            }
+            // if(field.type === 'date'){
+            //     className += 'date-min-w';
+            // }
+            // if(field.type === 'datetime'){
+            //     className += 'datetime-min-w';
+            // }
 
             //field上的amis属性里的clssname需要单独判断类型合并
             if (typeof field.amis?.className == "object") {
