@@ -55,7 +55,7 @@ export default {
       icon: config.amis.icon,
       scaffold: {
         type: config.amis.name,
-        className: "h-80",
+        className: "",
         config: {
           // Row Data: The data to be displayed.
           dataSource: [
