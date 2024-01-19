@@ -4,7 +4,8 @@
         "package": "@steedos-widgets/devextreme",
         "urls": [
             "https://unpkg.com/@steedos-widgets/devextreme@{{version}}/dist/devextreme.umd.js",
-            "https://unpkg.com/@steedos-widgets/devextreme@{{version}}/dist/devextreme.umd.css"
+            "https://unpkg.com/@steedos-widgets/devextreme@{{version}}/dist/devextreme.umd.css",
+            "https://cdn.jsdelivr.net/npm/devextreme@23.2.3/dist/css/dx.light.css"
         ],
         "library": "BuilderDevExtreme"
     }
