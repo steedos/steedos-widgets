@@ -3,7 +3,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-09-08 17:54:54
+ * @LastEditTime: 2024-01-19 17:12:48
  * @Description: 
  */
 
@@ -12,7 +12,7 @@ import { i18next } from '@steedos-widgets/amis-lib';
 
 export const AmisGlobalHeaderToolbar = async (props) => {
     const { className = '', data, logoutScript = "", customButtons = [] } = props;
-    
+
     let  avatarSrc = null;
 
     if(data.context?.user?.avatar){
@@ -340,6 +340,26 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                   },
                   {
                     "type": "button",
+                    "label": "切换工作区",
+                    "className": "flex",
+                    "onEvent": {
+                      "click": {
+                        "actions": [
+                            {
+                                "args": {
+                                  "url": "/accounts/a/#/select-space",
+                                  "blank": false
+                                },
+                                "actionType": "url"
+                              }
+                        ]
+                      }
+                    },
+                    "level": "link",
+                    "visibleOn": "${window:Meteor.settings.public.enable_saas}"
+                  },
+                  {
+                    "type": "button",
                     "label": i18next.t('frontend_profile'),
                     "className": "flex",
                     "onEvent": {
@@ -395,7 +415,6 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                     },
                     "level": "link"
                   }
-                  
                 ],
               }
             ],
