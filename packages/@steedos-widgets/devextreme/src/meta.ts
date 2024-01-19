@@ -5,13 +5,16 @@
  * @LastEditTime: 2022-09-01 18:46:29
  * @Description: 
  */
-import DevExtreme from "./metas/DataGrid";
-const components = [DevExtreme];
+import DataGrid from "./metas/DataGrid";
+import PivotGrid from "./metas/PivotGrid";
+import Gantt from './metas/Gantt';
+
+const components = [DataGrid, PivotGrid, Gantt];
 const componentList = [
   {
     title: "DevExtreme",
     icon: "",
-    children: [DevExtreme]
+    children: components
   }
 ];
 export default {

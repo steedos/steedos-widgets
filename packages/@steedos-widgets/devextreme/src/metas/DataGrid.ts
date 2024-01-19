@@ -21,7 +21,7 @@ const config: any = {
   engines: ["amis"],
   // settings for amis.
   amis: {
-    name: 'steedos-devextreme',
+    name: 'devextreme-datagrid',
     icon: "fa-fw fa fa-list-alt"
   }
 };
@@ -104,7 +104,7 @@ export default {
           type: "editor",
           "language": "json",
           name: "config",
-          label: "DevExtreme 配置",   
+          label: "DataGrid 配置",   
           pipeOut: (value) => {
             try {
               return value ? JSON.parse(value) : null;
@@ -118,8 +118,8 @@ export default {
           "language": "javascript",
           name: "dataFilter",
           label: "数据加工",
-          description: "如果后端没有直接返回 DevExtreme 配置，可以自己写一段函数来包装。\
-          签名：(config, DevExtreme, data) => config \
+          description: "如果后端没有直接返回 DataGrid 配置，可以自己写一段函数来包装。\
+          签名：(config, DataGrid, data) => config \
           "
         },
       ],

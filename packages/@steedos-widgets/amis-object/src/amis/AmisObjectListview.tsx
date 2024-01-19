@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-16 11:41:04
+ * @LastEditTime: 2024-01-19 09:14:05
  * @Description: 
  */
 import './AmisObjectListview.less';
@@ -197,7 +197,7 @@ export const AmisObjectListView = async (props) => {
               {
                 "type": "service",
                 "id": "service_schema_api_" + objectApiName,
-                "className": " steedos-object-listview-content grow",//这里加grow是因为crud card模式下底部会有灰色背影
+                "className": " steedos-object-listview-content md:overflow-auto grow",//这里加grow是因为crud card模式下底部会有灰色背影
                 "schemaApi": {
                     // 这里url上加objectApiName属性是因为设计器中切换对象时不会变更列表视图界面，不可以用objectName=${objectName}使用作用域中objectName变量是因为设计器那边不会监听识别data变化来render组件
                     "url": "${context.rootUrl}/graphql?objectName=" + objectApiName + "&listName=${listName}&display=${display}&rebuildOn=" + rebuildOn,
