@@ -21,7 +21,7 @@ const config: any = {
   engines: ["amis"],
   // settings for amis.
   amis: {
-    name: 'steedos-devextreme',
+    name: 'devextreme-datagrid',
     icon: "fa-fw fa fa-list-alt"
   }
 };
@@ -104,7 +104,7 @@ export default {
           type: "editor",
           "language": "json",
           name: "config",
-          label: "DevExtreme 配置",   
+          label: "DataGrid 配置",   
           pipeOut: (value) => {
             try {
               return value ? JSON.parse(value) : null;
