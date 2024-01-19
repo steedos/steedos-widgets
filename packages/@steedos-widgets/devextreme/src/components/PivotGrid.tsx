@@ -76,7 +76,7 @@ export const AmisPivotGrid = ( {
       </Chart>
 
       <PivotGrid
-        // id="pivotgrid"
+        id="pivotgrid"
         allowSortingBySummary={true}
         allowFiltering={true}
         showBorders={true}

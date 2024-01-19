@@ -7,7 +7,9 @@
  */
 import DataGrid from "./metas/DataGrid";
 import PivotGrid from "./metas/PivotGrid";
-const components = [DataGrid, PivotGrid];
+import Gantt from './metas/Gantt';
+
+const components = [DataGrid, PivotGrid, Gantt];
 const componentList = [
   {
     title: "DevExtreme",
