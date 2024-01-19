@@ -4,6 +4,7 @@ import Gantt, {
   Tasks, Dependencies, Resources, ResourceAssignments, Column, Editing, Toolbar, Item, Validation,
 } from 'devextreme-react/gantt';
 
+import './Gantt.css';
 
 // 不要用 devextreme-react, rollup 编译报错
 export const AmisGantt = ( {

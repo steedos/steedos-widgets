@@ -4,8 +4,8 @@
         "package": "@steedos-widgets/devextreme",
         "urls": [
             "https://unpkg.com/@steedos-widgets/devextreme@{{version}}/dist/devextreme.umd.js",
-            "https://cdn.jsdelivr.net/npm/devextreme@23.2.3/dist/css/dx.material.blue.light.compact.css",
-            "https://cdn.jsdelivr.net/npm/devextreme@23.2.3/dist/css/dx-gantt.min.css"
+            "https://unpkg.com/@steedos-widgets/devextreme@{{version}}/dist/devextreme.umd.css",
+            "https://cdn.jsdelivr.net/npm/devextreme@23.2.3/dist/css/dx.material.blue.light.compact.css"
         ],
         "library": "BuilderDevExtreme"
     }
