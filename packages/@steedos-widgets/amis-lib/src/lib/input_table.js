@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-21 10:26:05
+ * @LastEditTime: 2024-01-21 14:11:55
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -277,6 +277,7 @@ function getFormPagination(props, mode) {
         let currentFormValues = scope.getComponentById(__formId).getValues();
         var parent = event.data.parent;
         var __parentIndex = event.data.__parentIndex;
+        console.log("===onPageChangeScript===", fieldValue);
         if(parent){
             fieldValue[__parentIndex].children[currentIndex] = currentFormValues;
             // 重写父节点，并且改变其某个属性以让子节点修改的内容回显到界面上
@@ -568,6 +569,7 @@ async function getForm(props, mode = "edit", formId) {
                 });
             }
             else{
+                debugger;
                 // 主键唯一标识字段值允许在表单上编辑的可能性，所以优先取currentFormValues中的值
                 let primaryValue = currentFormValues[primaryKey] || fieldValue[currentIndex][primaryKey];
                 if(!primaryValue){
@@ -764,6 +766,7 @@ async function getButtonActions(props, mode) {
             let __formId = "${formId}";
             // let newItem = JSON.parse(JSON.stringify(event.data));
             let newItem = scope.getComponentById(__formId).getValues();//这里不可以用event.data，因为其拿到的是弹出表单时的初始值，不是用户实时填写的数据
+            newItem = _.clone(newItem);
             let fieldValue = event.data.__tableItems;//这里不可以_.cloneDeep，因为翻页form中用的是event.data.__tableItems，直接变更其值即可改变表单中的值
             // 复制当前页数据到新建行并保存到子表组件
             // fieldValue.push(newItem);
@@ -782,6 +785,7 @@ async function getButtonActions(props, mode) {
                     return item[primaryKey] == parent[primaryKey];
                 });
             }
+            console.log("===onSaveAndCopyItemScript===", newItem);
             if(newItem[primaryKey]){
                 // 如果newItem已经有主键字段值，则重新生成新的主键值，否则会重复。
                 let uuidv4 = new Function("return (" + ${uuidv4.toString()} + ")()");
