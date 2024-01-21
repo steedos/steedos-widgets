@@ -3,7 +3,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-19 17:12:48
+ * @LastEditTime: 2024-01-20 11:55:37
  * @Description: 
  */
 
@@ -340,26 +340,6 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                   },
                   {
                     "type": "button",
-                    "label": "切换工作区",
-                    "className": "flex",
-                    "onEvent": {
-                      "click": {
-                        "actions": [
-                            {
-                                "args": {
-                                  "url": "/accounts/a/#/select-space",
-                                  "blank": false
-                                },
-                                "actionType": "url"
-                              }
-                        ]
-                      }
-                    },
-                    "level": "link",
-                    "visibleOn": "${window:Meteor.settings.public.enable_saas}"
-                  },
-                  {
-                    "type": "button",
                     "label": i18next.t('frontend_profile'),
                     "className": "flex",
                     "onEvent": {
@@ -376,6 +356,26 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                       }
                     },
                     "level": "link"
+                  },
+                  {
+                    "type": "button",
+                    "label": i18next.t('switch_space'),
+                    "className": "flex",
+                    "onEvent": {
+                      "click": {
+                        "actions": [
+                            {
+                                "args": {
+                                  "url": "/accounts/a/#/select-space",
+                                  "blank": false
+                                },
+                                "actionType": "url"
+                              }
+                        ]
+                      }
+                    },
+                    "level": "link",
+                    "visibleOn": "${window:Meteor.settings.public.enable_saas}"
                   },
                   {
                     "type": "button",
