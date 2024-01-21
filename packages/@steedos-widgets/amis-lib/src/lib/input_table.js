@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-19 19:01:26
+ * @LastEditTime: 2024-01-21 10:26:05
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -1017,6 +1017,16 @@ async function getButtonActions(props, mode) {
             var __parentIndex = parent && _.findIndex(lastestFieldValue, function(item){
                 return item[primaryKey] == parent[primaryKey];
             });
+            if(parent && __parentIndex < 0){
+                let tableId = "${props.id}";
+                let table = scope.getComponentById(tableId)
+                // autoGeneratePrimaryKeyValue不为true的情况下，即子表组件input-table的pipeOut函数中会移除表单了子表字段的primaryKey字段值，
+                // 此时行primaryKey字段值为空，但是pipeIn函数中已经为input-table自动生成过primaryKey字段值了，只是没有输出到表单字段值中而已
+                // 所以上面从表单字段值中没找到__parentIndex，是因为此时行primaryKey字段值只经过pipeIn保存到table组件内而没有保存到tableService
+                __parentIndex = _.findIndex(table.props.value, function(item){
+                    return item[primaryKey] == parent[primaryKey];
+                });
+            }
             if(parent){
                 lastestFieldValue[__parentIndex].children.splice(currentIndex, 1);
                 // 重写父节点，并且改变其某个属性以让子节点修改的内容回显到界面上
