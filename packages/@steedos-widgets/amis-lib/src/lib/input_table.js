@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-21 16:17:44
+ * @LastEditTime: 2024-01-21 18:35:50
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -75,7 +75,9 @@ function getTableValueWithoutFieldPrefix(value, fieldPrefix){
     (value || []).forEach((itemValue)=>{
         var newItemValue = {};
         for(let n in itemValue){
-            newItemValue[n.replace(new RegExp(`^${fieldPrefix}`), "")] = itemValue[n];
+            if(itemValue.hasOwnProperty(n)){
+                newItemValue[n.replace(new RegExp(`^${fieldPrefix}`), "")] = itemValue[n];
+            }
         }
         convertedValue.push(newItemValue);
     });
@@ -93,7 +95,7 @@ function getTableValuePrependFieldPrefix(value, fieldPrefix, primaryKey){
     (value || []).forEach((itemValue)=>{
         var newItemValue = {};
         for(let n in itemValue){
-            if(typeof itemValue[n] !== undefined && n !== primaryKey){
+            if(itemValue.hasOwnProperty(n) && typeof itemValue[n] !== undefined && n !== primaryKey){
                 newItemValue[`${fieldPrefix}${n}`] = itemValue[n];
             }
         }
