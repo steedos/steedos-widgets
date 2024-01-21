@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-21 20:29:59
+ * @LastEditTime: 2024-01-21 22:10:02
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -281,7 +281,6 @@ function getFormPagination(props, mode) {
         currentFormValues = _.clone(currentFormValues);
         var parent = event.data.parent;
         var __parentIndex = event.data.__parentIndex;
-        console.log("===onPageChangeScript===", fieldValue);
         if(parent){
             fieldValue[__parentIndex].children[currentIndex] = currentFormValues;
             // 重写父节点，并且改变其某个属性以让子节点修改的内容回显到界面上
@@ -441,7 +440,6 @@ function getFormPaginationWrapper(props, form, mode) {
         // 这里如果不.clone的话，在弹出窗口中显示的子表组件，添加行后点窗口的取消按钮关闭窗口后无法把之前的操作还原，即把之前添加的行自动移除
         let lastestFieldValue = _.clone(wrapperServiceData["${props.name}"] || []);
         let fieldPrefix = "${props.fieldPrefix || ''}";
-        console.log("====onServiceInitedScript==fieldPrefix===", fieldPrefix);
         if(fieldPrefix){
             let getTableValueWithoutFieldPrefix = new Function('v', 'f', "return (" + ${getTableValueWithoutFieldPrefix.toString()} + ")(v, f)");
             lastestFieldValue = getTableValueWithoutFieldPrefix(lastestFieldValue, fieldPrefix);
@@ -554,6 +552,8 @@ async function getForm(props, mode = "edit", formId) {
         // 新增行弹出编辑行表单，在弹出之前已经不用先增加一行，因为在翻页service初始化的时候会判断mode为new时自动新增一行
         let onEditItemSubmitScript = `
             // let fieldValue = _.cloneDeep(event.data["${props.name}"]);
+            // 因为删除时只是把input-table组件中的行数据删除了，并没有把父层service中的行删除，所以__tableItems会有值为undefined的数据，需要移除掉
+            event.data.__tableItems = _.compact(event.data.__tableItems);
             let fieldValue = event.data.__tableItems;//这里不可以_.cloneDeep，因为翻页form中用的是event.data.__tableItems，直接变更其值即可改变表单中的值
             //这里加__super.__super前缀是因为__parentForm变量（即主表单）中可能会正好有名为index的字段
             // 比如“对象字段”对象options字段是一个子表字段，但是主表（即“对象字段”对象）中正好有一个名为index的字段
@@ -784,7 +784,6 @@ async function getButtonActions(props, mode) {
                     return item[primaryKey] == parent[primaryKey];
                 });
             }
-            console.log("===onSaveAndCopyItemScript===", newItem);
             if(newItem[primaryKey]){
                 // 如果newItem已经有主键字段值，则重新生成新的主键值，否则会重复。
                 let uuidv4 = new Function("return (" + ${uuidv4.toString()} + ")()");
@@ -1013,6 +1012,7 @@ async function getButtonActions(props, mode) {
             let wrapperServiceData = wrapperService.getData();
             // 这里不可以用event.data["${props.name}"]因为amis input talbe有一层单独的作用域，其值会延迟一拍
             // 这里_.clone是因为字段设计布局设置分组这种弹出窗口中的子表组件，直接删除后，点取消无法还原
+            // 也因为这里clone没有直接删除，所以弹出编辑表单提交事件中event.data.__tableItems中取到的值会有被删除的行数据为undefined
             let lastestFieldValue = _.clone(wrapperServiceData["${props.name}"]);
             var currentIndex = event.data.index;
             var parent = event.data.__super.parent;
