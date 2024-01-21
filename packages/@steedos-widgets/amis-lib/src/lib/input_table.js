@@ -2,12 +2,67 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-18 10:29:57
+ * @LastEditTime: 2024-01-19 19:01:26
  */
 
 import { getFormBody } from './converter/amis/form';
 import { getComparableAmisVersion } from './converter/amis/util';
 import { clone } from 'lodash';
+import { uuidv4 } from '../utils/uuid';
+
+function getTablePrimaryKey(props){
+    return props.primaryKey || "_id";
+}
+
+/**
+ * 子表组件字段值中每行数据的补上唯一标识字段值，其值为随机uuid
+ * @param {*} value 子表组件字段值，数组
+ * @param {*} primaryKey 主键字段名，一般为_id
+ * @returns 转换后的子表组件字段值
+ */
+function getTableValueWithPrimaryKeyValue(value, primaryKey){
+    if(!primaryKey){
+        return value;
+    }
+    return (value || []).map((itemValue)=>{
+        //这里不clone的话，会造成在pipeIn函数执行该函数后像pipeOut一样最终输出到表单项中，即库里把primaryKey字段值保存了
+        const newItemValue = clone(itemValue);
+        if(newItemValue[primaryKey]){
+            if(newItemValue.children){
+                newItemValue.children = getTableValueWithPrimaryKeyValue(newItemValue.children, primaryKey);
+            }
+            return newItemValue;
+        }
+        else{
+            newItemValue[primaryKey] = uuidv4();
+            if(newItemValue.children){
+                newItemValue.children = getTableValueWithPrimaryKeyValue(newItemValue.children, primaryKey);
+            }
+            return newItemValue;
+        }
+    });
+}
+
+/**
+ * 子表组件字段值中每行数据的移除唯一标识字段值，因为该字段值一般只作临时标记，不存库
+ * @param {*} value 子表组件字段值，数组
+ * @param {*} primaryKey 主键字段名，一般为_id
+ * @returns 转换后的子表组件字段值
+ */
+function getTableValueWithoutPrimaryKeyValue(value, primaryKey){
+    if(!primaryKey){
+        return value;
+    }
+    return (value || []).map((itemValue)=>{
+        //这里clone只是为了保险，不是必须的，每次修改子表数据是否都会生成新的primaryKey字段值是由pipeOut中识别autoGeneratePrimaryKeyValue决定的，跟这里没关系
+        const newItemValue = clone(itemValue);
+        if(newItemValue.children){
+            newItemValue.children = getTableValueWithoutPrimaryKeyValue(newItemValue.children, primaryKey);
+        }
+        delete newItemValue[primaryKey];
+        return newItemValue;
+    });
+}
 
 /**
  * 子表组件字段值中每行数据的键值key移除指定前缀
@@ -33,14 +88,17 @@ function getTableValueWithoutFieldPrefix(value, fieldPrefix){
  * @param {*} fieldPrefix 字段前缀
  * @returns 转换后的子表组件字段值
  */
-function getTableValuePrependFieldPrefix(value, fieldPrefix){
+function getTableValuePrependFieldPrefix(value, fieldPrefix, primaryKey){
     let convertedValue = [];
     (value || []).forEach((itemValue)=>{
         var newItemValue = {};
         for(let n in itemValue){
-            if(typeof itemValue[n] !== undefined){
+            if(typeof itemValue[n] !== undefined && n !== primaryKey){
                 newItemValue[`${fieldPrefix}${n}`] = itemValue[n];
             }
+        }
+        if(primaryKey && itemValue[primaryKey]){
+            newItemValue[primaryKey] = itemValue[primaryKey];
         }
         convertedValue.push(newItemValue);
     });
@@ -66,7 +124,12 @@ function getTableFieldsWithoutFieldPrefix(fields, fieldPrefix){
  * @param {*} mode edit/new/readonly
  */
 function getFormFields(props, mode = "edit") {
-    return (props.fields || []).map(function (item) {
+    let fieldPrefix = props.fieldPrefix;
+    let fields = props.fields || [];
+    if (fieldPrefix) {
+        fields = getTableFieldsWithoutFieldPrefix(fields, fieldPrefix);
+    }
+    return (fields || []).map(function (item) {
         let formItem = {
             "type": "steedos-field",
             "name": item.name,
@@ -138,7 +201,12 @@ async function getInputTableColumns(props) {
     let inlineEditMode = props.inlineEditMode;
     let showAsInlineEditMode = inlineEditMode && props.editable;
     // 实测过，直接不生成对应的隐藏column并不会对input-table值造成丢失问题，隐藏的列字段值能正常维护
-    let fields = props.fields;
+
+    let fieldPrefix = props.fieldPrefix;
+    let fields = props.fields || [];
+    if (fieldPrefix) {
+        fields = getTableFieldsWithoutFieldPrefix(fields, fieldPrefix);
+    }
     if (columns && columns.length) {
         return columns.map(function (column) {
             let field, extendColumnProps = {};
@@ -326,6 +394,7 @@ function getFormPaginationWrapper(props, form, mode) {
     // console.log("==getFormPaginationWrapper===", props, mode);
     let serviceId = getComponentId("form_pagination", props.id);
     let tableServiceId = getComponentId("table_service", props.id);
+    let primaryKey = getTablePrimaryKey(props);
     let innerForm = Object.assign({}, form, {
         "data": {
             // 这里加__super前缀是因为__parentForm变量（即主表单）中可能会正好有名为index的字段
@@ -353,7 +422,6 @@ function getFormPaginationWrapper(props, form, mode) {
         }
     ];
     let onServiceInitedScript = `
-
         // 以下脚本解决了有时弹出编辑表单时，表单中的值比最后一次编辑保存的值会延迟一拍。
         // 比如：inlineEditMode模式时，用户在表格单元格中直接修改数据，然后弹出的表单form中并没有包含单元格中修改的内容
         // 另外有的地方在非inlineEditMode模式时也会有这种延迟一拍问题，比如对象字段中下拉框类型字段的”选择项“属性
@@ -367,13 +435,14 @@ function getFormPaginationWrapper(props, form, mode) {
         // 这里不可以用event.data["${props.name}"]因为amis input talbe有一层单独的作用域，其值会延迟一拍
         // 这里如果不.clone的话，在弹出窗口中显示的子表组件，添加行后点窗口的取消按钮关闭窗口后无法把之前的操作还原，即把之前添加的行自动移除
         let lastestFieldValue = _.clone(wrapperServiceData["${props.name}"] || []);
-        let fieldPrefix = "${props.fieldPrefix}";
+        let fieldPrefix = "${props.fieldPrefix || ''}";
+        console.log("====onServiceInitedScript==fieldPrefix===", fieldPrefix);
         if(fieldPrefix){
             let getTableValueWithoutFieldPrefix = new Function('v', 'f', "return (" + ${getTableValueWithoutFieldPrefix.toString()} + ")(v, f)");
             lastestFieldValue = getTableValueWithoutFieldPrefix(lastestFieldValue, fieldPrefix);
         }
         //不可以直接像event.data.__tableItems = lastestFieldValue; 这样整个赋值，否则作用域会断
-        let mode = "${mode}";
+        let mode = "${mode || ''}";
         if(mode === "new"){
             // 点击子表组件底部新增按钮时新增一条空白行并自动翻页到新增行
             // 注意点击弹出的子表行详细表单中的新增按钮不会进此service init事件函数中
@@ -399,10 +468,20 @@ function getFormPaginationWrapper(props, form, mode) {
         var fieldValue = event.data.__tableItems;
         if(parent){
             // 如果是子行，即在节点嵌套情况下，当前节点如果是children属性下的子节点时，则算出其所属父行的索引值
-            var primaryKey = "${props.primaryKey}";
+            var primaryKey = "${primaryKey}";
             event.data.__parentIndex = _.findIndex(fieldValue, function(item){
                 return item[primaryKey] == parent[primaryKey];
             });
+            if(event.data.__parentIndex < 0){
+                let tableId = "${props.id}";
+                let table = scope.getComponentById(tableId)
+                // autoGeneratePrimaryKeyValue不为true的情况下，即子表组件input-table的pipeOut函数中会移除表单了子表字段的primaryKey字段值，
+                // 此时行primaryKey字段值为空，但是pipeIn函数中已经为input-table自动生成过primaryKey字段值了，只是没有输出到表单字段值中而已
+                // 所以上面从表单字段值中没找到__parentIndex，是因为此时行primaryKey字段值只经过pipeIn保存到table组件内而没有保存到tableService
+                event.data.__parentIndex = _.findIndex(table.props.value, function(item){
+                    return item[primaryKey] == parent[primaryKey];
+                });
+            }
         }
     `;
     let schema = {
@@ -451,6 +530,7 @@ function getFormPaginationWrapper(props, form, mode) {
 async function getForm(props, mode = "edit", formId) {
     let formFields = getFormFields(props, mode)
     let body = await getFormBody(null, formFields);
+    let primaryKey = getTablePrimaryKey(props);
     if (!formId) {
         formId = getComponentId("form", props.id);
     }
@@ -477,6 +557,8 @@ async function getForm(props, mode = "edit", formId) {
             var currentFormValues = JSON.parse(JSON.stringify(event.data));
             var parent = event.data.__super.__super.parent;
             var __parentIndex = event.data.__super.__super.__parentIndex;
+            let uuidv4 = new Function("return (" + ${uuidv4.toString()} + ")()");
+            var primaryKey = "${primaryKey}";
             if(parent){
                 fieldValue[__parentIndex].children[currentIndex] = currentFormValues;
                 // 重写父节点，并且改变其某个属性以让子节点修改的内容回显到界面上
@@ -486,7 +568,13 @@ async function getForm(props, mode = "edit", formId) {
                 });
             }
             else{
+                // 主键唯一标识字段值允许在表单上编辑的可能性，所以优先取currentFormValues中的值
+                let primaryValue = currentFormValues[primaryKey] || fieldValue[currentIndex][primaryKey];
+                if(!primaryValue){
+                    primaryValue = uuidv4();
+                }
                 fieldValue[currentIndex] = currentFormValues;
+                fieldValue[currentIndex][primaryKey] = primaryValue;
             }
             doAction({
                 "componentId": "${props.id}",
@@ -583,6 +671,7 @@ async function getForm(props, mode = "edit", formId) {
  */
 async function getButtonActions(props, mode) {
     let actions = [];
+    let primaryKey = getTablePrimaryKey(props);
     let formId = getComponentId("form", props.id);
     let dialogId = getComponentId("dialog", props.id);
     let buttonNextId = getComponentId("button_next", props.id);
@@ -628,10 +717,20 @@ async function getButtonActions(props, mode) {
             let fieldValue = event.data.__tableItems;//这里不可以_.cloneDeep，因为翻页form中用的是event.data.__tableItems，直接变更其值即可改变表单中的值
             // 新建一条空白行并保存到子表组件
             var parent = event.data.__super.parent;
-            var primaryKey = "${props.primaryKey}";
+            var primaryKey = "${primaryKey}";
             var __parentIndex = parent && _.findIndex(fieldValue, function(item){
                 return item[primaryKey] == parent[primaryKey];
             });
+            if(parent && __parentIndex < 0){
+                let tableId = "${props.id}";
+                let table = scope.getComponentById(tableId)
+                // autoGeneratePrimaryKeyValue不为true的情况下，即子表组件input-table的pipeOut函数中会移除表单了子表字段的primaryKey字段值，
+                // 此时行primaryKey字段值为空，但是pipeIn函数中已经为input-table自动生成过primaryKey字段值了，只是没有输出到表单字段值中而已
+                // 所以上面从表单字段值中没找到__parentIndex，是因为此时行primaryKey字段值只经过pipeIn保存到table组件内而没有保存到tableService
+                __parentIndex = _.findIndex(table.props.value, function(item){
+                    return item[primaryKey] == parent[primaryKey];
+                });
+            }
             if(parent){
                 fieldValue[__parentIndex].children.push({});
                 // 这里实测不需要fieldValue[__parentIndex] = ... 来重写整个父行让子表回显，所以没加相关代码
@@ -669,10 +768,25 @@ async function getButtonActions(props, mode) {
             // 复制当前页数据到新建行并保存到子表组件
             // fieldValue.push(newItem);
             var parent = event.data.__super.parent;
-            var primaryKey = "${props.primaryKey}";
+            var primaryKey = "${primaryKey}";
             var __parentIndex = parent && _.findIndex(fieldValue, function(item){
                 return item[primaryKey] == parent[primaryKey];
             });
+            if(parent && __parentIndex < 0){
+                let tableId = "${props.id}";
+                let table = scope.getComponentById(tableId)
+                // autoGeneratePrimaryKeyValue不为true的情况下，即子表组件input-table的pipeOut函数中会移除表单了子表字段的primaryKey字段值，
+                // 此时行primaryKey字段值为空，但是pipeIn函数中已经为input-table自动生成过primaryKey字段值了，只是没有输出到表单字段值中而已
+                // 所以上面从表单字段值中没找到__parentIndex，是因为此时行primaryKey字段值只经过pipeIn保存到table组件内而没有保存到tableService
+                __parentIndex = _.findIndex(table.props.value, function(item){
+                    return item[primaryKey] == parent[primaryKey];
+                });
+            }
+            if(newItem[primaryKey]){
+                // 如果newItem已经有主键字段值，则重新生成新的主键值，否则会重复。
+                let uuidv4 = new Function("return (" + ${uuidv4.toString()} + ")()");
+                newItem[primaryKey] = uuidv4();
+            }
             if(parent){
                 fieldValue[__parentIndex].children.push(newItem);
                 // 这里实测不需要fieldValue[__parentIndex] = ... 来重写整个父行让子表回显，所以没加相关代码
@@ -899,7 +1013,7 @@ async function getButtonActions(props, mode) {
             let lastestFieldValue = _.clone(wrapperServiceData["${props.name}"]);
             var currentIndex = event.data.index;
             var parent = event.data.__super.parent;
-            var primaryKey = "${props.primaryKey}";
+            var primaryKey = "${primaryKey}";
             var __parentIndex = parent && _.findIndex(lastestFieldValue, function(item){
                 return item[primaryKey] == parent[primaryKey];
             });
@@ -999,16 +1113,15 @@ export const getAmisInputTableSchema = async (props) => {
     if (!props.id) {
         props.id = "steedos_input_table_" + props.name + "_" + Math.random().toString(36).substr(2, 9);
     }
-    if (!props.primaryKey) {
-        props.primaryKey = "_id";
-    }
+    let primaryKey = getTablePrimaryKey(props);
     let showOperation = props.showOperation;
     if(showOperation !== false){
         showOperation = true;
     }
-    // props.fieldPrefix = "project_milestone_";
-    if (props.fieldPrefix) {
-        props.fields = getTableFieldsWithoutFieldPrefix(props.fields, props.fieldPrefix);
+    let fieldPrefix = props.fieldPrefix;
+    let fields = props.fields || [];
+    if (fieldPrefix) {
+        fields = getTableFieldsWithoutFieldPrefix(fields, fieldPrefix);
     }
     let serviceId = getComponentId("table_service", props.id);
     let buttonsForColumnOperations = [];
@@ -1021,7 +1134,7 @@ export const getAmisInputTableSchema = async (props) => {
                 // 始终显示弹出子表表单按钮，如果需要判断只在有列被隐藏时才需要显示弹出表单按钮放开下面的if逻辑就好
                 showEditButton = true;
                 // // inline edit模式下只在有列被隐藏时才需要显示编辑按钮
-                // if (props.columns && props.columns.length > 0 && props.columns.length < props.fields.length) {
+                // if (props.columns && props.columns.length > 0 && props.columns.length < fields.length) {
                 //     showEditButton = true;
                 // }
                 // else {
@@ -1036,7 +1149,7 @@ export const getAmisInputTableSchema = async (props) => {
         }
         else {
             // 只读时显示查看按钮
-            // 如果想只在有列被隐藏时才需要显示查看按钮可以加上判断：if (props.columns && props.columns.length > 0 && props.columns.length < props.fields.length)
+            // 如果想只在有列被隐藏时才需要显示查看按钮可以加上判断：if (props.columns && props.columns.length > 0 && props.columns.length < fields.length)
             let buttonViewSchema = await getButtonView(props);
             buttonsForColumnOperations.push(buttonViewSchema);
         }
@@ -1045,7 +1158,7 @@ export const getAmisInputTableSchema = async (props) => {
             buttonsForColumnOperations.push(buttonDeleteSchema);
         }
     }
-    let amis = props["input-table"] || props.amis;//额外支持"input-table"代替amis属性，是因为在字段yml文件中用amis作为key不好理解
+    let amis = props["input-table"] || props.amis || {};//额外支持"input-table"代替amis属性，是因为在字段yml文件中用amis作为key不好理解
     let inputTableSchema = {
         "type": "input-table",
         "label": props.label,
@@ -1064,13 +1177,46 @@ export const getAmisInputTableSchema = async (props) => {
         "showTableAddBtn": false,
         "showFooterAddBtn": false,
         "className": props.tableClassName,
+        "pipeIn": (value, data) => {
+            if(fieldPrefix){
+                value = getTableValueWithoutFieldPrefix(value, fieldPrefix);
+            }
+            if(primaryKey){
+                // 这里临时给每行数据补上primaryKey字段值，如果库里不需要保存这里补上的字段值，pipeOut中会识别autoGeneratePrimaryKeyValue属性选择最终移除这里补上的字段值
+                // 这里始终自动生成primaryKey字段值，而不是只在pipeOut输出整个子表字段值时才生成，是因为要支持当数据库里保存的子表字段行数据没有primaryKey字段值时的行嵌套模式（即节点的children属性）功能
+                // 这里要注意，流程详细设置界面的字段设置功能中的子表组件中，数据库里保存的子表字段行数据是有primaryKey字段值的，它不依赖这里自动生成行primaryKey值功能
+                value = getTableValueWithPrimaryKeyValue(value, primaryKey);
+            }
+            if(amis.pipeIn){
+                if(typeof amis.pipeIn === 'function'){
+                    return amis.pipeIn(value, data);
+                }
+                else{
+                    // TODO: 如果需要支持amis.pipeIn为字符串脚本在这里处理
+                    // amis.pipeIn;
+                }
+            }
+            return value;
+        },
         "pipeOut": (value, data) => {
             value = (value || []).map(function(item){
                 delete item.__fix_rerender_after_children_modified_tag;
                 return item;
             });
-            if(props.fieldPrefix){
-                value = getTableValuePrependFieldPrefix(value, props.fieldPrefix);
+            if(fieldPrefix){
+                value = getTableValuePrependFieldPrefix(value, fieldPrefix, primaryKey);
+            }
+            if(props.autoGeneratePrimaryKeyValue === true){
+                // 如果需要把自动生成的primaryKey值输出保存的库中，则补全所有行中的primaryKey值
+                // 这里如果不全部补全的话，初始从库里返回的字段值中拿到的行没primaryKey值的话就不会自动补上
+                value = getTableValueWithPrimaryKeyValue(value, primaryKey);
+            }
+            else{
+                // 默认情况下，也就是没有配置autoGeneratePrimaryKey时，最终输出的字段值要移除行中的primaryKey值
+                // 需要注意如果没有配置autoGeneratePrimaryKey时，因为每次弹出行编辑窗口保存后都会先后进入pipeOut和pipeIn，
+                // 这里删除掉了primaryKey值，所以primaryKey值每次弹出编辑窗口保存后都会给每行重新生成新的primaryKey值
+                // 只有autoGeneratePrimaryKey配置为true时，每行的primaryKey字段值才会始终保持不变
+                value = getTableValueWithoutPrimaryKeyValue(value, primaryKey);
             }
             if(amis.pipeOut){
                 if(typeof amis.pipeOut === 'function'){
@@ -1084,24 +1230,6 @@ export const getAmisInputTableSchema = async (props) => {
             return value;
         }
     };
-    if(amis.pipeIn){
-        inputTableSchema.pipeIn = amis.pipeIn;
-    }
-    if(props.fieldPrefix){
-        inputTableSchema.pipeIn = (value, data) => {
-            value = getTableValueWithoutFieldPrefix(value, props.fieldPrefix);
-            if(amis.pipeIn){
-                if(typeof amis.pipeIn === 'function'){
-                    return amis.pipeIn(value, data);
-                }
-                else{
-                    // TODO: 如果需要支持amis.pipeIn为字符串脚本在这里处理
-                    // amis.pipeIn;
-                }
-            }
-            return value;
-        };
-    }
     if (buttonsForColumnOperations.length) {
         inputTableSchema.columns.push({
             "name": "__op__",
@@ -1120,7 +1248,7 @@ export const getAmisInputTableSchema = async (props) => {
         delete amis.pipeOut;//该属性在上面合并过了
         Object.assign(inputTableSchema, amis);
     }
-    const isAnyFieldHasDependOn = (props.fields || []).find(function (item) {
+    const isAnyFieldHasDependOn = (fields || []).find(function (item) {
         return item.depend_on;
     });
     if (isAnyFieldHasDependOn) {
