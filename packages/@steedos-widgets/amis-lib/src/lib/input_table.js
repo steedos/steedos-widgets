@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-21 18:35:50
+ * @LastEditTime: 2024-01-21 19:06:01
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -1045,6 +1045,11 @@ async function getButtonActions(props, mode) {
             }
             else{
                 lastestFieldValue.splice(currentIndex, 1);
+            }
+            let fieldPrefix = "${props.fieldPrefix || ''}";
+            if(fieldPrefix){
+                let getTableValueWithoutFieldPrefix = new Function('v', 'f', "return (" + ${getTableValueWithoutFieldPrefix.toString()} + ")(v, f)");
+                lastestFieldValue = getTableValueWithoutFieldPrefix(lastestFieldValue, fieldPrefix);
             }
             doAction({
                 "componentId": "${props.id}",
