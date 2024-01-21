@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-21 22:30:52
+ * @LastEditTime: 2024-01-21 23:40:13
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -725,6 +725,18 @@ async function getButtonActions(props, mode) {
         // };
         let onSaveAndNewItemScript = `
             let scope = event.context.scoped;
+            let removeEmptyItems = function(items){
+                let i = _.findIndex(items, function(item){
+                    return item === undefined
+                });
+                if(i > -1){
+                    items.splice(i, 1);
+                    removeEmptyItems(items);
+                }
+            }
+            // 因为删除时只是把input-table组件中的行数据删除了，并没有把父层service中的行删除，所以__tableItems会有值为undefined的数据，需要移除掉
+            // 不用event.data.__tableItems = _.compact(event.data.__tableItems)是因为会把__tableItems变量保存到表单中
+            removeEmptyItems(event.data.__tableItems);
             let fieldValue = event.data.__tableItems;//这里不可以_.cloneDeep，因为翻页form中用的是event.data.__tableItems，直接变更其值即可改变表单中的值
             // 新建一条空白行并保存到子表组件
             var parent = event.data.__super.parent;
@@ -776,6 +788,18 @@ async function getButtonActions(props, mode) {
             // let newItem = JSON.parse(JSON.stringify(event.data));
             let newItem = scope.getComponentById(__formId).getValues();//这里不可以用event.data，因为其拿到的是弹出表单时的初始值，不是用户实时填写的数据
             newItem = _.clone(newItem);
+            let removeEmptyItems = function(items){
+                let i = _.findIndex(items, function(item){
+                    return item === undefined
+                });
+                if(i > -1){
+                    items.splice(i, 1);
+                    removeEmptyItems(items);
+                }
+            }
+            // 因为删除时只是把input-table组件中的行数据删除了，并没有把父层service中的行删除，所以__tableItems会有值为undefined的数据，需要移除掉
+            // 不用event.data.__tableItems = _.compact(event.data.__tableItems)是因为会把__tableItems变量保存到表单中
+            removeEmptyItems(event.data.__tableItems);
             let fieldValue = event.data.__tableItems;//这里不可以_.cloneDeep，因为翻页form中用的是event.data.__tableItems，直接变更其值即可改变表单中的值
             // 复制当前页数据到新建行并保存到子表组件
             // fieldValue.push(newItem);
