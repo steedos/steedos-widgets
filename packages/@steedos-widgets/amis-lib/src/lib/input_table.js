@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-21 14:11:55
+ * @LastEditTime: 2024-01-21 16:17:44
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -275,6 +275,8 @@ function getFormPagination(props, mode) {
         let currentIndex = event.data.index;
         // 翻页到下一页之前需要先把当前页改动的内容保存到中间变量__tableItems中
         let currentFormValues = scope.getComponentById(__formId).getValues();
+        // 这里不clone的话，其值会带上__super属性
+        currentFormValues = _.clone(currentFormValues);
         var parent = event.data.parent;
         var __parentIndex = event.data.__parentIndex;
         console.log("===onPageChangeScript===", fieldValue);
