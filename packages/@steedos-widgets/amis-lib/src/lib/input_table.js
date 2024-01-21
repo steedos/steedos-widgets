@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-21 19:06:01
+ * @LastEditTime: 2024-01-21 20:29:59
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -573,14 +573,9 @@ async function getForm(props, mode = "edit", formId) {
                 });
             }
             else{
-                debugger;
-                // 主键唯一标识字段值允许在表单上编辑的可能性，所以优先取currentFormValues中的值
-                let primaryValue = currentFormValues[primaryKey] || fieldValue[currentIndex][primaryKey];
-                if(!primaryValue){
-                    primaryValue = uuidv4();
-                }
+                // 这里currentFormValues中如果没有primaryKey字段值不用处理，因为组件的pipeIn/pipeOut中会为每行自动生成
+                // 也不用担心复制行时_id会重复，因为点击复制按钮时已经处理过了
                 fieldValue[currentIndex] = currentFormValues;
-                fieldValue[currentIndex][primaryKey] = primaryValue;
             }
             doAction({
                 "componentId": "${props.id}",
