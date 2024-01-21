@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-21 22:10:02
+ * @LastEditTime: 2024-01-21 22:30:52
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -552,8 +552,18 @@ async function getForm(props, mode = "edit", formId) {
         // 新增行弹出编辑行表单，在弹出之前已经不用先增加一行，因为在翻页service初始化的时候会判断mode为new时自动新增一行
         let onEditItemSubmitScript = `
             // let fieldValue = _.cloneDeep(event.data["${props.name}"]);
+            let removeEmptyItems = function(items){
+                let i = _.findIndex(items, function(item){
+                    return item === undefined
+                });
+                if(i > -1){
+                    items.splice(i, 1);
+                    removeEmptyItems(items);
+                }
+            }
             // 因为删除时只是把input-table组件中的行数据删除了，并没有把父层service中的行删除，所以__tableItems会有值为undefined的数据，需要移除掉
-            event.data.__tableItems = _.compact(event.data.__tableItems);
+            // 不用event.data.__tableItems = _.compact(event.data.__tableItems)是因为会把__tableItems变量保存到表单中
+            removeEmptyItems(event.data.__tableItems);
             let fieldValue = event.data.__tableItems;//这里不可以_.cloneDeep，因为翻页form中用的是event.data.__tableItems，直接变更其值即可改变表单中的值
             //这里加__super.__super前缀是因为__parentForm变量（即主表单）中可能会正好有名为index的字段
             // 比如“对象字段”对象options字段是一个子表字段，但是主表（即“对象字段”对象）中正好有一个名为index的字段
