@@ -1220,7 +1220,7 @@ export const getAmisInputTableSchema = async (props) => {
     let amis = props["input-table"] || props.amis || {};//额外支持"input-table"代替amis属性，是因为在字段yml文件中用amis作为key不好理解
     let inputTableSchema = {
         "type": "input-table",
-        "label": props.label,
+        "mode": "normal",
         "name": props.name,
         //不可以addable/editable/removable设置为true，因为会在原生的操作列显示操作按钮图标，此开关实测只控制这个按钮显示不会影响功能
         // "addable": props.addable,
@@ -1342,7 +1342,16 @@ export const getAmisInputTableSchema = async (props) => {
     }
     let schema = {
         "type": "service",
-        "body": schemaBody,
+        "body": [
+            {
+                "type": "control",
+                "body": schemaBody,
+                "label": props.label,
+                "labelClassName": props.label ? props.labelClassName : "none",
+                "labelRemark": props.labelRemark,
+                "labelAlign": props.labelAlign
+            }
+        ],
         "className": props.className,
         "id": serviceId
     };
