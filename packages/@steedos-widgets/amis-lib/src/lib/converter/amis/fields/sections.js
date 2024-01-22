@@ -85,6 +85,13 @@ const getSection = async (formFields, permissionFields, fieldSchemaArray, sectio
     }
   }
 
+  fieldSetBody.forEach((field)=>{
+    //判断label是否存在，不存在时将label的空占位元素隐藏
+    if(!field.label){
+      field.labelClassName = "none"
+    }
+  })
+
   // fieldSet 已支持显隐控制
   const sectionFieldsVisibleOn = lodash.map(lodash.compact(lodash.map(fieldSetBody, 'visibleOn')), (visibleOn) => {
     let visible = visibleOn;
