@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-21 23:40:13
+ * @LastEditTime: 2024-01-22 14:34:24
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -359,7 +359,7 @@ function getFormPagination(props, mode) {
             {
                 "type": "tpl",
                 // 这里用__super.parent，加__super是为了防止当前记录有字段名为parent的重名变量
-                "tpl": "${__page}/${__super.parent ? __tableItems[__parentIndex]['children'].length : __tableItems.length}"
+                "tpl": "${__page}/${__super.parent ? COMPACT(__tableItems[__parentIndex]['children']).length : COMPACT(__tableItems).length}"
             },
             {
                 "type": "button",
@@ -369,7 +369,7 @@ function getFormPagination(props, mode) {
                 "pageChangeDirection": "next",
                 // "disabledOn": showPagination ? "${__page >= __tableItems.length}" : "true",
                 // 这里用__super.parent，加__super是为了防止当前记录有字段名为parent的重名变量
-                "disabledOn": showPagination ? "${__page >= (__super.parent ? __tableItems[__parentIndex]['children'].length : __tableItems.length)}" : "true",
+                "disabledOn": showPagination ? "${__page >= (__super.parent ? COMPACT(__tableItems[__parentIndex]['children']).length : COMPACT(__tableItems).length)}" : "true",
                 "size": "sm",
                 "id": buttonNextId,
                 "onEvent": {
