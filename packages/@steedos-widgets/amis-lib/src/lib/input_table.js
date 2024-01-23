@@ -234,7 +234,6 @@ async function getInputTableColumns(props) {
                 let mode = typeof extendColumnProps.inlineEditMode === "boolean" ?
                     extendColumnProps.inlineEditMode : showAsInlineEditMode;
                 let tableCell = getInputTableCell(field, mode);
-                delete extendColumnProps.inlineEditMode;
                 return Object.assign({}, tableCell, extendColumnProps);
             }
             else {
