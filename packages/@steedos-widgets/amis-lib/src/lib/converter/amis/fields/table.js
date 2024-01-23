@@ -513,10 +513,14 @@ export async function getTableColumns(fields, options){
         //增加quickEdit属性，实现快速编辑
         const quickEditSchema = allowEdit ? await getQuickEditSchema(field, options) : allowEdit;
         let className = "";
-        if(field.wrap != true){
+        if(/Safari/.test(navigator.userAgent)){
             className += " whitespace-nowrap "
         }else{
-            className += " break-words "
+            if(field.wrap != true){
+                className += " whitespace-nowrap "
+            }else{
+                className += " break-words "
+            }
         }
         let columnItem;
         if((field.is_name || field.name === options.labelFieldName) && options.objectName === 'cms_files'){
