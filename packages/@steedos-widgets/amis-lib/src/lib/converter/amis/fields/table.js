@@ -483,7 +483,7 @@ async function getQuickEditSchema(field, options){
 }
 
 function getFieldWidth(width){
-    const defaultWidth = "unset";//用于使table内的td标签下生成div，实现将快速编辑按钮固定在右侧的效果，并不是为了unset效果
+    const defaultWidth = null;
     if(typeof width == 'string'){
         if(isNaN(width)){
             return width || defaultWidth;
@@ -513,14 +513,14 @@ export async function getTableColumns(fields, options){
         //增加quickEdit属性，实现快速编辑
         const quickEditSchema = allowEdit ? await getQuickEditSchema(field, options) : allowEdit;
         let className = "";
-        if(field.wrap != true){
-            if(field.wrap != false && field.is_wide){
-                className += " break-words ";
-            }else{
-                className += " whitespace-nowrap ";
-            }
+        if(/Safari/.test(navigator.userAgent)){
+            className += " whitespace-nowrap "
         }else{
-            className += " break-words ";
+            if(field.wrap != true){
+                className += " whitespace-nowrap "
+            }else{
+                className += " break-words "
+            }
         }
         let columnItem;
         if((field.is_name || field.name === options.labelFieldName) && options.objectName === 'cms_files'){

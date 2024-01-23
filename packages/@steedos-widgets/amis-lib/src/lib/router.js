@@ -21,6 +21,9 @@ export const Router = {
         if(uiSchema.enable_split){
             defaultDisplay = "split";
         }
+        if(window.innerWidth <= 768){
+            return "grid";
+        }
         return value ? value : defaultDisplay;
     },
   

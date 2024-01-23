@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-21 23:40:13
+ * @LastEditTime: 2024-01-22 15:59:32
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -269,37 +269,41 @@ function getFormPagination(props, mode) {
         let __formId = "${formId}";
         let fieldValue = event.data.__tableItems;//这里不可以_.cloneDeep，因为翻页form中用的是event.data.__tableItems，直接变更其值即可改变表单中的值
         let pageChangeDirection = context.props.pageChangeDirection;
+        let mode = "${mode}";
         // event.data中的index和__page分别表示当前要把表单数据提交到的行索引和用于标定下一页页码的当前页页码
         // 一般来说__page = index + 1，但是可以让event.data中传入__page和index值不是这种联系。
         // 比如__page设置为3，index设置为0表示把当前表单数据提交到第一页，但是跳转到第4页，弹出的表单中底下的新增和复制按钮依赖了此功能
         // let currentPage = currentIndex + 1;
         let currentPage = event.data.__page;
         let currentIndex = event.data.index;
-        // 翻页到下一页之前需要先把当前页改动的内容保存到中间变量__tableItems中
-        let currentFormValues = scope.getComponentById(__formId).getValues();
-        // 这里不clone的话，其值会带上__super属性
-        currentFormValues = _.clone(currentFormValues);
-        var parent = event.data.parent;
-        var __parentIndex = event.data.__parentIndex;
-        if(parent){
-            fieldValue[__parentIndex].children[currentIndex] = currentFormValues;
-            // 重写父节点，并且改变其某个属性以让子节点修改的内容回显到界面上
-            fieldValue[__parentIndex] = Object.assign({}, fieldValue[__parentIndex], {
-                children: fieldValue[__parentIndex].children,
-                __fix_rerender_after_children_modified_tag: new Date().getTime()
+        if(mode !== "readonly"){
+            // 新建编辑时，翻页才需要把当前页表单保存，只读时直接翻页即可
+            // 翻页到下一页之前需要先把当前页改动的内容保存到中间变量__tableItems中
+            let currentFormValues = scope.getComponentById(__formId).getValues();
+            // 这里不clone的话，其值会带上__super属性
+            currentFormValues = _.clone(currentFormValues);
+            var parent = event.data.parent;
+            var __parentIndex = event.data.__parentIndex;
+            if(parent){
+                fieldValue[__parentIndex].children[currentIndex] = currentFormValues;
+                // 重写父节点，并且改变其某个属性以让子节点修改的内容回显到界面上
+                fieldValue[__parentIndex] = Object.assign({}, fieldValue[__parentIndex], {
+                    children: fieldValue[__parentIndex].children,
+                    __fix_rerender_after_children_modified_tag: new Date().getTime()
+                });
+            }
+            else{
+                fieldValue[currentIndex] = currentFormValues;
+            }
+            // 翻页到下一页前需要同时把改动的内容保存到最终正式的表单字段中，所以额外给正式表单字段执行一次setValue
+            doAction({
+                "componentId": "${props.id}",
+                "actionType": "setValue",
+                "args": {
+                    "value": fieldValue
+                }
             });
         }
-        else{
-            fieldValue[currentIndex] = currentFormValues;
-        }
-        // 翻页到下一页前需要同时把改动的内容保存到最终正式的表单字段中，所以额外给正式表单字段执行一次setValue
-        doAction({
-            "componentId": "${props.id}",
-            "actionType": "setValue",
-            "args": {
-                "value": fieldValue
-            }
-        });
 
         // 以下是翻页逻辑，翻到下一页并把下一页内容显示到表单上
         let targetPage;
@@ -359,7 +363,7 @@ function getFormPagination(props, mode) {
             {
                 "type": "tpl",
                 // 这里用__super.parent，加__super是为了防止当前记录有字段名为parent的重名变量
-                "tpl": "${__page}/${__super.parent ? __tableItems[__parentIndex]['children'].length : __tableItems.length}"
+                "tpl": "${__page}/${__super.parent ? COMPACT(__tableItems[__parentIndex]['children']).length : COMPACT(__tableItems).length}"
             },
             {
                 "type": "button",
@@ -369,7 +373,7 @@ function getFormPagination(props, mode) {
                 "pageChangeDirection": "next",
                 // "disabledOn": showPagination ? "${__page >= __tableItems.length}" : "true",
                 // 这里用__super.parent，加__super是为了防止当前记录有字段名为parent的重名变量
-                "disabledOn": showPagination ? "${__page >= (__super.parent ? __tableItems[__parentIndex]['children'].length : __tableItems.length)}" : "true",
+                "disabledOn": showPagination ? "${__page >= (__super.parent ? COMPACT(__tableItems[__parentIndex]['children']).length : COMPACT(__tableItems).length)}" : "true",
                 "size": "sm",
                 "id": buttonNextId,
                 "onEvent": {
@@ -1030,7 +1034,10 @@ async function getButtonActions(props, mode) {
                         // 为了解决"弹出的dialog窗口中子表组件会影响页面布局界面中父作用域字段值"，比如设计字段布局微页面中的设置分组功能，弹出的就是子表dialog
                         // 所以这里使用json|toJson转一次，断掉event.data.__tableItems与上层任用域中props.name的联系
                         // "__tableItems": `\${${props.name}|json|toJson}`
-                        "__tableItems": `\${((__super.parent ? __super.__super.${props.name} : __super.${props.name}) || [])|json|toJson}`
+                        // "__tableItems": `\${((__super.parent ? __super.__super.${props.name} : __super.${props.name}) || [])|json|toJson}`
+                        // 在节点嵌套情况下，当前节点正好是带children属性的节点的话，这里弹出的dialog映射到的会是children数组，这是amis目前的规则，
+                        // 所以这里加判断有children时，用__super.__super让映射到正确的作用域层，如果不加，则__tableItems取到的会是children数组，而不是整个子表组件的值
+                        "__tableItems": `\${((children ? __super.__super.${props.name} : __super.${props.name}) || [])|json|toJson}`
                     },
                 }
             }
@@ -1213,7 +1220,7 @@ export const getAmisInputTableSchema = async (props) => {
     let amis = props["input-table"] || props.amis || {};//额外支持"input-table"代替amis属性，是因为在字段yml文件中用amis作为key不好理解
     let inputTableSchema = {
         "type": "input-table",
-        "label": props.label,
+        "mode": "normal",
         "name": props.name,
         //不可以addable/editable/removable设置为true，因为会在原生的操作列显示操作按钮图标，此开关实测只控制这个按钮显示不会影响功能
         // "addable": props.addable,
@@ -1335,7 +1342,16 @@ export const getAmisInputTableSchema = async (props) => {
     }
     let schema = {
         "type": "service",
-        "body": schemaBody,
+        "body": [
+            {
+                "type": "control",
+                "body": schemaBody,
+                "label": props.label,
+                "labelClassName": props.label ? props.labelClassName : "none",
+                "labelRemark": props.labelRemark,
+                "labelAlign": props.labelAlign
+            }
+        ],
         "className": props.className,
         "id": serviceId
     };

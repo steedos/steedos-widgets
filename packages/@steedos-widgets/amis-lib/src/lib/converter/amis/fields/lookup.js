@@ -65,17 +65,13 @@ export function getReferenceToSync(field) {
 
 export function getLookupSapceUserTreeSchema(isMobile){
     let apiAdaptor = `
-        // console.log("===getLookupSapceUserTreeSchema===", JSON.stringify(payload));
         const records = payload.data.options;
-        let isTreeOptionsComputed = false;
-        if(records.length === 1 && records[0].children){
-            isTreeOptionsComputed = true;
-        }
-        if(isTreeOptionsComputed){
-            return payload;
-        }
         const treeRecords = [];
-        const getChildren = (records, childrenIds) => {
+        const getChildren = (currentRecord, records, childrenIds) => {
+            if (currentRecord.children && typeof currentRecord.children[0] === "object") {
+                // 考虑api配置了cache缓存的话，不会请求接口但是会重新进这个接收适配器脚本且payload.data.options返回的会是上一次计算结果，这里直接返回计算过的children
+                return currentRecord.children;
+            }
             if (!childrenIds) {
                 return;
             }
@@ -84,7 +80,7 @@ export function getLookupSapceUserTreeSchema(isMobile){
             });
             _.each(children, (item) => {
                 if (item.children) {
-                    item.children = getChildren(records, item.children)
+                    item.children = getChildren(item, records, item.children)
                 }else{
                     item.children = [];
                 }
@@ -110,7 +106,7 @@ export function getLookupSapceUserTreeSchema(isMobile){
         
         _.each(records, (record) => {
             if (record.noParent == 1) {
-                treeRecords.push(Object.assign({}, record, { children: getChildren(records, record.children) }));
+                treeRecords.push(Object.assign({}, record, { children: getChildren(record, records, record.children) }));
             }
         });
         console.log(treeRecords)
