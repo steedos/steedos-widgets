@@ -80,7 +80,7 @@ export function getLookupSapceUserTreeSchema(isMobile){
             });
             _.each(children, (item) => {
                 if (item.children) {
-                    item.children = getChildren(currentRecord, records, item.children)
+                    item.children = getChildren(item, records, item.children)
                 }else{
                     item.children = [];
                 }
