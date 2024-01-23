@@ -739,7 +739,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
         }else{
             convertData.className = 'm-0';
         }
-        if(readonly){
+        if(readonly && ctx.mode !== 'edit'){
             convertData.className = `${convertData.className} border-b`
         }
         if(readonly){
