@@ -1341,19 +1341,19 @@ export const getAmisInputTableSchema = async (props) => {
         });
     }
     let schema = {
-        "type": "service",
-        "body": [
-            {
-                "type": "control",
-                "body": schemaBody,
-                "label": props.label,
-                "labelClassName": props.label ? props.labelClassName : "none",
-                "labelRemark": props.labelRemark,
-                "labelAlign": props.labelAlign
-            }
-        ],
-        "className": props.className,
-        "id": serviceId
+        "type": "control",
+        "body": {
+            "type": "service",
+            "body": schemaBody,
+            "id": serviceId
+        },
+        "label": props.label,
+        "labelClassName": props.label ? props.labelClassName : "none",
+        "labelRemark": props.labelRemark,
+        "labelAlign": props.labelAlign,
+        //控制control的mode属性，https://aisuda.bce.baidu.com/amis/zh-CN/components/form/formitem#表单项展示
+        "mode": props.mode || null,
+        "className": props.className
     };
     // console.log("===schema===", schema);
     return schema;
