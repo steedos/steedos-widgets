@@ -40,42 +40,46 @@ export const getSchema = (uiSchema) => {
                       },
                       "form": {
                         debug: false,
-                        // resetAfterSubmit: false,
-                        // data: {
-                        //   editFormInited: true,
-                        // },
-                        // initApi: {
-                        //   url: '/api/v1/queue_import_history/${recordId}?fields=["state"]',
-                        //   sendOn: 'this.recordId',
-                        //   responseData: {
-                        //     importState: "${state}"
-                        //   }
-                        // },
-                        // interval: 3000,
-                        // stopAutoRefreshWhen: "this.importState === 'finished'",
-                        // initFetch: false,
+                        resetAfterSubmit: false,
+                        data: {
+                          editFormInited: true,
+                        },
+                        initApi: {
+                          method: 'GET',
+                          url: '/api/v1/queue_import_history/${recordId}?fields=["state"]',
+                          sendOn: 'this.recordId',
+                          data: null,
+                          requestAdaptor: "return api;",
+                          adaptor: "return payload;",
+                          responseData: {
+                            importState: "${state}"
+                          }
+                        },
+                        interval: 3000,
+                        stopAutoRefreshWhen: "this.importState === 'finished'",
+                        initFetch: false,
                         onEvent: {
-                          // inited: {
-                          //   weight: 0,
-                          //   actions: [
-                          //     {
-                          //       "actionType": "broadcast",
-                          //       "args": {
-                          //         "eventName": `@data.changed.${uiSchema.name}`
-                          //       },
-                          //       "data": {
-                          //         "objectName": `${uiSchema.name}`,
-                          //         "displayAs": "${displayAs}",
-                          //         "recordId": "xxxx" //不可以省略，否则会进入进入记录详细页面
-                          //       },
-                          //       "expression": "this.importState === 'finished'"
-                          //     },
-                          //     {
-                          //       "actionType": "closeDialog",
-                          //       "expression": "this.importState === 'finished'"
-                          //     }
-                          //   ]
-                          // },
+                          inited: {
+                            weight: 0,
+                            actions: [
+                              {
+                                "actionType": "broadcast",
+                                "args": {
+                                  "eventName": `@data.changed.${uiSchema.name}`
+                                },
+                                "data": {
+                                  "objectName": `${uiSchema.name}`,
+                                  "displayAs": "${displayAs}",
+                                  "recordId": "xxxx" //不可以省略，否则会进入进入记录详细页面
+                                },
+                                "expression": "this.importState === 'finished'"
+                              },
+                              {
+                                "actionType": "closeDialog",
+                                "expression": "this.importState === 'finished'"
+                              }
+                            ]
+                          },
                           submitSucc: {
                             weight: 0,
                             actions: [
@@ -108,7 +112,7 @@ export const getSchema = (uiSchema) => {
                             ],
                           },
                         },
-                        // closeDialogOnSubmit: false,
+                        closeDialogOnSubmit: false,
                       }
                     }
                   ],
