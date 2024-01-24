@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-17 15:06:02
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2024-01-23 15:27:31
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -191,6 +191,7 @@ export const AmisSteedosField = async (props) => {
                 name: steedosField.name,  
                 label: steedosField.label,
                 static: true,
+                required: steedosField.required,
                 className: `${className || ''} ${steedosField.amis?.className || ''}`
             };
             if(inInputTable){

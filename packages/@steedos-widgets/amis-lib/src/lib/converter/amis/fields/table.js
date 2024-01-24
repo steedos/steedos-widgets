@@ -483,7 +483,7 @@ async function getQuickEditSchema(field, options){
 }
 
 function getFieldWidth(width){
-    const defaultWidth = "unset";//用于使table内的td标签下生成div，实现将快速编辑按钮固定在右侧的效果，并不是为了unset效果
+    const defaultWidth = null;
     if(typeof width == 'string'){
         if(isNaN(width)){
             return width || defaultWidth;
@@ -513,14 +513,14 @@ export async function getTableColumns(fields, options){
         //增加quickEdit属性，实现快速编辑
         const quickEditSchema = allowEdit ? await getQuickEditSchema(field, options) : allowEdit;
         let className = "";
-        if(field.wrap != true){
-            if(field.wrap != false && field.is_wide){
-                className += " break-words ";
-            }else{
-                className += " whitespace-nowrap ";
-            }
+        if(/Safari/.test(navigator.userAgent)){
+            className += " whitespace-nowrap "
         }else{
-            className += " break-words ";
+            if(field.wrap != true){
+                className += " whitespace-nowrap "
+            }else{
+                className += " break-words "
+            }
         }
         let columnItem;
         if((field.is_name || field.name === options.labelFieldName) && options.objectName === 'cms_files'){
@@ -1417,15 +1417,8 @@ export async function getTableApi(mainObject, fields, options){
                 }
             });
         };
-        let isTreeOptionsComputed = false;
-        if(records.length === 1 && records[0].children){
-            isTreeOptionsComputed = true;
-        }
-        if(!isTreeOptionsComputed){
-            // 如果api接口设置在缓存，缓存期间并不会重新请求接口，payload.data.rows是上次计算后的结果
-            payload.data.rows = getTreeOptions(records,{"valueField":"_id"});
-            assignIndexToTreeRecords(payload.data.rows, '');
-        }
+        payload.data.rows = getTreeOptions(records,{"valueField":"_id"});
+        assignIndexToTreeRecords(payload.data.rows, '');
     }
 
 

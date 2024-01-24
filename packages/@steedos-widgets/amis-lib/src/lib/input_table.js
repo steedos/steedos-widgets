@@ -151,6 +151,7 @@ function getInputTableCell(field, showAsInlineEditMode) {
             name: field.name,
             quickEdit: {
                 "type": "steedos-field",
+                "mode": "inline",
                 "config": Object.assign({}, field, {
                     label: false
                 })
@@ -230,7 +231,9 @@ async function getInputTableColumns(props) {
                 }
             }
             if (field) {
-                let tableCell = getInputTableCell(field, showAsInlineEditMode);
+                let mode = typeof extendColumnProps.inlineEditMode === "boolean" ?
+                    extendColumnProps.inlineEditMode : showAsInlineEditMode;
+                let tableCell = getInputTableCell(field, mode);
                 return Object.assign({}, tableCell, extendColumnProps);
             }
             else {
@@ -1296,9 +1299,6 @@ export const getAmisInputTableSchema = async (props) => {
             "buttons": buttonsForColumnOperations,
             "width": buttonsForColumnOperations.length > 1 ? "60px" : "20px"
         });
-    }
-    if (showAsInlineEditMode) {
-        inputTableSchema.needConfirm = false;
     }
     if (amis) {
         // 支持配置amis属性重写或添加最终生成的input-table中任何属性。
