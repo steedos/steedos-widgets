@@ -156,6 +156,7 @@ export function getLookupSapceUserTreeSchema(isMobile){
           }
         },
         "label": "",
+        "mode": "normal",
         "name": "organizations",
         "multiple": false,
         "joinValues": false,

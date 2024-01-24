@@ -8,8 +8,9 @@ import { getAmisInputTableSchema, i18next } from '@steedos-widgets/amis-lib'
 
 export const AmisInputTable = async (props) => {
   // console.log("AmisInputTable props", props);
+  // columns内存在inlineEditMode属性， 控制字段级的內联模式
   const { $schema, fields, name, id, data, columns, amis, className, tableClassName, headerToolbar, footerToolbar, 
-    inlineEditMode, strictMode, dialog, primaryKey, showOperation, fieldPrefix, autoGeneratePrimaryKeyValue } = props;
+    inlineEditMode, strictMode, dialog, primaryKey, showOperation, fieldPrefix, autoGeneratePrimaryKeyValue, mode } = props;
   const amisSchema = await getAmisInputTableSchema(props);
   // console.log("=AmisInputTable==amisSchema====", amisSchema);
   return amisSchema;

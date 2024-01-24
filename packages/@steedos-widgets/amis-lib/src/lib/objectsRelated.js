@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-15 10:34:46
+ * @LastEditTime: 2024-01-24 10:18:17
  * @Description:
  */
 
@@ -108,7 +108,9 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
                     const foreign_key_value = arr[2] ? arr[1]+'.'+arr[2] : arr[1];
                     mainRelated[arr[0]] = foreign_key_value;
                 }
-            }else{
+            }
+            // 防止related_lists中没有相关子表，但是details中有相关子表的情况
+            if(!mainRelated[relatedObjectName]){
                 const details = union(mainObjectUiSchema.details,mainObjectUiSchema.lookup_details) || [];
                 for (const detail of details) {
                     const arr = detail.split(".");

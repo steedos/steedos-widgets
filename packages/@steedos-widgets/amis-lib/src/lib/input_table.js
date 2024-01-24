@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-22 15:59:32
+ * @LastEditTime: 2024-01-24 14:56:03
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -10,7 +10,7 @@ import { getComparableAmisVersion } from './converter/amis/util';
 import { clone } from 'lodash';
 import { uuidv4 } from '../utils/uuid';
 
-function getTablePrimaryKey(props){
+function getTablePrimaryKey(props) {
     return props.primaryKey || "_id";
 }
 
@@ -20,22 +20,22 @@ function getTablePrimaryKey(props){
  * @param {*} primaryKey 主键字段名，一般为_id
  * @returns 转换后的子表组件字段值
  */
-function getTableValueWithPrimaryKeyValue(value, primaryKey){
-    if(!primaryKey){
+function getTableValueWithPrimaryKeyValue(value, primaryKey) {
+    if (!primaryKey) {
         return value;
     }
-    return (value || []).map((itemValue)=>{
+    return (value || []).map((itemValue) => {
         //这里不clone的话，会造成在pipeIn函数执行该函数后像pipeOut一样最终输出到表单项中，即库里把primaryKey字段值保存了
         const newItemValue = clone(itemValue);
-        if(newItemValue[primaryKey]){
-            if(newItemValue.children){
+        if (newItemValue[primaryKey]) {
+            if (newItemValue.children) {
                 newItemValue.children = getTableValueWithPrimaryKeyValue(newItemValue.children, primaryKey);
             }
             return newItemValue;
         }
-        else{
+        else {
             newItemValue[primaryKey] = uuidv4();
-            if(newItemValue.children){
+            if (newItemValue.children) {
                 newItemValue.children = getTableValueWithPrimaryKeyValue(newItemValue.children, primaryKey);
             }
             return newItemValue;
@@ -49,14 +49,14 @@ function getTableValueWithPrimaryKeyValue(value, primaryKey){
  * @param {*} primaryKey 主键字段名，一般为_id
  * @returns 转换后的子表组件字段值
  */
-function getTableValueWithoutPrimaryKeyValue(value, primaryKey){
-    if(!primaryKey){
+function getTableValueWithoutPrimaryKeyValue(value, primaryKey) {
+    if (!primaryKey) {
         return value;
     }
-    return (value || []).map((itemValue)=>{
+    return (value || []).map((itemValue) => {
         //这里clone只是为了保险，不是必须的，每次修改子表数据是否都会生成新的primaryKey字段值是由pipeOut中识别autoGeneratePrimaryKeyValue决定的，跟这里没关系
         const newItemValue = clone(itemValue);
-        if(newItemValue.children){
+        if (newItemValue.children) {
             newItemValue.children = getTableValueWithoutPrimaryKeyValue(newItemValue.children, primaryKey);
         }
         delete newItemValue[primaryKey];
@@ -70,12 +70,12 @@ function getTableValueWithoutPrimaryKeyValue(value, primaryKey){
  * @param {*} fieldPrefix 字段前缀
  * @returns 转换后的子表组件字段值
  */
-function getTableValueWithoutFieldPrefix(value, fieldPrefix){
+function getTableValueWithoutFieldPrefix(value, fieldPrefix) {
     let convertedValue = [];
-    (value || []).forEach((itemValue)=>{
+    (value || []).forEach((itemValue) => {
         var newItemValue = {};
-        for(let n in itemValue){
-            if(itemValue.hasOwnProperty(n)){
+        for (let n in itemValue) {
+            if (itemValue.hasOwnProperty(n)) {
                 newItemValue[n.replace(new RegExp(`^${fieldPrefix}`), "")] = itemValue[n];
             }
         }
@@ -90,16 +90,16 @@ function getTableValueWithoutFieldPrefix(value, fieldPrefix){
  * @param {*} fieldPrefix 字段前缀
  * @returns 转换后的子表组件字段值
  */
-function getTableValuePrependFieldPrefix(value, fieldPrefix, primaryKey){
+function getTableValuePrependFieldPrefix(value, fieldPrefix, primaryKey) {
     let convertedValue = [];
-    (value || []).forEach((itemValue)=>{
+    (value || []).forEach((itemValue) => {
         var newItemValue = {};
-        for(let n in itemValue){
-            if(itemValue.hasOwnProperty(n) && typeof itemValue[n] !== undefined && n !== primaryKey){
+        for (let n in itemValue) {
+            if (itemValue.hasOwnProperty(n) && typeof itemValue[n] !== undefined && n !== primaryKey) {
                 newItemValue[`${fieldPrefix}${n}`] = itemValue[n];
             }
         }
-        if(primaryKey && itemValue[primaryKey]){
+        if (primaryKey && itemValue[primaryKey]) {
             newItemValue[primaryKey] = itemValue[primaryKey];
         }
         convertedValue.push(newItemValue);
@@ -113,7 +113,7 @@ function getTableValuePrependFieldPrefix(value, fieldPrefix, primaryKey){
  * @param {*} fieldPrefix 字段前缀
  * @returns 转换后的子表组件字段值
  */
-function getTableFieldsWithoutFieldPrefix(fields, fieldPrefix){
+function getTableFieldsWithoutFieldPrefix(fields, fieldPrefix) {
     return (fields || []).map((item) => {
         const newItem = clone(item);//这里不clone的话，会造成子表组件重新render，从而审批王那边点开子表行编辑窗口时报错
         newItem.name = newItem.name.replace(new RegExp(`^${fieldPrefix}`), "");
@@ -151,6 +151,7 @@ function getInputTableCell(field, showAsInlineEditMode) {
             name: field.name,
             quickEdit: {
                 "type": "steedos-field",
+                "mode": "inline",
                 "config": Object.assign({}, field, {
                     label: false
                 })
@@ -230,7 +231,9 @@ async function getInputTableColumns(props) {
                 }
             }
             if (field) {
-                let tableCell = getInputTableCell(field, showAsInlineEditMode);
+                let mode = typeof extendColumnProps.inlineEditMode === "boolean" ?
+                    extendColumnProps.inlineEditMode : showAsInlineEditMode;
+                let tableCell = getInputTableCell(field, mode);
                 return Object.assign({}, tableCell, extendColumnProps);
             }
             else {
@@ -253,7 +256,7 @@ async function getInputTableColumns(props) {
  */
 function getFormPagination(props, mode) {
     let showPagination = true;
-    if(mode === "new" && !!!props.editable){
+    if (mode === "new" && !!!props.editable) {
         //不允许编辑只允许新建时不应该让用户操作翻页
         showPagination = false;
     }
@@ -693,7 +696,7 @@ async function getButtonActions(props, mode) {
     let formPaginationId = getComponentId("form_pagination", props.id);
     let parentFormData = "${__super.__super.__super.__super || {}}";
     let amisVersion = getComparableAmisVersion();
-    if(amisVersion < 3.6){
+    if (amisVersion < 3.6) {
         parentFormData = "${__super.__super || {}}";
     }
     if (mode == "new" || mode == "edit") {
@@ -857,13 +860,13 @@ async function getButtonActions(props, mode) {
         `;
         let dialogButtons = [
             {
-            "type": "button",
-            "label": "完成",
-            "actionType": "confirm",
-            "level": "primary"
+                "type": "button",
+                "label": "完成",
+                "actionType": "confirm",
+                "level": "primary"
             }
         ];
-        if(props.addable){
+        if (props.addable) {
             // 有新增行权限时额外添加新增和复制按钮
             dialogButtons = [
                 {
@@ -936,7 +939,7 @@ async function getButtonActions(props, mode) {
                     // 在节点嵌套情况下，当前节点正好是带children属性的节点的话，这里弹出的dialog映射到的会是children数组，这是amis目前的规则，
                     // 所以这里加判断有children时，用__super.__super让映射到正确的作用域层，如果不加，则__tableItems取到的会是children数组，而不是整个子表组件的值
                     "__tableItems": `\${((children ? __super.__super.${props.name} : __super.${props.name}) || [])|json|toJson}`
-        },
+                },
                 "actions": dialogButtons,
                 "onEvent": {
                     "confirm": {
@@ -1174,7 +1177,7 @@ export const getAmisInputTableSchema = async (props) => {
     }
     let primaryKey = getTablePrimaryKey(props);
     let showOperation = props.showOperation;
-    if(showOperation !== false){
+    if (showOperation !== false) {
         showOperation = true;
     }
     let fieldPrefix = props.fieldPrefix;
@@ -1186,7 +1189,7 @@ export const getAmisInputTableSchema = async (props) => {
     let buttonsForColumnOperations = [];
     let inlineEditMode = props.inlineEditMode;
     let showAsInlineEditMode = inlineEditMode && props.editable;
-    if(showOperation){
+    if (showOperation) {
         if (props.editable) {
             let showEditButton = true;
             if (showAsInlineEditMode) {
@@ -1237,20 +1240,20 @@ export const getAmisInputTableSchema = async (props) => {
         "showFooterAddBtn": false,
         "className": props.tableClassName,
         "pipeIn": (value, data) => {
-            if(fieldPrefix){
+            if (fieldPrefix) {
                 value = getTableValueWithoutFieldPrefix(value, fieldPrefix);
             }
-            if(primaryKey){
+            if (primaryKey) {
                 // 这里临时给每行数据补上primaryKey字段值，如果库里不需要保存这里补上的字段值，pipeOut中会识别autoGeneratePrimaryKeyValue属性选择最终移除这里补上的字段值
                 // 这里始终自动生成primaryKey字段值，而不是只在pipeOut输出整个子表字段值时才生成，是因为要支持当数据库里保存的子表字段行数据没有primaryKey字段值时的行嵌套模式（即节点的children属性）功能
                 // 这里要注意，流程详细设置界面的字段设置功能中的子表组件中，数据库里保存的子表字段行数据是有primaryKey字段值的，它不依赖这里自动生成行primaryKey值功能
                 value = getTableValueWithPrimaryKeyValue(value, primaryKey);
             }
-            if(amis.pipeIn){
-                if(typeof amis.pipeIn === 'function'){
+            if (amis.pipeIn) {
+                if (typeof amis.pipeIn === 'function') {
                     return amis.pipeIn(value, data);
                 }
-                else{
+                else {
                     // TODO: 如果需要支持amis.pipeIn为字符串脚本在这里处理
                     // amis.pipeIn;
                 }
@@ -1258,30 +1261,30 @@ export const getAmisInputTableSchema = async (props) => {
             return value;
         },
         "pipeOut": (value, data) => {
-            value = (value || []).map(function(item){
+            value = (value || []).map(function (item) {
                 delete item.__fix_rerender_after_children_modified_tag;
                 return item;
             });
-            if(fieldPrefix){
+            if (fieldPrefix) {
                 value = getTableValuePrependFieldPrefix(value, fieldPrefix, primaryKey);
             }
-            if(props.autoGeneratePrimaryKeyValue === true){
+            if (props.autoGeneratePrimaryKeyValue === true) {
                 // 如果需要把自动生成的primaryKey值输出保存的库中，则补全所有行中的primaryKey值
                 // 这里如果不全部补全的话，初始从库里返回的字段值中拿到的行没primaryKey值的话就不会自动补上
                 value = getTableValueWithPrimaryKeyValue(value, primaryKey);
             }
-            else{
+            else {
                 // 默认情况下，也就是没有配置autoGeneratePrimaryKey时，最终输出的字段值要移除行中的primaryKey值
                 // 需要注意如果没有配置autoGeneratePrimaryKey时，因为每次弹出行编辑窗口保存后都会先后进入pipeOut和pipeIn，
                 // 这里删除掉了primaryKey值，所以primaryKey值每次弹出编辑窗口保存后都会给每行重新生成新的primaryKey值
                 // 只有autoGeneratePrimaryKey配置为true时，每行的primaryKey字段值才会始终保持不变
                 value = getTableValueWithoutPrimaryKeyValue(value, primaryKey);
             }
-            if(amis.pipeOut){
-                if(typeof amis.pipeOut === 'function'){
+            if (amis.pipeOut) {
+                if (typeof amis.pipeOut === 'function') {
                     return amis.pipeOut(value, data);
                 }
-                else{
+                else {
                     // TODO: 如果需要支持amis.pipeOut为字符串脚本在这里处理
                     // amis.pipeOut;
                 }
@@ -1296,9 +1299,6 @@ export const getAmisInputTableSchema = async (props) => {
             "buttons": buttonsForColumnOperations,
             "width": buttonsForColumnOperations.length > 1 ? "60px" : "20px"
         });
-    }
-    if (showAsInlineEditMode) {
-        inputTableSchema.needConfirm = false;
     }
     if (amis) {
         // 支持配置amis属性重写或添加最终生成的input-table中任何属性。
@@ -1341,19 +1341,19 @@ export const getAmisInputTableSchema = async (props) => {
         });
     }
     let schema = {
-        "type": "service",
-        "body": [
-            {
-                "type": "control",
-                "body": schemaBody,
-                "label": props.label,
-                "labelClassName": props.label ? props.labelClassName : "none",
-                "labelRemark": props.labelRemark,
-                "labelAlign": props.labelAlign
-            }
-        ],
-        "className": props.className,
-        "id": serviceId
+        "type": "control",
+        "body": {
+            "type": "service",
+            "body": schemaBody,
+            "id": serviceId
+        },
+        "label": props.label,
+        "labelClassName": props.label ? props.labelClassName : "none",
+        "labelRemark": props.labelRemark,
+        "labelAlign": props.labelAlign,
+        //控制control的mode属性，https://aisuda.bce.baidu.com/amis/zh-CN/components/form/formitem#表单项展示
+        "mode": props.mode || null,
+        "className": props.className
     };
     // console.log("===schema===", schema);
     return schema;

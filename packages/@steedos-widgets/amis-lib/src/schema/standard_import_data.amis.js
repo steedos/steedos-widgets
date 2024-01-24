@@ -41,9 +41,16 @@ export const getSchema = (uiSchema) => {
                       "form": {
                         debug: false,
                         resetAfterSubmit: false,
+                        data: {
+                          editFormInited: true,
+                        },
                         initApi: {
+                          method: 'GET',
                           url: '/api/v1/queue_import_history/${recordId}?fields=["state"]',
                           sendOn: 'this.recordId',
+                          data: null,
+                          requestAdaptor: "return api;",
+                          adaptor: "return payload;",
                           responseData: {
                             importState: "${state}"
                           }

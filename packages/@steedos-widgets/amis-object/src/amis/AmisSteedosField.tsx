@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: liaodaxue
- * @LastEditTime: 2024-01-23 15:27:31
+ * @LastEditTime: 2024-01-24 13:21:37
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -47,6 +47,8 @@ function getAmisStaticFieldType(type: string, data_type?: string, options?: any)
             return `static-images`;
         }
         return `static-image`;
+    } else if (type === 'textarea') {
+        return 'static'
     }
     return type;
 };
@@ -199,12 +201,20 @@ export const AmisSteedosField = async (props) => {
             }else{
                 let referenceTo = steedosField.reference_to;
                 if(referenceTo){
+                    if(isArray(referenceTo)){
+                        const fieldValue = props.data?.[steedosField.name];
+                        if(fieldValue && fieldValue.o){
+                            referenceTo = fieldValue.o;
+                        }else{
+                            referenceTo = referenceTo[0];
+                        }
+                    }
                     let referenceToField = steedosField.reference_to_field;
                     if(referenceTo === 'users'){
                         referenceTo = 'space_users';
                         referenceToField = 'user';
                     }
-                    let fieldRefObject = await getUISchema(referenceTo)
+                    let fieldRefObject = await getUISchema(referenceTo);
                     if(props.data._display && has(props.data._display, steedosField.name)){
                         let disPlayValue = get(props.data._display, steedosField.name);
                         if(disPlayValue){
@@ -222,6 +232,7 @@ export const AmisSteedosField = async (props) => {
                                     body: [
                                         {
                                             type: 'each',
+                                            placeholder: "",
                                             className: `steedos-field-lookup-each flex flex-wrap gap-2`,
                                             source: `\${_display.${steedosField.name}|asArray}`,
                                             items: { 
@@ -484,6 +495,10 @@ export const AmisSteedosField = async (props) => {
                         "precision": steedosField.scale || 0
                     });
                 }
+            } else if (steedosField.type === 'textarea') {
+                Object.assign(schema, {
+                    tpl: `<%=(data.${steedosField.name} || "").split("\\n").join('<br>')%>`
+                })
             }
             Object.assign(schema, steedosField.amis || {});
             return schema;
