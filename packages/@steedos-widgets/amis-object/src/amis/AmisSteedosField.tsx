@@ -47,6 +47,8 @@ function getAmisStaticFieldType(type: string, data_type?: string, options?: any)
             return `static-images`;
         }
         return `static-image`;
+    } else if (type === 'textarea') {
+        return 'static'
     }
     return type;
 };
@@ -493,6 +495,10 @@ export const AmisSteedosField = async (props) => {
                         "precision": steedosField.scale || 0
                     });
                 }
+            } else if (steedosField.type === 'textarea') {
+                Object.assign(schema, {
+                    tpl: `<%=(data.${steedosField.name} || "").split("\\n").join('<br>')%>`
+                })
             }
             Object.assign(schema, steedosField.amis || {});
             return schema;
