@@ -1417,15 +1417,8 @@ export async function getTableApi(mainObject, fields, options){
                 }
             });
         };
-        let isTreeOptionsComputed = false;
-        if(records.length === 1 && records[0].children){
-            isTreeOptionsComputed = true;
-        }
-        if(!isTreeOptionsComputed){
-            // 如果api接口设置在缓存，缓存期间并不会重新请求接口，payload.data.rows是上次计算后的结果
-            payload.data.rows = getTreeOptions(records,{"valueField":"_id"});
-            assignIndexToTreeRecords(payload.data.rows, '');
-        }
+        payload.data.rows = getTreeOptions(records,{"valueField":"_id"});
+        assignIndexToTreeRecords(payload.data.rows, '');
     }
 
 
