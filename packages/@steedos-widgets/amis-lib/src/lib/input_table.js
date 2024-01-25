@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-24 14:56:03
+ * @LastEditTime: 2024-01-25 11:54:48
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -160,15 +160,18 @@ function getInputTableCell(field, showAsInlineEditMode) {
     }
     else {
         return {
-            "type": "steedos-field",
-            "config": Object.assign({}, field, {
-                label: false
-            }),
-            inInputTable: true,
-            "static": true,
-            "readonly": true,
+            "type": "service",
             label: field.label,
-            name: field.name
+            name: field.name,
+            "body":[{
+                "type": "steedos-field",
+                "config": Object.assign({}, field, {
+                    label: false
+                }),
+                inInputTable: true,
+                "static": true,
+                "readonly": true
+            }]
         }
     }
 }
@@ -1300,6 +1303,10 @@ export const getAmisInputTableSchema = async (props) => {
             "width": buttonsForColumnOperations.length > 1 ? "60px" : "20px"
         });
     }
+    // if (showAsInlineEditMode) {
+    //     // 因为要支持不同的列上配置inlineEditMode属性，所有不可以把整个子表组件都设置为inlineEditMode
+    //     inputTableSchema.needConfirm = false;
+    // }
     if (amis) {
         // 支持配置amis属性重写或添加最终生成的input-table中任何属性。
         delete amis.id;//如果steedos-input-table组件配置了amis.id属性，会造成新建编辑行功能不生效
