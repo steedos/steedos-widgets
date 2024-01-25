@@ -421,10 +421,20 @@ async function getQuickEditSchema(field, options){
                                                         "script": `
                                                             const noPermission = event.data.noPermission;
                                                             const crudComponent = event.context.scoped.getComponentById("${options.crudId}");
-                                                            const selectedItems = crudComponent && crudComponent.props.store.selectedItems.concat();
+                                                            let selectedItems = crudComponent && crudComponent.props.store.selectedItems.concat();
                                                             noPermission.forEach(function (item) {
                                                                 crudComponent && crudComponent.unSelectItem(_.find(selectedItems,{_id:item}));
+                                                                _.remove(selectedItems, (selected) => selected._id === item);
                                                             })
+                                                            doAction({
+                                                                "componentId": "${quickEditId}",
+                                                                "actionType": "setValue",
+                                                                "args": {
+                                                                    "value": {
+                                                                        selectedItems
+                                                                    }
+                                                                }
+                                                            });
                                                         `
                                                     },
                                                     {
