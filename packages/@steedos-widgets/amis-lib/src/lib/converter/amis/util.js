@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-20 16:29:22
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-28 14:59:08
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2024-01-25 14:44:17
  * @Description: 
  */
 import { getRootUrl } from "../../steedos.client";
@@ -87,4 +87,23 @@ export function getComparableAmisVersion() {
       let comparableVersion = parseFloat(comparableVersions[0].toString() + "." + comparableVersions[1].toString());
       return comparableVersion;
   }
+}
+
+/**
+ * 判断浏览器类型
+ * @returns 按需返回浏览器类型;
+ */
+ export function getBowserType() {
+    const userAgent = navigator.userAgent;
+    if (userAgent.indexOf("Chrome")!== -1 && userAgent.indexOf("Safari") !== -1 && userAgent.indexOf("Edg") === -1) {
+      return "Chrome";
+    } else if (userAgent.indexOf("Firefox") !== -1) {
+      return "Firefox";
+    } else if (userAgent.indexOf("Safari") !== -1 && userAgent.indexOf("Chrome") === -1 && userAgent.indexOf("Edge") === -1) {
+      return "Safari";
+    } else if (userAgent.indexOf("Edg") !== -1) {
+      return "Edge";
+    } else {
+      return "Unknown browser"; // 其他浏览器...（可根据自己需要确定是否新增其他浏览器的判断）
+    }
 }

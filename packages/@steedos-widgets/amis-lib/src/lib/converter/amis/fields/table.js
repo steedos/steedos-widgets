@@ -7,6 +7,7 @@ import { each, forEach, isBoolean, isEmpty } from 'lodash';
 import { getAmisFileReadonlySchema } from './file'
 import { Router } from '../../../router'
 import { i18next } from '../../../../i18n'
+import { getBowserType } from '../util';
 
 function getOperation(fields){
     const controls = [];
@@ -514,7 +515,8 @@ export async function getTableColumns(fields, options){
         //增加quickEdit属性，实现快速编辑
         const quickEditSchema = allowEdit ? await getQuickEditSchema(field, options) : allowEdit;
         let className = "";
-        if(/Safari/.test(navigator.userAgent)){
+        const bowserType = getBowserType();
+        if(bowserType === "Safari"){
             className += " whitespace-nowrap "
         }else{
             if(field.wrap != true){
