@@ -308,7 +308,8 @@ async function getQuickEditSchema(field, options){
                                         "failed": "失败了呢。。"
                                       }
                                     }
-                                }
+                                },
+                                "expression": "${!recordPermissions.modifyAllRecords}"
                             },
                             {
                                 "actionType": "setValue",
@@ -324,7 +325,7 @@ async function getQuickEditSchema(field, options){
                                 "componentId": quickEditId,
                                 "args": {
                                     "value":{
-                                        "quickedit_record_permissions": "${event.data}"
+                                        "quickedit_record_permissions": "${recordPermissions.modifyAllRecords ? {'allowEdit': true} : event.data}"
                                     }
                                 }
                             }
@@ -388,7 +389,7 @@ async function getQuickEditSchema(field, options){
                                           `
                                         }
                                     },
-                                    "expression":"${event.data.value}"
+                                    "expression":"${event.data.value && !recordPermissions.modifyAllRecords}"
                                 },
                                 {
                                     "actionType": "setValue",
