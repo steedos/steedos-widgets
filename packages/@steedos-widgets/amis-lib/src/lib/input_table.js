@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-25 11:54:48
+ * @LastEditTime: 2024-01-25 14:11:50
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -159,6 +159,7 @@ function getInputTableCell(field, showAsInlineEditMode) {
         }
     }
     else {
+        // 这里加一层service是因为amis 3.6/6.0中有bug，不加的话，这里会显示为父作用域中中的同名变量值，见：https://github.com/baidu/amis/issues/9520
         return {
             "type": "service",
             label: field.label,
