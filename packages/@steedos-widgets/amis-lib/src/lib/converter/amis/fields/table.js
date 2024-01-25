@@ -523,6 +523,18 @@ export async function getTableColumns(fields, options){
                 className += " break-words "
             }
         }
+
+        if (typeof field.amis?.className == "object") {
+            className = {
+                [className]: "true",
+                ...field.amis.className
+            }
+        } else if (typeof field.amis?.className == "string") {
+            className = `${className} ${field.amis.className} `
+        }
+        let fieldAmis = _.clone(field.amis);
+        delete fieldAmis?.className;
+
         let columnItem;
         if((field.is_name || field.name === options.labelFieldName) && options.objectName === 'cms_files'){
             const previewFileScript = `
@@ -573,7 +585,7 @@ export async function getTableColumns(fields, options){
                 toggled: field.toggled,
                 static: true,
                 className,
-            }, field.amis, {name: field.name});
+            }, fieldAmis, {name: field.name});
         }else if(field.type === 'avatar' || field.type === 'image' || field.type === 'file'){
             columnItem = Object.assign({}, {
                 type: "switch",
@@ -584,7 +596,7 @@ export async function getTableColumns(fields, options){
                 static: true,
                 className,
                 ...getAmisFileReadonlySchema(field)
-            }, field.amis, {name: field.name});
+            }, fieldAmis, {name: field.name});
         }
         else if(field.type === 'select'){
             const map = Tpl.getSelectMap(field.options);
@@ -599,7 +611,7 @@ export async function getTableColumns(fields, options){
                 className,
                 inputClassName: "inline",
                 static: true,
-            }, field.amis, {name: field.name});
+            }, fieldAmis, {name: field.name});
         }
         else{
             const tpl = await Tpl.getFieldTpl(field, options);
@@ -626,15 +638,6 @@ export async function getTableColumns(fields, options){
             // }
 
             //field上的amis属性里的clssname需要单独判断类型合并
-            if (typeof field.amis?.className == "object") {
-                className = {
-                    [className]: "true",
-                    ...field.amis.className
-                }
-            } else if (typeof field.amis?.className == "string") {
-                className = `${className} ${field.amis.className} `
-            }
-            delete field.amis?.className;
 
             if(!field.hidden && !field.extra){
                 columnItem = Object.assign({}, {
@@ -651,7 +654,7 @@ export async function getTableColumns(fields, options){
                     static: true,
                     options: field.type === 'html' ? {html: true} : null
                     // toggled: true 
-                }, field.amis, {name: field.name});
+                }, fieldAmis, {name: field.name});
                 
                 if(field.type === 'color'){
                     columnItem.type = 'color';
