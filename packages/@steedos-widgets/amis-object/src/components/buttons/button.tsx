@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-21 10:27:43
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-17 15:22:58
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2024-01-26 18:09:26
  * @Description: 
  */
 import React, { useEffect, useState } from 'react'
@@ -86,6 +86,7 @@ export const AmisObjectButton = (props) => {
             }
             if(renderData){
                 delete renderData.event;
+                delete renderData.record?.event;
             }
             schema.data = defaultsDeep({}, renderData, getDefaultRenderData(), schema.data);
 
