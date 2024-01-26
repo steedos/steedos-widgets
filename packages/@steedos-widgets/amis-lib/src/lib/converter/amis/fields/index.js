@@ -394,7 +394,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             convertData = {
                 type: getAmisStaticFieldType('datetime', readonly),
                 inputFormat: 'YYYY-MM-DD HH:mm',
-                format: 'YYYY-MM-DDTHH:mm:ss.SSSZ',
+                format: 'YYYY-MM-DDTHH:mm:00.000Z',
                 tpl: readonly ? Tpl.getDateTimeTpl(field) : null,
                 utc: true,
             }
