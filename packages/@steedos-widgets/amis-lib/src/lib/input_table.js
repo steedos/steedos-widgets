@@ -2,13 +2,61 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-25 14:11:50
+ * @LastEditTime: 2024-01-26 10:55:05
  */
 
 import { getFormBody } from './converter/amis/form';
 import { getComparableAmisVersion } from './converter/amis/util';
 import { clone } from 'lodash';
 import { uuidv4 } from '../utils/uuid';
+
+/**
+ * 子表组件字段值中每行数据补上字段值为空的的字段值，把值统一设置为空字符串，是为了解决amis amis 3.6/6.0 input-table组件bug:行中字段值为空时会显示为父作用域中的同名变量值，见：https://github.com/baidu/amis/issues/9520
+ * amis #9520修正后此函数及相关代码可以移除
+ * @param {*} value 子表组件字段值，数组
+ * @param {*} fields 子表组件fields属性，数组
+ * @returns 转换后的子表组件字段值
+ */
+function getTableValueWithEmptyValue(value, fields) {
+    return (value || []).map((itemValue) => {
+        //这里不clone的话，会造成在pipeIn函数执行该函数后像pipeOut一样最终输出到表单项中，即库里字段值会被改了
+        const newItemValue = clone(itemValue);
+        (fields || []).forEach((itemField) => {
+            if(itemField.name && (newItemValue[itemField.name] === undefined || newItemValue[itemField.name] === null)){
+                // 这里newItemValue中不存在 itemField.name 属性，或者值为null时都会有“显示为父作用域中的同名变量值”的问题，所以null和undefined都要重置为空字符串
+                // 实测数字、下拉框等字段类型重置为空字符串都不会有问题，而且实测amis from组件的清空表单字段值功能就是把表单中的各种字段类型设置为空字符串，所以看起来也符合amis规范
+                newItemValue[itemField.name] = "";
+            }
+            if (newItemValue.children) {
+                newItemValue.children = getTableValueWithEmptyValue(newItemValue.children, fields);
+            }
+        });
+        return newItemValue;
+    });
+}
+
+/**
+ * 把子表组件字段值中每行数据中经过上面getTableValueWithEmptyValue函数空字段值移除
+ * amis #9520修正后此函数及相关代码可以移除
+ * @param {*} value 子表组件字段值，数组
+ * @param {*} fields 子表组件fields属性，数组
+ * @returns 转换后的子表组件字段值
+ */
+function getTableValueWithoutEmptyValue(value, fields) {
+    return (value || []).map((itemValue) => {
+        const newItemValue = clone(itemValue);
+        (fields || []).forEach((itemField) => {
+            if(itemField.name && (newItemValue[itemField.name] === "" || newItemValue[itemField.name] === undefined || newItemValue[itemField.name] === null)){
+                // 这里额外把null和undefined值也删除掉纯粹是没必要输出保存它们
+                delete newItemValue[itemField.name];
+            }
+            if (newItemValue.children) {
+                newItemValue.children = getTableValueWithoutEmptyValue(newItemValue.children, fields);
+            }
+        });
+        return newItemValue;
+    });
+}
 
 function getTablePrimaryKey(props) {
     return props.primaryKey || "_id";
@@ -88,6 +136,7 @@ function getTableValueWithoutFieldPrefix(value, fieldPrefix) {
  * 子表组件字段值中每行数据的键值key补上指定前缀
  * @param {*} value 子表组件字段值，数组
  * @param {*} fieldPrefix 字段前缀
+ * @param {*} primaryKey 主键字段名，主键不参与被键值key规则，需要排除，审批王amis表单也是这个规则
  * @returns 转换后的子表组件字段值
  */
 function getTableValuePrependFieldPrefix(value, fieldPrefix, primaryKey) {
@@ -159,20 +208,16 @@ function getInputTableCell(field, showAsInlineEditMode) {
         }
     }
     else {
-        // 这里加一层service是因为amis 3.6/6.0中有bug，不加的话，这里会显示为父作用域中中的同名变量值，见：https://github.com/baidu/amis/issues/9520
         return {
-            "type": "service",
+            "type": "steedos-field",
+            "config": Object.assign({}, field, {
+                label: false
+            }),
+            inInputTable: true,
+            "static": true,
+            "readonly": true,
             label: field.label,
-            name: field.name,
-            "body":[{
-                "type": "steedos-field",
-                "config": Object.assign({}, field, {
-                    label: false
-                }),
-                inInputTable: true,
-                "static": true,
-                "readonly": true
-            }]
+            name: field.name
         }
     }
 }
@@ -1247,6 +1292,7 @@ export const getAmisInputTableSchema = async (props) => {
             if (fieldPrefix) {
                 value = getTableValueWithoutFieldPrefix(value, fieldPrefix);
             }
+            value = getTableValueWithEmptyValue(value, fields);
             if (primaryKey) {
                 // 这里临时给每行数据补上primaryKey字段值，如果库里不需要保存这里补上的字段值，pipeOut中会识别autoGeneratePrimaryKeyValue属性选择最终移除这里补上的字段值
                 // 这里始终自动生成primaryKey字段值，而不是只在pipeOut输出整个子表字段值时才生成，是因为要支持当数据库里保存的子表字段行数据没有primaryKey字段值时的行嵌套模式（即节点的children属性）功能
@@ -1272,6 +1318,7 @@ export const getAmisInputTableSchema = async (props) => {
             if (fieldPrefix) {
                 value = getTableValuePrependFieldPrefix(value, fieldPrefix, primaryKey);
             }
+            value = getTableValueWithoutEmptyValue(value, fields);
             if (props.autoGeneratePrimaryKeyValue === true) {
                 // 如果需要把自动生成的primaryKey值输出保存的库中，则补全所有行中的primaryKey值
                 // 这里如果不全部补全的话，初始从库里返回的字段值中拿到的行没primaryKey值的话就不会自动补上
