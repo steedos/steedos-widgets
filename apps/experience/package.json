@@ -1,6 +1,6 @@
 {
   "name": "@steedos/ee_experience",
-  "version": "3.6.2-beta.14",
+  "version": "3.6.2-beta.15",
   "main": "package.service.js",
   "private": true,
   "publishConfig": {
