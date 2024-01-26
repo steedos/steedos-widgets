@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-26 10:55:05
+ * @LastEditTime: 2024-01-26 11:38:42
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -24,7 +24,7 @@ function getTableValueWithEmptyValue(value, fields) {
         (fields || []).forEach((itemField) => {
             if(itemField.name && (newItemValue[itemField.name] === undefined || newItemValue[itemField.name] === null)){
                 // 这里newItemValue中不存在 itemField.name 属性，或者值为null时都会有“显示为父作用域中的同名变量值”的问题，所以null和undefined都要重置为空字符串
-                // 实测数字、下拉框等字段类型重置为空字符串都不会有问题，而且实测amis from组件的清空表单字段值功能就是把表单中的各种字段类型设置为空字符串，所以看起来也符合amis规范
+                // 实测数字、下拉框、多选lookup等字段类型重置为空字符串都不会有问题，而且实测amis from组件的清空表单字段值功能就是把表单中的各种字段类型设置为空字符串，所以看起来也符合amis规范
                 newItemValue[itemField.name] = "";
             }
             if (newItemValue.children) {
