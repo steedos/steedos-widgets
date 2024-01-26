@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-26 11:38:42
+ * @LastEditTime: 2024-01-26 17:47:16
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -405,8 +405,13 @@ function getFormPagination(props, mode) {
                     "click": {
                         "actions": [
                             {
+                                "actionType": "validate",
+                                "componentId": formId
+                            },
+                            {
                                 "actionType": "custom",
-                                "script": onPageChangeScript
+                                "script": onPageChangeScript,
+                                "expression": "${!!!event.data.validateResult.error}" //触发表单校验结果会存入validateResult，amis 3.2不支持，高版本比如 3.5.3支持
                             }
                         ]
                     }
@@ -432,8 +437,13 @@ function getFormPagination(props, mode) {
                     "click": {
                         "actions": [
                             {
+                                "actionType": "validate",
+                                "componentId": formId
+                            },
+                            {
                                 "actionType": "custom",
-                                "script": onPageChangeScript
+                                "script": onPageChangeScript,
+                                "expression": "${!!!event.data.validateResult.error}" //触发表单校验结果会存入validateResult，amis 3.2不支持，高版本比如 3.5.3支持
                             }
                         ]
                     }
@@ -926,8 +936,13 @@ async function getButtonActions(props, mode) {
                         "click": {
                             "actions": [
                                 {
+                                    "actionType": "validate",
+                                    "componentId": formId
+                                },
+                                {
                                     "actionType": "custom",
-                                    "script": onSaveAndNewItemScript
+                                    "script": onSaveAndNewItemScript,
+                                    "expression": "${!!!event.data.validateResult.error}" //触发表单校验结果会存入validateResult，amis 3.2不支持，高版本比如 3.5.3支持
                                 }
                             ]
                         }
@@ -941,8 +956,13 @@ async function getButtonActions(props, mode) {
                         "click": {
                             "actions": [
                                 {
+                                    "actionType": "validate",
+                                    "componentId": formId
+                                },
+                                {
                                     "actionType": "custom",
-                                    "script": onSaveAndCopyItemScript
+                                    "script": onSaveAndCopyItemScript,
+                                    "expression": "${!!!event.data.validateResult.error}" //触发表单校验结果会存入validateResult，amis 3.2不支持，高版本比如 3.5.3支持
                                 }
                             ]
                         }
