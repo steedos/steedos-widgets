@@ -1208,17 +1208,50 @@ async function getButtonView(props) {
 
 async function getButtonDelete(props) {
     return {
-        "type": "button",
-        "label": "",
-        "icon": "fa fa-trash-alt",//不可以用fa-trash-o，因为设计字段布局界面中弹出的设置分组列表中显示不了这个图标
+        "type": "dropdown-button",
         "level": "link",
-        "onEvent": {
-            "click": {
-                "actions": await getButtonActions(props, "delete")
+        "icon": "fa fa-trash-alt",
+        "size": "xs",
+        "hideCaret": true,
+        "closeOnClick": true,
+        "body": [
+            {
+                "type": "wrapper",
+                "size": "md",
+                "className": "w-80",
+                "body": [
+                    {
+                        "tpl": "确定要删除吗？",
+                        "type": "tpl"
+                    },
+                    {
+                        "type": "flex",
+                        "justify": "flex-end",
+                        "className": "mt-3",
+                        "items": [
+                            {
+                                "type": "button",
+                                "label": "取消",
+                                "className": "mr-2"
+                            },
+                            {
+                                "type": "button",
+                                "label": "删除",
+                                "level": "danger",
+                                "onEvent": {
+                                    "click": {
+                                        "actions": await getButtonActions(props, "delete")
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ]
             }
-        }
-    };
+        ]
+    }
 }
+
 
 export const getAmisInputTableSchema = async (props) => {
     if (!props.id) {
@@ -1395,6 +1428,17 @@ export const getAmisInputTableSchema = async (props) => {
             "body": headerToolbar
         });
     }
+    let className = "steedos-input-table";
+
+    if (typeof props.className == "object") {
+        className = {
+            [className]: "true",
+            ...props.className
+        }
+    } else if (typeof props.className == "string") {
+        className = `${className} ${props.className} `
+    }
+
     let schema = {
         "type": "control",
         "body": {
@@ -1408,7 +1452,7 @@ export const getAmisInputTableSchema = async (props) => {
         "labelAlign": props.labelAlign,
         //控制control的mode属性，https://aisuda.bce.baidu.com/amis/zh-CN/components/form/formitem#表单项展示
         "mode": props.mode || null,
-        "className": props.className
+        className
     };
     // console.log("===schema===", schema);
     return schema;

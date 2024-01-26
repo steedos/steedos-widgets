@@ -4,6 +4,7 @@
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
  * @LastEditTime: 2024-01-21 10:56:30
  */
+import './AmisInputTable.less';
 import { getAmisInputTableSchema, i18next } from '@steedos-widgets/amis-lib'
 
 export const AmisInputTable = async (props) => {
