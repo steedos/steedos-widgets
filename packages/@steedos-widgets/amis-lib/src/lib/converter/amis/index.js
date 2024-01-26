@@ -332,14 +332,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
           headers: {
             Authorization: "Bearer ${context.tenantId},${context.authToken}",
           },
-          requestAdaptor: quickSaveApiRequestAdaptor,
-          adaptor: `
-              if(payload.errors){
-                  payload.status = 2;
-                  payload.msg = window.t ? window.t(payload.errors[0].message) : payload.errors[0].message;
-              }
-              return payload;
-          `
+          requestAdaptor: quickSaveApiRequestAdaptor
         },
         // 外层data发生变化的时候, 不会重新渲染rowClassNameExpr, 所以先用css标记tr唯一标识
         // 使用表达式给tr添加初始选中状态
@@ -355,6 +348,21 @@ export async function getObjectCRUD(objectSchema, fields, options){
     if(body.mode){
       crudModeClassName = `steedos-crud-mode-${body.mode}`;
     }
+
+    body.quickSaveApi.adaptor = `
+      if(payload.errors){
+          payload.status = 2;
+          payload.msg = window.t ? window.t(payload.errors[0].message) : payload.errors[0].message;
+      }
+      debugger;
+      var scope = SteedosUI.getRef(context.scopeId);
+      var scopeParent = scope && scope.parent;
+      var crudScoped = scopeParent.getComponentById('${body.id}');
+      setTimeout(()=>{
+        crudScoped && crudScoped.control.updateAutoFillHeight();
+      }, 500);
+      return payload;
+    `
 
     if(body.columns && options.formFactor != 'SMALL'){
       //将_display放入crud的columns的倒数第二列中（最后一列会影响固定列），可以通过setvalue修改行内数据域的_display，而不影响上层items的_display,用于批量编辑

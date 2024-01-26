@@ -7,6 +7,7 @@ import { each, forEach, isBoolean, isEmpty } from 'lodash';
 import { getAmisFileReadonlySchema } from './file'
 import { Router } from '../../../router'
 import { i18next } from '../../../../i18n'
+import { getBowserType } from '../util';
 
 function getOperation(fields){
     const controls = [];
@@ -308,7 +309,8 @@ async function getQuickEditSchema(field, options){
                                         "failed": "失败了呢。。"
                                       }
                                     }
-                                }
+                                },
+                                "expression": "${!recordPermissions.modifyAllRecords}"
                             },
                             {
                                 "actionType": "setValue",
@@ -324,7 +326,7 @@ async function getQuickEditSchema(field, options){
                                 "componentId": quickEditId,
                                 "args": {
                                     "value":{
-                                        "quickedit_record_permissions": "${event.data}"
+                                        "quickedit_record_permissions": "${recordPermissions.modifyAllRecords ? {'allowEdit': true} : event.data}"
                                     }
                                 }
                             }
@@ -388,7 +390,7 @@ async function getQuickEditSchema(field, options){
                                           `
                                         }
                                     },
-                                    "expression":"${event.data.value}"
+                                    "expression":"${event.data.value && !recordPermissions.modifyAllRecords}"
                                 },
                                 {
                                     "actionType": "setValue",
@@ -419,10 +421,20 @@ async function getQuickEditSchema(field, options){
                                                         "script": `
                                                             const noPermission = event.data.noPermission;
                                                             const crudComponent = event.context.scoped.getComponentById("${options.crudId}");
-                                                            const selectedItems = crudComponent && crudComponent.props.store.selectedItems.concat();
+                                                            let selectedItems = crudComponent && crudComponent.props.store.selectedItems.concat();
                                                             noPermission.forEach(function (item) {
                                                                 crudComponent && crudComponent.unSelectItem(_.find(selectedItems,{_id:item}));
+                                                                _.remove(selectedItems, (selected) => selected._id === item);
                                                             })
+                                                            doAction({
+                                                                "componentId": "${quickEditId}",
+                                                                "actionType": "setValue",
+                                                                "args": {
+                                                                    "value": {
+                                                                        selectedItems
+                                                                    }
+                                                                }
+                                                            });
                                                         `
                                                     },
                                                     {
@@ -513,7 +525,8 @@ export async function getTableColumns(fields, options){
         //增加quickEdit属性，实现快速编辑
         const quickEditSchema = allowEdit ? await getQuickEditSchema(field, options) : allowEdit;
         let className = "";
-        if(/Safari/.test(navigator.userAgent)){
+        const bowserType = getBowserType();
+        if(bowserType === "Safari"){
             className += " whitespace-nowrap "
         }else{
             if(field.wrap != true){
@@ -522,6 +535,18 @@ export async function getTableColumns(fields, options){
                 className += " break-words "
             }
         }
+
+        if (typeof field.amis?.className == "object") {
+            className = {
+                [className]: "true",
+                ...field.amis.className
+            }
+        } else if (typeof field.amis?.className == "string") {
+            className = `${className} ${field.amis.className} `
+        }
+        let fieldAmis = _.clone(field.amis);
+        delete fieldAmis?.className;
+
         let columnItem;
         if((field.is_name || field.name === options.labelFieldName) && options.objectName === 'cms_files'){
             const previewFileScript = `
@@ -572,7 +597,7 @@ export async function getTableColumns(fields, options){
                 toggled: field.toggled,
                 static: true,
                 className,
-            }, field.amis, {name: field.name});
+            }, fieldAmis, {name: field.name});
         }else if(field.type === 'avatar' || field.type === 'image' || field.type === 'file'){
             columnItem = Object.assign({}, {
                 type: "switch",
@@ -583,7 +608,7 @@ export async function getTableColumns(fields, options){
                 static: true,
                 className,
                 ...getAmisFileReadonlySchema(field)
-            }, field.amis, {name: field.name});
+            }, fieldAmis, {name: field.name});
         }
         else if(field.type === 'select'){
             const map = Tpl.getSelectMap(field.options);
@@ -598,7 +623,7 @@ export async function getTableColumns(fields, options){
                 className,
                 inputClassName: "inline",
                 static: true,
-            }, field.amis, {name: field.name});
+            }, fieldAmis, {name: field.name});
         }
         else{
             const tpl = await Tpl.getFieldTpl(field, options);
@@ -625,15 +650,6 @@ export async function getTableColumns(fields, options){
             // }
 
             //field上的amis属性里的clssname需要单独判断类型合并
-            if (typeof field.amis?.className == "object") {
-                className = {
-                    [className]: "true",
-                    ...field.amis.className
-                }
-            } else if (typeof field.amis?.className == "string") {
-                className = `${className} ${field.amis.className} `
-            }
-            delete field.amis?.className;
 
             if(!field.hidden && !field.extra){
                 columnItem = Object.assign({}, {
@@ -650,7 +666,7 @@ export async function getTableColumns(fields, options){
                     static: true,
                     options: field.type === 'html' ? {html: true} : null
                     // toggled: true 
-                }, field.amis, {name: field.name});
+                }, fieldAmis, {name: field.name});
                 
                 if(field.type === 'color'){
                     columnItem.type = 'color';
