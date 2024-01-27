@@ -3,7 +3,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-20 11:55:37
+ * @LastEditTime: 2024-01-27 15:32:48
  * @Description: 
  */
 
@@ -56,22 +56,11 @@ export const AmisGlobalHeaderToolbar = async (props) => {
             "label": i18next.t('frontend_help')
           },
           {
-            "type": "button",
-            "hiddenOn": "window.innerWidth < 768",
-            "onEvent": {
-              "click": {
-                "actions": [
-                  {
-                    "componentId": "",
-                    "args": {
-                      "url": "/app/admin"
-                    },
-                    "actionType": "url"
-                  }
-                ]
-              }
-            },
-            "id": "u:b5d0ab3a32b5",
+            "type": "steedos-dropdown",
+            "placement": "bottomRight",
+            "trigger": [
+              "click"
+            ],
             "body": [
               {
                 "type": "steedos-icon",
@@ -82,7 +71,119 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                 "className": "slds-button_icon slds-global-header__icon"
               }
             ],
-            "label": i18next.t('frontend_setup')
+            "overlay": [
+              {
+                "type": "wrapper",
+                "className": "p-0 w-40",
+                "body": [
+                  {
+                    "type": "button",
+                    "hiddenOn": "window.innerWidth < 768",
+                    "onEvent": {
+                      "click": {
+                        "actions": [
+                          {
+                            "args": {
+                              "url": "/app/admin"
+                            },
+                            "actionType": "url"
+                          }
+                        ]
+                      }
+                    },
+                    "id": "u:b5d0ab3a32b5",
+                    "level": "link",
+                    "label": i18next.t('frontend_setup')
+                  },
+                  {
+                    "type": "divider",
+                    "className": "m-0",
+                    "visibleOn": "${window:Meteor.settings.public.enable_saas != true && global.user.is_space_admin == true}"
+                  },
+                  {
+                    "type": "button",
+                    "label": "编辑对象",
+                    "className": "flex",
+                    "onEvent": {
+                      "click": {
+                        "actions": [
+                          {
+                            "actionType": "ajax",
+                            "outputVar": "responseResult",
+                            "args": {
+                              "api": {
+                                "url": "/api/v1/objects/search",
+                                "data": {
+                                  "filters": ["name", "=", "${window:FlowRouter|routerParams|pick:object_name}"],
+                                  "fields": ["_id"]
+                                },
+                                "method": "post",
+                                "messages": {}
+                              }
+                            }
+                          },
+                            {
+                                "args": {
+                                  "url": "/app/admin/objects/view/${responseResult.items[0]._id}",
+                                },
+                                "actionType": "url"
+                              }
+                        ]
+                      }
+                    },
+                    "level": "link",
+                    "visibleOn": "${window:Meteor.settings.public.enable_saas != true && global.user.is_space_admin == true && window:FlowRouter|isObjectRouter}"
+                  },
+                  {
+                    "type": "button",
+                    "label": "编辑页面",
+                    "className": "flex",
+                    "onEvent": {
+                      "click": {
+                        "actions": [
+                          {
+                            "actionType": "toast",
+                            "args": {
+                              "msgType": "info",
+                              "position": "top-right",
+                              "closeButton": true,
+                              "showIcon": true,
+                              "msg": "${global.user.is_space_admin}",
+                              "className": "theme-toast-action-scope"
+                            }
+                          },
+                          {
+                            "actionType": "ajax",
+                            "outputVar": "responseResult",
+                            "args": {
+                              "api": {
+                                "url": "/api/v1/pages/search",
+                                "data": {
+                                  "filters": ["name", "=", "${window:FlowRouter|routerParams|pick:page_id}"],
+                                  "fields": ["_id"]
+                                },
+                                "method": "post",
+                                "messages": {}
+                              }
+                            }
+                          },
+                          {
+                              "args": {
+                                "url": "/app/admin/pages/view/${responseResult.items[0]._id}"
+                              },
+                              "actionType": "url"
+                          }
+                        ]
+                      }
+                    },
+                    "level": "link",
+                    "visibleOn": "${window:Meteor.settings.public.enable_saas != true && global.user.is_space_admin == true && window:FlowRouter|isPageRouter}"
+                  }
+                ],
+              }
+              
+            ],
+            "className": "antd-Action"
           },
           {
             "type": "steedos-dropdown",
