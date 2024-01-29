@@ -8,7 +8,7 @@ import * as List from './list';
 import { getLookupListView, getComparableAmisVersion } from '../util';
 import { getSelectUserSchema } from './user';
 import { getObjectHeaderToolbar, getObjectFooterToolbar, getObjectFilter } from './../toolbar';
-import { getListViewSort } from './../../../objects';
+import { getListViewSort, getListViewFilter } from './../../../objects';
 import { lookupToAmisTreeSelect } from './tree_select';
 import * as standardNew from '../../../../schema/standard_new.amis'
 import { i18next } from "../../../../i18n";
@@ -299,6 +299,9 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         }
     });
 
+    let listviewFilter = getListViewFilter(listView);
+    let listviewFiltersFunction = listView && listView._filters;
+
     let sort = "";
     if(listView){
         sort = getListViewSort(listView);
@@ -345,7 +348,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             Object.assign(api.data.$self, __changedSearchBoxValues, __changedFilterFormValues);
         }
         const selfData = JSON.parse(JSON.stringify(api.data.$self));
-        var filters = [];
+        ${listviewFilter && !ctx.inFilterForm ? `var filters = ${JSON.stringify(listviewFilter)};` : 'var filters = [];'}
         var pageSize = api.data.pageSize || 10;
         var pageNo = api.data.pageNo || 1;
         var skip = (pageNo - 1) * pageSize;
@@ -407,6 +410,16 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         }
         
         const inFilterForm = ${ctx.inFilterForm};
+
+        const listviewFiltersFunction = ${listviewFiltersFunction};
+
+        if(listviewFiltersFunction && !inFilterForm){
+            const _filters0 = listviewFiltersFunction(filters, api.data.$self.__super);
+            if(_filters0 && _filters0.length){
+                filters.push(_filters0);
+            }
+        }
+        
         const filtersFunction = ${field.filtersFunction || field._filtersFunction};
 
         if(filtersFunction && !inFilterForm){
