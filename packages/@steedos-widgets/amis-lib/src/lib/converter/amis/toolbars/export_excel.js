@@ -5,7 +5,7 @@ export const getExportExcelToolbarButtonSchema = ()=>{
         "type": "button",
         "icon": "fa fa-download",
         "align": "right", 
-        "className": "bg-white p-2 rounded border-gray-300 text-gray-500",
+        "className": "bg-white p-2 rounded text-gray-500",
         "tooltipPlacement": "top",
         "visibleOn": "${!isLookup && global.user.is_space_admin}",
         //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，为保持统一，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330

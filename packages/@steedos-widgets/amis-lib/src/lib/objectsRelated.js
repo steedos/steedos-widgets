@@ -201,7 +201,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
         amisSchema: {
             type: "service",
             id: componentId,
-            className: `steedos-record-related-list py-2 first:pt-0 border-b last:border-b-0 ${componentId} ${className}`,
+            className: `steedos-record-related-list py-2 first:pt-0 border-b-0 last:border-b-0 ${componentId} ${className}`,
             data: {
                 relatedKey: relatedKey,   
                 listViewId: `amis-\${appId}-${relatedObjectName}-listview`,

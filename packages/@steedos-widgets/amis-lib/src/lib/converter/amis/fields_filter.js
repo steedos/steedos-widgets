@@ -31,7 +31,7 @@ export async function getObjectFieldsFilterFormSchema(ctx) {
   const formSchema = {
     "type": "service",
     "visibleOn": "this.filterFormSearchableFields && this.filterFormSearchableFields.length",
-    "className": ctx.formFactor === 'SMALL' ? "slds-filters__body p-0 mb-2 overflow-y-auto overflow-x-hidden" : "slds-filters__body p-0 sm:grid sm:gap-2 sm:grid-cols-4 mb-2",
+    "className": ctx.formFactor === 'SMALL' ? "slds-filters__body p-0 mb-2 overflow-y-auto overflow-x-hidden" : "slds-filters__body p-0 sm:grid sm:gap-4 sm:grid-cols-4 p-2",
     "style":{
       "max-height":ctx.formFactor === 'SMALL'?"30vh":"unset"
     },
@@ -618,7 +618,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
         "className": "slds-filters"
       },
       "size": "xs",
-      "className": `border-gray-300 border-y slds-grid slds-grid_vertical slds-nowrap ${!ctx.isLookup && "mt-2"}`,
+      "className": `border-y slds-grid slds-grid_vertical slds-nowrap ${!ctx.isLookup && "mt-2"}`,
       "visibleOn": "this.showFieldsFilter",
     },
     "className": "bg-white"
