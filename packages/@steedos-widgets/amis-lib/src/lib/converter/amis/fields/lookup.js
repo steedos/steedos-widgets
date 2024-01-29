@@ -740,6 +740,9 @@ export async function lookupToAmisSelect(field, readonly, ctx){
     const refObjectConfig = referenceTo && await getUISchema(referenceTo.objectName);
     let listView = getLookupListView(refObjectConfig);
 
+    let listviewFilter = getListViewFilter(listView);
+    let listviewFiltersFunction = listView && listView._filters;
+
     let sort = "";
     if(listView){
         sort = getListViewSort(listView);
@@ -769,7 +772,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
     apiInfo.data['rfield'] = `\${object_name}`;
     // [["_id", "=", "$${field.name}._id"],"or",["name", "contains", "$term"]]
     apiInfo.requestAdaptor = `
-        var filters = [];
+        ${listviewFilter && !ctx.inFilterForm ? `var filters = ${JSON.stringify(listviewFilter)};` : 'var filters = [];'}
         var top = 200;
         if(api.data.$term){
             filters = [["${referenceTo?.NAME_FIELD_KEY || 'name'}", "contains", api.data.$term]];
@@ -792,6 +795,16 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         }
 
         const inFilterForm = ${ctx.inFilterForm};
+
+        const listviewFiltersFunction = ${listviewFiltersFunction};
+
+        if(listviewFiltersFunction && !inFilterForm){
+            const _filters0 = listviewFiltersFunction(filters, api.data.$);
+            if(_filters0 && _filters0.length){
+                filters.push(_filters0);
+            }
+        }
+        
         const filtersFunction = ${field.filtersFunction || field._filtersFunction};
 
         if(filtersFunction && !inFilterForm){
