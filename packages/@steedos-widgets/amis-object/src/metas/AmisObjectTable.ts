@@ -105,7 +105,7 @@ export default {
         label: config.title,
         objectApiName: "${objectName}",
         fields: [ "name"],
-        className: "sm:border sm:rounded sm:border-gray-300"
+        // className: "sm:border sm:rounded sm:border-gray-300"
       },
       previewSchema: {
         type: config.amis.name,
