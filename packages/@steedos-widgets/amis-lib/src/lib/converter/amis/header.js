@@ -185,7 +185,7 @@ export async function getObjectListHeaderSecordLine(objectSchema, listViewName, 
             "icon": "fa fa-refresh",
             "actionType": "reload",
             "target": amisListViewId,
-            "className": "bg-white p-2 rounded border-gray-300 text-gray-500"
+            "className": "bg-white p-2 rounded text-gray-500"
           },
           fieldsFilterButtonSchema,
           // {
@@ -193,7 +193,7 @@ export async function getObjectListHeaderSecordLine(objectSchema, listViewName, 
           //   "label": "",
           //   "icon": "fa fa-filter",
           //   "actionType": "custom",
-          //   "className": "bg-transparent p-2 rounded border-gray-300 text-gray-500",
+          //   "className": "bg-transparent p-2 rounded text-gray-500",
           //   "id": "u:c20cb87d96c9",
           //   "onEvent": {
           //     "click": {
@@ -241,7 +241,7 @@ export function getObjectListHeader(objectSchema, listViewName, ctx) {
   let headerSchema = [{
     "type": "wrapper",
     "body": body,
-    "className": `bg-gray-100 sm:rounded-tl sm:rounded-tr p-4 -mb-4`
+    "className": `sm:rounded-tl sm:rounded-tr p-4 -mb-4`
   }];
   return headerSchema;
 }
@@ -377,7 +377,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
   let body = [
     {
       "type": "wrapper",
-      "className": "p-4 bg-gray-100 border-b",
+      "className": "p-4 border-b",
       "body": [
         {
           "type": "grid",
