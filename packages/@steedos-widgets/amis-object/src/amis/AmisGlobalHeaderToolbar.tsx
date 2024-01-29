@@ -3,7 +3,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-27 15:32:48
+ * @LastEditTime: 2024-01-29 10:58:34
  * @Description: 
  */
 
@@ -141,17 +141,6 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                     "onEvent": {
                       "click": {
                         "actions": [
-                          {
-                            "actionType": "toast",
-                            "args": {
-                              "msgType": "info",
-                              "position": "top-right",
-                              "closeButton": true,
-                              "showIcon": true,
-                              "msg": "${global.user.is_space_admin}",
-                              "className": "theme-toast-action-scope"
-                            }
-                          },
                           {
                             "actionType": "ajax",
                             "outputVar": "responseResult",
