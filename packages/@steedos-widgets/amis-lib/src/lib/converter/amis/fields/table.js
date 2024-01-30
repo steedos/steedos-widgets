@@ -553,7 +553,7 @@ export async function getTableColumns(fields, options){
                 var data = event.data;
                 var file_name = data.versions ? data.name : "${field.label}";
                 var file_id = data._id;
-                SteedosUI.previewFile && SteedosUI.previewFile({file_name, file_id});
+                window.previewFile && window.previewFile({file_name, file_id});
             `;
             columnItem = {
                 "type": "button",
@@ -582,7 +582,7 @@ export async function getTableColumns(fields, options){
                           "actionType": "custom",
                           "script": previewFileScript,
                         //   "expression": "!!window?.nw?.require" //PC客户端预览附件
-                          "expression": "!!!(window && window.nw && window.nw.require)"//PC客户端预览附件
+                          "expression": "!!(window && window.nw && window.nw.require)"//PC客户端预览附件
                         }
                     ]
                   }
