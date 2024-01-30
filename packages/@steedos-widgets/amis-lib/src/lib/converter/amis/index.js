@@ -354,7 +354,6 @@ export async function getObjectCRUD(objectSchema, fields, options){
           payload.status = 2;
           payload.msg = window.t ? window.t(payload.errors[0].message) : payload.errors[0].message;
       }
-      debugger;
       var scope = SteedosUI.getRef(context.scopeId);
       var scopeParent = scope && scope.parent;
       var crudScoped = scopeParent.getComponentById('${body.id}');

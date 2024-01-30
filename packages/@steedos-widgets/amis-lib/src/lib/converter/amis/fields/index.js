@@ -525,6 +525,36 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                 convertData = {
                     type: 'static-text'
                 }
+            }else if(field.autonumber_enable_modify){
+                convertData = {
+                    "type": "input-group",
+                    "body": [
+                        {
+                            "type": "input-text",
+                            "name": field.name
+                        },
+                        {
+                            "type": "button",
+                            "label": "自动获取",
+                            "actionType": "ajax",
+                            "api": {
+                                "url": `\${context.rootUrl}/api/autonumber/generator/\${objectName}/${field.name}`,
+                                "method": "post",
+                                "headers": {
+                                    "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                                },
+                                "adaptor": `
+                                    payload.data["${field.name}"] = payload.data && payload.data.autonumber;
+                                    delete payload.data.autonumber;
+                                    return payload;
+                                `
+                            },
+                            "messages": {
+                                "success": "获取成功"
+                            }
+                        }
+                    ]
+                }
             }
             break;
         case 'url':
