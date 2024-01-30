@@ -1367,6 +1367,18 @@ export async function getTableApi(mainObject, fields, options){
         return api;
     `
     api.adaptor = `
+    let fields = ${JSON.stringify(_.map(fields, 'name'))};
+    // 这里把行数据中所有为空的字段值配置为空字符串，是因为amis有bug：crud的columns中的列如果type为static-前缀的话，行数据中该字段为空的话会显示为父作用域中同名变量值，见：https://github.com/baidu/amis/issues/9556
+    (payload.data.rows || []).forEach((itemRow) => {
+        (fields || []).forEach((itemField) => {
+            if(itemField && (itemRow[itemField] === undefined || itemRow[itemField] === null)){
+                // 这里itemRow中不存在 itemField 属性，或者值为null时都会有“显示为父作用域中的同名变量值”的问题，所以null和undefined都要重置为空字符串
+                // 实测数字、下拉框、多选lookup等字段类型重置为空字符串都不会有问题，而且实测amis from组件的清空表单字段值功能就是把表单中的各种字段类型设置为空字符串，所以看起来也符合amis规范
+                itemRow[itemField] = "";
+            }
+        });
+    });
+    
     if(api.body.listName == "recent"){
         payload.data.rows = _.sortBy(payload.data.rows, function(item){
             return _.indexOf(api.body._ids, item._id)
