@@ -337,13 +337,31 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             }
             break;
         case 'input-datetime-range':
+            // convertData = {
+            //     type: "input-datetime-range",
+            //     inputFormat: 'YYYY-MM-DD HH:mm',
+            //     format:'YYYY-MM-DDTHH:mm:ss.SSSZ',
+            //     tpl: readonly ? Tpl.getDateTimeTpl(field) : null,
+            //     utc: true,
+            //     joinValues: false
+            // }
+            // 日期时间字段，按日期方式展现显示控件，用户不用关心小时分钟
             convertData = {
-                type: "input-datetime-range",
-                inputFormat: 'YYYY-MM-DD HH:mm',
+                type: "input-date-range",
+                inputFormat: "YYYY-MM-DD HH:mm",
                 format:'YYYY-MM-DDTHH:mm:ss.SSSZ',
                 tpl: readonly ? Tpl.getDateTimeTpl(field) : null,
                 utc: true,
-                joinValues: false
+                joinValues: false,
+                "shortcuts": [
+                    "thismonth",
+                    "2monthsago",
+                    "3monthslater",
+                    "prevquarter",
+                    "thisquarter",
+                    "thisyear",
+                    "lastYear"
+                  ]
             }
             break;
         case 'datetime':
@@ -864,8 +882,9 @@ export async function getFieldSearchable(perField, permissionFields, ctx){
             fieldNamePrefix = `${fieldNamePrefix}between__`
         }
         if(_field.type === 'datetime'){
-            // 特意改为日期范围而不是日期时间范围，因为搜索时一般精确到日期就足够了，需要精确到日期时间范围需要在字段上配置amis属性来实现
-            _field.type = 'input-date-range'
+            // 这里如果想把搜索范围展示效果改为日期范围，不可以直接改为input-date-range，因为它们规则不一样，包括时区规则和小时分秒的存值规则都不一样
+            // 所以想改为展示日期范围效果，只能改input-datetime-range类型本身的属性来实现
+            _field.type = 'input-datetime-range'
             _field.is_wide = true;
             fieldNamePrefix = `${fieldNamePrefix}between__`
         }
