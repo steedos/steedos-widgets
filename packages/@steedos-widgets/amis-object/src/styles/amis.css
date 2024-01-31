@@ -362,3 +362,7 @@ fieldset.antd-Collapse > legend{
 .antd-Table-footToolbar {
     background: white;
 }
+
+.antd-Tabs-linksWrapper {
+    border-right: var(--Table-borderWidth) solid var(--Table-borderColor)
+}

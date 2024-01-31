@@ -538,7 +538,7 @@ export async function getRecordDetailSchema(objectName, appId, props = {}){
     }
     const content = {
         "type": "tabs",
-        "className": "steedos-record-tabs bg-white p-4 m-0 border-b",
+        "className": "steedos-record-tabs bg-white p-4 mt-3 border-y",
         "contentClassName": "bg-none",
         "tabs": [
             detailed
