@@ -23,3 +23,9 @@ STEEDOS_PUBLIC_PAGE_ASSETURLS=http://127.0.0.1:8080/@steedos-widgets/amis-object
 - [官方示例](https://js.devexpress.com/jQuery/Demos/WidgetsGallery/Demo/PivotGrid/Overview/MaterialBlueLight/)
 - [文档官方](https://js.devexpress.com/Documentation/Guide/Widgets/PivotGrid/Overview/)
 - [Amis数据架构](./examples/PivotGrid.config.js)
+
+## Gantt
+
+- [官方示例]https://js.devexpress.com/jQuery/Demos/WidgetsGallery/Demo/Gantt/Overview/MaterialBlueLight/)
+- [文档官方](https://js.devexpress.com/jQuery/Documentation/Guide/UI_Components/Gantt/Getting_Started_with_Gantt/)
+- [Amis数据架构](./examples/Gantt.config.js)
