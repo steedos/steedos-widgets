@@ -439,7 +439,6 @@ export async function getObjectFilter(objectSchema, fields, options) {
         "timeOut": 1000
       }
     });
-    resizeWindow();
     const scope = event.context.scoped;
     // let filterFormValues = event.data;
     let filterForm = SteedosUI.getClosestAmisComponentByType(scope, "form");
