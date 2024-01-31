@@ -552,7 +552,7 @@ export async function getTableColumns(fields, options){
             const previewFileScript = `
                 var data = event.data;
                 var file_name = data.versions ? data.name : "${field.label}";
-                var file_id = data._id;
+                var file_id = data.versions && data.versions[0] && data.versions[0]._id;
                 window.previewFile && window.previewFile({file_name, file_id});
             `;
             columnItem = {
@@ -1403,7 +1403,13 @@ export async function getTableApi(mainObject, fields, options){
                     value = [value]
                 };
                 if(field.type === 'file'){
-                    item[key] = value
+                    // item[key] = value
+                    // PC客户端附件子表列表点击标题预览附件功能依赖了_id，所以这里拼出来
+                    let itemKeyValue = item[key];
+                    item[key] = value.map(function(item, index){
+                        item._id = itemKeyValue[index];
+                        return item;
+                    });
                 }else{
                     item[key] = _.map(value, (item)=>{
                         if(field.type === 'image'){
