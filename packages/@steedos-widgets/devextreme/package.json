@@ -51,7 +51,8 @@
     "@rollup/plugin-replace": "^5.0.2",
     "@steedos-widgets/amis-lib": "3.6.2-beta.20",
     "devextreme": "^23.2.3",
-    "devextreme-react": "^23.2.3"
+    "devextreme-react": "^23.2.3",
+    "rollup-plugin-copy": "^3.5.0"
   },
   "gitHead": "ffb730e16642eb8e7a7ae5d98d0773c42482e7d2"
 }

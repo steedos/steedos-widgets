@@ -4,6 +4,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
 import replace from '@rollup/plugin-replace';
 import nodePolyfills from 'rollup-plugin-polyfill-node';
+import copy from 'rollup-plugin-copy'
 
 import json from 'rollup-plugin-json';
 import { terser } from "rollup-plugin-terser";
@@ -52,6 +53,11 @@ const options = {
     }),
     replace({
       'process.env.NODE_ENV': JSON.stringify('production'),
+    }),
+    copy({
+      targets: [
+        { src: 'src/css', dest: 'dist/' },
+      ]
     }),
     terser()
   ],
