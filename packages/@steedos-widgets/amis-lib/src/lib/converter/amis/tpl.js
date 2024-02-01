@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
- * @LastEditors: liaodaxue
- * @LastEditTime: 2024-01-17 16:00:27
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2024-01-31 15:42:53
  * @Description: 
  */
 import { Router } from '../../router'
@@ -92,7 +92,11 @@ export function getNameTpl(field, ctx){
     if(ctx && ctx.isLookup){
         linkTarget = "target='_blank'"
     }
-    return `<a href="${href}" ${linkTarget}>\${${field.name} | raw}</a>`
+    if(ctx.isRelated){
+        return `<a href="${href}" ${linkTarget} onclick="return false;">\${${field.name} | raw}</a>`
+    }else{
+        return `<a href="${href}" ${linkTarget}>\${${field.name} | raw}</a>`
+    }
 }
 
 export function getRelatedFieldTpl(field, ctx){

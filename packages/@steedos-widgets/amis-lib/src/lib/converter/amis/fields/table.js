@@ -672,6 +672,42 @@ export async function getTableColumns(fields, options){
                     columnItem.type = 'color';
                     columnItem.defaultColor = null;
                 }
+
+                console.log(`field`, field.name, field.label, field.is_name, options.isRelated, field)
+                if((field.is_name || field.name === options.labelFieldName) && options.isRelated){
+                    columnItem.onEvent = {
+                        "click": {
+                          "actions": [
+                            {
+                                "actionType": "drawer",
+                                "drawer": {
+                                  "type": "drawer",
+                                  "title": "&nbsp;",
+                                  "headerClassName": "",
+                                  "size": "lg",
+                                  "bodyClassName": "p-0 m-0",
+                                  "closeOnEsc": true,
+                                  "resizable": true,
+                                  "actions": [],
+                                  "body": [
+                                    {
+                                      "type": "steedos-record-detail",
+                                      "objectApiName": "${objectName}",
+                                      "recordId": `\${${options.idFieldName}}`,
+                                      "showBackButton": false,
+                                      "showButtons": true
+                                    }
+                                  ],
+                                  "className": "app-popover",
+                                  "id": "u:fc5f055afa8c"
+                                },
+                                "preventDefault": true
+                            }
+                          ]
+                        }
+                    }
+                }
+
             }
         }
         if(columnItem){
