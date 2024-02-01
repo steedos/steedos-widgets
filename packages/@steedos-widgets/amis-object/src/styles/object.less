@@ -128,6 +128,32 @@
     }
 }
 
+.antd-Modal-body{
+    margin-top: 0;
+    //lookup的弹窗模式的crud样式
+    .steedos-lookup-crud{
+        .antd-Table-headToolbar.hasHelpText{
+            .antd-Crud-toolbar-item:first-child{
+                width: 100%;
+                margin-top: -12px;
+                font-size: var(--Table-thead-fontSize);
+            }
+            .antd-Crud-toolbar-item:nth-child(2){
+                margin-left: unset;
+            }
+        }
+        .antd-Table-headToolbar{
+            padding-left: 0;
+            padding-right: 0;
+        }
+        .antd-Crud-selection{
+            padding-left: 0;
+            padding-right: 0;
+        }
+    }
+}
+
+
 //通用选人控件样式
 .steedos-select-user{
     margin-left: 330px;
@@ -151,7 +177,7 @@
         left: -330px;
         width: 320px;
         bottom: 0;
-        top: 0;
+        top: 10px;
         overflow: auto;
         min-height:300px;
     }
