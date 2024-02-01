@@ -578,11 +578,11 @@ export async function getTableColumns(fields, options){
                             "expression": "!!!(window && window.nw && window.nw.require)"//浏览器上直接下载
                         },
                         {
-                          "args": {},
-                          "actionType": "custom",
-                          "script": previewFileScript,
-                        //   "expression": "!!window?.nw?.require" //PC客户端预览附件
-                          "expression": "!!(window && window.nw && window.nw.require)"//PC客户端预览附件
+                            "args": {},
+                            "actionType": "custom",
+                            "script": previewFileScript,
+                            // "expression": "!!window?.nw?.require" //PC客户端预览附件
+                            "expression": "!!(window && window.nw && window.nw.require)"//PC客户端预览附件
                         }
                     ]
                   }
@@ -864,10 +864,10 @@ async function getMobileTableColumns(fields, options){
                                         if(value.url){
                                             cms_url = value.url;
                                         }else{
-                                            cms_url = "/api/files/files/"+value+"?download=true"
+                                            cms_url = Steedos.absoluteUrl("/api/files/files/"+value+"?download=true");
                                         }
                                     }
-                                    Steedos.cordovaDownload(encodeURI(Steedos.absoluteUrl(cms_url)), event.data.name);
+                                    Steedos.cordovaDownload(encodeURI(cms_url), event.data.name);
                                 `,
                                 "actionType": "custom"
                             }
