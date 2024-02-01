@@ -376,3 +376,7 @@ fieldset.antd-Collapse > legend{
 .antd-PopOver{
     z-index: 1360;
 }
+
+.antd-Tabs-linksWrapper {
+    border-right: var(--Table-borderWidth) solid var(--Table-borderColor)
+}
