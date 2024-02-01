@@ -283,7 +283,23 @@ async function getInputTableColumns(props) {
                 let mode = typeof extendColumnProps.inlineEditMode === "boolean" ?
                     extendColumnProps.inlineEditMode : showAsInlineEditMode;
                 let tableCell = getInputTableCell(field, mode);
-                return Object.assign({}, tableCell, extendColumnProps);
+                let className = "";
+                //判断是否换行，目前规则默认换行
+                if(extendColumnProps.wrap != true){
+                    className += " whitespace-nowrap "
+                }else{
+                    className += " break-words "
+                }
+                //合并classname
+                if (typeof extendColumnProps.className == "object") {
+                    className = {
+                        [className]: "true",
+                        ...extendColumnProps.className
+                    }
+                } else if (typeof extendColumnProps.className == "string") {
+                    className = `${className} ${extendColumnProps.className} `
+                }
+                return Object.assign({}, tableCell, extendColumnProps, {className});
             }
             else {
                 return column;
@@ -293,6 +309,7 @@ async function getInputTableColumns(props) {
     else {
         return fields.map(function (field) {
             let tableCell = getInputTableCell(field, showAsInlineEditMode);
+            tableCell.className = " whitespace-nowrap ";
             return tableCell;
         }) || [];
     }

@@ -363,6 +363,20 @@ fieldset.antd-Collapse > legend{
     background: white;
 }
 
+.antd-Drawer--right .antd-Drawer-close{
+    z-index: 11;
+}
+
+
+.antd-Drawer--lg .antd-Drawer-content{
+    width: 60rem;
+}
+
+
+.antd-PopOver{
+    z-index: 1360;
+}
+
 .antd-Tabs-linksWrapper {
     border-right: var(--Table-borderWidth) solid var(--Table-borderColor)
 }

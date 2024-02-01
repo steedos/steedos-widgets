@@ -546,13 +546,15 @@ export async function lookupToAmisPicker(field, readonly, ctx){
 
         pickerSchema.affixHeader = false;
 
-        var headerToolbarItems = [];
+        
+
+        pickerSchema.headerToolbar = getObjectHeaderToolbar(refObjectConfig, fieldsArr, ctx.formFactor, { isLookup: true, keywordsSearchBoxName });
+        
         if(referenceTo.objectName === "space_users" && field.reference_to_field === "user"){
-            headerToolbarItems = getLookupSapceUserTreeSchema(isMobile);
+            pickerSchema.headerToolbar.push(getLookupSapceUserTreeSchema(isMobile));
             pickerSchema.className = pickerSchema.className || "" + " steedos-select-user";
         }
-
-        pickerSchema.headerToolbar = getObjectHeaderToolbar(refObjectConfig, fieldsArr, ctx.formFactor, { headerToolbarItems, isLookup: true, keywordsSearchBoxName });
+        
         const isAllowCreate = refObjectConfig.permissions.allowCreate;
         const isCreate = _.isBoolean(field.create) ? field.create : true;
         // lookup字段配置过滤条件就强制不显示新建按钮
@@ -665,6 +667,16 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         pickerSchema.footerToolbar = ["pagination"]
     }
 
+    if(field.inlineHelpText){
+        pickerSchema.toolbarClassName = "hasHelpText";
+        pickerSchema.headerToolbar = [{
+            "type": "tpl",
+            "tpl": field.inlineHelpText,
+            "className": "text-secondary"
+        }, ...pickerSchema.headerToolbar]
+    }
+    pickerSchema.className = (pickerSchema.className || "") + " steedos-lookup-crud";
+    
     const data = {
         type: Field.getAmisStaticFieldType('picker', readonly),
         modalTitle:  i18next.t('frontend_form_please_select') + " " + refObjectConfig.label,

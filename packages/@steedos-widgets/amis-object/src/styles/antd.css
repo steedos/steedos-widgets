@@ -81,3 +81,10 @@
 /* .antd-Tabs {
     margin: 1rem;
 } */
+
+@media (max-width: 767px){
+    .instance-default .antd-Form-item .antd-Form-label + .antd-Form-item-controlBox {
+        max-width: 100%;
+        padding-right: 15px;
+    }
+}

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: liaodaxue
- * @LastEditTime: 2024-01-24 13:21:37
+ * @LastEditTime: 2024-02-01 17:32:17
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -308,6 +308,7 @@ export const AmisSteedosField = async (props) => {
                                 body: [
                                     {
                                         type: 'each',
+                                        placeholder: "",
                                         className: `steedos-field-lookup-each flex flex-wrap gap-2`,
                                         source: `\${${steedosField.name}}`,
                                         items: { 
