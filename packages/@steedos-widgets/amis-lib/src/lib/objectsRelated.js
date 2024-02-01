@@ -188,7 +188,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
         setDataToComponentId: componentId,
         // tableHiddenOn: hiddenEmptyTable ? "this.$count === 0" : null,
         appId: appId,
-        crudClassName: 'steedos-record-related-crud border-l border-r hidden',
+        crudClassName: 'steedos-record-related-crud hidden',
         refField,
         ...ctx
     }
