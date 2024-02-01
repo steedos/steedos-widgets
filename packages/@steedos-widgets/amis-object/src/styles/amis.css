@@ -362,3 +362,17 @@ fieldset.antd-Collapse > legend{
 .antd-Table-footToolbar {
     background: white;
 }
+
+.antd-Drawer--right .antd-Drawer-close{
+    z-index: 11;
+}
+
+
+.antd-Drawer--lg .antd-Drawer-content{
+    width: 60rem;
+}
+
+
+.antd-PopOver{
+    z-index: 1360;
+}
