@@ -1514,11 +1514,10 @@ export async function getTableApi(mainObject, fields, options){
     };
     let formFactor = "${options.formFactor}";
     if(formFactor !== "SMALL"){
-        const listviewComponent = $(".steedos-object-listview .antd-Table-table");
-        const firstListviewComponent = listviewComponent && listviewComponent[0];
-        if(firstListviewComponent){
+        const lisviewDom = document.querySelector(".steedos-object-listview .antd-Table-table");
+        if(lisviewDom){
             setTimeout(()=>{
-                firstListviewComponent.scrollIntoView();
+                lisviewDom.scrollIntoView();
             }, 600);
         }
     }
