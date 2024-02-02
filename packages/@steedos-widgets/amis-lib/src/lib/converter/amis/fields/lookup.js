@@ -897,6 +897,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         // 但是同时配置autoComplete和source会多请求一次接口
         // TODO:应该想办法把是否字段在子表组件内，即ctx.isInputTable，如果不在子表组件内不需要加source
         data.source = apiInfo;
+        delete data.autoComplete;
     }
     //删除xlink:href中的rootUrl前缀，解决客户端svg为空的问题
     const select_menuTpl = `<span class='flex items-center mt-0.5'>
