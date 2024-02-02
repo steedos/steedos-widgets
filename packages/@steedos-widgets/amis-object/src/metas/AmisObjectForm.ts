@@ -118,6 +118,7 @@ export default {
         label: config.title,
         objectApiName: "${objectName}",
         recordId: "${recordId}",
+        "mode": "edit",
         className: "sm:border sm:rounded sm:border-gray-300 bg-white p-4"
       },
       previewSchema: {
@@ -214,12 +215,12 @@ export default {
                           },
                           name: "mode",
                           label: "显示状态",
-                          value: "read",
+                          value: "edit",
                           options: [
-                            {
-                              "label": "只读",
-                              "value": "read"
-                            },
+                            // {
+                            //   "label": "只读",
+                            //   "value": "read"
+                            // },
                             {
                               "label": "编辑",
                               "value": "edit"
