@@ -5,8 +5,8 @@ import { getSettingListviewToolbarButtonSchema } from './toolbars/setting_listvi
 import { i18next } from "../../../i18n"
 import * as Fields from './fields/index';
 
-const getDisplayAsButton = function(objectName, showDisplayAs){
-  let displayAs = Router.getTabDisplayAs(objectName);
+const getDisplayAsButton = function(objectName, defaultEnableSplit){
+  let displayAs = Router.getTabDisplayAs(objectName, defaultEnableSplit);
   let buttons = [
     {
       "type": "button",
@@ -293,7 +293,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
       "id": "steedos_crud_toolbar_filter"
     };
   }
-  let toolbarDisplayAsButton = getDisplayAsButton(mainObject?.name, showDisplayAs);
+  let toolbarDisplayAsButton = getDisplayAsButton(mainObject?.name, mainObject?.enable_split);
   let toolbarDQuickSearchBox = getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup, keywordsSearchBoxName });
 
   // toolbars返回的数组元素不可以是空对象{}，比如hiddenCount ? {} : {"type": "tpl",...}，因为空对象最终还是会生成一个空的.antd-Crud-toolbar-item dom

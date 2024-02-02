@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-19 09:14:05
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2024-02-02 10:10:22
  * @Description: 
  */
 import './AmisObjectListview.less';
@@ -32,7 +32,8 @@ export const AmisObjectListView = async (props) => {
   if(!ctx){
     ctx = {};
   }
-  const displayAs = Router.getTabDisplayAs(objectApiName);
+  const uiSchema = await getUISchema(objectApiName, false);
+  const displayAs = Router.getTabDisplayAs(objectApiName, uiSchema.enable_split);
   // console.log(`AmisObjectListView`, 'displayAs===>', displayAs, objectApiName, data)
   let formFactor = props.formFactor;
   if(!formFactor){
@@ -54,7 +55,6 @@ export const AmisObjectListView = async (props) => {
     ctx.formFactor = formFactor;
   }
 
-  const uiSchema = await getUISchema(objectApiName, false);
   const listView =  find(
     uiSchema.list_views,
     (listView, name) => {
