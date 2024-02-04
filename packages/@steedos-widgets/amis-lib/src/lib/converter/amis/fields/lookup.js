@@ -955,7 +955,8 @@ export async function lookupToAmis(field, readonly, ctx){
     }
     // console.log(`lookupToAmis====`, field, readonly, ctx)
     if(readonly){
-        if(field.reference_to){
+        if(field.reference_to && !field.isTableField){
+            //isTableField只在grid字段内存在
             return {
                 type: 'steedos-field',
                 config: field,
