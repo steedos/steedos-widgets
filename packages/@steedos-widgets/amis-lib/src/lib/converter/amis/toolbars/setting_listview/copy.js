@@ -27,6 +27,7 @@ export const getCopyListviewButtonSchema = ()=>{
                       "objectApiName": "object_listviews",
                       "recordId": "",
                       "mode": "edit",
+                      "layout": "normal",
                       "defaultData": {
                         "&": "${list_view}",
                         "name":"",
@@ -90,13 +91,16 @@ function fields(){
     "mobile_columns.$.field",
     "searchable_fields.$.field",
     "is_system",
-    "shared"
+    "shared",
+    "shared_to",
+    "shared_to_organizations"
   ]
 }
 
 function fieldsExtend(){
   return {
     "label": {
+      "group": "",
       "is_wide": true
     },
     "name": {
@@ -146,9 +150,16 @@ function fieldsExtend(){
       }
     },
     "shared": {
+      "group": "",
       "amis": {
-        "visibleOn": "${global.user.is_space_admin}"
+        "visibleOn": "${false}"
       }
+    },
+    "shared_to": {
+      "group": ""
+    },
+    "shared_to_organizations": {
+      "group": ""
     },
     "filters": {
       "group": "",
