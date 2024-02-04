@@ -149,7 +149,7 @@ function getConvertDataScriptStr(fields){
 /*
     img/avatar字段值添加URL前缀使其在amis中正常显示图片。
 */
-function getScriptForAddUrlPrefixForImgFields(fields){
+export function getScriptForAddUrlPrefixForImgFields(fields){
     let imgFieldsKeys = [];
     let imgFields = {};
     fields.forEach((item)=>{

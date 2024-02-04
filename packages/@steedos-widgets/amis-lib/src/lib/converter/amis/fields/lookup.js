@@ -12,6 +12,7 @@ import { getListViewSort, getListViewFilter } from './../../../objects';
 import { lookupToAmisTreeSelect } from './tree_select';
 import * as standardNew from '../../../../schema/standard_new.amis'
 import { i18next } from "../../../../i18n";
+import { getScriptForAddUrlPrefixForImgFields } from "../api"
 
 export const getReferenceToFieldSchema = (field, refObjectConfig)=>{
     let referenceTo = field.reference_to;
@@ -506,6 +507,16 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             }
         });
         payload.data.rows = treeRecords;
+    }
+    const result = payload.data.rows;
+    if(result && result.length){
+        const updatedResult = _.map(result, (element) => {
+            const data = { ...element };
+            // image字段值添加URL前缀
+            ${getScriptForAddUrlPrefixForImgFields(_.values(refObjectConfig.fields))}
+            return data;
+        });
+        payload.data.rows = updatedResult;
     }
     return payload;
     `;
