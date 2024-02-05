@@ -782,10 +782,11 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             break;
     }
     if(!_.isEmpty(convertData)){
+        const className = convertData.className;
         if(field.is_wide || convertData.type === 'group'){
-            convertData.className = 'col-span-2 m-0';
+            convertData.className = className ? 'col-span-2 m-0 ' + className : 'col-span-2 m-0';
         }else{
-            convertData.className = 'm-0';
+            convertData.className = className ? 'm-0 ' + className : 'm-0';
         }
         if(readonly && ctx.mode !== 'edit'){
             convertData.className = `${convertData.className} border-b`
@@ -795,11 +796,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
         }
 
         let fieldTypeClassName = ' steedos-' + convertData.type + (readonly ? '-readonly' : '-edit');
-        if (convertData.className) {
-            convertData.className = convertData.className + fieldTypeClassName;
-        } else {
-            convertData.className = fieldTypeClassName;
-        }
+        convertData.className = convertData.className + fieldTypeClassName;
 
         if(field.visible_on && !ctx.inFilterForm){
             // convertData.visibleOn = `\$${field.visible_on.substring(1, field.visible_on.length -1).replace(/formData./g, '')}`;

@@ -690,6 +690,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     
     const data = {
         type: Field.getAmisStaticFieldType('picker', readonly),
+        className: ctx.className || '',
         modalTitle:  i18next.t('frontend_form_please_select') + " " + refObjectConfig.label,
         labelField: referenceTo.labelField.name,
         valueField: referenceTo.valueField.name,
