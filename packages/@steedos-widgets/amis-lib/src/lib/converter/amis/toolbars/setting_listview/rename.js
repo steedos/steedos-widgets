@@ -1,3 +1,9 @@
+/*
+ * @Author: 殷亮辉 yinlianghui@hotoa.com
+ * @Date: 2023-06-13 13:51:19
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2024-02-05 11:25:09
+ */
 import { i18next } from "../../../../../i18n"
 export const getRenameListviewButtonSchema = ()=>{
     return {
@@ -24,6 +30,7 @@ export const getRenameListviewButtonSchema = ()=>{
                       "label": "对象表单",
                       "objectApiName": "object_listviews",
                       "recordId": "${recordId}",
+                      "layout": "normal",
                       "mode": "edit",
                       "fields": [
                         "label"

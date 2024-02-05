@@ -37,7 +37,7 @@
     "frontend_listview_control_delete_confirm_text": "如果您删除此列表视图，该视图将为所有具备访问权限的用户永久删除。是否确定要删除？",
     "frontend_listview_control_delete_message_success": "删除成功",
     "frontend_listview_control_filters": "过滤设置",
-    "frontend_listview_control_filters_fields_extend": "条件组件1",
+    "frontend_listview_control_filters_fields_extend": "条件组件",
     "frontend_listview_control_new_label":"新建",
     "frontend_listview_control_new_title":"新建 列表视图",
     "frontend_listview_control_new_message_success":"成功",

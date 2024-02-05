@@ -130,10 +130,12 @@ function apiRequestAdaptor(){
 function fieldsExtend(){
   return {
     "filters": {
+      "label": "",
+      "group": "",
       "visible_on": "true",
       "amis": {
         "type": "condition-builder",
-        "label": i18next.t('frontend_listview_control_filters_fields_extend'),
+        // "label": i18next.t('frontend_listview_control_filters_fields_extend'),
         "source": {
           "method": "get",
           "url": "${context.rootUrl}/service/api/amis-metadata-listviews/getFilterFields?objectName=${targetObjectName}",

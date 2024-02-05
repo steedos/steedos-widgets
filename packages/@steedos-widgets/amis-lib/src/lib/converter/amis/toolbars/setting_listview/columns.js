@@ -29,6 +29,7 @@ export const getSetListviewColumnsButtonSchema = ()=>{
                       "objectApiName": "object_listviews",
                       "recordId": "${recordId}",
                       "mode": "edit",
+                      "layout": "normal",
                       "fieldsExtend": fieldsExtend(),
                       "initApiAdaptor": initApiAdaptor(),
                       "apiRequestAdaptor": apiRequestAdaptor(),
