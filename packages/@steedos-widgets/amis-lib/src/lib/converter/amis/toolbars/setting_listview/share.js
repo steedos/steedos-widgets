@@ -1,3 +1,9 @@
+/*
+ * @Author: 殷亮辉 yinlianghui@hotoa.com
+ * @Date: 2023-06-13 13:51:19
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2024-02-05 10:31:52
+ */
 import { i18next } from "../../../../../i18n"
 export const getSetListviewShareButtonSchema = ()=>{
     return {
@@ -14,6 +20,8 @@ export const getSetListviewShareButtonSchema = ()=>{
                   "title": i18next.t('frontend_listview_control_share'),
                   "data": {
                     "recordId": "${uiSchema.list_views[listName]._id}",
+                    "appId": "${appId}",
+                    "global": "${global}",
                     "context": "${context}"
                   },
                   "body": [
@@ -23,9 +31,12 @@ export const getSetListviewShareButtonSchema = ()=>{
                       "objectApiName": "object_listviews",
                       "recordId": "${recordId}",
                       "mode": "edit",
+                      "layout": "normal",
                       "fields": [
-                        "shared"
-                      ]
+                        "shared_to",
+                        "shared_to_organizations"
+                      ],
+                      "fieldsExtend": fieldsExtend(),
                     }
                   ],
                   "showCloseButton": true,
@@ -41,4 +52,15 @@ export const getSetListviewShareButtonSchema = ()=>{
           }
         }
     }
+}
+
+function fieldsExtend(){
+  return {
+    "shared_to": {
+      "group": ""
+    },
+    "shared_to_organizations": {
+      "group": ""
+    }
+  }
 }
