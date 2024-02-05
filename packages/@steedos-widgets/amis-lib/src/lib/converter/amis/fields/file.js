@@ -42,10 +42,9 @@ export const getAmisFileReadonlySchema = (steedosField)=>{
                 "type": "each",
                 "name": "_display." + steedosField.name,
                 "items": {
-                    "type": "button",
-                    "label": "${name}",
-                    "level": "link",
-                    "className": "pl-0",
+                    "type": "tpl",
+                    "tpl": "${name}",
+                    "className": "antd-Button--link inline-block",
                     "onEvent": {
                         "click": {
                             "actions": [
