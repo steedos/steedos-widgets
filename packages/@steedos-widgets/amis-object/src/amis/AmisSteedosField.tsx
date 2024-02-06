@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: liaodaxue
- * @LastEditTime: 2024-02-01 17:32:17
+ * @LastEditTime: 2024-02-05 13:22:58
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -504,6 +504,9 @@ export const AmisSteedosField = async (props) => {
             Object.assign(schema, steedosField.amis || {});
             return schema;
         } else {
+            if(!ctx.className){
+                ctx.className = className;
+            }
             let fieldAmis = steedosField.amis || {};
             if (!props.data.hasOwnProperty("_display")) {
                 // 有_display时保持原来的逻辑不变，不走以下新的逻辑，审批王中会特意传入_display以跳过后面新加的代码

@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-16 11:14:34
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2024-02-05 17:56:27
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -377,6 +377,8 @@ async function convertColumnsToTableFields(columns, uiSchema, ctx = {}) {
                     const rfUiSchema = await getUISchema(filedInfo.reference_to);
                     const rfFieldInfo = rfUiSchema.fields[displayName];
                     fields.push(Object.assign({}, rfFieldInfo, { name: `${fieldName}__expand.${displayName}`, expand: true, expandInfo: { fieldName, displayName } }, ctx));
+                }else if(filedInfo && filedInfo.type === 'object'){
+                    fields.push(uiSchema.fields[column]);
                 }
             } else {
                 if (uiSchema.fields[column]) {

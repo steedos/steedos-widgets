@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-01-13 17:27:54
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-08-28 17:45:38
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2024-02-04 17:29:54
  * @Description: 
  */
 import { i18next } from "../../../../i18n"
@@ -104,7 +104,8 @@ export const getHtmlFieldSchema = (field, readonly, ctx)=>{
                   "title": "Insert",
                   "items": "image link media addcomment pageembed codesample inserttable | charmap emoticons hr | pagebreak nonbreaking anchor tableofcontents | insertdatetime"
                 }
-              }
+              },
+              "statusbar": false
             },
             "name": field.name
         }

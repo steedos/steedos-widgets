@@ -36,7 +36,31 @@ export const getAmisFileReadonlySchema = (steedosField)=>{
         }
     }
     if(type === 'file'){
-        return {
+        return window.Meteor?.isCordova ? {
+            "type": "control",
+            "body": {
+                "type": "each",
+                "name": "_display." + steedosField.name,
+                "items": {
+                    "type": "tpl",
+                    "tpl": "${name}",
+                    "className": "antd-Button--link inline-block",
+                    "onEvent": {
+                        "click": {
+                            "actions": [
+                                {
+                                    "script": `
+                                        Steedos.cordovaDownload(encodeURI(event.data.url), event.data.name);
+                                    `,
+                                    "actionType": "custom"
+                                }
+                            ],
+                            "weight": 0
+                        }
+                    }
+                }
+            }
+        } : {
             type: amisFieldType,
             tpl: `
                 <% let fileData = data._display.${steedosField.name}; if (fileData) { %>
