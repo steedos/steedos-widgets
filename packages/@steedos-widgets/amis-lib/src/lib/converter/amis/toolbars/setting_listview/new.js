@@ -191,7 +191,11 @@ function fieldsExtend(){
       }
     },
     "shared_to": {
-      "group": ""
+      "group": "",
+      "amis":{
+        "type": "radios",
+        "inline": false
+      }
     },
     "shared_to_organizations": {
       "group": ""
