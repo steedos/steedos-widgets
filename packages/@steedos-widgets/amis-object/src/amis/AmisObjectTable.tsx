@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-12-05 15:37:54
+ * @LastEditTime: 2024-02-08 16:08:17
  * @Description: 
  */
 import './AmisObjectTable.less';
@@ -79,6 +79,13 @@ export const AmisObjectTable = async (props) => {
     defaults = {
       listSchema: Object.assign( {}, listSchema, crud )
     };
+  }
+  else{
+    // 相关列表组件传入crud属性，此时ctx.defaults有值，所以合并crud属性
+    const listSchema = ctx && ctx.defaults && ctx.defaults.listSchema;
+    if(listSchema){
+      ctx.defaults.listSchema = Object.assign({}, listSchema, crud)
+    }
   }
 
   // 支持通过直接定义headerSchema属性来定制表头，而不一定要通过ctx.defaults.headerSchema传入
