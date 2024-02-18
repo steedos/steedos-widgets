@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:51:00
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-02-18 16:47:18
+ * @LastEditTime: 2024-02-18 18:37:35
  * @Description: 
  */
 import { i18next } from "../i18n";
@@ -37,7 +37,7 @@ export const getSchema = async (uiSchema, ctx) => {
         }
 
         const _master = api.body._master;
-        if(_master && _master._isRelated && '${uiSchema.name}' === _master.objectName){
+        if(_master && _master._isRelated){
             const relatedKey = _master.relatedKey;
             const masterObjectName = _master.objectName;
             const recordId = _master.recordId;
