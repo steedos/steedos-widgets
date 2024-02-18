@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:51:00
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-09-25 14:53:05
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2024-02-18 16:47:18
  * @Description: 
  */
 import { i18next } from "../i18n";
@@ -37,19 +37,19 @@ export const getSchema = async (uiSchema, ctx) => {
         }
 
         const _master = api.body._master;
-        if(_master && _master._isRelated){
+        if(_master && _master._isRelated && '${uiSchema.name}' === _master.objectName){
             const relatedKey = _master.relatedKey;
             const masterObjectName = _master.objectName;
             const recordId = _master.recordId;
             let relatedKeySaveValue = recordId;
             const relatedField = fields[relatedKey];
-            if(relatedField.reference_to_field && relatedField.reference_to_field !== '_id'){
+            if(relatedField && relatedField.reference_to_field && relatedField.reference_to_field !== '_id'){
                 relatedKeySaveValue = _master.record[relatedField.reference_to_field];
             }
             let relatedKeyValue; 
-            if(!_.isString(relatedField.reference_to)){
+            if(relatedField && !_.isString(relatedField.reference_to)){
                 relatedKeyValue = { o: masterObjectName, ids: [relatedKeySaveValue] };
-            }else if (relatedField.multiple) {
+            }else if (relatedField && relatedField.multiple) {
                 relatedKeyValue = [relatedKeySaveValue];
             } else {
                 relatedKeyValue = relatedKeySaveValue;
