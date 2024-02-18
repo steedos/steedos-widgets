@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-19 09:14:05
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2024-02-08 10:35:29
  * @Description: 
  */
 import './AmisObjectListview.less';
@@ -32,7 +32,8 @@ export const AmisObjectListView = async (props) => {
   if(!ctx){
     ctx = {};
   }
-  const displayAs = Router.getTabDisplayAs(objectApiName);
+  const uiSchema = await getUISchema(objectApiName, false);
+  const displayAs = Router.getTabDisplayAs(objectApiName, uiSchema.enable_split);
   // console.log(`AmisObjectListView`, 'displayAs===>', displayAs, objectApiName, data)
   let formFactor = props.formFactor;
   if(!formFactor){
@@ -54,7 +55,6 @@ export const AmisObjectListView = async (props) => {
     ctx.formFactor = formFactor;
   }
 
-  const uiSchema = await getUISchema(objectApiName, false);
   const listView =  find(
     uiSchema.list_views,
     (listView, name) => {
@@ -79,7 +79,7 @@ export const AmisObjectListView = async (props) => {
   if (crudMode) {
     // 把crudMode属性传入到crud.mode属性值中
     // 如果只配置了crudMode属性，则后续内核代码会自动生成对应mode的默认属性值，比如card,listItem
-    // 这样可以手动配置crud.card或crud.listItem属性的时间提高开发效率
+    // 这样可以省去手动配置crud.card或crud.listItem属性的时间提高开发效率
     crud = Object.assign({
       mode: crudMode
     }, crud);

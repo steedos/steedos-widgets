@@ -64,7 +64,7 @@ export function getSelectMap(selectOptions){
     forEach(selectOptions,(option)=>{
         const optionValue = option.value + '';
         const optionColor = option.color + '';
-        if(optionColor){
+        if(optionColor && optionColor != "undefined"){
             const background = optionColor.charAt(0) === '#' ? optionColor : '#'+optionColor;
             const color = getContrastColor(background);
             const optionColorStyle = 'background:'+background+';color:'+color+';line-height:1.5rem';

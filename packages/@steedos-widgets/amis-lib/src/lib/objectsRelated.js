@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-24 10:18:17
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2024-02-08 16:10:52
  * @Description:
  */
 
@@ -127,18 +127,19 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
     // TODO: refField变量去掉，写到amis运行时脚本中，uiSchema.fields[relatedKey];可以取到
     const refField = await getField(relatedObjectName, relatedKey);
 
-    if(!refField){
-        return {
-            uiSchema: relatedObjectUiSchema,
-            amisSchema: {
-                "type": "alert",
-                "body": `${i18next.t('frontend_objects_related_alert_start')} ${relatedObjectName} ${i18next.t('frontend_objects_related_alert_end')}`,
-                "level": "warning",
-                "showIcon": true,
-                "className": "mb-3"
-            }
-        }
-    }
+    // 这里如果直接return错误提示，就无法支持refField不存在的情况了，因为有时需求是自己写相关表过滤条件，不能强制要求refField存在
+    // if(!refField){
+    //     return {
+    //         uiSchema: relatedObjectUiSchema,
+    //         amisSchema: {
+    //             "type": "alert",
+    //             "body": `${i18next.t('frontend_objects_related_alert_start')} ${relatedObjectName} ${i18next.t('frontend_objects_related_alert_end')}`,
+    //             "level": "warning",
+    //             "showIcon": true,
+    //             "className": "mb-3"
+    //         }
+    //     }
+    // }
 
     let relatedValue = "${recordId}";
     // if(refField.reference_to_field && refField.reference_to_field != '_id'){
@@ -188,7 +189,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
         setDataToComponentId: componentId,
         // tableHiddenOn: hiddenEmptyTable ? "this.$count === 0" : null,
         appId: appId,
-        crudClassName: 'steedos-record-related-crud border-l border-r hidden',
+        crudClassName: 'steedos-record-related-crud hidden',
         refField,
         ...ctx
     }
@@ -385,7 +386,10 @@ export async function getRelatedListSchema(
         "filterVisible": false,
         "requestAdaptor": ctx.requestAdaptor,  
         "adaptor": adaptor + ctx.adaptor || '',
-        "ctx": ctx
+        "ctx": ctx,
+        "crud": ctx.crud,
+        "crudDataFilter": ctx.crudDataFilter,
+        "onCrudDataFilter": ctx.onCrudDataFilter
     };
     // console.log(`getRelatedListSchema amisSchema`, amisSchema);
     return {

@@ -27,12 +27,21 @@ export const getCopyListviewButtonSchema = ()=>{
                       "objectApiName": "object_listviews",
                       "recordId": "",
                       "mode": "edit",
+                      "layout": "normal",
                       "defaultData": {
                         "&": "${list_view}",
                         "name":"",
                         "label": i18next.t('frontend_listview_control_clone_defaultData_label_start') + " ${list_view.label} " + i18next.t('frontend_listview_control_clone_defaultData_label_end'),
                         "shared":false,
                         "object_name": "${targetObjectName}",
+                        "_id":"",
+                        "shared_to": null,
+                        "shared_to_organizations": null,
+                        "locked": false,
+                        "owner": null,
+                        "company_id": null,
+                        "company_ids": null,
+                        "is_system": false
                       },
                       "fieldsExtend": fieldsExtend(),
                       "fields": fields(),
@@ -82,13 +91,16 @@ function fields(){
     "mobile_columns.$.field",
     "searchable_fields.$.field",
     "is_system",
-    "shared"
+    "shared",
+    "shared_to",
+    "shared_to_organizations"
   ]
 }
 
 function fieldsExtend(){
   return {
     "label": {
+      "group": "",
       "is_wide": true
     },
     "name": {
@@ -138,9 +150,20 @@ function fieldsExtend(){
       }
     },
     "shared": {
+      "group": "",
       "amis": {
-        "visibleOn": "${global.user.is_space_admin}"
+        "visibleOn": "${false}"
       }
+    },
+    "shared_to": {
+      "group": "",
+      "amis":{
+        "type": "radios",
+        "inline": false
+      }
+    },
+    "shared_to_organizations": {
+      "group": ""
     },
     "filters": {
       "group": "",

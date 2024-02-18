@@ -12,6 +12,7 @@ import { getListViewSort, getListViewFilter } from './../../../objects';
 import { lookupToAmisTreeSelect } from './tree_select';
 import * as standardNew from '../../../../schema/standard_new.amis'
 import { i18next } from "../../../../i18n";
+import { getScriptForAddUrlPrefixForImgFields } from "../api"
 
 export const getReferenceToFieldSchema = (field, refObjectConfig)=>{
     let referenceTo = field.reference_to;
@@ -507,6 +508,16 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         });
         payload.data.rows = treeRecords;
     }
+    const result = payload.data.rows;
+    if(result && result.length){
+        const updatedResult = _.map(result, (element) => {
+            const data = { ...element };
+            // image字段值添加URL前缀
+            ${getScriptForAddUrlPrefixForImgFields(_.values(refObjectConfig.fields))}
+            return data;
+        });
+        payload.data.rows = updatedResult;
+    }
     return payload;
     `;
     if(field.optionsFunction || field._optionsFunction){
@@ -546,13 +557,15 @@ export async function lookupToAmisPicker(field, readonly, ctx){
 
         pickerSchema.affixHeader = false;
 
-        var headerToolbarItems = [];
+        
+
+        pickerSchema.headerToolbar = getObjectHeaderToolbar(refObjectConfig, fieldsArr, ctx.formFactor, { isLookup: true, keywordsSearchBoxName });
+        
         if(referenceTo.objectName === "space_users" && field.reference_to_field === "user"){
-            headerToolbarItems = getLookupSapceUserTreeSchema(isMobile);
+            pickerSchema.headerToolbar.push(getLookupSapceUserTreeSchema(isMobile));
             pickerSchema.className = pickerSchema.className || "" + " steedos-select-user";
         }
-
-        pickerSchema.headerToolbar = getObjectHeaderToolbar(refObjectConfig, fieldsArr, ctx.formFactor, { headerToolbarItems, isLookup: true, keywordsSearchBoxName });
+        
         const isAllowCreate = refObjectConfig.permissions.allowCreate;
         const isCreate = _.isBoolean(field.create) ? field.create : true;
         // lookup字段配置过滤条件就强制不显示新建按钮
@@ -665,8 +678,19 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         pickerSchema.footerToolbar = ["pagination"]
     }
 
+    if(field.inlineHelpText){
+        pickerSchema.toolbarClassName = "hasHelpText";
+        pickerSchema.headerToolbar = [{
+            "type": "tpl",
+            "tpl": field.inlineHelpText,
+            "className": "text-secondary"
+        }, ...pickerSchema.headerToolbar]
+    }
+    pickerSchema.className = (pickerSchema.className || "") + " steedos-lookup-crud";
+    
     const data = {
         type: Field.getAmisStaticFieldType('picker', readonly),
+        className: ctx.className || '',
         modalTitle:  i18next.t('frontend_form_please_select') + " " + refObjectConfig.label,
         labelField: referenceTo.labelField.name,
         valueField: referenceTo.valueField.name,
@@ -885,6 +909,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         // 但是同时配置autoComplete和source会多请求一次接口
         // TODO:应该想办法把是否字段在子表组件内，即ctx.isInputTable，如果不在子表组件内不需要加source
         data.source = apiInfo;
+        delete data.autoComplete;
     }
     //删除xlink:href中的rootUrl前缀，解决客户端svg为空的问题
     const select_menuTpl = `<span class='flex items-center mt-0.5'>
@@ -931,7 +956,8 @@ export async function lookupToAmis(field, readonly, ctx){
     }
     // console.log(`lookupToAmis====`, field, readonly, ctx)
     if(readonly){
-        if(field.reference_to){
+        if(field.reference_to && !field.isTableField){
+            //isTableField只在grid字段内存在
             return {
                 type: 'steedos-field',
                 config: field,

@@ -1,15 +1,14 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-16 17:02:08
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-06-20 13:50:15
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2024-02-02 10:15:00
  * @Description:
  */
 import { getUISchemaSync } from './objects';
 
 export const Router = {
-    getTabDisplayAs(tab_id){
-        const uiSchema = getUISchemaSync(tab_id, false);
+    getTabDisplayAs(tab_id, defaultEnableSplit){
         var urlSearch = new URLSearchParams(document.location.search); 
         if(urlSearch.has('display')){
             return urlSearch.get('display')
@@ -18,7 +17,7 @@ export const Router = {
         // const key = `page_display`;
         const value = sessionStorage.getItem(key)
         let defaultDisplay = "grid";
-        if(uiSchema.enable_split){
+        if(defaultEnableSplit === true){
             defaultDisplay = "split";
         }
         if(window.innerWidth <= 768){

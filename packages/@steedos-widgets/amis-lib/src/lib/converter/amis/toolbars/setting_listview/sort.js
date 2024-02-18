@@ -70,6 +70,8 @@ export const getSetListviewSortButtonSchema = ()=>{
 function fieldsExtend(){
   return {
     "sort": {
+      "label": "",
+      "group": "",
       "amis": {
         "type": "tabs-transfer",
         "sortable": true,
