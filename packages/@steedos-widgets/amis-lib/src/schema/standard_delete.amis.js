@@ -1,8 +1,8 @@
 /*
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-03-22 09:31:21
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-12 10:35:36
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2024-02-18 16:06:21
  */
 import { i18next } from "../i18n";
 export const getSchema = (uiSchema)=>{
@@ -49,7 +49,8 @@ export const getSchema = (uiSchema)=>{
                                 },
                                 "data": {
                                   "objectName": `${uiSchema.name}`,
-                                  "__deletedRecord": true
+                                  "__deletedRecord": true,
+                                  "_inDrawer": "${_inDrawer}"
                                 }
                             },
                             {

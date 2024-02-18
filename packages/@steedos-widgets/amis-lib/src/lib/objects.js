@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: liaodaxue
- * @LastEditTime: 2024-02-05 17:56:27
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2024-02-18 16:05:21
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -591,9 +591,13 @@ export async function getRecordServiceSchema(objectName, appId, props = {}, body
                             "expression": "this.__deletedRecord != true"
                         },
                         {
+                            "actionType": "closeDialog",
+                            "expression": "this.__deletedRecord === true && this._inDrawer === true"
+                        },
+                        {
                             "actionType": "custom",
                             "script": "window.goBack()",
-                            "expression": "this.__deletedRecord === true"
+                            "expression": "this.__deletedRecord === true && this._inDrawer != true"
                         }
                     ]
                 },

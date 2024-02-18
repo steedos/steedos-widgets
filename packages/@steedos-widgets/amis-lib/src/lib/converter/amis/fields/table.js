@@ -695,7 +695,10 @@ export async function getTableColumns(fields, options){
                                       "objectApiName": "${objectName}",
                                       "recordId": `\${${options.idFieldName}}`,
                                       "showBackButton": false,
-                                      "showButtons": true
+                                      "showButtons": true,
+                                      "data": {
+                                        "_inDrawer": true
+                                      }
                                     }
                                   ],
                                   "className": "app-popover",
