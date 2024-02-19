@@ -562,8 +562,9 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                                     "Authorization": "Bearer ${context.tenantId},${context.authToken}"
                                 },
                                 "adaptor": `
-                                    payload.data["${field.name}"] = payload.data && payload.data.autonumber;
+                                    var tempValue = payload.data && payload.data.autonumber;
                                     delete payload.data.autonumber;
+                                    payload.data["${field.name}"] = tempValue;
                                     return payload;
                                 `
                             },
