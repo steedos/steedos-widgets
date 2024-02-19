@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-31 15:42:53
+ * @LastEditTime: 2024-02-19 11:48:13
  * @Description: 
  */
 import { Router } from '../../router'
@@ -147,7 +147,12 @@ export function getRelatedFieldTpl(field, ctx){
                 const href = Router.getObjectDetailPath({
                     formFactor: ctx.formFactor, appId: "${appId}", objectName: `${objectNameTpl}`, recordId: `${recordIdTpl}`
                 })
-                labelTpl = `<a href="${href}" ${linkTarget}>${labelTpl}</a>`;
+                if(ctx.isRelated){
+                    labelTpl = `<a href="${href}" ${linkTarget} onclick="return false;">${labelTpl}</a>`;
+                }else{
+                    labelTpl = `<a href="${href}" ${linkTarget}>${labelTpl}</a>`;
+                }
+                
             }
             tpl = labelTpl;
         }
