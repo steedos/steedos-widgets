@@ -326,7 +326,32 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
           "columns": [
             {
               "body": [
-                backButtonsSchema
+                backButtonsSchema,
+                {
+                  "type": "button",
+                  "visibleOn": "${_inDrawer === true}",
+                  "className":"flex mr-4",
+                  "onEvent": {
+                      "click": {
+                          "actions": [
+                            {
+                              "componentId": "",
+                              "args": {},
+                              "actionType": "closeDrawer"
+                            }
+                          ]
+                      }
+                  },
+                  "body": [
+                      {
+                          "type": "steedos-icon",
+                          "category": "utility",
+                          "name": "close",
+                          "colorVariant": "default",
+                          "className": "slds-button_icon slds-global-header__icon w-4"
+                      }
+                  ]
+                }
               ,{
                 "type": "tpl",
                 "className": "block",

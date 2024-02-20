@@ -701,9 +701,9 @@ export async function getTableColumns(fields, options){
                                 "drawer": {
                                   "type": "drawer",
                                   "title": "&nbsp;",
-                                  "headerClassName": "",
+                                  "headerClassName": "hidden",
                                   "size": "lg",
-                                  "bodyClassName": "p-0 m-0 border-t",
+                                  "bodyClassName": "p-0 m-0",
                                   "closeOnEsc": true,
                                   "closeOnOutside": true,
                                   "resizable": true,
@@ -711,7 +711,7 @@ export async function getTableColumns(fields, options){
                                   "body": [
                                     drawerRecordDetailSchema
                                   ],
-                                  "className": "app-popover",
+                                  "className": "steedos-record-detail-drawer app-popover",
                                   "id": "u:fc5f055afa8c"
                                 },
                                 "preventDefault": true
