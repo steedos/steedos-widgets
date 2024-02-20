@@ -48,7 +48,9 @@ function getAmisStaticFieldType(type: string, data_type?: string, options?: any)
         }
         return `static-image`;
     } else if (type === 'textarea') {
-        return 'static'
+        return 'static';
+    } else if (type === 'html') {
+        return 'input-rich-text';
     }
     return type;
 };
@@ -490,7 +492,7 @@ export const AmisSteedosField = async (props) => {
                 // 附件static模式先保持原来的逻辑，依赖_display，审批王中相关功能在creator中
                 // convertSFieldToAmisField中会合并steedosField.amis，所以也不需要再次合并steedosField.amis，直接return就好
                 return await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
-            }else if(steedosField.type === 'formula' || steedosField.type === 'summary'){
+            } else if (steedosField.type === 'formula' || steedosField.type === 'summary'){
                 if(steedosField.data_type === 'number' || steedosField.data_type === 'currency'){
                     Object.assign(schema, {
                         "precision": steedosField.scale || 0
@@ -500,6 +502,26 @@ export const AmisSteedosField = async (props) => {
                 Object.assign(schema, {
                     tpl: `<%=(data.${steedosField.name} || "").split("\\n").join('<br>')%>`
                 })
+            } else if (steedosField.type === 'html') {
+                Object.assign(schema, {
+                    "receiver": "${context.rootUrl}/s3/images",
+                    "options": {
+                        "menu": {
+                            "insert": {
+                                "title": "Insert",
+                                "items": "image link media addcomment pageembed codesample inserttable | charmap emoticons hr | pagebreak nonbreaking anchor tableofcontents | insertdatetime"
+                            }
+                        },
+                        "plugins": [
+                            "autoresize"
+                        ],
+                        // "max_height": 2000,
+                        "statusbar": false,
+                        "readonly": true,
+                        "toolbar": false,
+                        "menubar": false
+                    }
+                });
             }
             Object.assign(schema, steedosField.amis || {});
             return schema;
