@@ -137,6 +137,11 @@ const getSection = async (formFields, permissionFields, fieldSchemaArray, sectio
       section.visibleOn = groupVisibleOn;
     }
   }
+
+  let groupCollapsed = group && group.collapsed;
+  if(groupCollapsed === true) {
+    section.collapsed = true;
+  }
   return section
 }
 
