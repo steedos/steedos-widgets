@@ -1489,6 +1489,10 @@ export const getAmisInputTableSchema = async (props) => {
         "labelAlign": props.labelAlign,
         //控制control的mode属性，https://aisuda.bce.baidu.com/amis/zh-CN/components/form/formitem#表单项展示
         "mode": props.mode || null,
+        "visibleOn": props.$schema.visibleOn,
+        "visible":  props.$schema.visible,
+        "hiddenOn": props.$schema.hiddenOn,
+        "hidden": props.$schema.hidden,
         className
     };
     // console.log("===schema===", schema);
