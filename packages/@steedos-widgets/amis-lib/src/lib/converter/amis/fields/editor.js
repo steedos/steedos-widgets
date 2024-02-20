@@ -38,6 +38,7 @@ export const getMarkdownFieldSchema = (field, readonly, ctx)=>{
                       {
                         "type": "editor",
                         "name": field.name,
+                        "labelClassName": "none",
                         "language": "markdown",
                       }
                     ]

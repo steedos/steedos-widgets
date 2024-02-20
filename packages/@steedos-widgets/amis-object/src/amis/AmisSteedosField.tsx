@@ -522,6 +522,19 @@ export const AmisSteedosField = async (props) => {
                         "menubar": false
                     }
                 });
+            } else if (steedosField.type === 'markdown') {
+                Object.assign(schema, {
+                    "type": "control",
+                    "body": {
+                        "type": "markdown",
+                        "name": steedosField.name,
+                        "options": {
+                            "linkify": true,
+                            "html": true,
+                            "breaks": true
+                        }
+                    }
+                });
             }
             Object.assign(schema, steedosField.amis || {});
             return schema;
