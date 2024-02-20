@@ -51,6 +51,8 @@ function getAmisStaticFieldType(type: string, data_type?: string, options?: any)
         return 'static';
     } else if (type === 'html') {
         return 'input-rich-text';
+    } else if (type === 'markdown') {
+        return 'static-markdown';
     }
     return type;
 };
@@ -524,15 +526,10 @@ export const AmisSteedosField = async (props) => {
                 });
             } else if (steedosField.type === 'markdown') {
                 Object.assign(schema, {
-                    "type": "control",
-                    "body": {
-                        "type": "markdown",
-                        "name": steedosField.name,
-                        "options": {
-                            "linkify": true,
-                            "html": true,
-                            "breaks": true
-                        }
+                    "options": {
+                        "linkify": true,
+                        "html": true,
+                        "breaks": true
                     }
                 });
             }
