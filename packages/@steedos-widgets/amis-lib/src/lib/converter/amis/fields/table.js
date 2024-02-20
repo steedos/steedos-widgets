@@ -705,6 +705,7 @@ export async function getTableColumns(fields, options){
                                   "size": "lg",
                                   "bodyClassName": "p-0 m-0 border-t",
                                   "closeOnEsc": true,
+                                  "closeOnOutside": true,
                                   "resizable": true,
                                   "actions": [],
                                   "body": [
