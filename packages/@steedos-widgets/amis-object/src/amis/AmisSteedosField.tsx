@@ -55,6 +55,8 @@ function getAmisStaticFieldType(type: string, data_type?: string, options?: any)
         return 'static-markdown';
     } else if (type === 'select') {
         return 'static-mapping';
+    } else if (type === 'color') {
+        return 'static-color';
     }
     return type;
 };
