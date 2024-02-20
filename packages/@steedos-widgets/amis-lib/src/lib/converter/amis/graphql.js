@@ -16,27 +16,29 @@ export async function getFieldsTemplate(fields, display){
         fieldsArr = _.values(fields);
     }
     for (const field of fieldsArr) {
-        //graphql 的  ui\display 中使用的字段需要先在query中查询. 否则会返回null
-        if(field.expand){
-            expandFields.push(field);
-        }else{
-            if(field.name.indexOf('.') < 0){
-                if(display && (field.type == 'lookup' || field.type == 'master_detail')){
-                    fieldsName.push(`${field.name}`)
-                    displayFields.push(`${field.name}`)
-                }else{
-                    fieldsName.push( field.alias ? `${field.alias}:${field.name}` : field.name)
-                }
-                if(includes(['time','date','datetime','boolean','number','currency'], field.type)){
-                    fieldsName.push(`${field.name}`)
-                }
-                if(includes(['percent','time','filesize','date','datetime','boolean','number','currency', 'select', 'file', 'image', 'avatar', 'formula', 'summary', 'object', 'grid'], field.type)){
-                    displayFields.push(`${field.name}`)
-                }
+        if(field.name){
+            //graphql 的  ui\display 中使用的字段需要先在query中查询. 否则会返回null
+            if(field.expand){
+                expandFields.push(field);
             }else{
-                objectFieldName = field.name.split('.')[0];
-                fieldsName.push(objectFieldName);
-                displayFields.push(objectFieldName)
+                if(field.name.indexOf('.') < 0){
+                    if(display && (field.type == 'lookup' || field.type == 'master_detail')){
+                        fieldsName.push(`${field.name}`)
+                        displayFields.push(`${field.name}`)
+                    }else{
+                        fieldsName.push( field.alias ? `${field.alias}:${field.name}` : field.name)
+                    }
+                    if(includes(['time','date','datetime','boolean','number','currency'], field.type)){
+                        fieldsName.push(`${field.name}`)
+                    }
+                    if(includes(['percent','time','filesize','date','datetime','boolean','number','currency', 'select', 'file', 'image', 'avatar', 'formula', 'summary', 'object', 'grid'], field.type)){
+                        displayFields.push(`${field.name}`)
+                    }
+                }else{
+                    objectFieldName = field.name.split('.')[0];
+                    fieldsName.push(objectFieldName);
+                    displayFields.push(objectFieldName)
+                }
             }
         }
     }

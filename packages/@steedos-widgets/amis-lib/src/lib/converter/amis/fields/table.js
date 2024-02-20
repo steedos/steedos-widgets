@@ -672,6 +672,54 @@ export async function getTableColumns(fields, options){
                     columnItem.type = 'color';
                     columnItem.defaultColor = null;
                 }
+
+                if(((field.is_name || field.name === options.labelFieldName) || ((field.type == 'lookup' || field.type == 'master_detail') && _.isString(field.reference_to) && field.multiple != true)) && options.isRelated){
+                    
+                    const drawerRecordDetailSchema = {
+                        "type": "steedos-record-detail",
+                        "objectApiName": "${objectName}",
+                        "recordId": `\${${options.idFieldName}}`,
+                        "showBackButton": false,
+                        "showButtons": true,
+                        "data": {
+                          "_inDrawer": true,  // 用于判断是否在抽屉中
+                          "recordLoaded": false, // 重置数据加载状态
+                        }
+                    };
+
+
+                    if(!(field.is_name || field.name === options.labelFieldName)){
+                        drawerRecordDetailSchema.objectApiName = field.reference_to
+                        drawerRecordDetailSchema.recordId = `\${_display.${field.name}.value}`
+                    }
+                    
+                    columnItem.onEvent = {
+                        "click": {
+                          "actions": [
+                            {
+                                "actionType": "drawer",
+                                "drawer": {
+                                  "type": "drawer",
+                                  "title": "&nbsp;",
+                                  "headerClassName": "",
+                                  "size": "lg",
+                                  "bodyClassName": "p-0 m-0 border-t",
+                                  "closeOnEsc": true,
+                                  "resizable": true,
+                                  "actions": [],
+                                  "body": [
+                                    drawerRecordDetailSchema
+                                  ],
+                                  "className": "app-popover",
+                                  "id": "u:fc5f055afa8c"
+                                },
+                                "preventDefault": true
+                            }
+                          ]
+                        }
+                    }
+                }
+
             }
         }
         if(columnItem){

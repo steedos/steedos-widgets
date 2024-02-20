@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-02-08 16:10:52
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2024-02-18 14:46:50
  * @Description:
  */
 
@@ -159,7 +159,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
     //     globalFilter = [`${relatedKey}`, "=", relatedValue];
     // }
     const recordRelatedListHeader = await getObjectRecordDetailRelatedListHeader(relatedObjectUiSchema, relatedLabel, ctx);
-    const componentId = `steedos-record-related-list-${relatedObjectName}`;
+    const componentId = `steedos-record-related-list-${relatedObjectName}_${new Date().getTime()}`;
     const isMobile = window.innerWidth < 768;
     let headerToolbar = [];
     if(!isMobile){
