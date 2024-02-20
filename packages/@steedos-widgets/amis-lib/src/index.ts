@@ -27,6 +27,7 @@ export * from './lib/converter/amis/fields/lookup';
 export * from './lib/converter/amis/fields/user';
 export * from './lib/converter/amis/filters';
 export * from './lib/converter/amis/header';
+export * from './lib/converter/amis/tpl';
 export * from './lib/converter/amis/fields_filter';
 
 export * from './lib/router';
