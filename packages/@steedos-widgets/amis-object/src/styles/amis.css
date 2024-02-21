@@ -62,6 +62,20 @@
     --Tabs-content-bg: unset;
     --drawer-content-paddingTop: 0;
     --fieldSet-legend-fontWeight: 600;
+    --fieldSet-legend-marginTop: 1rem;
+    --fieldSet-legend-marginBottom: 1rem;
+}
+
+/* 修正手机端字体小的问题 */
+@media (max-width: 767px) {
+
+    :root {
+        --button-size-default-fontSize: var(--fontSizeLg);
+        --link-fontSize: var(--fontSizeLg);
+        --Table-fontSize: var(--fontSizeLg);
+        --Tabs--line-fontSize: var(--fontSizeLg);
+        --Tabs--line-active-fontSize: var(--fontSizeLg);
+    }
 }
 
 .steedos-header-container .antd-Nav-Menu {
