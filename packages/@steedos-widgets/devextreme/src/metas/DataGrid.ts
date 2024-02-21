@@ -54,46 +54,66 @@ export default {
       order: -9999,
       icon: config.amis.icon,
       scaffold: {
-        type: config.amis.name,
-        className: "",
-        config: {
-          // Row Data: The data to be displayed.
-          dataSource: [
-            { id: "Tesla", model: "Model Y", price: 64950, electric: true },
-            { id: "Ford", model: "F-Series", price: 33850, electric: false },
-            { id: "Toyota", model: "Corolla", price: 29600, electric: false },
-          ],
-          keyExpr: "id",
-          // Column Definitions: Defines & controls grid columns.
-          columns: [
-            { dataField: "id", caption: "ID" },
-            { dataField: "model" },
-            { dataField: "price" },
-            { dataField: "electric" }
-          ]
+        "type": "service",
+        "api": {
+          "url": "${context.rootUrl}/api/v1/space_users",
+          "method": "get"
         },
+        "body": [
+          {
+            type: config.amis.name,
+            dataSource: "${items}",
+            config: {
+              keyExpr: "_id",
+              // Column Definitions: Defines & controls grid columns.
+              columns: [
+                { dataField: "_id", caption: "ID" },
+                { dataField: "name" },
+              ],        
+              columnChooser: { enabled: true },
+              searchPanel: {
+                visible: true,
+                  highlightCaseSensitive: true,
+                },
+              groupPanel: { visible: true },
+              grouping: {
+                autoExpandAll: false,
+              },
+              allowColumnReordering: true,
+              rowAlternationEnabled: true,
+            },
+          }
+        ]
       },
       previewSchema: {
-        type: config.amis.name,
-        config: {
-          // Row Data: The data to be displayed.
-          dataSource: [
-            { id: "Tesla", model: "Model Y", price: 64950, electric: true },
-            { id: "Ford", model: "F-Series", price: 33850, electric: false },
-            { id: "Toyota", model: "Corolla", price: 29600, electric: false },
-          ],
-          keyExpr: "id",
-          // Column Definitions: Defines & controls grid columns.
-          columns: [
-            { dataField: "id", caption: "ID" },
-            { dataField: "model" },
-            { dataField: "price" },
-            { dataField: "electric" }
-          ]
+        "type": "service",
+        "api": {
+          "url": "${context.rootUrl}/api/v1/space_users",
+          "method": "get"
         },
+        "body": [
+          {
+            type: config.amis.name,
+            dataSource: "${items}",
+            config: {
+              keyExpr: "_id",
+              // Column Definitions: Defines & controls grid columns.
+              columns: [
+                { dataField: "_id", caption: "ID" },
+                { dataField: "name" },
+              ]
+            },
+          }
+        ]
       },
       panelTitle: "设置",
       panelControls: [
+        {
+          type: "text",
+          name: "dataSource",
+          label: "数据源",
+          value: ""
+        },
         {
           type: "text",
           name: "className",

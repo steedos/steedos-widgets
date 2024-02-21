@@ -10,6 +10,8 @@ import { createObject } from '@steedos-widgets/amis-lib';
 export const AmisDataGrid = ( {
   data: amisData,
   config, 
+  dataSource, 
+  keyExpr = "_id",
   className, 
   ...props
 } ) => {
@@ -49,6 +51,8 @@ export const AmisDataGrid = ( {
   return (
     <DataGrid
       className={className}
+      dataSource={dataSource}
+      keyExpr={keyExpr}
       {...configJSON}>
     </DataGrid>
   )
