@@ -950,6 +950,33 @@ async function getApi(object, recordId, fields, options){
     }
 }
 
+async function getAutoFill(field, refObject) {
+    let autoFillMapping = field.auto_fill_mapping;
+    if (autoFillMapping && autoFillMapping.length) {
+        let fillMapping = {};
+        let fieldsForApi = [];
+        autoFillMapping.forEach(function (item) {
+            fillMapping[item.to] = `\${${item.from}}`;
+            fieldsForApi.push(item.from);
+        });
+        // let api = {
+        //     // "url": "/amis/api/mock2/form/autoUpdate?browser=${browser}&version=${version}",
+        //     "url": `/api/v1/${refObject.name}/\${${field.name}}?fields=${JSON.stringify(fieldsForApi)}`,
+        //     // "responseData": {
+        //     //     "name": "${name}"
+        //     // },
+        //     "silent": false
+        // }
+        // return {
+        //     fillMapping,
+        //     // api
+        // }
+        // 因为autoFill中配置了api的话，在表单初始化（比如新建记录）时并不会触发执行autoFill，所以只能暂时不用api
+        // 给amis报过问题了，见：https://github.com/baidu/amis/issues/9631
+        return fillMapping;
+    }
+}
+
 export async function lookupToAmis(field, readonly, ctx){
     if(!ctx){
         ctx = {};
@@ -1032,6 +1059,10 @@ export async function lookupToAmis(field, readonly, ctx){
             }
             amisSchema = _.defaultsDeep({}, pageAmisSchema, amisSchema);
         }
+    }
+    const autoFill = await getAutoFill(field, refObject);
+    if(autoFill){
+        amisSchema.autoFill = autoFill;
     }
     return amisSchema;
 }

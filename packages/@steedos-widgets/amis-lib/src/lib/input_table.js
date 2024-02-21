@@ -1211,7 +1211,9 @@ async function getButtonNew(props) {
                 "actions": await getButtonActions(props, "new")
             }
         },
-        "level": "primary"
+        "level": "link",
+        "className": "text-gray-500",
+        "size": "xs"
     };
 }
 
@@ -1221,6 +1223,7 @@ async function getButtonEdit(props, showAsInlineEditMode) {
         "label": "",
         "icon": `fa fa-${showAsInlineEditMode ? "expand-alt" : "pencil"}`,//inline edit模式时显示为放开按钮，只读时显示为笔按钮
         "level": "link",
+        "className": "text-gray-400",
         "onEvent": {
             "click": {
                 "actions": await getButtonActions(props, "edit")
@@ -1235,6 +1238,7 @@ async function getButtonView(props) {
         "label": "",
         "icon": "fa fa-expand-alt",//fa-external-link
         "level": "link",
+        "className": "text-gray-400",
         "onEvent": {
             "click": {
                 "actions": await getButtonActions(props, "readonly")
@@ -1247,6 +1251,7 @@ async function getButtonDelete(props) {
     return {
         "type": "dropdown-button",
         "level": "link",
+        "btnClassName": "text-gray-400",
         "icon": "fa fa-trash-alt",
         "size": "xs",
         "hideCaret": true,
@@ -1489,6 +1494,10 @@ export const getAmisInputTableSchema = async (props) => {
         "labelAlign": props.labelAlign,
         //控制control的mode属性，https://aisuda.bce.baidu.com/amis/zh-CN/components/form/formitem#表单项展示
         "mode": props.mode || null,
+        "visibleOn": props.$schema.visibleOn,
+        "visible":  props.$schema.visible,
+        "hiddenOn": props.$schema.hiddenOn,
+        "hidden": props.$schema.hidden,
         className
     };
     // console.log("===schema===", schema);

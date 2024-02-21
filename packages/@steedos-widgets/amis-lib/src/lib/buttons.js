@@ -397,44 +397,46 @@ export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
             }
         })
 
-        return {
-            "type": "button",
-            "icon": "fa fa-angle-down",
-            "visibleOn": phoneMoreButtonsVisibleOn,
-            "onEvent": {
-              "click": {
-                "actions": [
-                  {
-                    "actionType": "drawer",
-                    "drawer": {
-                      "type": "drawer",
-                      "title": i18next.t('frontend_operation'),
-                      "id": "object_actions_drawer_" + objectSchema.name,
-                      "body": [
-                        {
-                          "type": "button-group",
-                          "id": "u:fd837823be5b",
-                          "vertical": true,
-                          "tiled": true,
-                          "buttons": dropdownButtons,
-                          "btnLevel": "enhance",
-                          "className": "w-full",
-                          "btnClassName": "w-full",
-                          "size": "lg"
+        return [
+            {
+                "type": "button",
+                "icon": "fa fa-angle-down",
+                "visibleOn": phoneMoreButtonsVisibleOn,
+                "onEvent": {
+                  "click": {
+                    "actions": [
+                      {
+                        "actionType": "drawer",
+                        "drawer": {
+                          "type": "drawer",
+                          "title": i18next.t('frontend_operation'),
+                          "id": "object_actions_drawer_" + objectSchema.name,
+                          "body": [
+                            {
+                              "type": "button-group",
+                              "id": "u:fd837823be5b",
+                              "vertical": true,
+                              "tiled": true,
+                              "buttons": dropdownButtons,
+                              "btnLevel": "enhance",
+                              "className": "w-full",
+                              "btnClassName": "w-full",
+                              "size": "lg"
+                            }
+                          ],
+                          "position": "bottom",
+                          "closeOnOutside": true,
+                          "resizable": false,
+                          "className": "buttons-drawer",
+                          "bodyClassName": "m-none p-none",
+                          "actions": []
                         }
-                      ],
-                      "position": "bottom",
-                      "closeOnOutside": true,
-                      "resizable": false,
-                      "className": "buttons-drawer",
-                      "bodyClassName": "m-none p-none",
-                      "actions": []
-                    }
+                      }
+                    ]
                   }
-                ]
+                }
               }
-            }
-          }
+        ]
     }else{
         if(moreButtons.length > 0){
             const dropdownButtonsSchema = {

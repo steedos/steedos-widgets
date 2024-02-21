@@ -673,7 +673,7 @@ export async function getTableColumns(fields, options){
                     columnItem.defaultColor = null;
                 }
 
-                if(((field.is_name || field.name === options.labelFieldName) || ((field.type == 'lookup' || field.type == 'master_detail') && _.isString(field.reference_to) && field.multiple != true)) && options.isRelated){
+                if(window.innerWidth >= 768 && ((field.is_name || field.name === options.labelFieldName) || ((field.type == 'lookup' || field.type == 'master_detail') && _.isString(field.reference_to) && field.multiple != true)) && options.isRelated){
                     
                     const drawerRecordDetailSchema = {
                         "type": "steedos-record-detail",
@@ -701,16 +701,17 @@ export async function getTableColumns(fields, options){
                                 "drawer": {
                                   "type": "drawer",
                                   "title": "&nbsp;",
-                                  "headerClassName": "",
+                                  "headerClassName": "hidden",
                                   "size": "lg",
-                                  "bodyClassName": "p-0 m-0 border-t",
+                                  "bodyClassName": "p-0 m-0",
                                   "closeOnEsc": true,
+                                  "closeOnOutside": true,
                                   "resizable": true,
                                   "actions": [],
                                   "body": [
                                     drawerRecordDetailSchema
                                   ],
-                                  "className": "app-popover",
+                                  "className": "steedos-record-detail-drawer app-popover",
                                   "id": "u:fc5f055afa8c"
                                 },
                                 "preventDefault": true
@@ -769,7 +770,7 @@ function getMobileLines(tpls){
     let isNewLine = false;
     let isLeft = true;
     let lineChildrenClassName = "";
-    let lineClassName = "flex items-center justify-between";
+    let lineClassName = "flex items-center justify-between mb-1";
     tpls.forEach(function(item){
         if(isNewLine && lines.length < maxLineCount){
             lines.push({

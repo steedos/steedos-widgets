@@ -306,6 +306,33 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
     amisButtonsSchema = getObjectDetailButtonsSchemas(objectSchema, recordId, options);
   }
 
+  amisButtonsSchema.push(
+    {
+      "type": "button",
+      "visibleOn": "${_inDrawer === true || _inRecordMini ===  true}",
+      "className":"ant-dropdown-trigger slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small slds-icon ml-1 flex",
+      "onEvent": {
+          "click": {
+              "actions": [
+                {
+                  "actionType": "custom",
+                  "script": "const data = event.data; window.open(`/app/${data.app_id}/${data.objectName}/view/${data.recordId}?side_object=${data.side_object}&side_listview_id=${data.side_listview_id}`)"
+                }
+              ]
+          }
+      },
+      "body": [
+          {
+              "type": "steedos-icon",
+              "category": "utility",
+              "name": "new_window",
+              "colorVariant": "default",
+              "className": "slds-button_icon slds-global-header__icon w-4"
+          }
+      ]
+    }
+  )
+
   let backButtonsSchema = null;
 
   if(options.showBackButton != false){
@@ -326,7 +353,32 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
           "columns": [
             {
               "body": [
-                backButtonsSchema
+                backButtonsSchema,
+                {
+                  "type": "button",
+                  "visibleOn": "${_inDrawer === true}",
+                  "className":"flex mr-4",
+                  "onEvent": {
+                      "click": {
+                          "actions": [
+                            {
+                              "componentId": "",
+                              "args": {},
+                              "actionType": "closeDrawer"
+                            }
+                          ]
+                      }
+                  },
+                  "body": [
+                      {
+                          "type": "steedos-icon",
+                          "category": "utility",
+                          "name": "close",
+                          "colorVariant": "default",
+                          "className": "slds-button_icon slds-global-header__icon w-4"
+                      }
+                  ]
+                }
               ,{
                 "type": "tpl",
                 "className": "block",
@@ -542,10 +594,10 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
             "md": "auto"
           }
         ],
-        "className": "flex justify-between"
+        "className": "flex justify-between min-h-8 items-center"
       }
     ],
-    "className": "steedos-record-related-header py-2 px-3 bg-gray-50 border"
+    "className": "steedos-record-related-header py-2 px-3 bg-gray-50 border rounded"
   };
   return recordRelatedListHeader;
 }

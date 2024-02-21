@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-02-19 11:57:49
+ * @LastEditTime: 2024-02-21 17:19:30
  * @Description: 
  */
 import { Router } from '../../router'
@@ -92,7 +92,7 @@ export function getNameTpl(field, ctx){
     if(ctx && ctx.isLookup){
         linkTarget = "target='_blank'"
     }
-    if(ctx.isRelated){
+    if(ctx.isRelated && window.innerWidth >= 768){
         return `<a href="${href}" ${linkTarget} onclick="return false;">\${${field.name} | raw}</a>`
     }else{
         return `<a href="${href}" ${linkTarget}>\${${field.name} | raw}</a>`
@@ -150,7 +150,7 @@ export function getRelatedFieldTpl(field, ctx){
                 const href = Router.getObjectDetailPath({
                     formFactor: ctx.formFactor, appId: "${appId}", objectName: `${objectNameTpl}`, recordId: `${recordIdTpl}`
                 })
-                if(ctx.isRelated){
+                if(ctx.isRelated && window.innerWidth >= 768){
                     labelTpl = `<a href="${href}" ${linkTarget} onclick="return false;">${labelTpl}</a>`;
                 }else{
                     labelTpl = `<a href="${href}" ${linkTarget}>${labelTpl}</a>`;

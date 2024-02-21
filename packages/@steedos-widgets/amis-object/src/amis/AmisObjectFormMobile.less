@@ -5,7 +5,9 @@
             display: flex;
         }
         .antd-Form-item > .antd-Form-label{
-            max-width: var(--Form-mode-default-width)
+            max-width: var(--Form-mode-default-width);
+            /*  修正手机端字段label太长时会换行的问题 */
+            width: auto;
         }
         .antd-Select.is-mobile, .antd-DatePicker.is-mobile{
             border-width: var(--Form-select-borderWidth);

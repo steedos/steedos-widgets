@@ -1,12 +1,12 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
- * @LastEditors: liaodaxue
- * @LastEditTime: 2024-02-05 13:22:58
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2024-02-21 17:37:49
  * @Description: 
  */
 import "./AmisSteedosField.less";
-import { Field, getUISchema } from '@steedos-widgets/amis-lib';
+import { Field, getUISchema, getSelectMap } from '@steedos-widgets/amis-lib';
 import { has, isArray, isEmpty, isString, pick, includes, clone, forEach, each, isObject, get } from 'lodash';
 
 const defaultImageValue = "data:image/svg+xml,%3C%3Fxml version='1.0' standalone='no'%3F%3E%3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3E%3Csvg t='1631083237695' class='icon' viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg' p-id='2420' xmlns:xlink='http://www.w3.org/1999/xlink' width='1024' height='1024'%3E%3Cdefs%3E%3Cstyle type='text/css'%3E%3C/style%3E%3C/defs%3E%3Cpath d='M959.872 128c0.032 0.032 0.096 0.064 0.128 0.128v767.776c-0.032 0.032-0.064 0.096-0.128 0.128H64.096c-0.032-0.032-0.096-0.064-0.128-0.128V128.128c0.032-0.032 0.064-0.096 0.128-0.128h895.776zM960 64H64C28.8 64 0 92.8 0 128v768c0 35.2 28.8 64 64 64h896c35.2 0 64-28.8 64-64V128c0-35.2-28.8-64-64-64z' p-id='2421' fill='%23bfbfbf'%3E%3C/path%3E%3Cpath d='M832 288c0 53.024-42.976 96-96 96s-96-42.976-96-96 42.976-96 96-96 96 42.976 96 96zM896 832H128V704l224-384 256 320h64l224-192z' p-id='2422' fill='%23bfbfbf'%3E%3C/path%3E%3C/svg%3E";
@@ -48,10 +48,56 @@ function getAmisStaticFieldType(type: string, data_type?: string, options?: any)
         }
         return `static-image`;
     } else if (type === 'textarea') {
-        return 'static'
+        return 'static';
+    } else if (type === 'html') {
+        return 'input-rich-text';
+    } else if (type === 'markdown') {
+        return 'static-markdown';
+    } else if (type === 'select') {
+        return 'static-mapping';
+    } else if (type === 'color') {
+        return 'static-color';
     }
     return type;
 };
+
+
+const REFERENCE_VALUE_ITEM_ONCLICK = {
+    "click": {
+      "actions": [
+        {
+            "actionType": "drawer",
+            "drawer": {
+              "type": "drawer",
+              "title": "&nbsp;",
+              "headerClassName": "hidden",
+              "size": "lg",
+              "bodyClassName": "p-0 m-0",
+              "closeOnEsc": true,
+              "closeOnOutside": true,
+              "resizable": true,
+              "actions": [],
+              "body": [
+                {
+                    "type": "steedos-record-detail",
+                    "objectApiName": "${objectName}",
+                    "recordId": "${value}",
+                    "showBackButton": false,
+                    "showButtons": true,
+                    "data": {
+                      "_inDrawer": true,  // 用于判断是否在抽屉中
+                      "recordLoaded": false, // 重置数据加载状态
+                    }
+                }
+              ],
+              "className": "steedos-record-detail-drawer app-popover",
+              "id": "u:fc5f055afa8c"
+            },
+            "preventDefault": true
+        }
+      ]
+    }
+}
 
 export const AmisSteedosField = async (props) => {
     // console.log(`AmisSteedosField===props===`, props);
@@ -92,6 +138,13 @@ export const AmisSteedosField = async (props) => {
 
     try {
         if (fStatic && (steedosField.type === 'lookup' || steedosField.type === 'master_detail')) {
+
+            let lookupATagClick = 'onclick="return false;"';
+
+            if(window.innerWidth < 768){
+                lookupATagClick = ""
+            }
+
             let defaultSource: any = {
                 "method": "post",
                 "url": "${context.rootUrl}/graphql",
@@ -240,8 +293,8 @@ export const AmisSteedosField = async (props) => {
                                                 labelClassName: "hidden",
                                                 label: false,
                                                 className: 'm-0',
-                                                tpl: `<a href="/app/-/\${objectName}/view/\${value}" target="_blank">\${label}</a>`, 
-                                                popOver: fieldRefObject.compactLayouts ? {
+                                                tpl: `<a href="/app/-/\${objectName}/view/\${value}" target="_blank" ${lookupATagClick}>\${label}</a>`, 
+                                                popOver: fieldRefObject.compactLayouts && window.innerWidth >= 768 ? {
                                                     "trigger": "hover",
                                                     "className": "steedos-record-detail-popover",
                                                     "position": "left-bottom",
@@ -260,11 +313,12 @@ export const AmisSteedosField = async (props) => {
                                                             "showBackButton": false,
                                                             "data": {
                                                                 "objectName": "${objectName}",
-                                                                "recordId": "${value}"
+                                                                "recordId": "${value}",
                                                             }
                                                         }
                                                     ]
-                                                } : null
+                                                } : null,
+                                                onEvent: window.innerWidth < 768 ? null : REFERENCE_VALUE_ITEM_ONCLICK
                                             }
                                         }
                                     ]
@@ -314,8 +368,8 @@ export const AmisSteedosField = async (props) => {
                                         items: { 
                                             type: 'static', 
                                             className: 'm-0',
-                                            tpl: `<a href="/app/-/\${objectName}/view/\${value}" target="_blank">\${label}</a>`, 
-                                            popOver: fieldRefObject.compactLayouts ? {
+                                            tpl: `<a href="/app/-/\${objectName}/view/\${value}" target="_blank" ${lookupATagClick}>\${label}</a>`, 
+                                            popOver: fieldRefObject.compactLayouts && window.innerWidth >= 768 ? {
                                                 "trigger": "hover",
                                                 "className": "steedos-record-detail-popover",
                                                 "position": "left-bottom",
@@ -334,11 +388,12 @@ export const AmisSteedosField = async (props) => {
                                                         "showBackButton": false,
                                                         "data": {
                                                             "objectName": "${objectName}",
-                                                            "recordId": "${value}"
+                                                            "recordId": "${value}",
                                                         }
                                                     }
                                                 ]
-                                            } : null
+                                            } : null,
+                                            onEvent: window.innerWidth < 768 ? null : REFERENCE_VALUE_ITEM_ONCLICK
                                         }
                                     }
                                 ]
@@ -420,8 +475,10 @@ export const AmisSteedosField = async (props) => {
                     "revealPassword": false //没生效，需要用样式隐藏
                 });
             } else if (steedosField.type === "select") {
+                const map = getSelectMap(steedosField.options);
                 Object.assign(schema, {
-                    "placeholder": ""
+                    "placeholder": "",
+                    "map": map
                 });
             } else if (steedosField.type === "color") {
                 Object.assign(schema, {
@@ -490,7 +547,7 @@ export const AmisSteedosField = async (props) => {
                 // 附件static模式先保持原来的逻辑，依赖_display，审批王中相关功能在creator中
                 // convertSFieldToAmisField中会合并steedosField.amis，所以也不需要再次合并steedosField.amis，直接return就好
                 return await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
-            }else if(steedosField.type === 'formula' || steedosField.type === 'summary'){
+            } else if (steedosField.type === 'formula' || steedosField.type === 'summary'){
                 if(steedosField.data_type === 'number' || steedosField.data_type === 'currency'){
                     Object.assign(schema, {
                         "precision": steedosField.scale || 0
@@ -500,6 +557,34 @@ export const AmisSteedosField = async (props) => {
                 Object.assign(schema, {
                     tpl: `<%=(data.${steedosField.name} || "").split("\\n").join('<br>')%>`
                 })
+            } else if (steedosField.type === 'html') {
+                Object.assign(schema, {
+                    "receiver": "${context.rootUrl}/s3/images",
+                    "options": {
+                        "menu": {
+                            "insert": {
+                                "title": "Insert",
+                                "items": "image link media addcomment pageembed codesample inserttable | charmap emoticons hr | pagebreak nonbreaking anchor tableofcontents | insertdatetime"
+                            }
+                        },
+                        "plugins": [
+                            "autoresize"
+                        ],
+                        // "max_height": 2000,
+                        "statusbar": false,
+                        "readonly": true,
+                        "toolbar": false,
+                        "menubar": false
+                    }
+                });
+            } else if (steedosField.type === 'markdown') {
+                Object.assign(schema, {
+                    "options": {
+                        "linkify": true,
+                        "html": true,
+                        "breaks": true
+                    }
+                });
             }
             Object.assign(schema, steedosField.amis || {});
             return schema;
