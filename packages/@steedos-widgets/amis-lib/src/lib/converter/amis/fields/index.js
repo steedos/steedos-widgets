@@ -785,9 +785,9 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
     if(!_.isEmpty(convertData)){
         const className = convertData.className;
         if(field.is_wide || convertData.type === 'group'){
-            convertData.className = className ? 'col-span-2 m-0 ' + className : 'col-span-2 m-0';
+            convertData.className = className ? 'col-span-2 m-1 ' + className : 'col-span-2 m-1';
         }else{
-            convertData.className = className ? 'm-0 ' + className : 'm-0';
+            convertData.className = className ? 'm-1 ' + className : 'm-1';
         }
         if(readonly && ctx.mode !== 'edit'){
             convertData.className = `${convertData.className} border-b`
