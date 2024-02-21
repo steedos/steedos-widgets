@@ -594,7 +594,7 @@ export async function getObjectRecordDetailRelatedListHeader(relatedObjectSchema
             "md": "auto"
           }
         ],
-        "className": "flex justify-between min-h-8"
+        "className": "flex justify-between min-h-8 items-center"
       }
     ],
     "className": "steedos-record-related-header py-2 px-3 bg-gray-50 border rounded"
