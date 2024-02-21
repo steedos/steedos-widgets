@@ -57,6 +57,7 @@
     --Tabs-link-maxWidth: 180px;
     --Tabs-content-bg: unset;
     --drawer-content-paddingTop: 0;
+    --fieldSet-legend-fontWeight: 600;
 }
 
 .steedos-header-container .antd-Nav-Menu {
@@ -379,4 +380,8 @@ fieldset.antd-Collapse > legend{
 
 .antd-Tabs-linksWrapper {
     border-right: var(--Table-borderWidth) solid var(--Table-borderColor)
+}
+
+.antd-Form-label {
+    font-weight: 600;
 }
