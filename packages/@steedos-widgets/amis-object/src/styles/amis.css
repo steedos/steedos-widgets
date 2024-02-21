@@ -13,7 +13,7 @@
     --Table-fixedRight-boxShadow: none;
     --Table-thead-borderColor: rgb(209 213 219);
     --Table-thead-fontSize: 13px;
-    --Table-thead-bg: #f9fafb;
+    --Table-thead-bg: white;
     --Table-thead-borderColor: var(--Table-borderColor);
     --Table-toolbar-marginY: 0;
     --Table-thead-borderWidth: 1px;
@@ -347,16 +347,16 @@ fieldset.antd-Collapse > legend{
 }
 /* === end === */
 
-.steedos-record-related-crud {
-    --Table-thead-bg: white;
-}
-
 .steedos-record-related-crud .antd-Table-table > thead > tr > th:not(:last-child) {
     border-right: 0px;
 }
 
 .steedos-crud-mode-table .antd-Table-table > thead > tr > th:not(:last-child) {
     border-right: 0px;
+}
+
+.antd-Table-table > thead > tr > th {
+    font-weight: 600;
 }
 
 .antd-Table-footToolbar {
