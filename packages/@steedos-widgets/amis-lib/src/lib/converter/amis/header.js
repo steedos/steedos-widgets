@@ -306,6 +306,33 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
     amisButtonsSchema = getObjectDetailButtonsSchemas(objectSchema, recordId, options);
   }
 
+  amisButtonsSchema.push(
+    {
+      "type": "button",
+      "visibleOn": "${_inDrawer === true || _inRecordMini ===  true}",
+      "className":"ant-dropdown-trigger slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small slds-icon ml-1 flex",
+      "onEvent": {
+          "click": {
+              "actions": [
+                {
+                  "actionType": "custom",
+                  "script": "const data = event.data; window.open(`/app/${data.app_id}/${data.objectName}/view/${data.recordId}?side_object=${data.side_object}&side_listview_id=${data.side_listview_id}`)"
+                }
+              ]
+          }
+      },
+      "body": [
+          {
+              "type": "steedos-icon",
+              "category": "utility",
+              "name": "new_window",
+              "colorVariant": "default",
+              "className": "slds-button_icon slds-global-header__icon w-4"
+          }
+      ]
+    }
+  )
+
   let backButtonsSchema = null;
 
   if(options.showBackButton != false){

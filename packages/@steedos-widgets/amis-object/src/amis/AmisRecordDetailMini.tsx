@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-15 15:52:02
+ * @LastEditTime: 2024-02-21 09:22:54
  * @Description: 
  */
 import './AmisRecordDetailMini.less'
@@ -38,11 +38,15 @@ export const AmisRecordDetailMini = async (props) => {
   if(props.$$editor){
     options.isEditor = true;
   }
-  console.log(`AmisRecordDetailMini==2=>`, objectApiName, options)
+  // console.log(`AmisRecordDetailMini==2=>`, objectApiName, options)
   const schema = await getRecordDetailMiniSchema(objectApiName, appId, options);
   if(!isEmpty(schemaData)){
-    schema.data = schemaData;
+    schema.data = Object.assign({
+      "_inDrawer": false,  // 重置否在抽屉中状态
+      "_inRecordMini": true,
+      "recordLoaded": false, // 重置数据加载状态
+    }, schemaData);
   }
-//   console.log(`AmisRecordDetailMini===>`, schema)
+  // console.log(`AmisRecordDetailMini===>`, schema)
   return schema
 }

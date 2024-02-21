@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
- * @LastEditors: liaodaxue
- * @LastEditTime: 2024-02-05 13:22:58
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2024-02-20 18:31:34
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -60,6 +60,44 @@ function getAmisStaticFieldType(type: string, data_type?: string, options?: any)
     }
     return type;
 };
+
+
+const REFERENCE_VALUE_ITEM_ONCLICK = {
+    "click": {
+      "actions": [
+        {
+            "actionType": "drawer",
+            "drawer": {
+              "type": "drawer",
+              "title": "&nbsp;",
+              "headerClassName": "hidden",
+              "size": "lg",
+              "bodyClassName": "p-0 m-0",
+              "closeOnEsc": true,
+              "closeOnOutside": true,
+              "resizable": true,
+              "actions": [],
+              "body": [
+                {
+                    "type": "steedos-record-detail",
+                    "objectApiName": "${objectName}",
+                    "recordId": "${value}",
+                    "showBackButton": false,
+                    "showButtons": true,
+                    "data": {
+                      "_inDrawer": true,  // 用于判断是否在抽屉中
+                      "recordLoaded": false, // 重置数据加载状态
+                    }
+                }
+              ],
+              "className": "steedos-record-detail-drawer app-popover",
+              "id": "u:fc5f055afa8c"
+            },
+            "preventDefault": true
+        }
+      ]
+    }
+}
 
 export const AmisSteedosField = async (props) => {
     // console.log(`AmisSteedosField===props===`, props);
@@ -248,7 +286,7 @@ export const AmisSteedosField = async (props) => {
                                                 labelClassName: "hidden",
                                                 label: false,
                                                 className: 'm-0',
-                                                tpl: `<a href="/app/-/\${objectName}/view/\${value}" target="_blank">\${label}</a>`, 
+                                                tpl: `<a href="/app/-/\${objectName}/view/\${value}" target="_blank" onclick="return false;">\${label}</a>`, 
                                                 popOver: fieldRefObject.compactLayouts ? {
                                                     "trigger": "hover",
                                                     "className": "steedos-record-detail-popover",
@@ -268,11 +306,12 @@ export const AmisSteedosField = async (props) => {
                                                             "showBackButton": false,
                                                             "data": {
                                                                 "objectName": "${objectName}",
-                                                                "recordId": "${value}"
+                                                                "recordId": "${value}",
                                                             }
                                                         }
                                                     ]
-                                                } : null
+                                                } : null,
+                                                onEvent: REFERENCE_VALUE_ITEM_ONCLICK
                                             }
                                         }
                                     ]
@@ -322,7 +361,7 @@ export const AmisSteedosField = async (props) => {
                                         items: { 
                                             type: 'static', 
                                             className: 'm-0',
-                                            tpl: `<a href="/app/-/\${objectName}/view/\${value}" target="_blank">\${label}</a>`, 
+                                            tpl: `<a href="/app/-/\${objectName}/view/\${value}" target="_blank" onclick="return false;">\${label}</a>`, 
                                             popOver: fieldRefObject.compactLayouts ? {
                                                 "trigger": "hover",
                                                 "className": "steedos-record-detail-popover",
@@ -342,11 +381,12 @@ export const AmisSteedosField = async (props) => {
                                                         "showBackButton": false,
                                                         "data": {
                                                             "objectName": "${objectName}",
-                                                            "recordId": "${value}"
+                                                            "recordId": "${value}",
                                                         }
                                                     }
                                                 ]
-                                            } : null
+                                            } : null,
+                                            onEvent: REFERENCE_VALUE_ITEM_ONCLICK
                                         }
                                     }
                                 ]
