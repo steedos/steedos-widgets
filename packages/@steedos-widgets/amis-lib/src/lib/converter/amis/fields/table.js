@@ -673,7 +673,7 @@ export async function getTableColumns(fields, options){
                     columnItem.defaultColor = null;
                 }
 
-                if(((field.is_name || field.name === options.labelFieldName) || ((field.type == 'lookup' || field.type == 'master_detail') && _.isString(field.reference_to) && field.multiple != true)) && options.isRelated){
+                if(window.innerWidth >= 768 && ((field.is_name || field.name === options.labelFieldName) || ((field.type == 'lookup' || field.type == 'master_detail') && _.isString(field.reference_to) && field.multiple != true)) && options.isRelated){
                     
                     const drawerRecordDetailSchema = {
                         "type": "steedos-record-detail",

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-02-20 18:31:34
+ * @LastEditTime: 2024-02-21 17:37:49
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -138,6 +138,13 @@ export const AmisSteedosField = async (props) => {
 
     try {
         if (fStatic && (steedosField.type === 'lookup' || steedosField.type === 'master_detail')) {
+
+            let lookupATagClick = 'onclick="return false;"';
+
+            if(window.innerWidth < 768){
+                lookupATagClick = ""
+            }
+
             let defaultSource: any = {
                 "method": "post",
                 "url": "${context.rootUrl}/graphql",
@@ -286,8 +293,8 @@ export const AmisSteedosField = async (props) => {
                                                 labelClassName: "hidden",
                                                 label: false,
                                                 className: 'm-0',
-                                                tpl: `<a href="/app/-/\${objectName}/view/\${value}" target="_blank" onclick="return false;">\${label}</a>`, 
-                                                popOver: fieldRefObject.compactLayouts ? {
+                                                tpl: `<a href="/app/-/\${objectName}/view/\${value}" target="_blank" ${lookupATagClick}>\${label}</a>`, 
+                                                popOver: fieldRefObject.compactLayouts && window.innerWidth >= 768 ? {
                                                     "trigger": "hover",
                                                     "className": "steedos-record-detail-popover",
                                                     "position": "left-bottom",
@@ -311,7 +318,7 @@ export const AmisSteedosField = async (props) => {
                                                         }
                                                     ]
                                                 } : null,
-                                                onEvent: REFERENCE_VALUE_ITEM_ONCLICK
+                                                onEvent: window.innerWidth < 768 ? null : REFERENCE_VALUE_ITEM_ONCLICK
                                             }
                                         }
                                     ]
@@ -361,8 +368,8 @@ export const AmisSteedosField = async (props) => {
                                         items: { 
                                             type: 'static', 
                                             className: 'm-0',
-                                            tpl: `<a href="/app/-/\${objectName}/view/\${value}" target="_blank" onclick="return false;">\${label}</a>`, 
-                                            popOver: fieldRefObject.compactLayouts ? {
+                                            tpl: `<a href="/app/-/\${objectName}/view/\${value}" target="_blank" ${lookupATagClick}>\${label}</a>`, 
+                                            popOver: fieldRefObject.compactLayouts && window.innerWidth >= 768 ? {
                                                 "trigger": "hover",
                                                 "className": "steedos-record-detail-popover",
                                                 "position": "left-bottom",
@@ -386,7 +393,7 @@ export const AmisSteedosField = async (props) => {
                                                     }
                                                 ]
                                             } : null,
-                                            onEvent: REFERENCE_VALUE_ITEM_ONCLICK
+                                            onEvent: window.innerWidth < 768 ? null : REFERENCE_VALUE_ITEM_ONCLICK
                                         }
                                     }
                                 ]
