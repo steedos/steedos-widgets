@@ -75,6 +75,7 @@
         --Table-fontSize: var(--fontSizeLg);
         --Tabs--line-fontSize: var(--fontSizeLg);
         --Tabs--line-active-fontSize: var(--fontSizeLg);
+        --Tabs--line-hover-fontSize: var(--fontSizeLg);
         --fieldSet-legend-fontSize: var(--fontSizeLg);
         --Pick-base-value-fontSize: var(--fontSizeLg);
         --dialog-header-fontSize: var(--fontSizeLg);
