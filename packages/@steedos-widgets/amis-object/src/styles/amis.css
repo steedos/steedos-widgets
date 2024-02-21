@@ -1,5 +1,7 @@
 :root {
     --body-bg: #f9fafb;
+    --body-color: #181818;
+    --body-size: 14px;
     --Page-main-bg: transparent;
     --Form-mode-default-labelGap: 2px;
     --Form-item-fontSize: 12px;
@@ -7,6 +9,8 @@
     --Form-fontSize: 14px;
     --Form-selectValue-fontSize: 14px;
     --Form-item-gap: 0.75rem;
+    /* --Table-color: #303030; */
+    /* --Table-thead-color: #303030; */
     --Table-borderColor: #e5e7eb;
     --Table-borderWidth: 1px;
     --Table-fontSize: 13px;
