@@ -76,6 +76,13 @@
         --Tabs--line-fontSize: var(--fontSizeLg);
         --Tabs--line-active-fontSize: var(--fontSizeLg);
         --fieldSet-legend-fontSize: var(--fontSizeLg);
+        --Pick-base-value-fontSize: var(--fontSizeLg);
+        --dialog-header-fontSize: var(--fontSizeLg);
+        --input-default-default-fontSize: var(--fontSizeLg);
+    }
+    .antd-Form .antd-Form-item input {
+        font-size: var(--fontSizeLg);
+        padding: 0 0.625rem 0 0.625rem;
     }
 }
 
@@ -403,4 +410,14 @@ fieldset.antd-Collapse > legend{
 
 .antd-Form-label {
     font-weight: 600;
+}
+
+/* 修正lookup 字段显示没有上下居中的问题  */
+.antd-Picker .antd-Picker-value {
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+.antd-Picker .antd-Picker-valueWrap {
+    margin-bottom: unset;
 }
