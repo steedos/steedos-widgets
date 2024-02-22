@@ -734,22 +734,30 @@ export async function lookupToAmisSelect(field, readonly, ctx){
 
     let apiInfo;
     let defaultValueOptionsQueryData;
+    const refObjectConfig = referenceTo && await getUISchema(referenceTo.objectName);
     if(referenceTo){
-        // 字段值单独走一个请求合并到source的同一个GraphQL接口中
-        defaultValueOptionsQueryData = await graphql.getFindQuery({ name: referenceTo.objectName }, null, [
+        let queryFields = [
             Object.assign({}, referenceTo.labelField, {alias: 'label'}),
             Object.assign({}, referenceTo.valueField, {alias: 'value'})
-        ], {
+        ];
+
+        // 把自动填充规则中依赖的字段也加到api请求中
+        let autoFillMapping = field.auto_fill_mapping;
+        if (autoFillMapping && autoFillMapping.length) {
+            autoFillMapping.forEach(function (item) {
+                queryFields.push(refObjectConfig.fields[item.from]);
+            });
+        }
+
+        // 字段值单独走一个请求合并到source的同一个GraphQL接口中
+        defaultValueOptionsQueryData = await graphql.getFindQuery({ name: referenceTo.objectName }, null, queryFields, {
             alias: "defaultValueOptions",
             filters: "{__options_filters}",
             count: false
         });
         apiInfo = await getApi({
             name: referenceTo.objectName
-        }, null, [
-            Object.assign({}, referenceTo.labelField, {alias: 'label'}),
-            Object.assign({}, referenceTo.valueField, {alias: 'value'})
-        ], {expand: false, alias: 'options', queryOptions: `filters: {__filters}, top: {__top}, sort: "{__sort}"`});
+        }, null, queryFields, {expand: false, alias: 'options', queryOptions: `filters: {__filters}, top: {__top}, sort: "{__sort}"`});
 
         apiInfo.adaptor = `
             const data = payload.data;
@@ -773,7 +781,6 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         }
     }
 
-    const refObjectConfig = referenceTo && await getUISchema(referenceTo.objectName);
     let listView = getLookupListView(refObjectConfig);
 
     let listviewFilter = getListViewFilter(listView);
