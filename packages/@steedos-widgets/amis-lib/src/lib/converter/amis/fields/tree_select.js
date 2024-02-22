@@ -15,7 +15,7 @@ async function getSource(field, ctx) {
     let defaultOptionQueryFields = optionQueryFields.filter(function (f) { return f.name !== "children" })
 
     // 把自动填充规则中依赖的字段也加到api请求中
-    let autoFillMapping = field.auto_fill_mapping;
+    let autoFillMapping = !field.multiple && field.auto_fill_mapping;
     if (autoFillMapping && autoFillMapping.length) {
         autoFillMapping.forEach(function (item) {
             if(item.from !== "children"){
@@ -108,7 +108,7 @@ async function getDeferApi(field, ctx) {
     let optionQueryFields = [{ name: ctx.valueField, alias: "value" }, { name: ctx.labelField, alias: "label" }, { name: "children" }];
 
     // 把自动填充规则中依赖的字段也加到api请求中
-    let autoFillMapping = field.auto_fill_mapping;
+    let autoFillMapping =  !field.multiple && field.auto_fill_mapping;
     if (autoFillMapping && autoFillMapping.length) {
         autoFillMapping.forEach(function (item) {
             if(item.from !== "children"){
