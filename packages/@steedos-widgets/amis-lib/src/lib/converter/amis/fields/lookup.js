@@ -751,6 +751,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
 
         // 字段值单独走一个请求合并到source的同一个GraphQL接口中
         defaultValueOptionsQueryData = await graphql.getFindQuery({ name: referenceTo.objectName }, null, queryFields, {
+            expand: false,
             alias: "defaultValueOptions",
             filters: "{__options_filters}",
             count: false
