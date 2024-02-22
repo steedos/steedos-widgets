@@ -11,7 +11,22 @@ const refOrgsObjectName = "organizations";
 async function getSource(field, ctx) {
     // data.query 最终格式 "{ \tleftOptions:organizations(filters: {__filters}){value:_id,label:name,children},   children:organizations(filters: {__filters}){ref:_id,children}, defaultValueOptions:space_users(filters: {__options_filters}){user,name} }"
     const refObjectName = ctx.objectName;
-    const data = await graphql.getFindQuery({ name: refObjectName }, null, [{ name: ctx.valueField, alias: "value" }, { name: ctx.labelField, alias: "label" }, { name: "children" }], {
+    let optionQueryFields = [{ name: ctx.valueField, alias: "value" }, { name: ctx.labelField, alias: "label" }, { name: "children" }];
+    let defaultOptionQueryFields = optionQueryFields.filter(function (f) { return f.name !== "children" })
+
+    // 把自动填充规则中依赖的字段也加到api请求中
+    let autoFillMapping = !field.multiple && field.auto_fill_mapping;
+    if (autoFillMapping && autoFillMapping.length) {
+        autoFillMapping.forEach(function (item) {
+            if(item.from !== "children"){
+                optionQueryFields.push({ name: item.from });
+            }
+            defaultOptionQueryFields.push({ name: item.from });
+        });
+    }
+
+    const data = await graphql.getFindQuery({ name: refObjectName }, null, optionQueryFields, {
+        expand: false,
         alias: "options",
         filters: "{__filters}"
     });
@@ -22,7 +37,8 @@ async function getSource(field, ctx) {
     // });
     // childrenData.query = childrenData.query.replace(/,count\:.+/, "}");
     // data.query = data.query.replace(/}$/, "," + childrenData.query.replace(/{(.+)}/, "$1}"));
-    const defaultValueOptionsData = await graphql.getFindQuery({ name: refObjectName }, null, [{ name: ctx.valueField, alias: "value" }, { name: ctx.labelField, alias: "label" }], {
+    const defaultValueOptionsData = await graphql.getFindQuery({ name: refObjectName }, null, defaultOptionQueryFields, {
+        expand: false,
         alias: "defaultValueOptions",
         filters: "{__options_filters}"
     });
@@ -89,7 +105,20 @@ async function getSource(field, ctx) {
 async function getDeferApi(field, ctx) {
     // data.query 最终格式 "{ \toptions:{__object_name}(filters:{__filters}){{__fields}} }"
     const refObjectName = ctx.objectName;
-    const data = await graphql.getFindQuery({ name: "{__object_name}" }, null, [], {
+    let optionQueryFields = [{ name: ctx.valueField, alias: "value" }, { name: ctx.labelField, alias: "label" }, { name: "children" }];
+
+    // 把自动填充规则中依赖的字段也加到api请求中
+    let autoFillMapping =  !field.multiple && field.auto_fill_mapping;
+    if (autoFillMapping && autoFillMapping.length) {
+        autoFillMapping.forEach(function (item) {
+            if(item.from !== "children"){
+                optionQueryFields.push({ name: item.from });
+            }
+        });
+    }
+
+    const data = await graphql.getFindQuery({ name: "{__object_name}" }, null, optionQueryFields, {
+        expand: false,
         alias: "options",
         // filters: "{__filters}",
         queryOptions: `filters: {__filters}, sort: "{__sort}"`
@@ -104,8 +133,6 @@ async function getDeferApi(field, ctx) {
         filters = filters(field);
     }
     data.query = data.query.replace(/,count\:.+/, "}");
-    // 字段要根据请求参数动态生成，写死为__fields后续在发送适配器中替换
-    data.query = data.query.replace("{_id}", "{{__fields}}");
     const requestAdaptor = `
         var dep = api.query.dep;
         var term = api.query.term;
@@ -115,11 +142,10 @@ async function getDeferApi(field, ctx) {
         var sort = "";
         if (dep) {
             objectName = "${refObjectName}";
-            fields = "_id,value:${ctx.valueField},label:${ctx.labelField},children";
             filters = [['parent', '=', dep]];
             sort = "${ctx.sort}";
         }
-        api.data.query = api.data.query.replace(/{__object_name}/g, objectName).replace(/{__fields}/g, fields).replace(/{__filters}/g, JSON.stringify(filters)).replace('{__sort}', sort.trim());
+        api.data.query = api.data.query.replace(/{__object_name}/g, objectName).replace(/{__filters}/g, JSON.stringify(filters)).replace('{__sort}', sort.trim());
         return api;
     `;
     const adaptor = `

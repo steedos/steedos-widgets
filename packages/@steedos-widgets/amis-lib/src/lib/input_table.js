@@ -766,6 +766,7 @@ async function getForm(props, mode = "edit", formId) {
 async function getButtonActions(props, mode) {
     let actions = [];
     let primaryKey = getTablePrimaryKey(props);
+    let tableServiceId = getComponentId("table_service", props.id);
     let formId = getComponentId("form", props.id);
     let dialogId = getComponentId("dialog", props.id);
     let buttonNextId = getComponentId("button_next", props.id);
@@ -1082,7 +1083,30 @@ async function getButtonActions(props, mode) {
             // };
             // 新增行时不需要在弹出编辑表单前先加一行，因为会在编辑表单所在service初始化时判断到是新增就自动增加一行，因为这里拿不到event.data.__tableItems，也无法变更其值
             // actions = [actionNewLine, actionShowEditDialog];
-            actions = [actionShowEditDialog];
+            if (props.enableDialog === false) {
+                actions = [
+                    {
+                        "actionType": "custom",
+                        "script":  `
+                            let scope = event.context.scoped;
+                            let __wrapperServiceId = "${tableServiceId}";
+                            let wrapperService = scope.getComponentById(__wrapperServiceId);
+                            let wrapperServiceData = wrapperService.getData();
+                            let lastestFieldValue = _.clone(wrapperServiceData["${props.name}"] || []);
+                            lastestFieldValue.push({})
+                            doAction({
+                                "componentId": "${props.id}",
+                                "actionType": "setValue",
+                                "args": {
+                                    "value": lastestFieldValue
+                                }
+                            });
+                        `
+                    }
+                ]
+            }else {
+                actions = [actionShowEditDialog];
+            }
         }
         else if (mode == "edit") {
             actions = [actionShowEditDialog];
@@ -1314,31 +1338,34 @@ export const getAmisInputTableSchema = async (props) => {
     let inlineEditMode = props.inlineEditMode;
     let showAsInlineEditMode = inlineEditMode && props.editable;
     if (showOperation) {
-        if (props.editable) {
-            let showEditButton = true;
-            if (showAsInlineEditMode) {
-                // 始终显示弹出子表表单按钮，如果需要判断只在有列被隐藏时才需要显示弹出表单按钮放开下面的if逻辑就好
-                showEditButton = true;
-                // // inline edit模式下只在有列被隐藏时才需要显示编辑按钮
-                // if (props.columns && props.columns.length > 0 && props.columns.length < fields.length) {
-                //     showEditButton = true;
-                // }
-                // else {
-                //     showEditButton = false;
-                // }
+        if (props.enableDialog !== false) {
+            if (props.editable) {
+                let showEditButton = true;
+                if (showAsInlineEditMode) {
+                    // 始终显示弹出子表表单按钮，如果需要判断只在有列被隐藏时才需要显示弹出表单按钮放开下面的if逻辑就好
+                    showEditButton = true;
+                    // // inline edit模式下只在有列被隐藏时才需要显示编辑按钮
+                    // if (props.columns && props.columns.length > 0 && props.columns.length < fields.length) {
+                    //     showEditButton = true;
+                    // }
+                    // else {
+                    //     showEditButton = false;
+                    // }
+                }
+                // 编辑时显示编辑按钮
+                if (showEditButton) {
+                    let buttonEditSchema = await getButtonEdit(props, showAsInlineEditMode);
+                    buttonsForColumnOperations.push(buttonEditSchema);
+                }
             }
-            // 编辑时显示编辑按钮
-            if (showEditButton) {
-                let buttonEditSchema = await getButtonEdit(props, showAsInlineEditMode);
-                buttonsForColumnOperations.push(buttonEditSchema);
+            else {
+                // 只读时显示查看按钮
+                // 如果想只在有列被隐藏时才需要显示查看按钮可以加上判断：if (props.columns && props.columns.length > 0 && props.columns.length < fields.length)
+                let buttonViewSchema = await getButtonView(props);
+                buttonsForColumnOperations.push(buttonViewSchema);
             }
         }
-        else {
-            // 只读时显示查看按钮
-            // 如果想只在有列被隐藏时才需要显示查看按钮可以加上判断：if (props.columns && props.columns.length > 0 && props.columns.length < fields.length)
-            let buttonViewSchema = await getButtonView(props);
-            buttonsForColumnOperations.push(buttonViewSchema);
-        }
+        
         if (props.removable) {
             let buttonDeleteSchema = await getButtonDelete(props);
             buttonsForColumnOperations.push(buttonDeleteSchema);

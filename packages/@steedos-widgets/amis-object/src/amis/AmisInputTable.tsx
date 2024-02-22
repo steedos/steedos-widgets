@@ -12,12 +12,16 @@ export const AmisInputTable = async (props) => {
   // columns内存在inlineEditMode属性， 控制字段级的內联模式；存在wrap属性，控制列表单元格是否换行，规则与列表视图相同
   const { $schema, fields, name, id, data, columns, amis, className, tableClassName, headerToolbar, footerToolbar,
     inlineEditMode, strictMode, dialog, primaryKey, showOperation, fieldPrefix, autoGeneratePrimaryKeyValue, mode,
-    disabledOn, disabled, visibleOn, visible, hiddenOn, hidden } = props;
+    disabledOn, disabled, visibleOn, visible, hiddenOn, hidden, enableDialog } = props;
   const extendProps = {};
   if (props.disabledOn || props.disabled) {
     extendProps["addable"] = false;
     extendProps["editable"] = false;
     extendProps["removable"] = false;
+  }
+
+  if (props.enableDialog === false) {
+    extendProps["inlineEditMode"] = true;
   }
   const amisSchema = await getAmisInputTableSchema(Object.assign({}, props, extendProps));
   // console.log("=AmisInputTable==amisSchema====", amisSchema);
