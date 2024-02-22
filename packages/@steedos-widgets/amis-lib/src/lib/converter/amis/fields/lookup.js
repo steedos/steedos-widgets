@@ -283,6 +283,18 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         }
     });
 
+    // 把自动填充规则中依赖的字段也加到api请求中
+    let autoFillMapping = field.auto_fill_mapping;
+    if (autoFillMapping && autoFillMapping.length) {
+        autoFillMapping.forEach(function (item) {
+            if(!_.find(tableFields, function(f){
+                return f.name === item.from
+            })){
+                tableFields.push(refObjectConfig.fields[item.from])
+            }
+        });
+    }
+
     _.each(refObjectConfig.fields, function (field) {
       if(Field.isFieldQuickSearchable(field, refObjectConfig.NAME_FIELD_KEY)){
           searchableFields.push(field.name);
@@ -954,10 +966,10 @@ async function getAutoFill(field, refObject) {
     let autoFillMapping = field.auto_fill_mapping;
     if (autoFillMapping && autoFillMapping.length) {
         let fillMapping = {};
-        let fieldsForApi = [];
+        // let fieldsForApi = [];
         autoFillMapping.forEach(function (item) {
             fillMapping[item.to] = `\${${item.from}}`;
-            fieldsForApi.push(item.from);
+            // fieldsForApi.push(item.from);
         });
         // let api = {
         //     // "url": "/amis/api/mock2/form/autoUpdate?browser=${browser}&version=${version}",
