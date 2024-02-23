@@ -1,4 +1,16 @@
-//默认隐藏input-table内删除按钮二次确认弹框的浮层
-.steedos-input-table .antd-DropDown-popover .antd-PopOver-overlay{
-  display: none;
+.steedos-input-table {
+
+  //默认隐藏input-table内删除按钮二次确认弹框的浮层
+  .antd-DropDown-popover .antd-PopOver-overlay {
+    display: none;
+  }
+
+  .antd-Table-table {
+    .antd-Table-placeholder {
+      display: none;
+    }
+    thead > tr > th {
+      border-right: none;
+    }
+  }
 }
