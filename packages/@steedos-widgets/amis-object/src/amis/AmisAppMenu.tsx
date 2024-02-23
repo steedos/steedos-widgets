@@ -14,9 +14,9 @@ export const AmisAppMenu = async (props) => {
     }
     // console.log(`AmisAppMenu appId`, appId)
     // console.log(`AmisAppMenu`, appId, props)
-    let badgeText = `\${ss:keyvalues.badge.value | pick:${appId} | toInt}`;
+    let badgeText = `\${keyvalues.badge.value | pick:${appId} | toInt}`;
     if(appId == "approve_workflow"){
-        badgeText = "${ss:keyvalues.badge.value | pick:'workflow' | toInt}";
+        badgeText = "${keyvalues.badge.value | pick:'workflow' | toInt}";
     }
 
     if(links){
@@ -138,9 +138,24 @@ export const AmisAppMenu = async (props) => {
                         "type":"service",
                         "data":{
                             "tabId": customTabId || objectTabId,
-                            "items": data.nav
+                            "items": data.nav,
+                            "keyvalues": "\${ss:keyvalues}"
                         },
                         "id": "appMenuService",
+                        "onEvent": {
+                            "@data.changed.steedos_keyvalues": {
+                                "actions": [
+                                    {
+                                        "actionType": "setValue",
+                                        "args": {
+                                            "value": {
+                                                "keyvalues": "\${event.data.keyvalues}"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        },
                         "body":{
                             "type": "nav",
                             className: "${className} text-black",
