@@ -261,7 +261,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
         crudId: listSchema.id || id, enable_tree: objectSchema.enable_tree
       }, options);
       tableOptions.amisData = createObject(options.amisData || {}, {});
-      const table = await getTableSchema(fields, tableOptions);
+      const table = await getTableSchema(objectSchema, fields, tableOptions);
       // delete table.mode;
       //image与avatar需要在提交修改时特别处理
       const imageNames = _.compact(_.map(_.filter(fields, (field) => ["image","avatar"].includes(field.type)), 'name'));

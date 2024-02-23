@@ -559,7 +559,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         if(refObjectConfig.name === 'organizations'){
           labelFieldName = 'name';
         }
-        pickerSchema = await Table.getTableSchema(tableFields, {
+        pickerSchema = await Table.getTableSchema(refObjectConfig, tableFields, {
             labelFieldName,
             top:  top,
             isLookup: true,
@@ -1171,7 +1171,7 @@ export async function getIdsPickerSchema(field, readonly, ctx){
             actions: false
         })
     }else{
-        pickerSchema = await Table.getTableSchema(tableFields, {
+        pickerSchema = await Table.getTableSchema(refObjectConfig, tableFields, {
             labelFieldName: refObjectConfig.NAME_FIELD_KEY,
             top:  top,
             isLookup: true,
