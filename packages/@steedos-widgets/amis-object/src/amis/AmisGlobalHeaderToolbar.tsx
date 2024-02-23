@@ -57,6 +57,7 @@ export const AmisGlobalHeaderToolbar = async (props) => {
           },
           {
             "type": "dropdown-button",
+            "visibleOn": "${window:innerWidth > 768}",
             "label": false,
             "trigger": "click",
             "level": "link",
