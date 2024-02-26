@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-02-18 16:05:21
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2024-02-23 16:37:06
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -369,6 +369,7 @@ async function convertColumnsToTableFields(columns, uiSchema, ctx = {}) {
     let fields = [];
     for (const column of columns) {
         if (isString(column)) {
+            let columnField;
             if (column.indexOf('.') > 0) {
                 const fieldName = column.split('.')[0];
                 const displayName = column.split('.')[1];
@@ -376,23 +377,30 @@ async function convertColumnsToTableFields(columns, uiSchema, ctx = {}) {
                 if (filedInfo && (filedInfo.type === 'lookup' || filedInfo.type === 'master_detail') && isString(filedInfo.reference_to)) {
                     const rfUiSchema = await getUISchema(filedInfo.reference_to);
                     const rfFieldInfo = rfUiSchema.fields[displayName];
-                    fields.push(Object.assign({}, rfFieldInfo, { name: `${fieldName}__expand.${displayName}`, expand: true, expandInfo: { fieldName, displayName } }, ctx));
+                    columnField = Object.assign({}, rfFieldInfo, { name: `${fieldName}__expand.${displayName}`, expand: true, expandInfo: { fieldName, displayName } }, ctx);
                 }else if(filedInfo && filedInfo.type === 'object'){
-                    fields.push(uiSchema.fields[column]);
+                    columnField = uiSchema.fields[column];
                 }
             } else {
                 if (uiSchema.fields[column]) {
-                    fields.push(Object.assign({}, uiSchema.fields[column], ctx));
+                    columnField = Object.assign({}, uiSchema.fields[column], ctx);
                 }
                 else if(ctx.extra){
                     // 配置列表视图extra_columns时允许字段是hidden的，hidden的字段在uiSchema.fields中不存在
-                    fields.push({
+                    columnField = {
                         extra: true,
                         name: column
-                    });
+                    };
                 }
             }
+            if(columnField){
+                // 列上的字段不认uiSchema.fields中定义的amis属性
+                columnField = Object.assign({}, columnField, {amis: undefined});
+                fields.push(columnField);
+            }
+
         } else if (isObject(column)) {
+            let columnField;
             if (column.field.indexOf('.') > 0) {
                 const fieldName = column.field.split('.')[0];
                 const displayName = column.field.split('.')[1];
@@ -400,32 +408,33 @@ async function convertColumnsToTableFields(columns, uiSchema, ctx = {}) {
                 if (filedInfo && (filedInfo.type === 'lookup' || filedInfo.type === 'master_detail') && isString(filedInfo.reference_to)) {
                     const rfUiSchema = await getUISchema(filedInfo.reference_to);
                     const rfFieldInfo = rfUiSchema.fields[displayName];
-                    fields.push(Object.assign({}, rfFieldInfo, ctx,
+                    columnField = Object.assign({}, rfFieldInfo, ctx,
                         { name: `${fieldName}__expand.${displayName}`, expand: true, expandInfo: { fieldName, displayName } },
                         {
                             width: column.width,
-                            wrap: column.wrap, // wrap = true 是没效果的
-                            amis: column.amis
+                            wrap: column.wrap // wrap = true 是没效果的
                         }
-                    ));
+                    );
                 }
             } else {
                 if (uiSchema.fields[column.field]) {
-                    fields.push(
-                        Object.assign({}, uiSchema.fields[column.field], ctx, {
-                            width: column.width,
-                            wrap: column.wrap, // wrap = true 是没效果的
-                            amis: column.amis
-                        })
-                    );
+                    columnField = Object.assign({}, uiSchema.fields[column.field], ctx, {
+                        width: column.width,
+                        wrap: column.wrap // wrap = true 是没效果的
+                    });
                 }
                 else if(ctx.extra){
                     // 配置列表视图extra_columns时允许字段是hidden的，hidden的字段在uiSchema.fields中不存在
-                    fields.push({
+                    columnField = {
                         extra: true,
                         name: column.field
-                    });
+                    };
                 }
+            }
+            if(columnField){
+                // 列上的字段不认uiSchema.fields中定义的amis属性，用列上配置的amis覆盖
+                columnField = Object.assign({}, columnField, {amis: column.amis});
+                fields.push(columnField);
             }
         }
     }

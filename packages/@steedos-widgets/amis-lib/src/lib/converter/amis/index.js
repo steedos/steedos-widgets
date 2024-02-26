@@ -3,7 +3,7 @@ import { getReadonlyFormInitApi, getSaveApi, getEditFormInitApi, getBatchDelete 
 import { getTableSchema, getTableApi } from './fields/table';
 import { getFormBody } from './form';
 import { getListSchema, getCardSchema } from './fields/list';
-import _, { map } from 'lodash';
+import _, { map, filter } from 'lodash';
 import { defaultsDeep } from '../../defaultsDeep';
 import { getObjectHeaderToolbar, getObjectFooterToolbar, getObjectFilter } from './toolbar';
 import { i18next } from "../../../i18n"
@@ -261,7 +261,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
         crudId: listSchema.id || id, enable_tree: objectSchema.enable_tree
       }, options);
       tableOptions.amisData = createObject(options.amisData || {}, {});
-      const table = await getTableSchema(fields, tableOptions);
+      const table = await getTableSchema(objectSchema, fields, tableOptions);
       // delete table.mode;
       //image与avatar需要在提交修改时特别处理
       const imageNames = _.compact(_.map(_.filter(fields, (field) => ["image","avatar"].includes(field.type)), 'name'));
@@ -535,7 +535,7 @@ export async function getObjectForm(objectSchema, ctx){
         body: {
           type: 'wrapper',
           className: 'p-0 m-0',
-          body: await getFormBody(fields, formFields, Object.assign({}, ctx, {fieldGroups: objectSchema.field_groups})),
+          body: await getFormBody(fields, formFields, Object.assign({}, ctx, {fieldGroups: objectSchema.field_groups, omitReadonlyFields: true})),
           hiddenOn: "${editFormInited != true}",
         },
         panelClassName:'m-0 sm:rounded-lg shadow-none border-none',

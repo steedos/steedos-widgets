@@ -39,7 +39,8 @@ function getOperation(fields){
 //获取name字段，如果没有，则_index字段添加链接
 function getDetailColumn(){}
 
-async function getQuickEditSchema(field, options){
+async function getQuickEditSchema(object, columnField, options){
+    let field = object.fields[columnField.name];
     //判断在amis3.2以上环境下，放开批量编辑与lookup的单元格编辑
     let isAmisVersionforBatchEdit = false;
     if(window.amisRequire && window.amisRequire('amis')){
@@ -509,7 +510,7 @@ function getFieldWidth(width){
     }
 }
 
-export async function getTableColumns(fields, options){
+export async function getTableColumns(object, fields, options){
     const columns = [];
     if(!options.isLookup && !options.isInputTable){
         if(!options.enable_tree){
@@ -523,7 +524,7 @@ export async function getTableColumns(fields, options){
             continue;
         }
         //增加quickEdit属性，实现快速编辑
-        const quickEditSchema = allowEdit ? await getQuickEditSchema(field, options) : allowEdit;
+        const quickEditSchema = allowEdit ? await getQuickEditSchema(object, field, options) : allowEdit;
         let className = "";
         const bowserType = getBowserType();
         if(bowserType === "Safari"){
@@ -1097,7 +1098,7 @@ async function getDefaultCrudCard(columns, options) {
     return card;
 }
 
-export async function getTableSchema(fields, options){
+export async function getTableSchema(object, fields, options){
     if(!options){
         options = {};
     }
@@ -1119,7 +1120,7 @@ export async function getTableSchema(fields, options){
         columns = await getMobileTableColumns(fields, options);
     }
     else{
-        columns = await getTableColumns(fields, options);
+        columns = await getTableColumns(object, fields, options);
 
         if(listSchema.mode === "cards"){
             let card = listSchema.card;
