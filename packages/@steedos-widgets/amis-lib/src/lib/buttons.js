@@ -443,6 +443,7 @@ export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
                 type: "steedos-dropdown-button",
                 label: "",
                 buttons: moreButtons,
+                "overlayClassName": "border rounded !min-w-[160px]",
                 className: 'slds-icon ml-1',
                 visibleOn: moreButtonsVisibleOn
             }

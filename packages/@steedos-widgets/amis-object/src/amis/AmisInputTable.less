@@ -1,5 +1,9 @@
 .steedos-input-table {
 
+  .steedos-delete-button:hover {
+    color: rgb(239 68 68) !important;
+  }
+
   //默认隐藏input-table内删除按钮二次确认弹框的浮层
   .antd-DropDown-popover .antd-PopOver-overlay {
     display: none;
@@ -11,6 +15,61 @@
     }
     thead > tr > th {
       border-right: none;
+    }
+  }
+
+  //序号居中显示
+  &.steedos-show-index {
+    tbody tr td:nth-child(1) {
+      text-align: center;
+    }
+  }
+
+  .antd-OperationField {
+    width: 50px;
+  }
+
+  //有序号并且有操作按钮时，操作按钮隐藏在序号上方，鼠标悬浮到当前行是显示
+  &.steedos-show-index.steedos-has-operations{
+    thead tr th:nth-child(2),tbody tr td:nth-child(2) {
+      padding: 0;
+    }
+    td .antd-OperationField {
+      text-align: center;
+      margin-left: -46px;
+      position: relative;
+      visibility: hidden;
+    }
+    tbody tr:hover  td .antd-OperationField{
+      background-color: var(--Table-onHover-bg);
+      visibility: visible;
+    }
+  }
+  //没序号时，嵌套模式操作按钮隐藏但占位；普通模式隐藏不占位；鼠标悬浮到当前行时显示
+  &.steedos-has-operations{
+    &.steedos-tree-mode{
+      td .antd-OperationField {
+        display: inline-flex;
+        visibility: hidden;
+        justify-content: center;
+      }
+      tbody tr:hover  td .antd-OperationField{
+        display: inline-flex;
+        visibility: visible;
+        justify-content: center;
+      }
+    }
+    thead tr th:nth-child(1),tbody tr td:nth-child(1) {
+      padding: 0;
+    }
+    td .antd-OperationField {
+      text-align: center;
+      display: none;
+    }
+    tbody tr:hover  td .antd-OperationField{
+      background-color: var(--Table-onHover-bg);
+      display: inline-flex;
+      justify-content: center;
     }
   }
 }
