@@ -2,13 +2,6 @@
     z-index: 1400;
 }
 
-.ant-dropdown-menu {
-    border: 1px solid #e5e5e5;
-    border-radius: 0.25rem;
-    padding: 0.25rem 0;
-    box-shadow: 0 2px 3px 0 rgb(0 0 0 / 16%);
-}
-
 .ant-dropdown-menu-item {
     padding: 0;
 }
@@ -87,4 +80,8 @@
         max-width: 100%;
         padding-right: 15px;
     }
+}
+
+.antd-DropDown-menu-root {
+    border: 1px solid #c9c9c9;
 }
