@@ -261,7 +261,7 @@ async function getInputTableColumns(props) {
     }
     if (inlineEditMode == true) {
         let popOverContainerSelector = "";
-        let popOverContainer = props.popOverContainer();
+        let popOverContainer = props.popOverContainer && props.popOverContainer();
         //获取到当前input-table所处的popOverContainer（可能是modal-dialog中），
         //给所有的下拉框字段配置popOverContainerSelector，使下拉框组件的弹出框挂载到当前dialog上，防止被dialog遮挡
         if (popOverContainer) {
@@ -1297,7 +1297,7 @@ async function getButtonDelete(props) {
     return {
         "type": "dropdown-button",
         "level": "link",
-        "btnClassName": "text-gray-400",
+        "btnClassName": "text-gray-400 steedos-delete-button",
         "icon": "fa fa-trash-alt",
         "size": "xs",
         "hideCaret": true,
@@ -1468,11 +1468,11 @@ export const getAmisInputTableSchema = async (props) => {
         }
     };
     if (buttonsForColumnOperations.length) {
-        inputTableSchema.columns.push({
+        inputTableSchema.columns.unshift({
             "name": "__op__",
             "type": "operation",
             "buttons": buttonsForColumnOperations,
-            "width": buttonsForColumnOperations.length > 1 ? "60px" : "20px"
+            "width": 1
         });
     }
     // if (showAsInlineEditMode) {
@@ -1520,6 +1520,18 @@ export const getAmisInputTableSchema = async (props) => {
         });
     }
     let className = "steedos-input-table";
+
+    if (props.showIndex) {
+        className += " steedos-show-index"
+    }
+
+    if (buttonsForColumnOperations.length) {
+        className += " steedos-has-operations"
+    }
+
+    if (props.enableTree) {
+        className += " steedos-tree-mode"
+    }
 
     if (typeof props.className == "object") {
         className = {
