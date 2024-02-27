@@ -7,7 +7,7 @@
 
 import { getFormBody } from './converter/amis/form';
 import { getComparableAmisVersion } from './converter/amis/util';
-import { clone } from 'lodash';
+import { clone, cloneDeep } from 'lodash';
 import { uuidv4 } from '../utils/uuid';
 
 /**
@@ -255,10 +255,32 @@ async function getInputTableColumns(props) {
     // 实测过，直接不生成对应的隐藏column并不会对input-table值造成丢失问题，隐藏的列字段值能正常维护
 
     let fieldPrefix = props.fieldPrefix;
-    let fields = props.fields || [];
+    let fields = cloneDeep(props.fields || []);
     if (fieldPrefix) {
         fields = getTableFieldsWithoutFieldPrefix(fields, fieldPrefix);
     }
+    if (inlineEditMode == true) {
+        let popOverContainerSelector = "";
+        let popOverContainer = props.popOverContainer();
+        //获取到当前input-table所处的popOverContainer（可能是modal-dialog中），
+        //给所有的下拉框字段配置popOverContainerSelector，使下拉框组件的弹出框挂载到当前dialog上，防止被dialog遮挡
+        if (popOverContainer) {
+            let classList = Array.prototype.slice.call(popOverContainer.parentElement.classList);
+            if (classList.includes('amis-dialog-widget')) {
+                popOverContainerSelector = '.' + classList.join('.') + ' .antd-Modal-content';
+            }
+        }
+        fields.forEach(function (field) {
+            //lookup存在下拉框模式；弹出模式用的是picker组件，不认popOverContainerSelector属性，所以统一加上
+            if (field.type == "select" || field.type == "lookup") {
+                field.amis = {
+                    ...field.amis,
+                    popOverContainerSelector
+                }
+            }
+        })
+    }
+    
     if (columns && columns.length) {
         return columns.map(function (column) {
             let field, extendColumnProps = {};
@@ -308,7 +330,7 @@ async function getInputTableColumns(props) {
     }
     else {
         return fields.map(function (field) {
-            let tableCell = getInputTableCell(field, showAsInlineEditMode);
+            let tableCell = getInputTableCell(field, showAsInlineEditMode); 
             tableCell.className = " whitespace-nowrap ";
             return tableCell;
         }) || [];
