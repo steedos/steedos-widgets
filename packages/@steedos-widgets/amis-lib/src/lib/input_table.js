@@ -248,7 +248,7 @@ function getComponentId(name, tag) {
  * @param {*} props 
  * @param {*} mode edit/new/readonly
  */
-async function getInputTableColumns(props) {
+async function getInputTableColumns(props, buttonsForColumnOperations) {
     let columns = props.columns || [];
     let inlineEditMode = props.inlineEditMode;
     let showAsInlineEditMode = inlineEditMode && props.editable;
@@ -282,7 +282,7 @@ async function getInputTableColumns(props) {
     }
     
     if (columns && columns.length) {
-        return columns.map(function (column) {
+        return columns.map(function (column, index) {
             let field, extendColumnProps = {};
             if (typeof column === "string") {
                 // 如果字符串，则取出要显示的列配置
@@ -308,9 +308,13 @@ async function getInputTableColumns(props) {
                 let className = "";
                 //判断是否换行，目前规则默认换行
                 if(extendColumnProps.wrap != true){
-                    className += " whitespace-nowrap "
+                    className += " whitespace-nowrap"
                 }else{
-                    className += " break-words "
+                    className += " break-words"
+                }
+                
+                if(buttonsForColumnOperations.length == 0 && !props.showIndex && index == 0) {
+                    className += " antd-Table-primayCell"
                 }
                 //合并classname
                 if (typeof extendColumnProps.className == "object") {
@@ -329,9 +333,12 @@ async function getInputTableColumns(props) {
         });
     }
     else {
-        return fields.map(function (field) {
+        return fields.map(function (field, index) {
             let tableCell = getInputTableCell(field, showAsInlineEditMode); 
             tableCell.className = " whitespace-nowrap ";
+            if(buttonsForColumnOperations.length == 0 && !props.showIndex && index == 0) {
+                tableCell.className += " antd-Table-primayCell"
+            }
             return tableCell;
         }) || [];
     }
@@ -1406,7 +1413,7 @@ export const getAmisInputTableSchema = async (props) => {
         "showIndex": props.showIndex,
         "perPage": props.perPage,
         "id": props.id,
-        "columns": await getInputTableColumns(props),
+        "columns": await getInputTableColumns(props, buttonsForColumnOperations),
         // "needConfirm": false, //不可以配置为false，否则，单元格都是可编辑状态，且很多static类型无法正常显示，比如static-mapping
         "strictMode": props.strictMode,
         "showTableAddBtn": false,

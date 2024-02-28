@@ -16,6 +16,13 @@
     thead > tr > th {
       border-right: none;
     }
+    td>div.antd-Form {
+      display: inline-block;
+      width: 100%;
+    }
+    td>div.antd-Form-item {
+      display: inline-block;
+    }
   }
 
   //序号居中显示
@@ -35,6 +42,7 @@
       padding: 0;
     }
     td .antd-OperationField {
+      margin-left: 0;
       text-align: center;
       margin-left: -46px;
       position: relative;
@@ -63,13 +71,34 @@
       padding: 0;
     }
     td .antd-OperationField {
+      margin-left: 5px; //防止操作按钮顶到左侧边界
       text-align: center;
       display: none;
     }
-    tbody tr:hover  td .antd-OperationField{
+    tbody tr:hover  td .antd-OperationField {
       background-color: var(--Table-onHover-bg);
       display: inline-flex;
       justify-content: center;
+    }
+
+    td .antd-Table-expandBtn2 + .antd-OperationField, td .antd-Table-expandSpace + .antd-OperationField {
+      margin-left: 0;
+    }
+
+  }
+}
+
+@media (max-width: 767px) {
+  .steedos-input-table {
+    &.steedos-show-index.steedos-has-operations {
+      tbody tr:hover  td .antd-OperationField {
+        background-color: white;
+      }
+    }
+    &.steedos-has-operations {
+      tbody tr:hover  td .antd-OperationField {
+        background-color: white
+      }
     }
   }
 }
