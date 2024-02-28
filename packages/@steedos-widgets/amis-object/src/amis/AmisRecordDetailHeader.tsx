@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-18 10:56:38
+ * @LastEditTime: 2024-02-28 11:34:09
  * @Description: 
  */
 import './AmisRecordDetailHeader.less'
@@ -16,7 +16,7 @@ export const AmisRecordDetailHeader = async (props) => {
   const defaultOnEvent = {}
   const { $schema, recordId, onEvent = defaultOnEvent, showRecordTitle = true } = props;
   let objectApiName = props.objectApiName || "space_users";
-  const schema = (await getRecordDetailHeaderSchema(objectApiName, recordId, {showRecordTitle, formFactor: props.data.formFactor, showButtons, showBackButton, display: props.data.display})).amisSchema;
+  const schema = (await getRecordDetailHeaderSchema(objectApiName, recordId, {showRecordTitle, formFactor: props.data.formFactor, showButtons, showBackButton, display: props.data.display, _inDrawer: props.data._inDrawer})).amisSchema;
   schema.className = className;
   // console.log(`AmisRecordDetailHeader======>`, Object.assign({}, schema, {onEvent: onEvent}))
 
