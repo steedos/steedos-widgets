@@ -1,5 +1,5 @@
 /*
- * @LastEditTime: 2024-02-28 15:11:29
+ * @LastEditTime: 2024-02-28 15:37:24
  * @LastEditors: baozhoutao@steedos.com
  * @customMade: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -118,6 +118,14 @@ export const getFieldDefaultValue = (field, globalData) => {
         case 'time':
             if(isDate(defaultValue)){
                 return moment(defaultValue).format('1970-01-01THH:mm:00.000[Z]')
+            }
+        case 'date':
+            if(isDate(defaultValue)){
+                return moment(defaultValue).format('YYYY-MM-DDT00:00:00.000[Z]')
+            }
+        case 'datetime':
+            if(isDate(defaultValue)){
+                return moment(defaultValue).format('YYYY-MM-DDTHH:mm:00.000Z')
             }
         default:
             break;
