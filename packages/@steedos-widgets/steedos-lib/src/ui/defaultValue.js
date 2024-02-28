@@ -1,10 +1,10 @@
 /*
- * @LastEditTime: 2023-11-03 16:54:54
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2024-02-28 15:11:29
+ * @LastEditors: baozhoutao@steedos.com
  * @customMade: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import * as _ from 'lodash';
-import { isFunction, isNumber, isBoolean, isString, isNil } from 'lodash';
+import { isFunction, isNumber, isBoolean, isString, isNil, isDate } from 'lodash';
 import { safeRunFunction, safeEval } from '../utils';
 import { isExpression, parseSingleExpression } from '../expression';
 
@@ -115,6 +115,10 @@ export const getFieldDefaultValue = (field, globalData) => {
                 defaultValue = false;
             }
             break;
+        case 'time':
+            if(isDate(defaultValue)){
+                return moment(defaultValue).format('1970-01-01THH:mm:00.000[Z]')
+            }
         default:
             break;
     }
