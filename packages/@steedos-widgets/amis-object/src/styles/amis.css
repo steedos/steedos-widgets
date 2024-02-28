@@ -422,3 +422,13 @@ fieldset.antd-Collapse > legend{
 .antd-Picker .antd-Picker-valueWrap {
     margin-bottom: unset;
 }
+
+/* 穿梭器右侧表格内选中项文字内容偏高,amis本身存在问题 */
+.antd-Transfer .antd-Transfer-result .antd-Selections-item .antd-Selections-label{
+    margin: 0;
+    display: inline-flex;
+}
+/* 组合穿梭器左侧滚动条异常，比如列表视图排序tab，amis未重现 */
+.antd-Transfer.antd-TabsTransfer .antd-GroupedSelection-item label.antd-Checkbox {
+    position: relative;
+}

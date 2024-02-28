@@ -471,6 +471,15 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
       divWidth = divWidth - 210;
     }
 
+    if(options._inDrawer){
+      try {
+        divWidth = new Number($("html").css("font-size").replace('px', '')) * 60;
+      } catch (error) {
+        console.error(error)
+        divWidth = 16 * 60;
+      }
+    }
+
     // 根据屏幕宽度计算显示数量, 使高亮字段只占1行
     max = Math.trunc(divWidth / 200 )
     if(max > 10){
