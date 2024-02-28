@@ -784,7 +784,7 @@ function getMobileLines(tpls){
         }
         if(isLeft){
             // 左侧半行
-            lineChildrenClassName = "steedos-listview-item-left truncate h-5";
+            lineChildrenClassName = "steedos-listview-item-left truncate";
             if(item.field.is_wide){
                 // 左侧全行样式可以单独写，如果需要配置两行省略号效果，可以加样式类 two-lines-truncate
                 lineChildrenClassName = "steedos-listview-item-wide";
@@ -796,7 +796,7 @@ function getMobileLines(tpls){
         }
         else{
             // 右侧半行，这里加样式类 flex flex-shrink-0，是为了省略号只显示在左半行，右半行文字一般比较短，如果也加省略号效果的话，左侧文字多的话，右侧没几个字就显示省略号了
-            lineChildrenClassName = "steedos-listview-item-right truncate ml-2 flex flex-shrink-0 h-5";
+            lineChildrenClassName = "steedos-listview-item-right truncate ml-2 flex flex-shrink-0";
         }
         //支持字段amis属性配置classname，识别classname的类型，与原样式合并
         var className;
