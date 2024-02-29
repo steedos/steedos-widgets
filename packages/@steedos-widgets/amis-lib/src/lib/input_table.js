@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-02-29 16:47:41
+ * @LastEditTime: 2024-02-29 18:36:58
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -293,6 +293,9 @@ async function getInputTableColumns(props, buttonsForColumnOperations) {
     }
     else{
         fields = getTableFieldsPrependFieldPrefix(fields, props.name + fieldPrefixSplit);
+        columns = getTableFieldsPrependFieldPrefix(columns.map(function (item) {
+            return typeof item == "string" ? { name: item } : item;
+        }), props.name + fieldPrefixSplit);
     }
     if (inlineEditMode == true) {
         let popOverContainerSelector = "";
@@ -322,13 +325,13 @@ async function getInputTableColumns(props, buttonsForColumnOperations) {
             if (typeof column === "string") {
                 // 如果字符串，则取出要显示的列配置
                 field = fields.find(function (fieldItem) {
-                    return fieldItem.name === column || fieldItem.__originalName === column;
+                    return fieldItem.name === column;
                 });
             }
             else {
                 // 如果是对象，则合并到steedos-field的config.amis属性中，steedos组件会把config.amis属性混合到最终生成的input-table column
                 field = fields.find(function (fieldItem) {
-                    return fieldItem.name === column.name || fieldItem.__originalName === column.name;
+                    return fieldItem.name === column.name;
                 });
                 if (field) {
                     // field.amis = Object.assign({}, field.amis, column);
