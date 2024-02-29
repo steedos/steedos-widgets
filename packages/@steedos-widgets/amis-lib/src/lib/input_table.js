@@ -2,13 +2,15 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-01-26 17:47:16
+ * @LastEditTime: 2024-02-29 18:36:58
  */
 
 import { getFormBody } from './converter/amis/form';
 import { getComparableAmisVersion } from './converter/amis/util';
 import { clone, cloneDeep } from 'lodash';
 import { uuidv4 } from '../utils/uuid';
+
+const fieldPrefixSplit = "__";
 
 /**
  * 子表组件字段值中每行数据补上字段值为空的的字段值，把值统一设置为空字符串，是为了解决amis amis 3.6/6.0 input-table组件bug:行中字段值为空时会显示为父作用域中的同名变量值，见：https://github.com/baidu/amis/issues/9520
@@ -124,7 +126,12 @@ function getTableValueWithoutFieldPrefix(value, fieldPrefix) {
         var newItemValue = {};
         for (let n in itemValue) {
             if (itemValue.hasOwnProperty(n)) {
-                newItemValue[n.replace(new RegExp(`^${fieldPrefix}`), "")] = itemValue[n];
+                if(n === "children"){
+                    newItemValue.children = getTableValueWithoutFieldPrefix(itemValue.children, fieldPrefix);
+                }
+                else{
+                    newItemValue[n.replace(new RegExp(`^${fieldPrefix}`), "")] = itemValue[n];
+                }
             }
         }
         convertedValue.push(newItemValue);
@@ -145,7 +152,12 @@ function getTableValuePrependFieldPrefix(value, fieldPrefix, primaryKey) {
         var newItemValue = {};
         for (let n in itemValue) {
             if (itemValue.hasOwnProperty(n) && typeof itemValue[n] !== undefined && n !== primaryKey) {
-                newItemValue[`${fieldPrefix}${n}`] = itemValue[n];
+                if(n === "children"){
+                    newItemValue.children = getTableValuePrependFieldPrefix(itemValue.children, fieldPrefix, primaryKey);
+                }
+                else{
+                    newItemValue[`${fieldPrefix}${n}`] = itemValue[n];
+                }
             }
         }
         if (primaryKey && itemValue[primaryKey]) {
@@ -171,6 +183,23 @@ function getTableFieldsWithoutFieldPrefix(fields, fieldPrefix) {
 }
 
 /**
+ * 子表组件字段集合属性中每个字段name补上指定前缀
+ * 因amis存在bug：input-table内的字段在行编辑模式时会受到外层相同name的字段的影响 https://github.com/baidu/amis/issues/9653
+ * 在渲染input table组件时统一调用此函数加上前缀来避开同名字段问题
+ * @param {*} fields 子表组件字段集合，数组
+ * @param {*} fieldPrefix 字段前缀
+ * @returns 转换后的子表组件字段值
+ */
+function getTableFieldsPrependFieldPrefix(fields, fieldPrefix) {
+    return (fields || []).map((item) => {
+        const newItem = clone(item);
+        newItem.name = `${fieldPrefix}${item.name}`;
+        newItem.__originalName = item.name;
+        return newItem;
+    });
+}
+
+/**
  * @param {*} props 
  * @param {*} mode edit/new/readonly
  */
@@ -179,6 +208,9 @@ function getFormFields(props, mode = "edit") {
     let fields = props.fields || [];
     if (fieldPrefix) {
         fields = getTableFieldsWithoutFieldPrefix(fields, fieldPrefix);
+    }
+    else{
+        fields = getTableFieldsPrependFieldPrefix(fields, props.name + fieldPrefixSplit);
     }
     return (fields || []).map(function (item) {
         let formItem = {
@@ -248,7 +280,7 @@ function getComponentId(name, tag) {
  * @param {*} props 
  * @param {*} mode edit/new/readonly
  */
-async function getInputTableColumns(props) {
+async function getInputTableColumns(props, buttonsForColumnOperations) {
     let columns = props.columns || [];
     let inlineEditMode = props.inlineEditMode;
     let showAsInlineEditMode = inlineEditMode && props.editable;
@@ -258,6 +290,12 @@ async function getInputTableColumns(props) {
     let fields = cloneDeep(props.fields || []);
     if (fieldPrefix) {
         fields = getTableFieldsWithoutFieldPrefix(fields, fieldPrefix);
+    }
+    else{
+        fields = getTableFieldsPrependFieldPrefix(fields, props.name + fieldPrefixSplit);
+        columns = getTableFieldsPrependFieldPrefix(columns.map(function (item) {
+            return typeof item == "string" ? { name: item } : item;
+        }), props.name + fieldPrefixSplit);
     }
     if (inlineEditMode == true) {
         let popOverContainerSelector = "";
@@ -282,7 +320,7 @@ async function getInputTableColumns(props) {
     }
     
     if (columns && columns.length) {
-        return columns.map(function (column) {
+        return columns.map(function (column, index) {
             let field, extendColumnProps = {};
             if (typeof column === "string") {
                 // 如果字符串，则取出要显示的列配置
@@ -308,9 +346,13 @@ async function getInputTableColumns(props) {
                 let className = "";
                 //判断是否换行，目前规则默认换行
                 if(extendColumnProps.wrap != true){
-                    className += " whitespace-nowrap "
+                    className += " whitespace-nowrap"
                 }else{
-                    className += " break-words "
+                    className += " break-words"
+                }
+                
+                if(buttonsForColumnOperations.length == 0 && !props.showIndex && index == 0) {
+                    className += " antd-Table-primayCell"
                 }
                 //合并classname
                 if (typeof extendColumnProps.className == "object") {
@@ -329,9 +371,12 @@ async function getInputTableColumns(props) {
         });
     }
     else {
-        return fields.map(function (field) {
+        return fields.map(function (field, index) {
             let tableCell = getInputTableCell(field, showAsInlineEditMode); 
             tableCell.className = " whitespace-nowrap ";
+            if(buttonsForColumnOperations.length == 0 && !props.showIndex && index == 0) {
+                tableCell.className += " antd-Table-primayCell"
+            }
             return tableCell;
         }) || [];
     }
@@ -548,6 +593,10 @@ function getFormPaginationWrapper(props, form, mode) {
         if(fieldPrefix){
             let getTableValueWithoutFieldPrefix = new Function('v', 'f', "return (" + ${getTableValueWithoutFieldPrefix.toString()} + ")(v, f)");
             lastestFieldValue = getTableValueWithoutFieldPrefix(lastestFieldValue, fieldPrefix);
+        }
+        else{
+            let getTableValuePrependFieldPrefix = new Function('v', 'f', "return (" + ${getTableValuePrependFieldPrefix.toString()} + ")(v, f)");
+            lastestFieldValue = getTableValuePrependFieldPrefix(lastestFieldValue, "${props.name + fieldPrefixSplit}", "${primaryKey}");
         }
         //不可以直接像event.data.__tableItems = lastestFieldValue; 这样整个赋值，否则作用域会断
         let mode = "${mode || ''}";
@@ -1355,6 +1404,9 @@ export const getAmisInputTableSchema = async (props) => {
     if (fieldPrefix) {
         fields = getTableFieldsWithoutFieldPrefix(fields, fieldPrefix);
     }
+    else{
+        fields = getTableFieldsPrependFieldPrefix(fields, props.name + fieldPrefixSplit);
+    }
     let serviceId = getComponentId("table_service", props.id);
     let buttonsForColumnOperations = [];
     let inlineEditMode = props.inlineEditMode;
@@ -1406,7 +1458,7 @@ export const getAmisInputTableSchema = async (props) => {
         "showIndex": props.showIndex,
         "perPage": props.perPage,
         "id": props.id,
-        "columns": await getInputTableColumns(props),
+        "columns": await getInputTableColumns(props, buttonsForColumnOperations),
         // "needConfirm": false, //不可以配置为false，否则，单元格都是可编辑状态，且很多static类型无法正常显示，比如static-mapping
         "strictMode": props.strictMode,
         "showTableAddBtn": false,
@@ -1415,6 +1467,9 @@ export const getAmisInputTableSchema = async (props) => {
         "pipeIn": (value, data) => {
             if (fieldPrefix) {
                 value = getTableValueWithoutFieldPrefix(value, fieldPrefix);
+            }
+            else{
+                value = getTableValuePrependFieldPrefix(value, props.name + fieldPrefixSplit, primaryKey);
             }
             value = getTableValueWithEmptyValue(value, fields);
             if (primaryKey) {
@@ -1441,6 +1496,9 @@ export const getAmisInputTableSchema = async (props) => {
             });
             if (fieldPrefix) {
                 value = getTableValuePrependFieldPrefix(value, fieldPrefix, primaryKey);
+            }
+            else{
+                value = getTableValueWithoutFieldPrefix(value, props.name + fieldPrefixSplit);
             }
             value = getTableValueWithoutEmptyValue(value, fields);
             if (props.autoGeneratePrimaryKeyValue === true) {
