@@ -62,14 +62,14 @@ const config: any = {
       description: '静态模式',
     },
     {
-      name: "showIndex",
-      propType: "boolean",
-      description: '显示序号',
-    },
-    {
       name: "perPage",
       propType: "number",
       description: '每页展示条数',
+    },
+    {
+      name: "enableDialog",
+      propType: "boolean",
+      description: '启用弹框模式'
     }
   ],
   preview: {
@@ -141,7 +141,7 @@ export default {
         removable: false,
         draggable: false,
         strictMode: true,
-        showIndex: false
+        enableDialog: true
       },
       previewSchema: {
         type: config.amis.name,
@@ -172,7 +172,7 @@ export default {
         removable: false,
         draggable: false,
         strictMode: true,
-        showIndex: false
+        enableDialog: true
       },
       panelTitle: "设置",
       panelControls: [
@@ -274,6 +274,7 @@ export default {
             justify: true
           },
           label: '内联模式',
+          visibleOn: "${enableDialog != false}"
         },
         {
           type: "switch",
@@ -288,21 +289,22 @@ export default {
           label: '静态模式',
         },
         {
+          "type": "input-number",
+          "name": "perPage",
+          "label": "每页展示条数",
+          "labelRemark": "如果为空则不进行分页"
+        },
+        {
           type: "switch",
-          name: "showIndex",
+          name: "enableDialog",
           mode: "horizontal",
+          labelRemark: "禁用弹框模式时，自动开启內联模式",
           horizontal: {
             left: 9,
             right: 4,
             justify: true
           },
-          label: '显示序号',
-        },
-        {
-          "type": "input-number",
-          "name": "perPage",
-          "label": "每页展示条数",
-          "labelRemark": "如果为空则不进行分页"
+          label: '启用弹框模式'
         }
       ]
     }
