@@ -1083,6 +1083,7 @@ export async function lookupToAmis(field, readonly, ctx){
     const autoFill = await getAutoFill(field, refObject);
     if(autoFill){
         amisSchema.autoFill = autoFill;
+        amisSchema.initAutoFill = false;
     }
     return amisSchema;
 }
