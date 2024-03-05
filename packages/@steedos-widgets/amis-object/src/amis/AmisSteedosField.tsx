@@ -596,6 +596,11 @@ export const AmisSteedosField = async (props) => {
                     inputFormat: "YYYY-MM-DD HH:mm",
                     format:'YYYY-MM-DDTHH:mm:ss.SSSZ'
                 });
+            } else if (steedosField.type === 'toggle') {
+                Object.assign(schema, {
+                    static: false,
+                    disabled: true
+                });
             }
             Object.assign(schema, steedosField.amis || {});
             return schema;
