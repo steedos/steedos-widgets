@@ -585,7 +585,7 @@ export const AmisSteedosField = async (props) => {
                         "breaks": true
                     }
                 });
-            } else if (steedosField.type === 'input-date-range') {
+            } else if (steedosField.type === 'input-date-range' || steedosField.type === 'date') {
                 Object.assign(schema, {
                     inputFormat: "YYYY-MM-DD",
                     format:'YYYY-MM-DDT00:00:00.000[Z]'
