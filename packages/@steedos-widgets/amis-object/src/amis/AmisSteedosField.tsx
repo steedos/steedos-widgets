@@ -460,7 +460,7 @@ export const AmisSteedosField = async (props) => {
                 static: true,
                 label: steedosField.label
             });
-            if (steedosField.type === "time") {
+            if (steedosField.type === "time" || steedosField.type === "input-time-range") {
                 Object.assign(schema, {
                     inputFormat: 'HH:mm',
                     timeFormat: 'HH:mm',
@@ -585,12 +585,12 @@ export const AmisSteedosField = async (props) => {
                         "breaks": true
                     }
                 });
-            } else if (steedosField.type === 'input-date-range' || steedosField.type === 'input-date') {
+            } else if (steedosField.type === 'input-date-range' || steedosField.type === 'date') {
                 Object.assign(schema, {
                     inputFormat: "YYYY-MM-DD",
                     format:'YYYY-MM-DDT00:00:00.000[Z]'
                 });
-            } else if (steedosField.type === 'input-datetime-range' || steedosField.type === 'input-datetime') {
+            } else if (steedosField.type === 'input-datetime-range' || steedosField.type === 'datetime') {
                 Object.assign(schema, {
                     inputFormat: "YYYY-MM-DD HH:mm",
                     format:'YYYY-MM-DDTHH:mm:ss.SSSZ'
