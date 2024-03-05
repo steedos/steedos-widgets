@@ -487,7 +487,8 @@ export const AmisSteedosField = async (props) => {
             } else if (steedosField.type === "number" || steedosField.type === 'currency') {
                 // amis input-number和number组件中的precision表示小数位数，并不是魔方平台的精度概念，要转换下，否则小数点后会显示很多的0
                 Object.assign(schema, {
-                    "precision": steedosField.scale || 0
+                    "precision": steedosField.scale || 0,
+                    "kilobitSeparator": steedosField.enable_thousands //识别enable_thousands，控制千分位分隔符
                 });
             } else if (steedosField.type === "table") {
                 if (steedosField.subFields) {
