@@ -460,7 +460,7 @@ export const AmisSteedosField = async (props) => {
                 static: true,
                 label: steedosField.label
             });
-            if (steedosField.type === "time") {
+            if (steedosField.type === "time" || steedosField.type === "input-time-range") {
                 Object.assign(schema, {
                     inputFormat: 'HH:mm',
                     timeFormat: 'HH:mm',
@@ -487,7 +487,8 @@ export const AmisSteedosField = async (props) => {
             } else if (steedosField.type === "number" || steedosField.type === 'currency') {
                 // amis input-number和number组件中的precision表示小数位数，并不是魔方平台的精度概念，要转换下，否则小数点后会显示很多的0
                 Object.assign(schema, {
-                    "precision": steedosField.scale || 0
+                    "precision": steedosField.scale || 0,
+                    "kilobitSeparator": steedosField.enable_thousands //识别enable_thousands，控制千分位分隔符
                 });
             } else if (steedosField.type === "table") {
                 if (steedosField.subFields) {
@@ -584,6 +585,21 @@ export const AmisSteedosField = async (props) => {
                         "html": true,
                         "breaks": true
                     }
+                });
+            } else if (steedosField.type === 'input-date-range' || steedosField.type === 'date') {
+                Object.assign(schema, {
+                    inputFormat: "YYYY-MM-DD",
+                    format:'YYYY-MM-DDT00:00:00.000[Z]'
+                });
+            } else if (steedosField.type === 'input-datetime-range' || steedosField.type === 'datetime') {
+                Object.assign(schema, {
+                    inputFormat: "YYYY-MM-DD HH:mm",
+                    format:'YYYY-MM-DDTHH:mm:ss.SSSZ'
+                });
+            } else if (steedosField.type === 'toggle') {
+                Object.assign(schema, {
+                    static: false,
+                    disabled: true
                 });
             }
             Object.assign(schema, steedosField.amis || {});

@@ -23,6 +23,13 @@ export const AmisInputTable = async (props) => {
   if (props.enableDialog === false) {
     extendProps["inlineEditMode"] = true;
   }
+
+  //showIndex默认为true
+  extendProps["showIndex"] = true;
+  if (props.showIndex == false || props.enableTree == true) {
+    extendProps["showIndex"] = false;
+  }
+  
   const amisSchema = await getAmisInputTableSchema(Object.assign({}, props, extendProps));
   // console.log("=AmisInputTable==amisSchema====", amisSchema);
   return amisSchema;
