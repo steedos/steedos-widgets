@@ -1083,7 +1083,8 @@ export async function lookupToAmis(field, readonly, ctx){
     const autoFill = await getAutoFill(field, refObject);
     if(autoFill){
         amisSchema.autoFill = autoFill;
-        amisSchema.initAutoFill = false;
+        // 这里不配置initAutoFill值，按amis规则initAutoFill默认值为fillIfNotSet处理--需要amis sdk 版本 > 3.6.3-patch.6（不包括）版本
+        // amisSchema.initAutoFill = false; 
     }
     return amisSchema;
 }
