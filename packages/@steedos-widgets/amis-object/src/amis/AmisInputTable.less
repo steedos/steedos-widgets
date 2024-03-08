@@ -4,11 +4,6 @@
     color: rgb(239 68 68) !important;
   }
 
-  //默认隐藏input-table内删除按钮二次确认弹框的浮层
-  .antd-DropDown-popover .antd-PopOver-overlay {
-    display: none;
-  }
-
   .antd-Table-table {
     .antd-Table-placeholder {
       display: none;
@@ -26,10 +21,17 @@
     }
   }
 
-  //序号居中显示
+
   &.steedos-show-index {
-    tbody tr td:nth-child(1), thead tr th:nth-child(1) {
+    //序号居中显示
+    tbody tr td:nth-child(1){
       text-align: center;
+    }
+    // 序号列去掉标题“序号” 
+    thead tr th:nth-child(1) {
+      .antd-TableCell--title {
+        visibility: hidden;
+      }
     }
   }
 

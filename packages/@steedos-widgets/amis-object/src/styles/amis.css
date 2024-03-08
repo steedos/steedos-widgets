@@ -432,3 +432,8 @@ fieldset.antd-Collapse > legend{
 .antd-Transfer.antd-TabsTransfer .antd-GroupedSelection-item label.antd-Checkbox {
     position: relative;
 }
+
+/* input-table表头不要分隔线，统一风格 */
+.antd-InputTable .antd-Table-table > thead > tr > th:not(:last-child) {
+    border-right: none;
+}
