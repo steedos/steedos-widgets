@@ -1334,48 +1334,38 @@ async function getButtonView(props) {
 
 async function getButtonDelete(props) {
     return {
-        "type": "dropdown-button",
+        "type": "button",
         "level": "link",
-        "btnClassName": "text-gray-400 steedos-delete-button",
+        "className": "text-gray-400 steedos-delete-button",
         "icon": "fa fa-trash-alt",
-        "size": "xs",
-        "hideCaret": true,
-        "closeOnClick": true,
-        "body": [
-            {
-                "type": "wrapper",
-                "size": "md",
-                "className": "w-80",
-                "body": [
-                    {
-                        "tpl": "确定要删除吗？",
-                        "type": "tpl"
+        "actionType": "dialog",
+        "dialog": {
+            "title": "系统信息",
+            "actions": [
+                {
+                    "type": "button",
+                    "label": "取消",
+                    "close": true
+                },
+                {
+                    "type": "button",
+                    "label": "删除",
+                    "level": "danger",
+                    "onEvent": {
+                        "click": {
+                            "actions": await getButtonActions(props, "delete")
+                        }
                     },
-                    {
-                        "type": "flex",
-                        "justify": "flex-end",
-                        "className": "mt-3",
-                        "items": [
-                            {
-                                "type": "button",
-                                "label": "取消",
-                                "className": "mr-2"
-                            },
-                            {
-                                "type": "button",
-                                "label": "删除",
-                                "level": "danger",
-                                "onEvent": {
-                                    "click": {
-                                        "actions": await getButtonActions(props, "delete")
-                                    }
-                                }
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
+                    "close": true
+                }
+            ],
+            "body": [
+                {
+                    "tpl": "确定要删除吗？",
+                    "type": "tpl"
+                }
+            ]
+        }
     }
 }
 
