@@ -1576,7 +1576,8 @@ export const getAmisInputTableSchema = async (props) => {
         "body": {
             "type": "service",
             "body": schemaBody,
-            "id": serviceId
+            "id": serviceId,
+            "className": "w-full",
         },
         "label": props.label,
         "labelClassName": props.label ? props.labelClassName : "none",
