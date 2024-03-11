@@ -36,28 +36,20 @@ export const AmisGlobalFooter = async (props) => {
         });
     `;
     const footerNavScript = `
-        if(payload.children.length <= 4){
-            //若tab长度在四个以内，只显示在底部
-            _.each(payload.children, (tab,index)=>{
-                ${footerNavEach}
-            })
-        }else{
-            //若tab长度超过四个，留下前三个tab在底部，然后再增加一个菜单tab
-            _.each(_.slice(payload.children, 0, 3), (tab,index)=>{
-                ${footerNavEach}
-            })
-            data.nav.push({
-                "label": {
-                    type: 'tpl',
-                    tpl: \`<span class=' truncate text-gray-700 block -ml-px no-underline group flex items-center text-[11px] rounded-md flex-col leading-3 nav-label'><svg class="fill-slate-500 flex-shrink-0 !h-10 !w-10" style="padding:7px"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#rows"></use></svg><span class="truncate" style="max-width: 20vw">${i18next.t('frontend_menu')}</span></span>\`,
-                    className:'h-full flex items-center'
-                },
-                "id": "__menu__",
-                "activeOn": "\\\\\${isMenuNavVisible}",
-                "isMenu": true,
-                "menuReRengder": "\${isMenuNavVisible}"//为了menu能正常显示高亮，触发重新渲染
-            });
-        }
+        _.each(_.slice(payload.children, 0, 3), (tab,index)=>{
+            ${footerNavEach}
+        })
+        data.nav.push({
+            "label": {
+                type: 'tpl',
+                tpl: \`<span class=' truncate text-gray-700 block -ml-px no-underline group flex items-center text-[11px] rounded-md flex-col leading-3 nav-label'><svg class="fill-slate-500 flex-shrink-0 !h-10 !w-10" style="padding:7px"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#rows"></use></svg><span class="truncate" style="max-width: 20vw">${i18next.t('frontend_menu')}</span></span>\`,
+                className:'h-full flex items-center'
+            },
+            "id": "__menu__",
+            "activeOn": "\\\\\${isMenuNavVisible}",
+            "isMenu": true,
+            "menuReRengder": "\${isMenuNavVisible}"//为了menu能正常显示高亮，触发重新渲染
+        });
     `;
     const menuNavScript = `
         _.each(_.groupBy(payload.children, 'group'), (tabs, groupName) => {
@@ -139,10 +131,10 @@ export const AmisGlobalFooter = async (props) => {
                 "url": `\${context.rootUrl}/service/api/apps/${appId}/menus?mobile=true`,
                 "adaptor": `
                         try {
-                            if(payload.children && payload.children.length == 0){
-                                payload.data = {};
-                                return payload
-                            }
+                            // if(payload.children && payload.children.length == 0){
+                            //     payload.data = {};
+                            //     return payload
+                            // }
                             const data = { nav: [],links: [] };
                             const stacked = ${stacked};
                             const showIcon = ${showIcon};
@@ -193,32 +185,39 @@ export const AmisGlobalFooter = async (props) => {
                                     {
                                         "type": "page",
                                         "bodyClassName": "p-0",
+                                        "title": {
+                                            "type": "steedos-app-launcher",
+                                            "showAppName": true,
+                                            "appId": "${appId}",
+                                        },
                                         "className": "steedos-global-footer-menu-page",
                                         "visibleOn": "\${isMenuNavVisible}",
-                                        "body": {
-                                            "type": "nav",
-                                            "id": "u:58c2a9249e9d",
-                                            "stacked": true,
-                                            "links": data.links,
-                                            "onEvent": {
-                                                "click": {
-                                                    "actions": [
-                                                       {
-                                                            "actionType": "setValue",
-                                                            "componentId": "steedosMobileFooterService",
-                                                            "args": {
-                                                                "value": {
-                                                                    "isMenuNavVisible": false,
-                                                                    "tabId": "\${event.data.item.id}",
-                                                                    "items": data.nav
-                                                                }
-                                                            },
-                                                            "expression":"\${event.data.item.id}"
-                                                       }
-                                                    ]
+                                        "body": [
+                                            {
+                                                "type": "nav",
+                                                "id": "u:58c2a9249e9d",
+                                                "stacked": true,
+                                                "links": data.links,
+                                                "onEvent": {
+                                                    "click": {
+                                                        "actions": [
+                                                        {
+                                                                "actionType": "setValue",
+                                                                "componentId": "steedosMobileFooterService",
+                                                                "args": {
+                                                                    "value": {
+                                                                        "isMenuNavVisible": false,
+                                                                        "tabId": "\${event.data.item.id}",
+                                                                        "items": data.nav
+                                                                    }
+                                                                },
+                                                                "expression":"\${event.data.item.id}"
+                                                        }
+                                                        ]
+                                                    }
                                                 }
                                             }
-                                        }
+                                        ]
                                     }
                                 ]
                                 
