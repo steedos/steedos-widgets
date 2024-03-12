@@ -211,7 +211,7 @@ export function getSwitchTpl(field){
 
 export function getPasswordTpl(field){
     return `<% if (data.${field.name}) { %>
-        <span>······</span>
+        <span>******</span>
         <% } %>`
 }
 

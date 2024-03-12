@@ -20,7 +20,7 @@ const AmisFormInputs = [
     'datetime',
     'time',
     'number',
-    'password',
+    // 'password',
     'url',
     'email'
 ]
@@ -47,7 +47,7 @@ function getAmisStaticFieldType(type: string, data_type?: string, options?: any)
             return `static-images`;
         }
         return `static-image`;
-    } else if (type === 'textarea') {
+    } else if (type === 'textarea' || type === 'password') {
         return 'static';
     } else if (type === 'html') {
         return 'input-rich-text';
@@ -472,7 +472,7 @@ export const AmisSteedosField = async (props) => {
                 });
             } else if (steedosField.type === "password") {
                 Object.assign(schema, {
-                    "revealPassword": false //没生效，需要用样式隐藏
+                    "tpl": "******" 
                 });
             } else if (steedosField.type === "select") {
                 const map = getSelectMap(steedosField.options);
