@@ -419,6 +419,11 @@ export async function lookupToAmisPicker(field, readonly, ctx){
 
         var fieldFilters = ${JSON.stringify(field.filters)};
         if(fieldFilters && fieldFilters.length){
+            var filtersForString = JSON.stringify(fieldFilters);
+            if(filtersForString.indexOf('$') > -1) {
+                var currentAmis = amisRequire('amis');
+                fieldFilters = JSON.parse(currentAmis.evaluate(filtersForString, api.data.$self.__super))
+            }
             filters.push(fieldFilters);
         }
         
@@ -827,6 +832,11 @@ export async function lookupToAmisSelect(field, readonly, ctx){
 
         var fieldFilters = ${JSON.stringify(field.filters)};
         if(fieldFilters && fieldFilters.length){
+            var filtersForString = JSON.stringify(fieldFilters);
+            if(filtersForString.indexOf('$') > -1) {
+                var currentAmis = amisRequire('amis');
+                fieldFilters = JSON.parse(currentAmis.evaluate(filtersForString, api.data.$))
+            }
             filters.push(fieldFilters);
         }
 
