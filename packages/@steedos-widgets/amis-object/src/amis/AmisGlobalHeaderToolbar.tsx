@@ -2,8 +2,8 @@
   /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-31 14:43:14
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2024-03-14 11:09:26
  * @Description: 
  */
 
@@ -188,19 +188,16 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                 "messages": {
                 },
                 "api": {
-                  "method": "post",
-                  "url": "${context.rootUrl}/graphql",
+                  "method": "get",
+                  "url": "${context.rootUrl}/api/v1/notifications/count",
                   "data": {
-                    "&": "$$",
-                    "context": "${context}",
-                    "userId": "${context.userId}"
+                    "filters": "[[\"owner\",\"=\",\"${context.userId}\"],[\"is_read\",\"!=\",true]]"
                   },
                   "dataType": "json",
-                  "requestAdaptor": "const { userId } = api.data;\napi.data = {\n    query: `{\n unReadCount: notifications__count(filters: [[\"owner\",\"=\",\"${userId}\"], [\"is_read\", \"!=\", true]])\n    }`\n}",
                   "headers": {
                     "Authorization": "Bearer ${context.tenantId},${context.authToken}"
                   },
-                  "adaptor": "return payload.data"
+                  "adaptor": "return { unReadCount: payload.data.count }"
                 },
                 "onEvent": {
                   "@data.changed.notifications": {
