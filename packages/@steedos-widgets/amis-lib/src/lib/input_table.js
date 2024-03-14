@@ -1494,7 +1494,8 @@ export const getAmisInputTableSchema = async (props) => {
                 }
             }
             return value;
-        }
+        },
+        "required": props.required
     };
     if (buttonsForColumnOperations.length) {
         inputTableSchema.columns.unshift({
@@ -1589,7 +1590,8 @@ export const getAmisInputTableSchema = async (props) => {
         "visible":  props.$schema.visible,
         "hiddenOn": props.$schema.hiddenOn,
         "hidden": props.$schema.hidden,
-        className
+        "required": props.required,
+        className,
     };
     // console.log("===schema===", schema);
     return schema;
