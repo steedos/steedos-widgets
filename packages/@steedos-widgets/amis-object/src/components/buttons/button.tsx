@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-21 10:27:43
- * @LastEditors: liaodaxue
- * @LastEditTime: 2024-01-26 18:09:26
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2024-03-14 11:46:53
  * @Description: 
  */
 import React, { useEffect, useState } from 'react'
@@ -67,6 +67,11 @@ export const AmisObjectButton = (props) => {
         if(schema && schema.body.length > 0){
             delete schema.body[0]['visibleOn']
         }
+
+        if(schema && schema.body.length > 0 && (button as any).visibleOn){
+            schema.body[0]['visibleOn'] = (button as any).visibleOn
+        }
+
 
         if(schema && className){
             schema.className = schema.className + ' steedos-object-button ' + className;
