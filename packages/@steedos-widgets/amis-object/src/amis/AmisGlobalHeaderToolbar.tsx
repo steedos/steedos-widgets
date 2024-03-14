@@ -3,7 +3,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-03-14 11:09:26
+ * @LastEditTime: 2024-03-14 11:36:39
  * @Description: 
  */
 
@@ -323,19 +323,19 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                     "messages": {
                     },
                     "api": {
-                      "method": "post",
-                      "url": "${context.rootUrl}/graphql",
+                      "method": "get",
+                      "url": "${context.rootUrl}/api/v1/notifications",
                       "data": {
-                        "&": "$$",
-                        "context": "${context}",
-                        "userId": "${context.userId}"
+                        "filters": "[\"owner\",\"=\",\"${context.userId}\"]",
+                        "sort": "created desc,name",
+                        "fields": JSON.stringify(["name","body","related_to","related_name","url","owner","is_read","from","created"]),
+                        "top": 10
                       },
                       "dataType": "json",
-                      "requestAdaptor": "const { userId } = api.data;\napi.data = {\n    query: `{\n        notifications(filters: [\"owner\",\"=\",\"${userId}\"], sort: \"created desc,name\", top : 10){\n          _id,name,body,related_to,related_name,url,owner,is_read,from,created\n        }  }`\n}",
                       "headers": {
                         "Authorization": "Bearer ${context.tenantId},${context.authToken}"
                       },
-                      "adaptor": "return payload.data"
+                      "adaptor": "return { notifications: payload.data.items }"
                     },
                   }
             ],
