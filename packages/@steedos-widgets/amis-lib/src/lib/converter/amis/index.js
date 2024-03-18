@@ -1,6 +1,7 @@
 import { getAuthToken , getTenantId, getRootUrl, getSteedosAuth } from '../../steedos.client.js';
 import { getReadonlyFormInitApi, getSaveApi, getEditFormInitApi, getBatchDelete } from './api';
 import { getTableSchema, getTableApi } from './fields/table';
+import { getTableApi as getTableOpenApi } from './fields/table_open_api.js';
 import { getFormBody } from './form';
 import { getListSchema, getCardSchema } from './fields/list';
 import _, { map, filter } from 'lodash';
@@ -304,6 +305,14 @@ export async function getObjectCRUD(objectSchema, fields, options){
         autoFillHeight = false
       }
 
+      let tableApi;
+      if(Builder.settings.useOpenAPI){
+        tableApi = await getTableOpenApi(objectSchema, fields, options);
+      }
+      else{
+        tableApi = await getTableApi(objectSchema, fields, options);
+      }
+
       body = Object.assign({}, table, {
         type: 'crud', 
         primaryField: '_id', 
@@ -311,7 +320,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
         id: id,
         name: id,
         keepItemSelectionOnPageChange: true, 
-        api: await getTableApi(objectSchema, fields, options),
+        api: tableApi,
         hiddenOn: options.tableHiddenOn,
         autoFillHeight,
         className: `flex-auto ${crudClassName || ""}`,
