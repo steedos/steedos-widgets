@@ -1,7 +1,7 @@
 import { getAuthToken , getTenantId, getRootUrl, getSteedosAuth } from '../../steedos.client.js';
 import { getReadonlyFormInitApi, getSaveApi, getEditFormInitApi, getBatchDelete } from './api';
 import { getTableSchema, getTableApi } from './fields/table';
-import { getTableApi as getTableOpenApi } from './fields/table_open_api.js';
+import { getTableApi as getTableOpenApi } from './fields/table_openql.js';
 import { getFormBody } from './form';
 import { getListSchema, getCardSchema } from './fields/list';
 import _, { map, filter } from 'lodash';
