@@ -60,52 +60,20 @@ export async function getFieldsTemplate(fields, display){
     }
 }
 
-export function getRecordPermissionsTemplate(){
-    return `
-    recordPermissions: _permissions{
-        allowCreate,
-        allowCreateFiles,
-        allowDelete,
-        allowDeleteFiles,
-        allowEdit,
-        allowEditFiles,
-        allowRead,
-        allowReadFiles,
-        disabled_actions,
-        disabled_list_views,
-        field_permissions,
-        modifyAllFiles,
-        modifyAllRecords,
-        modifyAssignCompanysRecords,
-        modifyCompanyRecords,
-        uneditable_fields,
-        unreadable_fields,
-        unrelated_objects,
-        viewAllFiles,
-        viewAllRecords,
-        viewAssignCompanysRecords,
-        viewCompanyRecords,
-      }
-    `
-}
-
 export async function getFindOneQuery(object, recordId, fields, options){
-    let queryOptions = `(filters:["${object.idFieldName}", "=", "\${recordId}"])`;
-    let alias = "data";
+    let filters = [`${object.idFieldName}`, "=", "${recordId}"];
     if(options){
-        if(options.alias){
-            alias = options.alias;
-        }
-
         if(options.filters){
-            queryOptions = `(filters:${options.filters})`;
-        }
-        if(options.queryOptions){
-            queryOptions = `(${options.queryOptions})`;
+            filters = options.filters;
         }
     }
+
+    const fieldsTemplate = await getFieldsTemplate(fields);
     return {
-        query: `{${alias}:${object.name}${queryOptions}{${await getFieldsTemplate(fields)}, ${getRecordPermissionsTemplate()}}}`
+        fields: fieldsTemplate.fields,
+        uiFields: fieldsTemplate.uiFields,
+        expandFields: fieldsTemplate.expandFields,
+        filters: filters,
     }
 }
 
@@ -137,39 +105,6 @@ export async function getFindQuery(object, recordId, fields, options){
         top: limit,
         // skip: 0,
         // sort
-    }
-}
-
-export function getRecordPermissionsQuery(object, recordId, options){
-    let queryOptions = "";
-
-    if(recordId){
-        queryOptions = `(filters:["${object.idFieldName}", "=", "${recordId}"])`;
-    }
-    let alias = "data";
-    if(options){
-        if(options.alias){
-            alias = options.alias;
-        }
-
-        if(options.filters){
-            queryOptions = `(filters:${options.filters})`;
-        }
-        if(options.queryOptions){
-            queryOptions = `(${options.queryOptions})`;
-        }
-    }
-
-    let recordPermissionsTemplate = getRecordPermissionsTemplate();
-    if(options?.fields && options.fields.length){
-        recordPermissionsTemplate = `
-            recordPermissions: _permissions{
-                ${options.fields.join(",")}
-            }
-        `;
-    }
-    return {
-        query: `{${alias}:${object.name}${queryOptions}{${object.idFieldName},${recordPermissionsTemplate}}}`
     }
 }
 

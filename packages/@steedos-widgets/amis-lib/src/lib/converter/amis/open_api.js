@@ -1,8 +1,11 @@
 import { OMIT_FIELDS } from './fields';
 import { absoluteUrl } from '../../steedos.client'
 import * as graphql from './graphql'
+import * as openql from './openql';
 import * as _ from 'lodash';
 import { i18next } from "../../../i18n"
+import { getScriptForRewriteValueForFileFields, getScriptForAddUrlPrefixForImgFields } from './api';
+
 const API_CACHE = 100;
 
 function getReadonlyFormAdaptor(object, fields, options){
@@ -130,118 +133,8 @@ export async function getReadonlyFormInitApi(object, recordId, fields, options){
     }
 }
 
-function getConvertDataScriptStr(fields){
-    const refFields = _.filter(fields, function(field){return field.name.indexOf('.') < 0 && (field.type == 'lookup' || field.type == 'master_detail') && field.reference_to});
-    let scriptStr = '';
-    _.each(refFields, function(field){
-        if(!_.includes(OMIT_FIELDS, field.name)){
-            const valueField = field.reference_to_field || '_id';
-            if(field.multiple){
-                scriptStr = scriptStr + `data.${field.name} = _.map(data.${field.name}, '${valueField}');`
-            }else{
-                scriptStr = scriptStr + `data.${field.name} = data.${field.name} ? data.${field.name}.${valueField}:null;`
-            }
-        }
-    })
-    return scriptStr;
-}
-
-/*
-    img/avatar字段值添加URL前缀使其在amis中正常显示图片。
-*/
-export function getScriptForAddUrlPrefixForImgFields(fields){
-    let imgFieldsKeys = [];
-    let imgFields = {};
-    fields.forEach((item)=>{
-        if(_.includes(['image','avatar'], item.type)){
-            imgFieldsKeys.push(item.name);
-            imgFields[item.name] = {
-                name: item.name,
-                type: item.type,
-                multiple: item.multiple
-            };
-        }
-    })
-    if(!imgFieldsKeys.length){
-        return '';
-    }
-    return `
-                // image字段值添加URL前缀
-                let imgFieldsKeys = ${JSON.stringify(imgFieldsKeys)};
-                let imgFields = ${JSON.stringify(imgFields)};
-                imgFieldsKeys.forEach((item)=>{
-                    let imgFieldValue = data[item];
-                    let imgFieldDisplayValue = data._display && data._display[item];
-                    if(imgFieldValue && imgFieldValue.length){
-                        let fieldProps = imgFields[item];
-                        if(fieldProps.multiple){
-                            if(imgFieldDisplayValue instanceof Array){
-                                data[item] = imgFieldDisplayValue.map((i)=>{ 
-                                    const url = window.getImageFieldUrl(i.url);
-                                    return url;
-                                });
-                            }
-                        }else{
-                            const url = imgFieldDisplayValue && window.getImageFieldUrl(imgFieldDisplayValue.url);
-                            data[item] = url;
-                        }
-                    }
-                })
-    `
-}
-
-/*
-    file字段值重写使其在amis中正常显示附件名、点击附件名下载文件。
-*/
-export function getScriptForRewriteValueForFileFields(fields){
-    let fileFieldsKeys = [];
-    let fileFields = {};
-    fields.forEach((item)=>{
-        if(item.type === 'file'){
-            fileFieldsKeys.push(item.name);
-            fileFields[item.name] = {
-                name: item.name,
-                multiple: item.multiple
-            };
-        }
-    })
-    if(!fileFieldsKeys.length){
-        return '';
-    }
-    return `
-                // file字段值重写以便编辑时正常显示附件名、点击附件名正常下载附件
-                let fileFieldsKeys = ${JSON.stringify(fileFieldsKeys)};
-                let fileFields = ${JSON.stringify(fileFields)};
-                fileFieldsKeys.forEach((item)=>{
-                    let fileFieldValue = data[item];
-                    let fileFieldDisplayValue = data._display && data._display[item];
-                    if(fileFieldValue && fileFieldValue.length){
-                        if(fileFields[item].multiple){
-                            if(fileFieldDisplayValue instanceof Array){
-                                data[item] = fileFieldDisplayValue.map((item, index)=>{ 
-                                    return {
-                                        value: fileFieldValue[index],
-                                        name: item.name,
-                                        url: item.url + "?download=true",
-                                        state: "uploaded"
-                                    }
-                                });
-                            }
-                        }else{
-                            data[item] = [{
-                                value: fileFieldValue,
-                                name: fileFieldDisplayValue.name,
-                                url: fileFieldDisplayValue.url + "?download=true",
-                                state: "uploaded"
-                            }];
-                        }
-                    }
-                })
-    `
-}
-
 export async function getEditFormInitApi(object, recordId, fields, options){
-    const data = await graphql.getFindOneQuery(object, recordId, fields);
+    const data = await openql.getFindOneQuery(object, recordId, fields);
     data.recordId = "${recordId}";
     data.objectName = "${objectName}";
     data.uiSchema = "${uiSchema}";
@@ -249,24 +142,24 @@ export async function getEditFormInitApi(object, recordId, fields, options){
     data.context = "${context}";
     data.defaultData = "${defaultData}";
     data._master = "${_master}";
+
+    const apiRequestAdaptor = getEditFormInitApiRequestAdaptor(data);
+    const apiAdaptor = getEditFormInitApiAdaptor(data);
     
     return {
-        method: "post",
-        url: graphql.getApi() + '&objectName=${objectName}' ,
+        method: "get",
+        url: openql.getApi(object.name) + '&objectName=${objectName}' ,
         // sendOn: "!!this.recordId",
         cache: API_CACHE,
         requestAdaptor: `
             // 所有不想在network请求中发送的数据都应该从data中分离出来，data变量只需要留下query才需要发送出去
-            var { recordId, objectName, uiSchema, global, context, _master, ...data} = api.data;
-            if(!recordId){
-                // 新建则不请求任何数据
-                data.query = "{data:" + objectName + "(filters: " + JSON.stringify(["_id", "=", null]) + ", top: 1){_id}}";
-            }
-            api.data = data;
+            var { recordId, objectName, uiSchema, global, context, _master } = api.body;
+            ${apiRequestAdaptor || ''}
             ${options.initApiRequestAdaptor || ''}
             return api;
         `,
         adaptor: `
+            ${apiAdaptor || ''};
             const recordId = api.body.recordId;
             let initialValues={};
             if(recordId && payload.data.data){
@@ -349,61 +242,49 @@ export async function getEditFormInitApi(object, recordId, fields, options){
     }
 }
 
-
-export function getSaveApi(object, recordId, fields, options){
-    return {
-        method: 'post',
-        url: graphql.getApi(),
-        data: graphql.getSaveQuery(object, recordId, fields, options),
-        requestAdaptor: graphql.getSaveRequestAdaptor(fields, options),
-        responseData: {
-            "recordId": "${record._id}"
-        },
-        adaptor: `
-            if(payload.errors){
-                delete payload.data;
-                payload.status = 2;
-                payload.msg = window.t ? window.t(payload.errors[0].message) : payload.errors[0].message;
+function getEditFormInitApiRequestAdaptor(data){
+    // open api发送适配器url参数
+    return `
+        if(recordId){
+            api.data = {
+                fields: JSON.stringify(api.body.fields),
+                uiFields: JSON.stringify(api.body.uiFields),
+                expandFields: JSON.stringify(api.body.expandFields),
+                filters: JSON.stringify(api.body.filters),
+                top: 1
             }
-            ${options.apiAdaptor || ''}
-            return payload;
-        `,
-        headers: {
-            Authorization: "Bearer ${context.tenantId},${context.authToken}"
         }
-    }
+        else{
+            // 新建则不请求任何数据
+            api.data = {
+                fields: JSON.stringify(["_id"]),
+                filters: JSON.stringify(["_id", "=", null]),
+                top: 1
+            }
+        }
+        if(api.body){
+            // amis bug，接口为Get请求时，url上的data参数无法删除，只能手动把url重写掉，见：https://github.com/baidu/amis/issues/9813
+            let rootURL = api.body.context && api.body.context.rootUrl || "";
+            let objectName = api.body.objectName || "";
+            let additionalFilters = api.body.additionalFilters || "";
+            // url按表单初始化url返回，比如/api/v1/test__c?reload=
+            api.url = rootURL = "/api/v1/" + objectName + "?reload=" + additionalFilters + "&objectName=" + objectName;
+        }
+    `;
 }
 
-export function getBatchDelete(objectName){
-    return {
-        method: 'post',
-        url: graphql.getApi(),
-        adaptor: `
-            if(payload.errors){
-                payload.data.deleteErrorMessage = [];
-                payload.errors.forEach(function(error){
-                    let errorRecord = error.path.map(function (item) {
-                        return item.split('delete__')[1].to_float() + 1;
-                    }).toString();
-                    payload.data.deleteErrorMessage.push("第" + errorRecord + "条记录删除出现异常，报错信息为(" + (window.t ? window.t(error.message) : error.message) + ")");
-                })
-            }
-            return payload;
-        `,
-        requestAdaptor: `
-            var ids = api.data.ids.split(",");
-            var deleteArray = [];
-            ids.forEach((id,index)=>{
-                deleteArray.push(\`delete__\${index}:${objectName}__delete(id: "\${id}")\`);
-            })
-            api.data = {query: \`mutation{\${deleteArray.join(',')}}\`};
-            return api;
-        `,
-        data: {
-            ids: `\${ids}`
-        },
-        headers: {
-            Authorization: "Bearer ${context.tenantId},${context.authToken}"
+function getEditFormInitApiAdaptor(data){
+    // open api接收适配器中，在最开头把返回值的items转为data，_ui转为_display,total转为count，这样后续脚本就可以跟GraphQL一样
+    return `
+        if(api.body.recordId && payload.data.items){
+            payload.data.data = (payload.data.items || []).map(function(n){
+                return Object.assign({}, n, {
+                    _display: n._ui
+                });
+            });
+            payload.data.count = payload.data.total;
+            delete payload.data.items;
+            delete payload.data.total;
         }
-    }
+    `;
 }

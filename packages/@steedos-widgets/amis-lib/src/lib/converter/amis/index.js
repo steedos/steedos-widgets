@@ -1,5 +1,6 @@
 import { getAuthToken , getTenantId, getRootUrl, getSteedosAuth } from '../../steedos.client.js';
 import { getReadonlyFormInitApi, getSaveApi, getEditFormInitApi, getBatchDelete } from './api';
+import { getEditFormInitApi as getEditFormInitOpenApi } from './open_api';
 import { getTableSchema, getTableApi } from './fields/table';
 import { getTableApi as getTableOpenApi } from './fields/table_openql.js';
 import { getFormBody } from './form';
@@ -511,6 +512,8 @@ export async function getObjectForm(objectSchema, ctx){
     if(!formSchema.id){
       formSchema.id = 'form_' + objectSchema.name;
     }
+    // TODO: 这里useOpenAPI时没有目前跟GraphQL一样请求recordPermissions: _permissions，如果用到了就需要加
+    const getInitApi = Builder.settings.useOpenAPI ? getEditFormInitOpenApi : getEditFormInitApi;
     const amisSchema =  {
       type: 'service',
       id: `service_${formSchema.id}`,
@@ -525,7 +528,7 @@ export async function getObjectForm(objectSchema, ctx){
       body: [defaultsDeep({}, formSchema, {
         type: "form",
         mode: layout,
-        initApi: await getEditFormInitApi(objectSchema, recordId, fields, ctx),
+        initApi: await getInitApi(objectSchema, recordId, fields, ctx),
         data: {
           editFormInited: false,
         },
