@@ -310,9 +310,7 @@ export async function getListSchema(
         }
 
         if(localListViewProps.perPage){
-            listSchema.defaultParams = {
-                perPage: localListViewProps.perPage
-            }
+            listSchema.perPage = localListViewProps.perPage;
         }
         defaults.listSchema = defaultsDeep({}, listSchema, defaults.listSchema || {});
       }

@@ -1134,14 +1134,14 @@ export async function getTableSchema(object, fields, options){
                 headerToolbarClassName: "py-2 px-2 border-gray-300 border-solid border-b",
                 className: "",
                 draggable: false,
-                defaultParams: getDefaultParams(options),
                 card: card,
                 syncLocation: false,
                 keepItemSelectionOnPageChange: true,
                 checkOnItemClick: isLookup ? true : false,
                 labelTpl: `\${${options.labelFieldName}}`,
                 autoFillHeight: false, // 自动高度效果不理想,先关闭
-                columnsTogglable: false
+                columnsTogglable: false,
+                ...getDefaultParams(options) //不可以使用crud的defaultParams属性，会造成翻页bug，https://github.com/steedos/steedos-platform/issues/6576
             }
         }
 
@@ -1167,7 +1167,6 @@ export async function getTableSchema(object, fields, options){
         headerToolbarClassName: "py-2 px-2 border-gray-300 border-solid border-b",
         className: "",
         draggable: false,
-        defaultParams: getDefaultParams(options),
         columns: columns,
         syncLocation: false,
         keepItemSelectionOnPageChange: true,
@@ -1175,7 +1174,8 @@ export async function getTableSchema(object, fields, options){
         labelTpl: `\${${options.labelFieldName}}`,
         autoFillHeight: false, // 自动高度效果不理想,先关闭
         columnsTogglable: false,
-        ...treeConfig
+        ...treeConfig,
+        ...getDefaultParams(options) //不可以使用crud的defaultParams属性，会造成翻页bug，https://github.com/steedos/steedos-platform/issues/6576
     }
 }
 
