@@ -30,9 +30,7 @@ export async function getSpaceUsersPickerAmisSchema(spaceUserSchema, name, optio
                 "switch-per-page",
                 "pagination"
             ],
-            "defaultParams": {
-                "perPage": 50
-            },
+            "perPage": 50,
             "columns": [
                 {
                     "name": "_index",

@@ -55,7 +55,6 @@ export async function getListSchema(fields, options){
         name: "thelist",
         draggable: false,
         headerToolbar: ['reload'],
-        defaultParams: getDefaultParams(options),
         syncLocation: false,
         keepItemSelectionOnPageChange: true,
         checkOnItemClick: false,
@@ -77,7 +76,8 @@ export async function getListSchema(fields, options){
                     })
                 }
             ]
-        }
+        },
+        ...getDefaultParams(options) //不可以使用crud的defaultParams属性，会造成翻页bug，https://github.com/steedos/steedos-platform/issues/6576
     }
 }
 
@@ -98,7 +98,6 @@ export async function getCardSchema(fields, options){
         name: "cards",
         draggable: false,
         headerToolbar: ['statistics', 'pagination'],
-        defaultParams: getDefaultParams(options),
         syncLocation: false,
         keepItemSelectionOnPageChange: false,
         checkOnItemClick: false,
@@ -109,6 +108,7 @@ export async function getCardSchema(fields, options){
                 "title": title
               },
             "body": [...listBody.columns]
-          }
+          },
+        ...getDefaultParams(options)
     }
 }
