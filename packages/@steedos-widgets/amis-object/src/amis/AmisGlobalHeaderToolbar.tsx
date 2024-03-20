@@ -3,7 +3,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-03-14 11:36:39
+ * @LastEditTime: 2024-03-20 10:37:30
  * @Description: 
  */
 
@@ -263,12 +263,9 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                                           "actionType": "ajax"
                                         },
                                         {
-                                          "args": {
-                                            "url": "${event.data.responseResult.responseData.redirect}",
-                                            "blank": true
-                                          },
+                                          "actionType": "custom",
+                                          "script": "if(Meteor.isCordova){window.open(Meteor.absoluteUrl(event.data.responseResult.responseData.redirect), '_blank')}else{window.open(event.data.responseResult.responseData.redirect, '_blank')}",
                                           "expression": "${!!event.data.responseResult.responseData.redirect}",
-                                          "actionType": "url"
                                         }
                                       ]
                                     }

@@ -343,6 +343,12 @@ export const AmisAppLauncher = async (props) => {
             className: `text-xl ml-4 mr-4 text-black nowrap ${appNameClassName} `,
             tpl: '${app.name}',
             hiddenOn: `${!!app || !!!showAppName}`
+          },
+          {
+            "type": "icon",
+            "icon": "angle-down",
+            "visibleOn": `${isMobile}`,
+            "className": "absolute right-0"
           }
         ],
         "dialog": {
