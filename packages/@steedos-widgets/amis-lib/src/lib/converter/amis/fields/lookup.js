@@ -258,6 +258,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
                     Object.assign({}, refObjectConfig.fields[column.field], {
                         width: column.width,
                         wrap: column.wrap,
+                        amis: column.amis
                     })
                 );
             }
