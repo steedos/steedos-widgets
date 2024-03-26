@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-02-08 10:35:29
+ * @LastEditTime: 2024-03-26 15:20:26
  * @Description: 
  */
 import './AmisObjectListview.less';
@@ -99,7 +99,7 @@ export const AmisObjectListView = async (props) => {
       "actions": [
         {
           "args": {
-            "url": "/app/${appId}/${objectName}/view/${event.data.result.data.recordId}?side_object=${objectName}&side_listview_id=${listName}",
+            "link": "/app/${appId}/${objectName}/view/${event.data.result.data.recordId}?side_object=${objectName}&side_listview_id=${listName}",
             "blank": false
           },
           "actionType": "link",
