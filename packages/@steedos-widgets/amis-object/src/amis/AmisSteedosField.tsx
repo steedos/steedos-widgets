@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-02-21 17:37:49
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2024-03-26 11:04:53
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -269,63 +269,63 @@ export const AmisSteedosField = async (props) => {
                     }
                     let fieldRefObject = await getUISchema(referenceTo);
                     if(props.data._display && has(props.data._display, steedosField.name)){
-                        let disPlayValue = get(props.data._display, steedosField.name);
-                        if(disPlayValue){
-                            if(!isArray(disPlayValue) && isObject(disPlayValue)){
-                                disPlayValue = [disPlayValue]
-                            }
-                            fieldBaseProps = Object.assign({}, fieldBaseProps, { 
-                                type: 'control', 
-                                name: null, //name 会导致底层的each异常,无法从数据链中获取数据. 如果给了name 会导致下层的each多了value 属性, value属性会引起each无法从数据链中获取数据
-                                body: {
-                                    type: 'wrapper',
-                                    className: `steedos-field-lookup-wrapper p-0`,
-                                    "wrapWithPanel": false,
-                                    "actions": [],
-                                    body: [
-                                        {
-                                            type: 'each',
-                                            placeholder: "",
-                                            className: `steedos-field-lookup-each flex flex-wrap gap-2`,
-                                            source: `\${_display.${steedosField.name}|asArray}`,
-                                            items: { 
-                                                type: 'static', 
-                                                labelClassName: "hidden",
-                                                label: false,
-                                                className: 'm-0',
-                                                tpl: `<a href="/app/-/\${objectName}/view/\${value}" target="_blank" ${lookupATagClick}>\${label}</a>`, 
-                                                popOver: fieldRefObject.compactLayouts && window.innerWidth >= 768 ? {
-                                                    "trigger": "hover",
-                                                    "className": "steedos-record-detail-popover",
-                                                    "position": "left-bottom",
-                                                    "showIcon": false,
-                                                    "title": false,
-                                                    "offset": {
-                                                        "top": 0,
-                                                        "left": 20
-                                                    },
-                                                    "body": [
-                                                        {
-                                                            "type": "steedos-record-mini",
-                                                            "objectApiName": "${objectName}",
+                        fieldBaseProps = Object.assign({}, fieldBaseProps, {
+                            type: 'control',
+                            name: null, //name 会导致底层的each异常,无法从数据链中获取数据. 如果给了name 会导致下层的each多了value 属性, value属性会引起each无法从数据链中获取数据
+                            body: [{
+                                type: 'wrapper',
+                                className: `steedos-field-lookup-wrapper p-0`,
+                                "wrapWithPanel": false,
+                                "actions": [],
+                                visibleOn: `\${_display.${steedosField.name}}`,
+                                body: [
+                                    {
+                                        type: 'each',
+                                        placeholder: "",
+                                        className: `steedos-field-lookup-each flex flex-wrap gap-2`,
+                                        source: `\${_display.${steedosField.name}|asArray}`,
+                                        items: {
+                                            type: 'static',
+                                            labelClassName: "hidden",
+                                            label: false,
+                                            className: 'm-0',
+                                            tpl: `<a href="/app/-/\${objectName}/view/\${value}" target="_blank" ${lookupATagClick}>\${label}</a>`,
+                                            popOver: fieldRefObject.compactLayouts && window.innerWidth >= 768 ? {
+                                                "trigger": "hover",
+                                                "className": "steedos-record-detail-popover",
+                                                "position": "left-bottom",
+                                                "showIcon": false,
+                                                "title": false,
+                                                "offset": {
+                                                    "top": 0,
+                                                    "left": 20
+                                                },
+                                                "body": [
+                                                    {
+                                                        "type": "steedos-record-mini",
+                                                        "objectApiName": "${objectName}",
+                                                        "recordId": "${value}",
+                                                        "showButtons": false,
+                                                        "showBackButton": false,
+                                                        "data": {
+                                                            "objectName": "${objectName}",
                                                             "recordId": "${value}",
-                                                            "showButtons": false,
-                                                            "showBackButton": false,
-                                                            "data": {
-                                                                "objectName": "${objectName}",
-                                                                "recordId": "${value}",
-                                                            }
                                                         }
-                                                    ]
-                                                } : null,
-                                                onEvent: window.innerWidth < 768 ? null : REFERENCE_VALUE_ITEM_ONCLICK
-                                            }
+                                                    }
+                                                ]
+                                            } : null,
+                                            onEvent: window.innerWidth < 768 ? null : REFERENCE_VALUE_ITEM_ONCLICK
                                         }
-                                    ]
-                            }});
-                        }else{
-                            fieldBaseProps = Object.assign({}, fieldBaseProps, { type: 'static', tpl: '-', className: `${fieldBaseProps.className || ''} text-muted`});
-                        }
+                                    }
+                                ]
+                            },
+                            {
+                                type: 'static',
+                                tpl: '-',
+                                className: `${fieldBaseProps.className || ''} text-muted`,
+                                hiddenOn: `\${_display.${steedosField.name}}`,
+                            }]
+                        });
                     }else{
                         const res = await env.fetcher(source, props.data);
                         const valueOptions = res?.data?.options || [];
