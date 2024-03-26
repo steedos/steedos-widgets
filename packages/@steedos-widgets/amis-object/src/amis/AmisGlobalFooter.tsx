@@ -10,6 +10,7 @@ import './AmisGlobalFooter.less';
 import {i18next} from '@steedos-widgets/amis-lib';
 
 export const AmisGlobalFooter = async (props) => {
+    console.log("props===>",props);
     let { stacked = false, overflow, appId, data, links = null, showIcon = true, indentSize = 12, selectedId } = props;
     if (!appId) {
         appId = data.context.appId || 'admin';
@@ -39,17 +40,19 @@ export const AmisGlobalFooter = async (props) => {
         _.each(_.slice(payload.children, 0, 3), (tab,index)=>{
             ${footerNavEach}
         })
-        data.nav.push({
-            "label": {
-                type: 'tpl',
-                tpl: \`<span class=' truncate text-gray-700 block -ml-px no-underline group flex items-center text-[11px] rounded-md flex-col leading-3 nav-label'><svg class="fill-slate-500 flex-shrink-0 !h-10 !w-10" style="padding:7px"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#rows"></use></svg><span class="truncate" style="max-width: 20vw">${i18next.t('frontend_menu')}</span></span>\`,
-                className:'h-full flex items-center'
-            },
-            "id": "__menu__",
-            "activeOn": "\\\\\${isMenuNavVisible}",
-            "isMenu": true,
-            "menuReRengder": "\${isMenuNavVisible}"//为了menu能正常显示高亮，触发重新渲染
-        });
+        if (!${data.app.is_hide_menu}) {
+            data.nav.push({
+                "label": {
+                    type: 'tpl',
+                    tpl: \`<span class=' truncate text-gray-700 block -ml-px no-underline group flex items-center text-[11px] rounded-md flex-col leading-3 nav-label'><svg class="fill-slate-500 flex-shrink-0 !h-10 !w-10" style="padding:7px"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#rows"></use></svg><span class="truncate" style="max-width: 20vw">${i18next.t('frontend_menu')}</span></span>\`,
+                    className:'h-full flex items-center'
+                },
+                "id": "__menu__",
+                "activeOn": "\\\\\${isMenuNavVisible}",
+                "isMenu": true,
+                "menuReRengder": "\${isMenuNavVisible}"//为了menu能正常显示高亮，触发重新渲染
+            });
+        } 
     `;
     const menuNavScript = `
         _.each(_.groupBy(payload.children, 'group'), (tabs, groupName) => {
@@ -188,7 +191,16 @@ export const AmisGlobalFooter = async (props) => {
                                         "title": {
                                             "type": "steedos-app-launcher",
                                             "showAppName": true,
+                                            "showAppIcon": false,
+                                            "appNameClassName": "!mx-0",
                                             "appId": "${appId}",
+                                            "customElements": [
+                                                {
+                                                    "type": "icon",
+                                                    "icon": "angle-down",
+                                                    "className": "absolute right-0"
+                                                }
+                                            ]
                                         },
                                         "className": "steedos-global-footer-menu-page",
                                         "visibleOn": "\${isMenuNavVisible}",
