@@ -10,7 +10,6 @@ import './AmisGlobalFooter.less';
 import {i18next} from '@steedos-widgets/amis-lib';
 
 export const AmisGlobalFooter = async (props) => {
-    console.log("props===>",props);
     let { stacked = false, overflow, appId, data, links = null, showIcon = true, indentSize = 12, selectedId } = props;
     if (!appId) {
         appId = data.context.appId || 'admin';
