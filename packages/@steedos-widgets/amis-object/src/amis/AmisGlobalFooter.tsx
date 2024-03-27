@@ -39,7 +39,7 @@ export const AmisGlobalFooter = async (props) => {
         _.each(_.slice(payload.children, 0, 3), (tab,index)=>{
             ${footerNavEach}
         })
-        if (!${data.app.is_hide_menu}) {
+        if (!${data.app.is_hide_mobile_menu}) {
             data.nav.push({
                 "label": {
                     type: 'tpl',
