@@ -9,7 +9,7 @@
 import { i18next } from '@steedos-widgets/amis-lib';
 
 export const AmisAppLauncher = async (props) => {
-  let { app, data, className, showAppName = true, appNameClassName = '' } = props;
+  let { app, data, className, showAppName = true, appNameClassName = '', customElements = [], showAppIcon = true } = props;
   if (!app) {
     app = data.context.app;
   }
@@ -336,7 +336,8 @@ export const AmisAppLauncher = async (props) => {
                 "width": "8px",
                 "height": "8px"
               }
-            }
+            },
+            "hiddenOn": `${!showAppIcon}`
           },
           {
             type: 'tpl',
@@ -344,12 +345,7 @@ export const AmisAppLauncher = async (props) => {
             tpl: '${app.name}',
             hiddenOn: `${!!app || !!!showAppName}`
           },
-          {
-            "type": "icon",
-            "icon": "angle-down",
-            "visibleOn": `${isMobile}`,
-            "className": "absolute right-0"
-          }
+          ...customElements
         ],
         "dialog": {
           "size": "xl",

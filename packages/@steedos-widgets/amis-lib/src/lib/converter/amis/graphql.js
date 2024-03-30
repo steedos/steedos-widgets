@@ -292,12 +292,15 @@ export async function getFindQuery(object, recordId, fields, options){
     //     return item.replace(/^{/,"").replace(/}$/,"");
     // }).join(",")) : "";
 
+    const fieldsTemplate = `${await getFieldsTemplate(fields, options.expand)}${treeFields}${cfsFields}`;
+
     return {
         orderBy: "${orderBy}",
         orderDir: "${orderDir}",
         pageNo: "${page}",
         pageSize: "${perPage}",
-        query: `{${alias}:${object.name}${queryOptions}{${await getFieldsTemplate(fields, options.expand)}${treeFields}${cfsFields}}${countQuery}}`
+        queryFields: fieldsTemplate,
+        query: `{${alias}:${object.name}${queryOptions}{${fieldsTemplate}}${countQuery}}`
     }
 }
 

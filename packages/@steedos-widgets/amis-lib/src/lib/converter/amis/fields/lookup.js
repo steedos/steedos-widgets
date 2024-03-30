@@ -263,6 +263,20 @@ export async function lookupToAmisPicker(field, readonly, ctx){
                 );
             }
         });
+        _.each(listView.extra_columns || [], function (column) {
+            // Lookup弹出列表跟列表视图组件一样，支持配置列表视图extra_columns，且允许其中字段是hidden的，hidden的字段在uiSchema.fields中不存在
+            if (_.isString(column)) {
+                fieldsArr.push({
+                    extra: true,
+                    name: column
+                });
+            } else if (_.isObject(column)) {
+                fieldsArr.push({
+                    extra: true,
+                    name: column.field
+                });
+            }
+        });
     }else{
         _.each(refObjectConfig.fields, (field, field_name)=>{
             if(field_name != '_id' && !field.hidden){

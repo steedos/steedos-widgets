@@ -53,10 +53,12 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                 "className": "slds-button_icon slds-global-header__icon"
               }
             ],
-            "label": i18next.t('frontend_help')
+            "label": i18next.t('frontend_help'),
+            "className": "steedos-header-toolbar-help"
           },
           {
             "type": "dropdown-button",
+            "className": "steedos-header-toolbar-setup",
             "visibleOn": "${window:innerWidth > 768}",
             "label": false,
             "trigger": "click",
@@ -340,7 +342,7 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                   }
             ],
             "id": "u:857e8161c96b",
-            "className": "antd-Action",
+            "className": "antd-Action steedos-header-toolbar-notifications",
             "open": false
           },
           {
@@ -491,7 +493,7 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                 ],
               }
             ],
-            "className": "antd-Action"
+            "className": "antd-Action steedos-header-toolbar-user"
           }
         ]
       }
