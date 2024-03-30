@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: liaodaxue
- * @LastEditTime: 2023-11-24 15:52:55
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2024-03-30 10:06:03
  * @Description: 
  */
 
@@ -311,7 +311,7 @@ export const AmisAppLauncher = async (props) => {
         "headers": {
           "Authorization": "Bearer ${context.tenantId},${context.authToken}"
         },
-        "adaptor": "\nlet app_items = payload;\nlet object_items = [];\nlet objects = [];\napp_items.forEach((item) => {\n  item.children.forEach((i) => {\n    if (objects.indexOf(i.id) < 0) {\n      objects.push(i.id);\n      object_items.push(i)\n    }\n  })\n})\npayload = {\n  app_items,\n  object_items\n}\nreturn payload;"
+        "adaptor": "\nlet app_items = payload;\nlet object_items = [];\nlet objects = [];\napp_items.forEach((item) => {\n  item.children.forEach((i) => {\n    if (objects.indexOf(i.id) < 0) {\n      objects.push(i.id);\n      if(i.type != 'url' && i.type != 'page'){object_items.push(i);}\n    }\n  })\n})\npayload = {\n  app_items,\n  object_items\n}\nreturn payload;"
       }
     }
   }
