@@ -14,7 +14,7 @@ import { render } from './render';
 import { getFieldDefaultValue } from './defaultValue';
 import { getTreeOptions } from './tree';
 import { getClosestAmisComponentByType, isFilterFormValuesEmpty } from './amis';
-import { compact } from 'lodash';
+import { compact, isEmpty } from 'lodash';
 
 export const SteedosUI = Object.assign({}, {
     render: render,
@@ -139,5 +139,95 @@ export const SteedosUI = Object.assign({}, {
         })
       };
       return keywordsFilters;
+    },
+    getFormulaVariables: (fields, hasGlobal = true) => {
+      const variables = [];
+      if (!isEmpty(fields)) {
+        variables.push({
+          "label": "表单字段",
+          "children": [
+
+          ]
+        });
+        lodash.forEach(fields,function (field) {
+          variables[0].children.push({
+            "label": field.label,
+            "value": field.name
+          })
+        })
+      }
+      if (hasGlobal) {
+        variables.push({
+          "label": "全局变量",
+          "children": [
+            {
+              "label": "用户ID",
+              "value": "global['userId']"
+            },
+            {
+              "label": "工作区ID",
+              "value": "global['spaceId']"
+            },
+            {
+              "label": "只读/编辑模式",
+              "value": "global['mode']"
+            },
+            {
+              "label": "用户",
+              "children": [
+                {
+                  "label": "姓名",
+                  "value": "global['user']['name']"
+                },
+                {
+                  "label": "邮件",
+                  "value": "global['user']['email']"
+                },
+                {
+                  "label": "语言",
+                  "value": "global['user']['language']"
+                },
+                {
+                  "label": "简档",
+                  "value": "global['user']['profile']"
+                },
+                {
+                  "label": "权限集",
+                  "value": "global['user']['roles']"
+                },
+                {
+                  "label": "主部门ID",
+                  "value": "global['user']['organization']['_id']"
+                },
+                {
+                  "label": "部门(多选)",
+                  "value": "global['user']['organizations']"
+                },
+                {
+                  "label": "部门(含上级)",
+                  "value": "global['user']['organizations_parents']" 
+                },
+                {
+                  "label": "主分部ID",
+                  "value": "global['user']['company_id']"
+                },
+                {
+                  "label": "分部(多选)",
+                  "value": "global['user']['company_ids']"  
+                },
+                {
+                  "label": "人员ID",
+                  "value": "global['user']['spaceUserId']"
+                },
+                {
+                  "label": "是否是工作区管理员",
+                  "value": "global['user']['is_space_admin']"
+                }
+              ]
+            }
+          ]
+        });
+      }
+      return variables;
     }
 })
