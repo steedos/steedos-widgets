@@ -1,0 +1,25 @@
+{
+  "packages": [
+    {
+        "package": "@steedos-widgets/ckeditor",
+        "urls": [
+            "https://unpkg.com/@steedos-widgets/ckeditor@{{version}}/dist/ckeditor.umd.js",
+            "https://unpkg.com/@steedos-widgets/ckeditor@{{version}}/dist/ckeditor.umd.css"
+        ],
+        "library": "BuilderCKEditor"
+    }
+  ],
+  "components": [
+      {
+          "exportName": "BuilderCKEditorMeta",
+          "npm": {
+              "package": "@steedos-widgets/ckeditor"
+          },
+          "url": "https://unpkg.com/@steedos-widgets/ckeditor@{{version}}/dist/meta.js",
+          "urls": {
+              "default": "https://unpkg.com/@steedos-widgets/ckeditor@{{version}}/dist/meta.js",
+              "design": "https://unpkg.com/@steedos-widgets/ckeditor@{{version}}/dist/meta.js"
+          }
+      }
+  ]
+}
