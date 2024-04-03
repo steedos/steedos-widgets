@@ -6,12 +6,13 @@
  * @Description: 
  */
 import CKEditor from "./metas/CKEditor";
-const components = [CKEditor];
+import CKEditorCommercial from "./metas/CKEditorCommercial";
+const components = [CKEditor, CKEditorCommercial];
 const componentList = [
   {
     title: "华炎魔方",
     icon: "",
-    children: [CKEditor]
+    children: [CKEditor, CKEditorCommercial]
   }
 ];
 export default {

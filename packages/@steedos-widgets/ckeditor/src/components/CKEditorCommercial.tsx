@@ -1,10 +1,8 @@
 import React, { useEffect, useRef } from 'react';
-// import { CKEditor } from '@ckeditor/ckeditor5-react';
-// import BalloonEditor from '@ckeditor/ckeditor5-build-balloon';
 
 import { CKEditor, CKEditorContext } from '@ckeditor/ckeditor5-react';
 
-import { BalloonEditor } from '@ckeditor/ckeditor5-editor-balloon';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Context } from '@ckeditor/ckeditor5-core';
 
 
@@ -33,7 +31,7 @@ import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 
 import './CKEditor.css';
 
-// import { Comments } from '@ckeditor/ckeditor5-comments';
+import { Comments } from '@ckeditor/ckeditor5-comments';
 
 
 import { createObject } from '@steedos-widgets/amis-lib';
@@ -64,14 +62,14 @@ const defaultConfig={
     TextTransformation,
 
     // Paid
-    // Comments
+    Comments
   ],
-  // comments: {
-  //   editorConfig: {
-  //       // The list of plugins that will be included in the comments editors.
-  //       // extraPlugins: [ Bold, Italic ]
-  //   }
-  // },
+  comments: {
+    editorConfig: {
+        // The list of plugins that will be included in the comments editors.
+        extraPlugins: [ Bold, Italic, List, Autoformat ]
+    }
+  },
   toolbar: {
     items: [
         'alignment',
@@ -92,22 +90,78 @@ const defaultConfig={
         'mediaEmbed',
         'undo',
         'redo',
-        // '|', 'comment', 'commentsArchive',
+        '|', 'comment', 'commentsArchive',
     ]
   },
 }
 
-export const AmisCKEditor = ( {config, ...props} ) => {
+
+	// Application data will be available under a global variable `appData`.
+	const appData : any = {};
+
+	// Users data.
+	appData.users = [
+		{
+			id: 'user-1',
+			name: 'Joe Doe',
+			// Note that the avatar is optional.
+			avatar: 'https://randomuser.me/api/portraits/thumb/men/26.jpg'
+		},
+		{
+			id: 'user-2',
+			name: 'Ella Harper',
+			avatar: 'https://randomuser.me/api/portraits/thumb/women/65.jpg'
+		}
+	];
+
+	// The ID of the current user.
+	appData.userId = 'user-1';
+
+	// Comment threads data.
+	appData.commentThreads = [
+  ]
+  
+class CommentsIntegration {
+  editor;
+
+  constructor( editor ) {
+    this.editor = editor;
+  }
+
+  init() {
+    const usersPlugin = this.editor.plugins.get( 'Users' );
+    const commentsRepositoryPlugin = this.editor.plugins.get( 'CommentsRepository' );
+
+    // Load the users data.
+    for ( const user of appData.users ) {
+      usersPlugin.addUser( user );
+    }
+
+    // Set the current user.
+    usersPlugin.defineMe( appData.userId );
+
+    // Load the comment threads data.
+    for ( const commentThread of appData.commentThreads ) {
+      commentThread.isFromAdapter = true;
+
+      commentsRepositoryPlugin.addCommentThread( commentThread );
+    }
+  }
+}
+
+export const AmisCKEditorCommercial = ( {config, ...props} ) => {
   
   const configJSON = {
     ...defaultConfig,
-    ...config
+    ...config,
+
+		extraPlugins: [ CommentsIntegration ],
   }
   
   return (
     <CKEditorContext context={ Context }>
       <CKEditor 
-        editor={ BalloonEditor }
+        editor={ ClassicEditor }
         data="<p>Hello from CKEditor&nbsp;5!</p>"
         config={configJSON}
         onReady={ editor => {

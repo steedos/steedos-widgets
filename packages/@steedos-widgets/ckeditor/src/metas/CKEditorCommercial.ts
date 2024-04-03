@@ -1,14 +1,14 @@
 
 const config: any = {
   group: "华炎魔方-原子组件",
-  componentName: "AmisCKEditor",
-  title: "CKEditor",
+  componentName: "AmisCKEditorCommercial",
+  title: "CKEditor Commercial",
   docUrl: "",
   screenshot: "",
   npm: {
     package: "@steedos-widgets/ckeditor",
     version: "{{version}}",
-    exportName: "AmisCKEditor",
+    exportName: "AmisCKEditorCommercial",
     main: "",
     destructuring: true,
     subName: ""
@@ -21,7 +21,7 @@ const config: any = {
   engines: ["amis"],
   // settings for amis.
   amis: {
-    name: 'ckeditor',
+    name: 'ckeditor-commercial',
     icon: "fa-fw fa fa-list-alt"
   }
 };
@@ -57,7 +57,7 @@ export default {
         type: config.amis.name,
         className: "h-80",
         config: {
-          
+          licenseKey: ""
         },
       },
       previewSchema: {
