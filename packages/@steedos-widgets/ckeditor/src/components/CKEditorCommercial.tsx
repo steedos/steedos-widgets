@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, Component } from 'react';
 
 import { CKEditor, CKEditorContext } from '@ckeditor/ckeditor5-react';
 
@@ -149,8 +149,16 @@ class CommentsIntegration {
   }
 }
 
-export const AmisCKEditorCommercial = ( {config, ...props} ) => {
-  
+export const AmisCKEditorCommercial = ( {
+  config, 
+  data: amisData,
+  value, 
+  onChange: amisOnChange,
+  dispatchEvent: amisDispatchEvent,
+  ...props
+} ) => {
+  const editorRef = useRef(null)
+
   const configJSON = {
     ...defaultConfig,
     ...config,
@@ -162,14 +170,21 @@ export const AmisCKEditorCommercial = ( {config, ...props} ) => {
     <CKEditorContext context={ Context }>
       <CKEditor 
         editor={ ClassicEditor }
-        data="<p>Hello from CKEditor&nbsp;5!</p>"
+        data={value}
         config={configJSON}
         onReady={ editor => {
             // You can store the "editor" and use when it is needed.
-            console.log( 'Editor is ready to use!', editor );
+            editorRef.current = editor;
+            console.log( 'Editor is ready to use!', editorRef.current );
         } }
         onChange={ ( event ) => {
-            console.log( event );
+          if (!amisDispatchEvent || !amisOnChange)
+            return 
+          console.log( event );
+      
+          console.log( "editorRef", editorRef.current );
+          console.log( "editorRef.getData()", editorRef.current.getData() );
+          editorRef.current && amisOnChange(editorRef.current.getData());
         } }
         onBlur={ ( event, editor ) => {
             console.log( 'Blur.', editor );
@@ -177,6 +192,7 @@ export const AmisCKEditorCommercial = ( {config, ...props} ) => {
         onFocus={ ( event, editor ) => {
             console.log( 'Focus.', editor );
         } }
+        {...props}
       />
     </CKEditorContext>
   )
