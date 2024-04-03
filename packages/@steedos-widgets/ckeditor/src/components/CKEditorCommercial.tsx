@@ -96,59 +96,6 @@ const defaultConfig={
 }
 
 
-	// Application data will be available under a global variable `appData`.
-	const appData : any = {};
-
-	// Users data.
-	appData.users = [
-		{
-			id: 'user-1',
-			name: 'Joe Doe',
-			// Note that the avatar is optional.
-			avatar: 'https://randomuser.me/api/portraits/thumb/men/26.jpg'
-		},
-		{
-			id: 'user-2',
-			name: 'Ella Harper',
-			avatar: 'https://randomuser.me/api/portraits/thumb/women/65.jpg'
-		}
-	];
-
-	// The ID of the current user.
-	appData.userId = 'user-1';
-
-	// Comment threads data.
-	appData.commentThreads = [
-  ]
-  
-class CommentsIntegration {
-  editor;
-
-  constructor( editor ) {
-    this.editor = editor;
-  }
-
-  init() {
-    const usersPlugin = this.editor.plugins.get( 'Users' );
-    const commentsRepositoryPlugin = this.editor.plugins.get( 'CommentsRepository' );
-
-    // Load the users data.
-    for ( const user of appData.users ) {
-      usersPlugin.addUser( user );
-    }
-
-    // Set the current user.
-    usersPlugin.defineMe( appData.userId );
-
-    // Load the comment threads data.
-    for ( const commentThread of appData.commentThreads ) {
-      commentThread.isFromAdapter = true;
-
-      commentsRepositoryPlugin.addCommentThread( commentThread );
-    }
-  }
-}
-
 export const AmisCKEditorCommercial = ( {
   config, 
   data: amisData,
@@ -158,6 +105,48 @@ export const AmisCKEditorCommercial = ( {
   ...props
 } ) => {
   const editorRef = useRef(null)
+
+  console.log(amisData)
+  console.log(props)
+  class CommentsIntegration {
+    editor;
+  
+    constructor( editor ) {
+      this.editor = editor;
+    }
+  
+    init() {
+      const currentUser = amisData?.__super?.global?.user || { userId: "test", name: "test" };
+      const userId = currentUser?.userId || "test";
+      const users = [
+        currentUser && {
+          id: currentUser.userId,
+          name: currentUser.name,
+          // Note that the avatar is optional.
+          avatar: `${amisData?.__super?.context.rootUrl}/avatar/${currentUser.userId}`
+        }
+      ]
+      const commentThreads = [];
+
+      const usersPlugin = this.editor.plugins.get( 'Users' );
+      const commentsRepositoryPlugin = this.editor.plugins.get( 'CommentsRepository' );
+  
+      // Load the users data.
+      for ( const user of users ) {
+        usersPlugin.addUser( user );
+      }
+  
+      // Set the current user.
+      usersPlugin.defineMe( userId );
+  
+      // Load the comment threads data.
+      for ( const commentThread of commentThreads ) {
+        commentThread.isFromAdapter = true;
+  
+        commentsRepositoryPlugin.addCommentThread( commentThread );
+      }
+    }
+  }
 
   const configJSON = {
     ...defaultConfig,
@@ -192,7 +181,6 @@ export const AmisCKEditorCommercial = ( {
         onFocus={ ( event, editor ) => {
             console.log( 'Focus.', editor );
         } }
-        {...props}
       />
     </CKEditorContext>
   )

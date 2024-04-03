@@ -55,9 +55,8 @@ export default {
       icon: config.amis.icon,
       scaffold: {
         type: config.amis.name,
-        className: "h-80",
         config: {
-          licenseKey: ""
+          licenseKey: "UEg5WEh3R3ZaL2EwLzZBY1dHSGR5NGhMVCtNYUVHQStwZTFoM0VRVzNlN2h5YWRtcHJmWXk3RDZoU0hmLU1qQXlOREExTURNPQ=="
         },
       },
       previewSchema: {
