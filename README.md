@@ -37,3 +37,23 @@ Gitpod运行时环境变量配置示例：
 ```
 STEEDOS_PUBLIC_PAGE_ASSETURLS=https://8080-steedos-steedoswebappne-pm96cp6i82c.ws-us73.gitpod.io/@steedos-widgets/amis-object/dist/assets-dev.json
 ```
+
+### 生产环境启用资产包
+
+```shell
+STEEDOS_WIDGETS_ADDITIONAL=@steedos-widgets/ckeditor
+STEEDOS_WIDGETS_VERSION=3.6.11-beta.3
+```
+
+### 启用 ckeditor
+
+配置字段 amis 属性，启用 ckeditor 或 ckeditor-commercial，如果是商业版，需要配置 licenseKey 。
+
+```
+{
+  "type": "ckeditor-commercial",
+  "config": {
+    "licenseKey": "UEg5WEh3R3ZaL2EwLzZBY1dHSGR5NGhMVCtNYUVHQStwZTFoM0VRVzNlN2h5YWRtcHJmWXk3RDZoU0hmLU1qQXlOREExTURNPQ=="
+  }
+}
+```
