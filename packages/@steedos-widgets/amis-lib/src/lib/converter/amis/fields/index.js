@@ -794,6 +794,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
         }
         if(readonly){
             convertData.quickEdit = false;
+            convertData.static = true;
         }
 
         let fieldTypeClassName = ' steedos-' + convertData.type + (readonly ? '-readonly' : '-edit');
