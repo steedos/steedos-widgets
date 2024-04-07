@@ -95,6 +95,27 @@ const defaultConfig={
   },
 }
 
+const toolbarStatic = ['comment', 'commentsArchive']
+const toolbar = [
+  'alignment',
+  'heading',
+  '|',
+  'bold',
+  'italic',
+  'link',
+  'bulletedList',
+  'numberedList',
+  '|',
+  'outdent',
+  'indent',
+  '|',
+  'imageUpload',
+  'blockQuote',
+  'insertTable',
+  'mediaEmbed',
+  'undo',
+  'redo',
+]
 
 export const AmisCKEditorCommercial = ( {
   config, 
@@ -106,8 +127,8 @@ export const AmisCKEditorCommercial = ( {
 } ) => {
   const editorRef = useRef(null)
 
-  console.log(amisData)
-  console.log(props)
+  // console.log(amisData)
+  // console.log(props)
   class CommentsIntegration {
     editor;
   
@@ -154,12 +175,11 @@ export const AmisCKEditorCommercial = ( {
 
 		extraPlugins: [ CommentsIntegration ],
     commentsOnly: props.static === true,
+    toolbar: {
+      items : props.static ? toolbarStatic : toolbar
+    }
   }
 
-  if (props.static) {
-    configJSON.toolbar.items = ['comment', 'commentsArchive'];
-  }
-  
   return (
     <CKEditorContext context={ Context }>
       <CKEditor 
@@ -169,12 +189,12 @@ export const AmisCKEditorCommercial = ( {
         onReady={ editor => {
             // You can store the "editor" and use when it is needed.
             editorRef.current = editor;
-            console.log( 'Editor is ready to use!', editorRef.current );
+            // console.log( 'Editor is ready to use!', editorRef.current );
         } }
         onChange={ async ( event ) => {
           if (!amisDispatchEvent || !amisOnChange || !editorRef.current)
             return 
-          console.log( event );
+          // console.log( event );
 
           // 支持 amis OnEvent.change
           const rendererEvent = await amisDispatchEvent(
@@ -188,7 +208,7 @@ export const AmisCKEditorCommercial = ( {
             return;
           }
 
-          console.log( "editorRef.getData()", editorRef.current.getData() );
+          // console.log( "editorRef.getData()", editorRef.current.getData() );
           setTimeout(()=> amisOnChange(editorRef.current.getData()), 500);
           
         } }
