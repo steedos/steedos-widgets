@@ -1,18 +1,27 @@
 {
-  "name": "@steedos-widgets/sortable",
+  "name": "@steedos-widgets/ckeditor",
+  "private": false,
   "version": "3.6.11-beta.3",
-  "main": "dist/sortable.cjs.js",
-  "module": "dist/sortable.esm.js",
-  "unpkg": "dist/sortable.umd.js",
-  "typings": "dist/index.d.ts",
-  "license": "MIT",
+  "main": "dist/ckeditor.cjs.js",
+  "module": "dist/ckeditor.esm.js",
+  "unpkg": "dist/ckeditor.umd.js",
+  "typings": "dist/ckeditor.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "yarn build:rollup",
-    "build:rollup": "rollup -c rollup.config.ts",
-    "build:types": "tsc --emitDeclarationOnly --declaration --declarationDir dist/types"
+    "http": "npx http-server ../ --port 8080 --cors -c -1",
+    "build": "yarn build-types && yarn build-rollup",
+    "build-types": "tsc --emitDeclarationOnly --declaration --declarationDir dist/types",
+    "build-rollup": "rollup -c rollup.config.ts"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-dev-utils": "^39.6.3",
     "@rollup/plugin-babel": "^5.3.1",
     "@rollup/plugin-commonjs": "^22.0.0",
     "@rollup/plugin-node-resolve": "^13.1.3",
@@ -39,13 +48,15 @@
     "rollup-plugin-tslib-resolve-id": "^0.0.0",
     "rollup-plugin-visualizer": "^5.8.0"
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "dependencies": {
-    "@dnd-kit/core": "^6.0.5",
-    "@dnd-kit/sortable": "^7.0.1",
-    "@steedos-widgets/amis-lib": "3.6.11-beta.3"
+    "@ckeditor/ckeditor5-build-balloon": "~41.2.1",
+    "@ckeditor/ckeditor5-comments": "~41.2.1",
+    "@ckeditor/ckeditor5-editor-classic": "^41.2.1",
+    "@ckeditor/ckeditor5-react": "~6.2.0",
+    "@ckeditor/ckeditor5-theme-lark": "^41.2.1",
+    "@rollup/plugin-replace": "^5.0.2",
+    "@steedos-widgets/amis-lib": "3.6.11-beta.3",
+    "rollup-plugin-string": "^3.0.0"
   },
   "gitHead": "ffb730e16642eb8e7a7ae5d98d0773c42482e7d2"
 }
