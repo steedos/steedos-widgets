@@ -140,19 +140,19 @@ export const SteedosUI = Object.assign({}, {
       };
       return keywordsFilters;
     },
-    getFormulaVariables: (fields, hasGlobal = true) => {
+    getFormulaVariables: (fieldOptions, hasGlobal = true) => {
       const variables = [];
-      if (!isEmpty(fields)) {
+      if (!isEmpty(fieldOptions)) {
         variables.push({
           "label": "表单字段",
           "children": [
 
           ]
         });
-        lodash.forEach(fields,function (field) {
+        lodash.forEach(fieldOptions,function (field) {
           variables[0].children.push({
             "label": field.label,
-            "value": field.name
+            "value": field.value
           })
         })
       }
