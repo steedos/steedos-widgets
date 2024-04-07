@@ -99,7 +99,7 @@ const defaultConfig={
 export const AmisCKEditorCommercial = ( {
   config, 
   data: amisData,
-  value, 
+  value = "", 
   onChange: amisOnChange,
   dispatchEvent: amisDispatchEvent,
   ...props
@@ -153,6 +153,11 @@ export const AmisCKEditorCommercial = ( {
     ...config,
 
 		extraPlugins: [ CommentsIntegration ],
+    commentsOnly: props.static === true,
+  }
+
+  if (props.static) {
+    configJSON.toolbar.items = ['comment', 'commentsArchive'];
   }
   
   return (
@@ -166,14 +171,26 @@ export const AmisCKEditorCommercial = ( {
             editorRef.current = editor;
             console.log( 'Editor is ready to use!', editorRef.current );
         } }
-        onChange={ ( event ) => {
-          if (!amisDispatchEvent || !amisOnChange)
+        onChange={ async ( event ) => {
+          if (!amisDispatchEvent || !amisOnChange || !editorRef.current)
             return 
           console.log( event );
-      
-          console.log( "editorRef", editorRef.current );
+
+          // 支持 amis OnEvent.change
+          const rendererEvent = await amisDispatchEvent(
+            'change',
+            createObject(amisData, {
+              value
+            }),
+            editorRef.current
+          );
+          if (rendererEvent?.prevented) {
+            return;
+          }
+
           console.log( "editorRef.getData()", editorRef.current.getData() );
-          editorRef.current && amisOnChange(editorRef.current.getData());
+          setTimeout(()=> amisOnChange(editorRef.current.getData()), 500);
+          
         } }
         onBlur={ ( event, editor ) => {
             console.log( 'Blur.', editor );

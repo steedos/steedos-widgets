@@ -65,7 +65,7 @@ const options = {
     replace({
       'process.env.NODE_ENV': JSON.stringify('production'),
     }),
-    terser(),
+    // process.env.NODE_ENV === "production" && terser(),
   ],
 };
 
