@@ -123,7 +123,7 @@ export const AmisCKEditorCommercial = ( {
           id: currentUser.userId,
           name: currentUser.name,
           // Note that the avatar is optional.
-          avatar: `${amisData?.__super?.context.rootUrl}/avatar/${currentUser.userId}`
+          avatar: `${amisData?.__super?.context?.rootUrl}/avatar/${currentUser.userId}`
         }
       ]
       const commentThreads = [];
