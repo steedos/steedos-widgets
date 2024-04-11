@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-01-13 17:27:54
- * @LastEditors: liaodaxue
- * @LastEditTime: 2024-02-04 17:29:54
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2024-04-11 14:14:43
  * @Description: 
  */
 import { i18next } from "../../../../i18n"
@@ -79,12 +79,12 @@ export const getHtmlFieldSchema = (field, readonly, ctx)=>{
           "receiver": "${context.rootUrl}/s3/images",
           "name": field.name,
           "options": {
-            "menu": {
-              "insert": {
-                "title": "Insert",
-                "items": "image link media addcomment pageembed codesample inserttable | charmap emoticons hr | pagebreak nonbreaking anchor tableofcontents | insertdatetime"
-              }
-            },
+            // "menu": {
+            //   "insert": {
+            //     "title": "Insert",
+            //     "items": "image link media addcomment pageembed codesample inserttable | charmap emoticons hr | pagebreak nonbreaking anchor tableofcontents | insertdatetime"
+            //   }
+            // },
             "plugins": [
               "autoresize"
             ],
@@ -100,13 +100,14 @@ export const getHtmlFieldSchema = (field, readonly, ctx)=>{
             "type": "input-rich-text",
             "receiver": "${context.rootUrl}/s3/images",
             "options":{
-              "menu": {
-                "insert": {
-                  "title": "Insert",
-                  "items": "image link media addcomment pageembed codesample inserttable | charmap emoticons hr | pagebreak nonbreaking anchor tableofcontents | insertdatetime"
-                }
-              },
-              "statusbar": false
+              // "menu": {
+              //   "insert": {
+              //     "title": "Insert",
+              //     "items": "image link media addcomment pageembed codesample inserttable | charmap emoticons hr | pagebreak nonbreaking anchor tableofcontents | insertdatetime"
+              //   }
+              // },
+              "statusbar": false,
+              "menubar": false
             },
             "name": field.name
         }
