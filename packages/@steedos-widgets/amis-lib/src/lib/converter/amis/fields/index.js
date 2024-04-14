@@ -188,7 +188,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
     if(_.includes(OMIT_FIELDS, field.name) && ctx.showSystemFields != true){
         return;
     }
-    const baseData = {name: ctx.fieldNamePrefix ? `${ctx.fieldNamePrefix}${field.name}` : field.name, label: field.label, labelRemark: field.inlineHelpText, required: _.has(ctx, 'required') ? ctx.required : field.required};
+    const baseData = {name: ctx.fieldNamePrefix ? `${ctx.fieldNamePrefix}${field.name}` : field.name, label: field.label, labelRemark: field.inlineHelpText, description: field.description, required: _.has(ctx, 'required') ? ctx.required : field.required};
     let convertData = {
     };
     // if(_.includes(OMIT_FIELDS, field.name)){
