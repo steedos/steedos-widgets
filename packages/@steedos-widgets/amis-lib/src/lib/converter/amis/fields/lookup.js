@@ -350,6 +350,11 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         }
     }
     
+    // amis@3.6.3和6.3.0如果不配置 trackExpression监听当前字段值变化，那么当前lookup字段（比如T）作为其它lookup字段（比如F）autoFill自动填充的目标字段的话，
+    // F字段值变更后，虽然会自动填充值到T字段中，但是并不会触发T字段的source接口重新请求，这会造成T字段被填充后，可能会显示为字段id而不是label了，见issue:https://github.com/steedos/steedos-platform/issues/6601
+    // amis@6.2.2不需要配置trackExpression不会有#6601所示问题，但是更高版本6.3.0也会有，所以这里只能加上trackExpression避开相关bug。
+    source.trackExpression = `\${${field.name}}`;
+    
     source.data.$term = "$term";
     source.data.$self = "$$";
 
