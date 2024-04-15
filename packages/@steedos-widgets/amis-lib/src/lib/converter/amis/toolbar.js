@@ -105,6 +105,7 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
   }
 
   const onChangeScript = `
+    // console.log("==search=onChangeScript===");
     const scope = event.context.scoped;
     let crud = SteedosUI.getClosestAmisComponentByType(scope, "crud");
     // let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service");
@@ -120,14 +121,14 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
     }
   `;
 
-  // onSearchScript中加上了onChangeScript中的脚本，是因为amis 3.2不能用change事件执行onChangeScript
+  // 之前onSearchScript中加上了onChangeScript中的脚本，是因为amis 3.2不能用change事件执行onChangeScript
   // 而点击回车按键又不会触发blur事件，所以只能每次回车事件中额外再执行一次onChangeScript
   // 等升级到amis 3.4+，blur事件换成change事件执行onChangeScript，就可以不用在onSearchScript中执行onChangeScript了
+  // 基于amis3.6，已经不再用blur事件触发onChangeScript，所以这里把之前加上的onChangeScript去掉了，如果以后还要换blur来触发onChangeScript脚本的话，这里又要加回onChangeScript脚本
   const onSearchScript = `
-    ${onChangeScript}
-
+    // console.log("==search=onSearchScript===");
     // 下面的脚本只为解决点击搜索表单取消按钮，再重新在其中输入过滤条件但是不点击搜索按钮或回车按键触发搜索，此时在快速搜索框输入过滤条件按回车按键会把搜索表单中的过滤条件清空的问题
-    // const scope = event.context.scoped;
+    const scope = event.context.scoped;
     // 如果点击过顶部搜索栏表单的取消按钮，会把此处event.data.__super.__super.__super中的搜索表单项的所有字段设置为null
     // 点击取消按钮后继续在表单项中输入过滤条件且最后没有点击回车按键或点击表单项搜索按钮的话，在快速搜索中点击回车按钮提交搜索会所顶部搜索表单中的字段值清空
     let isLookup = event.data.isLookup;
@@ -144,6 +145,14 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
     setTimeout(function(){
       filterForm.setValues(event.data[__changedFilterFormValuesKey]);
     }, 500);
+  `;
+
+  const onBlurScript = `
+    // console.log("==search=onBlurScript===");
+    // 失去焦点事件触发搜索
+    const scope = event.context.scoped;
+    const sb = SteedosUI.getClosestAmisComponentByType(scope, "search-box");
+    sb.handleSearch();
   `;
 
   return {
@@ -163,7 +172,7 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
         "name": keywordsSearchBoxName,
         "placeholder": "快捷搜索",
         "value": crudKeywords,
-        // "clearable": true,//因为清除并不会触发失去焦点事件，只有禁用，但是它会触发change事件，所以等升级到amis 3.4+后可以重新放开
+        "clearable": true,//因为清除并不会触发失去焦点事件，只有禁用，但是它会触发change事件，所以等升级到amis 3.4+后可以重新放开
         "clearAndSubmit": true,
         "searchImediately": false,
         "onEvent": {
@@ -175,11 +184,19 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
               }
             ]
           },
-          "blur": { //这里把change事件换成blur是因为amis 3.2change事件中setData会卡，升级到3.4+后就可以换回change事件
+          "change": { //amis 3.2change事件中setData会卡，升级到amis 3.4+应该不会再卡了，所以这里换回change事件，如果还是会卡就要考虑重新换成blur事件
             "actions": [
               {
                 "actionType": "custom",
                 "script": onChangeScript
+              },
+            ]
+          },
+          "blur": { 
+            "actions": [
+              {
+                "actionType": "custom",
+                "script": onBlurScript
               },
             ]
           }
@@ -207,59 +224,67 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
     };
   }
   let toolbarReloadButton;
-  if(formFactor === 'SMALL'){
-    // const onReloadScript = `
-    //   const scope = event.context.scoped;
-    //   var listView = scope.parent.getComponents().find(function(n){
-    //     return n.props.type === "crud";
-    //   });
-    //   listView.handleChangePage(1);
-    // `;
-    // toolbarReloadButton = {
-    //   // "type": "reload",//不可以直接使用reload，因为它不会设置页码到第一页，这在加载更多按钮的翻页模式下会有问题
-    //   "type": "button",
-    //   "align": "right",
-    //   //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，为保持统一，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330
-    //   // "tooltip": i18next.t('frontend_button_reload_tooltip'),
-    //   "tooltipPlacement": "top",
-    //   "className": "bg-white p-2 rounded text-gray-500",
-    //   "label": "",
-    //   "icon": "fa fa-sync",
-    //   "visibleOn": "${!showFieldsFilter}",
-    //   "onEvent": {
-    //     "click": {
-    //       "actions": [
-    //         {
-    //           "actionType": "custom",
-    //           "script": onReloadScript
-    //         }
-    //       ]
-    //     }
-    //   },
-    // };
+  const onReloadScript = `
+    // const scope = event.context.scoped;
+    // var listView = scope.parent.getComponents().find(function(n){
+    //   return n.props.type === "crud";
+    // });
+    // listView.handleChangePage(1);
 
-    // 后续如果换成加载更多按钮的翻页模式的话，不可以直接使用下面的reload，需要换成上面的自定义脚本模式
-    toolbarReloadButton = {
-      "type": "reload",
-      "align": "right",
-      //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，为保持统一，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330
-      // "tooltip": i18next.t('frontend_button_reload_tooltip'),
-      "tooltip":"",
-      "tooltipPlacement": "top",
-      "className": "bg-white p-2 rounded text-gray-500"
-    };
-  }
-  else{
-    toolbarReloadButton = {
-      "type": "reload",
-      "align": "right",
-      //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，为保持统一，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330
-      // "tooltip": i18next.t('frontend_button_reload_tooltip'),
-      "tooltip":"",
-      "tooltipPlacement": "top",
-      "className": "bg-white p-2 rounded text-gray-500"
-    };
-  }
+
+    // 触发搜索，而不是reload，因为快速搜索输入框失去焦点已经会触发搜索了，这里用reload的话，会有bug
+    // 不加setTimeout的话，快速搜索输入框失去焦点再触发此脚本还是有问题
+    setTimeout(function(){
+      const scope = event.context.scoped;
+      const sb = SteedosUI.getClosestAmisComponentByType(scope, "search-box");
+      sb.handleSearch();
+    }, 500);
+  `;
+  toolbarReloadButton = {
+    // "type": "reload",//不可以直接使用reload，因为它不会设置页码到第一页，这在加载更多按钮的翻页模式下会有问题
+    "type": "button",
+    "align": "right",
+    //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，为保持统一，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330
+    // "tooltip": i18next.t('frontend_button_reload_tooltip'),
+    "tooltipPlacement": "top",
+    "className": "bg-white p-2 rounded text-gray-500",
+    "label": "",
+    "icon": "fa fa-sync",
+    // "visibleOn": "${!showFieldsFilter}",
+    "onEvent": {
+      "click": {
+        "actions": [
+          {
+            "actionType": "custom",
+            "script": onReloadScript
+          }
+        ]
+      }
+    },
+  };
+  // if(formFactor === 'SMALL'){
+  //   // 后续如果换成加载更多按钮的翻页模式的话，不可以直接使用下面的reload，需要换成上面的自定义脚本模式
+  //   toolbarReloadButton = {
+  //     "type": "reload",
+  //     "align": "right",
+  //     //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，为保持统一，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330
+  //     // "tooltip": i18next.t('frontend_button_reload_tooltip'),
+  //     "tooltip":"",
+  //     "tooltipPlacement": "top",
+  //     "className": "bg-white p-2 rounded text-gray-500"
+  //   };
+  // }
+  // else{
+  //   toolbarReloadButton = {
+  //     "type": "reload",
+  //     "align": "right",
+  //     //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，为保持统一，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330
+  //     // "tooltip": i18next.t('frontend_button_reload_tooltip'),
+  //     "tooltip":"",
+  //     "tooltipPlacement": "top",
+  //     "className": "bg-white p-2 rounded text-gray-500"
+  //   };
+  // }
   let toolbarFilter;
   if(filterVisible){
     toolbarFilter ={
