@@ -233,7 +233,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
     // listView.handleChangePage(1);
 
 
-    // 触发搜索，而不是reload，因为使用search-box可以在amissdk是3.6.3-patch.8+实现快速搜索输入框中过滤条件变更时再点刷新可以自动跳转到第一页面
+    // 触发搜索，而不是reload，因为使用search-box可以在amissdk是3.6.3-patch.8+实现在非第一页的情况下，快速搜索输入框中过滤条件变更时再点刷新可以自动跳转翻页到第一页
     const scope = event.context.scoped;
     const sb = SteedosUI.getClosestAmisComponentByType(scope, "search-box");
     sb.handleSearch();

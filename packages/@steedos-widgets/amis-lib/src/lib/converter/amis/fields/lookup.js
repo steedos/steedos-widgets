@@ -438,12 +438,24 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         }
 
         var fieldFilters = ${JSON.stringify(field.filters)};
-        if(fieldFilters && fieldFilters.length){
-            var filtersForString = JSON.stringify(fieldFilters);
-            if(filtersForString.indexOf('$') > -1) {
-                var currentAmis = amisRequire('amis');
-                fieldFilters = JSON.parse(currentAmis.evaluate(filtersForString, api.data.$self.__super))
+        var currentAmis = amisRequire('amis');
+        //递归fieldFilters数组，检查每一个元素，判断若是公式，就仅把它解析
+        function traverseNestedArray(arr) {
+            for (let i = 0; i < arr.length; i++) {
+                if (Array.isArray(arr[i])) {
+                    // 如果当前元素是数组，则递归调用自身继续遍历
+                    traverseNestedArray(arr[i]);
+                } else {
+                    // 如果当前元素不是数组，则处理该元素
+                    // 下面正则用于匹配amis公式\${}
+                    if(/\\\$\\\{([^}]*)\\\}/.test(arr[i])) {
+                        arr[i] = currentAmis.evaluate(arr[i], api.data.$);
+                    }
+                }
             }
+        }
+        if(fieldFilters && fieldFilters.length){
+            traverseNestedArray(fieldFilters);
             filters.push(fieldFilters);
         }
         
@@ -851,12 +863,24 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         // }
 
         var fieldFilters = ${JSON.stringify(field.filters)};
-        if(fieldFilters && fieldFilters.length){
-            var filtersForString = JSON.stringify(fieldFilters);
-            if(filtersForString.indexOf('$') > -1) {
-                var currentAmis = amisRequire('amis');
-                fieldFilters = JSON.parse(currentAmis.evaluate(filtersForString, api.data.$))
+        var currentAmis = amisRequire('amis');
+        //递归fieldFilters数组，检查每一个元素，判断若是公式，就仅把它解析
+        function traverseNestedArray(arr) {
+            for (let i = 0; i < arr.length; i++) {
+                if (Array.isArray(arr[i])) {
+                    // 如果当前元素是数组，则递归调用自身继续遍历
+                    traverseNestedArray(arr[i]);
+                } else {
+                    // 如果当前元素不是数组，则处理该元素
+                    // 下面正则用于匹配amis公式\${}
+                    if(/\\\$\\\{([^}]*)\\\}/.test(arr[i])) {
+                        arr[i] = currentAmis.evaluate(arr[i], api.data.$);
+                    }
+                }
             }
+        }
+        if(fieldFilters && fieldFilters.length){
+            traverseNestedArray(fieldFilters);
             filters.push(fieldFilters);
         }
 
