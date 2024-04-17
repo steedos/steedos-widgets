@@ -125,9 +125,12 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
   // 而点击回车按键又不会触发blur事件，所以只能每次回车事件中额外再执行一次onChangeScript
   // 等升级到amis 3.4+，blur事件换成change事件执行onChangeScript，就可以不用在onSearchScript中执行onChangeScript了
   // 基于amis3.6，已经不再用blur事件触发onChangeScript，所以这里把之前加上的onChangeScript去掉了，如果以后还要换blur来触发onChangeScript脚本的话，这里又要加回onChangeScript脚本
+  // 这里重新额外先执行下onChangeScript，是因为不执行还有bug：[Bug]: amis升级到6.3后列表快速搜索功能，有时点击右上角的刷新按钮会按上次搜索的过滤条件请求数据 #6734
   const onSearchScript = `
+    ${onChangeScript}
+
     // 下面的脚本只为解决点击搜索表单取消按钮，再重新在其中输入过滤条件但是不点击搜索按钮或回车按键触发搜索，此时在快速搜索框输入过滤条件按回车按键会把搜索表单中的过滤条件清空的问题
-    const scope = event.context.scoped;
+    // const scope = event.context.scoped;
     // 如果点击过顶部搜索栏表单的取消按钮，会把此处event.data.__super.__super.__super中的搜索表单项的所有字段设置为null
     // 点击取消按钮后继续在表单项中输入过滤条件且最后没有点击回车按键或点击表单项搜索按钮的话，在快速搜索中点击回车按钮提交搜索会所顶部搜索表单中的字段值清空
     let isLookup = event.data.isLookup;
@@ -236,7 +239,8 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
     // 触发搜索，而不是reload，因为使用search-box可以在amissdk是3.6.3-patch.8+实现在非第一页的情况下，快速搜索输入框中过滤条件变更时再点刷新可以自动跳转翻页到第一页
     const scope = event.context.scoped;
     const sb = SteedosUI.getClosestAmisComponentByType(scope, "search-box");
-    sb.handleSearch();
+    const sbValue = sb.state.value;
+    sb.handleSearch(sbValue);
   `;
   toolbarReloadButton = {
     // "type": "reload",//不可以直接使用reload，因为它不会设置页码到第一页，这在加载更多按钮的翻页模式下会有问题
