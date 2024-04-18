@@ -438,7 +438,7 @@ fieldset.antd-Collapse > legend{
     border-right: none;
 }
 
-
+/* amis升级到6.3.0后配置了menuTpl属性的input-tree组件，菜单项内的wrapper组件宽度计算出bug了，需要指定宽度为100% */
 .antd-Tree .antd-Tree-list .antd-Tree-item .antd-Tree-itemLabel-item .antd-Tree-itemText >.antd-Wrapper{
     width: 100%;
 }
