@@ -437,3 +437,8 @@ fieldset.antd-Collapse > legend{
 .antd-InputTable .antd-Table-table > thead > tr > th:not(:last-child) {
     border-right: none;
 }
+
+
+.antd-Tree .antd-Tree-list .antd-Tree-item .antd-Tree-itemLabel-item .antd-Tree-itemText >.antd-Wrapper{
+    width: 100%;
+}
