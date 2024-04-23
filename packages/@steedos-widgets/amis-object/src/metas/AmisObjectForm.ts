@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-04-23 13:30:59
+ * @LastEditors: liaodaxue
+ * @LastEditTime: 2023-10-27 17:53:35
  * @Description: 
  */
 
@@ -217,10 +217,10 @@ export default {
                           label: "显示状态",
                           value: "edit",
                           options: [
-                            {
-                              "label": "只读",
-                              "value": "read"
-                            },
+                            // {
+                            //   "label": "只读",
+                            //   "value": "read"
+                            // },
                             {
                               "label": "编辑",
                               "value": "edit"
