@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-02-23 16:37:06
+ * @LastEditTime: 2024-04-24 14:07:30
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -286,37 +286,37 @@ export async function getListSchema(
      * 本次存储代码段
      */
     try {
-      const listViewPropsStoreKey = location.pathname + "/crud";
-      let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
-      /**
-       * localListViewProps规范来自crud请求api中api.data.$self参数值的。
-       * 比如：{"perPage":20,"page":1,"__searchable__name":"7","__searchable__between__n1__c":[null,null],"filter":[["name","contains","a"]]}
-       * __searchable__...:顶部放大镜搜索条件
-       * filter:右侧过滤器
-       * perPage:每页条数
-       * page:当前页码
-       * orderBy:排序字段
-       * orderDir:排序方向
-       */
-      if (localListViewProps) {
-        localListViewProps = JSON.parse(localListViewProps);
-        // localListViewProps.perPage = 3;
-        let listSchema = {};
-        if(localListViewProps.orderBy){
-            listSchema.orderBy = localListViewProps.orderBy;
-        }
-        if(localListViewProps.orderDir){
-            listSchema.orderDir = localListViewProps.orderDir;
-        }
+        const listViewPropsStoreKey = location.pathname + "/crud";
+        let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
+        /**
+         * localListViewProps规范来自crud请求api中api.data.$self参数值的。
+         * 比如：{"perPage":20,"page":1,"__searchable__name":"7","__searchable__between__n1__c":[null,null],"filter":[["name","contains","a"]]}
+         * __searchable__...:顶部放大镜搜索条件
+         * filter:右侧过滤器
+         * perPage:每页条数
+         * page:当前页码
+         * orderBy:排序字段
+         * orderDir:排序方向
+         */
+        if (localListViewProps) {
+            localListViewProps = JSON.parse(localListViewProps);
+            // localListViewProps.perPage = 3;
+            let listSchema = {};
+            if (localListViewProps.orderBy) {
+                listSchema.orderBy = localListViewProps.orderBy;
+            }
+            if (localListViewProps.orderDir) {
+                listSchema.orderDir = localListViewProps.orderDir;
+            }
 
-        if(localListViewProps.perPage){
-            listSchema.perPage = localListViewProps.perPage;
+            if (localListViewProps.perPage) {
+                listSchema.perPage = localListViewProps.perPage;
+            }
+            defaults.listSchema = defaultsDeep({}, listSchema, defaults.listSchema || {});
         }
-        defaults.listSchema = defaultsDeep({}, listSchema, defaults.listSchema || {});
-      }
     }
     catch (ex) {
-      console.error("本地存储中crud参数解析异常：", ex);
+        console.error("本地存储中crud参数解析异常：", ex);
     }
 
     ctx.defaults = defaults;
