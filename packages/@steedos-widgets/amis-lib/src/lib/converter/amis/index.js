@@ -299,10 +299,6 @@ export async function getObjectCRUD(objectSchema, fields, options){
             }
         }
       `
-      let autoFillHeight = true
-      if(options.isRelated || window.innerWidth < 768){
-        autoFillHeight = false
-      }
 
       body = Object.assign({}, table, {
         type: 'crud', 
@@ -313,7 +309,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
         keepItemSelectionOnPageChange: true, 
         api: await getTableApi(objectSchema, fields, options),
         hiddenOn: options.tableHiddenOn,
-        autoFillHeight,
+        // autoFillHeight,//autoFillHeight按amis规范默认为false，需要配置此属性时在各个组件层配置，比如列表视图组件那边传入此属性为true
         className: `flex-auto ${crudClassName || ""}`,
         // 这里不可以用动态className，因为它会把样式类加到.antd-Crud和.antd-Table.antd-Crud-body这两层div中，而子表列表中crudClassName中有hidden样式类会造成所有子表都不显示的bug
         // className: {
