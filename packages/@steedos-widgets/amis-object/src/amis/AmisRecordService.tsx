@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-08 10:32:17
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-04-25 19:02:45
+ * @LastEditTime: 2024-04-25 19:21:15
  * @Description: 
  */
 
@@ -43,6 +43,6 @@ export const AmisRecordService = async (props) => {
   if (has(props, 'objectApiName')) {
     schema.data.objectName = objectApiName;
   }
-  console.log(`AmisRecordService====schema==>`, schema)
+  // console.log(`AmisRecordService====schema==>`, schema)
   return schema
 }
