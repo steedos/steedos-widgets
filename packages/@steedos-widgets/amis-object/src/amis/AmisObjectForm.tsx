@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-04-23 13:20:58
+ * @LastEditTime: 2024-04-25 10:16:59
  * @Description: 
  */
 import './AmisObjectForm.less';
@@ -13,7 +13,7 @@ import { keys, pick, difference, isString, has } from 'lodash';
 export const AmisObjectForm = async (props) => {
   // console.log("===AmisObjectForm=props==", props);
   const { $schema, recordId, defaultData, mode, layout = "horizontal", labelAlign, appId, fieldsExtend, excludedFields = null, fields = null, form = {},
-    className="", initApiRequestAdaptor, initApiAdaptor, apiRequestAdaptor, apiAdaptor, enableTabs, tabsMode, submitSuccActions, data,
+    className="", enableInitApi, initApiRequestAdaptor, initApiAdaptor, apiRequestAdaptor, apiAdaptor, enableTabs, tabsMode, submitSuccActions, data,
     formDataFilter, onFormDataFilter, env
   } = props;
   let objectApiName = props.objectApiName || "space_users";
@@ -66,7 +66,7 @@ export const AmisObjectForm = async (props) => {
       options.isEditor = true;
     }
     const schema =  await getViewSchema(objectApiName, recordId, Object.assign({}, options, {
-      initApiRequestAdaptor, initApiAdaptor, enableTabs, tabsMode,
+      enableInitApi, initApiRequestAdaptor, initApiAdaptor, enableTabs, tabsMode,
       formDataFilter, onFormDataFilter, amisData: allData, env
     }));
     amisSchema =  schema.amisSchema;

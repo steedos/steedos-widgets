@@ -582,7 +582,7 @@ export async function getObjectForm(objectSchema, ctx){
 
 export async function getObjectDetail(objectSchema, recordId, ctx){
     const { formFactor, layout = formFactor === 'SMALL' ? 'normal' : "horizontal", labelAlign, 
-      formDataFilter, onFormDataFilter, amisData, env } = ctx;
+      formDataFilter, onFormDataFilter, amisData, env, enableInitApi } = ctx;
     const fields = _.values(objectSchema.fields);
     const formFields = getFormFields(objectSchema, ctx);
     const serviceId = `service_detail_page`;
@@ -647,6 +647,16 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
         //     ]
         //   }
         // }
+    }
+
+    if(enableInitApi){
+      amisSchema.api = await getReadonlyFormInitApi(objectSchema, recordId, fields, ctx);
+      // 开启初始化api请求时，如果不把recordLoaded默认设置为false，recordLoaded值会取RecordServic组件中的recordLoaded值
+      // 这会造成表单内steedos field组件lookup字段中props.data取到的是RecordServic组件
+      amisSchema.data = {
+        ...amisSchema.data,
+        recordLoaded: false
+      }
     }
 
     amisSchema.body[0].body = await getFormSchemaWithDataFilter(amisSchema.body[0].body, { formDataFilter, onFormDataFilter, amisData, env });

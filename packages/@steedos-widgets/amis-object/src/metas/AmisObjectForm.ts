@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
- * @LastEditors: liaodaxue
- * @LastEditTime: 2023-10-27 17:53:35
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2024-04-25 10:29:07
  * @Description: 
  */
 
@@ -42,6 +42,17 @@ const config: any = {
         ]
       },
       description: '显示状态',
+    },
+    {
+      name: "enableInitApi",
+      propType:  {
+        "type": "oneOf",
+        "value": [
+          true,
+          false,
+        ]
+      },
+      description: '初始化接口',
     },
     {
       name: "layout",
@@ -119,6 +130,7 @@ export default {
         objectApiName: "${objectName}",
         recordId: "${recordId}",
         "mode": "edit",
+        enableInitApi: false,
         className: "sm:border sm:rounded sm:border-gray-300 bg-white p-4"
       },
       previewSchema: {
@@ -217,13 +229,36 @@ export default {
                           label: "显示状态",
                           value: "edit",
                           options: [
-                            // {
-                            //   "label": "只读",
-                            //   "value": "read"
-                            // },
+                            {
+                              "label": "只读",
+                              "value": "read"
+                            },
                             {
                               "label": "编辑",
                               "value": "edit"
+                            }
+                          ]
+                        },
+                        {
+                          type: "button-group-select",
+                          name: "enableInitApi",
+                          mode: 'horizontal',
+                          horizontal: {
+                            left: 4,
+                            right: 8,
+                            justify: true
+                          },
+                          label: "初始化接口",
+                          value: false,
+                          visibleOn: "${mode === 'read'}",
+                          options: [
+                            {
+                              "label": "启用",
+                              "value": true
+                            },
+                            {
+                              "label": "禁用",
+                              "value": false
                             }
                           ]
                         },
