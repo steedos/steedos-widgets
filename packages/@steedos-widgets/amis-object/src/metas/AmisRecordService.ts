@@ -105,11 +105,11 @@ export default {
           "valueField": "name",
           "menuTpl": ""
         },
-        // {
-        //   type: "text",
-        //   name: "recordId",
-        //   label: "记录ID"
-        // }
+        {
+          type: "input-text",
+          name: "recordId",
+          label: "记录ID"
+        }
       ]
     }
   }

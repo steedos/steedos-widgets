@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-04-24 14:14:38
+ * @LastEditTime: 2024-04-25 19:01:52
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -627,6 +627,10 @@ export async function getRecordServiceSchema(objectName, appId, props = {}, body
                 data: {
                     "_master.objectName": "${objectName}",
                     "_master.recordId": "${recordId}",
+                    // 微页面设计器中用RecordServic组件包裹一个ObjectForm只读组件时，如果这里不把recordLoaded默认设置为false
+                    // recordLoaded值会取父作用域中已经被设置为true的值（比如父级有RecordServic组件，在加载完数据后，父作用域中recordLoaded值为true)
+                    // 这会造成表单内steedos field组件lookup字段中props.data取到的是父作用域中的数据
+                    "recordLoaded": false,
                     ...(props.data || {})
                 },
                 "style": {

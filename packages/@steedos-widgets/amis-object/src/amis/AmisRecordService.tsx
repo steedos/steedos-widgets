@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-08 10:32:17
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-02-18 16:05:56
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2024-04-25 19:02:45
  * @Description: 
  */
 
@@ -34,6 +34,15 @@ export const AmisRecordService = async (props) => {
     }
     Object.assign(schema.style, style);
   }
-  // console.log(`AmisRecordService====schema==>`, schema)
+
+  const formData: any = {};
+  if (has(props, "recordId") && $schema.recordId !== "${recordId}") {
+    formData.recordId = props.recordId;
+  }
+  schema.data = Object.assign({}, schema.data || {}, formData);
+  if (has(props, 'objectApiName')) {
+    schema.data.objectName = objectApiName;
+  }
+  console.log(`AmisRecordService====schema==>`, schema)
   return schema
 }
