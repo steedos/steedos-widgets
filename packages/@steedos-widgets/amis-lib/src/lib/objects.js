@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-04-25 19:01:52
+ * @LastEditTime: 2024-04-26 16:46:44
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -312,15 +312,18 @@ export async function getListSchema(
             if (localListViewProps.perPage) {
                 listSchema.perPage = localListViewProps.perPage;
             }
-            if (window.innerWidth > 768) {
-                // 列表视图组件PC端高度自动计算实现满屏效果，手机端不需要满屏效果，所以不用autofillheight
-                listSchema.autoFillHeight = true;
-            }
             defaults.listSchema = defaultsDeep({}, listSchema, defaults.listSchema || {});
         }
     }
     catch (ex) {
         console.error("本地存储中crud参数解析异常：", ex);
+    }
+
+    if (window.innerWidth > 768) {
+        // 列表视图组件PC端高度自动计算实现满屏效果，手机端不需要满屏效果，所以不用autofillheight，且允许重写微页面中重新组件autoFillHeight属性
+        defaults.listSchema = defaultsDeep({}, defaults.listSchema || {}, {
+            autoFillHeight: true
+        });
     }
 
     ctx.defaults = defaults;
