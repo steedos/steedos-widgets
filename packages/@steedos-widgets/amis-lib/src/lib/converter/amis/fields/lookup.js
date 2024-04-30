@@ -770,7 +770,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
     // const labelFieldKey = referenceTo && referenceTo.labelField?.name || 'name';
 
     let apiInfo;
-    let defaultValueOptionsQueryData;
+    let defaultValueOptionsQueryString;
     const refObjectConfig = referenceTo && await getUISchema(referenceTo.objectName);
     if(referenceTo){
         let queryFields = [
@@ -787,15 +787,18 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         }
 
         // 字段值单独走一个请求合并到source的同一个GraphQL接口中
-        defaultValueOptionsQueryData = await graphql.getFindQuery({ name: referenceTo.objectName }, null, queryFields, {
+        const defaultValueOptionsQueryData = await graphql.getFindQuery({ name: referenceTo.objectName }, null, queryFields, {
             expand: false,
             alias: "defaultValueOptions",
             filters: "{__options_filters}",
             count: false
         });
+        defaultValueOptionsQueryString = defaultValueOptionsQueryData.query.replace(/^{/,"").replace(/}$/,"");
         apiInfo = await getApi({
             name: referenceTo.objectName
         }, null, queryFields, {expand: false, alias: 'options', queryOptions: `filters: {__filters}, top: {__top}, sort: "{__sort}"`});
+
+        apiInfo.data.query = apiInfo.data.query.replace(/}$/,"{__options_query}}");
 
         apiInfo.adaptor = `
             const data = payload.data;
@@ -855,11 +858,12 @@ export async function lookupToAmisSelect(field, readonly, ctx){
     apiInfo.requestAdaptor = `
         ${listviewFilter && !ctx.inFilterForm ? `var filters = ${JSON.stringify(listviewFilter)};` : 'var filters = [];'}
         var top = 200;
+        let termFilters;
         if(api.data.$term){
-            filters = [["${referenceTo?.NAME_FIELD_KEY || 'name'}", "contains", api.data.$term]];
+            termFilters = [["${referenceTo?.NAME_FIELD_KEY || 'name'}", "contains", api.data.$term]];
         }
         // else if(api.data.$value){
-        //     filters = [["_id", "=", api.data.$value]];
+        //     termFilters = [["_id", "=", api.data.$value]];
         // }
 
         var fieldFilters = ${JSON.stringify(field.filters)};
@@ -911,25 +915,35 @@ export async function lookupToAmisSelect(field, readonly, ctx){
                 filters.push(_filters);
             }
         }
-        var sort = "${sort}";
-        api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', top).replace('{__sort}', sort.trim());
 
         var defaultValue = api.data.$value;
-        var optionsFiltersOp = "${field.multiple ? "in" : "="}";
-        var optionsFilters = [["${valueFieldKey}", optionsFiltersOp, []]];
-        if (defaultValue && !api.data.$term) { 
-            const defaultValueOptionsQueryData = ${JSON.stringify(defaultValueOptionsQueryData)};
-            const defaultValueOptionsQuery = defaultValueOptionsQueryData?.query?.replace(/^{/,"").replace(/}$/,"");
-            // 字段值单独请求，没值的时候在请求中返回空
-            optionsFilters = [["${valueFieldKey}", optionsFiltersOp, defaultValue]];
+        // if (defaultValue && !api.data.$term) { 
+        if (defaultValue) { 
+            // 字段值单独请求，没值的时候不发默认值query请求，注意搜索时，即api.data.$term有值时，也需要发出默认值query请求，
+            // 不过请求中不应该包含搜索相关过滤条件，即不应该包含termFilters
+            var optionsFiltersOp = "${field.multiple ? "in" : "="}";
+            var optionsFilters = [["${valueFieldKey}", optionsFiltersOp, defaultValue]];
             if(filters.length > 0){
-                optionsFilters = [filters, optionsFilters];
+                // 注意这里filters中不包含termFilters，否则请求不到数据，所以这里clone了一次
+                optionsFilters.push(_.clone(filters));
             }
-            if(defaultValueOptionsQuery){
-                api.data.query = "{"+api.data.query.replace(/^{/,"").replace(/}$/,"")+","+defaultValueOptionsQuery+"}";
-            } 
+            let defaultValueOptionsQueryString = ",${defaultValueOptionsQueryString}";
+            defaultValueOptionsQueryString = defaultValueOptionsQueryString.replace(/{__options_filters}/g, JSON.stringify(optionsFilters));
+            // 有默认值设置默认值请求query
+            api.data.query = api.data.query.replace(/{__options_query}/, defaultValueOptionsQueryString);
         }
-        api.data.query = api.data.query.replace(/{__options_filters}/g, JSON.stringify(optionsFilters));
+        else{
+            // 没有默认值清除默认值请求query占位符，不发默认值query请求
+            api.data.query = api.data.query.replace(/{__options_query}/, "");
+        }
+
+        // termFilters最后再合并到filters中，因为上面默认值请求optionsFilters中不能包含termFilters
+        if(termFilters && termFilters.length > 0){
+            filters.unshift(termFilters);
+        }
+
+        var sort = "${sort}";
+        api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', top).replace('{__sort}', sort.trim());
         return api;
     `
     let labelField = referenceTo ? referenceTo.labelField.name : '';
@@ -977,11 +991,22 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         autoComplete: apiInfo,
         searchable: true,
     }
-    let amisVersion = getComparableAmisVersion();
-    if(amisVersion >= 3.6){
-        // amis 3.6中不加source会造成子表组件中弹出行编辑窗口的lookup字段有时不请求接口（概率现象，同一个地方反复操作有时请求有时不请求）
-        // 但是同时配置autoComplete和source会多请求一次接口
-        // TODO:应该想办法把是否字段在子表组件内，即ctx.isInputTable，如果不在子表组件内不需要加source
+    // let amisVersion = getComparableAmisVersion();
+    // if(amisVersion >= 3.6){
+    //     // amis 3.6中不加source会造成子表组件中弹出行编辑窗口的lookup字段有时不请求接口（概率现象，同一个地方反复操作有时请求有时不请求）
+    //     // 但是同时配置autoComplete和source会多请求一次接口
+    //     // TODO:应该想办法把是否字段在子表组件内，即ctx.isInputTable，如果不在子表组件内不需要加source
+    //     data.source = apiInfo;
+    //     delete data.autoComplete;
+    // }
+
+    if(referenceTo){
+        // 不需要配置searchApi，因为搜索时走的是autoComplete
+        // data.searchApi = apiInfo;
+    }
+    else{
+        // 没有referenceTo时，比如选项卡对象的icon字段，下拉显示图标列表，这种情况下下拉框字段搜索时用的是前端本地过滤，不需要发请求到服务端搜索
+        // 如果用autoComplete而不是source，会造成下拉框字段搜索时也触发请求，没有必要
         data.source = apiInfo;
         delete data.autoComplete;
     }
