@@ -393,7 +393,8 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                                 "color": "#FFFFFF"
                             },
                           },
-                        ]
+                        ],
+                        "xs": "auto"
                       },
                       {
                         "body": [
@@ -409,7 +410,8 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                             "tpl": "${context.user.email}",
                             "inline": true,
                           },
-                        ]
+                        ],
+                        "columnClassName": "break-all"
                       }
                     ]
                   },
