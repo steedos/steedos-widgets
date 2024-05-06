@@ -489,6 +489,10 @@ async function getFormSchemaWithDataFilter(form, options = {}){
 export async function getObjectForm(objectSchema, ctx){
     const { recordId, formFactor, layout = formFactor === 'SMALL' ? 'normal' : "horizontal", labelAlign, tabId, appId, defaults, submitSuccActions = [], 
       formDataFilter, onFormDataFilter, amisData, env } = ctx;
+    //优先识别组件上的enableTabs属性，若不存在，则识别对象上定义的
+    if (typeof ctx.enableTabs !== 'boolean') {
+      ctx.enableTabs = objectSchema.enable_form_tabs;
+    }
     const fields = _.values(objectSchema.fields);
     const formFields = getFormFields(objectSchema, ctx);
     const formSchema =  defaults && defaults.formSchema || {};
