@@ -299,7 +299,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     });
 
     // 把自动填充规则中依赖的字段也加到api请求中
-    let autoFillMapping = !field.multiple && field.auto_fill_mapping;
+    let autoFillMapping = field.auto_fill_mapping;
     if (autoFillMapping && autoFillMapping.length) {
         autoFillMapping.forEach(function (item) {
             if(!_.find(tableFields, function(f){
@@ -779,7 +779,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         ];
 
         // 把自动填充规则中依赖的字段也加到api请求中
-        let autoFillMapping = !field.multiple && field.auto_fill_mapping;
+        let autoFillMapping = field.auto_fill_mapping;
         if (autoFillMapping && autoFillMapping.length) {
             autoFillMapping.forEach(function (item) {
                 queryFields.push(refObjectConfig.fields[item.from]);
@@ -1025,14 +1025,24 @@ async function getApi(object, recordId, fields, options){
 }
 
 async function getAutoFill(field, refObject) {
-    let autoFillMapping = !field.multiple && field.auto_fill_mapping;
+    let autoFillMapping = field.auto_fill_mapping;
     if (autoFillMapping && autoFillMapping.length) {
         let fillMapping = {};
+        if (field.multiple) {
+            autoFillMapping.forEach(function (item) {
+                if (_.includes(["lookup","master_detail","select"], refObject.fields[item.from].type)) {
+                    fillMapping[item.to] = `\${items | pick:${item.from}}`;
+                } else {
+                    fillMapping[item.to] = `\${items | pick:${item.from} | join}`;
+                }
+            });
+        }else{
+            autoFillMapping.forEach(function (item) {
+                fillMapping[item.to] = `\${${item.from}}`;
+            });
+        }
         // let fieldsForApi = [];
-        autoFillMapping.forEach(function (item) {
-            fillMapping[item.to] = `\${${item.from}}`;
-            // fieldsForApi.push(item.from);
-        });
+        // fieldsForApi.push(item.from);
         // let api = {
         //     // "url": "/amis/api/mock2/form/autoUpdate?browser=${browser}&version=${version}",
         //     "url": `/api/v1/${refObject.name}/\${${field.name}}?fields=${JSON.stringify(fieldsForApi)}`,
