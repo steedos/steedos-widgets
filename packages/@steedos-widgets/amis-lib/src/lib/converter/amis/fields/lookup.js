@@ -1030,6 +1030,7 @@ async function getAutoFill(field, refObject) {
         let fillMapping = {};
         if (field.multiple) {
             autoFillMapping.forEach(function (item) {
+                //from的字段类型为lookup、master_detail、select时，需要保留数组格式；其他类型需要转变为字符串格式
                 if (_.includes(["lookup","master_detail","select"], refObject.fields[item.from].type)) {
                     fillMapping[item.to] = `\${items | pick:${item.from}}`;
                 } else {
