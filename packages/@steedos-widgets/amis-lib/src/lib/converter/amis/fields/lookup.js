@@ -919,7 +919,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         var optionsFilters = [["${valueFieldKey}", optionsFiltersOp, []]];
         if (defaultValue && !api.data.$term) { 
             const defaultValueOptionsQueryData = ${JSON.stringify(defaultValueOptionsQueryData)};
-            const defaultValueOptionsQuery = defaultValueOptionsQueryData?.query?.replace(/^{/,"").replace(/}$/,"");
+            const defaultValueOptionsQuery = defaultValueOptionsQueryData && defaultValueOptionsQueryData.query && defaultValueOptionsQueryData.query.replace(/^{/,"").replace(/}$/,"");
             // 字段值单独请求，没值的时候在请求中返回空
             optionsFilters = [["${valueFieldKey}", optionsFiltersOp, defaultValue]];
             if(filters.length > 0){
