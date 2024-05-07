@@ -1,7 +1,7 @@
 {
   "name": "@steedos-widgets/ag-grid",
   "private": false,
-  "version": "6.3.0-beta.5",
+  "version": "6.3.0-beta.6",
   "main": "dist/ag-grid.cjs.js",
   "module": "dist/ag-grid.esm.js",
   "unpkg": "dist/ag-grid.umd.js",
@@ -49,7 +49,7 @@
   },
   "dependencies": {
     "@rollup/plugin-replace": "^5.0.2",
-    "@steedos-widgets/amis-lib": "6.3.0-beta.5",
+    "@steedos-widgets/amis-lib": "6.3.0-beta.6",
     "ag-grid-community": "~31.0.2",
     "ag-grid-enterprise": "~31.0.2",
     "ag-grid-react": "~31.0.2"
