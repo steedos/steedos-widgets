@@ -442,3 +442,14 @@ fieldset.antd-Collapse > legend{
 .antd-Tree .antd-Tree-list .antd-Tree-item .antd-Tree-itemLabel-item .antd-Tree-itemText >.antd-Wrapper{
     width: 100%;
 }
+
+@media (max-width: 768px){
+    .antd-Modal-footer{
+        flex-wrap: wrap;
+    }
+    .antd-Modal-footer .antd-Dialog-info{
+        flex-basis: 100%;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+}
