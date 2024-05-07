@@ -92,10 +92,23 @@ export function getNameTpl(field, ctx){
     if(ctx && ctx.isLookup){
         linkTarget = "target='_blank'"
     }
+    let nameLabel = field.name;
+    //若字段类型是lookup，则按照相关表tpl的label规则显示；若是其它类型，则显示_display或字段本身的值
+    if (field.type == "lookup") {
+        if(!field.reference_to && (field.optionsFunction || field._optionsFunction || field.options)){
+            if(!field.isTableField){
+                nameLabel = `\${${field.name}__label}`;
+            }
+        } else {
+            nameLabel = `\${_display.${field.name}.label}`;
+        }
+    } else {
+        nameLabel = `\${_display.${field.name} || ${field.name}}`
+    }
     if(ctx.isRelated && window.innerWidth >= 768){
-        return `<a href="${href}" ${linkTarget} onclick="return false;">\${${field.name} | raw}</a>`
+        return `<a href="${href}" ${linkTarget} onclick="return false;">\${${nameLabel} | raw}</a>`
     }else{
-        return `<a href="${href}" ${linkTarget}>\${${field.name} | raw}</a>`
+        return `<a href="${href}" ${linkTarget}>\${${nameLabel} | raw}</a>`
     }
 }
 
@@ -220,7 +233,7 @@ export function getLocationTpl(field){
 }
 
 export async function getFieldTpl (field, options){
-    if((field.is_name || field.name === options.labelFieldName) && !options.onlyDisplayLookLabel){
+    if((field.is_name || field.name === options.labelFieldName) && !options.onlyDisplayLookLabel && field.multiple !== true){
         return getNameTpl(field, options)
     }
     switch (field.type) {
