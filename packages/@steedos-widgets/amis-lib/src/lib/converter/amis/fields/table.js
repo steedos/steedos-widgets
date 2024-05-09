@@ -556,7 +556,7 @@ export async function getTableColumns(object, fields, options){
                 var file_id = data.versions && data.versions[0] && data.versions[0]._id;
                 window.previewFile && window.previewFile({file_name, file_id});
             `;
-            columnItem = {
+            columnItem = Object.assign({}, {
                 "type": "button",
                 "label": `<%=data.versions ? data.name : "${field.label}"%>`,
                 className,
@@ -588,7 +588,7 @@ export async function getTableColumns(object, fields, options){
                     ]
                   }
                 }
-            };
+            }, fieldAmis);
         }else if(field.type === 'toggle'){
             columnItem = Object.assign({}, {
                 type: "switch",
