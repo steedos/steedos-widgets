@@ -42,3 +42,29 @@
     min-height:var(--Nav-Item-height);
     height: unset;
 }
+
+.steedos-app-menu.stacked {
+    // .antd-Nav-Menu-inline .antd-Nav-Menu-item-selected::before {
+    //     border-right: none;
+    // }
+    // .antd-Nav-Menu-light .antd-Nav-Menu-item.antd-Nav-Menu-item-selected {
+    //     background-color: hsl(220, 13%, 91%);
+    // }
+    // .antd-Nav-Menu-item:active, .antd-Nav-Menu-item-active, .antd-Nav-Menu-submenu-title:active {
+    //     background-color: rgb(243 244 246);
+    //     color: black;
+    // }
+    .antd-Nav-Menu .antd-Nav-Menu-submenu-selected > .antd-Nav-Menu-submenu-title .antd-Nav-Menu-item-label {
+        color: black;
+    }
+    a, a:hover, a:active, a:focus {
+        color: black;
+    }
+    .antd-Nav-Menu-item-active .antd-Nav-Menu-item-label, .antd-Nav-Menu-item-active .antd-Nav-Menu-item-icon, .antd-Nav-Menu-item-active .antd-Nav-Menu-item-icon-after, .antd-Nav-Menu-item-active .antd-Nav-Menu-submenu-arrow {
+        color: black;
+    }
+    .antd-Nav-SearchBox.is-active {
+        width: calc(100% - 1rem);
+        margin: 0 0.5rem;
+    }
+}

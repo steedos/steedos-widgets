@@ -8,7 +8,7 @@
 import './AmisAppMenu.less';
 
 export const AmisAppMenu = async (props) => {
-    let { stacked = false, overflow, appId, data, links = null, showIcon = true, className = '', indentSize=12, selectedId } = props;
+    let { stacked = false, overflow, appId, data, links = null, showIcon = true, className = '', indentSize = 12, selectedId } = props;
     if(!appId){
         appId = data.context.appId || 'admin';
     }
@@ -54,6 +54,7 @@ export const AmisAppMenu = async (props) => {
                           _.each(_.groupBy(payload.children, 'group'), (tabs, groupName) => {
                               if (groupName === 'undefined' || groupName === '') {
                                   _.each(tabs, (tab) => {
+                                      tab.iconClass = (tab.icon || 'account').replaceAll('_', '-');
                                       if(locationPathname == tab.path){
                                         customTabId = tab.id;
                                       }else if(locationPathname.startsWith(tab.path + "/")){
@@ -62,8 +63,9 @@ export const AmisAppMenu = async (props) => {
                                       data.nav.push({
                                           "label": showIcon ? {
                                             type: 'tpl',
-                                            tpl: \`<span class='fill-slate-500 whitespace-normal leading-6 block -ml-px no-underline group flex items-center text-[14px] rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
+                                            tpl: \`<span class='whitespace-normal leading-6 block no-underline group flex items-center text-[14px] rounded-md'><svg class="slds-icon_container slds-icon-standard-\${ tab.iconClass } slds-icon !fill-white rounded-xl mr-2 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
                                           } : tab.name,
+                                          "searchKey": tab.name,
                                           "to": tab.path,
                                           "target":tab.target,
                                           "id": tab.id,
@@ -79,6 +81,7 @@ export const AmisAppMenu = async (props) => {
                                       "unfolded": tabGroup && tabGroup.default_open != false,
                                       "isGroup": true,
                                       "children": _.sortBy(_.map(tabs, (tab) => {
+                                            tab.iconClass = (tab.icon || 'account').replaceAll('_', '-');
                                             if(locationPathname == tab.path){
                                                 customTabId = tab.id;
                                             }else if(locationPathname.startsWith(tab.path + "/")){
@@ -87,8 +90,9 @@ export const AmisAppMenu = async (props) => {
                                             return {
                                             "label": showIcon ? {
                                                 type: 'tpl',
-                                                tpl: \`<span class='fill-slate-500 whitespace-normal leading-6 block -ml-px no-underline group flex items-center text-[14px] rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
+                                                tpl: \`<span class='whitespace-normal leading-6 block no-underline group flex items-center text-[14px] rounded-md'><svg class="slds-icon_container slds-icon-standard-\${ tab.iconClass } !fill-white slds-icon rounded-xl mr-2 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
                                             }  : tab.name,
+                                            "searchKey": tab.name,
                                             "to": tab.path,
                                             "target":tab.target,
                                             "id": tab.id,
@@ -103,6 +107,7 @@ export const AmisAppMenu = async (props) => {
                         
                       }else{
                           _.each(payload.children, (tab)=>{
+                                tab.iconClass = (tab.icon || 'account').replaceAll('_', '-');
                               if(locationPathname == tab.path){
                                 customTabId = tab.id;
                               }else if(locationPathname.startsWith(tab.path + "/")){
@@ -111,8 +116,9 @@ export const AmisAppMenu = async (props) => {
                               data.nav.push({
                               "label": showIcon ? {
                                   type: 'tpl',
-                                  tpl: \`<span class='fill-slate-500 whitespace-normal leading-6 block -ml-px no-underline group flex items-center text-[14px] rounded-md'><svg class="mr-1 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
+                                  tpl: \`<span class='whitespace-normal leading-6 block no-underline group flex items-center text-[14px] rounded-md'><svg class="slds-icon_container slds-icon-standard-\${ tab.iconClass } slds-icon !fill-white rounded-xl mr-2 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
                               } : tab.name,
+                              "searchKey": tab.name,
                               "to": tab.path,
                               "target":tab.target,
                               "id": tab.id,
@@ -158,7 +164,12 @@ export const AmisAppMenu = async (props) => {
                         },
                         "body":{
                             "type": "nav",
-                            className: "${className} text-black",
+                            "searchable": ${stacked},
+                            "searchConfig": {
+                              "placeholder": "搜索菜单",
+                              "matchFunc": "return link.searchKey && link.searchKey.indexOf(keyword)>=0;"
+                            },
+                            className: "${className} text-black steedos-app-menu ${stacked?'stacked':''}",
                             "stacked": ${stacked},
                             "overflow": ${JSON.stringify(overflow)},
                             "indentSize": ${indentSize},
