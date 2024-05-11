@@ -373,15 +373,15 @@ export async function getListSchema(
 async function convertColumnsToTableFields(columns, uiSchema, ctx = {}) {
     let fields = [];
     for (const column of columns) {
+        let columnField, fieldName, displayName, filedInfo, rfUiSchema, rfFieldInfo;
         if (isString(column)) {
-            let columnField;
             if (column.indexOf('.') > 0) {
-                const fieldName = column.split('.')[0];
-                const displayName = column.split('.')[1];
-                const filedInfo = uiSchema.fields[fieldName];
+                fieldName = column.split('.')[0];
+                displayName = column.split('.')[1];
+                filedInfo = uiSchema.fields[fieldName];
                 if (filedInfo && (filedInfo.type === 'lookup' || filedInfo.type === 'master_detail') && isString(filedInfo.reference_to)) {
-                    const rfUiSchema = await getUISchema(filedInfo.reference_to);
-                    const rfFieldInfo = rfUiSchema.fields[displayName];
+                    rfUiSchema = await getUISchema(filedInfo.reference_to);
+                    rfFieldInfo = rfUiSchema.fields[displayName];
                     columnField = Object.assign({}, rfFieldInfo, { name: `${fieldName}__expand.${displayName}`, expand: true, expandInfo: { fieldName, displayName } }, ctx);
                 }else if(filedInfo && filedInfo.type === 'object'){
                     columnField = uiSchema.fields[column];
@@ -405,14 +405,13 @@ async function convertColumnsToTableFields(columns, uiSchema, ctx = {}) {
             }
 
         } else if (isObject(column)) {
-            let columnField;
             if (column.field.indexOf('.') > 0) {
-                const fieldName = column.field.split('.')[0];
-                const displayName = column.field.split('.')[1];
-                const filedInfo = uiSchema.fields[fieldName];
+                fieldName = column.field.split('.')[0];
+                displayName = column.field.split('.')[1];
+                filedInfo = uiSchema.fields[fieldName];
                 if (filedInfo && (filedInfo.type === 'lookup' || filedInfo.type === 'master_detail') && isString(filedInfo.reference_to)) {
-                    const rfUiSchema = await getUISchema(filedInfo.reference_to);
-                    const rfFieldInfo = rfUiSchema.fields[displayName];
+                    rfUiSchema = await getUISchema(filedInfo.reference_to);
+                    rfFieldInfo = rfUiSchema.fields[displayName];
                     columnField = Object.assign({}, rfFieldInfo, ctx,
                         { name: `${fieldName}__expand.${displayName}`, expand: true, expandInfo: { fieldName, displayName } },
                         {
