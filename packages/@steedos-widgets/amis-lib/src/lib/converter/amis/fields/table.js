@@ -704,7 +704,7 @@ export async function getTableColumns(object, fields, options){
                                   "title": "&nbsp;",
                                   "headerClassName": "hidden",
                                   "size": "lg",
-                                  "bodyClassName": "p-0 m-0",
+                                  "bodyClassName": "p-0 m-0 bg-gray-100",
                                   "closeOnEsc": true,
                                   "closeOnOutside": true,
                                   "resizable": true,

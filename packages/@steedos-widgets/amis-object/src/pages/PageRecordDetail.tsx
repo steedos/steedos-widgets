@@ -21,7 +21,7 @@ export const PageRecordDetail = async (props) => {
     const recordPage = await getPage({type: 'record', appId: appId, objectName: objectApiName, formFactor: defaultFormFactor || data.formFactor});
     recordSchema = recordPage? recordPage.schema : {
       "type": "wrapper",
-      "className": "steedos-record-content overflow-y-auto p-0 m-0 flex-1 h-full",
+      "className": "steedos-record-content overflow-y-auto p-0 m-0 flex-1 h-full bg-gray-100",
       "name": `amis-${appId}-${objectApiName}-detail`,
       "body": [
         {
