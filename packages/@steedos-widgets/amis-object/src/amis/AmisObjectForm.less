@@ -35,12 +35,6 @@
             }
         }
 
-        .antd-Collapse {
-            .antd-Collapse-header.hidden {
-                display: none !important;
-            }
-        }
-
         .antd-Tabs-pane.is-active {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -75,6 +69,15 @@
     
 }
 
+.steedos-object-form {
+    .antd-Collapse {
+        //只有一个分组时隐藏分组名称
+        .antd-Collapse-header.hidden {
+            display: none !important;
+        }
+    }
+}
+
 // html 控件只读状态下不要显示边框 https://github.com/steedos/steedos-widgets/issues/488
 .steedos-object-form .steedos-input-rich-text-readonly .antd-RichTextControl{
     border: 0;
@@ -84,6 +87,9 @@
     .steedos-object-form{
         .antd-Form-item .antd-Form-label + .antd-Form-item-controlBox{
             max-width: unset;
+        }
+        .antd-Collapse::before{
+            content: unset;
         }
     }
 }
