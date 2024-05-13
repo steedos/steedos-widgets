@@ -45,8 +45,8 @@ function getReadonlyFormAdaptor(object, fields, options){
 
     var fieldNames = _.map(fields, function(n){return n.name});
     var nameField = object.fields[object.NAME_FIELD_KEY];
-    let nameLabel = nameField.name;
-    if (nameField.type == "lookup") {
+    let nameLabel = nameField && nameField.name;
+    if (nameField && nameField.type == "lookup") {
         if(!nameField.reference_to && (nameField.optionsFunction || nameField._optionsFunction || nameField.options)){
             if(!nameField.isTableField){
                 nameLabel = `record.${nameField.name}__label`;
@@ -54,7 +54,7 @@ function getReadonlyFormAdaptor(object, fields, options){
         } else {
             nameLabel = `record._display.${nameField.name}.label`;
         }
-    } else {
+    } else if (nameField){
         nameLabel = `record._display.${nameField.name} || record.${nameField.name}`
     }
     return  `
