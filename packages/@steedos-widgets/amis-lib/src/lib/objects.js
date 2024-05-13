@@ -419,6 +419,8 @@ async function convertColumnsToTableFields(columns, uiSchema, ctx = {}) {
                             wrap: column.wrap // wrap = true 是没效果的
                         }
                     );
+                } else if (filedInfo && filedInfo.type === 'object') {
+                    columnField = uiSchema.fields[column.field];
                 }
             } else {
                 if (uiSchema.fields[column.field]) {
