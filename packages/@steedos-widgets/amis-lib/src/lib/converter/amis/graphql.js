@@ -342,6 +342,6 @@ export function getApi (isMobile){
         //TODO 返回 绝对路径
     }else{
         // return __meteor_runtime_config__.ROOT_URL_PATH_PREFIX + "/graphql"
-        return `\${context.rootUrl}/graphql?reload=\${additionalFilters}`
+        return `\${context.rootUrl}/graphql?reload=\${additionalFilters|join}`
     }
 }
