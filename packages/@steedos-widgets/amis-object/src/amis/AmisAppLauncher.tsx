@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-03-30 10:06:03
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2024-05-14 13:30:24
  * @Description: 
  */
 
@@ -25,14 +25,61 @@ export const AmisAppLauncher = async (props) => {
       console.error("catch some error when eval the on_click script for app link:");
       console.error(e.message + "\\r\\n" + e.stack);
     }
-  `
+  `;
   const mobile_blank_script = `
     if(event.data.path[0] == "/"){
       Steedos.openWindow(event.data.context.rootUrl + event.data.path)
     }else{
       Steedos.openWindow(event.data.path)
     }
-  `
+  `;
+
+  const convertAppVisibleOnScript = `
+    var currentAmis = amisRequire('amis');
+    app_items.forEach((item) => {
+      let visible_on = item.visible_on && item.visible_on.trim();
+      if(visible_on){
+        // amis visibleOn属性中的表达式来自作用域中变量时,amis不认,所以这里把公式表达式提前运行下
+        try{
+          visible_on = currentAmis.evaluate(visible_on, BuilderAmisObject.AmisLib.createObject(context, item));
+          item.visible_on = visible_on;
+        }
+        catch(ex){
+          console.error("运行应用“" + item.name + "”的显示公式表达式时出现错误:",ex);
+          item.visible_on = false;
+        }
+      }
+    });
+  `;
+
+  const pcInitApiAdaptorScript = `
+    let app_items = payload;
+    let object_items = [];
+    let objects = [];
+    app_items.forEach((item) => {
+      item.children.forEach((i) => {
+        if (objects.indexOf(i.id) < 0) {
+          objects.push(i.id);
+          if(i.type != 'url' && i.type != 'page'){object_items.push(i);}
+        }
+      })
+    })
+    ${convertAppVisibleOnScript}
+    payload = {
+      app_items,
+      object_items
+    }
+    return payload;
+  `;
+  const mobileInitApiAdaptorScript = `
+    let app_items = payload;
+    ${convertAppVisibleOnScript}
+    payload = {
+      app_items
+    }
+    return payload;
+  `;
+
   let dialogSchema = {}
   const badgeText = "${IF(${id} == 'approve_workflow',${ss:keyvalues.badge.value|pick:'workflow'},${ss:keyvalues.badge.value|pick:${id}}) | toInt}";
   if(isMobile){
@@ -93,6 +140,7 @@ export const AmisAppLauncher = async (props) => {
                 ]
               }
             },
+            "visibleOn": "${visible_on}",
             "className": "block w-1/3 py-4",
             "style": {
               "display": "inline-flex",
@@ -113,7 +161,7 @@ export const AmisAppLauncher = async (props) => {
         "headers": {
           "Authorization": "Bearer ${context.tenantId},${context.authToken}"
         },
-        "adaptor": "\nlet app_items = payload;\npayload = {\n  app_items\n}\nreturn payload;",
+        "adaptor": mobileInitApiAdaptorScript,
         "messages": {
         }
       },
@@ -162,7 +210,7 @@ export const AmisAppLauncher = async (props) => {
                 {
                   "type": "each",
                   "name": "app_items",
-                  "items": {
+                  "items": [{
                     "type": "button",
                     "level": "link",
                     "body": [{
@@ -218,8 +266,9 @@ export const AmisAppLauncher = async (props) => {
                     "inline": true,
                     "style": {
                     },
+                    "visibleOn": "${visible_on}",
                     "className": "slds-p-horizontal_small slds-size_1-of-1 slds-medium-size_1-of-3"
-                  },
+                  }],
                   "className": "slds-grid slds-wrap slds-grid_pull-padded"
                 }
               ]
@@ -311,7 +360,7 @@ export const AmisAppLauncher = async (props) => {
         "headers": {
           "Authorization": "Bearer ${context.tenantId},${context.authToken}"
         },
-        "adaptor": "\nlet app_items = payload;\nlet object_items = [];\nlet objects = [];\napp_items.forEach((item) => {\n  item.children.forEach((i) => {\n    if (objects.indexOf(i.id) < 0) {\n      objects.push(i.id);\n      if(i.type != 'url' && i.type != 'page'){object_items.push(i);}\n    }\n  })\n})\npayload = {\n  app_items,\n  object_items\n}\nreturn payload;"
+        "adaptor": pcInitApiAdaptorScript
       }
     }
   }
