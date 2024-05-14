@@ -66,7 +66,8 @@ export const getSchema = (uiSchema)=>{
                             }
                           ]
                     }
-                }
+                },
+                "close": `object_actions_drawer_${uiSchema.name}`
             }
         ],
         "regions": [

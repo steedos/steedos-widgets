@@ -197,7 +197,8 @@ export const getSchema = async (uiSchema, ctx) => {
                                             type: 'button',
                                             actionType: 'confirm',
                                             label: i18next.t('frontend_form_save'),
-                                            primary: true
+                                            primary: true,
+                                            close: `object_actions_drawer_${uiSchema.name}`
                                         },
                                     ]
                                 }

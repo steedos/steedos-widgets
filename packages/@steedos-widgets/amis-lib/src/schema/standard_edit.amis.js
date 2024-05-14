@@ -78,6 +78,20 @@ export const getSchema = async (uiSchema, ctx) => {
                       ]
                     }
                   },
+                  "actions": [
+                    {
+                        type: 'button',
+                        actionType: 'cancel',
+                        label: i18next.t('frontend_form_cancel')
+                    },
+                    {
+                        type: 'button',
+                        actionType: 'confirm',
+                        label: i18next.t('frontend_form_save'),
+                        primary: true,
+                        close: `object_actions_drawer_${uiSchema.name}`
+                    },
+                  ]
                 },
               },
             ],
