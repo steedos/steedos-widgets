@@ -133,6 +133,10 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
     // const scope = event.context.scoped;
     // 如果点击过顶部搜索栏表单的取消按钮，会把此处event.data.__super.__super.__super中的搜索表单项的所有字段设置为null
     // 点击取消按钮后继续在表单项中输入过滤条件且最后没有点击回车按键或点击表单项搜索按钮的话，在快速搜索中点击回车按钮提交搜索会所顶部搜索表单中的字段值清空
+    let filterForm = SteedosUI.getClosestAmisComponentByType(scope, "form");
+    if(!filterForm){
+      return;
+    }
     let isLookup = event.data.isLookup;
     let __lookupField = event.data.__lookupField;
     let __changedFilterFormValuesKey = "__changedFilterFormValues";
@@ -143,9 +147,8 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
       }
       __changedFilterFormValuesKey += lookupTag;
     }
-    let filterForm = SteedosUI.getClosestAmisComponentByType(scope, "form");
     setTimeout(function(){
-      filterForm.setValues(event.data[__changedFilterFormValuesKey]);
+      filterForm && filterForm.setValues(event.data[__changedFilterFormValuesKey]);
     }, 500);
   `;
 
