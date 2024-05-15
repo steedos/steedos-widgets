@@ -13,6 +13,7 @@
     "frontend_form_delete": "删除",
     "frontend_form_view": "查看",
     "frontend_form_details": "详情",
+    "frontend_form_validation_failed_url": "URL 格式不正确",
     "frontend_delete_confirm_text": "确定要删除此项目?",
     "frontend_delete_many_selected_required": "请选择要删除的项",
     "frontend_delete_many_confirm_text": "确定要删除吗？",
