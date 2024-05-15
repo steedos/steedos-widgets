@@ -589,7 +589,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                 if(typeof fieldAmisValidations === "undefined"){
                     Object.assign(convertData, {
                         "validations": {
-                          "matchRegexp": "^((http:\\/\\/|https:\\/\\/)+([^\\s\\/\\.]+(\\.[^\\s\\/\\.]+)+))*(\\/[^\\s\\.\\/]+)*$"
+                          "matchRegexp": "^((http:\\/\\/|https:\\/\\/|ftp:\\/\\/|sftp:\\/\\/)+([^\\s\\/\\.]+(\\.[^\\s\\/\\.]+)+))*(\\/[^\\s\\.\\/]+)*$"
                         },
                         "validationErrors": {
                           "matchRegexp": i18next.t('frontend_form_validation_failed_url')//"URL 格式不正确"
