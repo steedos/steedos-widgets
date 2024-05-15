@@ -5,7 +5,8 @@ import * as Fields from '../fields';
 import * as Tpl from '../tpl';
 import * as File from './file';
 import { getAmisStaticFieldType } from './type';
-import * as _ from 'lodash'
+import * as _ from 'lodash';
+import { i18next } from "../../../../i18n";
 
 export const QUICK_SEARCHABLE_FIELD_TYPES = ["text", "textarea", "autonumber", "url", "email"];
 export const OMIT_FIELDS = ['created', 'created_by', 'modified', 'modified_by'];
@@ -580,6 +581,21 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             convertData = {
                 type: getAmisStaticFieldType('url', readonly, field),
                 static: readonly ? true : false
+            }
+            if(!readonly){
+                // amis input-url控件不支持相对路径，这里支持下
+                // 如果要使用amis原生input-url控件的默认的isUrl验证效果或自定义字段validations效果，配置字段的amis.validations属性即可，配置为null或空字符串则使用amis默认的isUrl效果
+                let fieldAmisValidations = field.amis?.validations;
+                if(typeof fieldAmisValidations === "undefined"){
+                    Object.assign(convertData, {
+                        "validations": {
+                          "matchRegexp": "^((http:\\/\\/|https:\\/\\/|ftp:\\/\\/|sftp:\\/\\/)+([^\\s\\/\\.]+(\\.[^\\s\\/\\.]+)+))*(\\/[^\\s\\.\\/]+)*$"
+                        },
+                        "validationErrors": {
+                          "matchRegexp": i18next.t('frontend_form_validation_failed_url')//"URL 格式不正确"
+                        }
+                    })
+                }
             }
             if(readonly && field.show_as_qr){
                 convertData = {
