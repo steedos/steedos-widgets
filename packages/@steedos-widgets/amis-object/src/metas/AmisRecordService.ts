@@ -81,36 +81,37 @@ export default {
         objectApiName: 'space_users'
       },
       panelTitle: "设置",
-      panelControls: [
-        {
-          "type": "select",
-          "label": "对象",
-          "name": "objectApiName",
-          "searchable": true,
-          "multiple": false,
-          "source": {
-            "method": "get",
-            "url": "/service/api/amis-design/objects",
-            "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
-            "adaptor": `
-              let data = payload.data;
-              payload.unshift({
-                label: "当前对象",
-                name: "\${objectName}"
-              });
-              return payload;
-            `
-          },
-          "labelField": "label",
-          "valueField": "name",
-          "menuTpl": ""
-        },
-        {
-          type: "input-text",
-          name: "recordId",
-          label: "记录ID"
-        }
-      ]
+      // panelControls: [
+      //   {
+      //     "type": "select",
+      //     "label": "对象",
+      //     "name": "objectApiName",
+      //     "searchable": true,
+      //     "multiple": false,
+      //     "source": {
+      //       "method": "get",
+      //       "url": "/service/api/amis-design/objects",
+      //       "requestAdaptor": "api.url = Builder.settings.rootUrl  + api.url; if(!api.headers){api.headers = {}};api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;return api;",
+      //       "adaptor": `
+      //         let data = payload.data;
+      //         payload.unshift({
+      //           label: "当前对象",
+      //           name: "\${objectName}"
+      //         });
+      //         return payload;
+      //       `
+      //     },
+      //     "labelField": "label",
+      //     "valueField": "name",
+      //     "menuTpl": ""
+      //   },
+      // 这里不可以放开右侧面板recordId属性，因为会自动设置其值为固定的id值，造成bug，见：https://github.com/steedos/steedos-platform/issues/6846
+      //   {
+      //     type: "input-text",
+      //     name: "recordId",
+      //     label: "记录ID"
+      //   }
+      // ]
     }
   }
 };
