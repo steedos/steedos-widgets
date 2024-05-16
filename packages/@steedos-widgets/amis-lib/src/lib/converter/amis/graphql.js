@@ -7,7 +7,7 @@ export async function getFieldsTemplate(fields, display){
     if(display != false){
         display = true;
     }
-    let fieldsName = ['_id'];
+    let fieldsName = ['_id', 'space'];
     let displayFields = [];
     let fieldsArr = [];
     if(_.isArray(fields)){
