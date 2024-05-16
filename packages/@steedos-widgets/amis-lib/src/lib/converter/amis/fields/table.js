@@ -8,6 +8,7 @@ import { getAmisFileReadonlySchema } from './file'
 import { Router } from '../../../router'
 import { i18next } from '../../../../i18n'
 import { getBowserType } from '../util';
+import { getPage } from '../../../../lib/page';
 
 function getOperation(fields){
     const controls = [];
@@ -675,19 +676,25 @@ export async function getTableColumns(object, fields, options){
                 }
 
                 if(window.innerWidth >= 768 && ((field.is_name || field.name === options.labelFieldName) || ((field.type == 'lookup' || field.type == 'master_detail') && _.isString(field.reference_to) && field.multiple != true)) && options.isRelated){
-                    
-                    const drawerRecordDetailSchema = {
+                    const recordPage = await getPage({ type: 'record', appId: options.appId, objectName: options.objectName, formFactor: options.formFactor });
+                    const drawerRecordDetailSchema = recordPage ? Object.assign({}, recordPage.schema, {
+                        "recordId": `\${${options.idFieldName}}`,
+                        "data": {
+                            ...recordPage.schema.data,
+                            "_inDrawer": true,  // 用于判断是否在抽屉中
+                            "recordLoaded": false, // 重置数据加载状态
+                        }
+                    }) : {
                         "type": "steedos-record-detail",
                         "objectApiName": "${objectName}",
                         "recordId": `\${${options.idFieldName}}`,
                         "showBackButton": false,
                         "showButtons": true,
                         "data": {
-                          "_inDrawer": true,  // 用于判断是否在抽屉中
-                          "recordLoaded": false, // 重置数据加载状态
+                            "_inDrawer": true,  // 用于判断是否在抽屉中
+                            "recordLoaded": false, // 重置数据加载状态
                         }
-                    };
-
+                    }
 
                     if(!(field.is_name || field.name === options.labelFieldName)){
                         drawerRecordDetailSchema.objectApiName = field.reference_to
