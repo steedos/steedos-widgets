@@ -449,7 +449,11 @@ export async function lookupToAmisPicker(field, readonly, ctx){
                     // 如果当前元素不是数组，则处理该元素
                     // 下面正则用于匹配amis公式\${}
                     if(/\\\$\\\{([^}]*)\\\}/.test(arr[i])) {
-                        arr[i] = currentAmis.evaluate(arr[i], api.data.$self);
+                        try{
+                            arr[i] = currentAmis.evaluate(arr[i], api.context);
+                        }catch(ex){
+                            console.error("运行lookup过滤公式时出现错误:",ex);
+                        }
                     }
                 }
             }
@@ -865,6 +869,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         var fieldFilters = ${JSON.stringify(field.filters)};
         var currentAmis = amisRequire('amis');
         //递归fieldFilters数组，检查每一个元素，判断若是公式，就仅把它解析
+        debugger;
         function traverseNestedArray(arr) {
             for (let i = 0; i < arr.length; i++) {
                 if (Array.isArray(arr[i])) {
@@ -874,7 +879,11 @@ export async function lookupToAmisSelect(field, readonly, ctx){
                     // 如果当前元素不是数组，则处理该元素
                     // 下面正则用于匹配amis公式\${}
                     if(/\\\$\\\{([^}]*)\\\}/.test(arr[i])) {
-                        arr[i] = currentAmis.evaluate(arr[i], api.data.$self);
+                        try{
+                            arr[i] = currentAmis.evaluate(arr[i], api.context);
+                        }catch(ex){
+                            console.error("运行lookup过滤公式时出现错误:",ex);
+                        }
                     }
                 }
             }
