@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-05-17 15:14:06
+ * @LastEditTime: 2024-05-17 17:02:10
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -100,8 +100,6 @@ const REFERENCE_VALUE_ITEM_ONCLICK = {
 }
 
 async function getLookupLinkOnClick(field: any, options: any) {
-    // console.log("===getLookupLinkOnClick===field===", field);
-    // console.log("===getLookupLinkOnClick===options===", options);
     const recordPage = await getPage({ type: 'record', appId: options.appId, objectName: options.objectName, formFactor: options.formFactor });
     const drawerRecordDetailSchema = recordPage ? Object.assign({}, recordPage.schema, {
         "recordId": "${value}",
@@ -364,6 +362,7 @@ export const AmisSteedosField = async (props) => {
                                                     }
                                                 ]
                                             } : null,
+                                            // onEvent: window.innerWidth < 768 ? null : REFERENCE_VALUE_ITEM_ONCLICK
                                             onEvent: window.innerWidth < 768 ? null : await getLookupLinkOnClick(steedosField, {
                                                 appId,
                                                 objectName: referenceTo,
@@ -447,7 +446,12 @@ export const AmisSteedosField = async (props) => {
                                                     }
                                                 ]
                                             } : null,
-                                            onEvent: window.innerWidth < 768 ? null : REFERENCE_VALUE_ITEM_ONCLICK
+                                            // onEvent: window.innerWidth < 768 ? null : REFERENCE_VALUE_ITEM_ONCLICK
+                                            onEvent: window.innerWidth < 768 ? null : await getLookupLinkOnClick(steedosField, {
+                                                appId,
+                                                objectName: referenceTo,
+                                                formFactor
+                                            })
                                         }
                                     }
                                 ]
