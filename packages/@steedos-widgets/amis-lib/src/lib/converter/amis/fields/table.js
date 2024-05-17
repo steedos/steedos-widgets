@@ -511,6 +511,59 @@ function getFieldWidth(width){
     }
 }
 
+async function getColumnItemOnClick(field, options){
+    const recordPage = await getPage({ type: 'record', appId: options.appId, objectName: options.objectName, formFactor: options.formFactor });
+    const drawerRecordDetailSchema = recordPage ? Object.assign({}, recordPage.schema, {
+        "recordId": `\${${options.idFieldName}}`,
+        "data": {
+            ...recordPage.schema.data,
+            "_inDrawer": true,  // 用于判断是否在抽屉中
+            "recordLoaded": false, // 重置数据加载状态
+        }
+    }) : {
+        "type": "steedos-record-detail",
+        "objectApiName": "${objectName}",
+        "recordId": `\${${options.idFieldName}}`,
+        "showBackButton": false,
+        "showButtons": true,
+        "data": {
+            "_inDrawer": true,  // 用于判断是否在抽屉中
+            "recordLoaded": false, // 重置数据加载状态
+        }
+    }
+
+    if(!(field.is_name || field.name === options.labelFieldName)){
+        drawerRecordDetailSchema.objectApiName = field.reference_to
+        drawerRecordDetailSchema.recordId = `\${_display.${field.name}.value}`
+    }
+    return {
+        "click": {
+          "actions": [
+            {
+                "actionType": "drawer",
+                "drawer": {
+                  "type": "drawer",
+                  "title": "&nbsp;",
+                  "headerClassName": "hidden",
+                  "size": "lg",
+                  "bodyClassName": "p-0 m-0 bg-gray-100",
+                  "closeOnEsc": true,
+                  "closeOnOutside": true,
+                  "resizable": true,
+                  "actions": [],
+                  "body": [
+                    drawerRecordDetailSchema
+                  ],
+                  "className": "steedos-record-detail-drawer app-popover",
+                  "id": "u:fc5f055afa8c"
+                },
+                "preventDefault": true
+            }
+          ]
+        }
+    };
+}
+
 export async function getTableColumns(object, fields, options){
     const columns = [];
     if(!options.isLookup && !options.isInputTable){
@@ -676,57 +729,7 @@ export async function getTableColumns(object, fields, options){
                 }
 
                 if(window.innerWidth >= 768 && ((field.is_name || field.name === options.labelFieldName) || ((field.type == 'lookup' || field.type == 'master_detail') && _.isString(field.reference_to) && field.multiple != true)) && options.isRelated){
-                    const recordPage = await getPage({ type: 'record', appId: options.appId, objectName: options.objectName, formFactor: options.formFactor });
-                    const drawerRecordDetailSchema = recordPage ? Object.assign({}, recordPage.schema, {
-                        "recordId": `\${${options.idFieldName}}`,
-                        "data": {
-                            ...recordPage.schema.data,
-                            "_inDrawer": true,  // 用于判断是否在抽屉中
-                            "recordLoaded": false, // 重置数据加载状态
-                        }
-                    }) : {
-                        "type": "steedos-record-detail",
-                        "objectApiName": "${objectName}",
-                        "recordId": `\${${options.idFieldName}}`,
-                        "showBackButton": false,
-                        "showButtons": true,
-                        "data": {
-                            "_inDrawer": true,  // 用于判断是否在抽屉中
-                            "recordLoaded": false, // 重置数据加载状态
-                        }
-                    }
-
-                    if(!(field.is_name || field.name === options.labelFieldName)){
-                        drawerRecordDetailSchema.objectApiName = field.reference_to
-                        drawerRecordDetailSchema.recordId = `\${_display.${field.name}.value}`
-                    }
-                    
-                    columnItem.onEvent = {
-                        "click": {
-                          "actions": [
-                            {
-                                "actionType": "drawer",
-                                "drawer": {
-                                  "type": "drawer",
-                                  "title": "&nbsp;",
-                                  "headerClassName": "hidden",
-                                  "size": "lg",
-                                  "bodyClassName": "p-0 m-0 bg-gray-100",
-                                  "closeOnEsc": true,
-                                  "closeOnOutside": true,
-                                  "resizable": true,
-                                  "actions": [],
-                                  "body": [
-                                    drawerRecordDetailSchema
-                                  ],
-                                  "className": "steedos-record-detail-drawer app-popover",
-                                  "id": "u:fc5f055afa8c"
-                                },
-                                "preventDefault": true
-                            }
-                          ]
-                        }
-                    }
+                    columnItem.onEvent = await getColumnItemOnClick(field, options);
                 }
 
             }
