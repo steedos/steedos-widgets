@@ -109,3 +109,13 @@
 .steedos-field-lookup-wrapper{
   display: block !important;
 }
+
+.steedos-object-record-detail-header{
+  .steedos-record-detail-drawer &{
+    // drawer弹出窗口中的record-detail-header组件内的左上角返回按钮隐藏掉
+    // 加这个样式是为兼容之前版本的魔方项目里如果定义过记录类型微页面，那么非分栏模式下的记录详细页面相关表列表点击标题链接弹出的右侧drawer中记录详细页面左上角的返回按钮无法隐藏
+    .steedos-object-record-detail-header-back-button{
+      display: none;
+    }
+  }
+}

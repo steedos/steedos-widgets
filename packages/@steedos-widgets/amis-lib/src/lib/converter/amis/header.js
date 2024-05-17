@@ -249,6 +249,7 @@ export function getObjectListHeader(objectSchema, listViewName, ctx) {
 function getBackButtonSchema(){
   return {
     "type": "service",
+    "className": "steedos-object-record-detail-header-back-button",
     "onEvent": {
         "@history_paths.changed": {
             "actions": [
@@ -536,7 +537,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
     id: `page_readonly_${name}_header`,
     name: `page`,
     body: body, 
-    className: ''
+    className: "steedos-object-record-detail-header"
   }
 
 }
