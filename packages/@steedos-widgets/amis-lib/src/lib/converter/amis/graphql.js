@@ -2,12 +2,15 @@ import * as _ from 'lodash';
 import { includes, trimEnd } from 'lodash';
 import { getUISchema } from '../../objects';
 
-export async function getFieldsTemplate(fields, display){
+export async function getFieldsTemplate(object, fields, display){
     let expandFields = [];
     if(display != false){
         display = true;
     }
-    let fieldsName = ['_id', 'space'];
+    let fieldsName = ['_id'];
+    if(!object.datasource || object.datasource === 'default' || object.datasource === 'meteor'){
+        fieldsName.push('space')
+    }
     let displayFields = [];
     let fieldsArr = [];
     if(_.isArray(fields)){
@@ -103,7 +106,7 @@ export async function getFindOneQuery(object, recordId, fields, options){
         }
     }
     return {
-        query: `{${alias}:${object.name}${queryOptions}{${await getFieldsTemplate(fields)}, ${getRecordPermissionsTemplate()}}}`
+        query: `{${alias}:${object.name}${queryOptions}{${await getFieldsTemplate(object, fields)}, ${getRecordPermissionsTemplate()}}}`
     }
 }
 
@@ -292,7 +295,7 @@ export async function getFindQuery(object, recordId, fields, options){
     //     return item.replace(/^{/,"").replace(/}$/,"");
     // }).join(",")) : "";
 
-    const fieldsTemplate = `${await getFieldsTemplate(fields, options.expand)}${treeFields}${cfsFields}`;
+    const fieldsTemplate = `${await getFieldsTemplate(object, fields, options.expand)}${treeFields}${cfsFields}`;
 
     return {
         orderBy: "${orderBy}",
