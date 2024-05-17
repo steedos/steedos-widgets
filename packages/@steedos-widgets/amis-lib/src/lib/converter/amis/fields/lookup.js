@@ -869,7 +869,6 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         var fieldFilters = ${JSON.stringify(field.filters)};
         var currentAmis = amisRequire('amis');
         //递归fieldFilters数组，检查每一个元素，判断若是公式，就仅把它解析
-        debugger;
         function traverseNestedArray(arr) {
             for (let i = 0; i < arr.length; i++) {
                 if (Array.isArray(arr[i])) {
