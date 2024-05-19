@@ -603,7 +603,10 @@ export async function getTableColumns(object, fields, options){
         delete fieldAmis?.className;
 
         let columnItem;
-        if((field.is_name || field.name === options.labelFieldName) && options.objectName === 'cms_files'){
+
+        // PC客户端点击名称字段直接预览
+        let isNode = !!(window && window.nw && window.nw.require);
+        if((field.is_name || field.name === options.labelFieldName) && options.objectName === 'cms_files' && isNode){
             const previewFileScript = `
                 var data = event.data;
                 var file_name = data.versions ? data.name : "${field.label}";
@@ -618,20 +621,20 @@ export async function getTableColumns(object, fields, options){
                 "onEvent": {
                   "click": {
                     "actions": [
-                        {
-                            "args": {
-                                "api": {
-                                    "url": "${(versions[0] && versions[0].url) ? versions[0].url+'?download=true' : context.rootUrl+'/api/files/files/'+versions[0]+'?download=true'}",
-                                    "method": "get",
-                                    "headers": {
-                                        "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                                    }
-                                }
-                            },
-                            "actionType": "download",
-                            // "expression": "!!!window?.nw?.require"//浏览器上直接下载
-                            "expression": "!!!(window && window.nw && window.nw.require)"//浏览器上直接下载
-                        },
+                        // {
+                        //     "args": {
+                        //         "api": {
+                        //             "url": "${(versions[0] && versions[0].url) ? versions[0].url+'?download=true' : context.rootUrl+'/api/files/files/'+versions[0]+'?download=true'}",
+                        //             "method": "get",
+                        //             "headers": {
+                        //                 "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                        //             }
+                        //         }
+                        //     },
+                        //     "actionType": "download",
+                        //     // "expression": "!!!window?.nw?.require"//浏览器上直接下载
+                        //     "expression": "!!!(window && window.nw && window.nw.require)"//浏览器上直接下载
+                        // },
                         {
                             "args": {},
                             "actionType": "custom",
@@ -944,17 +947,23 @@ async function getMobileTableColumns(fields, options){
                 onEvent: {
                     "click": {
                         "actions": [
+                            // {
+                            //     "args": {
+                            //         "api": {
+                            //             "url": url,
+                            //             "method": "get",
+                            //             "headers": {
+                            //                 "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                            //             }
+                            //         }
+                            //     },
+                            //     "actionType": "download"
+                            // }
                             {
+                                "actionType": "link",
                                 "args": {
-                                    "api": {
-                                        "url": url,
-                                        "method": "get",
-                                        "headers": {
-                                            "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                                        }
-                                    }
-                                },
-                                "actionType": "download"
+                                    "link": url
+                                }
                             }
                         ],
                         "weight": 0
