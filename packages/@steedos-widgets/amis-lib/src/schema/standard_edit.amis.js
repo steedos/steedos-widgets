@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:49:58
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-06-28 23:22:31
+ * @LastEditors: yinlianghui@hotoa.com yinlianghui@hotoa.com
+ * @LastEditTime: 2024-05-19 10:01:07
  * @Description:
  */
 import { i18next } from "../i18n";
@@ -66,6 +66,12 @@ export const getSchema = async (uiSchema, ctx) => {
                   closeOnEsc: false,
                   closeOnOutside: false,
                   showCloseButton: true,
+                  "data": {
+                    "&": "$$",
+                    "_master": "${_master}",
+                    "_master._isRelated": "${_isRelated}",
+                    "_master.relatedKey": "${relatedKey}"
+                  },
                   size: "lg",
                   "onEvent": {
                     "cancel": {
