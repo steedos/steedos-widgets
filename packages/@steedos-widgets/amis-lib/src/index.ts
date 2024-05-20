@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 09:09:12
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-11-16 10:10:42
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2024-05-20 13:46:04
  * @Description: 
  */
 export * from './lib/amis'
@@ -43,3 +43,5 @@ export * from './workflow';
 export * from './lib/router'
 
 export * from './i18n'
+
+export * from './utils/uuid';
