@@ -165,7 +165,12 @@ async function getQuickEditSchema(object, columnField, options){
                     break;
                 case "percent":
                     TempDisplayField = `
-                            _display["${field.name}"] = event.data.value.toFixed(${field.scale}) + '%';
+                            if(event.data.value){
+                                _display["${field.name}"] = event.data.value.toFixed(${field.scale}) + '%';
+                            } else {
+                                _display["${field.name}"] = event.data.value;
+                            }
+                            
                         `
                     quickEditSchema.body[0].onEvent["change"] = quickEditOnEvent(TempDisplayField)
                     break;
