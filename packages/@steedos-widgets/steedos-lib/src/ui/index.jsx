@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-27 15:54:12
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-08-14 16:52:49
+ * @LastEditTime: 2024-05-21 10:27:10
  * @Description: 
  */
 import { message, notification, Button, Space} from 'antd';
@@ -168,10 +168,11 @@ export const SteedosUI = Object.assign({}, {
               "label": "工作区ID",
               "value": "global['spaceId']"
             },
-            {
-              "label": "只读/编辑模式",
-              "value": "global['mode']"
-            },
+            // 因为默认值不能选这个选项，先直接去除
+            // {
+            //   "label": "只读/编辑模式",
+            //   "value": "global['mode']"
+            // },
             {
               "label": "用户",
               "children": [
@@ -199,10 +200,11 @@ export const SteedosUI = Object.assign({}, {
                   "label": "主部门ID",
                   "value": "global['user']['organization']['_id']"
                 },
-                {
-                  "label": "部门(多选)",
-                  "value": "global['user']['organizations']"
-                },
+                // 值为对象数组，先去掉
+                // {
+                //   "label": "部门(多选)",
+                //   "value": "global['user']['organizations']"
+                // },
                 {
                   "label": "部门(含上级)",
                   "value": "global['user']['organizations_parents']" 
