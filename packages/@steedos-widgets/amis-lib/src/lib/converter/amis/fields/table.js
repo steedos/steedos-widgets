@@ -524,6 +524,7 @@ async function getColumnItemOnClick(field, options){
             ...recordPage.schema.data,
             "_inDrawer": true,  // 用于判断是否在抽屉中
             "recordLoaded": false, // 重置数据加载状态
+            "recordId": `\${${options.idFieldName}}`//审批微页面依赖了作用域中的recordId
         }
     }) : {
         "type": "steedos-record-detail",
