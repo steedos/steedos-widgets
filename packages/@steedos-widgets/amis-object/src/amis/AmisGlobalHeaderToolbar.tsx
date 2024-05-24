@@ -3,7 +3,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-05-24 19:16:50
+ * @LastEditTime: 2024-05-24 19:37:30
  * @Description: 
  */
 
@@ -119,9 +119,14 @@ const getNotificationBadgeButton = () => {
         actions: [
           {
             "type": "button",
+            "label": i18next.t('frontend_notifications_close_dialog'),
+            "visibleOn": "${window:innerWidth <= 768}",
+            "close": true
+          },
+          {
+            "type": "button",
             "label": i18next.t('frontend_notifications_allread'),
             "id": "u:5530f3779e3a",
-            "close": true,
             "onEvent": {
               "click": {
                 "actions": [

@@ -71,6 +71,7 @@
     "frontend_notifications": "通知",
     "frontend_notifications_allread": "全部标记为已读",
     "frontend_notifications_allread_message": "已全部标记为已读",
+    "frontend_notifications_close_dialog": "关闭",
     "frontend_profile": "个人资料",
     "switch_space": "切换工作区",
     "frontend_about": "关于",

@@ -70,6 +70,7 @@
     "frontend_notifications": "Notifications",
     "frontend_notifications_allread": "Mark all as read",
     "frontend_notifications_allread_message": "All marked as read",
+    "frontend_notifications_close_dialog": "Close",
     "frontend_profile": "Profile",
     "switch_space": "Switch Space",
     "frontend_about": "About",
