@@ -3,7 +3,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-05-24 15:28:23
+ * @LastEditTime: 2024-05-24 19:16:50
  * @Description: 
  */
 
@@ -32,6 +32,228 @@ const notificationReadAdaptor = `
   console.log("====payload==", payload);
   return payload;
 `;
+
+const getNotificationBadgeButton = () => {
+  const isMobile = window.innerWidth < 768;
+  const listContent = {
+    "type": "service",
+    "body": [
+      {
+        "type": "panel",
+        "title": i18next.t('frontend_notifications'),
+        "className": "steedos-header-toolbar-notifications-panel " + (isMobile ? "" : "min-w-[300px] max-w-md"),
+        "body": [
+          {
+            "type": "each",
+            "className": "overflow-auto max-h-96 steedos-header-toolbar-notifications-list",
+            "name": "notifications",
+            "items": {
+              "type": "tpl",
+              "tpl": `<div class='flex items-center p-4 hover:bg-sky-50'>
+                              <img src='<%=data.context.rootUrl + "/avatar/" + data.from%>' alt='' class='h-10 w-10 flex-none rounded-full'>
+                              <div class='ml-4 flex-auto'>
+                                <div class='font-medium'>
+                                  <span class='text-primary'><%=data.name%></span>
+                                </div>
+                                <div class='mt-1 text-gray-700'>
+                                  <%=data.body%>
+                                </div>
+                                <div class='mt-1 text-gray-700'>
+                                  <%=moment(data.created).locale(data.global.user.language).fromNow()%>
+                                  <abbr class='slds-text-link slds-m-horizontal_xxx-small <%=data.is_read ? 'hidden' : ''%>' title='unread'>●</abbr>
+                                </div>
+                              </div>
+                            </div>`,
+              "id": "u:07ece657c7b7",
+              "onEvent": {
+                "click": {
+                  "weight": 0,
+                  "actions": [
+                    {
+                      "args": {
+                        "options": {},
+                        "api": {
+                          "url": "${context.rootUrl}/api/v4/notifications/${_id}/read?rootUrl=&appId=${appId}&async=true",
+                          "method": "get",
+                          "messages": {},
+                          "headers": {
+                            "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                          },
+                          "adaptor": "payload = {\n  status: 0,\n  msg: '',\n  data: {\n    redirect: payload.redirect || payload \n  }} \nreturn payload;"
+                          // "adaptor": notificationReadAdaptor
+                        }
+                      },
+                      "actionType": "ajax"
+                    },
+                    // {
+                    //   "actionType": "custom",
+                    //   "script": "if(Meteor.isCordova){window.open(Meteor.absoluteUrl(event.data.responseResult.responseData.redirect), '_blank')}else{window.open(event.data.responseResult.responseData.redirect, '_blank')}",
+                    //   "expression": "${!!event.data.responseResult.responseData.redirect}",
+                    // },
+                    {
+                      // PC端保持原样，新窗口打开
+                      "actionType": "custom",
+                      "script": "window.open(event.data.responseResult.responseData.redirect, '_blank')",
+                      "expression": "${!!event.data.responseResult.responseData.redirect && window:innerWidth > 768}"
+                    },
+                    {
+                      // 手机端改为直接跳路由，因为新窗口打开顶部会显示url地址栏
+                      "actionType": "link",
+                      "args": {
+                        "link": "${redirect}"
+                      },
+                      "expression": "${!!event.data.responseResult.responseData.redirect && window:innerWidth <= 768}"
+                    },
+                    {
+                      "actionType": "cancel",
+                      "componentId": "steedos_header_toolbar_notifications_dialog",
+                      "expression": "${!!event.data.responseResult.responseData.redirect && window:innerWidth <= 768}"
+                    }
+                  ]
+                }
+              }
+            },
+            "id": "u:18da41dab9ca"
+          },
+        ],
+        actions: [
+          {
+            "type": "button",
+            "label": i18next.t('frontend_notifications_allread'),
+            "id": "u:5530f3779e3a",
+            "close": true,
+            "onEvent": {
+              "click": {
+                "actions": [
+                  {
+                    "componentId": "",
+                    "args": {
+                      "api": {
+                        "url": "${context.rootUrl}/api/v4/notifications/all/markReadAll",
+                        "method": "post",
+                        "headers": {
+                          "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                        }
+                      },
+                      "messages": {
+                        "success": i18next.t('frontend_notifications_allread_message')
+                      }
+                    },
+                    "actionType": "ajax"
+                  }
+                ],
+                "weight": 0
+              }
+            }
+          }
+        ]
+      },
+
+    ],
+    "id": "u:aba521eed5b7",
+    "onEvent": {
+      "@data.changed.notifications": {
+        "actions": [
+          {
+            "actionType": "reload"
+          }
+        ]
+      }
+    },
+    "messages": {
+    },
+    "api": {
+      "method": "post",
+      "url": "${context.rootUrl}/graphql",
+      "data": {
+        "&": "$$",
+        "context": "${context}",
+        "userId": "${context.userId}"
+      },
+      "dataType": "json",
+      "requestAdaptor": "const { userId } = api.data;\napi.data = {\n    query: `{\n        notifications(filters: [\"owner\",\"=\",\"${userId}\"], sort: \"created desc,name\", top : 10){\n          _id,name,body,related_to,related_name,url,owner,is_read,from,created\n        }  }`\n}",
+      "headers": {
+        "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+      },
+      "adaptor": "return payload.data"
+    },
+  }
+  const badgeButtonContent = {
+    "type": "service",
+    "body": [
+      {
+        "type": "steedos-badge",
+        "body": [
+          {
+            "type": "steedos-icon",
+            "category": "utility",
+            "name": "notification",
+            "colorVariant": "default",
+            "className": "slds-button_icon slds-global-header__icon"
+          }
+        ],
+        "count": "${unReadCount}"
+      },
+    ],
+    "id": "u:aba521eed5b7",
+    "messages": {
+    },
+    "api": {
+      "method": "post",
+      "url": "${context.rootUrl}/graphql",
+      "data": {
+        "&": "$$",
+        "context": "${context}",
+        "userId": "${context.userId}"
+      },
+      "dataType": "json",
+      "requestAdaptor": "const { userId } = api.data;\napi.data = {\n    query: `{\n unReadCount: notifications__count(filters: [[\"owner\",\"=\",\"${userId}\"], [\"is_read\", \"!=\", true]])\n    }`\n}",
+      "headers": {
+        "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+      },
+      "adaptor": "return payload.data"
+    },
+    "onEvent": {
+      "@data.changed.notifications": {
+        "actions": [
+          {
+            "actionType": "reload"
+          }
+        ]
+      }
+    },
+    // "interval": 30000,
+    "silentPolling": true
+  };
+  return isMobile ? {
+    "type": "button",
+    "body": badgeButtonContent,
+    "actionType": "dialog",
+    "dialog": {
+      "title": "",
+      "id": "steedos_header_toolbar_notifications_dialog",
+      "className": "steedos-header-toolbar-notifications-dialog",
+      "body": listContent,
+      "actions": [],
+      "showCloseButton": false,
+      "closeOnOutside": true
+    }
+  } : {
+    "type": "steedos-dropdown",
+    "placement": "bottomRight",
+    "trigger": [
+      "click"
+    ],
+    "body": [
+      badgeButtonContent
+    ],
+    "overlay": [
+      listContent
+    ],
+    "className": "antd-Action steedos-header-toolbar-notifications",
+    "open": false
+  };
+}
 
 export const AmisGlobalHeaderToolbar = async (props) => {
     const { className = '', data, logoutScript = "", customButtons = [] } = props;
@@ -185,204 +407,7 @@ export const AmisGlobalHeaderToolbar = async (props) => {
               }
             ]
           },
-          {
-            "type": "steedos-dropdown",
-            "placement": "bottomRight",
-            "trigger": [
-              "click"
-            ],
-            "body": [
-              {
-                "type": "service",
-                "body": [
-                    {
-                        "type": "steedos-badge",
-                        "body": [
-                            {
-                                "type": "steedos-icon",
-                                "category": "utility",
-                                "name": "notification",
-                                "colorVariant": "default",
-                                "className": "slds-button_icon slds-global-header__icon"
-                            }
-                        ],
-                        "count": "${unReadCount}"
-                    },
-                ],
-                "id": "u:aba521eed5b7",
-                "messages": {
-                },
-                "api": {
-                  "method": "post",
-                  "url": "${context.rootUrl}/graphql",
-                  "data": {
-                    "&": "$$",
-                    "context": "${context}",
-                    "userId": "${context.userId}"
-                  },
-                  "dataType": "json",
-                  "requestAdaptor": "const { userId } = api.data;\napi.data = {\n    query: `{\n unReadCount: notifications__count(filters: [[\"owner\",\"=\",\"${userId}\"], [\"is_read\", \"!=\", true]])\n    }`\n}",
-                  "headers": {
-                    "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                  },
-                  "adaptor": "return payload.data"
-                },
-                "onEvent": {
-                  "@data.changed.notifications": {
-                    "actions": [
-                      {
-                        "actionType": "reload"
-                      }
-                    ]
-                  }
-                },
-                // "interval": 30000,
-                "silentPolling": true
-              }
-            ],
-            "overlay": [
-                {
-                    "type": "service",
-                    "body": [
-                        {
-                            "type": "panel",
-                            "title": i18next.t('frontend_notifications'),
-                            "className": "min-w-[300px] max-w-md",
-                            "body": [
-                              {
-                                "type": "each",
-                                className: "overflow-auto max-h-96",
-                                "name": "notifications",
-                                "items": {
-                                  "type": "tpl",
-                                  "tpl": `<div class='flex items-center p-4 hover:bg-sky-50'>
-                                      <img src='<%=data.context.rootUrl + "/avatar/" + data.from%>' alt='' class='h-10 w-10 flex-none rounded-full'>
-                                      <div class='ml-4 flex-auto'>
-                                        <div class='font-medium'>
-                                          <span class='text-primary'><%=data.name%></span>
-                                        </div>
-                                        <div class='mt-1 text-gray-700'>
-                                          <%=data.body%>
-                                        </div>
-                                        <div class='mt-1 text-gray-700'>
-                                          <%=moment(data.created).locale(data.global.user.language).fromNow()%>
-                                          <abbr class='slds-text-link slds-m-horizontal_xxx-small <%=data.is_read ? 'hidden' : ''%>' title='unread'>●</abbr>
-                                        </div>
-                                      </div>
-                                    </div>`,
-                                  "id": "u:07ece657c7b7",
-                                  "onEvent": {
-                                    "click": {
-                                      "weight": 0,
-                                      "actions": [
-                                        {
-                                          "args": {
-                                            "options": {},
-                                            "api": {
-                                              "url": "${context.rootUrl}/api/v4/notifications/${_id}/read?rootUrl=&appId=${appId}&async=true",
-                                              "method": "get",
-                                              "messages": {},
-                                              "headers": {
-                                                "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                                              },
-                                              "adaptor": "payload = {\n  status: 0,\n  msg: '',\n  data: {\n    redirect: payload.redirect || payload \n  }} \nreturn payload;"
-                                              // "adaptor": notificationReadAdaptor
-                                            }
-                                          },
-                                          "actionType": "ajax"
-                                        },
-                                        // {
-                                        //   "actionType": "custom",
-                                        //   "script": "if(Meteor.isCordova){window.open(Meteor.absoluteUrl(event.data.responseResult.responseData.redirect), '_blank')}else{window.open(event.data.responseResult.responseData.redirect, '_blank')}",
-                                        //   "expression": "${!!event.data.responseResult.responseData.redirect}",
-                                        // },
-                                        {
-                                          // PC端保持原样，新窗口打开
-                                          "actionType": "custom",
-                                          "script": "window.open(event.data.responseResult.responseData.redirect, '_blank')",
-                                          "expression": "${!!event.data.responseResult.responseData.redirect && window:innerWidth > 768}",
-                                        },
-                                        {
-                                          // 手机端改为直接跳路由，因为新窗口打开顶部会显示url地址栏
-                                          "actionType": "link",
-                                          "args": {
-                                            "link": "${redirect}"
-                                          },
-                                          "expression": "${!!event.data.responseResult.responseData.redirect && window:innerWidth <= 768}",
-                                        }
-                                      ]
-                                    }
-                                  }
-                                },
-                                "id": "u:18da41dab9ca"
-                              },
-                            ],
-                            actions: [
-                              {
-                                "type": "button",
-                                "label": i18next.t('frontend_notifications_allread'),
-                                "id": "u:5530f3779e3a",
-                                "onEvent": {
-                                  "click": {
-                                    "actions": [
-                                      {
-                                        "componentId": "",
-                                        "args": {
-                                          "api": {
-                                            "url": "${context.rootUrl}/api/v4/notifications/all/markReadAll",
-                                            "method": "post",
-                                            "headers": {
-                                              "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                                            }
-                                          },
-                                          "messages": {
-                                            "success": i18next.t('frontend_notifications_allread_message')
-                                          }
-                                        },
-                                        "actionType": "ajax"
-                                      }
-                                    ],
-                                    "weight": 0
-                                  }
-                                }
-                              }
-                            ]
-                          },
-                          
-                    ],
-                    "id": "u:aba521eed5b7",
-                    "onEvent": {
-                      "@data.changed.notifications": {
-                        "actions": [
-                          {
-                            "actionType": "reload"
-                          }
-                        ]
-                      }
-                    },
-                    "messages": {
-                    },
-                    "api": {
-                      "method": "post",
-                      "url": "${context.rootUrl}/graphql",
-                      "data": {
-                        "&": "$$",
-                        "context": "${context}",
-                        "userId": "${context.userId}"
-                      },
-                      "dataType": "json",
-                      "requestAdaptor": "const { userId } = api.data;\napi.data = {\n    query: `{\n        notifications(filters: [\"owner\",\"=\",\"${userId}\"], sort: \"created desc,name\", top : 10){\n          _id,name,body,related_to,related_name,url,owner,is_read,from,created\n        }  }`\n}",
-                      "headers": {
-                        "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                      },
-                      "adaptor": "return payload.data"
-                    },
-                  }
-            ],
-            "id": "u:857e8161c96b",
-            "className": "antd-Action steedos-header-toolbar-notifications",
-            "open": false
-          },
+          getNotificationBadgeButton(),
           {
             "type": "steedos-dropdown",
             "placement": "bottomRight",

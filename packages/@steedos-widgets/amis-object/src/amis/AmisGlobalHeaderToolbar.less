@@ -53,4 +53,29 @@ body.sidebar #sidebar {
         opacity: 1;
     }
 
+    .steedos-header-toolbar-notifications-dialog{
+        .antd-Modal-content{
+            position: absolute !important;
+            left: 12px;
+            right: 12px;
+            top: 50px;
+            height: auto !important;
+            width: unset;
+            max-width: unset;
+            border-radius: var(--dialog-default-border-radius) !important;
+            padding: 0;
+            background: transparent;
+            border: none;
+            .antd-Modal-body{
+                padding: 0;
+                margin: 0;
+                .steedos-header-toolbar-notifications-panel{
+                    .steedos-header-toolbar-notifications-list{
+                        max-height: 60vh;
+                        margin: 0;
+                    }
+                }
+            }
+        }
+    }
 }
