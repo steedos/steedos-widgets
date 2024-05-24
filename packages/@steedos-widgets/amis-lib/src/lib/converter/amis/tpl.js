@@ -94,7 +94,7 @@ export function getNameTpl(field, ctx){
     }
     let nameLabel = field.name;
     //若字段类型是lookup，则按照相关表tpl的label规则显示；若是其它类型，则显示_display或字段本身的值
-    if (field.type == "lookup") {
+    if (field.type == "lookup" || field.type == "master_detail") {
         if(!field.reference_to && (field.optionsFunction || field._optionsFunction || field.options)){
             if(!field.isTableField){
                 nameLabel = `\${${field.name}__label}`;
