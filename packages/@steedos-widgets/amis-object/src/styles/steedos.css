@@ -6,16 +6,21 @@
     overflow: auto;
 }
 
-.buttons-drawer .antd-Drawer-content{
+/* 去除下拉按钮内图标的边距 */
+.steedos-mobile-header-drop-down i.icon{
+    margin: 0;
+}
+
+/* .buttons-drawer .antd-Drawer-content{
     height: auto !important;
     max-height: 70% !important;
-}
+} */
 
-.buttons-drawer .antd-Drawer-body{
+/* .buttons-drawer .antd-Drawer-body{
     overflow: inherit !important;
-}
+} */
 
-.buttons-drawer .antd-Drawer-body button{
+.buttons-drawer .antd-ButtonGroup button{
     border-color: #c9c9c9;
     border-right: none !important;
     border-left: none !important;

@@ -70,16 +70,6 @@ export const getSchema = async (uiSchema, ctx) => {
             data: formSchema
         };
     `;
-    const onDialogCancelScript = `
-        // 这里加setTimeout是因为amis的Bug，它会先触发cancel事件执行此脚本关闭父窗口然后再关闭子窗口
-        // 正确的顺序应该是先关闭子窗口再关闭父窗口，顺序错了会造成第二次点击新建按钮的时候异常
-        setTimeout(function(){
-            doAction({
-                "actionType": "cancel",
-                "componentId": "object_actions_drawer_${uiSchema.name}"
-            });
-        }, 200);
-    `;
     const getSelectedRowsScript = `
         const isLookup = event.data.isLookup;
         if(isLookup){
@@ -169,17 +159,6 @@ export const getSchema = async (uiSchema, ctx) => {
                                     "closeOnEsc": false,
                                     "closeOnOutside": false,
                                     "size": "lg",
-                                    "onEvent": {
-                                        "cancel": {
-                                            "actions": [
-                                                {
-                                                    "actionType": "custom",
-                                                    "script": onDialogCancelScript,
-                                                    "expression": "${window:innerWidth < 768}",
-                                                }
-                                            ]
-                                        }
-                                    },
                                     "actions": [
                                         {
                                             type: 'button',
@@ -197,8 +176,7 @@ export const getSchema = async (uiSchema, ctx) => {
                                             type: 'button',
                                             actionType: 'confirm',
                                             label: i18next.t('frontend_form_save'),
-                                            primary: true,
-                                            close: `object_actions_drawer_${uiSchema.name}`
+                                            primary: true
                                         },
                                     ]
                                 }

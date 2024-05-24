@@ -374,6 +374,105 @@ const getObjectDetailHeaderButtons = (objectSchema, recordId)=>{
     };
 }
 
+const getDropdown = (dropdownButtons)=>{
+    const dropdown = {
+        "type": "dropdown-button",
+        "icon": "fa fa-angle-down",
+        "size": "sm",
+        "hideCaret": true,
+        "className": "mr-0 steedos-mobile-header-drop-down",
+        "closeOnClick": true,
+        "menuClassName": "buttons-drawer fixed inset-0 bg-none border-0 shadow-none",
+        "align": "right",
+        "body": [
+            {
+                "type": "action",
+                "style": {
+                    "position": "fixed",
+                    "top": 0,
+                    "right": 0,
+                    "bottom": 0,
+                    "left": 0,
+                    "z-index": 1,
+                    "background": "var(--Drawer-overlay-bg)",
+                    "height": "unset",
+                    "width": "unset",
+                    "padding": "0",
+                    "margin": "0",
+                    "border-radius": "0"
+                }
+            },
+            {
+                "type": "wrapper",
+                "style": {
+                    "position": "fixed",
+                    "bottom": 0,
+                    "z-index": 2,
+                    "width": "100vw",
+                    "left": "0",
+                    "padding": "0",
+                    "background": "white",
+                    "box-shadow": "0 -10px 10px -10px rgba(0, 0, 0, 0.2)"
+                },
+                "body": [
+                    {
+                        "type": "flex",
+                        "justify": "space-between",
+                        "items": [
+                            {
+                                "type": "tpl",
+                                "tpl": "操作",
+                                "style": {
+                                    "padding": "4px 12px",
+                                    "align-items": "center",
+                                    "display": "flex"
+                                }
+                            },
+                            {
+                                "type": "action",
+                                "label": "",
+                                "icon": "fa fa-times",
+                                "level": "link",
+                                "style": {
+                                    "color": "black"
+                                },
+                            }
+                        ],
+                        "style": {
+                            "padding-top": "0.5rem",
+                            "padding-bottom": "0.5rem",
+                            "border-bottom": "var(--Drawer-content-borderWidth) solid var(--Drawer-header-borderColor)"
+                        }
+                    },
+                    {
+                        "type": "wrapper",
+                        "body": [
+                            {
+                                "type": "button-group",
+                                "id": "u:fd837823be5b",
+                                "vertical": true,
+                                "tiled": true,
+                                "buttons": dropdownButtons,
+                                "className": "w-full overflow-auto",
+                                "btnClassName": "w-full",
+                                "size": "lg"
+                            }
+                        ],
+                        "style": {
+                            "padding": "0",
+                            "overflow": "auto",
+                            "max-height": "70vh"
+                        }
+                    }
+
+                ]
+            }
+        ]
+    }
+
+    return dropdown;
+}
+
 export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
     const { buttons, moreButtons, moreButtonsVisibleOn } = getObjectDetailHeaderButtons(objectSchema, recordId);
     if(ctx.formFactor === 'SMALL'){
@@ -397,46 +496,7 @@ export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
             }
         })
 
-        return [
-            {
-                "type": "button",
-                "icon": "fa fa-angle-down",
-                "visibleOn": phoneMoreButtonsVisibleOn,
-                "onEvent": {
-                  "click": {
-                    "actions": [
-                      {
-                        "actionType": "drawer",
-                        "drawer": {
-                          "type": "drawer",
-                          "title": i18next.t('frontend_operation'),
-                          "id": "object_actions_drawer_" + objectSchema.name,
-                          "body": [
-                            {
-                              "type": "button-group",
-                              "id": "u:fd837823be5b",
-                              "vertical": true,
-                              "tiled": true,
-                              "buttons": dropdownButtons,
-                              "btnLevel": "enhance",
-                              "className": "w-full",
-                              "btnClassName": "w-full",
-                              "size": "lg"
-                            }
-                          ],
-                          "position": "bottom",
-                          "closeOnOutside": true,
-                          "resizable": false,
-                          "className": "buttons-drawer",
-                          "bodyClassName": "m-none p-none",
-                          "actions": []
-                        }
-                      }
-                    ]
-                  }
-                }
-              }
-        ]
+        return [getDropdown(dropdownButtons)];
     }else{
         if(moreButtons.length > 0){
             const dropdownButtonsSchema = {
@@ -457,54 +517,16 @@ export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
 export const getObjectListViewButtonsSchemas = (objectSchema, ctx)=>{
     const buttons = getListViewButtons(objectSchema, ctx);
     if(ctx.formFactor === 'SMALL'){
-        return {
-            "type": "button",
-            "icon": "fa fa-angle-down",
-            "className": "mr-0",
-            "onEvent": {
-              "click": {
-                "actions": [
-                  {
-                    "actionType": "drawer",
-                    "drawer": {
-                      "type": "drawer",
-                      "title": i18next.t('frontend_operation'),
-                      "id": "object_actions_drawer_" + objectSchema.name,
-                      "body": [
-                        {
-                          "type": "button-group",
-                          "id": "u:fd837823be5b",
-                          "vertical": true,
-                          "tiled": true,
-                          "buttons": [
-                            ..._.map(buttons, (button)=>{
-                                return {
-                                    type: 'steedos-object-button',
-                                    name: button.name,
-                                    objectName: button.objectName,
-                                    visibleOn: getButtonVisibleOn(button),
-                                    className: `button_${button.name} w-full`
-                                }
-                            })
-                          ],
-                          "btnLevel": "enhance",
-                          "className": "w-full",
-                          "btnClassName": "w-full",
-                          "size": "lg"
-                        }
-                      ],
-                      "position": "bottom",
-                      "closeOnOutside": true,
-                      "resizable": false,
-                      "className": "buttons-drawer",
-                      "bodyClassName": "m-none p-none",
-                      "actions": []
-                    }
-                  }
-                ]
-              }
+        const dropdownButtons = _.map(buttons, (button)=>{
+            return {
+                type: 'steedos-object-button',
+                name: button.name,
+                objectName: button.objectName,
+                visibleOn: getButtonVisibleOn(button),
+                className: `button_${button.name} w-full`
             }
-          }
+        });
+        return getDropdown(dropdownButtons);
     }else{
         return _.map(buttons, (button) => {
             return {
@@ -521,55 +543,19 @@ export const getObjectListViewButtonsSchemas = (objectSchema, ctx)=>{
 export const getObjectRecordDetailRelatedListButtonsSchemas = (objectSchema, ctx)=>{
     const buttons = getObjectRelatedListButtons(objectSchema, ctx);
     if(ctx.formFactor === 'SMALL'){
-        return {
-            "type": "button",
-            "icon": "fa fa-angle-down",
-            "onEvent": {
-              "click": {
-                "actions": [
-                  {
-                    "actionType": "drawer",
-                    "drawer": {
-                      "type": "drawer",
-                      "title": i18next.t('frontend_operation'),
-                      "id": "object_actions_drawer_" + objectSchema.name,
-                      "body": [
-                        {
-                          "type": "button-group",
-                          "vertical": true,
-                          "tiled": true,
-                          "buttons": [
-                            ..._.map(buttons, (button)=>{
-                                return {
-                                    type: 'steedos-object-button',
-                                    name: button.name,
-                                    objectName: button.objectName,
-                                    visibleOn: getButtonVisibleOn(button),
-                                    className: `button_${button.name} w-full`
-                                }
-                            })
-                          ],
-                          "btnLevel": "enhance",
-                          "className": "w-full",
-                          "btnClassName": "w-full",
-                          "size": "lg"
-                        }
-                      ],
-                      "position": "bottom",
-                      "closeOnOutside": true,
-                      "resizable": false,
-                      "className": "buttons-drawer",
-                      "bodyClassName": "m-none p-none",
-                      "actions": []
-                    }
-                  }
-                ]
-              }
+        const dropdownButtons = _.map(buttons, (button)=>{
+            return {
+                type: 'steedos-object-button',
+                name: button.name,
+                objectName: button.objectName,
+                visibleOn: getButtonVisibleOn(button),
+                className: `button_${button.name} w-full`
             }
-          }
+        });
+        return [getDropdown(dropdownButtons)];
     }else{
         return _.map(buttons, (button) => {
-            return {
+            return {                                                                                                                                                                                                                                                                                                                                                                    
                 type: 'steedos-object-button',
                 name: button.name,
                 objectName: button.objectName,
