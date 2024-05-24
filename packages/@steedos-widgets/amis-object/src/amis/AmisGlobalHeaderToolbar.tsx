@@ -2,13 +2,36 @@
   /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-03-19 15:55:42
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2024-05-24 15:28:23
  * @Description: 
  */
 
 import './AmisGlobalHeaderToolbar.less';
 import { i18next } from '@steedos-widgets/amis-lib';
+
+const reg = /([^/]+)\/view\/([^/]+)/;
+
+const notificationReadAdaptor = `
+  var redirect = payload.redirect || payload;
+  if(typeof redirect !== 'string'){
+    redirect = "";
+  }
+  var matchs = redirect.match(${reg});
+  var objectName = matchs.length > 1 ? matchs[1] : "";
+  var recordId = matchs.length > 1 ? matchs[2] : "";
+  payload = {
+    status: 0,
+    msg: '',
+    data: {
+      redirect: redirect,
+      objectName: objectName,
+      recordId: recordId
+    }
+  } 
+  console.log("====payload==", payload);
+  return payload;
+`;
 
 export const AmisGlobalHeaderToolbar = async (props) => {
     const { className = '', data, logoutScript = "", customButtons = [] } = props;
@@ -263,14 +286,29 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                                                 "Authorization": "Bearer ${context.tenantId},${context.authToken}"
                                               },
                                               "adaptor": "payload = {\n  status: 0,\n  msg: '',\n  data: {\n    redirect: payload.redirect || payload \n  }} \nreturn payload;"
+                                              // "adaptor": notificationReadAdaptor
                                             }
                                           },
                                           "actionType": "ajax"
                                         },
+                                        // {
+                                        //   "actionType": "custom",
+                                        //   "script": "if(Meteor.isCordova){window.open(Meteor.absoluteUrl(event.data.responseResult.responseData.redirect), '_blank')}else{window.open(event.data.responseResult.responseData.redirect, '_blank')}",
+                                        //   "expression": "${!!event.data.responseResult.responseData.redirect}",
+                                        // },
                                         {
+                                          // PC端保持原样，新窗口打开
                                           "actionType": "custom",
-                                          "script": "if(Meteor.isCordova){window.open(Meteor.absoluteUrl(event.data.responseResult.responseData.redirect), '_blank')}else{window.open(event.data.responseResult.responseData.redirect, '_blank')}",
-                                          "expression": "${!!event.data.responseResult.responseData.redirect}",
+                                          "script": "window.open(event.data.responseResult.responseData.redirect, '_blank')",
+                                          "expression": "${!!event.data.responseResult.responseData.redirect && window:innerWidth > 768}",
+                                        },
+                                        {
+                                          // 手机端改为直接跳路由，因为新窗口打开顶部会显示url地址栏
+                                          "actionType": "link",
+                                          "args": {
+                                            "link": "${redirect}"
+                                          },
+                                          "expression": "${!!event.data.responseResult.responseData.redirect && window:innerWidth <= 768}",
                                         }
                                       ]
                                     }
