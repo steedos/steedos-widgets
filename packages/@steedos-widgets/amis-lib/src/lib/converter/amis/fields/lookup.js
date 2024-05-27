@@ -622,7 +622,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         const isAllowCreate = refObjectConfig.permissions.allowCreate;
         const isCreate = _.isBoolean(field.create) ? field.create : true;
         // lookup字段配置过滤条件就强制不显示新建按钮
-        let hasFilters = !_.isEmpty(field.filters) || field.filtersFunction || field._filtersFunction;
+        let hasFilters = !_.isEmpty(field.filters) || !!field.filtersFunction || !!field._filtersFunction;
         if (isAllowCreate && isCreate && !hasFilters) {
             const new_button = await standardNew.getSchema(refObjectConfig, { appId: ctx.appId, objectName: refObjectConfig.name, formFactor: ctx.formFactor });
             new_button.align = "right";
