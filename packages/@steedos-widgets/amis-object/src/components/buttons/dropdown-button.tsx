@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-22 17:26:21
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-08 14:00:29
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2024-05-27 16:27:15
  * @Description: 
  */
 import React, { useEffect, useState } from 'react'
@@ -57,7 +57,13 @@ export const SteedosDropdownButton = (props)=>{
         }
     }
     return (
-        <Dropdown menu={{items: menu}} trigger={trigger} onOpenChange={onOpenChange} placement={placement} overlayClassName={overlayClassName} arrow={arrow}>
+        <Dropdown menu={{items: menu}} trigger={trigger} onOpenChange={onOpenChange} placement={placement} overlayClassName={overlayClassName} arrow={arrow} getPopupContainer={
+          (button) => {
+            // 未配置getPopupContainer属性时，默认container为body，这里判断到dropdown button是在drawer中时，统一把container配置为drawer本身
+            // 这样就可以解决drawer内点击dropdown button组件下拉菜单中的按钮时不应该自动关闭drawer的问题
+            const drawerBody = (window as any).$(button).closest(".amis-dialog-widget .antd-Drawer-body")[0];
+            return drawerBody || document.querySelector("body");
+          }}>
           <button className={`slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small ${className ? className : ''}`}>
             <svg className="w-4 h-4 fill-gray-500"><use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#down"></use></svg>
           </button>
