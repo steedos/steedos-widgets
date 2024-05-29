@@ -3,7 +3,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-05-24 19:37:30
+ * @LastEditTime: 2024-05-29 11:45:57
  * @Description: 
  */
 
@@ -31,6 +31,13 @@ const notificationReadAdaptor = `
   } 
   console.log("====payload==", payload);
   return payload;
+`;
+
+const beforeMarkReadAllScript = `
+  var hasUnRead = !!db.notifications.find({'$or':[{'is_read': null},{'is_read': false}]}).count();
+  // 没有订阅到未读通知时需要额外单独触发重新请求通知列表及未读数量
+  // 如果有订阅到的话，因为监听订阅到的通知记录变化，有变化会触发@data.changed.notifications事件，从而会自动触发重新请求通知列表及未读数量
+  event.data.needToReload = !hasUnRead;
 `;
 
 const getNotificationBadgeButton = () => {
@@ -131,6 +138,10 @@ const getNotificationBadgeButton = () => {
               "click": {
                 "actions": [
                   {
+                    "actionType": "custom",
+                    "script": beforeMarkReadAllScript 
+                  },
+                  {
                     "componentId": "",
                     "args": {
                       "api": {
@@ -145,6 +156,16 @@ const getNotificationBadgeButton = () => {
                       }
                     },
                     "actionType": "ajax"
+                  },
+                  {
+                    "componentId": "service_global_header_notifications_unread_count",
+                    "actionType": "reload",
+                    "expression": "${needToReload}"
+                  },
+                  {
+                    "componentId": "service_global_header_notifications_list",
+                    "actionType": "reload",
+                    "expression": "${needToReload}"
                   }
                 ],
                 "weight": 0
@@ -155,7 +176,7 @@ const getNotificationBadgeButton = () => {
       },
 
     ],
-    "id": "u:aba521eed5b7",
+    "id": "service_global_header_notifications_list",
     "onEvent": {
       "@data.changed.notifications": {
         "actions": [
@@ -200,7 +221,7 @@ const getNotificationBadgeButton = () => {
         "count": "${unReadCount}"
       },
     ],
-    "id": "u:aba521eed5b7",
+    "id": "service_global_header_notifications_unread_count",
     "messages": {
     },
     "api": {
