@@ -6,6 +6,7 @@
  * @Description: 
  */
 import { getAmisStaticFieldType } from './type';
+import { getPage } from '../../../../lib/page';
 
 const getFileTableName = (steedosField)=>{
     switch (steedosField.type ) {
@@ -24,9 +25,74 @@ const getAmisFieldType = (steedosField, readonly)=>{
     return getAmisStaticFieldType(steedosField.type === 'avatar' ? 'image' : steedosField.type, readonly, {multiple: steedosField.multiple});
 }
 
-export const getAmisFileReadonlySchema = (steedosField)=>{
+async function getLookupLinkOnClick(field, options) {
+    const recordPage = await getPage({ type: 'record', appId: options.appId, objectName: options.objectName, formFactor: options.formFactor });
+
+    const drawerRecordDetailSchema = recordPage ? Object.assign({}, recordPage.schema, {
+        "recordId": "${value}",
+        "data": {
+            ...recordPage.schema.data,
+            "_inDrawer": true,  // 用于判断是否在抽屉中
+            "recordLoaded": false, // 重置数据加载状态
+            "objectName": options.objectName,
+        }
+    }) : {
+        "type": "steedos-record-detail",
+        "objectApiName": options.objectName,
+        "recordId": "${value}",
+        "showBackButton": false,
+        "showButtons": true,
+        "data": {
+            "_inDrawer": true,  // 用于判断是否在抽屉中
+            "recordLoaded": false, // 重置数据加载状态
+        }
+    }
+    return {
+        "click": {
+            "actions": [
+                // {
+                //     "type": "custom",
+                //     "script": `
+                //         let fileRecordId = url.match(${regFileRecordId})[2]; 
+                //         console.log('fileRecordId:',fileRecordId);
+                //         event.data.recordId = fileRecordId;
+                //     `,
+                // },
+                {
+                    "actionType": "drawer",
+                    "drawer": {
+                        "type": "drawer",
+                        "title": "&nbsp;",
+                        "headerClassName": "hidden",
+                        "size": "lg",
+                        "bodyClassName": "p-0 m-0 bg-gray-100",
+                        "closeOnEsc": true,
+                        "closeOnOutside": true,
+                        "resizable": true,
+                        "actions": [],
+                        "body": [
+                            drawerRecordDetailSchema
+                        ],
+                        "className": "steedos-record-detail-drawer app-popover"
+                    },
+                    "preventDefault": true
+                }
+            ]
+        }
+    }
+}
+
+export const  getAmisFileReadonlySchema = async (steedosField,ctx)=>{
     const type = steedosField.type;
+    const { appId, formFactor } = ctx.amisData || {};
     const amisFieldType = getAmisFieldType(steedosField, true)
+    
+    let lookupATagClick = 'onclick="return false;"';
+
+    if(window.innerWidth < 768){
+        lookupATagClick = ""
+    }
+
     if(_.includes(['avatar','image'], type)){
         return {
             type: amisFieldType,
@@ -61,13 +127,34 @@ export const getAmisFileReadonlySchema = (steedosField)=>{
                 }
             }
         } : {
-            type: amisFieldType,
-            tpl: `
-                <% let fileData = data._display.${steedosField.name}; if (fileData) { %>
-                    <% if(!Array.isArray(fileData)){ fileData = [fileData]}  %>
-                    <% fileData.forEach(function(item) { %> 
-                        <a href='<%= item.url %>' target='_self' class='block'><%= item.name %></a> 
-                <% });} %>`
+            // type: amisFieldType,
+            // tpl: `
+            //     <% let fileData = data._display.${steedosField.name}; if (fileData) { %>
+            //         <% if(!Array.isArray(fileData)){ fileData = [fileData]}  %>
+            //         <% fileData.forEach(function(item) { %> 
+            //             <a href='<%= item.url %>' target='_self' class='block'><%= item.name %></a> 
+            //     <% });} %>`
+            "type": "control",
+            "body": {
+                type: 'each',
+                placeholder: "",
+                // className: `steedos-field-lookup-each flex flex-wrap gap-2`,
+                source: `\${_display.${steedosField.name}|asArray}`,
+                items: {
+                    type: 'static',
+                    labelClassName: "hidden",
+                    label: false,
+                    className: 'm-0',
+                    tpl: `<a href="/app/-/cfs_files_filerecord/view/\${value}" ${lookupATagClick}>\${name}</a>`,
+                    // tpl: "<%= item.name >",
+                    // onEvent: window.innerWidth < 768 ? null : REFERENCE_VALUE_ITEM_ONCLICK
+                    onEvent: window.innerWidth < 768 ? null : await getLookupLinkOnClick(steedosField, {
+                        appId,
+                        objectName: "cfs_files_filerecord",
+                        formFactor
+                    })
+                }
+            }
         }
     }
 }
@@ -129,6 +216,6 @@ export const getAmisFileEditSchema = (steedosField)=>{
     return convertData;
 }
 
-export const getAmisFileSchema = (steedosField, readonly)=>{
-    return readonly ? getAmisFileReadonlySchema(steedosField) : getAmisFileEditSchema(steedosField);
+export const getAmisFileSchema = async (steedosField, readonly, ctx)=>{
+    return readonly ? await getAmisFileReadonlySchema(steedosField,ctx) : getAmisFileEditSchema(steedosField);
 }

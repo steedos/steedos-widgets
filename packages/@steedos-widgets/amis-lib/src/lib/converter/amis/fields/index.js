@@ -662,13 +662,13 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             }
             break;
         case 'avatar':
-            convertData = File.getAmisFileSchema(field, readonly);
+            convertData = await File.getAmisFileSchema(field, readonly, ctx);
             break;
         case 'image':
-            convertData = File.getAmisFileSchema(field, readonly);
+            convertData = await File.getAmisFileSchema(field, readonly, ctx);
             break;
         case 'file':
-            convertData = File.getAmisFileSchema(field, readonly);
+            convertData = await File.getAmisFileSchema(field, readonly, ctx);
             break;
         case 'formula':
             if(readonly){
