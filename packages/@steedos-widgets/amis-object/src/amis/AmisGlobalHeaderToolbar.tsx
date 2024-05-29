@@ -307,7 +307,7 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                   {
                     "componentId": "",
                     "args": {
-                      "url": "https://www.steedos.com/docs"
+                      "url": "https://docs.steedos.com/zh-CN"
                     },
                     "actionType": "url"
                   }
