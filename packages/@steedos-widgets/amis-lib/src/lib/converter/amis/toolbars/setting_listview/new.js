@@ -3,6 +3,7 @@ export const getNewListviewButtonSchema = ()=>{
     return {
         "type": "button",
         "label": i18next.t('frontend_listview_control_new_label'),
+        "className": "steedos-listview-new-button",
         "onEvent": {
           "click": {
             "weight": 0,

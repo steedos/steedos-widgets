@@ -157,3 +157,37 @@
         }
     }
 }
+
+// 列表视图切换试图按钮样式
+.steedos-object-listview{
+    .antd-Wrapper{
+        .steedos-listview-change-button{
+            .antd-DropDown-menu{
+                li>.antd-Action{
+                    width: 100%;
+                    .steedos-listview-edit-button{
+                        visibility: hidden;
+                        .fa-edit{
+                            color: #aaa;
+                            font-weight: 400;
+                            font-size: 13px;
+                        }
+                    }
+                }
+                .steedos-listview-new-button{
+                    border-top: 0.0625rem solid #ededef;
+                }
+                li:hover{
+                    .steedos-listview-edit-button {
+                        visibility: visible;
+                    }
+                    .steedos-listview-edit-button:hover{
+                        .fa-edit{
+                            color: #2468f2;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
