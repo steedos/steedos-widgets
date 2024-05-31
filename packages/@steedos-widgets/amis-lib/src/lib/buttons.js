@@ -382,21 +382,16 @@ const getDropdown = (dropdownButtons)=>{
         "hideCaret": true,
         "className": "mr-0 steedos-mobile-header-drop-down",
         "closeOnClick": true,
-        "menuClassName": "buttons-drawer fixed inset-0 bg-none border-0 shadow-none",
+        "menuClassName": "buttons-drawer fixed bg-none border-0 shadow-none",
         "align": "right",
         "body": [
             {
                 "type": "action",
                 "style": {
-                    "position": "fixed",
-                    "top": 0,
-                    "right": 0,
-                    "bottom": 0,
-                    "left": 0,
                     "z-index": 1,
                     "background": "var(--Drawer-overlay-bg)",
-                    "height": "unset",
-                    "width": "unset",
+                    "height": "100%",
+                    "width": "100%",
                     "padding": "0",
                     "margin": "0",
                     "border-radius": "0"
