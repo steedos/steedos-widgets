@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-01-13 17:27:54
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-06-07 13:38:28
+ * @LastEditTime: 2024-06-07 13:39:34
  * @Description: 
  */
 import { i18next } from "../../../../i18n"
@@ -40,7 +40,7 @@ export const getMarkdownFieldSchema = (field, readonly, ctx)=>{
                         "name": field.name,
                         "labelClassName": "none",
                         "language": "markdown",
-                        "options": field.amis?.editorOptions || null
+                        "options": field.amis ? field.amis.editorOptions : null
                       }
                     ]
                   },
