@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-01-13 17:27:54
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-04-11 14:14:43
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2024-06-07 13:38:28
  * @Description: 
  */
 import { i18next } from "../../../../i18n"
@@ -40,6 +40,7 @@ export const getMarkdownFieldSchema = (field, readonly, ctx)=>{
                         "name": field.name,
                         "labelClassName": "none",
                         "language": "markdown",
+                        "options": field.amis?.editorOptions || null
                       }
                     ]
                   },
