@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-05-17 17:02:10
+ * @LastEditTime: 2024-06-11 16:16:32
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -470,7 +470,7 @@ export const AmisSteedosField = async (props) => {
         else if (fStatic) {
             if (props.data.hasOwnProperty("_display")) {
                 // 有_display时保持原来的逻辑不变，不走以下新的逻辑，审批王中会特意传入_display以跳过后面新加的代码
-                const fieldSchema = await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
+                const fieldSchema = await Field.convertSFieldToAmisField(steedosField, true, ctx);
                 if (steedosField.type === 'file' && fieldSchema.disabled) {
                     const fieldValue = fieldSchema.value;
                     if (fieldValue && fieldValue.length) {
@@ -605,7 +605,7 @@ export const AmisSteedosField = async (props) => {
             } else if (steedosField.type === "file") {
                 // 附件static模式先保持原来的逻辑，依赖_display，审批王中相关功能在creator中
                 // convertSFieldToAmisField中会合并steedosField.amis，所以也不需要再次合并steedosField.amis，直接return就好
-                return await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
+                return await Field.convertSFieldToAmisField(steedosField, true, ctx);
             } else if (steedosField.type === 'formula' || steedosField.type === 'summary'){
                 if(steedosField.data_type === 'number' || steedosField.data_type === 'currency'){
                     Object.assign(schema, {
