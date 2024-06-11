@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-03-02 16:07:17
+ * @LastEditTime: 2024-06-11 15:38:16
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -1077,6 +1077,7 @@ async function getButtonActions(props, mode) {
                     "__parentForm": mode == "new" ? "$$" : parentFormData,
                     "_master": "${_master}",
                     "global": "${global}",
+                    "context": "${context}",
                     "uiSchema": "${uiSchema}",
                     "index": "${index}",//amis组件自带行索引,在节点嵌套情况下，当前节点如果是children属性下的子节点时，这里的index是当前节点在children中的索引，而不是外层父节点的index
                     "parent": "${__super.parent}",//amis组件自带父节点数据域数据，即节点嵌套情况下，当前节点为某个节点（比如A节点）的children属性下的子节点时，当前节点的父节点（即A节点）的数据域数据
@@ -1201,6 +1202,7 @@ async function getButtonActions(props, mode) {
                         "__parentForm": parentFormData,
                         "_master": "${_master}",
                         "global": "${global}",
+                        "context": "${context}",
                         "uiSchema": "${uiSchema}",
                         "index": "${index}",
                         "parent": "${__super.parent}",//amis组件自带父节点数据域数据，即节点嵌套情况下，当前节点为某个节点（比如A节点）的children属性下的子节点时，当前节点的父节点（即A节点）的数据域数据
