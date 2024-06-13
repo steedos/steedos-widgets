@@ -1,7 +1,7 @@
 {
   "name": "@steedos-widgets/ckeditor",
   "private": false,
-  "version": "6.3.0-beta.22",
+  "version": "6.3.0-beta.23",
   "main": "dist/ckeditor.cjs.js",
   "module": "dist/ckeditor.esm.js",
   "unpkg": "dist/ckeditor.umd.js",
@@ -55,7 +55,7 @@
     "@ckeditor/ckeditor5-react": "~6.2.0",
     "@ckeditor/ckeditor5-theme-lark": "^41.2.1",
     "@rollup/plugin-replace": "^5.0.2",
-    "@steedos-widgets/amis-lib": "6.3.0-beta.22",
+    "@steedos-widgets/amis-lib": "6.3.0-beta.23",
     "rollup-plugin-string": "^3.0.0"
   },
   "gitHead": "ffb730e16642eb8e7a7ae5d98d0773c42482e7d2"
