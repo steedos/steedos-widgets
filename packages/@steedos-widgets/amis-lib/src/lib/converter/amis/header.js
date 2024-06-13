@@ -129,7 +129,7 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
               },
               {
                 "type": "button",
-                "className": "steedos-listview-edit-button",
+                "className": "steedos-listview-edit-button ml-3",
                 "icon": "fa fa-edit",
                 "actionType": "dialog",
                 "hiddenOn": `!((global.user.is_space_admin || global.userId == '${listView.owner || ""}') && !!'${listView.owner || ""}')`,
@@ -564,6 +564,13 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
                     "btnClassName": "!bg-transparent !border-none !hover:border-none text-lg h-5 font-bold p-0 text-black leading-none",
                     "buttons": [
                       ...listViewButtonOptions,
+                      {
+                        "children": [
+                          {
+                            "type": "divider"
+                          }
+                        ]
+                      },
                       listviewNewButton
                     ]
                   }
