@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-06-11 15:38:16
+ * @LastEditTime: 2024-06-14 06:31:33
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -226,7 +226,8 @@ function getInputTableCell(field, showAsInlineEditMode) {
         return {
             "type": "steedos-field",
             "config": Object.assign({}, field, {
-                label: false
+                label: false,
+                description: null
             }),
             // quickEdit: {
             //     "type": "steedos-field",
@@ -243,7 +244,8 @@ function getInputTableCell(field, showAsInlineEditMode) {
         return {
             "type": "steedos-field",
             "config": Object.assign({}, field, {
-                label: false
+                label: false,
+                description: null
             }),
             inInputTable: true,
             "static": true,
@@ -1497,7 +1499,8 @@ export const getAmisInputTableSchema = async (props) => {
             }
             return value;
         },
-        "required": props.required
+        "required": props.required,
+        "description": props.description
     };
     if (buttonsForColumnOperations.length) {
         inputTableSchema.columns.unshift({
