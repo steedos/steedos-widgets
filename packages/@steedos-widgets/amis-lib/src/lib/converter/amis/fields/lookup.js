@@ -438,7 +438,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         }
 
         var fieldFilters = ${JSON.stringify(field.filters)};
-        var currentAmis = amisRequire('amis');
+        var currentAmis = (window.amisRequire && window.amisRequire('amis')) || Amis;
         //递归fieldFilters数组，检查每一个元素，判断若是公式，就仅把它解析
         function traverseNestedArray(arr) {
             for (let i = 0; i < arr.length; i++) {
@@ -867,7 +867,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         // }
 
         var fieldFilters = ${JSON.stringify(field.filters)};
-        var currentAmis = amisRequire('amis');
+        var currentAmis = (window.amisRequire && window.amisRequire('amis')) || Amis;
         //递归fieldFilters数组，检查每一个元素，判断若是公式，就仅把它解析
         function traverseNestedArray(arr) {
             for (let i = 0; i < arr.length; i++) {
