@@ -146,17 +146,34 @@ async function getLookupLinkOnClick(field: any, options: any) {
     }
 }
 
+function addEditorClass(schema, editorClassName){
+    if(schema.className && typeof schema.className == 'string'){
+        schema.className+= ` ${editorClassName}`;
+    }else if(schema.className && typeof schema.className == 'object'){
+        schema.className[editorClassName] = "true";
+    }else{
+        schema.className = editorClassName;
+    }
+}
+
 export const AmisSteedosField = async (props) => {
     // console.log(`AmisSteedosField===props===`, props);
     let steedosField = null;
     let { field, readonly = false, ctx = {}, config, $schema, static: fStatic, env, inInputTable, className } = props;
     const { appId, formFactor } = props.data || {};
-    // console.log(`AmisSteedosField`, props)
+    console.log(`AmisSteedosField`, props)
 
-    // if($schema.config && isString($schema.config)){
-    //     $schema.config = JSON.parse($schema.config)
-    //     props.config = $schema.config
-    // }
+    let editorClassName = "";
+    if(props.$$editor) {
+        if(config.amis) {
+            if(config.amis.name !== config.name) {
+                 config.amis.name = config.name
+            } 
+        }
+        editorClassName = "mx-10";
+    }
+
+    // console.log('$schema.config.amis.name==',$schema.config.amis.name)
 
     if (isString(ctx)) {
         ctx = JSON.parse(ctx);
@@ -464,6 +481,7 @@ export const AmisSteedosField = async (props) => {
             }
             const schema = Object.assign({}, fieldBaseProps, pick(steedosField.amis || {}, ['className', 'inline', 'label', 'labelAlign', 'name', 'labelRemark', 'description', 'placeholder', 'staticClassName', 'staticLabelClassName', 'staticInputClassName', 'staticSchema']));
             schema.placeholder = "";
+            addEditorClass(schema, editorClassName);
             // console.log(`steedos field [lookup] schema:`, schema)
             return schema;
         }
@@ -511,6 +529,7 @@ export const AmisSteedosField = async (props) => {
                         }
                     }
                 }
+                addEditorClass(fieldSchema, editorClassName);
                 return fieldSchema;
             }
             const schema = Object.assign({}, steedosField, {
@@ -661,6 +680,7 @@ export const AmisSteedosField = async (props) => {
                 });
             }
             Object.assign(schema, steedosField.amis || {});
+            addEditorClass(schema, editorClassName);
             return schema;
         } else {
             if(!ctx.className){
@@ -724,6 +744,7 @@ export const AmisSteedosField = async (props) => {
             }
 
             const schema = await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
+            addEditorClass(schema, editorClassName);
             // console.log(`AmisSteedosField return schema`, schema)
             return schema
         }

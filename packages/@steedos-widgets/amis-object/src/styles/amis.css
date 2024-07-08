@@ -453,3 +453,8 @@ fieldset.antd-Collapse > legend{
         margin-bottom: 0.5rem;
     }
 }
+
+/* 设计器内字段布局样式 */
+.steedos-amis-form.steedos-field-layout-page .antd-Collapse .antd-Form--normal>div[data-editor-id]{
+    display: contents;
+}
