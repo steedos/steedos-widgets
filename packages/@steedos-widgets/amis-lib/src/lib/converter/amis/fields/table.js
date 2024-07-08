@@ -671,7 +671,7 @@ export async function getTableColumns(object, fields, options){
                 toggled: field.toggled,
                 static: true,
                 className,
-                ...getAmisFileReadonlySchema(field)
+                // ...await getAmisFileReadonlySchema(field)
             }, fieldAmis, {name: field.name});
         }
         else if(field.type === 'select'){

@@ -82,7 +82,7 @@ async function getLookupLinkOnClick(field, options) {
     }
 }
 
-export const  getAmisFileReadonlySchema = async (steedosField,ctx)=>{
+export const  getAmisFileReadonlySchema = async (steedosField,ctx = {})=>{
     const type = steedosField.type;
     const { appId, formFactor } = ctx.amisData || {};
     const amisFieldType = getAmisFieldType(steedosField, true)
