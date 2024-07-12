@@ -29,7 +29,7 @@ async function getLookupLinkOnClick(field, options) {
     const recordPage = await getPage({ type: 'record', appId: options.appId, objectName: options.objectName, formFactor: options.formFactor });
 
     const drawerRecordDetailSchema = recordPage ? Object.assign({}, recordPage.schema, {
-        "recordId": "${value}",
+        "recordId": `\${${field.name}}`,
         "data": {
             ...recordPage.schema.data,
             "_inDrawer": true,  // 用于判断是否在抽屉中
@@ -39,7 +39,7 @@ async function getLookupLinkOnClick(field, options) {
     }) : {
         "type": "steedos-record-detail",
         "objectApiName": options.objectName,
-        "recordId": "${value}",
+        "recordId": `\${${field.name}}`,
         "showBackButton": false,
         "showButtons": true,
         "data": {
@@ -145,7 +145,7 @@ export const  getAmisFileReadonlySchema = async (steedosField,ctx = {})=>{
                     labelClassName: "hidden",
                     label: false,
                     className: 'm-0',
-                    tpl: `<a href="/app/-/cfs_files_filerecord/view/\${value}" ${lookupATagClick}>\${name}</a>`,
+                    tpl: `<a href="/app/-/cfs_files_filerecord/view/\${${steedosField.name}}" ${lookupATagClick}>\${name}</a>`,
                     // tpl: "<%= item.name >",
                     // onEvent: window.innerWidth < 768 ? null : REFERENCE_VALUE_ITEM_ONCLICK
                     onEvent: window.innerWidth < 768 ? null : await getLookupLinkOnClick(steedosField, {

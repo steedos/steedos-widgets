@@ -585,7 +585,7 @@ export async function getTableColumns(object, fields, options){
         }
         //增加quickEdit属性，实现快速编辑
         const quickEditSchema = allowEdit ? await getQuickEditSchema(object, field, options) : allowEdit;
-        let className = "";
+        let className = `steedos-table-${field.type}-field`;
         const bowserType = getBowserType();
         if(bowserType === "Safari"){
             className += " whitespace-nowrap "

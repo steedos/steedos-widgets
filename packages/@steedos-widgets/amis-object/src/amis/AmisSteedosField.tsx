@@ -375,7 +375,7 @@ export const AmisSteedosField = async (props) => {
                             {
                                 type: 'static',
                                 tpl: '-',
-                                className: `${fieldBaseProps.className || ''} text-muted`,
+                                className: `${fieldBaseProps.className || ''} text-muted !border-b-0`,
                                 hiddenOn: `\${_display.${steedosField.name}}`,
                             }]
                         });
