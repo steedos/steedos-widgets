@@ -438,8 +438,137 @@ const config: any = {
                     "clearValueOnHidden": true,
                     "disabledOn": "${config.is_system == true}"
                   },
-                  //config.data_type有问题
-                  //options
+                  {
+                    "name": "config.data_type",
+                    "label": "数据类型",
+                    "labelRemark": "字段类型为公式时，必须填写此字段。",
+                    "requiredOn": "['formula'].indexOf(config.type) > -1 ? true: false",
+                    "type": "select",
+                    "joinValues": false,
+                    "extractValue": true,
+                    "clearable": true,
+                    "disabledOn": "${config.is_system == true}",
+                    "searchable": true,
+                    "source": {
+                        "method": "post",
+                        "url": "${context.rootUrl}/graphql?depend_on_type=${config.type}",
+                        "data": {
+                            "query": "{objects(filters: [\"_id\", \"=\", \"-1\"]){_id}}"
+                        },
+                        "headers": {
+                            "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                        },
+                        "sendOn": "this.config.type",
+                        "adaptor": `
+                          if (context.config.type === "select") {
+                              payload.data.options = [
+                                  {
+                                      "label": "布尔",
+                                      "value": "boolean"
+                                  },
+                                  {
+                                      "label": "数值",
+                                      "value": "number"
+                                  },
+                                  {
+                                      "label": "文本",
+                                      "value": "text"
+                                  }
+                              ]
+                          }else {
+                              payload.data.options = [
+                                  {
+                                      "label": "布尔",
+                                      "value": "boolean"
+                                  },
+                                  {
+                                      "label": "数值",
+                                      "value": "number"
+                                  },
+                                  {
+                                      "label": "金额",
+                                      "value": "currency"
+                                  },
+                                  {
+                                      "label": "百分比",
+                                      "value": "percent"
+                                  },
+                                  {
+                                      "label": "文本",
+                                      "value": "text"
+                                  },
+                                  {
+                                      "label": "日期",
+                                      "value": "date"
+                                  },
+                                  {
+                                      "label": "日期时间",
+                                      "value": "datetime"
+                                  }
+                              ]
+                          }
+                          return payload;
+                        `
+                    },
+                    "visibleOn": "['formula','select'].indexOf(config.type) > -1 ? true: false",
+                    "clearValueOnHidden": true
+                  },
+                  {
+                    "type": "input-table",
+                    "name": "config.options",
+                    "label": "选择项",
+                    "labelRemark": "选择项的每个选项显示名及选项值不能为空，背景颜色请设置为ffffff这种格式的16进制数值。",
+                    "requiredOn": "config.type === 'select' ? true: false",
+                    "visibleOn": "config.type === 'select' ? true: false",
+                    "clearValueOnHidden": true,
+                    "showIndex": true,
+                    "addable": true,
+                    "removable": true,
+                    "columnsTogglable": false,
+                    "needConfirm": false,
+                    "footerAddBtn": {
+                      "visibleOn": "${!config.is_system}"
+                    },
+                    "columns": [
+                      {
+                        "type": "input-text",
+                        "name": "label",
+                        "label": "显示名",
+                        "required": true,
+                        "disabledOn": "${config.is_system == true}",
+                        "width": 100
+                      },
+                      {
+                        "type": "input-text",
+                        "name": "value",
+                        "label": "选项值",
+                        "required": true,
+                        "disabledOn": "${config.is_system == true}",
+                        "width": 100
+                      },
+                      {
+                        "type": "input-color",
+                        "name": "color",
+                        "label": "背景颜色",
+                        "disabledOn": "${config.is_system == true}",
+                        "width": 70
+                      },
+                      {
+                        "type": "textarea",
+                        "name": "description",
+                        "label": "描述",
+                        "disabledOn": "${config.is_system == true}",
+                        "width": 100
+                      },
+                      {
+                        "type": "operation",
+                        "label": "操作",
+                        "visibleOn": "${!config.is_system}",
+                        "width": 70,
+                        "fixed": "right"
+                      }
+                    ]
+                  },
                   {
                     "name": "config.precision",
                     "label": "数字位数",
@@ -662,7 +791,7 @@ const config: any = {
                         "headers": {
                             "Authorization": "Bearer ${context.tenantId},${context.authToken}"
                         },
-                        "adaptor": "\n debugger;           const data = payload.data;\n            var defaultValueOptions = data.defaultValueOptions;\n            // 字段值下拉选项合并到options中\n            data.options = _.unionWith(defaultValueOptions, data.options, function(a,b){\n                return a[\"value\"]=== b[\"value\"];\n            });\n            delete data.defaultValueOptions;\n            payload.data.options = data.options;\n            return payload;\n        ",
+                        "adaptor": "\n           const data = payload.data;\n            var defaultValueOptions = data.defaultValueOptions;\n            // 字段值下拉选项合并到options中\n            data.options = _.unionWith(defaultValueOptions, data.options, function(a,b){\n                return a[\"value\"]=== b[\"value\"];\n            });\n            delete data.defaultValueOptions;\n            payload.data.options = data.options;\n            return payload;\n        ",
                         "sendOn": "this.config.summary_object && this.config.summary_type",
                         "requestAdaptor": "\n        var filters = [];\n        var top = 200;\n        if(api.data.$term){\n            filters = [[\"label\", \"contains\", api.data.$term]];\n        }\n        // else if(api.data.$value){\n        //     filters = [[\"_id\", \"=\", api.data.$value]];\n        // }\n\n        var fieldFilters = undefined;\n        var currentAmis = (window.amisRequire && window.amisRequire('amis')) || Amis;\n        //递归fieldFilters数组，检查每一个元素，判断若是公式，就仅把它解析\n        function traverseNestedArray(arr) {\n            for (let i = 0; i < arr.length; i++) {\n                if (Array.isArray(arr[i])) {\n                    // 如果当前元素是数组，则递归调用自身继续遍历\n                    traverseNestedArray(arr[i]);\n                } else {\n                    // 如果当前元素不是数组，则处理该元素\n                    // 下面正则用于匹配amis公式${}\n                    if(/\\$\\{([^}]*)\\}/.test(arr[i])) {\n                        try{\n                            arr[i] = currentAmis.evaluate(arr[i], api.context);\n                        }catch(ex){\n                            console.error(\"运行lookup过滤公式时出现错误:\",ex);\n                        }\n                    }\n                }\n            }\n        }\n        if(fieldFilters && fieldFilters.length){\n            traverseNestedArray(fieldFilters);\n            filters.push(fieldFilters);\n        }\n\n        if(false && false){\n            if(filters.length > 0){\n                filters = [ [\"user_accepted\", \"=\", true], \"and\", filters ]\n            }else{\n                filters = [[\"user_accepted\", \"=\", true]];\n            }\n        }\n\n        const inFilterForm = undefined;\n\n        const listviewFiltersFunction = undefined;\n\n        if(listviewFiltersFunction && !inFilterForm){\n            const _filters0 = listviewFiltersFunction(filters, api.data.$);\n            if(_filters0 && _filters0.length){\n                filters.push(_filters0);\n            }\n        }\n        \n        const filtersFunction = undefined;\n\n        if(filtersFunction && !inFilterForm){\n            const _filters = filtersFunction(filters, api.data.$);\n            if(_filters && _filters.length > 0){\n                filters.push(_filters);\n            }\n        }\n        var sort = \"sort_no asc\";\n        api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', top).replace('{__sort}', sort.trim());\n\n        var defaultValue = api.data.$value;\n        var optionsFiltersOp = \"=\";\n        var optionsFilters = [[\"name\", optionsFiltersOp, []]];\n        if (defaultValue && !api.data.$term) { \n            const defaultValueOptionsQueryData = {\"orderBy\":\"${orderBy}\",\"orderDir\":\"${orderDir}\",\"pageNo\":\"${page}\",\"pageSize\":\"${perPage}\",\"queryFields\":\"_id space label:label value:name\",\"query\":\"{defaultValueOptions:object_fields(filters:{__options_filters}){_id space label:label value:name}}\"};\n            const defaultValueOptionsQuery = defaultValueOptionsQueryData && defaultValueOptionsQueryData.query && defaultValueOptionsQueryData.query.replace(/^{/,\"\").replace(/}$/,\"\");\n            // 字段值单独请求，没值的时候在请求中返回空\n            optionsFilters = [[\"name\", optionsFiltersOp, defaultValue]];\n            if(filters.length > 0){\n                optionsFilters = [filters, optionsFilters];\n            }\n            if(defaultValueOptionsQuery){\n                api.data.query = \"{\"+api.data.query.replace(/^{/,\"\").replace(/}$/,\"\")+\",\"+defaultValueOptionsQuery+\"}\";\n            } \n        }\n        api.data.query = api.data.query.replace(/{__options_filters}/g, JSON.stringify(optionsFilters));\n        return api;\n    "
                     },
@@ -681,7 +810,7 @@ const config: any = {
                         "adaptor": "debugger;const summary_type = api.body.summary_type;\nconst term = api.query.term;\nlet fields = payload.fields;\nlet options = [];\nif (fields) {\n  if (summary_type && summary_type !== \"count\") {\n    if (summary_type === \"sum\" || summary_type === \"avg\") {\n      /*sum/avg类型可以汇总数值、金额、百分比字段*/\n      _.forEach(fields, (value, key) => {\n        let fieldType = value.type;\n        if ([\"formula\", \"summary\"].indexOf(fieldType) > -1) {\n          /*要聚合的字段为公式或汇总字段时，按其字段数据类型判断是否支持聚合*/\n          fieldType = value.data_type;\n        }\n        if ([\"number\", \"currency\", \"percent\"].indexOf(fieldType) > -1) {\n          options.push({ label: value.label, value: value.name });\n        }\n      })\n    }\n    else {\n      /*min、max类型可以汇总数值、金额、百分比、日期、日期时间字段*/\n      _.forEach(fields, (value, key) => {\n        let fieldType = value.type;\n        if ([\"formula\", \"summary\"].indexOf(fieldType) > -1) {\n          /*要聚合的字段为公式或汇总字段时，按其字段数据类型判断是否支持聚合*/\n          fieldType = value.data_type;\n        }\n        if ([\"number\", \"currency\", \"percent\", \"date\", \"datetime\"].indexOf(fieldType) > -1) {\n          options.push({ label: value.label, value: value.name });\n        }\n      })\n    }\n  }\n  if (term) {\n    options = _.filter(options, (item) => {\n      return item.label.toLowerCase().indexOf(term.toLowerCase()) > -1;\n    })\n  }\n}\npayload = {\n  data: { options: options },\n  msg: \"\",\n  status: 0\n}\nreturn payload;"
                     }
                   },
-                  //汇总过滤条件
+                  //汇总过滤条件暂时无法直接使用组件，因为数据格式不一致
                   {
                     "name": "config.description",
                     "label": "描述",
