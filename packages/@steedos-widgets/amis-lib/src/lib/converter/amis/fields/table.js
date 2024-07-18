@@ -57,6 +57,11 @@ async function getQuickEditSchema(object, columnField, options){
             submit: {
                 actions: [
                     {
+                        "actionType": "validate",
+                        "componentId": quickEditId,
+                        "outputVar": "form_validate_result"
+                    },
+                    {
                         actionType: "custom",
                         script: `
                             console.log("asdasd");
@@ -72,10 +77,12 @@ async function getQuickEditSchema(object, columnField, options){
                                 doAction({actionType: 'setValue', "args": {"value": event.data._display},componentId: "${options.objectName}" + "_display_" + event.data._index});
                                 doAction({actionType: 'setValue', "args": {"value": event.data.${field.name}},componentId: "${options.objectName + "_" + field.name + "_"}" + event.data._index});
                             }
-                        `
+                        `,
+                        expression: "${!form_validate_result.error}"
                     },
                     {
-                        "actionType": "closeDialog"
+                        "actionType": "closeDialog",
+                        expression: "${!form_validate_result.error}"
                     }
                 ]
             }
