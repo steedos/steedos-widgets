@@ -477,7 +477,7 @@ export const AmisSteedosField = async (props) => {
                         let hasImageOrFile = false;
                         forEach(fieldValue, (item) => {
                             const fileName = item.name;
-                            if ([".pdf", ".jpg", ".jpeg", ".png", ".gif"].indexOf(fileName.slice(-4)) > -1) {
+                            if ([".pdf", ".jpg", ".jpeg", ".png", ".gif"].indexOf(fileName.toLowerCase().slice(-4)) > -1) {
                                 hasImageOrFile = true;
                             }
                         })
@@ -489,7 +489,7 @@ export const AmisSteedosField = async (props) => {
                             const fileName = item.name;
                             const fileUrl = item.url;
                             let filePreviewHtml = '';
-                            if ([".pdf", ".jpg", ".jpeg", ".png", ".gif"].indexOf(fileName.slice(-4)) > -1) {
+                            if ([".pdf", ".jpg", ".jpeg", ".png", ".gif"].indexOf(fileName.toLowerCase().slice(-4)) > -1) {
                                 const indexOfQuestionMark = fileUrl.indexOf('?');
                                 if (indexOfQuestionMark > -1) {
                                     const filePreviewUrl = fileUrl.substring(0, indexOfQuestionMark);
