@@ -460,6 +460,8 @@ export const AmisSteedosField = async (props) => {
                             fieldBaseProps = Object.assign({}, fieldBaseProps, { type: 'static', tpl: '-', className: `${fieldBaseProps.className || ''} text-muted`});
                         }
                     }
+                }else{
+                    fieldBaseProps = Object.assign({}, fieldBaseProps, { type: 'select', source: source});
                 }
             }
             const schema = Object.assign({}, fieldBaseProps, pick(steedosField.amis || {}, ['className', 'inline', 'label', 'labelAlign', 'name', 'labelRemark', 'description', 'placeholder', 'staticClassName', 'staticLabelClassName', 'staticInputClassName', 'staticSchema']));
