@@ -55,7 +55,7 @@ function getReadonlyFormAdaptor(object, fields, options){
             nameLabel = `record._display.${nameField.name}.label`;
         }
     } else if (nameField){
-        nameLabel = `(record._display ? record._display.${nameField.name} : record.${nameField.name})`
+        nameLabel = `(record._display && record._display.${nameField.name}) || record.${nameField.name}`
     }
     return  `
     if(payload.data.data.length === 0){
