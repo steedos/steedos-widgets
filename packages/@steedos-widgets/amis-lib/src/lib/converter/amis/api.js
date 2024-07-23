@@ -264,7 +264,7 @@ export async function getEditFormInitApi(object, recordId, fields, options){
     
     return {
         method: "post",
-        url: graphql.getApi() + '&objectName=${objectName}' ,
+        url: graphql.getApi() + '&objectName=${objectName}' + "&recordId=${recordId}",
         // sendOn: "!!this.recordId",
         cache: API_CACHE,
         requestAdaptor: `
