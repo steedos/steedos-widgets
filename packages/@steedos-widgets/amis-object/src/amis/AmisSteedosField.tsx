@@ -57,6 +57,8 @@ function getAmisStaticFieldType(type: string, data_type?: string, options?: any)
         return 'static-mapping';
     } else if (type === 'color') {
         return 'static-color';
+    } else if (type === 'file') {
+        return 'control';
     }
     return type;
 };
@@ -609,9 +611,34 @@ export const AmisSteedosField = async (props) => {
                     }
                 });
             } else if (steedosField.type === "file") {
-                // 附件static模式先保持原来的逻辑，依赖_display，审批王中相关功能在creator中
-                // convertSFieldToAmisField中会合并steedosField.amis，所以也不需要再次合并steedosField.amis，直接return就好
-                return await Field.convertSFieldToAmisField(steedosField, true, ctx);
+                Object.assign(schema, {
+                    "body": [
+                        {
+                            "type": "service",
+                            "api": {
+                                "method": "post",
+                                "url": `\${context.rootUrl}/graphql?file=\${${steedosField.name}}`,
+                                "headers": {
+                                    "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                                },
+                                "data": {
+                                    "query": `{fileData:cfs_files_filerecord(filters:["_id","in",\${${steedosField.name}|asArray|json}]){_id,original}}`
+                                }
+                            },
+                            "body": [
+                                {
+                                    "type": "each",
+                                    "source": "${fileData}",
+                                    "className": "flex flex-col",
+                                    "items": {
+                                        "type": "tpl",
+                                        "tpl": "<a href='${context.rootUrl}/api/files/files/${_id}?download=true' target='_blank'>${original.name}</a>"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },{name: ""});
             } else if (steedosField.type === 'formula' || steedosField.type === 'summary'){
                 if(steedosField.data_type === 'number' || steedosField.data_type === 'currency'){
                     Object.assign(schema, {
