@@ -131,7 +131,7 @@ export default {
         recordId: "${recordId}",
         "mode": "edit",
         enableInitApi: false,
-        className: "sm:border sm:rounded sm:border-gray-300 bg-white p-4"
+        className: ""
       },
       previewSchema: {
         type: config.amis.name,
