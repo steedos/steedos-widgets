@@ -66,7 +66,7 @@ export const AmisObjectForm = async (props) => {
       options.isEditor = true;
     }
     const schema =  await getViewSchema(objectApiName, recordId, Object.assign({}, options, {
-      enableInitApi, initApiRequestAdaptor, initApiAdaptor, enableTabs, tabsMode,
+      enableInitApi, initApiRequestAdaptor, initApiAdaptor, enableTabs, tabsMode: tabsMode || "vertical",
       formDataFilter, onFormDataFilter, amisData: allData, env
     }));
     amisSchema =  schema.amisSchema;

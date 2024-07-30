@@ -16,7 +16,7 @@ const getFieldSchemaArray = (formFields, ctx) => {
 
   lodash.forEach(formFields, (field) => {
     if (!field.group || field.group == 'null' || field.group == '-')
-      field.group = "";
+      field.group = i18next.t('frontend_field_group_generalization');
     const fieldName = field.name;
     let isObjectField = /\w+\.\w+/.test(fieldName)
     if (field.type == 'grid' || field.type == 'object' || field.type == 'table') {

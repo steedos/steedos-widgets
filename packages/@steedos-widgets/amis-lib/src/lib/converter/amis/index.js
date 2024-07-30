@@ -491,9 +491,10 @@ async function getFormSchemaWithDataFilter(form, options = {}){
 export async function getObjectForm(objectSchema, ctx){
     const { recordId, formFactor, layout = formFactor === 'SMALL' ? 'normal' : "horizontal", labelAlign, tabId, appId, defaults, submitSuccActions = [], 
       formDataFilter, onFormDataFilter, amisData, env } = ctx;
+    let enableTabs = ctx.enableTabs;
     //优先识别组件上的enableTabs属性，若不存在，则识别对象上定义的
-    if (typeof ctx.enableTabs !== 'boolean') {
-      ctx.enableTabs = objectSchema.enable_form_tabs;
+    if (typeof enableTabs !== 'boolean') {
+      enableTabs = objectSchema.enable_form_tabs;
     }
     const fields = _.values(objectSchema.fields);
     const formFields = getFormFields(objectSchema, ctx);
@@ -537,7 +538,7 @@ export async function getObjectForm(objectSchema, ctx){
         body: {
           type: 'wrapper',
           className: 'p-0 m-0',
-          body: await getFormBody(fields, formFields, Object.assign({}, ctx, {fieldGroups: objectSchema.field_groups, omitReadonlyFields: true})),
+          body: await getFormBody(fields, formFields, Object.assign({}, ctx, {fieldGroups: objectSchema.field_groups, omitReadonlyFields: true, enableTabs})),
           hiddenOn: "${editFormInited != true}",
         },
         panelClassName:'m-0 sm:rounded-lg shadow-none border-none',
@@ -592,6 +593,11 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
     const fields = _.values(objectSchema.fields);
     const formFields = getFormFields(objectSchema, ctx);
     const serviceId = `service_detail_page`;
+    let enableTabs = ctx.enableTabs;
+    //优先识别组件上的enableTabs属性，若不存在，则识别对象上定义的
+    if (typeof enableTabs !== 'boolean') {
+      enableTabs = objectSchema.enable_form_tabs;
+    }
     const amisSchema = {
         type: 'service',
         name: `page_readonly_${recordId}`,
@@ -618,7 +624,7 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
               body: await getFormBody(
                 map(fields, (field) => { field.readonly = true; return field; }),
                 map(formFields, (field) => { field.readonly = true; return field; }),
-                Object.assign({}, ctx, { showSystemFields: true, fieldGroups: objectSchema.field_groups })
+                Object.assign({}, ctx, { showSystemFields: true, fieldGroups: objectSchema.field_groups, enableTabs })
               ),
               className: 'steedos-amis-form bg-white',
               actions: [], // 不显示表单默认的提交按钮
