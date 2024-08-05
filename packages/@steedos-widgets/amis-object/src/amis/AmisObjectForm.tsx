@@ -10,6 +10,7 @@ import './AmisObjectFormMobile.less';
 import { getFormSchema, getViewSchema, createObject } from '@steedos-widgets/amis-lib'
 import { keys, pick, difference, isString, has } from 'lodash';
 
+// md:border-b
 export const AmisObjectForm = async (props) => {
   // console.log("===AmisObjectForm=props==", props);
   const { $schema, recordId, defaultData, mode, layout = "horizontal", labelAlign, appId, fieldsExtend, excludedFields = null, fields = null, form = {},
