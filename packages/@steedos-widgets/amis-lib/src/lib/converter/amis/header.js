@@ -969,7 +969,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
 
   // console.log('=======================max=========================', max)
 
-  if(objectSchema.compactLayouts){
+  if(objectSchema.compactLayouts && objectSchema.compactLayouts.length > 0){
     const details = [];
     _.each(_.slice(_.difference(objectSchema.compactLayouts, [objectSchema.NAME_FIELD_KEY]), 0, max), (fieldName)=>{
       const field = objectSchema.fields[fieldName];
