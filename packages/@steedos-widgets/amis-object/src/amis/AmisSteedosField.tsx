@@ -692,6 +692,17 @@ export const AmisSteedosField = async (props) => {
                     static: false,
                     disabled: true
                 });
+            } else if (steedosField.type === 'url' && steedosField.show_as_qr) {
+                Object.assign(schema, {
+                    type: "control",
+                    body: [
+                        {
+                            "type": "qr-code",
+                            "codeSize": inInputTable?64:128,
+                            "name": steedosField.name
+                        }
+                    ]
+                });
             }
             Object.assign(schema, steedosField.amis || {});
             return schema;
