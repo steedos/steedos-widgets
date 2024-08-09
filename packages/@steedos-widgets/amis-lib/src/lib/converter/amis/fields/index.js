@@ -498,9 +498,21 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             break;
         case 'percent':
             if(readonly){
+                // convertData = {
+                //     type: 'static-tpl',
+                //     tpl: Tpl.getUiFieldTpl(field)
+                // }
                 convertData = {
-                    type: 'static-tpl',
-                    tpl: Tpl.getUiFieldTpl(field)
+                    "type": "static-progress",
+                    "name": "progress",
+                    pipeIn: (value, data) => {
+                        if(value){
+                            // 因为例如 1.11 * 100 的值不是111，所以调整下。
+                            const result = value*100;
+                            return Number(result.toFixed(field.scale));
+                        }
+                        return value;
+                    }
                 }
             }else{
                 convertData = {
