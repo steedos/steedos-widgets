@@ -31,7 +31,7 @@ const getDisplayAsButton = function(objectName, defaultEnableSplit){
     // "tooltip": `${i18next.t('frontend_display_as')} ${displayAsLabel}`,
     "btnClassName": "antd-Button--iconOnly bg-white !p-2 rounded text-gray-500",
     "align": "right",
-    "visibleOn": "${window:innerWidth > 768 && !!!isLookup}",
+    "visibleOn": "${window:innerWidth > 768 && !!!isLookup && !!isObjectListview}",
     "buttons": [ 
       {
         "label": i18next.t('frontend_display_as'),
