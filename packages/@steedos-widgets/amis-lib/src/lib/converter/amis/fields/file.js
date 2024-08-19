@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-28 14:15:09
- * @LastEditors: liaodaxue
- * @LastEditTime: 2023-12-29 10:46:50
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2024-08-19 16:26:58
  * @Description: 
  */
 import { getAmisStaticFieldType } from './type';
@@ -212,6 +212,11 @@ export const getAmisFileEditSchema = (steedosField)=>{
         convertData.multiple = true;
         convertData.joinValues = false;
         convertData.extractValue = true;
+        if(steedosField.type === 'image'){
+            if(Steedos.isCordova() && Steedos.isCordova()){
+                convertData.accept = "";
+            }
+        }
     }
     return convertData;
 }
