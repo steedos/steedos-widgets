@@ -17,7 +17,7 @@ export const getSettingListviewToolbarButtonSchema = ()=>{
         // "tooltip": i18next.t('frontend_button_listview_control_tooltip'),
         "btnClassName": "antd-Button--iconOnly bg-white !p-2 rounded text-gray-500",
         "align": "right",
-        "visibleOn": "${!isLookup}",
+        "visibleOn": "${!isLookup && !!isObjectListview}",
         "buttons": [
           {
             "label": i18next.t('frontend_button_listview_control_label'),

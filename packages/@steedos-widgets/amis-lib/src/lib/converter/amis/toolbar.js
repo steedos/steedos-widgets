@@ -31,7 +31,7 @@ const getDisplayAsButton = function(objectName, defaultEnableSplit){
     // "tooltip": `${i18next.t('frontend_display_as')} ${displayAsLabel}`,
     "btnClassName": "antd-Button--iconOnly bg-white !p-2 rounded text-gray-500",
     "align": "right",
-    "visibleOn": "${window:innerWidth > 768 && !!!isLookup}",
+    "visibleOn": "${window:innerWidth > 768 && !!!isLookup && !!isObjectListview}",
     "buttons": [ 
       {
         "label": i18next.t('frontend_display_as'),
@@ -232,18 +232,19 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
   }
   let toolbarReloadButton;
   const onReloadScript = `
-    // const scope = event.context.scoped;
-    // var listView = scope.parent.getComponents().find(function(n){
-    //   return n.props.type === "crud";
-    // });
-    // listView.handleChangePage(1);
-
-
     // 触发搜索，而不是reload，因为使用search-box可以在amissdk是3.6.3-patch.8+实现在非第一页的情况下，快速搜索输入框中过滤条件变更时再点刷新可以自动跳转翻页到第一页
     const scope = event.context.scoped;
     const sb = SteedosUI.getClosestAmisComponentByType(scope, "search-box");
-    const sbValue = sb.state.value;
-    sb.handleSearch(sbValue);
+    if (sb) {
+      const sbValue = sb.state.value;
+      sb.handleSearch(sbValue);
+    }else{
+      var listView = scope.parent.getComponents().find(function(n){
+        return n.props.type === "crud";
+      });
+      listView.handleChangePage(1);
+    }
+    
   `;
   toolbarReloadButton = {
     // "type": "reload",//不可以直接使用reload，因为它不会设置页码到第一页，这在加载更多按钮的翻页模式下会有问题

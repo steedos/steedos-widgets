@@ -55,7 +55,7 @@ function getReadonlyFormAdaptor(object, fields, options){
             nameLabel = `record._display.${nameField.name}.label`;
         }
     } else if (nameField){
-        nameLabel = `(record._display ? record._display.${nameField.name} : record.${nameField.name})`
+        nameLabel = `(record._display && record._display.${nameField.name}) || record.${nameField.name}`
     }
     return  `
     if(payload.data.data.length === 0){
@@ -264,7 +264,7 @@ export async function getEditFormInitApi(object, recordId, fields, options){
     
     return {
         method: "post",
-        url: graphql.getApi() + '&objectName=${objectName}' ,
+        url: graphql.getApi() + '&objectName=${objectName}' + "&recordId=${recordId}",
         // sendOn: "!!this.recordId",
         cache: API_CACHE,
         requestAdaptor: `

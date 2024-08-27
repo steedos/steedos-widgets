@@ -191,6 +191,11 @@ export default {
                           "name": "visibleOn",
                           "label": "显示条件",
                           "labelRemark": "格式：静态/表达式"
+                        },
+                        {
+                          type: "input-text",
+                          name: "className",
+                          label: "CSS类名"
                         }
                       ]
                     },

@@ -498,9 +498,21 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             break;
         case 'percent':
             if(readonly){
+                // convertData = {
+                //     type: 'static-tpl',
+                //     tpl: Tpl.getUiFieldTpl(field)
+                // }
                 convertData = {
-                    type: 'static-tpl',
-                    tpl: Tpl.getUiFieldTpl(field)
+                    "type": "static-progress",
+                    "name": "progress",
+                    pipeIn: (value, data) => {
+                        if(value){
+                            // 因为例如 1.11 * 100 的值不是111，所以调整下。
+                            const result = value*100;
+                            return Number(result.toFixed(field.scale));
+                        }
+                        return value;
+                    }
                 }
             }else{
                 convertData = {
@@ -784,6 +796,8 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                     if(gridSub){
                         delete gridSub.name
                         delete gridSub.label
+                        //去除重复样式
+                        gridSub.className = gridSub.className.replace('border-b', '');
                         convertData.items.push(
                             Object.assign({}, gridSub, {label: subField.label}, subField.amis, {
                                 name: subFieldName
@@ -842,6 +856,10 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
         }
         // if(ctx.mode === 'edit'){
         let convertDataResult = Object.assign({}, baseData, convertData, { labelClassName: 'text-left', clearValueOnHidden: true, fieldName: field.name}, field.amis, {name: baseData.name});
+        // 只读时file字段的外层control层若存在name，内部each组件存在问题
+        if(readonly && field.type == "file") {
+            convertDataResult.name = "";
+        }
         // console.log("convertDataResult:", convertDataResult);
         return convertDataResult;
         // }else{

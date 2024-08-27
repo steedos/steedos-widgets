@@ -10,6 +10,7 @@ import './AmisObjectFormMobile.less';
 import { getFormSchema, getViewSchema, createObject } from '@steedos-widgets/amis-lib'
 import { keys, pick, difference, isString, has } from 'lodash';
 
+// md:border-b
 export const AmisObjectForm = async (props) => {
   // console.log("===AmisObjectForm=props==", props);
   const { $schema, recordId, defaultData, mode, layout = "horizontal", labelAlign, appId, fieldsExtend, excludedFields = null, fields = null, form = {},
@@ -66,7 +67,7 @@ export const AmisObjectForm = async (props) => {
       options.isEditor = true;
     }
     const schema =  await getViewSchema(objectApiName, recordId, Object.assign({}, options, {
-      enableInitApi, initApiRequestAdaptor, initApiAdaptor, enableTabs, tabsMode,
+      enableInitApi, initApiRequestAdaptor, initApiAdaptor, enableTabs, tabsMode: tabsMode || "vertical",
       formDataFilter, onFormDataFilter, amisData: allData, env
     }));
     amisSchema =  schema.amisSchema;

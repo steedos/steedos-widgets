@@ -57,6 +57,8 @@ function getAmisStaticFieldType(type: string, data_type?: string, options?: any)
         return 'static-mapping';
     } else if (type === 'color') {
         return 'static-color';
+    } else if (type === 'file') {
+        return 'control';
     }
     return type;
 };
@@ -392,7 +394,7 @@ export const AmisSteedosField = async (props) => {
                             {
                                 type: 'static',
                                 tpl: '-',
-                                className: `${fieldBaseProps.className || ''} text-muted`,
+                                className: `${fieldBaseProps.className || ''} text-muted !border-b-0`,
                                 hiddenOn: `\${_display.${steedosField.name}}`,
                             }]
                         });
@@ -477,6 +479,8 @@ export const AmisSteedosField = async (props) => {
                             fieldBaseProps = Object.assign({}, fieldBaseProps, { type: 'static', tpl: '-', className: `${fieldBaseProps.className || ''} text-muted`});
                         }
                     }
+                }else{
+                    fieldBaseProps = Object.assign({}, fieldBaseProps, { type: 'select', source: source});
                 }
             }
             const schema = Object.assign({}, fieldBaseProps, pick(steedosField.amis || {}, ['className', 'inline', 'label', 'labelAlign', 'name', 'labelRemark', 'description', 'placeholder', 'staticClassName', 'staticLabelClassName', 'staticInputClassName', 'staticSchema']));
@@ -495,7 +499,9 @@ export const AmisSteedosField = async (props) => {
                         let hasImageOrFile = false;
                         forEach(fieldValue, (item) => {
                             const fileName = item.name;
-                            if ([".pdf", ".jpg", ".jpeg", ".png", ".gif"].indexOf(fileName.slice(-4)) > -1) {
+                            const match = fileName.match(/\.([^\.]+)$/);
+                            const fileType = match ? match[0] : '';
+                            if ([".pdf", ".jpg", ".jpeg", ".png", ".gif"].indexOf(fileType) > -1) {
                                 hasImageOrFile = true;
                             }
                         })
@@ -506,8 +512,10 @@ export const AmisSteedosField = async (props) => {
                         forEach(fieldValue, (item) => {
                             const fileName = item.name;
                             const fileUrl = item.url;
+                            const match = fileName.match(/\.([^\.]+)$/);
+                            const fileType = match ? match[0] : '';
                             let filePreviewHtml = '';
-                            if ([".pdf", ".jpg", ".jpeg", ".png", ".gif"].indexOf(fileName.slice(-4)) > -1) {
+                            if ([".pdf", ".jpg", ".jpeg", ".png", ".gif"].indexOf(fileType) > -1) {
                                 const indexOfQuestionMark = fileUrl.indexOf('?');
                                 if (indexOfQuestionMark > -1) {
                                     const filePreviewUrl = fileUrl.substring(0, indexOfQuestionMark);
@@ -622,9 +630,34 @@ export const AmisSteedosField = async (props) => {
                     }
                 });
             } else if (steedosField.type === "file") {
-                // 附件static模式先保持原来的逻辑，依赖_display，审批王中相关功能在creator中
-                // convertSFieldToAmisField中会合并steedosField.amis，所以也不需要再次合并steedosField.amis，直接return就好
-                return await Field.convertSFieldToAmisField(steedosField, true, ctx);
+                Object.assign(schema, {
+                    "body": [
+                        {
+                            "type": "service",
+                            "api": {
+                                "method": "post",
+                                "url": `\${context.rootUrl}/graphql?file=\${${steedosField.name}}`,
+                                "headers": {
+                                    "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                                },
+                                "data": {
+                                    "query": `{fileData:cfs_files_filerecord(filters:["_id","in",\${${steedosField.name}|asArray|json}]){_id,original}}`
+                                }
+                            },
+                            "body": [
+                                {
+                                    "type": "each",
+                                    "source": "${fileData}",
+                                    "className": "flex flex-col",
+                                    "items": {
+                                        "type": "tpl",
+                                        "tpl": "<a href='${context.rootUrl}/api/files/files/${_id}?download=true' target='_blank'>${original.name}</a>"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },{name: ""});
             } else if (steedosField.type === 'formula' || steedosField.type === 'summary'){
                 if(steedosField.data_type === 'number' || steedosField.data_type === 'currency'){
                     Object.assign(schema, {
@@ -677,6 +710,17 @@ export const AmisSteedosField = async (props) => {
                 Object.assign(schema, {
                     static: false,
                     disabled: true
+                });
+            } else if (steedosField.type === 'url' && steedosField.show_as_qr) {
+                Object.assign(schema, {
+                    type: "control",
+                    body: [
+                        {
+                            "type": "qr-code",
+                            "codeSize": inInputTable?64:128,
+                            "name": steedosField.name
+                        }
+                    ]
                 });
             }
             Object.assign(schema, steedosField.amis || {});

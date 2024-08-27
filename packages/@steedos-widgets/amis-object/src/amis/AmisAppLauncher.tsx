@@ -85,114 +85,7 @@ export const AmisAppLauncher = async (props) => {
 
   let dialogSchema = {}
   const badgeText = "${IF(${id} == 'approve_workflow',${ss:keyvalues.badge.value|pick:'workflow'},${ss:keyvalues.badge.value|pick:${id}}) | toInt}";
-  if(isMobile){
-    dialogSchema = {
-      "type": "service",
-      "className": "steedos-apps-service",
-      "affixFooter": false,
-      "body": [
-        {
-          "type": "each",
-          "name": "app_items",
-          "items": {
-            "type": "button",
-            "level": "link",
-            "body": [
-              {
-                "type": "tpl",
-                "tpl": "<div class='flex flex-col justify-center'><div class='text-center'><svg class='w-12 h-12 slds-icon slds-icon_container slds-icon-standard-${REPLACE(icon, '_', '-' )}' aria-hidden='true'><use xlink:href='/assets/icons/standard-sprite/svg/symbols.svg#${icon}'></use></svg></div><div class='text-center text-lg'>${name}</div></div>",
-                "badge": {
-                  "mode": "text",
-                  "text": badgeText,
-                  "visibleOn": badgeText,
-                  "overflowCount": 99,
-                  "style": {
-                    "right": "50%",
-                    "margin-right": "-23px",
-                    "height": "20px",
-                    "border-radius": "10px",
-                    "font-size": "16px",
-                    "line-height": "18px"
-                  }
-                }
-              }
-            ],
-            "onEvent": {
-              "click": {
-                "actions": [
-                  {
-                    "actionType": "closeDialog"
-                  },
-                  {
-                    "actionType": "link",
-                    "args": {
-                      "link": "${path}"
-                    },
-                    "expression": "${AND(!blank , !on_click)}"
-                  },
-                  {
-                    "actionType": "custom",
-                    "script": mobile_blank_script,
-                    "expression": "${AND(blank , !on_click)}"
-                  },
-                  {
-                    "actionType": "custom",
-                    "script": on_click_script,
-                    "expression": "${on_click}"
-                  }
-                ]
-              }
-            },
-            "visibleOn": "${visible_on}",
-            "className": "block w-1/3 py-4",
-            "style": {
-              "display": "inline-flex",
-              "justify-content": "center"
-            }
-          },
-          "className": "flex flex-wrap",
-          "id": "u:a98e9f6fb4db"
-        }
-      ],
-      "clearValueOnHidden": false,
-      "visible": true,
-      "messages": {
-      },
-      "api": {
-        "method": "get",
-        "url": "${context.rootUrl}/service/api/apps/menus?mobile=true",
-        "headers": {
-          "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-        },
-        "adaptor": mobileInitApiAdaptorScript,
-        "messages": {
-        }
-      },
-      "onEvent": {
-        "@data.changed.steedos_keyvalues": {
-          "actions": [
-            {
-              "actionType": "reload"
-            }
-          ]
-        },
-        "fetchInited": {
-          "actions": [
-            {
-              "actionType": "broadcast",
-              "args": {
-                "eventName": "@appsLoaded"
-              },
-              "data": {
-                "apps": "${event.data.app_items}"
-              }
-            }
-          ]
-        }
-      },
-      "id": "u:2c8bd22d4ea8"
-    }
-  }else{
+  if(!isMobile){
     dialogSchema = {
       "type": "service",
       "id": "u:0f6224a0836f",
@@ -358,6 +251,7 @@ export const AmisAppLauncher = async (props) => {
       },
       "api": {
         "method": "get",
+        "cache": "10000",
         "url": "${context.rootUrl}/service/api/apps/menus?mobile=" + isMobile,
         "data": null,
         "headers": {
@@ -367,12 +261,143 @@ export const AmisAppLauncher = async (props) => {
       }
     }
   }
+  const overlaySchema = {
+    "type": "service",
+    "className": isMobile ? "steedos-apps-service" : "steedos-apps-service w-96",
+    "affixFooter": false,
+    "body": [
+      {
+        "type": "each",
+        "source": isMobile ? "${app_items}" : "${ARRAYFILTER(app_items, (item,index) => index<=8)}",
+        "items": {
+          "type": "button",
+          "level": "link",
+          "body": [
+            {
+              "type": "tpl",
+              "tpl": "<div class='flex flex-col justify-center'><div class='text-center'><svg class='w-12 h-12 slds-icon slds-icon_container slds-icon-standard-${REPLACE(icon, '_', '-' )}' aria-hidden='true'><use xlink:href='/assets/icons/standard-sprite/svg/symbols.svg#${icon}'></use></svg></div><div class='text-center text-lg'>${name}</div></div>",
+              "badge": {
+                "mode": "text",
+                "text": badgeText,
+                "visibleOn": badgeText,
+                "overflowCount": 99,
+                "style": {
+                  "right": "50%",
+                  "margin-right": "-23px",
+                  "height": "20px",
+                  "border-radius": "10px",
+                  "font-size": "16px",
+                  "line-height": "18px"
+                }
+              }
+            }
+          ],
+          "onEvent": {
+            "click": {
+              "actions": [
+                {
+                  "actionType": "closeDialog"
+                },
+                {
+                  "actionType": "link",
+                  "args": {
+                    "link": "${path}"
+                  },
+                  "expression": "${AND(!blank , !on_click)}"
+                },
+                {
+                  "actionType": "custom",
+                  "script": mobile_blank_script,
+                  "expression": "${AND(blank , !on_click)}"
+                },
+                {
+                  "actionType": "custom",
+                  "script": on_click_script,
+                  "expression": "${on_click}"
+                }
+              ]
+            }
+          },
+          "visibleOn": "${visible_on}",
+          "className": "block w-1/3 py-4",
+          "style": {
+            "display": "inline-flex",
+            "justify-content": "center"
+          }
+        },
+        "className": "flex flex-wrap",
+        "id": "u:a98e9f6fb4db"
+      },
+      isMobile ? null : {
+        "type": "divider",
+        "className": "m-0"
+      },
+      isMobile ? null : {
+        "type": "button",
+        "level": "link",
+        "label": "更多",
+        "className": "w-full h-10",
+        "actionType": "dialog",
+        "dialog": {
+          "size": "xl",
+          "title": {
+            "type": "tpl",
+            "tpl": i18next.t('frontend_application_launcher'),
+            "className": "block text-xl text-center"
+          },
+          "actions": [
+          ],
+          "body": [
+            dialogSchema
+          ]
+        }
+      }
+    ],
+    "clearValueOnHidden": false,
+    "visible": true,
+    "messages": {
+    },
+    "api": {
+      "method": "get",
+      "cache": "10000",
+      "url": "${context.rootUrl}/service/api/apps/menus?mobile=true",
+      "headers": {
+        "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+      },
+      "adaptor": mobileInitApiAdaptorScript,
+      "messages": {
+      }
+    },
+    "onEvent": {
+      "@data.changed.steedos_keyvalues": {
+        "actions": [
+          {
+            "actionType": "reload"
+          }
+        ]
+      },
+      "fetchInited": {
+        "actions": [
+          {
+            "actionType": "broadcast",
+            "args": {
+              "eventName": "@appsLoaded"
+            },
+            "data": {
+              "apps": "${event.data.app_items}"
+            }
+          }
+        ]
+      }
+    },
+    "id": "u:2c8bd22d4ea8"
+  }
 
   return {
     "type": "service",
     className,
     "body": [
-      {
+      isMobile ? {
         "type": "button",
         "actionType": "dialog",
         "className": "flex items-center",
@@ -409,10 +434,44 @@ export const AmisAppLauncher = async (props) => {
           "actions": [
           ],
           "body": [
-            dialogSchema
+            overlaySchema
           ]
         },
         "id": "u:b5dc095e1c11"
+      } : {
+        "type": "steedos-dropdown",
+        "placement": "bottomRight",
+        "trigger": [
+          "click"
+        ],
+        "body": [
+          {
+            "type": "tpl",
+            "className": "flex items-center",
+            "tpl": `<div aria-haspopup='true' title='${i18next.t('frontend_open_app_launcher')}' class='slds-icon-waffle_container slds-context-bar__button' type='button'><span class='slds-icon-waffle'><span class='slds-r1'></span><span class='slds-r2'></span><span class='slds-r3'></span><span class='slds-r4'></span><span class='slds-r5'></span><span class='slds-r6'></span><span class='slds-r7'></span><span class='slds-r8'></span><span class='slds-r9'></span></span></div>`,
+            "badge": {
+              "visibleOn": "${ss:keyvalues.badge.value.workflow | toInt}",
+              "offset": [3, -3],
+              "style": {
+                "width": "8px",
+                "height": "8px"
+              }
+            },
+            "hiddenOn": `${!showAppIcon}`
+          },
+          {
+            type: 'tpl',
+            className: `text-xl ml-4 mr-4 text-black nowrap ${appNameClassName} `,
+            tpl: '${app.name}',
+            hiddenOn: `${!!app || !!!showAppName}`
+          },
+          ...customElements
+        ],
+        "overlay": [
+          overlaySchema
+        ],
+        "className": "flex items-center",
+        "open": false
       }
     ],
     "id": "u:06ee48db134a",

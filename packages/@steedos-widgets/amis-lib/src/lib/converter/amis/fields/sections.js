@@ -16,7 +16,7 @@ const getFieldSchemaArray = (formFields, ctx) => {
 
   lodash.forEach(formFields, (field) => {
     if (!field.group || field.group == 'null' || field.group == '-')
-      field.group = i18next.t('frontend_field_group_generalization')
+      field.group = i18next.t('frontend_field_group_generalization');
     const fieldName = field.name;
     let isObjectField = /\w+\.\w+/.test(fieldName)
     if (field.type == 'grid' || field.type == 'object' || field.type == 'table') {
@@ -61,13 +61,17 @@ const getSection = async (formFields, permissionFields, fieldSchemaArray, sectio
       // console.log(`perField.type object ===> field`, field)
     }
     if (field.name.indexOf(".") < 0) {
+      let _field = _.cloneDeep(field);
+      if(field.type === "select" && field.data_type && field.data_type != "text"){
+        _field.type = field.data_type;
+      }
       if(field.type === "steedos-field"){
         // 如果是steedos-field则不需要通过convertSFieldToAmisField函数转换，因为steedos-field组件会转换
-        fieldSetBody.push(field);
+        fieldSetBody.push(_field);
       }
       else{
         ctx.__formFields = formFields;
-        const amisField = await Fields.convertSFieldToAmisField(field, field.readonly, ctx);
+        const amisField = await Fields.convertSFieldToAmisField(_field, _field.readonly, ctx);
         // 如果steedos-field稳定了，可以放开下面的代码直接用组件统一渲染字段
         // const amisField = {
         //   "type": "steedos-field",

@@ -131,7 +131,7 @@ export default {
         recordId: "${recordId}",
         "mode": "edit",
         enableInitApi: false,
-        className: "sm:border sm:rounded sm:border-gray-300 bg-white p-4"
+        className: ""
       },
       previewSchema: {
         type: config.amis.name,
@@ -286,6 +286,75 @@ export default {
                             //   "value": "inline"
                             // }
                           ]
+                        },
+                        {
+                          name: "enableTabs",
+                          type: "checkbox",
+                          mode: "horizontal",
+                          horizontal: {
+                            left: 10,
+                            right: 4,
+                            justify: true
+                          },
+                          label: "是否启用选项卡模式"
+                        },
+                        {
+                          "type": "select",
+                          mode: 'horizontal',
+                          horizontal: {
+                            left: 4,
+                            right: 8,
+                            justify: true
+                          },
+                          "label": "展示模式",
+                          "name": "tabsMode",
+                          "multiple": false,
+                          value: "",
+                          "options":[
+                            {
+                              "label":"默认",
+                              "value":""
+                            },
+                            {
+                              "label":"线型",
+                              "value":"line"
+                            },
+                            {
+                              "label":"卡片",
+                              "value":"card"
+                            },
+                            {
+                              "label":"选择器",
+                              "value":"radio"
+                            },
+                            {
+                              "label":"垂直",
+                              "value":"vertical"
+                            },
+                            {
+                              "label":"仿 Chrome",
+                              "value":"chrome"
+                            },
+                            {
+                              "label":"简约",
+                              "value":"simple"
+                            },
+                            {
+                              "label":"加强",
+                              "value":"strong"
+                            },
+                            {
+                              "label":"水平铺满",
+                              "value":"tiled"
+                            },
+                            {
+                              "label":"侧边栏",
+                              "value":"sidebar"
+                            }
+                          ],
+                          "labelField": "label",
+                          "valueField": "value",
+                          "visibleOn": "${enableTabs}"
                         }
                         /*
                         {
@@ -418,80 +487,6 @@ export default {
                         {
                           type: "markdown",
                           value: '重写字段配置. 例如\n```\n{\n    "name": {\n        "is_wide": true,  //设置为宽字段\n        "required": true, //设置为必填\n        "amis": { // 设置渲染属性\n            "type": "input-color" //将字段重写为 颜色选择器\n            ...\n        } \n    }, \n    "title": {\n        "group": "分组1" // 设置分组\n        ...\n    }\n}\n```'
-                        }
-                      ]
-                    },
-                    {
-                      type: "collapse",
-                      headingClassName: 'ae-formItemControl-header',
-                      bodyClassName: 'ae-formItemControl-body',
-                      key: "3",
-                      header: "选项卡",
-                      body:[
-                        {
-                          name: "enableTabs",
-                          type: "checkbox",
-                          mode: "horizontal",
-                          horizontal: {
-                            left: 10,
-                            right: 4,
-                            justify: true
-                          },
-                          label: "是否启用"
-                        },
-                        {
-                          "type": "select",
-                          mode: 'horizontal',
-                          horizontal: {
-                            left: 4,
-                            right: 8,
-                            justify: true
-                          },
-                          "label": "展示模式",
-                          "name": "tabsMode",
-                          "multiple": false,
-                          value: "line",
-                          "options":[
-                            {
-                              "label":"line",
-                              "value":"line"
-                            },
-                            {
-                              "label":"card",
-                              "value":"card"
-                            },
-                            {
-                              "label":"radio",
-                              "value":"radio"
-                            },
-                            {
-                              "label":"vertical",
-                              "value":"vertical"
-                            },
-                            {
-                              "label":"chrome",
-                              "value":"chrome"
-                            },
-                            {
-                              "label":"simple",
-                              "value":"simple"
-                            },
-                            {
-                              "label":"strong",
-                              "value":"strong"
-                            },
-                            {
-                              "label":"tiled",
-                              "value":"tiled"
-                            },
-                            {
-                              "label":"sidebar",
-                              "value":"sidebar"
-                            }
-                          ],
-                          "labelField": "label",
-                          "valueField": "value",
-                          "visibleOn": "${enableTabs}"
                         }
                       ]
                     },

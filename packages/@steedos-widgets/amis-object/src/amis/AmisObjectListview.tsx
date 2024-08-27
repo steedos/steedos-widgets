@@ -151,7 +151,7 @@ export const AmisObjectListView = async (props) => {
   headerSchema.className = "steedos-object-listview-header " + headerSchema.className || "";
 
   // TODO: recordPermissions和_id是右上角按钮需要强依赖的变量，应该写到按钮那边去
-  const serviceData: any = Object.assign({}, { showDisplayAs, displayAs, recordPermissions: uiSchema.permissions, _id: null, $listviewId: listName });
+  const serviceData: any = Object.assign({}, { showDisplayAs, displayAs, recordPermissions: uiSchema.permissions, _id: null, $listviewId: listName, isObjectListview: true });
   if(has(props, 'objectApiName')){
     serviceData.objectName = objectApiName;
   }
