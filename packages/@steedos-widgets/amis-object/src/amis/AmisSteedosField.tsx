@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-06-11 16:16:32
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2024-08-27 13:43:28
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -160,10 +160,21 @@ function addEditorClass(schema, editorClassName){
 
 export const AmisSteedosField = async (props) => {
     // console.log(`AmisSteedosField===props===`, props);
+
+    if(has(props, '$$editor')){
+        setTimeout(()=>{
+            if(props.config.is_wide){
+                document.getElementsByName(props.id)[0].style.gridColumn = 'span 2 / span 2';;
+            }else{
+                document.getElementsByName(props.id)[0].style.gridColumn="";
+            }
+        }, 200)
+    }
+
     let steedosField = null;
     let { field, readonly = false, ctx = {}, config, $schema, static: fStatic, env, inInputTable, className } = props;
     const { appId, formFactor } = props.data || {};
-    console.log(`AmisSteedosField`, props)
+    // console.log(`AmisSteedosField`, props)
 
     let editorClassName = "";
     if(props.$$editor) {
