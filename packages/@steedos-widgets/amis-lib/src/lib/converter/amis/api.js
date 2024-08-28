@@ -231,6 +231,7 @@ function getScriptForRewriteValueForFileFields(fields){
                         if(fileFields[item].multiple){
                             if(fileFieldDisplayValue instanceof Array){
                                 data[item] = fileFieldDisplayValue.map((item, index)=>{ 
+                                    item.value = fileFieldValue[index];
                                     return {
                                         value: fileFieldValue[index],
                                         name: item.name,
@@ -240,6 +241,7 @@ function getScriptForRewriteValueForFileFields(fields){
                                 });
                             }
                         }else{
+                            fileFieldDisplayValue.value = fileFieldValue;
                             data[item] = [{
                                 value: fileFieldValue,
                                 name: fileFieldDisplayValue.name,
