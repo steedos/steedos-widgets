@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-13 11:40:38
+ * @LastEditTime: 2024-08-29 16:36:45
  * @Description: 
  */
 // import Hello from "./metas/Hello";
@@ -64,6 +64,12 @@ import AmisInputTable from './metas/AmisInputTable';
 
 import AmisRecordDetailMini from './metas/AmisRecordDetailMini';
 
+import { fieldMetas } from './metas/steedos-fields/index';
+
+import AmisSteedosFieldGroup from './metas/AmisSteedosFieldGroup';
+
+import AmisSteedosObject from './metas/AmisSteedosObject';
+
 const components = [
   AmisRecordDetailHeader,
   AmisObjectForm, 
@@ -99,7 +105,10 @@ const components = [
   SteedosSkeleton,
   PageObject,
   AmisInputTable,
-  AmisRecordDetailMini
+  AmisRecordDetailMini,
+  ...fieldMetas,
+  AmisSteedosFieldGroup,
+  AmisSteedosObject
 ];
 
 const componentList = [

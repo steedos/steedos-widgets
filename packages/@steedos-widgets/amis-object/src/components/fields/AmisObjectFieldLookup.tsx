@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-12 13:18:55
- * @LastEditors: liaodaxue
- * @LastEditTime: 2023-06-27 11:41:57
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2024-08-28 16:04:44
  * @Description: 
  */
 import './AmisObjectFieldLookup.less';
@@ -88,6 +88,9 @@ export const AmisObjectFieldLookup = (props) => {
   // if(!data[field.name] && data.recordId && formItemValue === undefined){
   //   return ;
   // }
+  if(!field){
+    return ;
+  }
   const [schema, setSchema] = useState();
   if(formItemValue === undefined){
     formItemValue = data[field.name]

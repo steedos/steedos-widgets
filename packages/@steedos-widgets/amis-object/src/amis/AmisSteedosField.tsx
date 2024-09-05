@@ -2,12 +2,12 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-08-27 13:43:28
+ * @LastEditTime: 2024-08-30 17:25:31
  * @Description: 
  */
 import "./AmisSteedosField.less";
 import { Field, getUISchema, getSelectMap, getPage } from '@steedos-widgets/amis-lib';
-import { has, isArray, isEmpty, isString, pick, includes, clone, forEach, each, isObject, get } from 'lodash';
+import { sampleSize, has, isArray, isEmpty, isString, pick, includes, clone, forEach, each, isObject, get } from 'lodash';
 
 const defaultImageValue = "data:image/svg+xml,%3C%3Fxml version='1.0' standalone='no'%3F%3E%3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3E%3Csvg t='1631083237695' class='icon' viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg' p-id='2420' xmlns:xlink='http://www.w3.org/1999/xlink' width='1024' height='1024'%3E%3Cdefs%3E%3Cstyle type='text/css'%3E%3C/style%3E%3C/defs%3E%3Cpath d='M959.872 128c0.032 0.032 0.096 0.064 0.128 0.128v767.776c-0.032 0.032-0.064 0.096-0.128 0.128H64.096c-0.032-0.032-0.096-0.064-0.128-0.128V128.128c0.032-0.032 0.064-0.096 0.128-0.128h895.776zM960 64H64C28.8 64 0 92.8 0 128v768c0 35.2 28.8 64 64 64h896c35.2 0 64-28.8 64-64V128c0-35.2-28.8-64-64-64z' p-id='2421' fill='%23bfbfbf'%3E%3C/path%3E%3Cpath d='M832 288c0 53.024-42.976 96-96 96s-96-42.976-96-96 42.976-96 96-96 96 42.976 96 96zM896 832H128V704l224-384 256 320h64l224-192z' p-id='2422' fill='%23bfbfbf'%3E%3C/path%3E%3C/svg%3E";
 
@@ -158,17 +158,45 @@ function addEditorClass(schema, editorClassName){
     }
 }
 
-export const AmisSteedosField = async (props) => {
-    // console.log(`AmisSteedosField===props===`, props);
+function generateRandomString(length = 5) {
+    const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    return sampleSize(characters, length).join('');
+}
 
+export const AmisSteedosField = async (props) => {
     if(has(props, '$$editor')){
         setTimeout(()=>{
-            if(props.config.is_wide){
-                document.getElementsByName(props.id)[0].style.gridColumn = 'span 2 / span 2';;
-            }else{
-                document.getElementsByName(props.id)[0].style.gridColumn="";
+            const fieldEditDiv = document.getElementsByName(props.id)[0];
+            if(fieldEditDiv){
+                if(props.config.is_wide){
+                    fieldEditDiv.style.gridColumn = 'span 2 / span 2';;
+                }else{
+                    fieldEditDiv.style.gridColumn="";
+                }
+                const amisFieldEditDiv = fieldEditDiv.children[0];
+                //拖动字段后, 也要清理amis字段的编辑属性.
+                setInterval(()=>{
+                    if(amisFieldEditDiv){
+                        amisFieldEditDiv.removeAttribute("data-editor-id");
+                        amisFieldEditDiv.removeAttribute("name");
+                        amisFieldEditDiv.removeAttribute("data-visible");
+                        amisFieldEditDiv.removeAttribute("data-hide-text");
+                    }
+                }, 200)
             }
         }, 200)
+    }
+
+    if(!props.config){
+        props.config = {}
+    };
+
+    if(!props.config.object){
+        props.config.object = props.data?.objectName || '';
+    }
+
+    if(!props.config.name){
+        props.config.name = `f${generateRandomString(5)}`;
     }
 
     let steedosField = null;
@@ -185,8 +213,6 @@ export const AmisSteedosField = async (props) => {
         }
         editorClassName = "mx-10";
     }
-
-    // console.log('$schema.config.amis.name==',$schema.config.amis.name)
 
     if (isString(ctx)) {
         ctx = JSON.parse(ctx);

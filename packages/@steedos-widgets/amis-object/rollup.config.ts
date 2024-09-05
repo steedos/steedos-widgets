@@ -27,7 +27,10 @@ const globals = {
   react: 'React',
   'react-dom': 'ReactDOM',
   'lodash': '_',
-  'antd': 'antd'
+  'antd': 'antd',
+  'amis': 'Amis',
+  'amis-core': 'AmisCore',
+  'amis-ui': 'AmisUI'
 }
 
 const options = {

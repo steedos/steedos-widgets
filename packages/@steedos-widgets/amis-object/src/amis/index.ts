@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-13 11:34:24
+ * @LastEditTime: 2024-08-29 16:34:03
  * @Description: 
  */
 
@@ -37,3 +37,9 @@ export * from './AmisInstanceDetail';
 export * from './AmisInputTable';
 
 export * from './AmisRecordDetailMini';
+
+export * from './steedos-fields/index';
+
+export * from './AmisSteedosFieldGroup';
+
+export * from './AmisSteedosObject';
