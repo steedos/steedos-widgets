@@ -29,7 +29,7 @@ async function getLookupLinkOnClick(field, options) {
     const recordPage = await getPage({ type: 'record', appId: options.appId, objectName: options.objectName, formFactor: options.formFactor });
 
     const drawerRecordDetailSchema = recordPage ? Object.assign({}, recordPage.schema, {
-        "recordId": `\${${field.name}}`,
+        "recordId": field.type == "file" ? "${value}":`\${${field.name}}`,
         "data": {
             ...recordPage.schema.data,
             "_inDrawer": true,  // 用于判断是否在抽屉中
@@ -39,7 +39,7 @@ async function getLookupLinkOnClick(field, options) {
     }) : {
         "type": "steedos-record-detail",
         "objectApiName": options.objectName,
-        "recordId": `\${${field.name}}`,
+        "recordId": field.type == "file" ? "${value}":`\${${field.name}}`,
         "showBackButton": false,
         "showButtons": true,
         "data": {
@@ -135,17 +135,18 @@ export const  getAmisFileReadonlySchema = async (steedosField,ctx = {})=>{
             //             <a href='<%= item.url %>' target='_self' class='block'><%= item.name %></a> 
             //     <% });} %>`
             "type": "control",
+            "name": "",//control若存在name，内部each组件的source则会获取不到内容
             "body": {
                 type: 'each',
                 placeholder: "",
-                // className: `steedos-field-lookup-each flex flex-wrap gap-2`,
+                className: steedosField.multiple ? `flex flex-col` : '',
                 source: `\${_display.${steedosField.name}|asArray}`,
                 items: {
                     type: 'static',
                     labelClassName: "hidden",
                     label: false,
                     className: 'm-0',
-                    tpl: `<a href="/app/-/cfs_files_filerecord/view/\${${steedosField.name}}" ${lookupATagClick}>\${name}</a>`,
+                    tpl: `<a href="/app/-/cfs_files_filerecord/view/\${value}" ${lookupATagClick}>\${name}</a>`,
                     // tpl: "<%= item.name >",
                     // onEvent: window.innerWidth < 768 ? null : REFERENCE_VALUE_ITEM_ONCLICK
                     onEvent: window.innerWidth < 768 ? null : await getLookupLinkOnClick(steedosField, {

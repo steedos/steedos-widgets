@@ -220,6 +220,8 @@ async function getQuickEditSchema(object, columnField, options){
                                 _display["${field.name}"].push({
                                     "name": event.data.result.name,
                                     "url": event.data.result.url,
+                                    "value": event.data.result.value,
+                                    "_id": event.data.result.value,
                                     "type": event.data.item.type,
                                     "size": event.data.item.size
                                 });
@@ -232,6 +234,8 @@ async function getQuickEditSchema(object, columnField, options){
                                 _display["${field.name}"] = {
                                     "name": event.data.result.name,
                                     "url": event.data.result.url,
+                                    "value": event.data.result.value,
+                                    "_id": event.data.result.value,
                                     "type": event.data.item.type,
                                     "size": event.data.item.size
                                 };
@@ -679,7 +683,7 @@ export async function getTableColumns(object, fields, options){
                 static: true,
                 className,
                 ...await getAmisFileReadonlySchema(field)
-            }, fieldAmis, {name: field.name});
+            }, fieldAmis);
         }
         else if(field.type === 'select'){
             const map = Tpl.getSelectMap(field.options);
@@ -1492,7 +1496,8 @@ export async function getTableApi(mainObject, fields, options){
                     // PC客户端附件子表列表点击标题预览附件功能依赖了_id，所以这里拼出来
                     let itemKeyValue = item[key];
                     item[key] = value.map(function(item, index){
-                        item._id = itemKeyValue[index];
+                        item._id = typeof itemKeyValue == 'string' ? itemKeyValue : itemKeyValue[index];
+                        item.value = typeof itemKeyValue == 'string' ? itemKeyValue : itemKeyValue[index];
                         return item;
                     });
                 }else{
