@@ -854,6 +854,11 @@ const createMetaConfig = (name: string, title: string, icon: string) => {
                           "className": 'ae-formItemControl-body',
                           "body": [
                             {
+                                "name": "config.visible_on",
+                                "label": "显示公式",
+                                "type": 'input-formula',
+                            },
+                            {
                               "name": "config.required",
                               "label": "必填",
                               "required": false,
