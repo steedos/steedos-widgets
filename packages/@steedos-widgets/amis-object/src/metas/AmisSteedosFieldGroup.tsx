@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-11 09:39:38
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-09-05 15:53:41
+ * @LastEditTime: 2024-09-09 17:49:54
  * @Description: 
  */
 const config: any = {
@@ -67,7 +67,7 @@ const config: any = {
             title: '分组',
             collapsable: true,
             type: 'steedos-field-group',
-            body: [{type: 'sfield-text', amis: {}}],// 容器类字段
+            body: [],// 容器类字段
         },
         // 容器类组件必需字段
         regions: [
