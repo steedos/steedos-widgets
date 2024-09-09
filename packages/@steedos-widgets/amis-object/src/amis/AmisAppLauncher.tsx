@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-05-14 15:12:49
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2024-09-09 14:53:25
  * @Description: 
  */
 
@@ -360,7 +360,7 @@ export const AmisAppLauncher = async (props) => {
     "api": {
       "method": "get",
       "cache": "10000",
-      "url": "${context.rootUrl}/service/api/apps/menus?mobile=true",
+      "url": "${context.rootUrl}/service/api/apps/menus?mobile="+isMobile,
       "headers": {
         "Authorization": "Bearer ${context.tenantId},${context.authToken}"
       },
