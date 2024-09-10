@@ -1,5 +1,5 @@
 // 通用元数据配置生成器
-const createMetaConfig = (name: string, title: string, icon: string) => {
+const createMetaConfig = (name: string, type: string, title: string, icon: string) => {
     const metaConfig: any = {
         componentType: 'amisSchema',
         group: "字段",
@@ -56,7 +56,7 @@ const createMetaConfig = (name: string, title: string, icon: string) => {
                 scaffold: {
                     type: metaConfig.amis.name,
                     config: {
-                      "type": name.toLowerCase(),
+                      "type": type,
                       "label": title,
                       "amis": {}
                     }
@@ -64,7 +64,7 @@ const createMetaConfig = (name: string, title: string, icon: string) => {
                   previewSchema: {
                     type: metaConfig.amis.name,
                     config: {
-                      "type": name.toLowerCase(),
+                      "type": type,
                       "label": title,
                       "amis": {}
                     }
@@ -1089,7 +1089,7 @@ const fieldTypes = [
 const fieldMetas = [];
 
 fieldTypes.forEach(({ name, type, title, icon }) => {
-    fieldMetas.push(createMetaConfig(name, title, icon));
+    fieldMetas.push(createMetaConfig(name, type, title, icon));
 });
 
 export {
