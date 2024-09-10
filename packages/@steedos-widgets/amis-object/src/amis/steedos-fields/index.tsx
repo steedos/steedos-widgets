@@ -24,6 +24,41 @@ const createFieldFunction = (type: string) => {
         props.config.name = `f${generateRandomString(5)}`;
     }
 
+    if(props.config.type === 'textarea'){
+      if(!props.config.rows){
+        props.config.rows = 3;
+      }
+    }
+
+    if(props.config.type === 'select'){
+      if(!props.config.options){
+        props.config.options = [{
+          label: '选项1',
+          value: 'v1'
+        },{
+          label: '选项2',
+          value: 'v2'
+        }]
+      }
+    }
+
+    if( includes(['number', 'currency', 'percent', 'summary'], props.config.type)){
+      if(!props.config.precision){
+        props.config.precision = 18;
+      }
+      if(!props.config.scale && props.config.scale != 0){
+        props.config.scale = 2;
+      }
+    }
+
+    if(props.config.type === 'autonumber'){
+      if(!props.config.formula){
+        props.config.formula = '自动编号{YYYY}{MM}{DD}{000}'
+      }
+    }
+
+    
+
     if(has(props, '$$editor')){
       // props.config = Object.assign({}, props.config, {label: `${props.config.label}:${props.config.name}`})
       if(props.config.hidden || props.config.visible_on === '{{false}}'){

@@ -421,7 +421,8 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
                               "valueField": "value",
                               "visibleOn": "['code'].indexOf(config.type) > -1 ? true: false",
                               "clearValueOnHidden": true,
-                              "disabledOn": "${config.is_system == true}"
+                              "disabledOn": "${config.is_system == true}",
+                              "value": "javascript"
                             },
                             {
                               "name": "config.multiple",
