@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-11 09:39:38
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-09-09 17:49:54
+ * @LastEditTime: 2024-09-11 11:49:54
  * @Description: 
  */
 const config: any = {
@@ -76,6 +76,12 @@ const config: any = {
             label: '内容区',
             renderMethod: 'renderBody',
             insertPosition: 'inner',
+            accept: function(json){
+              if(json.type === 'steedos-field-group'){
+                return false;
+              }
+              return true
+            }.toString()
           },
         ],
         previewSchema: {
