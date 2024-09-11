@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-26 16:02:08
- * @LastEditors: yinlianghui@hotoa.com yinlianghui@hotoa.com
- * @LastEditTime: 2024-02-25 14:13:10
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2024-09-11 15:27:32
  * @Description: 
  */
 import * as Fields from '../fields';
@@ -61,17 +61,17 @@ const getSection = async (formFields, permissionFields, fieldSchemaArray, sectio
       // console.log(`perField.type object ===> field`, field)
     }
     if (field.name.indexOf(".") < 0) {
-      let _field = _.cloneDeep(field);
-      if(field.type === "select" && field.data_type && field.data_type != "text"){
-        _field.type = field.data_type;
-      }
+      // let _field = _.cloneDeep(field);
+      // if(field.type === "select" && field.data_type && field.data_type != "text"){
+      //   _field.type = field.data_type;
+      // }
       if(field.type === "steedos-field"){
         // 如果是steedos-field则不需要通过convertSFieldToAmisField函数转换，因为steedos-field组件会转换
-        fieldSetBody.push(_field);
+        fieldSetBody.push(field);
       }
       else{
         ctx.__formFields = formFields;
-        const amisField = await Fields.convertSFieldToAmisField(_field, _field.readonly, ctx);
+        const amisField = await Fields.convertSFieldToAmisField(field, field.readonly, ctx);
         // 如果steedos-field稳定了，可以放开下面的代码直接用组件统一渲染字段
         // const amisField = {
         //   "type": "steedos-field",

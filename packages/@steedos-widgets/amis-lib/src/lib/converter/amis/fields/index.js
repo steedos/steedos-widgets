@@ -892,9 +892,9 @@ export async function getFieldSearchable(perField, permissionFields, ctx){
             _field.precision = field.precision;
             _field.scale = field.scale;
         }
-        else if(field.type === "select" && field.data_type && field.data_type != "text"){
-            _field.type = field.data_type;
-        }
+        // else if(field.type === "select" && field.data_type && field.data_type != "text"){
+        //     _field.type = field.data_type;
+        // }
 
         if(_field.type === 'number' || _field.type === 'currency'){
             _field.type = 'input-array';
