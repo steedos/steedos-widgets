@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-09-09 14:53:25
+ * @LastEditTime: 2024-09-13 11:34:32
  * @Description: 
  */
 
@@ -349,6 +349,57 @@ export const AmisAppLauncher = async (props) => {
           ],
           "body": [
             dialogSchema
+          ]
+        }
+      },
+      isMobile ? null : {
+        "type": "button",
+        "level": "link",
+        "label": "+ 新建应用",
+        "className": "w-full h-10",
+        "actionType": "dialog",
+        "dialog": {
+          "title": "新建应用",
+          "actions": [
+            {
+              "type": "button",
+              "actionType": "cancel",
+              "label": "取消",
+              "id": "u:21d3cccf4d83"
+            },
+            {
+                "type": "button",
+                "actionType": "confirm",
+                "label": "确定",
+                "primary": true,
+                "id": "u:238e5731a053"
+            }
+          ],
+          "body": [
+            {
+              "type": "form",
+              "api": {
+                  "url": "/service/api/apps/create_by_design",
+                  "method": "post",
+                  "requestAdaptor": "api.data={code: context.code, name: context.name}; return api;",
+                  "adaptor": "window.location.href=Creator.getRelativeUrl('/app/' + payload.code);return {}",
+                  "messages": {}
+              },
+              "body": [
+                {
+                  "type": "input-text",
+                  "name": "code",
+                  "label": "应用唯一标识",
+                  "required": true
+                },
+                {
+                  "name": "name",
+                  "type": "input-text",
+                  "label": "显示名称",
+                  "required": true
+                }
+              ]
+            }
           ]
         }
       }
