@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-09-13 11:34:32
+ * @LastEditTime: 2024-09-25 09:37:16
  * @Description: 
  */
 
@@ -12,6 +12,12 @@ export const AmisAppLauncher = async (props) => {
   let { app, data, className, showAppName = true, appNameClassName = '', customElements = [], showAppIcon = true } = props;
   if (!app) {
     app = data.context.app;
+  }
+
+  let isSpaceAdmin = false;
+
+  if(data.context.user && data.context.user.is_space_admin){
+    isSpaceAdmin = true;
   }
 
   const formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE';
@@ -352,7 +358,7 @@ export const AmisAppLauncher = async (props) => {
           ]
         }
       },
-      isMobile ? null : {
+      isMobile && isSpaceAdmin ? null : {
         "type": "button",
         "level": "link",
         "label": "+ 新建应用",
