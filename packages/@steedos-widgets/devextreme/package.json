@@ -1,7 +1,7 @@
 {
   "name": "@steedos-widgets/devextreme",
   "private": false,
-  "version": "6.3.8",
+  "version": "6.3.10",
   "main": "dist/devextreme.cjs.js",
   "module": "dist/devextreme.esm.js",
   "unpkg": "dist/devextreme.umd.js",
@@ -49,7 +49,7 @@
   },
   "dependencies": {
     "@rollup/plugin-replace": "^5.0.2",
-    "@steedos-widgets/amis-lib": "6.3.8",
+    "@steedos-widgets/amis-lib": "6.3.10",
     "devextreme": "^23.2.3",
     "devextreme-react": "^23.2.3",
     "rollup-plugin-copy": "^3.5.0"
