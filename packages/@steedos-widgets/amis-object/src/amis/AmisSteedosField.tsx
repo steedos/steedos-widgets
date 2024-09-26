@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-09-10 18:53:14
+ * @LastEditTime: 2024-09-26 16:23:17
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -148,11 +148,11 @@ async function getLookupLinkOnClick(field: any, options: any) {
     }
 }
 
-function addEditorClass(schema, editorClassName){
+function addEditorClass(schema = {className: ""}, editorClassName){
     if(schema.className && typeof schema.className == 'string'){
         schema.className+= ` ${editorClassName}`;
     }else if(schema.className && typeof schema.className == 'object'){
-        schema.className[editorClassName] = "true";
+        (schema as any).className[editorClassName] = "true";
     }else{
         schema.className = editorClassName;
     }
@@ -188,7 +188,7 @@ export const AmisSteedosField = async (props) => {
     }
 
     if(!props.config){
-        props.config = {}
+        props.config = props.field || {}
     };
 
     if(!props.config.object){
