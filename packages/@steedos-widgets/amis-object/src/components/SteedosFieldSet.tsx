@@ -394,11 +394,10 @@ class FieldSetControl extends React.Component<
     };
     mode && (props.mode = mode);
     horizontal && (props.horizontal = horizontal);
-
     return (
       <div
         className={cx(
-          `Form--${props.mode || formMode || 'normal'}`,
+          `steedos-field-group Form--${props.mode || formMode || 'normal'}`,
           formClassName
         )}
       >

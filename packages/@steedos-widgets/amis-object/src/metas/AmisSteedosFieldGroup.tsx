@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-11 09:39:38
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-09-11 11:49:54
+ * @LastEditTime: 2024-10-08 15:04:40
  * @Description: 
  */
 const config: any = {
@@ -73,7 +73,7 @@ const config: any = {
         regions: [
           {
             key: 'body',
-            label: '内容区',
+            label: '字段项',
             renderMethod: 'renderBody',
             insertPosition: 'inner',
             accept: function(json){
