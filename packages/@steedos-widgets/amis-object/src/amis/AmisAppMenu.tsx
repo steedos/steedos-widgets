@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-09-25 15:41:48
+ * @LastEditTime: 2024-10-08 10:51:55
  * @Description: 
  */
 import './AmisAppMenu.less';
@@ -155,19 +155,19 @@ export const AmisAppMenu = async (props) => {
                             return (tab.index || 0) - 1000;
                         }
                       })
-
-                      _.each(payload.tab_groups, (group)=>{
-                        if(!_.includes(usedGroupNames, group.group_name)){
-                            data.nav.push({
-                                "label": group.group_name,
-                                'default_open': group && group.default_open != false,
-                                "unfolded": group && group.default_open != false,
-                                "isGroup": true,
-                                "children": []
-                            })
-                        }
-                      });
-
+                      if(allowEditApp){
+                        _.each(payload.tab_groups, (group)=>{
+                            if(!_.includes(usedGroupNames, group.group_name)){
+                                data.nav.push({
+                                    "label": group.group_name,
+                                    'default_open': group && group.default_open != false,
+                                    "unfolded": group && group.default_open != false,
+                                    "isGroup": true,
+                                    "children": []
+                                })
+                            }
+                        });
+                      }
                       let editAppSearch = [];
                       if(allowEditApp){
                         editAppSearch = [{
