@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-10-08 13:51:30
+ * @LastEditTime: 2024-10-08 14:04:09
  * @Description: 
  */
 import './AmisAppMenu.less';
@@ -196,6 +196,7 @@ export const AmisAppMenu = async (props) => {
                                         "body": [
                                             {
                                             "type": "dropdown-button",
+                                            "btnClassName": "pr-0",
                                             "level": "link",
                                             "icon": "fa fa-plus",
                                             "hideCaret": true,
