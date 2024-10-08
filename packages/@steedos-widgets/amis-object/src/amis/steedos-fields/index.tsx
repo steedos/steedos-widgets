@@ -66,6 +66,17 @@ const createFieldFunction = (type: string) => {
       }else if(props.config.type === 'autonumber' && props.config.autonumber_enable_modify != true){
         props.config = Object.assign({}, props.config, {label: `${props.config.label}(隐藏)`, autonumber_enable_modify: true})
       }
+
+      if(props.config.amis){
+        if(isString(props.config.amis)){
+          props.config.amis = JSON.parse(props.config.amis);
+        }
+        props.config.amis.mode = 'horizontal';
+      }else {
+        props.config.amis = {
+          mode: 'horizontal'
+        };
+      }
     }
 
 
