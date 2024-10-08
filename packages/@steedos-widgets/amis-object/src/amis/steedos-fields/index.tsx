@@ -63,6 +63,8 @@ const createFieldFunction = (type: string) => {
       // props.config = Object.assign({}, props.config, {label: `${props.config.label}:${props.config.name}`})
       if(props.config.hidden || props.config.visible_on === '{{false}}'){
         props.config = Object.assign({}, props.config, {label: `${props.config.label}(隐藏)`, visible_on: null})
+      }else if(props.config.type === 'autonumber' && props.config.autonumber_enable_modify != true){
+        props.config = Object.assign({}, props.config, {label: `${props.config.label}(隐藏)`, autonumber_enable_modify: true})
       }
     }
 
