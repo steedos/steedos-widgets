@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-09-25 09:37:16
+ * @LastEditTime: 2024-10-08 15:32:27
  * @Description: 
  */
 
@@ -344,6 +344,7 @@ export const AmisAppLauncher = async (props) => {
         "label": "更多",
         "className": "w-full h-10",
         "actionType": "dialog",
+        "visibleOn": "${app_items.length > 9}",
         "dialog": {
           "size": "xl",
           "title": {
