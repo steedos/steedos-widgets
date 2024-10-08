@@ -1,14 +1,14 @@
 #main {
-    overflow: hidden;
+  overflow: hidden;
 }
 
-#steedosPageRoot{
-    overflow: auto;
+#steedosPageRoot {
+  overflow: auto;
 }
 
 /* 去除下拉按钮内图标的边距 */
-.steedos-mobile-header-drop-down i.icon{
-    margin: 0;
+.steedos-mobile-header-drop-down i.icon {
+  margin: 0;
 }
 
 /* .buttons-drawer .antd-Drawer-content{
@@ -20,53 +20,242 @@
     overflow: inherit !important;
 } */
 
-.buttons-drawer{
-    position: fixed !important;
-    top: 0 !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    max-height: unset;
-    padding: 0;
-    margin: 0;
+.buttons-drawer {
+  position: fixed !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  max-height: unset;
+  padding: 0;
+  margin: 0;
 }
 
-.buttons-drawer .antd-ButtonGroup button{
-    border-color: #c9c9c9;
-    border-right: none !important;
-    border-left: none !important;
-    border-bottom: none !important;
-    border-radius: 0px !important;;
-    min-height: 50px;
+.buttons-drawer .antd-ButtonGroup button {
+  border-color: #c9c9c9;
+  border-right: none !important;
+  border-left: none !important;
+  border-bottom: none !important;
+  border-radius: 0px !important;
+  min-height: 50px;
 }
 
 @media screen and (max-width: 767px) {
-    /* 手机版Modal全屏 */
-    .antd-Modal-content{
-        max-height: 100% !important;
-        margin: 0px !important;
-        border-radius: 0px !important;
-        height: 100% !important;
-    }
+  /* 手机版Modal全屏 */
+  .antd-Modal-content {
+    max-height: 100% !important;
+    margin: 0px !important;
+    border-radius: 0px !important;
+    height: 100% !important;
+  }
 
-    /* 修正手机版TreeSelect样式异常 */
-    .antd-TreeSelect-popup .antd-Tree{
-        width: 100% !important;
-    }
-
+  /* 修正手机版TreeSelect样式异常 */
+  .antd-TreeSelect-popup .antd-Tree {
+    width: 100% !important;
+  }
 }
 
 /* 修正手机版 body上的sidebar导致y滚动条异常 */
-.sidebar{
-    padding-bottom: 0px !important;
+.sidebar {
+  padding-bottom: 0px !important;
 }
 
 body.steedos {
-    /*此样式可能造成ios17系统的iphone svg显示不出来，移除就好了*/
-    -webkit-overflow-scrolling: unset;
+  /*此样式可能造成ios17系统的iphone svg显示不出来，移除就好了*/
+  -webkit-overflow-scrolling: unset;
+}
+
+.steedos-record-detail-drawer .antd-Drawer-close {
+  display: none !important;
+}
+
+/*steedosfieldset*/
+
+steedosfieldset.antd-Collapse--lg,
+steedosfieldset.antd-Collapse--md,
+steedosfieldset.antd-Collapse--base,
+steedosfieldset.antd-Collapse--sm,
+steedosfieldset.antd-Collapse--xs {
+  position: relative;
+}
+steedosfieldset.antd-Collapse--lg:after,
+steedosfieldset.antd-Collapse--md:after,
+steedosfieldset.antd-Collapse--base:after,
+steedosfieldset.antd-Collapse--sm:after,
+steedosfieldset.antd-Collapse--xs:after {
+  content: "";
+  pointer-events: none;
+  border: 1px solid var(--borderColor);
+  position: absolute;
+  z-index: 0;
+  top: 11px;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+steedosfieldset.antd-Collapse--lg > legend,
+steedosfieldset.antd-Collapse--md > legend,
+steedosfieldset.antd-Collapse--base > legend,
+steedosfieldset.antd-Collapse--sm > legend,
+steedosfieldset.antd-Collapse--xs > legend {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: inline-block;
+  width: auto;
+  z-index: 1;
+  background: var(--Fieldset-legend-bgColor);
+}
+steedosfieldset.antd-Collapse--lg > legend.antd-Collapse-header.is-mobile,
+steedosfieldset.antd-Collapse--md > legend.antd-Collapse-header.is-mobile,
+steedosfieldset.antd-Collapse--base > legend.antd-Collapse-header.is-mobile,
+steedosfieldset.antd-Collapse--sm > legend.antd-Collapse-header.is-mobile,
+steedosfieldset.antd-Collapse--xs > legend.antd-Collapse-header.is-mobile {
+  position: absolute;
+}
+steedosfieldset.antd-Collapse--lg .collapse,
+steedosfieldset.antd-Collapse--md .collapse,
+steedosfieldset.antd-Collapse--base .collapse,
+steedosfieldset.antd-Collapse--sm .collapse,
+steedosfieldset.antd-Collapse--xs .collapse {
+  position: relative;
+}
+steedosfieldset.antd-Collapse {
+  border: none;
+}
+steedosfieldset.antd-Collapse > legend {
+  border-left: var(--fieldSet-legend-border-color)
+    var(--fieldSet-legend-border-width) solid;
+  height: var(--fieldSet-legend-height);
+  line-height: var(--fieldSet-legend-height);
+  margin: var(--fieldSet-legend-marginTop) var(--fieldSet-legend-marginRight)
+    var(--fieldSet-legend-marginBottom) var(--fieldSet-legend-marginLeft);
+  padding: var(--fieldSet-legend-paddingTop) var(--fieldSet-legend-paddingRight)
+    var(--fieldSet-legend-paddingBottom) var(--fieldSet-legend-paddingLeft);
+  cursor: pointer;
+  background: transparent;
+  display: inline-flex !important;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  box-sizing: content-box;
+}
+steedosfieldset.antd-Collapse > legend .antd-TplField {
+  font-weight: var(--fieldSet-legend-fontWeight);
+  font-size: var(--fieldSet-legend-fontSize);
+  color: var(--fieldSet-legend-color);
+}
+steedosfieldset.antd-Collapse > legend:hover {
+  background: transparent;
+}
+steedosfieldset.antd-Collapse--xs {
+  padding: var(--fieldSet-size-xs-paddingTop)
+    var(--fieldSet-size-xs-paddingRight) var(--fieldSet-size-xs-paddingBottom)
+    var(--fieldSet-size-xs-paddingLeft);
+}
+steedosfieldset.antd-Collapse--xs > legend {
+  left: var(--fieldSet-size-xs-paddingLeft);
+  padding: 0 3px;
+  margin: 0 0 0 -3px;
+}
+steedosfieldset.antd-Collapse--xs > legend .antd-TplField {
+  font-size: var(--fieldSet-size-xs-fontSize);
+}
+steedosfieldset.antd-Collapse--xs > legend:hover {
+  background-color: var(--white);
+}
+steedosfieldset.antd-Collapse--xs:after {
+  top: calc(var(--fieldSet-size-xs-fontSize) / 2);
+}
+steedosfieldset.antd-Collapse--sm {
+  padding: var(--fieldSet-size-sm-paddingTop)
+    var(--fieldSet-size-sm-paddingRight) var(--fieldSet-size-sm-paddingBottom)
+    var(--fieldSet-size-sm-paddingLeft);
+}
+steedosfieldset.antd-Collapse--sm > legend {
+  left: var(--fieldSet-size-sm-paddingLeft);
+  padding: 0 5px;
+  margin: 0 0 0 -5px;
+}
+steedosfieldset.antd-Collapse--sm > legend .antd-TplField {
+  font-size: var(--fieldSet-size-sm-fontSize);
+}
+steedosfieldset.antd-Collapse--sm > legend:hover {
+  background-color: var(--white);
+}
+steedosfieldset.antd-Collapse--sm:after {
+  top: calc(var(--fieldSet-size-sm-fontSize) / 2);
+}
+steedosfieldset.antd-Collapse--base {
+  padding: var(--fieldSet-size-base-paddingTop)
+    var(--fieldSet-size-base-paddingRight)
+    var(--fieldSet-size-base-paddingBottom)
+    var(--fieldSet-size-base-paddingLeft);
+}
+steedosfieldset.antd-Collapse--base > legend {
+  left: var(--fieldSet-size-base-paddingLeft);
+  padding: 0 8px;
+  margin: 0 0 0 -8px;
+}
+steedosfieldset.antd-Collapse--base > legend .antd-TplField {
+  font-size: var(--fieldSet-size-base-fontSize);
+}
+steedosfieldset.antd-Collapse--base > legend:hover {
+  background-color: var(--white);
+}
+steedosfieldset.antd-Collapse--base:after {
+  top: calc(var(--fieldSet-size-base-fontSize) / 2);
+}
+steedosfieldset.antd-Collapse--md {
+  padding: var(--fieldSet-size-md-paddingTop)
+    var(--fieldSet-size-md-paddingRight) var(--fieldSet-size-md-paddingBottom)
+    var(--fieldSet-size-md-paddingLeft);
+}
+steedosfieldset.antd-Collapse--md > legend {
+  left: var(--fieldSet-size-md-paddingLeft);
+  padding: 0 10px;
+  margin: 0 0 0 -10px;
+}
+steedosfieldset.antd-Collapse--md > legend .antd-TplField {
+  font-size: var(--fieldSet-size-md-fontSize);
+}
+steedosfieldset.antd-Collapse--md > legend:hover {
+  background-color: var(--white);
+}
+steedosfieldset.antd-Collapse--md:after {
+  top: calc(var(--fieldSet-size-md-fontSize) / 2);
+}
+steedosfieldset.antd-Collapse--lg {
+  padding: var(--fieldSet-size-lg-paddingTop)
+    var(--fieldSet-size-lg-paddingRight) var(--fieldSet-size-lg-paddingBottom)
+    var(--fieldSet-size-lg-paddingLeft);
+}
+steedosfieldset.antd-Collapse--lg > legend {
+  left: var(--fieldSet-size-lg-paddingLeft);
+  padding: 0 var(--gap-md);
+  margin: 0 0 0 calc(var(--gap-md) * -1);
+}
+steedosfieldset.antd-Collapse--lg > legend .antd-TplField {
+  font-size: var(--fieldSet-size-lg-fontSize);
+}
+steedosfieldset.antd-Collapse--lg > legend:hover {
+  background-color: var(--white);
+}
+steedosfieldset.antd-Collapse--lg:after {
+  top: calc(var(--fieldSet-size-lg-fontSize) / 2);
+}
+steedosfieldset.antd-Collapse .antd-Collapse-header.is-mobile {
+  padding-left: var(--gap-xs) !important;
+  padding-right: 1.125rem;
+}
+steedosfieldset.antd-Collapse .antd-Collapse-header.is-mobile:hover {
+  background: var(--white);
+}
+
+.steedos-amis-form steedosfieldset .antd-Collapse-body .antd-Collapse-content{
+    padding: var(--Collapse-content-padding);
 }
 
 
-.steedos-record-detail-drawer .antd-Drawer-close{
-    display: none !important;
+.steedos-amis-form{
+    padding: var(--Collapse-content-padding);
 }

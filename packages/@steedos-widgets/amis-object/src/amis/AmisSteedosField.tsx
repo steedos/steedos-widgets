@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-09-26 16:23:17
+ * @LastEditTime: 2024-10-08 16:28:14
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -211,13 +211,13 @@ export const AmisSteedosField = async (props) => {
                  config.amis.name = config.name
             } 
         }
-        editorClassName = "mx-10";
+        // editorClassName = "mb-6";
 
         if(config.type === 'formula' || config.type === 'summary'){
             return {
                 type: 'input-text',
                 label: `${config.label}(新建、编辑时不可见)`,
-                className: 'mx-10',
+                // className: 'mb-6',
                 readonly: true
             }
         }

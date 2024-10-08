@@ -203,7 +203,7 @@ class Collapse extends React.Component<CollapseProps, {}> {
       translate: __,
       mountOnEnter,
       unmountOnExit,
-      showArrow,
+      showArrow = true,
       expandIcon,
       disabled,
       collapsed,
@@ -397,7 +397,7 @@ class FieldSetControl extends React.Component<
     return (
       <div
         className={cx(
-          `steedos-field-group Form--${props.mode || formMode || 'normal'}`,
+          `steedos-field-set-body Form--${props.mode || formMode || 'normal'}`,
           formClassName
         )}
       >
