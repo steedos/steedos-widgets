@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-10-08 10:51:55
+ * @LastEditTime: 2024-10-08 13:51:30
  * @Description: 
  */
 import './AmisAppMenu.less';
@@ -183,6 +183,9 @@ export const AmisAppMenu = async (props) => {
                                                 "name": "keywords",
                                                 "className": "!w-full",
                                                 "placeholder": "搜索菜单",
+                                                "searchImediately": true,
+                                                "clearable": true,
+                                                "clearAndSubmit": true,
                                                 "id": "s01"
                                             }
                                         ]
@@ -741,11 +744,34 @@ export const AmisAppMenu = async (props) => {
                             }]
                       }
 
+                      let menuItems = data.nav;
+
+                      if(context.keywords){
+                        // 如果menuItem的children, children是数组结构, 每一项的searchKey包含context.keywords, 则显示menuItem及其符合条件的children;
+                        menuItems = _.filter(menuItems, (menuItem)=>{
+                            if(menuItem.children){
+                                const children = _.filter(menuItem.children, (child)=>{
+                                    return _.includes(child.searchKey, context.keywords);
+                                });
+
+                                if(children.length > 0){
+                                    menuItem.children = children;
+                                }
+
+                                return children.length > 0;
+                            }
+                        })
+                      };
+
+                      if(!menuItems || menuItems.length == 0){
+                        menuItems = data.nav;
+                      }
+
                       payload.data = {
                         "type":"service",
                         "data":{
                             "tabId": customTabId || objectTabId,
-                            "items": data.nav,
+                            "items": menuItems,
                             "keyvalues": "\${ss:keyvalues}",
                             "allowEditApp": allowEditApp,
                             "tab_groups": tab_groups
@@ -1755,6 +1781,11 @@ export const AmisAppMenu = async (props) => {
                       console.log(\`error\`, error)
                   }
                 //   console.log('payload===2==>', payload)
+
+                  setTimeout(function(){
+                    $("[name='keywords']").focus();
+                  }, 300);
+
                   return payload;
             `,
             "headers": {
