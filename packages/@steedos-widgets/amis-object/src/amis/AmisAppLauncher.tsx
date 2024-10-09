@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-10-08 15:32:27
+ * @LastEditTime: 2024-10-09 20:54:33
  * @Description: 
  */
 
@@ -397,7 +397,11 @@ export const AmisAppLauncher = async (props) => {
                   "type": "input-text",
                   "name": "code",
                   "label": "应用唯一标识",
-                  "required": true
+                  "required": true,
+                  "validateOnChange": true,
+                  "validations": {
+                      "isVariableName": /^[a-zA-Z]([A-Za-z0-9]|_(?!_))*[A-Za-z0-9]$/
+                  }
                 },
                 {
                   "name": "name",

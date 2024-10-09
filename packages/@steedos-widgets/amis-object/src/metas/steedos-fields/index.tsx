@@ -229,7 +229,11 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
                               "required": true,
                               "type": "input-text",
                               "clearValueOnHidden": true,
-                              "disabledOn": "${config.is_system == true}"
+                              "disabledOn": "${config.is_system == true}",
+                              "validateOnChange": true,
+                              "validations": {
+                                  "isVariableName": /^[a-zA-Z]([A-Za-z0-9]|_(?!_))*[A-Za-z0-9]$/
+                              }
                             },
                             {
                               "name": "config.autonumber_enable_modify",

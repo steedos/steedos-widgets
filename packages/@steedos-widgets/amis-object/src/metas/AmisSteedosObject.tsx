@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-11 09:39:38
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-09-05 15:22:09
+ * @LastEditTime: 2024-10-09 21:02:08
  * @Description: 
  */
 const config: any = {
@@ -78,7 +78,11 @@ const config: any = {
           {
             type: 'text',
             name: 'name',
-            label: '对象名'
+            label: '对象名',
+            "validateOnChange": true,
+            "validations": {
+                "isVariableName": /^[a-zA-Z]([A-Za-z0-9]|_(?!_))*[A-Za-z0-9]$/
+            }
           },
           {
             type: 'text',

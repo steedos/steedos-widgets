@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-10-08 14:04:09
+ * @LastEditTime: 2024-10-09 20:53:14
  * @Description: 
  */
 import './AmisAppMenu.less';
@@ -222,7 +222,11 @@ export const AmisAppMenu = async (props) => {
                                                                                     "id": "u:dae5884c1633",
                                                                                     "placeholder": "唯一标识",
                                                                                     "value": "o_\${UUID(6)}",
-                                                                                    "required": true
+                                                                                    "required": true,
+                                                                                    "validateOnChange": true,
+                                                                                    "validations": {
+                                                                                        "isVariableName": /^[a-zA-Z]([A-Za-z0-9]|_(?!_))*[A-Za-z0-9]$/
+                                                                                    }
                                                                                 },
                                                                                 {
                                                                                     "type": "input-text",
@@ -339,7 +343,11 @@ export const AmisAppMenu = async (props) => {
                                                                                     "id": "u:dae5884c1633",
                                                                                     "placeholder": "唯一标识",
                                                                                     "value": "p_\${UUID(6)}",
-                                                                                    "required": true
+                                                                                    "required": true,
+                                                                                    "validateOnChange": true,
+                                                                                    "validations": {
+                                                                                        "isVariableName": /^[a-zA-Z]([A-Za-z0-9]|_(?!_))*[A-Za-z0-9]$/
+                                                                                    }
                                                                                 },
                                                                                 {
                                                                                     "type": "input-text",
@@ -457,6 +465,11 @@ export const AmisAppMenu = async (props) => {
                                                                                     "placeholder": "唯一标识",
                                                                                     "required": true,
                                                                                     "value": "t_\${UUID(6)}",
+                                                                                    "validateOnChange": true,
+                                                                                    "validations": {
+                                                                                        "isVariableName": /^[a-zA-Z]([A-Za-z0-9]|_(?!_))*[A-Za-z0-9]$/
+                                                                                    }
+                                                                                    
                                                                                 },
                                                                                 {
                                                                                     "type": "input-text",
@@ -1277,7 +1290,11 @@ export const AmisAppMenu = async (props) => {
                                                                         "id": "u:dae5884c1633",
                                                                         "placeholder": "唯一标识",
                                                                         "value": "o_\${UUID(6)}",
-                                                                        "required": true
+                                                                        "required": true,
+                                                                        "validateOnChange": true,
+                                                                        "validations": {
+                                                                            "isVariableName": /^[a-zA-Z]([A-Za-z0-9]|_(?!_))*[A-Za-z0-9]$/
+                                                                        }
                                                                     },
                                                                     {
                                                                         "type": "input-text",
@@ -1394,7 +1411,11 @@ export const AmisAppMenu = async (props) => {
                                                                         "id": "u:dae5884c1633",
                                                                         "placeholder": "唯一标识",
                                                                         "value": "p_\${UUID(6)}",
-                                                                        "required": true
+                                                                        "required": true,
+                                                                        "validateOnChange": true,
+                                                                        "validations": {
+                                                                            "isVariableName": /^[a-zA-Z]([A-Za-z0-9]|_(?!_))*[A-Za-z0-9]$/
+                                                                        }
                                                                     },
                                                                     {
                                                                         "type": "input-text",
@@ -1512,6 +1533,10 @@ export const AmisAppMenu = async (props) => {
                                                                         "placeholder": "唯一标识",
                                                                         "required": true,
                                                                         "value": "t_\${UUID(6)}",
+                                                                        "validateOnChange": true,
+                                                                        "validations": {
+                                                                            "isVariableName": /^[a-zA-Z]([A-Za-z0-9]|_(?!_))*[A-Za-z0-9]$/
+                                                                        }
                                                                     },
                                                                     {
                                                                         "type": "input-text",
