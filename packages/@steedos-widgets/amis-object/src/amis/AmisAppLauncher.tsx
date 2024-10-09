@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-10-09 20:54:33
+ * @LastEditTime: 2024-10-09 21:07:41
  * @Description: 
  */
 
@@ -397,6 +397,7 @@ export const AmisAppLauncher = async (props) => {
                   "type": "input-text",
                   "name": "code",
                   "label": "应用唯一标识",
+                  "value": "a_\${UUID(6)}",
                   "required": true,
                   "validateOnChange": true,
                   "validations": {
