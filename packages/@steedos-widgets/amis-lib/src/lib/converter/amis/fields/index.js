@@ -348,7 +348,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
             // }
             // 日期时间字段，按日期方式展现显示控件，用户不用关心小时分钟
             convertData = {
-                type: "input-date-range",
+                type: "input-datetime-range",
                 inputFormat: "YYYY-MM-DD HH:mm",
                 format:'YYYY-MM-DDTHH:mm:ss.SSSZ',
                 tpl: readonly ? Tpl.getDateTimeTpl(field) : null,
