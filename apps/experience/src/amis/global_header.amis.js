@@ -37,7 +37,7 @@ export default {
                 "body": [
                     {
                         "type": "tpl",
-                        "tpl": "<div class='slds-dropdown-trigger slds-dropdown-trigger_click' style='display:inline-block'><button onClick='window.open(\"https://docs.steedos.com/zh-CN\", \"_blank\");' class='slds-button slds-button_icon-container slds-button_icon-small slds-button_icon slds-global-actions__help slds-global-actions__item-action' id='header-help-popover-id' tabindex='0' title='Help and Training' type='button' aria-haspopup='true'><svg focusable='false' data-key='down' aria-hidden='true' class='slds-button__icon slds-global-header__icon'><use xlink:href='/assets/icons/utility-sprite/svg/symbols.svg#help'></use></svg><span class='slds-assistive-text'>Help and Training</span></button></div>",
+                        "tpl": "<div class='slds-dropdown-trigger slds-dropdown-trigger_click' style='display:inline-block'><button onClick='window.open(\"https://docs.steedos.com/zh-CN/getting-started\", \"_blank\");' class='slds-button slds-button_icon-container slds-button_icon-small slds-button_icon slds-global-actions__help slds-global-actions__item-action' id='header-help-popover-id' tabindex='0' title='Help and Training' type='button' aria-haspopup='true'><svg focusable='false' data-key='down' aria-hidden='true' class='slds-button__icon slds-global-header__icon'><use xlink:href='/assets/icons/utility-sprite/svg/symbols.svg#help'></use></svg><span class='slds-assistive-text'>Help and Training</span></button></div>",
                         "inline": false,
                         "className": "slds-global-actions__item",
                     },
