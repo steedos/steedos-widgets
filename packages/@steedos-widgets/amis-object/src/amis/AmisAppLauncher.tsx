@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-10-10 16:20:42
+ * @LastEditTime: 2024-10-10 16:30:41
  * @Description: 
  */
 
@@ -325,7 +325,7 @@ export const AmisAppLauncher = async (props) => {
             }
           },
           "visibleOn": "${visible_on}",
-          "className": "block w-1/3 py-4 hover:bg-slate-200",
+          "className": "block w-1/3 py-4 hover:bg-[#1589EE1A]",
           "style": {
             "display": "inline-flex",
             "justify-content": "center"
