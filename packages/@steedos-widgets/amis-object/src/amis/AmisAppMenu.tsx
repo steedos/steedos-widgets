@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-10-09 20:53:14
+ * @LastEditTime: 2024-10-10 11:57:56
  * @Description: 
  */
 import './AmisAppMenu.less';
@@ -933,7 +933,20 @@ export const AmisAppMenu = async (props) => {
                                                     "actions": [
                                                         {
                                                             "actionType": "custom",
-                                                            "script": "window.location.href=Creator.getRelativeUrl('/api/amisObjectFieldsDesign?oid=' + event.data.id +\`&assetUrls=\${Builder.settings.assetUrls}\`+'&retUrl='+window.location.href)"
+                                                            "script": "window.location.href=Creator.getRelativeUrl('/api/amisObjectFieldsDesign?oid=' + event.data.id +\`&assetUrls=\${Builder.settings.assetUrls}\`+'&retUrl='+window.location.href)",
+                                                            "expression": "\${false}"
+                                                        },
+                                                        {
+                                                            "ignoreError": false,
+                                                            "outputVar": "responseResult",
+                                                            "actionType": "ajax",
+                                                            "api": {
+                                                                "url": "/graphql",
+                                                                "method": "post",
+                                                                "adaptor": "const objects = payload.data.objects; if(objects && objects.length > 0){ try{const objectId = objects[0]._id; FlowRouter.go('/app/admin/objects/view/'+objectId+'?side_object=objects&side_listview_id=all')}catch(e){payload.error=e.message;} }; return payload;",
+                                                                "requestAdaptor": "api.data={query: '{  objects(filters: [\\\"name\\\", \\\"=\\\", ' + context.id + ']) {    _id    name}}'}; return api;",
+                                                                "messages": {}
+                                                            }
                                                         }
                                                     ]
                                                 }
