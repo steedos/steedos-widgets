@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-10-09 21:07:41
+ * @LastEditTime: 2024-10-10 15:54:39
  * @Description: 
  */
 
@@ -388,7 +388,7 @@ export const AmisAppLauncher = async (props) => {
               "api": {
                   "url": "/service/api/apps/create_by_design",
                   "method": "post",
-                  "requestAdaptor": "api.data={code: context.code, name: context.name}; return api;",
+                  "requestAdaptor": "api.data={code: context.code, name: context.name, icon: context.icon}; return api;",
                   "adaptor": "window.location.href=Creator.getRelativeUrl('/app/' + payload.code);return {}",
                   "messages": {}
               },
@@ -409,6 +409,23 @@ export const AmisAppLauncher = async (props) => {
                   "type": "input-text",
                   "label": "显示名称",
                   "required": true
+                },
+                {
+                    "type": "steedos-field",
+                    "label": "图标",
+                    "config": {
+                        "label": "图标",
+                        "type": "lookup",
+                        "required": true,
+                        "sort_no": 30,
+                        "optionsFunction": "function anonymous() {        var options;        options = [];        _.forEach(Creator.resources.sldsIcons.standard, function (svg) {          return options.push({            value: svg,            label: svg,            icon: svg          });        });        return options;      }",
+                        "name": "icon",
+                        "inlineHelpText": "",
+                        "description": "",
+                        "hidden": false,
+                        "readonly": false,
+                        "disabled": false
+                    }
                 }
               ]
             }
