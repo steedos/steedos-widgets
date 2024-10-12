@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-10-08 16:28:14
+ * @LastEditTime: 2024-10-12 16:00:22
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -443,7 +443,12 @@ export const AmisSteedosField = async (props) => {
                                 tpl: '-',
                                 className: `${fieldBaseProps.className || ''} text-muted !border-b-0`,
                                 hiddenOn: `\${_display.${steedosField.name}}`,
-                            }]
+                            },
+                            {
+                                type: 'tpl', 
+                                tpl: `<span class='antd-TplField antd-Form-description'><span>${steedosField.description}</span></span>`
+                            }
+                            ]
                         });
                     }else{
                         const res = await env.fetcher(source, props.data);
