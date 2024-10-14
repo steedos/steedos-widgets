@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-28 14:15:09
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-08-19 16:26:58
+ * @LastEditTime: 2024-10-14 14:01:15
  * @Description: 
  */
 import { getAmisStaticFieldType } from './type';
@@ -104,13 +104,13 @@ export const  getAmisFileReadonlySchema = async (steedosField,ctx = {})=>{
     if(type === 'file'){
         return window.Meteor?.isCordova ? {
             "type": "control",
-            "body": {
+            "body": steedosField.multiple ? {
                 "type": "each",
                 "name": "_display." + steedosField.name,
                 "items": {
                     "type": "tpl",
                     "tpl": "${name}",
-                    "className": "antd-Button--link inline-block",
+                    "className": "antd-Button--link inline-block mr-2",
                     "onEvent": {
                         "click": {
                             "actions": [
@@ -123,6 +123,24 @@ export const  getAmisFileReadonlySchema = async (steedosField,ctx = {})=>{
                             ],
                             "weight": 0
                         }
+                    }
+                }
+            } : {
+                "type": "tpl",
+                "tpl": "${_display." + steedosField.name + ".name}",
+                "className": "antd-Button--link inline-block",
+                "onEvent": {
+                    "click": {
+                        "actions": [
+                            {
+                                "script": `
+                                    const data = event.data._display.${steedosField.name};
+                                    Steedos.cordovaDownload(encodeURI(data.url), data.name);
+                                `,
+                                "actionType": "custom"
+                            }
+                        ],
+                        "weight": 0
                     }
                 }
             }

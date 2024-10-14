@@ -161,12 +161,12 @@ export function getScriptForRemoveUrlPrefixForImgFields(fields){
                     if(imgFieldValue instanceof Array){
                         formData[item] = imgFieldValue.map((value)=>{ 
                             let itemValue = value && value.split('/');
-                            return itemValue[itemValue.length - 1];
+                            return itemValue[itemValue.length - 1].split('?')[0];
                         });
                     }
                 }else{
                     let imgValue = imgFieldValue.split('/');
-                    formData[item] = imgValue[imgValue.length - 1];
+                    formData[item] = imgValue[imgValue.length - 1].split('?')[0];
                 }
             }
         })

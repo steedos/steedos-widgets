@@ -81,7 +81,7 @@ function getReadonlyFormAdaptor(object, fields, options){
         var gridAndObjectFieldsName = ${JSON.stringify(gridAndObjectFieldsName)};
         try{
             ${scriptStr}
-            ${getScriptForAddUrlPrefixForImgFields(fields)}
+            ${getScriptForAddUrlPrefixForImgFields(fields, true)}
             ${getScriptForRewriteValueForFileFields(fields)}
         }catch(e){
             console.error(e)
@@ -161,7 +161,7 @@ function getConvertDataScriptStr(fields){
 /*
     img/avatar字段值添加URL前缀使其在amis中正常显示图片。
 */
-export function getScriptForAddUrlPrefixForImgFields(fields){
+export function getScriptForAddUrlPrefixForImgFields(fields, readonly){
     let imgFieldsKeys = [];
     let imgFields = {};
     fields.forEach((item)=>{
@@ -189,12 +189,12 @@ export function getScriptForAddUrlPrefixForImgFields(fields){
                         if(fieldProps.multiple){
                             if(imgFieldDisplayValue instanceof Array){
                                 data[item] = imgFieldDisplayValue.map((i)=>{ 
-                                    const url = window.getImageFieldUrl(i.url);
+                                    const url = window.getImageFieldUrl(i.url, ${readonly});
                                     return url;
                                 });
                             }
                         }else{
-                            const url = imgFieldDisplayValue && window.getImageFieldUrl(imgFieldDisplayValue.url);
+                            const url = imgFieldDisplayValue && window.getImageFieldUrl(imgFieldDisplayValue.url, ${readonly});
                             data[item] = url;
                         }
                     }
@@ -290,7 +290,7 @@ export async function getEditFormInitApi(object, recordId, fields, options){
                 const fieldKeys = uiSchema && _.keys(uiSchema.fields);
 
                 if(data){
-                    ${getScriptForAddUrlPrefixForImgFields(fields)}
+                    ${getScriptForAddUrlPrefixForImgFields(fields, false)}
                     ${getScriptForRewriteValueForFileFields(fields)}
 
                     _.each(dataKeys, function(key){

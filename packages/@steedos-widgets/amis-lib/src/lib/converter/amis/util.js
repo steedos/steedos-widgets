@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-20 16:29:22
- * @LastEditors: liaodaxue
- * @LastEditTime: 2024-01-25 14:44:17
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2024-10-14 13:33:27
  * @Description: 
  */
 import { getRootUrl } from "../../steedos.client";
@@ -21,13 +21,19 @@ export function getSvgUrl(source, name) {
     return `${getRootUrl()}${url}`;
 }
 
-export function getImageFieldUrl(url) {
-  if (window.Meteor && window.Meteor.isCordova != true) {
-    //  '//'的位置
-    const doubleSlashIndex = url.indexOf('//');
-    const urlIndex = url.indexOf('/', doubleSlashIndex + 2);
-    const rootUrl = url.substring(urlIndex);
-    return rootUrl;
+export function getImageFieldUrl(url, readonly) {
+  if (window.Meteor) {
+    if(window.Meteor.isCordova != true){
+      //  '//'的位置
+      const doubleSlashIndex = url.indexOf('//');
+      const urlIndex = url.indexOf('/', doubleSlashIndex + 2);
+      const rootUrl = url.substring(urlIndex);
+      return rootUrl;
+    }else{
+      if(readonly || url.startsWith('http')){
+        return `${url}?token=${window.btoa(JSON.stringify({ authToken : Builder.settings.context.authToken }))}`
+      }
+    }
   }
   return url;
 }
