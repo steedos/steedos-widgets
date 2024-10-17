@@ -600,10 +600,12 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
                               "labelRemark": "字段类型为自动编号或公式时，必须填写此字段。",
                               "description": "",
                               "requiredOn": "['autonumber', 'formula'].indexOf(config.type) > -1 ? true: false",
-                              "type": "textarea",
+                              "type": "input-formula",
                               "visibleOn": "['autonumber', 'formula'].indexOf(config.type) > -1 ? true: false",
                               "clearValueOnHidden": true,
-                              "disabledOn": "${config.is_system == true}"
+                              "evalMode": false,
+                              "disabledOn": "${config.is_system == true}",
+                              "variables": "${window:_objectFieldsVariables}"
                             },
                             {
                               "name": "config.show_as_qr",
