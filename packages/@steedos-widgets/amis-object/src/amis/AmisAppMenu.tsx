@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-10-10 11:57:56
+ * @LastEditTime: 2024-10-18 17:43:31
  * @Description: 
  */
 import './AmisAppMenu.less';
@@ -310,7 +310,7 @@ export const AmisAppMenu = async (props) => {
                                                                                                 "url": "/service/api/objects/create_by_design",
                                                                                                 "method": "post",
                                                                                                 "adaptor": "window.location.href=Creator.getRelativeUrl('/api/amisObjectFieldsDesign?oid=' + payload._id +\`&assetUrls=\${Builder.settings.assetUrls}\`+'&retUrl='+window.location.href);return {}",
-                                                                                                "requestAdaptor": "api.data={appId: context.app.id, groupId: '', name: context.oName, label: context.oLabel}; return api;",
+                                                                                                "requestAdaptor": "api.data={appId: context.app.id, groupId: '', name: context.oName, label: context.oLabel, icon: context.icon}; return api;",
                                                                                                 "messages": {}
                                                                                             }
                                                                                         }
@@ -1391,7 +1391,7 @@ export const AmisAppMenu = async (props) => {
                                                                                     "url": "/service/api/objects/create_by_design",
                                                                                     "method": "post",
                                                                                     "adaptor": "window.location.href=Creator.getRelativeUrl('/api/amisObjectFieldsDesign?oid=' + payload._id +\`&assetUrls=\${Builder.settings.assetUrls}\`+'&retUrl='+window.location.href);return {}",
-                                                                                "requestAdaptor": "api.data={appId: context.app.id, groupId: context.label, name: context.oName, label: context.oLabel}; return api;",
+                                                                                "requestAdaptor": "api.data={appId: context.app.id, groupId: context.label, name: context.oName, label: context.oLabel, icon: context.icon}; return api;",
                                                                                     "messages": {}
                                                                                 }
                                                                             }
