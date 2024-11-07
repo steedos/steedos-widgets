@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-11 09:39:38
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-08-28 14:43:01
+ * @LastEditTime: 2024-11-04 11:46:30
  * @Description: 
  */
 const config: any = {
@@ -921,14 +921,14 @@ const config: any = {
                     "clearValueOnHidden": true
                   },
                   {
-                    "name": "conig.create",
+                    "name": "config.create",
                     "label": "弹出选择时允许新建",
                     "required": false,
                     "type": "checkbox",
                     "tpl": null,
                     "visibleOn": "['lookup'].indexOf(config.type) > -1 ? true: false",
                     "clearValueOnHidden": true,
-                    "fieldName": "conig.create",
+                    "fieldName": "config.create",
                     "disabledOn": "${config.is_system == true}"
                   },
                   {
