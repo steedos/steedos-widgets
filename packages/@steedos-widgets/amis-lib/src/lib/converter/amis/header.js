@@ -909,7 +909,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
   let body = [
     {
       "type": "wrapper",
-      "className": "p-4 border-b",
+      "className": "p-4",
       "body": [
         {
           "type": "grid",
@@ -1007,7 +1007,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
         "body": details,
         "hiddenOn": "${recordLoaded != true}"
       },
-      "className": "steedos-record-compact-layouts p-4 bg-white compact-layouts border-b"
+      "className": "steedos-record-compact-layouts p-4 pb-2 border-t compact-layouts"
     })
   }
 

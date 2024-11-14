@@ -154,7 +154,7 @@ export const AmisGlobalHeader = async (props) => {
                 body: [
                     {
                         type: "wrapper",
-                        className: 'sidebar-wrapper px-0 py-3 pb-16 fixed z-20 h-full h-fill ease-in-out duration-300 flex flex-col border-r overflow-y-auto bg-gray-50 border-gray-200 block -translate-x-0 sm:w-[220px] w-64',
+                        className: 'sidebar-wrapper px-0 py-3 pb-16 fixed z-20 h-full h-fill ease-in-out duration-300 flex flex-col border-r overflow-y-auto bg-gray-100 border-gray-300 block -translate-x-0 sm:w-[220px] w-64',
                         body: [
                             {
                                 "type": "steedos-app-launcher",
