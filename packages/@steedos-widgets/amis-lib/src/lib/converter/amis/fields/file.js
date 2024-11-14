@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-28 14:15:09
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-10-14 14:01:15
+ * @LastEditTime: 2024-11-14 10:50:01
  * @Description: 
  */
 import { getAmisStaticFieldType } from './type';
@@ -65,6 +65,7 @@ async function getLookupLinkOnClick(field, options) {
                         "title": "&nbsp;",
                         "headerClassName": "hidden",
                         "size": "lg",
+                        "width": "70%",
                         "bodyClassName": "p-0 m-0 bg-gray-100",
                         "closeOnEsc": true,
                         "closeOnOutside": true,
