@@ -458,3 +458,14 @@ fieldset.antd-Collapse > legend{
 /* .steedos-amis-form.steedos-field-layout-page .antd-Collapse .antd-Form--normal>div[data-editor-id]{
     display: contents;
 } */
+
+
+/* 修正 DropButton 组件的样式 */
+.antd-DropDown-menu-root {
+    margin-top: 0;
+}
+
+/* 修正左侧菜单样式选中拖动 */
+.antd-Nav-Menu .antd-Nav-Menu-submenu .antd-Nav-Menu-item-dragBar {
+    left: 6px;
+}

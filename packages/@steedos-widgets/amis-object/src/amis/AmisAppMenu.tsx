@@ -172,17 +172,18 @@ export const AmisAppMenu = async (props) => {
                       if(allowEditApp){
                         editAppSearch = [{
                                 "type": "grid",
-                                "className": "m-1",
+                                "className": "mx-3 mb-2",
                                 "columns": [
                                     {
                                         "md": 10,
-                                        "columnClassName": "p-1",
+                                        "columnClassName": "p-0",
                                         "body": [
                                             {
                                                 "type": "search-box",
                                                 "name": "keywords",
                                                 "className": "!w-full",
                                                 "placeholder": "搜索菜单",
+                                                "autoFocus": false,
                                                 "searchImediately": true,
                                                 "clearable": true,
                                                 "clearAndSubmit": true,
@@ -192,13 +193,14 @@ export const AmisAppMenu = async (props) => {
                                     },
                                     {
                                         "md": 2,
-                                        "columnClassName": "p-1 pl-0 steedos-app-menu-plus",
+                                        "columnClassName": "p0 pl-0 steedos-app-menu-plus",
                                         "body": [
                                             {
                                             "type": "dropdown-button",
-                                            "btnClassName": "pr-0",
                                             "level": "link",
+                                            "btnClassName": "text-gray-700",
                                             "icon": "fa fa-plus",
+                                            "size": "md",
                                             "hideCaret": true,
                                             "align": "right",
                                             "buttons": [
@@ -832,6 +834,7 @@ export const AmisAppMenu = async (props) => {
                                     "type": "dropdown-button",
                                     "level": "link",
                                     "icon": "fa fa-ellipsis-h",
+                                    "btnClassName": "!text-gray-700",
                                     "hideCaret": true,
                                     "className": "hidden hover-inline-flex",
                                     "visibleOn": "!!allowEditApp",
@@ -1280,6 +1283,7 @@ export const AmisAppMenu = async (props) => {
                                     "level": "link",
                                     "icon": "fa fa-plus",
                                     "hideCaret": true,
+                                    "btnClassName": "!text-gray-700",
                                     "visibleOn": "!!allowEditApp && !!this.isGroup",
                                     "className": "hidden hover-inline-flex",
                                     "buttons": [
