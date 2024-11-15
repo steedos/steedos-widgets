@@ -69,7 +69,7 @@ export const AmisAppMenu = async (props) => {
                                       data.nav.push({
                                           "label": showIcon ? {
                                             type: 'tpl',
-                                            tpl: \`<span class='whitespace-normal leading-6 block no-underline group flex items-center text-[14px] rounded-md'><svg class="slds-icon_container slds-icon-standard-\${ tab.iconClass } slds-icon !fill-white rounded-xl mr-2 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
+                                            tpl: \`<span class='whitespace-normal leading-6 no-underline group items-center rounded-md'><svg class="slds-icon_container slds-icon fill-gray-700 mr-2 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
                                           } : tab.name,
                                           "searchKey": tab.name,
                                           "to": tab.path,
@@ -90,6 +90,7 @@ export const AmisAppMenu = async (props) => {
                                       'default_open': tabGroup && tabGroup.default_open != false,
                                       "unfolded": tabGroup && tabGroup.default_open != false,
                                       "isGroup": true,
+                                      "mode": "group",
                                       "children": _.sortBy(_.map(tabs, (tab) => {
                                             tab.iconClass = (tab.icon || 'account').replaceAll('_', '-');
                                             if(locationPathname == tab.path){
@@ -100,7 +101,7 @@ export const AmisAppMenu = async (props) => {
                                             return {
                                             "label": showIcon ? {
                                                 type: 'tpl',
-                                                tpl: \`<span class='whitespace-normal leading-6 block no-underline group flex items-center text-[14px] rounded-md'><svg class="slds-icon_container slds-icon-standard-\${ tab.iconClass } !fill-white slds-icon rounded-xl mr-2 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
+                                                tpl: \`<span class='whitespace-normal leading-6 block no-underline group items-center rounded-md'><svg class="slds-icon_container slds-icon fill-gray-700 mr-2 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
                                             }  : tab.name,
                                             "searchKey": tab.name,
                                             "to": tab.path,
@@ -129,7 +130,7 @@ export const AmisAppMenu = async (props) => {
                               data.nav.push({
                               "label": showIcon ? {
                                   type: 'tpl',
-                                  tpl: \`<span class='whitespace-normal leading-6 block no-underline group flex items-center text-[14px] rounded-md'><svg class="slds-icon_container slds-icon-standard-\${ tab.iconClass } slds-icon !fill-white rounded-xl mr-2 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
+                                  tpl: \`<span class='whitespace-normal leading-6 no-underline group items-center rounded-md'><svg class="slds-icon_container slds-icon-standard-\${ tab.iconClass } slds-icon !fill-white rounded-xl mr-2 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
                               } : tab.name,
                               "searchKey": tab.name,
                               "to": tab.path,
@@ -163,6 +164,7 @@ export const AmisAppMenu = async (props) => {
                                     'default_open': group && group.default_open != false,
                                     "unfolded": group && group.default_open != false,
                                     "isGroup": true,
+                                    "mode": "group",
                                     "children": []
                                 })
                             }
@@ -811,6 +813,7 @@ export const AmisAppMenu = async (props) => {
                             ...editAppSearch,
                             {
                             "type": "nav",
+                            "expandPosition": "after",
                             "searchable": !allowEditApp && ${stacked},
                             "searchConfig": {
                               "placeholder": "搜索菜单",
