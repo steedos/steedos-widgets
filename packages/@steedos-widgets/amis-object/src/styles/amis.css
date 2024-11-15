@@ -187,7 +187,7 @@ fieldset.antd-Collapse > legend.antd-Collapse-header > .antd-Collapse-arrow:befo
     top: 0px;
 }
 
-/* start: amis 2.7.2, component Nav */
+/* start: amis , component Nav */
 :root {
     --Nav-Item-height--horizontal: 2.5rem;
 }
@@ -203,18 +203,31 @@ fieldset.antd-Collapse > legend.antd-Collapse-header > .antd-Collapse-arrow:befo
     background: rgb(14 165 233);
 }
 
+.antd-Nav-Menu-light .antd-Nav-Menu-item {
+    padding-right: 0.5rem;
+}
+
 .antd-Nav-Menu-light .antd-Nav-Menu-item.antd-Nav-Menu-item-selected {
     background: rgba(21,137,238,.1);
 }
 
-.antd-Nav-Menu-item-selected .antd-Nav-Menu-item-label {
+.antd-Nav-Menu-light .antd-Nav-Menu-item.antd-Nav-Menu-item-active {
+    background: rgba(151, 151, 151, 0.1);
+}
+
+.antd-Nav-Menu-light .antd-Nav-Menu-submenu.antd-Nav-Menu-submenu-active .antd-Nav-Menu-submenu-title{
+    background: rgba(151, 151, 151, 0.1);
+}
+
+.antd-Nav-Menu-light .antd-Nav-Menu-submenu.antd-Nav-Menu-submenu .antd-Nav-Menu-submenu-title .antd-Nav-Menu-item-link .antd-Nav-Menu-item-label {
+    font-weight: bold !important;
     color: black !important;
 }
 
 .antd-Nav-Menu-horizontal > .antd-Nav-Menu-item-tooltip-wrap > .antd-Nav-Menu-item {
     padding: 0 15px;
 }
-/* end: amis 2.7.2, component Nav */
+/* end: amis  component Nav */
 
 /* 处理amis debug 滚动条异常 */
 .AMISDebug-content{
@@ -463,9 +476,4 @@ fieldset.antd-Collapse > legend{
 /* 修正 DropButton 组件的样式 */
 .antd-DropDown-menu-root {
     margin-top: 0;
-}
-
-/* 修正左侧菜单样式选中拖动 */
-.antd-Nav-Menu .antd-Nav-Menu-submenu .antd-Nav-Menu-item-dragBar {
-    left: 6px;
 }

@@ -90,7 +90,6 @@ export const AmisAppMenu = async (props) => {
                                       'default_open': tabGroup && tabGroup.default_open != false,
                                       "unfolded": tabGroup && tabGroup.default_open != false,
                                       "isGroup": true,
-                                      "mode": "group",
                                       "children": _.sortBy(_.map(tabs, (tab) => {
                                             tab.iconClass = (tab.icon || 'account').replaceAll('_', '-');
                                             if(locationPathname == tab.path){
@@ -164,7 +163,6 @@ export const AmisAppMenu = async (props) => {
                                     'default_open': group && group.default_open != false,
                                     "unfolded": group && group.default_open != false,
                                     "isGroup": true,
-                                    "mode": "group",
                                     "children": []
                                 })
                             }
