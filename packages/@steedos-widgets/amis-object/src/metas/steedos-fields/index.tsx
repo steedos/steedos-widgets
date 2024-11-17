@@ -236,6 +236,26 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
                               }
                             },
                             {
+                              "name": "config.required",
+                              "label": "必填",
+                              "required": false,
+                              "type": "checkbox",
+                              "tpl": null,
+                              "visibleOn": "['autonumber','summary','formula'].indexOf(config.type) > -1 ? false: true",
+                              "clearValueOnHidden": true,
+                              "fieldName": "config.required"
+                            },
+                            {
+                              "name": "config.is_wide",
+                              "label": "宽字段",
+                              "required": false,
+                              "type": "checkbox",
+                              "tpl": null,
+                              "labelClassName": "text-left",
+                              "clearValueOnHidden": true,
+                              "fieldName": "config.is_wide"
+                            },
+                            {
                               "name": "config.autonumber_enable_modify",
                               "label": "允许修改编号",
                               "required": false,
@@ -861,29 +881,292 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
                           "className": 'ae-formItemControl-body',
                           "body": [
                             {
+                                "name": "config.amis.type",
+                                "label": "输入类型",
+                                "required": false,
+                                "type": "select",
+                                "searchable": true,
+                                "fieldName": "config.amis.type",
+                                "options": [
+                                    {
+                                        "label": "数组输入框 (input-array)",
+                                        "value": "input-array"
+                                    },
+                                    {
+                                        "label": "按钮工具栏 (button-toolbar)",
+                                        "value": "button-toolbar"
+                                    },
+                                    {
+                                        "label": "按钮点选 (button-group-select)",
+                                        "value": "button-group-select"
+                                    },
+                                    {
+                                        "label": "链式下拉框 (chained-select)",
+                                        "value": "chained-select"
+                                    },
+                                    {
+                                        "label": "勾选框 (checkbox)",
+                                        "value": "checkbox"
+                                    },
+                                    {
+                                        "label": "复选框 (checkboxes)",
+                                        "value": "checkboxes"
+                                    },
+                                    {
+                                        "label": "城市选择器 (input-city)",
+                                        "value": "input-city"
+                                    },
+                                    {
+                                        "label": "颜色选择器 (input-color)",
+                                        "value": "input-color"
+                                    },
+                                    {
+                                        "label": "组合 (combo)",
+                                        "value": "combo"
+                                    },
+                                    {
+                                        "label": "组合条件 (condition-builder)",
+                                        "value": "condition-builder"
+                                    },
+                                    {
+                                        "label": "日期 (input-date)",
+                                        "value": "input-date"
+                                    },
+                                    {
+                                        "label": "日期时间 (input-datetime)",
+                                        "value": "input-datetime"
+                                    },
+                                    {
+                                        "label": "月份 (input-month)",
+                                        "value": "input-month"
+                                    },
+                                    {
+                                        "label": "日期范围 (input-date-range)",
+                                        "value": "input-date-range"
+                                    },
+                                    {
+                                        "label": "日期时间范围 (input-datetime-range)",
+                                        "value": "input-datetime-range"
+                                    },
+                                    {
+                                        "label": "月份范围 (input-month-range)",
+                                        "value": "input-month-range"
+                                    },
+                                    {
+                                        "label": "键值对 (input-kv)",
+                                        "value": "input-kv"
+                                    },
+                                    {
+                                        "label": "键值对象 (input-kvs)",
+                                        "value": "input-kvs"
+                                    },
+                                    {
+                                        "label": "公式编辑器 (input-formula)",
+                                        "value": "input-formula"
+                                    },
+                                    {
+                                        "label": "对比编辑器 (diff-editor)",
+                                        "value": "diff-editor"
+                                    },
+                                    {
+                                        "label": "编辑器 (editor)",
+                                        "value": "editor"
+                                    },
+                                    {
+                                        "label": "解析 Excel (input-excel)",
+                                        "value": "input-excel"
+                                    },
+                                    {
+                                        "label": "文件上传 (input-file)",
+                                        "value": "input-file"
+                                    },
+                                    {
+                                        "label": "公式 (formula)",
+                                        "value": "formula"
+                                    },
+                                    {
+                                        "label": "表单项组 (group)",
+                                        "value": "group"
+                                    },
+                                    {
+                                        "label": "隐藏字段 (hidden)",
+                                        "value": "hidden"
+                                    },
+                                    {
+                                        "label": "图片 (input-image)",
+                                        "value": "input-image"
+                                    },
+                                    {
+                                        "label": "输入框组合 (input-group)",
+                                        "value": "input-group"
+                                    },
+                                    {
+                                        "label": "列表选择 (list-select)",
+                                        "value": "list-select"
+                                    },
+                                    {
+                                        "label": "地理位置 (location-picker)",
+                                        "value": "location-picker"
+                                    },
+                                    {
+                                        "label": "UUID",
+                                        "value": "uuid"
+                                    },
+                                    {
+                                        "label": "矩阵选择 (matrix-checkboxes)",
+                                        "value": "matrix-checkboxes"
+                                    },
+                                    {
+                                        "label": "级联选择器 (nested-select)",
+                                        "value": "nested-select"
+                                    },
+                                    {
+                                        "label": "数字输入框 (input-number)",
+                                        "value": "input-number"
+                                    },
+                                    {
+                                        "label": "密码输入框 (input-password)",
+                                        "value": "input-password"
+                                    },
+                                    {
+                                        "label": "列表选择器 (picker)",
+                                        "value": "picker"
+                                    },
+                                    {
+                                        "label": "季度 (input-quarter)",
+                                        "value": "input-quarter"
+                                    },
+                                    {
+                                        "label": "季度范围 (input-quarter-range)",
+                                        "value": "input-quarter-range"
+                                    },
+                                    {
+                                        "label": "单选框 (radio)",
+                                        "value": "radio"
+                                    },
+                                    {
+                                        "label": "单选框 (radios)",
+                                        "value": "radios"
+                                    },
+                                    {
+                                        "label": "图表单选框 (chart-radios)",
+                                        "value": "chart-radios"
+                                    },
+                                    {
+                                        "label": "评分 (input-rating)",
+                                        "value": "input-rating"
+                                    },
+                                    {
+                                        "label": "滑块 (input-range)",
+                                        "value": "input-range"
+                                    },
+                                    {
+                                        "label": "重复频率选择器 (input-repeat)",
+                                        "value": "input-repeat"
+                                    },
+                                    {
+                                        "label": "富文本编辑器 (input-rich-text)",
+                                        "value": "input-rich-text"
+                                    },
+                                    {
+                                        "label": "选择器 (select)",
+                                        "value": "select"
+                                    },
+                                    {
+                                        "label": "子表单 (input-sub-form)",
+                                        "value": "input-sub-form"
+                                    },
+                                    {
+                                        "label": "开关 (switch)",
+                                        "value": "switch"
+                                    },
+                                    {
+                                        "label": "静态展示 (static)",
+                                        "value": "static"
+                                    },
+                                    {
+                                        "label": "文件上传 (input-file)",
+                                        "value": "input-file"
+                                    },
+                                    {
+                                        "label": "表格 (input-table)",
+                                        "value": "input-table"
+                                    },
+                                    {
+                                        "label": "标签选择器 (input-tag)",
+                                        "value": "input-tag"
+                                    },
+                                    {
+                                        "label": "输入框 (input-text)",
+                                        "value": "input-text"
+                                    },
+                                    {
+                                        "label": "多行文本输入框 (textarea)",
+                                        "value": "textarea"
+                                    },
+                                    {
+                                        "label": "时间 (input-time)",
+                                        "value": "input-time"
+                                    },
+                                    {
+                                        "label": "时间范围 (input-time-range)",
+                                        "value": "input-time-range"
+                                    },
+                                    {
+                                        "label": "穿梭器 (transfer)",
+                                        "value": "transfer"
+                                    },
+                                    {
+                                        "label": "穿梭选择器 (transfer-picker)",
+                                        "value": "transfer-picker"
+                                    },
+                                    {
+                                        "label": "组合穿梭器 (tabs-transfer)",
+                                        "value": "tabs-transfer"
+                                    },
+                                    {
+                                        "label": "组合穿梭选择器 (tabs-transfer-picker)",
+                                        "value": "tabs-transfer-picker"
+                                    },
+                                    {
+                                        "label": "树形选择框 (input-tree)",
+                                        "value": "input-tree"
+                                    },
+                                    {
+                                        "label": "树形选择器 (tree-select)",
+                                        "value": "tree-select"
+                                    },
+                                    {
+                                        "label": "年份选择 (input-year)",
+                                        "value": "input-year"
+                                    },
+                                    {
+                                        "label": "年份范围 (input-year-range)",
+                                        "value": "input-year-range"
+                                    },
+                                    {
+                                        "label": "JSON Schema (json-schema)",
+                                        "value": "json-schema"
+                                    },
+                                    {
+                                        "label": "JSON Schema Editor (json-schema-editor)",
+                                        "value": "json-schema-editor"
+                                    },
+                                    {
+                                        "label": "签名面板 (input-signature)",
+                                        "value": "input-signature"
+                                    },
+                                    {
+                                        "label": "验证码输入 (input-verification-code)",
+                                        "value": "input-verification-code"
+                                    }
+                                ]
+                                ,
+                              },
+                            {
                                 "name": "config.visible_on",
                                 "label": "显示公式",
                                 "type": 'input-formula',
-                            },
-                            {
-                              "name": "config.required",
-                              "label": "必填",
-                              "required": false,
-                              "type": "checkbox",
-                              "tpl": null,
-                              "visibleOn": "['autonumber','summary','formula'].indexOf(config.type) > -1 ? false: true",
-                              "clearValueOnHidden": true,
-                              "fieldName": "config.required"
-                            },
-                            {
-                              "name": "config.is_wide",
-                              "label": "宽字段",
-                              "required": false,
-                              "type": "checkbox",
-                              "tpl": null,
-                              "labelClassName": "text-left",
-                              "clearValueOnHidden": true,
-                              "fieldName": "config.is_wide"
                             },
                             {
                               "name": "config.readonly",
