@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-20 16:29:22
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-10-14 13:33:27
+ * @LastEditTime: 2024-11-17 13:05:44
  * @Description: 
  */
 import { getRootUrl } from "../../steedos.client";
@@ -42,13 +42,29 @@ if(typeof window  != 'undefined'){
   window.getImageFieldUrl = getImageFieldUrl;
 }
 
+
+
+// js color
+
+function toGrayscale(r, g, b){
+  return (
+    0.2126 * r +
+    0.7152 * g +
+    0.0722 * b
+  );
+}
+
+function isLight(r, g, b){
+  // 专业的亮度是 > 255 / 2. 此处的阈值调整为200 
+  return toGrayscale(r, g, b) > 200
+}
+
 export function getContrastColor(bgColor) {
   var backgroundColor = (bgColor.charAt(0) === '#') ? bgColor.substring(1, 7) : bgColor;
   var r = parseInt(backgroundColor.substr(0, 2), 16);
   var g = parseInt(backgroundColor.substr(2, 2), 16);
   var b = parseInt(backgroundColor.substr(4, 2), 16);
-  var brightness = (r * 299 + g * 587 + b * 114) / 1000;
-  return brightness < 128 ? "#ffffff" : "#000000";
+  return isLight(r, g, b) ? "#000000" : "#ffffff";
 }
 
 export function getLookupListView(refObjectConfig) {

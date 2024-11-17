@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-02-21 17:19:30
+ * @LastEditTime: 2024-11-17 13:10:08
  * @Description: 
  */
 import { Router } from '../../router'
@@ -67,7 +67,7 @@ export function getSelectMap(selectOptions){
         if(optionColor && optionColor != "undefined"){
             const background = optionColor.charAt(0) === '#' ? optionColor : '#'+optionColor;
             const color = getContrastColor(background);
-            const optionColorStyle = 'background:'+background+';color:'+color+';line-height:1.5rem';
+            const optionColorStyle = 'background:'+background+';color:'+color+';line-height:1.5rem;font-size:14px';
             map[optionValue] = `<span class="rounded-xl px-2 py-1" style='${optionColorStyle}'>${option.label}</span>`
         }else{
             map[optionValue] = option.label;
