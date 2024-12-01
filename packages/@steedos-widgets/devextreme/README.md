@@ -1,3 +1,8 @@
+<!--
+ * @LastEditTime: 2024-11-29 18:11:03
+ * @LastEditors: liaodaxue
+ * @customMade: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
 # DevExtreme
 
 https://github.com/DevExpress/DevExtreme
@@ -11,7 +16,7 @@ DevExtreme 商业使用需要购买许可证。
 开发环境
 
 ```
-STEEDOS_PUBLIC_PAGE_ASSETURLS=http://127.0.0.1:8080/@steedos-widgets/amis-object/dist/assets-dev.json,http://127.0.0.1:8080/@steedos-widgets/devextreme/dist/assets-dev.json
+https://demo2.steedos.cn?assetUrls=http://127.0.0.1:8080/@steedos-widgets/amis-object/dist/assets-dev.json,http://127.0.0.1:8080/@steedos-widgets/devextreme/dist/assets-dev.json
 ```
 
 生产环境

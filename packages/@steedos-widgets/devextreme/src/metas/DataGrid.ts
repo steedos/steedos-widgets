@@ -139,7 +139,7 @@ export default {
           name: "dataFilter",
           label: "数据加工",
           description: "如果后端没有直接返回 DataGrid 配置，可以自己写一段函数来包装。\
-          签名：(config, DataGrid, data) => config \
+          签名：(config, DevExpress, data) => config \
           "
         },
       ],

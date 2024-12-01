@@ -59,7 +59,7 @@ const options = {
         { src: 'src/css', dest: 'dist/' },
       ]
     }),
-    terser()
+    // terser()
   ],
 };
 

@@ -1,59 +1,52 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import {
-  DataGrid
-} from 'devextreme-react/data-grid';
+import DevExpress from './DevExpress';
 
-import { createObject } from '@steedos-widgets/amis-lib';
+export const AmisDataGrid = (props: any) => {
+  const {
+    config: configJSON = null,
+    data: amisData,
+    className,
+    dataFilter
+  } = props;
 
-// 不要用 devextreme-react, rollup 编译报错
-export const AmisDataGrid = ( {
-  data: amisData,
-  config, 
-  dataSource, 
-  keyExpr = "_id",
-  className, 
-  ...props
-} ) => {
+  const [config, setConfig] = useState(configJSON);
+
+  let onDataFilter = null;
   
-  let configJSON = {}
-  if (typeof config === 'string') {
-    try {
-      configJSON = JSON.parse(config);
-    } catch(e) {console.log(e)}
-  }
-  if (typeof config === 'object') {
-    configJSON = config
+  if (typeof dataFilter === 'string') {
+
+    onDataFilter = new Function('config', 'DevExpress', 'data', 'return (async () => { ' + dataFilter + ' })()')
   }
 
-
-  let onDataFilter = props.onDataFilter;
-  const dataFilter = props.dataFilter;
-
-  if (!onDataFilter && typeof dataFilter === 'string') {
-    onDataFilter = new Function(
-      'config',
-      'DataGrid',
-      'data',
-      dataFilter
-    ) as any;
-  }
-  try {
-    onDataFilter &&
-      (configJSON =
-        onDataFilter(configJSON, DataGrid, amisData) || configJSON);
-  } catch (e) {
-    console.warn(e);
-  }
   useEffect(() => {
-  }, [])
+    let isCancelled = false;
+    (async () => {
+      try {
+        if (onDataFilter) {
+          const newConfig = await onDataFilter(config, DevExpress, amisData);
+          if (!isCancelled) {
+            setConfig(newConfig || config);
+          }
+        }
+      } catch (e) {
+        console.warn(e);
+      }
+    })();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
+
+  if (!config) {
+    return <>Loading...</>;
+  }
 
   return (
-    <DataGrid
+    <DevExpress.DataGrid
       className={className}
-      dataSource={dataSource}
-      keyExpr={keyExpr}
-      {...configJSON}>
-    </DataGrid>
-  )
-}
+      {...config}
+    />
+  );
+};
