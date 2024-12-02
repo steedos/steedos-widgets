@@ -12,7 +12,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "http": "npx http-server ../ --port 8080 --cors -c -1",
-    "build": "yarn build-types && yarn build-rollup",
+    "build.disabled": "yarn build-types && yarn build-rollup",
     "build-types": "tsc --emitDeclarationOnly --declaration --declarationDir dist/types",
     "build-rollup": "rollup -c rollup.config.ts"
   },
