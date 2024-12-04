@@ -225,6 +225,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                     type: "static-mapping",
                     name: field.name,
                     label: field.label,
+                    options: field.options,
                     map: map
                 }
             }else{
