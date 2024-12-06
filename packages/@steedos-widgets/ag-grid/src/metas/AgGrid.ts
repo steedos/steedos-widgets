@@ -81,7 +81,7 @@ export default {
           type: "text",
           name: "className",
           label: "CSS类名",
-          value: "bg-gray-100 border-b sm:rounded sm:border border-gray-300 p-4 mb-4"
+          value: "bg-gray-100 border-b sm:rounded sm:border border-gray-300 p-4 mb-4 h-full"
         },
         {
           type: "editor",

@@ -3,7 +3,7 @@
     {
         "package": "ag-grid-enterprise",
         "urls": [
-            "https://unpkg.steedos.cn/ag-grid-enterprise@31.0.2/dist/ag-grid-enterprise.min.js"
+            "https://unpkg.steedos.cn/ag-grid-enterprise@32.3.3/dist/ag-grid-enterprise.min.js"
         ],
         "library": "agGrid"
     },

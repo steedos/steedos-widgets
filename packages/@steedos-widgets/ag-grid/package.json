@@ -48,6 +48,7 @@
     "rollup-plugin-visualizer": "^5.8.0"
   },
   "dependencies": {
+    "@ag-grid-community/locale": "^32.3.3",
     "@rollup/plugin-replace": "^5.0.2",
     "@steedos-widgets/amis-lib": "6.3.11-beta.12",
     "ag-grid-community": "~31.0.2",
