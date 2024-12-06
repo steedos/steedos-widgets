@@ -102,7 +102,7 @@ export default {
           name: "dataFilter",
           label: "数据加工",
           description: "如果后端没有直接返回 AgGrid 配置，可以自己写一段函数来包装。\
-          签名：(config, AgGrid, data) => config \
+          签名：(config, AgGrid, env, data) => config \
           "
         },
       ],
