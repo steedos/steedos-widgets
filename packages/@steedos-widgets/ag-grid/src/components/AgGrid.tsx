@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2024-01-18 18:58:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-12-06 19:58:29
+ * @LastEditTime: 2024-12-07 21:22:35
  */
 import React, { useEffect, useState, useRef } from 'react';
 import { AG_GRID_LOCALE_CN } from '@ag-grid-community/locale';
@@ -10,22 +10,21 @@ import { AG_GRID_LOCALE_CN } from '@ag-grid-community/locale';
 export const AmisAgGrid = (props: any) => {
   const {
     config: configJSON = null,
-    data: amisData,
+    data: amisData = {},
     className,
-    dataFilter,
-    env
+    dataFilter
   } = props;
   const initConfig = Object.assign({ localeText: AG_GRID_LOCALE_CN }, configJSON || {});
   const [config, setConfig] = useState(initConfig);
   // 如果不增加dataFilterLoaded机制，组件传入的configJSON初始不是null的时候会造成后面的agGrid.createGrid执行两次出现两个grid
   const [dataFilterLoaded, setDataFilterLoaded] = useState(!!!dataFilter);
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const agGrid = (window as any)["agGrid"]
+  const agGrid = (window as any)["agGrid"];
 
   let onDataFilter = null;
 
   if (typeof dataFilter === 'string') {
-    onDataFilter = new Function('config', 'AgGrid', 'env', 'data', 'return (async () => { ' + dataFilter + ' })()')
+    onDataFilter = new Function('config', 'AgGrid', 'props', 'data', 'return (async () => { ' + dataFilter + ' })()')
   }
 
   useEffect(() => {
@@ -33,7 +32,7 @@ export const AmisAgGrid = (props: any) => {
     (async () => {
       try {
         if (onDataFilter) {
-          const newConfig = await onDataFilter(config, agGrid, env, amisData);
+          const newConfig = await onDataFilter(config, agGrid, props, amisData);
           if (!isCancelled) {
             setConfig(newConfig || config);
             setDataFilterLoaded(true);
