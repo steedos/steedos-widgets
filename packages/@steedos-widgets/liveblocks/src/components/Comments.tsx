@@ -33,6 +33,7 @@ export const AmisComments = (props: any) => {
   } = props;
 
   const [config, setConfig] = useState(configJSON);
+  const [token, setToken] = useState(null);
 
   let onDataFilter = null;
   
@@ -67,7 +68,26 @@ export const AmisComments = (props: any) => {
 
   return (
     <LiveblocksProvider
-      authEndpoint={authEndpoint}
+      authEndpoint={async (room) => {
+        const headers = {
+          "Content-Type": "application/json",
+        };
+
+        const body = JSON.stringify({
+          room,
+        });
+
+        const response = await fetch(authEndpoint, {
+          method: "POST",
+          headers,
+          body,
+          credentials: 'include'
+        });
+        const result = await response.json();
+        setToken(result.token);
+
+        return result;
+      }}
     >
       <RoomProvider id={roomId}>
         <ErrorBoundary
