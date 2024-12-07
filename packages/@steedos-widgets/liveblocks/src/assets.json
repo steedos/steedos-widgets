@@ -1,0 +1,25 @@
+{
+  "packages": [
+    {
+        "package": "@steedos-widgets/liveblocks",
+        "urls": [
+            "https://unpkg.com/@steedos-widgets/liveblocks@{{version}}/dist/liveblocks.umd.js",
+            "https://unpkg.com/@steedos-widgets/liveblocks@{{version}}/dist/liveblocks.umd.css"
+        ],
+        "library": "BuilderAgGrid"
+    }
+  ],
+  "components": [
+      {
+          "exportName": "BuilderAgGridMeta",
+          "npm": {
+              "package": "@steedos-widgets/liveblocks"
+          },
+          "url": "https://unpkg.com/@steedos-widgets/liveblocks@{{version}}/dist/meta.js",
+          "urls": {
+              "default": "https://unpkg.com/@steedos-widgets/liveblocks@{{version}}/dist/meta.js",
+              "design": "https://unpkg.com/@steedos-widgets/liveblocks@{{version}}/dist/meta.js"
+          }
+      }
+  ]
+}
