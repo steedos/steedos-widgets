@@ -1,9 +1,45 @@
-import { useState } from 'react';
+import { Component, useState } from 'react';
 import { BuilderComponent } from '@builder6/react';
-import '@builder6/widgets';
 import * as uuid from 'uuid';
 import './App.css';
-import { AssetsLoader } from './components/AssetsLoader';
+import { AssetsLoader } from './utils/AssetsLoader';
+
+
+type DynamicAssetsLoaderProps = {
+  assetUrls: string[];
+  children?: React.ReactNode;
+};
+
+type DynamicAssetsLoaderState = {
+  assetsLoaded: boolean;
+};
+
+export class DynamicAssetsLoader extends Component<DynamicAssetsLoaderProps, DynamicAssetsLoaderState> {
+  constructor(props: DynamicAssetsLoaderProps) {
+    super(props);
+    this.state = {
+      assetsLoaded: false
+    };
+  }
+
+  async componentDidMount() {
+    const { assetUrls } = this.props;
+    await AssetsLoader.registerRemoteAssets(assetUrls);
+    this.setState({ assetsLoaded: true });
+  }
+
+  render() {
+    const { assetsLoaded } = this.state;
+    const { children } = this.props;
+
+    if (!assetsLoaded) {
+      return <div>Loading assets dynamically...</div>;
+    }
+
+    return <>{children}</>;
+  }
+}
+
 
 const RenderAmis = ({schema, data}:any) => {
   const id = uuid.v4();
@@ -17,7 +53,7 @@ const RenderAmis = ({schema, data}:any) => {
           layerName: "Page",
           id: `builder-${uuid.v4()}`,
           component: {
-            name: "Builder6:Amis",
+            name: "Steedos:Amis",
             options: {
               schema: schema,
               data: data,
@@ -92,13 +128,13 @@ const App = () => {
           />
         </div>
         <div className="flex-1 p-4 bg-white overflow-auto">
-          <AssetsLoader assetUrls={assetUrls}>
+          <DynamicAssetsLoader assetUrls={assetUrls}>
             {error ? (
               <div className="text-red-500 font-semibold text-center mt-4">{error}</div>
             ) : (
               parsedJson && <RenderAmis schema={parsedJson} data={{}}/>
             )}
-          </AssetsLoader>
+          </DynamicAssetsLoader>
         </div>
       </div>
   );
