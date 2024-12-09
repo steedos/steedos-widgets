@@ -4,6 +4,8 @@ import { LiveblocksProvider } from "@liveblocks/react";
 import { Composer, Thread } from "@liveblocks/react-ui";
 import { RoomProvider, useThreads } from "@liveblocks/react/suspense";
 import { ErrorBoundary } from "react-error-boundary";
+import "@liveblocks/react-ui/styles.css";
+// import "@liveblocks/react-ui/styles/dark/media-query.css";
 
 export const Loading = () => {
   return <div>Loading...</div>;
@@ -24,11 +26,11 @@ export const Threads = (props:any) => {
 
 export const AmisComments = (props: any) => {
   const {
-    config: configJSON = null,
+    config: configJSON = {},
     data: amisData,
     className,
     roomId,
-    authEndpoint,
+    baseUrl,
     dataFilter
   } = props;
 
@@ -62,13 +64,12 @@ export const AmisComments = (props: any) => {
     };
   }, []);
 
-  if (!config) {
-    return <>Loading...</>;
-  }
-
   return (
     <LiveblocksProvider
+      //@ts-ignore
+      baseUrl={baseUrl}
       authEndpoint={async (room) => {
+        const authEndpoint = `${baseUrl}/v2/c/auth`;
         const headers = {
           "Content-Type": "application/json",
         };
@@ -87,6 +88,43 @@ export const AmisComments = (props: any) => {
         setToken(result.token);
 
         return result;
+      }}
+      // Get users' info from their ID
+      resolveUsers={async ({ userIds }) => {
+        const searchParams = new URLSearchParams(
+          userIds.map((userId) => ["userIds", userId])
+        );
+        const response = await fetch(`${baseUrl}/v2/c/users?${searchParams}`, {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error("Problem resolving users");
+        }
+
+        const users = await response.json();
+        return users;
+      }}
+      // publicApiKey={import.meta.env.VITE_LIVEBLOCKS_PUBLIC_KEY}
+
+      // Find a list of users that match the current search term
+      resolveMentionSuggestions={async ({ text = "" }) => {
+        const response = await fetch(
+          `${baseUrl}/v2/c/users/search?keyword=${encodeURIComponent(text)}`, {
+            headers: {
+              "Authorization": `Bearer ${token}`
+            }
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Problem resolving mention suggestions");
+        }
+
+        const userIds = await response.json();
+        return userIds;
       }}
     >
       <RoomProvider id={roomId}>

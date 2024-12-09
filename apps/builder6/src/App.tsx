@@ -138,7 +138,7 @@ const App = () => {
             className="w-full h-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
           />
         </div>
-        <div className="flex-1 p-4 bg-white overflow-auto">
+        <div className="flex-1 p-0 bg-white overflow-auto">
           <DynamicAssetsLoader assetUrls={assetUrls}>
             {error ? (
               <div className="text-red-500 font-semibold text-center mt-4">{error}</div>
