@@ -1,4 +1,4 @@
-import { Component, useState } from 'react';
+import React, { Component, useState } from 'react';
 import { BuilderComponent } from '@builder6/react';
 import * as uuid from 'uuid';
 import './App.css';
