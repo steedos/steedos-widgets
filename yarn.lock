@@ -1571,15 +1571,15 @@
     node-fetch "^2.3.0"
     tslib "^1.10.0"
 
-"@builder6/react@^3.2.12":
-  version "3.2.12"
-  resolved "https://registry.npmjs.org/@builder6/react/-/react-3.2.12.tgz#f4fa0e514e5e364687096ec20159d4696df26f20"
-  integrity sha512-jq5TF1DjDQS99sYAsGJP9FkNKTCKs5FhxgeMJMEd9UaoGH4OVcZgj683toDCV1Yp53oaCUDm0lVjH1WFXx+g1A==
+"@builder6/react@^3.2.13":
+  version "3.2.13"
+  resolved "https://registry.yarnpkg.com/@builder6/react/-/react-3.2.13.tgz#34ca4429c12f637d80ce58200e2f9970de61ed00"
+  integrity sha512-jjma4fBgkozzOTNpV95HqJr758e5fsUny2lwfd5kGo/mCJnj9pmnE7f5puAatmwe+iFNjVqBfLfzIMFS5L2kLQ==
   dependencies:
     "@builder6/sdk" "^2.2.5"
     "@emotion/core" "^10.0.17"
     hash-sum "^2.0.0"
-    isolated-vm "^4.5.0"
+    isolated-vm "^5.0.0"
     preact "^10.1.0"
   optionalDependencies:
     node-fetch "^2.6.1"
@@ -14376,12 +14376,12 @@ isobject@^4.0.0:
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-4.0.0.tgz#3f1c9155e73b192022a80819bacd0343711697b0"
   integrity sha512-S/2fF5wH8SJA/kmwr6HYhK/RI/OkhD84k8ntalo0iJjZikgq1XFvR5M8NPT1x5F7fBwCG3qHfnzeP/Vh/ZxCUA==
 
-isolated-vm@^4.5.0:
-  version "4.7.2"
-  resolved "https://registry.npmjs.org/isolated-vm/-/isolated-vm-4.7.2.tgz#5670d5cce1d92004f9b825bec5b0b11fc7501b65"
-  integrity sha512-JVEs5gzWObzZK5+OlBplCdYSpokMcdhLSs/xWYYxmYWVfOOFF4oZJsYh7E/FmfX8e7gMioXMpMMeEyX1afuKrg==
+isolated-vm@^5.0.0:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/isolated-vm/-/isolated-vm-5.0.2.tgz#7a21d2e6d03a610e6c56ecf76127e73b70ba4690"
+  integrity sha512-q8zQIbVIg83nmV2x1r60gWGjgjaJ2srGMzJ5B4TIlvnWZMuZDIM0OxOOj+5FF9oui1XdAU29xWwT9M4ih6RJiQ==
   dependencies:
-    prebuild-install "^7.1.1"
+    prebuild-install "^7.1.2"
 
 isomorphic-fetch@^2.1.1:
   version "2.2.1"
@@ -19006,9 +19006,9 @@ preact@^8.4.2:
   resolved "https://registry.npmjs.org/preact/-/preact-8.5.3.tgz#78c2a5562fcecb1fed1d0055fa4ac1e27bde17c1"
   integrity sha512-O3kKP+1YdgqHOFsZF2a9JVdtqD+RPzCQc3rP+Ualf7V6rmRDchZ9MJbiGTT7LuyqFKZqlHSOyO/oMFmI2lVTsw==
 
-prebuild-install@^7.1.1:
+prebuild-install@^7.1.2:
   version "7.1.2"
-  resolved "https://registry.npmjs.org/prebuild-install/-/prebuild-install-7.1.2.tgz#a5fd9986f5a6251fbc47e1e5c65de71e68c0a056"
+  resolved "https://registry.yarnpkg.com/prebuild-install/-/prebuild-install-7.1.2.tgz#a5fd9986f5a6251fbc47e1e5c65de71e68c0a056"
   integrity sha512-UnNke3IQb6sgarcZIDU3gbMeTp/9SSU1DAIkil7PrqG1vZlBtY5msYccSKSHDqa3hNg436IXK+SNImReuA1wEQ==
   dependencies:
     detect-libc "^2.0.0"
