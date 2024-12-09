@@ -7,6 +7,8 @@ import { ErrorBoundary } from "react-error-boundary";
 import "@liveblocks/react-ui/styles.css";
 // import "@liveblocks/react-ui/styles/dark/media-query.css";
 
+import './Comments.css';
+
 export const Loading = () => {
   return <div>Loading...</div>;
 }
@@ -15,12 +17,12 @@ export const Threads = (props:any) => {
   const { threads } = useThreads();
 
   return (
-    <main>
+    <>
       {threads.map((thread) => (
         <Thread key={thread.id} thread={thread} className="thread" />
       ))}
       <Composer className="composer" />
-    </main>
+    </>
   );
 }
 
@@ -28,7 +30,7 @@ export const AmisComments = (props: any) => {
   const {
     config: configJSON = {},
     data: amisData,
-    className,
+    className = "m-2 flex flex-col gap-y-2",
     roomId,
     baseUrl,
     dataFilter
@@ -134,7 +136,9 @@ export const AmisComments = (props: any) => {
           }
         >
           <Suspense fallback={<Loading />}>
-            <Threads />
+            <main className={className}>
+              <Threads />
+            </main>
           </Suspense>
         </ErrorBoundary>
       </RoomProvider>

@@ -55,10 +55,7 @@ export default {
       icon: config.amis.icon,
       scaffold: {
         type: config.amis.name,
-        className: "h-80",
-        config: {
-          // Row Data: The data to be displayed.
-        },
+        className: "m-2 flex flex-col gap-y-2",
       },
       previewSchema: {
         type: config.amis.name,
@@ -69,7 +66,7 @@ export default {
           type: "text",
           name: "className",
           label: "CSS类名",
-          value: "bg-gray-100 border-b sm:rounded sm:border border-gray-300 p-4 mb-4 h-full"
+          value: "m-2 flex flex-col gap-y-2"
         },
         {
           type: "editor",

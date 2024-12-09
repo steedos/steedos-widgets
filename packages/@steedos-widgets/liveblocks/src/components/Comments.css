@@ -1,0 +1,37 @@
+
+
+.comments-main {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 4rem 1rem;
+  margin: 0 auto;
+  max-width: 680px;
+}
+
+.loading,
+.error {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  place-content: center;
+  place-items: center;
+}
+
+.loading img {
+  width: 64px;
+  height: 64px;
+  opacity: 0.2;
+}
+
+.thread,
+.composer {
+  position: relative;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 4%),
+    0 2px 6px rgb(0 0 0 / 4%),
+    0 8px 26px rgb(0 0 0 / 6%);
+}
