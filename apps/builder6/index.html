@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <script src="https://cdn.tailwindcss.com"></script>
 
+    <script src="https://unpkg.steedos.cn/@builder6/sdk@2.2.5/dist/index.umd.js"></script>
+    
     <script src="https://unpkg.steedos.cn/@steedos-widgets/amis@6.3.0-patch.3/sdk/sdk.js"></script>
     <link rel="stylesheet" href="https://unpkg.steedos.cn/@steedos-widgets/amis@6.3.0-patch.3/lib/themes/antd.css" />
     <link rel="stylesheet" href="https://unpkg.steedos.cn/@steedos-widgets/amis@6.3.0-patch.3/lib/helper.css" />
@@ -12,6 +14,8 @@
       window['React'] = amisRequire('react');
       window['ReactDOM'] = amisRequire('react-dom');
       window['moment'] = amisRequire('moment');
+      window['Amis'] = amisRequire('amis');
+      window['AmisEmbed'] = amisRequire('amis/embed');
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Builder6 Fiddle</title>

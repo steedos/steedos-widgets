@@ -23,6 +23,17 @@ export class DynamicAssetsLoader extends Component<DynamicAssetsLoaderProps, Dyn
   }
 
   async componentDidMount() {
+    await this.loadAssets();
+  }
+
+  async componentDidUpdate(prevProps: DynamicAssetsLoaderProps) {
+    if (prevProps.assetUrls !== this.props.assetUrls) {
+      this.setState({ assetsLoaded: false }); // Reset state before loading new assets
+      await this.loadAssets();
+    }
+  }
+
+  async loadAssets() {
     const { assetUrls } = this.props;
     await AssetsLoader.registerRemoteAssets(assetUrls);
     this.setState({ assetsLoaded: true });

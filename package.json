@@ -10,7 +10,7 @@
     "packages/**"
   ],
   "scripts": {
-    "dev": "cd apps/experience && node server",
+    "dev": "cd apps/builder6 && node server",
     "watch": "lerna run watch --parallel",
     "build": "lerna run build",
     "build-object": "lerna run build-object",

@@ -13,7 +13,7 @@ require('dotenv-flow').config();
 
 const pkg = require('./package.json');
 
-const exportName = 'BuidlerLiveblocks';
+const exportName = 'BuilderLiveblocks';
 
 const unpkgUrl = process.env.STEEDOS_UNPKG_URL ? process.env.STEEDOS_UNPKG_URL : 'https://unpkg.com'
 
@@ -51,7 +51,7 @@ const options = {
     replace({
       'process.env.NODE_ENV': JSON.stringify('production'),
     }),
-    terser()
+    // terser()
   ],
 };
 

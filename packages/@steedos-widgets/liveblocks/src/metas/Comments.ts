@@ -21,7 +21,7 @@ const config: any = {
   engines: ["amis"],
   // settings for amis.
   amis: {
-    name: 'comments',
+    name: 'liveblocks-comments',
     icon: "fa-fw fa fa-list-alt"
   }
 };
