@@ -6,7 +6,7 @@ https://github.com/liveblocks/liveblocks
 
 ## 测试资产包
 
-启动 builder6 服务
+启动 资产包测试 服务
 
 ```shell
 cd apps/builder6
@@ -22,6 +22,7 @@ yarn dev
 {
   "type": "rooms-comments",
   "roomId": "test",
+  "className": "flex flex-col m-3 gap-3",
   "baseUrl": "http://localhost:5100"
 }
 
