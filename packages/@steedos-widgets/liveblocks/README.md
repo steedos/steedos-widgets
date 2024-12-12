@@ -32,5 +32,5 @@ yarn dev
 ## Steedos 加载资产包
 
 ```
-STEEDOS_PUBLIC_PAGE_ASSETURLS=http://127.0.0.1:8080/@steedos-widgets/amis-object/dist/assets-dev.json,http://127.0.0.1:8080/@steedos-widgets/liveblocks/dist/assets-dev.json
+STEEDOS_WIDGETS_ADDITIONAL=@steedos-widgets/liveblocks
 ```

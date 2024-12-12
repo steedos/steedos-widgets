@@ -6,6 +6,7 @@
  */
 import React, { useEffect, useState, useRef } from 'react';
 import { AG_GRID_LOCALE_CN } from '@ag-grid-community/locale';
+import 'ag-grid-enterprise';
 
 export const AmisAgGrid = (props: any) => {
   const {
