@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2024-01-18 18:58:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-12-07 21:22:35
+ * @LastEditTime: 2024-12-12 17:36:50
  */
 import React, { useEffect, useState, useRef } from 'react';
 import { AG_GRID_LOCALE_CN } from '@ag-grid-community/locale';
@@ -25,7 +25,7 @@ export const AmisAgGrid = (props: any) => {
   let onDataFilter = null;
 
   if (typeof dataFilter === 'string') {
-    onDataFilter = new Function('config', 'AgGrid', 'props', 'data', 'return (async () => { ' + dataFilter + ' })()')
+    onDataFilter = new Function('config', 'AgGrid', 'props', 'data', 'ref', 'return (async () => { ' + dataFilter + ' })()')
   }
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export const AmisAgGrid = (props: any) => {
     (async () => {
       try {
         if (onDataFilter) {
-          const newConfig = await onDataFilter(config, agGrid, props, amisData);
+          const newConfig = await onDataFilter(config, agGrid, props, amisData, wrapperRef);
           if (!isCancelled) {
             setConfig(newConfig || config);
             setDataFilterLoaded(true);
