@@ -28,6 +28,18 @@ yarn dev
 
 ```
 
+集成到Steedos记录详情页
+
+```json
+{
+  "type": "rooms-comments",
+  "className": "flex flex-col m-3 gap-3",
+  "id": "u:bbb9a7d94945",
+  "roomId": "objects:${objectName}:{recordId}",
+  "baseUrl": "${context.rootUrl}"
+}
+```
+
 
 ## Steedos 加载资产包
 

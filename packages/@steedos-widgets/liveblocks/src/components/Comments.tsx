@@ -39,10 +39,12 @@ export const AmisComments = (props: any) => {
   const [config, setConfig] = useState(configJSON);
   const [token, setToken] = useState(null);
 
+  const fixedBaseUrl = baseUrl || amisData.context?.rootUrl || `${window.location.protocol}//${window.location.host}`
+  console.log('liveblocks baseUrl:', fixedBaseUrl);
+
   let onDataFilter = null;
   
   if (typeof dataFilter === 'string') {
-
     onDataFilter = new Function('config', 'data', 'return (async () => { ' + dataFilter + ' })()')
   }
 
@@ -69,9 +71,9 @@ export const AmisComments = (props: any) => {
   return (
     <LiveblocksProvider
       //@ts-ignore
-      baseUrl={baseUrl}
+      baseUrl={fixedBaseUrl}
       authEndpoint={async (room) => {
-        const authEndpoint = `${baseUrl}/v2/c/auth`;
+        const authEndpoint = `${fixedBaseUrl}/v2/c/auth`;
         const headers = {
           "Content-Type": "application/json",
         };
@@ -96,7 +98,7 @@ export const AmisComments = (props: any) => {
         const searchParams = new URLSearchParams(
           userIds.map((userId) => ["userIds", userId])
         );
-        const response = await fetch(`${baseUrl}/v2/c/users?${searchParams}`, {
+        const response = await fetch(`${fixedBaseUrl}/v2/c/users?${searchParams}`, {
           headers: {
             "Authorization": `Bearer ${token}`
           }
@@ -114,7 +116,7 @@ export const AmisComments = (props: any) => {
       // Find a list of users that match the current search term
       resolveMentionSuggestions={async ({ text = "" }) => {
         const response = await fetch(
-          `${baseUrl}/v2/c/users/search?keyword=${encodeURIComponent(text)}`, {
+          `${fixedBaseUrl}/v2/c/users/search?keyword=${encodeURIComponent(text)}`, {
             headers: {
               "Authorization": `Bearer ${token}`
             }

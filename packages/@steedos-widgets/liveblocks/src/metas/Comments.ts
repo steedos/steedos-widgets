@@ -64,6 +64,18 @@ export default {
       panelControls: [
         {
           type: "text",
+          name: "baseUrl",
+          label: "Base URL",
+          value: "m-2 flex flex-col gap-y-2"
+        },
+        {
+          type: "text",
+          name: "roomId",
+          label: "Room Id",
+          value: "m-2 flex flex-col gap-y-2"
+        },
+        {
+          type: "text",
           name: "className",
           label: "CSS类名",
           value: "m-2 flex flex-col gap-y-2"
