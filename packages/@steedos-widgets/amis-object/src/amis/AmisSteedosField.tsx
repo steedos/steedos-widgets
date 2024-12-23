@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-11-14 10:50:14
+ * @LastEditTime: 2024-12-23 17:34:22
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -559,9 +559,9 @@ export const AmisSteedosField = async (props) => {
                                 hasImageOrFile = true;
                             }
                         })
-                        if (!hasImageOrFile) {
-                            return fieldSchema;
-                        }
+                        // if (!hasImageOrFile) {
+                        //     return fieldSchema;
+                        // }
                         let fieldHtml = "";
                         forEach(fieldValue, (item) => {
                             const fileName = item.name;
