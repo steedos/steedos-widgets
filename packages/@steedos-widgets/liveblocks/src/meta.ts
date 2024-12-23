@@ -6,12 +6,15 @@
  * @Description: 
  */
 import Comments from "./metas/Comments";
-const components = [Comments];
+import InboxPopover from "./metas/InboxPopover";
+import Provider from "./metas/Provider";
+
+const components = [Comments, InboxPopover, Provider];
 const componentList = [
   {
-    title: "华炎魔方",
+    title: "Builder6",
     icon: "",
-    children: [Comments]
+    children: [Comments, InboxPopover, Provider]
   }
 ];
 export default {

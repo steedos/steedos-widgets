@@ -1,14 +1,14 @@
 
 const config: any = {
-  group: "华炎魔方-原子组件",
-  componentName: "AmisComments",
-  title: "Comments",
+  group: "Builder6",
+  componentName: "AmisRoomsProvider",
+  title: "Rooms Provider",
   docUrl: "",
   screenshot: "",
   npm: {
     package: "@steedos-widgets/liveblocks",
     version: "{{version}}",
-    exportName: "AmisComments",
+    exportName: "AmisRoomsProvider",
     main: "",
     destructuring: true,
     subName: ""
@@ -21,7 +21,7 @@ const config: any = {
   engines: ["amis"],
   // settings for amis.
   amis: {
-    name: 'rooms-comments',
+    name: 'rooms-provider',
     icon: "fa-fw fa fa-list-alt"
   }
 };
@@ -64,20 +64,11 @@ export default {
       panelControls: [
         {
           type: "text",
-          name: "roomId",
-          label: "Room Id",
-          value: "m-2 flex flex-col gap-y-2"
-        },
-        {
-          type: "text",
-          name: "className",
-          label: "CSS类名",
+          name: "baseUrl",
+          label: "Base URL",
           value: "m-2 flex flex-col gap-y-2"
         },
       ],
-      events: [{
-        
-      }],
     },
   }
 };

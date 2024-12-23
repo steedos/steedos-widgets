@@ -1,14 +1,14 @@
 
 const config: any = {
   group: "华炎魔方-原子组件",
-  componentName: "AmisComments",
-  title: "Comments",
+  componentName: "AmisInboxPopover",
+  title: "Inbox Popover",
   docUrl: "",
   screenshot: "",
   npm: {
     package: "@steedos-widgets/liveblocks",
     version: "{{version}}",
-    exportName: "AmisComments",
+    exportName: "AmisInboxPopover",
     main: "",
     destructuring: true,
     subName: ""
@@ -21,7 +21,7 @@ const config: any = {
   engines: ["amis"],
   // settings for amis.
   amis: {
-    name: 'rooms-comments',
+    name: 'rooms-inbox-popover',
     icon: "fa-fw fa fa-list-alt"
   }
 };
@@ -62,12 +62,6 @@ export default {
       },
       panelTitle: "设置",
       panelControls: [
-        {
-          type: "text",
-          name: "roomId",
-          label: "Room Id",
-          value: "m-2 flex flex-col gap-y-2"
-        },
         {
           type: "text",
           name: "className",
