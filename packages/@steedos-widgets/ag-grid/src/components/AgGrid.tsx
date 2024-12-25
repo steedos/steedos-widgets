@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2024-01-18 18:58:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-12-12 17:36:50
+ * @LastEditTime: 2024-12-25 09:02:40
  */
 import React, { useEffect, useState, useRef } from 'react';
 import { AG_GRID_LOCALE_CN } from '@ag-grid-community/locale';
@@ -12,7 +12,8 @@ export const AmisAgGrid = (props: any) => {
     config: configJSON = null,
     data: amisData = {},
     className,
-    dataFilter
+    dataFilter,
+    style
   } = props;
   const initConfig = Object.assign({ localeText: AG_GRID_LOCALE_CN }, configJSON || {});
   const [config, setConfig] = useState(initConfig);
@@ -59,6 +60,6 @@ export const AmisAgGrid = (props: any) => {
   }
 
   return (
-    <div ref={wrapperRef} className={`${className} ag-theme-quartz`} />
+    <div ref={wrapperRef} className={`${className} ag-theme-quartz`} style={style} />
   )
 };
