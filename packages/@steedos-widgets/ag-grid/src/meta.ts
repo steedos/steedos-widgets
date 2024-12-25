@@ -1,17 +1,18 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-01 18:46:29
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2024-12-25 14:59:55
  * @Description: 
  */
 import AgGrid from "./metas/AgGrid";
-const components = [AgGrid];
+import AmisTablesGrid from "./metas/AmisTablesGrid";
+const components = [AgGrid, AmisTablesGrid];
 const componentList = [
   {
     title: "华炎魔方",
     icon: "",
-    children: [AgGrid]
+    children: components
   }
 ];
 export default {
