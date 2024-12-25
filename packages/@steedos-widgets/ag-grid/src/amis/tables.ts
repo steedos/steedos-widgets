@@ -114,7 +114,7 @@ export async function getMeta(tableId: string, force: boolean = false) {
             credentials: 'include',
             // "headers": {
             //     'Content-Type': 'application/json',
-            //     "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+            //     "Authorization": "Bearer ${context.tenantId},${context.authToken}" //TODO context中没取到数据
             // }
         });
 
@@ -426,8 +426,8 @@ function getFieldVerificationErrors(fieldValue, colDef) {
 }
 
 // 监听行数据改变事件
-async function onRowValueChanged(event: any) {
-    const table: any = {};//TODO:要使用闭包方式传入table参数
+async function onRowValueChanged(event: any, table: any) {
+    console.log("===onRowValueChanged===table===", table);
     const tableId = table._id;
     const data = event.data;
     console.log('Saving updated data to server:', JSON.stringify(data));
@@ -539,10 +539,11 @@ async function onRowValueChanged(event: any) {
         const response = await fetch(url, {
             credentials: 'include',
             method: 'PUT',
-            // headers: {
-            //     'Content-Type': 'application/json',
-            //     "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-            // },
+            headers: {
+                'Content-Type': 'application/json',
+                // "Authorization": "Bearer ${context.tenantId},${context.authToken}" //TODO context中没取到数据
+                "Authorization": "Bearer 654300b5074594d15147bcfa,dbe0e0da68ba2e83aca63a5058907e543a4e89f7e979963b4aa1f574f227a3b5063e149d818ff553fb4aa1"
+            },
             body: JSON.stringify(data)
         });
         if (!response.ok) {
@@ -559,16 +560,20 @@ async function onRowValueChanged(event: any) {
 
 const changeQueue = new Map();
 
-function processChangeQueue() {
+function processChangeQueue(table: any) {
+    console.log("===processChangeQueue===table===", table);
     changeQueue.forEach((event, rowIndex) => {
-        onRowValueChanged(event);
+        onRowValueChanged(event, table);
     });
     changeQueue.clear();
 }
 
-const debouncedProcessChangeQueue = debounce(processChangeQueue, 200);
+const debouncedProcessChangeQueue = debounce(processChangeQueue, 200, {
+    leading: false,
+    trailing: true
+});
 
-function onCellValueChanged(event) {
+function onCellValueChanged(event: any, table: any) {
     const rowIndex = event.node.rowIndex;
 
     if (!changeQueue.has(rowIndex)) {
@@ -579,7 +584,7 @@ function onCellValueChanged(event) {
         existingEvent.data = { ...existingEvent.data, ...event.data };
     }
 
-    debouncedProcessChangeQueue();
+    debouncedProcessChangeQueue(table);
 }
 
 // 校验数据表中数据的字段类型格式合法性
@@ -849,7 +854,7 @@ function getServerSideDatasource(tableId: string) {
                     credentials: 'include',
                     // headers: {
                     //     'Content-Type': 'application/json',
-                    //     'Authorization': 'Bearer ${context.tenantId},${context.authToken}'
+                    //     'Authorization': 'Bearer ${context.tenantId},${context.authToken}' //TODO context中没取到数据
                     // }
                 });
 
@@ -1018,6 +1023,14 @@ function getGridOptions(table: any, mode: string) {
         sortable: false
     });
 
+    // 使用闭包把 table 参数传递给事件处理函数
+    const onRowValueChangedRaw = (event: any) => {
+        onRowValueChanged(event, table);
+    };
+    const onCellValueChangedRaw = (event: any) => {
+        onCellValueChanged(event, table);
+    };
+
     var needToValiTable = table.verifications && table.verifications.length > 0;
     var columnFieldNames = map(columnDefs, "field");
     var pageSize = 100000;
@@ -1055,8 +1068,8 @@ function getGridOptions(table: any, mode: string) {
             }
         },
         stopEditingWhenCellsLoseFocus: true,
-        // onRowValueChanged: isReadonly ? null : onRowValueChanged,
-        onCellValueChanged: isReadonly ? null : onCellValueChanged,
+        // onRowValueChanged: isReadonly ? null : onRowValueChangedRaw,
+        onCellValueChanged: isReadonly ? null : onCellValueChangedRaw,
         onDragStopped: isAdmin ? onDragStopped : null,
         onColumnMoved: isAdmin ? onColumnMoved : null,
         defaultColDef: {
@@ -1101,7 +1114,7 @@ function getGridOptions(table: any, mode: string) {
         // 如果 tables 中存在校验规则，把编辑模式转为行编辑，不使用单元格编辑模式，即把 onCellValueChanged 换成 onRowValueChanged
         if (gridOptions.onCellValueChanged) {
             gridOptions.editType = 'fullRow';
-            gridOptions.onRowValueChanged = onRowValueChanged;
+            gridOptions.onRowValueChanged = onRowValueChangedRaw;
             delete gridOptions.onCellValueChanged;
         }
     }
@@ -1117,34 +1130,13 @@ export async function getTablesGridSchema(
     ctx = {}
 ) {
     const meta = await getMeta(tableId);
-    console.log("===meta===", meta);
     const gridOptions = getGridOptions(meta, mode);
-    console.log("===gridOptions===", gridOptions);
-
-
-    const rowData = [
-        { make: "Toyota", model: "Celica", price: 35000 },
-        { make: "Ford", model: "Mondeo", price: 32000 },
-        { make: "Porsche", model: "Boxster", price: 72000 },
-        { make: "BMW", model: "M50", price: 60000 },
-        { make: "Aston Martin", model: "DBX", price: 190000 },
-    ];
-
-    const columnDefs = [
-        { field: "make" },
-        { field: "model" },
-        { field: "price" },
-    ];
 
     const amisSchema = {
         "type": "ag-grid",
         "dsType": "api",
         "className": "b6-tables-ag-grid h-96 ag-theme-quartz",
         "config": gridOptions
-        // "config": {
-        //     columnDefs,
-        //     rowData
-        // }
     };
     return {
         meta,
