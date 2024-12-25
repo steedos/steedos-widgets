@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 11:54:45
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-12-25 12:02:24
+ * @LastEditTime: 2024-12-25 12:05:23
  * @Description: 
  */
 import React, { useEffect, useState } from 'react';
@@ -150,7 +150,6 @@ export const StyleAutoHeight = () => (
         {
           "type": "ag-grid",
           "dsType": "api",
-          // "dataFilter": dataFilter,
           "className": "b6-tables-ag-grid h-96 ag-theme-quartz",
           "style": {
             "height": "calc(100vh - 58px)"
