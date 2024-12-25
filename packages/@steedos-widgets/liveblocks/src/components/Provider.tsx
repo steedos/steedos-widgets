@@ -46,6 +46,24 @@ export const AmisRoomsProvider = (props: any) => {
 
         return result;
       }}
+      // Get rooms' info from their ID
+      resolveRoomsInfo={async ({ roomIds }) => {
+        const searchParams = new URLSearchParams(
+          roomIds.map((roomId) => ["roomIds", roomId])
+        );
+        const response = await fetch(`${fixedBaseUrl}/v2/c/rooms?${searchParams}`, {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error("Problem resolving rooms info");
+        }
+
+        const roomsInfo = await response.json();
+        return roomsInfo;
+      }}
       // Get users' info from their ID
       resolveUsers={async ({ userIds }) => {
         const searchParams = new URLSearchParams(
