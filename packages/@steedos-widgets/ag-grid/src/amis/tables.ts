@@ -86,7 +86,7 @@ function checkSelectValueValid(value, options) {
 
 function getAmisGlobalVariables() {
     return {
-        global: (window as any).Creator.USER_CONTEXT
+        global: (window as any).Creator && (window as any).Creator.USER_CONTEXT || {}
     }
 }
 
@@ -125,13 +125,10 @@ export async function getMeta(tableId: string, force: boolean = false) {
     }
 }
 
-function evaluate() {
-    var currentAmis = (window as any).Amis;
-    return currentAmis.evaluate;
-}
-
 function runAmisFormula(formula: string, data: any, catchBack: Function, options: any = {}) {
     try {
+        var currentAmis = (window as any).amisRequire("amis");
+        var evaluate = currentAmis.evaluate;
         var globalData = getAmisGlobalVariables();
         return (evaluate as any)(formula, Object.assign({}, globalData, data), Object.assign({ evalMode: true }, options));
     }
@@ -141,7 +138,7 @@ function runAmisFormula(formula: string, data: any, catchBack: Function, options
 }
 
 // 校验数据表中配置的Verifications并返回错误信息
-function getTableVerificationErrors(data: any, tableVerifications: any) {
+function getTableVerificationErrors(data: any, tableVerifications: any, { env }) {
     let validated = true;
     const verificationErrors = [];
     // verification校验
@@ -149,7 +146,7 @@ function getTableVerificationErrors(data: any, tableVerifications: any) {
     verifications.forEach(function (verification: any) {
         validated = runAmisFormula(verification.rule, data, function (ex) {
             console.warn("执行校验规则“" + verification.rule + "”公式出错了，请检查校验规则公式配置：", ex);
-            //env.notify("error", "执行校验规则“" + verification.rule + "”公式出错了，请检查校验规则公式配置：" + (ex && ex.toString()))
+            env.notify("error", "执行校验规则“" + verification.rule + "”公式出错了，请检查校验规则公式配置：" + (ex && ex.toString()))
         });
         if (!validated) {
             verificationErrors.push(verification.alert || "校验规则未配置错误信息");
@@ -426,8 +423,9 @@ function getFieldVerificationErrors(fieldValue, colDef) {
 }
 
 // 监听行数据改变事件
-async function onRowValueChanged(event: any, table: any) {
+async function onRowValueChanged(event: any, table: any, { env }) {
     console.log("===onRowValueChanged===table===", table);
+    console.log("===onRowValueChanged===env===", env);
     const tableId = table._id;
     const data = event.data;
     console.log('Saving updated data to server:', JSON.stringify(data));
@@ -507,8 +505,9 @@ async function onRowValueChanged(event: any, table: any) {
         const formulaErrors = data.__formulaErrors.concat();
         // verifications校验
         const rowNode = event.node;
-        const tableVerificationErrors = getTableVerificationErrors(data, table.verifications);
+        const tableVerificationErrors = getTableVerificationErrors(data, table.verifications, { env });
         const verificationErrors = union(fieldsVerificationErrors, tableVerificationErrors);
+        console.log("==verificationErrors===:", verificationErrors);
         let allValidated = verificationErrors.length === 0;
         if (allValidated) {
             // 校验通过重新把row data中校验错误信息移除，否则错误信息一直在
@@ -528,7 +527,7 @@ async function onRowValueChanged(event: any, table: any) {
             }
             rowNode.setData(Object.assign({}, data, { __verificationErrors: verificationErrors }));
             verificationErrors.forEach((msg) => {
-                //env.notify("error", msg)
+                env.notify("error", msg)
             });
             console.log(verificationErrors.join("\n"));
         }
@@ -560,10 +559,10 @@ async function onRowValueChanged(event: any, table: any) {
 
 const changeQueue = new Map();
 
-function processChangeQueue(table: any) {
+function processChangeQueue(table: any, { env }) {
     console.log("===processChangeQueue===table===", table);
     changeQueue.forEach((event, rowIndex) => {
-        onRowValueChanged(event, table);
+        onRowValueChanged(event, table, { env });
     });
     changeQueue.clear();
 }
@@ -573,7 +572,7 @@ const debouncedProcessChangeQueue = debounce(processChangeQueue, 200, {
     trailing: true
 });
 
-function onCellValueChanged(event: any, table: any) {
+function onCellValueChanged(event: any, table: any, { env }) {
     const rowIndex = event.node.rowIndex;
 
     if (!changeQueue.has(rowIndex)) {
@@ -584,7 +583,7 @@ function onCellValueChanged(event: any, table: any) {
         existingEvent.data = { ...existingEvent.data, ...event.data };
     }
 
-    debouncedProcessChangeQueue(table);
+    debouncedProcessChangeQueue(table, { env });
 }
 
 // 校验数据表中数据的字段类型格式合法性
@@ -973,11 +972,10 @@ function getDataTypeDefinitions() {
     };
 }
 
-function getGridOptions(table: any, mode: string, ctx: any = {}) {
+function getGridOptions(table: any, mode: string, { dispatchEvent, env }) {
     if (!table || !table.fields) {
         return null;
     }
-    const { dispatchEvent } = ctx;
     let tableId = table._id;
     let tableLabel = table.label;
     const isReadonly = mode === "read";
@@ -1026,10 +1024,10 @@ function getGridOptions(table: any, mode: string, ctx: any = {}) {
 
     // 使用闭包把 table 参数传递给事件处理函数
     const onRowValueChangedRaw = (event: any) => {
-        onRowValueChanged(event, table);
+        onRowValueChanged(event, table, { env });
     };
     const onCellValueChangedRaw = (event: any) => {
-        onCellValueChanged(event, table);
+        onCellValueChanged(event, table, { env });
     };
     const onDragStoppedRaw = (event: any) => {
         onDragStopped(event, dispatchEvent);
@@ -1050,7 +1048,7 @@ function getGridOptions(table: any, mode: string, ctx: any = {}) {
                 const allGridColumns = params.api.getAllGridColumns();
                 const colDefs = keyBy(map(allGridColumns, "colDef"), "field");
                 var fieldsVerificationErrors = getFieldsVerificationErrors(params.data, colDefs);
-                var tableVerificationErrors = getTableVerificationErrors(params.data, table.verifications);
+                var tableVerificationErrors = getTableVerificationErrors(params.data, table.verifications, { env });
                 const verificationErrors = union(fieldsVerificationErrors, tableVerificationErrors);
                 params.data.__verificationErrors = verificationErrors;
 
@@ -1222,7 +1220,7 @@ function getTableAdminEvents(table: any) {
 export async function getTablesGridSchema(
     tableId: string,
     mode: string, //edit/read/admin
-    ctx = {}
+    { env }
 ) {
     const meta = await getMeta(tableId);
     // const gridOptions = getGridOptions(meta, mode, ctx);
@@ -1239,7 +1237,8 @@ export async function getTablesGridSchema(
             props.dispatchEvent(action, data, ref.current);
         }
         return getGridOptions(meta, mode, {
-            dispatchEvent
+            dispatchEvent,
+            env
         });
     }
 
