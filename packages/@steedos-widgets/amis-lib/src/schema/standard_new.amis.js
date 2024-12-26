@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:51:00
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-02-18 18:37:35
+ * @LastEditTime: 2024-12-26 20:28:43
  * @Description: 
  */
 import { i18next } from "../i18n";
@@ -163,20 +163,23 @@ export const getSchema = async (uiSchema, ctx) => {
                                         {
                                             type: 'button',
                                             actionType: 'cancel',
-                                            label: i18next.t('frontend_form_cancel')
+                                            label: i18next.t('frontend_form_cancel'),
+                                            className: 'form-btn-cancel'
                                         },
                                         {
                                             type: 'button',
                                             label: i18next.t('frontend_form_save_and_new'),
                                             actionType: 'confirm',
                                             close: false,
-                                            id: "confirmAndNew"
+                                            id: "confirmAndNew",
+                                            className: 'form-btn-save_and_new'
                                         },
                                         {
                                             type: 'button',
                                             actionType: 'confirm',
                                             label: i18next.t('frontend_form_save'),
-                                            primary: true
+                                            primary: true,
+                                            className: 'form-btn-save'
                                         },
                                     ]
                                 }
