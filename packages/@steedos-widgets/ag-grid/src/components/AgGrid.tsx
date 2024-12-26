@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2024-01-18 18:58:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-12-26 13:51:54
+ * @LastEditTime: 2024-12-26 16:18:44
  */
 import React, { useEffect, useState, useRef } from 'react';
 import { AG_GRID_LOCALE_CN } from '@ag-grid-community/locale';
@@ -64,6 +64,6 @@ export const AmisAgGrid = (props: any) => {
   }
 
   return (
-    <div ref={wrapperRef} className={`${className} ag-theme-quartz`} style={style} />
+    <div ref={wrapperRef} className={`${className} steedos-ag-grid ag-theme-quartz`} style={style} />
   )
 };

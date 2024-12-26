@@ -1217,111 +1217,116 @@ function getTableAdminEvents(table: any) {
     }
 }
 
-export async function getTablesGridSchema(
-    tableId: string,
-    mode: string, //edit/read/admin
-    { env }
-) {
-    const meta = await getMeta(tableId);
-    // const gridOptions = getGridOptions(meta, mode, ctx);
-    let tableAdminEvents = {};
-    const isAdmin = mode === "admin";
-    if (isAdmin) {
-        tableAdminEvents = getTableAdminEvents({ _id: tableId });
-    }
-
+const getAgGrid = (table: any, mode: string, { env }) => {
     const onDataFilter = async function (config: any, AgGrid: any, props: any, data: any, ref: any) {
         // 为ref.current补上props属性，否则props.dispatchEvent不能生效
         ref.current.props = props;
         let dispatchEvent = async function (action, data) {
             props.dispatchEvent(action, data, ref.current);
         }
-        return getGridOptions(meta, mode, {
+        return getGridOptions(table, mode, {
             dispatchEvent,
             env
         });
     }
+    const tableId = table._id;
+    const agGrid = {
+        "type": "ag-grid",
+        "onDataFilter": onDataFilter,
+        "className": "steedos-tables-grid-content mt-2 h-96",
+        "style": {
+            "height": "calc(100% - 58px)"
+        },
+        "onEvent": {
+            "editField": {
+                "weight": 0,
+                "actions": [
+                    {
+                        "type": "broadcast",
+                        "actionType": "broadcast",
+                        "args": {
+                            "eventName": `@b6tables.${tableId}.editField`
+                        },
+                        "data": {
+                            "editingFieldId": "${editingFieldId}"
+                        }
+                    }
+                ]
+            },
+            "deleteField": {
+                "weight": 0,
+                "actions": [
+                    {
+                        "type": "broadcast",
+                        "actionType": "broadcast",
+                        "args": {
+                            "eventName": `@b6tables.${tableId}.deleteField`
+                        },
+                        "data": {
+                            "deletingFieldId": "${deletingFieldId}"
+                        }
+                    }
+                ]
+            },
+            "sortFields": {
+                "weight": 0,
+                "actions": [
+                    {
+                        "type": "broadcast",
+                        "actionType": "broadcast",
+                        "args": {
+                            "eventName": `@b6tables.${tableId}.sortFields`
+                        },
+                        "data": {
+                            "sortedFields": "${sortedFields}"
+                        }
+                    }
+                ]
+            },
+            "setTotalCount": {
+                "weight": 0,
+                "actions": [
+                    {
+                        "type": "broadcast",
+                        "actionType": "broadcast",
+                        "args": {
+                            "eventName": `@b6tables.${tableId}.setTotalCount`
+                        },
+                        "data": {
+                            "totalCount": "${totalCount}"
+                        }
+                    }
+                ]
+            }
+        }
+    };
+    return agGrid;
+}
+
+
+export async function getTablesGridSchema(
+    tableId: string,
+    mode: string, //edit/read/admin
+    { env }
+) {
+    const meta = await getMeta(tableId);
+    let tableAdminEvents = {};
+    const isAdmin = mode === "admin";
+    if (isAdmin) {
+        tableAdminEvents = getTableAdminEvents({ _id: tableId });
+    }
 
     const amisSchema = {
         "type": "service",
-        // steedos-object-table样式类有因为单元格编辑功能的特殊样式会造成倒数第二列样式异常
-        // "className": "steedos-object-table  steedos-crud-mode-table h-full flex flex-col ",
-        "id": `service_listview_b6_data_${tableId}`,
+        "id": `service_tables_grid_${tableId}`,
         "name": "page",
         "data": {
             "_aggridTotalCount": "--"
         },
-        "className": "b6-tables-ag-grid-wrapper h-full",
+        "className": "steedos-tables-grid h-full",
         "body": [
-            //   getTableHeader(table, fields, { collectId, mode }),
-            {
-                "type": "ag-grid",
-                "className": "b6-tables-ag-grid h-96 ag-theme-quartz",
-                // "config": gridOptions,
-                "onDataFilter": onDataFilter,
-                "onEvent": {
-                    "editField": {
-                        "weight": 0,
-                        "actions": [
-                            {
-                                "type": "broadcast",
-                                "actionType": "broadcast",
-                                "args": {
-                                    "eventName": `@b6tables.${tableId}.editField`
-                                },
-                                "data": {
-                                    "editingFieldId": "${editingFieldId}"
-                                }
-                            }
-                        ]
-                    },
-                    "deleteField": {
-                        "weight": 0,
-                        "actions": [
-                            {
-                                "type": "broadcast",
-                                "actionType": "broadcast",
-                                "args": {
-                                    "eventName": `@b6tables.${tableId}.deleteField`
-                                },
-                                "data": {
-                                    "deletingFieldId": "${deletingFieldId}"
-                                }
-                            }
-                        ]
-                    },
-                    "sortFields": {
-                        "weight": 0,
-                        "actions": [
-                            {
-                                "type": "broadcast",
-                                "actionType": "broadcast",
-                                "args": {
-                                    "eventName": `@b6tables.${tableId}.sortFields`
-                                },
-                                "data": {
-                                    "sortedFields": "${sortedFields}"
-                                }
-                            }
-                        ]
-                    },
-                    "setTotalCount": {
-                        "weight": 0,
-                        "actions": [
-                            {
-                                "type": "broadcast",
-                                "actionType": "broadcast",
-                                "args": {
-                                    "eventName": `@b6tables.${tableId}.setTotalCount`
-                                },
-                                "data": {
-                                    "totalCount": "${totalCount}"
-                                }
-                            }
-                        ]
-                    }
-                }
-            }
+            // getTableHeader(table, fields, { collectId, mode }),
+            getAgGrid(meta, mode, { env })
         ],
         "onEvent": {
             [`@b6tables.${tableId}.setTotalCount`]: {

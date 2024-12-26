@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 11:54:45
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-12-26 15:36:57
+ * @LastEditTime: 2024-12-26 16:36:51
  * @Description: 
  */
 import React, { useEffect, useState } from 'react';
@@ -15,7 +15,7 @@ import * as _ from 'lodash';
 // window.defaultsDeep = defaultsDeep;
 
 const assetUrls = [
-  process.env.STEEDOS_UNPKG_URL + '/@steedos-widgets/ag-grid/dist/assets-dev.json', 
+  process.env.STEEDOS_UNPKG_URL + '/@steedos-widgets/ag-grid/dist/assets-dev.json',
   process.env.STEEDOS_UNPKG_URL + '/@steedos-widgets/amis-object/dist/assets-dev.json'
 ]
 
@@ -118,7 +118,10 @@ export const Gerneral = () => (
       "body": [
         {
           "type": "steedos-tables-grid",
-          "className": "b6-tables-ag-grid h-96 ag-theme-quartz",
+          "className": "h-96",
+          "style": {
+            "height": "calc(100vh - 58px)"
+          },
           "tableId": "67658ac0cc184d0efc68b752",
           "mode": "admin"
         }
