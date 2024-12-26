@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 11:54:45
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-12-26 11:36:32
+ * @LastEditTime: 2024-12-26 15:36:57
  * @Description: 
  */
 import React, { useEffect, useState } from 'react';
@@ -14,7 +14,10 @@ import * as _ from 'lodash';
 
 // window.defaultsDeep = defaultsDeep;
 
-const assetUrls = process.env.STEEDOS_UNPKG_URL + '/@steedos-widgets/ag-grid/dist/assets-dev.json'
+const assetUrls = [
+  process.env.STEEDOS_UNPKG_URL + '/@steedos-widgets/ag-grid/dist/assets-dev.json', 
+  process.env.STEEDOS_UNPKG_URL + '/@steedos-widgets/amis-object/dist/assets-dev.json'
+]
 
 if (Builder.isBrowser) {
   (window as any).Builder = Builder;
