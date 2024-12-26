@@ -1100,6 +1100,15 @@ function getGridOptions(table: any, mode: string, { dispatchEvent, env }) {
             //     "totalCount": rowCount
             // });
         },
+        onGridReady: function (params: any) {
+            // getRows 初始加载数据，过滤数据，列排序等，gridApi.applyServerSideTransaction 新建记录、删除记录都会触发
+            dispatchEvent("setGridApi", {
+                "gridApi": params.api,
+                "gridContext": {
+                    setRowDataFormulaValues
+                }
+            });
+        },
         defaultExcelExportParams: {
             fileName: tableLabel,
             columnKeys: columnFieldNames
@@ -1224,10 +1233,11 @@ const getAgGrid = (table: any, mode: string, { env }) => {
         let dispatchEvent = async function (action, data) {
             props.dispatchEvent(action, data, ref.current);
         }
-        return getGridOptions(table, mode, {
+        let gridOptions = getGridOptions(table, mode, {
             dispatchEvent,
             env
         });
+        return gridOptions;
     }
     const tableId = table._id;
     const agGrid = {
@@ -1238,6 +1248,41 @@ const getAgGrid = (table: any, mode: string, { env }) => {
             "height": "calc(100% - 58px)"
         },
         "onEvent": {
+            // "@b6tables.addRecord": {
+            //     "actions": [
+            //         {
+            //           "actionType": "toast",
+            //           "args": {
+            //             "msgType": "warning",
+            //             "msg": "1155我是全局警告消息，可以配置不同类型和弹出位置~",
+            //             "position": "top-right"
+            //           }
+            //         }
+            //     ]
+            // },
+            "setGridApi": {
+                "weight": 0,
+                "actions": [
+                    // {
+                    //     "ignoreError": false,
+                    //     "actionType": "custom",
+                    //     "script": "debugger;",
+                    //     "args": {
+                    //     }
+                    // },
+                    {
+                        "type": "broadcast",
+                        "actionType": "broadcast",
+                        "args": {
+                            "eventName": `@b6tables.${tableId}.setGridApi`
+                        },
+                        "data": {
+                            "gridApi": "${gridApi}",
+                            "gridContext": "${gridContext}"
+                        }
+                    }
+                ]
+            },
             "editField": {
                 "weight": 0,
                 "actions": [
@@ -1303,6 +1348,466 @@ const getAgGrid = (table: any, mode: string, { env }) => {
     return agGrid;
 }
 
+const getNewButtonScript = (table: any, mode: string, { env }) => {
+    let tableId = table._id;
+    return `
+      const B6_TABLES_ROOTURL = "${B6_TABLES_ROOTURL}";
+    //   const B6_TABLES_DATA_COLLECT_FIELDNAME = "\${B6_TABLES_DATA_COLLECT_FIELDNAME}";
+      const tableId = '${tableId || ""}';
+    //   const collectId = '\${collectId || ""}';
+      const amisNotify = event.context && event.context.env && event.context.env.notify || alert;
+    
+      const gridApi = event.data.gridApi; //agGridRefs && agGridRefs[tableId];
+      const gridContext = event.data.gridContext;
+      const setRowDataFormulaValues = gridContext.setRowDataFormulaValues;
+  
+      function scrollToBottom() {
+        const rowCount = gridApi.getDisplayedRowCount();
+        if (rowCount > 0) {
+          // Scroll to the last row
+          gridApi.ensureIndexVisible(rowCount - 1, 'bottom');
+        }
+      }
+  
+      function getFieldDefaultValue(colDef) {
+        const fieldConfig = colDef.cellEditorParams && colDef.cellEditorParams.fieldConfig;
+        if (!fieldConfig) {
+          //左侧行勾选框列没有cellEditorParams.fieldConfig
+          return;
+        }
+        const defaultValue = fieldConfig.default_value;
+        if (typeof defaultValue !== "undefined") {
+          return defaultValue;
+        }
+        if (fieldConfig.type === "boolean") {
+          return false;
+        }
+      }
+    
+      // 创建一个新行数据，可以初始化为默认值或空值
+      function createNewRowData() {
+        const newRow = {};
+        // 可以给每个字段一个默认值，例如：
+        const allGridColumns = gridApi.getAllGridColumns();
+        // 字段类型值转换
+        const colDefs = _.map(allGridColumns, "colDef");
+        colDefs.forEach(colDef => {
+          const dfValue = getFieldDefaultValue(colDef); // 设置为空或设置默认值
+          if (typeof dfValue != "undefined") {
+            newRow[colDef.field] = dfValue;
+          }
+        });
+  
+        // 设置默认值后需要进行依赖字段默认值的公式计算
+        const isFormulaRunSuccess = setRowDataFormulaValues(newRow, gridApi);
+        if (!isFormulaRunSuccess) {
+            return;
+        }
+  
+        // collectId存在时设置collectId值
+        // if (B6_TABLES_DATA_COLLECT_FIELDNAME && collectId) {
+        //   newRow[B6_TABLES_DATA_COLLECT_FIELDNAME] = collectId;
+        // }
+        return newRow;
+    }
+  
+      // 新增行的功能
+      async function addNewRow() {
+        if (!gridApi) {
+          console.error('Grid api not available. Ensure grid is initialized properly.');
+          return;
+        }
+  
+        // 有排序和过滤条件情况下不允许新建数据，因为新建后不知道是哪一行
+        const gridState = gridApi.getState();
+        const sortState = gridState.sort;
+        const filterState = gridState.filter;
+        if (!_.isEmpty(sortState)) {
+          amisNotify("warn", "请先移除排序");
+          return;
+        }
+  
+        if (!_.isEmpty(filterState)) {
+          amisNotify("warn", "请先移除过滤条件");
+          return;
+        }
+  
+        const newRow = createNewRowData();
+        if (!newRow) {
+          return;
+        }
+  
+        // 将新增数据发送到服务器
+        try {
+          const response = await fetch(B6_TABLES_ROOTURL + '/' + tableId, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+            //   "Authorization": \`Bearer \${event.data.context.tenantId},\${event.data.context.authToken}\` //TODO:要拿到登录校验活值
+            },
+            body: JSON.stringify(newRow)
+          });
+  
+          if (!response.ok) {
+            throw new Error('Server error! Status: ' + response.status);
+          }
+          const data = await response.json();
+          console.log('New row saved successfully', data);
+  
+          // 不能走refreshServerSide，因为会把校验失败的数据直接清空丢失
+          gridApi.applyServerSideTransaction({ add: [data] });
+          scrollToBottom();
+          
+          // 新增数据成功后刷新网格数据
+          // gridApi.refreshServerSide({ purge: false });//purge设置为true会造成上面scrollToBottomAfterRefresh不生效
+  
+        } catch (error) {
+          console.error('Error adding new row:', error);
+          amisNotify("warn", "新增行时发生错误，请稍后重试。");
+        }
+      }
+  
+      addNewRow();
+        `;
+}
+
+// const getNewFieldButtonScript = (table, fields, { collectId } = {}) => {
+//     let tableId = table._id;
+//     return `
+//       doAction(
+//         {
+//             "type": "broadcast",
+//             "actionType": "broadcast",
+//             "args": {
+//                 "eventName": "@b6tables.${tableId}.newField"
+//             }
+//         })
+//       `;
+// }
+
+const getDeleteButtonScript = (table: any, mode: string, { env }) => {
+    let tableId = table._id;
+    return `
+      const B6_TABLES_ROOTURL = "${B6_TABLES_ROOTURL}";
+      const tableId = '${tableId || ""}';
+
+      const amisNotify = event.context && event.context.env && event.context.env.notify || alert;
+
+      const gridApi = event.data.gridApi; //agGridRefs && agGridRefs[tableId];
+
+      function getAllRowData() {
+        const rowData = [];
+        const rowCount = gridApi.getDisplayedRowCount();
+
+        for (let i = 0; i < rowCount; i++) {
+          const rowNode = gridApi.getDisplayedRowAtIndex(i);
+          rowData.push(rowNode.data);
+        }
+
+        return rowData;
+      }
+
+      function getSelectedRowData() {
+        // Get the selected nodes and extract their data
+        const gridState = gridApi.getState();
+        const rowSelectionState = gridState.rowSelection;
+        const isSelectAll = rowSelectionState && rowSelectionState.selectAll;
+        if (isSelectAll) {
+          // 用户勾选了表头全选勾选框时，gridApi.getSelectedNodes()取不到数据，这里手动获取列表上的行数据
+          // gridApi.getState().rowSelection.toggledNodes 中记录了全选时用户取消了哪些选项的id值集合
+          const toggledNodes = rowSelectionState.toggledNodes;
+          let allRowData = getAllRowData();
+          if (_.isEmpty(toggledNodes)) {
+            return allRowData;
+          }
+          else {
+            const selectedData = allRowData.filter(dataItem => toggledNodes.indexOf(dataItem._id) < 0);
+            return selectedData;
+          }
+        }
+        else {
+          const selectedNodes = gridApi.getSelectedNodes();
+          const selectedData = selectedNodes.map(node => node.data);
+          return selectedData;
+        }
+      }
+
+      async function deleteSelectedRows() {
+        if (!gridApi) {
+          console.error('Grid api not available. Ensure grid is initialized properly.');
+          return;
+        }
+
+        const selectedData = getSelectedRowData();
+        const selectedIds = selectedData.map(data => data._id);
+        console.log('Deleting Rows:', selectedIds);
+
+        // Check if any rows are selected
+        if (selectedIds.length === 0) {
+          amisNotify("warn", "没有选中任何行！");
+          return;
+        }
+
+        try {
+          /*
+          for (const data of selectedData) {
+            const id = data._id;
+            // Call the API to delete each selected row
+            const response = await fetch(B6_TABLES_ROOTURL + '/' + tableId + '/' + id, {
+              method: 'DELETE',
+              credentials: 'include',
+              headers: {
+                'Content-Type': 'application/json',
+                "Authorization": \`Bearer \${event.data.context.tenantId},\${event.data.context.authToken}\`
+              }
+            });
+
+            if (!response.ok) {
+              throw new Error('Server error! Status: ' + response.status);
+            }
+
+            const result = await response.json();
+
+            if (result.deleted) {
+              // Remove the row from the grid only if the deletion was successful
+              gridApi.applyServerSideTransaction({ remove: [data] });
+            } else {
+              amisNotify("error", "删除 ID 为 " + id + " 的行失败");
+            }
+          }*/
+
+          console.log('Deleting rows:', selectedIds);
+          const response = await fetch(B6_TABLES_ROOTURL + '/' + tableId, {
+            method: 'DELETE',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+            //   "Authorization": \`Bearer \${event.data.context.tenantId},\${event.data.context.authToken}\`
+            },
+            body: JSON.stringify({ records: selectedIds })
+          });
+
+          if (!response.ok) {
+            throw new Error('Server error! Status: ' + response.status);
+          }
+
+          const result = await response.json();
+
+          if (result.error) {
+            console.error('Error deleting rows result:', result.error);
+            amisNotify('error', '删除行时发生错误，请稍后重试。');
+          } else {
+            console.log('Deleted rows success:', result.records);
+            // Remove the selected rows from the grid
+            gridApi.applyServerSideTransaction({ remove: selectedData });
+          }
+        } catch (error) {
+          console.error('Error deleting rows:', error);
+          amisNotify('error', '删除行时发生错误，请稍后重试。');
+        }
+      }
+
+      deleteSelectedRows();
+    `;
+}
+
+const getTableHeaderLeftButtons = (table: any, mode: string, { env }) => {
+    let tableId = table._id;
+    const isAdmin = mode === "admin";
+    const newFieldButton = {
+        "label": "新建字段",
+        "type": "button",
+        // "icon": "fa fa-plus",
+        "actionType": "custom",
+        // "level": "link",
+        "onEvent": {
+            "click": {
+                "actions": [
+                    {
+                        "ignoreError": false,
+                        "actionType": "custom",
+                        // "script": getNewFieldButtonScript(table, fields, { collectId }),
+                        "args": {
+                        }
+                    }
+                ]
+            }
+        }
+    };
+    const setVerificationButton = {
+        "type": "button",
+        "label": "校验规则",
+        // "icon": "fa fa-exclamation-triangle",
+        // "level": "link",
+        "actionType": "custom",
+        "onEvent": {
+            "click": {
+                "actions": [
+                    {
+                        "type": "broadcast",
+                        "actionType": "broadcast",
+                        "args": {
+                            "eventName": `@b6tables.${tableId}.setVerification`
+                        }
+                    }
+                ]
+            }
+        }
+    }
+    const buttons = isAdmin ? [
+        newFieldButton,
+        setVerificationButton
+    ] : [];
+    return {
+        "type": "flex",
+        "items": buttons,
+        "visibleOn": "${window:innerWidth > 768}"
+    };
+}
+
+const getTableHeaderRightButtons = (table: any, mode: string, { env }) => {
+    const newButton = {
+        "label": "新建",
+        "type": "button",
+        "actionType": "custom",
+        // "level": "primary",
+        "onEvent": {
+            "click": {
+                "actions": [
+                    // {
+                    //     "actionType": "broadcast",
+                    //     "args": {
+                    //         "eventName": "@b6tables.addRecord"
+                    //     }
+                    // }
+                    {
+                        "ignoreError": false,
+                        "actionType": "custom",
+                        "script": getNewButtonScript(table, mode, { env }),
+                        // "script": "debugger;",
+                        "args": {
+                        }
+                    }
+                ]
+            }
+        }
+    };
+    const deleteButton = {
+        "label": "删除",
+        "type": "button",
+        "actionType": "custom",
+        // "level": "primary",
+        "onEvent": {
+            "click": {
+                "actions": [
+                    {
+                        "actionType": "confirmDialog",
+                        "dialog": {
+                            "title": "操作确认",
+                            "msg": "确定要删除选中记录吗?"
+                        }
+                    },
+                    {
+                        "ignoreError": false,
+                        "actionType": "custom",
+                        "script": getDeleteButtonScript(table, mode, { env }),
+                        "args": {
+                        }
+                    }
+                ]
+            }
+        }
+    };
+    const buttons = [
+        newButton,
+        deleteButton
+    ];
+    return {
+        "type": "flex",
+        "items": buttons
+    };
+}
+
+const getTableHeader = (table: any, mode: string, { env }) => {
+    const isReadonly = mode === "read";
+    const isAdmin = mode === "admin";
+    const tableTitle = table.label || "记录";
+    return {
+        "type": "wrapper",
+        "body": [
+            {
+                "type": "grid",
+                "valign": "middle",
+                "columns": [
+                    {
+                        "body": [
+                            {
+                                "type": "grid",
+                                "valign": "middle",
+                                "className": "flex justify-between",
+                                "columns": [
+                                    {
+                                        "body": {
+                                            "type": "tpl",
+                                            "className": "block",
+                                            "tpl": "<svg class=\"w-6 h-6 slds-icon slds-icon_container slds-icon-standard-datadotcom\" aria-hidden=\"true\"><use xlink:href=\"/assets/icons/standard-sprite/svg/symbols.svg#datadotcom\"></use></svg>"
+                                        },
+                                        "md": "auto",
+                                        "className": "",
+                                        "columnClassName": "flex justify-center items-center"
+                                    },
+                                    {
+                                        "body": [
+                                            {
+                                                "type": "tpl",
+                                                // "tpl": "<a class=\"text-black text-base font-bold hover:font-bold\" href=\"/app/${appId}/${_master.objectName}/${_master.recordId}/${objectName}/grid?related_field_name=${relatedKey}\">记录(${$count})</a>",
+                                                "tpl": tableTitle + `(\${_aggridTotalCount})`,
+                                                "inline": false,
+                                                "wrapperComponent": "",
+                                                "className": "text-black text-base font-bold hover:font-bold"
+                                            }
+                                        ],
+                                        "md": "",
+                                        "valign": "middle",
+                                        "columnClassName": "p-l-xs"
+                                    }
+                                ]
+                            }
+                        ],
+                        "md": "auto"
+                    },
+                    {
+                        "type": "grid",
+                        "valign": "middle",
+                        "className": "flex justify-end",
+                        "columns": [
+                            {
+                                "body": getTableHeaderLeftButtons(table, mode, { env }),
+                                "md": "auto"
+                            },
+                            {
+                                "body": {
+                                    "type": "divider",
+                                    "direction": "vertical",
+                                    "className": "-ml-1 mt-0 mb-0",
+                                    "visibleOn": `\${window:innerWidth > 768 ? ${isAdmin} : false}`,
+                                },
+                                "md": "auto"
+                            },
+                            isReadonly ? {} : {
+                                "body": getTableHeaderRightButtons(table, mode, { env }),
+                                "md": "auto"
+                            }
+                        ]
+                    }
+                ],
+                "className": "flex justify-between min-h-8 items-center"
+            }
+        ],
+        "className": "steedos-record-related-header py-2 px-3 bg-gray-50 border rounded"
+    };
+}
 
 export async function getTablesGridSchema(
     tableId: string,
@@ -1325,10 +1830,31 @@ export async function getTablesGridSchema(
         },
         "className": "steedos-tables-grid h-full",
         "body": [
-            // getTableHeader(table, fields, { collectId, mode }),
+            getTableHeader(meta, mode, { env }),
             getAgGrid(meta, mode, { env })
         ],
         "onEvent": {
+            [`@b6tables.${tableId}.setGridApi`]: {
+                "actions": [
+                    // {
+                    //     "ignoreError": false,
+                    //     "actionType": "custom",
+                    //     "script": "debugger;console.log('===event.data===', event.data);",
+                    //     "args": {
+                    //     }
+                    // },
+                    {
+                        "actionType": "setValue",
+                        "args": {
+                            "value": {
+                                "gridApi": "${gridApi}",
+                                "gridContext": "${gridContext}"
+                            }
+                        },
+                        // "componentId": "apps-form"
+                    }
+                ]
+            },
             [`@b6tables.${tableId}.setTotalCount`]: {
                 "actions": [
                     {
@@ -1339,6 +1865,18 @@ export async function getTablesGridSchema(
                             }
                         },
                         // "componentId": "apps-form"
+                    }
+                ]
+            },
+            ["@b6tables.addRecord"]: {
+                "actions": [
+                    {
+                      "actionType": "toast",
+                      "args": {
+                        "msgType": "warning",
+                        "msg": "11我是全局警告消息，可以配置不同类型和弹出位置~",
+                        "position": "top-right"
+                      }
                     }
                 ]
             },
