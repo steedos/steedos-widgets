@@ -1,0 +1,33 @@
+
+/*b6_fields公式字段只读效果*/
+.antd-Form .antd-Form-item.steedos-static-readonly .antd-FormulaPicker .antd-FormulaPicker-input{
+    border: none;
+    padding: 0;
+    pointer-events: none;
+}
+.antd-Form .antd-Form-item.steedos-static-readonly .antd-FormulaPicker .antd-FormulaPicker-action{
+    display: none;
+}
+.antd-Form .antd-Form-item.steedos-static-text-readonly .antd-FormulaPicker .antd-FormulaPicker-input{
+    border: none;
+    padding: 0;
+    pointer-events: none;
+}
+.antd-Form .antd-Form-item.steedos-static-text-readonly .antd-FormulaPicker .antd-FormulaPicker-action{
+    display: none;
+}
+
+/*ag-grid校验错误时行警告背影色效果*/
+.steedos-tables-grid .ag-grid-verification-errors-row {
+    background-color: #FF634744 !important;
+}
+
+.steedos-tables-grid .ag-grid-verification-errors-row .ag-cell-edit-wrapper {
+    border: solid 3px #FF634744 !important;
+}
+
+/*隐藏ag-grid版本水印*/
+.ag-root-wrapper .ag-watermark{
+    display: none !important;
+    opacity: 0 !important;
+}
