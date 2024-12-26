@@ -1232,9 +1232,7 @@ export async function getTablesGridSchema(
         tableAdminEvents = getTableAdminEvents({ _id: tableId });
     }
 
-    const agGridDataFilter = async function (config: any, AgGrid: any, props: any, data: any, ref: any) {
-        console.log("agGridDataFilter==config=", config);
-        console.log("agGridDataFilter==ref=", ref);
+    const onDataFilter = async function (config: any, AgGrid: any, props: any, data: any, ref: any) {
         // 为ref.current补上props属性，否则props.dispatchEvent不能生效
         ref.current.props = props;
         let dispatchEvent = async function (action, data) {
@@ -1261,7 +1259,7 @@ export async function getTablesGridSchema(
                 "type": "ag-grid",
                 "className": "b6-tables-ag-grid h-96 ag-theme-quartz",
                 // "config": gridOptions,
-                "dataFilter": agGridDataFilter,
+                "onDataFilter": onDataFilter,
                 "onEvent": {
                     "editField": {
                         "weight": 0,
