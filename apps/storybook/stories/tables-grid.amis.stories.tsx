@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 11:54:45
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-12-25 18:07:07
+ * @LastEditTime: 2024-12-26 11:36:32
  * @Description: 
  */
 import React, { useEffect, useState } from 'react';
@@ -116,7 +116,8 @@ export const Gerneral = () => (
         {
           "type": "steedos-tables-grid",
           "className": "b6-tables-ag-grid h-96 ag-theme-quartz",
-          "tableId": "67658ac0cc184d0efc68b752"
+          "tableId": "67658ac0cc184d0efc68b752",
+          "mode": "admin"
         }
       ],
     }}

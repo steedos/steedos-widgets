@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2024-01-18 18:58:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-12-25 09:02:40
+ * @LastEditTime: 2024-12-26 10:11:42
  */
 import React, { useEffect, useState, useRef } from 'react';
 import { AG_GRID_LOCALE_CN } from '@ag-grid-community/locale';
@@ -22,7 +22,7 @@ export const AmisAgGrid = (props: any) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const agGrid = (window as any)["agGrid"];
 
-  let onDataFilter = null;
+  let onDataFilter = dataFilter;
 
   if (typeof dataFilter === 'string') {
     onDataFilter = new Function('config', 'AgGrid', 'props', 'data', 'ref', 'return (async () => { ' + dataFilter + ' })()')
@@ -51,6 +51,7 @@ export const AmisAgGrid = (props: any) => {
 
   useEffect(() => {
     if (dataFilterLoaded) {
+      // (wrapperRef.current as any).props = props
       agGrid && agGrid.createGrid(wrapperRef.current, config);
     }
   }, [config, dataFilterLoaded])

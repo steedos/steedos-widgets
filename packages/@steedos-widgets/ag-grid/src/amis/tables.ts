@@ -708,7 +708,7 @@ const onColumnMoved = () => {
 };
 
 // Function to handle drag stopped event
-async function onDragStopped(event) {
+async function onDragStopped(event: any, dispatchEvent: Function) {
     if (!columnMoved) {
         return;
     }
@@ -719,9 +719,9 @@ async function onDragStopped(event) {
     var newSortedFields = map(allColumns, "cellEditorParams.fieldConfig")
     console.log("Saving new fields sort:", newSortedFields);
     // 将新的字段排序发送到服务器
-    // dispatchEvent("sortFields", {
-    //     "sortedFields": newSortedFieldIds
-    // });
+    dispatchEvent("sortFields", {
+        "sortedFields": newSortedFieldIds
+    });
     columnMoved = false;
 }
 
@@ -973,10 +973,11 @@ function getDataTypeDefinitions() {
     };
 }
 
-function getGridOptions(table: any, mode: string) {
+function getGridOptions(table: any, mode: string, ctx: any = {}) {
     if (!table || !table.fields) {
         return null;
     }
+    const { dispatchEvent } = ctx;
     let tableId = table._id;
     let tableLabel = table.label;
     const isReadonly = mode === "read";
@@ -1030,6 +1031,9 @@ function getGridOptions(table: any, mode: string) {
     const onCellValueChangedRaw = (event: any) => {
         onCellValueChanged(event, table);
     };
+    const onDragStoppedRaw = (event: any) => {
+        onDragStopped(event, dispatchEvent);
+    };
 
     var needToValiTable = table.verifications && table.verifications.length > 0;
     var columnFieldNames = map(columnDefs, "field");
@@ -1070,7 +1074,7 @@ function getGridOptions(table: any, mode: string) {
         stopEditingWhenCellsLoseFocus: true,
         // onRowValueChanged: isReadonly ? null : onRowValueChangedRaw,
         onCellValueChanged: isReadonly ? null : onCellValueChangedRaw,
-        onDragStopped: isAdmin ? onDragStopped : null,
+        onDragStopped: isAdmin ? onDragStoppedRaw : null,
         onColumnMoved: isAdmin ? onColumnMoved : null,
         defaultColDef: {
             flex: 1,
@@ -1124,19 +1128,220 @@ function getGridOptions(table: any, mode: string) {
     return gridOptions;
 }
 
+function getTableAdminEvents(table: any) {
+    const tableId = table._id;
+    return {
+        [`@b6tables.${tableId}.editField`]: {
+            "actions": [
+                {
+                    "actionType": "dialog",
+                    // "dialog": getAgGridFieldFormDialog(table, fields, "edit")
+                }
+            ]
+        },
+        [`@b6tables.${tableId}.newField`]: {
+            "actions": [
+                {
+                    "actionType": "dialog",
+                    // "dialog": getAgGridFieldFormDialog(table, fields, "new")
+                }
+            ]
+        },
+        [`@b6tables.${tableId}.deleteField`]: {
+            "actions": [
+                {
+                    "actionType": "confirmDialog",
+                    "dialog": {
+                        "title": "操作确认",
+                        "msg": "确定要删除此字段吗?"
+                    }
+                },
+                {
+                    "ignoreError": false,
+                    "actionType": "ajax",
+                    "options": {},
+                    "api": {
+                        "url": "${context.rootUrl}/api/v1/b6_fields/${deletingFieldId}",
+                        "method": "delete",
+                        "requestAdaptor": "",
+                        "adaptor": "",
+                        "messages": {
+                            "success": "删除字段成功",
+                            "failed": "删除字段时发生错误，请稍后重试。"
+                        }
+                    }
+                },
+                {
+                    "actionType": "broadcast",
+                    "args": {
+                        "eventName": "broadcast_service_listview_b6_data_rebuild"
+                    }
+                }
+            ]
+        },
+        [`@b6tables.${tableId}.sortFields`]: {
+            "actions": [
+                {
+                    "ignoreError": false,
+                    "actionType": "ajax",
+                    "outputVar": "b6FieldsOrderResponseResult",
+                    "options": {},
+                    "api": {
+                        // "url": "${context.rootUrl}/api/builder6/b6_aggrid/order/b6_fields",
+                        "url": "http://127.0.0.1:5800/api/builder6/b6_aggrid/order/b6_fields", //TODO:rootUrl能取到？接口在b6不是标准接口
+                        "method": "post",
+                        "data": {
+                            "fields": "${sortedFields}"
+                        },
+                        "headers": {//TODO:Authorization取不到
+                            //   "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                            "Authorization": "Bearer 654300b5074594d15147bcfa,dbe0e0da68ba2e83aca63a5058907e543a4e89f7e979963b4aa1f574f227a3b5063e149d818ff553fb4aa1"
+                        },
+                        "adaptor": "",
+                        "messages": {
+                            // "success": "已成功更新字段排序",
+                            "failed": "更新字段排序时发生错误，请稍后重试。"
+                        }
+                    }
+                },
+                {
+                    "actionType": "broadcast",
+                    "args": {
+                        "eventName": "broadcast_service_listview_b6_data_rebuild"
+                    },
+                    "expression": "${!!!b6FieldsOrderResponseResult.success}"
+                }
+            ]
+        },
+        [`@b6tables.${tableId}.setVerification`]: {
+            // "actions": getVerificationSetActions(table, fields)
+        }
+    }
+}
+
 export async function getTablesGridSchema(
     tableId: string,
     mode: string, //edit/read/admin
     ctx = {}
 ) {
     const meta = await getMeta(tableId);
-    const gridOptions = getGridOptions(meta, mode);
+    // const gridOptions = getGridOptions(meta, mode, ctx);
+    let tableAdminEvents = {};
+    const isAdmin = mode === "admin";
+    if (isAdmin) {
+        tableAdminEvents = getTableAdminEvents({ _id: tableId });
+    }
+
+    const agGridDataFilter = async function (config: any, AgGrid: any, props: any, data: any, ref: any) {
+        console.log("agGridDataFilter==config=", config);
+        console.log("agGridDataFilter==ref=", ref);
+        // 为ref.current补上props属性，否则props.dispatchEvent不能生效
+        ref.current.props = props;
+        let dispatchEvent = async function (action, data) {
+            props.dispatchEvent(action, data, ref.current);
+        }
+        return getGridOptions(meta, mode, {
+            dispatchEvent
+        });
+    }
 
     const amisSchema = {
-        "type": "ag-grid",
-        "dsType": "api",
-        "className": "b6-tables-ag-grid h-96 ag-theme-quartz",
-        "config": gridOptions
+        "type": "service",
+        // steedos-object-table样式类有因为单元格编辑功能的特殊样式会造成倒数第二列样式异常
+        // "className": "steedos-object-table  steedos-crud-mode-table h-full flex flex-col ",
+        "id": `service_listview_b6_data_${tableId}`,
+        "name": "page",
+        "data": {
+            "_aggridTotalCount": "--"
+        },
+        "className": "b6-tables-ag-grid-wrapper h-full",
+        "body": [
+            //   getTableHeader(table, fields, { collectId, mode }),
+            {
+                "type": "ag-grid",
+                "className": "b6-tables-ag-grid h-96 ag-theme-quartz",
+                // "config": gridOptions,
+                "dataFilter": agGridDataFilter,
+                "onEvent": {
+                    "editField": {
+                        "weight": 0,
+                        "actions": [
+                            {
+                                "type": "broadcast",
+                                "actionType": "broadcast",
+                                "args": {
+                                    "eventName": `@b6tables.${tableId}.editField`
+                                },
+                                "data": {
+                                    "editingFieldId": "${editingFieldId}"
+                                }
+                            }
+                        ]
+                    },
+                    "deleteField": {
+                        "weight": 0,
+                        "actions": [
+                            {
+                                "type": "broadcast",
+                                "actionType": "broadcast",
+                                "args": {
+                                    "eventName": `@b6tables.${tableId}.deleteField`
+                                },
+                                "data": {
+                                    "deletingFieldId": "${deletingFieldId}"
+                                }
+                            }
+                        ]
+                    },
+                    "sortFields": {
+                        "weight": 0,
+                        "actions": [
+                            {
+                                "type": "broadcast",
+                                "actionType": "broadcast",
+                                "args": {
+                                    "eventName": `@b6tables.${tableId}.sortFields`
+                                },
+                                "data": {
+                                    "sortedFields": "${sortedFields}"
+                                }
+                            }
+                        ]
+                    },
+                    "setTotalCount": {
+                        "weight": 0,
+                        "actions": [
+                            {
+                                "type": "broadcast",
+                                "actionType": "broadcast",
+                                "args": {
+                                    "eventName": `@b6tables.${tableId}.setTotalCount`
+                                },
+                                "data": {
+                                    "totalCount": "${totalCount}"
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        ],
+        "onEvent": {
+            [`@b6tables.${tableId}.setTotalCount`]: {
+                "actions": [
+                    {
+                        "actionType": "setValue",
+                        "args": {
+                            "value": {
+                                "_aggridTotalCount": "${totalCount}"
+                            }
+                        },
+                        // "componentId": "apps-form"
+                    }
+                ]
+            },
+            ...tableAdminEvents
+        }
     };
     return {
         meta,
