@@ -1,7 +1,7 @@
 {
   "name": "@steedos-widgets/amis-lib",
   "private": false,
-  "version": "6.3.12-beta.5",
+  "version": "6.3.12-beta.6",
   "unpkg": "./dist/index.umd.js",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.esm.js",
