@@ -42,6 +42,7 @@ export const Simple = () => {
     assetUrls: [
       `https://unpkg.com/@steedos-widgets/liveblocks@6.3.12-beta.6/dist/assets.json`,
     ],
+    unpkgUrl: 'https://unpkg.steedos.cn'
   };
   return renderAmisSchema(schema, data, env)
 };
