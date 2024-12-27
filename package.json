@@ -16,7 +16,7 @@
     "build-object": "lerna run build-object",
     "build-app": "lerna run build-app --parallel",
     "unpkg": "http-server ./packages --port 8080 --cors -c -1",
-    "start": "cd apps/experience && NODE_ENV=production node server.js",
+    "start": "cd apps/storybook && yarn storybook",
     "cnpm-sync": "lerna exec --no-private  -- cnpm sync \\$LERNA_PACKAGE_NAME"
   },
   "dependencies": {
