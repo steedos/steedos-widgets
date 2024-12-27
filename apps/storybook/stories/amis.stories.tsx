@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2024-12-27 12:42:39
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-12-27 13:03:13
+ * @LastEditTime: 2024-12-27 14:09:40
  */
 import React from 'react';
 
@@ -50,9 +50,7 @@ export const Dialog = () => {
   };
   const data = {};
   const env = {
-    assetUrls: [
-      `https://unpkg.com/@steedos-widgets/liveblocks@6.3.12-beta.6/dist/assets.json`,
-    ],
+    assetUrls: [],
   };
   return renderAmisSchema(schema, data, env)
 };
