@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 11:54:45
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-12-27 12:40:47
+ * @LastEditTime: 2024-12-27 13:46:11
  * @Description: 
  */
 import React, { useEffect, useState } from 'react';
@@ -88,15 +88,10 @@ export default {
         loadJS('https://unpkg.steedos.cn/crypto-js@4.1.1/crypto-js.js'),
         loadJS('https://unpkg.steedos.cn/lodash/lodash.min.js'),
         // loadJS('https://unpkg.steedos.cn/@steedos-builder/react@0.2.30/dist/builder-react.unpkg.js'),
-        // loadJS('https://unpkg.steedos.cn/@steedos-builder/sdk@1.0.0/dist/index.umd.js'),
-        // loadJS('https://unpkg.steedos.cn/@steedos-widgets/amis@6.3.0-patch.3/sdk/sdk.css'),
+        // loadJS('https://unpkg.steedos.cn/@steedos-builder/sdk@1.0.0/dist/index.umd.js'),x
         loadCss('https://unpkg.steedos.cn/@steedos-widgets/amis@6.3.0-patch.3/lib/themes/antd.css'),
-        loadCss('http://127.0.0.1:5800/amis/amis.css'),
         loadCss('https://unpkg.steedos.cn/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css'),
-        // loadCss('https://unpkg.steedos.cn/amis/lib/themes/antd.css'),
-        // loadCss('https://unpkg.steedos.cn/amis/lib/helper.css'),
         loadCss('https://unpkg.steedos.cn/@steedos-widgets/amis@6.3.0-patch.3/lib/helper.css'),
-        // loadCss('https://unpkg.steedos.cn/amis/sdk/iconfont.css'),
         loadCss('https://unpkg.steedos.cn/@steedos-widgets/amis@6.3.0-patch.3/sdk/iconfont.css'),
         loadCss('https://unpkg.steedos.cn/@fortawesome/fontawesome-free@6.2.0/css/all.min.css'),
       ]).then(() => {
