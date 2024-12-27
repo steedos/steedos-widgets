@@ -2,6 +2,7 @@ import { keyBy, map, isNaN, isNil, union, debounce, each, clone, forEach, filter
 
 export const B6_TABLES_BASEID = "default";
 
+const ROOT_URL = "http://127.0.0.1:5800";
 const B6_HOST = "http://localhost:5100";//process.env.B6_HOST || "";
 const B6_TABLES_API = `${B6_HOST}/api/v6/tables`;
 export const B6_TABLES_ROOTURL = `${B6_TABLES_API}/${B6_TABLES_BASEID}`;
@@ -1135,6 +1136,160 @@ function getGridOptions(table: any, mode: string, { dispatchEvent, env }) {
     return gridOptions;
 }
 
+const getFormServiceApiRequestAdaptor = (tableId, showFormulaFields = false) => {
+    const filters = [["table_id", "=", tableId]];
+    if (!showFormulaFields) {
+        // 不能在公式字段中引用公式字段
+        filters.push(["type", "!=", "formula"]);
+    }
+    return `
+api.url += '?filters=${JSON.stringify(filters)}&fields=["label","name","type","sort_no"]&sort=sort_no';
+return api;
+    `;
+}
+
+const getFormServiceApiAdaptor = () => {
+    return `
+var formulaVariables = [];
+var fTypeTags = {
+  "text": "文本",
+  "textarea": "长文本",
+  "number": "数字",
+  "select": "单选",
+  "select-multiple": "多选",
+  "boolean": "勾选",
+  "date": "日期",
+  "datetime": "日期时间",
+  "formula": "公式",
+};
+var getFormulaVariableTag = function (type) { 
+  var tag = fTypeTags[type] || type;
+  return tag;
+}
+if (payload.data.items && payload.data.items.length) { 
+  formulaVariables = payload.data.items.map(function (n) {
+    return {
+      "label": n.label,
+      "value": n.name,
+      "tag": getFormulaVariableTag(n.type)
+    }
+  })
+}
+payload.data = {
+  _b6_fields__formula_variables: formulaVariables,
+  _formulaVariablesLoaded: true
+}
+return payload;
+    `
+}
+
+/**
+ * 新建和编辑字段的amis dialog第一层的service，它会抓取当前table所有字段集合用于显示公式字段的变量
+ * @returns 
+ */
+const getFieldFormService = (form, tableId, showFormulaFields = false) => {
+    const formService = {
+        "type": "service",
+        "body": [
+            form
+        ],
+        "api": {
+            // "url": "${context.rootUrl}/api/v1/b6_fields",
+            "url": ROOT_URL + "/api/v1/b6_fields",
+            "method": "get",
+            "requestAdaptor": getFormServiceApiRequestAdaptor(tableId, showFormulaFields),
+            "adaptor": getFormServiceApiAdaptor(),
+            "headers": {//TODO:Authorization取不到
+                //   "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                "Authorization": "Bearer 654300b5074594d15147bcfa,dbe0e0da68ba2e83aca63a5058907e543a4e89f7e979963b4aa1f574f227a3b5063e149d818ff553fb4aa1"
+            },
+            "messages": {
+            },
+            "data": {
+            }
+        },
+        "data": {
+            "_formulaVariablesLoaded": false
+        }
+    }
+    return formService;
+}
+
+/**
+ * 新建和编辑字段的amis dialog
+ * @param {*} table 
+ * @param {*} fields 
+ * @param {*} mode new/edit
+ * @returns 
+ */
+const getAgGridFieldFormDialog = (table: any, mode: string) => {
+    let tableId = table._id;
+    const form = {
+        "type": "steedos-object-form",
+        "mode": "edit",
+        "label": "对象表单",
+        "objectApiName": "b6_fields",
+        "recordId": "${editingFieldId}",
+        "enableInitApi": true,
+        "className": "",
+        "submitSuccActions": [
+            {
+                "actionType": "broadcast",
+                "args": {
+                    "eventName": "broadcast_service_listview_b6_data_rebuild"
+                }
+            }
+        ],
+        "fieldsExtend": "{\n  \"table_id\": {\n    \"visible_on\": \"${false}\"\n  }\n}",
+        "visibleOn": "${!!_formulaVariablesLoaded}"
+    };
+    if (mode === "new") {
+        Object.assign(form, {
+            "recordId": "",
+            "enableInitApi": false,
+            "defaultData": {
+                "table_id": tableId
+            }
+        });
+    }
+    const formService = getFieldFormService(form, tableId);
+    let title = "";
+    if (mode === "edit") {
+        title = "编辑字段";
+    }
+    else if (mode === "new") {
+        title = "新建字段";
+    }
+    return {
+        "type": "dialog",
+        "title": title,
+        "size": "lg",
+        "body": formService,
+        "actionType": "dialog",
+        "actions": [
+            {
+                "type": "button",
+                "actionType": "cancel",
+                "label": "取消",
+                "id": "u:30d4bab40dff"
+            },
+            {
+                "type": "button",
+                "actionType": "confirm",
+                "label": "确定",
+                "primary": true,
+                "id": "u:bc50710298c1"
+            }
+        ],
+        "showCloseButton": true,
+        "closeOnOutside": false,
+        "closeOnEsc": false,
+        "showErrorMsg": true,
+        "showLoading": true,
+        "draggable": false
+    }
+}
+
 function getTableAdminEvents(table: any) {
     const tableId = table._id;
     return {
@@ -1142,7 +1297,7 @@ function getTableAdminEvents(table: any) {
             "actions": [
                 {
                     "actionType": "dialog",
-                    // "dialog": getAgGridFieldFormDialog(table, fields, "edit")
+                    "dialog": getAgGridFieldFormDialog(table, "edit")
                 }
             ]
         },
@@ -1150,7 +1305,8 @@ function getTableAdminEvents(table: any) {
             "actions": [
                 {
                     "actionType": "dialog",
-                    // "dialog": getAgGridFieldFormDialog(table, fields, "new")
+                    "dialog": getAgGridFieldFormDialog(table, "new")
+
                 }
             ]
         },
@@ -1472,19 +1628,19 @@ const getNewButtonScript = (table: any, mode: string, { env }) => {
         `;
 }
 
-// const getNewFieldButtonScript = (table, fields, { collectId } = {}) => {
-//     let tableId = table._id;
-//     return `
-//       doAction(
-//         {
-//             "type": "broadcast",
-//             "actionType": "broadcast",
-//             "args": {
-//                 "eventName": "@b6tables.${tableId}.newField"
-//             }
-//         })
-//       `;
-// }
+const getNewFieldButtonScript = (table: any, mode: string, { env }) => {
+    let tableId = table._id;
+    return `
+      doAction(
+        {
+            "type": "broadcast",
+            "actionType": "broadcast",
+            "args": {
+                "eventName": "@b6tables.${tableId}.newField"
+            }
+        })
+      `;
+}
 
 const getDeleteButtonScript = (table: any, mode: string, { env }) => {
     let tableId = table._id;
@@ -1627,7 +1783,7 @@ const getTableHeaderLeftButtons = (table: any, mode: string, { env }) => {
                     {
                         "ignoreError": false,
                         "actionType": "custom",
-                        // "script": getNewFieldButtonScript(table, fields, { collectId }),
+                        "script": getNewFieldButtonScript(table, mode, { env }),
                         "args": {
                         }
                     }
@@ -1818,7 +1974,7 @@ export async function getTablesGridSchema(
     let tableAdminEvents = {};
     const isAdmin = mode === "admin";
     if (isAdmin) {
-        tableAdminEvents = getTableAdminEvents({ _id: tableId });
+        tableAdminEvents = getTableAdminEvents(meta);
     }
 
     const amisSchema = {
@@ -1871,12 +2027,12 @@ export async function getTablesGridSchema(
             ["@b6tables.addRecord"]: {
                 "actions": [
                     {
-                      "actionType": "toast",
-                      "args": {
-                        "msgType": "warning",
-                        "msg": "11我是全局警告消息，可以配置不同类型和弹出位置~",
-                        "position": "top-right"
-                      }
+                        "actionType": "toast",
+                        "args": {
+                            "msgType": "warning",
+                            "msg": "11我是全局警告消息，可以配置不同类型和弹出位置~",
+                            "position": "top-right"
+                        }
                     }
                 ]
             },
