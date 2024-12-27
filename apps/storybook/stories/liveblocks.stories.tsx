@@ -13,7 +13,7 @@ export const Simple = () => {
     toolbar: [
       {
         type: 'rooms-provider',
-        baseUrl: 'http://localhost:5100',
+        baseUrl: process.env.B6_HOST,
         body: {
           type: 'wrapper',
           className: 'p-4',
@@ -26,7 +26,7 @@ export const Simple = () => {
     body: [
       {
         type: 'rooms-provider',
-        baseUrl: 'http://localhost:5100',
+        baseUrl: process.env.B6_HOST,
         body: [
           {
             type: 'rooms-comments',
@@ -42,7 +42,6 @@ export const Simple = () => {
     assetUrls: [
       `https://unpkg.com/@steedos-widgets/liveblocks@6.3.12-beta.6/dist/assets.json`,
     ],
-    unpkgUrl: 'https://unpkg.steedos.cn'
   };
   return renderAmisSchema(schema, data, env)
 };
