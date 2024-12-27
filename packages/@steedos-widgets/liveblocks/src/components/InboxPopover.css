@@ -52,7 +52,7 @@
   display: flex;
   place-content: center;
   place-items: center;
-  background: var(--accent);
+  background: var(--Badge--danger-bg);
   color: #fff;
   font-size: 0.65rem;
   font-weight: 500;
