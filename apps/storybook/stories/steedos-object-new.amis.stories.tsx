@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-04-18 17:03:48
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-12-27 23:50:38
+ * @LastEditTime: 2024-12-29 17:55:55
  */
 import * as _ from 'lodash';
 import { SteedosUI } from '@steedos-widgets/steedos-lib';
@@ -58,6 +58,25 @@ export const Badge = () => {
   return renderAmisSchema(schema, data, env)
 };
 
+
+export const Logo = () => {
+  const schema = {
+    type: 'page',
+    title: 'Logo',
+    body: {
+      "type": "steedos-logo"
+    }
+  };
+  const data = {};
+  const env = {
+    assetUrls: [
+      `${process.env.STEEDOS_UNPKG_URL}/@steedos-widgets/amis-object/dist/assets-dev.json`,
+      // `https://unpkg.steedos.cn/@steedos-widgets/amis-object@6.3.5/dist/assets.json`,
+    ]
+  };
+  return renderAmisSchema(schema, data, env)
+};
+
 export const Field = () => {
   const schema = {
     type: 'page',
@@ -65,7 +84,8 @@ export const Field = () => {
     body: {
       "type": "steedos-field",
       "config":{
-        "type": "datetime"
+        "type": "datetime",
+        "label": "datetime"
       }
     }
   };

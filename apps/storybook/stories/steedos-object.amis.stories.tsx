@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 11:54:45
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-14 14:01:19
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2024-12-29 17:51:33
  * @Description: 
  */
 import React, {useEffect, useState} from 'react';
@@ -118,6 +118,18 @@ export default {
 };
 
 /** 以上为可复用代码 **/
+
+export const Logo = () => (
+  <AmisRender schema={{
+    type: 'page',
+    title: 'Logo',
+    body: {
+      "type": "steedos-logo"
+    }
+  }}
+  assetUrls={assetUrls}
+  />
+)
 
 export const ObjectForm = () => (
   <AmisRender schema={{
