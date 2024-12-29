@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 11:54:45
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-12-29 18:02:15
+ * @LastEditTime: 2024-12-29 18:05:43
  * @Description: 
  */
 import React, {useEffect, useState} from 'react';
@@ -42,7 +42,7 @@ if (Builder.isBrowser){
     } 
   });
 }
-const AmisRender = ({schema, data = {}, router = null, assetUrls = null, getModalContainer = null})=> {
+const AmisRender = ({schema, data = {}, router = null, assetUrls = null, getModalContainer = () => document.getElementsByTagName('body')[0]})=> {
   useEffect(()=>{
     const defData = defaultsDeep({}, data , {
         data: {
