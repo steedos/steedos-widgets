@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 11:54:45
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-12-29 18:05:43
+ * @LastEditTime: 2024-12-29 18:12:21
  * @Description: 
  */
 import React, {useEffect, useState} from 'react';
@@ -147,8 +147,8 @@ export const ObjectForm = () => (
       "body": [{
         "type": "steedos-object-form",
         "objectApiName": "space_users",
-        "mode": 'read',
-        "recordId": "S9KrMPys4fKx9Kjtm"
+        "recordId": "pnD8H5JQ9XxxeEbG7",
+        "enableInitApi": true
       }]
     },{
       "type": "panel",
@@ -160,7 +160,7 @@ export const ObjectForm = () => (
         "id": "test",
         "type": "steedos-object-form",
         "objectApiName": "organizations",
-        "recordId": "gKfnkfbLWdqCxo8dg",
+        "recordId": "654300b5074594d15147bcfa",
         // "objectApiName": "abc__c",
         // "recordId": "63453364310c62002c43e3b6",
         "mode": "edit",
