@@ -8,7 +8,7 @@
 import React, {useEffect, useState} from 'react';
 import { registerRemoteAssets, amisRender, getSteedosAuth, getRootUrl, defaultsDeep, getTenantId, getAuthToken } from '@steedos-widgets/amis-lib';
 // import { defaultsDeep } from 'lodash';
-import { Builder } from '@steedos-builder/react';
+// import { Builder } from '@steedos-builder/react';
 import * as _ from 'lodash';
 
 // window.defaultsDeep = defaultsDeep;
@@ -16,7 +16,7 @@ import * as _ from 'lodash';
 const assetUrls = process.env.STEEDOS_UNPKG_URL + '/@steedos-widgets/amis-object/dist/assets-dev.json'
 
 if (Builder.isBrowser){
-  (window as any).Builder = Builder;
+  // (window as any).Builder = Builder;
   (window as any)._ = _;
   Builder.set({ 
     rootUrl: process.env.STEEDOS_ROOT_URL,
