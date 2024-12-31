@@ -20,7 +20,7 @@
     "cnpm-sync": "lerna exec --no-private  -- cnpm sync \\$LERNA_PACKAGE_NAME"
   },
   "dependencies": {
-    "@builder6/react": "^3.2.20",
+    "@builder6/react": "^3.2.21",
     "lerna": "^6.6.2",
     "lodash": "^4.17.21",
     "postcss": "^8.1.10",
