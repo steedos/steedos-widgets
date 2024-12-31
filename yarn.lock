@@ -1585,10 +1585,10 @@
     node-fetch "^2.6.1"
     prop-types "^15.7.2"
 
-"@builder6/react@^3.2.20":
-  version "3.2.20"
-  resolved "https://registry.yarnpkg.com/@builder6/react/-/react-3.2.20.tgz#f6c617b31226926e2bc7307758520a0853b29a19"
-  integrity sha512-OmEHOU/BLuqV2i9o0s7pNNuOEycj7MF8pjY3xBFBZhoKBlRwrsBKpNqX0blvtEfuTBh7oLXYPo28HCOogoQoHg==
+"@builder6/react@^3.2.21":
+  version "3.2.21"
+  resolved "https://registry.npmmirror.com/@builder6/react/-/react-3.2.21.tgz#3eb6ac9020bfd324ccef769e2b8c87dc291790c3"
+  integrity sha512-nnoRMjgDUirqq54yooiNmdOlkAFtgUD5XtnNYhtwizyjjfI04sYELD6K3eI3EACL1VqFntDRX0tUNgmlvMQHPw==
   dependencies:
     "@builder6/sdk" "^2.2.5"
     "@emotion/core" "^10.0.17"
