@@ -40,7 +40,7 @@ export const UserSession = () => (
       }
     ],
   }}
-  />
+  data={data} env={env}/>
 )
 
 
@@ -98,7 +98,7 @@ export const AppHeader = () => (
     ],
     "id": "u:53a05f7c471a"
   }}
-  />
+  data={data} env={env}/>
 )
 
 
@@ -112,7 +112,7 @@ export const GlobalHeader = () => (
       }
     ],
   }}
-  />
+  data={data} env={env}/>
 )
 
 
@@ -128,7 +128,7 @@ export const AppMenuLeft = () => (
               }
             ],
     }}
-  />
+    data={data} env={env}/>
 )
 
 
@@ -143,7 +143,7 @@ export const AppMenuTop = () => (
               }
             ],
     }}
-  />
+    data={data} env={env}/>
 )
 
 
@@ -160,7 +160,7 @@ const PageListViewTemplate = (args) => {
           }
         ],
       }}
-    />
+    data={data} env={env}/>
   )
 }
 

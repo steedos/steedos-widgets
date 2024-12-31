@@ -5,8 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Steedos Widgets</title>
           
-  <script src="http://unpkg.steedos.cn/@builder6/react@3.2.21/dist/builder-react.browser.js"></script>
   <script src="https://unpkg.steedos.cn/@steedos-widgets/amis@6.3.0-patch.3/sdk/sdk.js"></script>
+  <script>
+    const amisRequire = window['amisRequire'];
+    const React = window['React'] = amisRequire('react');
+    const ReactDOM = window['ReactDOM'] = amisRequire('react-dom');
+  </script>
+  <script src="http://unpkg.steedos.cn/@builder6/react@3.2.21/dist/builder-react.browser.js"></script>
 
   <script src="https://unpkg.steedos.cn/lodash@4.17.21/lodash.js"></script>
   <link rel="stylesheet" href="https://unpkg.steedos.cn/@steedos-widgets/amis@6.3.0-patch.3/lib/themes/antd.css">
