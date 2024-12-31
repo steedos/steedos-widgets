@@ -1,11 +1,17 @@
 
-import React from 'react';
+import { React, AmisRender } from '../components/AmisRender';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
   title: 'Amis/Full Calendar',
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
+
+const env = {
+  assetUrls: [
+    `${process.env.STEEDOS_UNPKG_URL}/@steedos-widgets/fullcalendar/dist/assets.json`,
+  ],
+}
 
 let eventGuid = 0
 let todayStr = new Date().toISOString().replace(/T.*$/, '') // YYYY-MM-DD of today
@@ -32,8 +38,8 @@ function createEventId() {
   return String(eventGuid++)
 }
 
-export const Gerneral = () => {
-  const schema = {
+export const Gerneral = () => (
+  <AmisRender schema = {{
     "type": "steedos-fullcalendar",
     "label": "日程",
     "name": "fullcalendar",
@@ -124,13 +130,5 @@ export const Gerneral = () => {
         ]
       },
     }
-  };
-  const data = {};
-  const env = {
-    assetUrls: [
-      `https://unpkg.steedos.cn/@steedos-widgets/fullcalendar/dist/assets-dev.json`,
-    ],
-    unpkgUrl: 'https://unpkg.steedos.cn'
-  };
-  return renderAmisSchema(schema, data, env)
-};
+  }} env ={env}/>
+);

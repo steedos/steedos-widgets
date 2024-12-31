@@ -4,16 +4,16 @@
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
  * @LastEditTime: 2024-12-27 14:09:40
  */
-import React from 'react';
+import { React, AmisRender } from '../components/AmisRender';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Amis/Amis',
+  title: 'Amis/Dialog',
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
 
-export const Dialog = () => {
-  const schema = {
+export const Dialog = () => (
+  <AmisRender schema = {{
     "type": "page",
     "body": [
       {
@@ -47,10 +47,5 @@ export const Dialog = () => {
         }
       }
     ]
-  };
-  const data = {};
-  const env = {
-    assetUrls: [],
-  };
-  return renderAmisSchema(schema, data, env)
-};
+  }}/>
+)

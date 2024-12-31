@@ -17,10 +17,12 @@ import pkg from './package.json';
 
 const external = [
   "react",
-  "react-dom"
+  "react-dom",
+  "lodash",
 ]
 
 const globals = { 
+  lodash: '_',
   react: 'React',
   'react-dom': 'ReactDOM'
 }

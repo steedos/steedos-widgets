@@ -10,17 +10,19 @@
     "packages/**"
   ],
   "scripts": {
-    "dev": "cd apps/builder6 && node server",
+    "dev": "node unpkg-local.js",
+    "start": "cd apps/storybook && yarn storybook",
     "watch": "lerna run watch --parallel",
     "build": "lerna run build",
     "build-object": "lerna run build-object",
     "build-app": "lerna run build-app --parallel",
-    "unpkg": "http-server ./packages --port 8080 --cors -c -1",
-    "start": "cd apps/storybook && yarn storybook",
+    "unpkg": "node unpkg-local.js",
     "cnpm-sync": "lerna exec --no-private  -- cnpm sync \\$LERNA_PACKAGE_NAME"
   },
   "dependencies": {
+    "@builder6/react": "^3.2.21",
     "lerna": "^6.6.2",
+    "lodash": "^4.17.21",
     "postcss": "^8.1.10",
     "postcss-loader": "^4.1.0",
     "postcss-nested": "^5.0.1",
@@ -30,8 +32,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.18.13",
-    "cnpm": "9.0.1",
     "babel-loader": "^8.2.5",
+    "cnpm": "9.0.1",
     "http-server": "^14.1.1",
     "ts-node": "^10.9.1",
     "tsconfig-paths-webpack-plugin": "^4.0.0"

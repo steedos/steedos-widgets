@@ -132,7 +132,7 @@ class Collapse extends React.Component<CollapseProps, {}> {
 
   basicCollapse = React.createRef<any>();
 
-  @autobind
+  // @autobind
   async handleCollapseChange(collapsed: boolean) {
     const {dispatchEvent, onCollapse} = this.props;
     const eventData = resolveEventData(this.props, {

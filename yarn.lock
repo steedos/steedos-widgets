@@ -1585,6 +1585,20 @@
     node-fetch "^2.6.1"
     prop-types "^15.7.2"
 
+"@builder6/react@^3.2.21":
+  version "3.2.21"
+  resolved "https://registry.npmmirror.com/@builder6/react/-/react-3.2.21.tgz#3eb6ac9020bfd324ccef769e2b8c87dc291790c3"
+  integrity sha512-nnoRMjgDUirqq54yooiNmdOlkAFtgUD5XtnNYhtwizyjjfI04sYELD6K3eI3EACL1VqFntDRX0tUNgmlvMQHPw==
+  dependencies:
+    "@builder6/sdk" "^2.2.5"
+    "@emotion/core" "^10.0.17"
+    hash-sum "^2.0.0"
+    isolated-vm "^5.0.0"
+    preact "^10.1.0"
+  optionalDependencies:
+    node-fetch "^2.6.1"
+    prop-types "^15.7.2"
+
 "@builder6/sdk@^2.2.5":
   version "2.2.5"
   resolved "https://registry.npmjs.org/@builder6/sdk/-/sdk-2.2.5.tgz#7304caf2c1aef0c737214ff67c39dad9559242d5"
