@@ -2,7 +2,7 @@ import { React, AmisRender } from '../components/AmisRender';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Amis/Liveblocks',
+  title: 'Enterprise/Liveblocks',
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
 const env = {

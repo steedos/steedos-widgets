@@ -9,8 +9,8 @@ const data = {};
 
 const env = {
   assetUrls: [
-    process.env.STEEDOS_UNPKG_URL + '/@steedos-widgets/amis-object/dist/assets-dev.json',
-    process.env.STEEDOS_UNPKG_URL + '/@steedos-widgets/ag-grid/dist/assets-dev.json',
+    process.env.STEEDOS_UNPKG_URL + '/@steedos-widgets/amis-object/dist/assets.json',
+    process.env.STEEDOS_UNPKG_URL + '/@steedos-widgets/ag-grid/dist/assets.json',
   ],
 };
 

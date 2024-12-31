@@ -13,12 +13,12 @@ const data = {};
 
 const env = {
   assetUrls: [
-    `${process.env.STEEDOS_UNPKG_URL}/@steedos-widgets/amis-object/dist/assets-dev.json`,
+    `${process.env.STEEDOS_UNPKG_URL}/@steedos-widgets/amis-object/dist/assets.json`,
   ],
 };
 
 export default {
-  title: 'Amis/Steedos UI',
+  title: 'Steedos/Steedos UI',
 };
 
 
