@@ -131,19 +131,19 @@ class Container<T> extends React.Component<
     }
   };
 
-  @autobind
+  // @autobind
   handleClick(e: React.MouseEvent<any>) {
     const {dispatchEvent, data} = this.props;
     dispatchEvent(e, data);
   }
 
-  @autobind
+  // @autobind
   handleMouseEnter(e: React.MouseEvent<any>) {
     const {dispatchEvent, data} = this.props;
     dispatchEvent(e, data);
   }
 
-  @autobind
+  // @autobind
   handleMouseLeave(e: React.MouseEvent<any>) {
     const {dispatchEvent, data} = this.props;
     dispatchEvent(e, data);
