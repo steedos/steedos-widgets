@@ -1,11 +1,12 @@
+import { React, AmisRender } from '../components/AmisRender';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Amis/ObjectForm',
+  title: 'Amis/Object Form',
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
 
-const data = Builder.settings;
+const data = {};
 
 const env = {
   assetUrls: [
@@ -14,21 +15,21 @@ const env = {
 };
 
 
-export const Simple = () => {
-  const schema = {
+export const Simple = () =>  (
+  <AmisRender schema = {{
     type: 'steedos-object-form',
     objectApiName: 'space_users',
     "mode": "edit",
     "enableInitApi": false,
     "className": "",
     recordId: 'zT7rgJNvjeqHCk6n4',
-  };
-  return renderAmisSchema(schema, data, env);
-};
+  
+  }} data ={data} env = {env} />
+);
 
 
-export const ObjectForm = () => {
-  const schema = {
+export const ObjectForm = () =>  (
+  <AmisRender schema = {{
     type: 'page',
     title: '表单',
     body: [{
@@ -127,7 +128,5 @@ export const ObjectForm = () => {
         "id": "u:0ad1781ec67c"
       }]
     }]
-  };
-
-  return renderAmisSchema(schema, data, env);
-}
+  }} data ={data} env = {env} />
+);

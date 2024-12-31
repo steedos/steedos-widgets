@@ -1,5 +1,5 @@
 
-import React from 'react';
+import { React, AmisRender } from '../components/AmisRender';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
@@ -32,8 +32,8 @@ function createEventId() {
   return String(eventGuid++)
 }
 
-export const Gerneral = () => {
-  const schema = {
+export const Gerneral = () => (
+  <AmisRender schema = {{
     "type": "steedos-fullcalendar",
     "label": "日程",
     "name": "fullcalendar",
@@ -124,13 +124,9 @@ export const Gerneral = () => {
         ]
       },
     }
-  };
-  const data = {};
-  const env = {
+  }} env ={{
     assetUrls: [
       `https://unpkg.steedos.cn/@steedos-widgets/fullcalendar/dist/assets-dev.json`,
     ],
-    unpkgUrl: 'https://unpkg.steedos.cn'
-  };
-  return renderAmisSchema(schema, data, env)
-};
+  }}/>
+);

@@ -1,21 +1,22 @@
-import React from 'react';
+import { React, AmisRender } from '../components/AmisRender';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
   title: 'Amis/Liveblocks',
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
+const env = {
+  assetUrls: [
+    `${process.env.STEEDOS_UNPKG_URL}/@steedos-widgets/liveblocks@6.3.12-beta.6/dist/assets.json`,
+  ],
+}
 
 const data = {
-  ...Builder.settings,
-};
+  roomId: 'test'
+}
 
-
-
-
-export const Comments = () => {
-  const roomId = 'test';
-  const schema = {
+export const Comments = () => (
+  <AmisRender schema = {{
     type: 'page',
     title: '${context.rootUrl}',
     body: [
@@ -26,24 +27,17 @@ export const Comments = () => {
           {
             type: 'rooms-comments',
             className: 'flex flex-col m-3 gap-3',
-            roomId: `${roomId}`,
+            roomId: '${roomId}',
           },
         ],
       },
     ],
-  };
-  const env = {
-    assetUrls: [
-      `${process.env.STEEDOS_UNPKG_URL}/@steedos-widgets/liveblocks@6.3.12-beta.6/dist/assets.json`,
-    ],
-  };
-  return renderAmisSchema(schema, data, env)
-};
+  }} data ={data} env = {env} />
+);
 
 
-export const InboxNotification = () => {
-  const roomId = 'test';
-  const schema = {
+export const InboxNotification = () =>  (
+  <AmisRender schema = {{
     type: 'page',
     title: '${context.rootUrl}',
     body: [
@@ -59,19 +53,12 @@ export const InboxNotification = () => {
         },
       },
     ],
-  };
-  const env = {
-    assetUrls: [
-      `${process.env.STEEDOS_UNPKG_URL}/@steedos-widgets/liveblocks@6.3.12-beta.6/dist/assets.json`,
-    ],
-  };
-  return renderAmisSchema(schema, data, env)
-};
+  }} data ={data} env = {env} />
+);
 
 
-export const Full = () => {
-  const roomId = 'test';
-  const schema = {
+export const Full = () =>  (
+  <AmisRender schema = {{
     type: 'page',
     title: '${context.rootUrl}',
     regions: ['body', 'toolbar', 'header'],
@@ -96,16 +83,10 @@ export const Full = () => {
           {
             type: 'rooms-comments',
             className: 'flex flex-col m-3 gap-3',
-            roomId: `${roomId}`,
+            roomId: '${roomId}',
           },
         ],
       },
     ],
-  };
-  const env = {
-    assetUrls: [
-      `${process.env.STEEDOS_UNPKG_URL}/@steedos-widgets/liveblocks@6.3.12-beta.6/dist/assets.json`,
-    ],
-  };
-  return renderAmisSchema(schema, data, env)
-};
+  }} data ={data} env = {env} />
+);

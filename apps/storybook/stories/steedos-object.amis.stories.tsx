@@ -1,21 +1,24 @@
+import { React, AmisRender } from '../components/AmisRender';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Amis/SteedosObject',
+  title: 'Amis/Steedos Objects',
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
 
-const data = Builder.settings;
+const data = {};
 
 const env = {
   assetUrls: [
     `http://localhost:8080/@steedos-widgets/amis-object/dist/assets-dev.json`,
   ],
 };
-/** 以上为可复用代码 **/
 
-export const ObjectListview = () => (
-  <AmisRender schema={{
+
+
+
+export const ObjectListview = () =>  (
+  <AmisRender schema = {{
     type: 'page',
     title: '列表视图',
     body: [{
@@ -48,27 +51,24 @@ export const ObjectListview = () => (
         "showHeader": true
       }]
     }]
-  }}
-  assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
-  />
+  }} data ={data} env = {env} />
 )
 
 
-export const ObjectCalendar = () => (
-  <AmisRender schema={{
+export const ObjectCalendar = () =>  (
+  <AmisRender schema = {{
     type: 'page',
     title: '日历视图',
     body: [{
       "type": "steedos-object-calendar",
       "objectApiName": "events"
     }]
-  }}
-  assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
-  />
+  }} data ={data} env = {env} />
 )
 
-export const ObjectTable = () => (
-  <AmisRender schema={{
+
+export const ObjectTable = () =>  (
+  <AmisRender schema = {{
     type: 'page',
     title: '对象表格',
     body: [{
@@ -143,13 +143,12 @@ export const ObjectTable = () => (
         "columnsTogglable": false
       }]
     }]
-  }}
-  assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
-  />
+  }} data ={data} env = {env} />
 )
 
-export const RecordDetailRelatedList = () => (
-  <AmisRender schema={{
+
+export const RecordDetailRelatedList = () =>  (
+  <AmisRender schema = {{
     type: 'page',
     title: '相关列表',
     body: {
@@ -158,27 +157,25 @@ export const RecordDetailRelatedList = () => (
       "recordId": "AKEQtKsWvNDF6MitJ",
       "relatedObjectApiName": "contacts"
     },
-  }}
-  assetUrls={assetUrls}
-  />
+  }} data ={data} env = {env} />
 )
 
-export const RecordDetailHeader = () => (
-  <AmisRender schema={{
+
+export const RecordDetailHeader = () =>  (
+  <AmisRender schema = {{
     type: 'page',
     title: '标题面板',
     body: {
       "type": "steedos-record-detail-header",
       "objectApiName": "space_users",
-      "recordId": "kDrtGu7aZPwYdyFpe"
+      "recordId": ""
     },
-  }}
-  assetUrls={process.env.STEEDOS_EXPERIENCE_ASSETURLS}
-  />
+  }} data ={data} env = {env} />
 )
 
-export const AmisSelectUser = () => (
-    <AmisRender schema={{
+
+export const AmisSelectUser = () =>  (
+  <AmisRender schema = {{
       type: 'page',
       title: '选人组件',
       body: [{
@@ -270,13 +267,12 @@ export const AmisSelectUser = () => (
         ]
       }
     ]
-    }}
-    assetUrls={assetUrls}
-  />
+  }} data ={data} env = {env} />
 )
 
-export const Provider = () => (
-  <AmisRender schema={{
+
+export const Provider = () =>  (
+  <AmisRender schema = {{
     type: 'page',
     title: '华炎魔方容器',
     body: {
@@ -288,7 +284,5 @@ export const Provider = () => (
         }
       ]
     },
-  }}
-  assetUrls={assetUrls}
-  />
+  }} data ={data} env = {env} />
 )

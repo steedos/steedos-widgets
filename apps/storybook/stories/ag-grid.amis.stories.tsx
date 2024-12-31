@@ -1,9 +1,16 @@
-import React from 'react';
+import { React, AmisRender } from '../components/AmisRender';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Amis/Ag Grid',
+  title: 'Enterprise/Ag Grid',
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
+};
+
+const data = {};
+const env = {
+  assetUrls: [
+    `http://127.0.0.1:8080/@steedos-widgets/ag-grid/dist/assets-dev.json`,
+  ],
 };
 
 const rowData = [
@@ -20,8 +27,8 @@ const columnDefs = [
   { field: "price" },
 ];
 
-export const Gerneral = () => {
-  const schema = {
+export const Gerneral = () => (
+  <AmisRender schema = {{
     "type": "ag-grid",
     "dsType": "api",
     "className": "b6-tables-ag-grid h-96 ag-theme-quartz",
@@ -29,19 +36,11 @@ export const Gerneral = () => {
       columnDefs: columnDefs,
       rowData: rowData
     }
-  };
-  const data = {};
-  const env = {
-    assetUrls: [
-      `http://127.0.0.1:8080/@steedos-widgets/ag-grid/dist/assets-dev.json`,
-    ],
-    unpkgUrl: 'https://unpkg.steedos.cn'
-  };
-  return renderAmisSchema(schema, data, env)
-};
+  }} data ={data} env = {env} />
+);
 
-export const StyleAutoHeight = () => {
-  const schema = {
+export const StyleAutoHeight = () =>  (
+  <AmisRender schema = {{
     "type": "page",
     "body": [
       {
@@ -57,60 +56,43 @@ export const StyleAutoHeight = () => {
         }
       }
     ],
-  };
-  const data = {};
-  const env = {
-    assetUrls: [
-      `http://127.0.0.1:8080/@steedos-widgets/ag-grid/dist/assets-dev.json`,
-    ],
-    unpkgUrl: 'https://unpkg.steedos.cn'
-  };
-  return renderAmisSchema(schema, data, env)
-};
+  }} data ={data} env = {env} />
+);
 
-const dataFilter = `
-  const getServerSideDatasource = () => {
-    return {
-      getRows: (params) => {
-        const rowData = ${JSON.stringify(rowData)};
-        const data = {
-          data: rowData,
-          totalCount: rowData.length
-        }
-        params.success({
-          rowData: data.data,
-          rowCount: data.totalCount
-      });
-      }
-    };
-  }
-  return Object.assign({}, config, {
-    rowModelType: 'serverSide',
-    serverSideDatasource: getServerSideDatasource()
-  });
-`;
 
-export const DataFilter = () => {
-  const schema = {
+export const DataFilter = () =>(
+  <AmisRender schema = {{
     "type": "page",
     "body": [
       {
         "type": "ag-grid",
         "dsType": "api",
-        "dataFilter": dataFilter,
+        "dataFilter": `
+          const getServerSideDatasource = () => {
+            return {
+              getRows: (params) => {
+                const rowData = ${JSON.stringify(rowData)};
+                const data = {
+                  data: rowData,
+                  totalCount: rowData.length
+                }
+                params.success({
+                  rowData: data.data,
+                  rowCount: data.totalCount
+              });
+              }
+            };
+          }
+          return Object.assign({}, config, {
+            rowModelType: 'serverSide',
+            serverSideDatasource: getServerSideDatasource()
+          });
+        `,
         "className": "b6-tables-ag-grid h-96 ag-theme-quartz",
         "config": {
           columnDefs: columnDefs
         }
       }
     ],
-  };
-  const data = {};
-  const env = {
-    assetUrls: [
-      `http://127.0.0.1:8080/@steedos-widgets/ag-grid/dist/assets-dev.json`,
-    ],
-    unpkgUrl: 'https://unpkg.steedos.cn'
-  };
-  return renderAmisSchema(schema, data, env)
-};
+  }} data ={data} env = {env} />
+);

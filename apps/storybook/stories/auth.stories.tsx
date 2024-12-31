@@ -1,3 +1,4 @@
+import { React, AmisRender } from '../components/AmisRender';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
@@ -5,15 +6,9 @@ export default {
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
 
-const data = Builder.settings;
 
-const env = {
-  assetUrls: [
-  ],
-};
-
-export const Login = () => {
-  const schema = {
+export const Login = () => (
+  <AmisRender schema = {{
     "type": "page",
     "body": [{
       "type": "form",
@@ -29,6 +24,7 @@ export const Login = () => {
         `,
         "requestAdaptor": `
           api.url = api.data.rootUrl + "/api/v6/auth/login";
+          localStorage.setItem("steedos:rootUrl", api.data.rootUrl); 
           localStorage.setItem("steedosRootUrl", api.data.rootUrl); 
           localStorage.setItem("steedosUsername", api.data.username);
           console.log(api, context);
@@ -62,13 +58,12 @@ export const Login = () => {
       "submitText": "Login",
       "title": "Login to Steedos"
     }]
-  };
-  return renderAmisSchema(schema, data, env);
-}
+  }}/>
+)
 
 
-export const Me = () => {
-  const schema = {
+export const Me = () => (
+  <AmisRender schema = {{
     "type": "page",
     "body": [{
       "type": "form",
@@ -102,6 +97,5 @@ export const Me = () => {
       "submitText": "Login",
       "title": "Login to Steedos"
     }]
-  };
-  return renderAmisSchema(schema, data, env);
-}
+  }}/>
+)
