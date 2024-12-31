@@ -149,7 +149,7 @@ jobs:
         if: ${{ startsWith(steps.branch-name.outputs.tag, '3.6') && steps.version.outputs.is_stable == 'true' }}
         run: |
           npm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
-          yarn lerna publish from-package --registry https://registry.npmjs.org --yes
+          yarn lerna publish from-package --registry https://registry.npmjs.org --yes  --dist-tag 3.6
         env:
           CI: false
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
@@ -158,17 +158,17 @@ jobs:
         if: ${{ startsWith(steps.branch-name.outputs.tag, '6.3') && steps.version.outputs.is_stable == 'true' }}
         run: |
           npm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
-          yarn lerna publish from-package --registry https://registry.npmjs.org --yes  --dist-tag 6.3
+          yarn lerna publish from-package --registry https://registry.npmjs.org --yes 
         env:
           CI: false
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
-      - name: Merge 3.6 -> master
-        if: ${{ startsWith(steps.branch-name.outputs.tag, '3.6') }}
+      - name: Merge 6.3 -> master
+        if: ${{ startsWith(steps.branch-name.outputs.tag, '6.3') }}
         uses: devmasx/merge-branch@master
         with:
           type: now
-          from_branch: 3.6
+          from_branch: 6.3
           target_branch: master
           github_token: ${{ github.token }}
 
