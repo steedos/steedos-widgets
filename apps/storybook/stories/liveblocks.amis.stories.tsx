@@ -6,14 +6,79 @@ export default {
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
 
-export const Simple = () => {
+const data = {
+  ...Builder.settings,
+};
+
+
+
+
+export const Comments = () => {
+  const roomId = 'test';
   const schema = {
     type: 'page',
-    title: 'Hello',
+    title: '${context.rootUrl}',
+    body: [
+      {
+        type: 'rooms-provider',
+        baseUrl: '${context.rootUrl}',
+        body: [
+          {
+            type: 'rooms-comments',
+            className: 'flex flex-col m-3 gap-3',
+            roomId: `${roomId}`,
+          },
+        ],
+      },
+    ],
+  };
+  const env = {
+    assetUrls: [
+      `${process.env.STEEDOS_UNPKG_URL}/@steedos-widgets/liveblocks@6.3.12-beta.6/dist/assets.json`,
+    ],
+  };
+  return renderAmisSchema(schema, data, env)
+};
+
+
+export const InboxNotification = () => {
+  const roomId = 'test';
+  const schema = {
+    type: 'page',
+    title: '${context.rootUrl}',
+    body: [
+      {
+        type: 'rooms-provider',
+        baseUrl: '${context.rootUrl}',
+        body: {
+          type: 'wrapper',
+          className: 'p-4',
+          body: {
+            type: 'rooms-inbox-popover',
+          },
+        },
+      },
+    ],
+  };
+  const env = {
+    assetUrls: [
+      `${process.env.STEEDOS_UNPKG_URL}/@steedos-widgets/liveblocks@6.3.12-beta.6/dist/assets.json`,
+    ],
+  };
+  return renderAmisSchema(schema, data, env)
+};
+
+
+export const Full = () => {
+  const roomId = 'test';
+  const schema = {
+    type: 'page',
+    title: '${context.rootUrl}',
+    regions: ['body', 'toolbar', 'header'],
     toolbar: [
       {
         type: 'rooms-provider',
-        baseUrl: process.env.B6_HOST,
+        baseUrl: '${context.rootUrl}',
         body: {
           type: 'wrapper',
           className: 'p-4',
@@ -26,21 +91,20 @@ export const Simple = () => {
     body: [
       {
         type: 'rooms-provider',
-        baseUrl: process.env.B6_HOST,
+        baseUrl: '${context.rootUrl}',
         body: [
           {
             type: 'rooms-comments',
             className: 'flex flex-col m-3 gap-3',
-            roomId: `001`,
+            roomId: `${roomId}`,
           },
         ],
       },
     ],
   };
-  const data = {};
   const env = {
     assetUrls: [
-      `https://unpkg.com/@steedos-widgets/liveblocks@6.3.12-beta.6/dist/assets.json`,
+      `${process.env.STEEDOS_UNPKG_URL}/@steedos-widgets/liveblocks@6.3.12-beta.6/dist/assets.json`,
     ],
   };
   return renderAmisSchema(schema, data, env)

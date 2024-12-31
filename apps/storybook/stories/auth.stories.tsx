@@ -1,7 +1,7 @@
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Amis/Auth',
+  title: 'Auth',
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
 
@@ -20,31 +20,38 @@ export const Login = () => {
       "mode": "horizontal",
       "api": {
         "method": "post",
-        "url": "${context.rootUrl}/api/v6/auth/login",
+        "url": "/api/v6/auth/login",
         "adaptor": `
-          localStorage.setItem("steedos:rootUrl", api.data.rootUrl);
           localStorage.setItem("steedos:userId", payload._id);
           localStorage.setItem("steedos:spaceId", payload.space);
           localStorage.setItem("steedos:authToken", payload.auth_token);
           return payload;
         `,
         "requestAdaptor": `
-          localStorage.setItem("steedos:rootUrl", api.data.rootUrl); 
+          api.url = api.data.rootUrl + "/api/v6/auth/login";
+          localStorage.setItem("steedosRootUrl", api.data.rootUrl); 
+          localStorage.setItem("steedosUsername", api.data.username);
+          console.log(api, context);
           return api;
         `
+      },
+      "messages": {
+        "saveSuccess": "登录成功"
       },
       "body": [
         {
           "label": "Root URL",
           "type": "input-text",
           "name": "rootUrl",
-          "placeholder": "请输入 Steedos Root URL"
+          "placeholder": "请输入 Steedos Root URL",
+          value: "${ls:steedosRootUrl}",
         },
         {
           "label": "Email",
           "type": "input-text",
           "name": "username",
-          "placeholder": "请输入邮箱"
+          "placeholder": "请输入邮箱",
+          value: "${ls:steedosUsername}",
         },
         {
           "label": "Password",
