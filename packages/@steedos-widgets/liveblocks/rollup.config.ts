@@ -54,8 +54,8 @@ const options = {
     replace({
       preventAssignment: true,
       'https://cdn.jsdelivr.net/npm': '${Builder && Builder.settings && Builder.settings.unpkgUrl ? Builder.settings.unpkgUrl:"https://unpkg.com"}',
-    })
-    // terser()
+    }),
+    terser()
   ],
 };
 
