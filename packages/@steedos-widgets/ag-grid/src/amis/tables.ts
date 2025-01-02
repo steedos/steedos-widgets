@@ -977,7 +977,7 @@ function getDataTypeDefinitions() {
     };
 }
 
-function getGridOptions(table: any, mode: string, { dispatchEvent, env }) {
+export function getGridOptions(table: any, mode: string, { dispatchEvent, env }) {
     if (!table || !table.fields) {
         return null;
     }
@@ -1294,7 +1294,7 @@ const getAgGridFieldFormDialog = (table: any, mode: string) => {
     }
 }
 
-function getTableAdminEvents(table: any) {
+export function getTableAdminEvents(table: any) {
     const tableId = table._id;
     return {
         [`@b6tables.${tableId}.editField`]: {
@@ -1893,7 +1893,7 @@ const getTableHeaderRightButtons = (table: any, mode: string, { env }) => {
     };
 }
 
-const getTableHeader = (table: any, mode: string, { env }) => {
+export const getTableHeader = (table: any, mode: string, { env }) => {
     const isReadonly = mode === "read";
     const isAdmin = mode === "admin";
     const tableTitle = table.label || "记录";

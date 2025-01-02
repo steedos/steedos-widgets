@@ -1,9 +1,15 @@
+/*
+ * @Author: 殷亮辉 yinlianghui@hotoa.com
+ * @Date: 2025-01-02 15:33:22
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2025-01-02 21:11:49
+ */
 import { React, AmisRender } from '../components/AmisRender';
 import { useEffect, useState, useRef } from 'react';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Enterprise/Tables',
+  title: 'Enterprise/Tables2',
 };
 
 const data = {};
@@ -24,7 +30,7 @@ export const Gerneral = () => (
       "type": "page",
       "body": [
         {
-          "type": "steedos-tables-grid",
+          "type": "steedos-tables-grid2",
           "className": "h-96",
           "style": {
             "height": "calc(100vh - 58px)"
@@ -77,7 +83,7 @@ export const SwitchTableId = () => {
               "tpl": "TableId: ${tableId}"
             },
             {
-              "type": "steedos-tables-grid",
+              "type": "steedos-tables-grid2",
               "className": "h-96",
               "style": {
                 "height": "calc(100vh - 58px)"
