@@ -51,6 +51,10 @@ const options = {
     replace({
       'process.env.NODE_ENV': JSON.stringify('production'),
     }),
+    replace({
+      preventAssignment: true,
+      'https://cdn.jsdelivr.net/npm': '${Builder && Builder.settings && Builder.settings.unpkgUrl ? Builder.settings.unpkgUrl:"https://unpkg.com"}',
+    })
     // terser()
   ],
 };
@@ -80,10 +84,7 @@ export default [
         strict: false,
         intro: 'const global = window;',
         globals,
-        plugins: [getBabelOutputPlugin({
-          allowAllFormats: true,
-          presets: [['@babel/preset-env', { modules: 'umd' }]],
-        })]
+        plugins: options.plugins.concat([]),
       },
     ],
   },
@@ -103,12 +104,6 @@ export default [
                  type: 'asset',
                  fileName: 'assets.json',
                  source: amis
-              });
-              const amisDev = JSON.stringify(assets, null, 4).replace(/\@\{\{version\}\}/g, ``).replace(/https\:\/\/unpkg.com/g, unpkgUrl)
-              this.emitFile({
-                 type: 'asset',
-                 fileName: 'assets-dev.json',
-                 source: amisDev
               });
           }
       }

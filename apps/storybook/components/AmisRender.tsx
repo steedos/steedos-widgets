@@ -17,7 +17,8 @@ Builder.settings = {
     userId: localStorage.getItem('steedos:userId'),
     tenantId: localStorage.getItem('steedos:spaceId'),
     authToken: localStorage.getItem('steedos:authToken'),
-  } 
+  },
+  unpkgUrl: process.env.STEEDOS_UNPKG_URL,
 };
 
 export {
