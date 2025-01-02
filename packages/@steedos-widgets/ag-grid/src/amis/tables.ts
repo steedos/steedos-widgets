@@ -156,39 +156,39 @@ function getTableVerificationErrors(data: any, tableVerifications: any, { env })
     return verificationErrors;
 }
 
-function getMainMenuItems(params) {
+function getMainMenuItems(params: any, { dispatchEvent, env }) {
     const athleteMenuItems = params.defaultItems.slice(0);
-    // athleteMenuItems.unshift("separator");
-    // athleteMenuItems.unshift({
-    //     name: "删除字段",
-    //     action: (menuParams) => {
-    //         console.log("Start to delete a field");
-    //         var fieldConfig = menuParams.column.colDef.cellEditorParams.fieldConfig;
-    //         if (!fieldConfig) {
-    //             return;
-    //         }
-    //         dispatchEvent("deleteField", {
-    //             "deletingFieldId": fieldConfig._id
-    //         });
-    //     }
-    // });
-    // athleteMenuItems.unshift({
-    //     name: "编辑字段",
-    //     action: (menuParams) => {
-    //         console.log("Start to edit a field");
-    //         var fieldConfig = menuParams.column.colDef.cellEditorParams.fieldConfig;
-    //         if (!fieldConfig) {
-    //             return;
-    //         }
-    //         dispatchEvent("editField", {
-    //             "editingFieldId": fieldConfig._id
-    //         });
-    //     }
-    // });
+    athleteMenuItems.unshift("separator");
+    athleteMenuItems.unshift({
+        name: "删除字段",
+        action: (menuParams: any) => {
+            console.log("Start to delete a field");
+            var fieldConfig = menuParams.column.colDef.cellEditorParams.fieldConfig;
+            if (!fieldConfig) {
+                return;
+            }
+            dispatchEvent("deleteField", {
+                "deletingFieldId": fieldConfig._id
+            });
+        }
+    });
+    athleteMenuItems.unshift({
+        name: "编辑字段",
+        action: (menuParams: any) => {
+            console.log("Start to edit a field");
+            var fieldConfig = menuParams.column.colDef.cellEditorParams.fieldConfig;
+            if (!fieldConfig) {
+                return;
+            }
+            dispatchEvent("editField", {
+                "editingFieldId": fieldConfig._id
+            });
+        }
+    });
     return athleteMenuItems;
 }
 
-function getColumnDef(field: any, dataTypeDefinitions: any, mode: string) {
+function getColumnDef(field: any, dataTypeDefinitions: any, mode: string, { dispatchEvent, env }) {
     const isReadonly = mode === "read";
     const isAdmin = mode === "admin";
     var cellDataType: any,
@@ -334,10 +334,14 @@ function getColumnDef(field: any, dataTypeDefinitions: any, mode: string) {
             cellDataType = 'text'; // 默认类型
     }
 
-    var mainMenuItems = isAdmin ? getMainMenuItems : null;
-    if (field.is_system) {
-        // 系统字段不显示额外菜单
-        mainMenuItems = null;
+    let mainMenuItems: any;
+    // 系统字段不显示额外菜单
+    if (isAdmin && !field.is_system) {
+        // 使用闭包把 table 参数传递给事件处理函数
+        const getMainMenuItemsRaw = function (params: any) {
+            return getMainMenuItems(params, { dispatchEvent, env });
+        };
+        mainMenuItems = getMainMenuItemsRaw;
     }
 
     return {
@@ -984,7 +988,7 @@ function getGridOptions(table: any, mode: string, { dispatchEvent, env }) {
     var dataTypeDefinitions = getDataTypeDefinitions();
 
     var columnDefs = table.fields.map(function (field) {
-        return getColumnDef(field, dataTypeDefinitions, mode);
+        return getColumnDef(field, dataTypeDefinitions, mode, { dispatchEvent, env });
     });
 
     // if (!isReadonly){
@@ -1326,6 +1330,10 @@ function getTableAdminEvents(table: any) {
                     "api": {
                         "url": "${context.rootUrl}/api/v1/b6_fields/${deletingFieldId}",
                         "method": "delete",
+                        "headers": {//TODO:Authorization取不到
+                            //   "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                            "Authorization": "Bearer 654300b5074594d15147bcfa,dbe0e0da68ba2e83aca63a5058907e543a4e89f7e979963b4aa1f574f227a3b5063e149d818ff553fb4aa1"
+                        },
                         "requestAdaptor": "",
                         "adaptor": "",
                         "messages": {
