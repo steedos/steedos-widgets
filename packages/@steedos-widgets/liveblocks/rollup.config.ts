@@ -4,6 +4,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
 import replace from '@rollup/plugin-replace';
 import nodePolyfills from 'rollup-plugin-polyfill-node';
+import visualizer from 'rollup-plugin-visualizer';
 
 import json from 'rollup-plugin-json';
 import { terser } from "rollup-plugin-terser";
@@ -55,6 +56,10 @@ const options = {
       preventAssignment: true,
       'https://cdn.jsdelivr.net/npm': '${Builder && Builder.settings && Builder.settings.unpkgUrl ? Builder.settings.unpkgUrl:"https://unpkg.com"}',
     }),
+    // visualizer({
+    //   filename: 'stats.html',
+    //   open: true, // 打包完成后自动打开浏览器
+    // })
     terser()
   ],
 };
@@ -84,9 +89,9 @@ export default [
         strict: false,
         intro: 'const global = window;',
         globals,
-        plugins: options.plugins.concat([]),
       },
     ],
+    plugins: options.plugins.concat([]),
   },
   // meta build
   {
