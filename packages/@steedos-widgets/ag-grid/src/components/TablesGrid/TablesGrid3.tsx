@@ -2,13 +2,13 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2024-01-18 18:58:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-01-03 17:43:08
+ * @LastEditTime: 2025-01-03 17:55:28
  */
 import React, { useEffect, useState, useRef } from 'react';
 import { keyBy, map, isNaN, isNil, union, debounce, each, clone, forEach, filter } from "lodash";
 import { AmisAgGrid } from '../AgGrid';
 import { TablesGridProvider } from './provider';
-import { TablesGridCore } from './TablesGridCore';
+import { TablesGridCore, TablesGridCoreProps } from './TablesGridCore';
 import { getGridOptions, getMeta, filterModelToSteedosFilters } from './core';
 import {
   IServerSideGetRowsParams,
@@ -21,26 +21,8 @@ const B6_HOST = "http://localhost:5100";//process.env.B6_HOST || "";
 const B6_TABLES_API = `${B6_HOST}/api/v6/tables`;
 export const B6_TABLES_ROOTURL = `${B6_TABLES_API}/${B6_TABLES_BASEID}`;
 
-type Mode = 'read' | 'edit' | 'admin';
-
-type TablesGrid3Props = {
+type TablesGrid3Props = TablesGridCoreProps & {
   tableId: string;
-  mode: Mode;
-  [key: string]: any;
-};
-
-const customGetColumns = () => {
-  return [
-    { headerName: 'Name', field: 'name' },
-    { headerName: 'Age', field: 'age' },
-  ];
-};
-
-const customGetRows = () => {
-  return [
-    { name: 'John', age: 25 },
-    { name: 'Jane', age: 30 },
-  ];
 };
 
 const getRows = async function (params: any, tableId: string) {
@@ -124,27 +106,9 @@ export const AmisTablesGrid3: React.FC<TablesGrid3Props> = (props) => {
     mode,
     env
   } = props;
-  console.log('AmisTablesGrid3===tableId===', tableId);
-  // const [meta, setMeta] = useState(null);
-  // const ref = useRef(null);
-
-  // useEffect(() => {
-  //   const fetchMeta = async () => {
-  //     const result = await getMeta(tableId);
-  //     setMeta(result);
-  //   };
-
-  //   fetchMeta();
-  // }, [tableId]);
-
-  // if (!meta) {
-  //   return <div>Loading...</div>;
-  // }
-
 
   const getTableMeta = async () => {
     const meta = await getMeta(tableId);
-    console.log('getTableMeta===meta===', meta);
     return meta;
   }
 
@@ -155,7 +119,7 @@ export const AmisTablesGrid3: React.FC<TablesGrid3Props> = (props) => {
   return (
     <TablesGridProvider
       getTableMeta={getTableMeta}
-      getColumnDefs={customGetColumns}
+      // getColumnDefs={customGetColumns}
       getRows={getRowsRaw}
     >
       <TablesGridCore
