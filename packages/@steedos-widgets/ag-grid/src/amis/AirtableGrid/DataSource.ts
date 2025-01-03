@@ -11,7 +11,7 @@ interface DataSourceConfig {
   update: (key: string, values: any) => Promise<any>;
 }
 
-class AirtableDataSource {
+export class AirtableDataSource {
   private config: DataSourceConfig;
 
   constructor(config: DataSourceConfig) {
