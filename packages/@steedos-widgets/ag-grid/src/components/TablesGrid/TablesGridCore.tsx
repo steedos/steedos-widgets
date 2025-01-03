@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2024-01-18 18:58:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-01-03 17:07:11
+ * @LastEditTime: 2025-01-03 17:11:48
  */
 import React, { useEffect, useState, useRef } from 'react';
 import { AmisAgGrid } from '../AgGrid';
@@ -27,7 +27,7 @@ export const TablesGridCore: React.FC<TablesGrid3Props> = (props) => {
   console.log('TablesGridCore===tableId===');
   const [meta, setMeta] = useState(null);
   const ref = useRef(null);
-  const { getTableMeta } = useTablesGridContext();
+  const { getTableMeta, getRows } = useTablesGridContext();
 
   useEffect(() => {
     const fetchMeta = async () => {
@@ -50,7 +50,8 @@ export const TablesGridCore: React.FC<TablesGrid3Props> = (props) => {
     }
     let gridOptions = getGridOptions(meta, mode, {
       dispatchEvent,
-      env
+      env,
+      getRows
     });
     return gridOptions;
   }

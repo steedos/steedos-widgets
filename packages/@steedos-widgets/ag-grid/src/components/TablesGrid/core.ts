@@ -153,7 +153,7 @@ async function onDragStopped(event: any, dispatchEvent: Function) {
  * 把ag-grid filterModel 转为魔方filters格式
  * @param filterModel
  */
-function filterModelToOdataFilters(filterModel, colDefs) {
+export function filterModelToSteedosFilters(filterModel, colDefs) {
     const filters = [];
     forEach(filterModel, (value, key) => {
         const fieldConfig = colDefs[key].cellEditorParams.fieldConfig;
@@ -235,7 +235,7 @@ function getServerSideDatasource(tableId: string) {
                     map(params.api.getAllGridColumns(), col => col.colDef),
                     "field"
                 );
-                const modelFilters = filterModelToOdataFilters(params.request.filterModel, colDefs);
+                const modelFilters = filterModelToSteedosFilters(params.request.filterModel, colDefs);
                 console.log('Server Side Datasource - Requesting rows by modelFilters:', modelFilters);
 
                 let url = `${B6_TABLES_ROOTURL}/${tableId}`;
@@ -606,7 +606,7 @@ function getColumnDef(field: any, dataTypeDefinitions: any, mode: string, { disp
 
 }
 
-export function getGridOptions(table: any, mode: string, { dispatchEvent, env }) {
+export function getGridOptions(table: any, mode: string, { dispatchEvent, env, getRows }) {
     if (!table || !table.fields) {
         return null;
     }
@@ -751,7 +751,10 @@ export function getGridOptions(table: any, mode: string, { dispatchEvent, env })
             fileName: tableLabel,
             columnKeys: columnFieldNames
         },
-        serverSideDatasource: getServerSideDatasource(tableId)
+        // serverSideDatasource: getServerSideDatasource(tableId)
+        serverSideDatasource: {
+            getRows
+        }
     };
 
     if (needToValiTable) {
