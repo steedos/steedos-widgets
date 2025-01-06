@@ -428,10 +428,11 @@ function getFieldVerificationErrors(fieldValue, colDef) {
 }
 
 // 监听行数据改变事件
-async function onRowValueChanged(event: any, table: any, { env }) {
-    console.log("===onRowValueChanged===table===", table);
+async function onRowValueChanged(event: any, dataSource: any, { env }) {
+    console.log("===onRowValueChanged===dataSource===", dataSource);
     console.log("===onRowValueChanged===env===", env);
-    const tableId = table._id;
+    // const tableId = table._id;
+    const table: any = {};
     const data = event.data;
     console.log('Saving updated data to server:', JSON.stringify(data));
     try {
@@ -539,21 +540,22 @@ async function onRowValueChanged(event: any, table: any, { env }) {
         // 保存更新的数据到服务端
         delete data.__verificationErrors;
         delete data.__formulaErrors;
-        var url = B6_TABLES_ROOTURL + '/' + tableId + '/' + data._id;
-        const response = await fetch(url, {
-            credentials: 'include',
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                // "Authorization": "Bearer ${context.tenantId},${context.authToken}" //TODO context中没取到数据
-                "Authorization": "Bearer 654300b5074594d15147bcfa,dbe0e0da68ba2e83aca63a5058907e543a4e89f7e979963b4aa1f574f227a3b5063e149d818ff553fb4aa1"
-            },
-            body: JSON.stringify(data)
-        });
-        if (!response.ok) {
-            throw new Error('Server error! Status: ' + response.status);
-        }
-        const responseData = await response.json();
+        // var url = B6_TABLES_ROOTURL + '/' + tableId + '/' + data._id;
+        // const response = await fetch(url, {
+        //     credentials: 'include',
+        //     method: 'PUT',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         // "Authorization": "Bearer ${context.tenantId},${context.authToken}" //TODO context中没取到数据
+        //         "Authorization": "Bearer 654300b5074594d15147bcfa,dbe0e0da68ba2e83aca63a5058907e543a4e89f7e979963b4aa1f574f227a3b5063e149d818ff553fb4aa1"
+        //     },
+        //     body: JSON.stringify(data)
+        // });
+        // if (!response.ok) {
+        //     throw new Error('Server error! Status: ' + response.status);
+        // }
+        // const responseData = await response.json();
+        const responseData = await dataSource.update(data._id, data);
         console.log('Data saved successfully:', responseData);
         rowNode.setData(Object.assign({}, responseData, { __verificationErrors: verificationErrors, __formulaErrors: formulaErrors }));
     } catch (error) {
@@ -1019,10 +1021,10 @@ export async function getGridOptions({ tableId, title, mode, dataSource, getColu
 
     // 使用闭包把 table 参数传递给事件处理函数
     const onRowValueChangedRaw = (event: any) => {
-        onRowValueChanged(event, table, { env });
+        onRowValueChanged(event, dataSource, { env });
     };
     const onCellValueChangedRaw = (event: any) => {
-        onCellValueChanged(event, table, { env });
+        onCellValueChanged(event, dataSource, { env });
     };
     const onDragStoppedRaw = (event: any) => {
         onDragStopped(event, dispatchEvent);
@@ -1100,7 +1102,8 @@ export async function getGridOptions({ tableId, title, mode, dataSource, getColu
             dispatchEvent("setGridApi", {
                 "gridApi": params.api,
                 "gridContext": {
-                    setRowDataFormulaValues
+                    setRowDataFormulaValues,
+                    dataSource
                 }
             });
         },
@@ -1502,15 +1505,16 @@ const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env 
 const getNewButtonScript = (table: any, mode: string, { env }) => {
     let tableId = table._id;
     return `
-      const B6_TABLES_ROOTURL = "${B6_TABLES_ROOTURL}";
+    //   const B6_TABLES_ROOTURL = "${B6_TABLES_ROOTURL}";
     //   const B6_TABLES_DATA_COLLECT_FIELDNAME = "\${B6_TABLES_DATA_COLLECT_FIELDNAME}";
-      const tableId = '${tableId || ""}';
+    //   const tableId = '${tableId || ""}';
     //   const collectId = '\${collectId || ""}';
       const amisNotify = event.context && event.context.env && event.context.env.notify || alert;
     
-      const gridApi = event.data.gridApi; //agGridRefs && agGridRefs[tableId];
+      const gridApi = event.data.gridApi;
       const gridContext = event.data.gridContext;
       const setRowDataFormulaValues = gridContext.setRowDataFormulaValues;
+      const dataSource = gridContext.dataSource;
   
       function scrollToBottom() {
         const rowCount = gridApi.getDisplayedRowCount();
@@ -1590,20 +1594,21 @@ const getNewButtonScript = (table: any, mode: string, { env }) => {
   
         // 将新增数据发送到服务器
         try {
-          const response = await fetch(B6_TABLES_ROOTURL + '/' + tableId, {
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-              'Content-Type': 'application/json',
-            //   "Authorization": \`Bearer \${event.data.context.tenantId},\${event.data.context.authToken}\` //TODO:要拿到登录校验活值
-            },
-            body: JSON.stringify(newRow)
-          });
+        //   const response = await fetch(B6_TABLES_ROOTURL + '/' + tableId, {
+        //     method: 'POST',
+        //     credentials: 'include',
+        //     headers: {
+        //       'Content-Type': 'application/json',
+        //     //   "Authorization": \`Bearer \${event.data.context.tenantId},\${event.data.context.authToken}\` //TODO:要拿到登录校验活值
+        //     },
+        //     body: JSON.stringify(newRow)
+        //   });
   
-          if (!response.ok) {
-            throw new Error('Server error! Status: ' + response.status);
-          }
-          const data = await response.json();
+        //   if (!response.ok) {
+        //     throw new Error('Server error! Status: ' + response.status);
+        //   }
+        //   const data = await response.json();
+          const data = await dataSource.insert(newRow);
           console.log('New row saved successfully', data);
   
           // 不能走refreshServerSide，因为会把校验失败的数据直接清空丢失
@@ -1645,7 +1650,9 @@ const getDeleteButtonScript = (table: any, mode: string, { env }) => {
 
       const amisNotify = event.context && event.context.env && event.context.env.notify || alert;
 
-      const gridApi = event.data.gridApi; //agGridRefs && agGridRefs[tableId];
+      const gridApi = event.data.gridApi;
+      const gridContext = event.data.gridContext;
+      const dataSource = gridContext.dataSource;
 
       function getAllRowData() {
         const rowData = [];
@@ -1701,49 +1708,23 @@ const getDeleteButtonScript = (table: any, mode: string, { env }) => {
         }
 
         try {
-          /*
-          for (const data of selectedData) {
-            const id = data._id;
-            // Call the API to delete each selected row
-            const response = await fetch(B6_TABLES_ROOTURL + '/' + tableId + '/' + id, {
-              method: 'DELETE',
-              credentials: 'include',
-              headers: {
-                'Content-Type': 'application/json',
-                "Authorization": \`Bearer \${event.data.context.tenantId},\${event.data.context.authToken}\`
-              }
-            });
-
-            if (!response.ok) {
-              throw new Error('Server error! Status: ' + response.status);
-            }
-
-            const result = await response.json();
-
-            if (result.deleted) {
-              // Remove the row from the grid only if the deletion was successful
-              gridApi.applyServerSideTransaction({ remove: [data] });
-            } else {
-              amisNotify("error", "删除 ID 为 " + id + " 的行失败");
-            }
-          }*/
-
           console.log('Deleting rows:', selectedIds);
-          const response = await fetch(B6_TABLES_ROOTURL + '/' + tableId, {
-            method: 'DELETE',
-            credentials: 'include',
-            headers: {
-              'Content-Type': 'application/json',
-            //   "Authorization": \`Bearer \${event.data.context.tenantId},\${event.data.context.authToken}\`
-            },
-            body: JSON.stringify({ records: selectedIds })
-          });
+        //   const response = await fetch(B6_TABLES_ROOTURL + '/' + tableId, {
+        //     method: 'DELETE',
+        //     credentials: 'include',
+        //     headers: {
+        //       'Content-Type': 'application/json',
+        //     //   "Authorization": \`Bearer \${event.data.context.tenantId},\${event.data.context.authToken}\`
+        //     },
+        //     body: JSON.stringify({ records: selectedIds })
+        //   });
 
-          if (!response.ok) {
-            throw new Error('Server error! Status: ' + response.status);
-          }
+        //   if (!response.ok) {
+        //     throw new Error('Server error! Status: ' + response.status);
+        //   }
 
-          const result = await response.json();
+        //   const result = await response.json();
+          const result = await dataSource.remove(selectedIds);
 
           if (result.error) {
             console.error('Error deleting rows result:', result.error);
