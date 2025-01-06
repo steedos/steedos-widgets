@@ -2,10 +2,10 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-01-02 15:39:40
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-01-06 15:07:54
+ * @LastEditTime: 2025-01-06 16:56:22
  */
 // import { getMeta, getColumnDef, getGridOptions, getTableHeader } from '../tables';
-import { getMeta, getColumnDef, getDataTypeDefinitions } from '../AirtableGrid/gridOptions';
+import { getColumnDef, getDataTypeDefinitions } from '../AirtableGrid/gridOptions';
 import { getDataSource } from './dataSource';
 
 export const B6_TABLES_BASEID = "default";
@@ -16,6 +16,27 @@ const B6_TABLES_API = `${B6_HOST}/api/v6/tables`;
 export const B6_TABLES_ROOTURL = `${B6_TABLES_API}/${B6_TABLES_BASEID}`;
 
 export const B6_TABLES_METABASE_ROOTURL = `${B6_TABLES_API}/meta/bases/${B6_TABLES_BASEID}/tables`;
+
+
+async function getMeta(tableId: string, force: boolean = false) {
+    if (!tableId) {
+        return;
+    }
+    try {
+        const response = await fetch(`${B6_TABLES_METABASE_ROOTURL}/${tableId}`, {
+            credentials: 'include',
+            // "headers": {
+            //     'Content-Type': 'application/json',
+            //     "Authorization": "Bearer ${context.tenantId},${context.authToken}" //TODO context中没取到数据
+            // }
+        });
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error(`getUISchema`, tableId, error);
+    }
+}
 
 export async function getTablesGridSchema(
     tableId: string,

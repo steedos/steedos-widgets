@@ -106,26 +106,6 @@ function checkNumberPrecision(num, precision) {
     }
 }
 
-export async function getMeta(tableId: string, force: boolean = false) {
-    if (!tableId) {
-        return;
-    }
-    try {
-        const response = await fetch(`${B6_TABLES_METABASE_ROOTURL}/${tableId}`, {
-            credentials: 'include',
-            // "headers": {
-            //     'Content-Type': 'application/json',
-            //     "Authorization": "Bearer ${context.tenantId},${context.authToken}" //TODO context中没取到数据
-            // }
-        });
-
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error(`getUISchema`, tableId, error);
-    }
-}
-
 function runAmisFormula(formula: string, data: any, catchBack: Function, options: any = {}) {
     try {
         var currentAmis = (window as any).amisRequire("amis");
@@ -1891,7 +1871,6 @@ export const getTableHeader = ({ tableId, title, mode, dataSource, getColumnDefs
 export async function getAirtableGridSchema(
     { tableId, title, mode, dataSource, getColumnDefs, env }
 ) {
-    // const meta = await getMeta(tableId);
     const meta = { _id: tableId };
     let tableAdminEvents = {};
     const isAdmin = mode === "admin";
