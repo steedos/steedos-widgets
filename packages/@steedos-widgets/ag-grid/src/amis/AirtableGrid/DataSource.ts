@@ -1,14 +1,11 @@
 type LoadOptions = Record<string, any>;
 
 interface DataSourceConfig {
-  baseUrl: string;
-  baseId: string;
-  tableId: string;
-  key: string;
   load: (loadOptions: LoadOptions) => Promise<any>;
   insert: (values: any) => Promise<any>;
   remove: (key: string) => Promise<any>;
   update: (key: string, values: any) => Promise<any>;
+  [key: string]: any;
 }
 
 export class AirtableDataSource {
@@ -18,24 +15,20 @@ export class AirtableDataSource {
     this.config = config;
   }
 
-  private getFullUrl() {
-    return `${this.config.baseUrl}/${this.config.baseId}/${this.config.tableId}`;
-  }
-
   public async load(loadOptions: LoadOptions) {
-    return this.config.load(loadOptions);
+    return await this.config.load(loadOptions);
   }
 
   public async insert(values: any) {
-    return this.config.insert(values);
+    return await this.config.insert(values);
   }
 
   public async remove(key: string) {
-    return this.config.remove(key);
+    return await this.config.remove(key);
   }
 
   public async update(key: string, values: any) {
-    return this.config.update(key, values);
+    return await this.config.update(key, values);
   }
 }
 

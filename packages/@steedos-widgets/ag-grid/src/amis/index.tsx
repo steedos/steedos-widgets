@@ -5,5 +5,5 @@
  * @LastEditTime: 2025-01-03 22:34:16
  */
 export * from './TablesGrid';
-export * from './TablesGrid2';
+export * from './TablesGrid/TablesGrid2';
 export * from './AirtableGrid';

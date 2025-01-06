@@ -188,7 +188,7 @@ function getMainMenuItems(params: any, { dispatchEvent, env }) {
     return athleteMenuItems;
 }
 
-function getColumnDef(field: any, dataTypeDefinitions: any, mode: string, { dispatchEvent, env }) {
+export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string, { dispatchEvent, env }) {
     const isReadonly = mode === "read";
     const isAdmin = mode === "admin";
     var cellDataType: any,
@@ -803,7 +803,7 @@ function filterModelToOdataFilters(filterModel, colDefs) {
     return filters;
 }
 
-function getServerSideDatasource(tableId: string) {
+function getServerSideDatasource(dataSource: any) {
     return {
         getRows: async function (params: any) {
             console.log('Server Side Datasource - Requesting rows from server:', params.request);
@@ -817,12 +817,17 @@ function getServerSideDatasource(tableId: string) {
                 );
                 const modelFilters = filterModelToOdataFilters(params.request.filterModel, colDefs);
                 console.log('Server Side Datasource - Requesting rows by modelFilters:', modelFilters);
-
-                let url = `${B6_TABLES_ROOTURL}/${tableId}`;
+                // let url = `${B6_TABLES_ROOTURL}/${tableId}`;
                 const startRow = params.request.startRow;
                 const pageSize = params.api.paginationGetPageSize();
-                let separator = url.includes('?') ? '&' : '?';
-                url += `${separator}skip=${startRow}&top=${pageSize}&expands=created_by,modified_by`;
+                // let separator = url.includes('?') ? '&' : '?';
+                // url += `${separator}skip=${startRow}&top=${pageSize}&expands=created_by,modified_by`;
+
+                const loadOptions: any = {
+                    skip: startRow, 
+                    top: pageSize,
+                    expands: 'created_by,modified_by'
+                }
 
                 // 过滤
                 let queryFilters = [];
@@ -837,10 +842,11 @@ function getServerSideDatasource(tableId: string) {
                 } else {
                     queryFilters = modelFilters;
                 }
-                if (queryFilters.length > 0) {
-                    separator = url.includes('?') ? '&' : '?';
-                    url += `${separator}filters=${JSON.stringify(queryFilters)}`;
-                }
+                // if (queryFilters.length > 0) {
+                //     separator = url.includes('?') ? '&' : '?';
+                //     url += `${separator}filters=${JSON.stringify(queryFilters)}`;
+                // }
+                loadOptions.filters = queryFilters;
 
                 // 排序
                 const sortModel = params.request.sortModel;
@@ -849,29 +855,31 @@ function getServerSideDatasource(tableId: string) {
                     sort.push(`${sortField.colId} ${sortField.sort}`);
                 });
                 console.log('Server Side Datasource - Requesting rows by sortModel:', sortModel);
-                if (sort.length > 0) {
-                    separator = url.includes('?') ? '&' : '?';
-                    url += `${separator}sort=${sort.join(",")}`;
-                }
+                // if (sort.length > 0) {
+                //     separator = url.includes('?') ? '&' : '?';
+                //     url += `${separator}sort=${sort.join(",")}`;
+                // }
+                loadOptions.sort = sort;
 
-                const response = await fetch(url, {
-                    credentials: 'include',
-                    // headers: {
-                    //     'Content-Type': 'application/json',
-                    //     'Authorization': 'Bearer ${context.tenantId},${context.authToken}' //TODO context中没取到数据
-                    // }
-                });
+                // const response = await fetch(url, {
+                //     credentials: 'include',
+                //     // headers: {
+                //     //     'Content-Type': 'application/json',
+                //     //     'Authorization': 'Bearer ${context.tenantId},${context.authToken}' //TODO context中没取到数据
+                //     // }
+                // });
+                const response = await dataSource.load(loadOptions);
 
-                if (!response.ok) {
-                    throw new Error(`Server error! Status: ${response.status}`);
-                }
+                // if (!response.ok) {
+                //     throw new Error(`Server error! Status: ${response.status}`);
+                // }
 
-                const data = await response.json();
-                console.log('Server Side Datasource - data:', data);
+                // const data = await response.json();
+                // console.log('Server Side Datasource - data:', data);
 
                 params.success({
-                    rowData: data.data,
-                    rowCount: data.totalCount
+                    rowData: response.data,
+                    rowCount: response.totalCount
                 });
             } catch (error) {
                 console.error('Error fetching data from server:', error);
@@ -882,7 +890,7 @@ function getServerSideDatasource(tableId: string) {
     };
 }
 
-function getDataTypeDefinitions() {
+export function getDataTypeDefinitions() {
     return {
         date: {
             baseDataType: 'date',
@@ -977,7 +985,7 @@ function getDataTypeDefinitions() {
     };
 }
 
-export function getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent }) {
+export async function getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent }) {
     // if (!table || !table.fields) {
     //     return null;
     // }
@@ -991,7 +999,7 @@ export function getGridOptions({ tableId, title, mode, dataSource, getColumnDefs
     // var columnDefs = table.fields.map(function (field) {
     //     return getColumnDef(field, dataTypeDefinitions, mode, { dispatchEvent, env });
     // });
-    var columnDefs = getColumnDefs({ title, mode, dataSource, env, dispatchEvent });
+    var columnDefs = await getColumnDefs({ title, mode, dataSource, env, dispatchEvent }) || [];
     columnDefs.unshift({
         headerName: "",
         valueGetter: "node.rowIndex + 1",
@@ -1104,7 +1112,7 @@ export function getGridOptions({ tableId, title, mode, dataSource, getColumnDefs
             fileName: tableLabel,
             columnKeys: columnFieldNames
         },
-        serverSideDatasource: getServerSideDatasource(tableId)
+        serverSideDatasource: getServerSideDatasource(dataSource)
     };
 
     if (needToValiTable) {
@@ -1372,7 +1380,7 @@ export function getTableAdminEvents(table: any) {
     }
 }
 
-const getAgGrid = ({ tableId, title, mode, dataSource, getColumnDefs, env }) => {
+const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env }) => {
     const table = { _id: tableId, label: title };
     const onDataFilter = async function (config: any, AgGrid: any, props: any, data: any, ref: any) {
         // 为ref.current补上props属性，否则props.dispatchEvent不能生效
@@ -1380,13 +1388,13 @@ const getAgGrid = ({ tableId, title, mode, dataSource, getColumnDefs, env }) => 
         let dispatchEvent = async function (action, data) {
             props.dispatchEvent(action, data, ref.current);
         }
-        let gridOptions = getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent });
+        let gridOptions = await getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent });
         return gridOptions;
     }
     const agGrid = {
         "type": "ag-grid",
         "onDataFilter": onDataFilter,
-        "className": "steedos-tables-grid-content mt-2 h-96",
+        "className": "steedos-airtable-grid-content mt-2 h-96",
         "style": {
             "height": "calc(100% - 58px)"
         },
@@ -1971,10 +1979,10 @@ export async function getTablesGridSchema(
         "data": {
             "_aggridTotalCount": "--"
         },
-        "className": "steedos-tables-grid h-full",
+        "className": "steedos-airtable-grid h-full",
         "body": [
             getTableHeader({ tableId, title, mode, dataSource, getColumnDefs, env }),
-            getAgGrid({ tableId, title, mode, dataSource, getColumnDefs, env })
+            await getAgGrid({ tableId, title, mode, dataSource, getColumnDefs, env })
         ],
         "onEvent": {
             [`@b6tables.${tableId}.setGridApi`]: {
