@@ -1065,9 +1065,9 @@ export async function getGridOptions({ tableId, title, mode, dataSource, getColu
             var rowCount = event.api.getDisplayedRowCount();
             console.log('onStoreUpdated:', rowCount);
             // getRows 初始加载数据，过滤数据，列排序等，gridApi.applyServerSideTransaction 新建记录、删除记录都会触发
-            // dispatchEvent("setTotalCount", {
-            //     "totalCount": rowCount
-            // });
+            dispatchEvent("setTotalCount", {
+                "totalCount": rowCount
+            });
         },
         onGridReady: function (params: any) {
             // getRows 初始加载数据，过滤数据，列排序等，gridApi.applyServerSideTransaction 新建记录、删除记录都会触发
