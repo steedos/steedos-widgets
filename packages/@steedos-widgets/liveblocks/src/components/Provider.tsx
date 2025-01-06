@@ -30,6 +30,11 @@ export const AmisRoomsProvider = (props: any) => {
         const headers = {
           "Content-Type": "application/json",
         };
+        const authToken = localStorage.getItem("steedos:authToken")
+        const spaceId = localStorage.getItem("steedos:spaceId")
+        if (spaceId && authToken) {
+          headers['Authorization'] = `Bearer ${spaceId},${authToken}`
+        }
 
         const body = JSON.stringify({
           room,
