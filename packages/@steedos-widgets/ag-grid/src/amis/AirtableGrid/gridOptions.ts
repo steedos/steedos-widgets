@@ -1402,18 +1402,6 @@ const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env 
             "height": "calc(100% - 58px)"
         },
         "onEvent": {
-            // "@b6tables.addRecord": {
-            //     "actions": [
-            //         {
-            //           "actionType": "toast",
-            //           "args": {
-            //             "msgType": "warning",
-            //             "msg": "1155我是全局警告消息，可以配置不同类型和弹出位置~",
-            //             "position": "top-right"
-            //           }
-            //         }
-            //     ]
-            // },
             "setGridApi": {
                 "weight": 0,
                 "actions": [
@@ -1502,12 +1490,9 @@ const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env 
     return agGrid;
 }
 
-const getNewButtonScript = (table: any, mode: string, { env }) => {
-    let tableId = table._id;
+const getNewButtonScript = () => {
     return `
-    //   const B6_TABLES_ROOTURL = "${B6_TABLES_ROOTURL}";
     //   const B6_TABLES_DATA_COLLECT_FIELDNAME = "\${B6_TABLES_DATA_COLLECT_FIELDNAME}";
-    //   const tableId = '${tableId || ""}';
     //   const collectId = '\${collectId || ""}';
       const amisNotify = event.context && event.context.env && event.context.env.notify || alert;
     
@@ -1594,20 +1579,6 @@ const getNewButtonScript = (table: any, mode: string, { env }) => {
   
         // 将新增数据发送到服务器
         try {
-        //   const response = await fetch(B6_TABLES_ROOTURL + '/' + tableId, {
-        //     method: 'POST',
-        //     credentials: 'include',
-        //     headers: {
-        //       'Content-Type': 'application/json',
-        //     //   "Authorization": \`Bearer \${event.data.context.tenantId},\${event.data.context.authToken}\` //TODO:要拿到登录校验活值
-        //     },
-        //     body: JSON.stringify(newRow)
-        //   });
-  
-        //   if (!response.ok) {
-        //     throw new Error('Server error! Status: ' + response.status);
-        //   }
-        //   const data = await response.json();
           const data = await dataSource.insert(newRow);
           console.log('New row saved successfully', data);
   
@@ -1642,12 +1613,8 @@ const getNewFieldButtonScript = (table: any, mode: string, { env }) => {
       `;
 }
 
-const getDeleteButtonScript = (table: any, mode: string, { env }) => {
-    let tableId = table._id;
+const getDeleteButtonScript = () => {
     return `
-      const B6_TABLES_ROOTURL = "${B6_TABLES_ROOTURL}";
-      const tableId = '${tableId || ""}';
-
       const amisNotify = event.context && event.context.env && event.context.env.notify || alert;
 
       const gridApi = event.data.gridApi;
@@ -1709,21 +1676,6 @@ const getDeleteButtonScript = (table: any, mode: string, { env }) => {
 
         try {
           console.log('Deleting rows:', selectedIds);
-        //   const response = await fetch(B6_TABLES_ROOTURL + '/' + tableId, {
-        //     method: 'DELETE',
-        //     credentials: 'include',
-        //     headers: {
-        //       'Content-Type': 'application/json',
-        //     //   "Authorization": \`Bearer \${event.data.context.tenantId},\${event.data.context.authToken}\`
-        //     },
-        //     body: JSON.stringify({ records: selectedIds })
-        //   });
-
-        //   if (!response.ok) {
-        //     throw new Error('Server error! Status: ' + response.status);
-        //   }
-
-        //   const result = await response.json();
           const result = await dataSource.remove(selectedIds);
 
           if (result.error) {
@@ -1799,6 +1751,7 @@ const getTableHeaderLeftButtons = (table: any, mode: string, { env }) => {
 }
 
 const getTableHeaderRightButtons = (table: any, mode: string, { env }) => {
+    const tableId = table._id;
     const newButton = {
         "label": "新建",
         "type": "button",
@@ -1807,18 +1760,11 @@ const getTableHeaderRightButtons = (table: any, mode: string, { env }) => {
         "onEvent": {
             "click": {
                 "actions": [
-                    // {
-                    //     "actionType": "broadcast",
-                    //     "args": {
-                    //         "eventName": "@b6tables.addRecord"
-                    //     }
-                    // }
                     {
-                        "ignoreError": false,
-                        "actionType": "custom",
-                        "script": getNewButtonScript(table, mode, { env }),
-                        // "script": "debugger;",
+                        "type": "broadcast",
+                        "actionType": "broadcast",
                         "args": {
+                            "eventName": `@b6tables.${tableId}.insertRecord`
                         }
                     }
                 ]
@@ -1841,10 +1787,10 @@ const getTableHeaderRightButtons = (table: any, mode: string, { env }) => {
                         }
                     },
                     {
-                        "ignoreError": false,
-                        "actionType": "custom",
-                        "script": getDeleteButtonScript(table, mode, { env }),
+                        "type": "broadcast",
+                        "actionType": "broadcast",
                         "args": {
+                            "eventName": `@b6tables.${tableId}.removeRecord`
                         }
                     }
                 ]
@@ -2000,14 +1946,24 @@ export async function getTablesGridSchema(
                     }
                 ]
             },
-            ["@b6tables.addRecord"]: {
+            [`@b6tables.${tableId}.insertRecord`]: {
                 "actions": [
                     {
-                        "actionType": "toast",
+                        "ignoreError": false,
+                        "actionType": "custom",
+                        "script": getNewButtonScript(),
                         "args": {
-                            "msgType": "warning",
-                            "msg": "11我是全局警告消息，可以配置不同类型和弹出位置~",
-                            "position": "top-right"
+                        }
+                    }
+                ]
+            },
+            [`@b6tables.${tableId}.removeRecord`]: {
+                "actions": [
+                    {
+                        "ignoreError": false,
+                        "actionType": "custom",
+                        "script": getDeleteButtonScript(),
+                        "args": {
                         }
                     }
                 ]

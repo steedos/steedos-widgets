@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-01-02 15:39:40
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-01-06 13:16:21
+ * @LastEditTime: 2025-01-06 15:07:54
  */
 // import { getMeta, getColumnDef, getGridOptions, getTableHeader } from '../tables';
 import { getMeta, getColumnDef, getDataTypeDefinitions } from '../AirtableGrid/gridOptions';
@@ -37,7 +37,7 @@ export async function getTablesGridSchema(
 
     const amisSchema = {
         "type": "steedos-airtable-grid",
-        "className": "abc123 steedos-tables-grid h-full",
+        "className": "steedos-tables-grid h-full",
         "title": meta.label,
         "mode": mode,
         "getColumnDefs": getColumnDefs,
