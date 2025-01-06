@@ -1888,7 +1888,7 @@ export const getTableHeader = ({ tableId, title, mode, dataSource, getColumnDefs
     };
 }
 
-export async function getTablesGridSchema(
+export async function getAirtableGridSchema(
     { tableId, title, mode, dataSource, getColumnDefs, env }
 ) {
     // const meta = await getMeta(tableId);
