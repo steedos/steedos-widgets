@@ -317,7 +317,7 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
     let mainMenuItems: any;
     // 系统字段不显示额外菜单
     if (isAdmin && !field.is_system) {
-        // 使用闭包把 table 参数传递给事件处理函数
+        // 使用闭包把 dispatchEvent 等参数传递给事件处理函数
         const getMainMenuItemsRaw = function (params: any) {
             return getMainMenuItems(params, { dispatchEvent, env });
         };
@@ -409,9 +409,6 @@ function getFieldVerificationErrors(fieldValue, colDef) {
 
 // 监听行数据改变事件
 async function onRowValueChanged(event: any, dataSource: any, { env }) {
-    console.log("===onRowValueChanged===dataSource===", dataSource);
-    console.log("===onRowValueChanged===env===", env);
-    // const tableId = table._id;
     const table: any = {};
     const data = event.data;
     console.log('Saving updated data to server:', JSON.stringify(data));
@@ -546,10 +543,9 @@ async function onRowValueChanged(event: any, dataSource: any, { env }) {
 
 const changeQueue = new Map();
 
-function processChangeQueue(table: any, { env }) {
-    console.log("===processChangeQueue===table===", table);
+function processChangeQueue(dataSource: any, { env }) {
     changeQueue.forEach((event, rowIndex) => {
-        onRowValueChanged(event, table, { env });
+        onRowValueChanged(event, dataSource, { env });
     });
     changeQueue.clear();
 }
@@ -559,7 +555,7 @@ const debouncedProcessChangeQueue = debounce(processChangeQueue, 200, {
     trailing: true
 });
 
-function onCellValueChanged(event: any, table: any, { env }) {
+function onCellValueChanged(event: any, dataSource: any, { env }) {
     const rowIndex = event.node.rowIndex;
 
     if (!changeQueue.has(rowIndex)) {
@@ -570,7 +566,7 @@ function onCellValueChanged(event: any, table: any, { env }) {
         existingEvent.data = { ...existingEvent.data, ...event.data };
     }
 
-    debouncedProcessChangeQueue(table, { env });
+    debouncedProcessChangeQueue(dataSource, { env });
 }
 
 // 校验数据表中数据的字段类型格式合法性
@@ -968,10 +964,6 @@ export function getDataTypeDefinitions() {
 }
 
 export async function getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent }) {
-    // if (!table || !table.fields) {
-    //     return null;
-    // }
-    // let tableId = table._id;
     const table = { _id: tableId, verifications:[] };
     let tableLabel = title;
     const isReadonly = mode === "read";
@@ -999,7 +991,7 @@ export async function getGridOptions({ tableId, title, mode, dataSource, getColu
         sortable: false
     });
 
-    // 使用闭包把 table 参数传递给事件处理函数
+    // 使用闭包把 dataSource 等参数传递给事件处理函数
     const onRowValueChangedRaw = (event: any) => {
         onRowValueChanged(event, dataSource, { env });
     };
@@ -1194,13 +1186,11 @@ const getFieldFormService = (form, tableId, showFormulaFields = false) => {
 
 /**
  * 新建和编辑字段的amis dialog
- * @param {*} table 
- * @param {*} fields 
+ * @param {*} tableId 
  * @param {*} mode new/edit
  * @returns 
  */
-const getAgGridFieldFormDialog = (table: any, mode: string) => {
-    let tableId = table._id;
+const getAgGridFieldFormDialog = (tableId: any, mode: string) => {
     const form = {
         "type": "steedos-object-form",
         "mode": "edit",
@@ -1267,14 +1257,13 @@ const getAgGridFieldFormDialog = (table: any, mode: string) => {
     }
 }
 
-export function getTableAdminEvents(table: any) {
-    const tableId = table._id;
+export function getTableAdminEvents(tableId: any) {
     return {
         [`@b6tables.${tableId}.editField`]: {
             "actions": [
                 {
                     "actionType": "dialog",
-                    "dialog": getAgGridFieldFormDialog(table, "edit")
+                    "dialog": getAgGridFieldFormDialog(tableId, "edit")
                 }
             ]
         },
@@ -1282,7 +1271,7 @@ export function getTableAdminEvents(table: any) {
             "actions": [
                 {
                     "actionType": "dialog",
-                    "dialog": getAgGridFieldFormDialog(table, "new")
+                    "dialog": getAgGridFieldFormDialog(tableId, "new")
 
                 }
             ]
@@ -1364,7 +1353,6 @@ export function getTableAdminEvents(table: any) {
 }
 
 const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env }) => {
-    const table = { _id: tableId, label: title };
     const onDataFilter = async function (config: any, AgGrid: any, props: any, data: any, ref: any) {
         // 为ref.current补上props属性，否则props.dispatchEvent不能生效
         ref.current.props = props;
@@ -1579,8 +1567,7 @@ const getNewButtonScript = () => {
         `;
 }
 
-const getNewFieldButtonScript = (table: any, mode: string, { env }) => {
-    let tableId = table._id;
+const getNewFieldButtonScript = (tableId: string, mode: string, { env }) => {
     return `
       doAction(
         {
@@ -1676,8 +1663,7 @@ const getDeleteButtonScript = () => {
     `;
 }
 
-const getTableHeaderLeftButtons = (table: any, mode: string, { env }) => {
-    let tableId = table._id;
+const getTableHeaderLeftButtons = (tableId: string, mode: string, { env }) => {
     const isAdmin = mode === "admin";
     const newFieldButton = {
         "label": "新建字段",
@@ -1691,7 +1677,7 @@ const getTableHeaderLeftButtons = (table: any, mode: string, { env }) => {
                     {
                         "ignoreError": false,
                         "actionType": "custom",
-                        "script": getNewFieldButtonScript(table, mode, { env }),
+                        "script": getNewFieldButtonScript(tableId, mode, { env }),
                         "args": {
                         }
                     }
@@ -1730,8 +1716,7 @@ const getTableHeaderLeftButtons = (table: any, mode: string, { env }) => {
     };
 }
 
-const getTableHeaderRightButtons = (table: any, mode: string, { env }) => {
-    const tableId = table._id;
+const getTableHeaderRightButtons = (tableId: any, mode: string, { env }) => {
     const newButton = {
         "label": "新建",
         "type": "button",
@@ -1791,7 +1776,6 @@ export const getTableHeader = ({ tableId, title, mode, dataSource, getColumnDefs
     const isReadonly = mode === "read";
     const isAdmin = mode === "admin";
     const tableTitle = title || "记录";
-    const table = { _id: tableId };
     return {
         "type": "wrapper",
         "body": [
@@ -1842,7 +1826,7 @@ export const getTableHeader = ({ tableId, title, mode, dataSource, getColumnDefs
                         "className": "flex justify-end",
                         "columns": [
                             {
-                                "body": getTableHeaderLeftButtons(table, mode, { env }),
+                                "body": getTableHeaderLeftButtons(tableId, mode, { env }),
                                 "md": "auto"
                             },
                             {
@@ -1855,7 +1839,7 @@ export const getTableHeader = ({ tableId, title, mode, dataSource, getColumnDefs
                                 "md": "auto"
                             },
                             isReadonly ? {} : {
-                                "body": getTableHeaderRightButtons(table, mode, { env }),
+                                "body": getTableHeaderRightButtons(tableId, mode, { env }),
                                 "md": "auto"
                             }
                         ]
@@ -1875,7 +1859,7 @@ export async function getAirtableGridSchema(
     let tableAdminEvents = {};
     const isAdmin = mode === "admin";
     if (isAdmin) {
-        tableAdminEvents = getTableAdminEvents(meta);
+        tableAdminEvents = getTableAdminEvents(tableId);
     }
 
     const amisSchema = {
