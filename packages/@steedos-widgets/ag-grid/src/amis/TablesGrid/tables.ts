@@ -2,13 +2,11 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-01-02 15:39:40
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-01-06 20:09:12
+ * @LastEditTime: 2025-01-06 22:41:12
  */
 // import { getMeta, getColumnDef, getGridOptions, getTableHeader } from '../tables';
 import { getColumnDef, getDataTypeDefinitions } from '../AirtableGrid/gridOptions';
 import { getDataSource } from './dataSource';
-
-const B6_HOST = "http://localhost:5100";//process.env.B6_HOST || "";
 
 async function getMeta(tableId: string, baseId: string = 'default', baseUrl: string = '') {
     if (!tableId) {
@@ -36,9 +34,9 @@ export async function getTablesGridSchema(
     tableId: string,
     baseId: string,
     mode: string, //edit/read/admin
-    { env }
+    { env, data }
 ) {
-    const baseUrl = B6_HOST;//TODO:要改为从amis data context中取值
+    const baseUrl =   data.rootUrl;// 开发环境 b6 server 需要配置 B6_PROXY_TARGET 环境变量，代理 B6_HOST 为平台 RootUrl
     const meta = await getMeta(tableId, baseId, baseUrl);
     const dataSource = getDataSource({ baseUrl, baseId, tableId});
 
