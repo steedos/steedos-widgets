@@ -7,7 +7,7 @@ export default {
 };
 const env = {
   assetUrls: [
-    `${process.env.STEEDOS_UNPKG_URL}/@steedos-widgets/liveblocks@6.3.12-beta.6/dist/assets.json`,
+    `${process.env.STEEDOS_UNPKG_URL}/@steedos-widgets/liveblocks@6.3.12-beta.9/dist/assets.json`,
   ],
 }
 
