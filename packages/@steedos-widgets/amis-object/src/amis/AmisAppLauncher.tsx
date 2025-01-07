@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-10-10 16:30:41
+ * @LastEditTime: 2025-01-07 17:14:16
  * @Description: 
  */
 
@@ -359,7 +359,7 @@ export const AmisAppLauncher = async (props) => {
           ]
         }
       },
-      isMobile && isSpaceAdmin ? null : {
+      isMobile || !isSpaceAdmin ? null : {
         "type": "button",
         "level": "link",
         "label": "+ 新建应用",
