@@ -508,21 +508,9 @@ async function onRowValueChanged(event: any, dataSource: any, { env }) {
         // 保存更新的数据到服务端
         delete data.__verificationErrors;
         delete data.__formulaErrors;
-        // var url = B6_TABLES_ROOTURL + '/' + tableId + '/' + data._id;
-        // const response = await fetch(url, {
-        //     credentials: 'include',
-        //     method: 'PUT',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //         // "Authorization": "Bearer ${context.tenantId},${context.authToken}" //TODO context中没取到数据
-        //         "Authorization": "Bearer 654300b5074594d15147bcfa,dbe0e0da68ba2e83aca63a5058907e543a4e89f7e979963b4aa1f574f227a3b5063e149d818ff553fb4aa1"
-        //     },
-        //     body: JSON.stringify(data)
-        // });
         // if (!response.ok) {
         //     throw new Error('Server error! Status: ' + response.status);
         // }
-        // const responseData = await response.json();
         const responseData = await dataSource.update(data._id, data);
         console.log('Data saved successfully:', responseData);
         rowNode.setData(Object.assign({}, responseData, { __verificationErrors: verificationErrors, __formulaErrors: formulaErrors }));
@@ -776,8 +764,7 @@ function getServerSideDatasource(dataSource: any) {
     return {
         getRows: async function (params: any) {
             console.log('Server Side Datasource - Requesting rows from server:', params.request);
-            let gridApi = params.api;
-            // agGridRefs[tableId] = gridApi;\
+            // let gridApi = params.api;
 
             try {
                 const colDefs = keyBy(
@@ -786,11 +773,8 @@ function getServerSideDatasource(dataSource: any) {
                 );
                 const modelFilters = filterModelToOdataFilters(params.request.filterModel, colDefs);
                 console.log('Server Side Datasource - Requesting rows by modelFilters:', modelFilters);
-                // let url = `${B6_TABLES_ROOTURL}/${tableId}`;
                 const startRow = params.request.startRow;
                 const pageSize = params.api.paginationGetPageSize();
-                // let separator = url.includes('?') ? '&' : '?';
-                // url += `${separator}skip=${startRow}&top=${pageSize}&expands=created_by,modified_by`;
 
                 const loadOptions: any = {
                     skip: startRow,
@@ -811,10 +795,6 @@ function getServerSideDatasource(dataSource: any) {
                 } else {
                     queryFilters = modelFilters;
                 }
-                // if (queryFilters.length > 0) {
-                //     separator = url.includes('?') ? '&' : '?';
-                //     url += `${separator}filters=${JSON.stringify(queryFilters)}`;
-                // }
                 loadOptions.filters = queryFilters;
 
                 // 排序
@@ -824,27 +804,13 @@ function getServerSideDatasource(dataSource: any) {
                     sort.push(`${sortField.colId} ${sortField.sort}`);
                 });
                 console.log('Server Side Datasource - Requesting rows by sortModel:', sortModel);
-                // if (sort.length > 0) {
-                //     separator = url.includes('?') ? '&' : '?';
-                //     url += `${separator}sort=${sort.join(",")}`;
-                // }
                 loadOptions.sort = sort;
 
-                // const response = await fetch(url, {
-                //     credentials: 'include',
-                //     // headers: {
-                //     //     'Content-Type': 'application/json',
-                //     //     'Authorization': 'Bearer ${context.tenantId},${context.authToken}' //TODO context中没取到数据
-                //     // }
-                // });
                 const response = await dataSource.load(loadOptions);
 
                 // if (!response.ok) {
                 //     throw new Error(`Server error! Status: ${response.status}`);
                 // }
-
-                // const data = await response.json();
-                // console.log('Server Side Datasource - data:', data);
 
                 params.success({
                     rowData: response.data,
@@ -1614,13 +1580,6 @@ export async function getAirtableGridSchema(
         "onEvent": {
             [`@b6tables.${tableId}.setGridApi`]: {
                 "actions": [
-                    // {
-                    //     "ignoreError": false,
-                    //     "actionType": "custom",
-                    //     "script": "debugger;console.log('===event.data===', event.data);",
-                    //     "args": {
-                    //     }
-                    // },
                     {
                         "actionType": "setValue",
                         "args": {
@@ -1629,7 +1588,6 @@ export async function getAirtableGridSchema(
                                 "gridContext": "${gridContext}"
                             }
                         },
-                        // "componentId": "apps-form"
                     }
                 ]
             },
@@ -1642,7 +1600,6 @@ export async function getAirtableGridSchema(
                                 "_aggridTotalCount": "${totalCount}"
                             }
                         },
-                        // "componentId": "apps-form"
                     }
                 ]
             },
