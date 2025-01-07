@@ -2,10 +2,11 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-01-06 17:56:09
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-01-06 18:15:25
+ * @LastEditTime: 2025-01-07 10:27:24
  */
 import { React, AmisRender } from '../components/AmisRender';
 import { useEffect, useState, useRef } from 'react';
+// import { getDataTypeDefinitions, getColumnDef, AirtableDataSource } from '@steedos-widgets/ag-grid';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
@@ -26,8 +27,8 @@ function isNotEmpty(value: any): boolean {
   return value !== null && value !== undefined && value !== '';
 }
 
-const getDataSource = () => {
-  // console.log("getDataSource ====", { baseUrl, baseId, tableId, key });
+const getDataSource = ({ baseUrl, baseId = 'default', tableId, key = "_id" }) => {
+  console.log("getDataSource ====", { baseUrl, baseId, tableId, key });
   // return new AirtableDataSource({
   //   baseUrl: baseUrl,
   //   baseId: baseId,
@@ -42,21 +43,6 @@ const getDataSource = () => {
   //       const params: Record<string, string> = {};
 
   //       [
-  //         // "filter",
-  //         // "group",
-  //         // "groupSummary",
-  //         // "parentIds",
-  //         // "requireGroupCount",
-  //         // "requireTotalCount",
-  //         // "searchExpr",
-  //         // "searchOperation",
-  //         // "searchValue",
-  //         // "select",
-  //         // "sort",
-  //         // "skip",
-  //         // "take",
-  //         // "totalSummary",
-  //         // "userData",
   //         "skip",
   //         "top",
   //         "filters",
@@ -136,54 +122,61 @@ const getDataSource = () => {
   // });
 }
 
-// async function getMeta(tableId: string, force: boolean = false) {
-//     if (!tableId) {
-//         return;
-//     }
-//     try {
-//         const response = await fetch(`${B6_TABLES_METABASE_ROOTURL}/${tableId}`, {
-//             credentials: 'include',
-//             // "headers": {
-//             //     'Content-Type': 'application/json',
-//             //     "Authorization": "Bearer ${context.tenantId},${context.authToken}" //TODO context中没取到数据
-//             // }
-//         });
+async function getMeta(tableId: string, baseId: string = 'default', baseUrl: string = '') {
+  if (!tableId) {
+    return;
+  }
+  const tablesApi = `${baseUrl}/api/v6/tables`;
+  const metaApi = `${tablesApi}/meta/bases/${baseId}/tables`;
+  try {
+    const response = await fetch(`${metaApi}/${tableId}`, {
+      credentials: 'include',
+      // "headers": {
+      //     'Content-Type': 'application/json',
+      //     "Authorization": "Bearer ${context.tenantId},${context.authToken}" //TODO context中没取到数据
+      // }
+    });
 
-//         const data = await response.json();
-//         return data;
-//     } catch (error) {
-//         console.error(`getUISchema`, tableId, error);
-//     }
-// }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(`getUISchema`, tableId, error);
+  }
+}
 
-const getColumnDefs = async ({ dispatchEvent }) => {
+export const Gerneral = () => {
+  const baseUrl = process.env.ROOT_URL;
+  const tableId = '67658ac0cc184d0efc68b752';
+  const mode = 'admin';
+  // const meta = await getMeta(tableId);
+  const getColumnDefs = ({ dispatchEvent }) => {
     // let dataTypeDefinitions = getDataTypeDefinitions();
     // var columnDefs = meta.fields.map(function (field: any) {
-    //     return getColumnDef(field, dataTypeDefinitions, mode, { dispatchEvent, env });
+    //   return getColumnDef(field, dataTypeDefinitions, mode, { dispatchEvent, env });
     // });
     // return columnDefs;
     return []
+  };
+  return (<>
+    <AmisRender
+      data={data}
+      env={env}
+      schema={{
+        "type": "page",
+        "body": [
+          {
+            "type": "steedos-airtable-grid",
+            "className": "h-96",
+            "getColumnDefs": getColumnDefs,
+            // "dataSource": getDataSource({baseUrl, tableId}),
+            "style": {
+              "height": "calc(100vh - 58px)"
+            },
+            "tableId": "67658ac0cc184d0efc68b752",
+            "mode": "admin"
+          }
+        ],
+      }}
+    />
+  </>)
 }
-
-export const Gerneral = () => (
-  <AmisRender
-    data={data}
-    env={env}
-    schema={{
-      "type": "page",
-      "body": [
-        {
-          "type": "steedos-airtable-grid",
-          "className": "h-96",
-          "getColumnDefs": getColumnDefs,
-          // "dataSource": getDataSource(),
-          "style": {
-            "height": "calc(100vh - 58px)"
-          },
-          "tableId": "67658ac0cc184d0efc68b752",
-          "mode": "admin"
-        }
-      ],
-    }}
-  />
-)
