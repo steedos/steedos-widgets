@@ -1599,8 +1599,6 @@ export const getTableHeader = ({ tableId, title, mode, dataSource, getColumnDefs
 export async function getAirtableGridSchema(
     { tableId, title, mode, dataSource, getColumnDefs, env }
 ) {
-    const meta = { _id: tableId };
-
     const amisSchema = {
         "type": "service",
         "id": `service_airtable_grid_${tableId}`,
@@ -1673,7 +1671,6 @@ export async function getAirtableGridSchema(
         }
     };
     return {
-        meta,
         amisSchema,
     };
 }
