@@ -1,14 +1,5 @@
 import { keyBy, map, isNaN, isNil, union, debounce, each, clone, forEach, filter } from "lodash";
 
-export const B6_TABLES_BASEID = "default";
-
-const ROOT_URL = "http://127.0.0.1:5800";
-const B6_HOST = "http://localhost:5100";//process.env.B6_HOST || "";
-const B6_TABLES_API = `${B6_HOST}/api/v6/tables`;
-export const B6_TABLES_ROOTURL = `${B6_TABLES_API}/${B6_TABLES_BASEID}`;
-
-export const B6_TABLES_METABASE_ROOTURL = `${B6_TABLES_API}/meta/bases/${B6_TABLES_BASEID}/tables`;
-
 const baseFields = ["created", "created_by", "modified", "modified_by"];
 
 const FilterTypesMap = {
