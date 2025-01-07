@@ -60,9 +60,8 @@ const getFieldFormService = (form, tableId, showFormulaFields = false) => {
             "method": "get",
             "requestAdaptor": getFormServiceApiRequestAdaptor(tableId, showFormulaFields),
             "adaptor": getFormServiceApiAdaptor(),
-            "headers": {//TODO:Authorization取不到
-                //   "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                "Authorization": "Bearer 654300b5074594d15147bcfa,dbe0e0da68ba2e83aca63a5058907e543a4e89f7e979963b4aa1f574f227a3b5063e149d818ff553fb4aa1"
+            "headers": {
+                "Authorization": "Bearer ${context.tenantId},${context.authToken}"
             },
             "messages": {
             },
@@ -184,9 +183,8 @@ export function getTableAdminEvents(tableId: string) {
                     "api": {
                         "url": "${context.rootUrl}/api/v1/b6_fields/${deletingFieldId}",
                         "method": "delete",
-                        "headers": {//TODO:Authorization取不到
-                            //   "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                            "Authorization": "Bearer 654300b5074594d15147bcfa,dbe0e0da68ba2e83aca63a5058907e543a4e89f7e979963b4aa1f574f227a3b5063e149d818ff553fb4aa1"
+                        "headers": {
+                            "Authorization": "Bearer ${context.tenantId},${context.authToken}"
                         },
                         "requestAdaptor": "",
                         "adaptor": "",
@@ -218,9 +216,8 @@ export function getTableAdminEvents(tableId: string) {
                         "data": {
                             "fields": "${sortedFields}"
                         },
-                        "headers": {//TODO:Authorization取不到
-                            //   "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                            "Authorization": "Bearer 654300b5074594d15147bcfa,dbe0e0da68ba2e83aca63a5058907e543a4e89f7e979963b4aa1f574f227a3b5063e149d818ff553fb4aa1"
+                        "headers": {
+                            "Authorization": "Bearer ${context.tenantId},${context.authToken}"
                         },
                         "adaptor": "",
                         "messages": {
