@@ -2,11 +2,12 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-01-02 15:39:40
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-01-06 22:41:12
+ * @LastEditTime: 2025-01-07 11:14:35
  */
 // import { getMeta, getColumnDef, getGridOptions, getTableHeader } from '../tables';
 import { getColumnDef, getDataTypeDefinitions } from '../AirtableGrid/gridOptions';
 import { getDataSource } from './dataSource';
+import { getTableAdminEvents } from './fieldsAdmin';
 
 async function getMeta(tableId: string, baseId: string = 'default', baseUrl: string = '') {
     if (!tableId) {
@@ -30,15 +31,16 @@ async function getMeta(tableId: string, baseId: string = 'default', baseUrl: str
     }
 }
 
+
 export async function getTablesGridSchema(
     tableId: string,
     baseId: string,
     mode: string, //edit/read/admin
     { env, data }
 ) {
-    const baseUrl =   data.rootUrl;// 开发环境 b6 server 需要配置 B6_PROXY_TARGET 环境变量，代理 B6_HOST 为平台 RootUrl
+    const baseUrl = data.rootUrl;// 开发环境 b6 server 需要配置 B6_PROXY_TARGET 环境变量，代理 B6_HOST 为平台 RootUrl
     const meta = await getMeta(tableId, baseId, baseUrl);
-    const dataSource = getDataSource({ baseUrl, baseId, tableId});
+    const dataSource = getDataSource({ baseUrl, baseId, tableId });
 
     const getColumnDefs = async ({ dispatchEvent }) => {
         let dataTypeDefinitions = getDataTypeDefinitions();
@@ -48,14 +50,31 @@ export async function getTablesGridSchema(
         return columnDefs;
     }
 
+    let tableAdminEvents = {};
+    const isAdmin = mode === "admin";
+    if (isAdmin) {
+        tableAdminEvents = getTableAdminEvents(tableId);
+    }
+
     const amisSchema = {
-        "type": "steedos-airtable-grid",
+        "type": "service",
+        "id": `service_tables_grid_${tableId}`,
+        "name": "page",
         "className": "steedos-tables-grid h-full",
-        "title": meta.label,
-        "mode": mode,
-        "getColumnDefs": getColumnDefs,
-        "dataSource": dataSource,
-        tableId
+        "body": [
+            {
+                "type": "steedos-airtable-grid",
+                "className": "h-full",
+                "title": meta.label,
+                "mode": mode,
+                "getColumnDefs": getColumnDefs,
+                "dataSource": dataSource,
+                tableId
+            }
+        ],
+        "onEvent": {
+            ...tableAdminEvents
+        }
     };
     return {
         meta,
