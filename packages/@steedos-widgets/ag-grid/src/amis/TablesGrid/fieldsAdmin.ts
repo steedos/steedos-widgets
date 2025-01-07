@@ -151,7 +151,7 @@ const getAgGridFieldFormDialog = (tableId: string, mode: string) => {
 
 export function getTableAdminEvents(tableId: string) {
     return {
-        [`@b6tables.${tableId}.editField`]: {
+        [`@airtable.${tableId}.editField`]: {
             "actions": [
                 {
                     "actionType": "dialog",
@@ -159,7 +159,7 @@ export function getTableAdminEvents(tableId: string) {
                 }
             ]
         },
-        [`@b6tables.${tableId}.newField`]: {
+        [`@airtable.${tableId}.newField`]: {
             "actions": [
                 {
                     "actionType": "dialog",
@@ -168,7 +168,7 @@ export function getTableAdminEvents(tableId: string) {
                 }
             ]
         },
-        [`@b6tables.${tableId}.deleteField`]: {
+        [`@airtable.${tableId}.deleteField`]: {
             "actions": [
                 {
                     "actionType": "confirmDialog",
@@ -204,7 +204,7 @@ export function getTableAdminEvents(tableId: string) {
                 }
             ]
         },
-        [`@b6tables.${tableId}.sortFields`]: {
+        [`@airtable.${tableId}.sortFields`]: {
             "actions": [
                 {
                     "ignoreError": false,
@@ -238,7 +238,7 @@ export function getTableAdminEvents(tableId: string) {
                 }
             ]
         },
-        [`@b6tables.${tableId}.setVerification`]: {
+        [`@airtable.${tableId}.setVerification`]: {
             // "actions": getVerificationSetActions(table, fields)
         }
     }

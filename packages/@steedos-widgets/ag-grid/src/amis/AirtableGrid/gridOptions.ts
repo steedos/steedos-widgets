@@ -1094,7 +1094,7 @@ const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env 
                         "type": "broadcast",
                         "actionType": "broadcast",
                         "args": {
-                            "eventName": `@b6tables.${tableId}.setGridApi`
+                            "eventName": `@airtable.${tableId}.setGridApi`
                         },
                         "data": {
                             "gridApi": "${gridApi}",
@@ -1110,7 +1110,7 @@ const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env 
                         "type": "broadcast",
                         "actionType": "broadcast",
                         "args": {
-                            "eventName": `@b6tables.${tableId}.editField`
+                            "eventName": `@airtable.${tableId}.editField`
                         },
                         "data": {
                             "editingFieldId": "${editingFieldId}"
@@ -1125,7 +1125,7 @@ const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env 
                         "type": "broadcast",
                         "actionType": "broadcast",
                         "args": {
-                            "eventName": `@b6tables.${tableId}.deleteField`
+                            "eventName": `@airtable.${tableId}.deleteField`
                         },
                         "data": {
                             "deletingFieldId": "${deletingFieldId}"
@@ -1140,7 +1140,7 @@ const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env 
                         "type": "broadcast",
                         "actionType": "broadcast",
                         "args": {
-                            "eventName": `@b6tables.${tableId}.sortFields`
+                            "eventName": `@airtable.${tableId}.sortFields`
                         },
                         "data": {
                             "sortedFields": "${sortedFields}"
@@ -1155,7 +1155,7 @@ const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env 
                         "type": "broadcast",
                         "actionType": "broadcast",
                         "args": {
-                            "eventName": `@b6tables.${tableId}.setTotalCount`
+                            "eventName": `@airtable.${tableId}.setTotalCount`
                         },
                         "data": {
                             "totalCount": "${totalCount}"
@@ -1284,7 +1284,7 @@ const getNewFieldButtonScript = (tableId: string, mode: string, { env }) => {
             "type": "broadcast",
             "actionType": "broadcast",
             "args": {
-                "eventName": "@b6tables.${tableId}.newField"
+                "eventName": "@airtable.${tableId}.newField"
             }
         })
       `;
@@ -1408,7 +1408,7 @@ const getTableHeaderLeftButtons = (tableId: string, mode: string, { env }) => {
                         "type": "broadcast",
                         "actionType": "broadcast",
                         "args": {
-                            "eventName": `@b6tables.${tableId}.setVerification`
+                            "eventName": `@airtable.${tableId}.setVerification`
                         }
                     }
                 ]
@@ -1439,7 +1439,7 @@ const getTableHeaderRightButtons = (tableId: any, mode: string, { env }) => {
                         "type": "broadcast",
                         "actionType": "broadcast",
                         "args": {
-                            "eventName": `@b6tables.${tableId}.insertRecord`
+                            "eventName": `@airtable.${tableId}.insertRecord`
                         }
                     }
                 ]
@@ -1465,7 +1465,7 @@ const getTableHeaderRightButtons = (tableId: any, mode: string, { env }) => {
                         "type": "broadcast",
                         "actionType": "broadcast",
                         "args": {
-                            "eventName": `@b6tables.${tableId}.removeRecord`
+                            "eventName": `@airtable.${tableId}.removeRecord`
                         }
                     }
                 ]
@@ -1578,7 +1578,7 @@ export async function getAirtableGridSchema(
             await getAgGrid({ tableId, title, mode, dataSource, getColumnDefs, env })
         ],
         "onEvent": {
-            [`@b6tables.${tableId}.setGridApi`]: {
+            [`@airtable.${tableId}.setGridApi`]: {
                 "actions": [
                     {
                         "actionType": "setValue",
@@ -1591,7 +1591,7 @@ export async function getAirtableGridSchema(
                     }
                 ]
             },
-            [`@b6tables.${tableId}.setTotalCount`]: {
+            [`@airtable.${tableId}.setTotalCount`]: {
                 "actions": [
                     {
                         "actionType": "setValue",
@@ -1603,7 +1603,7 @@ export async function getAirtableGridSchema(
                     }
                 ]
             },
-            [`@b6tables.${tableId}.insertRecord`]: {
+            [`@airtable.${tableId}.insertRecord`]: {
                 "actions": [
                     {
                         "ignoreError": false,
@@ -1614,7 +1614,7 @@ export async function getAirtableGridSchema(
                     }
                 ]
             },
-            [`@b6tables.${tableId}.removeRecord`]: {
+            [`@airtable.${tableId}.removeRecord`]: {
                 "actions": [
                     {
                         "ignoreError": false,
