@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-01-07 18:06:58
+ * @LastEditTime: 2025-01-07 20:20:50
  * @Description:
  */
 
@@ -367,7 +367,9 @@ export async function getRelatedListSchema(
     const adaptor = `
         try{
             if(setDataToComponentId){
-                if(payload.data.count){
+                // 子表列表在headerToolbar过滤器中设置过过滤条件的话，始终显示子表列表，无论是否查询到数据
+                var headerToolbarFilterChanged = context.isFieldsFilterEmpty === false;
+                if(payload.data.count || headerToolbarFilterChanged){
                     setTimeout(function(){
                         // 设计器中获取不到window.$从而导致报错， 所以用纯js替换下。
                         // window.$("." + setDataToComponentId + " .antd-Crud").removeClass("hidden");		
