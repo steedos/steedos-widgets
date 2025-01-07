@@ -1,13 +1,13 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-02-18 14:46:50
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2025-01-07 18:06:58
  * @Description:
  */
 
 
-import { getObjectRecordDetailRelatedListHeader } from './converter/amis/header';
+import { getObjectRecordDetailRelatedListHeader, getObjectListHeader } from './converter/amis/header';
 import { isEmpty,  find, isString, forEach, keys, findKey, isArray, union, has, map } from "lodash";
 import { getUISchema, getField, getListViewColumns, getListViewSort, getListViewFilter } from './objects'
 import { getRecord } from './record';
@@ -83,7 +83,7 @@ export async function getObjectRelatedList(
 
 // 获取单个相关表
 export async function getRecordDetailRelatedListSchema(objectName, recordId, relatedObjectName, relatedKey, ctx){
-    let { top, perPage, appId, relatedLabel, className, columns, sort, filters, visible_on } = ctx;
+    let { top, perPage, appId, relatedLabel, className, columns, sort, filters, visible_on, enableHeaderToolbar } = ctx;
     // console.log('getRecordDetailRelatedListSchema==>',objectName,recordId,relatedObjectName)
     const relatedObjectUiSchema = await getUISchema(relatedObjectName);
     if(!relatedObjectUiSchema){
@@ -164,6 +164,10 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
     let headerToolbar = [];
     if(!isMobile){
         headerToolbar.push("bulkActions");
+        if (enableHeaderToolbar) {
+            // 通过 enableHeaderToolbar = true 可以控制是否显示内置的带过滤器的headerToolbar
+            headerToolbar = undefined;
+        }
     }
     const options = {
         globalFilter,
@@ -202,7 +206,7 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
         amisSchema: {
             type: "service",
             id: componentId,
-            className: `steedos-record-related-list mb-4 last:mb-0 ${componentId} ${className}`,
+            className: `steedos-record-related-list mb-4 last:mb-0 ${componentId} ${className} ${enableHeaderToolbar ? 'enable-header-toolbar' : ''}`,
             data: {
                 relatedKey: relatedKey,   
                 listViewId: `amis-\${appId}-${relatedObjectName}-listview`,
@@ -305,6 +309,7 @@ export async function getRelatedListSchema(
     listViewName,
     ctx
   ) {
+    const { enableHeaderToolbar } = ctx;
     const uiSchema = await getUISchema(objectName);
     if(!uiSchema){
         return {}
@@ -357,6 +362,7 @@ export async function getRelatedListSchema(
     delete ctx.filters;
 
     delete ctx.globalFilter;
+    delete ctx.enableHeaderToolbar;
 
     const adaptor = `
         try{
@@ -383,7 +389,7 @@ export async function getRelatedListSchema(
         "filters": listviewFilter,
         "filtersFunction": filtersFunction,
         "sort": listViewSort,
-        "filterVisible": false,
+        "filterVisible": !!enableHeaderToolbar,
         "requestAdaptor": ctx.requestAdaptor,  
         "adaptor": adaptor + ctx.adaptor || '',
         "ctx": ctx,
