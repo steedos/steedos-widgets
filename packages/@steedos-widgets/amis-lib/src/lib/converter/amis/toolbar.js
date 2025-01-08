@@ -108,7 +108,7 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
     // console.log("==search=onChangeScript===");
     const scope = event.context.scoped;
     let crud = SteedosUI.getClosestAmisComponentByType(scope, "crud");
-    // let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service");
+    // let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service", {name: "service_object_table_crud"});
     let __changedSearchBoxValues = {};
     __changedSearchBoxValues["${keywordsSearchBoxName}"] = event.data["${keywordsSearchBoxName}"];
     // crudService && crudService.setData({__changedSearchBoxValues: __changedSearchBoxValues});
@@ -475,10 +475,10 @@ export async function getObjectFilter(objectSchema, fields, options) {
     let filterForm = SteedosUI.getClosestAmisComponentByType(scope, "form");
     let filterFormService = SteedosUI.getClosestAmisComponentByType(filterForm.context, "service");
     // 使用event.data的话，并不能拿到本地存储中的过滤条件，所以需要从filterFormService中取。
-    let filterFormValues = filterFormService.getData()
+    let filterFormValues = filterFormService.getData();
     let isFieldsFilterEmpty = SteedosUI.isFilterFormValuesEmpty(filterFormValues);
     let crud = SteedosUI.getClosestAmisComponentByType(scope, "crud");
-    let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service");
+    let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service", {name: "service_object_table_crud"});
     crudService && crudService.setData({isFieldsFilterEmpty});
   `;
   let onChangeScript = `
@@ -493,7 +493,7 @@ export async function getObjectFilter(objectSchema, fields, options) {
     filterFormValues = JSON.parse(JSON.stringify(filterFormValues)); //只取当层数据域中数据，去除__super层数据
     let crud = SteedosUI.getClosestAmisComponentByType(scope, "crud");
     const changedFilterFormValues = _.pickBy(filterFormValues, function(n,k){return /^__searchable__/.test(k);});;
-    // let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service");
+    // let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service", {name: "service_object_table_crud"});
     // crudService && crudService.setData({__changedFilterFormValues: changedFilterFormValues});
     // 这里不用crudService而用crud是因为lookup字段弹出的列表中的crudService中的变量无法传入crud的发送适配器中
     // crud && crud.setData({__changedFilterFormValues: changedFilterFormValues});
