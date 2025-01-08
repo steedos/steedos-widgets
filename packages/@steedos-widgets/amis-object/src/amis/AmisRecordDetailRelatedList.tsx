@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-02-08 16:06:28
+ * @LastEditTime: 2025-01-07 17:26:30
  * @Description: 
  */
 import { getRecordDetailRelatedListSchema, i18next } from '@steedos-widgets/amis-lib'
@@ -12,7 +12,7 @@ export const AmisRecordDetailRelatedList = async (props: any) => {
   // console.log(`AmisRecordDetailRelatedList props==>`, props)
   const { $schema, objectApiName, recordId, relatedObjectApiName, data, relatedKey, top, perPage, 
     hiddenEmptyTable, appId, relatedLabel, className = '', columns, sort, filters, visible_on, requestAdaptor, adaptor, visibleOn,
-    crud, crudDataFilter, onCrudDataFilter, env
+    crud, crudDataFilter, onCrudDataFilter, env, enableHeaderToolbar
   } = props;
   let formFactor = props.formFactor;
   if(!formFactor){
@@ -35,7 +35,7 @@ export const AmisRecordDetailRelatedList = async (props: any) => {
   const schema: any = (await getRecordDetailRelatedListSchema(objectApiName, recordId, relatedObjectApiName, relatedKey, {
     top, perPage, appId, relatedLabel, className, formFactor, columns, sort, 
     filters, visible_on, isRelated: true, hiddenEmptyTable, requestAdaptor, adaptor,
-    crud, crudDataFilter, onCrudDataFilter, env
+    crud, crudDataFilter, onCrudDataFilter, env, enableHeaderToolbar
   })).amisSchema;
   
   if(isEmpty(schema)){

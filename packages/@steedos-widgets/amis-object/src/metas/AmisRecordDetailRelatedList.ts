@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-02-08 11:00:44
+ * @LastEditTime: 2025-01-07 17:41:41
  * @Description: 
  */
 const config: any = {
@@ -174,6 +174,11 @@ export default {
                           "labelField": "label",
                           "valueField": "name",
                           "menuTpl": ""
+                        },
+                        {
+                          "type": "checkbox",
+                          "name": "enableHeaderToolbar",
+                          "label": "显示表头工具栏"
                         },
                         {
                           "type": "input-number",
