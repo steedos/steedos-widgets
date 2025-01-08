@@ -22,8 +22,15 @@
         display: none;
     }
     &.enable-header-toolbar{
+        // 子表组件放开headerToolbar时，始终显示headerToolbar，没有记录时只隐藏crud内部表格，不隐藏headerToolbar
         .antd-Table-headToolbar{
             display: block;
+        }
+        .steedos-record-related-crud.hidden{
+            display: block;
+            .antd-Table-contentWrap{
+                display: none;
+            }
         }
     }
     .antd-Images{
