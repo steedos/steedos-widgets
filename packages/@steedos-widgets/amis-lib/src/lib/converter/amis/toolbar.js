@@ -105,7 +105,7 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
   }
 
   const onChangeScript = `
-    // console.log("==search=onChangeScript===");
+    console.log("==getObjectHeaderQuickSearchBox====onChangeScript=onChangeScript===", event.data);
     const scope = event.context.scoped;
     let crud = SteedosUI.getClosestAmisComponentByType(scope, "crud");
     // let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service", {name: "service_object_table_crud"});
@@ -147,7 +147,9 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
       }
       __changedFilterFormValuesKey += lookupTag;
     }
+    console.log("===getObjectHeaderQuickSearchBox====onSearchScript==__changedFilterFormValues====", JSON.stringify(event.data[__changedFilterFormValuesKey]));
     setTimeout(function(){
+      console.log("==onChangeScript==onSearchScript====setTimeout===__changedFilterFormValues====", JSON.stringify(event.data[__changedFilterFormValuesKey]));
       filterForm && filterForm.setValues(event.data[__changedFilterFormValuesKey]);
     }, 500);
   `;
@@ -455,6 +457,7 @@ export function getObjectFooterToolbar(mainObject, formFactor, options) {
 export async function getObjectFilter(objectSchema, fields, options) {
   const fieldsFilterBarSchema = await getObjectListHeaderFieldsFilterBar(objectSchema, null, options);
   let onSubmitSuccScript = `
+      console.log("=getObjectFilter==onSubmitSuccScript===event.data====", event.data);
     let isLookup = event.data.isLookup;
     if(isLookup){
       return;
@@ -476,12 +479,37 @@ export async function getObjectFilter(objectSchema, fields, options) {
     let filterFormService = SteedosUI.getClosestAmisComponentByType(filterForm.context, "service");
     // 使用event.data的话，并不能拿到本地存储中的过滤条件，所以需要从filterFormService中取。
     let filterFormValues = filterFormService.getData();
+    filterFormValues = JSON.parse(JSON.stringify(filterFormValues)); //只取当层数据域中数据，去除__super层数据
+      console.log("=getObjectFilter==onSubmitSuccScript===filterFormValues====", filterFormValues);
     let isFieldsFilterEmpty = SteedosUI.isFilterFormValuesEmpty(filterFormValues);
     let crud = SteedosUI.getClosestAmisComponentByType(scope, "crud");
+    const changedFilterFormValues = _.pickBy(filterFormValues, function(n,k){return /^__searchable__/.test(k);});
+    // 这里不用crudService而用crud是因为lookup字段弹出的列表中的crudService中的变量无法传入crud的发送适配器中
+    // crud && crud.setData({__changedFilterFormValues: changedFilterFormValues});
+    let __changedFilterFormValuesKey = "__changedFilterFormValues";
+    if(isLookup && __lookupField){
+      let lookupTag = "__lookup__" + __lookupField.name + "__" + __lookupField.reference_to;
+      if(__lookupField.reference_to_field){
+        lookupTag += "__" + __lookupField.reference_to_field;
+      }
+      __changedFilterFormValuesKey += lookupTag;
+    }
+      console.log("=getObjectFilter==onSubmitSuccScript===changedFilterFormValues====", changedFilterFormValues);
+    if(crud){
+      // 这里加setTimeout是因为不加的话，crud中作用域中的__changedFilterFormValues变量又会还原到上一次的值
+      // 大概会是crud组件内部的bug,因为这个onSubmitSuccScript事件后只有crud api的接收适配器代码要执行，而crud api的接收适配器代码中并没有对__changedFilterFormValues变量进行操作
+      setTimeout(function(){
+        let crudData = crud.getData();
+        crudData[__changedFilterFormValuesKey] = changedFilterFormValues;
+        crud.setData(crudData);
+      }, 500);
+    }
+
     let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service", {name: "service_object_table_crud"});
     crudService && crudService.setData({isFieldsFilterEmpty});
   `;
   let onChangeScript = `
+      console.log("=getObjectFilter==onChangeScript===event.data====", event.data);
     let isLookup = event.data.isLookup;
     let __lookupField = event.data.__lookupField;
     const scope = event.context.scoped;
@@ -505,6 +533,7 @@ export async function getObjectFilter(objectSchema, fields, options) {
       }
       __changedFilterFormValuesKey += lookupTag;
     }
+      console.log("=getObjectFilter==onChangeScript===changedFilterFormValues====", changedFilterFormValues);
     if(crud){
       let crudData = crud.getData();
       crudData[__changedFilterFormValuesKey] = changedFilterFormValues;

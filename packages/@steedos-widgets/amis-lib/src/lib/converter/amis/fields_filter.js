@@ -100,6 +100,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
   const filterFormSchema = await getObjectFieldsFilterFormSchema(ctx);
   const keywordsSearchBoxName = ctx.keywordsSearchBoxName || "__keywords";
   const onSearchScript = `
+      console.log("=getObjectFieldsFilterBarSchema==onSearchScript===event.data====", event.data);
     let isLookup = event.data.isLookup;
     let __lookupField = event.data.__lookupField;
     const scope = event.context.scoped;
@@ -109,6 +110,8 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     });
     // 使用filterForm.getValues()的话，并不能拿到本地存储中的过滤条件，所以需要从event.data中取，因为本地存储中的过滤条件自动填充到表单上时filterForm.getValues()拿不到。
     let filterFormValues = event.data;
+    filterFormValues = JSON.parse(JSON.stringify(filterFormValues)); //只取当层数据域中数据，去除__super层数据
+    const changedFilterFormValues = _.pickBy(filterFormValues, function(n,k){return /^__searchable__/.test(k);});
     // 同步__changedFilterFormValues中的值
     // crud && crud.setData({__changedFilterFormValues: {}});
     let __changedFilterFormValuesKey = "__changedFilterFormValues";
@@ -119,9 +122,10 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       }
       __changedFilterFormValuesKey += lookupTag;
     }
+      console.log("=getObjectFieldsFilterBarSchema==onSearchScript====__changedFilterFormValues===", changedFilterFormValues);
     if(crud){
       let crudData = crud.getData();
-      crudData[__changedFilterFormValuesKey] = filterFormValues;
+      crudData[__changedFilterFormValuesKey] = changedFilterFormValues;
       crud.setData(crudData);
     }
     filterForm.handleFormSubmit(event);
