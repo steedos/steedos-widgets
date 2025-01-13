@@ -1307,7 +1307,6 @@ export async function getTableApi(mainObject, fields, options){
             if(localListViewProps){
                 localListViewProps = JSON.parse(localListViewProps);
                 selfData = Object.assign({}, localListViewProps, selfData);
-                // Object.assign(api.data.$self, selfData);
                 if(!api.data.filter){
                     api.data.filter = localListViewProps.filter;
                 }
