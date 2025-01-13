@@ -79,8 +79,11 @@ const createFieldFunction = (type: string) => {
       }
     }
 
-
-    return await AmisSteedosField(props)
+    const schema = await AmisSteedosField(props);
+    if(has(props, '$$editor')){
+      delete schema.visibleOn
+    }
+    return schema;
     // {
     //   type: "steedos-field",
     //   config: Object.assign({}, props.config || {}, {

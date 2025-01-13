@@ -91,6 +91,11 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
                               "required": true
                             },
                             {
+                                "type": "formula",
+                                "name": "visibleOn",
+                                "formula": "${config.visible_on}"
+                            },
+                            {
                               "name": "config.type",
                               "label": "字段类型",
                               "required": true,
@@ -1167,6 +1172,7 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
                                 "name": "config.visible_on",
                                 "label": "显示公式",
                                 "type": 'input-formula',
+                                "mixedMode": true
                             },
                             {
                               "name": "config.readonly",
