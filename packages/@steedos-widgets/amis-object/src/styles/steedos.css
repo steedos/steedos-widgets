@@ -259,3 +259,7 @@ steedosfieldset.antd-Collapse .antd-Collapse-header.is-mobile:hover {
 .steedos-amis-form{
     padding: var(--Collapse-content-padding);
 }
+
+.steedos-header-toolbar-notifications-panel {
+  margin-bottom: 0px !important;
+}
