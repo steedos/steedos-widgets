@@ -496,13 +496,9 @@ export async function getObjectFilter(objectSchema, fields, options) {
     }
       console.log("=getObjectFilter==onSubmitSuccScript===changedFilterFormValues====", changedFilterFormValues);
     if(crud){
-      // 这里加setTimeout是因为不加的话，crud中作用域中的__changedFilterFormValues变量又会还原到上一次的值
-      // 大概会是crud组件内部的bug,因为这个onSubmitSuccScript事件后只有crud api的接收适配器代码要执行，而crud api的接收适配器代码中并没有对__changedFilterFormValues变量进行操作
-      setTimeout(function(){
-        let crudData = crud.getData();
-        crudData[__changedFilterFormValuesKey] = changedFilterFormValues;
-        crud.setData(crudData);
-      }, 500);
+      let crudData = crud.getData();
+      crudData[__changedFilterFormValuesKey] = changedFilterFormValues;
+      crud.setData(crudData);
     }
 
     let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service", {name: "service_object_table_crud"});
