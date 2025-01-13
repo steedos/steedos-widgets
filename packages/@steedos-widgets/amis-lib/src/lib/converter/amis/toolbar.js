@@ -105,7 +105,6 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
   }
 
   const onChangeScript = `
-    console.log("==getObjectHeaderQuickSearchBox====onChangeScript=onChangeScript===", event.data);
     const scope = event.context.scoped;
     let crud = SteedosUI.getClosestAmisComponentByType(scope, "crud");
     // let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service", {name: "service_object_table_crud"});
@@ -147,9 +146,7 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
       }
       __changedFilterFormValuesKey += lookupTag;
     }
-    console.log("===getObjectHeaderQuickSearchBox====onSearchScript==__changedFilterFormValues====", JSON.stringify(event.data[__changedFilterFormValuesKey]));
     setTimeout(function(){
-      console.log("==onChangeScript==onSearchScript====setTimeout===__changedFilterFormValues====", JSON.stringify(event.data[__changedFilterFormValuesKey]));
       filterForm && filterForm.setValues(event.data[__changedFilterFormValuesKey]);
     }, 500);
   `;
@@ -457,7 +454,6 @@ export function getObjectFooterToolbar(mainObject, formFactor, options) {
 export async function getObjectFilter(objectSchema, fields, options) {
   const fieldsFilterBarSchema = await getObjectListHeaderFieldsFilterBar(objectSchema, null, options);
   let onSubmitSuccScript = `
-      console.log("=getObjectFilter==onSubmitSuccScript===event.data====", event.data);
     let isLookup = event.data.isLookup;
     if(isLookup){
       return;
@@ -480,7 +476,6 @@ export async function getObjectFilter(objectSchema, fields, options) {
     // 使用event.data的话，并不能拿到本地存储中的过滤条件，所以需要从filterFormService中取。
     let filterFormValues = filterFormService.getData();
     filterFormValues = JSON.parse(JSON.stringify(filterFormValues)); //只取当层数据域中数据，去除__super层数据
-      console.log("=getObjectFilter==onSubmitSuccScript===filterFormValues====", filterFormValues);
     let isFieldsFilterEmpty = SteedosUI.isFilterFormValuesEmpty(filterFormValues);
     let crud = SteedosUI.getClosestAmisComponentByType(scope, "crud");
     const changedFilterFormValues = _.pickBy(filterFormValues, function(n,k){return /^__searchable__/.test(k);});
@@ -494,7 +489,6 @@ export async function getObjectFilter(objectSchema, fields, options) {
       }
       __changedFilterFormValuesKey += lookupTag;
     }
-      console.log("=getObjectFilter==onSubmitSuccScript===changedFilterFormValues====", changedFilterFormValues);
     if(crud){
       let crudData = crud.getData();
       crudData[__changedFilterFormValuesKey] = changedFilterFormValues;
@@ -505,7 +499,6 @@ export async function getObjectFilter(objectSchema, fields, options) {
     crudService && crudService.setData({isFieldsFilterEmpty});
   `;
   let onChangeScript = `
-      console.log("=getObjectFilter==onChangeScript===event.data====", event.data);
     let isLookup = event.data.isLookup;
     let __lookupField = event.data.__lookupField;
     const scope = event.context.scoped;
@@ -529,7 +522,6 @@ export async function getObjectFilter(objectSchema, fields, options) {
       }
       __changedFilterFormValuesKey += lookupTag;
     }
-      console.log("=getObjectFilter==onChangeScript===changedFilterFormValues====", changedFilterFormValues);
     if(crud){
       let crudData = crud.getData();
       crudData[__changedFilterFormValuesKey] = changedFilterFormValues;

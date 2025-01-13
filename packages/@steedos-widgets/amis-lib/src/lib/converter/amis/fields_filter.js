@@ -100,7 +100,6 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
   const filterFormSchema = await getObjectFieldsFilterFormSchema(ctx);
   const keywordsSearchBoxName = ctx.keywordsSearchBoxName || "__keywords";
   const onSearchScript = `
-      console.log("=getObjectFieldsFilterBarSchema==onSearchScript===event.data====", event.data);
     let isLookup = event.data.isLookup;
     let __lookupField = event.data.__lookupField;
     const scope = event.context.scoped;
@@ -122,7 +121,6 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       }
       __changedFilterFormValuesKey += lookupTag;
     }
-      console.log("=getObjectFieldsFilterBarSchema==onSearchScript====__changedFilterFormValues===", changedFilterFormValues);
     if(crud){
       let crudData = crud.getData();
       crudData[__changedFilterFormValuesKey] = changedFilterFormValues;
