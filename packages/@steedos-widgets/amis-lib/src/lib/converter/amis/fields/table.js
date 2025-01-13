@@ -64,7 +64,6 @@ async function getQuickEditSchema(object, columnField, options){
                     {
                         actionType: "custom",
                         script: `
-                            console.log("asdasd");
                             let items = _.cloneDeep(event.data.items);
                             let selectedItems = _.cloneDeep(event.data.selectedItems);
                             if(event.data.isBatchEdit){
@@ -1295,8 +1294,6 @@ export async function getTableApi(mainObject, fields, options){
         // 反过来先在快速搜索框中输入过滤条件却不点击其中回车键触发搜索，而是到搜索表单中触发搜索请求也是一样的。
         // 这里直接合并到api.data.$self，而不是后面定义的selfData变量，是因为可以省去在接收适配器中写一样的合并逻辑
         // 如果有问题可以改为合并到selfData变量中，但是要在接收适配器中写上一样的合并逻辑，否则里面的过滤条件不会存入本地存储中
-        console.log("==requestAdaptor==__changedSearchBoxValues===", __changedSearchBoxValues);
-        console.log("==requestAdaptor==__changedFilterFormValues===", __changedFilterFormValues);
         Object.assign(api.data.$self, __changedSearchBoxValues, __changedFilterFormValues);
         // selfData 中的数据由 CRUD 控制. selfData中,只能获取到 CRUD 给定的data. 无法从数据链中获取数据.
         let selfData = JSON.parse(JSON.stringify(api.data.$self));
@@ -1618,8 +1615,6 @@ export async function getTableApi(mainObject, fields, options){
     payload.data.__changedFilterFormValues = api.context.__changedFilterFormValues;
     payload.data.__changedSearchBoxValues = api.context.__changedSearchBoxValues;
     ${options.adaptor || ''}
-        console.log("==adaptor==api===", api);
-        console.log("==adaptor==payload===", payload);
     return payload;
     `;
     return api;
