@@ -2,14 +2,14 @@
 //  * @Author: 殷亮辉 yinlianghui@hotoa.com
 //  * @Date: 2025-01-02 15:33:22
 //  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
-//  * @LastEditTime: 2025-01-02 21:11:49
+//  * @LastEditTime: 2025-01-14 11:33:57
 //  */
 // import { React, AmisRender } from '../components/AmisRender';
 // import { useEffect, useState, useRef } from 'react';
 
 // // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 // export default {
-//   title: 'Enterprise/Tables2',
+//   title: 'Enterprise/Tables OLD',
 // };
 
 // const data = {};
@@ -30,7 +30,7 @@
 //       "type": "page",
 //       "body": [
 //         {
-//           "type": "steedos-tables-grid2",
+//           "type": "steedos-tables-grid-old",
 //           "className": "h-96",
 //           "style": {
 //             "height": "calc(100vh - 58px)"
@@ -83,7 +83,7 @@
 //               "tpl": "TableId: ${tableId}"
 //             },
 //             {
-//               "type": "steedos-tables-grid2",
+//               "type": "steedos-tables-grid-old",
 //               "className": "h-96",
 //               "style": {
 //                 "height": "calc(100vh - 58px)"
