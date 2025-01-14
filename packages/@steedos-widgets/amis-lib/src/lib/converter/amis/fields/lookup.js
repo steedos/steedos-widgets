@@ -648,7 +648,9 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             pickerSchema.filter = await getObjectFilter(refObjectConfig, fields, {
                 ...ctx,
                 isLookup: true,
-                keywordsSearchBoxName
+                keywordsSearchBoxName,
+                searchable_fields: field.searchable_fields,
+                auto_open_filter: field.auto_open_filter
             });
         }
         pickerSchema.data = Object.assign({}, pickerSchema.data, {
