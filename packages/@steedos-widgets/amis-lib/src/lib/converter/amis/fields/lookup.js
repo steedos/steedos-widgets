@@ -240,6 +240,9 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     ctx.idFieldName = refObjectConfig.idFieldName
     ctx.objectName = refObjectConfig.name
 
+    // 是否显示lookup字段左侧的过滤器（如果有的话），默认为true，目前只有lookup选人字段有左侧树过滤器
+    const showLeftFilter = field.show_left_filter !== false;
+
     let tableFields = [];
     const searchableFields = [];
 
@@ -628,7 +631,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
 
         pickerSchema.headerToolbar = getObjectHeaderToolbar(refObjectConfig, fieldsArr, ctx.formFactor, { isLookup: true, keywordsSearchBoxName });
         
-        if(referenceTo.objectName === "space_users" && field.reference_to_field === "user"){
+        if(referenceTo.objectName === "space_users" && field.reference_to_field === "user" && showLeftFilter){
             pickerSchema.headerToolbar.push(getLookupSapceUserTreeSchema(isMobile));
             pickerSchema.className = pickerSchema.className || "" + " steedos-select-user";
         }
@@ -650,7 +653,8 @@ export async function lookupToAmisPicker(field, readonly, ctx){
                 isLookup: true,
                 keywordsSearchBoxName,
                 searchable_fields: field.searchable_fields,
-                auto_open_filter: field.auto_open_filter
+                auto_open_filter: field.auto_open_filter,
+                show_left_filter: field.show_left_filter
             });
         }
         pickerSchema.data = Object.assign({}, pickerSchema.data, {
