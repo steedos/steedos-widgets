@@ -96,6 +96,8 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
   if (!ctx) {
     ctx = {};
   }
+  const searchableFields = ctx.searchable_fields;
+  const autoOpenFilter = !!ctx.auto_open_filter;
   const btnSearchId = "btn_filter_form_search_" + new Date().getTime();
   const filterFormSchema = await getObjectFieldsFilterFormSchema(ctx);
   const keywordsSearchBoxName = ctx.keywordsSearchBoxName || "__keywords";
@@ -265,6 +267,8 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     crudService && crudService.setData({isFieldsFilterEmpty: true, showFieldsFilter: false});
     `;
   const dataProviderInited = `
+    const searchableFields = ${JSON.stringify(searchableFields)};
+    const autoOpenFilter = ${autoOpenFilter};
     const objectName = data.objectName;
     const isLookup = data.isLookup;
     const listName = data.listName;
@@ -276,6 +280,11 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     let defaultSearchableFields = localStorage.getItem(searchableFieldsStoreKey);
     if(defaultSearchableFields){
       defaultSearchableFields = defaultSearchableFields.split(",");
+    }
+    if(_.isEmpty(defaultSearchableFields) && searchableFields){
+      if(searchableFields.length){
+        defaultSearchableFields = _.map(searchableFields, 'field');
+      }
     }
     if(_.isEmpty(defaultSearchableFields) && data.uiSchema){
       let listView = data.uiSchema.list_views[data.listName];
@@ -295,7 +304,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     setData({ filterFormSearchableFields: defaultSearchableFields });
     if(isLookup){
       // looup字段过滤器不在本地缓存记住过滤条件，所以初始始终隐藏过滤器
-      setData({ showFieldsFilter: false });
+      setData({ showFieldsFilter: autoOpenFilter });
     }
     else{
       const listViewPropsStoreKey = location.pathname + "/crud";
