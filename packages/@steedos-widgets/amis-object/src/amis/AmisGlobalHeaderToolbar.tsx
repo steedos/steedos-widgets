@@ -3,7 +3,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-10-10 16:36:14
+ * @LastEditTime: 2025-01-13 11:17:07
  * @Description: 
  */
 
@@ -60,7 +60,7 @@ const getNotificationBadgeButton = () => {
                 "name": "notifications",
                 "items": {
                   "type": "tpl",
-                  "tpl": `<div class='flex items-center p-4 hover:bg-sky-50'>
+                  "tpl": `<div class='flex items-center p-2 hover:bg-sky-50'>
                                   <img src='<%=data.context.rootUrl + "/avatar/" + data.from%>' alt='' class='h-10 w-10 flex-none rounded-full'>
                                   <div class='ml-4 flex-auto'>
                                     <div class='font-medium'>

@@ -64,7 +64,6 @@ async function getQuickEditSchema(object, columnField, options){
                     {
                         actionType: "custom",
                         script: `
-                            console.log("asdasd");
                             let items = _.cloneDeep(event.data.items);
                             let selectedItems = _.cloneDeep(event.data.selectedItems);
                             if(event.data.isBatchEdit){
@@ -1609,6 +1608,11 @@ export async function getTableApi(mainObject, fields, options){
             }, 600);
         }
     }
+
+    // 列表搜索和快速搜索，有时在某些操作情况下还是会造成crud接口请求使用的过滤条件是上次的，这里强制把正确的过滤条件返回到crud，详细规则见：https://github.com/steedos/steedos-platform/issues/7112
+    // lookup字段的弹出列表搜索不受这里影响，因为lookup字段的弹出列表搜索是单独的接口请求
+    payload.data.__changedFilterFormValues = api.context.__changedFilterFormValues;
+    payload.data.__changedSearchBoxValues = api.context.__changedSearchBoxValues;
     ${options.adaptor || ''}
     return payload;
     `;

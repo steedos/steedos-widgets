@@ -398,7 +398,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
       className: crudModeClassName,
       //目前crud的service层id不认用户自定义id，只支持默认规则id，许多地方的格式都写死了service_listview_${objectname}
       id: `service_${id}`,
-      name: `page`,
+      name: "service_object_table_crud",
       data: options.amisData,
       body: body,
       //监听广播事件，重算crud高度

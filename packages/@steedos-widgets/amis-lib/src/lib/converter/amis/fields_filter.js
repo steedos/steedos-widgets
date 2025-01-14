@@ -100,11 +100,32 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
   const filterFormSchema = await getObjectFieldsFilterFormSchema(ctx);
   const keywordsSearchBoxName = ctx.keywordsSearchBoxName || "__keywords";
   const onSearchScript = `
-    // console.log("===onSearchScript=form==");
+    let isLookup = event.data.isLookup;
+    let __lookupField = event.data.__lookupField;
     const scope = event.context.scoped;
+    let crud = SteedosUI.getClosestAmisComponentByType(scope, "crud");
     var filterForm = scope.parent.parent.getComponents().find(function(n){
       return n.props.type === "form";
     });
+    // 使用filterForm.getValues()的话，并不能拿到本地存储中的过滤条件，所以需要从event.data中取，因为本地存储中的过滤条件自动填充到表单上时filterForm.getValues()拿不到。
+    let filterFormValues = event.data;
+    filterFormValues = JSON.parse(JSON.stringify(filterFormValues)); //只取当层数据域中数据，去除__super层数据
+    const changedFilterFormValues = _.pickBy(filterFormValues, function(n,k){return /^__searchable__/.test(k);});
+    // 同步__changedFilterFormValues中的值
+    // crud && crud.setData({__changedFilterFormValues: {}});
+    let __changedFilterFormValuesKey = "__changedFilterFormValues";
+    if(isLookup && __lookupField){
+      let lookupTag = "__lookup__" + __lookupField.name + "__" + __lookupField.reference_to;
+      if(__lookupField.reference_to_field){
+        lookupTag += "__" + __lookupField.reference_to_field;
+      }
+      __changedFilterFormValuesKey += lookupTag;
+    }
+    if(crud){
+      let crudData = crud.getData();
+      crudData[__changedFilterFormValuesKey] = changedFilterFormValues;
+      crud.setData(crudData);
+    }
     filterForm.handleFormSubmit(event);
     // var filterFormValues = filterForm.getValues();
     // var listView = scope.parent.parent.parent.getComponents().find(function(n){
@@ -153,11 +174,8 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     }
     filterService.setData({showFieldsFilter});
     // resizeWindow();//已迁移到搜索栏表单提交事件中执行，因为表单项change后也会触发表单提交了
-    // 使用filterForm.getValues()的话，并不能拿到本地存储中的过滤条件，所以需要从event.data中取。
-    let filterFormValues = event.data;
     let isFieldsFilterEmpty = SteedosUI.isFilterFormValuesEmpty(filterFormValues);
-    let crud = SteedosUI.getClosestAmisComponentByType(scope, "crud");
-    let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service");
+    let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service", {name: "service_object_table_crud"});
     crudService && crudService.setData({isFieldsFilterEmpty, showFieldsFilter});
   `;
   const onCancelScript = `
@@ -243,7 +261,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     
     // 移除搜索按钮上的红点
     // let crudService = scope.getComponentById("service_listview_" + event.data.objectName);
-    let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service");
+    let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service", {name: "service_object_table_crud"});
     crudService && crudService.setData({isFieldsFilterEmpty: true, showFieldsFilter: false});
     `;
   const dataProviderInited = `
