@@ -75,9 +75,15 @@ const getFieldFormService = (form, tableId, showFormulaFields = false) => {
     return formService;
 }
 
+/**
+ * 新建和编辑字段form提交成功后脚本
+ * @param {*} tableId 
+ * @param {*} mode new/edit
+ * @returns 
+ */
 const getSubmitSuccScript = (tableId: any, mode: string) => {
     return `
-        debugger;
+        let mode = "${mode || ''}";
         const data = context.getData();
         const gridApi = data.gridApi;
         const gridContext = data.gridContext;
@@ -86,12 +92,22 @@ const getSubmitSuccScript = (tableId: any, mode: string) => {
         Object.assign(fieldFormData, {
             _id: data.recordId
         });
-        const newColumnDefs = gridApi.getColumnDefs().map(function (n) {
-            if (n.field === fieldFormData.name) {
-                return gridContext.getColumnDefByField(fieldFormData)
-            }
-            return n;
-        });
+        var columnDefs = gridApi.getColumnDefs();
+        var currentColumnDef = gridContext.getColumnDefByField(fieldFormData);
+        let newColumnDefs;
+        if (mode === "new"){
+            // columnDefs.splice(columnDefs.length - 4, 0, "m");
+            var index = columnDefs.length - 4;
+            newColumnDefs = columnDefs.slice(0, index).concat([currentColumnDef], columnDefs.slice(index));
+        }
+        else if (mode === "edit"){
+            newColumnDefs = columnDefs.map(function (n) {
+                if (n.field === fieldFormData.name) {
+                    return currentColumnDef;
+                }
+                return n;
+            });
+        }
         gridApi.setGridOption('columnDefs', newColumnDefs);
     `
 }
