@@ -2,10 +2,9 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-01-02 15:39:40
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-01-17 13:37:05
+ * @LastEditTime: 2025-01-17 20:36:04
  */
-// import { getMeta, getColumnDef, getGridOptions, getTableHeader } from '../tables';
-import { getColumnDef, getDataTypeDefinitions } from '../AirtableGrid/gridOptions';
+// import { getColumnDef, getDataTypeDefinitions } from '../AirtableGrid/gridOptions';
 import { getDataSource } from './dataSource';
 import { getTableAdminEvents } from './fieldsAdmin';
 
@@ -42,10 +41,11 @@ export async function getTablesGridSchema(
     const meta = await getMeta(tableId, baseId, baseUrl, data.context);
     const dataSource = getDataSource({ baseUrl, baseId, tableId, context: data.context });
 
-    const getColumnDefs = async ({ dispatchEvent }) => {
-        let dataTypeDefinitions = getDataTypeDefinitions();
+    const getColumnDefs = async ({ getColumnDefByField }) => {
+        // let dataTypeDefinitions = getDataTypeDefinitions();
         var columnDefs = meta.fields.map(function (field: any) {
-            return getColumnDef(field, dataTypeDefinitions, mode, { dispatchEvent, env });
+            // return getColumnDef(field, dataTypeDefinitions, mode, { dispatchEvent, env });
+            return getColumnDefByField(field);
         });
         return columnDefs;
     }
@@ -73,6 +73,19 @@ export async function getTablesGridSchema(
             }
         ],
         "onEvent": {
+            [`@airtable.${tableId}.setGridApi`]: {
+                "actions": [
+                    {
+                        "actionType": "setValue",
+                        "args": {
+                            "value": {
+                                "gridApi": "${gridApi}",
+                                "gridContext": "${gridContext}"
+                            }
+                        },
+                    }
+                ]
+            },
             ...tableAdminEvents
         }
     };

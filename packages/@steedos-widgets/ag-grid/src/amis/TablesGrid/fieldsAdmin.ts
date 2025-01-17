@@ -75,6 +75,27 @@ const getFieldFormService = (form, tableId, showFormulaFields = false) => {
     return formService;
 }
 
+const getSubmitSuccScript = (tableId: any, mode: string) => {
+    return `
+        debugger;
+        const data = context.getData();
+        const gridApi = data.gridApi;
+        const gridContext = data.gridContext;
+        const fieldFormData = JSON.parse(JSON.stringify(data));
+        // fieldFormData中缺少_id属性，agGrid组件中依赖了_id
+        Object.assign(fieldFormData, {
+            _id: data.recordId
+        });
+        const newColumnDefs = gridApi.getColumnDefs().map(function (n) {
+            if (n.field === fieldFormData.name) {
+                return gridContext.getColumnDefByField(fieldFormData)
+            }
+            return n;
+        });
+        gridApi.setGridOption('columnDefs', newColumnDefs);
+    `
+}
+
 /**
  * 新建和编辑字段的amis dialog
  * @param {*} tableId 
@@ -92,11 +113,16 @@ const getAgGridFieldFormDialog = (tableId: string, mode: string) => {
         "className": "",
         "submitSuccActions": [
             {
-                "actionType": "broadcast",
-                "args": {
-                    "eventName": "broadcast_service_listview_b6_data_rebuild"
-                }
+                "actionType": "custom",
+                "script": getSubmitSuccScript(tableId, mode)
             }
+            // 不再使用rebuild刷新表格的方式来更新ag-grid字段信息
+            // {
+            //     "actionType": "broadcast",
+            //     "args": {
+            //         "eventName": "broadcast_service_listview_b6_data_rebuild"
+            //     }
+            // }
         ],
         "fieldsExtend": "{\n  \"table_id\": {\n    \"visible_on\": \"${false}\"\n  }\n}",
         "visibleOn": "${!!_formulaVariablesLoaded}"
@@ -163,7 +189,6 @@ export function getTableAdminEvents(tableId: string) {
                 {
                     "actionType": "dialog",
                     "dialog": getAgGridFieldFormDialog(tableId, "new")
-
                 }
             ]
         },

@@ -336,6 +336,12 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
 
 }
 
+export function getColumnDefByFieldFun(dataTypeDefinitions: any, mode: string, { dispatchEvent, env }) {
+    return function (field: any){
+        return getColumnDef(field, dataTypeDefinitions, mode, { dispatchEvent, env });
+    }
+}
+
 // 校验数据表中配置的Verifications并返回错误信息
 function getFieldVerificationErrors(fieldValue, colDef) {
     const verificationErrors = [];
@@ -930,7 +936,8 @@ export async function getGridOptions({ tableId, title, mode, dataSource, getColu
     // var columnDefs = table.fields.map(function (field) {
     //     return getColumnDef(field, dataTypeDefinitions, mode, { dispatchEvent, env });
     // });
-    var columnDefs = await getColumnDefs({ title, mode, dataSource, env, dispatchEvent }) || [];
+    const getColumnDefByField = getColumnDefByFieldFun(dataTypeDefinitions, mode, { dispatchEvent, env });
+    var columnDefs = await getColumnDefs({ title, mode, dataSource, env, dispatchEvent, getColumnDefByField }) || [];
     columnDefs.unshift({
         headerName: "",
         valueGetter: "node.rowIndex + 1",
@@ -1032,7 +1039,8 @@ export async function getGridOptions({ tableId, title, mode, dataSource, getColu
                 "gridApi": params.api,
                 "gridContext": {
                     setRowDataFormulaValues,
-                    dataSource
+                    dataSource,
+                    getColumnDefByField
                 }
             });
         },
@@ -1113,6 +1121,7 @@ const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env 
                             "eventName": `@airtable.${tableId}.editField`
                         },
                         "data": {
+                            // "gridApi": "${gridApi}",//这里gridApi传不下去，在TablesGrid组件的广播事件监听器中获取不到
                             "editingFieldId": "${editingFieldId}"
                         }
                     }
