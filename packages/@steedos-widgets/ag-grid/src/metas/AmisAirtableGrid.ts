@@ -2,14 +2,14 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-01-03 21:18:49
+ * @LastEditTime: 2025-01-17 14:40:15
  * @Description: 
  */
 const config: any = {
   componentType: 'amisSchema', // amisSchema || react 
   group: "华炎魔方",
   componentName: "AmisAirtableGrid",
-  title: "Tables Grid",
+  title: "Airtable Grid",
   docUrl: "",
   screenshot: "",
   npm: {
@@ -92,7 +92,7 @@ export default {
       weight: 1,
       framework: "react"
     },
-    plugin: {
+    plugin_disabled: {
       rendererName: config.amis.name,
       $schema: '/schemas/UnkownSchema.json',
       name: config.title,
