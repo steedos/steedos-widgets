@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-01-06 17:48:03
+ * @LastEditTime: 2025-01-17 14:35:26
  * @Description: 
  */
 const config: any = {
@@ -92,7 +92,7 @@ export default {
       weight: 1,
       framework: "react"
     },
-    plugin: {
+    plugin_disabled: {
       rendererName: config.amis.name,
       $schema: '/schemas/UnkownSchema.json',
       name: config.title,
