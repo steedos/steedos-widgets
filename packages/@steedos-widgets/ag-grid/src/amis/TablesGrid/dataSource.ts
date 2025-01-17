@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-01-06 09:34:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-01-06 14:45:06
+ * @LastEditTime: 2025-01-17 13:49:52
  */
 
 import { AirtableDataSource } from '../AirtableGrid';
@@ -12,27 +12,19 @@ function isNotEmpty(value: any): boolean {
   return value !== null && value !== undefined && value !== '';
 }
 
-/* 
-TODO:请求接口headers要带Authorization，目前使用的是Cookie
-  headers: {
-      'Content-Type': 'application/json',
-      // "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-      "Authorization": "Bearer 654300b5074594d15147bcfa,dbe0e0da68ba2e83aca63a5058907e543a4e89f7e979963b4aa1f574f227a3b5063e149d818ff553fb4aa1"
-  },
-*/
-export const getDataSource = ({ baseUrl, baseId, tableId, key = "_id" }) => {
-  console.log("getDataSource ====", { baseUrl, baseId, tableId, key });
+export const getDataSource = ({ baseUrl, baseId, tableId, key = "_id", context = {} }) => {
   return new AirtableDataSource({
     baseUrl: baseUrl,
     baseId: baseId,
     tableId: tableId,
     key: key,
+    context,
     getFullUrl(): string {
-      console.log("getFullUrl ====");
       return `${this.baseUrl}/api/v6/tables/${this.baseId}/${this.tableId}`;
     },
     load: async function (loadOptions) {
       try {
+        const context = this.context;
         const params: Record<string, string> = {};
 
         [
@@ -62,7 +54,13 @@ export const getDataSource = ({ baseUrl, baseId, tableId, key = "_id" }) => {
           }
         });
 
-        const response = await fetch(this.getFullUrl() + '?' + new URLSearchParams(params), { credentials: 'include' });
+        const response = await fetch(this.getFullUrl() + '?' + new URLSearchParams(params), { 
+          credentials: 'include',
+          "headers": {
+              'Content-Type': 'application/json',
+              "Authorization": `Bearer ${context.tenantId},${context.authToken}`
+          }
+        });
         if (!response.ok) throw new Error("Data loading error");
         const data = await response.json();
 
@@ -79,10 +77,12 @@ export const getDataSource = ({ baseUrl, baseId, tableId, key = "_id" }) => {
 
     insert: async function (values) {
       try {
+        const context = this.context;
         const response = await fetch(this.getFullUrl(), {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${context.tenantId},${context.authToken}`
           },
           body: JSON.stringify(values),
           credentials: 'include'
@@ -96,10 +96,12 @@ export const getDataSource = ({ baseUrl, baseId, tableId, key = "_id" }) => {
 
     remove: async function (keys) {
       try {
+        const context = this.context;
         const response = await fetch(this.getFullUrl(), {
           method: "DELETE",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${context.tenantId},${context.authToken}`
           },
           body: JSON.stringify({ records: keys }),
           credentials: 'include'
@@ -113,10 +115,12 @@ export const getDataSource = ({ baseUrl, baseId, tableId, key = "_id" }) => {
 
     update: async function (key, values) {
       try {
+        const context = this.context;
         const response = await fetch(this.getFullUrl() + '/' + encodeURIComponent(key), {
           method: "PUT",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${context.tenantId},${context.authToken}`
           },
           body: JSON.stringify(values),
           credentials: 'include'
