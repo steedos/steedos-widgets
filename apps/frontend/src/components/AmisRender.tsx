@@ -2,31 +2,25 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2025-01-22 12:51:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2025-01-22 15:42:32
+ * @LastEditTime: 2025-01-22 16:23:37
  * @Description: 
  */
 
-import React, { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
-import { BuilderComponent, Builder, builder, useIsPreviewing } from '@builder6/react';
-
-window['React'] = React;
-window['ReactDOM'] = ReactDOM;
-(window as any)['Builder'] = Builder;
-(window as any)['builder'] = builder;
-
-Builder.settings = { 
-  rootUrl: localStorage.getItem('steedos:rootUrl'),
-  assetUrls: ['http://127.0.0.1:8080/@steedos-widgets/amis-object@v6.3.12-beta.15/dist/assets.json'],
-  context: {
-    rootUrl: localStorage.getItem('steedos:rootUrl'),
-    userId: localStorage.getItem('steedos:userId'),
-    tenantId: localStorage.getItem('steedos:spaceId'),
-    authToken: localStorage.getItem('steedos:authToken'),
-  } 
-};
-
 export const AmisRender = function ({schema = {}, data = {}, env = {}}) {
+  const Builder = (window as any).Builder; // or use a more specific type
+  const BuilderComponent = (window as any).BuilderComponent
+
+  Builder.settings = { 
+    rootUrl: localStorage.getItem('steedos:rootUrl'),
+    assetUrls: ['http://127.0.0.1:8080/@steedos-widgets/amis-object@v6.3.12-beta.15/dist/assets.json'],
+    context: {
+      rootUrl: localStorage.getItem('steedos:rootUrl'),
+      userId: localStorage.getItem('steedos:userId'),
+      tenantId: localStorage.getItem('steedos:spaceId'),
+      authToken: localStorage.getItem('steedos:authToken'),
+    } 
+  };
+
   const mergedData = {
     ...Builder.settings,
     ...data,
