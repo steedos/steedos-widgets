@@ -2,13 +2,14 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-10-10 16:30:41
+ * @LastEditTime: 2025-01-22 12:17:09
  * @Description: 
  */
 
 import { i18next } from '@steedos-widgets/amis-lib';
 
 export const AmisAppLauncher = async (props) => {
+  console.log(`AmisAppLauncher`, props)
   let { app, data, className, showAppName = true, appNameClassName = '', customElements = [], showAppIcon = true } = props;
   if (!app) {
     app = data.context.app;
@@ -418,7 +419,7 @@ export const AmisAppLauncher = async (props) => {
                         "type": "lookup",
                         "required": true,
                         "sort_no": 30,
-                        "optionsFunction": "function anonymous() {        var options;        options = [];        _.forEach(Creator.resources.sldsIcons.standard, function (svg) {          return options.push({            value: svg,            label: svg,            icon: svg          });        });        return options;      }",
+                        "optionsFunction": "function anonymous() {        var options;        options = [];        _.forEach(Steedos.resources.sldsIcons.standard, function (svg) {          return options.push({            value: svg,            label: svg,            icon: svg          });        });        return options;      }",
                         "name": "icon",
                         "inlineHelpText": "",
                         "description": "",

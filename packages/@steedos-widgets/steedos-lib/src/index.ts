@@ -2,14 +2,16 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-25 09:16:09
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-16 18:14:11
+ * @LastEditTime: 2025-01-17 15:28:00
  * @Description: 
  */
 
 import { StandardObjects } from './standard_objects'
 import { authRequest } from './authRequest'
 import { SteedosUI } from './ui';
+import { sldsIcons } from './icon';
 import * as Expression from './expression';
+import { organizationsTree } from './organization/organizations_tree'
 
 declare var Builder;
 
@@ -21,6 +23,10 @@ const getBuilderContext = ()=>{
 }
 
 export const Steedos = {
+    resources: {
+        sldsIcons
+    },
+    organizationsTree,
     getRootUrl: (defaultRootUrl?)=>{
         const context: any = getBuilderContext()
         if(context.rootUrl){

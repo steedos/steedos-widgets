@@ -2,17 +2,17 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-16 13:45:42
+ * @LastEditTime: 2025-01-16 18:00:59
  * @Description: 
  */
 
 export const AmisGlobalHeader = async (props) => {
-    const { logoSrc, customButtons } = props
+    const { logoSrc, customButtons, className } = props
     const isMobile = window.innerWidth <= 768
 
     const schema = {
         "type": "wrapper",
-        "className": 'p-0',
+        "className": 'p-0' + (className ? ` ${className}` : ''),
         body: [
             {
                 "type": "wrapper",

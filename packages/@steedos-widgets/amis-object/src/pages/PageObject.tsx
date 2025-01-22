@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-04-12 15:00:42
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-16 10:32:11
+ * @LastEditTime: 2025-01-18 11:49:04
  * @Description: 
  */
 import './PageObject.less';
@@ -10,9 +10,16 @@ import './PageObject.less';
 import { getUISchema } from '@steedos-widgets/amis-lib'
 
 export const PageObject = async (props) => {
-    // console.log(`PageObject=====>`, props);
+    console.log(`PageObject=====>`, props);
     const { data, $schema = {} } = props;
-    const uiSchema = await getUISchema($schema.data.objectName, false);
+
+    let objectName = $schema.data.objectName;
+
+    if(objectName.startsWith('$')){
+        objectName = data.objectName;
+    }
+
+    const uiSchema = await getUISchema(objectName, false);
     
     delete $schema.data.recordId;
     
