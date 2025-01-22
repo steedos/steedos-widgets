@@ -16,7 +16,8 @@ import routerBindings, {
   NavigateToResource,
   UnsavedChangesNotifier,
 } from "@refinedev/react-router";
-import dataProvider from "@refinedev/simple-rest";
+// import dataProvider from "@refinedev/simple-rest";
+import dataProvider from "@refinedev/airtable";
 import { App as AntdApp } from "antd";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router";
 import { authProvider } from "./authProvider";
@@ -35,6 +36,7 @@ import {
   CategoryList,
   CategoryShow,
 } from "./pages/categories";
+import { AppList, AppShow } from './pages/apps';
 import { ForgotPassword } from "./pages/forgotPassword";
 import { Login } from "./pages/login";
 import { Register } from "./pages/register";
@@ -44,7 +46,7 @@ import { Register } from "./pages/register";
 function App() {
   return (
     <BrowserRouter>
-      <GitHubBanner />
+      {/* <GitHubBanner /> */}
       <RefineKbarProvider>
         <ColorModeContextProvider>
           <AntdApp>
@@ -56,9 +58,9 @@ function App() {
                 routerProvider={routerBindings}
                 resources={[
                   {
-                    name: "Apps",
+                    name: "apps",
                     list: "/apps",
-                    show: "/apps/show/:id",
+                    show: "/apps/:id",
                     meta: {
                       canDelete: true,
                       headers: {
@@ -119,8 +121,12 @@ function App() {
                   >
                     <Route
                       index
-                      element={<NavigateToResource resource="blog_posts" />}
+                      element={<NavigateToResource resource="apps" />}
                     />
+                    <Route path="/apps">
+                      <Route index element={<AppList />} />
+                      <Route path=":id" element={<AppShow />} />
+                    </Route>
                     <Route path="/blog-posts">
                       <Route index element={<BlogPostList />} />
                       <Route path="create" element={<BlogPostCreate />} />
