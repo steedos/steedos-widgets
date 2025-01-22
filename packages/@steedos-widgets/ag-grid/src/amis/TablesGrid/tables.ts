@@ -35,7 +35,7 @@ export async function getTablesGridSchema(
     tableId: string,
     baseId: string,
     mode: string, //edit/read/admin
-    { env, data, licenseKey }
+    { env, data, agGridLicenseKey }
 ) {
     const baseUrl = data.rootUrl;// 开发环境 b6 server 需要配置 B6_PROXY_TARGET 环境变量，代理 B6_HOST 为平台 RootUrl
     const meta = await getMeta(tableId, baseId, baseUrl, data.context);
@@ -70,7 +70,7 @@ export async function getTablesGridSchema(
                 "getColumnDefs": getColumnDefs,
                 "dataSource": dataSource,
                 tableId,
-                licenseKey
+                agGridLicenseKey
             }
         ],
         "onEvent": {

@@ -19,11 +19,11 @@ interface AirtableGridProps {
 }
 
 export const AmisAirtableGrid = async (props: AirtableGridProps) => {
-  const { $schema, data, defaultData, className = "", tableId, title, mode = "edit", dataSource, getColumnDefs, env, style, licenseKey } = props;
+  const { $schema, data, defaultData, className = "", tableId, title, mode = "edit", dataSource, getColumnDefs, env, style, agGridLicenseKey } = props;
   console.log('AmisAirtableGrid===', props);
   const amisSchemaData = Object.assign({}, data, defaultData);
   // const appId = data?.appId || defaultData?.appId;
-  let tableSchema = await getAirtableGridSchema({ tableId, title, mode, dataSource, getColumnDefs, env, licenseKey });
+  let tableSchema = await getAirtableGridSchema({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey });
   let amisSchema: any = tableSchema.amisSchema;
   amisSchema.data = Object.assign({}, amisSchema.data, amisSchemaData);
   amisSchema.className = `${amisSchema.className} ${className}`;

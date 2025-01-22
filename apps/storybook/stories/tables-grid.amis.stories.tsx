@@ -110,7 +110,7 @@ export const LicenseKey = () => (
           },
           "tableId": "67658ac0cc184d0efc68b752",
           "mode": "admin",
-          "licenseKey": "1234567890"
+          "agGridLicenseKey": "1234567890"
         }
       ],
     }}

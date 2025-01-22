@@ -1070,16 +1070,16 @@ export async function getGridOptions({ tableId, title, mode, dataSource, getColu
     return gridOptions;
 }
 
-const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env, licenseKey }) => {
+const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey }) => {
     const onDataFilter = async function (config: any, AgGrid: any, props: any, data: any, ref: any) {
         // 为ref.current补上props属性，否则props.dispatchEvent不能生效
         ref.current.props = props;
         let dispatchEvent = async function (action, data) {
             props.dispatchEvent(action, data, ref.current);
         }
-        if (licenseKey) {
+        if (agGridLicenseKey) {
             // 启用 AG Grid 企业版
-            AgGrid.LicenseManager.setLicenseKey(licenseKey);
+            AgGrid.LicenseManager.setLicenseKey(agGridLicenseKey);
         }
         let gridOptions = await getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent });
         return gridOptions;
@@ -1576,7 +1576,7 @@ export const getTableHeader = ({ tableId, title, mode, dataSource, getColumnDefs
 }
 
 export async function getAirtableGridSchema(
-    { tableId, title, mode, dataSource, getColumnDefs, env, licenseKey }
+    { tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey }
 ) {
     const amisSchema = {
         "type": "service",
@@ -1588,7 +1588,7 @@ export async function getAirtableGridSchema(
         "className": "steedos-airtable-grid h-full",
         "body": [
             getTableHeader({ tableId, title, mode, dataSource, getColumnDefs, env }),
-            await getAgGrid({ tableId, title, mode, dataSource, getColumnDefs, env, licenseKey })
+            await getAgGrid({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey })
         ],
         "onEvent": {
             [`@airtable.${tableId}.setGridApi`]: {
