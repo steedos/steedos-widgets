@@ -5,8 +5,6 @@ import { BuilderComponent, Builder, builder, useIsPreviewing } from '@builder6/r
 
 import './index.css';
 
-window['React'] = React;
-window['ReactDOM'] = ReactDOM;
 window['Builder'] = Builder;
 window['builder'] = builder;
 
@@ -24,15 +22,16 @@ Builder.settings.env = {
 }
 
 Builder.settings.context = {
-  rootUrl: import.meta.env.VITE_B6_ROOT_URL
+  rootUrl: import.meta.env.VITE_B6_ROOT_URL,
+  userId: localStorage.getItem('steedos:userId'),
+  tenantId: localStorage.getItem('steedos:spaceId'),
+  authToken: localStorage.getItem('steedos:token'),
 };
 Builder.settings.unpkgUrl = 'https://unpkg.steedos.cn';
 Builder.settings.assetUrls = ['https://unpkg.steedos.cn/@steedos-widgets/amis-object@v6.3.12-beta.6/dist/assets.json'];
 
 const data = {
-  context: {
-    rootUrl: import.meta.env.VITE_B6_ROOT_URL
-  }
+  context: Builder.settings.context
 }
 
 // Put your API key here

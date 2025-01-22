@@ -4,14 +4,14 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "NODE_ENV=production vite",
     "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
     "@builder6/react": "^8.0.4",
-    "react": "^16.9.0",
-    "react-dom": "^16.9.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-router-dom": "^5.0.1",
     "vite-plugin-external": "^4.3.1"
   },
@@ -19,6 +19,6 @@
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "@vitejs/plugin-react": "^3.1.0",
-    "vite": "^4.5.3"
+    "vite": "^6.0.11"
   }
 }

@@ -6,5 +6,21 @@ import createExternal from 'vite-plugin-external';
 export default defineConfig({
   plugins: [
     react(),
+    createExternal({
+      interop: 'auto',
+      externals: {
+        react: 'React',
+        'react-dom': 'ReactDOM',
+      }
+    }),
   ],
+  // external react
+  build: {
+    minify: false,
+    rollupOptions: {
+      output: {
+        format: 'iife',
+      }
+    },
+  },
 });
