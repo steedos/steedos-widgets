@@ -2,24 +2,13 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2025-01-22 12:51:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2025-01-22 16:23:37
+ * @LastEditTime: 2025-01-22 16:47:31
  * @Description: 
  */
 
 export const AmisRender = function ({schema = {}, data = {}, env = {}}) {
   const Builder = (window as any).Builder; // or use a more specific type
   const BuilderComponent = (window as any).BuilderComponent
-
-  Builder.settings = { 
-    rootUrl: localStorage.getItem('steedos:rootUrl'),
-    assetUrls: ['http://127.0.0.1:8080/@steedos-widgets/amis-object@v6.3.12-beta.15/dist/assets.json'],
-    context: {
-      rootUrl: localStorage.getItem('steedos:rootUrl'),
-      userId: localStorage.getItem('steedos:userId'),
-      tenantId: localStorage.getItem('steedos:spaceId'),
-      authToken: localStorage.getItem('steedos:authToken'),
-    } 
-  };
 
   const mergedData = {
     ...Builder.settings,
