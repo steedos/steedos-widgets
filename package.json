@@ -6,12 +6,11 @@
   "license": "MIT",
   "private": true,
   "workspaces": [
-    "apps/*",
     "packages/**"
   ],
   "scripts": {
     "dev": "node unpkg-local.js",
-    "start": "cd apps/storybook && yarn storybook",
+    "start": "cd apps/storybook && yarn && yarn storybook",
     "watch": "lerna run watch --parallel",
     "build": "lerna run build",
     "build-object": "lerna run build-object",
@@ -38,5 +37,6 @@
     "http-server": "^14.1.1",
     "ts-node": "^10.9.1",
     "tsconfig-paths-webpack-plugin": "^4.0.0"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
