@@ -51,7 +51,7 @@ function App() {
           <AntdApp>
             <DevtoolsProvider>
               <Refine
-                dataProvider={dataProvider("http://localhost:8088/backend/service/api")}
+                // dataProvider={dataProvider("http://localhost:8088/backend/service/api")}
                 notificationProvider={useNotificationProvider}
                 authProvider={authProvider}
                 routerProvider={routerBindings}
