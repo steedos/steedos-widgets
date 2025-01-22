@@ -94,3 +94,25 @@ export const SwitchTableId = () => {
     />
   </>)
 }
+
+export const LicenseKey = () => (
+  <AmisRender
+    data={data}
+    env={env}
+    schema={{
+      "type": "page",
+      "body": [
+        {
+          "type": "steedos-tables-grid",
+          "className": "h-96",
+          "style": {
+            "height": "calc(100vh - 58px)"
+          },
+          "tableId": "67658ac0cc184d0efc68b752",
+          "mode": "admin",
+          "licenseKey": "1234567890"
+        }
+      ],
+    }}
+  />
+)
