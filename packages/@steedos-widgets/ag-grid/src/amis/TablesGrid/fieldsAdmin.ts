@@ -190,6 +190,23 @@ const getAgGridFieldFormDialog = (tableId: string, mode: string) => {
     }
 }
 
+const getDeleteSuccScript = () => {
+    return `
+        const data = context.getData();
+        const gridApi = data.gridApi;
+        const gridContext = data.gridContext;
+        const deletingFieldId = event.data.deletingFieldId;
+        const isDeleteSuc = event.data.responseData && event.data.responseData._id === deletingFieldId;
+        if (isDeleteSuc) {
+            var columnDefs = gridApi.getColumnDefs();
+            _.remove(columnDefs, function(n){
+                return n.cellEditorParams && n.cellEditorParams.fieldConfig && n.cellEditorParams.fieldConfig._id === deletingFieldId;
+            });
+            gridApi.setGridOption('columnDefs', columnDefs);
+        }
+    `
+}
+
 export function getTableAdminEvents(tableId: string) {
     return {
         [`@airtable.${tableId}.editField`]: {
@@ -236,11 +253,16 @@ export function getTableAdminEvents(tableId: string) {
                     }
                 },
                 {
-                    "actionType": "broadcast",
-                    "args": {
-                        "eventName": "broadcast_service_listview_b6_data_rebuild"
-                    }
+                    "actionType": "custom",
+                    "script": getDeleteSuccScript()
                 }
+                // 不再使用rebuild刷新表格的方式来更新ag-grid字段信息
+                // {
+                //     "actionType": "broadcast",
+                //     "args": {
+                //         "eventName": "broadcast_service_listview_b6_data_rebuild"
+                //     }
+                // }
             ]
         },
         [`@airtable.${tableId}.sortFields`]: {
@@ -267,13 +289,15 @@ export function getTableAdminEvents(tableId: string) {
                         }
                     }
                 },
-                {
-                    "actionType": "broadcast",
-                    "args": {
-                        "eventName": "broadcast_service_listview_b6_data_rebuild"
-                    },
-                    "expression": "${!!!b6FieldsOrderResponseResult.success}"
-                }
+                // 排序后不用刷新表格，ag-grid会自动更新界面上的排序次序
+                // 不再使用rebuild刷新表格的方式来更新ag-grid字段信息
+                // {
+                //     "actionType": "broadcast",
+                //     "args": {
+                //         "eventName": "broadcast_service_listview_b6_data_rebuild"
+                //     },
+                //     "expression": "${!!!b6FieldsOrderResponseResult.success}"
+                // }
             ]
         },
         [`@airtable.${tableId}.setVerification`]: {
