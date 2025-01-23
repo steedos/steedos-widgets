@@ -2,10 +2,9 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2025-01-22 12:51:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2025-01-22 16:47:31
+ * @LastEditTime: 2025-01-23 17:57:03
  * @Description: 
  */
-
 export const AmisRender = function ({schema = {}, data = {}, env = {}}) {
   const Builder = (window as any).Builder; // or use a more specific type
   const BuilderComponent = (window as any).BuilderComponent

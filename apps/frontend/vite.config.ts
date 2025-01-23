@@ -1,8 +1,16 @@
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
+import createExternal from 'vite-plugin-external';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(),
+    createExternal({
+      interop: 'auto',
+      externals: {
+        react: 'React',
+        'react-dom': 'ReactDOM',
+      }
+    })],
   // base: '/frontend/',
   server: {
     port: 3000, // 指定你想要的启动端口
