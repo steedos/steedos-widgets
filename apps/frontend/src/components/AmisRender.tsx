@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2025-01-22 12:51:08
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2025-01-23 17:57:03
+ * @LastEditTime: 2025-01-24 17:24:14
  * @Description: 
  */
 export const AmisRender = function ({schema = {}, data = {}, env = {}}) {
@@ -16,6 +16,11 @@ export const AmisRender = function ({schema = {}, data = {}, env = {}}) {
   const mergedEnv = {
     assetUrls: Builder.settings.assetUrls,
     unpkgUrl: 'https://unpkg.steedos.cn',
+    jumpTo: (to: string, action: string)=>{
+      //TODO
+      debugger;
+      console.log('jumpTo to, action', to, action)
+    },
     ...env,
   }
 

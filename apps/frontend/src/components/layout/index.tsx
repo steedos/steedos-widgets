@@ -27,6 +27,9 @@ export const ThemedLayoutV2: React.FC<RefineThemedLayoutV2Props> = ({
         },
         Layout: {
           bodyBg: 'background: radial-gradient(circle at 64% 46%, #e9f0f5 0, #f2f0f4 57%, #f5f5f5 100%);'
+        },
+        Menu: {
+          activeBarBorderWidth: 0
         }
       }
     }}>

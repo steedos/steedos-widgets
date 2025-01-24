@@ -29,12 +29,14 @@ import { Login } from "./pages/login";
 import { Register } from "./pages/register";
 import { ObjectDetail, ObjectListView } from "./pages/object";
 import DynamicMenu from "./components/DynamicMenu";
+import GlobalLinkInterceptor from "./GlobalLinkInterceptor";
 
 
 function App() {
   return (
     <BrowserRouter>
       {/* <GitHubBanner /> */}
+      <GlobalLinkInterceptor />
       <RefineKbarProvider>
         <ColorModeContextProvider>
           <AntdApp>

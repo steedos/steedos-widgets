@@ -1,3 +1,37 @@
 .ant-layout-content>div{
     padding: 0px !important;
 }
+
+.steedos-record-content{
+    background-color: transparent !important;
+}
+
+.steedos-object-listview{
+    background-color: transparent !important;
+}
+
+.steedos-object-table .antd-Form .antd-Service{
+    border-radius: 0.75rem;
+}
+
+.steedos-object-table .antd-Form .antd-Service{
+    border-radius: 0.75rem;
+}
+
+.steedos-object-table .antd-Table-content{
+    border-radius: 0.75rem;
+}
+
+.steedos-object-table .antd-Table-contentWrap{
+    padding: 1rem;
+}
+
+
+:where(.css-dev-only-do-not-override-1cijr1n).ant-menu-light.ant-menu-inline .ant-menu-sub.ant-menu-inline, :where(.css-dev-only-do-not-override-1cijr1n).ant-menu-light>.ant-menu.ant-menu-inline .ant-menu-sub.ant-menu-inline {
+    background: transparent !important;
+}
+
+
+.antd-Table-contentWrap{
+    min-height: 600px;
+}

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 11:54:45
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2025-01-18 17:10:58
+ * @LastEditTime: 2025-01-24 17:24:42
  * @Description: 
  */
 import { React, AmisRender } from '../components/AmisRender';
@@ -378,5 +378,5 @@ export const SteedosApp2 = ()=>{
 
         history.push(originalHref)
     }
-});
+  });
 }
