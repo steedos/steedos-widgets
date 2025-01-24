@@ -127,41 +127,7 @@ const DynamicMenu = () => {
         return
     }
 
-    return <div style={{ width: 256}}>
-        <div style={{background: '#fff', height: 64, alignItems: 'center', display: 'flex'}}>
-        <AmisRender schema={{
-                  "columnClassName": "items-center flex pb-0",
-                  "body": [
-                      {
-                          "type": "steedos-app-launcher",
-                          "showAppName": true,
-                          "appId": appId,
-                      }
-                  ],
-                  "md": "auto",
-                  "valign": "middle"
-              }} data ={{
-                context: {
-                    rootUrl: "/backend",
-                    app: appId,
-                    appId: appId,
-                    app_id: appId,
-                    tenantId:"617a0127e410310030c0b95f",
-                    userId:"Tt4hK3NpmDr5WjxFx",
-                    authToken: "ea3cdc716fb0f9cb3b183f62a57194b640dbc9dbb923e2463f9d489dd84aff4fa7fac46a1a3eb675b7d6b4",
-                    user: {
-                      spaceId: "617a0127e410310030c0b95f",
-                      userId:"Tt4hK3NpmDr5WjxFx",
-                    }
-                  },
-                  app: appId,
-                  appId: appId,
-                  app_id: appId,
-            }} env = {{}} ></AmisRender>
-            <Text strong={true} style={{fontSize: 16}}>{(menus as any).name}</Text>
-        </div>
-        <Menu onClick={onClick} selectedKeys={[current]} mode="inline" items={menuItems} style={{ marginTop: 0 }}/>
-    </div>;
+    return <Menu onClick={onClick} selectedKeys={[current]} mode="inline" items={menuItems} style={{ width: 256, marginTop: 0, background: 'transparent' }}/>
 };
 
 export default DynamicMenu;

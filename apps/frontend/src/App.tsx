@@ -4,10 +4,11 @@ import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 
 import {
   ErrorComponent,
-  ThemedLayoutV2,
-  ThemedSiderV2,
   useNotificationProvider,
 } from "@refinedev/antd";
+import {
+  ThemedLayoutV2,
+} from "./components/layout";
 import "@refinedev/antd/dist/reset.css";
 import "./App.css";
 
@@ -18,12 +19,10 @@ import routerBindings, {
   UnsavedChangesNotifier,
 } from "@refinedev/react-router";
 // import dataProvider from "@refinedev/simple-rest";
-import dataProvider from "@refinedev/airtable";
 import { App as AntdApp } from "antd";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router";
 import { authProvider } from "./authProvider";
 import { AppIcon } from "./components/app-icon";
-import { Header } from "./components/header";
 import { ColorModeContextProvider } from "./contexts/color-mode";
 import { ForgotPassword } from "./pages/forgotPassword";
 import { Login } from "./pages/login";
@@ -74,7 +73,6 @@ function App() {
                         fallback={<CatchAllNavigate to="/login" />}
                       >
                         <ThemedLayoutV2
-                          Header={Header}
                           Sider={(props) =>{
                             return <DynamicMenu></DynamicMenu>
                           }}
