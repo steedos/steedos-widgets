@@ -9,6 +9,7 @@ import {
   useNotificationProvider,
 } from "@refinedev/antd";
 import "@refinedev/antd/dist/reset.css";
+import "./App.css";
 
 import routerBindings, {
   CatchAllNavigate,
@@ -28,6 +29,7 @@ import { ForgotPassword } from "./pages/forgotPassword";
 import { Login } from "./pages/login";
 import { Register } from "./pages/register";
 import { ObjectDetail, ObjectListView } from "./pages/object";
+import DynamicMenu from "./components/DynamicMenu";
 
 
 function App() {
@@ -45,7 +47,7 @@ function App() {
                 routerProvider={routerBindings}
                 resources={[
                   {
-                    name: "App",
+                    name: "app",
                     list: "/app/:appId/:objectName/grid/:listviewId",
                     show: "/app/:appId/:objectName/view/:recordId",
                     meta: {
@@ -73,7 +75,9 @@ function App() {
                       >
                         <ThemedLayoutV2
                           Header={Header}
-                          Sider={(props) => <ThemedSiderV2 {...props} fixed />}
+                          Sider={(props) =>{
+                            return <DynamicMenu></DynamicMenu>
+                          }}
                         >
                           <Outlet />
                         </ThemedLayoutV2>

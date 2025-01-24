@@ -10,6 +10,8 @@ import {
 } from "antd";
 import React, { useContext } from "react";
 import { ColorModeContext } from "../../contexts/color-mode";
+import { AmisRender } from "../AmisRender";
+import { useParams } from "react-router";
 
 const { Text } = Typography;
 const { useToken } = theme;
@@ -20,13 +22,15 @@ type IUser = {
   avatar: string;
 };
 
+
+// TODO app launcher 应该渲染到此文件中,但是由于amis 自定义组件有bug, 此处渲染时,无法正常注册组件.
+
 export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
   sticky = true,
 }) => {
   const { token } = useToken();
   const { data: user } = useGetIdentity<IUser>();
   const { mode, setMode } = useContext(ColorModeContext);
-
   const headerStyles: React.CSSProperties = {
     backgroundColor: token.colorBgElevated,
     display: "flex",
@@ -41,7 +45,6 @@ export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
     headerStyles.top = 0;
     headerStyles.zIndex = 1;
   }
-
   return (
     <AntdLayout.Header style={headerStyles}>
       <Space>
