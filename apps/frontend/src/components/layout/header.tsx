@@ -6,7 +6,8 @@ import {
 } from "@refinedev/core";
 import { Layout as AntdLayout, Typography, Avatar, Space, theme, Col, Row } from "antd";
 import type { RefineThemedLayoutV2HeaderProps } from "@refinedev/antd";
-import AppLauncher from "../Appl";
+import AppLauncher from "../AppLauncher";
+import Logo from "../Logo";
 
 export const ThemedHeaderV2: React.FC<RefineThemedLayoutV2HeaderProps> = ({
   isSticky,
@@ -43,7 +44,11 @@ export const ThemedHeaderV2: React.FC<RefineThemedLayoutV2HeaderProps> = ({
     <AntdLayout.Header style={headerStyles}>
       <Row style={{height: '48px'}}>
         <Col span={18}>
-          <AppLauncher></AppLauncher>
+          <Space size="middle">
+            <AppLauncher></AppLauncher>
+            <Logo></Logo>
+            <div>AppName</div>
+          </Space>
         </Col>
         <Col span={6}>
           <Space style={{float: 'right'}}>
