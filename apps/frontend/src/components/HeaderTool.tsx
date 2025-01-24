@@ -1,15 +1,16 @@
 import { AmisRender } from "./AmisRender"
 
-const Logo = () => {
+const HeaderTool = () => {
     const  appId = 's3';
     return <AmisRender schema={{
         "columnClassName": "items-center flex pb-0",
         "body": [
             {
-                "type": "steedos-logo",
-                "src": "/backend/images/logo.png",
-                "showAppName": true,
-                "appId": appId,
+                "type": "steedos-global-header-toolbar",
+                "label": "Global Header",
+                className: 'flex flex-nowrap gap-x-3 items-center justify-end',
+                logoutScript: "window.signOut();",
+                // customButtons: customButtons
             }
         ],
         "md": "auto",
@@ -34,4 +35,4 @@ const Logo = () => {
     }} env={{}}></AmisRender>
 }
 
-export default Logo;
+export default HeaderTool;
