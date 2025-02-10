@@ -522,7 +522,7 @@ async function onRowValueChanged(event: any, dataSource: any, { env }) {
         rowNode.setData(Object.assign({}, responseData, { __verificationErrors: verificationErrors, __formulaErrors: formulaErrors }));
     } catch (error) {
         console.error('Error saving data:', error);
-        // env.notify("error", "保存数据失败，请刷新浏览器以查看最新数据状态，并稍后重试。");
+        env.notify("error", "保存数据失败，请刷新浏览器以查看最新数据状态，并稍后重试。");
     }
 }
 

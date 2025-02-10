@@ -273,8 +273,7 @@ export function getTableAdminEvents(tableId: string) {
                     "outputVar": "b6FieldsOrderResponseResult",
                     "options": {},
                     "api": {
-                        "url": "${context.rootUrl}/api/builder6/b6_aggrid/order/b6_fields",
-                        // "url": "http://127.0.0.1:5800/api/builder6/b6_aggrid/order/b6_fields", //TODO:rootUrl能取到？接口在b6不是标准接口
+                        "url": "${context.rootUrl}/api/builder6/b6_aggrid/order/b6_fields",//TODO:sort接口在b6不是标准接口
                         "method": "post",
                         "data": {
                             "fields": "${sortedFields}"
