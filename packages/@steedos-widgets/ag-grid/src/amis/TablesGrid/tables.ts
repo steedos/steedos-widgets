@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-01-02 15:39:40
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-02-10 09:58:45
+ * @LastEditTime: 2025-02-10 17:28:09
  */
 // import { getColumnDef, getDataTypeDefinitions } from '../AirtableGrid/gridOptions';
 import { getDataSource } from './dataSource';
@@ -71,7 +71,8 @@ export async function getTablesGridSchema(
                 "dataSource": dataSource,
                 tableId,
                 agGridLicenseKey,
-                filters
+                filters,
+                verifications: meta.verifications
             }
         ],
         "onEvent": {

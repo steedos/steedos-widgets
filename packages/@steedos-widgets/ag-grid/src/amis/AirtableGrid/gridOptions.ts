@@ -411,6 +411,7 @@ async function onRowValueChanged(event: any, dataSource: any, { env }) {
     console.log('Saving updated data to server:', JSON.stringify(data));
     try {
         const allGridColumns = event.api.getAllGridColumns();
+        const gridContext = event.api.getGridOption("context");
         // 字段类型值转换以及字段校验
         let fieldsVerificationErrors = [];
         const colDefs = keyBy(map(allGridColumns, "colDef"), "field");
@@ -485,7 +486,7 @@ async function onRowValueChanged(event: any, dataSource: any, { env }) {
         const formulaErrors = data.__formulaErrors.concat();
         // verifications校验
         const rowNode = event.node;
-        const tableVerificationErrors = getTableVerificationErrors(data, table.verifications, { env });
+        const tableVerificationErrors = getTableVerificationErrors(data, gridContext.verifications, { env });
         const verificationErrors = union(fieldsVerificationErrors, tableVerificationErrors);
         console.log("==verificationErrors===:", verificationErrors);
         let allValidated = verificationErrors.length === 0;
@@ -926,8 +927,8 @@ export function getDataTypeDefinitions() {
     };
 }
 
-export async function getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent, filters }) {
-    const table = { _id: tableId, verifications: [] };
+export async function getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications = [] }) {
+    const table = { _id: tableId };
     let tableLabel = title;
     const isReadonly = mode === "read";
     const isAdmin = mode === "admin";
@@ -966,7 +967,7 @@ export async function getGridOptions({ tableId, title, mode, dataSource, getColu
         onDragStopped(event, dispatchEvent);
     };
 
-    var needToValiTable = table.verifications && table.verifications.length > 0;
+    var needToValiTable = verifications && verifications.length > 0;
     var columnFieldNames = map(columnDefs, "field");
     var pageSize = 100000;
     // 初始化网格配置
@@ -979,9 +980,10 @@ export async function getGridOptions({ tableId, title, mode, dataSource, getColu
                     return false;
                 }
                 const allGridColumns = params.api.getAllGridColumns();
+                const gridContext = params.api.getGridOption("context");
                 const colDefs = keyBy(map(allGridColumns, "colDef"), "field");
                 var fieldsVerificationErrors = getFieldsVerificationErrors(params.data, colDefs);
-                var tableVerificationErrors = getTableVerificationErrors(params.data, table.verifications, { env });
+                var tableVerificationErrors = getTableVerificationErrors(params.data, gridContext.verifications, { env });
                 const verificationErrors = union(fieldsVerificationErrors, tableVerificationErrors);
                 params.data.__verificationErrors = verificationErrors;
 
@@ -1052,7 +1054,10 @@ export async function getGridOptions({ tableId, title, mode, dataSource, getColu
             fileName: tableLabel,
             columnKeys: columnFieldNames
         },
-        serverSideDatasource: getServerSideDatasource(dataSource, filters)
+        serverSideDatasource: getServerSideDatasource(dataSource, filters),
+        context: {
+            verifications
+        }
     };
 
     if (needToValiTable) {
@@ -1070,7 +1075,7 @@ export async function getGridOptions({ tableId, title, mode, dataSource, getColu
     return gridOptions;
 }
 
-const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters }) => {
+const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications }) => {
     const onDataFilter = async function (config: any, AgGrid: any, props: any, data: any, ref: any) {
         // 为ref.current补上props属性，否则props.dispatchEvent不能生效
         ref.current.props = props;
@@ -1081,7 +1086,7 @@ const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env,
             // 启用 AG Grid 企业版
             AgGrid.LicenseManager.setLicenseKey(agGridLicenseKey);
         }
-        let gridOptions = await getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent, filters });
+        let gridOptions = await getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications });
         return gridOptions;
     }
     const agGrid = {
@@ -1576,7 +1581,7 @@ export const getTableHeader = ({ tableId, title, mode, dataSource, getColumnDefs
 }
 
 export async function getAirtableGridSchema(
-    { tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters }
+    { tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications }
 ) {
     const amisSchema = {
         "type": "service",
@@ -1588,7 +1593,7 @@ export async function getAirtableGridSchema(
         "className": "steedos-airtable-grid h-full",
         "body": [
             getTableHeader({ tableId, title, mode, dataSource, getColumnDefs, env }),
-            await getAgGrid({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters })
+            await getAgGrid({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications })
         ],
         "onEvent": {
             [`@airtable.${tableId}.setGridApi`]: {
