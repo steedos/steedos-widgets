@@ -210,7 +210,7 @@ const getDeleteSuccScript = () => {
 /**
  * 新建、编辑查看校验规则表单记录的amis dialog
  * @param {*} tableId 
- * @param {*} mode new/edit/readonly
+ * @param {*} mode new/edit/read
  * @returns 
  */
 const getAgGridVerificationFormDialog = (tableId: string, mode: string) => {
@@ -247,8 +247,9 @@ const getAgGridVerificationFormDialog = (tableId: string, mode: string) => {
             }
         });
     }
-    else if (mode === "readonly") {
+    else if (mode === "read") {
         Object.assign(form, {
+            "mode": "readonly",
             "submitSuccActions": []
         });
     }
@@ -260,7 +261,7 @@ const getAgGridVerificationFormDialog = (tableId: string, mode: string) => {
     else if (mode === "new") {
         title = "新建校验规则";
     }
-    else if (mode === "readonly") {
+    else if (mode === "read") {
         title = "查看校验规则";
     }
     return {
@@ -294,14 +295,6 @@ const getAgGridVerificationFormDialog = (tableId: string, mode: string) => {
 export function getVerificationSetActions(tableId: string) {
     return [
         {
-          "actionType": "toast",
-          "args": {
-            "msgType": "warning",
-            "msg": "=s=我是全局警告消息，可以配置不同类型和弹出位置~",
-            "position": "top-right"
-          }
-        },
-        {
             "ignoreError": false,
             "actionType": "dialog",
             "dialog": {
@@ -329,138 +322,6 @@ export function getVerificationSetActions(tableId: string) {
                                 },
                                 "id": "u:f4bb2603b8e2",
                                 "level": "primary"
-                            },
-                            {
-                                "type": "button",
-                                "label": "过滤",
-                                "hidden": true,
-                                "onEvent": {
-                                    "click": {
-                                        "actions": [
-                                            {
-                                                "ignoreError": false,
-                                                "actionType": "dialog",
-                                                "dialog": {
-                                                    "type": "dialog",
-                                                    "title": "过滤",
-                                                    "body": [
-                                                        {
-                                                            "type": "form",
-                                                            "title": "过滤",
-                                                            "size": "md",
-                                                            "mode": "normal",
-                                                            "dsType": "api",
-                                                            "body": [
-                                                                {
-                                                                    "type": "condition-builder",
-                                                                    "name": "conditions",
-                                                                    "label": "",
-                                                                    "fields": [
-                                                                        {
-                                                                            "name": "rule",
-                                                                            "label": "校验规则",
-                                                                            "sortable": true,
-                                                                            "type": "text"
-                                                                        },
-                                                                        {
-                                                                            "name": "alert",
-                                                                            "label": "报错提示",
-                                                                            "type": "text",
-                                                                            "sortable": true
-                                                                        }
-                                                                    ],
-                                                                    "id": "u:e250068c0913",
-                                                                    "builderMode": "simple"
-                                                                }
-                                                            ],
-                                                            "actions": [
-                                                                {
-                                                                    "type": "button",
-                                                                    "label": "提交",
-                                                                    "onEvent": {
-                                                                        "click": {
-                                                                            "actions": [
-                                                                                {
-                                                                                    "actionType": "submit",
-                                                                                    "componentId": "u:bfb9d516ba7d"
-                                                                                }
-                                                                            ]
-                                                                        }
-                                                                    },
-                                                                    "level": "primary"
-                                                                }
-                                                            ],
-                                                            "id": "u:4041caac0110",
-                                                            "feat": "Insert"
-                                                        }
-                                                    ],
-                                                    "actions": [
-                                                        {
-                                                            "type": "button",
-                                                            "actionType": "cancel",
-                                                            "label": "取消",
-                                                            "id": "u:3fab80fd3f87"
-                                                        },
-                                                        {
-                                                            "type": "button",
-                                                            "actionType": "confirm",
-                                                            "label": "确定",
-                                                            "primary": true,
-                                                            "id": "u:77efd22a8ac1"
-                                                        }
-                                                    ],
-                                                    "data": {
-                                                        "conditions": "${_crud_conditions}"
-                                                    },
-                                                    "showCloseButton": true,
-                                                    "closeOnOutside": false,
-                                                    "closeOnEsc": false,
-                                                    "showErrorMsg": true,
-                                                    "showLoading": true,
-                                                    "draggable": false,
-                                                    "actionType": "dialog",
-                                                    "resizable": false,
-                                                    "onEvent": {
-                                                        "confirm": {
-                                                            "weight": 0,
-                                                            "actions": [
-                                                                {
-                                                                    "actionType": "custom",
-                                                                    "script": "event.data._crud_filters=window.amisConvert.conditionsToFilters(event.data.conditions);"
-                                                                },
-                                                                {
-                                                                    "componentId": "u:set_fields_dialog",
-                                                                    "groupType": "component",
-                                                                    "actionType": "setValue",
-                                                                    "args": {
-                                                                        "value": "${{\n_crud_conditions: conditions\n}}"
-                                                                    }
-                                                                },
-                                                                {
-                                                                    "componentId": "u:set_fields_dialog",
-                                                                    "groupType": "component",
-                                                                    "actionType": "setValue",
-                                                                    "args": {
-                                                                        "value": "${{\nfilters: _crud_filters\n}}"
-                                                                    }
-                                                                },
-                                                                {
-                                                                    "componentId": "u:d6234e18fa74",
-                                                                    "groupType": "component",
-                                                                    "actionType": "reload"
-                                                                }
-                                                            ]
-                                                        }
-                                                    },
-                                                    "size": "md",
-                                                    "className": "steedos-overflow-visible-dialog",
-                                                    "id": "u:b38279dc9ee3"
-                                                }
-                                            }
-                                        ]
-                                    }
-                                },
-                                "id": "u:1e34ae7788f4"
                             }
                         ]
                     },
@@ -511,7 +372,7 @@ export function getVerificationSetActions(tableId: string) {
                                         "type": "button",
                                         "icon": "fa fa-eye",
                                         "actionType": "dialog",
-                                        "dialog": getAgGridVerificationFormDialog(tableId, "readonly")
+                                        "dialog": getAgGridVerificationFormDialog(tableId, "read")
                                     },
                                     {
                                         "type": "button",
