@@ -766,7 +766,7 @@ function filterModelToOdataFilters(filterModel, colDefs) {
     return filters;
 }
 
-function getServerSideDatasource(dataSource: any) {
+function getServerSideDatasource(dataSource: any, filters: any) {
     return {
         getRows: async function (params: any) {
             console.log('Server Side Datasource - Requesting rows from server:', params.request);
@@ -790,14 +790,14 @@ function getServerSideDatasource(dataSource: any) {
 
                 // 过滤
                 let queryFilters = [];
-                const collectFilters = [];
+                const rawFilters = filters || [];
                 // if (B6_TABLES_DATA_COLLECT_FIELDNAME && collectId) {
-                //     collectFilters = [B6_TABLES_DATA_COLLECT_FIELDNAME, "=", collectId];
+                //     rawFilters = [B6_TABLES_DATA_COLLECT_FIELDNAME, "=", collectId];
                 // }
-                if (collectFilters.length && modelFilters.length) {
-                    queryFilters = [collectFilters, modelFilters];
-                } else if (collectFilters.length) {
-                    queryFilters = collectFilters;
+                if (rawFilters.length && modelFilters.length) {
+                    queryFilters = [rawFilters, modelFilters];
+                } else if (rawFilters.length) {
+                    queryFilters = rawFilters;
                 } else {
                     queryFilters = modelFilters;
                 }
@@ -926,7 +926,7 @@ export function getDataTypeDefinitions() {
     };
 }
 
-export async function getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent }) {
+export async function getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent, filters }) {
     const table = { _id: tableId, verifications: [] };
     let tableLabel = title;
     const isReadonly = mode === "read";
@@ -1052,7 +1052,7 @@ export async function getGridOptions({ tableId, title, mode, dataSource, getColu
             fileName: tableLabel,
             columnKeys: columnFieldNames
         },
-        serverSideDatasource: getServerSideDatasource(dataSource)
+        serverSideDatasource: getServerSideDatasource(dataSource, filters)
     };
 
     if (needToValiTable) {
@@ -1070,7 +1070,7 @@ export async function getGridOptions({ tableId, title, mode, dataSource, getColu
     return gridOptions;
 }
 
-const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey }) => {
+const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters }) => {
     const onDataFilter = async function (config: any, AgGrid: any, props: any, data: any, ref: any) {
         // 为ref.current补上props属性，否则props.dispatchEvent不能生效
         ref.current.props = props;
@@ -1081,7 +1081,7 @@ const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env,
             // 启用 AG Grid 企业版
             AgGrid.LicenseManager.setLicenseKey(agGridLicenseKey);
         }
-        let gridOptions = await getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent });
+        let gridOptions = await getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent, filters });
         return gridOptions;
     }
     const agGrid = {
@@ -1576,7 +1576,7 @@ export const getTableHeader = ({ tableId, title, mode, dataSource, getColumnDefs
 }
 
 export async function getAirtableGridSchema(
-    { tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey }
+    { tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters }
 ) {
     const amisSchema = {
         "type": "service",
@@ -1588,7 +1588,7 @@ export async function getAirtableGridSchema(
         "className": "steedos-airtable-grid h-full",
         "body": [
             getTableHeader({ tableId, title, mode, dataSource, getColumnDefs, env }),
-            await getAgGrid({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey })
+            await getAgGrid({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters })
         ],
         "onEvent": {
             [`@airtable.${tableId}.setGridApi`]: {

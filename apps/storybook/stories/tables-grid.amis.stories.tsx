@@ -37,6 +37,28 @@ export const Gerneral = () => (
   />
 )
 
+export const Filters = () => (
+  <AmisRender
+    data={data}
+    env={env}
+    schema={{
+      "type": "page",
+      "body": [
+        {
+          "type": "steedos-tables-grid",
+          "className": "h-96",
+          "style": {
+            "height": "calc(100vh - 58px)"
+          },
+          "tableId": "67658ac0cc184d0efc68b752",
+          "mode": "admin",
+          "filters": ["int", ">", 100]
+        }
+      ],
+    }}
+  />
+)
+
 export const SwitchTableId = () => {
   // const [tableId, setTableId] = useState('675ce746f7d71010aaeb3fe6');
   return (<>
