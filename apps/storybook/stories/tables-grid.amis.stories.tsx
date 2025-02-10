@@ -51,7 +51,6 @@ export const Filters = () => (
             "height": "calc(100vh - 58px)"
           },
           "tableId": "67658ac0cc184d0efc68b752",
-          "mode": "admin",
           "filters": ["int", ">", 100]
         }
       ],
