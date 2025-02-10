@@ -228,12 +228,12 @@ const getAgGridVerificationFormDialog = (tableId: string, mode: string) => {
                 "componentId": "u:d6234e18fa74",
                 "groupType": "component"
             },
-            {
-                "actionType": "broadcast",
-                "args": {
-                    "eventName": "broadcast_service_listview_b6_data_rebuild"
-                }
-            }
+            // {
+            //     "actionType": "broadcast",
+            //     "args": {
+            //         "eventName": "broadcast_service_listview_b6_data_rebuild"
+            //     }
+            // }
         ],
         "fieldsExtend": "{\n    \"table\": {\n        \"visible_on\": \"${false}\"\n    }\n}",
         "visibleOn": "${!!_formulaVariablesLoaded}"
@@ -290,6 +290,25 @@ const getAgGridVerificationFormDialog = (tableId: string, mode: string) => {
         "showLoading": true,
         "draggable": false
     }
+}
+
+const getVerificationSetDialogConfirmScript = (tableId: string) => {
+    return `
+        const tableId = "${tableId}";
+        var dialogCrud = event.context.scoped.getComponentById("u:d6234e18fa74");
+        var crudData = dialogCrud.getData();
+        var newVerifications = crudData.items;
+        doAction({
+            "type": "broadcast",
+            "actionType": "broadcast",
+            "args": {
+                "eventName": "@airtable.${tableId}.setVerificationConfirm"
+            },
+            "data": {
+                "newVerifications": newVerifications
+            }
+        })
+    `;
 }
 
 export function getVerificationSetActions(tableId: string) {
@@ -364,7 +383,7 @@ export function getVerificationSetActions(tableId: string) {
                             },
                             {
                                 "type": "operation",
-                                "label": "操作2",
+                                "label": "操作",
                                 "width": 100,
                                 "fixed": "right",
                                 "buttons": [
@@ -394,7 +413,7 @@ export function getVerificationSetActions(tableId: string) {
                                                         "outputVar": "responseResult",
                                                         "options": {},
                                                         "api": {
-                                                            "url": "/api/v1/b6_verification/${_id}",
+                                                            "url": "${context.rootUrl}/api/v1/b6_verification/${_id}",
                                                             "method": "delete",
                                                             "requestAdaptor": "",
                                                             "adaptor": "",
@@ -409,12 +428,12 @@ export function getVerificationSetActions(tableId: string) {
                                                         "groupType": "component",
                                                         "actionType": "reload"
                                                     },
-                                                    {
-                                                        "actionType": "broadcast",
-                                                        "args": {
-                                                            "eventName": "broadcast_service_listview_b6_data_rebuild"
-                                                        }
-                                                    }
+                                                    // {
+                                                    //     "actionType": "broadcast",
+                                                    //     "args": {
+                                                    //         "eventName": "broadcast_service_listview_b6_data_rebuild"
+                                                    //     }
+                                                    // }
                                                 ]
                                             }
                                         },
@@ -444,16 +463,16 @@ export function getVerificationSetActions(tableId: string) {
                     "context": "${context}"
                 },
                 "actions": [
-                    {
-                        "type": "button",
-                        "actionType": "cancel",
-                        "label": "取消",
-                        "id": "u:cd0da5df3e78"
-                    },
+                    // {
+                    //     "type": "button",
+                    //     "actionType": "cancel",
+                    //     "label": "取消",
+                    //     "id": "u:cd0da5df3e78"
+                    // },
                     {
                         "type": "button",
                         "actionType": "confirm",
-                        "label": "确定",
+                        "label": "完成",
                         "primary": true,
                         "id": "u:3ca3a2bb15b0"
                     }
@@ -465,10 +484,33 @@ export function getVerificationSetActions(tableId: string) {
                 "showLoading": true,
                 "draggable": false,
                 "actionType": "dialog",
-                "size": "lg"
+                "size": "lg",
+                "onEvent": {
+                    "confirm": {
+                        "actions": [
+                            {
+                                "actionType": "custom",
+                                "script": getVerificationSetDialogConfirmScript(tableId)
+                            }
+                        ]
+                    }
+                }
             }
         }
     ]
+}
+
+const getVerificationConfirmScript = () => {
+    return `
+        const newVerifications = event.data.newVerifications;
+        const data = context.getData();
+        const gridApi = data.gridApi;
+        const oldContext = gridApi.getGridOption("context")
+        gridApi.setGridOption("context", Object.assign({}, oldContext, { 
+            verifications: newVerifications 
+        }));
+        gridApi.redrawRows();
+    `
 }
 
 export function getTableAdminEvents(tableId: string) {
@@ -565,6 +607,14 @@ export function getTableAdminEvents(tableId: string) {
         },
         [`@airtable.${tableId}.setVerification`]: {
             "actions": getVerificationSetActions(tableId)
+        },
+        [`@airtable.${tableId}.setVerificationConfirm`]: {
+            "actions": [
+                {
+                    "actionType": "custom",
+                    "script": getVerificationConfirmScript()
+                }
+            ]
         }
     }
 }
