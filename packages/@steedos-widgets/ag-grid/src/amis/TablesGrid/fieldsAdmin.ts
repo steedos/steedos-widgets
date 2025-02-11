@@ -505,10 +505,30 @@ const getVerificationConfirmScript = () => {
         const newVerifications = event.data.newVerifications;
         const data = context.getData();
         const gridApi = data.gridApi;
-        const oldContext = gridApi.getGridOption("context")
-        gridApi.setGridOption("context", Object.assign({}, oldContext, { 
+        const oldContext = gridApi.getGridOption("context");
+        const newContext = Object.assign({}, oldContext, { 
             verifications: newVerifications 
-        }));
+        });
+        const newGridOptionsProps = {
+            context: newContext
+        };
+        const needToValiTable = newVerifications && newVerifications.length > 0;
+        const isReadonly = oldContext.isReadonly;
+        if (!isReadonly){
+            // 用户有数据编辑权限时，默认使用单元格编辑，即 onCellValueChanged 属性有值
+            // 如果 tables 中存在校验规则，把编辑模式转为行编辑，不使用单元格编辑模式，即把 onCellValueChanged 换成 onRowValueChanged
+            if (needToValiTable){
+                newGridOptionsProps.editType = "fullRow";
+                newGridOptionsProps.onRowValueChanged = oldContext.onRowValueChangedFun;
+                newGridOptionsProps.onCellValueChanged = null;
+            }
+            else {
+                newGridOptionsProps.editType = "cell";
+                newGridOptionsProps.onRowValueChanged = null;
+                newGridOptionsProps.onCellValueChanged = oldContext.onCellValueChangedFun;
+            }
+        }
+        gridApi.updateGridOptions(newGridOptionsProps);
         gridApi.redrawRows();
     `
 }

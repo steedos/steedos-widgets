@@ -1056,7 +1056,10 @@ export async function getGridOptions({ tableId, title, mode, dataSource, getColu
         },
         serverSideDatasource: getServerSideDatasource(dataSource, filters),
         context: {
-            verifications
+            verifications,
+            onRowValueChangedFun: onRowValueChangedRaw,
+            onCellValueChangedFun: onCellValueChangedRaw,
+            isReadonly
         }
     };
 
