@@ -110,7 +110,7 @@ export const AdminEditRead = () => (
               "type": "steedos-tables-grid",
               "className": "h-96",
               "style": {
-                "height": "calc(100vh - 108px)"
+                "height": "calc(100vh - 178px)"
               },
               "tableId": "${tableId}",
               "mode": "${tableMode}",
@@ -204,7 +204,7 @@ export const Filters = () => (
               "type": "steedos-tables-grid",
               "className": "h-96",
               "style": {
-                "height": "calc(100vh - 108px)"
+                "height": "calc(100vh - 178px)"
               },
               "tableId": "${tableId}",
               "mode": "read",
@@ -328,7 +328,7 @@ export const SwitchTableId = () => {
               "type": "steedos-tables-grid",
               "className": "h-96",
               "style": {
-                "height": "calc(100vh - 58px)"
+                "height": "calc(100vh - 108px)"
               },
               "tableId": "${tableId}",
               "mode": "admin"
