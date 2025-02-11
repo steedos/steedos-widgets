@@ -477,7 +477,7 @@ export function getVerificationSetActions(tableId: string) {
                         "id": "u:3ca3a2bb15b0"
                     }
                 ],
-                "showCloseButton": true,
+                "showCloseButton": false,
                 "closeOnOutside": false,
                 "closeOnEsc": false,
                 "showErrorMsg": true,
