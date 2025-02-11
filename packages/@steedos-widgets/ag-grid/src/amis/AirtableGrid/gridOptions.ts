@@ -1,4 +1,5 @@
 import { keyBy, map, isNaN, isNil, union, debounce, each, clone, forEach, filter } from "lodash";
+import { AmisDateTimeCellEditor, AmisMultiSelectCellEditor } from '../cellEditor';
 
 const baseFields = ["created", "created_by", "modified", "modified_by"];
 
@@ -239,6 +240,7 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
                 values: fieldOptions
             });
             // cellEditor = MultiSelectCellEditor;
+            cellEditor = AmisMultiSelectCellEditor;
             filter = 'agSetColumnFilter';
             Object.assign(filterParams, {
                 values: fieldOptions
@@ -257,8 +259,9 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
             break;
         case 'datetime':
             cellDataType = 'date';
-            editable = false;
+            // editable = false;
             // cellEditor = DateTimeEditor;
+            cellEditor = AmisDateTimeCellEditor;
             // 因为日期时间依赖了DateTimeEditor.init函数中对初始值定义，所以这里没必要再走一次valueGetter
             // valueGetter = dataTypeDefinitions.date.valueGetter;
             /*
@@ -1060,6 +1063,10 @@ export async function getGridOptions({ tableId, title, mode, dataSource, getColu
             onRowValueChangedFun: onRowValueChangedRaw,
             onCellValueChangedFun: onCellValueChangedRaw,
             isReadonly
+        },
+        components: {
+            AmisDateTimeCellEditor: AmisDateTimeCellEditor,
+            AmisMultiSelectCellEditor: AmisMultiSelectCellEditor
         }
     };
 
