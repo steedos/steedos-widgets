@@ -22,7 +22,8 @@
         "@steedos-widgets/fullcalendar": ["packages/@steedos-widgets/fullcalendar/src"],
         "@steedos-widgets/amis-lib": ["packages/@steedos-widgets/amis-lib/src"],
         "@steedos-widgets/amis-object": ["packages/@steedos-widgets/amis-object/src"],
-        "@steedos-widgets/steedos-lib": ["packages/@steedos-widgets/steedos-lib/src"]
+        "@steedos-widgets/steedos-lib": ["packages/@steedos-widgets/steedos-lib/src"],
+        "@steedos-widgets/ag-grid": ["packages/@steedos-widgets/ag-grid/src"],
       }
     },
     "include": [
