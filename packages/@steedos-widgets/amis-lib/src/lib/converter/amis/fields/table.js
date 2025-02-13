@@ -562,7 +562,7 @@ async function getColumnItemOnClick(field, options){
                   "title": "&nbsp;",
                   "headerClassName": "hidden",
                   "size": "lg",
-                  "width": "70%",
+                  "width": window.drawerWidth || "70%",
                   "bodyClassName": "p-0 m-0 bg-gray-100",
                   "closeOnEsc": true,
                   "closeOnOutside": true,
