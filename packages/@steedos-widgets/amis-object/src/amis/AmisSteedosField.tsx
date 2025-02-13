@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2025-02-13 10:35:11
+ * @LastEditTime: 2025-02-13 15:12:53
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -122,7 +122,6 @@ async function getLookupLinkOnClick(field: any, options: any) {
             "recordLoaded": false, // 重置数据加载状态
         }
     }
-    debugger;
     return {
         "click": {
             "actions": [
