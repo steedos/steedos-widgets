@@ -2,12 +2,12 @@ import { React, AmisRender } from '../components/AmisRender';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Amis/Liveblocks',
+  title: 'Enterprise/Liveblocks',
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
 const env = {
   assetUrls: [
-    `${process.env.STEEDOS_UNPKG_URL}/@steedos-widgets/liveblocks@6.3.12-beta.6/dist/assets.json`,
+    `${process.env.STEEDOS_UNPKG_URL}/@steedos-widgets/liveblocks@6.3.12-beta.9/dist/assets.json`,
   ],
 }
 

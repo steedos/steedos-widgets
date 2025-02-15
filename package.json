@@ -19,7 +19,7 @@
     "cnpm-sync": "lerna exec --no-private  -- cnpm sync \\$LERNA_PACKAGE_NAME"
   },
   "dependencies": {
-    "@builder6/react": "^3.2.20",
+    "@builder6/react": "^3.2.21",
     "lerna": "^6.6.2",
     "lodash": "^4.17.21",
     "postcss": "^8.1.10",
@@ -34,6 +34,7 @@
     "antd": "4.24.5",
     "babel-loader": "^8.2.5",
     "cnpm": "9.0.1",
+    "express": "^4.21.2",
     "http-server": "^14.1.1",
     "ts-node": "^10.9.1",
     "tsconfig-paths-webpack-plugin": "^4.0.0"

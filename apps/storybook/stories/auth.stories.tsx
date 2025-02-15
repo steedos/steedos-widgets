@@ -23,8 +23,9 @@ export const Login = () => (
           return payload;
         `,
         "requestAdaptor": `
-          api.url = api.data.rootUrl + "/api/v6/auth/login";
+          api.url = (api.data.b6Host || api.data.rootUrl) + "/api/v6/auth/login";
           localStorage.setItem("steedos:rootUrl", api.data.rootUrl); 
+          localStorage.setItem("steedosB6Host", api.data.b6Host); 
           localStorage.setItem("steedosRootUrl", api.data.rootUrl); 
           localStorage.setItem("steedosUsername", api.data.username);
           console.log(api, context);
@@ -41,6 +42,13 @@ export const Login = () => (
           "name": "rootUrl",
           "placeholder": "请输入 Steedos Root URL",
           value: "${ls:steedosRootUrl}",
+        },
+        {
+          "label": "B6 HOST",
+          "type": "input-text",
+          "name": "b6Host",
+          "placeholder": "请输入 B6 Host，默认与Root URL相同",
+          value: "${ls:steedosB6Host}",
         },
         {
           "label": "Email",

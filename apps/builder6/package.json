@@ -1,7 +1,7 @@
 {
   "name": "builder6",
   "private": true,
-  "version": "6.3.12-beta.6",
+  "version": "6.3.12-beta.18",
   "type": "module",
   "scripts": {
     "dev": "vite",

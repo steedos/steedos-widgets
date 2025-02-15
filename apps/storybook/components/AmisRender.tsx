@@ -17,7 +17,8 @@ Builder.settings = {
     userId: localStorage.getItem('steedos:userId'),
     tenantId: localStorage.getItem('steedos:spaceId'),
     authToken: localStorage.getItem('steedos:authToken'),
-  } 
+  },
+  unpkgUrl: process.env.STEEDOS_UNPKG_URL,
 };
 
 export {
@@ -51,7 +52,7 @@ export const AmisRender = function ({schema, data = {}, env = {}}) {
             name: "Core:AssetsLoader",
             options: {
               urls: assetUrls,
-              unpkgUrl: 'https://unpkg.steedos.cn'
+              unpkgUrl: process.env.STEEDOS_UNPKG_URL,
             },
           },
           children: [

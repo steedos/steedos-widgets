@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-12-23 17:34:22
+ * @LastEditTime: 2025-02-13 15:12:53
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -74,7 +74,7 @@ const REFERENCE_VALUE_ITEM_ONCLICK = {
               "title": "&nbsp;",
               "headerClassName": "hidden",
               "size": "lg",
-              "width": "70%",
+              "width": (window as any).drawerWidth || "70%",
               "bodyClassName": "p-0 m-0 bg-gray-100",
               "closeOnEsc": true,
               "closeOnOutside": true,
@@ -132,7 +132,7 @@ async function getLookupLinkOnClick(field: any, options: any) {
                         "title": "&nbsp;",
                         "headerClassName": "hidden",
                         "size": "lg",
-                        "width": "70%",
+                        "width": (window as any).drawerWidth || "70%",
                         "bodyClassName": "p-0 m-0 bg-gray-100",
                         "closeOnEsc": true,
                         "closeOnOutside": true,

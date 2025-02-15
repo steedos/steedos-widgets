@@ -2,7 +2,7 @@ import { React, AmisRender } from '../components/AmisRender';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Amis/Object Form',
+  title: 'Steedos/Object Form',
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
 
@@ -10,7 +10,7 @@ const data = {};
 
 const env = {
   assetUrls: [
-    `http://localhost:8080/@steedos-widgets/amis-object/dist/assets-dev.json`,
+    `${process.env.STEEDOS_UNPKG_URL}/@steedos-widgets/amis-object/dist/assets.json`,
   ],
 };
 

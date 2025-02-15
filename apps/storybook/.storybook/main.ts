@@ -11,7 +11,7 @@ require('dotenv-flow').config({path: path.join(__dirname, '../')});
 
 module.exports = {
   stories: ['../stories/**/*.stories.tsx'],
-  staticDirs: ['../../apps/experience/public'],
+  staticDirs: ['../public'],
   reactOptions: {
     legacyRootApi: false,
   },

@@ -9,7 +9,7 @@ export default {
 const data = {};
 const env = {
   assetUrls: [
-    `http://127.0.0.1:8080/@steedos-widgets/ag-grid/dist/assets-dev.json`,
+    `${process.env.STEEDOS_UNPKG_URL}/@steedos-widgets/ag-grid/dist/assets.json`,
   ],
 };
 

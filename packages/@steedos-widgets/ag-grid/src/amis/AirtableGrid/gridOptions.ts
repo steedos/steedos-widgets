@@ -1,13 +1,5 @@
 import { keyBy, map, isNaN, isNil, union, debounce, each, clone, forEach, filter } from "lodash";
-
-export const B6_TABLES_BASEID = "default";
-
-const ROOT_URL = "http://127.0.0.1:5800";
-const B6_HOST = "http://localhost:5100";//process.env.B6_HOST || "";
-const B6_TABLES_API = `${B6_HOST}/api/v6/tables`;
-export const B6_TABLES_ROOTURL = `${B6_TABLES_API}/${B6_TABLES_BASEID}`;
-
-export const B6_TABLES_METABASE_ROOTURL = `${B6_TABLES_API}/meta/bases/${B6_TABLES_BASEID}/tables`;
+import { AmisDateTimeCellEditor, AmisMultiSelectCellEditor } from '../cellEditor';
 
 const baseFields = ["created", "created_by", "modified", "modified_by"];
 
@@ -106,26 +98,6 @@ function checkNumberPrecision(num, precision) {
     }
 }
 
-export async function getMeta(tableId: string, force: boolean = false) {
-    if (!tableId) {
-        return;
-    }
-    try {
-        const response = await fetch(`${B6_TABLES_METABASE_ROOTURL}/${tableId}`, {
-            credentials: 'include',
-            // "headers": {
-            //     'Content-Type': 'application/json',
-            //     "Authorization": "Bearer ${context.tenantId},${context.authToken}" //TODO context中没取到数据
-            // }
-        });
-
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error(`getUISchema`, tableId, error);
-    }
-}
-
 function runAmisFormula(formula: string, data: any, catchBack: Function, options: any = {}) {
     try {
         var currentAmis = (window as any).amisRequire("amis");
@@ -156,39 +128,39 @@ function getTableVerificationErrors(data: any, tableVerifications: any, { env })
     return verificationErrors;
 }
 
-function getMainMenuItems(params) {
+function getMainMenuItems(params: any, { dispatchEvent, env }) {
     const athleteMenuItems = params.defaultItems.slice(0);
-    // athleteMenuItems.unshift("separator");
-    // athleteMenuItems.unshift({
-    //     name: "删除字段",
-    //     action: (menuParams) => {
-    //         console.log("Start to delete a field");
-    //         var fieldConfig = menuParams.column.colDef.cellEditorParams.fieldConfig;
-    //         if (!fieldConfig) {
-    //             return;
-    //         }
-    //         dispatchEvent("deleteField", {
-    //             "deletingFieldId": fieldConfig._id
-    //         });
-    //     }
-    // });
-    // athleteMenuItems.unshift({
-    //     name: "编辑字段",
-    //     action: (menuParams) => {
-    //         console.log("Start to edit a field");
-    //         var fieldConfig = menuParams.column.colDef.cellEditorParams.fieldConfig;
-    //         if (!fieldConfig) {
-    //             return;
-    //         }
-    //         dispatchEvent("editField", {
-    //             "editingFieldId": fieldConfig._id
-    //         });
-    //     }
-    // });
+    athleteMenuItems.unshift("separator");
+    athleteMenuItems.unshift({
+        name: "删除字段",
+        action: (menuParams: any) => {
+            console.log("Start to delete a field");
+            var fieldConfig = menuParams.column.colDef.cellEditorParams.fieldConfig;
+            if (!fieldConfig) {
+                return;
+            }
+            dispatchEvent("deleteField", {
+                "deletingFieldId": fieldConfig._id
+            });
+        }
+    });
+    athleteMenuItems.unshift({
+        name: "编辑字段",
+        action: (menuParams: any) => {
+            console.log("Start to edit a field");
+            var fieldConfig = menuParams.column.colDef.cellEditorParams.fieldConfig;
+            if (!fieldConfig) {
+                return;
+            }
+            dispatchEvent("editField", {
+                "editingFieldId": fieldConfig._id
+            });
+        }
+    });
     return athleteMenuItems;
 }
 
-function getColumnDef(field: any, dataTypeDefinitions: any, mode: string) {
+export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string, { dispatchEvent, env }) {
     const isReadonly = mode === "read";
     const isAdmin = mode === "admin";
     var cellDataType: any,
@@ -268,6 +240,7 @@ function getColumnDef(field: any, dataTypeDefinitions: any, mode: string) {
                 values: fieldOptions
             });
             // cellEditor = MultiSelectCellEditor;
+            cellEditor = AmisMultiSelectCellEditor;
             filter = 'agSetColumnFilter';
             Object.assign(filterParams, {
                 values: fieldOptions
@@ -286,8 +259,9 @@ function getColumnDef(field: any, dataTypeDefinitions: any, mode: string) {
             break;
         case 'datetime':
             cellDataType = 'date';
-            editable = false;
+            // editable = false;
             // cellEditor = DateTimeEditor;
+            cellEditor = AmisDateTimeCellEditor;
             // 因为日期时间依赖了DateTimeEditor.init函数中对初始值定义，所以这里没必要再走一次valueGetter
             // valueGetter = dataTypeDefinitions.date.valueGetter;
             /*
@@ -334,10 +308,14 @@ function getColumnDef(field: any, dataTypeDefinitions: any, mode: string) {
             cellDataType = 'text'; // 默认类型
     }
 
-    var mainMenuItems = isAdmin ? getMainMenuItems : null;
-    if (field.is_system) {
-        // 系统字段不显示额外菜单
-        mainMenuItems = null;
+    let mainMenuItems: any;
+    // 系统字段不显示额外菜单
+    if (isAdmin && !field.is_system) {
+        // 使用闭包把 dispatchEvent 等参数传递给事件处理函数
+        const getMainMenuItemsRaw = function (params: any) {
+            return getMainMenuItems(params, { dispatchEvent, env });
+        };
+        mainMenuItems = getMainMenuItemsRaw;
     }
 
     return {
@@ -359,6 +337,12 @@ function getColumnDef(field: any, dataTypeDefinitions: any, mode: string) {
         lockPosition: lockPosition
     };
 
+}
+
+export function getColumnDefByFieldFun(dataTypeDefinitions: any, mode: string, { dispatchEvent, env }) {
+    return function (field: any){
+        return getColumnDef(field, dataTypeDefinitions, mode, { dispatchEvent, env });
+    }
 }
 
 // 校验数据表中配置的Verifications并返回错误信息
@@ -424,14 +408,13 @@ function getFieldVerificationErrors(fieldValue, colDef) {
 }
 
 // 监听行数据改变事件
-async function onRowValueChanged(event: any, table: any, { env }) {
-    console.log("===onRowValueChanged===table===", table);
-    console.log("===onRowValueChanged===env===", env);
-    const tableId = table._id;
+async function onRowValueChanged(event: any, dataSource: any, { env }) {
+    const table: any = {};
     const data = event.data;
     console.log('Saving updated data to server:', JSON.stringify(data));
     try {
         const allGridColumns = event.api.getAllGridColumns();
+        const gridContext = event.api.getGridOption("context");
         // 字段类型值转换以及字段校验
         let fieldsVerificationErrors = [];
         const colDefs = keyBy(map(allGridColumns, "colDef"), "field");
@@ -506,7 +489,7 @@ async function onRowValueChanged(event: any, table: any, { env }) {
         const formulaErrors = data.__formulaErrors.concat();
         // verifications校验
         const rowNode = event.node;
-        const tableVerificationErrors = getTableVerificationErrors(data, table.verifications, { env });
+        const tableVerificationErrors = getTableVerificationErrors(data, gridContext.verifications, { env });
         const verificationErrors = union(fieldsVerificationErrors, tableVerificationErrors);
         console.log("==verificationErrors===:", verificationErrors);
         let allValidated = verificationErrors.length === 0;
@@ -535,35 +518,23 @@ async function onRowValueChanged(event: any, table: any, { env }) {
         // 保存更新的数据到服务端
         delete data.__verificationErrors;
         delete data.__formulaErrors;
-        var url = B6_TABLES_ROOTURL + '/' + tableId + '/' + data._id;
-        const response = await fetch(url, {
-            credentials: 'include',
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                // "Authorization": "Bearer ${context.tenantId},${context.authToken}" //TODO context中没取到数据
-                "Authorization": "Bearer 654300b5074594d15147bcfa,dbe0e0da68ba2e83aca63a5058907e543a4e89f7e979963b4aa1f574f227a3b5063e149d818ff553fb4aa1"
-            },
-            body: JSON.stringify(data)
-        });
-        if (!response.ok) {
-            throw new Error('Server error! Status: ' + response.status);
-        }
-        const responseData = await response.json();
+        // if (!response.ok) {
+        //     throw new Error('Server error! Status: ' + response.status);
+        // }
+        const responseData = await dataSource.update(data._id, data);
         console.log('Data saved successfully:', responseData);
         rowNode.setData(Object.assign({}, responseData, { __verificationErrors: verificationErrors, __formulaErrors: formulaErrors }));
     } catch (error) {
         console.error('Error saving data:', error);
-        // env.notify("error", "保存数据失败，请刷新浏览器以查看最新数据状态，并稍后重试。");
+        env.notify("error", "保存数据失败，请刷新浏览器以查看最新数据状态，并稍后重试。");
     }
 }
 
 const changeQueue = new Map();
 
-function processChangeQueue(table: any, { env }) {
-    console.log("===processChangeQueue===table===", table);
+function processChangeQueue(dataSource: any, { env }) {
     changeQueue.forEach((event, rowIndex) => {
-        onRowValueChanged(event, table, { env });
+        onRowValueChanged(event, dataSource, { env });
     });
     changeQueue.clear();
 }
@@ -573,7 +544,7 @@ const debouncedProcessChangeQueue = debounce(processChangeQueue, 200, {
     trailing: true
 });
 
-function onCellValueChanged(event: any, table: any, { env }) {
+function onCellValueChanged(event: any, dataSource: any, { env }) {
     const rowIndex = event.node.rowIndex;
 
     if (!changeQueue.has(rowIndex)) {
@@ -584,7 +555,7 @@ function onCellValueChanged(event: any, table: any, { env }) {
         existingEvent.data = { ...existingEvent.data, ...event.data };
     }
 
-    debouncedProcessChangeQueue(table, { env });
+    debouncedProcessChangeQueue(dataSource, { env });
 }
 
 // 校验数据表中数据的字段类型格式合法性
@@ -799,12 +770,11 @@ function filterModelToOdataFilters(filterModel, colDefs) {
     return filters;
 }
 
-function getServerSideDatasource(tableId: string) {
+function getServerSideDatasource(dataSource: any, filters: any) {
     return {
         getRows: async function (params: any) {
             console.log('Server Side Datasource - Requesting rows from server:', params.request);
-            let gridApi = params.api;
-            // agGridRefs[tableId] = gridApi;\
+            // let gridApi = params.api;
 
             try {
                 const colDefs = keyBy(
@@ -813,30 +783,29 @@ function getServerSideDatasource(tableId: string) {
                 );
                 const modelFilters = filterModelToOdataFilters(params.request.filterModel, colDefs);
                 console.log('Server Side Datasource - Requesting rows by modelFilters:', modelFilters);
-
-                let url = `${B6_TABLES_ROOTURL}/${tableId}`;
                 const startRow = params.request.startRow;
                 const pageSize = params.api.paginationGetPageSize();
-                let separator = url.includes('?') ? '&' : '?';
-                url += `${separator}skip=${startRow}&top=${pageSize}&expands=created_by,modified_by`;
+
+                const loadOptions: any = {
+                    skip: startRow,
+                    top: pageSize,
+                    expands: 'created_by,modified_by'
+                }
 
                 // 过滤
                 let queryFilters = [];
-                const collectFilters = [];
+                const rawFilters = filters || [];
                 // if (B6_TABLES_DATA_COLLECT_FIELDNAME && collectId) {
-                //     collectFilters = [B6_TABLES_DATA_COLLECT_FIELDNAME, "=", collectId];
+                //     rawFilters = [B6_TABLES_DATA_COLLECT_FIELDNAME, "=", collectId];
                 // }
-                if (collectFilters.length && modelFilters.length) {
-                    queryFilters = [collectFilters, modelFilters];
-                } else if (collectFilters.length) {
-                    queryFilters = collectFilters;
+                if (rawFilters.length && modelFilters.length) {
+                    queryFilters = [rawFilters, modelFilters];
+                } else if (rawFilters.length) {
+                    queryFilters = rawFilters;
                 } else {
                     queryFilters = modelFilters;
                 }
-                if (queryFilters.length > 0) {
-                    separator = url.includes('?') ? '&' : '?';
-                    url += `${separator}filters=${JSON.stringify(queryFilters)}`;
-                }
+                loadOptions.filters = queryFilters;
 
                 // 排序
                 const sortModel = params.request.sortModel;
@@ -845,29 +814,17 @@ function getServerSideDatasource(tableId: string) {
                     sort.push(`${sortField.colId} ${sortField.sort}`);
                 });
                 console.log('Server Side Datasource - Requesting rows by sortModel:', sortModel);
-                if (sort.length > 0) {
-                    separator = url.includes('?') ? '&' : '?';
-                    url += `${separator}sort=${sort.join(",")}`;
-                }
+                loadOptions.sort = sort;
 
-                const response = await fetch(url, {
-                    credentials: 'include',
-                    // headers: {
-                    //     'Content-Type': 'application/json',
-                    //     'Authorization': 'Bearer ${context.tenantId},${context.authToken}' //TODO context中没取到数据
-                    // }
-                });
+                const response = await dataSource.load(loadOptions);
 
-                if (!response.ok) {
-                    throw new Error(`Server error! Status: ${response.status}`);
-                }
-
-                const data = await response.json();
-                console.log('Server Side Datasource - data:', data);
+                // if (!response.ok) {
+                //     throw new Error(`Server error! Status: ${response.status}`);
+                // }
 
                 params.success({
-                    rowData: data.data,
-                    rowCount: data.totalCount
+                    rowData: response.data,
+                    rowCount: response.totalCount
                 });
             } catch (error) {
                 console.error('Error fetching data from server:', error);
@@ -878,7 +835,7 @@ function getServerSideDatasource(tableId: string) {
     };
 }
 
-function getDataTypeDefinitions() {
+export function getDataTypeDefinitions() {
     return {
         date: {
             baseDataType: 'date',
@@ -973,39 +930,18 @@ function getDataTypeDefinitions() {
     };
 }
 
-function getGridOptions(table: any, mode: string, { dispatchEvent, env }) {
-    if (!table || !table.fields) {
-        return null;
-    }
-    let tableId = table._id;
-    let tableLabel = table.label;
+export async function getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications = [] }) {
+    const table = { _id: tableId };
+    let tableLabel = title;
     const isReadonly = mode === "read";
     const isAdmin = mode === "admin";
     var dataTypeDefinitions = getDataTypeDefinitions();
 
-    var columnDefs = table.fields.map(function (field) {
-        return getColumnDef(field, dataTypeDefinitions, mode);
-    });
-
-    // if (!isReadonly){
-    //     // 添加选择列，这里单独添加选择列，不使用rowSelection配置为对象的方式默认生成的选择列是为了把索引列排在第一列
-    //     columnDefs.unshift({
-    //         headerCheckboxSelection: true,
-    //         checkboxSelection: true,
-    //         flex: null,//不配置的话，默认走defaultColDef中的flex:1的话，宽度不生效
-    //         width: 50,
-    //         minWidth: 50,
-    //         contextMenuItems: [],
-    //         mainMenuItems: [],
-    //         pinned: 'left',
-    //         suppressMovable: true,
-    //         suppressHeaderMenuButton: true,
-    //         suppressHeaderContextMenu: true,
-    //         suppressFloatingFilterButton: true,
-    //         resizable: false,
-    //         sortable: false
-    //     });
-    // }
+    // var columnDefs = table.fields.map(function (field) {
+    //     return getColumnDef(field, dataTypeDefinitions, mode, { dispatchEvent, env });
+    // });
+    const getColumnDefByField = getColumnDefByFieldFun(dataTypeDefinitions, mode, { dispatchEvent, env });
+    var columnDefs = await getColumnDefs({ title, mode, dataSource, env, dispatchEvent, getColumnDefByField }) || [];
     columnDefs.unshift({
         headerName: "",
         valueGetter: "node.rowIndex + 1",
@@ -1023,18 +959,18 @@ function getGridOptions(table: any, mode: string, { dispatchEvent, env }) {
         sortable: false
     });
 
-    // 使用闭包把 table 参数传递给事件处理函数
+    // 使用闭包把 dataSource 等参数传递给事件处理函数
     const onRowValueChangedRaw = (event: any) => {
-        onRowValueChanged(event, table, { env });
+        onRowValueChanged(event, dataSource, { env });
     };
     const onCellValueChangedRaw = (event: any) => {
-        onCellValueChanged(event, table, { env });
+        onCellValueChanged(event, dataSource, { env });
     };
     const onDragStoppedRaw = (event: any) => {
         onDragStopped(event, dispatchEvent);
     };
 
-    var needToValiTable = table.verifications && table.verifications.length > 0;
+    var needToValiTable = verifications && verifications.length > 0;
     var columnFieldNames = map(columnDefs, "field");
     var pageSize = 100000;
     // 初始化网格配置
@@ -1047,9 +983,10 @@ function getGridOptions(table: any, mode: string, { dispatchEvent, env }) {
                     return false;
                 }
                 const allGridColumns = params.api.getAllGridColumns();
+                const gridContext = params.api.getGridOption("context");
                 const colDefs = keyBy(map(allGridColumns, "colDef"), "field");
                 var fieldsVerificationErrors = getFieldsVerificationErrors(params.data, colDefs);
-                var tableVerificationErrors = getTableVerificationErrors(params.data, table.verifications, { env });
+                var tableVerificationErrors = getTableVerificationErrors(params.data, gridContext.verifications, { env });
                 const verificationErrors = union(fieldsVerificationErrors, tableVerificationErrors);
                 params.data.__verificationErrors = verificationErrors;
 
@@ -1097,16 +1034,18 @@ function getGridOptions(table: any, mode: string, { dispatchEvent, env }) {
             var rowCount = event.api.getDisplayedRowCount();
             console.log('onStoreUpdated:', rowCount);
             // getRows 初始加载数据，过滤数据，列排序等，gridApi.applyServerSideTransaction 新建记录、删除记录都会触发
-            // dispatchEvent("setTotalCount", {
-            //     "totalCount": rowCount
-            // });
+            dispatchEvent("setTotalCount", {
+                "totalCount": rowCount
+            });
         },
         onGridReady: function (params: any) {
             // getRows 初始加载数据，过滤数据，列排序等，gridApi.applyServerSideTransaction 新建记录、删除记录都会触发
             dispatchEvent("setGridApi", {
                 "gridApi": params.api,
                 "gridContext": {
-                    setRowDataFormulaValues
+                    setRowDataFormulaValues,
+                    dataSource,
+                    getColumnDefByField
                 }
             });
         },
@@ -1118,7 +1057,17 @@ function getGridOptions(table: any, mode: string, { dispatchEvent, env }) {
             fileName: tableLabel,
             columnKeys: columnFieldNames
         },
-        serverSideDatasource: getServerSideDatasource(tableId)
+        serverSideDatasource: getServerSideDatasource(dataSource, filters),
+        context: {
+            verifications,
+            onRowValueChangedFun: onRowValueChangedRaw,
+            onCellValueChangedFun: onCellValueChangedRaw,
+            isReadonly
+        },
+        components: {
+            AmisDateTimeCellEditor: AmisDateTimeCellEditor,
+            AmisMultiSelectCellEditor: AmisMultiSelectCellEditor
+        }
     };
 
     if (needToValiTable) {
@@ -1136,286 +1085,28 @@ function getGridOptions(table: any, mode: string, { dispatchEvent, env }) {
     return gridOptions;
 }
 
-const getFormServiceApiRequestAdaptor = (tableId, showFormulaFields = false) => {
-    const filters = [["table_id", "=", tableId]];
-    if (!showFormulaFields) {
-        // 不能在公式字段中引用公式字段
-        filters.push(["type", "!=", "formula"]);
-    }
-    return `
-api.url += '?filters=${JSON.stringify(filters)}&fields=["label","name","type","sort_no"]&sort=sort_no';
-return api;
-    `;
-}
-
-const getFormServiceApiAdaptor = () => {
-    return `
-var formulaVariables = [];
-var fTypeTags = {
-  "text": "文本",
-  "textarea": "长文本",
-  "number": "数字",
-  "select": "单选",
-  "select-multiple": "多选",
-  "boolean": "勾选",
-  "date": "日期",
-  "datetime": "日期时间",
-  "formula": "公式",
-};
-var getFormulaVariableTag = function (type) { 
-  var tag = fTypeTags[type] || type;
-  return tag;
-}
-if (payload.data.items && payload.data.items.length) { 
-  formulaVariables = payload.data.items.map(function (n) {
-    return {
-      "label": n.label,
-      "value": n.name,
-      "tag": getFormulaVariableTag(n.type)
-    }
-  })
-}
-payload.data = {
-  _b6_fields__formula_variables: formulaVariables,
-  _formulaVariablesLoaded: true
-}
-return payload;
-    `
-}
-
-/**
- * 新建和编辑字段的amis dialog第一层的service，它会抓取当前table所有字段集合用于显示公式字段的变量
- * @returns 
- */
-const getFieldFormService = (form, tableId, showFormulaFields = false) => {
-    const formService = {
-        "type": "service",
-        "body": [
-            form
-        ],
-        "api": {
-            // "url": "${context.rootUrl}/api/v1/b6_fields",
-            "url": ROOT_URL + "/api/v1/b6_fields",
-            "method": "get",
-            "requestAdaptor": getFormServiceApiRequestAdaptor(tableId, showFormulaFields),
-            "adaptor": getFormServiceApiAdaptor(),
-            "headers": {//TODO:Authorization取不到
-                //   "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                "Authorization": "Bearer 654300b5074594d15147bcfa,dbe0e0da68ba2e83aca63a5058907e543a4e89f7e979963b4aa1f574f227a3b5063e149d818ff553fb4aa1"
-            },
-            "messages": {
-            },
-            "data": {
-            }
-        },
-        "data": {
-            "_formulaVariablesLoaded": false
-        }
-    }
-    return formService;
-}
-
-/**
- * 新建和编辑字段的amis dialog
- * @param {*} table 
- * @param {*} fields 
- * @param {*} mode new/edit
- * @returns 
- */
-const getAgGridFieldFormDialog = (table: any, mode: string) => {
-    let tableId = table._id;
-    const form = {
-        "type": "steedos-object-form",
-        "mode": "edit",
-        "label": "对象表单",
-        "objectApiName": "b6_fields",
-        "recordId": "${editingFieldId}",
-        "enableInitApi": true,
-        "className": "",
-        "submitSuccActions": [
-            {
-                "actionType": "broadcast",
-                "args": {
-                    "eventName": "broadcast_service_listview_b6_data_rebuild"
-                }
-            }
-        ],
-        "fieldsExtend": "{\n  \"table_id\": {\n    \"visible_on\": \"${false}\"\n  }\n}",
-        "visibleOn": "${!!_formulaVariablesLoaded}"
-    };
-    if (mode === "new") {
-        Object.assign(form, {
-            "recordId": "",
-            "enableInitApi": false,
-            "defaultData": {
-                "table_id": tableId
-            }
-        });
-    }
-    const formService = getFieldFormService(form, tableId);
-    let title = "";
-    if (mode === "edit") {
-        title = "编辑字段";
-    }
-    else if (mode === "new") {
-        title = "新建字段";
-    }
-    return {
-        "type": "dialog",
-        "title": title,
-        "size": "lg",
-        "body": formService,
-        "actionType": "dialog",
-        "actions": [
-            {
-                "type": "button",
-                "actionType": "cancel",
-                "label": "取消",
-                "id": "u:30d4bab40dff"
-            },
-            {
-                "type": "button",
-                "actionType": "confirm",
-                "label": "确定",
-                "primary": true,
-                "id": "u:bc50710298c1"
-            }
-        ],
-        "showCloseButton": true,
-        "closeOnOutside": false,
-        "closeOnEsc": false,
-        "showErrorMsg": true,
-        "showLoading": true,
-        "draggable": false
-    }
-}
-
-function getTableAdminEvents(table: any) {
-    const tableId = table._id;
-    return {
-        [`@b6tables.${tableId}.editField`]: {
-            "actions": [
-                {
-                    "actionType": "dialog",
-                    "dialog": getAgGridFieldFormDialog(table, "edit")
-                }
-            ]
-        },
-        [`@b6tables.${tableId}.newField`]: {
-            "actions": [
-                {
-                    "actionType": "dialog",
-                    "dialog": getAgGridFieldFormDialog(table, "new")
-
-                }
-            ]
-        },
-        [`@b6tables.${tableId}.deleteField`]: {
-            "actions": [
-                {
-                    "actionType": "confirmDialog",
-                    "dialog": {
-                        "title": "操作确认",
-                        "msg": "确定要删除此字段吗?"
-                    }
-                },
-                {
-                    "ignoreError": false,
-                    "actionType": "ajax",
-                    "options": {},
-                    "api": {
-                        "url": "${context.rootUrl}/api/v1/b6_fields/${deletingFieldId}",
-                        "method": "delete",
-                        "requestAdaptor": "",
-                        "adaptor": "",
-                        "messages": {
-                            "success": "删除字段成功",
-                            "failed": "删除字段时发生错误，请稍后重试。"
-                        }
-                    }
-                },
-                {
-                    "actionType": "broadcast",
-                    "args": {
-                        "eventName": "broadcast_service_listview_b6_data_rebuild"
-                    }
-                }
-            ]
-        },
-        [`@b6tables.${tableId}.sortFields`]: {
-            "actions": [
-                {
-                    "ignoreError": false,
-                    "actionType": "ajax",
-                    "outputVar": "b6FieldsOrderResponseResult",
-                    "options": {},
-                    "api": {
-                        // "url": "${context.rootUrl}/api/builder6/b6_aggrid/order/b6_fields",
-                        "url": "http://127.0.0.1:5800/api/builder6/b6_aggrid/order/b6_fields", //TODO:rootUrl能取到？接口在b6不是标准接口
-                        "method": "post",
-                        "data": {
-                            "fields": "${sortedFields}"
-                        },
-                        "headers": {//TODO:Authorization取不到
-                            //   "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                            "Authorization": "Bearer 654300b5074594d15147bcfa,dbe0e0da68ba2e83aca63a5058907e543a4e89f7e979963b4aa1f574f227a3b5063e149d818ff553fb4aa1"
-                        },
-                        "adaptor": "",
-                        "messages": {
-                            // "success": "已成功更新字段排序",
-                            "failed": "更新字段排序时发生错误，请稍后重试。"
-                        }
-                    }
-                },
-                {
-                    "actionType": "broadcast",
-                    "args": {
-                        "eventName": "broadcast_service_listview_b6_data_rebuild"
-                    },
-                    "expression": "${!!!b6FieldsOrderResponseResult.success}"
-                }
-            ]
-        },
-        [`@b6tables.${tableId}.setVerification`]: {
-            // "actions": getVerificationSetActions(table, fields)
-        }
-    }
-}
-
-const getAgGrid = (table: any, mode: string, { env }) => {
+const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications }) => {
     const onDataFilter = async function (config: any, AgGrid: any, props: any, data: any, ref: any) {
         // 为ref.current补上props属性，否则props.dispatchEvent不能生效
         ref.current.props = props;
         let dispatchEvent = async function (action, data) {
             props.dispatchEvent(action, data, ref.current);
         }
-        let gridOptions = getGridOptions(table, mode, {
-            dispatchEvent,
-            env
-        });
+        if (agGridLicenseKey) {
+            // 启用 AG Grid 企业版
+            AgGrid.LicenseManager.setLicenseKey(agGridLicenseKey);
+        }
+        let gridOptions = await getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications });
         return gridOptions;
     }
-    const tableId = table._id;
     const agGrid = {
         "type": "ag-grid",
         "onDataFilter": onDataFilter,
-        "className": "steedos-tables-grid-content mt-2 h-96",
+        "className": "steedos-airtable-grid-content mt-2 h-96",
         "style": {
             "height": "calc(100% - 58px)"
         },
         "onEvent": {
-            // "@b6tables.addRecord": {
-            //     "actions": [
-            //         {
-            //           "actionType": "toast",
-            //           "args": {
-            //             "msgType": "warning",
-            //             "msg": "1155我是全局警告消息，可以配置不同类型和弹出位置~",
-            //             "position": "top-right"
-            //           }
-            //         }
-            //     ]
-            // },
             "setGridApi": {
                 "weight": 0,
                 "actions": [
@@ -1430,7 +1121,7 @@ const getAgGrid = (table: any, mode: string, { env }) => {
                         "type": "broadcast",
                         "actionType": "broadcast",
                         "args": {
-                            "eventName": `@b6tables.${tableId}.setGridApi`
+                            "eventName": `@airtable.${tableId}.setGridApi`
                         },
                         "data": {
                             "gridApi": "${gridApi}",
@@ -1446,9 +1137,10 @@ const getAgGrid = (table: any, mode: string, { env }) => {
                         "type": "broadcast",
                         "actionType": "broadcast",
                         "args": {
-                            "eventName": `@b6tables.${tableId}.editField`
+                            "eventName": `@airtable.${tableId}.editField`
                         },
                         "data": {
+                            // "gridApi": "${gridApi}",//这里gridApi传不下去，在TablesGrid组件的广播事件监听器中获取不到
                             "editingFieldId": "${editingFieldId}"
                         }
                     }
@@ -1461,7 +1153,7 @@ const getAgGrid = (table: any, mode: string, { env }) => {
                         "type": "broadcast",
                         "actionType": "broadcast",
                         "args": {
-                            "eventName": `@b6tables.${tableId}.deleteField`
+                            "eventName": `@airtable.${tableId}.deleteField`
                         },
                         "data": {
                             "deletingFieldId": "${deletingFieldId}"
@@ -1476,7 +1168,7 @@ const getAgGrid = (table: any, mode: string, { env }) => {
                         "type": "broadcast",
                         "actionType": "broadcast",
                         "args": {
-                            "eventName": `@b6tables.${tableId}.sortFields`
+                            "eventName": `@airtable.${tableId}.sortFields`
                         },
                         "data": {
                             "sortedFields": "${sortedFields}"
@@ -1491,7 +1183,7 @@ const getAgGrid = (table: any, mode: string, { env }) => {
                         "type": "broadcast",
                         "actionType": "broadcast",
                         "args": {
-                            "eventName": `@b6tables.${tableId}.setTotalCount`
+                            "eventName": `@airtable.${tableId}.setTotalCount`
                         },
                         "data": {
                             "totalCount": "${totalCount}"
@@ -1504,18 +1196,16 @@ const getAgGrid = (table: any, mode: string, { env }) => {
     return agGrid;
 }
 
-const getNewButtonScript = (table: any, mode: string, { env }) => {
-    let tableId = table._id;
+const getNewButtonScript = () => {
     return `
-      const B6_TABLES_ROOTURL = "${B6_TABLES_ROOTURL}";
     //   const B6_TABLES_DATA_COLLECT_FIELDNAME = "\${B6_TABLES_DATA_COLLECT_FIELDNAME}";
-      const tableId = '${tableId || ""}';
     //   const collectId = '\${collectId || ""}';
       const amisNotify = event.context && event.context.env && event.context.env.notify || alert;
     
-      const gridApi = event.data.gridApi; //agGridRefs && agGridRefs[tableId];
+      const gridApi = event.data.gridApi;
       const gridContext = event.data.gridContext;
       const setRowDataFormulaValues = gridContext.setRowDataFormulaValues;
+      const dataSource = gridContext.dataSource;
   
       function scrollToBottom() {
         const rowCount = gridApi.getDisplayedRowCount();
@@ -1595,20 +1285,7 @@ const getNewButtonScript = (table: any, mode: string, { env }) => {
   
         // 将新增数据发送到服务器
         try {
-          const response = await fetch(B6_TABLES_ROOTURL + '/' + tableId, {
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-              'Content-Type': 'application/json',
-            //   "Authorization": \`Bearer \${event.data.context.tenantId},\${event.data.context.authToken}\` //TODO:要拿到登录校验活值
-            },
-            body: JSON.stringify(newRow)
-          });
-  
-          if (!response.ok) {
-            throw new Error('Server error! Status: ' + response.status);
-          }
-          const data = await response.json();
+          const data = await dataSource.insert(newRow);
           console.log('New row saved successfully', data);
   
           // 不能走refreshServerSide，因为会把校验失败的数据直接清空丢失
@@ -1628,29 +1305,26 @@ const getNewButtonScript = (table: any, mode: string, { env }) => {
         `;
 }
 
-const getNewFieldButtonScript = (table: any, mode: string, { env }) => {
-    let tableId = table._id;
+const getNewFieldButtonScript = (tableId: string, mode: string, { env }) => {
     return `
       doAction(
         {
             "type": "broadcast",
             "actionType": "broadcast",
             "args": {
-                "eventName": "@b6tables.${tableId}.newField"
+                "eventName": "@airtable.${tableId}.newField"
             }
         })
       `;
 }
 
-const getDeleteButtonScript = (table: any, mode: string, { env }) => {
-    let tableId = table._id;
+const getDeleteButtonScript = () => {
     return `
-      const B6_TABLES_ROOTURL = "${B6_TABLES_ROOTURL}";
-      const tableId = '${tableId || ""}';
-
       const amisNotify = event.context && event.context.env && event.context.env.notify || alert;
 
-      const gridApi = event.data.gridApi; //agGridRefs && agGridRefs[tableId];
+      const gridApi = event.data.gridApi;
+      const gridContext = event.data.gridContext;
+      const dataSource = gridContext.dataSource;
 
       function getAllRowData() {
         const rowData = [];
@@ -1706,49 +1380,8 @@ const getDeleteButtonScript = (table: any, mode: string, { env }) => {
         }
 
         try {
-          /*
-          for (const data of selectedData) {
-            const id = data._id;
-            // Call the API to delete each selected row
-            const response = await fetch(B6_TABLES_ROOTURL + '/' + tableId + '/' + id, {
-              method: 'DELETE',
-              credentials: 'include',
-              headers: {
-                'Content-Type': 'application/json',
-                "Authorization": \`Bearer \${event.data.context.tenantId},\${event.data.context.authToken}\`
-              }
-            });
-
-            if (!response.ok) {
-              throw new Error('Server error! Status: ' + response.status);
-            }
-
-            const result = await response.json();
-
-            if (result.deleted) {
-              // Remove the row from the grid only if the deletion was successful
-              gridApi.applyServerSideTransaction({ remove: [data] });
-            } else {
-              amisNotify("error", "删除 ID 为 " + id + " 的行失败");
-            }
-          }*/
-
           console.log('Deleting rows:', selectedIds);
-          const response = await fetch(B6_TABLES_ROOTURL + '/' + tableId, {
-            method: 'DELETE',
-            credentials: 'include',
-            headers: {
-              'Content-Type': 'application/json',
-            //   "Authorization": \`Bearer \${event.data.context.tenantId},\${event.data.context.authToken}\`
-            },
-            body: JSON.stringify({ records: selectedIds })
-          });
-
-          if (!response.ok) {
-            throw new Error('Server error! Status: ' + response.status);
-          }
-
-          const result = await response.json();
+          const result = await dataSource.remove(selectedIds);
 
           if (result.error) {
             console.error('Error deleting rows result:', result.error);
@@ -1768,8 +1401,7 @@ const getDeleteButtonScript = (table: any, mode: string, { env }) => {
     `;
 }
 
-const getTableHeaderLeftButtons = (table: any, mode: string, { env }) => {
-    let tableId = table._id;
+const getTableHeaderLeftButtons = (tableId: string, mode: string, { env }) => {
     const isAdmin = mode === "admin";
     const newFieldButton = {
         "label": "新建字段",
@@ -1783,7 +1415,7 @@ const getTableHeaderLeftButtons = (table: any, mode: string, { env }) => {
                     {
                         "ignoreError": false,
                         "actionType": "custom",
-                        "script": getNewFieldButtonScript(table, mode, { env }),
+                        "script": getNewFieldButtonScript(tableId, mode, { env }),
                         "args": {
                         }
                     }
@@ -1804,7 +1436,7 @@ const getTableHeaderLeftButtons = (table: any, mode: string, { env }) => {
                         "type": "broadcast",
                         "actionType": "broadcast",
                         "args": {
-                            "eventName": `@b6tables.${tableId}.setVerification`
+                            "eventName": `@airtable.${tableId}.setVerification`
                         }
                     }
                 ]
@@ -1822,7 +1454,7 @@ const getTableHeaderLeftButtons = (table: any, mode: string, { env }) => {
     };
 }
 
-const getTableHeaderRightButtons = (table: any, mode: string, { env }) => {
+const getTableHeaderRightButtons = (tableId: any, mode: string, { env }) => {
     const newButton = {
         "label": "新建",
         "type": "button",
@@ -1831,18 +1463,11 @@ const getTableHeaderRightButtons = (table: any, mode: string, { env }) => {
         "onEvent": {
             "click": {
                 "actions": [
-                    // {
-                    //     "actionType": "broadcast",
-                    //     "args": {
-                    //         "eventName": "@b6tables.addRecord"
-                    //     }
-                    // }
                     {
-                        "ignoreError": false,
-                        "actionType": "custom",
-                        "script": getNewButtonScript(table, mode, { env }),
-                        // "script": "debugger;",
+                        "type": "broadcast",
+                        "actionType": "broadcast",
                         "args": {
+                            "eventName": `@airtable.${tableId}.insertRecord`
                         }
                     }
                 ]
@@ -1865,10 +1490,10 @@ const getTableHeaderRightButtons = (table: any, mode: string, { env }) => {
                         }
                     },
                     {
-                        "ignoreError": false,
-                        "actionType": "custom",
-                        "script": getDeleteButtonScript(table, mode, { env }),
+                        "type": "broadcast",
+                        "actionType": "broadcast",
                         "args": {
+                            "eventName": `@airtable.${tableId}.removeRecord`
                         }
                     }
                 ]
@@ -1885,10 +1510,10 @@ const getTableHeaderRightButtons = (table: any, mode: string, { env }) => {
     };
 }
 
-const getTableHeader = (table: any, mode: string, { env }) => {
+export const getTableHeader = ({ tableId, title, mode, dataSource, getColumnDefs, env }) => {
     const isReadonly = mode === "read";
     const isAdmin = mode === "admin";
-    const tableTitle = table.label || "记录";
+    const tableTitle = title || "记录";
     return {
         "type": "wrapper",
         "body": [
@@ -1939,7 +1564,7 @@ const getTableHeader = (table: any, mode: string, { env }) => {
                         "className": "flex justify-end",
                         "columns": [
                             {
-                                "body": getTableHeaderLeftButtons(table, mode, { env }),
+                                "body": getTableHeaderLeftButtons(tableId, mode, { env }),
                                 "md": "auto"
                             },
                             {
@@ -1952,7 +1577,7 @@ const getTableHeader = (table: any, mode: string, { env }) => {
                                 "md": "auto"
                             },
                             isReadonly ? {} : {
-                                "body": getTableHeaderRightButtons(table, mode, { env }),
+                                "body": getTableHeaderRightButtons(tableId, mode, { env }),
                                 "md": "auto"
                             }
                         ]
@@ -1965,40 +1590,24 @@ const getTableHeader = (table: any, mode: string, { env }) => {
     };
 }
 
-export async function getTablesGridSchema(
-    tableId: string,
-    mode: string, //edit/read/admin
-    { env }
+export async function getAirtableGridSchema(
+    { tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications }
 ) {
-    const meta = await getMeta(tableId);
-    let tableAdminEvents = {};
-    const isAdmin = mode === "admin";
-    if (isAdmin) {
-        tableAdminEvents = getTableAdminEvents(meta);
-    }
-
     const amisSchema = {
         "type": "service",
-        "id": `service_tables_grid_${tableId}`,
+        "id": `service_airtable_grid_${tableId}`,
         "name": "page",
         "data": {
             "_aggridTotalCount": "--"
         },
-        "className": "steedos-tables-grid h-full",
+        "className": "steedos-airtable-grid h-full",
         "body": [
-            getTableHeader(meta, mode, { env }),
-            getAgGrid(meta, mode, { env })
+            getTableHeader({ tableId, title, mode, dataSource, getColumnDefs, env }),
+            await getAgGrid({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications })
         ],
         "onEvent": {
-            [`@b6tables.${tableId}.setGridApi`]: {
+            [`@airtable.${tableId}.setGridApi`]: {
                 "actions": [
-                    // {
-                    //     "ignoreError": false,
-                    //     "actionType": "custom",
-                    //     "script": "debugger;console.log('===event.data===', event.data);",
-                    //     "args": {
-                    //     }
-                    // },
                     {
                         "actionType": "setValue",
                         "args": {
@@ -2007,11 +1616,10 @@ export async function getTablesGridSchema(
                                 "gridContext": "${gridContext}"
                             }
                         },
-                        // "componentId": "apps-form"
                     }
                 ]
             },
-            [`@b6tables.${tableId}.setTotalCount`]: {
+            [`@airtable.${tableId}.setTotalCount`]: {
                 "actions": [
                     {
                         "actionType": "setValue",
@@ -2020,27 +1628,34 @@ export async function getTablesGridSchema(
                                 "_aggridTotalCount": "${totalCount}"
                             }
                         },
-                        // "componentId": "apps-form"
                     }
                 ]
             },
-            ["@b6tables.addRecord"]: {
+            [`@airtable.${tableId}.insertRecord`]: {
                 "actions": [
                     {
-                        "actionType": "toast",
+                        "ignoreError": false,
+                        "actionType": "custom",
+                        "script": getNewButtonScript(),
                         "args": {
-                            "msgType": "warning",
-                            "msg": "11我是全局警告消息，可以配置不同类型和弹出位置~",
-                            "position": "top-right"
                         }
                     }
                 ]
             },
-            ...tableAdminEvents
+            [`@airtable.${tableId}.removeRecord`]: {
+                "actions": [
+                    {
+                        "ignoreError": false,
+                        "actionType": "custom",
+                        "script": getDeleteButtonScript(),
+                        "args": {
+                        }
+                    }
+                ]
+            }
         }
     };
     return {
-        meta,
         amisSchema,
     };
 }

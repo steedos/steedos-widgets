@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2024-01-18 18:58:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-12-26 16:18:44
+ * @LastEditTime: 2025-01-22 17:15:28
  */
 import React, { useEffect, useState, useRef } from 'react';
 import { AG_GRID_LOCALE_CN } from '@ag-grid-community/locale';
@@ -16,6 +16,7 @@ export const AmisAgGrid = (props: any) => {
     onDataFilter: onDataFilterFun,
     style
   } = props;
+  // console.log('AmisAgGrid===configJSON===', configJSON);
   const initConfig = Object.assign({ localeText: AG_GRID_LOCALE_CN }, configJSON || {});
   const [config, setConfig] = useState(initConfig);
   // 如果不增加dataFilterLoaded机制，组件传入的configJSON初始不是null的时候会造成后面的agGrid.createGrid执行两次出现两个grid

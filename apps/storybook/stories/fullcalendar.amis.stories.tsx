@@ -7,6 +7,12 @@ export default {
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
 
+const env = {
+  assetUrls: [
+    `${process.env.STEEDOS_UNPKG_URL}/@steedos-widgets/fullcalendar/dist/assets.json`,
+  ],
+}
+
 let eventGuid = 0
 let todayStr = new Date().toISOString().replace(/T.*$/, '') // YYYY-MM-DD of today
 
@@ -124,9 +130,5 @@ export const Gerneral = () => (
         ]
       },
     }
-  }} env ={{
-    assetUrls: [
-      `https://unpkg.steedos.cn/@steedos-widgets/fullcalendar/dist/assets-dev.json`,
-    ],
-  }}/>
+  }} env ={env}/>
 );

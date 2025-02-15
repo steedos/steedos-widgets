@@ -240,6 +240,9 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     ctx.idFieldName = refObjectConfig.idFieldName
     ctx.objectName = refObjectConfig.name
 
+    // 是否显示lookup字段左侧的过滤器（如果有的话），默认为true，目前只有lookup选人字段有左侧树过滤器
+    const showLeftFilter = field.show_left_filter !== false;
+
     let tableFields = [];
     const searchableFields = [];
 
@@ -571,6 +574,20 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         });
         payload.data.rows = updatedResult;
     }
+    let __changedFilterFormValuesKey = "__changedFilterFormValues";
+    let __lookupField = api.data.$self.__lookupField;
+    if(__lookupField){
+        let lookupTag = "__lookup__" + __lookupField.name + "__" + __lookupField.reference_to;
+        if(__lookupField.reference_to_field){
+            lookupTag += "__" + __lookupField.reference_to_field;
+        }
+        __changedFilterFormValuesKey += lookupTag;
+    }
+    let __changedFilterFormValues = api.context[__changedFilterFormValuesKey] || {};
+    let __changedSearchBoxValues = api.context.__changedSearchBoxValues || {};
+    // 列表搜索和快速搜索，有时在某些操作情况下还是会造成crud接口请求使用的过滤条件是上次的，这里强制把正确的过滤条件返回到crud，详细规则见：https://github.com/steedos/steedos-platform/issues/7112
+    payload.data[__changedFilterFormValuesKey] = __changedFilterFormValues;
+    payload.data.__changedSearchBoxValues = __changedSearchBoxValues;
     return payload;
     `;
     if(field.optionsFunction || field._optionsFunction){
@@ -614,7 +631,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
 
         pickerSchema.headerToolbar = getObjectHeaderToolbar(refObjectConfig, fieldsArr, ctx.formFactor, { isLookup: true, keywordsSearchBoxName });
         
-        if(referenceTo.objectName === "space_users" && field.reference_to_field === "user"){
+        if(referenceTo.objectName === "space_users" && field.reference_to_field === "user" && showLeftFilter){
             pickerSchema.headerToolbar.push(getLookupSapceUserTreeSchema(isMobile));
             pickerSchema.className = pickerSchema.className || "" + " steedos-select-user";
         }
@@ -634,7 +651,10 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             pickerSchema.filter = await getObjectFilter(refObjectConfig, fields, {
                 ...ctx,
                 isLookup: true,
-                keywordsSearchBoxName
+                keywordsSearchBoxName,
+                searchable_fields: field.searchable_fields,
+                auto_open_filter: field.auto_open_filter,
+                show_left_filter: field.show_left_filter
             });
         }
         pickerSchema.data = Object.assign({}, pickerSchema.data, {
