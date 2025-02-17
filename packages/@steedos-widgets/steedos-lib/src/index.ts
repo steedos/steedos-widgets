@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-25 09:16:09
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2025-01-17 15:28:00
+ * @LastEditTime: 2025-02-17 10:25:43
  * @Description: 
  */
 
@@ -76,12 +76,20 @@ export const Steedos = {
     ...Expression
 }
 
-if(typeof window != 'undefined' && !(window as any).Steedos){
-    (window as any).Steedos = Steedos;
+if(typeof window != 'undefined'){
+    if((window as any).Steedos){
+        (window as any).Steedos = Object.assign(Steedos, (window as any).Steedos);
+    }else{
+        (window as any).Steedos = Steedos;
+    }
 }
 
-if(typeof window != 'undefined' && !(window as any).SteedosUI){
-    (window as any).SteedosUI = SteedosUI;
+if(typeof window != 'undefined'){
+    if((window as any).SteedosUI){
+        (window as any).SteedosUI = Object.assign(SteedosUI, (window as any).SteedosUI);
+    }else{
+        (window as any).SteedosUI = SteedosUI;
+    }
 }
 // else if(typeof window != 'undefined'){
 //     (window as any).SteedosUI = Object.assign((window as any).SteedosUI, SteedosUI);
