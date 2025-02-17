@@ -1,7 +1,7 @@
 {
   "name": "@steedos-widgets/steedos-lib",
   "private": false,
-  "version": "6.3.12-beta.18",
+  "version": "6.10.1-beta.3",
   "unpkg": "./dist/index.umd.js",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.esm.js",
@@ -22,7 +22,6 @@
     "access": "public"
   },
   "dependencies": {
-    "lodash": "^4.17.21",
     "@babel/core": "^7.18.13",
     "@babel/plugin-proposal-class-properties": "^7.18.6",
     "@babel/plugin-proposal-export-default-from": "^7.18.10",
@@ -37,6 +36,7 @@
     "@rollup/plugin-typescript": "^8.4.0",
     "cors": "^2.8.5",
     "dotenv-flow": "^3.2.0",
+    "lodash": "^4.17.21",
     "rimraf": "3.0.2",
     "rollup": "^2.70.1",
     "rollup-plugin-alias": "^2.2.0",
@@ -60,6 +60,5 @@
     "typescript": "^4.6.2",
     "uglify-js": "^3.17.0"
   },
-  
   "gitHead": "ffb730e16642eb8e7a7ae5d98d0773c42482e7d2"
 }
