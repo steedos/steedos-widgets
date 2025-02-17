@@ -80,6 +80,12 @@ jobs:
         with: 
           ref: '6.3'
 
+      - name: Checkout branch 6.10
+        uses: actions/checkout@v2
+        if: ${{ startsWith(steps.branch-name.outputs.tag, '6.10') }}
+        with: 
+          ref: '6.10'
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
@@ -162,6 +168,15 @@ jobs:
         env:
           CI: false
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+
+      - name: Lerna publish 6.10
+        if: ${{ startsWith(steps.branch-name.outputs.tag, '6.10') && steps.version.outputs.is_stable == 'true' }}
+        run: |
+          npm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
+          yarn lerna publish from-package --registry https://registry.npmjs.org --yes  --dist-tag 6.10
+        env:
+          CI: false
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}      
 
       - name: Merge 6.3 -> master
         if: ${{ startsWith(steps.branch-name.outputs.tag, '6.3') }}
