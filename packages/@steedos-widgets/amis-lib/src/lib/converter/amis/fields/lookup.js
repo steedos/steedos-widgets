@@ -408,18 +408,18 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             }
         }
 
-        let filterFormValues = ${_.isObject(filterFormValues) ? JSON.stringify(filterFormValues) : ('"' + filterFormValues + '"')} || {};
-        const isAmisFormula = typeof filterFormValues === "string" && filterFormValues.indexOf("\${") > -1;
-        if (isAmisFormula){
-            filterFormValues = AmisCore.evaluate(filterFormValues, context) || {};
-        }
-        if (_.isObject(filterFormValues) || !_.isEmpty(filterFormValues)){
-            // filterFormValues = _.pickBy(filterFormValues, function(n,k){
-            //     return defaultSearchableFields.indexOf(k) > -1;
-            // });
-            filterFormValues = _.mapKeys(filterFormValues, function(n,k){
-                return "__searchable__" + k;
-            })
+        let filterFormValues = {};
+        if (selfData.op !== 'loadOptions'){
+            filterFormValues = ${_.isObject(filterFormValues) ? JSON.stringify(filterFormValues) : ('"' + filterFormValues + '"')} || {};
+            const isAmisFormula = typeof filterFormValues === "string" && filterFormValues.indexOf("\${") > -1;
+            if (isAmisFormula){
+                filterFormValues = AmisCore.evaluate(filterFormValues, context) || {};
+            }
+            if (_.isObject(filterFormValues) || !_.isEmpty(filterFormValues)){
+                filterFormValues = _.mapKeys(filterFormValues, function(n,k){
+                    return "__searchable__" + k;
+                })
+            }
         }
 
         var searchableFilter = SteedosUI.getSearchFilter(Object.assign({}, { ...filterFormValues }, selfData)) || [];
