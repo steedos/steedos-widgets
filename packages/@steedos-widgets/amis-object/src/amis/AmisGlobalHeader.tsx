@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2025-01-16 18:00:59
+ * @LastEditTime: 2025-02-15 14:11:21
  * @Description: 
  */
 
@@ -180,7 +180,7 @@ export const AmisGlobalHeader = async (props) => {
                         "actions": [
                             {
                                 "actionType": "custom",
-                                "script": "console.log(event.target); if(window.innerWidth < 768){ document.body.classList.remove('sidebar-open'); }",
+                                "script": "console.log('event.target===>', event.target); if(window.innerWidth < 768){ document.body.classList.remove('sidebar-open'); }",
                             }
                         ]
                     }

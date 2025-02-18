@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-10-18 17:43:31
+ * @LastEditTime: 2025-02-18 13:10:04
  * @Description: 
  */
 import './AmisAppMenu.less';
@@ -10,10 +10,10 @@ import './AmisAppMenu.less';
 export const AmisAppMenu = async (props) => {
     let { stacked = false, overflow, appId, data, links = null, showIcon = true, className = '', indentSize = 12, selectedId } = props;
     if(!appId){
-        appId = data.context.appId || 'admin';
+        appId = data.context.appId;
     }
     // console.log(`AmisAppMenu appId`, appId)
-    // console.log(`AmisAppMenu`, appId, props)
+    console.log(`AmisAppMenu`, appId, props)
     let badgeText = `\${keyvalues.badge.value | pick:${appId} | toInt}`;
     if(appId == "approve_workflow"){
         badgeText = "${keyvalues.badge.value | pick:'workflow' | toInt}";
@@ -35,6 +35,7 @@ export const AmisAppMenu = async (props) => {
         schemaApi: {
             "method": "get",
             "url": `\${context.rootUrl}/service/api/apps/${appId}/menus`,
+            "sendOn": "!!appId",
             "adaptor": `
                   try {
                     //   console.log('payload====>', payload)
@@ -1824,7 +1825,7 @@ export const AmisAppMenu = async (props) => {
                   } catch (error) {
                       console.log(\`error\`, error)
                   }
-                //   console.log('payload===2==>', payload)
+                    console.log('payload===2==>', payload)
 
                   setTimeout(function(){
                     $("[name='keywords']").focus();
@@ -1837,6 +1838,6 @@ export const AmisAppMenu = async (props) => {
             }
         }
     }
-    // console.log(`schema=====>`, schema)
+    console.log(`AmisAppMenu schema=====>`, schema)
     return schema;
 }
