@@ -1174,6 +1174,10 @@ export async function lookupToAmis(field, readonly, ctx){
     }
     let amisSchema;
     // 默认使用下拉框模式显示lookup选项，只能配置了enable_enhanced_lookup才使用弹出增强模式
+    if(enableEnhancedLookup == true && field.amis && field.amis.type && field.amis.type !== 'picker'){
+        // 如果配置了amis.type且其值不是picker，则不使用弹出增强模式
+        enableEnhancedLookup = false;
+    }
     if(enableEnhancedLookup == true){
         amisSchema = await lookupToAmisPicker(field, readonly, ctx);
     }else if(refObject.enable_tree) {
