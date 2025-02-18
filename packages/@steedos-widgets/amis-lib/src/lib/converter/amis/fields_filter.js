@@ -266,6 +266,20 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service", {name: "service_object_table_crud"});
     crudService && crudService.setData({isFieldsFilterEmpty: true, showFieldsFilter: false});
     `;
+  /**
+  给lookup字段配置filter_form_data时可以配置为amis变量，也可以配置为事态key-value键值对象值：
+  ```
+  "filter_form_data": "${selectedPublicGroupFilterFormData|toJson}"
+  ```
+  or
+  ```
+  "filter_form_data": {
+      "public_group_ids": [
+          "67addbef39f9a4503789b38d"
+      ]
+  }
+  ```
+   */
   const filterFormValues = ctx.filter_form_data;
   const dataProviderInited = `
     const searchableFields = ${JSON.stringify(searchableFields)};
