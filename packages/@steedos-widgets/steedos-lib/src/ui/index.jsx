@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-27 15:54:12
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-05-19 15:47:34
+ * @LastEditTime: 2025-06-10 14:16:02
  * @Description: 
  */
 import { message, notification, Button, Space} from 'antd';
@@ -110,6 +110,45 @@ export const SteedosUI = Object.assign({}, {
           }
       });
       return searchableFilter;
+    },
+    /**
+     * 传入amis form data，返回用于crud/picker列表顶部表单搜索中用的form values
+     * @param {*} data amis form data，不带__searchable__前缀
+     * @param {*} fields 对象的字段定义，可以传入对象uiSchema接口返回的fields属性
+     * @returns amis form data，带__searchable__前缀
+     */
+    getSearchFilterFormValues: (data, fields)=>{
+      if (_.isObject(data) || !_.isEmpty(data)){
+        let formData = data;
+        if (fields){
+            formData = _.pickBy(data, function(n,k){
+              return !!fields[k];
+            });
+        }
+        let formValues = _.mapKeys(formData, function (n, k) {
+          let fieldNamePrefix = '__searchable__';
+          if (fields){
+            const fieldType = fields[k]?.type;
+            if (fieldType === 'number' || fieldType === 'currency') {
+              fieldNamePrefix = `${fieldNamePrefix}between__`
+            }
+            else if (fieldType === 'date') {
+              fieldNamePrefix = `${fieldNamePrefix}between__`
+            }
+            else if (fieldType === 'datetime') {
+              fieldNamePrefix = `${fieldNamePrefix}between__`
+            }
+            else if (fieldType === 'time') {
+              fieldNamePrefix = `${fieldNamePrefix}between__`
+            }
+          }
+          return fieldNamePrefix + k;
+        });
+        return formValues;
+      }
+      else {
+        return data;
+      }
     },
     getKeywordsSearchFilter: (keywords, allowSearchFields) => {
       const keywordsFilters = [];

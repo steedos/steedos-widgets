@@ -415,9 +415,8 @@ export async function lookupToAmisPicker(field, readonly, ctx){
                 filterFormValues = AmisCore.evaluate(filterFormValues, context) || {};
             }
             if (_.isObject(filterFormValues) || !_.isEmpty(filterFormValues)){
-                filterFormValues = _.mapKeys(filterFormValues, function(n,k){
-                    return "__searchable__" + k;
-                })
+                let fields = api.data.$self.uiSchema && api.data.$self.uiSchema.fields;
+                filterFormValues = SteedosUI.getSearchFilterFormValues(filterFormValues, fields);
             }
         }
 
