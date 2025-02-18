@@ -387,7 +387,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         }
         const selfData = JSON.parse(JSON.stringify(api.data.$self));
         ${listviewFilter && !ctx.inFilterForm ? `var filters = ${JSON.stringify(listviewFilter)};` : 'var filters = [];'}
-        var pageSize = api.data.pageSize || 10;
+        var pageSize = 500;//api.data.pageSize || 10;
         var pageNo = api.data.pageNo || 1;
         var skip = (pageNo - 1) * pageSize;
         var orderBy = api.data.orderBy || '';
@@ -408,18 +408,17 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             }
         }
 
-        let filterFormValues = ${_.isObject(filterFormValues) ? JSON.stringify(filterFormValues) : ('"' + filterFormValues + '"')} || {};
-        const isAmisFormula = typeof filterFormValues === "string" && filterFormValues.indexOf("\${") > -1;
-        if (isAmisFormula){
-            filterFormValues = AmisCore.evaluate(filterFormValues, context) || {};
-        }
-        if (_.isObject(filterFormValues) || !_.isEmpty(filterFormValues)){
-            // filterFormValues = _.pickBy(filterFormValues, function(n,k){
-            //     return defaultSearchableFields.indexOf(k) > -1;
-            // });
-            filterFormValues = _.mapKeys(filterFormValues, function(n,k){
-                return "__searchable__" + k;
-            })
+        let filterFormValues = {};
+        if (selfData.op !== 'loadOptions'){
+            filterFormValues = ${_.isObject(filterFormValues) ? JSON.stringify(filterFormValues) : ('"' + filterFormValues + '"')} || {};
+            const isAmisFormula = typeof filterFormValues === "string" && filterFormValues.indexOf("\${") > -1;
+            if (isAmisFormula){
+                filterFormValues = AmisCore.evaluate(filterFormValues, context) || {};
+            }
+            if (_.isObject(filterFormValues) || !_.isEmpty(filterFormValues)){
+                let fields = api.data.$self.uiSchema && api.data.$self.uiSchema.fields;
+                filterFormValues = SteedosUI.getSearchFilterFormValues(filterFormValues, fields);
+            }
         }
 
         var searchableFilter = SteedosUI.getSearchFilter(Object.assign({}, { ...filterFormValues }, selfData)) || [];
