@@ -311,12 +311,8 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
         filterFormValues = AmisCore.evaluate(filterFormValues, data) || {};
       }
       if (_.isObject(filterFormValues) || !_.isEmpty(filterFormValues)){
-        filterFormValues = _.pickBy(filterFormValues, function(n,k){
-          return defaultSearchableFields.indexOf(k) > -1;
-        });
-        filterFormValues = _.mapKeys(filterFormValues, function(n,k){
-          return "__searchable__" + k;
-        })
+        let fields = data.uiSchema && data.uiSchema.fields;
+        filterFormValues = SteedosUI.getSearchFilterFormValues(filterFormValues, fields);
         setData({ ...filterFormValues });
       }
       // looup字段过滤器不在本地缓存记住过滤条件，所以初始始终隐藏过滤器
