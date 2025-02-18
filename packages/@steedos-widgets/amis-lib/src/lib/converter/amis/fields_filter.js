@@ -96,6 +96,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
   if (!ctx) {
     ctx = {};
   }
+  console.log("getObjectFieldsFilterBarSchema===", ctx)
   const searchableFields = ctx.searchable_fields;
   const autoOpenFilter = !!ctx.auto_open_filter;
   const btnSearchId = "btn_filter_form_search_" + new Date().getTime();
@@ -266,6 +267,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service", {name: "service_object_table_crud"});
     crudService && crudService.setData({isFieldsFilterEmpty: true, showFieldsFilter: false});
     `;
+  const filterFormValues = ctx.filter_form_data;
   const dataProviderInited = `
     const searchableFields = ${JSON.stringify(searchableFields)};
     const autoOpenFilter = ${autoOpenFilter};
@@ -303,6 +305,20 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     }
     setData({ filterFormSearchableFields: defaultSearchableFields });
     if(isLookup){
+      let filterFormValues = ${_.isObject(filterFormValues) ? JSON.stringify(filterFormValues) : ('"' + filterFormValues + '"')} || {};
+      const isAmisFormula = typeof filterFormValues === "string" && filterFormValues.indexOf("\${") > -1;
+      if (isAmisFormula){
+        filterFormValues = AmisCore.evaluate(filterFormValues, data) || {};
+      }
+      if (_.isObject(filterFormValues) || !_.isEmpty(filterFormValues)){
+        filterFormValues = _.pickBy(filterFormValues, function(n,k){
+          return defaultSearchableFields.indexOf(k) > -1;
+        });
+        filterFormValues = _.mapKeys(filterFormValues, function(n,k){
+          return "__searchable__" + k;
+        })
+        setData({ ...filterFormValues });
+      }
       // looup字段过滤器不在本地缓存记住过滤条件，所以初始始终隐藏过滤器
       setData({ showFieldsFilter: autoOpenFilter });
     }

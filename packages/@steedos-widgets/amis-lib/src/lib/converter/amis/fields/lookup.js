@@ -139,6 +139,7 @@ export function getLookupSapceUserTreeSchema(isMobile){
               {
                 "actionType": "custom",
                 "script": `
+                console.log("===__searchable__organizations_parents===",event.data);
                 const scope = event.context.scoped;
                 var filterFormValues={
                     "__searchable__organizations_parents":event.data.value.value
@@ -364,6 +365,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     // field.name可能是带点的名称，比如审批王中子表字段'instances.instances_submitter'，如果不替换掉点，会造成审批王表单中新建子表行时报错
     let keywordsSearchBoxName = `__keywords_lookup__${field.name.replace(/\./g, "_")}__to__${refObjectConfig.name}`;
 
+    const filterFormValues = field.filter_form_data;
     source.requestAdaptor = `
         let __changedFilterFormValuesKey = "__changedFilterFormValues";
         let __lookupField = api.data.$self.__lookupField;
@@ -406,7 +408,21 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             }
         }
 
-        var searchableFilter = SteedosUI.getSearchFilter(selfData) || [];
+        let filterFormValues = ${_.isObject(filterFormValues) ? JSON.stringify(filterFormValues) : ('"' + filterFormValues + '"')} || {};
+        const isAmisFormula = typeof filterFormValues === "string" && filterFormValues.indexOf("\${") > -1;
+        if (isAmisFormula){
+            filterFormValues = AmisCore.evaluate(filterFormValues, context) || {};
+        }
+        if (_.isObject(filterFormValues) || !_.isEmpty(filterFormValues)){
+            // filterFormValues = _.pickBy(filterFormValues, function(n,k){
+            //     return defaultSearchableFields.indexOf(k) > -1;
+            // });
+            filterFormValues = _.mapKeys(filterFormValues, function(n,k){
+                return "__searchable__" + k;
+            })
+        }
+
+        var searchableFilter = SteedosUI.getSearchFilter(Object.assign({}, { ...filterFormValues }, selfData)) || [];
 
         if(searchableFilter.length > 0){
             if(filters.length > 0 ){
@@ -648,13 +664,15 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         }
         pickerSchema.footerToolbar = refObjectConfig.enable_tree ? [] : getObjectFooterToolbar(refObjectConfig,ctx.formFactor,{isLookup: true});
         if (ctx.filterVisible !== false) {
+            console.log("lookupToAmisPicker===pickerSchema.filter===field===", field)
             pickerSchema.filter = await getObjectFilter(refObjectConfig, fields, {
                 ...ctx,
                 isLookup: true,
                 keywordsSearchBoxName,
                 searchable_fields: field.searchable_fields,
                 auto_open_filter: field.auto_open_filter,
-                show_left_filter: field.show_left_filter
+                show_left_filter: field.show_left_filter,
+                filter_form_data: field.filter_form_data
             });
         }
         pickerSchema.data = Object.assign({}, pickerSchema.data, {
@@ -1152,6 +1170,10 @@ export async function lookupToAmis(field, readonly, ctx){
     }
     let amisSchema;
     // 默认使用下拉框模式显示lookup选项，只能配置了enable_enhanced_lookup才使用弹出增强模式
+    if(enableEnhancedLookup == true && field.amis && field.amis.type && field.amis.type !== 'picker'){
+        // 如果配置了amis.type且其值不是picker，则不使用弹出增强模式
+        enableEnhancedLookup = false;
+    }
     if(enableEnhancedLookup == true){
         amisSchema = await lookupToAmisPicker(field, readonly, ctx);
     }else if(refObject.enable_tree) {
