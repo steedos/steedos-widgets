@@ -139,14 +139,42 @@ export function getLookupSapceUserTreeSchema(isMobile){
               {
                 "actionType": "custom",
                 "script": `
+                console.log("lookup-tree-event.data:",event.data);
+                console.log("lookup-tree-event.data.value.label:",event.data.value.label);
+                console.log("lookup-tree-event.data.value.value:",event.data.value.value);
                 const scope = event.context.scoped;
-                var filterFormValues={
+                var treeFilterFormValues={
                     "__searchable__organizations_parents":event.data.value.value
                 }
-                var listView = scope.parent.getComponents().find(function(n){
-                  return n.props.type === "crud";
+                // var listView = scope.parent.getComponents().find(function(n){
+                //   return n.props.type === "crud";
+                // });
+                // listView.handleFilterSubmit(Object.assign({}, filterFormValues));
+                let __lookupField = event.data.__lookupField;
+                let crud = SteedosUI.getClosestAmisComponentByType(scope, "crud");
+                var filterForm = scope.getComponents().find(function(n){
+                    return n.props.type === "form";
                 });
-                listView.handleFilterSubmit(Object.assign({}, filterFormValues));
+                let filterFormValues = filterForm.getData();
+                filterFormValues = JSON.parse(JSON.stringify(filterFormValues)); //只取当层数据域中数据，去除__super层数据
+                const changedFilterFormValues = _.pickBy(filterFormValues, function(n,k){return /^__searchable__/.test(k);});
+                Object.assign(changedFilterFormValues, treeFilterFormValues);
+                // 同步__changedFilterFormValues中的值
+                let __changedFilterFormValuesKey = "__changedFilterFormValues";
+                if(__lookupField){
+                    let lookupTag = "__lookup__" + __lookupField.name + "__" + __lookupField.reference_to;
+                    if(__lookupField.reference_to_field){
+                        lookupTag += "__" + __lookupField.reference_to_field;
+                    }
+                    __changedFilterFormValuesKey += lookupTag;
+                }
+                if(crud){
+                    let crudData = crud.getData();
+                    crudData[__changedFilterFormValuesKey] = changedFilterFormValues;
+                    crud.setData(crudData);
+                }
+                filterForm.setData(treeFilterFormValues);
+                filterForm.handleFormSubmit(event);
               `
               },
               {
