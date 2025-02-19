@@ -96,7 +96,6 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
   if (!ctx) {
     ctx = {};
   }
-  console.log("getObjectFieldsFilterBarSchema===", ctx)
   const searchableFields = ctx.searchable_fields;
   const autoOpenFilter = !!ctx.auto_open_filter;
   const btnSearchId = "btn_filter_form_search_" + new Date().getTime();
