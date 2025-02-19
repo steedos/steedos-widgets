@@ -144,7 +144,7 @@ export function getLookupSapceUserTreeSchema(isMobile){
                 console.log("lookup-tree-event.data.value.value:",event.data.value.value);
                 const scope = event.context.scoped;
                 var treeFilterFormValues={
-                    "__searchable__organizations_parents": [event.data.value.value]
+                    "__searchable__organizations_parents":event.data.value.value
                 }
                 // var listView = scope.parent.getComponents().find(function(n){
                 //   return n.props.type === "crud";
