@@ -638,7 +638,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         return payload;
         `
     }
-    let top = 20;
+    let top = 500;
 
     if(refObjectConfig.paging && refObjectConfig.paging.enabled === false){
         top = 1000;
