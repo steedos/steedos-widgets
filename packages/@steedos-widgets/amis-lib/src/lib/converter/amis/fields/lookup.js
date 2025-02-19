@@ -414,7 +414,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         }
         const selfData = JSON.parse(JSON.stringify(api.data.$self));
         ${listviewFilter && !ctx.inFilterForm ? `var filters = ${JSON.stringify(listviewFilter)};` : 'var filters = [];'}
-        var pageSize = 500;//api.data.pageSize || 10;
+        var pageSize = api.data.pageSize || 10;
         var pageNo = api.data.pageNo || 1;
         var skip = (pageNo - 1) * pageSize;
         var orderBy = api.data.orderBy || '';
@@ -638,7 +638,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
         return payload;
         `
     }
-    let top = 20;
+    let top = 500;
 
     if(refObjectConfig.paging && refObjectConfig.paging.enabled === false){
         top = 1000;
