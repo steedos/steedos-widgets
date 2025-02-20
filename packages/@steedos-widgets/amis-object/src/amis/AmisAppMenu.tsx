@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2025-02-18 13:10:04
+ * @LastEditTime: 2025-02-20 16:10:11
  * @Description: 
  */
 import './AmisAppMenu.less';
@@ -34,11 +34,11 @@ export const AmisAppMenu = async (props) => {
         id: 'u:app-menu',
         schemaApi: {
             "method": "get",
-            "url": `\${context.rootUrl}/service/api/apps/${appId}/menus`,
+            "url": `\${context.rootUrl}/service/api/apps/\${appId}/menus`,
             "sendOn": "!!appId",
             "adaptor": `
                   try {
-                    //   console.log('payload====>', payload)
+                    //  console.log('payload====>', payload)
                       if(payload.nav_schema){
                         payload.data = payload.nav_schema;
                         return payload
@@ -1838,6 +1838,6 @@ export const AmisAppMenu = async (props) => {
             }
         }
     }
-    console.log(`AmisAppMenu schema=====>`, schema)
+    // console.log(`AmisAppMenu schema=====>`, schema)
     return schema;
 }
