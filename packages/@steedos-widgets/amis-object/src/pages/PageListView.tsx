@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-09-13 16:12:22
+ * @LastEditTime: 2025-02-20 18:23:50
  * @Description: 
  */
 import { getPage, Router } from "@steedos-widgets/amis-lib";
@@ -67,7 +67,7 @@ export const PageListView = async (props) => {
   // const pageGridClassName = listSchema.pageGridClassName || 'h-full sm:p-3'
   // const pageSplitClassName = listSchema.pageSplitClassName || 'p-0 flex flex-1 overflow-hidden h-full'
 
-  return {
+  const schema = {
     type: 'service',
     className: {
       "h-full" : "true",
@@ -76,4 +76,6 @@ export const PageListView = async (props) => {
     },
     body: listSchema
   }
+  console.log(`PageListView=====>`, props, schema)
+  return schema;
 }

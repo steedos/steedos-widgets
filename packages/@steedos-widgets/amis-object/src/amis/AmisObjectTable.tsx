@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-02-08 16:08:17
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2025-02-20 18:38:20
  * @Description: 
  */
 import './AmisObjectTable.less';
@@ -59,7 +59,17 @@ export const AmisObjectTable = async (props) => {
   }
   const columns = getTableColumns(props.columns, includedFields, fieldsExtend) || [];
   let defaults: any = {};
-  let objectApiName = props.objectApiName || "space_users";
+  let objectApiName = "space_users";
+
+  if(props.$$editor){
+    if(props.objectApiName){
+      objectApiName = props.objectApiName
+    }
+  }else{
+    if(props.data.objectName){
+      objectApiName = props.data.objectName
+    }
+  }
 
   if (crudMode) {
     // 把crudMode属性传入到crud.mode属性值中
@@ -117,5 +127,6 @@ export const AmisObjectTable = async (props) => {
   amisSchema.className = `steedos-object-table ${uiSchema.enable_tree ? "is-steedos-tree-table" : ""} ${amisSchema.className} h-full flex flex-col ${className}`;
   amisSchema.objectApiName = objectApiName;//设计器中切换对象时画布中显示的列未同步变更
   // console.timeEnd('AmisObjectTable')
+  console.log(`AmisObjectTable=====>`, props, amisSchema)
   return amisSchema;
 }

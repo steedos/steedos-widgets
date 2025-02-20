@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-04-12 15:00:42
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2025-01-18 11:49:04
+ * @LastEditTime: 2025-02-20 18:24:45
  * @Description: 
  */
 import './PageObject.less';
@@ -10,7 +10,6 @@ import './PageObject.less';
 import { getUISchema } from '@steedos-widgets/amis-lib'
 
 export const PageObject = async (props) => {
-    console.log(`PageObject=====>`, props);
     const { data, $schema = {} } = props;
 
     let objectName = $schema.data.objectName;
@@ -25,7 +24,7 @@ export const PageObject = async (props) => {
     
     (window as any).Steedos && (window as any).Steedos.setDocumentTitle && (window as any).Steedos.setDocumentTitle({tabName: uiSchema.label || uiSchema.name})
     // 最外层的data是render data, 会被updateProps data覆盖, 所以组件data需要单开一个数据域. 所以此处有2层service
-    return {
+    const schema = {
         type: "service",
         data: $schema.data,
         className: "h-full",
@@ -99,4 +98,6 @@ export const PageObject = async (props) => {
         //     }
         // }
     }
+    console.log(`PageObject=====>`, props, schema)
+    return schema;
 }
