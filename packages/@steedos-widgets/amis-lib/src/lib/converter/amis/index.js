@@ -672,6 +672,6 @@ export async function getObjectDetail(objectSchema, recordId, ctx){
     }
 
     amisSchema.body[0].body = await getFormSchemaWithDataFilter(amisSchema.body[0].body, { formDataFilter, onFormDataFilter, amisData, env });
-    // console.log('getObjectDetail=====>', amisSchema);
+    // console.log('getObjectDetail=====>', amisSchema, objectSchema, recordId, ctx);
     return amisSchema;
 }

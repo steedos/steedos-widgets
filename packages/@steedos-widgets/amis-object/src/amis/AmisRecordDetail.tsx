@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-08 10:32:17
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-02-18 16:06:08
+ * @LastEditTime: 2025-02-21 13:59:35
  * @Description: 
  */
 // import './AmisRecordDetailHeader.less'
@@ -38,7 +38,7 @@ export const AmisRecordDetail = async (props) => {
     if(body){
       schema.body = body;
     }
-    // console.log(`AmisRecordDetail====schema==>`, schema);
     schema.data = Object.assign({}, $schema.data, schema.data)
+    // console.log(`AmisRecordDetail====schema==>`, schema, props);
     return schema
   }

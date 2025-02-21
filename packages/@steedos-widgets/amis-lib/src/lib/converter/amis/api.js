@@ -70,6 +70,7 @@ function getReadonlyFormAdaptor(object, fields, options){
             payload.data.data = [emptyDoc];
         }
         else{
+            console.log('无法找到记录', api, payload, context)
             return {
                 status: 2,
                 msg: "${i18next.t('frontend_no_records_found')}"
@@ -96,13 +97,12 @@ function getReadonlyFormAdaptor(object, fields, options){
             console.error(e)
         }
         payload.data = data;
-        payload.data.__objectName = "${object.name}";
         payload.data.record = record;
         payload.data.NAME_FIELD_VALUE = ${nameLabel} || record.name;
         payload.data._master = {
             record: record,
-            objectName: "${object.name}",
-            recordId: record._id
+            objectName: "\${objectName}",
+            recordId: "\${recordId}"
         }
         window.postMessage(Object.assign({type: "record.loaded"}, {record: record}), "*")
     }

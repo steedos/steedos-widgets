@@ -2,11 +2,12 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-04 11:24:28
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-01-16 10:19:02
+ * @LastEditTime: 2025-02-21 13:59:28
  * @Description: 
  */
 import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { getPage, Router } from "@steedos-widgets/amis-lib";
+import { has } from 'lodash';
 
 export const PageRecordDetail = async (props) => {
   // console.log(`PageRecordDetail`, props)
@@ -26,8 +27,8 @@ export const PageRecordDetail = async (props) => {
       "body": [
         {
           "type": "steedos-record-detail",
-          // "recordId": "${recordId}",
-          "objectApiName": "${objectName}",
+          "recordId": has(props, 'recordId') ? recordId : data.recordId,
+          "objectApiName": objectApiName,
           // className: "sm:m-3",
           appId: appId,
         }
@@ -35,7 +36,7 @@ export const PageRecordDetail = async (props) => {
     }
   }
   
-  return {
+  const schema = {
     type: 'service',
     "className":  'h-full',
     body: recordSchema,
@@ -50,4 +51,7 @@ export const PageRecordDetail = async (props) => {
       }
     }
   }
+  
+  // console.log(`PageRecordDetail===>`, schema, props)
+  return schema;
 }
