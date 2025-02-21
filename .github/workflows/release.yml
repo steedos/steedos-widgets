@@ -104,6 +104,7 @@ jobs:
         env:
           CI: false
         run: |
+          git checkout -- yarn.lock
           yarn build
 
       - name: Lerna publish beta
