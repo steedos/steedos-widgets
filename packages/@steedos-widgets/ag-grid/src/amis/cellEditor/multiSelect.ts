@@ -2,9 +2,9 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-02-11 17:43:41
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-02-25 15:00:50
+ * @LastEditTime: 2025-02-25 15:28:11
  */
-import { ICellEditorComp, ICellEditorParams } from 'ag-grid-community';
+import { ICellEditorComp, ICellEditorParams, ISelectCellEditorParams } from 'ag-grid-community';
 // import * as amis from 'amis';
 
 // 定义类型以避免 TypeScript 的错误
@@ -16,8 +16,10 @@ export class AmisMultiSelectCellEditor implements ICellEditorComp {
     private amisScope: any;
     private containerId: string;
     private amisSchema: any;
+    private params: ICellEditorParams;
 
     init(params: ICellEditorParams): void {
+        this.params = params;
         this.value = params.value;
         this.setupGui();
     }
@@ -37,6 +39,8 @@ export class AmisMultiSelectCellEditor implements ICellEditorComp {
         containerDiv.id = this.containerId;
         this.eGui.appendChild(containerDiv);
 
+        let fieldOptions = (this.params as unknown as ISelectCellEditorParams).values;
+
         // 定义 amis 的 schema
         this.amisSchema = {
             id: 'cellForm',
@@ -48,20 +52,7 @@ export class AmisMultiSelectCellEditor implements ICellEditorComp {
                     name: 'cellValue',
                     value: this.value,
                     multiple: true,
-                    "options": [
-                        {
-                            "label": "A",
-                            "value": "a"
-                        },
-                        {
-                            "label": "B",
-                            "value": "b"
-                        },
-                        {
-                            "label": "C",
-                            "value": "c"
-                        }
-                    ],
+                    "options": fieldOptions,
                     "popOverContainerSelector": `#${this.eGui.id}`
                 }
             ]
