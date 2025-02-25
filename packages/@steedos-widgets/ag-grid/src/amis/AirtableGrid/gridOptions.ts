@@ -1007,7 +1007,7 @@ export async function getGridOptions({ tableId, title, mode, dataSource, getColu
                 mode: 'range',
             }
         },
-        stopEditingWhenCellsLoseFocus: true,
+        // stopEditingWhenCellsLoseFocus: true,//如果开启，单元格amis日期时间控件如果是非embed模式，编辑时弹出的日期选择器会关闭，导致选择的日期无法正常保存
         // onRowValueChanged: isReadonly ? null : onRowValueChangedRaw,
         onCellValueChanged: isReadonly ? null : onCellValueChangedRaw,
         onDragStopped: isAdmin ? onDragStoppedRaw : null,

@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-02-11 17:43:41
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-02-25 10:41:53
+ * @LastEditTime: 2025-02-25 14:53:03
  */
 import { ICellEditorComp, ICellEditorParams } from 'ag-grid-community';
 // import * as amis from 'amis';
@@ -16,8 +16,11 @@ export class AmisDateTimeCellEditor implements ICellEditorComp {
     private amisScope: any;
     private containerId: string;
     private amisSchema: any;
+    private params: ICellEditorParams;
+
 
     init(params: ICellEditorParams): void {
+        this.params = params;
         this.value = params.value;
         this.setupGui();
     }
@@ -31,7 +34,6 @@ export class AmisDateTimeCellEditor implements ICellEditorComp {
         // 为 amis 组件创建一个唯一的容器 ID
         this.containerId = 'amis-editor-' + Math.random().toString(36).substring(2);
         this.eGui.id = this.containerId + '-container';
-        console.log("===this.eGui.id===", this.eGui.id);
 
         // 创建一个子元素，作为 amis 组件的容器
         var containerDiv = document.createElement('div');
@@ -53,16 +55,12 @@ export class AmisDateTimeCellEditor implements ICellEditorComp {
                     // 禁用自动提交表单
                     preventEnterSubmit: true,
                     "popOverContainerSelector": `#${this.eGui.id}`,
-                    "embed": true
+                    // "popOverContainer": this.eGui,
+                    "closeOnSelect": false,
+                    // "embed": true
                 }
             ]
         };
-
-        // // 渲染 amis 组件
-        // const amis = amisRequire("amis/embed");
-        // // const root = document.getElementById(this.containerId);
-        // console.log("===this.containerId===", this.containerId);
-        // this.amisScope = amis.embed(`#${this.containerId}`, amisSchema);
     }
 
     getGui(): HTMLElement {
