@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-02-11 17:43:41
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-02-25 14:53:03
+ * @LastEditTime: 2025-02-25 15:03:40
  */
 import { ICellEditorComp, ICellEditorParams } from 'ag-grid-community';
 // import * as amis from 'amis';
@@ -50,7 +50,11 @@ export class AmisDateTimeCellEditor implements ICellEditorComp {
                     type: 'input-datetime',
                     name: 'cellValue',
                     value: this.value,
-                    format: 'YYYY-MM-DD HH:mm:ss',
+                    // format: 'YYYY-MM-DD HH:mm:ss',
+                    inputFormat: 'YYYY-MM-DD HH:mm',
+                    format: 'YYYY-MM-DDTHH:mm:00.000Z',
+                    // tpl: readonly ? Tpl.getDateTimeTpl(field) : null,
+                    utc: true,
                     clearable: true,
                     // 禁用自动提交表单
                     preventEnterSubmit: true,
