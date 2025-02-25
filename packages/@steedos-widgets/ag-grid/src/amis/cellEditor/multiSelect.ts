@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-02-11 17:43:41
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-02-25 10:41:01
+ * @LastEditTime: 2025-02-25 15:00:50
  */
 import { ICellEditorComp, ICellEditorParams } from 'ag-grid-community';
 // import * as amis from 'amis';
@@ -31,7 +31,6 @@ export class AmisMultiSelectCellEditor implements ICellEditorComp {
         // 为 amis 组件创建一个唯一的容器 ID
         this.containerId = 'amis-editor-' + Math.random().toString(36).substring(2);
         this.eGui.id = this.containerId + '-container';
-        console.log("===this.eGui.id===", this.eGui.id);
 
         // 创建一个子元素，作为 amis 组件的容器
         var containerDiv = document.createElement('div');
