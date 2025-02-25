@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-02-11 17:43:41
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-02-11 22:08:50
+ * @LastEditTime: 2025-02-25 10:41:53
  */
 import { ICellEditorComp, ICellEditorParams } from 'ag-grid-community';
 // import * as amis from 'amis';
@@ -25,7 +25,7 @@ export class AmisDateTimeCellEditor implements ICellEditorComp {
     setupGui(): void {
         // 创建编辑器的容器
         this.eGui = document.createElement('div');
-        this.eGui.style.width = '200px';
+        this.eGui.style.width = '100%';
         this.eGui.style.height = '100%';
 
         // 为 amis 组件创建一个唯一的容器 ID
@@ -72,7 +72,8 @@ export class AmisDateTimeCellEditor implements ICellEditorComp {
     afterGuiAttached?(): void {
         // 在元素被附加到 DOM 后，再调用 amis.embed
         const amis = amisRequire("amis/embed");
-        this.amisScope = amis.embed(`#${this.containerId}`, this.amisSchema);
+        const env = (window as any).BuilderAmisObject.AmisLib.getEvn();
+        this.amisScope = amis.embed(`#${this.containerId}`, this.amisSchema, {}, env);
     }
 
     getValue(): any {
