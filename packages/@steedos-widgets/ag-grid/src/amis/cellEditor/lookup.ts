@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-02-11 17:43:41
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-02-26 13:55:57
+ * @LastEditTime: 2025-02-26 14:14:30
  */
 import { ICellEditorComp, ICellEditorParams } from 'ag-grid-community';
 // import * as amis from 'amis';
@@ -60,8 +60,7 @@ export class AmisLookupCellEditor implements ICellEditorComp {
                     // value: this.value,
                     config: Object.assign({}, fieldConfig, {
                         label: false
-                    }),
-                    "popOverContainerSelector": `#${this.eGui.id}`
+                    })
                 }
             ],
             data: {
