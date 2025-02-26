@@ -298,7 +298,10 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
             dataTypeDefinitions.formula.fields[field.name.toLowerCase()] = field;
             break;
         case 'lookup':
-            cellDataType = 'lookup';
+            cellDataType = 'text';
+            if(field.multiple){
+                cellDataType = 'object';
+            }
             cellEditor = AmisLookupCellEditor;
             // 不可以使用 cellRenderer ，因为导出excel不认
             // cellRenderer = function(params) { return (params.value && params.value.name) || ""; }
@@ -887,21 +890,21 @@ export function getDataTypeDefinitions() {
             baseDataType: 'text',
             extendsDataType: 'text',
             valueGetter: function (params) {
-                // lookup字段值显示和导出为excel，不可以使用 cellRenderer ，因为导出excel不认
-                // var fieldType = params.colDef.cellEditorParams.fieldConfig.type;
+                var isMultiple = params.colDef.cellEditorParams.fieldConfig.multiple;
                 var fieldName = params.colDef.field;
                 var fieldValue = params.data[fieldName];
                 if (!fieldValue) return null;
 
-                return fieldValue._id || "";
+                return isMultiple ? (fieldValue.map((item) => item._id).join(", ")) : (fieldValue._id || "");
             },
             valueFormatter: function (params) {
-                // var fieldType = params.colDef.cellEditorParams.fieldConfig.type;
+                // lookup字段值显示和导出为excel，不可以使用 cellRenderer ，因为导出excel不认
+                var isMultiple = params.colDef.cellEditorParams.fieldConfig.multiple;
                 var fieldName = params.colDef.field;
                 var fieldValue = params.data[fieldName];
                 if (!fieldValue) return null;
 
-                return fieldValue.name || "";
+                return isMultiple ? (fieldValue.map((item) => item.name).join(", ")) : (fieldValue.name || "");
             }
         },
         number: {
