@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-02-11 17:43:41
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-02-26 15:02:27
+ * @LastEditTime: 2025-02-26 15:36:27
  */
 import { ICellEditorComp, ICellEditorParams, ISelectCellEditorParams } from 'ag-grid-community';
 // import * as amis from 'amis';
@@ -64,7 +64,7 @@ export class AmisMultiSelectCellEditor implements ICellEditorComp {
                         type: 'select',
                         multiple: true,
                         options: fieldOptions,
-                        amis:{
+                        amis: {
                             "popOverContainerSelector": `#${this.eGui.id}`,
                             // valuesNoWrap: true
                         }
