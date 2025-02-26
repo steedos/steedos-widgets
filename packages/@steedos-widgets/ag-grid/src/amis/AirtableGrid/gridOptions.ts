@@ -492,7 +492,7 @@ async function onRowValueChanged(event: any, dataSource: any, { env }) {
         const rowNode = event.node;
         const tableVerificationErrors = getTableVerificationErrors(data, gridContext.verifications, { env });
         const verificationErrors = union(fieldsVerificationErrors, tableVerificationErrors);
-        console.log("==verificationErrors===:", verificationErrors);
+        // console.log("==verificationErrors===:", verificationErrors);
         let allValidated = verificationErrors.length === 0;
         if (allValidated) {
             // 校验通过重新把row data中校验错误信息移除，否则错误信息一直在
