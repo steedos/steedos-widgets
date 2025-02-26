@@ -1,5 +1,5 @@
 import { keyBy, map, isNaN, isNil, union, debounce, each, clone, forEach, filter } from "lodash";
-import { AmisDateTimeCellEditor, AmisMultiSelectCellEditor } from '../cellEditor';
+import { AmisDateTimeCellEditor, AmisMultiSelectCellEditor, AmisLookupCellEditor } from '../cellEditor';
 
 const baseFields = ["created", "created_by", "modified", "modified_by"];
 
@@ -299,10 +299,11 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
             break;
         case 'lookup':
             cellDataType = 'lookup';
-            editable = false;
+            cellEditor = AmisLookupCellEditor;
             // 不可以使用 cellRenderer ，因为导出excel不认
             // cellRenderer = function(params) { return (params.value && params.value.name) || ""; }
             valueGetter = dataTypeDefinitions.lookup.valueGetter;
+            valueFormatter = dataTypeDefinitions.lookup.valueFormatter;
             break;
         default:
             cellDataType = 'text'; // 默认类型
@@ -887,7 +888,15 @@ export function getDataTypeDefinitions() {
             extendsDataType: 'text',
             valueGetter: function (params) {
                 // lookup字段值显示和导出为excel，不可以使用 cellRenderer ，因为导出excel不认
-                var fieldType = params.colDef.cellEditorParams.fieldConfig.type;
+                // var fieldType = params.colDef.cellEditorParams.fieldConfig.type;
+                var fieldName = params.colDef.field;
+                var fieldValue = params.data[fieldName];
+                if (!fieldValue) return null;
+
+                return fieldValue._id || "";
+            },
+            valueFormatter: function (params) {
+                // var fieldType = params.colDef.cellEditorParams.fieldConfig.type;
                 var fieldName = params.colDef.field;
                 var fieldValue = params.data[fieldName];
                 if (!fieldValue) return null;
@@ -930,7 +939,7 @@ export function getDataTypeDefinitions() {
     };
 }
 
-export async function getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications = [] }) {
+export async function getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications = [], amisData }) {
     const table = { _id: tableId };
     let tableLabel = title;
     const isReadonly = mode === "read";
@@ -1062,7 +1071,9 @@ export async function getGridOptions({ tableId, title, mode, dataSource, getColu
             verifications,
             onRowValueChangedFun: onRowValueChangedRaw,
             onCellValueChangedFun: onCellValueChangedRaw,
-            isReadonly
+            isReadonly,
+            amisData,
+            amisEnv: env
         },
         components: {
             AmisDateTimeCellEditor: AmisDateTimeCellEditor,
@@ -1096,7 +1107,7 @@ const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env,
             // 启用 AG Grid 企业版
             AgGrid.LicenseManager.setLicenseKey(agGridLicenseKey);
         }
-        let gridOptions = await getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications });
+        let gridOptions = await getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications, amisData: data });
         return gridOptions;
     }
     const agGrid = {
