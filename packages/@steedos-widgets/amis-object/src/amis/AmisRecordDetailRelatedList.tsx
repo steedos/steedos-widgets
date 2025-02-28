@@ -1,15 +1,14 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-01-07 17:26:30
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2025-02-28 11:35:58
  * @Description: 
  */
 import { getRecordDetailRelatedListSchema, i18next } from '@steedos-widgets/amis-lib'
 import { has, isEmpty } from 'lodash';
 
 export const AmisRecordDetailRelatedList = async (props: any) => {
-  // console.log(`AmisRecordDetailRelatedList props==>`, props)
   const { $schema, objectApiName, recordId, relatedObjectApiName, data, relatedKey, top, perPage, 
     hiddenEmptyTable, appId, relatedLabel, className = '', columns, sort, filters, visible_on, requestAdaptor, adaptor, visibleOn,
     crud, crudDataFilter, onCrudDataFilter, env, enableHeaderToolbar
@@ -43,18 +42,18 @@ export const AmisRecordDetailRelatedList = async (props: any) => {
   }
   schema.data = Object.assign(schema.data || {}, formData);
 
-  if(has(props, "recordId") && ( $schema.recordId !== "${recordId}" || (props.$$editor && props.recordId !== "${recordId}") )){
-    schema.data = Object.assign(schema.data, {
-      _master: {
-        record: data?._master?.record,
-        objectName: objectApiName,
-        recordId: recordId
-      }
+  schema.data = Object.assign(schema.data, {
+    objectName: relatedObjectApiName,
+    _master: {
+      record: data?._master?.record,
+      objectName: objectApiName,
+      recordId: recordId
+    }
     });
-  }
   // 因为 visibleOn 的值格式是字符串，所以这里加个判断条件。
   if(visibleOn){
     schema.visibleOn = visibleOn;
   }
+  // console.log(`AmisRecordDetailRelatedList props==>`, props, schema)
   return schema
 }

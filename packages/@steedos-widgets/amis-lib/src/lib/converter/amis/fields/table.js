@@ -1409,7 +1409,7 @@ export async function getTableApi(mainObject, fields, options){
             const refField = self.uiSchema.fields[relatedKey];
             const masterRecord = self._master.record;
             const masterObjectName = self._master.objectName;
-            let relatedValue = self._master.recordId;
+            let relatedValue = masterRecord._id;
             if(refField && refField.reference_to_field && refField.reference_to_field != '_id'){
                 relatedValue = masterRecord[refField.reference_to_field]
             }
@@ -1450,6 +1450,7 @@ export async function getTableApi(mainObject, fields, options){
             skip: skip,
             fields: ${JSON.stringify(_.map(fields, 'name'))}
         }));
+        // console.log('table requestAdaptor', api);
         return api;
     `
     api.adaptor = `
