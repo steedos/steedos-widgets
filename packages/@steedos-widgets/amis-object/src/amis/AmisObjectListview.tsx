@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-03-26 15:20:26
+ * @LastEditors: baozhoutao@steedos.com
+ * @LastEditTime: 2025-02-28 16:14:20
  * @Description: 
  */
 import './AmisObjectListview.less';
@@ -171,7 +171,9 @@ export const AmisObjectListView = async (props) => {
   // console.log('headerSchema===>', headerSchema)
   return {
     type: "service",
-    data: serviceData,
+    data: {
+      defaultListName: listName ? listName : first(values(uiSchema.list_views))?.name
+    },
     style: style,
     className: `${className} sm:bg-gray-50 h-full  steedos-object-listview ${displayAs === 'split'? 'sm:border-r':'sm:border-r'}`,
     body: [{
@@ -209,7 +211,7 @@ export const AmisObjectListView = async (props) => {
                     },
                     "requestAdaptor": "api.data={query: '{spaces__findOne(id: \"none\"){_id,name}}'};return api;",
                     "adaptor": `
-                        // console.log('service listview schemaApi adaptor....', api.body); 
+                        // console.log('service listview schemaApi adaptor....', api); 
                         let { appId, objectName, defaultListName: listName, display, formFactor: defaultFormFactor, uiSchema} = api.body;
                         if(api.body.listName){
                           listName = api.body.listName;
@@ -259,6 +261,7 @@ export const AmisObjectListView = async (props) => {
                             }catch(e){
                               console.error(e)
                             }
+                            // console.log('schema.amisSchema====>', schema.amisSchema)
                             payload.data = schema.amisSchema;
                             resolve(payload)
                           });

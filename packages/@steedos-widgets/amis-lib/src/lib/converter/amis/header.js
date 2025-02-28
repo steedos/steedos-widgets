@@ -722,6 +722,7 @@ export function getObjectListHeader(objectSchema, listViewName, ctx) {
     "body": body,
     "className": `sm:rounded-tl sm:rounded-tr p-4 -mb-4`
   }];
+  // console.log(`getObjectListHeader`, objectSchema, listViewName, ctx)
   return headerSchema;
 }
 

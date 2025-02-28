@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2025-02-20 18:38:20
+ * @LastEditTime: 2025-02-28 15:18:03
  * @Description: 
  */
 import './AmisObjectTable.less';
@@ -107,6 +107,7 @@ export const AmisObjectTable = async (props) => {
   if(!setDataToComponentId){
     setDataToComponentId = `service_listview_${objectApiName}`;
   }
+  // console.log(`objectApiName`, objectApiName)
   const amisFilters = amisCondition && conditionsToFilters(amisCondition);
   const tableFilters = filters || amisFilters;
   const amisSchemaData = Object.assign({}, data, defaultData);
@@ -114,6 +115,7 @@ export const AmisObjectTable = async (props) => {
   const appId = data?.appId || defaultData?.appId;
   // ctx中值为undefined的属性不能保留，否则会导致 filters等被覆盖。
   ctx = pickBy(ctx, (value)=>{ return value !== undefined })
+  // console.log(`columns`, columns)
   let tableSchema = await getTableSchema(appId, objectApiName, columns, { 
     filters: tableFilters, filtersFunction, top, sort, sortField, sortOrder, extraColumns, defaults, ...ctx, 
     setDataToComponentId, requestAdaptor, adaptor, filterVisible, headerToolbarItems, 
@@ -121,12 +123,12 @@ export const AmisObjectTable = async (props) => {
   let amisSchema: any = tableSchema.amisSchema;
   let uiSchema = tableSchema.uiSchema;
   amisSchema.data = Object.assign({}, amisSchema.data, amisSchemaData);
-  if(has(props, 'objectApiName')){
-    amisSchema.data.objectName = objectApiName;
-  }
+  // if(has(props, 'objectApiName')){
+  //   amisSchema.data.objectName = objectApiName;
+  // }
   amisSchema.className = `steedos-object-table ${uiSchema.enable_tree ? "is-steedos-tree-table" : ""} ${amisSchema.className} h-full flex flex-col ${className}`;
-  amisSchema.objectApiName = objectApiName;//设计器中切换对象时画布中显示的列未同步变更
+  // amisSchema.objectApiName = objectApiName;//设计器中切换对象时画布中显示的列未同步变更
   // console.timeEnd('AmisObjectTable')
-  console.log(`AmisObjectTable=====>`, props, amisSchema)
+  // console.log(`AmisObjectTable=====>`, props, amisSchema)
   return amisSchema;
 }
