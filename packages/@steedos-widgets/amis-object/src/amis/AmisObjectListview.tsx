@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2025-02-28 16:14:20
+ * @LastEditTime: 2025-02-28 17:29:59
  * @Description: 
  */
 import './AmisObjectListview.less';
@@ -168,11 +168,12 @@ export const AmisObjectListView = async (props) => {
   }
   // console.timeEnd('AmisObjectListView')
   // console.log('serviceData===>', serviceData)
-  // console.log('headerSchema===>', headerSchema)
+  // console.log('headerSchema===>',headerSchema)
   return {
     type: "service",
     data: {
-      defaultListName: listName ? listName : first(values(uiSchema.list_views))?.name
+      defaultListName: listName ? listName : first(values(uiSchema.list_views))?.name,
+      recordPermissions: uiSchema.permissions
     },
     style: style,
     className: `${className} sm:bg-gray-50 h-full  steedos-object-listview ${displayAs === 'split'? 'sm:border-r':'sm:border-r'}`,
