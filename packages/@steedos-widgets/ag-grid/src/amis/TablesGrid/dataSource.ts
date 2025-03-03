@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-01-06 09:34:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-01-17 13:49:52
+ * @LastEditTime: 2025-03-03 17:11:33
  */
 
 import { AirtableDataSource } from '../AirtableGrid';
@@ -50,15 +50,19 @@ export const getDataSource = ({ baseUrl, baseId, tableId, key = "_id", context =
           "expands",
         ].forEach((i) => {
           if (i in loadOptions && isNotEmpty(loadOptions[i])) {
-            params[i] = JSON.stringify(loadOptions[i]);
+            if (i === "filters") {
+              params[i] = JSON.stringify(loadOptions[i]);
+            } else {
+              params[i] = loadOptions[i];
+            }
           }
         });
 
-        const response = await fetch(this.getFullUrl() + '?' + new URLSearchParams(params), { 
+        const response = await fetch(this.getFullUrl() + '?' + new URLSearchParams(params), {
           credentials: 'include',
           "headers": {
-              'Content-Type': 'application/json',
-              "Authorization": `Bearer ${context.tenantId},${context.authToken}`
+            'Content-Type': 'application/json',
+            "Authorization": `Bearer ${context.tenantId},${context.authToken}`
           }
         });
         if (!response.ok) throw new Error("Data loading error");

@@ -824,7 +824,7 @@ function getServerSideDatasource(dataSource: any, filters: any) {
                 });
                 console.log('Server Side Datasource - Requesting rows by sortModel:', sortModel);
                 if (sort.length) {
-                    loadOptions.sort = sort;
+                    loadOptions.sort = sort.join(",");
                 }
 
                 const response = await dataSource.load(loadOptions);
