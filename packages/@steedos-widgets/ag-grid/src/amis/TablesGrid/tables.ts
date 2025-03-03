@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-01-02 15:39:40
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-03-03 11:33:42
+ * @LastEditTime: 2025-03-03 16:02:23
  */
 // import { getColumnDef, getDataTypeDefinitions } from '../AirtableGrid/gridOptions';
 import { getDataSource } from './dataSource';
@@ -37,7 +37,7 @@ export async function getTablesGridSchema(
     mode: string, //edit/read/admin
     { env, data, agGridLicenseKey, filters, beforeSaveData }
 ) {
-    const baseUrl = data.rootUrl;// 开发环境 b6 server 需要配置 B6_PROXY_TARGET 环境变量，代理 B6_HOST 为平台 RootUrl
+    const baseUrl = data.context.rootUrl;// 开发环境 b6 server 需要配置 B6_PROXY_TARGET 环境变量，代理 B6_HOST 为平台 RootUrl
     const meta = await getMeta(tableId, baseId, baseUrl, data.context);
     const dataSource = getDataSource({ baseUrl, baseId, tableId, context: data.context });
 
