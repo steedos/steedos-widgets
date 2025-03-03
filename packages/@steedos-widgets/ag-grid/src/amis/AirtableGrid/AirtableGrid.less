@@ -1,19 +1,21 @@
-
 /*b6_fields公式字段只读效果*/
-.antd-Form .antd-Form-item.steedos-static-readonly .antd-FormulaPicker .antd-FormulaPicker-input{
+.antd-Form .antd-Form-item.steedos-static-readonly .antd-FormulaPicker .antd-FormulaPicker-input {
     border: none;
     padding: 0;
     pointer-events: none;
 }
-.antd-Form .antd-Form-item.steedos-static-readonly .antd-FormulaPicker .antd-FormulaPicker-action{
+
+.antd-Form .antd-Form-item.steedos-static-readonly .antd-FormulaPicker .antd-FormulaPicker-action {
     display: none;
 }
-.antd-Form .antd-Form-item.steedos-static-text-readonly .antd-FormulaPicker .antd-FormulaPicker-input{
+
+.antd-Form .antd-Form-item.steedos-static-text-readonly .antd-FormulaPicker .antd-FormulaPicker-input {
     border: none;
     padding: 0;
     pointer-events: none;
 }
-.antd-Form .antd-Form-item.steedos-static-text-readonly .antd-FormulaPicker .antd-FormulaPicker-action{
+
+.antd-Form .antd-Form-item.steedos-static-text-readonly .antd-FormulaPicker .antd-FormulaPicker-action {
     display: none;
 }
 
@@ -24,4 +26,19 @@
 
 .steedos-airtable-grid .ag-grid-verification-errors-row .ag-cell-edit-wrapper {
     border: solid 3px #FF634744 !important;
+}
+
+/*ag-grid单元格编辑，amis下拉框多选值很多时允许显示为多行*/
+.steedos-airtable-grid {
+    .ag-popup-editor {
+        .antd-Select.antd-Select--multi {
+            .antd-Select-valueWrap {
+                display: inline-block;
+
+                .antd-Select-value {
+                    display: inline-block;
+                }
+            }
+        }
+    }
 }

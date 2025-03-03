@@ -20,23 +20,31 @@ yarn dev
 
 ```json
 {
-  "type": "rooms-comments",
-  "roomId": "test",
-  "className": "flex flex-col m-3 gap-3",
-  "baseUrl": "http://localhost:5100"
+  "type": "rooms-provider",
+  "baseUrl": "${context.rootUrl}",
+  "body": [
+    {
+      "type": "rooms-comments",
+      "className": "flex flex-col m-3 gap-3",
+      "roomId": "test",
+    }
+  ]
 }
-
 ```
 
 集成到Steedos记录详情页
 
 ```json
 {
-  "type": "rooms-comments",
-  "className": "flex flex-col m-3 gap-3",
-  "id": "u:bbb9a7d94945",
-  "roomId": "objects:${objectName}:{recordId}",
-  "baseUrl": "${context.rootUrl}"
+  "type": "rooms-provider",
+  "baseUrl": "${context.rootUrl}",
+  "body": [
+    {
+      "type": "rooms-comments",
+      "className": "flex flex-col m-3 gap-3",
+      "roomId": "objects:${objectName}:{recordId}",
+    }
+  ]
 }
 ```
 

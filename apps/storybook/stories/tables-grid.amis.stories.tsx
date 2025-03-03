@@ -222,6 +222,109 @@ export const Filters = () => (
     }}
   />
 )
+
+export const BeforeSaveData = () => (
+  <AmisRender
+    data={data}
+    env={env}
+    schema={{
+      "type": "page",
+      "body": [
+        {
+          "type": "service",
+          "id": "service_wrap",
+          "body": [
+            {
+              "name": "tableId",
+              "type": "input-text",
+              "label": "TableId",
+              "value": "${tableId}",
+              "onEvent": {
+                "change": {
+                  "actions": [
+                    {
+                      "actionType": "setValue",
+                      "componentId": "service_wrap",
+                      "args": {
+                        "value": {
+                          "tableVisible": "${false}"
+                        }
+                      }
+                    },
+                    {
+                      "actionType": "setValue",
+                      "componentId": "service_wrap",
+                      "args": {
+                        "value": {
+                          "tableVisible": "${true}",
+                          "tableId": "${event.data.value}"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "beforeSaveData",
+              "type": "textarea",
+              "label": "BeforeSaveData",
+              "value": "${tableBeforeSaveData}",
+              "onEvent": {
+                "change": {
+                  "actions": [
+                    {
+                      "actionType": "setValue",
+                      "componentId": "service_wrap",
+                      "args": {
+                        "value": {
+                          "tableVisible": "${false}"
+                        }
+                      }
+                    },
+                    {
+                      "actionType": "setValue",
+                      "componentId": "service_wrap",
+                      "args": {
+                        "value": {
+                          "tableVisible": "${true}",
+                          "tableBeforeSaveData": "${event.data.value}"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "type": "steedos-tables-grid",
+              "className": "h-96",
+              "style": {
+                "height": "calc(100vh - 178px)"
+              },
+              "tableId": "${tableId}",
+              "mode": "admin",
+              "beforeSaveData": "${tableBeforeSaveData}",
+              "visibleOn": "${tableVisible}"
+            }
+          ],
+          "data": {
+            "tableId": "67658ac0cc184d0efc68b752",
+            "tableVisible": "${true}",
+            "tableBeforeSaveData": `const { isInsert, isUpdate } = options;
+if (isInsert) {
+  rowData.collectId = "111";
+}
+else if (isUpdate) {
+  rowData.collectId = "222";
+}`
+          }
+        }
+      ],
+    }}
+  />
+)
+
 export const LicenseKey = () => (
   <AmisRender
     data={data}

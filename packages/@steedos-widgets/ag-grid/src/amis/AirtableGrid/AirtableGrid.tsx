@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2024-12-25 13:52:44
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-02-10 17:06:53
+ * @LastEditTime: 2025-03-03 10:42:03
  */
 import './AirtableGrid.less';
 import React, { useEffect, useState, useRef } from 'react';
@@ -20,11 +20,11 @@ interface AirtableGridProps {
 
 export const AmisAirtableGrid = async (props: AirtableGridProps) => {
   const { $schema, data, defaultData, className = "", tableId, title, mode = "edit", dataSource, getColumnDefs, env, style, 
-    agGridLicenseKey, filters, verifications } = props;
+    agGridLicenseKey, filters, verifications, beforeSaveData } = props;
   console.log('AmisAirtableGrid===', props);
   const amisSchemaData = Object.assign({}, data, defaultData);
   // const appId = data?.appId || defaultData?.appId;
-  let tableSchema = await getAirtableGridSchema({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications });
+  let tableSchema = await getAirtableGridSchema({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications, beforeSaveData });
   let amisSchema: any = tableSchema.amisSchema;
   amisSchema.data = Object.assign({}, amisSchema.data, amisSchemaData);
   amisSchema.className = `${amisSchema.className} ${className}`;

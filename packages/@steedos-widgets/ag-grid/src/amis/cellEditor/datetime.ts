@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-02-11 17:43:41
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-02-11 22:08:50
+ * @LastEditTime: 2025-02-26 15:47:04
  */
 import { ICellEditorComp, ICellEditorParams } from 'ag-grid-community';
 // import * as amis from 'amis';
@@ -12,31 +12,41 @@ declare const amisRequire: any;
 
 export class AmisDateTimeCellEditor implements ICellEditorComp {
     private eGui: HTMLElement;
+    private name: string;
     private value: string;
     private amisScope: any;
     private containerId: string;
     private amisSchema: any;
+    private amisData: any;
+    private amisEnv: any;
+    private params: ICellEditorParams;
+
 
     init(params: ICellEditorParams): void {
+        this.params = params;
         this.value = params.value;
+        this.amisData = (this.params as any).context.amisData;
+        this.amisEnv = (this.params as any).context.amisEnv;
+        let fieldConfig = (this.params as any).fieldConfig;
+        this.name = fieldConfig.name;
         this.setupGui();
     }
 
     setupGui(): void {
         // 创建编辑器的容器
         this.eGui = document.createElement('div');
-        this.eGui.style.width = '200px';
+        this.eGui.style.width = '100%';
         this.eGui.style.height = '100%';
 
         // 为 amis 组件创建一个唯一的容器 ID
         this.containerId = 'amis-editor-' + Math.random().toString(36).substring(2);
         this.eGui.id = this.containerId + '-container';
-        console.log("===this.eGui.id===", this.eGui.id);
 
         // 创建一个子元素，作为 amis 组件的容器
         var containerDiv = document.createElement('div');
         containerDiv.id = this.containerId;
         this.eGui.appendChild(containerDiv);
+        let fieldConfig = (this.params as any).fieldConfig;
 
         // 定义 amis 的 schema
         this.amisSchema = {
@@ -45,24 +55,22 @@ export class AmisDateTimeCellEditor implements ICellEditorComp {
             wrapWithPanel: false,
             body: [
                 {
-                    type: 'input-datetime',
-                    name: 'cellValue',
-                    value: this.value,
-                    format: 'YYYY-MM-DD HH:mm:ss',
-                    clearable: true,
-                    // 禁用自动提交表单
-                    preventEnterSubmit: true,
-                    "popOverContainerSelector": `#${this.eGui.id}`,
-                    "embed": true
+                    type: 'steedos-field',
+                    // value: this.value,
+                    config: Object.assign({}, fieldConfig, {
+                        label: false,
+                        amis: {
+                            "popOverContainerSelector": `#${this.eGui.id}`,
+                            "closeOnSelect": false,
+                            // "embed": true
+                        }
+                    })
                 }
-            ]
+            ],
+            data: {
+                [this.name]: this.value
+            }
         };
-
-        // // 渲染 amis 组件
-        // const amis = amisRequire("amis/embed");
-        // // const root = document.getElementById(this.containerId);
-        // console.log("===this.containerId===", this.containerId);
-        // this.amisScope = amis.embed(`#${this.containerId}`, amisSchema);
     }
 
     getGui(): HTMLElement {
@@ -72,13 +80,14 @@ export class AmisDateTimeCellEditor implements ICellEditorComp {
     afterGuiAttached?(): void {
         // 在元素被附加到 DOM 后，再调用 amis.embed
         const amis = amisRequire("amis/embed");
-        this.amisScope = amis.embed(`#${this.containerId}`, this.amisSchema);
+        const env = (window as any).BuilderAmisObject.AmisLib.getEvn();
+        this.amisScope = amis.embed(`#${this.containerId}`, this.amisSchema, { data: this.amisData }, env);
     }
 
     getValue(): any {
         // 从 amis 中获取当前数据
         const data = this.amisScope.getComponentById('cellForm')?.getValues();
-        return data?.cellValue;
+        return (data || {})[this.name];
     }
 
     destroy?(): void {

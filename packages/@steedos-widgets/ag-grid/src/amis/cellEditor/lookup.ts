@@ -2,15 +2,15 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-02-11 17:43:41
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-02-26 15:36:27
+ * @LastEditTime: 2025-02-26 14:14:30
  */
-import { ICellEditorComp, ICellEditorParams, ISelectCellEditorParams } from 'ag-grid-community';
+import { ICellEditorComp, ICellEditorParams } from 'ag-grid-community';
 // import * as amis from 'amis';
 
 // 定义类型以避免 TypeScript 的错误
 declare const amisRequire: any;
 
-export class AmisMultiSelectCellEditor implements ICellEditorComp {
+export class AmisLookupCellEditor implements ICellEditorComp {
     private eGui: HTMLElement;
     private name: string;
     private value: string;
@@ -46,8 +46,6 @@ export class AmisMultiSelectCellEditor implements ICellEditorComp {
         containerDiv.id = this.containerId;
         this.eGui.appendChild(containerDiv);
 
-        let fieldOptions = (this.params as unknown as ISelectCellEditorParams).values;
-        fieldOptions = fieldOptions && fieldOptions.map(function (n: string) { return { label: n, value: n } }) || [];
         let fieldConfig = (this.params as any).fieldConfig;
 
         // 定义 amis 的 schema
@@ -55,19 +53,13 @@ export class AmisMultiSelectCellEditor implements ICellEditorComp {
             id: 'cellForm',
             type: 'form',
             wrapWithPanel: false,
+            // debug: true,
             body: [
                 {
                     type: 'steedos-field',
                     // value: this.value,
                     config: Object.assign({}, fieldConfig, {
-                        label: false,
-                        type: 'select',
-                        multiple: true,
-                        options: fieldOptions,
-                        amis: {
-                            "popOverContainerSelector": `#${this.eGui.id}`,
-                            // valuesNoWrap: true
-                        }
+                        label: false
                     })
                 }
             ],
@@ -90,12 +82,13 @@ export class AmisMultiSelectCellEditor implements ICellEditorComp {
     afterGuiAttached?(): void {
         // 在元素被附加到 DOM 后，再调用 amis.embed
         const amis = amisRequire("amis/embed");
+        // const env = this.amisEnv;
         const env = (window as any).BuilderAmisObject.AmisLib.getEvn();
         this.amisScope = amis.embed(`#${this.containerId}`, this.amisSchema, { data: this.amisData }, env);
     }
 
     getValue(): any {
-        // // 从 amis 中获取当前数据
+        // 从 amis 中获取当前数据
         const data = this.amisScope.getComponentById('cellForm')?.getValues();
         return (data || {})[this.name];
     }
