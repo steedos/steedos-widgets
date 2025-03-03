@@ -796,7 +796,7 @@ function getServerSideDatasource(dataSource: any, filters: any) {
                 const loadOptions: any = {
                     skip: startRow,
                     top: pageSize,
-                    expands: 'created_by,modified_by'
+                    // expands: 'created_by,modified_by'
                 }
 
                 // 过滤
