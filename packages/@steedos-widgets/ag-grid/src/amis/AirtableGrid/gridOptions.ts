@@ -526,8 +526,8 @@ async function onRowValueChanged(event: any, dataSource: any, { env }) {
         //     throw new Error('Server error! Status: ' + response.status);
         // }
 
-        const beforeUpdateData = gridContext.beforeUpdateData;
-        beforeUpdateData && beforeUpdateData(data, { isUpdate: true });
+        const beforeSaveData = gridContext.beforeSaveData;
+        beforeSaveData && beforeSaveData(data, { isUpdate: true });
         const responseData = await dataSource.update(data._id, data);
         console.log('Data saved successfully:', responseData);
         rowNode.setData(Object.assign({}, responseData, { __verificationErrors: verificationErrors, __formulaErrors: formulaErrors }));
@@ -944,7 +944,7 @@ export function getDataTypeDefinitions() {
     };
 }
 
-export async function getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications = [], amisData, beforeUpdateData }) {
+export async function getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications = [], amisData, beforeSaveData }) {
     const table = { _id: tableId };
     let tableLabel = title;
     const isReadonly = mode === "read";
@@ -1074,7 +1074,7 @@ export async function getGridOptions({ tableId, title, mode, dataSource, getColu
             onCellValueChangedFun: onCellValueChangedRaw,
             setRowDataFormulaValues,
             getColumnDefByField,
-            beforeUpdateData,
+            beforeSaveData,
             isReadonly,
             amisData,
             amisEnv: env
@@ -1100,7 +1100,7 @@ export async function getGridOptions({ tableId, title, mode, dataSource, getColu
     return gridOptions;
 }
 
-const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications, beforeUpdateData }) => {
+const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications, beforeSaveData }) => {
     const onDataFilter = async function (config: any, AgGrid: any, props: any, data: any, ref: any) {
         // 为ref.current补上props属性，否则props.dispatchEvent不能生效
         ref.current.props = props;
@@ -1111,7 +1111,7 @@ const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env,
             // 启用 AG Grid 企业版
             AgGrid.LicenseManager.setLicenseKey(agGridLicenseKey);
         }
-        let gridOptions = await getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications, amisData: data, beforeUpdateData });
+        let gridOptions = await getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications, amisData: data, beforeSaveData });
         return gridOptions;
     }
     const agGrid = {
@@ -1299,8 +1299,8 @@ const getNewButtonScript = () => {
   
         // 将新增数据发送到服务器
         try {
-          const beforeUpdateData = gridContext.beforeUpdateData;
-          beforeUpdateData && beforeUpdateData(newRow, { isInsert: true });
+          const beforeSaveData = gridContext.beforeSaveData;
+          beforeSaveData && beforeSaveData(newRow, { isInsert: true });
           const data = await dataSource.insert(newRow);
           console.log('New row saved successfully', data);
   
@@ -1607,14 +1607,14 @@ export const getTableHeader = ({ tableId, title, mode, dataSource, getColumnDefs
 }
 
 export async function getAirtableGridSchema(
-    { tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications, beforeUpdateData }
+    { tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications, beforeSaveData }
 ) {
-    // beforeUpdateData = (rowData: any, options: any)=>{
+    // beforeSaveData = (rowData: any, options: any)=>{
     //     const { isInsert, isUpdate } = options;
     //     // rowData.xxx = "ssss";
     // }
-    if (typeof beforeUpdateData === 'string') {
-        beforeUpdateData = new Function('rowData', 'options', 'return (async () => { ' + beforeUpdateData + ' })()')
+    if (typeof beforeSaveData === 'string') {
+        beforeSaveData = new Function('rowData', 'options', 'return (async () => { ' + beforeSaveData + ' })()')
     }
 
     const amisSchema = {
@@ -1627,7 +1627,7 @@ export async function getAirtableGridSchema(
         "className": "steedos-airtable-grid h-full",
         "body": [
             getTableHeader({ tableId, title, mode, dataSource, getColumnDefs, env }),
-            await getAgGrid({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications, beforeUpdateData })
+            await getAgGrid({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications, beforeSaveData })
         ],
         "onEvent": {
             [`@airtable.${tableId}.setGridApi`]: {

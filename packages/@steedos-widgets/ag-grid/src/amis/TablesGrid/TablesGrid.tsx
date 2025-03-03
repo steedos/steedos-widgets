@@ -7,11 +7,11 @@
 import { getTablesGridSchema } from "./tables";
 
 export const AmisTablesGrid = async (props: any) => {
-  const { $schema, data, defaultData, className = "", tableId, baseId = "default", mode = "edit", env, style, agGridLicenseKey, filters, beforeUpdateData } = props;
+  const { $schema, data, defaultData, className = "", tableId, baseId = "default", mode = "edit", env, style, agGridLicenseKey, filters, beforeSaveData } = props;
   // console.log('AmisTablesGrid===', props);
   const amisSchemaData = Object.assign({}, data, defaultData);
   // const appId = data?.appId || defaultData?.appId;
-  let tableSchema = await getTablesGridSchema(tableId, baseId, mode, { env, data, agGridLicenseKey, filters, beforeUpdateData });
+  let tableSchema = await getTablesGridSchema(tableId, baseId, mode, { env, data, agGridLicenseKey, filters, beforeSaveData });
   let amisSchema: any = tableSchema.amisSchema;
   amisSchema.data = Object.assign({}, amisSchema.data, amisSchemaData);
   amisSchema.className = `${amisSchema.className} ${className}`;

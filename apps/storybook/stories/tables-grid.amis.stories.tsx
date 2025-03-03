@@ -223,7 +223,7 @@ export const Filters = () => (
   />
 )
 
-export const BeforeUpdateData = () => (
+export const BeforeSaveData = () => (
   <AmisRender
     data={data}
     env={env}
@@ -266,10 +266,10 @@ export const BeforeUpdateData = () => (
               }
             },
             {
-              "name": "beforeUpdateData",
+              "name": "beforeSaveData",
               "type": "textarea",
-              "label": "BeforeUpdateData",
-              "value": "${tableBeforeUpdateData}",
+              "label": "BeforeSaveData",
+              "value": "${tableBeforeSaveData}",
               "onEvent": {
                 "change": {
                   "actions": [
@@ -288,7 +288,7 @@ export const BeforeUpdateData = () => (
                       "args": {
                         "value": {
                           "tableVisible": "${true}",
-                          "tableBeforeUpdateData": "${event.data.value}"
+                          "tableBeforeSaveData": "${event.data.value}"
                         }
                       }
                     }
@@ -304,14 +304,14 @@ export const BeforeUpdateData = () => (
               },
               "tableId": "${tableId}",
               "mode": "admin",
-              "beforeUpdateData": "${tableBeforeUpdateData}",
+              "beforeSaveData": "${tableBeforeSaveData}",
               "visibleOn": "${tableVisible}"
             }
           ],
           "data": {
             "tableId": "67658ac0cc184d0efc68b752",
             "tableVisible": "${true}",
-            "tableBeforeUpdateData": `const { isInsert, isUpdate } = options;
+            "tableBeforeSaveData": `const { isInsert, isUpdate } = options;
 if (isInsert) {
   rowData.collectId = "111";
 }
