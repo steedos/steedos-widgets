@@ -895,7 +895,7 @@ export function getDataTypeDefinitions() {
                 var fieldValue = params.data[fieldName];
                 if (!fieldValue) return null;
 
-                return isMultiple ? (fieldValue.map((item) => item._id).join(", ")) : (fieldValue._id || "");
+                return isMultiple ? (fieldValue.map((item) => item._id) || []) : (fieldValue._id || "");
             },
             valueFormatter: function (params) {
                 // lookup字段值显示和导出为excel，不可以使用 cellRenderer ，因为导出excel不认
@@ -932,7 +932,6 @@ export function getDataTypeDefinitions() {
                         return parseFloat(fieldValue).toFixed(fieldPrecision);
                     }
                     else {
-                        console.log("===整数直接返回显示和导出2===");
                         // 整数直接返回显示和导出
                         return fieldValue;
                     }
