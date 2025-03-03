@@ -525,7 +525,8 @@ export async function getRecordDetailHeaderSchema(objectName,recordId, options){
 }
 
 export async function getRecordDetailSchema(objectName, appId, props = {}){
-    const uiSchema = await getUISchema(objectName);
+    const uiSchema = await getUISchema(objectName);    
+
     const relatedLists = await getObjectRelatedList(objectName, null, null);
     const detailed = {
         "title": i18next.t('frontend_record_detail_tab_detailed'),
@@ -564,6 +565,21 @@ export async function getRecordDetailSchema(objectName, appId, props = {}){
     if(relatedLists.length){
         content.tabs.push(related)
     }
+    const contents = [content];
+    if (uiSchema.enable_chatter) {
+        const chatter = {
+            "type": "rooms-provider",
+            "baseUrl": "${context.rootUrl}",
+            "body": [
+              {
+                "type": "rooms-comments",
+                "className": "flex flex-col gap-3 m-4",
+                "roomId": "objects:${objectName}:{recordId}",
+              }
+            ]
+        }
+        contents.push(chatter);
+    }
     // content.tabs = reverse(content.tabs)
     return {
         uiSchema,
@@ -579,7 +595,7 @@ export async function getRecordDetailSchema(objectName, appId, props = {}){
                     "showButtons": props.showButtons,
                     "showBackButton": props.showBackButton,
                 },
-                content
+                ...contents,
             ],
             "objectApiName": "${objectName}",
             "recordId": "${recordId}",
