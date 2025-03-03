@@ -812,7 +812,9 @@ function getServerSideDatasource(dataSource: any, filters: any) {
                 } else {
                     queryFilters = modelFilters;
                 }
-                loadOptions.filters = queryFilters;
+                if (queryFilters.length) {
+                    loadOptions.filters = queryFilters;
+                }
 
                 // 排序
                 const sortModel = params.request.sortModel;
@@ -821,7 +823,9 @@ function getServerSideDatasource(dataSource: any, filters: any) {
                     sort.push(`${sortField.colId} ${sortField.sort}`);
                 });
                 console.log('Server Side Datasource - Requesting rows by sortModel:', sortModel);
-                loadOptions.sort = sort;
+                if (sort.length) {
+                    loadOptions.sort = sort;
+                }
 
                 const response = await dataSource.load(loadOptions);
 
