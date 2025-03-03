@@ -86,7 +86,7 @@ const getSubmitSuccScript = (tableId: any, mode: string) => {
         let mode = "${mode || ''}";
         const data = context.getData();
         const gridApi = data.gridApi;
-        const gridContext = data.gridContext;
+        const gridContext = gridApi.getGridOption("context");
         const fieldFormData = JSON.parse(JSON.stringify(data));
         // fieldFormData中缺少_id属性，agGrid组件中依赖了_id
         Object.assign(fieldFormData, {
@@ -194,7 +194,7 @@ const getDeleteSuccScript = () => {
     return `
         const data = context.getData();
         const gridApi = data.gridApi;
-        const gridContext = data.gridContext;
+        const gridContext = gridApi.getGridOption("context");
         const deletingFieldId = event.data.deletingFieldId;
         const isDeleteSuc = event.data.responseData && event.data.responseData._id === deletingFieldId;
         if (isDeleteSuc) {

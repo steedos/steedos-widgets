@@ -299,7 +299,7 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
             break;
         case 'lookup':
             cellDataType = 'text';
-            if(field.multiple){
+            if (field.multiple) {
                 cellDataType = 'object';
             }
             cellEditor = AmisLookupCellEditor;
@@ -344,7 +344,7 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
 }
 
 export function getColumnDefByFieldFun(dataTypeDefinitions: any, mode: string, { dispatchEvent, env }) {
-    return function (field: any){
+    return function (field: any) {
         return getColumnDef(field, dataTypeDefinitions, mode, { dispatchEvent, env });
     }
 }
@@ -525,6 +525,9 @@ async function onRowValueChanged(event: any, dataSource: any, { env }) {
         // if (!response.ok) {
         //     throw new Error('Server error! Status: ' + response.status);
         // }
+
+        const beforeUpdateData = gridContext.beforeUpdateData;
+        beforeUpdateData && beforeUpdateData(data, { isUpdate: true });
         const responseData = await dataSource.update(data._id, data);
         console.log('Data saved successfully:', responseData);
         rowNode.setData(Object.assign({}, responseData, { __verificationErrors: verificationErrors, __formulaErrors: formulaErrors }));
@@ -941,7 +944,7 @@ export function getDataTypeDefinitions() {
     };
 }
 
-export async function getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications = [], amisData }) {
+export async function getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications = [], amisData, beforeUpdateData }) {
     const table = { _id: tableId };
     let tableLabel = title;
     const isReadonly = mode === "read";
@@ -1052,12 +1055,7 @@ export async function getGridOptions({ tableId, title, mode, dataSource, getColu
         onGridReady: function (params: any) {
             // getRows 初始加载数据，过滤数据，列排序等，gridApi.applyServerSideTransaction 新建记录、删除记录都会触发
             dispatchEvent("setGridApi", {
-                "gridApi": params.api,
-                "gridContext": {
-                    setRowDataFormulaValues,
-                    dataSource,
-                    getColumnDefByField
-                }
+                "gridApi": params.api
             });
         },
         defaultExcelExportParams: {
@@ -1070,9 +1068,13 @@ export async function getGridOptions({ tableId, title, mode, dataSource, getColu
         },
         serverSideDatasource: getServerSideDatasource(dataSource, filters),
         context: {
+            dataSource,
             verifications,
             onRowValueChangedFun: onRowValueChangedRaw,
             onCellValueChangedFun: onCellValueChangedRaw,
+            setRowDataFormulaValues,
+            getColumnDefByField,
+            beforeUpdateData,
             isReadonly,
             amisData,
             amisEnv: env
@@ -1098,7 +1100,7 @@ export async function getGridOptions({ tableId, title, mode, dataSource, getColu
     return gridOptions;
 }
 
-const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications }) => {
+const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications, beforeUpdateData }) => {
     const onDataFilter = async function (config: any, AgGrid: any, props: any, data: any, ref: any) {
         // 为ref.current补上props属性，否则props.dispatchEvent不能生效
         ref.current.props = props;
@@ -1109,7 +1111,7 @@ const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env,
             // 启用 AG Grid 企业版
             AgGrid.LicenseManager.setLicenseKey(agGridLicenseKey);
         }
-        let gridOptions = await getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications, amisData: data });
+        let gridOptions = await getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications, amisData: data, beforeUpdateData });
         return gridOptions;
     }
     const agGrid = {
@@ -1137,8 +1139,7 @@ const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env,
                             "eventName": `@airtable.${tableId}.setGridApi`
                         },
                         "data": {
-                            "gridApi": "${gridApi}",
-                            "gridContext": "${gridContext}"
+                            "gridApi": "${gridApi}"
                         }
                     }
                 ]
@@ -1216,7 +1217,7 @@ const getNewButtonScript = () => {
       const amisNotify = event.context && event.context.env && event.context.env.notify || alert;
     
       const gridApi = event.data.gridApi;
-      const gridContext = event.data.gridContext;
+      const gridContext = gridApi.getGridOption("context");
       const setRowDataFormulaValues = gridContext.setRowDataFormulaValues;
       const dataSource = gridContext.dataSource;
   
@@ -1298,6 +1299,8 @@ const getNewButtonScript = () => {
   
         // 将新增数据发送到服务器
         try {
+          const beforeUpdateData = gridContext.beforeUpdateData;
+          beforeUpdateData && beforeUpdateData(newRow, { isInsert: true });
           const data = await dataSource.insert(newRow);
           console.log('New row saved successfully', data);
   
@@ -1336,7 +1339,7 @@ const getDeleteButtonScript = () => {
       const amisNotify = event.context && event.context.env && event.context.env.notify || alert;
 
       const gridApi = event.data.gridApi;
-      const gridContext = event.data.gridContext;
+      const gridContext = gridApi.getGridOption("context");
       const dataSource = gridContext.dataSource;
 
       function getAllRowData() {
@@ -1604,8 +1607,16 @@ export const getTableHeader = ({ tableId, title, mode, dataSource, getColumnDefs
 }
 
 export async function getAirtableGridSchema(
-    { tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications }
+    { tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications, beforeUpdateData }
 ) {
+    // beforeUpdateData = (rowData: any, options: any)=>{
+    //     const { isInsert, isUpdate } = options;
+    //     // rowData.xxx = "ssss";
+    // }
+    if (typeof beforeUpdateData === 'string') {
+        beforeUpdateData = new Function('rowData', 'options', 'return (async () => { ' + beforeUpdateData + ' })()')
+    }
+
     const amisSchema = {
         "type": "service",
         "id": `service_airtable_grid_${tableId}`,
@@ -1616,7 +1627,7 @@ export async function getAirtableGridSchema(
         "className": "steedos-airtable-grid h-full",
         "body": [
             getTableHeader({ tableId, title, mode, dataSource, getColumnDefs, env }),
-            await getAgGrid({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications })
+            await getAgGrid({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications, beforeUpdateData })
         ],
         "onEvent": {
             [`@airtable.${tableId}.setGridApi`]: {
@@ -1625,8 +1636,7 @@ export async function getAirtableGridSchema(
                         "actionType": "setValue",
                         "args": {
                             "value": {
-                                "gridApi": "${gridApi}",
-                                "gridContext": "${gridContext}"
+                                "gridApi": "${gridApi}"
                             }
                         },
                     }
