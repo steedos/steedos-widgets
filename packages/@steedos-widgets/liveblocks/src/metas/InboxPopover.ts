@@ -1,6 +1,6 @@
 
 const config: any = {
-  group: "华炎魔方-原子组件",
+  group: "Builder6",
   componentName: "AmisInboxPopover",
   title: "Inbox Popover",
   docUrl: "",
