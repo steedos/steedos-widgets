@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-02-11 17:43:41
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-03-04 14:45:11
+ * @LastEditTime: 2025-03-04 15:05:44
  */
 import { ICellEditorComp, ICellEditorParams, ISelectCellEditorParams } from 'ag-grid-community';
 // import * as amis from 'amis';
@@ -48,7 +48,7 @@ export class AmisMultiSelectCellEditor implements ICellEditorComp {
         // 创建一个子元素，作为 amis 组件的容器
         var containerDiv = document.createElement('div');
         containerDiv.id = this.containerId;
-        containerDiv.className = cellClassName + ' amis-ag-grid-cell-editor-datetime';
+        containerDiv.className = cellClassName + ' amis-ag-grid-cell-editor-select-multiple';
         this.eGui.appendChild(containerDiv);
 
         let fieldOptions = (this.params as unknown as ISelectCellEditorParams).values;
