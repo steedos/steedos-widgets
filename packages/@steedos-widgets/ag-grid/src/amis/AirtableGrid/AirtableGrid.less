@@ -51,6 +51,14 @@
         }
     }
 
+    /*ag-grid单元格编辑非popup模式，amis lookup多选值很多时允许显示为多行*/
+    .ag-cell-lookup-multiple {
+        &.ag-cell-inline-editing {
+            overflow: auto;
+            height: 72px;
+        }
+    }
+
     /*ag-grid单元格编辑自定义组件中，如果不是popup模式，应该显示为满屏高度*/
     .amis-ag-grid-cell-editor-wrapper {
         .amis-ag-grid-cell-editor {
@@ -75,6 +83,64 @@
 
                             .antd-Select-valueWrap {
                                 flex-wrap: wrap;
+                            }
+                        }
+
+                        .antd-Picker {
+                            height: 100%;
+                            background: #fff;
+
+                            .antd-Picker-input {
+                                border: none;
+                            }
+
+                            &.antd-Picker--single {
+                                .antd-Picker-input {
+                                    height: 100%;
+                                    align-items: center;
+
+                                    .antd-Picker-valueWrap {
+                                        /*下面css是为解决lookup单选时选项值垂直居中，文字超出时不换行且显示省略号*/
+                                        min-width: 0;
+
+                                        .antd-Picker-values {
+                                            min-width: 0;
+
+                                            .antd-Picker-value {
+                                                display: flex;
+                                                align-items: center;
+                                                min-width: 0;
+
+                                                .antd-Picker-valueLabel {
+                                                    overflow: hidden;
+                                                    text-overflow: ellipsis;
+                                                    white-space: nowrap;
+                                                    min-width: 0;
+                                                }
+                                            }
+                                        }
+
+                                        &>input {
+                                            display: none;
+                                        }
+                                    }
+                                }
+                            }
+
+                            &.antd-Picker--multi {
+                                .antd-Picker-input {
+                                    .antd-Picker-valueWrap {
+                                        /*下面css是为解决lookup多选时选项很多时能换行显示*/
+                                        .antd-Picker-values {
+                                            display: flex;
+                                            flex-wrap: wrap;
+                                        }
+
+                                        &>input {
+                                            display: none;
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

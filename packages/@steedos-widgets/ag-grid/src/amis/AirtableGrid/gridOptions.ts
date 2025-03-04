@@ -305,9 +305,11 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
         case 'lookup':
             cellDataType = 'text';
             let minWidth = 160;
+            cellClass = "ag-cell-lookup";
             if (field.multiple) {
                 cellDataType = 'object';
                 minWidth = 220;
+                cellClass = "ag-cell-lookup ag-cell-lookup-multiple";
             }
             Object.assign(cellEditorParams, {
                 minWidth

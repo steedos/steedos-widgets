@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-02-11 17:43:41
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-03-04 12:01:47
+ * @LastEditTime: 2025-03-04 15:48:45
  */
 import { ICellEditorComp, ICellEditorParams } from 'ag-grid-community';
 // import * as amis from 'amis';
@@ -40,12 +40,15 @@ export class AmisLookupCellEditor implements ICellEditorComp {
         this.eGui.style.height = '100%';
 
         // 为 amis 组件创建一个唯一的容器 ID
-        this.containerId = 'amis-editor-' + Math.random().toString(36).substring(2);
-        this.eGui.id = this.containerId + '-container';
+        const cellClassName = 'amis-ag-grid-cell-editor';
+        this.containerId = `${cellClassName}-${Math.random().toString(36).substring(2)}`;
+        this.eGui.id = this.containerId + '-wrapper';
+        this.eGui.className = `${cellClassName}-wrapper`;
 
         // 创建一个子元素，作为 amis 组件的容器
         var containerDiv = document.createElement('div');
         containerDiv.id = this.containerId;
+        containerDiv.className = cellClassName + ' amis-ag-grid-cell-editor-lookup';
         this.eGui.appendChild(containerDiv);
 
         let fieldConfig = (this.params as any).fieldConfig;
@@ -103,6 +106,6 @@ export class AmisLookupCellEditor implements ICellEditorComp {
     }
 
     isPopup?(): boolean {
-        return true;
+        return false;
     }
 }
