@@ -590,7 +590,7 @@ export async function getRecordDetailSchema(objectName, appId, props = {}){
         content.tabs.push(related)
     }
     const contents = [content];
-    if (uiSchema.enable_chatter) {
+    if (uiSchema.enable_chatter && window.BuilderLiveblocks) {
         const chatter = {
             "type": "rooms-provider",
             "baseUrl": "${context.rootUrl}",
@@ -598,7 +598,7 @@ export async function getRecordDetailSchema(objectName, appId, props = {}){
               {
                 "type": "rooms-comments",
                 "className": "flex flex-col gap-3 m-4",
-                "roomId": "objects:${objectName}:{recordId}",
+                "roomId": "objects:${objectName}:${recordId}",
               }
             ]
         }
