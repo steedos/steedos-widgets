@@ -796,7 +796,7 @@ function getServerSideDatasource(dataSource: any, filters: any) {
                 const loadOptions: any = {
                     skip: startRow,
                     top: pageSize,
-                    expands: 'created_by,modified_by'
+                    // expands: 'created_by,modified_by'
                 }
 
                 // 过滤
@@ -824,7 +824,7 @@ function getServerSideDatasource(dataSource: any, filters: any) {
                 });
                 console.log('Server Side Datasource - Requesting rows by sortModel:', sortModel);
                 if (sort.length) {
-                    loadOptions.sort = sort;
+                    loadOptions.sort = sort.join(",");
                 }
 
                 const response = await dataSource.load(loadOptions);

@@ -17,6 +17,7 @@
     "build-object": "lerna run build-object",
     "build-app": "lerna run build-app --parallel",
     "unpkg": "node unpkg-local.js",
+    "prepare": "husky install",
     "cnpm-sync": "lerna exec --no-private  -- cnpm sync \\$LERNA_PACKAGE_NAME"
   },
   "dependencies": {
@@ -32,11 +33,25 @@
   },
   "devDependencies": {
     "@babel/core": "^7.18.13",
+    "@commitlint/cli": "^19.7.1",
+    "@commitlint/config-conventional": "^19.7.1",
     "babel-loader": "^8.2.5",
     "cnpm": "9.0.1",
     "express": "^4.21.2",
     "http-server": "^14.1.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.4.3",
     "ts-node": "^10.9.1",
     "tsconfig-paths-webpack-plugin": "^4.0.0"
+  },
+  "lint-staged": {
+    "packages/*/src/**/*.{js,ts,jsx,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "packages/*/src/**/*.{css,scss}": [
+      "stylelint --fix",
+      "prettier --write"
+    ]
   }
 }
