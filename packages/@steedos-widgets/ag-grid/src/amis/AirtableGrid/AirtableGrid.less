@@ -41,4 +41,28 @@
             }
         }
     }
+
+    /*ag-grid单元格编辑自定义组件中，如果不是popup模式，应该显示为满屏高度*/
+    .amis-ag-grid-cell-editor-wrapper {
+        .amis-ag-grid-cell-editor {
+            height: 100%;
+
+            .antd-Form {
+                height: 100%;
+
+                .antd-Form-item {
+                    height: 100%;
+
+                    .antd-Form-control {
+                        height: 100%;
+
+                        .antd-DatePicker {
+                            height: 100%;
+                            border: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
