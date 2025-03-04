@@ -390,7 +390,7 @@ export const AmisAppLauncher = async (props) => {
                   "url": "/service/api/apps/create_by_design",
                   "method": "post",
                   "requestAdaptor": "api.data={code: context.code, name: context.name, icon: context.icon}; return api;",
-                  "adaptor": "window.location.href=Creator.getRelativeUrl('/app/' + payload.code);return {}",
+                  "adaptor": "window.location.href=Steedos.getRelativeUrl('/app/' + payload.code);return {}",
                   "messages": {}
               },
               "body": [

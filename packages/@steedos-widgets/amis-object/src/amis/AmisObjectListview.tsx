@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2025-02-28 17:29:59
+ * @LastEditTime: 2025-03-03 13:09:35
  * @Description: 
  */
 import './AmisObjectListview.less';
@@ -212,7 +212,7 @@ export const AmisObjectListView = async (props) => {
                     },
                     "requestAdaptor": "api.data={query: '{spaces__findOne(id: \"none\"){_id,name}}'};return api;",
                     "adaptor": `
-                        // console.log('service listview schemaApi adaptor....', api); 
+                        console.log('service listview schemaApi adaptor....', api, context); 
                         let { appId, objectName, defaultListName: listName, display, formFactor: defaultFormFactor, uiSchema} = api.body;
                         if(api.body.listName){
                           listName = api.body.listName;
@@ -232,7 +232,7 @@ export const AmisObjectListView = async (props) => {
                           const formFactor = (["split"].indexOf(display) > -1) ? 'SMALL': defaultFormFactor;
                           listViewSchemaProps.formFactor = formFactor;
                           listViewSchemaProps.displayAs = display;
-                          // console.log("====listViewSchemaProps===>", listName, display, listViewSchemaProps)
+                          console.log("====listViewSchemaProps===>", listName, display, listViewSchemaProps)
                           const crud_mode = listView.crud_mode;
                           if(crud_mode){
                             if(!listViewSchemaProps.defaults.listSchema.mode){
@@ -262,7 +262,7 @@ export const AmisObjectListView = async (props) => {
                             }catch(e){
                               console.error(e)
                             }
-                            // console.log('schema.amisSchema====>', schema.amisSchema)
+                            console.log('schema.amisSchema====>', schema.amisSchema)
                             payload.data = schema.amisSchema;
                             resolve(payload)
                           });
