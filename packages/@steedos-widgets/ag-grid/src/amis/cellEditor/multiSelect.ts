@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-02-11 17:43:41
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-03-04 12:01:59
+ * @LastEditTime: 2025-03-04 14:45:11
  */
 import { ICellEditorComp, ICellEditorParams, ISelectCellEditorParams } from 'ag-grid-community';
 // import * as amis from 'amis';
@@ -40,12 +40,15 @@ export class AmisMultiSelectCellEditor implements ICellEditorComp {
         this.eGui.style.height = '100%';
 
         // 为 amis 组件创建一个唯一的容器 ID
-        this.containerId = 'amis-editor-' + Math.random().toString(36).substring(2);
-        this.eGui.id = this.containerId + '-container';
+        const cellClassName = 'amis-ag-grid-cell-editor';
+        this.containerId = `${cellClassName}-${Math.random().toString(36).substring(2)}`;
+        this.eGui.id = this.containerId + '-wrapper';
+        this.eGui.className = `${cellClassName}-wrapper`;
 
         // 创建一个子元素，作为 amis 组件的容器
         var containerDiv = document.createElement('div');
         containerDiv.id = this.containerId;
+        containerDiv.className = cellClassName + ' amis-ag-grid-cell-editor-datetime';
         this.eGui.appendChild(containerDiv);
 
         let fieldOptions = (this.params as unknown as ISelectCellEditorParams).values;
@@ -67,7 +70,7 @@ export class AmisMultiSelectCellEditor implements ICellEditorComp {
                         multiple: true,
                         options: fieldOptions,
                         amis: {
-                            "popOverContainerSelector": `#${this.eGui.id}`,
+                            // "popOverContainerSelector": `#${this.eGui.id}`,
                             // valuesNoWrap: true
                         }
                     })
@@ -110,6 +113,6 @@ export class AmisMultiSelectCellEditor implements ICellEditorComp {
     }
 
     isPopup?(): boolean {
-        return true;
+        return false;
     }
 }

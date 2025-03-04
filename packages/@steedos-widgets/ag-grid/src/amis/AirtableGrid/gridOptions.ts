@@ -173,7 +173,8 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
         fieldOptions: any,
         editable = true,
         filter: any,
-        filterParams: any;
+        filterParams: any, 
+        cellClass: any;
 
     let isCellReadonly = isReadonly;
     if (field.readonly || field.is_system) {
@@ -246,6 +247,7 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
             Object.assign(filterParams, {
                 values: fieldOptions
             });
+            cellClass = "ag-cell-select-multiple";
             break;
         case 'date':
             cellDataType = 'date';
@@ -346,7 +348,8 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
         filterParams: filterParams,
         mainMenuItems: mainMenuItems,
         suppressMovable: suppressMovable,
-        lockPosition: lockPosition
+        lockPosition: lockPosition,
+        cellClass
     };
 
 }

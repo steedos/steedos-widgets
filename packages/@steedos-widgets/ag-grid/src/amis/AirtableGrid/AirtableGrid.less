@@ -28,8 +28,9 @@
     border: solid 3px #FF634744 !important;
 }
 
-/*ag-grid单元格编辑，amis下拉框多选值很多时允许显示为多行*/
 .steedos-airtable-grid {
+
+    /*ag-grid单元格编辑popup模式，amis下拉框多选值很多时允许显示为多行*/
     .ag-popup-editor {
         .antd-Select.antd-Select--multi {
             .antd-Select-valueWrap {
@@ -39,6 +40,14 @@
                     display: inline-block;
                 }
             }
+        }
+    }
+
+    /*ag-grid单元格编辑非popup模式，amis下拉框多选值很多时允许显示为多行*/
+    .ag-cell-select-multiple {
+        &.ag-cell-inline-editing {
+            overflow: auto;
+            height: 72px;
         }
     }
 
@@ -59,6 +68,14 @@
                         .antd-DatePicker {
                             height: 100%;
                             border: none;
+                        }
+
+                        .antd-Select.antd-Select--multi {
+                            border: none;
+
+                            .antd-Select-valueWrap {
+                                flex-wrap: wrap;
+                            }
                         }
                     }
                 }
