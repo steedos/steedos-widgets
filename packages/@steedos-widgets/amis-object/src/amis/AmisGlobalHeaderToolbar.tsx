@@ -52,7 +52,7 @@ const getNotificationBadgeButton = () => {
           {
             "type": "panel",
             "title": i18next.t('frontend_notifications'),
-            "className": "steedos-header-toolbar-notifications-panel " + (isMobile ? "" : "min-w-[300px] max-w-md"),
+            "className": "steedos-header-toolbar-notifications-panel border-0 shadow-none " + (isMobile ? "" : "min-w-[460px] max-w-md"),
             "body": [
               {
                 "type": "each",
@@ -235,6 +235,7 @@ const getNotificationBadgeButton = () => {
             "className": "slds-button_icon slds-global-header__icon"
           }
         ],
+        "size": "small",
         "count": "${unReadCount}"
       },
     ],
@@ -295,6 +296,20 @@ const getNotificationBadgeButton = () => {
     "className": "antd-Action steedos-header-toolbar-notifications",
     "open": false
   };
+}
+
+const getHeaderButtons = () => {
+  if (window['BuilderLiveblocks']) {
+    return [{
+      type: 'rooms-provider',
+      baseUrl: '',
+      body: {
+        type: 'rooms-inbox-popover',
+      },
+    }];
+  } else {
+    return [];
+  }
 }
 
 export const AmisGlobalHeaderToolbar = async (props) => {
@@ -450,6 +465,7 @@ export const AmisGlobalHeaderToolbar = async (props) => {
             ]
           },
           getNotificationBadgeButton(),
+          ...getHeaderButtons(),
           {
             "type": "steedos-dropdown",
             "placement": "bottomRight",

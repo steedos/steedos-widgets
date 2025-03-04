@@ -98,7 +98,7 @@ export const AmisGlobalHeader = async (props) => {
                             {
                                 "type": "steedos-global-header-toolbar",
                                 "label": "Global Header",
-                                className: 'flex flex-nowrap gap-x-3 items-center',
+                                className: 'flex flex-nowrap gap-x-4 items-center',
                                 logoutScript: "window.signOut();",
                                 customButtons: customButtons
                             }

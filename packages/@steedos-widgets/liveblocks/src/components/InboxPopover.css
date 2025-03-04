@@ -3,6 +3,7 @@
   background: #fff;
   width: 460px;
   height: 560px;
+  z-index: 1000;
   max-height: calc(100vh - var(--header-height) - 10px);
   display: flex;
   flex-direction: column;
@@ -46,7 +47,7 @@
 
 .inbox-unread-count {
   position: absolute;
-  top: 0;
+  top: 6px;
   right: 0;
   transform: translate(50%, -50%);
   display: flex;
@@ -54,11 +55,11 @@
   place-items: center;
   background: var(--Badge--danger-bg);
   color: #fff;
-  font-size: 0.65rem;
+  font-size: 12px;
   font-weight: 500;
   height: 1rem;
   min-width: 1rem;
-  padding: 0 0.25rem;
+  padding: 0 0.5rem;
   border-radius: 9999px;
 }
 
@@ -80,13 +81,14 @@
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
   border-radius: 0.5rem;
-  background: #f3f3f3;
-  color: #555;
+  /* background: #f3f3f3; */
+  background: transparent;
+  color: rgb(116, 116, 116);
 }
 
 .inbox-button.square {
   padding: 0;
-  width: 2rem;
+  width: 1.6rem;
   height: 2rem;
 }
 
@@ -97,7 +99,7 @@
 
 .inbox-button:hover,
 .inbox-button:focus-visible {
-  background: #e8e8e8;
+  /* background: #f3f3f3; */
   cursor: pointer;
 }
 
