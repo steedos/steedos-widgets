@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-02-11 17:43:41
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-02-26 15:36:27
+ * @LastEditTime: 2025-03-04 12:01:59
  */
 import { ICellEditorComp, ICellEditorParams, ISelectCellEditorParams } from 'ag-grid-community';
 // import * as amis from 'amis';
@@ -34,7 +34,9 @@ export class AmisMultiSelectCellEditor implements ICellEditorComp {
     setupGui(): void {
         // 创建编辑器的容器
         this.eGui = document.createElement('div');
-        this.eGui.style.width = '200px';
+        const minWidth = (this.params as any).minWidth;
+        const originalWidth = this.params.column.getActualWidth();
+        this.eGui.style.width = (originalWidth < minWidth ? minWidth : originalWidth) + 'px';
         this.eGui.style.height = '100%';
 
         // 为 amis 组件创建一个唯一的容器 ID

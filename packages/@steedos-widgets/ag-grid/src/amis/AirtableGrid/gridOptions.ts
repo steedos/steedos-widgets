@@ -237,7 +237,8 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
             cellDataType = 'object';
             fieldOptions = field.options && field.options.split("\n").map(function (n: string) { return n.trim(); }) || [];
             Object.assign(cellEditorParams, {
-                values: fieldOptions
+                values: fieldOptions,
+                minWidth: 200
             });
             // cellEditor = MultiSelectCellEditor;
             cellEditor = AmisMultiSelectCellEditor;
@@ -260,7 +261,9 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
         case 'datetime':
             cellDataType = 'date';
             // editable = false;
-            // cellEditor = DateTimeEditor;
+            Object.assign(cellEditorParams, {
+                minWidth: 172
+            });
             cellEditor = AmisDateTimeCellEditor;
             // 因为日期时间依赖了DateTimeEditor.init函数中对初始值定义，所以这里没必要再走一次valueGetter
             // valueGetter = dataTypeDefinitions.date.valueGetter;
@@ -299,9 +302,14 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
             break;
         case 'lookup':
             cellDataType = 'text';
+            let minWidth = 160;
             if (field.multiple) {
                 cellDataType = 'object';
+                minWidth = 220;
             }
+            Object.assign(cellEditorParams, {
+                minWidth
+            });
             cellEditor = AmisLookupCellEditor;
             // 不可以使用 cellRenderer ，因为导出excel不认
             // cellRenderer = function(params) { return (params.value && params.value.name) || ""; }
@@ -948,6 +956,22 @@ export function getDataTypeDefinitions() {
     };
 }
 
+// 编辑开始时的处理函数
+function onCellEditingStarted(event: any) {
+    const column = event.column;
+    const colDef = event.colDef;
+    const cellEditorParams = colDef.cellEditorParams || {};
+    const fieldConfig = cellEditorParams.fieldConfig;
+    if (!fieldConfig) {
+        return;
+    }
+    const minWidth = cellEditorParams.minWidth;
+    const originalWidth = column.getActualWidth();
+    if (minWidth && minWidth > originalWidth) {
+        event.api.setColumnWidth(column, minWidth);
+    }
+}
+
 export async function getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications = [], amisData, beforeSaveData }) {
     const table = { _id: tableId };
     let tableLabel = title;
@@ -1062,6 +1086,7 @@ export async function getGridOptions({ tableId, title, mode, dataSource, getColu
                 "gridApi": params.api
             });
         },
+        onCellEditingStarted,
         defaultExcelExportParams: {
             fileName: tableLabel,
             columnKeys: columnFieldNames
