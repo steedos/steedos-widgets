@@ -84,8 +84,9 @@
 
                             .antd-Select-valueWrap {
                                 flex-wrap: wrap;
-                                .antd-Select-value{
-                                    .antd-Select-valueIcon{
+
+                                .antd-Select-value {
+                                    .antd-Select-valueIcon {
                                         height: 100%;
                                         line-height: 100%;
                                     }
@@ -137,6 +138,7 @@
                             &.antd-Picker--multi {
                                 .antd-Picker-input {
                                     .antd-Picker-valueWrap {
+
                                         /*下面css是为解决lookup多选时选项很多时能换行显示*/
                                         .antd-Picker-values {
                                             display: flex;
@@ -155,4 +157,13 @@
             }
         }
     }
+}
+
+/*
+fix ag-grid单元格编辑datetime字段类型在华炎魔方右侧drawer弹出详细页面无法显示弹出picker问题
+amis 6.4+才开始支持 input-datetime 的 popOverContainerSelector 属性
+目前魔方平台用的是amis 6.3 所以这里只能改变z-index属性来解决
+*/
+.antd-PopOver.antd-DatePicker-popover {
+    z-index: 1420;
 }

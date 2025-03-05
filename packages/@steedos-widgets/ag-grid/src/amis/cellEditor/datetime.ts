@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-02-11 17:43:41
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-03-05 12:08:18
+ * @LastEditTime: 2025-03-05 12:12:18
  */
 import { ICellEditorComp, ICellEditorParams } from 'ag-grid-community';
 // import * as amis from 'amis';
@@ -65,7 +65,7 @@ export class AmisDateTimeCellEditor implements ICellEditorComp {
                     config: Object.assign({}, fieldConfig, {
                         label: false,
                         amis: {
-                            "popOverContainerSelector": `#${this.eGui.id}`,
+                            "popOverContainerSelector": `.steedos-airtable-grid`,//`#${this.eGui.id}`
                             "closeOnSelect": false,
                             // "embed": true
                         }
