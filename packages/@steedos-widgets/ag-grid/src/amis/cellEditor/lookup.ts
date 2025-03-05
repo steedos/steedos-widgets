@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-02-11 17:43:41
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-03-05 11:17:17
+ * @LastEditTime: 2025-03-05 12:02:56
  */
 import { ICellEditorComp, ICellEditorParams } from 'ag-grid-community';
 // import * as amis from 'amis';
@@ -53,6 +53,8 @@ export class AmisLookupCellEditor implements ICellEditorComp {
 
         let fieldConfig = (this.params as any).fieldConfig;
 
+        const maxTagCount = fieldConfig.multiple ? (10 + Math.floor((originalWidth < minWidth ? minWidth : originalWidth) / 60)) : -1;
+
         // 定义 amis 的 schema
         this.amisSchema = {
             id: 'cellForm',
@@ -64,7 +66,12 @@ export class AmisLookupCellEditor implements ICellEditorComp {
                     type: 'steedos-field',
                     // value: this.value,
                     config: Object.assign({}, fieldConfig, {
-                        label: false
+                        label: false,
+                        amis: {
+                            "overflowConfig": {
+                                "maxTagCount": maxTagCount
+                            }
+                        }
                     })
                 }
             ],
