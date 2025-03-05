@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-02-11 17:43:41
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-03-05 10:41:21
+ * @LastEditTime: 2025-03-05 11:36:07
  */
 import { ICellEditorComp, ICellEditorParams, ISelectCellEditorParams } from 'ag-grid-community';
 // import * as amis from 'amis';
@@ -39,7 +39,7 @@ export class AmisMultiSelectCellEditor implements ICellEditorComp {
         this.eGui.style.width = (originalWidth < minWidth ? minWidth : originalWidth) + 'px';
         this.eGui.style.height = '100%';
 
-        const maxTagCount = Math.floor((originalWidth < minWidth ? minWidth : originalWidth)/60);
+        const maxTagCount = Math.floor((originalWidth < minWidth ? minWidth : originalWidth) / 60);
 
         // 为 amis 组件创建一个唯一的容器 ID
         const cellClassName = 'amis-ag-grid-cell-editor';
@@ -73,7 +73,8 @@ export class AmisMultiSelectCellEditor implements ICellEditorComp {
                         options: fieldOptions,
                         amis: {
                             "popOverContainerSelector": `.steedos-airtable-grid`,//`#${this.eGui.id}`
-                            "maxTagCount": maxTagCount
+                            "maxTagCount": maxTagCount,
+                            "checkAll": true
                             // valuesNoWrap: true
                         }
                     })
@@ -97,19 +98,23 @@ export class AmisMultiSelectCellEditor implements ICellEditorComp {
 
     afterGuiAttached?(): void {
         // 在元素被附加到 DOM 后，再调用 amis.embed
-        const amis = amisRequire("amis/embed");
-        const env = (window as any).BuilderAmisObject.AmisLib.getEvn();
-        this.amisScope = amis.embed(`#${this.containerId}`, this.amisSchema, { data: this.amisData }, env);
+        const renderAmis = (window as any).renderAmis;
+        if (renderAmis) {
+            renderAmis(`#${this.containerId}`, this.amisSchema, this.amisData);
+            this.amisScope = (window as any).SteedosUI.refs["cellForm"];
 
-
-        // (window as any).Steedos.Page.render(`#${this.containerId}`, {
-        //     name: "agGridCellEditor",
-        //     render_engine: "amis",
-        //     schema: this.amisSchema
-        // }, this.amisData);
-
-        // (window as any).renderAmis(`#${this.containerId}`, this.amisSchema, this.amisData);
-        // this.amisScope = (window as any).SteedosUI.refs["cellForm"];
+            // (window as any).Steedos.Page.render(`#${this.containerId}`, {
+            //     name: "agGridCellEditor",
+            //     render_engine: "amis",
+            //     schema: this.amisSchema
+            // }, this.amisData);
+        }
+        else {
+            const amis = amisRequire("amis/embed");
+            // const env = this.amisEnv;
+            const env = (window as any).BuilderAmisObject.AmisLib.getEvn();
+            this.amisScope = amis.embed(`#${this.containerId}`, this.amisSchema, { data: this.amisData }, env);
+        }
     }
 
     getValue(): any {
