@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-02-11 17:43:41
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-03-04 15:05:44
+ * @LastEditTime: 2025-03-05 10:17:09
  */
 import { ICellEditorComp, ICellEditorParams, ISelectCellEditorParams } from 'ag-grid-community';
 // import * as amis from 'amis';
@@ -70,7 +70,7 @@ export class AmisMultiSelectCellEditor implements ICellEditorComp {
                         multiple: true,
                         options: fieldOptions,
                         amis: {
-                            // "popOverContainerSelector": `#${this.eGui.id}`,
+                            "popOverContainerSelector": `.steedos-airtable-grid`,//`#${this.eGui.id}`
                             // valuesNoWrap: true
                         }
                     })
@@ -97,6 +97,16 @@ export class AmisMultiSelectCellEditor implements ICellEditorComp {
         const amis = amisRequire("amis/embed");
         const env = (window as any).BuilderAmisObject.AmisLib.getEvn();
         this.amisScope = amis.embed(`#${this.containerId}`, this.amisSchema, { data: this.amisData }, env);
+
+
+        // (window as any).Steedos.Page.render(`#${this.containerId}`, {
+        //     name: "agGridCellEditor",
+        //     render_engine: "amis",
+        //     schema: this.amisSchema
+        // }, this.amisData);
+
+        // (window as any).renderAmis(`#${this.containerId}`, this.amisSchema, this.amisData);
+        // this.amisScope = (window as any).SteedosUI.refs["cellForm"];
     }
 
     getValue(): any {
