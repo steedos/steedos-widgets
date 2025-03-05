@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-02-11 17:43:41
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-03-05 10:17:09
+ * @LastEditTime: 2025-03-05 10:41:21
  */
 import { ICellEditorComp, ICellEditorParams, ISelectCellEditorParams } from 'ag-grid-community';
 // import * as amis from 'amis';
@@ -39,6 +39,8 @@ export class AmisMultiSelectCellEditor implements ICellEditorComp {
         this.eGui.style.width = (originalWidth < minWidth ? minWidth : originalWidth) + 'px';
         this.eGui.style.height = '100%';
 
+        const maxTagCount = Math.floor((originalWidth < minWidth ? minWidth : originalWidth)/60);
+
         // 为 amis 组件创建一个唯一的容器 ID
         const cellClassName = 'amis-ag-grid-cell-editor';
         this.containerId = `${cellClassName}-${Math.random().toString(36).substring(2)}`;
@@ -71,6 +73,7 @@ export class AmisMultiSelectCellEditor implements ICellEditorComp {
                         options: fieldOptions,
                         amis: {
                             "popOverContainerSelector": `.steedos-airtable-grid`,//`#${this.eGui.id}`
+                            "maxTagCount": maxTagCount
                             // valuesNoWrap: true
                         }
                     })
