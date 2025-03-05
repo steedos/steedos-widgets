@@ -173,7 +173,8 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
         fieldOptions: any,
         editable = true,
         filter: any,
-        filterParams: any;
+        filterParams: any,
+        cellClass: any;
 
     let isCellReadonly = isReadonly;
     if (field.readonly || field.is_system) {
@@ -237,7 +238,8 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
             cellDataType = 'object';
             fieldOptions = field.options && field.options.split("\n").map(function (n: string) { return n.trim(); }) || [];
             Object.assign(cellEditorParams, {
-                values: fieldOptions
+                values: fieldOptions,
+                minWidth: 200
             });
             // cellEditor = MultiSelectCellEditor;
             cellEditor = AmisMultiSelectCellEditor;
@@ -245,6 +247,7 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
             Object.assign(filterParams, {
                 values: fieldOptions
             });
+            cellClass = "ag-cell-select-multiple";
             break;
         case 'date':
             cellDataType = 'date';
@@ -260,7 +263,9 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
         case 'datetime':
             cellDataType = 'date';
             // editable = false;
-            // cellEditor = DateTimeEditor;
+            Object.assign(cellEditorParams, {
+                minWidth: 172
+            });
             cellEditor = AmisDateTimeCellEditor;
             // 因为日期时间依赖了DateTimeEditor.init函数中对初始值定义，所以这里没必要再走一次valueGetter
             // valueGetter = dataTypeDefinitions.date.valueGetter;
@@ -299,9 +304,16 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
             break;
         case 'lookup':
             cellDataType = 'text';
+            let minWidth = 160;
+            cellClass = "ag-cell-lookup";
             if (field.multiple) {
                 cellDataType = 'object';
+                minWidth = 220;
+                cellClass = "ag-cell-lookup ag-cell-lookup-multiple";
             }
+            Object.assign(cellEditorParams, {
+                minWidth
+            });
             cellEditor = AmisLookupCellEditor;
             // 不可以使用 cellRenderer ，因为导出excel不认
             // cellRenderer = function(params) { return (params.value && params.value.name) || ""; }
@@ -338,7 +350,8 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
         filterParams: filterParams,
         mainMenuItems: mainMenuItems,
         suppressMovable: suppressMovable,
-        lockPosition: lockPosition
+        lockPosition: lockPosition,
+        cellClass
     };
 
 }
@@ -948,8 +961,24 @@ export function getDataTypeDefinitions() {
     };
 }
 
+// 编辑开始时的处理函数
+function onCellEditingStarted(event: any) {
+    const column = event.column;
+    const colDef = event.colDef;
+    const cellEditorParams = colDef.cellEditorParams || {};
+    const fieldConfig = cellEditorParams.fieldConfig;
+    if (!fieldConfig) {
+        return;
+    }
+    const minWidth = cellEditorParams.minWidth;
+    const originalWidth = column.getActualWidth();
+    if (minWidth && minWidth > originalWidth) {
+        event.api.setColumnWidth(column, minWidth);
+    }
+}
+
 export async function getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications = [], amisData, beforeSaveData }) {
-    const table = { _id: tableId };
+    let gridApi: any;
     let tableLabel = title;
     const isReadonly = mode === "read";
     const isAdmin = mode === "admin";
@@ -988,6 +1017,40 @@ export async function getGridOptions({ tableId, title, mode, dataSource, getColu
         onDragStopped(event, dispatchEvent);
     };
 
+    // 全局点击事件处理函数，stopEditingWhenCellsLoseFocus为false（ag-grid默认）时，点击其他空白地方不会自动停止编辑
+    function onDocumentClick(event) {
+        // 获取 grid 的 DOM 元素
+        var gridElement = document.querySelector('.steedos-airtable-grid');
+
+        if (!gridElement) {
+            return;
+        }
+
+        var targetElement = event.target;
+
+        // // 如果点击发生在 grid 内部，直接返回
+        // if (gridElement.contains(targetElement)) {
+        //   return;
+        // }
+
+        // 如果点击发生在 grid 内部，不执行 stopEditing，由ag-grid内部规则处理
+        if (targetElement.closest('.steedos-airtable-grid .ag-center-cols-viewport .ag-center-cols-container')) {
+            return;
+        }
+
+        // 点击某些字段编辑状态下弹出的 popover 内部元素时，不执行 stopEditing
+        const escapeSelectors = [
+            '.antd-PopOver.antd-Select-popover',//多选 字段 弹出 amis select 内部
+            '.amis-dialog-widget.antd-Modal',//lookup 字段 弹出 amis picker 内部
+            '.antd-PopOver.antd-DatePicker-popover'//datetime 字段 弹出 amis picker 内部
+        ];
+        if (targetElement.closest(escapeSelectors.join(','))) {
+            return;
+        }
+
+        gridApi.stopEditing();
+    }
+
     var needToValiTable = verifications && verifications.length > 0;
     var columnFieldNames = map(columnDefs, "field");
     var pageSize = 100000;
@@ -1025,7 +1088,7 @@ export async function getGridOptions({ tableId, title, mode, dataSource, getColu
                 mode: 'range',
             }
         },
-        // stopEditingWhenCellsLoseFocus: true,//如果开启，单元格amis日期时间控件如果是非embed模式，编辑时弹出的日期选择器会关闭，导致选择的日期无法正常保存
+        // stopEditingWhenCellsLoseFocus: true,//如果开启，单元格amis日期时间控件、下拉选择控件、lookup picker控件等在弹出popover选项层失去焦点时，会自动停止编辑状态，导致无法保存数据
         // onRowValueChanged: isReadonly ? null : onRowValueChangedRaw,
         onCellValueChanged: isReadonly ? null : onCellValueChangedRaw,
         onDragStopped: isAdmin ? onDragStoppedRaw : null,
@@ -1057,11 +1120,19 @@ export async function getGridOptions({ tableId, title, mode, dataSource, getColu
             });
         },
         onGridReady: function (params: any) {
+            gridApi = params.api;
             // getRows 初始加载数据，过滤数据，列排序等，gridApi.applyServerSideTransaction 新建记录、删除记录都会触发
             dispatchEvent("setGridApi", {
                 "gridApi": params.api
             });
+            // 添加全局点击事件监听器
+            document.addEventListener('click', onDocumentClick);
         },
+        onDestroy: function () {
+            // 在 grid 销毁时，移除事件监听器，防止内存泄漏
+            document.removeEventListener('click', onDocumentClick);
+        },
+        onCellEditingStarted,
         defaultExcelExportParams: {
             fileName: tableLabel,
             columnKeys: columnFieldNames

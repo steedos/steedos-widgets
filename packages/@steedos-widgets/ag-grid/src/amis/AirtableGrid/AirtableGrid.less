@@ -28,8 +28,9 @@
     border: solid 3px #FF634744 !important;
 }
 
-/*ag-grid单元格编辑，amis下拉框多选值很多时允许显示为多行*/
 .steedos-airtable-grid {
+
+    /*ag-grid单元格编辑popup模式，amis下拉框多选值很多时允许显示为多行*/
     .ag-popup-editor {
         .antd-Select.antd-Select--multi {
             .antd-Select-valueWrap {
@@ -41,4 +42,128 @@
             }
         }
     }
+
+    /*ag-grid单元格编辑非popup模式，amis下拉框多选值很多时允许显示为多行*/
+    .ag-cell-select-multiple {
+        &.ag-cell-inline-editing {
+            overflow: auto;
+            height: 72px;
+        }
+    }
+
+    /*ag-grid单元格编辑非popup模式，amis lookup多选值很多时允许显示为多行*/
+    .ag-cell-lookup-multiple {
+        &.ag-cell-inline-editing {
+            overflow: auto;
+            height: 72px;
+        }
+    }
+
+    /*ag-grid单元格编辑自定义组件中，如果不是popup模式，应该显示为满屏高度*/
+    .amis-ag-grid-cell-editor-wrapper {
+        .amis-ag-grid-cell-editor {
+            height: 100%;
+
+            .antd-Form {
+                height: 100%;
+
+                .antd-Form-item {
+                    height: 100%;
+
+                    .antd-Form-control {
+                        height: 100%;
+                        background: #fff;
+
+                        .antd-DatePicker {
+                            height: 100%;
+                            border: none;
+                        }
+
+                        .antd-Select.antd-Select--multi {
+                            border: none;
+
+                            .antd-Select-valueWrap {
+                                flex-wrap: wrap;
+
+                                .antd-Select-value {
+                                    .antd-Select-valueIcon {
+                                        height: 100%;
+                                        line-height: 100%;
+                                    }
+                                }
+                            }
+                        }
+
+                        .antd-Picker {
+                            height: 100%;
+                            background: #fff;
+
+                            .antd-Picker-input {
+                                border: none;
+                            }
+
+                            &.antd-Picker--single {
+                                .antd-Picker-input {
+                                    height: 100%;
+                                    align-items: center;
+
+                                    .antd-Picker-valueWrap {
+                                        /*下面css是为解决lookup单选时选项值垂直居中，文字超出时不换行且显示省略号*/
+                                        min-width: 0;
+
+                                        .antd-Picker-values {
+                                            min-width: 0;
+
+                                            .antd-Picker-value {
+                                                display: flex;
+                                                align-items: center;
+                                                min-width: 0;
+
+                                                .antd-Picker-valueLabel {
+                                                    overflow: hidden;
+                                                    text-overflow: ellipsis;
+                                                    white-space: nowrap;
+                                                    min-width: 0;
+                                                }
+                                            }
+                                        }
+
+                                        &>input {
+                                            display: none;
+                                        }
+                                    }
+                                }
+                            }
+
+                            &.antd-Picker--multi {
+                                .antd-Picker-input {
+                                    .antd-Picker-valueWrap {
+
+                                        /*下面css是为解决lookup多选时选项很多时能换行显示*/
+                                        .antd-Picker-values {
+                                            display: flex;
+                                            flex-wrap: wrap;
+                                        }
+
+                                        &>input {
+                                            display: none;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/*
+fix ag-grid单元格编辑datetime字段类型在华炎魔方右侧drawer弹出详细页面无法显示弹出picker问题
+amis 6.4+才开始支持 input-datetime 的 popOverContainerSelector 属性
+目前魔方平台用的是amis 6.3 所以这里只能改变z-index属性来解决
+*/
+.antd-PopOver.antd-DatePicker-popover {
+    z-index: 1420;
 }
