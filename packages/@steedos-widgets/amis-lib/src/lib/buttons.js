@@ -527,10 +527,7 @@ export const getObjectListViewButtonsSchemas = (objectSchema, ctx)=>{
             return {
             type: 'steedos-object-button',
             name: button.name,
-            data: {
-                objectName: button.objectName,
-                name: button.name,
-            },
+            objectName: button.objectName,
             visibleOn: getButtonVisibleOn(button),
             className: `button_${button.name}`
             }

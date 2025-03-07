@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-21 10:27:43
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2025-03-07 16:48:20
+ * @LastEditTime: 2025-03-07 17:05:39
  * @Description: 
  */
 import React, { useEffect, useState } from 'react'
@@ -11,10 +11,10 @@ import { getButton, executeButton, getUISchema, getDefaultRenderData } from '@st
 
 export const AmisObjectButton = (props) => {
     // console.log(`AmisObjectButton=====》`, props)
-    const { name, data, render, className,  listViewId, defaultData} = props;
+    const { name, objectName, data, render, className,  listViewId, defaultData} = props;
     const [button, setButton] = useState();
     const [uiSchema, setUiSchema] = useState();
-    const objectName = defaultData.objectName;
+    // const objectName = defaultData.objectName;
     //TODO 处理上下文参数
     const appId = data.appId;
     const formFactor = data.formFactor;
