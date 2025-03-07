@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2025-03-04 14:18:49
+ * @LastEditTime: 2025-03-07 16:48:27
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -218,6 +218,7 @@ export async function getListSchema(
     listViewName,
     ctx = {}
 ) {
+    // console.log('getListSchema', objectName, listView, ctx)
     const uiSchema = await getUISchema(objectName);
     if(!uiSchema){
         return {}
@@ -248,6 +249,7 @@ export async function getListSchema(
     }
 
     let listViewColumns = getListViewColumns(listView, ctx.formFactor);
+    // console.log('getListSchema listViewColumns', objectName, listView, listViewColumns)
     let sort = getListViewSort(listView);
     let listviewFilter = getListViewFilter(listView, ctx);
     let listview_filters = listView && listView._filters;
@@ -454,7 +456,7 @@ export async function getTableSchema(
     columns,
     ctx = {}
 ) {
-    // console.time('getTableSchema', columns);
+    // console.log('getTableSchema', columns);
     const uiSchema = await getUISchema(objectName);
 
     let sort = ctx.sort;
@@ -488,7 +490,7 @@ export async function getTableSchema(
     };
     crudOptions.amisData = createObject(ctx.amisData || {}, {});
     const amisSchema = await getObjectCRUD(uiSchema, fields, crudOptions);
-    // console.timeEnd('getTableSchema');
+    // console.log('getTableSchema', amisSchema, uiSchema);
     return {
         uiSchema,
         amisSchema,

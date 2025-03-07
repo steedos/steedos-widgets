@@ -28,9 +28,9 @@ export function getButtonVisibleOn(button){
         //     return 'false';
         // }
         if(visible.trim().startsWith('function')){
-            visible = `${visible}.apply({
+            visible = `(function(){try{const fun = ${visible}; return fun.apply({
                 object: uiSchema
-            }, [objectName, typeof _id === 'undefined' ? null: _id, typeof record === 'undefined' ? (typeof recordPermissions === 'undefined' ? {} : recordPermissions) : record.recordPermissions, data])`
+            }, [objectName, typeof _id === 'undefined' ? null: _id, typeof record === 'undefined' ? (typeof recordPermissions === 'undefined' ? {} : recordPermissions) : record.recordPermissions, data])}catch(e){console.error(e)}})()`
         }
     }
 
@@ -527,7 +527,10 @@ export const getObjectListViewButtonsSchemas = (objectSchema, ctx)=>{
             return {
             type: 'steedos-object-button',
             name: button.name,
-            objectName: button.objectName,
+            data: {
+                objectName: button.objectName,
+                name: button.name,
+            },
             visibleOn: getButtonVisibleOn(button),
             className: `button_${button.name}`
             }

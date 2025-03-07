@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-21 10:27:43
  * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2025-03-03 12:03:44
+ * @LastEditTime: 2025-03-07 16:48:20
  * @Description: 
  */
 import React, { useEffect, useState } from 'react'
@@ -11,9 +11,10 @@ import { getButton, executeButton, getUISchema, getDefaultRenderData } from '@st
 
 export const AmisObjectButton = (props) => {
     // console.log(`AmisObjectButton=====》`, props)
-    const { objectName, name, data, render, className,  listViewId} = props;
+    const { name, data, render, className,  listViewId, defaultData} = props;
     const [button, setButton] = useState();
     const [uiSchema, setUiSchema] = useState();
+    const objectName = defaultData.objectName;
     //TODO 处理上下文参数
     const appId = data.appId;
     const formFactor = data.formFactor;
@@ -77,7 +78,7 @@ export const AmisObjectButton = (props) => {
             schema.className = schema.className + ' steedos-object-button ' + className;
         }
         
-        const renderData: any = Object.assign(data, {objectName: objectName, app_id: appId, className: className});
+        const renderData: any = Object.assign({}, data, {objectName: objectName, app_id: appId, className: className});
         if(data._id){
             renderData.recordId = data._id
         }
