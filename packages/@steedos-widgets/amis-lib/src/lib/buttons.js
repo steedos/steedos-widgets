@@ -329,7 +329,7 @@ export const execute = (button, props) => {
             ...props,
             action: button
         }
-        return button.todo.apply(todoThis, [todoThis.objectName, todoThis.recordId]);
+        return button.todo.apply(todoThis, [todoThis.objectName, todoThis.recordId, props.record?.record?.recordPermissions, props.record]);
     }
 };
 
