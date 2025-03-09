@@ -744,7 +744,7 @@ function getBackButtonSchema(){
     },
     "body":[{
       "type": "button",
-      "visibleOn": "${window:innerWidth > 768 && (window:historyPaths.length > 1 || window:historyPaths[0].params.record_id) && display !== 'split'}",
+      "visibleOn": "${window:innerWidth > 768 && display !== 'split'}",
       "className":"flex mr-4",
       "onEvent": {
           "click": {
@@ -815,12 +815,12 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
   )
 
   let backButtonsSchema = null;
-
+  
   if(options.showBackButton != false){
     backButtonsSchema = getBackButtonSchema();
   }
 
-  // console.log(`getObjectRecordDetailHeader==>`, amisButtonsSchema)
+  console.log(`getObjectRecordDetailHeader==> backButtonsSchema`, backButtonsSchema)
   
   const reg = new RegExp('_', 'g');
   const standardIcon = icon && icon.replace(reg, '-');
