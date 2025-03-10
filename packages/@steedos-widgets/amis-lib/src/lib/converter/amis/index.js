@@ -350,12 +350,12 @@ export async function getObjectCRUD(objectSchema, fields, options){
           payload.status = 2;
           payload.msg = window.t ? window.t(payload.errors[0].message) : payload.errors[0].message;
       }
-      var scope = SteedosUI.getRef(context.scopeId);
-      var scopeParent = scope && scope.parent;
-      var crudScoped = scopeParent.getComponentById('${body.id}');
-      setTimeout(()=>{
-        crudScoped && crudScoped.control.updateAutoFillHeight();
-      }, 500);
+      // var scope = SteedosUI.getRef(context.scopeId);
+      // var scopeParent = scope && scope.parent;
+      // var crudScoped = scopeParent.getComponentById('${body.id}');
+      // setTimeout(()=>{
+      //   crudScoped && crudScoped.control.updateAutoFillHeight();
+      // }, 500);
       return payload;
     `
 
