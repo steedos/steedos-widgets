@@ -1,4 +1,4 @@
-import { keyBy, map, isNaN, isNil, union, debounce, each, clone, forEach, filter } from "lodash";
+import { keyBy, map, isNaN, isNil, union, debounce, each, clone, forEach, filter, isArray, find } from "lodash";
 import { AmisDateTimeCellEditor, AmisMultiSelectCellEditor, AmisLookupCellEditor } from '../cellEditor';
 
 const baseFields = ["created", "created_by", "modified", "modified_by"];
@@ -79,7 +79,7 @@ function parseDate(str: string, hasTime: boolean = false) {
     }
 
     // 检查生成的日期和输入是否一致（避免 2024-02-30 这种情况）
-    if (hasTime && str.indexOf('T') < 0){
+    if (hasTime && str.indexOf('T') < 0) {
         // 日期时间字段类型，如果传入的字段值不带T就说明是本地时间，应该基于本地时间比较
         if (date.getFullYear() === parseInt(year, 10) &&
             date.getMonth() + 1 === parseInt(month, 10) &&
@@ -100,8 +100,15 @@ function parseDate(str: string, hasTime: boolean = false) {
 }
 
 // 校验单选字段是否在选项范围
-function checkSelectValueValid(value, options) {
-    return (options || []).indexOf(value) > -1;
+function checkSelectValueValid(value: any, options: any, isMultiple: boolean = false) {
+    if (isMultiple) {
+        return !!!find((value || []), function (valueItem: string) {
+            return (options || []).indexOf(valueItem) < 0;
+        });
+    }
+    else {
+        return (options || []).indexOf(value) > -1;
+    }
 }
 
 function getAmisGlobalVariables() {
@@ -197,6 +204,8 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
         cellRenderer: any,
         valueFormatter: any,
         valueGetter: any,
+        valueSetter: any,
+        valueParser: any,
         fieldOptions: any,
         editable = true,
         filter: any,
@@ -270,6 +279,7 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
             });
             // cellEditor = MultiSelectCellEditor;
             cellEditor = AmisMultiSelectCellEditor;
+            valueParser = dataTypeDefinitions.multipleSelect.valueParser;
             filter = 'agSetColumnFilter';
             Object.assign(filterParams, {
                 values: fieldOptions
@@ -372,6 +382,8 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
         editable: isCellReadonly ? false : editable,
         valueFormatter: valueFormatter,
         valueGetter: valueGetter,
+        valueSetter: valueSetter,
+        valueParser: valueParser,
         tooltipValueGetter: tooltipValueGetter,
         filter: filter,
         filterParams: filterParams,
@@ -449,6 +461,16 @@ function getFieldVerificationErrors(fieldValue, colDef) {
             verificationErrors.push("字段“" + fieldConfig.label + "”是单选类型，请输入合法的选项值！");
         }
     }
+    else if (fieldConfig.type === "select-multiple") {
+        if (fieldValue && !isArray(fieldValue)) {
+            verificationErrors.push("字段“" + fieldConfig.label + "”是多选类型，只支持数组！");
+            return verificationErrors;
+        }
+        let isSelectValueValid = checkSelectValueValid(fieldValue, colDef.cellEditorParams.values || [], true);
+        if (!isSelectValueValid) {
+            verificationErrors.push("字段“" + fieldConfig.label + "”是多选类型，请输入合法的选项值！");
+        }
+    }
     return verificationErrors;
 }
 
@@ -489,11 +511,11 @@ async function onRowValueChanged(event: any, dataSource: any, { env }) {
                         isDateString = true;
                     }
                     let utcDate = n;
-                    if(isDateString){
+                    if (isDateString) {
                         // 从粘贴行数据过来的字符串格式不用额外处理时区，parseDate中会自动处理时区
                         utcDate = parseDate(n, fieldConfig.type === "datetime");
                     }
-                    else if(fieldConfig.type === "date"){
+                    else if (fieldConfig.type === "date") {
                         // 设置为选中日期的 UTC 0 点
                         // 只有从日期控件输入的值需要做转换，从粘贴行数据过来的字符串格式不用处理时区，因为要求粘贴过来的只兼容 YYYY-MM-DD YYYY/MM/DD 两种格式
                         const timezoneOffset = n.getTimezoneOffset();
@@ -527,6 +549,15 @@ async function onRowValueChanged(event: any, dataSource: any, { env }) {
                     if (!isSelectValueValid) {
                         fieldsVerificationErrors = union(fieldsVerificationErrors, selectValiErrors);
                         // 下拉框字段类型是字符串，不在范围内也直接保存，列表会显示异常信息就好
+                        // data[k] = null; // 非法字段类型值统一存为null
+                    }
+                }
+                else if (fieldConfig.type === "select-multiple") {
+                    let selectValiErrors = getFieldVerificationErrors(n, colDef);
+                    let isSelectValueValid = !selectValiErrors || selectValiErrors.length === 0;
+                    if (!isSelectValueValid) {
+                        fieldsVerificationErrors = union(fieldsVerificationErrors, selectValiErrors);
+                        // 下拉框多选字段类型是数组，不在范围内也直接保存，列表会显示异常信息就好
                         // data[k] = null; // 非法字段类型值统一存为null
                     }
                 }
@@ -988,6 +1019,18 @@ export function getDataTypeDefinitions() {
                         return fieldValue;
                     }
                 }
+            }
+        },
+        // 下拉多选 select-multiple 类型
+        multipleSelect: {
+            baseDataType: 'object',
+            extendsDataType: 'object',
+            valueParser: function (params) {
+                // 复制单元格时，需要将字符串转换为数组
+                if (typeof params.newValue === 'string') {
+                    return params.newValue.split(',');
+                }
+                return params.newValue;
             }
         }
     };
