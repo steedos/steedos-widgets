@@ -30,12 +30,16 @@ function isValidDate(date: any) {
     return Object.prototype.toString.call(date) === '[object Date]' && !isNaN(date.getTime());
 }
 
-//校验字符串日期值是否合法，如果合法返回Date类型，否则返回null
-function parseDate(str: string) {
+// 校验字符串日期值、日期时间值是否合法，如果合法返回Date类型，否则返回null
+// hasTime为true时表达字段类型为datetime，否则为date
+// 允许两种字段类型转换，比如hasTime为true时，允许传入2025/3/06这种格式，会自动带上整点时间部分，反之会自动去掉时间部分存为utc0点
+function parseDate(str: string, hasTime: boolean = false) {
     // 定义正则表达式，匹配不同的日期格式
-    // 格式：YYYY-MM-DD、YYYY/MM/DD 和 YYYY-MM-DDTHH:MM:SS.SSSZ 
+    // 格式：YYYY-MM-DD、YYYY/MM/DD、YYYY/MM/DD HH:MM、YYYY/MM/DD HH:MM:SS、YYYY-MM-DDTHH:MM:SS.SSS+00:00 和 YYYY-MM-DDTHH:MM:SS.SSSZ 
+    // YYYY-MM-DDTHH:MM:SS.SSS+00:00 这种格式是amis input-datetime控件输出的字段值格式
     // 最后一种TZ格式是服务端返回的格式值，复制其它列字段值时会把这种格式值提交到接口，必须兼容
-    var regex = new RegExp("^(\\d{4})([-\\/])(0?[1-9]|1[0-2])\\2(0?[1-9]|[12][0-9]|3[01])(T(\\d{2}):(\\d{2}):(\\d{2})(\\.\\d{3})?Z)?$");
+    // var regex = new RegExp("^(\\d{4})([-\\/])(0?[1-9]|1[0-2])\\2(0?[1-9]|[12][0-9]|3[01])(T(\\d{2}):(\\d{2}):(\\d{2})(\\.\\d{3})?Z)?$");
+    var regex = new RegExp("^(\\d{4})([-\\/])(0?[1-9]|1[0-2])\\2(0?[1-9]|[12][0-9]|3[01])((T|\\s)(\\d{1,2}):(\\d{1,2})(:(\\d{1,2}))?(\\.\\d{3})?(Z|(\\+\\d{1,2}\\:\\d{1,2}))?)?$");
 
     // 检查是否匹配正则表达式
     var match = str.match(regex);
@@ -50,6 +54,18 @@ function parseDate(str: string) {
 
     // 如果有时间部分，提取时间
     var timePart = match[5] ? match[5] : '';
+    if (hasTime) {
+        // 如果没有时间部分，补充整点时间部分，本地时间0点，因为日期时间类型会保存时区部分，所以要转换本地时间0点而不是UTC 0点
+        if (timePart === '') {
+            timePart = ' 00:00:00';
+        }
+    }
+    else {
+        // 如果有时间部分，去掉时间部分，即UTC 0点，因为日期类型字段只保存日期部分，转换为UTC 0点
+        if (timePart !== '') {
+            timePart = 'T00:00:00.000Z';
+        }
+    }
     var standardizedDateStr = year + '-' + month + '-' + day + timePart;
 
     // 使用 Date 对象验证日期是否合法
@@ -63,10 +79,21 @@ function parseDate(str: string) {
     }
 
     // 检查生成的日期和输入是否一致（避免 2024-02-30 这种情况）
-    if (date.getUTCFullYear() === parseInt(year, 10) &&
-        date.getUTCMonth() + 1 === parseInt(month, 10) &&
-        date.getUTCDate() === parseInt(day, 10)) {
-        return date;
+    if (hasTime && str.indexOf('T') < 0){
+        // 日期时间字段类型，如果传入的字段值不带T就说明是本地时间，应该基于本地时间比较
+        if (date.getFullYear() === parseInt(year, 10) &&
+            date.getMonth() + 1 === parseInt(month, 10) &&
+            date.getDate() === parseInt(day, 10)) {
+            return date;
+        }
+    }
+    else {
+        // 日期字段类型基于UTC时间比较
+        if (date.getUTCFullYear() === parseInt(year, 10) &&
+            date.getUTCMonth() + 1 === parseInt(month, 10) &&
+            date.getUTCDate() === parseInt(day, 10)) {
+            return date;
+        }
     }
 
     return null;
@@ -374,7 +401,7 @@ function getFieldVerificationErrors(fieldValue, colDef) {
     }
 
     const fieldConfig = colDef.cellEditorParams.fieldConfig;
-    if (fieldConfig.type === "date") {
+    if (fieldConfig.type === "date" || fieldConfig.type === "datetime") {
         let isDateValid = true;
         if (typeof fieldValue === 'string') {
             if (fieldValue === '') {
@@ -382,7 +409,7 @@ function getFieldVerificationErrors(fieldValue, colDef) {
                 return verificationErrors;
             }
             // 粘贴行数据过来时是字符串
-            fieldValue = parseDate(fieldValue);
+            fieldValue = parseDate(fieldValue, fieldConfig.type === "datetime");
             if (fieldValue === null) {
                 isDateValid = false;
             }
@@ -392,7 +419,8 @@ function getFieldVerificationErrors(fieldValue, colDef) {
             isDateValid = isValidDate(fieldValue);
         }
         if (!isDateValid) {
-            verificationErrors.push("字段“" + fieldConfig.label + "”必须是合法的日期格式！例如：2024-01-01 或 2024/01/01");
+            var msgValidFormat = fieldConfig.type === "datetime" ? "必须是合法的日期时间格式！例如：2024-01-01 09:00、2024/01/01 09:00、2024/2/3 9:6" : "必须是合法的日期格式！例如：2024-01-01 或 2024/01/01";
+            verificationErrors.push("字段“" + fieldConfig.label + "”" + msgValidFormat);
             return verificationErrors;
         }
     }
@@ -443,7 +471,7 @@ async function onRowValueChanged(event: any, dataSource: any, { env }) {
             const colDef = colDefs[k];
             if (colDef) {
                 const fieldConfig = colDef.cellEditorParams.fieldConfig;
-                if (fieldConfig.type === "date") {
+                if (fieldConfig.type === "date" || fieldConfig.type === "datetime") {
                     let dateValiErrors = getFieldVerificationErrors(n, colDef);
                     let isDateValid = !dateValiErrors || dateValiErrors.length === 0;
                     if (!isDateValid) {
@@ -461,7 +489,11 @@ async function onRowValueChanged(event: any, dataSource: any, { env }) {
                         isDateString = true;
                     }
                     let utcDate = n;
-                    if (!isDateString) {
+                    if(isDateString){
+                        // 从粘贴行数据过来的字符串格式不用额外处理时区，parseDate中会自动处理时区
+                        utcDate = parseDate(n, fieldConfig.type === "datetime");
+                    }
+                    else if(fieldConfig.type === "date"){
                         // 设置为选中日期的 UTC 0 点
                         // 只有从日期控件输入的值需要做转换，从粘贴行数据过来的字符串格式不用处理时区，因为要求粘贴过来的只兼容 YYYY-MM-DD YYYY/MM/DD 两种格式
                         const timezoneOffset = n.getTimezoneOffset();
