@@ -18,7 +18,7 @@ import clsx from "clsx";
 import './InboxPopover.css';
 
 
-function Inbox({ className, ...props }: ComponentPropsWithoutRef<"div">) {
+function Inbox({ className, onClick, ...props }: ComponentPropsWithoutRef<"div">) {
   const { inboxNotifications } = useInboxNotifications();
 
   return inboxNotifications.length === 0 ? (
@@ -32,7 +32,9 @@ function Inbox({ className, ...props }: ComponentPropsWithoutRef<"div">) {
           return (
             <InboxNotification
               key={inboxNotification.id}
+              // markAsReadOnClick={true}
               inboxNotification={inboxNotification}
+              onClick={onClick as any}
               // components={{ Anchor: Link }}
             />
           );
@@ -60,6 +62,11 @@ export function AmisInboxPopover({
   // useEffect(() => {
   //   setOpen(false);
   // }, [pathname]);
+
+  const onItemClick = (e: React.MouseEvent) => {
+    console.log("clicked");
+    setOpen(false);
+  }
 
   return (
     <Popover.Root open={isOpen} onOpenChange={setOpen}>
@@ -108,7 +115,7 @@ export function AmisInboxPopover({
             }
           >
             <ClientSideSuspense fallback={<Loading />}>
-              <Inbox />
+              <Inbox onClick={onItemClick}/>
             </ClientSideSuspense>
           </ErrorBoundary>
         </Popover.Content>
