@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-02-11 17:43:41
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-03-05 12:12:18
+ * @LastEditTime: 2025-03-11 21:23:52
  */
 import { ICellEditorComp, ICellEditorParams } from 'ag-grid-community';
 // import * as amis from 'amis';
@@ -66,7 +66,7 @@ export class AmisDateTimeCellEditor implements ICellEditorComp {
                         label: false,
                         amis: {
                             "popOverContainerSelector": `.steedos-airtable-grid`,//`#${this.eGui.id}`
-                            "closeOnSelect": false,
+                            // "closeOnSelect": false,// 不可以配置为false，否则会出现第一次点开控件时，点选日期后，输入框中小时值无故变成差8小时
                             // "embed": true
                         }
                     })
