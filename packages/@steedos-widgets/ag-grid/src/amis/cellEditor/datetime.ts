@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-02-11 17:43:41
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-03-11 21:23:52
+ * @LastEditTime: 2025-03-12 19:05:53
  */
 import { ICellEditorComp, ICellEditorParams } from 'ag-grid-community';
 // import * as amis from 'amis';
@@ -20,6 +20,7 @@ export class AmisDateTimeCellEditor implements ICellEditorComp {
     private amisData: any;
     private amisEnv: any;
     private params: ICellEditorParams;
+    private cellFormId: string;
 
 
     init(params: ICellEditorParams): void {
@@ -42,7 +43,8 @@ export class AmisDateTimeCellEditor implements ICellEditorComp {
 
         // 为 amis 组件创建一个唯一的容器 ID
         const cellClassName = 'amis-ag-grid-cell-editor';
-        this.containerId = `${cellClassName}-${Math.random().toString(36).substring(2)}`;
+        const random = Math.random().toString(36).substring(2);
+        this.containerId = `${cellClassName}-${random}`;
         this.eGui.id = this.containerId + '-wrapper';
         this.eGui.className = `${cellClassName}-wrapper`;
 
@@ -53,9 +55,10 @@ export class AmisDateTimeCellEditor implements ICellEditorComp {
         this.eGui.appendChild(containerDiv);
         let fieldConfig = (this.params as any).fieldConfig;
 
+        this.cellFormId =  `cellForm__editor__datetime__${random}`;
         // 定义 amis 的 schema
         this.amisSchema = {
-            id: 'cellForm',
+            id: this.cellFormId,
             type: 'form',
             wrapWithPanel: false,
             body: [
@@ -87,7 +90,7 @@ export class AmisDateTimeCellEditor implements ICellEditorComp {
         const renderAmis = (window as any).renderAmis;
         if (renderAmis) {
             renderAmis(`#${this.containerId}`, this.amisSchema, this.amisData);
-            this.amisScope = (window as any).SteedosUI.refs["cellForm"];
+            this.amisScope = (window as any).SteedosUI.refs[this.cellFormId];
         }
         else {
             const amis = amisRequire("amis/embed");
@@ -99,7 +102,7 @@ export class AmisDateTimeCellEditor implements ICellEditorComp {
 
     getValue(): any {
         // 从 amis 中获取当前数据
-        const data = this.amisScope.getComponentById('cellForm')?.getValues();
+        const data = this.amisScope.getComponentById(this.cellFormId)?.getValues();
         return (data || {})[this.name];
     }
 
