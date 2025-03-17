@@ -373,6 +373,7 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
 
     return {
         field: field.name.toLowerCase(),
+        colId: field.name.toLowerCase(),
         headerName: field.label,
         cellDataType: cellDataType,
         cellEditorParams: cellEditorParams,
