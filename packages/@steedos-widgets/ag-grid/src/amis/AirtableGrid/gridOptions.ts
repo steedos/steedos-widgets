@@ -1052,7 +1052,7 @@ function onCellEditingStarted(event: any) {
     }
 }
 
-export async function getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications = [], amisData, beforeSaveData }) {
+export async function getGridOptions({ tableId, title, mode, config, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications = [], amisData, beforeSaveData }) {
     let gridApi: any;
     let tableLabel = title;
     const isReadonly = mode === "read";
@@ -1245,7 +1245,7 @@ export async function getGridOptions({ tableId, title, mode, dataSource, getColu
         }
     }
 
-    // gridOptions = Object.assign({}, config, gridOptions);
+    gridOptions = Object.assign({}, config, gridOptions);
     console.log("amis agGrid gridOptions:", gridOptions);
     return gridOptions;
 }
@@ -1261,7 +1261,7 @@ const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env,
             // 启用 AG Grid 企业版
             AgGrid.LicenseManager.setLicenseKey(agGridLicenseKey);
         }
-        let gridOptions = await getGridOptions({ tableId, title, mode, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications, amisData: data, beforeSaveData });
+        let gridOptions = await getGridOptions({ tableId, title, mode, config, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications, amisData: data, beforeSaveData });
         return gridOptions;
     }
     const agGrid = {
