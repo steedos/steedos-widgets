@@ -767,7 +767,9 @@ async function onDragStopped(event: any, dispatchEvent: Function) {
     if (!columnMoved) {
         return;
     }
-    var allColumns = filter(event.api.getColumnDefs(), function (n) {
+    const gridApi = event.api;
+    var columnDefs = gridApi.getColumnDefs();
+    var allColumns = filter(columnDefs, function (n) {
         return n.cellEditorParams && n.cellEditorParams.fieldConfig && baseFields.indexOf(n.cellEditorParams.fieldConfig.name) < 0;
     });
     var newSortedFieldIds = map(allColumns, "cellEditorParams.fieldConfig._id")
@@ -777,6 +779,10 @@ async function onDragStopped(event: any, dispatchEvent: Function) {
     dispatchEvent("sortFields", {
         "sortedFields": newSortedFieldIds
     });
+    var newColumnKeys = columnDefs.map(function (n: any) {
+        return n.field;
+    });
+    updateDefaultExportColumnKeys(gridApi, newColumnKeys);
     columnMoved = false;
 }
 
@@ -1053,6 +1059,25 @@ function onCellEditingStarted(event: any) {
     }
 }
 
+
+function updateDefaultExportColumnKeys(gridApi: any, newColumnKeys: any) {
+    // 更新导出参数，如果配置了columnKeys，则导出时需要同步更新
+    var defaultExcelExportParams = gridApi.getGridOption('defaultExcelExportParams');
+    var defaultCsvExportParams = gridApi.getGridOption('defaultCsvExportParams');
+    if (defaultExcelExportParams && isArray(defaultExcelExportParams.columnKeys)) {
+        var newExportParams = Object.assign({}, defaultExcelExportParams, {
+            columnKeys: newColumnKeys
+        });
+        gridApi.setGridOption('defaultExcelExportParams', newExportParams);
+    }
+    if (defaultCsvExportParams && isArray(defaultCsvExportParams.columnKeys)) {
+        var newExportParams = Object.assign({}, defaultCsvExportParams, {
+            columnKeys: newColumnKeys
+        });
+        gridApi.setGridOption('defaultCsvExportParams', newExportParams);
+    }
+}
+
 export async function getGridOptions({ tableId, title, mode, config, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications = [], amisData, beforeSaveData }) {
     let gridApi: any;
     let tableLabel = title;
@@ -1211,10 +1236,12 @@ export async function getGridOptions({ tableId, title, mode, config, dataSource,
         onCellEditingStarted,
         defaultExcelExportParams: {
             fileName: tableLabel,
+            sheetName: tableLabel,
             columnKeys: columnFieldNames
         },
         defaultCsvExportParams: {
             fileName: tableLabel,
+            sheetName: tableLabel,
             columnKeys: columnFieldNames
         },
         serverSideDatasource: getServerSideDatasource(dataSource, filters),
@@ -1225,6 +1252,9 @@ export async function getGridOptions({ tableId, title, mode, config, dataSource,
             onCellValueChangedFun: onCellValueChangedRaw,
             setRowDataFormulaValues,
             getColumnDefByField,
+            updateDefaultExportColumnKeys: (newColumnKeys: any) => {
+                updateDefaultExportColumnKeys(gridApi, newColumnKeys)
+            },
             beforeSaveData,
             isReadonly,
             amisData,

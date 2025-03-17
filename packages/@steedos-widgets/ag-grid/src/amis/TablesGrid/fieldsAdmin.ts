@@ -100,23 +100,10 @@ const getSubmitSuccScript = (tableId: any, mode: string) => {
             var index = columnDefs.length - 4;
             newColumnDefs = columnDefs.slice(0, index).concat([currentColumnDef], columnDefs.slice(index));
             // 更新导出参数，如果配置了columnKeys，则导出时需要同步更新
-            var defaultExcelExportParams = gridApi.getGridOption('defaultExcelExportParams');
-            var defaultCsvExportParams = gridApi.getGridOption('defaultCsvExportParams');
             var newColumnKeys = newColumnDefs.map(function (n){
                 return n.field;
             });
-            if (defaultExcelExportParams && _.isArray(defaultExcelExportParams.columnKeys)){
-                var newExportParams = Object.assign({}, defaultExcelExportParams, {
-                    columnKeys: newColumnKeys
-                });
-                gridApi.setGridOption('defaultExcelExportParams', newExportParams);
-            }
-            if (defaultCsvExportParams && _.isArray(defaultCsvExportParams.columnKeys)){
-                var newExportParams = Object.assign({}, defaultCsvExportParams, {
-                    columnKeys: newColumnKeys
-                });
-                gridApi.setGridOption('defaultCsvExportParams', newExportParams);
-            }
+            gridContext.updateDefaultExportColumnKeys(newColumnKeys);
         }
         else if (mode === "edit"){
             newColumnDefs = columnDefs.map(function (n) {
