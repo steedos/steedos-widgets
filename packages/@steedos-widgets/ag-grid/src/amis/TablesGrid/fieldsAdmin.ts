@@ -107,7 +107,8 @@ const getSubmitSuccScript = (tableId: any, mode: string) => {
         }
         else if (mode === "edit"){
             newColumnDefs = columnDefs.map(function (n) {
-                if (n.field === fieldFormData.name) {
+                // if (n.field === fieldFormData.name) {
+                if (n.cellEditorParams && n.cellEditorParams.fieldConfig && n.cellEditorParams.fieldConfig._id === fieldFormData._id) {
                     return currentColumnDef;
                 }
                 return n;
