@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-02-11 17:43:41
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-03-12 19:05:49
+ * @LastEditTime: 2025-03-18 23:25:54
  */
 import { ICellEditorComp, ICellEditorParams, ISelectCellEditorParams } from 'ag-grid-community';
 // import * as amis from 'amis';
@@ -59,7 +59,7 @@ export class AmisMultiSelectCellEditor implements ICellEditorComp {
         fieldOptions = fieldOptions && fieldOptions.map(function (n: string) { return { label: n, value: n } }) || [];
         let fieldConfig = (this.params as any).fieldConfig;
 
-        this.cellFormId =  `cellForm__editor__select-multiple__${random}`;
+        this.cellFormId = `cellForm__editor__select-multiple__${random}`;
         // 定义 amis 的 schema
         this.amisSchema = {
             id: this.cellFormId,
@@ -127,9 +127,16 @@ export class AmisMultiSelectCellEditor implements ICellEditorComp {
     }
 
     destroy?(): void {
-        // 销毁 amis 实例
-        if (this.amisScope) {
-            this.amisScope.unmount();
+        // 销毁 amis 实例，TODO:这里执行amisScope.unmount，会造成BUG：
+        // 如果点开过某个自定义字段类型的单元格编辑（只有整行编辑模式才有问题）会造成填写任务列表右上角的催办按钮，以及填写任务详细页面的提交和催办按钮点了没反应，删除字段菜单点了也没反应
+        // 这里需要unmount，是因为这里加载amis schema的方式是生成新的amis scope，
+        // 后续换成amisRender返回React Element的方式加载amis schema后就不用执行unmount
+        // if (this.amisScope) {
+        //     // this.amisScope.unmount();
+        // }
+        const refs = (window as any).SteedosUI.refs;
+        if (refs) {
+            delete refs[this.cellFormId];
         }
     }
 
