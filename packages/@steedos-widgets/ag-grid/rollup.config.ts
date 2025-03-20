@@ -22,6 +22,9 @@ const external = [
   "react-dom",
   'lodash',
   // 'ag-grid',
+  // 'ag-grid-enterprise',
+  // 'ag-grid-community',
+  // 'ag-grid-react',
 ]
 
 const globals = { 

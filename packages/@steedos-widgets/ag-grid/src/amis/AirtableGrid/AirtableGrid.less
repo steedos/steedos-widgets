@@ -60,94 +60,92 @@
     }
 
     /*ag-grid单元格编辑自定义组件中，如果不是popup模式，应该显示为满屏高度*/
-    .amis-ag-grid-cell-editor-wrapper {
-        .amis-ag-grid-cell-editor {
+    .amis-ag-grid-cell-editor {
+        height: 100%;
+
+        .antd-Form {
             height: 100%;
 
-            .antd-Form {
+            .antd-Form-item {
                 height: 100%;
 
-                .antd-Form-item {
+                .antd-Form-control {
                     height: 100%;
+                    background: #fff;
 
-                    .antd-Form-control {
+                    .antd-DatePicker {
+                        height: 100%;
+                        border: none;
+                    }
+
+                    .antd-Select.antd-Select--multi {
+                        border: none;
+
+                        .antd-Select-valueWrap {
+                            flex-wrap: wrap;
+
+                            .antd-Select-value {
+                                .antd-Select-valueIcon {
+                                    height: 100%;
+                                    line-height: 100%;
+                                }
+                            }
+                        }
+                    }
+
+                    .antd-Picker {
                         height: 100%;
                         background: #fff;
 
-                        .antd-DatePicker {
-                            height: 100%;
+                        .antd-Picker-input {
                             border: none;
                         }
 
-                        .antd-Select.antd-Select--multi {
-                            border: none;
-
-                            .antd-Select-valueWrap {
-                                flex-wrap: wrap;
-
-                                .antd-Select-value {
-                                    .antd-Select-valueIcon {
-                                        height: 100%;
-                                        line-height: 100%;
-                                    }
-                                }
-                            }
-                        }
-
-                        .antd-Picker {
-                            height: 100%;
-                            background: #fff;
-
+                        &.antd-Picker--single {
                             .antd-Picker-input {
-                                border: none;
-                            }
+                                height: 100%;
+                                align-items: center;
 
-                            &.antd-Picker--single {
-                                .antd-Picker-input {
-                                    height: 100%;
-                                    align-items: center;
+                                .antd-Picker-valueWrap {
+                                    /*下面css是为解决lookup单选时选项值垂直居中，文字超出时不换行且显示省略号*/
+                                    min-width: 0;
 
-                                    .antd-Picker-valueWrap {
-                                        /*下面css是为解决lookup单选时选项值垂直居中，文字超出时不换行且显示省略号*/
+                                    .antd-Picker-values {
                                         min-width: 0;
 
-                                        .antd-Picker-values {
+                                        .antd-Picker-value {
+                                            display: flex;
+                                            align-items: center;
                                             min-width: 0;
 
-                                            .antd-Picker-value {
-                                                display: flex;
-                                                align-items: center;
+                                            .antd-Picker-valueLabel {
+                                                overflow: hidden;
+                                                text-overflow: ellipsis;
+                                                white-space: nowrap;
                                                 min-width: 0;
-
-                                                .antd-Picker-valueLabel {
-                                                    overflow: hidden;
-                                                    text-overflow: ellipsis;
-                                                    white-space: nowrap;
-                                                    min-width: 0;
-                                                }
                                             }
                                         }
+                                    }
 
-                                        &>input {
-                                            display: none;
-                                        }
+                                    &>input {
+                                        display: none;
                                     }
                                 }
                             }
+                        }
 
-                            &.antd-Picker--multi {
-                                .antd-Picker-input {
-                                    .antd-Picker-valueWrap {
+                        &.antd-Picker--multi {
+                            .antd-Picker-input {
+                                .antd-Picker-valueWrap {
 
-                                        /*下面css是为解决lookup多选时选项很多时能换行显示*/
-                                        .antd-Picker-values {
-                                            display: flex;
-                                            flex-wrap: wrap;
-                                        }
+                                    /*下面css是为解决lookup多选时选项很多时能换行显示*/
+                                    .antd-Picker-values {
+                                        display: flex;
+                                        flex-wrap: wrap;
+                                    }
 
-                                        &>input {
-                                            display: none;
-                                        }
+                                    &>input {
+                                        display: none;
                                     }
                                 }
                             }

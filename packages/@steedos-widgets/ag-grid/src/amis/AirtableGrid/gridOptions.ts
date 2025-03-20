@@ -1,5 +1,6 @@
 import { keyBy, map, isNaN, isNil, union, debounce, each, clone, forEach, filter, isArray, find } from "lodash";
 import { AmisDateTimeCellEditor, AmisMultiSelectCellEditor, AmisLookupCellEditor } from '../cellEditor';
+// import {AmisDateTimeCellEditor} from '../cellEditor/datetime1';
 
 const baseFields = ["created", "created_by", "modified", "modified_by"];
 
@@ -1055,7 +1056,13 @@ function onCellEditingStarted(event: any) {
     const minWidth = cellEditorParams.minWidth;
     const originalWidth = column.getActualWidth();
     if (minWidth && minWidth > originalWidth) {
-        event.api.setColumnWidth(column, minWidth);
+        console.log('onCellEditingStarted', 'column', column, 'originalWidth', originalWidth, 'minWidth', minWidth);
+        // event.api.setColumnWidth(column, minWidth);
+        event.api.setColumnWidths([{
+            key: column,
+            newWidth: minWidth
+            // [column.colId]: minWidth
+        }]);
     }
 }
 
@@ -1078,7 +1085,7 @@ function updateDefaultExportColumnKeys(gridApi: any, newColumnKeys: any) {
     }
 }
 
-export async function getGridOptions({ tableId, title, mode, config, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications = [], amisData, beforeSaveData }) {
+export async function getGridOptions({ tableId, title, mode, config, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications = [], amisData, beforeSaveData, amisRender }) {
     let gridApi: any;
     let tableLabel = title;
     const isReadonly = mode === "read";
@@ -1203,12 +1210,12 @@ export async function getGridOptions({ tableId, title, mode, config, dataSource,
         selectionColumnDef: {
             pinned: 'left'
         },
-        rowSelection: isReadonly ? null : {
-            mode: "multiRow",
-            selectAll: "all",
-            checkboxes: true,
-            headerCheckbox: true
-        },
+        // rowSelection: isReadonly ? null : {
+        //     mode: "multiRow",
+        //     selectAll: "all",
+        //     checkboxes: true,
+        //     headerCheckbox: true
+        // },
         // 勾选框列单独在columnDefs中定义后，rowSelection定义为上面的对象格式会多显示一列勾选框列
         // rowSelection: isReadonly ? null : "multiple",
         suppressRowClickSelection: true,
@@ -1258,7 +1265,8 @@ export async function getGridOptions({ tableId, title, mode, config, dataSource,
             beforeSaveData,
             isReadonly,
             amisData,
-            amisEnv: env
+            amisEnv: env,
+            amisRender
         },
         components: {
             AmisDateTimeCellEditor: AmisDateTimeCellEditor,
@@ -1281,7 +1289,7 @@ export async function getGridOptions({ tableId, title, mode, config, dataSource,
     return gridOptions;
 }
 
-const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications, beforeSaveData }) => {
+const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications, beforeSaveData, amisRender }) => {
     const onDataFilter = async function (config: any, AgGrid: any, props: any, data: any, ref: any) {
         // 为ref.current补上props属性，否则props.dispatchEvent不能生效
         ref.current.props = props;
@@ -1292,7 +1300,7 @@ const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env,
             // 启用 AG Grid 企业版
             AgGrid.LicenseManager.setLicenseKey(agGridLicenseKey);
         }
-        let gridOptions = await getGridOptions({ tableId, title, mode, config, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications, amisData: data, beforeSaveData });
+        let gridOptions = await getGridOptions({ tableId, title, mode, config, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications, amisData: data, beforeSaveData, amisRender });
         return gridOptions;
     }
     const agGrid = {
@@ -1788,7 +1796,7 @@ export const getTableHeader = ({ tableId, title, mode, dataSource, getColumnDefs
 }
 
 export async function getAirtableGridSchema(
-    { tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications, beforeSaveData }
+    { tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications, beforeSaveData, amisRender }
 ) {
     // beforeSaveData = (rowData: any, options: any)=>{
     //     const { isInsert, isUpdate } = options;
@@ -1808,7 +1816,7 @@ export async function getAirtableGridSchema(
         "className": "steedos-airtable-grid h-full",
         "body": [
             getTableHeader({ tableId, title, mode, dataSource, getColumnDefs, env }),
-            await getAgGrid({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications, beforeSaveData })
+            await getAgGrid({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications, beforeSaveData, amisRender })
         ],
         "onEvent": {
             [`@airtable.${tableId}.setGridApi`]: {
