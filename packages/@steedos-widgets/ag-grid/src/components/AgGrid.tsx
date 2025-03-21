@@ -2,22 +2,13 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2024-01-18 18:58:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-03-20 12:42:58
+ * @LastEditTime: 2025-03-21 11:15:42
  */
 import React, { useEffect, useState, useRef } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 // import 'ag-grid-enterprise';
 import { AG_GRID_LOCALE_CN } from '@ag-grid-community/locale';
 import { DateTimeCellEditor, MultiSelectCellEditor, LookupCellEditor } from './cellEditor';
-
-
-import { ModuleRegistry, provideGlobalGridOptions } from 'ag-grid-community';
-import { AllEnterpriseModule, LicenseManager } from 'ag-grid-enterprise';
-
-// LicenseManager.setLicenseKey('your License Key');
-
-// Register all enterprise features
-ModuleRegistry.registerModules([AllEnterpriseModule]);
 
 export const AmisAgGrid = (props: any) => {
   const {

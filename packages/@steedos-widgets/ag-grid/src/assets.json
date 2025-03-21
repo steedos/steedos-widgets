@@ -3,9 +3,16 @@
     {
         "package": "ag-grid-enterprise",
         "urls": [
-            "https://unpkg.steedos.cn/ag-grid-enterprise@32.3.3/dist/ag-grid-enterprise.min.js"
+            "https://unpkg.steedos.cn/ag-grid-enterprise@33.1.1/dist/ag-grid-enterprise.min.js"
         ],
         "library": "agGrid"
+    },
+    {
+        "package": "ag-grid-react",
+        "urls": [
+            "https://unpkg.steedos.cn/ag-grid-react@33.1.1/dist/umd/ag-grid-react.min.js"
+        ],
+        "library": "agGridReact"
     },
     {
         "package": "@steedos-widgets/ag-grid",
