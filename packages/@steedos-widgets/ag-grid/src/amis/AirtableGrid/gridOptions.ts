@@ -1150,6 +1150,7 @@ export async function getGridOptions({ tableId, title, mode, config, dataSource,
         const escapeSelectors = [
             '.antd-PopOver.antd-Select-popover',//多选 字段 弹出 amis select 内部
             '.amis-dialog-widget.antd-Modal',//lookup 字段 弹出 amis picker 内部
+            '.antd-Button',//所有的amis按钮，比如lookup 字段 弹出 amis picker 底部的确定、取消按钮，及其顶部展开的搜索搜索表单中中的按钮
             '.antd-PopOver.antd-DatePicker-popover'//datetime 字段 弹出 amis picker 内部
         ];
         if (targetElement.closest(escapeSelectors.join(','))) {
