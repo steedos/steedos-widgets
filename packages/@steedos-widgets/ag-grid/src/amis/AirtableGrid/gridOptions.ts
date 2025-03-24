@@ -1228,15 +1228,16 @@ export async function getGridOptions({ tableId, title, mode, config, dataSource,
         selectionColumnDef: {
             pinned: 'left'
         },
-        // rowSelection: isReadonly ? null : {
-        //     mode: "multiRow",
-        //     selectAll: "all",
-        //     checkboxes: true,
-        //     headerCheckbox: true
-        // },
+        rowSelection: isReadonly ? null : {
+            mode: "multiRow",
+            selectAll: "all",
+            checkboxes: true,
+            headerCheckbox: true,
+            enableClickSelection: true
+        },
         // 勾选框列单独在columnDefs中定义后，rowSelection定义为上面的对象格式会多显示一列勾选框列
         // rowSelection: isReadonly ? null : "multiple",
-        suppressRowClickSelection: true,
+        // suppressRowClickSelection: true,//ag-grid 33版本后不再支持，换成rowSelection.enableClickSelection了
         onStoreUpdated: function (event) {
             var rowCount = event.api.getDisplayedRowCount();
             console.log('onStoreUpdated:', rowCount);
