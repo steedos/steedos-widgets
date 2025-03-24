@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-02-11 17:43:41
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-03-20 12:42:26
+ * @LastEditTime: 2025-03-24 13:24:40
  */
 
 import React from 'react';
@@ -41,7 +41,20 @@ export const MultiSelectCellEditor = (props: CustomCellEditorProps & {
                     amis: {
                         "popOverContainerSelector": `.steedos-airtable-grid`,//`#${this.eGui.id}`
                         "maxTagCount": maxTagCount,
-                        "checkAll": true
+                        "checkAll": true,
+                        "onEvent": {
+                            "change": {
+                                "actions": [
+                                    {
+                                        "actionType": "custom",
+                                        "script": `
+                                            var updateAgGridCellEditorValue = context.props.updateAgGridCellEditorValue;
+                                            updateAgGridCellEditorValue(event.data.value);
+                                        `
+                                    }
+                                ]
+                            }
+                        },
                         // valuesNoWrap: true
                     }
                 })
@@ -62,12 +75,13 @@ export const MultiSelectCellEditor = (props: CustomCellEditorProps & {
             height: '100%'
         }}>
             {amisRender('body', amisSchema, {
-                // 这里的信息会作为 props 传递给子组件，一般情况下都不需要这个,
                 data: amisData,
-                onChange: (data, value, props) => {
-                    console.log(`change....`)
-                    updateValue(value[fieldConfig.name]);
-                }
+                updateAgGridCellEditorValue: updateValue,
+                // 测试到直接使用下面的onChange，用户操作比较快的时间不会触发，所以迁移到上面的amis onEvent中
+                // onChange: (data, value, props) => {
+                //     console.log(`11change....`)
+                //     updateValue(value[fieldConfig.name]);
+                // }
             })}
         </div>
     )
