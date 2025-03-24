@@ -1056,12 +1056,11 @@ function onCellEditingStarted(event: any) {
     const minWidth = cellEditorParams.minWidth;
     const originalWidth = column.getActualWidth();
     if (minWidth && minWidth > originalWidth) {
-        console.log('onCellEditingStarted', 'column', column, 'originalWidth', originalWidth, 'minWidth', minWidth);
+        // console.log('onCellEditingStarted', 'column', column, 'originalWidth', originalWidth, 'minWidth', minWidth);
         // event.api.setColumnWidth(column, minWidth);
         event.api.setColumnWidths([{
             key: column,
             newWidth: minWidth
-            // [column.colId]: minWidth
         }]);
     }
 }
