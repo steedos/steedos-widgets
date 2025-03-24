@@ -1,4 +1,5 @@
 import { keyBy, map, isNaN, isNil, union, debounce, each, clone, forEach, filter, isArray, find } from "lodash";
+import { ProcessCellForExportParams } from 'ag-grid-enterprise';
 
 const baseFields = ["created", "created_by", "modified", "modified_by"];
 
@@ -354,6 +355,7 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
             // cellRenderer = function(params) { return (params.value && params.value.name) || ""; }
             valueGetter = dataTypeDefinitions.lookup.valueGetter;
             valueFormatter = dataTypeDefinitions.lookup.valueFormatter;
+            valueParser = dataTypeDefinitions.lookup.valueParser;
             break;
         default:
             cellDataType = 'text'; // 默认类型
@@ -993,6 +995,18 @@ export function getDataTypeDefinitions() {
                 if (!fieldValue) return null;
 
                 return isMultiple ? (fieldValue.map((item) => item.name).join(", ")) : (fieldValue.name || "");
+            },
+            valueParser: function (params) {
+                const fieldValue = params.newValue;
+                const colDef = params.column.getColDef();
+                const fieldConfig = colDef.cellEditorParams.fieldConfig;
+                const isMultiple = fieldConfig.multiple;
+                var fieldName = colDef.field;
+                if (fieldConfig.type === "lookup" && isMultiple && typeof fieldValue === 'string') {
+                    // 多选lookup字段值如果是string，额外处理，转为数组
+                    return fieldValue && fieldValue.split(',') || [];
+                }
+                return fieldValue;
             }
         },
         number: {
@@ -1033,7 +1047,7 @@ export function getDataTypeDefinitions() {
             valueParser: function (params) {
                 // 复制单元格时，需要将字符串转换为数组
                 if (typeof params.newValue === 'string') {
-                    return params.newValue.split(',');
+                    return params.newValue && params.newValue.split(',') || [];
                 }
                 return params.newValue;
             }
@@ -1238,6 +1252,32 @@ export async function getGridOptions({ tableId, title, mode, config, dataSource,
             document.removeEventListener('click', onDocumentClick);
         },
         onCellEditingStarted,
+        // 自定义数据复制到剪贴板时的格式
+        processCellForClipboard: function (params: ProcessCellForExportParams) {
+            const fieldValue = params.value;
+            const colDef = params.column.getColDef();
+            const fieldConfig = colDef.cellEditorParams.fieldConfig;
+            const isMultiple = fieldConfig.multiple;
+            const fieldType = fieldConfig.type;
+            var fieldName = colDef.field;
+            if (fieldType === "lookup") {
+                // 因为lookup字段的值是记录id，避免发起起请求来根据记录label（即formatValue）获取记录id，这里直接复制id值到剪贴板
+                if(isMultiple){
+                    return fieldValue.join(",");
+                }
+                else{
+                    return fieldValue;
+                }
+            }
+            // 默认（即不定义 processCellForClipboard 函数时）使用的是字段的formatValue格式作为复制到剪贴板的内容
+            return params.formatValue(fieldValue);
+        },
+        // // 从剪贴板粘贴回ag-grid时的处理逻辑
+        // processCellFromClipboard: function (params: ProcessCellForExportParams) {
+        //     const fieldValue = params.value;
+        //     // 默认（即不定义 processCellFromClipboard 函数时）使用的是字段的parseValue格式作为复制到剪贴板的内容
+        //     return params.parseValue(fieldValue);
+        // },
         defaultExcelExportParams: {
             fileName: tableLabel,
             sheetName: tableLabel,
