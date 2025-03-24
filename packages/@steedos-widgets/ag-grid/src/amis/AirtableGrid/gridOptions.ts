@@ -1,6 +1,4 @@
 import { keyBy, map, isNaN, isNil, union, debounce, each, clone, forEach, filter, isArray, find } from "lodash";
-import { AmisDateTimeCellEditor, AmisMultiSelectCellEditor, AmisLookupCellEditor } from '../cellEditor';
-// import {AmisDateTimeCellEditor} from '../cellEditor/datetime1';
 
 const baseFields = ["created", "created_by", "modified", "modified_by"];
 
@@ -278,8 +276,7 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
                 values: fieldOptions,
                 minWidth: 200
             });
-            // cellEditor = MultiSelectCellEditor;
-            cellEditor = AmisMultiSelectCellEditor;
+            cellEditor = "agAmisMultiSelectCellEditor";
             valueParser = dataTypeDefinitions.multipleSelect.valueParser;
             filter = 'agSetColumnFilter';
             Object.assign(filterParams, {
@@ -304,7 +301,7 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
             Object.assign(cellEditorParams, {
                 minWidth: 172
             });
-            cellEditor = AmisDateTimeCellEditor;
+            cellEditor = "agAmisDateTimeCellEditor";
             // 因为日期时间依赖了DateTimeEditor.init函数中对初始值定义，所以这里没必要再走一次valueGetter
             // valueGetter = dataTypeDefinitions.date.valueGetter;
             /*
@@ -352,7 +349,7 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
             Object.assign(cellEditorParams, {
                 minWidth
             });
-            cellEditor = AmisLookupCellEditor;
+            cellEditor = "agAmisLookupCellEditor";
             // 不可以使用 cellRenderer ，因为导出excel不认
             // cellRenderer = function(params) { return (params.value && params.value.name) || ""; }
             valueGetter = dataTypeDefinitions.lookup.valueGetter;
@@ -1267,10 +1264,6 @@ export async function getGridOptions({ tableId, title, mode, config, dataSource,
             amisData,
             amisEnv: env,
             amisRender
-        },
-        components: {
-            AmisDateTimeCellEditor: AmisDateTimeCellEditor,
-            AmisMultiSelectCellEditor: AmisMultiSelectCellEditor
         }
     };
 
