@@ -1300,13 +1300,20 @@ export async function getGridOptions({ tableId, title, mode, config, dataSource,
                 // 如果上面 processCellForClipboard 函数中不约定特定格式，以下lookup字段转换逻辑可以全去掉
                 if(isMultiple){
                     // "新新<654300b5074594d15147bcfa>,上海分公司<9FqSC6jms4KRGCgNm>"这种格式中取出id值数组
-                    const matches = fieldValue.match(/<(.*?)>/g).map(match => match.slice(1, -1));
-                    return matches;
+                    const matches = fieldValue.match(/<(.*?)>/g)?.map(match => match.slice(1, -1));
+                    if (matches?.length){
+                        return matches;
+                    }
+                    else{
+                        return fieldValue.split(",").map((item: string)=>{
+                            return item.trim();
+                        });
+                    }
                 }
                 else{
                     // "上海分公司<9FqSC6jms4KRGCgNm>"这种格式中取出id值
                     const mactchs = fieldValue.match(/<(\w+)>/);
-                    const fieldValueId = mactchs?.length > 1 ? mactchs[1] : null;
+                    const fieldValueId = mactchs?.length > 1 ? mactchs[1] : fieldValue;
                     return fieldValueId;
                 }
             }
