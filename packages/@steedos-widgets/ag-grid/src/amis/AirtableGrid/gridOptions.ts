@@ -1233,7 +1233,7 @@ export async function getGridOptions({ tableId, title, mode, config, dataSource,
             selectAll: "all",
             checkboxes: true,
             headerCheckbox: true,
-            enableClickSelection: true
+            enableClickSelection: false
         },
         // 勾选框列单独在columnDefs中定义后，rowSelection定义为上面的对象格式会多显示一列勾选框列
         // rowSelection: isReadonly ? null : "multiple",
