@@ -1306,7 +1306,7 @@ export async function getGridOptions({ tableId, title, mode, config, dataSource,
                 else{
                     // "上海分公司<9FqSC6jms4KRGCgNm>"这种格式中取出id值
                     const mactchs = fieldValue.match(/<(\w+)>/);
-                    const fieldValueId = mactchs.length > 1 ? mactchs[1] : null;
+                    const fieldValueId = mactchs?.length > 1 ? mactchs[1] : null;
                     return fieldValueId;
                 }
             }
