@@ -305,11 +305,10 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
             cellEditor = "agAmisDateTimeCellEditor";
             // 因为日期时间依赖了DateTimeEditor.init函数中对初始值定义，所以这里没必要再走一次valueGetter
             // valueGetter = dataTypeDefinitions.date.valueGetter;
-            /*
-            filter = 'agDateColumnFilter';
-            Object.assign(filterParams, {
-                filterOptions: ["equals", "greaterThan", "greaterThanOrEqual", "lessThan", "lessThanOrEqual"]
-            });*/
+            filter = 'agAmisDateTimeFilter';
+            // Object.assign(filterParams, {
+            //     filterOptions: ["equals", "greaterThan", "greaterThanOrEqual", "lessThan", "lessThanOrEqual"]
+            // });
             break;
         case 'boolean':
             cellDataType = 'boolean';
@@ -804,6 +803,17 @@ function filterModelToOdataFilters(filterModel, colDefs) {
         if (value.type === 'between') {
             if (value.filterType === "number") {
                 filters.push([key, "between", [value.numberFrom, value.numberTo]]);
+            } else if (value.filterType === "datetime"){
+                // filters.push([key, "between", [value.dateFrom, value.dateTo]]);
+                // 服务端接口不支持between，裂变为两个条件
+                let filterItem = [];
+                if (value.dateFrom) {
+                    filterItem.push([key, ">=", value.dateFrom]);
+                }
+                if (value.dateTo){
+                    filterItem.push([key, "<=", value.dateTo]);
+                }
+                filters.push(filterItem);
             } else {
                 if (value.filter) {
                     filters.push([key, value.type, value.filter]);
