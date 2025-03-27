@@ -12,7 +12,9 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "http": "npx http-server ../ --port 8080 --cors -c -1",
-    "build": "yarn build-types && yarn build-rollup",
+    "build": "yarn replace-slate-vars && yarn replace-liveblocks-vars && yarn build-types && yarn build-rollup",
+    "replace-liveblocks-vars": "node ./script/replaceAttachmentSize.js",
+    "replace-slate-vars": "node ./script/replaceSlateVars.js",
     "build-types": "tsc --emitDeclarationOnly --declaration --declarationDir dist/types",
     "build-rollup": "rollup -c rollup.config.ts"
   },
