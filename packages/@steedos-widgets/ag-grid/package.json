@@ -1,7 +1,7 @@
 {
   "name": "@steedos-widgets/ag-grid",
   "private": false,
-  "version": "6.3.12-beta.28",
+  "version": "6.3.12-beta.29",
   "main": "dist/ag-grid.cjs.js",
   "module": "dist/ag-grid.esm.js",
   "unpkg": "dist/ag-grid.umd.js",
@@ -48,12 +48,12 @@
     "rollup-plugin-visualizer": "^5.8.0"
   },
   "dependencies": {
-    "@ag-grid-community/locale": "^32.3.3",
+    "@ag-grid-community/locale": "^33.1.1",
     "@rollup/plugin-replace": "^5.0.2",
-    "@steedos-widgets/amis-lib": "6.3.12-beta.28",
-    "ag-grid-community": "~32.3.3",
-    "ag-grid-enterprise": "~32.3.3",
-    "ag-grid-react": "~32.3.3"
+    "@steedos-widgets/amis-lib": "6.3.12-beta.29",
+    "ag-grid-community": "~33.1.1",
+    "ag-grid-enterprise": "~33.1.1",
+    "ag-grid-react": "~33.1.1"
   },
   "gitHead": "ffb730e16642eb8e7a7ae5d98d0773c42482e7d2"
 }

@@ -99,10 +99,16 @@ const getSubmitSuccScript = (tableId: any, mode: string) => {
             // columnDefs.splice(columnDefs.length - 4, 0, "m");
             var index = columnDefs.length - 4;
             newColumnDefs = columnDefs.slice(0, index).concat([currentColumnDef], columnDefs.slice(index));
+            // 更新导出参数，如果配置了columnKeys，则导出时需要同步更新
+            var newColumnKeys = newColumnDefs.map(function (n){
+                return n.field;
+            });
+            gridContext.updateDefaultExportColumnKeys(newColumnKeys);
         }
         else if (mode === "edit"){
             newColumnDefs = columnDefs.map(function (n) {
-                if (n.field === fieldFormData.name) {
+                // if (n.field === fieldFormData.name) {
+                if (n.cellEditorParams && n.cellEditorParams.fieldConfig && n.cellEditorParams.fieldConfig._id === fieldFormData._id) {
                     return currentColumnDef;
                 }
                 return n;

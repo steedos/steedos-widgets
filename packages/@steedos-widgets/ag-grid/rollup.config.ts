@@ -22,6 +22,9 @@ const external = [
   "react-dom",
   'lodash',
   // 'ag-grid',
+  // 'ag-grid-community',
+  'ag-grid-enterprise',
+  'ag-grid-react',
 ]
 
 const globals = { 
@@ -29,6 +32,9 @@ const globals = {
   'react-dom': 'ReactDOM',
   'lodash': '_',
   // 'ag-grid': 'AgGrid',
+  // 'ag-grid-community': 'AgGrid',
+  'ag-grid-enterprise': 'AgGrid',
+  'ag-grid-react': 'AgGridReact',
 }
 
 const options = {

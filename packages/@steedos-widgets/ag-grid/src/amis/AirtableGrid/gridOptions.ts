@@ -1,5 +1,5 @@
-import { keyBy, map, isNaN, isNil, union, debounce, each, clone, forEach, filter, isArray, find } from "lodash";
-import { AmisDateTimeCellEditor, AmisMultiSelectCellEditor, AmisLookupCellEditor } from '../cellEditor';
+import { keyBy, map, isNaN, isNil, union, debounce, each, clone, forEach, filter, isArray, find, compact } from "lodash";
+import { ProcessCellForExportParams } from 'ag-grid-enterprise';
 
 const baseFields = ["created", "created_by", "modified", "modified_by"];
 
@@ -277,8 +277,7 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
                 values: fieldOptions,
                 minWidth: 200
             });
-            // cellEditor = MultiSelectCellEditor;
-            cellEditor = AmisMultiSelectCellEditor;
+            cellEditor = "agAmisMultiSelectCellEditor";
             valueParser = dataTypeDefinitions.multipleSelect.valueParser;
             filter = 'agSetColumnFilter';
             Object.assign(filterParams, {
@@ -303,14 +302,13 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
             Object.assign(cellEditorParams, {
                 minWidth: 172
             });
-            cellEditor = AmisDateTimeCellEditor;
+            cellEditor = "agAmisDateTimeCellEditor";
             // 因为日期时间依赖了DateTimeEditor.init函数中对初始值定义，所以这里没必要再走一次valueGetter
             // valueGetter = dataTypeDefinitions.date.valueGetter;
-            /*
-            filter = 'agDateColumnFilter';
-            Object.assign(filterParams, {
-                filterOptions: ["equals", "greaterThan", "greaterThanOrEqual", "lessThan", "lessThanOrEqual"]
-            });*/
+            filter = 'agAmisDateTimeFilter';
+            // Object.assign(filterParams, {
+            //     filterOptions: ["equals", "greaterThan", "greaterThanOrEqual", "lessThan", "lessThanOrEqual"]
+            // });
             break;
         case 'boolean':
             cellDataType = 'boolean';
@@ -351,11 +349,12 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
             Object.assign(cellEditorParams, {
                 minWidth
             });
-            cellEditor = AmisLookupCellEditor;
+            cellEditor = "agAmisLookupCellEditor";
             // 不可以使用 cellRenderer ，因为导出excel不认
             // cellRenderer = function(params) { return (params.value && params.value.name) || ""; }
             valueGetter = dataTypeDefinitions.lookup.valueGetter;
             valueFormatter = dataTypeDefinitions.lookup.valueFormatter;
+            valueParser = dataTypeDefinitions.lookup.valueParser;
             break;
         default:
             cellDataType = 'text'; // 默认类型
@@ -560,6 +559,13 @@ async function onRowValueChanged(event: any, dataSource: any, { env }) {
                         fieldsVerificationErrors = union(fieldsVerificationErrors, selectValiErrors);
                         // 下拉框多选字段类型是数组，不在范围内也直接保存，列表会显示异常信息就好
                         // data[k] = null; // 非法字段类型值统一存为null
+                    }
+                }
+                else if (fieldConfig.type === "lookup") {
+                    var isMultiple = fieldConfig.multiple;
+                    if(isMultiple){
+                        // 移除id数组中的null值，单元格复制功能可以填充错误的id值保存为null了
+                        data[k] = compact(data[k]);
                     }
                 }
             }
@@ -767,7 +773,9 @@ async function onDragStopped(event: any, dispatchEvent: Function) {
     if (!columnMoved) {
         return;
     }
-    var allColumns = filter(event.api.getColumnDefs(), function (n) {
+    const gridApi = event.api;
+    var columnDefs = gridApi.getColumnDefs();
+    var allColumns = filter(columnDefs, function (n) {
         return n.cellEditorParams && n.cellEditorParams.fieldConfig && baseFields.indexOf(n.cellEditorParams.fieldConfig.name) < 0;
     });
     var newSortedFieldIds = map(allColumns, "cellEditorParams.fieldConfig._id")
@@ -777,6 +785,10 @@ async function onDragStopped(event: any, dispatchEvent: Function) {
     dispatchEvent("sortFields", {
         "sortedFields": newSortedFieldIds
     });
+    var newColumnKeys = columnDefs.map(function (n: any) {
+        return n.field;
+    });
+    updateDefaultExportColumnKeys(gridApi, newColumnKeys);
     columnMoved = false;
 }
 
@@ -791,6 +803,17 @@ function filterModelToOdataFilters(filterModel, colDefs) {
         if (value.type === 'between') {
             if (value.filterType === "number") {
                 filters.push([key, "between", [value.numberFrom, value.numberTo]]);
+            } else if (value.filterType === "datetime"){
+                // filters.push([key, "between", [value.dateFrom, value.dateTo]]);
+                // 服务端接口不支持between，裂变为两个条件
+                let filterItem = [];
+                if (value.dateFrom) {
+                    filterItem.push([key, ">=", value.dateFrom]);
+                }
+                if (value.dateTo){
+                    filterItem.push([key, "<=", value.dateTo]);
+                }
+                filters.push(filterItem);
             } else {
                 if (value.filter) {
                     filters.push([key, value.type, value.filter]);
@@ -979,7 +1002,7 @@ export function getDataTypeDefinitions() {
                 var fieldValue = params.data[fieldName];
                 if (!fieldValue) return null;
 
-                return isMultiple ? (fieldValue.map((item) => item._id) || []) : (fieldValue._id || "");
+                return isMultiple ? (compact(fieldValue.map((item) => item?._id)) || []) : (fieldValue._id || "");
             },
             valueFormatter: function (params) {
                 // lookup字段值显示和导出为excel，不可以使用 cellRenderer ，因为导出excel不认
@@ -988,7 +1011,19 @@ export function getDataTypeDefinitions() {
                 var fieldValue = params.data[fieldName];
                 if (!fieldValue) return null;
 
-                return isMultiple ? (fieldValue.map((item) => item.name).join(", ")) : (fieldValue.name || "");
+                return isMultiple ? (params.value.map((item) => find(fieldValue, {_id:item})?.name || "").join(", ")) : (fieldValue.name || "");
+            },
+            valueParser: function (params) {
+                const fieldValue = params.newValue;
+                const colDef = params.column.getColDef();
+                const fieldConfig = colDef.cellEditorParams.fieldConfig;
+                const isMultiple = fieldConfig.multiple;
+                var fieldName = colDef.field;
+                if (fieldConfig.type === "lookup" && isMultiple && typeof fieldValue === 'string') {
+                    // 多选lookup字段值如果是string，额外处理，转为数组
+                    return fieldValue && fieldValue.split(',') || [];
+                }
+                return fieldValue;
             }
         },
         number: {
@@ -1029,7 +1064,7 @@ export function getDataTypeDefinitions() {
             valueParser: function (params) {
                 // 复制单元格时，需要将字符串转换为数组
                 if (typeof params.newValue === 'string') {
-                    return params.newValue.split(',');
+                    return params.newValue && params.newValue.split(',') || [];
                 }
                 return params.newValue;
             }
@@ -1049,11 +1084,35 @@ function onCellEditingStarted(event: any) {
     const minWidth = cellEditorParams.minWidth;
     const originalWidth = column.getActualWidth();
     if (minWidth && minWidth > originalWidth) {
-        event.api.setColumnWidth(column, minWidth);
+        // console.log('onCellEditingStarted', 'column', column, 'originalWidth', originalWidth, 'minWidth', minWidth);
+        // event.api.setColumnWidth(column, minWidth);
+        event.api.setColumnWidths([{
+            key: column,
+            newWidth: minWidth
+        }]);
     }
 }
 
-export async function getGridOptions({ tableId, title, mode, config, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications = [], amisData, beforeSaveData }) {
+
+function updateDefaultExportColumnKeys(gridApi: any, newColumnKeys: any) {
+    // 更新导出参数，如果配置了columnKeys，则导出时需要同步更新
+    var defaultExcelExportParams = gridApi.getGridOption('defaultExcelExportParams');
+    var defaultCsvExportParams = gridApi.getGridOption('defaultCsvExportParams');
+    if (defaultExcelExportParams && isArray(defaultExcelExportParams.columnKeys)) {
+        var newExportParams = Object.assign({}, defaultExcelExportParams, {
+            columnKeys: newColumnKeys
+        });
+        gridApi.setGridOption('defaultExcelExportParams', newExportParams);
+    }
+    if (defaultCsvExportParams && isArray(defaultCsvExportParams.columnKeys)) {
+        var newExportParams = Object.assign({}, defaultCsvExportParams, {
+            columnKeys: newColumnKeys
+        });
+        gridApi.setGridOption('defaultCsvExportParams', newExportParams);
+    }
+}
+
+export async function getGridOptions({ tableId, title, mode, config, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications = [], amisData, beforeSaveData, amisRender }) {
     let gridApi: any;
     let tableLabel = title;
     const isReadonly = mode === "read";
@@ -1118,6 +1177,7 @@ export async function getGridOptions({ tableId, title, mode, config, dataSource,
         const escapeSelectors = [
             '.antd-PopOver.antd-Select-popover',//多选 字段 弹出 amis select 内部
             '.amis-dialog-widget.antd-Modal',//lookup 字段 弹出 amis picker 内部
+            '.antd-Button',//所有的amis按钮，比如lookup 字段 弹出 amis picker 底部的确定、取消按钮，及其顶部展开的搜索搜索表单中中的按钮
             '.antd-PopOver.antd-DatePicker-popover'//datetime 字段 弹出 amis picker 内部
         ];
         if (targetElement.closest(escapeSelectors.join(','))) {
@@ -1182,11 +1242,12 @@ export async function getGridOptions({ tableId, title, mode, config, dataSource,
             mode: "multiRow",
             selectAll: "all",
             checkboxes: true,
-            headerCheckbox: true
+            headerCheckbox: true,
+            enableClickSelection: false
         },
         // 勾选框列单独在columnDefs中定义后，rowSelection定义为上面的对象格式会多显示一列勾选框列
         // rowSelection: isReadonly ? null : "multiple",
-        suppressRowClickSelection: true,
+        // suppressRowClickSelection: true,//ag-grid 33版本后不再支持，换成rowSelection.enableClickSelection了
         onStoreUpdated: function (event) {
             var rowCount = event.api.getDisplayedRowCount();
             console.log('onStoreUpdated:', rowCount);
@@ -1209,12 +1270,74 @@ export async function getGridOptions({ tableId, title, mode, config, dataSource,
             document.removeEventListener('click', onDocumentClick);
         },
         onCellEditingStarted,
+        // 自定义数据复制到剪贴板时的格式
+        processCellForClipboard: function (params: ProcessCellForExportParams) {
+            const fieldValue = params.value;
+            const colDef = params.column.getColDef();
+            const fieldConfig = colDef.cellEditorParams.fieldConfig;
+            const isMultiple = fieldConfig.multiple;
+            const fieldType = fieldConfig.type;
+            var fieldName = colDef.field;
+            if (fieldType === "lookup") {
+                // 因为lookup字段的值是记录id，避免发起起请求来根据记录label（即formatValue）获取记录id，这里直接复制id值到剪贴板
+                if(isMultiple){
+                    // return fieldValue.join(",");
+                    // 约定输出"新新<654300b5074594d15147bcfa>,上海分公司<9FqSC6jms4KRGCgNm>"这种格式
+                    // 如果不约定格式，直接返回id数组格式，即 fieldValue.join(",") 即可
+                    return fieldValue.map((item: string)=>{
+                        return `${params.formatValue([item])}<${item}>`;
+                    }).join(",");
+                }
+                else{
+                    // return fieldValue;
+                    // 输出"上海分公司<9FqSC6jms4KRGCgNm>"这种格式
+                    // 如果不约定格式，直接返回id字符格式，即 fieldValue 即可
+                    return `${params.formatValue(fieldValue)}<${fieldValue}>`;
+                }
+            }
+            // 默认（即不定义 processCellForClipboard 函数时）使用的是字段的formatValue格式作为复制到剪贴板的内容
+            return params.formatValue(fieldValue);
+        },
+        // 从剪贴板粘贴回ag-grid时的处理逻辑
+        processCellFromClipboard: function (params: ProcessCellForExportParams) {
+            const fieldValue = params.value;
+            const colDef = params.column.getColDef();
+            const fieldConfig = colDef.cellEditorParams.fieldConfig;
+            const isMultiple = fieldConfig.multiple;
+            const fieldType = fieldConfig.type;
+            var fieldName = colDef.field;
+            if (fieldType === "lookup") {
+                // 如果上面 processCellForClipboard 函数中不约定特定格式，以下lookup字段转换逻辑可以全去掉
+                if(isMultiple){
+                    // "新新<654300b5074594d15147bcfa>,上海分公司<9FqSC6jms4KRGCgNm>"这种格式中取出id值数组
+                    const matches = fieldValue.match(/<(.*?)>/g)?.map(match => match.slice(1, -1));
+                    if (matches?.length){
+                        return matches;
+                    }
+                    else{
+                        return fieldValue.split(",").map((item: string)=>{
+                            return item.trim();
+                        });
+                    }
+                }
+                else{
+                    // "上海分公司<9FqSC6jms4KRGCgNm>"这种格式中取出id值
+                    const mactchs = fieldValue.match(/<(\w+)>/);
+                    const fieldValueId = mactchs?.length > 1 ? mactchs[1] : fieldValue;
+                    return fieldValueId;
+                }
+            }
+            // 默认（即不定义 processCellFromClipboard 函数时）使用的是字段的parseValue格式作为复制到剪贴板的内容
+            return params.parseValue(fieldValue);
+        },
         defaultExcelExportParams: {
             fileName: tableLabel,
+            sheetName: tableLabel,
             columnKeys: columnFieldNames
         },
         defaultCsvExportParams: {
             fileName: tableLabel,
+            sheetName: tableLabel,
             columnKeys: columnFieldNames
         },
         serverSideDatasource: getServerSideDatasource(dataSource, filters),
@@ -1225,14 +1348,14 @@ export async function getGridOptions({ tableId, title, mode, config, dataSource,
             onCellValueChangedFun: onCellValueChangedRaw,
             setRowDataFormulaValues,
             getColumnDefByField,
+            updateDefaultExportColumnKeys: (newColumnKeys: any) => {
+                updateDefaultExportColumnKeys(gridApi, newColumnKeys)
+            },
             beforeSaveData,
             isReadonly,
             amisData,
-            amisEnv: env
-        },
-        components: {
-            AmisDateTimeCellEditor: AmisDateTimeCellEditor,
-            AmisMultiSelectCellEditor: AmisMultiSelectCellEditor
+            amisEnv: env,
+            amisRender
         }
     };
 
@@ -1251,7 +1374,7 @@ export async function getGridOptions({ tableId, title, mode, config, dataSource,
     return gridOptions;
 }
 
-const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications, beforeSaveData }) => {
+const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications, beforeSaveData, amisRender }) => {
     const onDataFilter = async function (config: any, AgGrid: any, props: any, data: any, ref: any) {
         // 为ref.current补上props属性，否则props.dispatchEvent不能生效
         ref.current.props = props;
@@ -1262,7 +1385,7 @@ const getAgGrid = async ({ tableId, title, mode, dataSource, getColumnDefs, env,
             // 启用 AG Grid 企业版
             AgGrid.LicenseManager.setLicenseKey(agGridLicenseKey);
         }
-        let gridOptions = await getGridOptions({ tableId, title, mode, config, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications, amisData: data, beforeSaveData });
+        let gridOptions = await getGridOptions({ tableId, title, mode, config, dataSource, getColumnDefs, env, dispatchEvent, filters, verifications, amisData: data, beforeSaveData, amisRender });
         return gridOptions;
     }
     const agGrid = {
@@ -1758,7 +1881,7 @@ export const getTableHeader = ({ tableId, title, mode, dataSource, getColumnDefs
 }
 
 export async function getAirtableGridSchema(
-    { tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications, beforeSaveData }
+    { tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications, beforeSaveData, amisRender }
 ) {
     // beforeSaveData = (rowData: any, options: any)=>{
     //     const { isInsert, isUpdate } = options;
@@ -1778,7 +1901,7 @@ export async function getAirtableGridSchema(
         "className": "steedos-airtable-grid h-full",
         "body": [
             getTableHeader({ tableId, title, mode, dataSource, getColumnDefs, env }),
-            await getAgGrid({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications, beforeSaveData })
+            await getAgGrid({ tableId, title, mode, dataSource, getColumnDefs, env, agGridLicenseKey, filters, verifications, beforeSaveData, amisRender })
         ],
         "onEvent": {
             [`@airtable.${tableId}.setGridApi`]: {

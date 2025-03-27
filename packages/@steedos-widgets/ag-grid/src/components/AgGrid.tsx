@@ -2,10 +2,14 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2024-01-18 18:58:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-01-22 17:15:28
+ * @LastEditTime: 2025-03-25 18:31:14
  */
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
+import { AgGridReact } from 'ag-grid-react';
+// import 'ag-grid-enterprise';
 import { AG_GRID_LOCALE_CN } from '@ag-grid-community/locale';
+import { DateTimeCellEditor, MultiSelectCellEditor, LookupCellEditor } from './cellEditor';
+import { DateTimeFilter } from './filter';
 
 export const AmisAgGrid = (props: any) => {
   const {
@@ -28,7 +32,7 @@ export const AmisAgGrid = (props: any) => {
   if (typeof dataFilter === 'string') {
     onDataFilter = new Function('config', 'AgGrid', 'props', 'data', 'ref', 'return (async () => { ' + dataFilter + ' })()')
   }
-  else if(onDataFilterFun){
+  else if (onDataFilterFun) {
     onDataFilter = onDataFilterFun;
   }
 
@@ -53,18 +57,37 @@ export const AmisAgGrid = (props: any) => {
     };
   }, []);
 
-  useEffect(() => {
-    if (dataFilterLoaded) {
-      // (wrapperRef.current as any).props = props
-      agGrid && agGrid.createGrid(wrapperRef.current, config);
+  // useEffect(() => {
+  //   if (dataFilterLoaded) {
+  //     // (wrapperRef.current as any).props = props
+  //     // agGrid && agGrid.createGrid(wrapperRef.current, config);
+  //   }
+  // }, [config, dataFilterLoaded])
+
+  const components = useMemo<{
+    [p: string]: any;
+  }>(() => {
+    if (!dataFilterLoaded) {
+      return {}
     }
-  }, [config, dataFilterLoaded])
+    return {
+      ...config.components,
+      agAmisDateTimeCellEditor: DateTimeCellEditor,
+      agAmisMultiSelectCellEditor: MultiSelectCellEditor,
+      agAmisLookupCellEditor: LookupCellEditor,
+      agAmisDateTimeFilter: DateTimeFilter
+    };
+  }, [config, dataFilterLoaded]);
 
   if (!config) {
     return <>Loading...</>;
   }
 
   return (
-    <div ref={wrapperRef} className={`${className} steedos-ag-grid ag-theme-quartz`} style={style} />
+    <div ref={wrapperRef} className={`${className} steedos-ag-grid ag-theme-quartz`} style={style} >
+      {dataFilterLoaded && (
+        <AgGridReact {...config} components={components} />
+      )}
+    </div>
   )
 };
