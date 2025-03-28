@@ -41,9 +41,7 @@ export const StandardButtons = {
                     objectName,
                     uiSchema
                 } = this;
-                const scopeId = this.scopeId || `amis-${appId}-${objectName}-listview`;
-                const scope = this.scope || SteedosUI?.getRef(scopeId);
-                //https://github.com/baidu/amis/pull/6807 .parent的改动是为适应3.2getComponentById的规则改动，不影响2.9
+                const scope = this.scope
                 const listViewRef = scope.parent?.getComponentById(`listview_${uiSchema.name}`);
                 if(_.isEmpty(listViewRef.props.store.toJSON().selectedItems)){
                     listViewRef.handleAction({}, {
