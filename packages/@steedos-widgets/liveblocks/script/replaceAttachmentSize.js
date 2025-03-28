@@ -4,7 +4,7 @@ const path = require('path');
 
 // 定义要替换的原始行和新的行
 const oldLine = 'var ATTACHMENT_PART_SIZE = 5 * 1024 * 1024;';
-const newLine = 'var ATTACHMENT_PART_SIZE = 50 * 1024 * 1024;';
+const newLine = 'var ATTACHMENT_PART_SIZE = 500 * 1024 * 1024;';
 
 // 读取文件
 const replaceAttachmentSize = (filePath)=>{
