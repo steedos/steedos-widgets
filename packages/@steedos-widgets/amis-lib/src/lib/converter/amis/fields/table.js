@@ -1588,17 +1588,15 @@ export async function getTableApi(mainObject, fields, options){
     }
     // 标记加载过，后续优先从本地存储中加载相关参数
     payload.data.loaded= true;
-
     const setDataToComponentId = "${setDataToComponentId}";
     if(setDataToComponentId){
         //https://github.com/baidu/amis/pull/6807 .parent的改动是为适应3.2getComponentById的规则改动，不影响2.9
-        var scope = SteedosUI.getRef(api.body.$self.$scopeId);
+        var scope = context._scoped;
         var scopeParent = scope && scope.parent;
         var setDataToComponent = scopeParent && scopeParent.getComponentById(setDataToComponentId);
         if(setDataToComponent){
             setDataToComponent.setData({$count: payload.data.count});
         }
-        // SteedosUI.getRef(api.body.$self.$scopeId)?.parent?.getComponentById(setDataToComponentId)?.setData({$count: payload.data.count})
     };
     let formFactor = "${options.formFactor}";
     if(formFactor !== "SMALL"){
