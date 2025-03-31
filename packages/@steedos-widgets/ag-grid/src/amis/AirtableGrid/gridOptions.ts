@@ -1274,7 +1274,7 @@ export async function getGridOptions({ tableId, title, mode, config, dataSource,
             // 添加全局点击事件监听器
             document.addEventListener('click', onDocumentClick);
         },
-        onDestroy: function () {
+        onGridPreDestroyed: function () {
             // 在 grid 销毁时，移除事件监听器，防止内存泄漏
             document.removeEventListener('click', onDocumentClick);
         },
