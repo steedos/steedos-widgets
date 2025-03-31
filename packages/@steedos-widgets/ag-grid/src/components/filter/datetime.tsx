@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-03-25 17:53:21
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-03-25 23:20:27
+ * @LastEditTime: 2025-03-31 09:15:39
  */
 import type { ChangeEvent } from "react";
 import React, { useCallback, useEffect, useState } from "react";
@@ -26,37 +26,14 @@ export const DateTimeFilter = (props: CustomFilterProps) => {
         return true;
     }, []);
 
-    // TODO:点击弹出日期时间popover会关闭filter菜单，需要单独处理，见：https://ag-grid.com/react-data-grid/component-filter/#custom-filters-containing-a-popup-element
-    function onAntdDateRangePickerPopoverClick(event) {
-        // console.log("=onAntdDateRangePickerPopoverClick====88====");
-        // // 获取 grid 的 DOM 元素
-        // var gridElement = document.querySelector('.steedos-airtable-grid');
-
-        // if (!gridElement) {
-        //     return;
-        // }
-
-        var targetElement = event.target;
-
-        // 如果点击发生在 grid 内部，不执行 stopEditing，由ag-grid内部规则处理
-        if (targetElement.closest('.antd-PopOver.antd-DateRangePicker-popover')) {
-            // console.log("=onAntdDateRangePickerPopoverClick=====in closest===");
-            event.preventDefault();
-            event.stopPropagation();
-            return false;
-        }
-    }
-
     const afterGuiAttached = useCallback(
         ({ hidePopup }: IAfterGuiAttachedParams) => {
-            // document.addEventListener('click', onAntdDateRangePickerPopoverClick);
         },
         [],
     );
 
     const afterGuiDetached = useCallback(
         () => {
-            // document.removeEventListener('click', onAntdDateRangePickerPopoverClick);
         },
         [],
     );
@@ -64,8 +41,8 @@ export const DateTimeFilter = (props: CustomFilterProps) => {
     // register filter handlers with the grid
     useGridFilter({
         doesFilterPass,
-        afterGuiAttached,
-        afterGuiDetached,
+        // afterGuiAttached,
+        // afterGuiDetached,
     });
 
     const random = Math.random().toString(36).substring(2);
@@ -99,19 +76,20 @@ export const DateTimeFilter = (props: CustomFilterProps) => {
                                     }
                                 ]
                             },
-                            // "focus": {
-                            //     "actions": [
-                            //         {
-                            //             "actionType": "custom",
-                            //             "script": `
-                            //                 console.log("=====focus=====");
-                            //                 var onAntdDateRangePickerPopoverClick = context.props.onAntdDateRangePickerPopoverClick;
-                            //                 var popover = document.querySelector('.antd-PopOver.antd-DateRangePicker-popover');
-                            //                 popover && popover.addEventListener('click', onAntdDateRangePickerPopoverClick);
-                            //             `
-                            //         }
-                            //     ]
-                            // }
+                            // 点击弹出日期时间popover会关闭filter菜单，需要单独处理，见：https://ag-grid.com/react-data-grid/component-filter/#custom-filters-containing-a-popup-element
+                            "focus": {
+                                "actions": [
+                                    {
+                                        "actionType": "custom",
+                                        "script": `
+                                            setTimeout(function(){
+                                                var popover = document.querySelector('.antd-PopOver.antd-DateRangePicker-popover');
+                                                popover && popover.classList.add('ag-custom-component-popup');
+                                            }, 300);
+                                        `
+                                    }
+                                ]
+                            }
                         },
                     }
                 })
@@ -140,7 +118,6 @@ export const DateTimeFilter = (props: CustomFilterProps) => {
                 // 这里的信息会作为 props 传递给子组件，一般情况下都不需要这个,
                 data: amisData,
                 updateAgGridFilterValue: updateValue,
-                onAntdDateRangePickerPopoverClick,
                 // 测试到直接使用下面的onChange，用户操作比较快的时间不会触发，所以迁移到上面的amis onEvent中
                 // onChange: (data, value, props) => {
                 //     console.log(`change....`)
