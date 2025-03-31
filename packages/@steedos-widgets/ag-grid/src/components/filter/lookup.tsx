@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-03-25 17:53:21
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-03-31 10:06:00
+ * @LastEditTime: 2025-03-31 18:39:06
  */
 import type { ChangeEvent } from "react";
 import React, { useCallback, useEffect, useState } from "react";
@@ -49,6 +49,7 @@ export const LookupFilter = (props: CustomFilterProps) => {
     const cellFormId = `filterForm__lookup__${random}`;
 
     // 定义 amis 的 schema
+    // 设置 showSystemFields 和 readonly 属性是因为 创建时间、创建人、修改时间、修改人 这几个系统字段, 在表单中不可编辑且默认隐藏
     const amisSchema = {
         id: cellFormId,
         type: 'form',
@@ -57,9 +58,13 @@ export const LookupFilter = (props: CustomFilterProps) => {
             {
                 type: 'steedos-field',
                 // value: this.value,
+                ctx: {
+                    showSystemFields: true
+                },
                 config: Object.assign({}, fieldConfig, {
                     label: false,
                     multiple: true,
+                    readonly: false,
                     amis: {
                         "onEvent": {
                             "change": {
@@ -78,9 +83,9 @@ export const LookupFilter = (props: CustomFilterProps) => {
                 })
             }
         ],
-        // data: {
-        //     [fieldConfig.name]: value
-        // }
+        data: {
+            [fieldConfig.name]: null //防止 amisData 中有同名字段
+        }
     };
 
     const updateValue = (val: any) => {

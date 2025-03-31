@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-03-25 17:53:21
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-03-31 09:15:39
+ * @LastEditTime: 2025-03-31 18:39:17
  */
 import type { ChangeEvent } from "react";
 import React, { useCallback, useEffect, useState } from "react";
@@ -49,6 +49,7 @@ export const DateTimeFilter = (props: CustomFilterProps) => {
     const cellFormId = `filterForm__datetime__${random}`;
 
     // 定义 amis 的 schema
+    // 设置 showSystemFields 和 readonly 属性是因为 创建时间、创建人、修改时间、修改人 这几个系统字段, 在表单中不可编辑且默认隐藏
     const amisSchema = {
         id: cellFormId,
         type: 'form',
@@ -57,9 +58,13 @@ export const DateTimeFilter = (props: CustomFilterProps) => {
             {
                 type: 'steedos-field',
                 // value: this.value,
+                ctx: {
+                    showSystemFields: true
+                },
                 config: Object.assign({}, fieldConfig, {
                     label: false,
                     type: 'input-datetime-range',
+                    readonly: false,
                     amis: {
                         "popOverContainerSelector": `.steedos-airtable-grid`,//`#${this.eGui.id}`
                         // "closeOnSelect": false,// 不可以配置为false，否则会出现第一次点开控件时，点选日期后，输入框中小时值无故变成差8小时
@@ -95,9 +100,9 @@ export const DateTimeFilter = (props: CustomFilterProps) => {
                 })
             }
         ],
-        // data: {
-        //     [fieldConfig.name]: value
-        // }
+        data: {
+            [fieldConfig.name]: null //防止 amisData 中有同名字段
+        }
     };
 
     const updateValue = (val: any) => {
