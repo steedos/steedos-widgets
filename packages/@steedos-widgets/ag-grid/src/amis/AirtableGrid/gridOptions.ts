@@ -355,6 +355,7 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
             valueGetter = dataTypeDefinitions.lookup.valueGetter;
             valueFormatter = dataTypeDefinitions.lookup.valueFormatter;
             valueParser = dataTypeDefinitions.lookup.valueParser;
+            filter = 'agAmisLookupFilter';
             break;
         default:
             cellDataType = 'text'; // 默认类型
@@ -800,6 +801,7 @@ function filterModelToOdataFilters(filterModel, colDefs) {
     const filters = [];
     forEach(filterModel, (value, key) => {
         const fieldConfig = colDefs[key].cellEditorParams.fieldConfig;
+        let filterValue;
         if (value.type === 'between') {
             if (value.filterType === "number") {
                 filters.push([key, "between", [value.numberFrom, value.numberTo]]);
@@ -861,7 +863,7 @@ function filterModelToOdataFilters(filterModel, colDefs) {
                     filters.push(filterItem);
                     break;
                 case 'boolean':
-                    let filterValue = value.values[0];
+                    filterValue = value.values[0];
                     if (typeof filterValue !== "boolean") {
                         filterValue = filterValue === "true"
                     }
@@ -870,6 +872,13 @@ function filterModelToOdataFilters(filterModel, colDefs) {
                     break;
                 case 'formula':
                     // 不支持公式字段过滤
+                    break;
+                case 'lookup':
+                    filterValue = value.values;
+                    if (filterValue?.length) {
+                        filterItem = [key, 'in', filterValue];
+                        filters.push(filterItem);
+                    }
                     break;
             }
         }
