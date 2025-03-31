@@ -279,6 +279,7 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
             });
             cellEditor = "agAmisMultiSelectCellEditor";
             valueParser = dataTypeDefinitions.multipleSelect.valueParser;
+            valueFormatter = dataTypeDefinitions.multipleSelect.valueFormatter;
             filter = 'agSetColumnFilter';
             Object.assign(filterParams, {
                 values: fieldOptions
@@ -1020,7 +1021,8 @@ export function getDataTypeDefinitions() {
                 var fieldValue = params.data[fieldName];
                 if (!fieldValue) return null;
 
-                return isMultiple ? (params.value.map((item) => find(fieldValue, {_id:item})?.name || "").join(", ")) : (fieldValue.name || "");
+                // 这里使用params.value.map，而不是fieldValue.map，是因为processCellForClipboard中调用了valueFormatter，传入的参数值为params.value
+                return isMultiple ? (params.value.map((item) => find(fieldValue, {_id:item})?.name || "").join(",")) : (fieldValue.name || "");
             },
             valueParser: function (params) {
                 const fieldValue = params.newValue;
@@ -1076,6 +1078,13 @@ export function getDataTypeDefinitions() {
                     return params.newValue && params.newValue.split(',') || [];
                 }
                 return params.newValue;
+            },
+            valueFormatter: function (params) {
+                var fieldName = params.colDef.field;
+                var fieldValue = params.data[fieldName];
+                if (!fieldValue) return null;
+
+                return fieldValue.join(",");
             }
         }
     };
