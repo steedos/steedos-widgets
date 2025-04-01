@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-03-25 17:53:21
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-04-01 12:03:31
+ * @LastEditTime: 2025-04-01 17:34:20
  */
 import type { ChangeEvent } from "react";
 import React, { useCallback, useEffect, useState } from "react";
@@ -100,20 +100,24 @@ export const LookupFilter = (props: CustomFilterProps) => {
     };
 
     return (
-        <div className='amis-ag-grid-cell-editor amis-ag-grid-cell-editor-datetime' style={{
-            width: '100%',
-            height: '100%'
-        }}>
-            {amisRender('body', amisSchema, {
-                // 这里的信息会作为 props 传递给子组件，一般情况下都不需要这个,
-                data: amisData,
-                updateAgGridFilterValue: updateValue,
-                // 测试到直接使用下面的onChange，用户操作比较快的时间不会触发，所以迁移到上面的amis onEvent中
-                // onChange: (data, value, props) => {
-                //     console.log(`change....`)
-                //     updateValue(value[fieldConfig.name]);
-                // }
-            })}
-        </div>
+        <form className="ag-filter-wrapper ag-focus-managed">
+            <div className="ag-filter-body-wrapper ag-simple-filter-body-wrapper">
+                <div className='amis-ag-grid-filter amis-ag-grid-filter-lookup' style={{
+                    width: '100%',
+                    height: '100%'
+                }}>
+                    {amisRender('body', amisSchema, {
+                        // 这里的信息会作为 props 传递给子组件，一般情况下都不需要这个,
+                        data: amisData,
+                        updateAgGridFilterValue: updateValue,
+                        // 测试到直接使用下面的onChange，用户操作比较快的时间不会触发，所以迁移到上面的amis onEvent中
+                        // onChange: (data, value, props) => {
+                        //     console.log(`change....`)
+                        //     updateValue(value[fieldConfig.name]);
+                        // }
+                    })}
+                </div>
+            </div>
+        </form>
     )
 };
