@@ -806,7 +806,7 @@ function filterModelToOdataFilters(filterModel, colDefs) {
         if (value.type === 'between') {
             if (value.filterType === "number") {
                 filters.push([key, "between", [value.numberFrom, value.numberTo]]);
-            } else if (value.filterType === "datetime") {
+            } else if (value.filterType === "datetime" || value.filterType === "date") {
                 // filters.push([key, "between", [value.dateFrom, value.dateTo]]);
                 // 服务端接口不支持between，裂变为两个条件
                 let filterItem = [];
@@ -816,7 +816,9 @@ function filterModelToOdataFilters(filterModel, colDefs) {
                 if (value.dateTo) {
                     filterItem.push([key, "<=", value.dateTo]);
                 }
-                filters.push(filterItem);
+                if(filterItem.length){
+                    filters.push(filterItem);
+                }
             } else {
                 if (value.filter) {
                     filters.push([key, value.type, value.filter]);
