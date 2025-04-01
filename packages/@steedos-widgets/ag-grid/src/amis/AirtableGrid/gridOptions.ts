@@ -351,7 +351,11 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
                 minWidth
             });
             cellEditor = "agAmisLookupCellEditor";
-            // 不可以使用 cellRenderer ，因为导出excel不认
+            Object.assign(cellRendererParams, {
+                fieldConfig: field
+            });
+            // 导出excel不走 cellRenderer，走的是 valueFormatter
+            cellRenderer = "agAmisLookupCellRenderer";
             // cellRenderer = function(params) { return (params.value && params.value.name) || ""; }
             valueGetter = dataTypeDefinitions.lookup.valueGetter;
             valueFormatter = dataTypeDefinitions.lookup.valueFormatter;
