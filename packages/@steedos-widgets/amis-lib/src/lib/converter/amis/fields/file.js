@@ -188,7 +188,7 @@ export const getAmisFileEditSchema = (steedosField)=>{
         receiver: {
             method: "post",
             dataType: "form-data",
-            url: `\${context.rootUrl}/s3/${tableName}`,
+            url: `\${context.rootUrl}/api/v6/files/cfs.${tableName}.filerecord`,
             requestAdaptor: `
                 const superData = (typeof context != 'undefined') ? context : api.body; 
                 const { _master, global } = superData;
@@ -211,14 +211,14 @@ export const getAmisFileEditSchema = (steedosField)=>{
             adaptor: `
                 const superData = (typeof context != 'undefined') ? context : api.body; 
                 const { context:pageContext } = superData; 
-                var rootUrl = pageContext.rootUrl + "/api/files/${tableName}/";
+                var rootUrl = pageContext.rootUrl + "/api/v6/files/download/cfs.${tableName}.filerecord/";
                 payload = {
                     status: response.status == 200 ? 0 : response.status,
                     msg: response.statusText,
                     data: {
                         value: payload._id,
                         name: payload.original.name,
-                        url: rootUrl + payload._id,
+                        url: rootUrl + payload._id + "/" + payload.original.name,
                     }
                 }
                 return payload;
