@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-02-11 17:43:41
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-04-01 14:00:19
+ * @LastEditTime: 2025-04-01 14:09:48
  */
 
 import React from 'react';
@@ -29,7 +29,10 @@ export const LookupCellRenderer = (props: CustomCellRendererProps & {
     return (
         <div className='amis-ag-grid-cell-renderer amis-ag-grid-cell-renderer-lookup' style={{
             width: '100%',
-            height: '100%'
+            height: '100%',
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis'
         }}>
             {labelFormattedArray.map((item, index) => {
                 return (
