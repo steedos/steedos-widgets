@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-03-25 17:53:21
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-03-31 18:39:17
+ * @LastEditTime: 2025-04-01 12:03:52
  */
 import type { ChangeEvent } from "react";
 import React, { useCallback, useEffect, useState } from "react";
@@ -106,12 +106,16 @@ export const DateTimeFilter = (props: CustomFilterProps) => {
     };
 
     const updateValue = (val: any) => {
-        onModelChange({
-            dateFrom: val[0],
-            dateTo: val[1],
-            filterType: "datetime",
-            type: "between",
-        });
+        let updatedModel: any;
+        if (val?.length) {
+            updatedModel = {
+                dateFrom: val[0],
+                dateTo: val[1],
+                filterType: "datetime",
+                type: "between"
+            };
+        }
+        onModelChange(updatedModel);
     };
 
     return (

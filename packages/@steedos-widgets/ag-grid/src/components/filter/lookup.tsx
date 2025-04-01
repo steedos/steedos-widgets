@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-03-25 17:53:21
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-03-31 18:39:06
+ * @LastEditTime: 2025-04-01 12:03:31
  */
 import type { ChangeEvent } from "react";
 import React, { useCallback, useEffect, useState } from "react";
@@ -89,10 +89,14 @@ export const LookupFilter = (props: CustomFilterProps) => {
     };
 
     const updateValue = (val: any) => {
-        onModelChange({
-            values: val,
-            filterType: "lookup"
-        });
+        let updatedModel: any;
+        if (val?.length) {
+            updatedModel = {
+                values: val,
+                filterType: "lookup"
+            };
+        }
+        onModelChange(updatedModel);
     };
 
     return (
