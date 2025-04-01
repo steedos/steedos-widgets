@@ -279,6 +279,7 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
             });
             cellEditor = "agAmisMultiSelectCellEditor";
             valueParser = dataTypeDefinitions.multipleSelect.valueParser;
+            valueFormatter = dataTypeDefinitions.multipleSelect.valueFormatter;
             filter = 'agSetColumnFilter';
             Object.assign(filterParams, {
                 values: fieldOptions
@@ -350,11 +351,16 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
                 minWidth
             });
             cellEditor = "agAmisLookupCellEditor";
-            // 不可以使用 cellRenderer ，因为导出excel不认
+            Object.assign(cellRendererParams, {
+                fieldConfig: field
+            });
+            // 导出excel不走 cellRenderer，走的是 valueFormatter
+            cellRenderer = "agAmisLookupCellRenderer";
             // cellRenderer = function(params) { return (params.value && params.value.name) || ""; }
             valueGetter = dataTypeDefinitions.lookup.valueGetter;
             valueFormatter = dataTypeDefinitions.lookup.valueFormatter;
             valueParser = dataTypeDefinitions.lookup.valueParser;
+            filter = 'agAmisLookupFilter';
             break;
         default:
             cellDataType = 'text'; // 默认类型
@@ -563,7 +569,7 @@ async function onRowValueChanged(event: any, dataSource: any, { env }) {
                 }
                 else if (fieldConfig.type === "lookup") {
                     var isMultiple = fieldConfig.multiple;
-                    if(isMultiple){
+                    if (isMultiple) {
                         // 移除id数组中的null值，单元格复制功能可以填充错误的id值保存为null了
                         data[k] = compact(data[k]);
                     }
@@ -800,20 +806,23 @@ function filterModelToOdataFilters(filterModel, colDefs) {
     const filters = [];
     forEach(filterModel, (value, key) => {
         const fieldConfig = colDefs[key].cellEditorParams.fieldConfig;
+        let filterValue;
         if (value.type === 'between') {
             if (value.filterType === "number") {
                 filters.push([key, "between", [value.numberFrom, value.numberTo]]);
-            } else if (value.filterType === "datetime"){
+            } else if (value.filterType === "datetime" || value.filterType === "date") {
                 // filters.push([key, "between", [value.dateFrom, value.dateTo]]);
                 // 服务端接口不支持between，裂变为两个条件
                 let filterItem = [];
                 if (value.dateFrom) {
                     filterItem.push([key, ">=", value.dateFrom]);
                 }
-                if (value.dateTo){
+                if (value.dateTo) {
                     filterItem.push([key, "<=", value.dateTo]);
                 }
-                filters.push(filterItem);
+                if(filterItem.length){
+                    filters.push(filterItem);
+                }
             } else {
                 if (value.filter) {
                     filters.push([key, value.type, value.filter]);
@@ -861,7 +870,7 @@ function filterModelToOdataFilters(filterModel, colDefs) {
                     filters.push(filterItem);
                     break;
                 case 'boolean':
-                    let filterValue = value.values[0];
+                    filterValue = value.values[0];
                     if (typeof filterValue !== "boolean") {
                         filterValue = filterValue === "true"
                     }
@@ -870,6 +879,13 @@ function filterModelToOdataFilters(filterModel, colDefs) {
                     break;
                 case 'formula':
                     // 不支持公式字段过滤
+                    break;
+                case 'lookup':
+                    filterValue = value.values;
+                    if (filterValue?.length) {
+                        filterItem = [key, 'in', filterValue];
+                        filters.push(filterItem);
+                    }
                     break;
             }
         }
@@ -1011,7 +1027,8 @@ export function getDataTypeDefinitions() {
                 var fieldValue = params.data[fieldName];
                 if (!fieldValue) return null;
 
-                return isMultiple ? (params.value.map((item) => find(fieldValue, {_id:item})?.name || "").join(", ")) : (fieldValue.name || "");
+                // 这里使用params.value.map，而不是fieldValue.map，是因为 processCellForClipboard 中调用了 formatValue 函数，传入的参数值为params.value
+                return isMultiple ? (params.value.map((item) => find(fieldValue, { _id: item })?.name || "").join(",")) : (fieldValue.name || "");
             },
             valueParser: function (params) {
                 const fieldValue = params.newValue;
@@ -1067,6 +1084,12 @@ export function getDataTypeDefinitions() {
                     return params.newValue && params.newValue.split(',') || [];
                 }
                 return params.newValue;
+            },
+            valueFormatter: function (params) {
+                var fieldValue = params.value;
+                if (!fieldValue) return null;
+
+                return isArray(fieldValue) ? fieldValue.join(",") : fieldValue;
             }
         }
     };
@@ -1265,7 +1288,7 @@ export async function getGridOptions({ tableId, title, mode, config, dataSource,
             // 添加全局点击事件监听器
             document.addEventListener('click', onDocumentClick);
         },
-        onDestroy: function () {
+        onGridPreDestroyed: function () {
             // 在 grid 销毁时，移除事件监听器，防止内存泄漏
             document.removeEventListener('click', onDocumentClick);
         },
@@ -1280,15 +1303,15 @@ export async function getGridOptions({ tableId, title, mode, config, dataSource,
             var fieldName = colDef.field;
             if (fieldType === "lookup") {
                 // 因为lookup字段的值是记录id，避免发起起请求来根据记录label（即formatValue）获取记录id，这里直接复制id值到剪贴板
-                if(isMultiple){
+                if (isMultiple) {
                     // return fieldValue.join(",");
                     // 约定输出"新新<654300b5074594d15147bcfa>,上海分公司<9FqSC6jms4KRGCgNm>"这种格式
                     // 如果不约定格式，直接返回id数组格式，即 fieldValue.join(",") 即可
-                    return fieldValue.map((item: string)=>{
+                    return fieldValue.map((item: string) => {
                         return `${params.formatValue([item])}<${item}>`;
                     }).join(",");
                 }
-                else{
+                else {
                     // return fieldValue;
                     // 输出"上海分公司<9FqSC6jms4KRGCgNm>"这种格式
                     // 如果不约定格式，直接返回id字符格式，即 fieldValue 即可
@@ -1308,19 +1331,19 @@ export async function getGridOptions({ tableId, title, mode, config, dataSource,
             var fieldName = colDef.field;
             if (fieldType === "lookup") {
                 // 如果上面 processCellForClipboard 函数中不约定特定格式，以下lookup字段转换逻辑可以全去掉
-                if(isMultiple){
+                if (isMultiple) {
                     // "新新<654300b5074594d15147bcfa>,上海分公司<9FqSC6jms4KRGCgNm>"这种格式中取出id值数组
                     const matches = fieldValue.match(/<(.*?)>/g)?.map(match => match.slice(1, -1));
-                    if (matches?.length){
+                    if (matches?.length) {
                         return matches;
                     }
-                    else{
-                        return fieldValue.split(",").map((item: string)=>{
+                    else {
+                        return fieldValue.split(",").map((item: string) => {
                             return item.trim();
                         });
                     }
                 }
-                else{
+                else {
                     // "上海分公司<9FqSC6jms4KRGCgNm>"这种格式中取出id值
                     const mactchs = fieldValue.match(/<(\w+)>/);
                     const fieldValueId = mactchs?.length > 1 ? mactchs[1] : fieldValue;

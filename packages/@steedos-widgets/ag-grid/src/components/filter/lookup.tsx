@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-03-25 17:53:21
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-04-01 17:35:14
+ * @LastEditTime: 2025-04-01 17:34:20
  */
 import type { ChangeEvent } from "react";
 import React, { useCallback, useEffect, useState } from "react";
@@ -14,8 +14,8 @@ import type {
 import type { CustomFilterProps } from "ag-grid-react";
 import { useGridFilter } from "ag-grid-react";
 
-export const DateTimeFilter = (props: CustomFilterProps) => {
-    // console.log("=DateTimeFilter==props====", props);
+export const LookupFilter = (props: CustomFilterProps) => {
+    // console.log("=LookupFilter==props====", props);
     const { model, onModelChange, context, colDef } = props;
     const { filterParams, cellEditorParams } = colDef;
     const { amisRender, amisData } = context;
@@ -46,7 +46,7 @@ export const DateTimeFilter = (props: CustomFilterProps) => {
     });
 
     const random = Math.random().toString(36).substring(2);
-    const cellFormId = `filterForm__datetime__${random}`;
+    const cellFormId = `filterForm__lookup__${random}`;
 
     // 定义 amis 的 schema
     // 设置 showSystemFields 和 readonly 属性是因为 创建时间、创建人、修改时间、修改人 这几个系统字段, 在表单中不可编辑且默认隐藏
@@ -63,12 +63,9 @@ export const DateTimeFilter = (props: CustomFilterProps) => {
                 },
                 config: Object.assign({}, fieldConfig, {
                     label: false,
-                    type: 'input-datetime-range',
+                    multiple: true,
                     readonly: false,
                     amis: {
-                        "popOverContainerSelector": `.steedos-airtable-grid`,//`#${this.eGui.id}`
-                        // "closeOnSelect": false,// 不可以配置为false，否则会出现第一次点开控件时，点选日期后，输入框中小时值无故变成差8小时
-                        // "embed": true
                         "onEvent": {
                             "change": {
                                 "actions": [
@@ -77,20 +74,6 @@ export const DateTimeFilter = (props: CustomFilterProps) => {
                                         "script": `
                                             var updateAgGridFilterValue = context.props.updateAgGridFilterValue;
                                             updateAgGridFilterValue(event.data.value);
-                                        `
-                                    }
-                                ]
-                            },
-                            // 点击弹出日期时间popover会关闭filter菜单，需要单独处理，见：https://ag-grid.com/react-data-grid/component-filter/#custom-filters-containing-a-popup-element
-                            "focus": {
-                                "actions": [
-                                    {
-                                        "actionType": "custom",
-                                        "script": `
-                                            setTimeout(function(){
-                                                var popover = document.querySelector('.antd-PopOver.antd-DateRangePicker-popover');
-                                                popover && popover.classList.add('ag-custom-component-popup');
-                                            }, 300);
                                         `
                                     }
                                 ]
@@ -109,10 +92,8 @@ export const DateTimeFilter = (props: CustomFilterProps) => {
         let updatedModel: any;
         if (val?.length) {
             updatedModel = {
-                dateFrom: val[0],
-                dateTo: val[1],
-                filterType: "datetime",
-                type: "between"
+                values: val,
+                filterType: "lookup"
             };
         }
         onModelChange(updatedModel);
@@ -121,7 +102,7 @@ export const DateTimeFilter = (props: CustomFilterProps) => {
     return (
         <form className="ag-filter-wrapper ag-focus-managed">
             <div className="ag-filter-body-wrapper ag-simple-filter-body-wrapper">
-                <div className='amis-ag-grid-filter amis-ag-grid-filter-datetime' style={{
+                <div className='amis-ag-grid-filter amis-ag-grid-filter-lookup' style={{
                     width: '100%',
                     height: '100%'
                 }}>
