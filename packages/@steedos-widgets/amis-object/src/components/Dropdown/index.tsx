@@ -7,7 +7,7 @@
  */
 import { Dropdown, Spin, Tabs } from 'antd';
 import type { DropDownProps } from 'antd/es/dropdown';
-import React from 'react';
+import React, { useState } from 'react';
 const { TabPane } = Tabs;
 export type HeaderDropdownProps = {
   overlayClassName?: string;
@@ -24,21 +24,24 @@ const HeaderDropdown: React.FC<HeaderDropdownProps> = ({ overlayClassName: cls, 
   />
 );
 
-const getOverlay = (render, overlaySchema, data)=>{
-  return <>
-  <Spin delay={300} spinning={false} >
-    <div className="bg-white shadow">
-    {render('body', overlaySchema, {
-      // data: data
-        // 这里的信息会作为 props 传递给子组件，一般情况下都不需要这个
-    })}
-    </div>
-  </Spin>
-</>
-}
+
 
 export const SteedosDropdown = (props) => {
+  const [open, setOpen] = useState(false);
   const { render, overlay, body, trigger = ['click'], placement = 'bottomRight', overlayClassName, className, data } = props; 
+
+  const getOverlay = (render, overlaySchema, data) => {
+    return (
+      <div onClick={() => setOpen(false)}>
+        <Spin delay={300} spinning={false}>
+          <div className="bg-white shadow">
+            {render('body', overlaySchema, data)}
+          </div>
+        </Spin>
+      </div>
+    );
+  }
+
   return (
     <>
     <HeaderDropdown
@@ -47,6 +50,8 @@ export const SteedosDropdown = (props) => {
         trigger={trigger}
         className={className}
         overlayClassName={overlayClassName}
+        open={open}
+        onOpenChange={setOpen}
       >
         <div>
         <>{render('body', body, {
