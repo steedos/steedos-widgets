@@ -233,7 +233,7 @@ export const AmisObjectListView = async (props) => {
                           listViewSchemaProps.formFactor = formFactor;
                           listViewSchemaProps.displayAs = display;
                           console.log("====listViewSchemaProps===>", listName, display, listViewSchemaProps)
-                          const crud_mode = listView.crud_mode;
+                          const crud_mode = listView && listView.crud_mode;
                           if(crud_mode){
                             if(!listViewSchemaProps.defaults.listSchema.mode){
                               // 这里优先认微页面中为列表视图组件配置的crudMode及crud.mode属性，
