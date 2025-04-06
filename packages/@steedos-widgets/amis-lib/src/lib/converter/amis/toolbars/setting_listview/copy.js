@@ -55,6 +55,10 @@ export const getCopyListviewButtonSchema = ()=>{
                                 "blank": false
                               },
                               "actionType": "url",
+                            },
+                            {
+                              "actionType": "custom",
+                              "script": "window.location.reload();"
                             }
                           ]
                         }

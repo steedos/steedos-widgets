@@ -37,6 +37,10 @@ export const getDeleteListviewButtonSchema = ()=>{
                   "blank": false
                 },
                 "expression": "data.delete == 1"
+              },
+              {
+                "actionType": "custom",
+                "script": "window.location.reload();"
               }
             ]
           }

@@ -173,7 +173,8 @@ export const AmisObjectListView = async (props) => {
     type: "service",
     data: {
       defaultListName: listName ? listName : first(values(uiSchema.list_views))?.name,
-      recordPermissions: uiSchema.permissions
+      recordPermissions: uiSchema.permissions,
+      isObjectListview: true
     },
     style: style,
     className: `${className} sm:bg-gray-50 h-full  steedos-object-listview ${displayAs === 'split'? 'sm:border-r':'sm:border-r'}`,

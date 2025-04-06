@@ -47,6 +47,10 @@ export const getRenameListviewButtonSchema = ()=>{
                               },
                               "actionType": "url",
                             },
+                            {
+                              "actionType": "custom",
+                              "script": "window.location.reload();"
+                            }
                           ]
                         }
                       }

@@ -39,11 +39,8 @@ export const getSetListviewSortButtonSchema = ()=>{
                           "weight": 0,
                           "actions": [
                             {
-                              "args": {
-                                "url": "${context.rootUrl}/app/${appId}/${targetObjectName}/grid/${listName}",
-                                "blank": false
-                              },
-                              "actionType": "url"
+                              "actionType": "custom",
+                              "script": "window.location.reload(); //doAction({'actionType': 'rebuild', 'componentId': `service_listview_${event.data.targetObjectName}`})"
                             }
                           ]
                         }

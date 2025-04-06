@@ -58,6 +58,10 @@ export const getNewListviewButtonSchema = ()=>{
                                 "blank": false
                               },
                               "actionType": "url",
+                            },
+                            {
+                              "actionType": "custom",
+                              "script": "window.location.reload();"
                             }
                           ]
                         }
