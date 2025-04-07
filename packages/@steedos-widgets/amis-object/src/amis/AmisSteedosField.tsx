@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-04-07 22:37:49
+ * @LastEditTime: 2025-04-07 23:05:00
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -443,12 +443,12 @@ export const AmisSteedosField = async (props) => {
                                     }
                                 ]
                             },
-                            {
+                            (!!!tableObjectName ? {
                                 type: 'static',
                                 tpl: '-',
                                 className: `${fieldBaseProps.className || ''} text-muted !border-b-0`,
                                 hiddenOn: `\${_display.${steedosField.name}}`,
-                            },
+                            } : null),
                             (steedosField.description ?
                             {
                                 type: 'tpl', 
