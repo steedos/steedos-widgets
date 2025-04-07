@@ -1020,7 +1020,9 @@ function getButtonVisibleOn(button){
         //     return 'false';
         // }
         if(visible.trim().startsWith('function')){
-            return `try{${visible}(objectName, typeof _id === 'undefined' ? null: _id, typeof record === 'undefined' ? (typeof recordPermissions === 'undefined' ? {} : recordPermissions) : record.recordPermissions, data)}catch(e){console.error(e)}`
+            visible = visible.replace('function', 'function __visible');
+            const visibleStr = `(function _visible(){try{return (${visible})(objectName, typeof _id === 'undefined' ? null: _id, typeof record === 'undefined' ? (typeof recordPermissions === 'undefined' ? {} : recordPermissions) : record.recordPermissions, data)}catch(e){console.error(e)}})()`
+            return visibleStr;
         }
         return visible;
     }

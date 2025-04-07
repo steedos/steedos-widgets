@@ -11,7 +11,7 @@ import { map, defaultsDeep } from 'lodash';
 import { createObject } from '@steedos-widgets/amis-lib';
 
 const getMenu = (render, buttons, btnClassName, props) => {
-  return map(buttons, (button) => {
+  const menu = map(buttons, (button) => {
     if (btnClassName) {
       button.className = `${button.className} ${btnClassName}`
     }
@@ -28,6 +28,7 @@ const getMenu = (render, buttons, btnClassName, props) => {
       )
     }
   })
+  return menu;
 }
 
 export const SteedosDropdownButton = (props)=>{
@@ -41,7 +42,8 @@ export const SteedosDropdownButton = (props)=>{
                     env.fetcher(onOpenApi, createObject(data, {})).then(result => {
                         const openData = result?.hasOwnProperty('ok') ? result.data : result;
                         setMenu(getMenu(render, buttons, btnClassName, {
-                            data: createObject(data, defaultsDeep(openData, data, {record: data}))
+                            // data: createObject(data, defaultsDeep(openData, data, {record: data}))
+                            data: createObject(data, Object.assign({}, data, {record: data}, openData))
                         }))
                       }).catch((e)=>{
                         console.error(e)

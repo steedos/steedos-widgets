@@ -130,7 +130,7 @@ function formatUISchemaCache(objectName, uiSchema){
     })
 }
 
-export async function getUISchema(objectName, force) {
+export async function getUISchema(objectName, force, retry = true) {
     if (!objectName) {
         return;
     }
@@ -146,7 +146,13 @@ export async function getUISchema(objectName, force) {
             const url = `/service/api/@${objectName.replace(/\./g, "_")}/uiSchema`;
             uiSchema = await fetchAPI(url, { method: "get" });
         }
-        if(!uiSchema){
+
+        if(!uiSchema && retry){
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            return getUISchema(objectName, force, false);
+        }
+
+        if(!uiSchema && retry == false){
             return ;
         }
         formatUISchemaCache(objectName, uiSchema);
@@ -157,7 +163,16 @@ export async function getUISchema(objectName, force) {
     return getUISchemaCache(objectName);
 }
 
-export function getUISchemaSync(objectName, force) {
+// 阻塞等待函数，单位毫秒
+function wait(milliseconds) {
+    const start = new Date().getTime();
+    let now = start;
+    while (now - start < milliseconds) {
+        now = new Date().getTime();
+    }
+}
+
+export function getUISchemaSync(objectName, force, retry = true) {
     if (!objectName) {
         return;
     }
@@ -173,7 +188,12 @@ export function getUISchemaSync(objectName, force) {
             async: false,
         });
 
-        if(!uiSchema){
+        if(!uiSchema && retry){
+            wait(2000); // 阻塞等待3秒
+            return getUISchemaSync(objectName, force, false)
+        }
+
+        if(!uiSchema && retry == false){
             return ;
         }
         formatUISchemaCache(objectName, uiSchema);
