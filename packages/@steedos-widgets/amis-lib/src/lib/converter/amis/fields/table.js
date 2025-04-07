@@ -527,14 +527,19 @@ function getFieldWidth(width){
 }
 
 async function getColumnItemOnClick(field, options){
-    const recordPage = await getPage({ type: 'record', appId: options.appId, objectName: options.objectName, formFactor: options.formFactor });
+    let objectApiName = options.objectName;
+    if(!(field.is_name || field.name === options.labelFieldName)){
+        objectApiName = field.reference_to
+    }
+    const recordPage = await getPage({ type: 'record', appId: options.appId, objectName: objectApiName, formFactor: options.formFactor });
     const drawerRecordDetailSchema = recordPage ? Object.assign({}, recordPage.schema, {
         "recordId": `\${${options.idFieldName}}`,
         "data": {
             ...recordPage.schema.data,
             "_inDrawer": true,  // 用于判断是否在抽屉中
             "recordLoaded": false, // 重置数据加载状态
-            "recordId": `\${${options.idFieldName}}`//审批微页面依赖了作用域中的recordId
+            "recordId": `\${${options.idFieldName}}`,//审批微页面依赖了作用域中的recordId
+            "_tableObjectName": options.objectName
         }
     }) : {
         "type": "steedos-record-detail",
@@ -545,12 +550,16 @@ async function getColumnItemOnClick(field, options){
         "data": {
             "_inDrawer": true,  // 用于判断是否在抽屉中
             "recordLoaded": false, // 重置数据加载状态
+            "_tableObjectName": options.objectName
         }
     }
 
     if(!(field.is_name || field.name === options.labelFieldName)){
         drawerRecordDetailSchema.objectApiName = field.reference_to
         drawerRecordDetailSchema.recordId = `\${_display.${field.name}.value}`
+        // if (recordPage){
+        //     drawerRecordDetailSchema.data.recordId = `\${_display.${field.name}.value}`
+        // }
     }
     return {
         "click": {
@@ -748,7 +757,16 @@ export async function getTableColumns(object, fields, options){
                     columnItem.defaultColor = null;
                 }
 
-                if(window.innerWidth >= 768 && ((field.is_name || field.name === options.labelFieldName) || ((field.type == 'lookup' || field.type == 'master_detail') && _.isString(field.reference_to) && field.multiple != true)) && options.isRelated){
+                let needClickEvent = false;
+                if (options.isRelated){
+                    // 子表列表上，Lookup字段和名称字段都需要点击事件
+                    needClickEvent = ((field.is_name || field.name === options.labelFieldName) || ((field.type == 'lookup' || field.type == 'master_detail') && _.isString(field.reference_to) && field.multiple != true));
+                }
+                else {// if (isObjectListview)
+                    // 列表视图、对象表格中，Lookup字段需要点击事件
+                    needClickEvent = (field.type == 'lookup' || field.type == 'master_detail') && _.isString(field.reference_to) && field.multiple != true;
+                }
+                if(window.innerWidth >= 768 && needClickEvent){
                     columnItem.onEvent = await getColumnItemOnClick(field, options);
                 }
 
