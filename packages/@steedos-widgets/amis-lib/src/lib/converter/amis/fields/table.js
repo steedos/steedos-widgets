@@ -709,6 +709,32 @@ export async function getTableColumns(object, fields, options){
                 static: true,
             }, fieldAmis, {name: field.name});
         }
+        else if(field.type === 'lookup'){
+            columnItem = Object.assign({}, {
+                type: "static-wrapper",
+                name: field.name,
+                label: field.label,
+                sortable: field.sortable,
+                width: getFieldWidth(field.width),
+                toggled: field.toggled,
+                className,
+                size: "none",
+                inputClassName: "inline",
+                body: {
+                    type: "steedos-field",
+                    static: true,
+                    tableObjectName: options.objectName,
+                    config: {
+                        type: "lookup",
+                        reference_to: field.reference_to,
+                        name: field.name,
+                        label: null,
+                        multiple: field.multiple,
+                        // amis
+                    }
+                }
+            }, fieldAmis, {name: field.name});
+        }
         else{
             const tpl = await Tpl.getFieldTpl(field, options);
             let type = 'static-text';
@@ -757,18 +783,18 @@ export async function getTableColumns(object, fields, options){
                     columnItem.defaultColor = null;
                 }
 
-                let needClickEvent = false;
-                if (options.isRelated){
-                    // 子表列表上，Lookup字段和名称字段都需要点击事件
-                    needClickEvent = ((field.is_name || field.name === options.labelFieldName) || ((field.type == 'lookup' || field.type == 'master_detail') && _.isString(field.reference_to) && field.multiple != true));
-                }
-                else {// if (isObjectListview)
-                    // 列表视图、对象表格中，Lookup字段需要点击事件
-                    needClickEvent = (field.type == 'lookup' || field.type == 'master_detail') && _.isString(field.reference_to) && field.multiple != true;
-                }
-                if(window.innerWidth >= 768 && needClickEvent){
-                    columnItem.onEvent = await getColumnItemOnClick(field, options);
-                }
+                // let needClickEvent = false;
+                // if (options.isRelated){
+                //     // 子表列表上，Lookup字段和名称字段都需要点击事件
+                //     needClickEvent = ((field.is_name || field.name === options.labelFieldName) || ((field.type == 'lookup' || field.type == 'master_detail') && _.isString(field.reference_to) && field.multiple != true));
+                // }
+                // else {// if (isObjectListview)
+                //     // 列表视图、对象表格中，Lookup字段需要点击事件
+                //     needClickEvent = (field.type == 'lookup' || field.type == 'master_detail') && _.isString(field.reference_to) && field.multiple != true;
+                // }
+                // if(window.innerWidth >= 768 && needClickEvent){
+                //     columnItem.onEvent = await getColumnItemOnClick(field, options);
+                // }
 
             }
         }
