@@ -1,8 +1,8 @@
 /*
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-03-22 09:31:21
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-02-18 16:06:21
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2025-04-07 16:02:53
  */
 import { i18next } from "../i18n";
 export const getSchema = (uiSchema)=>{
@@ -63,6 +63,17 @@ export const getSchema = (uiSchema)=>{
                                   "_isRelated": "${_isRelated}"
                                 },
                                 "expression": `\${_master.objectName != '${uiSchema.name}' && _master.objectName}`
+                            },
+                            // 列表视图、对象表格组件上的lookup字段，点开右侧弹出drawer窗口，删除记录后刷新列表
+                            {
+                                "actionType": "broadcast",
+                                "args": {
+                                  "eventName": "@data.changed.${_tableObjectName}"
+                                },
+                                "data": {
+                                  "objectName": "${_tableObjectName}"
+                                },
+                                "expression": `\${_tableObjectName != '${uiSchema.name}' && _tableObjectName}`
                             }
                           ]
                     }
