@@ -709,7 +709,7 @@ export async function getTableColumns(object, fields, options){
                 static: true,
             }, fieldAmis, {name: field.name});
         }
-        else if(field.type === 'lookup'){
+        else if(field.type === 'lookup' || field.type === 'master_detail'){
             columnItem = Object.assign({}, {
                 type: "static-wrapper",
                 name: field.name,
