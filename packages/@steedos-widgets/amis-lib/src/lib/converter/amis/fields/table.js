@@ -783,7 +783,7 @@ export async function getTableColumns(object, fields, options){
                     columnItem.defaultColor = null;
                 }
 
-                // let needClickEvent = false;
+                let needClickEvent = false;
                 // if (options.isRelated){
                 //     // 子表列表上，Lookup字段和名称字段都需要点击事件
                 //     needClickEvent = ((field.is_name || field.name === options.labelFieldName) || ((field.type == 'lookup' || field.type == 'master_detail') && _.isString(field.reference_to) && field.multiple != true));
@@ -792,10 +792,11 @@ export async function getTableColumns(object, fields, options){
                 //     // 列表视图、对象表格中，Lookup字段需要点击事件
                 //     needClickEvent = (field.type == 'lookup' || field.type == 'master_detail') && _.isString(field.reference_to) && field.multiple != true;
                 // }
-                // if(window.innerWidth >= 768 && needClickEvent){
-                //     columnItem.onEvent = await getColumnItemOnClick(field, options);
-                // }
-
+                // lookup字段走steedos-field组件了，所以这里只需要判断子表名称字段才额外加点击事件弹出右侧详情
+                needClickEvent = options.isRelated && (field.is_name || field.name === options.labelFieldName);
+                if(window.innerWidth >= 768 && needClickEvent){
+                    columnItem.onEvent = await getColumnItemOnClick(field, options);
+                }
             }
         }
         if(columnItem){
