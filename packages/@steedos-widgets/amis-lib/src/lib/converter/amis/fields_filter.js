@@ -619,13 +619,15 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
                                       "actionType": "custom",
                                       "script": onSearchableFieldsChangeScript
                                     },
-                                    {
-                                      "actionType": "click",
-                                      "componentId": btnSearchId,
-                                      "args": {
-                                        "__from_fields_filter_settings_confirm": true
-                                      }
-                                    },
+                                    // 自动触发搜索事件会造成bug，应该是升级amis到6.4造成的，见：https://github.com/steedos/steedos-platform/issues/7121
+                                    // 变更搜索项后，用户一般会点击搜索按钮，所以这里不自动触发搜索事件
+                                    // {
+                                    //   "actionType": "click",
+                                    //   "componentId": btnSearchId,
+                                    //   "args": {
+                                    //     "__from_fields_filter_settings_confirm": true
+                                    //   }
+                                    // },
                                     {
                                       "componentId": "",
                                       "args": {},
