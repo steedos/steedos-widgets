@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2025-02-13 15:12:53
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2025-04-07 23:05:00
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -110,6 +110,7 @@ async function getLookupLinkOnClick(field: any, options: any) {
             ...recordPage.schema.data,
             "_inDrawer": true,  // 用于判断是否在抽屉中
             "recordLoaded": false, // 重置数据加载状态
+            "_tableObjectName": options.tableObjectName
         }
     }) : {
         "type": "steedos-record-detail",
@@ -120,6 +121,7 @@ async function getLookupLinkOnClick(field: any, options: any) {
         "data": {
             "_inDrawer": true,  // 用于判断是否在抽屉中
             "recordLoaded": false, // 重置数据加载状态
+            "_tableObjectName": options.tableObjectName
         }
     }
     return {
@@ -202,7 +204,7 @@ export const AmisSteedosField = async (props) => {
     }
 
     let steedosField = null;
-    let { field, readonly = false, ctx = {}, config, $schema, static: fStatic, env, inInputTable, className } = props;
+    let { field, readonly = false, ctx = {}, config, $schema, static: fStatic, env, inInputTable, className, tableObjectName } = props;
     const { appId, formFactor } = props.data || {};
     // console.log(`AmisSteedosField`, props)
 
@@ -434,23 +436,25 @@ export const AmisSteedosField = async (props) => {
                                             onEvent: window.innerWidth < 768 ? null : await getLookupLinkOnClick(steedosField, {
                                                 appId,
                                                 objectName: referenceTo,
-                                                formFactor
+                                                formFactor,
+                                                tableObjectName
                                             })
                                         }
                                     }
                                 ]
                             },
-                            {
+                            (!!!tableObjectName ? {
                                 type: 'static',
                                 tpl: '-',
                                 className: `${fieldBaseProps.className || ''} text-muted !border-b-0`,
                                 hiddenOn: `\${_display.${steedosField.name}}`,
-                            },
+                            } : null),
+                            (steedosField.description ?
                             {
                                 type: 'tpl', 
                                 tpl: `<span class='antd-TplField antd-Form-description'><span>${steedosField.description}</span></span>`
-                            }
-                            ]
+                            } : null)
+                        ]
                         });
                     }else{
                         const res = await env.fetcher(source, props.data);

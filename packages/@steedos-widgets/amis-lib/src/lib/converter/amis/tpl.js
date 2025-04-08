@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-05-23 09:53:08
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-11-17 13:10:08
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2025-04-08 10:55:41
  * @Description: 
  */
 import { Router } from '../../router'
@@ -163,9 +163,10 @@ export function getRelatedFieldTpl(field, ctx){
                 const href = Router.getObjectDetailPath({
                     formFactor: ctx.formFactor, appId: "${appId}", objectName: `${objectNameTpl}`, recordId: `${recordIdTpl}`
                 })
-                if(ctx.isRelated && window.innerWidth >= 768){
+                if (window.innerWidth >= 768) { //(ctx.isRelated || isObjectListview) && window.innerWidth >= 768
+                    // 相关表字段，包括列表视图、对象表格组件中的lookup/master_detail字段，在PC端显示时，点击字段值，不跳转到详情页而是右侧弹出drawer
                     labelTpl = `<a href="${href}" ${linkTarget} onclick="return false;">${labelTpl}</a>`;
-                }else{
+                } else {
                     labelTpl = `<a href="${href}" ${linkTarget}>${labelTpl}</a>`;
                 }
                 

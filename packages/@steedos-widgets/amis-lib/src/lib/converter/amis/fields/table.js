@@ -92,7 +92,12 @@ async function getQuickEditSchema(object, columnField, options){
     if (field.disabled) {
         quickEditSchema = false;
     } else {
-        var fieldSchema = await Fields.convertSFieldToAmisField(field, false, _.omit(options, 'buttons'));
+        var fieldCtx = Object.assign({}, _.omit(options, 'buttons'), {
+            defaults: Object.assign({}, options.defaults, {
+                formSchema: quickEditSchema
+            })
+        });
+        var fieldSchema = await Fields.convertSFieldToAmisField(field, false, fieldCtx);
         //存在属性上可编辑，实际不可编辑的字段，convertSFieldToAmisField函数可能会返回undefined，如summary
         if (!!fieldSchema) {
             quickEditSchema.body.push(fieldSchema);
@@ -527,14 +532,19 @@ function getFieldWidth(width){
 }
 
 async function getColumnItemOnClick(field, options){
-    const recordPage = await getPage({ type: 'record', appId: options.appId, objectName: options.objectName, formFactor: options.formFactor });
+    let objectApiName = options.objectName;
+    if(!(field.is_name || field.name === options.labelFieldName)){
+        objectApiName = field.reference_to
+    }
+    const recordPage = await getPage({ type: 'record', appId: options.appId, objectName: objectApiName, formFactor: options.formFactor });
     const drawerRecordDetailSchema = recordPage ? Object.assign({}, recordPage.schema, {
         "recordId": `\${${options.idFieldName}}`,
         "data": {
             ...recordPage.schema.data,
             "_inDrawer": true,  // 用于判断是否在抽屉中
             "recordLoaded": false, // 重置数据加载状态
-            "recordId": `\${${options.idFieldName}}`//审批微页面依赖了作用域中的recordId
+            "recordId": `\${${options.idFieldName}}`,//审批微页面依赖了作用域中的recordId
+            "_tableObjectName": options.objectName
         }
     }) : {
         "type": "steedos-record-detail",
@@ -545,12 +555,16 @@ async function getColumnItemOnClick(field, options){
         "data": {
             "_inDrawer": true,  // 用于判断是否在抽屉中
             "recordLoaded": false, // 重置数据加载状态
+            "_tableObjectName": options.objectName
         }
     }
 
     if(!(field.is_name || field.name === options.labelFieldName)){
         drawerRecordDetailSchema.objectApiName = field.reference_to
         drawerRecordDetailSchema.recordId = `\${_display.${field.name}.value}`
+        // if (recordPage){
+        //     drawerRecordDetailSchema.data.recordId = `\${_display.${field.name}.value}`
+        // }
     }
     return {
         "click": {
@@ -700,6 +714,32 @@ export async function getTableColumns(object, fields, options){
                 static: true,
             }, fieldAmis, {name: field.name});
         }
+        else if(field.type === 'lookup' || field.type === 'master_detail'){
+            columnItem = Object.assign({}, {
+                type: "static-wrapper",
+                name: field.name,
+                label: field.label,
+                sortable: field.sortable,
+                width: getFieldWidth(field.width),
+                toggled: field.toggled,
+                className,
+                size: "none",
+                inputClassName: "inline",
+                body: {
+                    type: "steedos-field",
+                    static: true,
+                    tableObjectName: options.objectName,
+                    config: {
+                        type: "lookup",
+                        reference_to: field.reference_to,
+                        name: field.name,
+                        label: null,
+                        multiple: field.multiple,
+                        amis: Object.assign({}, fieldAmis, { label: null })
+                    }
+                }
+            }, fieldAmis, {name: field.name});
+        }
         else{
             const tpl = await Tpl.getFieldTpl(field, options);
             let type = 'static-text';
@@ -748,10 +788,20 @@ export async function getTableColumns(object, fields, options){
                     columnItem.defaultColor = null;
                 }
 
-                if(window.innerWidth >= 768 && ((field.is_name || field.name === options.labelFieldName) || ((field.type == 'lookup' || field.type == 'master_detail') && _.isString(field.reference_to) && field.multiple != true)) && options.isRelated){
+                let needClickEvent = false;
+                // if (options.isRelated){
+                //     // 子表列表上，Lookup字段和名称字段都需要点击事件
+                //     needClickEvent = ((field.is_name || field.name === options.labelFieldName) || ((field.type == 'lookup' || field.type == 'master_detail') && _.isString(field.reference_to) && field.multiple != true));
+                // }
+                // else {// if (isObjectListview)
+                //     // 列表视图、对象表格中，Lookup字段需要点击事件
+                //     needClickEvent = (field.type == 'lookup' || field.type == 'master_detail') && _.isString(field.reference_to) && field.multiple != true;
+                // }
+                // lookup字段走steedos-field组件了，所以这里只需要判断子表名称字段才额外加点击事件弹出右侧详情
+                needClickEvent = options.isRelated && (field.is_name || field.name === options.labelFieldName);
+                if(window.innerWidth >= 768 && needClickEvent){
                     columnItem.onEvent = await getColumnItemOnClick(field, options);
                 }
-
             }
         }
         if(columnItem){
