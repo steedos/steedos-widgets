@@ -770,7 +770,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
                     }
                     
                     const ctx = ${JSON.stringify(ctx)};
-                    const componentId = ctx.defaults.formSchema.id;
+                    const componentId = ctx.defaults && ctx.defaults.formSchema && ctx.defaults.formSchema.id;
                     doAction({
                         actionType: 'setValue',
                         componentId: componentId, 
