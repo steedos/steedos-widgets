@@ -730,7 +730,7 @@ export async function getTableColumns(object, fields, options){
                         name: field.name,
                         label: null,
                         multiple: field.multiple,
-                        // amis
+                        amis: Object.assign({}, fieldAmis, {name: field.name, label: null})
                     }
                 }
             }, fieldAmis, {name: field.name});
