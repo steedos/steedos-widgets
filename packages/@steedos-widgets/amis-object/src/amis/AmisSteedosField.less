@@ -5,3 +5,37 @@
     }
 }
 
+.antd-Crud .antd-Table .antd-Table-table {
+    tbody td.steedos-table-lookup-field, td.steedos-table-master_detail-field {
+        .antd-Wrapper {
+            display: inline !important;
+    
+            .antd-Form-item {
+                display: inline !important;
+    
+                &> label.antd-Form-label{
+                    // ObjectForm中的lookup字段弹出的picker列表中的lookup字段变成右对齐了，是因为这里的lookup字段多了一层 antd-Form-label 和 antd-Form-value
+                    // ObjectTable中的单元格编辑弹出的lookup picker没有这个问题，因为它没有多生成一层 antd-Form-label 和 antd-Form-value
+                    display: none !important;
+                }
+    
+                .steedos-field-lookup-wrapper {
+                    display: inline !important;
+    
+                    * {
+                        display: inline !important;
+                    }
+    
+                    .steedos-field-lookup-each{
+                        &> .antd-Form-item {
+                            margin-right: 6px;
+                            &:last-child{
+                                margin-right: 0;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
