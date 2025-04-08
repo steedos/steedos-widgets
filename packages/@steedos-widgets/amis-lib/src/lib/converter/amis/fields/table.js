@@ -92,7 +92,12 @@ async function getQuickEditSchema(object, columnField, options){
     if (field.disabled) {
         quickEditSchema = false;
     } else {
-        var fieldSchema = await Fields.convertSFieldToAmisField(field, false, _.omit(options, 'buttons'));
+        var fieldCtx = Object.assign({}, _.omit(options, 'buttons'), {
+            defaults: Object.assign({}, options.defaults, {
+                formSchema: quickEditSchema
+            })
+        });
+        var fieldSchema = await Fields.convertSFieldToAmisField(field, false, fieldCtx);
         //存在属性上可编辑，实际不可编辑的字段，convertSFieldToAmisField函数可能会返回undefined，如summary
         if (!!fieldSchema) {
             quickEditSchema.body.push(fieldSchema);
