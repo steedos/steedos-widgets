@@ -1028,7 +1028,7 @@ export function getDataTypeDefinitions() {
                 if (!fieldValue) return null;
 
                 // 这里使用params.value.map，而不是fieldValue.map，是因为 processCellForClipboard 中调用了 formatValue 函数，传入的参数值为params.value
-                return isMultiple ? (params.value.map((item) => find(fieldValue, { _id: item })?.name || "").join(",")) : (fieldValue.name || "");
+                return isMultiple ? ((params.value || []).map((item) => find(fieldValue, { _id: item })?.name || "").join(",")) : (fieldValue.name || "");
             },
             valueParser: function (params) {
                 const fieldValue = params.newValue;
