@@ -288,7 +288,8 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
             break;
         case 'date':
             cellDataType = 'date';
-            cellEditor = "agDateCellEditor";
+            // cellEditor = "agDateCellEditor";
+            cellEditor = "agAmisDateCellEditor";
             valueFormatter = dataTypeDefinitions.date.valueFormatter;
             // 如果不定义valueGetter，双击单元格进入编辑状态时，值显示为空
             valueGetter = dataTypeDefinitions.date.valueGetter;
@@ -522,6 +523,7 @@ async function onRowValueChanged(event: any, dataSource: any, { env }) {
                         utcDate = parseDate(n, fieldConfig.type === "datetime");
                     }
                     else if (fieldConfig.type === "date") {
+                        // 日期类型换成 amis steedos date 组件后,n 值不再是 Date 对象，而是字符串，所以这里的逻辑只在原来使用 ag-grid 自带的 agDateCellEditor 组件才会进
                         // 设置为选中日期的 UTC 0 点
                         // 只有从日期控件输入的值需要做转换，从粘贴行数据过来的字符串格式不用处理时区，因为要求粘贴过来的只兼容 YYYY-MM-DD YYYY/MM/DD 两种格式
                         const timezoneOffset = n.getTimezoneOffset();
