@@ -820,7 +820,7 @@ function filterModelToOdataFilters(filterModel, colDefs) {
                 if (value.dateTo) {
                     filterItem.push([key, "<=", value.dateTo]);
                 }
-                if(filterItem.length){
+                if (filterItem.length) {
                     filters.push(filterItem);
                 }
             } else {
@@ -1295,63 +1295,75 @@ export async function getGridOptions({ tableId, title, mode, config, dataSource,
         onCellEditingStarted,
         // 自定义数据复制到剪贴板时的格式
         processCellForClipboard: function (params: ProcessCellForExportParams) {
-            const fieldValue = params.value;
-            const colDef = params.column.getColDef();
-            const fieldConfig = colDef.cellEditorParams.fieldConfig;
-            const isMultiple = fieldConfig.multiple;
-            const fieldType = fieldConfig.type;
-            var fieldName = colDef.field;
-            if (fieldType === "lookup") {
-                // 因为lookup字段的值是记录id，避免发起起请求来根据记录label（即formatValue）获取记录id，这里直接复制id值到剪贴板
-                if (isMultiple) {
-                    // return fieldValue.join(",");
-                    // 约定输出"新新<654300b5074594d15147bcfa>,上海分公司<9FqSC6jms4KRGCgNm>"这种格式
-                    // 如果不约定格式，直接返回id数组格式，即 fieldValue.join(",") 即可
-                    return fieldValue.map((item: string) => {
-                        return `${params.formatValue([item])}<${item}>`;
-                    }).join(",");
+            try {
+                const fieldValue = params.value;
+                const colDef = params.column.getColDef();
+                const fieldConfig = colDef.cellEditorParams.fieldConfig;
+                const isMultiple = fieldConfig.multiple;
+                const fieldType = fieldConfig.type;
+                var fieldName = colDef.field;
+                if (fieldType === "lookup") {
+                    // 因为lookup字段的值是记录id，避免发起起请求来根据记录label（即formatValue）获取记录id，这里直接复制id值到剪贴板
+                    if (isMultiple) {
+                        // return fieldValue.join(",");
+                        // 约定输出"新新<654300b5074594d15147bcfa>,上海分公司<9FqSC6jms4KRGCgNm>"这种格式
+                        // 如果不约定格式，直接返回id数组格式，即 fieldValue.join(",") 即可
+                        return fieldValue?.map((item: string) => {
+                            return `${params.formatValue([item])}<${item}>`;
+                        }).join(",");
+                    }
+                    else {
+                        // return fieldValue;
+                        // 输出"上海分公司<9FqSC6jms4KRGCgNm>"这种格式
+                        // 如果不约定格式，直接返回id字符格式，即 fieldValue 即可
+                        return `${params.formatValue(fieldValue)}<${fieldValue}>`;
+                    }
                 }
-                else {
-                    // return fieldValue;
-                    // 输出"上海分公司<9FqSC6jms4KRGCgNm>"这种格式
-                    // 如果不约定格式，直接返回id字符格式，即 fieldValue 即可
-                    return `${params.formatValue(fieldValue)}<${fieldValue}>`;
-                }
+                // 默认（即不定义 processCellForClipboard 函数时）使用的是字段的formatValue格式作为复制到剪贴板的内容
+                return params.formatValue(fieldValue);
             }
-            // 默认（即不定义 processCellForClipboard 函数时）使用的是字段的formatValue格式作为复制到剪贴板的内容
-            return params.formatValue(fieldValue);
+            catch (error) {
+                console.error("Ag-Grid复制数据时遇到错误了：", error);
+                env.notify("error", `Ag-Grid复制数据时遇到错误了：${error.message}`);
+            }
         },
         // 从剪贴板粘贴回ag-grid时的处理逻辑
         processCellFromClipboard: function (params: ProcessCellForExportParams) {
-            const fieldValue = params.value;
-            const colDef = params.column.getColDef();
-            const fieldConfig = colDef.cellEditorParams.fieldConfig;
-            const isMultiple = fieldConfig.multiple;
-            const fieldType = fieldConfig.type;
-            var fieldName = colDef.field;
-            if (fieldType === "lookup") {
-                // 如果上面 processCellForClipboard 函数中不约定特定格式，以下lookup字段转换逻辑可以全去掉
-                if (isMultiple) {
-                    // "新新<654300b5074594d15147bcfa>,上海分公司<9FqSC6jms4KRGCgNm>"这种格式中取出id值数组
-                    const matches = fieldValue.match(/<(.*?)>/g)?.map(match => match.slice(1, -1));
-                    if (matches?.length) {
-                        return matches;
+            try {
+                const fieldValue = params.value;
+                const colDef = params.column.getColDef();
+                const fieldConfig = colDef.cellEditorParams.fieldConfig;
+                const isMultiple = fieldConfig.multiple;
+                const fieldType = fieldConfig.type;
+                var fieldName = colDef.field;
+                if (fieldType === "lookup") {
+                    // 如果上面 processCellForClipboard 函数中不约定特定格式，以下lookup字段转换逻辑可以全去掉
+                    if (isMultiple) {
+                        // "新新<654300b5074594d15147bcfa>,上海分公司<9FqSC6jms4KRGCgNm>"这种格式中取出id值数组
+                        const matches = fieldValue.match(/<(.*?)>/g)?.map(match => match.slice(1, -1));
+                        if (matches?.length) {
+                            return matches;
+                        }
+                        else {
+                            return fieldValue.split(",").map((item: string) => {
+                                return item.trim();
+                            });
+                        }
                     }
                     else {
-                        return fieldValue.split(",").map((item: string) => {
-                            return item.trim();
-                        });
+                        // "上海分公司<9FqSC6jms4KRGCgNm>"这种格式中取出id值
+                        const mactchs = fieldValue.match(/<(\w+)>/);
+                        const fieldValueId = mactchs?.length > 1 ? mactchs[1] : fieldValue;
+                        return fieldValueId;
                     }
                 }
-                else {
-                    // "上海分公司<9FqSC6jms4KRGCgNm>"这种格式中取出id值
-                    const mactchs = fieldValue.match(/<(\w+)>/);
-                    const fieldValueId = mactchs?.length > 1 ? mactchs[1] : fieldValue;
-                    return fieldValueId;
-                }
+                // 默认（即不定义 processCellFromClipboard 函数时）使用的是字段的parseValue格式作为复制到剪贴板的内容
+                return params.parseValue(fieldValue);
             }
-            // 默认（即不定义 processCellFromClipboard 函数时）使用的是字段的parseValue格式作为复制到剪贴板的内容
-            return params.parseValue(fieldValue);
+            catch (error) {
+                console.error("Ag-Grid粘贴数据时遇到错误了：", error)
+                env.notify("error", `Ag-Grid粘贴数据时遇到错误了：${error.message}`);
+            }
         },
         defaultExcelExportParams: {
             fileName: tableLabel,
