@@ -288,14 +288,16 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
             break;
         case 'date':
             cellDataType = 'date';
-            cellEditor = "agDateCellEditor";
+            // cellEditor = "agDateCellEditor";
+            cellEditor = "agAmisDateCellEditor";
             valueFormatter = dataTypeDefinitions.date.valueFormatter;
             // 如果不定义valueGetter，双击单元格进入编辑状态时，值显示为空
             valueGetter = dataTypeDefinitions.date.valueGetter;
-            filter = 'agDateColumnFilter';
-            Object.assign(filterParams, {
-                filterOptions: ["equals", "greaterThan", "greaterThanOrEqual", "lessThan", "lessThanOrEqual"]
-            });
+            // filter = 'agDateColumnFilter';
+            filter = 'agAmisDateFilter';
+            // Object.assign(filterParams, {
+            //     filterOptions: ["equals", "greaterThan", "greaterThanOrEqual", "lessThan", "lessThanOrEqual"]
+            // });
             break;
         case 'datetime':
             cellDataType = 'date';
@@ -522,6 +524,7 @@ async function onRowValueChanged(event: any, dataSource: any, { env }) {
                         utcDate = parseDate(n, fieldConfig.type === "datetime");
                     }
                     else if (fieldConfig.type === "date") {
+                        // 日期类型换成 amis steedos date 组件后,n 值不再是 Date 对象，而是字符串，所以这里的逻辑只在原来使用 ag-grid 自带的 agDateCellEditor 组件才会进
                         // 设置为选中日期的 UTC 0 点
                         // 只有从日期控件输入的值需要做转换，从粘贴行数据过来的字符串格式不用处理时区，因为要求粘贴过来的只兼容 YYYY-MM-DD YYYY/MM/DD 两种格式
                         const timezoneOffset = n.getTimezoneOffset();
@@ -860,6 +863,7 @@ function filterModelToOdataFilters(filterModel, colDefs) {
                     break;
                 case 'date':
                 case 'datetime':
+                    // 日期、日期时间类型，过滤器组件换成amis steedos date/datetime组件后，就走上面的 between 操作符了，不再走这边
                     let dateValue = new Date(value.dateFrom);
                     if (fieldConfig.type === "date") {
                         // 设置为日期的 UTC 0 点
