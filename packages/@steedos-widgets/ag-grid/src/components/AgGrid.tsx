@@ -2,14 +2,14 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2024-01-18 18:58:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-04-10 21:54:04
+ * @LastEditTime: 2025-04-10 22:58:08
  */
 import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 // import 'ag-grid-enterprise';
 import { AG_GRID_LOCALE_CN } from '@ag-grid-community/locale';
 import { DateTimeCellEditor, DateCellEditor, MultiSelectCellEditor, LookupCellEditor } from './cellEditor';
-import { DateTimeFilter, LookupFilter } from './filter';
+import { DateTimeFilter, DateFilter, LookupFilter } from './filter';
 import { LookupCellRenderer } from './cellRenderer';
 
 export const AmisAgGrid = (props: any) => {
@@ -78,6 +78,7 @@ export const AmisAgGrid = (props: any) => {
       agAmisMultiSelectCellEditor: MultiSelectCellEditor,
       agAmisLookupCellEditor: LookupCellEditor,
       agAmisDateTimeFilter: DateTimeFilter,
+      agAmisDateFilter: DateFilter,
       agAmisLookupFilter: LookupFilter,
       agAmisLookupCellRenderer: LookupCellRenderer
     };

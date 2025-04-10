@@ -293,10 +293,11 @@ export function getColumnDef(field: any, dataTypeDefinitions: any, mode: string,
             valueFormatter = dataTypeDefinitions.date.valueFormatter;
             // 如果不定义valueGetter，双击单元格进入编辑状态时，值显示为空
             valueGetter = dataTypeDefinitions.date.valueGetter;
-            filter = 'agDateColumnFilter';
-            Object.assign(filterParams, {
-                filterOptions: ["equals", "greaterThan", "greaterThanOrEqual", "lessThan", "lessThanOrEqual"]
-            });
+            // filter = 'agDateColumnFilter';
+            filter = 'agAmisDateFilter';
+            // Object.assign(filterParams, {
+            //     filterOptions: ["equals", "greaterThan", "greaterThanOrEqual", "lessThan", "lessThanOrEqual"]
+            // });
             break;
         case 'datetime':
             cellDataType = 'date';
@@ -862,6 +863,7 @@ function filterModelToOdataFilters(filterModel, colDefs) {
                     break;
                 case 'date':
                 case 'datetime':
+                    // 日期、日期时间类型，过滤器组件换成amis steedos date/datetime组件后，就走上面的 between 操作符了，不再走这边
                     let dateValue = new Date(value.dateFrom);
                     if (fieldConfig.type === "date") {
                         // 设置为日期的 UTC 0 点
