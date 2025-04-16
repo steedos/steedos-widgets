@@ -128,7 +128,7 @@ export async function getReadonlyFormInitApi(object, recordId, fields, options){
     }
     return {
         method: "post",
-        url: graphql.getApi() + '&objectName=${objectName}' + "&recordId=${recordId}",
+        url: graphql.getApi(),
         cache: API_CACHE,
         requestAdaptor: `
             ${options && options.initApiRequestAdaptor || ''}
@@ -266,7 +266,7 @@ export async function getEditFormInitApi(object, recordId, fields, options){
     
     return {
         method: "post",
-        url: graphql.getApi() + '&objectName=${objectName}' + "&recordId=${recordId}",
+        url: graphql.getApi(),
         // sendOn: "!!this.recordId",
         cache: API_CACHE,
         requestAdaptor: `
