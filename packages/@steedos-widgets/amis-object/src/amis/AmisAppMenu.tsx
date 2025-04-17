@@ -838,7 +838,7 @@ export const AmisAppMenu = async (props) => {
                                     "icon": "fa fa-ellipsis-h",
                                     "btnClassName": "!text-gray-700",
                                     "hideCaret": true,
-                                    "className": "hidden hover-inline-flex",
+                                    "className": "hidden hover-inline-flex px-1",
                                     "visibleOn": "!!allowEditApp",
                                     "buttons": [
                                         {
@@ -948,7 +948,7 @@ export const AmisAppMenu = async (props) => {
                                                             "api": {
                                                                 "url": "/graphql",
                                                                 "method": "post",
-                                                                "adaptor": "const objects = payload.data.objects; if(objects && objects.length > 0){ try{const objectId = objects[0]._id; FlowRouter.go('/app/admin/objects/view/'+objectId+'?side_object=objects&side_listview_id=all')}catch(e){payload.error=e.message;} }; return payload;",
+                                                                "adaptor": "const objects = payload.data.objects; if(objects && objects.length > 0){ try{const objectId = objects[0]._id; navigate('/app/admin/objects/view/'+objectId+'?side_object=objects&side_listview_id=all')}catch(e){payload.error=e.message;} }; return payload;",
                                                                 "requestAdaptor": "api.data={query: '{  objects(filters: [\\\"name\\\", \\\"=\\\", ' + context.id + ']) {    _id    name}}'}; return api;",
                                                                 "messages": {}
                                                             }
@@ -1287,7 +1287,7 @@ export const AmisAppMenu = async (props) => {
                                     "hideCaret": true,
                                     "btnClassName": "!text-gray-700",
                                     "visibleOn": "!!allowEditApp && !!this.isGroup",
-                                    "className": "hidden hover-inline-flex",
+                                    "className": "hidden hover-inline-flex px-1",
                                     "buttons": [
                                         {
                                             "type": "button",
