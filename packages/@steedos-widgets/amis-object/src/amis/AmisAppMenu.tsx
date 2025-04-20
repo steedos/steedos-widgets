@@ -173,7 +173,7 @@ export const AmisAppMenu = async (props) => {
                       if(allowEditApp){
                         editAppSearch = [{
                                 "type": "grid",
-                                "className": "mx-3 mb-2",
+                                "className": "ml-3 mb-2",
                                 "columns": [
                                     {
                                         "md": 10,
@@ -199,7 +199,7 @@ export const AmisAppMenu = async (props) => {
                                             {
                                             "type": "dropdown-button",
                                             "level": "link",
-                                            "btnClassName": "text-gray-700",
+                                            "btnClassName": "text-gray-700 px-2",
                                             "icon": "fa fa-plus",
                                             "size": "md",
                                             "hideCaret": true,
@@ -942,9 +942,47 @@ export const AmisAppMenu = async (props) => {
                                                             "expression": "\${false}"
                                                         },
                                                         {
+                                                            "actionType": "ajax",
+                                                            "api": {
+                                                                "url": "/graphql",
+                                                                "method": "post",
+                                                                "adaptor": "const objects = payload.data.objects; if(objects && objects.length > 0){ return {data: objects[0]} }; return {data: null};",
+                                                                "requestAdaptor": "api.data={query: '{  objects(filters: [\\\"name\\\", \\\"=\\\", ' + context.id + ']) {    _id    name}}'}; return api;"
+                                                            }
+                                                        },
+                                                        {
+                                                            "actionType": "drawer",
+                                                            "drawer": {
+                                                                "type": "drawer",
+                                                                "title": "&nbsp;",
+                                                                "headerClassName": "hidden",
+                                                                "size": "lg",
+                                                                "width": window.drawerWidth || "70%",
+                                                                "bodyClassName": "p-0 m-0 bg-gray-100",
+                                                                "closeOnEsc": true,
+                                                                "closeOnOutside": true,
+                                                                "resizable": true,
+                                                                "actions": [],
+                                                                "body": {
+                                                                    "type": "service",
+                                                                    "id": "u:1678e148c8d2",
+                                                                    "messages": {},
+                                                                    "schemaApi": {
+                                                                        "url": "/api/pageSchema/record?objectApiName=objects&formFactor=LARGE",
+                                                                        "method": "get",
+                                                                        "adaptor": "const schema = JSON.parse(payload.schema); schema.data={objectName: 'objects', _inDrawer: true, recordLoaded: false}; schema.objectApiName='objects'; schema.recordId=context.responseData._id; return {data: schema};"
+                                                                    }
+                                                                },
+                                                                "className": "steedos-record-detail-drawer app-popover",
+                                                                "id": "u:fc5f055afa8c"
+                                                            },
+                                                            "preventDefault": true
+                                                        },
+                                                        {
                                                             "ignoreError": false,
                                                             "outputVar": "responseResult",
                                                             "actionType": "ajax",
+                                                            "expression": "\${false}",
                                                             "api": {
                                                                 "url": "/graphql",
                                                                 "method": "post",

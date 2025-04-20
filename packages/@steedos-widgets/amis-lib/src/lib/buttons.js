@@ -28,9 +28,7 @@ export function getButtonVisibleOn(button){
         //     return 'false';
         // }
         if(visible.trim().startsWith('function')){
-            visible = `(function(){try{const fun = ${visible}; return fun.apply({
-                object: uiSchema
-            }, [objectName, typeof _id === 'undefined' ? null: _id, typeof record === 'undefined' ? (typeof recordPermissions === 'undefined' ? {} : recordPermissions) : record.recordPermissions, data])}catch(e){console.error(e)}})()`
+            visible = `(function(){try{const fun = ${visible}; return fun.apply({}, [objectName, typeof _id === 'undefined' ? null: _id, typeof record === 'undefined' ? (typeof recordPermissions === 'undefined' ? {} : recordPermissions) : record.recordPermissions, data])}catch(e){console.error(e)}})()`
         }
     }
 
