@@ -1275,9 +1275,9 @@ export async function getTableApi(mainObject, fields, options){
     const api = await getApi(mainObject, null, fields, {count: options.queryCount, alias: 'rows', limit: top, queryOptions: `filters: {__filters}, top: {__top}, skip: {__skip}, sort: "{__sort}"`});
 
     api.url;//设计器上对象表格组件需要切换对象重新请求列表数据
-    if(options.isRelated){
-        api.url += "&recordId=${_master.recordId}";
-    }
+    // if(options.isRelated){
+    //     api.url += "&recordId=${_master.recordId}";
+    // }
     api.cache = 3000; 
     api.data.$term = "$term";
     api.data.term = "$term";

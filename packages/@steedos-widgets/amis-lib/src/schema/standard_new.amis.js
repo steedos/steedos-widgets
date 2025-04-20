@@ -30,7 +30,7 @@ export const getSchema = async (uiSchema, ctx) => {
             // 如果新建记录时复制的数据中有omit或其他不相关字段数据时不应该一起保存到数据库，
             // 原规则见：https://github.com/steedos/steedos-frontend/issues/297
             _.forEach(selectedRowResponseResult, (val, key) => {
-              if (fieldsKeys.indexOf(key) > -1 && fields[key].omit !== true) {
+              if (fieldsKeys.indexOf(key) > -1 && fields[key].omit !== true && key != 'owner') {
                 defaultData[key] = val;
               }
             })
@@ -40,7 +40,7 @@ export const getSchema = async (uiSchema, ctx) => {
         if(_master && _master._isRelated){
             const relatedKey = _master.relatedKey;
             const masterObjectName = _master.objectName;
-            const recordId = _master.recordId;
+            const recordId = _master.recordId || _master.record._id;
             let relatedKeySaveValue = recordId;
             const relatedField = fields[relatedKey];
             if(relatedField && relatedField.reference_to_field && relatedField.reference_to_field !== '_id'){
@@ -65,7 +65,6 @@ export const getSchema = async (uiSchema, ctx) => {
                 formSchema.defaultData = defaultData;
             }
         }
-
         return {
             data: formSchema
         };
