@@ -173,7 +173,7 @@ export const AmisAppMenu = async (props) => {
                       if(allowEditApp){
                         editAppSearch = [{
                                 "type": "grid",
-                                "className": "ml-3 mb-2",
+                                "className": "ml-3 mb-2 mr-0",
                                 "columns": [
                                     {
                                         "md": 10,
@@ -194,12 +194,12 @@ export const AmisAppMenu = async (props) => {
                                     },
                                     {
                                         "md": 2,
-                                        "columnClassName": "p0 pl-0 steedos-app-menu-plus",
+                                        "columnClassName": "p0 pl-2 steedos-app-menu-plus",
                                         "body": [
                                             {
                                             "type": "dropdown-button",
                                             "level": "link",
-                                            "btnClassName": "text-gray-700 px-2",
+                                            "btnClassName": "text-gray-700 px-1",
                                             "icon": "fa fa-plus",
                                             "size": "md",
                                             "hideCaret": true,
