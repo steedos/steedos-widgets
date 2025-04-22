@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2025-03-07 16:48:27
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2025-04-22 17:44:32
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -587,6 +587,9 @@ export async function getRecordDetailSchema(objectName, appId, props = {}){
         content.tabs.push(related)
     }
     // content.tabs = reverse(content.tabs)
+    if(content.tabs.length == 1){
+        content.className += " steedos-record-tabs--single";
+    }
     return {
         uiSchema,
         amisSchema: {
