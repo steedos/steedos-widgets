@@ -978,7 +978,9 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
         details.push({
           type: 'steedos-field',
           static: true,
-          config: field,
+          config: Object.assign({}, field, {
+            description: null
+          })
         })
       }
     });
