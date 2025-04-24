@@ -705,7 +705,7 @@ export const AmisSteedosField = async (props) => {
                                     "className": "flex flex-col",
                                     "items": {
                                         "type": "tpl",
-                                        "tpl": "<a href='${context.rootUrl}/api/files/files/${_id}?download=true' target='_blank'>${original.name}</a>"
+                                        "tpl": "<a href='/api/v6/files/download/cfs.files.filerecord/${_id}/${original.name}' target='_blank'>${original.name}</a>"
                                     }
                                 }
                             ]

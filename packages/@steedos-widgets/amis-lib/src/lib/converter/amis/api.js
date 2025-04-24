@@ -22,7 +22,7 @@ function getReadonlyFormAdaptor(object, fields, options){
             }
             if(field.multiple){
                 scriptStr = scriptStr + `data.${field.name}__label = _.map(_.filter(${field.name}Options, function(option){return _.includes(data.${field.name}, option.value)}), 'label');`
-            }else{
+            }else if(scriptStr != ''){
                 scriptStr = scriptStr + `var ${field.name}Selected = _.find(${field.name}Options, function(option){return data.${field.name} == option.value});`
                 scriptStr = scriptStr + `data.${field.name}__label = ${field.name}Selected ? ${field.name}Selected.label:null;`
             }
@@ -235,7 +235,7 @@ function getScriptForRewriteValueForFileFields(fields){
                                     return {
                                         value: fileFieldValue[index],
                                         name: item.name,
-                                        url: item.url + "?download=true",
+                                        url: item.url,
                                         state: "uploaded"
                                     }
                                 });
@@ -245,7 +245,7 @@ function getScriptForRewriteValueForFileFields(fields){
                             data[item] = [{
                                 value: fileFieldValue,
                                 name: fileFieldDisplayValue.name,
-                                url: fileFieldDisplayValue.url + "?download=true",
+                                url: fileFieldDisplayValue.url,
                                 state: "uploaded"
                             }];
                         }

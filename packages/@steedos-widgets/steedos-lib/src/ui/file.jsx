@@ -5,7 +5,7 @@ const File = {
         if (window.Meteor && window.Meteor.isCordova) {
             return window.Steedos.cordovaDownload(download_url, file_name, file_id, file_size);
         } else {
-            url = download_url + "?download=true";
+            url = download_url;
             return window.location = url;
         }
     },
