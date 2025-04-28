@@ -7,7 +7,7 @@
  */
 import React, { useEffect, useState } from 'react'
 import { isString, defaultsDeep } from 'lodash';
-import { getButton, executeButton, getUISchema, getDefaultRenderData } from '@steedos-widgets/amis-lib';
+import { getButton, executeButton, getUISchema, getDefaultRenderData, createObject } from '@steedos-widgets/amis-lib';
 
 export const AmisObjectButton = (props) => {
     // console.log(`AmisObjectButton=====》`, props)
@@ -91,7 +91,7 @@ export const AmisObjectButton = (props) => {
                 delete renderData.event;
                 delete renderData.record?.event;
             }
-            schema.data = defaultsDeep({}, renderData, getDefaultRenderData(), schema.data);
+            schema.data = createObject(data, defaultsDeep(renderData, schema.data));
 
             delete schema.data.event;
         }
