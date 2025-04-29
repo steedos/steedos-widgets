@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-27 15:54:12
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-05-21 10:27:10
+ * @LastEditTime: 2025-04-29 19:01:06
  * @Description: 
  */
 import { message, notification, Button, Space} from 'antd';
@@ -126,7 +126,7 @@ export const SteedosUI = Object.assign({}, {
             keyValues.forEach(function(valueItem, valueIndex){
               everyFieldFilters.push([key, "contains", valueItem]);
               if (valueIndex < keyValues.length - 1) {
-                everyFieldFilters.push('or');
+                everyFieldFilters.push('and');
               }
             });
           }
