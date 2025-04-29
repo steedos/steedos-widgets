@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2025-02-13 15:12:53
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2025-04-29 16:01:02
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -695,7 +695,7 @@ export const AmisSteedosField = async (props) => {
                                     "Authorization": "Bearer ${context.tenantId},${context.authToken}"
                                 },
                                 "data": {
-                                    "query": `{fileData:cfs_files_filerecord(filters:["_id","in",\${${steedosField.name}|asArray|json}]){_id,original}}`
+                                    "query": `{fileData:cfs_files_filerecord(filters:["_id","in",\${(${steedosField.name}||[])|asArray|json}]){_id,original}}`
                                 }
                             },
                             "body": [
