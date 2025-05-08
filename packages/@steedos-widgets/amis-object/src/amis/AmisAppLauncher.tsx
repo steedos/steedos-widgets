@@ -261,9 +261,6 @@ export const AmisAppLauncher = async (props) => {
         "cache": "10000",
         "url": "${context.rootUrl}/service/api/apps/menus?mobile=" + isMobile,
         "data": null,
-        "headers": {
-          "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-        },
         "adaptor": pcInitApiAdaptorScript
       }
     }
@@ -442,9 +439,6 @@ export const AmisAppLauncher = async (props) => {
       "method": "get",
       "cache": "10000",
       "url": "${context.rootUrl}/service/api/apps/menus?mobile="+isMobile,
-      "headers": {
-        "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-      },
       "adaptor": mobileInitApiAdaptorScript,
       "messages": {
       }

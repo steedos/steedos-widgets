@@ -237,10 +237,7 @@ export const AmisGlobalFooter = async (props) => {
                             console.log(\`error\`, error)
                         }
                         return payload;
-        `,
-                "headers": {
-                    "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                }
+        `
             }
         }
     }

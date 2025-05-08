@@ -1870,10 +1870,7 @@ export const AmisAppMenu = async (props) => {
                   }, 300);
 
                   return payload;
-            `,
-            "headers": {
-              "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-            }
+            `
         }
     }
     // console.log(`AmisAppMenu schema=====>`, schema)
