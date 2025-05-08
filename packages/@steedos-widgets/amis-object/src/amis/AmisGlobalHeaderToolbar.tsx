@@ -251,9 +251,6 @@ const getNotificationBadgeButton = () => {
       },
       "dataType": "json",
       "requestAdaptor": "const { userId } = api.data;\napi.data = {\n    query: `{\n unReadCount: notifications__count(filters: [[\"owner\",\"=\",\"${userId}\"], [\"is_read\", \"!=\", true]])\n    }`\n}",
-      "headers": {
-        "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-      },
       "adaptor": "return payload.data"
     },
     "onEvent": {
