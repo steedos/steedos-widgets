@@ -820,7 +820,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
     backButtonsSchema = getBackButtonSchema();
   }
 
-  console.log(`getObjectRecordDetailHeader==> backButtonsSchema`, backButtonsSchema)
+  // console.log(`getObjectRecordDetailHeader==> backButtonsSchema`, backButtonsSchema)
   
   const reg = new RegExp('_', 'g');
   const standardIcon = icon && icon.replace(reg, '-');

@@ -13,7 +13,7 @@ export const AmisAppMenu = async (props) => {
         appId = data.context.appId;
     }
     // console.log(`AmisAppMenu appId`, appId)
-    console.log(`AmisAppMenu`, appId, props)
+    // console.log(`AmisAppMenu`, appId, props)
     let badgeText = `\${keyvalues.badge.value | pick:${appId} | toInt}`;
     if(appId == "approve_workflow"){
         badgeText = "${keyvalues.badge.value | pick:'workflow' | toInt}";
@@ -1863,8 +1863,6 @@ export const AmisAppMenu = async (props) => {
                   } catch (error) {
                       console.log(\`error\`, error)
                   }
-                    console.log('payload===2==>', payload)
-
                   setTimeout(function(){
                     $("[name='keywords']").focus();
                   }, 300);

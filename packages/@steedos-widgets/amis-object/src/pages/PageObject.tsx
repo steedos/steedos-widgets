@@ -98,6 +98,6 @@ export const PageObject = async (props) => {
         //     }
         // }
     }
-    console.log(`PageObject=====>`, props, schema)
+    // console.log(`PageObject=====>`, props, schema)
     return schema;
 }

@@ -9,7 +9,7 @@
 import { i18next } from '@steedos-widgets/amis-lib';
 
 export const AmisAppLauncher = async (props) => {
-  console.log(`AmisAppLauncher`, props)
+  // console.log(`AmisAppLauncher`, props)
   let { app, data, className, showAppName = true, appNameClassName = '', customElements = [], showAppIcon = true } = props;
   if (!app) {
     app = data.context.app;
