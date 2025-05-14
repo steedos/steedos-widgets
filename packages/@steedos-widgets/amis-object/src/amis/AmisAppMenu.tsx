@@ -1857,6 +1857,62 @@ export const AmisAppMenu = async (props) => {
                                     ]
                                 }
                             }
+                        },
+                        {
+                            "type": "container",
+                            "className": "fixed bottom-0 w-full", 
+                            "visibleOn": "!!allowEditApp",
+                            "body": {
+                                "type": "button",
+                                "level": "link",
+                                "label": "设置应用",
+                                "icon": "fa fa-cog",
+                                "visibleOn": "!!allowEditApp",
+                                "className": "w-full m-0 rounded-none !border-t bg-transparent !border-slate-300 !border-solid justify-start !text-black hover:!bg-slate-200",
+                                "onEvent": {
+                                    "click": {
+                                        "actions": [
+                                            {
+                                                "actionType": "ajax",
+                                                "api": {
+                                                    "url": "/graphql",
+                                                    "method": "post",
+                                                    "adaptor": "const apps = payload.data.apps; if(apps && apps.length > 0){ return {data: apps[0]} }; return {data: null};",
+                                                    "requestAdaptor": "api.data={query: '{  apps(filters: [\\\"code\\\", \\\"=\\\", ' + context.appId + ']) {    _id    name}}'}; return api;"
+                                                }
+                                            },
+                                            {
+                                                "actionType": "drawer",
+                                                "drawer": {
+                                                    "type": "drawer",
+                                                    "title": "&nbsp;",
+                                                    "headerClassName": "hidden",
+                                                    "size": "lg",
+                                                    "width": window.drawerWidth || "70%",
+                                                    "bodyClassName": "p-0 m-0 bg-gray-100",
+                                                    "closeOnEsc": true,
+                                                    "closeOnOutside": true,
+                                                    "resizable": true,
+                                                    "actions": [],
+                                                    "body": {
+                                                        "type": "service",
+                                                        "id": "u:1678e148c8d2",
+                                                        "messages": {},
+                                                        "schemaApi": {
+                                                            "url": "/api/pageSchema/app?objectApiName=apps&formFactor=LARGE&formFactor=LARGE",
+                                                            "method": "get",
+                                                            "adaptor": "const schema = {type: 'steedos-record-detail'}; schema.data={objectName: 'apps', _inDrawer: true, recordLoaded: false}; schema.objectApiName='apps'; schema.recordId=context.responseData._id; console.log('schema', schema); return {data: schema};"
+                                                        }
+                                                    },
+                                                    "className": "steedos-record-detail-drawer app-popover",
+                                                    "id": "u:fc5f055afa8c"
+                                                },
+                                                "preventDefault": true
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
                         }
                         ]
                       };
@@ -1866,7 +1922,7 @@ export const AmisAppMenu = async (props) => {
                   setTimeout(function(){
                     $("[name='keywords']").focus();
                   }, 300);
-
+                    // console.log('AmisAppMenu AmisAppMenu=====>', payload)
                   return payload;
             `
         }
