@@ -260,7 +260,7 @@ export const getButton = async (objectName, buttonName, ctx)=>{
             }
         }
 
-        if(uiSchema.hasImportTemplates && button.name === 'standard_import_data'){
+        if(button.name === 'standard_import_data'){
             return {
                 label: button.label,
                 name: button.name,

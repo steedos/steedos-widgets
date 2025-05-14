@@ -91,8 +91,7 @@ export const AmisObjectButton = (props) => {
                 delete renderData.event;
                 delete renderData.record?.event;
             }
-            schema.data = createObject(data, defaultsDeep(renderData, schema.data));
-
+            schema.data = createObject(data, defaultsDeep(renderData, schema.data, {context: data.context, global: data.global, }));
             delete schema.data.event;
         }
         return (
