@@ -41,16 +41,21 @@ export const AmisObjectButton = (props) => {
         
     }, [objectName, name])
     const buttonClick = () => {
-        return executeButton(button, {
-            objectName: objectName,
-            listViewId: listViewId || data.listViewId,
-            uiSchema: uiSchema,
-            record: data,
-            recordId: data._id,
-            appId: appId,
-            formFactor: formFactor,
-            scope: data._scoped
-        });
+        try {
+            return executeButton(button, {
+                objectName: objectName,
+                listViewId: listViewId || data.listViewId,
+                uiSchema: uiSchema,
+                record: data,
+                recordId: data._id,
+                appId: appId,
+                formFactor: formFactor,
+                scope: data._scoped
+            });
+        } catch (error) {
+            console.error(error)
+            SteedosUI.notification.error({message: error.message})
+        }
     };
     if(!button){
         return (<><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="animate-spin w-4 h-4">
