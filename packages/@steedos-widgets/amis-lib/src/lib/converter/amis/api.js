@@ -72,8 +72,8 @@ function getReadonlyFormAdaptor(object, fields, options){
         else{
             console.log('无法找到记录', api, payload, context)
             return {
-                status: 2,
-                msg: "${i18next.t('frontend_no_records_found')}"
+                status: 0,
+                // msg: "${i18next.t('frontend_no_records_found')}"
             }
         }
     }
@@ -138,7 +138,8 @@ export async function getReadonlyFormInitApi(object, recordId, fields, options){
         data: await graphql.getFindOneQuery(object, recordId, fields, findOneOptions),
         headers: {
             Authorization: "Bearer ${context.tenantId},${context.authToken}"
-        }
+        },
+        trackExpression: '${objectName}'
     }
 }
 
