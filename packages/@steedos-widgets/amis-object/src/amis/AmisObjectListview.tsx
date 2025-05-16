@@ -166,16 +166,23 @@ export const AmisObjectListView = async (props) => {
   if(!showHeader){
     headerSchema = {};
   }
-  // console.timeEnd('AmisObjectListView')
+  // console.log('AmisObjectListView', listName)
   // console.log('serviceData===>', serviceData)
   // console.log('headerSchema===>',headerSchema)
-  return {
-    type: "service",
-    data: {
+
+  let _data: any = {
       defaultListName: listName ? listName : first(values(uiSchema.list_views))?.name,
       recordPermissions: uiSchema.permissions,
       isObjectListview: true
-    },
+    }
+
+  if(has(props, '$$editor')){
+    _data = serviceData;
+  }
+
+  return {
+    type: "service",
+    data: _data,
     style: style,
     className: `${className} sm:bg-gray-50 h-full  steedos-object-listview ${displayAs === 'split'? 'sm:border-r':'sm:border-r'}`,
     body: [{
