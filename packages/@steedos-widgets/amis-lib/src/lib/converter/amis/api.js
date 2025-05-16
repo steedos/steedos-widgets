@@ -128,7 +128,7 @@ export async function getReadonlyFormInitApi(object, recordId, fields, options){
     }
     return {
         method: "post",
-        url: graphql.getApi(),
+        url: graphql.getApi() + '&objectName=${objectName}' + "&recordId=${recordId}",
         cache: API_CACHE,
         requestAdaptor: `
             ${options && options.initApiRequestAdaptor || ''}
@@ -138,8 +138,7 @@ export async function getReadonlyFormInitApi(object, recordId, fields, options){
         data: await graphql.getFindOneQuery(object, recordId, fields, findOneOptions),
         headers: {
             Authorization: "Bearer ${context.tenantId},${context.authToken}"
-        },
-        trackExpression: '${objectName}'
+        }
     }
 }
 
