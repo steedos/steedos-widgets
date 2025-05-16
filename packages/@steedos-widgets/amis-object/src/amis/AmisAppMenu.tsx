@@ -1868,7 +1868,7 @@ export const AmisAppMenu = async (props) => {
                                 "label": "设置应用",
                                 "icon": "fa fa-cog",
                                 "visibleOn": "!!allowEditApp",
-                                "className": "w-full m-0 rounded-none !border-t bg-transparent !border-slate-300 !border-solid justify-start !text-black hover:!bg-slate-200",
+                                "className": "w-full m-0 rounded-none h-12 !border-t bg-transparent !border-slate-300 !border-solid justify-start !text-black hover:!bg-slate-200",
                                 "onEvent": {
                                     "click": {
                                         "actions": [
