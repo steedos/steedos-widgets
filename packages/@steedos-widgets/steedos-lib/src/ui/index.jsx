@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-27 15:54:12
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-04-29 19:01:06
+ * @LastEditTime: 2025-05-19 15:47:34
  * @Description: 
  */
 import { message, notification, Button, Space} from 'antd';
@@ -231,5 +231,24 @@ export const SteedosUI = Object.assign({}, {
         });
       }
       return variables;
+    },
+    traverseNestedArrayFormula: (arr, data) => {
+      var currentAmis = (window.amisRequire && window.amisRequire('amis')) || Amis;
+      for (let i = 0; i < arr.length; i++) {
+        if (Array.isArray(arr[i])) {
+          // 如果当前元素是数组，则递归调用自身继续遍历
+          SteedosUI.traverseNestedArrayFormula(arr[i], data);
+        } else {
+          // 如果当前元素不是数组，则处理该元素
+          // 下面正则用于匹配amis公式\${}
+          if (/\$\{([^}]*)\}/.test(arr[i])) {
+            try {
+              arr[i] = currentAmis.evaluate(arr[i], data);
+            } catch (ex) {
+              console.error("运行过滤器公式时出现错误:", ex);
+            }
+          }
+        }
+      }
     }
 })

@@ -1328,7 +1328,10 @@ export async function getTableApi(mainObject, fields, options){
             console.error("本地存储中crud参数解析异常：", ex);
         }
         ${baseFilters ? `var systemFilters = ${JSON.stringify(baseFilters)};` : 'var systemFilters = [];'}
-        var _ids = []
+        var _ids = [];
+        if(systemFilters && systemFilters.length){
+            SteedosUI.traverseNestedArrayFormula(systemFilters, api.context);
+        }
         const filtersFunction = ${filtersFunction};
         if(filtersFunction){
             const _filters = filtersFunction(systemFilters, api.data.$self);
