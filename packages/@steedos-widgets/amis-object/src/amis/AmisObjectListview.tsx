@@ -275,7 +275,6 @@ export const AmisObjectListView = async (props) => {
                             }
                             // console.log('schema.amisSchema====>', schema.amisSchema)
                             payload.data = schema.amisSchema;
-                            console.log("====schema.amisSchema====", schema.amisSchema);
                             resolve(payload)
                           });
                         });
