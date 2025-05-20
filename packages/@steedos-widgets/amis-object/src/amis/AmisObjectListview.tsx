@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-03-26 15:20:26
+ * @LastEditTime: 2025-05-20 18:27:27
  * @Description: 
  */
 import './AmisObjectListview.less';
@@ -82,6 +82,11 @@ export const AmisObjectListView = async (props) => {
     // 这样可以省去手动配置crud.card或crud.listItem属性的时间提高开发效率
     crud = Object.assign({
       mode: crudMode
+    }, crud);
+  }
+  if(has(props, '$$editor')){
+    crud = Object.assign({
+      autoFillHeight: false
     }, crud);
   }
 
@@ -260,6 +265,7 @@ export const AmisObjectListView = async (props) => {
                               console.error(e)
                             }
                             payload.data = schema.amisSchema;
+                            console.log("====schema.amisSchema====", schema.amisSchema);
                             resolve(payload)
                           });
                         });
