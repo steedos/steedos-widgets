@@ -1,11 +1,21 @@
 .sidebar-wrapper {
     transition: 0.5s ease transform;
     will-change: transform;
-    transform:translate(-100%,0); // W3c标准
-    -webkit-transform:translate(-100%,0); // Safari Chrome
-    -moz-transform:translate(-100%,0); // firefox
-    -ms-transform:translate(-100%,0); // IE9
-    -o-transform:translate(-100%,0); // opera
+    transform:translate(calc(-100% + 60px),0); // W3c标准
+    -webkit-transform:translate(calc(-100% + 60px),0); // Safari Chrome
+    -moz-transform:translate(calc(-100% + 60px),0); // firefox
+    -ms-transform:translate(calc(-100% + 60px),0); // IE9
+    -o-transform:translate(calc(-100% + 60px),0); // opera
+
+    overflow-x: hidden;
+
+    .steedos-app-service{
+        left: 180px;
+    }
+}
+
+.antd-Nav-Menu-item-divider {
+    border-bottom: 0.0625rem solid #cacacc !important;
 }
 
 
@@ -15,15 +25,27 @@ body.sidebar-open .sidebar-wrapper {
     -moz-transform:translate(0,0); // firefox
     -ms-transform:translate(0,0); // IE9
     -o-transform:translate(0,0); // opera
+    width: 240px !important;
+
+    .steedos-app-service{
+        left: 0px;
+    }
 }
 
 body.sidebar #sidebar {
     margin-top: 50px; 
 }
 
+.antd-Nav-Menu-item-tooltip{
+    display: none !important;
+}
+
 @media (min-width: 768px){
     body.sidebar.sidebar-open #main {
         margin-left: 220px;
+    }
+    body.sidebar #main {
+        margin-left: 60px;
     }
 }
 
