@@ -907,7 +907,7 @@ export const AmisAppMenu = async (props) => {
                                     }
                                 ]
                             }]
-                      }else{
+                      }else if(stacked){
                         editAppSearch = [{
                             "type": "button",
                             "className": "toggle-sidebar text-center w-[60px]",
