@@ -448,7 +448,8 @@ export const AmisSteedosField = async (props) => {
                             },
                             {
                                 type: 'tpl', 
-                                tpl: `<span class='antd-TplField antd-Form-description'><span>${steedosField.description}</span></span>`
+                                tpl: `<span class='antd-TplField antd-Form-description'><span>${steedosField.description}</span></span>`,
+                                hidden: isEmpty(steedosField.description) ? true : false
                             }
                             ]
                         });
