@@ -297,8 +297,8 @@ export const AmisAppMenu = async (props) => {
                                             {
                                             "type": "dropdown-button",
                                             "level": "link",
-                                            "btnClassName": "text-gray-700 px-1",
-                                            "icon": "fa fa-ellipsis-h",
+                                            "btnClassName": "text-gray-700 px-1 pt-0 text-base",
+                                            "icon": "fa fa-cog",
                                             "size": "md",
                                             "hideCaret": true,
                                             "align": "right",
