@@ -966,7 +966,7 @@ export const AmisAppMenu = async (props) => {
 
                       payload.data = {
                         "type":"service",
-                        "className": "steedos-app-service",
+                        "className": "steedos-app-service steedos-app-service-\${allowEditApp ? 'edit' : 'readonly'}",
                         "data":{
                             "tabId": customTabId || objectTabId,
                             "items": menuItems,
