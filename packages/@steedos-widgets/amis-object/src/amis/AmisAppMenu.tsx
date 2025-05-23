@@ -218,7 +218,7 @@ export const AmisAppMenu = async (props) => {
                                     disabledTip: true,
                                     label: {
                                         "type": "tooltip-wrapper",
-                                        "content": childrenItem.label,
+                                        "content": item.label,
                                         "placement": "right",
                                         "disabled": true,
                                         "body": [
