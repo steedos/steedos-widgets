@@ -495,7 +495,8 @@ export const AmisAppLauncher = async (props) => {
             type: 'tpl',
             className: `text-xl ml-4 mr-4 text-black nowrap ${appNameClassName} `,
             tpl: '${app.name}',
-            hiddenOn: `${!!app || !!!showAppName}`
+            hiddenOn: `${!!app || !!!showAppName}`,
+            visibleOn: '${!!appId}',
           },
           ...customElements
         ],
@@ -538,7 +539,8 @@ export const AmisAppLauncher = async (props) => {
             type: 'tpl',
             className: `text-xl ml-4 mr-4 text-black nowrap ${appNameClassName} `,
             tpl: '${app.name}',
-            hiddenOn: `${!!app || !!!showAppName}`
+            hiddenOn: `${!!app || !!!showAppName}`,
+            visibleOn: '${!!appId}',
           },
           ...customElements
         ],
