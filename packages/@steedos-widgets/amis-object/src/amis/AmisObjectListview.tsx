@@ -108,11 +108,11 @@ export const AmisObjectListView = async (props) => {
             "blank": false
           },
           "actionType": "link",
-          "expression": "${!!!event.data.recordId && event.data.__deletedRecord != true && event.data._isRelated != true}" //是新建, 则进入详细页面. 
+          "expression": "${!!!event.data.recordId && event.data.__deletedRecord != true && event.data._isRelated != true && event.data.reload !=true}" //是新建, 则进入详细页面. 
         },
         {
           "actionType": "reload",
-          "expression": "${(event.data.recordId || event.data.__deletedRecord === true || event.data.displayAs === 'split') && event.data._isRelated != true}" //不是新建, 或分栏模式下新建主对象记录, 则刷新列表
+          "expression": "${(event.data.reload || event.data.recordId || event.data.__deletedRecord === true || event.data.displayAs === 'split') && event.data._isRelated != true}" //不是新建, 或分栏模式下新建主对象记录, 则刷新列表
         }
       ]
     }
