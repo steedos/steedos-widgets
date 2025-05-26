@@ -1501,7 +1501,7 @@ export const AmisAppMenu = async (props) => {
                                         },
                                         {
                                             "type": "button",
-                                            "label": "编辑",
+                                            "label": "编辑分组",
                                             "visibleOn": "!!this.isGroup",
                                             "onEvent": {
                                                 "click": {
@@ -1589,7 +1589,7 @@ export const AmisAppMenu = async (props) => {
                                         },
                                         {
                                             "type": "button",
-                                            "label": "编辑",
+                                            "label": "编辑对象",
                                             "visibleOn": "this.type==='object'",
                                             "onEvent": {
                                                 "click": {
@@ -1655,7 +1655,7 @@ export const AmisAppMenu = async (props) => {
                                         },
                                         {
                                             "type": "button",
-                                            "label": "编辑",
+                                            "label": "编辑微页面",
                                             "visibleOn": "this.type==='page'",
                                             "onEvent": {
                                                 "click": {
@@ -1678,7 +1678,7 @@ export const AmisAppMenu = async (props) => {
                                         },
                                         {
                                             "type": "button",
-                                            "label": "编辑",
+                                            "label": "编辑选项卡",
                                             "visibleOn": "this.type==='url'",
                                             "onEvent": {
                                                 "click": {
@@ -1823,7 +1823,7 @@ export const AmisAppMenu = async (props) => {
                                         },
                                         {
                                             "type": "button",
-                                            "label": "移动",
+                                            "label": "移动至分组",
                                             "visibleOn": "!!!this.isGroup",
                                             "onEvent": {
                                                 "click": {
@@ -1837,7 +1837,7 @@ export const AmisAppMenu = async (props) => {
                                                             "actionType": "dialog",
                                                             "dialog": {
                                                                 "type": "dialog",
-                                                                "title": "移动",
+                                                                "title": "移动到指定分组",
                                                                 "data": {
                                                                     "appId": "\\\${event.data.appId}",
                                                                     "groups": "\\\${event.data.groups}",
@@ -1910,7 +1910,7 @@ export const AmisAppMenu = async (props) => {
                                         },
                                         {
                                             "type": "button",
-                                            "label": "删除",
+                                            "label": "删除选项卡",
                                             "visibleOn": "!!!this.isGroup",
                                             "onEvent": {
                                                 "click": {
@@ -1941,7 +1941,7 @@ export const AmisAppMenu = async (props) => {
                                         },
                                         {
                                             "type": "button",
-                                            "label": "删除",
+                                            "label": "删除分组",
                                             "visibleOn": "!!this.isGroup",
                                             "onEvent": {
                                                 "click": {
