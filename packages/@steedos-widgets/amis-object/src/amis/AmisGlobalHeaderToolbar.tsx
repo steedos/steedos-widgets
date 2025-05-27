@@ -2,8 +2,8 @@
   /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2025-01-13 11:17:07
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2025-05-27 15:56:54
  * @Description: 
  */
 
@@ -31,13 +31,6 @@ const notificationReadAdaptor = `
   } 
   console.log("====payload==", payload);
   return payload;
-`;
-
-const beforeMarkReadAllScript = `
-  var hasUnRead = !!db.notifications.find({'$or':[{'is_read': null},{'is_read': false}]}).count();
-  // 没有订阅到未读通知时需要额外单独触发重新请求通知列表及未读数量
-  // 如果有订阅到的话，因为监听订阅到的通知记录变化，有变化会触发@data.changed.notifications事件，从而会自动触发重新请求通知列表及未读数量
-  event.data.needToReload = !hasUnRead;
 `;
 
 const getNotificationBadgeButton = () => {
@@ -142,10 +135,6 @@ const getNotificationBadgeButton = () => {
                   "click": {
                     "actions": [
                       {
-                        "actionType": "custom",
-                        "script": beforeMarkReadAllScript 
-                      },
-                      {
                         "componentId": "",
                         "args": {
                           "api": {
@@ -163,13 +152,11 @@ const getNotificationBadgeButton = () => {
                       },
                       {
                         "componentId": "service_global_header_notifications_unread_count",
-                        "actionType": "reload",
-                        "expression": "${needToReload}"
+                        "actionType": "reload"
                       },
                       {
                         "componentId": "service_global_header_notifications_list",
-                        "actionType": "reload",
-                        "expression": "${needToReload}"
+                        "actionType": "reload"
                       }
                     ],
                     "weight": 0
