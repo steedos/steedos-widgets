@@ -12,8 +12,8 @@ import './AmisRecordDetail.less'
 
 export const AmisRecordDetail = async (props) => {
     // console.log(`AmisRecordDetail======>`, props)
-    const { className, $schema, appId, objectApiName = "space_users", recordId, onEvent, defaultData, body, showButtons, showBackButton } = props;
-    const schema = (await getRecordDetailSchema(objectApiName, appId, {showButtons, showBackButton})).amisSchema;
+    const { className, $schema, appId, objectApiName = "space_users", recordId, onEvent, defaultData, body, showButtons, showBackButton, _reloadKey } = props;
+    const schema = (await getRecordDetailSchema(objectApiName, appId, {showButtons, showBackButton, _reloadKey})).amisSchema;
     // 在非记录页组件下全局作用域下无recordId，会导致表单接口sendOn始终为false，无法发起请求。
     // let recordDetailData: any = {};
     // if(recordId){

@@ -12,7 +12,7 @@ import { keys, pick, difference, find, has, first, values } from 'lodash';
 export const AmisObjectListView = async (props) => {
   // console.time('AmisObjectListView')
   // console.log(`AmisObjectListView props`, props)
-  const { $schema, top, perPage, showHeader=true, data, defaultData, 
+  const { $schema, top, perPage, showHeader=true, data, defaultData, _reloadKey,
       className="", 
       style={},
       crudClassName, 
@@ -169,19 +169,22 @@ export const AmisObjectListView = async (props) => {
   // console.log('AmisObjectListView', listName)
   // console.log('serviceData===>', serviceData)
   // console.log('headerSchema===>',headerSchema)
-
+  // console.log('_reloadKey===>',_reloadKey)
   let _data: any = {
       defaultListName: listName ? listName : first(values(uiSchema.list_views))?.name,
       recordPermissions: uiSchema.permissions,
-      isObjectListview: true
+      isObjectListview: true,
+      _reloadKey: _reloadKey
     }
 
   if(has(props, '$$editor')){
     _data = serviceData;
   }
 
-  return {
+  const schema = {
     type: "service",
+    id: 'u:steedos-object-listview',
+    _reloadKey: _reloadKey,
     data: _data,
     style: style,
     className: `${className} sm:bg-gray-50 h-full  steedos-object-listview ${displayAs === 'split'? 'sm:border-r':'sm:border-r'}`,
@@ -208,10 +211,12 @@ export const AmisObjectListView = async (props) => {
               {
                 "type": "service",
                 "id": "service_schema_api_" + objectApiName,
+                _reloadKey: _reloadKey,
                 "className": " steedos-object-listview-content grow",//这里加grow是因为crud card模式下底部会有灰色背影
                 "schemaApi": {
                     // 这里url上加objectApiName属性是因为设计器中切换对象时不会变更列表视图界面，不可以用objectName=${objectName}使用作用域中objectName变量是因为设计器那边不会监听识别data变化来render组件
-                    "url": "${context.rootUrl}/graphql?objectName=" + objectApiName + "&listName=${listName}&display=${display}&rebuildOn=" + rebuildOn,
+                    "url": "${context.rootUrl}/graphql?objectName=" + objectApiName + "&listName=${listName}&display=${display}&rebuildOn=" + rebuildOn + _reloadKey,
+                    "trackExpression": "${_reloadKey|}",
                     "method": "post",
                     "messages": {
                     },
@@ -284,5 +289,7 @@ export const AmisObjectListView = async (props) => {
       ]
     }
     ]
-  }
+  };
+  // console.log('AmisObjectListview', schema);
+  return schema;
 }

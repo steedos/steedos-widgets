@@ -27,6 +27,7 @@ export const PageObject = async (props) => {
     const schema = {
         type: "service",
         data: $schema.data,
+        id: 'u:steedos-page-object',
         className: "h-full",
         body: {
             type: 'service',
@@ -52,7 +53,8 @@ export const PageObject = async (props) => {
                         "objectApiName":  data.objectName,
                         "appId":  data.appId,
                         "display":  data.display,
-                        "columnsTogglable": false
+                        "columnsTogglable": false,
+                        "_reloadKey": data._reloadKey
                     },
                     "visibleOn": "${pageType === 'list' || (pageType === 'record' && display == 'split')}"
                 },
@@ -71,7 +73,8 @@ export const PageObject = async (props) => {
                         "sideListviewId":  data.sideListviewId,
                         // "recordId": recordId,
                         "display":  data.display,
-                        "appId": data.appId
+                        "appId": data.appId,
+                        "_reloadKey": data._reloadKey
                     },
                     "visibleOn": "${pageType === 'record'}"
                 }

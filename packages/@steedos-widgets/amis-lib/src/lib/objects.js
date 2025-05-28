@@ -558,7 +558,8 @@ export async function getRecordDetailSchema(objectName, appId, props = {}){
                 "label": "对象表单",
                 "objectApiName": "${objectName}",
                 "recordId": "${recordId}",
-                appId: appId
+                appId: appId,
+                _reloadKey: props._reloadKey
             }
         ],
     };
@@ -571,7 +572,8 @@ export async function getRecordDetailSchema(objectName, appId, props = {}){
                 "label": "相关列表",
                 "objectApiName": "${objectName}",
                 "recordId": "${recordId}",
-                appId: appId
+                appId: appId,
+                _reloadKey: props._reloadKey
             }
         ],
     }
@@ -603,6 +605,7 @@ export async function getRecordDetailSchema(objectName, appId, props = {}){
                     "id": "u:48d2c28eb755",
                     "showButtons": props.showButtons,
                     "showBackButton": props.showBackButton,
+                    _reloadKey: props._reloadKey
                 },
                 content
             ],

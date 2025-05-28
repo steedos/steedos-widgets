@@ -11,7 +11,7 @@ import { has } from 'lodash';
 
 export const PageRecordDetail = async (props) => {
   // console.log(`PageRecordDetail`, props)
-  const { formFactor: defaultFormFactor, appId, objectApiName, recordId, display, data } = props
+  const { formFactor: defaultFormFactor, appId, objectApiName, recordId, display, data, _reloadKey } = props
   const _display = data.display || display
   if(_display){
     Router.setTabDisplayAs(objectApiName, _display)
@@ -31,6 +31,7 @@ export const PageRecordDetail = async (props) => {
           "objectApiName": objectApiName,
           // className: "sm:m-3",
           appId: appId,
+          "_reloadKey": _reloadKey
         }
       ],
     }
@@ -39,6 +40,7 @@ export const PageRecordDetail = async (props) => {
   const schema = {
     type: 'service',
     "className":  'h-full',
+    id: 'u:steedos-page-object-detail',
     body: recordSchema,
     "onEvent": {
       "recordLoaded": {

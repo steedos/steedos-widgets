@@ -12,7 +12,7 @@ import { defaultsDeep } from 'lodash';
 export const PageListView = async (props) => {
   // console.time('PageListView')
   // console.log(`PageListView====>`, props)
-  const { formFactor, appId, objectApiName, listviewId, display, $schema = {}, listName, data } = props
+  const { formFactor, appId, objectApiName, listviewId, display, $schema = {}, listName, data, _reloadKey } = props
   const _display = data.display || display
   //TODO  此代码应该在object page template中处理
   if (_display)
@@ -42,6 +42,7 @@ export const PageListView = async (props) => {
     "objectApiName": objectApiName,
     "columnsTogglable": false,
     "showHeader": true,
+    "_reloadKey": _reloadKey
     // "showDisplayAs": (formFactor !== 'SMALL'),
     // "formFactor": formFactor,
     // "className": (displayAs === 'split')? 'w-full': 'p-0 flex-1 m-0 sm:border sm:shadow sm:rounded border-gray-300 border-solid bg-gray-100'
@@ -69,8 +70,9 @@ export const PageListView = async (props) => {
 
   const schema = {
     type: 'service',
+    id: 'u:steedos-page-object-listview',
     className: {
-      "h-full" : "true",
+      "h-full" : " true",
       "page-list-grid" : "${display != 'split'}",
       "page-list-split" : "${display == 'split'}"
     },
