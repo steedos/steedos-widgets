@@ -54,7 +54,7 @@ const getNotificationBadgeButton = () => {
                 "items": {
                   "type": "tpl",
                   "tpl": `<div class='flex items-center p-2 hover:bg-sky-50'>
-                                  <img src='<%=data.context.rootUrl + "/avatar/" + data.from%>' alt='' class='h-10 w-10 flex-none rounded-full'>
+                                  <img src='<%=data.context.rootUrl + "/api/v6/users/" + data.from + "/avatar"%>' alt='' class='h-10 w-10 flex-none rounded-full'>
                                   <div class='ml-4 flex-auto'>
                                     <div class='font-medium'>
                                       <span class='text-primary'><%=data.name%></span>
@@ -287,7 +287,7 @@ export const AmisGlobalHeaderToolbar = async (props) => {
     let  avatarSrc = null;
 
     if(data.context?.user?.avatar){
-        avatarSrc = `${data.context.rootUrl || ""}/avatar/${data.context.user.userId}?w=220&h=200&fs=160&avatar=${data.context.user.avatar}`;
+        avatarSrc = `${data.context.rootUrl || ""}/api/v6/users/${data.context.user.userId}/avatar?w=220&h=200&fs=160&avatar=${data.context.user.avatar}`;
     }
 
     return {
