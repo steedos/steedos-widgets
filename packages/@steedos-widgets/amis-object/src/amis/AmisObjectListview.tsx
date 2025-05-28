@@ -177,6 +177,18 @@ export const AmisObjectListView = async (props) => {
       _reloadKey: _reloadKey
     }
 
+  if(!data.objectName){
+    _data.objectName = objectApiName;
+  }
+
+  if(!data.listName){
+    _data.listName = listName;
+  }
+
+  if(!data.uiSchema){
+    _data.uiSchema = uiSchema;
+  }
+
   if(has(props, '$$editor')){
     _data = serviceData;
   }
