@@ -159,14 +159,20 @@ export function getScriptForRemoveUrlPrefixForImgFields(fields){
                 // 因为表单初始化接口的接收适配器中为image字段值添加了url前缀（为了字段编辑时正常显示图片），所以保存时移除（为了字段值保存时正常保存id,而不是url）。
                 if(imgFields[item].multiple){
                     if(imgFieldValue instanceof Array){
-                        formData[item] = imgFieldValue.map((value)=>{ 
+                        formData[item] = imgFieldValue.map((value)=>{
+                            if(!value || value.indexOf("/") < 0 ){
+                                return value;
+                            }
                             let itemValue = value && value.split('/');
-                            return itemValue[itemValue.length - 1].split('?')[0];
+                            return itemValue[itemValue.length - 2];
                         });
                     }
                 }else{
+                    if(!imgFieldValue || imgFieldValue.indexOf("/") < 0 ){
+                        return imgFieldValue;
+                    }
                     let imgValue = imgFieldValue.split('/');
-                    formData[item] = imgValue[imgValue.length - 1].split('?')[0];
+                    formData[item] = imgValue[imgValue.length - 2];
                 }
             }
         })

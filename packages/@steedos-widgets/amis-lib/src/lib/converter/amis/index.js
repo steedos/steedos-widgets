@@ -530,7 +530,7 @@ export async function getObjectForm(objectSchema, ctx){
         promptPageLeave: true,
         canAccessSuperData: false,
         name: `form_edit_${recordId}`,
-        debug: false,
+        debug: window.amis_form_debug || false,
         title: "",
         submitText: "", // amis 表单不显示提交按钮, 表单提交由项目代码接管
         api: await getSaveApi(objectSchema, recordId, fields, ctx),
