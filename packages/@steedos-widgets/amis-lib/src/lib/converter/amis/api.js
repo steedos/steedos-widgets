@@ -58,7 +58,7 @@ function getReadonlyFormAdaptor(object, fields, options){
         nameLabel = `(record._display && record._display.${nameField.name}) || record.${nameField.name}`
     }
     return  `
-    if(payload.data.data.length === 0){
+    if(!payload.data.data || payload.data.data.length === 0){
         var isEditor = !!${options && options.isEditor};
         if(isEditor){
             var fieldNames = ${JSON.stringify(fieldNames)};
