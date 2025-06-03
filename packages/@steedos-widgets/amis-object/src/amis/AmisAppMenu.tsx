@@ -1823,7 +1823,7 @@ export const AmisAppMenu = async (props) => {
                                         },
                                         {
                                             "type": "button",
-                                            "label": "移动至分组",
+                                            "label": "移动分组",
                                             "visibleOn": "!!!this.isGroup",
                                             "onEvent": {
                                                 "click": {
