@@ -185,7 +185,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
     const bodyProps = {
       // toolbar: getToolbar(),
       // headerToolbar: getObjectHeaderToolbar(objectSchema, options.formFactor, {showDisplayAs}),
-      headerToolbarClassName: "px-4 py-2 border-b",
+      headerToolbarClassName: "px-0 py-2 border-b",
       footerToolbar: getObjectFooterToolbar(objectSchema, options.formFactor, {
         ...options,
         disableStatistics: options.queryCount === false
