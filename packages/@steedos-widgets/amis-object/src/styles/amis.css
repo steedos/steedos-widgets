@@ -305,11 +305,6 @@ fieldset.antd-Collapse > legend{
     width: unset;
 }
 
-/* crud中的快速搜索框样式改成与按钮风格统一的边框 */
-.antd-Crud .antd-Crud-toolbar .antd-SearchBox.is-active{
-    border-color: var(--button-default-default-top-border-color);
-}
-
 /* crud中的快速搜索框图标没对齐 */
 .antd-Crud .antd-Crud-toolbar .antd-SearchBox.is-active svg.icon{
     top: unset
@@ -328,6 +323,10 @@ fieldset.antd-Collapse > legend{
     padding: var(--gap-sm);
     /* border-bottom: 1px solid var(--Table-thead-borderColor); */
     margin-bottom: 0;
+}
+
+.antd-Crud .antd-Crud-toolbar-item .antd-Button--default {
+    border-color: transparent;
 }
 
 .bg-white {

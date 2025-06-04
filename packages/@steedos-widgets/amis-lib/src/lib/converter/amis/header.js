@@ -720,7 +720,7 @@ export function getObjectListHeader(objectSchema, listViewName, ctx) {
   let headerSchema = [{
     "type": "wrapper",
     "body": body,
-    "className": `sm:rounded-tl sm:rounded-tr p-4 -mb-4`
+    "className": `p-3 m-4 shadow rounded bg-white`
   }];
   // console.log(`getObjectListHeader`, objectSchema, listViewName, ctx)
   return headerSchema;
