@@ -240,23 +240,12 @@ export const AmisAppMenu = async (props) => {
                       if(allowEditApp){
                         editAppSearch = [{
                                 "type": "grid",
-                                "className": "ml-3 mr-0",
+                                "className": "m-2",
                                 "columns": [
                                     {
-                                        "md": 10,
+                                        "md": 9,
                                         "columnClassName": "p-0",
                                         "body": [
-                                            // {
-                                            //     "type": "search-box",
-                                            //     "name": "keywords",
-                                            //     "className": "!w-full",
-                                            //     "placeholder": "搜索菜单",
-                                            //     "autoFocus": false,
-                                            //     "searchImediately": true,
-                                            //     "clearable": true,
-                                            //     "clearAndSubmit": true,
-                                            //     "id": "s01"
-                                            // }
                                             {
                                                 "type": "button",
                                                 "className": "toggle-sidebar",
@@ -279,29 +268,27 @@ export const AmisAppMenu = async (props) => {
                                                 },
                                                 "body": [
                                                     {
-                                                        "type": "steedos-icon",
-                                                        "category": "utility",
-                                                        "name": "rows",
-                                                        "colorVariant": "default",
-                                                        "id": "u:afc3a08e8cf3",
-                                                        "className": "slds-button_icon slds-global-header__icon"
+                                                        "type": "html",
+                                                        "html": "<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor' class='w-7 h-7 p-1 hover:bg-white hover:shadow'><path stroke-linecap='round' stroke-linejoin='round' d='M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5' /></svg>"
                                                     }
                                                 ]
                                             }
                                         ]
                                     },
                                     {
-                                        "md": 2,
-                                        "columnClassName": "p0 pl-2 steedos-app-menu-plus",
+                                        "md": 3,
+                                        "columnClassName": "p-0 steedos-app-menu-plus",
                                         "body": [
                                             {
                                             "type": "dropdown-button",
                                             "level": "link",
-                                            "btnClassName": "text-gray-700 px-1 pt-0 text-base",
-                                            "icon": "fa fa-cog",
+                                            "className": "float-right",
+                                            "btnClassName": "p-1 text-gray-600 hover:bg-white! hover:shadow!",
+                                            "icon": "fa fa-gear",
+                                            "iconOnly": true,
                                             "closeOnClick": true,
                                             "closeOnOutside": true,
-                                            "size": "md",
+                                            // "size": "md",
                                             "hideCaret": true,
                                             "align": "right",
                                             "buttons": [
@@ -912,7 +899,7 @@ export const AmisAppMenu = async (props) => {
                       }else if(stacked){
                         editAppSearch = [{
                             "type": "button",
-                            "className": "toggle-sidebar text-center w-[60px]",
+                            "className": "toggle-sidebar w-12 mx-3 my-2",
                             "onEvent": {
                                 "click": {
                                     "actions": [
@@ -932,12 +919,8 @@ export const AmisAppMenu = async (props) => {
                             },
                             "body": [
                                 {
-                                    "type": "steedos-icon",
-                                    "category": "utility",
-                                    "name": "rows",
-                                    "colorVariant": "default",
-                                    "id": "u:afc3a08e8cf3",
-                                    "className": "slds-button_icon slds-global-header__icon"
+                                    "type": "html",
+                                    "html": "<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor' class='w-7 h-7 p-1 hover:bg-white hover:shadow'><path stroke-linecap='round' stroke-linejoin='round' d='M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5' /></svg>"
                                 }
                             ]
                         }]
@@ -1589,7 +1572,7 @@ export const AmisAppMenu = async (props) => {
                                         },
                                         {
                                             "type": "button",
-                                            "label": "编辑对象",
+                                            "label": "查看对象",
                                             "visibleOn": "this.type==='object'",
                                             "onEvent": {
                                                 "click": {
