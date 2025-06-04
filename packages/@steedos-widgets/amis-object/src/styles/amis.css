@@ -64,6 +64,9 @@
     --fieldSet-legend-fontWeight: 600;
     --fieldSet-legend-marginTop: 1rem;
     --fieldSet-legend-marginBottom: 1rem;
+
+    --DropDown-menu-boxShadow: rgba(0, 0, 0, 0.12) 0px 0px 2px, rgba(0, 0, 0, 0.14) 0px 4px 8px;
+
 }
 
 /* 修正手机端字体小的问题 */
@@ -475,4 +478,5 @@ fieldset.antd-Collapse > legend{
 /* 修正 DropButton 组件的样式 */
 .antd-DropDown-menu-root {
     margin-top: 0;
+    border: none;
 }
