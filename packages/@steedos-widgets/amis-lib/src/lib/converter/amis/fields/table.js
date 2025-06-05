@@ -733,6 +733,7 @@ export async function getTableColumns(object, fields, options){
                         type: "lookup",
                         reference_to: field.reference_to,
                         name: field.name,
+                        is_name: field.is_name,
                         label: null,
                         multiple: field.multiple,
                         amis: Object.assign({}, fieldAmis, { label: null })
