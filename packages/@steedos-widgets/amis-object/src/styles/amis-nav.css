@@ -22,6 +22,7 @@
 
 .antd-Nav-Menu-item-dragBar {
   left: 0;
+  top: 11px;
 }
 
 .steedos-app-service-edit .antd-Nav-Menu-inline .antd-Nav-Menu-item-active.antd-Nav-Menu-item-selected::before {
