@@ -547,6 +547,7 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
                               "clearValueOnHidden": true,
                               "showIndex": true,
                               "addable": true,
+                              "draggable": true,
                               "removable": true,
                               "columnsTogglable": false,
                               "needConfirm": false,
