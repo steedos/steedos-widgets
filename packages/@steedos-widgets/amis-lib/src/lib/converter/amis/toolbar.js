@@ -164,7 +164,7 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
   return {
     "type": "tooltip-wrapper",
     "id": "steedos_crud_toolbar_quick_search",
-    "align": "right",
+    "align": "left",
     "title": "",
     "content": "可搜索字段：" + searchableFieldsLabel.join(","),
     "placement": "bottom",
@@ -226,6 +226,8 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
   if(!hiddenCount){
     toolbarCount = {
       "type": "tpl",
+      "align": "right",
+      "className": "text-gray-500 mr-2",
       "tpl":  "${count} " + i18next.t('frontend_record_sum')
     };
   }
@@ -308,7 +310,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
         "animation": true,
         "visibleOn": "${isFieldsFilterEmpty == false && isLookup != true}"
       },
-      "align": "right",
+      "align": "left",
       "className": "bg-white p-2 rounded text-gray-500",
       "onEvent": {
         "click": {
@@ -333,11 +335,11 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
     if(toolbarCount){
       toolbars.push(toolbarCount);
     }
+    toolbars.push(toolbarReloadButton);
+    toolbars.push(toolbarDisplayAsButton);
     if(toolbarFilter){
       toolbars.push(toolbarFilter);
     }
-    toolbars.push(toolbarReloadButton);
-    toolbars.push(toolbarDisplayAsButton);
     toolbars.push(toolbarDQuickSearchBox);
     return [
       // "bulkActions",
@@ -345,18 +347,18 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
       ...toolbars,
   ]
   }else{
-    if(toolbarCount){
-      toolbars.push(toolbarCount);
-    }
-    if(toolbarFilter){
-      toolbars.push(toolbarFilter);
-    }
     toolbars.push(toolbarReloadButton);
     toolbars.push(toolbarDisplayAsButton);
     if(mainObject?.permissions?.allowCreateListViews){
       toolbars.push(getSettingListviewToolbarButtonSchema());
     }
     toolbars.push(toolbarDQuickSearchBox);
+    if(toolbarFilter){
+      toolbars.push(toolbarFilter);
+    }
+    if(toolbarCount){
+      toolbars.push(toolbarCount);
+    }
     return [
       // "filter-toggler",
       ...(headerToolbarItems || []),
