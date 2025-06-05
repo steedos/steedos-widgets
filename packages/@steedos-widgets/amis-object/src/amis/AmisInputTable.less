@@ -23,12 +23,22 @@
 
 
   &.steedos-show-index {
-    //序号居中显示
+    // 序号居中显示
     tbody tr td:nth-child(1){
+      text-align: center;
+    }
+    // 启用拖动排序时会多加一列td，上面的失效了，额外实现序号居中显示
+    tbody tr td.antd-Table-dragCell + td {
       text-align: center;
     }
     // 序号列去掉标题“序号” 
     thead tr th:nth-child(1) {
+      .antd-TableCell--title {
+        visibility: hidden;
+      }
+    }
+    // 启用拖动排序时会多加一列td，上面的失效了，额外实现序号列去掉标题“序号”
+    thead tr th.antd-Table-dragCell + th {
       .antd-TableCell--title {
         visibility: hidden;
       }
@@ -41,7 +51,10 @@
 
   //有序号并且有操作按钮时，操作按钮隐藏在序号上方，鼠标悬浮到当前行是显示
   &.steedos-show-index.steedos-has-operations{
-    thead tr th:nth-child(2),tbody tr td:nth-child(2) {
+    // thead tr th:nth-child(2),tbody tr td:nth-child(2) {
+    //   padding: 0;
+    // }
+    td.steedos-input-table-column-operation, th.antd-Table-operationCell{
       padding: 0;
     }
     td .antd-OperationField {
@@ -70,7 +83,10 @@
         justify-content: center;
       }
     }
-    thead tr th:nth-child(1),tbody tr td:nth-child(1) {
+    // thead tr th:nth-child(1),tbody tr td:nth-child(1) {
+    //   padding: 0;
+    // }
+    td.steedos-input-table-column-operation, th.antd-Table-operationCell{
       padding: 0;
     }
     td .antd-OperationField {

@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-06-14 06:31:33
+ * @LastEditTime: 2025-06-05 11:49:01
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -1507,7 +1507,8 @@ export const getAmisInputTableSchema = async (props) => {
             "name": "__op__",
             "type": "operation",
             "buttons": buttonsForColumnOperations,
-            "width": 1
+            "width": 1,
+            "className": "steedos-input-table-column-operation",
         });
     }
     // if (showAsInlineEditMode) {
