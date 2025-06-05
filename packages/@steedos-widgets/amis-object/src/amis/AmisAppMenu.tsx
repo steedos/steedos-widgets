@@ -990,7 +990,7 @@ export const AmisAppMenu = async (props) => {
                             "overflow": ${JSON.stringify(overflow)},
                             "indentSize": ${indentSize},
                             "draggable": allowEditApp,
-                            "dragOnSameLevel": true,
+                            "dragOnSameLevel": false,
                             "saveOrderApi": {
                                 "url": "/service/api/apps/update_app_by_design",
                                 "method": "post",

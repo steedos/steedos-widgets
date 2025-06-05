@@ -44,18 +44,13 @@
     --button-size-default-bottom-left-border-radius: 0.25rem;
     --button-size-default-marginRight: 4px;
     --button-default-default-bg-color: white;
-    --button-default-hover-bg-color: rgb(245, 245, 245);
+    /* --button-default-hover-bg-color: rgb(245, 245, 245); */
     --button-default-default-top-border-color: rgb(224, 224, 224);
     --button-default-default-bottom-border-color: rgb(224, 224, 224);
     --button-default-default-left-border-color: rgb(224, 224, 224);
     --button-default-default-right-border-color: rgb(224, 224, 224);
     --button-default-default-font-color: rgb(1, 118, 211);
     --button-enhance-default-bg-color: white;
-    --Nav-item-borderRadius: 0px;
-    --Nav-item-onHover-bg: rgba(21,137,238,.1);
-    --Nav-item-onActive-bg: rgba(21,137,238,.1);
-    --Nav-item-onActive-color: #000;
-    --Nav-Item-maxWidth--tabs: 200px;
     --Crud-toolbar-gap: 2px;
     --DropDown-caret-marginLeft: 0;
     --Tabs--vertical-width: 180px;
@@ -90,11 +85,6 @@
         padding: 0 0.625rem 0 0.625rem;
     }
 }
-
-.steedos-header-container .antd-Nav-Menu {
-    --Menu-light-backgroundColor: transparent;
-}
-
 fieldset.antd-Collapse {
     margin-bottom: 1rem;
 }
@@ -173,10 +163,6 @@ fieldset.antd-Collapse > legend.antd-Collapse-header > .antd-Collapse-arrow:befo
 }
 
 
-.antd-Nav-item.is-active {
-    box-shadow:var(--link-color) 4px 0 0 inset;
-}
-
 .antd-Pagination > li > a, .antd-Pagination > li > span {
     display: flex;
     align-items: center;
@@ -191,47 +177,6 @@ fieldset.antd-Collapse > legend.antd-Collapse-header > .antd-Collapse-arrow:befo
     top: 0px;
 }
 
-/* start: amis , component Nav */
-:root {
-    --Nav-Item-height--horizontal: 2.5rem;
-}
-
-.antd-Nav-Menu-submenu-arrow > svg {
-    display: initial;
-}
-
-.antd-Nav-Menu-horizontal .antd-Nav-Menu-item.antd-Nav-Menu-item-selected:after {
-    height: 3px;
-    top: 0;
-    bottom: unset;
-    background: rgb(14 165 233);
-}
-
-.antd-Nav-Menu-light .antd-Nav-Menu-item {
-    padding-right: 0.5rem;
-}
-
-.antd-Nav-Menu-light .antd-Nav-Menu-item.antd-Nav-Menu-item-selected {
-    background: rgba(21,137,238,.1);
-}
-
-.antd-Nav-Menu-light .antd-Nav-Menu-item.antd-Nav-Menu-item-active {
-    background: rgba(151, 151, 151, 0.1);
-}
-
-.antd-Nav-Menu-light .antd-Nav-Menu-submenu.antd-Nav-Menu-submenu-active .antd-Nav-Menu-submenu-title{
-    background: rgba(151, 151, 151, 0.1);
-}
-
-.antd-Nav-Menu-light .antd-Nav-Menu-submenu.antd-Nav-Menu-submenu .antd-Nav-Menu-submenu-title .antd-Nav-Menu-item-link .antd-Nav-Menu-item-label {
-    font-weight: bold !important;
-    color: black !important;
-}
-
-.antd-Nav-Menu-horizontal > .antd-Nav-Menu-item-tooltip-wrap > .antd-Nav-Menu-item {
-    padding: 0 15px;
-}
-/* end: amis  component Nav */
 
 /* 处理amis debug 滚动条异常 */
 .AMISDebug-content{
@@ -247,12 +192,6 @@ fieldset.antd-Collapse > legend.antd-Collapse-header > .antd-Collapse-arrow:befo
     overflow: scroll;
     height: calc(100% - 40px);
 }
-
-/*  nav下配置itemBadge属性后item不会自动撑开 */ 
-.antd-Nav-Menu-item-wrap .antd-Badge{
-    width: -webkit-fill-available;
-}
-
 
 /* 实现弹框中的crud中的inputTree高度满屏，目前选人控件的左侧树样式 */
 .antd-Modal-body .antd-Crud .antd-Table .antd-Tree{
@@ -290,17 +229,6 @@ fieldset.antd-Collapse > legend.antd-Collapse-header > .antd-Collapse-arrow:befo
     .steedos-combo-edit .steedos-native-time .antd-TextControl-input input{
         min-width: 70px;
     }
-}
-
-/* TODO: amis3.2.0 .antd-Nav-Menu-item-link类中缺少flex，影响nav样式 */
-.antd-Nav-Menu-item-link{
-    display: flex;
-    align-items: center;
-}
-
-/* TODO: amis3.2.0 .antd-Nav类中多了background属性，影响nav样式 */
-.antd-Nav{
-    background-color: unset;
 }
 
 /* TODO: amis3.2.0 fieldset.antd-Collapse > legend类中多了background属性，影响分组样式 */
@@ -480,4 +408,5 @@ fieldset.antd-Collapse > legend{
 .antd-DropDown-menu-root {
     margin-top: 0;
     border: none;
+    padding: 6px;
 }

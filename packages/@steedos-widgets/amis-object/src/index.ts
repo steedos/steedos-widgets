@@ -1,4 +1,6 @@
 import './styles/amis.css';
+import './styles/amis-nav.css';
+
 import './styles/antd.css';
 import './styles/tailwind.css';
 import './styles/object.less';
