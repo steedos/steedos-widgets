@@ -92,7 +92,7 @@
   color: var(--Menu-light-fontColor);
 }
 
-.antd-Nav-Menu .antd-Nav-Menu-submenu-title {
+.antd-Nav-Menu .antd-Nav-Menu-submenu-title a, .antd-Nav-Menu .antd-Nav-Menu-submenu-title a:hover {
   padding-left: 6px;
   font-weight: bold;
 }
