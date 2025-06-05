@@ -31,7 +31,7 @@ export async function getObjectFieldsFilterFormSchema(ctx) {
   const formSchema = {
     "type": "service",
     "visibleOn": "this.filterFormSearchableFields && this.filterFormSearchableFields.length",
-    "className": ctx.formFactor === 'SMALL' ? "slds-filters__body p-0 mb-2 overflow-y-auto overflow-x-hidden" : "slds-filters__body p-0 sm:grid sm:gap-4 sm:grid-cols-4 p-2",
+    "className": ctx.formFactor === 'SMALL' ? "slds-filters__body p-0 mb-2 overflow-y-auto overflow-x-hidden" : "slds-filters__body p-0 sm:grid sm:gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 p-1",
     "style":{
       "max-height":ctx.formFactor === 'SMALL'?"30vh":"unset"
     },
@@ -156,24 +156,24 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     const filterService = filterForm.context.getComponents().find(function(n){
       return n.props.type === "service";
     });
-    let showFieldsFilter = false;
-    const isMobile = window.innerWidth < 768;
-    if(event.data.__from_fields_filter_settings_confirm){
-      // 如果是从设置搜索项点击确认按钮触发的搜索事件不应该自动关闭搜索栏
-      showFieldsFilter = true;
-    }
-    else if(isMobile){
-      // 如果是手机端，点击搜索后自动关闭搜索栏
-      showFieldsFilter = false;
-    }
-    else if(event.data.displayAs === "split") {
-      // PC上分栏模式下的列表，始终按手机上效果处理，即自动关闭搜索栏
-      showFieldsFilter = false;
-    }
-    else if(window.innerHeight >= 1200){
-      // 高分辨率屏幕（2k+），列表高度比较高，没必要自动关闭搜索栏
-      showFieldsFilter = true;
-    }
+    let showFieldsFilter = true;
+    // const isMobile = window.innerWidth < 768;
+    // if(event.data.__from_fields_filter_settings_confirm){
+    //   // 如果是从设置搜索项点击确认按钮触发的搜索事件不应该自动关闭搜索栏
+    //   showFieldsFilter = true;
+    // }
+    // else if(isMobile){
+    //   // 如果是手机端，点击搜索后自动关闭搜索栏
+    //   showFieldsFilter = false;
+    // }
+    // else if(event.data.displayAs === "split") {
+    //   // PC上分栏模式下的列表，始终按手机上效果处理，即自动关闭搜索栏
+    //   showFieldsFilter = false;
+    // }
+    // else if(window.innerHeight >= 1200){
+    //   // 高分辨率屏幕（2k+），列表高度比较高，没必要自动关闭搜索栏
+    //   showFieldsFilter = true;
+    // }
     filterService.setData({showFieldsFilter});
     // resizeWindow();//已迁移到搜索栏表单提交事件中执行，因为表单项change后也会触发表单提交了
     let isFieldsFilterEmpty = SteedosUI.isFilterFormValuesEmpty(filterFormValues);
@@ -642,10 +642,10 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
           "className": "slds-filters__footer slds-grid slds-shrink-none flex justify-between p-0"
         }],
         "size": "xs",
-        "className": "slds-filters"
+        "className": "slds-filters px-0"
       },
       "size": "xs",
-      "className": `border-y slds-grid slds-grid_vertical slds-nowrap ${!ctx.isLookup && "mt-2"}`,
+      "className": `p-0`,
       "visibleOn": "this.showFieldsFilter",
     },
     "className": "bg-white"
