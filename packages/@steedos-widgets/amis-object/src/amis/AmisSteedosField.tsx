@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-04-07 23:05:00
+ * @LastEditTime: 2025-06-05 23:51:29
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -104,8 +104,18 @@ const REFERENCE_VALUE_ITEM_ONCLICK = {
 
 async function getLookupLinkOnClick(field: any, options: any) {
     const recordPage = await getPage({ type: 'record', appId: options.appId, objectName: options.objectName, formFactor: options.formFactor });
+    // Lookup字段点击弹出的详细页面的对象是字段referenceTo的对象，_id是字段的value
+    let objectName = "${objectName}";
+    let recordId = "${value}";
+    if (options.tableObjectName && field.is_name){
+        // 如果Lookup字段上配置了is_name，且是在表格（即tableObjectName有值，包括列表视图和子表）中
+        // 则点击弹出的详细页面是表格行记录指向的记录详细页面，此时打开的详细页面对象是表格所属对象，_id是表格行记录的_id值
+        // tableObjectName 没有值时说明lookup字段可能是在记录详细页面表单等地方，此时打开的详细页面lookup字段值指向的记录
+        objectName = options.tableObjectName;
+        recordId = "${_id}";
+    }
     const drawerRecordDetailSchema = recordPage ? Object.assign({}, recordPage.schema, {
-        "recordId": "${value}",
+        "recordId": recordId,
         "data": {
             ...recordPage.schema.data,
             "_inDrawer": true,  // 用于判断是否在抽屉中
@@ -114,8 +124,8 @@ async function getLookupLinkOnClick(field: any, options: any) {
         }
     }) : {
         "type": "steedos-record-detail",
-        "objectApiName": "${objectName}",
-        "recordId": "${value}",
+        "objectApiName": objectName,
+        "recordId": recordId,
         "showBackButton": false,
         "showButtons": true,
         "data": {
