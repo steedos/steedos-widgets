@@ -43,7 +43,7 @@ export const SteedosDropdownButton = (props)=>{
                         const openData = result?.hasOwnProperty('ok') ? result.data : result;
                         setMenu(getMenu(render, buttons, btnClassName, {
                             // data: createObject(data, defaultsDeep(openData, data, {record: data}))
-                            data: createObject(data, Object.assign({}, data, {record: data}, openData))
+                            data: createObject(data, Object.assign({}, data, {record: data}, openData, {_master: {record: data}}))
                         }))
                       }).catch((e)=>{
                         console.error(e)
