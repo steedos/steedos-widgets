@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-04-25 10:16:59
+ * @LastEditTime: 2025-06-09 20:27:55
  * @Description: 
  */
 import './AmisObjectForm.less';
@@ -13,10 +13,11 @@ import { keys, pick, difference, isString, has } from 'lodash';
 // md:border-b
 export const AmisObjectForm = async (props) => {
   // console.log("===AmisObjectForm=props==", props);
-  const { $schema, recordId, defaultData, mode, layout = "horizontal", labelAlign, appId, fieldsExtend, excludedFields = null, fields = null, form = {},
+  const { $schema, recordId, mode, layout = "horizontal", labelAlign, appId, fieldsExtend, excludedFields = null, fields = null, form = {},
     className="", enableInitApi, initApiRequestAdaptor, initApiAdaptor, apiRequestAdaptor, apiAdaptor, enableTabs, tabsMode, submitSuccActions, data,
     formDataFilter, onFormDataFilter, env
   } = props;
+  let defaultData = props.defaultData;
   let objectApiName = props.objectApiName || "space_users";
   // amis中的mode属性是表单布局,没有layout属性。defaults的变量会覆盖mode属性值。
   const schemaKeys = difference(keys($schema), ["id","form","type","mode","layout","defaultData", "formDataFilter", "onFormDataFilter", "env"]);
@@ -49,6 +50,12 @@ export const AmisObjectForm = async (props) => {
   const allData: any = createObject(data, {}); 
   if (mode === 'edit') {//这里不把defaultData传入createObject是因为此处defaultData是表单字段默认值，不属于上下文data
     if(defaultData){
+      try {
+        defaultData = isString(defaultData) ? JSON.parse(defaultData) : defaultData
+      } catch (error) {
+        console.warn(error)
+        defaultData = {}
+      }
       // 让ObjectForm支持props中的dafaultData属性与上层组件配置的defaultData混合
       // 为了解决相关表新建时如果是表单类型微页面，因为找不到ObjectForm在哪层而造成无法设置ObjectForm的defaultData的问题
       allData.defaultData = {

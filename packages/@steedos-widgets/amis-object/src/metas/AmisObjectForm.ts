@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-04-25 10:29:07
+ * @LastEditTime: 2025-06-09 20:27:12
  * @Description: 
  */
 
@@ -497,6 +497,15 @@ export default {
                       "key": "4",
                       "header": "高级",
                       "body": [
+                        {
+                          type: "editor",
+                          name: "defaultData",
+                          label: "初始化静态数据",
+                          "options": {
+                            "lineNumbers": "off"
+                          },
+                          language: "json",
+                        },
                         {
                           type: "editor",
                           name: "formDataFilter",
