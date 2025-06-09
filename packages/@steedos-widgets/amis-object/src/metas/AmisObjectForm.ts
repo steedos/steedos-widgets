@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-04-25 10:29:07
+ * @LastEditTime: 2025-06-09 18:37:14
  * @Description: 
  */
 
@@ -497,6 +497,14 @@ export default {
                       "key": "4",
                       "header": "高级",
                       "body": [
+                        {
+                          type: "input-kv",
+                          name: "defaultData",
+                          label: "初始化静态数据",
+                          itemsWrapperClassName: 'ae-Combo-items',
+                          itemClassName: 'ae-Combo-item',
+                          description: ""
+                        },
                         {
                           type: "editor",
                           name: "formDataFilter",
