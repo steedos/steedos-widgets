@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-06-09 18:37:14
+ * @LastEditTime: 2025-06-09 19:29:04
  * @Description: 
  */
 
@@ -498,12 +498,30 @@ export default {
                       "header": "高级",
                       "body": [
                         {
-                          type: "input-kv",
+                          type: "editor",
                           name: "defaultData",
                           label: "初始化静态数据",
-                          itemsWrapperClassName: 'ae-Combo-items',
-                          itemClassName: 'ae-Combo-item',
-                          description: ""
+                          "options": {
+                            "lineNumbers": "off"
+                          },
+                          "pipeIn": (value, data) => {
+                            if(value){
+                              return value;
+                            }
+                            return "";
+                          },
+                          "pipeOut": (value, data) => {
+                            if(value){
+                              const v = JSON.parse(value);
+                              if(JSON.stringify(v) === '{}'){
+                                return ""
+                              }else{
+                                return v;
+                              }
+                            }
+                            return "";
+                          },
+                          language: "json",
                         },
                         {
                           type: "editor",
