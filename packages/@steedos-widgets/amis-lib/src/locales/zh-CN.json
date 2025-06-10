@@ -22,7 +22,7 @@
     "frontend_display_as": "显示为",
     "frontend_record_sum": "个项目",
     "frontend_button_reload_tooltip": "刷新",
-    "frontend_button_search_tooltip": "高级搜索",
+    "frontend_button_search_tooltip": "过滤",
     "frontend_fields_filter_button_search": "搜索",
     "frontend_fields_filter_button_settings": "选择搜索项",
     "frontend_button_listview_control_tooltip": "列表视图控制",

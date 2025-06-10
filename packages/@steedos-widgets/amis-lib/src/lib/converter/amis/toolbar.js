@@ -164,7 +164,7 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
   return {
     "type": "tooltip-wrapper",
     "id": "steedos_crud_toolbar_quick_search",
-    "align": "left",
+    "align": "right",
     "title": "",
     "content": "可搜索字段：" + searchableFieldsLabel.join(","),
     "placement": "bottom",
@@ -178,6 +178,7 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
         "name": keywordsSearchBoxName,
         "placeholder": "快捷搜索",
         "value": crudKeywords,
+        "mini": true,
         "clearable": true,//因为清除并不会触发失去焦点事件，只有禁用，但是它会触发change事件，所以等升级到amis 3.4+后可以重新放开
         "clearAndSubmit": true,
         "searchImediately": false,
@@ -226,7 +227,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
   if(!hiddenCount){
     toolbarCount = {
       "type": "tpl",
-      "align": "right",
+      "align": "left",
       "className": "text-gray-500 mr-2",
       "tpl":  "${count} " + i18next.t('frontend_record_sum')
     };
@@ -310,7 +311,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
         "animation": true,
         "visibleOn": "${isFieldsFilterEmpty == false && isLookup != true}"
       },
-      "align": "left",
+      "align": "right",
       "className": "bg-white p-2 rounded text-gray-500",
       "onEvent": {
         "click": {
@@ -347,12 +348,12 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
       ...toolbars,
   ]
   }else{
-    toolbars.push(toolbarReloadButton);
+    toolbars.push(toolbarDQuickSearchBox);
     toolbars.push(toolbarDisplayAsButton);
+    toolbars.push(toolbarReloadButton);
     if(mainObject?.permissions?.allowCreateListViews){
       toolbars.push(getSettingListviewToolbarButtonSchema());
     }
-    toolbars.push(toolbarDQuickSearchBox);
     if(toolbarFilter){
       toolbars.push(toolbarFilter);
     }

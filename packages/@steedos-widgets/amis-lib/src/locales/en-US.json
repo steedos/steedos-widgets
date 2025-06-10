@@ -22,7 +22,7 @@
     "frontend_display_as": "Displayed as",
     "frontend_record_sum": "items",
     "frontend_button_reload_tooltip": "Refresh",
-    "frontend_button_search_tooltip": "Advanced Search",
+    "frontend_button_search_tooltip": "Filter",
     "frontend_fields_filter_button_search": "Search",
     "frontend_fields_filter_button_settings": "Set search options",
     "frontend_button_listview_control_tooltip": "List View Controls",
