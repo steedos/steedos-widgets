@@ -28,7 +28,7 @@
 .thread,
 .composer {
   position: relative;
-  border-radius: 0.75rem;
+  border-radius: 0.25rem;
   overflow: hidden;
   box-shadow:
     0 0 0 1px rgb(0 0 0 / 4%),
