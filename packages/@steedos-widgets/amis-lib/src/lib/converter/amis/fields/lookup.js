@@ -671,6 +671,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
                 "filtersFunction": field.filtersFunction,
                 "_filtersFunction": field._filtersFunction,
                 "inFilterForm": ctx.inFilterForm,
+                "listviewFilter": listviewFilter,
                 "listviewFiltersFunction": listviewFiltersFunction
             }
         });

@@ -56,6 +56,13 @@ export const organizationsTree = {
         }
         var allowSearchFields = this.getSearchableFields(api);
         var filters: any[][] = [];
+        if (option.isLookup) {
+            const inFilterForm = __lookupField.inFilterForm;
+            const listviewFilter = __lookupField.listviewFilter;
+            if (listviewFilter && listviewFilter.length && !inFilterForm) {
+                filters = listviewFilter;
+            }
+        }
         var selfData = JSON.parse(JSON.stringify(api.context));
         var searchableFilter = SteedosUI.getSearchFilter(selfData) || [];
         if (searchableFilter.length > 0) {
@@ -89,13 +96,15 @@ export const organizationsTree = {
                 filters.push(fieldFilters);
             }
 
-            var inFilterForm = __lookupField.listviewFiltersFunction;
-            const listviewFiltersFunction = __lookupField.listviewFiltersFunction;
+            const inFilterForm = __lookupField.inFilterForm;
+            let listviewFiltersFunction = __lookupField.listviewFiltersFunction;
+            if(typeof listviewFiltersFunction === "string"){
+                listviewFiltersFunction = new Function(`return ${listviewFiltersFunction}`)();
+            }
             let filtersFunction = __lookupField.filtersFunction || __lookupField._filtersFunction;
             if(typeof filtersFunction === "string"){
                 filtersFunction = new Function(`return ${filtersFunction}`)();
             }
-
             if(listviewFiltersFunction && !inFilterForm){
                 const _filters0 = listviewFiltersFunction(filters, api.context);
                 if(_filters0 && _filters0.length){
