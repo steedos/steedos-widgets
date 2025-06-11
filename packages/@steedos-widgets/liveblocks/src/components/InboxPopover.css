@@ -2,7 +2,8 @@
 .inbox {
   background: #fff;
   width: 460px;
-  height: 560px;
+  min-height: 120px;
+  max-height: 560px;
   z-index: 1000;
   max-height: calc(100vh - var(--header-height) - 10px);
   display: flex;
@@ -14,6 +15,10 @@
     0 0 0 1px rgb(0 0 0 / 4%),
     0 2px 6px rgb(0 0 0 / 8%),
     0 8px 26px rgb(0 0 0 / 12%);
+}
+
+.inbox .empty {
+  padding: 0.5rem 0.5rem 0.5rem 1rem;
 }
 
 .inbox-header {
