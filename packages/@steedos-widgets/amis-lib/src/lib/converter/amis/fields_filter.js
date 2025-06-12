@@ -31,7 +31,7 @@ export async function getObjectFieldsFilterFormSchema(ctx) {
   const formSchema = {
     "type": "service",
     "visibleOn": "this.filterFormSearchableFields && this.filterFormSearchableFields.length",
-    "className": ctx.formFactor === 'SMALL' ? "slds-filters__body p-0 mb-2 overflow-y-auto overflow-x-hidden" : "slds-filters__body p-0 sm:grid sm:gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 p-1",
+    "className": ctx.formFactor === 'SMALL' ? "slds-filters__body p-0 mb-2 overflow-y-auto overflow-x-hidden" : "slds-filters__body p-0 sm:grid sm:gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-1",
     "style":{
       "max-height":ctx.formFactor === 'SMALL'?"30vh":"unset"
     },
@@ -484,6 +484,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
             "body": [
               {
                 "type": "button",
+                "level": "primary",
                 "id": btnSearchId,
                 "label": i18next.t('frontend_fields_filter_button_search'),
                 "icon": "fa fa-search",
@@ -501,7 +502,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
               },
               {
                 "type": "button",
-                "label": i18next.t('frontend_form_cancel'),
+                "label": i18next.t('frontend_form_reset'),
                 "name": "btn_filter_form_cancel",
                 // "visibleOn": "this.filterFormSearchableFields && this.filterFormSearchableFields.length",
                 "onEvent": {
@@ -591,7 +592,6 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
                               "className": "steedos-amis-form"
                             }
                           ],
-                          "id": "u:ca99fa9fe1b1",
                           "actions": [
                             {
                               "type": "button",
@@ -658,12 +658,11 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
                     ]
                   }
                 },
-                "id": "u:b96d84868a5a",
                 "level": "link"
               }
             ],
             "size": "xs",
-            "className": "space-x-4"
+            "className": "space-x-2"
           },
           "size": "xs",
           "className": "slds-filters__footer slds-grid slds-shrink-none flex justify-between p-0"

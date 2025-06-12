@@ -86,9 +86,9 @@ export const getSchema = async (uiSchema, ctx) => {
         "body": [
             {
                 "type": "button",
+                "level": "primary",
                 "label": i18next.t('frontend_form_new'),
                 "id": "u:standard_new",
-                "level": "default",
                 "onEvent": {
                     "click": {
                         "weight": 0,
