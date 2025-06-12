@@ -333,15 +333,15 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
   // 当出现空的.antd-Crud-toolbar-item dom时会影响toolbar元素的maring-right css样式计算，如果有动态需要应该加到动态数组变量toolbars中
   let toolbars = [];
   if(formFactor === 'SMALL'){
-    if(toolbarCount){
-      toolbars.push(toolbarCount);
-    }
-    toolbars.push(toolbarReloadButton);
-    toolbars.push(toolbarDisplayAsButton);
+    // if(toolbarCount){
+    //   toolbars.push(toolbarCount);
+    // }
+    // toolbars.push(toolbarReloadButton);
+    toolbars.push(toolbarDQuickSearchBox);
     if(toolbarFilter){
       toolbars.push(toolbarFilter);
     }
-    toolbars.push(toolbarDQuickSearchBox);
+    toolbars.push(toolbarDisplayAsButton);
     return [
       // "bulkActions",
       ...(headerToolbarItems || []),
