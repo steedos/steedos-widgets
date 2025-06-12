@@ -199,7 +199,7 @@ export const AmisObjectListView = async (props) => {
     _reloadKey: _reloadKey,
     data: _data,
     style: style,
-    className: `${className} h-full  steedos-object-listview ${displayAs === 'split'? 'sm:border-r':'sm:bg-[#FAFAFA]'}`,
+    className: `${className} h-full  steedos-object-listview ${displayAs === 'split'? 'sm:border-r':'sm:bg-gray-50'}`,
     body: [{
       "type": "wrapper",
       "size": "none",
