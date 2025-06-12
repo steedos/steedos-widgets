@@ -1,7 +1,7 @@
 {
   "name": "react-js",
   "private": true,
-  "version": "6.10.1-beta.31",
+  "version": "6.10.1-beta.32",
   "type": "module",
   "scripts": {
     "dev": "NODE_ENV=production vite",
