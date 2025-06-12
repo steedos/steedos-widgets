@@ -217,14 +217,14 @@ export const AmisObjectListView = async (props) => {
           "className": sideSchema ? `flex-1 focus:outline-none lg:order-last w-96 h-full` : 'w-full h-full',
           "body": {
             type: "wrapper",
-            className: "p-0 m-0 steedos-object-listview-content-wrapper h-full flex flex-col",
+            className: "p-0 m-4 shadow rounded bg-white steedos-object-listview-content-wrapper flex flex-col",
             body: [
               ...headerSchema, //list view header,
               {
                 "type": "service",
                 "id": "service_schema_api_" + objectApiName,
                 _reloadKey: _reloadKey,
-                "className": " steedos-object-listview-content grow px-3 py-1 m-4 mt-0 shadow rounded bg-white",//这里加grow是因为crud card模式下底部会有灰色背影
+                "className": " steedos-object-listview-content grow px-3 py-0 m-1 bg-white",//这里加grow是因为crud card模式下底部会有灰色背影
                 "schemaApi": {
                     // 这里url上加objectApiName属性是因为设计器中切换对象时不会变更列表视图界面，不可以用objectName=${objectName}使用作用域中objectName变量是因为设计器那边不会监听识别data变化来render组件
                     "url": "${context.rootUrl}/graphql?objectName=" + objectApiName + "&listName=${listName}&display=${display}&rebuildOn=" + rebuildOn + _reloadKey,

@@ -349,8 +349,8 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
   ]
   }else{
     toolbars.push(toolbarDQuickSearchBox);
-    toolbars.push(toolbarDisplayAsButton);
     toolbars.push(toolbarReloadButton);
+    toolbars.push(toolbarDisplayAsButton);
     if(mainObject?.permissions?.allowCreateListViews){
       toolbars.push(getSettingListviewToolbarButtonSchema());
     }
