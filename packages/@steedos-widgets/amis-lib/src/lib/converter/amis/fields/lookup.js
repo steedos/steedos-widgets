@@ -731,7 +731,9 @@ export async function lookupToAmisPicker(field, readonly, ctx){
                 {
                     "actionType": "custom",
                     "script": `
-                    const masterRecord = event.data._master && event.data._master.record;
+                    // lookup字段弹出列表，点击新建按钮，新建记录成功后，触发@data.changed.xxx，
+                    // 此时context.props.data值是lookup字段所在表单数据，经测试多层lookup弹出列表新建记录成功后context.props.data始终取的是最近一层的lookup字段所在表单数据，符合预期
+                    const masterRecord = context.props.data;//event.data._master && event.data._master.record;
                     const fieldConfig = ${JSON.stringify(field)};
                     let reference_to = fieldConfig.reference_to;
                     let saveValue;
@@ -741,7 +743,6 @@ export async function lookupToAmisPicker(field, readonly, ctx){
                     }
                     const saveField = fieldConfig.reference_to_field || '_id';
                     const saveFieldValue = newRecord[saveField];
-
                     if( fieldConfig._reference_to && (_.isArray(fieldConfig._reference_to) || _.isFunction(fieldConfig._reference_to) || fieldConfig._reference_to.startsWith('function') ) ){
                         
                         const fieldValue = masterRecord ? masterRecord[fieldConfig.name] : {o: reference_to, ids: []};
@@ -761,8 +762,10 @@ export async function lookupToAmisPicker(field, readonly, ctx){
 
                     }else{
                         if(fieldConfig.multiple){
-                            // TODO: 连续新建多个记录时，因为获取的主记录不是实时的，所以只会勾选最后一个新建的记录。
-                            const fieldValue = (masterRecord && masterRecord[fieldConfig.name]) || [];
+                            // const fieldValue = (masterRecord && masterRecord[fieldConfig.name]) || [];
+                            // 连续新建多个记录时，因为masterRecord获取的主记录不是实时的，所以只会勾选最后一个新建的记录
+                            // 而下面context.context.component指向的是lookup picker组件，可以直接取到用户实时勾选的记录。
+                            const fieldValue = context.context.component.props.store.toJSON().selectedItems
                             saveValue = fieldValue.concat(saveFieldValue);
                         }else{
                             saveValue = saveFieldValue;
