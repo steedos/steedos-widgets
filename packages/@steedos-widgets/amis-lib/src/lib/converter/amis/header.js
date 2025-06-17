@@ -478,7 +478,6 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
                       "id": "u:ce9e3fcc411a"
                     }
                   ],
-                  "className": "steedos-overflow-visible-dialog",
                   "showCloseButton": true,
                   "showErrorMsg": true,
                   "showLoading": true,
