@@ -272,12 +272,12 @@ fieldset.antd-Collapse > legend{
     border: var(--Form-input-borderWidth) solid transparent;
     border-radius: var(--Form-input-borderRadius);
 }
-
+/* 
 .antd-Picker .antd-Picker-input .antd-Picker-values .antd-Picker-value{
-    /* lookup字段值选中项值字符很多超长时换行，包括单选和多选 */
+    // lookup字段值选中项值字符很多超长时换行，包括单选和多选
     white-space: break-spaces;
     word-break: break-all;
-}
+} */
 
 .steedos-crud-mode-cards .antd-Card-actions a[disabled]{
     box-shadow: none;
