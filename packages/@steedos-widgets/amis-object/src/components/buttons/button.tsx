@@ -99,12 +99,12 @@ export const AmisObjectButton = (props) => {
             schema.data = createObject(data, defaultsDeep(renderData, schema.data, {context: data.context, global: data.global, }));
             delete schema.data.event;
         }
-        if(!has(JSON.parse(JSON.stringify(data)), 'record')){
-            if(schema && schema.data){
-                schema.data.record = null;
-            }
-            renderData.record = null;
-        }
+        // if(!has(JSON.parse(JSON.stringify(data)), 'record')){
+        //     if(schema && schema.data){
+        //         schema.data.record = null;
+        //     }
+        //     renderData.record = null;
+        // }
         return (
             <>
             {button && amisSchema? (
