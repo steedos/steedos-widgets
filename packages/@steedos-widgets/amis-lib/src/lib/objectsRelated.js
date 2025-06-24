@@ -210,7 +210,10 @@ export async function getRecordDetailRelatedListSchema(objectName, recordId, rel
             data: {
                 relatedKey: relatedKey,   
                 listViewId: `amis-\${appId}-${relatedObjectName}-listview`,
-                _isRelated: true
+                _isRelated: true,
+                record: {
+                    recordPermissions: relatedObjectUiSchema.permissions
+                }
             },
             body:[
                 amisSchema

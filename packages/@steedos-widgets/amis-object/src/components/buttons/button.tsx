@@ -6,7 +6,7 @@
  * @Description: 
  */
 import React, { useEffect, useState } from 'react'
-import { isString, defaultsDeep } from 'lodash';
+import { isString, defaultsDeep, has } from 'lodash';
 import { getButton, executeButton, getUISchema, getDefaultRenderData, createObject } from '@steedos-widgets/amis-lib';
 
 export const AmisObjectButton = (props) => {
@@ -98,6 +98,10 @@ export const AmisObjectButton = (props) => {
             }
             schema.data = createObject(data, defaultsDeep(renderData, schema.data, {context: data.context, global: data.global, }));
             delete schema.data.event;
+        }
+        if(!has(JSON.parse(JSON.stringify(data)), 'record')){
+            schema.data.record = null;
+            renderData.record = null;
         }
         return (
             <>
