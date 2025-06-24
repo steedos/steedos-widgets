@@ -100,7 +100,9 @@ export const AmisObjectButton = (props) => {
             delete schema.data.event;
         }
         if(!has(JSON.parse(JSON.stringify(data)), 'record')){
-            schema.data.record = null;
+            if(schema && schema.data){
+                schema.data.record = null;
+            }
             renderData.record = null;
         }
         return (
