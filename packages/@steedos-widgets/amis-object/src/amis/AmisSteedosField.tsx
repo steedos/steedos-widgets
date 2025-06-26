@@ -418,7 +418,7 @@ export const AmisSteedosField = async (props) => {
                                             label: false,
                                             className: 'm-0',
                                             tpl: `<a href="/app/-/\${objectName}/view/\${value}" target="_blank" ${lookupATagClick}>\${label}</a>`,
-                                            popOver: fieldRefObject.compactLayouts && window.innerWidth >= 768 ? {
+                                            popOver: (window as any).showLookupPopOver && fieldRefObject.compactLayouts && window.innerWidth >= 768 ? {
                                                 "trigger": "hover",
                                                 "className": "steedos-record-detail-popover",
                                                 "position": "left-bottom",
