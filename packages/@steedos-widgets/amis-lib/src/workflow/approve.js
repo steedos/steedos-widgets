@@ -40,6 +40,7 @@ const getJudgeOptions = async (instance) => {
 
 const getJudgeInput = async (instance) => {
   const judgeOptions = await getJudgeOptions(instance);
+  // console.log('getJudgeInput', judgeOptions);
   if (judgeOptions.length > 0 && instance.approve.type != 'cc') {
     return {
       type: "radios",
@@ -80,6 +81,7 @@ const getJudgeInput = async (instance) => {
 
 //TODO 只有一个下一步时,默认选中,并且禁止修改.
 const getNextStepInput = async (instance) => {
+  // console.log('getNextStepInput', instance);
   if(instance.approve?.type == 'cc'){
     return ;
   }
@@ -115,14 +117,30 @@ const getNextStepInput = async (instance) => {
               "next_users": null
             },
             "source": {
-              "url": "${context.rootUrl}/api/workflow/v2/nextStep?judge=${new_judge}",
+              "url": "/api/workflow/v2/nextStep?judge=${new_judge}",
               "headers": {
                 "Authorization": "Bearer ${context.tenantId},${context.authToken}"
               },
               "method": "post",
               "messages": {
               },
-              "requestAdaptor": "let { context, judge } = api.data; if(!judge){judge='approved'}\nconst formValues = SteedosUI.getRef(api.data.$scopeId).getComponentById(\"instance_form\").getValues();\n\napi.data = {\nflowVersionId: context.flowVersion._id,\n  instanceId: context._id,\n  flowId: context.flow._id,\n  step: context.step,\n  judge: judge,\n  values: formValues\n}\n\n\n return api;",
+              "requestAdaptor": `
+                let { judge } = api.data; 
+                const ctx = api.data.context;
+                if(!judge){
+                  judge='approved'
+                };
+                const formValues = context._scoped.getComponentById("instance_form").getValues();
+                api.data = {
+                  flowVersionId: ctx.flowVersion._id,
+                  instanceId: ctx._id,
+                  flowId: ctx.flow._id,
+                  step: ctx.step,
+                  judge: judge,
+                  values: formValues
+                };
+                return api;
+              `,
               "adaptor": `
                 payload.data = {
                   value: payload.nextSteps.length === 1 ? payload.nextSteps[0]._id : null, 
@@ -230,7 +248,7 @@ const getNextStepUsersInput = async (instance) => {
                 "messages": {
                 },
                 "requestAdaptor": "\nconst { context, next_step, $scopeId } = api.data;\nconst formValues = SteedosUI.getRef($scopeId).getComponentById(\"instance_form\").getValues();\n\napi.data = {\n  instanceId: context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
-                "adaptor": "\npayload.data = {value: payload.nextStepUsers.length === 1 ? payload.nextStepUsers[0].id : null, options: payload.nextStepUsers};\nreturn payload;",
+                "adaptor": "debugger;\npayload.data = {value: payload.nextStepUsers.length === 1 ? payload.nextStepUsers[0].id : null, options: payload.nextStepUsers};\nreturn payload;",
                 "data": {
                   "&": "$$",
                   "$scopeId": "$scopeId",
@@ -255,8 +273,8 @@ const getNextStepUsersInput = async (instance) => {
 
 const getCCSubmitRequestAdaptor = async (instance) => {
   return `  
-            const instanceForm = SteedosUI.getRef(api.data.$scopeId).getComponentById("instance_form");
-            const approveValues = SteedosUI.getRef(api.data.$scopeId).getComponentById("instance_approval").getValues();
+            const instanceForm = context._scoped.getComponentById("instance_form");
+            const approveValues = context._scoped.getComponentById("instance_approval").getValues();
             api.data = {
               instanceId: "${instance._id}", 
               traceId: "${instance.trace._id}", 
@@ -268,9 +286,9 @@ const getCCSubmitRequestAdaptor = async (instance) => {
 };
 
 const getPostSubmitRequestAdaptor = async (instance) => {
-  return `  const instanceForm = SteedosUI.getRef(api.data.$scopeId).getComponentById("instance_form");
+  return `  const instanceForm = context._scoped.getComponentById("instance_form");
             const formValues = instanceForm.getValues();
-            const approveValues = SteedosUI.getRef(api.data.$scopeId).getComponentById("instance_approval").getValues();
+            const approveValues = context._scoped.getComponentById("instance_approval").getValues();
             let nextUsers = approveValues.next_users;
             if(_.isString(nextUsers)){
               nextUsers = [approveValues.next_users];
@@ -286,7 +304,7 @@ const getPostSubmitRequestAdaptor = async (instance) => {
                     approves: [{
                         _id: "${instance.approve._id}",
                         next_steps: [{
-                            step: approveValues.next_step._id,
+                            step: approveValues.next_step,
                             users: nextUsers,
                         }],
                         description: approveValues.suggestion,
@@ -294,6 +312,7 @@ const getPostSubmitRequestAdaptor = async (instance) => {
                     }]
                 }]
             }]};
+            console.log('submit api', api);
             api.data = body;
             return api;
             `;
@@ -301,8 +320,8 @@ const getPostSubmitRequestAdaptor = async (instance) => {
 
 const getPostEngineRequestAdaptor = async (instance) => {
   return `  
-            const formValues = SteedosUI.getRef(api.data.$scopeId).getComponentById("instance_form").getValues();
-            const approveValues = SteedosUI.getRef(api.data.$scopeId).getComponentById("instance_approval").getValues();
+            const formValues = context._scoped.getComponentById("instance_form").getValues();
+            const approveValues = context._scoped.getComponentById("instance_approval").getValues();
             let nextUsers = approveValues.next_users;
             if(_.isString(nextUsers)){
               nextUsers = [approveValues.next_users];
@@ -313,7 +332,7 @@ const getPostEngineRequestAdaptor = async (instance) => {
               trace: "${instance.approve.trace}",
               _id: "${instance.approve._id}",
               next_steps: [{
-                  step: approveValues.next_step._id,
+                  step: approveValues.next_step,
                   users: nextUsers,
               }],
               description: approveValues.suggestion,
@@ -332,7 +351,7 @@ const getPostEngineRequestAdaptor = async (instance) => {
  * @returns
  */
 const getSubmitActions = async (instance) => {
-  // console.log(`getSubmitActions instance====`, instance)
+  console.log(`getSubmitActions instance====`, instance)
   let api = "";
   let requestAdaptor = "";
   if(instance.approve?.type == "cc"){
@@ -349,7 +368,9 @@ const getSubmitActions = async (instance) => {
       return null; //TODO 考虑异常情况?
     }
   }
-
+  console.log(`getSubmitActions api====`, api)
+  console.log(`getSubmitActions requestAdaptor====`, requestAdaptor)
+  console.log('getObjectListViewPath========>', Router.getObjectListViewPath({appId: "${appId}", objectName: "${objectName}", listViewName: "${side_listview_id}"}))
   return [
     // 校验表单
     {
@@ -357,7 +378,7 @@ const getSubmitActions = async (instance) => {
       "args": {},
       "actionType": "custom",
       "script": `
-        // console.log("======getSubmitActions");
+        console.log("======getSubmitActions");
         const form = event.context.scoped.getComponentById("instance_form");
         return form.validate().then((instanceFormValidate)=>{
           event.setData({...event.data, instanceFormValidate})
@@ -381,7 +402,7 @@ const getSubmitActions = async (instance) => {
       componentId: "",
       args: {
         api: {
-          url: `\${context.rootUrl}${api}`,
+          url: `${api}`,
           method: "post",
           dataType: "json",
           data: {
@@ -417,7 +438,7 @@ const getSubmitActions = async (instance) => {
 };
 
 export const getApprovalDrawerSchema = async (instance) => {
-  // console.log("=============getApprovalDrawerSchema=============")
+  console.log("=============getApprovalDrawerSchema=============", instance)
   return {
     type: "drawer",
     overlay: true,
@@ -431,7 +452,7 @@ export const getApprovalDrawerSchema = async (instance) => {
     bodyClassName: 'p-2',
     footerClassName: 'p-2 pt-0',
     drawerContainer: ()=>{
-      return window.$(".antd-Page-content",window.$(".steedos-instance-wrapper"))[0];
+      return document.body;
     },
     body: [
       {

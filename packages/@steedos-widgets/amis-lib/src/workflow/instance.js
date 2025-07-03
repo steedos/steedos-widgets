@@ -154,7 +154,9 @@ const isCurrentStepOpinionField = (field, currentStep)=>{
   return _.includes(_.map(getOpinionFieldStepsName(field), 'stepName'), currentStep?.name);
 }
 
-export const getInstanceInfo = async ({ instanceId, box }) => {
+export const getInstanceInfo = async (props) => {
+  console.log(`getInstanceInfo props`, props)
+  const { instanceId, box } = props;
   const userId = getSteedosAuth().userId;
   const query = `{
       instance: instances__findOne(id:"${instanceId}"){

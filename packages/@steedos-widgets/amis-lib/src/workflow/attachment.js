@@ -43,15 +43,11 @@ export const getAttachments = async (instance)=>{
                         {
                             type: 'tpl',
                             inline: true,
-                            tpl: `<a href='\${context.rootUrl}/api/files/instances/\${_id}?download=true' target='_blank'>\${original.name}</a>`
+                            tpl: `<a href='/api/v6/files/download/cfs.instances.filerecord/\${_id}/\${original.name}?download=true' target='_blank'>\${original.name}</a>`
                         }
                       ],
                       "actions": [
-                        {
-                          "icon": "fa fa-eye",
-                          "type": "button",
-                          "id": "u:ef52fa8940a8"
-                        }
+                        
                       ],
                       "id": "u:550b3fdc8788"
                     },
@@ -97,7 +93,7 @@ export const getAttachmentUploadInput = async (instance)=>{
             "extractValue": false,
             "valueField": "version_id",
             "receiver": {
-              "url": "${context.rootUrl}/api/v4/instances/s3",
+              "url": "/api/instance/${context._id}/file",
               headers: {
                 Authorization: "Bearer ${context.tenantId},${context.authToken}"
               },
@@ -109,7 +105,7 @@ export const getAttachmentUploadInput = async (instance)=>{
                 api.data.append('instance', '${instance._id}');
                 api.data.append('approve', '${instance.approve?._id}');
                 api.data.append('owner', '${auth.userId}');
-                api.data.append('owner_name', '${auth.name}');
+                api.data.append('owner_name', '${auth.user.name}');
                 return api;
               `
             },

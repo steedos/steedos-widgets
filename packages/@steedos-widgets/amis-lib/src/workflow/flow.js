@@ -731,6 +731,7 @@ export const getFlowFormSchema = async (instance, box) => {
     name: "instancePage",
     className: "steedos-amis-instance-view",
     bodyClassName: "overflow-y-auto h-full",
+    headerClassName: "p-0",
     "title": {
       "type": "steedos-record-detail-header",
       "label": "标题面板",
@@ -752,6 +753,25 @@ export const getFlowFormSchema = async (instance, box) => {
       ".antd-List-heading": {
         "font-size": "14px",
         "font-weight": "500"
+      },
+      ".steedos-object-record-detail-header .antd-Grid-col--mdAuto": {
+        "padding": "0px !important"
+      },
+      ".steedos-amis-instance-view .antd-Page-body": {
+        "width": "710px"
+      },
+      ".antd-List-placeholder": {
+        "display": "none"
+      },
+      ".steedos-amis-instance-view .antd-Table-fixedTop:after":{
+        "box-shadow": "none"
+      },
+      ".antd-List-items": {
+        "border": '0px'
+      },
+      ".antd-ListItem": {
+        "border-top": "0px  !important",
+        "background": "transparent !important"
       }
     },
     body: [

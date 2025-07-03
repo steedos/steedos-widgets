@@ -40,11 +40,6 @@ export const getRelatedInstances = async (instance)=>{
             }
           ],
           "actions": [
-            {
-              "icon": "fa fa-eye",
-              "type": "button",
-              "id": "u:ef52fa8940a8"
-            }
           ],
           "id": "u:550b3fdc8788"
         },

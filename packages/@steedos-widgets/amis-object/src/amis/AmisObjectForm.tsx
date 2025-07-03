@@ -12,7 +12,7 @@ import { keys, pick, difference, isString, has } from 'lodash';
 
 // md:border-b
 export const AmisObjectForm = async (props) => {
-  // console.log("===AmisObjectForm=props==", props);
+  console.log("===AmisObjectForm=props==", props);
   const { $schema, recordId, mode, layout = "horizontal", labelAlign, appId, fieldsExtend, excludedFields = null, fields = null, form = {},
     className="", enableInitApi, initApiRequestAdaptor, initApiAdaptor, apiRequestAdaptor, apiAdaptor, enableTabs, tabsMode, submitSuccActions, data,
     formDataFilter, onFormDataFilter, env
@@ -90,11 +90,11 @@ export const AmisObjectForm = async (props) => {
     formData.recordId = props.recordId;
   }
   amisSchema.className = `steedos-object-form ${className}`
-  // console.log('AmisObjectForm amisSchema======>', amisSchema)
+  
   amisSchema.data = Object.assign({},  amisSchema.data || {}, formData, {global: globalData, uiSchema:uiSchema});
   if(has(props, 'objectApiName')){
     amisSchema.data.objectName = objectApiName;
   }
-
+  console.log('AmisObjectForm amisSchema======>', amisSchema)
   return amisSchema;
 }
