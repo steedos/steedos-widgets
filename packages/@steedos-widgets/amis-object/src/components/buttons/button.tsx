@@ -67,9 +67,9 @@ export const AmisObjectButton = (props) => {
     if ((button as any).type === "amis_button") {
         const amisSchema = (button as any).amis_schema;
         const schema = isString(amisSchema) ? JSON.parse(amisSchema) : amisSchema;
-        if(schema && schema.body.length > 0){
-            delete schema.body[0]['visibleOn']
-        }
+        // if(schema && schema.body.length > 0){
+        //     delete schema.body[0]['visibleOn']
+        // }
 
         if(schema && schema.body.length > 0 && (button as any).visibleOn){
             schema.body[0]['visibleOn'] = (button as any).visibleOn
@@ -105,6 +105,8 @@ export const AmisObjectButton = (props) => {
         //     }
         //     renderData.record = null;
         // }
+        // console.log(`steedos-button button--->`, button);
+        // console.log(`steedos-button schema--->`, schema);
         return (
             <>
             {button && amisSchema? (
