@@ -6,5 +6,27 @@
     "frontend_fallback_error": "收到通知时出现错误。",
     "frontend_fetch_mention_suggestions_error": "请求提及建议时出现错误。",
     "frontend_fetch_rooms_info_error": "请求Rooms信息时出现错误。",
-    "frontend_fetch_users_error": "请求用户清单时出现错误。"
+    "frontend_fetch_users_error": "请求用户清单时出现错误。",
+    
+    "COMPOSER_PLACEHOLDER": "写评论...",
+    "THREAD_COMPOSER_PLACEHOLDER": "回复...",
+    "THREAD_COMPOSER_SEND": "回复",
+    "THREAD_RESOLVE": "标记为已解决",
+    "THREAD_UNRESOLVE": "重新开启讨论",
+    "INBOX_NOTIFICATION_THREAD_COMMENTS_LIST__commented": "评论",
+    "INBOX_NOTIFICATION_THREAD_COMMENTS_LIST__in": "于",
+    "INBOX_NOTIFICATION_THREAD_COMMENTS_LIST__in_a_thread": "于评论栏",
+    "INBOX_NOTIFICATION_DELETE": "删除通知",
+    "INBOX_NOTIFICATION_MORE": "更多",
+    "COMMENT_EDIT": "编辑讨论",
+    "COMMENT_EDIT_COMPOSER_PLACEHOLDER": "编辑讨论...",
+    "COMMENT_DELETE": "删除讨论",
+    "COMMENT_EDIT_COMPOSER_CANCEL": "取消",
+    "COMMENT_EDIT_COMPOSER_SAVE": "保存",
+    "COMMENT_MORE": "更多",
+    "COMPOSER_INSERT_MENTION": "提及某个人",
+    "COMPOSER_INSERT_EMOJI": "添加表情",
+    "COMPOSER_ATTACH_FILES": "上传附件",
+    "COMMENT_ADD_REACTION": "添加表情",
+    "COMPOSER_SEND": "发送"
 }

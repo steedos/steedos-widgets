@@ -1,12 +1,12 @@
-import React, { Suspense, useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState, ReactNode } from 'react';
 
 import { LiveblocksProvider } from "@liveblocks/react";
-import { Composer, Thread } from "@liveblocks/react-ui";
+import { Composer, Thread, LiveblocksUIConfig } from "@liveblocks/react-ui";
 import { RoomProvider, useThreads } from "@liveblocks/react/suspense";
 import { ErrorBoundary } from "react-error-boundary";
 import "@liveblocks/react-ui/styles.css";
 import { i18next } from '../i18n';
-
+import { useTranslation } from "react-i18next";
 
 export const AmisRoomsProvider = (props: any) => {
   const {
@@ -22,7 +22,30 @@ export const AmisRoomsProvider = (props: any) => {
   const fixedBaseUrl = baseUrl || amisData.context?.rootUrl || `${window.location.protocol}//${window.location.host}`
   console.log('liveblocks baseUrl:', fixedBaseUrl);
 
+  const { i18n, t } = useTranslation();
+  const lang = i18n.language;
+  const liveblocksResources = i18next.getResourceBundle(lang, "liveblocks") || {};
+
+  const overrides = {
+    locale: lang,
+    ...liveblocksResources
+  };
+
+  const commentsCommented = overrides.INBOX_NOTIFICATION_THREAD_COMMENTS_LIST__commented || 'commented';
+  const commentsIn = overrides.INBOX_NOTIFICATION_THREAD_COMMENTS_LIST__in || 'in';
+  const commentsInAThread = overrides.INBOX_NOTIFICATION_THREAD_COMMENTS_LIST__in_a_thread || 'in a thread';
+  overrides.INBOX_NOTIFICATION_THREAD_COMMENTS_LIST = (
+    list: ReactNode,
+    room: ReactNode
+  ) => (
+    <>
+      {list} {commentsCommented}
+      {room ? <> {commentsIn} {room}</> : <> {commentsInAThread}</>}
+    </>
+  )
+
   return (
+    <LiveblocksUIConfig overrides={overrides}>
     <LiveblocksProvider
       //@ts-ignore
       baseUrl={fixedBaseUrl}
@@ -112,5 +135,6 @@ export const AmisRoomsProvider = (props: any) => {
 
       {children}
     </LiveblocksProvider>
+    </LiveblocksUIConfig>
   );
 };
