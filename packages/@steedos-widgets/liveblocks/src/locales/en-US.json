@@ -1,0 +1,7 @@
+{
+    "frontend_inbox_empty": "There aren’t any notifications yet.",
+    "frontend_comment_inbox": "Comment Inbox",
+    "frontend_mark_all_read": "Mark all as read",
+    "frontend_delete_all": "Delete all",
+    "frontend_fallback_error": "There was an error while getting notifications."
+}

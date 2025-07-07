@@ -16,6 +16,7 @@ import clsx from "clsx";
 // import { Link } from "./Link";
 // import { usePathname } from "next/navigation";
 import './InboxPopover.css';
+import { i18next } from '../i18n';
 
 
 function Inbox({ className, onClick, ...props }: ComponentPropsWithoutRef<"div">) {
@@ -23,7 +24,7 @@ function Inbox({ className, onClick, ...props }: ComponentPropsWithoutRef<"div">
 
   return inboxNotifications.length === 0 ? (
     <div className={clsx(className, "empty")}>
-      There aren’t any notifications yet.
+      {i18next.t('liveblocks:frontend_inbox_empty')}
     </div>
   ) : (
     <div className={className} {...props}>
@@ -91,26 +92,28 @@ export function AmisInboxPopover({
           {...props}
         >
           <div className="inbox-header">
-            <span className="inbox-title">Comment Inbox</span>
+            <span className="inbox-title">
+              {i18next.t('liveblocks:frontend_comment_inbox')}
+            </span>
             <div className="inbox-buttons">
               <button
                 className="inbox-button"
                 onClick={markAllInboxNotificationsAsRead}
               >
-                Mark all as read
+                {i18next.t('liveblocks:frontend_mark_all_read')}
               </button>
               <button
                 className="inbox-button destructive"
                 onClick={deleteAllInboxNotifications}
               >
-                Delete all
+                {i18next.t('liveblocks:frontend_delete_all')}
               </button>
             </div>
           </div>
           <ErrorBoundary
             fallback={
               <div className="error">
-                There was an error while getting notifications.
+                {i18next.t('liveblocks:frontend_fallback_error')}
               </div>
             }
           >
