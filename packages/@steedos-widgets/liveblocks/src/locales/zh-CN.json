@@ -3,5 +3,8 @@
     "frontend_comment_inbox": "评论收件箱",
     "frontend_mark_all_read": "全部标记为已读",
     "frontend_delete_all": "全部删除",
-    "frontend_fallback_error": "收到通知时出现错误。"
+    "frontend_fallback_error": "收到通知时出现错误。",
+    "frontend_fetch_mention_suggestions_error": "请求提及建议时出现错误。",
+    "frontend_fetch_rooms_info_error": "请求Rooms信息时出现错误。",
+    "frontend_fetch_users_error": "请求用户清单时出现错误。"
 }

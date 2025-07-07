@@ -3,5 +3,8 @@
     "frontend_comment_inbox": "Comment Inbox",
     "frontend_mark_all_read": "Mark all as read",
     "frontend_delete_all": "Delete all",
-    "frontend_fallback_error": "There was an error while getting notifications."
+    "frontend_fallback_error": "There was an error while getting notifications.",
+    "frontend_fetch_mention_suggestions_error": "Problem resolving mention suggestions",
+    "frontend_fetch_rooms_info_error": "Problem resolving rooms info",
+    "frontend_fetch_users_error": "Problem resolving users"
 }

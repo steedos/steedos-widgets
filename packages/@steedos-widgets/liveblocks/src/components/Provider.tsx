@@ -5,6 +5,7 @@ import { Composer, Thread } from "@liveblocks/react-ui";
 import { RoomProvider, useThreads } from "@liveblocks/react/suspense";
 import { ErrorBoundary } from "react-error-boundary";
 import "@liveblocks/react-ui/styles.css";
+import { i18next } from '../i18n';
 
 
 export const AmisRoomsProvider = (props: any) => {
@@ -63,7 +64,7 @@ export const AmisRoomsProvider = (props: any) => {
         });
 
         if (!response.ok) {
-          throw new Error("Problem resolving rooms info");
+          throw new Error(i18next.t('liveblocks:frontend_fetch_rooms_info_error'));
         }
 
         const roomsInfo = await response.json();
@@ -81,7 +82,7 @@ export const AmisRoomsProvider = (props: any) => {
         });
 
         if (!response.ok) {
-          throw new Error("Problem resolving users");
+          throw new Error(i18next.t('liveblocks:frontend_fetch_users_error'));
         }
 
         const users = await response.json();
@@ -100,7 +101,7 @@ export const AmisRoomsProvider = (props: any) => {
         );
 
         if (!response.ok) {
-          throw new Error("Problem resolving mention suggestions");
+          throw new Error(i18next.t('liveblocks:frontend_fetch_mention_suggestions_error'));
         }
 
         const userIds = await response.json();
