@@ -1,5 +1,5 @@
 {
-    "frontend_inbox_empty": "还没有任何通知。",
+    "frontend_inbox_empty": "没有通知。",
     "frontend_comment_inbox": "评论收件箱",
     "frontend_mark_all_read": "全部标记为已读",
     "frontend_delete_all": "全部删除",
