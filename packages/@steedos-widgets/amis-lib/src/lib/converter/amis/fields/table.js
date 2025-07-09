@@ -1671,6 +1671,7 @@ export async function getTableApi(mainObject, fields, options){
     ${options.adaptor || ''}
     return payload;
     `;
+    // api.trackExpression='${additionalFilters|json}'
     return api;
 }
 

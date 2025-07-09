@@ -376,6 +376,8 @@ const getFieldEditTpl = async (field, label)=>{
         tpl.type = "input-text";
         break;
       default:
+        tpl.type = 'steedos-field'
+        tpl.config = field.steedos_field
         break;
     }
   }

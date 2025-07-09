@@ -560,6 +560,7 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
                     "size": "sm",
                     "hideCaret": true,
                     "closeOnClick": true,
+                    "visibleOn": "\${listName && uiSchema.list_views[listName].disableSwitch != true}",
                     "btnClassName": "!bg-transparent !border-none !hover:border-none text-lg h-5 font-bold p-0 text-black leading-none",
                     "buttons": [
                       ...listViewButtonOptions,
@@ -572,6 +573,12 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
                       },
                       listviewNewButton
                     ]
+                  },
+                  {
+                    "type": "tpl",
+                    "className": "steedos-listview-change-button text-lg font-bold", 
+                    "tpl": "\${listName ? uiSchema.list_views[listName].label : uiSchema.list_views[defaultListName].label}",
+                    "visibleOn": "\${listName && uiSchema.list_views[listName].disableSwitch}",
                   }
                 ],
                 "md": "",
