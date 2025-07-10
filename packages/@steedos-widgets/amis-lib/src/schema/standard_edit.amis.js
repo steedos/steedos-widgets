@@ -34,6 +34,7 @@ export const getSchema = async (uiSchema, ctx) => {
       : page.schema;
   }
   
+  // console.log('formSchema====>', formSchema);
 
   return {
     type: "service",
@@ -58,7 +59,7 @@ export const getSchema = async (uiSchema, ctx) => {
                   showCloseButton: true,
                   "data": {
                     "&": "$$",
-                    "_master": "${_master}",
+                    "_master": "${mainRecord}",
                     "_master._isRelated": "${_isRelated}",
                     "_master.relatedKey": "${relatedKey}"
                   },

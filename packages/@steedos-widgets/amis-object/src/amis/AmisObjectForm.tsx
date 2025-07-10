@@ -95,6 +95,7 @@ export const AmisObjectForm = async (props) => {
   if(has(props, 'objectApiName')){
     amisSchema.data.objectName = objectApiName;
   }
-  console.log('AmisObjectForm amisSchema======>', amisSchema)
+
+  // console.log('AmisObjectForm amisSchema======>', amisSchema)
   return amisSchema;
 }
