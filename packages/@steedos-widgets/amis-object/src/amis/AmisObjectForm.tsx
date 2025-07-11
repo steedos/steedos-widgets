@@ -90,11 +90,11 @@ export const AmisObjectForm = async (props) => {
     formData.recordId = props.recordId;
   }
   amisSchema.className = `steedos-object-form ${className}`
-  // console.log('AmisObjectForm amisSchema======>', amisSchema)
   amisSchema.data = Object.assign({},  amisSchema.data || {}, formData, {global: globalData, uiSchema:uiSchema});
   if(has(props, 'objectApiName')){
     amisSchema.data.objectName = objectApiName;
   }
 
+  // console.log('AmisObjectForm amisSchema======>', amisSchema)
   return amisSchema;
 }

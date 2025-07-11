@@ -104,6 +104,11 @@ function getReadonlyFormAdaptor(object, fields, options){
             objectName: "${object.name}",
             recordId: record._id
         }
+        if(window.location.pathname.endsWith("/"+record._id)){
+            payload.data.mainRecord= {
+                record
+            };
+        }
         window.postMessage(Object.assign({type: "record.loaded"}, {record: record}), "*")
     }
     if(payload.errors){
