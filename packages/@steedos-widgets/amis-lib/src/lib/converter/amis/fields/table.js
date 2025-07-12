@@ -1504,6 +1504,16 @@ export async function getTableApi(mainObject, fields, options){
         return api;
     `
     api.adaptor = `
+
+    if(payload.errors && payload.errors.length > 0){
+        return {
+            status: 500,
+            msg: payload.errors[0].message,
+            data: {}
+        }
+    }
+
+
     let fields = ${JSON.stringify(_.map(fields, 'name'))};
     // 这里把行数据中所有为空的字段值配置为空字符串，是因为amis有bug：crud的columns中的列如果type为static-前缀的话，行数据中该字段为空的话会显示为父作用域中同名变量值，见：https://github.com/baidu/amis/issues/9556
     (payload.data.rows || []).forEach((itemRow) => {
