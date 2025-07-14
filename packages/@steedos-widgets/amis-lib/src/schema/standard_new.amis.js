@@ -127,7 +127,7 @@ export const getSchema = async (uiSchema, ctx) => {
                                         "isLookup": "${isLookup}",
                                         "listName": "${listName}",
                                         "selectedRowResponseResult": "${selectedRowResponseResult}",
-                                        "_tableObjectName": "${_tableObjectName}"
+                                        "_lookupObjectName": "${_lookupObjectName}"
                                     },
                                     "title":i18next.t('frontend_form_new') + " ${uiSchema.label | raw}",
                                     "body": [

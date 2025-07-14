@@ -569,16 +569,16 @@ export async function getObjectForm(objectSchema, ctx){
                 },
                 "expression": `\${_master.objectName != '${objectSchema.name}' && _master.objectName}`
               },
-              // 列表视图、对象表格组件上的lookup字段，点开右侧弹出drawer窗口，修改记录后刷新列表
+              // 列表视图、对象表格、对象表单组件上的lookup字段，点开右侧弹出drawer窗口，修改记录后刷新列表
               {
                 "actionType": "broadcast",
                 "args": {
-                  "eventName": "@data.changed.${_tableObjectName}"
+                  "eventName": "@data.changed.${_lookupObjectName}"
                 },
                 "data": {
-                  "objectName": "${_tableObjectName}"
+                  "objectName": "${_lookupObjectName}"
                 },
-                "expression": `\${_tableObjectName != '${objectSchema.name}' && _tableObjectName}`
+                "expression": `\${_lookupObjectName != '${objectSchema.name}' && _lookupObjectName}`
               },
               ...submitSuccActions,
               // {

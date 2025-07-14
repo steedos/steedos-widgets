@@ -62,7 +62,7 @@ export const getSchema = async (uiSchema, ctx) => {
                     "_master": "${mainRecord}",
                     "_master._isRelated": "${_isRelated}",
                     "_master.relatedKey": "${relatedKey}",
-                    "_tableObjectName": "${_tableObjectName}"
+                    "_lookupObjectName": "${_lookupObjectName}"
                   },
                   size: "lg",
                   "actions": [
