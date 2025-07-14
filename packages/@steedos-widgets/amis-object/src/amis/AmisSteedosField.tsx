@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-06-05 23:51:29
+ * @LastEditTime: 2025-07-14 15:53:01
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -107,11 +107,12 @@ async function getLookupLinkOnClick(field: any, options: any) {
     // Lookup字段点击弹出的详细页面的对象是字段referenceTo的对象，_id是字段的value
     let objectName = "${objectName}";
     let recordId = "${value}";
-    if (options.tableObjectName && field.is_name){
-        // 如果Lookup字段上配置了is_name，且是在表格（即tableObjectName有值，包括列表视图和子表）中
+    const lookupObjectName = field.object;
+    if (options.isLookupInTable && field.is_name){
+        // 如果Lookup字段上配置了is_name，且是在表格（即isLookupInTable，包括列表视图和子表）中
         // 则点击弹出的详细页面是表格行记录指向的记录详细页面，此时打开的详细页面对象是表格所属对象，_id是表格行记录的_id值
-        // tableObjectName 没有值时说明lookup字段可能是在记录详细页面表单等地方，此时打开的详细页面lookup字段值指向的记录
-        objectName = options.tableObjectName;
+        // isLookupInTable不为true时说明lookup字段可能是在记录详细页面表单等地方，此时打开的详细页面lookup字段值指向的记录
+        objectName = lookupObjectName;
         recordId = "${_id}";
     }
     const drawerRecordDetailSchema = recordPage ? Object.assign({}, recordPage.schema, {
@@ -120,7 +121,7 @@ async function getLookupLinkOnClick(field: any, options: any) {
             ...recordPage.schema.data,
             "_inDrawer": true,  // 用于判断是否在抽屉中
             "recordLoaded": false, // 重置数据加载状态
-            "_tableObjectName": options.tableObjectName
+            "_lookupObjectName": lookupObjectName
         }
     }) : {
         "type": "steedos-record-detail",
@@ -131,7 +132,7 @@ async function getLookupLinkOnClick(field: any, options: any) {
         "data": {
             "_inDrawer": true,  // 用于判断是否在抽屉中
             "recordLoaded": false, // 重置数据加载状态
-            "_tableObjectName": options.tableObjectName
+            "_lookupObjectName": lookupObjectName
         }
     }
     return {
@@ -214,7 +215,7 @@ export const AmisSteedosField = async (props) => {
     }
 
     let steedosField = null;
-    let { field, readonly = false, ctx = {}, config, $schema, static: fStatic, env, inInputTable, className, tableObjectName } = props;
+    let { field, readonly = false, ctx = {}, config, $schema, static: fStatic, env, inInputTable, className, isLookupInTable } = props;
     const { appId, formFactor } = props.data || {};
     // console.log(`AmisSteedosField`, props)
 
@@ -447,13 +448,13 @@ export const AmisSteedosField = async (props) => {
                                                 appId,
                                                 objectName: referenceTo,
                                                 formFactor,
-                                                tableObjectName
+                                                isLookupInTable
                                             })
                                         }
                                     }
                                 ]
                             },
-                            (!!!tableObjectName ? {
+                            (!!!isLookupInTable ? {
                                 type: 'static',
                                 tpl: '-',
                                 className: `${fieldBaseProps.className || ''} text-muted !border-b-0`,

@@ -544,7 +544,7 @@ async function getColumnItemOnClick(field, options){
             "_inDrawer": true,  // 用于判断是否在抽屉中
             "recordLoaded": false, // 重置数据加载状态
             "recordId": `\${${options.idFieldName}}`,//审批微页面依赖了作用域中的recordId
-            "_tableObjectName": options.objectName
+            "_lookupObjectName": options.objectName
         }
     }) : {
         "type": "steedos-record-detail",
@@ -555,7 +555,7 @@ async function getColumnItemOnClick(field, options){
         "data": {
             "_inDrawer": true,  // 用于判断是否在抽屉中
             "recordLoaded": false, // 重置数据加载状态
-            "_tableObjectName": options.objectName
+            "_lookupObjectName": options.objectName
         }
     }
 
@@ -728,7 +728,7 @@ export async function getTableColumns(object, fields, options){
                 body: {
                     type: "steedos-field",
                     static: true,
-                    tableObjectName: options.objectName,
+                    isLookupInTable: true,
                     config: {
                         type: "lookup",
                         reference_to: field.reference_to,
