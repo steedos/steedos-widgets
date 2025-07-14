@@ -913,7 +913,8 @@ export async function getFieldSearchable(perField, permissionFields, ctx){
             _field.removable = false;
             _field.value = [null,null];
             _field.items = {
-                type: "input-number"
+                type: "input-number",
+                clearValueOnEmpty: true
             }
             _field.is_wide = true;
             fieldNamePrefix = `${fieldNamePrefix}between__`
