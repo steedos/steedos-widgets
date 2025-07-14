@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:51:00
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-12-26 20:28:43
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2025-07-14 11:56:42
  * @Description: 
  */
 import { i18next } from "../i18n";
@@ -127,6 +127,7 @@ export const getSchema = async (uiSchema, ctx) => {
                                         "isLookup": "${isLookup}",
                                         "listName": "${listName}",
                                         "selectedRowResponseResult": "${selectedRowResponseResult}",
+                                        "_tableObjectName": "${_tableObjectName}"
                                     },
                                     "title":i18next.t('frontend_form_new') + " ${uiSchema.label | raw}",
                                     "body": [
