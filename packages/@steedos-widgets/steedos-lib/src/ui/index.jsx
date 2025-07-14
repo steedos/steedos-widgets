@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-27 15:54:12
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-06-10 14:16:02
+ * @LastEditTime: 2025-07-14 21:50:25
  * @Description: 
  */
 import { message, notification, Button, Space} from 'antd';
@@ -90,7 +90,9 @@ export const SteedosUI = Object.assign({}, {
       _.each(data, (value, key)=>{
           if(!_.isEmpty(value) || _.isBoolean(value)){
               if(_.startsWith(key, '__searchable__between__')){
+                if (_.compact(value).length > 0) {
                   searchableFilter.push([`${key.replace("__searchable__between__", "")}`, "between", value])
+                }
               }else if(_.startsWith(key, '__searchable__')){
                   if(_.isString(value)){
                       searchableFilter.push([`${key.replace("__searchable__", "")}`, "contains", value])
