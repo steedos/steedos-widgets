@@ -503,15 +503,15 @@ const getTdField = async (field, fieldsCount) => {
 
 const getTdTitle = (field) => {
   return {
-    className: "td-title",
+    className: `td-title td-title-${field.type}`,
     align: field.type != "section" ? "center" : "left",
     width: field.type != "section" ? "16%" : "",
     colspan: field.type == "section" ? 4 : "",
-    background: "#FFFFFF",
+    background: field.type == "section" ? "#f1f1f1" : "#FFFFFF",
     body: [
       {
         type: "tpl",
-        tpl: `<div>${field.name || field.code} ${field.is_required ? '<span class="antd-Form-star">*</span>' : ''}</div>`,
+        tpl: `<div class='${field.type == "section" ? "font-bold" : ""}'>${field.name || field.code} ${field.is_required ? '<span class="antd-Form-star">*</span>' : ''}</div>`,
       },
     ],
     // "id": "u:9b001b7ff92d",
@@ -584,6 +584,7 @@ const getFormTableView = async (instance) => {
     trs: await getFormTrs(instance),
     id: "u:047f3669468b",
   };
+  console.log('getFormTableView===>', instance, formSchema);
   return formSchema;
 };
 
@@ -613,6 +614,14 @@ const getApplicantTableView = async (instance) => {
     }
   }
 
+  if(applicantInput){
+    if(applicantInput.className){
+      applicantInput.className = `${applicantInput.className} inline-left`
+    }else{
+      applicantInput.className = `inline-left`
+    }
+  }
+
   return {
     type: "table-view",
     className: "instance-applicant-view",
@@ -624,14 +633,15 @@ const getApplicantTableView = async (instance) => {
             className: "td-title",
             background: "#FFFFFF",
             align: "left",
-            width: "16%",
+            width: "50%",
             colspan: "",
             body: [
               {
                 type: "tpl",
-                tpl: "<div>提交人</div>",
+                tpl: "<div class='inline-left'>提交人:</div>",
                 id: "u:ee62634201bf",
               },
+              applicantInput
             ],
             id: "u:6c24c1bb99c9",
             style: {
@@ -639,55 +649,34 @@ const getApplicantTableView = async (instance) => {
             },
           },
           {
-            background: "#FFFFFF",
-            colspan: 1,
-            align: "left",
-            className: "td-field",
-            width: "32%",
-            body: [
-              applicantInput
-            ],
-            id: "u:45d65d91905c",
-          },
-          {
             className: "td-title",
             background: "#FFFFFF",
             align: "left",
-            width: "16%",
+            width: "50%",
             colspan: "",
             body: [
               {
                 type: "tpl",
-                tpl: "<div>提交日期</div>",
+                tpl: "<div class='inline-left'>提交日期:</div>",
                 id: "u:6d0a7763d527",
               },
-            ],
-            id: "u:c8b8214ac931",
-            style: {
-              padding: "none",
-            },
-          },
-          {
-            background: "#FFFFFF",
-            colspan: 1,
-            align: "left",
-            className: "td-field",
-            width: "32%",
-            body: [
               {
                 label: false,
                 mode: "horizontal",
-                className: "m-none p-none",
+                className: "m-none p-none inline-left",
                 disabled: true,
                 type: "tpl",
                 inputFormat: "YYYY-MM-DD",
                 valueFormat: "YYYY-MM-DDT00:00:00.000[Z]",
                 tpl: '<div>${submit_date}</div>',
                 id: "u:2016b04355f4",
-              },
+              }
             ],
-            id: "u:81b07d82a5e4",
-          },
+            id: "u:c8b8214ac931",
+            style: {
+              padding: "none",
+            },
+          }
         ],
       },
     ],
@@ -741,7 +730,7 @@ export const getFlowFormSchema = async (instance, box) => {
       "recordId": instance._id,
       "id": "u:e6b2adbe0e21",
       "showRecordTitle": false,
-      "className": "p-0 m-0 p0 m0"
+      "className": "p-0 m-0 p0 m0 bg-gray-50"
     },
     "css": {
       ".instance-approve-history .antd-Table-table thead": {
@@ -760,7 +749,7 @@ export const getFlowFormSchema = async (instance, box) => {
         "padding": "0px !important"
       },
       ".steedos-amis-instance-view .antd-Page-body": {
-        "width": "710px"
+        "width": "1024px"
       },
       ".antd-List-placeholder": {
         "display": "none"

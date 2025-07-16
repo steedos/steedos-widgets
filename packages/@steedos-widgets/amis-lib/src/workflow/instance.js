@@ -154,6 +154,7 @@ const isCurrentStepOpinionField = (field, currentStep)=>{
   return _.includes(_.map(getOpinionFieldStepsName(field), 'stepName'), currentStep?.name);
 }
 
+
 export const getInstanceInfo = async (props) => {
   console.log(`getInstanceInfo props`, props)
   const { instanceId, box } = props;
@@ -239,7 +240,7 @@ export const getInstanceInfo = async (props) => {
   });
 
   const moment = getMoment();
-
+  console.log('getInstanceInfo====>', step, formVersion.fields);
   return {
     box: box,
     _id: instanceId,
@@ -257,9 +258,17 @@ export const getInstanceInfo = async (props) => {
     title: instance.name || instance.form.name,
     name: instance.name || instance.form.name,
     fields: _.map(formVersion.fields, (field) => {
-      return Object.assign({}, field, {
+      const newField = Object.assign({}, field, {
         permission:  userApprove?.type != 'cc' && (step?.permissions[field.code] || ( isCurrentStepOpinionField(field, step) ? 'editable' : '')),
       }) ;
+      if(field.type === 'section'){
+        newField.fields = _.map(field.fields, (sfield) => {
+          return Object.assign({}, sfield, {
+            permission:  userApprove?.type != 'cc' && (step?.permissions[sfield.code] || ( isCurrentStepOpinionField(sfield, step) ? 'editable' : '')),
+          });
+        })
+      }
+      return newField;
     }),
     flowVersion: flowVersion,
     formVersion: formVersion,
