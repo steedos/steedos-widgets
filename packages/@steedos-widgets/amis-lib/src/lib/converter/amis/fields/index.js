@@ -962,6 +962,10 @@ export async function getFieldSearchable(perField, permissionFields, ctx){
             delete _field.amis.hidden;
             delete _field.amis.hiddenOn;
             delete _field.amis.autoFill;
+            if(_field.type.indexOf("-range") > -1 || _field.type === 'input-array'){
+                // 范围类型不允许变更type，否则会因为某些属性兼容性问题报错页面奔溃，比如input-date-range类型有shortcuts属性，改为input-date后其shortcuts属性有兼容性问题
+                delete _field.amis.type;
+            }
         }
 
         const amisField = await Fields.convertSFieldToAmisField(_field, false, Object.assign({}, ctx, {fieldNamePrefix: fieldNamePrefix, required: false, showSystemFields: true, inFilterForm: true}));
