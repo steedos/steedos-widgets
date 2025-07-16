@@ -858,9 +858,9 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
         // if(ctx.mode === 'edit'){
         let convertDataResult;
         if(convertData.type == "steedos-field"){
-            // 如果是steedos-field，不能把amis属性合并到steedos-field根属性中，要合并也是合并到steedos-field的config.amis中
-            // 而steedos-field字段的amis属性本身就在config.amis中了，所以这里不需要再合并field.amis
-            // 目前测试到受影响的是，把字段的amis属性配置为{"type": "checkboxes"}时，ObjectForm只读模式下，lookup字段返回的是type为steedos-field的组件，此时field.amis中的type不应该合并到steedos-field根属性中
+            // 如果是steedos-field，不能把field.amis属性合并到steedos-field根属性中，要合并也是合并到steedos-field的config.amis中
+            // 而steedos-field字段的config属性中的amis属性已经有了这里的field.amis，所以这里不需要再合并field.amis
+            // 目前测试到受影响的是，把字段的amis属性配置为{"type": "checkboxes"}时，ObjectForm只读模式下，lookup字段返回的是type为steedos-field的组件，此时如果在这里合并field.amis，那么其type就变成了checkboxes，导致lookup字段显示为复选框
             convertDataResult = Object.assign({}, baseData, convertData, { labelClassName: 'text-left', clearValueOnHidden: true, fieldName: field.name}, {name: baseData.name});
         }
         else{
