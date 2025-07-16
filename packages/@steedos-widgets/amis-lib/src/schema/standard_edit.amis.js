@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:49:58
- * @LastEditors: yinlianghui@hotoa.com yinlianghui@hotoa.com
- * @LastEditTime: 2024-05-19 10:01:07
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2025-07-14 15:52:24
  * @Description:
  */
 import { i18next } from "../i18n";

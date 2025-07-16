@@ -544,7 +544,7 @@ async function getColumnItemOnClick(field, options){
             "_inDrawer": true,  // 用于判断是否在抽屉中
             "recordLoaded": false, // 重置数据加载状态
             "recordId": `\${${options.idFieldName}}`,//审批微页面依赖了作用域中的recordId
-            "_tableObjectName": options.objectName
+            "_lookupObjectName": options.objectName
         }
     }) : {
         "type": "steedos-record-detail",
@@ -555,7 +555,7 @@ async function getColumnItemOnClick(field, options){
         "data": {
             "_inDrawer": true,  // 用于判断是否在抽屉中
             "recordLoaded": false, // 重置数据加载状态
-            "_tableObjectName": options.objectName
+            "_lookupObjectName": options.objectName
         }
     }
 
@@ -728,7 +728,7 @@ export async function getTableColumns(object, fields, options){
                 body: {
                     type: "steedos-field",
                     static: true,
-                    tableObjectName: options.objectName,
+                    isLookupInTable: true,
                     config: {
                         type: "lookup",
                         reference_to: field.reference_to,
@@ -1556,10 +1556,13 @@ export async function getTableApi(mainObject, fields, options){
                     // item[key] = value
                     // PC客户端附件子表列表点击标题预览附件功能依赖了_id，所以这里拼出来
                     let itemKeyValue = item[key];
-                    item[key] = value.map(function(item, index){
-                        item._id = typeof itemKeyValue == 'string' ? itemKeyValue : itemKeyValue[index];
-                        item.value = typeof itemKeyValue == 'string' ? itemKeyValue : itemKeyValue[index];
-                        return item;
+                    item[key] = value.map(function(curValue, index){
+                        let fileId = typeof itemKeyValue == 'string' ? itemKeyValue : itemKeyValue[index];
+                        // 克隆一份对象，避免下方value递归污染curValue
+                        let result = _.clone(curValue);
+                        result._id = fileId;
+                        result.value = fileId;
+                        return result;
                     });
                 }else{
                     item[key] = _.map(value, (item)=>{

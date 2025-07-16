@@ -68,12 +68,12 @@ export const getSchema = (uiSchema)=>{
                             {
                                 "actionType": "broadcast",
                                 "args": {
-                                  "eventName": "@data.changed.${_tableObjectName}"
+                                  "eventName": "@data.changed.${_lookupObjectName}"
                                 },
                                 "data": {
-                                  "objectName": "${_tableObjectName}"
+                                  "objectName": "${_lookupObjectName}"
                                 },
-                                "expression": `\${_tableObjectName != '${uiSchema.name}' && _tableObjectName}`
+                                "expression": `\${_lookupObjectName != '${uiSchema.name}' && _lookupObjectName}`
                             }
                           ]
                     }
