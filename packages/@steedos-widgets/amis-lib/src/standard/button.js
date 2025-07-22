@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:53:07
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-28 17:06:22
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2025-07-22 14:12:01
  * @Description: 
  */
 import { i18next } from "../i18n";
@@ -39,10 +39,12 @@ export const StandardButtons = {
                 const {
                     appId,
                     objectName,
-                    uiSchema
+                    uiSchema,
+                    record
                 } = this;
+                const crudId = record?.crudId || `listview_${uiSchema.name}`;
                 const scope = this.scope
-                const listViewRef = scope.parent?.getComponentById(`listview_${uiSchema.name}`);
+                const listViewRef = scope.parent?.getComponentById(crudId);
                 if(_.isEmpty(listViewRef.props.store.toJSON().selectedItems)){
                     listViewRef.handleAction({}, {
                         "actionType": "toast",

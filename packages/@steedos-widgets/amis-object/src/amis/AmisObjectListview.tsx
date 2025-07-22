@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-05-26 22:26:15
+ * @LastEditTime: 2025-07-22 14:12:42
  * @Description: 
  */
 import './AmisObjectListview.less';
@@ -191,6 +191,10 @@ export const AmisObjectListView = async (props) => {
 
   if(has(props, '$$editor')){
     _data = serviceData;
+  }
+
+  if(has(crud, 'id')){
+    _data.crudId = crud.id;
   }
 
   const schema = {
