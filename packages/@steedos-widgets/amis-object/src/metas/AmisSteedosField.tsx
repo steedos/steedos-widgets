@@ -450,7 +450,10 @@ const config: any = {
                     "disabledOn": "${config.is_system == true}",
                     "searchable": true,
                     "source": {
-                        "method": 'get',
+                        "method": 'post',
+                        "data": {
+                          "query": ""
+                        },
                         "url": "/api/amis/health_check?depend_on_type=${config.type}",
                         "sendOn": "this.config.type",
                         "adaptor": `

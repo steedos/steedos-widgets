@@ -886,8 +886,8 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         `;
     }else{
         apiInfo = {
-            method: "get",
-            data: {$: "$$"},
+            method: "post",
+            data: {$: "$$", query: ""},
             url: "/api/amis/health_check?reload=\${additionalFilters|join}&listName=\${listName}"
         }
     }
@@ -926,6 +926,7 @@ export async function lookupToAmisSelect(field, readonly, ctx){
     apiInfo.data['rfield'] = `\${object_name}`;
     // [["_id", "=", "$${field.name}._id"],"or",["name", "contains", "$term"]]
     apiInfo.requestAdaptor = `
+        debugger;
         ${listviewFilter && !ctx.inFilterForm ? `var filters = ${JSON.stringify(listviewFilter)};` : 'var filters = [];'}
         var top = 200;
         if(api.data.$term){

@@ -36,9 +36,10 @@ export async function getObjectFieldsFilterFormSchema(ctx) {
       "max-height":ctx.formFactor === 'SMALL'?"30vh":"unset"
     },
     "schemaApi": {
-      method: 'get',
+      method: 'post',
       data: {
-        $self: "$$"
+        $self: "$$",
+        query: ""
       },
       url: `/api/amis/health_check?reload=\${filterFormSearchableFields|join}`,
       adaptor: `

@@ -474,7 +474,10 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
                               "disabledOn": "${config.is_system == true}",
                               "searchable": true,
                               "source": {
-                                  "method": 'get',
+                                  "method": 'post',
+                                  "data": {
+                                    "query": ""
+                                  },
                                   "url": "/api/amis/health_check?depend_on_type=${config.type}",
                                   "headers": {
                                       "Authorization": "Bearer ${context.tenantId},${context.authToken}"
