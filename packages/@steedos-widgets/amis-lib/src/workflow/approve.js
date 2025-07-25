@@ -441,10 +441,10 @@ export const getApprovalDrawerSchema = async (instance) => {
   console.log("=============getApprovalDrawerSchema=============", instance)
   return {
     type: "drawer",
-    overlay: true,
+    overlay: false,
     resizable: false,
     closeOnEsc: true,
-    closeOnOutside: true,
+    closeOnOutside: false,
     size: "sm",
     title: `${instance.step.name}`,
     className: "approval-drawer absolute",

@@ -721,7 +721,7 @@ export const getFlowFormSchema = async (instance, box) => {
     type: "page",
     name: "instancePage",
     className: "steedos-amis-instance-view",
-    bodyClassName: "overflow-y-auto h-full",
+    bodyClassName: "overflow-y-auto h-full steedos-amis-instance-view-body",
     headerClassName: "p-0",
     "title": {
       "type": "steedos-record-detail-header",
@@ -733,6 +733,9 @@ export const getFlowFormSchema = async (instance, box) => {
       "className": "p-0 m-0 p0 m0 bg-gray-50"
     },
     "css": {
+      ".steedos-amis-instance-view-body": {
+        "height": "calc(100% - 65px)"
+      },
       ".instance-approve-history .antd-Table-table thead": {
         "display": "none"
       },
