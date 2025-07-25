@@ -36,20 +36,11 @@ export async function getObjectFieldsFilterFormSchema(ctx) {
       "max-height":ctx.formFactor === 'SMALL'?"30vh":"unset"
     },
     "schemaApi": {
-      method: 'post',
-      url: `\${context.rootUrl}/graphql?reload=\${filterFormSearchableFields|join}`,
+      method: 'get',
       data: {
-        $self: "$$",
-        query: "{\n data: objects(filters: [[\"_id\",\"=\",null]],top: 1, skip: 0){_id}\n    }"
+        $self: "$$"
       },
-      requestAdaptor: `
-        return {
-          ...api,
-          data: {
-            query: api.data.query
-          }
-        };
-      `,
+      url: `/api/amis/health_check?reload=\${filterFormSearchableFields|join}`,
       adaptor: `
           if(payload.errors){
               payload.status = 2;

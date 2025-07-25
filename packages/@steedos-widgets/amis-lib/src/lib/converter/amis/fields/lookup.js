@@ -886,12 +886,9 @@ export async function lookupToAmisSelect(field, readonly, ctx){
         `;
     }else{
         apiInfo = {
-            method: "post",
-            url: graphql.getApi(),
-            data: {query: '{objects(filters: ["_id", "=", "-1"]){_id}}', $: "$$"},
-            "headers": {
-                "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-            }
+            method: "get",
+            data: {$: "$$"},
+            url: "/api/amis/health_check?reload=\${additionalFilters|join}&listName=\${listName}"
         }
     }
 

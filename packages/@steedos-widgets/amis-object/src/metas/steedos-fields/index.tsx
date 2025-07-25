@@ -474,11 +474,8 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
                               "disabledOn": "${config.is_system == true}",
                               "searchable": true,
                               "source": {
-                                  "method": "post",
-                                  "url": "${context.rootUrl}/graphql?depend_on_type=${config.type}",
-                                  "data": {
-                                      "query": "{objects(filters: [\"_id\", \"=\", \"-1\"]){_id}}"
-                                  },
+                                  "method": 'get',
+                                  "url": "/api/amis/health_check?depend_on_type=${config.type}",
                                   "headers": {
                                       "Authorization": "Bearer ${context.tenantId},${context.authToken}"
                                   },
