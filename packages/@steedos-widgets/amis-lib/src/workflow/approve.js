@@ -248,7 +248,7 @@ const getNextStepUsersInput = async (instance) => {
                 "messages": {
                 },
                 "requestAdaptor": "\nconst { context, next_step, $scopeId } = api.data;\nconst formValues = SteedosUI.getRef($scopeId).getComponentById(\"instance_form\").getValues();\n\napi.data = {\n  instanceId: context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
-                "adaptor": "debugger;\npayload.data = {value: payload.nextStepUsers.length === 1 ? payload.nextStepUsers[0].id : null, options: payload.nextStepUsers};\nreturn payload;",
+                "adaptor": "\npayload.data = {value: payload.nextStepUsers.length === 1 ? payload.nextStepUsers[0].id : null, options: payload.nextStepUsers};\nreturn payload;",
                 "data": {
                   "&": "$$",
                   "$scopeId": "$scopeId",

@@ -78,7 +78,6 @@ function isCurrentUrl(to, ctx?) {
 const APPENV = {
   theme: 'antd',
   updateLocation: (location, replace) => {
-    debugger;
     location = normalizeLink(location);
     if (location === 'goBack') {
       return history.goBack();
@@ -96,7 +95,6 @@ const APPENV = {
     history[replace ? 'replace' : 'push'](location);
   },
   jumpTo: (to, action) => {
-    debugger;
     if (to === 'goBack') {
       return history.goBack();
     }

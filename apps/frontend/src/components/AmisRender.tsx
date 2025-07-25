@@ -18,7 +18,6 @@ export const AmisRender = function ({schema = {}, data = {}, env = {}}) {
     unpkgUrl: 'https://unpkg.steedos.cn',
     jumpTo: (to: string, action: string)=>{
       //TODO
-      debugger;
       console.log('jumpTo to, action', to, action)
     },
     ...env,
