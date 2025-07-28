@@ -17,6 +17,7 @@
 }
 .antd-Nav-Menu.antd-Nav-Menu-horizontal {
   --Menu-light-backgroundColor-onHover: rgba(151, 151, 151, 0.1);
+  --Menu-light-fontColor-onHover: var(--Layout-fontColor--onHover);
 }
 
 .antd-Nav {
@@ -47,7 +48,7 @@
 }
 
 .antd-Nav-Menu-horizontal .antd-Nav-Menu-item.antd-Nav-Menu-item-selected:after {
-  height: 3px;
+  height: 8px;
   top: 0;
   bottom: unset;
   background: rgb(14 165 233);
@@ -57,6 +58,21 @@
   padding-right: 0.5rem;
 }
 
+.antd-Nav-Menu-horizontal.antd-Nav-Menu-light .antd-Nav-Menu-item.antd-Nav-Menu-item-selected {
+  background: rgba(21,137,238,.1);
+}
+
+.antd-Nav-Menu-horizontal.antd-Nav-Menu-light .antd-Nav-Menu-item.antd-Nav-Menu-item-selected.antd-Nav-Menu-item-active {
+  background: var(--Menu-light-backgroundColor-onHover);
+}
+
+.antd-Nav-Menu-horizontal.antd-Nav-Menu-light .antd-Nav-Menu-item.antd-Nav-Menu-item-selected .antd-Nav-Menu-item-label{
+  color: var(--Menu-light-fontColor-onHover);
+}
+
+.antd-Nav-Menu-horizontal.antd-Nav-Menu-light .antd-Nav-Menu-item.antd-Nav-Menu-item-active .antd-Nav-Menu-item-label{
+  color: var(--Menu-light-fontColor-onHover);
+}
 
 .antd-Nav-Menu-horizontal > .antd-Nav-Menu-item-tooltip-wrap > .antd-Nav-Menu-item {
   padding: 0 15px;
