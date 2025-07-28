@@ -91,7 +91,7 @@ export const AmisAppLauncher = async (props) => {
   `;
 
   let dialogSchema = {}
-  const badgeText = "${IF(${id} == 'approve_workflow',${ss:keyvalues.badge.value|pick:'workflow'},${ss:keyvalues.badge.value|pick:${id}}) | toInt}";
+  const badgeText = "${IF(${id} == 'approve_workflow',${badge|pick:'workflow'},${badge|pick:${id}}) | toInt}";
   if(!isMobile){
     dialogSchema = {
       "type": "service",
@@ -468,7 +468,7 @@ export const AmisAppLauncher = async (props) => {
     "id": "u:2c8bd22d4ea8"
   }
 
-  return {
+  const amisSchema =  {
     "type": "service",
     className,
     "body": [
@@ -482,7 +482,7 @@ export const AmisAppLauncher = async (props) => {
             "className": "flex items-center",
             "tpl": `<div aria-haspopup='true' title='${i18next.t('frontend_open_app_launcher')}' class='slds-icon-waffle_container slds-context-bar__button' type='button'><span class='slds-icon-waffle'><span class='slds-r1'></span><span class='slds-r2'></span><span class='slds-r3'></span><span class='slds-r4'></span><span class='slds-r5'></span><span class='slds-r6'></span><span class='slds-r7'></span><span class='slds-r8'></span><span class='slds-r9'></span></span></div>`,
             "badge": {
-              "visibleOn": "${ss:keyvalues.badge.value.workflow | toInt}",
+              "visibleOn": "${badge.workflow | toInt}",
               "offset": [3, -3],
               "style": {
                 "width": "8px",
@@ -526,7 +526,7 @@ export const AmisAppLauncher = async (props) => {
             "className": "flex items-center",
             "tpl": `<div aria-haspopup='true' title='${i18next.t('frontend_open_app_launcher')}' class='slds-icon-waffle_container slds-context-bar__button' type='button'><span class='slds-icon-waffle'><span class='slds-r1'></span><span class='slds-r2'></span><span class='slds-r3'></span><span class='slds-r4'></span><span class='slds-r5'></span><span class='slds-r6'></span><span class='slds-r7'></span><span class='slds-r8'></span><span class='slds-r9'></span></span></div>`,
             "badge": {
-              "visibleOn": "${ss:keyvalues.badge.value.workflow | toInt}",
+              "visibleOn": "${badge.workflow | toInt}",
               "offset": [3, -3],
               "style": {
                 "width": "8px",
@@ -564,5 +564,6 @@ export const AmisAppLauncher = async (props) => {
       }
     }
   }
-
+  // console.log(`AmisAppLauncher`, amisSchema)
+  return amisSchema;
 }
