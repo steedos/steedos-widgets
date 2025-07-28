@@ -15,6 +15,9 @@
   --Nav-item-onActive-color: var(--Layout-light--onActive);
   --Nav-Item-maxWidth--tabs: 200px;
 }
+.antd-Nav-Menu.antd-Nav-Menu-horizontal {
+  --Menu-light-backgroundColor-onHover: rgba(151, 151, 151, 0.1);
+}
 
 .antd-Nav {
   --Nav-item-onActive-color: #000;
