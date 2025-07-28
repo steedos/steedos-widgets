@@ -28,7 +28,7 @@ export const PageObject = async (props) => {
         type: "service",
         data: $schema.data,
         id: 'u:steedos-page-object',
-        className: "h-full",
+        className: "h-full steedos-page-object",
         body: {
             type: 'service',
             className: {
@@ -39,6 +39,51 @@ export const PageObject = async (props) => {
                 uiSchema
             },
             body: [
+                {
+                    "type": "button",
+                    "label": "刷新",
+                    "className": "hidden btn-reload-page-object-detail",
+                    "onEvent": {
+                        "click": {
+                            "actions": [
+                                {
+                                    "componentId": "u:steedos-page-object-detail",
+                                    "actionType": "reload"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "type": "button",
+                    "label": "刷新",
+                    "className": "hidden btn-reload-page-object-listview",
+                    "onEvent": {
+                        "click": {
+                            "actions": [
+                                {
+                                    "componentId": "u:steedos-page-object-listview",
+                                    "actionType": "reload"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "type": "button",
+                    "label": "刷新",
+                    "className": "hidden btn-reload-object-listview",
+                    "onEvent": {
+                        "click": {
+                            "actions": [
+                                {
+                                    "componentId": "u:steedos-object-listview",
+                                    "actionType": "reload"
+                                }
+                            ]
+                        }
+                    }
+                },
                 {
                     "type": "wrapper",
                     "size": "none",
@@ -86,6 +131,15 @@ export const PageObject = async (props) => {
                 }
             ]
         },
+        dataProvider: function(data, setData){
+            (window as any).addEventListener('message', function (event) {
+                const { data } = event;
+                if (data && data.type === 'page.dataProvider.setData') {
+                    // console.log('dataProvider====>setData', data);
+                    setData(data.data)
+                }
+            })
+        }
         // onEvent: {
         //     "recordLoaded": {
         //       "actions": [

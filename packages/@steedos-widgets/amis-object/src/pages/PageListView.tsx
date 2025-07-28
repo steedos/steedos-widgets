@@ -6,7 +6,7 @@
  * @Description: 
  */
 import { getPage, Router } from "@steedos-widgets/amis-lib";
-import { defaultsDeep } from 'lodash';
+import { defaultsDeep, has } from 'lodash';
 
 
 export const PageListView = async (props) => {
@@ -37,15 +37,27 @@ export const PageListView = async (props) => {
   //   name: objectApiName,
   // });
   
-  const listSchema = page? page.schema : {
+  let listSchema = page? page.schema : {
     "type": "steedos-object-listview",
     "objectApiName": objectApiName,
     "columnsTogglable": false,
     "showHeader": true,
-    "_reloadKey": _reloadKey
     // "showDisplayAs": (formFactor !== 'SMALL'),
     // "formFactor": formFactor,
     // "className": (displayAs === 'split')? 'w-full': 'p-0 flex-1 m-0 sm:border sm:shadow sm:rounded border-gray-300 border-solid bg-gray-100'
+  }
+
+  listSchema._reloadKey = _reloadKey;
+
+  if(page && page.schema){
+    if(page.schema.data){
+      listSchema.data._reloadKey = _reloadKey;
+    }else{
+      listSchema.data = {
+        _reloadKey
+      }
+    }
+    listSchema = JSON.parse(JSON.stringify(listSchema).replaceAll('"type":"steedos-object-listview"', `"type":"steedos-object-listview","_reloadKey":"${_reloadKey}"`))
   }
 
   // const defData = {

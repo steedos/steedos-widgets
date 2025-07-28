@@ -232,7 +232,7 @@ export const AmisObjectListView = async (props) => {
                 "schemaApi": {
                     // 这里url上加objectApiName属性是因为设计器中切换对象时不会变更列表视图界面，不可以用objectName=${objectName}使用作用域中objectName变量是因为设计器那边不会监听识别data变化来render组件
                     "url": "${context.rootUrl}/graphql?objectName=" + objectApiName + "&listName=${listName}&display=${display}&rebuildOn=" + rebuildOn + _reloadKey,
-                    "trackExpression": "${_reloadKey|}",
+                    "trackExpression": "${_reloadKey}",
                     "method": "post",
                     "messages": {
                     },
