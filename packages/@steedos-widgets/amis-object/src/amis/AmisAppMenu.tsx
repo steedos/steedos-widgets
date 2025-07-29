@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-07-29 20:37:43
+ * @LastEditTime: 2025-07-29 20:58:10
  * @Description: 
  */
 import './AmisAppMenu.less';
@@ -202,18 +202,7 @@ export const AmisAppMenu = async (props) => {
                               });
                           })
                       }
-                      //以下为nav第一层排序，包括分组与选项卡
-                      // let groupLength = ((payload.tab_groups && payload.tab_groups.length) || 0) + 1000;
-                      data.nav = _.sortBy(data.nav, function(tab){
-                        if(tab.isGroup){
-                            return _.findIndex(payload.tab_groups, function(group){
-                                return group.group_name === tab.label;
-                            });
-                        }else{
-                            // 没有分组的选项卡按index排列在有分组的选项卡前方
-                            return (tab.index || 0) - 1000;
-                        }
-                      })
+
                       if(allowEditApp){
                         const tempTabForEmptyGroup = {
                             "label": {
@@ -238,6 +227,19 @@ export const AmisAppMenu = async (props) => {
                             }
                         });
                       }
+
+                      //以下为nav第一层排序，包括分组与选项卡
+                      // let groupLength = ((payload.tab_groups && payload.tab_groups.length) || 0) + 1000;
+                      data.nav = _.sortBy(data.nav, function(tab){
+                        if(tab.isGroup){
+                            return _.findIndex(payload.tab_groups, function(group){
+                                return group.group_name === tab.label;
+                            });
+                        }else{
+                            // 没有分组的选项卡按index排列在有分组的选项卡前方
+                            return (tab.index || 0) - 1000;
+                        }
+                      })
 
                       if(collapsed){
                         const collapsedNav = [];
