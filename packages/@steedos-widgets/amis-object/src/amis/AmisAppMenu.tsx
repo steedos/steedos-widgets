@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-07-29 20:58:10
+ * @LastEditTime: 2025-07-29 21:59:33
  * @Description: 
  */
 import './AmisAppMenu.less';
@@ -59,7 +59,15 @@ export const AmisAppMenu = async (props) => {
                             });
                             hasError = true;
                         } else {
-                            tab_items[menu2.tabApiName] = { group: menu.label };
+                            if (menu.isGroup) {
+                                tab_items[menu2.tabApiName] = { group: menu.label };
+                            }
+                            else{
+                                // menu.isGroup不为true，说明menu不是一个分组，而menu.children有值，说明menu是一个分组，这是异常操作
+                                // 说明此时是把一个菜单拖动到一个普通的菜单内部，正常应该把菜单拖动到某个分组内或其它菜单同级，不可以把普通菜单当分组
+                                // 此时把菜单还原成普通菜单即可，即group值为空
+                                tab_items[menu2.tabApiName] = { group: "" };
+                            }
                         }
                     }
                 });
@@ -1989,7 +1997,7 @@ export const AmisAppMenu = async (props) => {
                                                     "actions": [
                                                         {
                                                             "actionType": "custom",
-                                                            "script": "if(event.data.children && event.data.children.length > 0){doAction({'actionType': 'toast','args': {  'msgType': 'warning',  'msg': '分组下有数据,禁止删除'}});event.stopPropagation();};"
+                                                            "script": "if(event.data.children && event.data.children.length > 0 && !event.data.children[0].isTempTabForEmptyGroup){doAction({'actionType': 'toast','args': {  'msgType': 'warning',  'msg': '分组下有数据,禁止删除'}});event.stopPropagation();};"
                                                         },
                                                         {
                                                             "ignoreError": false,
