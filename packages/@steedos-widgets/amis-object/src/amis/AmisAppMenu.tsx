@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-07-29 22:06:08
+ * @LastEditTime: 2025-07-29 22:50:22
  * @Description: 
  */
 import './AmisAppMenu.less';
@@ -75,8 +75,8 @@ export const AmisAppMenu = async (props) => {
         });
         if(hasError){
             var amis = amisRequire("amis");
-            var errorMsg = window.t ? window.t("frontend_app_menu_save_order_group_nesting_error") : "Group nesting is not supported";
-            amis && amis.toast.warning(errorMsg);
+            // var errorMsg = window.t ? window.t("frontend_app_menu_save_order_group_nesting_error") : "Group nesting is not supported";
+            amis && amis.toast.warning("不支持分组嵌套");
         }
         api.data = { appId: context.app.id, tab_groups, tab_items };
         // console.log("====saveOrderApiRequestAdaptor====api.data==", api.data);
