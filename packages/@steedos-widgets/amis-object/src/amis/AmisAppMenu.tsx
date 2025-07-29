@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2025-02-20 16:10:11
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2025-07-29 15:00:13
  * @Description: 
  */
 import './AmisAppMenu.less';
@@ -29,6 +29,33 @@ export const AmisAppMenu = async (props) => {
             "links": links
         }
     }
+
+    const saveOrderApiRequestAdaptor = `
+        const menus = context.data;
+        console.log("====saveOrderApiRequestAdaptor====menus==", menus);
+        const tab_groups = [];
+        const tab_items = {};
+        _.each(menus, (menu) => {
+            if (menu.isGroup) {
+                tab_groups.push({
+                    group_name: menu.label,
+                    default_open: menu.default_open,
+                });
+            } else {
+                tab_items[menu.tabApiName] = { group: "" };
+            }
+            if (menu.children) {
+                _.each(menu.children, (menu2) => {
+                    if(menu2.isTempTabForEmptyGroup !== true){
+                        tab_items[menu2.tabApiName] = { group: menu.label };
+                    }
+                });
+            }
+        });
+        api.data = { appId: context.app.id, tab_groups, tab_items };
+        console.log("====saveOrderApiRequestAdaptor====api.data==", api.data);
+        return api;
+    `;
     const schema = {
         type: 'service',
         id: 'u:app-menu',
@@ -38,7 +65,7 @@ export const AmisAppMenu = async (props) => {
             "sendOn": "!!appId",
             "adaptor": `
                   try {
-                    //  console.log('payload====>', payload)
+                     console.log('payload====>', payload)
                       if(payload.nav_schema){
                         payload.data = payload.nav_schema;
                         return payload
@@ -170,14 +197,25 @@ export const AmisAppMenu = async (props) => {
                         }
                       })
                       if(allowEditApp){
+                        const tempTabForEmptyGroup = {
+                            "label": {
+                                "type": "tpl",
+                                "tpl": "请添加菜单项"
+                            },
+                            "searchKey": "",
+                            "disabled": true,
+                            "tabApiName": "temp_tab_for_empty_group",
+                            "isTempTabForEmptyGroup": true
+                        };
                         _.each(payload.tab_groups, (group)=>{
                             if(!_.includes(usedGroupNames, group.group_name)){
+                                tempTabForEmptyGroup.id = "temp_tab_for_empty_group__" + group.group_name;
                                 data.nav.push({
                                     "label": group.group_name,
                                     'default_open': group && group.default_open != false,
                                     "unfolded": group && group.default_open != false,
                                     "isGroup": true,
-                                    "children": []
+                                    "children": [tempTabForEmptyGroup]
                                 })
                             }
                         });
@@ -948,7 +986,7 @@ export const AmisAppMenu = async (props) => {
                       if(!menuItems || menuItems.length == 0){
                         menuItems = data.nav;
                       }
-
+                      console.log("menuItems====", menuItems);
                       payload.data = {
                         "type":"service",
                         "className": "steedos-app-service steedos-app-service-\${allowEditApp ? 'edit' : 'readonly'}",
@@ -995,7 +1033,7 @@ export const AmisAppMenu = async (props) => {
                                 "url": "/service/api/apps/update_app_by_design",
                                 "method": "post",
                                 "adaptor": "",
-                                "requestAdaptor": "const menus = context.data;const tab_groups = [];const tab_items = {};_.each(menus, (menu) => {  if (menu.isGroup) {    tab_groups.push({      group_name: menu.label,      default_open: menu.default_open,    });  }else{tab_items[menu.tabApiName] = {group:''}};  if (menu.children) {    _.each(menu.children, (menu2) => {      tab_items[menu2.tabApiName] = {        group: menu.label      }    })  }}); api.data={appId: context.app.id, tab_groups, tab_items}; return api;",
+                                "requestAdaptor": ${JSON.stringify(saveOrderApiRequestAdaptor)},
                                 "messages": {}
                             },
                             "itemActions": [
@@ -2033,7 +2071,7 @@ export const AmisAppMenu = async (props) => {
                   setTimeout(function(){
                     $("[name='keywords']").focus();
                   }, 300);
-                    // console.log('AmisAppMenu AmisAppMenu=====>', payload)
+                    console.log('AmisAppMenu AmisAppMenu=====>', payload)
                   return payload;
             `
         }
