@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-07-29 21:59:33
+ * @LastEditTime: 2025-07-29 22:06:08
  * @Description: 
  */
 import './AmisAppMenu.less';
@@ -32,7 +32,7 @@ export const AmisAppMenu = async (props) => {
 
     const saveOrderApiRequestAdaptor = `
         const menus = context.data;
-        console.log("====saveOrderApiRequestAdaptor====menus==", menus);
+        // console.log("====saveOrderApiRequestAdaptor====menus==", menus);
         const tab_groups = [];
         const tab_items = {};
         var hasError = false;
@@ -79,7 +79,7 @@ export const AmisAppMenu = async (props) => {
             amis && amis.toast.warning(errorMsg);
         }
         api.data = { appId: context.app.id, tab_groups, tab_items };
-        console.log("====saveOrderApiRequestAdaptor====api.data==", api.data);
+        // console.log("====saveOrderApiRequestAdaptor====api.data==", api.data);
         return api;
     `;
     const schema = {
@@ -91,7 +91,7 @@ export const AmisAppMenu = async (props) => {
             "sendOn": "!!appId",
             "adaptor": `
                   try {
-                     console.log('payload====>', payload)
+                    //  console.log('payload====>', payload)
                       if(payload.nav_schema){
                         payload.data = payload.nav_schema;
                         return payload
@@ -1014,7 +1014,7 @@ export const AmisAppMenu = async (props) => {
                       if(!menuItems || menuItems.length == 0){
                         menuItems = data.nav;
                       }
-                      console.log("menuItems====", menuItems);
+                    //   console.log("menuItems====", menuItems);
                       payload.data = {
                         "type":"service",
                         "className": "steedos-app-service steedos-app-service-\${allowEditApp ? 'edit' : 'readonly'}",
@@ -2099,7 +2099,7 @@ export const AmisAppMenu = async (props) => {
                   setTimeout(function(){
                     $("[name='keywords']").focus();
                   }, 300);
-                    console.log('AmisAppMenu AmisAppMenu=====>', payload)
+                  // console.log('AmisAppMenu AmisAppMenu=====>', payload)
                   return payload;
             `
         }
