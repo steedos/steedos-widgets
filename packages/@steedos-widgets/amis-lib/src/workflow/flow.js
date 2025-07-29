@@ -757,6 +757,9 @@ export const getFlowFormSchema = async (instance, box) => {
       ".antd-List-placeholder": {
         "display": "none"
       },
+      ".steedos-amis-instance-view .antd-Table-fixedTop":{
+        "top": "-13px"
+      },
       ".steedos-amis-instance-view .antd-Table-fixedTop:after":{
         "box-shadow": "none"
       },
