@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-07-29 15:00:13
+ * @LastEditTime: 2025-07-29 20:37:43
  * @Description: 
  */
 import './AmisAppMenu.less';
@@ -35,6 +35,7 @@ export const AmisAppMenu = async (props) => {
         console.log("====saveOrderApiRequestAdaptor====menus==", menus);
         const tab_groups = [];
         const tab_items = {};
+        var hasError = false;
         _.each(menus, (menu) => {
             if (menu.isGroup) {
                 tab_groups.push({
@@ -47,11 +48,28 @@ export const AmisAppMenu = async (props) => {
             if (menu.children) {
                 _.each(menu.children, (menu2) => {
                     if(menu2.isTempTabForEmptyGroup !== true){
-                        tab_items[menu2.tabApiName] = { group: menu.label };
+                        if (menu2.isGroup) {
+                            // 因为分组只支持到一层，不支持分组拖动到另一个分组，还原到原来的分组
+                            tab_groups.push({
+                                group_name: menu2.label,
+                                default_open: menu2.default_open,
+                            });
+                            _.each(menu2.children, (menu3) => {
+                                tab_items[menu3.tabApiName] = { group: menu2.label };
+                            });
+                            hasError = true;
+                        } else {
+                            tab_items[menu2.tabApiName] = { group: menu.label };
+                        }
                     }
                 });
             }
         });
+        if(hasError){
+            var amis = amisRequire("amis");
+            var errorMsg = window.t ? window.t("frontend_app_menu_save_order_group_nesting_error") : "Group nesting is not supported";
+            amis && amis.toast.warning(errorMsg);
+        }
         api.data = { appId: context.app.id, tab_groups, tab_items };
         console.log("====saveOrderApiRequestAdaptor====api.data==", api.data);
         return api;
@@ -200,7 +218,7 @@ export const AmisAppMenu = async (props) => {
                         const tempTabForEmptyGroup = {
                             "label": {
                                 "type": "tpl",
-                                "tpl": "请添加菜单项"
+                                "tpl": "无菜单"
                             },
                             "searchKey": "",
                             "disabled": true,

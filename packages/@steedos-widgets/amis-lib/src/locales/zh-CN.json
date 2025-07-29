@@ -89,5 +89,6 @@
     "frontend_objects_related_alert_start": "未找到与相关列表对象",
     "frontend_objects_related_alert_end": "关联的相关表字段",
     "frontend_no_records_found": "无法找到记录",
-    "frontend_records_no_allowedit": "您对这条记录没有编辑权限"
+    "frontend_records_no_allowedit": "您对这条记录没有编辑权限",
+    "frontend_app_menu_save_order_group_nesting_error": "不支持分组嵌套"
 }

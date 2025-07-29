@@ -88,5 +88,6 @@
     "frontend_objects_related_alert_start": "No related table fields associated with the related list object",
     "frontend_objects_related_alert_end": "were found.",
     "frontend_no_records_found": "No records found.",
-    "frontend_records_no_allowedit": "You do not have edit permission for this record"
+    "frontend_records_no_allowedit": "You do not have edit permission for this record",
+    "frontend_app_menu_save_order_group_nesting_error": "Group nesting is not supported"
 }
