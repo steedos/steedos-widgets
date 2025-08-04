@@ -39,6 +39,20 @@ body.sidebar #sidebar {
     display: none !important;
 }
 
+.antd-Nav{
+    &.stacked{
+        .antd-Nav-Menu-item-link{
+            .antd-Nav-Menu-item-label{
+                // 左侧菜单文字超长时显示省略号不换行
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                width: 100%;
+            }
+        }
+    }
+}
+
 @media (min-width: 768px){
     body.sidebar.sidebar-open #main {
         margin-left: 220px;

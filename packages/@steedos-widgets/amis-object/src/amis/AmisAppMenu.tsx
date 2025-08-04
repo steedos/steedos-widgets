@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-08-04 16:06:36
+ * @LastEditTime: 2025-08-04 23:26:01
  * @Description: 
  */
 import './AmisAppMenu.less';
@@ -133,7 +133,8 @@ export const AmisAppMenu = async (props) => {
                                       data.nav.push({
                                           "label": showIcon ? {
                                             type: 'tpl',
-                                            tpl: \`<span class='whitespace-normal leading-6 no-underline group items-center rounded-md'><svg class="slds-icon_container slds-icon fill-gray-700 mr-2 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
+                                            showNativeTitle: true,
+                                            tpl: \`<span class='leading-6 no-underline group items-center rounded-md'><svg class="slds-icon_container slds-icon fill-gray-700 mr-2 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
                                           } : tab.name,
                                           "searchKey": tab.name,
                                           "to": tab.path,
@@ -165,7 +166,8 @@ export const AmisAppMenu = async (props) => {
                                             return {
                                             "label": showIcon ? {
                                                 type: 'tpl',
-                                                tpl: \`<span class='whitespace-normal leading-6 block no-underline group items-center rounded-md'><svg class="slds-icon_container slds-icon fill-gray-700 mr-2 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
+                                                showNativeTitle: true,
+                                                tpl: \`<span class='leading-6 block no-underline group items-center rounded-md'><svg class="slds-icon_container slds-icon fill-gray-700 mr-2 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
                                             }  : tab.name,
                                             "searchKey": tab.name,
                                             "to": tab.path,
