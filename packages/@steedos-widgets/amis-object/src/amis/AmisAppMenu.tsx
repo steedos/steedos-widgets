@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-08-04 23:26:01
+ * @LastEditTime: 2025-08-04 23:36:52
  * @Description: 
  */
 import './AmisAppMenu.less';
@@ -267,7 +267,7 @@ export const AmisAppMenu = async (props) => {
                                             "type": "tooltip-wrapper",
                                             "content": childrenItem.label,
                                             "placement": "right",
-                                            "disabled": true,
+                                            // "disabled": true,
                                             "body": [
                                                 {
                                                     'type': 'tpl',
@@ -288,7 +288,7 @@ export const AmisAppMenu = async (props) => {
                                         "type": "tooltip-wrapper",
                                         "content": item.label,
                                         "placement": "right",
-                                        "disabled": true,
+                                        // "disabled": true,
                                         "body": [
                                             {
                                                 'type': 'tpl',
