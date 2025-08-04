@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-07-29 22:50:22
+ * @LastEditTime: 2025-08-04 16:06:36
  * @Description: 
  */
 import './AmisAppMenu.less';
@@ -851,7 +851,8 @@ export const AmisAppMenu = async (props) => {
                                                                                 "option": "是否默认展开",
                                                                                 "name": "defaultOpen",
                                                                                 "id": "u:dae5884c1623",
-                                                                                "required": true
+                                                                                "required": true,
+                                                                                "value": true
                                                                             }
                                                                         ],
                                                                         "id": "u:304b5b04c573",
