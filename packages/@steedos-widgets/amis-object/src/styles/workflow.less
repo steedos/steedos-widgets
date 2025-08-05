@@ -1,0 +1,35 @@
+.instance-form-view{
+    .antd-Table-table{
+        .antd-Form-label{
+            display: none;
+        }
+    }
+}
+
+
+.steedos-amis-instance-view{
+    .steedos-input-table{
+        .antd-Table-table{
+            colgroup col:nth-child(2) {
+                width: 0px !important;
+                min-width: 0px !important;
+            }
+            thead{
+                tr{
+                    th:first-child {
+                        width: 60px;
+                    }
+                }
+                .antd-Table-operationCell{
+                    width: 0px !important;
+                }
+            }
+            .steedos-input-table-column-operation{
+                border: none !important;
+                .antd-OperationField{
+                    margin-left: -55px;
+                }
+            }
+        }
+    }
+}

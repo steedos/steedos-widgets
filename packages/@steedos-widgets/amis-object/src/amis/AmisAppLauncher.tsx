@@ -91,7 +91,7 @@ export const AmisAppLauncher = async (props) => {
   `;
 
   let dialogSchema = {}
-  const badgeText = "${IF(${id} == 'approve_workflow',${badge|pick:'workflow'},${badge|pick:${id}}) | toInt}";
+  const badgeText = "${IF(${id} == 'approve_workflow',${badges|pick:'workflow'},${badges|pick:${id}}) | toInt}";
   if(!isMobile){
     dialogSchema = {
       "type": "service",
@@ -482,7 +482,7 @@ export const AmisAppLauncher = async (props) => {
             "className": "flex items-center",
             "tpl": `<div aria-haspopup='true' title='${i18next.t('frontend_open_app_launcher')}' class='slds-icon-waffle_container slds-context-bar__button' type='button'><span class='slds-icon-waffle'><span class='slds-r1'></span><span class='slds-r2'></span><span class='slds-r3'></span><span class='slds-r4'></span><span class='slds-r5'></span><span class='slds-r6'></span><span class='slds-r7'></span><span class='slds-r8'></span><span class='slds-r9'></span></span></div>`,
             "badge": {
-              "visibleOn": "${badge.workflow | toInt}",
+              "visibleOn": "${badges.workflow | toInt}",
               "offset": [3, -3],
               "style": {
                 "width": "8px",
@@ -526,7 +526,7 @@ export const AmisAppLauncher = async (props) => {
             "className": "flex items-center",
             "tpl": `<div aria-haspopup='true' title='${i18next.t('frontend_open_app_launcher')}' class='slds-icon-waffle_container slds-context-bar__button' type='button'><span class='slds-icon-waffle'><span class='slds-r1'></span><span class='slds-r2'></span><span class='slds-r3'></span><span class='slds-r4'></span><span class='slds-r5'></span><span class='slds-r6'></span><span class='slds-r7'></span><span class='slds-r8'></span><span class='slds-r9'></span></span></div>`,
             "badge": {
-              "visibleOn": "${badge.workflow | toInt}",
+              "visibleOn": "${badges.workflow | toInt}",
               "offset": [3, -3],
               "style": {
                 "width": "8px",

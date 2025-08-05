@@ -859,7 +859,7 @@ export const AmisSteedosField = async (props) => {
 
             const schema = await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
             addEditorClass(schema, editorClassName);
-            // console.log(`AmisSteedosField return schema`, schema)
+            console.log(`AmisSteedosField return schema`, schema, props)
             return schema
         }
 

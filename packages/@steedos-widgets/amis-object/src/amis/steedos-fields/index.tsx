@@ -79,6 +79,14 @@ const createFieldFunction = (type: string) => {
       }
     }
 
+    if(props.config.type === 'table'){
+      props.config.amis.type = 'input-table';
+      const schema = props.config;
+      if(has(props, '$$editor')){
+        delete schema.visibleOn
+      }
+      return schema
+    }
     const schema = await AmisSteedosField(props);
     if(has(props, '$$editor')){
       delete schema.visibleOn
@@ -120,7 +128,8 @@ const fieldTypes = [
   { name: "Email", type: "email", title: "电子邮件", icon: "fa-fw fa fa-envelope" },
   { name: "Location", type: "location", title: "位置", icon: "fa-fw fa fa-map-marker" },
   { name: "Formula", type: "formula", title: "公式", icon: "fa-fw fa fa-sigma" },
-  { name: "Summary", type: "summary", title: "累计汇总", icon: "fa-fw fa fa-sum" }
+  { name: "Summary", type: "summary", title: "累计汇总", icon: "fa-fw fa fa-sum" },
+  { name: "Table", type: "table", title: "表格", icon: "fa-fw fa fa-table" }
 ];
 
 // 生成每个字段类型的函数
@@ -156,7 +165,8 @@ export const {
   SteedosFieldEmail,
   SteedosFieldLocation,
   SteedosFieldFormula,
-  SteedosFieldSummary
+  SteedosFieldSummary,
+  SteedosFieldTable
 } = generatedFunctions;
 
 export default generatedFunctions;

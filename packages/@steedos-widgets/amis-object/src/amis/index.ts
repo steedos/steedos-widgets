@@ -43,3 +43,5 @@ export * from './steedos-fields/index';
 export * from './AmisSteedosFieldGroup';
 
 export * from './AmisSteedosObject';
+
+export * from './AmisSteedosFlowForm';

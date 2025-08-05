@@ -10,6 +10,8 @@ import './styles/steedos.css';
 
 import './styles/data-table.less';
 
+import './styles/workflow.less'
+
 /**
  * 请勿删除, 让tailwind编译出一下class
  * min-w-[240px]

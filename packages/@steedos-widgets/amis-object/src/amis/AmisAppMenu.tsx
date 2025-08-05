@@ -14,9 +14,9 @@ export const AmisAppMenu = async (props) => {
     }
     // console.log(`AmisAppMenu appId`, appId)
     // console.log(`AmisAppMenu`, appId, props)
-    let badgeText = `\${keyvalues.badge.value | pick:${appId} | toInt}`;
+    let badgeText = `\${badges.value | pick:${appId} | toInt}`;
     if(appId == "approve_workflow"){
-        badgeText = "${keyvalues.badge.value | pick:'workflow' | toInt}";
+        badgeText = "${badges.value | pick:'workflow' | toInt}";
     }
 
     if(links){

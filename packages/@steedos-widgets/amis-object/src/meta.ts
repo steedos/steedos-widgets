@@ -70,6 +70,8 @@ import AmisSteedosFieldGroup from './metas/AmisSteedosFieldGroup';
 
 import AmisSteedosObject from './metas/AmisSteedosObject';
 
+import AmisSteedosFlowForm from './metas/AmisSteedosFlowForm';
+
 const components = [
   AmisRecordDetailHeader,
   AmisObjectForm, 
@@ -108,7 +110,8 @@ const components = [
   AmisRecordDetailMini,
   ...fieldMetas,
   AmisSteedosFieldGroup,
-  AmisSteedosObject
+  AmisSteedosObject,
+  AmisSteedosFlowForm
 ];
 
 const componentList = [

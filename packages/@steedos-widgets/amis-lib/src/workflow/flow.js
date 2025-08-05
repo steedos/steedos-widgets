@@ -357,18 +357,37 @@ const getFieldEditTpl = async (field, label)=>{
           tpl.type = "input-rich-text";
         }
         break;
+      // case "table":
+      //   tpl.type = "input-table"; //TODO
+      //   tpl.addable = field.permission === "editable";
+      //   tpl.editable = tpl.addable;
+      //   tpl.copyable = tpl.addable;
+      //   tpl.removable = tpl.addable;
+      //   tpl.columns = [];
+      //   for (const sField of field.fields) {
+      //     if (sField.type != "hidden") {
+      //       sField.permission = field.permission
+      //       const column = await getTdInputTpl(sField, true);
+      //       tpl.columns.push(column);
+      //     }
+      //   }
+      //   break;
       case "table":
-        tpl.type = "input-table"; //TODO
+        tpl.type = "steedos-input-table"; //TODO
         tpl.addable = field.permission === "editable";
         tpl.editable = tpl.addable;
         tpl.copyable = tpl.addable;
         tpl.removable = tpl.addable;
-        tpl.columns = [];
+        tpl.fields = [];
         for (const sField of field.fields) {
           if (sField.type != "hidden") {
             sField.permission = field.permission
             const column = await getTdInputTpl(sField, true);
-            tpl.columns.push(column);
+            if(column.type === 'steedos-field'){
+              tpl.fields.push(column.config);
+            }else{
+              tpl.fields.push(column);
+            }
           }
         }
         break;
@@ -377,7 +396,7 @@ const getFieldEditTpl = async (field, label)=>{
         break;
       default:
         tpl.type = 'steedos-field'
-        tpl.config = field.steedos_field
+        tpl.config = field.steedos_field || field.config
         break;
     }
   }

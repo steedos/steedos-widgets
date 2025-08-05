@@ -82,14 +82,14 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
                           "title": "通用",
                           "className": 'ae-formItemControl-body',
                           "body": [
-                            {
-                              "type": "input-text",
-                              "name": "config.object",
-                              "value": "${objectName}",
-                              "disabled": true,
-                              "label": "对象",
-                              "required": true
-                            },
+                            // {
+                            //   "type": "input-text",
+                            //   "name": "config.object",
+                            //   "value": "${objectName}",
+                            //   "disabled": true,
+                            //   "label": "对象",
+                            //   "required": true
+                            // },
                             {
                                 "type": "formula",
                                 "name": "visibleOn",
@@ -205,6 +205,10 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
                                   {
                                       "label": "累计汇总",
                                       "value": "summary"
+                                  },
+                                  {
+                                      "label": "表格",
+                                      "value": "table"
                                   }
                               ],
                               "extractValue": true,
@@ -1380,7 +1384,8 @@ const fieldTypes = [
     { name: "Email", type: "email", title: "电子邮件", icon: "fa-fw fa fa-envelope" },
     { name: "Location", type: "location", title: "位置", icon: "fa-fw fa fa-map-marker" },
     { name: "Formula", type: "formula", title: "公式", icon: "fa-fw fa fa-subscript" },
-    { name: "Summary", type: "summary", title: "累计汇总", icon: "fa-fw fa fa-superscript" }
+    { name: "Summary", type: "summary", title: "累计汇总", icon: "fa-fw fa fa-superscript" },
+    { name: "Table", type: "table", title: "表格", icon: "fa-fw fa fa-table" }
 ];
 
 const fieldMetas = [];
