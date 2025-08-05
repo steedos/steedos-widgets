@@ -50,7 +50,7 @@ const options = {
             }
         }
     },
-    process.env.NODE_ENV === 'production' && uglify()
+    // process.env.NODE_ENV === 'production' && uglify()
   ],
 };
 

@@ -3,8 +3,8 @@
   --Menu-light-fontColor: var(--Layout-light-fontColor);
   --Menu-light-fontColor-onHover: var(--Layout-light-fontColor);
   --Menu-light-fontColor-onActive: var(--Layout-light--onActive);
-  --Menu-light-active-backgroundColor: #fff;
-  --Menu-light-backgroundColor-onHover: rgb(250, 250, 250);
+  --Menu-light-active-backgroundColor: rgb(240, 240, 240);
+  --Menu-light-backgroundColor-onHover: rgb(240, 240, 240);
   --Menu-light-selectedIndicator-color: rgb(14, 165, 233);
   --Nav-Item-height: 2.5rem;
   /* --Nav-Item-height--horizontal: 2.5rem; */
