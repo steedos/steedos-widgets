@@ -142,6 +142,13 @@ const getNextStepInput = async (instance) => {
                 return api;
               `,
               "adaptor": `
+                if(payload.error){
+                  SteedosUI.notification.error({message: payload.error});
+                  return {
+                    status: 0,
+                    data: {}
+                  }
+                }
                 payload.data = {
                   value: payload.nextSteps.length === 1 ? payload.nextSteps[0]._id : null, 
                   options: _.map(payload.nextSteps, (item)=>{
@@ -219,53 +226,93 @@ const getNextStepUsersInput = async (instance) => {
       },
       {
         body: [
-          // TODO 处理下一步处理人默认值
-          Object.assign({}, 
           {
-            "type": "steedos-select-user"
-          },
-          {
+            type: "steedos-select-user",
+            label: "",
             name: "next_users", 
             hiddenOn: "this.new_next_step.deal_type != 'pickupAtRuntime'",
             required: true
-          }),
+          },
           {
-            type: "steedos-select-user",
+            type: "list-select",
             label: "",
             name: "next_users",
             id: "u:next_users",
             required: true,
             hiddenOn: "this.new_next_step.deal_type === 'pickupAtRuntime'",
-            amis: {
-              multiple: "this.new_next_step.deal_type === 'counterSign'",
-              "source": {
-                "url": "${context.rootUrl}/api/workflow/v2/nextStepUsers",
-                "method": "post",
-                "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end'",
-                "headers": {
-                  "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                },
-                "messages": {
-                },
-                "requestAdaptor": "\nconst { context, next_step, $scopeId } = api.data;\nconst formValues = SteedosUI.getRef($scopeId).getComponentById(\"instance_form\").getValues();\n\napi.data = {\n  instanceId: context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
-                "adaptor": "\npayload.data = {value: payload.nextStepUsers.length === 1 ? payload.nextStepUsers[0].id : null, options: payload.nextStepUsers};\nreturn payload;",
-                "data": {
-                  "&": "$$",
-                  "$scopeId": "$scopeId",
-                  "context": "${context}",
-                  "next_step": "${new_next_step}",
-                }
+            multiple: "this.new_next_step.deal_type === 'counterSign'",
+            "source": {
+              "url": "${context.rootUrl}/api/workflow/v2/nextStepUsers?next_step=${next_step}",
+              "method": "post",
+              "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end'",
+              "headers": {
+                "Authorization": "Bearer ${context.tenantId},${context.authToken}"
               },
-              "labelField": "name",
-              "valueField": "id",
-            }
-          }
+              "messages": {
+              },
+              "requestAdaptor": "\nconst { next_step, $scopeId } = api.data;\nconst formValues = context._scoped.getComponentById(\"instance_form\").getValues();\n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
+              "adaptor": `
+                if(payload.error){
+                  SteedosUI.notification.error({message: payload.error});
+                  return {
+                    status: 0,
+                    data: {}
+                  }
+                }
+                payload.data = {
+                  value: payload.nextStepUsers.length === 1 ? payload.nextStepUsers[0].id : null, 
+                  options: payload.nextStepUsers
+                }; 
+                return payload;`,
+              "data": {
+                "&": "$$",
+                "$scopeId": "$scopeId",
+                "context": "${context}",
+                "next_step": "${new_next_step}",
+              }
+            },
+            "labelField": "name",
+            "valueField": "id",
+            value: '${new_next_step.approver_users}',
+          },
+          // {
+          //   type: "steedos-select-user",
+          //   label: "",
+          //   name: "next_users",
+          //   id: "u:next_users",
+          //   required: true,
+          //   hiddenOn: "this.new_next_step.deal_type === 'pickupAtRuntime'",
+          //   amis: {
+          //     multiple: "this.new_next_step.deal_type === 'counterSign'",
+          //     "source": {
+          //       "url": "${context.rootUrl}/api/workflow/v2/nextStepUsers",
+          //       "method": "post",
+          //       "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end'",
+          //       "headers": {
+          //         "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+          //       },
+          //       "messages": {
+          //       },
+          //       "requestAdaptor": "\nconst { next_step, $scopeId } = api.data;\nconst formValues = context._scoped.getComponentById(\"instance_form\").getValues();\n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
+          //       "adaptor": "\npayload.data = {value: payload.nextStepUsers.length === 1 ? payload.nextStepUsers[0].id : null, options: payload.nextStepUsers};\nreturn payload;",
+          //       "data": {
+          //         "&": "$$",
+          //         "$scopeId": "$scopeId",
+          //         "context": "${context}",
+          //         "next_step": "${new_next_step}",
+          //       }
+          //     },
+          //     "labelField": "name",
+          //     "valueField": "id",
+          //     value: '${new_next_step.approver_users}',
+          //   }
+          // }
         ],
         id: "u:81a4913c61cc",
       },
     ],
     id: "u:ffff15b76c89",
-    className: "b-a b-1x p-xs m-b-none m-l-none m-r-none m-t-sm",
+    className: "b-a b-1x p-xs m-b-none m-l-none m-r-none m-t-sm ${record.step.step_type == 'counterSign' ? 'hidden' : ''}",
     subFormMode: "",
     hiddenOn: "!!!this.new_next_step || (this.new_next_step && this.new_next_step.step_type === 'end')"
   };
@@ -305,7 +352,7 @@ const getPostSubmitRequestAdaptor = async (instance) => {
                         _id: "${instance.approve._id}",
                         next_steps: [{
                             step: approveValues.next_step,
-                            users: nextUsers,
+                            users: nextUsers || [],
                         }],
                         description: approveValues.suggestion,
                         values: formValues
@@ -333,7 +380,7 @@ const getPostEngineRequestAdaptor = async (instance) => {
               _id: "${instance.approve._id}",
               next_steps: [{
                   step: approveValues.next_step,
-                  users: nextUsers,
+                  users: nextUsers || [],
               }],
               description: approveValues.suggestion,
               values: formValues
