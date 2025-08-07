@@ -217,7 +217,7 @@ export const AmisSteedosField = async (props) => {
     let steedosField = null;
     let { field, readonly = false, ctx = {}, config, $schema, static: fStatic, env, inInputTable, className, isLookupInTable } = props;
     const { appId, formFactor } = props.data || {};
-    console.log(`AmisSteedosField`, props)
+    // console.log(`AmisSteedosField`, props)
 
     let editorClassName = "";
     if(props.$$editor) {
@@ -264,8 +264,6 @@ export const AmisSteedosField = async (props) => {
         // 字段配置为只读，强制走fStatic模式，加上_display判断是为了不影响历史代码，比如直接在ObjectForm中调用steedos-field组件
         fStatic = true;
     }
-
-    console.log('=-----steedosField--->', fStatic, steedosField)
 
     try {
         if (fStatic && (steedosField.type === 'lookup' || steedosField.type === 'master_detail')) {
@@ -550,7 +548,7 @@ export const AmisSteedosField = async (props) => {
             const schema = Object.assign({}, fieldBaseProps, pick(steedosField.amis || {}, ['className', 'inline', 'label', 'labelAlign', 'name', 'labelRemark', 'description', 'placeholder', 'staticClassName', 'staticLabelClassName', 'staticInputClassName', 'staticSchema']));
             schema.placeholder = "";
             addEditorClass(schema, editorClassName);
-            console.log(`steedos field [lookup] schema:`, schema)
+            // console.log(`steedos field [lookup] schema:`, schema)
             return schema;
         }
         else if (fStatic) {
@@ -789,7 +787,7 @@ export const AmisSteedosField = async (props) => {
             }
             Object.assign(schema, steedosField.amis || {});
             addEditorClass(schema, editorClassName);
-            console.log(`798 AmisSteedosField return schema`, schema, props)
+            // console.log(`798 AmisSteedosField return schema`, schema, props)
             return schema;
         } else {
             if(!ctx.className){
@@ -854,7 +852,7 @@ export const AmisSteedosField = async (props) => {
 
             const schema = await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
             addEditorClass(schema, editorClassName);
-            console.log(`863 AmisSteedosField return schema`, schema, props)
+            // console.log(`863 AmisSteedosField return schema`, schema, props)
             return schema
         }
 

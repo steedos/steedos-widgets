@@ -12,7 +12,7 @@ import { keys, pick, difference, isString, has } from 'lodash';
 
 // md:border-b
 export const AmisObjectForm = async (props) => {
-  console.log("===AmisObjectForm=props==", props);
+  // console.log("===AmisObjectForm=props==", props);
   const { $schema, recordId, mode, layout = "horizontal", labelAlign, appId, fieldsExtend, excludedFields = null, fields = null, form = {},
     className="", enableInitApi, initApiRequestAdaptor, initApiAdaptor, apiRequestAdaptor, apiAdaptor, enableTabs, tabsMode, submitSuccActions, data,
     formDataFilter, onFormDataFilter, env

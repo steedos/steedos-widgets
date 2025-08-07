@@ -35,6 +35,6 @@ export const AmisRecordDetailHeader = async (props) => {
       console.warn(e);
     }
   }
-  console.log(`AmisRecordDetailHeader==>`, config)
+  // console.log(`AmisRecordDetailHeader==>`, config)
   return config
 }
