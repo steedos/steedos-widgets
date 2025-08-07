@@ -156,7 +156,6 @@ const isCurrentStepOpinionField = (field, currentStep)=>{
 
 
 export const getInstanceInfo = async (props) => {
-  console.log(`getInstanceInfo props`, props)
   const { instanceId, box } = props;
   const userId = getSteedosAuth().userId;
   const query = `{
@@ -240,7 +239,6 @@ export const getInstanceInfo = async (props) => {
   });
 
   const moment = getMoment();
-  console.log('getInstanceInfo====>', step, formVersion.fields);
   return {
     box: box,
     _id: instanceId,

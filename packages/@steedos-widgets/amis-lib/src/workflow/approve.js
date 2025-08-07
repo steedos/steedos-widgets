@@ -361,7 +361,6 @@ const getPostSubmitRequestAdaptor = async (instance) => {
                     }]
                 }]
             }]};
-            console.log('submit api', api);
             api.data = body;
             return api;
             `;
@@ -400,7 +399,6 @@ const getPostEngineRequestAdaptor = async (instance) => {
  * @returns
  */
 const getSubmitActions = async (instance) => {
-  console.log(`getSubmitActions instance====`, instance)
   let api = "";
   let requestAdaptor = "";
   if(instance.approve?.type == "cc"){
@@ -417,9 +415,6 @@ const getSubmitActions = async (instance) => {
       return null; //TODO 考虑异常情况?
     }
   }
-  console.log(`getSubmitActions api====`, api)
-  console.log(`getSubmitActions requestAdaptor====`, requestAdaptor)
-  console.log('getObjectListViewPath========>', Router.getObjectListViewPath({appId: "${appId}", objectName: "${objectName}", listViewName: "${side_listview_id}"}))
   return [
     // 校验表单
     {
@@ -427,7 +422,6 @@ const getSubmitActions = async (instance) => {
       "args": {},
       "actionType": "custom",
       "script": `
-        console.log("======getSubmitActions");
         const form = event.context.scoped.getComponentById("instance_form");
         return form.validate().then((instanceFormValidate)=>{
           event.setData({...event.data, instanceFormValidate})
@@ -487,7 +481,6 @@ const getSubmitActions = async (instance) => {
 };
 
 export const getApprovalDrawerSchema = async (instance) => {
-  console.log("=============getApprovalDrawerSchema=============", instance)
   return {
     type: "drawer",
     overlay: false,

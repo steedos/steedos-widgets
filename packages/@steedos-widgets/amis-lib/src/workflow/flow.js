@@ -408,7 +408,6 @@ const getFieldEditTpl = async (field, label)=>{
 };
 
 const getFieldReadonlyTpl = async (field, label)=>{
-  console.log(`getFieldReadonlyTpl`, label, field)
   const tpl = {
     label: label === true ? field.name : false,
     name: field.code,
@@ -614,7 +613,6 @@ const getFormTableView = async (instance) => {
     trs: await getFormTrs(instance),
     id: "u:047f3669468b",
   };
-  console.log('getFormTableView===>', instance, formSchema);
   return formSchema;
 };
 
