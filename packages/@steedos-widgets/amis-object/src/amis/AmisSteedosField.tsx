@@ -217,7 +217,7 @@ export const AmisSteedosField = async (props) => {
     let steedosField = null;
     let { field, readonly = false, ctx = {}, config, $schema, static: fStatic, env, inInputTable, className, isLookupInTable } = props;
     const { appId, formFactor } = props.data || {};
-    // console.log(`AmisSteedosField`, props)
+    console.log(`AmisSteedosField`, props)
 
     let editorClassName = "";
     if(props.$$editor) {
@@ -265,6 +265,8 @@ export const AmisSteedosField = async (props) => {
         fStatic = true;
     }
 
+    console.log('=-----steedosField--->', fStatic, steedosField)
+
     try {
         if (fStatic && (steedosField.type === 'lookup' || steedosField.type === 'master_detail')) {
 
@@ -276,9 +278,10 @@ export const AmisSteedosField = async (props) => {
 
             let defaultSource: any = {
                 "method": "post",
-                "url": "${context.rootUrl}/graphql",
+                "url": "/api/v1/:objectName/names",
                 "requestAdaptor": `
                     var steedosField = ${JSON.stringify(steedosField)};
+                    let ids = [];
                     // console.log('defaultSource====>steedosField', steedosField);
                     var objectName, filters, valueFieldKey, labelFieldKey;
                     if(_.isString(steedosField.reference_to)){
@@ -289,20 +292,9 @@ export const AmisSteedosField = async (props) => {
                         objectName = referenceTo.objectName
                         valueFieldKey = referenceTo && referenceTo.valueField?.name || '_id' ;
                         labelFieldKey = referenceTo && referenceTo.labelField?.name || 'name';
-                        let value = _.get(api.data, steedosField.name);
-                        if(_.isString(value)){
-                            value = [value]
-                        }
-                        filters = [referenceToField, "in", value || []];
-                        if(objectName == "object_fields" || objectName == "object_actions"){
-                            //对象为object_fields时，必须加上object的过滤条件
-                            const filtersFunction = ${steedosField.filtersFunction || steedosField._filtersFunction};
-                            if(filtersFunction){
-                                const _filters = filtersFunction(filters, api.data);
-                                if(_filters && _filters.length > 0){
-                                    filters = [filters,_filters]
-                                }
-                            }
+                        ids = _.get(api.data, steedosField.name);
+                        if(_.isString(ids)){
+                            ids = [ids]
                         }
                     }else{
                         // reference_to为多选
@@ -316,13 +308,15 @@ export const AmisSteedosField = async (props) => {
                         objectName = referenceTo.objectName
                         valueFieldKey = referenceTo && referenceTo.valueField?.name || '_id' ;
                         labelFieldKey = referenceTo && referenceTo.labelField?.name || 'name';
-                        let value = api.data[_steedosField.name] && api.data[_steedosField.name].ids;
-                        filters = [referenceToField, "in", value || []];
+                        ids = api.data[_steedosField.name] && api.data[_steedosField.name].ids;
                     }
+
+                    api.url = '/api/v1/' + objectName + '/names';
 
                     // 额外返回_id字段
                     api.data = {
-                        query: '{options:' + objectName + '(filters: ' + JSON.stringify(filters) + '){label: ' + labelFieldKey + ',value: ' + valueFieldKey + ', _id}}'
+                        ids: ids || [],
+                        idKey: valueFieldKey
                     }
                     return api;
                 `,
@@ -374,7 +368,7 @@ export const AmisSteedosField = async (props) => {
                 multiple: steedosField.multiple,
                 name: steedosField.name,  
                 label: steedosField.label,
-                static: true,
+                // static: true,
                 required: steedosField.required,
                 className: `${className || ''} ${steedosField.amis?.className || ''}`
             };
@@ -556,7 +550,7 @@ export const AmisSteedosField = async (props) => {
             const schema = Object.assign({}, fieldBaseProps, pick(steedosField.amis || {}, ['className', 'inline', 'label', 'labelAlign', 'name', 'labelRemark', 'description', 'placeholder', 'staticClassName', 'staticLabelClassName', 'staticInputClassName', 'staticSchema']));
             schema.placeholder = "";
             addEditorClass(schema, editorClassName);
-            // console.log(`steedos field [lookup] schema:`, schema)
+            console.log(`steedos field [lookup] schema:`, schema)
             return schema;
         }
         else if (fStatic) {
@@ -795,6 +789,7 @@ export const AmisSteedosField = async (props) => {
             }
             Object.assign(schema, steedosField.amis || {});
             addEditorClass(schema, editorClassName);
+            console.log(`798 AmisSteedosField return schema`, schema, props)
             return schema;
         } else {
             if(!ctx.className){
@@ -859,7 +854,7 @@ export const AmisSteedosField = async (props) => {
 
             const schema = await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
             addEditorClass(schema, editorClassName);
-            console.log(`AmisSteedosField return schema`, schema, props)
+            console.log(`863 AmisSteedosField return schema`, schema, props)
             return schema
         }
 

@@ -274,6 +274,8 @@ const getNextStepUsersInput = async (instance) => {
             "labelField": "name",
             "valueField": "id",
             value: '${new_next_step.approver_users}',
+            "joinValues": false,
+            "extractValue": true,
           },
           // {
           //   type: "steedos-select-user",

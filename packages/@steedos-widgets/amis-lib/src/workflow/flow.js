@@ -373,12 +373,15 @@ const getFieldEditTpl = async (field, label)=>{
       //   }
       //   break;
       case "table":
-        tpl.type = "steedos-input-table"; //TODO
+        tpl.type = "steedos-input-table";
         tpl.addable = field.permission === "editable";
         tpl.editable = tpl.addable;
         tpl.copyable = tpl.addable;
         tpl.removable = tpl.addable;
         tpl.fields = [];
+        if(tpl.editable){
+          tpl.className = `${tpl.className || ''} steedos-input-table-editable`
+        }
         for (const sField of field.fields) {
           if (sField.type != "hidden") {
             sField.permission = field.permission
@@ -405,7 +408,7 @@ const getFieldEditTpl = async (field, label)=>{
 };
 
 const getFieldReadonlyTpl = async (field, label)=>{
-  // console.log(`getFieldReadonlyTpl`, label, field)
+  console.log(`getFieldReadonlyTpl`, label, field)
   const tpl = {
     label: label === true ? field.name : false,
     name: field.code,
@@ -472,6 +475,11 @@ const getFieldReadonlyTpl = async (field, label)=>{
     }
   }else if(field.type === 'html'){
     tpl.type = 'tpl';
+  }else if(field.type.startsWith("sfield-") || field.type === 'steedos-field'){
+    tpl.type = 'steedos-field'
+    tpl.config = field.steedos_field || field.config
+    tpl.static = true
+    tpl.inInputTable = true;
   }
   else{
     tpl.type = 'static';
@@ -486,6 +494,9 @@ const getFieldReadonlyTpl = async (field, label)=>{
  * @returns 
  */
 const getTdInputTpl = async (field, label) => {
+  if(field.config?.amis?.name){
+    delete field.config.amis.name
+  }
   const edit = field.permission === "editable";
   if(edit){
     return await getFieldEditTpl(field, label)
