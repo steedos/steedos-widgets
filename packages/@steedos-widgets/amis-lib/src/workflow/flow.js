@@ -843,6 +843,17 @@ export const getFlowFormSchema = async (instance, box) => {
                 "actionType": "toast"
               }
             ],
+          },
+          change: {
+            weight: 0,
+            actions: [
+              {
+                "actionType": "reload",
+                "componentId": "u:next_step",
+                "args": {
+                }
+              }
+            ]
           }
         }
       },
