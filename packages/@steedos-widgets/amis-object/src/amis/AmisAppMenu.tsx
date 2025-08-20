@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-08-20 22:28:43
+ * @LastEditTime: 2025-08-20 22:56:03
  * @Description: 
  */
 import './AmisAppMenu.less';
@@ -1013,7 +1013,7 @@ export const AmisAppMenu = async (props) => {
                             "body": [
                                 {
                                     "type": "html",
-                                    "html": "<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor' class='w-7 h-7 p-1 hover:bg-white hover:shadow'><path stroke-linecap='round' stroke-linejoin='round' d='M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5' /></svg>"
+                                    "html": "<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor' class='w-7 h-7 p-1 hover:bg-white hover:shadow ml-1'><path stroke-linecap='round' stroke-linejoin='round' d='M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5' /></svg>"
                                 }
                             ]
                         }]
