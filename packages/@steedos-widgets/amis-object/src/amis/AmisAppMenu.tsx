@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-08-04 23:36:52
+ * @LastEditTime: 2025-08-20 22:28:43
  * @Description: 
  */
 import './AmisAppMenu.less';
@@ -50,6 +50,7 @@ export const AmisAppMenu = async (props) => {
                     if(menu2.isTempTabForEmptyGroup !== true){
                         if (menu2.isGroup) {
                             // 因为分组只支持到一层，不支持分组拖动到另一个分组，还原到原来的分组
+                            // 注意，如果是分组拖动到当前分组本身内，被拖动的分组和其children会直接丢失，所以不会进这里，需要在后面单独处理
                             tab_groups.push({
                                 group_name: menu2.label,
                                 default_open: menu2.default_open,
@@ -77,6 +78,29 @@ export const AmisAppMenu = async (props) => {
             var amis = amisRequire("amis");
             // var errorMsg = window.t ? window.t("frontend_app_menu_save_order_group_nesting_error") : "Group nesting is not supported";
             amis && amis.toast.warning("不支持分组嵌套");
+        }
+        else{
+            // 如果是分组拖动到当前分组本身内，被拖动的分组和其children会直接丢失，即context.data中直接丢失了被拖动的分组
+            // 这里通过对比拖动前后分组的个数，如果发现分组个数减少，则说明有分组被丢失，此时需要把丢失的分组还原回来
+            var prevGroups = context.__super.tab_groups;
+            var preGroupNames = _.map(prevGroups, "group_name");
+            var curGroupNames = _.map(tab_groups, "group_name");
+            var difGroupNames = _.difference(preGroupNames, curGroupNames);
+            if(difGroupNames.length > 0){
+                // 丢失的分组difGroupNames，需要从context.__super.items中还原回来，重新添加到tab_groups和tab_items
+                var difGroupItem =_.find(context.__super.items, {label: difGroupNames[0], isGroup: true});
+                tab_groups.push({
+                    group_name: difGroupItem.label,
+                    default_open: difGroupItem.default_open,
+                });
+                if (difGroupItem.children) {
+                    _.each(difGroupItem.children, (child) => {
+                        if(child.isTempTabForEmptyGroup !== true){
+                            tab_items[child.tabApiName] = { group: difGroupItem.label };
+                        }
+                    });
+                }
+            }
         }
         api.data = { appId: context.app.id, tab_groups, tab_items };
         // console.log("====saveOrderApiRequestAdaptor====api.data==", api.data);
