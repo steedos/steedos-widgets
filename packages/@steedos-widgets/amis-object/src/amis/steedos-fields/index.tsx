@@ -85,12 +85,14 @@ const createFieldFunction = (type: string) => {
       if(has(props, '$$editor')){
         delete schema.visibleOn
       }
+      schema.className = `sfield-item sfield-item-${props.config.type} ${schema.className || ''}`
       return schema
     }
     const schema = await AmisSteedosField(props);
     if(has(props, '$$editor')){
       delete schema.visibleOn
     }
+    schema.className = `sfield-item sfield-item-${props.config.type} ${schema.className || ''}`
     return schema;
     // {
     //   type: "steedos-field",
