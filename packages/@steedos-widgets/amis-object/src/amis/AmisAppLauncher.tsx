@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2025-02-15 11:25:39
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2025-08-23 21:28:07
  * @Description: 
  */
 
@@ -360,22 +360,22 @@ export const AmisAppLauncher = async (props) => {
       isMobile || !isSpaceAdmin ? null : {
         "type": "button",
         "level": "link",
-        "label": "+ 新建应用",
+        "label": i18next.t('frontend_app_launcher_button_new_app'),
         "className": "w-full h-10",
         "actionType": "dialog",
         "dialog": {
-          "title": "新建应用",
+          "title": i18next.t('frontend_app_launcher_dialog_new_app_title'),
           "actions": [
             {
               "type": "button",
               "actionType": "cancel",
-              "label": "取消",
+              "label": "\${'Cancel' | t}",
               "id": "u:21d3cccf4d83"
             },
             {
                 "type": "button",
                 "actionType": "confirm",
-                "label": "确定",
+                "label": "\${'OK' | t}",
                 "primary": true,
                 "id": "u:238e5731a053"
             }
@@ -394,7 +394,7 @@ export const AmisAppLauncher = async (props) => {
                 {
                   "type": "input-text",
                   "name": "code",
-                  "label": "应用唯一标识",
+                  "label": i18next.t('frontend_app_launcher_dialog_new_app_code_label'),
                   "value": "a_\${UUID(6)}",
                   "required": true,
                   "validateOnChange": true,
@@ -405,12 +405,12 @@ export const AmisAppLauncher = async (props) => {
                 {
                   "name": "name",
                   "type": "input-text",
-                  "label": "显示名称",
+                  "label": i18next.t('frontend_app_launcher_dialog_new_app_name_label'),
                   "required": true
                 },
                 {
                     "type": "steedos-field",
-                    "label": "图标",
+                    "label": i18next.t('frontend_app_launcher_dialog_new_app_icon_label'),
                     "config": {
                         "label": "图标",
                         "type": "lookup",
