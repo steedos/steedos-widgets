@@ -89,5 +89,20 @@
     "frontend_objects_related_alert_end": "were found.",
     "frontend_no_records_found": "No records found.",
     "frontend_records_no_allowedit": "You do not have edit permission for this record",
-    "frontend_app_menu_save_order_group_nesting_error": "Group nesting is not supported"
+    "frontend_app_menu_save_order_group_nesting_error": "Group nesting is not supported",
+    "frontend_menu_new_object": "New Object",
+    "frontend_menu_view_object": "View Object",
+    "frontend_menu_new_micro_page": "New Micro Page",
+    "frontend_menu_edit_micro_page": "Edit Micro Page",
+    "frontend_menu_new_url": "New URL link",
+    "frontend_menu_edit_url": "Edit URL link",
+    "frontend_menu_add_existing_tabs": "Add existing Tabs",
+    "frontend_menu_edit_tab": "Edit Tab",
+    "frontend_menu_delete_tab": "Delete Tab",
+    "frontend_menu_new_group": "New Group",
+    "frontend_menu_edit_group": "Edit Group",
+    "frontend_menu_delete_group": "Delete Group",
+    "frontend_menu_move_group": "Move Group",
+    "frontend_menu_dialog_move_group": "Move to another Group",
+    "frontend_menu_edit_app": "Edit App"
 }

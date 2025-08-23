@@ -2,10 +2,11 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-08-20 22:56:03
+ * @LastEditTime: 2025-08-23 13:51:49
  * @Description: 
  */
 import './AmisAppMenu.less';
+import { i18next } from '@steedos-widgets/amis-lib';
 
 export const AmisAppMenu = async (props) => {
     let { stacked = false, overflow, appId, data, links = null, showIcon = true, className = '', indentSize = 12, selectedId } = props;
@@ -386,7 +387,7 @@ export const AmisAppMenu = async (props) => {
                                             "buttons": [
                                                     {
                                                         "type": "button",
-                                                        "label": "新建对象",
+                                                        "label": "${i18next.t('frontend_menu_new_object')}",
                                                         "onEvent": {
                                                             "click": {
                                                                 "actions": [
@@ -395,7 +396,7 @@ export const AmisAppMenu = async (props) => {
                                                                         "actionType": "dialog",
                                                                         "dialog": {
                                                                             "type": "dialog",
-                                                                            "title": "新建对象",
+                                                                            "title": "${i18next.t('frontend_menu_new_object')}",
                                                                             "body": [
                                                                                 {
                                                                                     "type": "input-text",
@@ -507,7 +508,7 @@ export const AmisAppMenu = async (props) => {
                                                     },
                                                     {
                                                         "type": "button",
-                                                        "label": "新建微页面",
+                                                        "label": "${i18next.t('frontend_menu_new_micro_page')}",
                                                         "onEvent": {
                                                             "click": {
                                                                 "actions": [
@@ -516,7 +517,7 @@ export const AmisAppMenu = async (props) => {
                                                                         "actionType": "dialog",
                                                                         "dialog": {
                                                                             "type": "dialog",
-                                                                            "title": "新建微页面",
+                                                                            "title": "${i18next.t('frontend_menu_new_micro_page')}",
                                                                             "body": [
                                                                                 {
                                                                                     "type": "input-text",
@@ -628,7 +629,7 @@ export const AmisAppMenu = async (props) => {
                                                     },
                                                     {
                                                         "type": "button",
-                                                        "label": "新建外部链接",
+                                                        "label": "${i18next.t('frontend_menu_new_url')}",
                                                         "onEvent": {
                                                             "click": {
                                                                 "actions": [
@@ -637,7 +638,7 @@ export const AmisAppMenu = async (props) => {
                                                                         "actionType": "dialog",
                                                                         "dialog": {
                                                                             "type": "dialog",
-                                                                            "title": "新建外部链接",
+                                                                            "title": "${i18next.t('frontend_menu_new_url')}",
                                                                             "body": [
                                                                                 {
                                                                                     "type": "input-text",
@@ -764,7 +765,7 @@ export const AmisAppMenu = async (props) => {
                                                     },
                                                     {
                                                         "type": "button",
-                                                        "label": "添加现有选项卡",
+                                                        "label": "${i18next.t('frontend_menu_add_existing_tabs')}",
                                                         "onEvent": {
                                                             "click": {
                                                             "actions": [
@@ -773,7 +774,7 @@ export const AmisAppMenu = async (props) => {
                                                                 "actionType": "dialog",
                                                                 "dialog": {
                                                                     "type": "dialog",
-                                                                    "title": "添加现有选项卡",
+                                                                    "title": "${i18next.t('frontend_menu_add_existing_tabs')}",
                                                                     "body": [
                                                                         {
                                                                             "type": "steedos-field",
@@ -853,7 +854,7 @@ export const AmisAppMenu = async (props) => {
                                                     },
                                                     {
                                                         "type": "button",
-                                                        "label": "新建分组",
+                                                        "label": "${i18next.t('frontend_menu_new_group')}",
                                                         "onEvent": {
                                                             "click": {
                                                             "actions": [
@@ -862,7 +863,7 @@ export const AmisAppMenu = async (props) => {
                                                                     "actionType": "dialog",
                                                                     "dialog": {
                                                                         "type": "dialog",
-                                                                        "title": "新建分组",
+                                                                        "title": "${i18next.t('frontend_menu_new_group')}",
                                                                         "body": [
                                                                             {
                                                                                 "type": "input-text",
@@ -938,7 +939,7 @@ export const AmisAppMenu = async (props) => {
                                                     },
                                                     {
                                                         "type": "button",
-                                                        "label": "编辑应用",
+                                                        "label": "${i18next.t('frontend_menu_edit_app')}",
                                                         "onEvent": {
                                                             "click": {
                                                                 "actions": [
@@ -1105,7 +1106,7 @@ export const AmisAppMenu = async (props) => {
                                     "buttons": [
                                         {
                                             "type": "button",
-                                            "label": "新建对象",
+                                            "label": "${i18next.t('frontend_menu_new_object')}",
                                             "visibleOn": "!!this.isGroup",
                                             "onEvent": {
                                                 "click": {
@@ -1115,7 +1116,7 @@ export const AmisAppMenu = async (props) => {
                                                             "actionType": "dialog",
                                                             "dialog": {
                                                                 "type": "dialog",
-                                                                "title": "新建对象",
+                                                                "title": "${i18next.t('frontend_menu_new_object')}",
                                                                 "body": [
                                                                     {
                                                                         "type": "input-text",
@@ -1227,7 +1228,7 @@ export const AmisAppMenu = async (props) => {
                                         },
                                         {
                                             "type": "button",
-                                            "label": "新建微页面",
+                                            "label": "${i18next.t('frontend_menu_new_micro_page')}",
                                             "visibleOn": "!!this.isGroup",
                                             "onEvent": {
                                                 "click": {
@@ -1237,7 +1238,7 @@ export const AmisAppMenu = async (props) => {
                                                             "actionType": "dialog",
                                                             "dialog": {
                                                                 "type": "dialog",
-                                                                "title": "新建微页面",
+                                                                "title": "${i18next.t('frontend_menu_new_micro_page')}",
                                                                 "body": [
                                                                     {
                                                                         "type": "input-text",
@@ -1349,7 +1350,7 @@ export const AmisAppMenu = async (props) => {
                                         },
                                         {
                                             "type": "button",
-                                            "label": "新建外部链接",
+                                            "label": "${i18next.t('frontend_menu_new_url')}",
                                             "visibleOn": "!!this.isGroup",
                                             "onEvent": {
                                                 "click": {
@@ -1359,7 +1360,7 @@ export const AmisAppMenu = async (props) => {
                                                             "actionType": "dialog",
                                                             "dialog": {
                                                                 "type": "dialog",
-                                                                "title": "新建外部链接",
+                                                                "title": "${i18next.t('frontend_menu_new_url')}",
                                                                 "body": [
                                                                     {
                                                                         "type": "input-text",
@@ -1486,7 +1487,7 @@ export const AmisAppMenu = async (props) => {
                                         },
                                         {
                                             "type": "button",
-                                            "label": "添加现有选项卡",
+                                            "label": "${i18next.t('frontend_menu_add_existing_tabs')}",
                                             "visibleOn": "!!this.isGroup",
                                             "onEvent": {
                                                 "click": {
@@ -1496,7 +1497,7 @@ export const AmisAppMenu = async (props) => {
                                                     "actionType": "dialog",
                                                     "dialog": {
                                                         "type": "dialog",
-                                                        "title": "添加现有选项卡",
+                                                        "title": "${i18next.t('frontend_menu_add_existing_tabs')}",
                                                         "body": [
                                                             {
                                                                 "type": "steedos-field",
@@ -1577,7 +1578,7 @@ export const AmisAppMenu = async (props) => {
                                         },
                                         {
                                             "type": "button",
-                                            "label": "编辑分组",
+                                            "label": "${i18next.t('frontend_menu_edit_group')}",
                                             "visibleOn": "!!this.isGroup",
                                             "onEvent": {
                                                 "click": {
@@ -1587,7 +1588,7 @@ export const AmisAppMenu = async (props) => {
                                                             "actionType": "dialog",
                                                             "dialog": {
                                                                 "type": "dialog",
-                                                                "title": "编辑分组",
+                                                                "title": "${i18next.t('frontend_menu_edit_group')}",
                                                                 "data": {
                                                                     "appId": "\\\${app.id}",
                                                                     "name": "\\\${event.data.label}",
@@ -1665,7 +1666,7 @@ export const AmisAppMenu = async (props) => {
                                         },
                                         {
                                             "type": "button",
-                                            "label": "查看对象",
+                                            "label": "${i18next.t('frontend_menu_view_object')}",
                                             "visibleOn": "this.type==='object'",
                                             "onEvent": {
                                                 "click": {
@@ -1731,7 +1732,7 @@ export const AmisAppMenu = async (props) => {
                                         },
                                         {
                                             "type": "button",
-                                            "label": "编辑微页面",
+                                            "label": "${i18next.t('frontend_menu_edit_micro_page')}",
                                             "visibleOn": "this.type==='page'",
                                             "onEvent": {
                                                 "click": {
@@ -1754,7 +1755,7 @@ export const AmisAppMenu = async (props) => {
                                         },
                                         {
                                             "type": "button",
-                                            "label": "编辑选项卡",
+                                            "label": "${i18next.t('frontend_menu_edit_tab')}",
                                             "visibleOn": "this.type==='url'",
                                             "onEvent": {
                                                 "click": {
@@ -1776,7 +1777,7 @@ export const AmisAppMenu = async (props) => {
                                                             "actionType": "dialog",
                                                             "dialog": {
                                                                 "type": "dialog",
-                                                                "title": "编辑外部链接",
+                                                                "title": "${i18next.t('frontend_menu_edit_url')}",
                                                                 "data": {
                                                                     "appId": "\\\${app.id}",
                                                                     "&": "\\\${event.data.responseResult}"
@@ -1899,7 +1900,7 @@ export const AmisAppMenu = async (props) => {
                                         },
                                         {
                                             "type": "button",
-                                            "label": "移动分组",
+                                            "label": "${i18next.t('frontend_menu_move_group')}",
                                             "visibleOn": "!!!this.isGroup",
                                             "onEvent": {
                                                 "click": {
@@ -1913,7 +1914,7 @@ export const AmisAppMenu = async (props) => {
                                                             "actionType": "dialog",
                                                             "dialog": {
                                                                 "type": "dialog",
-                                                                "title": "移动到指定分组",
+                                                                "title": "${i18next.t('frontend_menu_dialog_move_group')}",
                                                                 "data": {
                                                                     "appId": "\\\${event.data.appId}",
                                                                     "groups": "\\\${event.data.groups}",
@@ -1986,7 +1987,7 @@ export const AmisAppMenu = async (props) => {
                                         },
                                         {
                                             "type": "button",
-                                            "label": "删除选项卡",
+                                            "label": "${i18next.t('frontend_menu_delete_tab')}",
                                             "visibleOn": "!!!this.isGroup",
                                             "onEvent": {
                                                 "click": {
@@ -2017,7 +2018,7 @@ export const AmisAppMenu = async (props) => {
                                         },
                                         {
                                             "type": "button",
-                                            "label": "删除分组",
+                                            "label": "${i18next.t('frontend_menu_delete_group')}",
                                             "visibleOn": "!!this.isGroup",
                                             "onEvent": {
                                                 "click": {
