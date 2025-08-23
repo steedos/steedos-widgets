@@ -7,9 +7,6 @@ const resources = {
   "en": {
     translation: en_us
   },
-  "en-US": {
-    translation: en_us
-  },
   "zh-CN": {
     translation: zh_cn
   }
@@ -18,6 +15,9 @@ const resources = {
 var locale = "zh-CN";
 if (typeof window != 'undefined') {
   locale = Builder.settings.context?.user?.language || window.navigator.language;
+  if(locale === 'en' || locale.startsWith('en-')){
+    locale = 'en'
+  }
 }
 
 i18n
