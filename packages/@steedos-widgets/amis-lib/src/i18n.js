@@ -17,12 +17,7 @@ const resources = {
 
 var locale = "zh-CN";
 if (typeof window != 'undefined') {
-  var currentLocale = Builder.settings.context?.user?.locale || window.navigator.language;
-  if (currentLocale == "en-us") {
-    locale = "en-US";
-  } else if (currentLocale == "zh-cn") {
-    locale = "zh-CN";
-  }
+  locale = Builder.settings.context?.user?.language || window.navigator.language;
 }
 
 i18n
