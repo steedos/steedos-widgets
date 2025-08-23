@@ -4,6 +4,9 @@ import en_us from "./locales/en-US.json"
 import zh_cn from "./locales/zh-CN.json"
 
 const resources = {
+  "en": {
+    translation: en_us
+  },
   "en-US": {
     translation: en_us
   },
@@ -14,7 +17,7 @@ const resources = {
 
 var locale = "zh-CN";
 if (typeof window != 'undefined') {
-  var currentLocale = Builder.settings.context?.user?.locale;//window.Builder?.settings.locale
+  var currentLocale = Builder.settings.context?.user?.locale || window.navigator.language;
   if (currentLocale == "en-us") {
     locale = "en-US";
   } else if (currentLocale == "zh-cn") {
