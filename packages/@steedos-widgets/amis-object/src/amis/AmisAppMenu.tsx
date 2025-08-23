@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-08-23 13:51:49
+ * @LastEditTime: 2025-08-23 17:43:09
  * @Description: 
  */
 import './AmisAppMenu.less';
@@ -400,10 +400,10 @@ export const AmisAppMenu = async (props) => {
                                                                             "body": [
                                                                                 {
                                                                                     "type": "input-text",
-                                                                                    "label": "Api Name",
+                                                                                    "label": "\${'CustomField.objects.name.label' | t}",
                                                                                     "name": "oName",
                                                                                     "id": "u:dae5884c1633",
-                                                                                    "placeholder": "唯一标识",
+                                                                                    "placeholder": "${i18next.t('frontend_menu_dialog_name_placeholder')}",
                                                                                     "value": "o_\${UUID(6)}",
                                                                                     "required": true,
                                                                                     "validateOnChange": true,
@@ -413,14 +413,14 @@ export const AmisAppMenu = async (props) => {
                                                                                 },
                                                                                 {
                                                                                     "type": "input-text",
-                                                                                    "label": "显示名称",
+                                                                                    "label": "\${'CustomField.objects.label.label' | t}",
                                                                                     "name": "oLabel",
                                                                                     "id": "u:e5bd37f6691b",
                                                                                     "required": true
                                                                                 },
                                                                                 {
                                                                                     "type": "steedos-field",
-                                                                                    "label": "图标",
+                                                                                    "label": "\${'CustomField.objects.icon.label' | t}",
                                                                                     "config": {
                                                                                         "label": "图标",
                                                                                         "type": "lookup",
@@ -441,13 +441,13 @@ export const AmisAppMenu = async (props) => {
                                                                                 {
                                                                                 "type": "button",
                                                                                 "actionType": "cancel",
-                                                                                "label": "取消",
+                                                                                "label": "\${'Cancel' | t}",
                                                                                 "id": "u:21d3cccf4d83"
                                                                                 },
                                                                                 {
                                                                                     "type": "button",
                                                                                     "actionType": "confirm",
-                                                                                    "label": "确定",
+                                                                                    "label": "\${'OK' | t}",
                                                                                     "primary": true,
                                                                                     "id": "u:238e5731a053"
                                                                                 }
@@ -521,10 +521,10 @@ export const AmisAppMenu = async (props) => {
                                                                             "body": [
                                                                                 {
                                                                                     "type": "input-text",
-                                                                                    "label": "API Name",
+                                                                                    "label": "\${'CustomField.pages.name.label' | t}",
                                                                                     "name": "oName",
                                                                                     "id": "u:dae5884c1633",
-                                                                                    "placeholder": "唯一标识",
+                                                                                    "placeholder": "${i18next.t('frontend_menu_dialog_name_placeholder')}",
                                                                                     "value": "p_\${UUID(6)}",
                                                                                     "required": true,
                                                                                     "validateOnChange": true,
@@ -534,14 +534,14 @@ export const AmisAppMenu = async (props) => {
                                                                                 },
                                                                                 {
                                                                                     "type": "input-text",
-                                                                                    "label": "显示名称",
+                                                                                    "label": "\${'CustomField.pages.label.label' | t}",
                                                                                     "name": "oLabel",
                                                                                     "id": "u:e5bd37f6691b",
                                                                                     "required": true
                                                                                 },
                                                                                 {
                                                                                     "type": "steedos-field",
-                                                                                    "label": "图标",
+                                                                                    "label": "\${'CustomField.tabs.icon.label' | t}",
                                                                                     "config": {
                                                                                         "label": "图标",
                                                                                         "type": "lookup",
@@ -562,13 +562,13 @@ export const AmisAppMenu = async (props) => {
                                                                                 {
                                                                                 "type": "button",
                                                                                 "actionType": "cancel",
-                                                                                "label": "取消",
+                                                                                "label": "\${'Cancel' | t}",
                                                                                 "id": "u:21d3cccf4d83"
                                                                                 },
                                                                                 {
                                                                                     "type": "button",
                                                                                     "actionType": "confirm",
-                                                                                    "label": "确定",
+                                                                                    "label": "\${'OK' | t}",
                                                                                     "primary": true,
                                                                                     "id": "u:238e5731a053"
                                                                                 }
@@ -643,9 +643,10 @@ export const AmisAppMenu = async (props) => {
                                                                                 {
                                                                                     "type": "input-text",
                                                                                     "label": "API Name",
+                                                                                    "label": "\${'CustomField.tabs.name.label' | t}",
                                                                                     "name": "oName",
                                                                                     "id": "u:dae5884c1633",
-                                                                                    "placeholder": "唯一标识",
+                                                                                    "placeholder": "${i18next.t('frontend_menu_dialog_name_placeholder')}",
                                                                                     "required": true,
                                                                                     "value": "t_\${UUID(6)}",
                                                                                     "validateOnChange": true,
@@ -656,21 +657,21 @@ export const AmisAppMenu = async (props) => {
                                                                                 },
                                                                                 {
                                                                                     "type": "input-text",
-                                                                                    "label": "显示名称",
+                                                                                    "label": "\${'CustomField.tabs.label.label' | t}",
                                                                                     "name": "fLabel",
                                                                                     "id": "u:e5bd37f6691b",
                                                                                     "required": true
                                                                                 },
                                                                                 {
                                                                                     "type": "input-text",
-                                                                                    "label": "外部链接",
+                                                                                    "label": "\${'CustomField.tabs.url.label' | t}",
                                                                                     "name": "fUrl",
                                                                                     "id": "u:e5bd37f6691b",
                                                                                     "required": true
                                                                                 },
                                                                                 {
                                                                                     "type": "steedos-field",
-                                                                                    "label": "图标",
+                                                                                    "label": "\${'CustomField.tabs.icon.label' | t}",
                                                                                     "config": {
                                                                                         "label": "图标",
                                                                                         "type": "lookup",
@@ -691,13 +692,13 @@ export const AmisAppMenu = async (props) => {
                                                                                 {
                                                                                 "type": "button",
                                                                                 "actionType": "cancel",
-                                                                                "label": "取消",
+                                                                                "label": "\${'Cancel' | t}",
                                                                                 "id": "u:21d3cccf4d83"
                                                                                 },
                                                                                 {
                                                                                     "type": "button",
                                                                                     "actionType": "confirm",
-                                                                                    "label": "确定",
+                                                                                    "label": "\${'OK' | t}",
                                                                                     "primary": true,
                                                                                     "id": "u:238e5731a053"
                                                                                 }
@@ -800,13 +801,13 @@ export const AmisAppMenu = async (props) => {
                                                                         {
                                                                             "type": "button",
                                                                             "actionType": "cancel",
-                                                                            "label": "取消",
+                                                                            "label": "\${'Cancel' | t}",
                                                                             "id": "u:ba7b707cddd8"
                                                                         },
                                                                         {
                                                                             "type": "button",
                                                                             "actionType": "confirm",
-                                                                            "label": "确定",
+                                                                            "label": "\${'OK' | t}",
                                                                             "primary": true,
                                                                             "id": "u:2f3e5635b95d"
                                                                         }
@@ -867,15 +868,15 @@ export const AmisAppMenu = async (props) => {
                                                                         "body": [
                                                                             {
                                                                                 "type": "input-text",
-                                                                                "label": "名称",
+                                                                                "label": "${i18next.t('frontend_menu_tabs_group_name_label')}",
                                                                                 "name": "name",
                                                                                 "id": "u:e5bd37f6699b",
-                                                                                "placeholder": "分组名称",
+                                                                                "placeholder": "${i18next.t('frontend_menu_tabs_group_name_placeholder')}",
                                                                                 "required": true
                                                                             },
                                                                             {
                                                                                 "type": "checkbox",
-                                                                                "option": "是否默认展开",
+                                                                                "option": "${i18next.t('frontend_menu_tabs_group_default_open_label')}",
                                                                                 "name": "defaultOpen",
                                                                                 "id": "u:dae5884c1623",
                                                                                 "required": true,
@@ -887,13 +888,13 @@ export const AmisAppMenu = async (props) => {
                                                                         {
                                                                             "type": "button",
                                                                             "actionType": "cancel",
-                                                                            "label": "取消",
+                                                                            "label": "\${'Cancel' | t}",
                                                                             "id": "u:21d3cccf4d85"
                                                                         },
                                                                         {
                                                                             "type": "button",
                                                                             "actionType": "confirm",
-                                                                            "label": "确定",
+                                                                            "label": "\${'OK' | t}",
                                                                             "primary": true,
                                                                             "id": "u:238e5731a05b"
                                                                         }
@@ -1123,7 +1124,7 @@ export const AmisAppMenu = async (props) => {
                                                                         "label": "Api Name",
                                                                         "name": "oName",
                                                                         "id": "u:dae5884c1633",
-                                                                        "placeholder": "唯一标识",
+                                                                        "placeholder": "${i18next.t('frontend_menu_dialog_name_placeholder')}",
                                                                         "value": "o_\${UUID(6)}",
                                                                         "required": true,
                                                                         "validateOnChange": true,
@@ -1133,14 +1134,14 @@ export const AmisAppMenu = async (props) => {
                                                                     },
                                                                     {
                                                                         "type": "input-text",
-                                                                        "label": "显示名称",
+                                                                        "label": "\${'CustomField.objects.name.label' | t}",
                                                                         "name": "oLabel",
                                                                         "id": "u:e5bd37f6691b",
                                                                         "required": true
                                                                     },
                                                                     {
                                                                         "type": "steedos-field",
-                                                                        "label": "图标",
+                                                                        "label": "\${'CustomField.objects.icon.label' | t}",
                                                                         "config": {
                                                                             "label": "图标",
                                                                             "type": "lookup",
@@ -1161,13 +1162,13 @@ export const AmisAppMenu = async (props) => {
                                                                     {
                                                                     "type": "button",
                                                                     "actionType": "cancel",
-                                                                    "label": "取消",
+                                                                    "label": "\${'Cancel' | t}",
                                                                     "id": "u:21d3cccf4d83"
                                                                     },
                                                                     {
                                                                         "type": "button",
                                                                         "actionType": "confirm",
-                                                                        "label": "确定",
+                                                                        "label": "\${'OK' | t}",
                                                                         "primary": true,
                                                                         "id": "u:238e5731a053"
                                                                     }
@@ -1242,10 +1243,10 @@ export const AmisAppMenu = async (props) => {
                                                                 "body": [
                                                                     {
                                                                         "type": "input-text",
-                                                                        "label": "API Name",
+                                                                        "label": "\${'CustomField.pages.name.label' | t}",
                                                                         "name": "oName",
                                                                         "id": "u:dae5884c1633",
-                                                                        "placeholder": "唯一标识",
+                                                                        "placeholder": "${i18next.t('frontend_menu_dialog_name_placeholder')}",
                                                                         "value": "p_\${UUID(6)}",
                                                                         "required": true,
                                                                         "validateOnChange": true,
@@ -1255,14 +1256,14 @@ export const AmisAppMenu = async (props) => {
                                                                     },
                                                                     {
                                                                         "type": "input-text",
-                                                                        "label": "显示名称",
+                                                                        "label": "\${'CustomField.pages.label.label' | t}",
                                                                         "name": "oLabel",
                                                                         "id": "u:e5bd37f6691b",
                                                                         "required": true
                                                                     },
                                                                     {
                                                                         "type": "steedos-field",
-                                                                        "label": "图标",
+                                                                        "label": "\${'CustomField.tabs.icon.label' | t}",
                                                                         "config": {
                                                                             "label": "图标",
                                                                             "type": "lookup",
@@ -1283,13 +1284,13 @@ export const AmisAppMenu = async (props) => {
                                                                     {
                                                                     "type": "button",
                                                                     "actionType": "cancel",
-                                                                    "label": "取消",
+                                                                    "label": "\${'Cancel' | t}",
                                                                     "id": "u:21d3cccf4d83"
                                                                     },
                                                                     {
                                                                         "type": "button",
                                                                         "actionType": "confirm",
-                                                                        "label": "确定",
+                                                                        "label": "\${'OK' | t}",
                                                                         "primary": true,
                                                                         "id": "u:238e5731a053"
                                                                     }
@@ -1364,10 +1365,10 @@ export const AmisAppMenu = async (props) => {
                                                                 "body": [
                                                                     {
                                                                         "type": "input-text",
-                                                                        "label": "API Name",
+                                                                        "label": "\${'CustomField.tabs.name.label' | t}",
                                                                         "name": "oName",
                                                                         "id": "u:dae5884c1633",
-                                                                        "placeholder": "唯一标识",
+                                                                        "placeholder": "${i18next.t('frontend_menu_dialog_name_placeholder')}",
                                                                         "required": true,
                                                                         "value": "t_\${UUID(6)}",
                                                                         "validateOnChange": true,
@@ -1377,21 +1378,21 @@ export const AmisAppMenu = async (props) => {
                                                                     },
                                                                     {
                                                                         "type": "input-text",
-                                                                        "label": "显示名称",
+                                                                        "label": "\${'CustomField.tabs.label.label' | t}",
                                                                         "name": "fLabel",
                                                                         "id": "u:e5bd37f6691b",
                                                                         "required": true
                                                                     },
                                                                     {
                                                                         "type": "input-text",
-                                                                        "label": "外部链接",
+                                                                        "label": "\${'CustomField.tabs.url.label' | t}",
                                                                         "name": "fUrl",
                                                                         "id": "u:e5bd37f6691b",
                                                                         "required": true
                                                                     },
                                                                     {
                                                                         "type": "steedos-field",
-                                                                        "label": "图标",
+                                                                        "label": "\${'CustomField.tabs.icon.label' | t}",
                                                                         "config": {
                                                                             "label": "图标",
                                                                             "type": "lookup",
@@ -1412,13 +1413,13 @@ export const AmisAppMenu = async (props) => {
                                                                     {
                                                                     "type": "button",
                                                                     "actionType": "cancel",
-                                                                    "label": "取消",
+                                                                    "label": "\${'Cancel' | t}",
                                                                     "id": "u:21d3cccf4d83"
                                                                     },
                                                                     {
                                                                         "type": "button",
                                                                         "actionType": "confirm",
-                                                                        "label": "确定",
+                                                                        "label": "\${'OK' | t}",
                                                                         "primary": true,
                                                                         "id": "u:238e5731a053"
                                                                     }
@@ -1523,13 +1524,13 @@ export const AmisAppMenu = async (props) => {
                                                             {
                                                                 "type": "button",
                                                                 "actionType": "cancel",
-                                                                "label": "取消",
+                                                                "label": "\${'Cancel' | t}",
                                                                 "id": "u:ba7b707cddd8"
                                                             },
                                                             {
                                                                 "type": "button",
                                                                 "actionType": "confirm",
-                                                                "label": "确定",
+                                                                "label": "\${'OK' | t}",
                                                                 "primary": true,
                                                                 "id": "u:2f3e5635b95d"
                                                             }
@@ -1598,15 +1599,15 @@ export const AmisAppMenu = async (props) => {
                                                                 "body": [
                                                                     {
                                                                         "type": "input-text",
-                                                                        "label": "名称",
+                                                                        "label": "${i18next.t('frontend_menu_tabs_group_name_label')}",
                                                                         "name": "name",
                                                                         "id": "u:e5bd37f6699b",
-                                                                        "placeholder": "分组名称",
+                                                                        "placeholder": "${i18next.t('frontend_menu_tabs_group_name_placeholder')}",
                                                                         "required": true
                                                                     },
                                                                     {
                                                                         "type": "checkbox",
-                                                                        "option": "是否默认展开",
+                                                                        "option": "${i18next.t('frontend_menu_tabs_group_default_open_label')}",
                                                                         "name": "defaultOpen",
                                                                         "id": "u:dae5884c1623",
                                                                         "required": true
@@ -1617,13 +1618,13 @@ export const AmisAppMenu = async (props) => {
                                                                 {
                                                                     "type": "button",
                                                                     "actionType": "cancel",
-                                                                    "label": "取消",
+                                                                    "label": "\${'Cancel' | t}",
                                                                     "id": "u:21d3cccf4d85"
                                                                 },
                                                                 {
                                                                     "type": "button",
                                                                     "actionType": "confirm",
-                                                                    "label": "确定",
+                                                                    "label": "\${'OK' | t}",
                                                                     "primary": true,
                                                                     "id": "u:238e5731a05b"
                                                                 }
@@ -1785,30 +1786,30 @@ export const AmisAppMenu = async (props) => {
                                                                 "body": [
                                                                     {
                                                                         "type": "input-text",
-                                                                        "label": "API Name",
+                                                                        "label": "\${'CustomField.tabs.name.label' | t}",
                                                                         "name": "oName",
                                                                         "id": "u:dae5884c1633",
-                                                                        "placeholder": "唯一标识",
+                                                                        "placeholder": "${i18next.t('frontend_menu_dialog_name_placeholder')}",
                                                                         "required": true,
                                                                         "disabled": true
                                                                     },
                                                                     {
                                                                         "type": "input-text",
-                                                                        "label": "显示名称",
+                                                                        "label": "\${'CustomField.tabs.label.label' | t}",
                                                                         "name": "fLabel",
                                                                         "id": "u:e5bd37f6691b",
                                                                         "required": true
                                                                     },
                                                                     {
                                                                         "type": "input-text",
-                                                                        "label": "外部链接",
+                                                                        "label": "\${'CustomField.tabs.url.label' | t}",
                                                                         "name": "fUrl",
                                                                         "id": "u:e5bd37f6691b",
                                                                         "required": true
                                                                     },
                                                                     {
                                                                         "type": "steedos-field",
-                                                                        "label": "图标",
+                                                                        "label": "\${'CustomField.tabs.icon.label' | t}",
                                                                         "config": {
                                                                             "label": "图标",
                                                                             "type": "lookup",
@@ -1829,13 +1830,13 @@ export const AmisAppMenu = async (props) => {
                                                                     {
                                                                     "type": "button",
                                                                     "actionType": "cancel",
-                                                                    "label": "取消",
+                                                                    "label": "\${'Cancel' | t}",
                                                                     "id": "u:21d3cccf4d83"
                                                                     },
                                                                     {
                                                                         "type": "button",
                                                                         "actionType": "confirm",
-                                                                        "label": "确定",
+                                                                        "label": "\${'OK' | t}",
                                                                         "primary": true,
                                                                         "id": "u:238e5731a053"
                                                                     }
@@ -1937,13 +1938,13 @@ export const AmisAppMenu = async (props) => {
                                                                     {
                                                                         "type": "button",
                                                                         "actionType": "cancel",
-                                                                        "label": "取消",
+                                                                        "label": "\${'Cancel' | t}",
                                                                         "id": "u:12261bf51dcb"
                                                                     },
                                                                     {
                                                                         "type": "button",
                                                                         "actionType": "confirm",
-                                                                        "label": "确定",
+                                                                        "label": "\${'OK' | t}",
                                                                         "primary": true,
                                                                         "id": "u:b144775ea124"
                                                                     }
@@ -2014,7 +2015,7 @@ export const AmisAppMenu = async (props) => {
                                                 }
                                             },
                                             "id": "u:e54eed92d13f",
-                                            "confirmText": "确定要删除吗?"
+                                            "confirmText": "${i18next.t('frontend_button_delete_confirm_text')}"
                                         },
                                         {
                                             "type": "button",
@@ -2049,7 +2050,7 @@ export const AmisAppMenu = async (props) => {
                                                 }
                                             },
                                             "id": "u:e54eed92d13f",
-                                            "confirmText": "确定要删除吗?"
+                                            "confirmText": "${i18next.t('frontend_button_delete_confirm_text')}"
                                         }
                                     ]
                                 },

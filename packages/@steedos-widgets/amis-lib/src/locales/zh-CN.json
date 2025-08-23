@@ -105,5 +105,10 @@
     "frontend_menu_delete_group": "删除分组",
     "frontend_menu_move_group": "移动分组",
     "frontend_menu_dialog_move_group": "移动到指定分组",
-    "frontend_menu_edit_app": "编辑应用"
+    "frontend_menu_edit_app": "编辑应用",
+    "frontend_menu_dialog_name_placeholder": "唯一标识",
+    "frontend_menu_tabs_group_name_label": "名称",
+    "frontend_menu_tabs_group_name_placeholder": "分组名称",
+    "frontend_menu_tabs_group_default_open_label": "是否默认展开",
+    "frontend_button_delete_confirm_text": "确定要删除吗?"
 }

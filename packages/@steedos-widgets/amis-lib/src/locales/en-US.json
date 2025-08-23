@@ -104,5 +104,10 @@
     "frontend_menu_delete_group": "Delete Group",
     "frontend_menu_move_group": "Move Group",
     "frontend_menu_dialog_move_group": "Move to another Group",
-    "frontend_menu_edit_app": "Edit App"
+    "frontend_menu_edit_app": "Edit App",
+    "frontend_menu_dialog_name_placeholder": "Unique identifier",
+    "frontend_menu_tabs_group_name_label": "Name",
+    "frontend_menu_tabs_group_name_placeholder": "Group Name",
+    "frontend_menu_tabs_group_default_open_label": "Whether to expand by default",
+    "frontend_button_delete_confirm_text": "Are you sure you want to delete it?"
 }
