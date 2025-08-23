@@ -4,7 +4,7 @@ import en_us from "./locales/en-US.json"
 import zh_cn from "./locales/zh-CN.json"
 
 const resources = {
-  "en": {
+  "en-US": {
     translation: en_us
   },
   "zh-CN": {
@@ -12,7 +12,15 @@ const resources = {
   }
 };
 
-var locale = window.navigator.language;
+var locale = "zh-CN";
+if (typeof window != 'undefined') {
+  var currentLocale = Builder.settings.context?.user?.locale;//window.Builder?.settings.locale
+  if (currentLocale == "en-us") {
+    locale = "en-US";
+  } else if (currentLocale == "zh-cn") {
+    locale = "zh-CN";
+  }
+}
 
 i18n
   .use(initReactI18next)
