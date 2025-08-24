@@ -1391,7 +1391,10 @@ const fieldTypes = [
 const fieldMetas = [];
 
 fieldTypes.forEach(({ name, type, title, icon }) => {
-    fieldMetas.push(createMetaConfig(name, type, title, icon));
+    const disabledFields = (window as any).parent?._disabledFields || [];
+    if(!disabledFields.includes(type)){
+        fieldMetas.push(createMetaConfig(name, type, title, icon));
+    }
 });
 
 export {
