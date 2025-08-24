@@ -477,6 +477,9 @@ const getFieldReadonlyTpl = async (field, label)=>{
   }else if(field.type.startsWith("sfield-") || field.type === 'steedos-field'){
     tpl.type = 'steedos-field'
     tpl.config = field.steedos_field || field.config
+    if(tpl.config){
+      delete tpl.config.required
+    }
     tpl.static = true
     tpl.inInputTable = true;
   }
