@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-08-23 21:36:26
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-08-25 21:34:58
+ * @LastEditTime: 2025-08-25 23:39:12
  */
 import en from "./locales/amis/en.json"
 import zh_cn from "./locales/amis/zh-CN.json"
@@ -26,7 +26,8 @@ function getAmisLocaleResource() {
 }
 
 if (typeof window != 'undefined') {
-  window.amisRequire("amis").registerLocale(locale, getAmisLocaleResource())
+  var currentAmis = (window.amisRequire && window.amisRequire('amis')) || Amis;
+  currentAmis && currentAmis.registerLocale(locale, getAmisLocaleResource())
 }
 
 export { getAmisLocaleResource };
