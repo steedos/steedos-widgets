@@ -115,5 +115,6 @@
     "frontend_app_launcher_dialog_new_app_code_label": "App ID",
     "frontend_app_launcher_dialog_new_app_name_label": "Label",
     "frontend_app_launcher_dialog_new_app_icon_label": "Icon",
-    "frontend_crud_toolbar_quick_search_placeholder": "Quick Search"
+    "frontend_crud_toolbar_quick_search_placeholder": "Quick Search",
+    "frontend_crud_toolbar_quick_search_tooltip_prefix": "Searchable fields:"
 }

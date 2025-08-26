@@ -166,7 +166,7 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
     "id": "steedos_crud_toolbar_quick_search",
     "align": "right",
     "title": "",
-    "content": "可搜索字段：" + searchableFieldsLabel.join(","),
+    "content": i18next.t('frontend_crud_toolbar_quick_search_tooltip_prefix') + searchableFieldsLabel.join(","),
     "placement": "bottom",
     "tooltipTheme": "dark",
     "trigger": "click",

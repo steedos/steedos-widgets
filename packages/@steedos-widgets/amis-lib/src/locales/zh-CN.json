@@ -116,5 +116,6 @@
     "frontend_app_launcher_dialog_new_app_code_label": "应用唯一标识",
     "frontend_app_launcher_dialog_new_app_name_label": "显示名称",
     "frontend_app_launcher_dialog_new_app_icon_label": "图标",
-    "frontend_crud_toolbar_quick_search_placeholder": "快捷搜索"
+    "frontend_crud_toolbar_quick_search_placeholder": "快捷搜索",
+    "frontend_crud_toolbar_quick_search_tooltip_prefix": "可搜索字段："
 }
