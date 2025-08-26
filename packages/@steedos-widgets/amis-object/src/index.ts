@@ -1,3 +1,10 @@
+/*
+ * @Author: 殷亮辉 yinlianghui@hotoa.com
+ * @Date: 2025-08-19 15:02:47
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2025-08-26 09:24:36
+ */
+
 import './styles/amis.css';
 import './styles/amis-nav.css';
 
@@ -25,5 +32,6 @@ export * from './pages';
 export * as AmisLib from '@steedos-widgets/amis-lib';
 export * as SteedosLib from '@steedos-widgets/steedos-lib';
 
+export * from './metas/i18n';
 
 

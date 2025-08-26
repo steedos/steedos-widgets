@@ -2,15 +2,15 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-06-09 20:22:22
+ * @LastEditTime: 2025-08-26 09:36:19
  * @Description: 
  */
-
+const t = (window as any).i18nextMetasAmisObject.t;
 const config: any = {
   componentType: 'amisSchema', // amisSchema || react 
   group: "华炎魔方",
   componentName: "AmisObjectForm",
-  title: "对象表单",
+  title: t('metas-amis-object:object_form_title'),//"对象表单",
   docUrl: "",
   screenshot: "",
   npm: {
