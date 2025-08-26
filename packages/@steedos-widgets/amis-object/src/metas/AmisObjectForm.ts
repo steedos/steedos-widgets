@@ -2,10 +2,10 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-08-26 09:36:19
+ * @LastEditTime: 2025-08-26 10:25:59
  * @Description: 
  */
-const t = (window as any).i18nextMetasAmisObject.t;
+const t = (window as any).steedosI18next.t;
 const config: any = {
   componentType: 'amisSchema', // amisSchema || react 
   group: "华炎魔方",

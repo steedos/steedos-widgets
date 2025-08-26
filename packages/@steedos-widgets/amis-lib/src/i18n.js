@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-08-25 21:06:56
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-08-25 22:20:43
+ * @LastEditTime: 2025-08-26 10:17:05
  */
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
@@ -19,7 +19,7 @@ const resources = {
 };
 
 const getUserLanguage = () => {
-  lan = Builder.settings.context?.user?.language || window.navigator.language;
+  var lan = Builder.settings.context?.user?.language || window.navigator.language;
   if(lan === 'en' || lan.startsWith('en-')){
     lan = 'en'
   }
@@ -28,7 +28,7 @@ const getUserLanguage = () => {
 
 var locale = "zh-CN";
 if (typeof window != 'undefined') {
-  window.i18next = i18n;
+  window.steedosI18next = i18n;
   locale = getUserLanguage();
 }
 
