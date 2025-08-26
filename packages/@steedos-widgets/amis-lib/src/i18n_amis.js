@@ -2,16 +2,23 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-08-23 21:36:26
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-08-25 23:39:12
+ * @LastEditTime: 2025-08-26 11:49:26
  */
-import en from "./locales/amis/en.json"
+import en_us from "./locales/amis/en-US.json"
 import zh_cn from "./locales/amis/zh-CN.json"
-import { getUserLanguage } from "./i18n"
 
 const resourcesMap = {
-  "en": en,
+  "en-US": en_us,
   "zh-CN": zh_cn,
 };
+
+const getUserLanguage = () => {
+  var lan = Builder.settings.context?.user?.language || window.navigator.language;
+  if (lan === 'en') {
+    lan = 'en-US'
+  }
+  return lan;
+}
 
 var locale = "zh-CN";
 if (typeof window != 'undefined') {
@@ -19,8 +26,9 @@ if (typeof window != 'undefined') {
 }
 
 function getAmisLocaleResource() {
-  if (resourcesMap[locale]) {
-    return resourcesMap[locale];
+  var rs = resourcesMap[locale];
+  if (rs) {
+    return rs;
   }
   return resourcesMap["zh-CN"];
 }
