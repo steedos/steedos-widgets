@@ -1,11 +1,12 @@
 import { fetchAPI, getSteedosAuth } from "@steedos-widgets/amis-lib";
 import _, { find, isEmpty } from "lodash";
 import { getOpinionFieldStepsName } from './util';
+import { i18next } from "@steedos-widgets/amis-lib";
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 17:47:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-08-27 10:59:19
+ * @LastEditTime: 2025-08-28 01:47:42
  * @Description:
  */
 
@@ -295,7 +296,7 @@ export const getInstanceInfo = async (props) => {
               opinion = approve.cc_description;
             }
             if (!finishDate) {
-              finishDate = approve.is_read ? "已读" : "未处理";
+              finishDate = approve.is_read ? i18next.t('frontend_workflow_approval_history_read') : i18next.t('frontend_workflow_approval_history_unprocessed');
               judge = null;
             } else {
               finishDate = moment && moment(finishDate).format("YYYY-MM-DD HH:mm");
@@ -306,34 +307,34 @@ export const getInstanceInfo = async (props) => {
                 judge = "";
                 break;
               case "returned":
-                judge = "已退回";
+                judge = i18next.t('frontend_workflow_approval_judge_returned');//"已退回"
                 break;
               case "terminated":
-                judge = "被取回";
+                judge = i18next.t('frontend_workflow_approval_judge_terminated');//"被取回";
                 break;
               case "pending":
-                judge = "审核中";
+                judge = i18next.t('frontend_workflow_approval_judge_pending');//"审核中";
                 break;
               case "approved":
-                judge = "已核准";
+                judge = i18next.t('frontend_workflow_approval_judge_approved');//"已核准";
                 break;
               case "rejected":
-                judge = "已驳回";
+                judge = i18next.t('frontend_workflow_approval_judge_rejected');//"已驳回";
                 break;
               case "finished":
-                judge = "已完成";
+                judge = i18next.t('frontend_workflow_approval_judge_finished');//"已完成";
                 break;
               case "reassigned":
-                judge = "转签核";
+                judge = i18next.t('frontend_workflow_approval_judge_reassigned');//"转签核";
                 break;
               case "inhand":
-                judge = "处理中";
+                judge = i18next.t('frontend_workflow_approval_judge_inhand');//"处理中";
                 break;
               case "relocated":
-                judge = "重定位";
+                judge = i18next.t('frontend_workflow_approval_judge_relocated');//"重定位";
                 break;
               case "readed":
-                judge = "已阅";
+                judge = i18next.t('frontend_workflow_approval_judge_readed');//"已阅";
                 break;
               default:
                 break;

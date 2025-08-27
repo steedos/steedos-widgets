@@ -2,6 +2,7 @@ import {
   lookupToAmisPicker,
   getSteedosAuth, Router
 } from "@steedos-widgets/amis-lib";
+import { i18next } from "@steedos-widgets/amis-lib";
 //TODO Meteor.settings.public?.workflow?.hideCounterSignJudgeOptions
 
 const HIDE_COUNTER_SIGN_JUDGE_OPTIONS = false;
@@ -11,11 +12,11 @@ const getJudgeOptions = async (instance) => {
   const options = [];
   if (step.step_type === "sign") {
     options.push({
-      label: "核准",
+      label: i18next.t('frontend_workflow_judge_option_approved'),//"核准",
       value: "approved",
     });
     options.push({
-      label: "驳回",
+      label: i18next.t('frontend_workflow_judge_option_rejected'),//"驳回",
       value: "rejected",
     });
   } else if (
@@ -23,15 +24,15 @@ const getJudgeOptions = async (instance) => {
     HIDE_COUNTER_SIGN_JUDGE_OPTIONS != true
   ) {
     options.push({
-      label: "核准",
+      label: i18next.t('frontend_workflow_judge_option_approved'),//"核准",
       value: "approved",
     });
     options.push({
-      label: "驳回",
+      label: i18next.t('frontend_workflow_judge_option_rejected'),//"驳回",
       value: "rejected",
     });
     options.push({
-      label: "已阅",
+      label: i18next.t('frontend_workflow_judge_option_readed'),//"已阅",
       value: "readed",
     });
   }
@@ -92,7 +93,7 @@ const getNextStepInput = async (instance) => {
         body: [
           {
             type: "tpl",
-            tpl: "下一步",
+            tpl: i18next.t('frontend_workflow_next_step'),//"下一步",
             inline: true,
             wrapperComponent: "",
             id: "u:0a85de51480f",
@@ -570,7 +571,7 @@ export const getApprovalDrawerSchema = async (instance) => {
     actions: [
       {
         type: "button",
-        label: "提交",
+        label: "${'Submit' | t}",
         onEvent: {
           click: {
             actions: await getSubmitActions(instance),
@@ -581,7 +582,7 @@ export const getApprovalDrawerSchema = async (instance) => {
       },
       {
         type: "button",
-        label: "取消",
+        label: "${'Cancel' | t}",
         onEvent: {
           click: {
             actions: [

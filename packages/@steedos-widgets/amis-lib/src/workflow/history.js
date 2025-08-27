@@ -1,18 +1,19 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-24 16:48:28
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-09-27 16:45:58
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2025-08-28 01:38:39
  * @Description: 
  */
 
 import _, { each } from 'lodash';
+import { i18next } from "@steedos-widgets/amis-lib";
 
 export const getInstanceApprovalHistory = async ()=>{
     return {
         "type": "table",
         "headerClassName": "hidden",
-        "title": "签批历程",
+        "title": i18next.t('frontend_workflow_approval_history'),
         "source": "${historyApproves}",
         "className": "m-b-none instance-approve-history",
         "columnsTogglable": false,
@@ -33,14 +34,14 @@ export const getInstanceApprovalHistory = async ()=>{
           {
             "name": "finish_date",
             "label": "finish_date",
-            "classNameExpr": "<%= data.finish_date == '已读' ? 'text-[blue]' : (data.finish_date == '未处理' ? 'text-[red]' : '') %>"
+            "classNameExpr": "<%= data.finish_date == i18next.t('frontend_workflow_approval_history_read') ? 'text-[blue]' : (data.finish_date == i18next.t('frontend_workflow_approval_history_unprocessed') ? 'text-[red]' : '') %>"
             // "type": "datetime",
             // "format": "YYYY-MM-DD HH:mm"
           },
           {
             "name": "judge",
             "label": "judge",
-            "classNameExpr": "<%= data.judge == '已核准' ? 'text-green-600' : (data.judge == '已驳回' ? 'text-[red]' : '') %>"
+            "classNameExpr": "<%= data.judge == i18next.t('frontend_workflow_approval_judge_approved') ? 'text-green-600' : (data.judge == i18next.t('frontend_workflow_approval_judge_rejected') ? 'text-[red]' : '') %>"
           }
         ]
       }

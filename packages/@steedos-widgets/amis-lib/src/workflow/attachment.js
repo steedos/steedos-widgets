@@ -1,11 +1,12 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-16 17:27:24
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-08 10:13:06
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2025-08-28 01:24:26
  * @Description: 
  */
 import { getSteedosAuth } from '@steedos-widgets/amis-lib'
+import { i18next } from "@steedos-widgets/amis-lib";
 // TODO attachments
 export const getAttachments = async (instance)=>{
 
@@ -75,11 +76,11 @@ export const getAttachmentUploadInput = async (instance)=>{
             "type": "input-file",
             labelClassName: "antd-List-heading",
             className: "flex items-center",
-            "label": "附件",
+            "label": i18next.t('frontend_workflow_attachment'),
             mode:"inline",
             "name": "file",
             "id": "u:a58d02614e04",
-            "btnLabel": "上传",
+            "btnLabel": i18next.t('frontend_workflow_attachment_upload'),
             "btnClassName": "m-0", 
             "multiple": true,
             "maxLength": 10,

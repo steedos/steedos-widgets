@@ -1,12 +1,13 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-16 17:26:12
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-09 09:48:18
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2025-08-28 01:23:32
  * @Description: 
  */
 import { map, isEmpty } from 'lodash'
 import { getSteedosAuth } from '@steedos-widgets/amis-lib';
+import { i18next } from "@steedos-widgets/amis-lib";
 export const getRelatedRecords = async (instance)=>{
     if(!instance.record_ids || isEmpty(instance.record_ids)){
         return ;
@@ -30,7 +31,7 @@ export const getRelatedInstances = async (instance)=>{
         "type": "list",
         "name": "relatedInstances",
         "source": "${related_instances}",
-        title: "相关文件",
+        title: i18next.t('frontend_workflow_related_file'),
         "listItem": {
           "body": [
             {

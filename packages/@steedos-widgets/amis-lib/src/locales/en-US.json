@@ -116,5 +116,18 @@
     "frontend_app_launcher_dialog_new_app_name_label": "Label",
     "frontend_app_launcher_dialog_new_app_icon_label": "Icon",
     "frontend_crud_toolbar_quick_search_placeholder": "Quick Search",
-    "frontend_crud_toolbar_quick_search_tooltip_prefix": "Searchable fields:"
+    "frontend_crud_toolbar_quick_search_tooltip_prefix": "Searchable fields:",
+    "frontend_workflow_instances_applicant_name_prefix": "Applicant name:",
+    "frontend_workflow_instance_submit_date_prefix": "Submission date:",
+    "frontend_workflow_instance_button_sign": "Sign",
+    "frontend_workflow_approval_history": "Approval History",
+    "frontend_workflow_approval_history_read": "Read",
+    "frontend_workflow_approval_history_unprocessed": "Unprocessed",
+    "frontend_workflow_attachment": "Attachment",
+    "frontend_workflow_attachment_upload": "Upload",
+    "frontend_workflow_related_file": "Related File",
+    "frontend_workflow_judge_option_approved": "Approved",
+    "frontend_workflow_judge_option_rejected": "Rejected",
+    "frontend_workflow_judge_option_readed": "Readed",
+    "frontend_workflow_next_step": "Next Step"
 }

@@ -2,13 +2,14 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-08-27 21:17:46
+ * @LastEditTime: 2025-08-28 02:36:59
  * @Description:
  */
 import {
   lookupToAmis,
   getSteedosAuth,
 } from "@steedos-widgets/amis-lib";
+import { i18next } from "@steedos-widgets/amis-lib";
 
 import { each, startsWith, includes } from "lodash";
 
@@ -758,7 +759,7 @@ const getApplicantTableView = async (instance) => {
             body: [
               {
                 type: "tpl",
-                tpl: "<div class='inline-left'>提交人:</div>",
+                tpl: "<div class='inline-left'>" + i18next.t('frontend_workflow_instances_applicant_name_prefix') + "</div>",
                 id: "u:ee62634201bf",
               },
               applicantInput
@@ -777,7 +778,7 @@ const getApplicantTableView = async (instance) => {
             body: [
               {
                 type: "tpl",
-                tpl: "<div class='inline-left'>提交日期:</div>",
+                tpl: "<div class='inline-left'>" + i18next.t('frontend_workflow_instance_submit_date_prefix') + "</div>",
                 id: "u:6d0a7763d527",
               },
               {
@@ -816,7 +817,7 @@ const getApproveButton = async (instance)=>{
   }
   return {
     type: "button",
-    label: "签批",
+    label: i18next.t('frontend_workflow_instance_button_sign'),
     onEvent: {
       click: {
         actions: [
