@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-08-27 18:36:31
+ * @LastEditTime: 2025-08-27 21:17:46
  * @Description:
  */
 import {
@@ -654,6 +654,22 @@ const getFormSteps = async (instance) => {
         "mode": "horizontal",
         "body": stepFields
       });
+    }
+  }
+  var isReadonlyBox = instance.box !== 'inbox' && instance.box !== 'draft';
+  if (isReadonlyBox) {
+    // 只读的审批箱中最后一步的保存按钮要隐藏
+    if (stepsSchema.length == 1) {
+      stepsSchema[stepsSchema.length - 1].actions = [];
+    }
+    else if (stepsSchema.length > 1) {
+      stepsSchema[stepsSchema.length - 1].actions = [
+        {
+          "label": "Prev",
+          "type": "button",
+          "actionType": "prev"
+        }
+      ];
     }
   }
   return stepsSchema;
