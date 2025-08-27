@@ -58,7 +58,42 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
                     config: {
                       "type": type,
                       "label": title,
-                      "amis": {}
+                      "amis": {},
+                      "columns": type == 'table' ? [
+                        {
+                            "type": "sfield-text",
+                            "config": {
+                            "type": "text",
+                            "label": "column 1",
+                            "amis": {
+                                "mode": "horizontal",
+                                "name": "fuwrx6",
+                                "id": "u:3a883adb07a5"
+                            },
+                            "object": "",
+                            "name": "fuwrx6"
+                            },
+                            "label": "column 1",
+                            "id": "u:fc066ce3ce29",
+                            "placeholder": "-"
+                        },{
+                            "type": "sfield-text",
+                            "config": {
+                            "type": "text",
+                            "label": "column 2",
+                            "amis": {
+                                "mode": "horizontal",
+                                "name": "fuwrx6",
+                                "id": "u:3a883adb07a52"
+                            },
+                            "object": "",
+                            "name": "fuwrx6"
+                            },
+                            "label": "column 2",
+                            "id": "u:fc066ce3ce292",
+                            "placeholder": "-"
+                        }
+                        ]  : null
                     }
                   },
                   previewSchema: {
@@ -66,7 +101,42 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
                     config: {
                       "type": type,
                       "label": title,
-                      "amis": {}
+                      "amis": {},
+                      "columns": type == 'table' ? [
+                        {
+                            "type": "sfield-text",
+                            "config": {
+                            "type": "text",
+                            "label": "column 1",
+                            "amis": {
+                                "mode": "horizontal",
+                                "name": "fuwrx6",
+                                "id": "u:3a883adb07a5"
+                            },
+                            "object": "",
+                            "name": "fuwrx6"
+                            },
+                            "label": "column 1",
+                            "id": "u:fc066ce3ce29",
+                            "placeholder": "-"
+                        },{
+                            "type": "sfield-text",
+                            "config": {
+                            "type": "text",
+                            "label": "column 2",
+                            "amis": {
+                                "mode": "horizontal",
+                                "name": "fuwrx6",
+                                "id": "u:3a883adb07a52"
+                            },
+                            "object": "",
+                            "name": "fuwrx6"
+                            },
+                            "label": "column 2",
+                            "id": "u:fc066ce3ce292",
+                            "placeholder": "-"
+                        }
+                        ]  : null
                     }
                   },
                 panelTitle: "设置",
