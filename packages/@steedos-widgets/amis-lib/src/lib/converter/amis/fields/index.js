@@ -191,6 +191,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
     }
     const baseData = {name: ctx.fieldNamePrefix ? `${ctx.fieldNamePrefix}${field.name}` : field.name, label: field.label, labelRemark: field.inlineHelpText, description: field.description, required: _.has(ctx, 'required') ? ctx.required : field.required};
     let convertData = {
+        className: ctx.className
     };
     // if(_.includes(OMIT_FIELDS, field.name)){
     //     readonly = true;
@@ -816,9 +817,9 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
     if(!_.isEmpty(convertData)){
         const className = convertData.className;
         if(field.is_wide || convertData.type === 'group'){
-            convertData.className = className ? 'col-span-2 m-0 ' + className : 'col-span-2 m-0';
+            convertData.className = className ? ('col-span-2 m-0 ' + className) : 'col-span-2 m-0';
         }else{
-            convertData.className = className ? 'm-0 ' + className : 'm-0';
+            convertData.className = className ? ('m-0 ' + className) : 'm-0';
         }
         if(readonly && ctx.mode !== 'edit'){
             convertData.className = `${convertData.className} border-b`
