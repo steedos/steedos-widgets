@@ -4,8 +4,8 @@ import { getOpinionFieldStepsName } from './util';
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 17:47:37
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-10-10 13:57:02
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2025-08-27 10:59:19
  * @Description:
  */
 
@@ -180,7 +180,8 @@ export const getInstanceInfo = async (props) => {
         form_version,
         form:form__expand{
           _id,
-          name
+          name,
+          style,
           current,
           historys
         },

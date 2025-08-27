@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
- * @LastEditors: liaodaxue
- * @LastEditTime: 2023-12-29 16:06:35
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2025-08-27 18:36:31
  * @Description:
  */
 import {
@@ -619,6 +619,79 @@ const getFormTableView = async (instance) => {
   return formSchema;
 };
 
+const getFormSteps = async (instance) => {
+  const stepsSchema = [];
+  let stepFields = [];
+  let fields = [];
+  let unGroupFields = [];
+  each(instance.fields, (field) => {
+    if (field.type === "section") {
+      fields.push(field);
+    }
+    else {
+      unGroupFields.push(field);
+    }
+  });
+  if (unGroupFields.length > 0) {
+    fields = [{
+      type: "section",
+      name: "General",
+      code: "General",
+      fields: unGroupFields
+    }].concat(fields);
+  }
+
+  for (const field of fields) {
+    if (field.type === "section" && field.fields) {
+      stepFields = [];
+      let fieldSchema;
+      for (const childField of field.fields) {
+        fieldSchema = await getTdInputTpl(childField, true);
+        stepFields.push(fieldSchema);
+      }
+      stepsSchema.push({
+        "title": field.name,
+        "mode": "horizontal",
+        "body": stepFields
+      });
+    }
+  }
+  return stepsSchema;
+}
+
+const getFormWizardView = async (instance) => {
+  const formSchema = {
+    type: "wizard",
+    className: "instance-form-view-wizard pt-4",
+    steps: await getFormSteps(instance),
+    actionFinishLabel: "${'CustomAction.instances.instance_save' | t}",//"保存",
+    id: "u:instance_wizard",
+    target: "instance_form",
+    "onEvent": {
+      "change": {
+        "actions": [
+          {
+            "actionType": "setValue",
+            "componentId": "instance_form",
+            "args": {
+              "value": "${event.data}"
+            }
+          }
+        ]
+      },
+      "finished": { //点最后一步完成按钮触发暂存按钮事件保存数据
+        "actions": [
+          {
+            "actionType": "click",
+            "componentId": "u:instance_save"
+          }
+        ]
+      }
+    },
+  };
+  return formSchema;
+};
+
 const getApplicantTableView = async (instance) => {
   let applicantInput = null;
   if(instance.state === 'draft'){
@@ -748,6 +821,14 @@ const getApproveButton = async (instance)=>{
 }
 
 export const getFlowFormSchema = async (instance, box) => {
+  const formStyle = instance.form.current.style || "table";
+  let formContentSchema;
+  if (formStyle === "wizard") {
+    formContentSchema = await getFormWizardView(instance);
+  }
+  else{
+    formContentSchema = await getFormTableView(instance);
+  }
   return {
     type: "page",
     name: "instancePage",
@@ -824,7 +905,7 @@ export const getFlowFormSchema = async (instance, box) => {
               textAlign: "center",
             },
           },
-          await getFormTableView(instance),
+          formContentSchema,
           await getApplicantTableView(instance),
           
         ],
@@ -877,7 +958,19 @@ export const getFlowFormSchema = async (instance, box) => {
             actionType: "reload"
           }
         ]
-      }
+      },
+      "inited": {
+        "actions": [
+          {
+            "actionType": "setValue",
+            "componentId": "instance_form",
+            "args": {
+              "value": "${event.data.context.approveValues}"
+            },
+            "expression": "${event.data.context.form.current.style === 'wizard'}"// 表单为 wizard 样式时需要初始同步表单数据，否则直接点击暂存按钮会清空数据
+          }
+        ]
+      },
       // inited: {
       //   weight: 0,
       //   actions: [

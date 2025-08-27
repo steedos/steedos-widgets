@@ -1,3 +1,9 @@
+/*
+ * @Author: 殷亮辉 yinlianghui@hotoa.com
+ * @Date: 2025-08-19 15:02:47
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2025-08-27 10:58:22
+ */
 const config: any = {
     componentType: 'amisSchema', 
     group: "华炎魔方-审批王",
@@ -77,6 +83,17 @@ const config: any = {
             "validations": {
                 "isVariableName": /^[a-zA-Z]([A-Za-z0-9]|_(?!_))*[A-Za-z0-9]$/
             }
+          },
+          {
+            type: 'radios',
+            name: 'style',//groups_show_as
+            label: '样式',
+            options: [
+              {label: '表格', value: 'table'},
+              // {label: '分组', value: 'groups'},
+              // {label: '选项卡', value: 'tabs'},
+              {label: '向导', value: 'wizard'}
+            ]
           },
           {
             type: 'textarea',
