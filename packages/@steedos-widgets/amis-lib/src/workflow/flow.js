@@ -379,6 +379,8 @@ const getFieldEditTpl = async (field, label)=>{
         tpl.editable = tpl.addable;
         tpl.copyable = tpl.addable;
         tpl.removable = tpl.addable;
+        // tpl.fieldPrefix = field.name + "_";
+        tpl.autoGeneratePrimaryKeyValue = true;
         tpl.fields = [];
         if(tpl.editable){
           tpl.className = `${tpl.className || ''} steedos-input-table-editable`
