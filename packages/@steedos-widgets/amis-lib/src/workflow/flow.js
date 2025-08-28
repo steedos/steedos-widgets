@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-08-28 02:36:59
+ * @LastEditTime: 2025-08-28 22:47:28
  * @Description:
  */
 import {
@@ -684,7 +684,7 @@ const getFormWizardView = async (instance) => {
     className: "instance-form-view-wizard pt-4",
     steps: await getFormSteps(instance),
     actionFinishLabel: "${'CustomAction.instances.instance_save' | t}",//"保存",
-    id: "u:instance_wizard",
+    id: "instance_wizard",
     target: "instance_form",
     "onEvent": {
       "change": {

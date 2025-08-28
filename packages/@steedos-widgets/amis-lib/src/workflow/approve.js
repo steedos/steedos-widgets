@@ -423,10 +423,22 @@ const getSubmitActions = async (instance) => {
       "args": {},
       "actionType": "custom",
       "script": `
+        const wizard = event.context.scoped.getComponentById("instance_wizard");
         const form = event.context.scoped.getComponentById("instance_form");
-        return form.validate().then((instanceFormValidate)=>{
-          event.setData({...event.data, instanceFormValidate})
-        })
+
+        // 1. 校验外层 form（直接表单项）
+        let formValidatePromise = form.validate();
+
+        // 2. 校验 wizard（所有步骤数据）
+        let wizardValidatePromise = wizard?.form?.validate 
+          ? wizard.form.validate() 
+          : Promise.resolve(true);
+
+        return Promise.all([formValidatePromise, wizardValidatePromise]).then(([formValid, wizardValid]) => {
+          const allValid = formValid && wizardValid;
+          event.setData({...event.data, instanceFormValidate: allValid});
+          return allValid;
+        });
       `
     },
     // 校验审批表单
