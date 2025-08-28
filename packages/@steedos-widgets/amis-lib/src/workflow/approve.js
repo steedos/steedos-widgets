@@ -215,7 +215,7 @@ const getNextStepUsersInput = async (instance) => {
         body: [
           {
             type: "tpl",
-            tpl: "处理人",
+            tpl: i18next.t('frontend_workflow_next_users'),//"处理人",
             inline: true,
             wrapperComponent: "",
             id: "u:3203cc281b3c",
@@ -530,7 +530,7 @@ export const getApprovalDrawerSchema = async (instance) => {
             id: "u:cd344f708ddc",
             minRows: 3,
             maxRows: 20,
-            placeholder: "请填写意见",
+            placeholder: i18next.t('frontend_workflow_suggestion_placeholder'),//"请填写意见",
             requiredOn: "${judge === 'rejected'}"
           },
           await getNextStepInput(instance),
@@ -567,8 +567,8 @@ export const getApprovalDrawerSchema = async (instance) => {
                   "position": "top-right",
                   "closeButton": true,
                   "showIcon": true,
-                  "title": "提交失败",
-                  "msg": "请填写必填字段"
+                  "title": i18next.t('frontend_workflow_submit_validate_error_title'),//"提交失败",
+                  "msg": i18next.t('frontend_workflow_submit_validate_error_msg'),//"请填写必填字段"
                 },
                 "actionType": "toast"
               }

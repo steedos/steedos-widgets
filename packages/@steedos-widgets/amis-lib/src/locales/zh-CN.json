@@ -118,6 +118,7 @@
     "frontend_app_launcher_dialog_new_app_icon_label": "图标",
     "frontend_crud_toolbar_quick_search_placeholder": "快捷搜索",
     "frontend_crud_toolbar_quick_search_tooltip_prefix": "可搜索字段：",
+    "frontend_lookup_left_tree_search_organizations": "查找部门",
     "frontend_workflow_instances_applicant_name_prefix": "提交人：",
     "frontend_workflow_instance_submit_date_prefix": "提交日期：",
     "frontend_workflow_approval_judge_returned": "已退回",
@@ -130,6 +131,11 @@
     "frontend_workflow_approval_judge_inhand": "处理中",
     "frontend_workflow_approval_judge_relocated": "重定位",
     "frontend_workflow_approval_judge_readed": "已阅",
+    "frontend_workflow_approval_suggestion_readed": "已阅",
+    "frontend_workflow_approval_suggestion_completed": "已办",
+    "frontend_workflow_approval_suggestion_agree": "同意",
+    "frontend_workflow_approval_suggestion_other": "其他常用意见",
+    "frontend_workflow_suggestion_placeholder": "请填写意见",
     "frontend_workflow_instance_button_sign": "签批",
     "frontend_workflow_approval_history": "签批历程",
     "frontend_workflow_approval_history_read": "已读",
@@ -140,5 +146,9 @@
     "frontend_workflow_judge_option_approved": "核准",
     "frontend_workflow_judge_option_rejected": "驳回",
     "frontend_workflow_judge_option_readed": "已阅",
-    "frontend_workflow_next_step": "下一步"
+    "frontend_workflow_next_step": "下一步",
+    "frontend_workflow_next_users": "处理人",
+    "frontend_workflow_submit_validate_error_title": "提交失败",
+    "frontend_workflow_submit_validate_error_msg": "请填写必填字段",
+    "frontend_workflow_related_records_link_title": "相关台账信息"
 }

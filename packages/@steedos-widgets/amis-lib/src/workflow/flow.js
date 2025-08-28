@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-08-28 22:47:28
+ * @LastEditTime: 2025-08-29 01:56:00
  * @Description:
  */
 import {
@@ -64,7 +64,7 @@ const getFieldEditTpl = async (field, label)=>{
       },
       {
         "type": "button",
-        "label": "签批",
+        "label": i18next.t('frontend_workflow_instance_button_sign'),//"签批",
         "level": "link",
         "id": "u:2592111d236d",
         "block": false,
@@ -89,7 +89,7 @@ const getFieldEditTpl = async (field, label)=>{
                           "minRows": 6,
                           "maxRows": 20,
                           "mode": "normal",
-                          "placeholder": "请填写意见"
+                          "placeholder": i18next.t('frontend_workflow_suggestion_placeholder'),//"请填写意见"
                         },
                         {
                           "type": "grid",
@@ -98,15 +98,15 @@ const getFieldEditTpl = async (field, label)=>{
                               "body": [
                                 {
                                   "type": "button",
-                                  "label": "已阅",
+                                  "label": i18next.t('frontend_workflow_approval_judge_readed'),//"已阅",
                                   "onEvent": {
                                     "click": {
                                       "actions": [
                                         {
                                           "componentId": "u:1d5a60623000",
                                           "args": {
-                                            "valueInput": "已阅",
-                                            "value": "已阅"
+                                            "valueInput": i18next.t('frontend_workflow_approval_judge_readed'),//"已阅",
+                                            "value": i18next.t('frontend_workflow_approval_judge_readed')//"已阅"
                                           },
                                           "actionType": "setValue"
                                         }
@@ -119,15 +119,15 @@ const getFieldEditTpl = async (field, label)=>{
                                 },
                                 {
                                   "type": "button",
-                                  "label": "已办",
+                                  "label": i18next.t('frontend_workflow_approval_suggestion_completed'),//"已办",
                                   "onEvent": {
                                     "click": {
                                       "actions": [
                                         {
                                           "componentId": "u:1d5a60623000",
                                           "args": {
-                                            "valueInput": "已办",
-                                            "value": "已办"
+                                            "valueInput": i18next.t('frontend_workflow_approval_suggestion_completed'),//"已办",
+                                            "value": i18next.t('frontend_workflow_approval_suggestion_completed')//"已办",
                                           },
                                           "actionType": "setValue"
                                         }
@@ -140,15 +140,15 @@ const getFieldEditTpl = async (field, label)=>{
                                 },
                                 {
                                   "type": "button",
-                                  "label": "同意",
+                                  "label": i18next.t('frontend_workflow_approval_suggestion_agree'),//"同意",
                                   "onEvent": {
                                     "click": {
                                       "actions": [
                                         {
                                           "componentId": "u:1d5a60623000",
                                           "args": {
-                                            "valueInput": "同意",
-                                            "value": "同意"
+                                            "valueInput": i18next.t('frontend_workflow_approval_suggestion_agree'),//"同意"
+                                            "value": i18next.t('frontend_workflow_approval_suggestion_agree')//"同意"
                                           },
                                           "actionType": "setValue"
                                         }
@@ -161,7 +161,7 @@ const getFieldEditTpl = async (field, label)=>{
                                 },
                                 {
                                   "type": "button",
-                                  "label": "其他常用意见",
+                                  "label": i18next.t('frontend_workflow_approval_suggestion_other'),//"同意"
                                   "onEvent": {
                                     "click": {
                                       "actions": []
@@ -188,7 +188,7 @@ const getFieldEditTpl = async (field, label)=>{
                   "actions": [
                     {
                       "type": "button",
-                      "label": "确认",
+                      "label": "${'OK' | t}",
                       "onEvent": {
                         "click": {
                           "actions": [
@@ -213,7 +213,7 @@ const getFieldEditTpl = async (field, label)=>{
                     },
                     {
                       "type": "button",
-                      "label": "取消",
+                      "label": "${'Cancel' | t}",
                       "onEvent": {
                         "click": {
                           "actions": [
@@ -940,8 +940,8 @@ export const getFlowFormSchema = async (instance, box) => {
                   "position": "top-right",
                   "closeButton": true,
                   "showIcon": true,
-                  "title": "提交失败",
-                  "msg": "请填写必填字段"
+                  "title": i18next.t('frontend_workflow_submit_validate_error_title'),//"提交失败",
+                  "msg": i18next.t('frontend_workflow_submit_validate_error_msg'),//"请填写必填字段"
                 },
                 "actionType": "toast"
               }

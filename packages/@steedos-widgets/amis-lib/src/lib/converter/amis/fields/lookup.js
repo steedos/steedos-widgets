@@ -202,7 +202,7 @@ export function getLookupSapceUserTreeSchema(isMobile){
         "searchable": true,
         "searchConfig": {
           "sticky": true,
-          "placeholder": "查找部门"
+          "placeholder": i18next.t('frontend_lookup_left_tree_search_organizations')
         },
         "unfoldedLevel": 2,
         "originPosition": "left-top"
