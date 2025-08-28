@@ -25,6 +25,127 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
         }
     };
 
+    const fieldTypes = [
+                                  {
+                                      "label": "文本",
+                                      "value": "text"
+                                  },
+                                  {
+                                      "label": "长文本",
+                                      "value": "textarea"
+                                  },
+                                  {
+                                      "label": "富文本",
+                                      "value": "html"
+                                  },
+                                  {
+                                      "label": "代码",
+                                      "value": "code"
+                                  },
+                                  {
+                                      "label": "Markdown",
+                                      "value": "markdown"
+                                  },
+                                  {
+                                      "label": "选择框",
+                                      "value": "select"
+                                  },
+                                  {
+                                      "label": "颜色",
+                                      "value": "color"
+                                  },
+                                  {
+                                      "label": "复选框",
+                                      "value": "boolean"
+                                  },
+                                  {
+                                      "label": "开关",
+                                      "value": "toggle"
+                                  },
+                                  {
+                                      "label": "日期",
+                                      "value": "date"
+                                  },
+                                  {
+                                      "label": "日期时间",
+                                      "value": "datetime"
+                                  },
+                                  {
+                                      "label": "时间",
+                                      "value": "time"
+                                  },
+                                  {
+                                      "label": "数值",
+                                      "value": "number"
+                                  },
+                                  {
+                                      "label": "金额",
+                                      "value": "currency"
+                                  },
+                                  {
+                                      "label": "百分比",
+                                      "value": "percent"
+                                  },
+                                  {
+                                      "label": "密码",
+                                      "value": "password"
+                                  },
+                                  {
+                                      "label": "相关表关系",
+                                      "value": "lookup"
+                                  },
+                                  {
+                                      "label": "主/子表关系",
+                                      "value": "master_detail"
+                                  },
+                                  {
+                                      "label": "自动编号",
+                                      "value": "autonumber"
+                                  },
+                                  {
+                                      "label": "网址",
+                                      "value": "url"
+                                  },
+                                  {
+                                      "label": "邮件地址",
+                                      "value": "email"
+                                  },
+                                  {
+                                      "label": "地理位置",
+                                      "value": "location"
+                                  },
+                                  {
+                                      "label": "图片",
+                                      "value": "image"
+                                  },
+                                  {
+                                      "label": "附件",
+                                      "value": "file"
+                                  },
+                                  {
+                                      "label": "公式",
+                                      "value": "formula"
+                                  },
+                                  {
+                                      "label": "累计汇总",
+                                      "value": "summary"
+                                  },
+                                  {
+                                      "label": "表格",
+                                      "value": "table"
+                                  }
+                              ];
+
+    const disabledFields = (window as any).parent?._disabledFields || [];
+    
+    const fieldTypeOptions = [];
+
+    for (const fieldType of fieldTypes) {
+        if(!disabledFields.includes(fieldType.value)){
+            fieldTypeOptions.push(fieldType);
+        }
+    }
+
     return {
         ...metaConfig,
         snippets: [
@@ -171,116 +292,7 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
                               "required": true,
                               "type": "select",
                               "joinValues": false,
-                              "options": [
-                                  {
-                                      "label": "文本",
-                                      "value": "text"
-                                  },
-                                  {
-                                      "label": "长文本",
-                                      "value": "textarea"
-                                  },
-                                  {
-                                      "label": "富文本",
-                                      "value": "html"
-                                  },
-                                  {
-                                      "label": "代码",
-                                      "value": "code"
-                                  },
-                                  {
-                                      "label": "Markdown",
-                                      "value": "markdown"
-                                  },
-                                  {
-                                      "label": "选择框",
-                                      "value": "select"
-                                  },
-                                  {
-                                      "label": "颜色",
-                                      "value": "color"
-                                  },
-                                  {
-                                      "label": "复选框",
-                                      "value": "boolean"
-                                  },
-                                  {
-                                      "label": "开关",
-                                      "value": "toggle"
-                                  },
-                                  {
-                                      "label": "日期",
-                                      "value": "date"
-                                  },
-                                  {
-                                      "label": "日期时间",
-                                      "value": "datetime"
-                                  },
-                                  {
-                                      "label": "时间",
-                                      "value": "time"
-                                  },
-                                  {
-                                      "label": "数值",
-                                      "value": "number"
-                                  },
-                                  {
-                                      "label": "金额",
-                                      "value": "currency"
-                                  },
-                                  {
-                                      "label": "百分比",
-                                      "value": "percent"
-                                  },
-                                  {
-                                      "label": "密码",
-                                      "value": "password"
-                                  },
-                                  {
-                                      "label": "相关表关系",
-                                      "value": "lookup"
-                                  },
-                                  {
-                                      "label": "主/子表关系",
-                                      "value": "master_detail"
-                                  },
-                                  {
-                                      "label": "自动编号",
-                                      "value": "autonumber"
-                                  },
-                                  {
-                                      "label": "网址",
-                                      "value": "url"
-                                  },
-                                  {
-                                      "label": "邮件地址",
-                                      "value": "email"
-                                  },
-                                  {
-                                      "label": "地理位置",
-                                      "value": "location"
-                                  },
-                                  {
-                                      "label": "图片",
-                                      "value": "image"
-                                  },
-                                  {
-                                      "label": "附件",
-                                      "value": "file"
-                                  },
-                                  {
-                                      "label": "公式",
-                                      "value": "formula"
-                                  },
-                                  {
-                                      "label": "累计汇总",
-                                      "value": "summary"
-                                  },
-                                  {
-                                      "label": "表格",
-                                      "value": "table"
-                                  }
-                              ],
+                              "options": fieldTypeOptions,
                               "extractValue": true,
                               "clearable": true,
                               "labelField": "label",
