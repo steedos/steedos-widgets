@@ -1,6 +1,6 @@
 {
   "name": "refine-project",
-  "version": "6.10.1-beta.50",
+  "version": "6.10.1-beta.51",
   "private": true,
   "type": "module",
   "dependencies": {
