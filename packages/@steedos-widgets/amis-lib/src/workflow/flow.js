@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-08-29 01:56:00
+ * @LastEditTime: 2025-08-29 19:23:38
  * @Description:
  */
 import {
@@ -851,7 +851,7 @@ export const getFlowFormSchema = async (instance, box) => {
   return {
     type: "page",
     name: "instancePage",
-    className: "steedos-amis-instance-view",
+    className: "steedos-amis-instance-view " + "steedos-instance-style-" + formStyle,
     bodyClassName: "overflow-y-auto h-full steedos-amis-instance-view-body",
     headerClassName: "p-0",
     "title": {
@@ -882,7 +882,7 @@ export const getFlowFormSchema = async (instance, box) => {
       ".steedos-object-record-detail-header .antd-Grid-col--mdAuto": {
         "padding": "0px !important"
       },
-      ".steedos-amis-instance-view .antd-Page-body": {
+      ".steedos-amis-instance-view.steedos-instance-style-table .antd-Page-body": {
         "width": "1024px"
       },
       ".antd-List-placeholder": {
