@@ -146,6 +146,48 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
         }
     }
 
+    const _config: any = {
+        "type": type,
+        "label": title,
+        "amis": {}}
+    if(type == 'table'){
+        _config.columns = [
+        {
+            "type": "sfield-text",
+            "config": {
+            "type": "text",
+            "label": "column 1",
+            "amis": {
+                "mode": "horizontal",
+                "name": "fuwrx6",
+                "id": "u:3a883adb07a5"
+            },
+            "object": "",
+            "name": "fuwrx6"
+            },
+            "label": "column 1",
+            "id": "u:fc066ce3ce29",
+            "placeholder": "-"
+        },{
+            "type": "sfield-text",
+            "config": {
+            "type": "text",
+            "label": "column 2",
+            "amis": {
+                "mode": "horizontal",
+                "name": "fuwrx6",
+                "id": "u:3a883adb07a52"
+            },
+            "object": "",
+            "name": "fuwrx6"
+            },
+            "label": "column 2",
+            "id": "u:fc066ce3ce292",
+            "placeholder": "-"
+        }
+        ]
+    }
+
     return {
         ...metaConfig,
         snippets: [
@@ -176,89 +218,11 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
                 icon: metaConfig.amis.icon,
                 scaffold: {
                     type: metaConfig.amis.name,
-                    config: {
-                      "type": type,
-                      "label": title,
-                      "amis": {},
-                      "columns": type == 'table' ? [
-                        {
-                            "type": "sfield-text",
-                            "config": {
-                            "type": "text",
-                            "label": "column 1",
-                            "amis": {
-                                "mode": "horizontal",
-                                "name": "fuwrx6",
-                                "id": "u:3a883adb07a5"
-                            },
-                            "object": "",
-                            "name": "fuwrx6"
-                            },
-                            "label": "column 1",
-                            "id": "u:fc066ce3ce29",
-                            "placeholder": "-"
-                        },{
-                            "type": "sfield-text",
-                            "config": {
-                            "type": "text",
-                            "label": "column 2",
-                            "amis": {
-                                "mode": "horizontal",
-                                "name": "fuwrx6",
-                                "id": "u:3a883adb07a52"
-                            },
-                            "object": "",
-                            "name": "fuwrx6"
-                            },
-                            "label": "column 2",
-                            "id": "u:fc066ce3ce292",
-                            "placeholder": "-"
-                        }
-                        ]  : null
-                    }
+                    config: _config
                   },
                   previewSchema: {
                     type: metaConfig.amis.name,
-                    config: {
-                      "type": type,
-                      "label": title,
-                      "amis": {},
-                      "columns": type == 'table' ? [
-                        {
-                            "type": "sfield-text",
-                            "config": {
-                            "type": "text",
-                            "label": "column 1",
-                            "amis": {
-                                "mode": "horizontal",
-                                "name": "fuwrx6",
-                                "id": "u:3a883adb07a5"
-                            },
-                            "object": "",
-                            "name": "fuwrx6"
-                            },
-                            "label": "column 1",
-                            "id": "u:fc066ce3ce29",
-                            "placeholder": "-"
-                        },{
-                            "type": "sfield-text",
-                            "config": {
-                            "type": "text",
-                            "label": "column 2",
-                            "amis": {
-                                "mode": "horizontal",
-                                "name": "fuwrx6",
-                                "id": "u:3a883adb07a52"
-                            },
-                            "object": "",
-                            "name": "fuwrx6"
-                            },
-                            "label": "column 2",
-                            "id": "u:fc066ce3ce292",
-                            "placeholder": "-"
-                        }
-                        ]  : null
-                    }
+                    config: _config
                   },
                 panelTitle: "设置",
                 panelControls: [
