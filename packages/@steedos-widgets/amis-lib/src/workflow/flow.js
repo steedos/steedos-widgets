@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-08-29 19:23:38
+ * @LastEditTime: 2025-08-29 21:01:29
  * @Description:
  */
 import {
@@ -623,6 +623,7 @@ const getFormTableView = async (instance) => {
 };
 
 const getFormSteps = async (instance) => {
+  const formMode = instance.form.current.mode || "normal";//normal,horizontal,inline
   const stepsSchema = [];
   let stepFields = [];
   let fields = [];
@@ -650,11 +651,16 @@ const getFormSteps = async (instance) => {
       let fieldSchema;
       for (const childField of field.fields) {
         fieldSchema = await getTdInputTpl(childField, true);
+        if (fieldSchema.type === "steedos-field"){
+          fieldSchema.config.amis.mode = formMode;
+        }
+        else{
+          fieldSchema.mode = formMode;
+        }
         stepFields.push(fieldSchema);
       }
       stepsSchema.push({
         "title": field.name,
-        "mode": "horizontal",
         "body": stepFields
       });
     }

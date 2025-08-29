@@ -6,7 +6,7 @@ import { i18next } from "@steedos-widgets/amis-lib";
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 17:47:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-08-28 01:47:42
+ * @LastEditTime: 2025-08-29 20:51:53
  * @Description:
  */
 
@@ -183,6 +183,7 @@ export const getInstanceInfo = async (props) => {
           _id,
           name,
           style,
+          mode,
           current,
           historys
         },
