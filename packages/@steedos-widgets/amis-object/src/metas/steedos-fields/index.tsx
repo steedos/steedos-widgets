@@ -1,8 +1,8 @@
-// 通用元数据配置生成器
+const t = (window as any).steedosI18next.t;
 const createMetaConfig = (name: string, type: string, title: string, icon: string) => {
     const metaConfig: any = {
         componentType: 'amisSchema',
-        group: "字段",
+        group: t('widgets-meta:sfield_tab_group', '字段'),
         componentName: `SteedosField${name}`,
         title: title,
         docUrl: "",
@@ -17,8 +17,8 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
         },
         preview: {
         },
-        targets: ["steedos__RecordPage", "steedos__AppPage", "steedos__HomePage"],
-        engines: ["amis"],
+        targets: ['steedos__RecordPage', 'steedos__AppPage', 'steedos__HomePage'],
+        engines: ['amis'],
         amis: {
             name: `sfield-${name.toLowerCase()}`,
             icon: icon
@@ -26,115 +26,34 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
     };
 
     const fieldTypes = [
-                                  {
-                                      "label": "文本",
-                                      "value": "text"
-                                  },
-                                  {
-                                      "label": "长文本",
-                                      "value": "textarea"
-                                  },
-                                  {
-                                      "label": "富文本",
-                                      "value": "html"
-                                  },
-                                  {
-                                      "label": "代码",
-                                      "value": "code"
-                                  },
-                                  {
-                                      "label": "Markdown",
-                                      "value": "markdown"
-                                  },
-                                  {
-                                      "label": "选择框",
-                                      "value": "select"
-                                  },
-                                  {
-                                      "label": "颜色",
-                                      "value": "color"
-                                  },
-                                  {
-                                      "label": "复选框",
-                                      "value": "boolean"
-                                  },
-                                  {
-                                      "label": "开关",
-                                      "value": "toggle"
-                                  },
-                                  {
-                                      "label": "日期",
-                                      "value": "date"
-                                  },
-                                  {
-                                      "label": "日期时间",
-                                      "value": "datetime"
-                                  },
-                                  {
-                                      "label": "时间",
-                                      "value": "time"
-                                  },
-                                  {
-                                      "label": "数值",
-                                      "value": "number"
-                                  },
-                                  {
-                                      "label": "金额",
-                                      "value": "currency"
-                                  },
-                                  {
-                                      "label": "百分比",
-                                      "value": "percent"
-                                  },
-                                  {
-                                      "label": "密码",
-                                      "value": "password"
-                                  },
-                                  {
-                                      "label": "相关表关系",
-                                      "value": "lookup"
-                                  },
-                                  {
-                                      "label": "主/子表关系",
-                                      "value": "master_detail"
-                                  },
-                                  {
-                                      "label": "自动编号",
-                                      "value": "autonumber"
-                                  },
-                                  {
-                                      "label": "网址",
-                                      "value": "url"
-                                  },
-                                  {
-                                      "label": "邮件地址",
-                                      "value": "email"
-                                  },
-                                  {
-                                      "label": "地理位置",
-                                      "value": "location"
-                                  },
-                                  {
-                                      "label": "图片",
-                                      "value": "image"
-                                  },
-                                  {
-                                      "label": "附件",
-                                      "value": "file"
-                                  },
-                                  {
-                                      "label": "公式",
-                                      "value": "formula"
-                                  },
-                                  {
-                                      "label": "累计汇总",
-                                      "value": "summary"
-                                  },
-                                  {
-                                      "label": "表格",
-                                      "value": "table"
-                                  }
-                              ];
+        { "label": t('widgets-meta:sfield_text', "文本"), "value": "text" },
+        { "label": t('widgets-meta:sfield_textarea', "长文本"), "value": "textarea" },
+        { "label": t('widgets-meta:sfield_html', "富文本"), "value": "html" },
+        { "label": t('widgets-meta:sfield_code', "代码"), "value": "code" },
+        { "label": t('widgets-meta:sfield_markdown', "Markdown"), "value": "markdown" },
+        { "label": t('widgets-meta:sfield_select', "选择框"), "value": "select" },
+        { "label": t('widgets-meta:sfield_color', "颜色"), "value": "color" },
+        { "label": t('widgets-meta:sfield_boolean', "复选框"), "value": "boolean" },
+        { "label": t('widgets-meta:sfield_toggle', "开关"), "value": "toggle" },
+        { "label": t('widgets-meta:sfield_date', "日期"), "value": "date" },
+        { "label": t('widgets-meta:sfield_datetime', "日期时间"), "value": "datetime" },
+        { "label": t('widgets-meta:sfield_time', "时间"), "value": "time" },
+        { "label": t('widgets-meta:sfield_number', "数值"), "value": "number" },
+        { "label": t('widgets-meta:sfield_currency', "金额"), "value": "currency" },
+        { "label": t('widgets-meta:sfield_percent', "百分比"), "value": "percent" },
+        { "label": t('widgets-meta:sfield_password', "密码"), "value": "password" },
+        { "label": t('widgets-meta:sfield_lookup', "相关表关系"), "value": "lookup" },
+        { "label": t('widgets-meta:sfield_master_detail', "主/子表关系"), "value": "master_detail" },
+        { "label": t('widgets-meta:sfield_autonumber', "自动编号"), "value": "autonumber" },
+        { "label": t('widgets-meta:sfield_url', "网址"), "value": "url" },
+        { "label": t('widgets-meta:sfield_email', "邮件地址"), "value": "email" },
+        { "label": t('widgets-meta:sfield_location', "地理位置"), "value": "location" },
+        { "label": t('widgets-meta:sfield_image', "图片"), "value": "image" },
+        { "label": t('widgets-meta:sfield_file', "附件"), "value": "file" },
+        { "label": t('widgets-meta:sfield_formula', "公式"), "value": "formula" },
+        { "label": t('widgets-meta:sfield_summary', "累计汇总"), "value": "summary" },
+        { "label": t('widgets-meta:sfield_table', "表格"), "value": "table" }
+    ];
 
     const disabledFields = (window as any).parent?._disabledFields || [];
     
@@ -149,43 +68,45 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
     const _config: any = {
         "type": type,
         "label": title,
-        "amis": {}}
+        "amis": {}
+    };
     if(type == 'table'){
         _config.columns = [
-        {
-            "type": "sfield-text",
-            "config": {
-            "type": "text",
-            "label": "column 1",
-            "amis": {
-                "mode": "horizontal",
-                "name": "fuwrx6",
-                "id": "u:3a883adb07a5"
+            {
+                "type": "sfield-text",
+                "config": {
+                    "type": "text",
+                    "label": t('widgets-meta:sfield_control_column_1_label', "column 1"),
+                    "amis": {
+                        "mode": "horizontal",
+                        "name": "fuwrx6",
+                        "id": "u:3a883adb07a5"
+                    },
+                    "object": "",
+                    "name": "fuwrx6"
+                },
+                "label": t('widgets-meta:sfield_control_column_1_label', "column 1"),
+                "id": "u:fc066ce3ce29",
+                "placeholder": "-"
             },
-            "object": "",
-            "name": "fuwrx6"
-            },
-            "label": "column 1",
-            "id": "u:fc066ce3ce29",
-            "placeholder": "-"
-        },{
-            "type": "sfield-text",
-            "config": {
-            "type": "text",
-            "label": "column 2",
-            "amis": {
-                "mode": "horizontal",
-                "name": "fuwrx6",
-                "id": "u:3a883adb07a52"
-            },
-            "object": "",
-            "name": "fuwrx6"
-            },
-            "label": "column 2",
-            "id": "u:fc066ce3ce292",
-            "placeholder": "-"
-        }
-        ]
+            {
+                "type": "sfield-text",
+                "config": {
+                    "type": "text",
+                    "label": t('widgets-meta:sfield_control_column_2_label', "column 2"),
+                    "amis": {
+                        "mode": "horizontal",
+                        "name": "fuwrx6",
+                        "id": "u:3a883adb07a52"
+                    },
+                    "object": "",
+                    "name": "fuwrx6"
+                },
+                "label": t('widgets-meta:sfield_control_column_2_label', "column 2"),
+                "id": "u:fc066ce3ce292",
+                "placeholder": "-"
+            }
+        ];
     }
 
     return {
@@ -214,17 +135,17 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
                 isBaseComponent: true,
                 description: metaConfig.title,
                 tags: [metaConfig.group],
-                order: -9999,
+                order: -99999,
                 icon: metaConfig.amis.icon,
                 scaffold: {
                     type: metaConfig.amis.name,
                     config: _config
-                  },
-                  previewSchema: {
+                },
+                previewSchema: {
                     type: metaConfig.amis.name,
                     config: _config
-                  },
-                panelTitle: "设置",
+                },
+                panelTitle: t('widgets-meta:sfield_settings_panel_title', "设置"),
                 panelControls: [
                     {
                       "type": "tabs",
@@ -234,1164 +155,747 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
                       contentClassName: 'no-border editor-prop-config-tabs-cont',
                       "tabs": [
                         {
-                          "title": "通用",
+                          "title": t('widgets-meta:sfield_control_general', "通用"),
                           "className": 'ae-formItemControl-body',
                           "body": [
-                            // {
-                            //   "type": "input-text",
-                            //   "name": "config.object",
-                            //   "value": "${objectName}",
-                            //   "disabled": true,
-                            //   "label": "对象",
-                            //   "required": true
-                            // },
                             {
                                 "type": "formula",
                                 "name": "visibleOn",
                                 "formula": "${config.visible_on}"
                             },
                             {
-                              "name": "config.type",
-                              "label": "字段类型",
-                              "required": true,
-                              "type": "select",
-                              "joinValues": false,
-                              "options": fieldTypeOptions,
-                              "extractValue": true,
-                              "clearable": true,
-                              "labelField": "label",
-                              "valueField": "value",
-                              "labelClassName": "text-left",
-                              "clearValueOnHidden": true,
-                              "disabledOn": "${config.is_system == true}",
-                              "searchable": true
+                                "name": "config.type",
+                                "label": t('widgets-meta:sfield_control_field_type', "字段类型"),
+                                "required": true,
+                                "type": "select",
+                                "joinValues": false,
+                                "options": fieldTypeOptions,
+                                "extractValue": true,
+                                "clearable": true,
+                                "labelField": "label",
+                                "valueField": "value",
+                                "labelClassName": "text-left",
+                                "clearValueOnHidden": true,
+                                "disabledOn": "${config.is_system == true}",
+                                "searchable": true
                             },
                             {
-                              "name": "config.label",
-                              "label": "显示名称",
-                              "labelRemark": "",
-                              "description": "",
-                              "required": true,
-                              "type": "input-text",
-                              "labelClassName": "text-left",
-                              "clearValueOnHidden": true
+                                "name": "config.label",
+                                "label": t('widgets-meta:sfield_control_display_name', "显示名称"),
+                                "labelRemark": "",
+                                "description": "",
+                                "required": true,
+                                "type": "input-text",
+                                "labelClassName": "text-left",
+                                "clearValueOnHidden": true
                             },
                             {
-                              "name": "config.name",
-                              "label": "API 名称",
-                              "labelRemark": "API 名称只能包含小写字母、数字，必须以字母开头，不能以下划线字符结尾或包含两个连续的下划线字符",
-                              "description": "",
-                              "required": true,
-                              "type": "input-text",
-                              "clearValueOnHidden": true,
-                              "disabledOn": "${config.is_system == true}",
-                              "validateOnChange": true,
-                              "validations": {
-                                  "isVariableName": /^[a-zA-Z]([A-Za-z0-9]|_(?!_))*[A-Za-z0-9]$/
-                              }
-                            },
-                            {
-                              "name": "config.required",
-                              "label": "必填",
-                              "required": false,
-                              "type": "checkbox",
-                              "tpl": null,
-                              "visibleOn": "['autonumber','summary','formula'].indexOf(config.type) > -1 ? false: true",
-                              "clearValueOnHidden": true,
-                              "fieldName": "config.required"
-                            },
-                            {
-                              "name": "config.is_wide",
-                              "label": "宽字段",
-                              "required": false,
-                              "type": "checkbox",
-                              "tpl": null,
-                              "labelClassName": "text-left",
-                              "clearValueOnHidden": true,
-                              "fieldName": "config.is_wide"
-                            },
-                            {
-                              "name": "config.autonumber_enable_modify",
-                              "label": "允许修改编号",
-                              "required": false,
-                              "type": "checkbox",
-                              "tpl": null,
-                              "visibleOn": "config.type === 'autonumber' ? true: false",
-                              "clearValueOnHidden": true
-                            },
-                            {
-                              "name": "config.rows",
-                              "label": "多行文本行数",
-                              "labelRemark": "",
-                              "description": "",
-                              "requiredOn": "config.type === 'textarea' ? true: false",
-                              "type": "input-number",
-                              "precision": 0,
-                              "visibleOn": "config.type === 'textarea' ? true: false",
-                              "clearValueOnHidden": true
-                            },
-                            {
-                              "name": "config.language",
-                              "label": "语言",
-                              "requiredOn": "['code'].indexOf(config.type) > -1 ? true: false",
-                              "type": "select",
-                              "joinValues": false,
-                              "options": [
-                                  {
-                                      "label": "bat",
-                                      "value": "bat"
-                                  },
-                                  {
-                                      "label": "c",
-                                      "value": "c"
-                                  },
-                                  {
-                                      "label": "coffeescript",
-                                      "value": "coffeescript"
-                                  },
-                                  {
-                                      "label": "cpp",
-                                      "value": "cpp"
-                                  },
-                                  {
-                                      "label": "csharp",
-                                      "value": "csharp"
-                                  },
-                                  {
-                                      "label": "css",
-                                      "value": "css"
-                                  },
-                                  {
-                                      "label": "dockerfile",
-                                      "value": "dockerfile"
-                                  },
-                                  {
-                                      "label": "fsharp",
-                                      "value": "fsharp"
-                                  },
-                                  {
-                                      "label": "go",
-                                      "value": "go"
-                                  },
-                                  {
-                                      "label": "handlebars",
-                                      "value": "handlebars"
-                                  },
-                                  {
-                                      "label": "html",
-                                      "value": "html"
-                                  },
-                                  {
-                                      "label": "ini",
-                                      "value": "ini"
-                                  },
-                                  {
-                                      "label": "java",
-                                      "value": "java"
-                                  },
-                                  {
-                                      "label": "javascript",
-                                      "value": "javascript"
-                                  },
-                                  {
-                                      "label": "json",
-                                      "value": "json"
-                                  },
-                                  {
-                                      "label": "less",
-                                      "value": "less"
-                                  },
-                                  {
-                                      "label": "lua",
-                                      "value": "lua"
-                                  },
-                                  {
-                                      "label": "markdown",
-                                      "value": "markdown"
-                                  },
-                                  {
-                                      "label": "msdax",
-                                      "value": "msdax"
-                                  },
-                                  {
-                                      "label": "objective-c",
-                                      "value": "objective-c"
-                                  },
-                                  {
-                                      "label": "php",
-                                      "value": "php"
-                                  },
-                                  {
-                                      "label": "plaintext",
-                                      "value": "plaintext"
-                                  },
-                                  {
-                                      "label": "postiats",
-                                      "value": "postiats"
-                                  },
-                                  {
-                                      "label": "powershell",
-                                      "value": "powershell"
-                                  },
-                                  {
-                                      "label": "pug",
-                                      "value": "pug"
-                                  },
-                                  {
-                                      "label": "python",
-                                      "value": "python"
-                                  },
-                                  {
-                                      "label": "r",
-                                      "value": "r"
-                                  },
-                                  {
-                                      "label": "razor",
-                                      "value": "razor"
-                                  },
-                                  {
-                                      "label": "ruby",
-                                      "value": "ruby"
-                                  },
-                                  {
-                                      "label": "sb",
-                                      "value": "sb"
-                                  },
-                                  {
-                                      "label": "scss",
-                                      "value": "scss"
-                                  },
-                                  {
-                                      "label": "shell",
-                                      "value": "shell"
-                                  },
-                                  {
-                                      "label": "sol",
-                                      "value": "sol"
-                                  },
-                                  {
-                                      "label": "sql",
-                                      "value": "sql"
-                                  },
-                                  {
-                                      "label": "swift",
-                                      "value": "swift"
-                                  },
-                                  {
-                                      "label": "typescript",
-                                      "value": "typescript"
-                                  },
-                                  {
-                                      "label": "vb",
-                                      "value": "vb"
-                                  },
-                                  {
-                                      "label": "xml",
-                                      "value": "xml"
-                                  },
-                                  {
-                                      "label": "yaml",
-                                      "value": "yaml"
-                                  }
-                              ],
-                              "extractValue": true,
-                              "clearable": true,
-                              "labelField": "label",
-                              "valueField": "value",
-                              "visibleOn": "['code'].indexOf(config.type) > -1 ? true: false",
-                              "clearValueOnHidden": true,
-                              "disabledOn": "${config.is_system == true}",
-                              "value": "javascript"
-                            },
-                            {
-                              "name": "config.multiple",
-                              "label": "多选",
-                              "labelRemark": "单选<==>多选 相互切换，请自行重新提交已有记录或在数据库中统一修改此字段的保存格式。",
-                              "type": "checkbox",
-                              "visibleOn": "['select', 'lookup', 'image','file'].indexOf(config.type) > -1 ? true: false",
-                              "clearValueOnHidden": true,
-                              "disabledOn": "${config.is_system == true}"
-                            },
-                            {
-                              "name": "config.data_type",
-                              "label": "数据类型",
-                              "labelRemark": "字段类型为公式时，必须填写此字段。",
-                              "requiredOn": "['formula'].indexOf(config.type) > -1 ? true: false",
-                              "type": "select",
-                              "joinValues": false,
-                              "extractValue": true,
-                              "clearable": true,
-                              "disabledOn": "${config.is_system == true}",
-                              "searchable": true,
-                              "source": {
-                                  "method": 'post',
-                                  "data": {
-                                    "query": ""
-                                  },
-                                  "url": "/api/amis/health_check?depend_on_type=${config.type}",
-                                  "headers": {
-                                      "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                                  },
-                                  "sendOn": "this.config.type",
-                                  "adaptor": `
-                                    if (context.config.type === "select") {
-                                        payload.data.options = [
-                                            {
-                                                "label": "布尔",
-                                                "value": "boolean"
-                                            },
-                                            {
-                                                "label": "数值",
-                                                "value": "number"
-                                            },
-                                            {
-                                                "label": "文本",
-                                                "value": "text"
-                                            }
-                                        ]
-                                    }else {
-                                        payload.data.options = [
-                                            {
-                                                "label": "布尔",
-                                                "value": "boolean"
-                                            },
-                                            {
-                                                "label": "数值",
-                                                "value": "number"
-                                            },
-                                            {
-                                                "label": "金额",
-                                                "value": "currency"
-                                            },
-                                            {
-                                                "label": "百分比",
-                                                "value": "percent"
-                                            },
-                                            {
-                                                "label": "文本",
-                                                "value": "text"
-                                            },
-                                            {
-                                                "label": "日期",
-                                                "value": "date"
-                                            },
-                                            {
-                                                "label": "日期时间",
-                                                "value": "datetime"
-                                            }
-                                        ]
-                                    }
-                                    return payload;
-                                  `
-                              },
-                              "visibleOn": "['formula','select'].indexOf(config.type) > -1 ? true: false",
-                              "clearValueOnHidden": true
-                            },
-                            {
-                              "type": "input-table",
-                              "name": "config.options",
-                              "label": "选择项",
-                              "labelRemark": "选择项的每个选项显示名及选项值不能为空，背景颜色请设置为ffffff这种格式的16进制数值。",
-                              "requiredOn": "config.type === 'select' ? true: false",
-                              "visibleOn": "config.type === 'select' ? true: false",
-                              "clearValueOnHidden": true,
-                              "showIndex": true,
-                              "addable": true,
-                              "draggable": true,
-                              "removable": true,
-                              "columnsTogglable": false,
-                              "needConfirm": false,
-                              "footerAddBtn": {
-                                "visibleOn": "${!config.is_system}"
-                              },
-                              "columns": [
-                                {
-                                  "type": "input-text",
-                                  "name": "label",
-                                  "label": "显示名",
-                                  "required": true,
-                                  "disabledOn": "${config.is_system == true}",
-                                  "width": 100
-                                },
-                                {
-                                  "type": "input-text",
-                                  "name": "value",
-                                  "label": "选项值",
-                                  "required": true,
-                                  "disabledOn": "${config.is_system == true}",
-                                  "width": 100
-                                },
-                                {
-                                  "type": "input-color",
-                                  "name": "color",
-                                  "label": "背景颜色",
-                                  "disabledOn": "${config.is_system == true}",
-                                  "width": 70
-                                },
-                                {
-                                  "type": "textarea",
-                                  "name": "description",
-                                  "label": "描述",
-                                  "disabledOn": "${config.is_system == true}",
-                                  "width": 100
-                                },
-                                {
-                                  "type": "operation",
-                                  "label": "操作",
-                                  "visibleOn": "${!config.is_system}",
-                                  "width": 70,
-                                  "fixed": "right"
+                                "name": "config.name",
+                                "label": t('widgets-meta:sfield_control_api_name', "API 名称"),
+                                "labelRemark": t('widgets-meta:sfield_control_api_name_description', "API 名称只能包含小写字母、数字，必须以字母开头，不能以下划线字符结尾或包含两个连续的下划线字符"),
+                                "description": "",
+                                "required": true,
+                                "type": "input-text",
+                                "clearValueOnHidden": true,
+                                "disabledOn": "${config.is_system == true}",
+                                "validateOnChange": true,
+                                "validations": {
+                                    "isVariableName": /^[a-zA-Z]([A-Za-z0-9]|_(?!_))*[A-Za-z0-9]$/
                                 }
-                              ]
                             },
                             {
-                              "name": "config.precision",
-                              "label": "数字位数",
-                              "labelRemark": "小数点左边的数字位数",
-                              "requiredOn": " (function(){ if(['number', 'currency', 'percent', 'summary'].indexOf(config.type) > -1){ return true; } else{ if(['formula'].indexOf(config.type) > -1 && ['number', 'currency', 'percent'].indexOf(config.data_type) > -1){ return true; } else{ return false; } } })() ",
-                              "type": "input-number",
-                              "precision": 0,
-                              "visibleOn": " (function(){ if(['number', 'currency', 'percent', 'summary'].indexOf(config.type) > -1){ return true; } else{ if(['formula'].indexOf(config.type) > -1 && ['number', 'currency', 'percent'].indexOf(config.data_type) > -1){ return true; } else{ return false; } } })() ",
-                              "clearValueOnHidden": true,
-                              "value": 18,
-                              "disabledOn": "${config.is_system == true}"
+                                "name": "config.required",
+                                "label": t('widgets-meta:sfield_control_required', "必填"),
+                                "required": false,
+                                "type": "checkbox",
+                                "tpl": null,
+                                "visibleOn": "['autonumber','summary','formula'].indexOf(config.type) > -1 ? false: true",
+                                "clearValueOnHidden": true,
+                                "fieldName": "config.required"
                             },
                             {
-                              "name": "config.scale",
-                              "label": "小数位数",
-                              "labelRemark": "If the field type is a Percent, this indicates the number of decimal places the field will display, for example, two decimal places will display as 10.20%.",
-                              "requiredOn": " (function(){ if(['number', 'currency', 'percent', 'summary'].indexOf(config.type) > -1){ return true; } else{ if(['formula'].indexOf(config.type) > -1 && ['number', 'currency', 'percent'].indexOf(config.data_type) > -1){ return true; } else{ return false; } } })() ",
-                              "type": "input-number",
-                              "min": 0,
-                              "precision": 0,
-                              "visibleOn": " (function(){ if(['number', 'currency', 'percent', 'summary'].indexOf(config.type) > -1){ return true; } else{ if(['formula'].indexOf(config.type) > -1 && ['number', 'currency', 'percent'].indexOf(config.data_type) > -1){ return true; } else{ return false; } } })() ",
-                              "labelClassName": "text-left",
-                              "clearValueOnHidden": true,
-                              "value": 2,
-                              "disabledOn": "${config.is_system == true}"
+                                "name": "config.is_wide",
+                                "label": t('widgets-meta:sfield_control_wide_field', "宽字段"),
+                                "required": false,
+                                "type": "checkbox",
+                                "tpl": null,
+                                "labelClassName": "text-left",
+                                "clearValueOnHidden": true,
+                                "fieldName": "config.is_wide"
                             },
                             {
-                              "name": "config.formula",
-                              "label": "公式",
-                              "labelRemark": "字段类型为自动编号或公式时，必须填写此字段。",
-                              "description": "",
-                              "requiredOn": "['autonumber', 'formula'].indexOf(config.type) > -1 ? true: false",
-                              "type": "input-formula",
-                              "visibleOn": "['autonumber', 'formula'].indexOf(config.type) > -1 ? true: false",
-                              "clearValueOnHidden": true,
-                              "evalMode": false,
-                              "disabledOn": "${config.is_system == true}",
-                              "variables": "${window:_objectFieldsVariables}"
+                                "name": "config.autonumber_enable_modify",
+                                "label": t('widgets-meta:sfield_control_allow_modify_number', "允许修改编号"),
+                                "required": false,
+                                "type": "checkbox",
+                                "tpl": null,
+                                "visibleOn": "config.type === 'autonumber' ? true: false",
+                                "clearValueOnHidden": true
                             },
                             {
-                              "name": "config.show_as_qr",
-                              "label": "显示为二维码",
-                              "required": false,
-                              "type": "checkbox",
-                              "tpl": null,
-                              "visibleOn": "config.type === 'url' ? true: false",
-                              "clearValueOnHidden": true,
-                              "disabledOn": "${config.is_system == true}"
+                                "name": "config.rows",
+                                "label": t('widgets-meta:sfield_control_textarea_rows', "多行文本行数"),
+                                "labelRemark": "",
+                                "description": "",
+                                "requiredOn": "config.type === 'textarea' ? true: false",
+                                "type": "input-number",
+                                "precision": 0,
+                                "visibleOn": "config.type === 'textarea' ? true: false",
+                                "clearValueOnHidden": true
                             },
                             {
-                              "name": "config.coordinatesType",
-                              "label": "坐标类型",
-                              "required": false,
-                              "type": "input-text",
-                              "visibleOn": "['location'].indexOf(config.type) > -1 ? true: false",
-                              "clearValueOnHidden": true,
-                              "disabledOn": "${config.is_system == true}",
-                              "value": "bd09"
+                                "name": "config.language",
+                                "label": t('widgets-meta:sfield_control_language', "语言"),
+                                "requiredOn": "['code'].indexOf(config.type) > -1 ? true: false",
+                                "type": "select",
+                                "joinValues": false,
+                                "options": [
+                                    { "label": "bat", "value": "bat" },
+                                    { "label": "c", "value": "c" },
+                                    { "label": "coffeescript", "value": "coffeescript" },
+                                    { "label": "cpp", "value": "cpp" },
+                                    { "label": "csharp", "value": "csharp" },
+                                    { "label": "css", "value": "css" },
+                                    { "label": "dockerfile", "value": "dockerfile" },
+                                    { "label": "fsharp", "value": "fsharp" },
+                                    { "label": "go", "value": "go" },
+                                    { "label": "handlebars", "value": "handlebars" },
+                                    { "label": "html", "value": "html" },
+                                    { "label": "ini", "value": "ini" },
+                                    { "label": "java", "value": "java" },
+                                    { "label": "javascript", "value": "javascript" },
+                                    { "label": "json", "value": "json" },
+                                    { "label": "less", "value": "less" },
+                                    { "label": "lua", "value": "lua" },
+                                    { "label": "markdown", "value": "markdown" },
+                                    { "label": "msdax", "value": "msdax" },
+                                    { "label": "objective-c", "value": "objective-c" },
+                                    { "label": "php", "value": "php" },
+                                    { "label": "plaintext", "value": "plaintext" },
+                                    { "label": "postiats", "value": "postiats" },
+                                    { "label": "powershell", "value": "powershell" },
+                                    { "label": "pug", "value": "pug" },
+                                    { "label": "python", "value": "python" },
+                                    { "label": "r", "value": "r" },
+                                    { "label": "razor", "value": "razor" },
+                                    { "label": "ruby", "value": "ruby" },
+                                    { "label": "sb", "value": "sb" },
+                                    { "label": "scss", "value": "scss" },
+                                    { "label": "shell", "value": "shell" },
+                                    { "label": "sol", "value": "sol" },
+                                    { "label": "sql", "value": "sql" },
+                                    { "label": "swift", "value": "swift" },
+                                    { "label": "typescript", "value": "typescript" },
+                                    { "label": "vb", "value": "vb" },
+                                    { "label": "xml", "value": "xml" },
+                                    { "label": "yaml", "value": "yaml" }
+                                ],
+                                "extractValue": true,
+                                "clearable": true,
+                                "labelField": "label",
+                                "valueField": "value",
+                                "visibleOn": "['code'].indexOf(config.type) > -1 ? true: false",
+                                "clearValueOnHidden": true,
+                                "disabledOn": "${config.is_system == true}",
+                                "value": "javascript"
                             },
                             {
-                              "name": "config.formula_blank_value",
-                              "label": "空白字段处理",
-                              "labelRemark": "如果您的公式引用了任何数字和货币字段，请指定当这些字段值为空时如何处理公式输出。",
-                              "description": "",
-                              "requiredOn": "['formula'].indexOf(config.type) > -1 ? true: false",
-                              "type": "select",
-                              "joinValues": false,
-                              "options": [
-                                  {
-                                      "label": "将空白字段视为零",
-                                      "value": "zeroes"
-                                  },
-                                  {
-                                      "label": "将空白字段视为空白",
-                                      "value": "blanks"
-                                  }
-                              ],
-                              "extractValue": true,
-                              "clearable": true,
-                              "labelField": "label",
-                              "valueField": "value",
-                              "visibleOn": "['formula'].indexOf(config.type) > -1 ? true: false",
-                              "labelClassName": "text-left",
-                              "clearValueOnHidden": true,
-                              "fieldName": "config.formula_blank_value",
-                              "disabledOn": "${config.is_system == true}"
+                                "name": "config.multiple",
+                                "label": t('widgets-meta:sfield_control_multiple_select', "多选"),
+                                "labelRemark": t('widgets-meta:sfield_control_multiple_select_remark', "单选<==>多选 相互切换，请自行重新提交已有记录或在数据库中统一修改此字段的保存格式。"),
+                                "type": "checkbox",
+                                "visibleOn": "['select', 'lookup', 'image','file'].indexOf(config.type) > -1 ? true: false",
+                                "clearValueOnHidden": true,
+                                "disabledOn": "${config.is_system == true}"
                             },
                             {
-                              "name": "config.reference_to",
-                              "label": "引用对象",
-                              "requiredOn": "['lookup','master_detail'].indexOf(config.type) > -1 ? true: false",
-                              "type": "select",
-                              "joinValues": false,
-                              "extractValue": true,
-                              "clearable": true,
-                              "disabledOn": "${config.is_system == true}",
-                              "searchable": true,
-                              "source": {
-                                  "method": "post",
-                                  "url": "${context.rootUrl}/graphql?reload=${additionalFilters|join}",
-                                  "data": {
-                                      "orderBy": "${orderBy}",
-                                      "orderDir": "${orderDir}",
-                                      "pageNo": "${page}",
-                                      "pageSize": "${perPage}",
-                                      "queryFields": "_id space label:label value:name",
-                                      "query": "{options:objects(filters: {__filters}, top: {__top}, sort: \"{__sort}\"){_id space label:label value:name},count:objects__count(filters:{__filters})}",
-                                      "$term": "$term",
-                                      "$value": "$config.reference_to",
-                                      "$": "$$"
-                                  },
-                                  "headers": {
-                                      "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                                  },
-                                  "adaptor": "\n            const data = payload.data;\n            var defaultValueOptions = data.defaultValueOptions;\n            // 字段值下拉选项合并到options中\n            data.options = _.unionWith(defaultValueOptions, data.options, function(a,b){\n                return a[\"value\"]=== b[\"value\"];\n            });\n            delete data.defaultValueOptions;\n            payload.data.options = data.options;\n            return payload;\n        ",
-                                  "requestAdaptor": "\n        var filters = [];\n        var top = 200;\n        if(api.data.$term){\n            filters = [[\"label\", \"contains\", api.data.$term]];\n        }\n        // else if(api.data.$value){\n        //     filters = [[\"_id\", \"=\", api.data.$value]];\n        // }\n\n        var fieldFilters = undefined;\n        var currentAmis = (window.amisRequire && window.amisRequire('amis')) || Amis;\n        //递归fieldFilters数组，检查每一个元素，判断若是公式，就仅把它解析\n        function traverseNestedArray(arr) {\n            for (let i = 0; i < arr.length; i++) {\n                if (Array.isArray(arr[i])) {\n                    // 如果当前元素是数组，则递归调用自身继续遍历\n                    traverseNestedArray(arr[i]);\n                } else {\n                    // 如果当前元素不是数组，则处理该元素\n                    // 下面正则用于匹配amis公式${}\n                    if(/\\$\\{([^}]*)\\}/.test(arr[i])) {\n                        try{\n                            arr[i] = currentAmis.evaluate(arr[i], api.context);\n                        }catch(ex){\n                            console.error(\"运行lookup过滤公式时出现错误:\",ex);\n                        }\n                    }\n                }\n            }\n        }\n        if(fieldFilters && fieldFilters.length){\n            traverseNestedArray(fieldFilters);\n            filters.push(fieldFilters);\n        }\n\n        if(false && false){\n            if(filters.length > 0){\n                filters = [ [\"user_accepted\", \"=\", true], \"and\", filters ]\n            }else{\n                filters = [[\"user_accepted\", \"=\", true]];\n            }\n        }\n\n        const inFilterForm = undefined;\n\n        const listviewFiltersFunction = undefined;\n\n        if(listviewFiltersFunction && !inFilterForm){\n            const _filters0 = listviewFiltersFunction(filters, api.data.$);\n            if(_filters0 && _filters0.length){\n                filters.push(_filters0);\n            }\n        }\n        \n        const filtersFunction = undefined;\n\n        if(filtersFunction && !inFilterForm){\n            const _filters = filtersFunction(filters, api.data.$);\n            if(_filters && _filters.length > 0){\n                filters.push(_filters);\n            }\n        }\n        var sort = \"\";\n        api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', top).replace('{__sort}', sort.trim());\n\n        var defaultValue = api.data.$value;\n        var optionsFiltersOp = \"=\";\n        var optionsFilters = [[\"name\", optionsFiltersOp, []]];\n        if (defaultValue && !api.data.$term) { \n            const defaultValueOptionsQueryData = {\"orderBy\":\"${orderBy}\",\"orderDir\":\"${orderDir}\",\"pageNo\":\"${page}\",\"pageSize\":\"${perPage}\",\"queryFields\":\"_id space label:label value:name\",\"query\":\"{defaultValueOptions:objects(filters:{__options_filters}){_id space label:label value:name}}\"};\n            const defaultValueOptionsQuery = defaultValueOptionsQueryData && defaultValueOptionsQueryData.query && defaultValueOptionsQueryData.query.replace(/^{/,\"\").replace(/}$/,\"\");\n            // 字段值单独请求，没值的时候在请求中返回空\n            optionsFilters = [[\"name\", optionsFiltersOp, defaultValue]];\n            if(filters.length > 0){\n                optionsFilters = [filters, optionsFilters];\n            }\n            if(defaultValueOptionsQuery){\n                api.data.query = \"{\"+api.data.query.replace(/^{/,\"\").replace(/}$/,\"\")+\",\"+defaultValueOptionsQuery+\"}\";\n            } \n        }\n        api.data.query = api.data.query.replace(/{__options_filters}/g, JSON.stringify(optionsFilters));\n        return api;\n    "
-                              },
-                              "menuTpl": "<div>${label}(${value})</div>",
-                              "visibleOn": "['lookup', 'master_detail'].indexOf(config.type) > -1 ? true: false",
-                              "clearValueOnHidden": true
+                                "name": "config.data_type",
+                                "label": t('widgets-meta:sfield_control_data_type', "数据类型"),
+                                "labelRemark": t('widgets-meta:sfield_control_data_type_remark', "字段类型为公式时，必须填写此字段。"),
+                                "requiredOn": "['formula'].indexOf(config.type) > -1 ? true: false",
+                                "type": "select",
+                                "joinValues": false,
+                                "extractValue": true,
+                                "clearable": true,
+                                "disabledOn": "${config.is_system == true}",
+                                "searchable": true,
+                                "source": {
+                                    "method": 'post',
+                                    "data": {
+                                        "query": ""
+                                    },
+                                    "url": "/api/amis/health_check?depend_on_type=${config.type}",
+                                    "headers": {
+                                        "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                                    },
+                                    "sendOn": "this.config.type",
+                                    "adaptor": `
+                                      if (context.config.type === "select") {
+                                          payload.data.options = [
+                                              { "label": "布尔", "value": "boolean" },
+                                              { "label": "数值", "value": "number" },
+                                              { "label": "文本", "value": "text" }
+                                          ]
+                                      } else {
+                                          payload.data.options = [
+                                              { "label": "布尔", "value": "boolean" },
+                                              { "label": "数值", "value": "number" },
+                                              { "label": "金额", "value": "currency" },
+                                              { "label": "百分比", "value": "percent" },
+                                              { "label": "文本", "value": "text" },
+                                              { "label": "日期", "value": "date" },
+                                              { "label": "日期时间", "value": "datetime" }
+                                          ]
+                                      }
+                                      return payload;
+                                    `
+                                },
+                                "visibleOn": "['formula','select'].indexOf(config.type) > -1 ? true: false",
+                                "clearValueOnHidden": true
                             },
                             {
-                              "name": "config.summary_object",
-                              "label": "要汇总的对象",
-                              "labelRemark": "字段类型为累计汇总时，必须填写此字段。",
-                              "description": "",
-                              "requiredOn": "config.type === 'summary' ? true: false",
-                              "type": "select",
-                              "joinValues": false,
-                              "extractValue": true,
-                              "clearable": true,
-                              "disabledOn": "${config.is_system == true}",
-                              "searchable": true,
-                              "source": {
-                                  "method": "get",
-                                  "url": "${context.rootUrl}/service/api/amis-metadata-objects/objects/${config.object}/detailLists/options?depend_on_object=${config.object}",
-                                  "headers": {
-                                      "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                                  },
-                                  "adaptor": "",
-                                  "sendOn": "this.config.object",
-                                  "requestAdaptor": ""
-                              },
-                              "visibleOn": "config.type === 'summary' ? true: false",
-                              "clearValueOnHidden": true,
-                              "autoComplete": {
-                                  "method": "get",
-                                  "url": "${context.rootUrl}/service/api/amis-metadata-objects/objects/${config.object}/detailLists/options?depend_on_object=${config.object}",
-                                  "headers": {
-                                      "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                                  },
-                                  "adaptor": "",
-                                  "sendOn": "this.config.object",
-                                  "requestAdaptor": ""
-                              }
+                                "type": "input-table",
+                                "name": "config.options",
+                                "label": t('widgets-meta:sfield_control_select_options', "选择项"),
+                                "labelRemark": t('widgets-meta:sfield_control_select_options_remark', "选择项的每个选项显示名及选项值不能为空，背景颜色请设置为ffffff这种格式的16进制数值。"),
+                                "requiredOn": "config.type === 'select' ? true: false",
+                                "visibleOn": "config.type === 'select' ? true: false",
+                                "clearValueOnHidden": true,
+                                "showIndex": true,
+                                "addable": true,
+                                "draggable": true,
+                                "removable": true,
+                                "columnsTogglable": false,
+                                "needConfirm": false,
+                                "footerAddBtn": {
+                                    "visibleOn": "${!config.is_system}"
+                                },
+                                "columns": [
+                                    { "type": "input-text", "name": "label", "label": t('widgets-meta:sfield_control_option_label', "显示名"), "required": true, "disabledOn": "${config.is_system == true}", "width": 100 },
+                                    { "type": "input-text", "name": "value", "label": t('widgets-meta:sfield_control_option_value', "选项值"), "required": true, "disabledOn": "${config.is_system == true}", "width": 100 },
+                                    { "type": "input-color", "name": "color", "label": t('widgets-meta:sfield_control_option_color', "背景颜色"), "disabledOn": "${config.is_system == true}", "width": 70 },
+                                    { "type": "textarea", "name": "description", "label": t('widgets-meta:sfield_control_option_description', "描述"), "disabledOn": "${config.is_system == true}", "width": 100 },
+                                    { "type": "operation", "label": t('widgets-meta:sfield_control_option_operation', "操作"), "visibleOn": "${!config.is_system}", "width": 70, "fixed": "right" }
+                                ]
                             },
                             {
-                              "name": "config.summary_type",
-                              "label": "汇总类型",
-                              "labelRemark": "字段类型为累计汇总时，必须填写此字段。",
-                              "requiredOn": "config.type === 'summary' ? true: false",
-                              "type": "select",
-                              "joinValues": false,
-                              "options": [
-                                  {
-                                      "label": "COUNT",
-                                      "value": "count"
-                                  },
-                                  {
-                                      "label": "SUM",
-                                      "value": "sum"
-                                  },
-                                  {
-                                      "label": "MIN",
-                                      "value": "min"
-                                  },
-                                  {
-                                      "label": "MAX",
-                                      "value": "max"
-                                  },
-                                  {
-                                      "label": "AVG",
-                                      "value": "avg"
-                                  }
-                              ],
-                              "extractValue": true,
-                              "clearable": true,
-                              "labelField": "label",
-                              "valueField": "value",
-                              "visibleOn": "config.type === 'summary' ? true: false",
-                              "clearValueOnHidden": true,
-                              "disabledOn": "${config.is_system == true}"
+                                "name": "config.precision",
+                                "label": t('widgets-meta:sfield_control_precision', "数字位数"),
+                                "labelRemark": t('widgets-meta:sfield_control_precision_remark', "小数点左边的数字位数"),
+                                "requiredOn": " (function(){ if(['number', 'currency', 'percent', 'summary'].indexOf(config.type) > -1){ return true; } else{ if(['formula'].indexOf(config.type) > -1 && ['number', 'currency', 'percent'].indexOf(config.data_type) > -1){ return true; } else{ return false; } } })() ",
+                                "type": "input-number",
+                                "precision": 0,
+                                "visibleOn": " (function(){ if(['number', 'currency', 'percent', 'summary'].indexOf(config.type) > -1){ return true; } else{ if(['formula'].indexOf(config.type) > -1 && ['number', 'currency', 'percent'].indexOf(config.data_type) > -1){ return true; } else{ return false; } } })() ",
+                                "clearValueOnHidden": true,
+                                "value": 18,
+                                "disabledOn": "${config.is_system == true}"
                             },
                             {
-                              "name": "config.summary_field",
-                              "label": "汇总字段",
-                              "labelRemark": "字段类型为累计汇总且汇总类型不是COUNT时，必须填写此字段，只支持聚合数值、金额、日期、日期时间类型的字段。",
-                              "description": "",
-                              "requiredOn": "config.type === 'summary' && config.summary_type !== 'count' ? true: false",
-                              "type": "select",
-                              "joinValues": false,
-                              "extractValue": true,
-                              "clearable": true,
-                              "disabledOn": "${config.is_system == true}",
-                              "searchable": true,
-                              "source": {
-                                  "method": "post",
-                                  "url": "${context.rootUrl}/graphql?reload=${additionalFilters|join}&depend_on_summary_object=${config.summary_object}&depend_on_summary_type=${config.summary_type}",
-                                  "data": {
-                                      "orderBy": "${orderBy}",
-                                      "orderDir": "${orderDir}",
-                                      "pageNo": "${page}",
-                                      "pageSize": "${perPage}",
-                                      "queryFields": "_id space label:label value:name",
-                                      "query": "{options:object_fields(filters: {__filters}, top: {__top}, sort: \"{__sort}\"){_id space label:label value:name},count:object_fields__count(filters:{__filters})}",
-                                      "$term": "$term",
-                                      "$value": "$config.summary_field",
-                                      "summary_object": "$config.summary_object",
-                                      "summary_type": "$config.summary_type",
-                                      "$": "$$"
-                                  },
-                                  "headers": {
-                                      "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                                  },
-                                  "adaptor": "\n           const data = payload.data;\n            var defaultValueOptions = data.defaultValueOptions;\n            // 字段值下拉选项合并到options中\n            data.options = _.unionWith(defaultValueOptions, data.options, function(a,b){\n                return a[\"value\"]=== b[\"value\"];\n            });\n            delete data.defaultValueOptions;\n            payload.data.options = data.options;\n            return payload;\n        ",
-                                  "sendOn": "this.config.summary_object && this.config.summary_type",
-                                  "requestAdaptor": "\n        var filters = [];\n        var top = 200;\n        if(api.data.$term){\n            filters = [[\"label\", \"contains\", api.data.$term]];\n        }\n        // else if(api.data.$value){\n        //     filters = [[\"_id\", \"=\", api.data.$value]];\n        // }\n\n        var fieldFilters = undefined;\n        var currentAmis = (window.amisRequire && window.amisRequire('amis')) || Amis;\n        //递归fieldFilters数组，检查每一个元素，判断若是公式，就仅把它解析\n        function traverseNestedArray(arr) {\n            for (let i = 0; i < arr.length; i++) {\n                if (Array.isArray(arr[i])) {\n                    // 如果当前元素是数组，则递归调用自身继续遍历\n                    traverseNestedArray(arr[i]);\n                } else {\n                    // 如果当前元素不是数组，则处理该元素\n                    // 下面正则用于匹配amis公式${}\n                    if(/\\$\\{([^}]*)\\}/.test(arr[i])) {\n                        try{\n                            arr[i] = currentAmis.evaluate(arr[i], api.context);\n                        }catch(ex){\n                            console.error(\"运行lookup过滤公式时出现错误:\",ex);\n                        }\n                    }\n                }\n            }\n        }\n        if(fieldFilters && fieldFilters.length){\n            traverseNestedArray(fieldFilters);\n            filters.push(fieldFilters);\n        }\n\n        if(false && false){\n            if(filters.length > 0){\n                filters = [ [\"user_accepted\", \"=\", true], \"and\", filters ]\n            }else{\n                filters = [[\"user_accepted\", \"=\", true]];\n            }\n        }\n\n        const inFilterForm = undefined;\n\n        const listviewFiltersFunction = undefined;\n\n        if(listviewFiltersFunction && !inFilterForm){\n            const _filters0 = listviewFiltersFunction(filters, api.data.$);\n            if(_filters0 && _filters0.length){\n                filters.push(_filters0);\n            }\n        }\n        \n        const filtersFunction = undefined;\n\n        if(filtersFunction && !inFilterForm){\n            const _filters = filtersFunction(filters, api.data.$);\n            if(_filters && _filters.length > 0){\n                filters.push(_filters);\n            }\n        }\n        var sort = \"sort_no asc\";\n        api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', top).replace('{__sort}', sort.trim());\n\n        var defaultValue = api.data.$value;\n        var optionsFiltersOp = \"=\";\n        var optionsFilters = [[\"name\", optionsFiltersOp, []]];\n        if (defaultValue && !api.data.$term) { \n            const defaultValueOptionsQueryData = {\"orderBy\":\"${orderBy}\",\"orderDir\":\"${orderDir}\",\"pageNo\":\"${page}\",\"pageSize\":\"${perPage}\",\"queryFields\":\"_id space label:label value:name\",\"query\":\"{defaultValueOptions:object_fields(filters:{__options_filters}){_id space label:label value:name}}\"};\n            const defaultValueOptionsQuery = defaultValueOptionsQueryData && defaultValueOptionsQueryData.query && defaultValueOptionsQueryData.query.replace(/^{/,\"\").replace(/}$/,\"\");\n            // 字段值单独请求，没值的时候在请求中返回空\n            optionsFilters = [[\"name\", optionsFiltersOp, defaultValue]];\n            if(filters.length > 0){\n                optionsFilters = [filters, optionsFilters];\n            }\n            if(defaultValueOptionsQuery){\n                api.data.query = \"{\"+api.data.query.replace(/^{/,\"\").replace(/}$/,\"\")+\",\"+defaultValueOptionsQuery+\"}\";\n            } \n        }\n        api.data.query = api.data.query.replace(/{__options_filters}/g, JSON.stringify(optionsFilters));\n        return api;\n    "
-                              },
-                              "visibleOn": "config.type === 'summary' && config.summary_object && config.summary_type && config.summary_type !== 'count'",
-                              "clearValueOnHidden": true,
-                              "autoComplete": {
-                                  "method": "get",
-                                  "url": "${context.rootUrl}/service/api/@${config.summary_object}/uiSchema?summary_object=${config.summary_object}&summary_type=${config.summary_type}&term=${term}",
-                                  "data": {
-                                      "summary_type": "${config.summary_type}"
-                                  },
-                                  "headers": {
-                                      "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                                  },
-                                  "sendOn": "!!this.config.summary_object && !!this.config.summary_type",
-                                  "adaptor": "const summary_type = api.body.summary_type;\nconst term = api.query.term;\nlet fields = payload.fields;\nlet options = [];\nif (fields) {\n  if (summary_type && summary_type !== \"count\") {\n    if (summary_type === \"sum\" || summary_type === \"avg\") {\n      /*sum/avg类型可以汇总数值、金额、百分比字段*/\n      _.forEach(fields, (value, key) => {\n        let fieldType = value.type;\n        if ([\"formula\", \"summary\"].indexOf(fieldType) > -1) {\n          /*要聚合的字段为公式或汇总字段时，按其字段数据类型判断是否支持聚合*/\n          fieldType = value.data_type;\n        }\n        if ([\"number\", \"currency\", \"percent\"].indexOf(fieldType) > -1) {\n          options.push({ label: value.label, value: value.name });\n        }\n      })\n    }\n    else {\n      /*min、max类型可以汇总数值、金额、百分比、日期、日期时间字段*/\n      _.forEach(fields, (value, key) => {\n        let fieldType = value.type;\n        if ([\"formula\", \"summary\"].indexOf(fieldType) > -1) {\n          /*要聚合的字段为公式或汇总字段时，按其字段数据类型判断是否支持聚合*/\n          fieldType = value.data_type;\n        }\n        if ([\"number\", \"currency\", \"percent\", \"date\", \"datetime\"].indexOf(fieldType) > -1) {\n          options.push({ label: value.label, value: value.name });\n        }\n      })\n    }\n  }\n  if (term) {\n    options = _.filter(options, (item) => {\n      return item.label.toLowerCase().indexOf(term.toLowerCase()) > -1;\n    })\n  }\n}\npayload = {\n  data: { options: options },\n  msg: \"\",\n  status: 0\n}\nreturn payload;"
-                              }
-                            },
-                            //汇总过滤条件暂时无法直接使用组件，因为数据格式不一致
-                            {
-                              "name": "config.description",
-                              "label": "描述",
-                              "required": false,
-                              "type": "textarea",
-                              "tpl": "<%=(data.config.description || \"\").split(\"\\n\").join('<br>')%>",
-                              "clearValueOnHidden": true
+                                "name": "config.scale",
+                                "label": t('widgets-meta:sfield_control_scale', "小数位数"),
+                                "labelRemark": t('widgets-meta:sfield_control_scale_remark', "如果字段类型是百分比，则表示字段将显示的小数位数，例如，显示两位小数将显示为10.20%。"),
+                                "requiredOn": " (function(){ if(['number', 'currency', 'percent', 'summary'].indexOf(config.type) > -1){ return true; } else{ if(['formula'].indexOf(config.type) > -1 && ['number', 'currency', 'percent'].indexOf(config.data_type) > -1){ return true; } else{ return false; } } })() ",
+                                "type": "input-number",
+                                "min": 0,
+                                "precision": 0,
+                                "visibleOn": " (function(){ if(['number', 'currency', 'percent', 'summary'].indexOf(config.type) > -1){ return true; } else{ if(['formula'].indexOf(config.type) > -1 && ['number', 'currency', 'percent'].indexOf(config.data_type) > -1){ return true; } else{ return false; } } })() ",
+                                "labelClassName": "text-left",
+                                "clearValueOnHidden": true,
+                                "value": 2,
+                                "disabledOn": "${config.is_system == true}"
                             },
                             {
-                              "name": "config.deleted_lookup_record_behavior",
-                              "label": "如果相关表记录被删除怎么办？",
-                              "required": true,
-                              "type": "select",
-                              "joinValues": false,
-                              "options": [
-                                  {
-                                      "label": "清除此字段的值。 如果您将此字段设为必填，您不能选择此选项。",
-                                      "value": "clear"
-                                  },
-                                  {
-                                      "label": "不允许删除＂作为相关表关系的一部分的相关表记录＂。",
-                                      "value": "retain"
-                                  }
-                              ],
-                              "extractValue": true,
-                              "clearable": true,
-                              "labelField": "label",
-                              "valueField": "value",
-                              "visibleOn": " 'lookup' === config.type ? true: false ",
-                              "clearValueOnHidden": true,
-                              "disabledOn": "${config.required==true}",
-                              "value": "${IFS(true===config.required, \"retain\", !config.required && !config.deleted_lookup_record_behavior, \"clear\", config.deleted_lookup_record_behavior)}"
+                                "name": "config.formula",
+                                "label": t('widgets-meta:sfield_control_formula', "公式"),
+                                "labelRemark": t('widgets-meta:sfield_control_formula_remark', "字段类型为自动编号或公式时，必须填写此字段。"),
+                                "description": "",
+                                "requiredOn": "['autonumber', 'formula'].indexOf(config.type) > -1 ? true: false",
+                                "type": "input-formula",
+                                "visibleOn": "['autonumber', 'formula'].indexOf(config.type) > -1 ? true: false",
+                                "clearValueOnHidden": true,
+                                "evalMode": false,
+                                "disabledOn": "${config.is_system == true}",
+                                "variables": "${window:_objectFieldsVariables}"
                             },
                             {
-                              "name": "config.write_requires_master_read",
-                              "label": "当用户对主表记录有读取权限时对子表记录可以增删改",
-                              "labelRemark": "设置主记录上创建、编辑或删除子记录所需的最低访问级别。此字段仅适用于·主表/子表·字段类型。勾选表示允许具有'读取'访问权限的用户创建、编辑或删除子记录。反之表示允许具有'读取/写入'访问权限的用户创建、编辑或删除子记录的权限。",
-                              "type": "checkbox",
-                              "visibleOn": "config.type === 'master_detail' ? true: false",
-                              "clearValueOnHidden": true,
-                              "disabledOn": "${config.is_system == true}"
+                                "name": "config.show_as_qr",
+                                "label": t('widgets-meta:sfield_control_show_as_qr', "显示为二维码"),
+                                "required": false,
+                                "type": "checkbox",
+                                "tpl": null,
+                                "visibleOn": "config.type === 'url' ? true: false",
+                                "clearValueOnHidden": true,
+                                "disabledOn": "${config.is_system == true}"
+                            },
+                            {
+                                "name": "config.coordinatesType",
+                                "label": t('widgets-meta:sfield_control_coordinates_type', "坐标类型"),
+                                "required": false,
+                                "type": "input-text",
+                                "visibleOn": "['location'].indexOf(config.type) > -1 ? true: false",
+                                "clearValueOnHidden": true,
+                                "disabledOn": "${config.is_system == true}",
+                                "value": "bd09"
+                            },
+                            {
+                                "name": "config.formula_blank_value",
+                                "label": t('widgets-meta:sfield_control_formula_blank_value', "空白字段处理"),
+                                "labelRemark": t('widgets-meta:sfield_control_formula_blank_value_remark', "如果您的公式引用了任何数字和货币字段，请指定当这些字段值为空时如何处理公式输出。"),
+                                "description": "",
+                                "requiredOn": "['formula'].indexOf(config.type) > -1 ? true: false",
+                                "type": "select",
+                                "joinValues": false,
+                                "options": [
+                                    { "label": t('widgets-meta:sfield_control_zero_as_blank', "将空白字段视为零"), "value": "zeroes" },
+                                    { "label": t('widgets-meta:sfield_control_blanks_as_blank', "将空白字段视为空白"), "value": "blanks" }
+                                ],
+                                "extractValue": true,
+                                "clearable": true,
+                                "labelField": "label",
+                                "valueField": "value",
+                                "visibleOn": "['formula'].indexOf(config.type) > -1 ? true: false",
+                                "labelClassName": "text-left",
+                                "clearValueOnHidden": true,
+                                "fieldName": "config.formula_blank_value",
+                                "disabledOn": "${config.is_system == true}"
+                            },
+                            {
+                                "name": "config.reference_to",
+                                "label": t('widgets-meta:sfield_control_reference_object', "引用对象"),
+                                "requiredOn": "['lookup','master_detail'].indexOf(config.type) > -1 ? true: false",
+                                "type": "select",
+                                "joinValues": false,
+                                "extractValue": true,
+                                "clearable": true,
+                                "disabledOn": "${config.is_system == true}",
+                                "searchable": true,
+                                "source": {
+                                    "method": "post",
+                                    "url": "${context.rootUrl}/graphql?reload=${additionalFilters|join}",
+                                    "data": {
+                                        "orderBy": "${orderBy}",
+                                        "orderDir": "${orderDir}",
+                                        "pageNo": "${page}",
+                                        "pageSize": "${perPage}",
+                                        "queryFields": "_id space label:label value:name",
+                                        "query": "{options:objects(filters: {__filters}, top: {__top}, sort: \"{__sort}\"){_id space label:label value:name},count:objects__count(filters:{__filters})}",
+                                        "$term": "$term",
+                                        "$value": "$config.reference_to",
+                                        "$": "$$"
+                                    },
+                                    "headers": {
+                                        "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                                    },
+                                    "adaptor": "\n            const data = payload.data;\n            var defaultValueOptions = data.defaultValueOptions;\n            // 字段值下拉选项合并到options中\n            data.options = _.unionWith(defaultValueOptions, data.options, function(a,b){\n                return a[\"value\"]=== b[\"value\"];\n            });\n            delete data.defaultValueOptions;\n            payload.data.options = data.options;\n            return payload;\n        ",
+                                    "requestAdaptor": "\n        var filters = [];\n        var top = 200;\n        if(api.data.$term){\n            filters = [[\"label\", \"contains\", api.data.$term]];\n        }\n        // else if(api.data.$value){\n        //     filters = [[\"_id\", \"=\", api.data.$value]];\n        // }\n\n        var fieldFilters = undefined;\n        var currentAmis = (window.amisRequire && window.amisRequire('amis')) || Amis;\n        //递归fieldFilters数组，检查每一个元素，判断若是公式，就仅把它解析\n        function traverseNestedArray(arr) {\n            for (let i = 0; i < arr.length; i++) {\n                if (Array.isArray(arr[i])) {\n                    // 如果当前元素是数组，则递归调用自身继续遍历\n                    traverseNestedArray(arr[i]);\n                } else {\n                    // 如果当前元素不是数组，则处理该元素\n                    // 下面正则用于匹配amis公式${}\n                    if(/\\$\\{([^}]*)\\}/.test(arr[i])) {\n                        try{\n                            arr[i] = currentAmis.evaluate(arr[i], api.context);\n                        }catch(ex){\n                            console.error(\"运行lookup过滤公式时出现错误:\",ex);\n                        }\n                    }\n                }\n            }\n        }\n        if(fieldFilters && fieldFilters.length){\n            traverseNestedArray(fieldFilters);\n            filters.push(fieldFilters);\n        }\n\n        if(false && false){\n            if(filters.length > 0){\n                filters = [ [\"user_accepted\", \"=\", true], \"and\", filters ]\n            }else{\n                filters = [[\"user_accepted\", \"=\", true]];\n            }\n        }\n\n        const inFilterForm = undefined;\n\n        const listviewFiltersFunction = undefined;\n\n        if(listviewFiltersFunction && !inFilterForm){\n            const _filters0 = listviewFiltersFunction(filters, api.data.$);\n            if(_filters0 && _filters0.length){\n                filters.push(_filters0);\n            }\n        }\n        \n        const filtersFunction = undefined;\n\n        if(filtersFunction && !inFilterForm){\n            const _filters = filtersFunction(filters, api.data.$);\n            if(_filters && _filters.length > 0){\n                filters.push(_filters);\n            }\n        }\n        var sort = \"\";\n        api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', top).replace('{__sort}', sort.trim());\n\n        var defaultValue = api.data.$value;\n        var optionsFiltersOp = \"=\";\n        var optionsFilters = [[\"name\", optionsFiltersOp, []]];\n        if (defaultValue && !api.data.$term) { \n            const defaultValueOptionsQueryData = {\"orderBy\":\"${orderBy}\",\"orderDir\":\"${orderDir}\",\"pageNo\":\"${page}\",\"pageSize\":\"${perPage}\",\"queryFields\":\"_id space label:label value:name\",\"query\":\"{defaultValueOptions:objects(filters:{__options_filters}){_id space label:label value:name}}\"};\n            const defaultValueOptionsQuery = defaultValueOptionsQueryData && defaultValueOptionsQueryData.query && defaultValueOptionsQueryData.query.replace(/^{/,\"\").replace(/}$/,\"\");\n            // 字段值单独请求，没值的时候在请求中返回空\n            optionsFilters = [[\"name\", optionsFiltersOp, defaultValue]];\n            if(filters.length > 0){\n                optionsFilters = [filters, optionsFilters];\n            }\n            if(defaultValueOptionsQuery){\n                api.data.query = \"{\"+api.data.query.replace(/^{/,\"\").replace(/}$/,\"\")+\",\"+defaultValueOptionsQuery+\"}\";\n            } \n        }\n        api.data.query = api.data.query.replace(/{__options_filters}/g, JSON.stringify(optionsFilters));\n        return api;\n    "
+                                },
+                                "menuTpl": "<div>${label}(${value})</div>",
+                                "visibleOn": "['lookup', 'master_detail'].indexOf(config.type) > -1 ? true: false",
+                                "clearValueOnHidden": true
+                            },
+                            {
+                                "name": "config.summary_object",
+                                "label": t('widgets-meta:sfield_control_summary_object', "要汇总的对象"),
+                                "labelRemark": t('widgets-meta:sfield_control_summary_object_remark', "字段类型为累计汇总时，必须填写此字段。"),
+                                "description": "",
+                                "requiredOn": "config.type === 'summary' ? true: false",
+                                "type": "select",
+                                "joinValues": false,
+                                "extractValue": true,
+                                "clearable": true,
+                                "disabledOn": "${config.is_system == true}",
+                                "searchable": true,
+                                "source": {
+                                    "method": "get",
+                                    "url": "${context.rootUrl}/service/api/amis-metadata-objects/objects/${config.object}/detailLists/options?depend_on_object=${config.object}",
+                                    "headers": {
+                                        "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                                    },
+                                    "adaptor": "",
+                                    "sendOn": "this.config.object",
+                                    "requestAdaptor": ""
+                                },
+                                "visibleOn": "config.type === 'summary' ? true: false",
+                                "clearValueOnHidden": true,
+                                "autoComplete": {
+                                    "method": "get",
+                                    "url": "${context.rootUrl}/service/api/amis-metadata-objects/objects/${config.object}/detailLists/options?depend_on_object=${config.object}",
+                                    "headers": {
+                                        "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                                    },
+                                    "adaptor": "",
+                                    "sendOn": "this.config.object",
+                                    "requestAdaptor": ""
+                                }
+                            },
+                            {
+                                "name": "config.summary_type",
+                                "label": t('widgets-meta:sfield_control_summary_type', "汇总类型"),
+                                "labelRemark": t('widgets-meta:sfield_control_summary_type_remark', "字段类型为累计汇总时，必须填写此字段。"),
+                                "requiredOn": "config.type === 'summary' ? true: false",
+                                "type": "select",
+                                "joinValues": false,
+                                "options": [
+                                    { "label": "COUNT", "value": "count" },
+                                    { "label": "SUM", "value": "sum" },
+                                    { "label": "MIN", "value": "min" },
+                                    { "label": "MAX", "value": "max" },
+                                    { "label": "AVG", "value": "avg" }
+                                ],
+                                "extractValue": true,
+                                "clearable": true,
+                                "labelField": "label",
+                                "valueField": "value",
+                                "visibleOn": "config.type === 'summary' ? true: false",
+                                "clearValueOnHidden": true,
+                                "disabledOn": "${config.is_system == true}"
+                            },
+                            {
+                                "name": "config.summary_field",
+                                "label": t('widgets-meta:sfield_control_summary_field', "汇总字段"),
+                                "labelRemark": t('widgets-meta:sfield_control_summary_field_remark', "字段类型为累计汇总且汇总类型不是COUNT时，必须填写此字段，只支持聚合数值、金额、日期、日期时间类型的字段。"),
+                                "description": "",
+                                "requiredOn": "config.type === 'summary' && config.summary_type !== 'count' ? true: false",
+                                "type": "select",
+                                "joinValues": false,
+                                "extractValue": true,
+                                "clearable": true,
+                                "disabledOn": "${config.is_system == true}",
+                                "searchable": true,
+                                "source": {
+                                    "method": "post",
+                                    "url": "${context.rootUrl}/graphql?reload=${additionalFilters|join}&depend_on_summary_object=${config.summary_object}&depend_on_summary_type=${config.summary_type}",
+                                    "data": {
+                                        "orderBy": "${orderBy}",
+                                        "orderDir": "${orderDir}",
+                                        "pageNo": "${page}",
+                                        "pageSize": "${perPage}",
+                                        "queryFields": "_id space label:label value:name",
+                                        "query": "{options:object_fields(filters: {__filters}, top: {__top}, sort: \"{__sort}\"){_id space label:label value:name},count:object_fields__count(filters:{__filters})}",
+                                        "$term": "$term",
+                                        "$value": "$config.summary_field",
+                                        "summary_object": "$config.summary_object",
+                                        "summary_type": "$config.summary_type",
+                                        "$": "$$"
+                                    },
+                                    "headers": {
+                                        "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                                    },
+                                    "adaptor": "\n           const data = payload.data;\n            var defaultValueOptions = data.defaultValueOptions;\n            // 字段值下拉选项合并到options中\n            data.options = _.unionWith(defaultValueOptions, data.options, function(a,b){\n                return a[\"value\"]=== b[\"value\"];\n            });\n            delete data.defaultValueOptions;\n            payload.data.options = data.options;\n            return payload;\n        ",
+                                    "sendOn": "this.config.summary_object && this.config.summary_type",
+                                    "requestAdaptor": "\n        var filters = [];\n        var top = 200;\n        if(api.data.$term){\n            filters = [[\"label\", \"contains\", api.data.$term]];\n        }\n        // else if(api.data.$value){\n        //     filters = [[\"_id\", \"=\", api.data.$value]];\n        // }\n\n        var fieldFilters = undefined;\n        var currentAmis = (window.amisRequire && window.amisRequire('amis')) || Amis;\n        //递归fieldFilters数组，检查每一个元素，判断若是公式，就仅把它解析\n        function traverseNestedArray(arr) {\n            for (let i = 0; i < arr.length; i++) {\n                if (Array.isArray(arr[i])) {\n                    // 如果当前元素是数组，则递归调用自身继续遍历\n                    traverseNestedArray(arr[i]);\n                } else {\n                    // 如果当前元素不是数组，则处理该元素\n                    // 下面正则用于匹配amis公式${}\n                    if(/\\$\\{([^}]*)\\}/.test(arr[i])) {\n                        try{\n                            arr[i] = currentAmis.evaluate(arr[i], api.context);\n                        }catch(ex){\n                            console.error(\"运行lookup过滤公式时出现错误:\",ex);\n                        }\n                    }\n                }\n            }\n        }\n        if(fieldFilters && fieldFilters.length){\n            traverseNestedArray(fieldFilters);\n            filters.push(fieldFilters);\n        }\n\n        if(false && false){\n            if(filters.length > 0){\n                filters = [ [\"user_accepted\", \"=\", true], \"and\", filters ]\n            }else{\n                filters = [[\"user_accepted\", \"=\", true]];\n            }\n        }\n\n        const inFilterForm = undefined;\n\n        const listviewFiltersFunction = undefined;\n\n        if(listviewFiltersFunction && !inFilterForm){\n            const _filters0 = listviewFiltersFunction(filters, api.data.$);\n            if(_filters0 && _filters0.length){\n                filters.push(_filters0);\n            }\n        }\n        \n        const filtersFunction = undefined;\n\n        if(filtersFunction && !inFilterForm){\n            const _filters = filtersFunction(filters, api.data.$);\n            if(_filters && _filters.length > 0){\n                filters.push(_filters);\n            }\n        }\n        var sort = \"sort_no asc\";\n        api.data.query = api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', top).replace('{__sort}', sort.trim());\n\n        var defaultValue = api.data.$value;\n        var optionsFiltersOp = \"=\";\n        var optionsFilters = [[\"name\", optionsFiltersOp, []]];\n        if (defaultValue && !api.data.$term) { \n            const defaultValueOptionsQueryData = {\"orderBy\":\"${orderBy}\",\"orderDir\":\"${orderDir}\",\"pageNo\":\"${page}\",\"pageSize\":\"${perPage}\",\"queryFields\":\"_id space label:label value:name\",\"query\":\"{defaultValueOptions:object_fields(filters:{__options_filters}){_id space label:label value:name}}\"};\n            const defaultValueOptionsQuery = defaultValueOptionsQueryData && defaultValueOptionsQueryData.query && defaultValueOptionsQueryData.query.replace(/^{/,\"\").replace(/}$/,\"\");\n            // 字段值单独请求，没值的时候在请求中返回空\n            optionsFilters = [[\"name\", optionsFiltersOp, defaultValue]];\n            if(filters.length > 0){\n                optionsFilters = [filters, optionsFilters];\n            }\n            if(defaultValueOptionsQuery){\n                api.data.query = \"{\"+api.data.query.replace(/^{/,\"\").replace(/}$/,\"\")+\",\"+defaultValueOptionsQuery+\"}\";\n            } \n        }\n        api.data.query = api.data.query.replace(/{__options_filters}/g, JSON.stringify(optionsFilters));\n        return api;\n    "
+                                },
+                                "visibleOn": "config.type === 'summary' && config.summary_object && config.summary_type && config.summary_type !== 'count'",
+                                "clearValueOnHidden": true,
+                                "autoComplete": {
+                                    "method": "get",
+                                    "url": "${context.rootUrl}/service/api/@${config.summary_object}/uiSchema?summary_object=${config.summary_object}&summary_type=${config.summary_type}&term=${term}",
+                                    "data": {
+                                        "summary_type": "${config.summary_type}"
+                                    },
+                                    "headers": {
+                                        "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                                    },
+                                    "sendOn": "!!this.config.summary_object && !!this.config.summary_type",
+                                    "adaptor": "const summary_type = api.body.summary_type;\nconst term = api.query.term;\nlet fields = payload.fields;\nlet options = [];\nif (fields) {\n  if (summary_type && summary_type !== \"count\") {\n    if (summary_type === \"sum\" || summary_type === \"avg\") {\n      /*sum/avg类型可以汇总数值、金额、百分比字段*/\n      _.forEach(fields, (value, key) => {\n        let fieldType = value.type;\n        if ([\"formula\", \"summary\"].indexOf(fieldType) > -1) {\n          /*要聚合的字段为公式或汇总字段时，按其字段数据类型判断是否支持聚合*/\n          fieldType = value.data_type;\n        }\n        if ([\"number\", \"currency\", \"percent\"].indexOf(fieldType) > -1) {\n          options.push({ label: value.label, value: value.name });\n        }\n      })\n    }\n    else {\n      /*min、max类型可以汇总数值、金额、百分比、日期、日期时间字段*/\n      _.forEach(fields, (value, key) => {\n        let fieldType = value.type;\n        if ([\"formula\", \"summary\"].indexOf(fieldType) > -1) {\n          /*要聚合的字段为公式或汇总字段时，按其字段数据类型判断是否支持聚合*/\n          fieldType = value.data_type;\n        }\n        if ([\"number\", \"currency\", \"percent\", \"date\", \"datetime\"].indexOf(fieldType) > -1) {\n          options.push({ label: value.label, value: value.name });\n        }\n      })\n    }\n  }\n  if (term) {\n    options = _.filter(options, (item) => {\n      return item.label.toLowerCase().indexOf(term.toLowerCase()) > -1;\n    })\n  }\n}\npayload = {\n  data: { options: options },\n  msg: \"\",\n  status: 0\n}\nreturn payload;"
+                                }
+                            },
+                            {
+                                "name": "config.description",
+                                "label": t('widgets-meta:sfield_control_description', "描述"),
+                                "required": false,
+                                "type": "textarea",
+                                "tpl": "<%=(data.config.description || \"\").split(\"\\n\").join('<br>')%>",
+                                "clearValueOnHidden": true
+                            },
+                            {
+                                "name": "config.deleted_lookup_record_behavior",
+                                "label": t('widgets-meta:sfield_control_deleted_lookup_record_behavior', "如果相关表记录被删除怎么办？"),
+                                "required": true,
+                                "type": "select",
+                                "joinValues": false,
+                                "options": [
+                                    { "label": t('widgets-meta:sfield_control_clear_value', "清除此字段的值。 如果您将此字段设为必填，您不能选择此选项。"), "value": "clear" },
+                                    { "label": t('widgets-meta:sfield_control_retain_related_record', "不允许删除＂作为相关表关系的一部分的相关表记录＂。"), "value": "retain" }
+                                ],
+                                "extractValue": true,
+                                "clearable": true,
+                                "labelField": "label",
+                                "valueField": "value",
+                                "visibleOn": " 'lookup' === config.type ? true: false ",
+                                "clearValueOnHidden": true,
+                                "disabledOn": "${config.required==true}",
+                                "value": "${IFS(true===config.required, \"retain\", !config.required && !config.deleted_lookup_record_behavior, \"clear\", config.deleted_lookup_record_behavior)}"
+                            },
+                            {
+                                "name": "config.write_requires_master_read",
+                                "label": t('widgets-meta:sfield_control_write_requires_master_read', "当用户对主表记录有读取权限时对子表记录可以增删改"),
+                                "labelRemark": t('widgets-meta:sfield_control_write_requires_master_read_remark', "设置主记录上创建、编辑或删除子记录所需的最低访问级别。此字段仅适用于·主表/子表·字段类型。勾选表示允许具有'读取'访问权限的用户创建、编辑或删除子记录。反之表示允许具有'读取/写入'访问权限的用户创建、编辑或删除子记录的权限。"),
+                                "type": "checkbox",
+                                "visibleOn": "config.type === 'master_detail' ? true: false",
+                                "clearValueOnHidden": true,
+                                "disabledOn": "${config.is_system == true}"
                             }
                           ]
                         },
                         {
-                          "title": "表单",
+                          "title": t('widgets-meta:sfield_control_form', "表单"),
                           "className": 'ae-formItemControl-body',
                           "body": [
                             {
                                 "name": "config.amis.type",
-                                "label": "输入类型",
+                                "label": t('widgets-meta:sfield_control_input_type', "输入类型"),
                                 "required": false,
                                 "type": "select",
                                 "searchable": true,
                                 "fieldName": "config.amis.type",
                                 "options": [
-                                    {
-                                        "label": "数组输入框 (input-array)",
-                                        "value": "input-array"
-                                    },
-                                    {
-                                        "label": "按钮工具栏 (button-toolbar)",
-                                        "value": "button-toolbar"
-                                    },
-                                    {
-                                        "label": "按钮点选 (button-group-select)",
-                                        "value": "button-group-select"
-                                    },
-                                    {
-                                        "label": "链式下拉框 (chained-select)",
-                                        "value": "chained-select"
-                                    },
-                                    {
-                                        "label": "勾选框 (checkbox)",
-                                        "value": "checkbox"
-                                    },
-                                    {
-                                        "label": "复选框 (checkboxes)",
-                                        "value": "checkboxes"
-                                    },
-                                    {
-                                        "label": "城市选择器 (input-city)",
-                                        "value": "input-city"
-                                    },
-                                    {
-                                        "label": "颜色选择器 (input-color)",
-                                        "value": "input-color"
-                                    },
-                                    {
-                                        "label": "组合 (combo)",
-                                        "value": "combo"
-                                    },
-                                    {
-                                        "label": "组合条件 (condition-builder)",
-                                        "value": "condition-builder"
-                                    },
-                                    {
-                                        "label": "日期 (input-date)",
-                                        "value": "input-date"
-                                    },
-                                    {
-                                        "label": "日期时间 (input-datetime)",
-                                        "value": "input-datetime"
-                                    },
-                                    {
-                                        "label": "月份 (input-month)",
-                                        "value": "input-month"
-                                    },
-                                    {
-                                        "label": "日期范围 (input-date-range)",
-                                        "value": "input-date-range"
-                                    },
-                                    {
-                                        "label": "日期时间范围 (input-datetime-range)",
-                                        "value": "input-datetime-range"
-                                    },
-                                    {
-                                        "label": "月份范围 (input-month-range)",
-                                        "value": "input-month-range"
-                                    },
-                                    {
-                                        "label": "键值对 (input-kv)",
-                                        "value": "input-kv"
-                                    },
-                                    {
-                                        "label": "键值对象 (input-kvs)",
-                                        "value": "input-kvs"
-                                    },
-                                    {
-                                        "label": "公式编辑器 (input-formula)",
-                                        "value": "input-formula"
-                                    },
-                                    {
-                                        "label": "对比编辑器 (diff-editor)",
-                                        "value": "diff-editor"
-                                    },
-                                    {
-                                        "label": "编辑器 (editor)",
-                                        "value": "editor"
-                                    },
-                                    {
-                                        "label": "解析 Excel (input-excel)",
-                                        "value": "input-excel"
-                                    },
-                                    {
-                                        "label": "文件上传 (input-file)",
-                                        "value": "input-file"
-                                    },
-                                    {
-                                        "label": "公式 (formula)",
-                                        "value": "formula"
-                                    },
-                                    {
-                                        "label": "表单项组 (group)",
-                                        "value": "group"
-                                    },
-                                    {
-                                        "label": "隐藏字段 (hidden)",
-                                        "value": "hidden"
-                                    },
-                                    {
-                                        "label": "图片 (input-image)",
-                                        "value": "input-image"
-                                    },
-                                    {
-                                        "label": "输入框组合 (input-group)",
-                                        "value": "input-group"
-                                    },
-                                    {
-                                        "label": "列表选择 (list-select)",
-                                        "value": "list-select"
-                                    },
-                                    {
-                                        "label": "地理位置 (location-picker)",
-                                        "value": "location-picker"
-                                    },
-                                    {
-                                        "label": "UUID",
-                                        "value": "uuid"
-                                    },
-                                    {
-                                        "label": "矩阵选择 (matrix-checkboxes)",
-                                        "value": "matrix-checkboxes"
-                                    },
-                                    {
-                                        "label": "级联选择器 (nested-select)",
-                                        "value": "nested-select"
-                                    },
-                                    {
-                                        "label": "数字输入框 (input-number)",
-                                        "value": "input-number"
-                                    },
-                                    {
-                                        "label": "密码输入框 (input-password)",
-                                        "value": "input-password"
-                                    },
-                                    {
-                                        "label": "列表选择器 (picker)",
-                                        "value": "picker"
-                                    },
-                                    {
-                                        "label": "季度 (input-quarter)",
-                                        "value": "input-quarter"
-                                    },
-                                    {
-                                        "label": "季度范围 (input-quarter-range)",
-                                        "value": "input-quarter-range"
-                                    },
-                                    {
-                                        "label": "单选框 (radio)",
-                                        "value": "radio"
-                                    },
-                                    {
-                                        "label": "单选框 (radios)",
-                                        "value": "radios"
-                                    },
-                                    {
-                                        "label": "图表单选框 (chart-radios)",
-                                        "value": "chart-radios"
-                                    },
-                                    {
-                                        "label": "评分 (input-rating)",
-                                        "value": "input-rating"
-                                    },
-                                    {
-                                        "label": "滑块 (input-range)",
-                                        "value": "input-range"
-                                    },
-                                    {
-                                        "label": "重复频率选择器 (input-repeat)",
-                                        "value": "input-repeat"
-                                    },
-                                    {
-                                        "label": "富文本编辑器 (input-rich-text)",
-                                        "value": "input-rich-text"
-                                    },
-                                    {
-                                        "label": "选择器 (select)",
-                                        "value": "select"
-                                    },
-                                    {
-                                        "label": "子表单 (input-sub-form)",
-                                        "value": "input-sub-form"
-                                    },
-                                    {
-                                        "label": "开关 (switch)",
-                                        "value": "switch"
-                                    },
-                                    {
-                                        "label": "静态展示 (static)",
-                                        "value": "static"
-                                    },
-                                    {
-                                        "label": "文件上传 (input-file)",
-                                        "value": "input-file"
-                                    },
-                                    {
-                                        "label": "表格 (input-table)",
-                                        "value": "input-table"
-                                    },
-                                    {
-                                        "label": "标签选择器 (input-tag)",
-                                        "value": "input-tag"
-                                    },
-                                    {
-                                        "label": "输入框 (input-text)",
-                                        "value": "input-text"
-                                    },
-                                    {
-                                        "label": "多行文本输入框 (textarea)",
-                                        "value": "textarea"
-                                    },
-                                    {
-                                        "label": "时间 (input-time)",
-                                        "value": "input-time"
-                                    },
-                                    {
-                                        "label": "时间范围 (input-time-range)",
-                                        "value": "input-time-range"
-                                    },
-                                    {
-                                        "label": "穿梭器 (transfer)",
-                                        "value": "transfer"
-                                    },
-                                    {
-                                        "label": "穿梭选择器 (transfer-picker)",
-                                        "value": "transfer-picker"
-                                    },
-                                    {
-                                        "label": "组合穿梭器 (tabs-transfer)",
-                                        "value": "tabs-transfer"
-                                    },
-                                    {
-                                        "label": "组合穿梭选择器 (tabs-transfer-picker)",
-                                        "value": "tabs-transfer-picker"
-                                    },
-                                    {
-                                        "label": "树形选择框 (input-tree)",
-                                        "value": "input-tree"
-                                    },
-                                    {
-                                        "label": "树形选择器 (tree-select)",
-                                        "value": "tree-select"
-                                    },
-                                    {
-                                        "label": "年份选择 (input-year)",
-                                        "value": "input-year"
-                                    },
-                                    {
-                                        "label": "年份范围 (input-year-range)",
-                                        "value": "input-year-range"
-                                    },
-                                    {
-                                        "label": "JSON Schema (json-schema)",
-                                        "value": "json-schema"
-                                    },
-                                    {
-                                        "label": "JSON Schema Editor (json-schema-editor)",
-                                        "value": "json-schema-editor"
-                                    },
-                                    {
-                                        "label": "签名面板 (input-signature)",
-                                        "value": "input-signature"
-                                    },
-                                    {
-                                        "label": "验证码输入 (input-verification-code)",
-                                        "value": "input-verification-code"
-                                    }
-                                ]
-                                ,
-                              },
+                                    { "label": t('widgets-meta:sfield_control_input_array', "数组输入框 (input-array)"), "value": "input-array" },
+                                    { "label": t('widgets-meta:sfield_control_button_toolbar', "按钮工具栏 (button-toolbar)"), "value": "button-toolbar" },
+                                    { "label": t('widgets-meta:sfield_control_button_group_select', "按钮点选 (button-group-select)"), "value": "button-group-select" },
+                                    { "label": t('widgets-meta:sfield_control_chained_select', "链式下拉框 (chained-select)"), "value": "chained-select" },
+                                    { "label": t('widgets-meta:sfield_control_checkbox', "勾选框 (checkbox)"), "value": "checkbox" },
+                                    { "label": t('widgets-meta:sfield_control_checkboxes', "复选框 (checkboxes)"), "value": "checkboxes" },
+                                    { "label": t('widgets-meta:sfield_control_input_city', "城市选择器 (input-city)"), "value": "input-city" },
+                                    { "label": t('widgets-meta:sfield_control_input_color', "颜色选择器 (input-color)"), "value": "input-color" },
+                                    { "label": t('widgets-meta:sfield_control_combo', "组合 (combo)"), "value": "combo" },
+                                    { "label": t('widgets-meta:sfield_control_condition_builder', "组合条件 (condition-builder)"), "value": "condition-builder" },
+                                    { "label": t('widgets-meta:sfield_control_input_date', "日期 (input-date)"), "value": "input-date" },
+                                    { "label": t('widgets-meta:sfield_control_input_datetime', "日期时间 (input-datetime)"), "value": "input-datetime" },
+                                    { "label": t('widgets-meta:sfield_control_input_month', "月份 (input-month)"), "value": "input-month" },
+                                    { "label": t('widgets-meta:sfield_control_input_date_range', "日期范围 (input-date-range)"), "value": "input-date-range" },
+                                    { "label": t('widgets-meta:sfield_control_input_datetime_range', "日期时间范围 (input-datetime-range)"), "value": "input-datetime-range" },
+                                    { "label": t('widgets-meta:sfield_control_input_month_range', "月份范围 (input-month-range)"), "value": "input-month-range" },
+                                    { "label": t('widgets-meta:sfield_control_input_kv', "键值对 (input-kv)"), "value": "input-kv" },
+                                    { "label": t('widgets-meta:sfield_control_input_kvs', "键值对象 (input-kvs)"), "value": "input-kvs" },
+                                    { "label": t('widgets-meta:sfield_control_input_formula', "公式编辑器 (input-formula)"), "value": "input-formula" },
+                                    { "label": t('widgets-meta:sfield_control_diff_editor', "对比编辑器 (diff-editor)"), "value": "diff-editor" },
+                                    { "label": t('widgets-meta:sfield_control_editor', "编辑器 (editor)"), "value": "editor" },
+                                    { "label": t('widgets-meta:sfield_control_input_excel', "解析 Excel (input-excel)"), "value": "input-excel" },
+                                    { "label": t('widgets-meta:sfield_control_input_file', "文件上传 (input-file)"), "value": "input-file" },
+                                    { "label": t('widgets-meta:sfield_control_formula', "公式 (formula)"), "value": "formula" },
+                                    { "label": t('widgets-meta:sfield_control_group', "表单项组 (group)"), "value": "group" },
+                                    { "label": t('widgets-meta:sfield_control_hidden', "隐藏字段 (hidden)"), "value": "hidden" },
+                                    { "label": t('widgets-meta:sfield_control_input_image', "图片 (input-image)"), "value": "input-image" },
+                                    { "label": t('widgets-meta:sfield_control_input_group', "输入框组合 (input-group)"), "value": "input-group" },
+                                    { "label": t('widgets-meta:sfield_control_list_select', "列表选择 (list-select)"), "value": "list-select" },
+                                    { "label": t('widgets-meta:sfield_control_location_picker', "地理位置 (location-picker)"), "value": "location-picker" },
+                                    { "label": t('widgets-meta:sfield_control_uuid', "UUID"), "value": "uuid" },
+                                    { "label": t('widgets-meta:sfield_control_matrix_checkboxes', "矩阵选择 (matrix-checkboxes)"), "value": "matrix-checkboxes" },
+                                    { "label": t('widgets-meta:sfield_control_nested_select', "级联选择器 (nested-select)"), "value": "nested-select" },
+                                    { "label": t('widgets-meta:sfield_control_input_number', "数字输入框 (input-number)"), "value": "input-number" },
+                                    { "label": t('widgets-meta:sfield_control_input_password', "密码输入框 (input-password)"), "value": "input-password" },
+                                    { "label": t('widgets-meta:sfield_control_picker', "列表选择器 (picker)"), "value": "picker" },
+                                    { "label": t('widgets-meta:sfield_control_input_quarter', "季度 (input-quarter)"), "value": "input-quarter" },
+                                    { "label": t('widgets-meta:sfield_control_input_quarter_range', "季度范围 (input-quarter-range)"), "value": "input-quarter-range" },
+                                    { "label": t('widgets-meta:sfield_control_radio', "单选框 (radio)"), "value": "radio" },
+                                    { "label": t('widgets-meta:sfield_control_radios', "单选框 (radios)"), "value": "radios" },
+                                    { "label": t('widgets-meta:sfield_control_chart_radios', "图表单选框 (chart-radios)"), "value": "chart-radios" },
+                                    { "label": t('widgets-meta:sfield_control_input_rating', "评分 (input-rating)"), "value": "input-rating" },
+                                    { "label": t('widgets-meta:sfield_control_input_range', "滑块 (input-range)"), "value": "input-range" },
+                                    { "label": t('widgets-meta:sfield_control_input_repeat', "重复频率选择器 (input-repeat)"), "value": "input-repeat" },
+                                    { "label": t('widgets-meta:sfield_control_input_rich_text', "富文本编辑器 (input-rich-text)"), "value": "input-rich-text" },
+                                    { "label": t('widgets-meta:sfield_control_select', "选择器 (select)"), "value": "select" },
+                                    { "label": t('widgets-meta:sfield_control_input_sub_form', "子表单 (input-sub-form)"), "value": "input-sub-form" },
+                                    { "label": t('widgets-meta:sfield_control_switch', "开关 (switch)"), "value": "switch" },
+                                    { "label": t('widgets-meta:sfield_control_static', "静态展示 (static)"), "value": "static" },
+                                    { "label": t('widgets-meta:sfield_control_input_file', "文件上传 (input-file)"), "value": "input-file" },
+                                    { "label": t('widgets-meta:sfield_control_input_table', "表格 (input-table)"), "value": "input-table" },
+                                    { "label": t('widgets-meta:sfield_control_input_tag', "标签选择器 (input-tag)"), "value": "input-tag" },
+                                    { "label": t('widgets-meta:sfield_control_input_text', "输入框 (input-text)"), "value": "input-text" },
+                                    { "label": t('widgets-meta:sfield_control_textarea', "多行文本输入框 (textarea)"), "value": "textarea" },
+                                    { "label": t('widgets-meta:sfield_control_input_time', "时间 (input-time)"), "value": "input-time" },
+                                    { "label": t('widgets-meta:sfield_control_input_time_range', "时间范围 (input-time-range)"), "value": "input-time-range" },
+                                    { "label": t('widgets-meta:sfield_control_transfer', "穿梭器 (transfer)"), "value": "transfer" },
+                                    { "label": t('widgets-meta:sfield_control_transfer_picker', "穿梭选择器 (transfer-picker)"), "value": "transfer-picker" },
+                                    { "label": t('widgets-meta:sfield_control_tabs_transfer', "组合穿梭器 (tabs-transfer)"), "value": "tabs-transfer" },
+                                    { "label": t('widgets-meta:sfield_control_tabs_transfer_picker', "组合穿梭选择器 (tabs-transfer-picker)"), "value": "tabs-transfer-picker" },
+                                    { "label": t('widgets-meta:sfield_control_input_tree', "树形选择框 (input-tree)"), "value": "input-tree" },
+                                    { "label": t('widgets-meta:sfield_control_tree_select', "树形选择器 (tree-select)"), "value": "tree-select" },
+                                    { "label": t('widgets-meta:sfield_control_input_year', "年份选择 (input-year)"), "value": "input-year" },
+                                    { "label": t('widgets-meta:sfield_control_input_year_range', "年份范围 (input-year-range)"), "value": "input-year-range" },
+                                    { "label": t('widgets-meta:sfield_control_json_schema', "JSON Schema (json-schema)"), "value": "json-schema" },
+                                    { "label": t('widgets-meta:sfield_control_json_schema_editor', "JSON Schema Editor (json-schema-editor)"), "value": "json-schema-editor" },
+                                    { "label": t('widgets-meta:sfield_control_input_signature', "签名面板 (input-signature)"), "value": "input-signature" },
+                                    { "label": t('widgets-meta:sfield_control_input_verification_code', "验证码输入 (input-verification-code)"), "value": "input-verification-code" }
+                                ],
+                                "extractValue": true,
+                                "clearable": true,
+                                "fieldName": "config.amis.type",
+                                "labelClassName": "text-left",
+                                "clearValueOnHidden": true
+                            },
                             {
                                 "name": "config.visible_on",
-                                "label": "显示公式",
+                                "label": t('widgets-meta:sfield_control_visible_on', "显示公式"),
                                 "type": 'input-formula',
                                 "mixedMode": true
                             },
                             {
-                              "name": "config.readonly",
-                              "label": "只读",
-                              "labelRemark": "只读字段不显示在表单上，数据不会提交到服务端。",
-                              "required": false,
-                              "type": "checkbox",
-                              "tpl": null,
-                              "clearValueOnHidden": true,
-                              "fieldName": "config.readonly"
+                                "name": "config.readonly",
+                                "label": t('widgets-meta:sfield_control_readonly', "只读"),
+                                "labelRemark": t('widgets-meta:sfield_control_readonly_remark', "只读字段不显示在表单上，数据不会提交到服务端。"),
+                                "required": false,
+                                "type": "checkbox",
+                                "tpl": null,
+                                "clearValueOnHidden": true,
+                                "fieldName": "config.readonly"
                             },
                             {
-                              "name": "config.static",
-                              "label": "静态",
-                              "labelRemark": "静态字段在表单上显示，用户不可编辑，可动态赋值。",
-                              "required": false,
-                              "type": "checkbox",
-                              "tpl": null,
-                              "clearValueOnHidden": true,
-                              "fieldName": "config.static"
+                                "name": "config.static",
+                                "label": t('widgets-meta:sfield_control_static', "静态"),
+                                "labelRemark": t('widgets-meta:sfield_control_static_remark', "静态字段在表单上显示，用户不可编辑，可动态赋值。"),
+                                "required": false,
+                                "type": "checkbox",
+                                "tpl": null,
+                                "clearValueOnHidden": true,
+                                "fieldName": "config.static"
                             },
                             {
-                              "name": "config.inlineHelpText",
-                              "label": "提示文本",
-                              "required": false,
-                              "type": "textarea",
-                              "tpl": "<%=(data.config.inlineHelpText || \"\").split(\"\\n\").join('<br>')%>",
-                              "className": "col-span-2 m-0 steedos-textarea-edit ",
-                              "labelClassName": "text-left",
-                              "clearValueOnHidden": true,
-                              "fieldName": "config.inlineHelpText"
+                                "name": "config.inlineHelpText",
+                                "label": t('widgets-meta:sfield_control_inline_help_text', "提示文本"),
+                                "required": false,
+                                "type": "textarea",
+                                "tpl": "<%=(data.config.inlineHelpText || \"\").split(\"\\n\").join('<br>')%>",
+                                "className": "col-span-2 m-0 steedos-textarea-edit ",
+                                "labelClassName": "text-left",
+                                "clearValueOnHidden": true,
+                                "fieldName": "config.inlineHelpText"
                             },
                             {
-                              "name": "config.enable_enhanced_lookup",
-                              "label": "弹出选择",
-                              "labelRemark": "被其他字段引用时，使用弹出框选择记录。",
-                              "required": false,
-                              "type": "checkbox",
-                              "tpl": null,
-                              "visibleOn": "['lookup'].indexOf(config.type) > -1 ? true: false",
-                              "clearValueOnHidden": true
+                                "name": "config.enable_enhanced_lookup",
+                                "label": t('widgets-meta:sfield_control_enable_enhanced_lookup', "弹出选择"),
+                                "labelRemark": t('widgets-meta:sfield_control_enable_enhanced_lookup_remark', "被其他字段引用时，使用弹出框选择记录。"),
+                                "required": false,
+                                "type": "checkbox",
+                                "tpl": null,
+                                "visibleOn": "['lookup'].indexOf(config.type) > -1 ? true: false",
+                                "clearValueOnHidden": true
                             },
                             {
-                              "name": "config.create",
-                              "label": "弹出选择时允许新建",
-                              "required": false,
-                              "type": "checkbox",
-                              "tpl": null,
-                              "visibleOn": "['lookup'].indexOf(config.type) > -1 ? true: false",
-                              "clearValueOnHidden": true,
-                              "fieldName": "config.create",
-                              "disabledOn": "${config.is_system == true}"
+                                "name": "config.create",
+                                "label": t('widgets-meta:sfield_control_create_allowance', "弹出选择时允许新建"),
+                                "required": false,
+                                "type": "checkbox",
+                                "tpl": null,
+                                "visibleOn": "['lookup'].indexOf(config.type) > -1 ? true: false",
+                                "clearValueOnHidden": true,
+                                "fieldName": "config.create",
+                                "disabledOn": "${config.is_system == true}"
                             },
                             {
-                              "name": "config.depend_on",
-                              "label": "依赖字段",
-                              "labelRemark": "依赖字段的变化会触发当前字段重算",
-                              "description": "",
-                              "required": false,
-                              "type": "select",
-                              "joinValues": false,
-                              "extractValue": true,
-                              "clearable": true,
-                              "disabledOn": "${config.is_system == true}",
-                              "visibleOn": "['lookup', 'master_detail'].indexOf(config.type) > -1 ? true: false",
-                              "searchable": true,
-                              "multiple": true,
-                              "source": {
-                                  "method": "post",
-                                  "url": "${context.rootUrl}/graphql?reload=${additionalFilters|join}",
-                                  "data": {
-                                      "query": `{options:object_fields(filters: ["object","=","\${config.object}"], top: 200, sort: "created desc"){_id space label:label value:name},count:object_fields__count(filters:["object","=","\${config.object}"])}`,
-                                      "$value": "$config.depend_on",
-                                      "$": "$$"
+                                "name": "config.depend_on",
+                                "label": t('widgets-meta:sfield_control_depend_on', "依赖字段"),
+                                "labelRemark": t('widgets-meta:sfield_control_depend_on_remark', "依赖字段的变化会触发当前字段重算"),
+                                "description": "",
+                                "required": false,
+                                "type": "select",
+                                "joinValues": false,
+                                "extractValue": true,
+                                "clearable": true,
+                                "disabledOn": "${config.is_system == true}",
+                                "visibleOn": "['lookup', 'master_detail'].indexOf(config.type) > -1 ? true: false",
+                                "searchable": true,
+                                "multiple": true,
+                                "source": {
+                                    "method": "post",
+                                    "url": "${context.rootUrl}/graphql?reload=${additionalFilters|join}",
+                                    "data": {
+                                        "query": `{options:object_fields(filters: ["object","=","\${config.object}"], top: 200, sort: "created desc"){_id space label:label value:name},count:object_fields__count(filters:["object","=","\${config.object}"])}`,
+                                        "$value": "$config.depend_on",
+                                        "$": "$$"
+                                    },
+                                    "sendOn": "this.config.object",
+                                    "trackExpression": "${config.object}",
+                                    "headers": {
+                                        "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                                    },
+                                    "adaptor": "\n            const data = payload.data;\n            var defaultValueOptions = data.defaultValueOptions;\n            // 字段值下拉选项合并到options中\n            data.options = _.unionWith(defaultValueOptions, data.options, function(a,b){\n                return a[\"value\"]=== b[\"value\"];\n            });\n            delete data.defaultValueOptions;\n            payload.data.options = data.options;\n            return payload;\n        ",
                                   },
-                                  "sendOn": "this.config.object",
-                                  "trackExpression": "${config.object}",
-                                  "headers": {
-                                      "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                                  },
-                                  "adaptor": "\n            const data = payload.data;\n            var defaultValueOptions = data.defaultValueOptions;\n            // 字段值下拉选项合并到options中\n            data.options = _.unionWith(defaultValueOptions, data.options, function(a,b){\n                return a[\"value\"]=== b[\"value\"];\n            });\n            delete data.defaultValueOptions;\n            payload.data.options = data.options;\n            return payload;\n        ",
-                                },
-                              "clearValueOnHidden": true
+                                "clearValueOnHidden": true
                             },
                             {
-                              "name": "config.enable_thousands",
-                              "label": "显示千分符",
-                              "required": false,
-                              "type": "checkbox",
-                              "tpl": null,
-                              "visibleOn": "['number','currency','percent'].indexOf(config.type) > -1 ? true: false",
-                              "clearValueOnHidden": true,
-                              "fieldName": "config.enable_thousands"
+                                "name": "config.enable_thousands",
+                                "label": t('widgets-meta:sfield_control_enable_thousands', "显示千分符"),
+                                "required": false,
+                                "type": "checkbox",
+                                "tpl": null,
+                                "visibleOn": "['number','currency','percent'].indexOf(config.type) > -1 ? true: false",
+                                "clearValueOnHidden": true,
+                                "fieldName": "config.enable_thousands"
                             }
-                            //filters
-                            //自动填充
                           ]
                         },
                         {
-                          "title": "高级",
+                          "title": t('widgets-meta:sfield_control_advanced', "高级"),
                           "className": 'ae-formItemControl-body',
                           "body": [
                             {
-                              "name": "config.unique",
-                              "label": "创建唯一索引",
-                              "labelRemark": "默认每天凌晨执行一次创建，已有的索引不重复创建。",
-                              "required": false,
-                              "type": "checkbox",
-                              "tpl": null,
-                              "clearValueOnHidden": true
+                                "name": "config.unique",
+                                "label": t('widgets-meta:sfield_control_create_unique_index', "创建唯一索引"),
+                                "labelRemark": t('widgets-meta:sfield_control_create_unique_index_remark', "默认每天凌晨执行一次创建，已有的索引不重复创建。"),
+                                "required": false,
+                                "type": "checkbox",
+                                "tpl": null,
+                                "clearValueOnHidden": true
                             },
                             {
-                              "name": "config.filterable",
-                              "label": "列表页过滤器默认字段",
-                              "required": false,
-                              "type": "checkbox",
-                              "tpl": null,
-                              "clearValueOnHidden": true
+                                "name": "config.filterable",
+                                "label": t('widgets-meta:sfield_control_default_filter_field', "列表页过滤器默认字段"),
+                                "required": false,
+                                "type": "checkbox",
+                                "tpl": null,
+                                "clearValueOnHidden": true
                             },
                             {
-                              "name": "config.index",
-                              "label": "创建索引",
-                              "labelRemark": "默认每天凌晨执行一次创建，已有的索引不重复创建。",
-                              "required": false,
-                              "type": "checkbox",
-                              "tpl": null,
-                              "clearValueOnHidden": true
+                                "name": "config.index",
+                                "label": t('widgets-meta:sfield_control_create_index', "创建索引"),
+                                "labelRemark": t('widgets-meta:sfield_control_create_index_remark', "默认每天凌晨执行一次创建，已有的索引不重复创建。"),
+                                "required": false,
+                                "type": "checkbox",
+                                "tpl": null,
+                                "clearValueOnHidden": true
                             },
                             {
-                              "name": "config.is_name",
-                              "label": "名称字段",
-                              "required": false,
-                              "type": "checkbox",
-                              "tpl": null,
-                              "visibleOn": "${ARRAYSOME(['text', 'textarea', 'autonumber', 'date', 'datetime', 'time', 'formula', 'lookup', 'master_detail'], item => item === config.type) && !config.multiple}",
-                              "clearValueOnHidden": true,
-                              "disabledOn": "${config.is_system == true}"
+                                "name": "config.is_name",
+                                "label": t('widgets-meta:sfield_control_name_field', "名称字段"),
+                                "required": false,
+                                "type": "checkbox",
+                                "tpl": null,
+                                "visibleOn": "${ARRAYSOME(['text', 'textarea', 'autonumber', 'date', 'datetime', 'time', 'formula', 'lookup', 'master_detail'], item => item === config.type) && !config.multiple}",
+                                "clearValueOnHidden": true,
+                                "disabledOn": "${config.is_system == true}"
                             },
                             {
-                              "name": "config.reference_to_field",
-                              "label": "外键字段",
-                              "labelRemark": "关联的对象保存到当前对象字段的值；例如：A对象关联B对象后，当A1记录关联了B1记录，默认会存B1记录的_id存到A1记录中。如果修改了外键字段后，会将“外键字段”替换_id存储到A1记录中。",
-                              "description": "默认为主键，默认值是_id",
-                              "required": false,
-                              "type": "select",
-                              "joinValues": false,
-                              "extractValue": true,
-                              "clearable": true,
-                              "disabledOn": "${config.is_system == true}",
-                              "visibleOn": "['lookup', 'master_detail'].indexOf(config.type) > -1 ? true: false",
-                              "searchable": true,
-                              "multiple": false,
-                              "source": {
-                                  "method": "post",
-                                  "url": "${context.rootUrl}/graphql?reload=${additionalFilters|join}",
-                                  "data": {
-                                      "query": `{options:object_fields(filters: ["object","=","\${config.reference_to}"], top: 200, sort: "created desc"){_id space label:label value:name},count:object_fields__count(filters:["object","=","\${config.reference_to}"])}`,
-                                      "$value": "$config.reference_to_field",
-                                      "$": "$$"
-                                  },
-                                  "sendOn": "this.config.reference_to",
-                                  "trackExpression": "${config.reference_to}",
-                                  "headers": {
-                                      "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                                  },
-                                  "adaptor": "\n            const data = payload.data;\n            var defaultValueOptions = data.defaultValueOptions;\n            // 字段值下拉选项合并到options中\n            data.options = _.unionWith(defaultValueOptions, data.options, function(a,b){\n                return a[\"value\"]=== b[\"value\"];\n            });\n            delete data.defaultValueOptions;\n            payload.data.options = data.options;\n            return payload;\n        ",
+                                "name": "config.reference_to_field",
+                                "label": t('widgets-meta:sfield_control_foreign_key_field', "外键字段"),
+                                "labelRemark": t('widgets-meta:sfield_control_foreign_key_field_remark', "关联的对象保存到当前对象字段的值；例如：A对象关联B对象后，当A1记录关联了B1记录，默认会存B1记录的_id存到A1记录中。如果修改了外键字段后，会将“外键字段”替换_id存储到A1记录中。"),
+                                "description": t('widgets-meta:sfield_control_foreign_key_field_default', "默认为主键，默认值是_id"),
+                                "required": false,
+                                "type": "select",
+                                "joinValues": false,
+                                "extractValue": true,
+                                "clearable": true,
+                                "disabledOn": "${config.is_system == true}",
+                                "visibleOn": "['lookup', 'master_detail'].indexOf(config.type) > -1 ? true: false",
+                                "searchable": true,
+                                "multiple": false,
+                                "source": {
+                                    "method": "post",
+                                    "url": "${context.rootUrl}/graphql?reload=${additionalFilters|join}",
+                                    "data": {
+                                        "query": `{options:object_fields(filters: ["object","=","\${config.reference_to}"], top: 200, sort: "created desc"){_id space label:label value:name},count:object_fields__count(filters:["object","=","\${config.reference_to}"])}`,
+                                        "$value": "$config.reference_to_field",
+                                        "$": "$$"
+                                    },
+                                    "sendOn": "this.config.reference_to",
+                                    "trackExpression": "${config.reference_to}",
+                                    "headers": {
+                                        "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                                    },
+                                    "adaptor": "\n            const data = payload.data;\n            var defaultValueOptions = data.defaultValueOptions;\n            // 字段值下拉选项合并到options中\n            data.options = _.unionWith(defaultValueOptions, data.options, function(a,b){\n                return a[\"value\"]=== b[\"value\"];\n            });\n            delete data.defaultValueOptions;\n            payload.data.options = data.options;\n            return payload;\n        ",
                                 },
-                              "clearValueOnHidden": true
+                                "clearValueOnHidden": true
                             }
                           ]
                         }
@@ -1405,33 +909,33 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
 
 // 针对每个字段类型生成函数和元数据
 const fieldTypes = [
-    { name: "Text", type: "text", title: "文本", icon: "fa-fw fa fa-list-alt" },
-    { name: "Textarea", type: "textarea", title: "长文本", icon: "fa-fw fa fa-list-alt" },
-    { name: "Html", type: "html", title: "富文本", icon: "fa-fw fa fa-code" },
-    { name: "Lookup", type: "lookup", title: "相关表关系", icon: "fa-fw fa fa-search" },
-    { name: "MasterDetail", type: "master_detail", title: "主/子表关系", icon: "fa-fw fa fa-link" },
-    { name: "Select", type: "select", title: "选择", icon: "fa-fw fa fa-list" },
-    { name: "Boolean", type: "boolean", title: "布尔", icon: "fa-fw fa fa-check" },
-    { name: "Date", type: "date", title: "日期", icon: "fa-fw fa fa-calendar" },
-    { name: "Datetime", type: "datetime", title: "日期时间", icon: "fa-fw fa fa-clock" },
-    { name: "Time", type: "time", title: "时间", icon: "fa-fw fa fa-clock" },
-    { name: "Number", type: "number", title: "数字", icon: "fa-fw fa fa-calculator" },
-    { name: "Currency", type: "currency", title: "货币", icon: "fa-fw fa fa-jpy" },
-    { name: "Percent", type: "percent", title: "百分比", icon: "fa-fw fa fa-percent" },
-    { name: "Image", type: "image", title: "图片", icon: "fa-fw fa fa-image" },
-    { name: "File", type: "file", title: "文件", icon: "fa-fw fa fa-file" },
-    { name: "Code", type: "code", title: "代码", icon: "fa-fw fa fa-code" },
-    { name: "Markdown", type: "markdown", title: "Markdown", icon: "fa-fw fa fa-markdown" },
-    { name: "Color", type: "color", title: "颜色", icon: "fa-fw fa fa-palette" },
-    { name: "Toggle", type: "toggle", title: "切换", icon: "fa-fw fa fa-toggle-on" },
-    { name: "Password", type: "password", title: "密码", icon: "fa-fw fa fa-key" },
-    { name: "Autonumber", type: "autonumber", title: "自动编号", icon: "fa-fw fa fa-hashtag" },
-    { name: "Url", type: "url", title: "URL", icon: "fa-fw fa fa-link" },
-    { name: "Email", type: "email", title: "电子邮件", icon: "fa-fw fa fa-envelope" },
-    { name: "Location", type: "location", title: "位置", icon: "fa-fw fa fa-map-marker" },
-    { name: "Formula", type: "formula", title: "公式", icon: "fa-fw fa fa-subscript" },
-    { name: "Summary", type: "summary", title: "累计汇总", icon: "fa-fw fa fa-superscript" },
-    { name: "Table", type: "table", title: "表格", icon: "fa-fw fa fa-table" }
+    { name: "Text", type: "text", title: t(`widgets-meta:sfield_text`), icon: "fa-fw fa fa-list-alt" },
+    { name: "Textarea", type: "textarea", title: t('widgets-meta:sfield_textarea', "长文本"), icon: "fa-fw fa fa-list-alt" },
+    { name: "Html", type: "html", title: t('widgets-meta:sfield_html', "富文本"), icon: "fa-fw fa fa-code" },
+    { name: "Lookup", type: "lookup", title: t('widgets-meta:sfield_lookup', "相关表关系"), icon: "fa-fw fa fa-search" },
+    { name: "MasterDetail", type: "master_detail", title: t('widgets-meta:sfield_master_detail', "主/子表关系"), icon: "fa-fw fa fa-link" },
+    { name: "Select", type: "select", title: t('widgets-meta:sfield_select', "选择"), icon: "fa-fw fa fa-list" },
+    { name: "Boolean", type: "boolean", title: t('widgets-meta:sfield_boolean', "布尔"), icon: "fa-fw fa fa-check" },
+    { name: "Date", type: "date", title: t('widgets-meta:sfield_date', "日期"), icon: "fa-fw fa fa-calendar" },
+    { name: "Datetime", type: "datetime", title: t('widgets-meta:sfield_datetime', "日期时间"), icon: "fa-fw fa fa-clock" },
+    { name: "Time", type: "time", title: t('widgets-meta:sfield_time', "时间"), icon: "fa-fw fa fa-clock" },
+    { name: "Number", type: "number", title: t('widgets-meta:sfield_number', "数字"), icon: "fa-fw fa fa-calculator" },
+    { name: "Currency", type: "currency", title: t('widgets-meta:sfield_currency', "货币"), icon: "fa-fw fa fa-jpy" },
+    { name: "Percent", type: "percent", title: t('widgets-meta:sfield_percent', "百分比"), icon: "fa-fw fa fa-percent" },
+    { name: "Image", type: "image", title: t('widgets-meta:sfield_image', "图片"), icon: "fa-fw fa fa-image" },
+    { name: "File", type: "file", title: t('widgets-meta:sfield_file', "文件"), icon: "fa-fw fa fa-file" },
+    { name: "Code", type: "code", title: t('widgets-meta:sfield_code', "代码"), icon: "fa-fw fa fa-code" },
+    { name: "Markdown", type: "markdown", title: t('widgets-meta:sfield_markdown', "Markdown"), icon: "fa-fw fa fa-markdown" },
+    { name: "Color", type: "color", title: t('widgets-meta:sfield_color', "颜色"), icon: "fa-fw fa fa-palette" },
+    { name: "Toggle", type: "toggle", title: t('widgets-meta:sfield_toggle', "切换"), icon: "fa-fw fa fa-toggle-on" },
+    { name: "Password", type: "password", title: t('widgets-meta:sfield_password', "密码"), icon: "fa-fw fa fa-key" },
+    { name: "Autonumber", type: "autonumber", title: t('widgets-meta:sfield_autonumber', "自动编号"), icon: "fa-fw fa fa-hashtag" },
+    { name: "Url", type: "url", title: t('widgets-meta:sfield_url', "URL"), icon: "fa-fw fa fa-link" },
+    { name: "Email", type: "email", title: t('widgets-meta:sfield_email', "电子邮件"), icon: "fa-fw fa fa-envelope" },
+    { name: "Location", type: "location", title: t('widgets-meta:sfield_location', "位置"), icon: "fa-fw fa fa-map-marker" },
+    { name: "Formula", type: "formula", title: t('widgets-meta:sfield_formula', "公式"), icon: "fa-fw fa fa-subscript" },
+    { name: "Summary", type: "summary", title: t('widgets-meta:sfield_summary', "累计汇总"), icon: "fa-fw fa fa-superscript" },
+    { name: "Table", type: "table", title: t('widgets-meta:sfield_table', "表格"), icon: "fa-fw fa fa-table" }
 ];
 
 const fieldMetas = [];

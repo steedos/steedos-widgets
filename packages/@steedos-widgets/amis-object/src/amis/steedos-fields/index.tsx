@@ -60,11 +60,12 @@ const createFieldFunction = (type: string) => {
     
 
     if(has(props, '$$editor')){
+      const t = (window as any).steedosI18next.t;
       // props.config = Object.assign({}, props.config, {label: `${props.config.label}:${props.config.name}`})
       if(props.config.hidden || props.config.visible_on === '{{false}}'){
-        props.config = Object.assign({}, props.config, {label: `${props.config.label}(隐藏)`, visible_on: null})
+        props.config = Object.assign({}, props.config, {label: `${props.config.label}(${t('widgets-meta:hidden', '隐藏')})`, visible_on: null})
       }else if(props.config.type === 'autonumber' && props.config.autonumber_enable_modify != true){
-        props.config = Object.assign({}, props.config, {label: `${props.config.label}(隐藏)`, autonumber_enable_modify: true})
+        props.config = Object.assign({}, props.config, {label: `${props.config.label}(${t('widgets-meta:hidden', '隐藏')})`, autonumber_enable_modify: true})
       }
 
       if(props.config.amis){

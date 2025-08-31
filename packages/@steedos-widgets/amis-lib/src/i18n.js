@@ -8,7 +8,7 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import en_us from "./locales/en-US.json"
 import zh_cn from "./locales/zh-CN.json"
-
+import { map } from 'lodash';
 const resources = {
   "en": {
     translation: en_us
@@ -19,7 +19,7 @@ const resources = {
 };
 
 const getUserLanguage = () => {
-  var lan = Builder.settings.context?.user?.language || window.navigator.language;
+  var lan = Builder.settings.context?.user?.language || Builder.settings.locale || window.navigator.language;
   if(lan === 'en' || lan.startsWith('en-')){
     lan = 'en'
   }

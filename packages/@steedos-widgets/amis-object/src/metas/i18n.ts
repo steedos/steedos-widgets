@@ -8,8 +8,8 @@ import en from "./locales/en.json"
 import zh_cn from "./locales/zh-CN.json"
 
 if (typeof window != 'undefined') {
-    (window as any).steedosI18next.addResources('en', 'metas-amis-object', en);
-    (window as any).steedosI18next.addResources('zh-CN', 'metas-amis-object', zh_cn);
+    (window as any).steedosI18next.addResources('en', 'widgets-meta', en);
+    (window as any).steedosI18next.addResources('zh-CN', 'widgets-meta', zh_cn);
 }
 
 export {  };

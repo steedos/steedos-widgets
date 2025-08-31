@@ -5,11 +5,13 @@
  * @LastEditTime: 2024-10-08 15:04:40
  * @Description: 
  */
+const t = (window as any).steedosI18next.t; // 确保国际化函数能被使用
+
 const config: any = {
     // componentType: 'amisSchema', 
-    group: "字段",
+    group: t('widgets-meta:sfield_tab_group', '字段'),
     componentName: "SteedosFieldSet",
-    title: "分组",
+    title: '分组',
     docUrl: "",
     screenshot: "",
     npm: {
@@ -57,7 +59,7 @@ const config: any = {
         description: config.title,
         tags: [config.group],
         isBaseComponent: true,
-        order: -10000,
+        order: -100000,
         icon: config.amis.icon,
         filterProps: function(props, node){
             props.collapsed = false;
