@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-08-19 15:02:47
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-08-27 10:58:22
+ * @LastEditTime: 2025-08-29 20:48:20
  */
 const config: any = {
     componentType: 'amisSchema', 
@@ -86,13 +86,24 @@ const config: any = {
           },
           {
             type: 'radios',
-            name: 'style',//groups_show_as
+            name: 'style',
             label: '样式',
             options: [
               {label: '表格', value: 'table'},
               // {label: '分组', value: 'groups'},
               // {label: '选项卡', value: 'tabs'},
               {label: '向导', value: 'wizard'}
+            ]
+          },
+          {
+            type: 'radios',
+            name: 'mode',
+            label: '模式',
+            visibleOn: "${style === 'wizard'}",
+            options: [
+              {label: '默认', value: 'normal'},
+              {label: '水平模式', value: 'horizontal'},
+              {label: '内联模式', value: 'inline'}
             ]
           },
           {
