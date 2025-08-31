@@ -142,6 +142,7 @@
     "frontend_workflow_approval_history_unprocessed": "未处理",
     "frontend_workflow_attachment": "附件",
     "frontend_workflow_attachment_upload": "上传",
+    "frontend_workflow_attachment_upload_success": "上传成功",
     "frontend_workflow_related_file": "相关文件",
     "frontend_workflow_judge_option_approved": "核准",
     "frontend_workflow_judge_option_rejected": "驳回",

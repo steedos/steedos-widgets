@@ -141,6 +141,7 @@
     "frontend_workflow_approval_history_unprocessed": "Unprocessed",
     "frontend_workflow_attachment": "Attachment",
     "frontend_workflow_attachment_upload": "Upload",
+    "frontend_workflow_attachment_upload_success": "Uploaded successfully",
     "frontend_workflow_related_file": "Related File",
     "frontend_workflow_judge_option_approved": "Approved",
     "frontend_workflow_judge_option_rejected": "Rejected",
