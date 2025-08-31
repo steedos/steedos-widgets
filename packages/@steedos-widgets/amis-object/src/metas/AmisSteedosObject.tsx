@@ -1,15 +1,10 @@
-/*
- * @Author: baozhoutao@steedos.com
- * @Date: 2022-10-11 09:39:38
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2024-10-09 21:02:08
- * @Description: 
- */
+const t = (window as any).steedosI18next.t;
+
 const config: any = {
     // componentType: 'amisSchema', 
-    group: "华炎魔方-对象",
+    group: t('widgets-meta:steedos-object_group', '华炎魔方-对象'),
     componentName: "SteedosObject",
-    title: "对象",
+    title: t('widgets-meta:steedos-object_title', '对象'),
     docUrl: "",
     screenshot: "",
     npm: {
@@ -46,7 +41,7 @@ const config: any = {
     amis: {
       render: {
         type: config.amis.name,
-        usage: "renderer",
+        usage: t('widgets-meta:steedos-object_usage', 'renderer'),
         weight: 1,
         framework: "react"
       },
@@ -67,18 +62,18 @@ const config: any = {
         regions: [
           {
             key: 'body',
-            label: '内容区'
+            label: t('widgets-meta:steedos-object_body_label', '内容区')
           },
         ],
         previewSchema: {
           type: config.amis.name,
         },
-        panelTitle: "设置",
+        panelTitle: t('widgets-meta:steedos-object_panel_title', '设置'),
         panelControls: [
           {
             type: 'text',
             name: 'name',
-            label: '对象名',
+            label: t('widgets-meta:steedos-object_name_label', '对象名'),
             "validateOnChange": true,
             "validations": {
                 "isVariableName": /^[a-zA-Z]([A-Za-z0-9]|_(?!_))*[A-Za-z0-9]$/
@@ -87,15 +82,14 @@ const config: any = {
           {
             type: 'text',
             name: 'label',
-            label: '显示名称'
+            label: t('widgets-meta:steedos-object_label_label', '显示名称')
           },
           {
             type: 'textarea',
             name: 'description',
-            label: '描述'
+            label: t('widgets-meta:steedos-object_description_label', '描述')
           }
         ]
       }
     }
   };
-  

@@ -9,9 +9,9 @@ const t = (window as any).steedosI18next.t; // 确保国际化函数能被使用
 
 const config: any = {
     // componentType: 'amisSchema', 
-    group: t('widgets-meta:sfield_tab_group', '字段'),
+    group: t('widgets-meta:steedos-field-group_sfield_tab_group', '字段'),
     componentName: "SteedosFieldSet",
-    title: '分组',
+    title: t('widgets-meta:steedos-field-group_title', '分组'),
     docUrl: "",
     screenshot: "",
     npm: {
@@ -66,7 +66,7 @@ const config: any = {
             return props;
         }.toString(),
         scaffold: {
-            title: '分组',
+            title: t('widgets-meta:steedos-field-group_scaffold_title', '分组'),
             collapsable: true,
             type: 'steedos-field-group',
             body: [],// 容器类字段
@@ -75,7 +75,7 @@ const config: any = {
         regions: [
           {
             key: 'body',
-            label: '字段项',
+            label: t('widgets-meta:steedos-field-group_regions_body_label', '字段项'),
             renderMethod: 'renderBody',
             insertPosition: 'inner',
             accept: function(json){
@@ -89,25 +89,24 @@ const config: any = {
         previewSchema: {
           type: config.amis.name,
         },
-        panelTitle: "设置",
+        panelTitle: t('widgets-meta:steedos-field-group_panel_title', "设置"),
         panelControls: [
           {
             type: 'text',
             name: 'title',
-            label: '标题'
+            label: t('widgets-meta:steedos-field-group_panel_controls_title_label', '标题')
           },
           {
             type: 'switch',
             name: 'collapsed',
-            label: '默认是否折叠'
+            label: t('widgets-meta:steedos-field-group_panel_controls_collapsed_label', '默认是否折叠')
           },
           {
             type: 'input-formula',
             name: 'visible_on',
-            label: '显示条件'
+            label: t('widgets-meta:steedos-field-group_panel_controls_visible_on_label', '显示条件')
           }
         ]
       }
     }
   };
-  
