@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-08-29 21:01:29
+ * @LastEditTime: 2025-08-31 17:49:49
  * @Description:
  */
 import {
@@ -651,10 +651,15 @@ const getFormSteps = async (instance) => {
       let fieldSchema;
       for (const childField of field.fields) {
         fieldSchema = await getTdInputTpl(childField, true);
-        if (fieldSchema.type === "steedos-field"){
-          fieldSchema.config.amis.mode = formMode;
+        if (fieldSchema.type === "steedos-field" && fieldSchema.config) {
+          if (fieldSchema.config.amis) {
+            fieldSchema.config.amis.mode = formMode;
+          }
+          else {
+            fieldSchema.config.amis = { mode: formMode };
+          }
         }
-        else{
+        else {
           fieldSchema.mode = formMode;
         }
         stepFields.push(fieldSchema);
