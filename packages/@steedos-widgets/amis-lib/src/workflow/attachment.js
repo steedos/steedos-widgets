@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-16 17:27:24
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-08-28 01:24:26
+ * @LastEditTime: 2025-08-31 09:53:48
  * @Description: 
  */
 import { getSteedosAuth } from '@steedos-widgets/amis-lib'
@@ -64,7 +64,7 @@ export const getAttachmentUploadInput = async (instance)=>{
     if(!instance.approve){
         return {
             type: 'tpl',
-            tpl: "附件"
+            tpl: i18next.t('frontend_workflow_attachment')
         }
     }
     const auth = getSteedosAuth();
@@ -126,7 +126,7 @@ export const getAttachmentUploadInput = async (instance)=>{
                       "position": "top-right",
                       "closeButton": true,
                       "showIcon": true,
-                      "msg": "上传成功"
+                      "msg": i18next.t('frontend_workflow_attachment_upload_success'),//"上传成功"
                     },
                     "actionType": "toast"
                   },

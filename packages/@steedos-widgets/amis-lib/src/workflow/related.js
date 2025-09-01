@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-16 17:26:12
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-08-28 01:23:32
+ * @LastEditTime: 2025-08-31 09:46:58
  * @Description: 
  */
 import { map, isEmpty } from 'lodash'
@@ -15,7 +15,7 @@ export const getRelatedRecords = async (instance)=>{
     return map(instance.record_ids, (item)=>{
         return {
             type: 'tpl',
-            tpl: `<a href='/app/-/${item.o}/view/${item.ids[0]}' target='_blank'>相关台账信息</a>`
+            tpl: `<a href='/app/-/${item.o}/view/${item.ids[0]}' target='_blank'>${i18next.t('frontend_workflow_related_records_link_title')}</a>`
         }
     })
 }

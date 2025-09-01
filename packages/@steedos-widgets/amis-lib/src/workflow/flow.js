@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-08-29 21:01:29
+ * @LastEditTime: 2025-08-31 17:57:15
  * @Description:
  */
 import {
@@ -651,10 +651,15 @@ const getFormSteps = async (instance) => {
       let fieldSchema;
       for (const childField of field.fields) {
         fieldSchema = await getTdInputTpl(childField, true);
-        if (fieldSchema.type === "steedos-field"){
-          fieldSchema.config.amis.mode = formMode;
+        if (fieldSchema.type === "steedos-field" && fieldSchema.config) {
+          if (fieldSchema.config.amis) {
+            fieldSchema.config.amis.mode = formMode;
+          }
+          else {
+            fieldSchema.config.amis = { mode: formMode };
+          }
         }
-        else{
+        else {
           fieldSchema.mode = formMode;
         }
         stepFields.push(fieldSchema);
@@ -687,7 +692,7 @@ const getFormSteps = async (instance) => {
 const getFormWizardView = async (instance) => {
   const formSchema = {
     type: "wizard",
-    className: "instance-form-view-wizard pt-4",
+    className: "instance-form-view-wizard pt-4 mt-3",
     steps: await getFormSteps(instance),
     actionFinishLabel: "${'CustomAction.instances.instance_save' | t}",//"保存",
     id: "instance_wizard",

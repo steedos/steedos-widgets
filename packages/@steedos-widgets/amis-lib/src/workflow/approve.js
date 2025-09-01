@@ -423,21 +423,45 @@ const getSubmitActions = async (instance) => {
       "args": {},
       "actionType": "custom",
       "script": `
-        const wizard = event.context.scoped.getComponentById("instance_wizard");
-        const form = event.context.scoped.getComponentById("instance_form");
+        var wizard = event.context.scoped.getComponentById('instance_wizard');
+        var form = event.context.scoped.getComponentById('instance_form');
 
-        // 1. 校验外层 form（直接表单项）
-        let formValidatePromise = form.validate();
+        if (!wizard) {
+          return form.validate().then(function(formValid) {
+            event.setData(Object.assign({}, event.data, {instanceFormValidate: formValid}));
+            return formValid;
+          });
+        }
 
-        // 2. 校验 wizard（所有步骤数据）
-        let wizardValidatePromise = wizard?.form?.validate 
-          ? wizard.form.validate() 
-          : Promise.resolve(true);
+        var stepsCount = wizard.state.rawSteps.length;
+        var originStep = wizard.state.currentStep; // 索引从1开始
 
-        return Promise.all([formValidatePromise, wizardValidatePromise]).then(([formValid, wizardValid]) => {
-          const allValid = formValid && wizardValid;
-          event.setData({...event.data, instanceFormValidate: allValid});
-          return allValid;
+        function validateStepsUntilFail(i) {
+          if (i > stepsCount) {
+            // 所有校验都通过，回到原来的页面
+            return wizard.gotoStep(originStep).then(function(){
+              return true;
+            });
+          }
+          return wizard.gotoStep(i).then(function() {
+            return wizard.form.validate();
+          }).then(function(valid) {
+            if (!valid) {
+              // 校验失败，停在本步骤，返回 false
+              return false;
+            }
+            // 校验通过，递归下一个
+            return validateStepsUntilFail(i + 1);
+          });
+        }
+
+        return form.validate().then(function(formValid){
+          return validateStepsUntilFail(1).then(function(wizardValid){
+            // wizardValid为false时，当前wizard已停在第一个未通过步骤，并且未通过表单项高亮
+            var allValid = formValid && wizardValid;
+            event.setData(Object.assign({}, event.data, {instanceFormValidate: allValid}));
+            return allValid;
+          });
         });
       `
     },
