@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-08-19 15:02:47
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-09-01 13:00:00
+ * @LastEditTime: 2025-09-01 23:13:27
  */
 
 const t = (window as any).steedosI18next.t;
@@ -95,12 +95,22 @@ export default {
           {
             type: 'radios',
             name: 'mode',
-            label: t('widgets-meta:steedos-flow-form_mode', '模式'),
+            label: t('widgets-meta:steedos-flow-form_mode', '表单模式'),
             visibleOn: "${style === 'wizard'}",
             options: [
               {label: t('widgets-meta:steedos-flow-form_mode_normal', '默认'), value: 'normal'},
               {label: t('widgets-meta:steedos-flow-form_mode_horizontal', '水平模式'), value: 'horizontal'},
               {label: t('widgets-meta:steedos-flow-form_mode_inline', '内联模式'), value: 'inline'}
+            ]
+          },
+          {
+            type: 'radios',
+            name: 'wizard_mode',
+            label: t('widgets-meta:steedos-flow-form_wizard_mode', '向导模式'),
+            visibleOn: "${style === 'wizard'}",
+            options: [
+              {label: t('widgets-meta:steedos-flow-form_wizard_mode_vertical', '纵向'), value: 'vertical'},
+              {label: t('widgets-meta:steedos-flow-form_wizard_mode_horizontal', '横向'), value: 'horizontal'}
             ]
           },
           {

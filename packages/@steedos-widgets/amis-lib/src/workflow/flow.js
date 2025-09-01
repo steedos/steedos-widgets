@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-08-31 17:57:15
+ * @LastEditTime: 2025-09-01 23:58:44
  * @Description:
  */
 import {
@@ -690,9 +690,11 @@ const getFormSteps = async (instance) => {
 }
 
 const getFormWizardView = async (instance) => {
+  const wizardMode = instance.form.current.wizard_mode || "vertical";//vertical,horizontal
   const formSchema = {
     type: "wizard",
-    className: "instance-form-view-wizard pt-4 mt-3",
+    className: `instance-form-view-wizard ${wizardMode === "horizontal" ? "pt-4" : "pt-1"} mt-3`,
+    mode: wizardMode,
     steps: await getFormSteps(instance),
     actionFinishLabel: "${'CustomAction.instances.instance_save' | t}",//"保存",
     id: "instance_wizard",

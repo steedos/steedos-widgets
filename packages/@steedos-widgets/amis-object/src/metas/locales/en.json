@@ -592,9 +592,12 @@
   "steedos-flow-form_style": "Style",
   "steedos-flow-form_style_table": "Table",
   "steedos-flow-form_style_wizard": "Wizard",
-  "steedos-flow-form_mode": "Mode",
+  "steedos-flow-form_mode": "Form Mode",
   "steedos-flow-form_mode_normal": "Default",
   "steedos-flow-form_mode_horizontal": "Horizontal Mode",
   "steedos-flow-form_mode_inline": "Inline Mode",
+  "steedos-flow-form_wizard_mode": "Wizard Mode",
+  "steedos-flow-form_wizard_mode_vertical": "Vertical",
+  "steedos-flow-form_wizard_mode_horizontal": "Horizontal",
   "steedos-flow-form_description": "Description"
 }

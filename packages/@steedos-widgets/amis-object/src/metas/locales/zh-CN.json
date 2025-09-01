@@ -592,9 +592,12 @@
   "steedos-flow-form_style": "样式",
   "steedos-flow-form_style_table": "表格",
   "steedos-flow-form_style_wizard": "向导",
-  "steedos-flow-form_mode": "模式",
+  "steedos-flow-form_mode": "表单模式",
   "steedos-flow-form_mode_normal": "默认",
   "steedos-flow-form_mode_horizontal": "水平模式",
   "steedos-flow-form_mode_inline": "内联模式",
+  "steedos-flow-form_wizard_mode": "向导模式",
+  "steedos-flow-form_wizard_mode_vertical": "纵向",
+  "steedos-flow-form_wizard_mode_horizontal": "横向",
   "steedos-flow-form_description": "描述"
 }
