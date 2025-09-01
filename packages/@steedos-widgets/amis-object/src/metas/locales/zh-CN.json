@@ -340,8 +340,7 @@
   "steedos-object-table_sortOrder_asc": "升序",
   "steedos-object-table_sortOrder_desc": "倒序",
   "steedos-object-table_top": "显示的记录数量",
-  "steedos-object-table_top_remark": "即TOP，配置该属性后不再支持翻页，始终显示该属性值配置的记录数"
-,
+  "steedos-object-table_top_remark": "即TOP，配置该属性后不再支持翻页，始终显示该属性值配置的记录数",
   "steedos-object-related-listview_group": "华炎魔方",
   "steedos-object-related-listview_title": "相关表",
   "steedos-object-related-listview_description": "显示指定对象的相关某一个相关表。",
@@ -370,8 +369,7 @@
   "steedos-object-related-listview_adaptor_desc": "函数签名: (payload, response, api) => payload",
   "steedos-object-related-listview_collapse_advanced": "高级",
   "steedos-object-related-listview_crudDataFilter": "CRUD",
-  "steedos-object-related-listview_markdown_crud": "如果需要对组件原始返回的crud进行加工，可以自己写一段函数脚本来实现。\n\n函数签名：(crud, env, data) => crud\n\n参数说明：\n\ncrud 组件原始返回的crud schema\n\nenv amis env，可以调用env.fetcher函数实现异步请求\n\ndata 数据域中的data\n\n返回值：\n\n最后需要返回加工后的crud schema\n\n示例：\n\n```\nconsole.log('data===>', data);\nconst api = ...;\nreturn env.fetcher(api, {}).then((result) => {\n  console.log(result);\n  crud.columns.push({'label': 'xxx', name: 'xxx'});\n  return crud;\n});\n```"
-,
+  "steedos-object-related-listview_markdown_crud": "如果需要对组件原始返回的crud进行加工，可以自己写一段函数脚本来实现。\n\n函数签名：(crud, env, data) => crud\n\n参数说明：\n\ncrud 组件原始返回的crud schema\n\nenv amis env，可以调用env.fetcher函数实现异步请求\n\ndata 数据域中的data\n\n返回值：\n\n最后需要返回加工后的crud schema\n\n示例：\n\n```\nconsole.log('data===>', data);\nconst api = ...;\nreturn env.fetcher(api, {}).then((result) => {\n  console.log(result);\n  crud.columns.push({'label': 'xxx', name: 'xxx'});\n  return crud;\n});\n```",
   "steedos-object-related-lists_group": "华炎魔方",
   "steedos-object-related-lists_title": "所有相关表",
   "steedos-object-related-lists_description": "显示指定对象的相关表，可基于页面布局配置相关表清单。",
@@ -380,15 +378,13 @@
   "steedos-object-related-lists_panelTitle": "设置",
   "steedos-object-related-lists_panelControls_objectApiName": "父级对象",
   "steedos-object-related-lists_panelControls_recordId": "父级记录",
-  "steedos-object-related-lists_currentObject": "当前对象"
-,
+  "steedos-object-related-lists_currentObject": "当前对象",
   "steedos-record-service_group": "华炎魔方",
   "steedos-record-service_title": "记录服务",
   "steedos-record-service_props_objectApiName": "对象名称",
   "steedos-record-service_props_recordId": "记录Id",
   "steedos-record-service_panelTitle": "设置",
-  "steedos-record-service_regions_body": "内容区"
-,
+  "steedos-record-service_regions_body": "内容区",
   "steedos-object-calendar_group": "华炎魔方",
   "steedos-object-calendar_title": "对象日历",
   "steedos-object-calendar_props_objectApiName": "对象名称",
@@ -408,8 +404,7 @@
   "steedos-object-calendar_options_month": "月",
   "steedos-object-calendar_options_week": "周",
   "steedos-object-calendar_options_day": "日",
-  "steedos-object-calendar_options_list": "列表"
-,
+  "steedos-object-calendar_options_list": "列表",
   "steedos-input-table_group": "华炎魔方",
   "steedos-input-table_title": "表格编辑框",
   "steedos-input-table_description": "表格编辑组件，对amis input-table组件的进一步封装。",
@@ -446,8 +441,7 @@
   "steedos-input-table_panelControls_perPage": "每页展示条数",
   "steedos-input-table_panelControls_perPage_remark": "如果为空则不进行分页",
   "steedos-input-table_panelControls_enableDialog": "启用弹框模式",
-  "steedos-input-table_panelControls_enableDialog_remark": "禁用弹框模式时，自动开启內联模式"
-,
+  "steedos-input-table_panelControls_enableDialog_remark": "禁用弹框模式时，自动开启內联模式",
   "steedos-icon_group": "华炎魔方-原子组件",
   "steedos-icon_title": "图标",
   "steedos-icon_panelTitle": "设置",
@@ -457,8 +451,7 @@
   "steedos-icon_containerClassName": "容器 ClassName",
   "steedos-icon_colorVariant": "图标颜色",
   "steedos-icon_size": "图标大小",
-  "steedos-icon_basePath": "基础路径"
-,
+  "steedos-icon_basePath": "基础路径",
   "steedos-badge_group": "华炎魔方-原子组件",
   "steedos-badge_title": "徽标数",
   "steedos-badge_panelTitle": "设置",
@@ -471,17 +464,14 @@
   "steedos-badge_size": "在设置了 count 的前提下有效，设置小圆点的大小",
   "steedos-badge_status": "Badge 为状态点",
   "steedos-badge_text": "在设置了 status 的前提下有效，设置状态点的文本",
-  "steedos-badge_titleLabel": "设置鼠标放在状态点上时显示的文字"
-,
-
+  "steedos-badge_titleLabel": "设置鼠标放在状态点上时显示的文字",
   "steedos-badge-ribbon_group": "华炎魔方-原子组件",
   "steedos-badge-ribbon_title": "缎带",
   "steedos-badge-ribbon_panelTitle": "设置",
   "steedos-badge-ribbon_body": "内容区",
   "steedos-badge-ribbon_color": "缎带的颜色",
   "steedos-badge-ribbon_placement": "缎带的位置",
-  "steedos-badge-ribbon_text": "缎带中填入的内容"
-,
+  "steedos-badge-ribbon_text": "缎带中填入的内容",
   "steedos-field_group": "华炎魔方-原子组件",
   "steedos-field_title": "字段",
   "steedos-field_scaffold_label": "字段1",
@@ -593,9 +583,18 @@
   "steedos-field_is_name": "名称字段",
   "steedos-field_reference_to_field": "外键字段",
   "steedos-field_reference_to_field_remark": "关联的对象保存到当前对象字段的值；例如：A对象关联B对象后，当A1记录关联了B1记录，默认会存B1记录的_id存到A1记录中。如果修改了外键字段后，会将“外键字段”替换_id存储到A1记录中。",
-  "steedos-field_reference_to_field_description": "默认为主键，默认值是_id"
+  "steedos-field_reference_to_field_description": "默认为主键，默认值是_id",
+  "steedos-flow-form_title": "流程表单",
+  "steedos-flow-form_group": "华炎魔方-审批王",
+  "steedos-flow-form_region_body": "内容区",
+  "steedos-flow-form_panelTitle": "设置",
+  "steedos-flow-form_name": "表单名",
+  "steedos-flow-form_style": "样式",
+  "steedos-flow-form_style_table": "表格",
+  "steedos-flow-form_style_wizard": "向导",
+  "steedos-flow-form_mode": "模式",
+  "steedos-flow-form_mode_normal": "默认",
+  "steedos-flow-form_mode_horizontal": "水平模式",
+  "steedos-flow-form_mode_inline": "内联模式",
+  "steedos-flow-form_description": "描述"
 }
-
-
-
-
