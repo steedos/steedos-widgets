@@ -310,6 +310,17 @@ export const AmisSteedosField = async (props) => {
                     }
 
                     api.url = '/api/v1/' + objectName + '/names';
+                    
+                    if(_.isArray(ids) && ids.length > 0){
+                        if(ids[0][valueFieldKey]){
+                            ids = _.map(ids, valueFieldKey)
+                        }
+                    }
+
+                    if(ids && _.isPlainObject(ids)){
+                        ids = ids[valueFieldKey]
+                    }
+
 
                     // 额外返回_id字段
                     api.data = {
