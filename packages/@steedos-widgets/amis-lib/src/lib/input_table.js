@@ -2,13 +2,14 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-06-05 11:49:01
+ * @LastEditTime: 2025-09-01 15:40:28
  */
 
 import { getFormBody } from './converter/amis/form';
 import { getComparableAmisVersion } from './converter/amis/util';
 import { clone, cloneDeep } from 'lodash';
 import { uuidv4 } from '../utils/uuid';
+import { i18next } from '../i18n';
 
 /**
  * 子表组件字段值中每行数据补上字段值为空的的字段值，把值统一设置为空字符串，是为了解决amis amis 3.6/6.0 input-table组件bug:行中字段值为空时会显示为父作用域中的同名变量值，见：https://github.com/baidu/amis/issues/9520
@@ -1001,7 +1002,7 @@ async function getButtonActions(props, mode) {
         let dialogButtons = [
             {
                 "type": "button",
-                "label": "完成",
+                "label": i18next.t('frontend_input_table_button_confirm'),//"完成",
                 "actionType": "confirm",
                 "level": "primary"
             }
@@ -1011,8 +1012,8 @@ async function getButtonActions(props, mode) {
             dialogButtons = [
                 {
                     "type": "button",
-                    "label": "新增",
-                    "tooltip": "保存并新增一行，即保存当前行数据并新增一条空白行",
+                    "label": i18next.t('frontend_input_table_button_new'),//"新增",
+                    "tooltip": i18next.t('frontend_input_table_button_new_tooltip'),
                     "onEvent": {
                         "click": {
                             "actions": [
@@ -1031,8 +1032,8 @@ async function getButtonActions(props, mode) {
                 },
                 {
                     "type": "button",
-                    "label": "复制",
-                    "tooltip": "复制并新增一行，即保存当前行数据并复制当前行数据到新增行",
+                    "label": i18next.t('frontend_input_table_button_copy'),//"复制",
+                    "tooltip": i18next.t('frontend_input_table_button_copy_tooltip'),
                     "onEvent": {
                         "click": {
                             "actions": [
@@ -1057,7 +1058,7 @@ async function getButtonActions(props, mode) {
             "dialog": {
                 "type": "dialog",
                 "id": dialogId,
-                "title": `\${uiSchema.fields.${props.name}.label} 明细`,
+                "title": `\${uiSchema.fields.${props.name}.label} ` + i18next.t('frontend_input_table_dialog_title_suffix'),
                 "body": [
                     await getForm(props, mode, formId)
                 ],
@@ -1182,7 +1183,7 @@ async function getButtonActions(props, mode) {
                 "actionType": "dialog",
                 "dialog": {
                     "type": "dialog",
-                    "title": `\${uiSchema.fields.${props.name}.label} 明细`,
+                    "title": `\${uiSchema.fields.${props.name}.label} ` + i18next.t('frontend_input_table_dialog_title_suffix'),
                     "body": [
                         await getForm(props, "readonly")
                     ],
@@ -1292,7 +1293,7 @@ async function getButtonActions(props, mode) {
 
 async function getButtonNew(props) {
     return {
-        "label": "新增",
+        "label": i18next.t('frontend_input_table_button_new'),//"新增",
         "type": "button",
         "icon": "fa fa-plus",
         "onEvent": {
@@ -1344,16 +1345,16 @@ async function getButtonDelete(props) {
         "icon": "fa fa-trash-alt",
         "actionType": "dialog",
         "dialog": {
-            "title": "系统信息",
+            "title": "${'CustomLabels.alert_info' | t}",
             "actions": [
                 {
                     "type": "button",
-                    "label": "取消",
+                    "label": "${'Cancel' | t}",
                     "close": true
                 },
                 {
                     "type": "button",
-                    "label": "删除",
+                    "label": i18next.t('frontend_input_table_button_delete'),
                     "level": "danger",
                     "onEvent": {
                         "click": {
@@ -1365,7 +1366,7 @@ async function getButtonDelete(props) {
             ],
             "body": [
                 {
-                    "tpl": "确定要删除吗？",
+                    "tpl": i18next.t('frontend_delete_many_confirm_text'),
                     "type": "tpl"
                 }
             ]
