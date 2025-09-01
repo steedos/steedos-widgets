@@ -5,12 +5,14 @@
  * @LastEditTime: 2022-12-01 16:08:49
  * @Description: 
  */
+const t = (window as any).steedosI18next.t;
+
 const config: any = {
   componentType: 'amisSchema', // amisSchema || react 
-  group: "华炎魔方",
+  group: t('widgets-meta:steedos-object-related-lists_group', '华炎魔方'),
   componentName: "AmisRecordDetailRelatedLists",
-  title: "所有相关表",
-  description: "显示指定对象的相关表，可基于页面布局配置相关表清单。",
+  title: t('widgets-meta:steedos-object-related-lists_title', '所有相关表'),
+  description: t('widgets-meta:steedos-object-related-lists_description', '显示指定对象的相关表，可基于页面布局配置相关表清单。'),
   docUrl: "",
   screenshot: "",
   npm: {
@@ -25,12 +27,12 @@ const config: any = {
     {
       name: "objectApiName",
       propType: "string",
-      description: '父级对象',
+      description: t('widgets-meta:steedos-object-related-lists_props_objectApiName', '父级对象'),
     },
     {
       name: "recordId",
       propType: "string",
-      description: '父级记录',
+      description: t('widgets-meta:steedos-object-related-lists_props_recordId', '父级记录'),
     }
   ],
   preview: {
@@ -81,11 +83,11 @@ export default {
         type: config.amis.name,
         objectApiName: "accounts",
       },
-      panelTitle: "设置",
+      panelTitle: t('widgets-meta:steedos-object-related-lists_panelTitle', '设置'),
       panelControls: [
         {
           "type": "select",
-          "label": "父级对象",
+          "label": t('widgets-meta:steedos-object-related-lists_panelControls_objectApiName', '父级对象'),
           "name": "objectApiName",
           "searchable": true,
           "multiple": false,
@@ -96,7 +98,7 @@ export default {
             "adaptor": `
               let data = payload.data;
               payload.unshift({
-                label: "当前对象",
+                label: "${t('widgets-meta:steedos-object-related-lists_currentObject', '当前对象')}",
                 name: "\${objectName}"
               });
               return payload;
@@ -109,7 +111,7 @@ export default {
         {
           type: "text",
           name: "recordId",
-          label: "父级记录"
+          label: t('widgets-meta:steedos-object-related-lists_panelControls_recordId', '父级记录')
         }
       ]
     }
