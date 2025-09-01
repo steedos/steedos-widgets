@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-08-23 21:28:07
+ * @LastEditTime: 2025-09-02 00:20:59
  * @Description: 
  */
 
@@ -339,7 +339,7 @@ export const AmisAppLauncher = async (props) => {
       isMobile ? null : {
         "type": "button",
         "level": "link",
-        "label": "更多",
+        "label": i18next.t('frontend_app_launcher_button_more'),
         "className": "w-full h-10",
         "actionType": "dialog",
         "visibleOn": "${app_items.length > 9}",

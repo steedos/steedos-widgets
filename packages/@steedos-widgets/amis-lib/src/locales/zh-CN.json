@@ -111,6 +111,7 @@
     "frontend_menu_tabs_group_name_placeholder": "分组名称",
     "frontend_menu_tabs_group_default_open_label": "是否默认展开",
     "frontend_button_delete_confirm_text": "确定要删除吗?",
+    "frontend_app_launcher_button_more": "更多",
     "frontend_app_launcher_button_new_app": "+ 新建应用",
     "frontend_app_launcher_dialog_new_app_title": "新建应用",
     "frontend_app_launcher_dialog_new_app_code_label": "应用唯一标识",
