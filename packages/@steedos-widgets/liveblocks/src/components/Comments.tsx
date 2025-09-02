@@ -10,25 +10,54 @@ import { Loading } from "./Loading";
 
 import './Comments.css';
 
-export const Threads = (props:any) => {
+export const Threads = ({
+      indentCommentContent,
+      showActions,
+      showDeletedComments,
+      showResolveAction,
+      showReactions,
+      showComposer,
+      showAttachments,
+      showComposerFormattingControls}) => {
   const { threads } = useThreads();
 
   return (
     <>
       {threads.map((thread) => (
-        <Thread key={thread.id} thread={thread} className="thread" />
+        <Thread key={thread.id} thread={thread} className="thread" 
+                indentCommentContent={indentCommentContent} 
+                showActions={showActions} 
+                showDeletedComments={showDeletedComments} 
+                showResolveAction={showResolveAction} 
+                showReactions={showReactions} 
+                showComposer={showComposer} 
+                showAttachments={showAttachments} 
+                showComposerFormattingControls={showComposerFormattingControls} />
       ))}
-      <Composer className="composer" />
+      { showComposer && (<Composer className="composer" />) }
     </>
   );
 }
 
 export const AmisComments = (props: any) => {
-  const {
+  let {
     className = "m-2 flex flex-col gap-y-2",
     roomId,
+    readonly = false,
+    indentCommentContent = true,
+    showActions = "hover",
+    showDeletedComments,
+    showResolveAction = true,
+    showReactions = true,
+    showComposer = "collapsed",
+    showAttachments = true,
+    showComposerFormattingControls = true
   } = props;
 
+  if (readonly) {
+    showComposer = false;
+    showActions = false;
+  }
 
   return (
       <RoomProvider id={roomId}>
@@ -39,7 +68,15 @@ export const AmisComments = (props: any) => {
         >
           <Suspense fallback={<Loading />}>
             <main className={className}>
-              <Threads />
+              <Threads 
+                indentCommentContent={indentCommentContent} 
+                showActions={showActions} 
+                showDeletedComments={showDeletedComments} 
+                showResolveAction={showResolveAction} 
+                showReactions={showReactions} 
+                showComposer={showComposer} 
+                showAttachments={showAttachments} 
+                showComposerFormattingControls={showComposerFormattingControls} />
             </main>
           </Suspense>
         </ErrorBoundary>
