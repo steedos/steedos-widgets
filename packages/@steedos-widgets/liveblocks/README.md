@@ -42,12 +42,25 @@ yarn dev
     {
       "type": "rooms-comments",
       "className": "flex flex-col m-3 gap-3",
-      "roomId": "objects:${objectName}:{recordId}",
+      "roomId": "objects:${objectName}:${recordId}",
+      "readonly": "${true}",
     }
   ]
 }
 ```
 
+rooms-comments 高级权限控制：
+
+```js
+  indentCommentContent = true,
+  showActions = "hover",
+  showDeletedComments,
+  showResolveAction = true,
+  showReactions = true,
+  showComposer = "collapsed",
+  showAttachments = true,
+  showComposerFormattingControls = true
+```
 
 ## Steedos 加载资产包
 
