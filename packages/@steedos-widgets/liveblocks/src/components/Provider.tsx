@@ -14,6 +14,7 @@ export const AmisRoomsProvider = (props: any) => {
     children,
     body, 
     render,
+    readonly = false,
   } = props;
 
   const [token, setToken] = useState(null);
@@ -38,6 +39,7 @@ export const AmisRoomsProvider = (props: any) => {
 
         const body = JSON.stringify({
           room,
+          readonly
         });
 
         const response = await fetch(authEndpoint, {
