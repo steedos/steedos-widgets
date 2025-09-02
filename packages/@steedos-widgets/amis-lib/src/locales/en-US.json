@@ -158,5 +158,12 @@
     "frontend_workflow_next_users": "To",
     "frontend_workflow_submit_validate_error_title": "Submission failed",
     "frontend_workflow_submit_validate_error_msg": "Please fill in the required fields",
-    "frontend_workflow_related_records_link_title": "Related Records"
+    "frontend_workflow_related_records_link_title": "Related Records",
+    "frontend_formula_variables_tab_form_fields": "Form Fields",
+    "frontend_formula_variables_tab_form_global": "Global Variables",
+    "frontend_formula_variables_global_userId": "User ID",
+    "frontend_formula_variables_global_spaceId": "Space ID",
+    "frontend_formula_variables_global_user_roles": "Permission Set",
+    "frontend_formula_variables_global_user_spaceUserId": "Space User ID",
+    "frontend_formula_variables_global_user_is_space_admin": "Is Space Admin"
 }

@@ -159,5 +159,12 @@
     "frontend_workflow_next_users": "处理人",
     "frontend_workflow_submit_validate_error_title": "提交失败",
     "frontend_workflow_submit_validate_error_msg": "请填写必填字段",
-    "frontend_workflow_related_records_link_title": "相关台账信息"
+    "frontend_workflow_related_records_link_title": "相关台账信息",
+    "frontend_formula_variables_tab_form_fields": "表单字段",
+    "frontend_formula_variables_tab_form_global": "全局变量",
+    "frontend_formula_variables_global_userId": "用户ID",
+    "frontend_formula_variables_global_spaceId": "工作区ID",
+    "frontend_formula_variables_global_user_roles": "权限集",
+    "frontend_formula_variables_global_user_spaceUserId": "人员ID",
+    "frontend_formula_variables_global_user_is_space_admin": "是否工作区管理员"
 }

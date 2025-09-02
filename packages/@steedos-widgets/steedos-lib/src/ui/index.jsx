@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-27 15:54:12
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-07-14 21:29:43
+ * @LastEditTime: 2025-09-02 19:57:05
  * @Description: 
  */
 import { message, notification, Button, Space} from 'antd';
@@ -182,10 +182,11 @@ export const SteedosUI = Object.assign({}, {
       return keywordsFilters;
     },
     getFormulaVariables: (fieldOptions, hasGlobal = true) => {
+      const t = window.steedosI18next.t;
       const variables = [];
       if (!isEmpty(fieldOptions)) {
         variables.push({
-          "label": "表单字段",
+          "label": t('frontend_formula_variables_tab_form_fields', '表单字段'),
           "children": [
 
           ]
@@ -199,14 +200,14 @@ export const SteedosUI = Object.assign({}, {
       }
       if (hasGlobal) {
         variables.push({
-          "label": "全局变量",
+          "label": t('frontend_formula_variables_tab_form_global', '全局变量'),
           "children": [
             {
-              "label": "用户ID",
+              "label": t('frontend_formula_variables_global_userId', '用户ID'),
               "value": "global['userId']"
             },
             {
-              "label": "工作区ID",
+              "label": t('frontend_formula_variables_global_spaceId', '工作区ID'),
               "value": "global['spaceId']"
             },
             // 因为默认值不能选这个选项，先直接去除
@@ -215,30 +216,30 @@ export const SteedosUI = Object.assign({}, {
             //   "value": "global['mode']"
             // },
             {
-              "label": "用户",
+              "label": window.t('CustomObject.users.label', '用户'),
               "children": [
                 {
-                  "label": "姓名",
+                  "label": window.t('CustomField.space_users.name.label'),//姓名
                   "value": "global['user']['name']"
                 },
                 {
-                  "label": "邮件",
+                  "label": window.t('CustomField.space_users.email.label'),//邮件
                   "value": "global['user']['email']"
                 },
                 {
-                  "label": "语言",
+                  "label": window.t('CustomField.space_users.locale.label'),//语言
                   "value": "global['user']['language']"
                 },
                 {
-                  "label": "简档",
+                  "label": window.t('CustomField.space_users.profile.label'),//"简档",
                   "value": "global['user']['profile']"
                 },
                 {
-                  "label": "权限集",
+                  "label": t('frontend_formula_variables_global_user_roles', '权限集'),
                   "value": "global['user']['roles']"
                 },
                 {
-                  "label": "主部门ID",
+                  "label": window.t('CustomField.space_users.organization.label') + " ID",//"主部门ID",
                   "value": "global['user']['organization']['_id']"
                 },
                 // 值为对象数组，先去掉
@@ -247,23 +248,23 @@ export const SteedosUI = Object.assign({}, {
                 //   "value": "global['user']['organizations']"
                 // },
                 {
-                  "label": "部门(含上级)",
+                  "label": window.t('CustomField.space_users.organizations_parents.label'),//"部门(含上级)",
                   "value": "global['user']['organizations_parents']" 
                 },
                 {
-                  "label": "主分部ID",
+                  "label": window.t('CustomField.space_users.company_id.label') + " ID",//"主分部ID",
                   "value": "global['user']['company_id']"
                 },
                 {
-                  "label": "分部(多选)",
+                  "label": window.t('CustomField.space_users.company_ids.label'),//"分部(多选)",
                   "value": "global['user']['company_ids']"  
                 },
                 {
-                  "label": "人员ID",
+                  "label": t('frontend_formula_variables_global_user_spaceUserId', '人员ID'),
                   "value": "global['user']['spaceUserId']"
                 },
                 {
-                  "label": "是否是工作区管理员",
+                  "label": t('frontend_formula_variables_global_user_is_space_admin', '是否工作区管理员'),
                   "value": "global['user']['is_space_admin']"
                 }
               ]
