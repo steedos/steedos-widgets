@@ -49,17 +49,24 @@ yarn dev
 }
 ```
 
-rooms-comments 高级权限控制：
+如果配置了 readonly ，隐藏了所有的编辑框和按钮，相当于 
 
-```js
-  indentCommentContent = true,
-  showActions = "hover",
-  showDeletedComments,
-  showResolveAction = true,
-  showReactions = true,
-  showComposer = "collapsed",
-  showAttachments = true,
-  showComposerFormattingControls = true
+```json
+  "showActions": false,
+  "showComposer": false
+```
+
+rooms-comments 高级控制：
+
+```json
+  "indentCommentContent": true,
+  "showActions": "hover",   // or false
+  "showDeletedComments": false,
+  "showResolveAction": true,
+  "showReactions": true,
+  "showComposer": "collapsed",  // or false
+  "showAttachments": true,
+  "showComposerFormattingControls": true
 ```
 
 ## Steedos 加载资产包
