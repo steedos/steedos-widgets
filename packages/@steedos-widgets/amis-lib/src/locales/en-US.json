@@ -104,6 +104,7 @@
     "frontend_menu_delete_group": "Delete Group",
     "frontend_menu_move_group": "Move Group",
     "frontend_menu_dialog_move_group": "Move to another Group",
+    "frontend_menu_group_none_children": "none menu",
     "frontend_menu_edit_app": "Edit App",
     "frontend_menu_dialog_name_placeholder": "Unique identifier",
     "frontend_menu_tabs_group_name_label": "Name",
