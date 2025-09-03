@@ -143,7 +143,7 @@ export const AmisAppMenu = async (props) => {
                             showIcon = false;
                         }
 
-                          if(payload.allowEditApp && collapsed != true){
+                          if(payload.allowEditApp && (collapsed != true) && (window.innerWidth > 768)){
                             allowEditApp = true;
                           }
                           _.each(_.groupBy(payload.children, 'group'), (tabs, groupName) => {
@@ -333,7 +333,7 @@ export const AmisAppMenu = async (props) => {
                       if(allowEditApp){
                         editAppSearch = [{
                                 "type": "grid",
-                                "className": "m-2",
+                                "className": "",
                                 "columns": [
                                     {
                                         "md": 9,
@@ -341,7 +341,7 @@ export const AmisAppMenu = async (props) => {
                                         "body": [
                                             {
                                                 "type": "button",
-                                                "className": "toggle-sidebar",
+                                                "className": "toggle-sidebar ml-6 mt-2",
                                                 "onEvent": {
                                                     "click": {
                                                         "actions": [
@@ -362,7 +362,7 @@ export const AmisAppMenu = async (props) => {
                                                 "body": [
                                                     {
                                                         "type": "html",
-                                                        "html": "<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor' class='w-7 h-7 p-1 hover:bg-white hover:shadow'><path stroke-linecap='round' stroke-linejoin='round' d='M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5' /></svg>"
+                                                        "html": '<svg aria-label="Left navigation panel" fill="currentColor" role="img" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 4.5c0-.28.22-.5.5-.5h15a.5.5 0 0 1 0 1h-15a.5.5 0 0 1-.5-.5Zm0 5c0-.28.22-.5.5-.5h15a.5.5 0 0 1 0 1h-15a.5.5 0 0 1-.5-.5Zm.5 4.5a.5.5 0 0 0 0 1h15a.5.5 0 0 0 0-1h-15Z" fill="currentColor"></path></svg>'
                                                     }
                                                 ]
                                             }
@@ -991,10 +991,10 @@ export const AmisAppMenu = async (props) => {
                                     }
                                 ]
                             }]
-                      }else if(stacked){
+                      }else if(stacked && window.innerWidth > 768){
                         editAppSearch = [{
                             "type": "button",
-                            "className": "toggle-sidebar w-12 mx-2 mt-2",
+                            "className": "toggle-sidebar mx-4 mt-2",
                             "onEvent": {
                                 "click": {
                                     "actions": [
@@ -1015,7 +1015,7 @@ export const AmisAppMenu = async (props) => {
                             "body": [
                                 {
                                     "type": "html",
-                                    "html": "<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor' class='w-7 h-7 p-1 hover:bg-white hover:shadow ml-1'><path stroke-linecap='round' stroke-linejoin='round' d='M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5' /></svg>"
+                                    "html": '<svg aria-label="Left navigation panel" fill="currentColor" role="img" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 4.5c0-.28.22-.5.5-.5h15a.5.5 0 0 1 0 1h-15a.5.5 0 0 1-.5-.5Zm0 5c0-.28.22-.5.5-.5h15a.5.5 0 0 1 0 1h-15a.5.5 0 0 1-.5-.5Zm.5 4.5a.5.5 0 0 0 0 1h15a.5.5 0 0 0 0-1h-15Z" fill="currentColor"></path></svg>'
                                 }
                             ]
                         }]
