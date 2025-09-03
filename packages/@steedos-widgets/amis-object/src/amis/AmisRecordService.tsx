@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-08 10:32:17
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2025-02-21 13:59:44
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2025-09-03 11:04:14
  * @Description: 
  */
 
@@ -11,7 +11,7 @@ import { has } from 'lodash';
 
 export const AmisRecordService = async (props) => {
   // console.log(`AmisRecordService======>`, props)
-  let { className, $schema, appId, objectApiName = "space_users", fields, body, style, onEvent, recordId } = props;
+  let { className, $schema, appId, objectApiName = "space_users", fields, body, style, onEvent, recordId, initApiRequestAdaptor, initApiAdaptor } = props;
 
   if(has($schema.data, "recordId") && $schema.data.recordId !== "${recordId}"){
     recordId = $schema.data.recordId;
@@ -20,7 +20,7 @@ export const AmisRecordService = async (props) => {
     objectApiName = $schema.data.objectName;
   }
 
-  const options: any = {onEvent: $schema.onEvent, data: $schema.data, recordId}
+  const options: any = {onEvent: $schema.onEvent, data: $schema.data, recordId, initApiRequestAdaptor, initApiAdaptor}
   if(props.$$editor){
     options.isEditor = true;
   }

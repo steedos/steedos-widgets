@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-08-31 16:32:35
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-12-01 16:08:49
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2025-09-03 14:31:30
  * @Description: 
  */
 const t = (window as any).steedosI18next.t;
@@ -26,13 +26,23 @@ const config: any = {
     {
       name: "objectApiName",
       propType: "string",
-      description: t('widgets-meta:steedos-record-service_props_objectApiName', '对象名称'),
+      description: t('widgets-meta:steedos-record-service_props_objectApiName', '对象'),
     },
     {
       name: "recordId",
       propType: "string",
-      description: t('widgets-meta:steedos-record-service_props_recordId', '记录Id'),
-    }
+      description: t('widgets-meta:steedos-record-service_props_recordId', '记录ID'),
+    },
+    {
+      name: "initApiRequestAdaptor",
+      propType: "string",
+      description: t('widgets-meta:steedos-record-service_props_initApiRequestAdaptor', '初始化接口发送适配器'),
+    },
+    {
+      name: "initApiAdaptor",
+      propType: "string",
+      description: t('widgets-meta:steedos-record-service_props_initApiAdaptor', '初始化接口接收适配器'),
+    },
   ],
   preview: {
   },
@@ -89,7 +99,70 @@ export default {
         type: config.amis.name,
         objectApiName: 'space_users'
       },
-      panelTitle: t('widgets-meta:steedos-record-service_panelTitle', '设置')
+      panelTitle: t('widgets-meta:steedos-record-service_panelTitle', '设置'),
+      panelControls: [
+        {
+          "type": "select",
+          mode: 'horizontal',
+          horizontal: {
+            left: 4,
+            right: 8,
+            justify: true
+          },
+          "label": t('widgets-meta:steedos-record-service_props_objectApiName', '对象'),
+          "name": "objectApiName",
+          "searchable": true,
+          "multiple": false,
+          "source": {
+            "method": "get",
+            "url": "/service/api/amis-design/objects",
+            "requestAdaptor": `
+                api.url = Builder.settings.rootUrl  + api.url; 
+                if(!api.headers){
+                  api.headers = {}
+                };
+                api.headers.Authorization='Bearer ' + Builder.settings.tenantId + ',' + Builder.settings.authToken  ;
+                return api;
+            `,
+            "adaptor": `
+              let data = payload.data;
+              payload.unshift({
+                label: "${t('widgets-meta:steedos-record-service_props_objectApiName_currentObject', '当前对象')}",
+                name: "\${objectName}"
+              });
+              return payload;
+            `
+          },
+          "labelField": "label",
+          "valueField": "name",
+          "menuTpl": ""
+        },
+        {
+          type: "input-text",
+          name: "recordId",
+          label: t('widgets-meta:steedos-record-service_props_recordId', '记录ID'),
+          mode: 'horizontal',
+          horizontal: {
+            left: 4,
+            right: 8,
+            justify: true
+          },
+        },
+        {
+          type: "editor",
+          name: "initApiRequestAdaptor",
+          label: t('widgets-meta:steedos-record-service_props_initApiRequestAdaptor', '发送适配器'),
+          language: "javascript",
+          description: t('widgets-meta:steedos-record-service_props_tip_initApiRequestAdaptor', '函数签名：(api) => api， 数据在 api.data 中，修改后返回 api 对象。')
+        },
+        {
+          type: "editor",
+          name: "initApiAdaptor",
+          label: t('widgets-meta:steedos-record-service_props_initApiAdaptor', '接收适配器'),
+          language: "javascript",
+          description: t('widgets-meta:steedos-record-service_props_tip_initApiAdaptor', '函数签名: (payload, response, api) => payload')
+        }
+      ]
     }
   }
 };
