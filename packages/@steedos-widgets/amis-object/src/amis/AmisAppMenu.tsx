@@ -994,7 +994,7 @@ export const AmisAppMenu = async (props) => {
                       }else if(stacked){
                         editAppSearch = [{
                             "type": "button",
-                            "className": "toggle-sidebar w-12 mx-3 my-2",
+                            "className": "toggle-sidebar w-12 mx-2 mt-2",
                             "onEvent": {
                                 "click": {
                                     "actions": [
