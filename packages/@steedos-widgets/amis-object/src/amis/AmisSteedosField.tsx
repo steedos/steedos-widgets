@@ -227,11 +227,11 @@ export const AmisSteedosField = async (props) => {
             } 
         }
         // editorClassName = "mb-6";
-
+        const t = (window as any).steedosI18next.t;
         if(config.type === 'formula' || config.type === 'summary'){
             return {
                 type: 'input-text',
-                label: `${config.label}(新建、编辑时不可见)`,
+                label: `${config.label}(${t('widgets-meta:formula_hidden', '新建、编辑时不可见')})`,
                 // className: 'mb-6',
                 readonly: true
             }
