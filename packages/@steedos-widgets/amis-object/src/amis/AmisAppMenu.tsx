@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-08-23 17:43:09
+ * @LastEditTime: 2025-09-03 22:55:11
  * @Description: 
  */
 import './AmisAppMenu.less';
@@ -242,7 +242,7 @@ export const AmisAppMenu = async (props) => {
                         const tempTabForEmptyGroup = {
                             "label": {
                                 "type": "tpl",
-                                "tpl": "无菜单"
+                                "tpl": "${i18next.t('frontend_menu_group_none_children')}"
                             },
                             "searchKey": "",
                             "disabled": true,
@@ -376,7 +376,7 @@ export const AmisAppMenu = async (props) => {
                                             "type": "dropdown-button",
                                             "level": "link",
                                             "className": "float-right",
-                                            "btnClassName": "p-1 text-gray-600 hover:bg-white! hover:shadow!",
+                                            "btnClassName": "mr-4 text-gray-600 hover:bg-white! hover:shadow!",
                                             "icon": "fa fa-gear",
                                             "iconOnly": true,
                                             "closeOnClick": true,

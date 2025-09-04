@@ -1,7 +1,7 @@
 {
   "name": "@steedos-widgets/liveblocks",
   "private": false,
-  "version": "6.10.1-beta.56",
+  "version": "6.10.1-beta.58",
   "main": "dist/liveblocks.cjs.js",
   "module": "dist/liveblocks.esm.js",
   "unpkg": "dist/liveblocks.umd.js",
@@ -55,7 +55,7 @@
     "@liveblocks/react": "2.15.1",
     "@liveblocks/react-ui": "2.15.1",
     "@rollup/plugin-replace": "^5.0.2",
-    "@steedos-widgets/amis-lib": "6.10.1-beta.56",
+    "@steedos-widgets/amis-lib": "6.10.1-beta.58",
     "clsx": "2.1.1",
     "emojibase-data": "^16.0.2",
     "react-error-boundary": "^4.1.2"
