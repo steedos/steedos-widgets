@@ -120,5 +120,5 @@ export default {
         { type: "switch", name: "enableDialog", mode: "horizontal", labelRemark: t('widgets-meta:steedos-input-table_panelControls_enableDialog_remark', '禁用弹框模式时，自动开启內联模式'), horizontal: { left: 9, right: 4, justify: true }, label: t('widgets-meta:steedos-input-table_panelControls_enableDialog', '启用弹框模式') }
       ]
     }
-  ]
+  }
 };

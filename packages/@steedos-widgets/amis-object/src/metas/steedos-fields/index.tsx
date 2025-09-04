@@ -721,7 +721,6 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
                                 ],
                                 "extractValue": true,
                                 "clearable": true,
-                                "fieldName": "config.amis.type",
                                 "labelClassName": "text-left",
                                 "clearValueOnHidden": true
                             },
