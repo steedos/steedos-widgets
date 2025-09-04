@@ -861,6 +861,8 @@ export const getFlowFormSchema = async (instance, box) => {
   else{
     formContentSchema = await getFormTableView(instance);
   }
+
+  console.log('getFlowFormSchema formContentSchema', formContentSchema);
   return {
     type: "page",
     name: "instancePage",

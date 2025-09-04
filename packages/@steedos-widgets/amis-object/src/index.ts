@@ -22,7 +22,6 @@ import './styles/workflow.less'
 export * as AmisLib from '@steedos-widgets/amis-lib';
 export * as SteedosLib from '@steedos-widgets/steedos-lib';
 
-export * from './metas/i18n';
 /**
  * 请勿删除, 让tailwind编译出一下class
  * min-w-[240px]

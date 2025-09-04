@@ -8,13 +8,18 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import en_us from "./locales/en-US.json"
 import zh_cn from "./locales/zh-CN.json"
+import widget_ed from './locales/widgets/en.json'
+import widget_zh from './locales/widgets/zh-CN.json'
 import { map } from 'lodash';
+
 const resources = {
   "en": {
-    translation: en_us
+    translation: en_us,
+    'widgets-meta': widget_ed
   },
   "zh-CN": {
-    translation: zh_cn
+    translation: zh_cn,
+    'widgets-meta': widget_zh
   }
 };
 
