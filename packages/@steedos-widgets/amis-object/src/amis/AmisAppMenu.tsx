@@ -492,7 +492,7 @@ export const AmisAppMenu = async (props) => {
                                                                                             "api": {
                                                                                                 "url": "/service/api/objects/create_by_design",
                                                                                                 "method": "post",
-                                                                                                "adaptor": "window.location.href=Steedos.getRelativeUrl('/api/amisObjectFieldsDesign?oid=' + payload._id +\`&assetUrls=\${Builder.settings.assetUrls}\`+'&retUrl='+window.location.href);return {}",
+                                                                                                "adaptor": "var locale = Builder.settings.context?.user?.language || window.navigator.language; window.location.href=Steedos.getRelativeUrl('/api/amisObjectFieldsDesign?oid=' + payload._id +\`&assetUrls=\${Builder.settings.assetUrls}\`+'&retUrl='+window.location.href+'&locale='+locale);return {}",
                                                                                                 "requestAdaptor": "api.data={appId: context.app.id, groupId: '', name: context.oName, label: context.oLabel, icon: context.icon}; return api;",
                                                                                                 "messages": {}
                                                                                             }
@@ -613,7 +613,7 @@ export const AmisAppMenu = async (props) => {
                                                                                             "api": {
                                                                                                 "url": "/service/api/pages/create_page_by_design",
                                                                                                 "method": "post",
-                                                                                                "adaptor": "window.location.href=Steedos.getRelativeUrl('/api/pageDesign?pageId=' + payload._id +\`&assetUrls=\${Builder.settings.assetUrls}\`+'&retUrl='+window.location.href);return {}",
+                                                                                                "adaptor": "var locale = Builder.settings.context?.user?.language || window.navigator.language; window.location.href=Steedos.getRelativeUrl('/api/pageDesign?pageId=' + payload._id +\`&assetUrls=\${Builder.settings.assetUrls}\`+'&retUrl='+window.location.href+'&locale='+locale);return {}",
                                                                                                 "requestAdaptor": "api.data={appId: context.app.id, groupId: '', name: context.oName, label: context.oLabel, icon: context.icon}; return api;",
                                                                                                 "messages": {}
                                                                                             }
@@ -1213,7 +1213,7 @@ export const AmisAppMenu = async (props) => {
                                                                                 "api": {
                                                                                     "url": "/service/api/objects/create_by_design",
                                                                                     "method": "post",
-                                                                                    "adaptor": "window.location.href=Steedos.getRelativeUrl('/api/amisObjectFieldsDesign?oid=' + payload._id +\`&assetUrls=\${Builder.settings.assetUrls}\`+'&retUrl='+window.location.href);return {}",
+                                                                                    "adaptor": "var locale = Builder.settings.context?.user?.language || window.navigator.language; window.location.href=Steedos.getRelativeUrl('/api/amisObjectFieldsDesign?oid=' + payload._id +\`&assetUrls=\${Builder.settings.assetUrls}\`+'&retUrl='+window.location.href+'&locale='+locale);return {}",
                                                                                 "requestAdaptor": "api.data={appId: context.app.id, groupId: context.label, name: context.oName, label: context.oLabel, icon: context.icon}; return api;",
                                                                                     "messages": {}
                                                                                 }
@@ -1335,7 +1335,7 @@ export const AmisAppMenu = async (props) => {
                                                                                 "api": {
                                                                                     "url": "/service/api/pages/create_page_by_design",
                                                                                     "method": "post",
-                                                                                    "adaptor": "window.location.href=Steedos.getRelativeUrl('/api/pageDesign?pageId=' + payload._id +\`&assetUrls=\${Builder.settings.assetUrls}\`+'&retUrl='+window.location.href);return {}",
+                                                                                    "adaptor": "var locale = Builder.settings.context?.user?.language || window.navigator.language; window.location.href=Steedos.getRelativeUrl('/api/pageDesign?pageId=' + payload._id +\`&assetUrls=\${Builder.settings.assetUrls}\`+'&retUrl='+window.location.href+'&locale='+locale);return {}",
                                                                                     "requestAdaptor": "api.data={appId: context.app.id, groupId: context.label, name: context.oName, label: context.oLabel, icon: context.icon}; return api;",
                                                                                     "messages": {}
                                                                                 }
@@ -1674,7 +1674,7 @@ export const AmisAppMenu = async (props) => {
                                                     "actions": [
                                                         {
                                                             "actionType": "custom",
-                                                            "script": "window.location.href=Steedos.getRelativeUrl('/api/amisObjectFieldsDesign?oid=' + event.data.id +\`&assetUrls=\${Builder.settings.assetUrls}\`+'&retUrl='+window.location.href)",
+                                                            "script": "var locale = Builder.settings.context?.user?.language || window.navigator.language;window.location.href=Steedos.getRelativeUrl('/api/amisObjectFieldsDesign?oid=' + event.data.id +\`&assetUrls=\${Builder.settings.assetUrls}\`+'&retUrl='+window.location.href+'&locale='+locale)",
                                                             "expression": "\${false}"
                                                         },
                                                         {
@@ -1745,7 +1745,7 @@ export const AmisAppMenu = async (props) => {
                                                             "api": {
                                                                 "url": "/graphql",
                                                                 "method": "post",
-                                                                "adaptor": "const tabs = payload.data.tabs; if(tabs && tabs.length > 0){ try{const pageId = tabs[0].page__expand._id; window.location.href=Steedos.getRelativeUrl('/api/pageDesign?pageId=' + pageId +\`&assetUrls=\${Builder.settings.assetUrls}\`+'&retUrl='+window.location.href)}catch(e){payload.error=e.message;} }; return payload;",
+                                                                "adaptor": "var locale = Builder.settings.context?.user?.language || window.navigator.language; const tabs = payload.data.tabs; if(tabs && tabs.length > 0){ try{const pageId = tabs[0].page__expand._id; window.location.href=Steedos.getRelativeUrl('/api/pageDesign?pageId=' + pageId +\`&assetUrls=\${Builder.settings.assetUrls}\`+'&retUrl='+window.location.href+'&locale='+locale)}catch(e){payload.error=e.message;} }; return payload;",
                                                                 "requestAdaptor": "api.data={query: '{  tabs(filters: [\\\"name\\\", \\\"=\\\", ' + context.id + ']) {    _id    name    page    page__expand {      _id    }  }}'}; return api;",
                                                                 "messages": {}
                                                             }
