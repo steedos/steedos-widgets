@@ -376,7 +376,7 @@ export const AmisAppMenu = async (props) => {
                                             "type": "dropdown-button",
                                             "level": "link",
                                             "className": "float-right",
-                                            "btnClassName": "p-1 text-gray-600 hover:bg-white! hover:shadow!",
+                                            "btnClassName": "mr-4 text-gray-600 hover:bg-white! hover:shadow!",
                                             "icon": "fa fa-gear",
                                             "iconOnly": true,
                                             "closeOnClick": true,
