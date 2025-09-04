@@ -20,7 +20,10 @@ const external = [
   "react",
   "react-dom",
   'lodash',
-  'antd'
+  'antd',
+  'amis',
+  'amis-core',
+  'amis-ui'
 ]
 
 const globals = { 
@@ -30,7 +33,7 @@ const globals = {
   'antd': 'antd',
   'amis': 'Amis',
   'amis-core': 'AmisCore',
-  'amis-ui': 'AmisUI'
+  'amis-ui': 'AmisUI',
 }
 
 const options = {
@@ -71,37 +74,36 @@ const options = {
 
 export default [
   // React CJS
-  {
-    ...options,
-    output: [{ file: pkg.main, format: 'cjs', sourcemap: true }],
-    external,
-    plugins: options.plugins.concat([]),
-  },
+  // {
+  //   ...options,
+  //   output: [{ file: pkg.main, format: 'cjs', sourcemap: true }],
+  //   external,
+  //   plugins: options.plugins.concat([]),
+  // },
   // ES
+  // {
+  //   ...options,
+  //   output: [{ file: pkg.module, format: 'es', sourcemap: true }],
+  //   external,
+  //   plugins: options.plugins.concat([]),
+  // },
   {
     ...options,
-    output: [{ file: pkg.module, format: 'es', sourcemap: true }],
     external,
-    plugins: options.plugins.concat([]),
-  },
-  {
-    ...options,
-    external,
-    output: [
-      {
-        file: pkg.unpkg,
-        name: exportName,
-        format: 'umd',
-        sourcemap: true,
-        strict: false,
-        intro: 'const global = window; const process = {env: {NODE_ENV: "production"}};',
-        globals,
-        plugins: [getBabelOutputPlugin({
-          allowAllFormats: true,
-          presets: [['@babel/preset-env', { modules: 'umd' }]],
-        })]
-      },
-    ],
+    output: {
+      file: pkg.unpkg,
+      name: exportName,
+      format: 'umd',
+      sourcemap: true,
+      strict: false,
+      inlineDynamicImports: false,
+      intro: 'const global = window; const process = {env: {NODE_ENV: "production"}};',
+      globals,
+      plugins: [getBabelOutputPlugin({
+        allowAllFormats: true,
+        presets: [['@babel/preset-env', { modules: 'umd' }]],
+      })]
+    },
   },
   // meta build
   {
