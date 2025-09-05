@@ -78,6 +78,17 @@ const createFieldFunction = (type: string) => {
           mode: 'horizontal'
         };
       }
+
+      if(props.config.multiple){
+        if(props.config.amis){
+          props.config.amis.multiple = true
+        }else{
+          props.config.amis = {
+            multiple: true
+          }
+        }
+      }
+
     }
 
     if(props.config.type === 'table'){
