@@ -1,5 +1,9 @@
 const t = (window as any).steedosI18next.t;
 const createMetaConfig = (name: string, type: string, title: string, icon: string) => {
+    function generateRandomString(length = 5) {
+      const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+      return (window as any).lodash.sampleSize(characters, length).join('');
+    }
     const metaConfig: any = {
         componentType: 'amisSchema',
         group: t('widgets-meta:sfield_tab_group', '字段'),
@@ -78,12 +82,10 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
                     "type": "text",
                     "label": t('widgets-meta:sfield_control_column_1_label', "column 1"),
                     "amis": {
-                        "mode": "horizontal",
-                        "name": "fuwrx6",
-                        "id": "u:3a883adb07a5"
+                        "mode": "horizontal"
                     },
                     "object": "",
-                    "name": "fuwrx6"
+                    "name": `f${generateRandomString(5)}`
                 },
                 "label": t('widgets-meta:sfield_control_column_1_label', "column 1"),
                 "id": "u:fc066ce3ce29",
@@ -95,18 +97,17 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
                     "type": "text",
                     "label": t('widgets-meta:sfield_control_column_2_label', "column 2"),
                     "amis": {
-                        "mode": "horizontal",
-                        "name": "fuwrx6",
-                        "id": "u:3a883adb07a52"
+                        "mode": "horizontal"
                     },
                     "object": "",
-                    "name": "fuwrx6"
+                    "name": `f${generateRandomString(5)}`
                 },
                 "label": t('widgets-meta:sfield_control_column_2_label', "column 2"),
                 "id": "u:fc066ce3ce292",
                 "placeholder": "-"
             }
         ];
+        _config.name = `f${generateRandomString(5)}`;
     }
 
     return {
