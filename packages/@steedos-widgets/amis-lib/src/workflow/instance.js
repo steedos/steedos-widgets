@@ -267,6 +267,7 @@ export const getInstanceInfo = async (props) => {
         newField.fields = _.map(field.fields, (sfield) => {
           return Object.assign({}, sfield, {
             permission:  userApprove?.type != 'cc' && (step?.permissions[sfield.code] || ( isCurrentStepOpinionField(sfield, step) ? 'editable' : '')),
+            type: sfield._type || sfield.type
           });
         })
       }

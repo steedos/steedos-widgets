@@ -231,17 +231,69 @@ const getNextStepUsersInput = async (instance) => {
             type: "steedos-select-user",
             label: "",
             name: "next_users", 
-            hiddenOn: "this.new_next_step.deal_type != 'pickupAtRuntime'",
+            hiddenOn: "this.new_next_step.deal_type != 'pickupAtRuntime' || this.new_next_step.step_type == 'counterSign'",
             required: true
           },
           {
-            type: "list-select",
+            type: "steedos-select-user",
             label: "",
+            name: "next_users", 
+            hiddenOn: "this.new_next_step.deal_type != 'pickupAtRuntime' || this.new_next_step.step_type != 'counterSign'",
+            required: true,
+            multiple: true
+          },
+          {
+            type: "list-select",
+            label: "list-select1",
             name: "next_users",
             id: "u:next_users",
             required: true,
-            hiddenOn: "this.new_next_step.deal_type === 'pickupAtRuntime'",
-            multiple: "this.new_next_step.deal_type === 'counterSign'",
+            hiddenOn: "this.new_next_step.deal_type == 'pickupAtRuntime' || this.new_next_step.step_type != 'counterSign'",
+            multiple: true,
+            "source": {
+              "url": "${context.rootUrl}/api/workflow/v2/nextStepUsers?next_step=${next_step}",
+              "method": "post",
+              "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end'",
+              "headers": {
+                "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+              },
+              "messages": {
+              },
+              "requestAdaptor": "\nconst { next_step, $scopeId } = api.data;\nconst formValues = context._scoped.getComponentById(\"instance_form\").getValues();\n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
+              "adaptor": `
+                if(payload.error){
+                  SteedosUI.notification.error({message: payload.error});
+                  return {
+                    status: 0,
+                    data: {}
+                  }
+                }
+                payload.data = {
+                  value: payload.nextStepUsers.length === 1 ? payload.nextStepUsers[0].id : null, 
+                  options: payload.nextStepUsers
+                }; 
+                return payload;`,
+              "data": {
+                "&": "$$",
+                "$scopeId": "$scopeId",
+                "context": "${context}",
+                "next_step": "${new_next_step}",
+              }
+            },
+            "labelField": "name",
+            "valueField": "id",
+            value: '${new_next_step.approver_users}',
+            "joinValues": false,
+            "extractValue": true,
+          },
+          {
+            type: "list-select",
+            label: "list-select2",
+            name: "next_users",
+            id: "u:next_users",
+            required: true,
+            hiddenOn: "this.new_next_step.deal_type === 'pickupAtRuntime' || this.new_next_step.step_type == 'counterSign'",
+            multiple: false,
             "source": {
               "url": "${context.rootUrl}/api/workflow/v2/nextStepUsers?next_step=${next_step}",
               "method": "post",
