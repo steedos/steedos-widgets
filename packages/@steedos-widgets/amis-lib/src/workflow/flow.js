@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-09-05 21:48:07
+ * @LastEditTime: 2025-09-08 14:35:29
  * @Description:
  */
 import {
@@ -896,9 +896,6 @@ export const getFlowFormSchema = async (instance, box) => {
       },
       ".steedos-object-record-detail-header .antd-Grid-col--mdAuto": {
         "padding": "0px !important"
-      },
-      ".steedos-amis-instance-view.steedos-instance-style-table .antd-Page-body": {
-        "width": "1024px"
       },
       ".antd-List-placeholder": {
         "display": "none"
