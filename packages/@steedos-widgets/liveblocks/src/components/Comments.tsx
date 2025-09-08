@@ -17,8 +17,8 @@ export const Threads = ({
       showResolveAction,
       showReactions,
       showComposer,
-      showAttachments,
-      showComposerFormattingControls}) => {
+      showAttachments
+      }) => {
   const { threads } = useThreads();
 
   return (
@@ -31,8 +31,7 @@ export const Threads = ({
                 showResolveAction={showResolveAction} 
                 showReactions={showReactions} 
                 showComposer={showComposer} 
-                showAttachments={showAttachments} 
-                showComposerFormattingControls={showComposerFormattingControls} />
+                showAttachments={showAttachments}  />
       ))}
       { showComposer && (<Composer className="composer" />) }
     </>
@@ -51,7 +50,6 @@ export const AmisComments = (props: any) => {
     showReactions = true,
     showComposer = "collapsed",
     showAttachments = true,
-    showComposerFormattingControls = true
   } = props;
 
   if (readonly) {
@@ -75,8 +73,7 @@ export const AmisComments = (props: any) => {
                 showResolveAction={showResolveAction} 
                 showReactions={showReactions} 
                 showComposer={showComposer} 
-                showAttachments={showAttachments} 
-                showComposerFormattingControls={showComposerFormattingControls} />
+                showAttachments={showAttachments} />
             </main>
           </Suspense>
         </ErrorBoundary>

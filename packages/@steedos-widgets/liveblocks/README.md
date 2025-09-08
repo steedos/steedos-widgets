@@ -59,7 +59,6 @@ rooms-comments 高级权限控制：
   showReactions = true,
   showComposer = "collapsed",
   showAttachments = true,
-  showComposerFormattingControls = true
 ```
 
 ## Steedos 加载资产包

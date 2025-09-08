@@ -50,17 +50,17 @@ const options = {
 
 export default [
   // React CJS
-  {
-    ...options,
-    output: [{ file: pkg.main, format: 'cjs', sourcemap: true }],
-    plugins: options.plugins.concat([]),
-  },
+  // {
+  //   ...options,
+  //   output: [{ file: pkg.main, format: 'cjs', sourcemap: true }],
+  //   plugins: options.plugins.concat([]),
+  // },
   // ES
-  {
-    ...options,
-    output: [{ file: pkg.module, format: 'es', sourcemap: true }],
-    plugins: options.plugins.concat([]),
-  },
+  // {
+  //   ...options,
+  //   output: [{ file: pkg.module, format: 'es', sourcemap: true }],
+  //   plugins: options.plugins.concat([]),
+  // },
   {
     ...options,
     external,

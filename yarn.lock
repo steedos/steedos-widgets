@@ -3467,37 +3467,37 @@
     write-pkg "4.0.0"
     yargs "16.2.0"
 
-"@liveblocks/client@2.15.1":
-  version "2.15.1"
-  resolved "https://registry.yarnpkg.com/@liveblocks/client/-/client-2.15.1.tgz#26d473f36567dba76d0f369ab47452118c4a486c"
-  integrity sha512-R4zpISMYxQzMQxCbGWldVCDmvtz8I/32ihyqG/SYccK1UfJxrlFaHyy0Y8DvxYoKLnlmfddqJ6phkuSWodEEMg==
+"@liveblocks/client@2.12.0":
+  version "2.12.0"
+  resolved "https://registry.yarnpkg.com/@liveblocks/client/-/client-2.12.0.tgz#d1580b35194430b0dc331f005031682798259875"
+  integrity sha512-Y2pb9t5hS1kplvS1sTD0q391AM00b3vbRHfFDZhZzElT8u3nGpe+KRB1I1FWGKDoIsSnGk1SSbak01cFSwt2bA==
   dependencies:
-    "@liveblocks/core" "2.15.1"
+    "@liveblocks/core" "2.12.0"
 
-"@liveblocks/core@2.15.1":
-  version "2.15.1"
-  resolved "https://registry.yarnpkg.com/@liveblocks/core/-/core-2.15.1.tgz#77d411cbf5bdf1d039434d22023c06fe4226fcc3"
-  integrity sha512-/rVOTgE8ACFOSyIKJ8uMyF/NKANqB3bCymfa3yhB9vrQ7CPKfAkhjyD7TFfHiWqthyYQeOaio6084wijHnpV6w==
+"@liveblocks/core@2.12.0":
+  version "2.12.0"
+  resolved "https://registry.yarnpkg.com/@liveblocks/core/-/core-2.12.0.tgz#2e216cc158f9da6c7860bbac910abe12e33c680a"
+  integrity sha512-Bsd3dvsj97OruvuYyEWuZmLFihWzv/ghLGgBIBJFCY1AWrbQwkd0tRbkmRXpTtWJd8+902asoHajPYHhpeGWOA==
 
-"@liveblocks/node@2.15.1":
-  version "2.15.1"
-  resolved "https://registry.yarnpkg.com/@liveblocks/node/-/node-2.15.1.tgz#8e12d9fd6cbcc9e1bef99e5edc62093279de9fbe"
-  integrity sha512-+GIzzyuzGZ80DNI0qepRtKXZxsQi67XZqmyRPJvkny8UULToZgkLGFRAPY17rlAsGnfrCL47+DQHCBfTv1VMnQ==
+"@liveblocks/node@2.12.0":
+  version "2.12.0"
+  resolved "https://registry.yarnpkg.com/@liveblocks/node/-/node-2.12.0.tgz#5dc0624a1a2dd144df50f4a914d90cfae6aa8cc3"
+  integrity sha512-m2mguyLjyWzCrwLbUd+s1Dox3W/IkG9k5OB7M9SdpWPaeTa53TLj/m5Il/dWNmLBMiPE3RyQ6f+QX66xYDQLTg==
   dependencies:
-    "@liveblocks/core" "2.15.1"
+    "@liveblocks/core" "2.12.0"
     "@stablelib/base64" "^1.0.1"
     fast-sha256 "^1.3.0"
     node-fetch "^2.6.1"
 
-"@liveblocks/react-ui@2.15.1":
-  version "2.15.1"
-  resolved "https://registry.yarnpkg.com/@liveblocks/react-ui/-/react-ui-2.15.1.tgz#f2d0f4660c11084abf0b990101c9edc7e9228e0e"
-  integrity sha512-j8juyiEpBP1MESlzrEGAc9/ACnKQUgFsl7hPedEEUCiBAJSNzEcd9F5z5a103rlyUzI/sbzdeitiuNbw7RKP4Q==
+"@liveblocks/react-ui@2.12.0":
+  version "2.12.0"
+  resolved "https://registry.yarnpkg.com/@liveblocks/react-ui/-/react-ui-2.12.0.tgz#05b7e70b9dba478638ef50bad5e45d661631f72f"
+  integrity sha512-hljja9ZwF0s/bmdPAbH+MW0xQDPRxR6XkDqXgGw8RwLPrHYYjOXjc5lRL9Q4JyWMy3+OBmhtcZmXxiV1xs0Gow==
   dependencies:
     "@floating-ui/react-dom" "^2.1.2"
-    "@liveblocks/client" "2.15.1"
-    "@liveblocks/core" "2.15.1"
-    "@liveblocks/react" "2.15.1"
+    "@liveblocks/client" "2.12.0"
+    "@liveblocks/core" "2.12.0"
+    "@liveblocks/react" "2.12.0"
     "@radix-ui/react-dropdown-menu" "^2.1.2"
     "@radix-ui/react-popover" "^1.1.2"
     "@radix-ui/react-slot" "^1.1.0"
@@ -3508,14 +3508,16 @@
     slate-history "^0.110.3"
     slate-hyperscript "^0.100.0"
     slate-react "^0.110.3"
+    use-sync-external-store "^1.2.2"
 
-"@liveblocks/react@2.15.1":
-  version "2.15.1"
-  resolved "https://registry.yarnpkg.com/@liveblocks/react/-/react-2.15.1.tgz#cb190cef7092e83bcb2ea707f3ca8f58b9f94ebf"
-  integrity sha512-mESv75dAKgPjwlZKtMe0TxSBnAJL+Wk/HU5w+F+rGC7tXQ9pm2xBH3usm10pbvpfC/1KVo2hDi6jDxxyYGxP3w==
+"@liveblocks/react@2.12.0":
+  version "2.12.0"
+  resolved "https://registry.yarnpkg.com/@liveblocks/react/-/react-2.12.0.tgz#04f088d09ab9b0b35aa7453303ea7053a95ba5de"
+  integrity sha512-ivevtDYbda695WSa2TSwBjDILzY3Ys2cfc3BcfishELb/udb01ujDT6ZUUGzEKFdF5iNxFmfeis7OmmJSjKYCQ==
   dependencies:
-    "@liveblocks/client" "2.15.1"
-    "@liveblocks/core" "2.15.1"
+    "@liveblocks/client" "2.12.0"
+    "@liveblocks/core" "2.12.0"
+    use-sync-external-store "^1.2.2"
 
 "@mdx-js/mdx@^1.6.22":
   version "1.6.22"
@@ -24004,7 +24006,7 @@ typescript@4.6.3:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.6.3.tgz#eefeafa6afdd31d725584c67a0eaba80f6fc6c6c"
   integrity sha512-yNIatDa5iaofVozS/uQJEl3JRWLKKGJKh6Yaiv0GLGSuhpFJe7P3SbHZ8/yjAHRQwKRoA6YZqlfjXWmVzoVSMw==
 
-"typescript@^3 || ^4", typescript@^4.6.2:
+"typescript@^3 || ^4":
   version "4.8.4"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.8.4.tgz#c464abca159669597be5f96b8943500b238e60e6"
   integrity sha512-QCh+85mCy+h0IGff8r5XWzOVSbBO+KfeYrMQh7NJ58QujwcE22u+NUSmUxqF+un70P9GXKxa2HCNiTTMJknyjQ==
@@ -24013,6 +24015,11 @@ typescript@^3.7.3:
   version "3.9.10"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.10.tgz#70f3910ac7a51ed6bef79da7800690b19bf778b8"
   integrity sha512-w6fIxVE/H1PkLKcCPsFqKE7Kv7QUwhU8qQY2MueZXWx5cPZdwFupLgKK3vntcK98BtNHZtAF4LA/yl2a7k8R6Q==
+
+typescript@^4.6.2:
+  version "4.9.5"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.5.tgz#095979f9bcc0d09da324d58d03ce8f8374cbe65a"
+  integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
 
 typescript@~5.6.2:
   version "5.6.3"
@@ -24379,6 +24386,11 @@ use-sync-external-store@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/use-sync-external-store/-/use-sync-external-store-1.2.0.tgz#7dbefd6ef3fe4e767a0cf5d7287aacfb5846928a"
   integrity sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==
+
+use-sync-external-store@^1.2.2:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/use-sync-external-store/-/use-sync-external-store-1.5.0.tgz#55122e2a3edd2a6c106174c27485e0fd59bcfca0"
+  integrity sha512-Rb46I4cGGVBmjamjphe8L/UnvJD+uPPtTkNvX5mZgqdbavhI4EbgIWJiIHXJ8bc/i9EQGPRh4DwEURJ552Do0A==
 
 use@^3.1.0:
   version "3.1.1"
