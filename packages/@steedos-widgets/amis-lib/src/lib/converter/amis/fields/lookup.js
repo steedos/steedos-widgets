@@ -709,7 +709,13 @@ export async function lookupToAmisPicker(field, readonly, ctx){
             "__lookupField": {
                 "name": field.name,
                 "reference_to": refObjectConfig.name,
-                "reference_to_field": field.reference_to_field
+                "reference_to_field": field.reference_to_field,
+                "filters": field.filters,
+                "filtersFunction": field.filtersFunction,
+                "_filtersFunction": field._filtersFunction,
+                "inFilterForm": ctx.inFilterForm,
+                "listviewFilter": listviewFilter,
+                "listviewFiltersFunction": listviewFiltersFunction
             }
         });
 

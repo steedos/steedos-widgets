@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:53:07
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2023-02-28 17:06:22
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2025-07-22 14:49:34
  * @Description: 
  */
 import { i18next } from "../i18n";
@@ -39,12 +39,13 @@ export const StandardButtons = {
                 const {
                     appId,
                     objectName,
-                    uiSchema
+                    uiSchema,
+                    record
                 } = this;
                 const scopeId = this.scopeId || `amis-${appId}-${objectName}-listview`;
                 const scope = this.scope || SteedosUI?.getRef(scopeId);
-                //https://github.com/baidu/amis/pull/6807 .parent的改动是为适应3.2getComponentById的规则改动，不影响2.9
-                const listViewRef = scope.parent?.getComponentById(`listview_${uiSchema.name}`);
+                const crudId = record?.crudId || `listview_${uiSchema.name}`;
+                const listViewRef = scope.parent?.getComponentById(crudId);
                 if(_.isEmpty(listViewRef.props.store.toJSON().selectedItems)){
                     listViewRef.handleAction({}, {
                         "actionType": "toast",

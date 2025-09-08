@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-05-26 18:46:03
+ * @LastEditTime: 2025-07-22 14:53:04
  * @Description: 
  */
 import './AmisObjectListview.less';
@@ -160,6 +160,9 @@ export const AmisObjectListView = async (props) => {
   }
   if(!has(data, 'uiSchema')){
     serviceData.uiSchema = uiSchema;
+  }
+  if(has(crud, 'id')){
+    serviceData.crudId = crud.id;
   }
 
   serviceData.defaultListName = listName ? listName : first(values(uiSchema.list_views))?.name
