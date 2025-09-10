@@ -159,7 +159,7 @@ export const  getAmisFileReadonlySchema = async (steedosField,ctx = {})=>{
                 type: 'each',
                 placeholder: "",
                 className: steedosField.multiple ? `flex flex-col` : '',
-                source: `\${_display.${steedosField.name}|asArray}`,
+                source: `\${${steedosField.name}|asArray}`,
                 items: {
                     type: 'static',
                     labelClassName: "hidden",
