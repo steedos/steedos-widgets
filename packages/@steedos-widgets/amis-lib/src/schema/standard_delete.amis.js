@@ -43,6 +43,10 @@ export const getSchema = (uiSchema)=>{
                               "actionType": "ajax"
                             },
                             {
+                              "actionType": "custom",
+                              "script": "if(event.data.responseResult.responseStatus === 2){event.preventDefault();event.stopPropagation()}"
+                            },
+                            {
                                 "actionType": "broadcast",
                                 "args": {
                                   "eventName": `@data.changed.${uiSchema.name}`
