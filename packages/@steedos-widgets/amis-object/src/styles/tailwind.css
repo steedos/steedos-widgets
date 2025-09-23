@@ -3,6 +3,13 @@
 @tailwind utilities;
 
 
-.shadow, .sm\:shadow {
+.shadow {
   box-shadow: rgba(0, 0, 0, 0.12) 0px 0px 2px, rgba(0, 0, 0, 0.14) 0px 2px 4px;
+} 
+
+
+@media (min-width: 640px) {
+  .sm\:shadow {
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 0px 2px, rgba(0, 0, 0, 0.14) 0px 2px 4px;
+  }
 }

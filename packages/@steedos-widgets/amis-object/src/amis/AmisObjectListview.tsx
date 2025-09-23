@@ -221,7 +221,7 @@ export const AmisObjectListView = async (props) => {
           "className": sideSchema ? `flex-1 focus:outline-none lg:order-last w-96 h-full` : 'w-full h-full',
           "body": {
             type: "wrapper",
-            className: `p-0 bg-white steedos-object-listview-content-wrapper flex flex-col ${displayAs === 'split'? '':'m-4 shadow rounded'}`,
+            className: `p-0 bg-white steedos-object-listview-content-wrapper flex flex-col ${(displayAs === 'split' || formFactor === 'SMALL')? '':'m-4 shadow rounded'}`,
             body: [
               ...headerSchema, //list view header,
               {
