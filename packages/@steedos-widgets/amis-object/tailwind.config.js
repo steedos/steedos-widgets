@@ -18,11 +18,14 @@ module.exports = {
       xl: '18px',
     },
     extend: {
-      screens: {
-        '3xl': '1600px',
-        '4xl': '1800px',
-        '5xl': '2000px',
-      },
+      // screens: {
+      //   '3xl': '1600px',
+      //   '4xl': '1800px',
+      //   '5xl': '2000px',
+      // },
+      boxShadow: {
+        'DEFAULT': 'rgba(0, 0, 0, 0.12) 0px 0px 2px, rgba(0, 0, 0, 0.14) 0px 2px 4px;',
+      }
     },
   },
   plugins: [],
