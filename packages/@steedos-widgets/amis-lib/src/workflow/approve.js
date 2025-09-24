@@ -244,7 +244,7 @@ const getNextStepUsersInput = async (instance) => {
           },
           {
             type: "list-select",
-            label: "list-select1",
+            label: "",
             name: "next_users",
             id: "u:next_users",
             required: true,
@@ -288,7 +288,7 @@ const getNextStepUsersInput = async (instance) => {
           },
           {
             type: "list-select",
-            label: "list-select2",
+            label: "",
             name: "next_users",
             id: "u:next_users",
             required: true,
