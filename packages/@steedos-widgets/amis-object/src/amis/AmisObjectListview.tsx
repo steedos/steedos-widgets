@@ -203,7 +203,7 @@ export const AmisObjectListView = async (props) => {
     _reloadKey: _reloadKey,
     data: _data,
     style: style,
-    className: `${className} h-full  steedos-object-listview ${displayAs === 'split'? 'sm:border-r sm:border-l':'sm:bg-gray-50'}`,
+    className: `${className} h-full  steedos-object-listview ${displayAs === 'split'? '':''}`,
     body: [{
       "type": "wrapper",
       "size": "none",
@@ -221,7 +221,7 @@ export const AmisObjectListView = async (props) => {
           "className": sideSchema ? `flex-1 focus:outline-none lg:order-last w-96 h-full` : 'w-full h-full',
           "body": {
             type: "wrapper",
-            className: `p-0 bg-white steedos-object-listview-content-wrapper flex flex-col ${displayAs === 'split'? '':'m-4 shadow rounded'}`,
+            className: `p-0 bg-white steedos-object-listview-content-wrapper flex flex-col ${(formFactor === 'SMALL')? '':'m-4 shadow rounded'} ${(displayAs === 'split')? 'mr-1':''}`,
             body: [
               ...headerSchema, //list view header,
               {
