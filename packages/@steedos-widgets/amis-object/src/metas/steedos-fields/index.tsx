@@ -823,7 +823,27 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
                                 "visibleOn": "['number','currency','percent'].indexOf(config.type) > -1 ? true: false",
                                 "clearValueOnHidden": true,
                                 "fieldName": "config.enable_thousands"
-                            }
+                            },
+                            // TODO: 应该换成 condition-builder 输出的值需要转换 通过window.amisConvert.conditionsToFilters转换
+                            // {
+                            //     "name": "config.filters",
+                            //     "label": t('widgets-meta:sfield_control_filters', "相关表过滤条件"),
+                            //     "labelRemark": t('widgets-meta:sfield_control_filters_remark', "当字段类型为相关表关系或主/子表关系时，可以为该字段配置过滤条件，过滤选项列表；其中字段值可以配置为公式，公式中引用的字段需要同时配置在依赖的字段中。"),
+                            //     "required": false,
+                            //     "tpl": null,
+                            //     "disabledOn": "${config.is_system == true}",
+                            //     "visibleOn": "['lookup', 'master_detail'].indexOf(config.type) > -1 ? true: false",
+                            //     "clearValueOnHidden": true,
+                            //     "type": "condition-builder",
+                            //     "source": {
+                            //         "method": "get",
+                            //         "url": "${context.rootUrl}/service/api/amis-metadata-listviews/getFilterFields?objectName=${config.reference_to}",
+                            //         "dataType": "json",
+                            //         "headers": {
+                            //             "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                            //         }
+                            //     }
+                            // }
                           ]
                         },
                         {
@@ -840,11 +860,28 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
                                 "clearValueOnHidden": true
                             },
                             {
+                                "name": "config.searchable",
+                                "label": t('widgets-meta:sfield_control_filterable', "启用列表页快速搜索"),
+                                "required": false,
+                                "type": "checkbox",
+                                "tpl": null,
+                                "clearValueOnHidden": true
+                            },
+                            {
                                 "name": "config.filterable",
                                 "label": t('widgets-meta:sfield_control_default_filter_field', "列表页过滤器默认字段"),
                                 "required": false,
                                 "type": "checkbox",
                                 "tpl": null,
+                                "clearValueOnHidden": true
+                            },
+                            {
+                                "name": "config.sortable",
+                                "label": t('widgets-meta:sfield_control_sortable', "可排序"),
+                                "required": false,
+                                "type": "checkbox",
+                                "tpl": null,
+                                "visibleOn": "['image','file','lookup','master_detail','select'].indexOf(config.type) < 0",
                                 "clearValueOnHidden": true
                             },
                             {
