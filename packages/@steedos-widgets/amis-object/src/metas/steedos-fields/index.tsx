@@ -824,26 +824,36 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
                                 "clearValueOnHidden": true,
                                 "fieldName": "config.enable_thousands"
                             },
-                            // TODO: 应该换成 condition-builder 输出的值需要转换 通过window.amisConvert.conditionsToFilters转换
-                            // {
-                            //     "name": "config.filters",
-                            //     "label": t('widgets-meta:sfield_control_filters', "相关表过滤条件"),
-                            //     "labelRemark": t('widgets-meta:sfield_control_filters_remark', "当字段类型为相关表关系或主/子表关系时，可以为该字段配置过滤条件，过滤选项列表；其中字段值可以配置为公式，公式中引用的字段需要同时配置在依赖的字段中。"),
-                            //     "required": false,
-                            //     "tpl": null,
-                            //     "disabledOn": "${config.is_system == true}",
-                            //     "visibleOn": "['lookup', 'master_detail'].indexOf(config.type) > -1 ? true: false",
-                            //     "clearValueOnHidden": true,
-                            //     "type": "condition-builder",
-                            //     "source": {
-                            //         "method": "get",
-                            //         "url": "${context.rootUrl}/service/api/amis-metadata-listviews/getFilterFields?objectName=${config.reference_to}",
-                            //         "dataType": "json",
-                            //         "headers": {
-                            //             "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-                            //         }
-                            //     }
-                            // }
+                            {
+                                "name": "config.filters",
+                                "id": "test123",
+                                "label": t('widgets-meta:sfield_control_filters', "相关表过滤条件"),
+                                "labelRemark": t('widgets-meta:sfield_control_filters_remark', "当字段类型为相关表关系或主/子表关系时，可以为该字段配置过滤条件，过滤选项列表；其中字段值可以配置为公式，公式中引用的字段需要同时配置在依赖的字段中。"),
+                                "required": false,
+                                "tpl": null,
+                                "disabledOn": "${config.is_system == true}",
+                                "visibleOn": "['lookup', 'master_detail'].indexOf(config.type) > -1 ? true: false",
+                                "clearValueOnHidden": true,
+                                "type": "editor",
+                                "language": "javascript",    
+                                "pipeOut": `
+                                    try {
+                                        return value ? JSON.parse(value) : null;
+                                    } catch (e) {
+                                    }
+                                    return value;
+                                `
+                                // TODO: 应该换成 condition-builder 输出的值需要转换 通过window.amisConvert.conditionsToFilters转换
+                                // "type": "condition-builder",
+                                // "source": {
+                                //     "method": "get",
+                                //     "url": "${context.rootUrl}/service/api/amis-metadata-listviews/getFilterFields?objectName=${config.reference_to}",
+                                //     "dataType": "json",
+                                //     "headers": {
+                                //         "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                                //     }
+                                // }
+                            }
                           ]
                         },
                         {
