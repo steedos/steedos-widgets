@@ -417,6 +417,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                 format: 'YYYY-MM-DDTHH:mm:00.000Z',
                 tpl: readonly ? Tpl.getDateTimeTpl(field) : null,
                 utc: true,
+                closeOnSelect: false
             }
             break;
         case 'input-time-range':

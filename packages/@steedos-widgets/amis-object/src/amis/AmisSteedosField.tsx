@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-07-14 15:27:05
+ * @LastEditTime: 2025-09-28 10:47:16
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -777,7 +777,8 @@ export const AmisSteedosField = async (props) => {
             } else if (steedosField.type === 'input-datetime-range' || steedosField.type === 'datetime') {
                 Object.assign(schema, {
                     inputFormat: "YYYY-MM-DD HH:mm",
-                    format:'YYYY-MM-DDTHH:mm:ss.SSSZ'
+                    format:'YYYY-MM-DDTHH:mm:ss.SSSZ',
+                    closeOnSelect: false
                 });
             } else if (steedosField.type === 'toggle') {
                 Object.assign(schema, {
