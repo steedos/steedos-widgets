@@ -826,7 +826,7 @@ const getApplicantTableView = async (instance) => {
   };
 };
 
-const getApproveButton = async (instance)=>{
+const getApproveButton = async (instance, submitEvents)=>{
   if(!instance.approve || ( instance.box != 'inbox' && instance.box != 'draft')){
     return null;
   }
@@ -840,7 +840,7 @@ const getApproveButton = async (instance)=>{
             componentId: "",
             args: {},
             actionType: "drawer",
-            drawer: await getApprovalDrawerSchema(instance),
+            drawer: await getApprovalDrawerSchema(instance, submitEvents),
           },
         ],
       },
@@ -860,6 +860,19 @@ export const getFlowFormSchema = async (instance, box) => {
   }
   else{
     formContentSchema = await getFormTableView(instance);
+  }
+
+  const amisSchemaStr = instance.formVersion?.amis_schema;
+  
+  let initedEvents = [];
+  let changeEvents = [];
+  let submitEvents = [];
+
+  if(amisSchemaStr){
+    const onEvent = JSON.parse(instance.formVersion.amis_schema).onEvent;
+    initedEvents = onEvent.inited.actions || [];
+    changeEvents = onEvent.change.actions || [];
+    submitEvents = onEvent.submit.actions || [];
   }
 
   console.log('getFlowFormSchema formContentSchema', formContentSchema);
@@ -967,13 +980,14 @@ export const getFlowFormSchema = async (instance, box) => {
                 "componentId": "u:next_step",
                 "args": {
                 }
-              }
+              },
+              ...changeEvents
             ]
           }
         }
       },
       await getInstanceApprovalHistory(),
-      await getApproveButton(instance)
+      await getApproveButton(instance, submitEvents)
     ],
     id: "u:63849ea39e12",
     messages: {},
@@ -999,7 +1013,8 @@ export const getFlowFormSchema = async (instance, box) => {
               "value": "${event.data.context.approveValues}"
             },
             "expression": "${event.data.context.form.current.style === 'wizard'}"// 表单为 wizard 样式时需要初始同步表单数据，否则直接点击暂存按钮会清空数据
-          }
+          },
+          ...initedEvents
         ]
       },
       // inited: {

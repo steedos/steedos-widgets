@@ -451,7 +451,7 @@ const getPostEngineRequestAdaptor = async (instance) => {
  * @param instance
  * @returns
  */
-const getSubmitActions = async (instance) => {
+const getSubmitActions = async (instance, submitEvents) => {
   let api = "";
   let requestAdaptor = "";
   if(instance.approve?.type == "cc"){
@@ -530,6 +530,7 @@ const getSubmitActions = async (instance) => {
       `,
       expression: "${event.data.instanceFormValidate}"
     },
+    ...submitEvents,
     {
       componentId: "",
       args: {
@@ -569,7 +570,7 @@ const getSubmitActions = async (instance) => {
   ];
 };
 
-export const getApprovalDrawerSchema = async (instance) => {
+export const getApprovalDrawerSchema = async (instance, submitEvents) => {
   return {
     type: "drawer",
     overlay: false,
@@ -662,7 +663,7 @@ export const getApprovalDrawerSchema = async (instance) => {
         label: "${'Submit' | t}",
         onEvent: {
           click: {
-            actions: await getSubmitActions(instance),
+            actions: await getSubmitActions(instance, submitEvents),
           },
         },
         id: "u:f6f8c3933f6c",

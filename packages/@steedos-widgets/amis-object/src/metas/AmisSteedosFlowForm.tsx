@@ -8,117 +8,212 @@
 const t = (window as any).steedosI18next.t;
 
 const config: any = {
-    componentType: 'amisSchema', 
-    group: t('widgets-meta:steedos-flow-form_group', 'Steedos-审批王'),
-    componentName: "AmisSteedosFlowForm",
-    title: t('widgets-meta:steedos-flow-form_title', '流程表单'),
-    docUrl: "",
-    screenshot: "",
-    npm: {
-      package: "@steedos-widgets/amis-object",
-      version: "{{version}}",
-      exportName: "AmisSteedosFlowForm",
-      main: "",
-      destructuring: true,
-      subName: ""
-    },
-    preview: {},
-    targets: ["steedos__RecordPage", "steedos__AppPage", "steedos__HomePage"],
-    engines: ["amis"],
-    amis: {
-      name: 'steedos-flow-form',
-      icon: "fa-fw fa fa-list-alt"
-    }
-  };
-  
+  componentType: "amisSchema",
+  group: t("widgets-meta:steedos-flow-form_group", "Steedos-审批王"),
+  componentName: "AmisSteedosFlowForm",
+  title: t("widgets-meta:steedos-flow-form_title", "流程表单"),
+  docUrl: "",
+  screenshot: "",
+  npm: {
+    package: "@steedos-widgets/amis-object",
+    version: "{{version}}",
+    exportName: "AmisSteedosFlowForm",
+    main: "",
+    destructuring: true,
+    subName: "",
+  },
+  preview: {},
+  targets: ["steedos__RecordPage", "steedos__AppPage", "steedos__HomePage"],
+  engines: ["amis"],
+  amis: {
+    name: "steedos-flow-form",
+    icon: "fa-fw fa fa-list-alt",
+  },
+};
+
 export default {
-    ...config,
-    snippets: [
-      {
-        title: config.title,
-        screenshot: "",
-        schema: {
-          componentName: config.componentName,
-          props: config.preview
-        }
-      }
-    ],
-    amis: {
-      render: {
-        type: config.amis.name,
-        usage: "renderer",
-        weight: 1,
-        framework: "react"
+  ...config,
+  snippets: [
+    {
+      title: config.title,
+      screenshot: "",
+      schema: {
+        componentName: config.componentName,
+        props: config.preview,
       },
-      plugin: {
-        rendererName: config.amis.name,
-        $schema: '/schemas/UnkownSchema.json',
-        name: config.title,
-        description: config.title,
-        tags: [config.group],
-        isBaseComponent: true,
-        order: -10000,
-        icon: config.amis.icon,
-        scaffold: {
-          type: 'steedos-flow-form',
-          body: [],
+    },
+  ],
+  amis: {
+    render: {
+      type: config.amis.name,
+      usage: "renderer",
+      weight: 1,
+      framework: "react",
+    },
+    plugin: {
+      rendererName: config.amis.name,
+      $schema: "/schemas/AmisSteedosFlowFormSchema.json",
+      name: config.title,
+      description: config.title,
+      tags: [config.group],
+      isBaseComponent: true,
+      order: -10000,
+      icon: config.amis.icon,
+      events: [
+        { eventName: "inited", eventLabel: "表单初始化完成", description: "表单初始化完成事件，不管配置不配置 initApi 都会触发，实际上还会等部分子表单项初始化完成" },
+        { eventName: "change", eventLabel: "表单值变化时触发", description: "" },
+        { eventName: "submit", eventLabel: "表单提交前触发", description: "" },
+      ],
+      scaffold: {
+        type: "steedos-flow-form",
+        body: [],
+      },
+      regions: [
+        {
+          key: "body",
+          label: t("widgets-meta:steedos-flow-form_region_body", "内容区"),
         },
-        regions: [
+      ],
+      previewSchema: {
+        type: config.amis.name,
+      },
+      panelTitle: t("widgets-meta:steedos-flow-form_panelTitle", "设置"),
+      panelBodyCreator: function(context){
+        return [
           {
-            key: 'body',
-            label: t('widgets-meta:steedos-flow-form_region_body', '内容区')
+            type: "tabs",
+            tabsMode: "line",
+            className: "editor-prop-config-tabs",
+            linksClassName: "editor-prop-config-tabs-links",
+            contentClassName: "no-border editor-prop-config-tabs-cont",
+            tabs: [
+              {
+                title: "属性",
+                className: "",
+                body: [
+                  {
+                    type: "collapse-group",
+                    expandIconPosition: "right",
+                    expandIcon: {
+                      type: "icon",
+                      icon: "chevron-right",
+                    },
+                    className: "ae-formItemControl",
+                    body: [
+                      {
+                        type: "input-text",
+                        name: "name",
+                        label: t("widgets-meta:steedos-flow-form_name", "表单名"),
+                        validateOnChange: true
+                      },
+                      {
+                        type: "radios",
+                        name: "style",
+                        label: t("widgets-meta:steedos-flow-form_style", "样式"),
+                        options: [
+                          {
+                            label: t(
+                              "widgets-meta:steedos-flow-form_style_table",
+                              "表格"
+                            ),
+                            value: "table",
+                          },
+                          {
+                            label: t(
+                              "widgets-meta:steedos-flow-form_style_wizard",
+                              "向导"
+                            ),
+                            value: "wizard",
+                          },
+                        ],
+                        value: 'table'
+                      },
+                      {
+                        type: "radios",
+                        name: "mode",
+                        label: t(
+                          "widgets-meta:steedos-flow-form_mode",
+                          "表单模式"
+                        ),
+                        visibleOn: "${style === 'wizard'}",
+                        options: [
+                          {
+                            label: t(
+                              "widgets-meta:steedos-flow-form_mode_normal",
+                              "默认"
+                            ),
+                            value: "normal",
+                          },
+                          {
+                            label: t(
+                              "widgets-meta:steedos-flow-form_mode_horizontal",
+                              "水平模式"
+                            ),
+                            value: "horizontal",
+                          },
+                          {
+                            label: t(
+                              "widgets-meta:steedos-flow-form_mode_inline",
+                              "内联模式"
+                            ),
+                            value: "inline",
+                          },
+                        ],
+                      },
+                      {
+                        type: "radios",
+                        name: "wizard_mode",
+                        label: t(
+                          "widgets-meta:steedos-flow-form_wizard_mode",
+                          "向导模式"
+                        ),
+                        visibleOn: "${style === 'wizard'}",
+                        options: [
+                          {
+                            label: t(
+                              "widgets-meta:steedos-flow-form_wizard_mode_vertical",
+                              "纵向"
+                            ),
+                            value: "vertical",
+                          },
+                          {
+                            label: t(
+                              "widgets-meta:steedos-flow-form_wizard_mode_horizontal",
+                              "横向"
+                            ),
+                            value: "horizontal",
+                          },
+                        ],
+                      },
+                      {
+                        type: "textarea",
+                        name: "description",
+                        label: t(
+                          "widgets-meta:steedos-flow-form_description",
+                          "描述"
+                        ),
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                title: "事件",
+                className: "p-none",
+                body: [
+                  {
+                    name: 'onEvent',
+                    ...(window as any).AmisEditor?.formItemControl(
+                      { },
+                      context
+                    )[0].tabs[2].body[0]
+                  }
+                ],
+              },
+            ],
           },
-        ],
-        previewSchema: {
-          type: config.amis.name,
-        },
-        panelTitle: t('widgets-meta:steedos-flow-form_panelTitle', '设置'),
-        panelControls: [
-          {
-            type: 'text',
-            name: 'name',
-            label: t('widgets-meta:steedos-flow-form_name', '表单名'),
-            validateOnChange: true,
-            validations: {
-                isVariableName: /^[a-zA-Z]([A-Za-z0-9]|_(?!_))*[A-Za-z0-9]$/
-            }
-          },
-          {
-            type: 'radios',
-            name: 'style',
-            label: t('widgets-meta:steedos-flow-form_style', '样式'),
-            options: [
-              {label: t('widgets-meta:steedos-flow-form_style_table', '表格'), value: 'table'},
-              {label: t('widgets-meta:steedos-flow-form_style_wizard', '向导'), value: 'wizard'}
-            ]
-          },
-          {
-            type: 'radios',
-            name: 'mode',
-            label: t('widgets-meta:steedos-flow-form_mode', '表单模式'),
-            visibleOn: "${style === 'wizard'}",
-            options: [
-              {label: t('widgets-meta:steedos-flow-form_mode_normal', '默认'), value: 'normal'},
-              {label: t('widgets-meta:steedos-flow-form_mode_horizontal', '水平模式'), value: 'horizontal'},
-              {label: t('widgets-meta:steedos-flow-form_mode_inline', '内联模式'), value: 'inline'}
-            ]
-          },
-          {
-            type: 'radios',
-            name: 'wizard_mode',
-            label: t('widgets-meta:steedos-flow-form_wizard_mode', '向导模式'),
-            visibleOn: "${style === 'wizard'}",
-            options: [
-              {label: t('widgets-meta:steedos-flow-form_wizard_mode_vertical', '纵向'), value: 'vertical'},
-              {label: t('widgets-meta:steedos-flow-form_wizard_mode_horizontal', '横向'), value: 'horizontal'}
-            ]
-          },
-          {
-            type: 'textarea',
-            name: 'description',
-            label: t('widgets-meta:steedos-flow-form_description', '描述')
-          }
         ]
       }
-    }
+    },
+  },
 };
