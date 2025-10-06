@@ -414,3 +414,20 @@ fieldset.antd-Collapse > legend{
     border: none;
     padding: 6px;
 }
+
+.antd-Form-description ol,ul{
+    margin-left: 1rem !important;
+}
+
+.antd-Form-item ol{
+    list-style-type: decimal !important;
+}
+
+.antd-Form-item ul{
+    list-style-type: disc !important;
+}
+
+.steedos-static-readonly .antd-RichTextControl{
+    border: none  !important;
+    margin-left: 1rem  !important;
+}

@@ -605,9 +605,35 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
                                 "name": "config.description",
                                 "label": t('widgets-meta:sfield_control_description', "描述"),
                                 "required": false,
-                                "type": "textarea",
+                                "type": "input-rich-text",
                                 "tpl": "<%=(data.config.description || \"\").split(\"\\n\").join('<br>')%>",
-                                "clearValueOnHidden": true
+                                "clearValueOnHidden": true,
+                                "options": {
+                                    "menubar": false,
+                                    // "toolbar_mode": "wrap",
+                                    "height": 300,
+                                    "plugins": ["lists"],
+                                    "toolbar": "bold italic underline color align list",
+                                    toolbar_groups: {
+                                        align: {
+                                            icon: 'align-left',
+                                            tooltip: 'Align',
+                                            items: 'alignleft aligncenter alignright alignjustify'
+                                        },
+                                        color: {
+                                            icon: 'text-color',
+                                            tooltip: 'Color',
+                                            items: 'forecolor backcolor'
+                                        },
+                                        list: {
+                                            icon: 'unordered-list',
+                                            tooltip: 'List',
+                                            items: 'bullist numlist outdent indent'
+                                        }
+                                    },
+                                    "statusbar": false
+                                }
+                                    
                             },
                             {
                                 "name": "config.deleted_lookup_record_behavior",
