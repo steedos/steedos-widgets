@@ -415,7 +415,11 @@ fieldset.antd-Collapse > legend{
     padding: 6px;
 }
 
-.antd-Form-description ol,ul{
+.antd-Form-description ol{
+    margin-left: 1rem !important;
+}
+
+.antd-Form-description ul{
     margin-left: 1rem !important;
 }
 
