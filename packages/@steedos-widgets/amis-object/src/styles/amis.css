@@ -417,18 +417,20 @@ fieldset.antd-Collapse > legend{
 
 .antd-Form-description ol{
     margin-left: 1rem !important;
+    list-style-type: decimal;
 }
 
 .antd-Form-description ul{
     margin-left: 1rem !important;
+    list-style-type: decimal;
 }
 
-.antd-Form-item ol{
-    list-style-type: decimal !important;
+.antd-RichTextControl ol{
+    list-style-type: decimal;
 }
 
-.antd-Form-item ul{
-    list-style-type: disc !important;
+.antd-RichTextControl ul{
+    list-style-type: disc;
 }
 
 .steedos-static-readonly .antd-RichTextControl{
