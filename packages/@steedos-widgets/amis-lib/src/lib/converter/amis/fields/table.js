@@ -1352,12 +1352,15 @@ export async function getTableApi(mainObject, fields, options){
         let selfData = JSON.parse(JSON.stringify(api.data.$self));
         // 保留一份初始data，以供自定义发送适配器中获取原始数据。
         const data = _.cloneDeep(api.data);
+        let needToStoreListViewProps;
         try{
             // TODO: 不应该直接在这里取localStorage，应该从外面传入
             const listName = api.data.listName;
+            // 只有在列表页面中才需要存储和读取本地存储中的参数，相关子表组件不需要
+            needToStoreListViewProps = !!listName && !api.body.$self._isRelated;
             const listViewPropsStoreKey = location.pathname + "/crud";
             let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
-            if(localListViewProps){
+            if(needToStoreListViewProps && localListViewProps){
                 localListViewProps = JSON.parse(localListViewProps);
                 selfData = Object.assign({}, localListViewProps, selfData);
                 if(!api.data.filter){
@@ -1499,7 +1502,7 @@ export async function getTableApi(mainObject, fields, options){
 
         //写入本次存储filters、sort
         const listViewPropsStoreKey = location.pathname + "/crud/query";
-        sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify({
+        needToStoreListViewProps && sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify({
             filters: filters,
             sort: sort.trim(),
             pageSize: pageSize,
@@ -1606,9 +1609,12 @@ export async function getTableApi(mainObject, fields, options){
     }
 
 
+    let needToStoreListViewProps;
     try{
         // TODO: 不应该直接在这里取localStorage，应该从外面传入
         const listName = api.body.listName;
+        // 只有在列表页面中才需要存储和读取本地存储中的参数，相关子表组件不需要
+        needToStoreListViewProps = !!listName && !api.body.$self._isRelated;
         const listViewPropsStoreKey = location.pathname + "/crud";
         /**
          * localListViewProps规范来自crud请求api中api.data.$self参数值的。
@@ -1620,7 +1626,7 @@ export async function getTableApi(mainObject, fields, options){
          * orderBy:排序字段
          * orderDir:排序方向
          */
-        let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
+        let localListViewProps = needToStoreListViewProps && sessionStorage.getItem(listViewPropsStoreKey);
         let selfData = JSON.parse(JSON.stringify(api.body.$self));
         if(localListViewProps){
             localListViewProps = JSON.parse(localListViewProps);
@@ -1638,7 +1644,7 @@ export async function getTableApi(mainObject, fields, options){
         
         delete selfData.context;
         delete selfData.global;
-        sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify(selfData));
+        needToStoreListViewProps && sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify(selfData));
         // 返回页码到UI界面
         payload.data.page= selfData.page;
     }
