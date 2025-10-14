@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:51:00
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-07-22 14:29:15
+ * @LastEditTime: 2025-10-14 15:53:35
  * @Description: 
  */
 import { i18next } from "../i18n";
@@ -156,7 +156,7 @@ export const getSchema = async (uiSchema, ctx) => {
                                         }
                                     ],
                                     "showCloseButton": true,
-                                    "id": "u:e11347411d2d",
+                                    "id": "u:standard_new_dialog",
                                     "closeOnEsc": false,
                                     "closeOnOutside": false,
                                     "size": "lg",
@@ -173,7 +173,22 @@ export const getSchema = async (uiSchema, ctx) => {
                                             actionType: 'confirm',
                                             close: false,
                                             id: "confirmAndNew",
-                                            className: 'form-btn-save_and_new'
+                                            className: 'form-btn-save_and_new',
+                                            "onEvent": {
+                                                "click": {
+                                                    "actions": [
+                                                        {
+                                                            "actionType": "setValue",
+                                                            "componentId": "u:standard_new_dialog",
+                                                            "args": {
+                                                                "value": {
+                                                                    "__saveAndNewRecord": true
+                                                                }
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            }
                                         },
                                         {
                                             type: 'button',
