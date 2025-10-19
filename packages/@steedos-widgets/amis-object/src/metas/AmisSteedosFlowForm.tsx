@@ -1,17 +1,10 @@
-/*
- * @Author: 殷亮辉 yinlianghui@hotoa.com
- * @Date: 2025-08-19 15:02:47
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-09-01 23:13:27
- */
-
 const t = (window as any).steedosI18next.t;
 
 const config: any = {
   componentType: "amisSchema",
-  group: t("widgets-meta:steedos-flow-form_group", "Steedos-审批王"),
+  group: (window as any).steedosI18next.t("widgets-meta:steedos-flow-form_group", "Steedos-审批王"),
   componentName: "AmisSteedosFlowForm",
-  title: t("widgets-meta:steedos-flow-form_title", "流程表单"),
+  title: (window as any).steedosI18next.t("widgets-meta:steedos-flow-form_title", "流程表单"),
   docUrl: "",
   screenshot: "",
   npm: {
@@ -71,13 +64,13 @@ export default {
       regions: [
         {
           key: "body",
-          label: t("widgets-meta:steedos-flow-form_region_body", "内容区"),
+          label: (window as any).steedosI18next.t("widgets-meta:steedos-flow-form_region_body", "内容区"),
         },
       ],
       previewSchema: {
         type: config.amis.name,
       },
-      panelTitle: t("widgets-meta:steedos-flow-form_panelTitle", "设置"),
+      panelTitle: (window as any).steedosI18next.t("widgets-meta:steedos-flow-form_panelTitle", "设置"),
       panelBodyCreator: function(context){
         return [
           {
@@ -103,23 +96,23 @@ export default {
                       {
                         type: "input-text",
                         name: "name",
-                        label: t("widgets-meta:steedos-flow-form_name", "表单名"),
+                        label: (window as any).steedosI18next.t("widgets-meta:steedos-flow-form_name", "表单名"),
                         validateOnChange: true
                       },
                       {
                         type: "radios",
                         name: "style",
-                        label: t("widgets-meta:steedos-flow-form_style", "样式"),
+                        label: (window as any).steedosI18next.t("widgets-meta:steedos-flow-form_style", "样式"),
                         options: [
                           {
-                            label: t(
+                            label: (window as any).steedosI18next.t(
                               "widgets-meta:steedos-flow-form_style_table",
                               "表格"
                             ),
                             value: "table",
                           },
                           {
-                            label: t(
+                            label: (window as any).steedosI18next.t(
                               "widgets-meta:steedos-flow-form_style_wizard",
                               "向导"
                             ),
@@ -131,28 +124,28 @@ export default {
                       {
                         type: "radios",
                         name: "mode",
-                        label: t(
+                        label: (window as any).steedosI18next.t(
                           "widgets-meta:steedos-flow-form_mode",
                           "表单模式"
                         ),
                         visibleOn: "${style === 'wizard'}",
                         options: [
                           {
-                            label: t(
+                            label: (window as any).steedosI18next.t(
                               "widgets-meta:steedos-flow-form_mode_normal",
                               "默认"
                             ),
                             value: "normal",
                           },
                           {
-                            label: t(
+                            label: (window as any).steedosI18next.t(
                               "widgets-meta:steedos-flow-form_mode_horizontal",
                               "水平模式"
                             ),
                             value: "horizontal",
                           },
                           {
-                            label: t(
+                            label: (window as any).steedosI18next.t(
                               "widgets-meta:steedos-flow-form_mode_inline",
                               "内联模式"
                             ),
@@ -163,21 +156,21 @@ export default {
                       {
                         type: "radios",
                         name: "wizard_mode",
-                        label: t(
+                        label: (window as any).steedosI18next.t(
                           "widgets-meta:steedos-flow-form_wizard_mode",
                           "向导模式"
                         ),
                         visibleOn: "${style === 'wizard'}",
                         options: [
                           {
-                            label: t(
+                            label: (window as any).steedosI18next.t(
                               "widgets-meta:steedos-flow-form_wizard_mode_vertical",
                               "纵向"
                             ),
                             value: "vertical",
                           },
                           {
-                            label: t(
+                            label: (window as any).steedosI18next.t(
                               "widgets-meta:steedos-flow-form_wizard_mode_horizontal",
                               "横向"
                             ),
@@ -188,7 +181,7 @@ export default {
                       {
                         type: "textarea",
                         name: "description",
-                        label: t(
+                        label: (window as any).steedosI18next.t(
                           "widgets-meta:steedos-flow-form_description",
                           "描述"
                         ),
@@ -201,13 +194,11 @@ export default {
                 title: "事件",
                 className: "p-none",
                 body: [
-                  {
-                    name: 'onEvent',
-                    ...(window as any).AmisEditor?.formItemControl(
+                  Object.assign({name: 'onEvent'}, (window as any).AmisEditor?.formItemControl(
                       { },
                       context
                     )[0].tabs[2].body[0]
-                  }
+                  )
                 ],
               },
             ],

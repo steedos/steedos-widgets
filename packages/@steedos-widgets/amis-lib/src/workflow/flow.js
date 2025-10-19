@@ -989,7 +989,7 @@ export const getFlowFormSchema = async (instance, box) => {
       await getInstanceApprovalHistory(),
       await getApproveButton(instance, submitEvents)
     ],
-    id: "u:63849ea39e12",
+    id: "u:instancePage",
     messages: {},
     pullRefresh: {},
     regions: [
@@ -1000,6 +1000,11 @@ export const getFlowFormSchema = async (instance, box) => {
       "@data.@instanceDetail.changed": {
         actions: [
           {
+            actionType: "custom",
+            script:"debugger;",
+          },
+          {
+            componentId:"u:instancePage",
             actionType: "reload"
           }
         ]
@@ -1016,22 +1021,7 @@ export const getFlowFormSchema = async (instance, box) => {
           },
           ...initedEvents
         ]
-      },
-      // inited: {
-      //   weight: 0,
-      //   actions: [
-      //     // {
-      //     //   componentId: "steedos-approve-button",
-      //     //   actionType: "click",
-      //     // },
-      //     // {
-      //     //   "componentId": "",
-      //     //   "args": {},
-      //     //   "actionType": "drawer",
-      //     //   "drawer": await getApprovalDrawerSchema()
-      //     // }
-      //   ],
-      // }
+      }
     },
     initApi:{
       "url": "${context.rootUrl}/graphql",
@@ -1063,8 +1053,6 @@ export const getFlowFormSchema = async (instance, box) => {
         return payload;
       `,
       "data": {
-        // "&": "$$",
-        // "context": "${context}",
         "judge": "${new_judge}",
       }
     },
