@@ -870,9 +870,9 @@ export const getFlowFormSchema = async (instance, box) => {
 
   if(amisSchemaStr){
     const onEvent = JSON.parse(instance.formVersion.amis_schema).onEvent;
-    initedEvents = onEvent.inited.actions || [];
-    changeEvents = onEvent.change.actions || [];
-    submitEvents = onEvent.submit.actions || [];
+    initedEvents = onEvent?.inited.actions || [];
+    changeEvents = onEvent?.change.actions || [];
+    submitEvents = onEvent?.submit.actions || [];
   }
 
   console.log('getFlowFormSchema formContentSchema', formContentSchema);
