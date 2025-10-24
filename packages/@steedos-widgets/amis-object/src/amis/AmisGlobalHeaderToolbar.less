@@ -48,6 +48,11 @@ body.sidebar #sidebar {
                 overflow: hidden;
                 text-overflow: ellipsis;
                 width: 100%;
+                &> span > span {
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
             }
         }
     }
