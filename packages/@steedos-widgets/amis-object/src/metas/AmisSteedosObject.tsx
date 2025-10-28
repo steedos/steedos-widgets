@@ -41,7 +41,7 @@ const config: any = {
     amis: {
       render: {
         type: config.amis.name,
-        usage: t('widgets-meta:steedos-object_usage', 'renderer'),
+        usage: 'renderer',
         weight: 1,
         framework: "react"
       },
