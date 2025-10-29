@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-09-08 14:35:29
+ * @LastEditTime: 2025-10-29 22:17:24
  * @Description:
  */
 import {
@@ -847,9 +847,52 @@ const getApproveButton = async (instance, submitEvents)=>{
     },
     id: "steedos-approve-button",
     level: "primary",
-    className:
-      "approve-button w-14 h-14 rounded-full fixed bottom-4 right-4 shadow-lg text-white text-base text-center font-semibold bg-blue-500 p-0",
+    className: {
+      "approve-button w-14 h-14 rounded-full fixed bottom-4 right-4 shadow-lg text-white text-base text-center font-semibold bg-blue-500 p-0": true,
+      "hidden": instance.box === 'draft'
+    }
   }
+}
+
+const getScrollToBottomAutoOpenApproveDrawerScript = () => {
+  return `
+    (function () {
+      setTimeout(function () {
+        var bodyEl = document.querySelector('.steedos-amis-instance-view-body');
+        if (!bodyEl) return;
+        var btn = document.querySelector('.approve-button');
+        if (!btn) return;
+
+        var lastAtBottom = false; // 上一个scroll事件是否到底
+
+        function isAtBottom() {
+          var scrollTop = bodyEl.scrollTop,
+            scrollHeight = bodyEl.scrollHeight,
+            clientHeight = bodyEl.clientHeight;
+          return (scrollHeight <= clientHeight) || (scrollTop + clientHeight >= scrollHeight - 2);
+        }
+
+        // wheel: 只要现在到底、且是向下滚，即可弹出
+        bodyEl.addEventListener('wheel', function (e) {
+          var atBottom = isAtBottom();
+          if (atBottom && e.deltaY > 0) {
+            // [wheel] 拖动条在底部且向下滚，弹drawer
+            btn.click();
+          }
+        });
+
+        // scroll: 拖动时仅“从非底部->底部”瞬间弹
+        bodyEl.addEventListener('scroll', function () {
+          var atBottom = isAtBottom();
+          if (!lastAtBottom && atBottom) {
+            // [scroll] 拖动条到底，弹drawer
+            btn.click();
+          }
+          lastAtBottom = atBottom;
+        });
+      }, 1000);
+    })();
+  `;
 }
 
 export const getFlowFormSchema = async (instance, box) => {
@@ -873,6 +916,14 @@ export const getFlowFormSchema = async (instance, box) => {
     initedEvents = onEvent?.inited.actions || [];
     changeEvents = onEvent?.change.actions || [];
     submitEvents = onEvent?.submit.actions || [];
+  }
+  if (box == 'inbox' || box == 'draft') {
+    // 滚动条滚动到底部弹出底部签批drawer窗口
+    initedEvents.push({
+      "actionType": "custom",
+      "script": getScrollToBottomAutoOpenApproveDrawerScript(),
+      "args": {}
+    });
   }
 
   console.log('getFlowFormSchema formContentSchema', formContentSchema);
