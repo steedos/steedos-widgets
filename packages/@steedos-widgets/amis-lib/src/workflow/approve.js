@@ -634,23 +634,23 @@ export const getApprovalDrawerSchema = async (instance, submitEvents) => {
           //     }
           //   ]
           // },
-          validateError: {
-            weight: 0,
-            actions: [
-              {
-                "componentId": "",
-                "args": {
-                  "msgType": "info",
-                  "position": "top-right",
-                  "closeButton": true,
-                  "showIcon": true,
-                  "title": i18next.t('frontend_workflow_submit_validate_error_title'),//"提交失败",
-                  "msg": i18next.t('frontend_workflow_submit_validate_error_msg'),//"请填写必填字段"
-                },
-                "actionType": "toast"
-              }
-            ],
-          }
+          // validateError: {
+          //   weight: 0,
+          //   actions: [
+          //     {
+          //       "componentId": "",
+          //       "args": {
+          //         "msgType": "info",
+          //         "position": "top-right",
+          //         "closeButton": true,
+          //         "showIcon": true,
+          //         "title": i18next.t('frontend_workflow_submit_validate_error_title'),//"提交失败",
+          //         "msg": i18next.t('frontend_workflow_submit_validate_error_msg'),//"请填写必填字段"
+          //       },
+          //       "actionType": "toast"
+          //     }
+          //   ],
+          // }
         },
         
       },

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-10-29 22:17:24
+ * @LastEditTime: 2025-10-30 13:40:31
  * @Description:
  */
 import {
@@ -1006,23 +1006,23 @@ export const getFlowFormSchema = async (instance, box) => {
         ],
         id: "instance_form",
         onEvent: {
-          validateError: {
-            weight: 0,
-            actions: [
-              {
-                "componentId": "",
-                "args": {
-                  "msgType": "info",
-                  "position": "top-right",
-                  "closeButton": true,
-                  "showIcon": true,
-                  "title": i18next.t('frontend_workflow_submit_validate_error_title'),//"提交失败",
-                  "msg": i18next.t('frontend_workflow_submit_validate_error_msg'),//"请填写必填字段"
-                },
-                "actionType": "toast"
-              }
-            ],
-          },
+          // validateError: {
+          //   weight: 0,
+          //   actions: [
+          //     {
+          //       "componentId": "",
+          //       "args": {
+          //         "msgType": "info",
+          //         "position": "top-right",
+          //         "closeButton": true,
+          //         "showIcon": true,
+          //         "title": i18next.t('frontend_workflow_submit_validate_error_title'),//"提交失败",
+          //         "msg": i18next.t('frontend_workflow_submit_validate_error_msg'),//"请填写必填字段"
+          //       },
+          //       "actionType": "toast"
+          //     }
+          //   ],
+          // },
           change: {
             weight: 0,
             actions: [
