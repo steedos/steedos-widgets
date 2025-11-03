@@ -6,7 +6,7 @@ import { i18next } from "@steedos-widgets/amis-lib";
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 17:47:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-09-01 23:33:14
+ * @LastEditTime: 2025-11-03 15:17:50
  * @Description:
  */
 
@@ -155,6 +155,26 @@ const isCurrentStepOpinionField = (field, currentStep)=>{
   return _.includes(_.map(getOpinionFieldStepsName(field), 'stepName'), currentStep?.name);
 }
 
+const isNeedToShowSignImage = (is_finished, judge, traceShowSignImage) => {
+  if (traceShowSignImage === false) {
+    return false;
+  }
+  if (!is_finished) {
+    return false;
+  }
+  if (['returned', 'terminated', 'retrieved'].includes(judge)) {
+    return false;
+  }
+  return true;
+}
+
+const getSpaceUserSign = async (space, handler) => {
+  const result = await fetchAPI(`/api/v1/space_user_signs?filters=[["space","=","${space}"],["user","=","${handler}"]]&fields=["sign"]`);
+  if (result?.data?.items && result.data.items.length > 0) {
+    return result.data.items[0].sign;
+  }
+  return null;
+}
 
 export const getInstanceInfo = async (props) => {
   const { instanceId, box } = props;
@@ -243,6 +263,7 @@ export const getInstanceInfo = async (props) => {
   });
 
   const moment = getMoment();
+  const signImageCache = new Map();
   return {
     box: box,
     _id: instanceId,
@@ -286,14 +307,28 @@ export const getInstanceInfo = async (props) => {
     forward_from_instance: instance.forward_from_instance,
     cc_users: instance.cc_users,
     traces: instance.traces,
-    historyApproves: _.map(instance.traces, (trace) => {
+    historyApproves: await Promise.all(_.map(instance.traces, async (trace) => {
       return Object.assign(
         {
-          children: _.map(trace.approves, (approve) => {
+          children: await Promise.all(_.map(trace.approves, async (approve) => {
             let finishDate = approve.finish_date;
             let judge = approve.judge;
             let userName = approve.user_name;
             let opinion = approve.description;
+            const traceShowSignImage = true;
+            let showSignImage = isNeedToShowSignImage(approve.is_finished, approve.judge, traceShowSignImage);
+            let userSign;
+            if (showSignImage) {
+              if (signImageCache.has(approve.handler)) {
+                userSign = signImageCache.get(approve.handler);
+              } else {
+                userSign = await getSpaceUserSign(instance.space, approve.handler);
+                signImageCache.set(approve.handler, userSign);
+              }
+              if (userSign){
+                userName = `<img class="image-sign" alt="${userName}" src="/api/v6/files/download/cfs.avatars.filerecord/${userSign}" />`;
+              }
+            }
             if(approve.type === 'cc'){
               userName = `${userName} (传阅)`
               opinion = approve.cc_description;
@@ -349,10 +384,10 @@ export const getInstanceInfo = async (props) => {
               judge: judge,
               opinion: opinion,
             };
-          }),
+          })),
         },
         { name: trace.name, judge: "" }
       );
-    }),
+    })),
   };
 };

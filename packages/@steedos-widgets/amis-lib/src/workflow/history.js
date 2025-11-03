@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-24 16:48:28
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-11-03 10:23:32
+ * @LastEditTime: 2025-11-03 11:16:43
  * @Description: 
  */
 
@@ -29,7 +29,7 @@ export const getInstanceApprovalHistory = async ()=>{
             "name": "user_name",
             "label": "user_name",
             "type": "tpl",
-            "tpl": "<div><div>${opinion}</div>${user_name}</div>"
+            "tpl": "<div><div>${opinion}</div>${user_name|raw}</div>"
           },
           {
             "name": "finish_date",
