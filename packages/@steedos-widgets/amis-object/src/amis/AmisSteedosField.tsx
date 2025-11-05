@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-11-05 09:24:52
+ * @LastEditTime: 2025-11-05 23:00:50
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -566,7 +566,7 @@ export const AmisSteedosField = async (props) => {
             if(!ctx.className){
                 ctx.className = className;
             }
-            const schema = await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
+            const schema = await Field.convertSFieldToAmisField(steedosField, true, ctx);
             addEditorClass(schema, editorClassName);
             return schema
         }

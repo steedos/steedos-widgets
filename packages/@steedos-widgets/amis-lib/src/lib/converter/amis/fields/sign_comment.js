@@ -2,19 +2,12 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-11-04 12:00:23
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-11-05 22:45:56
+ * @LastEditTime: 2025-11-05 23:01:39
  */
 import * as _ from 'lodash'
 export function signCommentToAmis(field, readonly, ctx) {
     if (!ctx) {
         ctx = {};
-    }
-    console.log(`signCommentToAmis====`, field, readonly, ctx)
-    if (readonly) {
-
-        return {
-            type: 'static-text'
-        }
     }
 
     let signComment = `
@@ -34,7 +27,7 @@ export function signCommentToAmis(field, readonly, ctx) {
                 "tpl": html,
                 "className": "instance-sign-content block m-2.5"
             }
-            // TODO:签批链接，点击弹出填写签批意见
+            // TODO:签批链接，点击弹出填写签批意见，readonly时不显示签批链接
         ],
         "size": "none"
     };
