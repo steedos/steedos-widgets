@@ -143,7 +143,8 @@ const fieldTypes = [
   { name: "Location", type: "location", title: "位置", icon: "fa-fw fa fa-map-marker" },
   { name: "Formula", type: "formula", title: "公式", icon: "fa-fw fa fa-sigma" },
   { name: "Summary", type: "summary", title: "累计汇总", icon: "fa-fw fa fa-sum" },
-  { name: "Table", type: "table", title: "表格", icon: "fa-fw fa fa-table" }
+  { name: "Table", type: "table", title: "表格", icon: "fa-fw fa fa-table" },
+  { name: "SignComment", type: "sign_comment", title: "签字意见", icon: "fa-fw fa fa-table" }
 ];
 
 // 生成每个字段类型的函数
@@ -180,7 +181,8 @@ export const {
   SteedosFieldLocation,
   SteedosFieldFormula,
   SteedosFieldSummary,
-  SteedosFieldTable
+  SteedosFieldTable,
+  SteedosFieldSignComment
 } = generatedFunctions;
 
 export default generatedFunctions;

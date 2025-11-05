@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-12-26 18:07:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-09-28 10:47:16
+ * @LastEditTime: 2025-11-05 09:24:52
  * @Description: 
  */
 import "./AmisSteedosField.less";
@@ -561,6 +561,14 @@ export const AmisSteedosField = async (props) => {
             addEditorClass(schema, editorClassName);
             console.log(`steedos field [lookup] schema:`, schema)
             return schema;
+        }
+        if (fStatic && (steedosField.type === 'sign_comment')) {
+            if(!ctx.className){
+                ctx.className = className;
+            }
+            const schema = await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
+            addEditorClass(schema, editorClassName);
+            return schema
         }
         else if (fStatic) {
             if (props.data.hasOwnProperty("_display")) {

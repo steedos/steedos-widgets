@@ -6,7 +6,7 @@ import { i18next } from "@steedos-widgets/amis-lib";
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-09 17:47:37
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-11-03 15:17:50
+ * @LastEditTime: 2025-11-05 22:48:54
  * @Description:
  */
 
@@ -262,6 +262,55 @@ export const getInstanceInfo = async (props) => {
     method: "get",
   });
 
+  const signCommentFields = {};
+  _.each(formVersion.fields, (field) => {
+    if (field.config?.type === "sign_comment") {
+      signCommentFields[field.code] = _.clone(field.config);
+    }
+    if (field.type === 'section') {
+      _.each(field.fields, (subField) => {
+        if (subField.config?.type === "sign_comment") {
+          signCommentFields[subField.code] = _.clone(subField.config);
+        }
+      });
+    }
+  });
+  _.each(signCommentFields, (field) => {
+    // 根据field.steps中对应的步骤name找到对应的步骤
+    const fieldSteps = _.clone(field.steps).map((step) => {
+      if (typeof step === 'string'){
+        const flowStep = flowVersion.steps.find((s) => s.name === step);
+        return _.pick(flowStep, ["_id", "name"]);
+      }
+      else {
+        const flowStep = flowVersion.steps.find((s) => s.name === step.name);
+        return Object.assign({}, step, {
+          _id: flowStep?._id,
+        });
+      }
+    });
+    if (fieldSteps && fieldSteps.length > 0) {
+      const fieldComments = [];
+      const instanceTraces = instance.traces;
+      for (let i = instanceTraces.length - 1; i >= 0; i--) {
+        const trace = instanceTraces[i];
+        const isTraceInFieldSteps = !!fieldSteps.find((step) => step._id === trace.step);
+        if (isTraceInFieldSteps) {
+          const approves = trace.approves;
+          for (let j = approves.length - 1; j >= 0; j--) {
+            const approve = approves[j];
+            if (approve.description) {
+              // TODO:approve.sign_show为true时，显示签章图片
+              const commentContent = _.pick(approve, ["description", "handler_name", "user_name", "finish_date", "is_finished"]);
+              fieldComments.push(commentContent);
+            }
+          }
+        }
+      }
+      field.comments = fieldComments;
+    }
+  });
+
   const moment = getMoment();
   const signImageCache = new Map();
   return {
@@ -389,5 +438,6 @@ export const getInstanceInfo = async (props) => {
         { name: trace.name, judge: "" }
       );
     })),
+    signCommentFields
   };
 };

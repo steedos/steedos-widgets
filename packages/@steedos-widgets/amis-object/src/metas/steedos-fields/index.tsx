@@ -56,7 +56,8 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
         { "label": t('widgets-meta:sfield_file', "附件"), "value": "file" },
         { "label": t('widgets-meta:sfield_formula', "公式"), "value": "formula" },
         { "label": t('widgets-meta:sfield_summary', "累计汇总"), "value": "summary" },
-        { "label": t('widgets-meta:sfield_table', "表格"), "value": "table" }
+        { "label": t('widgets-meta:sfield_table', "表格"), "value": "table" },
+        { "label": t('widgets-meta:sfield_sign_comment', "签字意见"), "value": "sign_comment" }
     ];
 
     const disabledFields = (window as any).parent?._disabledFields || [];
@@ -602,6 +603,45 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
                                 }
                             },
                             {
+                                "name": "config.steps",
+                                "label": t('widgets-meta:sfield_control_steps', "关联步骤"),
+                                "labelRemark": t('widgets-meta:sfield_control_steps_remark', "在流程步骤中输入的意见会显示在此字段中。"),
+                                "type": "combo",
+                                "multiLine": true,
+                                "multiple": true,
+                                "items": [
+                                    {
+                                        "label": "步骤名",
+                                        "name": "name",
+                                        "type": "input-text"
+                                    },
+                                    {
+                                        "label": "只显示传阅人员签批意见",
+                                        "name": "only_cc",
+                                        "type": "switch"
+                                    },
+                                    {
+                                        "label": "只显示处理人员意见",
+                                        "name": "only_handler",
+                                        "type": "switch"
+                                    },
+                                    {
+                                        "label": "是否图片签名",
+                                        "name": "image_sign",
+                                        "type": "switch"
+                                    },
+                                    {
+                                        "label": "默认意见",
+                                        "name": "default",
+                                        "type": "input-text"
+                                    }
+                                ],
+                                "visibleOn": " 'sign_comment' === config.type ? true: false ",
+                                "labelClassName": "text-left",
+                                "clearValueOnHidden": true,
+                                "disabledOn": "${config.is_system == true}"
+                            },
+                            {
                                 "name": "config.description",
                                 "label": t('widgets-meta:sfield_control_description', "描述"),
                                 "required": false,
@@ -1008,7 +1048,8 @@ const fieldTypes = [
     { name: "Location", type: "location", title: t('widgets-meta:sfield_location', "位置"), icon: "fa-fw fa fa-map-marker" },
     { name: "Formula", type: "formula", title: t('widgets-meta:sfield_formula', "公式"), icon: "fa-fw fa fa-subscript" },
     { name: "Summary", type: "summary", title: t('widgets-meta:sfield_summary', "累计汇总"), icon: "fa-fw fa fa-superscript" },
-    { name: "Table", type: "table", title: t('widgets-meta:sfield_table', "表格"), icon: "fa-fw fa fa-table" }
+    { name: "Table", type: "table", title: t('widgets-meta:sfield_table', "表格"), icon: "fa-fw fa fa-table" },
+    { name: "SignComment", type: "sign_comment", title: t('widgets-meta:sfield_sign_comment', "签字意见"), icon: "fa-fw fa fa-table" }
 ];
 
 const fieldMetas = [];

@@ -7,6 +7,7 @@ import * as File from './file';
 import { getAmisStaticFieldType } from './type';
 import * as _ from 'lodash';
 import { i18next } from "../../../../i18n";
+import { signCommentToAmis } from './sign_comment';
 
 export const QUICK_SEARCHABLE_FIELD_TYPES = ["text", "textarea", "autonumber", "url", "email"];
 export const OMIT_FIELDS = ['created', 'created_by', 'modified', 'modified_by'];
@@ -808,6 +809,9 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                     }
                 }
             }
+            break;
+        case 'sign_comment':
+            convertData = signCommentToAmis(field, readonly, ctx)
             break;
         default:
             // console.log('convertData default', field.type);
