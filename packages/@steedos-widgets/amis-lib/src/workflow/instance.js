@@ -1,14 +1,7 @@
 import { fetchAPI, getSteedosAuth } from "@steedos-widgets/amis-lib";
 import _, { find, isEmpty } from "lodash";
-import { getOpinionFieldStepsName } from './util';
+import { getOpinionFieldStepsName, getTraceApprovesByStep, isOpinionOfField } from './util';
 import { i18next } from "@steedos-widgets/amis-lib";
-/*
- * @Author: baozhoutao@steedos.com
- * @Date: 2022-09-09 17:47:37
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-11-05 22:48:54
- * @Description:
- */
 
 const getMoment = ()=>{
   if(window.amisRequire){
@@ -277,37 +270,44 @@ export const getInstanceInfo = async (props) => {
   });
   _.each(signCommentFields, (field) => {
     // 根据field.steps中对应的步骤name找到对应的步骤
-    const fieldSteps = _.clone(field.steps).map((step) => {
-      if (typeof step === 'string'){
-        const flowStep = flowVersion.steps.find((s) => s.name === step);
-        return _.pick(flowStep, ["_id", "name"]);
-      }
-      else {
-        const flowStep = flowVersion.steps.find((s) => s.name === step.name);
-        return Object.assign({}, step, {
-          _id: flowStep?._id,
-        });
-      }
-    });
+    // const fieldSteps = _.clone(field.steps).map((step) => {
+    //   if (typeof step === 'string'){
+    //     const flowStep = flowVersion.steps.find((s) => s.name === step);
+    //     return _.pick(flowStep, ["_id", "name"]);
+    //   }
+    //   else {
+    //     const flowStep = flowVersion.steps.find((s) => s.name === step.name);
+    //     return Object.assign({}, step, {
+    //       _id: flowStep?._id,
+    //     });
+    //   }
+    // });
+    const fieldSteps = _.clone(field.steps);
     if (fieldSteps && fieldSteps.length > 0) {
-      const fieldComments = [];
-      const instanceTraces = instance.traces;
-      for (let i = instanceTraces.length - 1; i >= 0; i--) {
-        const trace = instanceTraces[i];
-        const isTraceInFieldSteps = !!fieldSteps.find((step) => step._id === trace.step);
-        if (isTraceInFieldSteps) {
-          const approves = trace.approves;
-          for (let j = approves.length - 1; j >= 0; j--) {
-            const approve = approves[j];
-            if (approve.description) {
-              // TODO:approve.sign_show为true时，显示签章图片
-              const commentContent = _.pick(approve, ["description", "handler_name", "user_name", "finish_date", "is_finished"]);
-              fieldComments.push(commentContent);
-            }
-          }
-        }
-      }
-      field.comments = fieldComments;
+      let fieldComments = [];
+      // const instanceTraces = instance.traces;
+      // for (let i = instanceTraces.length - 1; i >= 0; i--) {
+      //   const trace = instanceTraces[i];
+      //   const isTraceInFieldSteps = !!fieldSteps.find((step) => step._id === trace.step);
+      //   if (isTraceInFieldSteps) {
+      //     const approves = trace.approves;
+      //     for (let j = approves.length - 1; j >= 0; j--) {
+      //       const approve = approves[j];
+      //       if (approve.description) {
+      //         // TODO:approve.sign_show为true时，显示签章图片
+      //         const commentContent = _.pick(approve, ["description", "handler_name", "user_name", "finish_date", "is_finished"]);
+      //         fieldComments.push(commentContent);
+      //       }
+      //     }
+      //   }
+      // }
+      _.each(fieldSteps, (step) => {
+        const only_cc_opinion = step.show_cc && !step.show_handler;
+        fieldComments = _.union(fieldComments, getTraceApprovesByStep(instance, flowVersion, step.name, only_cc_opinion));
+      });
+      field.comments = fieldComments.filter((comment)=>{
+        return isOpinionOfField(comment, field);
+      });
     }
   });
 

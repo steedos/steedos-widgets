@@ -1,10 +1,12 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-08 16:26:26
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2022-10-08 16:28:42
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2025-11-07 16:52:40
  * @Description: 
  */
+import _, { find, last, clone, sortBy, filter, groupBy, indexOf } from "lodash";
+import { i18next } from "@steedos-widgets/amis-lib";
 
 const isOpinionField = (field_formula)=>{
     return (field_formula?.indexOf("{traces.") > -1 || field_formula?.indexOf("{signature.traces.") > -1 || field_formula?.indexOf("{yijianlan:") > -1 || field_formula?.indexOf("{\"yijianlan\":") > -1 || field_formula?.indexOf("{'yijianlan':") > -1)
@@ -66,3 +68,146 @@ export const getOpinionFieldStepsName = (field, top_keywords) => {
     }
     return opinionFields;
 }
+
+const getTraceApprovesGroupBySteps = (instance, flow) => {
+  if (!instance || !flow) {
+    return {};
+  }
+
+  const steps = flow.steps;
+  const tracesResult = {};
+
+  (instance.traces || []).forEach(trace => {
+    const step = find(steps, s => s._id === trace.step);
+    const approves = [];
+
+    (trace.approves || []).forEach(approve => {
+      let judge_name = '';
+      if (trace.is_finished === true) {
+        if (approve.judge === 'approved') {
+          judge_name = i18next.t("Instance State approved");
+        } else if (approve.judge === 'rejected') {
+          judge_name = i18next.t("Instance State rejected");
+        } else if (approve.judge === 'terminated') {
+          judge_name = i18next.t("Instance State terminated");
+        } else if (approve.judge === 'reassigned') {
+          judge_name = i18next.t("Instance State reassigned");
+        } else if (approve.judge === 'relocated') {
+          judge_name = i18next.t("Instance State relocated");
+        } else if (!approve.judge) {
+          judge_name = "";
+        } else {
+          judge_name = "";
+        }
+      } else {
+        judge_name = i18next.t("Instance State pending");
+      }
+
+      approves.push({
+        _id: approve._id,
+        handler: approve.user,
+        handler_name: approve.handler_name,
+        handler_organization_name: approve.handler_organization_name,
+        handler_organization_fullname: approve.handler_organization_fullname,
+        finish_date: approve.finish_date,
+        judge: approve.judge,
+        judge_name: judge_name,
+        description: approve.description,
+        is_finished: approve.is_finished,
+        type: approve.type,
+        opinion_fields_code: approve.opinion_fields_code,
+        sign_field_code: approve.sign_field_code,
+        is_read: approve.is_read,
+        sign_show: approve.sign_show
+      });
+    });
+
+    if (step) {
+      if (tracesResult.hasOwnProperty(step.name)) {
+        tracesResult[step.name] = tracesResult[step.name].concat(approves);
+      } else {
+        tracesResult[step.name] = approves;
+      }
+    }
+  });
+
+  return tracesResult;
+}
+
+export const getTraceApprovesByStep = (instance, flow, stepName, only_cc_opinion) => {
+  if (!instance) return [];
+
+  const is_completed = instance?.state === "completed";
+  let completed_date = 0;
+  if (is_completed) {
+    let lastTrace = last(instance.traces);
+    completed_date = lastTrace && lastTrace.finish_date ? (new Date(lastTrace.finish_date)).getTime() : 0;
+  }
+  if (is_completed && instance.finish_date) {
+    completed_date = (new Date(instance.finish_date)).getTime();
+  }
+
+  const tracesObj = getTraceApprovesGroupBySteps(instance, flow);
+
+  let approves = clone(tracesObj[stepName] || []);
+
+  const approve_sort = approvesParam => {
+    return sortBy(approvesParam, approve => {
+      let date = approve.finish_date ? new Date(approve.finish_date) : new Date();
+      return -date.getTime();
+    }) || [];
+  };
+
+  approves = filter(approves, a => a.type !== "forward" && a.type !== "distribute" && a.type !== "terminated");
+
+  if (only_cc_opinion) {
+    approves = filter(approves, a => a.type === "cc");
+  }
+
+  let approves_sorted = approve_sort(approves);
+
+  const approvesGroup = groupBy(approves, "handler");
+
+  function hasNext(approve, group) {
+    const handlerApproves = group[approve.handler];
+    return indexOf(handlerApproves, approve) + 1 < handlerApproves.length;
+  }
+
+  function haveDescriptionApprove(approve, group) {
+    const handlerApproves = group[approve.handler];
+    const descriptionApproves = filter(handlerApproves, a => !!a.description);
+    return descriptionApproves.length > 0;
+  }
+
+  approves_sorted.forEach(approve => {
+    const showBlank = false;//Meteor.settings.public.workflow?.showBlankApproveDescription;
+    if (
+      approve.sign_show !== false
+      && (approve.description
+        || (!approve.description && !hasNext(approve, approvesGroup) && !approve.is_finished)
+        || showBlank
+      )
+      && approve.judge !== 'terminated'
+    ) {
+      approve._display = true;
+    }
+  });
+
+  approves_sorted = filter(approves_sorted, a => {
+    if (is_completed) {
+      return a._display === true && a.is_finished && a.finish_date && (new Date(a.finish_date)).getTime() <= completed_date;
+    } else {
+      return a._display === true;
+    }
+  });
+
+  return approves_sorted;
+}
+
+export const isOpinionOfField = (approve, field) => {
+  if (approve.type === "cc" && field.name) {
+    return field.name === approve.sign_field_code;
+  } else {
+    return true;
+  }
+};

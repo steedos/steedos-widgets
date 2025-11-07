@@ -616,13 +616,13 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
                                         "type": "input-text"
                                     },
                                     {
-                                        "label": "只显示传阅人员签批意见",
-                                        "name": "only_cc",
+                                        "label": "显示传阅人员签批意见",
+                                        "name": "show_cc",
                                         "type": "switch"
                                     },
                                     {
-                                        "label": "只显示处理人员意见",
-                                        "name": "only_handler",
+                                        "label": "显示处理人员意见",
+                                        "name": "show_handler",
                                         "type": "switch"
                                     },
                                     {

@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-11-04 12:00:23
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-11-06 10:00:42
+ * @LastEditTime: 2025-11-07 21:26:27
  */
 import * as _ from 'lodash'
 
@@ -13,7 +13,7 @@ export function signCommentToAmis(field, readonly, ctx) {
 
     let signComment = `
         '<div class="instance-sign-item' +  (item.is_finished ? ' mt-1' : ' text-gray-500 border-l-2 px-1 border-blue-500 my-approve not-finished') + '">' + 
-            '<p class="m-0 p-0">' + item.description + '</p>' + 
+            '<p class="m-0 p-0">' + (item.description || '') + '</p>' + 
             '&emsp;&emsp;' + item.handler_name + 
         '</div>'`;
     let html = `
