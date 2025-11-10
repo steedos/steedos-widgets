@@ -220,7 +220,7 @@ export const getInstanceInfo = async (props) => {
     }),
   });
   
-
+  const moment = getMoment();
   let userApprove = null;
   let trace = null;
   let step = null;
@@ -290,6 +290,9 @@ export const getInstanceInfo = async (props) => {
             if (approve.description){
               approve.description = approve.description.replace(/\n/g, "<br/>");
             }
+            if (moment && approve.finish_date){
+              approve.finishDateFormated = moment(approve.finish_date).format("YYYY-MM-DD");
+            }
           }
         });
         fieldComments = _.union(fieldComments, stepApproves);
@@ -309,7 +312,6 @@ export const getInstanceInfo = async (props) => {
       }
     });
   }
-  const moment = getMoment();
   const signImageCache = new Map();
   return {
     box: box,
