@@ -1,6 +1,6 @@
 import { fetchAPI, getSteedosAuth } from "@steedos-widgets/amis-lib";
 import _, { find, isEmpty } from "lodash";
-import { getOpinionFieldStepsName, getTraceApprovesByStep, isOpinionOfField } from './util';
+import { getOpinionFieldStepsName, getTraceApprovesByStep, isOpinionOfField, isMyApprove, showApprove } from './util';
 import { i18next } from "@steedos-widgets/amis-lib";
 
 const getMoment = ()=>{
@@ -268,49 +268,41 @@ export const getInstanceInfo = async (props) => {
       });
     }
   });
+  const myApproveFields = [];
   _.each(signCommentFields, (field) => {
-    // 根据field.steps中对应的步骤name找到对应的步骤
-    // const fieldSteps = _.clone(field.steps).map((step) => {
-    //   if (typeof step === 'string'){
-    //     const flowStep = flowVersion.steps.find((s) => s.name === step);
-    //     return _.pick(flowStep, ["_id", "name"]);
-    //   }
-    //   else {
-    //     const flowStep = flowVersion.steps.find((s) => s.name === step.name);
-    //     return Object.assign({}, step, {
-    //       _id: flowStep?._id,
-    //     });
-    //   }
-    // });
     const fieldSteps = _.clone(field.steps);
     if (fieldSteps && fieldSteps.length > 0) {
       let fieldComments = [];
-      // const instanceTraces = instance.traces;
-      // for (let i = instanceTraces.length - 1; i >= 0; i--) {
-      //   const trace = instanceTraces[i];
-      //   const isTraceInFieldSteps = !!fieldSteps.find((step) => step._id === trace.step);
-      //   if (isTraceInFieldSteps) {
-      //     const approves = trace.approves;
-      //     for (let j = approves.length - 1; j >= 0; j--) {
-      //       const approve = approves[j];
-      //       if (approve.description) {
-      //         // TODO:approve.sign_show为true时，显示签章图片
-      //         const commentContent = _.pick(approve, ["description", "handler_name", "user_name", "finish_date", "is_finished"]);
-      //         fieldComments.push(commentContent);
-      //       }
-      //     }
-      //   }
-      // }
       _.each(fieldSteps, (step) => {
         const only_cc_opinion = step.show_cc && !step.show_handler;
-        fieldComments = _.union(fieldComments, getTraceApprovesByStep(instance, flowVersion, step.name, only_cc_opinion));
+        const stepApproves = getTraceApprovesByStep(instance, flowVersion, step.name, only_cc_opinion);
+        _.each(stepApproves, (approve) => {
+          approve.isOpinionOfField = isOpinionOfField(approve, field);
+          if (approve.isOpinionOfField) {
+            approve.isMyApprove = isMyApprove({ approve, only_cc_opinion, box, currentApprove: userApprove, field });
+            if (approve.isMyApprove) {
+              myApproveFields.push(field);
+            }
+            approve.showApprove = showApprove(approve, field);
+          }
+        });
+        fieldComments = _.union(fieldComments, stepApproves);
       });
-      field.comments = fieldComments.filter((comment)=>{
-        return isOpinionOfField(comment, field);
+      field.comments = fieldComments.filter((comment) => {
+        return comment.isOpinionOfField && (comment.isMyApprove || comment.showApprove) && !!comment.description;
       });
     }
   });
 
+  if (step?.permissions) {
+    // 字段字段
+    _.each(signCommentFields, (field) => {
+      delete step.permissions[field.name];
+      if (_.find(myApproveFields, { name: field.name })) {
+        step.permissions[field.name] = 'editable';
+      }
+    });
+  }
   const moment = getMoment();
   const signImageCache = new Map();
   return {
@@ -331,12 +323,14 @@ export const getInstanceInfo = async (props) => {
     name: instance.name || instance.form.name,
     fields: _.map(formVersion.fields, (field) => {
       const newField = Object.assign({}, field, {
-        permission:  userApprove?.type != 'cc' && (step?.permissions[field.code] || ( isCurrentStepOpinionField(field, step) ? 'editable' : '')),
+        // permission:  userApprove?.type != 'cc' && (step?.permissions[field.code] || ( isCurrentStepOpinionField(field, step) ? 'editable' : '')),
+        permission:  userApprove?.type != 'cc' && step?.permissions[field.code],
       }) ;
       if(field.type === 'section'){
         newField.fields = _.map(field.fields, (sfield) => {
           return Object.assign({}, sfield, {
-            permission:  userApprove?.type != 'cc' && (step?.permissions[sfield.code] || ( isCurrentStepOpinionField(sfield, step) ? 'editable' : '')),
+            // permission:  userApprove?.type != 'cc' && (step?.permissions[sfield.code] || ( isCurrentStepOpinionField(sfield, step) ? 'editable' : '')),
+            permission:  userApprove?.type != 'cc' && step?.permissions[sfield.code],
             type: sfield._type || sfield.type
           });
         })

@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-08 16:26:26
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-11-07 16:52:40
+ * @LastEditTime: 2025-11-10 10:33:46
  * @Description: 
  */
 import _, { find, last, clone, sortBy, filter, groupBy, indexOf } from "lodash";
@@ -210,4 +210,43 @@ export const isOpinionOfField = (approve, field) => {
   } else {
     return true;
   }
+};
+
+export const isMyApprove = ({ approve, only_cc_opinion, box, currentApprove, field }) => {
+  if (box !== 'inbox') {
+    return false;
+  }
+
+  if (!approve?._id) {
+    approve = currentApprove;
+  }
+
+  if (
+    approve._id === currentApprove?._id &&
+    currentApprove?.type === 'cc' &&
+    field.name
+  ) {
+    return _.indexOf(currentApprove?.opinion_fields_code, field.name) > -1;
+  }
+
+  if (!(currentApprove?.type === 'cc') && only_cc_opinion) {
+    return false;
+  }
+
+  if (currentApprove && approve._id === currentApprove._id) {
+    return true;
+  }
+
+  return false;
+};
+
+export const showApprove = (approve, field) => {
+  if (!approve.sign_field_code || approve.sign_field_code === field.name) {
+    if (approve?.is_read) {
+      if (approve.is_finished) {
+        return ["approved", "rejected", "submitted", "readed"].includes(approve.judge);
+      }
+    }
+  }
+  return false;
 };
