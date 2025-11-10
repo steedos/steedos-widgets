@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-11-04 12:00:23
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-11-10 09:44:47
+ * @LastEditTime: 2025-11-10 17:37:28
  */
 import * as _ from 'lodash'
 
@@ -17,7 +17,7 @@ export function signCommentToAmis(field, readonly, ctx) {
             '&emsp;&emsp;' + item.handler_name + 
         '</div>'`;
     let html = `
-        \${JOIN(ARRAYMAP(record.signCommentFields["${field.name}"].comments, item => ${signComment}), '')}
+        \${JOIN(ARRAYMAP(record.signCommentFields["${field.name}"].comments, item => ${signComment}), '') || '&emsp;&emsp;'}
     `;
     let signCommentSchema = {
         "type": "wrapper",

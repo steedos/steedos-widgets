@@ -287,6 +287,9 @@ export const getInstanceInfo = async (props) => {
             if (approve.showApprove && !approve.description && fieldStep.default && showApproveDefaultDescription(approve)) {
               approve.description = fieldStep.default
             }
+            if (approve.description){
+              approve.description = approve.description.replace(/\n/g, "<br/>");
+            }
           }
         });
         fieldComments = _.union(fieldComments, stepApproves);
