@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-08 16:26:26
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-11-10 10:33:46
+ * @LastEditTime: 2025-11-10 17:04:22
  * @Description: 
  */
 import _, { find, last, clone, sortBy, filter, groupBy, indexOf } from "lodash";
@@ -180,7 +180,8 @@ export const getTraceApprovesByStep = (instance, flow, stepName, only_cc_opinion
   }
 
   approves_sorted.forEach(approve => {
-    const showBlank = false;//Meteor.settings.public.workflow?.showBlankApproveDescription;
+    // showBlank为false时，签字字段上配置的默认意见不会生效
+    const showBlank = true;//Meteor.settings.public.workflow?.showBlankApproveDescription;
     if (
       approve.sign_show !== false
       && (approve.description
@@ -247,6 +248,17 @@ export const showApprove = (approve, field) => {
         return ["approved", "rejected", "submitted", "readed"].includes(approve.judge);
       }
     }
+  }
+  return false;
+};
+
+export const isReaded = (judge) => {
+  return ["approved", "rejected", "submitted", "readed"].includes(judge);
+};
+
+export const showApproveDefaultDescription = (approve) => {
+  if (approve.is_finished && isReaded(approve.judge)) {
+    return true;
   }
   return false;
 };

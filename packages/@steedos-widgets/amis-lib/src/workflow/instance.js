@@ -1,6 +1,6 @@
 import { fetchAPI, getSteedosAuth } from "@steedos-widgets/amis-lib";
 import _, { find, isEmpty } from "lodash";
-import { getOpinionFieldStepsName, getTraceApprovesByStep, isOpinionOfField, isMyApprove, showApprove } from './util';
+import { getOpinionFieldStepsName, getTraceApprovesByStep, isOpinionOfField, isMyApprove, showApprove, showApproveDefaultDescription } from './util';
 import { i18next } from "@steedos-widgets/amis-lib";
 
 const getMoment = ()=>{
@@ -273,9 +273,9 @@ export const getInstanceInfo = async (props) => {
     const fieldSteps = _.clone(field.steps);
     if (fieldSteps && fieldSteps.length > 0) {
       let fieldComments = [];
-      _.each(fieldSteps, (step) => {
-        const only_cc_opinion = step.show_cc && !step.show_handler;
-        const stepApproves = getTraceApprovesByStep(instance, flowVersion, step.name, only_cc_opinion);
+      _.each(fieldSteps, (fieldStep) => {
+        const only_cc_opinion = fieldStep.show_cc && !fieldStep.show_handler;
+        const stepApproves = getTraceApprovesByStep(instance, flowVersion, fieldStep.name, only_cc_opinion);
         _.each(stepApproves, (approve) => {
           approve.isOpinionOfField = isOpinionOfField(approve, field);
           if (approve.isOpinionOfField) {
@@ -284,6 +284,9 @@ export const getInstanceInfo = async (props) => {
               myApproveFields.push(field);
             }
             approve.showApprove = showApprove(approve, field);
+            if (approve.showApprove && !approve.description && fieldStep.default && showApproveDefaultDescription(approve)) {
+              approve.description = fieldStep.default
+            }
           }
         });
         fieldComments = _.union(fieldComments, stepApproves);
