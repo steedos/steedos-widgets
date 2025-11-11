@@ -144,7 +144,7 @@ const fieldTypes = [
   { name: "Formula", type: "formula", title: "公式", icon: "fa-fw fa fa-sigma" },
   { name: "Summary", type: "summary", title: "累计汇总", icon: "fa-fw fa fa-sum" },
   { name: "Table", type: "table", title: "表格", icon: "fa-fw fa fa-table" },
-  { name: "ApprovalComments", type: "approval_comments", title: "审批意见", icon: "fa-fw fa fa-table" }
+  { name: "ApprovalComments", type: "approval_comments", title: "审批意见", icon: "fa-fw fa fa-commenting" }
 ];
 
 // 生成每个字段类型的函数

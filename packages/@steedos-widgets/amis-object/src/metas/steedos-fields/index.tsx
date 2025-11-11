@@ -1049,7 +1049,7 @@ const fieldTypes = [
     { name: "Formula", type: "formula", title: t('widgets-meta:sfield_formula', "公式"), icon: "fa-fw fa fa-subscript" },
     { name: "Summary", type: "summary", title: t('widgets-meta:sfield_summary', "累计汇总"), icon: "fa-fw fa fa-superscript" },
     { name: "Table", type: "table", title: t('widgets-meta:sfield_table', "表格"), icon: "fa-fw fa fa-table" },
-    { name: "ApprovalComments", type: "approval_comments", title: t('widgets-meta:sfield_approval_comments', "审批意见"), icon: "fa-fw fa fa-table" }
+    { name: "ApprovalComments", type: "approval_comments", title: t('widgets-meta:sfield_approval_comments', "审批意见"), icon: "fa-fw fa fa-commenting" }
 ];
 
 const fieldMetas = [];
