@@ -1,6 +1,6 @@
 import { fetchAPI, getSteedosAuth } from "@steedos-widgets/amis-lib";
 import _, { find, isEmpty } from "lodash";
-import { getOpinionFieldStepsName, getTraceApprovesByStep, isOpinionOfField, isMyApprove, showApprove, showApproveDefaultDescription, showApproveSignImage } from './util';
+import { getUserApprove, getOpinionFieldStepsName, getTraceApprovesByStep, isOpinionOfField, isMyApprove, showApprove, showApproveDefaultDescription, showApproveSignImage } from './util';
 import { i18next } from "@steedos-widgets/amis-lib";
 
 const getMoment = ()=>{
@@ -15,37 +15,6 @@ const getTrace = ({ instance, traceId }) => {
   return find(instance.traces, (trace) => {
     return trace._id === traceId;
   });
-};
-
-const getUserApprove = ({ instance, userId }) => {
-  const currentTrace = find(instance.traces, (trace) => {
-    return trace.is_finished != true;
-  });
-  let currentApprove = null;
-  if (currentTrace) {
-    currentApprove = find(currentTrace.approves, (approve) => {
-      return approve.is_finished != true && approve.handler == userId;
-    });
-  }
-
-  //传阅的approve返回最新一条
-  if (!currentApprove || currentApprove.type == "cc") {
-    // 当前是传阅
-    _.each(instance.traces, function (t) {
-      _.each(t.approves, function (a) {
-        if (a.type == "cc" && a.handler == userId && a.is_finished == false) {
-          currentApprove = a;
-        }
-      });
-    });
-  }
-
-  if (!currentApprove) return;
-
-  if (currentApprove._id) {
-    currentApprove.id = currentApprove._id;
-  }
-  return currentApprove;
 };
 
 const getApproveValues = ({ instance, trace, step, approve, box }) => {

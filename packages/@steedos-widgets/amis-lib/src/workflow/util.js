@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-08 16:26:26
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-11-11 13:47:43
+ * @LastEditTime: 2025-11-11 21:23:23
  * @Description: 
  */
 import _, { find, last, clone, sortBy, filter, groupBy, indexOf } from "lodash";
@@ -265,4 +265,35 @@ export const showApproveDefaultDescription = (approve) => {
 
 export const showApproveSignImage = (judge) => {
   return !['returned', 'terminated', 'retrieved'].includes(judge);
+};
+
+export const getUserApprove = ({ instance, userId }) => {
+  const currentTrace = find(instance.traces, (trace) => {
+    return trace.is_finished != true;
+  });
+  let currentApprove = null;
+  if (currentTrace) {
+    currentApprove = find(currentTrace.approves, (approve) => {
+      return approve.is_finished != true && approve.handler == userId;
+    });
+  }
+
+  //传阅的approve返回最新一条
+  if (!currentApprove || currentApprove.type == "cc") {
+    // 当前是传阅
+    _.each(instance.traces, function (t) {
+      _.each(t.approves, function (a) {
+        if (a.type == "cc" && a.handler == userId && a.is_finished == false) {
+          currentApprove = a;
+        }
+      });
+    });
+  }
+
+  if (!currentApprove) return;
+
+  if (currentApprove._id) {
+    currentApprove.id = currentApprove._id;
+  }
+  return currentApprove;
 };

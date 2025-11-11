@@ -3,6 +3,7 @@ import {
   getSteedosAuth, Router
 } from "@steedos-widgets/amis-lib";
 import { i18next } from "@steedos-widgets/amis-lib";
+import { getUserApprove } from './util';
 //TODO Meteor.settings.public?.workflow?.hideCounterSignJudgeOptions
 
 const HIDE_COUNTER_SIGN_JUDGE_OPTIONS = false;
@@ -571,6 +572,8 @@ const getSubmitActions = async (instance, submitEvents) => {
 };
 
 export const getApprovalDrawerSchema = async (instance, submitEvents) => {
+  const userId = getSteedosAuth().userId;
+  const userApprove = getUserApprove({ instance, userId });
   return {
     type: "drawer",
     overlay: false,
@@ -609,6 +612,7 @@ export const getApprovalDrawerSchema = async (instance, submitEvents) => {
             maxRows: 20,
             placeholder: i18next.t('frontend_workflow_suggestion_placeholder'),//"请填写意见",
             requiredOn: "${judge === 'rejected'}",
+            value: userApprove?.description,
             "onEvent": {
               "change": {
                 "actions": [
