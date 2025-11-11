@@ -562,7 +562,7 @@ export const AmisSteedosField = async (props) => {
             console.log(`steedos field [lookup] schema:`, schema)
             return schema;
         }
-        if (fStatic && (steedosField.type === 'sign_comment')) {
+        if (fStatic && (steedosField.type === 'approval_comments')) {
             if(!ctx.className){
                 ctx.className = className;
             }

@@ -225,21 +225,21 @@ export const getInstanceInfo = async (props) => {
   });
 
   const signImageCache = new Map();
-  const signCommentFields = {};
+  const approvalCommentsFields = {};
   _.each(formVersion.fields, (field) => {
-    if (field.config?.type === "sign_comment") {
-      signCommentFields[field.code] = _.clone(field.config);
+    if (field.config?.type === "approval_comments") {
+      approvalCommentsFields[field.code] = _.clone(field.config);
     }
     if (field.type === 'section') {
       _.each(field.fields, (subField) => {
-        if (subField.config?.type === "sign_comment") {
-          signCommentFields[subField.code] = _.clone(subField.config);
+        if (subField.config?.type === "approval_comments") {
+          approvalCommentsFields[subField.code] = _.clone(subField.config);
         }
       });
     }
   });
   const myApproveFields = [];
-  for (const field of _.values(signCommentFields)) {
+  for (const field of _.values(approvalCommentsFields)) {
     const fieldSteps = _.clone(field.steps);
     if (fieldSteps && fieldSteps.length > 0) {
       let fieldComments = [];
@@ -291,7 +291,7 @@ export const getInstanceInfo = async (props) => {
 
   if (step?.permissions) {
     // 字段字段
-    _.each(signCommentFields, (field) => {
+    _.each(approvalCommentsFields, (field) => {
       delete step.permissions[field.name];
       if (_.find(myApproveFields, { name: field.name })) {
         step.permissions[field.name] = 'editable';
@@ -425,6 +425,6 @@ export const getInstanceInfo = async (props) => {
         { name: trace.name, judge: "" }
       );
     })),
-    signCommentFields
+    approvalCommentsFields
   };
 };

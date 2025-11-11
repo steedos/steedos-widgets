@@ -518,6 +518,7 @@
   "steedos-field_type_file": "Attachment",
   "steedos-field_type_formula": "Formula",
   "steedos-field_type_summary": "Rollup Summary",
+  "steedos-field_type_approval_comments": "Approval Comments",
   "steedos-field_label": "Display Name",
   "steedos-field_api_name": "API Name",
   "steedos-field_api_name_remark": "The API name can only contain lowercase letters and numbers, must start with a letter, cannot end with an underscore or contain two consecutive underscores.",
