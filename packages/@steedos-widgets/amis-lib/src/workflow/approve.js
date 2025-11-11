@@ -608,7 +608,22 @@ export const getApprovalDrawerSchema = async (instance, submitEvents) => {
             minRows: 3,
             maxRows: 20,
             placeholder: i18next.t('frontend_workflow_suggestion_placeholder'),//"请填写意见",
-            requiredOn: "${judge === 'rejected'}"
+            requiredOn: "${judge === 'rejected'}",
+            "onEvent": {
+              "change": {
+                "actions": [
+                  {
+                    "componentId": "u:instancePage",
+                    "actionType": "setValue",
+                    "args": {
+                      "value": {
+                        "instance_my_approve_description": "${value}"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
           },
           await getNextStepInput(instance),
           await getNextStepUsersInput(instance),

@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2025-11-04 12:00:23
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-11-11 13:32:59
+ * @LastEditTime: 2025-11-11 17:58:46
  */
 import * as _ from 'lodash'
 
@@ -13,8 +13,8 @@ export function signCommentToAmis(field, readonly, ctx) {
 
     let signComment = `
         '<div class="instance-sign-item' +  (item.is_finished ? ' mt-1' : ' text-gray-500 border-l-2 px-1 border-blue-500 ' + (item.isMyApprove ? 'my-approve' : '') + ' not-finished') + '">' + 
-            '<p class="m-0 p-0">' + (item.description || '') + '</p>' + 
-            (item.showApproveSignImage ? item.userSignImage : ('&emsp;&emsp;' + item.handler_name + '&emsp;')) +
+            '<p class="m-0 p-0">' + (item.isMyApprove ? (instance_my_approve_description || item.description || '') : (item.description || '')) + '</p>' + 
+            ((item.isMyApprove ? !!(instance_my_approve_description || item.description) : true) ? (item.showApproveSignImage ? item.userSignImage : ('&emsp;&emsp;' + item.handler_name + '&emsp;')) : '') +
             (item.finishDateFormated || '') + 
         '</div>'`;
     let html = `

@@ -315,7 +315,7 @@ export const getInstanceInfo = async (props) => {
         fieldComments = _.union(fieldComments, stepApproves);
       };
       field.comments = fieldComments.filter((comment) => {
-        return comment.isOpinionOfField && (comment.isMyApprove || comment.showApprove) && !!comment.description;
+        return comment.isOpinionOfField && (comment.isMyApprove || (comment.showApprove && !!comment.description));
       });
     }
   };
