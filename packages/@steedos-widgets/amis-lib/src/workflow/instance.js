@@ -1,6 +1,6 @@
 import { fetchAPI, getSteedosAuth } from "@steedos-widgets/amis-lib";
 import _, { find, isEmpty } from "lodash";
-import { getOpinionFieldStepsName, getTraceApprovesByStep, isOpinionOfField, isMyApprove, showApprove, showApproveDefaultDescription } from './util';
+import { getOpinionFieldStepsName, getTraceApprovesByStep, isOpinionOfField, isMyApprove, showApprove, showApproveDefaultDescription, showApproveSignImage } from './util';
 import { i18next } from "@steedos-widgets/amis-lib";
 
 const getMoment = ()=>{
@@ -255,6 +255,7 @@ export const getInstanceInfo = async (props) => {
     method: "get",
   });
 
+  const signImageCache = new Map();
   const signCommentFields = {};
   _.each(formVersion.fields, (field) => {
     if (field.config?.type === "sign_comment") {
@@ -269,14 +270,15 @@ export const getInstanceInfo = async (props) => {
     }
   });
   const myApproveFields = [];
-  _.each(signCommentFields, (field) => {
+  for (const field of _.values(signCommentFields)) {
     const fieldSteps = _.clone(field.steps);
     if (fieldSteps && fieldSteps.length > 0) {
       let fieldComments = [];
-      _.each(fieldSteps, (fieldStep) => {
+      for (const fieldStep of fieldSteps) {
         const only_cc_opinion = fieldStep.show_cc && !fieldStep.show_handler;
         const stepApproves = getTraceApprovesByStep(instance, flowVersion, fieldStep.name, only_cc_opinion);
-        _.each(stepApproves, (approve) => {
+        for (const approve of stepApproves) {
+          let userName = approve.user_name;
           approve.isOpinionOfField = isOpinionOfField(approve, field);
           if (approve.isOpinionOfField) {
             approve.isMyApprove = isMyApprove({ approve, only_cc_opinion, box, currentApprove: userApprove, field });
@@ -293,15 +295,30 @@ export const getInstanceInfo = async (props) => {
             if (moment && approve.finish_date){
               approve.finishDateFormated = moment(approve.finish_date).format("YYYY-MM-DD");
             }
+            let showSignImage = fieldStep.show_image_sign && showApproveSignImage(approve.judge);
+            if (showSignImage){
+              let userSign, userSignImage;
+              if (signImageCache.has(approve.handler)) {
+                userSign = signImageCache.get(approve.handler);
+              } else {
+                userSign = await getSpaceUserSign(instance.space, approve.handler);
+                signImageCache.set(approve.handler, userSign);
+              }
+              if (userSign){
+                userSignImage = `<img class="image-sign" alt="${userName}" src="/api/v6/files/download/cfs.avatars.filerecord/${userSign}" />`;
+              }
+              approve.showApproveSignImage = !!userSign;
+              approve.userSignImage = userSignImage;
+            }
           }
-        });
+        };
         fieldComments = _.union(fieldComments, stepApproves);
-      });
+      };
       field.comments = fieldComments.filter((comment) => {
         return comment.isOpinionOfField && (comment.isMyApprove || comment.showApprove) && !!comment.description;
       });
     }
-  });
+  };
 
   if (step?.permissions) {
     // 字段字段
@@ -312,7 +329,6 @@ export const getInstanceInfo = async (props) => {
       }
     });
   }
-  const signImageCache = new Map();
   return {
     box: box,
     _id: instanceId,

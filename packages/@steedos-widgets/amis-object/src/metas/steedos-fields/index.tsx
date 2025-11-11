@@ -627,7 +627,7 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
                                     },
                                     {
                                         "label": "是否图片签名",
-                                        "name": "image_sign",
+                                        "name": "show_image_sign",
                                         "type": "switch"
                                     },
                                     {

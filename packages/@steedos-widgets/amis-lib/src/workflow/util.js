@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-08 16:26:26
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-11-10 17:04:22
+ * @LastEditTime: 2025-11-11 13:47:43
  * @Description: 
  */
 import _, { find, last, clone, sortBy, filter, groupBy, indexOf } from "lodash";
@@ -261,4 +261,8 @@ export const showApproveDefaultDescription = (approve) => {
     return true;
   }
   return false;
+};
+
+export const showApproveSignImage = (judge) => {
+  return !['returned', 'terminated', 'retrieved'].includes(judge);
 };
