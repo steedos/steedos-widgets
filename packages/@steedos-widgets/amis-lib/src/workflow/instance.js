@@ -247,7 +247,7 @@ export const getInstanceInfo = async (props) => {
         const only_cc_opinion = fieldStep.show_cc && !fieldStep.show_handler;
         const stepApproves = getTraceApprovesByStep(instance, flowVersion, fieldStep.name, only_cc_opinion);
         for (const approve of stepApproves) {
-          let userName = approve.user_name;
+          let userName = approve.handler_name;
           approve.isOpinionOfField = isOpinionOfField(approve, field);
           if (approve.isOpinionOfField) {
             approve.isMyApprove = isMyApprove({ approve, only_cc_opinion, box, currentApprove: userApprove, field });
