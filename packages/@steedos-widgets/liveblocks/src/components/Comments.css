@@ -9,7 +9,7 @@
   max-width: 680px;
 }
 
-.loading,
+/* .loading, */
 .error {
   position: absolute;
   width: 100vw;
@@ -19,11 +19,11 @@
   place-items: center;
 }
 
-.loading img {
+/* .loading img {
   width: 64px;
   height: 64px;
   opacity: 0.2;
-}
+} */
 
 .thread,
 .composer {
