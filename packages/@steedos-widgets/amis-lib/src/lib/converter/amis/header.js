@@ -910,6 +910,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
       "items": amisButtonsSchema,
     },
     "md": "auto",
+    "columnClassName": "flex justify-center items-center"
     // "hiddenOn": "${recordLoaded != true}"
   })
 
