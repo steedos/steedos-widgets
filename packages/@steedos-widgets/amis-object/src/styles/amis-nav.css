@@ -22,12 +22,12 @@
 
 .antd-Nav-Menu-item {
   border-radius: 0.375rem;
+  margin-top: 3px;
 }
 
 
 .antd-Nav-Menu-item-dragBar {
-  left: 0;
-  top: 11px;
+  left: -4px;
 }
 
 .steedos-app-service-edit .antd-Nav-Menu-inline .antd-Nav-Menu-item-active.antd-Nav-Menu-item-selected::before {
@@ -55,8 +55,8 @@
   background: rgb(14 165 233);
 }
 
-.antd-Nav-Menu-light .antd-Nav-Menu-item {
-  padding-right: 0.5rem;
+.antd-Nav-Menu-light .antd-Nav-Menu-item, .antd-Nav-Menu-light .antd-Nav-Menu-submenu-title {
+  padding-right: 0;
 }
 
 .antd-Nav-Menu-horizontal.antd-Nav-Menu-light .antd-Nav-Menu-item.antd-Nav-Menu-item-selected {
@@ -98,23 +98,44 @@
   background-color: unset;
 }
 
-
+/* 
 .steedos-header-container .antd-Nav-Menu {
   --Menu-light-backgroundColor: transparent;
+} */
+.antd-Nav-Menu .antd-Nav-Menu-submenu > .antd-Nav-Menu-submenu-title .antd-Nav-Menu-item-label {
+  color: var(--Menu-light-fontColor);
+  padding-left: 6px;
 }
-
+/* 
 .antd-Nav-Menu .antd-Nav-Menu-submenu-selected > .antd-Nav-Menu-submenu-title .antd-Nav-Menu-item-label {
   color: var(--Menu-light-fontColor);
+  padding-left: 6px;
 }
+.antd-Nav-Menu .antd-Nav-Menu-submenu-active > .antd-Nav-Menu-submenu-title .antd-Nav-Menu-item-label {
+  color: var(--Menu-light-fontColor);
+  padding-left: 6px;
+} */
+/* 
 .antd-Nav-Menu a, a:hover, a:active, a:focus {
   color: var(--Menu-light-fontColor);
 }
 .antd-Nav-Menu-item-active .antd-Nav-Menu-item-label, .antd-Nav-Menu-item-active .antd-Nav-Menu-item-icon, .antd-Nav-Menu-item-active .antd-Nav-Menu-item-icon-after, .antd-Nav-Menu-item-active .antd-Nav-Menu-submenu-arrow {
   color: var(--Menu-light-fontColor);
-}
+} */
 
-.antd-Nav-Menu .antd-Nav-Menu-submenu-title a, .antd-Nav-Menu .antd-Nav-Menu-submenu-title a:hover {
+/* .antd-Nav-Menu .antd-Nav-Menu-submenu-title a, .antd-Nav-Menu .antd-Nav-Menu-submenu-title a:hover {
   padding-left: 6px;
   font-weight: bold;
+} */
+
+.antd-Nav .antd-Nav-dropIndicator {
+  position: absolute;
+  background: gray;
+  height: 0.125rem;
 }
 
+
+.antd-Nav .antd-Nav-Menu-item-link{
+    min-height:var(--Nav-Item-height);
+    height: unset;
+}

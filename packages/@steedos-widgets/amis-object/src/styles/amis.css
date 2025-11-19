@@ -2,6 +2,7 @@
     --body-bg: white;
     --body-color: #181818;
     --body-size: 14px;
+    --link-color: #1677ff;
     --Page-main-bg: transparent;
     --Form-mode-default-labelGap: 2px;
     --Form-item-fontSize: 12px;
@@ -45,6 +46,13 @@
     --button-size-default-bottom-right-border-radius: 0.25rem;
     --button-size-default-bottom-left-border-radius: 0.25rem;
     --button-size-default-marginRight: 4px;
+
+    --button-light-default-bg-color: transparent;
+    --button-light-default-top-border-color: transparent;
+    --button-light-default-bottom-border-color: transparent;
+    --button-light-default-left-border-color: transparent;
+    --button-light-default-right-border-color: transparent;
+    
     --button-default-default-bg-color: white;
     /* --button-default-hover-bg-color: rgb(245, 245, 245); */
     --button-default-default-top-border-color: rgb(224, 224, 224);
@@ -67,6 +75,10 @@
     --DropDown-menu-boxShadow: rgba(0, 0, 0, 0.12) 0px 0px 2px, rgba(0, 0, 0, 0.14) 0px 4px 8px;
     --boxShadow: rgba(0, 0, 0, 0.12) 0px 0px 2px, rgba(0, 0, 0, 0.14) 0px 4px 8px;
     --common-popover-border: none;
+}
+
+a {
+    color: var(--link-color);
 }
 
 /* 因上面全局设置 --DropDown-caret-marginLeft 为0了，这里允许设置DropDown的className为steedos-DropDown--show-label时恢复按钮label和右侧caret图标间距 */

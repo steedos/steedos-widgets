@@ -341,6 +341,7 @@ export const AmisAppMenu = async (props) => {
                                         "body": [
                                             {
                                                 "type": "button",
+                                                "level": "light",
                                                 "icon": "fa fa-bars",
                                                 "onEvent": {
                                                     "click": {
@@ -363,10 +364,12 @@ export const AmisAppMenu = async (props) => {
                                         ]
                                     },
                                     {
-                                        "columnClassName": "steedos-app-menu-plus",
+                                        "columnClassName": "steedos-app-menu-plus p-0",
                                         "body": [
                                             {
                                             "type": "dropdown-button",
+                                            "btnClassName": "mx-0",
+                                            "level": "primary",
                                             "label": "${i18next.t('frontend_menu_setup')}",
                                             "closeOnClick": true,
                                             "closeOnOutside": true,
@@ -981,6 +984,7 @@ export const AmisAppMenu = async (props) => {
                       }else if(stacked && window.innerWidth > 768){
                         editAppSearch = [{
                             "type": "button",
+                            "level": "light",
                             "className": "toggle-sidebar mx-3",
                             "icon": "fa fa-bars",
                             "onEvent": {
@@ -1062,7 +1066,7 @@ export const AmisAppMenu = async (props) => {
                               "placeholder": "搜索菜单",
                               "matchFunc": "return link.searchKey && link.searchKey.indexOf(keyword)>=0;"
                             },
-                            className: "${className} text-black steedos-app-menu px-2 ${stacked?'stacked':''}",
+                            className: "${className} text-black steedos-app-menu px-0 ${stacked?'stacked':''}",
                             "stacked": ${stacked},
                             "overflow": ${JSON.stringify(overflow)},
                             "indentSize": ${indentSize},
@@ -1078,486 +1082,15 @@ export const AmisAppMenu = async (props) => {
                             "itemActions": [
                                 {
                                     "type": "dropdown-button",
+                                    "level": "light",
                                     "icon": "fa fa-ellipsis-h",
                                     "hideCaret": true,
                                     "closeOnClick": true,
                                     "closeOnOutside": true,
-                                    "btnClassName": "!text-gray-700 !bg-transparent !px-2",
+                                    "btnClassName": " !px-2",
                                     "visibleOn": "!!allowEditApp",
                                     "className": "hidden hover-inline-flex px-1",
                                     "buttons": [
-                                        {
-                                            "type": "button",
-                                            "label": "${i18next.t('frontend_menu_new_object')}",
-                                            "visibleOn": "!!this.isGroup",
-                                            "onEvent": {
-                                                "click": {
-                                                    "actions": [
-                                                        {
-                                                            "ignoreError": false,
-                                                            "actionType": "dialog",
-                                                            "dialog": {
-                                                                "type": "dialog",
-                                                                "title": "${i18next.t('frontend_menu_new_object')}",
-                                                                "body": [
-                                                                    {
-                                                                        "type": "input-text",
-                                                                        "label": "Api Name",
-                                                                        "name": "oName",
-                                                                        "id": "u:dae5884c1633",
-                                                                        "placeholder": "${i18next.t('frontend_menu_dialog_name_placeholder')}",
-                                                                        "value": "o_\${UUID(6)}",
-                                                                        "required": true,
-                                                                        "validateOnChange": true,
-                                                                        "validations": {
-                                                                            "isVariableName": /^[a-zA-Z]([A-Za-z0-9]|_(?!_))*[A-Za-z0-9]$/
-                                                                        }
-                                                                    },
-                                                                    {
-                                                                        "type": "input-text",
-                                                                        "label": "\${'CustomField.objects.name.label' | t}",
-                                                                        "name": "oLabel",
-                                                                        "id": "u:e5bd37f6691b",
-                                                                        "required": true
-                                                                    },
-                                                                    {
-                                                                        "type": "steedos-field",
-                                                                        "label": "\${'CustomField.objects.icon.label' | t}",
-                                                                        "config": {
-                                                                            "label": "图标",
-                                                                            "type": "lookup",
-                                                                            "required": true,
-                                                                            "sort_no": 30,
-                                                                            "optionsFunction": "function anonymous() {        var options;        options = [];        _.forEach(Steedos.resources.sldsIcons.standard, function (svg) {          return options.push({            value: svg,            label: svg,            icon: svg          });        });        return options;      }",
-                                                                            "name": "icon",
-                                                                            "inlineHelpText": "",
-                                                                            "description": "",
-                                                                            "hidden": false,
-                                                                            "readonly": false,
-                                                                            "disabled": false
-                                                                        }
-                                                                    }
-                                                                ],
-                                                                "id": "u:38b76ff2792d",
-                                                                "actions": [
-                                                                    {
-                                                                    "type": "button",
-                                                                    "actionType": "cancel",
-                                                                    "label": "\${'Cancel' | t}",
-                                                                    "id": "u:21d3cccf4d83"
-                                                                    },
-                                                                    {
-                                                                        "type": "button",
-                                                                        "actionType": "confirm",
-                                                                        "label": "\${'OK' | t}",
-                                                                        "primary": true,
-                                                                        "id": "u:238e5731a053"
-                                                                    }
-                                                                ],
-                                                                "showCloseButton": false,
-                                                                "closeOnOutside": false,
-                                                                "closeOnEsc": false,
-                                                                "showErrorMsg": false,
-                                                                "showLoading": false,
-                                                                "draggable": false,
-                                                                "onEvent": {
-                                                                    "confirm": {
-                                                                        "weight": 0,
-                                                                        "actions": [
-                                                                            {
-                                                                            "ignoreError": false,
-                                                                            "actionType": "dialog",
-                                                                            "dialog": {
-                                                                                "type": "dialog",
-                                                                                "title": "",
-                                                                                "body": [
-                                                                                    {
-                                                                                        "type": "spinner",
-                                                                                        "id": "u:7b15becd491f",
-                                                                                        "overlay": true
-                                                                                    }
-                                                                                ],
-                                                                                "id": "u:38b76ff2798d",
-                                                                                "actions": [],
-                                                                                "showCloseButton": false,
-                                                                                "closeOnOutside": false,
-                                                                                "closeOnEsc": false,
-                                                                                "showErrorMsg": false,
-                                                                                "showLoading": false,
-                                                                                "draggable": false
-                                                                                }
-                                                                            },
-                                                                            {
-                                                                                "ignoreError": false,
-                                                                                "outputVar": "responseResult",
-                                                                                "actionType": "ajax",
-                                                                                "api": {
-                                                                                    "url": "/service/api/objects/create_by_design",
-                                                                                    "method": "post",
-                                                                                    "adaptor": "var locale = Builder.settings.context?.user?.language || window.navigator.language; window.location.href=Steedos.getRelativeUrl('/api/amisObjectFieldsDesign?oid=' + payload._id +\`&assetUrls=\${Builder.settings.assetUrls}\`+'&retUrl='+window.location.href+'&locale='+locale);return {}",
-                                                                                "requestAdaptor": "api.data={appId: context.app.id, groupId: context.label, name: context.oName, label: context.oLabel, icon: context.icon}; return api;",
-                                                                                    "messages": {}
-                                                                                }
-                                                                            }
-                                                                        ]
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    ]
-                                                }
-                                            }
-                                        },
-                                        {
-                                            "type": "button",
-                                            "label": "${i18next.t('frontend_menu_new_micro_page')}",
-                                            "visibleOn": "!!this.isGroup",
-                                            "onEvent": {
-                                                "click": {
-                                                    "actions": [
-                                                        {
-                                                            "ignoreError": false,
-                                                            "actionType": "dialog",
-                                                            "dialog": {
-                                                                "type": "dialog",
-                                                                "title": "${i18next.t('frontend_menu_new_micro_page')}",
-                                                                "body": [
-                                                                    {
-                                                                        "type": "input-text",
-                                                                        "label": "\${'CustomField.pages.name.label' | t}",
-                                                                        "name": "oName",
-                                                                        "id": "u:dae5884c1633",
-                                                                        "placeholder": "${i18next.t('frontend_menu_dialog_name_placeholder')}",
-                                                                        "value": "p_\${UUID(6)}",
-                                                                        "required": true,
-                                                                        "validateOnChange": true,
-                                                                        "validations": {
-                                                                            "isVariableName": /^[a-zA-Z]([A-Za-z0-9]|_(?!_))*[A-Za-z0-9]$/
-                                                                        }
-                                                                    },
-                                                                    {
-                                                                        "type": "input-text",
-                                                                        "label": "\${'CustomField.pages.label.label' | t}",
-                                                                        "name": "oLabel",
-                                                                        "id": "u:e5bd37f6691b",
-                                                                        "required": true
-                                                                    },
-                                                                    {
-                                                                        "type": "steedos-field",
-                                                                        "label": "\${'CustomField.tabs.icon.label' | t}",
-                                                                        "config": {
-                                                                            "label": "图标",
-                                                                            "type": "lookup",
-                                                                            "required": true,
-                                                                            "sort_no": 30,
-                                                                            "optionsFunction": "function anonymous() {        var options;        options = [];        _.forEach(Steedos.resources.sldsIcons.standard, function (svg) {          return options.push({            value: svg,            label: svg,            icon: svg          });        });        return options;      }",
-                                                                            "name": "icon",
-                                                                            "inlineHelpText": "",
-                                                                            "description": "",
-                                                                            "hidden": false,
-                                                                            "readonly": false,
-                                                                            "disabled": false
-                                                                        }
-                                                                    }
-                                                                ],
-                                                                "id": "u:38b76ff2792d",
-                                                                "actions": [
-                                                                    {
-                                                                    "type": "button",
-                                                                    "actionType": "cancel",
-                                                                    "label": "\${'Cancel' | t}",
-                                                                    "id": "u:21d3cccf4d83"
-                                                                    },
-                                                                    {
-                                                                        "type": "button",
-                                                                        "actionType": "confirm",
-                                                                        "label": "\${'OK' | t}",
-                                                                        "primary": true,
-                                                                        "id": "u:238e5731a053"
-                                                                    }
-                                                                ],
-                                                                "showCloseButton": false,
-                                                                "closeOnOutside": false,
-                                                                "closeOnEsc": false,
-                                                                "showErrorMsg": false,
-                                                                "showLoading": false,
-                                                                "draggable": false,
-                                                                "onEvent": {
-                                                                    "confirm": {
-                                                                        "weight": 0,
-                                                                        "actions": [
-                                                                            {
-                                                                            "ignoreError": false,
-                                                                            "actionType": "dialog",
-                                                                            "dialog": {
-                                                                                "type": "dialog",
-                                                                                "title": "",
-                                                                                "body": [
-                                                                                    {
-                                                                                        "type": "spinner",
-                                                                                        "id": "u:7b15becd491f",
-                                                                                        "overlay": true
-                                                                                    }
-                                                                                ],
-                                                                                "id": "u:38b76ff2798d",
-                                                                                "actions": [],
-                                                                                "showCloseButton": false,
-                                                                                "closeOnOutside": false,
-                                                                                "closeOnEsc": false,
-                                                                                "showErrorMsg": false,
-                                                                                "showLoading": false,
-                                                                                "draggable": false
-                                                                                }
-                                                                            },
-                                                                            {
-                                                                                "ignoreError": false,
-                                                                                "outputVar": "responseResult",
-                                                                                "actionType": "ajax",
-                                                                                "api": {
-                                                                                    "url": "/service/api/pages/create_page_by_design",
-                                                                                    "method": "post",
-                                                                                    "adaptor": "var locale = Builder.settings.context?.user?.language || window.navigator.language; window.location.href=Steedos.getRelativeUrl('/api/pageDesign?pageId=' + payload._id +\`&assetUrls=\${Builder.settings.assetUrls}\`+'&retUrl='+window.location.href+'&locale='+locale);return {}",
-                                                                                    "requestAdaptor": "api.data={appId: context.app.id, groupId: context.label, name: context.oName, label: context.oLabel, icon: context.icon}; return api;",
-                                                                                    "messages": {}
-                                                                                }
-                                                                            }
-                                                                        ]
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    ]
-                                                }
-                                            }
-                                        },
-                                        {
-                                            "type": "button",
-                                            "label": "${i18next.t('frontend_menu_new_url')}",
-                                            "visibleOn": "!!this.isGroup",
-                                            "onEvent": {
-                                                "click": {
-                                                    "actions": [
-                                                        {
-                                                            "ignoreError": false,
-                                                            "actionType": "dialog",
-                                                            "dialog": {
-                                                                "type": "dialog",
-                                                                "title": "${i18next.t('frontend_menu_new_url')}",
-                                                                "body": [
-                                                                    {
-                                                                        "type": "input-text",
-                                                                        "label": "\${'CustomField.tabs.name.label' | t}",
-                                                                        "name": "oName",
-                                                                        "id": "u:dae5884c1633",
-                                                                        "placeholder": "${i18next.t('frontend_menu_dialog_name_placeholder')}",
-                                                                        "required": true,
-                                                                        "value": "t_\${UUID(6)}",
-                                                                        "validateOnChange": true,
-                                                                        "validations": {
-                                                                            "isVariableName": /^[a-zA-Z]([A-Za-z0-9]|_(?!_))*[A-Za-z0-9]$/
-                                                                        }
-                                                                    },
-                                                                    {
-                                                                        "type": "input-text",
-                                                                        "label": "\${'CustomField.tabs.label.label' | t}",
-                                                                        "name": "fLabel",
-                                                                        "id": "u:e5bd37f6691b",
-                                                                        "required": true
-                                                                    },
-                                                                    {
-                                                                        "type": "input-text",
-                                                                        "label": "\${'CustomField.tabs.url.label' | t}",
-                                                                        "name": "fUrl",
-                                                                        "id": "u:e5bd37f6691b",
-                                                                        "required": true
-                                                                    },
-                                                                    {
-                                                                        "type": "steedos-field",
-                                                                        "label": "\${'CustomField.tabs.icon.label' | t}",
-                                                                        "config": {
-                                                                            "label": "图标",
-                                                                            "type": "lookup",
-                                                                            "required": true,
-                                                                            "sort_no": 30,
-                                                                            "optionsFunction": "function anonymous() {        var options;        options = [];        _.forEach(Steedos.resources.sldsIcons.standard, function (svg) {          return options.push({            value: svg,            label: svg,            icon: svg          });        });        return options;      }",
-                                                                            "name": "icon",
-                                                                            "inlineHelpText": "",
-                                                                            "description": "",
-                                                                            "hidden": false,
-                                                                            "readonly": false,
-                                                                            "disabled": false
-                                                                        }
-                                                                    }
-                                                                ],
-                                                                "id": "u:38b76ff2792d",
-                                                                "actions": [
-                                                                    {
-                                                                    "type": "button",
-                                                                    "actionType": "cancel",
-                                                                    "label": "\${'Cancel' | t}",
-                                                                    "id": "u:21d3cccf4d83"
-                                                                    },
-                                                                    {
-                                                                        "type": "button",
-                                                                        "actionType": "confirm",
-                                                                        "label": "\${'OK' | t}",
-                                                                        "primary": true,
-                                                                        "id": "u:238e5731a053"
-                                                                    }
-                                                                ],
-                                                                "showCloseButton": false,
-                                                                "closeOnOutside": false,
-                                                                "closeOnEsc": false,
-                                                                "showErrorMsg": false,
-                                                                "showLoading": false,
-                                                                "draggable": false,
-                                                                "onEvent": {
-                                                                    "confirm": {
-                                                                        "weight": 0,
-                                                                        "actions": [
-                                                                            {
-                                                                            "ignoreError": false,
-                                                                            "actionType": "dialog",
-                                                                            "dialog": {
-                                                                                "type": "dialog",
-                                                                                "title": "",
-                                                                                "body": [
-                                                                                    {
-                                                                                        "type": "spinner",
-                                                                                        "id": "u:7b15becd491f",
-                                                                                        "overlay": true
-                                                                                    }
-                                                                                ],
-                                                                                "id": "u:38b76ff2798d",
-                                                                                "actions": [],
-                                                                                "showCloseButton": false,
-                                                                                "closeOnOutside": false,
-                                                                                "closeOnEsc": false,
-                                                                                "showErrorMsg": false,
-                                                                                "showLoading": false,
-                                                                                "draggable": false
-                                                                                }
-                                                                            },
-                                                                            {
-                                                                                "ignoreError": false,
-                                                                                "outputVar": "responseResult",
-                                                                                "actionType": "ajax",
-                                                                                "api": {
-                                                                                    "url": "/service/api/tabs/create_link_tab_by_design",
-                                                                                    "method": "post",
-                                                                                "requestAdaptor": "api.data={appId: context.app.id, groupId: context.label, name: context.oName, label: context.fLabel, icon: context.icon, url: context.fUrl}; return api;",
-                                                                                    "messages": {}
-                                                                                }
-                                                                            },
-                                                                            {
-                                                                                "componentId": "u:app-menu",
-                                                                                "groupType": "component",
-                                                                                "actionType": "reload"
-                                                                            }
-                                                                        ]
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    ]
-                                                }
-                                            }
-                                        },
-                                        {
-                                            "type": "divider",
-                                            "visibleOn": "!!this.isGroup",
-                                        },
-                                        {
-                                            "type": "button",
-                                            "label": "${i18next.t('frontend_menu_add_existing_tabs')}",
-                                            "visibleOn": "!!this.isGroup",
-                                            "onEvent": {
-                                                "click": {
-                                                "actions": [
-                                                    {
-                                                    "ignoreError": false,
-                                                    "actionType": "dialog",
-                                                    "dialog": {
-                                                        "type": "dialog",
-                                                        "title": "${i18next.t('frontend_menu_add_existing_tabs')}",
-                                                        "body": [
-                                                            {
-                                                                "type": "steedos-field",
-                                                                "label": "选项卡",
-                                                                "config": {
-                                                                    "type": "lookup",
-                                                                    "reference_to": "tabs",
-                                                                    "reference_to_field": "name",
-                                                                    "required": true,
-                                                                    "sort_no": 30,
-                                                                    "name": "tabs",
-                                                                    "multiple": true,
-                                                                    "enable_enhanced_lookup": true,
-                                                                    "amis": {
-                                                                        "label": false,
-                                                                        "embed": true,
-                                                                    }
-                                                                }
-                                                            }
-                                                        ],
-                                                        "id": "u:709fd4d53437",
-                                                        "actions": [
-                                                            {
-                                                                "type": "button",
-                                                                "actionType": "cancel",
-                                                                "label": "\${'Cancel' | t}",
-                                                                "id": "u:ba7b707cddd8"
-                                                            },
-                                                            {
-                                                                "type": "button",
-                                                                "actionType": "confirm",
-                                                                "label": "\${'OK' | t}",
-                                                                "primary": true,
-                                                                "id": "u:2f3e5635b95d"
-                                                            }
-                                                        ],
-                                                        "showCloseButton": true,
-                                                        "closeOnOutside": false,
-                                                        "closeOnEsc": false,
-                                                        "showErrorMsg": true,
-                                                        "showLoading": true,
-                                                        "draggable": false,
-                                                        "size": "md",
-                                                        "onEvent": {
-                                                            "confirm": {
-                                                            "weight": 0,
-                                                            "actions": [
-                                                                {
-                                                                    "ignoreError": false,
-                                                                    "outputVar": "responseResult",
-                                                                    "actionType": "ajax",
-                                                                    "options": {},
-                                                                    "api": {
-                                                                        "url": "/service/api/apps/update_app_tabs_by_design",
-                                                                        "method": "post",
-                                                                        "requestAdaptor": "api.data={appId: context.app.id, groupId: context.label, addTabNames: context.tabs}; return api;",
-                                                                        "adaptor": "",
-                                                                        "messages": {}
-                                                                    }
-                                                                },
-                                                                {
-                                                                    "componentId": "u:app-menu",
-                                                                    "groupType": "component",
-                                                                    "actionType": "reload"
-                                                                }
-                                                            ]
-                                                            }
-                                                        }
-                                                    }
-                                                    }
-                                                ]
-                                                }
-                                            }
-                                        },
-                                        {
-                                            "type": "divider",
-                                            "visibleOn": "!!this.isGroup",
-                                        },
                                         {
                                             "type": "button",
                                             "label": "${i18next.t('frontend_menu_edit_group')}",
