@@ -333,15 +333,15 @@ export const AmisAppMenu = async (props) => {
                       if(allowEditApp){
                         editAppSearch = [{
                                 "type": "grid",
-                                "className": "",
+                                "className": "mx-0 mb-2",
+                                "align": "between",
                                 "columns": [
                                     {
-                                        "md": 9,
-                                        "columnClassName": "p-0",
+                                        "columnClassName": "justify-self-start items-start",
                                         "body": [
                                             {
                                                 "type": "button",
-                                                "className": "toggle-sidebar ml-6 mt-2",
+                                                "icon": "fa fa-bars",
                                                 "onEvent": {
                                                     "click": {
                                                         "actions": [
@@ -359,30 +359,17 @@ export const AmisAppMenu = async (props) => {
                                                         ]
                                                     }
                                                 },
-                                                "body": [
-                                                    {
-                                                        "type": "html",
-                                                        "html": '<svg aria-label="Left navigation panel" fill="currentColor" role="img" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 4.5c0-.28.22-.5.5-.5h15a.5.5 0 0 1 0 1h-15a.5.5 0 0 1-.5-.5Zm0 5c0-.28.22-.5.5-.5h15a.5.5 0 0 1 0 1h-15a.5.5 0 0 1-.5-.5Zm.5 4.5a.5.5 0 0 0 0 1h15a.5.5 0 0 0 0-1h-15Z" fill="currentColor"></path></svg>'
-                                                    }
-                                                ]
                                             }
                                         ]
                                     },
                                     {
-                                        "md": 3,
-                                        "columnClassName": "p-0 steedos-app-menu-plus",
+                                        "columnClassName": "steedos-app-menu-plus",
                                         "body": [
                                             {
                                             "type": "dropdown-button",
-                                            "level": "link",
-                                            "className": "float-right",
-                                            "btnClassName": "mr-4 text-gray-600 hover:bg-white! hover:shadow!",
-                                            "icon": "fa fa-gear",
-                                            "iconOnly": true,
+                                            "label": "${i18next.t('frontend_menu_setup')}",
                                             "closeOnClick": true,
                                             "closeOnOutside": true,
-                                            // "size": "md",
-                                            "hideCaret": true,
                                             "align": "right",
                                             "buttons": [
                                                     {
@@ -994,7 +981,8 @@ export const AmisAppMenu = async (props) => {
                       }else if(stacked && window.innerWidth > 768){
                         editAppSearch = [{
                             "type": "button",
-                            "className": "toggle-sidebar mx-4 mt-2",
+                            "className": "toggle-sidebar mx-3",
+                            "icon": "fa fa-bars",
                             "onEvent": {
                                 "click": {
                                     "actions": [
@@ -1012,12 +1000,6 @@ export const AmisAppMenu = async (props) => {
                                     ]
                                 }
                             },
-                            "body": [
-                                {
-                                    "type": "html",
-                                    "html": '<svg aria-label="Left navigation panel" fill="currentColor" role="img" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 4.5c0-.28.22-.5.5-.5h15a.5.5 0 0 1 0 1h-15a.5.5 0 0 1-.5-.5Zm0 5c0-.28.22-.5.5-.5h15a.5.5 0 0 1 0 1h-15a.5.5 0 0 1-.5-.5Zm.5 4.5a.5.5 0 0 0 0 1h15a.5.5 0 0 0 0-1h-15Z" fill="currentColor"></path></svg>'
-                                }
-                            ]
                         }]
                       }
 
@@ -1080,7 +1062,7 @@ export const AmisAppMenu = async (props) => {
                               "placeholder": "搜索菜单",
                               "matchFunc": "return link.searchKey && link.searchKey.indexOf(keyword)>=0;"
                             },
-                            className: "${className} text-black steedos-app-menu ${stacked?'stacked':''}",
+                            className: "${className} text-black steedos-app-menu px-2 ${stacked?'stacked':''}",
                             "stacked": ${stacked},
                             "overflow": ${JSON.stringify(overflow)},
                             "indentSize": ${indentSize},
@@ -1096,12 +1078,11 @@ export const AmisAppMenu = async (props) => {
                             "itemActions": [
                                 {
                                     "type": "dropdown-button",
-                                    "level": "link",
                                     "icon": "fa fa-ellipsis-h",
                                     "hideCaret": true,
                                     "closeOnClick": true,
                                     "closeOnOutside": true,
-                                    "btnClassName": "!text-gray-700",
+                                    "btnClassName": "!text-gray-700 !bg-transparent !px-2",
                                     "visibleOn": "!!allowEditApp",
                                     "className": "hidden hover-inline-flex px-1",
                                     "buttons": [

@@ -54,7 +54,7 @@
     /* --button-default-default-font-color: rgb(1, 118, 211); */
     --button-enhance-default-bg-color: white;
     --Crud-toolbar-gap: 2px;
-    --DropDown-caret-marginLeft: 0;
+    /* --DropDown-caret-marginLeft: 0; */
     --Tabs--vertical-width: 180px;
     --Tabs--vertical-bg: white;
     --Tabs-link-maxWidth: 180px;
@@ -69,10 +69,10 @@
     --common-popover-border: none;
 }
 
-.steedos-DropDown--show-label.antd-DropDown .antd-Button .antd-DropDown-caret{
-    /* 因上面全局设置 --DropDown-caret-marginLeft 为0了，这里允许设置DropDown的className为steedos-DropDown--show-label时恢复按钮label和右侧caret图标间距 */
+/* 因上面全局设置 --DropDown-caret-marginLeft 为0了，这里允许设置DropDown的className为steedos-DropDown--show-label时恢复按钮label和右侧caret图标间距 */
+/* .steedos-DropDown--show-label.antd-DropDown .antd-Button .antd-DropDown-caret{
     margin-left: 0.5rem;
-}
+} */
 
 /* 修正手机端字体小的问题 */
 @media (max-width: 767px) {
@@ -182,9 +182,9 @@ fieldset.antd-Collapse > legend.antd-Collapse-header > .antd-Collapse-arrow:befo
     border-collapse: separate;
 }
 
-.antd-DropDown-caret > svg {
+/* .antd-DropDown-caret > svg {
     top: 0px;
-}
+} */
 
 
 /* 处理amis debug 滚动条异常 */

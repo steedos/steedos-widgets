@@ -1,18 +1,18 @@
 
 :root, .antd-Nav-Menu {
+
   --Menu-light-fontColor: var(--Layout-light-fontColor);
-  --Menu-light-fontColor-onHover: var(--Layout-light-fontColor);
-  --Menu-light-fontColor-onActive: var(--Layout-light--onActive);
+  --Menu-light-fontColor-onHover: var(--link-color);
+  --Menu-light-fontColor-onActive: var(--link-colorlink);
   --Menu-light-active-backgroundColor: rgb(240, 240, 240);
   --Menu-light-backgroundColor-onHover: rgb(240, 240, 240);
-  --Menu-light-selectedIndicator-color: rgb(14, 165, 233);
+  --Menu-light-selectedIndicator-color: transparent;
   --Nav-Item-height: 2.5rem;
   /* --Nav-Item-height--horizontal: 2.5rem; */
-  --Nav-item-borderRadius: 0px;
-  --Nav-item-onActive-color: #000;
+  --Nav-item-borderRadius: 0.5rem;
   --Nav-item-onHover-bg: rgba(21,137,238,.1);
   --Nav-item-onActive-bg: rgba(21,137,238,.1);
-  --Nav-item-onActive-color: var(--Layout-light--onActive);
+  --Nav-item-onActive-color: var(--link-colorlink);
   --Nav-Item-maxWidth--tabs: 200px;
 }
 .antd-Nav-Menu.antd-Nav-Menu-horizontal {
@@ -20,9 +20,10 @@
   --Menu-light-fontColor-onHover: var(--Layout-fontColor--onHover);
 }
 
-.antd-Nav {
-  --Nav-item-onActive-color: #000;
+.antd-Nav-Menu-item {
+  border-radius: 0.375rem;
 }
+
 
 .antd-Nav-Menu-item-dragBar {
   left: 0;
