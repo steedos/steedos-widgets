@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-11-19 16:06:23
+ * @LastEditTime: 2025-11-19 17:13:18
  * @Description:
  */
 import {
@@ -858,10 +858,15 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
   return `
     (function () {
       setTimeout(function () {
-        var bodyEl = document.querySelector('.steedos-amis-instance-view-body');
+        var bodyEl = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .steedos-amis-instance-view-body');
         if (!bodyEl) return;
-        var btn = document.querySelector('.approve-button');
+        var btn = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .approve-button');
         if (!btn) return;
+
+        function isDrawerOpen() {
+          var dr = document.querySelector('.amis-dialog-widget.approval-drawer');
+          return dr && dr.offsetParent !== null;
+        }
 
         var lastAtBottom = false; // 上一个scroll事件是否到底
 
@@ -875,7 +880,7 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
         // wheel: 只要现在到底、且是向下滚，即可弹出
         bodyEl.addEventListener('wheel', function (e) {
           var atBottom = isAtBottom();
-          if (atBottom && e.deltaY > 0) {
+          if (atBottom && e.deltaY > 0 && !isDrawerOpen()) {
             // [wheel] 拖动条在底部且向下滚，弹drawer
             btn.click();
           }
@@ -884,7 +889,7 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
         // scroll: 拖动时仅“从非底部->底部”瞬间弹
         bodyEl.addEventListener('scroll', function () {
           var atBottom = isAtBottom();
-          if (!lastAtBottom && atBottom) {
+          if (!lastAtBottom && atBottom && !isDrawerOpen()) {
             // [scroll] 拖动条到底，弹drawer
             btn.click();
           }
