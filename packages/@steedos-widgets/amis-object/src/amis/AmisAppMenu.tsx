@@ -337,12 +337,13 @@ export const AmisAppMenu = async (props) => {
                                 "align": "between",
                                 "columns": [
                                     {
-                                        "columnClassName": "justify-self-start items-start",
+                                        "columnClassName": "p-0",
                                         "body": [
                                             {
                                                 "type": "button",
                                                 "level": "light",
                                                 "icon": "fa fa-bars",
+                                                "className": "w-[2.5rem]",
                                                 "onEvent": {
                                                     "click": {
                                                         "actions": [
@@ -368,8 +369,10 @@ export const AmisAppMenu = async (props) => {
                                         "body": [
                                             {
                                             "type": "dropdown-button",
+                                            "className": "block justify-self-end",
                                             "btnClassName": "mx-0",
-                                            "level": "primary",
+                                            "level": "default",
+                                            // "icon": "fa fa-gear",
                                             "label": "${i18next.t('frontend_menu_setup')}",
                                             "closeOnClick": true,
                                             "closeOnOutside": true,
@@ -985,7 +988,7 @@ export const AmisAppMenu = async (props) => {
                         editAppSearch = [{
                             "type": "button",
                             "level": "light",
-                            "className": "toggle-sidebar mx-3",
+                            "className": "toggle-sidebar w-[3rem]",
                             "icon": "fa fa-bars",
                             "onEvent": {
                                 "click": {
