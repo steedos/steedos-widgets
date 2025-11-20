@@ -1,33 +1,129 @@
+.sidebar-wrapper {
+    // transition: 0.5s ease transform;
+    // will-change: transform;
+    // transform:translate(calc(-100% + 60px),0); // W3c标准
+    // -webkit-transform:translate(calc(-100% + 60px),0); // Safari Chrome
+    // -moz-transform:translate(calc(-100% + 60px),0); // firefox
+    // -ms-transform:translate(calc(-100% + 60px),0); // IE9
+    // -o-transform:translate(calc(-100% + 60px),0); // opera
 
-.steedos-context-bar .antd-Nav-list{
-    border-bottom: 0px;
-    height: 40px;
+    overflow-x: hidden;
+    width: 40px;
 }
 
-.steedos-context-bar .antd-Nav .antd-Nav-list--tabs .antd-Nav-item.is-active  {
-    box-shadow: none;
+.sidebar.sidebar-open .sidebar-wrapper {
+    width: 220px;
 }
 
-.steedos-context-bar .antd-Nav .antd-Nav-list--tabs .antd-Nav-item > a {
-    border: 0px;
-    padding-left: 12px;
-    padding-right: 12px;
-    border-top: solid transparent 3px;
+.sidebar .toggle-sidebar {
+    display: block;
+    justify-self: center;
 }
 
-.steedos-context-bar .antd-Nav .antd-Nav-list--tabs .antd-Nav-item:hover > a,
-.steedos-context-bar .antd-Nav .antd-Nav-list--tabs .antd-Nav-item > a:focus {
-    border-top-left-radius: 0px;
-    border-top-right-radius: 0px;
-    background: rgba(21,137,238,.1);
-    border-top: solid rgba(21,137,238,.1) 3px;
+.sidebar.sidebar-open .toggle-sidebar {
+    display: block;
+    justify-self: left;
 }
 
-.steedos-context-bar .antd-Nav .antd-Nav-list--tabs .antd-Nav-item.is-active > a {
-    border-top-left-radius: 0px;
-    border-top-right-radius: 0px;
-    background: rgba(21,137,238,.1);
-    border-top: solid rgb(14 165 233) 3px;
+.antd-Nav-Menu-item-divider {
+    border-bottom: 0.0625rem solid #cacacc !important;
+}
+
+
+.antd-Nav-Menu-item-tooltip{
+    display: none !important;
+}
+
+.antd-Nav{
+    &.stacked{
+        .antd-Nav-Menu-item-link{
+            .antd-Nav-Menu-item-label{
+                // 左侧菜单文字超长时显示省略号不换行
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                width: 100%;
+                &> span > span {
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
+        }
+    }
+}
+
+@media (min-width: 768px){
+    body.sidebar.sidebar-open #main {
+        margin-left: 220px;
+    }
+    body.sidebar #main {
+        margin-left: 50px;
+    }
+}
+
+@media (max-width: 768px){
+
+    body.sidebar.sidebar-open #main {
+        padding-left: 0;
+    }
+
+    .sidebar-overlay {
+        display: none;
+    }
+
+    body.sidebar.sidebar-open .sidebar-overlay {
+        display: block;
+        transition: ease-out opacity .2s;
+        position: fixed;
+        top: 51px;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1000;
+        background: rgba(0,0,0,.6);
+        opacity: 1;
+    }
+
+    .steedos-header-toolbar-notifications-dialog{
+        .antd-Modal-content{
+            position: absolute !important;
+            left: 12px;
+            right: 12px;
+            top: 50px;
+            height: auto !important;
+            width: unset;
+            max-width: unset;
+            border-radius: var(--dialog-default-border-radius) !important;
+            padding: 0;
+            background: transparent;
+            border: none;
+            .antd-Modal-body{
+                padding: 0;
+                margin: 0;
+                .steedos-header-toolbar-notifications-panel{
+                    .steedos-header-toolbar-notifications-list{
+                        max-height: 60vh;
+                        margin: 0;
+                    }
+                }
+            }
+        }
+    }
+
+    .sidebar.sidebar-open .sidebar-wrapper {
+        position: fixed;
+        left: 0;
+        top: 50px;
+        bottom: 0;
+        width: 220px;
+        background: #fff;
+        z-index: 1001;
+    }
+
+    .sidebar .sidebar-wrapper {
+        width: 0;
+    }
 }
 
 .antd-Nav .antd-Nav-list--stacked .antd-Nav-item .antd-Nav-itemToggler, .antd-Nav .antd-Nav-list--stacked .antd-Badge .antd-Nav-itemToggler {

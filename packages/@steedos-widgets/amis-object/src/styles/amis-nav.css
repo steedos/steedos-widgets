@@ -1,18 +1,18 @@
 
 :root, .antd-Nav-Menu {
-  --Menu-width--collapsed: 3rem;
+  --Menu-width--collapsed: 2.5rem;
   --Menu-light-fontColor: var(--Layout-light-fontColor);
   --Menu-light-fontColor-onHover: var(--link-color);
-  --Menu-light-fontColor-onActive: var(--link-colorlink);
+  --Menu-light-fontColor-onActive: var(--link-color);
   --Menu-light-active-backgroundColor: rgb(240, 240, 240);
   --Menu-light-backgroundColor-onHover: rgb(240, 240, 240);
   --Menu-light-selectedIndicator-color: transparent;
-  --Nav-Item-height: 2.5rem;
+  --Nav-Item-height: 2.25rem;
   /* --Nav-Item-height--horizontal: 2.5rem; */
   --Nav-item-borderRadius: 0.5rem;
   --Nav-item-onHover-bg: rgba(21,137,238,.1);
   --Nav-item-onActive-bg: rgba(21,137,238,.1);
-  --Nav-item-onActive-color: var(--link-colorlink);
+  --Nav-item-onActive-color: var(--link-color);
   --Nav-Item-maxWidth--tabs: 200px;
 }
 .antd-Nav-Menu.antd-Nav-Menu-horizontal {
@@ -23,7 +23,7 @@
 .antd-Nav-Menu-item {
   border-radius: 0.375rem;
   margin-top: 3px;
-  margin-left: 0.5rem;
+  margin-left: 0rem;
 }
 
 .antd-Nav-Menu-collapsed 
@@ -36,10 +36,6 @@
 .antd-Nav-Menu-item-dragBar {
   left: 0px;
   height: 16px;
-}
-
-.steedos-app-service-edit .antd-Nav-Menu-inline .antd-Nav-Menu-item-active.antd-Nav-Menu-item-selected::before {
-  display: none;
 }
 
 .antd-Nav-Menu-item-active {
@@ -64,7 +60,7 @@
 }
 
 .antd-Nav-Menu-light .antd-Nav-Menu-item, .antd-Nav-Menu-light .antd-Nav-Menu-submenu-title {
-  padding-right: 0;
+  padding-right: 4px;
 }
 
 .antd-Nav-Menu-horizontal.antd-Nav-Menu-light .antd-Nav-Menu-item.antd-Nav-Menu-item-selected {

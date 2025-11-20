@@ -343,7 +343,7 @@ export const AmisAppMenu = async (props) => {
                                                 "type": "button",
                                                 "level": "light",
                                                 "icon": "fa fa-bars",
-                                                "className": "w-[2.5rem]",
+                                                "className": "",
                                                 "onEvent": {
                                                     "click": {
                                                         "actions": [
@@ -370,10 +370,10 @@ export const AmisAppMenu = async (props) => {
                                             {
                                             "type": "dropdown-button",
                                             "className": "block justify-self-end",
-                                            "btnClassName": "mx-0",
-                                            "level": "default",
-                                            // "icon": "fa fa-gear",
-                                            "label": "${i18next.t('frontend_menu_setup')}",
+                                            "btnClassName": "mx-0 text-gray-600",
+                                            "level": "light",
+                                            "icon": "fa fa-gear",
+                                            // "label": "${i18next.t('frontend_menu_setup')}",
                                             "closeOnClick": true,
                                             "closeOnOutside": true,
                                             "align": "right",
@@ -988,7 +988,7 @@ export const AmisAppMenu = async (props) => {
                         editAppSearch = [{
                             "type": "button",
                             "level": "light",
-                            "className": "toggle-sidebar w-[3rem]",
+                            "className": "toggle-sidebar mx-0",
                             "icon": "fa fa-bars",
                             "onEvent": {
                                 "click": {
@@ -1062,7 +1062,7 @@ export const AmisAppMenu = async (props) => {
                             ...editAppSearch,
                             {
                             "type": "nav",
-                            "expandPosition": "after",
+                            "expandPosition": "before",
                             "collapsed": collapsed,
                             "searchable": false,
                             "searchConfig": {
@@ -1085,12 +1085,12 @@ export const AmisAppMenu = async (props) => {
                             "itemActions": [
                                 {
                                     "type": "dropdown-button",
-                                    "level": "light",
+                                    "level": "link",
                                     "icon": "fa fa-ellipsis-h",
                                     "hideCaret": true,
                                     "closeOnClick": true,
                                     "closeOnOutside": true,
-                                    "btnClassName": " !px-2",
+                                    "btnClassName": "!text-gray-600",
                                     "visibleOn": "!!allowEditApp",
                                     "className": "hidden hover-inline-flex px-1",
                                     "buttons": [
