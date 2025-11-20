@@ -68,7 +68,7 @@ export function getSelectMap(selectOptions){
             const background = optionColor.charAt(0) === '#' ? optionColor : '#'+optionColor;
             const color = getContrastColor(background);
             const optionColorStyle = 'background:'+background+';color:'+color+';line-height:1.5rem;font-size:14px';
-            map[optionValue] = `<span class="rounded-xl px-2 py-1" style='${optionColorStyle}'>${option.label}</span>`
+            map[optionValue] = `<span class="rounded-xl px-2 py-1 whitespace-nowrap" style='${optionColorStyle}'>${option.label}</span>`
         }else{
             map[optionValue] = option.label;
         }

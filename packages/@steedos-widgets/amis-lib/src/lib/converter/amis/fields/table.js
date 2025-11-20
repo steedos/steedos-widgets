@@ -615,7 +615,7 @@ export async function getTableColumns(object, fields, options){
         if(bowserType === "Safari"){
             className += " whitespace-nowrap "
         }else{
-            if(field.wrap != true){
+            if(field.wrap === false){
                 className += " whitespace-nowrap "
             }else{
                 className += " break-words "
