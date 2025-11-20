@@ -112,17 +112,17 @@
     }
 
     .sidebar.sidebar-open .sidebar-wrapper {
-        position: fixed;
         left: 0;
+    }
+
+    .sidebar .sidebar-wrapper {
+        position: fixed;
         top: 50px;
         bottom: 0;
         width: 220px;
         background: #fff;
         z-index: 1001;
-    }
-
-    .sidebar .sidebar-wrapper {
-        width: 0;
+        left: -220px;   
     }
 }
 
