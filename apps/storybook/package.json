@@ -1,6 +1,6 @@
 {
   "name": "storybook",
-  "version": "6.10.11",
+  "version": "6.10.12",
   "main": "index.js",
   "private": true,
   "license": "MIT",
