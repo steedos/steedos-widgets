@@ -364,23 +364,24 @@ const getFieldEditTpl = async (field, label)=>{
             return payload;
           `,
           requestAdaptor: `
-            const field = ${JSON.stringify(field)};
-            if(field.filters){
-              console.log('field.filters', field.filters);
+            const filters = ${_.replace(field.filters, /_.pluck/g, '_.map')};
+            const url = ${field.url}
+            if(filters){
+              console.log('filters', filters);
               const joinKey = field.url.indexOf('?') > 0 ? '&' : '?';
-              if(field.filters.startsWith('function(') || field.filters.startsWith('function (')){
+              if(filters.startsWith('function(') || filters.startsWith('function (')){
                 const argsName = ${JSON.stringify(argsName)};
-                const fun = eval('_fun='+field.filters);
+                const fun = eval('_fun='+filters);
                 const funArgs = [];
                 for(const item of argsName){
                   funArgs.push(context[item])
                 }
-                api.url = field.url + joinKey + "$filter=" + fun.apply({}, funArgs)
+                api.url = url + joinKey + "$filter=" + fun.apply({}, funArgs)
               }else{
-                api.url = field.url + joinKey + "$filter=" + field.filters
+                api.url = url + joinKey + "$filter=" + filters
               }
             }else{
-              api.url = field.url  
+              api.url = url  
             }
             api.query = {};
             return api;
