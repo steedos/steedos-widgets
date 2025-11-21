@@ -344,9 +344,7 @@ const getFieldEditTpl = async (field, label)=>{
         // tpl.labelField = labelField;
         // tpl.valueField = "_value";
         tpl.source = {
-          url: startsWith(field.url, "http")
-            ? field.url
-            : `\${context.rootUrl}${field.url}`,
+          url: field.url,
           method: "get",
           dataType: "json",
           adaptor:`
@@ -368,6 +366,7 @@ const getFieldEditTpl = async (field, label)=>{
           requestAdaptor: `
             const field = ${JSON.stringify(field)};
             if(field.filters){
+              console.log('field.filters', field.filters);
               const joinKey = field.url.indexOf('?') > 0 ? '&' : '?';
               if(field.filters.startsWith('function(') || field.filters.startsWith('function (')){
                 const argsName = ${JSON.stringify(argsName)};
@@ -380,13 +379,16 @@ const getFieldEditTpl = async (field, label)=>{
               }else{
                 api.url = field.url + joinKey + "$filter=" + field.filters
               }
+            }else{
+              api.url = field.url  
             }
             api.query = {};
             return api;
-          `
+          `,
+          trackExpression: _.join(_.map(argsName, (item)=>{return `\${${item}|json}`}), '-')
         };
         tpl.isAmis=true;
-        // delete tpl.source;
+        console.log(`odata`, tpl)
         break;
       case "html":
         if (tpl.disabled) {
