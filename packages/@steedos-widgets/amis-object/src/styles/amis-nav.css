@@ -1,6 +1,6 @@
 
 :root, .antd-Nav-Menu {
-  --Menu-width--collapsed: 2.5rem;
+  --Menu-width--collapsed: 32px;
   --Menu-light-fontColor: var(--Layout-light-fontColor);
   --Menu-light-fontColor-onHover: var(--link-color);
   --Menu-light-fontColor-onActive: var(--link-color);
