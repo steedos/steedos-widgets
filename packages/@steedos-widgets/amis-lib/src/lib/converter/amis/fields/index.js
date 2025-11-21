@@ -239,6 +239,13 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                     labelField: 'label',
                     valueField: 'value'
                 }
+                if(field.isAmis){
+                    delete field.mode;
+                    convertData = {
+                        ...convertData,
+                        ...field
+                    }
+                }
                 const select_menuTpl = `<span class='flex items-center mt-0.5'>
                     <span role='img' aria-label='smile' class='anticon anticon-smile'>
                         <span class='slds-icon_container slds-icon-standard-\${REPLACE(icon,'_','-')}'>

@@ -268,7 +268,6 @@ export const showApproveSignImage = (judge) => {
 };
 
 export const getUserApprove = ({ instance, userId }) => {
-  console.log(`getUserApprove===>`, instance, userId)
   const currentTrace = find(instance.traces, (trace) => {
     return trace.is_finished != true;
   });

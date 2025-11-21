@@ -209,7 +209,7 @@ function getFormFields(props, mode = "edit") {
         fields = getTableFieldsWithoutFieldPrefix(fields, fieldPrefix);
     }
     return (fields || []).map(function (item) {
-        let formItem = {
+        let formItem = item.isAmis ? item : {
             "type": "steedos-field",
             "name": item.name,
             "config": item
@@ -224,6 +224,9 @@ function getFormFields(props, mode = "edit") {
 function getInputTableCell(field, showAsInlineEditMode) {
     if (showAsInlineEditMode) {
         // 这里不可以用quickEdit，因为amis存在bug：input-table内的字段在行编辑模式时会受到外层相同name的字段的影响 https://github.com/baidu/amis/issues/9653
+        if(field.isAmis){
+            return field;
+        }
         return {
             "type": "steedos-field",
             "config": Object.assign({}, field, {
@@ -242,6 +245,16 @@ function getInputTableCell(field, showAsInlineEditMode) {
         }
     }
     else {
+        if(field.isAmis){
+            return {
+                ...field,
+                inInputTable: true,
+                "static": true,
+                "readonly": true,
+                label: field.label,
+                name: field.name
+            };
+        }
         return {
             "type": "steedos-field",
             "config": Object.assign({}, field, {

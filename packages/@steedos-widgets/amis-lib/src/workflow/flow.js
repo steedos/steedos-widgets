@@ -334,7 +334,6 @@ const getFieldEditTpl = async (field, label)=>{
         tpl.options = getSelectOptions(field);
         break;
       case "odata":
-        console.log('odata field', field);
         const argsName = getArgumentsList(field.filters);
         var labelField = field.formula.substr(1, field.formula.length - 2);
         labelField = labelField.substr(labelField.indexOf(".") + 1);
@@ -381,12 +380,11 @@ const getFieldEditTpl = async (field, label)=>{
               }
             }
             api.query = {};
-            console.log('api', api);
             return api;
           `
         };
+        tpl.isAmis=true;
         // delete tpl.source;
-        console.log('odata tpl', tpl)
         break;
       case "html":
         if (tpl.disabled) {
@@ -614,7 +612,6 @@ const getFormTrs = async (instance) => {
   const trs = [];
   let tdFields = [];
   let fields = [];
-  console.log('getFormTrs===>', instance.fields);
   each(instance.fields, (field) => {
     fields.push(field);
     if (field.type === "section" && field.fields) {
@@ -947,7 +944,6 @@ export const getFlowFormSchema = async (instance, box) => {
   else{
     formContentSchema = await getFormTableView(instance);
   }
-  console.log(`formContentSchema`, formContentSchema)
   const amisSchemaStr = instance.formVersion?.amis_schema;
   
   let initedEvents = [];
@@ -971,7 +967,6 @@ export const getFlowFormSchema = async (instance, box) => {
     });
   }
 
-  console.log('getFlowFormSchema formContentSchema', formContentSchema);
   return {
     type: "page",
     name: "instancePage",

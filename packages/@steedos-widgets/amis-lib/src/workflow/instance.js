@@ -189,7 +189,6 @@ export const getInstanceInfo = async (props) => {
   if (!instance) {
     return undefined;
   }
-  console.log(`box====>`, box)
   if (box === "inbox" || box === "draft") {
     userApprove = getUserApprove({ instance, userId });
   }
@@ -203,9 +202,6 @@ export const getInstanceInfo = async (props) => {
     trace = getTrace({ instance, traceId: userApprove.trace });
     step = getStep({ flowVersion, stepId: trace.step });
   }
-
-  console.log(`userApprove===>`, userApprove)
-  console.log(`step===>`, step)
 
   let currentStep = getStep({ flowVersion, stepId: _.last(instance.traces).step });
 
