@@ -179,6 +179,7 @@ function generateRandomString(length = 5) {
 }
 
 export const AmisSteedosField = async (props) => {
+    console.log(`AmisSteedosField==>`, props)
     if(has(props, '$$editor')){
         setTimeout(()=>{
             const fieldEditDiv = document.getElementsByName(props.id)[0];
@@ -807,8 +808,11 @@ export const AmisSteedosField = async (props) => {
             }
             Object.assign(schema, steedosField.amis || {});
             addEditorClass(schema, editorClassName);
-            // console.log(`798 AmisSteedosField return schema`, schema, props)
-            return schema;
+            console.log(`798 AmisSteedosField return schema`, schema, props)
+            return schema || {
+                ...config,
+                mode: 'normal'
+            };
         } else {
             if(!ctx.className){
                 ctx.className = className;
@@ -872,8 +876,11 @@ export const AmisSteedosField = async (props) => {
 
             const schema = await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
             addEditorClass(schema, editorClassName);
-            // console.log(`863 AmisSteedosField return schema`, schema, props)
-            return schema
+            console.log(`863 AmisSteedosField return schema`, schema, props)
+            return schema || {
+                ...config,
+                mode: 'normal'
+            };
         }
 
     } catch (error) {

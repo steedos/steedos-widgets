@@ -56,7 +56,6 @@ const getFlowVersion = async (instance) => {
   const result = await fetchAPI(`/api/workflow/flow/${instance.flow._id}/version/${instance.flow_version}`, {
     method: "get"
   });
-  console.log(`getFlowVersion: `, result)
   return result;
 };
 
@@ -64,7 +63,6 @@ const getFormVersion = async (instance) => {
   const result = await fetchAPI(`/api/workflow/form/${instance.form._id}/version/${instance.form_version}`, {
     method: "get"
   });
-  console.log(`getFormVersion: `, result)
   return result;
 };
 

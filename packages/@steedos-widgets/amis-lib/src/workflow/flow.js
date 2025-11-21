@@ -57,6 +57,7 @@ const getArgumentsList = (func)=>{
 }
 
 const getFieldEditTpl = async (field, label)=>{
+  console.log('field',field)
   const tpl = {
     label: label === true ? field.name : false,
     name: field.code,
@@ -264,6 +265,7 @@ const getFieldEditTpl = async (field, label)=>{
         break;
       case "number":
         tpl.type = "input-number";
+        tpl.precision=2
         break;
       case "date":
         tpl.type = "input-date";
@@ -461,7 +463,7 @@ const getFieldReadonlyTpl = async (field, label)=>{
       map[item.value] = item.label;
     })
     tpl.type = 'static';
-    tpl.tpl = `<% var options = ${JSON.stringify(map)}; return (options && options[data.${field.code}]) || ''%>`
+    tpl.tpl = `<% var options = ${JSON.stringify(map)}; return (options && options[data["${field.code}"]]) || ''%>`
   }else if(field.type === 'odata'){
     tpl.type = 'static';
     tpl.tpl = `<div>\${${field.code}['@label']}</div>`

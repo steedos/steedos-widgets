@@ -657,6 +657,7 @@ function getFormPaginationWrapper(props, form, mode) {
             "method": "get",
             "adaptor": `
                 const formBody = ${JSON.stringify(formBody)};
+                console.log('formBody===>', formBody);
                 return {
                     "body": formBody
                 }
