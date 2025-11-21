@@ -40,6 +40,22 @@ const isOpinionField = (field)=>{
   return (field_formula?.indexOf("{traces.") > -1 || field_formula?.indexOf("{signature.traces.") > -1 || field_formula?.indexOf("{yijianlan:") > -1 || field_formula?.indexOf("{\"yijianlan\":") > -1 || field_formula?.indexOf("{'yijianlan':") > -1)
 }
 
+const getArgumentsList = (func)=>{
+  let funcString;
+  if (typeof func === 'function') {
+    funcString = func.toString();
+  } else {
+    funcString = func;
+  }
+  const regExp = /function\s*\w*\(([\s\S]*?)\)/;
+  if (regExp.test(funcString)) {
+    const argList = RegExp.$1.split(',');
+    return argList.map(arg => arg.replace(/\s/g, ''));
+  } else {
+    return [];
+  }
+}
+
 const getFieldEditTpl = async (field, label)=>{
   const tpl = {
     label: label === true ? field.name : false,
@@ -318,6 +334,8 @@ const getFieldEditTpl = async (field, label)=>{
         tpl.options = getSelectOptions(field);
         break;
       case "odata":
+        console.log('odata field', field);
+        const argsName = getArgumentsList(field.filters);
         var labelField = field.formula.substr(1, field.formula.length - 2);
         labelField = labelField.substr(labelField.indexOf(".") + 1);
         tpl.type = "select";
@@ -330,9 +348,6 @@ const getFieldEditTpl = async (field, label)=>{
             : `\${context.rootUrl}${field.url}`,
           method: "get",
           dataType: "json",
-          headers: {
-            Authorization: "Bearer ${context.tenantId},${context.authToken}",
-          },
           adaptor:`
             payload.data = {
               options: _.map(payload.value, (item)=>{
@@ -348,8 +363,30 @@ const getFieldEditTpl = async (field, label)=>{
               })
             }
             return payload;
+          `,
+          requestAdaptor: `
+            const field = ${JSON.stringify(field)};
+            if(field.filters){
+              const joinKey = field.url.indexOf('?') > 0 ? '&' : '?';
+              if(field.filters.startsWith('function(') || field.filters.startsWith('function (')){
+                const argsName = ${JSON.stringify(argsName)};
+                const fun = eval('_fun='+field.filters);
+                const funArgs = [];
+                for(const item of argsName){
+                  funArgs.push(context[item])
+                }
+                api.url = field.url + joinKey + "$filter=" + fun.apply({}, funArgs)
+              }else{
+                api.url = field.url + joinKey + "$filter=" + field.filters
+              }
+            }
+            api.query = {};
+            console.log('api', api);
+            return api;
           `
         };
+        // delete tpl.source;
+        console.log('odata tpl', tpl)
         break;
       case "html":
         if (tpl.disabled) {
@@ -577,6 +614,7 @@ const getFormTrs = async (instance) => {
   const trs = [];
   let tdFields = [];
   let fields = [];
+  console.log('getFormTrs===>', instance.fields);
   each(instance.fields, (field) => {
     fields.push(field);
     if (field.type === "section" && field.fields) {
@@ -623,7 +661,7 @@ const getFormTableView = async (instance) => {
 };
 
 const getFormSteps = async (instance) => {
-  const formMode = instance.form.current.mode || "normal";//normal,horizontal,inline
+  const formMode = instance.formVersion.mode || "normal";//normal,horizontal,inline
   const stepsSchema = [];
   let stepFields = [];
   let fields = [];
@@ -690,7 +728,7 @@ const getFormSteps = async (instance) => {
 }
 
 const getFormWizardView = async (instance) => {
-  const wizardMode = instance.form.current.wizard_mode || "vertical";//vertical,horizontal
+  const wizardMode = instance.formVersion.wizard_mode || "vertical";//vertical,horizontal
   const formSchema = {
     type: "wizard",
     className: `instance-form-view-wizard ${wizardMode === "horizontal" ? "pt-4" : "pt-1"} mt-3`,
@@ -901,7 +939,7 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
 }
 
 export const getFlowFormSchema = async (instance, box) => {
-  const formStyle = instance.form.current.style || "table";
+  const formStyle = instance.formVersion.style || "table";
   let formContentSchema;
   if (formStyle === "wizard") {
     formContentSchema = await getFormWizardView(instance);
@@ -909,7 +947,7 @@ export const getFlowFormSchema = async (instance, box) => {
   else{
     formContentSchema = await getFormTableView(instance);
   }
-
+  console.log(`formContentSchema`, formContentSchema)
   const amisSchemaStr = instance.formVersion?.amis_schema;
   
   let initedEvents = [];
@@ -1075,7 +1113,7 @@ export const getFlowFormSchema = async (instance, box) => {
             "args": {
               "value": "${event.data.context.approveValues}"
             },
-            "expression": "${event.data.context.form.current.style === 'wizard'}"// 表单为 wizard 样式时需要初始同步表单数据，否则直接点击暂存按钮会清空数据
+            "expression": "${event.data.context.flowVersion.style === 'wizard'}"// 表单为 wizard 样式时需要初始同步表单数据，否则直接点击暂存按钮会清空数据
           },
           ...initedEvents
         ]

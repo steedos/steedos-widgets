@@ -52,24 +52,20 @@ const getApproveValues = ({ instance, trace, step, approve, box }) => {
   return instanceValues;
 };
 
-const getFlowVersion = (instance) => {
-  if (instance.flow.current._id === instance.flow_version) {
-    return instance.flow.current;
-  } else {
-    return find(instance.flow.historys, (history) => {
-      return history._id === instance.flow_version;
-    });
-  }
+const getFlowVersion = async (instance) => {
+  const result = await fetchAPI(`/api/workflow/flow/${instance.flow._id}/version/${instance.flow_version}`, {
+    method: "get"
+  });
+  console.log(`getFlowVersion: `, result)
+  return result;
 };
 
-const getFormVersion = (instance) => {
-  if (instance.form.current._id === instance.form_version) {
-    return instance.form.current;
-  } else {
-    return find(instance.form.historys, (history) => {
-      return history._id === instance.form_version;
-    });
-  }
+const getFormVersion = async (instance) => {
+  const result = await fetchAPI(`/api/workflow/form/${instance.form._id}/version/${instance.form_version}`, {
+    method: "get"
+  });
+  console.log(`getFormVersion: `, result)
+  return result;
 };
 
 const getStep = ({ flowVersion, stepId }) => {
@@ -166,17 +162,13 @@ export const getInstanceInfo = async (props) => {
           name,
           style,
           mode,
-          wizard_mode,
-          current,
-          historys
+          wizard_mode
         },
         flow_version,
         flow:flow__expand{
           _id,
           name,
-          perms,
-          current,
-          historys
+          perms
         }
       }
     }
@@ -197,16 +189,23 @@ export const getInstanceInfo = async (props) => {
   if (!instance) {
     return undefined;
   }
+  console.log(`box====>`, box)
   if (box === "inbox" || box === "draft") {
     userApprove = getUserApprove({ instance, userId });
   }
-  const flowVersion = getFlowVersion(instance);
-  const formVersion = getFormVersion(instance);
+  const flowVersion = await getFlowVersion(instance);
+  const formVersion = await getFormVersion(instance);
+
+  instance.flowVersion = flowVersion;
+  instance.formVersion = formVersion;
 
   if (userApprove) {
     trace = getTrace({ instance, traceId: userApprove.trace });
     step = getStep({ flowVersion, stepId: trace.step });
   }
+
+  console.log(`userApprove===>`, userApprove)
+  console.log(`step===>`, step)
 
   let currentStep = getStep({ flowVersion, stepId: _.last(instance.traces).step });
 
