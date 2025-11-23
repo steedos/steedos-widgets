@@ -336,7 +336,6 @@ export async function getObjectCRUD(objectSchema, fields, options){
       }, bodyProps);
 
     }
-
     body = defaultsDeep({}, listSchema, body);
     body = await getCrudSchemaWithDataFilter(body, { crudDataFilter, onCrudDataFilter, amisData, env });
 

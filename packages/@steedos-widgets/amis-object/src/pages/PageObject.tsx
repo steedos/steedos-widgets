@@ -61,9 +61,6 @@ export const PageObject = async (props) => {
 
     const additionalFilters = urlParams['additionalFilters'] || '';
 
-    console.log('urlParams===>', urlParams);
-    console.log('additionalFilters===>', additionalFilters);
-
     const schema = {
         type: "service",
         data: $schema.data,

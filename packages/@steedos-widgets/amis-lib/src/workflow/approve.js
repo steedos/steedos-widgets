@@ -556,6 +556,12 @@ const getSubmitActions = async (instance, submitEvents) => {
       expression: "${event.data.instanceFormValidate && event.data.approvalFormValidate}"
     },
     {
+        "actionType": "wait",
+        "args": {
+            "time": 300
+        }
+    },
+    {
       "actionType": "custom",
       "script": `
         const appId = context.props.data.appId;

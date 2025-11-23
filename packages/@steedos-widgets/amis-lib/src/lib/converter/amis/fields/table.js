@@ -953,7 +953,41 @@ async function getMobileTableColumns(fields, options){
         }
     };
 
-    const url = Tpl.getNameTplUrl(nameField, options)
+    function getUrlParams(search = window.location.search) {
+        const params = {};
+        const queryString = search.startsWith('?') ? search.slice(1) : search;
+        
+        if (!queryString) return params;
+        
+        queryString.split('&').forEach(pair => {
+            const [key, value] = pair.split('=');
+            if (key) {
+            const decodedKey = decodeURIComponent(key);
+            const decodedValue = value ? decodeURIComponent(value.replace(/\+/g, ' ')) : '';
+            
+            // 处理数组参数（如：?color=red&color=blue）
+            if (params.hasOwnProperty(decodedKey)) {
+                if (Array.isArray(params[decodedKey])) {
+                params[decodedKey].push(decodedValue);
+                } else {
+                params[decodedKey] = [params[decodedKey], decodedValue];
+                }
+            } else {
+                params[decodedKey] = decodedValue;
+            }
+            }
+        });
+        
+        return params;
+    }
+
+    const urlParams = getUrlParams();
+
+    let url = Tpl.getNameTplUrl(nameField, options)
+    if(options.displayAs === 'split'){
+        const additionalFilters = urlParams['additionalFilters'] || '';
+        url = url + `&additionalFilters=${encodeURIComponent(additionalFilters)}`
+    }
 
     const columnLines = getMobileLines(tpls);
 
