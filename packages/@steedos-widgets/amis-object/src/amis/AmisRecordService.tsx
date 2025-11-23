@@ -43,6 +43,6 @@ export const AmisRecordService = async (props) => {
   if (has(props, 'objectApiName') && props.$$editor) {
     schema.data.objectName = objectApiName;
   }
-  // console.log(`AmisRecordService====schema==>`, schema, props)
+  console.log(`AmisRecordService====schema==>`, schema, props)
   return schema
 }

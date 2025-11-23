@@ -556,12 +556,19 @@ const getSubmitActions = async (instance, submitEvents) => {
       expression: "${event.data.instanceFormValidate && event.data.approvalFormValidate}"
     },
     {
-      "componentId": "",
-      "args": {
-        "blank": false,
-        "url": Router.getObjectListViewPath({appId: "${appId}", objectName: "${objectName}", listViewName: "${side_listview_id}"})
-      },
-      "actionType": "url",
+      "actionType": "custom",
+      "script": `
+        const appId = context.props.data.appId;
+        const objectName = context.props.data.objectName;
+        const side_listview_id = context.props.data.side_listview_id;
+        const additionalFilters = context.props.data.additionalFilters;
+        if(context.props.data.display === 'split'){
+          window.navigate(\`/app/\${appId}/\${objectName}/view/none?side_object=\${objectName}&side_listview_id=\${side_listview_id}&additionalFilters=\${additionalFilters ? encodeURIComponent(additionalFilters) : ''}\`);
+          window.$(".list-view-btn-reload").click();
+        }else{
+          window.navigate(\`/app/\${appId}/\${objectName}/grid/\${side_listview_id}\`);
+        }
+      `,
       expression: "${event.data.instanceFormValidate && event.data.approvalFormValidate}"
     },
     {

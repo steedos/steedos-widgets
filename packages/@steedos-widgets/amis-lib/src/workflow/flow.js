@@ -1096,10 +1096,6 @@ export const getFlowFormSchema = async (instance, box) => {
       "@data.@instanceDetail.changed": {
         actions: [
           {
-            actionType: "custom",
-            script:"debugger;",
-          },
-          {
             componentId:"u:instancePage",
             actionType: "reload"
           }
@@ -1107,6 +1103,10 @@ export const getFlowFormSchema = async (instance, box) => {
       },
       "inited": {
         "actions": [
+          {
+              actionType: 'broadcast',
+              eventName: "recordLoaded"
+          },
           {
             "actionType": "setValue",
             "componentId": "instance_form",

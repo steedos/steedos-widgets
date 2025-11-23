@@ -3,6 +3,9 @@ import _, { find, isEmpty } from "lodash";
 import { getUserApprove, getOpinionFieldStepsName, getTraceApprovesByStep, isOpinionOfField, isMyApprove, showApprove, showApproveDefaultDescription, showApproveSignImage } from './util';
 import { i18next } from "@steedos-widgets/amis-lib";
 
+const flowVersionCache = new Map();
+const formVersionCache = new Map();
+
 const getMoment = ()=>{
   if(window.amisRequire){
     return window.amisRequire("moment");
@@ -53,17 +56,29 @@ const getApproveValues = ({ instance, trace, step, approve, box }) => {
 };
 
 const getFlowVersion = async (instance) => {
-  const result = await fetchAPI(`/api/workflow/flow/${instance.flow._id}/version/${instance.flow_version}`, {
-    method: "get"
-  });
-  return result;
+  const cacheKey = `${instance.flow._id}_${instance.flow_version}`;
+  
+  if (!flowVersionCache.has(cacheKey)) {
+    const result = await fetchAPI(`/api/workflow/flow/${instance.flow._id}/version/${instance.flow_version}`, {
+      method: "get"
+    });
+    flowVersionCache.set(cacheKey, result);
+  }
+  
+  return flowVersionCache.get(cacheKey);
 };
 
 const getFormVersion = async (instance) => {
-  const result = await fetchAPI(`/api/workflow/form/${instance.form._id}/version/${instance.form_version}`, {
-    method: "get"
-  });
-  return result;
+  const cacheKey = `${instance.form._id}_${instance.form_version}`;
+  
+  if (!formVersionCache.has(cacheKey)) {
+    const result = await fetchAPI(`/api/workflow/form/${instance.form._id}/version/${instance.form_version}`, {
+      method: "get"
+    });
+    formVersionCache.set(cacheKey, result);
+  }
+  
+  return formVersionCache.get(cacheKey);
 };
 
 const getStep = ({ flowVersion, stepId }) => {
@@ -124,12 +139,29 @@ const isNeedToShowSignImage = (is_finished, judge, traceShowSignImage) => {
   return true;
 }
 
+// 缓存存储
+const signCache = new Map();
 const getSpaceUserSign = async (space, handler) => {
-  const result = await fetchAPI(`/api/v1/space_user_signs?filters=[["space","=","${space}"],["user","=","${handler}"]]&fields=["sign"]`);
-  if (result?.data?.items && result.data.items.length > 0) {
-    return result.data.items[0].sign;
+  // 生成缓存键
+  const cacheKey = `${space}_${handler}`;
+  
+  // 检查缓存
+  if (signCache.has(cacheKey)) {
+    return signCache.get(cacheKey);
   }
-  return null;
+  
+  // 调用API
+  const result = await fetchAPI(`/api/v1/space_user_signs?filters=[["space","=","${space}"],["user","=","${handler}"]]&fields=["sign"]`);
+  
+  let sign = null;
+  if (result?.data?.items && result.data.items.length > 0) {
+    sign = result.data.items[0].sign;
+  }
+  
+  // 写入缓存
+  signCache.set(cacheKey, sign);
+  
+  return sign;
 }
 
 export const getInstanceInfo = async (props) => {

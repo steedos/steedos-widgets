@@ -22,8 +22,48 @@ export const PageObject = async (props) => {
     
     delete $schema.data.recordId;
     
-    (window as any).Steedos && (window as any).Steedos.setDocumentTitle && (window as any).Steedos.setDocumentTitle({tabName: uiSchema.label || uiSchema.name})
+    (window as any).Steedos && (window as any).Steedos.setDocumentTitle && (window as any).Steedos.setDocumentTitle({tabName: uiSchema.label || uiSchema.name});
+
     // 最外层的data是render data, 会被updateProps data覆盖, 所以组件data需要单开一个数据域. 所以此处有2层service
+    function getUrlParams(search = window.location.search) {
+        const params = {};
+        const queryString = search.startsWith('?') ? search.slice(1) : search;
+        
+        if (!queryString) return params;
+        
+        queryString.split('&').forEach(pair => {
+            const [key, value] = pair.split('=');
+            if (key) {
+            const decodedKey = decodeURIComponent(key);
+            const decodedValue = value ? decodeURIComponent(value.replace(/\+/g, ' ')) : '';
+            
+            // 处理数组参数（如：?color=red&color=blue）
+            if (params.hasOwnProperty(decodedKey)) {
+                if (Array.isArray(params[decodedKey])) {
+                params[decodedKey].push(decodedValue);
+                } else {
+                params[decodedKey] = [params[decodedKey], decodedValue];
+                }
+            } else {
+                params[decodedKey] = decodedValue;
+            }
+            }
+        });
+        
+        return params;
+    }
+
+    const urlParams = getUrlParams();
+
+    for (const key in urlParams) {
+        $schema.data[key] = urlParams[key];
+    }
+
+    const additionalFilters = urlParams['additionalFilters'] || '';
+
+    console.log('urlParams===>', urlParams);
+    console.log('additionalFilters===>', additionalFilters);
+
     const schema = {
         type: "service",
         data: $schema.data,
@@ -88,7 +128,7 @@ export const PageObject = async (props) => {
                     "type": "wrapper",
                     "size": "none",
                     "className": {
-                        "p-0 flex-shrink-0 min-w-[388px] w-fit lg:order-first lg:flex lg:flex-col": "${display == 'split'}",
+                        "p-0 flex-shrink-0 min-w-[388px] w-fit lg:order-first lg:flex lg:flex-col overflow-y-auto": "${display == 'split'}",
                         'h-full': "${display != 'split'}",
                     },
                     "body": {
@@ -99,7 +139,7 @@ export const PageObject = async (props) => {
                         "appId":  data.appId,
                         "display":  data.display,
                         "columnsTogglable": false,
-                        "_reloadKey": data._reloadKey
+                        "_reloadKey": data.objectName + '-' + additionalFilters //window.location.search;
                     },
                     "visibleOn": "${pageType === 'list' || (pageType === 'record' && display == 'split')}"
                 },
@@ -107,7 +147,7 @@ export const PageObject = async (props) => {
                     "type": "wrapper",
                     "size": "none",
                     "className": {
-                        "overflow-y-auto p-0 flex-1 focus:outline-none lg:order-last h-full": "${display == 'split'}",
+                        "overflow-y-auto p-0 flex-1 focus:outline-none lg:order-last h-full page-object-detail-wrapper": "${display == 'split'}",
                         'h-full': "${display != 'split'}",
                     },
                     "body": {
@@ -121,7 +161,7 @@ export const PageObject = async (props) => {
                         "appId": data.appId,
                         "_reloadKey": data._reloadKey
                     },
-                    "visibleOn": "${pageType === 'record'}"
+                    "visibleOn": "${pageType === 'record' && recordId != 'none'}"
                 }
                 ,
                 {
@@ -155,6 +195,6 @@ export const PageObject = async (props) => {
         //     }
         // }
     }
-    // console.log(`PageObject=====>`, props, schema)
+    console.log(`PageObject=====>`, props, schema)
     return schema;
 }

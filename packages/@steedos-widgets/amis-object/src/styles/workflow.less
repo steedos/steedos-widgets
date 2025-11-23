@@ -58,3 +58,64 @@
         }
     }
 }
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutToRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes slideInFromTop {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutToBottom {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.slide-in-right {
+    animation: slideInFromRight 0.5s ease-out forwards;
+}
+
+.slide-out-right {
+    animation: slideOutToRight 0.5s ease-out forwards;
+}
+
+.slide-in-top {
+  animation: slideInFromTop 0.3s ease-out forwards;
+}
+
+/* 从下边消失 */
+.slide-out-bottom {
+  animation: slideOutToBottom 0.3s ease-in forwards;
+}

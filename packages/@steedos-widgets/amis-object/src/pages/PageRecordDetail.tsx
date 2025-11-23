@@ -17,6 +17,11 @@ export const PageRecordDetail = async (props) => {
     Router.setTabDisplayAs(objectApiName, _display)
   }
 
+  if (data.recordId && !(window as any).$('.steedos-record-tr-'+ data.recordId ).hasClass('steedos-record-selected')) {
+    (window as any).$('.page-object-detail-wrapper').removeClass('slide-in-top'); 
+    (window as any).$('.page-object-detail-wrapper').addClass('slide-out-bottom');
+  }
+
   let recordSchema = {}
   if (true || recordId) {
     const recordPage = await getPage({type: 'record', appId: appId, objectName: objectApiName, formFactor: defaultFormFactor || data.formFactor});
@@ -47,13 +52,13 @@ export const PageRecordDetail = async (props) => {
         "actions": [
           {
             "actionType": "custom",
-            "script": "window.Steedos && window.Steedos.setDocumentTitle && Steedos.setDocumentTitle({pageName: event.data.record.name}); $('.steedos-record-tr').removeClass('steedos-record-selected');$('.steedos-record-tr-'+event.data.record._id).addClass('steedos-record-selected');"
+            "script": "$('.steedos-record-tr').removeClass('steedos-record-selected');$('.steedos-record-tr-'+event.data.recordId).addClass('steedos-record-selected'); $('.page-object-detail-wrapper').removeClass('slide-out-bottom'); $('.page-object-detail-wrapper').addClass('slide-in-top')"
           }
         ]
       }
     }
   }
   
-  // console.log(`PageRecordDetail===>`, schema, props)
+  console.log(`PageRecordDetail===>`, schema, props)
   return schema;
 }

@@ -255,7 +255,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
     //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，为保持统一，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330
     // "tooltip": i18next.t('frontend_button_reload_tooltip'),
     "tooltipPlacement": "top",
-    "className": "bg-white p-2 rounded text-gray-500 list-view-btn-reload",
+    "className": `bg-white p-2 rounded text-gray-500 list-view-btn-reload ${formFactor === 'SMALL' ? 'hidden' : ''}`,
     "label": "",
     "icon": "fa fa-sync",
     // "visibleOn": "${!showFieldsFilter}",
@@ -336,7 +336,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
     // if(toolbarCount){
     //   toolbars.push(toolbarCount);
     // }
-    // toolbars.push(toolbarReloadButton);
+    toolbars.push(toolbarReloadButton);
     toolbars.push(toolbarDQuickSearchBox);
     if(toolbarFilter){
       toolbars.push(toolbarFilter);

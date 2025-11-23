@@ -10,7 +10,9 @@ import { getInstanceInfo , getFlowFormSchema} from '@steedos-widgets/amis-lib'
 
 export const AmisInstanceDetail = async (props) => {
     const {instanceId, boxName, data} = props;
+    console.log('AmisInstanceDetail===>', props);
     const instanceInfo = await getInstanceInfo({instanceId: instanceId, box: boxName});
+    console.log('AmisInstanceDetail===instanceInfo>', instanceInfo);
     const schema = await getFlowFormSchema(instanceInfo, boxName);
 
     schema.data = {
@@ -26,6 +28,6 @@ export const AmisInstanceDetail = async (props) => {
         record: instanceInfo,
         applicant: instanceInfo.applicant._id
       }
-    console.log(`AmisInstanceDetail schema`, schema)
+    console.log(`AmisInstanceDetail schema`, props, schema)
     return schema;
 }

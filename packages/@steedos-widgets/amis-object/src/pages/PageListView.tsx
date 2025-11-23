@@ -90,6 +90,6 @@ export const PageListView = async (props) => {
     },
     body: listSchema
   }
-  // console.log(`PageListView=====>`, props, schema)
+  console.log(`PageListView=====>`, props, schema)
   return schema;
 }
