@@ -1059,7 +1059,7 @@ export const AmisAppMenu = async (props) => {
                             ...editAppSearch,
                             {
                             "type": "nav",
-                            "expandPosition": "before",
+                            "expandPosition": allowEditApp ? "before" : "after",
                             "collapsed": collapsed,
                             "searchable": false,
                             "searchConfig": {
