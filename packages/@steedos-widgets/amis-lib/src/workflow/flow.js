@@ -364,11 +364,11 @@ const getFieldEditTpl = async (field, label)=>{
             return payload;
           `,
           requestAdaptor: `
-            const filters = ${_.replace(field.filters, /_.pluck/g, '_.map')};
-            const url = ${field.url}
+            const filters = \`${_.replace(field.filters, /_.pluck/g, '_.map')}\`;
+            const url = \`${field.url}\`;
             if(filters){
               console.log('filters', filters);
-              const joinKey = field.url.indexOf('?') > 0 ? '&' : '?';
+              const joinKey = url.indexOf('?') > 0 ? '&' : '?';
               if(filters.startsWith('function(') || filters.startsWith('function (')){
                 const argsName = ${JSON.stringify(argsName)};
                 const fun = eval('_fun='+filters);
