@@ -11,7 +11,7 @@ import { keys, pick, difference, find, has, first, values } from 'lodash';
 
 export const AmisObjectListView = async (props) => {
   // console.time('AmisObjectListView')
-  console.log(`AmisObjectListView props`, props)
+  // console.log(`AmisObjectListView props`, props)
   const { $schema, top, perPage, showHeader=true, data, defaultData, _reloadKey,
       className="", 
       style={},
@@ -26,7 +26,7 @@ export const AmisObjectListView = async (props) => {
   let ctx = props.ctx;
   let crud = props.crud || {};
   let listName = defaultData?.listName || data?.listName || props?.listName;
-  console.log('AmisObjectListView ==listName=>', listName)
+  // console.log('AmisObjectListView ==listName=>', listName)
   let defaults: any = {};
   let objectApiName = props.objectApiName || "space_users"; // 只是为了设计器,才在此处设置了默认值. TODO , 使用其他方式来辨别是否再设计器中
   if(!ctx){
@@ -289,7 +289,7 @@ export const AmisObjectListView = async (props) => {
                             }catch(e){
                               console.error(e)
                             }
-                            console.log('schema.amisSchema====>', schema.amisSchema)
+                            // console.log('schema.amisSchema====>', schema.amisSchema)
                             payload.data = schema.amisSchema;
                             resolve(payload)
                           });
@@ -306,6 +306,6 @@ export const AmisObjectListView = async (props) => {
     }
     ]
   };
-  console.log('AmisObjectListview', schema);
+  // console.log('AmisObjectListview', schema);
   return schema;
 }

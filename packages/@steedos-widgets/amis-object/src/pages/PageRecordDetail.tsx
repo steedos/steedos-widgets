@@ -59,6 +59,6 @@ export const PageRecordDetail = async (props) => {
     }
   }
   
-  console.log(`PageRecordDetail===>`, schema, props)
+  // console.log(`PageRecordDetail===>`, schema, props)
   return schema;
 }
