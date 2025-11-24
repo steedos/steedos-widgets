@@ -178,7 +178,7 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
         "name": keywordsSearchBoxName,
         "placeholder": i18next.t('frontend_crud_toolbar_quick_search_placeholder'),//"快捷搜索",
         "value": crudKeywords,
-        "mini": true,
+        "mini": false,
         "clearable": true,//因为清除并不会触发失去焦点事件，只有禁用，但是它会触发change事件，所以等升级到amis 3.4+后可以重新放开
         "clearAndSubmit": true,
         "searchImediately": false,
@@ -348,15 +348,15 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
       ...toolbars,
   ]
   }else{
-    toolbars.push(toolbarDQuickSearchBox);
+    if(toolbarFilter){
+      toolbars.push(toolbarFilter);
+    }
     toolbars.push(toolbarReloadButton);
     toolbars.push(toolbarDisplayAsButton);
     if(mainObject?.permissions?.allowCreateListViews){
       toolbars.push(getSettingListviewToolbarButtonSchema());
     }
-    if(toolbarFilter){
-      toolbars.push(toolbarFilter);
-    }
+    toolbars.push(toolbarDQuickSearchBox);
     if(toolbarCount){
       toolbars.push(toolbarCount);
     }
