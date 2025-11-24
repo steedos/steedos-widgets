@@ -129,14 +129,14 @@ export const PageObject = async (props) => {
                         'h-full': "${display != 'split'}",
                     },
                     "body": {
-                        "name": `${ data.objectName}-listview-${ data.listViewId}`,
+                        "name": `${ data.objectName}-listview-${ data.listName}`,
                         "type": "steedos-page-listview",
                         "showHeader": true,
                         "objectApiName":  data.objectName,
                         "appId":  data.appId,
                         "display":  data.display,
                         "columnsTogglable": false,
-                        "_reloadKey": data.objectName + '-' + additionalFilters //window.location.search;
+                        "_reloadKey": data.objectName + '-' + data.listName + '-' + additionalFilters //window.location.search;
                     },
                     "visibleOn": "${pageType === 'list' || (pageType === 'record' && display == 'split')}"
                 },
