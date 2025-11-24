@@ -118,7 +118,6 @@ export const AmisAppMenu = async (props) => {
             "sendOn": "!!appId",
             "adaptor": (payload, response, api, context) => {
                   try {
-                     console.log('payload====>', payload)
                       if(payload.nav_schema){
                         payload.data = payload.nav_schema;
                         return payload
