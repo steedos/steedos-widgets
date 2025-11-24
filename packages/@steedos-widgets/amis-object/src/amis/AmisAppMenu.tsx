@@ -7,6 +7,7 @@
  */
 import './AmisAppMenu.less';
 import { i18next } from '@steedos-widgets/amis-lib';
+import _ from 'lodash';
 
 export const AmisAppMenu = async (props) => {
     let { stacked = false, overflow, appId, data, links = null, showIcon = true, className = '', indentSize = 12, selectedId } = props;
@@ -15,7 +16,7 @@ export const AmisAppMenu = async (props) => {
     }
     // console.log(`AmisAppMenu appId`, appId)
     // console.log(`AmisAppMenu`, appId, props)
-    let badgeText = `\${badges.value | pick:${appId} | toInt}`;
+    let badgeText = "${badges.value | pick:${appId} | toInt}";
     if(appId == "approve_workflow"){
         badgeText = "${badges.value | pick:'workflow' | toInt}";
     }
@@ -31,7 +32,8 @@ export const AmisAppMenu = async (props) => {
         }
     }
 
-    const saveOrderApiRequestAdaptor = `
+    const saveOrderApiRequestAdaptor = (api, context) => {
+        
         const menus = context.data;
         // console.log("====saveOrderApiRequestAdaptor====menus==", menus);
         const tab_groups = [];
@@ -76,7 +78,7 @@ export const AmisAppMenu = async (props) => {
             }
         });
         if(hasError){
-            var amis = amisRequire("amis");
+            var amis = (window as any).amisRequire("amis");
             // var errorMsg = window.t ? window.t("frontend_app_menu_save_order_group_nesting_error") : "Group nesting is not supported";
             amis && amis.toast.warning("不支持分组嵌套");
         }
@@ -106,17 +108,17 @@ export const AmisAppMenu = async (props) => {
         api.data = { appId: context.app.id, tab_groups, tab_items };
         // console.log("====saveOrderApiRequestAdaptor====api.data==", api.data);
         return api;
-    `;
+    };
     const schema = {
         type: 'service',
         id: 'u:app-menu',
         schemaApi: {
             "method": "get",
-            "url": `\${context.rootUrl}/service/api/apps/\${appId}/menus`,
+            "url": "${context.rootUrl}/service/api/apps/${appId}/menus",
             "sendOn": "!!appId",
-            "adaptor": `
+            "adaptor": (payload, response, api, context) => {
                   try {
-                    //  console.log('payload====>', payload)
+                     console.log('payload====>', payload)
                       if(payload.nav_schema){
                         payload.data = payload.nav_schema;
                         return payload
@@ -125,9 +127,6 @@ export const AmisAppMenu = async (props) => {
                       let collapsed = false;
 
                       const data = { nav: [] };
-                      const stacked = ${stacked};
-                      let showIcon = ${showIcon};
-                      const selectedId = '${selectedId}';
                       const tab_groups = payload.tab_groups;
                       const locationPathname = window.location.pathname;
                       var customTabId = "";
@@ -159,13 +158,13 @@ export const AmisAppMenu = async (props) => {
                                           "label": showIcon ? {
                                             type: 'tpl',
                                             showNativeTitle: true,
-                                            tpl: \`<span class='leading-6 no-underline group items-center rounded-md'><svg class="slds-icon_container slds-icon fill-gray-700 mr-2 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
+                                            tpl: `<span class='leading-6 no-underline group items-center rounded-md'><svg class="slds-icon_container slds-icon fill-gray-700 mr-2 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#${tab.icon || 'account'}"></use></svg>${tab.name}</span>`
                                           } : tab.name,
                                           "searchKey": tab.name,
                                           "to": tab.path,
                                           "target":tab.target,
                                           "id": tab.id,
-                                          "activeOn": "\\\\\${tabId == '"+ tab.id +"'}",
+                                          "activeOn": "${tabId == '"+ tab.id +"'}",
                                           "index": tab.index,
                                           "tabApiName": tab.tabApiName,
                                           "type": tab.type,
@@ -192,13 +191,13 @@ export const AmisAppMenu = async (props) => {
                                             "label": showIcon ? {
                                                 type: 'tpl',
                                                 showNativeTitle: true,
-                                                tpl: \`<span class='leading-6 block no-underline group items-center rounded-md'><svg class="slds-icon_container slds-icon fill-gray-700 mr-2 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
+                                                tpl: `<span class='leading-6 block no-underline group items-center rounded-md'><svg class="slds-icon_container slds-icon fill-gray-700 mr-2 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#${tab.icon || 'account'}"></use></svg>${tab.name}</span>`
                                             }  : tab.name,
                                             "searchKey": tab.name,
                                             "to": tab.path,
                                             "target":tab.target,
                                             "id": tab.id,
-                                            "activeOn": "\\\\\${tabId == '"+ tab.id +"'}",
+                                            "activeOn": "${tabId == '"+ tab.id +"'}",
                                             "index": tab.index,
                                             "tabApiName": tab.tabApiName,
                                             "type": tab.type,
@@ -222,13 +221,13 @@ export const AmisAppMenu = async (props) => {
                               data.nav.push({
                               "label": showIcon ? {
                                   type: 'tpl',
-                                  tpl: \`<span class='whitespace-normal leading-6 no-underline group items-center rounded-md'><svg class="slds-icon_container slds-icon-standard-\${ tab.iconClass } slds-icon !fill-white rounded-xl mr-2 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#\${tab.icon || 'account'}"></use></svg>\${tab.name}</span>\`
+                                  tpl: `<span class='whitespace-normal leading-6 no-underline group items-center rounded-md'><svg class="slds-icon_container slds-icon-standard-${ tab.iconClass } slds-icon !fill-white rounded-xl mr-2 flex-shrink-0 h-6 w-6"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#${tab.icon || 'account'}"></use></svg>${tab.name}</span>`
                               } : tab.name,
                               "searchKey": tab.name,
                               "to": tab.path,
                               "target":tab.target,
                               "id": tab.id,
-                              "activeOn": "\\\\\${tabId == '"+ tab.id +"'}",
+                              "activeOn": "${tabId == '"+ tab.id +"'}",
                               "index": tab.index,
                               "tabApiName": tab.tabApiName,
                               "type": tab.type,
@@ -242,13 +241,13 @@ export const AmisAppMenu = async (props) => {
                         const tempTabForEmptyGroup = {
                             "label": {
                                 "type": "tpl",
-                                "tpl": "${i18next.t('frontend_menu_group_none_children')}"
+                                "tpl": i18next.t('frontend_menu_group_none_children')
                             },
                             "searchKey": "",
                             "disabled": true,
                             "tabApiName": "temp_tab_for_empty_group",
                             "isTempTabForEmptyGroup": true
-                        };
+                        } as any;
                         _.each(payload.tab_groups, (group)=>{
                             if(!_.includes(usedGroupNames, group.group_name)){
                                 tempTabForEmptyGroup.id = "temp_tab_for_empty_group__" + group.group_name;
@@ -267,7 +266,7 @@ export const AmisAppMenu = async (props) => {
                       // let groupLength = ((payload.tab_groups && payload.tab_groups.length) || 0) + 1000;
                       data.nav = _.sortBy(data.nav, function(tab){
                         if(tab.isGroup){
-                            return _.findIndex(payload.tab_groups, function(group){
+                            return _.findIndex(payload.tab_groups, function(group:any){
                                 return group.group_name === tab.label;
                             });
                         }else{
@@ -380,7 +379,7 @@ export const AmisAppMenu = async (props) => {
                                             "buttons": [
                                                     {
                                                         "type": "button",
-                                                        "label": "${i18next.t('frontend_menu_new_object')}",
+                                                        "label": i18next.t('frontend_menu_new_object'),
                                                         "onEvent": {
                                                             "click": {
                                                                 "actions": [
@@ -389,15 +388,15 @@ export const AmisAppMenu = async (props) => {
                                                                         "actionType": "dialog",
                                                                         "dialog": {
                                                                             "type": "dialog",
-                                                                            "title": "${i18next.t('frontend_menu_new_object')}",
+                                                                            "title": i18next.t('frontend_menu_new_object'),
                                                                             "body": [
                                                                                 {
                                                                                     "type": "input-text",
-                                                                                    "label": "\${'CustomField.objects.name.label' | t}",
+                                                                                    "label": i18next.t('CustomField.objects.name.label'),
                                                                                     "name": "oName",
                                                                                     "id": "u:dae5884c1633",
-                                                                                    "placeholder": "${i18next.t('frontend_menu_dialog_name_placeholder')}",
-                                                                                    "value": "o_\${UUID(6)}",
+                                                                                    "placeholder": i18next.t('frontend_menu_dialog_name_placeholder'),
+                                                                                    "value": "o_${UUID(6)}",
                                                                                     "required": true,
                                                                                     "validateOnChange": true,
                                                                                     "validations": {
@@ -406,14 +405,14 @@ export const AmisAppMenu = async (props) => {
                                                                                 },
                                                                                 {
                                                                                     "type": "input-text",
-                                                                                    "label": "\${'CustomField.objects.label.label' | t}",
+                                                                                    "label": "${'CustomField.objects.label.label' | t}",
                                                                                     "name": "oLabel",
                                                                                     "id": "u:e5bd37f6691b",
                                                                                     "required": true
                                                                                 },
                                                                                 {
                                                                                     "type": "steedos-field",
-                                                                                    "label": "\${'CustomField.objects.icon.label' | t}",
+                                                                                    "label": "${'CustomField.objects.icon.label' | t}",
                                                                                     "config": {
                                                                                         "label": "图标",
                                                                                         "type": "lookup",
@@ -434,13 +433,13 @@ export const AmisAppMenu = async (props) => {
                                                                                 {
                                                                                 "type": "button",
                                                                                 "actionType": "cancel",
-                                                                                "label": "\${'Cancel' | t}",
+                                                                                "label": "${'Cancel' | t}",
                                                                                 "id": "u:21d3cccf4d83"
                                                                                 },
                                                                                 {
                                                                                     "type": "button",
                                                                                     "actionType": "confirm",
-                                                                                    "label": "\${'OK' | t}",
+                                                                                    "label": "${'OK' | t}",
                                                                                     "primary": true,
                                                                                     "id": "u:238e5731a053"
                                                                                 }
@@ -501,7 +500,7 @@ export const AmisAppMenu = async (props) => {
                                                     },
                                                     {
                                                         "type": "button",
-                                                        "label": "${i18next.t('frontend_menu_new_micro_page')}",
+                                                        "label": i18next.t('frontend_menu_new_micro_page'),
                                                         "onEvent": {
                                                             "click": {
                                                                 "actions": [
@@ -510,15 +509,15 @@ export const AmisAppMenu = async (props) => {
                                                                         "actionType": "dialog",
                                                                         "dialog": {
                                                                             "type": "dialog",
-                                                                            "title": "${i18next.t('frontend_menu_new_micro_page')}",
+                                                                            "title": i18next.t('frontend_menu_new_micro_page'),
                                                                             "body": [
                                                                                 {
                                                                                     "type": "input-text",
-                                                                                    "label": "\${'CustomField.pages.name.label' | t}",
+                                                                                    "label": "${'CustomField.pages.name.label' | t}",
                                                                                     "name": "oName",
                                                                                     "id": "u:dae5884c1633",
-                                                                                    "placeholder": "${i18next.t('frontend_menu_dialog_name_placeholder')}",
-                                                                                    "value": "p_\${UUID(6)}",
+                                                                                    "placeholder": i18next.t('frontend_menu_dialog_name_placeholder'),
+                                                                                    "value": "p_${UUID(6)}",
                                                                                     "required": true,
                                                                                     "validateOnChange": true,
                                                                                     "validations": {
@@ -527,14 +526,14 @@ export const AmisAppMenu = async (props) => {
                                                                                 },
                                                                                 {
                                                                                     "type": "input-text",
-                                                                                    "label": "\${'CustomField.pages.label.label' | t}",
+                                                                                    "label": "${'CustomField.pages.label.label' | t}",
                                                                                     "name": "oLabel",
                                                                                     "id": "u:e5bd37f6691b",
                                                                                     "required": true
                                                                                 },
                                                                                 {
                                                                                     "type": "steedos-field",
-                                                                                    "label": "\${'CustomField.tabs.icon.label' | t}",
+                                                                                    "label": "${'CustomField.tabs.icon.label' | t}",
                                                                                     "config": {
                                                                                         "label": "图标",
                                                                                         "type": "lookup",
@@ -555,13 +554,13 @@ export const AmisAppMenu = async (props) => {
                                                                                 {
                                                                                 "type": "button",
                                                                                 "actionType": "cancel",
-                                                                                "label": "\${'Cancel' | t}",
+                                                                                "label": "${'Cancel' | t}",
                                                                                 "id": "u:21d3cccf4d83"
                                                                                 },
                                                                                 {
                                                                                     "type": "button",
                                                                                     "actionType": "confirm",
-                                                                                    "label": "\${'OK' | t}",
+                                                                                    "label": "${'OK' | t}",
                                                                                     "primary": true,
                                                                                     "id": "u:238e5731a053"
                                                                                 }
@@ -622,7 +621,7 @@ export const AmisAppMenu = async (props) => {
                                                     },
                                                     {
                                                         "type": "button",
-                                                        "label": "${i18next.t('frontend_menu_new_url')}",
+                                                        "label": i18next.t('frontend_menu_new_url'),
                                                         "onEvent": {
                                                             "click": {
                                                                 "actions": [
@@ -631,17 +630,16 @@ export const AmisAppMenu = async (props) => {
                                                                         "actionType": "dialog",
                                                                         "dialog": {
                                                                             "type": "dialog",
-                                                                            "title": "${i18next.t('frontend_menu_new_url')}",
+                                                                            "title": i18next.t('frontend_menu_new_url'),
                                                                             "body": [
                                                                                 {
                                                                                     "type": "input-text",
-                                                                                    "label": "API Name",
-                                                                                    "label": "\${'CustomField.tabs.name.label' | t}",
+                                                                                    "label": i18next.t('CustomField.tabs.name.label'),
                                                                                     "name": "oName",
                                                                                     "id": "u:dae5884c1633",
-                                                                                    "placeholder": "${i18next.t('frontend_menu_dialog_name_placeholder')}",
+                                                                                    "placeholder": i18next.t('frontend_menu_dialog_name_placeholder'),
                                                                                     "required": true,
-                                                                                    "value": "t_\${UUID(6)}",
+                                                                                    "value": "t_${UUID(6)}",
                                                                                     "validateOnChange": true,
                                                                                     "validations": {
                                                                                         "isVariableName": /^[a-zA-Z]([A-Za-z0-9]|_(?!_))*[A-Za-z0-9]$/
@@ -650,21 +648,21 @@ export const AmisAppMenu = async (props) => {
                                                                                 },
                                                                                 {
                                                                                     "type": "input-text",
-                                                                                    "label": "\${'CustomField.tabs.label.label' | t}",
+                                                                                    "label": "${'CustomField.tabs.label.label' | t}",
                                                                                     "name": "fLabel",
                                                                                     "id": "u:e5bd37f6691b",
                                                                                     "required": true
                                                                                 },
                                                                                 {
                                                                                     "type": "input-text",
-                                                                                    "label": "\${'CustomField.tabs.url.label' | t}",
+                                                                                    "label": "${'CustomField.tabs.url.label' | t}",
                                                                                     "name": "fUrl",
                                                                                     "id": "u:e5bd37f6691b",
                                                                                     "required": true
                                                                                 },
                                                                                 {
                                                                                     "type": "steedos-field",
-                                                                                    "label": "\${'CustomField.tabs.icon.label' | t}",
+                                                                                    "label": "${'CustomField.tabs.icon.label' | t}",
                                                                                     "config": {
                                                                                         "label": "图标",
                                                                                         "type": "lookup",
@@ -685,13 +683,13 @@ export const AmisAppMenu = async (props) => {
                                                                                 {
                                                                                 "type": "button",
                                                                                 "actionType": "cancel",
-                                                                                "label": "\${'Cancel' | t}",
+                                                                                "label": "${'Cancel' | t}",
                                                                                 "id": "u:21d3cccf4d83"
                                                                                 },
                                                                                 {
                                                                                     "type": "button",
                                                                                     "actionType": "confirm",
-                                                                                    "label": "\${'OK' | t}",
+                                                                                    "label": "${'OK' | t}",
                                                                                     "primary": true,
                                                                                     "id": "u:238e5731a053"
                                                                                 }
@@ -759,7 +757,7 @@ export const AmisAppMenu = async (props) => {
                                                     },
                                                     {
                                                         "type": "button",
-                                                        "label": "${i18next.t('frontend_menu_add_existing_tabs')}",
+                                                        "label": i18next.t('frontend_menu_add_existing_tabs'),
                                                         "onEvent": {
                                                             "click": {
                                                             "actions": [
@@ -768,7 +766,7 @@ export const AmisAppMenu = async (props) => {
                                                                 "actionType": "dialog",
                                                                 "dialog": {
                                                                     "type": "dialog",
-                                                                    "title": "${i18next.t('frontend_menu_add_existing_tabs')}",
+                                                                    "title": i18next.t('frontend_menu_add_existing_tabs'),
                                                                     "body": [
                                                                         {
                                                                             "type": "steedos-field",
@@ -794,13 +792,13 @@ export const AmisAppMenu = async (props) => {
                                                                         {
                                                                             "type": "button",
                                                                             "actionType": "cancel",
-                                                                            "label": "\${'Cancel' | t}",
+                                                                            "label": "${'Cancel' | t}",
                                                                             "id": "u:ba7b707cddd8"
                                                                         },
                                                                         {
                                                                             "type": "button",
                                                                             "actionType": "confirm",
-                                                                            "label": "\${'OK' | t}",
+                                                                            "label": "${'OK' | t}",
                                                                             "primary": true,
                                                                             "id": "u:2f3e5635b95d"
                                                                         }
@@ -848,7 +846,7 @@ export const AmisAppMenu = async (props) => {
                                                     },
                                                     {
                                                         "type": "button",
-                                                        "label": "${i18next.t('frontend_menu_new_group')}",
+                                                        "label": i18next.t('frontend_menu_new_group'),
                                                         "onEvent": {
                                                             "click": {
                                                             "actions": [
@@ -857,19 +855,19 @@ export const AmisAppMenu = async (props) => {
                                                                     "actionType": "dialog",
                                                                     "dialog": {
                                                                         "type": "dialog",
-                                                                        "title": "${i18next.t('frontend_menu_new_group')}",
+                                                                        "title": i18next.t('frontend_menu_new_group'),
                                                                         "body": [
                                                                             {
                                                                                 "type": "input-text",
-                                                                                "label": "${i18next.t('frontend_menu_tabs_group_name_label')}",
+                                                                                "label": i18next.t('frontend_menu_tabs_group_name_label'),
                                                                                 "name": "name",
                                                                                 "id": "u:e5bd37f6699b",
-                                                                                "placeholder": "${i18next.t('frontend_menu_tabs_group_name_placeholder')}",
+                                                                                "placeholder": i18next.t('frontend_menu_tabs_group_name_placeholder'),
                                                                                 "required": true
                                                                             },
                                                                             {
                                                                                 "type": "checkbox",
-                                                                                "option": "${i18next.t('frontend_menu_tabs_group_default_open_label')}",
+                                                                                "option": i18next.t('frontend_menu_tabs_group_default_open_label'),
                                                                                 "name": "defaultOpen",
                                                                                 "id": "u:dae5884c1623",
                                                                                 "required": true,
@@ -881,13 +879,13 @@ export const AmisAppMenu = async (props) => {
                                                                         {
                                                                             "type": "button",
                                                                             "actionType": "cancel",
-                                                                            "label": "\${'Cancel' | t}",
+                                                                            "label": "${'Cancel' | t}",
                                                                             "id": "u:21d3cccf4d85"
                                                                         },
                                                                         {
                                                                             "type": "button",
                                                                             "actionType": "confirm",
-                                                                            "label": "\${'OK' | t}",
+                                                                            "label": "${'OK' | t}",
                                                                             "primary": true,
                                                                             "id": "u:238e5731a05b"
                                                                         }
@@ -933,7 +931,7 @@ export const AmisAppMenu = async (props) => {
                                                     },
                                                     {
                                                         "type": "button",
-                                                        "label": "${i18next.t('frontend_menu_edit_app')}",
+                                                        "label": i18next.t('frontend_menu_edit_app'),
                                                         "onEvent": {
                                                             "click": {
                                                                 "actions": [
@@ -953,7 +951,7 @@ export const AmisAppMenu = async (props) => {
                                                                             "title": "&nbsp;",
                                                                             "headerClassName": "hidden",
                                                                             "size": "lg",
-                                                                            "width": window.drawerWidth || "70%",
+                                                                            "width": (window as any).drawerWidth || "70%",
                                                                             "bodyClassName": "p-0 m-0 bg-gray-100",
                                                                             "closeOnEsc": true,
                                                                             "closeOnOutside": true,
@@ -1035,11 +1033,11 @@ export const AmisAppMenu = async (props) => {
                     //   console.log("menuItems====", menuItems);
                       payload.data = {
                         "type":"service",
-                        "className": "steedos-app-service steedos-app-service-\${allowEditApp ? 'edit' : 'readonly'}",
+                        "className": "steedos-app-service steedos-app-service-${allowEditApp ? 'edit' : 'readonly'}",
                         "data":{
                             "tabId": customTabId || objectTabId,
                             "items": menuItems,
-                            "keyvalues": "\${ss:keyvalues}",
+                            "keyvalues": "${ss:keyvalues}",
                             "allowEditApp": allowEditApp,
                             "tab_groups": tab_groups
                         },
@@ -1051,7 +1049,7 @@ export const AmisAppMenu = async (props) => {
                                         "actionType": "setValue",
                                         "args": {
                                             "value": {
-                                                "keyvalues": "\${event.data.keyvalues}"
+                                                "keyvalues": "${event.data.keyvalues}"
                                             }
                                         }
                                     }
@@ -1070,16 +1068,16 @@ export const AmisAppMenu = async (props) => {
                               "matchFunc": "return link.searchKey && link.searchKey.indexOf(keyword)>=0;"
                             },
                             className: "${className} text-black steedos-app-menu px-0 ${stacked?'stacked':''}",
-                            "stacked": ${stacked},
-                            "overflow": ${JSON.stringify(overflow)},
-                            "indentSize": ${indentSize},
+                            "stacked": stacked,
+                            "overflow": JSON.stringify(overflow),
+                            "indentSize": indentSize,
                             "draggable": allowEditApp,
                             "dragOnSameLevel": false,
                             "saveOrderApi": {
                                 "url": "/service/api/apps/update_app_by_design",
                                 "method": "post",
                                 "adaptor": "",
-                                "requestAdaptor": ${JSON.stringify(saveOrderApiRequestAdaptor)},
+                                "requestAdaptor": saveOrderApiRequestAdaptor,
                                 "messages": {}
                             },
                             "itemActions": [
@@ -1096,7 +1094,7 @@ export const AmisAppMenu = async (props) => {
                                     "buttons": [
                                         {
                                             "type": "button",
-                                            "label": "${i18next.t('frontend_menu_edit_group')}",
+                                            "label": i18next.t('frontend_menu_edit_group'),
                                             "visibleOn": "!!this.isGroup",
                                             "onEvent": {
                                                 "click": {
@@ -1106,25 +1104,25 @@ export const AmisAppMenu = async (props) => {
                                                             "actionType": "dialog",
                                                             "dialog": {
                                                                 "type": "dialog",
-                                                                "title": "${i18next.t('frontend_menu_edit_group')}",
+                                                                "title": i18next.t('frontend_menu_edit_group'),
                                                                 "data": {
-                                                                    "appId": "\\\${app.id}",
-                                                                    "name": "\\\${event.data.label}",
-                                                                    "oldName": "\\\${event.data.label}",
-                                                                    "defaultOpen": "\\\${event.data.default_open}"
+                                                                    "appId": "${app.id}",
+                                                                    "name": "${event.data.label}",
+                                                                    "oldName": "${event.data.label}",
+                                                                    "defaultOpen": "${event.data.default_open}"
                                                                 },
                                                                 "body": [
                                                                     {
                                                                         "type": "input-text",
-                                                                        "label": "${i18next.t('frontend_menu_tabs_group_name_label')}",
+                                                                        "label": i18next.t('frontend_menu_tabs_group_name_label'),
                                                                         "name": "name",
                                                                         "id": "u:e5bd37f6699b",
-                                                                        "placeholder": "${i18next.t('frontend_menu_tabs_group_name_placeholder')}",
+                                                                        "placeholder": i18next.t('frontend_menu_tabs_group_name_placeholder'),
                                                                         "required": true
                                                                     },
                                                                     {
                                                                         "type": "checkbox",
-                                                                        "option": "${i18next.t('frontend_menu_tabs_group_default_open_label')}",
+                                                                        "option": i18next.t('frontend_menu_tabs_group_default_open_label'),
                                                                         "name": "defaultOpen",
                                                                         "id": "u:dae5884c1623",
                                                                         "required": true
@@ -1135,13 +1133,13 @@ export const AmisAppMenu = async (props) => {
                                                                 {
                                                                     "type": "button",
                                                                     "actionType": "cancel",
-                                                                    "label": "\${'Cancel' | t}",
+                                                                    "label": "${'Cancel' | t}",
                                                                     "id": "u:21d3cccf4d85"
                                                                 },
                                                                 {
                                                                     "type": "button",
                                                                     "actionType": "confirm",
-                                                                    "label": "\${'OK' | t}",
+                                                                    "label": "${'OK' | t}",
                                                                     "primary": true,
                                                                     "id": "u:238e5731a05b"
                                                                 }
@@ -1184,7 +1182,7 @@ export const AmisAppMenu = async (props) => {
                                         },
                                         {
                                             "type": "button",
-                                            "label": "${i18next.t('frontend_menu_view_object')}",
+                                            "label": i18next.t('frontend_menu_view_object'),
                                             "visibleOn": "this.type==='object'",
                                             "onEvent": {
                                                 "click": {
@@ -1192,7 +1190,7 @@ export const AmisAppMenu = async (props) => {
                                                         {
                                                             "actionType": "custom",
                                                             "script": "var locale = Builder.settings.context?.user?.language || window.navigator.language;window.location.href=Steedos.getRelativeUrl('/api/amisObjectFieldsDesign?oid=' + event.data.id +\`&assetUrls=\${Builder.settings.assetUrls}\`+'&retUrl='+window.location.href+'&locale='+locale)",
-                                                            "expression": "\${false}"
+                                                            "expression": "${false}"
                                                         },
                                                         {
                                                             "actionType": "ajax",
@@ -1210,7 +1208,7 @@ export const AmisAppMenu = async (props) => {
                                                                 "title": "&nbsp;",
                                                                 "headerClassName": "hidden",
                                                                 "size": "lg",
-                                                                "width": window.drawerWidth || "70%",
+                                                                "width": (window as any).drawerWidth || "70%",
                                                                 "bodyClassName": "p-0 m-0 bg-gray-100",
                                                                 "closeOnEsc": true,
                                                                 "closeOnOutside": true,
@@ -1235,7 +1233,7 @@ export const AmisAppMenu = async (props) => {
                                                             "ignoreError": false,
                                                             "outputVar": "responseResult",
                                                             "actionType": "ajax",
-                                                            "expression": "\${false}",
+                                                            "expression": "${false}",
                                                             "api": {
                                                                 "url": "/graphql",
                                                                 "method": "post",
@@ -1250,7 +1248,7 @@ export const AmisAppMenu = async (props) => {
                                         },
                                         {
                                             "type": "button",
-                                            "label": "${i18next.t('frontend_menu_edit_micro_page')}",
+                                            "label": i18next.t('frontend_menu_edit_micro_page'),
                                             "visibleOn": "this.type==='page'",
                                             "onEvent": {
                                                 "click": {
@@ -1273,7 +1271,7 @@ export const AmisAppMenu = async (props) => {
                                         },
                                         {
                                             "type": "button",
-                                            "label": "${i18next.t('frontend_menu_edit_tab')}",
+                                            "label": i18next.t('frontend_menu_edit_tab'),
                                             "visibleOn": "this.type==='url'",
                                             "onEvent": {
                                                 "click": {
@@ -1295,38 +1293,38 @@ export const AmisAppMenu = async (props) => {
                                                             "actionType": "dialog",
                                                             "dialog": {
                                                                 "type": "dialog",
-                                                                "title": "${i18next.t('frontend_menu_edit_url')}",
+                                                                "title": i18next.t('frontend_menu_edit_url'),
                                                                 "data": {
-                                                                    "appId": "\\\${app.id}",
-                                                                    "&": "\\\${event.data.responseResult}"
+                                                                    "appId": "${app.id}",
+                                                                    "&": "${event.data.responseResult}"
                                                                 },
                                                                 "body": [
                                                                     {
                                                                         "type": "input-text",
-                                                                        "label": "\${'CustomField.tabs.name.label' | t}",
+                                                                        "label": "${'CustomField.tabs.name.label' | t}",
                                                                         "name": "oName",
                                                                         "id": "u:dae5884c1633",
-                                                                        "placeholder": "${i18next.t('frontend_menu_dialog_name_placeholder')}",
+                                                                        "placeholder": i18next.t('frontend_menu_dialog_name_placeholder'),
                                                                         "required": true,
                                                                         "disabled": true
                                                                     },
                                                                     {
                                                                         "type": "input-text",
-                                                                        "label": "\${'CustomField.tabs.label.label' | t}",
+                                                                        "label": "${'CustomField.tabs.label.label' | t}",
                                                                         "name": "fLabel",
                                                                         "id": "u:e5bd37f6691b",
                                                                         "required": true
                                                                     },
                                                                     {
                                                                         "type": "input-text",
-                                                                        "label": "\${'CustomField.tabs.url.label' | t}",
+                                                                        "label": "${'CustomField.tabs.url.label' | t}",
                                                                         "name": "fUrl",
                                                                         "id": "u:e5bd37f6691b",
                                                                         "required": true
                                                                     },
                                                                     {
                                                                         "type": "steedos-field",
-                                                                        "label": "\${'CustomField.tabs.icon.label' | t}",
+                                                                        "label": "${'CustomField.tabs.icon.label' | t}",
                                                                         "config": {
                                                                             "label": "图标",
                                                                             "type": "lookup",
@@ -1347,13 +1345,13 @@ export const AmisAppMenu = async (props) => {
                                                                     {
                                                                     "type": "button",
                                                                     "actionType": "cancel",
-                                                                    "label": "\${'Cancel' | t}",
+                                                                    "label": "${'Cancel' | t}",
                                                                     "id": "u:21d3cccf4d83"
                                                                     },
                                                                     {
                                                                         "type": "button",
                                                                         "actionType": "confirm",
-                                                                        "label": "\${'OK' | t}",
+                                                                        "label": "${'OK' | t}",
                                                                         "primary": true,
                                                                         "id": "u:238e5731a053"
                                                                     }
@@ -1418,7 +1416,7 @@ export const AmisAppMenu = async (props) => {
                                         },
                                         {
                                             "type": "button",
-                                            "label": "${i18next.t('frontend_menu_move_group')}",
+                                            "label": i18next.t('frontend_menu_move_group'),
                                             "visibleOn": "!!!this.isGroup",
                                             "onEvent": {
                                                 "click": {
@@ -1432,13 +1430,13 @@ export const AmisAppMenu = async (props) => {
                                                             "actionType": "dialog",
                                                             "dialog": {
                                                                 "type": "dialog",
-                                                                "title": "${i18next.t('frontend_menu_dialog_move_group')}",
+                                                                "title": i18next.t('frontend_menu_dialog_move_group'),
                                                                 "data": {
-                                                                    "appId": "\\\${event.data.appId}",
-                                                                    "groups": "\\\${event.data.groups}",
-                                                                    "tabApiName": "\\\${event.data.tabApiName}",
-                                                                    "groupName": "\\\${event.data.groupName}",
-                                                                    "oldGroupName": "\\\${event.data.groupName}",
+                                                                    "appId": "${event.data.appId}",
+                                                                    "groups": "${event.data.groups}",
+                                                                    "tabApiName": "${event.data.tabApiName}",
+                                                                    "groupName": "${event.data.groupName}",
+                                                                    "oldGroupName": "${event.data.groupName}",
                                                                 },
                                                                 "body": [
                                                                     {
@@ -1447,7 +1445,7 @@ export const AmisAppMenu = async (props) => {
                                                                     "name": "groupName",
                                                                     "id": "u:26d0b458ff51",
                                                                     "multiple": false,
-                                                                    "source": "\\\${groups}"
+                                                                    "source": "${groups}"
                                                                     }
                                                                 ],
                                                                 "id": "u:d69cbb95089a",
@@ -1455,13 +1453,13 @@ export const AmisAppMenu = async (props) => {
                                                                     {
                                                                         "type": "button",
                                                                         "actionType": "cancel",
-                                                                        "label": "\${'Cancel' | t}",
+                                                                        "label": "${'Cancel' | t}",
                                                                         "id": "u:12261bf51dcb"
                                                                     },
                                                                     {
                                                                         "type": "button",
                                                                         "actionType": "confirm",
-                                                                        "label": "\${'OK' | t}",
+                                                                        "label": "${'OK' | t}",
                                                                         "primary": true,
                                                                         "id": "u:b144775ea124"
                                                                     }
@@ -1505,7 +1503,7 @@ export const AmisAppMenu = async (props) => {
                                         },
                                         {
                                             "type": "button",
-                                            "label": "${i18next.t('frontend_menu_delete_tab')}",
+                                            "label": i18next.t('frontend_menu_delete_tab'),
                                             "visibleOn": "!!!this.isGroup",
                                             "onEvent": {
                                                 "click": {
@@ -1532,11 +1530,11 @@ export const AmisAppMenu = async (props) => {
                                                 }
                                             },
                                             "id": "u:e54eed92d13f",
-                                            "confirmText": "${i18next.t('frontend_button_delete_confirm_text')}"
+                                            "confirmText": i18next.t('frontend_button_delete_confirm_text')
                                         },
                                         {
                                             "type": "button",
-                                            "label": "${i18next.t('frontend_menu_delete_group')}",
+                                            "label": i18next.t('frontend_menu_delete_group'),
                                             "visibleOn": "!!this.isGroup",
                                             "onEvent": {
                                                 "click": {
@@ -1567,17 +1565,17 @@ export const AmisAppMenu = async (props) => {
                                                 }
                                             },
                                             "id": "u:e54eed92d13f",
-                                            "confirmText": "${i18next.t('frontend_button_delete_confirm_text')}"
+                                            "confirmText": i18next.t('frontend_button_delete_confirm_text')
                                         }
                                     ]
                                 },
                             ],
-                            "source": "\${items}",
+                            "source": "${items}",
                             //左层显示时审批单显示badge数量
                             "itemBadge": {
                                 "mode": "text",
                                 "text": "${badgeText}",
-                                "visibleOn": "\${id == 'instance_tasks'}",
+                                "visibleOn": "${id == 'instance_tasks'}",
                                 "overflowCount": 99,
                                 "style": stacked?{
                                   "right": "20%",
@@ -1604,11 +1602,11 @@ export const AmisAppMenu = async (props) => {
                                             "componentId": "appMenuService",
                                             "args": {
                                                 "value": {
-                                                    "tabId": "\${event.data.item.id}",
+                                                    "tabId": "${event.data.item.id}",
                                                     "items": data.nav
                                                 }
                                             },
-                                            "expression":"\${event.data.item.id}"
+                                            "expression":"${event.data.item.id}"
                                         },
                                         {
                                             "actionType": "custom",
@@ -1623,11 +1621,11 @@ export const AmisAppMenu = async (props) => {
                                             "componentId": "appMenuService",
                                             "args": {
                                                 "value": {
-                                                    "tabId": "\${event.data.tabId}",
+                                                    "tabId": "${event.data.tabId}",
                                                     "items": data.nav
                                                 }
                                             },
-                                            "expression":"\${event.data.tabId}"
+                                            "expression":"${event.data.tabId}"
                                         },
                                         {
                                             "actionType": "custom",
@@ -1640,16 +1638,16 @@ export const AmisAppMenu = async (props) => {
                         ]
                       };
                   } catch (error) {
-                      console.log(\`error\`, error)
+                      console.log(`error`, error)
                   }
-                  setTimeout(function(){
-                    $("[name='keywords']").focus();
-                  }, 300);
+                //   setTimeout(function(){
+                //     $("[name='keywords']").focus();
+                //   }, 300);
                   // console.log('AmisAppMenu AmisAppMenu=====>', payload)
                   return payload;
-            `
+                }
         }
     }
-    // console.log(`AmisAppMenu schema=====>`, schema)
+    console.log(`AmisAppMenu schema=====>`, schema)
     return schema;
 }
