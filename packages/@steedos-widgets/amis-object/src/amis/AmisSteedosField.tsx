@@ -560,7 +560,7 @@ export const AmisSteedosField = async (props) => {
             const schema = Object.assign({}, fieldBaseProps, pick(steedosField.amis || {}, ['className', 'inline', 'label', 'labelAlign', 'name', 'labelRemark', 'description', 'placeholder', 'staticClassName', 'staticLabelClassName', 'staticInputClassName', 'staticSchema']));
             schema.placeholder = "";
             addEditorClass(schema, editorClassName);
-            console.log(`steedos field [lookup] schema:`, schema)
+            // console.log(`steedos field [lookup] schema:`, schema)
             return schema;
         }
         if (fStatic && (steedosField.type === 'approval_comments')) {
