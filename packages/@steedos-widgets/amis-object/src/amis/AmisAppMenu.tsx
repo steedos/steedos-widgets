@@ -391,7 +391,7 @@ export const AmisAppMenu = async (props) => {
                                                                             "body": [
                                                                                 {
                                                                                     "type": "input-text",
-                                                                                    "label": i18next.t('CustomField.objects.name.label'),
+                                                                                    "label": "${'CustomField.objects.name.label' | t}",
                                                                                     "name": "oName",
                                                                                     "id": "u:dae5884c1633",
                                                                                     "placeholder": i18next.t('frontend_menu_dialog_name_placeholder'),
@@ -633,7 +633,7 @@ export const AmisAppMenu = async (props) => {
                                                                             "body": [
                                                                                 {
                                                                                     "type": "input-text",
-                                                                                    "label": i18next.t('CustomField.tabs.name.label'),
+                                                                                    "label": "${'CustomField.tabs.name.label' | t}",
                                                                                     "name": "oName",
                                                                                     "id": "u:dae5884c1633",
                                                                                     "placeholder": i18next.t('frontend_menu_dialog_name_placeholder'),
