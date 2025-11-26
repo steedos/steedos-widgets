@@ -1303,6 +1303,55 @@ export async function getTableSchema(object, fields, options){
 }
 
 
+/**
+ * 移除符合特定规则的sessionStorage项，用于清除列表视图组件请求接口的历史查询条件、翻页页码等本地存储参数数据，只保留最后一次的相关参数
+ * 兼容列表视图的两栏和三栏模式，以及列表视图的简化版（不带/grid）路径
+ * @param {string} suffix - 需要匹配的路径后缀，如"/crud"或"/crud/query"
+ * @returns {string} 返回包含正则表达式和清除逻辑的代码字符串
+ */
+function removeTableApiSessionStorageItems(suffix) {
+    // 手动转义suffix中的斜线/以确保正则表达式能够正确匹配路径
+    const escapedSuffix = suffix.replace(/\//g, '\\/');
+    
+    return `
+        /**
+         * 正则表达式1：匹配不带 /grid 的路径，路径结尾为 ${escapedSuffix}
+         * - 适用于路径格式：/app/{appName}/{objectName}${suffix}
+         * - 可能的suffix值包括："/crud", "/crud/query"
+         */
+        const noGridPattern = new RegExp('^\\\\/app\\\\/([^\\\\/]+)\\\\/([^\\\\/]+)${escapedSuffix}$');
+        
+        /**
+         * 正则表达式2：匹配带 /grid 的路径，路径结尾为 ${escapedSuffix}
+         * - 适用于路径格式：/app/{appName}/{objectName}/grid/{listName}${suffix}
+         * - 可能的suffix值包括："/crud", "/crud/query"
+         */
+        const withGridPattern = new RegExp('^\\\\/app\\\\/([^\\\\/]+)\\\\/([^\\\\/]+)\\\\/grid\\\\/([^\\\\/]+)${escapedSuffix}$');
+        
+        /**
+         * 正则表达式3：匹配带 /view 的路径（列表三栏模式），路径结尾为 ${escapedSuffix}
+         * - 适用于路径格式：/app/{appName}/{objectName}/view/{recordId}${suffix}
+         * - 可能的suffix值包括："/crud", "/crud/query"
+         */
+        const withViewPattern = new RegExp('^\\\\/app\\\\/([^\\\\/]+)\\\\/([^\\\\/]+)\\\\/view\\\\/([^\\\\/]+)${escapedSuffix}$');
+        
+        // 清除 sessionStorage 中符合条件的历史数据
+        for (let i = 0; i < sessionStorage.length; i++) {
+            const key = sessionStorage.key(i);
+            
+            /**
+             * 检查是否匹配规则并移除匹配的sessionStorage项:
+             * - noGridPattern 匹配简化版路径
+             * - withGridPattern 匹配带有 /grid 的路径
+             * - withViewPattern 匹配带有 /view 的路径
+             */
+            if (noGridPattern.test(key) || withGridPattern.test(key) || withViewPattern.test(key)) {
+                sessionStorage.removeItem(key);
+                i--; // 因为移除之后，索引也跟着变化，所以需要回退一步
+            }
+        }
+    `;
+}
 
 /**
  * 
@@ -1536,13 +1585,16 @@ export async function getTableApi(mainObject, fields, options){
 
         //写入本次存储filters、sort
         const listViewPropsStoreKey = location.pathname + "/crud/query";
-        needToStoreListViewProps && sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify({
-            filters: filters,
-            sort: sort.trim(),
-            pageSize: pageSize,
-            skip: skip,
-            fields: ${JSON.stringify(_.map(fields, 'name'))}
-        }));
+        if(needToStoreListViewProps) {
+            ${removeTableApiSessionStorageItems("/crud/query")};
+            sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify({
+                filters: filters,
+                sort: sort.trim(),
+                pageSize: pageSize,
+                skip: skip,
+                fields: ${JSON.stringify(_.map(fields, 'name'))}
+            }));
+        }
         // console.log('table requestAdaptor', api);
         return api;
     `
@@ -1678,7 +1730,10 @@ export async function getTableApi(mainObject, fields, options){
         
         delete selfData.context;
         delete selfData.global;
-        needToStoreListViewProps && sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify(selfData));
+        if(needToStoreListViewProps) {
+            ${removeTableApiSessionStorageItems("/crud")};
+            sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify(selfData));
+        }
         // 返回页码到UI界面
         payload.data.page= selfData.page;
     }
