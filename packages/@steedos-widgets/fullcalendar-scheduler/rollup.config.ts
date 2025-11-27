@@ -18,12 +18,14 @@ const external = [
   "react",
   "react-dom",
   'lodash',
+  'amis-core'
 ]
 
 const globals = { 
   react: 'React',
   'react-dom': 'ReactDOM',
   'lodash': '_',
+  'amis-core': 'AmisCore',
 }
 
 const options = {
