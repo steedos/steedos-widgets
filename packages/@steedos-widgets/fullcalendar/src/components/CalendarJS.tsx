@@ -16,8 +16,6 @@ import React, { useEffect, useRef } from 'react'
 // import allLocales from '@fullcalendar/core/locales-all';
 import './Calendar.css';
 
-import { createObject } from '@steedos-widgets/amis-lib';
-
 class DivWrapper extends React.Component<any> {
   render() {
     const { children, ...props } = this.props;
@@ -37,7 +35,6 @@ export const FullCalendar = ({
   if(!props.data){
     props.data = {}
   }
-  console.log(props, amisData)
 
   const calendarWrapperRef = useRef(null);
   // 1. 创建一个 ref 来引用将要渲染日历的 DOM 元素
@@ -51,7 +48,7 @@ export const FullCalendar = ({
     
     const rendererEvent = await amisDispatchEvent(
       action,
-      value ? createObject(amisData, value) : amisData,
+      value ? (window as any).AmisCore.utils.createObject(amisData, value) : amisData,
       //为了解决dispatchevent不生效的问题, https://github.com/baidu/amis/issues/7488
       calendarWrapperRef.current
     );
