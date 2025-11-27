@@ -1,14 +1,14 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-03-24 15:38:16
+ * @LastEditors: yinlianghui yinlianghui@hotoa.com
+ * @LastEditTime: 2025-11-27 13:07:00
  * @Description: 
  */
 import { getCalendarSchema } from '@steedos-widgets/amis-lib'
 
 export const AmisObjectCalendar = async (props) => {
-  console.log(`AmisObjectCalendar props`, props)
+  // console.log(`AmisObjectCalendar props`, props)
   const { $schema, top, sort, filters, filtersFunction, title, currentView, startDateExpr, endDateExpr, allDayExpr, textExpr, data, defaultData, className="", onEvent, config} = props;
 
   let objectApiName = props.objectApiName || "events";
