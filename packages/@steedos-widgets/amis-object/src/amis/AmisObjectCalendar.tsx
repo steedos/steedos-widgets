@@ -38,7 +38,7 @@ export const AmisObjectCalendar = async (props) => {
         "actions": [
             {
               "actionType": "custom",
-              "script": "context.props.data.calendarRef.current.getApi().refetchEvents()"
+              "script": "context.props.data.calendarApi.refetchEvents()"
             }
         ]
     }

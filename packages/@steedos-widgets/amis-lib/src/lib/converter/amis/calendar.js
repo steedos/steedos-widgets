@@ -187,13 +187,13 @@ export function getCalendarRecordSaveApi(object, calendarOptions) {
   formData[calendarOptions.allDayExpr] = "${event.data.event.allDay}";
   // formData[calendarOptions.textExpr] = "${event.data.event.title}";
   const apiData = {
-    objectName: "${objectName}",
+    objectName: object.name,
     $: formData,
     $self: "$$"
   };
   const saveDataTpl = `
     const formData = api.data.$;
-    const objectName = api.data.objectName;
+    const objectName = ${object.name}};
     let query = \`mutation{record: \${objectName}__update(id: "\${formData.${idFieldName}}", doc: {__saveData}){${idFieldName}}}\`;
     delete formData.${idFieldName};
     let __saveData = JSON.stringify(JSON.stringify(formData));
@@ -320,7 +320,7 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
           "body": [
             {
               "type": "steedos-object-form",
-              "objectApiName": "\${objectName}",
+              "objectApiName": "${objectSchema.name}",
               "mode": "edit",
               "defaultData": doc,
               //改回为通用的提交事件
@@ -519,14 +519,14 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
         }
       ]
     },
-    "getRef": {
+    "setCalendarApi": {
       "weight": 0,
       "actions": [
         {
           "componentId": `service_${options.id}`,
           "args": {
             "value":{
-              "calendarRef": "${event.data.calendarRef}"
+              "calendarApi": "${event.data.calendarApi}"
             }
           },
           "actionType": "setValue",
