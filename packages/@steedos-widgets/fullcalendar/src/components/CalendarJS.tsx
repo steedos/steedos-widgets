@@ -47,13 +47,12 @@ export const FullCalendar = ({
 
   const initialLocaleCode = 'zh-cn';
   const dispatchEvent = async (action: string, value?: object) => {
-    console.log('dispatchEvent', action, value, amisDispatchEvent)
     if (!amisDispatchEvent) return;
     
     const rendererEvent = await amisDispatchEvent(
       action,
       value ? createObject(amisData, value) : amisData,
-      //为了解决3.2dispatchevent不生效的问题, https://github.com/baidu/amis/issues/7488
+      //为了解决dispatchevent不生效的问题, https://github.com/baidu/amis/issues/7488
       calendarWrapperRef.current
     );
 
@@ -127,9 +126,9 @@ export const FullCalendar = ({
 
                   // 添加一些配置，例如资源列表，否则 resourceTimeline 视图可能不显示
                   resources: [
-                      { id: 'a', title: 'Room A' },
-                      { id: 'b', title: 'Room B' },
-                      { id: 'c', title: 'Room C' },
+                      // { id: 'a', title: 'Room A' },
+                      // { id: 'b', title: 'Room B' },
+                      // { id: 'c', title: 'Room C' },
                   ],
                   
                   locale: initialLocaleCode,
@@ -149,6 +148,8 @@ export const FullCalendar = ({
                   eventRemove: handleEventRemove,
                   eventDidMount: handleEventDidMount,
                   eventWillUnmount: handleEventWillUnmount,
+                  noEventsDidMount: handleNoEventsDidMount,
+                  noEventsWillUnmount: handleNoEventsWillUnmount,
 
                   forceEventDuration: true,
                   
