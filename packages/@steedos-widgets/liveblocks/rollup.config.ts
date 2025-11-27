@@ -22,12 +22,14 @@ const external = [
   "react",
   "react-dom",
   'lodash',
+  '@steedos-widgets/amis-object',
 ]
 
 const globals = { 
   react: 'React',
   'react-dom': 'ReactDOM',
   'lodash': '_',
+  '@steedos-widgets/amis-object': 'BuilderAmisObject',
 }
 
 const options = {
