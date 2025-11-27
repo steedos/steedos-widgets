@@ -455,17 +455,14 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
             "options": {
             },
             "api": {
-              url: '/api/v1/meetingroom',
+              url: '/api/v1/meetingroom?fields=["name","color","enable_open"]&sort=name',
               adaptor: function (payload, response, api, context) {
-                console.log("=====meetingroom==payload===", payload);
                 const items = payload?.data?.items || [];
                 const resources = items.map(item => ({
-                    id: item._id,       // 映射 _id 到 id
-                    title: item.name,    // 映射 name 到 title
+                    id: item._id,
+                    title: item.name,
+                    eventColor: item.color
                 }));
-
-                // 2. 返回转换后的资源数组
-                console.log("=====meetingroom==resources===", resources);
                 context.successCallback(resources);
                 return payload;
               }
