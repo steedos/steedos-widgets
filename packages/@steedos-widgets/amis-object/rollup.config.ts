@@ -123,7 +123,7 @@ export default [
                  fileName: 'assets.json',
                  source: amis
               });
-              const amisDev = JSON.stringify(assets, null, 4).replace(/https\:\/\/unpkg.com\/fullcalendar/g, "https://unpkg.steedos.cn/fullcalendar").replace(/https\:\/\/unpkg.com\/antd/g, "https://unpkg.steedos.cn/antd").replace(/\@\{\{version\}\}/g, ``).replace(/https\:\/\/unpkg.com/g, unpkgUrl)
+              const amisDev = JSON.stringify(assets, null, 4).replace(/https\:\/\/unpkg.com\/antd/g, "https://unpkg.steedos.cn/antd").replace(/\@\{\{version\}\}/g, ``).replace(/https\:\/\/unpkg.com/g, unpkgUrl)
               this.emitFile({
                  type: 'asset',
                  fileName: 'assets-dev.json',

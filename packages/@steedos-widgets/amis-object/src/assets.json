@@ -9,24 +9,6 @@
         "library": "antd"
     },
     {
-        "package": "@steedos-widgets/fullcalendar",
-        "urls": [
-            "https://unpkg.com/fullcalendar@5.11.4/main.min.js",
-            "https://unpkg.com/fullcalendar@5.11.4/locales-all.min.js",
-            "https://unpkg.com/fullcalendar@5.11.4/main.min.css",
-            "https://unpkg.com/@steedos-widgets/fullcalendar@{{version}}/dist/fullcalendar.umd.js",
-            "https://unpkg.com/@steedos-widgets/fullcalendar@{{version}}/dist/fullcalendar.umd.css"
-        ],
-        "library": "BuilderFullCalendar"
-    },
-    {
-        "package": "steedos-lib",
-        "urls": [
-            "https://unpkg.com/@steedos-widgets/steedos-lib@{{version}}/dist/index.umd.js"
-        ],
-        "library": "SteedosLib"
-    },
-    {
         "package": "@steedos-widgets/amis-object",
         "urls": [
             "https://unpkg.com/@steedos-widgets/amis-object@{{version}}/dist/amis-object.umd.js",
@@ -36,17 +18,6 @@
     }
   ],
   "components": [
-    {
-        "exportName": "BuilderFullCalendarMeta",
-        "npm": {
-            "package": "@steedos-widgets/fullcalendar"
-        },
-        "url": "https://unpkg.com/@steedos-widgets/fullcalendar@{{version}}/dist/meta.js",
-        "urls": {
-            "default": "https://unpkg.com/@steedos-widgets/fullcalendar@{{version}}/dist/meta.js",
-            "design": "https://unpkg.com/@steedos-widgets/fullcalendar@{{version}}/dist/meta.js"
-        }
-    },
     {
         "exportName": "BuilderAmisObjectMeta",
         "npm": {
