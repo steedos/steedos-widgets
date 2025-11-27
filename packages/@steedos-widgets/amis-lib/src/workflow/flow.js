@@ -767,7 +767,7 @@ const getFormWizardView = async (instance) => {
 const getApplicantTableView = async (instance) => {
   let applicantInput = null;
   if(instance.state === 'draft'){
-    applicantInput = Object.assign({name: "applicant", value: getSteedosAuth().userId, disabled: instance.box !== 'draft'}, await lookupToAmis(
+    applicantInput = Object.assign({name: "applicant", value: instance.applicant || getSteedosAuth().userId, disabled: instance.box !== 'draft'}, await lookupToAmis(
       {
         name: "applicant",
         label: false,
