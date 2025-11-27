@@ -3,7 +3,9 @@ import ReactFlow, { Controls, Background, ReactFlowProvider, useReactFlow, useNo
 import 'reactflow/dist/style.css';
 import './ReactFlow.css';
 
-import { createObject } from '@steedos-widgets/amis-lib';
+import AmisCore from 'amis-core'
+
+const createObject = AmisCore.utils.createObject;
 
 const Flow = ({
   dispatchEvent, 

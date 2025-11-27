@@ -49,7 +49,6 @@
   },
   "dependencies": {
     "@rollup/plugin-replace": "^5.0.2",
-    "@steedos-widgets/amis-lib": "6.10.18",
     "devextreme": "^23.2.3",
     "devextreme-react": "^23.2.3",
     "rollup-plugin-copy": "^3.5.0"

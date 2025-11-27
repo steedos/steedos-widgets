@@ -20,6 +20,7 @@ const external = [
   "react",
   "react-dom",
   'lodash',
+  'amis-core',
   // 'reactflow',
 ]
 
@@ -27,6 +28,7 @@ const globals = {
   react: 'React',
   'react-dom': 'ReactDOM',
   'lodash': '_',
+  'amis-core': 'AmisCore',
   // 'reactflow': 'ReactFlow',
 }
 
@@ -56,18 +58,18 @@ const options = {
 };
 
 export default [
-  // React CJS
-  {
-    ...options,
-    output: [{ file: pkg.main, format: 'cjs', sourcemap: true }],
-    plugins: options.plugins.concat([]),
-  },
-  // ES
-  {
-    ...options,
-    output: [{ file: pkg.module, format: 'es', sourcemap: true }],
-    plugins: options.plugins.concat([]),
-  },
+  // // React CJS
+  // {
+  //   ...options,
+  //   output: [{ file: pkg.main, format: 'cjs', sourcemap: true }],
+  //   plugins: options.plugins.concat([]),
+  // },
+  // // ES
+  // {
+  //   ...options,
+  //   output: [{ file: pkg.module, format: 'es', sourcemap: true }],
+  //   plugins: options.plugins.concat([]),
+  // },
   {
     ...options,
     external,

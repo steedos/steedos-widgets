@@ -36,8 +36,6 @@ import './CKEditor.css';
 // import { Comments } from '@ckeditor/ckeditor5-comments';
 
 
-import { createObject } from '@steedos-widgets/amis-lib';
-
 const defaultConfig={
   plugins: [
     // Alignment,

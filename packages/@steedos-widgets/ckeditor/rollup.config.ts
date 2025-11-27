@@ -23,6 +23,7 @@ const external = [
   "react",
   "react-dom",
   'lodash',
+  'amis-core',
   // 'ckeditor',
 ]
 
@@ -30,6 +31,7 @@ const globals = {
   react: 'React',
   'react-dom': 'ReactDOM',
   'lodash': '_',
+  'amis-core': 'AmisCore',
   // 'ckeditor': 'CKEditor',
 }
 

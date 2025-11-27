@@ -33,8 +33,9 @@ import './CKEditor.css';
 
 import { Comments } from '@ckeditor/ckeditor5-comments';
 
+import AmisCore from 'amis-core'
 
-import { createObject } from '@steedos-widgets/amis-lib';
+const createObject = AmisCore.utils.createObject;
 
 const defaultConfig={
   plugins: [
