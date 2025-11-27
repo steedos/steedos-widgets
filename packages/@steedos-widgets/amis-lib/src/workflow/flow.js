@@ -577,6 +577,8 @@ const getTdField = async (field, fieldsCount) => {
 };
 
 const getTdTitle = (field) => {
+  const requiredOn = field.config?.amis.requiredOn;
+  console.log('getTdTitle', field.is_required , requiredOn, field);
   return {
     className: `td-title td-title-${field.type}`,
     align: field.type != "section" ? "center" : "left",
@@ -586,7 +588,8 @@ const getTdTitle = (field) => {
     body: [
       {
         type: "tpl",
-        tpl: `<div class='${field.type == "section" ? "font-bold" : ""}'>${field.name || field.code} ${field.is_required ? '<span class="antd-Form-star">*</span>' : ''}</div>`,
+        tpl: `<div class='${field.type == "section" ? "font-bold" : ""}'>${field.name || field.code} <span class="antd-Form-star">*</span></div>`,
+        className: field.is_required ? 'steedos-field-required' : (requiredOn ? {'steedos-field-required' : `${requiredOn}`} : '')
       },
     ],
     // "id": "u:9b001b7ff92d",
@@ -971,7 +974,7 @@ export const getFlowFormSchema = async (instance, box) => {
       "args": {}
     });
   }
-
+  console.log('formContentSchema....', formContentSchema)
   return {
     type: "page",
     name: "instancePage",
