@@ -146,7 +146,8 @@ export async function getCalendarApi(mainObject, fields, options) {
         start: n["${calendarOptions.startDateExpr}"],
         end: n["${calendarOptions.endDateExpr}"],
         allDay: n["${calendarOptions.allDayExpr}"],
-        extendedProps: n
+        extendedProps: n,
+        resourceId: n.room
       }
     });
     const successCallback = selfData.successCallback;
@@ -243,6 +244,7 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
     calendarOptions.allDayExpr,
     calendarOptions.textExpr
   ];
+  titleFields.push("room");
   let fields = [];
   each(titleFields, function (n) {
     if (objectSchema.fields[n]) {
@@ -298,6 +300,17 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
       },
     });
   `;
+
+  // const onGetRresourcesScript = `
+  //   const api = ${JSON.stringify(api)};
+  //   doAction({
+  //     "actionType": 'ajax',
+  //     "args": {
+  //       "api": api
+  //     },
+  //   });
+  // `;
+  // const resourcesApi = await getRresourcesApi(objectSchema, fields, options);
 
   const onSelectScript = `
     const data = event.data;
@@ -422,6 +435,50 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
         //     // }
         //   }
         // }
+      ]
+    },
+    "getRresources": {
+      "weight": 0,
+      "actions": [
+        // {
+        //   "componentId": "",
+        //   "args": {
+        //   },
+        //   "actionType": "custom",
+        //   "script": onGetRresourcesScript
+        // }
+
+        {
+          "actionType": "ajax",
+          "outputVar": "responseResult",
+          "args": {
+            "options": {
+            },
+            "api": {
+              url: '/api/v1/meetingroom',
+              adaptor: function (payload, response, api, context) {
+                console.log("=====meetingroom==payload===", payload);
+                const items = payload?.data?.items || [];
+                const resources = items.map(item => ({
+                    id: item._id,       // 映射 _id 到 id
+                    title: item.name,    // 映射 name 到 title
+                }));
+
+                // 2. 返回转换后的资源数组
+                console.log("=====meetingroom==resources===", resources);
+                context.successCallback(resources);
+                return payload;
+              }
+            }
+            // {
+            //   "url": "111",
+            //   "method": "post",
+            //   "data": {
+            //     "calendarOptions": JSON.stringify(calendarOptions);
+            //   }
+            // }
+          }
+        }
       ]
     },
     "select": {
@@ -563,6 +620,33 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
       }
     }
   }
+
+  const resourceConfig = {
+    url: '/api/v1/meetingroom',
+    method: 'GET',
+    
+    // 👇 V6 中推荐用于转换异步加载数据的回调函数 👇
+    success: function(rawResourceData) {
+        console.error("加载资源rawResourceData", rawResourceData);
+        // FullCalendar 期望这个 success 函数返回最终的资源数组
+        
+        // 1. 执行你的数据转换逻辑
+        const items = rawResourceData?.data?.items || [];
+        const resources = items.map(item => ({
+            id: item._id,       // 映射 _id 到 id
+            title: item.name,    // 映射 name 到 title
+        }));
+
+        // 2. 返回转换后的资源数组
+        return resources; 
+    },
+
+    failure: function(error) {
+        console.error("加载资源失败", error);
+        // 可以返回一个空数组 [] 或抛出错误
+        return []; 
+    }
+};
 
   const amisSchema = {
     "type": "steedos-fullcalendar",
