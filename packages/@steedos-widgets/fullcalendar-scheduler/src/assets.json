@@ -3,9 +3,9 @@
       {
           "package": "@steedos-widgets/fullcalendar-scheduler",
           "urls": [
-              "https://unpkg.steedos.cn/fullcalendar-scheduler@5.11.4/main.min.js",
-              "https://unpkg.steedos.cn/fullcalendar-scheduler@5.11.4/locales-all.min.js",
-              "https://unpkg.steedos.cn/fullcalendar-scheduler@5.11.4/main.min.css",
+              "https://unpkg.com/fullcalendar-scheduler@5.11.4/main.min.js",
+              "https://unpkg.com/fullcalendar-scheduler@5.11.4/locales-all.min.js",
+              "https://unpkg.com/fullcalendar-scheduler@5.11.4/main.min.css",
               "https://unpkg.com/@steedos-widgets/fullcalendar-scheduler@{{version}}/dist/fullcalendar.umd.js",
               "https://unpkg.com/@steedos-widgets/fullcalendar-scheduler@{{version}}/dist/fullcalendar.umd.css"
           ],
