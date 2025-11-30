@@ -82,7 +82,7 @@ const getJudgeInput = async (instance) => {
 };
 
 //TODO 只有一个下一步时,默认选中,并且禁止修改.
-const getNextStepInput = async (instance) => {
+const getNextStepInput = async (instance, nextStepChangeEvents) => {
   // console.log('getNextStepInput', instance);
   if(instance.approve?.type == 'cc'){
     return ;
@@ -170,29 +170,14 @@ const getNextStepInput = async (instance) => {
                 "judge": "${new_judge}",
               }
             },
-            // "onEvent": {
-            //   "change": {
-            //     "weight": 0,
-            //     "actions": [
-            //       {
-            //         "componentId": "instance_approval",
-            //         "args": {
-            //           "value": {
-            //             new_next_step: "${event.data.value}",
-            //           }
-            //         },
-            //         "actionType": "setValue"
-            //       },
-            //       // {
-            //       //   "args": {
-            //       //     next_step: "${event.data.value}",
-            //       //   },
-            //       //   "actionType": "broadcast",
-            //       //   eventName: "approve_next_step_change"
-            //       // },
-            //     ]
-            //   }
-            // }
+            "onEvent": {
+              "change": {
+                "weight": 0,
+                "actions": [
+                  ...nextStepChangeEvents
+                ]
+              }
+            }
           },
         ],
         id: "u:4d3a884b437c",
@@ -205,7 +190,7 @@ const getNextStepInput = async (instance) => {
 };
 
 //TODO 只有一个处理人时,默认选中,禁止修改. 部分情况不需要显示下一步处理人
-const getNextStepUsersInput = async (instance) => {
+const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
   if(instance.approve?.type == 'cc'){
     return ;
   }
@@ -233,7 +218,15 @@ const getNextStepUsersInput = async (instance) => {
             label: "",
             name: "next_users", 
             hiddenOn: "this.new_next_step.deal_type != 'pickupAtRuntime' || this.new_next_step.step_type == 'counterSign'",
-            required: true
+            required: true,
+            "onEvent": {
+              "change": {
+                "weight": 0,
+                "actions": [
+                  ...nextStepUserChangeEvents
+                ]
+              }
+            }
           },
           {
             type: "steedos-select-user",
@@ -241,7 +234,15 @@ const getNextStepUsersInput = async (instance) => {
             name: "next_users", 
             hiddenOn: "this.new_next_step.deal_type != 'pickupAtRuntime' || this.new_next_step.step_type != 'counterSign'",
             required: true,
-            multiple: true
+            multiple: true,
+            "onEvent": {
+              "change": {
+                "weight": 0,
+                "actions": [
+                  ...nextStepUserChangeEvents
+                ]
+              }
+            }
           },
           {
             type: "list-select",
@@ -286,6 +287,14 @@ const getNextStepUsersInput = async (instance) => {
             value: '${new_next_step.approver_users}',
             "joinValues": false,
             "extractValue": true,
+            "onEvent": {
+              "change": {
+                "weight": 0,
+                "actions": [
+                  ...nextStepUserChangeEvents
+                ]
+              }
+            }
           },
           {
             type: "list-select",
@@ -330,6 +339,14 @@ const getNextStepUsersInput = async (instance) => {
             value: '${new_next_step.approver_users}',
             "joinValues": false,
             "extractValue": true,
+            "onEvent": {
+              "change": {
+                "weight": 0,
+                "actions": [
+                  ...nextStepUserChangeEvents
+                ]
+              }
+            }
           },
           // {
           //   type: "steedos-select-user",
@@ -584,10 +601,11 @@ const getSubmitActions = async (instance, submitEvents) => {
   ];
 };
 
-export const getApprovalDrawerSchema = async (instance, submitEvents) => {
+export const getApprovalDrawerSchema = async (instance, events) => {
+  const { submitEvents , nextStepInitedEvents, nextStepChangeEvents, nextStepUserChangeEvents } = events;
   const userId = getSteedosAuth().userId;
   const userApprove = getUserApprove({ instance, userId });
-  return {
+  const schema = {
     type: "drawer",
     overlay: false,
     resizable: false,
@@ -605,6 +623,10 @@ export const getApprovalDrawerSchema = async (instance, submitEvents) => {
     body: [
       {
         type: "form",
+        initApi: {
+          method: 'POST',
+          url: '/api/v6/amis/health_check'
+        },
         debug: false,
         id: "instance_approval",
         resetAfterSubmit: true,
@@ -642,8 +664,8 @@ export const getApprovalDrawerSchema = async (instance, submitEvents) => {
             //   }
             // }
           },
-          await getNextStepInput(instance),
-          await getNextStepUsersInput(instance),
+          await getNextStepInput(instance, nextStepChangeEvents),
+          await getNextStepUsersInput(instance, nextStepUserChangeEvents),
         ],
         onEvent: {
           "approve_judge_change": {
@@ -656,6 +678,11 @@ export const getApprovalDrawerSchema = async (instance, submitEvents) => {
               }
             ]
           },
+          "inited": {
+            "actions": [
+              ...nextStepInitedEvents
+            ]
+          }
           // "approve_next_step_change": {
           //   "actions": [
           //     {
@@ -719,4 +746,6 @@ export const getApprovalDrawerSchema = async (instance, submitEvents) => {
       },
     ]
   };
+  console.log(`getApprovalDrawerSchema: `, schema)
+  return schema;
 };

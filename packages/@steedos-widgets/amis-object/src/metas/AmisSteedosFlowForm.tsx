@@ -56,6 +56,9 @@ export default {
         { eventName: "inited", eventLabel: "表单初始化完成", description: "表单初始化完成事件，不管配置不配置 initApi 都会触发，实际上还会等部分子表单项初始化完成" },
         { eventName: "change", eventLabel: "表单值变化时触发", description: "" },
         { eventName: "submit", eventLabel: "表单提交前触发", description: "" },
+        { eventName: "nextStepInited", eventLabel: "下一步初始化完成", description: "" },
+        { eventName: "nextStepChange", eventLabel: "下一步步骤变化时触发", description: "" },
+        { eventName: "nextStepUserChange", eventLabel: "下一步处理人变化时触发", description: "" },
       ],
       scaffold: {
         type: "steedos-flow-form",

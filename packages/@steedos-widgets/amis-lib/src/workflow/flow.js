@@ -917,7 +917,7 @@ const getApplicantTableView = async (instance) => {
   };
 };
 
-const getApproveButton = async (instance, submitEvents)=>{
+const getApproveButton = async (instance, events)=>{
   if(!instance.approve || ( instance.box != 'inbox' && instance.box != 'draft')){
     return null;
   }
@@ -931,7 +931,7 @@ const getApproveButton = async (instance, submitEvents)=>{
             componentId: "",
             args: {},
             actionType: "drawer",
-            drawer: await getApprovalDrawerSchema(instance, submitEvents),
+            drawer: await getApprovalDrawerSchema(instance, events),
           },
         ],
       },
@@ -1005,12 +1005,18 @@ export const getFlowFormSchema = async (instance, box) => {
   let initedEvents = [];
   let changeEvents = [];
   let submitEvents = [];
+  let nextStepInitedEvents = [];
+  let nextStepChangeEvents = [];
+  let nextStepUserChangeEvents = [];
 
   if(amisSchemaStr){
     const onEvent = JSON.parse(instance.formVersion.amis_schema).onEvent;
-    initedEvents = onEvent?.inited.actions || [];
-    changeEvents = onEvent?.change.actions || [];
-    submitEvents = onEvent?.submit.actions || [];
+    initedEvents = onEvent?.inited?.actions || [];
+    changeEvents = onEvent?.change?.actions || [];
+    submitEvents = onEvent?.submit?.actions || [];
+    nextStepInitedEvents = onEvent?.nextStepInited?.actions || [];
+    nextStepChangeEvents = onEvent?.nextStepChange?.actions || [];
+    nextStepUserChangeEvents = onEvent?.nextStepUserChange.actions || [];
   }
   // if (box == 'inbox' || box == 'draft') {
   // TODO: 临时去掉 AutoOpenApproveDrawer 功能因为测试到性能问题
@@ -1132,7 +1138,7 @@ export const getFlowFormSchema = async (instance, box) => {
         }
       },
       await getInstanceApprovalHistory(),
-      await getApproveButton(instance, submitEvents)
+      await getApproveButton(instance, { submitEvents , nextStepInitedEvents, nextStepChangeEvents, nextStepUserChangeEvents})
     ],
     id: "u:instancePage",
     messages: {},
