@@ -399,7 +399,7 @@ const getPostSubmitRequestAdaptor = async (instance) => {
             const body = {Instances: [{
                 _id: "${instance._id}",
                 flow: "${instance.flow._id}",
-                applicant: formValues.applicant,
+                applicant: formValues.__applicant,
                 submitter: formValues.submitter,
                 traces: [{
                     _id: "${instance.trace._id}",

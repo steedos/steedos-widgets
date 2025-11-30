@@ -453,3 +453,12 @@ export const getInstanceInfo = async (props) => {
     approvalCommentsFields
   };
 };
+
+
+
+export const getApplicant = async (userId) => {
+  const result = await fetchAPI(`/api/formula/user/${userId}`, {
+    method: "get"
+  });
+  return result;
+}

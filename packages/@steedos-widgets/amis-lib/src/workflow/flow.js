@@ -57,15 +57,22 @@ const getArgumentsList = (func)=>{
 }
 
 const getFieldEditTpl = async (field, label)=>{
-  console.log('field',field)
+  // console.log('field',field)
   const tpl = {
     label: label === true ? field.name : false,
     name: field.code,
     mode: "horizontal",
     className: "m-none p-none form-control",
     disabled: field.permission !== "editable",
-    required: field.is_required
+    required: field.is_required,
+    visibleOn: field.visibleOn,
+    requiredOn: field.requiredOn
   };
+
+  if(field.formula){
+    tpl.value = `$${field.formula}`;
+  }
+  
   if(isOpinionField(field)){
     tpl.type = 'input-group';
     tpl.body = [
@@ -367,7 +374,6 @@ const getFieldEditTpl = async (field, label)=>{
             const filters = \`${_.replace(field.filters, /_.pluck/g, '_.map')}\`;
             const url = \`${field.url}\`;
             if(filters){
-              console.log('filters', filters);
               const joinKey = url.indexOf('?') > 0 ? '&' : '?';
               if(filters.startsWith('function(') || filters.startsWith('function (')){
                 const argsName = ${JSON.stringify(argsName)};
@@ -389,7 +395,7 @@ const getFieldEditTpl = async (field, label)=>{
           trackExpression: _.join(_.map(argsName, (item)=>{return `\${${item}|json}`}), '-')
         };
         tpl.isAmis=true;
-        console.log(`odata`, tpl)
+        // console.log(`odata`, tpl)
         break;
       case "html":
         if (tpl.disabled) {
@@ -419,6 +425,11 @@ const getFieldEditTpl = async (field, label)=>{
         tpl.editable = tpl.addable;
         tpl.copyable = tpl.addable;
         tpl.removable = tpl.addable;
+        if(tpl.addable){
+          tpl.actionData = {
+            "&" : "$$"
+          }
+        }
         // tpl.fieldPrefix = field.name + "_";
         tpl.autoGeneratePrimaryKeyValue = true;
         tpl.fields = [];
@@ -429,7 +440,16 @@ const getFieldEditTpl = async (field, label)=>{
           if (sField.type != "hidden") {
             sField.permission = field.permission
             const column = await getTdInputTpl(sField, true);
+          // console.log('table column', column, sField);
             if(column.type === 'steedos-field'){
+              if(sField.visibleOn){
+                column.config.visibleOn = sField.visibleOn
+              }
+
+              if(sField.requiredOn){
+                column.config.requiredOn = sField.requiredOn
+              }
+
               tpl.fields.push(column.config);
             }else{
               tpl.fields.push(column);
@@ -457,6 +477,9 @@ const getFieldReadonlyTpl = async (field, label)=>{
     mode: "horizontal",
     className: "m-none p-none form-control",
   };
+  if(field.formula){
+    tpl.value = `$${field.formula}`;
+  }
   if(includes(['text'], field.type)){
     tpl.type = `static-${field.type}`;
   }else if(field.type === 'select'){
@@ -578,7 +601,7 @@ const getTdField = async (field, fieldsCount) => {
 
 const getTdTitle = (field) => {
   const requiredOn = field.config?.amis.requiredOn;
-  console.log('getTdTitle', field.is_required , requiredOn, field);
+  // console.log('getTdTitle', field.is_required , requiredOn, field);
   return {
     className: `td-title td-title-${field.type}`,
     align: field.type != "section" ? "center" : "left",
@@ -616,6 +639,7 @@ const getTds = async (tdFields) => {
 };
 
 const getFormTrs = async (instance) => {
+  // console.log('getFormTrs instance====>', instance);
   const trsSchema = [];
   const trs = [];
   let tdFields = [];
@@ -770,9 +794,9 @@ const getFormWizardView = async (instance) => {
 const getApplicantTableView = async (instance) => {
   let applicantInput = null;
   if(instance.state === 'draft'){
-    applicantInput = Object.assign({name: "applicant", value: instance.applicant || getSteedosAuth().userId, disabled: instance.box !== 'draft'}, await lookupToAmis(
+    applicantInput = Object.assign({name: "__applicant", value: instance.applicant || getSteedosAuth().userId, disabled: instance.box !== 'draft'}, await lookupToAmis(
       {
-        name: "applicant",
+        name: "__applicant",
         label: false,
         reference_to: "space_users",
         reference_to_field: 'user',
@@ -780,7 +804,31 @@ const getApplicantTableView = async (instance) => {
       },
       false,
       {}
-    ));
+    ), {
+        "onEvent": {
+          "change": {
+            "actions": [
+              {
+                "actionType": "ajax",
+                "api": {
+                  "url": "/api/formula/user/${__applicant}",
+                  "method": "get",
+                  "messages": {
+                    "success": "",
+                    "failed": ""
+                  },
+                  "silent": true,
+                  "adaptor": "return {applicantInfo: payload}"
+                }
+              },
+              {
+                "actionType": "custom",
+                "script": "doAction({'componentId': 'u:instancePage',  'actionType': 'setValue',  'args': {    'value': {      'applicant': event.data.applicantInfo   }  }}) "
+              }
+            ]
+          }
+        } 
+    });
   }else{
     applicantInput = {
       label: false,
@@ -974,7 +1022,7 @@ export const getFlowFormSchema = async (instance, box) => {
       "args": {}
     });
   }
-  console.log('formContentSchema....', formContentSchema)
+  // console.log('formContentSchema....', formContentSchema)
   return {
     type: "page",
     name: "instancePage",
@@ -1050,7 +1098,6 @@ export const getFlowFormSchema = async (instance, box) => {
           },
           formContentSchema,
           await getApplicantTableView(instance),
-          
         ],
         id: "instance_form",
         onEvent: {
@@ -1077,8 +1124,7 @@ export const getFlowFormSchema = async (instance, box) => {
               {
                 "actionType": "reload",
                 "componentId": "u:next_step",
-                "args": {
-                }
+                "args": {}
               },
               ...changeEvents
             ]

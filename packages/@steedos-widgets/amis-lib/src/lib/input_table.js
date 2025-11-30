@@ -241,7 +241,9 @@ function getInputTableCell(field, showAsInlineEditMode) {
             //     })
             // },
             label: field.label,
-            name: field.name
+            name: field.name,
+            visibleOn: field.visibleOn,
+            requiredOn: field.requiredOn
         }
     }
     else {
@@ -265,7 +267,9 @@ function getInputTableCell(field, showAsInlineEditMode) {
             "static": true,
             "readonly": true,
             label: field.label,
-            name: field.name
+            name: field.name,
+            visibleOn: field.visibleOn,
+            requiredOn: field.requiredOn
         }
     }
 }
@@ -1104,7 +1108,8 @@ async function getButtonActions(props, mode) {
                     // "__tableItems": `\${${props.name}|json|toJson}`
                     // 在节点嵌套情况下，当前节点正好是带children属性的节点的话，这里弹出的dialog映射到的会是children数组，这是amis目前的规则，
                     // 所以这里加判断有children时，用__super.__super让映射到正确的作用域层，如果不加，则__tableItems取到的会是children数组，而不是整个子表组件的值
-                    "__tableItems": `\${((children ? __super.__super.${props.name} : __super.${props.name}) || [])|json|toJson}`
+                    "__tableItems": `\${((children ? __super.__super.${props.name} : __super.${props.name}) || [])|json|toJson}`,
+                    ...(props.actionData || {})
                 },
                 "actions": dialogButtons,
                 "onEvent": {
@@ -1230,7 +1235,8 @@ async function getButtonActions(props, mode) {
                         // "__tableItems": `\${((__super.parent ? __super.__super.${props.name} : __super.${props.name}) || [])|json|toJson}`
                         // 在节点嵌套情况下，当前节点正好是带children属性的节点的话，这里弹出的dialog映射到的会是children数组，这是amis目前的规则，
                         // 所以这里加判断有children时，用__super.__super让映射到正确的作用域层，如果不加，则__tableItems取到的会是children数组，而不是整个子表组件的值
-                        "__tableItems": `\${((children ? __super.__super.${props.name} : __super.${props.name}) || [])|json|toJson}`
+                        "__tableItems": `\${((children ? __super.__super.${props.name} : __super.${props.name}) || [])|json|toJson}`,
+                        ...(props.actionData || {})
                     },
                 }
             }
