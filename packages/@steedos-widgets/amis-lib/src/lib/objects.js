@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-06-17 20:18:18
+ * @LastEditTime: 2025-12-02 01:03:54
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -220,6 +220,74 @@ export async function getFormSchema(objectName, ctx) {
     };
 }
 
+/**
+ * 合并 calendar_ 开头的属性与 options 属性，以 options 属性为优先。
+ * @param {object} listView 列表视图配置对象
+ * @returns {object} 合并后的日历配置选项
+ */
+function getCalendarOptions(listView) {
+    const calendarDefaults = {};
+
+    if (listView.calendar_start_field) {
+        calendarDefaults.startDateExpr = listView.calendar_start_field;
+    }
+    if (listView.calendar_end_field) {
+        calendarDefaults.endDateExpr = listView.calendar_end_field;
+    }
+    if (listView.calendar_all_day_field) {
+        calendarDefaults.allDayExpr = listView.calendar_all_day_field;
+    }
+    if (listView.calendar_text_field) {
+        calendarDefaults.textExpr = listView.calendar_text_field;
+    }
+
+    if (listView.calendar_current_view) {
+        calendarDefaults.currentView = listView.calendar_current_view;
+    }
+    // if (listView.calendar_views) {
+    //     calendarDefaults.views = listView.calendar_views;
+    // }
+
+    if (listView.calendar_group_field) {
+        calendarDefaults.groups = [listView.calendar_group_field];
+    }
+
+    const resourceDefaults = {};
+    if (listView.calendar_resource_color_field) {
+        resourceDefaults.color = listView.calendar_resource_color_field;
+    }
+    if (listView.calendar_resource_filters) {
+        resourceDefaults.filters = listView.calendar_resource_filters;
+    }
+    if (listView.calendar_resource_sort) {
+        resourceDefaults.sort = listView.calendar_resource_sort;
+    }
+
+    if (Object.keys(resourceDefaults).length > 0) {
+        calendarDefaults.resources = resourceDefaults;
+    }
+
+    // 第一次合并：将 calendarDefaults 作为默认值，listView.options 作为高优先级配置
+    let mergedOptions = {
+        ...calendarDefaults,
+        ...listView.options
+    };
+
+    // 第二次合并：深度合并 'resources' 属性（如果两者都有定义）
+    // 确保 options 内部的 resources 属性优先于 calendar_resource_... 属性
+    const defaultResources = calendarDefaults.resources;
+    const optionResources = listView.options.resources;
+    
+    if (defaultResources && optionResources) {
+        mergedOptions.resources = {
+            ...defaultResources, // 默认的资源属性（如 color）
+            ...optionResources   // options中指定的资源属性（如 sort）
+        };
+    }
+    
+    return mergedOptions;
+}
+
 // 获取只读页面 recordId 已废弃, 函数签名保持不变, 但recordId变量不可再使用, 请使用运行时的${recordId}
 export async function getViewSchema(objectName, recordId, ctx) {
     const uiSchema = await getUISchema(objectName);
@@ -275,13 +343,15 @@ export async function getListSchema(
     let listview_filters = listView && listView._filters;
     // 返回 calendar 组件
     if(listView.type === "calendar"){
+        console.log("===listView==", listView);
+        const calendarOptions = getCalendarOptions(listView);
         const amisSchema = {
             "type": "steedos-object-calendar",
             "objectApiName": objectName,
             "filters": listviewFilter,
             "filtersFunction": listview_filters,
             "sort": sort,
-            ...listView.options
+            ...calendarOptions
         };
         return {
             uiSchema,
