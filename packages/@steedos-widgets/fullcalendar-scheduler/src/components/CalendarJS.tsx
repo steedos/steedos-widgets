@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-03-22 09:31:21
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-03-24 21:12:55
+ * @LastEditTime: 2025-12-01 22:39:15
  * @FilePath: /steedos-widgets/packages/@steedos-widgets/fullcalendar/src/components/Calendar.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -105,6 +105,13 @@ export const FullCalendar = ({
     dispatchEvent('noEventsWillUnmount', event)
   };
 
+  const handleGetRresources = (fetchInfo, successCallback, failureCallback) => {
+    // fix：控件初始 render 的时候，dispatchEvent未生效
+    setTimeout(()=>{
+      dispatchEvent('getRresources', {fetchInfo, successCallback, failureCallback})
+    }, 100);
+  };
+
 
   // useEffect 在组件挂载后运行
   useEffect(() => {
@@ -122,12 +129,7 @@ export const FullCalendar = ({
                     right: 'prev,next today dayGridMonth,timeGridWeek,timeGridDay,listWeek'
                   },
 
-                  // 添加一些配置，例如资源列表，否则 resourceTimeline 视图可能不显示
-                  resources: [
-                      // { id: 'a', title: 'Room A' },
-                      // { id: 'b', title: 'Room B' },
-                      // { id: 'c', title: 'Room C' },
-                  ],
+                  resources: handleGetRresources,
                   
                   locale: initialLocaleCode,
                   editable: true,

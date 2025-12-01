@@ -146,7 +146,8 @@ export async function getCalendarApi(mainObject, fields, options) {
         start: n["${calendarOptions.startDateExpr}"],
         end: n["${calendarOptions.endDateExpr}"],
         allDay: n["${calendarOptions.allDayExpr}"],
-        extendedProps: n
+        extendedProps: n,
+        resourceId: n["${calendarOptions.groups?.[0]}"]
       }
     });
     const successCallback = selfData.successCallback;
@@ -224,6 +225,35 @@ export function getCalendarRecordSaveApi(object, calendarOptions) {
   };
 }
 
+
+export function getCalendarResourcesApi(objectSchema, calendarOptions) {
+  const { groups, resources } = calendarOptions;
+  const { color, filters, sort } = resources || {};
+  const groupFieldName = groups[0];
+  const groupField = objectSchema.fields[groupFieldName];
+  let groupObjectName = groupField?.reference_to;
+  if (!groupObjectName){
+    return {};
+  }
+  const fetchFields = [objectSchema.NAME_FIELD_KEY || 'name'];
+  if (color) {
+    fetchFields.push(color);
+  }
+  return {
+    url: `/api/v1/${groupObjectName}?fields=${JSON.stringify(fetchFields)}&filters=${JSON.stringify(filters || [])}&sort=${sort || 'name asc'}`,
+    adaptor: function (payload, response, api, context) {
+      const items = payload?.data?.items || [];
+      const resources = items.map(item => ({
+        id: item._id,
+        title: item.name,
+        eventColor: item.color
+      }));
+      context.successCallback(resources);
+      return payload;
+    }
+  }
+}
+
 /**
  * 列表视图Calendar amisSchema
  * @param {*} objectSchema 对象UISchema
@@ -243,6 +273,10 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
     calendarOptions.allDayExpr,
     calendarOptions.textExpr
   ];
+  const groups = calendarOptions.groups;
+  if (groups && groups.length > 0) {
+    titleFields.push(groups[0]);
+  }
   let fields = [];
   each(titleFields, function (n) {
     if (objectSchema.fields[n]) {
@@ -394,6 +428,21 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
     businessHours.endTime = `${calendarOptions.endDayHour}:00`;
   }
 
+  const moreEvents = {};
+  if (!_.isEmpty(calendarOptions.resources) && groups && groups.length > 0) {
+    moreEvents.getRresources = {
+      "weight": 0,
+      "actions": [
+        {
+          "actionType": "ajax",
+          "args": {
+            "api": getCalendarResourcesApi(objectSchema, calendarOptions)
+          }
+        }
+      ]
+    };
+  }
+
   // api.trackExpression="\\\${additionalFilters}";
   const onEvent = {
     "getEvents": {
@@ -532,7 +581,8 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
           "actionType": "setValue",
         }
       ]
-    }
+    },
+    ...moreEvents
   };
 
   Object.assign(onEvent, options.onEvent);
@@ -562,6 +612,18 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
         console.warn(e);
       }
     }
+  }
+
+  if (!_.isEmpty(calendarOptions.resources)) {
+    const headerToolbarViews = "prev,next today resourceTimelineMonth,resourceTimelineWeek,resourceTimelineDay,listWeek";
+    Object.assign(config, {
+      // "height": "auto",
+      initialView: 'resourceTimelineWeek',
+      resourceAreaHeaderContent: '会议室',
+      "headerToolbar": {
+        "right": headerToolbarViews
+      }
+    });
   }
 
   const amisSchema = {
