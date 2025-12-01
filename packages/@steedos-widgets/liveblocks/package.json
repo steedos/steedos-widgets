@@ -55,6 +55,7 @@
     "@liveblocks/react": "2.15.1",
     "@liveblocks/react-ui": "2.15.1",
     "@rollup/plugin-replace": "^5.0.2",
+    "@steedos-widgets/amis-lib": "6.10.19",
     "@steedos-widgets/amis-object": "6.10.19",
     "clsx": "2.1.1",
     "emojibase-data": "^16.0.2",
