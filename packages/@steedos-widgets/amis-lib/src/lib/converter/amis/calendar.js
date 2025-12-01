@@ -274,8 +274,9 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
     calendarOptions.textExpr
   ];
   const groups = calendarOptions.groups;
-  if (groups && groups.length > 0) {
-    titleFields.push(groups[0]);
+  const groupFieldName = groups?.[0];
+  if (groupFieldName) {
+    titleFields.push(groupFieldName);
   }
   let fields = [];
   each(titleFields, function (n) {
@@ -340,9 +341,10 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
     doc["${calendarOptions.endDateExpr}"] = data.end;
     doc["${calendarOptions.allDayExpr}"] = data.allDay;
     doc["${calendarOptions.textExpr}"] = data.title;
+    if (data.resource) {
+      doc["${groupFieldName}"] = data.resource.id;
+    }
     // ObjectForm会认作用域下的变量值
-    // TODO: 待组件支持initValues属性后应该改掉，不应该通过data直接传值
-    // TODO: 全天事件属性传入doc了但是没有生效，需要手动在ObjectForm中勾选全天事件
     const title = "${i18next.t('frontend_form_new')} ${objectSchema.label}";
     doAction(
       {
@@ -429,7 +431,7 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
   }
 
   const moreEvents = {};
-  if (!_.isEmpty(calendarOptions.resources) && groups && groups.length > 0) {
+  if (!_.isEmpty(calendarOptions.resources) && groupFieldName) {
     moreEvents.getRresources = {
       "weight": 0,
       "actions": [
