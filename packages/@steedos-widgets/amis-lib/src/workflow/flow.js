@@ -68,10 +68,6 @@ const getFieldEditTpl = async (field, label)=>{
     visibleOn: field.visibleOn,
     requiredOn: field.requiredOn
   };
-
-  if(field.formula){
-    tpl.value = `$${field.formula}`;
-  }
   
   if(isOpinionField(field)){
     tpl.type = 'input-group';
@@ -269,10 +265,16 @@ const getFieldEditTpl = async (field, label)=>{
         } else {
           tpl.type = "input-text";
         }
+        if(field.formula){
+          tpl.value = `$${field.formula}`;
+        }
         break;
       case "number":
         tpl.type = "input-number";
-        tpl.precision=2
+        tpl.precision=field.digits;
+        if(field.formula){
+          tpl.value = `$${field.formula}`;
+        }
         break;
       case "date":
         tpl.type = "input-date";
