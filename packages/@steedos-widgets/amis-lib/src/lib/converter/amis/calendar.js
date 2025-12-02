@@ -431,7 +431,7 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
   }
 
   const moreEvents = {};
-  if (!_.isEmpty(calendarOptions.resources) && groupFieldName) {
+  if (groupFieldName) {
     moreEvents.getRresources = {
       "weight": 0,
       "actions": [
@@ -616,7 +616,7 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
     }
   }
 
-  if (!_.isEmpty(calendarOptions.resources)) {
+  if (!_.isEmpty(calendarOptions.groups)) {
     const headerToolbarViews = "prev,next today resourceTimelineMonth,resourceTimelineWeek,resourceTimelineDay,listWeek";
     Object.assign(config, {
       // "height": "auto",

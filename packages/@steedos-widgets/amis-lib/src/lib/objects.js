@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-12-02 01:03:54
+ * @LastEditTime: 2025-12-02 15:56:17
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -276,13 +276,19 @@ function getCalendarOptions(listView) {
     // 第二次合并：深度合并 'resources' 属性（如果两者都有定义）
     // 确保 options 内部的 resources 属性优先于 calendar_resource_... 属性
     const defaultResources = calendarDefaults.resources;
-    const optionResources = listView.options.resources;
+    const optionResources = listView.options?.resources;
     
     if (defaultResources && optionResources) {
         mergedOptions.resources = {
             ...defaultResources, // 默认的资源属性（如 color）
             ...optionResources   // options中指定的资源属性（如 sort）
         };
+    }
+
+    if (listView.type !== "timeline") {
+        // 只有资源视图才显示分资源分组的模式
+        delete mergedOptions.groups;
+        delete mergedOptions.resources;
     }
     
     return mergedOptions;
@@ -342,8 +348,7 @@ export async function getListSchema(
     let listviewFilter = getListViewFilter(listView, ctx);
     let listview_filters = listView && listView._filters;
     // 返回 calendar 组件
-    if(listView.type === "calendar"){
-        console.log("===listView==", listView);
+    if(listView.type === "calendar" || listView.type === "timeline"){
         const calendarOptions = getCalendarOptions(listView);
         const amisSchema = {
             "type": "steedos-object-calendar",
