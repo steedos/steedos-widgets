@@ -5,7 +5,7 @@
  * @LastEditTime: 2025-10-14 15:53:35
  * @Description: 
  */
-import { i18next } from "../i18n";
+import i18next from "i18next";
 
 export const getSchema = async (uiSchema, ctx) => {
     const schemaApiAdaptor = `

@@ -5,7 +5,7 @@
  * @LastEditTime: 2023-12-13 10:09:05
  * @Description: 
  */
-import { i18next } from "../i18n";
+import i18next from "i18next";
 
 export const getSchema = (uiSchema)=>{
     return {

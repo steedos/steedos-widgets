@@ -6,7 +6,7 @@
  * @Description: 
  */
 import { getSteedosAuth } from '@steedos-widgets/amis-lib'
-import { i18next } from "@steedos-widgets/amis-lib";
+import i18next from "i18next";
 // TODO attachments
 export const getAttachments = async (instance)=>{
 

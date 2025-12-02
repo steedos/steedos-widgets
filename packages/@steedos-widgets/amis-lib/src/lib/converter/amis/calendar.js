@@ -3,7 +3,7 @@ import { getSaveApi } from './api';
 import { each, values } from 'lodash';
 import * as graphql from './graphql'
 import _, { isEmpty, omitBy, isNil } from 'lodash';
-import { i18next } from "../../../i18n"
+import i18next from "i18next";
 
 export const DEFAULT_CALENDAR_OPTIONS = {
   startDateExpr: "start",

@@ -2,7 +2,7 @@ import {
   lookupToAmisPicker,
   getSteedosAuth, Router
 } from "@steedos-widgets/amis-lib";
-import { i18next } from "@steedos-widgets/amis-lib";
+import i18next from "i18next";
 import { getUserApprove } from './util';
 //TODO Meteor.settings.public?.workflow?.hideCounterSignJudgeOptions
 

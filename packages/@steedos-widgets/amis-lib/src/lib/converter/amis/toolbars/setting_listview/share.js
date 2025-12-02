@@ -4,7 +4,7 @@
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
  * @LastEditTime: 2024-02-06 15:38:49
  */
-import { i18next } from "../../../../../i18n"
+import i18next from "i18next";
 export const getSetListviewShareButtonSchema = ()=>{
     return {
         "type": "button",

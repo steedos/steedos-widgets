@@ -2,7 +2,7 @@ import { OMIT_FIELDS } from './fields';
 import { absoluteUrl } from '../../steedos.client'
 import * as graphql from './graphql'
 import * as _ from 'lodash';
-import { i18next } from "../../../i18n"
+import i18next from "i18next";
 const API_CACHE = 100;
 
 function getReadonlyFormAdaptor(object, fields, options){

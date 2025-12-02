@@ -11,7 +11,7 @@ import { getObjectRecordDetailRelatedListHeader, getObjectListHeader } from './c
 import { isEmpty,  find, isString, forEach, keys, findKey, isArray, union, has, map } from "lodash";
 import { getUISchema, getField, getListViewColumns, getListViewSort, getListViewFilter } from './objects'
 import { getRecord } from './record';
-import { i18next } from '../i18n'
+import i18next from "i18next";
 
 function str2function(
     contents,

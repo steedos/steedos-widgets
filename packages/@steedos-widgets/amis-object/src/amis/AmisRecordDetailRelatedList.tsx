@@ -5,8 +5,9 @@
  * @LastEditTime: 2025-02-28 11:35:58
  * @Description: 
  */
-import { getRecordDetailRelatedListSchema, i18next } from '@steedos-widgets/amis-lib'
+import { getRecordDetailRelatedListSchema } from '@steedos-widgets/amis-lib'
 import { has, isEmpty } from 'lodash';
+import i18next from "i18next";
 
 export const AmisRecordDetailRelatedList = async (props: any) => {
   const { $schema, objectApiName, recordId, relatedObjectApiName, data, relatedKey, top, perPage, 

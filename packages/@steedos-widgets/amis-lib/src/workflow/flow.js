@@ -9,7 +9,7 @@ import {
   lookupToAmis,
   getSteedosAuth,
 } from "@steedos-widgets/amis-lib";
-import { i18next } from "@steedos-widgets/amis-lib";
+import i18next from "i18next";
 
 import { each, startsWith, includes } from "lodash";
 

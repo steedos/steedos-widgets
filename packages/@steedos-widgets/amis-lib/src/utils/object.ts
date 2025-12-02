@@ -1,4 +1,4 @@
-import isPlainObject from 'lodash/isPlainObject';
+import {isPlainObject} from 'lodash';
 import {keyToPath} from './keyToPath';
 
 // 方便取值的时候能够把上层的取到，但是获取的时候不会全部把所有的数据获取到。

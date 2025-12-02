@@ -7,7 +7,7 @@
  */
 import { fetchAPI, getUserId } from "./steedos.client";
 import { getObjectCalendar } from './converter/amis/calendar';
-import { i18next } from '../i18n'
+import i18next from "i18next";
 import { createObject } from '../utils/object'
 
 import { getReadonlyFormInitApi } from './converter/amis/api'

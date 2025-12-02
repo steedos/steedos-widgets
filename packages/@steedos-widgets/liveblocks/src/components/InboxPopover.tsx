@@ -16,7 +16,7 @@ import clsx from "clsx";
 // import { Link } from "./Link";
 // import { usePathname } from "next/navigation";
 import './InboxPopover.css';
-import { i18next } from '../i18n';
+import i18next from "i18next";
 
 
 function Inbox({ className, onClick, ...props }: ComponentPropsWithoutRef<"div">) {

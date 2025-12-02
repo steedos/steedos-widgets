@@ -6,7 +6,7 @@ import * as Tpl from '../tpl';
 import * as File from './file';
 import { getAmisStaticFieldType } from './type';
 import * as _ from 'lodash';
-import { i18next } from "../../../../i18n";
+import i18next from "i18next";
 import { approvalCommentsToAmis } from './approval_comments';
 
 export const QUICK_SEARCHABLE_FIELD_TYPES = ["text", "textarea", "autonumber", "url", "email"];

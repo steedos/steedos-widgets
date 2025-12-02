@@ -23,7 +23,8 @@ const external = [
   'antd',
   'amis',
   'amis-core',
-  'amis-ui'
+  'amis-ui',
+  'i18next',
 ]
 
 const globals = { 
@@ -34,12 +35,13 @@ const globals = {
   'amis': 'Amis',
   'amis-core': 'AmisCore',
   'amis-ui': 'AmisUI',
+  'i18next': 'i18next',
 }
 
 const options = {
   input: `src/index.ts`,
   // Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash')
-  external: [],
+  external,
   watch: {
     include: 'src/**',
   },
@@ -68,7 +70,7 @@ const options = {
         require('autoprefixer')
       ],
     }),
-    process.env.NODE_ENV === 'production' && terser()
+    // process.env.NODE_ENV === 'production' && terser()
   ],
 };
 
@@ -123,7 +125,11 @@ export default [
                  fileName: 'assets.json',
                  source: amis
               });
-              const amisDev = JSON.stringify(assets, null, 4).replace(/https\:\/\/unpkg.com\/antd/g, "https://unpkg.steedos.cn/antd").replace(/\@\{\{version\}\}/g, ``).replace(/https\:\/\/unpkg.com/g, unpkgUrl)
+              const amisDev = JSON.stringify(assets, null, 4).
+                replace(/https\:\/\/unpkg.com\/antd/g, "https://unpkg.steedos.cn/antd").
+                replace(/https\:\/\/unpkg.com\/i18next/g, "https://unpkg.steedos.cn/i18next").
+                replace(/https\:\/\/unpkg.com\/react-i18next/g, "https://unpkg.steedos.cn/react-i18next").
+                replace(/\@\{\{version\}\}/g, ``).replace(/https\:\/\/unpkg.com/g, unpkgUrl)
               this.emitFile({
                  type: 'asset',
                  fileName: 'assets-dev.json',

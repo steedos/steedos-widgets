@@ -5,7 +5,7 @@
  * @LastEditTime: 2024-06-07 13:39:34
  * @Description: 
  */
-import { i18next } from "../../../../i18n"
+import i18next from "i18next";
 
 export const getMarkdownFieldSchema = (field, readonly, ctx)=>{
     if(readonly){

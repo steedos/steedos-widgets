@@ -6,7 +6,7 @@
  * @Description: 
  */
 import _, { find, last, clone, sortBy, filter, groupBy, indexOf } from "lodash";
-import { i18next } from "@steedos-widgets/amis-lib";
+import i18next from "i18next";
 
 const isOpinionField = (field_formula)=>{
     return (field_formula?.indexOf("{traces.") > -1 || field_formula?.indexOf("{signature.traces.") > -1 || field_formula?.indexOf("{yijianlan:") > -1 || field_formula?.indexOf("{\"yijianlan\":") > -1 || field_formula?.indexOf("{'yijianlan':") > -1)

@@ -6,7 +6,7 @@
  * @Description: 
  */
 
-import { i18next } from '@steedos-widgets/amis-lib';
+import i18next from "i18next";
 
 export const AmisAppLauncher = async (props) => {
   // console.log(`AmisAppLauncher`, props)
