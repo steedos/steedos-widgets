@@ -217,6 +217,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
             type: "steedos-select-user",
             label: "",
             name: "next_users", 
+            id: "u:next_users",
             hiddenOn: "this.new_next_step.deal_type != 'pickupAtRuntime' || this.new_next_step.step_type == 'counterSign'",
             required: true,
             "onEvent": {
@@ -232,6 +233,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
             type: "steedos-select-user",
             label: "",
             name: "next_users", 
+            id: "u:next_users",
             hiddenOn: "this.new_next_step.deal_type != 'pickupAtRuntime' || this.new_next_step.step_type != 'counterSign'",
             required: true,
             multiple: true,
