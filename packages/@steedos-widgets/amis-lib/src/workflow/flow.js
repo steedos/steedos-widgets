@@ -1018,7 +1018,7 @@ export const getFlowFormSchema = async (instance, box) => {
     submitEvents = onEvent?.submit?.actions || [];
     nextStepInitedEvents = onEvent?.nextStepInited?.actions || [];
     nextStepChangeEvents = onEvent?.nextStepChange?.actions || [];
-    nextStepUserChangeEvents = onEvent?.nextStepUserChange.actions || [];
+    nextStepUserChangeEvents = onEvent?.nextStepUserChange?.actions || [];
   }
   // if (box == 'inbox' || box == 'draft') {
   // TODO: 临时去掉 AutoOpenApproveDrawer 功能因为测试到性能问题
