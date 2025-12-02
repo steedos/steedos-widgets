@@ -22,11 +22,6 @@ export const getRelatedRecords = async (instance)=>{
 
 // TODO delete button
 export const getRelatedInstances = async (instance)=>{
-    // if(!instance.related_instances || isEmpty(instance.related_instances)){
-    //     return ;
-    // }
-    const spaceId = getSteedosAuth().tenantId;
-    
     return {
         "type": "list",
         "name": "relatedInstances",
@@ -37,7 +32,7 @@ export const getRelatedInstances = async (instance)=>{
             {
                 type: 'tpl',
                 inline: true,
-                tpl: `<a href='\${context.rootUrl}/workflow/space/${spaceId}/view/readonly/\${_id}' target='_blank'>\${name}</a>`
+                tpl: `<a href='/app/approve_workflow/page/page_instance_view?recordId=\${_id}' target='_blank'>\${name}</a>`
             }
           ],
           "actions": [
