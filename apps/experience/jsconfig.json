@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"],
-      "@steedos-widgets/*": ["../../packages/@steedos-widgets/*/src"],
-    }
-  }
-}
