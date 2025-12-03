@@ -154,6 +154,8 @@ export const FullCalendar = ({
 
                   forceEventDuration: true,
                   
+                  schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
+                  
                   // 其他任何 FullCalendar 选项...
                   ...props
               });
