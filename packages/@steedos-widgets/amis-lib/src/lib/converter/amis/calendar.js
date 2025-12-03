@@ -229,7 +229,7 @@ export function getCalendarRecordSaveApi(object, calendarOptions) {
 
 export function getCalendarResourcesApi(objectSchema, calendarOptions) {
   const { groups, resources } = calendarOptions;
-  const { color, filters, sort } = resources || {};
+  const { color, filters } = resources || {};
   const groupFieldName = groups[0];
   const groupField = objectSchema.fields[groupFieldName];
   let groupObjectName = groupField?.reference_to;
@@ -241,7 +241,7 @@ export function getCalendarResourcesApi(objectSchema, calendarOptions) {
     fetchFields.push(color);
   }
   return {
-    url: `/api/v1/${groupObjectName}?fields=${JSON.stringify(fetchFields)}&filters=${JSON.stringify(filters || [])}&sort=${sort || 'name asc'}`,
+    url: `/api/v1/${groupObjectName}?fields=${JSON.stringify(fetchFields)}&filters=${JSON.stringify(filters || [])}`,
     adaptor: function (payload, response, api, context) {
       const items = payload?.data?.items || [];
       const resources = items.map(item => ({
@@ -634,10 +634,17 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
 
   if (!_.isEmpty(calendarOptions.groups)) {
     const headerToolbarViews = "prev,next today resourceTimelineMonth,resourceTimelineWeek,resourceTimelineDay,listWeek";
+    const groupField = objectSchema.fields[groupFieldName];
+    let groupObjectName = groupField?.reference_to;
+    let groupHeaderTitle = "资源";
+    if (groupObjectName){
+      const groupObjectConfig = getUISchemaSync(groupObjectName);
+      groupHeaderTitle = groupObjectConfig?.label || groupHeaderTitle;
+    }
     Object.assign(config, {
       // "height": "auto",
       initialView: 'resourceTimelineWeek',
-      resourceAreaHeaderContent: '会议室',
+      resourceAreaHeaderContent: groupHeaderTitle,
       "headerToolbar": {
         "right": headerToolbarViews
       }
