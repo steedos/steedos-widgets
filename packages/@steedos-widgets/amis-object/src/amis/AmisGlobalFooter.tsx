@@ -7,7 +7,7 @@
  */
 
 import './AmisGlobalFooter.less';
-import {i18next} from '@steedos-widgets/amis-lib';
+import i18next from "i18next";
 
 export const AmisGlobalFooter = async (props) => {
     let { stacked = false, overflow, appId, data, links = null, showIcon = true, indentSize = 12, selectedId } = props;

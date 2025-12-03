@@ -6,9 +6,8 @@
  */
 import en_us from "./locales/en-US.json"
 import zh_cn from "./locales/zh-CN.json"
-import { i18next } from '@steedos-widgets/amis-lib';
+import i18next from "i18next";
 
 i18next.addResources('en', 'liveblocks', en_us);
 i18next.addResources('zh-CN', 'liveblocks', zh_cn);
 
-export { i18next };

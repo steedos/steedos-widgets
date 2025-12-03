@@ -1,7 +1,7 @@
 import { fetchAPI, getSteedosAuth } from "@steedos-widgets/amis-lib";
 import _, { find, isEmpty } from "lodash";
 import { getUserApprove, getOpinionFieldStepsName, getTraceApprovesByStep, isOpinionOfField, isMyApprove, showApprove, showApproveDefaultDescription, showApproveSignImage } from './util';
-import { i18next } from "@steedos-widgets/amis-lib";
+import i18next from "i18next";
 
 const flowVersionCache = new Map();
 const formVersionCache = new Map();

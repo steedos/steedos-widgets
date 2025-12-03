@@ -8,7 +8,7 @@
 
 import * as Tpl from '../tpl';
 import { Router } from '../../../router'
-import { i18next } from '../../../../i18n'
+import i18next from "i18next";
 
 async function getListBody(fields, options){
     const columns = [];

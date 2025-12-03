@@ -6,7 +6,7 @@
  * @Description: 
  */
 import './AmisAppMenu.less';
-import { i18next } from '@steedos-widgets/amis-lib';
+import i18next from "i18next";
 import _ from 'lodash';
 
 export const AmisAppMenu = async (props) => {

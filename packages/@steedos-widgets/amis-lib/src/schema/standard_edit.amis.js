@@ -5,7 +5,7 @@
  * @LastEditTime: 2025-07-14 11:55:43
  * @Description:
  */
-import { i18next } from "../i18n";
+import i18next from "i18next";
 import { getPage } from '../lib/page'
 
 export const getSchema = async (uiSchema, ctx) => {

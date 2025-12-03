@@ -11,7 +11,7 @@ import { getObjectHeaderToolbar, getObjectFooterToolbar, getObjectFilter } from 
 import { getListViewSort, getListViewFilter } from './../../../objects';
 import { lookupToAmisTreeSelect } from './tree_select';
 import * as standardNew from '../../../../schema/standard_new.amis'
-import { i18next } from "../../../../i18n";
+import i18next from "i18next";
 import { getScriptForAddUrlPrefixForImgFields } from "../api"
 
 export const getReferenceToFieldSchema = (field, refObjectConfig)=>{

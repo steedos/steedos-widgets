@@ -2,7 +2,7 @@ import {
   lookupToAmisPicker,
   getSteedosAuth, Router
 } from "@steedos-widgets/amis-lib";
-import { i18next } from "@steedos-widgets/amis-lib";
+import i18next from "i18next";
 import { getUserApprove } from './util';
 //TODO Meteor.settings.public?.workflow?.hideCounterSignJudgeOptions
 
@@ -217,6 +217,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
             type: "steedos-select-user",
             label: "",
             name: "next_users", 
+            id: "u:next_users",
             hiddenOn: "this.new_next_step.deal_type != 'pickupAtRuntime' || this.new_next_step.step_type == 'counterSign'",
             required: true,
             "onEvent": {
@@ -232,6 +233,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
             type: "steedos-select-user",
             label: "",
             name: "next_users", 
+            id: "u:next_users",
             hiddenOn: "this.new_next_step.deal_type != 'pickupAtRuntime' || this.new_next_step.step_type != 'counterSign'",
             required: true,
             multiple: true,

@@ -8,7 +8,7 @@
  */
 
 import './AmisGlobalHeaderToolbar.less';
-import { i18next } from '@steedos-widgets/amis-lib';
+import i18next from "i18next";
 
 const reg = /([^/]+)\/view\/([^/]+)/;
 

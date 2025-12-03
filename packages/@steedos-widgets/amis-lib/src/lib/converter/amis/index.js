@@ -6,7 +6,7 @@ import { getListSchema, getCardSchema } from './fields/list';
 import _, { map, filter } from 'lodash';
 import { defaultsDeep } from '../../defaultsDeep';
 import { getObjectHeaderToolbar, getObjectFooterToolbar, getObjectFilter } from './toolbar';
-import { i18next } from "../../../i18n"
+import i18next from "i18next";
 import { createObject } from '../../../utils/object';
 
 function getBulkActions(objectSchema){

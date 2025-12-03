@@ -7,7 +7,7 @@
  */
 
 import _, { each } from 'lodash';
-import { i18next } from "@steedos-widgets/amis-lib";
+import i18next from "i18next";
 
 export const getInstanceApprovalHistory = async ()=>{
     return {

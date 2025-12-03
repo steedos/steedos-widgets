@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import { isExpression, parseSingleExpression } from "./expression";
 import { getUISchema } from "./objects";
-import { i18next } from '../i18n'
+import i18next from "i18next";
 
 import { StandardButtons } from '../standard/button'
 

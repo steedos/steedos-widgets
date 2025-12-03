@@ -5,7 +5,8 @@
  * @LastEditTime: 2024-06-14 06:22:22
  */
 import './AmisInputTable.less';
-import { getAmisInputTableSchema, i18next } from '@steedos-widgets/amis-lib'
+import { getAmisInputTableSchema } from '@steedos-widgets/amis-lib'
+import i18next from "i18next";
 
 export const AmisInputTable = async (props) => {
   // console.log("AmisInputTable props", props);

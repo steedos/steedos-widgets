@@ -7,7 +7,7 @@
  */
 import { map, isEmpty } from 'lodash'
 import { getSteedosAuth } from '@steedos-widgets/amis-lib';
-import { i18next } from "@steedos-widgets/amis-lib";
+import i18next from "i18next";
 export const getRelatedRecords = async (instance)=>{
     if(!instance.record_ids || isEmpty(instance.record_ids)){
         return ;

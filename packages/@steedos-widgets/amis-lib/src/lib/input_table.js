@@ -9,7 +9,7 @@ import { getFormBody } from './converter/amis/form';
 import { getComparableAmisVersion } from './converter/amis/util';
 import { clone, cloneDeep } from 'lodash';
 import { uuidv4 } from '../utils/uuid';
-import { i18next } from '../i18n';
+import i18next from "i18next";
 
 /**
  * 子表组件字段值中每行数据补上字段值为空的的字段值，把值统一设置为空字符串，是为了解决amis amis 3.6/6.0 input-table组件bug:行中字段值为空时会显示为父作用域中的同名变量值，见：https://github.com/baidu/amis/issues/9520

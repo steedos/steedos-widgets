@@ -4,7 +4,7 @@
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
  * @LastEditTime: 2025-04-07 16:02:53
  */
-import { i18next } from "../i18n";
+import i18next from "i18next";
 export const getSchema = (uiSchema)=>{
     return {
         "type": "service",

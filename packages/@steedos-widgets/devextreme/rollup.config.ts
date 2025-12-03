@@ -59,7 +59,7 @@ const options = {
         { src: 'src/css', dest: 'dist/' },
       ]
     }),
-    terser()
+    // terser()
   ],
 };
 
@@ -112,7 +112,9 @@ export default [
                  fileName: 'assets.json',
                  source: amis
               });
-              const amisDev = JSON.stringify(assets, null, 4).replace(/\@\{\{version\}\}/g, ``).replace(/https\:\/\/unpkg.com/g, unpkgUrl)
+              const amisDev = JSON.stringify(assets, null, 4).replace(/\@\{\{version\}\}/g, ``)
+                .replace(/https\:\/\/unpkg.com\/devextreme-dist/g, "https://unpkg.steedos.cn/devextreme-dist")
+                .replace(/https\:\/\/unpkg.com/g, unpkgUrl)
               this.emitFile({
                  type: 'asset',
                  fileName: 'assets-dev.json',

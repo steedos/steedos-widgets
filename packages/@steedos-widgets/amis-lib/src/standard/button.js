@@ -5,7 +5,7 @@
  * @LastEditTime: 2025-07-22 14:12:01
  * @Description: 
  */
-import { i18next } from "../i18n";
+import i18next from "i18next";
 import * as standardNew from '../schema/standard_new.amis.js'
 import * as standardEdit from '../schema/standard_edit.amis.js'
 import * as standardDelete from '../schema/standard_delete.amis.js'

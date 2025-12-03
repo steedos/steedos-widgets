@@ -6,8 +6,8 @@
  * @Description: 
  */
 import typescript from '@rollup/plugin-typescript';
-import commonjs from 'rollup-plugin-commonjs';
-import resolve from 'rollup-plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import resolve, { nodeResolve } from '@rollup/plugin-node-resolve';
 import { uglify } from 'rollup-plugin-uglify';
 import json from 'rollup-plugin-json';
 import fg from 'fast-glob';
@@ -19,12 +19,14 @@ const external = [
   "react",
   "react-dom",
   "lodash",
+  "i18next",
 ]
 
 const globals = { 
   lodash: '_',
   react: 'React',
-  'react-dom': 'ReactDOM'
+  'react-dom': 'ReactDOM',
+  'i18next': 'i18next',
 }
 
 const options = {
@@ -35,11 +37,12 @@ const options = {
   plugins: [
     typescript({}),
     json(),
+    nodeResolve(),
     commonjs({
-      namedExports: {
-        'js-cookie': ['get', 'set'],
-        './node_modules/es6-promise/dist/es6-promise.j': ['polyfill'],
-      },
+      // namedExports: {
+      //   'js-cookie': ['get', 'set'],
+      //   './node_modules/es6-promise/dist/es6-promise.j': ['polyfill'],
+      // },
     }),
     {
         name: 'watch-src',
@@ -50,7 +53,7 @@ const options = {
             }
         }
     },
-    // process.env.NODE_ENV === 'production' && uglify()
+    process.env.NODE_ENV === 'production' && uglify()
   ],
 };
 
@@ -62,7 +65,7 @@ export default [
     output: [
       {
         file: pkg.unpkg,
-        name: 'amis-lib',
+        name: 'AmisLib',
         format: 'umd',
         sourcemap: true,
         strict: false,

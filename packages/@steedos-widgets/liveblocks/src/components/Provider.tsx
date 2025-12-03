@@ -5,8 +5,8 @@ import { Composer, Thread, LiveblocksUIConfig } from "@liveblocks/react-ui";
 import { RoomProvider, useThreads } from "@liveblocks/react/suspense";
 import { ErrorBoundary } from "react-error-boundary";
 import "@liveblocks/react-ui/styles.css";
-import { i18next } from '../i18n';
-import { useTranslation } from "react-i18next";
+import i18next from "i18next";
+import zh_cn from "../locales/zh-CN.json"
 
 export const AmisRoomsProvider = (props: any) => {
   const {
@@ -22,15 +22,13 @@ export const AmisRoomsProvider = (props: any) => {
 
   const fixedBaseUrl = baseUrl || amisData.context?.rootUrl || `${window.location.protocol}//${window.location.host}`
   console.log('liveblocks baseUrl:', fixedBaseUrl);
-
-  const { i18n, t } = useTranslation();
-  const lang = i18n.language;
-  const liveblocksResources = i18next.getResourceBundle(lang, "liveblocks") || {};
+  
+  const liveblocksResources = i18next.language.startsWith('zh') ? zh_cn : {};
 
   const overrides = {
-    locale: lang,
+    locale: i18next.language,
     ...liveblocksResources
-  };
+  } as any;
 
   const commentsCommented = overrides.INBOX_NOTIFICATION_THREAD_COMMENTS_LIST__commented || 'commented';
   const commentsIn = overrides.INBOX_NOTIFICATION_THREAD_COMMENTS_LIST__in || 'in';
