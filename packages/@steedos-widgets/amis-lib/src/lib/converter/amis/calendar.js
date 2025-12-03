@@ -195,7 +195,7 @@ export function getCalendarRecordSaveApi(object, calendarOptions) {
   };
   const saveDataTpl = `
     const formData = api.data.$;
-    const objectName = ${object.name}};
+    const objectName = "${object.name}";
     let query = \`mutation{record: \${objectName}__update(id: "\${formData.${idFieldName}}", doc: {__saveData}){${idFieldName}}}\`;
     delete formData.${idFieldName};
     let __saveData = JSON.stringify(JSON.stringify(formData));
