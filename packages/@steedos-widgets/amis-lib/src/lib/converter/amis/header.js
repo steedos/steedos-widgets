@@ -803,7 +803,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
               "actions": [
                 {
                   "actionType": "custom",
-                  "script": "const data = event.data; window.open(`/app/${data.app_id}/${data.objectName}/view/${data.recordId}?side_object=${data.side_object}&side_listview_id=${data.side_listview_id}`)"
+                  "script": "const data = event.data; window.open(`/app/${data.app_id || '-'}/${data.objectName}/view/${data.recordId}?side_object=${data.side_object}&side_listview_id=${data.side_listview_id}`)"
                 }
               ]
           }
