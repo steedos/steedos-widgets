@@ -9,7 +9,7 @@ import i18next from "i18next";
 export const DEFAULT_CALENDAR_OPTIONS = {
   startDateExpr: "start",
   endDateExpr: "end",
-  allDayExpr: "is_all_day",
+  // allDayExpr: "is_all_day",
   textExpr: "name"
 };
 
