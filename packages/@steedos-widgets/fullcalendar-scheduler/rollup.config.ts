@@ -10,7 +10,7 @@ require('dotenv-flow').config();
 
 const pkg = require('./package.json');
 
-const exportName = 'BuilderFullCalendar';
+const exportName = 'BuilderFullCalendarScheduler';
 
 const unpkgUrl = process.env.STEEDOS_UNPKG_URL ? process.env.STEEDOS_UNPKG_URL : 'https://unpkg.com'
 

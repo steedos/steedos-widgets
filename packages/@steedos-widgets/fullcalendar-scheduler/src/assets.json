@@ -9,12 +9,12 @@
               "https://unpkg.com/@steedos-widgets/fullcalendar-scheduler@{{version}}/dist/fullcalendar.umd.js",
               "https://unpkg.com/@steedos-widgets/fullcalendar-scheduler@{{version}}/dist/fullcalendar.umd.css"
           ],
-          "library": "BuilderFullCalendar"
+          "library": "BuilderFullCalendarScheduler"
       }
   ],
   "components": [
       {
-          "exportName": "BuilderFullCalendarMeta",
+          "exportName": "BuilderFullCalendarSchedulerMeta",
           "npm": {
               "package": "@steedos-widgets/fullcalendar-scheduler"
           },
