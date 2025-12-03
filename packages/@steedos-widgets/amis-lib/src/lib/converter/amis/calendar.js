@@ -556,7 +556,7 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
             "api": recordSaveApi,
             "messages": {
               "success": objectSchema.label + i18next.t('frontend_message_modification_successful'),
-              "failed": objectSchema.label + i18next.t('frontend_message_modification_successful')
+              // "failed": objectSchema.label + i18next.t('frontend_message_modification_failed') //不可以设置请求失败错误信息，否则上面接收适配器中返回的错误信息不会显示
             }
           }
         }
