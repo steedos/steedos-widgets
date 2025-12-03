@@ -1,4 +1,5 @@
 :root {
+    --fc-small-font-size: var(--link-fontSize);
     --fc-button-text-color: #0176d3;
     --fc-button-bg-color: #fff;
     --fc-button-border-color: #c9c9c9;

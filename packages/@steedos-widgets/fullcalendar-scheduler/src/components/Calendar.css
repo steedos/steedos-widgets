@@ -1,4 +1,5 @@
 :root {
+    --fc-small-font-size: var(--link-fontSize);
     --fc-button-text-color: #0176d3;
     --fc-button-bg-color: #fff;
     --fc-button-border-color: #c9c9c9;
@@ -8,10 +9,10 @@
     --fc-button-active-border-color: #c9c9c9;
 }
 
-.steedos-object-listview .fc-media-screen{
+/* .steedos-object-listview .fc-media-screen{
     --tw-bg-opacity: 1;
     background-color: rgb(243 244 246 / var(--tw-bg-opacity));
-}
+} */
 .steedos-object-listview .fc-media-screen .fc-view-harness{
     background: #fff;
     max-height: calc(100vh - 240px);
@@ -30,8 +31,9 @@
     border-right-width: 0;
 }
 .steedos-object-listview .fc .fc-toolbar.fc-header-toolbar{
-    margin: var(--gap-md);
-    margin-top: var(--gap-sm);
+    /* margin-left: var(--gap-md);
+    margin-top: var(--gap-sm); */
+    margin-bottom: var(--gap-md);
 }
 .fc-media-screen a:hover{
     background-color: var(--fc-event-bg-color, #3788d8) !important;
