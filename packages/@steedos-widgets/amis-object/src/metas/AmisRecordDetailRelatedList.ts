@@ -9,7 +9,7 @@ const t = (window as any).steedosI18next.t;
 
 const config: any = {
   componentType: 'amisSchema', // amisSchema || react 
-  group: t('widgets-meta:steedos-object-related-listview_group', 'Steedos'),
+  group: t('widgets-meta:steedos-object-related-listview_group', '华炎魔方'),
   componentName: "AmisRecordDetailRelatedList",
   title: t('widgets-meta:steedos-object-related-listview_title', '相关表'),
   description: t('widgets-meta:steedos-object-related-listview_description', '显示指定对象的相关某一个相关表。'),
