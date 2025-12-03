@@ -4,6 +4,7 @@ import { each, values } from 'lodash';
 import * as graphql from './graphql'
 import _, { isEmpty, omitBy, isNil } from 'lodash';
 import { i18next } from "../../../i18n"
+import { getPage } from '../../page';
 
 export const DEFAULT_CALENDAR_OPTIONS = {
   startDateExpr: "start",
@@ -254,6 +255,52 @@ export function getCalendarResourcesApi(objectSchema, calendarOptions) {
   }
 }
 
+async function getEventClickActions(options) {
+  const recordPage = await getPage({ type: 'record', appId: options.appId, objectName: options.objectName, formFactor: options.formFactor });
+  let recordId = "${event.id}";
+  const drawerRecordDetailSchema = recordPage ? Object.assign({}, recordPage.schema, {
+    "recordId": recordId,
+    "data": {
+      ...recordPage.schema.data,
+      "_inDrawer": true,  // 用于判断是否在抽屉中
+      "recordLoaded": false, // 重置数据加载状态
+      "objectName": options.objectName,
+    }
+  }) : {
+    "type": "steedos-record-detail",
+    "objectApiName": options.objectName,
+    "recordId": recordId,
+    "showBackButton": false,
+    "showButtons": true,
+    "data": {
+      "_inDrawer": true,  // 用于判断是否在抽屉中
+      "recordLoaded": false, // 重置数据加载状态
+    }
+  }
+  return [
+    {
+      "actionType": "drawer",
+      "drawer": {
+        "type": "drawer",
+        "title": "&nbsp;",
+        "headerClassName": "hidden",
+        "size": "lg",
+        "width": window.drawerWidth || "70%",
+        "bodyClassName": "p-0 m-0 bg-gray-100",
+        "closeOnEsc": true,
+        "closeOnOutside": true,
+        "resizable": true,
+        "actions": [],
+        "body": [
+          drawerRecordDetailSchema
+        ],
+        "className": "steedos-record-detail-drawer app-popover"
+      },
+      "preventDefault": true
+    }
+  ]
+}
+
 /**
  * 列表视图Calendar amisSchema
  * @param {*} objectSchema 对象UISchema
@@ -393,25 +440,6 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
         "link": "/app/" + appId + "/" + objectName + "/view/" + eventId
       }
     });
-    // doAction({
-    //   "actionType": "dialog",
-    //   "dialog": {
-    //     "type": "dialog",
-    //     "title": "",
-    //     "body": [
-    //       {
-    //         "type": "steedos-record-detail",
-    //         "objectApiName": "\${objectName}",
-    //         "recordId": data.event && data.event.id
-    //       }
-    //     ],
-    //     "closeOnEsc": false,
-    //     "closeOnOutside": false,
-    //     "showCloseButton": true,
-    //     "size": "lg",
-    //     "actions": []
-    //   }
-    // });
   `;
 
   const recordId = "${event.id}";
@@ -489,19 +517,7 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
     },
     "eventClick": {
       "weight": 0,
-      "actions": [
-        {
-          "actionType": "custom",
-          "script": onEventClickScript
-        },
-        // amis 升级到 3.2后，以下的"actionType": "link"方式拿不到appId和objectName了
-        // {
-        //   "actionType": "link",
-        //   "args": {
-        //     "link": "/app/${appId}/${objectName}/view/${event.id}"
-        //   }
-        // }
-      ]
+      "actions": await getEventClickActions({objectName: objectSchema.name, appId: options.appId, formFactor: options.formFactor})
     },
     "eventAdd": {
       "weight": 0,
