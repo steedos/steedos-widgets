@@ -1,14 +1,14 @@
 
 const config: any = {
   group: "DevExtreme",
-  componentName: "AmisDataGrid",
-  title: "DataGrid",
+  componentName: "AmisScheduler",
+  title: "Scheduler",
   docUrl: "",
   screenshot: "",
   npm: {
     package: "@steedos-widgets/devextreme",
     version: "{{version}}",
-    exportName: "AmisDataGrid",
+    exportName: "AmisScheduler",
     main: "",
     destructuring: true,
     subName: ""
@@ -21,7 +21,7 @@ const config: any = {
   engines: ["amis"],
   // settings for amis.
   amis: {
-    name: 'devextreme-datagrid',
+    name: 'devextreme-scheduler',
     icon: "fa-fw fa fa-list-alt"
   }
 };
@@ -54,55 +54,31 @@ export default {
       order: -9999,
       icon: config.amis.icon,
       scaffold: {
-        "type": "service",
-        "api": {
-          "url": "${context.rootUrl}/api/v1/space_users",
-          "method": "get"
+        type: config.amis.name,
+        config: {
+          views: ['week', 'month'],
+          currentView: 'week',
+          currentDate: new Date(2021, 2, 28),
+          startDayHour: 9,
+          height: 730,
         },
-        "body": [
-          {
-            type: config.amis.name,
-            dataSource: "${items}",
-            config: {
-              keyExpr: "_id",
-              // Column Definitions: Defines & controls grid columns.
-              columns: [
-                { dataField: "_id", caption: "ID" },
-                { dataField: "name" },
-              ],        
-              columnChooser: { enabled: true },
-              searchPanel: {
-                visible: true,
-                  highlightCaseSensitive: true,
-                },
-              groupPanel: { visible: true },
-              grouping: {
-                autoExpandAll: false,
-              },
-              allowColumnReordering: true,
-              rowAlternationEnabled: true,
-            },
-          }
-        ]
       },
       previewSchema: {
         "type": "service",
         "api": {
-          "url": "${context.rootUrl}/api/v1/space_users",
+          "url": "${context.rootUrl}/api/v1/events",
           "method": "get"
         },
-        "body": [
-          {
-            type: config.amis.name,
-            dataSource: "${items}",
-            config: {
-              keyExpr: "_id",
-              // Column Definitions: Defines & controls grid columns.
-              columns: [
-              ]
-            },
-          }
-        ]
+        "body": [{
+          type: config.amis.name,
+          config: {
+            views: ['week', 'month'],
+            currentView: 'week',
+            currentDate: new Date(2021, 2, 28),
+            startDayHour: 9,
+            height: 730,
+          },
+        }]
       },
       panelTitle: "设置",
       panelControls: [
@@ -110,7 +86,7 @@ export default {
           type: "editor",
           "language": "json",
           name: "config",
-          label: "DataGrid 配置",   
+          label: "Scheduler 配置",   
           pipeOut: (value) => {
             try {
               return value ? JSON.parse(value) : null;
