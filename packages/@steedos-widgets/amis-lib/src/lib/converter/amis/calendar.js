@@ -180,13 +180,20 @@ export function getCalendarRecordPermissionsApi(mainObject, recordId) {
 
 export function getCalendarRecordSaveApi(object, calendarOptions) {
   const formData = {};
+  const groups = calendarOptions.groups;
+  const groupFieldName = groups?.[0];
   const idFieldName = object.idFieldName || "_id";
   formData[idFieldName] = "${event.data.event.id}";
   const nameFieldKey = object.NAME_FIELD_KEY || "name";
   formData[nameFieldKey] = "${event.data.event.title}";
   formData[calendarOptions.startDateExpr] = "${event.data.event.start}";
   formData[calendarOptions.endDateExpr] = "${event.data.event.end}";
-  formData[calendarOptions.allDayExpr] = "${event.data.event.allDay}";
+  if (calendarOptions.allDayExpr){
+    formData[calendarOptions.allDayExpr] = "${event.data.event.allDay}";
+  }
+  if (groupFieldName){
+    formData[groupFieldName] = "${event.data.event._def.resourceIds[0]}";
+  }
   // formData[calendarOptions.textExpr] = "${event.data.event.title}";
   const apiData = {
     objectName: object.name,
@@ -253,7 +260,7 @@ export function getCalendarResourcesApi(objectSchema, calendarOptions) {
     fetchFields.push(color);
   }
   return {
-    url: `/api/v1/${groupObjectName}?fields=${JSON.stringify(fetchFields)}&filters=${JSON.stringify(groupFilters || [])}`,
+    url: `/api/v1/${groupObjectName}?fields=${JSON.stringify(fetchFields)}&filters=${JSON.stringify(groupFilters || [])}&top=1000`,
     adaptor: function (payload, response, api, context) {
       const items = payload?.data?.items || [];
       const resources = items.map(item => ({
