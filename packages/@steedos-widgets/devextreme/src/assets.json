@@ -1,10 +1,16 @@
 {
   "packages": [
     {
+        "package": "devextreme-dist",
+        "urls": [
+            "https://unpkg.com/devextreme-dist@23.2.15/js/dx.all.js",
+            "https://unpkg.com/devextreme-dist@23.2.15/css/dx.material.blue.light.compact.css"
+        ],
+        "library": "DevExtreme"
+    },
+    {
         "package": "@steedos-widgets/devextreme",
         "urls": [
-            "https://unpkg.com/devextreme-dist@25.1.7/js/dx.all.js",
-            "https://unpkg.com/devextreme-dist@25.1.7/css/dx.material.blue.light.compact.css",
             "https://unpkg.com/@steedos-widgets/devextreme@{{version}}/dist/devextreme.umd.js"
         ],
         "library": "BuilderDevExtreme"
