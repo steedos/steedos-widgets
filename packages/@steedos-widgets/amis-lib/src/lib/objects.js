@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-12-04 14:03:00
+ * @LastEditTime: 2025-12-04 23:20:29
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -307,6 +307,10 @@ export async function getViewSchema(objectName, recordId, ctx) {
 
 function isListViewSupported(listView) {
     if(listView.type === "calendar" || listView.type === "timeline"){
+        var isEnterprise = window.Builder?.settings.platform && ["platform-standard", "platform-enterprise", "platform-professional"].includes(window.Builder.settings.platform.product);
+        if (!isEnterprise) {
+            return false;
+        }
         return listView.type === "timeline" ? (!!window.BuilderFullCalendarScheduler) : (!!window.BuilderFullCalendar || !!window.BuilderFullCalendarScheduler);
     }
     return true;
