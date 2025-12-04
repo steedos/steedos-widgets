@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-12-02 15:56:17
+ * @LastEditTime: 2025-12-04 13:17:39
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -305,6 +305,13 @@ export async function getViewSchema(objectName, recordId, ctx) {
     };
 }
 
+function isListViewSupported(listView) {
+    if(listView.type === "calendar" || listView.type === "timeline"){
+        return listView.type === "timeline" ? (!!window.BuilderFullCalendarScheduler) : (!!window.BuilderFullCalendar);
+    }
+    return true;
+}
+
 // 获取列表视图
 export async function getListSchema(
     appName,
@@ -330,6 +337,16 @@ export async function getListSchema(
 
     if (!listView) {
         return { uiSchema };
+    }
+    if (!isListViewSupported(listView)) {
+        return { 
+            uiSchema, 
+            amisSchema: {
+                "type": "alert",
+                "body": `当前版本不支持此视图类型`,
+                "level": "warning"
+            }
+        };
     }
 
     // 直接返回自定义的列表视图schema
