@@ -68,7 +68,9 @@ const getFieldEditTpl = async (field, label)=>{
     visibleOn: field.visibleOn,
     requiredOn: field.requiredOn
   };
-  
+  if(field.default_value){
+    tpl.value = field.default_value;
+  }
   if(isOpinionField(field)){
     tpl.type = 'input-group';
     tpl.body = [
@@ -468,7 +470,7 @@ const getFieldEditTpl = async (field, label)=>{
         break;
     }
   }
-  // console.log('getFieldEditTpl ', label, tpl)
+  console.log('getFieldEditTpl ', label, tpl, field)
   return tpl;
 };
 
