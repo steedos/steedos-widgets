@@ -28,7 +28,7 @@ class DivWrapper extends React.Component<any> {
   }
 }
 
-export const FullCalendar = ({ 
+export const AmisFullCalendar = ({ 
   dispatchEvent: amisDispatchEvent, 
   data: amisData,
   ...props }

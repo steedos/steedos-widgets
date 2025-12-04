@@ -1,14 +1,14 @@
 
 const config: any = {
-  group: "华炎魔方",
-  componentName: "FullCalendar",
+  group: "FullCalendar",
+  componentName: "AmisFullCalendar",
   title: "日程",
   docUrl: "",
   screenshot: "",
   npm: {
     package: "@steedos-widgets/fullcalendar-scheduler",
     version: "{{version}}",
-    exportName: "FullCalendar",
+    exportName: "AmisFullCalendar",
     main: "",
     destructuring: true,
     subName: ""
@@ -45,7 +45,7 @@ export default {
       weight: 1,
       framework: "react"
     },
-    plugin_disabled: {
+    plugin: {
       rendererName: config.amis.name,
       $schema: '/schemas/UnkownSchema.json',
       name: config.title,
