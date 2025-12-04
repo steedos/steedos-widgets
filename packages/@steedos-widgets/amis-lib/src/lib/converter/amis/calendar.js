@@ -247,7 +247,8 @@ export function getCalendarResourcesApi(objectSchema, calendarOptions) {
     groupFilters = groupFilters.length > 0 ? [groupFilters, spaceUsersAdditionalFilters] : spaceUsersAdditionalFilters;
   }
   const groupObjectConfig = getUISchemaSync(groupObjectName);
-  const fetchFields = [groupObjectConfig.NAME_FIELD_KEY || 'name', groupReferenceToField];
+  const groupNameField = groupObjectConfig.NAME_FIELD_KEY || 'name';
+  const fetchFields = [groupNameField, groupReferenceToField];
   if (color) {
     fetchFields.push(color);
   }
@@ -257,7 +258,7 @@ export function getCalendarResourcesApi(objectSchema, calendarOptions) {
       const items = payload?.data?.items || [];
       const resources = items.map(item => ({
         id: item[groupReferenceToField],
-        title: item.name,
+        title: item[groupNameField],
         eventColor: item.color
       }));
       context.successCallback(resources);
