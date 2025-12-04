@@ -602,7 +602,7 @@ const getTdField = async (field, fieldsCount) => {
 };
 
 const getTdTitle = (field) => {
-  const requiredOn = field.config?.amis.requiredOn;
+  const requiredOn = field.config?.amis?.requiredOn;
   // console.log('getTdTitle', field.is_required , requiredOn, field);
   return {
     className: `td-title td-title-${field.type}`,
