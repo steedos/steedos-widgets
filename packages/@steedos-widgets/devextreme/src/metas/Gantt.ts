@@ -68,12 +68,6 @@ export default {
       panelTitle: "设置",
       panelControls: [
         {
-          type: "text",
-          name: "className",
-          label: "CSS类名",
-          value: "bg-gray-100 border-b sm:rounded sm:border border-gray-300 p-4 mb-4"
-        },
-        {
           type: "editor",
           "language": "json",
           name: "config",
@@ -89,11 +83,17 @@ export default {
         {
           type: "editor",
           "language": "javascript",
-          name: "dataFilter",
-          label: "数据加工",
-          description: "如果后端没有直接返回 Gantt 配置，可以自己写一段函数来包装。\
-          签名：(config, Gantt, data) => config \
+          name: "configAdaptor",
+          label: "配置适配器",
+          description: "通过函数扩展配置。\
+          签名：(config, data) => config \
           "
+        },
+        {
+          type: "text",
+          name: "className",
+          label: "CSS类名",
+          value: "bg-gray-100 border-b sm:rounded sm:border border-gray-300 p-4 mb-4"
         },
       ],
       events: [{

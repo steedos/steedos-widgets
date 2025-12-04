@@ -1,121 +1,102 @@
 import React, { useEffect, useRef, useMemo } from 'react';
-// 假设 UMD 脚本已加载，并获取全局的 DevExtreme dxGantt 构造函数
+
+// 假设 UMD 脚本已加载，并获取全局的 DevExtreme Gantt 构造函数
 const DxGantt: any = (window as any).DevExpress?.ui?.dxGantt;
+const DevExpress: any = (window as any).DevExpress;
 
 if (!DxGantt) {
     console.warn("DevExtreme Gantt UMD 模块未找到。请确保 UMD 脚本已正确加载。");
 }
 
-// 帮助函数：安全地解析配置
-const parseConfig = (config: any) => {
-    if (typeof config === 'string') {
-        try {
-            return JSON.parse(config);
-        } catch(e) {
-            console.warn("配置解析失败:", e);
-            return {};
-        }
-    }
-    return typeof config === 'object' && config !== null ? config : {};
-};
+// 定义 props 接口
+interface AmisGanttProps {
+  // Gantt 组件通常需要一个包含任务数据的对象，
+  // 结构可能更复杂 (tasks, resources, dependencies)
+  data: any; 
+  className?: string; 
+  config?: object; 
+  configAdaptor?: string;
+  onConfigAdaptor?: (config: any, data: any) => any;
+  [key: string]: any; 
+}
 
 /**
- * React 包装组件，用于渲染 UMD 格式的 DevExtreme Gantt。
+ * React 包装组件，用于渲染 UMD 格式的 DevExtreme Gantt 图。
  */
 export const AmisGantt = ( {
   data: amisData,
-  config, 
   className, 
+  config,
+  configAdaptor, 
+  onConfigAdaptor, 
   ...props
-} : any) => {
+} : AmisGanttProps) => {
   
-  // 1. DOM 引用：用于挂载 Gantt
+  // 1. DOM 引用：用于挂载 Gantt 图
   const ganttContainerRef = useRef<HTMLDivElement>(null);
-  // 2. DevExtreme 实例引用
+
+  // 2. DevExtreme Gantt 实例引用
   const ganttInstanceRef = useRef<any>(null);
 
-  // 3. 处理配置和数据过滤，并构造完整的配置对象
+  // 3. 处理配置和数据过滤 (保持与 DataGrid/PivotGrid 一致的逻辑)
   const fullConfig = useMemo(() => {
-    let baseConfig = parseConfig(config);
+    let baseConfig = config;
     
-    // 处理 dataFilter 逻辑 (与原代码保持一致)
-    let onDataFilter = props.onDataFilter;
-    const dataFilter = props.dataFilter;
+    let filterFn = onConfigAdaptor;
 
-    if (!onDataFilter && typeof dataFilter === 'string') {
-      try {
-        onDataFilter = new Function(
-          'config',
-          'Gantt',
-          'data',
-          dataFilter
-        ) as any;
-      } catch (e) {
-        console.warn("DataFilter 函数创建失败:", e);
-      }
+    if (!filterFn) {
+        if (typeof configAdaptor === 'string') {
+            try {
+                filterFn = new Function(
+                    'config',
+                    'data',
+                    configAdaptor
+                ) as any;
+            } catch (e) {
+                console.warn("configAdaptor 字符串函数创建失败:", e);
+            }
+        }
     }
 
     try {
-      // 注意：这里的 'Gantt' 应该指向 UMD 实例，即 DxGantt
-      onDataFilter &&
-        (baseConfig =
-          onDataFilter(baseConfig, DxGantt, amisData) || baseConfig);
+      if (filterFn) {
+        const newConfig = filterFn(baseConfig, amisData);
+        if (newConfig) {
+            baseConfig = newConfig;
+        }
+      }
     } catch (e) {
-      console.warn("DataFilter 执行错误:", e);
+      console.warn("configAdaptor 执行错误:", e);
     }
     
-    // --- 核心：将子组件配置合并到主配置对象中 ---
-    
+    // DevExtreme Gantt 需要一个 height，通常设置为 100% 或固定值
     const finalConfig = {
-      // 默认/硬编码属性 (来自原 <Gantt> 标签的属性)
-      taskListWidth: 500,
-      scaleType: "weeks",
-      height: 700,
+      // 默认设置：例如，允许编辑、默认高度
+      allowSelection: true,
+      height: '100%', 
       
-      // 合并外部传入的配置
       ...baseConfig,
       ...props, 
       
-      // 数据源配置 (需要明确设置，如果 amisData 包含了所有数据)
-      // DevExtreme Gantt 需要分开设置任务、依赖、资源等数据源
-      tasks: amisData?.tasks || [], 
-      dependencies: amisData?.dependencies || [], 
-      resources: amisData?.resources || [],
-      resourceAssignments: amisData?.resourceAssignments || [],
+      // Gantt 的数据源通常包含在 amisData 中，
+      // 但我们需要将其作为配置的一部分传入。
+      // DevExtreme Gantt 通常将数据源分为 tasks, dependencies, resources 等。
+      // 为了与amisData适配，我们假设 amisData 包含了所有所需的数据配置。
+      // 如果 amisData 是一个对象且包含 'tasks' 属性，则使用它。
+      // 如果 amisData 是一个数组，则假设它是任务数据，并手动创建 dataSource.
       
-      // UMD/JS 对象格式的子组件配置
-      editing: {
-        enabled: true
-      },
-      validation: {
-        autoUpdateParentTasks: true
-      },
-      // 字段列配置
-      columns: [
-        { dataField: "title", caption: "Subject", width: 300 },
-        { dataField: "start", caption: "Start Date" },
-        { dataField: "end", caption: "End Date" },
-      ],
-      // 工具栏配置
-      toolbar: {
-        items: [
-          { name: "undo" },
-          { name: "redo" },
-          { name: "separator" },
-          { name: "collapseAll" },
-          { name: "expandAll" },
-          { name: "separator" },
-          { name: "addTask" },
-          { name: "deleteTask" },
-          { name: "separator" },
-          { name: "zoomIn" },
-          { name: "zoomOut" },
-        ]
-      }
+      // 这是一个简化的假设，实际应用中可能需要更复杂的适配逻辑：
+      tasks: Array.isArray(amisData) ? { dataSource: amisData } : props?.tasks,
+      
+      // 简化处理，将 amisData 直接映射到 tasks.dataSource，如果 amisData是数组
+      ...(Array.isArray(amisData) && { 
+        tasks: { dataSource: amisData } 
+      }),
+      // 如果不是数组，则假设任务、依赖、资源等配置都在 baseConfig/props 中
     };
-    
+
     return finalConfig;
-  }, [config, props, amisData]); // 依赖于原始 props 和数据
+  }, [configAdaptor, onConfigAdaptor, props, amisData, config]);
 
   // ==========================================
   // I. 挂载和实例化 (Mount)
@@ -125,7 +106,7 @@ export const AmisGantt = ( {
       return;
     }
 
-    // 实例化 DevExtreme Gantt，使用完整的配置对象
+    // --- 1. 实例化 Gantt ---
     const instance = new DxGantt(ganttContainerRef.current, fullConfig);
     ganttInstanceRef.current = instance;
 
@@ -134,7 +115,7 @@ export const AmisGantt = ( {
     // ==========================================
     return () => {
       if (ganttInstanceRef.current) {
-        // 销毁实例以释放资源和事件处理程序
+        // 销毁 Gantt 实例
         ganttInstanceRef.current.dispose();
         ganttInstanceRef.current = null;
       }
@@ -151,15 +132,16 @@ export const AmisGantt = ( {
       instance.option(fullConfig);
     }
   }, [fullConfig]); // 依赖于 fullConfig 变化
-  
+
   // ==========================================
   // IV. 渲染
   // ==========================================
   return (
     <div 
       ref={ganttContainerRef} 
+      // 必须设置高度，否则 Gantt 组件可能不显示
+      style={{ width: '100%', height: '500px' }} // 默认给一个固定高度
       className={className} 
-      style={{ width: '100%', height: fullConfig.height || 700 }} // 设置高度
     />
   );
 }
