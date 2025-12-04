@@ -233,19 +233,30 @@ export function getCalendarResourcesApi(objectSchema, calendarOptions) {
   const groupFieldName = groups[0];
   const groupField = objectSchema.fields[groupFieldName];
   let groupObjectName = groupField?.reference_to;
+  let groupReferenceToField = groupField?.reference_to_field || "_id";
   if (!groupObjectName){
     return {};
   }
-  const fetchFields = [objectSchema.NAME_FIELD_KEY || 'name'];
+  let groupFilters = filters || [];
+  let spaceUsersAdditionalFilters = ["user_accepted", "=", true];
+  if (groupObjectName === "users") {
+    groupObjectName = "space_users";
+    groupReferenceToField = "user";
+  }
+  if (groupObjectName === "space_users") {
+    groupFilters = groupFilters.length > 0 ? [groupFilters, spaceUsersAdditionalFilters] : spaceUsersAdditionalFilters;
+  }
+  const groupObjectConfig = getUISchemaSync(groupObjectName);
+  const fetchFields = [groupObjectConfig.NAME_FIELD_KEY || 'name', groupReferenceToField];
   if (color) {
     fetchFields.push(color);
   }
   return {
-    url: `/api/v1/${groupObjectName}?fields=${JSON.stringify(fetchFields)}&filters=${JSON.stringify(filters || [])}`,
+    url: `/api/v1/${groupObjectName}?fields=${JSON.stringify(fetchFields)}&filters=${JSON.stringify(groupFilters || [])}`,
     adaptor: function (payload, response, api, context) {
       const items = payload?.data?.items || [];
       const resources = items.map(item => ({
-        id: item._id,
+        id: item[groupReferenceToField],
         title: item.name,
         eventColor: item.color
       }));
