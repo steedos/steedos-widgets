@@ -5,6 +5,7 @@
  * @LastEditTime: 2025-08-26 10:17:05
  */
 import * as i18next from "i18next";
+// import LanguageDetector from "i18next-browser-languagedetector";
 import en_us from "./locales/en-US.json"
 import zh_cn from "./locales/zh-CN.json"
 import widget_en from './locales/widgets/en.json'
@@ -33,12 +34,29 @@ const getUserLanguage = () => {
 var locale = "zh-CN";
 if (typeof window != 'undefined') {
   window.steedosI18next = i18next;
-  locale = getUserLanguage();
+  // locale = getUserLanguage();
 }
 
-i18next.addResources('en', 'translation', en_us);
-i18next.addResources('en', 'widgets-meta', widget_en);
-i18next.addResources('zh-CN', 'translation', zh_cn);
-i18next.addResources('zh-CN', 'widgets-meta', widget_zh);
+if (!i18next.isInitialized) {
+  i18next
+    // .use(LanguageDetector)
+    .init({
+      // lng: locale,
+      fallbackLng: 'zh-CN',
+      resources,
+    }, ()=>{
+      console.log("i18next initialized:", locale);
+      // i18next.addResources('en', 'translation', en_us);
+      // i18next.addResources('en', 'widgets-meta', widget_en);
+      // i18next.addResources('zh-CN', 'translation', zh_cn);
+      // i18next.addResources('zh-CN', 'widgets-meta', widget_zh);
+    });
+} else {
+  i18next.addResources('en', 'translation', en_us);
+  i18next.addResources('en', 'widgets-meta', widget_en);
+  i18next.addResources('zh-CN', 'translation', zh_cn);
+  i18next.addResources('zh-CN', 'widgets-meta', widget_zh);
+}
+
 
 export { getUserLanguage };
