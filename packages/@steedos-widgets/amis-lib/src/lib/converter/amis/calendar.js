@@ -180,13 +180,20 @@ export function getCalendarRecordPermissionsApi(mainObject, recordId) {
 
 export function getCalendarRecordSaveApi(object, calendarOptions) {
   const formData = {};
+  const groups = calendarOptions.groups;
+  const groupFieldName = groups?.[0];
   const idFieldName = object.idFieldName || "_id";
   formData[idFieldName] = "${event.data.event.id}";
   const nameFieldKey = object.NAME_FIELD_KEY || "name";
   formData[nameFieldKey] = "${event.data.event.title}";
   formData[calendarOptions.startDateExpr] = "${event.data.event.start}";
   formData[calendarOptions.endDateExpr] = "${event.data.event.end}";
-  formData[calendarOptions.allDayExpr] = "${event.data.event.allDay}";
+  if (calendarOptions.allDayExpr){
+    formData[calendarOptions.allDayExpr] = "${event.data.event.allDay}";
+  }
+  if (groupFieldName){
+    formData[groupFieldName] = "${event.data.event._def.resourceIds[0]}";
+  }
   // formData[calendarOptions.textExpr] = "${event.data.event.title}";
   const apiData = {
     objectName: object.name,
@@ -233,20 +240,32 @@ export function getCalendarResourcesApi(objectSchema, calendarOptions) {
   const groupFieldName = groups[0];
   const groupField = objectSchema.fields[groupFieldName];
   let groupObjectName = groupField?.reference_to;
+  let groupReferenceToField = groupField?.reference_to_field || "_id";
   if (!groupObjectName){
     return {};
   }
-  const fetchFields = [objectSchema.NAME_FIELD_KEY || 'name'];
+  let groupFilters = filters || [];
+  let spaceUsersAdditionalFilters = ["user_accepted", "=", true];
+  if (groupObjectName === "users") {
+    groupObjectName = "space_users";
+    groupReferenceToField = "user";
+  }
+  if (groupObjectName === "space_users") {
+    groupFilters = groupFilters.length > 0 ? [groupFilters, spaceUsersAdditionalFilters] : spaceUsersAdditionalFilters;
+  }
+  const groupObjectConfig = getUISchemaSync(groupObjectName);
+  const groupNameField = groupObjectConfig.NAME_FIELD_KEY || 'name';
+  const fetchFields = [groupNameField, groupReferenceToField];
   if (color) {
     fetchFields.push(color);
   }
   return {
-    url: `/api/v1/${groupObjectName}?fields=${JSON.stringify(fetchFields)}&filters=${JSON.stringify(filters || [])}`,
+    url: `/api/v1/${groupObjectName}?fields=${JSON.stringify(fetchFields)}&filters=${JSON.stringify(groupFilters || [])}&top=1000`,
     adaptor: function (payload, response, api, context) {
       const items = payload?.data?.items || [];
       const resources = items.map(item => ({
-        id: item._id,
-        title: item.name,
+        id: item[groupReferenceToField],
+        title: item[groupNameField],
         eventColor: item.color
       }));
       context.successCallback(resources);

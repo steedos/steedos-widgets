@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-11-20 20:13:03
+ * @LastEditTime: 2025-12-04 13:47:10
  * @Description:
  */
 import {
@@ -1039,8 +1039,7 @@ export const getFlowFormSchema = async (instance, box) => {
     nextStepUserChangeEvents = onEvent?.nextStepUserChange?.actions || [];
   }
   // if (box == 'inbox' || box == 'draft') {
-  // TODO: 临时去掉 AutoOpenApproveDrawer 功能因为测试到性能问题
-  if ((box == 'inbox' || box == 'draft') && window.enableAutoOpenApproveDrawer) {
+  if ((box == 'inbox' || box == 'draft') && !!!window.disableAutoOpenApproveDrawer) {
     // 滚动条滚动到底部弹出底部签批drawer窗口
     initedEvents.push({
       "actionType": "custom",

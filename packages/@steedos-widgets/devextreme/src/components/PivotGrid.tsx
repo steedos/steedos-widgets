@@ -3,33 +3,34 @@ import React, { useEffect, useRef, useMemo } from 'react';
 // 假设 UMD 脚本已加载，并获取全局的 DevExtreme 构造函数
 const DxPivotGrid: any = (window as any).DevExpress?.ui?.dxPivotGrid;
 const DxChart: any = (window as any).DevExpress?.viz?.dxChart;
+const DevExpress: any = (window as any).DevExpress;
 
 if (!DxPivotGrid || !DxChart) {
     console.warn("DevExtreme PivotGrid 或 Chart UMD 模块未找到。请确保 UMD 脚本已正确加载。");
 }
 
-// 帮助函数：安全地解析配置
-const parseConfig = (config: any) => {
-    if (typeof config === 'string') {
-        try {
-            return JSON.parse(config);
-        } catch(e) {
-            console.warn("配置解析失败:", e);
-            return {};
-        }
-    }
-    return typeof config === 'object' && config !== null ? config : {};
-};
+// 定义 props 接口，方便类型提示（可选）
+interface AmisPivotGridProps {
+  data: any;
+  className?: string; 
+  config?: object;
+  // configAdaptor 可以是函数 (Function) 或字符串代码 (String)
+  configAdaptor?: string;
+  onConfigAdaptor?: (DevExpress: any, data: any) => any;
+  [key: string]: any; // 允许其他 props
+}
 
 /**
  * React 包装组件，用于渲染 UMD 格式的 DevExtreme PivotGrid 和 Chart。
  */
 export const AmisPivotGrid = ( {
   data: amisData,
-  config, 
   className, 
+  config,
+  configAdaptor, // 解构出来以便统一处理
+  onConfigAdaptor, // 解构出来以便统一处理
   ...props
-} : any) => {
+} : AmisPivotGridProps) => {
   
   // 1. DOM 引用：用于挂载 PivotGrid 和 Chart
   const chartContainerRef = useRef<HTMLDivElement>(null);
@@ -39,32 +40,39 @@ export const AmisPivotGrid = ( {
   const chartInstanceRef = useRef<any>(null);
   const pivotGridInstanceRef = useRef<any>(null);
 
-  // 3. 处理配置和数据过滤 (逻辑与原代码保持一致)
-  const [configJSON, fullConfig] = useMemo(() => {
-    let baseConfig = parseConfig(config);
+  // 3. 处理配置和数据过滤 (优化后的逻辑)
+  const fullConfig = useMemo(() => {
+    let baseConfig = config;
     
-    // 处理 dataFilter 逻辑
-    let onDataFilter = props.onDataFilter;
-    const dataFilter = props.dataFilter;
+    // 统一处理 configAdaptor / onConfigAdaptor 逻辑
+    let filterFn = onConfigAdaptor;
 
-    if (!onDataFilter && typeof dataFilter === 'string') {
-      try {
-        // 使用 new Function 代替 eval，用于执行字符串代码
-        onDataFilter = new Function(
-          'config',
-          'PivotGrid',
-          'data',
-          dataFilter
-        ) as any;
-      } catch (e) {
-        console.warn("DataFilter 函数创建失败:", e);
-      }
+    if (!filterFn) {
+        if (typeof configAdaptor === 'string') {
+            // configAdaptor 是字符串，尝试创建函数
+            try {
+                // 使用 new Function 代替 eval，用于执行字符串代码
+                filterFn = new Function(
+                    'config',
+                    'data',
+                    configAdaptor
+                ) as any;
+            } catch (e) {
+                console.warn("DataFilter 字符串函数创建失败:", e);
+            }
+        }
     }
 
+    // 执行数据过滤函数（如果存在）
     try {
-      onDataFilter &&
-        (baseConfig =
-          onDataFilter(baseConfig, DxPivotGrid, amisData) || baseConfig);
+      if (filterFn) {
+        // 使用执行结果，如果返回非空值，则覆盖 baseConfig
+        const newConfig = filterFn(baseConfig, amisData);
+        if (newConfig) {
+            baseConfig = newConfig;
+        }
+        console.log("最终 PivotGrid 配置:", newConfig);
+      }
     } catch (e) {
       console.warn("DataFilter 执行错误:", e);
     }
@@ -72,13 +80,11 @@ export const AmisPivotGrid = ( {
     // 合并最终配置，并明确设置 dataSource
     const finalConfig = {
       ...baseConfig,
-      ...props, // 合并 props 中的配置项
-      dataSource: amisData, // 确保数据源被设置
+      ...props, // 合并剩余的 props 中的配置项
     };
 
-    return [baseConfig, finalConfig];
-  }, [config, props, amisData]);
-
+    return finalConfig;
+  }, [configAdaptor, onConfigAdaptor, props, amisData]); // 依赖项包含所有配置和数据源
 
   // ==========================================
   // I. 挂载和实例化 (Mount)
@@ -90,7 +96,6 @@ export const AmisPivotGrid = ( {
 
     // --- 1. 实例化 PivotGrid ---
     const pivotGridConfig = {
-      ...fullConfig,
       // 保持原组件中的默认配置，除非被 fullConfig 覆盖
       allowSortingBySummary: true,
       allowFiltering: true,
@@ -99,10 +104,10 @@ export const AmisPivotGrid = ( {
       showColumnGrandTotals: false,
       showRowTotals: false,
       showRowGrandTotals: false,
-      // 在 UMD 模式下，通常将 FieldChooser 的配置直接写在主配置中
-      fieldChooser: fullConfig.fieldChooser || { enabled: true, height: 400 },
+      ...fullConfig,
     };
     
+    // 注意：这里使用 pivotGridConfig 而非 fullConfig
     const pivotInstance = new DxPivotGrid(pivotGridContainerRef.current, pivotGridConfig);
     pivotGridInstanceRef.current = pivotInstance;
 
@@ -115,7 +120,7 @@ export const AmisPivotGrid = ( {
       },
       commonSeriesSettings: { type: 'bar' },
       adaptiveLayout: { width: 450 },
-      // Chart 实例需要在配置中引用 PivotGrid 的数据源，但 bindChart 会处理这个
+      // Chart 实例的配置可以从 fullConfig 中获取，但为了保持示例简洁，使用默认配置
     };
 
     const chartInstance = new DxChart(chartContainerRef.current, chartConfig);
@@ -173,9 +178,9 @@ export const AmisPivotGrid = ( {
       {/* PivotGrid 容器 */}
       <div
         ref={pivotGridContainerRef}
-        id="pivotgrid" // 保持 id 属性，虽然在 React 中不推荐，但保留以防 DevExtreme 内部逻辑依赖
+        // 移除 id="pivotgrid" 以更符合 React 最佳实践（除非 DevExtreme 严格依赖它）
         style={{ width: '100%' }}
-        className={className}
+        // className={className} // 保持外部 div 上的 className 即可
       />
     </div>
   );

@@ -8,8 +8,9 @@
 import DataGrid from "./metas/DataGrid";
 import PivotGrid from "./metas/PivotGrid";
 import Gantt from './metas/Gantt';
+import Scheduler from "./metas/Scheduler";
 
-const components = [DataGrid, PivotGrid, Gantt];
+const components = [DataGrid, PivotGrid, Gantt, Scheduler];
 const componentList = [
   {
     title: "DevExtreme",

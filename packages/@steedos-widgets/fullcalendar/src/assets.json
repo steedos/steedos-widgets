@@ -1,11 +1,17 @@
 {
   "packages": [
       {
-          "package": "@steedos-widgets/fullcalendar",
+          "package": "fullcalendar",
           "urls": [
               "https://unpkg.com/fullcalendar@5.11.4/main.min.js",
               "https://unpkg.com/fullcalendar@5.11.4/locales-all.min.js",
-              "https://unpkg.com/fullcalendar@5.11.4/main.min.css",
+              "https://unpkg.com/fullcalendar@5.11.4/main.min.css"
+          ],
+          "library": "FullCalendar"
+      },
+      {
+          "package": "@steedos-widgets/fullcalendar",
+          "urls": [
               "https://unpkg.com/@steedos-widgets/fullcalendar@{{version}}/dist/fullcalendar.umd.js",
               "https://unpkg.com/@steedos-widgets/fullcalendar@{{version}}/dist/fullcalendar.umd.css"
           ],

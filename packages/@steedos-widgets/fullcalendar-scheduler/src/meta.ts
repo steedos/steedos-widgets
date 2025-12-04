@@ -7,14 +7,6 @@
  */
 import Calendar from "./metas/Calendar";
 const components = [Calendar];
-const componentList = [
-  {
-    title: "华炎魔方",
-    icon: "",
-    children: [Calendar]
-  }
-];
 export default {
-  componentList,
   components
 };

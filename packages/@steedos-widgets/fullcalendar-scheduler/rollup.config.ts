@@ -2,7 +2,9 @@ import resolve, { nodeResolve } from '@rollup/plugin-node-resolve';
 import postcss from 'rollup-plugin-postcss';
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
+import replace from '@rollup/plugin-replace';
 import json from 'rollup-plugin-json';
+import nodePolyfills from 'rollup-plugin-polyfill-node';
 import { terser } from "rollup-plugin-terser";
 import babel, { getBabelOutputPlugin } from '@rollup/plugin-babel';
 
@@ -36,11 +38,15 @@ const options = {
     include: 'src/**',
   },
   plugins: [
+    nodePolyfills(),
     nodeResolve(),
     json(),
     typescript({ 
     }),
     commonjs({
+    }),
+    replace({
+      'process.env.NODE_ENV': JSON.stringify('production'),
     }),
     postcss({
       extract: true,
@@ -75,10 +81,7 @@ export default [
         strict: false,
         intro: 'const global = window;',
         globals,
-        plugins: [getBabelOutputPlugin({
-          allowAllFormats: true,
-          presets: [['@babel/preset-env', { modules: 'umd' }]],
-        })]
+        plugins: []
       },
     ],
   },
