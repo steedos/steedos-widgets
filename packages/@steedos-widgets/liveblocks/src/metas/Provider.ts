@@ -55,10 +55,11 @@ export default {
       icon: config.amis.icon,
       scaffold: {
         type: config.amis.name,
-        className: "m-2 flex flex-col gap-y-2",
+        baseUrl: "${context.rootUrl}",
       },
       previewSchema: {
         type: config.amis.name,
+        baseUrl: "${context.rootUrl}"
       },
       panelTitle: "设置",
       panelControls: [

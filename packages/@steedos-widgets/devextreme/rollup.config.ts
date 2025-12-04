@@ -113,7 +113,7 @@ export default [
                  source: amis
               });
               const amisDev = JSON.stringify(assets, null, 4).replace(/\@\{\{version\}\}/g, ``)
-                .replace(/https\:\/\/unpkg.com\/devextreme-dist/g, "https://unpkg.steedos.cn/devextreme-dist")
+                .replace(/https\:\/\/unpkg.com\/devextreme-/g, "https://unpkg.steedos.cn/devextreme-")
                 .replace(/https\:\/\/unpkg.com/g, unpkgUrl)
               this.emitFile({
                  type: 'asset',

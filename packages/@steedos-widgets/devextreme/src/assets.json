@@ -4,9 +4,18 @@
         "package": "devextreme-dist",
         "urls": [
             "https://unpkg.com/devextreme-dist@23.2.15/js/dx.all.js",
+            "https://unpkg.com/devextreme-dist@23.2.15/js/FileSaver.js",
+            "https://unpkg.com/devextreme-dist@23.2.15/js/localization/dx.messages.zh.js",
             "https://unpkg.com/devextreme-dist@23.2.15/css/dx.material.blue.light.compact.css"
         ],
         "library": "DevExtreme"
+    },
+    {
+        "package": "devextreme-aspnet-data",
+        "urls": [
+            "https://unpkg.com/devextreme-aspnet-data@5.0.0/js/dx.aspnet.data.js"
+        ],
+        "library": "DevExtremeAspNetData"
     },
     {
         "package": "@steedos-widgets/devextreme",

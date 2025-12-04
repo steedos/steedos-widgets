@@ -54,11 +54,22 @@ export default {
       order: -9999,
       icon: config.amis.icon,
       scaffold: {
-        type: config.amis.name,
-        className: "m-2 flex flex-col gap-y-2",
+        type: "rooms-provider",
+        baseUrl: "${context.rootUrl}",
+        body: [{
+          type: config.amis.name,
+          roomId: "test",
+          className: "m-2 flex flex-col gap-y-2",
+        }]
       },
       previewSchema: {
-        type: config.amis.name,
+        type: "rooms-provider",
+        baseUrl: "${context.rootUrl}",
+        body: [{
+          type: config.amis.name,
+          roomId: "test",
+          className: "m-2 flex flex-col gap-y-2",
+        }]
       },
       panelTitle: "设置",
       panelControls: [
@@ -66,7 +77,7 @@ export default {
           type: "text",
           name: "roomId",
           label: "Room Id",
-          value: "m-2 flex flex-col gap-y-2"
+          value: "test"
         },
         {
           type: "text",
