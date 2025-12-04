@@ -815,6 +815,22 @@ const getApplicantTableView = async (instance) => {
               {
                 "actionType": "ajax",
                 "api": {
+                    "url": "/api/workflow/v2/instance/save",
+                    "method": "post",
+                    "sendOn": "",
+                    "requestAdaptor": "var _SteedosUI$getRef$get, _approveValues$next_s;\nconst formValues = context._scoped.getComponentById(\"instance_form\").getValues(); const _formValues = JSON.parse(JSON.stringify(formValues)); if(_formValues){delete _formValues.__applicant} \nconst approveValues = (_SteedosUI$getRef$get = context._scoped.getComponentById(\"instance_approval\")) === null || _SteedosUI$getRef$get === void 0 ? void 0 : _SteedosUI$getRef$get.getValues();\nlet nextUsers = approveValues === null || approveValues === void 0 ? void 0 : approveValues.next_users;\nif (_.isString(nextUsers)) {\n  nextUsers = [approveValues.next_users];\n}\nconst instance = context.record;\nconst body = {\n  instance: {\n    _id: instance._id,\n    applicant: context.__applicant,\n    submitter: formValues.submitter,\n    traces: [{\n      _id: instance.trace._id,\n      step: instance.step._id,\n      approves: [{\n        _id: instance.approve._id,\n        next_steps: [{\n          step: approveValues === null || approveValues === void 0 || (_approveValues$next_s = approveValues.next_step) === null || _approveValues$next_s === void 0 ? void 0 : _approveValues$next_s._id,\n          users: nextUsers\n        }],\n        description: approveValues === null || approveValues === void 0 ? void 0 : approveValues.suggestion,\n        values: _formValues\n      }]\n    }]\n  }\n};\napi.data = body;\nreturn api;",
+                    "adaptor": "if (payload.instance == \"upgraded\") { window.setTimeout(function(){ window.location.reload(); }, 2000); return {...payload, status: 1, msg: t('instance_action_instance_save_msg_upgraded')}; } \n return payload.instance === true ? {...payload, status: 0, msg: ''} : {...payload, status: 1, msg: t('instance_action_instance_save_msg_failed')};",
+                    "headers": {
+                        "Authorization": "Bearer ${context.tenantId},${context.authToken}"
+                    },
+                    "data": {
+                        "&": "$$"
+                    }
+                }
+              },
+              {
+                "actionType": "ajax",
+                "api": {
                   "url": "/api/formula/user/${__applicant}",
                   "method": "get",
                   "messages": {
@@ -844,7 +860,7 @@ const getApplicantTableView = async (instance) => {
       id: "u:2016b04355f4",
     }
   }
-
+  // console.log('applicantInput', applicantInput);
   if(applicantInput){
     if(applicantInput.className){
       applicantInput.className = `${applicantInput.className} inline-left`
