@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-09-01 15:40:28
+ * @LastEditTime: 2025-12-04 22:52:15
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -1617,9 +1617,10 @@ export const getAmisInputTableSchema = async (props) => {
         "visible":  props.$schema.visible,
         "hiddenOn": props.$schema.hiddenOn,
         "hidden": props.$schema.hidden,
+        "requiredOn": props.$schema.requiredOn,
         "required": props.required,
         className,
     };
-    // console.log("===schema===", schema);
+    // console.log("=inputtable==schema===", schema);
     return schema;
 }
