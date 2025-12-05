@@ -77,7 +77,7 @@
   overflow-y: auto;
 }
 
-.lb-inbox .inbox-button {
+.lb-inbox-button {
   all: unset;
   position: relative;
   display: flex;
@@ -91,24 +91,24 @@
   color: rgb(116, 116, 116);
 }
 
-.lb-inbox .inbox-button.square {
+.lb-inbox-button.square {
   padding: 0;
   width: 1.6rem;
   height: 2rem;
 }
 
-.lb-inbox .inbox-button.destructive {
+.lb-inbox-button.destructive {
   background: #fde5e5;
   color: #953939;
 }
 
-.lb-inbox .inbox-button:hover,
-.lb-inbox .inbox-button:focus-visible {
+.lb-inbox-button:hover,
+.lb-inbox-button:focus-visible {
   /* background: #f3f3f3; */
   cursor: pointer;
 }
 
-.lb-inbox .inbox-button.destructive:hover,
-.lb-inbox .inbox-button.destructive:focus-visible{
+.lb-inbox-button.destructive:hover,
+.lb-inbox-button.destructive:focus-visible{
   background: #ffd6d6;
 }

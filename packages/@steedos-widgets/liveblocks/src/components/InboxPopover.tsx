@@ -71,7 +71,7 @@ export function AmisInboxPopover({
 
   return (
     <Popover.Root open={isOpen} onOpenChange={setOpen}>
-      <Popover.Trigger className={clsx(className, "inbox-button square")}>
+      <Popover.Trigger className={clsx(className, "lb-inbox-button square")}>
         <ErrorBoundary fallback={null}>
           <ClientSideSuspense fallback={null}>
             <InboxPopoverUnreadCount />
@@ -97,13 +97,13 @@ export function AmisInboxPopover({
             </span>
             <div className="inbox-buttons">
               <button
-                className="inbox-button"
+                className="lb-inbox-button"
                 onClick={markAllInboxNotificationsAsRead}
               >
                 {i18next.t('liveblocks:frontend_mark_all_read')}
               </button>
               <button
-                className="inbox-button destructive"
+                className="lb-inbox-button destructive"
                 onClick={deleteAllInboxNotifications}
               >
                 {i18next.t('liveblocks:frontend_delete_all')}
