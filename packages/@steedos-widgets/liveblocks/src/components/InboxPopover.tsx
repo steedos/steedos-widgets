@@ -86,7 +86,7 @@ export function AmisInboxPopover({
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Content
-          className="inbox"
+          className="lb-inbox"
           collisionPadding={16}
           sideOffset={8}
           {...props}
