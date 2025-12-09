@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-12-04 13:47:10
+ * @LastEditors: yinlianghui yinlianghui@hotoa.com
+ * @LastEditTime: 2025-12-09 14:37:06
  * @Description:
  */
 import {
@@ -1078,6 +1078,9 @@ export const getFlowFormSchema = async (instance, box) => {
       ".antd-List-heading": {
         "font-size": "14px",
         "font-weight": "500"
+      },
+      ".steedos-amis-instance-view.steedos-instance-style-table .antd-Page-body": {
+        "width": "1024px"
       },
       ".antd-List-placeholder": {
         "display": "none"
