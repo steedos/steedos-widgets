@@ -1,0 +1,161 @@
+
+
+.steedos-logo_container {
+    border: 0;
+    outline: 0
+}
+
+.steedos-logo_container:focus .steedos-r1,.steedos-logo_container:focus .steedos-r2,.steedos-logo_container:focus .steedos-r3,.steedos-logo_container:focus .steedos-r4,.steedos-logo_container:focus .steedos-r5,.steedos-logo_container:focus .steedos-r6,.steedos-logo_container:focus .steedos-r7,.steedos-logo_container:focus .steedos-r8,.steedos-logo_container:focus .steedos-r9,.steedos-logo_container:hover .steedos-r1,.steedos-logo_container:hover .steedos-r2,.steedos-logo_container:hover .steedos-r3,.steedos-logo_container:hover .steedos-r4,.steedos-logo_container:hover .steedos-r5,.steedos-logo_container:hover .steedos-r6,.steedos-logo_container:hover .steedos-r7,.steedos-logo_container:hover .steedos-r8,.steedos-logo_container:hover .steedos-r9 {
+    -webkit-animation: steedos-logo-throb 2 .2s alternate;
+    animation: steedos-logo-throb 2 .2s alternate
+}
+
+.steedos-logo_container:focus .steedos-r1,.steedos-logo_container:focus .steedos-r2,.steedos-logo_container:hover .steedos-r1,.steedos-logo_container:hover .steedos-r2 {
+    background-color: #8bc34a;
+}
+
+.steedos-logo_container:focus .steedos-r3,.steedos-logo_container:focus .steedos-r6,.steedos-logo_container:hover .steedos-r3,.steedos-logo_container:hover .steedos-r6 {
+    background-color: #ffc107;
+}
+
+.steedos-logo_container:focus .steedos-r4,.steedos-logo_container:focus .steedos-r7,.steedos-logo_container:hover .steedos-r4,.steedos-logo_container:hover .steedos-r7 {
+    background-color: #ff5722;
+}
+
+.steedos-logo_container:focus .steedos-r8,.steedos-logo_container:focus .steedos-r9,.steedos-logo_container:hover .steedos-r8,.steedos-logo_container:hover .steedos-r9 {
+    background-color: #03a9f4;
+}
+
+.steedos-logo_container:focus .steedos-r5, .steedos-logo_container:hover .steedos-r5 {
+    background-color: #EFEFEF;
+}
+
+.steedos-logo_container:focus .steedos-r2,.steedos-logo_container:focus .steedos-r4,.steedos-logo_container:hover .steedos-r2,.steedos-logo_container:hover .steedos-r4 {
+    -webkit-transition-delay: 50ms;
+    transition-delay: 50ms;
+    -webkit-animation-delay: 50ms;
+    animation-delay: 50ms
+}
+
+.steedos-logo_container:focus .steedos-r3,.steedos-logo_container:focus .steedos-r5,.steedos-logo_container:focus .steedos-r7,.steedos-logo_container:hover .steedos-r3,.steedos-logo_container:hover .steedos-r5,.steedos-logo_container:hover .steedos-r7 {
+    -webkit-transition-delay: .1s;
+    transition-delay: .1s;
+    -webkit-animation-delay: .1s;
+    animation-delay: .1s
+}
+
+.steedos-logo_container:focus .steedos-r6,.steedos-logo_container:focus .steedos-r8,.steedos-logo_container:hover .steedos-r6,.steedos-logo_container:hover .steedos-r8 {
+    -webkit-transition-delay: 150ms;
+    transition-delay: 150ms;
+    -webkit-animation-delay: 150ms;
+    animation-delay: 150ms
+}
+
+.steedos-logo_container:focus .steedos-r9,.steedos-logo_container:hover .steedos-r9 {
+    -webkit-transition-delay: .2s;
+    transition-delay: .2s;
+    -webkit-animation-delay: .2s;
+    animation-delay: .2s
+}
+
+.steedos-logo {
+    width: 1.35rem;
+    height: 1.35rem;
+    position: relative;
+    display: block;
+    cursor: pointer
+}
+
+.steedos-logo .steedos-r1,.steedos-logo .steedos-r2,.steedos-logo .steedos-r3,.steedos-logo .steedos-r4,.steedos-logo .steedos-r5,.steedos-logo .steedos-r6,.steedos-logo .steedos-r7,.steedos-logo .steedos-r8,.steedos-logo .steedos-r9 {
+    width: .35rem;
+    height: .35rem;
+    background-color: var(--steedos-g-color-neutral-base-50,#747474);
+    display: inline-block;
+    position: absolute;
+    border-radius: 50%;
+    -webkit-transition: background-color .1s;
+    transition: background-color .1s;
+    -webkit-transform-origin: 50% 50%;
+    transform-origin: 50% 50%;
+    will-change: scale,background-color;
+    border: 2px solid transparent
+}
+
+.steedos-logo .steedos-r1 {
+    top: 0;
+    left: 0;
+}
+
+.steedos-logo .steedos-r2 {
+    top: 0;
+    left: .5rem;
+}
+
+.steedos-logo .steedos-r3 {
+    top: 0;
+    left: 1rem;
+}
+
+.steedos-logo .steedos-r4 {
+    top: .5rem;
+    left: 0;
+}
+
+.steedos-logo .steedos-r5 {
+    top: .5rem;
+    left: .5rem;
+}
+
+.steedos-logo .steedos-r6 {
+    top: .5rem;
+    left: 1rem;
+}
+
+.steedos-logo .steedos-r7 {
+    top: 1rem;
+    left: 0;
+}
+
+.steedos-logo .steedos-r8 {
+    top: 1rem;
+    left: .5rem;
+}
+
+.steedos-logo .steedos-r9 {
+    top: 1rem;
+    left: 1rem;
+}
+
+.steedos-logo .steedos-r1 {
+    -webkit-transition-delay: .2s;
+    transition-delay: .2s
+}
+
+.steedos-logo .steedos-r2,.steedos-logo .steedos-r4 {
+    -webkit-transition-delay: 150ms;
+    transition-delay: 150ms
+}
+
+.steedos-logo .steedos-r3,.steedos-logo .steedos-r5,.steedos-logo .steedos-r7 {
+    -webkit-transition-delay: .1s;
+    transition-delay: .1s
+}
+
+.steedos-logo .steedos-r6,.steedos-logo .steedos-r8 {
+    -webkit-transition-delay: 50ms;
+    transition-delay: 50ms
+}
+
+@-webkit-keyframes steedos-logo-throb {
+    to {
+        -webkit-transform: scale(1.5);
+        transform: scale(1.5)
+    }
+}
+
+@keyframes steedos-logo-throb {
+    to {
+        -webkit-transform: scale(1.5);
+        transform: scale(1.5)
+    }
+}

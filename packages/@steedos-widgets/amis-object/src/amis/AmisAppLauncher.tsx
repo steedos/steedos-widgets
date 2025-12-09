@@ -480,7 +480,7 @@ export const AmisAppLauncher = async (props) => {
           {
             "type": "tpl",
             "className": "flex items-center",
-            "tpl": `<div aria-haspopup='true' title='${i18next.t('frontend_open_app_launcher')}' class='slds-icon-waffle_container slds-context-bar__button' type='button'><span class='slds-icon-waffle'><span class='slds-r1'></span><span class='slds-r2'></span><span class='slds-r3'></span><span class='slds-r4'></span><span class='slds-r5'></span><span class='slds-r6'></span><span class='slds-r7'></span><span class='slds-r8'></span><span class='slds-r9'></span></span></div>`,
+            "tpl": `<div aria-haspopup='true' title='${i18next.t('frontend_open_app_launcher')}' class='steedos-logo_container slds-context-bar__button' type='button'><span class='steedos-logo'><span class='steedos-r1'></span><span class='steedos-r2'></span><span class='steedos-r3'></span><span class='steedos-r4'></span><span class='steedos-r5'></span><span class='steedos-r6'></span><span class='steedos-r7'></span><span class='steedos-r8'></span><span class='steedos-r9'></span></span></div>`,
             "badge": {
               "visibleOn": "${badges.workflow | toInt}",
               "offset": [3, -3],
@@ -524,7 +524,7 @@ export const AmisAppLauncher = async (props) => {
           {
             "type": "tpl",
             "className": "flex items-center",
-            "tpl": `<div aria-haspopup='true' title='${i18next.t('frontend_open_app_launcher')}' class='slds-icon-waffle_container slds-context-bar__button' type='button'><span class='slds-icon-waffle'><span class='slds-r1'></span><span class='slds-r2'></span><span class='slds-r3'></span><span class='slds-r4'></span><span class='slds-r5'></span><span class='slds-r6'></span><span class='slds-r7'></span><span class='slds-r8'></span><span class='slds-r9'></span></span></div>`,
+            "tpl": `<div aria-haspopup='true' title='${i18next.t('frontend_open_app_launcher')}' class='steedos-logo_container slds-context-bar__button' type='button'><span class='steedos-logo'><span class='steedos-r1'></span><span class='steedos-r2'></span><span class='steedos-r3'></span><span class='steedos-r4'></span><span class='steedos-r5'></span><span class='steedos-r6'></span><span class='steedos-r7'></span><span class='steedos-r8'></span><span class='steedos-r9'></span></span></div>`,
             "badge": {
               "visibleOn": "${badges.workflow | toInt}",
               "offset": [3, -3],
