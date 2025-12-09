@@ -1061,7 +1061,7 @@ export const getFlowFormSchema = async (instance, box) => {
       "recordId": instance._id,
       "id": "u:e6b2adbe0e21",
       "showRecordTitle": false,
-      "className": "p-0 m-0 p0 m0 bg-gray-50 sm:rounded-tl sm:rounded-tr"
+      "className": "sm:rounded-tl sm:rounded-tr"
     },
     "css": {
       ".steedos-amis-instance-view-body": {
@@ -1078,9 +1078,6 @@ export const getFlowFormSchema = async (instance, box) => {
       ".antd-List-heading": {
         "font-size": "14px",
         "font-weight": "500"
-      },
-      ".steedos-object-record-detail-header .antd-Grid-col--mdAuto": {
-        "padding": "0px !important"
       },
       ".antd-List-placeholder": {
         "display": "none"
