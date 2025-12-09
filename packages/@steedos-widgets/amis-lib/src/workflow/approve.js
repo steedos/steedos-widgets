@@ -620,7 +620,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
     bodyClassName: 'p-2',
     footerClassName: 'p-2 pt-0',
     drawerContainer: ()=>{
-      return document.body;
+      return document.querySelector(".steedos-amis-instance-view");//document.body;
     },
     body: [
       {
@@ -718,6 +718,21 @@ export const getApprovalDrawerSchema = async (instance, events) => {
     ],
     id: "u:approve_8861156e0b23",
     position: "bottom",
+    "onEvent": {
+      "cancel": {
+        "actions": [
+          {
+            "actionType": "custom",
+            "script": (context, doAction, event)=>{
+              var instancePageContent = document.querySelector(".steedos-amis-instance-view .antd-Page-content");
+              if (instancePageContent){
+                $(instancePageContent).css("paddingBottom", "0px");
+              }
+            }
+          }
+        ]
+      }
+    },
     actions: [
       {
         type: "button",

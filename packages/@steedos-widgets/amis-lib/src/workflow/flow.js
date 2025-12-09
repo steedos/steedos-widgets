@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: yinlianghui yinlianghui@hotoa.com
- * @LastEditTime: 2025-12-09 14:37:06
+ * @LastEditTime: 2025-12-09 15:28:25
  * @Description:
  */
 import {
@@ -953,6 +953,23 @@ const getApproveButton = async (instance, events)=>{
             actionType: "drawer",
             drawer: await getApprovalDrawerSchema(instance, events),
           },
+          {
+            "actionType": "wait",
+            "args": {
+              "time": 1000 //延时等底部签批栏drawer弹出再执行下面的添加审批单内部底边距脚本，不等的话拿不到drawer高度
+            }
+          },
+          {
+            "actionType": "custom",
+            "script": (context, doAction, event) => {
+              // 每次点开底部签批栏添加审批单内部底边距以解决签批栏会挡住申请单内容的问题
+              var instancePageContent = document.querySelector(".steedos-amis-instance-view .antd-Page-content");
+              var approvalDrawerContent = document.querySelector(".approval-drawer .antd-Drawer-content");
+              if (instancePageContent && approvalDrawerContent) {
+                $(instancePageContent).css("paddingBottom", `${approvalDrawerContent.clientHeight + 10}px`);
+              }
+            }
+          }
         ],
       },
     },
