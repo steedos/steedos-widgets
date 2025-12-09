@@ -1002,7 +1002,7 @@ async function getMobileTableColumns(fields, options){
         link: url,
         innerClassName: {
             "steedos-listview-item block text-gray-500":"true",
-            "max-w-[360px]": "${display == 'split'}",
+            "w-full": "${display == 'split'}",
         },
         body: {
             "type": "wrapper",

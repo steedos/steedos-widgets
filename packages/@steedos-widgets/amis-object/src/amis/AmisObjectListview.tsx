@@ -18,7 +18,6 @@ export const AmisObjectListView = async (props) => {
       style={},
       crudClassName, 
       showDisplayAs = false,
-      sideSchema,
       columnsTogglable=false,
       filterVisible = true,
       headerToolbarItems, rowClassNameExpr, hiddenColumnOperation=false, columns,
@@ -47,10 +46,10 @@ export const AmisObjectListView = async (props) => {
     }
   }
 
-  // 分栏模式不应该改变尺寸变量值
-  // if(["split"].indexOf(displayAs) > -1){
-  //   formFactor = 'SMALL';
-  // }
+  // 分栏模式应该改变尺寸变量值
+  if(["split"].indexOf(displayAs) > -1){
+    formFactor = 'SMALL';
+  }
 
   if(!ctx.formFactor){
     ctx.formFactor = formFactor;
@@ -204,25 +203,19 @@ export const AmisObjectListView = async (props) => {
     _reloadKey: _reloadKey,
     data: _data,
     style: style,
-    className: `${className} h-full  steedos-object-listview ${displayAs === 'split'? '':''}`,
+    className: `${className} h-full  steedos-object-listview ${displayAs === 'split'? 'min-w-[24rem] xl:min-w-[28rem] 2xl:min-w-[32rem] ':''}`,
     body: [{
       "type": "wrapper",
       "size": "none",
       "className": "flex flex-1 h-full",
       body: [
-        sideSchema ? {
-          "type": "wrapper",
-          "size": "none",
-          "className": "flex-shrink-0 min-w-[200px] h-full border-r border-gray-200 lg:order-first lg:flex lg:flex-col",
-          "body": sideSchema
-        } : null,
         {
           "type": "wrapper",
           "size": "none",
-          "className": sideSchema ? `flex-1 focus:outline-none lg:order-last min-w-md h-full` : 'w-full h-full',
+          "className": 'w-full h-full',
           "body": {
             type: "wrapper",
-            className: `p-0 bg-white steedos-object-listview-content-wrapper flex flex-col ${(formFactor === 'SMALL')? '':'m-4 shadow rounded'} ${(displayAs === 'split')? 'mr-1':''}`,
+            className: `p-0 bg-white steedos-object-listview-content-wrapper flex flex-col ${(formFactor === 'SMALL')? '':''} ${(displayAs === 'split')? 'border-r':'sm:m-4 sm:shadow sm:rounded'}`,
             body: [
               ...headerSchema, //list view header,
               {

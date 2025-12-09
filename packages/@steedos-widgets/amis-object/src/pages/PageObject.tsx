@@ -125,7 +125,7 @@ export const PageObject = async (props) => {
                     "type": "wrapper",
                     "size": "none",
                     "className": {
-                        "p-0 flex-shrink-0 min-w-[388px] w-fit lg:order-first lg:flex lg:flex-col overflow-y-auto": "${display == 'split'}",
+                        "p-0 flex-shrink-0 lg:order-first lg:flex lg:flex-col overflow-y-auto": "${display == 'split'}",
                         'h-full': "${display != 'split'}",
                     },
                     "body": {
