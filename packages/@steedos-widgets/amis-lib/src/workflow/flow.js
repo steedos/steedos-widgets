@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: yinlianghui yinlianghui@hotoa.com
- * @LastEditTime: 2025-12-09 16:26:53
+ * @LastEditTime: 2025-12-09 17:03:24
  * @Description:
  */
 import {
@@ -966,7 +966,7 @@ const getApproveButton = async (instance, events)=>{
               var instancePageContent = document.querySelector(".steedos-amis-instance-view .antd-Page-content");
               var approvalDrawerContent = document.querySelector(".approval-drawer .antd-Drawer-content");
               if (instancePageContent && approvalDrawerContent) {
-                $(instancePageContent).css("paddingBottom", `${approvalDrawerContent.clientHeight + 10}px`);
+                $(instancePageContent).css("paddingBottom", `${approvalDrawerContent.clientHeight + 2}px`);
               }
             }
           }
@@ -1109,6 +1109,10 @@ export const getFlowFormSchema = async (instance, box) => {
       },
       ".steedos-amis-instance-view.steedos-instance-style-table .antd-Page-body .steedos-amis-instance-view-content": {
         "width": "1024px"
+      },
+      ".steedos-amis-instance-view .approval-drawer.antd-Drawer .antd-Drawer-content": {
+        "box-shadow": "none",
+        "border-top": "1px solid rgb(209 213 219)"
       },
       ".antd-List-placeholder": {
         "display": "none"
