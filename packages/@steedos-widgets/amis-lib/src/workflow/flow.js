@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: yinlianghui yinlianghui@hotoa.com
- * @LastEditTime: 2025-12-09 17:03:24
+ * @LastEditTime: 2025-12-09 17:13:13
  * @Description:
  */
 import {
@@ -1108,7 +1108,7 @@ export const getFlowFormSchema = async (instance, box) => {
         "font-weight": "500"
       },
       ".steedos-amis-instance-view.steedos-instance-style-table .antd-Page-body .steedos-amis-instance-view-content": {
-        "width": "1024px"
+        "max-width": "1024px"
       },
       ".steedos-amis-instance-view .approval-drawer.antd-Drawer .antd-Drawer-content": {
         "box-shadow": "none",
