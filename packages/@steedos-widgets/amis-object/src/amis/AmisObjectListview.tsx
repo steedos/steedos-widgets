@@ -46,10 +46,10 @@ export const AmisObjectListView = async (props) => {
     }
   }
 
-  // 分栏模式应该改变尺寸变量值
-  if(["split"].indexOf(displayAs) > -1){
-    formFactor = 'SMALL';
-  }
+  // 分栏模式不应该改变尺寸变量值
+  // if(["split"].indexOf(displayAs) > -1){
+  //   formFactor = 'SMALL';
+  // }
 
   if(!ctx.formFactor){
     ctx.formFactor = formFactor;
