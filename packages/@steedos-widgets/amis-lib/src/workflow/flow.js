@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-07 16:20:45
  * @LastEditors: yinlianghui yinlianghui@hotoa.com
- * @LastEditTime: 2025-12-09 15:28:25
+ * @LastEditTime: 2025-12-09 16:06:24
  * @Description:
  */
 import {
@@ -998,6 +998,15 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
 
         var lastAtBottom = false; // 上一个scroll事件是否到底
 
+        function scrollToBottom(){
+          setTimeout(function(){
+            var instanceViewBody = document.querySelector(".steedos-amis-instance-view .antd-Page-content .steedos-amis-instance-view-body");
+            if (instanceViewBody){
+              $(instanceViewBody).animate({scrollTop: $(instanceViewBody).prop("scrollHeight")});
+            }
+          }, 1000);
+        }
+
         function isAtBottom() {
           var scrollTop = bodyEl.scrollTop,
             scrollHeight = bodyEl.scrollHeight,
@@ -1011,6 +1020,7 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
           if (atBottom && e.deltaY > 0 && !isDrawerOpen()) {
             // [wheel] 拖动条在底部且向下滚，弹drawer
             btn.click();
+            scrollToBottom();
           }
         });
 
@@ -1020,6 +1030,7 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
           if (!lastAtBottom && atBottom && !isDrawerOpen()) {
             // [scroll] 拖动条到底，弹drawer
             btn.click();
+            scrollToBottom();
           }
           lastAtBottom = atBottom;
         });
