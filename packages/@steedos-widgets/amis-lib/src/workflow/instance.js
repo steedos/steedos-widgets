@@ -198,7 +198,8 @@ export const getInstanceInfo = async (props) => {
         flow:flow__expand{
           _id,
           name,
-          perms
+          perms,
+          allow_select_step
         }
       }
     }

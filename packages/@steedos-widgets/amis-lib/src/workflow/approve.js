@@ -748,6 +748,6 @@ export const getApprovalDrawerSchema = async (instance, events) => {
       },
     ]
   };
-  console.log(`getApprovalDrawerSchema: `, schema)
+  // console.log(`getApprovalDrawerSchema: `, schema)
   return schema;
 };

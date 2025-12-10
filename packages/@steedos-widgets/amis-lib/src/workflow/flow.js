@@ -1,10 +1,3 @@
-/*
- * @Author: baozhoutao@steedos.com
- * @Date: 2022-09-07 16:20:45
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-12-04 13:47:10
- * @Description:
- */
 import {
   lookupToAmis,
   getSteedosAuth,
@@ -20,6 +13,8 @@ import { getAttachments } from './attachment';
 import { getRelatedRecords, getRelatedInstances } from './related';
 
 import { getInstanceApprovalHistory } from './history';
+
+import { getStepsSchema } from './nextSteps';
 
 
 const getSelectOptions = (field) => {
@@ -1151,11 +1146,17 @@ export const getFlowFormSchema = async (instance, box) => {
                 "componentId": "u:next_step",
                 "args": {}
               },
+              {
+                "actionType": "reload",
+                "componentId": "u:set_steps_users",
+                "args": {}
+              },
               ...changeEvents
             ]
           }
         }
       },
+      await getStepsSchema(instance),
       await getInstanceApprovalHistory(),
       await getApproveButton(instance, { submitEvents , nextStepInitedEvents, nextStepChangeEvents, nextStepUserChangeEvents})
     ],

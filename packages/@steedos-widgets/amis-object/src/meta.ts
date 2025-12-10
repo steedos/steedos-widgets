@@ -72,6 +72,8 @@ import AmisSteedosObject from './metas/AmisSteedosObject';
 
 import AmisSteedosFlowForm from './metas/AmisSteedosFlowForm';
 
+import AmisInstanceHandler from "./metas/AmisInstanceHandler";
+
 const components = [
   AmisRecordDetailHeader,
   AmisObjectForm, 
@@ -111,7 +113,8 @@ const components = [
   ...fieldMetas,
   AmisSteedosFieldGroup,
   AmisSteedosObject,
-  AmisSteedosFlowForm
+  AmisSteedosFlowForm,
+  AmisInstanceHandler
 ];
 
 const componentList = [

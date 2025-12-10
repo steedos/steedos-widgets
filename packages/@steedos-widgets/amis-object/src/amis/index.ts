@@ -45,3 +45,5 @@ export * from './AmisSteedosFieldGroup';
 export * from './AmisSteedosObject';
 
 export * from './AmisSteedosFlowForm';
+
+export * from './AmisInstanceHandler';
