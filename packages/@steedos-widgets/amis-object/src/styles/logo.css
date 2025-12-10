@@ -59,17 +59,17 @@
 }
 
 .steedos-logo {
-    width: 1.35rem;
-    height: 1.35rem;
+    width: 1.315rem;
+    height: 1.315rem;
     position: relative;
     display: block;
     cursor: pointer
 }
 
 .steedos-logo .steedos-r1,.steedos-logo .steedos-r2,.steedos-logo .steedos-r3,.steedos-logo .steedos-r4,.steedos-logo .steedos-r5,.steedos-logo .steedos-r6,.steedos-logo .steedos-r7,.steedos-logo .steedos-r8,.steedos-logo .steedos-r9 {
-    width: .35rem;
-    height: .35rem;
-    background-color: var(--steedos-g-color-neutral-base-50,#747474);
+    width: .315rem;
+    height: .315rem;
+    background-color: var(--steedos-logo-color-default,#666666);
     display: inline-block;
     position: absolute;
     border-radius: 50%;
@@ -158,4 +158,8 @@
         -webkit-transform: scale(1.5);
         transform: scale(1.5)
     }
+}
+
+.dark {
+    --steedos-logo-color-default: #FFFFFF;
 }
