@@ -66,7 +66,7 @@ const options = {
       plugins: [
         require('postcss-simple-vars'), 
         require('postcss-nested'), 
-        require('tailwindcss'), 
+        // require('tailwindcss'), 
         require('autoprefixer')
       ],
     }),
