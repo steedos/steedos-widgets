@@ -1,7 +1,7 @@
 {
   "name": "@steedos-widgets/devextreme",
   "private": false,
-  "version": "6.10.32",
+  "version": "6.10.33",
   "main": "dist/devextreme.cjs.js",
   "module": "dist/devextreme.esm.js",
   "unpkg": "dist/devextreme.umd.js",
