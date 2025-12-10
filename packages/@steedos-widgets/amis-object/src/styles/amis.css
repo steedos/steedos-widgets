@@ -283,9 +283,9 @@ fieldset.antd-Collapse > legend{
     border-color: transparent;
 }
 
-.bg-white {
+/* .bg-white {
   color: var(--body-color);
-}
+} */
 
 .antd-SearchBox.is-mobile {
     border: var(--Form-input-borderWidth) solid transparent;
