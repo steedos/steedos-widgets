@@ -1,8 +1,8 @@
 /*
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-12-04 22:52:15
+ * @LastEditors: yinlianghui yinlianghui@hotoa.com
+ * @LastEditTime: 2025-12-10 17:04:58
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -737,8 +737,8 @@ async function getForm(props, mode = "edit", formId) {
             var currentFormValues = JSON.parse(JSON.stringify(event.data));
             var parent = event.data.__super.__super.parent;
             var __parentIndex = event.data.__super.__super.__parentIndex;
-            let uuidv4 = new Function("return (" + ${uuidv4.toString()} + ")()");
-            var primaryKey = "${primaryKey}";
+            // let uuidv4 = new Function("return (" + ${uuidv4.toString()} + ")()");
+            // var primaryKey = "${primaryKey}";
             if(parent){
                 fieldValue[__parentIndex].children[currentIndex] = currentFormValues;
                 // 重写父节点，并且改变其某个属性以让子节点修改的内容回显到界面上
@@ -986,8 +986,11 @@ async function getButtonActions(props, mode) {
             }
             if(newItem[primaryKey]){
                 // 如果newItem已经有主键字段值，则重新生成新的主键值，否则会重复。
-                let uuidv4 = new Function("return (" + ${uuidv4.toString()} + ")()");
-                newItem[primaryKey] = uuidv4();
+                // let uuidv4 = new Function("return (" + ${uuidv4.toString()} + ")()");
+                // newItem[primaryKey] = uuidv4();
+                // 删除primaryKey会自动加primaryKey，这里不删除primaryKey审批王会有bug,像上面重新给新的uuid值也一样，见：[子表-通过复制出来的记录，再点击编辑，没有值](https://github.com/steedos/steedos-plugins/issues/83)
+                // 只能删除primaryKey键值，改后不影响autoGeneratePrimaryKeyValue功能最终效果
+                delete newItem[primaryKey];
             }
             if(parent){
                 fieldValue[__parentIndex].children.push(newItem);
