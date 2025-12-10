@@ -661,7 +661,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
           "className": "slds-filters__footer slds-grid slds-shrink-none flex justify-between p-0"
         }],
         "size": "xs",
-        "className": "slds-filters px-0"
+        "className": "slds-filters px-3"
       },
       "size": "xs",
       "className": `p-0`,

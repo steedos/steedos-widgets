@@ -948,6 +948,23 @@ const getApproveButton = async (instance, events)=>{
             actionType: "drawer",
             drawer: await getApprovalDrawerSchema(instance, events),
           },
+          {
+            "actionType": "wait",
+            "args": {
+              "time": 1000 //延时等底部签批栏drawer弹出再执行下面的添加审批单内部底边距脚本，不等的话拿不到drawer高度
+            }
+          },
+          {
+            "actionType": "custom",
+            "script": (context, doAction, event) => {
+              // 每次点开底部签批栏添加审批单内部底边距以解决签批栏会挡住申请单内容的问题
+              var instancePageContent = document.querySelector(".steedos-amis-instance-view .antd-Page-content");
+              var approvalDrawerContent = document.querySelector(".approval-drawer .antd-Drawer-content");
+              if (instancePageContent && approvalDrawerContent) {
+                $(instancePageContent).css("paddingBottom", `${approvalDrawerContent.clientHeight + 2}px`);
+              }
+            }
+          }
         ],
       },
     },
@@ -976,6 +993,15 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
 
         var lastAtBottom = false; // 上一个scroll事件是否到底
 
+        function scrollToBottom(){
+          setTimeout(function(){
+            var instanceViewBody = document.querySelector(".steedos-amis-instance-view .antd-Page-content .steedos-amis-instance-view-body");
+            if (instanceViewBody){
+              $(instanceViewBody).animate({scrollTop: $(instanceViewBody).prop("scrollHeight")});
+            }
+          }, 1000);
+        }
+
         function isAtBottom() {
           var scrollTop = bodyEl.scrollTop,
             scrollHeight = bodyEl.scrollHeight,
@@ -989,6 +1015,7 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
           if (atBottom && e.deltaY > 0 && !isDrawerOpen()) {
             // [wheel] 拖动条在底部且向下滚，弹drawer
             btn.click();
+            scrollToBottom();
           }
         });
 
@@ -998,6 +1025,7 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
           if (!lastAtBottom && atBottom && !isDrawerOpen()) {
             // [scroll] 拖动条到底，弹drawer
             btn.click();
+            scrollToBottom();
           }
           lastAtBottom = atBottom;
         });
@@ -1056,7 +1084,7 @@ export const getFlowFormSchema = async (instance, box) => {
       "recordId": instance._id,
       "id": "u:e6b2adbe0e21",
       "showRecordTitle": false,
-      "className": "p-0 m-0 p0 m0 bg-gray-50 sm:rounded-tl sm:rounded-tr"
+      "className": "sm:rounded-tl sm:rounded-tr"
     },
     "css": {
       ".steedos-amis-instance-view-body": {
@@ -1074,8 +1102,12 @@ export const getFlowFormSchema = async (instance, box) => {
         "font-size": "14px",
         "font-weight": "500"
       },
-      ".steedos-object-record-detail-header .antd-Grid-col--mdAuto": {
-        "padding": "0px !important"
+      ".steedos-amis-instance-view.steedos-instance-style-table .antd-Page-body .steedos-amis-instance-view-content": {
+        "max-width": "1024px"
+      },
+      ".steedos-amis-instance-view .approval-drawer.antd-Drawer .antd-Drawer-content": {
+        "box-shadow": "none",
+        "border-top": "1px solid rgb(209 213 219)"
       },
       ".antd-List-placeholder": {
         "display": "none"
@@ -1094,72 +1126,77 @@ export const getFlowFormSchema = async (instance, box) => {
         "background": "transparent !important"
       }
     },
-    body: [
-      await getAttachments(instance),
-      await getRelatedInstances(instance),
-      await getRelatedRecords(instance),
-      {
-        type: "form",
-        debug: false,
-        wrapWithPanel: false,
-        resetAfterSubmit: true,
-        body: [
-          {
-            type: "tpl",
-            id: "u:f5bb0ad602a6",
-            tpl: `<div class="instance-name">${instance.title}</div>`,
-            inline: true,
-            wrapperComponent: "",
-            style: {
-              fontFamily: "",
-              fontSize: 12,
-              textAlign: "center",
+    body: [{
+      "type": "wrapper",
+      "body": [
+        await getAttachments(instance),
+        await getRelatedInstances(instance),
+        await getRelatedRecords(instance),
+        {
+          type: "form",
+          debug: false,
+          wrapWithPanel: false,
+          resetAfterSubmit: true,
+          body: [
+            {
+              type: "tpl",
+              id: "u:f5bb0ad602a6",
+              tpl: `<div class="instance-name">${instance.title}</div>`,
+              inline: true,
+              wrapperComponent: "",
+              style: {
+                fontFamily: "",
+                fontSize: 12,
+                textAlign: "center",
+              },
             },
-          },
-          formContentSchema,
-          await getApplicantTableView(instance),
-        ],
-        id: "instance_form",
-        onEvent: {
-          // validateError: {
-          //   weight: 0,
-          //   actions: [
-          //     {
-          //       "componentId": "",
-          //       "args": {
-          //         "msgType": "info",
-          //         "position": "top-right",
-          //         "closeButton": true,
-          //         "showIcon": true,
-          //         "title": i18next.t('frontend_workflow_submit_validate_error_title'),//"提交失败",
-          //         "msg": i18next.t('frontend_workflow_submit_validate_error_msg'),//"请填写必填字段"
-          //       },
-          //       "actionType": "toast"
-          //     }
-          //   ],
-          // },
-          change: {
-            weight: 0,
-            actions: [
-              {
-                "actionType": "reload",
-                "componentId": "u:next_step",
-                "args": {}
-              },
-              {
-                "actionType": "reload",
-                "componentId": "u:set_steps_users",
-                "args": {}
-              },
-              ...changeEvents
-            ]
+            formContentSchema,
+            await getApplicantTableView(instance),
+          ],
+          id: "instance_form",
+          onEvent: {
+            // validateError: {
+            //   weight: 0,
+            //   actions: [
+            //     {
+            //       "componentId": "",
+            //       "args": {
+            //         "msgType": "info",
+            //         "position": "top-right",
+            //         "closeButton": true,
+            //         "showIcon": true,
+            //         "title": i18next.t('frontend_workflow_submit_validate_error_title'),//"提交失败",
+            //         "msg": i18next.t('frontend_workflow_submit_validate_error_msg'),//"请填写必填字段"
+            //       },
+            //       "actionType": "toast"
+            //     }
+            //   ],
+            // },
+            change: {
+              weight: 0,
+              actions: [
+                {
+                  "actionType": "reload",
+                  "componentId": "u:next_step",
+                  "args": {}
+                },
+                {
+                  "actionType": "reload",
+                  "componentId": "u:set_steps_users",
+                  "args": {}
+                },
+                ...changeEvents
+              ]
+            }
           }
-        }
-      },
-      await getStepsSchema(instance),
-      await getInstanceApprovalHistory(),
-      await getApproveButton(instance, { submitEvents , nextStepInitedEvents, nextStepChangeEvents, nextStepUserChangeEvents})
-    ],
+        },
+        await getStepsSchema(instance),
+        await getInstanceApprovalHistory(),
+        await getApproveButton(instance, { submitEvents , nextStepInitedEvents, nextStepChangeEvents, nextStepUserChangeEvents})
+      ],
+      "size": "none",
+      "className": "steedos-amis-instance-view-content"
+    }],
     id: "u:instancePage",
     messages: {},
     pullRefresh: {},

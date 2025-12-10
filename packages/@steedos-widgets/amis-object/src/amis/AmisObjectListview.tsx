@@ -18,7 +18,6 @@ export const AmisObjectListView = async (props) => {
       style={},
       crudClassName, 
       showDisplayAs = false,
-      sideSchema,
       columnsTogglable=false,
       filterVisible = true,
       headerToolbarItems, rowClassNameExpr, hiddenColumnOperation=false, columns,
@@ -204,32 +203,26 @@ export const AmisObjectListView = async (props) => {
     _reloadKey: _reloadKey,
     data: _data,
     style: style,
-    className: `${className} h-full  steedos-object-listview ${displayAs === 'split'? '':''}`,
+    className: `${className} h-full  steedos-object-listview ${displayAs === 'split'? 'min-w-[24rem] xl:min-w-[28rem] 2xl:min-w-[32rem] ':''}`,
     body: [{
       "type": "wrapper",
       "size": "none",
       "className": "flex flex-1 h-full",
       body: [
-        sideSchema ? {
-          "type": "wrapper",
-          "size": "none",
-          "className": "flex-shrink-0 min-w-[200px] h-full border-r border-gray-200 lg:order-first lg:flex lg:flex-col",
-          "body": sideSchema
-        } : null,
         {
           "type": "wrapper",
           "size": "none",
-          "className": sideSchema ? `flex-1 focus:outline-none lg:order-last w-96 h-full` : 'w-full h-full',
+          "className": 'w-full h-full',
           "body": {
             type: "wrapper",
-            className: `p-0 bg-white steedos-object-listview-content-wrapper flex flex-col ${(formFactor === 'SMALL')? '':'m-4 shadow rounded'} ${(displayAs === 'split')? 'mr-1':''}`,
+            className: `p-0 bg-white steedos-object-listview-content-wrapper flex flex-col ${(formFactor === 'SMALL')? '':''} ${(displayAs === 'split')? 'border-r':'sm:m-4 sm:shadow sm:rounded'}`,
             body: [
               ...headerSchema, //list view header,
               {
                 "type": "service",
                 "id": "service_schema_api_" + objectApiName,
                 _reloadKey: _reloadKey,
-                "className": ` steedos-object-listview-content grow  bg-white ${displayAs === 'split'? 'p-0 m-0':'px-3 py-0 m-1'}`,//这里加grow是因为crud card模式下底部会有灰色背影
+                "className": ` steedos-object-listview-content grow  bg-white ${displayAs === 'split'? 'p-0 m-0':'p-0 m-0'}`,//这里加grow是因为crud card模式下底部会有灰色背影
                 "schemaApi": {
                     // 这里url上加objectApiName属性是因为设计器中切换对象时不会变更列表视图界面，不可以用objectName=${objectName}使用作用域中objectName变量是因为设计器那边不会监听识别data变化来render组件
                     "url": "${context.rootUrl}/graphql?objectName=" + objectApiName + "&listName=${listName}&display=${display}&rebuildOn=" + rebuildOn + _reloadKey,

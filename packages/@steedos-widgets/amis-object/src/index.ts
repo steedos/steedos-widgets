@@ -5,6 +5,8 @@
  * @LastEditTime: 2025-08-26 09:24:36
  */
 
+import './styles/logo.css'
+
 import './styles/amis.css';
 import './styles/amis-nav.css';
 

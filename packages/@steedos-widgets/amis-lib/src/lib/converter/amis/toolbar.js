@@ -336,12 +336,12 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
     // if(toolbarCount){
     //   toolbars.push(toolbarCount);
     // }
-    toolbars.push(toolbarReloadButton);
-    toolbars.push(toolbarDQuickSearchBox);
     if(toolbarFilter){
       toolbars.push(toolbarFilter);
     }
+    toolbars.push(toolbarReloadButton);
     toolbars.push(toolbarDisplayAsButton);
+    toolbars.push(toolbarDQuickSearchBox);
     return [
       // "bulkActions",
       ...(headerToolbarItems || []),
