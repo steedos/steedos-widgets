@@ -39,7 +39,7 @@ export const AmisRecordDetailMini = async (props) => {
     options.isEditor = true;
   }
   // console.log(`AmisRecordDetailMini==2=>`, objectApiName, options)
-  const schema = await getRecordDetailMiniSchema(objectApiName, appId, options);
+  const schema = await getRecordDetailMiniSchema(objectApiName, appId, options) as any;
   if(!isEmpty(schemaData)){
     schema.data = Object.assign({
       "_inDrawer": false,  // 重置否在抽屉中状态

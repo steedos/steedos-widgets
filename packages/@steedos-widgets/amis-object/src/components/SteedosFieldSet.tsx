@@ -13,7 +13,7 @@ import {
   FormHorizontal
 } from 'amis-core';
 import {Collapse as BasicCollapse, Icon} from 'amis-ui';
-import {BaseSchema, SchemaCollection, SchemaTpl, SchemaObject} from 'amis';
+import {BaseSchema, SchemaCollection, SchemaObject} from 'amis';
 
 /**
  * Collapse 折叠渲染器，格式说明。
@@ -83,7 +83,7 @@ interface CollapseSchema extends BaseSchema {
   /**
    * 收起的标题
    */
-  collapseHeader?: SchemaTpl;
+  collapseHeader?: any;
 
   /**
    * 控件大小
@@ -309,12 +309,12 @@ interface FieldSetControlSchema
   /**
    * 标题
    */
-  title?: SchemaTpl;
+  title?: any;
 
   /**
    * 收起的标题
    */
-  collapseTitle?: SchemaTpl;
+  collapseTitle?: any;
 
   /**
    * 点开时才加载内容

@@ -53,8 +53,8 @@ export const AmisObjectButton = (props) => {
                 scope: data._scoped
             });
         } catch (error) {
-            console.error(error)
-            SteedosUI.notification.error({message: error.message})
+            console.error(error);
+            (window as any).SteedosUI.notification.error({message: error.message})
         }
     };
     if(!button){

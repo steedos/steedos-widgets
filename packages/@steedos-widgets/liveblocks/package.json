@@ -57,6 +57,7 @@
     "@rollup/plugin-replace": "^5.0.2",
     "clsx": "2.1.1",
     "emojibase-data": "^16.0.2",
+    "i18next": "24.2.2",
     "react-error-boundary": "^4.1.2"
   },
   "gitHead": "ffb730e16642eb8e7a7ae5d98d0773c42482e7d2"

@@ -24,7 +24,7 @@ export const AmisRecordService = async (props) => {
   if(props.$$editor){
     options.isEditor = true;
   }
-  const schema = (await getRecordServiceSchema(objectApiName, appId, options, body)).amisSchema;
+  const schema = (await getRecordServiceSchema(objectApiName, appId, options, body)).amisSchema as any;
   if(className){
     schema.className = className;
   }

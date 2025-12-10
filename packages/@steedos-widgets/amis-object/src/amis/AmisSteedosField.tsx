@@ -400,7 +400,7 @@ export const AmisSteedosField = async (props) => {
                         referenceTo = 'space_users';
                         referenceToField = 'user';
                     }
-                    let fieldRefObject = await getUISchema(referenceTo);
+                    let fieldRefObject = await getUISchema(referenceTo) as any;
                     if(props.data._display && has(props.data._display, steedosField.name)){
                         fieldBaseProps = Object.assign({}, fieldBaseProps, {
                             type: 'control',

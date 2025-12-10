@@ -13,7 +13,7 @@ export const AmisInstanceDetail = async (props) => {
     // console.log('AmisInstanceDetail===>', props);
     const instanceInfo = await getInstanceInfo({instanceId: instanceId, box: boxName});
     // console.log('AmisInstanceDetail===instanceInfo>', instanceInfo);
-    const schema = await getFlowFormSchema(instanceInfo, boxName);
+    const schema = await getFlowFormSchema(instanceInfo, boxName) as any;
     const applicant = await getApplicant(instanceInfo.applicant);
     schema.data = {
         "&": "$$",

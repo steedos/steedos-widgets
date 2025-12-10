@@ -130,7 +130,7 @@ function formatUISchemaCache(objectName, uiSchema){
     })
 }
 
-export async function getUISchema(objectName, force, retry = true) {
+export async function getUISchema(objectName, force = false, retry = true) {
     if (!objectName) {
         return;
     }
