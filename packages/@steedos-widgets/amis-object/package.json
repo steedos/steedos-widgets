@@ -59,12 +59,12 @@
     "tslint-config-prettier": "^1.1.0",
     "tslint-config-standard": "^7.0.0",
     "typescript": "^5.6.2",
-    "uglify-js": "^3.17.0"
-  },
-  "dependencies": {
+    "uglify-js": "^3.17.0",
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.19",
     "tailwindcss": "^3.4.17"
+  },
+  "dependencies": {
   },
   "gitHead": "ffb730e16642eb8e7a7ae5d98d0773c42482e7d2"
 }
