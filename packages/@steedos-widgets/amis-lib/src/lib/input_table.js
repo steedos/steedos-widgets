@@ -1,8 +1,8 @@
 /*
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
- * @LastEditors: yinlianghui yinlianghui@hotoa.com
- * @LastEditTime: 2025-12-10 17:04:58
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2025-12-11 11:47:53
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -626,6 +626,17 @@ function getFormPaginationWrapper(props, form, mode) {
                     "value": lastestFieldValue
                 }
             });
+
+            // 延时再保存一次当前页数据到子表组件中，解决新增/复制新增行后关闭弹出窗口时数据丢失造成翻页页码错误问题
+            setTimeout(function(){
+                doAction({
+                    "componentId": "${props.id}",
+                    "actionType": "setValue",
+                    "args": {
+                        "value": lastestFieldValue
+                    }
+                });
+            }, 1000);
         }
         event.data.__tableItems.forEach(function(n,i){
             event.data.__tableItems[i] = lastestFieldValue[i];
@@ -706,7 +717,7 @@ async function getForm(props, mode = "edit", formId) {
         "type": "form",
         "id": formId,
         "title": "表单",
-        "debug": false,
+        "debug": window.amis_form_debug || false,
         "mode": "normal",
         "body": body,
         "wrapWithPanel": false,
@@ -947,6 +958,17 @@ async function getButtonActions(props, mode) {
             }
             // 触发翻页按钮事件，实现保存当前页数据并跳转到最后一行
             scope.getComponentById(buttonNextId).props.dispatchEvent("click", event.data);
+            
+            // 延时再保存一次当前页数据到子表组件中，解决新增/复制新增行后关闭弹出窗口时数据丢失造成翻页页码错误问题
+            setTimeout(function(){
+                doAction({
+                    "componentId": "${props.id}",
+                    "actionType": "setValue",
+                    "args": {
+                        "value": fieldValue
+                    }
+                });
+            }, 1000);
         `;
         let onSaveAndCopyItemScript = `
             let scope = event.context.scoped;
@@ -1019,6 +1041,17 @@ async function getButtonActions(props, mode) {
             }
             // 触发翻页按钮事件，实现保存当前页数据并跳转到最后一行
             scope.getComponentById(buttonNextId).props.dispatchEvent("click", event.data);
+            
+            // 延时再保存一次当前页数据到子表组件中，解决新增/复制新增行后关闭弹出窗口时数据丢失造成翻页页码错误问题
+            setTimeout(function(){
+                doAction({
+                    "componentId": "${props.id}",
+                    "actionType": "setValue",
+                    "args": {
+                        "value": fieldValue
+                    }
+                });
+            }, 1000);
         `;
         let dialogButtons = [
             {
