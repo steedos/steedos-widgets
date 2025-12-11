@@ -774,6 +774,12 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                         columnsTogglable: false
                     }
                 }
+                if (readonly && !_.isEmpty(field.amis)){
+                    Object.assign(field.amis, {
+                        disabled: true,
+                        disabledOn: true
+                    });
+                }
                 // console.log(`convertData ======>`, field, convertData)
                 for (const subField of field.subFields) {
                     if(!subField.name.endsWith(".$")){

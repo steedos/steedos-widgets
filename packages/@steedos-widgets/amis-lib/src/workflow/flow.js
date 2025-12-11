@@ -422,7 +422,6 @@ const getFieldEditTpl = async (field, label)=>{
         tpl.type = "steedos-input-table";
         tpl.addable = field.permission === "editable";
         tpl.editable = tpl.addable;
-        tpl.copyable = tpl.addable;
         tpl.removable = tpl.addable;
         if(tpl.addable){
           tpl.actionData = {
@@ -525,16 +524,23 @@ const getFieldReadonlyTpl = async (field, label)=>{
     // tpl.format = 'YYYY-MM-DD HH:mm'
     tpl.tpl = `\${${field.code}.name}`
   }else if(field.type === 'table'){
-    tpl.type = "input-table"; //TODO
-    tpl.addable = field.permission === "editable";
-    tpl.editable = tpl.addable;
-    tpl.removable = tpl.addable;
-    tpl.copyable = tpl.addable;
-    tpl.columns = [];
+    tpl.type = "steedos-input-table";
+    tpl.disabled = true;
+    tpl.autoGeneratePrimaryKeyValue = true;
+    tpl.fields = [];
     for (const sField of field.fields) {
       if (sField.type != "hidden") {
+        sField.permission = "readonly";
         const column = await getTdInputTpl(sField, true);
-        tpl.columns.push(column);
+        // console.log('table column', column, sField);
+        if(column.type === 'steedos-field'){
+          if(sField.visibleOn){
+            column.config.visibleOn = sField.visibleOn
+          }
+          tpl.fields.push(column.config);
+        }else{
+          tpl.fields.push(column);
+        }
       }
     }
   }else if(field.type === 'html'){

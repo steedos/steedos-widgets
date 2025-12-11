@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-06-14 06:22:22
+ * @LastEditTime: 2025-12-11 22:18:56
  */
 import './AmisInputTable.less';
 import { getAmisInputTableSchema } from '@steedos-widgets/amis-lib'
@@ -19,6 +19,7 @@ export const AmisInputTable = async (props) => {
     extendProps["addable"] = false;
     extendProps["editable"] = false;
     extendProps["removable"] = false;
+    extendProps["draggable"] = false;
   }
 
   if (props.enableDialog === false) {
