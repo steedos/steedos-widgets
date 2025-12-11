@@ -1,7 +1,7 @@
 {
   "name": "@steedos-widgets/ckeditor",
   "private": false,
-  "version": "6.10.34-beta.3",
+  "version": "6.10.34-beta.4",
   "main": "dist/ckeditor.cjs.js",
   "module": "dist/ckeditor.esm.js",
   "unpkg": "dist/ckeditor.umd.js",
