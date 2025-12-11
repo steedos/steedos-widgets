@@ -34,7 +34,6 @@
     "rollup-plugin-alias": "^2.2.0",
     "rollup-plugin-external-globals": "^0.6.1",
     "rollup-plugin-json": "^4.0.0",
-    "rollup-plugin-node-builtins": "^2.1.2",
     "rollup-plugin-node-globals": "^1.4.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-polyfill-node": "^0.8.0",

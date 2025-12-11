@@ -6,7 +6,6 @@ import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
 import json from 'rollup-plugin-json';
 import visualizer from 'rollup-plugin-visualizer';
-import builtins from 'rollup-plugin-node-builtins';
 import path from 'path';
 
 const rollupPostcssLessLoader = require('rollup-plugin-postcss-webpack-alias-less-loader');
@@ -29,7 +28,6 @@ const options = {
     include: 'src/**',
   },
   plugins: [,
-    builtins(),
     json(),
     // resolve(),
     nodeResolve({
