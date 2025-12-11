@@ -1,6 +1,13 @@
 {
   "packages": [
     {
+        "package": "antd",
+        "urls": [
+            "https://unpkg.com/antd@4.24.5/dist/antd.min.js"
+        ],
+        "library": "antd"
+    },
+    {
         "package": "@steedos-widgets/amis-object",
         "urls": [
             "https://unpkg.com/@steedos-widgets/amis-object@{{version}}/dist/amis-object.umd.js",
