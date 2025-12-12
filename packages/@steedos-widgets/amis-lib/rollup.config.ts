@@ -59,9 +59,9 @@ const options = {
         comments: false,
       }
     }),
-    visualizer({
-      filename: 'stats.html',
-    }),
+    // visualizer({
+    //   filename: 'stats.html',
+    // }),
   ],
 };
 

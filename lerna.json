@@ -4,6 +4,7 @@
     "apps/*",
     "packages/**"
   ],
+  "useWorkspaces": true,
   "command": {
     "version": {
       "exact": true,

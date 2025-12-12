@@ -76,9 +76,9 @@ const options = {
         comments: false,
       }
     }),
-    visualizer({
-      filename: 'stats.html',
-    }),
+    // visualizer({
+    //   filename: 'stats.html',
+    // }),
     // process.env.NODE_ENV === 'production' && terser()
   ],
 };
