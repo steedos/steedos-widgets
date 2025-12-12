@@ -6,6 +6,7 @@ import json from 'rollup-plugin-json';
 import { terser } from "rollup-plugin-terser";
 import fg from 'fast-glob';
 import babel, { getBabelOutputPlugin } from '@rollup/plugin-babel';
+import visualizer from 'rollup-plugin-visualizer';
 
 
 require('dotenv-flow').config();
@@ -69,6 +70,14 @@ const options = {
         // require('tailwindcss'), 
         require('autoprefixer')
       ],
+    }),
+    terser({
+      format: {
+        comments: false,
+      }
+    }),
+    visualizer({
+      filename: 'stats.html',
     }),
     // process.env.NODE_ENV === 'production' && terser()
   ],

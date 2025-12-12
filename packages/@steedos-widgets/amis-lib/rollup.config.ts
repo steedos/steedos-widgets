@@ -8,10 +8,11 @@
 import typescript from '@rollup/plugin-typescript';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve, { nodeResolve } from '@rollup/plugin-node-resolve';
-import { uglify } from 'rollup-plugin-uglify';
+import { terser } from 'rollup-plugin-terser';
 import json from 'rollup-plugin-json';
 import fg from 'fast-glob';
 import babel, { getBabelOutputPlugin } from '@rollup/plugin-babel';
+import visualizer from 'rollup-plugin-visualizer';
 
 import pkg from './package.json';
 
@@ -53,7 +54,14 @@ const options = {
             }
         }
     },
-    process.env.NODE_ENV === 'production' && uglify()
+    terser({
+      format: {
+        comments: false,
+      }
+    }),
+    visualizer({
+      filename: 'stats.html',
+    }),
   ],
 };
 
