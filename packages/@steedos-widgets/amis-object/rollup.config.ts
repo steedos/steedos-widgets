@@ -127,7 +127,7 @@ export default [
               });
               const amisDev = JSON.stringify(assets, null, 4).
                 replace(/https\:\/\/unpkg.com\/antd/g, "https://unpkg.steedos.cn/antd").
-                replace(/https\:\/\/unpkg.com\/i18next/g, "https://unpkg.steedos.cn/i18next").
+                replace(/https\:\/\/unpkg.com\/dayjs/g, "https://unpkg.steedos.cn/dayjs").
                 replace(/https\:\/\/unpkg.com\/react-i18next/g, "https://unpkg.steedos.cn/react-i18next").
                 replace(/\@\{\{version\}\}/g, ``).replace(/https\:\/\/unpkg.com/g, unpkgUrl)
               this.emitFile({

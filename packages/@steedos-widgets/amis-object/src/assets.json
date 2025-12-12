@@ -3,7 +3,7 @@
     {
         "package": "dayjs",
         "urls": [
-            "https://cdn.jsdelivr.net/npm/dayjs@1.11.19/dayjs.min.js"
+            "https://unpkg.com/dayjs@1.11.19/dayjs.min.js"
         ],
         "library": "dayjs"
     },
