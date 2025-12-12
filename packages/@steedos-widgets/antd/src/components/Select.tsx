@@ -8,10 +8,24 @@ interface OptionItem {
   label: React.ReactNode;
   value: string | number | undefined;
   disabled?: boolean;
+  data?: any; 
 }
 
-// 使用 Amis 的 FormItem HOC 包装，可以自动处理数据绑定
-const AntdSelect: React.FC<any> = (props) => {
+// 扩展 Props 结构
+interface AntdSelectProps extends React.ComponentProps<any> {
+    value?: any;
+    onChange: (value: any) => void;
+    options?: any[];
+    placeholder?: string;
+    isLoading?: boolean;
+    selectProps?: any; 
+    classnames?: (...args: (string | false | null | undefined)[]) => string;
+    render: (schema: any, props?: any, scope?: any) => React.ReactNode; 
+    env: any;
+    scope: any; 
+}
+
+const AntdSelect: React.FC<AntdSelectProps> = (props) => {
   const {
     value,
     onChange,
@@ -19,51 +33,119 @@ const AntdSelect: React.FC<any> = (props) => {
     placeholder = '请选择',
     isLoading = false,
     selectProps = {},
+    required,
+    disabled,
     classnames: cx,
+    render, // Amis 渲染函数
+    env,
+    scope,
   } = props;
   
-  // 1. 格式化选项：将 Amis 的 Options 转换为 Antd Select 的 Options
-  // Amis Options 默认是 { label: string, value: any } 结构
-  const antdOptions: OptionItem[] = useMemo(() => {
-    return (amisOptions || []).map(item => ({
-      label: item.label,
-      value: item.value,
-      disabled: item.disabled,
-    }));
-  }, [amisOptions]);
+  // 获取用户输入的选项模板字符串 (optionTpl)
+  const optionRenderTpl = selectProps.optionTpl; 
+  // 获取用户输入的标签模板字符串 (labelTpl)
+  const labelRenderTpl = selectProps.labelTpl; 
   
-  // 2. 处理 loading 状态
+  // 【新增】安全地解构 selectProps，排除可能与组件内部或 options 冲突的属性
+  const {
+      // 排除模板属性
+      optionTpl: excludedOptionTpl,
+      labelTpl: excludedLabelTpl,
+      // 【关键优化】排除 disabled，防止它禁用整个 Select (除非它来自组件根 props)
+      disabled: excludedDisabled,
+      // 排除其他可能冲突的属性（如 options, value, onChange 等）
+      options: excludedOptions,
+      value: excludedValue,
+      onChange: excludedOnChange,
+      // 捕获所有剩余的属性，用于透传给 Antd Select
+      ...restSelectProps
+  } = selectProps;
+
+  // 1. 格式化选项 (略，保持不变) ...
+  const antdOptions: OptionItem[] = useMemo(() => {
+    return (amisOptions || []).map((item, index) => {
+      
+      const optionItem: OptionItem = {
+        label: item.label,
+        value: item.value,
+        disabled: item.disabled, // disabled 在这里：控制单个选项的可用性
+        data: item, 
+      };
+
+      if (optionRenderTpl && typeof optionRenderTpl === 'string') {
+        
+        optionItem.label = render(
+          'body',
+          { type: 'tpl', tpl: optionRenderTpl }, 
+          { data: optionItem.data, key: index }
+        );
+      }
+      
+      return optionItem;
+    });
+  }, [amisOptions, optionRenderTpl, scope, env, render]);
+
+  
+  // 2. 实现 customLabelRender 函数 (略，保持不变) ...
+  const customLabelRender = useMemo(() => {
+    if (!labelRenderTpl || typeof labelRenderTpl !== 'string') {
+      return undefined;
+    }
+    
+    return (renderProps: { value: any; label: React.ReactNode; option: any }) => {
+        const fullOption = antdOptions.find(opt => opt.value === renderProps.value);
+        
+        if (!fullOption) {
+            return renderProps.label;
+        }
+
+        return render(
+            'body',
+            { type: 'tpl', tpl: labelRenderTpl }, 
+            { data: fullOption.data, key: renderProps.value }
+        );
+    };
+  }, [labelRenderTpl, antdOptions, render]);
+
+
+  // 3. 处理 loading 状态 (略，保持不变) ...
   if (isLoading) {
     return (
-      <Spin 
-        style={{ width: '100%', display: 'block' }}
-      />
+      <Spin style={{ width: '100%', display: 'block' }} />
     );
   }
 
-  // 3. 处理值变化
+  // 4. 处理值变化 (略，保持不变) ...
   const handleChange = (newValue: any) => {
-    // 关键：通过 props.onChange 将值回传给 Amis 表单
     onChange(newValue);
   };
   
+  // 5. 渲染 Antd Select
   return (
     <div className={cx('AntdSelect-Wrapper', props.className)}>
       <Select
-        // 绑定值和 onChange 事件
         value={value}
         onChange={handleChange}
         
-        // 渲染选项
         options={antdOptions}
         
-        // antd Select 默认属性
         placeholder={placeholder}
+        required={required}
+        disabled={disabled}
         allowClear
         style={{ width: '100%' }}
         
-        // 允许传入其他 Select 属性覆盖默认值或添加额外功能（如 mode="multiple"）
-        {...selectProps}
+        labelRender={customLabelRender}
+        
+        // 【关键优化】展开剩余的 selectProps。
+        // 由于我们已经在解构时排除了 disabled 等属性，
+        // 这里的 {...restSelectProps} 包含了所有用户需要透传的 Antd Select 属性，
+        // 同时避免了冲突。
+        {...restSelectProps}
+        
+        // 如果您希望支持整个组件的 disabled，并且用户是通过 selectProps 传入的
+        // 可以像下面这样，将排除掉的 excludedDisabled 重新作为根属性传入
+        // disabled={excludedDisabled} // 仅在您确定要支持此用法时启用
       />
     </div>
   );

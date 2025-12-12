@@ -12,14 +12,14 @@ const config: any = {
   docUrl: "",
   screenshot: "",
   npm: {
-    package: "@steedos-widgets/antd", // Replace with your actual package name
+    package: "@steedos-widgets/antd", 
     version: "{{version}}",
     exportName: "AntdSelect", 
     main: "",
     destructuring: true,
     subName: ""
   },
-  preview: { // Default props for preview
+  preview: { 
     placeholder: "Please select",
     options: [
         { label: 'Option 1', value: '1' },
@@ -31,8 +31,8 @@ const config: any = {
 
   // 2. Amis Core Configuration
   amis: {
-    name: 'antd-select', // Amis Renderer Type Name
-    icon: "fa-fw fa fa-angle-down" // Icon for the component
+    name: 'antd-select', 
+    icon: "fa-fw fas fa-caret-square-down" 
   }
 };
 
@@ -53,15 +53,13 @@ export default {
 
   // 4. Amis Renderer and Editor Plugin Configuration
   amis: {
-    // Renderer Registration Info
     render: { 
         type: config.amis.name, 
-        usage: "formitem", // Declares this as a form item component
+        usage: "formitem", 
         weight: 1, 
         framework: "react" 
     },
     
-    // Editor Plugin Configuration
     plugin: {
       rendererName: config.amis.name,
       $schema: '/schemas/FormItem.json', 
@@ -71,10 +69,10 @@ export default {
       order: -9999,
       icon: config.amis.icon,
       
-      // Default scaffolding structure
       scaffold: {
         type: config.amis.name,
         label: config.title,
+        name: 'select_field',
         options: [
             { label: 'Option One', value: 'one' },
             { label: 'Option Two', value: 'two' },
@@ -84,57 +82,126 @@ export default {
       previewSchema: { type: config.amis.name, label: 'Preview', placeholder: 'Please select' },
       panelTitle: 'Select Dropdown Settings',
       
-      // Controls for the editor's right-side property panel
+      // ====== OPTIMIZED PANEL CONTROLS (General & Advanced Tabs) START ======
       panelControls: [
-        // ====== Basic Properties ======
         { 
-            type: 'text', 
-            name: 'label', 
-            label: 'Label' 
-        },
-        { 
-            type: 'text', 
-            name: 'name', 
-            label: 'Field Name' 
-        },
-        { 
-            type: 'text', 
-            name: 'placeholder', 
-            label: 'Placeholder Text' 
-        },
-        
-        // ====== Options Configuration ======
-        {
-          type: 'combo',
-          name: 'options',
-          label: 'Options Configuration',
-          multiple: true,
-          items: [
-            { type: 'text', name: 'label', label: 'Display Value' },
-            { type: 'text', name: 'value', label: 'Actual Value' }
-          ]
-        },
-        {
-            type: 'switch',
-            name: 'selectProps.showSearch', // Maps to the selectProps object
-            label: 'Searchable',
-            pipeIn: (value: any) => value !== false, 
-        },
-        {
-            type: 'select',
-            name: 'selectProps.mode', 
-            label: 'Selection Mode',
-            options: [
-            { label: 'Single Select (Default)', value: undefined },
-            { label: 'Multiple Select', value: 'multiple' },
-            { label: 'Tags', value: 'tags' }
+            type: 'tabs',
+            tabs: [
+                // =================================== 标签页 1: General ===================================
+                {
+                    title: 'General',
+                    body: [
+                        { type: 'switch', name: 'selectProps.allowClear', label: 'Allow Clear', value: true },
+                        { type: 'switch', name: 'isLoading', label: 'Show Loading Indicator' },
+                        {
+                            type: 'select',
+                            name: 'selectProps.mode', 
+                            label: 'Selection Mode',
+                            options: [
+                                { label: 'Single Select (Default)', value: undefined },
+                                { label: 'Multiple Select', value: 'multiple' },
+                                { label: 'Tags', value: 'tags' }
+                            ]
+                        },
+                        {
+                            type: 'switch',
+                            name: 'selectProps.showSearch', 
+                            label: 'Enable Search',
+                            pipeIn: (value: any) => value !== false, 
+                        },
+                        {
+                            type: 'select',
+                            name: 'selectProps.size', 
+                            label: 'Size',
+                            options: [
+                                { label: 'Default', value: 'default' },
+                                { label: 'Large', value: 'large' },
+                                { label: 'Small', value: 'small' }
+                            ],
+                            value: 'default',
+                        },
+                        { type: 'switch', name: 'selectProps.bordered', label: 'Show Border', value: true },
+                        {
+                            type: 'combo',
+                            name: 'options',
+                            label: 'Options',
+                            "multiLine": true,
+                            multiple: true,
+                            items: [
+                                { type: 'input-text', name: 'label', label: 'Display Value' },
+                                { type: 'input-text', name: 'value', label: 'Actual Value' }
+                            ]
+                        },
+                        { type: 'input-text', name: 'source', label: 'API Data Source (URL)' } 
+                    ]
+                },
+
+                // =================================== 标签页 2: Advanced ===================================
+                {
+                    title: 'Advanced',
+                    body: [
+                        // --- Custom Option Template (NEW) ---
+                        {
+                            type: 'textarea', // 接收文本模板
+                            name: 'selectProps.optionTpl', // 新属性名
+                            label: 'Custom Option Template',
+                            description: 'Use Amis template syntax (e.g., <span>\\${label} (\\${value})</span>) to render each option item.',
+                            language: 'html', // 方便输入 HTML 结构
+                        },
+                        // --- Custom Option Template (NEW) ---
+                        {
+                            type: 'textarea', // 接收文本模板
+                            name: 'selectProps.labelTpl', // 新属性名
+                            label: 'Custom Label Template',
+                            description: 'Use Amis template syntax (e.g., <span>\\${label} (\\${value})</span>) to render each option item.',
+                            language: 'html', // 方便输入 HTML 结构
+                        },
+
+                        // --- Multi-select Tagging ---
+                        {
+                            type: 'number',
+                            name: 'selectProps.maxTagCount',
+                            label: 'Max Tags to Display',
+                            description: 'When exceeded, remaining tags are collapsed.',
+                            min: 0,
+                            visibleOn: 'this.selectProps && (this.selectProps.mode === "multiple" || this.selectProps.mode === "tags")',
+                        },
+                        {
+                            type: 'select',
+                            name: 'selectProps.maxTagPlaceholder',
+                            label: 'Overflow Tag Placeholder',
+                            options: [
+                                { label: 'Default (count)', value: undefined },
+                                { label: 'Custom text...', value: 'expression' } 
+                            ],
+                            visibleOn: 'this.selectProps && (this.selectProps.mode === "multiple" || this.selectProps.mode === "tags")',
+                        },
+
+                        // --- Input Limits ---
+                        {
+                            type: 'number',
+                            name: 'selectProps.maxLength',
+                            label: 'Max Input Length (Search)',
+                        },
+                        
+                        // --- Dropdown Overlay ---
+                        {
+                            type: 'switch',
+                            name: 'selectProps.dropdownMatchSelectWidth',
+                            label: 'Dropdown Width Match',
+                            value: true,
+                        },
+                        {
+                            type: 'input-text',
+                            name: 'selectProps.dropdownClassName',
+                            label: 'Dropdown Class Name',
+                        },
+                        
+                    ]
+                }
             ]
-        },
-        {
-            type: 'switch',
-            name: 'required', // Amis Form validation property
-            label: 'Is Required',
-        }]
+        }
+      ]
     }
   }
 };
