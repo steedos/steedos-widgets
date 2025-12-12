@@ -1,9 +1,16 @@
 {
   "packages": [
     {
+        "package": "dayjs",
+        "urls": [
+            "https://cdn.jsdelivr.net/npm/dayjs@1.11.19/dayjs.min.js"
+        ],
+        "library": "dayjs"
+    },
+    {
         "package": "antd",
         "urls": [
-            "https://unpkg.com/antd@4.24.5/dist/antd.min.js"
+            "https://unpkg.com/antd@5.29.1/dist/antd.min.js"
         ],
         "library": "antd"
     },

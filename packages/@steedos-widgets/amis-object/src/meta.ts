@@ -74,6 +74,8 @@ import AmisSteedosFlowForm from './metas/AmisSteedosFlowForm';
 
 import AmisInstanceHandler from "./metas/AmisInstanceHandler";
 
+import AntdSelect from "./metas/antd/Select";
+
 const components = [
   AmisRecordDetailHeader,
   AmisObjectForm, 
@@ -114,17 +116,11 @@ const components = [
   AmisSteedosFieldGroup,
   AmisSteedosObject,
   AmisSteedosFlowForm,
-  AmisInstanceHandler
+  AmisInstanceHandler,
+
+  AntdSelect,
 ];
 
-const componentList = [
-  {
-    title: "华炎魔方",
-    icon: "",
-    children: components
-  }
-];
 export default {
-  componentList,
   components
 };

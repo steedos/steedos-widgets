@@ -7,7 +7,7 @@
  */
 const config: any = {
     // componentType: 'amisSchema', 
-    group: "华炎魔方",
+    group: "antd",
     componentName: "SteedosDropdown",
     title: "下拉菜单",
     docUrl: "",
