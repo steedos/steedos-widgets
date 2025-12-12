@@ -514,6 +514,7 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
           "type": "dropdown-button",
           "buttons": restButtons,
           "className": " ml-1",
+          "hideCaret": true,
           "menuClassName": "p-none split-dropdown-buttons",
           "align": "right",
           "size": "sm"
