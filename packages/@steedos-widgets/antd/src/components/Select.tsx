@@ -1,13 +1,7 @@
 import React, { useMemo } from 'react';
 import { Select, SelectProps, Spin } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
 
-// 导入 Amis 相关的类型和工具函数
-import {
-  FormItem,
-  registerRenderer,
-  Options,
-} from 'amis-core'; 
+import './Select.css';
 
 // 定义 Antd Select 的选项数据结构
 interface OptionItem {
@@ -42,7 +36,6 @@ const AntdSelect: React.FC<any> = (props) => {
   if (isLoading) {
     return (
       <Spin 
-        indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} 
         style={{ width: '100%', display: 'block' }}
       />
     );

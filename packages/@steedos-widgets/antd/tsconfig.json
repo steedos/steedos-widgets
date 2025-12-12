@@ -5,5 +5,5 @@
     "declarationDir": "dist/types",
     "outDir": "dist/cjs"
   },
-  "include": ["src", "../antd/src/metas/Select.tsx"]
+  "include": ["src"]
 }

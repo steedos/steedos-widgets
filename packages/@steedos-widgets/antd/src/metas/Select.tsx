@@ -12,7 +12,7 @@ const config: any = {
   docUrl: "",
   screenshot: "",
   npm: {
-    package: "@steedos-widgets/amis-object", // Replace with your actual package name
+    package: "@steedos-widgets/antd", // Replace with your actual package name
     version: "{{version}}",
     exportName: "AntdSelect", 
     main: "",
