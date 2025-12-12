@@ -115,8 +115,7 @@ const getNextStepInput = async (instance, nextStepChangeEvents) => {
             required: true,
             // selectFirst: true,
             autoFill: {
-              "new_next_step": "${step}",
-              "next_users": null
+              "new_next_step": "${step}"
             },
             "source": {
               "url": "/api/workflow/v2/nextStep?judge=${new_judge}",
