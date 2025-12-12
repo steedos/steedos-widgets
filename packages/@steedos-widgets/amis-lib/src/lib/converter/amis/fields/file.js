@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-28 14:15:09
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2025-02-13 09:31:02
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2025-12-12 16:47:28
  * @Description: 
  */
 import { getAmisStaticFieldType } from './type';
@@ -154,7 +154,7 @@ export const  getAmisFileReadonlySchema = async (steedosField,ctx = {})=>{
             //             <a href='<%= item.url %>' target='_self' class='block'><%= item.name %></a> 
             //     <% });} %>`
             "type": "control",
-            "name": "",//control若存在name，内部each组件的source则会获取不到内容
+            // "name": "",//control若存在name，内部each组件的source则会获取不到内容 //加上这个空nmae字段会造成列表页面报错 TypeError: Unexpected token } in 1:3，移除后原issue #6977 经测试并没有问题
             "body": {
                 type: 'each',
                 placeholder: "",
