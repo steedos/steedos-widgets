@@ -1,6 +1,6 @@
 {
   "name": "@steedos-widgets/sortable",
-  "version": "6.10.34-beta.11",
+  "version": "6.10.34",
   "main": "dist/sortable.cjs.js",
   "module": "dist/sortable.esm.js",
   "unpkg": "dist/sortable.umd.js",
