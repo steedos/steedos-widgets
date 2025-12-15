@@ -246,7 +246,7 @@ async function getQuickEditSchema(object, columnField, options){
                             `
                         removeDisplayField = `
                                 if(_display["${field.name}"].url == event.data.item.url){
-                                    _display["${field.name}"] = {};
+                                    delete _display["${field.name}"];
                                 }
                             `
                     }
