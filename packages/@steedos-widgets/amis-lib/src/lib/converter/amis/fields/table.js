@@ -50,7 +50,7 @@ async function getQuickEditSchema(object, columnField, options){
         isAmisVersionforBatchEdit = window.Amis.version[0] >= 3 && window.Amis.version[2] >= 2;
     }
     const quickEditId = options.objectName + "_" + field.name + "_quickEdit";//定义快速编辑的表单id，用于setvalue传值
-    var quickEditSchema = { body: [], id: quickEditId, className: "steedos-table-quickEdit", "debug": window.amis_quick_edit_form_debug || false };
+    var quickEditSchema = { body: [], id: quickEditId, className: "steedos-table-quickEdit", "debug": window.amis_form_debug || false };
     //select,avatar,image,file等组件无法行记录字段赋值，暂不支持批量编辑；
     if(field.type != 'avatar' && field.type != 'image' && field.type != 'file' && isAmisVersionforBatchEdit){
         const submitEvent = {
@@ -497,10 +497,6 @@ async function getQuickEditSchema(object, columnField, options){
         }
         //amis3.2以下禁用lookup的单元格编辑
         if(field.type == "lookup" && !isAmisVersionforBatchEdit){
-            quickEditSchema = false;
-        }
-        //TODO:附件多选时会覆盖老数据，暂时禁用
-        if(field.type == "file" && field.multiple){
             quickEditSchema = false;
         }
         //TODO:location字段在列表中快速编辑后存在bug,保存时可能会丢失部分数据，暂时禁用
@@ -1647,6 +1643,7 @@ export async function getTableApi(mainObject, fields, options){
                         let result = _.clone(curValue);
                         result._id = fileId;
                         result.value = fileId;
+                        result.state = "uploaded";
                         return result;
                     });
                 }else{
