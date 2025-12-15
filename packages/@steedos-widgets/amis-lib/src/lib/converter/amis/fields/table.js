@@ -258,7 +258,7 @@ async function getQuickEditSchema(object, columnField, options){
                     quickEditSchema.body[0].receiver.adaptor = `
                         const superData = (typeof context != 'undefined') ? context : api.body; 
                         const { context:pageContext } = superData; 
-                        var rootUrl = pageContext.rootUrl + "/api/files/${field.type}s/";
+                        var rootUrl = pageContext.rootUrl + "/api/v6/files/download/cfs.images.filerecord/";
                         payload = {
                             status: response.status == 200 ? 0 : response.status,
                             msg: response.statusText,
