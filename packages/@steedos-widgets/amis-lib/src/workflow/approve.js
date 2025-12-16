@@ -613,9 +613,9 @@ export const getApprovalDrawerSchema = async (instance, events) => {
     let ccFromLabel = i18next.t('frontend_workflow_instance_from');//"来自",
     const ccFromUserName = userApprove?.from_user_name || '';
     const ccDescription = userApprove?.cc_description || '';
-    drawerTitle = `${ccLabel} （${ccFromLabel}${ccFromUserName}）`;
+    drawerTitle = `${ccLabel}&nbsp;(${ccFromLabel}${ccFromUserName})`;
     if (ccDescription.length) {
-      drawerTitle += `: ${ccDescription}`;
+      drawerTitle += `&nbsp;:&nbsp;${ccDescription}`;
     }
   }
   const schema = {
