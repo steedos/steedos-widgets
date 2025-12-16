@@ -359,7 +359,7 @@ async function getInputTableColumns(props, buttonsForColumnOperations) {
                 let tableCell = getInputTableCell(field, mode);
                 let className = "";
                 //判断是否换行，目前规则默认换行
-                if(extendColumnProps.wrap != true){
+                if(extendColumnProps.wrap == false ){
                     className += " whitespace-nowrap"
                 }else{
                     className += " break-words"
@@ -387,7 +387,7 @@ async function getInputTableColumns(props, buttonsForColumnOperations) {
     else {
         return fields.map(function (field, index) {
             let tableCell = getInputTableCell(field, showAsInlineEditMode); 
-            tableCell.className = " whitespace-nowrap ";
+            tableCell.className = ""; // 允许换行 " whitespace-nowrap ";
             if(buttonsForColumnOperations.length == 0 && !props.showIndex && index == 0) {
                 tableCell.className += " antd-Table-primayCell"
             }
