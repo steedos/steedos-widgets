@@ -50,7 +50,7 @@ async function getQuickEditSchema(object, columnField, options){
         isAmisVersionforBatchEdit = window.Amis.version[0] >= 3 && window.Amis.version[2] >= 2;
     }
     const quickEditId = options.objectName + "_" + field.name + "_quickEdit";//定义快速编辑的表单id，用于setvalue传值
-    var quickEditSchema = { body: [], id: quickEditId, className: "steedos-table-quickEdit", "debug": window.amis_form_debug || false };
+    var quickEditSchema = { body: [], id: quickEditId, className: "steedos-table-quickEdit", "debug": window.amis_form_debug || false, quickedit_record_permissions_loading: true };
     //select,avatar,image,file等组件无法行记录字段赋值，暂不支持批量编辑；
     if(field.type != 'avatar' && field.type != 'image' && field.type != 'file' && isAmisVersionforBatchEdit){
         const submitEvent = {
@@ -309,15 +309,6 @@ async function getQuickEditSchema(object, columnField, options){
                                 `
                             },
                             {
-                                "actionType": "setValue",
-                                "componentId": quickEditId,
-                                "args": {
-                                    "value":{
-                                        "quickedit_record_permissions_loading": true
-                                    }
-                                }
-                            },
-                            {
                                 "actionType": "ajax",
                                 "args": {
                                     "api": {
@@ -339,15 +330,7 @@ async function getQuickEditSchema(object, columnField, options){
                                 "componentId": quickEditId,
                                 "args": {
                                     "value":{
-                                        "quickedit_record_permissions_loading": false
-                                    }
-                                }
-                            },
-                            {
-                                "actionType": "setValue",
-                                "componentId": quickEditId,
-                                "args": {
-                                    "value":{
+                                        "quickedit_record_permissions_loading": false,
                                         "quickedit_record_permissions": "${recordPermissions.modifyAllRecords ? {'allowEdit': true} : event.data}"
                                     }
                                 }
