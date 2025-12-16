@@ -221,6 +221,9 @@ async function getQuickEditSchema(object, columnField, options){
                     var removeDisplayField = ``;
                     if (field.multiple) {
                         TempDisplayField = `
+                                if (!_display["${field.name}"]){
+                                    _display["${field.name}"] = [];
+                                }
                                 _display["${field.name}"].push({
                                     "name": event.data.result.name,
                                     "url": event.data.result.url,
