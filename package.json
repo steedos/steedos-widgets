@@ -32,7 +32,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.18.13",
-    "antd": "5.29.1",
     "babel-loader": "^8.2.5",
     "cnpm": "9.0.1",
     "express": "^4.21.2",

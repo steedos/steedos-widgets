@@ -3,7 +3,7 @@
 }
 
 .ant-dropdown-menu-item {
-    padding: 0;
+    padding: 0 !important;
 }
 
 .ant-dropdown-menu-item .antd-Button.antd-Button--default{

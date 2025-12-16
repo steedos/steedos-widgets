@@ -10,7 +10,7 @@
         {
             "package": "antd",
             "urls": [
-                "https://unpkg.com/antd@5.29.1/dist/antd.min.js"
+                "https://unpkg.com/antd@5.29.2/dist/antd.min.js"
             ],
             "library": "antd"
         },
