@@ -393,7 +393,7 @@ export const getInstanceInfo = async (props) => {
             }
             if(approve.type === 'cc'){
               userName = `${userName} (传阅)`
-              opinion = approve.cc_description;
+              opinion = approve.description //cc_description;
             }
             if (!finishDate) {
               finishDate = approve.is_read ? i18next.t('frontend_workflow_approval_history_read') : i18next.t('frontend_workflow_approval_history_unprocessed');
