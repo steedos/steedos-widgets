@@ -316,7 +316,7 @@ export const getInstanceInfo = async (props) => {
   };
 
   if (step?.permissions) {
-    // 字段字段
+    // 字段权限
     _.each(approvalCommentsFields, (field) => {
       delete step.permissions[field.name];
       if (_.find(myApproveFields, { name: field.name })) {

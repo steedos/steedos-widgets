@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-08 16:26:26
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-11-11 21:23:23
+ * @LastEditTime: 2025-12-16 19:42:49
  * @Description: 
  */
 import _, { find, last, clone, sortBy, filter, groupBy, indexOf } from "lodash";
@@ -296,4 +296,18 @@ export const getUserApprove = ({ instance, userId }) => {
     currentApprove.id = currentApprove._id;
   }
   return currentApprove;
+};
+
+export const isCC = ({ instance, approve, userId }) => {
+  if (!instance)
+    return false;
+
+  if (approve && approve.type != "cc") {
+    return false;
+  }
+
+  if (instance.cc_users && instance.cc_users.includes(userId))
+    return true;
+
+  return false;
 };

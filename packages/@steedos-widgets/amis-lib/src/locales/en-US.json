@@ -161,6 +161,8 @@
     "frontend_workflow_submit_validate_error_title": "Submission failed",
     "frontend_workflow_submit_validate_error_msg": "Please fill in the required fields",
     "frontend_workflow_related_records_link_title": "Related Records",
+    "frontend_workflow_instance_cc_title": "Carbon Copy",
+    "frontend_workflow_instance_from": "From",
     "frontend_formula_variables_tab_form_fields": "Form Fields",
     "frontend_formula_variables_tab_form_global": "Global Variables",
     "frontend_formula_variables_global_userId": "User ID",

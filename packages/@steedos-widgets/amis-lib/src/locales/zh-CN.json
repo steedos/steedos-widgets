@@ -162,6 +162,8 @@
     "frontend_workflow_submit_validate_error_title": "提交失败",
     "frontend_workflow_submit_validate_error_msg": "请填写必填字段",
     "frontend_workflow_related_records_link_title": "相关台账信息",
+    "frontend_workflow_instance_cc_title": "传阅",
+    "frontend_workflow_instance_from": "来自",
     "frontend_formula_variables_tab_form_fields": "表单字段",
     "frontend_formula_variables_tab_form_global": "全局变量",
     "frontend_formula_variables_global_userId": "用户ID",
