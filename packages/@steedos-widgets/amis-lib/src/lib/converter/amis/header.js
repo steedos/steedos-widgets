@@ -975,7 +975,6 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
     }
   }
 
-  // console.log('=======================max=========================', max)
 
   if(objectSchema.compactLayouts && objectSchema.compactLayouts.length > 0){
     const details = [];
@@ -992,26 +991,12 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
       }
     });
 
-    // 注意: 以下注释不能删除. tailwind css 动态编译时会识别以下注释, 生成对应的样式
-    // lg:grid-cols-1
-    // lg:grid-cols-2
-    // lg:grid-cols-3
-    // lg:grid-cols-4
-    // lg:grid-cols-5
-    // lg:grid-cols-6
-    // lg:grid-cols-7
-    // lg:grid-cols-8
-    // lg:grid-cols-9
-    // lg:grid-cols-10
-    // lg:grid-cols-11
-    // lg:grid-cols-12
-
     body.push({
       "type": "wrapper",
       "body": {
         "type": "form",
-        // "className": "gap-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-5 3xl:grid-cols-8 4xl:grid-cols-8 5xl:grid-cols-10", //max-h-12 overflow-hidden 
-        "className": `gap-2 grid grid-cols-1 lg:grid-cols-${max}`,
+        "className-for-build": "sm:grid-cols-1 sm:grid-cols-2 sm:grid-cols-3 sm:grid-cols-4 sm:grid-cols-5 sm:grid-cols-6 sm:grid-cols-7 sm:grid-cols-8 sm:grid-cols-9 sm:grid-cols-10 sm:grid-cols-11 sm:grid-cols-12",
+        "className": `gap-2 grid grid-cols-1 sm:grid-cols-${max}`,
         "wrapWithPanel": false,
         "actions": [],
         "body": details,
