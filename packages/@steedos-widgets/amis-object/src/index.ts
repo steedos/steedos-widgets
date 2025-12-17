@@ -11,6 +11,9 @@ import './styles/data-table.less';
 /**
  * 请勿删除, 让tailwind编译出一下class
  * min-w-[240px]
+ * min-w-[260px]
+ * min-w-[280px]
+ * min-w-[300px]
  */
 
 export * from './components';

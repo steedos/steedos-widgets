@@ -337,7 +337,9 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
       toolbars.push(toolbarFilter);
     }
     toolbars.push(toolbarReloadButton);
-    toolbars.push(toolbarDisplayAsButton);
+    if (showDisplayAs) {
+      toolbars.push(toolbarDisplayAsButton);
+    }
     toolbars.push(toolbarDQuickSearchBox);
     return [
       // "bulkActions",
@@ -352,7 +354,9 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
       toolbars.push(toolbarFilter);
     }
     toolbars.push(toolbarReloadButton);
-    toolbars.push(toolbarDisplayAsButton);
+    if (showDisplayAs) {
+      toolbars.push(toolbarDisplayAsButton);
+    }
     if(mainObject?.permissions?.allowCreateListViews){
       toolbars.push(getSettingListviewToolbarButtonSchema());
     }
