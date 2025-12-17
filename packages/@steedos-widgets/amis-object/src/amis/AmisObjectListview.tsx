@@ -16,7 +16,7 @@ export const AmisObjectListView = async (props) => {
       className="", 
       style={},
       crudClassName, 
-      showDisplayAs = false,
+      showDisplayAs = true,
       sideSchema,
       columnsTogglable=false,
       filterVisible = true,
@@ -176,7 +176,7 @@ export const AmisObjectListView = async (props) => {
     type: "service",
     data: serviceData,
     style: style,
-    className: `${className} sm:bg-gray-50 h-full  steedos-object-listview ${displayAs === 'split'? 'sm:border-r':'sm:border-r'}`,
+    className: `${className}` + "sm:bg-gray-50 h-full  steedos-object-listview ${displayAs === 'split'? '!w-[24rem] xl:!w-[28rem] 2xl:!w-[32rem] sm:border-r':'sm:border-r'}",
     body: [{
       "type": "wrapper",
       "size": "none",
