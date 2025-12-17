@@ -160,6 +160,15 @@ const getNextStepInput = async (instance, nextStepChangeEvents) => {
                     }
                   })
                 };
+                if(payload.nextSteps.length === 1){
+                  setTimeout(()=>{
+                    const stepProps = context._scoped.getComponentById("u:next_step").props;
+                    stepProps.dispatchEvent("change", BuilderAmisObject.AmisLib.createObject(stepProps.data, {
+                      value: payload.nextSteps[0]._id,
+                      next_step: payload.nextSteps[0]._id
+                    }))
+                  }, 10)
+                }
                 return payload;
               `,
               "data": {
