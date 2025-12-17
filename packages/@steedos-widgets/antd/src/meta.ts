@@ -6,7 +6,9 @@
  * @Description: 
  */
 import Select from "./metas/Select";
-const components = [Select];
+import Liquid from "./metas/Liquid";
+
+const components = [Select, Liquid];
 export default {
   components
 };

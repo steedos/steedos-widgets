@@ -1,7 +1,7 @@
 {
   "name": "@steedos-widgets/antd",
   "private": false,
-  "version": "6.10.36",
+  "version": "6.10.37",
   "main": "dist/antd.cjs.js",
   "module": "dist/antd.esm.js",
   "unpkg": "dist/antd.umd.js",
@@ -47,5 +47,8 @@
     "rollup-plugin-tslib-resolve-id": "^0.0.0",
     "rollup-plugin-visualizer": "^5.8.0"
   },
-  "gitHead": "ffb730e16642eb8e7a7ae5d98d0773c42482e7d2"
+  "gitHead": "ffb730e16642eb8e7a7ae5d98d0773c42482e7d2",
+  "dependencies": {
+    "liquidjs": "^10.24.0"
+  }
 }
