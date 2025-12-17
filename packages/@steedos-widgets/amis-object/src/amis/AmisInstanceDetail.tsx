@@ -6,10 +6,13 @@
  * @Description: 
  */
 import './AmisInstanceDetail.less';
-import { getInstanceInfo , getFlowFormSchema, getApplicant} from '@steedos-widgets/amis-lib'
+import { getInstanceInfo , getFlowFormSchema, getApplicant, autoUpgradeInstance} from '@steedos-widgets/amis-lib'
 
 export const AmisInstanceDetail = async (props) => {
     const {instanceId, boxName, data, print} = props;
+    if (boxName == 'draft') {
+      await autoUpgradeInstance(instanceId);
+    }
     // console.log('AmisInstanceDetail===>', props);
     const instanceInfo = await getInstanceInfo({instanceId: instanceId, box: boxName, print});
     // console.log('AmisInstanceDetail===instanceInfo>', instanceInfo);

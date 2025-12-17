@@ -1041,24 +1041,6 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
   `;
 }
 
-export const checkInstanceFlowVersion = async (instance) => {
-  const flow = await fetchAPI(`/api/v1/flows/${instance.flow._id}?fields=["name","current._id"]`, {
-    method: "get"
-  });
-  if (flow.data.current._id !== instance.flowVersion._id) {
-    console.log("checkInstanceFlowVersion: flow version changed");
-    return false;
-  }
-  const form = await fetchAPI(`/api/v1/forms/${instance.form._id}?fields=["name","current._id"]`, {
-    method: "get"
-  });
-  if (form.data.current._id !== instance.formVersion._id) {
-    console.log("checkInstanceFlowVersion: form version changed");
-    return false;
-  }
-  return true;
-}
-
 export const getFlowFormSchema = async (instance, box, print) => {
   const formStyle = instance.formVersion.style || "table";
   
@@ -1079,28 +1061,6 @@ export const getFlowFormSchema = async (instance, box, print) => {
     nextStepInitedEvents = onEvent?.nextStepInited?.actions || [];
     nextStepChangeEvents = onEvent?.nextStepChange?.actions || [];
     nextStepUserChangeEvents = onEvent?.nextStepUserChange?.actions || [];
-  }
-  if (box == 'draft' && instance.state === 'draft') {
-    // 草稿调用流程版本接口确认是否有新版本，有则调用一次暂存接口，它会提示升级并自动刷新浏览器
-    let isFlowVersionChecked = await checkInstanceFlowVersion(instance);
-    if (!isFlowVersionChecked) {
-      initedEvents.push({
-        "actionType": "ajax",
-        "api": {
-          "url": "/api/workflow/v2/instance/save",
-          "method": "post",
-          "sendOn": "",
-          "requestAdaptor": "var _SteedosUI$getRef$get, _approveValues$next_s;\nconst formValues = context._scoped.getComponentById(\"instance_form\").getValues(); const _formValues = JSON.parse(JSON.stringify(formValues)); if(_formValues){delete _formValues.__applicant} \nconst approveValues = (_SteedosUI$getRef$get = context._scoped.getComponentById(\"instance_approval\")) === null || _SteedosUI$getRef$get === void 0 ? void 0 : _SteedosUI$getRef$get.getValues();\nlet nextUsers = approveValues === null || approveValues === void 0 ? void 0 : approveValues.next_users;\nif (_.isString(nextUsers)) {\n  nextUsers = [approveValues.next_users];\n}\nconst instance = context.record;\nconst body = {\n  instance: {\n    _id: instance._id,\n    applicant: context.__applicant,\n    submitter: formValues.submitter,\n    traces: [{\n      _id: instance.trace._id,\n      step: instance.step._id,\n      approves: [{\n        _id: instance.approve._id,\n        next_steps: [{\n          step: approveValues === null || approveValues === void 0 || (_approveValues$next_s = approveValues.next_step) === null || _approveValues$next_s === void 0 ? void 0 : _approveValues$next_s._id,\n          users: nextUsers\n        }],\n        description: approveValues === null || approveValues === void 0 ? void 0 : approveValues.suggestion,\n        values: _formValues\n      }]\n    }]\n  }\n};\napi.data = body;\nreturn api;",
-          "adaptor": "if (payload.instance == \"upgraded\") { window.setTimeout(function(){ window.location.reload(); }, 2000); return {...payload, status: 1, msg: t('instance_action_instance_save_msg_upgraded')}; } \n return payload.instance === true ? {...payload, status: 0, msg: ''} : {...payload, status: 1, msg: t('instance_action_instance_save_msg_failed')};",
-          "headers": {
-            "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-          },
-          "data": {
-            "&": "$$"
-          }
-        }
-      });
-    }
   }
   if ((box == 'inbox' || box == 'draft') && !!!window.disableAutoOpenApproveDrawer) {
     // 滚动条滚动到底部弹出底部签批drawer窗口

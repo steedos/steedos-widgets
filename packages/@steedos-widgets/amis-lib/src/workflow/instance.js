@@ -164,6 +164,16 @@ const getSpaceUserSign = async (space, handler) => {
   return sign;
 }
 
+export const autoUpgradeInstance = async (instanceId)=>{
+    const result = await fetchAPI('/api/workflow/v2/instance/upgrade', {
+        method: 'post',
+        body: JSON.stringify({
+            instance: {_id: instanceId}
+        })
+    })
+    return result;
+}
+
 export const getInstanceInfo = async (props) => {
   const { instanceId, box, print } = props;
   const userId = getSteedosAuth().userId;
