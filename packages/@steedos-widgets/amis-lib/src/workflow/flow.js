@@ -1193,7 +1193,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
     className: "steedos-amis-instance-view sm:rounded " + "steedos-instance-style-" + formStyle,
     bodyClassName: "overflow-y-auto h-full steedos-amis-instance-view-body",
     headerClassName: "p-0",
-    "title": {
+    "title": print ? null : {
       "type": "steedos-record-detail-header",
       "label": "标题面板",
       "objectApiName": "instances",
