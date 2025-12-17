@@ -465,7 +465,7 @@ const getFieldEditTpl = async (field, label)=>{
         break;
     }
   }
-  console.log('getFieldEditTpl ', label, tpl, field)
+  // console.log('getFieldEditTpl ', label, tpl, field)
   return tpl;
 };
 
@@ -476,7 +476,7 @@ const getFieldReadonlyTpl = async (field, label)=>{
     mode: "horizontal",
     className: "m-none p-none form-control",
   };
-  if(field.formula){
+  if(includes(['text', 'input', 'number'], field.type) && field.formula){
     tpl.value = `$${field.formula}`;
   }
   if(includes(['text'], field.type)){
