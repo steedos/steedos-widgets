@@ -17,7 +17,7 @@
         {
             "package": "liquidjs",
             "urls": [
-                "https://unpkg.com/liquidjs@10.24.0/dist/liquid.browser.umd.js"
+                "https://unpkg.com/liquidjs@10.24.0/dist/liquid.browser.min.js"
             ],
             "library": "liquidjs"
         },
