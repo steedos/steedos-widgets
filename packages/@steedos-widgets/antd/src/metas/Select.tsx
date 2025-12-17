@@ -6,7 +6,7 @@
 
 const config: any = {
   // 1. Base Configuration
-  group: 'Antd', 
+  group: 'General', 
   componentName: "AntdSelect", 
   title: 'Select',
   docUrl: "",
@@ -62,7 +62,7 @@ export default {
     
     plugin: {
       rendererName: config.amis.name,
-      $schema: '/schemas/FormItem.json', 
+      $schema: '/schemas/UnkownSchema.json', 
       name: config.title,
       description: config.title,
       tags: [config.group],

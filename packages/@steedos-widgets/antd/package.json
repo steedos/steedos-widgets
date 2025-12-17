@@ -47,5 +47,8 @@
     "rollup-plugin-tslib-resolve-id": "^0.0.0",
     "rollup-plugin-visualizer": "^5.8.0"
   },
-  "gitHead": "ffb730e16642eb8e7a7ae5d98d0773c42482e7d2"
+  "gitHead": "ffb730e16642eb8e7a7ae5d98d0773c42482e7d2",
+  "dependencies": {
+    "liquidjs": "^10.24.0"
+  }
 }

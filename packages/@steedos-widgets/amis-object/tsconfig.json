@@ -5,5 +5,5 @@
     "declarationDir": "dist/types",
     "outDir": "dist/cjs"
   },
-  "include": ["src"]
+  "include": ["src", "../antd/src/components/Liquid.tsx"]
 }

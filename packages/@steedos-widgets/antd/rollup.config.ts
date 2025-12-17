@@ -19,6 +19,7 @@ const external = [
   "react-dom",
   'lodash',
   'antd',
+  'liquidjs',
   'amis-core'
 ]
 
@@ -27,6 +28,7 @@ const globals = {
   'react-dom': 'ReactDOM',
   'lodash': '_',
   'antd': 'antd',
+  'liquidjs': 'liquidjs',
   'amis-core': 'AmisCore',
 }
 

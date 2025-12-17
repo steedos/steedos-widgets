@@ -15,6 +15,13 @@
             "library": "antd"
         },
         {
+            "package": "liquidjs",
+            "urls": [
+                "https://unpkg.com/liquidjs@10.24.0/dist/liquid.browser.umd.js"
+            ],
+            "library": "liquidjs"
+        },
+        {
             "package": "@steedos-widgets/antd",
             "urls": [
                 "https://unpkg.com/@steedos-widgets/antd@{{version}}/dist/antd.umd.js",
