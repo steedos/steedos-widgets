@@ -1,0 +1,35 @@
+{
+  "type": "liquid",
+  "template": "Hello {{name}}\n\n{{context.user.name}}\n{% render 'toolbar' %}\n{% render 'body' %}\n{% render 'aside' %}\n\n{% amis %}\n{\n    \"type\": \"button\",\n    \"label\": \"Click Me\",\n    \"level\": \"primary\"\n}\n{% endamis %}",
+  "id": "u:684dbbb971a9",
+  "aside": [
+    {
+      "type": "tpl",
+      "tpl": "这是侧边栏部分",
+      "id": "u:d6f4e9420ce5"
+    }
+  ],
+  "toolbar": [
+    {
+      "type": "tpl",
+      "tpl": "这是工具栏部分",
+      "id": "u:3570eb548fc5"
+    }
+  ],
+  "body": [
+    {
+      "type": "tpl",
+      "tpl": "这是内容区",
+      "id": "u:c34747e4f929"
+    },
+    {
+      "value": "<div>html</div>",
+      "type": "code",
+      "id": "u:c35730236ab8",
+      "language": "html"
+    }
+  ],
+  "data": {
+    "name": "World"
+  }
+}
