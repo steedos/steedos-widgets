@@ -209,11 +209,29 @@ function getFormFields(props, mode = "edit") {
         fields = getTableFieldsWithoutFieldPrefix(fields, fieldPrefix);
     }
     return (fields || []).map(function (item) {
-        let formItem = item.isAmis ? item : {
-            "type": "steedos-field",
-            "name": item.name,
-            "config": item
+        let formItem ;
+
+        if(item.isAmis){
+            formItem = item;
+        }else{
+            formItem = {
+                "type": "steedos-field",
+                "name": item.name,
+                "config": item
+            };
+
+            if(!formItem.config.amis){
+                formItem.config.amis = {}
+            }
+
+            if(item.visibleOn){
+                formItem.config.amis.visibleOn = item.visibleOn;
+            }
+            if(item.requiredOn){
+                formItem.config.amis.requiredOn = item.requiredOn;
+            }
         }
+     
         if (mode === "readonly") {
             formItem.static = true;
         }
@@ -708,6 +726,7 @@ function getFormPaginationWrapper(props, form, mode) {
  */
 async function getForm(props, mode = "edit", formId) {
     let formFields = getFormFields(props, mode)
+    // console.log(`getForm formFields`, formFields)
     let body = await getFormBody(null, formFields);
     let primaryKey = getTablePrimaryKey(props);
     if (!formId) {
