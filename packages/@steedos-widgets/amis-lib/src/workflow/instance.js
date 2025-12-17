@@ -164,14 +164,19 @@ const getSpaceUserSign = async (space, handler) => {
   return sign;
 }
 
-export const autoUpgradeInstance = async (instanceId)=>{
-    const result = await fetchAPI('/api/workflow/v2/instance/upgrade', {
-        method: 'post',
-        body: JSON.stringify({
-            instance: {_id: instanceId}
-        })
+export const autoUpgradeInstance = async (instanceId) => {
+  const result = await fetchAPI('/api/workflow/v2/instance/upgrade', {
+    method: 'post',
+    body: JSON.stringify({
+      instance: { _id: instanceId }
     })
-    return result;
+  })
+  const errorMsg = result?.error;
+  if (errorMsg) {
+    var amis = window.amisRequire("amis");
+    amis && amis.toast.warning(`${i18next.t('frontend_workflow_instance_upgrade_failed')}:${errorMsg}`);
+  }
+  return result;
 }
 
 export const getInstanceInfo = async (props) => {

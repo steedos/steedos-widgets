@@ -164,6 +164,7 @@
     "frontend_workflow_related_records_link_title": "相关台账信息",
     "frontend_workflow_instance_cc_title": "传阅",
     "frontend_workflow_instance_from": "来自",
+    "frontend_workflow_instance_upgrade_failed": "草稿自动升级失败",
     "frontend_formula_variables_tab_form_fields": "表单字段",
     "frontend_formula_variables_tab_form_global": "全局变量",
     "frontend_formula_variables_global_userId": "用户ID",
