@@ -1117,7 +1117,10 @@ export const getFlowFormSchema = async (instance, box, print) => {
     try {
       instanceFormSchema = JSON.parse(instance.flow.print_template);
     } catch (error) {
-      instanceFormSchema = instance.flow.print_template
+      instanceFormSchema = {
+        type: 'liquid',
+        template: instance.flow.print_template
+      }
     }
   }else{
     if (formStyle === "wizard") {
@@ -1131,6 +1134,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
       debug: false,
       wrapWithPanel: false,
       resetAfterSubmit: true,
+      className: 'instance-form',
       body: [
         {
           type: "tpl",
