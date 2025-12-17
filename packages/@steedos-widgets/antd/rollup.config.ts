@@ -4,16 +4,13 @@ import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
 import json from 'rollup-plugin-json';
 import { terser } from "rollup-plugin-terser";
-import fg from 'fast-glob';
 import babel, { getBabelOutputPlugin } from '@rollup/plugin-babel';
-import visualizer from 'rollup-plugin-visualizer';
-
 
 require('dotenv-flow').config();
 
 const pkg = require('./package.json');
 
-const exportName = 'BuilderAmisObject';
+const exportName = 'BuilderAntd';
 
 const unpkgUrl = process.env.STEEDOS_UNPKG_URL ? process.env.STEEDOS_UNPKG_URL : 'https://unpkg.com'
 
@@ -22,10 +19,7 @@ const external = [
   "react-dom",
   'lodash',
   'antd',
-  'amis',
-  'amis-core',
-  'amis-ui',
-  'i18next',
+  'amis-core'
 ]
 
 const globals = { 
@@ -33,29 +27,17 @@ const globals = {
   'react-dom': 'ReactDOM',
   'lodash': '_',
   'antd': 'antd',
-  'amis': 'Amis',
   'amis-core': 'AmisCore',
-  'amis-ui': 'AmisUI',
-  'i18next': 'i18next',
 }
 
 const options = {
   input: `src/index.ts`,
   // Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash')
-  external,
+  external: [],
   watch: {
     include: 'src/**',
   },
   plugins: [
-    {
-        name: 'watch-src',
-        async buildStart(){
-            const files = await fg('src/**/*');
-            for(let file of files){
-              this.addWatchFile(file);
-            }
-        }
-    },
     nodeResolve(),
     json(),
     typescript({ 
@@ -64,22 +46,9 @@ const options = {
     }),
     postcss({
       extract: true,
-      plugins: [
-        require('postcss-simple-vars'), 
-        require('postcss-nested'), 
-        // require('tailwindcss'), 
-        require('autoprefixer')
-      ],
+      plugins: [require('postcss-simple-vars'), require('postcss-nested')],
     }),
-    terser({
-      format: {
-        comments: false,
-      }
-    }),
-    // visualizer({
-    //   filename: 'stats.html',
-    // }),
-    // process.env.NODE_ENV === 'production' && terser()
+    // terser()
   ],
 };
 
@@ -88,39 +57,37 @@ export default [
   // {
   //   ...options,
   //   output: [{ file: pkg.main, format: 'cjs', sourcemap: true }],
-  //   external,
   //   plugins: options.plugins.concat([]),
   // },
-  // ES
+  // // ES
   // {
   //   ...options,
   //   output: [{ file: pkg.module, format: 'es', sourcemap: true }],
-  //   external,
   //   plugins: options.plugins.concat([]),
   // },
   {
     ...options,
     external,
-    output: {
-      file: pkg.unpkg,
-      name: exportName,
-      format: 'umd',
-      sourcemap: true,
-      strict: false,
-      inlineDynamicImports: false,
-      intro: 'const global = window; const process = {env: {NODE_ENV: "production"}};',
-      globals,
-      plugins: [getBabelOutputPlugin({
-        allowAllFormats: true,
-        presets: [['@babel/preset-env', { modules: 'umd' }]],
-      })]
-    },
+    output: [
+      {
+        file: pkg.unpkg,
+        name: exportName,
+        format: 'umd',
+        sourcemap: false,
+        strict: false,
+        intro: 'const global = window;',
+        globals,
+        plugins: [getBabelOutputPlugin({
+          allowAllFormats: true,
+          presets: [['@babel/preset-env', { modules: 'umd' }]],
+        })]
+      },
+    ],
   },
   // meta build
   {
     input: `src/meta.ts`,
     plugins: [
-      nodeResolve(),
       typescript({ 
       }),
       {
@@ -134,11 +101,10 @@ export default [
                  fileName: 'assets.json',
                  source: amis
               });
-              const amisDev = JSON.stringify(assets, null, 4).
-                replace(/https\:\/\/unpkg.com\/antd/g, "https://unpkg.steedos.cn/antd").
-                replace(/https\:\/\/unpkg.com\/dayjs/g, "https://unpkg.steedos.cn/dayjs").
-                replace(/https\:\/\/unpkg.com\/react-i18next/g, "https://unpkg.steedos.cn/react-i18next").
-                replace(/\@\{\{version\}\}/g, ``).replace(/https\:\/\/unpkg.com/g, unpkgUrl)
+              const amisDev = JSON.stringify(assets, null, 4)
+                .replace(/https\:\/\/unpkg.com\/antd/g, "https://unpkg.steedos.cn/antd")
+                .replace(/https\:\/\/unpkg.com\/dayjs/g, "https://unpkg.steedos.cn/dayjs")
+                .replace(/\@\{\{version\}\}/g, ``).replace(/https\:\/\/unpkg.com/g, unpkgUrl)
               this.emitFile({
                  type: 'asset',
                  fileName: 'assets-dev.json',

@@ -1,0 +1,39 @@
+{
+  "packages": [
+        {
+            "package": "dayjs",
+            "urls": [
+                "https://unpkg.com/dayjs@1.11.19/dayjs.min.js"
+            ],
+            "library": "dayjs"
+        },
+        {
+            "package": "antd",
+            "urls": [
+                "https://unpkg.com/antd@5.29.2/dist/antd.min.js"
+            ],
+            "library": "antd"
+        },
+        {
+            "package": "@steedos-widgets/antd",
+            "urls": [
+                "https://unpkg.com/@steedos-widgets/antd@{{version}}/dist/antd.umd.js",
+                "https://unpkg.com/@steedos-widgets/antd@{{version}}/dist/antd.umd.css"
+            ],
+            "library": "BuilderAntd"
+        }
+  ],
+  "components": [
+      {
+          "exportName": "BuilderAntdMeta",
+          "npm": {
+              "package": "@steedos-widgets/antd"
+          },
+          "url": "https://unpkg.com/@steedos-widgets/antd@{{version}}/dist/meta.js",
+          "urls": {
+              "default": "https://unpkg.com/@steedos-widgets/antd@{{version}}/dist/meta.js",
+              "design": "https://unpkg.com/@steedos-widgets/antd@{{version}}/dist/meta.js"
+          }
+      }
+  ]
+}

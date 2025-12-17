@@ -50,7 +50,7 @@ async function getQuickEditSchema(object, columnField, options){
         isAmisVersionforBatchEdit = window.Amis.version[0] >= 3 && window.Amis.version[2] >= 2;
     }
     const quickEditId = options.objectName + "_" + field.name + "_quickEdit";//定义快速编辑的表单id，用于setvalue传值
-    var quickEditSchema = { body: [], id: quickEditId, className: "steedos-table-quickEdit" };
+    var quickEditSchema = { body: [], id: quickEditId, className: "steedos-table-quickEdit", "debug": window.amis_form_debug || false, quickedit_record_permissions_loading: true };
     //select,avatar,image,file等组件无法行记录字段赋值，暂不支持批量编辑；
     if(field.type != 'avatar' && field.type != 'image' && field.type != 'file' && isAmisVersionforBatchEdit){
         const submitEvent = {
@@ -221,6 +221,9 @@ async function getQuickEditSchema(object, columnField, options){
                     var removeDisplayField = ``;
                     if (field.multiple) {
                         TempDisplayField = `
+                                if (!_display["${field.name}"]){
+                                    _display["${field.name}"] = [];
+                                }
                                 _display["${field.name}"].push({
                                     "name": event.data.result.name,
                                     "url": event.data.result.url,
@@ -246,7 +249,7 @@ async function getQuickEditSchema(object, columnField, options){
                             `
                         removeDisplayField = `
                                 if(_display["${field.name}"].url == event.data.item.url){
-                                    _display["${field.name}"] = {};
+                                    delete _display["${field.name}"];
                                 }
                             `
                     }
@@ -258,7 +261,7 @@ async function getQuickEditSchema(object, columnField, options){
                     quickEditSchema.body[0].receiver.adaptor = `
                         const superData = (typeof context != 'undefined') ? context : api.body; 
                         const { context:pageContext } = superData; 
-                        var rootUrl = pageContext.rootUrl + "/api/files/${field.type}s/";
+                        var rootUrl = pageContext.rootUrl + "/api/v6/files/download/cfs.images.filerecord/";
                         payload = {
                             status: response.status == 200 ? 0 : response.status,
                             msg: response.statusText,
@@ -309,15 +312,6 @@ async function getQuickEditSchema(object, columnField, options){
                                 `
                             },
                             {
-                                "actionType": "setValue",
-                                "componentId": quickEditId,
-                                "args": {
-                                    "value":{
-                                        "quickedit_record_permissions_loading": true
-                                    }
-                                }
-                            },
-                            {
                                 "actionType": "ajax",
                                 "args": {
                                     "api": {
@@ -339,15 +333,7 @@ async function getQuickEditSchema(object, columnField, options){
                                 "componentId": quickEditId,
                                 "args": {
                                     "value":{
-                                        "quickedit_record_permissions_loading": false
-                                    }
-                                }
-                            },
-                            {
-                                "actionType": "setValue",
-                                "componentId": quickEditId,
-                                "args": {
-                                    "value":{
+                                        "quickedit_record_permissions_loading": false,
                                         "quickedit_record_permissions": "${recordPermissions.modifyAllRecords ? {'allowEdit': true} : event.data}"
                                     }
                                 }
@@ -497,10 +483,6 @@ async function getQuickEditSchema(object, columnField, options){
         }
         //amis3.2以下禁用lookup的单元格编辑
         if(field.type == "lookup" && !isAmisVersionforBatchEdit){
-            quickEditSchema = false;
-        }
-        //TODO:附件多选时会覆盖老数据，暂时禁用
-        if(field.type == "file" && field.multiple){
             quickEditSchema = false;
         }
         //TODO:location字段在列表中快速编辑后存在bug,保存时可能会丢失部分数据，暂时禁用
@@ -1647,6 +1629,7 @@ export async function getTableApi(mainObject, fields, options){
                         let result = _.clone(curValue);
                         result._id = fileId;
                         result.value = fileId;
+                        result.state = "uploaded";
                         return result;
                     });
                 }else{

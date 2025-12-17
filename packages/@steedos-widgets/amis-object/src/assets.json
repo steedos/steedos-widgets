@@ -1,20 +1,6 @@
 {
   "packages": [
     {
-        "package": "dayjs",
-        "urls": [
-            "https://unpkg.com/dayjs@1.11.19/dayjs.min.js"
-        ],
-        "library": "dayjs"
-    },
-    {
-        "package": "antd",
-        "urls": [
-            "https://unpkg.com/antd@5.29.1/dist/antd.min.js"
-        ],
-        "library": "antd"
-    },
-    {
         "package": "@steedos-widgets/amis-object",
         "urls": [
             "https://unpkg.com/@steedos-widgets/amis-object@{{version}}/dist/amis-object.umd.js",

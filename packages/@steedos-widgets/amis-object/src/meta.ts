@@ -74,7 +74,6 @@ import AmisSteedosFlowForm from './metas/AmisSteedosFlowForm';
 
 import AmisInstanceHandler from "./metas/AmisInstanceHandler";
 
-import AntdSelect from "./metas/antd/Select";
 
 const components = [
   AmisRecordDetailHeader,
@@ -117,8 +116,6 @@ const components = [
   AmisSteedosObject,
   AmisSteedosFlowForm,
   AmisInstanceHandler,
-
-  AntdSelect,
 ];
 
 export default {

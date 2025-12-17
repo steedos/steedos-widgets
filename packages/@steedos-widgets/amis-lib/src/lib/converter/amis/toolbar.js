@@ -27,9 +27,10 @@ const getDisplayAsButton = function(objectName, defaultEnableSplit){
   return {
     "type": "dropdown-button",
     "icon": "fa fa-table-columns",
+    "hideCaret": true,
     //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330
     // "tooltip": `${i18next.t('frontend_display_as')} ${displayAsLabel}`,
-    "btnClassName": "antd-Button--iconOnly bg-white !p-2 rounded text-gray-500",
+    "btnClassName": "antd-Button--iconOnly bg-white !p-2 rounded !text-gray-500",
     "align": "right",
     "visibleOn": "${window:innerWidth > 768 && !!!isLookup && !!isObjectListview}",
     "buttons": [ 
@@ -255,7 +256,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
     //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，为保持统一，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330
     // "tooltip": i18next.t('frontend_button_reload_tooltip'),
     "tooltipPlacement": "top",
-    "className": `bg-white p-2 rounded text-gray-500 list-view-btn-reload ${formFactor === 'SMALL' ? 'hidden' : ''}`,
+    "className": `bg-white p-2 rounded !text-gray-500 list-view-btn-reload ${formFactor === 'SMALL' ? 'hidden' : ''}`,
     "label": "",
     "icon": "fa fa-sync",
     // "visibleOn": "${!showFieldsFilter}",
@@ -312,7 +313,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
         "visibleOn": "${isFieldsFilterEmpty == false && isLookup != true}"
       },
       "align": "right",
-      "className": "bg-white p-2 rounded text-gray-500",
+      "className": "bg-white p-2 rounded !text-gray-500",
       "onEvent": {
         "click": {
           "actions": [

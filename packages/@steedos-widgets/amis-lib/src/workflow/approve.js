@@ -3,7 +3,7 @@ import {
   getSteedosAuth, Router
 } from "@steedos-widgets/amis-lib";
 import i18next from "i18next";
-import { getUserApprove } from './util';
+import { getUserApprove, isCC } from './util';
 //TODO Meteor.settings.public?.workflow?.hideCounterSignJudgeOptions
 
 const HIDE_COUNTER_SIGN_JUDGE_OPTIONS = false;
@@ -606,6 +606,18 @@ export const getApprovalDrawerSchema = async (instance, events) => {
   const { submitEvents , nextStepInitedEvents, nextStepChangeEvents, nextStepUserChangeEvents } = events;
   const userId = getSteedosAuth().userId;
   const userApprove = getUserApprove({ instance, userId });
+  const isCCApprove = isCC({ instance, approve: userApprove, userId });
+  let drawerTitle = instance.step.name;
+  if (isCCApprove) {
+    let ccLabel = i18next.t('frontend_workflow_instance_cc_title');//"传阅",
+    let ccFromLabel = i18next.t('frontend_workflow_instance_from');//"来自",
+    const ccFromUserName = userApprove?.from_user_name || '';
+    const ccDescription = userApprove?.cc_description || '';
+    drawerTitle = `${ccLabel}&nbsp;(${ccFromLabel}${ccFromUserName})`;
+    if (ccDescription.length) {
+      drawerTitle += `&nbsp;:&nbsp;${ccDescription}`;
+    }
+  }
   const schema = {
     type: "drawer",
     overlay: false,
@@ -613,7 +625,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
     closeOnEsc: true,
     closeOnOutside: false,
     size: "sm",
-    title: `${instance.step.name}`,
+    title: drawerTitle,
     className: "approval-drawer absolute",
     headerClassName: 'p-2',
     bodyClassName: 'p-2',
