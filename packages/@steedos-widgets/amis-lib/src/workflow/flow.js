@@ -1059,15 +1059,9 @@ export const checkInstanceFlowVersion = async (instance) => {
   return true;
 }
 
-export const getFlowFormSchema = async (instance, box) => {
+export const getFlowFormSchema = async (instance, box, print) => {
   const formStyle = instance.formVersion.style || "table";
-  let formContentSchema;
-  if (formStyle === "wizard") {
-    formContentSchema = await getFormWizardView(instance);
-  }
-  else{
-    formContentSchema = await getFormTableView(instance);
-  }
+  
   const amisSchemaStr = instance.formVersion?.amis_schema;
   
   let initedEvents = [];
@@ -1116,6 +1110,82 @@ export const getFlowFormSchema = async (instance, box) => {
       "args": {}
     });
   }
+
+    let formContentSchema;
+  let instanceFormSchema;
+  if(print && instance.flow.print_template){
+    try {
+      instanceFormSchema = JSON.parse(instance.flow.print_template);
+    } catch (error) {
+      instanceFormSchema = instance.flow.print_template
+    }
+  }else{
+    if (formStyle === "wizard") {
+      formContentSchema = await getFormWizardView(instance);
+    }
+    else{
+      formContentSchema = await getFormTableView(instance);
+    }
+    instanceFormSchema = {
+      type: "form",
+      debug: false,
+      wrapWithPanel: false,
+      resetAfterSubmit: true,
+      body: [
+        {
+          type: "tpl",
+          id: "u:f5bb0ad602a6",
+          tpl: `<div class="instance-name">${instance.title}</div>`,
+          inline: true,
+          wrapperComponent: "",
+          style: {
+            fontFamily: "",
+            fontSize: 12,
+            textAlign: "center",
+          },
+        },
+        formContentSchema,
+        await getApplicantTableView(instance),
+      ],
+      id: "instance_form",
+      onEvent: {
+        // validateError: {
+        //   weight: 0,
+        //   actions: [
+        //     {
+        //       "componentId": "",
+        //       "args": {
+        //         "msgType": "info",
+        //         "position": "top-right",
+        //         "closeButton": true,
+        //         "showIcon": true,
+        //         "title": i18next.t('frontend_workflow_submit_validate_error_title'),//"提交失败",
+        //         "msg": i18next.t('frontend_workflow_submit_validate_error_msg'),//"请填写必填字段"
+        //       },
+        //       "actionType": "toast"
+        //     }
+        //   ],
+        // },
+        change: {
+          weight: 0,
+          actions: [
+            {
+              "actionType": "reload",
+              "componentId": "u:next_step",
+              "args": {}
+            },
+            {
+              "actionType": "reload",
+              "componentId": "u:set_steps_users",
+              "args": {}
+            },
+            ...changeEvents
+          ]
+        }
+      }
+    };
+  }
+
   // console.log('formContentSchema....', formContentSchema)
   return {
     type: "page",
@@ -1178,64 +1248,7 @@ export const getFlowFormSchema = async (instance, box) => {
         await getAttachments(instance),
         await getRelatedInstances(instance),
         await getRelatedRecords(instance),
-        {
-          type: "form",
-          debug: false,
-          wrapWithPanel: false,
-          resetAfterSubmit: true,
-          body: [
-            {
-              type: "tpl",
-              id: "u:f5bb0ad602a6",
-              tpl: `<div class="instance-name">${instance.title}</div>`,
-              inline: true,
-              wrapperComponent: "",
-              style: {
-                fontFamily: "",
-                fontSize: 12,
-                textAlign: "center",
-              },
-            },
-            formContentSchema,
-            await getApplicantTableView(instance),
-          ],
-          id: "instance_form",
-          onEvent: {
-            // validateError: {
-            //   weight: 0,
-            //   actions: [
-            //     {
-            //       "componentId": "",
-            //       "args": {
-            //         "msgType": "info",
-            //         "position": "top-right",
-            //         "closeButton": true,
-            //         "showIcon": true,
-            //         "title": i18next.t('frontend_workflow_submit_validate_error_title'),//"提交失败",
-            //         "msg": i18next.t('frontend_workflow_submit_validate_error_msg'),//"请填写必填字段"
-            //       },
-            //       "actionType": "toast"
-            //     }
-            //   ],
-            // },
-            change: {
-              weight: 0,
-              actions: [
-                {
-                  "actionType": "reload",
-                  "componentId": "u:next_step",
-                  "args": {}
-                },
-                {
-                  "actionType": "reload",
-                  "componentId": "u:set_steps_users",
-                  "args": {}
-                },
-                ...changeEvents
-              ]
-            }
-          }
-        },
+        instanceFormSchema,
         await getStepsSchema(instance),
         await getInstanceApprovalHistory(),
         await getApproveButton(instance, { submitEvents , nextStepInitedEvents, nextStepChangeEvents, nextStepUserChangeEvents})

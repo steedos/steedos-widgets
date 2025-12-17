@@ -25,6 +25,7 @@ export const getRelatedInstances = async (instance)=>{
     return {
         "type": "list",
         "name": "relatedInstances",
+        "className": "instance-related-list",
         "source": "${related_instances}",
         title: i18next.t('frontend_workflow_related_file'),
         "listItem": {

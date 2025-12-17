@@ -9,11 +9,11 @@ import './AmisInstanceDetail.less';
 import { getInstanceInfo , getFlowFormSchema, getApplicant} from '@steedos-widgets/amis-lib'
 
 export const AmisInstanceDetail = async (props) => {
-    const {instanceId, boxName, data} = props;
-    // console.log('AmisInstanceDetail===>', props);
-    const instanceInfo = await getInstanceInfo({instanceId: instanceId, box: boxName});
-    // console.log('AmisInstanceDetail===instanceInfo>', instanceInfo);
-    const schema = await getFlowFormSchema(instanceInfo, boxName) as any;
+    const {instanceId, boxName, data, print} = props;
+    console.log('AmisInstanceDetail===>', props);
+    const instanceInfo = await getInstanceInfo({instanceId: instanceId, box: boxName, print});
+    console.log('AmisInstanceDetail===instanceInfo>', instanceInfo);
+    const schema = await getFlowFormSchema(instanceInfo, boxName, print) as any;
     const applicant = await getApplicant(instanceInfo.applicant);
     schema.data = {
         "&": "$$",
@@ -28,6 +28,6 @@ export const AmisInstanceDetail = async (props) => {
         record: instanceInfo,
         applicant: applicant
       }
-    // console.log(`AmisInstanceDetail schema`, props, schema)
+    console.log(`AmisInstanceDetail schema`, props, schema)
     return schema;
 }

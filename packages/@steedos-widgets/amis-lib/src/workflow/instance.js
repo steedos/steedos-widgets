@@ -165,8 +165,12 @@ const getSpaceUserSign = async (space, handler) => {
 }
 
 export const getInstanceInfo = async (props) => {
-  const { instanceId, box } = props;
+  const { instanceId, box, print } = props;
   const userId = getSteedosAuth().userId;
+  let flowFields = '';
+  if(print){
+    flowFields = ',print_template'
+  }
   const query = `{
       instance: instances__findOne(id:"${instanceId}"){
         _id,
@@ -199,7 +203,7 @@ export const getInstanceInfo = async (props) => {
           _id,
           name,
           perms,
-          allow_select_step
+          allow_select_step${flowFields}
         }
       }
     }
@@ -370,13 +374,18 @@ export const getInstanceInfo = async (props) => {
     cc_users: instance.cc_users,
     traces: instance.traces,
     historyApproves: await Promise.all(_.map(instance.traces, async (trace) => {
+      const tStep = _.find(flowVersion.steps, (item)=>{
+        return item._id === trace.step
+      })
       return Object.assign(
         {
           children: await Promise.all(_.map(trace.approves, async (approve) => {
             let finishDate = approve.finish_date;
             let judge = approve.judge;
+            let judgeValue = approve.judge;
             let userName = approve.user_name;
             let opinion = approve.description;
+            let type = approve.type;
             const traceShowSignImage = true;
             let showSignImage = isNeedToShowSignImage(approve.is_finished, approve.judge, traceShowSignImage);
             let userSign;
@@ -444,11 +453,16 @@ export const getInstanceInfo = async (props) => {
               user_name: userName,
               finish_date: finishDate,
               judge: judge,
+              judgeValue: judgeValue,
               opinion: opinion,
+              type: 'approve',
+              approve_type: type || '',
+              step_type: tStep.step_type, 
+              step_id: tStep._id
             };
           })),
         },
-        { name: trace.name, judge: "" }
+        { name: trace.name, type: 'trace', judge: "", judgeValue: trace.judge, step_type: tStep.step_type, step_id: tStep._id}
       );
     })),
     approvalCommentsFields

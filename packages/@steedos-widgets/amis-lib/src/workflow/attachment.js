@@ -12,7 +12,7 @@ export const getAttachments = async (instance)=>{
 
     return {
         "type": "panel",
-        className: "border-none bg-none shadow-none",
+        className: "instance-file-list border-none bg-none shadow-none",
         headerClassName: "p-0 border-none mb-1",
         bodyClassName: "p-0",
         "title": [

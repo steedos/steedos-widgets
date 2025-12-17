@@ -17,31 +17,34 @@ export const getInstanceApprovalHistory = async ()=>{
         "source": "${historyApproves}",
         "className": "m-b-none instance-approve-history",
         "columnsTogglable": false,
+        "rowClassNameExpr": "step-type-${step_type} ${type}-step-type-${step_type} ${type}-step-id-${step_id} ${type}-judge-${judgeValue} ${type==='approve' ? 'approve-type-' + approve_type : ''}",
         "footable": {
             "expand": "all"
         },
         "columns": [
           {
             "name": "name",
-            "label": "name"
+            "label": "name",
+            "className": "name"
           },
           {
             "name": "user_name",
             "label": "user_name",
             "type": "tpl",
-            "tpl": "<div><div>${opinion}</div>${user_name|raw}</div>"
+            "tpl": "<div><div>${opinion}</div>${user_name|raw}</div>",
+            "className": "user_name"
           },
           {
             "name": "finish_date",
             "label": "finish_date",
-            "classNameExpr": `<%= data.finish_date == '${i18next.t('frontend_workflow_approval_history_read')}' ? 'text-[blue]' : (data.finish_date == '${i18next.t('frontend_workflow_approval_history_unprocessed')}' ? 'text-[red]' : '') %>`
+            "classNameExpr": `<%= data.finish_date == '${i18next.t('frontend_workflow_approval_history_read')}' ? 'text-[blue]' : (data.finish_date == '${i18next.t('frontend_workflow_approval_history_unprocessed')}' ? 'finish_date text-[red]' : 'finish_date') %>`
             // "type": "datetime",
             // "format": "YYYY-MM-DD HH:mm"
           },
           {
             "name": "judge",
             "label": "judge",
-            "classNameExpr": `<%= data.judge == '${i18next.t('frontend_workflow_approval_judge_approved')}' ? 'text-green-600' : (data.judge == '${i18next.t('frontend_workflow_approval_judge_rejected')}' ? 'text-[red]' : '') %>`
+            "classNameExpr": `<%= data.judge == '${i18next.t('frontend_workflow_approval_judge_approved')}' ? 'text-green-600' : (data.judge == '${i18next.t('frontend_workflow_approval_judge_rejected')}' ? 'judge text-[red]' : 'judge') %>`
           }
         ]
       }
