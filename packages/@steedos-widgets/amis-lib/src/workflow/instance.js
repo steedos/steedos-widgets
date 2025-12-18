@@ -184,7 +184,7 @@ export const getInstanceInfo = async (props) => {
   const userId = getSteedosAuth().userId;
   let flowFields = ',instance_template';
   if(print){
-    flowFields = ',print_template'
+    flowFields = ',instance_template,print_template'
   }
   const query = `{
       instance: instances__findOne(id:"${instanceId}"){
