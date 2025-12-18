@@ -29,8 +29,8 @@ const getSelectFlowSchema = (id, props) => {
     showIcon = true,
     showRadio = false,
     showOutline,
-    initiallyOpen,
-    unfoldedLevel,
+    initiallyOpen = false,
+    unfoldedLevel = 0,
     treeContainerClassName,
     amis = {},
   } = props;
