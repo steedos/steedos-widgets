@@ -33,7 +33,7 @@ export const getRelatedInstances = async (instance)=>{
             {
                 type: 'tpl',
                 inline: true,
-                tpl: `<a href='/app/approve_workflow/page/page_instance_view?recordId=\${_id}' target='_blank'>\${name}</a>`
+                tpl: `<a href='/app/approve_workflow/page/page_instance_view?embed=1&recordId=\${_id}' target='_blank'>\${name}</a>`
             }
           ],
           "actions": [
