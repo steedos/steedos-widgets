@@ -963,23 +963,6 @@ const getApproveButton = async (instance, events)=>{
                 btn && btn.classList.add('hidden');
               }
             }
-          },
-          {
-            "actionType": "wait",
-            "args": {
-              "time": 1000 //延时等底部签批栏drawer弹出再执行下面的添加审批单内部底边距脚本，不等的话拿不到drawer高度
-            }
-          },
-          {
-            "actionType": "custom",
-            "script": (context, doAction, event) => {
-              // 每次点开底部签批栏添加审批单内部底边距以解决签批栏会挡住申请单内容的问题
-              var instancePageContent = document.querySelector(".steedos-amis-instance-view .antd-Page-content");
-              var approvalDrawerContent = document.querySelector(".approval-drawer .antd-Drawer-content");
-              if (instancePageContent && approvalDrawerContent) {
-                $(instancePageContent).css("paddingBottom", `${approvalDrawerContent.clientHeight + 58}px`);
-              }
-            }
           }
         ],
       },
@@ -1009,15 +992,6 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
 
         var lastAtBottom = false; // 上一个scroll事件是否到底
 
-        function scrollToBottom(){
-          setTimeout(function(){
-            var instanceViewBody = document.querySelector(".steedos-amis-instance-view .antd-Page-content .steedos-amis-instance-view-body");
-            if (instanceViewBody){
-              $(instanceViewBody).animate({scrollTop: $(instanceViewBody).prop("scrollHeight")});
-            }
-          }, 1000);
-        }
-
         function isAtBottom() {
           var scrollTop = bodyEl.scrollTop,
             scrollHeight = bodyEl.scrollHeight,
@@ -1030,8 +1004,8 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
           var atBottom = isAtBottom();
           if (atBottom && e.deltaY > 0 && !isDrawerOpen()) {
             // [wheel] 拖动条在底部且向下滚，弹drawer
+            btn.dataset.triggerSource = 'scrollToBottom';
             btn.click();
-            scrollToBottom();
           }
         });
 
@@ -1040,8 +1014,8 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
           var atBottom = isAtBottom();
           if (!lastAtBottom && atBottom && !isDrawerOpen()) {
             // [scroll] 拖动条到底，弹drawer
+            btn.dataset.triggerSource = 'scrollToBottom';
             btn.click();
-            scrollToBottom();
           }
           lastAtBottom = atBottom;
         });
