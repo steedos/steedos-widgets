@@ -707,13 +707,17 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                 "actionType": "custom",
                 "script": (context, doAction, event) => {
                   // 每次点开底部签批栏添加审批单内部底边距以解决签批栏会挡住申请单内容的问题
-                  var instancePageContent = document.querySelector(".steedos-amis-instance-view .antd-Page-content");
-                  var approvalDrawerContent = document.querySelector(".approval-drawer .antd-Drawer-content");
-                  if (instancePageContent && approvalDrawerContent) {
-                    // 注意这里签批栏高度clientHeight可能会变高一行（比如点选下一步后会多出一行下一步处理人）
-                    // 所以特意留的额外高度以解决高度动态变化后申请单内容被挡住问题，这在待审核页面时大多数情况下会看到多出的顶部空白
-                    $(instancePageContent).css("paddingBottom", `${approvalDrawerContent.clientHeight + 66}px`);
+                  var appendInstanceContentPadding = function(){
+                    setTimeout(function(){
+                      var instancePageContent = document.querySelector(".steedos-amis-instance-view .antd-Page-content .steedos-amis-instance-view-body");
+                      var approvalDrawerContent = document.querySelector(".approval-drawer .antd-Drawer-content");
+                      if (instancePageContent && approvalDrawerContent) {
+                        // 注意这里签批栏高度clientHeight可能会变高一行（比如点选下一步后会多出一行下一步处理人），所以额外补上内边距paddingBottom，宜大不宜小
+                        $(instancePageContent).css("marginBottom", `${approvalDrawerContent.clientHeight + 2}px`).css("paddingBottom", `${100}px`);
+                      }
+                    }, 500);
                   }
+                  appendInstanceContentPadding();
 
                   var scrollToBottom = function(){
                     setTimeout(function(){
@@ -771,9 +775,9 @@ export const getApprovalDrawerSchema = async (instance, events) => {
           {
             "actionType": "custom",
             "script": (context, doAction, event) => {
-              var instancePageContent = document.querySelector(".steedos-amis-instance-view .antd-Page-content");
+              var instancePageContent = document.querySelector(".steedos-amis-instance-view .antd-Page-content .steedos-amis-instance-view-body");
               if (instancePageContent) {
-                $(instancePageContent).css("paddingBottom", "0px");
+                $(instancePageContent).css("marginBottom", "0px").css("paddingBottom", "0px");
               }
               if (instance.box !== 'draft') {
                 var btn = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .approve-button');
