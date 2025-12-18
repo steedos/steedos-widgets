@@ -956,6 +956,15 @@ const getApproveButton = async (instance, events)=>{
             drawer: await getApprovalDrawerSchema(instance, events),
           },
           {
+            "actionType": "custom",
+            "script": (context, doAction, event) => {
+              if (instance.box !== 'draft'){
+                var btn = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .approve-button');
+                btn && btn.classList.add('hidden');
+              }
+            }
+          },
+          {
             "actionType": "wait",
             "args": {
               "time": 1000 //延时等底部签批栏drawer弹出再执行下面的添加审批单内部底边距脚本，不等的话拿不到drawer高度
@@ -968,7 +977,7 @@ const getApproveButton = async (instance, events)=>{
               var instancePageContent = document.querySelector(".steedos-amis-instance-view .antd-Page-content");
               var approvalDrawerContent = document.querySelector(".approval-drawer .antd-Drawer-content");
               if (instancePageContent && approvalDrawerContent) {
-                $(instancePageContent).css("paddingBottom", `${approvalDrawerContent.clientHeight + 2}px`);
+                $(instancePageContent).css("paddingBottom", `${approvalDrawerContent.clientHeight + 58}px`);
               }
             }
           }
