@@ -732,6 +732,16 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                     scrollToBottom();
                     delete btn.dataset.triggerSource;
                   }
+                  var submitApprovalForm = function(){
+                    // 用amis actionType触发btnSubmit提交事件不会触发表单校验，加很长时间的延时也没用，改用原生js click事件触发
+                    setTimeout(function(){
+                      var btnSubmit = document.querySelector('.steedos-instance-detail-wrapper .approval-drawer .steedos-approve-submit-button');
+                      if (btnSubmit) {
+                        btnSubmit.click();
+                      }
+                    }, 500);
+                  }
+                  event.data.autoSubmitInstance && submitApprovalForm();
                 }
               }
             ]
@@ -797,7 +807,8 @@ export const getApprovalDrawerSchema = async (instance, events) => {
             actions: await getSubmitActions(instance, submitEvents),
           },
         },
-        id: "u:f6f8c3933f6c",
+        id: "steedos-approve-submit-button",
+        className: "steedos-approve-submit-button",
         level: "primary",
       },
       {
