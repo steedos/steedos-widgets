@@ -788,6 +788,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
         ]
       }
     },
+    footerClassName: "flex justify-start",
     actions: [
       {
         type: "button",
