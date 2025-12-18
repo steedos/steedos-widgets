@@ -593,15 +593,15 @@ export async function getTableColumns(object, fields, options){
         //增加quickEdit属性，实现快速编辑
         const quickEditSchema = allowEdit ? await getQuickEditSchema(object, field, options) : allowEdit;
         let className = `steedos-table-${field.type}-field`;
-        const bowserType = getBowserType();
-        if(bowserType === "Safari"){
+        if (field.is_wide) {
+            className += " min-w-[200px] ";
+        } else {
+            className += " min-w-[100px] ";
+        }
+        if(field.wrap === false){
             className += " whitespace-nowrap "
         }else{
-            if(field.wrap === false){
-                className += " whitespace-nowrap "
-            }else{
-                className += " break-words "
-            }
+            className += " break-words "
         }
 
         if (typeof field.amis?.className == "object") {
