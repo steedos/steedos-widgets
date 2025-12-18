@@ -638,7 +638,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
     className: "approval-drawer absolute",
     headerClassName: 'p-2',
     bodyClassName: 'p-2',
-    footerClassName: 'p-2 pt-0',
+    footerClassName: "p-2 pt-0 flex justify-start",
     drawerContainer: ()=>{
       return document.querySelector(".steedos-amis-instance-view");//document.body;
     },
@@ -712,7 +712,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                       var instancePageContent = document.querySelector(".steedos-amis-instance-view .antd-Page-content .steedos-amis-instance-view-body");
                       var approvalDrawerContent = document.querySelector(".approval-drawer .antd-Drawer-content");
                       if (instancePageContent && approvalDrawerContent) {
-                        // 注意这里签批栏高度clientHeight可能会变高一行（比如点选下一步后会多出一行下一步处理人），所以额外补上内边距paddingBottom，宜大不宜小
+                        // 注意这里签批栏高度clientHeight可能会变高一行（比如点选下一步后会多出一行下一步处理人），此时申请单内容又会被挡住，所以额外补上内边距paddingBottom，宜大不宜小
                         $(instancePageContent).css("marginBottom", `${approvalDrawerContent.clientHeight + 2}px`).css("paddingBottom", `${100}px`);
                       }
                     }, 500);
@@ -788,7 +788,6 @@ export const getApprovalDrawerSchema = async (instance, events) => {
         ]
       }
     },
-    footerClassName: "flex justify-start",
     actions: [
       {
         type: "button",
