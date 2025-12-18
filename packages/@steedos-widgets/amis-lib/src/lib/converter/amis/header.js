@@ -502,7 +502,6 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
   const buttonSchema = [{
     "type": "flex",
     "items": amisButtonsSchema,
-    // "visibleOn": "${display == 'split'?false:true}"
   }]
   // if(ctx.formFactor !== 'SMALL'){
   //   const restButtons = Array.isArray(amisButtonsSchema) ? amisButtonsSchema.filter(obj => obj.name !== "standard_new"):[]

@@ -743,10 +743,14 @@ export const getApprovalDrawerSchema = async (instance, events) => {
         "actions": [
           {
             "actionType": "custom",
-            "script": (context, doAction, event)=>{
+            "script": (context, doAction, event) => {
               var instancePageContent = document.querySelector(".steedos-amis-instance-view .antd-Page-content");
-              if (instancePageContent){
+              if (instancePageContent) {
                 $(instancePageContent).css("paddingBottom", "0px");
+              }
+              if (instance.box !== 'draft') {
+                var btn = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .approve-button');
+                btn && btn.classList.remove('hidden');
               }
             }
           }

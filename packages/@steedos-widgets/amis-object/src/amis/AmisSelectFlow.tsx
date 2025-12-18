@@ -25,13 +25,13 @@ const getSelectFlowSchema = (id, props) => {
     delimiter,
     joinValues,
     extractValue,
-    searchable,
+    searchable = true,
     showIcon = true,
     showRadio = false,
     showOutline,
     initiallyOpen,
     unfoldedLevel,
-    treeContainerClassName,
+    treeContainerClassName = 'p-0 border-none',
     amis = {},
   } = props;
   // console.log(`=====onEvent`, onEvent)
@@ -271,31 +271,31 @@ export const AmisSelectFlow = (props) => {
     id: "selectFlowService",
     className: "steedos-select-flow-service",
     body: [
-      {
-        type: "search-box",
-        className: "!w-full mb-2",
-        name: "keywords",
-        enhance: true,
-        onEvent: {
-          search: {
-            actions: [
-              {
-                actionType: "setValue",
-                componentId: "selectFlowService",
-                args: {
-                  value: {
-                    keywords: "${event.data.keywords}",
-                  },
-                },
-              },
-              {
-                componentId: inputId,
-                actionType: "reload",
-              },
-            ],
-          },
-        },
-      },
+      // {
+      //   type: "search-box",
+      //   className: "!w-full mb-2",
+      //   name: "keywords",
+      //   enhance: true,
+      //   onEvent: {
+      //     search: {
+      //       actions: [
+      //         {
+      //           actionType: "setValue",
+      //           componentId: "selectFlowService",
+      //           args: {
+      //             value: {
+      //               keywords: "${event.data.keywords}",
+      //             },
+      //           },
+      //         },
+      //         {
+      //           componentId: inputId,
+      //           actionType: "reload",
+      //         },
+      //       ],
+      //     },
+      //   },
+      // },
       flowSchema,
     ],
   };

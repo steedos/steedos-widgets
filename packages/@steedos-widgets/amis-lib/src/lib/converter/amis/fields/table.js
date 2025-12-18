@@ -593,15 +593,15 @@ export async function getTableColumns(object, fields, options){
         //增加quickEdit属性，实现快速编辑
         const quickEditSchema = allowEdit ? await getQuickEditSchema(object, field, options) : allowEdit;
         let className = `steedos-table-${field.type}-field`;
-        const bowserType = getBowserType();
-        if(bowserType === "Safari"){
+        if (field.is_wide) {
+            className += " min-w-[200px] ";
+        } else {
+            className += " min-w-[100px] ";
+        }
+        if(field.wrap === false){
             className += " whitespace-nowrap "
         }else{
-            if(field.wrap === false){
-                className += " whitespace-nowrap "
-            }else{
-                className += " break-words "
-            }
+            className += " break-words "
         }
 
         if (typeof field.amis?.className == "object") {
@@ -847,7 +847,7 @@ function getMobileLines(tpls){
         }
         if(isLeft){
             // 左侧半行
-            lineChildrenClassName = "steedos-listview-item-left truncate";
+            lineChildrenClassName = "steedos-listview-item-left";
             if(item.field.is_wide){
                 // 左侧全行样式可以单独写，如果需要配置两行省略号效果，可以加样式类 two-lines-truncate
                 lineChildrenClassName = "steedos-listview-item-wide";
@@ -859,7 +859,7 @@ function getMobileLines(tpls){
         }
         else{
             // 右侧半行，这里加样式类 flex flex-shrink-0，是为了省略号只显示在左半行，右半行文字一般比较短，如果也加省略号效果的话，左侧文字多的话，右侧没几个字就显示省略号了
-            lineChildrenClassName = "steedos-listview-item-right truncate ml-2 flex flex-shrink-0";
+            lineChildrenClassName = "steedos-listview-item-right ml-2 flex flex-shrink-0";
         }
         //支持字段amis属性配置classname，识别classname的类型，与原样式合并
         var className;
