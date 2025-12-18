@@ -1083,12 +1083,24 @@ export const getFlowFormSchema = async (instance, box, print) => {
       }
     }
   }else{
-    if (formStyle === "wizard") {
-      formContentSchema = await getFormWizardView(instance);
+    if(instance.flow.instance_template){
+      try {
+        formContentSchema = JSON.parse(instance.flow.instance_template);
+      } catch (error) {
+        formContentSchema = {
+          type: 'liquid',
+          template: instance.flow.instance_template
+        }
+      }
+    }else{
+      if (formStyle === "wizard") {
+        formContentSchema = await getFormWizardView(instance);
+      }
+      else{
+        formContentSchema = await getFormTableView(instance);
+      }
     }
-    else{
-      formContentSchema = await getFormTableView(instance);
-    }
+    
     instanceFormSchema = {
       type: "form",
       debug: false,

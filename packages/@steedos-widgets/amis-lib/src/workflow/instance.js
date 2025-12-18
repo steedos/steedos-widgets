@@ -182,7 +182,7 @@ export const autoUpgradeInstance = async (instanceId) => {
 export const getInstanceInfo = async (props) => {
   const { instanceId, box, print } = props;
   const userId = getSteedosAuth().userId;
-  let flowFields = '';
+  let flowFields = ',instance_template';
   if(print){
     flowFields = ',print_template'
   }
