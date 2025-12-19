@@ -472,6 +472,10 @@ export function getObjectListHeaderFirstLine(objectSchema, listViewName, ctx) {
                               },
                               "actionType": "url",
                             },
+                            {
+                              "actionType": "custom",
+                              "script": "window.location.reload();"
+                            }
                           ]
                         }
                       },
