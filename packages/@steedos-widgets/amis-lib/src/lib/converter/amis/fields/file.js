@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-10-28 14:15:09
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-12-13 01:02:05
+ * @LastEditTime: 2025-12-19 23:20:21
  * @Description: 
  */
 import { getAmisStaticFieldType } from './type';
@@ -153,8 +153,8 @@ export const  getAmisFileReadonlySchema = async (steedosField,ctx = {})=>{
             //         <% fileData.forEach(function(item) { %> 
             //             <a href='<%= item.url %>' target='_self' class='block'><%= item.name %></a> 
             //     <% });} %>`
-            "type": "wrapper",
-            "size": "none",
+            "type": "control",
+            "name": "__file_control",//虚拟字段名，不设置或者设置为该行任何一列的字段名的话单元格编辑时上传新附件后附件名称会变成空值或其它字段值，如果设置为空串又会造成列表页面报waring错 TypeError: Unexpected token } in 1:3
             "body": {
                 type: 'each',
                 placeholder: "",
