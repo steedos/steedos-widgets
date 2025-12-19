@@ -425,7 +425,7 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                 format: 'YYYY-MM-DDTHH:mm:00.000Z',
                 tpl: readonly ? Tpl.getDateTimeTpl(field) : null,
                 utc: true,
-                closeOnSelect: false
+                // closeOnSelect: false // 配置此属性有bug，会造成点选时间过程中控件input输入框显示值差8小时，见#8228
             }
             break;
         case 'input-time-range':
