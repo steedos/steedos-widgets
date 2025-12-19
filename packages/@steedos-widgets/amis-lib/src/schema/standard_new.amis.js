@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-11-01 15:51:00
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-10-14 15:53:35
+ * @LastEditTime: 2025-12-19 17:29:12
  * @Description: 
  */
 import i18next from "i18next";
@@ -29,8 +29,10 @@ export const getSchema = async (uiSchema, ctx) => {
             const fieldsKeys = _.keys(fields);
             // 如果新建记录时复制的数据中有omit或其他不相关字段数据时不应该一起保存到数据库，
             // 原规则见：https://github.com/steedos/steedos-frontend/issues/297
+            var omitFieldTypes = ['autonumber', 'formula', 'summary'];
             _.forEach(selectedRowResponseResult, (val, key) => {
-              if (fieldsKeys.indexOf(key) > -1 && fields[key].omit !== true && key != 'owner') {
+              var tempField = fields[key];
+              if (fieldsKeys.indexOf(key) > -1 && tempField.omit !== true && key != 'owner' && !_.includes(omitFieldTypes, tempField.type)) {
                 defaultData[key] = val;
               }
             })
