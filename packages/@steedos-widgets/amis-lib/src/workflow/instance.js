@@ -87,7 +87,7 @@ const getStep = ({ flowVersion, stepId }) => {
   });
 };
 
-const getLastCCStep = ({ traces }, userId) => {
+const getLastCCStepId = ({ traces }, userId) => {
   var i, step_id, trace_id, user_id;
 
   user_id = userId;
@@ -255,7 +255,8 @@ export const getInstanceInfo = async (props) => {
 
   let currentStep = getStep({ flowVersion, stepId: _.last(instance.traces).step });
 
-  const lastCCStep = getLastCCStep(instance, userId);
+  const lastCCStepId = getLastCCStepId(instance, userId);
+  const lastCCStep = getStep({flowVersion, lastCCStepId});
 
   const values = getApproveValues({
     instance,
