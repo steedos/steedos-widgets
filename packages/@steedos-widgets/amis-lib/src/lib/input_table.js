@@ -1617,6 +1617,7 @@ export const getAmisInputTableSchema = async (props) => {
         schemaBody.push({
             "type": "wrapper",
             "size": "none",
+            "className": "steedos-input-table-footer",
             "body": footerToolbar
         });
     }

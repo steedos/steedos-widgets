@@ -55,7 +55,7 @@ const getArgumentsList = (func)=>{
 const getFieldEditTpl = async (field, label)=>{
   // console.log('field',field)
   const tpl = {
-    label: label === true ? field.name : false,
+    label: label === true ? (field.name || field.code) : false,
     name: field.code,
     mode: "horizontal",
     className: "m-none p-none form-control",
@@ -471,7 +471,7 @@ const getFieldEditTpl = async (field, label)=>{
 
 const getFieldReadonlyTpl = async (field, label)=>{
   const tpl = {
-    label: label === true ? field.name : false,
+    label: label === true ? (field.name || field.code) : false,
     name: field.code,
     mode: "horizontal",
     className: "m-none p-none form-control",
