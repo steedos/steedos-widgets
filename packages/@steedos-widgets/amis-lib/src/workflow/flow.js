@@ -833,7 +833,7 @@ const getApplicantTableView = async (instance) => {
               {
                 "actionType": "ajax",
                 "api": {
-                  "url": "/api/formula/user/${__applicant}",
+                  "url": "/api/formula/user/${event.data.__applicant}",
                   "method": "get",
                   "messages": {
                     "success": "",
