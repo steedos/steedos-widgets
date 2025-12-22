@@ -232,11 +232,11 @@ export const getAmisFileEditSchema = (steedosField)=>{
         convertData.multiple = true;
         convertData.joinValues = false;
         convertData.extractValue = true;
-        if(steedosField.type === 'image'){
-            if(Steedos.isCordova() && Steedos.isCordova()){
-                convertData.accept = "";
-            }
-        }
+        // if(steedosField.type === 'image'){
+        //     if(Steedos.isCordova() && Steedos.isCordova()){
+        //         convertData.accept = "";
+        //     }
+        // }
     }
     return convertData;
 }
