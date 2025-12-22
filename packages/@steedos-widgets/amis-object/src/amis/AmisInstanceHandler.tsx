@@ -54,17 +54,26 @@ export const AmisInstanceHandler = async (props) => {
                     "sendOn": "!!this && this.step_type != 'end'",
                     "requestAdaptor": "debugger;\nconst { next_step, $scopeId } = api.data;\nconst formValues = context._scoped.getComponentById(\"instance_form\").getValues();\n\napi.data = {\n  instanceId: context.recordId,\n nextStepId: context._id,\n  values: formValues\n}\n\n\n return api;",
                     "adaptor": `
-                if(payload.error){
-                  SteedosUI.notification.error({message: payload.error});
-                  return {
-                    status: 0,
-                    data: {}
-                  }
-                }
-                payload.data = {
-                  value: payload.nextStepUsers.length === 1 ? payload.nextStepUsers[0].id : null, 
-                  options: payload.nextStepUsers
-                }; 
+                    if(payload.error){
+                    SteedosUI.notification.error({message: payload.error});
+                    return {
+                        status: 0,
+                        data: {}
+                    }
+                    }
+                    let value = null;
+
+                    if(context.step_type == 'counterSign'){
+                        value = _.map(payload.nextStepUsers, 'id');
+                    }
+                    if(payload.nextStepUsers.length === 1){
+                        value = payload.nextStepUsers[0].id;
+                    }
+
+                    payload.data = {
+                        value: value, 
+                        options: payload.nextStepUsers
+                    }; 
                 return payload;`,
                     "data": {
                         "&": "$$",

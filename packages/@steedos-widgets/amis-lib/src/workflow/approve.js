@@ -280,8 +280,17 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                     data: {}
                   }
                 }
+                let value = null;
+
+                if(context.step_type == 'counterSign'){
+                    value = _.map(payload.nextStepUsers, 'id');
+                }
+                if(payload.nextStepUsers.length === 1){
+                    value = payload.nextStepUsers[0].id;
+                }
+
                 payload.data = {
-                  value: payload.nextStepUsers.length === 1 ? payload.nextStepUsers[0].id : null, 
+                  value: value, 
                   options: payload.nextStepUsers
                 }; 
                 return payload;`,
