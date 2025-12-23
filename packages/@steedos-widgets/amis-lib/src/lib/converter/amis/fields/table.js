@@ -1487,8 +1487,23 @@ export async function getTableApi(mainObject, fields, options){
         }else if(selfData.op === 'loadOptions' && selfData.value){
             userFilters = [["${valueField.name}", "=", selfData.value]];
         }
+        
+        let uiSchema = api.data.$self.uiSchema;
+        let listView = uiSchema && uiSchema.list_views[api.data.listName];
+        let searchableFilterData = {};
+        if (selfData.op !== 'loadOptions'){
+            searchableFilterData = listView && listView.searchable_filter_data;
+            const isAmisFormula = typeof searchableFilterData === "string" && searchableFilterData.indexOf("\${") > -1;
+            if (isAmisFormula){
+                searchableFilterData = AmisCore.evaluate(searchableFilterData, context) || {};
+            }
+            if (_.isObject(searchableFilterData) || !_.isEmpty(searchableFilterData)){
+                let fields = uiSchema && uiSchema.fields;
+                searchableFilterData = SteedosUI.getSearchFilterFormValues(searchableFilterData, fields);
+            }
+        }
 
-        var searchableFilter = SteedosUI.getSearchFilter(selfData) || [];
+        var searchableFilter = SteedosUI.getSearchFilter(Object.assign({}, { ...searchableFilterData }, selfData)) || [];
         if(searchableFilter.length > 0){
             if(userFilters.length > 0 ){
                 userFilters = [userFilters, 'and', searchableFilter];
