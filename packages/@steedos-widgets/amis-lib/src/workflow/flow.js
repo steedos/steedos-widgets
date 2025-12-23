@@ -395,6 +395,7 @@ const getFieldEditTpl = async (field, label)=>{
           trackExpression: _.join(_.map(argsName, (item)=>{return `\${${item}|json}`}), '-')
         };
         tpl.isAmis=true;
+        tpl.searchable = true;
         // console.log(`odata`, tpl)
         break;
       case "html":
@@ -465,7 +466,7 @@ const getFieldEditTpl = async (field, label)=>{
         break;
     }
   }
-  // console.log('getFieldEditTpl ', label, tpl, field)
+  console.log('getFieldEditTpl ', label, tpl, field)
   return tpl;
 };
 
@@ -1089,6 +1090,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
       debug: false,
       wrapWithPanel: false,
       resetAfterSubmit: true,
+      promptPageLeave: true,
       className: 'instance-form',
       body: [
         {
@@ -1145,7 +1147,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
     };
   }
 
-  // console.log('formContentSchema....', formContentSchema)
+  console.log('instanceFormSchema....', instanceFormSchema)
   return {
     type: "page",
     name: "instancePage",
