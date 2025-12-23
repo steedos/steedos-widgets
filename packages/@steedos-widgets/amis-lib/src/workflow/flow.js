@@ -466,7 +466,7 @@ const getFieldEditTpl = async (field, label)=>{
         break;
     }
   }
-  console.log('getFieldEditTpl ', label, tpl, field)
+  // console.log('getFieldEditTpl ', label, tpl, field)
   return tpl;
 };
 
@@ -1147,7 +1147,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
     };
   }
 
-  console.log('instanceFormSchema....', instanceFormSchema)
+  // console.log('instanceFormSchema....', instanceFormSchema)
   return {
     type: "page",
     name: "instancePage",
