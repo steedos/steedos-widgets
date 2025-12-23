@@ -1,7 +1,7 @@
 
 export const AmisInstanceHandler = async (props) => {
     // console.log('AmisInstanceHandler===>', props);
-    const { data, id, name } = props;
+    const { data, id, name, label='' } = props;
     if(data.step_type === 'start' || data.step_type === 'end'){
         return {
             type: 'tpl',
@@ -25,7 +25,7 @@ export const AmisInstanceHandler = async (props) => {
         body: [
             {
                 type: "steedos-select-user",
-                label: "",
+                label: label,
                 name: name,
                 id: id,
                 hiddenOn: "this.deal_type != 'pickupAtRuntime' || this.step_type == 'counterSign'",
@@ -33,7 +33,7 @@ export const AmisInstanceHandler = async (props) => {
             },
             {
                 type: "steedos-select-user",
-                label: "",
+                label: label,
                 name: name,
                 id: id,
                 hiddenOn: "this.deal_type != 'pickupAtRuntime' || this.step_type != 'counterSign'",
@@ -42,7 +42,7 @@ export const AmisInstanceHandler = async (props) => {
             },
             {
                 type: "list-select",
-                label: "",
+                label: label,
                 name: name,
                 id: id,
                 required: true,
@@ -90,7 +90,7 @@ export const AmisInstanceHandler = async (props) => {
             },
             {
                 type: "list-select",
-                label: "",
+                label: label,
                 name: name,
                 id: id,
                 required: true,
