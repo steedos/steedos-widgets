@@ -11,6 +11,7 @@ import zh_cn from "./locales/zh-CN.json"
 import widget_en from './locales/widgets/en.json'
 import widget_zh from './locales/widgets/zh-CN.json'
 import { map } from 'lodash';
+import { registerFilter, registerFunction } from "amis-core";
 
 const resources = {
   "en": {
@@ -58,5 +59,12 @@ if (!i18next.isInitialized) {
   i18next.addResources('zh-CN', 'widgets-meta', widget_zh);
 }
 
+registerFilter('t', function (key,param) {
+  return typeof key === 'string' ? i18next.t(key, param) : key;
+})
+
+registerFunction('t', function (key,param) {
+  return typeof key === 'string' ? i18next.t(key, param) : key;
+})
 
 export { getUserLanguage };

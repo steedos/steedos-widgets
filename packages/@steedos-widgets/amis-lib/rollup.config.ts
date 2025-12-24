@@ -20,6 +20,9 @@ const external = [
   "react",
   "react-dom",
   "lodash",
+  'amis',
+  'amis-core',
+  'amis-ui',
   "i18next",
 ]
 
@@ -27,6 +30,9 @@ const globals = {
   lodash: '_',
   react: 'React',
   'react-dom': 'ReactDOM',
+  'amis': 'Amis',
+  'amis-core': 'AmisCore',
+  'amis-ui': 'AmisUI',
   'i18next': 'i18next',
 }
 

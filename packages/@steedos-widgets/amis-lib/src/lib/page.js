@@ -10,7 +10,7 @@ import { has } from 'lodash';
 let pageCache = {};
 
 export async function getPage({type, pageId = '', appId, objectName = '', recordId = '', formFactor = 'LARGE'}){
-    const api = `/api/pageSchema/${type}?app=${appId}&objectApiName=${objectName}&recordId=${recordId}&pageId=${pageId}&formFactor=${formFactor}`;
+    const api = `/api/v6/pages/schema/${type}?app=${appId}&objectApiName=${objectName}&recordId=${recordId}&pageId=${pageId}&formFactor=${formFactor}`;
 
     if(has(pageCache, api)) {
         return pageCache[api];

@@ -105,6 +105,11 @@ const config: any = {
             type: 'input-formula',
             name: 'visible_on',
             label: t('widgets-meta:steedos-field-group_panel_controls_visible_on_label', '显示条件')
+          },
+          {
+            type: 'textarea',
+            name: 'description',
+            label: t('widgets-meta:steedos-field-group_panel_controls_description_label', '描述')
           }
         ]
       }

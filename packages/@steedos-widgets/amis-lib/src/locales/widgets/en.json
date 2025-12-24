@@ -179,6 +179,7 @@
   "steedos-field-group_panel_controls_title_label": "Title",
   "steedos-field-group_panel_controls_collapsed_label": "Default Collapsed",
   "steedos-field-group_panel_controls_visible_on_label": "Visibility Condition",
+  "steedos-field-group_panel_controls_description_label": "Description",
   "steedos-object_title": "Object",
   "steedos-object_description": "Object",
   "steedos-object_regions_body_label": "Content Area",

@@ -395,6 +395,7 @@ const getFieldEditTpl = async (field, label)=>{
           trackExpression: _.join(_.map(argsName, (item)=>{return `\${${item}|json}`}), '-')
         };
         tpl.isAmis=true;
+        tpl.searchable = true;
         // console.log(`odata`, tpl)
         break;
       case "html":
@@ -617,7 +618,7 @@ const getTdTitle = (field) => {
     body: [
       {
         type: "tpl",
-        tpl: `<div class='${field.type == "section" ? "font-bold" : ""}'>${field.name || field.code} <span class="antd-Form-star">*</span></div>`,
+        tpl: `<div class='${field.type == "section" ? "font-bold" : ""}'>${field.name || field.code} <span class="antd-Form-star">*</span><pre class='font-normal'>${field.description || ''}</pre></div>`,
         className: field.is_required ? 'steedos-field-required' : (requiredOn ? {'steedos-field-required' : `${requiredOn}`} : '')
       },
     ],
@@ -1089,6 +1090,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
       debug: false,
       wrapWithPanel: false,
       resetAfterSubmit: true,
+      promptPageLeave: true,
       className: 'instance-form',
       body: [
         {
@@ -1145,7 +1147,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
     };
   }
 
-  // console.log('formContentSchema....', formContentSchema)
+  // console.log('instanceFormSchema....', instanceFormSchema)
   return {
     type: "page",
     name: "instancePage",
