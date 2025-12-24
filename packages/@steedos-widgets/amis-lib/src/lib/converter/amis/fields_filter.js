@@ -317,10 +317,6 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     setData({ filterFormSearchableFields: defaultSearchableFields });
 
     let searchableFilterData = ${_.isObject(searchableDefault) ? JSON.stringify(searchableDefault) : ('"' + (searchableDefault || "") + '"')} || {};
-    const isAmisFormula = typeof searchableFilterData === "string" && searchableFilterData.indexOf("\${") > -1;
-    if (isAmisFormula){
-      searchableFilterData = AmisCore.evaluate(searchableFilterData, data) || {};
-    }
     if (_.isObject(searchableFilterData) || !_.isEmpty(searchableFilterData)){
       _.each(searchableFilterData, function(v, k){
         const isAmisFormulaValue = typeof v === "string" && v.indexOf("\${") > -1;
