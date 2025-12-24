@@ -8,22 +8,28 @@
 import { getPage, Router } from "@steedos-widgets/amis-lib";
 import { defaultsDeep, has } from 'lodash';
 
+
 function injectServerCss(cssString) {
 
+  // 3. 挂载到 head 中
+  // 如果之前已经存在，先移除旧的（避免重复堆叠）
+  const oldStyle = document.getElementById('dynamic-page-styles');
+  if (oldStyle) {
+    oldStyle.remove();
+  }
+
+  if (cssString == null || cssString.trim() === '') {
+    return;
+  }
+  
   // 1. 创建 style 标签
   const styleTag = document.createElement('style');
-  styleTag.id = 'list-page-styles'; // 设置 ID 以便后续更新或删除
+  styleTag.id = 'dynamic-page-styles'; // 设置 ID 以便后续更新或删除
   
   // 2. 填入 CSS 内容
   styleTag.innerHTML = cssString;
   
-  // 3. 挂载到 head 中
-  // 如果之前已经存在，先移除旧的（避免重复堆叠）
-  const oldStyle = document.getElementById('list-page-styles');
-  if (oldStyle) {
-    oldStyle.remove();
-  }
-  document.head.appendChild(styleTag);
+  document.head.prepend(styleTag);
 }
 
 
@@ -98,7 +104,7 @@ export const PageListView = async (props) => {
   // const pageGridClassName = listSchema.pageGridClassName || 'h-full sm:p-3'
   // const pageSplitClassName = listSchema.pageSplitClassName || 'p-0 flex flex-1 overflow-hidden h-full'
 
-  if (page?.css) {
+  if (page) {
     injectServerCss(page.css);
   }
 

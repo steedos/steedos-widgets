@@ -24,7 +24,7 @@ function injectServerCss(cssString) {
   if (oldStyle) {
     oldStyle.remove();
   }
-  document.head.appendChild(styleTag);
+  document.head.prepend(styleTag);
 }
 
 export const PageRecordDetail = async (props) => {
