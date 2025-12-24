@@ -392,8 +392,8 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     // field.name可能是带点的名称，比如审批王中子表字段'instances.instances_submitter'，如果不替换掉点，会造成审批王表单中新建子表行时报错
     let keywordsSearchBoxName = `__keywords_lookup__${field.name.replace(/\./g, "_")}__to__${refObjectConfig.name}`;
 
-    // 优先认lookup字段上配置的searchable_filter_data，没有时再使用lookup字段关联对象对应的Lookup列表视图上的searchable_filter_data配置
-    const searchableFilterData = field.searchable_filter_data || listView.searchable_filter_data;
+    // 优先认lookup字段上配置的searchable_default，没有时再使用lookup字段关联对象对应的Lookup列表视图上的searchable_default配置
+    const searchableFilterData = field.searchable_default || listView.searchable_default;
     source.requestAdaptor = `
         let __changedFilterFormValuesKey = "__changedFilterFormValues";
         let __lookupField = api.data.$self.__lookupField;
@@ -702,7 +702,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
                 isLookup: true,
                 keywordsSearchBoxName,
                 searchable_fields: field.searchable_fields,
-                searchable_filter_data: field.searchable_filter_data,
+                searchable_default: field.searchable_default,
                 auto_open_filter: field.auto_open_filter,
                 show_left_filter: field.show_left_filter
             });

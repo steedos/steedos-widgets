@@ -259,21 +259,27 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     crudService && crudService.setData({isFieldsFilterEmpty: true, showFieldsFilter: false});
     `;
   /**
-  给lookup字段或列表视图中配置 searchable_filter_data 时可以配置为amis变量，也可以配置为事态key-value键值对象值：
+  给lookup字段或列表视图中配置 searchable_default 时可以配置为amis变量，也可以配置为静态key-value键值对象值：
   ```
-  "searchable_filter_data": "${selectedPublicGroupFilterFormData|toJson}"
+  "searchable_default": {
+    "start": "${[STARTOF(NOW(), 'month'),ENDOF(DATEMODIFY(NOW(), 3, 'month'), 'month')]}"
+  }
   ```
   or
   ```
-  "searchable_filter_data": {
+  "searchable_default": {
       "public_group_ids": [
           "67addbef39f9a4503789b38d"
       ]
   }
   ```
+  注意只能配置为json键值对格式，amis变量值只能分别配置到各个字段值中，不支持配置为amis变量的字符串形式，例如：
+  ```
+  "searchable_default": "${selectedPublicGroupFilterFormData|toJson}"
+  ```
    */
-  // lookup字段上配置的searchable_filter_data会传入到ctx中
-  const searchableFilterData = ctx.searchable_filter_data;
+  // lookup字段上配置的searchable_default会传入到ctx中
+  const searchableFilterData = ctx.searchable_default;
   const dataProviderInited = `
     const searchableFields = ${JSON.stringify(searchableFields)};
     const autoOpenFilter = ${autoOpenFilter};
@@ -313,8 +319,8 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
 
     let searchableFilterData = ${_.isObject(searchableFilterData) ? JSON.stringify(searchableFilterData) : ('"' + (searchableFilterData || "") + '"')} || {};
     if (!searchableFilterData || _.isEmpty(searchableFilterData)){
-      // 优先认传入的字段级别的searchable_filter_data，为空时再使用列表视图级别的searchable_filter_data
-      searchableFilterData = listView && listView.searchable_filter_data;
+      // 优先认传入的字段级别的searchable_default，为空时再使用列表视图级别的searchable_default
+      searchableFilterData = listView && listView.searchable_default;
     }
     const isAmisFormula = typeof searchableFilterData === "string" && searchableFilterData.indexOf("\${") > -1;
     if (isAmisFormula){

@@ -1492,7 +1492,7 @@ export async function getTableApi(mainObject, fields, options){
         let listView = uiSchema && uiSchema.list_views[api.data.listName];
         let searchableFilterData = {};
         if (selfData.op !== 'loadOptions'){
-            searchableFilterData = listView && listView.searchable_filter_data;
+            searchableFilterData = listView && listView.searchable_default;
             const isAmisFormula = typeof searchableFilterData === "string" && searchableFilterData.indexOf("\${") > -1;
             if (isAmisFormula){
                 searchableFilterData = AmisCore.evaluate(searchableFilterData, context) || {};
