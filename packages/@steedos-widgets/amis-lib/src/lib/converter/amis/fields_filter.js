@@ -173,7 +173,6 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     crudService && crudService.setData({isFieldsFilterEmpty, showFieldsFilter});
   `;
   const onCancelScript = `
-    // console.log("===onCancelScript=form==");
     let isLookup = event.data.isLookup;
     let __lookupField = event.data.__lookupField;
     const scope = event.context.scoped;
@@ -278,8 +277,8 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
   "searchable_default": "${selectedPublicGroupFilterFormData|toJson}"
   ```
    */
-  // lookup字段上配置的searchable_default会传入到ctx中
-  const searchableFilterData = ctx.searchable_default;
+  // 列表视图、对象表格组件或lookup字段上配置的searchable_default会传入到ctx中
+  const searchableDefault = ctx.searchableDefault;
   const dataProviderInited = `
     const searchableFields = ${JSON.stringify(searchableFields)};
     const autoOpenFilter = ${autoOpenFilter};
@@ -317,11 +316,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     }
     setData({ filterFormSearchableFields: defaultSearchableFields });
 
-    let searchableFilterData = ${_.isObject(searchableFilterData) ? JSON.stringify(searchableFilterData) : ('"' + (searchableFilterData || "") + '"')} || {};
-    if (!searchableFilterData || _.isEmpty(searchableFilterData)){
-      // 优先认传入的字段级别的searchable_default，为空时再使用列表视图级别的searchable_default
-      searchableFilterData = listView && listView.searchable_default;
-    }
+    let searchableFilterData = ${_.isObject(searchableDefault) ? JSON.stringify(searchableDefault) : ('"' + (searchableDefault || "") + '"')} || {};
     const isAmisFormula = typeof searchableFilterData === "string" && searchableFilterData.indexOf("\${") > -1;
     if (isAmisFormula){
       searchableFilterData = AmisCore.evaluate(searchableFilterData, data) || {};

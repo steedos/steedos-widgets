@@ -393,7 +393,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     let keywordsSearchBoxName = `__keywords_lookup__${field.name.replace(/\./g, "_")}__to__${refObjectConfig.name}`;
 
     // 优先认lookup字段上配置的searchable_default，没有时再使用lookup字段关联对象对应的Lookup列表视图上的searchable_default配置
-    const searchableFilterData = field.searchable_default || listView.searchable_default;
+    const searchableDefault = field.searchable_default || listView.searchable_default;
     source.requestAdaptor = `
         let __changedFilterFormValuesKey = "__changedFilterFormValues";
         let __lookupField = api.data.$self.__lookupField;
@@ -438,7 +438,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
 
         let filterFormValues = {};
         if (selfData.op !== 'loadOptions'){
-            filterFormValues = ${_.isObject(searchableFilterData) ? JSON.stringify(searchableFilterData) : ('"' + (searchableFilterData || "") + '"')} || {};
+            filterFormValues = ${_.isObject(searchableDefault) ? JSON.stringify(searchableDefault) : ('"' + (searchableDefault || "") + '"')} || {};
             const isAmisFormula = typeof filterFormValues === "string" && filterFormValues.indexOf("\${") > -1;
             if (isAmisFormula){
                 filterFormValues = AmisCore.evaluate(filterFormValues, context) || {};
@@ -702,7 +702,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
                 isLookup: true,
                 keywordsSearchBoxName,
                 searchable_fields: field.searchable_fields,
-                searchable_default: field.searchable_default,
+                searchableDefault: field.searchable_default,
                 auto_open_filter: field.auto_open_filter,
                 show_left_filter: field.show_left_filter
             });
