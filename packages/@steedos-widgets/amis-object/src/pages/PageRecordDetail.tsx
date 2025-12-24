@@ -9,6 +9,24 @@ import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { getPage, Router } from "@steedos-widgets/amis-lib";
 import { has } from 'lodash';
 
+function injectServerCss(cssString) {
+
+  // 1. 创建 style 标签
+  const styleTag = document.createElement('style');
+  styleTag.id = 'record-page-styles'; // 设置 ID 以便后续更新或删除
+  
+  // 2. 填入 CSS 内容
+  styleTag.innerHTML = cssString;
+  
+  // 3. 挂载到 head 中
+  // 如果之前已经存在，先移除旧的（避免重复堆叠）
+  const oldStyle = document.getElementById('record-page-styles');
+  if (oldStyle) {
+    oldStyle.remove();
+  }
+  document.head.appendChild(styleTag);
+}
+
 export const PageRecordDetail = async (props) => {
   // console.log(`PageRecordDetail`, props)
   const { formFactor: defaultFormFactor, appId, objectApiName, recordId, display, data, _reloadKey } = props
@@ -25,9 +43,15 @@ export const PageRecordDetail = async (props) => {
   let recordSchema = {}
   if (true || recordId) {
     const recordPage = await getPage({type: 'record', appId: appId, objectName: objectApiName, formFactor: defaultFormFactor || data.formFactor});
+    if (recordPage && recordPage.css) {
+      injectServerCss(recordPage.css);
+    }
+    if (recordPage && recordPage.schema) {
+      recordPage.schema.className += ` page-${recordPage?.name}`;
+    }
     recordSchema = recordPage? recordPage.schema : {
       "type": "wrapper",
-      "className": "steedos-record-content overflow-y-auto p-0 m-0 flex-1 h-full bg-gray-50",
+      "className": `steedos-record-content overflow-y-auto p-0 m-0 flex-1 h-full bg-gray-50`,
       "name": `amis-${appId}-${objectApiName}-detail`,
       "body": [
         {
@@ -44,7 +68,7 @@ export const PageRecordDetail = async (props) => {
   
   const schema = {
     type: 'service',
-    "className":  'h-full',
+    "className": `h-full`,
     id: 'u:steedos-page-object-detail',
     body: recordSchema,
     "onEvent": {
@@ -58,7 +82,6 @@ export const PageRecordDetail = async (props) => {
       }
     }
   }
-  
   // console.log(`PageRecordDetail===>`, schema, props)
   return schema;
 }
