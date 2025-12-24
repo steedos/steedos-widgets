@@ -1,7 +1,7 @@
 {
   "name": "@steedos-widgets/liveblocks",
   "private": false,
-  "version": "6.10.42-beta.1",
+  "version": "6.10.42-beta.2",
   "main": "dist/liveblocks.cjs.js",
   "module": "dist/liveblocks.esm.js",
   "unpkg": "dist/liveblocks.umd.js",
