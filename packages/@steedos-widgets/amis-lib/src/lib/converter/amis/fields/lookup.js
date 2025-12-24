@@ -444,6 +444,12 @@ export async function lookupToAmisPicker(field, readonly, ctx){
                 filterFormValues = AmisCore.evaluate(filterFormValues, context) || {};
             }
             if (_.isObject(filterFormValues) || !_.isEmpty(filterFormValues)){
+                _.each(filterFormValues, function(v, k){
+                    const isAmisFormulaValue = typeof v === "string" && v.indexOf("\${") > -1;
+                    if (isAmisFormulaValue){
+                        filterFormValues[k] = AmisCore.evaluate(v, context);
+                    }
+                });
                 let fields = api.data.$self.uiSchema && api.data.$self.uiSchema.fields;
                 filterFormValues = SteedosUI.getSearchFilterFormValues(filterFormValues, fields);
             }

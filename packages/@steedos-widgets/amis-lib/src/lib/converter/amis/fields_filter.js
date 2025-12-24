@@ -321,6 +321,12 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       searchableFilterData = AmisCore.evaluate(searchableFilterData, data) || {};
     }
     if (_.isObject(searchableFilterData) || !_.isEmpty(searchableFilterData)){
+      _.each(searchableFilterData, function(v, k){
+        const isAmisFormulaValue = typeof v === "string" && v.indexOf("\${") > -1;
+        if (isAmisFormulaValue){
+          searchableFilterData[k] = AmisCore.evaluate(v, data);
+        }
+      });
       let fields = data.uiSchema && data.uiSchema.fields;
       searchableFilterData = SteedosUI.getSearchFilterFormValues(searchableFilterData, fields);
     }
