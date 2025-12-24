@@ -180,6 +180,7 @@
   "steedos-field-group_panel_controls_title_label": "标题",
   "steedos-field-group_panel_controls_collapsed_label": "默认是否折叠",
   "steedos-field-group_panel_controls_visible_on_label": "显示条件",
+  "steedos-field-group_panel_controls_description_label": "描述",
   "steedos-object_title": "对象",
   "steedos-object_description": "对象",
   "steedos-object_regions_body_label": "内容区",
