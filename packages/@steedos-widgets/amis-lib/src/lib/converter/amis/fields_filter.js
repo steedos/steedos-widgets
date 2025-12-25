@@ -332,7 +332,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       if (!_.isEmpty(searchableFilterData)){
         setData({ ...searchableFilterData });
       }
-      // looup字段过滤器不在本地缓存记住过滤条件，所以初始始终隐藏过滤器
+      // looup字段过滤器不在本地缓存记住过滤条件，只处理是否隐藏过滤器
       setData({ showFieldsFilter: autoOpenFilter });
     }
     else{
