@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-05-10 22:08:05
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2023-05-12 13:39:53
+ * @LastEditTime: 2025-12-25 09:33:24
  */
 
 /**
@@ -62,7 +62,6 @@ export function isFilterFormValuesEmpty(formValues) {
                 || (_.isArray(n) && _.isEmpty(n.filter(function (item) { return !_.isNil(item) })))
                 || (_.isString(n) && n.length === 0);
         });
-        // 有过滤条件时自动展开搜索栏
         if (!_.isEmpty(omitedEmptyFormValue)) {
             isEmpty = false;
         }

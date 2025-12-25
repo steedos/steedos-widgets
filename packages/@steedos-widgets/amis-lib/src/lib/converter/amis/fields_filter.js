@@ -285,6 +285,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     const objectName = data.objectName;
     const isLookup = data.isLookup;
     const listName = data.listName;
+    const crudId = "${ctx.crudId || ""}" || "listview_" + objectName;
     let searchableFieldsStoreKey = location.pathname + "/searchable_fields";
     if(isLookup){
       searchableFieldsStoreKey += "/lookup/" + objectName;
@@ -347,16 +348,11 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       let filterFormValues = Object.assign({}, searchableFilterData, localFilterFormValues);
       if(!_.isEmpty(filterFormValues)){
         setData({ ...filterFormValues });
-        const omitedEmptyFormValue = _.omitBy(localFilterFormValues, function(n){
-          return _.isNil(n) 
-            || (_.isObject(n) && _.isEmpty(n)) 
-            || (_.isArray(n) && _.isEmpty(n.filter(function(item){return !_.isNil(item)})))
-            || (_.isString(n) && n.length === 0);
-        });
+        let isFieldsFilterEmpty = SteedosUI.isFilterFormValuesEmpty(filterFormValues);
         // 有过滤条件时只显示搜索按钮上的红点，不自动展开搜索栏
-        if(!_.isEmpty(omitedEmptyFormValue)){
-          let scopeRef = SteedosUI.getRef(data.$scopeId);
-          let crudService = scopeRef && scopeRef.parent.getComponentById("service_listview_" + data.objectName)
+        if(!isFieldsFilterEmpty){
+          let crud = data._scoped && data._scoped.getComponentById(crudId);
+          let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service", {name: "service_object_table_crud"});
           crudService && crudService.setData({isFieldsFilterEmpty: false});
           // setData({ showFieldsFilter: true });//自动展开搜索栏
         }
