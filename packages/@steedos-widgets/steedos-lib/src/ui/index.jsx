@@ -15,6 +15,7 @@ import { getFieldDefaultValue } from './defaultValue';
 import { getTreeOptions } from './tree';
 import { getClosestAmisComponentByType, isFilterFormValuesEmpty } from './amis';
 import { compact, isEmpty } from 'lodash';
+import { NavigationGuard } from './navigationGuard';
 
 export const SteedosUI = Object.assign({}, {
     render: render,
@@ -292,5 +293,6 @@ export const SteedosUI = Object.assign({}, {
           }
         }
       }
-    }
+    },
+    navigationGuard: new NavigationGuard()
 })

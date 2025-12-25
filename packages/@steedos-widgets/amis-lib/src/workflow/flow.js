@@ -1131,6 +1131,10 @@ export const getFlowFormSchema = async (instance, box, print) => {
           weight: 0,
           actions: [
             {
+              "actionType": "custom",
+              "script": "window.SteedosWorkflow.Instance.changed = true;"
+            },
+            {
               "actionType": "reload",
               "componentId": "u:next_step",
               "args": {}
