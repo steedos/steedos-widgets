@@ -59,12 +59,31 @@ if (!i18next.isInitialized) {
   i18next.addResources('zh-CN', 'widgets-meta', widget_zh);
 }
 
+ const translate = function(key, parameters){
+  if(!key){
+      return key;
+  }
+  let keys;
+  if(lodash.isArray(key)){
+      keys = key;
+  }else{
+      keys = [`CustomLabels.${key}`, key];
+  }
+  if ((parameters != null) && !(lodash.isObject(parameters))) {
+      return i18next.t(keys, { lng: locale, postProcess: 'sprintf', sprintf: [parameters], keySeparator: false});
+  } else {
+      return i18next.t(keys, Object.assign({lng: locale}, {keySeparator: false}, parameters));
+  }
+};
+
 registerFilter('t', function (key,param) {
-  return typeof key === 'string' ? i18next.t(key, param) : key;
+  return typeof key === 'string' ? translate(key, param) : key;
 })
 
 registerFunction('t', function (key,param) {
-  return typeof key === 'string' ? i18next.t(key, param) : key;
+  return typeof key === 'string' ? translate(key, param) : key;
 })
+
+window['t'] = translate;
 
 export { getUserLanguage };
