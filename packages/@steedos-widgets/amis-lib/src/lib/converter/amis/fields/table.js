@@ -1344,7 +1344,7 @@ function removeTableApiSessionStorageItems(suffix) {
  */
 export async function getTableApi(mainObject, fields, options){
     const searchableFields = [];
-    let { filter, filtersFunction, sort, top, setDataToComponentId = '', searchableDefault } = options;
+    let { filter, filtersFunction, sort, top, setDataToComponentId = '', searchable_default: searchableDefault } = options;
 
     if(_.isArray(filter)){
         filter = _.map(filter, function(item){

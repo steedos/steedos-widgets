@@ -278,7 +278,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
   ```
    */
   // 列表视图、对象表格组件或lookup字段上配置的searchable_default会传入到ctx中
-  const searchableDefault = ctx.searchableDefault;
+  const searchableDefault = ctx.searchable_default;
   const dataProviderInited = `
     const searchableFields = ${JSON.stringify(searchableFields)};
     const autoOpenFilter = ${autoOpenFilter};

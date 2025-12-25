@@ -698,7 +698,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
                 isLookup: true,
                 keywordsSearchBoxName,
                 searchable_fields: field.searchable_fields,
-                searchableDefault: field.searchable_default,
+                searchable_default: field.searchable_default,
                 auto_open_filter: field.auto_open_filter,
                 show_left_filter: field.show_left_filter
             });
