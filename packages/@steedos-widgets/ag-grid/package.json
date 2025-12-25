@@ -1,7 +1,7 @@
 {
   "name": "@steedos-widgets/ag-grid",
   "private": false,
-  "version": "6.10.42-beta.2",
+  "version": "6.10.42",
   "main": "dist/ag-grid.cjs.js",
   "module": "dist/ag-grid.esm.js",
   "unpkg": "dist/ag-grid.umd.js",
