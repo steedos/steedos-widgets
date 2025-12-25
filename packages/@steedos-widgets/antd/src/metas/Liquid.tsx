@@ -68,6 +68,14 @@ export default {
       order: 99,
       icon: config.amis.icon,
       
+      // 容器类组件必需字段
+      regions: [
+        {
+          key: 'body',
+          label: 'Partials',
+          insertPosition: 'inner',
+        },
+      ],
       scaffold: {
         type: config.amis.name,
         template: "Hello {{name}}",
