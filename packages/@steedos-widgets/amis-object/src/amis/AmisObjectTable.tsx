@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-02-08 16:08:17
+ * @LastEditors: yinlianghui yinlianghui@hotoa.com
+ * @LastEditTime: 2025-12-25 16:59:35
  * @Description: 
  */
 import './AmisObjectTable.less';
@@ -45,7 +45,7 @@ export const AmisObjectTable = async (props) => {
     sort, sortField, sortOrder, extraColumns, data, defaultData,
     formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE',
     className = "", requestAdaptor,  adaptor, filterVisible = true, headerToolbarItems,
-    crudDataFilter, onCrudDataFilter, env, crudMode, hiddenColumnOperation=false } = props;
+    crudDataFilter, onCrudDataFilter, env, crudMode, hiddenColumnOperation=false, searchable_default } = props;
   let ctx = props.ctx;
   let crud = props.crud || {};
   if(!ctx){
@@ -107,7 +107,7 @@ export const AmisObjectTable = async (props) => {
   let tableSchema = await getTableSchema(appId, objectApiName, columns, { 
     filters: tableFilters, filtersFunction, top, sort, sortField, sortOrder, extraColumns, defaults, ...ctx, 
     setDataToComponentId, requestAdaptor, adaptor, filterVisible, headerToolbarItems, 
-    crudDataFilter, onCrudDataFilter, amisData: allData, env });
+    crudDataFilter, onCrudDataFilter, amisData: allData, env, searchable_default });
   let amisSchema: any = tableSchema.amisSchema;
   let uiSchema = tableSchema.uiSchema;
   amisSchema.data = Object.assign({}, amisSchema.data, amisSchemaData);

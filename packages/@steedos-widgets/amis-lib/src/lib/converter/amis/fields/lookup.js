@@ -392,7 +392,8 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     // field.name可能是带点的名称，比如审批王中子表字段'instances.instances_submitter'，如果不替换掉点，会造成审批王表单中新建子表行时报错
     let keywordsSearchBoxName = `__keywords_lookup__${field.name.replace(/\./g, "_")}__to__${refObjectConfig.name}`;
 
-    const filterFormValues = field.filter_form_data;
+    // 优先认lookup字段上配置的searchable_default，没有时再使用lookup字段关联对象对应的Lookup列表视图上的searchable_default配置
+    const searchableDefault = field.searchable_default || listView.searchable_default;
     source.requestAdaptor = `
         let __changedFilterFormValuesKey = "__changedFilterFormValues";
         let __lookupField = api.data.$self.__lookupField;
@@ -437,12 +438,14 @@ export async function lookupToAmisPicker(field, readonly, ctx){
 
         let filterFormValues = {};
         if (selfData.op !== 'loadOptions'){
-            filterFormValues = ${_.isObject(filterFormValues) ? JSON.stringify(filterFormValues) : ('"' + filterFormValues + '"')} || {};
-            const isAmisFormula = typeof filterFormValues === "string" && filterFormValues.indexOf("\${") > -1;
-            if (isAmisFormula){
-                filterFormValues = AmisCore.evaluate(filterFormValues, context) || {};
-            }
+            filterFormValues = ${_.isObject(searchableDefault) ? JSON.stringify(searchableDefault) : ('"' + (searchableDefault || "") + '"')} || {};
             if (_.isObject(filterFormValues) || !_.isEmpty(filterFormValues)){
+                _.each(filterFormValues, function(v, k){
+                    const isAmisFormulaValue = typeof v === "string" && v.indexOf("\${") > -1;
+                    if (isAmisFormulaValue){
+                        filterFormValues[k] = AmisCore.evaluate(v, context);
+                    }
+                });
                 let fields = api.data.$self.uiSchema && api.data.$self.uiSchema.fields;
                 filterFormValues = SteedosUI.getSearchFilterFormValues(filterFormValues, fields);
             }
@@ -696,8 +699,8 @@ export async function lookupToAmisPicker(field, readonly, ctx){
                 keywordsSearchBoxName,
                 searchable_fields: field.searchable_fields,
                 auto_open_filter: field.auto_open_filter,
-                show_left_filter: field.show_left_filter,
-                filter_form_data: field.filter_form_data
+                searchable_default: searchableDefault,
+                show_left_filter: field.show_left_filter
             });
         }
         pickerSchema.data = Object.assign({}, pickerSchema.data, {

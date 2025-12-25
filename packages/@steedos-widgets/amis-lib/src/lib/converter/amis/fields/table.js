@@ -1259,7 +1259,7 @@ export async function getTableSchema(object, fields, options){
  */
 export async function getTableApi(mainObject, fields, options){
     const searchableFields = [];
-    let { filter, filtersFunction, sort, top, setDataToComponentId = '' } = options;
+    let { filter, filtersFunction, sort, top, setDataToComponentId = '', searchable_default: searchableDefault } = options;
 
     if(_.isArray(filter)){
         filter = _.map(filter, function(item){
@@ -1399,8 +1399,25 @@ export async function getTableApi(mainObject, fields, options){
         }else if(selfData.op === 'loadOptions' && selfData.value){
             userFilters = [["${valueField.name}", "=", selfData.value]];
         }
+        
+        let filterFormValues = {};
+        if (selfData.op !== 'loadOptions'){
+            filterFormValues = ${_.isObject(searchableDefault) ? JSON.stringify(searchableDefault) : ('"' + (searchableDefault || "") + '"')} || {};
+            if (_.isObject(filterFormValues) || !_.isEmpty(filterFormValues)){
+                _.each(filterFormValues, function(v, k){
+                    const isAmisFormulaValue = typeof v === "string" && v.indexOf("\${") > -1;
+                    if (isAmisFormulaValue){
+                        filterFormValues[k] = AmisCore.evaluate(v, context);
+                    }
+                });
+                let uiSchema = api.data.$self.uiSchema;
+                let fields = uiSchema && uiSchema.fields;
+                filterFormValues = SteedosUI.getSearchFilterFormValues(filterFormValues, fields);
+            }
+        }
 
-        var searchableFilter = SteedosUI.getSearchFilter(selfData) || [];
+        var searchableFilter = SteedosUI.getSearchFilter(Object.assign({}, { ...filterFormValues }, selfData)) || [];
+
         if(searchableFilter.length > 0){
             if(userFilters.length > 0 ){
                 userFilters = [userFilters, 'and', searchableFilter];

@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-07-05 15:55:39
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-05-20 16:56:55
+ * @LastEditors: yinlianghui yinlianghui@hotoa.com
+ * @LastEditTime: 2025-12-25 16:41:00
  * @Description:
  */
 import { fetchAPI, getUserId } from "./steedos.client";
@@ -361,7 +361,8 @@ export async function getListSchema(
         "filterVisible": ctx.filterVisible,
         "rowClassNameExpr": ctx.rowClassNameExpr,
         "crudDataFilter": ctx.crudDataFilter,
-        "onCrudDataFilter": ctx.onCrudDataFilter
+        "onCrudDataFilter": ctx.onCrudDataFilter,
+        "searchable_default": listView.searchable_default
     };
     // console.log(`getListSchema===>`,amisSchema)
     return {
