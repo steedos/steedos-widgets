@@ -485,6 +485,10 @@ async function getQuickEditSchema(object, columnField, options){
         if(field.type == "lookup" && !isAmisVersionforBatchEdit){
             quickEditSchema = false;
         }
+        //TODO:图片多选时会覆盖老数据，暂时禁用，见：#8262
+        if(field.type == "image" && field.multiple){
+            quickEditSchema = false;
+        }
         //TODO:location字段在列表中快速编辑后存在bug,保存时可能会丢失部分数据，暂时禁用
         if(field.type == "location"){
             quickEditSchema = false;
