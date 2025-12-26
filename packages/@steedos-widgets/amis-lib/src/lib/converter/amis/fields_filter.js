@@ -181,7 +181,6 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     crudService && crudService.setData({isFieldsFilterEmpty, showFieldsFilter});
   `;
   const onCancelScript = `
-    // console.log("===onCancelScript=form==");
     let isLookup = event.data.isLookup;
     let __lookupField = event.data.__lookupField;
     const scope = event.context.scoped;
@@ -267,26 +266,34 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     crudService && crudService.setData({isFieldsFilterEmpty: true, showFieldsFilter: false});
     `;
   /**
-  给lookup字段配置filter_form_data时可以配置为amis变量，也可以配置为事态key-value键值对象值：
+  给lookup字段或列表视图中配置 searchable_default 时可以配置为amis变量，也可以配置为静态key-value键值对象值：
   ```
-  "filter_form_data": "${selectedPublicGroupFilterFormData|toJson}"
+  "searchable_default": {
+    "start": "${[STARTOF(NOW(), 'month'),ENDOF(DATEMODIFY(NOW(), 3, 'month'), 'month')]}"
+  }
   ```
   or
   ```
-  "filter_form_data": {
+  "searchable_default": {
       "public_group_ids": [
           "67addbef39f9a4503789b38d"
       ]
   }
   ```
+  注意只能配置为json键值对格式，amis变量值只能分别配置到各个字段值中，不支持配置为amis变量的字符串形式，例如：
+  ```
+  "searchable_default": "${selectedPublicGroupFilterFormData|toJson}"
+  ```
    */
-  const filterFormValues = ctx.filter_form_data;
+  // 列表视图、对象表格组件或lookup字段上配置的searchable_default会传入到ctx中
+  const searchableDefault = ctx.searchable_default;
   const dataProviderInited = `
     const searchableFields = ${JSON.stringify(searchableFields)};
     const autoOpenFilter = ${autoOpenFilter};
     const objectName = data.objectName;
     const isLookup = data.isLookup;
     const listName = data.listName;
+    const crudId = "${ctx.crudId || ""}" || "listview_" + objectName;
     let searchableFieldsStoreKey = location.pathname + "/searchable_fields";
     if(isLookup){
       searchableFieldsStoreKey += "/lookup/" + objectName;
@@ -317,42 +324,45 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       );
     }
     setData({ filterFormSearchableFields: defaultSearchableFields });
+
+    let searchableFilterData = ${_.isObject(searchableDefault) ? JSON.stringify(searchableDefault) : ('"' + (searchableDefault || "") + '"')} || {};
+    if (_.isObject(searchableFilterData) || !_.isEmpty(searchableFilterData)){
+      _.each(searchableFilterData, function(v, k){
+        const isAmisFormulaValue = typeof v === "string" && v.indexOf("\${") > -1;
+        if (isAmisFormulaValue){
+          searchableFilterData[k] = AmisCore.evaluate(v, data);
+        }
+      });
+      let fields = data.uiSchema && data.uiSchema.fields;
+      searchableFilterData = SteedosUI.getSearchFilterFormValues(searchableFilterData, fields);
+    }
     if(isLookup){
-      let filterFormValues = ${_.isObject(filterFormValues) ? JSON.stringify(filterFormValues) : ('"' + filterFormValues + '"')} || {};
-      const isAmisFormula = typeof filterFormValues === "string" && filterFormValues.indexOf("\${") > -1;
-      if (isAmisFormula){
-        filterFormValues = AmisCore.evaluate(filterFormValues, data) || {};
+      if (!_.isEmpty(searchableFilterData)){
+        setData({ ...searchableFilterData });
       }
-      if (_.isObject(filterFormValues) || !_.isEmpty(filterFormValues)){
-        let fields = data.uiSchema && data.uiSchema.fields;
-        filterFormValues = SteedosUI.getSearchFilterFormValues(filterFormValues, fields);
-        setData({ ...filterFormValues });
-      }
-      // looup字段过滤器不在本地缓存记住过滤条件，所以初始始终隐藏过滤器
+      // looup字段过滤器不在本地缓存记住过滤条件，只处理是否隐藏过滤器
       setData({ showFieldsFilter: autoOpenFilter });
     }
     else{
       const listViewPropsStoreKey = location.pathname + "/crud";
       let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
+      let localFilterFormValues;
       if(localListViewProps){
         localListViewProps = JSON.parse(localListViewProps);
-        let filterFormValues = _.pickBy(localListViewProps, function(n,k){
+        localFilterFormValues = _.pickBy(localListViewProps, function(n,k){
           return /^__searchable__/g.test(k);
         });
-        if(!_.isEmpty(filterFormValues)){
-          setData({ ...filterFormValues });
-          const omitedEmptyFormValue = _.omitBy(filterFormValues, function(n){
-            return _.isNil(n) 
-              || (_.isObject(n) && _.isEmpty(n)) 
-              || (_.isArray(n) && _.isEmpty(n.filter(function(item){return !_.isNil(item)})))
-              || (_.isString(n) && n.length === 0);
-          });
-          // 有过滤条件时只显示搜索按钮上的红点，不自动展开搜索栏
-          if(!_.isEmpty(omitedEmptyFormValue)){
-            let crudService = SteedosUI.getRef(data.$scopeId).parent.getComponentById("service_listview_" + data.objectName)
-            crudService && crudService.setData({isFieldsFilterEmpty: false});
-            // setData({ showFieldsFilter: true });//自动展开搜索栏
-          }
+      }
+      let filterFormValues = Object.assign({}, searchableFilterData, localFilterFormValues);
+      if(!_.isEmpty(filterFormValues)){
+        setData({ ...filterFormValues });
+        let isFieldsFilterEmpty = SteedosUI.isFilterFormValuesEmpty(filterFormValues);
+        // 有过滤条件时只显示搜索按钮上的红点，不自动展开搜索栏
+        if(!isFieldsFilterEmpty){
+          let crud = SteedosUI.getRef(data.$scopeId).getComponentById(crudId);
+          let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service", {name: "service_object_table_crud"});
+          crudService && crudService.setData({isFieldsFilterEmpty: false});
+          // setData({ showFieldsFilter: true });//自动展开搜索栏
         }
       }
     }
