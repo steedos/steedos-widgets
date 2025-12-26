@@ -1631,25 +1631,37 @@ export async function getTableApi(mainObject, fields, options){
     _.each(payload.data.rows, function(item, index){
         _.each(fileFields , (field, key)=>{
             if(item[key] && item._display && item._display[key]){
-                let value = item._display[key];
-                if(!_.isArray(value)){
-                    value = [value]
+                let fileFieldValue = item[key];
+                let fileFieldDisplayValue = item._display[key];
+                if(!_.isArray(fileFieldValue)){
+                    fileFieldValue = [fileFieldValue]
                 };
+                if(!_.isArray(fileFieldDisplayValue)){
+                    fileFieldDisplayValue = [fileFieldDisplayValue]
+                };
+                if(field.multiple){
+                    // _display的顺序并不是用户上传的顺序，按字段值本身的顺序重写
+                    fileFieldDisplayValue = fileFieldValue.map(function (val) {
+                        return fileFieldDisplayValue.find(function (fileItem) {
+                            return fileItem.value === val;
+                        }) || {};
+                    });
+                    item._display[key] = fileFieldDisplayValue; // 同时修正_display的顺序
+                }
                 if(field.type === 'file'){
-                    // item[key] = value
                     // PC客户端附件子表列表点击标题预览附件功能依赖了_id，所以这里拼出来
-                    let itemKeyValue = item[key];
-                    item[key] = value.map(function(curValue, index){
-                        let fileId = typeof itemKeyValue == 'string' ? itemKeyValue : itemKeyValue[index];
+                    item[key] = fileFieldDisplayValue.map(function(fItem, index){
+                        if (!fItem) return {};
+                        // let fileId = typeof fileFieldValue == 'string' ? fileFieldValue : fileFieldValue[index];
+                        let fileId = fItem.value; //服务端display中会返回字段value属性，它是附件_id值，即curValue.value
                         // 克隆一份对象，避免下方value递归污染curValue
-                        let result = _.clone(curValue);
+                        let result = _.clone(fItem);
                         result._id = fileId;
-                        result.value = fileId;
                         result.state = "uploaded";
                         return result;
                     });
                 }else{
-                    item[key] = _.map(value, (item)=>{
+                    item[key] = _.map(fileFieldDisplayValue, (item)=>{
                         if(field.type === 'image'){
                             const url = window.getImageFieldUrl(item.url);
                             return url;

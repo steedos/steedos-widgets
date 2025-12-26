@@ -192,9 +192,17 @@ export function getScriptForAddUrlPrefixForImgFields(fields, readonly){
                     if(imgFieldValue && imgFieldValue.length){
                         let fieldProps = imgFields[item];
                         if(fieldProps.multiple){
-                            if(imgFieldDisplayValue instanceof Array){
-                                data[item] = imgFieldDisplayValue.map((i)=>{ 
-                                    const url = window.getImageFieldUrl(i.url, ${readonly});
+                            if (imgFieldDisplayValue instanceof Array) {
+                                // _display的顺序并不是用户上传的顺序，按字段值本身的顺序重写
+                                imgFieldDisplayValue = data[item].map(function (val) {
+                                    return imgFieldDisplayValue.find(function (fileItem) {
+                                        return fileItem.value === val;
+                                    });
+                                });
+                                data._display[item] = imgFieldDisplayValue; // 同时修正_display的顺序
+                                data[item] = imgFieldDisplayValue.map(function (fItem) {
+                                    if (!fItem) return null;
+                                    const url = window.getImageFieldUrl(fItem.url, ${readonly});
                                     return url;
                                 });
                             }
@@ -234,15 +242,22 @@ function getScriptForRewriteValueForFileFields(fields){
                     let fileFieldDisplayValue = data._display && data._display[item];
                     if(fileFieldValue && fileFieldValue.length){
                         if(fileFields[item].multiple){
-                            if(fileFieldDisplayValue instanceof Array){
-                                data[item] = fileFieldDisplayValue.map((item, index)=>{ 
-                                    item.value = fileFieldValue[index];
+                            if (fileFieldDisplayValue instanceof Array) {
+                                // _display的顺序并不是用户上传的顺序，按字段值本身的顺序重写
+                                fileFieldDisplayValue = data[item].map(function (val) {
+                                    return fileFieldDisplayValue.find(function (fileItem) {
+                                        return fileItem.value === val;
+                                    }) || {};
+                                });
+                                data._display[item] = fileFieldDisplayValue; // 同时修正_display的顺序
+                                data[item] = fileFieldDisplayValue.map(function (fItem) {
+                                    if (!fItem) return {};
                                     return {
-                                        value: fileFieldValue[index],
-                                        name: item.name,
-                                        url: item.url,
+                                        value: fItem.value,
+                                        name: fItem.name,
+                                        url: fItem.url,
                                         state: "uploaded"
-                                    }
+                                    };
                                 });
                             }
                         }else{
