@@ -9,6 +9,7 @@ type SchemaObject = Record<string, any>;
 
 interface LiquidTemplateProps {
   template: string; 
+  tpl: string; 
   data: Record<string, any>; 
   $schema?: Record<string, string | object>; 
   partials?: Record<string, string | object>; 
@@ -44,12 +45,17 @@ const looseJsonParse = (str: string): any => {
 
 export const LiquidComponent: React.FC<LiquidTemplateProps> = ({ 
   template, 
+  tpl,
   data,
   className,
   $schema,
   render: amisRender,
   partials: propsPartials,
 }) => {
+  // 支持 tpl 作为 template 的别名
+  if (tpl && !template) {
+    template = tpl;
+  }
   const [html, setHtml] = useState<string>('');
   const [mountNodes, setMountNodes] = useState<Record<string, HTMLElement>>({});
   const containerRef = useRef<HTMLDivElement>(null);
