@@ -62,7 +62,8 @@ const getFieldEditTpl = async (field, label)=>{
     disabled: field.permission !== "editable",
     required: field.is_required,
     visibleOn: field.visibleOn,
-    requiredOn: field.requiredOn
+    requiredOn: field.requiredOn,
+    onEvent: field._amisField?.onEvent
   };
   if(field.default_value){
     tpl.value = field.default_value;
