@@ -180,72 +180,125 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = ({
      });
   }, [mountNodes, partialsFingerprint, dataFingerprint, amisRender, data]);
 
-
   // ==================================================================================
-  // 5. 核心逻辑：执行脚本 (新增功能)
+  // 5. 核心逻辑：顺序加载器 (等待外部脚本加载完再执行内联脚本)
   // ==================================================================================
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // 1. 先清理上一次执行留下的副作用（如果有返回清理函数）
+    // 清理旧副作用
     scriptCleanupsRef.current.forEach(cleanup => cleanup && cleanup());
     scriptCleanupsRef.current = [];
 
-    // 2. 查找容器内所有的 script 标签
-    const scripts = containerRef.current.querySelectorAll('script');
+    const allScriptNodes = Array.from(containerRef.current.querySelectorAll('script'));
+    
+    // 如果没有脚本，直接返回
+    if (allScriptNodes.length === 0) return;
 
-    scripts.forEach((scriptNode) => {
-      // 防止重复执行 (虽然每次 html 变动都会重置 DOM，但加上标记更保险)
-      if (scriptNode.dataset.executed) return;
+    // 1. 分类：找出需要加载的外部脚本 和 需要执行的内联脚本
+    const externalNodes: HTMLScriptElement[] = [];
+    const inlineNodes: HTMLScriptElement[] = [];
 
-      const code = scriptNode.innerHTML;
-      if (!code) return;
-
-      try {
-        // --- 构造沙箱环境 ---
-        
-        // 赋予脚本唯一名字，方便在 Chrome DevTools -> Sources -> Page 面板中调试
-        // 格式: steedos-script-{随机ID}.js
-        const debugName = `steedos-liquid-${Math.random().toString(36).slice(2)}.js`;
-        const debuggableCode = code + `\n//# sourceURL=${debugName}`;
-
-        // 构造函数
-        // 参数1: context (数据域)
-        // 参数2: dom (当前 script 的父节点，方便局部操作 DOM)
-        // 参数3: React/Amis 工具 (可选)
-        const func = new Function('context', 'dom', debuggableCode);
-
-        // --- 执行 ---
-        // 我们将 data 传入，脚本里可以直接用 `context.user.name` 访问
-        // 我们将 scriptNode.parentElement 传入，脚本可以用 `dom.style.color = 'red'` 操作局部
-        const cleanupResult = func(data, scriptNode.parentElement);
-
-        // 如果脚本返回了一个函数，我们把它作为 cleanup 函数保存
-        if (typeof cleanupResult === 'function') {
-          scriptCleanupsRef.current.push(cleanupResult);
+    allScriptNodes.forEach(node => {
+        if (node.dataset.executed) return; // 跳过已处理的
+        if (node.src) {
+            externalNodes.push(node);
+        } else {
+            inlineNodes.push(node);
         }
-
-        // 标记已执行
-        scriptNode.dataset.executed = "true";
-
-      } catch (err) {
-        console.error("Liquid Script Execution Error:", err);
-        console.warn("Faulty Script:", code);
-        // 可选：在页面上显式报错
-        const errorDiv = document.createElement('div');
-        errorDiv.style.color = 'red';
-        errorDiv.style.fontSize = '12px';
-        errorDiv.innerText = `Script Error: ${(err as Error).message}`;
-        scriptNode.parentNode?.insertBefore(errorDiv, scriptNode.nextSibling);
-      }
     });
 
-    // 组件卸载时清理
-    return () => {
-      scriptCleanupsRef.current.forEach(cleanup => cleanup && cleanup());
-    };
-  }, [html, dataFingerprint]); // 当 HTML 结构变化或数据变化时，重新扫描执行
+    // 2. 定义加载外部脚本的函数（返回 Promise）
+    const loadExternalScript = (scriptNode: HTMLScriptElement): Promise<void> => {
+        return new Promise((resolve) => {
+            const src = scriptNode.getAttribute('src');
+            if (!src) { resolve(); return; }
 
+            const newScriptUrl = new URL(src, window.location.href).href;
+
+            // --- 查重逻辑：检查全局是否已存在该脚本（排除自身） ---
+            let isGlobalLoaded = false;
+            const allDocScripts = document.getElementsByTagName('script');
+            for (let i = 0; i < allDocScripts.length; i++) {
+                const s = allDocScripts[i];
+                if (s.src === newScriptUrl && s !== scriptNode) {
+                    isGlobalLoaded = true;
+                    break;
+                }
+            }
+
+            // 标记当前节点已处理，防止下次 render 重复
+            scriptNode.dataset.executed = "true";
+
+            if (isGlobalLoaded) {
+                console.log(`[Liquid] Script already loaded: ${src}`);
+                resolve(); // 已存在，直接视为成功
+                return;
+            }
+
+            // --- 创建新脚本加载 ---
+            const newScript = document.createElement('script');
+            newScript.src = src;
+            newScript.async = false; // 尝试保持顺序，虽然动态插入通常默认 async
+            
+            // 复制属性
+            Array.from(scriptNode.attributes).forEach(attr => {
+                if (attr.name !== 'src' && attr.name !== 'data-executed') {
+                    newScript.setAttribute(attr.name, attr.value);
+                }
+            });
+
+            newScript.onload = () => {
+                console.log(`[Liquid] Loaded: ${src}`);
+                resolve();
+            };
+
+            newScript.onerror = () => {
+                console.error(`[Liquid] Failed to load: ${src}`);
+                // 即使失败也 resolve，避免阻塞后续内联脚本执行（或者你可以选择 reject 来阻断）
+                resolve(); 
+            };
+
+            document.body.appendChild(newScript);
+        });
+    };
+
+    // 3. 定义执行内联脚本的函数
+    const runInlineScripts = () => {
+        inlineNodes.forEach(scriptNode => {
+            // 双重检查，防止重入
+            if (scriptNode.dataset.executed) return;
+
+            const code = scriptNode.innerHTML;
+            if (code) {
+                try {
+                    const debugName = `steedos-liquid-${Math.random().toString(36).slice(2)}.js`;
+                    const debuggableCode = code + `\n//# sourceURL=${debugName}`;
+                    const func = new Function('context', 'dom', debuggableCode);
+                    const cleanupResult = func(data, scriptNode.parentElement);
+                    if (typeof cleanupResult === 'function') {
+                        scriptCleanupsRef.current.push(cleanupResult);
+                    }
+                } catch (err) {
+                    console.error("[Liquid] Inline Script Error:", err);
+                }
+            }
+            scriptNode.dataset.executed = "true";
+        });
+    };
+
+    // 4. 执行流程：先并行加载所有外部脚本 -> 全部完成后 -> 执行内联脚本
+    const loadingPromises = externalNodes.map(loadExternalScript);
+
+    Promise.all(loadingPromises).then(() => {
+        // 所有外部脚本（src）都已加载完毕（或失败），现在执行内联代码
+        runInlineScripts();
+    });
+
+    return () => {
+        scriptCleanupsRef.current.forEach(cleanup => cleanup && cleanup());
+    };
+  }, [html, dataFingerprint]);
 
   return (
     <div className={`liquid-amis-container ${className || ''}`} ref={containerRef}>
