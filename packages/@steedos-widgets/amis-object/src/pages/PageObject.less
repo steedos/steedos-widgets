@@ -5,3 +5,22 @@
         color: var(--Table-onChecked-color) !important;
     }
 }
+
+.steedos-listview-split-max-height {
+    overflow: hidden;
+
+    .steedos-object-listview .steedos-object-table {
+        // 默认逻辑：存在底部 toolbar 翻页时的计算方式
+        .antd-Table-contentWrap .antd-Table-content {
+            max-height: calc(100vh - 194px);
+        }
+
+        // 业务逻辑：当 contentWrap 的后面兄弟元素中没有 toolbar 翻页时
+        // :not(:has(~ .antd-Table-toolbar)) 表示：后面不跟着 toolbar 样式类
+        .antd-Table-contentWrap:not(:has(~ .antd-Table-toolbar)) {
+            .antd-Table-content {
+                max-height: calc(100vh - 164px);
+            }
+        }
+    }
+}

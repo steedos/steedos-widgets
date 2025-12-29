@@ -1,8 +1,8 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-04-12 15:00:42
- * @LastEditors: baozhoutao@steedos.com
- * @LastEditTime: 2025-02-20 18:24:45
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2025-12-29 14:34:22
  * @Description: 
  */
 import './PageObject.less';
@@ -127,6 +127,8 @@ export const PageObject = async (props) => {
                     "className": {
                         "p-0 flex-shrink-0 lg:order-first lg:flex lg:flex-col overflow-y-auto": "${display == 'split'}",
                         'h-full': "${display != 'split'}",
+                        //分栏模式记录详细页面列表视图 crud autofill 在此复杂页面上刷新浏览器时不触发高度计算，所以设置最大高度来显示滚动条
+                        "steedos-listview-split-max-height": "${pageType === 'record' && display == 'split'}",
                     },
                     "body": {
                         "name": `${ data.objectName}-listview-${ data.listName}`,
