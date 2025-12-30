@@ -1,7 +1,7 @@
 {
   "name": "@steedos-widgets/fullcalendar-scheduler",
   "private": false,
-  "version": "6.10.45",
+  "version": "6.10.46",
   "main": "dist/fullcalendar.cjs.js",
   "module": "dist/fullcalendar.esm.js",
   "unpkg": "dist/fullcalendar.umd.js",
