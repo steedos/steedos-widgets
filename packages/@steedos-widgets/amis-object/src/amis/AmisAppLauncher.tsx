@@ -96,6 +96,7 @@ export const AmisAppLauncher = async (props) => {
     dialogSchema = {
       "type": "service",
       "id": "u:0f6224a0836f",
+      "icon-colors": "bg-red-600 bg-orange-600 bg-yellow-600 bg-green-600 bg-teal-600 bg-cyan-600 bg-blue-600 bg-pink-600 bg-purple-600 bg-gray-600 bg-sky-600",
       "affixFooter": false,
       "body": [
         {
@@ -118,7 +119,7 @@ export const AmisAppLauncher = async (props) => {
                     "level": "link",
                     "body": [{
                       "type": "tpl",
-                      "tpl": "<div class='slds-app-launcher__tile slds-text-link_reset'><div class='slds-app-launcher__tile-figure'><svg class='w-12 h-12 slds-icon slds-icon_container slds-icon-standard-${REPLACE(icon, '_', '-')}' aria-hidden='true'><use xlink:href='/assets/icons/standard-sprite/svg/symbols.svg#${icon}'></use></svg><span class='slds-assistive-text'>${name}</span></div><div class='slds-app-launcher__tile-body'><span class='slds-link text-blue-600 text-lg'><span title='${name}'>${name}</span></span><div style='display: -webkit-box; -webkit-line-clamp: 1;-webkit-box-orient: vertical;overflow: hidden;'><span title='${description}'>${description}</span></div></div></div>",
+                      "tpl": "<div class='slds-app-launcher__tile slds-text-link_reset'><div class='slds-app-launcher__tile-figure'><svg class='w-12 h-12 slds-icon slds-icon_container bg-${color || \"sky\"}-600' aria-hidden='true'><use xlink:href='/assets/icons/standard-sprite/svg/symbols.svg#${icon}'></use></svg><span class='slds-assistive-text'>${name}</span></div><div class='slds-app-launcher__tile-body'><span class='slds-link text-blue-600 text-lg'><span title='${name}'>${name}</span></span><div style='display: -webkit-box; -webkit-line-clamp: 1;-webkit-box-orient: vertical;overflow: hidden;'><span title='${description}'>${description}</span></div></div></div>",
                       "badge": {
                         "mode": "text",
                         "text": badgeText,
@@ -279,7 +280,7 @@ export const AmisAppLauncher = async (props) => {
           "body": [
             {
               "type": "tpl",
-              "tpl": "<div class='flex flex-col justify-center'><div class='text-center'><svg class='w-12 h-12 slds-icon slds-icon_container slds-icon-standard-${REPLACE(icon, '_', '-' )}' aria-hidden='true'><use xlink:href='/assets/icons/standard-sprite/svg/symbols.svg#${icon}'></use></svg></div><div class='text-center text-lg'>${name}</div></div>",
+              "tpl": "<div class='flex flex-col justify-center'><div class='text-center'><svg class='w-12 h-12 slds-icon slds-icon_container bg-${color || \"sky\"}-600' aria-hidden='true'><use xlink:href='/assets/icons/standard-sprite/svg/symbols.svg#${icon}'></use></svg></div><div class='text-center text-lg'>${name}</div></div>",
               "badge": {
                 "mode": "text",
                 "text": badgeText,
