@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: yinlianghui yinlianghui@hotoa.com
- * @LastEditTime: 2025-12-30 18:01:53
+ * @LastEditTime: 2025-12-30 18:19:34
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -427,6 +427,7 @@ function getFormPagination(props, mode) {
     }
     let buttonPrevId = getComponentId("button_prev", props.id);
     let buttonNextId = getComponentId("button_next", props.id);
+    let dialogId = getComponentId("dialog", props.id);
     let formId = getComponentId("form", props.id);
     let tableServiceId = getComponentId("table_service", props.id);
     let formPaginationId = getComponentId("form_pagination", props.id);
@@ -503,6 +504,20 @@ function getFormPagination(props, mode) {
         //     "dataMergeMode": "override"// amis 3.2不支持override模式，高版本才支持
         // });
     `;
+    let buttonPrevActions = [];
+    if (mode !== "readonly") {
+        // 校验通过时，返回上一页，需要重置 __isNewItem 为默认值，否则点击取消按钮会删除最后一行
+        buttonPrevActions.push({
+            "actionType": "setValue",
+            "componentId": dialogId,
+            "args": {
+                "value": {
+                    "__isNewItem": false
+                }
+            },
+            "expression": "${!!!event.data.validateResult.error}"
+        });
+    }
     return {
         "type": "wrapper",
         "size": "none",
@@ -528,7 +543,8 @@ function getFormPagination(props, mode) {
                                 "actionType": "custom",
                                 "script": onPageChangeScript,
                                 "expression": "${!!!event.data.validateResult.error}" //触发表单校验结果会存入validateResult，amis 3.2不支持，高版本比如 3.5.3支持
-                            }
+                            },
+                            ...buttonPrevActions
                         ]
                     }
                 }
