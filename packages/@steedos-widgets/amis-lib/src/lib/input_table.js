@@ -2,7 +2,7 @@
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-12-11 11:47:53
+ * @LastEditTime: 2025-12-30 15:19:58
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -448,8 +448,8 @@ function getFormPagination(props, mode) {
             // 新建编辑时，翻页才需要把当前页表单保存，只读时直接翻页即可
             // 翻页到下一页之前需要先把当前页改动的内容保存到中间变量__tableItems中
             let currentFormValues = scope.getComponentById(__formId).getValues();
-            // 这里不clone的话，其值会带上__super属性
-            currentFormValues = _.clone(currentFormValues);
+            // 这里不clone的话，其值会带上__super属性，审批王给子表组件传入autoGeneratePrimaryKeyValue属性后，这里用clone的话，通过复制出来的记录，如果点**右上角的关闭按钮**，再点击复制出来的行记录编辑，弹出的表单中没有值
+            currentFormValues = JSON.parse(JSON.stringify(currentFormValues));//_.clone(currentFormValues);
             var parent = event.data.parent;
             var __parentIndex = event.data.__parentIndex;
             if(parent){
@@ -994,7 +994,8 @@ async function getButtonActions(props, mode) {
             let __formId = "${formId}";
             // let newItem = JSON.parse(JSON.stringify(event.data));
             let newItem = scope.getComponentById(__formId).getValues();//这里不可以用event.data，因为其拿到的是弹出表单时的初始值，不是用户实时填写的数据
-            newItem = _.clone(newItem);
+            // 审批王给子表组件传入autoGeneratePrimaryKeyValue属性后，这里用clone的话，通过复制出来的记录，如果点**右上角的关闭按钮**，再点击复制出来的行记录编辑，弹出的表单中没有值
+            newItem = JSON.parse(JSON.stringify(newItem));//_.clone(newItem);
             let removeEmptyItems = function(items){
                 let i = _.findIndex(items, function(item){
                     return item === undefined
