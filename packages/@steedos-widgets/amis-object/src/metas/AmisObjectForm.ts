@@ -552,11 +552,28 @@ export default {
                           description: t('widgets-meta:steedos-object-form_tip_apiAdaptor', '函数签名: (payload, response, api) => payload')
                         }
                       ]
+                    },
+                    {
+                      "type": "collapse",
+                      headingClassName: 'ae-formItemControl-header',
+                      bodyClassName: 'ae-formItemControl-body',
+                      "key": "5",
+                      "header": 'Actions',
+                      "visibleOn": "${mode == 'edit'}",
+                      "body": [
+                        {
+                          type: "editor",
+                          name: "onSubmitSuccess",
+                          label: 'On Submit Success',
+                          language: "javascript",
+                          description: '(payload, response, api) => payload'
+                        }
+                      ]
                     }
                   ]
                 }
               ]
-            }
+            },
           ]
         }
       ]

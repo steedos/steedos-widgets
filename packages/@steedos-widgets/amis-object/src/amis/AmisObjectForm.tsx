@@ -14,7 +14,7 @@ import { keys, pick, difference, isString, has } from 'lodash';
 export const AmisObjectForm = async (props) => {
   // console.log("===AmisObjectForm=props==", props);
   const { $schema, recordId, mode, layout = "horizontal", labelAlign, appId, fieldsExtend, excludedFields = null, fields = null, form = {},
-    className="", enableInitApi, initApiRequestAdaptor, initApiAdaptor, apiRequestAdaptor, apiAdaptor, enableTabs, tabsMode, submitSuccActions, data,
+    className="", enableInitApi, initApiRequestAdaptor, initApiAdaptor, apiRequestAdaptor, apiAdaptor, enableTabs, tabsMode, onSubmitSuccess, submitSuccActions = [], data,
     formDataFilter, onFormDataFilter, env
   } = props;
   let defaultData = props.defaultData;
@@ -63,6 +63,12 @@ export const AmisObjectForm = async (props) => {
         ...defaultData//这里的defaultData是form组件的defaultData属性值
       }
     }
+    if (onSubmitSuccess) {
+      submitSuccActions.unshift({
+        "actionType": "custom",
+        "script": onSubmitSuccess
+      });
+    }
     const schema = await getFormSchema(objectApiName, Object.assign({}, options, {
       initApiRequestAdaptor, initApiAdaptor, apiRequestAdaptor, apiAdaptor, enableTabs, tabsMode, submitSuccActions,
       formDataFilter, onFormDataFilter, amisData: allData, env
@@ -96,6 +102,5 @@ export const AmisObjectForm = async (props) => {
     amisSchema.data.objectName = objectApiName;
   }
 
-  // console.log('AmisObjectForm amisSchema======>', amisSchema)
   return amisSchema;
 }
