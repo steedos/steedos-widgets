@@ -34,6 +34,8 @@
     /* margin-left: var(--gap-md);
     margin-top: var(--gap-sm); */
     margin-bottom: var(--gap-md);
+    margin-left: var(--gap-md);
+    margin-right: var(--gap-md);
 }
 .fc-media-screen a:hover{
     background-color: var(--fc-event-bg-color, #3788d8) !important;
