@@ -1,8 +1,8 @@
 /*
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-12-30 15:19:58
+ * @LastEditors: yinlianghui yinlianghui@hotoa.com
+ * @LastEditTime: 2025-12-30 18:01:53
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -920,6 +920,7 @@ async function getButtonActions(props, mode) {
         //     }
         // };
         let onSaveAndNewItemScript = `
+            console.log("onSaveAndNewItemScript start");
             let scope = event.context.scoped;
             let removeEmptyItems = function(items){
                 let i = _.findIndex(items, function(item){
@@ -977,6 +978,17 @@ async function getButtonActions(props, mode) {
             }
             // 触发翻页按钮事件，实现保存当前页数据并跳转到最后一行
             scope.getComponentById(buttonNextId).props.dispatchEvent("click", event.data);
+
+            // 标记dialog为新建行，点击取消时需要删除行
+            doAction({
+                "componentId": "${dialogId}",
+                "actionType": "setValue",
+                "args": {
+                    "value": {
+                        "__isNewItem": true
+                    }
+                }
+            });
             
             // 延时再保存一次当前页数据到子表组件中，解决新增/复制新增行后关闭弹出窗口时数据丢失造成翻页页码错误问题
             setTimeout(function(){
@@ -990,6 +1002,7 @@ async function getButtonActions(props, mode) {
             }, 1000);
         `;
         let onSaveAndCopyItemScript = `
+            console.log("onSaveAndCopyItemScript start");
             let scope = event.context.scoped;
             let __formId = "${formId}";
             // let newItem = JSON.parse(JSON.stringify(event.data));
@@ -1061,6 +1074,17 @@ async function getButtonActions(props, mode) {
             }
             // 触发翻页按钮事件，实现保存当前页数据并跳转到最后一行
             scope.getComponentById(buttonNextId).props.dispatchEvent("click", event.data);
+
+            // 标记dialog为新建行，点击取消时需要删除行
+            doAction({
+                "componentId": "${dialogId}",
+                "actionType": "setValue",
+                "args": {
+                    "value": {
+                        "__isNewItem": true
+                    }
+                }
+            });
             
             // 延时再保存一次当前页数据到子表组件中，解决新增/复制新增行后关闭弹出窗口时数据丢失造成翻页页码错误问题
             setTimeout(function(){
@@ -1165,6 +1189,7 @@ async function getButtonActions(props, mode) {
                     // 在节点嵌套情况下，当前节点正好是带children属性的节点的话，这里弹出的dialog映射到的会是children数组，这是amis目前的规则，
                     // 所以这里加判断有children时，用__super.__super让映射到正确的作用域层，如果不加，则__tableItems取到的会是children数组，而不是整个子表组件的值
                     "__tableItems": `\${((children ? __super.__super.${props.name} : __super.${props.name}) || [])|json|toJson}`,
+                    "__isNewItem": false,
                     ...(props.actionData || {})
                 },
                 "actions": dialogButtons,
@@ -1178,6 +1203,52 @@ async function getButtonActions(props, mode) {
                             {
                                 "preventDefault": true,
                                 "expression": "${event.data.validateResult.error}" //触发表单校验结果会存入validateResult，amis 3.2不支持，高版本比如 3.5.3支持
+                            }
+                        ]
+                    },
+                    "cancel": {
+                        "actions": [
+                            {
+                                "actionType": "custom",
+                                "script": `
+                                    // let __dialogId = "${dialogId}";
+                                    // let dialog = event.context.scoped.getComponentById(__dialogId)
+                                    if (event.data.__isNewItem){
+                                        let scope = event.context.scoped;
+                                        let fieldValue = event.data.__tableItems;//这里不可以_.cloneDeep，因为翻页form中用的是event.data.__tableItems，直接变更其值即可改变表单中的值
+                                        // 新建一条空白行并保存到子表组件
+                                        var parent = event.data.__super.parent;
+                                        var primaryKey = "${primaryKey}";
+                                        var __parentIndex = parent && _.findIndex(fieldValue, function(item){
+                                            return item[primaryKey] == parent[primaryKey];
+                                        });
+                                        if(parent && __parentIndex < 0){
+                                            let tableId = "${props.id}";
+                                            let table = scope.getComponentById(tableId)
+                                            // autoGeneratePrimaryKeyValue不为true的情况下，即子表组件input-table的pipeOut函数中会移除表单了子表字段的primaryKey字段值，
+                                            // 此时行primaryKey字段值为空，但是pipeIn函数中已经为input-table自动生成过primaryKey字段值了，只是没有输出到表单字段值中而已
+                                            // 所以上面从表单字段值中没找到__parentIndex，是因为此时行primaryKey字段值只经过pipeIn保存到table组件内而没有保存到tableService
+                                            __parentIndex = _.findIndex(table.props.value, function(item){
+                                                return item[primaryKey] == parent[primaryKey];
+                                            });
+                                        }
+                                        if(parent){
+                                            fieldValue[__parentIndex].children.pop();
+                                            // 这里实测不需要fieldValue[__parentIndex] = ... 来重写整个父行让子表回显，所以没加相关代码
+                                        }
+                                        else{
+                                            fieldValue.pop();
+                                        }
+                                        doAction({
+                                            "componentId": "${props.id}",
+                                            "actionType": "setValue",
+                                            "args": {
+                                                "value": fieldValue
+                                            }
+                                        });
+                                    }
+
+                                `
                             }
                         ]
                     }
@@ -1245,6 +1316,7 @@ async function getButtonActions(props, mode) {
                     }
                 ]
             }else {
+                actionShowEditDialog.dialog.data.__isNewItem = true;
                 actions = [actionShowEditDialog];
             }
         }
