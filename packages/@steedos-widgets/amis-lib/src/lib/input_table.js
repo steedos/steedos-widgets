@@ -1,8 +1,8 @@
 /*
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
- * @LastEditors: yinlianghui yinlianghui@hotoa.com
- * @LastEditTime: 2025-12-30 18:19:34
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2025-12-30 23:25:42
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -1116,6 +1116,14 @@ async function getButtonActions(props, mode) {
         let dialogButtons = [
             {
                 "type": "button",
+                "label": i18next.t('frontend_form_cancel'),//"取消",
+                "actionType": "close",
+                "style": {
+                    "margin-right": "auto"
+                }
+            },
+            {
+                "type": "button",
                 "label": i18next.t('frontend_input_table_button_confirm'),//"完成",
                 "actionType": "confirm",
                 "level": "primary"
@@ -1124,6 +1132,7 @@ async function getButtonActions(props, mode) {
         if (props.addable) {
             // 有新增行权限时额外添加新增和复制按钮
             dialogButtons = [
+                dialogButtons[0],
                 {
                     "type": "button",
                     "label": i18next.t('frontend_input_table_button_new'),//"新增",
@@ -1164,7 +1173,7 @@ async function getButtonActions(props, mode) {
                         }
                     }
                 },
-                dialogButtons[0]
+                dialogButtons[1]
             ];
         }
         let actionShowEditDialog = {
