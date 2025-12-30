@@ -280,7 +280,7 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = ({
                 try {
                     const debugName = `steedos-liquid-${Math.random().toString(36).slice(2)}.js`;
                     const debuggableCode = code + `\n//# sourceURL=${debugName}`;
-                    const func = new Function('context', 'dom', debuggableCode);
+                    const func = new Function('data', 'dom', debuggableCode);
                     const cleanupResult = func(data, scriptNode.parentElement);
                     if (typeof cleanupResult === 'function') {
                         scriptCleanupsRef.current.push(cleanupResult);
