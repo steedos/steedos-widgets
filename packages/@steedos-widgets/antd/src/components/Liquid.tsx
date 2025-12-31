@@ -307,9 +307,13 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = ({
   }, [html, dataFingerprint]);
 
   return (
-    <div className={`liquid-amis-container ${className || ''}`} ref={containerRef}>
-      <div dangerouslySetInnerHTML={{ __html: html }} />
+    <>
+      <div 
+        className={`liquid-amis-container flex flex-col h-full w-full overflow-hidden ${className || ''}`} 
+        ref={containerRef} 
+        dangerouslySetInnerHTML={{ __html: html }} 
+      />
       {portals}
-    </div>
+    </>
   );
 };
