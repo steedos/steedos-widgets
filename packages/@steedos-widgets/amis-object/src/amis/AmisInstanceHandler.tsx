@@ -52,7 +52,7 @@ export const AmisInstanceHandler = async (props) => {
                     "url": "${context.rootUrl}/api/workflow/v2/nextStepUsers?next_step=${_id}",
                     "method": "post",
                     "sendOn": "!!this && this.step_type != 'end'",
-                    "requestAdaptor": "debugger;\nconst { next_step, $scopeId } = api.data;\nconst formValues = context._scoped.getComponentById(\"instance_form\").getValues();\n\napi.data = {\n  instanceId: context.recordId,\n nextStepId: context._id,\n  values: formValues\n}\n\n\n return api;",
+                    "requestAdaptor": "\nconst { next_step, $scopeId } = api.data;\nconst formValues = context._scoped.getComponentById(\"instance_form\").getValues();\n\napi.data = {\n  instanceId: context.recordId,\n nextStepId: context._id,\n  values: formValues\n}\n\n\n return api;",
                     "adaptor": `
                     if(payload.error){
                     SteedosUI.notification.error({message: payload.error});
@@ -100,7 +100,7 @@ export const AmisInstanceHandler = async (props) => {
                     "url": "${context.rootUrl}/api/workflow/v2/nextStepUsers?next_step=${_id}",
                     "method": "post",
                     "sendOn": "!!this && this.step_type != 'end'",
-                    "requestAdaptor": "debugger;\nconst { next_step, $scopeId } = api.data;\nconst formValues = context._scoped.getComponentById(\"instance_form\").getValues();\n\napi.data = {\n  instanceId: context.recordId,\n nextStepId: context._id,\n  values: formValues\n}\n\n\n return api;",
+                    "requestAdaptor": "\nconst { next_step, $scopeId } = api.data;\nconst formValues = context._scoped.getComponentById(\"instance_form\").getValues();\n\napi.data = {\n  instanceId: context.recordId,\n nextStepId: context._id,\n  values: formValues\n}\n\n\n return api;",
                     "adaptor": `
                 if(payload.error){
                   SteedosUI.notification.error({message: payload.error});
