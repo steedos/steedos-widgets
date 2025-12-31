@@ -583,6 +583,7 @@ const getSubmitActions = async (instance, submitEvents) => {
             Authorization: "Bearer ${context.tenantId},${context.authToken}",
           },
           requestAdaptor: requestAdaptor,
+          adaptor: 'window.SteedosWorkflow.Instance.changed=false;return payload'
         },
         messages: {
           success: "提交成功!",
