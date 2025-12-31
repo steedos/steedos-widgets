@@ -475,7 +475,8 @@ const getFieldEditTpl = async (field, label)=>{
 };
 
 const getFieldReadonlyTpl = async (field, label)=>{
-  const tpl = {
+  console.log('getFieldReadonlyTpl', label, field);
+  let tpl = {
     label: label === true ? (field.name || field.code) : false,
     name: field.code,
     mode: "horizontal",
@@ -518,17 +519,47 @@ const getFieldReadonlyTpl = async (field, label)=>{
     // tpl.format = 'YYYY-MM-DD HH:mm'
     tpl.tpl = `<%=data.${field.code} ? date(new Date(data.${field.code}), 'YYYY-MM-DD HH:mm') : '' %>`
   }else if(field.type === 'user'){
-    tpl.type = 'static'
-    // tpl.format = 'YYYY-MM-DD HH:mm'
-    if(field.is_multiselect){
-      tpl.tpl = `\${_.map(${field.code}, 'name')}`
-    }else{
-      tpl.tpl = `\${${field.code} && ${field.code}.name}`
+    // tpl.type = 'static'
+    // // tpl.format = 'YYYY-MM-DD HH:mm'
+    // if(field.is_multiselect){
+    //   tpl.tpl = `\${_.map(${field.code}, 'name')}`
+    // }else{
+    //   tpl.tpl = `\${${field.code} && ${field.code}.name}`
+    // }
+
+    tpl = {
+      "type": "steedos-field",
+      "id": `u:${field.code}`,
+      "static": true,
+      "openDrawer": false,
+      "config": {
+        name: field.code,
+        label: field.name,
+        reference_to: "space_users",
+        reference_to_field: 'user',
+        multiple: field.is_multiselect,
+        type: "lookup"
+      }
     }
   }else if(field.type === 'group'){
     tpl.type = 'static'
     // tpl.format = 'YYYY-MM-DD HH:mm'
     tpl.tpl = `\${${field.code}.name}`
+
+    tpl = {
+      "type": "steedos-field",
+      "id": `u:${field.code}`,
+      "static": true,
+      "openDrawer": false,
+      "config": {
+        name: field.code,
+        label: field.name,
+        reference_to: "organizations",
+        multiple: field.is_multiselect,
+        type: "lookup"
+      }
+    }
+
   }else if(field.type === 'table'){
     tpl.type = "steedos-input-table";
     tpl.disabled = true;
@@ -566,6 +597,7 @@ const getFieldReadonlyTpl = async (field, label)=>{
   else{
     tpl.type = 'static';
   }
+  console.log('getFieldReadonlyTpl', tpl)
   return tpl;
 };
 
