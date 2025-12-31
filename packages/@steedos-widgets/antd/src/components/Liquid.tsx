@@ -14,6 +14,7 @@ interface LiquidTemplateProps {
   $schema?: Record<string, string | object>; 
   partials?: Record<string, string | object>; 
   className?: string;
+  dispatchEvent: any,
   render: (region: string, schema: SchemaObject, props?: any) => React.ReactNode;
 }
 
@@ -50,8 +51,12 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = ({
   className,
   $schema,
   render: amisRender,
+  dispatchEvent,
   partials: propsPartials,
+  ...rest
 }) => {
+  const doAction = data._scoped?.doAction;
+
   // 支持 tpl 作为 template 的别名
   if (tpl && !template) {
     template = tpl;
@@ -280,8 +285,8 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = ({
                 try {
                     const debugName = `steedos-liquid-${Math.random().toString(36).slice(2)}.js`;
                     const debuggableCode = code + `\n//# sourceURL=${debugName}`;
-                    const func = new Function('data', 'dom', debuggableCode);
-                    const cleanupResult = func(data, scriptNode.parentElement);
+                    const func = new Function('data', 'dom', 'doAction', 'dispatchEvent', debuggableCode);
+                    const cleanupResult = func(data, scriptNode.parentElement, doAction, dispatchEvent);
                     if (typeof cleanupResult === 'function') {
                         scriptCleanupsRef.current.push(cleanupResult);
                     }
