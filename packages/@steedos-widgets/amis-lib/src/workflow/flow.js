@@ -426,6 +426,9 @@ const getFieldEditTpl = async (field, label)=>{
         tpl.addable = field.permission === "editable";
         tpl.editable = tpl.addable;
         tpl.removable = tpl.addable;
+        tpl.dialog = {
+          "title": `${field.name || field.code} ` + i18next.t('frontend_input_table_dialog_title_suffix')
+        };
         if(tpl.addable){
           tpl.actionData = {
             "&" : "$$"
@@ -531,6 +534,9 @@ const getFieldReadonlyTpl = async (field, label)=>{
     tpl.disabled = true;
     tpl.autoGeneratePrimaryKeyValue = true;
     tpl.fields = [];
+    tpl.dialog = {
+      "title": `${field.name || field.code} ` + i18next.t('frontend_input_table_dialog_title_suffix')
+    };
     for (const sField of field.fields) {
       if (sField.type != "hidden") {
         sField.permission = "readonly";

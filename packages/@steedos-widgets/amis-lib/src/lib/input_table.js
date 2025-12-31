@@ -1,8 +1,8 @@
 /*
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-12-30 23:25:42
+ * @LastEditors: yinlianghui yinlianghui@hotoa.com
+ * @LastEditTime: 2025-12-31 13:39:47
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -1391,6 +1391,7 @@ async function getButtonActions(props, mode) {
                         "__tableItems": `\${((children ? __super.__super.${props.name} : __super.${props.name}) || [])|json|toJson}`,
                         ...(props.actionData || {})
                     },
+                    ...(props.dialog || {})
                 }
             }
         ];
