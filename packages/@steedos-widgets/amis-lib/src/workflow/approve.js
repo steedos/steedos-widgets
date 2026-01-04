@@ -281,8 +281,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                   }
                 }
                 let value = null;
-
-                if(context.step_type == 'counterSign'){
+                if(context.new_next_step.step_type == 'counterSign'){
                     value = _.map(payload.nextStepUsers, 'id');
                 }
                 if(payload.nextStepUsers.length === 1){
