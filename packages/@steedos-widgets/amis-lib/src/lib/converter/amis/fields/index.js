@@ -821,6 +821,13 @@ export async function convertSFieldToAmisField(field, readonly, ctx) {
                         )
                     }
                 }
+
+                if(readonly){
+                    convertData = {
+                        type: 'wrapper',
+                        body: convertData.items
+                    }
+                }
             }
             break;
         case 'approval_comments':
