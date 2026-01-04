@@ -1135,7 +1135,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
         {
           type: "tpl",
           id: "u:f5bb0ad602a6",
-          tpl: `<div class="instance-name">${instance.title}</div>`,
+          tpl: `<div class="instance-name">\${title}</div>`,
           inline: true,
           wrapperComponent: "",
           style: {
