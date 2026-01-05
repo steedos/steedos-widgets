@@ -1349,7 +1349,7 @@ function removeTableApiSessionStorageItems(suffix) {
 export async function getTableApi(mainObject, fields, options){
     const searchableFields = [];
     let { filter, filtersFunction, sort, top, setDataToComponentId = '', searchable_default: searchableDefault } = options;
-
+    let split = options.formFactor === 'SMALL' || ["split"].indexOf(options.displayAs) > -1;
     if(_.isArray(filter)){
         filter = _.map(filter, function(item){
             if(item.operation){
@@ -1398,7 +1398,9 @@ export async function getTableApi(mainObject, fields, options){
     // if(options.isRelated){
     //     api.url += "&recordId=${_master.recordId}";
     // }
-    api.cache = 3000; 
+    if(!split){
+        api.cache = 3000; 
+    }
     api.data.$term = "$term";
     api.data.term = "$term";
     api.data.$self = "$$";
