@@ -1,8 +1,8 @@
 /*
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
- * @LastEditors: yinlianghui yinlianghui@hotoa.com
- * @LastEditTime: 2025-12-31 13:39:47
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2026-01-05 15:37:51
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -69,7 +69,7 @@ function getTablePrimaryKey(props) {
  * @param {*} primaryKey 主键字段名，一般为_id
  * @returns 转换后的子表组件字段值
  */
-function getTableValueWithPrimaryKeyValue(value, primaryKey) {
+function getTableValueWithPrimaryKeyValue(value, primaryKey, pipeOut = false) {
     if (!primaryKey) {
         return value;
     }
@@ -77,18 +77,24 @@ function getTableValueWithPrimaryKeyValue(value, primaryKey) {
         //这里不clone的话，会造成在pipeIn函数执行该函数后像pipeOut一样最终输出到表单项中，即库里把primaryKey字段值保存了
         const newItemValue = clone(itemValue);
         if (newItemValue[primaryKey]) {
+            // 审批王子表开了autoGeneratePrimaryKeyValue属性，库里子表记录行中存了primaryKey属性，
+            // 如果不加__input_table_temp_primary_key的话，子表行中无法识别主表记录字段值变更，即子表行中拿到的主表记录值可能是老的
+            newItemValue["__input_table_temp_primary_key"] = uuidv4();
             if (newItemValue.children) {
-                newItemValue.children = getTableValueWithPrimaryKeyValue(newItemValue.children, primaryKey);
+                newItemValue.children = getTableValueWithPrimaryKeyValue(newItemValue.children, primaryKey, pipeOut);
             }
-            return newItemValue;
         }
         else {
             newItemValue[primaryKey] = uuidv4();
             if (newItemValue.children) {
-                newItemValue.children = getTableValueWithPrimaryKeyValue(newItemValue.children, primaryKey);
+                newItemValue.children = getTableValueWithPrimaryKeyValue(newItemValue.children, primaryKey, pipeOut);
             }
-            return newItemValue;
         }
+        if (pipeOut === true) {
+            // 如果是pipeOut，则把临时唯一标识字段值删除，避免存入库中
+            delete newItemValue["__input_table_temp_primary_key"];
+        }
+        return newItemValue;
     });
 }
 
@@ -1621,6 +1627,7 @@ export const getAmisInputTableSchema = async (props) => {
         "showFooterAddBtn": false,
         "className": props.tableClassName,
         "pipeIn": (value, data) => {
+            // console.log("steedos input table pipeIn:", fieldPrefix, primaryKey);
             if (fieldPrefix) {
                 value = getTableValueWithoutFieldPrefix(value, fieldPrefix);
             }
@@ -1643,6 +1650,7 @@ export const getAmisInputTableSchema = async (props) => {
             return value;
         },
         "pipeOut": (value, data) => {
+            // console.log("steedos input table pipeOut:", fieldPrefix, primaryKey);
             value = (value || []).map(function (item) {
                 delete item.__fix_rerender_after_children_modified_tag;
                 return item;
@@ -1654,7 +1662,7 @@ export const getAmisInputTableSchema = async (props) => {
             if (props.autoGeneratePrimaryKeyValue === true) {
                 // 如果需要把自动生成的primaryKey值输出保存的库中，则补全所有行中的primaryKey值
                 // 这里如果不全部补全的话，初始从库里返回的字段值中拿到的行没primaryKey值的话就不会自动补上
-                value = getTableValueWithPrimaryKeyValue(value, primaryKey);
+                value = getTableValueWithPrimaryKeyValue(value, primaryKey, true);
             }
             else {
                 // 默认情况下，也就是没有配置autoGeneratePrimaryKey时，最终输出的字段值要移除行中的primaryKey值
