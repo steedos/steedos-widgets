@@ -529,7 +529,7 @@ const getSubmitActions = async (instance, submitEvents) => {
 
         if (!wizard) {
           return form.validate().then(function(formValid) {
-            event.setData(Object.assign({}, event.data, {instanceFormValidate: formValid}));
+            event.setData(BuilderAmisObject.AmisLib.createObject(event.data, {instanceFormValidate: formValid}));
             return formValid;
           });
         }
@@ -560,7 +560,7 @@ const getSubmitActions = async (instance, submitEvents) => {
           return validateStepsUntilFail(1).then(function(wizardValid){
             // wizardValid为false时，当前wizard已停在第一个未通过步骤，并且未通过表单项高亮
             var allValid = formValid && wizardValid;
-            event.setData(Object.assign({}, event.data, {instanceFormValidate: allValid}));
+            event.setData(BuilderAmisObject.AmisLib.createObject(event.data, {instanceFormValidate: allValid}));
             return allValid;
           });
         });
@@ -574,12 +574,38 @@ const getSubmitActions = async (instance, submitEvents) => {
       "script": `
         const form = event.context.scoped.getComponentById("instance_approval");
         return form.validate().then((approvalFormValidate)=>{
-          event.setData({...event.data, approvalFormValidate})
+          event.setData(BuilderAmisObject.AmisLib.createObject(event.data, {approvalFormValidate: approvalFormValidate}));
         })
       `,
       expression: "${event.data.instanceFormValidate}"
     },
     ...submitEvents,
+    {
+      "actionType": "custom",
+      "script": `let isValid = true;
+        const instance = event.data.record;
+        if(instance.box === 'draft' && instance.state === 'draft' && instance.flow.allow_select_step){
+          const steps = event.data.record.flowVersion.steps;
+          const result = Steedos.authRequest('/api/workflow/v2/get_instance_steps/'+instance._id, {async: false})
+          const stepApprove = result.data.step_approve; 
+          const skip_steps = result.data.skip_steps; 
+          _.each(steps, (step) => {
+            if (step.step_type !== "start" && step.step_type !== "end" && !_.includes(skip_steps, step._id)) {
+              const stepApproves = stepApprove[step._id]
+                if (_.isEmpty(stepApproves)) {
+                  SteedosUI.notification.error({message:'请选择「'+step.name+'」步骤的处理人'});
+                }
+            }
+          });
+          if(!isValid){
+            event.stopPropagation();
+            event.preventDefault();
+            return false;
+          };
+        }
+        return true;
+      `
+    },
     {
       componentId: "",
       args: {
