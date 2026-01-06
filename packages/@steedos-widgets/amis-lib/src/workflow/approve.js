@@ -688,7 +688,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
     bodyClassName: 'p-2',
     footerClassName: "p-2 pt-0 flex justify-start",
     drawerContainer: ()=>{
-      return document.querySelector(".steedos-amis-instance-view");//document.body;
+      return document.querySelector(".steedos-amis-instance-approval-drawer-container");//document.body;
     },
     body: [
       {
@@ -754,28 +754,91 @@ export const getApprovalDrawerSchema = async (instance, events) => {
               {
                 "actionType": "custom",
                 "script": (context, doAction, event) => {
+                  if (window.approvalDrawerObserver) window.approvalDrawerObserver.disconnect();
+
+                  const CONFIG = {
+                    bodySelector: ".steedos-amis-instance-view .antd-Page-content .steedos-amis-instance-view-body",
+                    drawerContainerSelector: ".steedos-amis-instance-view .steedos-amis-instance-approval-drawer-container",
+                    drawerSelector: ".steedos-amis-instance-view .approval-drawer",
+                    drawerContentSelector: ".steedos-amis-instance-view .approval-drawer .antd-Drawer-content",
+                    approveButtonSelector: ".steedos-instance-detail-wrapper .steedos-amis-instance-view .approve-button"
+                  };
+
+                  const container = document.querySelector(CONFIG.drawerContainerSelector);
+                  if (!container) return;
+
                   // 每次点开底部签批栏添加审批单内部底边距以解决签批栏会挡住申请单内容的问题
-                  var appendInstanceContentPadding = function(){
-                    setTimeout(function(){
-                      var instancePageContent = document.querySelector(".steedos-amis-instance-view .antd-Page-content .steedos-amis-instance-view-body");
-                      var approvalDrawerContent = document.querySelector(".approval-drawer .antd-Drawer-content");
-                      if (instancePageContent && approvalDrawerContent) {
-                        // 注意这里签批栏高度clientHeight可能会变高一行（比如点选下一步后会多出一行下一步处理人），此时申请单内容又会被挡住，所以额外补上内边距paddingBottom，宜大不宜小
-                        $(instancePageContent).css("marginBottom", `${approvalDrawerContent.clientHeight + 2}px`).css("paddingBottom", `${100}px`);
+                  const syncHeight = () => {
+                    const drawerEl = document.querySelector(CONFIG.drawerSelector);
+                    const bodyEl = document.querySelector(CONFIG.bodySelector);
+                    
+                    if (!drawerEl) {
+                      // 场景 A: Drawer 已经消失 -> 清理样式
+                      if (bodyEl) {
+                        bodyEl.style.marginBottom = "0px";
+                        bodyEl.style.paddingBottom = "0px";
+                        
+                        if (instance.box !== 'draft') {
+                          const btn = document.querySelector(CONFIG.approveButtonSelector);
+                          if (btn) btn.classList.remove('hidden');
+                        }
+                        
+                        if (window.approvalDrawerObserver) {
+                            window.approvalDrawerObserver.disconnect();
+                            window.approvalDrawerObserver = null;
+                        }
                       }
-                    }, 500);
-                  }
-                  appendInstanceContentPadding();
+                      return;
+                    }
+
+                    // 场景 B: Drawer 还在 -> 动态计算并更新高度
+                    const contentEl = document.querySelector(CONFIG.drawerContentSelector);
+                    if (contentEl && bodyEl) {
+                      const newHeight = contentEl.clientHeight + 2;
+                      const currentMargin = parseInt(bodyEl.style.marginBottom || "0");
+                      
+                      // 只有高度变化超过一定大小才会触发重绘，减少性能损耗
+                      if (Math.abs(newHeight - currentMargin) > 10) {
+                        requestAnimationFrame(() => {
+                          if (bodyEl) {
+                            bodyEl.style.marginBottom = newHeight + "px";
+                            // 这里签批栏高度clientHeight可能动态变高一行，MutationObserver会触发syncHeight函数会重新计算适配，所以这里的paddingBottom大点小点没关系
+                            bodyEl.style.paddingBottom = "30px";
+                          }
+                        });
+                      }
+                    }
+                  };
+
+                  requestAnimationFrame(() => {
+                    setTimeout(syncHeight, 300);
+                  });
+                  
+                  window.approvalDrawerObserver = new MutationObserver((mutations, obs) => {
+                    // 无论是 Drawer 本身被删了，还是它里面的子节点变了，都会触发 syncHeight
+                    try {
+                      syncHeight();
+                    } catch (e) {
+                      console.error("Instance Approval MutationObserver Error:", e);
+                      obs.disconnect();
+                    }
+                  });
+
+                  // 启动监听：只监控子节点增删，开销极小
+                  window.approvalDrawerObserver.observe(container, {
+                    childList: true,
+                    subtree: true
+                  });
 
                   var scrollToBottom = function(){
                     setTimeout(function(){
-                      var instanceViewBody = document.querySelector(".steedos-amis-instance-view .antd-Page-content .steedos-amis-instance-view-body");
+                      const instanceViewBody = document.querySelector(CONFIG.bodySelector);
                       if (instanceViewBody){
                         $(instanceViewBody).animate({scrollTop: $(instanceViewBody).prop("scrollHeight")});
                       }
                     }, 500);
                   }
-                  var btn = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .approve-button');
+                  var btn = document.querySelector(CONFIG.approveButtonSelector);
                   if (btn && btn.dataset.triggerSource === 'scrollToBottom') {
                     scrollToBottom();
                     delete btn.dataset.triggerSource;
@@ -827,25 +890,6 @@ export const getApprovalDrawerSchema = async (instance, events) => {
     ],
     id: "u:approve_8861156e0b23",
     position: "bottom",
-    "onEvent": {
-      "cancel": {
-        "actions": [
-          {
-            "actionType": "custom",
-            "script": (context, doAction, event) => {
-              var instancePageContent = document.querySelector(".steedos-amis-instance-view .antd-Page-content .steedos-amis-instance-view-body");
-              if (instancePageContent) {
-                $(instancePageContent).css("marginBottom", "0px").css("paddingBottom", "0px");
-              }
-              if (instance.box !== 'draft') {
-                var btn = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .approve-button');
-                btn && btn.classList.remove('hidden');
-              }
-            }
-          }
-        ]
-      }
-    },
     actions: [
       {
         type: "button",

@@ -1259,6 +1259,11 @@ export const getFlowFormSchema = async (instance, box, print) => {
       ],
       "size": "none",
       "className": "steedos-amis-instance-view-content"
+    },{
+      "type": "wrapper",
+      "body": [],
+      "size": "none",
+      "className": "steedos-amis-instance-approval-drawer-container"
     }],
     id: "u:instancePage",
     messages: {},
