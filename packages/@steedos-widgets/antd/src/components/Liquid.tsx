@@ -42,6 +42,53 @@ const looseJsonParse = (str: string): any => {
   }
 };
 
+function extractObjectChain(value) {
+  const result = value ? [value] : [];
+  const visited = new Set(); // 用于存储已遍历的对象引用
+
+  if (value) visited.add(value);
+
+  let current = value;
+  while (current?.__super) {
+    const next = current.__super;
+
+    // 检查是否已经访问过该对象
+    if (visited.has(next)) {
+      console.warn("检测到循环引用，已自动截断链条", next);
+      break; 
+    }
+
+    result.unshift(next);
+    visited.add(next);
+    current = next;
+  }
+  
+  return result;
+}
+
+/**
+ * 安全地将链条属性合并到顶层
+ */
+function flattenObjectChain(obj) {
+  if (!obj) return {};
+
+  // 1. 调用上方带 Set 检查的提取函数
+  const chain = extractObjectChain(obj);
+
+  // 2. 扁平化合并
+  // 遵循“就近原则”：数组后面的对象属性覆盖前面的
+  const flattened = chain.reduce((acc, current) => {
+    // 建议：如果不需要合并原型链上的属性，仅合并自身属性
+    // 使用 Object.assign 仅拷贝可枚举的自有属性
+    return Object.assign(acc, current);
+  }, {});
+
+  // 3. 清理标记位，避免干扰结果
+  delete flattened.__super;
+
+  return flattened;
+}
+
 // --- 组件实现 ---
 
 export const LiquidComponent: React.FC<LiquidTemplateProps> = ({ 
@@ -144,7 +191,7 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = ({
     inlineSchemasRef.current = {}; 
 
     const contextData = {
-      ...data,
+      ...flattenObjectChain(data),
       __registerInlineSchema: (id: string, schema: SchemaObject) => {
         inlineSchemasRef.current[id] = schema;
       }
