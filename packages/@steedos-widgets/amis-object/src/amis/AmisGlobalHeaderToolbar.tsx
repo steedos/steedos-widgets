@@ -181,7 +181,7 @@ const getNotificationBadgeButton = () => {
         },
         "api": {
           "method": "post",
-          "url": "${context.rootUrl}/graphql",
+          "url": "/graphql",
           "data": {
             "&": "$$",
             "context": "${context}",
@@ -189,9 +189,6 @@ const getNotificationBadgeButton = () => {
           },
           "dataType": "json",
           "requestAdaptor": "const { userId } = api.data;\napi.data = {\n    query: `{\n        notifications(filters: [\"owner\",\"=\",\"${userId}\"], sort: \"created desc,name\", top : 10){\n          _id,name,body,related_to,related_name,url,owner,is_read,from,created\n        }  }`\n}",
-          "headers": {
-            "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-          },
           "adaptor": "return payload.data"
         },
       }
@@ -311,6 +308,21 @@ export const AmisGlobalHeaderToolbar = async (props) => {
         "className": `steedos-global-header-toolbar leading-3	${className}`,
         "size": "xs",
         "body": [
+          {
+            "type": "button",
+            "label": "刷新badge",
+            "className": "btn-reload-global-header-notifications hidden",
+            "onEvent": {
+              "click": {
+                "actions": [
+                  {
+                    "componentId": "service_global_header_notifications_unread_count",
+                    "actionType": "reload"
+                  }
+                ]
+              }
+            }
+          },
           ...customButtons,
           {
             "type": "button",
