@@ -1,8 +1,8 @@
 /*
  * @Author: 殷亮辉 yinlianghui@hotoa.com
  * @Date: 2023-11-15 09:50:22
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2026-01-05 15:37:51
+ * @LastEditors: yinlianghui yinlianghui@hotoa.com
+ * @LastEditTime: 2026-01-07 10:37:37
  */
 
 import { getFormBody } from './converter/amis/form';
@@ -249,7 +249,13 @@ function getInputTableCell(field, showAsInlineEditMode) {
     if (showAsInlineEditMode) {
         // 这里不可以用quickEdit，因为amis存在bug：input-table内的字段在行编辑模式时会受到外层相同name的字段的影响 https://github.com/baidu/amis/issues/9653
         if(field.isAmis){
-            return field;
+            // 列上不要配置 visibleOn/requiredOn：列级条件会让 th/td 数量不一致，单元格内部控件已支持这两个属性
+            const {visibleOn, requiredOn, ...restField} = field;
+            return {
+                ...restField,
+                label: field.label,
+                name: field.name
+            };
         }
         return {
             "type": "steedos-field",
@@ -265,15 +271,16 @@ function getInputTableCell(field, showAsInlineEditMode) {
             //     })
             // },
             label: field.label,
-            name: field.name,
-            visibleOn: field.visibleOn,
-            requiredOn: field.requiredOn
+            name: field.name
+            // 列上不要配置 visibleOn/requiredOn：列级条件会让 th/td 数量不一致，单元格内部控件已支持这两个属性
         }
     }
     else {
         if(field.isAmis){
+            // 列上不要配置 visibleOn/requiredOn：列级条件会让 th/td 数量不一致，单元格内部控件已支持这两个属性
+            const {visibleOn, requiredOn, ...restField} = field;
             return {
-                ...field,
+                ...restField,
                 inInputTable: true,
                 "static": true,
                 "readonly": true,
@@ -291,9 +298,8 @@ function getInputTableCell(field, showAsInlineEditMode) {
             "static": true,
             "readonly": true,
             label: field.label,
-            name: field.name,
-            visibleOn: field.visibleOn,
-            requiredOn: field.requiredOn
+            name: field.name
+            // 列上不要配置 visibleOn/requiredOn：列级条件会让 th/td 数量不一致，单元格内部控件已支持这两个属性
         }
     }
 }
