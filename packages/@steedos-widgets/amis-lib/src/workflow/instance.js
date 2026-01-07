@@ -218,6 +218,7 @@ export const getInstanceInfo = async (props) => {
           _id,
           name,
           perms,
+          state,
           allow_select_step${flowFields}
         }
       }
