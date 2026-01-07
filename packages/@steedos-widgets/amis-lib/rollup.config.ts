@@ -16,6 +16,8 @@ import visualizer from 'rollup-plugin-visualizer';
 
 import pkg from './package.json';
 
+const isDebugBuild = process.env.AMIS_LIB_DEBUG === 'true';
+
 const external = [
   "react",
   "react-dom",
@@ -60,7 +62,16 @@ const options = {
             }
         }
     },
-    terser({
+    terser(isDebugBuild ? {
+      // Debug 构建：保留 debugger，取消压缩/混淆，便于断点
+      compress: false,
+      mangle: false,
+      format: {
+        comments: false,
+        beautify: true,
+      }
+    } : {
+      // 默认构建：保持原有压缩
       format: {
         comments: false,
       }
