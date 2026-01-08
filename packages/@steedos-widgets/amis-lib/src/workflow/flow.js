@@ -65,7 +65,7 @@ const getFieldEditTpl = async (field, label)=>{
     requiredOn: field.requiredOn,
     onEvent: field._amisField?.onEvent
   };
-  if(field.default_value){
+  if(field.default_value && !field.default_value?.trim().startsWith('auto_number(')){
     tpl.value = field.default_value;
   }
   if(isOpinionField(field)){

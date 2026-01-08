@@ -7,4 +7,4 @@
  */
 
 export { getFlowFormSchema } from './flow';
-export { getInstanceInfo,getApplicant, autoUpgradeInstance } from './instance';
+export { getInstanceInfo,getApplicant, autoUpgradeInstance, fetchAutoNumber } from './instance';

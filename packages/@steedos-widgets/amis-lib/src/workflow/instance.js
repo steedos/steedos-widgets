@@ -1,3 +1,4 @@
+
 import { fetchAPI, getSteedosAuth } from "@steedos-widgets/amis-lib";
 import _, { find, isEmpty } from "lodash";
 import { getUserApprove, getOpinionFieldStepsName, getTraceApprovesByStep, isOpinionOfField, isMyApprove, showApprove, showApproveDefaultDescription, showApproveSignImage } from './util';
@@ -375,6 +376,12 @@ export const getInstanceInfo = async (props) => {
           });
         })
       }
+
+
+    if(field.default_value?.trim().startsWith('auto_number(')){
+      newField.permission = 'readonly';
+    }
+
       return newField;
     }),
     flowVersion: flowVersion,
@@ -493,4 +500,23 @@ export const getApplicant = async (userId) => {
     method: "get"
   });
   return result;
+}
+
+// 自动编号接口调用
+export async function fetchAutoNumber(instanceId) {
+  const res = await fetch('/api/workflow/v2/auto_number', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      instanceId
+    })
+  });
+  const data = await res.json();
+  if (data.success) {
+    return data;
+  } else {
+    throw new Error(data.error || '自动编号失败');
+  }
 }
