@@ -982,29 +982,30 @@ export const AmisAppMenu = async (props) => {
                                 ]
                             }]
                       }else if(stacked && window.innerWidth > 768){
-                        editAppSearch = [{
-                            "type": "button",
-                            "level": "light",
-                            "className": "toggle-sidebar mx-0",
-                            "icon": "fa fa-bars",
-                            "onEvent": {
-                                "click": {
-                                    "actions": [
-                                        {
-                                            "actionType": "custom",
-                                            "script": "document.body.classList.toggle('sidebar-open')",
-                                        },
-                                        {
-                                            "actionType": "rebuild",
-                                            "componentId": "u:app-menu",
-                                            "args": {
-                                                "toggleSidebar": true
-                                            }
-                                        }
-                                    ]
-                                }
-                            },
-                        }]
+                        editAppSearch = [];
+                        // editAppSearch = [{
+                        //     "type": "button",
+                        //     "level": "light",
+                        //     "className": "toggle-sidebar mx-0",
+                        //     "icon": "fa fa-bars",
+                        //     "onEvent": {
+                        //         "click": {
+                        //             "actions": [
+                        //                 {
+                        //                     "actionType": "custom",
+                        //                     "script": "document.body.classList.toggle('sidebar-open')",
+                        //                 },
+                        //                 {
+                        //                     "actionType": "rebuild",
+                        //                     "componentId": "u:app-menu",
+                        //                     "args": {
+                        //                         "toggleSidebar": true
+                        //                     }
+                        //                 }
+                        //             ]
+                        //         }
+                        //     },
+                        // }]
                       }
 
                       let menuItems = data.nav;
@@ -1066,7 +1067,7 @@ export const AmisAppMenu = async (props) => {
                               "placeholder": "搜索菜单",
                               "matchFunc": "return link.searchKey && link.searchKey.indexOf(keyword)>=0;"
                             },
-                            className: "${className} text-black steedos-app-menu px-0 ${stacked?'stacked':''}",
+                            className: "${className} text-slate-600 steedos-app-menu px-0 ${stacked?'stacked':''}",
                             "stacked": stacked,
                             "overflow": JSON.stringify(overflow),
                             "indentSize": indentSize,
