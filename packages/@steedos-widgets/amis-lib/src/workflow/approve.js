@@ -585,7 +585,7 @@ const getSubmitActions = async (instance, submitEvents) => {
       "script": `let isValid = true;
         const instance = event.data.record;
         if(instance.box === 'draft' && instance.state === 'draft' && instance.flow.allow_select_step){
-          const steps = event.data.record.flowVersion.steps;
+          const steps = event.data._scoped.getComponentById("u:set_steps_users").props.data?.nextSteps || [];
           const result = Steedos.authRequest('/api/workflow/v2/get_instance_steps/'+instance._id, {async: false})
           const stepApprove = result.data.step_approve; 
           const skip_steps = result.data.skip_steps; 
@@ -593,6 +593,7 @@ const getSubmitActions = async (instance, submitEvents) => {
             if (step.step_type !== "start" && step.step_type !== "end" && !_.includes(skip_steps, step._id)) {
               const stepApproves = stepApprove[step._id]
                 if (_.isEmpty(stepApproves)) {
+                  isValid = false;
                   SteedosUI.notification.error({message:'请选择「'+step.name+'」步骤的处理人'});
                 }
             }
