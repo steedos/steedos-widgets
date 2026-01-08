@@ -768,7 +768,7 @@ export async function getRecordServiceSchema(objectName, appId, props = {}, body
                     "type": "wrapper",
                     "className": "p-0 m-0",
                     "body": body || [],
-                    "hiddenOn": "${recordLoaded != true}"
+                    ...(props.isEditor ? {} : {"hiddenOn": "${recordLoaded != true}"})
                   },
                 data: {
                     "_master.objectName": "${objectName}",
