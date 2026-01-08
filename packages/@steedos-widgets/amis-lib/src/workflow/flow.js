@@ -475,7 +475,7 @@ const getFieldEditTpl = async (field, label)=>{
 };
 
 const getFieldReadonlyTpl = async (field, label)=>{
-  console.log('getFieldReadonlyTpl', label, field);
+  // console.log('getFieldReadonlyTpl', label, field);
   let tpl = {
     label: label === true ? (field.name || field.code) : false,
     name: field.code,
@@ -531,10 +531,10 @@ const getFieldReadonlyTpl = async (field, label)=>{
       "type": "steedos-field",
       "id": `u:${field.code}`,
       "static": true,
-      "openDrawer": false,
+      // "openDrawer": false,
       "config": {
         name: field.code,
-        label: field.name,
+        label: false,
         reference_to: "space_users",
         reference_to_field: 'user',
         multiple: field.is_multiselect,
@@ -550,10 +550,10 @@ const getFieldReadonlyTpl = async (field, label)=>{
       "type": "steedos-field",
       "id": `u:${field.code}`,
       "static": true,
-      "openDrawer": false,
+      // "openDrawer": false,
       "config": {
         name: field.code,
-        label: field.name,
+        label: false,
         reference_to: "organizations",
         multiple: field.is_multiselect,
         type: "lookup"
