@@ -25,8 +25,6 @@ export * from './AmisGlobalFooter';
 
 export * from './AmisGlobalHeaderToolbar';
 
-export * from './AmisGlobalHeader';
-
 
 export * from './AmisSteedosField';
 

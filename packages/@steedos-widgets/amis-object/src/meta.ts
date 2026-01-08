@@ -39,8 +39,6 @@ import SteedosDropdown from "./metas/SteedosDropdown";
 
 import FromNow from './metas/FromNow';
 
-import AmisGlobalHeader from './metas/AmisGlobalHeader';
-
 import AmisGlobalFooter from './metas/AmisGlobalFooter';
 
 import SteedosLoading from './metas/SteedosLoading';
@@ -89,7 +87,6 @@ const components = [
   AmisObjectFieldLookup,
   AmisSelectUser, 
   SteedosDropdownButton,
-  AmisGlobalHeader,
   AmisGlobalFooter,
   AmisGlobalHeaderToolbar,
   AmisAppLauncher,
