@@ -351,8 +351,8 @@ const getFieldEditTpl = async (field, label)=>{
         tpl.multiple = field.is_multiselect;
         // tpl.labelField = labelField;
         // tpl.valueField = "_value";
-        tpl.source = {
-          url: field.url,
+        tpl.autoComplete = {
+          url: field.url.indexOf('?') < 0 ? `${field.url}?term=$\{term}` : `${field.url}&term=$\{term}`, 
           method: "get",
           dataType: "json",
           adaptor:`
@@ -376,6 +376,7 @@ const getFieldEditTpl = async (field, label)=>{
             const url = \`${field.url}\`;
             if(filters){
               const joinKey = url.indexOf('?') > 0 ? '&' : '?';
+              let _filter = []
               if(filters.startsWith('function(') || filters.startsWith('function (')){
                 const argsName = ${JSON.stringify(argsName)};
                 const fun = eval('_fun='+filters);
@@ -383,10 +384,15 @@ const getFieldEditTpl = async (field, label)=>{
                 for(const item of argsName){
                   funArgs.push(context[item])
                 }
-                api.url = url + joinKey + "$filter=" + fun.apply({}, funArgs)
+                _filter = fun.apply({}, funArgs)
               }else{
-                api.url = url + joinKey + "$filter=" + filters
+                _filter = filters
               }
+              console.log('context', context)
+              if(context.term){
+                _filter = \`(\${_filter}) and contains(name, '\${context.term}')\`
+              }
+              api.url = url + joinKey + "$filter=" + _filter
             }else{
               api.url = url  
             }
@@ -395,9 +401,10 @@ const getFieldEditTpl = async (field, label)=>{
           `,
           trackExpression: _.join(_.map(argsName, (item)=>{return `\${${item}|json}`}), '-')
         };
+        // tpl.autoComplete = tpl.source;
         tpl.isAmis=true;
         tpl.searchable = true;
-        // console.log(`odata`, tpl)
+        console.log(`odata`, tpl)
         break;
       case "html":
         if (tpl.disabled) {
