@@ -1,13 +1,21 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// 使用 CORS 中间件
-app.use(cors());
+// CORS middleware to allow cross-origin requests
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
 
 function parsePackagePath(urlPath) {
   // 去掉首个 '/'

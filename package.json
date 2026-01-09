@@ -10,7 +10,8 @@
     "packages/**"
   ],
   "scripts": {
-    "dev": "node unpkg-local.js",
+    "dev": "node dev-server.js",
+    "dev:legacy": "node unpkg-local.js",
     "start": "cd apps/storybook && yarn storybook",
     "watch": "lerna run watch --parallel",
     "build": "lerna run build",
