@@ -8,6 +8,7 @@
   "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",
+    "watch": "rollup -c rollup.config.ts -w",
     "build": "yarn build:rollup",
     "build:rollup": "rollup -c rollup.config.ts",
     "build:types": "tsc --emitDeclarationOnly --declaration --declarationDir dist/types"
