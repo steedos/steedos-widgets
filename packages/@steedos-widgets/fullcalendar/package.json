@@ -1,7 +1,7 @@
 {
   "name": "@steedos-widgets/fullcalendar",
   "private": false,
-  "version": "6.10.51",
+  "version": "6.10.52-beta.1",
   "main": "dist/fullcalendar.cjs.js",
   "module": "dist/fullcalendar.esm.js",
   "unpkg": "dist/fullcalendar.umd.js",
