@@ -10,7 +10,8 @@
     "packages/**"
   ],
   "scripts": {
-    "dev": "node unpkg-local.js",
+    "dev": "node dev-server.js",
+    "dev:legacy": "node unpkg-local.js",
     "start": "cd apps/storybook && yarn storybook",
     "watch": "lerna run watch --parallel",
     "build": "lerna run build",
@@ -37,6 +38,7 @@
     "@commitlint/config-conventional": "^19.7.1",
     "babel-loader": "^8.2.5",
     "cnpm": "9.0.1",
+    "cors": "^2.8.5",
     "express": "^4.21.2",
     "http-server": "^14.1.1",
     "husky": "^9.1.7",
