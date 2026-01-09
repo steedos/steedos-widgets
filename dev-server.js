@@ -6,6 +6,10 @@
  * 1. Serving packages locally via unpkg-compatible server
  * 2. Automatically rebuilding packages when source files change
  * 3. Providing live reload capabilities
+ * 
+ * SECURITY NOTE: This is a development-only server intended to run locally.
+ * It should NOT be exposed to the internet or used in production environments.
+ * The server does not implement rate limiting as it's designed for local development only.
  */
 
 const express = require('express');
