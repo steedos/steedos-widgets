@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-09-03 22:55:11
+ * @LastEditTime: 2026-01-09 23:22:05
  * @Description: 
  */
 import './AmisAppMenu.less';
@@ -10,7 +10,7 @@ import i18next from "i18next";
 import _ from 'lodash';
 
 export const AmisAppMenu = async (props) => {
-    let { stacked = false, overflow, appId, data, links = null, showIcon = true, className = '', indentSize = 12, selectedId } = props;
+    let { stacked = false, overflow, appId, data, links = null, showIcon = true, className = '', indentSize = 12, selectedId, ignoreNavSchema = false } = props;
     if(!appId){
         appId = data.context.appId;
     }
@@ -118,7 +118,7 @@ export const AmisAppMenu = async (props) => {
             "sendOn": "!!appId",
             "adaptor": (payload, response, api, context) => {
                   try {
-                      if(payload.nav_schema){
+                      if(payload.nav_schema && !ignoreNavSchema){
                         payload.data = payload.nav_schema;
                         return payload
                       }
