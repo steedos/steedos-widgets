@@ -103,7 +103,7 @@ function startWatch() {
   
   watchProcess = spawn('yarn', ['watch'], {
     stdio: 'inherit',
-    shell: true,
+    shell: false,
     cwd: __dirname
   });
 
