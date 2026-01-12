@@ -9,3 +9,18 @@
     }
   }
 }
+
+
+@media (min-width: 768px) {
+  .steedos-record-tabs {
+    overflow-y: auto;
+    max-height: calc(100vh - 180px);
+  }
+
+  .steedos-record-detail-drawer {
+    .steedos-record-tabs {
+      overflow-y: unset;
+      max-height: unset;
+    }
+  }
+}
