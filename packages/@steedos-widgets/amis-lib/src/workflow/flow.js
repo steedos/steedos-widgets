@@ -265,7 +265,11 @@ const getFieldEditTpl = async (field, label)=>{
           tpl.type = "input-text";
         }
         if(field.formula){
-          tpl.value = `$${field.formula}`;
+          if(field.formula.startsWith('{') && field.formula.endsWith('}')){
+            tpl.value = `$${field.formula}`;
+          }else{
+            tpl.value = field.formula.replace(/"/g, '');
+          }
         }
         break;
       case "number":
