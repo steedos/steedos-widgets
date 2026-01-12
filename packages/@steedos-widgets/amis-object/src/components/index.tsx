@@ -29,3 +29,7 @@ export * from './SteedosSkeleton';
 export * from './SteedosFieldSet';
 
 export * from './SteedosObject';
+
+export * from './SteedosOrgSelector';
+
+export * from './SteedosUserSelector';

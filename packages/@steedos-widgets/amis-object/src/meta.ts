@@ -72,6 +72,10 @@ import AmisSteedosFlowForm from './metas/AmisSteedosFlowForm';
 
 import AmisInstanceHandler from "./metas/AmisInstanceHandler";
 
+import SteedosOrgSelector from './metas/SteedosOrgSelector';
+
+import SteedosUserSelector from "./metas/SteedosUserSelector";
+
 
 const components = [
   AmisRecordDetailHeader,
@@ -113,6 +117,8 @@ const components = [
   AmisSteedosObject,
   AmisSteedosFlowForm,
   AmisInstanceHandler,
+  SteedosOrgSelector,
+  SteedosUserSelector
 ];
 
 export default {
