@@ -8,3 +8,27 @@ dist
 *.log
 .DS_Store
 packages/@steedos-widgets/src/**
+
+# IDE
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+.idea
+
+# Test coverage
+coverage
+.nyc_output
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+*~
+
+# Build artifacts
+build
+*.tsbuildinfo
+
+# OS files
+Thumbs.db
