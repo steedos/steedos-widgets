@@ -13,6 +13,9 @@ Steedos 前端资产包
 - **[开发文档](./DEVELOPMENT.md)** - 详细的开发指南（双语）
 - **[架构文档](./ARCHITECTURE.md)** - 项目架构和技术栈详解
 - **[贡献指南](./CONTRIBUTING.md)** - 如何为项目做贡献
+- **[优化报告](./PROJECT_OPTIMIZATION_REPORT.md)** - 🌟 完整的项目优化报告
+- **[实施指南](./OPTIMIZATION_GUIDE.md)** - 优化实施步骤指南
+- **[快速参考](./QUICK_REFERENCE.md)** - 常用命令和技巧速查
 - **[AI 优化总结](./AI_OPTIMIZATION_SUMMARY.md)** - AI 辅助编程优化说明
 - **[GitHub Copilot 指南](./.github/copilot-instructions.md)** - AI 编程上下文
 
