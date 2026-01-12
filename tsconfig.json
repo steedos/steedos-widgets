@@ -1,34 +1,89 @@
 {
-    "compilerOptions": {
-      "baseUrl": "./",
-      "target": "es5",
-      "module": "esnext",
-      "lib": ["dom", "esnext"],
-      "declaration": true,
-      "sourceMap": true,
-      "moduleResolution": "node",
-      "skipLibCheck": true,
-      "strict": false,
-      "jsx": "react",
-      "esModuleInterop": true,
-      "resolveJsonModule": true,
-      "allowSyntheticDefaultImports": true,
-      "downlevelIteration": true,
-      "strictFunctionTypes": false,
-      "noImplicitAny": false,
-      "declarationDir": "dist/types",
-      "paths": {
-        "@steedos-widgets/sortable": ["packages/@steedos-widgets/sortable/src"],
-        "@steedos-widgets/fullcalendar": ["packages/@steedos-widgets/fullcalendar/src"],
-        "@steedos-widgets/amis-lib": ["packages/@steedos-widgets/amis-lib/src"],
-        "@steedos-widgets/amis-object": ["packages/@steedos-widgets/amis-object/src"],
-        "@steedos-widgets/steedos-lib": ["packages/@steedos-widgets/steedos-lib/src"],
-        "@steedos-widgets/ag-grid": ["packages/@steedos-widgets/ag-grid/src"],
-      }
-    },
-    "include": [
-      "packages",
-      "stories",
-    ],
-    "exclude": ["node_modules"]
-  }
+  "compilerOptions": {
+    // Project structure
+    "baseUrl": "./",
+    "composite": false,
+    "incremental": true,
+    
+    // Target and module
+    "target": "ES2020",
+    "module": "esnext",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    
+    // Module resolution
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    
+    // Output
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "declarationDir": "dist/types",
+    
+    // Type checking - Enhanced for better AI assistance
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    
+    // Additional checks
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": false,
+    
+    // Other options
+    "skipLibCheck": true,
+    "jsx": "react",
+    "downlevelIteration": true,
+    "allowJs": false,
+    "forceConsistentCasingInFileNames": true,
+    
+    // Path mappings for better AI context
+    "paths": {
+      "@steedos-widgets/sortable": ["packages/@steedos-widgets/sortable/src"],
+      "@steedos-widgets/sortable/*": ["packages/@steedos-widgets/sortable/src/*"],
+      "@steedos-widgets/fullcalendar": ["packages/@steedos-widgets/fullcalendar/src"],
+      "@steedos-widgets/fullcalendar/*": ["packages/@steedos-widgets/fullcalendar/src/*"],
+      "@steedos-widgets/amis-lib": ["packages/@steedos-widgets/amis-lib/src"],
+      "@steedos-widgets/amis-lib/*": ["packages/@steedos-widgets/amis-lib/src/*"],
+      "@steedos-widgets/amis-object": ["packages/@steedos-widgets/amis-object/src"],
+      "@steedos-widgets/amis-object/*": ["packages/@steedos-widgets/amis-object/src/*"],
+      "@steedos-widgets/steedos-lib": ["packages/@steedos-widgets/steedos-lib/src"],
+      "@steedos-widgets/steedos-lib/*": ["packages/@steedos-widgets/steedos-lib/src/*"],
+      "@steedos-widgets/ag-grid": ["packages/@steedos-widgets/ag-grid/src"],
+      "@steedos-widgets/ag-grid/*": ["packages/@steedos-widgets/ag-grid/src/*"],
+      "@steedos-widgets/reactflow": ["packages/@steedos-widgets/reactflow/src"],
+      "@steedos-widgets/reactflow/*": ["packages/@steedos-widgets/reactflow/src/*"],
+      "@steedos-widgets/liveblocks": ["packages/@steedos-widgets/liveblocks/src"],
+      "@steedos-widgets/liveblocks/*": ["packages/@steedos-widgets/liveblocks/src/*"],
+      "@steedos-widgets/devextreme": ["packages/@steedos-widgets/devextreme/src"],
+      "@steedos-widgets/devextreme/*": ["packages/@steedos-widgets/devextreme/src/*"],
+      "@steedos-widgets/ckeditor": ["packages/@steedos-widgets/ckeditor/src"],
+      "@steedos-widgets/ckeditor/*": ["packages/@steedos-widgets/ckeditor/src/*"],
+      "@steedos-widgets/example": ["packages/@steedos-widgets/example/src"],
+      "@steedos-widgets/example/*": ["packages/@steedos-widgets/example/src/*"]
+    }
+  },
+  "include": [
+    "packages/*/src/**/*",
+    "apps/*/src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "**/node_modules",
+    "**/dist",
+    "**/build"
+  ]
+}

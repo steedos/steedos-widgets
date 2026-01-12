@@ -1,0 +1,72 @@
+# Renovate Configuration for Steedos Widgets
+# Automated dependency updates
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base"
+  ],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchCurrentVersion": "!/^0/",
+      "automerge": true
+    },
+    {
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["patch"],
+      "automerge": true
+    },
+    {
+      "matchPackagePatterns": ["^@types/"],
+      "automerge": true
+    },
+    {
+      "matchPackagePatterns": ["^eslint", "^prettier"],
+      "groupName": "linting/formatting",
+      "automerge": true
+    },
+    {
+      "matchPackagePatterns": ["^@typescript-eslint"],
+      "groupName": "typescript-eslint",
+      "automerge": true
+    },
+    {
+      "matchPackageNames": ["typescript"],
+      "groupName": "typescript",
+      "automerge": false
+    },
+    {
+      "matchPackagePatterns": ["^@rollup", "^rollup"],
+      "groupName": "rollup",
+      "automerge": false
+    },
+    {
+      "matchPackagePatterns": ["^react", "^react-dom"],
+      "groupName": "react",
+      "automerge": false
+    },
+    {
+      "matchDepTypes": ["peerDependencies"],
+      "enabled": false
+    }
+  ],
+  "schedule": [
+    "before 3am on Monday"
+  ],
+  "timezone": "Asia/Shanghai",
+  "labels": ["dependencies"],
+  "assignees": [],
+  "reviewers": [],
+  "commitMessagePrefix": "chore(deps):",
+  "commitMessageAction": "update",
+  "semanticCommits": "enabled",
+  "prHourlyLimit": 2,
+  "prConcurrentLimit": 10,
+  "updateNotScheduled": false,
+  "ignoreDeps": [],
+  "vulnerabilityAlerts": {
+    "labels": ["security"],
+    "assignees": [],
+    "reviewers": []
+  }
+}
