@@ -1,0 +1,36 @@
+# Dependencies
+node_modules
+**/node_modules
+
+# Build outputs
+dist
+build
+**/dist
+**/build
+*.min.js
+
+# Logs
+logs
+*.log
+
+# Coverage
+coverage
+.nyc_output
+
+# Lock files
+yarn.lock
+package-lock.json
+
+# Environment files
+.env.local
+.env.*.local
+
+# Cache
+.cache
+.parcel-cache
+
+# Misc
+.DS_Store
+*.swp
+*.swo
+*~

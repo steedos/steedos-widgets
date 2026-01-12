@@ -19,7 +19,12 @@
     "build-app": "lerna run build-app --parallel",
     "unpkg": "node unpkg-local.js",
     "prepare": "husky install",
-    "cnpm-sync": "lerna exec --no-private  -- cnpm sync \\$LERNA_PACKAGE_NAME"
+    "cnpm-sync": "lerna exec --no-private  -- cnpm sync \\$LERNA_PACKAGE_NAME",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
+    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@builder6/react": "^3.2.21",
@@ -36,22 +41,29 @@
     "@babel/core": "^7.18.13",
     "@commitlint/cli": "^19.7.1",
     "@commitlint/config-conventional": "^19.7.1",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
     "babel-loader": "^8.2.5",
     "cnpm": "9.0.1",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^4.6.2",
     "express": "^4.21.2",
     "http-server": "^14.1.1",
     "husky": "^9.1.7",
     "lint-staged": "^15.4.3",
+    "prettier": "^3.4.2",
     "ts-node": "^10.9.1",
-    "tsconfig-paths-webpack-plugin": "^4.0.0"
+    "tsconfig-paths-webpack-plugin": "^4.0.0",
+    "typescript": "^4.9.5"
   },
   "lint-staged": {
-    "packages/*/src/**/*.{js,ts,jsx,tsx}": [
+    "*.{js,jsx,ts,tsx}": [
       "eslint --fix",
       "prettier --write"
     ],
-    "packages/*/src/**/*.{css,scss}": [
-      "stylelint --fix",
+    "*.{json,css,scss,md}": [
       "prettier --write"
     ]
   }

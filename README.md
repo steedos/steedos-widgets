@@ -3,7 +3,38 @@ Steedos 前端资产包
 
 > 💡 **新功能**: 现在支持自动重新编译！运行 `yarn dev` 即可启动开发服务器，无需每次手动 build。
 > 
-> 📖 查看 [快速开始指南](./QUICKSTART.md) | [完整开发文档](./DEVELOPMENT.md)
+> 🎯 **架构优化**: 项目已全面优化，更好地支持 AI 辅助编程和现代化开发流程！
+> 
+> 📖 查看 [快速开始指南](./QUICKSTART.md) | [完整开发文档](./DEVELOPMENT.md) | [架构文档](./ARCHITECTURE.md) | [贡献指南](./CONTRIBUTING.md)
+
+## 📚 文档导航
+
+- **[快速开始](./QUICKSTART.md)** - 5分钟快速上手指南
+- **[开发文档](./DEVELOPMENT.md)** - 详细的开发指南（双语）
+- **[架构文档](./ARCHITECTURE.md)** - 项目架构和技术栈详解
+- **[贡献指南](./CONTRIBUTING.md)** - 如何为项目做贡献
+- **[AI 优化总结](./AI_OPTIMIZATION_SUMMARY.md)** - AI 辅助编程优化说明
+- **[GitHub Copilot 指南](./.github/copilot-instructions.md)** - AI 编程上下文
+
+## ✨ 最新改进
+
+### 代码质量提升
+- ✅ 集成 ESLint + Prettier - 自动化代码检查和格式化
+- ✅ 严格 TypeScript 配置 - 更好的类型安全
+- ✅ Git Hooks 集成 - 提交前自动检查
+- ✅ EditorConfig 支持 - 跨编辑器一致性
+
+### AI 辅助编程优化
+- ✅ GitHub Copilot 配置 - 提供丰富的项目上下文
+- ✅ 完善的文档体系 - 帮助 AI 理解项目
+- ✅ 清晰的代码规范 - AI 生成一致性代码
+- ✅ 类型系统增强 - 更准确的代码补全
+
+### 开发体验改进
+- ✅ VSCode 集成优化 - 推荐扩展和配置
+- ✅ 保存时自动格式化 - 无需手动操作
+- ✅ 快捷命令 - `yarn lint`, `yarn format`, `yarn type-check`
+- ✅ 详细的架构文档 - 快速理解项目结构
 
 ## 快速开始
 
@@ -109,5 +140,35 @@ A:
 - **Lerna**: 管理多包仓库
 - **Rollup**: 打包各个组件为 UMD 格式
 - **TypeScript**: 类型安全的开发体验
+- **React**: UI 组件框架
+- **Tailwind CSS**: 实用工具优先的 CSS 框架
 - **Watch Mode**: 自动监听源代码变化
 - **Local Unpkg Server**: 本地模拟 unpkg.com 服务
+- **ESLint + Prettier**: 代码质量和格式化
+
+查看 [架构文档](./ARCHITECTURE.md) 了解更多详情。
+
+## 🛠️ 可用命令
+
+```bash
+# 开发
+yarn dev              # 启动开发服务器（推荐）
+yarn watch            # 监听模式构建所有包
+yarn build            # 构建所有包
+yarn unpkg            # 启动 unpkg 本地服务
+
+# 代码质量
+yarn lint             # 运行 ESLint 检查
+yarn lint:fix         # 自动修复 ESLint 问题
+yarn format           # 格式化所有代码
+yarn format:check     # 检查代码格式
+yarn type-check       # TypeScript 类型检查
+```
+
+## 🤝 参与贡献
+
+欢迎贡献！请查看 [贡献指南](./CONTRIBUTING.md) 了解如何参与项目开发。
+
+## 📝 许可证
+
+MIT License
