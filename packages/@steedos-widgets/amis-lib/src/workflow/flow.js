@@ -272,7 +272,7 @@ const getFieldEditTpl = async (field, label)=>{
               // {申请人姓名}.organization.fullname
               let formula = field.formula;
               formula = formula.substring(1, formula.indexOf("}"));
-              tpl.value = `\${${formula}${field.formula.substring( field.formula.indexOf("}") + 1 )}}`;
+              tpl.value = `\${${formula}__expand${field.formula.substring( field.formula.indexOf("}") + 1 )}}`;
             } else {
               // {申请人姓名.organization.fullname}
               tpl.value = `$${field.formula}`;
@@ -335,6 +335,29 @@ const getFieldEditTpl = async (field, label)=>{
           {}
         );
         Object.assign(tpl, useTpl);
+        tpl.onEvent = {
+          "change": {
+            "actions": [
+              {
+                "actionType": "ajax",
+                "api": {
+                  "url": "/api/formula/user/${event.data.value}",
+                  "method": "get",
+                  "messages": {
+                    "success": "",
+                    "failed": ""
+                  },
+                  "silent": true,
+                  "adaptor": "return {applicantInfo: payload}"
+                }
+              },
+              {
+                "actionType": "custom",
+                "script": `doAction({'componentId': 'u:instancePage',  'actionType': 'setValue',  'args': {    'value': {      '${field.code}__expand': event.data.applicantInfo   }  }}) `
+              }
+            ]
+          }
+        }
         break;
       case "group":
         const orgTpl = await lookupToAmis(
@@ -496,7 +519,7 @@ const getFieldEditTpl = async (field, label)=>{
 };
 
 const getFieldReadonlyTpl = async (field, label)=>{
-  console.log('getFieldReadonlyTpl', label, field);
+  // console.log('getFieldReadonlyTpl', label, field);
   let tpl = {
     label: label === true ? (field.name || field.code) : false,
     name: field.code,
@@ -511,7 +534,7 @@ const getFieldReadonlyTpl = async (field, label)=>{
         // {申请人姓名}.organization.fullname
         let formula = field.formula;
         formula = formula.substring(1, formula.indexOf("}"));
-        tpl.value = `\${${formula}${field.formula.substring( field.formula.indexOf("}") + 1 )}}`;
+        tpl.value = `\${${formula}__expand${field.formula.substring( field.formula.indexOf("}") + 1 )}}`;
       } else {
         // {申请人姓名.organization.fullname}
         tpl.value = `$${field.formula}`;
