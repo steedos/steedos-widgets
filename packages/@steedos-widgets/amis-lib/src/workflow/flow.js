@@ -53,7 +53,7 @@ const getArgumentsList = (func)=>{
 }
 
 const getFieldEditTpl = async (field, label)=>{
-  // console.log('field',field)
+  console.log('field',field)
   const tpl = {
     label: label === true ? (field.name || field.code) : false,
     name: field.code,
@@ -265,8 +265,18 @@ const getFieldEditTpl = async (field, label)=>{
           tpl.type = "input-text";
         }
         if(field.formula){
-          if(field.formula.startsWith('{') && field.formula.endsWith('}')){
-            tpl.value = `$${field.formula}`;
+          if(field.formula.startsWith('{') && (field.formula.endsWith('}') || field.formula.indexOf("}") > 0)){
+            // {申请人姓名}.organization.fullname 转换为 ${申请人姓名.organization.fullname}
+            // {申请人姓名.organization.fullname} 转换为 ${申请人姓名.organization.fullname}  
+            if(field.formula.indexOf("}.") > 0){
+              // {申请人姓名}.organization.fullname
+              let formula = field.formula;
+              formula = formula.substring(1, formula.indexOf("}"));
+              tpl.value = `\${${formula}${field.formula.substring( field.formula.indexOf("}") + 1 )}}`;
+            } else {
+              // {申请人姓名.organization.fullname}
+              tpl.value = `$${field.formula}`;
+            }
           }else{
             tpl.value = field.formula.replace(/"/g, '');
           }
@@ -486,7 +496,7 @@ const getFieldEditTpl = async (field, label)=>{
 };
 
 const getFieldReadonlyTpl = async (field, label)=>{
-  // console.log('getFieldReadonlyTpl', label, field);
+  console.log('getFieldReadonlyTpl', label, field);
   let tpl = {
     label: label === true ? (field.name || field.code) : false,
     name: field.code,
@@ -494,7 +504,22 @@ const getFieldReadonlyTpl = async (field, label)=>{
     className: "m-none p-none form-control",
   };
   if(includes(['text', 'input', 'number'], field.type) && field.formula){
-    tpl.value = `$${field.formula}`;
+    if(field.formula.startsWith('{') && (field.formula.endsWith('}') || field.formula.indexOf("}") > 0)){
+      // {申请人姓名}.organization.fullname 转换为 ${申请人姓名.organization.fullname}
+      // {申请人姓名.organization.fullname} 转换为 ${申请人姓名.organization.fullname}  
+      if(field.formula.indexOf("}.") > 0){
+        // {申请人姓名}.organization.fullname
+        let formula = field.formula;
+        formula = formula.substring(1, formula.indexOf("}"));
+        tpl.value = `\${${formula}${field.formula.substring( field.formula.indexOf("}") + 1 )}}`;
+      } else {
+        // {申请人姓名.organization.fullname}
+        tpl.value = `$${field.formula}`;
+      }
+    }else{
+      tpl.value = field.formula.replace(/"/g, '');
+    }
+
   }
   if(includes(['text'], field.type)){
     tpl.type = `static-${field.type}`;
