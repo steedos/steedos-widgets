@@ -179,7 +179,7 @@ function generateRandomString(length = 5) {
 }
 
 export const AmisSteedosField = async (props) => {
-    console.log(`AmisSteedosField==>`, props)
+    // console.log(`AmisSteedosField==>`, props)
     if(has(props, '$$editor')){
         setTimeout(()=>{
             const fieldEditDiv = document.getElementsByName(props.id)[0];
@@ -218,7 +218,7 @@ export const AmisSteedosField = async (props) => {
     let steedosField = null;
     let { field, readonly = false, ctx = {}, config, $schema, static: fStatic, env, inInputTable, className, isLookupInTable, openDrawer=true} = props;
     const { appId, formFactor } = props.data || {};
-    console.log(`AmisSteedosField====>`, props)
+    // console.log(`AmisSteedosField====>`, props)
 
     let editorClassName = "";
     if(props.$$editor) {
@@ -560,7 +560,7 @@ export const AmisSteedosField = async (props) => {
             const schema = Object.assign({}, fieldBaseProps, pick(steedosField.amis || {}, ['className', 'inline', 'label', 'labelAlign', 'name', 'labelRemark', 'description', 'placeholder', 'staticClassName', 'staticLabelClassName', 'staticInputClassName', 'staticSchema']));
             schema.placeholder = "";
             addEditorClass(schema, editorClassName);
-            console.log(`steedos field [lookup] schema:`, schema)
+            // console.log(`steedos field [lookup] schema:`, schema)
             return schema;
         }
         if (fStatic && (steedosField.type === 'approval_comments')) {
@@ -875,7 +875,7 @@ export const AmisSteedosField = async (props) => {
 
             const schema = await Field.convertSFieldToAmisField(steedosField, readonly, ctx);
             addEditorClass(schema, editorClassName);
-            console.log(`863 AmisSteedosField return schema`, schema, props)
+            // console.log(`863 AmisSteedosField return schema`, schema, props)
             return schema || {
                 ...config,
                 mode: 'normal'

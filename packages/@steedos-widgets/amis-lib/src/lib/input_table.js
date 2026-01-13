@@ -706,6 +706,7 @@ function getFormPaginationWrapper(props, form, mode) {
         },
         {
             "type": "service",
+            "id": "u:steedos-input-table-form-service",
             "body": [
                 innerForm
             ],
@@ -732,6 +733,19 @@ function getFormPaginationWrapper(props, form, mode) {
         if(fieldPrefix){
             let getTableValueWithoutFieldPrefix = new Function('v', 'f', "return (" + ${getTableValueWithoutFieldPrefix.toString()} + ")(v, f)");
             lastestFieldValue = getTableValueWithoutFieldPrefix(lastestFieldValue, fieldPrefix);
+        }
+        // 处理带括号的 key，复制一份 _ 的 key
+        if(lastestFieldValue){
+            lastestFieldValue.forEach(function(item) {
+                for (var key in item) {
+                    if (key && (key.indexOf('（') > -1 || key.indexOf('(') > -1)) {
+                        var safeKey = key.replace(/[（(]/g, '_').replace(/[）)]/g, '');
+                        if (safeKey !== key) {
+                            item[safeKey] = item[key];
+                        }
+                    }
+                }
+            });
         }
         //不可以直接像event.data.__tableItems = lastestFieldValue; 这样整个赋值，否则作用域会断
         let mode = "${mode || ''}";
@@ -797,7 +811,6 @@ function getFormPaginationWrapper(props, form, mode) {
             "method": "get",
             "adaptor": `
                 const formBody = ${JSON.stringify(formBody)};
-                console.log('formBody===>', formBody);
                 return {
                     "body": formBody
                 }
@@ -1553,6 +1566,7 @@ async function getButtonActions(props, mode) {
             }
         ]
     }
+    console.log(`actions`, actions)
     return actions;
 }
 

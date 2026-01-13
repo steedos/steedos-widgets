@@ -52,7 +52,59 @@ const getArgumentsList = (func)=>{
   }
 }
 
-const getFieldEditTpl = async (field, label)=>{
+const getSafeCode = (code)=>{
+  return code.replace(/（/g, '_').replace(/）/g, '');
+}
+
+const getTableFieldMap = (fields) => {
+  const map = {};
+  each(fields, (field) => {
+    if (field.type === 'table' && field.fields) {
+      each(field.fields, (col) => {
+        map[col.code] = field.code;
+      });
+    }
+    if (field.type === 'section' && field.fields) {
+      Object.assign(map, getTableFieldMap(field.fields));
+    }
+  });
+  return map;
+};
+
+const mapFormula = (formula, tableFieldMap)=>{
+  if(formula.trim().startsWith('${')){
+      return null;
+  }
+  let newFormula = formula;
+  const isFunction = newFormula.match(/(sum|average|count|max|min|numToRMB)\s*\(/i);
+  const isOperator = newFormula.match(/[\+\-\*\/]/) && newFormula.indexOf("}.") < 0;
+
+  if(isFunction || isOperator){
+    
+    if(isFunction){
+      newFormula = newFormula.replace(/sum\s*\(/ig, 'SUM(');
+      newFormula = newFormula.replace(/average\s*\(/ig, 'AVG(');
+      newFormula = newFormula.replace(/count\s*\(/ig, 'COUNT(');
+      newFormula = newFormula.replace(/max\s*\(/ig, 'MAX(');
+      newFormula = newFormula.replace(/min\s*\(/ig, 'MIN(');
+      newFormula = newFormula.replace(/numToRMB\s*\(/ig, 'UPPERMONEY(');
+    }
+
+    newFormula = newFormula.replace(/\{([^{}]+)\}/g, (match, code)=>{
+      if(tableFieldMap && tableFieldMap[code]){
+          const tableCode = tableFieldMap[code];
+          const safeTableCode = getSafeCode(tableCode);
+          return `ARRAYMAP(${safeTableCode}, item => item['${code}'])`;
+      }
+      return getSafeCode(code);
+    });
+
+    return `\${${newFormula}}`;
+  }
+  return null;
+}
+
+const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
   console.log('field',field)
   const tpl = {
     label: label === true ? (field.name || field.code) : false,
@@ -65,6 +117,24 @@ const getFieldEditTpl = async (field, label)=>{
     requiredOn: field.requiredOn,
     onEvent: field._amisField?.onEvent
   };
+  if(field.code.indexOf('（') > -1){
+    const safeCode = getSafeCode(field.code);
+    tpl.onEvent = tpl.onEvent || {};
+    tpl.onEvent.change = tpl.onEvent.change || { actions: [] };
+    const action = {
+      actionType: 'setValue',
+      componentId: "u:steedos-input-table-form-service",
+      args: {
+        value: {
+            [safeCode]: "${event.data.value}"
+        }
+      }
+    };
+    if(!inTable){
+        action.componentId = 'instance_form';
+    }
+    tpl.onEvent.change.actions.push(action);
+  }
   if(field.default_value && !field.default_value?.trim().startsWith('auto_number(')){
     tpl.value = field.default_value;
   }
@@ -265,7 +335,10 @@ const getFieldEditTpl = async (field, label)=>{
           tpl.type = "input-text";
         }
         if(field.formula){
-          if(field.formula.startsWith('{') && (field.formula.endsWith('}') || field.formula.indexOf("}") > 0)){
+          const formula = mapFormula(field.formula, !inTable ? tableFieldMap : null);
+          if(formula){
+            tpl.value = formula;
+          }else if(field.formula.startsWith('{') && (field.formula.endsWith('}') || field.formula.indexOf("}") > 0)){
             // {申请人姓名}.organization.fullname 转换为 ${申请人姓名.organization.fullname}
             // {申请人姓名.organization.fullname} 转换为 ${申请人姓名.organization.fullname}  
             if(field.formula.indexOf("}.") > 0){
@@ -286,7 +359,12 @@ const getFieldEditTpl = async (field, label)=>{
         tpl.type = "input-number";
         tpl.precision=field.digits;
         if(field.formula){
-          tpl.value = `$${field.formula}`;
+          const formula = mapFormula(field.formula, !inTable ? tableFieldMap : null);
+          if(formula){
+            tpl.value = formula;
+          }else{
+            tpl.value = `$${field.formula}`;
+          }
         }
         break;
       case "date":
@@ -487,7 +565,7 @@ const getFieldEditTpl = async (field, label)=>{
         for (const sField of field.fields) {
           if (sField.type != "hidden") {
             sField.permission = field.permission
-            const column = await getTdInputTpl(sField, true);
+            const column = await getTdInputTpl(sField, true, true);
           // console.log('table column', column, sField);
             if(column.type === 'steedos-field'){
               if(sField.visibleOn){
@@ -518,7 +596,7 @@ const getFieldEditTpl = async (field, label)=>{
   return tpl;
 };
 
-const getFieldReadonlyTpl = async (field, label)=>{
+const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
   // console.log('getFieldReadonlyTpl', label, field);
   let tpl = {
     label: label === true ? (field.name || field.code) : false,
@@ -527,7 +605,10 @@ const getFieldReadonlyTpl = async (field, label)=>{
     className: "m-none p-none form-control",
   };
   if(includes(['text', 'input', 'number'], field.type) && field.formula){
-    if(field.formula.startsWith('{') && (field.formula.endsWith('}') || field.formula.indexOf("}") > 0)){
+    const formula = mapFormula(field.formula, !inTable ? tableFieldMap : null);
+    if(formula){
+      tpl.value = formula;
+    }else if(field.formula.startsWith('{') && (field.formula.endsWith('}') || field.formula.indexOf("}") > 0)){
       // {申请人姓名}.organization.fullname 转换为 ${申请人姓名.organization.fullname}
       // {申请人姓名.organization.fullname} 转换为 ${申请人姓名.organization.fullname}  
       if(field.formula.indexOf("}.") > 0){
@@ -666,26 +747,26 @@ const getFieldReadonlyTpl = async (field, label)=>{
  * @param {*} label 
  * @returns 
  */
-const getTdInputTpl = async (field, label) => {
+const getTdInputTpl = async (field, label, inTable=false, tableFieldMap) => {
   if(field.config?.amis?.name){
     delete field.config.amis.name
   }
   const edit = field.permission === "editable";
   if(edit){
-    return await getFieldEditTpl(field, label)
+    return await getFieldEditTpl(field, label, inTable, tableFieldMap)
   }else{
-    return await getFieldReadonlyTpl(field, label)
+    return await getFieldReadonlyTpl(field, label, inTable, tableFieldMap)
   }
 };
 
-const getTdField = async (field, fieldsCount) => {
+const getTdField = async (field, fieldsCount, tableFieldMap) => {
   return {
     background: field.permission !== "editable" ? "#FFFFFF" : "rgba(255,255,0,.1)",
     colspan: field.type === "table" ? 4 : 3 - (fieldsCount - 1) * 2,
     align: "left",
     className: "td-field",
     width: "32%",
-    body: [await getTdInputTpl(field)],
+    body: [await getTdInputTpl(field, null, false, tableFieldMap)],
     style: {
       marginTop: "0",
       paddingTop: "0",
@@ -730,20 +811,20 @@ const getTdTitle = (field) => {
   };
 };
 
-const getTds = async (tdFields) => {
+const getTds = async (tdFields, tableFieldMap) => {
   const tds = [];
   for (const field of tdFields) {
     if (field.type != "table") {
       tds.push(getTdTitle(field));
     }
     if (field.type != "section") {
-      tds.push(await getTdField(field, tdFields.length));
+      tds.push(await getTdField(field, tdFields.length, tableFieldMap));
     }
   }
   return tds;
 };
 
-const getFormTrs = async (instance) => {
+const getFormTrs = async (instance, tableFieldMap) => {
   // console.log('getFormTrs instance====>', instance);
   const trsSchema = [];
   const trs = [];
@@ -778,23 +859,23 @@ const getFormTrs = async (instance) => {
   for (const tdFields of trs) {
     trsSchema.push({
       background: "#F7F7F7",
-      tds: await getTds(tdFields),
+      tds: await getTds(tdFields, tableFieldMap),
     });
   }
   return trsSchema;
 };
 
-const getFormTableView = async (instance) => {
+const getFormTableView = async (instance, tableFieldMap) => {
   const formSchema = {
     type: "table-view",
     className: "instance-form-view",
-    trs: await getFormTrs(instance),
+    trs: await getFormTrs(instance, tableFieldMap),
     id: "u:047f3669468b",
   };
   return formSchema;
 };
 
-const getFormSteps = async (instance) => {
+const getFormSteps = async (instance, tableFieldMap) => {
   const formMode = instance.formVersion.mode || "normal";//normal,horizontal,inline
   const stepsSchema = [];
   let stepFields = [];
@@ -822,7 +903,7 @@ const getFormSteps = async (instance) => {
       stepFields = [];
       let fieldSchema;
       for (const childField of field.fields) {
-        fieldSchema = await getTdInputTpl(childField, true);
+        fieldSchema = await getTdInputTpl(childField, true, false, tableFieldMap);
         if (fieldSchema.type === "steedos-field" && fieldSchema.config) {
           if (fieldSchema.config.amis) {
             fieldSchema.config.amis.mode = formMode;
@@ -861,13 +942,13 @@ const getFormSteps = async (instance) => {
   return stepsSchema;
 }
 
-const getFormWizardView = async (instance) => {
+const getFormWizardView = async (instance, tableFieldMap) => {
   const wizardMode = instance.formVersion.wizard_mode || "vertical";//vertical,horizontal
   const formSchema = {
     type: "wizard",
     className: `instance-form-view-wizard ${wizardMode === "horizontal" ? "pt-4" : "pt-1"} mt-3`,
     mode: wizardMode,
-    steps: await getFormSteps(instance),
+    steps: await getFormSteps(instance, tableFieldMap),
     actionFinishLabel: "${'CustomAction.instances.instance_save' | t}",//"保存",
     id: "instance_wizard",
     target: "instance_form",
@@ -1124,6 +1205,7 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
 }
 
 export const getFlowFormSchema = async (instance, box, print) => {
+  const tableFieldMap = getTableFieldMap(instance.fields);
   const formStyle = instance.formVersion.style || "table";
   
   const amisSchemaStr = instance.formVersion?.amis_schema;
@@ -1176,10 +1258,10 @@ export const getFlowFormSchema = async (instance, box, print) => {
       }
     }else{
       if (formStyle === "wizard") {
-        formContentSchema = await getFormWizardView(instance);
+        formContentSchema = await getFormWizardView(instance, tableFieldMap);
       }
       else{
-        formContentSchema = await getFormTableView(instance);
+        formContentSchema = await getFormTableView(instance, tableFieldMap);
       }
     }
     
@@ -1382,8 +1464,26 @@ export const getFlowFormSchema = async (instance, box, print) => {
         return api;
       `,
       "adaptor": `
+        var instance = payload.data.instance;
+        var formatData = function(data){
+          if(_.isArray(data)){
+            _.each(data, function(item){
+              formatData(item);
+            })
+          }else if(_.isObject(data)){
+            _.each(data, function(value, key){
+              if(key.indexOf('（') > -1 || key.indexOf('）') > -1){
+                  var newKey = key.replace(/（/g, '_').replace(/）/g, '');
+                  data[newKey] = value;
+              }
+              formatData(value);
+            })
+          }
+        }
+        formatData(instance);
         payload.data = {
-          related_instances: payload.data.instance.related_instances
+          related_instances: payload.data.instance.related_instances,
+          ...payload.data.instance
         };
         return payload;
       `,
