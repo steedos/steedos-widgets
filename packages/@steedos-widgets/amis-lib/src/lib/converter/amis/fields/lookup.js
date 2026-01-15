@@ -265,6 +265,22 @@ export async function lookupToAmisPicker(field, readonly, ctx){
     }
     const refObjectConfig = await getUISchema(referenceTo.objectName);
 
+    if(refObjectConfig.name === 'organizations'){
+        return {
+            "type": "steedos-org-selector",
+            "multiple": field.multiple,
+            name: field.name,
+        }
+    }
+
+    if((refObjectConfig.name === 'space_users' && field.reference_to_field === 'user') || refObjectConfig.name === 'users' ){
+        return {
+            "type": "steedos-user-selector",
+            "multiple": field.multiple,
+            name: field.name,
+        }
+    }
+
     ctx.idFieldName = refObjectConfig.idFieldName
     ctx.objectName = refObjectConfig.name
 

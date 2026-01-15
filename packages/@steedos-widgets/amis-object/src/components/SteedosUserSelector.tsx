@@ -32,7 +32,7 @@ async function defaultFetchUsers(organizationId?: string, keyword?: string): Pro
     filters.push([['organizations_parents', 'in', [organizationId]]]);
   }
 
-  const query = `{rows:space_users(filters: [${filters.map(f => typeof f === 'string' ? `"${f}"` : JSON.stringify(f)).join(',')}], top: 100, skip: 0, sort: "sort_no desc,name asc"){_id,user,space,name,mobile,email,position,sort_no,username,avatar,organization,_display:_ui{sort_no,organization}},count:space_users__count(filters:[${filters.map(f => typeof f === 'string' ? `"${f}"` : JSON.stringify(f)).join(',')}])}`;
+  const query = `{rows:space_users(filters: [${filters.map(f => typeof f === 'string' ? `"${f}"` : JSON.stringify(f)).join(',')}], top: 1000, skip: 0, sort: "sort_no desc,name asc"){_id,user,space,name,mobile,email,position,sort_no,username,avatar,organization,_display:_ui{sort_no,organization}},count:space_users__count(filters:[${filters.map(f => typeof f === 'string' ? `"${f}"` : JSON.stringify(f)).join(',')}])}`;
   
   const res = await fetch('/graphql', {
     method: 'POST',
@@ -58,7 +58,7 @@ async function defaultFetchUsers(organizationId?: string, keyword?: string): Pro
 async function defaultFetchDeptTree(parentId?: string, keyword?: string): Promise<any[]> {
   if (keyword) {
     // 服务端检索部门
-    const query = `{rows:organizations(filters: [["name","contains","${keyword}"]], top: 100, skip: 0, sort: "sort_no desc"){_id,space,name,sort_no,parent,children}}`;
+    const query = `{rows:organizations(filters: [["name","contains","${keyword}"]], top: 1000, skip: 0, sort: "sort_no desc"){_id,space,name,fullname,sort_no,parent,children}}`;
     const res = await fetch('/graphql', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -67,7 +67,7 @@ async function defaultFetchDeptTree(parentId?: string, keyword?: string): Promis
     const data = await res.json();
     const rows = data.data?.rows || [];
     return rows.map(org => ({
-      title: org.name,
+      title: org.fullname || org.name,
       value: String(org._id),
       key: String(org._id),
       isLeaf: !(Array.isArray(org.children) && org.children.length > 0),
@@ -99,7 +99,9 @@ async function defaultFetchDeptTree(parentId?: string, keyword?: string): Promis
       title: org.name,
       value: String(org._id),
       key: String(org._id),
+      // 修复：如果有children数组且长度大于0，则不是叶子节点
       isLeaf: !(Array.isArray(org.children) && org.children.length > 0),
+      // 修复：确保children初始化为undefined，触发懒加载
       children: undefined
     }));
   }
@@ -113,17 +115,25 @@ interface UserSelectorProps {
   fetchUsers?: (organizationId?: string, keyword?: string) => Promise<any[]>;
   fetchDeptTree?: (parentId?: string, keyword?: string) => Promise<any[]>;
   style?: React.CSSProperties;
+  dispatchEvent?: (eventName: string, data: any, ref: any) => Promise<void>;
+  data?: any;
+  [key: string]: any;
 }
 
-export const SteedosUserSelector: React.FC<UserSelectorProps> = ({
-  value,
-  onChange,
-  multiple = false,
-  placeholder = '请选择人员',
-  fetchUsers = defaultFetchUsers,
-  fetchDeptTree = defaultFetchDeptTree,
-  style
-}) => {
+export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
+  const {
+    value,
+    onChange,
+    multiple = false,
+    placeholder = '请选择人员',
+    fetchUsers = defaultFetchUsers,
+    fetchDeptTree = defaultFetchDeptTree,
+    style,
+    dispatchEvent,
+    data
+  } = props;
+
+  // console.log('SteedosUserSelector. value', value)
   const [visible, setVisible] = useState(false);
   const [deptTree, setDeptTree] = useState<DataNode[]>([]);
   const [users, setUsers] = useState<any[]>([]);
@@ -135,9 +145,16 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = ({
   const [deptSearchKeyword, setDeptSearchKeyword] = useState('');
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
+  const [hoveredUserId, setHoveredUserId] = useState<string | null>(null);
+  const [inputHovered, setInputHovered] = useState(false);
+  const [treeKey, setTreeKey] = useState(0); // 增加 treeKey 状态
   const searchTimeoutRef = useRef<NodeJS.Timeout>();
   const deptSearchTimeoutRef = useRef<NodeJS.Timeout>();
   const lastDragTimeRef = useRef<number>(0);
+  const ref = useRef<any>();
+
+  // 确保 ref.current.props 等于传入的完整 props
+  ref.current = { props };
 
   // 初始化已选择的用户
   useEffect(() => {
@@ -145,7 +162,8 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = ({
     if (initValue.length > 0) {
       // 从GraphQL获取用户完整信息
       const userIds = initValue.map(id => `"${id}"`).join(',');
-      const query = `{rows:space_users(filters: [["_id","in",[${userIds}]]], top: 100){_id,user,name,email,mobile,position,username,avatar,organization}}`;
+      // 修复：按user字段(用户ID)查询，而不是space_user的_id
+      const query = `{rows:space_users(filters: [["user","in",[${userIds}]]], top: 1000){_id,user,name,email,mobile,position,username,avatar,organization}}`;
       
       fetch('/graphql', {
         method: 'POST',
@@ -166,7 +184,8 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = ({
           organization: user.organization
         }));
         // 按initValue的顺序排序users
-        users = initValue.map(id => users.find((u: any) => u._id === id)).filter((u: any) => !!u);
+        // 修复：按user字段匹配
+        users = initValue.map(id => users.find((u: any) => u.user === id)).filter((u: any) => !!u);
         setSelectedUsers(users);
       });
     } else {
@@ -216,6 +235,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = ({
   const updateTreeData = (list: DataNode[], key: React.Key, children: DataNode[]): DataNode[] =>
     list.map(node => {
       if (node.key === key) {
+        // 关键修复：不要覆盖原有属性，只更新children
         return { ...node, children };
       }
       if (node.children) {
@@ -225,9 +245,12 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = ({
     });
 
   // 懒加载子节点
-  const onLoadData: TreeProps['loadData'] = async ({ key }) => {
-    const children = await fetchDeptTree(String(key));
-    setDeptTree(origin => updateTreeData(origin, key, children as DataNode[]));
+  const onLoadData: TreeProps['loadData'] = async ({ key, children }) => {
+    // 如果已经有子节点，不需要重复加载
+    if (children && children.length > 0) return;
+    
+    const childNodes = await fetchDeptTree(String(key));
+    setDeptTree(origin => updateTreeData(origin, key, childNodes as DataNode[]));
   };
 
   // 选择部门
@@ -235,6 +258,9 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = ({
     if (selectedKeys.length > 0) {
       setSelectedDept(String(selectedKeys[0]));
       setSearchKeyword('');
+    } else if (deptTree.length > 0) {
+      // 没有任何选中时，默认选中第一个根节点
+      setSelectedDept(String(deptTree[0].key));
     }
   };
 
@@ -249,8 +275,23 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = ({
     if (!searchValue) {
       // 清空搜索，恢复初始树
       setLoading(true);
-      fetchDeptTree()
-        .then(data => setDeptTree(data as DataNode[]))
+      fetchDeptTree() // 获取根节点
+        .then(data => {
+          // 这里重置为初始状态，确保根节点的children是undefined，这样展开时才会触发懒加载
+          const initialData = data.map((item: any) => ({
+            ...item,
+            children: undefined, // 强制重置children
+          }));
+          setDeptTree(initialData);
+          setTreeKey(k => k + 1); // 强制重置Tree组件状态
+          // 重新展开第一层
+          const firstLevelKeys = (initialData as DataNode[]).map(item => item.key);
+          setExpandedKeys(firstLevelKeys);
+          // 默认选中第一个根节点
+          if (firstLevelKeys.length > 0) {
+            setSelectedDept(String(firstLevelKeys[0]));
+          }
+        })
         .finally(() => setLoading(false));
       return;
     }
@@ -271,7 +312,12 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = ({
     
     searchTimeoutRef.current = setTimeout(() => {
       setSearchKeyword(searchValue);
-      setSelectedDept(null);
+      if (searchValue) {
+        setSelectedDept(null);
+      } else if (deptTree.length > 0) {
+        // 如果清空搜索且有部门树数据，默认选中第一个
+        setSelectedDept(String(deptTree[0].key));
+      }
     }, 300);
   };
 
@@ -348,13 +394,20 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = ({
   };
 
   // 确认选择
-  const handleOk = () => {
+  const handleOk = async () => {
     setSelectedUsers(tempSelectedUsers);
-    if (onChange) {
-      const values = tempSelectedUsers.map(u => u._id);
-      console.log(`handleOk onChange: `, onChange)
-      console.log(`handleOk onChange: `, values)
-      onChange(multiple ? values : (values[0] || ''));
+    if (onChange || dispatchEvent) {
+      // 修复：返回user字段(用户ID)而不是space_users的_id
+      const values = tempSelectedUsers.map(u => u.user);
+      const outputValue = multiple ? values : (values[0] || '');
+      
+      if (dispatchEvent) {
+        await dispatchEvent('change', { value: outputValue }, ref.current);
+      }
+      
+      if (onChange) {
+        onChange(outputValue);
+      }
     }
     setVisible(false);
   };
@@ -366,31 +419,51 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = ({
   };
 
   return (
-    <div style={{ ...style }}>
-      <Space style={{ width: '100%' }} size="small">
-        <Input
-          readOnly
-          placeholder={placeholder}
-          value={selectedUsers.map(u => u.name).join(', ')}
-          onClick={handleOpen}
-          style={{ minWidth: 280, cursor: 'pointer' }}
-          suffix={<UserOutlined style={{ color: '#999' }} />}
-        />
-        {selectedUsers.length > 0 && (
-          <Button size="small" onClick={() => {
-            setSelectedUsers([]);
-            if (onChange) onChange(multiple ? [] : '');
-          }}>
-            清空
-          </Button>
-        )}
-      </Space>
+    <div style={{ ...style }} className='steedos-user-selector'>
+      <Input
+        readOnly
+        placeholder={placeholder}
+        value={selectedUsers.map(u => u.name).join(', ')}
+        onClick={handleOpen}
+        onMouseEnter={() => setInputHovered(true)}
+        onMouseLeave={() => setInputHovered(false)}
+        style={{ minWidth: 280, cursor: 'pointer' }}
+        suffix={
+          selectedUsers.length > 0 && inputHovered ? (
+            <CloseOutlined
+              style={{ color: '#ff4d4f', cursor: 'pointer' }}
+              onMouseEnter={() => setInputHovered(true)}
+              onMouseLeave={() => setInputHovered(false)}
+              onClick={async (e) => {
+                e.stopPropagation();
+                setSelectedUsers([]);
+                const outputValue = multiple ? [] : '';
+                
+                if (dispatchEvent) {
+                  await dispatchEvent('change', { value: outputValue }, ref.current);
+                }
+                
+                if (onChange) onChange(outputValue);
+                setInputHovered(false);
+              }}
+            />
+          ) : (
+            <UserOutlined 
+              style={{ color: '#999' }} 
+              onMouseEnter={() => selectedUsers.length > 0 && setInputHovered(true)}
+              onMouseLeave={() => setInputHovered(false)}
+            />
+          )
+        }
+      />
 
       <Modal
         title="选择人员"
         open={visible}
         onOk={handleOk}
         onCancel={handleCancel}
+        okText="确定"
+        cancelText="取消"
         width={1200}
         destroyOnClose
         bodyStyle={{ height: 600, overflow: 'hidden', padding: 0 }}
@@ -410,6 +483,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = ({
             <div style={{ flex: 1, overflowY: 'auto' }}>
               <Spin spinning={loading && !selectedDept && !searchKeyword}>
                 <Tree
+                  key={treeKey}
                   treeData={deptTree}
                   onSelect={onSelectDept}
                   loadData={deptSearchKeyword ? undefined : onLoadData}
@@ -424,6 +498,14 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = ({
 
           {/* 中间：人员列表 */}
           <div style={{ flex: 1, padding: 16, display: 'flex', flexDirection: 'column' }}>
+            <style>
+              {`
+                .steedos-user-selector-item:hover {
+                  background-color: #f0f7ff !important;
+                  border-color: #1890ff !important;
+                }
+              `}
+            </style>
             <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
               <Input
                 placeholder="搜索姓名、邮箱或用户名"
@@ -452,30 +534,21 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = ({
                       return (
                         <div
                           key={user._id}
+                          className={!isSelected ? "steedos-user-selector-item" : ""}
                           onClick={() => !isSelected && handleAddUser(user)}
                           style={{
                             padding: '10px 12px',
                             borderRadius: 4,
                             cursor: isSelected ? 'default' : 'pointer',
                             backgroundColor: isSelected ? '#f5f5f5' : 'transparent',
-                            border: '1px solid transparent',
+                            borderColor: isSelected ? '#1890ff' : 'transparent',
+                            borderWidth: 1,
+                            borderStyle: 'solid',
                             transition: 'all 0.2s',
                             opacity: isSelected ? 0.6 : 1,
                             display: 'flex',
                             alignItems: 'center',
                             gap: 12
-                          }}
-                          onMouseEnter={(e) => {
-                            if (!isSelected) {
-                              e.currentTarget.style.backgroundColor = '#f0f7ff';
-                              e.currentTarget.style.borderColor = '#1890ff';
-                            }
-                          }}
-                          onMouseLeave={(e) => {
-                            if (!isSelected) {
-                              e.currentTarget.style.backgroundColor = 'transparent';
-                              e.currentTarget.style.borderColor = 'transparent';
-                            }
                           }}
                         >
                           <Avatar 
@@ -524,6 +597,8 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = ({
                       onDragStart={() => handleDragStart(index)}
                       onDragEnd={handleDragEnd}
                       onDragOver={(e) => handleDragOver(e, index)}
+                      onMouseEnter={() => setHoveredUserId(user._id)}
+                      onMouseLeave={() => setHoveredUserId(null)}
                       style={{
                         width: '100%',
                         padding: '8px 12px',
@@ -551,10 +626,12 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = ({
                       <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {user.name}
                       </span>
-                      <CloseOutlined 
-                        onClick={() => handleRemoveUser(user._id)}
-                        style={{ fontSize: 12, cursor: 'pointer', color: '#999' }}
-                      />
+                      {hoveredUserId === user._id && (
+                        <CloseOutlined 
+                          onClick={() => handleRemoveUser(user._id)}
+                          style={{ fontSize: 12, cursor: 'pointer', color: '#ff4d4f' }}
+                        />
+                      )}
                     </div>
                   ))}
                 </Space>

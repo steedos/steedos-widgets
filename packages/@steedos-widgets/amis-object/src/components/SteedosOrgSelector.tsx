@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { TreeSelect, Spin } from 'antd';
 import type { TreeSelectProps } from 'antd';
+import { createObject } from '@steedos-widgets/amis-lib';
 
 // 支持服务端检索的部门树数据获取方法
 async function defaultFetchDeptTree(parentId?: string, keyword?: string): Promise<any[]> {
@@ -109,22 +110,30 @@ interface DeptGroupSelectorProps {
   placeholder?: string;
   fetchDeptTree?: (parentId?: string, keyword?: string) => Promise<any[]>; // [{ title, value, key, isLeaf }]
   style?: React.CSSProperties;
+  dispatchEvent?: (eventName: string, data: any, ref: any) => void;
+  onEvent,
+  data?: any;
 }
 
-export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = ({
-  value,
-  onChange,
-  multiple = false,
-  placeholder = '请选择部门/分组',
-  fetchDeptTree = defaultFetchDeptTree,
-  style
-}) => {
+export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
+  const {
+    value,
+    onChange,
+    multiple = false,
+    placeholder = '请选择部门/分组',
+    fetchDeptTree = defaultFetchDeptTree,
+    style,
+    dispatchEvent,
+    data,
+  } = props
   const [treeData, setTreeData] = useState<any[]>([]);
+  const ref: any = useRef();
   const [loading, setLoading] = useState(false);
   const [labelMap, setLabelMap] = useState<Map<string, string>>(new Map());
   const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
   const searchTimeoutRef = useRef<NodeJS.Timeout>();
 
+  console.log('SteedosOrgSelector. dispatchEvent', dispatchEvent)
   useEffect(() => {
     setLoading(true);
     fetchDeptTree()
@@ -246,14 +255,18 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = ({
     setLoading(true);
     const children = await fetchDeptTree(String(node.key));
     setTreeData(origin => {
-      const updated = updateTreeData(origin, String(node.key), children);
+      // 修复：加载子节点时，检查是否已经存在于根节点（isExtra），如果存在则移除根节点的临时节点，防止key重复
+      const childrenKeys = new Set(children.map((c: any) => c.key));
+      const filteredOrigin = origin.filter(item => !(item.isExtra && childrenKeys.has(item.key)));
+      
+      const updated = updateTreeData(filteredOrigin, String(node.key), children);
       // 为新加载的子节点添加路径标签
       const parentPath = node.pathLabel || node.title;
       const enrichedChildren = children.map(child => ({
         ...child,
         pathLabel: child.fullname || `${parentPath} / ${child.title}`
       }));
-      const finalData = updateTreeData(updated, String(node.key), enrichedChildren);
+      const finalData = updateTreeData(filteredOrigin, String(node.key), enrichedChildren);
       // 更新labelMap
       const newLabelMap = new Map(labelMap);
       enrichedChildren.forEach(child => {
@@ -327,12 +340,40 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = ({
   };
 
   // 处理选择变化，显示全路径
-  const handleChange = (val: any, label: any, extra: any) => {
+  const handleChange = async (val: any, label: any, extra: any) => {
     console.log(`handleChange`, onChange, val);
-    if (onChange) {
+
+    // 适配 treeCheckStrictly 模式，提取 value
+    let selectedValues = val;
+    if (multiple && val) {
+      if (Array.isArray(val) && val.length > 0 && typeof val[0] === 'object' && 'value' in val[0]) {
+        selectedValues = val.map((item: any) => item.value);
+      } else if (Array.isArray(val)) {
+        selectedValues = val;
+      } else if (typeof val === 'object' && 'value' in val) {
+         // 单选且开启 strict (虽然这里multiple=true才会开启strict)
+         selectedValues = val.value;
+      }
+    }
+
+    if (onChange || dispatchEvent) {
+      const triggerChange = async (newVal: any) => {
+        /**
+         * 为了解决3.2 dispatchevent不生效的问题, https://github.com/baidu/amis/issues/7488
+         * dispatchEvent时第三个参数传入的current的data为undefined会报错
+         */
+        const rendererEvent: any = await dispatchEvent?.('change', newVal ? createObject(data, { value: newVal }) : data, ref.current);
+        console.log(`rendererEvent`, rendererEvent, ref.current)
+        if (rendererEvent?.prevented) {
+          return;
+        }
+
+        onChange?.(newVal);
+      };
+
       // 如果是从搜索结果选中的，需要补充完整路径
-      if (Array.isArray(val)) {
-        Promise.all(val.map(async v => {
+      if (Array.isArray(selectedValues)) {
+        Promise.all(selectedValues.map(async v => {
           const existingPath = labelMap.get(String(v));
           if (!existingPath || !existingPath.includes('/')) {
             // 如果没有完整路径，从服务端获取
@@ -347,40 +388,40 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = ({
           }
           return existingPath;
         })).then(paths => {
-          onChange(val);
+          triggerChange(selectedValues);
         });
-      } else if (val) {
-        const existingPath = labelMap.get(String(val));
+      } else if (selectedValues) {
+        const existingPath = labelMap.get(String(selectedValues));
         if (!existingPath || !existingPath.includes('/')) {
           // 如果没有完整路径，从服务端获取
-          const node = findNodeInTree(treeData, String(val));
+          const node = findNodeInTree(treeData, String(selectedValues));
           if (node) {
-            getNodeFullPath(String(val), node.title).then(fullPath => {
+            getNodeFullPath(String(selectedValues), node.title).then(fullPath => {
               const newLabelMap = new Map(labelMap);
-              newLabelMap.set(String(val), fullPath);
+              newLabelMap.set(String(selectedValues), fullPath);
               setLabelMap(newLabelMap);
-              onChange(val);
+              triggerChange(selectedValues);
             });
           } else {
-            onChange(val);
+            triggerChange(selectedValues);
           }
         } else {
-          onChange(val);
+          triggerChange(selectedValues);
         }
       } else {
-        onChange(val);
+        await triggerChange(selectedValues);
       }
     }
   };
 
-  return (
-    <Spin spinning={loading}>
+  const element = (
+    <Spin spinning={loading} className='steedos-org-selector'>
       <TreeSelect
         treeData={treeData}
-        value={value}
+        value={multiple ? (Array.isArray(value) ? value : (value ? [value] : [])).map(v => ({ value: String(v), label: labelMap.get(String(v)) || v })) : value}
         onChange={handleChange}
         treeCheckable={multiple}
-        showCheckedStrategy={TreeSelect.SHOW_PARENT}
+        showCheckedStrategy={multiple ? undefined : TreeSelect.SHOW_PARENT}
         placeholder={placeholder}
         style={{ minWidth: 280, ...style }}
         loadData={onLoadData}
@@ -389,8 +430,9 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = ({
         onTreeExpand={onTreeExpand}
         allowClear
         multiple={multiple}
+        treeCheckStrictly={multiple}
         treeLine
-        styles={{ popup: { root: { minWidth: 400, maxWidth: 450, maxHeight: 700, overflow: 'auto' } } }}
+        styles={{ popup: { root: { minWidth: 400, maxWidth: 450, maxHeight: 700, overflow: 'auto', zIndex: 3000 } } }}
         treeNodeLabelProp="pathLabel"
         showSearch
         onSearch={onSearch}
@@ -400,4 +442,13 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = ({
       />
     </Spin>
   );
+
+  ref.current = element;
+
+  ref.current.props = {
+    ...ref.current.props,
+    ...props
+  }
+
+  return element;
 };
