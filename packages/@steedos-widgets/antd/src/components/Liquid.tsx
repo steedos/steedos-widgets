@@ -109,6 +109,7 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = ({
     template = tpl;
   }
   const [html, setHtml] = useState<string>('');
+  const [parsedTemplates, setParsedTemplates] = useState<any[]>([]);
   const [mountNodes, setMountNodes] = useState<Record<string, HTMLElement>>({});
   const containerRef = useRef<HTMLDivElement>(null);
   
@@ -148,6 +149,7 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = ({
     liq.registerTag('amis', {
       parse: function(tagToken, remainTokens) {
         this.templates = [];
+        this.id = generateId();
         const stream = liq.parser.parseStream(remainTokens);
         stream.on('tag:endamis', () => stream.stop())
               .on('template', (tpl: any) => this.templates.push(tpl))
@@ -163,7 +165,7 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = ({
         }
         try {
           const schema = looseJsonParse(rawStr);
-          const id = generateId();
+          const id = this.id;
           let register = ctx.get(['__registerInlineSchema']);
           if (!register && (ctx as any).environments) {
              register = (ctx as any).environments['__registerInlineSchema'];
@@ -185,8 +187,23 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = ({
   const dataFingerprint = JSON.stringify(data);
   const partialsFingerprint = JSON.stringify(finalPartials);
 
+  useEffect(() => {
+    let isMounted = true;
+    try {
+      const tpl = engine.parse(template);
+      if (isMounted) {
+        setParsedTemplates(tpl);
+      }
+    } catch (e) {
+      console.error("Liquid Parse Error:", e);
+    }
+    return () => { isMounted = false; };
+  }, [engine, template]);
+
   // 2. Liquid 渲染 HTML
   useEffect(() => {
+    if (!parsedTemplates) return;
+
     let isMounted = true;
     inlineSchemasRef.current = {}; 
 
@@ -197,18 +214,19 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = ({
       }
     };
 
-    engine.parseAndRender(template, contextData)
+    engine.render(parsedTemplates, contextData)
       .then((result) => {
         if (isMounted) {
           setHtml(prev => (prev !== result ? result : prev));
         }
       })
       .catch(err => {
+        console.log(`render error: `, template, contextData)
         if (isMounted) console.error("Liquid Render Error:", err);
       });
 
     return () => { isMounted = false; };
-  }, [engine, template, dataFingerprint, partialsFingerprint]);
+  }, [engine, parsedTemplates, dataFingerprint, partialsFingerprint]);
 
   // 3. Portals 挂载检测
   useEffect(() => {
