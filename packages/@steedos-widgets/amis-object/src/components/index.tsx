@@ -18,9 +18,6 @@ export * from './Dropdown';
 
 export * from './FromNow';
 
-export * from './AmisVue';
-
-
 export * from './SteedosBadge';
 
 export * from './SteedosBadgeRibbon';
