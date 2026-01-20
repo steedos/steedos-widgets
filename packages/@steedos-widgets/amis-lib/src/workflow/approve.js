@@ -416,7 +416,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
       },
     ],
     id: "u:ffff15b76c89",
-    className: "b-a b-1x p-xs m-b-none m-l-none m-r-none m-t-sm ${record.step.step_type == 'counterSign' ? 'hidden' : ''}",
+    className: "b-a b-1x p-xs m-b-none m-l-none m-r-none m-t-sm ${new_next_step.step_type == 'counterSign' ? 'hidden' : ''}",
     subFormMode: "",
     hiddenOn: "!!!this.new_next_step || (this.new_next_step && this.new_next_step.step_type === 'end')"
   };
