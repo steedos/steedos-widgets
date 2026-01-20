@@ -516,7 +516,7 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
           `,
           trackExpression: _.join(_.map(argsName, (item)=>{return `\${${item}|json}`}), '-')
         };
-        // tpl.autoComplete = tpl.source;
+        tpl.source = tpl.autoComplete;
         tpl.isAmis=true;
         tpl.searchable = true;
         console.log(`odata`, tpl)
