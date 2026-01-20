@@ -1366,6 +1366,9 @@ export const getFlowFormSchema = async (instance, box, print) => {
       ".steedos-amis-instance-view.steedos-instance-style-table .antd-Page-body .steedos-amis-instance-view-content": {
         "max-width": "1024px"
       },
+      ".steedos-amis-instance-view.steedos-instance-style-table .antd-Page-body .steedos-amis-instance-view-content .steedos-input-table": {
+        "max-width": "1024px"
+      },
       ".steedos-amis-instance-view .approval-drawer.antd-Drawer .antd-Drawer-content": {
         "box-shadow": "none",
         "border-top": "1px solid rgb(209 213 219)"
