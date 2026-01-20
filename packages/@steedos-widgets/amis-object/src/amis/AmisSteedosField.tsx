@@ -692,7 +692,7 @@ export const AmisSteedosField = async (props) => {
                             value = value.map(function (item: string) {
                                 if (item && item.split("/").length === 1) {
                                     // 不是url格式时转为url格式显示
-                                    return (window as any).getImageFieldUrl((window as any).Meteor.absoluteUrl(`/api/files/images/${item}`))
+                                    return (window as any).getImageFieldUrl(`/api/v6/files/images/${item}`)
                                 }
                                 else {
                                     return item;
@@ -705,7 +705,7 @@ export const AmisSteedosField = async (props) => {
                             }
                             if (value && value.split("/").length === 1) {
                                 // 不是url格式时转为url格式显示
-                                return (window as any).getImageFieldUrl((window as any).Meteor.absoluteUrl(`/api/files/images/${value}`))
+                                return (window as any).getImageFieldUrl(`/api/v6/files/images/${value}`)
                             }
                         }
                         return value;
@@ -827,7 +827,7 @@ export const AmisSteedosField = async (props) => {
                                 value = value && value.map(function (item: string) {
                                     if (item && item.split("/").length === 1) {
                                         // 不是url格式时转为url格式显示
-                                        return (window as any).getImageFieldUrl((window as any).Meteor.absoluteUrl(`/api/files/images/${item}`))
+                                        return (window as any).getImageFieldUrl(`/api/v6/files/images/${item}`)
                                     }
                                     else {
                                         return item;
@@ -840,7 +840,7 @@ export const AmisSteedosField = async (props) => {
                                 }
                                 if (value && value.split("/").length === 1) {
                                     // 不是url格式时转为url格式显示
-                                    return (window as any).getImageFieldUrl((window as any).Meteor.absoluteUrl(`/api/files/images/${value}`))
+                                    return (window as any).getImageFieldUrl(`/api/v6/files/images/${value}`)
                                 }
                             }
                             return value;
