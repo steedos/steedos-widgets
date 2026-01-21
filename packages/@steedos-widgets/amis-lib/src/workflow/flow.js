@@ -737,7 +737,7 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
   else{
     tpl.type = 'static';
   }
-  console.log('getFieldReadonlyTpl', tpl)
+  // console.log('getFieldReadonlyTpl', tpl)
   return tpl;
 };
 

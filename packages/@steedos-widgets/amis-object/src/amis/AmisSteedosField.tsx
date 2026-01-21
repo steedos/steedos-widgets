@@ -474,15 +474,22 @@ export const AmisSteedosField = async (props) => {
                         });
                     }else{
                         const res = await env.fetcher(source, props.data);
-                        const valueOptions = res?.data?.options || [];
+                        let valueOptions = res?.data?.options || [];
                         const fieldValue = props.data?.[steedosField.name];
 
                         // console.log(`fieldValue`, fieldValue, steedosField, valueOptions);
-                        let values = fieldValue
+                        let values = fieldValue;
+                        if(values.id){
+                            values = fieldValue.id;
+                            valueOptions = [{
+                                label: fieldValue.name,
+                                value: fieldValue.id
+                            }]
+                        }
                         if(isString(values)){
                             values = [values]
                         }
-
+                        // console.log(`values`, values, valueOptions);
                         if(values && values.length > 0){
 
                             const disPlayValue = []
@@ -560,7 +567,7 @@ export const AmisSteedosField = async (props) => {
             const schema = Object.assign({}, fieldBaseProps, pick(steedosField.amis || {}, ['className', 'inline', 'label', 'labelAlign', 'name', 'labelRemark', 'description', 'placeholder', 'staticClassName', 'staticLabelClassName', 'staticInputClassName', 'staticSchema']));
             schema.placeholder = "";
             addEditorClass(schema, editorClassName);
-            // console.log(`steedos field [lookup] schema:`, schema)
+            // console.log(`steedos field [lookup] schema:`, schema, steedosField)
             return schema;
         }
         if (fStatic && (steedosField.type === 'approval_comments')) {
