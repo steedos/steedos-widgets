@@ -274,7 +274,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
           }
           ,
             {
-              type: "list-select",
+              type: "radios",
               label: "",
               name: "next_users",
               id: "u:next_users",
@@ -331,7 +331,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
               }
             },
             {
-              type: "list-select",
+              type: "radios",
               label: "",
               name: "next_users",
               id: "u:next_users",

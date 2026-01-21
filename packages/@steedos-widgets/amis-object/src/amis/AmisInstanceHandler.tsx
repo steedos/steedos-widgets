@@ -41,7 +41,7 @@ export const AmisInstanceHandler = async (props) => {
                 multiple: true
             },
             {
-                type: "list-select",
+                type: "radios",
                 label: label,
                 name: name,
                 id: id,
@@ -89,7 +89,7 @@ export const AmisInstanceHandler = async (props) => {
                 "extractValue": true
             },
             {
-                type: "list-select",
+                type: "radios",
                 label: label,
                 name: name,
                 id: id,
