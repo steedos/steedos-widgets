@@ -12,87 +12,6 @@ import { uuidv4 } from '../utils/uuid';
 import i18next from "i18next";
 
 /**
- * 修正因 visibleOn 导致 td 缺失时的表格边框问题
- * 使用 debounce 避免短时间内重复执行
- * 入参为根节点，减少组件对象传递
- */
-const fixTableBorders = debounce((rootEl) => {
-    try {
-        if (window.amis_form_debug) {
-            console.log('[steedos-input-table] fixTableBorders 开始执行');
-        }
-        const tables = rootEl ? rootEl.querySelectorAll('.steedos-input-table-fixed-border table') : document.querySelectorAll('.steedos-input-table-fixed-border table');
-        if (window.amis_form_debug) {
-            console.log('[steedos-input-table] 找到的表格数量:', tables.length, 'scoped:', !!rootEl);
-        }
-        
-        tables.forEach(table => {
-            const thead = table.querySelector('thead');
-            const tbody = table.querySelector('tbody');
-            if (!thead || !tbody) {
-                if (window.amis_form_debug) {
-                    console.log('[steedos-input-table] 未找到 thead 或 tbody');
-                }
-                return;
-            }
-            
-            const headerRow = thead.querySelector('tr');
-            if (!headerRow) {
-                if (window.amis_form_debug) {
-                    console.log('[steedos-input-table] 未找到表头行');
-                }
-                return;
-            }
-            const thCount = headerRow.querySelectorAll('th').length;
-            if (window.amis_form_debug) {
-                console.log('[steedos-input-table] 表头列数:', thCount);
-            }
-            
-            const bodyRows = tbody.querySelectorAll('tr');
-            let fixedCount = 0;
-            bodyRows.forEach(row => {
-                if (row.classList.contains('antd-Table-expandedRow')) return;
-                
-                // 先移除之前添加的空单元格
-                row.querySelectorAll('td.steedos-empty-cell').forEach(td => td.remove());
-                
-                // 重新计算实际 td 数量
-                const tds = row.querySelectorAll('td');
-                const tdCount = tds.length;
-                
-                // 提前退出：如果 td 数量已经等于 th 数量，则无需修复，跳过该行
-                if (tdCount === thCount) {
-                    return;
-                }
-                
-                if (window.amis_form_debug) {
-                    console.log('[steedos-input-table] 当前行 td 数量:', tdCount, '需要:', thCount);
-                }
-                
-                if (tdCount < thCount) {
-                    const diff = thCount - tdCount;
-                    for (let i = 0; i < diff; i++) {
-                        const emptyTd = document.createElement('td');
-                        emptyTd.className = 'steedos-empty-cell';
-                        emptyTd.innerHTML = '&nbsp;';
-                        row.appendChild(emptyTd);
-                        fixedCount++;
-                    }
-                }
-            });
-            if (window.amis_form_debug) {
-                console.log('[steedos-input-table] 修正了', fixedCount, '个缺失的 td');
-            }
-        });
-    } catch (error) {
-        // 捕获异常，避免影响主流程
-        if (window.amis_form_debug) {
-            console.error('[steedos-input-table] fixTableBorders 执行异常:', error);
-        }
-    }
-}, 150);
-
-/**
  * 子表组件字段值中每行数据补上字段值为空的的字段值，把值统一设置为空字符串，是为了解决amis amis 3.6/6.0 input-table组件bug:行中字段值为空时会显示为父作用域中的同名变量值，见：https://github.com/baidu/amis/issues/9520
  * amis #9520修正后此函数及相关代码可以移除
  * @param {*} value 子表组件字段值，数组
@@ -1709,7 +1628,6 @@ export const getAmisInputTableSchema = async (props) => {
         }
     }
     let amis = props["input-table"] || props.amis || {};//额外支持"input-table"代替amis属性，是因为在字段yml文件中用amis作为key不好理解
-    const hasColumnVisibleOn = (fields || []).some((field) => !!field.visibleOn);
     let inputTableSchema = {
         "type": "input-table",
         "mode": "normal",
@@ -1785,22 +1703,7 @@ export const getAmisInputTableSchema = async (props) => {
             return value;
         },
         "required": props.required,
-        "description": props.description,
-        "onEvent": hasColumnVisibleOn ? {
-            "change": {
-                "actions": [
-                    {
-                        "actionType": "custom",
-                        "script": (context, doAction, event) => {
-                            const comp = event?.context?.scoped?.getComponentById(serviceId);
-                            const findDOMNode = window.ReactDOM?.findDOMNode;
-                            const rootEl = comp && findDOMNode ? findDOMNode(comp) : null;
-                            fixTableBorders(rootEl);
-                        }
-                    }
-                ]
-            }
-        } : undefined
+        "description": props.description
     };
     if (buttonsForColumnOperations.length) {
         inputTableSchema.columns.unshift({
@@ -1856,7 +1759,7 @@ export const getAmisInputTableSchema = async (props) => {
             "body": headerToolbar
         });
     }
-    let className = "steedos-input-table steedos-input-table-fixed-border";
+    let className = "steedos-input-table";
 
     if (props.showIndex) {
         className += " steedos-show-index"
@@ -1885,22 +1788,7 @@ export const getAmisInputTableSchema = async (props) => {
             "type": "service",
             "body": schemaBody,
             "id": serviceId,
-            "className": "w-full",
-            "onEvent": hasColumnVisibleOn ? {
-                "init": {
-                    "actions": [
-                        {
-                            "actionType": "custom",
-                            "script": (context, doAction, event) => {
-                                const comp = event?.context?.scoped?.getComponentById(serviceId);
-                                const findDOMNode = window.ReactDOM?.findDOMNode;
-                                const rootEl = comp && findDOMNode ? findDOMNode(comp) : null;
-                                fixTableBorders(rootEl);
-                            }
-                        }
-                    ]
-                }
-            } : undefined
+            "className": "w-full"
         },
         "label": props.label,
         "labelClassName": props.label ? props.labelClassName : "none",
