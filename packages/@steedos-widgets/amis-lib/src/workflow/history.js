@@ -12,8 +12,9 @@ import i18next from "i18next";
 export const getInstanceApprovalHistory = async ()=>{
     return {
         "type": "liquid",
-        "className": "m-b-none instance-approve-history",
+        "className": "m-b-none",
         "template": `
+            <div class="instance-approve-history">
             <div class="text-base font-bold pb-2">签批历程</div>
             <table class="w-full text-sm text-left border-collapse border-2 border-black">
                 <tbody class="text-gray-900">
@@ -22,13 +23,14 @@ export const getInstanceApprovalHistory = async ()=>{
                         {% if children_count > 0 %}
                             {% assign row_span = children_count | times: 2 %}
                             {% for item in trace.children %}
+                                {% capture row_class_name %}step-type-{{trace.step_type}} {{item.type}}-step-type-{{trace.step_type}} {{item.type}}-step-id-{{trace.id}} {{item.type}}-judge-{{item.judgeValue}}{% if item.type == 'approve' %} approve-type-{{item.approve_type}}{% endif %}{% endcapture %}
                                 {% if item.opinion and item.opinion != '' %}
                                     <!-- 有意见: 分两行显示 -->
                                     <!-- Row 1: 意见 -->
-                                    <tr class="bg-white">
+                                    <tr class="bg-white {{ row_class_name }}">
                                         <!-- 步骤名称 -->
                                         {% if forloop.first %}
-                                        <td class="p-2 border-r border-b border-black text-center align-middle font-normal" style="width: 130px;" rowspan="{{ row_span }}">
+                                        <td class="p-2 border-r border-b border-black text-center align-middle font-normal" style="width: 130px; border-right: 1px solid black; border-bottom: 1px solid black;" rowspan="{{ row_span }}">
                                             {{ trace.name }}
                                         </td>
                                         {% endif %}
@@ -40,7 +42,7 @@ export const getInstanceApprovalHistory = async ()=>{
                                     </tr>
                                     
                                     <!-- Row 2: 人员、时间、结果 -->
-                                    <tr class="bg-white">
+                                    <tr class="bg-white {{ row_class_name }}">
                                         <!-- 人员 -->
                                         <td class="p-2 align-middle border-b border-black" style="min-width: 200px;">
                                             <div class="font-[SimSun]">{{ item.user_name }}</div>
@@ -78,10 +80,10 @@ export const getInstanceApprovalHistory = async ()=>{
                                     </tr>
                                 {% else %}
                                     <!-- 无意见: 合并显示, 垂直居中 -->
-                                    <tr class="bg-white">
+                                    <tr class="bg-white {{ row_class_name }}">
                                         <!-- 步骤名称 -->
                                         {% if forloop.first %}
-                                        <td class="p-2 border-r border-b border-black text-center align-middle font-normal" style="width: 130px;" rowspan="{{ row_span }}">
+                                        <td class="p-2 border-r border-b border-black text-center align-middle font-normal" style="width: 130px; border-right: 1px solid black; border-bottom: 1px solid black;" rowspan="{{ row_span }}">
                                             {{ trace.name }}
                                         </td>
                                         {% endif %}
@@ -127,7 +129,7 @@ export const getInstanceApprovalHistory = async ()=>{
                             {% endfor %}
                         {% else %}
                             <tr class="bg-white border-b border-black">
-                                <td class="p-2 border-r border-black text-center align-middle font-normal" style="width: 130px;">
+                                <td class="p-2 border-r border-black text-center align-middle font-normal" style="width: 130px; border-right: 1px solid black; border-bottom: 1px solid black;">
                                     {{ trace.name }}
                                 </td>
                                 <td class="p-2 align-middle border-b border-black" style="min-width: 200px;"></td>
@@ -138,6 +140,7 @@ export const getInstanceApprovalHistory = async ()=>{
                     {% endfor %}
                 </tbody>
             </table>
+            </div>
         `
     }
 }
