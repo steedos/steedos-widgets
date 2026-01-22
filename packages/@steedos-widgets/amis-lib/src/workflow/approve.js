@@ -274,7 +274,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
           }
           ,
             {
-              type: "radios",
+              type: "checkboxes",
               label: "",
               name: "next_users",
               id: "u:next_users",

@@ -41,7 +41,7 @@ export const AmisInstanceHandler = async (props) => {
                 multiple: true
             },
             {
-                type: "radios",
+                type: "checkboxes",
                 label: label,
                 name: name,
                 id: id,
