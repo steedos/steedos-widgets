@@ -1,4 +1,55 @@
 
+.steedos-amis-instance-view .instance-form-view-mobile {
+    .ant-input-affix-wrapper, 
+    .antd-TextControl-input, 
+    .antd-ResultBox, 
+    .antd-Select, 
+    .antd-DatePicker, 
+    .antd-TextareaControl-input, 
+    .antd-Number, 
+    .antd-Picker-input {
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    // 强制清除输入控件的左侧默认内边距，确保和 Label 对齐
+    .antd-Form-control {
+        padding-left: 0 !important;
+        
+        // 针对内部可能的子元素，也尝试清除左侧 padding
+        > .antd-Form-control {
+            padding-left: 0 !important;
+        }
+
+        // 针对展示态（static）的控件
+        &.antd-Form-static{
+             padding-left: 0 !important;
+        }
+    }
+    
+    // 强制清除 Input/Select 等具体组件内部可能存在的 padding-left
+    .antd-Input, 
+    .ant-picker-input > input,
+    .ant-select-selector,
+    .antd-TextControl-input,
+    .antd-DatePicker,
+    .antd-Number-input-wrap,
+    .antd-TextareaControl-input {
+        padding-left: 0 !important;
+    }
+
+    // 特别修正：针对嵌套在容器内的 Input 元素本身，强制清除内边距
+    .antd-TextControl-input input,
+    .antd-DatePicker input,
+    .antd-DatePicker-input,
+    .antd-Number-input-wrap input,
+    .antd-Number-input,
+    textarea.antd-TextareaControl-input {
+        padding-left: 0 !important;
+    }
+}
+
 .steedos-amis-instance-view{
     font-size: .8125rem;
 }

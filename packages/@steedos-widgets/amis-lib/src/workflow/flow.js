@@ -875,6 +875,79 @@ const getFormTableView = async (instance, tableFieldMap) => {
   return formSchema;
 };
 
+const getFormMobileView = async (instance, tableFieldMap) => {
+  const body = [];
+  let fields = [];
+  
+  each(instance.fields, (field) => {
+    fields.push(field);
+    if (field.type === "section" && field.fields) {
+      fields = fields.concat(field.fields);
+    }
+  });
+
+  for (const field of fields) {
+      // Section 作为标题
+      if(field.type === 'section'){
+          body.push({
+              type: "container",
+              body: [
+                {
+                  type: "tpl",
+                  tpl: field.name || field.code,
+                  className: "font-bold text-base text-gray-800 text-left block w-full"
+                }
+              ],
+              className: "sticky top-0 z-10 bg-gray-100 px-4 py-2 border-b border-gray-200 w-full block text-left"
+          });
+          continue;
+      }
+      
+      const inputTpl = await getTdInputTpl(field, false, false, tableFieldMap);
+
+      // 去除 PC Table 模式下的特定样式
+      if(inputTpl.className){
+        inputTpl.className = inputTpl.className.replace(/m-none|p-none/g, '').trim();
+      }
+
+      // 手机端只读态优化：如果是 static 类型，可能还是原来的样式，确保可读性
+      if(inputTpl.type && inputTpl.type.startsWith('static')){
+         // 可以追加一些样式
+      }
+
+      // Label 样式
+      const labelTpl = {
+        type: "tpl",
+        className: "block text-left px-0",
+        tpl: `<div class="text-gray-500 text-md mb-1">${
+          field.name || field.code
+        } ${field.is_required ? '<span class="text-red-500">*</span>' : ''}</div>`,
+      };
+
+      body.push({
+        type: "container",
+        className: "px-4 pt-2 bg-white text-left",
+        body: [
+            labelTpl, 
+            {
+                type: "container",
+                className: "px-0 pb-2", // 移除了 border-b border-gray-100
+                style: {
+                    backgroundColor: field.permission === 'editable' ? "rgba(255,255,0,.1)" : "transparent"
+                },
+                body: [inputTpl]
+            }
+        ]
+      });
+  }
+
+  return {
+    type: "wrapper",
+    className: "instance-form-view-mobile p-0 bg-white mt-4",
+    body: body
+  };
+};
+
 const getFormSteps = async (instance, tableFieldMap) => {
   const formMode = instance.formVersion.mode || "normal";//normal,horizontal,inline
   const stepsSchema = [];
@@ -1257,7 +1330,11 @@ export const getFlowFormSchema = async (instance, box, print) => {
         }
       }
     }else{
-      if (formStyle === "wizard") {
+      const isMobile = window.innerWidth < 768;
+      if (isMobile) {
+        formContentSchema = await getFormMobileView(instance, tableFieldMap);
+      }
+      else if (formStyle === "wizard") {
         formContentSchema = await getFormWizardView(instance, tableFieldMap);
       }
       else{
