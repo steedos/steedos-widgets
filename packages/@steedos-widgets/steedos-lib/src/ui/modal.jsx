@@ -17,7 +17,7 @@ const newFunctionComponent = (Component)=>{
     // const ref = useRef(null);
     const [isVisible, setIsVisible] = useState(true);
 
-    const defProps = {
+    const defProps = Component === AntdDrawer ? {} : {
       width: "70%",
       style: {
         width: "70%",
@@ -40,6 +40,8 @@ const newFunctionComponent = (Component)=>{
         // ref: ref
       }
     }
+
+
     // TODO fix build error:   Error: Unexpected token (Note that you need plugins to import files that are not JavaScript)
     return React.createElement(Component, _extends({
       visible: isVisible,
