@@ -1,4 +1,55 @@
 
+.steedos-amis-instance-view .instance-form-view-mobile {
+    .ant-input-affix-wrapper, 
+    .antd-TextControl-input, 
+    .antd-ResultBox, 
+    .antd-Select, 
+    .antd-DatePicker, 
+    .antd-TextareaControl-input, 
+    .antd-Number, 
+    .antd-Picker-input {
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    // 强制清除输入控件的左侧默认内边距，确保和 Label 对齐
+    .antd-Form-control {
+        padding-left: 0 !important;
+        
+        // 针对内部可能的子元素，也尝试清除左侧 padding
+        > .antd-Form-control {
+            padding-left: 0 !important;
+        }
+
+        // 针对展示态（static）的控件
+        &.antd-Form-static{
+             padding-left: 0 !important;
+        }
+    }
+    
+    // 强制清除 Input/Select 等具体组件内部可能存在的 padding-left
+    .antd-Input, 
+    .ant-picker-input > input,
+    .ant-select-selector,
+    .antd-TextControl-input,
+    .antd-DatePicker,
+    .antd-Number-input-wrap,
+    .antd-TextareaControl-input {
+        padding-left: 0 !important;
+    }
+
+    // 特别修正：针对嵌套在容器内的 Input 元素本身，强制清除内边距
+    .antd-TextControl-input input,
+    .antd-DatePicker input,
+    .antd-DatePicker-input,
+    .antd-Number-input-wrap input,
+    .antd-Number-input,
+    textarea.antd-TextareaControl-input {
+        padding-left: 0 !important;
+    }
+}
+
 .steedos-amis-instance-view{
     font-size: .8125rem;
 }
@@ -310,6 +361,91 @@
     .steedos-field-required {
         .antd-Form-star{
             display: inline;
+        }
+    }
+}
+
+.steedos-amis-instance-view {
+    @media (max-width: 768px) {
+        /* 附件区域优化: 让 Label 和上传按钮靠左紧凑排列 */
+        .instance-file-list {
+            .antd-Form-item {
+                display: flex !important;
+                justify-content: flex-start !important;
+                flex-wrap: nowrap !important;
+                align-items: center !important;
+                
+                .antd-Form-label {
+                    flex: 0 0 auto !important;
+                    width: auto !important;
+                    max-width: none !important;
+                    margin-right: 8px !important; 
+                    padding: 0 !important;
+                    text-align: left !important;
+                }
+                
+                .antd-Form-value {
+                    flex: 0 0 auto !important;
+                    width: auto !important;
+                    min-width: 0 !important;
+
+                    .antd-Form-control,
+                    .antd-FileControl,
+                    .antd-FileControl-dropzone {
+                        padding: 0 !important;
+                        margin: 0 !important;
+                        border: none !important;
+                        min-height: auto !important;
+                    }
+                    
+                    /* 针对可能存在的按钮容器 */
+                    .antd-FileControl-selectBtn {
+                         margin: 0 !important;
+                    }
+                }
+            }
+        }
+
+        /* 相关文件区域优化: 标题和列表项左对齐 */
+        .instance-related-list {
+            /* 标题区域 */
+            .cxd-List-heading, 
+            .antd-List-heading {
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+                text-align: left !important;
+                font-weight: bold;
+                border: none !important;
+            }
+
+            /* 列表容器 */
+            .cxd-List-items, 
+            .antd-List-items {
+                padding-left: 0 !important;
+                margin-left: 0 !important;
+            }
+
+            /* 列表单项 */
+            .cxd-List-item, 
+            .antd-List-item {
+                padding-top: 8px !important; 
+                padding-bottom: 8px !important; 
+                margin: 0 !important;
+                border-bottom: 1px solid #f0f0f0; 
+                
+                // 链接部分
+                a {
+                    display: block; 
+                    text-align: left;
+                    color: inherit; 
+                }
+            }
+
+            // 用户反馈的特定 padding 修正
+            .antd-ListItem--actions-at-right {
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+            }
         }
     }
 }
