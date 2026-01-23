@@ -133,7 +133,7 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
   const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
   const searchTimeoutRef = useRef<NodeJS.Timeout>();
 
-  console.log('SteedosOrgSelector. dispatchEvent', dispatchEvent)
+  // console.log('SteedosOrgSelector. dispatchEvent', dispatchEvent)
   useEffect(() => {
     setLoading(true);
     fetchDeptTree()
@@ -341,7 +341,7 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
 
   // 处理选择变化，显示全路径
   const handleChange = async (val: any, label: any, extra: any) => {
-    console.log(`handleChange`, onChange, val);
+    // console.log(`handleChange`, onChange, val);
 
     // 适配 treeCheckStrictly 模式，提取 value
     let selectedValues = val;
@@ -363,7 +363,7 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
          * dispatchEvent时第三个参数传入的current的data为undefined会报错
          */
         const rendererEvent: any = await dispatchEvent?.('change', newVal ? createObject(data, { value: newVal }) : data, ref.current);
-        console.log(`rendererEvent`, rendererEvent, ref.current)
+        // console.log(`rendererEvent`, rendererEvent, ref.current)
         if (rendererEvent?.prevented) {
           return;
         }

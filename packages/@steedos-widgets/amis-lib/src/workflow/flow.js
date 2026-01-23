@@ -105,7 +105,7 @@ const mapFormula = (formula, tableFieldMap)=>{
 }
 
 const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
-  console.log('field',field)
+  // console.log('field',field)
   const tpl = {
     label: label === true ? (field.name || field.code) : false,
     name: field.code,
@@ -503,7 +503,6 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
               }else{
                 _filter = filters
               }
-              console.log('context', context)
               if(context.term){
                 _filter = \`(\${_filter}) and contains(name, '\${context.term}')\`
               }
@@ -519,7 +518,6 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
         tpl.source = tpl.autoComplete;
         tpl.isAmis=true;
         tpl.searchable = true;
-        console.log(`odata`, tpl)
         break;
       case "html":
         if (tpl.disabled) {
