@@ -40,7 +40,7 @@ window.previewAttachment = function(file) {
             // 尝试使用 Office Online
             let officeViewerUrl = Builder.settings.PUBLIC_OFFICE_VIEWER_URL;
             const officeUrl = officeViewerUrl + encodeURIComponent(downloadUrl + '?token=' + Builder.settings.context.user.authToken);
-            if(Builder.settings.PUBLIC_OFFICE_PREVIEW_IN_NEW_WINDOW){
+            if(Builder.settings.PUBLIC_OFFICE_PREVIEW_IN_NEW_WINDOW === 'true'){
                 window.open(officeUrl, "_blank");
                 return;
             }
