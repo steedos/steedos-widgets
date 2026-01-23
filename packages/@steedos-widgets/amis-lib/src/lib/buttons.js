@@ -376,7 +376,7 @@ const getDropdown = (dropdownButtons)=>{
     const dropdown = {
         "type": "dropdown-button",
         "icon": "fa fa-angle-down",
-        "size": "sm",
+        //"size": "sm",
         "hideCaret": true,
         "className": "mr-0 steedos-mobile-header-drop-down",
         "closeOnClick": true,
@@ -418,7 +418,8 @@ const getDropdown = (dropdownButtons)=>{
                                 "style": {
                                     "padding": "4px 12px",
                                     "align-items": "center",
-                                    "display": "flex"
+                                    "display": "flex",
+                                    "font-weight": "bold"
                                 }
                             },
                             {
@@ -446,14 +447,15 @@ const getDropdown = (dropdownButtons)=>{
                                 "vertical": true,
                                 "tiled": true,
                                 "buttons": dropdownButtons,
-                                "className": "w-full overflow-auto",
+                                "className": "w-full",
                                 "btnClassName": "w-full",
                                 "size": "lg"
                             }
                         ],
                         "style": {
                             "padding": "0",
-                            "overflow": "auto",
+                            "overflow-y": "auto",
+                            "overflow-x": "hidden",
                             "max-height": "70vh"
                         }
                     }
