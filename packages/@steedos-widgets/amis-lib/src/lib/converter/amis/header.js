@@ -753,7 +753,7 @@ function getBackButtonSchema(){
     },
     "body":[{
       "type": "button",
-      "visibleOn": "${window:innerWidth > 768 && display !== 'split'}",
+      "visibleOn": "${(window:innerWidth > 768 && display !== 'split') || window:innerWidth <= 768}",
       "className":"flex mr-4",
       "onEvent": {
           "click": {
