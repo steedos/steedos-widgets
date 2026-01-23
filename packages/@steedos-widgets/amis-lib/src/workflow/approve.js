@@ -103,6 +103,7 @@ const getNextStepInput = async (instance, nextStepChangeEvents) => {
         id: "u:bf75adfb544e",
         md: "auto",
         valign: "middle",
+        columnClassName: "pr-2"
       },
       {
         body: [
@@ -113,6 +114,7 @@ const getNextStepInput = async (instance, nextStepChangeEvents) => {
             id: "u:next_step",
             multiple: false,
             required: true,
+            className: "m-b-none",
             // selectFirst: true,
             autoFill: {
               "new_next_step": "${step}"
@@ -189,10 +191,11 @@ const getNextStepInput = async (instance, nextStepChangeEvents) => {
           },
         ],
         id: "u:4d3a884b437c",
+        valign: "middle"
       },
     ],
     id: "u:016c56efe5fd",
-    className: "b-a b-1x m-none p-xs",
+    className: "border-b border-gray-200 py-2",
     subFormMode: "",
   };
 };
@@ -218,6 +221,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
         id: "u:8eece76a9e4c",
         md: "auto",
         valign: "middle",
+        columnClassName: "pr-2"
       },
       {
         body: [
@@ -244,6 +248,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
               id: "u:next_users",
               hiddenOn: "this.new_next_step.deal_type != 'pickupAtRuntime' || this.new_next_step.step_type == 'counterSign'",
               required: true,
+              className: "m-b-none",
               "onEvent": {
                 "change": {
                   "weight": 0,
@@ -261,6 +266,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
               hiddenOn: "this.new_next_step.deal_type != 'pickupAtRuntime' || this.new_next_step.step_type != 'counterSign'",
               required: true,
               multiple: true,
+              className: "m-b-none",
               "onEvent": {
                 "change": {
                   "weight": 0,
@@ -281,6 +287,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
               required: true,
               hiddenOn: "this.new_next_step.deal_type == 'pickupAtRuntime' || this.new_next_step.step_type != 'counterSign'",
               multiple: true,
+              className: "m-b-none",
               "source": {
                 "url": "/api/workflow/v2/nextStepUsers?next_step=${next_step}",
                 "method": "post",
@@ -338,6 +345,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
               required: true,
               hiddenOn: "this.new_next_step.deal_type === 'pickupAtRuntime' || this.new_next_step.step_type == 'counterSign'",
               multiple: false,
+              className: "m-b-none",
               "source": {
                 "url": "/api/workflow/v2/nextStepUsers?next_step=${next_step}",
                 "method": "post",
@@ -413,10 +421,11 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
             // }
         ],
         id: "u:81a4913c61cc",
+        valign: "middle",
       },
     ],
     id: "u:ffff15b76c89",
-    className: "b-a b-1x p-xs m-b-none m-l-none m-r-none m-t-sm ${new_next_step.step_type == 'counterSign' ? 'hidden' : ''}",
+    className: "border-b border-gray-200 py-3 ${new_next_step.step_type == 'counterSign' ? 'hidden' : ''}",
     subFormMode: "",
     hiddenOn: "!!!this.new_next_step || (this.new_next_step && this.new_next_step.step_type === 'end')"
   };
