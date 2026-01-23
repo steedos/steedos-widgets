@@ -9,6 +9,30 @@ import { getSteedosAuth } from '@steedos-widgets/amis-lib'
 import i18next from "i18next";
 import React from 'react';
 
+// 
+const AmisOfficeViewer = ({ src }) => {
+    const ref = React.useRef(null);
+    React.useEffect(() => {
+        let scope = null;
+        if (ref.current) {
+            let amis = window.amisRequire && window.amisRequire('amis/embed');
+            if (amis && amis.embed) {
+                scope = amis.embed(ref.current, {
+                    type: 'office-viewer',
+                    src: src,
+                    className: 'w-full h-full'
+                });
+            }
+        }
+        return () => {
+            if (scope && scope.unmount) {
+                scope.unmount();
+            }
+        }
+    }, [src]);
+    return React.createElement('div', { ref: ref, className: "w-full h-full" });
+};
+
 // 预览附件
 window.previewAttachment = function(file) {
     console.log("previewAttachment", file);
@@ -50,6 +74,8 @@ window.previewAttachment = function(file) {
                 className: "w-full flex-1 border-none"
                 })
             ]);
+    } else if (['doc', 'docx', 'xls', 'xlsx'].includes(fileExt)) {
+        previewContent = React.createElement(AmisOfficeViewer, { src: fileUrl });
     } else {
             previewContent = React.createElement('div', { className: "flex flex-col items-center justify-center h-full text-gray-500" }, [
                 React.createElement('svg', { className: "w-16 h-16 mb-4 text-gray-300", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24"},
