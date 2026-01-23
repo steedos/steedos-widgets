@@ -2,14 +2,14 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2026-01-23 14:20:13
+ * @LastEditTime: 2026-01-24 00:07:58
  * @Description: 
  */
 import './AmisRecordDetailHeader.less'
 import { getRecordDetailHeaderSchema , getUISchema} from '@steedos-widgets/amis-lib'
 
 export const AmisRecordDetailHeader = async (props) => {
-  console.log(`AmisRecordDetailHeader=====>`, props)
+  // console.log(`AmisRecordDetailHeader=====>`, props)
   //sticky在最新版ios上存在bug，因此暂时去除手机版sticky
   const { className = 'sm:sticky top-0 sm:z-10 p-0 bg-white sm:m-4 sm:shadow sm:rounded', schemaFilter, showButtons, showBackButton } = props;
   const objectUiSchema = await getUISchema(props.objectApiName || "space_users", false);
@@ -22,9 +22,6 @@ export const AmisRecordDetailHeader = async (props) => {
 
   let config = Object.assign({}, schema, {onEvent: onEvent})
 
-  console.log(`AmisRecordDetailHeader=====showBackButton=>`, showBackButton)
-  console.log(`AmisRecordDetailHeader=====showButtons=>`, showButtons)
-  console.log(`AmisRecordDetailHeader=====schemaFilter=>`, schemaFilter)
   if(schemaFilter && typeof schemaFilter === 'string'){
     let schemaFilterFun = new Function(
       'config',
@@ -38,6 +35,6 @@ export const AmisRecordDetailHeader = async (props) => {
       console.warn(e);
     }
   }
-  console.log(`AmisRecordDetailHeader==>`, config)
+  // console.log(`AmisRecordDetailHeader==>`, config)
   return config
 }

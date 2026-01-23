@@ -735,10 +735,12 @@ export function getObjectListHeader(objectSchema, listViewName, ctx) {
   return headerSchema;
 }
 
-function getBackButtonSchema(){
+function getBackButtonSchema(options){
+  const { showRecordTitle = true } = options || {}
   return {
     "type": "service",
     "className": "steedos-object-record-detail-header-back-button",
+    "visibleOn": "${(window:innerWidth > 768 && display !== 'split') || window:innerWidth <= 768}",
     "onEvent": {
         "@history_paths.changed": {
             "actions": [
@@ -753,8 +755,7 @@ function getBackButtonSchema(){
     },
     "body":[{
       "type": "button",
-      "visibleOn": "${(window:innerWidth > 768 && display !== 'split') || window:innerWidth <= 768}",
-      "className":"flex mr-4",
+      "className":`flex ${showRecordTitle ? 'mr-4' : ''}`,
       "onEvent": {
           "click": {
               "actions": [
@@ -829,7 +830,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
   let backButtonsSchema = null;
   
   if(options.showBackButton != false){
-    backButtonsSchema = getBackButtonSchema();
+    backButtonsSchema = getBackButtonSchema(options);
   }
 
   // console.log(`getObjectRecordDetailHeader==> backButtonsSchema`, backButtonsSchema)
@@ -908,32 +909,12 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
       "columnClassName": "flex-initial",
       "md": "auto",
     })
-  }else if(backButtonsSchema){
-    let backButtonColumnClassName = "flex justify-center items-center antd-Button antd-Button--size-default flex border-none pr-0 -mr-6 ml-1";
-    if(options.formFactor == 'SMALL'){
-      backButtonColumnClassName = "flex justify-center items-center antd-Button antd-Button--size-default flex border-none pr-0 pl-0";
-    }
-    gridBody.push({
-      "body": [
-        {
-          "type": "grid",
-          "columns": [
-            {
-              "body": [
-                backButtonsSchema
-              ],
-              "md": "auto",
-              "className": "",
-              "columnClassName": backButtonColumnClassName
-            }
-          ],
-          "className": "flex justify-between"
-        }
-      ],
-      "columnClassName": "flex-initial",
-      "md": "auto",
-    })
-  };
+  }
+
+  if (!showRecordTitle && backButtonsSchema) {
+    backButtonsSchema.className += " antd-Button antd-Button--size-default border-none pl-0";
+    amisButtonsSchema.unshift(backButtonsSchema);
+  }
 
   gridBody.push({
     "body":  {
@@ -945,12 +926,6 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
     // "hiddenOn": "${recordLoaded != true}"
   })
 
-  let gridClassName = "flex justify-between flex-nowrap";
-  if(!showRecordTitle){
-    // 不显示标题时，按钮左对齐，不把按钮按左右分布
-    gridClassName = "flex justify-start flex-nowrap gap-2";
-  }
-
   let body = [
     {
       "type": "wrapper",
@@ -959,7 +934,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
         {
           "type": "grid",
           "columns": gridBody,
-          "className": gridClassName
+          "className": "flex justify-between flex-nowrap"
         }
       ],
       "hiddenOn": "${recordLoaded != true}"
