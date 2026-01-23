@@ -1487,7 +1487,6 @@ async function getButtonActions(props, mode) {
             }
         ]
     }
-    console.log(`actions`, actions)
     return actions;
 }
 
