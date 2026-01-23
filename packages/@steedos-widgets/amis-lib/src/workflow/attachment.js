@@ -45,10 +45,6 @@ window.previewAttachment = function(file) {
                 return;
             }
             previewContent = React.createElement('div', { className: "w-full h-full flex flex-col" }, [
-                React.createElement('div', { className: "p-2 bg-yellow-50 text-yellow-700 text-sm border-b border-yellow-100 flex justify-between items-center" }, [
-                    React.createElement('span', null, "预览由微软 Office Online 提供，如无法加载请下载后查看。"),
-                    React.createElement('a', { href: downloadUrl + "?download=true", className: "underline hover:text-yellow-800"}, "下载文件")
-                ]),
                 React.createElement('iframe', { 
                 src: officeUrl, 
                 className: "w-full flex-1 border-none"
