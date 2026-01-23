@@ -1474,9 +1474,9 @@ export const getFlowFormSchema = async (instance, box, print) => {
         await getRelatedInstances(instance),
         await getRelatedRecords(instance),
         instanceFormSchema,
-        // await getStepsSchema(instance),
-        // await getInstanceApprovalHistory(),
-        // await getApproveButton(instance, { submitEvents , nextStepInitedEvents, nextStepChangeEvents, nextStepUserChangeEvents})
+        await getStepsSchema(instance),
+        await getInstanceApprovalHistory(),
+        await getApproveButton(instance, { submitEvents , nextStepInitedEvents, nextStepChangeEvents, nextStepUserChangeEvents})
       ],
       "size": "none",
       "className": "steedos-amis-instance-view-content"
