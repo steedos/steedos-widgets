@@ -787,6 +787,9 @@ function getBackButtonSchema(){
  */
 export async function getObjectRecordDetailHeader(objectSchema, recordId, options) {
   // console.log(`getObjectRecordDetailHeader====>`, options)
+  if(options && !options.formFactor && typeof window !== 'undefined' && window.innerWidth <= 768){
+    options.formFactor = 'SMALL';
+  }
   const { showRecordTitle = true } = options || {}
   // console.log('getObjectRecordDetailHeader==>', objectSchema, recordId)
   const { name, label, icon, NAME_FIELD_KEY } = objectSchema;
@@ -905,6 +908,31 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
       "columnClassName": "flex-initial",
       "md": "auto",
     })
+  }else if(backButtonsSchema){
+    let backButtonColumnClassName = "flex justify-center items-center antd-Button antd-Button--size-default flex border-none pr-0 -mr-6 ml-1";
+    if(options.formFactor == 'SMALL'){
+      backButtonColumnClassName = "flex justify-center items-center antd-Button antd-Button--size-default flex border-none pr-0 pl-0";
+    }
+    gridBody.push({
+      "body": [
+        {
+          "type": "grid",
+          "columns": [
+            {
+              "body": [
+                backButtonsSchema
+              ],
+              "md": "auto",
+              "className": "",
+              "columnClassName": backButtonColumnClassName
+            }
+          ],
+          "className": "flex justify-between"
+        }
+      ],
+      "columnClassName": "flex-initial",
+      "md": "auto",
+    })
   };
 
   gridBody.push({
@@ -917,6 +945,12 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
     // "hiddenOn": "${recordLoaded != true}"
   })
 
+  let gridClassName = "flex justify-between flex-nowrap";
+  if(!showRecordTitle){
+    // 不显示标题时，按钮左对齐，不把按钮按左右分布
+    gridClassName = "flex justify-start flex-nowrap gap-2";
+  }
+
   let body = [
     {
       "type": "wrapper",
@@ -925,7 +959,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
         {
           "type": "grid",
           "columns": gridBody,
-          "className": "flex justify-between flex-nowrap"
+          "className": gridClassName
         }
       ],
       "hiddenOn": "${recordLoaded != true}"
