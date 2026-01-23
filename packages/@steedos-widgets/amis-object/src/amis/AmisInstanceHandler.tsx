@@ -110,9 +110,11 @@ export const AmisInstanceHandler = async (props) => {
                   }
                 }
                 payload.data = {
-                  value: payload.nextStepUsers.length === 1 ? payload.nextStepUsers[0].id : null, 
                   options: payload.nextStepUsers
                 }; 
+                if(payload.nextStepUsers.length === 1){
+                    payload.data.value = payload.nextStepUsers[0].id
+                }
                 return payload;`,
                     "data": {
                         "&": "$$",
