@@ -1280,6 +1280,7 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
 export const getFlowFormSchema = async (instance, box, print) => {
   const tableFieldMap = getTableFieldMap(instance.fields);
   const formStyle = instance.formVersion.style || "table";
+  const isMobile = window.innerWidth < 768;
   
   const amisSchemaStr = instance.formVersion?.amis_schema;
   
@@ -1330,7 +1331,6 @@ export const getFlowFormSchema = async (instance, box, print) => {
         }
       }
     }else{
-      const isMobile = window.innerWidth < 768;
       if (isMobile) {
         formContentSchema = await getFormMobileView(instance, tableFieldMap);
       }
@@ -1412,7 +1412,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
   return {
     type: "page",
     name: "instancePage",
-    className: "steedos-amis-instance-view sm:rounded " + "steedos-instance-style-" + formStyle,
+    className: "steedos-amis-instance-view sm:rounded " + "steedos-instance-style-" + formStyle + (isMobile ? " steedos-mobile-view" : ""),
     bodyClassName: "overflow-y-auto h-full steedos-amis-instance-view-body",
     headerClassName: "p-0",
     "title": print ? null : {
@@ -1474,9 +1474,9 @@ export const getFlowFormSchema = async (instance, box, print) => {
         await getRelatedInstances(instance),
         await getRelatedRecords(instance),
         instanceFormSchema,
-        await getStepsSchema(instance),
-        await getInstanceApprovalHistory(),
-        await getApproveButton(instance, { submitEvents , nextStepInitedEvents, nextStepChangeEvents, nextStepUserChangeEvents})
+        // await getStepsSchema(instance),
+        // await getInstanceApprovalHistory(),
+        // await getApproveButton(instance, { submitEvents , nextStepInitedEvents, nextStepChangeEvents, nextStepUserChangeEvents})
       ],
       "size": "none",
       "className": "steedos-amis-instance-view-content"

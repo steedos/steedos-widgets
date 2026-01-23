@@ -364,3 +364,88 @@
         }
     }
 }
+
+.steedos-amis-instance-view {
+    @media (max-width: 768px) {
+        /* 附件区域优化: 让 Label 和上传按钮靠左紧凑排列 */
+        .instance-file-list {
+            .antd-Form-item {
+                display: flex !important;
+                justify-content: flex-start !important;
+                flex-wrap: nowrap !important;
+                align-items: center !important;
+                
+                .antd-Form-label {
+                    flex: 0 0 auto !important;
+                    width: auto !important;
+                    max-width: none !important;
+                    margin-right: 8px !important; 
+                    padding: 0 !important;
+                    text-align: left !important;
+                }
+                
+                .antd-Form-value {
+                    flex: 0 0 auto !important;
+                    width: auto !important;
+                    min-width: 0 !important;
+
+                    .antd-Form-control,
+                    .antd-FileControl,
+                    .antd-FileControl-dropzone {
+                        padding: 0 !important;
+                        margin: 0 !important;
+                        border: none !important;
+                        min-height: auto !important;
+                    }
+                    
+                    /* 针对可能存在的按钮容器 */
+                    .antd-FileControl-selectBtn {
+                         margin: 0 !important;
+                    }
+                }
+            }
+        }
+
+        /* 相关文件区域优化: 标题和列表项左对齐 */
+        .instance-related-list {
+            /* 标题区域 */
+            .cxd-List-heading, 
+            .antd-List-heading {
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+                text-align: left !important;
+                font-weight: bold;
+                border: none !important;
+            }
+
+            /* 列表容器 */
+            .cxd-List-items, 
+            .antd-List-items {
+                padding-left: 0 !important;
+                margin-left: 0 !important;
+            }
+
+            /* 列表单项 */
+            .cxd-List-item, 
+            .antd-List-item {
+                padding-top: 8px !important; 
+                padding-bottom: 8px !important; 
+                margin: 0 !important;
+                border-bottom: 1px solid #f0f0f0; 
+                
+                // 链接部分
+                a {
+                    display: block; 
+                    text-align: left;
+                    color: inherit; 
+                }
+            }
+
+            // 用户反馈的特定 padding 修正
+            .antd-ListItem--actions-at-right {
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+            }
+        }
+    }
+}
