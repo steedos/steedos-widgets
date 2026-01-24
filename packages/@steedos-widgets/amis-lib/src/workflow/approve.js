@@ -918,6 +918,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
       {
         type: "button",
         label: "${'Cancel' | t}",
+        className: "steedos-approve-close-button",
         onEvent: {
           click: {
             actions: [

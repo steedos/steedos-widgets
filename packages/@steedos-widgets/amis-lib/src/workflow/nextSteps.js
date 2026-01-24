@@ -37,6 +37,7 @@ export const getStepsSchema = (instance) => {
                         "url": "/api/workflow/v2/set_instance_steps",
                         "method": "post",
                         "requestAdaptor": `
+                            $('.steedos-approve-close-button').trigger('click');
                             if(event && false){
                                 api.data = {
                                     instanceId: 'none'
