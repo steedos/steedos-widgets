@@ -236,7 +236,8 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 "requestAdaptor": "\nconst { next_step, $scopeId } = api.data;\n\n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step,\n  \n}\n\n\n return api;",
                 "adaptor": `
                   payload.data = {
-                    next_users: payload.value
+                    next_users: payload.value,
+                    hasNextUsers: !!payload.value && !_.isEmpty(payload.value)
                   }; 
                   return payload;`
               },
@@ -246,7 +247,8 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
               label: "",
               name: "next_users", 
               id: "u:next_users",
-              hiddenOn: "this.new_next_step.deal_type != 'pickupAtRuntime' || this.new_next_step.step_type == 'counterSign'",
+              hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type == 'counterSign'",
+              disabledOn: "this.hasNextUsers",
               required: true,
               className: "m-b-none",
               "onEvent": {
@@ -263,7 +265,8 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
               label: "",
               name: "next_users", 
               id: "u:next_users",
-              hiddenOn: "this.new_next_step.deal_type != 'pickupAtRuntime' || this.new_next_step.step_type != 'counterSign'",
+              hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type != 'counterSign'",
+              disabledOn: "this.hasNextUsers",
               required: true,
               multiple: true,
               className: "m-b-none",
@@ -275,17 +278,14 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                   ]
                 }
               }
-            }
-            ]
-          }
-          ,
+            },
             {
               type: "checkboxes",
               label: "",
               name: "next_users",
               id: "u:next_users",
               required: true,
-              hiddenOn: "this.new_next_step.deal_type == 'pickupAtRuntime' || this.new_next_step.step_type != 'counterSign'",
+              hiddenOn: "this.new_next_step.deal_type == 'pickupAtRuntime' || this.hasNextUsers || this.new_next_step.step_type != 'counterSign'",
               multiple: true,
               className: "m-b-none",
               "source": {
@@ -343,7 +343,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
               name: "next_users",
               id: "u:next_users",
               required: true,
-              hiddenOn: "this.new_next_step.deal_type === 'pickupAtRuntime' || this.new_next_step.step_type == 'counterSign'",
+              hiddenOn: "this.new_next_step.deal_type === 'pickupAtRuntime' || this.hasNextUsers || this.new_next_step.step_type == 'counterSign'",
               multiple: false,
               className: "m-b-none",
               "source": {
@@ -386,7 +386,9 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                   ]
                 }
               }
-            },
+            }
+            ]
+          },
             // {
             //   type: "steedos-select-user",
             //   label: "",

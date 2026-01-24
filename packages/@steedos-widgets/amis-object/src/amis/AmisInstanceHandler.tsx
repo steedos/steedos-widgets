@@ -22,13 +22,58 @@ export const AmisInstanceHandler = async (props) => {
     //     applicant: applicant
     //   }
     const schema = {
+        type: 'service',
+        api: {
+            "url": "${context.rootUrl}/api/workflow/v2/nextStepUsers?next_step=${_id}",
+            "method": "post",
+            "sendOn": "!!this && this.step_type != 'end' && this.deal_type != 'pickupAtRuntime'",
+            "requestAdaptor": `
+const { next_step, $scopeId } = api.data;
+const formValues = context._scoped.getComponentById("instance_form").getValues();
+
+api.data = {
+  instanceId: context.recordId,
+  nextStepId: context._id,
+  values: formValues
+}
+return api;
+            `,
+            "adaptor": `
+            if(payload.error){
+                SteedosUI.notification.error({message: payload.error});
+                return {
+                    status: 0,
+                    data: {}
+                }
+            }
+            let value = null;
+
+            if(context.step_type == 'counterSign'){
+                value = _.map(payload.nextStepUsers, 'id');
+            }
+            if(payload.nextStepUsers.length === 1){
+                value = payload.nextStepUsers[0].id;
+            }
+
+            payload.data = {
+                nextStepUsers: payload.nextStepUsers,
+                ["${name}"]: value
+            }; 
+            return payload;`,
+            "data": {
+                "&": "$$",
+                "$scopeId": "$scopeId",
+                "context": "${context}",
+                "next_step": "$}",
+            }
+        },
         body: [
             {
                 type: "steedos-select-user",
                 label: label,
                 name: name,
                 id: id,
-                hiddenOn: "this.deal_type != 'pickupAtRuntime' || this.step_type == 'counterSign'",
+                hiddenOn: "this.deal_type != 'pickupAtRuntime' && (this.nextStepUsers && this.nextStepUsers.length > 0) || this.step_type == 'counterSign'",
                 required: true
             },
             {
@@ -36,7 +81,7 @@ export const AmisInstanceHandler = async (props) => {
                 label: label,
                 name: name,
                 id: id,
-                hiddenOn: "this.deal_type != 'pickupAtRuntime' || this.step_type != 'counterSign'",
+                hiddenOn: "this.deal_type != 'pickupAtRuntime' && (this.nextStepUsers && this.nextStepUsers.length > 0) || this.step_type != 'counterSign'",
                 required: true,
                 multiple: true
             },
@@ -46,42 +91,9 @@ export const AmisInstanceHandler = async (props) => {
                 name: name,
                 id: id,
                 required: true,
-                hiddenOn: "this.deal_type == 'pickupAtRuntime' || this.step_type != 'counterSign'",
+                hiddenOn: "this.deal_type == 'pickupAtRuntime' || !this.nextStepUsers || this.nextStepUsers.length == 0 || this.step_type != 'counterSign'",
                 multiple: true,
-                "source": {
-                    "url": "${context.rootUrl}/api/workflow/v2/nextStepUsers?next_step=${_id}",
-                    "method": "post",
-                    "sendOn": "!!this && this.step_type != 'end'",
-                    "requestAdaptor": "\nconst { next_step, $scopeId } = api.data;\nconst formValues = context._scoped.getComponentById(\"instance_form\").getValues();\n\napi.data = {\n  instanceId: context.recordId,\n nextStepId: context._id,\n  values: formValues\n}\n\n\n return api;",
-                    "adaptor": `
-                    if(payload.error){
-                    SteedosUI.notification.error({message: payload.error});
-                    return {
-                        status: 0,
-                        data: {}
-                    }
-                    }
-                    let value = null;
-
-                    if(context.step_type == 'counterSign'){
-                        value = _.map(payload.nextStepUsers, 'id');
-                    }
-                    if(payload.nextStepUsers.length === 1){
-                        value = payload.nextStepUsers[0].id;
-                    }
-
-                    payload.data = {
-                        value: value, 
-                        options: payload.nextStepUsers
-                    }; 
-                return payload;`,
-                    "data": {
-                        "&": "$$",
-                        "$scopeId": "$scopeId",
-                        "context": "${context}",
-                        "next_step": "$}",
-                    }
-                },
+                "source": "${nextStepUsers}",
                 "labelField": "name",
                 "valueField": "id",
                 value: '${approver_users}',
@@ -94,43 +106,16 @@ export const AmisInstanceHandler = async (props) => {
                 name: name,
                 id: id,
                 required: true,
-                hiddenOn: "this.deal_type === 'pickupAtRuntime' || this.step_type == 'counterSign'",
+                hiddenOn: "this.deal_type == 'pickupAtRuntime' || !this.nextStepUsers || this.nextStepUsers.length == 0 || this.step_type == 'counterSign'",
                 multiple: false,
-                "source": {
-                    "url": "${context.rootUrl}/api/workflow/v2/nextStepUsers?next_step=${_id}",
-                    "method": "post",
-                    "sendOn": "!!this && this.step_type != 'end'",
-                    "requestAdaptor": "\nconst { next_step, $scopeId } = api.data;\nconst formValues = context._scoped.getComponentById(\"instance_form\").getValues();\n\napi.data = {\n  instanceId: context.recordId,\n nextStepId: context._id,\n  values: formValues\n}\n\n\n return api;",
-                    "adaptor": `
-                if(payload.error){
-                  SteedosUI.notification.error({message: payload.error});
-                  return {
-                    status: 0,
-                    data: {}
-                  }
-                }
-                payload.data = {
-                  options: payload.nextStepUsers
-                }; 
-                if(payload.nextStepUsers.length === 1){
-                    payload.data.value = payload.nextStepUsers[0].id
-                }
-                return payload;`,
-                    "data": {
-                        "&": "$$",
-                        "$scopeId": "$scopeId",
-                        "context": "${context}",
-                        "next_step": "$}",
-                    }
-                },
+                "source": "${nextStepUsers}",
                 "labelField": "name",
                 "valueField": "id",
                 value: '${approver_users}',
                 "joinValues": false,
                 "extractValue": true,
             }
-        ],
-        type: 'service'
+        ]
     }
     // console.log(`AmisInstanceHandler schema`, props, schema)
     return schema;

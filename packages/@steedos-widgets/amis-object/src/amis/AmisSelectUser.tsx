@@ -10,7 +10,7 @@ import { getSelectUserSchema, getIdsPickerSchema, Field } from '@steedos-widgets
 
 export const AmisSelectUser = async (props) => {
   // console.log(`AmisSelectUser props`, props)
-  const { $schema, data, idsDependOn, readonly = false, amis, ctx = {}, onEvent, id } = props;
+  let { $schema, data, idsDependOn, readonly = false, disabled = false, amis, ctx = {}, onEvent, id } = props;
   let amisSchema: any;
   try {
     const steedosField = {
@@ -25,6 +25,9 @@ export const AmisSelectUser = async (props) => {
       amis
     };
     const options = Object.assign({}, ...ctx, { idsDependOn });
+    if(disabled===true){
+      readonly = true;
+    }
     amisSchema = await Field.convertSFieldToAmisField(steedosField, readonly, options);
   } catch (error) {
     console.log(`error`, error)
