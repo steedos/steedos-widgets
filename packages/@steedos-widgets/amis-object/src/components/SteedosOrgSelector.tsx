@@ -447,7 +447,7 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
 
   ref.current.props = {
     ...ref.current.props,
-    ...props
+    // ...props。会导致搜索报错
   }
 
   return element;
