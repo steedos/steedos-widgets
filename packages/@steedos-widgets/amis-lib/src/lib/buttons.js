@@ -376,7 +376,7 @@ const getDropdown = (dropdownButtons)=>{
     const dropdown = {
         "type": "dropdown-button",
         "icon": "fa fa-angle-down",
-        "size": "sm",
+        //"size": "sm",
         "hideCaret": true,
         "className": "mr-0 steedos-mobile-header-drop-down",
         "closeOnClick": true,
@@ -418,7 +418,8 @@ const getDropdown = (dropdownButtons)=>{
                                 "style": {
                                     "padding": "4px 12px",
                                     "align-items": "center",
-                                    "display": "flex"
+                                    "display": "flex",
+                                    "font-weight": "bold"
                                 }
                             },
                             {
@@ -446,14 +447,15 @@ const getDropdown = (dropdownButtons)=>{
                                 "vertical": true,
                                 "tiled": true,
                                 "buttons": dropdownButtons,
-                                "className": "w-full overflow-auto",
+                                "className": "w-full",
                                 "btnClassName": "w-full",
                                 "size": "lg"
                             }
                         ],
                         "style": {
                             "padding": "0",
-                            "overflow": "auto",
+                            "overflow-y": "auto",
+                            "overflow-x": "hidden",
                             "max-height": "70vh"
                         }
                     }
@@ -469,27 +471,34 @@ const getDropdown = (dropdownButtons)=>{
 export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
     const { buttons, moreButtons, moreButtonsVisibleOn } = getObjectDetailHeaderButtons(objectSchema, recordId);
     if(ctx.formFactor === 'SMALL'){
-        const dropdownButtons = [
-            ..._.map(buttons, (button) => {
-                button.className += ' w-full';
-                return button;
-            }),
-            ..._.map(moreButtons, (button) => {
-                button.className += ' w-full';
-                return button;
-            })
-        ];
+        const allButtons = [
+            ...buttons,
+            ...moreButtons
+        ].filter(button => button.visibleOn !== false && button.visibleOn !== 'false');
+        
+        let sliceCount = 7;
+        // 如果显示了记录标题(showRecordTitle)，则说明是分栏显示模式，
+        // 此时左侧有标题占用空间，右侧空间有限，只显示1个按钮在外部，其余折叠。
+        // 反之，如果不显示标题，则说明是整行模式，可以显示更多按钮(如7个)。
+        // 审批王应用中 showRecordTitle 为 false，且sliceCount为7才能正常显示三个按钮
+        if(ctx.showRecordTitle){
+            sliceCount = 1;
+        }
 
-        let phoneMoreButtonsVisibleOn = '';
-        _.forEach(dropdownButtons, (button, index) => {
-            if(index === 0){
-                phoneMoreButtonsVisibleOn = button.visibleOn;
-            }else{
-                phoneMoreButtonsVisibleOn = phoneMoreButtonsVisibleOn + ' || ' + button.visibleOn;
-            }
-        })
+        const primaryButtons = allButtons.slice(0, sliceCount);
+        const dropdownButtonsSource = allButtons.slice(sliceCount);
+        
+        const dropdownButtons = _.map(dropdownButtonsSource, (button) => {
+            const btn = _.clone(button);
+            btn.className = (btn.className || '') + ' w-full';
+            return btn;
+        });
 
-        return [getDropdown(dropdownButtons)];
+        const result = [...primaryButtons];
+        if(dropdownButtons.length > 0){
+            result.push(getDropdown(dropdownButtons));
+        }
+        return result;
     }else{
         if(moreButtons.length > 0){
             const dropdownButtonsSchema = {

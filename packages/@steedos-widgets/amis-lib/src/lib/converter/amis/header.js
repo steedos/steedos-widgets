@@ -735,10 +735,12 @@ export function getObjectListHeader(objectSchema, listViewName, ctx) {
   return headerSchema;
 }
 
-function getBackButtonSchema(){
+function getBackButtonSchema(options){
+  const { showRecordTitle = true } = options || {}
   return {
     "type": "service",
     "className": "steedos-object-record-detail-header-back-button",
+    "visibleOn": "${(window:innerWidth > 768 && display !== 'split') || window:innerWidth <= 768}",
     "onEvent": {
         "@history_paths.changed": {
             "actions": [
@@ -753,8 +755,7 @@ function getBackButtonSchema(){
     },
     "body":[{
       "type": "button",
-      "visibleOn": "${(window:innerWidth > 768 && display !== 'split') || window:innerWidth <= 768}",
-      "className":"flex mr-4",
+      "className":`flex ${showRecordTitle ? 'mr-4' : ''}`,
       "onEvent": {
           "click": {
               "actions": [
@@ -787,6 +788,9 @@ function getBackButtonSchema(){
  */
 export async function getObjectRecordDetailHeader(objectSchema, recordId, options) {
   // console.log(`getObjectRecordDetailHeader====>`, options)
+  if(options && !options.formFactor && typeof window !== 'undefined' && window.innerWidth <= 768){
+    options.formFactor = 'SMALL';
+  }
   const { showRecordTitle = true } = options || {}
   // console.log('getObjectRecordDetailHeader==>', objectSchema, recordId)
   const { name, label, icon, NAME_FIELD_KEY } = objectSchema;
@@ -826,7 +830,7 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
   let backButtonsSchema = null;
   
   if(options.showBackButton != false){
-    backButtonsSchema = getBackButtonSchema();
+    backButtonsSchema = getBackButtonSchema(options);
   }
 
   // console.log(`getObjectRecordDetailHeader==> backButtonsSchema`, backButtonsSchema)
@@ -905,7 +909,12 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
       "columnClassName": "flex-initial",
       "md": "auto",
     })
-  };
+  }
+
+  if (!showRecordTitle && backButtonsSchema) {
+    backButtonsSchema.className += " antd-Button antd-Button--size-default border-none pl-0";
+    amisButtonsSchema.unshift(backButtonsSchema);
+  }
 
   gridBody.push({
     "body":  {

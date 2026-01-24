@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2024-05-17 13:12:15
+ * @LastEditTime: 2026-01-24 00:07:58
  * @Description: 
  */
 import './AmisRecordDetailHeader.less'
