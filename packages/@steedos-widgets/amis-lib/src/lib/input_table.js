@@ -419,6 +419,9 @@ async function getInputTableColumns(props, buttonsForColumnOperations) {
             if(buttonsForColumnOperations.length == 0 && !props.showIndex && index == 0) {
                 tableCell.className += " antd-Table-primayCell"
             }
+            if(tableCell.config && inlineEditMode != true){
+                delete tableCell.config.value;
+            }
             return tableCell;
         }) || [];
     }
