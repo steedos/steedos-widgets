@@ -23,9 +23,9 @@ const getSelectOptions = (field) => {
   each(field.options.split("\n"), (item) => {
     var foo = item.split(":");
     if (foo.length == 2) {
-      options.push({ label: foo[0], value: foo[1] });
+      options.push({ label: _.trim(foo[0]), value: _.trim(foo[1]) });
     } else {
-      options.push({ label: item, value: item });
+      options.push({ label: _.trim(item), value: _.trim(item) });
     }
   });
   return options;
