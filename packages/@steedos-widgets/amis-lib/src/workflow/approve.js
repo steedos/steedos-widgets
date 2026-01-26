@@ -87,6 +87,7 @@ const getNextStepInput = async (instance, nextStepChangeEvents) => {
   if(instance.approve?.type == 'cc'){
     return ;
   }
+  const isMobile = window.innerWidth < 768;
   return {
     type: "grid",
     columns: [
@@ -109,7 +110,7 @@ const getNextStepInput = async (instance, nextStepChangeEvents) => {
         body: [
           {
             type: "list-select",
-            label: "",
+            label: isMobile ? false : "",//手机端label和value显示为两行，左侧不应该有空隙
             name: "next_step",
             id: "u:next_step",
             multiple: false,
@@ -202,6 +203,7 @@ const getNextStepInput = async (instance, nextStepChangeEvents) => {
 
 //TODO 只有一个处理人时,默认选中,禁止修改. 部分情况不需要显示下一步处理人
 const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
+  const isMobile = window.innerWidth < 768;
   if(instance.approve?.type == 'cc'){
     return ;
   }
@@ -244,7 +246,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
             body: [
             {
               type: "steedos-select-user",
-              label: "",
+              label: isMobile ? false : "",//手机端label和value显示为两行，左侧不应该有空隙
               name: "next_users", 
               id: "u:next_users",
               hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type == 'counterSign'",
@@ -262,7 +264,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
             },
             {
               type: "steedos-select-user",
-              label: "",
+              label: isMobile ? false : "",//手机端label和value显示为两行，左侧不应该有空隙
               name: "next_users", 
               id: "u:next_users",
               hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type != 'counterSign'",
@@ -281,7 +283,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
             },
             {
               type: "checkboxes",
-              label: "",
+              label: isMobile ? false : "",//手机端label和value显示为两行，左侧不应该有空隙
               name: "next_users",
               id: "u:next_users",
               required: true,
@@ -339,7 +341,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
             },
             {
               type: "radios",
-              label: "",
+              label: isMobile ? false : "",//手机端label和value显示为两行，左侧不应该有空隙
               name: "next_users",
               id: "u:next_users",
               required: true,
