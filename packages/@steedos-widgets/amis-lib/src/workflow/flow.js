@@ -53,7 +53,7 @@ const getArgumentsList = (func)=>{
 }
 
 const getSafeCode = (code)=>{
-  return code.replace(/（/g, '_').replace(/）/g, '');
+  return code.replace(/（/g, '_').replace(/）/g, '').replace(/、/g, '_');
 }
 
 const getTableFieldMap = (fields) => {
@@ -117,7 +117,7 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
     requiredOn: field.requiredOn,
     onEvent: field._amisField?.onEvent
   };
-  if(field.code.indexOf('（') > -1){
+  if(field.code.indexOf('（') > -1 || field.code.indexOf('、') > -1){
     const safeCode = getSafeCode(field.code);
     tpl.onEvent = tpl.onEvent || {};
     tpl.onEvent.change = tpl.onEvent.change || { actions: [] };
@@ -1406,8 +1406,8 @@ export const getFlowFormSchema = async (instance, box, print) => {
                 var changes = {};
                 var hasChanges = false;
                 _.each(data, function(value, key){
-                  if(typeof key === 'string' && (key.indexOf('（') > -1 || key.indexOf('）') > -1)){
-                      var newKey = key.replace(/（/g, '_').replace(/）/g, '');
+                  if(typeof key === 'string' && (key.indexOf('（') > -1 || key.indexOf('）') > -1 || key.indexOf('、') > -1)){
+                      var newKey = key.replace(/（/g, '_').replace(/）/g, '').replace(/、/g, '_');
                       if(data[newKey] !== value){
                         changes[newKey] = value;
                         hasChanges = true;
@@ -1547,8 +1547,8 @@ export const getFlowFormSchema = async (instance, box, print) => {
                   var changes = {};
                   var hasChanges = false;
                   _.each(data, function(value, key){
-                    if(typeof key === 'string' && (key.indexOf('（') > -1 || key.indexOf('）') > -1)){
-                        var newKey = key.replace(/（/g, '_').replace(/）/g, '');
+                    if(typeof key === 'string' && (key.indexOf('（') > -1 || key.indexOf('）') > -1 || key.indexOf('、') > -1)){
+                        var newKey = key.replace(/（/g, '_').replace(/）/g, '').replace(/、/g, '_');
                         if(data[newKey] !== value){
                           changes[newKey] = value;
                           hasChanges = true;
@@ -1615,8 +1615,8 @@ export const getFlowFormSchema = async (instance, box, print) => {
             })
           }else if(_.isObject(data)){
             _.each(data, function(value, key){
-              if(key.indexOf('（') > -1 || key.indexOf('）') > -1){
-                  var newKey = key.replace(/（/g, '_').replace(/）/g, '');
+              if(key.indexOf('（') > -1 || key.indexOf('）') > -1 || key.indexOf('、') > -1){
+                  var newKey = key.replace(/（/g, '_').replace(/）/g, '').replace(/、/g, '_');
                   data[newKey] = value;
               }
               formatData(value);
