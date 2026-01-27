@@ -620,6 +620,14 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
       }
     }else{
       tpl.value = field.formula.replace(/"/g, '');
+      if(field.type === 'number'){
+        try {
+          tpl.value = Number(tpl.value);
+          tpl.type = 'static-number';
+        } catch (error) {
+          console.error('getFieldReadonlyTpl number formula parse error', field.code, field.formula, error);
+        }
+      }
     }
 
   }
@@ -733,7 +741,9 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
     tpl.inInputTable = true;
   }
   else{
-    tpl.type = 'static';
+    if(tpl.type != 'static-number'){
+      tpl.type = 'static';
+    }
   }
   // console.log('getFieldReadonlyTpl', tpl)
   return tpl;
@@ -1390,6 +1400,32 @@ export const getFlowFormSchema = async (instance, box, print) => {
               "script": "window.SteedosWorkflow.Instance.changed = true;"
             },
             {
+              "actionType": "custom",
+              "script": `
+                var data = event.data;
+                var changes = {};
+                var hasChanges = false;
+                _.each(data, function(value, key){
+                  if(typeof key === 'string' && (key.indexOf('（') > -1 || key.indexOf('）') > -1)){
+                      var newKey = key.replace(/（/g, '_').replace(/）/g, '');
+                      if(data[newKey] !== value){
+                        changes[newKey] = value;
+                        hasChanges = true;
+                      }
+                  }
+                });
+                if(hasChanges){
+                  doAction({
+                    actionType: 'setValue',
+                    componentId: 'instance_form',
+                    args: {
+                      value: changes
+                    }
+                  });
+                }
+              `
+            },
+            {
               "actionType": "reload",
               "componentId": "u:next_step",
               "args": {}
@@ -1406,7 +1442,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
     };
   }
 
-  // console.log('instanceFormSchema....', instanceFormSchema)
+  console.log('instanceFormSchema....', instanceFormSchema)
   return {
     type: "page",
     name: "instancePage",
@@ -1502,6 +1538,35 @@ export const getFlowFormSchema = async (instance, box, print) => {
       },
       "inited": {
         "actions": [
+          {
+              "actionType": "custom",
+              "script": `
+                setTimeout(function(){
+                  var form = event.context.scoped.getComponentById('instance_form');
+                  var data = form.getValues();
+                  var changes = {};
+                  var hasChanges = false;
+                  _.each(data, function(value, key){
+                    if(typeof key === 'string' && (key.indexOf('（') > -1 || key.indexOf('）') > -1)){
+                        var newKey = key.replace(/（/g, '_').replace(/）/g, '');
+                        if(data[newKey] !== value){
+                          changes[newKey] = value;
+                          hasChanges = true;
+                        }
+                    }
+                  });
+                  if(hasChanges){
+                    doAction({
+                      actionType: 'setValue',
+                      componentId: 'instance_form',
+                      args: {
+                        value: changes
+                      }
+                    });
+                  }
+                }, 1500 )
+              `
+          },
           {
               actionType: 'broadcast',
               eventName: "recordLoaded"
