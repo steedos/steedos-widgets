@@ -101,6 +101,11 @@ const mapFormula = (formula, tableFieldMap)=>{
 
     return `\${${newFormula}}`;
   }
+
+  if(newFormula.trim().startsWith('{') && newFormula.trim().endsWith('}')){
+    return `$${newFormula}`;
+  }
+
   return null;
 }
 
@@ -136,7 +141,12 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
     tpl.onEvent.change.actions.push(action);
   }
   if(field.default_value && !field.default_value?.trim().startsWith('auto_number(')){
-    tpl.value = field.default_value;
+    const formula = mapFormula(field.default_value, !inTable ? tableFieldMap : null);
+    if(formula){
+      tpl.value = formula;
+    }else{
+      tpl.value = field.default_value;
+    }
   }
   if(isOpinionField(field)){
     tpl.type = 'input-group';
