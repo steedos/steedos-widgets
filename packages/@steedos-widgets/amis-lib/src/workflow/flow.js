@@ -1486,14 +1486,24 @@ export const getFlowFormSchema = async (instance, box, print) => {
               `
             },
             {
-              "actionType": "reload",
-              "componentId": "u:next_step",
-              "args": {}
-            },
-            {
-              "actionType": "reload",
-              "componentId": "u:set_steps_users",
-              "args": {}
+              "actionType": "custom",
+              "script": `
+                if(window.steedosWorkflowReloadStepTimer){
+                  clearTimeout(window.steedosWorkflowReloadStepTimer);
+                }
+                window.steedosWorkflowReloadStepTimer = setTimeout(()=>{
+                  doAction({
+                    "actionType": "reload",
+                    "componentId": "u:next_step",
+                    "args": {}
+                  });
+                  doAction({
+                    "actionType": "reload",
+                    "componentId": "u:set_steps_users",
+                    "args": {}
+                  });
+                }, 1500);
+              `
             },
             ...changeEvents
           ]
