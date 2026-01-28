@@ -64,7 +64,6 @@ return api;
                 "&": "$$",
                 "$scopeId": "$scopeId",
                 "context": "${context}",
-                "next_step": "$}",
             }
         },
         body: [
@@ -96,7 +95,6 @@ return api;
                 "source": "${nextStepUsers}",
                 "labelField": "name",
                 "valueField": "id",
-                value: '${approver_users}',
                 "joinValues": false,
                 "extractValue": true
             },
@@ -111,7 +109,6 @@ return api;
                 "source": "${nextStepUsers}",
                 "labelField": "name",
                 "valueField": "id",
-                value: '${approver_users}',
                 "joinValues": false,
                 "extractValue": true,
             }

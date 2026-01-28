@@ -53,7 +53,7 @@ const getArgumentsList = (func)=>{
 }
 
 const getSafeCode = (code)=>{
-  return code.replace(/（/g, '_').replace(/）/g, '');
+  return code.replace(/（/g, '_').replace(/）/g, '').replace(/、/g, '_');
 }
 
 const getTableFieldMap = (fields) => {
@@ -101,6 +101,11 @@ const mapFormula = (formula, tableFieldMap)=>{
 
     return `\${${newFormula}}`;
   }
+
+  if(newFormula.trim().startsWith('{') && newFormula.trim().endsWith('}')){
+    return `$${newFormula}`;
+  }
+
   return null;
 }
 
@@ -117,7 +122,7 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
     requiredOn: field.requiredOn,
     onEvent: field._amisField?.onEvent
   };
-  if(field.code.indexOf('（') > -1){
+  if(field.code.indexOf('（') > -1 || field.code.indexOf('、') > -1){
     const safeCode = getSafeCode(field.code);
     tpl.onEvent = tpl.onEvent || {};
     tpl.onEvent.change = tpl.onEvent.change || { actions: [] };
@@ -136,7 +141,12 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
     tpl.onEvent.change.actions.push(action);
   }
   if(field.default_value && !field.default_value?.trim().startsWith('auto_number(')){
-    tpl.value = field.default_value;
+    const formula = mapFormula(field.default_value, !inTable ? tableFieldMap : null);
+    if(formula){
+      tpl.value = formula;
+    }else{
+      tpl.value = field.default_value;
+    }
   }
   if(isOpinionField(field)){
     tpl.type = 'input-group';
@@ -1456,8 +1466,8 @@ export const getFlowFormSchema = async (instance, box, print) => {
                 var changes = {};
                 var hasChanges = false;
                 _.each(data, function(value, key){
-                  if(typeof key === 'string' && (key.indexOf('（') > -1 || key.indexOf('）') > -1)){
-                      var newKey = key.replace(/（/g, '_').replace(/）/g, '');
+                  if(typeof key === 'string' && (key.indexOf('（') > -1 || key.indexOf('）') > -1 || key.indexOf('、') > -1)){
+                      var newKey = key.replace(/（/g, '_').replace(/）/g, '').replace(/、/g, '_');
                       if(data[newKey] !== value){
                         changes[newKey] = value;
                         hasChanges = true;
@@ -1597,8 +1607,8 @@ export const getFlowFormSchema = async (instance, box, print) => {
                   var changes = {};
                   var hasChanges = false;
                   _.each(data, function(value, key){
-                    if(typeof key === 'string' && (key.indexOf('（') > -1 || key.indexOf('）') > -1)){
-                        var newKey = key.replace(/（/g, '_').replace(/）/g, '');
+                    if(typeof key === 'string' && (key.indexOf('（') > -1 || key.indexOf('）') > -1 || key.indexOf('、') > -1)){
+                        var newKey = key.replace(/（/g, '_').replace(/）/g, '').replace(/、/g, '_');
                         if(data[newKey] !== value){
                           changes[newKey] = value;
                           hasChanges = true;
@@ -1665,8 +1675,8 @@ export const getFlowFormSchema = async (instance, box, print) => {
             })
           }else if(_.isObject(data)){
             _.each(data, function(value, key){
-              if(key.indexOf('（') > -1 || key.indexOf('）') > -1){
-                  var newKey = key.replace(/（/g, '_').replace(/）/g, '');
+              if(key.indexOf('（') > -1 || key.indexOf('）') > -1 || key.indexOf('、') > -1){
+                  var newKey = key.replace(/（/g, '_').replace(/）/g, '').replace(/、/g, '_');
                   data[newKey] = value;
               }
               formatData(value);
