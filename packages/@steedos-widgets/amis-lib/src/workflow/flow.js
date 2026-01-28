@@ -471,8 +471,8 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
           method: "get",
           dataType: "json",
           adaptor:`
-            payload.data = {
-              options: _.map(payload.value, (item)=>{
+            return (async () => {
+              let options = _.map(payload.value, (item)=>{
                 const value = item;
                 item["@label"] = item["${labelField}"]
                 delete item['@odata.editLink'];
@@ -482,15 +482,56 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
                   label: item["@label"],
                   value: value
                 }
-              })
-            }
-            return payload;
+              });
+              
+              if(api.selectedIds && api.selectedIds.length > 0){
+                const loadedIds = options.map(function(opt){
+                  return opt.value._id;
+                });
+                const missingIds = api.selectedIds.filter(function(id){
+                  return !loadedIds.includes(id);
+                });
+                if(missingIds.length > 0){
+                  const baseUrl = api.baseUrl;
+                  const idFilter = missingIds.map(function(id){
+                    return "_id eq '" + id + "'";
+                  }).join(" or ");
+                  const fetchUrl = baseUrl + (baseUrl.indexOf('?') > -1 ? '&' : '?') + "$filter=" + idFilter;
+                  try {
+                    const response = await fetch(fetchUrl, {});
+                    const data = await response.json();
+                    if (data && data.value) {
+                       const missingOptions = _.map(data.value, (item) => {
+                           const value = item;
+                           item["@label"] = item["${labelField}"];
+                           delete item['@odata.editLink'];
+                           delete item['@odata.etag'];
+                           delete item['@odata.id'];
+                           return {
+                               label: item["@label"],
+                               value: value
+                           };
+                       });
+                       options.unshift(...missingOptions);
+                    }
+                  } catch (e) {
+                      console.error("Failed to fetch missing values", e);
+                  }
+                }
+              }
+
+              payload.data = {
+                options: options
+              }
+              return payload;
+            })();
           `,
           requestAdaptor: `
             const filters = \`${_.replace(field.filters, /_.pluck/g, '_.map')}\`;
-            const url = \`${field.url}\`;
+            let url = \`${field.url}\`;
+            api.baseUrl = url;
             if(filters){
-              const joinKey = url.indexOf('?') > 0 ? '&' : '?';
+              let joinKey = url.indexOf('?') > 0 ? '&' : '?';
               let _filter = []
               if(filters.startsWith('function(') || filters.startsWith('function (')){
                 const argsName = ${JSON.stringify(argsName)};
@@ -503,9 +544,18 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
               }else{
                 _filter = filters
               }
+
+              const val = context.value || _.get(context, '${field.code}');
+              if(val){
+                const values = Array.isArray(val) ? val : [val];
+                const ids = values.map((v) => v && (v._id || v)).filter((v) => typeof v === 'string');
+                api.selectedIds = ids;
+              }
+
               if(context.term){
                 _filter = \`(\${_filter}) and contains(name, '\${context.term}')\`
               }
+              joinKey = url.indexOf('?') > 0 ? '&' : '?';
               api.url = url + joinKey + "$filter=" + _filter
             }else{
               api.url = url  
