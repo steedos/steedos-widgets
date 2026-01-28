@@ -31,6 +31,7 @@ export const AmisInstanceDetail = async (props) => {
         applicant_name: instanceInfo.applicant_name,
         related_instances: instanceInfo.related_instances,
         historyApproves: instanceInfo.historyApproves,
+        approveValues: instanceInfo.approveValues,
         boxName,
         ...instanceInfo.approveValues,
         context: Object.assign({}, data.context, instanceInfo),
