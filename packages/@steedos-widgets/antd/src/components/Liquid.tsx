@@ -91,24 +91,81 @@ function flattenObjectChain(obj) {
 
 // --- 组件实现 ---
 
-export const LiquidComponent: React.FC<LiquidTemplateProps> = ({ 
-  template, 
-  tpl,
-  data,
-  className,
-  $schema,
-  render: amisRender,
-  dispatchEvent,
-  partials: propsPartials,
-  ...rest
-}) => {
+// --- 错误边界组件 ---
+class ErrorBoundary extends React.Component<{ fallback?: React.ReactNode, children: React.ReactNode }, { hasError: boolean, error: Error | null }> {
+  constructor(props: any) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: any) {
+    console.error("Liquid Component ErrorBoundary caught error:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      // 如果提供了 fallback 则使用 fallback，否则不显示（静默失败，符合“不影响整体显示”的要求）
+      // 但对于顶层错误，可能需要显示。这里用于 amisRender 的局部包裹。
+      return this.props.fallback || null; 
+    }
+    return this.props.children;
+  }
+}
+
+// --- 错误显示组件 ---
+const ErrorDisplay = ({ error }: { error: Error }) => {
+  const [expanded, setExpanded] = useState(false);
+  if (!error) return null;
+  return (
+    <div className="border border-red-500 bg-red-50 text-red-700 p-4 rounded mb-4 text-sm font-mono">
+      <div className="flex justify-between items-start">
+        <div className="font-bold">Template Render Error</div>
+        <button 
+          onClick={() => setExpanded(!expanded)} 
+          className="text-blue-600 hover:underline text-xs ml-4 whitespace-nowrap"
+        >
+          {expanded ? 'Hide Details' : 'Show Details'}
+        </button>
+      </div>
+      <div className="mt-1">{error.message}</div>
+      {expanded && (
+        <div className="mt-2 pt-2 border-t border-red-200 text-xs overflow-auto max-h-60">
+          <pre>{error.stack}</pre>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
+  let { 
+    template, 
+    tpl,
+    data,
+    className,
+    $schema,
+    render: amisRender,
+    dispatchEvent,
+    partials: propsPartials,
+    ...rest
+  } = props;
   const doAction = data._scoped?.doAction;
 
   // 支持 tpl 作为 template 的别名
   if (tpl && !template) {
     template = tpl;
   }
+
+  if(!template){
+    template = props.$schema.template as any;
+  }
+  // console.log('template =============>', template, props);
   const [html, setHtml] = useState<string>('');
+  const [error, setError] = useState<Error | null>(null);
   const [parsedTemplates, setParsedTemplates] = useState<any[]>([]);
   const [mountNodes, setMountNodes] = useState<Record<string, HTMLElement>>({});
   const containerRef = useRef<HTMLDivElement>(null);
@@ -188,14 +245,27 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = ({
   const partialsFingerprint = JSON.stringify(finalPartials);
 
   useEffect(() => {
+    // console.log('template', template)
     let isMounted = true;
     try {
+      if (!template) {
+        if (isMounted) {
+          setParsedTemplates([]);
+          setError(null);
+        }
+        return;
+      }
       const tpl = engine.parse(template);
       if (isMounted) {
         setParsedTemplates(tpl);
+        setError(null);
       }
     } catch (e) {
       console.error("Liquid Parse Error:", e);
+      if (isMounted) {
+        setError(e as Error);
+        setParsedTemplates(null as any); 
+      }
     }
     return () => { isMounted = false; };
   }, [engine, template]);
@@ -214,15 +284,22 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = ({
       }
     };
 
+    // console.debug('[Liquid] Start render with context:', parsedTemplates, contextData);
+
     engine.render(parsedTemplates, contextData)
       .then((result) => {
         if (isMounted) {
+          // console.debug('[Liquid] Render success, content length:', result?.length, result);
           setHtml(prev => (prev !== result ? result : prev));
+          setError(null);
         }
       })
       .catch(err => {
-        console.log(`render error: `, template, contextData)
-        if (isMounted) console.error("Liquid Render Error:", err);
+        // console.log(`render error: `, template, contextData)
+        if (isMounted) {
+          console.error("Liquid Render Error:", err);
+          setError(err);
+        }
       });
 
     return () => { isMounted = false; };
@@ -241,7 +318,18 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = ({
         hasChanges = true;
       }
     });
-    if (hasChanges) setMountNodes(nodes);
+
+    // 只有在节点实际发生变化时才更新，防止死循环
+    // 简单的 key 比较
+    setMountNodes(prev => {
+        const prevKeys = Object.keys(prev).sort().join(',');
+        const newKeys = Object.keys(nodes).sort().join(',');
+        if (prevKeys !== newKeys) return nodes;
+        
+        // 如果想要更精确，还得对比 dom 引用，通常 key 变了 dom 也就变了
+        // 这里只是为了避免不必要的 set
+        return prev; 
+    });
   }, [html]);
 
   // 4. 创建 Portals
@@ -251,7 +339,12 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = ({
         const schema = inlineSchemasRef.current[key] || partialsRef.current[key] as SchemaObject;
         if (!schema || !domNode) return null;
         try {
-          return createPortal(amisRender(`partial-${key}`, schema, { data }), domNode);
+          return createPortal(
+            <ErrorBoundary fallback={null}>
+              {amisRender(`partial-${key}`, schema, { data })}
+            </ErrorBoundary>, 
+            domNode
+          );
         } catch(e) { return null; }
      });
   }, [mountNodes, partialsFingerprint, dataFingerprint, amisRender, data]);
@@ -307,7 +400,7 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = ({
             scriptNode.dataset.executed = "true";
 
             if (isGlobalLoaded) {
-                console.log(`[Liquid] Script already loaded: ${src}`);
+                // console.log(`[Liquid] Script already loaded: ${src}`);
                 resolve(); // 已存在，直接视为成功
                 return;
             }
@@ -325,7 +418,7 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = ({
             });
 
             newScript.onload = () => {
-                console.log(`[Liquid] Loaded: ${src}`);
+                // console.log(`[Liquid] Loaded: ${src}`);
                 resolve();
             };
 
@@ -375,6 +468,14 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = ({
         scriptCleanupsRef.current.forEach(cleanup => cleanup && cleanup());
     };
   }, [html, dataFingerprint]);
+
+  if (error) {
+    return (
+       <div className={`liquid-amis-container flex flex-col w-full overflow-auto p-4 ${className || ''}`}>
+         <ErrorDisplay error={error} />
+       </div>
+    );
+  }
 
   return (
     <>
