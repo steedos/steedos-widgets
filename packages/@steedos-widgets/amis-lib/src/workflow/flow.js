@@ -78,8 +78,10 @@ const mapFormula = (formula, tableFieldMap)=>{
   let newFormula = formula;
   const isFunction = newFormula.match(/(sum|average|count|max|min|numToRMB)\s*\(/i);
   const isOperator = newFormula.match(/[\+\-\*\/]/) && newFormula.indexOf("}.") < 0;
+  const isObjectField = newFormula.indexOf("}.") > -1;
+  const isDotField = newFormula.match(/\{[^{}]+\.[^{}]+\}/);
 
-  if(isFunction || isOperator){
+  if(isFunction || isOperator || isObjectField || isDotField){
     
     if(isFunction){
       newFormula = newFormula.replace(/sum\s*\(/ig, 'SUM(');
@@ -90,11 +92,28 @@ const mapFormula = (formula, tableFieldMap)=>{
       newFormula = newFormula.replace(/numToRMB\s*\(/ig, 'UPPERMONEY(');
     }
 
+    newFormula = newFormula.replace(/\{([^{}]+)\}\./g, (match, code)=>{
+      const trimmedCode = code.trim();
+      if(trimmedCode === 'applicant'){
+        return 'applicant.';
+      }
+      return `${getSafeCode(trimmedCode)}__expand.`;
+    });
+
     newFormula = newFormula.replace(/\{([^{}]+)\}/g, (match, code)=>{
+      code = code.trim();
       if(tableFieldMap && tableFieldMap[code]){
           const tableCode = tableFieldMap[code];
           const safeTableCode = getSafeCode(tableCode);
           return `ARRAYMAP(${safeTableCode}, item => item['${code}'])`;
+      }
+      if(code.indexOf('.') > -1){
+        const parts = code.split('.');
+        const firstPart = parts[0].trim();
+        if(firstPart === 'applicant'){
+           return `${firstPart}.${parts.slice(1).join('.')}`;
+        }
+        return `${getSafeCode(firstPart)}__expand.${parts.slice(1).join('.')}`;
       }
       return getSafeCode(code);
     });
@@ -348,20 +367,8 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
           const formula = mapFormula(field.formula, !inTable ? tableFieldMap : null);
           if(formula){
             tpl.value = formula;
-          }else if(field.formula.startsWith('{') && (field.formula.endsWith('}') || field.formula.indexOf("}") > 0)){
-            // {申请人姓名}.organization.fullname 转换为 ${申请人姓名.organization.fullname}
-            // {申请人姓名.organization.fullname} 转换为 ${申请人姓名.organization.fullname}  
-            if(field.formula.indexOf("}.") > 0){
-              // {申请人姓名}.organization.fullname
-              let formula = field.formula;
-              formula = formula.substring(1, formula.indexOf("}"));
-              tpl.value = `\${${formula}__expand${field.formula.substring( field.formula.indexOf("}") + 1 )}}`;
-            } else {
-              // {申请人姓名.organization.fullname}
-              tpl.value = `$${field.formula}`;
-            }
           }else{
-            tpl.value = field.formula.replace(/"/g, '');
+            tpl.value = `$${field.formula}`;
           }
         }
         break;
@@ -666,18 +673,6 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
     const formula = mapFormula(field.formula, !inTable ? tableFieldMap : null);
     if(formula){
       tpl.value = formula;
-    }else if(field.formula.startsWith('{') && (field.formula.endsWith('}') || field.formula.indexOf("}") > 0)){
-      // {申请人姓名}.organization.fullname 转换为 ${申请人姓名.organization.fullname}
-      // {申请人姓名.organization.fullname} 转换为 ${申请人姓名.organization.fullname}  
-      if(field.formula.indexOf("}.") > 0){
-        // {申请人姓名}.organization.fullname
-        let formula = field.formula;
-        formula = formula.substring(1, formula.indexOf("}"));
-        tpl.value = `\${${formula}__expand${field.formula.substring( field.formula.indexOf("}") + 1 )}}`;
-      } else {
-        // {申请人姓名.organization.fullname}
-        tpl.value = `$${field.formula}`;
-      }
     }else{
       tpl.value = field.formula.replace(/"/g, '');
       if(field.type === 'number'){
@@ -1154,7 +1149,7 @@ const getApplicantTableView = async (instance) => {
               {
                 "actionType": "ajax",
                 "api": {
-                  "url": "/api/formula/user/${event.data.__applicant}",
+                  "url": "/api/formula/user/${event.data.value}",
                   "method": "get",
                   "messages": {
                     "success": "",
