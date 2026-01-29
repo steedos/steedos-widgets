@@ -48,9 +48,9 @@ return api;
             }
             let value = null;
 
-            if(context.step_type == 'counterSign'){
-                value = _.map(payload.nextStepUsers, 'id');
-            }
+            // if(context.step_type == 'counterSign'){
+            //     value = _.map(payload.nextStepUsers, 'id');
+            // }
             if(payload.nextStepUsers.length === 1){
                 value = payload.nextStepUsers[0].id;
             }
