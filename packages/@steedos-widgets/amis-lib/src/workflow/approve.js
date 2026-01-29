@@ -429,7 +429,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
       },
     ],
     id: "u:ffff15b76c89",
-    className: "border-b border-gray-200 py-3 ${new_next_step.step_type == 'counterSign' ? 'hidden' : ''}",
+    className: "border-b border-gray-200 py-3", // ${new_next_step.step_type == 'counterSign' ? 'hidden' : ''}
     subFormMode: "",
     hiddenOn: "!!!this.new_next_step || (this.new_next_step && this.new_next_step.step_type === 'end')"
   };
