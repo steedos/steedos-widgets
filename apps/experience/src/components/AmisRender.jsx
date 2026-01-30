@@ -6,43 +6,69 @@
  * @Description: 
  */
 
-import React, { useState, useEffect, Fragment, useRef, useImperativeHandle } from 'react';
+import React, { useState, useEffect, Fragment, useRef, useImperativeHandle, useMemo } from 'react';
 import { amisRender, amisRootClick, getDefaultRenderData } from '@/lib/amis';
-import { defaultsDeep, concat, compact, filter, map, isEmpty } from 'lodash';
+import { defaultsDeep, concat, compact, filter, map, isEmpty, isEqual } from 'lodash';
 import { useRouter } from 'next/router'
 
 
 export const AmisRender = ({id, schema, data, className, assets, getModalContainer, updateProps, session})=>{
     const router = useRouter()
+    const prevSchemaRef = useRef(schema);
+    const prevDataRef = useRef(data);
+    const isInitializedRef = useRef(false);
+
+    // Memoize the stringified values to avoid recreating them on every render
+    const schemaString = useMemo(() => JSON.stringify(schema), [schema]);
+    const dataString = useMemo(() => JSON.stringify(data), [data]);
 
     useEffect(() => {
+        // Check if schema or data actually changed using deep equality
+        const schemaChanged = !isEqual(prevSchemaRef.current, schema);
+        const dataChanged = !isEqual(prevDataRef.current, data);
         
-        const defData = defaultsDeep({data: {$scopeId : id ,scopeId : id }}, {data: data} , {
-            data: getDefaultRenderData()
-        });
-        // 如果已存在,则先销毁, 再创建新实例
-        if(SteedosUI.refs[id]){
-            try {
-                SteedosUI.refs[id].unmount()
-            } catch (error) {
-                console.error(`error`, id)
+        // Only update if schema changed or it's the initial render
+        // For data changes, use updateProps instead of recreating the whole component
+        if (!isInitializedRef.current || schemaChanged) {
+            const defData = defaultsDeep({data: {$scopeId : id ,scopeId : id }}, {data: data} , {
+                data: getDefaultRenderData()
+            });
+            // 如果已存在,则先销毁, 再创建新实例
+            if(SteedosUI.refs[id]){
+                try {
+                    SteedosUI.refs[id].unmount()
+                } catch (error) {
+                    console.error(`error`, id)
+                }
             }
-        }
 
-        const env = {};
+            const env = {};
 
-        if(getModalContainer){
-            env.getModalContainer = getModalContainer;
+            if(getModalContainer){
+                env.getModalContainer = getModalContainer;
+            }
+            if(session){
+                env.session = session;
+            }
+            SteedosUI.refs[id] = amisRender(`#${id}`, defaultsDeep(defData , schema), {
+                // location: router
+            }, env, {router: router, assets:assets});
+
+            isInitializedRef.current = true;
+            prevSchemaRef.current = schema;
+            prevDataRef.current = data;
+        } else if (dataChanged && SteedosUI.refs[id]) {
+            // If only data changed, use updateProps to avoid re-creating the component
+            const amisScope = SteedosUI.refs[id];
+            const updatedData = defaultsDeep({$scopeId : id ,scopeId : id }, data, getDefaultRenderData());
+            amisScope.updateProps({ data: updatedData }, () => {
+                // Update completed
+            });
+            prevDataRef.current = data;
         }
-        if(session){
-            env.session = session;
-        }
-        SteedosUI.refs[id] = amisRender(`#${id}`, defaultsDeep(defData , schema), {
-            // location: router
-        }, env, {router: router, assets:assets});
 
         return ()=>{
-            if(SteedosUI.refs[id]){
+            if(SteedosUI.refs[id] && !isInitializedRef.current){
                 try {
                     SteedosUI.refs[id].unmount();
                     SteedosUI.refs[id] = null;
@@ -52,7 +78,7 @@ export const AmisRender = ({id, schema, data, className, assets, getModalContain
             }
         }
 
-      }, [JSON.stringify(schema), JSON.stringify(data)]);
+      }, [schemaString, dataString, id, router, assets, getModalContainer, session]);
 
     useEffect(()=>{
         const amisScope = SteedosUI.getRef(id);
@@ -64,7 +90,7 @@ export const AmisRender = ({id, schema, data, className, assets, getModalContain
                 console.log(`amisScope.updateProps callback.......`)
             });
         }
-    }, [JSON.stringify(updateProps)])
+    }, [JSON.stringify(updateProps), data, id])
     return (
         <div id={`${id}`} className={`app-wrapper ${className}`} onClick={(e)=>{ return amisRootClick(router, e)}}></div>
     )

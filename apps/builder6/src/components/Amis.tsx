@@ -6,6 +6,7 @@
 'use client';
 import React, { PropsWithChildren } from 'react';
 import { BuilderElement, Builder } from '@builder6/react';
+import isEqual from 'lodash/isEqual';
 
 
 interface AmisProps {
@@ -177,12 +178,18 @@ export class AmisComponent extends React.Component<PropsWithChildren<AmisProps>,
   }
 
   componentDidUpdate(prevProps: any) {
-    if (prevProps.schema !== this.props.schema) {
-      this.amisScoped.updateSchema(this.props.schema);
-    } else if (prevProps.data !== this.props.data) {
-      this.amisScoped.updateProps(this.props.data, () => {
-        /*更新回调 */
-      });
+    // Use deep equality check to prevent unnecessary updates
+    const schemaChanged = !isEqual(prevProps.schema, this.props.schema);
+    const dataChanged = !isEqual(prevProps.data, this.props.data);
+    
+    if (this.amisScoped) {
+      if (schemaChanged) {
+        this.amisScoped.updateSchema(this.props.schema);
+      } else if (dataChanged) {
+        this.amisScoped.updateProps(this.props.data, () => {
+          /*更新回调 */
+        });
+      }
     }
   }
 
