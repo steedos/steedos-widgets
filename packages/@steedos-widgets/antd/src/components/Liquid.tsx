@@ -174,6 +174,10 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
   // 防抖的数据状态，用于减少 HTML 重建频率
   const [debouncedData, setDebouncedData] = useState(data);
   
+  // 保持最新 data 的引用，供脚本使用
+  const dataRef = useRef(data);
+  dataRef.current = data;
+  
   // 用于存储脚本清理函数的引用，以便在组件卸载或更新时清理副作用
   const scriptCleanupsRef = useRef<Function[]>([]);
 
@@ -183,18 +187,22 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
   
   const inlineSchemasRef = useRef<Record<string, SchemaObject>>({});
   
+  // 创建稳定的防抖函数，用于更新 debouncedData
+  const debouncedSetData = useMemo(
+    () => debounce((newData: Record<string, any>) => {
+      setDebouncedData(newData);
+    }, 300, { leading: true }), // leading: true 确保第一次更新立即执行
+    []
+  );
+  
   // 防抖更新 debouncedData，减少 HTML 重建频率
   useEffect(() => {
-    const debouncedUpdate = debounce(() => {
-      setDebouncedData(data);
-    }, 300); // 300ms 防抖延迟
-    
-    debouncedUpdate();
+    debouncedSetData(data);
     
     return () => {
-      debouncedUpdate.cancel();
+      debouncedSetData.cancel();
     };
-  }, [data]);
+  }, [data, debouncedSetData]);
 
   // 1. 初始化 Liquid Engine
   const engine = useMemo(() => {
@@ -258,9 +266,9 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
     return liq;
   }, []);
 
-  // Track previous values for comparison
-  const prevDebouncedDataRef = useRef(debouncedData);
-  const prevPartialsRef = useRef(finalPartials);
+  // Track previous values for comparison (初始化为 undefined 以确保首次渲染)
+  const prevDebouncedDataRef = useRef<Record<string, any> | undefined>(undefined);
+  const prevPartialsRef = useRef<Record<string, string | object> | undefined>(undefined);
 
   useEffect(() => {
     // console.log('template', template)
@@ -472,7 +480,8 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
                     const debugName = `steedos-liquid-${Math.random().toString(36).slice(2)}.js`;
                     const debuggableCode = code + `\n//# sourceURL=${debugName}`;
                     const func = new Function('data', 'dom', 'doAction', 'dispatchEvent', debuggableCode);
-                    const cleanupResult = func(data, scriptNode.parentElement, doAction, dispatchEvent);
+                    // 使用 dataRef.current 获取最新的 data
+                    const cleanupResult = func(dataRef.current, scriptNode.parentElement, doAction, dispatchEvent);
                     if (typeof cleanupResult === 'function') {
                         scriptCleanupsRef.current.push(cleanupResult);
                     }
