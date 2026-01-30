@@ -269,6 +269,7 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
   // Track previous values for comparison (初始化为 undefined 以确保首次渲染)
   const prevDebouncedDataRef = useRef<Record<string, any> | undefined>(undefined);
   const prevPartialsRef = useRef<Record<string, string | object> | undefined>(undefined);
+  const prevParsedTemplatesRef = useRef<any[] | undefined>(undefined);
 
   useEffect(() => {
     // console.log('template', template)
@@ -301,17 +302,23 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
     // 跳过空模板或未解析的模板（parsedTemplates 为 null、undefined 或空数组时）
     if (!parsedTemplates || parsedTemplates.length === 0) return;
     
+    // 检查 parsedTemplates 是否发生变化（模板重新解析时需要强制渲染）
+    const templatesChanged = prevParsedTemplatesRef.current !== parsedTemplates;
+    
     console.log('[Liquid Debug] Render effect - checking if should render:', {
       prevDebouncedData: prevDebouncedDataRef.current,
       debouncedData: debouncedData,
       dataEqual: isEqual(prevDebouncedDataRef.current, debouncedData),
       prevPartials: prevPartialsRef.current,
       finalPartials: finalPartials,
-      partialsEqual: isEqual(prevPartialsRef.current, finalPartials)
+      partialsEqual: isEqual(prevPartialsRef.current, finalPartials),
+      templatesChanged: templatesChanged
     });
     
     // 只在 debouncedData 或 partials 实际变化时才重新渲染
-    if (isEqual(prevDebouncedDataRef.current, debouncedData) && 
+    // 但如果 parsedTemplates 变化了（模板重新解析），必须渲染
+    if (!templatesChanged && 
+        isEqual(prevDebouncedDataRef.current, debouncedData) && 
         isEqual(prevPartialsRef.current, finalPartials)) {
       console.log('[Liquid Debug] Render effect - skipping render, data unchanged');
       return;
@@ -320,6 +327,7 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
     console.log('[Liquid Debug] Render effect - will render');
     prevDebouncedDataRef.current = debouncedData;
     prevPartialsRef.current = finalPartials;
+    prevParsedTemplatesRef.current = parsedTemplates;
 
     let isMounted = true;
     inlineSchemasRef.current = {}; 
