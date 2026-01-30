@@ -298,7 +298,8 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
 
   // 2. Liquid 渲染 HTML
   useEffect(() => {
-    if (!parsedTemplates) return;
+    // 跳过空模板或未解析的模板（parsedTemplates 为 null、undefined 或空数组时）
+    if (!parsedTemplates || parsedTemplates.length === 0) return;
     
     // 只在 debouncedData 或 partials 实际变化时才重新渲染
     if (isEqual(prevDebouncedDataRef.current, debouncedData) && 
