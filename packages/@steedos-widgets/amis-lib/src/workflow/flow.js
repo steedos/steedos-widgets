@@ -556,12 +556,15 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
               }
 
               const val = context.value || _.get(context, '${field.code}');
+              let ids = [];
               if(val){
                 const values = Array.isArray(val) ? val : [val];
-                const ids = values.map((v) => v && (v._id || v)).filter((v) => typeof v === 'string');
-                api.selectedIds = ids;
+                ids = values.map((v) => v && (v._id || v)).filter((v) => typeof v === 'string');
               }
 
+              ids = _.uniq(ids);
+              api.selectedIds = ids;
+              
               if(context.term){
                 _filter = \`(\${_filter}) and contains(name, '\${context.term}')\`
               }
@@ -573,9 +576,10 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
             api.query = {};
             return api;
           `,
-          trackExpression: _.join(_.map(argsName, (item)=>{return `\${${item}|json}`}), '-')
+          trackExpression: _.join(_.map(argsName, (item)=>{return `\${${item}|json}`}), '-') + `-\${${field.code}|json}`
         };
-        tpl.source = tpl.autoComplete;
+        tpl.source = _.cloneDeep(tpl.autoComplete);
+        delete tpl.autoComplete.trackExpression;
         tpl.isAmis=true;
         tpl.searchable = true;
         break;
