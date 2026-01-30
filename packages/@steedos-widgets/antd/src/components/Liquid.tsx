@@ -301,12 +301,23 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
     // 跳过空模板或未解析的模板（parsedTemplates 为 null、undefined 或空数组时）
     if (!parsedTemplates || parsedTemplates.length === 0) return;
     
+    console.log('[Liquid Debug] Render effect - checking if should render:', {
+      prevDebouncedData: prevDebouncedDataRef.current,
+      debouncedData: debouncedData,
+      dataEqual: isEqual(prevDebouncedDataRef.current, debouncedData),
+      prevPartials: prevPartialsRef.current,
+      finalPartials: finalPartials,
+      partialsEqual: isEqual(prevPartialsRef.current, finalPartials)
+    });
+    
     // 只在 debouncedData 或 partials 实际变化时才重新渲染
     if (isEqual(prevDebouncedDataRef.current, debouncedData) && 
         isEqual(prevPartialsRef.current, finalPartials)) {
+      console.log('[Liquid Debug] Render effect - skipping render, data unchanged');
       return;
     }
     
+    console.log('[Liquid Debug] Render effect - will render');
     prevDebouncedDataRef.current = debouncedData;
     prevPartialsRef.current = finalPartials;
 
@@ -316,6 +327,7 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
     const contextData = {
       ...flattenObjectChain(debouncedData),
       __registerInlineSchema: (id: string, schema: SchemaObject) => {
+        console.log('[Liquid Debug] Registering inline schema:', id);
         inlineSchemasRef.current[id] = schema;
       }
     };
@@ -325,6 +337,7 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
     engine.render(parsedTemplates, contextData)
       .then((result) => {
         if (isMounted) {
+          console.log('[Liquid Debug] Render complete, schemas registered:', Object.keys(inlineSchemasRef.current));
           // console.debug('[Liquid] Render success, content length:', result?.length, result);
           setHtml(prev => (prev !== result ? result : prev));
           setError(null);
