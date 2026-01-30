@@ -9,6 +9,9 @@
  * - Field schema caching is implemented to prevent re-computation during user input
  * - Cache is maintained with a maximum size of 1000 entries
  * - Editor mode bypasses caching for real-time updates
+ * - Data-dependent schemas (static mode with _display) are not cached
+ * - Responsive schemas (lookup/master_detail) are not cached to preserve window size behavior
+ * - Failed schema generation is retried on next request
  * - Use clearFieldSchemaCache() to manually clear the cache if needed
  */
 import "./AmisSteedosField.less";
@@ -24,27 +27,42 @@ const fieldSchemaCache = new Map<string, Promise<any>>();
 const MAX_CACHE_SIZE = 1000;
 
 // Generate a cache key from field props
-function generateFieldCacheKey(props: any): string {
-    const { config, field, readonly, ctx, static: fStatic, inInputTable, isLookupInTable, data } = props;
+function generateFieldCacheKey(props: any): string | null {
+    const { config, field, readonly, ctx, static: fStatic, inInputTable, isLookupInTable, data, className, label } = props;
     const steedosField = config || field;
     
+    // Don't cache if in static display mode with _display data, as schemas depend on runtime record data
+    if (fStatic && data && data.hasOwnProperty('_display')) {
+        return null;
+    }
+    
+    // Don't cache schemas that depend on window size (responsive behavior)
+    // These fields have different schemas based on window.innerWidth
+    if (steedosField?.type === 'lookup' || steedosField?.type === 'master_detail') {
+        return null;
+    }
+    
     // Create a stable cache key based on field configuration
+    const effectiveLabel = (typeof label === "string" || label === false) ? label : steedosField?.label;
     const cacheKeyParts = [
         steedosField?.object,
         steedosField?.name,
         steedosField?.type,
-        steedosField?.label,
+        effectiveLabel,
         steedosField?.readonly,
         readonly,
         fStatic,
         inInputTable,
         isLookupInTable,
-        data?.appId,
-        data?.formFactor,
-        data?.objectName,
+        className,
+        data?.appId || '',
+        data?.formFactor || '',
+        data?.objectName || '',
+        data?.hasOwnProperty('_display') ? 'with_display' : 'no_display',
         JSON.stringify(steedosField?.reference_to),
         JSON.stringify(steedosField?.options),
         JSON.stringify(steedosField?.amis),
+        JSON.stringify(ctx),
     ];
     
     return cacheKeyParts.join('|');
@@ -930,13 +948,23 @@ export const AmisSteedosField = async (props) => {
     // Generate cache key based on field configuration
     const cacheKey = generateFieldCacheKey(props);
     
+    // Skip caching if cache key is null (data-dependent or responsive schemas)
+    if (cacheKey === null) {
+        return AmisSteedosFieldImpl(props);
+    }
+    
     // Check if schema is already cached
     if (fieldSchemaCache.has(cacheKey)) {
         return fieldSchemaCache.get(cacheKey);
     }
     
-    // Generate schema and cache the promise
-    const schemaPromise = AmisSteedosFieldImpl(props);
+    // Generate schema and cache the promise with error handling
+    const schemaPromise = AmisSteedosFieldImpl(props).catch((error) => {
+        // Remove failed entry from cache so it can be retried
+        fieldSchemaCache.delete(cacheKey);
+        throw error;
+    });
+    
     fieldSchemaCache.set(cacheKey, schemaPromise);
     
     // Maintain cache size
