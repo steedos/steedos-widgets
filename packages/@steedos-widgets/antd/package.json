@@ -30,6 +30,7 @@
     "antd": "^5.29.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "rimraf": "^6.1.2",
     "rollup": "^2.79.2",
     "rollup-plugin-alias": "^2.2.0",
     "rollup-plugin-external-globals": "^0.6.1",
@@ -45,10 +46,12 @@
     "rollup-plugin-svg": "^2.0.0",
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-tslib-resolve-id": "^0.0.0",
-    "rollup-plugin-visualizer": "^5.8.0"
+    "rollup-plugin-visualizer": "^5.8.0",
+    "typescript": "^5.9.3"
   },
   "gitHead": "ffb730e16642eb8e7a7ae5d98d0773c42482e7d2",
   "dependencies": {
-    "liquidjs": "^10.24.0"
+    "liquidjs": "^10.24.0",
+    "lodash": "^4.17.23"
   }
 }

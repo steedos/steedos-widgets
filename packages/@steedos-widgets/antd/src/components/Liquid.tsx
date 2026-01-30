@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Liquid, Context } from 'liquidjs';
+import { isEqual, debounce } from 'lodash';
 
 // --- 类型定义 ---
 type SchemaObject = Record<string, any>;
@@ -170,6 +171,9 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
   const [mountNodes, setMountNodes] = useState<Record<string, HTMLElement>>({});
   const containerRef = useRef<HTMLDivElement>(null);
   
+  // 防抖的数据状态，用于减少 HTML 重建频率
+  const [debouncedData, setDebouncedData] = useState(data);
+  
   // 用于存储脚本清理函数的引用，以便在组件卸载或更新时清理副作用
   const scriptCleanupsRef = useRef<Function[]>([]);
 
@@ -178,6 +182,19 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
   partialsRef.current = finalPartials;
   
   const inlineSchemasRef = useRef<Record<string, SchemaObject>>({});
+  
+  // 防抖更新 debouncedData，减少 HTML 重建频率
+  useEffect(() => {
+    const debouncedUpdate = debounce(() => {
+      setDebouncedData(data);
+    }, 300); // 300ms 防抖延迟
+    
+    debouncedUpdate();
+    
+    return () => {
+      debouncedUpdate.cancel();
+    };
+  }, [data]);
 
   // 1. 初始化 Liquid Engine
   const engine = useMemo(() => {
@@ -241,8 +258,9 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
     return liq;
   }, []);
 
-  const dataFingerprint = JSON.stringify(data);
-  const partialsFingerprint = JSON.stringify(finalPartials);
+  // Track previous values for comparison
+  const prevDebouncedDataRef = useRef(debouncedData);
+  const prevPartialsRef = useRef(finalPartials);
 
   useEffect(() => {
     // console.log('template', template)
@@ -273,12 +291,21 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
   // 2. Liquid 渲染 HTML
   useEffect(() => {
     if (!parsedTemplates) return;
+    
+    // 只在 debouncedData 或 partials 实际变化时才重新渲染
+    if (isEqual(prevDebouncedDataRef.current, debouncedData) && 
+        isEqual(prevPartialsRef.current, finalPartials)) {
+      return;
+    }
+    
+    prevDebouncedDataRef.current = debouncedData;
+    prevPartialsRef.current = finalPartials;
 
     let isMounted = true;
     inlineSchemasRef.current = {}; 
 
     const contextData = {
-      ...flattenObjectChain(data),
+      ...flattenObjectChain(debouncedData),
       __registerInlineSchema: (id: string, schema: SchemaObject) => {
         inlineSchemasRef.current[id] = schema;
       }
@@ -303,7 +330,7 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
       });
 
     return () => { isMounted = false; };
-  }, [engine, parsedTemplates, dataFingerprint, partialsFingerprint]);
+  }, [engine, parsedTemplates, debouncedData, finalPartials]);
 
   // 3. Portals 挂载检测
   useEffect(() => {
@@ -343,11 +370,12 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
             <ErrorBoundary fallback={null}>
               {amisRender(`partial-${key}`, schema, { data })}
             </ErrorBoundary>, 
-            domNode
+            domNode,
+            key // 使用稳定的 key 基于 Partial ID
           );
         } catch(e) { return null; }
      });
-  }, [mountNodes, partialsFingerprint, dataFingerprint, amisRender, data]);
+  }, [mountNodes, finalPartials, amisRender, data]);
 
   // ==================================================================================
   // 5. 核心逻辑：顺序加载器 (等待外部脚本加载完再执行内联脚本)
@@ -467,7 +495,7 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
     return () => {
         scriptCleanupsRef.current.forEach(cleanup => cleanup && cleanup());
     };
-  }, [html, dataFingerprint]);
+  }, [html]); // 仅依赖 html 变化，不依赖 data 变化
 
   if (error) {
     return (
