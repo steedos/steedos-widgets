@@ -4,6 +4,12 @@
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
  * @LastEditTime: 2025-07-14 15:53:01
  * @Description: 
+ * 
+ * Performance Optimization (性能优化):
+ * - Field schema caching is implemented to prevent re-computation during user input
+ * - Cache is maintained with a maximum size of 1000 entries
+ * - Editor mode bypasses caching for real-time updates
+ * - Use clearFieldSchemaCache() to manually clear the cache if needed
  */
 import "./AmisSteedosField.less";
 import { Field, getUISchema, getSelectMap, getPage } from '@steedos-widgets/amis-lib';
