@@ -188,13 +188,16 @@ export class AmisComponent extends React.Component<PropsWithChildren<AmisProps>,
         this.amisScoped.updateSchema(this.props.schema);
       } else if (dataChanged) {
         // Match the data structure from initializeAmis
-        const data = {
-          ...this.props.builderState.state,
-          ...this.props.data,
-        };
-        this.amisScoped.updateProps({ data }, () => {
-          /*更新回调 */
-        });
+        const { builderState } = this.props;
+        if (builderState) {
+          const data = {
+            ...builderState.state,
+            ...this.props.data,
+          };
+          this.amisScoped.updateProps({ data }, () => {
+            /*更新回调 */
+          });
+        }
       }
     }
   }
