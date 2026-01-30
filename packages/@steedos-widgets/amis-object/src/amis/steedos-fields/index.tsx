@@ -4,6 +4,60 @@ import { sampleSize, has, isArray, isEmpty, isString, pick, includes, clone, for
 
 import { AmisSteedosField } from '../AmisSteedosField'
 
+function getAmisFieldType(sType){
+    switch (sType) {
+        case 'text':
+            return 'text';
+        case 'textarea':
+            return 'textarea';
+        case 'html':
+            return 'html';
+        case 'markdown':
+            return 'markdown';
+        case 'select':
+            return 'select';
+        case 'boolean':
+            return 'checkbox';
+        case 'date':
+            return 'date';
+        case 'datetime':
+            return 'datetime';
+        case 'number':
+            return 'input-number';
+        case 'currency':
+            return 'input-number';
+        case 'percent':
+            return 'input-number'
+        case 'password':
+            return 'password';
+        case 'lookup':
+            return 'select';
+        case 'master_detail':
+            return 'picker';
+        case 'autonumber':
+            return 'text';
+        case 'url':
+            return 'url'
+        case 'email':
+            return 'email'
+        case 'image':
+            return 'image'
+        case 'formula':
+            //TODO
+            break;
+        case 'summary':
+            //TODO
+            break;
+        case 'grid':
+            return 'table';
+        case 'table':
+            return 'steedos-input-table';
+        default:
+            return sType;
+    }
+
+};
+
 function generateRandomString(length = 5) {
   const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
   return sampleSize(characters, length).join('');
@@ -77,6 +131,10 @@ const createFieldFunction = (type: string) => {
         props.config.amis = {
           mode: 'horizontal'
         };
+      }
+
+      if(includes(['currency', 'number'], props.config.type)){
+        props.config.amis.type = getAmisFieldType(props.config.type)
       }
 
       if(props.config.multiple){

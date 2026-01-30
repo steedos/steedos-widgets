@@ -133,6 +133,7 @@
     "frontend_workflow_instance_submit_date_prefix": "提交日期：",
     "frontend_workflow_approval_judge_returned": "已退回",
     "frontend_workflow_approval_judge_terminated": "被取回",
+    "frontend_workflow_approval_judge_retrieved": "已取回",
     "frontend_workflow_approval_judge_pending": "审核中",
     "frontend_workflow_approval_judge_approved": "已核准",
     "frontend_workflow_approval_judge_rejected": "已驳回",

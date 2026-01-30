@@ -469,6 +469,8 @@ export const getInstanceInfo = async (props) => {
               case "readed":
                 judge = i18next.t('frontend_workflow_approval_judge_readed');//"已阅";
                 break;
+              case "retrieved":
+                judge = i18next.t('frontend_workflow_approval_judge_retrieved');//"已阅";
               default:
                 break;
             }
