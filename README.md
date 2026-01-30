@@ -3,6 +3,8 @@ Steedos 前端资产包
 
 > 💡 **新功能**: 现在支持自动重新编译！运行 `yarn dev` 即可启动开发服务器，无需每次手动 build。
 > 
+> 🚀 **性能优化**: 已优化 AMIS 组件渲染性能，消除页面闪烁和组件丢失问题。查看 [性能优化文档](./OPTIMIZATION_SUMMARY_CN.md)
+> 
 > 📖 查看 [快速开始指南](./QUICKSTART.md) | [完整开发文档](./DEVELOPMENT.md)
 
 ## 快速开始
