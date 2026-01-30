@@ -6,7 +6,7 @@
  * @Description: 
  */
 
-import React, { useState, useEffect, Fragment, useRef, useImperativeHandle, useMemo } from 'react';
+import React, { useState, useEffect, Fragment, useRef, useImperativeHandle } from 'react';
 import { amisRender, amisRootClick, getDefaultRenderData } from '@/lib/amis';
 import { defaultsDeep, concat, compact, filter, map, isEmpty, isEqual } from 'lodash';
 import { useRouter } from 'next/router'
@@ -14,13 +14,9 @@ import { useRouter } from 'next/router'
 
 export const AmisRender = ({id, schema, data, className, assets, getModalContainer, updateProps, session})=>{
     const router = useRouter()
-    const prevSchemaRef = useRef(schema);
-    const prevDataRef = useRef(data);
+    const prevSchemaRef = useRef(null);
+    const prevDataRef = useRef(null);
     const isInitializedRef = useRef(false);
-
-    // Memoize the stringified values to avoid recreating them on every render
-    const schemaString = useMemo(() => JSON.stringify(schema), [schema]);
-    const dataString = useMemo(() => JSON.stringify(data), [data]);
 
     useEffect(() => {
         // Check if schema or data actually changed using deep equality
@@ -68,7 +64,7 @@ export const AmisRender = ({id, schema, data, className, assets, getModalContain
         }
 
         return ()=>{
-            if(SteedosUI.refs[id] && !isInitializedRef.current){
+            if(SteedosUI.refs[id] && isInitializedRef.current){
                 try {
                     SteedosUI.refs[id].unmount();
                     SteedosUI.refs[id] = null;
@@ -78,7 +74,7 @@ export const AmisRender = ({id, schema, data, className, assets, getModalContain
             }
         }
 
-      }, [schemaString, dataString, id, router, assets, getModalContainer, session]);
+      }, [schema, data, id, router, assets, getModalContainer, session]);
 
     useEffect(()=>{
         const amisScope = SteedosUI.getRef(id);
@@ -90,7 +86,7 @@ export const AmisRender = ({id, schema, data, className, assets, getModalContain
                 console.log(`amisScope.updateProps callback.......`)
             });
         }
-    }, [JSON.stringify(updateProps), data, id])
+    }, [updateProps, data, id])
     return (
         <div id={`${id}`} className={`app-wrapper ${className}`} onClick={(e)=>{ return amisRootClick(router, e)}}></div>
     )

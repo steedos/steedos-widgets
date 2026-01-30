@@ -180,13 +180,19 @@ export class AmisComponent extends React.Component<PropsWithChildren<AmisProps>,
   componentDidUpdate(prevProps: any) {
     // Use deep equality check to prevent unnecessary updates
     const schemaChanged = !isEqual(prevProps.schema, this.props.schema);
-    const dataChanged = !isEqual(prevProps.data, this.props.data);
+    const dataChanged = !isEqual(prevProps.data, this.props.data) || 
+                        !isEqual(prevProps.builderState?.state, this.props.builderState?.state);
     
     if (this.amisScoped) {
       if (schemaChanged) {
         this.amisScoped.updateSchema(this.props.schema);
       } else if (dataChanged) {
-        this.amisScoped.updateProps(this.props.data, () => {
+        // Match the data structure from initializeAmis
+        const data = {
+          ...this.props.builderState.state,
+          ...this.props.data,
+        };
+        this.amisScoped.updateProps({ data }, () => {
           /*更新回调 */
         });
       }
