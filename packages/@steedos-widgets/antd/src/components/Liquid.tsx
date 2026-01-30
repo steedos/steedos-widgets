@@ -346,24 +346,19 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
     if (!containerRef.current) return;
     const nodes: Record<string, HTMLElement> = {};
     const elements = containerRef.current.querySelectorAll('[data-amis-partial]');
-    let hasChanges = false;
     elements.forEach((el) => {
       const key = el.getAttribute('data-amis-partial');
       if (key && (inlineSchemasRef.current[key] || partialsRef.current[key])) {
         nodes[key] = el as HTMLElement;
-        hasChanges = true;
       }
     });
 
-    // 只有在节点实际发生变化时才更新，防止死循环
-    // 简单的 key 比较
+    // 每次 html 变化都需要更新 DOM 节点引用，因为 dangerouslySetInnerHTML 会销毁并重建节点
     setMountNodes(prev => {
         const prevKeys = Object.keys(prev).sort().join(',');
         const newKeys = Object.keys(nodes).sort().join(',');
-        if (prevKeys !== newKeys) return nodes;
-        
-        // 如果想要更精确，还得对比 dom 引用，通常 key 变了 dom 也就变了
-        // 这里只是为了避免不必要的 set
+        // 如果 key 变化了，或者有新的 nodes，则更新
+        if (prevKeys !== newKeys || Object.keys(nodes).length > 0) return nodes;
         return prev; 
     });
   }, [html]);
