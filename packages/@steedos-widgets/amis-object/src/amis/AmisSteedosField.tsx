@@ -11,6 +11,51 @@ import { sampleSize, has, isArray, isEmpty, isString, pick, includes, clone, for
 
 const defaultImageValue = "data:image/svg+xml,%3C%3Fxml version='1.0' standalone='no'%3F%3E%3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3E%3Csvg t='1631083237695' class='icon' viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg' p-id='2420' xmlns:xlink='http://www.w3.org/1999/xlink' width='1024' height='1024'%3E%3Cdefs%3E%3Cstyle type='text/css'%3E%3C/style%3E%3C/defs%3E%3Cpath d='M959.872 128c0.032 0.032 0.096 0.064 0.128 0.128v767.776c-0.032 0.032-0.064 0.096-0.128 0.128H64.096c-0.032-0.032-0.096-0.064-0.128-0.128V128.128c0.032-0.032 0.064-0.096 0.128-0.128h895.776zM960 64H64C28.8 64 0 92.8 0 128v768c0 35.2 28.8 64 64 64h896c35.2 0 64-28.8 64-64V128c0-35.2-28.8-64-64-64z' p-id='2421' fill='%23bfbfbf'%3E%3C/path%3E%3Cpath d='M832 288c0 53.024-42.976 96-96 96s-96-42.976-96-96 42.976-96 96-96 96 42.976 96 96zM896 832H128V704l224-384 256 320h64l224-192z' p-id='2422' fill='%23bfbfbf'%3E%3C/path%3E%3C/svg%3E";
 
+// Field schema cache for performance optimization
+// Cache key: hash of field config properties
+// Cache value: Promise of the generated schema
+const fieldSchemaCache = new Map<string, Promise<any>>();
+const MAX_CACHE_SIZE = 1000;
+
+// Generate a cache key from field props
+function generateFieldCacheKey(props: any): string {
+    const { config, field, readonly, ctx, static: fStatic, inInputTable, isLookupInTable, data } = props;
+    const steedosField = config || field;
+    
+    // Create a stable cache key based on field configuration
+    const cacheKeyParts = [
+        steedosField?.object,
+        steedosField?.name,
+        steedosField?.type,
+        steedosField?.label,
+        steedosField?.readonly,
+        readonly,
+        fStatic,
+        inInputTable,
+        isLookupInTable,
+        data?.appId,
+        data?.formFactor,
+        data?.objectName,
+        JSON.stringify(steedosField?.reference_to),
+        JSON.stringify(steedosField?.options),
+        JSON.stringify(steedosField?.amis),
+    ];
+    
+    return cacheKeyParts.join('|');
+}
+
+// Clear old cache entries when cache grows too large
+function maintainCacheSize() {
+    if (fieldSchemaCache.size > MAX_CACHE_SIZE) {
+        // Remove oldest 20% of entries
+        const entriesToRemove = Math.floor(MAX_CACHE_SIZE * 0.2);
+        const keys = Array.from(fieldSchemaCache.keys());
+        for (let i = 0; i < entriesToRemove; i++) {
+            fieldSchemaCache.delete(keys[i]);
+        }
+    }
+}
+
 const AmisFormInputs = [
     'text',
     'date',
@@ -178,7 +223,8 @@ function generateRandomString(length = 5) {
     return sampleSize(characters, length).join('');
 }
 
-export const AmisSteedosField = async (props) => {
+// Internal implementation of AmisSteedosField without caching
+const AmisSteedosFieldImpl = async (props) => {
     if(has(props, '$$editor')){
         setTimeout(()=>{
             const fieldEditDiv = document.getElementsByName(props.id)[0];
@@ -866,4 +912,34 @@ export const AmisSteedosField = async (props) => {
         console.log(`error`, error)
     }
     return null;
+}
+
+// Exported wrapper with caching for performance optimization
+export const AmisSteedosField = async (props) => {
+    // Skip caching for editor mode to ensure real-time updates
+    if (has(props, '$$editor')) {
+        return AmisSteedosFieldImpl(props);
+    }
+    
+    // Generate cache key based on field configuration
+    const cacheKey = generateFieldCacheKey(props);
+    
+    // Check if schema is already cached
+    if (fieldSchemaCache.has(cacheKey)) {
+        return fieldSchemaCache.get(cacheKey);
+    }
+    
+    // Generate schema and cache the promise
+    const schemaPromise = AmisSteedosFieldImpl(props);
+    fieldSchemaCache.set(cacheKey, schemaPromise);
+    
+    // Maintain cache size
+    maintainCacheSize();
+    
+    return schemaPromise;
+}
+
+// Export function to clear cache if needed (e.g., when schema definitions change)
+export const clearFieldSchemaCache = () => {
+    fieldSchemaCache.clear();
 }
