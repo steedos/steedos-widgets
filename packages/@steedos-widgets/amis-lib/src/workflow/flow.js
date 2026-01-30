@@ -588,7 +588,9 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
         tpl.source = _.cloneDeep(tpl.autoComplete);
         delete tpl.autoComplete.trackExpression;
         tpl.isAmis=true;
-        tpl.searchable = true;
+        if(!inTable){
+          tpl.searchable = true;
+        }
         break;
       case "html":
         if (tpl.disabled) {
