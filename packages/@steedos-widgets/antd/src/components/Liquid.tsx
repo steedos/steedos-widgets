@@ -241,7 +241,6 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
       render: async function(ctx: Context) {
         const chunks = this.templates.map((tpl: any) => tpl.str); 
         const rawStr = chunks.join('').trim();
-        console.log('[Liquid Debug] Amis tag render:', { id: this.id, rawStr: rawStr?.substring(0, 100), hasContent: !!rawStr });
         if (!rawStr) return '';
         if (rawStr.includes('[object Object]')) {
            return `<div class="text-red-500 border border-red-500 p-2 text-sm bg-red-50">Error: [object Object] detected. Use | json filter.</div>`;
@@ -253,18 +252,13 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
           if (!register && (ctx as any).environments) {
              register = (ctx as any).environments['__registerInlineSchema'];
           }
-          console.log('[Liquid Debug] Amis tag registration:', { id, hasRegister: !!register, schemaType: schema?.type });
           if (typeof register === 'function') {
             register(id, schema);
-            const html = `<div data-amis-partial="${id}" style="display: contents;"></div>`;
-            console.log('[Liquid Debug] Amis tag output:', html);
-            return html;
+            return `<div data-amis-partial="${id}" style="display: contents;"></div>`;
           } else {
-            console.log('[Liquid Debug] Amis tag - no register function');
             return ``;
           }
         } catch (e) {
-          console.error('[Liquid Debug] Amis tag parse error:', e);
           return `<div style="color:red">JSON Parse Error: ${(e as Error).message}</div>`;
         }
       }
@@ -311,26 +305,14 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
     // 检查 parsedTemplates 是否发生变化（模板重新解析时需要强制渲染）
     const templatesChanged = prevParsedTemplatesRef.current !== parsedTemplates;
     
-    console.log('[Liquid Debug] Render effect - checking if should render:', {
-      prevDebouncedData: prevDebouncedDataRef.current,
-      debouncedData: debouncedData,
-      dataEqual: isEqual(prevDebouncedDataRef.current, debouncedData),
-      prevPartials: prevPartialsRef.current,
-      finalPartials: finalPartials,
-      partialsEqual: isEqual(prevPartialsRef.current, finalPartials),
-      templatesChanged: templatesChanged
-    });
-    
     // 只在 debouncedData 或 partials 实际变化时才重新渲染
     // 但如果 parsedTemplates 变化了（模板重新解析），必须渲染
     if (!templatesChanged && 
         isEqual(prevDebouncedDataRef.current, debouncedData) && 
         isEqual(prevPartialsRef.current, finalPartials)) {
-      console.log('[Liquid Debug] Render effect - skipping render, data unchanged');
       return;
     }
     
-    console.log('[Liquid Debug] Render effect - will render');
     prevDebouncedDataRef.current = debouncedData;
     prevPartialsRef.current = finalPartials;
     prevParsedTemplatesRef.current = parsedTemplates;
@@ -341,26 +323,18 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
     const contextData = {
       ...flattenObjectChain(debouncedData),
       __registerInlineSchema: (id: string, schema: SchemaObject) => {
-        console.log('[Liquid Debug] Registering inline schema:', id);
         inlineSchemasRef.current[id] = schema;
       }
     };
 
-    // console.debug('[Liquid] Start render with context:', parsedTemplates, contextData);
-
     engine.render(parsedTemplates, contextData)
       .then((result) => {
         if (isMounted) {
-          console.log('[Liquid Debug] Render complete, schemas registered:', Object.keys(inlineSchemasRef.current));
-          // console.debug('[Liquid] Render success, content length:', result?.length, result);
-          // 先更新 HTML，然后触发 Portal 检测
-          // 注意：schemas 已经在 render 过程中注册到 inlineSchemasRef.current 了
-          setHtml(result); // 总是设置，确保触发 Portal 检测
+          setHtml(result); // Always set to ensure Portal detection runs with fresh schemas
           setError(null);
         }
       })
       .catch(err => {
-        // console.log(`render error: `, template, contextData)
         if (isMounted) {
           console.error("Liquid Render Error:", err);
           setError(err);
@@ -376,28 +350,17 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
     const nodes: Record<string, HTMLElement> = {};
     const elements = containerRef.current.querySelectorAll('[data-amis-partial]');
     
-    console.log('[Liquid Debug] Portal detection:', {
-      elementCount: elements.length,
-      inlineSchemas: Object.keys(inlineSchemasRef.current),
-      partials: Object.keys(partialsRef.current)
-    });
-    
     elements.forEach((el) => {
       const key = el.getAttribute('data-amis-partial');
-      const hasSchema = key && (inlineSchemasRef.current[key] || partialsRef.current[key]);
-      console.log('[Liquid Debug] Element:', { key, hasSchema });
-      if (hasSchema) {
-        nodes[key!] = el as HTMLElement;
+      if (key && (inlineSchemasRef.current[key] || partialsRef.current[key])) {
+        nodes[key] = el as HTMLElement;
       }
     });
-
-    console.log('[Liquid Debug] Nodes found:', Object.keys(nodes));
 
     // 每次 html 变化都需要更新 DOM 节点引用，因为 dangerouslySetInnerHTML 会销毁并重建节点
     setMountNodes(prev => {
         const prevKeys = Object.keys(prev).sort().join(',');
         const newKeys = Object.keys(nodes).sort().join(',');
-        console.log('[Liquid Debug] Mount nodes update:', { prevKeys, newKeys, willUpdate: prevKeys !== newKeys || Object.keys(nodes).length > 0 });
         // 如果 key 变化了，或者有新的 nodes，则更新
         if (prevKeys !== newKeys || Object.keys(nodes).length > 0) return nodes;
         return prev; 
@@ -406,19 +369,11 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
 
   // 4. 创建 Portals
   const portals = useMemo(() => {
-     console.log('[Liquid Debug] Creating portals:', {
-       mountNodeKeys: Object.keys(mountNodes),
-       inlineSchemas: Object.keys(inlineSchemasRef.current),
-       partials: Object.keys(partialsRef.current)
-     });
-     
      return Object.keys(mountNodes).map((key) => {
         const domNode = mountNodes[key];
         const schema = inlineSchemasRef.current[key] || partialsRef.current[key] as SchemaObject;
-        console.log('[Liquid Debug] Portal for key:', { key, hasSchema: !!schema, hasDomNode: !!domNode });
         if (!schema || !domNode) return null;
         try {
-          console.log('[Liquid Debug] Rendering portal:', key);
           return createPortal(
             <ErrorBoundary fallback={null}>
               {amisRender(`partial-${key}`, schema, { data })}
@@ -427,7 +382,6 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
             key // 使用稳定的 key 基于 Partial ID
           );
         } catch(e) { 
-          console.error('[Liquid Debug] Portal error:', e);
           return null; 
         }
      });
