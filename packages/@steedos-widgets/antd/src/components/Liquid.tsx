@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Liquid, Context } from 'liquidjs';
-import { isEqual, debounce } from 'lodash';
+import { isEqual } from 'lodash';
 
 // --- 类型定义 ---
 type SchemaObject = Record<string, any>;
@@ -172,8 +172,6 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
   const containerRef = useRef<HTMLDivElement>(null);
   
   // 防抖的数据状态，用于减少 HTML 重建频率
-  const [debouncedData, setDebouncedData] = useState(data);
-  
   // 保持最新 data 的引用，供脚本使用
   const dataRef = useRef(data);
   dataRef.current = data;
@@ -186,23 +184,6 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
   partialsRef.current = finalPartials;
   
   const inlineSchemasRef = useRef<Record<string, SchemaObject>>({});
-  
-  // 创建稳定的防抖函数，用于更新 debouncedData
-  const debouncedSetData = useMemo(
-    () => debounce((newData: Record<string, any>) => {
-      setDebouncedData(newData);
-    }, 300, { leading: true }), // leading: true 确保第一次更新立即执行
-    []
-  );
-  
-  // 防抖更新 debouncedData，减少 HTML 重建频率
-  useEffect(() => {
-    debouncedSetData(data);
-    
-    return () => {
-      debouncedSetData.cancel();
-    };
-  }, [data, debouncedSetData]);
 
   // 1. 初始化 Liquid Engine
   const engine = useMemo(() => {
@@ -267,7 +248,6 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
   }, []);
 
   // Track previous values for comparison (初始化为 undefined 以确保首次渲染)
-  const prevDebouncedDataRef = useRef<Record<string, any> | undefined>(undefined);
   const prevPartialsRef = useRef<Record<string, string | object> | undefined>(undefined);
   const prevParsedTemplatesRef = useRef<any[] | undefined>(undefined);
 
@@ -297,7 +277,7 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
     return () => { isMounted = false; };
   }, [engine, template]);
 
-  // 2. Liquid 渲染 HTML
+  // 2. Liquid 渲染 HTML（仅在模板或 partials 变化时，不在数据变化时重新渲染）
   useEffect(() => {
     // 跳过空模板或未解析的模板（parsedTemplates 为 null、undefined 或空数组时）
     if (!parsedTemplates || parsedTemplates.length === 0) return;
@@ -305,15 +285,14 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
     // 检查 parsedTemplates 是否发生变化（模板重新解析时需要强制渲染）
     const templatesChanged = prevParsedTemplatesRef.current !== parsedTemplates;
     
-    // 只在 debouncedData 或 partials 实际变化时才重新渲染
+    // 只在 partials 实际变化时才重新渲染
     // 但如果 parsedTemplates 变化了（模板重新解析），必须渲染
+    // 注意：不再依赖 data 变化来重新渲染 HTML，data 变化只更新 Portal 组件
     if (!templatesChanged && 
-        isEqual(prevDebouncedDataRef.current, debouncedData) && 
         isEqual(prevPartialsRef.current, finalPartials)) {
       return;
     }
     
-    prevDebouncedDataRef.current = debouncedData;
     prevPartialsRef.current = finalPartials;
     prevParsedTemplatesRef.current = parsedTemplates;
 
@@ -322,8 +301,10 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
     // Clearing causes race conditions with Portal detection
     // inlineSchemasRef.current = {}; 
 
+    // 使用当前 data 进行初始渲染 - HTML 结构不会因为数据变化而重新渲染
+    // Portal 组件会通过 props 获取实时数据更新
     const contextData = {
-      ...flattenObjectChain(debouncedData),
+      ...flattenObjectChain(data),
       __registerInlineSchema: (id: string, schema: SchemaObject) => {
         inlineSchemasRef.current[id] = schema;
       }
@@ -344,7 +325,7 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
       });
 
     return () => { isMounted = false; };
-  }, [engine, parsedTemplates, debouncedData, finalPartials]);
+  }, [engine, parsedTemplates, finalPartials]); // 移除 data 依赖，只在模板变化时重新渲染
 
   // 3. Portals 挂载检测
   useEffect(() => {
