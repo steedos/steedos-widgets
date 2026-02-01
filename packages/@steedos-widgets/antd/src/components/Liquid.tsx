@@ -386,12 +386,12 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
           return null;
         }
         
-        console.log('[Liquid Portal Debug] Creating portal:', { key, schemaType: schema?.type, hasData: !!data });
+        console.log('[Liquid Portal Debug] Creating portal:', { key, schemaType: schema?.type, hasData: !!dataRef.current });
         
         try {
           return createPortal(
             <ErrorBoundary fallback={null}>
-              {amisRender(`partial-${key}`, schema, { data })}
+              {amisRender(`partial-${key}`, schema, { data: dataRef.current })}
             </ErrorBoundary>, 
             domNode,
             key // 使用稳定的 key 基于 Partial ID
@@ -401,7 +401,7 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
           return null; 
         }
      });
-  }, [mountNodes, finalPartials, amisRender, data]); // mountNodes 更新时重新创建 Portals
+  }, [mountNodes, finalPartials, amisRender]); // Removed data dependency - use dataRef to avoid Portal recreation on data changes
 
   // ==================================================================================
   // 5. 核心逻辑：顺序加载器 (等待外部脚本加载完再执行内联脚本)
