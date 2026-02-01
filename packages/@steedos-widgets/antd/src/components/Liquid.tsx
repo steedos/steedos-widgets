@@ -354,12 +354,24 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
     console.log('[Liquid Portal Debug] Final nodes:', Object.keys(nodes));
 
     // 每次 html 变化都需要更新 DOM 节点引用，因为 dangerouslySetInnerHTML 会销毁并重建节点
+    // 但仅在节点实际变化时更新，避免不必要的 Portal 重新创建
     setMountNodes(prev => {
         const prevKeys = Object.keys(prev).sort().join(',');
         const newKeys = Object.keys(nodes).sort().join(',');
-        console.log('[Liquid Portal Debug] Update decision:', { prevKeys, newKeys, willUpdate: prevKeys !== newKeys || Object.keys(nodes).length > 0 });
-        // 如果 key 变化了，或者有新的 nodes，则更新
-        if (prevKeys !== newKeys || Object.keys(nodes).length > 0) return nodes;
+        const keysChanged = prevKeys !== newKeys;
+        console.log('[Liquid Portal Debug] Update decision:', { prevKeys, newKeys, keysChanged, willUpdate: keysChanged });
+        // 仅在 keys 实际变化时更新（新增或删除了 Portal 挂载点）
+        if (keysChanged) {
+          return nodes;
+        }
+        // Keys 相同但 html 变了，需要更新 DOM 节点引用（dangerouslySetInnerHTML 销毁重建了节点）
+        // 但不能创建新对象，否则会触发 Portal useMemo 重新执行
+        // 所以我们更新 prev 对象中的节点引用
+        Object.keys(nodes).forEach(key => {
+          if (prev[key] !== nodes[key]) {
+            prev[key] = nodes[key];
+          }
+        });
         return prev; 
     });
   }, [html]);
