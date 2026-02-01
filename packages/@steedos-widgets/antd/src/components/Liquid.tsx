@@ -241,6 +241,7 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
       render: async function(ctx: Context) {
         const chunks = this.templates.map((tpl: any) => tpl.str); 
         const rawStr = chunks.join('').trim();
+        console.log('[Liquid Debug] Amis tag render:', { id: this.id, rawStr: rawStr?.substring(0, 100), hasContent: !!rawStr });
         if (!rawStr) return '';
         if (rawStr.includes('[object Object]')) {
            return `<div class="text-red-500 border border-red-500 p-2 text-sm bg-red-50">Error: [object Object] detected. Use | json filter.</div>`;
@@ -252,13 +253,18 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
           if (!register && (ctx as any).environments) {
              register = (ctx as any).environments['__registerInlineSchema'];
           }
+          console.log('[Liquid Debug] Amis tag registration:', { id, hasRegister: !!register, schemaType: schema?.type });
           if (typeof register === 'function') {
             register(id, schema);
-            return `<div data-amis-partial="${id}" style="display: contents;"></div>`;
+            const html = `<div data-amis-partial="${id}" style="display: contents;"></div>`;
+            console.log('[Liquid Debug] Amis tag output:', html);
+            return html;
           } else {
+            console.log('[Liquid Debug] Amis tag - no register function');
             return ``;
           }
         } catch (e) {
+          console.error('[Liquid Debug] Amis tag parse error:', e);
           return `<div style="color:red">JSON Parse Error: ${(e as Error).message}</div>`;
         }
       }
