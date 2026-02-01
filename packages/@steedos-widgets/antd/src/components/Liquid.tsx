@@ -333,25 +333,14 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
     const nodes: Record<string, HTMLElement> = {};
     const elements = containerRef.current.querySelectorAll('[data-amis-partial]');
     
-    console.log('[Liquid Portal Debug] Detection:', {
-      elementCount: elements.length,
-      inlineSchemaKeys: Object.keys(inlineSchemasRef.current),
-      partialKeys: Object.keys(partialsRef.current)
-    });
-    
     elements.forEach((el) => {
       const key = el.getAttribute('data-amis-partial');
       const hasInlineSchema = key && inlineSchemasRef.current[key];
       const hasPartialSchema = key && partialsRef.current[key];
       if (key && (hasInlineSchema || hasPartialSchema)) {
         nodes[key] = el as HTMLElement;
-        console.log('[Liquid Portal Debug] Matched:', { key, hasInlineSchema: !!hasInlineSchema, hasPartialSchema: !!hasPartialSchema });
-      } else if (key) {
-        console.log('[Liquid Portal Debug] No schema:', { key });
       }
     });
-
-    console.log('[Liquid Portal Debug] Final nodes:', Object.keys(nodes));
 
     // 每次 html 变化都需要更新 DOM 节点引用，因为 dangerouslySetInnerHTML 会销毁并重建节点
     // 但仅在节点实际变化时更新，避免不必要的 Portal 重新创建
@@ -359,7 +348,7 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
         const prevKeys = Object.keys(prev).sort().join(',');
         const newKeys = Object.keys(nodes).sort().join(',');
         const keysChanged = prevKeys !== newKeys;
-        console.log('[Liquid Portal Debug] Update decision:', { prevKeys, newKeys, keysChanged, willUpdate: keysChanged });
+        
         // 仅在 keys 实际变化时更新（新增或删除了 Portal 挂载点）
         if (keysChanged) {
           return nodes;
@@ -378,27 +367,13 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
 
   // 4. 创建 Portals
   const portals = useMemo(() => {
-     console.log('[Liquid Portal Debug] Creating portals:', {
-       mountNodeCount: Object.keys(mountNodes).length,
-       mountNodeKeys: Object.keys(mountNodes).slice(0, 5),
-       inlineSchemaCount: Object.keys(inlineSchemasRef.current).length,
-       partialCount: Object.keys(partialsRef.current).length
-     });
-     
      return Object.keys(mountNodes).map((key) => {
         const domNode = mountNodes[key];
         const schema = inlineSchemasRef.current[key] || partialsRef.current[key] as SchemaObject;
         
-        if (!schema) {
-          console.warn('[Liquid Portal Debug] No schema for key:', key);
+        if (!schema || !domNode) {
           return null;
         }
-        if (!domNode) {
-          console.warn('[Liquid Portal Debug] No domNode for key:', key);
-          return null;
-        }
-        
-        console.log('[Liquid Portal Debug] Creating portal:', { key, schemaType: schema?.type, hasData: !!dataRef.current });
         
         try {
           return createPortal(
@@ -409,7 +384,7 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
             key // 使用稳定的 key 基于 Partial ID
           );
         } catch(e) { 
-          console.error('[Liquid Portal Debug] Portal creation error:', { key, error: e });
+          console.error('[Liquid] Portal creation error:', { key, error: e });
           return null; 
         }
      });
