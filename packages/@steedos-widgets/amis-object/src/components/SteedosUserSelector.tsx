@@ -458,7 +458,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
       />
 
       <Modal
-        title="选择人员"
+        title={multiple ? "选择人员 (多选)" : "选择人员 (单选)"}
         open={visible}
         onOk={handleOk}
         onCancel={handleCancel}
