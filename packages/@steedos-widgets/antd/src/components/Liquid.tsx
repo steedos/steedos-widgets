@@ -353,7 +353,9 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
         if (isMounted) {
           console.log('[Liquid Debug] Render complete, schemas registered:', Object.keys(inlineSchemasRef.current));
           // console.debug('[Liquid] Render success, content length:', result?.length, result);
-          setHtml(prev => (prev !== result ? result : prev));
+          // 先更新 HTML，然后触发 Portal 检测
+          // 注意：schemas 已经在 render 过程中注册到 inlineSchemasRef.current 了
+          setHtml(result); // 总是设置，确保触发 Portal 检测
           setError(null);
         }
       })
