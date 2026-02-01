@@ -418,7 +418,7 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
           return null; 
         }
      });
-  }, [mountNodes, finalPartials, amisRender, data, html]); // 添加 html 依赖，确保在 schemas 注册后重新创建 Portals
+  }, [mountNodes, finalPartials, amisRender, data]); // mountNodes 更新时重新创建 Portals
 
   // ==================================================================================
   // 5. 核心逻辑：顺序加载器 (等待外部脚本加载完再执行内联脚本)
