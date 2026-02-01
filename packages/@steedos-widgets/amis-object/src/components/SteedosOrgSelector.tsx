@@ -321,6 +321,7 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
       // 为搜索结果添加路径标签
       const enrichedResult = result.map(node => ({
         ...node,
+        title: node.fullname || node.title,
         pathLabel: node.fullname || node.title
       }));
       setTreeData(enrichedResult);
@@ -418,6 +419,7 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
     <Spin spinning={loading} className='steedos-org-selector'>
       <TreeSelect
         treeData={treeData}
+        className='w-full'
         value={multiple ? (Array.isArray(value) ? value : (value ? [value] : [])).map(v => ({ value: String(v), label: labelMap.get(String(v)) || v })) : value}
         onChange={handleChange}
         treeCheckable={multiple}
