@@ -8,3 +8,4 @@ dist
 *.log
 .DS_Store
 packages/@steedos-widgets/src/**
+package-lock.json

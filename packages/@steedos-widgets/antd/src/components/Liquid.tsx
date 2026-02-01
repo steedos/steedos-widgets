@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Liquid, Context } from 'liquidjs';
+import { isEqual } from 'lodash';
 
 // --- 类型定义 ---
 type SchemaObject = Record<string, any>;
@@ -170,6 +171,11 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
   const [mountNodes, setMountNodes] = useState<Record<string, HTMLElement>>({});
   const containerRef = useRef<HTMLDivElement>(null);
   
+  // 防抖的数据状态，用于减少 HTML 重建频率
+  // 保持最新 data 的引用，供脚本使用
+  const dataRef = useRef(data);
+  dataRef.current = data;
+  
   // 用于存储脚本清理函数的引用，以便在组件卸载或更新时清理副作用
   const scriptCleanupsRef = useRef<Function[]>([]);
 
@@ -241,8 +247,9 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
     return liq;
   }, []);
 
-  const dataFingerprint = JSON.stringify(data);
-  const partialsFingerprint = JSON.stringify(finalPartials);
+  // Track previous values for comparison (初始化为 undefined 以确保首次渲染)
+  const prevPartialsRef = useRef<Record<string, string | object> | undefined>(undefined);
+  const prevParsedTemplatesRef = useRef<any[] | undefined>(undefined);
 
   useEffect(() => {
     // console.log('template', template)
@@ -270,13 +277,32 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
     return () => { isMounted = false; };
   }, [engine, template]);
 
-  // 2. Liquid 渲染 HTML
+  // 2. Liquid 渲染 HTML（仅在模板或 partials 变化时，不在数据变化时重新渲染）
   useEffect(() => {
-    if (!parsedTemplates) return;
+    // 跳过空模板或未解析的模板（parsedTemplates 为 null、undefined 或空数组时）
+    if (!parsedTemplates || parsedTemplates.length === 0) return;
+    
+    // 检查 parsedTemplates 是否发生变化（模板重新解析时需要强制渲染）
+    const templatesChanged = prevParsedTemplatesRef.current !== parsedTemplates;
+    
+    // 只在 partials 实际变化时才重新渲染
+    // 但如果 parsedTemplates 变化了（模板重新解析），必须渲染
+    // 注意：不再依赖 data 变化来重新渲染 HTML，data 变化只更新 Portal 组件
+    if (!templatesChanged && 
+        isEqual(prevPartialsRef.current, finalPartials)) {
+      return;
+    }
+    
+    prevPartialsRef.current = finalPartials;
+    prevParsedTemplatesRef.current = parsedTemplates;
 
     let isMounted = true;
-    inlineSchemasRef.current = {}; 
+    // Don't clear schemas here - let them accumulate and be overwritten
+    // Clearing causes race conditions with Portal detection
+    // inlineSchemasRef.current = {}; 
 
+    // 使用当前 data 进行初始渲染 - HTML 结构不会因为数据变化而重新渲染
+    // Portal 组件会通过 props 获取实时数据更新
     const contextData = {
       ...flattenObjectChain(data),
       __registerInlineSchema: (id: string, schema: SchemaObject) => {
@@ -284,18 +310,14 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
       }
     };
 
-    // console.debug('[Liquid] Start render with context:', parsedTemplates, contextData);
-
     engine.render(parsedTemplates, contextData)
       .then((result) => {
         if (isMounted) {
-          // console.debug('[Liquid] Render success, content length:', result?.length, result);
-          setHtml(prev => (prev !== result ? result : prev));
+          setHtml(result); // Always set to ensure Portal detection runs with fresh schemas
           setError(null);
         }
       })
       .catch(err => {
-        // console.log(`render error: `, template, contextData)
         if (isMounted) {
           console.error("Liquid Render Error:", err);
           setError(err);
@@ -303,31 +325,42 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
       });
 
     return () => { isMounted = false; };
-  }, [engine, parsedTemplates, dataFingerprint, partialsFingerprint]);
+  }, [engine, parsedTemplates, finalPartials]); // 移除 data 依赖，只在模板变化时重新渲染
 
   // 3. Portals 挂载检测
   useEffect(() => {
     if (!containerRef.current) return;
     const nodes: Record<string, HTMLElement> = {};
     const elements = containerRef.current.querySelectorAll('[data-amis-partial]');
-    let hasChanges = false;
+    
     elements.forEach((el) => {
       const key = el.getAttribute('data-amis-partial');
-      if (key && (inlineSchemasRef.current[key] || partialsRef.current[key])) {
+      const hasInlineSchema = key && inlineSchemasRef.current[key];
+      const hasPartialSchema = key && partialsRef.current[key];
+      if (key && (hasInlineSchema || hasPartialSchema)) {
         nodes[key] = el as HTMLElement;
-        hasChanges = true;
       }
     });
 
-    // 只有在节点实际发生变化时才更新，防止死循环
-    // 简单的 key 比较
+    // 每次 html 变化都需要更新 DOM 节点引用，因为 dangerouslySetInnerHTML 会销毁并重建节点
+    // 但仅在节点实际变化时更新，避免不必要的 Portal 重新创建
     setMountNodes(prev => {
         const prevKeys = Object.keys(prev).sort().join(',');
         const newKeys = Object.keys(nodes).sort().join(',');
-        if (prevKeys !== newKeys) return nodes;
+        const keysChanged = prevKeys !== newKeys;
         
-        // 如果想要更精确，还得对比 dom 引用，通常 key 变了 dom 也就变了
-        // 这里只是为了避免不必要的 set
+        // 仅在 keys 实际变化时更新（新增或删除了 Portal 挂载点）
+        if (keysChanged) {
+          return nodes;
+        }
+        // Keys 相同但 html 变了，需要更新 DOM 节点引用（dangerouslySetInnerHTML 销毁重建了节点）
+        // 但不能创建新对象，否则会触发 Portal useMemo 重新执行
+        // 所以我们更新 prev 对象中的节点引用
+        Object.keys(nodes).forEach(key => {
+          if (prev[key] !== nodes[key]) {
+            prev[key] = nodes[key];
+          }
+        });
         return prev; 
     });
   }, [html]);
@@ -337,17 +370,25 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
      return Object.keys(mountNodes).map((key) => {
         const domNode = mountNodes[key];
         const schema = inlineSchemasRef.current[key] || partialsRef.current[key] as SchemaObject;
-        if (!schema || !domNode) return null;
+        
+        if (!schema || !domNode) {
+          return null;
+        }
+        
         try {
           return createPortal(
             <ErrorBoundary fallback={null}>
-              {amisRender(`partial-${key}`, schema, { data })}
+              {amisRender(`partial-${key}`, schema, { data: dataRef.current })}
             </ErrorBoundary>, 
-            domNode
+            domNode,
+            key // 使用稳定的 key 基于 Partial ID
           );
-        } catch(e) { return null; }
+        } catch(e) { 
+          console.error('[Liquid] Portal creation error:', { key, error: e });
+          return null; 
+        }
      });
-  }, [mountNodes, partialsFingerprint, dataFingerprint, amisRender, data]);
+  }, [mountNodes, finalPartials, amisRender]); // Removed data dependency - use dataRef to avoid Portal recreation on data changes
 
   // ==================================================================================
   // 5. 核心逻辑：顺序加载器 (等待外部脚本加载完再执行内联脚本)
@@ -444,7 +485,8 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
                     const debugName = `steedos-liquid-${Math.random().toString(36).slice(2)}.js`;
                     const debuggableCode = code + `\n//# sourceURL=${debugName}`;
                     const func = new Function('data', 'dom', 'doAction', 'dispatchEvent', debuggableCode);
-                    const cleanupResult = func(data, scriptNode.parentElement, doAction, dispatchEvent);
+                    // 使用 dataRef.current 获取最新的 data
+                    const cleanupResult = func(dataRef.current, scriptNode.parentElement, doAction, dispatchEvent);
                     if (typeof cleanupResult === 'function') {
                         scriptCleanupsRef.current.push(cleanupResult);
                     }
@@ -467,7 +509,7 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
     return () => {
         scriptCleanupsRef.current.forEach(cleanup => cleanup && cleanup());
     };
-  }, [html, dataFingerprint]);
+  }, [html]); // 仅依赖 html 变化，不依赖 data 变化
 
   if (error) {
     return (
