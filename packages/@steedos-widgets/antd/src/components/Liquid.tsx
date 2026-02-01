@@ -318,7 +318,9 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
     prevParsedTemplatesRef.current = parsedTemplates;
 
     let isMounted = true;
-    inlineSchemasRef.current = {}; 
+    // Don't clear schemas here - let them accumulate and be overwritten
+    // Clearing causes race conditions with Portal detection
+    // inlineSchemasRef.current = {}; 
 
     const contextData = {
       ...flattenObjectChain(debouncedData),
