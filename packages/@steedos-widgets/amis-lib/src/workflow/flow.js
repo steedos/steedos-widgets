@@ -46,7 +46,7 @@ const getArgumentsList = (func)=>{
   const regExp = /function\s*\w*\(([\s\S]*?)\)/;
   if (regExp.test(funcString)) {
     const argList = RegExp.$1.split(',');
-    return argList.map(arg => arg.replace(/\s/g, ''));
+    return argList.map(arg => arg.replace(/\s/g, '')).filter(arg => arg);
   } else {
     return [];
   }
