@@ -60,6 +60,7 @@ export default {
         { type: 'text', name: 'name', label: t('widgets-meta:form_item_name', '字段名') },
         { type: 'text', name: 'label', label: t('widgets-meta:form_item_label', '标题') },
         { type: 'switch', name: 'multiple', label: t('widgets-meta:user-selector_multiple', '多选') },
+        { type: 'switch', name: 'clearable', label: t('widgets-meta:user-selector_clearable', '可清除'), value: true },
         { type: 'text', name: 'placeholder', label: t('widgets-meta:user-selector_placeholder', '占位符') }
         // fetchUsers 和 fetchDepartments 通常由平台注入，不建议在低代码属性面板暴露
       ]

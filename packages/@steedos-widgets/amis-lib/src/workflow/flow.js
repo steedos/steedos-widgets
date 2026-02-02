@@ -1128,7 +1128,8 @@ const getApplicantTableView = async (instance) => {
         label: false,
         reference_to: "space_users",
         reference_to_field: 'user',
-        multiple: false
+        multiple: false,
+        clearable: false
       },
       false,
       {}
