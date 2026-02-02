@@ -279,6 +279,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
                 "type": "steedos-user-selector",
                 "multiple": field.multiple,
                 name: field.name,
+                clearable: field.clearable
             }
         }
     }

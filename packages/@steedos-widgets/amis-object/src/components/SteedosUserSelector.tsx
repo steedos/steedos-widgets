@@ -117,6 +117,7 @@ interface UserSelectorProps {
   style?: React.CSSProperties;
   dispatchEvent?: (eventName: string, data: any, ref: any) => Promise<void>;
   data?: any;
+  clearable?: boolean;
   [key: string]: any;
 }
 
@@ -130,10 +131,11 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
     fetchDeptTree = defaultFetchDeptTree,
     style,
     dispatchEvent,
-    data
+    data,
+    clearable = true
   } = props;
 
-  // console.log('SteedosUserSelector. value', value)
+  // console.log('SteedosUserSelector. props', props)
   const [visible, setVisible] = useState(false);
   const [deptTree, setDeptTree] = useState<DataNode[]>([]);
   const [users, setUsers] = useState<any[]>([]);
@@ -429,7 +431,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
         onMouseLeave={() => setInputHovered(false)}
         style={{ minWidth: 280, cursor: 'pointer' }}
         suffix={
-          selectedUsers.length > 0 && inputHovered ? (
+          clearable && selectedUsers.length > 0 && inputHovered ? (
             <CloseOutlined
               style={{ color: '#ff4d4f', cursor: 'pointer' }}
               onMouseEnter={() => setInputHovered(true)}
@@ -626,7 +628,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
                       <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {user.name}
                       </span>
-                      {hoveredUserId === user._id && (
+                      {clearable && hoveredUserId === user._id && (
                         <CloseOutlined 
                           onClick={() => handleRemoveUser(user._id)}
                           style={{ fontSize: 12, cursor: 'pointer', color: '#ff4d4f' }}
@@ -639,7 +641,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
                 <Empty description="未选择" style={{ marginTop: 60 }} image={Empty.PRESENTED_IMAGE_SIMPLE} />
               )}
             </div>
-            {tempSelectedUsers.length > 0 && (
+            {clearable && tempSelectedUsers.length > 0 && (
               <Button
                 size="small"
                 type="link"
