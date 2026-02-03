@@ -134,7 +134,7 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
     label: label === true ? (field.name || field.code) : false,
     name: field.code,
     mode: "horizontal",
-    className: "m-none p-none form-control",
+    className: `m-none p-none form-control steedos-field-${field.type}-edit`,
     disabled: field.permission !== "editable",
     required: field.is_required,
     visibleOn: field.visibleOn,
@@ -597,6 +597,9 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
           tpl.type = 'html';
         } else {
           tpl.type = "input-rich-text";
+          tpl.options = {
+            content_style: "table { width: 100% !important; max-width: 100% !important; border-collapse: collapse !important; border: 1px solid #ddd !important; margin-bottom: 10px; } td, th { padding: 5px 10px !important; border: 1px solid #ddd !important; min-width: 50px; }",
+          };
         }
         break;
       // case "table":
@@ -673,7 +676,7 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
     label: label === true ? (field.name || field.code) : false,
     name: field.code,
     mode: "horizontal",
-    className: "m-none p-none form-control",
+    className: `m-none p-none form-control steedos-field-${field.type}-readonly`,
   };
   if(includes(['text', 'input', 'number'], field.type) && field.formula){
     const formula = mapFormula(field.formula, !inTable ? tableFieldMap : null);

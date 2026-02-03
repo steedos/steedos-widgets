@@ -304,6 +304,9 @@
 .steedos-amis-instance-view {
     &.steedos-instance-style-table {
         table.instance-form-view {
+            // 强制表格布局为fixed，防止HTML字段等宽内容撑开页面，同时也确保了列宽严格遵循定义
+            table-layout: fixed;
+
             .steedos-input-number-edit {
                 .antd-Number-handler-wrap {
                     border-left: none;
@@ -445,6 +448,28 @@
             .antd-ListItem--actions-at-right {
                 padding-left: 0 !important;
                 padding-right: 0 !important;
+            }
+        }
+    }
+
+    // 修复审批王应用申请单中表格样式问题，主要是excel粘贴过来的表格
+    .instance-form-view {
+        .steedos-field-html-readonly {
+            display: block;
+            overflow-x: auto;
+            
+            table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+                border: 1px solid #ddd !important;
+                margin-bottom: 10px;
+
+                td,
+                th {
+                    padding: 5px 10px !important;
+                    border: 1px solid #ddd !important;
+                    min-width: 50px;
+                }
             }
         }
     }
