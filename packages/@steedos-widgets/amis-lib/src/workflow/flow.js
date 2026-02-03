@@ -834,7 +834,7 @@ const getTdInputTpl = async (field, label, inTable=false, tableFieldMap) => {
 const getTdField = async (field, fieldsCount, tableFieldMap) => {
   return {
     background: field.permission !== "editable" ? "#FFFFFF" : "rgba(255,255,0,.1)",
-    colspan: field.type === "table" ? 4 : 3 - (fieldsCount - 1) * 2,
+    colspan: (field.type === "table" || field.type === "html" || field.config?.type === 'html') ? 4 : 3 - (fieldsCount - 1) * 2,
     align: "left",
     className: "td-field",
     width: "32%",
@@ -886,7 +886,7 @@ const getTdTitle = (field) => {
 const getTds = async (tdFields, tableFieldMap) => {
   const tds = [];
   for (const field of tdFields) {
-    if (field.type != "table") {
+    if (field.type != "table" && field.type != "html" && field.config?.type != 'html') {
       tds.push(getTdTitle(field));
     }
     if (field.type != "section") {
@@ -909,7 +909,7 @@ const getFormTrs = async (instance, tableFieldMap) => {
     }
   });
   each(fields, (field, index) => {
-    if (field.is_wide) {
+    if (field.is_wide || field.type === "html" || field.config?.type === 'html') {
       if (tdFields.length != 0) {
         trs.push(tdFields);
       }
