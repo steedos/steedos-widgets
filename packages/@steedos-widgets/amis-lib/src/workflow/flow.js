@@ -598,6 +598,8 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
         } else {
           tpl.type = "input-rich-text";
           tpl.options = {
+            menubar: false,
+            statusbar: false,
             content_style: "table { width: 100% !important; max-width: 100% !important; border-collapse: collapse !important; border: 1px solid #ddd !important; margin-bottom: 10px; } td, th { padding: 5px 10px !important; border: 1px solid #ddd !important; min-width: 50px; } th { background-color: #f7f7f7; font-weight: bold; }",
           };
         }
