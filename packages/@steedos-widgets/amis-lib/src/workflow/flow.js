@@ -163,11 +163,19 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
     tpl.onEvent.change.actions.push(action);
   }
   if(field.default_value && !field.default_value?.trim().startsWith('auto_number(')){
+    // 在异步加载数据场景下（如Steedos的initApi），如果字段配置了公式形式的默认值（如${NOW()}），AMIS可能会在实际数据返回前就计算并填充默认值，导致已有数据被覆盖。
+    // 因此需要使用 ${field || expression} 的写法，明确指定优先使用已有值。
     const formula = mapFormula(field.default_value, !inTable ? tableFieldMap : null);
     if(formula){
-      tpl.value = formula;
+      const expression = formula.substring(2, formula.length - 1);
+      tpl.value = `\${${field.code} || ${expression}}`;
     }else{
-      tpl.value = field.default_value;
+      if (field.default_value.trim().startsWith('${') && field.default_value.trim().endsWith('}')) {
+        const expression = field.default_value.trim().substring(2, field.default_value.trim().length - 1);
+        tpl.value = `\${${field.code} || ${expression}}`;
+      } else {
+        tpl.value = field.default_value;
+      }
     }
   }
   if(isOpinionField(field)){
