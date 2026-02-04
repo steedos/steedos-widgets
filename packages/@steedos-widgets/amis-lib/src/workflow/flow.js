@@ -75,6 +75,9 @@ const mapFormula = (formula, tableFieldMap)=>{
   if(formula.trim().startsWith('${')){
       return null;
   }
+  if (formula.trim() === '{now}') {
+    return '${NOW()}';
+  }
   let newFormula = formula;
   const isFunction = newFormula.match(/(sum|average|count|max|min|numToRMB)\s*\(/i);
   const isOperator = newFormula.match(/[\+\-\*\/]/) && newFormula.indexOf("}.") < 0;
