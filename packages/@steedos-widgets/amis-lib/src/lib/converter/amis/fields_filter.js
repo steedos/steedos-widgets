@@ -156,24 +156,24 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     const filterService = filterForm.context.getComponents().find(function(n){
       return n.props.type === "service";
     });
-    let showFieldsFilter = false;
-    const isMobile = window.innerWidth < 768;
-    if(event.data.__from_fields_filter_settings_confirm){
-      // 如果是从设置搜索项点击确认按钮触发的搜索事件不应该自动关闭搜索栏
-      showFieldsFilter = true;
-    }
-    else if(isMobile){
-      // 如果是手机端，点击搜索后自动关闭搜索栏
-      showFieldsFilter = false;
-    }
-    else if(event.data.displayAs === "split") {
-      // PC上分栏模式下的列表，始终按手机上效果处理，即自动关闭搜索栏
-      showFieldsFilter = false;
-    }
-    else if(window.innerHeight >= 1200){
-      // 高分辨率屏幕（2k+），列表高度比较高，没必要自动关闭搜索栏
-      showFieldsFilter = true;
-    }
+    let showFieldsFilter = true;
+    // const isMobile = window.innerWidth < 768;
+    // if(event.data.__from_fields_filter_settings_confirm){
+    //   // 如果是从设置搜索项点击确认按钮触发的搜索事件不应该自动关闭搜索栏
+    //   showFieldsFilter = true;
+    // }
+    // else if(isMobile){
+    //   // 如果是手机端，点击搜索后自动关闭搜索栏
+    //   showFieldsFilter = false;
+    // }
+    // else if(event.data.displayAs === "split") {
+    //   // PC上分栏模式下的列表，始终按手机上效果处理，即自动关闭搜索栏
+    //   showFieldsFilter = false;
+    // }
+    // else if(window.innerHeight >= 1200){
+    //   // 高分辨率屏幕（2k+），列表高度比较高，没必要自动关闭搜索栏
+    //   showFieldsFilter = true;
+    // }
     filterService.setData({showFieldsFilter});
     // resizeWindow();//已迁移到搜索栏表单提交事件中执行，因为表单项change后也会触发表单提交了
     let isFieldsFilterEmpty = SteedosUI.isFilterFormValuesEmpty(filterFormValues);
