@@ -215,7 +215,7 @@ export const AmisObjectListView = async (props) => {
           "className": 'w-full h-full',
           "body": {
             type: "wrapper",
-            className: `p-0 bg-white steedos-object-listview-content-wrapper flex flex-col ${(formFactor === 'SMALL')? '':''} ${(displayAs === 'split')? 'border-r':'sm:m-4 sm:shadow sm:rounded'}`,
+            className: `p-0 bg-white steedos-object-listview-content-wrapper flex flex-col ${(formFactor === 'SMALL')? '':''} ${(displayAs === 'split')? 'border-r h-full':'sm:m-4 sm:shadow sm:rounded'}`,
             body: [
               ...headerSchema, //list view header,
               {
