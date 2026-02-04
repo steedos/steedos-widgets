@@ -9,7 +9,77 @@
 import _, { each } from 'lodash';
 import i18next from "i18next";
 
-export const getInstanceApprovalHistory = async ()=>{
+const getMobileInstanceApprovalHistory = async () => {
+    return {
+        "type": "liquid",
+        "className": "m-b-none bg-white",
+        "template": `
+            <div class="instance-approve-history w-full bg-white border-t border-gray-100 mt-2">
+                <div class="text-base font-bold py-3 px-4 text-gray-800 border-b border-gray-100">签批历程</div>
+                <div class="flex flex-col w-full text-sm text-left pb-4">
+                    {% for trace in historyApproves %}
+                        {% assign children_count = trace.children | size %}
+                        {% if children_count > 0 %}
+                            
+                            <!-- Step Name as Section Title -->
+                            <div class="px-4 pt-4 pb-2 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                {{ trace.name }}
+                            </div>
+
+                            {% for item in trace.children %}
+                                <div class="px-4 py-3 mx-4 bg-gray-50 rounded mb-2 border border-gray-100 shadow-sm">
+                                    <div class="flex justify-between items-start">
+                                        <!-- User Name & Status -->
+                                        <div class="flex flex-col w-full">
+                                            <div class="flex items-center justify-between gap-2 w-full">
+                                                <span class="font-bold text-gray-900 text-[15px]">{{ item.user_name }}</span>
+                                                <!-- Status Badge (text only) -->
+                                                {% if item.judge and item.judge != '' %}
+                                                <span class="text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap
+                                                    {% if item.judgeValue == 'approved' %}bg-green-100 text-green-700 border border-green-200
+                                                    {% elsif item.judgeValue == 'rejected' %}bg-red-100 text-red-700 border border-red-200
+                                                    {% elsif item.finish_date == '${i18next.t('frontend_workflow_approval_history_read')}' %}bg-blue-50 text-blue-600 border border-blue-200
+                                                    {% else %}bg-gray-100 text-gray-600 border border-gray-200{% endif %}">
+                                                    {{ item.judge }}
+                                                </span>
+                                                {% endif %}
+                                            </div>
+                                            <!-- Date -->
+                                            <div class="text-xs text-gray-400 mt-1.5 flex items-center">
+                                                {% if item.finish_date == '${i18next.t('frontend_workflow_approval_history_read')}' or item.finish_date == '${i18next.t('frontend_workflow_approval_history_unprocessed')}' %}
+                                                    <!-- Special status text replacing date -->
+                                                    <span class="{% if item.finish_date == '${i18next.t('frontend_workflow_approval_history_read')}' %}text-blue-500 bg-blue-50 px-1.5 py-0.5 rounded{% elsif item.finish_date == '${i18next.t('frontend_workflow_approval_history_unprocessed')}' %}text-red-500 bg-red-50 px-1.5 py-0.5 rounded{% endif %}">
+                                                        {{ item.finish_date }}
+                                                    </span>
+                                                {% else %}
+                                                    <!-- Regular Date -->
+                                                    <svg class="w-3 h-3 mr-1 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                                    {{ item.finish_date }}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Opinion -->
+                                    {% if item.opinion and item.opinion != '' %}
+                                    <div class="mt-3 pt-2 border-t border-gray-200 text-sm text-gray-700 leading-relaxed bg-white/50 -mx-2 px-2 rounded-b">
+                                        {{ item.opinion }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        `
+    }
+}
+
+export const getInstanceApprovalHistory = async (isMobile)=>{
+    if (isMobile) {
+        return await getMobileInstanceApprovalHistory();
+    }
     return {
         "type": "liquid",
         "className": "m-b-none",
