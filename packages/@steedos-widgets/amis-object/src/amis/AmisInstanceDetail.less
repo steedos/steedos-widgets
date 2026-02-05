@@ -453,11 +453,16 @@
     }
 
     // 修复审批王应用申请单中表格样式问题，主要是excel粘贴过来的表格
-    .instance-form-view {
+    .instance-form-view,
+    .instance-form-view-mobile {
         .steedos-field-html-readonly,
         .antd-RichTextControl {
             display: block;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
             overflow-x: auto;
+            flex-shrink: 1;
             
             table {
                 width: 100% !important;

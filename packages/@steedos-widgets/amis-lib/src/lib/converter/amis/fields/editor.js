@@ -101,7 +101,7 @@ export const getHtmlFieldSchema = (field, readonly, ctx)=>{
             "type": "input-rich-text",
             "receiver": "${context.rootUrl}/s3/images",
             "options":{
-              "content_style": "table { width: 100% !important; max-width: 100% !important; border-collapse: collapse !important; border: 1px solid #ddd !important; margin-bottom: 10px; } td, th { padding: 5px 10px !important; border: 1px solid #ddd !important; min-width: 50px; } th { background-color: #f7f7f7; font-weight: bold; }",
+              "content_style": "table { width: 100% !important; border-collapse: collapse !important; border: 1px solid #ddd !important; margin-bottom: 10px; } td, th { padding: 5px 10px !important; border: 1px solid #ddd !important; min-width: 50px; } th { background-color: #f7f7f7; font-weight: bold; }",
               // "menu": {
               //   "insert": {
               //     "title": "Insert",

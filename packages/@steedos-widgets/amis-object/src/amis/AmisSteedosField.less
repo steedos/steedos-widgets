@@ -47,7 +47,6 @@
     overflow-x: auto;
     
     table {
-      width: 100% !important;
       border-collapse: collapse !important;
       border: 1px solid #ddd !important;
       margin-bottom: 10px;
@@ -66,3 +65,29 @@
     }
   }
 }
+
+// 手机端全局修正：防止 fieldset 被宽内容撑开，限制在 Steedos Object Form 上下文中
+@media (max-width: 768px) {
+  .steedos-object-form fieldset.antd-Collapse {
+    min-width: 0;
+    width: 100%;
+    max-width: 100vw; /* 兜底 */
+  }
+
+  .steedos-input-rich-text-readonly {
+    // 关键修正: 必须显式给 Flex 子项（Value 容器）设置 min-width: 0 以允许收缩
+    .antd-Form-value {
+      min-width: 0 !important;
+      flex-shrink: 1 !important;
+      width: 100% !important; // 确保占满 flex 容器的剩余空间
+    }
+
+    .antd-RichTextControl {
+      display: block !important;
+      width: 100% !important; 
+      max-width: 100% !important;
+      overflow-x: auto !important; // 触发自身的滚动条
+    }
+  }
+}
+
