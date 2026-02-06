@@ -1424,7 +1424,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
       }
     }
   }else{
-    if(instance.flow.instance_template){
+    if(!isMobile && instance.flow.instance_template){
       try {
         formContentSchema = JSON.parse(instance.flow.instance_template);
       } catch (error) {
