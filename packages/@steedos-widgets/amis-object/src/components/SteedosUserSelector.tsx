@@ -429,7 +429,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
         onClick={handleOpen}
         onMouseEnter={() => setInputHovered(true)}
         onMouseLeave={() => setInputHovered(false)}
-        style={{ minWidth: 280, cursor: 'pointer' }}
+        style={{ minWidth: 150, cursor: 'pointer' }}
         suffix={
           clearable && selectedUsers.length > 0 && inputHovered ? (
             <CloseOutlined

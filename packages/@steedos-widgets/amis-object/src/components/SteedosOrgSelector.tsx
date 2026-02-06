@@ -425,7 +425,7 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
         treeCheckable={multiple}
         showCheckedStrategy={multiple ? undefined : TreeSelect.SHOW_PARENT}
         placeholder={placeholder}
-        style={{ minWidth: 280, ...style }}
+        style={{ minWidth: 150, ...style }}
         loadData={onLoadData}
         treeDefaultExpandAll={false}
         treeExpandedKeys={expandedKeys}
