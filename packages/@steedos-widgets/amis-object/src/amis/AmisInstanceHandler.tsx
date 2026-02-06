@@ -28,23 +28,25 @@ export const AmisInstanceHandler = async (props) => {
             "method": "post",
             "sendOn": "!!this && this.step_type != 'end' && this.deal_type != 'pickupAtRuntime'",
             "requestAdaptor": `
-const { next_step, $scopeId } = api.data;
-const formValues = context._scoped.getComponentById("instance_form").getValues();
+                const { next_step, $scopeId } = api.data;
+                const formValues = context._scoped.getComponentById("instance_form").getValues();
 
-api.data = {
-  instanceId: context.recordId,
-  nextStepId: context._id,
-  values: formValues
-}
-return api;
+                api.data = {
+                instanceId: context.recordId,
+                nextStepId: context._id,
+                values: formValues
+                }
+                return api;
             `,
             "adaptor": `
             if(payload.error){
-                SteedosUI.notification.error({message: payload.error});
                 return {
                     status: 0,
-                    data: {}
-                }
+                    data: {
+                        nextStepUsersError: payload.error,
+                        nextStepUsers: [] 
+                    }
+                };
             }
             let value = null;
 
@@ -56,6 +58,7 @@ return api;
             }
 
             payload.data = {
+                nextStepUsersError: null,
                 nextStepUsers: payload.nextStepUsers,
                 ["${name}"]: value
             }; 
@@ -73,7 +76,8 @@ return api;
                 name: name,
                 id: id,
                 hiddenOn: "this.deal_type != 'pickupAtRuntime' && (this.nextStepUsers && this.nextStepUsers.length > 0) || this.step_type == 'counterSign'",
-                required: true
+                required: true,
+                "inputClassName": "${nextStepUsersError ? 'border-red-500' : ''}"
             },
             {
                 type: "steedos-select-user",
@@ -82,7 +86,8 @@ return api;
                 id: id,
                 hiddenOn: "this.deal_type != 'pickupAtRuntime' && (this.nextStepUsers && this.nextStepUsers.length > 0) || this.step_type != 'counterSign'",
                 required: true,
-                multiple: true
+                multiple: true,
+                "inputClassName": "${nextStepUsersError ? 'border-red-500' : ''}"
             },
             {
                 type: "checkboxes",
@@ -96,7 +101,8 @@ return api;
                 "labelField": "name",
                 "valueField": "id",
                 "joinValues": false,
-                "extractValue": true
+                "extractValue": true,
+                "className": "${nextStepUsersError ? 'border-red-500 border' : ''}"
             },
             {
                 type: "radios",
@@ -111,6 +117,12 @@ return api;
                 "valueField": "id",
                 "joinValues": false,
                 "extractValue": true,
+                "className": "${nextStepUsersError ? 'border-red-500 border' : ''}"
+            },
+            {
+                "type": "tpl",
+                "tpl": "<div class='text-danger text-sm'>${nextStepUsersError}</div>",
+                "visibleOn": "this.nextStepUsersError"
             }
         ]
     }

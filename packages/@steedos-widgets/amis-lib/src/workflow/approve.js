@@ -147,13 +147,17 @@ const getNextStepInput = async (instance, nextStepChangeEvents) => {
               `,
               "adaptor": `
                 if(payload.error){
-                  SteedosUI.notification.error({message: payload.error});
                   return {
                     status: 0,
-                    data: {}
+                    data: {
+                      nextStepsError: payload.error,
+                      options: [],
+                      value: null
+                    }
                   }
                 }
                 payload.data = {
+                  nextStepsError: null,
                   value: payload.nextSteps.length === 1 ? payload.nextSteps[0]._id : null, 
                   options: _.map(payload.nextSteps, (item)=>{
                     return {
@@ -190,6 +194,11 @@ const getNextStepInput = async (instance, nextStepChangeEvents) => {
               }
             }
           },
+          {
+            "type": "tpl",
+            "tpl": "<div class='text-danger text-sm'>${nextStepsError}</div>",
+            "visibleOn": "this.nextStepsError"
+          }
         ],
         id: "u:4d3a884b437c",
         valign: "middle"
@@ -229,6 +238,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
         body: [
           {
             type: 'service',
+            id: "u:next_step_users_service",
             api: {
                 "url": "/api/workflow/v2/nextStepUsersValue?next_step=${next_step}",
                 "method": "post",
@@ -283,7 +293,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
             },
             {
               type: "checkboxes",
-              label: isMobile ? false : "",//手机端label和value显示为两行，左侧不应该有空隙
+              label: false,//手机端label和value显示为两行，左侧不应该有空隙
               name: "next_users",
               id: "u:next_users",
               required: true,
@@ -299,12 +309,32 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 "requestAdaptor": " \nconst { next_step, $scopeId } = api.data;\n let formValues = context._scoped.getComponentById(\"instance_form\").getValues(); formValues = {...context.approveValues, ...formValues}; \n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
                 "adaptor": `
                   if(payload.error){
-                    SteedosUI.notification.error({message: payload.error});
+                    context._scoped.doAction({
+                      actionType: 'setValue',
+                      componentId: 'u:next_step_users_service',
+                      args: {
+                        value: {
+                          nextStepUsersError: payload.error
+                        }
+                      }
+                    });
                     return {
                       status: 0,
-                      data: {}
+                      data: {
+                        options: [],
+                        value: null
+                      }
                     }
                   }
+                  context._scoped.doAction({
+                    actionType: 'setValue',
+                    componentId: 'u:next_step_users_service',
+                    args: {
+                      value: {
+                        nextStepUsersError: null
+                      }
+                    }
+                  });
                   let value = null;
                   if(context.new_next_step.step_type == 'counterSign'){
                       value = _.map(payload.nextStepUsers, 'id');
@@ -341,7 +371,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
             },
             {
               type: "radios",
-              label: isMobile ? false : "",//手机端label和value显示为两行，左侧不应该有空隙
+              label: false,//手机端label和value显示为两行，左侧不应该有空隙
               name: "next_users",
               id: "u:next_users",
               required: true,
@@ -357,12 +387,32 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 "requestAdaptor": " const { next_step, $scopeId } = api.data;\n if(api.query.next_step != next_step._id){return {'mockResponse':{'status':200,'data':{'status':0,'data':{}}}}}; \n let formValues = context._scoped.getComponentById(\"instance_form\").getValues(); formValues = {...context.approveValues, ...formValues}; \n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
                 "adaptor": `
                   if(payload.error){
-                    SteedosUI.notification.error({message: payload.error});
+                    context._scoped.doAction({
+                      actionType: 'setValue',
+                      componentId: 'u:next_step_users_service',
+                      args: {
+                        value: {
+                          nextStepUsersError: payload.error
+                        }
+                      }
+                    });
                     return {
                       status: 0,
-                      data: {}
+                      data: {
+                        options: [],
+                        value: null
+                      }
                     }
                   }
+                  context._scoped.doAction({
+                    actionType: 'setValue',
+                    componentId: 'u:next_step_users_service',
+                    args: {
+                      value: {
+                        nextStepUsersError: null
+                      }
+                    }
+                  });
                   payload.data = {
                     value: payload.nextStepUsers.length === 1 ? payload.nextStepUsers[0].id : null, 
                     options: payload.nextStepUsers
@@ -388,41 +438,14 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                   ]
                 }
               }
+            },
+            {
+              "type": "tpl",
+              "tpl": "<div class='text-danger text-sm'>${nextStepUsersError}</div>",
+              "visibleOn": "this.nextStepUsersError"
             }
             ]
           },
-            // {
-            //   type: "steedos-select-user",
-            //   label: "",
-            //   name: "next_users",
-            //   id: "u:next_users",
-            //   required: true,
-            //   hiddenOn: "this.new_next_step.deal_type === 'pickupAtRuntime'",
-            //   amis: {
-            //     multiple: "this.new_next_step.deal_type === 'counterSign'",
-            //     "source": {
-            //       "url": "${context.rootUrl}/api/workflow/v2/nextStepUsers",
-            //       "method": "post",
-            //       "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end'",
-            //       "headers": {
-            //         "Authorization": "Bearer ${context.tenantId},${context.authToken}"
-            //       },
-            //       "messages": {
-            //       },
-            //       "requestAdaptor": "\nconst { next_step, $scopeId } = api.data;\nconst formValues = context._scoped.getComponentById(\"instance_form\").getValues();\n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
-            //       "adaptor": "\npayload.data = {value: payload.nextStepUsers.length === 1 ? payload.nextStepUsers[0].id : null, options: payload.nextStepUsers};\nreturn payload;",
-            //       "data": {
-            //         "&": "$$",
-            //         "$scopeId": "$scopeId",
-            //         "context": "${context}",
-            //         "next_step": "${new_next_step}",
-            //       }
-            //     },
-            //     "labelField": "name",
-            //     "valueField": "id",
-            //     value: '${new_next_step.approver_users}',
-            //   }
-            // }
         ],
         id: "u:81a4913c61cc",
         valign: "middle",
