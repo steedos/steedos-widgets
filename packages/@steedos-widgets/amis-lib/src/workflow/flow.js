@@ -708,6 +708,23 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
     }
 
   }
+  if(includes(['text', 'input', 'number'], field.type) && field.default_value){
+    const formula = mapFormula(field.default_value, !inTable ? tableFieldMap : null);
+    if(formula){
+      tpl.value = formula;
+    }else{
+      tpl.value = field.formula.replace(/"/g, '');
+      if(field.type === 'number'){
+        try {
+          tpl.value = Number(tpl.value);
+          tpl.type = 'static-number';
+        } catch (error) {
+          console.error('getFieldReadonlyTpl number default_value parse error', field.code, field.formula, error);
+        }
+      }
+    }
+
+  }
   if(includes(['text'], field.type)){
     tpl.type = `static-${field.type}`;
   }else if(field.type === 'select'){
