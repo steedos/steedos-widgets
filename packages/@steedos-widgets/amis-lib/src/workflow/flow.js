@@ -1688,7 +1688,6 @@ export const getFlowFormSchema = async (instance, box, print) => {
                   if(!formEl) return;
                   formEl.addEventListener('focusout', function(e){
                     setTimeout(function(){
-                      console.log('---', window.steedosWorkflowStepUsersNeedReload, formEl.contains(document.activeElement));
                       if(window.steedosWorkflowStepUsersNeedReload && !formEl.contains(document.activeElement)){
                         window.steedosWorkflowStepUsersNeedReload = false;
                         doAction({
