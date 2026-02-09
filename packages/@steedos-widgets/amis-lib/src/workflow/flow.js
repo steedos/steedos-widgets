@@ -713,7 +713,7 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
     if(formula){
       tpl.value = formula;
     }else{
-      tpl.value = field.formula.replace(/"/g, '');
+      tpl.value = field.default_value.replace(/"/g, '');
       if(field.type === 'number'){
         try {
           tpl.value = Number(tpl.value);
