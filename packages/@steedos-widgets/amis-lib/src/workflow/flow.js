@@ -1532,12 +1532,8 @@ export const getFlowFormSchema = async (instance, box, print) => {
                     "componentId": "u:next_step",
                     "args": {}
                   });
-                  doAction({
-                    "actionType": "reload",
-                    "componentId": "u:set_steps_users",
-                    "args": {}
-                  });
                 }, 1500);
+                window.steedosWorkflowStepUsersNeedReload = true;
               `
             },
             ...changeEvents
@@ -1683,6 +1679,28 @@ export const getFlowFormSchema = async (instance, box, print) => {
               "value": "${event.data.context.approveValues}"
             },
             "expression": "${event.data.context.flowVersion.style === 'wizard'}"// 表单为 wizard 样式时需要初始同步表单数据，否则直接点击暂存按钮会清空数据
+          },
+          {
+              "actionType": "custom",
+              "script": `
+                setTimeout(function(){
+                  var formEl = document.getElementsByClassName('instance-form')[0];
+                  if(!formEl) return;
+                  formEl.addEventListener('focusout', function(e){
+                    setTimeout(function(){
+                      console.log('---', window.steedosWorkflowStepUsersNeedReload, formEl.contains(document.activeElement));
+                      if(window.steedosWorkflowStepUsersNeedReload && !formEl.contains(document.activeElement)){
+                        window.steedosWorkflowStepUsersNeedReload = false;
+                        doAction({
+                          "actionType": "reload",
+                          "componentId": "u:set_steps_users",
+                          "args": {}
+                        });
+                      }
+                    }, 300);
+                  });
+                }, 1000);
+              `
           },
           ...initedEvents
         ]
