@@ -264,6 +264,7 @@ export const AmisSelectFlow = (props) => {
   const inputId = `${id}_input`;
   const flowSchema = getSelectFlowSchema(inputId, props);
   if (mode === "tree-select") {
+    flowSchema.className = flowSchema.className ? `${flowSchema.className} flow-select` : 'flow-select'
     return flowSchema;
   }
   return {

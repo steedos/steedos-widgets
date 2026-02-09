@@ -33,7 +33,7 @@ export async function getObjectFieldsFilterFormSchema(ctx) {
     "visibleOn": "this.filterFormSearchableFields && this.filterFormSearchableFields.length",
     "className": ctx.formFactor === 'SMALL' ? "slds-filters__body p-0 mb-2 overflow-y-auto overflow-x-hidden" : "slds-filters__body p-0 sm:grid sm:gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-1",
     "style":{
-      "max-height":ctx.formFactor === 'SMALL'?"30vh":"unset"
+      "max-height":ctx.formFactor === 'SMALL'?"100vh":"unset"
     },
     "schemaApi": {
       method: 'post',
@@ -71,6 +71,7 @@ export async function getObjectFieldsFilterFormSchema(ctx) {
             ) {
               var ctx = ${JSON.stringify(ctx)};
               const amisField = window.getFieldSearchable(field, fields, ctx);
+              console.log('amisField===>', amisField)
               return amisField;
             }
           })).then(resolveAll, rejectAll);
@@ -149,15 +150,15 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       return n.props.type === "service";
     });
     let showFieldsFilter = true;
-    // const isMobile = window.innerWidth < 768;
-    // if(event.data.__from_fields_filter_settings_confirm){
-    //   // 如果是从设置搜索项点击确认按钮触发的搜索事件不应该自动关闭搜索栏
-    //   showFieldsFilter = true;
-    // }
-    // else if(isMobile){
-    //   // 如果是手机端，点击搜索后自动关闭搜索栏
-    //   showFieldsFilter = false;
-    // }
+    const isMobile = window.innerWidth < 768;
+    if(event.data.__from_fields_filter_settings_confirm){
+      // 如果是从设置搜索项点击确认按钮触发的搜索事件不应该自动关闭搜索栏
+      showFieldsFilter = true;
+    }
+    else if(isMobile){
+      // 如果是手机端，点击搜索后自动关闭搜索栏（drawer模式）
+      showFieldsFilter = false;
+    }
     // else if(event.data.displayAs === "split") {
     //   // PC上分栏模式下的列表，始终按手机上效果处理，即自动关闭搜索栏
     //   showFieldsFilter = false;
@@ -462,6 +463,40 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     });
     // ===END===
   `;
+  const isMobileFilter = ctx.formFactor === 'SMALL';
+  const mobileFilterCloseScript = `
+    const scope = event.context.scoped;
+    let filterService = SteedosUI.getClosestAmisComponentByType(scope, "service", {name: "service_listview_filter_form"});
+    filterService && filterService.setData({showFieldsFilter: false});
+    let crudService = SteedosUI.getClosestAmisComponentByType(scope, "service", {name: "service_object_table_crud"});
+    crudService && crudService.setData({showFieldsFilter: false});
+  `;
+  const mobileFilterTitleBar = {
+    "type": "wrapper",
+    "className": "flex justify-between items-center py-3 border-b mb-2",
+    "body": [
+      {
+        "type": "tpl",
+        "tpl": "筛选",
+        "className": "text-lg font-bold"
+      },
+      {
+        "type": "button",
+        "icon": "fa fa-times",
+        "level": "link",
+        "className": "text-gray-500 p-0",
+        "onEvent": {
+          "click": {
+            "actions": [{
+              "actionType": "custom",
+              "script": mobileFilterCloseScript
+            }]
+          }
+        }
+      }
+    ],
+    "size": "xs"
+  };
   return {
     "type": "service",
     "name": "service_listview_filter_form",
@@ -479,7 +514,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       "type": "wrapper",
       "body": {
         "type": "wrapper",
-        "body": [filterFormSchema, {
+        "body": [...(isMobileFilter ? [mobileFilterTitleBar] : []), filterFormSchema, {
           "type": "wrapper",
           "body": {
             "type": "wrapper",
@@ -670,13 +705,15 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
           "className": "slds-filters__footer slds-grid slds-shrink-none flex justify-between p-0"
         }],
         "size": "xs",
-        "className": "slds-filters px-3"
+        "className": isMobileFilter ? "slds-filters px-3 bg-white rounded-lg shadow-2xl w-full" : "slds-filters px-3",
+        "style": isMobileFilter ? { "zIndex": 1000, "overflowY": "auto", "height": "fit-content", "width": "920px", "maxWidth": "100%" } : undefined,
       },
       "size": "xs",
-      "className": `p-0`,
+      "className": isMobileFilter ? "p-0 fixed inset-0 flex justify-center" : "p-0",
+      "style": isMobileFilter ? { "zIndex": 999, "backgroundColor": "rgba(0,0,0,0.4)", "padding": "16px", "paddingTop": "20vh" } : undefined,
       "visibleOn": "this.showFieldsFilter",
     },
-    "className": "bg-white"
+    "className": isMobileFilter ? "" : "bg-white"
   };
 }
 
