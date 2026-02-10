@@ -1,4 +1,3 @@
-
 .steedos-amis-instance-view .instance-form-view-mobile {
     .ant-input-affix-wrapper, 
     .antd-TextControl-input, 
@@ -16,15 +15,18 @@
     // 强制清除输入控件的左侧默认内边距，确保和 Label 对齐
     .antd-Form-control {
         padding-left: 0 !important;
+        padding-right: 0 !important;
         
         // 针对内部可能的子元素，也尝试清除左侧 padding
         > .antd-Form-control {
             padding-left: 0 !important;
+            padding-right: 0 !important;
         }
 
         // 针对展示态（static）的控件
         &.antd-Form-static{
              padding-left: 0 !important;
+             padding-right: 0 !important;
         }
     }
     
@@ -37,6 +39,7 @@
     .antd-Number-input-wrap,
     .antd-TextareaControl-input {
         padding-left: 0 !important;
+        padding-right: 0 !important;
     }
 
     // 特别修正：针对嵌套在容器内的 Input 元素本身，强制清除内边距
@@ -47,6 +50,220 @@
     .antd-Number-input,
     textarea.antd-TextareaControl-input {
         padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    // 去除可编辑字段容器内 Form-item 的底部线条（border-bottom）
+    .antd-Form-item {
+        border-bottom: none !important;
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    // 去除 Form-control 可能的底部边框线
+    .antd-Form-control {
+        border-bottom: none !important;
+    }
+
+    // ========================================================
+    // 移动端 Section 分组标题（shadcn/ui 风格）
+    // 上方细线分隔 + 标题 + 可选描述文字
+    // ========================================================
+    .mobile-section-divider {
+        border-top: 1px solid #e5e7eb; // gray-200 separator line
+        padding-top: 16px !important;
+
+        .mobile-section-header {
+            .mobile-section-title {
+                font-size: 16px;
+                font-weight: 600;
+                color: #0f172a; // slate-900
+                line-height: 1.5;
+                letter-spacing: -0.01em;
+            }
+
+            .mobile-section-desc {
+                font-size: 14px;
+                font-weight: 400;
+                color: #64748b; // slate-500
+                line-height: 1.4;
+                margin-top: 2px;
+            }
+        }
+    }
+
+    // ========================================================
+    // 移动端子表表格（shadcn/ui 风格）
+    // 白底 + 柔和灰色文字表头 + 水平分隔线，无竖线、无背景色
+    // ========================================================
+    .steedos-input-table .antd-Table-table {
+        border: none !important;
+
+        thead th {
+            background: transparent !important;
+            border-bottom: 1px solid #e2e8f0 !important; // slate-200
+            border-top: none !important;
+            border-left: none !important;
+            border-right: none !important;
+            color: #64748b; // slate-500 (muted-foreground)
+            font-size: 13px;
+            font-weight: 500;
+            padding: 8px 10px !important;
+        }
+
+        tbody td {
+            border: none !important;
+            border-bottom: 1px solid #f1f5f9 !important; // slate-100
+            padding: 10px !important;
+            font-size: 14px;
+            color: #1e293b; // slate-800
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none !important;
+        }
+    }
+
+    // 子表 InputTable 工具栏（+ 新增按钮）
+    .form-control .antd-InputTable {
+        .antd-InputTable-toolbar {
+            border-top: 1px solid #e2e8f0 !important; // slate-200
+            button {
+                color: #64748b !important; // slate-500
+                font-size: 14px;
+            }
+        }
+    }
+
+    // 子表 footer
+    .steedos-input-table .steedos-input-table-footer {
+        border-top: 1px solid #e2e8f0 !important; // slate-200
+    }
+}
+
+// ========================================================
+// 移动端 Checkbox / Radio 样式（shadcn/ui 风格）
+// 更大的触摸目标、圆角、现代配色
+// ========================================================
+.steedos-amis-instance-view .instance-form-view-mobile .mobile-editable-field {
+    .antd-CheckboxesControl,
+    .antd-CheckboxControl {
+        padding: 8px 12px !important; // 上下+左右内边距，避免贴边
+
+        .antd-Checkbox {
+            display: flex !important;
+            align-items: center !important;
+            padding: 6px 0 !important;
+            margin-bottom: 0 !important;
+            cursor: pointer;
+
+            // 隐藏原生 input
+            input[type='checkbox'] {
+                position: absolute;
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+            // 自定义 checkbox 图标（<i> 元素）
+            > i {
+                width: 18px !important;
+                height: 18px !important;
+                min-width: 18px !important;
+                border: 1.5px solid #d1d5db !important; // gray-300
+                border-radius: 4px !important; // shadcn rounded-sm
+                background: #fff !important;
+                transition: all 0.15s ease-in-out;
+                display: inline-flex !important;
+                align-items: center;
+                justify-content: center;
+                margin-right: 8px !important;
+                box-shadow: none !important;
+            }
+
+            // 选中状态
+            input[type='checkbox']:checked + i {
+                background: #0f172a !important; // slate-900 (shadcn primary)
+                border-color: #0f172a !important;
+            }
+
+            // 选项文字
+            > span {
+                font-size: 15px !important;
+                color: #1e293b; // slate-800
+                line-height: 1.4;
+                user-select: none;
+            }
+        }
+    }
+}
+
+// ========================================================
+// 移动端可编辑字段（.mobile-editable-field）统一样式
+// 目标：所有单行输入控件 44px 高度、垂直居中、圆角 8px
+// 选择器从顶层写，避免嵌套导致层级错误
+// ========================================================
+.steedos-amis-instance-view .instance-form-view-mobile .mobile-editable-field {
+    // 内部 amis 容器撑满宽度
+    > div {
+        width: 100% !important;
+    }
+
+    // Form-item 去除多余间距
+    .antd-Form-item {
+        min-height: auto !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border-bottom: none !important;
+    }
+
+    // Form-control 去除多余间距（排除 Checkbox/Radio 容器，它们有自己的 padding 规则）
+    .antd-Form-control:not(.antd-CheckboxesControl):not(.antd-CheckboxControl):not(.antd-RadiosControl) {
+        padding: 0 !important;
+        border-bottom: none !important;
+    }
+
+    // ======= 核心：所有单行输入控件的「包裹容器」和「input 元素」都强制 44px =======
+    // 包裹容器层
+    .antd-TextControl-input,
+    .antd-Number,
+    .antd-Number-input-wrap,
+    .antd-DatePicker,
+    .antd-Select,
+    .antd-ResultBox,
+    .antd-Picker-input {
+        height: 44px !important;
+        min-height: 44px !important;
+        line-height: 44px !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        box-sizing: border-box !important;
+    }
+
+    // input/select 元素层
+    input:not([type='checkbox']):not([type='radio']),
+    select,
+    .antd-Number-input,
+    .antd-DatePicker-input {
+        height: 44px !important;
+        min-height: 44px !important;
+        line-height: 44px !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        box-sizing: border-box !important;
+        font-size: 16px !important;
+    }
+
+    // Textarea 例外：不固定高度，保持自适应
+    textarea,
+    textarea.antd-TextareaControl-input {
+        padding-top: 6px !important;
+        padding-bottom: 6px !important;
+        line-height: 1.5 !important;
+        height: auto !important;
+        min-height: auto !important;
     }
 }
 
@@ -372,6 +589,11 @@
     @media (max-width: 768px) {
         /* 附件区域优化: 让 Label 和上传按钮靠左紧凑排列 */
         .instance-file-list {
+            padding-left: 8px !important;
+            padding-right: 8px !important;
+            margin-top: 0 !important;
+            padding-top: 0px !important; /* 去除顶部间距 */
+
             .antd-Form-item {
                 display: flex !important;
                 justify-content: flex-start !important;
@@ -385,6 +607,13 @@
                     margin-right: 8px !important; 
                     padding: 0 !important;
                     text-align: left !important;
+                    
+                    /* 统一标题字体 */
+                    &.antd-List-heading {
+                        font-size: 14px !important;
+                        font-weight: bold !important;
+                        color: #374151 !important; /* text-gray-700 */
+                    }
                 }
                 
                 .antd-Form-value {
@@ -411,6 +640,9 @@
 
         /* 相关文件区域优化: 标题和列表项左对齐 */
         .instance-related-list {
+            padding-left: 8px !important;
+            padding-right: 8px !important;
+
             /* 标题区域 */
             .cxd-List-heading, 
             .antd-List-heading {
@@ -419,6 +651,10 @@
                 text-align: left !important;
                 font-weight: bold;
                 border: none !important;
+                /* 统一字体大小 */
+                font-size: 14px !important;
+                line-height: 1.5;
+                color: #374151; /* text-gray-700 */
             }
 
             /* 列表容器 */
@@ -441,6 +677,8 @@
                     display: block; 
                     text-align: left;
                     color: inherit; 
+                    /* 统一内容字体大小 */
+                    font-size: 16px;
                 }
             }
 
@@ -448,6 +686,78 @@
             .antd-ListItem--actions-at-right {
                 padding-left: 0 !important;
                 padding-right: 0 !important;
+            }
+        }
+
+        /* 底部提交人区域优化 */
+        .instance-applicant-view {
+            border: none !important;
+
+            td {
+                border: none !important;
+            }
+
+            /* 隐藏提交日期列（第二个td） */
+            td:last-child {
+                display: none !important;
+            }
+
+            /* 提交人列占满宽度，用flex确保label在左、value在右 */
+            td:first-child {
+                width: 100% !important;
+                display: flex !important;
+                align-items: center !important;
+                flex-wrap: nowrap;
+                padding-left: 6px;
+
+                /* 取消 inline-left 的 float，改由 flex 控制排列 */
+                .inline-left {
+                    float: none !important;
+                    display: inline-block !important;
+                }
+            }
+        }
+
+        /* 签批历程区域优化：与表单左右对齐、字体统一 */
+        .instance-approve-history {
+            /* 与表单 px-2 对齐，覆盖模板中的 border-t */
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            margin-top: 16px !important;
+
+            /* 标题 "签批历程"：与表单字段标题对齐 */
+            > div:first-child {
+                padding-left: 8px !important;
+                padding-right: 8px !important;
+                font-size: 16px !important;
+            }
+
+            /* 内容容器 */
+            > .flex.flex-col {
+                font-size: 14px !important;
+
+                /* 步骤名称（如"开始"、"车间主管领导(会签)"） */
+                > div[class*="px-4"][class*="text-xs"] {
+                    padding-left: 8px !important;
+                    padding-right: 8px !important;
+                    font-size: 14px !important;
+                }
+
+                /* 每条审批卡片 */
+                > div[class*="px-4"][class*="mx-4"] {
+                    margin-left: 8px !important;
+                    margin-right: 8px !important;
+                    
+                    /* 审批人名字 */
+                    .text-\[15px\] {
+                        font-size: 15px !important;
+                    }
+                    
+                    /* 意见文字 */
+                    .text-sm {
+                        font-size: 14px !important;
+                    }
+                }
             }
         }
     }
