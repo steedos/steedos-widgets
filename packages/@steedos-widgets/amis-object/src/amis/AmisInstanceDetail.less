@@ -91,6 +91,54 @@
             }
         }
     }
+
+    // ========================================================
+    // 移动端子表表格（shadcn/ui 风格）
+    // 白底 + 柔和灰色文字表头 + 水平分隔线，无竖线、无背景色
+    // ========================================================
+    .steedos-input-table .antd-Table-table {
+        border: none !important;
+
+        thead th {
+            background: transparent !important;
+            border-bottom: 1px solid #e2e8f0 !important; // slate-200
+            border-top: none !important;
+            border-left: none !important;
+            border-right: none !important;
+            color: #64748b; // slate-500 (muted-foreground)
+            font-size: 13px;
+            font-weight: 500;
+            padding: 8px 10px !important;
+        }
+
+        tbody td {
+            border: none !important;
+            border-bottom: 1px solid #f1f5f9 !important; // slate-100
+            padding: 10px !important;
+            font-size: 14px;
+            color: #1e293b; // slate-800
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none !important;
+        }
+    }
+
+    // 子表 InputTable 工具栏（+ 新增按钮）
+    .form-control .antd-InputTable {
+        .antd-InputTable-toolbar {
+            border-top: 1px solid #e2e8f0 !important; // slate-200
+            button {
+                color: #64748b !important; // slate-500
+                font-size: 14px;
+            }
+        }
+    }
+
+    // 子表 footer
+    .steedos-input-table .steedos-input-table-footer {
+        border-top: 1px solid #e2e8f0 !important; // slate-200
+    }
 }
 
 // ========================================================
