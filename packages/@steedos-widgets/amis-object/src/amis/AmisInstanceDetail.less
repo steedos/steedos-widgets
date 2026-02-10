@@ -505,6 +505,49 @@
                 }
             }
         }
+
+        /* 签批历程区域优化：与表单左右对齐、字体统一 */
+        .instance-approve-history {
+            /* 与表单 px-2 对齐，覆盖模板中的 border-t */
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            margin-top: 16px !important;
+
+            /* 标题 "签批历程"：与表单字段标题对齐 */
+            > div:first-child {
+                padding-left: 8px !important;
+                padding-right: 8px !important;
+                font-size: 16px !important;
+            }
+
+            /* 内容容器 */
+            > .flex.flex-col {
+                font-size: 14px !important;
+
+                /* 步骤名称（如"开始"、"车间主管领导(会签)"） */
+                > div[class*="px-4"][class*="text-xs"] {
+                    padding-left: 8px !important;
+                    padding-right: 8px !important;
+                    font-size: 14px !important;
+                }
+
+                /* 每条审批卡片 */
+                > div[class*="px-4"][class*="mx-4"] {
+                    margin-left: 8px !important;
+                    margin-right: 8px !important;
+                    
+                    /* 审批人名字 */
+                    .text-\[15px\] {
+                        font-size: 15px !important;
+                    }
+                    
+                    /* 意见文字 */
+                    .text-sm {
+                        font-size: 14px !important;
+                    }
+                }
+            }
+        }
     }
 
     // 修复审批王应用申请单中表格样式问题，主要是excel粘贴过来的表格
