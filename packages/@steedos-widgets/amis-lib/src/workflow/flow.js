@@ -989,18 +989,18 @@ const getFormMobileView = async (instance, tableFieldMap) => {
   });
 
   for (const field of fields) {
-      // Section 作为标题
+      // Section 作为分组标题（shadcn/ui 风格：上方 separator + 标题 + 描述）
       if(field.type === 'section'){
           body.push({
               type: "container",
               body: [
                 {
                   type: "tpl",
-                  tpl: field.name || field.code,
-                  className: "font-bold text-base text-gray-800 text-left block w-full"
+                  tpl: `<div class="mobile-section-header"><div class="mobile-section-title">${field.name || field.code}</div>${field.description ? '<div class="mobile-section-desc">' + field.description + '</div>' : ''}</div>`,
+                  className: "block w-full text-left"
                 }
               ],
-              className: "sticky top-0 z-10 bg-gray-100 px-2 py-2 border-b border-gray-200 w-full block text-left mt-2" // Section padding
+              className: "mobile-section-divider mt-6 mb-2 px-0"
           });
           continue;
       }
