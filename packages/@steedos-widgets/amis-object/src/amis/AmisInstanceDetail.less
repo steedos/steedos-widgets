@@ -94,6 +94,63 @@
 }
 
 // ========================================================
+// 移动端 Checkbox / Radio 样式（shadcn/ui 风格）
+// 更大的触摸目标、圆角、现代配色
+// ========================================================
+.steedos-amis-instance-view .instance-form-view-mobile .mobile-editable-field {
+    .antd-CheckboxesControl,
+    .antd-CheckboxControl {
+        padding: 8px 12px !important; // 上下+左右内边距，避免贴边
+
+        .antd-Checkbox {
+            display: flex !important;
+            align-items: center !important;
+            padding: 6px 0 !important;
+            margin-bottom: 0 !important;
+            cursor: pointer;
+
+            // 隐藏原生 input
+            input[type='checkbox'] {
+                position: absolute;
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+            // 自定义 checkbox 图标（<i> 元素）
+            > i {
+                width: 18px !important;
+                height: 18px !important;
+                min-width: 18px !important;
+                border: 1.5px solid #d1d5db !important; // gray-300
+                border-radius: 4px !important; // shadcn rounded-sm
+                background: #fff !important;
+                transition: all 0.15s ease-in-out;
+                display: inline-flex !important;
+                align-items: center;
+                justify-content: center;
+                margin-right: 8px !important;
+                box-shadow: none !important;
+            }
+
+            // 选中状态
+            input[type='checkbox']:checked + i {
+                background: #0f172a !important; // slate-900 (shadcn primary)
+                border-color: #0f172a !important;
+            }
+
+            // 选项文字
+            > span {
+                font-size: 15px !important;
+                color: #1e293b; // slate-800
+                line-height: 1.4;
+                user-select: none;
+            }
+        }
+    }
+}
+
+// ========================================================
 // 移动端可编辑字段（.mobile-editable-field）统一样式
 // 目标：所有单行输入控件 44px 高度、垂直居中、圆角 8px
 // 选择器从顶层写，避免嵌套导致层级错误
@@ -112,8 +169,8 @@
         border-bottom: none !important;
     }
 
-    // Form-control 去除多余间距
-    .antd-Form-control {
+    // Form-control 去除多余间距（排除 Checkbox/Radio 容器，它们有自己的 padding 规则）
+    .antd-Form-control:not(.antd-CheckboxesControl):not(.antd-CheckboxControl):not(.antd-RadiosControl) {
         padding: 0 !important;
         border-bottom: none !important;
     }
