@@ -110,7 +110,7 @@ const getNextStepInput = async (instance, nextStepChangeEvents) => {
         body: [
           {
             type: "list-select",
-            label: isMobile ? false : "",//手机端label和value显示为两行，左侧不应该有空隙
+            label: false,//手机端label和value显示为两行，左侧不应该有空隙
             name: "next_step",
             id: "u:next_step",
             multiple: false,
@@ -256,7 +256,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
             body: [
             {
               type: "steedos-select-user",
-              label: isMobile ? false : "",//手机端label和value显示为两行，左侧不应该有空隙
+              label: false,//手机端label和value显示为两行，左侧不应该有空隙
               name: "next_users", 
               id: "u:next_users",
               hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type == 'counterSign'",
@@ -274,7 +274,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
             },
             {
               type: "steedos-select-user",
-              label: isMobile ? false : "",//手机端label和value显示为两行，左侧不应该有空隙
+              label: false,//手机端label和value显示为两行，左侧不应该有空隙
               name: "next_users", 
               id: "u:next_users",
               hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type != 'counterSign'",

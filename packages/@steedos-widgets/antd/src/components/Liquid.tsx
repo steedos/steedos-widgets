@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Liquid, Context } from 'liquidjs';
 import { isEqual } from 'lodash';
@@ -35,6 +35,7 @@ const looseJsonParse = (str: string): any => {
   try {
     return JSON.parse(cleanStr);
   } catch (e) {
+    console.error(e, cleanStr)
     try {
       return new Function("return " + cleanStr)();
     } catch (e2) {
@@ -117,6 +118,83 @@ class ErrorBoundary extends React.Component<{ fallback?: React.ReactNode, childr
   }
 }
 
+// --- Portal 渲染器（React.memo 防止不必要的 remount）---
+// amisRender 执行后可能窃取焦点，需要在每次 Portal 渲染后恢复焦点
+const PortalRenderer = React.memo(function PortalItem({
+  portalKey, schema, domNode, amisRenderRef, dataRef
+}: {
+  portalKey: string;
+  schema: SchemaObject;
+  domNode: HTMLElement;
+  amisRenderRef: React.MutableRefObject<any>;
+  dataRef: React.MutableRefObject<any>;
+}) {
+  // 记录焦点恢复定时器，确保组件卸载时清理
+  const focusTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // render 阶段捕获当前焦点（在 amisRender 执行前）
+  const savedFocusRef = useRef<{ element: Element | null; selectionStart: number | null; selectionEnd: number | null }>({ element: null, selectionStart: null, selectionEnd: null });
+  
+  const active = document.activeElement;
+  if (active && active instanceof HTMLElement && active !== document.body) {
+    savedFocusRef.current = {
+      element: active,
+      selectionStart: (active as any).selectionStart ?? null,
+      selectionEnd: (active as any).selectionEnd ?? null,
+    };
+  }
+
+  // amisRender 执行（可能会窃取焦点）
+  const rendered = amisRenderRef.current(`partial-${portalKey}`, schema, { data: dataRef.current });
+
+  // DOM 更新后恢复焦点（延迟 10ms，等待 amis 内部异步 DOM 操作完成）
+  useLayoutEffect(() => {
+    const { element, selectionStart, selectionEnd } = savedFocusRef.current;
+    if (!element || !(element instanceof HTMLElement)) return;
+
+    // 清理上一次未执行的定时器
+    if (focusTimerRef.current) {
+      clearTimeout(focusTimerRef.current);
+    }
+
+    focusTimerRef.current = setTimeout(() => {
+      focusTimerRef.current = null;
+      // 焦点已不在原元素上，且原元素仍在 DOM 中
+      if (document.activeElement !== element && document.body.contains(element)) {
+        element.focus();
+        // 恢复光标位置（input/textarea）
+        try {
+          if (selectionStart !== null && 'setSelectionRange' in element) {
+            (element as HTMLInputElement).setSelectionRange(selectionStart, selectionEnd ?? selectionStart);
+          }
+        } catch (_) { /* 某些 input type 不支持 setSelectionRange */ }
+      }
+    }, 10);
+  });
+
+  // 组件卸载时清理定时器
+  useEffect(() => {
+    return () => {
+      if (focusTimerRef.current) {
+        clearTimeout(focusTimerRef.current);
+      }
+    };
+  }, []);
+
+  return createPortal(
+    <ErrorBoundary fallback={null}>
+      {rendered}
+    </ErrorBoundary>,
+    domNode,
+    portalKey
+  );
+}, (prev, next) =>
+  // 仅在 portalKey、DOM 节点或 schema 内容变化时才重新渲染
+  prev.portalKey === next.portalKey &&
+  prev.domNode === next.domNode &&
+  isEqual(prev.schema, next.schema)
+);
+
 // --- 错误显示组件 ---
 const ErrorDisplay = ({ error }: { error: Error }) => {
   const [expanded, setExpanded] = useState(false);
@@ -171,10 +249,17 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
   const [mountNodes, setMountNodes] = useState<Record<string, HTMLElement>>({});
   const containerRef = useRef<HTMLDivElement>(null);
   
+  // 焦点保护：跟踪当前聚焦元素，防止 re-render 导致焦点丢失
+  const focusInfoRef = useRef<{ element: Element | null; inContainer: boolean }>({ element: null, inContainer: false });
+  
   // 防抖的数据状态，用于减少 HTML 重建频率
   // 保持最新 data 的引用，供脚本使用
   const dataRef = useRef(data);
   dataRef.current = data;
+
+  // 稳定引用 amisRender，防止因父组件 re-render 产生新函数引用导致 portals 重建
+  const amisRenderRef = useRef(amisRender);
+  amisRenderRef.current = amisRender;
   
   // 用于存储脚本清理函数的引用，以便在组件卸载或更新时清理副作用
   const scriptCleanupsRef = useRef<Function[]>([]);
@@ -184,6 +269,13 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
   partialsRef.current = finalPartials;
   
   const inlineSchemasRef = useRef<Record<string, SchemaObject>>({});
+
+  // 深比较稳定的 finalPartials 引用，防止 $schema 每次 render 产生新引用导致 portals 不必要重建
+  const stableFinalPartialsRef = useRef(finalPartials);
+  if (!isEqual(stableFinalPartialsRef.current, finalPartials)) {
+    stableFinalPartialsRef.current = finalPartials;
+  }
+  const stableFinalPartials = stableFinalPartialsRef.current;
 
   // 1. 初始化 Liquid Engine
   const engine = useMemo(() => {
@@ -240,6 +332,7 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
             return ``;
           }
         } catch (e) {
+          console.error(e)
           return `<div style="color:red">JSON Parse Error: ${(e as Error).message}</div>`;
         }
       }
@@ -365,7 +458,43 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
     });
   }, [html]);
 
+  // 3.5 阻止容器内原生表单的默认提交行为
+  // 防止在 input 中按回车键时触发浏览器默认的表单 submit，导致页面刷新、所有表单值丢失
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    // 拦截 form submit 事件（覆盖显式提交和 Enter 键隐式提交）
+    const handleSubmit = (e: Event) => {
+      e.preventDefault();
+    };
+
+    // 拦截 input 中的 Enter 键，防止触发外层 form 的隐式提交
+    // （适用于 form 在容器之上的情况，此时 submit 事件无法在容器层拦截）
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Enter') return;
+      const target = e.target as HTMLElement;
+      // 仅拦截单行 input，不影响 textarea 的换行行为
+      if (target.tagName === 'INPUT') {
+        const form = target.closest('form');
+        if (form) {
+          e.preventDefault();
+        }
+      }
+    };
+
+    container.addEventListener('submit', handleSubmit);
+    container.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      container.removeEventListener('submit', handleSubmit);
+      container.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [html]);
+
   // 4. 创建 Portals
+  // 使用 PortalRenderer (React.memo) 包裹每个 Portal，确保只有 schema 实际变化的 Portal 才会重新渲染
+  // 移除 amisRender 依赖（使用 ref），避免父组件 re-render 导致所有 Portal 被销毁重建
   const portals = useMemo(() => {
      return Object.keys(mountNodes).map((key) => {
         const domNode = mountNodes[key];
@@ -375,20 +504,16 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
           return null;
         }
         
-        try {
-          return createPortal(
-            <ErrorBoundary fallback={null}>
-              {amisRender(`partial-${key}`, schema, { data: dataRef.current })}
-            </ErrorBoundary>, 
-            domNode,
-            key // 使用稳定的 key 基于 Partial ID
-          );
-        } catch(e) { 
-          console.error('[Liquid] Portal creation error:', { key, error: e });
-          return null; 
-        }
+        return <PortalRenderer
+          key={key}
+          portalKey={key}
+          schema={schema}
+          domNode={domNode}
+          amisRenderRef={amisRenderRef}
+          dataRef={dataRef}
+        />;
      });
-  }, [mountNodes, finalPartials, amisRender]); // Removed data dependency - use dataRef to avoid Portal recreation on data changes
+  }, [mountNodes, stableFinalPartials]); // 使用稳定引用，避免不必要的 Portal 重建
 
   // ==================================================================================
   // 5. 核心逻辑：顺序加载器 (等待外部脚本加载完再执行内联脚本)
@@ -511,6 +636,59 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
     };
   }, [html]); // 仅依赖 html 变化，不依赖 data 变化
 
+  // ==================================================================================
+  // 6. 焦点保护机制
+  // 在 render 阶段捕获当前焦点状态，在 DOM 更新后延迟恢复意外丢失的焦点
+  // ==================================================================================
+  const outerFocusTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  if (containerRef.current) {
+    const active = document.activeElement;
+    focusInfoRef.current = {
+      element: active,
+      inContainer: !!active && containerRef.current.contains(active)
+    };
+  } else {
+    focusInfoRef.current = { element: null, inContainer: false };
+  }
+
+  useLayoutEffect(() => {
+    const { element, inContainer } = focusInfoRef.current;
+    if (!inContainer || !element || !(element instanceof HTMLElement)) return;
+
+    if (outerFocusTimerRef.current) {
+      clearTimeout(outerFocusTimerRef.current);
+    }
+
+    outerFocusTimerRef.current = setTimeout(() => {
+      outerFocusTimerRef.current = null;
+      if (document.activeElement !== element &&
+          (document.activeElement === document.body || document.activeElement === null) &&
+          document.body.contains(element)) {
+        element.focus();
+      }
+    }, 10);
+  });
+
+  // 组件卸载时清理外层焦点定时器
+  useEffect(() => {
+    return () => {
+      if (outerFocusTimerRef.current) {
+        clearTimeout(outerFocusTimerRef.current);
+      }
+    };
+  }, []);
+
+  // 7. 缓存容器元素，避免 data 变化时 React 对 dangerouslySetInnerHTML div 进行不必要的协调
+  const innerHtml = useMemo(() => ({ __html: html }), [html]);
+  const containerElement = useMemo(() => (
+    <div 
+      className={`liquid-amis-container flex flex-col h-full w-full overflow-hidden ${className || ''}`} 
+      ref={containerRef} 
+      dangerouslySetInnerHTML={innerHtml} 
+    />
+  ), [innerHtml, className]);
+
   if (error) {
     return (
        <div className={`liquid-amis-container flex flex-col w-full overflow-auto p-4 ${className || ''}`}>
@@ -521,11 +699,7 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
 
   return (
     <>
-      <div 
-        className={`liquid-amis-container flex flex-col h-full w-full overflow-hidden ${className || ''}`} 
-        ref={containerRef} 
-        dangerouslySetInnerHTML={{ __html: html }} 
-      />
+      {containerElement}
       {portals}
     </>
   );
