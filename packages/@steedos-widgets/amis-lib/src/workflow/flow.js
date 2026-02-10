@@ -983,7 +983,7 @@ const getFormMobileView = async (instance, tableFieldMap) => {
                   className: "font-bold text-base text-gray-800 text-left block w-full"
                 }
               ],
-              className: "sticky top-0 z-10 bg-gray-100 px-4 py-2 border-b border-gray-200 w-full block text-left"
+              className: "sticky top-0 z-10 bg-gray-100 px-2 py-2 border-b border-gray-200 w-full block text-left mt-2" // Section padding
           });
           continue;
       }
@@ -1003,22 +1003,22 @@ const getFormMobileView = async (instance, tableFieldMap) => {
       // Label 样式
       const labelTpl = {
         type: "tpl",
-        className: "block text-left px-0",
-        tpl: `<div class="text-gray-500 text-md mb-1">${
+        className: "block text-left px-0", // 移除 px-2，使 Label 与字段值背景色左边缘对齐
+        tpl: `<div class="font-bold text-gray-700 mb-1" style="font-size: 14px;">${
           field.name || field.code
         } ${field.is_required ? '<span class="text-red-500">*</span>' : ''}</div>`,
       };
 
       body.push({
         type: "container",
-        className: "px-4 pt-2 bg-white text-left",
+        className: "pt-2 bg-white text-left",
         body: [
             labelTpl, 
             {
                 type: "container",
-                className: "px-0 pb-2", // 移除了 border-b border-gray-100
+                className: field.permission === 'editable' ? "px-2 pb-2" : "px-0 pb-2", // Input container padding
                 style: {
-                    backgroundColor: field.permission === 'editable' ? "rgba(255,255,0,.1)" : "transparent"
+                    backgroundColor: field.permission === 'editable' ? "rgb(248 248 230)" : "#ffffff"
                 },
                 body: [inputTpl]
             }
@@ -1028,7 +1028,7 @@ const getFormMobileView = async (instance, tableFieldMap) => {
 
   return {
     type: "wrapper",
-    className: "instance-form-view-mobile p-0 bg-white mt-4",
+    className: "instance-form-view-mobile p-0 px-2 bg-white mt-4", // Added px-2 wrapper padding
     body: body
   };
 };

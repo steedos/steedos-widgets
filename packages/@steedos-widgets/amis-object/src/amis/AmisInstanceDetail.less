@@ -16,15 +16,18 @@
     // 强制清除输入控件的左侧默认内边距，确保和 Label 对齐
     .antd-Form-control {
         padding-left: 0 !important;
+        padding-right: 0 !important;
         
         // 针对内部可能的子元素，也尝试清除左侧 padding
         > .antd-Form-control {
             padding-left: 0 !important;
+            padding-right: 0 !important;
         }
 
         // 针对展示态（static）的控件
         &.antd-Form-static{
              padding-left: 0 !important;
+             padding-right: 0 !important;
         }
     }
     
@@ -37,6 +40,7 @@
     .antd-Number-input-wrap,
     .antd-TextareaControl-input {
         padding-left: 0 !important;
+        padding-right: 0 !important;
     }
 
     // 特别修正：针对嵌套在容器内的 Input 元素本身，强制清除内边距
@@ -47,6 +51,7 @@
     .antd-Number-input,
     textarea.antd-TextareaControl-input {
         padding-left: 0 !important;
+        padding-right: 0 !important;
     }
 }
 
@@ -372,6 +377,11 @@
     @media (max-width: 768px) {
         /* 附件区域优化: 让 Label 和上传按钮靠左紧凑排列 */
         .instance-file-list {
+            padding-left: 8px !important;
+            padding-right: 8px !important;
+            margin-top: 0 !important;
+            padding-top: 0px !important; /* 去除顶部间距 */
+
             .antd-Form-item {
                 display: flex !important;
                 justify-content: flex-start !important;
@@ -385,6 +395,13 @@
                     margin-right: 8px !important; 
                     padding: 0 !important;
                     text-align: left !important;
+                    
+                    /* 统一标题字体 */
+                    &.antd-List-heading {
+                        font-size: 14px !important;
+                        font-weight: bold !important;
+                        color: #374151 !important; /* text-gray-700 */
+                    }
                 }
                 
                 .antd-Form-value {
@@ -411,6 +428,9 @@
 
         /* 相关文件区域优化: 标题和列表项左对齐 */
         .instance-related-list {
+            padding-left: 8px !important;
+            padding-right: 8px !important;
+
             /* 标题区域 */
             .cxd-List-heading, 
             .antd-List-heading {
@@ -419,6 +439,10 @@
                 text-align: left !important;
                 font-weight: bold;
                 border: none !important;
+                /* 统一字体大小 */
+                font-size: 14px !important;
+                line-height: 1.5;
+                color: #374151; /* text-gray-700 */
             }
 
             /* 列表容器 */
@@ -441,6 +465,8 @@
                     display: block; 
                     text-align: left;
                     color: inherit; 
+                    /* 统一内容字体大小 */
+                    font-size: 16px;
                 }
             }
 
@@ -448,6 +474,34 @@
             .antd-ListItem--actions-at-right {
                 padding-left: 0 !important;
                 padding-right: 0 !important;
+            }
+        }
+
+        /* 底部提交人区域优化 */
+        .instance-applicant-view {
+            border: none !important;
+
+            td {
+                border: none !important;
+            }
+
+            /* 隐藏提交日期列（第二个td） */
+            td:last-child {
+                display: none !important;
+            }
+
+            /* 提交人列占满宽度，用flex确保label在左、value在右 */
+            td:first-child {
+                width: 100% !important;
+                display: flex !important;
+                align-items: center !important;
+                flex-wrap: nowrap;
+
+                /* 取消 inline-left 的 float，改由 flex 控制排列 */
+                .inline-left {
+                    float: none !important;
+                    display: inline-block !important;
+                }
             }
         }
     }
