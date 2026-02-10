@@ -1,4 +1,3 @@
-
 .steedos-amis-instance-view .instance-form-view-mobile {
     .ant-input-affix-wrapper, 
     .antd-TextControl-input, 
@@ -52,6 +51,87 @@
     textarea.antd-TextareaControl-input {
         padding-left: 0 !important;
         padding-right: 0 !important;
+    }
+
+    // 去除可编辑字段容器内 Form-item 的底部线条（border-bottom）
+    .antd-Form-item {
+        border-bottom: none !important;
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    // 去除 Form-control 可能的底部边框线
+    .antd-Form-control {
+        border-bottom: none !important;
+    }
+}
+
+// ========================================================
+// 移动端可编辑字段（.mobile-editable-field）统一样式
+// 目标：所有单行输入控件 44px 高度、垂直居中、圆角 8px
+// 选择器从顶层写，避免嵌套导致层级错误
+// ========================================================
+.steedos-amis-instance-view .instance-form-view-mobile .mobile-editable-field {
+    // 内部 amis 容器撑满宽度
+    > div {
+        width: 100% !important;
+    }
+
+    // Form-item 去除多余间距
+    .antd-Form-item {
+        min-height: auto !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border-bottom: none !important;
+    }
+
+    // Form-control 去除多余间距
+    .antd-Form-control {
+        padding: 0 !important;
+        border-bottom: none !important;
+    }
+
+    // ======= 核心：所有单行输入控件的「包裹容器」和「input 元素」都强制 44px =======
+    // 包裹容器层
+    .antd-TextControl-input,
+    .antd-Number,
+    .antd-Number-input-wrap,
+    .antd-DatePicker,
+    .antd-Select,
+    .antd-ResultBox,
+    .antd-Picker-input {
+        height: 44px !important;
+        min-height: 44px !important;
+        line-height: 44px !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        box-sizing: border-box !important;
+    }
+
+    // input/select 元素层
+    input:not([type='checkbox']):not([type='radio']),
+    select,
+    .antd-Number-input,
+    .antd-DatePicker-input {
+        height: 44px !important;
+        min-height: 44px !important;
+        line-height: 44px !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        box-sizing: border-box !important;
+        font-size: 16px !important;
+    }
+
+    // Textarea 例外：不固定高度，保持自适应
+    textarea,
+    textarea.antd-TextareaControl-input {
+        padding-top: 6px !important;
+        padding-bottom: 6px !important;
+        line-height: 1.5 !important;
+        height: auto !important;
+        min-height: auto !important;
     }
 }
 

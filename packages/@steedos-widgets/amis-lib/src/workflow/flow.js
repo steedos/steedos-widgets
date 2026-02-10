@@ -1033,9 +1033,11 @@ const getFormMobileView = async (instance, tableFieldMap) => {
             labelTpl, 
             {
                 type: "container",
-                className: field.permission === 'editable' ? "px-2 pb-2" : "px-0 pb-2", // Input container padding
+                className: field.permission === 'editable' ? "px-2 mobile-editable-field" : "px-0 pb-2", // Input container padding
                 style: {
-                    backgroundColor: field.permission === 'editable' ? "rgb(248 248 230)" : "#ffffff"
+                    backgroundColor: "#ffffff",
+                    border: field.permission === 'editable' ? "1px solid #d1d5db" : "none",
+                    borderRadius: field.permission === 'editable' ? "8px" : "0"
                 },
                 body: [inputTpl]
             }
