@@ -340,9 +340,8 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
     return liq;
   }, []);
 
-  // Track previous values for comparison (初始化为 undefined 以确保首次渲染)
-  const prevPartialsRef = useRef<Record<string, string | object> | undefined>(undefined);
-  const prevParsedTemplatesRef = useRef<any[] | undefined>(undefined);
+  // 用于处理异步渲染竞态条件的计数器，确保只应用最新一次渲染的结果
+  const renderIdRef = useRef(0);
 
   useEffect(() => {
     // console.log('template', template)
@@ -370,32 +369,14 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
     return () => { isMounted = false; };
   }, [engine, template]);
 
-  // 2. Liquid 渲染 HTML（仅在模板或 partials 变化时，不在数据变化时重新渲染）
+  // 2. Liquid 渲染 HTML（当模板、partials 或数据变化时重新渲染）
   useEffect(() => {
     // 跳过空模板或未解析的模板（parsedTemplates 为 null、undefined 或空数组时）
     if (!parsedTemplates || parsedTemplates.length === 0) return;
-    
-    // 检查 parsedTemplates 是否发生变化（模板重新解析时需要强制渲染）
-    const templatesChanged = prevParsedTemplatesRef.current !== parsedTemplates;
-    
-    // 只在 partials 实际变化时才重新渲染
-    // 但如果 parsedTemplates 变化了（模板重新解析），必须渲染
-    // 注意：不再依赖 data 变化来重新渲染 HTML，data 变化只更新 Portal 组件
-    if (!templatesChanged && 
-        isEqual(prevPartialsRef.current, finalPartials)) {
-      return;
-    }
-    
-    prevPartialsRef.current = finalPartials;
-    prevParsedTemplatesRef.current = parsedTemplates;
 
     let isMounted = true;
-    // Don't clear schemas here - let them accumulate and be overwritten
-    // Clearing causes race conditions with Portal detection
-    // inlineSchemasRef.current = {}; 
+    const currentRenderId = ++renderIdRef.current;
 
-    // 使用当前 data 进行初始渲染 - HTML 结构不会因为数据变化而重新渲染
-    // Portal 组件会通过 props 获取实时数据更新
     const contextData = {
       ...flattenObjectChain(data),
       __registerInlineSchema: (id: string, schema: SchemaObject) => {
@@ -405,20 +386,22 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
 
     engine.render(parsedTemplates, contextData)
       .then((result) => {
-        if (isMounted) {
-          setHtml(result); // Always set to ensure Portal detection runs with fresh schemas
+        // 仅应用最新一次渲染的结果，丢弃过期的异步结果（处理竞态条件）
+        if (isMounted && currentRenderId === renderIdRef.current) {
+          // 仅在渲染结果真正变化时才更新 state，避免不必要的 DOM 重建
+          setHtml(prev => prev === result ? prev : result);
           setError(null);
         }
       })
       .catch(err => {
-        if (isMounted) {
+        if (isMounted && currentRenderId === renderIdRef.current) {
           console.error("Liquid Render Error:", err);
           setError(err);
         }
       });
 
     return () => { isMounted = false; };
-  }, [engine, parsedTemplates, finalPartials]); // 移除 data 依赖，只在模板变化时重新渲染
+  }, [engine, parsedTemplates, finalPartials, data]); // data 变化时重新渲染模板
 
   // 3. Portals 挂载检测
   useEffect(() => {
