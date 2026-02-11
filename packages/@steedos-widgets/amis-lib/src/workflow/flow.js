@@ -80,7 +80,7 @@ const mapFormula = (formula, tableFieldMap)=>{
   }
   let newFormula = formula;
   const isFunction = newFormula.match(/(sum|average|count|max|min|numToRMB)\s*\(/i);
-  const isOperator = newFormula.match(/(?<![+\-*\/])[+\-*\/](?![+\-*\/])/) && newFormula.indexOf("}.") < 0;
+  const isOperator = newFormula.match(/[\+\-\*\/]/) && newFormula.indexOf("}.") < 0;
   const isObjectField = newFormula.indexOf("}.") > -1;
   const isDotField = newFormula.match(/\{[^{}]+\.[^{}]+\}/);
 
