@@ -17,6 +17,7 @@ import { getInstanceApprovalHistory } from './history';
 
 import { getStepsSchema } from './nextSteps';
 
+import { getSafeCode, getTableFieldMap, mapFormula } from './formula-utils';
 
 const getSelectOptions = (field) => {
   const options = [];
@@ -50,85 +51,6 @@ const getArgumentsList = (func)=>{
   } else {
     return [];
   }
-}
-
-const getSafeCode = (code)=>{
-  return code.replace(/（/g, '_').replace(/）/g, '').replace(/、/g, '_');
-}
-
-const getTableFieldMap = (fields) => {
-  const map = {};
-  each(fields, (field) => {
-    if (field.type === 'table' && field.fields) {
-      each(field.fields, (col) => {
-        map[col.code] = field.code;
-      });
-    }
-    if (field.type === 'section' && field.fields) {
-      Object.assign(map, getTableFieldMap(field.fields));
-    }
-  });
-  return map;
-};
-
-const mapFormula = (formula, tableFieldMap)=>{
-  if(formula.trim().startsWith('${')){
-      return null;
-  }
-  if (formula.trim() === '{now}') {
-    return '${NOW()}';
-  }
-  let newFormula = formula;
-  const isFunction = newFormula.match(/(sum|average|count|max|min|numToRMB)\s*\(/i);
-  const isOperator = newFormula.match(/[\+\-\*\/]/) && newFormula.indexOf("}.") < 0;
-  const isObjectField = newFormula.indexOf("}.") > -1;
-  const isDotField = newFormula.match(/\{[^{}]+\.[^{}]+\}/);
-
-  if(isFunction || isOperator || isObjectField || isDotField){
-    
-    if(isFunction){
-      newFormula = newFormula.replace(/sum\s*\(/ig, 'SUM(');
-      newFormula = newFormula.replace(/average\s*\(/ig, 'AVG(');
-      newFormula = newFormula.replace(/count\s*\(/ig, 'COUNT(');
-      newFormula = newFormula.replace(/max\s*\(/ig, 'MAX(');
-      newFormula = newFormula.replace(/min\s*\(/ig, 'MIN(');
-      newFormula = newFormula.replace(/numToRMB\s*\(/ig, 'UPPERMONEY(');
-    }
-
-    newFormula = newFormula.replace(/\{([^{}]+)\}\./g, (match, code)=>{
-      const trimmedCode = code.trim();
-      if(trimmedCode === 'applicant'){
-        return 'applicant.';
-      }
-      return `${getSafeCode(trimmedCode)}__expand.`;
-    });
-
-    newFormula = newFormula.replace(/\{([^{}]+)\}/g, (match, code)=>{
-      code = code.trim();
-      if(tableFieldMap && tableFieldMap[code]){
-          const tableCode = tableFieldMap[code];
-          const safeTableCode = getSafeCode(tableCode);
-          return `ARRAYMAP(${safeTableCode}, item => item['${code}'])`;
-      }
-      if(code.indexOf('.') > -1){
-        const parts = code.split('.');
-        const firstPart = parts[0].trim();
-        if(firstPart === 'applicant'){
-           return `${firstPart}.${parts.slice(1).join('.')}`;
-        }
-        return `${getSafeCode(firstPart)}__expand.${parts.slice(1).join('.')}`;
-      }
-      return getSafeCode(code);
-    });
-
-    return `\${${newFormula}}`;
-  }
-
-  if(newFormula.trim().startsWith('{') && newFormula.trim().endsWith('}')){
-    return `$${newFormula}`;
-  }
-
-  return null;
 }
 
 const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
