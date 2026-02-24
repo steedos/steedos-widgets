@@ -805,6 +805,14 @@ export const AmisAppMenu = async (props) => {
                                         }
                                     }
                                 ]
+                            },
+                            "@history_paths.changed": {
+                                "actions": [
+                                    {
+                                        "actionType": "custom",
+                                        "script": "var items = context.items || []; var locationPathname = window.location.pathname; var customTabId = ''; var objectTabId = ''; function scanItems(list) { _.each(list, function(item) { if (item.children) { scanItems(item.children); } if (item.to && locationPathname === item.to) { customTabId = item.id; } else if (item.to && locationPathname.startsWith(item.to + '/')) { objectTabId = item.id; } }); } scanItems(items); var newTabId = customTabId || objectTabId; if (newTabId) { doAction({actionType: 'setValue', componentId: 'appMenuService', args: {value: {tabId: newTabId}}}); }"
+                                    }
+                                ]
                             }
                         },
                         "body": [
