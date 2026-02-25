@@ -163,7 +163,7 @@ export const AmisAppMenu = async (props) => {
                                           "to": tab.path,
                                           "target":tab.target,
                                           "id": tab.id,
-                                          "activeOn": "${tabId == '"+ tab.id +"' || window:location.pathname == '"+ tab.path +"' || window:location.pathname.indexOf('"+ tab.path +"/') == 0}",
+                                          "activeOn": "${tabId == '"+ tab.id +"'}",
                                           "index": tab.index,
                                           "tabApiName": tab.tabApiName,
                                           "type": tab.type,
@@ -196,7 +196,7 @@ export const AmisAppMenu = async (props) => {
                                             "to": tab.path,
                                             "target":tab.target,
                                             "id": tab.id,
-                                            "activeOn": "${tabId == '"+ tab.id +"' || window:location.pathname == '"+ tab.path +"' || window:location.pathname.indexOf('"+ tab.path +"/') == 0}",
+                                            "activeOn": "${tabId == '"+ tab.id +"'}",
                                             "index": tab.index,
                                             "tabApiName": tab.tabApiName,
                                             "type": tab.type,
@@ -226,7 +226,7 @@ export const AmisAppMenu = async (props) => {
                               "to": tab.path,
                               "target":tab.target,
                               "id": tab.id,
-                              "activeOn": "${tabId == '"+ tab.id +"' || window:location.pathname == '"+ tab.path +"' || window:location.pathname.indexOf('"+ tab.path +"/') == 0}",
+                              "activeOn": "${tabId == '"+ tab.id +"'}",
                               "index": tab.index,
                               "tabApiName": tab.tabApiName,
                               "type": tab.type,
@@ -1062,10 +1062,15 @@ export const AmisAppMenu = async (props) => {
                             "tab_groups": tab_groups
                         },
                         "id": "appMenuService",
-                        "dataProvider": {
-                            "inited": matchTabIdScript + " if (_newTabId) { setData({ tabId: _newTabId }); }"
-                        },
                         "onEvent": {
+                            "init": {
+                                "actions": [
+                                    {
+                                        "actionType": "custom",
+                                        "script": matchTabIdScript + " if (_newTabId) { doAction({ actionType: 'setValue', componentId: 'appMenuService', args: { value: { tabId: _newTabId } } }); }"
+                                    }
+                                ]
+                            },
                             "@data.changed.steedos_keyvalues": {
                                 "actions": [
                                     {
