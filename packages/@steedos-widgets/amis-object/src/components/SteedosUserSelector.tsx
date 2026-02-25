@@ -1,7 +1,44 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { Modal, Tree, Input, Spin, Empty, Space, Button, Tag, Avatar } from 'antd';
-import { SearchOutlined, UserOutlined, CloseOutlined } from '@ant-design/icons';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { Modal, Tree, Input, Spin, Empty, Space, Button, Tag, Avatar, Drawer, Badge } from 'antd';
+import { SearchOutlined, UserOutlined, CloseOutlined, CheckOutlined, PlusOutlined, UpOutlined, DownOutlined, ApartmentOutlined } from '@ant-design/icons';
 import type { TreeProps } from 'antd';
+import { MobileDrawerContent } from './MobileDrawerContent';
+
+// 分批渲染 Hook（IntersectionObserver，零依赖）
+function useInfiniteScroll(totalCount: number, batchSize: number = 50, deps: any[] = []) {
+  const [visibleCount, setVisibleCount] = React.useState(batchSize);
+  const sentinelRef = React.useRef<HTMLDivElement | null>(null);
+  const observerRef = React.useRef<IntersectionObserver | null>(null);
+  // 关键修复：deps 增加 totalCount，确保 users 变化时重置 visibleCount
+  React.useEffect(() => { setVisibleCount(batchSize); }, [...deps, totalCount]);
+  React.useEffect(() => {
+    if (observerRef.current) observerRef.current.disconnect();
+    if (!sentinelRef.current || visibleCount >= totalCount) return;
+    observerRef.current = new IntersectionObserver(
+      (entries) => { if (entries[0]?.isIntersecting) setVisibleCount(prev => Math.min(prev + batchSize, totalCount)); },
+      { threshold: 0.1 }
+    );
+    observerRef.current.observe(sentinelRef.current);
+    return () => { if (observerRef.current) observerRef.current.disconnect(); };
+  }, [totalCount, batchSize, visibleCount]);
+  return { visibleCount, sentinelRef };
+}
+
+// 移动端检测 Hook
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.innerWidth < 768;
+  });
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
+  return isMobile;
+}
 
 interface DataNode {
   title: string;
@@ -25,10 +62,10 @@ async function defaultFetchUsers(organizationId?: string, keyword?: string): Pro
   filters.push('and');
   
   if (keyword) {
-    // 按姓名或邮箱搜索
+    // 按姓名、邮箱或用户名全局搜索
     filters.push([[['name', 'contains', keyword], 'or', ['email', 'contains', keyword]], 'or', ['username', 'contains', keyword]]);
   } else if (organizationId) {
-    // 按部门搜索
+    // 按部门浏览（与关键字搜索互斥）
     filters.push([['organizations_parents', 'in', [organizationId]]]);
   }
 
@@ -155,6 +192,14 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
   const lastDragTimeRef = useRef<number>(0);
   const ref = useRef<any>();
 
+  // 移动端状态
+  const isMobile = useIsMobile();
+  const [mobileActiveTab, setMobileActiveTab] = useState<'dept' | 'users' | 'selected'>('dept');
+  const [selectedDeptName, setSelectedDeptName] = useState<string>('');
+
+  // PC端分批渲染
+  const { visibleCount: pcVisibleCount, sentinelRef: pcSentinelRef } = useInfiniteScroll(users.length, 50, [selectedDept, searchKeyword]);
+
   // 确保 ref.current.props 等于传入的完整 props
   ref.current = { props };
 
@@ -199,7 +244,9 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
   useEffect(() => {
     if (visible) {
       setLoading(true);
-      // 重置状态，确保Tree组件能重新触发加载
+      // 关键修复：visible变化时强制刷新treeKey，重置全部状态
+      setTreeKey(k => k + 1);
+      setSelectedDeptName('');
       setDeptTree([]);
       setExpandedKeys([]);
       setSelectedDept(null);
@@ -208,14 +255,34 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
       
       fetchDeptTree()
         .then(data => {
-          setDeptTree(data as DataNode[]);
+          const rootNodes = data as DataNode[];
+          setDeptTree(rootNodes);
           // 默认展开第一层
-          const firstLevelKeys = (data as DataNode[]).map(item => item.key);
+          const firstLevelKeys = rootNodes.map(item => item.key);
           setExpandedKeys(firstLevelKeys);
           // 默认选中第一个根节点
           if (firstLevelKeys.length > 0) {
             setSelectedDept(String(firstLevelKeys[0]));
           }
+          // 关键修复：手动加载已展开根节点的子节点数据
+          // Ant Design Tree 对程序化设置的 expandedKeys 不会自动触发 loadData，
+          // 这导致第二次打开弹窗时根节点展开但看不到子节点。
+          rootNodes.forEach(node => {
+            if (!node.isLeaf) {
+              fetchDeptTree(String(node.key)).then(children => {
+                setDeptTree(prev => {
+                  // 内联 updateTreeData 逻辑，避免闭包依赖问题
+                  const update = (list: DataNode[], key: React.Key, ch: DataNode[]): DataNode[] =>
+                    list.map(n => {
+                      if (n.key === key) return { ...n, children: ch };
+                      if (n.children) return { ...n, children: update(n.children, key, ch) };
+                      return n;
+                    });
+                  return update(prev, node.key, children as DataNode[]);
+                });
+              });
+            }
+          });
         })
         .finally(() => setLoading(false));
     }
@@ -256,10 +323,15 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
   };
 
   // 选择部门
-  const onSelectDept: TreeProps['onSelect'] = (selectedKeys) => {
+  const onSelectDept: TreeProps['onSelect'] = (selectedKeys, info) => {
     if (selectedKeys.length > 0) {
       setSelectedDept(String(selectedKeys[0]));
-      setSearchKeyword('');
+      setSearchKeyword(''); // 互斥规则：切换部门时清空搜索关键字
+      // 移动端：记住部门名称，自动跳转到人员Tab
+      if (isMobile && info?.node) {
+        setSelectedDeptName(String((info.node as any).title || ''));
+        setMobileActiveTab('users');
+      }
     } else if (deptTree.length > 0) {
       // 没有任何选中时，默认选中第一个根节点
       setSelectedDept(String(deptTree[0].key));
@@ -315,9 +387,10 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
     searchTimeoutRef.current = setTimeout(() => {
       setSearchKeyword(searchValue);
       if (searchValue) {
-        setSelectedDept(null);
+        setSelectedDept(null);      // 互斥规则：输入关键字时清空部门选中
+        setSelectedDeptName('');    // 同步清空移动端顶部部门状态栏
       } else if (deptTree.length > 0) {
-        // 如果清空搜索且有部门树数据，默认选中第一个
+        // 清空关键字时恢复默认选中第一个根节点
         setSelectedDept(String(deptTree[0].key));
       }
     }, 300);
@@ -327,10 +400,18 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
   const handleAddUser = (user: any) => {
     if (multiple) {
       if (!tempSelectedUsers.find(u => u._id === user._id)) {
-        setTempSelectedUsers([...tempSelectedUsers, user]);
+        const newSelected = [...tempSelectedUsers, user];
+        setTempSelectedUsers(newSelected);
       }
     } else {
       setTempSelectedUsers([user]);
+      // 移动端单选：选完自动确认关闭
+      if (isMobile) {
+        // 使用setTimeout确保state更新后再执行确认
+        setTimeout(() => {
+          handleOkWithUsers([user]);
+        }, 0);
+      }
     }
   };
 
@@ -393,14 +474,18 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
   const handleOpen = () => {
     setVisible(true);
     setTempSelectedUsers([...selectedUsers]);
+    // 移动端：重置Tab状态
+    if (isMobile) {
+      setMobileActiveTab('dept');
+      setSelectedDeptName('');
+    }
   };
 
-  // 确认选择
-  const handleOk = async () => {
-    setSelectedUsers(tempSelectedUsers);
+  // 确认选择（支持传入指定用户列表，用于移动端单选自动确认）
+  const handleOkWithUsers = async (userList: any[]) => {
+    setSelectedUsers(userList);
     if (onChange || dispatchEvent) {
-      // 修复：返回user字段(用户ID)而不是space_users的_id
-      const values = tempSelectedUsers.map(u => u.user);
+      const values = userList.map(u => u.user);
       const outputValue = multiple ? values : (values[0] || '');
       
       if (dispatchEvent) {
@@ -414,11 +499,40 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
     setVisible(false);
   };
 
+  // 确认选择
+  const handleOk = async () => {
+    await handleOkWithUsers(tempSelectedUsers);
+  };
+
   // 取消选择
   const handleCancel = () => {
     setTempSelectedUsers([...selectedUsers]);
     setVisible(false);
   };
+
+  // 移动端：移动已选用户顺序
+  const handleMoveUser = useCallback((index: number, direction: 'up' | 'down') => {
+    const newIndex = direction === 'up' ? index - 1 : index + 1;
+    if (newIndex < 0 || newIndex >= tempSelectedUsers.length) return;
+    const newList = [...tempSelectedUsers];
+    [newList[index], newList[newIndex]] = [newList[newIndex], newList[index]];
+    setTempSelectedUsers(newList);
+  }, [tempSelectedUsers]);
+
+  // 移动端：切换用户选中/取消（用于人员列表点击已选用户时）
+  const handleToggleUser = useCallback((user: any) => {
+    const isSelected = tempSelectedUsers.find(u => u._id === user._id);
+    if (isSelected) {
+      handleRemoveUser(user._id);
+    } else {
+      handleAddUser(user);
+    }
+  }, [tempSelectedUsers, multiple]);
+
+  // ====== 渲染部分 ======
+
+  // 移动端：是否显示清除按钮（移动端常驻显示，PC端hover显示）
+  const showClearButton = clearable && selectedUsers.length > 0 && (isMobile || inputHovered);
 
   return (
     <div style={{ ...style }} className='steedos-user-selector'>
@@ -427,15 +541,15 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
         placeholder={placeholder}
         value={selectedUsers.map(u => u.name).join(', ')}
         onClick={handleOpen}
-        onMouseEnter={() => setInputHovered(true)}
-        onMouseLeave={() => setInputHovered(false)}
+        onMouseEnter={() => !isMobile && setInputHovered(true)}
+        onMouseLeave={() => !isMobile && setInputHovered(false)}
         style={{ minWidth: 150, cursor: 'pointer' }}
         suffix={
-          clearable && selectedUsers.length > 0 && inputHovered ? (
+          showClearButton ? (
             <CloseOutlined
-              style={{ color: '#ff4d4f', cursor: 'pointer' }}
-              onMouseEnter={() => setInputHovered(true)}
-              onMouseLeave={() => setInputHovered(false)}
+              style={{ color: '#ff4d4f', cursor: 'pointer', padding: isMobile ? 4 : 0 }}
+              onMouseEnter={() => !isMobile && setInputHovered(true)}
+              onMouseLeave={() => !isMobile && setInputHovered(false)}
               onClick={async (e) => {
                 e.stopPropagation();
                 setSelectedUsers([]);
@@ -452,14 +566,15 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
           ) : (
             <UserOutlined 
               style={{ color: '#999' }} 
-              onMouseEnter={() => selectedUsers.length > 0 && setInputHovered(true)}
-              onMouseLeave={() => setInputHovered(false)}
+              onMouseEnter={() => !isMobile && selectedUsers.length > 0 && setInputHovered(true)}
+              onMouseLeave={() => !isMobile && setInputHovered(false)}
             />
           )
         }
       />
 
-      <Modal
+      {/* ====== PC端：Modal三栏布局（原有代码完全不变） ====== */}
+      {!isMobile && <Modal
         title={multiple ? "选择人员 (多选)" : "选择人员 (单选)"}
         open={visible}
         onOk={handleOk}
@@ -512,6 +627,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
               <Input
                 placeholder="搜索姓名、邮箱或用户名"
                 prefix={<SearchOutlined />}
+                value={searchKeyword}
                 onChange={(e) => handleSearch(e.target.value)}
                 allowClear
                 style={{ flex: 1 }}
@@ -522,58 +638,62 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
                 </Button>
               )}
             </div>
-            <div style={{ flex: 1, overflowY: 'auto', border: '1px solid #f0f0f0', borderRadius: 4 }}>
+            <div style={{ flex: 1, overflowY: 'auto', border: '1px solid #f0f0f0', borderRadius: 4, position: 'relative' }}>
               <Spin spinning={loading}>
                 {users.length > 0 ? (
-                  <div style={{ 
-                    padding: 8, 
-                    display: 'grid', 
-                    gridTemplateColumns: 'repeat(2, 1fr)', 
-                    gap: 8 
-                  }}>
-                    {users.map((user) => {
-                      const isSelected = tempSelectedUsers.find(u => u._id === user._id);
-                      return (
-                        <div
-                          key={user._id}
-                          className={!isSelected ? "steedos-user-selector-item" : ""}
-                          onClick={() => !isSelected && handleAddUser(user)}
-                          style={{
-                            padding: '10px 12px',
-                            borderRadius: 4,
-                            cursor: isSelected ? 'default' : 'pointer',
-                            backgroundColor: isSelected ? '#f5f5f5' : 'transparent',
-                            borderColor: isSelected ? '#1890ff' : 'transparent',
-                            borderWidth: 1,
-                            borderStyle: 'solid',
-                            transition: 'all 0.2s',
-                            opacity: isSelected ? 0.6 : 1,
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 12
-                          }}
-                        >
-                          <Avatar 
-                            src={user.avatar ? `/api/v6/users/${user.user}/avatar` : user.avatar}
-                            size={40}
-                            style={{ backgroundColor: user.avatar ? undefined : '#1890ff', flexShrink: 0 }}
+                  <>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '4px', padding: '0 8px' }}>
+                      {users.slice(0, pcVisibleCount).map((user: any) => {
+                        const isSelected = !!tempSelectedUsers.find(u => u._id === user._id);
+                        return (
+                          <div
+                            key={user._id}
+                            className={!isSelected ? "steedos-user-selector-item" : ""}
+                            onClick={() => !isSelected && handleAddUser(user)}
+                            style={{
+                              padding: '10px 12px',
+                              borderRadius: 4,
+                              cursor: isSelected ? 'default' : 'pointer',
+                              backgroundColor: isSelected ? '#f5f5f5' : 'transparent',
+                              borderColor: isSelected ? '#1890ff' : 'transparent',
+                              borderWidth: 1,
+                              borderStyle: 'solid',
+                              transition: 'all 0.2s',
+                              opacity: isSelected ? 0.6 : 1,
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 12,
+                              minWidth: 0
+                            }}
                           >
-                            {!user.avatar && user.name?.charAt(0)}
-                          </Avatar>
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontWeight: 500, marginBottom: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.name}</div>
-                            <div style={{ fontSize: 12, color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                              {user.organization?.name && <span>{user.organization.name}</span>}
-                              {user.position && <span> · {user.position}</span>}
+                            <Avatar
+                              src={user.avatar ? `/api/v6/users/${user.user}/avatar` : user.avatar}
+                              size={40}
+                              style={{ backgroundColor: user.avatar ? undefined : '#1890ff', flexShrink: 0 }}
+                            >
+                              {!user.avatar && user.name?.charAt(0)}
+                            </Avatar>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ fontWeight: 500, marginBottom: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.name}</div>
+                              <div style={{ fontSize: 12, color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                {user.organization?.name && <span>{user.organization.name}</span>}
+                                {user.position && <span> · {user.position}</span>}
+                              </div>
+                              <div style={{ fontSize: 12, color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                {user.email || user.mobile || user.username}
+                              </div>
                             </div>
-                            <div style={{ fontSize: 12, color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                              {user.email || user.mobile || user.username}
-                            </div>
+                            {isSelected && <CheckOutlined style={{ color: '#1890ff', flexShrink: 0 }} />}
                           </div>
-                        </div>
-                      );
-                    })}
-                  </div>
+                        );
+                      })}
+                    </div>
+                    {pcVisibleCount < users.length && (
+                      <div ref={pcSentinelRef} style={{ height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#999', fontSize: 13, marginTop: 8 }}>
+                        滚动加载更多...
+                      </div>
+                    )}
+                  </>
                 ) : (selectedDept || searchKeyword) && !loading ? (
                   <Empty description="暂无人员" style={{ marginTop: 60 }} />
                 ) : !loading ? (
@@ -653,7 +773,41 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
             )}
           </div>
         </div>
-      </Modal>
+      </Modal>}
+
+      {/* ====== 移动端：Drawer底部抽屉 + Tab切换布局 ====== */}
+      {isMobile && visible && (
+        <MobileDrawerContent
+          visible={visible}
+          multiple={multiple}
+          loading={loading}
+          deptTree={deptTree}
+          treeKey={treeKey}
+          deptSearchKeyword={deptSearchKeyword}
+          selectedDept={selectedDept}
+          selectedDeptName={selectedDeptName}
+          expandedKeys={expandedKeys}
+          users={users}
+          searchKeyword={searchKeyword}
+          tempSelectedUsers={tempSelectedUsers}
+          mobileActiveTab={mobileActiveTab}
+          clearable={clearable}
+          onSelectDept={onSelectDept}
+          onLoadData={onLoadData}
+          onExpandKeys={setExpandedKeys}
+          onDeptSearch={handleDeptSearch}
+          onUserSearch={handleSearch}
+          onAddUser={handleAddUser}
+          onRemoveUser={handleRemoveUser}
+          onToggleUser={handleToggleUser}
+          onToggleSelectAll={handleToggleSelectAll}
+          onMoveUser={handleMoveUser}
+          onTabChange={setMobileActiveTab}
+          onOk={handleOk}
+          onCancel={handleCancel}
+          onClearAll={() => setTempSelectedUsers([])}
+        />
+      )}
     </div>
   );
 };
