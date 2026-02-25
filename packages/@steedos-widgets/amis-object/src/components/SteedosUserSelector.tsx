@@ -187,6 +187,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
   const [hoveredUserId, setHoveredUserId] = useState<string | null>(null);
   const [inputHovered, setInputHovered] = useState(false);
   const [treeKey, setTreeKey] = useState(0); // 增加 treeKey 状态
+  const [singleSelectHighlightId, setSingleSelectHighlightId] = useState<string | null>(null); // 单选高亮反馈
   const searchTimeoutRef = useRef<NodeJS.Timeout>();
   const deptSearchTimeoutRef = useRef<NodeJS.Timeout>();
   const lastDragTimeRef = useRef<number>(0);
@@ -409,12 +410,15 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
       }
     } else {
       setTempSelectedUsers([user]);
-      // 移动端单选：选完自动确认关闭
+      // 单选：点击即确认（PC 300ms 高亮反馈后关闭，移动端立即关闭）
       if (isMobile) {
-        // 使用setTimeout确保state更新后再执行确认
+        setTimeout(() => { handleOkWithUsers([user]); }, 0);
+      } else {
+        setSingleSelectHighlightId(user._id);
         setTimeout(() => {
+          setSingleSelectHighlightId(null);
           handleOkWithUsers([user]);
-        }, 0);
+        }, 300);
       }
     }
   };
@@ -577,15 +581,16 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
         }
       />
 
-      {/* ====== PC端：Modal三栏布局（原有代码完全不变） ====== */}
+      {/* ====== PC端：单选两栏 / 多选三栏 ====== */}
       {!isMobile && <Modal
-        title={multiple ? "选择人员 (多选)" : "选择人员 (单选)"}
+        title={multiple ? "选择人员 (多选)" : "选择人员"}
         open={visible}
-        onOk={handleOk}
+        onOk={multiple ? handleOk : undefined}
         onCancel={handleCancel}
         okText="确定"
         cancelText="取消"
-        width={1200}
+        footer={multiple ? undefined : null}
+        width={multiple ? 1200 : 850}
         destroyOnClose
         bodyStyle={{ height: 600, overflow: 'hidden', padding: 0 }}
       >
@@ -642,6 +647,38 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
                 </Button>
               )}
             </div>
+            {/* 单选模式：当前选中指示条 */}
+            {!multiple && tempSelectedUsers.length > 0 && (
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: 8, padding: '6px 12px',
+                marginBottom: 8, background: '#f6f8fa', borderRadius: 6, border: '1px solid #e8e8e8'
+              }}>
+                <span style={{ fontSize: 12, color: '#999', flexShrink: 0 }}>当前选中</span>
+                <Avatar
+                  src={tempSelectedUsers[0].avatar ? `/api/v6/users/${tempSelectedUsers[0].user}/avatar` : undefined}
+                  size={24}
+                  style={{ backgroundColor: tempSelectedUsers[0].avatar ? undefined : '#1890ff', flexShrink: 0 }}
+                >
+                  {!tempSelectedUsers[0].avatar && tempSelectedUsers[0].name?.charAt(0)}
+                </Avatar>
+                <span style={{ fontSize: 14, fontWeight: 500, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {tempSelectedUsers[0].name}
+                </span>
+                {tempSelectedUsers[0].email && (
+                  <span style={{ fontSize: 12, color: '#999', flexShrink: 0 }}>{tempSelectedUsers[0].email}</span>
+                )}
+                {clearable && (
+                  <CloseOutlined
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setTempSelectedUsers([]);
+                      handleOkWithUsers([]);
+                    }}
+                    style={{ fontSize: 12, color: '#999', cursor: 'pointer', flexShrink: 0, padding: 4 }}
+                  />
+                )}
+              </div>
+            )}
             <div style={{ flex: 1, overflowY: 'auto', border: '1px solid #f0f0f0', borderRadius: 4, position: 'relative' }}>
               <Spin spinning={loading}>
                 {users.length > 0 ? (
@@ -652,18 +689,24 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
                         return (
                           <div
                             key={user._id}
-                            className={!isSelected ? "steedos-user-selector-item" : ""}
-                            onClick={() => !isSelected && handleAddUser(user)}
+                            className={!isSelected || !multiple ? "steedos-user-selector-item" : ""}
+                            onClick={() => {
+                              if (multiple) {
+                                if (!isSelected) handleAddUser(user);
+                              } else {
+                                handleAddUser(user); // 单选：允许替换已选
+                              }
+                            }}
                             style={{
                               padding: '10px 12px',
                               borderRadius: 4,
-                              cursor: isSelected ? 'default' : 'pointer',
-                              backgroundColor: isSelected ? '#f5f5f5' : 'transparent',
-                              borderColor: isSelected ? '#1890ff' : 'transparent',
+                              cursor: 'pointer',
+                              backgroundColor: singleSelectHighlightId === user._id ? '#e6f7ff' : (isSelected && multiple ? '#f5f5f5' : 'transparent'),
+                              borderColor: singleSelectHighlightId === user._id ? '#1890ff' : (isSelected && multiple ? '#1890ff' : 'transparent'),
                               borderWidth: 1,
                               borderStyle: 'solid',
                               transition: 'all 0.2s',
-                              opacity: isSelected ? 0.6 : 1,
+                              opacity: isSelected && multiple ? 0.6 : 1,
                               display: 'flex',
                               alignItems: 'center',
                               gap: 12,
@@ -707,8 +750,8 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
             </div>
           </div>
 
-          {/* 右侧：已选中 */}
-          <div style={{ width: 240, borderLeft: '1px solid #f0f0f0', padding: 16, display: 'flex', flexDirection: 'column' }}>
+          {/* 右侧：已选中（仅多选模式显示） */}
+          {multiple && <div style={{ width: 240, borderLeft: '1px solid #f0f0f0', padding: 16, display: 'flex', flexDirection: 'column' }}>
             <div style={{ marginBottom: 12, fontSize: 14 }}>
               <span style={{ fontWeight: 500 }}>已选中</span>
               <span style={{ marginLeft: 8, color: '#999' }}>({tempSelectedUsers.length})</span>
@@ -775,7 +818,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
                 清空全部
               </Button>
             )}
-          </div>
+          </div>}
         </div>
       </Modal>}
 
