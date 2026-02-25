@@ -1031,6 +1031,26 @@ export const AmisAppMenu = async (props) => {
                         menuItems = data.nav;
                       }
                     //   console.log("menuItems====", menuItems);
+
+                      // Build path-to-id mapping for URL-based tabId matching
+                      var pathToIdMap = {};
+                      function buildPathMap(items) {
+                          for (var i = 0; i < items.length; i++) {
+                              var item = items[i];
+                              if (item.to && item.id) {
+                                  pathToIdMap[item.to] = item.id;
+                              }
+                              if (item.children) {
+                                  buildPathMap(item.children);
+                              }
+                          }
+                      }
+                      buildPathMap(menuItems);
+                      var pathToIdMapJson = JSON.stringify(pathToIdMap);
+
+                      // Script to compute tabId from current URL using the embedded path-to-id mapping
+                      var matchTabIdScript = "var map = " + pathToIdMapJson + "; var loc = window.location.pathname; var _customTabId = ''; var _objectTabId = ''; for (var p in map) { if (loc === p) { _customTabId = map[p]; } else if (loc.startsWith(p + '/')) { _objectTabId = map[p]; } } var _newTabId = _customTabId || _objectTabId;";
+
                       payload.data = {
                         "type":"service",
                         "className": "steedos-app-service steedos-app-service-${allowEditApp ? 'edit' : 'readonly'}",
@@ -1042,6 +1062,9 @@ export const AmisAppMenu = async (props) => {
                             "tab_groups": tab_groups
                         },
                         "id": "appMenuService",
+                        "dataProvider": {
+                            "inited": matchTabIdScript + " if (_newTabId) { setData({ tabId: _newTabId }); }"
+                        },
                         "onEvent": {
                             "@data.changed.steedos_keyvalues": {
                                 "actions": [
@@ -1059,7 +1082,7 @@ export const AmisAppMenu = async (props) => {
                                 "actions": [
                                     {
                                         "actionType": "custom",
-                                        "script": "var items = context.props.data.items || []; var loc = window.location.pathname; var customTabId = ''; var objectTabId = ''; function scan(list){ for(var i=0;i<list.length;i++){ var it=list[i]; if(it.children && it.children.length){ scan(it.children); } if(it.to){ if(loc === it.to){ customTabId = it.id; } else if(loc.startsWith(it.to + '/')){ objectTabId = it.id; } } } } scan(items); var newTabId = customTabId || objectTabId; if(newTabId && newTabId !== context.props.data.tabId){ doAction({ actionType: 'setValue', componentId: 'appMenuService', args: { value: { tabId: newTabId } } }); }"
+                                        "script": matchTabIdScript + " if (_newTabId) { doAction({ actionType: 'setValue', componentId: 'appMenuService', args: { value: { tabId: _newTabId } } }); }"
                                     }
                                 ]
                             }
