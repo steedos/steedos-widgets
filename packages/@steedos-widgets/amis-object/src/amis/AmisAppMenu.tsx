@@ -1034,7 +1034,7 @@ export const AmisAppMenu = async (props) => {
 
                       // Build path-to-id mapping for URL-based tabId matching
                       var pathToIdMap = {};
-                      function buildPathMap(items) {
+                      var buildPathMap = function(items) {
                           for (var i = 0; i < items.length; i++) {
                               var item = items[i];
                               if (item.to && item.id) {
@@ -1044,7 +1044,7 @@ export const AmisAppMenu = async (props) => {
                                   buildPathMap(item.children);
                               }
                           }
-                      }
+                      };
                       buildPathMap(menuItems);
                       var pathToIdMapJson = JSON.stringify(pathToIdMap);
 
