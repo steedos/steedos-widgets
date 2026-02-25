@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { Tree, Input, Spin, Empty, Button, Avatar, Drawer, Badge } from 'antd';
-import { SearchOutlined, CloseOutlined, CheckOutlined, UpOutlined, DownOutlined, ApartmentOutlined } from '@ant-design/icons';
+import { SearchOutlined, CloseOutlined, CheckOutlined, ApartmentOutlined, HolderOutlined } from '@ant-design/icons';
 import type { TreeProps } from 'antd';
 
 // 移动端分批渲染 Hook（callback ref 模式，兼容 Drawer 动画延迟挂载场景）
@@ -161,7 +161,7 @@ interface MobileDrawerProps {
   onRemoveUser: (userId: string) => void;
   onToggleUser: (user: any) => void;
   onToggleSelectAll: () => void;
-  onMoveUser: (index: number, direction: 'up' | 'down') => void;
+  onReorderUsers: (fromIndex: number, toIndex: number) => void;
   onTabChange: (tab: 'dept' | 'users' | 'selected') => void;
   onOk: () => void;
   onCancel: () => void;
@@ -175,7 +175,7 @@ export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
     tempSelectedUsers, mobileActiveTab, clearable,
     onSelectDept, onLoadData, onExpandKeys, onDeptSearch, onUserSearch,
     onAddUser, onRemoveUser, onToggleUser, onToggleSelectAll,
-    onMoveUser, onTabChange, onOk, onCancel, onClearAll
+    onReorderUsers, onTabChange, onOk, onCancel, onClearAll
   } = props;
 
   const isAllSelected = users.length > 0 && users.every(u => tempSelectedUsers.find(s => s._id === u._id));
@@ -230,6 +230,11 @@ export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
                       <div style={{ fontSize: 12, color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: 2 }}>
                         {user.organization?.name}{user.position ? ` · ${user.position}` : ''}
                       </div>
+                      {(user.email || user.mobile || user.username) && (
+                        <div style={{ fontSize: 12, color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: 1 }}>
+                          {user.email || user.mobile || user.username}
+                        </div>
+                      )}
                     </div>
                     <div style={{ width: 32, height: 32, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, background: isSelected ? '#1890ff' : '#f0f0f0' }}>
                       {isSelected ? <CheckOutlined style={{ color: '#fff', fontSize: 14 }} /> : <span style={{ color: '#bbb', fontSize: 18, lineHeight: 1 }}>+</span>}
@@ -253,6 +258,102 @@ export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
     </div>
   );
 
+  // 触摸拖拽排序状态
+  const dragState = useRef<{
+    dragging: boolean;
+    startIndex: number;
+    currentIndex: number;
+    startY: number;
+    itemHeight: number;
+    clone: HTMLDivElement | null;
+    listEl: HTMLDivElement | null;
+  }>({ dragging: false, startIndex: -1, currentIndex: -1, startY: 0, itemHeight: 56, clone: null, listEl: null });
+
+  const selectedListRef = useRef<HTMLDivElement | null>(null);
+  const [dragActiveIndex, setDragActiveIndex] = useState<number | null>(null);
+  const [dropTargetIndex, setDropTargetIndex] = useState<number | null>(null);
+
+  // 长按开始拖拽
+  const handleTouchStart = useCallback((e: React.TouchEvent, index: number) => {
+    // 如果是在删除按钮上长按，忽略
+    const target = e.target as HTMLElement;
+    if (target.closest('.steedos-selected-remove-btn')) return;
+
+    const touch = e.touches[0];
+    const card = (e.currentTarget as HTMLElement);
+    const rect = card.getBoundingClientRect();
+
+    // 创建拖拽克隆元素
+    const clone = card.cloneNode(true) as HTMLDivElement;
+    clone.style.position = 'fixed';
+    clone.style.left = `${rect.left}px`;
+    clone.style.top = `${rect.top}px`;
+    clone.style.width = `${rect.width}px`;
+    clone.style.zIndex = '9999';
+    clone.style.boxShadow = '0 8px 24px rgba(0,0,0,0.15)';
+    clone.style.borderRadius = '8px';
+    clone.style.opacity = '0.92';
+    clone.style.transition = 'box-shadow 0.2s';
+    clone.style.pointerEvents = 'none';
+    document.body.appendChild(clone);
+
+    dragState.current = {
+      dragging: true,
+      startIndex: index,
+      currentIndex: index,
+      startY: touch.clientY,
+      itemHeight: rect.height,
+      clone,
+      listEl: selectedListRef.current,
+    };
+    setDragActiveIndex(index);
+    setDropTargetIndex(index);
+
+    // 触发触觉反馈（如果设备支持）
+    if (navigator.vibrate) navigator.vibrate(20);
+  }, []);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    const ds = dragState.current;
+    if (!ds.dragging || !ds.clone) return;
+    e.preventDefault(); // 阻止页面滚动
+
+    const touch = e.touches[0];
+    const deltaY = touch.clientY - ds.startY;
+    ds.clone.style.transform = `translateY(${deltaY}px) scale(1.02)`;
+
+    // 计算当前悬停的目标位置
+    const newIndex = Math.round(deltaY / ds.itemHeight) + ds.startIndex;
+    const clamped = Math.max(0, Math.min(newIndex, tempSelectedUsers.length - 1));
+    if (clamped !== ds.currentIndex) {
+      ds.currentIndex = clamped;
+      setDropTargetIndex(clamped);
+      if (navigator.vibrate) navigator.vibrate(10);
+    }
+  }, [tempSelectedUsers.length]);
+
+  const handleTouchEnd = useCallback(() => {
+    const ds = dragState.current;
+    if (!ds.dragging) return;
+
+    // 清理克隆节点
+    if (ds.clone) {
+      ds.clone.remove();
+      ds.clone = null;
+    }
+
+    const from = ds.startIndex;
+    const to = ds.currentIndex;
+    ds.dragging = false;
+
+    setDragActiveIndex(null);
+    setDropTargetIndex(null);
+
+    if (from !== to && from >= 0 && to >= 0) {
+      onReorderUsers(from, to);
+    }
+  }, [onReorderUsers]);
+
   // 已选面板
   const renderSelectedPanel = () => (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
@@ -262,24 +363,53 @@ export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
           <Button type="link" danger size="small" onClick={onClearAll} style={{ padding: 0 }}>清空全部</Button>
         )}
       </div>
-      <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch' as any }}>
-        {tempSelectedUsers.length > 0 ? tempSelectedUsers.map((user, index) => (
-          <div key={user._id} style={{ display: 'flex', alignItems: 'center', padding: '10px 16px', borderBottom: '1px solid #f5f5f5', gap: 8 }}>
-            {multiple && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 2, flexShrink: 0 }}>
-                <Button type="text" size="small" icon={<UpOutlined />} disabled={index === 0} onClick={() => onMoveUser(index, 'up')} style={{ padding: 0, width: 24, height: 24, minWidth: 24 }} />
-                <Button type="text" size="small" icon={<DownOutlined />} disabled={index === tempSelectedUsers.length - 1} onClick={() => onMoveUser(index, 'down')} style={{ padding: 0, width: 24, height: 24, minWidth: 24 }} />
+      {multiple && tempSelectedUsers.length > 1 && (
+        <div style={{ padding: '0 16px 6px', fontSize: 12, color: '#999' }}>长按拖拽可调整顺序</div>
+      )}
+      <div ref={selectedListRef} style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch' as any }}>
+        {tempSelectedUsers.length > 0 ? tempSelectedUsers.map((user, index) => {
+          const isDragging = dragActiveIndex === index;
+          const isDropTarget = dropTargetIndex === index && dragActiveIndex !== null && dragActiveIndex !== index;
+          return (
+            <div
+              key={user._id}
+              onTouchStart={multiple ? (e) => handleTouchStart(e, index) : undefined}
+              onTouchMove={multiple ? handleTouchMove : undefined}
+              onTouchEnd={multiple ? handleTouchEnd : undefined}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                padding: '10px 16px',
+                borderBottom: '1px solid #f5f5f5',
+                gap: 10,
+                opacity: isDragging ? 0.3 : 1,
+                background: isDropTarget ? '#e6f7ff' : '#fff',
+                borderTop: isDropTarget ? '2px solid #1890ff' : '2px solid transparent',
+                transition: 'background 0.15s, border-top 0.15s, opacity 0.15s',
+                touchAction: 'none',
+                userSelect: 'none' as any,
+              }}
+            >
+              {multiple && (
+                <HolderOutlined style={{ color: '#bbb', fontSize: 16, flexShrink: 0, cursor: 'grab' }} />
+              )}
+              <Avatar src={user.avatar ? `/api/v6/users/${user.user}/avatar` : undefined} size={36} style={{ backgroundColor: user.avatar ? undefined : '#1890ff', flexShrink: 0 }}>
+                {!user.avatar && user.name?.charAt(0)}
+              </Avatar>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 15, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.name}</div>
+                {(user.email || user.mobile || user.username) && (
+                  <div style={{ fontSize: 12, color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: 1 }}>
+                    {user.email || user.mobile || user.username}
+                  </div>
+                )}
               </div>
-            )}
-            <Avatar src={user.avatar ? `/api/v6/users/${user.user}/avatar` : undefined} size={36} style={{ backgroundColor: user.avatar ? undefined : '#1890ff', flexShrink: 0 }}>
-              {!user.avatar && user.name?.charAt(0)}
-            </Avatar>
-            <span style={{ flex: 1, fontSize: 15, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.name}</span>
-            {clearable && (
-              <CloseOutlined onClick={() => onRemoveUser(user._id)} style={{ fontSize: 14, color: '#ff4d4f', padding: 8, flexShrink: 0 }} />
-            )}
-          </div>
-        )) : (
+              {clearable && (
+                <CloseOutlined className="steedos-selected-remove-btn" onClick={() => onRemoveUser(user._id)} style={{ fontSize: 14, color: '#ff4d4f', padding: 8, flexShrink: 0 }} />
+              )}
+            </div>
+          );
+        }) : (
           <Empty description="未选择" style={{ marginTop: 60 }} image={Empty.PRESENTED_IMAGE_SIMPLE} />
         )}
       </div>

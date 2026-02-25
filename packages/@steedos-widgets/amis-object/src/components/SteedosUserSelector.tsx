@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Modal, Tree, Input, Spin, Empty, Space, Button, Tag, Avatar, Drawer, Badge } from 'antd';
-import { SearchOutlined, UserOutlined, CloseOutlined, CheckOutlined, PlusOutlined, UpOutlined, DownOutlined, ApartmentOutlined } from '@ant-design/icons';
+import { SearchOutlined, UserOutlined, CloseOutlined, CheckOutlined, PlusOutlined, ApartmentOutlined } from '@ant-design/icons';
 import type { TreeProps } from 'antd';
 import { MobileDrawerContent } from './MobileDrawerContent';
 
@@ -263,6 +263,10 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
           // 默认选中第一个根节点
           if (firstLevelKeys.length > 0) {
             setSelectedDept(String(firstLevelKeys[0]));
+            // 移动端默认进入人员Tab，需要同步显示部门名称
+            if (isMobile && rootNodes[0]) {
+              setSelectedDeptName(String(rootNodes[0].title || ''));
+            }
           }
           // 关键修复：手动加载已展开根节点的子节点数据
           // Ant Design Tree 对程序化设置的 expandedKeys 不会自动触发 loadData，
@@ -474,9 +478,9 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
   const handleOpen = () => {
     setVisible(true);
     setTempSelectedUsers([...selectedUsers]);
-    // 移动端：重置Tab状态
+    // 移动端：重置Tab状态，默认进入"人员"Tab（已自动选中第一个根部门）
     if (isMobile) {
-      setMobileActiveTab('dept');
+      setMobileActiveTab('users');
       setSelectedDeptName('');
     }
   };
@@ -510,12 +514,12 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
     setVisible(false);
   };
 
-  // 移动端：移动已选用户顺序
-  const handleMoveUser = useCallback((index: number, direction: 'up' | 'down') => {
-    const newIndex = direction === 'up' ? index - 1 : index + 1;
-    if (newIndex < 0 || newIndex >= tempSelectedUsers.length) return;
+  // 移动端：拖拽排序已选用户
+  const handleReorderUsers = useCallback((fromIndex: number, toIndex: number) => {
+    if (fromIndex < 0 || toIndex < 0 || fromIndex >= tempSelectedUsers.length || toIndex >= tempSelectedUsers.length) return;
     const newList = [...tempSelectedUsers];
-    [newList[index], newList[newIndex]] = [newList[newIndex], newList[index]];
+    const [moved] = newList.splice(fromIndex, 1);
+    newList.splice(toIndex, 0, moved);
     setTempSelectedUsers(newList);
   }, [tempSelectedUsers]);
 
@@ -801,7 +805,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
           onRemoveUser={handleRemoveUser}
           onToggleUser={handleToggleUser}
           onToggleSelectAll={handleToggleSelectAll}
-          onMoveUser={handleMoveUser}
+          onReorderUsers={handleReorderUsers}
           onTabChange={setMobileActiveTab}
           onOk={handleOk}
           onCancel={handleCancel}
