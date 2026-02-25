@@ -163,7 +163,6 @@ export const AmisAppMenu = async (props) => {
                                           "to": tab.path,
                                           "target":tab.target,
                                           "id": tab.id,
-                                          "activeOn": "${tabId == '"+ tab.id +"'}",
                                           "index": tab.index,
                                           "tabApiName": tab.tabApiName,
                                           "type": tab.type,
@@ -196,7 +195,6 @@ export const AmisAppMenu = async (props) => {
                                             "to": tab.path,
                                             "target":tab.target,
                                             "id": tab.id,
-                                            "activeOn": "${tabId == '"+ tab.id +"'}",
                                             "index": tab.index,
                                             "tabApiName": tab.tabApiName,
                                             "type": tab.type,
@@ -226,7 +224,6 @@ export const AmisAppMenu = async (props) => {
                               "to": tab.path,
                               "target":tab.target,
                               "id": tab.id,
-                              "activeOn": "${tabId == '"+ tab.id +"'}",
                               "index": tab.index,
                               "tabApiName": tab.tabApiName,
                               "type": tab.type,
@@ -1032,25 +1029,6 @@ export const AmisAppMenu = async (props) => {
                       }
                     //   console.log("menuItems====", menuItems);
 
-                      // Build path-to-id mapping for URL-based tabId matching
-                      var pathToIdMap = {};
-                      var buildPathMap = function(items) {
-                          for (var i = 0; i < items.length; i++) {
-                              var item = items[i];
-                              if (item.to && item.id) {
-                                  pathToIdMap[item.to] = item.id;
-                              }
-                              if (item.children) {
-                                  buildPathMap(item.children);
-                              }
-                          }
-                      };
-                      buildPathMap(menuItems);
-                      var pathToIdMapJson = JSON.stringify(pathToIdMap);
-
-                      // Script to compute tabId from current URL using the embedded path-to-id mapping
-                      var matchTabIdScript = "var map = " + pathToIdMapJson + "; var loc = window.location.pathname; var _customTabId = ''; var _objectTabId = ''; for (var p in map) { if (loc === p) { _customTabId = map[p]; } else if (loc.startsWith(p + '/')) { _objectTabId = map[p]; } } var _newTabId = _customTabId || _objectTabId;";
-
                       payload.data = {
                         "type":"service",
                         "className": "steedos-app-service steedos-app-service-${allowEditApp ? 'edit' : 'readonly'}",
@@ -1063,14 +1041,6 @@ export const AmisAppMenu = async (props) => {
                         },
                         "id": "appMenuService",
                         "onEvent": {
-                            "init": {
-                                "actions": [
-                                    {
-                                        "actionType": "custom",
-                                        "script": matchTabIdScript + " if (_newTabId) { doAction({ actionType: 'setValue', componentId: 'appMenuService', args: { value: { tabId: _newTabId } } }); }"
-                                    }
-                                ]
-                            },
                             "@data.changed.steedos_keyvalues": {
                                 "actions": [
                                     {
@@ -1080,14 +1050,6 @@ export const AmisAppMenu = async (props) => {
                                                 "keyvalues": "${event.data.keyvalues}"
                                             }
                                         }
-                                    }
-                                ]
-                            },
-                            "@history_paths.changed": {
-                                "actions": [
-                                    {
-                                        "actionType": "custom",
-                                        "script": matchTabIdScript + " if (_newTabId) { doAction({ actionType: 'setValue', componentId: 'appMenuService', args: { value: { tabId: _newTabId } } }); }"
                                     }
                                 ]
                             }
