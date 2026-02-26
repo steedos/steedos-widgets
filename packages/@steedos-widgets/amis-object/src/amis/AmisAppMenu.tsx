@@ -1005,6 +1005,47 @@ export const AmisAppMenu = async (props) => {
                         // }]
                       }
 
+                      // === 计算 activeOn 表达式: 基于 _pathname 数据实现菜单高亮 ===
+                      // 收集所有 tab 路径, 用于"最长匹配优先"逻辑
+                      const allTabPaths = [];
+                      const collectPaths = (items) => {
+                          _.each(items, (item) => {
+                              if (item.isGroup && item.children) {
+                                  collectPaths(item.children);
+                              } else if (item.to) {
+                                  allTabPaths.push(item.to);
+                              }
+                          });
+                      };
+                      collectPaths(data.nav);
+
+                      // 为每个 nav item 生成 activeOn 表达式
+                      const assignActiveOn = (items) => {
+                          _.each(items, (item) => {
+                              if (item.isGroup && item.children) {
+                                  assignActiveOn(item.children);
+                              } else if (item.to) {
+                                  const segments = item.to.split('/').filter(s => s).length;
+                                  if (segments > 3) {
+                                      // 长路径(如URL类型选项卡): 仅精确匹配
+                                      item.activeOn = "${_pathname == '" + item.to + "'}";
+                                  } else {
+                                      // 短路径(如对象列表页 /app/{appId}/{objectName}): 精确 + 前缀匹配
+                                      // 但需排除那些更长的、被其他 tab 精确匹配的子路径
+                                      const longerTabs = allTabPaths.filter(p => p !== item.to && p.startsWith(item.to + '/'));
+                                      if (longerTabs.length === 0) {
+                                          item.activeOn = "${_pathname == '" + item.to + "' || STARTSWITH(_pathname, '" + item.to + "/')}";
+                                      } else {
+                                          const exclusions = longerTabs.map(p => "_pathname != '" + p + "'").join(' && ');
+                                          item.activeOn = "${_pathname == '" + item.to + "' || (STARTSWITH(_pathname, '" + item.to + "/') && " + exclusions + ")}";
+                                      }
+                                  }
+                              }
+                          });
+                      };
+                      assignActiveOn(data.nav);
+                      // === activeOn 计算完毕 ===
+
                       let menuItems = data.nav;
 
                       if(context.keywords){
