@@ -702,100 +702,110 @@ export const getApprovalDrawerSchema = async (instance, events) => {
   const userApprove = getUserApprove({ instance, userId });
   const schema = {
     type: "wrapper",
-    className: "steedos-approval-inline border-t border-gray-200",
+    className: "steedos-approval-inline",
     body: [
       {
-        type: "form",
-        initApi: {
-          method: 'POST',
-          url: '/api/v6/amis/health_check'
-        },
-        debug: false,
-        id: "instance_approval",
-        wrapWithPanel: false,
-        resetAfterSubmit: true,
-        clearPersistDataAfterSubmit: true,
-        persistData: `workflow_approve_form_${instance.approve._id}`,
+        type: "tpl",
+        tpl: `<div class="steedos-approval-inline-header"><span class="steedos-approval-inline-title">${i18next.t('frontend_workflow_instance_button_sign')}</span></div>`,
+      },
+      {
+        type: "wrapper",
+        className: "p-4",
         body: [
           {
-            type: 'hidden',
-            name: 'new_next_step'
-          },
-          await getJudgeInput(instance),
-          {
-            type: "textarea",
-            label: false,
-            name: "suggestion",
-            id: "u:cd344f708ddc",
-            minRows: 3,
-            maxRows: 20,
-            placeholder: i18next.t('frontend_workflow_suggestion_placeholder'),//"请填写意见",
-            requiredOn: "${judge === 'rejected'}",
-            value: userApprove?.description,
-            "onEvent": {
-              "blur": {
+            type: "form",
+            initApi: {
+              method: 'POST',
+              url: '/api/v6/amis/health_check'
+            },
+            debug: false,
+            id: "instance_approval",
+            wrapWithPanel: false,
+            resetAfterSubmit: true,
+            clearPersistDataAfterSubmit: true,
+            persistData: `workflow_approve_form_${instance.approve._id}`,
+            body: [
+              {
+                type: 'hidden',
+                name: 'new_next_step'
+              },
+              await getJudgeInput(instance),
+              {
+                type: "textarea",
+                label: false,
+                name: "suggestion",
+                id: "u:cd344f708ddc",
+                minRows: 3,
+                maxRows: 20,
+                placeholder: i18next.t('frontend_workflow_suggestion_placeholder'),//"请填写意见",
+                requiredOn: "${judge === 'rejected'}",
+                value: userApprove?.description,
+                "onEvent": {
+                  "blur": {
+                    "actions": [
+                      {
+                        "componentId": "u:instancePage",
+                        "actionType": "setValue",
+                        "args": {
+                          "value": {
+                            "instance_my_approve_description": "${value}"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              await getNextStepInput(instance, nextStepChangeEvents),
+              await getNextStepUsersInput(instance, nextStepUserChangeEvents),
+            ],
+            onEvent: {
+              "approve_judge_change": {
                 "actions": [
                   {
-                    "componentId": "u:instancePage",
-                    "actionType": "setValue",
+                    "actionType": "reload",
+                    "componentId": "u:next_step",
                     "args": {
-                      "value": {
-                        "instance_my_approve_description": "${value}"
+                    }
+                  }
+                ]
+              },
+              "inited": {
+                "actions": [
+                  ...nextStepInitedEvents,
+                  {
+                    "actionType": "custom",
+                    "script": (context, doAction, event) => {
+                      var submitApprovalForm = function(){
+                        // 用amis actionType触发btnSubmit提交事件不会触发表单校验，加很长时间的延时也没用，改用原生js click事件触发
+                        setTimeout(function(){
+                          var btnSubmit = document.querySelector('.steedos-instance-detail-wrapper .steedos-approve-submit-button');
+                          if (btnSubmit) {
+                            btnSubmit.click();
+                          }
+                        }, 500);
                       }
+                      event.data.autoSubmitInstance && submitApprovalForm();
                     }
                   }
                 ]
               }
-            }
+            },
+            
           },
-          await getNextStepInput(instance, nextStepChangeEvents),
-          await getNextStepUsersInput(instance, nextStepUserChangeEvents),
+          {
+            type: "button",
+            label: "${'Submit' | t}",
+            onEvent: {
+              click: {
+                actions: await getSubmitActions(instance, submitEvents),
+              },
+            },
+            id: "steedos-approve-submit-button",
+            className: "steedos-approve-submit-button steedos-approval-submit-btn",
+            level: "primary",
+          },
         ],
-        onEvent: {
-          "approve_judge_change": {
-            "actions": [
-              {
-                "actionType": "reload",
-                "componentId": "u:next_step",
-                "args": {
-                }
-              }
-            ]
-          },
-          "inited": {
-            "actions": [
-              ...nextStepInitedEvents,
-              {
-                "actionType": "custom",
-                "script": (context, doAction, event) => {
-                  var submitApprovalForm = function(){
-                    // 用amis actionType触发btnSubmit提交事件不会触发表单校验，加很长时间的延时也没用，改用原生js click事件触发
-                    setTimeout(function(){
-                      var btnSubmit = document.querySelector('.steedos-instance-detail-wrapper .steedos-approve-submit-button');
-                      if (btnSubmit) {
-                        btnSubmit.click();
-                      }
-                    }, 500);
-                  }
-                  event.data.autoSubmitInstance && submitApprovalForm();
-                }
-              }
-            ]
-          }
-        },
-        
-      },
-      {
-        type: "button",
-        label: "${'Submit' | t}",
-        onEvent: {
-          click: {
-            actions: await getSubmitActions(instance, submitEvents),
-          },
-        },
-        id: "steedos-approve-submit-button",
-        className: "steedos-approve-submit-button mt-2",
-        level: "primary",
       },
     ],
     id: "u:approve_8861156e0b23",

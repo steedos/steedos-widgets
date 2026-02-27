@@ -1240,8 +1240,16 @@ const getApproveButton = async (instance, events)=>{
               {
                 actionType: "custom",
                 script: `
+                  var bodyEl = document.querySelector('.steedos-amis-instance-view-body');
+                  if (bodyEl) {
+                    // 先滚动到审批区域底部，确保用户能看到校验错误
+                    bodyEl.scrollTo({ top: bodyEl.scrollHeight, behavior: 'smooth' });
+                  }
                   var btnSubmit = document.querySelector('.steedos-instance-detail-wrapper .steedos-approve-submit-button');
-                  if (btnSubmit) { btnSubmit.click(); } else { console.warn('[steedos] approve submit button not found'); }
+                  // 等待平滑滚动完成（smooth scroll 通常 ≤ 300ms）后再触发提交
+                  setTimeout(function() {
+                    if (btnSubmit) { btnSubmit.click(); } else { console.warn('[steedos] approve submit button not found'); }
+                  }, 300);
                 `
               }
             ]

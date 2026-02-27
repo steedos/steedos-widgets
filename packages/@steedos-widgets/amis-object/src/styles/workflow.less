@@ -157,3 +157,59 @@
     position: relative;
   }
 }
+
+// ========================================================
+// Inline 审批签批区域（steedos-approval-inline）
+// 设计理念：视觉上与申请单内容形成明显分层，
+// 顶部圆角 + 向上投影营造"浮起的卡片"感，
+// 标题栏 + 蓝色竖线标识让用户一眼识别为独立操作区。
+// ========================================================
+.steedos-approval-inline {
+  margin-top: 24px;
+  background: #fff;
+  border-radius: 12px 12px 0 0;
+  // 向上投影，制造与申请单内容的分层视觉感
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08), 0 -1px 4px rgba(0, 0, 0, 0.04);
+  overflow: hidden; // 裁剪顶部圆角
+
+  // 标题栏
+  .steedos-approval-inline-header {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    background: linear-gradient(135deg, #eff6ff 0%, #f8fafc 100%);
+    border-bottom: 1px solid #e2e8f0;
+
+    // 蓝色竖线装饰
+    &::before {
+      content: '';
+      display: inline-block;
+      width: 3px;
+      height: 16px;
+      background: #3b82f6;
+      border-radius: 2px;
+      margin-right: 8px;
+      flex-shrink: 0;
+    }
+
+    .steedos-approval-inline-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e293b;
+      letter-spacing: 0.02em;
+    }
+  }
+
+  // 提交按钮：占满宽度（手机友好）
+  .steedos-approval-submit-btn {
+    display: block;
+    width: 100%;
+    margin-top: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .steedos-approval-inline {
+    border-radius: 8px 8px 0 0;
+  }
+}
