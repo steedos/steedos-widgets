@@ -1266,38 +1266,52 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
         if (!btn) return;
 
         function isDrawerOpen() {
-          var dr = document.querySelector('.amis-dialog-widget.approval-drawer');
-          return dr && dr.offsetParent !== null;
+          var dr = document.querySelector('.steedos-amis-instance-approval-drawer-container .approval-drawer');
+          return !!dr;
         }
 
-        var lastAtBottom = false; // 上一个scroll事件是否到底
+        var hasTriggered = false;
+        var lastScrollTop = bodyEl.scrollTop;
 
         function isAtBottom() {
           var scrollTop = bodyEl.scrollTop,
             scrollHeight = bodyEl.scrollHeight,
             clientHeight = bodyEl.clientHeight;
-          return (scrollHeight <= clientHeight) || (scrollTop + clientHeight >= scrollHeight - 2);
+          if (scrollHeight <= clientHeight) return false;
+          return scrollTop + clientHeight >= scrollHeight - 2;
         }
 
-        // wheel: 只要现在到底、且是向下滚，即可弹出
+        // 监听 drawer 关闭，重置 hasTriggered
+        var observer = new MutationObserver(function() {
+          if (!isDrawerOpen()) {
+            hasTriggered = false;
+          }
+        });
+        var container = document.querySelector('.steedos-amis-instance-approval-drawer-container');
+        if (container) {
+          observer.observe(container, { childList: true, subtree: true });
+        }
+
+        // wheel: 向下滚且到底时触发
         bodyEl.addEventListener('wheel', function (e) {
-          var atBottom = isAtBottom();
-          if (atBottom && e.deltaY > 0 && !isDrawerOpen()) {
-            // [wheel] 拖动条在底部且向下滚，弹drawer
+          if (e.deltaY > 0 && isAtBottom() && !hasTriggered && !isDrawerOpen()) {
+            hasTriggered = true;
             btn.dataset.triggerSource = 'scrollToBottom';
             btn.click();
           }
         });
 
-        // scroll: 拖动时仅“从非底部->底部”瞬间弹
+        // scroll: 向下滚动且从非底部到底部时触发
         bodyEl.addEventListener('scroll', function () {
+          var currentScrollTop = bodyEl.scrollTop;
+          var isScrollingDown = currentScrollTop > lastScrollTop;
           var atBottom = isAtBottom();
-          if (!lastAtBottom && atBottom && !isDrawerOpen()) {
-            // [scroll] 拖动条到底，弹drawer
+          if (isScrollingDown && atBottom && !hasTriggered && !isDrawerOpen()) {
+            hasTriggered = true;
             btn.dataset.triggerSource = 'scrollToBottom';
             btn.click();
           }
-          lastAtBottom = atBottom;
+          lastScrollTop = currentScrollTop;
         });
       }, 1000);
     })();
@@ -1328,6 +1342,17 @@ export const getFlowFormSchema = async (instance, box, print) => {
     nextStepUserChangeEvents = onEvent?.nextStepUserChange?.actions || [];
   }
   if ((box == 'inbox' || box == 'draft') && !!!window.disableAutoOpenApproveDrawer) {
+    // 页面加载后自动打开审批 Drawer，延时800ms等待页面渲染完成
+    initedEvents.push({
+      "actionType": "custom",
+      "script": `
+        setTimeout(function(){
+          var btn = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .approve-button');
+          if(btn){ btn.click(); }
+        }, 800);
+      `,
+      "args": {}
+    });
     // 滚动条滚动到底部弹出底部签批drawer窗口
     initedEvents.push({
       "actionType": "custom",

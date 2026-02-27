@@ -867,17 +867,8 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                     subtree: true
                   });
 
-                  var scrollToBottom = function(){
-                    setTimeout(function(){
-                      const instanceViewBody = document.querySelector(CONFIG.bodySelector);
-                      if (instanceViewBody){
-                        $(instanceViewBody).animate({scrollTop: $(instanceViewBody).prop("scrollHeight")});
-                      }
-                    }, 500);
-                  }
                   var btn = document.querySelector(CONFIG.approveButtonSelector);
                   if (btn && btn.dataset.triggerSource === 'scrollToBottom') {
-                    scrollToBottom();
                     delete btn.dataset.triggerSource;
                   }
                   var submitApprovalForm = function(){
