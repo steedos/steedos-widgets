@@ -1223,7 +1223,33 @@ const getApproveButton = async (instance, events)=>{
   if(!instance.approve || ( instance.box != 'inbox' && instance.box != 'draft')){
     return null;
   }
-  return await getApprovalDrawerSchema(instance, events);
+  return {
+    type: "wrapper",
+    className: "p-0",
+    body: [
+      await getApprovalDrawerSchema(instance, events),
+      // 保留隐藏的代理按钮，兼容服务端 "发送" 按钮通过 .approve-button 触发提交的行为
+      {
+        type: "button",
+        label: "",
+        id: "steedos-approve-button",
+        className: "approve-button hidden",
+        onEvent: {
+          click: {
+            actions: [
+              {
+                actionType: "custom",
+                script: `
+                  var btnSubmit = document.querySelector('.steedos-instance-detail-wrapper .steedos-approve-submit-button');
+                  if (btnSubmit) { btnSubmit.click(); } else { console.warn('[steedos] approve submit button not found'); }
+                `
+              }
+            ]
+          }
+        }
+      }
+    ]
+  };
 }
 
 
