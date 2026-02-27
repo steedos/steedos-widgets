@@ -1225,7 +1225,7 @@ const getApproveButton = async (instance, events)=>{
   }
   return {
     type: "wrapper",
-    className: "p-0",
+    className: "p-0 steedos-approve-footer",
     body: [
       await getApprovalDrawerSchema(instance, events),
       // 保留隐藏的代理按钮，兼容服务端 "发送" 按钮通过 .approve-button 触发提交的行为
