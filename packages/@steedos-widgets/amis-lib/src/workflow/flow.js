@@ -1327,7 +1327,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
     nextStepChangeEvents = onEvent?.nextStepChange?.actions || [];
     nextStepUserChangeEvents = onEvent?.nextStepUserChange?.actions || [];
   }
-  if ((box == 'inbox' || box == 'draft') && !!!window.disableAutoOpenApproveDrawer) {
+  if ((box == 'inbox' || box == 'draft') && !!!window.disableAutoOpenApproveDrawer && false) {
     // 滚动条滚动到底部弹出底部签批drawer窗口
     initedEvents.push({
       "actionType": "custom",
@@ -1358,14 +1358,30 @@ export const getFlowFormSchema = async (instance, box, print) => {
         }
       }
     }else{
-      if (isMobile) {
-        formContentSchema = await getFormMobileView(instance, tableFieldMap);
-      }
-      else if (formStyle === "wizard") {
-        formContentSchema = await getFormWizardView(instance, tableFieldMap);
-      }
-      else{
-        formContentSchema = await getFormTableView(instance, tableFieldMap);
+      if(instance.formVersion.version === 'v2'){
+          formContentSchema = {
+            "type": "workflow-form-v2",
+            "formName": instance.title,
+            "viewMode": instance.formVersion.viewMode,
+            "tableColumns": instance.formVersion.tableColumns,
+            "readOnly": instance.box !== 'inbox' && instance.box !== 'draft',
+            "showButtons": false,
+            "fields": instance.formVersion.fields,
+            "values": instance.values,
+            "showFormName": false,
+            "fieldPermissions": instance.currentStep.permissions,
+          }
+          console.log('formContentSchema v2', formContentSchema);
+      }else{
+        if (isMobile) {
+          formContentSchema = await getFormMobileView(instance, tableFieldMap);
+        }
+        else if (formStyle === "wizard") {
+          formContentSchema = await getFormWizardView(instance, tableFieldMap);
+        }
+        else{
+          formContentSchema = await getFormTableView(instance, tableFieldMap);
+        }
       }
     }
     
