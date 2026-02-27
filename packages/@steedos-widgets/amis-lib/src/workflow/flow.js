@@ -1223,100 +1223,9 @@ const getApproveButton = async (instance, events)=>{
   if(!instance.approve || ( instance.box != 'inbox' && instance.box != 'draft')){
     return null;
   }
-  return {
-    type: "button",
-    label: i18next.t('frontend_workflow_instance_button_sign'),
-    onEvent: {
-      click: {
-        actions: [
-          {
-            componentId: "",
-            args: {},
-            actionType: "drawer",
-            drawer: await getApprovalDrawerSchema(instance, events),
-          },
-          {
-            "actionType": "custom",
-            "script": (context, doAction, event) => {
-              if (instance.box !== 'draft'){
-                var btn = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .approve-button');
-                btn && btn.classList.add('hidden');
-              }
-            }
-          }
-        ],
-      },
-    },
-    id: "steedos-approve-button",
-    level: "primary",
-    className: {
-      "approve-button w-14 h-14 rounded-full fixed bottom-4 right-4 shadow-lg text-white text-base text-center font-semibold bg-blue-500 p-0": true,
-      "hidden": instance.box === 'draft'
-    }
-  }
+  return await getApprovalDrawerSchema(instance, events);
 }
 
-const getScrollToBottomAutoOpenApproveDrawerScript = () => {
-  return `
-    (function () {
-      setTimeout(function () {
-        var bodyEl = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .steedos-amis-instance-view-body');
-        if (!bodyEl) return;
-        var btn = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .approve-button');
-        if (!btn) return;
-
-        function isDrawerOpen() {
-          var dr = document.querySelector('.steedos-amis-instance-approval-drawer-container .approval-drawer');
-          return !!dr;
-        }
-
-        var hasTriggered = false;
-        var lastScrollTop = bodyEl.scrollTop;
-
-        function isAtBottom() {
-          var scrollTop = bodyEl.scrollTop,
-            scrollHeight = bodyEl.scrollHeight,
-            clientHeight = bodyEl.clientHeight;
-          if (scrollHeight <= clientHeight) return false;
-          return scrollTop + clientHeight >= scrollHeight - 2;
-        }
-
-        // 监听 drawer 关闭，重置 hasTriggered
-        var observer = new MutationObserver(function() {
-          if (!isDrawerOpen()) {
-            hasTriggered = false;
-          }
-        });
-        var container = document.querySelector('.steedos-amis-instance-approval-drawer-container');
-        if (container) {
-          observer.observe(container, { childList: true, subtree: true });
-        }
-
-        // wheel: 向下滚且到底时触发
-        bodyEl.addEventListener('wheel', function (e) {
-          if (e.deltaY > 0 && isAtBottom() && !hasTriggered && !isDrawerOpen()) {
-            hasTriggered = true;
-            btn.dataset.triggerSource = 'scrollToBottom';
-            btn.click();
-          }
-        });
-
-        // scroll: 向下滚动且从非底部到底部时触发
-        bodyEl.addEventListener('scroll', function () {
-          var currentScrollTop = bodyEl.scrollTop;
-          var isScrollingDown = currentScrollTop > lastScrollTop;
-          var atBottom = isAtBottom();
-          if (isScrollingDown && atBottom && !hasTriggered && !isDrawerOpen()) {
-            hasTriggered = true;
-            btn.dataset.triggerSource = 'scrollToBottom';
-            btn.click();
-          }
-          lastScrollTop = currentScrollTop;
-        });
-      }, 1000);
-    })();
-  `;
-}
 
 export const getFlowFormSchema = async (instance, box, print) => {
   const tableFieldMap = getTableFieldMap(instance.fields);
@@ -1340,25 +1249,6 @@ export const getFlowFormSchema = async (instance, box, print) => {
     nextStepInitedEvents = onEvent?.nextStepInited?.actions || [];
     nextStepChangeEvents = onEvent?.nextStepChange?.actions || [];
     nextStepUserChangeEvents = onEvent?.nextStepUserChange?.actions || [];
-  }
-  if ((box == 'inbox' || box == 'draft') && !!!window.disableAutoOpenApproveDrawer) {
-    // 页面加载后自动打开审批 Drawer，延时800ms等待页面渲染完成
-    initedEvents.push({
-      "actionType": "custom",
-      "script": `
-        setTimeout(function(){
-          var btn = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .approve-button');
-          if(btn){ btn.click(); }
-        }, 800);
-      `,
-      "args": {}
-    });
-    // 滚动条滚动到底部弹出底部签批drawer窗口
-    initedEvents.push({
-      "actionType": "custom",
-      "script": getScrollToBottomAutoOpenApproveDrawerScript(),
-      "args": {}
-    });
   }
 
     let formContentSchema;
@@ -1530,10 +1420,6 @@ export const getFlowFormSchema = async (instance, box, print) => {
       ".steedos-amis-instance-view.steedos-instance-style-table .antd-Page-body .steedos-amis-instance-view-content .steedos-input-table": {
         "max-width": "1024px"
       },
-      ".steedos-amis-instance-view .approval-drawer.antd-Drawer .antd-Drawer-content": {
-        "box-shadow": "none",
-        "border-top": "1px solid rgb(209 213 219)"
-      },
       ".antd-List-placeholder": {
         "display": "none"
       },
@@ -1564,11 +1450,6 @@ export const getFlowFormSchema = async (instance, box, print) => {
       ],
       "size": "none",
       "className": "steedos-amis-instance-view-content"
-    },{
-      "type": "wrapper",
-      "body": [],
-      "size": "none",
-      "className": "steedos-amis-instance-approval-drawer-container"
     }],
     id: "u:instancePage",
     messages: {},
