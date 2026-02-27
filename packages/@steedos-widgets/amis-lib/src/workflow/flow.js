@@ -1225,7 +1225,7 @@ const getApproveButton = async (instance, events)=>{
   }
   return {
     type: "button",
-    label: i18next.t('frontend_workflow_instance_button_sign'),
+    label: instance.box === 'draft' ? i18next.t('Submit') : i18next.t('frontend_workflow_instance_button_sign'),
     onEvent: {
       click: {
         actions: [
@@ -1238,10 +1238,8 @@ const getApproveButton = async (instance, events)=>{
           {
             "actionType": "custom",
             "script": (context, doAction, event) => {
-              if (instance.box !== 'draft'){
-                var btn = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .approve-button');
-                btn && btn.classList.add('hidden');
-              }
+              var btn = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .approve-button');
+              btn && btn.classList.add('hidden');
             }
           }
         ],
@@ -1249,60 +1247,10 @@ const getApproveButton = async (instance, events)=>{
     },
     id: "steedos-approve-button",
     level: "primary",
-    className: {
-      "approve-button w-14 h-14 rounded-full fixed bottom-4 right-4 shadow-lg text-white text-base text-center font-semibold bg-blue-500 p-0": true,
-      "hidden": instance.box === 'draft'
-    }
+    className: "approve-button w-14 h-14 rounded-full fixed bottom-4 right-4 shadow-lg text-white text-base text-center font-semibold bg-blue-500 p-0"
   }
 }
 
-const getScrollToBottomAutoOpenApproveDrawerScript = () => {
-  return `
-    (function () {
-      setTimeout(function () {
-        var bodyEl = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .steedos-amis-instance-view-body');
-        if (!bodyEl) return;
-        var btn = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .approve-button');
-        if (!btn) return;
-
-        function isDrawerOpen() {
-          var dr = document.querySelector('.amis-dialog-widget.approval-drawer');
-          return dr && dr.offsetParent !== null;
-        }
-
-        var lastAtBottom = false; // 上一个scroll事件是否到底
-
-        function isAtBottom() {
-          var scrollTop = bodyEl.scrollTop,
-            scrollHeight = bodyEl.scrollHeight,
-            clientHeight = bodyEl.clientHeight;
-          return (scrollHeight <= clientHeight) || (scrollTop + clientHeight >= scrollHeight - 2);
-        }
-
-        // wheel: 只要现在到底、且是向下滚，即可弹出
-        bodyEl.addEventListener('wheel', function (e) {
-          var atBottom = isAtBottom();
-          if (atBottom && e.deltaY > 0 && !isDrawerOpen()) {
-            // [wheel] 拖动条在底部且向下滚，弹drawer
-            btn.dataset.triggerSource = 'scrollToBottom';
-            btn.click();
-          }
-        });
-
-        // scroll: 拖动时仅“从非底部->底部”瞬间弹
-        bodyEl.addEventListener('scroll', function () {
-          var atBottom = isAtBottom();
-          if (!lastAtBottom && atBottom && !isDrawerOpen()) {
-            // [scroll] 拖动条到底，弹drawer
-            btn.dataset.triggerSource = 'scrollToBottom';
-            btn.click();
-          }
-          lastAtBottom = atBottom;
-        });
-      }, 1000);
-    })();
-  `;
-}
 
 export const getFlowFormSchema = async (instance, box, print) => {
   const tableFieldMap = getTableFieldMap(instance.fields);
@@ -1327,16 +1275,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
     nextStepChangeEvents = onEvent?.nextStepChange?.actions || [];
     nextStepUserChangeEvents = onEvent?.nextStepUserChange?.actions || [];
   }
-  if ((box == 'inbox' || box == 'draft') && !!!window.disableAutoOpenApproveDrawer) {
-    // 滚动条滚动到底部弹出底部签批drawer窗口
-    initedEvents.push({
-      "actionType": "custom",
-      "script": getScrollToBottomAutoOpenApproveDrawerScript(),
-      "args": {}
-    });
-  }
-
-    let formContentSchema;
+  let formContentSchema;
   let instanceFormSchema;
   if(print && instance.flow.print_template){
     try {
