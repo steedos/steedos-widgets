@@ -1266,38 +1266,54 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
         if (!btn) return;
 
         function isDrawerOpen() {
-          var dr = document.querySelector('.amis-dialog-widget.approval-drawer');
-          return dr && dr.offsetParent !== null;
+          var dr = document.querySelector('.steedos-amis-instance-approval-drawer-container .approval-drawer');
+          return !!dr;
         }
 
-        var lastAtBottom = false; // 上一个scroll事件是否到底
+        var hasTriggered = false; // 防止重复触发
+
+        // 当drawer关闭后重置hasTriggered，允许下次再触发
+        var drawerContainer = document.querySelector('.steedos-amis-instance-approval-drawer-container');
+        if (drawerContainer) {
+          var drawerObserver = new MutationObserver(function () {
+            if (!isDrawerOpen()) {
+              hasTriggered = false;
+            }
+          });
+          drawerObserver.observe(drawerContainer, { childList: true, subtree: true });
+        }
 
         function isAtBottom() {
           var scrollTop = bodyEl.scrollTop,
             scrollHeight = bodyEl.scrollHeight,
             clientHeight = bodyEl.clientHeight;
-          return (scrollHeight <= clientHeight) || (scrollTop + clientHeight >= scrollHeight - 2);
+          return (scrollHeight > clientHeight) && (scrollTop + clientHeight >= scrollHeight - 2);
         }
 
         // wheel: 只要现在到底、且是向下滚，即可弹出
         bodyEl.addEventListener('wheel', function (e) {
           var atBottom = isAtBottom();
-          if (atBottom && e.deltaY > 0 && !isDrawerOpen()) {
+          if (atBottom && e.deltaY > 0 && !hasTriggered && !isDrawerOpen()) {
             // [wheel] 拖动条在底部且向下滚，弹drawer
+            hasTriggered = true;
             btn.dataset.triggerSource = 'scrollToBottom';
             btn.click();
           }
         });
 
-        // scroll: 拖动时仅“从非底部->底部”瞬间弹
+        // scroll: 仅向下滚动且到底时触发
+        var lastScrollTop = bodyEl.scrollTop;
         bodyEl.addEventListener('scroll', function () {
+          var currentScrollTop = bodyEl.scrollTop;
+          var isScrollingDown = currentScrollTop > lastScrollTop;
           var atBottom = isAtBottom();
-          if (!lastAtBottom && atBottom && !isDrawerOpen()) {
-            // [scroll] 拖动条到底，弹drawer
+          if (isScrollingDown && atBottom && !hasTriggered && !isDrawerOpen()) {
+            // [scroll] 向下滚动到底，弹drawer
+            hasTriggered = true;
             btn.dataset.triggerSource = 'scrollToBottom';
             btn.click();
           }
-          lastAtBottom = atBottom;
+          lastScrollTop = currentScrollTop;
         });
       }, 1000);
     })();
