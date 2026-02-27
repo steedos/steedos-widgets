@@ -181,6 +181,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
   const [tempSelectedUsers, setTempSelectedUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [searchInputValue, setSearchInputValue] = useState(''); // 搜索框即时值（解耦输入与防抖查询）
   const [deptSearchKeyword, setDeptSearchKeyword] = useState('');
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
@@ -253,6 +254,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
       setSelectedDept(null);
       setDeptSearchKeyword('');
       setSearchKeyword('');
+      setSearchInputValue(''); // 同步清空搜索输入框
       
       fetchDeptTree()
         .then(data => {
@@ -332,6 +334,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
     if (selectedKeys.length > 0) {
       setSelectedDept(String(selectedKeys[0]));
       setSearchKeyword(''); // 互斥规则：切换部门时清空搜索关键字
+      setSearchInputValue(''); // 同步清空搜索输入框
       // 移动端：记住部门名称，自动跳转到人员Tab
       if (isMobile && info?.node) {
         setSelectedDeptName(String((info.node as any).title || ''));
@@ -385,6 +388,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
 
   // 处理用户搜索
   const handleSearch = (searchValue: string) => {
+    setSearchInputValue(searchValue); // 立即更新输入框显示
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
     }
@@ -590,7 +594,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
         okText="确定"
         cancelText="取消"
         footer={multiple ? undefined : null}
-        width={multiple ? 1200 : 850}
+        width={1200}
         destroyOnClose
         bodyStyle={{ height: 600, overflow: 'hidden', padding: 0 }}
       >
@@ -636,7 +640,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
               <Input
                 placeholder="搜索姓名、邮箱或用户名"
                 prefix={<SearchOutlined />}
-                value={searchKeyword}
+                value={searchInputValue}
                 onChange={(e) => handleSearch(e.target.value)}
                 allowClear
                 style={{ flex: 1 }}
@@ -750,8 +754,8 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
             </div>
           </div>
 
-          {/* 右侧：已选中（仅多选模式显示） */}
-          {multiple && <div style={{ width: 240, borderLeft: '1px solid #f0f0f0', padding: 16, display: 'flex', flexDirection: 'column' }}>
+          {/* 右侧：已选中 */}
+          <div style={{ width: 240, borderLeft: '1px solid #f0f0f0', padding: 16, display: 'flex', flexDirection: 'column' }}>
             <div style={{ marginBottom: 12, fontSize: 14 }}>
               <span style={{ fontWeight: 500 }}>已选中</span>
               <span style={{ marginLeft: 8, color: '#999' }}>({tempSelectedUsers.length})</span>
@@ -818,7 +822,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
                 清空全部
               </Button>
             )}
-          </div>}
+          </div>
         </div>
       </Modal>}
 
@@ -836,6 +840,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
           expandedKeys={expandedKeys}
           users={users}
           searchKeyword={searchKeyword}
+          searchInputValue={searchInputValue}
           tempSelectedUsers={tempSelectedUsers}
           mobileActiveTab={mobileActiveTab}
           clearable={clearable}
