@@ -651,38 +651,6 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
                 </Button>
               )}
             </div>
-            {/* 单选模式：当前选中指示条 */}
-            {!multiple && tempSelectedUsers.length > 0 && (
-              <div style={{
-                display: 'flex', alignItems: 'center', gap: 8, padding: '6px 12px',
-                marginBottom: 8, background: '#f6f8fa', borderRadius: 6, border: '1px solid #e8e8e8'
-              }}>
-                <span style={{ fontSize: 12, color: '#999', flexShrink: 0 }}>当前选中</span>
-                <Avatar
-                  src={tempSelectedUsers[0].avatar ? `/api/v6/users/${tempSelectedUsers[0].user}/avatar` : undefined}
-                  size={24}
-                  style={{ backgroundColor: tempSelectedUsers[0].avatar ? undefined : '#1890ff', flexShrink: 0 }}
-                >
-                  {!tempSelectedUsers[0].avatar && tempSelectedUsers[0].name?.charAt(0)}
-                </Avatar>
-                <span style={{ fontSize: 14, fontWeight: 500, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {tempSelectedUsers[0].name}
-                </span>
-                {tempSelectedUsers[0].email && (
-                  <span style={{ fontSize: 12, color: '#999', flexShrink: 0 }}>{tempSelectedUsers[0].email}</span>
-                )}
-                {clearable && (
-                  <CloseOutlined
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setTempSelectedUsers([]);
-                      handleOkWithUsers([]);
-                    }}
-                    style={{ fontSize: 12, color: '#999', cursor: 'pointer', flexShrink: 0, padding: 4 }}
-                  />
-                )}
-              </div>
-            )}
             <div style={{ flex: 1, overflowY: 'auto', border: '1px solid #f0f0f0', borderRadius: 4, position: 'relative' }}>
               <Spin spinning={loading}>
                 {users.length > 0 ? (
