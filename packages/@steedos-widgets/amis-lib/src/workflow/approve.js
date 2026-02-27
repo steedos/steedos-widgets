@@ -870,14 +870,6 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                   var btn = document.querySelector(CONFIG.approveButtonSelector);
                   if (btn && btn.dataset.triggerSource === 'scrollToBottom') {
                     delete btn.dataset.triggerSource;
-                    // drawer因滚动到底部触发打开，等syncHeight完成marginBottom设置后平滑滚到新底部
-                    // 使drawer从底部自然显出，内容不被遮挡（500ms > syncHeight的300ms延时+1帧）
-                    setTimeout(function() {
-                      var bodyEl = document.querySelector(CONFIG.bodySelector);
-                      if (bodyEl) {
-                        bodyEl.scrollTo({ top: bodyEl.scrollHeight, behavior: 'smooth' });
-                      }
-                    }, 500);
                   }
                   var submitApprovalForm = function(){
                     // 用amis actionType触发btnSubmit提交事件不会触发表单校验，加很长时间的延时也没用，改用原生js click事件触发
