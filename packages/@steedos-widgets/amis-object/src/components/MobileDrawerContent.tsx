@@ -149,6 +149,7 @@ interface MobileDrawerProps {
   expandedKeys: React.Key[];
   users: any[];
   searchKeyword: string;
+  searchInputValue: string;
   tempSelectedUsers: any[];
   mobileActiveTab: 'dept' | 'users' | 'selected';
   clearable: boolean;
@@ -171,7 +172,7 @@ interface MobileDrawerProps {
 export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
   const {
     visible, multiple, loading, deptTree, treeKey, deptSearchKeyword,
-    selectedDept, selectedDeptName, expandedKeys, users, searchKeyword,
+    selectedDept, selectedDeptName, expandedKeys, users, searchKeyword, searchInputValue,
     tempSelectedUsers, mobileActiveTab, clearable,
     onSelectDept, onLoadData, onExpandKeys, onDeptSearch, onUserSearch,
     onAddUser, onRemoveUser, onToggleUser, onToggleSelectAll,
@@ -209,7 +210,7 @@ export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
       )}
       {/* 搜索框 + 全选同行（参考钉钉/飞书规范） */}
       <div style={{ padding: '8px 16px', display: 'flex', alignItems: 'center', gap: 8 }}>
-        <Input placeholder="搜索姓名、邮箱或用户名" prefix={<SearchOutlined />} value={searchKeyword} onChange={(e) => onUserSearch(e.target.value)} allowClear size="large" style={{ flex: 1 }} />
+        <Input placeholder="搜索姓名、邮箱或用户名" prefix={<SearchOutlined />} value={searchInputValue} onChange={(e) => onUserSearch(e.target.value)} allowClear size="large" style={{ flex: 1 }} />
         {multiple && users.length > 0 && (
           <Button size="small" onClick={onToggleSelectAll} style={{ flexShrink: 0 }}>{isAllSelected ? '取消全选' : '全选'}</Button>
         )}
