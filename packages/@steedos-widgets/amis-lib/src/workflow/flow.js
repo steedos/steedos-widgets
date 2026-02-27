@@ -1296,7 +1296,6 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
           if (atBottom && e.deltaY > 0 && !hasTriggered && !isDrawerOpen()) {
             // [wheel] 拖动条在底部且向下滚，弹drawer
             hasTriggered = true;
-            btn.dataset.triggerSource = 'scrollToBottom';
             btn.click();
           }
         });
@@ -1310,7 +1309,6 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
           if (isScrollingDown && atBottom && !hasTriggered && !isDrawerOpen()) {
             // [scroll] 向下滚动到底，弹drawer
             hasTriggered = true;
-            btn.dataset.triggerSource = 'scrollToBottom';
             btn.click();
           }
           lastScrollTop = currentScrollTop;

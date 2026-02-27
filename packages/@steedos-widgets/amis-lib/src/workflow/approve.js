@@ -868,9 +868,6 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                   });
 
                   var btn = document.querySelector(CONFIG.approveButtonSelector);
-                  if (btn && btn.dataset.triggerSource === 'scrollToBottom') {
-                    delete btn.dataset.triggerSource;
-                  }
                   var submitApprovalForm = function(){
                     // 用amis actionType触发btnSubmit提交事件不会触发表单校验，加很长时间的延时也没用，改用原生js click事件触发
                     setTimeout(function(){
