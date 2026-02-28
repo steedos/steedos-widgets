@@ -1327,7 +1327,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
     nextStepChangeEvents = onEvent?.nextStepChange?.actions || [];
     nextStepUserChangeEvents = onEvent?.nextStepUserChange?.actions || [];
   }
-  if ((box == 'inbox' || box == 'draft') && !!!window.disableAutoOpenApproveDrawer && false) {
+  if ((box == 'inbox' || box == 'draft') && !!!window.disableAutoOpenApproveDrawer) {
     // 滚动条滚动到底部弹出底部签批drawer窗口
     initedEvents.push({
       "actionType": "custom",
