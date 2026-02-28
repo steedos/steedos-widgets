@@ -217,7 +217,12 @@ export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
           {users.slice(0, visibleCount).map((user: any) => {
             const isSelected = !!tempSelectedUsers.find(u => u._id === user._id);
             return (
-              <div key={user._id} className="steedos-mobile-user-card" onClick={() => onToggleUser(user)} style={{ opacity: isSelected ? 0.7 : 1 }}>
+              <div key={user._id} className="steedos-mobile-user-card" onClick={() => onToggleUser(user)}>
+                {multiple && (
+                  <div style={{ width: 20, height: 20, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, background: isSelected ? '#1890ff' : 'transparent', border: isSelected ? 'none' : '1.5px solid #d9d9d9' }}>
+                    {isSelected && <CheckOutlined style={{ color: '#fff', fontSize: 11 }} />}
+                  </div>
+                )}
                 <Avatar src={user.avatar ? `/api/v6/users/${user.user}/avatar` : undefined} size={40} style={{ backgroundColor: user.avatar ? undefined : '#1890ff', flexShrink: 0 }}>
                   {!user.avatar && user.name?.charAt(0)}
                 </Avatar>
@@ -231,9 +236,6 @@ export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
                       {user.email || user.mobile || user.username}
                     </div>
                   )}
-                </div>
-                <div style={{ width: 32, height: 32, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, background: isSelected ? '#1890ff' : '#f0f0f0' }}>
-                  {isSelected ? <CheckOutlined style={{ color: '#fff', fontSize: 14 }} /> : <span style={{ color: '#bbb', fontSize: 18, lineHeight: 1 }}>+</span>}
                 </div>
               </div>
             );
@@ -416,20 +418,25 @@ export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
       </div>
       {/* 标题栏 */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 16px 8px' }}>
-        {deptPath.length > 0 ? (
-          <Button type="text" onClick={onMobileBack} style={{ padding: 0, color: '#1890ff' }}>
-            <LeftOutlined style={{ marginRight: 4 }} />返回
-          </Button>
-        ) : (
-          <Button type="text" onClick={onCancel} style={{ padding: 0, color: '#666' }}>取消</Button>
-        )}
-        <span style={{ fontWeight: 600, fontSize: 16 }}>
-          {deptPath.length > 0 ? deptPath[deptPath.length - 1].name : '选择人员'}
-        </span>
-        <span style={{ width: 40 }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 28, minWidth: 60 }}>
+          {deptPath.length > 0 && (
+            <span onClick={onMobileBack} style={{ color: '#1890ff', fontSize: 18, lineHeight: 1, cursor: 'pointer', WebkitTapHighlightColor: 'transparent', padding: '4px 0' }}>
+              <LeftOutlined />
+            </span>
+          )}
+          <span onClick={onCancel} style={{ color: '#666', fontSize: 16, lineHeight: 1, cursor: 'pointer', WebkitTapHighlightColor: 'transparent', padding: '4px 0' }}>
+            <CloseOutlined />
+          </span>
+        </div>
+        <span style={{ fontWeight: 600, fontSize: 16 }}>选择人员</span>
+        <div style={{ minWidth: 60, display: 'flex', justifyContent: 'flex-end' }}>
+          {multiple && users.length > 0 && !isSearchMode && (
+            <span onClick={onToggleSelectAll} style={{ fontSize: 14, color: '#1890ff', cursor: 'pointer', WebkitTapHighlightColor: 'transparent' }}>{isAllSelected ? '取消全选' : '全选'}</span>
+          )}
+        </div>
       </div>
-      {/* 搜索框 + 全选 */}
-      <div style={{ padding: '4px 16px 8px', display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+      {/* 搜索框 */}
+      <div style={{ padding: '4px 16px 8px', flexShrink: 0 }}>
         <Input
           placeholder="搜索姓名、邮箱或用户名"
           prefix={<SearchOutlined />}
@@ -437,11 +444,7 @@ export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
           onChange={(e) => onUserSearch(e.target.value)}
           allowClear
           size="large"
-          style={{ flex: 1 }}
         />
-        {multiple && users.length > 0 && !isSearchMode && (
-          <Button size="small" onClick={onToggleSelectAll} style={{ flexShrink: 0 }}>{isAllSelected ? '取消全选' : '全选'}</Button>
-        )}
       </div>
       {/* 主内容区：通讯录入口(初始页) / 部门卡片(钻入) + 人员列表 */}
       <div ref={scrollContainerRef} style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch' as any }}>
