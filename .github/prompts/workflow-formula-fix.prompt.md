@@ -8,7 +8,8 @@
 4. **Tests**: `packages/@steedos-widgets/amis-lib/src/workflow/__tests__/formula-utils.test.js`
 5. **Fix history**: `packages/@steedos-widgets/amis-lib/docs/workflow/plan-001-formula-refactor.md`
 6. **Fix history**: `packages/@steedos-widgets/amis-lib/docs/workflow/plan-002-static-value-fix.md`
-7. **Human guide**: `packages/@steedos-widgets/amis-lib/docs/workflow/formula-bugfix-guide.md`
+7. **Fix history**: `packages/@steedos-widgets/amis-lib/docs/workflow/plan-003-ascii-parentheses-fix.md`
+8. **Human guide**: `packages/@steedos-widgets/amis-lib/docs/workflow/formula-bugfix-guide.md`
 
 ## Procedure
 
@@ -51,4 +52,5 @@ npx jest --verbose
 ## Bug Numbering
 - Bugs 1-4: Plan 001
 - Bug 5: Plan 002
-- Next bug: **Bug 6**
+- Bug 6: Plan 003
+- Next bug: **Bug 7**

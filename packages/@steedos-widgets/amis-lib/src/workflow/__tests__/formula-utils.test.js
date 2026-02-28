@@ -269,3 +269,29 @@ describe('mapFormula - Bug 5: 静态默认值不应被误判为公式', () => {
     expect(mapFormula('ABC-DEF-123', null)).toBeNull();
   });
 });
+
+// ============================================================
+// 测试组 7: Bug 6 — 字段名含半角括号未安全化
+// ============================================================
+describe('mapFormula - Bug 6: 字段名含半角括号应安全化', () => {
+
+  test('运算符公式中含半角括号字段: {工程应预估支出(3)}/{合同金额(1)}*100', () => {
+    const result = mapFormula('{工程应预估支出(3)}/{合同金额(1)}*100', null);
+    expect(result).toBe('${工程应预估支出_3/合同金额_1*100}');
+  });
+
+  test('简单引用含半角括号: {费用合计(1)}', () => {
+    const result = mapFormula('{费用合计(1)}', null);
+    expect(result).toBe('${费用合计_1}');
+  });
+
+  test('半角括号与中文全角括号混合: {金额（元）} + {数量(2)}', () => {
+    const result = mapFormula('{金额（元）} + {数量(2)}', null);
+    expect(result).toBe('${金额_元 + 数量_2}');
+  });
+
+  test('getSafeCode 处理半角括号', () => {
+    expect(getSafeCode('工程应预估支出(3)')).toBe('工程应预估支出_3');
+    expect(getSafeCode('合同金额(1)')).toBe('合同金额_1');
+  });
+});

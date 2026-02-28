@@ -25,7 +25,7 @@ npx jest --verbose -t "Bug 5"
 
 ```
 Test Suites: 1 passed, 1 total
-Tests:       43 passed, 43 total
+Tests:       49 passed, 49 total
 ```
 
 ## 文件说明
@@ -46,7 +46,8 @@ Tests:       43 passed, 43 total
 | Bug 3 | 简单引用中文字符 | 3 |
 | Bug 4 | 简单引用空白 trim | 2 |
 | Bug 5 | 静态文本误判为公式 | 8 |
-| getSafeCode | 辅助函数 | 3 |
+| Bug 6 | 字段名含半角括号 | 4 |
+| getSafeCode | 辅助函数 | 4 |
 | getTableFieldMap | 辅助函数 | 3 |
 
 ## 添加新测试
