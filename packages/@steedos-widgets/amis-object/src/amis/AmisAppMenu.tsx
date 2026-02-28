@@ -121,9 +121,17 @@ export const AmisAppMenu = async (props) => {
                       // Always collect nav paths (before nav_schema check) for isCurrentUrl prefix-match dedup
                       if (payload.children) {
                           var _navPaths = [];
+                          // Try to resolve template variables using user data from amis data scope
+                          var _ctxUser = (context && context.context && context.context.user) || (context && context.global && context.global.user) || {};
                           _.each(payload.children, function(tab) {
                               if (tab.path) {
                                   var p = tab.path;
+                                  // Resolve ${context.user.xxx} and ${global.user.xxx} template variables
+                                  if (p.indexOf('${') > -1) {
+                                      p = p.replace(/\$\{(?:context|global)\.user\.(\w+)\}/g, function(m, key) {
+                                          return _ctxUser[key] || m;
+                                      });
+                                  }
                                   var qi = p.indexOf('?');
                                   if (qi > -1) p = p.substring(0, qi);
                                   var hi = p.indexOf('#');
